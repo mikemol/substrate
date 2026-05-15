@@ -752,6 +752,184 @@ the lex-min recovery and may be best deferred until a concrete
 motivation arises (e.g., extending to a 5-axis system at higher
 Hadamard levels).
 
+### Type-D sub-variants (rigidification mechanism varies)
+
+The hunt surfaces three additional Type-D instances with different
+rigidification mechanisms — not all Type-D rigidifications work the
+same way. Distinguishing them sharpens what to look for in future
+audits.
+
+#### Sub-variant: empty-bridge rigidification (integer-as-path founding)
+
+**The most dramatic find of the second-round hunt.** M2's narrative
+explicitly admitted four representations as first-class:
+*"Function-as-path / Trace-as-path / Polynomial-as-path (GF(2^k))"*
+([../cotype-free-self-extending-grammar.md:112-114](../cotype-free-self-extending-grammar.md)),
+with integer-as-path as the locally-pragmatic founding choice and the
+others "reachable via S7" — the `transform(k, src_rep, tgt_rep)`
+operation. M2 even flagged the lex-min recovery for itself:
+*"any vertex could have been chosen; the founding is a free choice
+respecting the structure"*
+([line 141](../cotype-free-self-extending-grammar.md)).
+
+The rigidification mechanism is unlike the lex-min case. There is no
+verifier-as-contract, no content-addressing dependency, no
+agreement theorem. Instead:
+
+- [../scratch/chart.py:214-226](../scratch/chart.py): the `transform`
+  method exists as API surface, but its body is `NotImplementedError`
+  for any non-identity transform:
+
+  ```python
+  def transform(self, k: Any, src_rep: str, tgt_rep: str) -> Any:
+      if src_rep == tgt_rep:
+          return k
+      rot = (src_rep, tgt_rep)
+      ...
+      raise NotImplementedError(f"transform {src_rep} -> {tgt_rep}")
+  ```
+
+- No `function-as-path`, `trace-as-path`, or `polynomial-as-path`
+  implementations exist anywhere in the corpus. The alternative
+  representations are *named* and *unimplemented*.
+
+The rigidification IS the absence: M2 promised first-class
+multiplicity; the corpus delivered one operational representation
+and a placeholder API for the others. The placeholder API is the
+**empty bridge** — its presence affirms the promise; its body
+defeats it.
+
+**Why this is the most consequential Type-D find**: the lex-min and
+AXES rigidifications constrain *which choice* is operational among
+gauge-equivalent options. The integer-as-path empty-bridge eliminates
+the *existence* of operational alternatives. M2's "topos's freedom of
+representation choice" is operationally nil.
+
+**Recovery action available**: implement `transform` for at least one
+alternative representation (`trace-as-path` is the most testable —
+it would unfold an apply-chain as a path) so the API is operationally
+non-empty. The empty-bridge pattern is recoverable; the AXES cascade
+is not (without a refactor).
+
+#### Sub-variant: per-instance rigidification (designated identities)
+
+M3 explicitly enumerated the designated-identity choices as "open
+structural choices" the founding set leaves underdetermined
+([../cotype-free-self-extending-grammar.md:88-94](../cotype-free-self-extending-grammar.md)),
+then committed them at M3-resolution:
+`nil = 0, true = 1, false = 2, failure = 3` (M3's C2).
+
+The rigidification at [../scratch/chart.py:40-46](../scratch/chart.py):
+
+```python
+self.NIL     = 0
+self.TRUE    = self.cons(0, 0)   # 1
+self.FALSE   = self.cons(0, 1)   # 2
+self.FAILURE = self.cons(1, 0)   # 3
+self.S       = self.cons(3, 3)   # 4
+self.K       = self.cons(3, 0)   # 5
+self.I       = self.cons(0, 3)   # 6
+```
+
+This is per-instance rigidification: each `Chart` instance has its
+own NIL/TRUE/FALSE/FAILURE/S/K/I as instance attributes, NOT module-
+level constants. The integers (0, 1, 2, 3, ...) are determined by
+the hash-consing order at instance construction. Two `Chart`
+instances built identically will have the same indices; two with
+different construction histories may not.
+
+**Implication**: receipts emitted by one chart and replayed against
+another require the cons-order to match. The integers are
+operationally local to a chart instance but structurally local to
+the M3 commitment. M3 said *which* commitment was made; chart.py
+implements that specific commitment as the construction recipe.
+
+**Strength**: weaker Type-D than AXES because re-ordering would only
+affect cross-chart receipt portability, not the algebraic structure
+itself. But the choice is real, and the integers do appear as
+literals in atom_map ([../scratch/chart.py:186-190](../scratch/chart.py))
+and likely elsewhere.
+
+#### Sub-variant: structurally-partially-motivated rigidification (codeword bit layout)
+
+The 5-bit codeword layout used throughout M38–M41 is
+([../applied_grammar.py:623-672](../applied_grammar.py),
+[../scratch/unified_address.py:88-103](../scratch/unified_address.py)):
+
+```text
+bit 4    : chirality   (0=even, 1=odd)        [1 bit]
+bits 2-3 : pairing                             [2 bits]
+bits 0-1 : witness                             [2 bits]
+```
+
+20+ hardcoded extractions: `(code >> 4) & 1`, `(code >> 2) & 0b11`,
+`code & 0b11`, and recompositions
+`(chir_bit << 4) | (pairing_bits << 2) | witness_bits`.
+
+**The math admits any bit permutation as a valid layout**. The
+chirality bit could be at any position; the pairing and witness
+blocks could swap; non-contiguous layouts are also valid.
+
+**Partial structural motivation**: putting chirality at the MSB
+aligns with the parity-sieve / codeword-distance / inverse-pair
+structure — chirality flip (M35 Z_2 inverse-pair completion) is
+literally `code XOR 0b10000`. That's a structural argument FOR
+this layout. But it is not the unique valid layout — chirality at
+the LSB (with everything shifted up) would have the same distance
+properties.
+
+**Rigidification mechanism**: bit-level operations hardcoded
+throughout codec functions; no `BIT_LAYOUT` abstraction; no
+verifiers test "chirality occupies one bit at some position" —
+they test "chirality is bit 4."
+
+**Strength**: moderate. Partial structural motivation pulls toward
+this layout but doesn't determine it. Recovery would require
+parametrising the bit positions; not motivated by current scope.
+
+#### Sub-variant: label-only rigidification (chirality even/odd convention)
+
+The sign homomorphism S_4 → Z_2 is the unique non-trivial
+homomorphism (mathematically canonical). The choice that remains is
+**which Z_2 element gets which label**:
+
+- [../scratch/chirality_as_parity.py:34](../scratch/chirality_as_parity.py):
+  `def sign(perm)` returns `0` (even) or `1` (odd).
+- "even" maps to A_4 (the kernel of the sign homomorphism); "odd"
+  maps to S_4 \\ A_4 (the non-identity coset).
+- "0=even, 1=odd" is the integer-encoding convention.
+
+There are 2 valid sign conventions and 2 valid integer-encodings
+(0/1 vs 1/0), so 4 valid combinations total. The corpus picked one.
+
+**Rigidification mechanism**: pure label-binding. No
+verifier-as-contract, no content-addressing dependency beyond what
+the bit-layout already encodes. Re-labelling (e.g., "even=1,
+odd=0") would flip every chirality bit but produce a structurally
+identical system.
+
+**Strength**: weak. This is the cleanest case of "trivially
+recoverable label choice" — a future reader who needs the opposite
+convention can swap globally with no other consequences. Calling it
+out is mostly so the catalog records that the convention IS a
+choice and not a discovered structure.
+
+### Type-D taxonomy after the second-round hunt
+
+| Sub-variant | Mechanism | Recoverability | Bridge layer? |
+|------|-----------|----------------|---------------|
+| Verifier-contract (lex-min) | Choice tested as contract; content-addressed against | Hard — receipts encode the choice | Yes (v17↔v19 agreement theorem) |
+| Unsubstituted-foundation (AXES) | Choice cascades unquestioned through entire module-load chain | Hard — touches almost everything | None |
+| Empty-bridge (integer-as-path) | API placeholder + `NotImplementedError` body | Medium — fill in the bridge bodies | The API surface IS the bridge — empty |
+| Per-instance (designated identities) | Construction recipe assigns specific indices | Easy per-chart, hard cross-chart | None |
+| Partially-motivated (bit layout) | Bit-level hardcoding with partial structural argument | Medium — parametrise positions | None |
+| Label-only (chirality convention) | Pure naming choice | Trivial — global rename | None |
+
+The taxonomy is now load-bearing for future audits: when a Type-D
+candidate is found, classify it by mechanism to estimate recovery
+cost. Verifier-contract and unsubstituted-foundation are the
+expensive ones; label-only is free.
+
 ## Open questions surfaced by the catalog
 
 These are not in the corpus explicitly; they emerge from cataloguing.
