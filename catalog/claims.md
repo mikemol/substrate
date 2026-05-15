@@ -467,6 +467,73 @@ C-ids and [README.md](README.md) for status semantics.
 - **Status**: shown.
 - **Concepts**: C-transactional-verification, C-codeword-address-bijection.
 
+## Implementation bindings (K-claim → scratch artefact)
+
+Each K-claim is bound to the file(s) that purport to witness it.
+"shown by paper proof, no runnable witness" claims promote to
+"executable witness available" once the corresponding scratch artefact
+exists. To re-run, add [../scratch/](../scratch/) to PYTHONPATH.
+
+| K-claim | Implementation | Verifier (if separate) |
+|---------|---------------|------------------------|
+| K-six-micro-ops-suffice | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) | — |
+| K-apply-grounds-realizability | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) | — |
+| K-apply-single-step-terminates-structurally | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) (CBNeed) | — |
+| K-chart-is-memoization | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) (hash-cons) | — |
+| K-chart-kernel-implements-micro-ops | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) | — |
+| K-self-extension-closes-L5 | [../scratch/chart (6).py](../scratch/chart%20%286%29.py) (meta-circular interp) | — |
+| K-K_n-coherence-for-composition | [../scratch/enumerate_associahedra.py](../scratch/enumerate_associahedra.py) (M18) | — |
+| K-tier2-regroup-well-formed | M10 regroup pass | [../scratch/verify_shadows (5).py](../scratch/verify_shadows%20%285%29.py) |
+| K-table2-minimal | [../scratch/search_table2.py](../scratch/search_table2.py) | — |
+| K-K-rule-gauge-structure | [../scratch/search_k_variants.py](../scratch/search_k_variants.py) | — |
+| K-default-table-is-RM-1-3 | [../scratch/rm_in_tier1.py](../scratch/rm_in_tier1.py) | — |
+| K-parity-basins-rotational | [../scratch/rm_codeword_basins.py](../scratch/rm_codeword_basins.py) | — |
+| K-punctured-RM-is-Hamming | [../scratch/hamming_7_4_codewords.py](../scratch/hamming_7_4_codewords.py) | — |
+| K-WHT-quotient-algebra | [../scratch/walsh_hadamard_readings.py](../scratch/walsh_hadamard_readings.py) | — |
+| K-hamming-family-scales | [../scratch/hamming_scaling_hardware.py](../scratch/hamming_scaling_hardware.py) | — |
+| K-stasheff-per-hadamard-level | [../scratch/stasheff_per_hadamard_level.py](../scratch/stasheff_per_hadamard_level.py) | — |
+| K-F2-3-gauge-on-puncturings | [../scratch/walsh_hadamard_core.py](../scratch/walsh_hadamard_core.py) | — |
+| K-S-is-pivot | [../scratch/s_as_pivot.py](../scratch/s_as_pivot.py) | — |
+| K-triadic-with-witness | [../scratch/triadic_decomposition.py](../scratch/triadic_decomposition.py), [../scratch/witnessed_pairs.py](../scratch/witnessed_pairs.py) | — |
+| K-gauge-is-semantic-axis | [../scratch/scratch_axis_audit.py](../scratch/scratch_axis_audit.py) | — |
+| K-v4-under-explored | [../scratch/v4_klein_four_coverage.py](../scratch/v4_klein_four_coverage.py), [../scratch/engagement_matrix.py](../scratch/engagement_matrix.py) | — |
+| K-state-machine-verified | [../scratch/architecture_state_machine (2).py](../scratch/architecture_state_machine%20%282%29.py) | — |
+| K-F-populated | [../scratch/construct_v4_twins (2).py](../scratch/construct_v4_twins%20%282%29.py), [../scratch/construct_v4_twins_final (1).py](../scratch/construct_v4_twins_final%20%281%29.py) | [../scratch/verify_v4_twins.py](../scratch/verify_v4_twins.py) |
+| K-v4-twins-fail-cells (negative) | [../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py), [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py) | — |
+| K-chirality-is-parity | [../scratch/chirality_as_parity.py](../scratch/chirality_as_parity.py), [../scratch/directed_witnessed_pairs.py](../scratch/directed_witnessed_pairs.py) | — |
+| K-inverse-pair-completes-via-Z2 | [../scratch/chart_with_inverses (1).py](../scratch/chart_with_inverses%20%281%29.py) | [../scratch/verify_inverses (1).py](../scratch/verify_inverses%20%281%29.py) |
+| K-V4-extension-completes-S4-orbit | [../scratch/chart_full_v4 (1).py](../scratch/chart_full_v4%20%281%29.py) | [../scratch/verify_full_v4 (1).py](../scratch/verify_full_v4%20%281%29.py) |
+| K-Z3-is-4axis-generator | [../scratch/chart_chained.py](../scratch/chart_chained.py) | [../scratch/verify_chained.py](../scratch/verify_chained.py) |
+| K-unified-address-guardrails | [../scratch/unified_address.py](../scratch/unified_address.py) | [../scratch/verify_unified_address.py](../scratch/verify_unified_address.py) |
+| K-architecture-is-hadamard-mixing | [../scratch/hadamard_basis.py](../scratch/hadamard_basis.py) | — |
+| K-M40-aggregator | [../scratch/spectral_view.py](../scratch/spectral_view.py) (`verify_m40_group_is_a4z2_not_s4`) | [../scratch/verify_spectral.py](../scratch/verify_spectral.py) |
+| K-chirality-is-central | [../scratch/spectral_view.py](../scratch/spectral_view.py) (center order tests) | — |
+| K-V4-semidirect-S3-is-primary | [../s4_structure.py](../s4_structure.py) | [../scratch/verify_s4_structure.py](../scratch/verify_s4_structure.py) |
+| K-hodge-32-24-8 | [../s4_structure.py](../s4_structure.py) (`verify_32_constructed_from_triadic_plus_hodge`) | [../scratch/verify_s4_structure.py](../scratch/verify_s4_structure.py) |
+| K-cayley-dickson-level4 | [../s4_structure.py:659+](../s4_structure.py) (`sn_cayley_dickson_table`) | — |
+| K-orbit-canonical-bijection | [../applied_grammar.py:861-956](../applied_grammar.py) | [../applied_grammar.py:969+](../applied_grammar.py) (`verify_signature_decomposition_bijection`) |
+| K-v17-v19-agree | [../applied_grammar.py:1313-1328](../applied_grammar.py) | same file |
+| K-parity-sieve-characterises-24 | [../applied_grammar.py:1021+](../applied_grammar.py) (`verify_parity_sieve_characterization`) | — |
+| K-codeword-address-bijection | [../applied_grammar.py:632-696](../applied_grammar.py) | [../applied_grammar.py:694+](../applied_grammar.py) (`verify_codeword_address_bijection`) |
+| K-receipt-carries-address | [../applied_grammar.py](../applied_grammar.py) | [../verify_applied_grammar.py](../verify_applied_grammar.py) (suite covers this) |
+| K-structural-address-obligation-closed | [../applied_grammar.py](../applied_grammar.py) (`verify_every_receipt_carries_structural_address` umbrella) | [../verify_applied_grammar.py](../verify_applied_grammar.py) |
+| K-addressed-op-paths-commute | [../applied_grammar.py:1734-1765](../applied_grammar.py) (`verify_addressed_op_*`) | [../verify_applied_grammar.py](../verify_applied_grammar.py) |
+| K-bridge-content-addressed | [../applied_grammar.py](../applied_grammar.py) (transactional verification block) | [../verify_applied_grammar.py](../verify_applied_grammar.py) |
+
+**Claims without a dedicated implementation** (narrative-only or
+identified-with-other):
+
+- K-representations-associahedron (M2): no dedicated artefact;
+  representation-change coherence lives in the chart kernel's
+  `transform` operation.
+- K-formal-system-algebraic (M6): narrative commitment.
+- K-cocycle-unifies-formal-systems (M8): narrative framing; arguably
+  subsumed by K-WHT-quotient-algebra under the cohomological reading
+  (open edge — see [entailment.md](entailment.md) open questions).
+- K-meta-principle-lifted (M15): narrative.
+- K-DBE-applied-to-itself (M11 second instance): narrative
+  demonstration; the methodology is its own witness.
+
 ## Coverage gaps in this first-pass claim ledger
 
 - L₂, L₄ closure claims are stated in probe-state tables across early

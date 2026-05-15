@@ -252,70 +252,65 @@ a rebase. After the rebase, audit pressure produced 9 more versions.
 landed cleanly at v22.0 with the audit chain closed. Future sessions
 should read v22.0 and v19 first; v13–v18 are correction passes.
 
-### Type-C drift: artefact-narrative gap (recoverable from scratch/)
+### Type-C drift: artefact-narrative gap (RESOLVED — material in scratch/)
 
-The narrative names Python modules that **were not in the committed
-tree at catalog-build time** but **have since been located and placed
-in [`../scratch/`](../scratch/)**. The four modules required by the
-committed code:
+This finding is now resolved. The narrative names Python modules that
+were not in the committed tree at catalog-build time; the user has
+since placed all historical material in [../scratch/](../scratch/),
+which is now tracked across 10 thematic commits. The four modules
+required by the committed code:
 
 | Module | Referenced from | Narrative source | Location |
 |--------|----------------|------------------|----------|
-| `chart_chained` | [../applied_grammar.py:175](../applied_grammar.py), [../verify_applied_grammar.py:15](../verify_applied_grammar.py) | M9 (chart kernel), M32 (V_4-twin ops added) | [../scratch/chart_chained.py](../scratch/chart_chained.py) |
-| `meta_protocol` | [../s4_structure.py:29](../s4_structure.py), [../applied_grammar.py:795](../applied_grammar.py) | M22-bis (DCSW axes, V_4 swaps, PAIRINGS) | [../scratch/meta_protocol.py](../scratch/meta_protocol.py) |
+| `chart_chained` | [../applied_grammar.py:175](../applied_grammar.py), [../verify_applied_grammar.py:15](../verify_applied_grammar.py) | M37 (4-axis chained ops), built on M11→M14→M34→M35→M36 evolution | [../scratch/chart_chained.py](../scratch/chart_chained.py) |
+| `meta_protocol` | [../s4_structure.py:29](../s4_structure.py), [../applied_grammar.py:795](../applied_grammar.py) | declarative protocol foundation (M22-bis onward) | [../scratch/meta_protocol.py](../scratch/meta_protocol.py) |
 | `unified_address` | [../applied_grammar.py:176](../applied_grammar.py), [../applied_grammar.py:799](../applied_grammar.py) | M38 (`encode_op`, `UnifiedCodeword`) | [../scratch/unified_address.py](../scratch/unified_address.py) |
 | `spectral_view` | [../applied_grammar.py:177](../applied_grammar.py) (`fwht`) | M40 v6 (`spectral_view.py — M40 (v6)`) | [../scratch/spectral_view.py](../scratch/spectral_view.py) |
 
-In addition, `scratch/` contains a per-move implementation file for
-most moves not yet promoted to the top of the tree: `rm_in_tier1.py`
-(M19), `rm_codeword_basins.py` (M20), `hamming_7_4_codewords.py` (M21),
-`hadamard_basis.py` (WHT primitives, M22), `hamming_scaling_hardware.py`
-(M23), `enumerate_associahedra.py` (M18), `stasheff_per_hadamard_level.py`
-(M24), `s_as_pivot.py` (M23-bis), `triadic_decomposition.py` (M24-bis),
-`level3_tesseract_orbits (1).py` (M26), `scratch_axis_audit.py` (M27),
-`v4_klein_four_coverage.py` (M28), `architecture_state_machine (2).py`
-(M29), `construct_v4_twins*.py` (M30–M31), `directed_witnessed_pairs.py`
-and `chirality_as_parity.py` (M34), `audit_inhabitation.py` /
-`verify_cell_inhabitation.py` (M33 audits), `two_rotations.py`,
-`engagement_matrix.py`, `search_table2.py` / `search_k_variants.py`
-(M16–M17), `brute_force_probe_states (2).py`. Plus `.pyc` caches and
-an output transcript `engagement_matrix_output.txt`.
+Per-move implementation files for nearly every move are in scratch/
+and bound to specific K-claims in [claims.md](claims.md). A verifier
+suite is also present — see `verify_*.py` files in scratch/.
 
-**Drift signal (reproducibility)**: now LOW. The committed verifier
-suite can in principle be run by adding [`../scratch/`](../scratch/) to
-PYTHONPATH.
+**Drift signal (reproducibility)**: now LOW. The verifier suite can be
+run by adding [../scratch/](../scratch/) to PYTHONPATH.
 
-**Drift signal (design fidelity)**: unchanged — still low; the
-committed code matches the narrative at API level.
+**Drift signal (design fidelity)**: low; the committed code matches
+the narrative at API level.
 
-**New drift surfaced by scratch/ inspection**:
+**Findings from scratch/ inspection (revised)**:
 
-1. **Chart-kernel forking.** scratch/ contains five distinct chart
-   variants: `chart (6).py`, `chart_chained.py`, `chart_full_v4 (1).py`,
-   `chart_with_inverses (1).py`, `chart_meta.py`. The committed code
-   only imports `chart_chained`. The other variants are dead-but-
-   preserved branches of the chart kernel from prior sessions — likely
-   M9, M32, and intermediate audit passes that took different
-   directions.
+1. **The "chart variants" are kernel evolution, not parallel forks.**
+   The five files `chart (6).py`, `chart_meta.py`,
+   `chart_with_inverses (1).py`, `chart_full_v4 (1).py`,
+   `chart_chained.py` are the chronological build-out of the chart
+   across M11+M14 → M34 → M35 → M36 → M37, each adding the next
+   layer of operations to the previous. Only the last
+   (`chart_chained`) is the import target of the committed code; the
+   others are reference snapshots of earlier states.
 2. **Browser-download artefact naming.** Files with `(N)` suffixes
-   (`chart (6).py`, `applied_grammar (1).py`, `level3_tesseract_orbits
-   (1).py`, etc.) indicate the artefacts were saved via browser
-   downloads across many sessions. This is consistent with the
-   external-LLM-session pattern described by the user.
-3. **Older narrative.** `cotype-free-self-extending-grammar (16).md`
-   has the same byte count (534256) as the committed
-   [../cotype-free-self-extending-grammar.md](../cotype-free-self-extending-grammar.md);
-   a diff would confirm whether it is an exact twin or a near-twin
-   from one iteration prior.
-4. **Prior M41 version.** `applied_grammar_v12_backup.py` (48 KB) is
-   one-quarter the size of the committed v22.0 (189 KB) — captures the
-   pre-v13-rebase state when M41 had not yet been brought onto M40's
-   algebra.
+   indicate cross-session-LLM provenance — successive saves of
+   regenerated code across many separate LLM conversations.
+3. **The "older narrative" is identical, not older.**
+   `cotype-free-self-extending-grammar (16).md` is byte-identical
+   (md5 f1c2fc03b5d69e8ce839dd1b1baa50f3) to the committed
+   [../cotype-free-self-extending-grammar.md](../cotype-free-self-extending-grammar.md).
+   It is a duplicate download, not a prior iteration. Same applies to
+   `scratch/applied_grammar (1).py` (identical to committed
+   applied_grammar.py), `scratch/s4_structure.py` (identical to
+   committed), and `scratch/verify_applied_grammar.py` (identical
+   to committed). These four duplicates are intentionally left
+   untracked.
+4. **Pre-rebase M41 is genuinely older.**
+   `applied_grammar_v12_backup.py` (48 KB) captures M41 v12 —
+   "sum-type receipts, StateOpSpec registry, fail-closed verification,
+   strict_replay_context manager" — before v13's stream merge brought
+   M41 onto M40's algebra. The diff between v12 and committed v22.0
+   (189 KB) is the most legible record of what the v13→v22.0 audit
+   chain produced.
 
-**Recovery action available**: catalogue can be deepened by binding
-each move's K-claim to its specific implementation file in scratch/
-(e.g., K-default-table-is-RM-1-3 → [../scratch/rm_in_tier1.py](../scratch/rm_in_tier1.py)).
-Listed as deferred work.
+**No outstanding Type-C drift.** Catalog claims that cited absent
+modules are now bound to located files; verifier-witnessed claims have
+runnable witnesses available.
 
 ## Open questions surfaced by the catalog
 
