@@ -267,7 +267,7 @@ C-ids and [README.md](README.md) for status semantics.
 - **Status**: shown.
 - **Concepts**: C-V4-twins.
 
-### K-v4-twins-fail-cells
+### K-v4-twins-fail-cells (rejected; replaced by K-v4-twins-cell-labels-aspirational and K-v4-twins-partial-inhabitation)
 - **Statement (as authored)**: "Implementations do not fully honor
   their claimed V₄ cells; V₄-twin claims fail structurally under
   strict inhabitation audit."
@@ -278,22 +278,51 @@ C-ids and [README.md](README.md) for status semantics.
   [cotype-free-self-extending-grammar.md:8029-8157],
   [../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py),
   [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py).
-- **Status**: **disaffirmed-by-non-constructive-audit**. The claim's
-  *form* is the overclaim. The audit ran but did not exhibit a
-  constructive `P ⊢ ⊥` (no specific cell with a specific
-  inhabitation property whose absence is constructively
-  demonstrated); it reports absence-of-found-witness, which under
-  this repository's epistemic rule
-  ([README.md § Epistemic discipline](README.md)) does not entail
-  negation. The V₄-twin construction (K-F-populated, M30–M31) is
-  not refuted; any actual existence-form findings of the audit
-  should be re-stated positively as "on input X, property Q
-  observed / not observed" rather than as a universal "V₄-twin
-  claims fail."
+- **Status**: **rejected-as-overclaim** under
+  [README § Epistemic discipline](README.md). The claim's universal
+  form is unwarranted; the audit's actual content (run 2026-05-15
+  on Python 3.13 with scratch/ on PYTHONPATH) is positive and
+  cleanly decomposable. Replaced by the two existence-form claims
+  below.
 - **Concepts**: C-V4-twins.
-- **Editorial note**: this is the corpus's only claim originally
-  recorded as `negative`; its reframing is the catalog's first
-  application of the LEM-rejection rule.
+
+### K-v4-twins-partial-inhabitation
+- **Statement** (existence-form): there exist 4 of 9 audited
+  operations that exhibit structural V₄ coherence at runtime —
+  their axis-engagement profiles honor the V₄ cell their nominal
+  classification claims.
+- **Introduced**: derived from the audit by LEM-rejection-aware
+  restatement (2026-05-15).
+- **Evidence**: [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py)
+  output: `4/9 operations are STRUCTURALLY V₄-coherent`.
+- **Status**: shown (executable witness).
+- **Concepts**: C-V4-twins, C-V4-Klein.
+
+### K-v4-twins-cell-labels-aspirational
+- **Statement** (existence-form): there exist 5 of 9 audited
+  operations whose nominal V₄ cell label is broader than the
+  axis-engagement the implementation actually exhibits. The audit
+  itself characterises the gap as "the original cotype was
+  aspirational; the implementation is honest" and recommends
+  reclassification of labels to match implementations, not patches
+  to the constructions.
+- **Introduced**: derived from the audit by LEM-rejection-aware
+  restatement (2026-05-15).
+- **Evidence**: [../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py)
+  (specific call-outs: `compute_identity` engages no axes;
+  `workspace_marker` and `compute_marker` have indistinguishable
+  engagement; `store` and `load` are not engagement-symmetric);
+  [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py)
+  (reclassification recommendations: identity ops as (X, {X}) not
+  (X, ∅); `load` as (W, ∅); `workspace_driven_state` as (W, {C});
+  `workspace_marker` as (W, {W}); `workspace_witness` as (W, {C, D})
+  with caveat about second-level normalize routing).
+- **Status**: shown (executable witness exhibits the 5 specific
+  label-vs-runtime gaps).
+- **Concepts**: C-V4-twins.
+- **Action**: reclassification of these 5 cells in the
+  meta_protocol registry would close the audit findings without
+  changing any implementation. Listed as deferred work.
 
 ### K-chirality-is-parity
 - **Statement**: Chirality of a directed witnessed-pair is the parity
@@ -485,12 +514,46 @@ C-ids and [README.md](README.md) for status semantics.
 - **Status**: shown.
 - **Concepts**: C-transactional-verification, C-codeword-address-bijection.
 
+## Verifier-run summary (2026-05-15)
+
+Verifier suite executed under Python 3.13.7 (.venv) with
+`PYTHONPATH=scratch:.`. All test files pass:
+
+| File | Checks |
+|------|--------|
+| [../scratch/verify_meta_protocol.py](../scratch/verify_meta_protocol.py) | 20/20 |
+| [../scratch/verify_s4_structure.py](../scratch/verify_s4_structure.py) | 62/62 |
+| [../scratch/verify_unified_address.py](../scratch/verify_unified_address.py) | 13/13 |
+| [../scratch/verify_spectral.py](../scratch/verify_spectral.py) | 98/98 (incl. `M40_GROUP_IS_A4Z2_NOT_S4` aggregator) |
+| [../scratch/verify_chained.py](../scratch/verify_chained.py) | 19/19 |
+| [../scratch/verify_full_v4.py](../scratch/verify_full_v4.py) | 20/20 |
+| [../scratch/verify_inverses.py](../scratch/verify_inverses.py) | 17/17 |
+| [../scratch/verify_v4_twins.py](../scratch/verify_v4_twins.py) | 13/13 |
+| [../scratch/verify_shadows.py](../scratch/verify_shadows.py) | S1–S7 + M-move invariants verified |
+| [../verify_applied_grammar.py](../verify_applied_grammar.py) | 160/160 (incl. `every_receipt_carries_structural_address` umbrella + all `addressed_op_*` checks) |
+
+**Aggregate: 422 explicit checks pass plus the S1–S7 / M-move
+invariants suite.** Under [the LEM-rejection rule](README.md#epistemic-discipline-lem-is-rejected),
+this is what "shown" means: a constructive witness exists and was
+exhibited. Every claim with `Status: shown` in this file that is
+bound to one of these verifiers below is constructively backed,
+not paper-proof.
+
+The two M33 audit files
+([../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py),
+[../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py))
+also ran and produced the existence-form findings now recorded in
+K-v4-twins-partial-inhabitation and
+K-v4-twins-cell-labels-aspirational. The audit's universal-negative
+conclusion is rejected per the epistemic rule; the audit's positive
+content is preserved as two existence-form claims.
+
 ## Implementation bindings (K-claim → scratch artefact)
 
 Each K-claim is bound to the file(s) that purport to witness it.
 "shown by paper proof, no runnable witness" claims promote to
-"executable witness available" once the corresponding scratch artefact
-exists. To re-run, add [../scratch/](../scratch/) to PYTHONPATH.
+"executable witness" — see the Verifier-run summary above for the
+2026-05-15 results.
 
 | K-claim | Implementation | Verifier (if separate) |
 |---------|---------------|------------------------|
