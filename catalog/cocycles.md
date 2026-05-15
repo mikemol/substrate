@@ -588,6 +588,146 @@ This principle subsumes and refines the earlier discipline rules in
 invariant only), and rule 9 (existence-form findings) all instantiate
 orbit-collapse-with-virtual-recovery at their respective layers.
 
+## Isomorphic storage: the deeper discipline
+
+**The stronger framing** (per user clarification, 2026-05-15):
+orbit-collapse-with-virtual-recovery is the *weaker* discipline.
+The stronger one is **storage payload topology ≅ invariant space**:
+the storage *is* the invariant space, not a container that *holds*
+canonical representatives of it. The user's exact framing: *"I want
+to collapse the distinction; I want the storage payload topology
+to be isomorphic to the invariants."*
+
+Under this discipline:
+
+1. **There is no canonical representative.** The previous framing
+   stored "the canonical V_4 translate" or "the canonical packed
+   node"; isomorphic storage stores *the orbit*, with no
+   representative selected. There is no `canonicalize(orbit, *,
+   method)` function because there is no choice to make — every
+   "canonical-choice" question dissolves because the storage
+   structure has no extra degrees of freedom into which a choice
+   could be made.
+2. **Gauge actions become automorphisms of the storage topology
+   itself**, not transformations of payloads inside containers.
+   A V_4 axis-swap is *structural routing* — moving along an edge
+   in the storage graph — not "reading an alternative data field."
+   The gauge group acts on pointers, not on contents.
+3. **A new element acts as a generator**. The user's framing:
+   *"An element newly added to the forest entails its entire
+   cocycle intrinsically; other orbit-members don't need to be
+   observed in order to participate in the generative complement
+   to the parse."* The orbit is *not recovered virtually* in the
+   sense of "re-run the gauge to derive other members" — it is
+   *tautologically present* by virtue of the group action being
+   baked into the storage topology's automorphisms.
+
+The two disciplines compared:
+
+| Discipline | Storage shape | Gauge realised as | Where canonical choice lives |
+|------------|----------------|---------------------|------------------------------|
+| Orbit-collapse with virtual recovery (weaker) | canonical representative + gauge-invariant key | function parameter (`canonicalize=…`) | as a named, parametrised selection rule |
+| **Isomorphic storage** (stronger) | the invariant *is* the storage topology | automorphism of the storage graph | **nowhere — the question doesn't arise** |
+
+### What this does to CY-5
+
+Under isomorphic storage, CY-5's lex-min Type-D rigidification
+**doesn't get fixed — it dissolves**. There is no v4_delta in
+storage because there is no canonical-relative coordinate to store.
+The 6 V_4-orbits are 6 nodes in the storage topology; the 4
+V_4-translates of each orbit are accessed by *moving along edges
+between adjacent orbit-cells*, not by retrieving an offset from
+some canonical baseline. Receipts carry the orbit's *structural
+position*, which is the invariant; v4_delta and lex-min are not
+just deprecated — they are *not expressible* in the isomorphic-
+storage substrate, because there's no place for a coordinate-
+dependent value to live.
+
+This is the strongest version of the catalog's recovery rule for
+CY-5: not "content-address by orbit_key only," but **"the
+addressing-vs-payload distinction does not exist**." The Type-D
+verifier-contract rigidification is structurally impossible in this
+substrate because the structure has no place for the rigidified
+choice to be encoded.
+
+### What this does to CY-6
+
+Under isomorphic storage, the SPPF's "packed nodes" stop being
+*containers for alternative derivations*. Per user:
+
+> *"The 'pack' of 'packed nodes' is done through group symmetry
+> collapse. An element newly added to the forest entails its
+> entire cocycle intrinsically; other orbit-members don't need to
+> be observed in order to participate in the generative complement
+> to the parse."*
+
+The grammar's composition algebra is baked into the structural
+adjacencies of the substrate. Adding one element to the forest
+makes its entire cocycle operationally present *because the gauge
+group's action is part of how the substrate is wired*, not because
+the alternatives are stored anywhere. Ambiguity becomes
+**topological path redundancy** — multiple paths through the
+invariant network that satisfy the same boundary conditions —
+rather than "alternative data shapes in a container."
+
+The SPPF is no longer a *data structure* in the Earley-style
+sense. It is a *projector*: a single element projects the whole
+orbit through group action.
+
+### What this does to the metacircular triple identification
+
+Storage ≡ grammar ≡ ISA achieves *perfect* identification under
+isomorphic storage:
+
+- **Storage**: the physical configuration of nodes mirrors the
+  algebraic invariants directly.
+- **Grammar**: syntax rules are not string-matching tests; they are
+  geometric instructions for *constructing paths through the
+  storage topology*.
+- **ISA**: the instruction set is the set of valid automorphisms
+  over the invariant storage graph.
+
+There is no "hidden implementation layer underneath the math"
+because there is no implementation layer at all — the storage IS
+the math. The data IS the grammar IS the execution.
+
+This is the maximal form of the metacircularity commitment from
+L0 ([clarified_foundation.md § L0](clarified_foundation.md#l0--framing-rules-no-axioms-metalogical-commitments)).
+A clarified rewrite that takes metacircularity to its logical
+limit produces an isomorphic-storage substrate by construction;
+anything less leaves a residual storage-vs-invariant distinction
+that the gauge structure has to police.
+
+### Implementation note (aspirational)
+
+The current substrate ([../applied_grammar.py](../applied_grammar.py),
+[../scratch/chart_chained.py](../scratch/chart_chained.py),
+[../s4_structure.py](../s4_structure.py)) does **not** satisfy
+isomorphic storage — it stores signatures with v4_delta,
+canonicalises with lex-min, treats storage and invariants as
+separate concerns. Isomorphic storage is therefore aspirational
+discipline for the clarified rewrite, not a description of what
+exists. Sketch shape:
+
+```python
+class ForestElement:
+    """A generator element in the isomorphic storage topology.
+    Carries an invariant; alternative orbit-members are not stored
+    here — they are reached by gauge automorphism over the
+    storage graph."""
+    invariant: OrbitInvariant
+    # structural_adjacencies is the WIRING of the gauge group's
+    # action into the topology — not a dictionary of alternative
+    # values:
+    structural_adjacencies: dict[GaugeAction, 'ForestElement']
+```
+
+`generative_complement(action)` returns the orbit-member reached by
+applying `action` — but the call doesn't *retrieve* the member from
+storage; it *moves along a structural edge* in the storage graph.
+The edges *are* the gauge group; the orbit *is* the connected
+component.
+
 ## Metacircularity: storage ≡ grammar ≡ ISA
 
 **The corpus's central structural identification** (per user,

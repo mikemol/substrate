@@ -284,21 +284,41 @@ re-introducing the Type-D drift catalogued this session.
     introduced at L1–L9 closes with a constructible/reachable/
     observable/coverable check, per K-charter-honored-corpus-wide
     in claims.md.
-11. **Orbit collapse with virtual recovery**: storage holds only
-    the canonical representative of each orbit; alternatives are
-    virtually recoverable from (canonical, gauge structure,
-    parametric inputs). This is *canonicalization* (no information
-    lost — every orbit member maps to the same invariant) and is
-    distinct from *rigidification* (where the specific canonical
-    choice is encoded into the content-address). For CY-6 parse:
-    store the canonical `Rule`, recover alternative derivations by
-    re-running the parser with a different selection rule (not by
-    storing them as sidecar metadata). For CY-9 memoization: store
-    the cached result, recompute on miss. For CY-5 V_4 signatures:
-    store `orbit_key` only — `v4_delta` is the canonical-choice-
-    relative coordinate and should not be in the content-address.
-    See [cocycles.md § Orbit collapse with virtual recovery](cocycles.md#orbit-collapse-with-virtual-recovery-methodology).
-    This rule subsumes rules 1, 5, and 9 at the canonicalization
+11. **Isomorphic storage** (strong) / **orbit collapse with virtual
+    recovery** (weak). Two versions of the canonicalisation discipline,
+    nested:
+    - **Weak version**: storage holds the canonical representative
+      of each orbit; alternatives are virtually recoverable from
+      (canonical, gauge structure, parametric inputs). The
+      canonicalisation function is named and parametrised
+      (`canonicalize_orbit(orbit_key, *, method)`); alternative
+      canonicals are substitutable. No information lost — every
+      orbit member maps to the same invariant.
+    - **Strong version (aspirational)**: **storage payload topology
+      ≅ invariant space**. There is no canonical representative
+      because there is no representative. The storage *is* the
+      invariant space; gauge actions are automorphisms of the
+      storage topology itself (structural routing, not value
+      retrieval). A new element acts as a *generator* — its orbit
+      is tautologically entailed by group action, not recovered.
+      The canonicalisation-function-parameter from the weak version
+      disappears entirely; the question doesn't arise. For CY-5:
+      no v4_delta in storage at all; the 6 V_4-orbits are 6 nodes
+      with V_4 wired as the structural adjacency graph. For CY-6:
+      packed nodes are not containers; ambiguity is topological
+      path redundancy. The metacircular triple identity (storage ≡
+      grammar ≡ ISA) achieves *literal* identification under this
+      version — there is no implementation layer underneath the
+      math.
+
+    The current substrate satisfies neither version; a clarified
+    rewrite should target the strong version directly (the weak
+    version is a worthwhile intermediate but the strong version
+    eliminates rather than fixes the Type-D verifier-contract
+    rigidification at CY-5). See
+    [cocycles.md § Isomorphic storage](cocycles.md#isomorphic-storage-the-deeper-discipline)
+    and [§ Orbit collapse with virtual recovery](cocycles.md#orbit-collapse-with-virtual-recovery-methodology).
+    This rule subsumes rules 1, 5, and 9 at the canonicalisation
     layer.
 
 ## What this foundation does NOT include
