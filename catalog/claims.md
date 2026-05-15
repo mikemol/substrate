@@ -501,10 +501,16 @@ C-ids and [README.md](README.md) for status semantics.
 - **Evidence**: [../applied_grammar.py:861-956](../applied_grammar.py),
   verifier `verify_signature_decomposition_bijection`.
 - **Status**: shown (verifier passes — see 2026-05-15 run).
-  Also `realizes` K-cocycle-unifies-formal-systems at the address-
-  space layer (V_4 axis-swap gauge; orbit_key is the cohomology
-  class, v4_delta is the gauge degree of freedom). See
+  Also `realizes` K-cocycle-unifies-formal-systems and
+  K-representations-associahedron at the address-space layer (V_4
+  axis-swap gauge; orbit_key is the cohomology class / V_4-invariant
+  content; v4_delta is the gauge degree of freedom). See
   [entailment.md § M8 cocycle → three parallel realisations](entailment.md#m8-cocycle--three-parallel-realisations).
+  **Operational caveat**: the v17 lex-min canonical choice is
+  rigidified into receipt content-addressing and verifier
+  contracts; M2's "topos's freedom" is realised mathematically
+  but not operationally. See [entailment.md § Type-D drift:
+  operational choice-rigidification](entailment.md#type-d-drift-operational-choice-rigidification).
 - **Concepts**: C-orbit-canonical-decomposition.
 
 ### K-v17-v19-agree

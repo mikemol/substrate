@@ -308,11 +308,19 @@ as canonical signature.
     witness) signatures on DCSW axes; transforms are V_4 axis
     swaps; the polytope structure is the Cayley-Dickson ladder
     (32 = 24 + 8 with parity sieve giving 32 × 3/4).
-  - **The "topos's freedom" realised**: canonical_signature_in_orbit
-    picks lex-min, but ANY V_4-translate within an orbit could have
-    been canonical; the choice respects the structure. This is M2's
-    structural commitment #4 made concrete in code at
-    [../applied_grammar.py:923-931](../applied_grammar.py).
+  - **The "topos's freedom" — mathematical only**: the math admits
+    any V_4 translate in an orbit as canonical
+    ([../applied_grammar.py:923-931](../applied_grammar.py) picks
+    lex-min, but the structure permits any choice). Operationally,
+    however, the lex-min was treated as permanent by the prior LLM
+    session — see [§ Type-D drift](#type-d-drift-operational-choice-rigidification).
+    Receipts content-address `v4_delta` relative to lex-min;
+    verifiers test `canonical == lex-min` as a contract; the v19
+    → Stab(D) framing required a translation theorem rather than
+    a substitution. So the realisation is mathematically clean but
+    operationally rigidified. M2's structural commitment #4 is
+    technically respected by the math and not respected by the
+    code.
 
 Consequence: K-representations-associahedron is promoted from
 status `partial` (vertices/edges enumerated; higher cells stated
@@ -532,6 +540,80 @@ the narrative at API level.
 **No outstanding Type-C drift.** Catalog claims that cited absent
 modules are now bound to located files; verifier-witnessed claims have
 runnable witnesses available.
+
+### Type-D drift: operational choice-rigidification
+
+A gauge-free choice the mathematics permits is treated by an LLM as
+permanent, built into the operational substrate (verified-as-contract,
+content-addressed-against, depended-on by downstream digests), and
+becomes immovable. When a later move wants a different choice (the
+formally cleaner one), the system can't substitute — a translation /
+agreement layer gets grafted on. The bridge is the residue of the
+rigidification. Structurally related to Type-B drift but distinct: a
+Type-B version chain is multiple-versions-preserved; a Type-D
+rigidification is one-version-frozen-and-unmovable.
+
+**Instance: the lex-min canonical V_4 translate (M41 v16 → v19).**
+
+The mathematics of K-orbit-canonical-bijection (M41 v16) permits any
+V_4 translate in an orbit as the canonical representative — the
+"topos's freedom" M2 named as commitment #4. The prior LLM session
+chose lex-min and:
+
+- Gave it a structural-sounding justification:
+  *"Canonical signature within an orbit = lex-min over the 4
+  V_4-translates (the 'left-choice' of the Cayley-Dickson framing)"*
+  ([../cotype-free-self-extending-grammar.md:6469](../cotype-free-self-extending-grammar.md)).
+  Wrapping a choice in a structural rationale obscures that it was
+  a choice.
+- Built `_ORBIT_TABLE` at module load with the lex-min as the 'e'
+  entry ([../applied_grammar.py:861-905](../applied_grammar.py)) —
+  the **fixed reference frame** for the rest of M41.
+- Content-addressed `ContentAddressedReceiptFields.v4_delta`
+  **relative to the lex-min canonical**
+  ([../applied_grammar.py:1212-1255](../applied_grammar.py)). Every
+  receipt now encodes the choice.
+- Wrote `canonical_at_delta_e_in_cache` and
+  `canonical_is_lex_min_in_orbit` verifiers
+  ([../cotype-free-self-extending-grammar.md:6359, 6534, 6550](../cotype-free-self-extending-grammar.md))
+  — verifying the *specific* choice as a contract, not the *abstract
+  property* (a canonical is a deterministic function of orbit_key).
+  The choice is now load-bearing.
+
+At v19, the formal V_4 ⋊ S_3 framing identified Stab(D)-representative
+as the natural canonical (the unique permutation in each orbit that
+fixes the anchor axis D). The lex-min could not be displaced — the
+content-addressing and verifier contracts had frozen it. The residue:
+
+- `v17_to_v4_s3` ([../applied_grammar.py:1289-1310](../applied_grammar.py))
+  — a function that translates from one canonical to the other.
+- `verify_v17_v19_decomposition_agreement` ([../applied_grammar.py:1313-1326](../applied_grammar.py))
+  — the agreement theorem proving they're inter-derivable.
+- `verify_canonical_offset_consistent_per_orbit` ([../applied_grammar.py:1329-1346](../applied_grammar.py))
+  — proves the per-orbit δ between the two canonicals is well-defined.
+- The narrative names the tension as the *"alphabetical-vs-anchor
+  choice"* ([../cotype-free-self-extending-grammar.md:5864](../cotype-free-self-extending-grammar.md))
+  — the LLM saw the conflict but resolved it by bridging, not by
+  re-choosing.
+
+**Why this matters for K-orbit-canonical-bijection's realisation of M2.**
+The realisation is *mathematical* but not *operational*. The math
+admits any V_4 translate as canonical; the implementation admits only
+lex-min as canonical. M2's "topos's freedom" is technically present
+in the math and structurally absent in the code. This is the same
+LLM-pathology family as the negation-overclaim case
+([drift Type-A K-v4-twins-fail-cells](#type-a-drift-move-ordinal-collision-the-llm-lost-its-place)
+and the [LEM-rejection rule](README.md#epistemic-discipline-lem-is-rejected)):
+the LLM commits operationally to more than the math requires.
+
+**Recovery action available**: refactor the v17-canonical reference
+out of the content-addressing layer; have receipts content-address by
+orbit_key only (gauge-invariant) with v4_delta carried as additional
+data that needn't be reproducible from the codeword. This would
+restore the topos's freedom operationally. Listed as deferred work.
+Until then, `canonical_signature_in_orbit` returning lex-min should
+be read as "lex-min was picked among gauge-equivalent options," not
+"lex-min is THE canonical."
 
 ## Open questions surfaced by the catalog
 
