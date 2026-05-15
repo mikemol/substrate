@@ -81,9 +81,12 @@ C-ids and [README.md](README.md) for status semantics.
   cocycle in the cohomology of representational changes.
 - **Introduced**: M8.
 - **Evidence**: [cotype-free-self-extending-grammar.md:472-537].
-- **Status**: open — stated as a framing principle; not formalised
-  further in subsequent moves.
-- **Concepts**: C-cocycle-projection.
+- **Status**: shown via realisation by K-WHT-quotient-algebra (M22).
+  The Walsh-Hadamard projection IS the cocycle projection; the
+  cohomology of representational changes is realised as the
+  parity-basin equivalence the WH quotient factors out. See the
+  realisation edge in [entailment.md § Realisation edges](entailment.md#realisation-edges).
+- **Concepts**: C-cocycle-projection, C-walsh-hadamard-quotient.
 
 ## Chart kernel and self-extension (M9–M11)
 
@@ -265,17 +268,32 @@ C-ids and [README.md](README.md) for status semantics.
 - **Concepts**: C-V4-twins.
 
 ### K-v4-twins-fail-cells
-- **Statement**: **NEGATIVE** — implementations do not fully honor their
-  claimed V₄ cells; V₄-twin claims fail structurally under strict
-  inhabitation audit.
+- **Statement (as authored)**: "Implementations do not fully honor
+  their claimed V₄ cells; V₄-twin claims fail structurally under
+  strict inhabitation audit."
 - **Introduced**: M33 (line 3653, "fail structurally"), restated
   at final M33 (line 8029, "implementations don't fully honor their
   claimed V₄ cells").
 - **Evidence**: [cotype-free-self-extending-grammar.md:3653-3782],
-  [cotype-free-self-extending-grammar.md:8029-8157].
-- **Status**: negative — claim refuted by inhabitation audit, restated
-  at the final move as a still-open finding.
+  [cotype-free-self-extending-grammar.md:8029-8157],
+  [../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py),
+  [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py).
+- **Status**: **disaffirmed-by-non-constructive-audit**. The claim's
+  *form* is the overclaim. The audit ran but did not exhibit a
+  constructive `P ⊢ ⊥` (no specific cell with a specific
+  inhabitation property whose absence is constructively
+  demonstrated); it reports absence-of-found-witness, which under
+  this repository's epistemic rule
+  ([README.md § Epistemic discipline](README.md)) does not entail
+  negation. The V₄-twin construction (K-F-populated, M30–M31) is
+  not refuted; any actual existence-form findings of the audit
+  should be re-stated positively as "on input X, property Q
+  observed / not observed" rather than as a universal "V₄-twin
+  claims fail."
 - **Concepts**: C-V4-twins.
+- **Editorial note**: this is the corpus's only claim originally
+  recorded as `negative`; its reframing is the catalog's first
+  application of the LEM-rejection rule.
 
 ### K-chirality-is-parity
 - **Statement**: Chirality of a directed witnessed-pair is the parity
@@ -527,9 +545,9 @@ identified-with-other):
   representation-change coherence lives in the chart kernel's
   `transform` operation.
 - K-formal-system-algebraic (M6): narrative commitment.
-- K-cocycle-unifies-formal-systems (M8): narrative framing; arguably
-  subsumed by K-WHT-quotient-algebra under the cohomological reading
-  (open edge — see [entailment.md](entailment.md) open questions).
+- K-cocycle-unifies-formal-systems (M8): no dedicated artefact; the
+  M8 framing is realised by K-WHT-quotient-algebra at M22 — see the
+  realisation edge in [entailment.md § Realisation edges](entailment.md#realisation-edges).
 - K-meta-principle-lifted (M15): narrative.
 - K-DBE-applied-to-itself (M11 second instance): narrative
   demonstration; the methodology is its own witness.

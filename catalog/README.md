@@ -63,6 +63,31 @@ between LLM sessions.
   - **Notes**: optional gloss.
 ```
 
+## Epistemic discipline: LEM is rejected
+
+This repository operates intuitionistically. The law of the excluded
+middle is rejected: `P ∨ ¬P` is not automatic, and absence-of-
+affirmation is not negation.
+
+What this means for the catalog:
+
+- **Asserting P** (status `shown` / `partial`): requires a
+  constructive witness — a construction, proof, or verifier result.
+- **Asserting ¬P** (status `negative`): requires a constructive
+  `P ⊢ ⊥` — a counterexample, an explicit contradiction, an
+  absurdity derived from P. Without one, do not use `negative`.
+- **When an audit ran but found no inhabitant / no witness**:
+  status is `open` or `disaffirmed-by-non-constructive-audit`, not
+  `negative`. Describe what was checked, in existence-form, in the
+  record's body. Do not collapse "not-found" to "not-exists."
+- **`refutes` edges in [entailment.md](entailment.md)**: require
+  constructive warrant. An audit that "failed to verify" is not
+  a `refutes` edge.
+
+This rule clarifies what the project's M1 realizability charter
+(constructible → reachable → observable → coverable) already commits
+to: every step is a positive predicate; none requires LEM.
+
 ## Auditability contract
 
 Every record cites at least one line range in the corpus. To verify a

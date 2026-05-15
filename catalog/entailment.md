@@ -15,7 +15,8 @@ separate edge type and given a prominent section.
 | `supersedes` | the target replaces the source; source is dormant |
 | `drift_into` | the target reuses the source's name/number for substantively different content (loss of intent-vector pointer) |
 | `witnesses` | the target is a code/verifier artefact for the source claim |
-| `refutes` | the target contradicts the source (negative result) |
+| `refutes` | the target contradicts the source via a constructive `P ⊢ ⊥` (counterexample, explicit absurdity). Under this repo's [LEM-rejection rule](README.md#epistemic-discipline-lem-is-rejected), an audit that "failed to verify" is NOT a `refutes` edge. |
+| `realizes` | the target is a concrete construction that makes good on the source's abstract framing (the source was a placeholder; the target fills it in) |
 
 ## Primary motivation chain (the spine)
 
@@ -91,10 +92,10 @@ K-v4-under-explored                  (M28: V₄ coverage identifies gap)
    │ motivates
    ▼
 K-state-machine-verified             (M29) → K-F-populated (M30–M31)
-   │ refuted by
-   ▼
-K-v4-twins-fail-cells                (M33: NEGATIVE; restated at final M33)
-   │ motivates
+   │ (no refutation edge — see drift §Type-A and the LEM-rejection
+   │  note below; K-v4-twins-fail-cells is disaffirmed-by-non-
+   │  constructive-audit, not a constructive `P ⊢ ⊥`)
+   │ motivates the reframe at
    ▼
 K-chirality-is-parity                (M34: chirality = S₄/A₄ parity)
    │ depends_on
@@ -149,6 +150,33 @@ either lateral support, an audit-driven correction, or drift.
 - C-parity-sieve `depends_on` ← K-parity-sieve-characterises-24
 - C-grade-meet-monoid `depends_on` ← K-bridge-content-addressed,
   K-receipt-carries-address (verification grades flow through these)
+
+## Realisation edges
+
+The corpus contains M8-era abstract framings that were stated as
+placeholders and later realised concretely. The `realizes` relation
+captures these:
+
+- K-WHT-quotient-algebra (M22) `realizes` K-cocycle-unifies-formal-systems (M8).
+  - **The identification**: the Walsh-Hadamard projection on WHT_8 is the
+    cocycle projection of M8; the cohomology of representational
+    changes is realised concretely as the parity-basin equivalence
+    that the WH quotient algebra factors out. M8's "cocycle that
+    unifies multiple formal systems" was a placeholder; M22's
+    "axis-signatures index Walsh rows; rule composition is Hadamard
+    multiplication mod parity-basin" is what the placeholder named.
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:472-537](../cotype-free-self-extending-grammar.md)
+    (M8 statement) and [../cotype-free-self-extending-grammar.md:1752-1873](../cotype-free-self-extending-grammar.md)
+    (M22 realisation); [../scratch/walsh_hadamard_readings.py](../scratch/walsh_hadamard_readings.py)
+    exhibits the 8 mutually orthogonal readings of RM(1,3) that
+    instantiate the WH projection.
+  - **Consequence**: K-cocycle-unifies-formal-systems is promoted
+    from status `open` to `shown via realisation`; the M8 framing
+    is no longer a free-standing obligation.
+- K-WHT-quotient-algebra (M22) also `refines` K-K_n-coherence-for-composition (M7).
+  - The Stasheff K_n associahedron coherence (M7's framing for rule
+    composition) is what governs the WH quotient at each Hadamard
+    level — see K-stasheff-per-hadamard-level (M24).
 
 ## Drift {#drift}
 
@@ -328,11 +356,13 @@ These are not in the corpus explicitly; they emerge from cataloguing.
    implementation bug, or is it a re-statement of the open finding?**
    The status is "negative — still open" but the corpus may have a
    resolution that the catalog missed.
-4. **K-cocycle-unifies-formal-systems (M8) is stated then never reused
-   directly.** Did M22's WHT quotient algebra subsume it (the cocycle
-   becoming the Walsh-Hadamard projection)? An edge `K-WHT-quotient-
-   algebra realizes K-cocycle-unifies-formal-systems` is a candidate
-   if so, but the corpus doesn't explicitly draw it.
+4. ~~K-cocycle-unifies-formal-systems (M8) is stated then never
+   reused directly.~~ **Resolved** (user-confirmed, 2026-05-15):
+   the M22 Walsh-Hadamard quotient algebra realises the M8 cocycle
+   projection. Edge drawn in
+   [§ Realisation edges](#realisation-edges); K-cocycle-unifies-
+   formal-systems promoted from `open` to `shown via realisation`
+   in [claims.md](claims.md).
 
 ## Coverage gaps
 
