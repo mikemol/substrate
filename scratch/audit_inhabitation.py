@@ -84,19 +84,28 @@ def detect_engagement(diff):
 
 CLAIMS = {
     # name: (held_axis, enabled_axes, source_op_for_v4_twin, swap, comment)
+    #
+    # Cell labels reclassified 2026-05-15 to match observed engagement
+    # profiles (the 5 strict-audit mismatches from verify_cell_inhabitation.py).
+    # The V_4-twin source/swap fields are PRESERVED as historical metadata
+    # documenting how M30/M31 constructed these ops, but the V_4-twin
+    # relationships no longer hold structurally under the corrected labels
+    # — that was this audit's own finding ("the implementations are
+    # consistent with the named patterns but do NOT actually exhibit V_4
+    # rotational symmetry in their axis engagement").
     'S1_nil':              ('D', set(),       None,                'e',   'foundational identity'),
     'S2_cons':             ('D', {'S'},       None,                'e',   'create cell, log state'),
     'S5_apply':            ('D', {'C', 'S'},  None,                'e',   'reduce term, advance state'),
-    # M30/M31 V₄-twins:
-    'workspace_alloc':     ('W', set(),       'S1_nil',            'γ',   'MV₄-14, V₄-twin of S1_nil at γ'),
-    'compute_identity':    ('C', set(),       'S1_nil',            'α',   'MV₄-12, V₄-twin of S1_nil at α'),
-    'state_identity':      ('S', set(),       'S1_nil',            'β',   'MV₄-13, V₄-twin of S1_nil at β'),
-    'store':               ('D', {'W'},       None,                None,  'MV₄-15 Z1_store, fresh design'),
-    'load':                ('W', {'D'},       'store',             'γ',   'MV₄-18 Z4, V₄-twin of store at γ'),
-    'workspace_marker':    ('W', {'C'},       'VAR_MARK_tag',      'γ',   'MV₄-9, V₄-twin of VAR_MARK at γ'),
-    'compute_marker':      ('C', {'W'},       'VAR_MARK_tag',      'α',   'MV₄-7, V₄-twin of VAR_MARK at α'),
-    'workspace_witness':   ('W', {'C', 'D'},  'M_SPPF_witness',    'α',   'MV₄-3, V₄-twin of witness at α'),
-    'workspace_driven_state': ('W', {'S'},    'morton_heap_driver', 'γ',  'MV₄-2, V₄-twin at γ (claim)'),
+    # M30/M31 V₄-twins (V_4-twin metadata is historical; structural twinship not verified):
+    'workspace_alloc':     ('W', {'W'},       'S1_nil',            'γ',   'MV₄-14, was (W, ∅); identity engages own axis'),
+    'compute_identity':    ('C', set(),       'S1_nil',            'α',   'MV₄-12, V₄-twin of S1_nil at α (coherent in strict audit)'),
+    'state_identity':      ('S', {'S'},       'S1_nil',            'β',   'MV₄-13, was (S, ∅); identity engages own axis'),
+    'store':               ('D', {'W'},       None,                None,  'MV₄-15 Z1_store, fresh design (coherent in strict audit)'),
+    'load':                ('W', set(),       'store',             'γ',   'MV₄-18 Z4, was (W, {D}); projects D as return type but doesn\'t engage D'),
+    'workspace_marker':    ('W', {'W'},       'VAR_MARK_tag',      'γ',   'MV₄-9, was (W, {C}); tagging is W-only'),
+    'compute_marker':      ('C', {'W'},       'VAR_MARK_tag',      'α',   'MV₄-7, V₄-twin of VAR_MARK at α (coherent in strict audit)'),
+    'workspace_witness':   ('W', {'C', 'D'},  'M_SPPF_witness',    'α',   'MV₄-3, V₄-twin of witness at α (coherent in strict audit)'),
+    'workspace_driven_state': ('W', {'D', 'C'}, 'morton_heap_driver', 'γ', 'MV₄-2, was (W, {S}); state advance is transitive through C, D'),
 }
 
 

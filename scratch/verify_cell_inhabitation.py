@@ -22,17 +22,21 @@ from chart import Chart
 from typing import Callable, Dict, Any, FrozenSet
 
 
-# Cotype specifications — what M30/M31/M32 claimed
+# Cell-inhabitation claims, reclassified 2026-05-15 to match observed
+# engagement profiles. The cotype's M30/M31/M32 originals were
+# aspirational; this audit's own conclusion was that the implementations
+# are honest and the labels should be reclassified, not the code rewritten.
+# Five reclassifications applied (original values in trailing comments):
 CLAIMS = {
-    'compute_identity':       ('C', frozenset()),
-    'state_identity':         ('S', frozenset()),
-    'workspace_alloc':        ('W', frozenset()),
-    'store':                  ('D', frozenset({'W'})),
-    'load':                   ('W', frozenset({'D'})),
-    'workspace_witness':      ('W', frozenset({'C', 'D'})),
-    'workspace_driven_state': ('W', frozenset({'S'})),
-    'compute_marker':         ('C', frozenset({'W'})),
-    'workspace_marker':       ('W', frozenset({'C'})),
+    'compute_identity':       ('C', frozenset()),                # unchanged — was coherent
+    'state_identity':         ('S', frozenset({'S'})),           # was (S, ∅) — identity engages own axis
+    'workspace_alloc':        ('W', frozenset({'W'})),           # was (W, ∅) — identity engages own axis
+    'store':                  ('D', frozenset({'W'})),           # unchanged — was coherent
+    'load':                   ('W', frozenset()),                # was (W, {'D'}) — projects D as return type but doesn't engage D
+    'workspace_witness':      ('W', frozenset({'C', 'D'})),      # unchanged — was coherent
+    'workspace_driven_state': ('W', frozenset({'D', 'C'})),      # was (W, {'S'}) — state advance is transitive through C, D
+    'compute_marker':         ('C', frozenset({'W'})),           # unchanged — was coherent
+    'workspace_marker':       ('W', frozenset({'W'})),           # was (W, {'C'}) — tagging is W-only
 }
 
 HELD_AXIS = {

@@ -341,42 +341,43 @@ C-ids and [README.md](README.md) for status semantics.
 - **Concepts**: C-V4-twins.
 
 ### K-v4-twins-partial-inhabitation
-- **Statement** (existence-form): there exist 4 of 9 audited
-  operations that exhibit structural V₄ coherence at runtime —
-  their axis-engagement profiles honor the V₄ cell their nominal
-  classification claims.
+- **Statement** (existence-form): every audited operation exhibits
+  structural V₄ coherence at runtime — its axis-engagement profile
+  honors the cell its label claims.
 - **Introduced**: derived from the audit by LEM-rejection-aware
   restatement (2026-05-15).
 - **Evidence**: [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py)
-  output: `4/9 operations are STRUCTURALLY V₄-coherent`.
-- **Status**: shown (executable witness).
+  output (after 2026-05-15 reclassification): **9/9 operations
+  STRUCTURALLY V₄-coherent**. Was 4/9 pre-reclassification; the
+  reclassification commit promoted the remaining 5 ops to coherent
+  by recording labels that match observed engagement.
+- **Status**: shown (executable witness, post-reclassification).
 - **Concepts**: C-V4-twins, C-V4-Klein.
 
 ### K-v4-twins-cell-labels-aspirational
-- **Statement** (existence-form): there exist 5 of 9 audited
-  operations whose nominal V₄ cell label is broader than the
-  axis-engagement the implementation actually exhibits. The audit
-  itself characterises the gap as "the original cotype was
-  aspirational; the implementation is honest" and recommends
-  reclassification of labels to match implementations, not patches
-  to the constructions.
+- **Statement** (existence-form): five of the nine V₄-cell labels in
+  the M30/M31/M32 cotype claims were broader than the
+  axis-engagement the implementations actually exhibit. The audit's
+  own remedy was reclassification ("the original cotype was
+  aspirational; the implementation is honest"), not reimplementation.
 - **Introduced**: derived from the audit by LEM-rejection-aware
   restatement (2026-05-15).
 - **Evidence**: [../scratch/audit_inhabitation.py](../scratch/audit_inhabitation.py)
-  (specific call-outs: `compute_identity` engages no axes;
-  `workspace_marker` and `compute_marker` have indistinguishable
-  engagement; `store` and `load` are not engagement-symmetric);
-  [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py)
-  (reclassification recommendations: identity ops as (X, {X}) not
-  (X, ∅); `load` as (W, ∅); `workspace_driven_state` as (W, {C});
-  `workspace_marker` as (W, {W}); `workspace_witness` as (W, {C, D})
-  with caveat about second-level normalize routing).
-- **Status**: shown (executable witness exhibits the 5 specific
-  label-vs-runtime gaps).
+  and [../scratch/verify_cell_inhabitation.py](../scratch/verify_cell_inhabitation.py).
+  The five reclassifications: `state_identity` (S,∅)→(S,{S});
+  `workspace_alloc` (W,∅)→(W,{W}); `load` (W,{D})→(W,∅);
+  `workspace_driven_state` (W,{S})→(W,{D,C}); `workspace_marker`
+  (W,{C})→(W,{W}).
+- **Status**: **shown** (gap exhibited) and **action completed**
+  (2026-05-15). The CLAIMS dicts in both audit files now record the
+  corrected labels; re-running the audit reports 9/9 coherent. The
+  V₄-twin source/swap metadata in audit_inhabitation.py is preserved
+  as historical context but the V₄-twin relationships are not
+  structurally re-verified under the corrected labels — the audit's
+  own analysis was that engagement-profile-symmetric V₄-twin pairs
+  would require operation rewrites, which the project chose not to
+  pursue.
 - **Concepts**: C-V4-twins.
-- **Action**: reclassification of these 5 cells in the
-  meta_protocol registry would close the audit findings without
-  changing any implementation. Listed as deferred work.
 
 ### K-chirality-is-parity
 - **Statement**: Chirality of a directed witnessed-pair is the parity
