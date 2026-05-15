@@ -51,8 +51,19 @@ C-ids and [README.md](README.md) for status semantics.
   identity (Stasheff coherence).
 - **Introduced**: M2.
 - **Evidence**: [cotype-free-self-extending-grammar.md:116-150].
-- **Status**: partial — vertices and edges enumerated; higher-cell
-  coherence stated as obligation, not constructed.
+- **Status**: shown via three parallel realisations at three
+  operational layers (M17 K-rule variables / M22 WHT codewords /
+  M41 v16+v19 signatures). M2 and M8 are alternative vocabularies
+  for the same gauge-equivalence pattern; the three M8-realising
+  claims also realise M2 with different gauge groups (S_n /
+  parity-basin / V_4). The "topos's freedom" of M2's commitment #4
+  is concretely exercised at
+  [../applied_grammar.py:923-931](../applied_grammar.py)
+  (`canonical_signature_in_orbit` picks lex-min over V_4 translates;
+  any translate could have been canonical). Higher-cell coherence
+  remains abstract in M2's strict sense but the gauge structure the
+  polytope encodes is fully operational. See [entailment.md § M2
+  representational multiplicity ≈ M8 cocycle](entailment.md#m2-representational-multiplicity--m8-cocycle-same-pattern-different-vocabulary).
 - **Concepts**: C-representation-multiplicity, C-transform,
   C-associahedron-K_n.
 
@@ -81,8 +92,20 @@ C-ids and [README.md](README.md) for status semantics.
   constructor modulo hash-consing.
 - **Introduced**: M6.
 - **Evidence**: [cotype-free-self-extending-grammar.md:310-402].
-- **Status**: shown (commitment).
-- **Concepts**: C-formal-system, C-cons.
+- **Status**: shown via pair-realisation. M6's algebraic commitment
+  was necessary-but-not-sufficient; the corpus grounds the formal
+  system in TWO mutually-constraining algebraic structures —
+  term-algebra (chart_chained / applied_grammar: cons-tree free
+  magma + hash-cons + apply) and symmetry-algebra (meta_protocol /
+  s4_structure: V_4 ⋊ S_3 ≅ S_4 + Hodge ★ in dim 4 + Cayley-Dickson
+  seam). The spokesperson claim K-V4-semidirect-S3-is-primary (M41
+  v19) ties them together via AddressedOp / StructuralAddress. The
+  realisation also *strengthens* M6 — the formal system is more
+  than a free magma; it is a free magma whose operation set carries
+  an S_4 symmetry verified end-to-end. See [entailment.md § M6
+  algebraic commitment realised as a term-algebra / symmetry-algebra
+  pair](entailment.md#m6-algebraic-commitment-realised-as-a-term-algebra--symmetry-algebra-pair).
+- **Concepts**: C-formal-system, C-cons, C-V4-semidirect-S3.
 
 ### K-K_n-coherence-for-composition
 - **Statement**: Rule composition is governed by the Stasheff
@@ -640,15 +663,17 @@ Each K-claim is bound to the file(s) that purport to witness it.
 | K-bridge-content-addressed | [../applied_grammar.py](../applied_grammar.py) (transactional verification block) | [../verify_applied_grammar.py](../verify_applied_grammar.py) |
 
 **Claims without a dedicated implementation** (narrative-only or
-identified-with-other):
+realised-via-other):
 
-- K-representations-associahedron (M2): no dedicated artefact;
-  representation-change coherence lives in the chart kernel's
-  `transform` operation.
-- K-formal-system-algebraic (M6): narrative commitment.
-- K-cocycle-unifies-formal-systems (M8): no dedicated artefact; the
-  M8 framing is realised by K-WHT-quotient-algebra at M22 — see the
-  realisation edge in [entailment.md § Realisation edges](entailment.md#realisation-edges).
+- K-representations-associahedron (M2): realised by three layers —
+  M17, M22, M41 v16+v19 — sharing the gauge-equivalence pattern with
+  M8 (see entailment.md). No single dedicated artefact; the
+  realisation is across the pattern.
+- K-formal-system-algebraic (M6): realised as a term-algebra /
+  symmetry-algebra pair (chart_chained+applied_grammar /
+  meta_protocol+s4_structure); no single dedicated artefact.
+- K-cocycle-unifies-formal-systems (M8): realised by three parallel
+  claims (M17, M22, M41 v16+v19) — see entailment.md.
 - K-meta-principle-lifted (M15): narrative.
 - K-DBE-applied-to-itself (M11 second instance): narrative
   demonstration; the methodology is its own witness.

@@ -270,6 +270,107 @@ from status `open` → `shown via three parallel realisations`.
     (M7), [../cotype-free-self-extending-grammar.md:2027-2220](../cotype-free-self-extending-grammar.md)
     (M24); [../scratch/stasheff_per_hadamard_level.py](../scratch/stasheff_per_hadamard_level.py).
 
+### M2 representational multiplicity ≈ M8 cocycle: same pattern, different vocabulary
+
+K-representations-associahedron (M2,
+[../cotype-free-self-extending-grammar.md:100-150](../cotype-free-self-extending-grammar.md))
+and K-cocycle-unifies-formal-systems (M8,
+[../cotype-free-self-extending-grammar.md:472-537](../cotype-free-self-extending-grammar.md))
+are alternative framings of the *same* categorical pattern: a gauge
+structure where representations / formal-systems are equivalent up
+to a coherence (M2: cycles compose to identity; M8: cocycle modulo
+coboundary), and gauge-invariant data is the quotient. M2 phrases
+this in associahedron / polytope vocabulary; M8 phrases it in
+cohomology / cocycle vocabulary; the structure is the same.
+
+Consequence: **the three parallel realisations of M8 listed above
+ALSO realise M2**, because both sources name the same pattern. The
+specific gauge groups (S_n at M17, parity-basin at M22, V_4 at M41
+v16+v19) are different at each layer; the pattern is uniform.
+
+The "topos's freedom" in M2's structural commitment #4 ("any vertex
+could have been chosen") is precisely what each realisation
+exercises: M17 picks an off-diagonal canonical; M22 picks a parity-
+basin representative; M41 v16+v19 picks lex-min over V_4 translates
+as canonical signature.
+
+- **K-K-rule-gauge-structure (M17) `realizes` K-representations-associahedron (M2)**.
+  - **The "representations"** at this layer are variable-name
+    assignments to K-rule positions; transforms are S_n renamings;
+    the polytope structure is the partition refinement on slot
+    indices.
+- **K-WHT-quotient-algebra (M22) `realizes` K-representations-associahedron (M2)**.
+  - **The "representations"** at this layer are codewords; transforms
+    are parity-basin moves; the polytope structure is the Walsh-
+    Hadamard character lattice.
+- **K-orbit-canonical-bijection (M41 v16+v19) `realizes` K-representations-associahedron (M2)**.
+  - **The "representations"** at this layer are (source, sink,
+    witness) signatures on DCSW axes; transforms are V_4 axis
+    swaps; the polytope structure is the Cayley-Dickson ladder
+    (32 = 24 + 8 with parity sieve giving 32 × 3/4).
+  - **The "topos's freedom" realised**: canonical_signature_in_orbit
+    picks lex-min, but ANY V_4-translate within an orbit could have
+    been canonical; the choice respects the structure. This is M2's
+    structural commitment #4 made concrete in code at
+    [../applied_grammar.py:923-931](../applied_grammar.py).
+
+Consequence: K-representations-associahedron is promoted from
+status `partial` (vertices/edges enumerated; higher cells stated
+as obligation) → `shown via three parallel realisations at three
+operational layers`. Higher-cell coherence is still abstract in M2's
+sense but the gauge structure that the polytope encodes is fully
+operational.
+
+### M6 algebraic commitment realised as a term-algebra / symmetry-algebra pair
+
+- **(applied_grammar.py + s4_structure.py + chart_chained.py + meta_protocol.py) collectively `realize` K-formal-system-algebraic (M6)**.
+  - **M6's commitment**: "the substrate is the free magma on the
+    binary constructor modulo hash-consing"
+    ([../cotype-free-self-extending-grammar.md:310-402](../cotype-free-self-extending-grammar.md))
+    — an abstract algebraic identity; M6 does not specify *which*
+    symmetries the operation set has.
+  - **The realisation lands as a pair**, because M6's commitment was
+    necessary-but-not-sufficient: the corpus eventually grounds the
+    formal system in TWO algebraic structures that mutually
+    constrain one another:
+    - **Term-algebra side**: cons-tree free magma mod hash-cons.
+      Implementation: [../scratch/chart_chained.py](../scratch/chart_chained.py)
+      (chart kernel + hash-consing + apply reducer) +
+      [../applied_grammar.py](../applied_grammar.py) (operations
+      layered on chart).
+    - **Symmetry-algebra side**: V_4 ⋊ S_3 ≅ S_4 acting on the 4
+      axes, with Hodge ★ in dim 4 giving 32 = 24 + 8 = |S_4| +
+      2·dim(Λ¹) and the Cayley-Dickson seam at level 4.
+      Implementation: [../scratch/meta_protocol.py](../scratch/meta_protocol.py)
+      (declarative protocol) + [../s4_structure.py](../s4_structure.py)
+      (formal group structure).
+  - **Spokesperson claim**: K-V4-semidirect-S3-is-primary (M41 v19)
+    is the single best-located point of the realisation — it names
+    the specific algebraic identity (S_4 ≅ V_4 ⋊ S_3 as primary
+    formal foundation) that ties the symmetry side to the term
+    side via the AddressedOp / StructuralAddress chain.
+  - **Evidence chain**: [../cotype-free-self-extending-grammar.md:5752-5904](../cotype-free-self-extending-grammar.md)
+    (v19 establishes V_4 ⋊ S_3 as primary);
+    [../s4_structure.py:5-21](../s4_structure.py) (the claim made
+    operational); [../scratch/verify_s4_structure.py](../scratch/verify_s4_structure.py)
+    (62/62 checks pass; verifies the algebraic identity end-to-end);
+    [../applied_grammar.py:861-956](../applied_grammar.py) (the
+    AddressedOp / orbit-canonical bridge that ties term-algebra
+    receipts to symmetry-algebra signatures).
+  - **Consequence**: K-formal-system-algebraic promoted from
+    `shown (commitment)` to `shown via pair-realisation` — the
+    commitment is now concretely embodied. The realisation also
+    *strengthens* M6: the formal system isn't just a free magma
+    mod hash-cons; it is a free magma mod hash-cons whose operation
+    set carries an S_4 ≅ V_4 ⋊ S_3 symmetry encoded by
+    StructuralAddress and verified by the umbrella
+    `verify_every_receipt_carries_structural_address`.
+  - **Reading aid**: M6 was the *promise* of algebraic
+    commitment; the M41 stack is what the commitment turned out
+    to require. The 22+ version chain on M41 is the audit-walk that
+    pulled the symmetry-algebra side into the same algebraic
+    discipline as the term-algebra side.
+
 ## Drift {#drift}
 
 This section is the user's primary deliverable. The corpus shows two
