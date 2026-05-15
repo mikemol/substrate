@@ -190,35 +190,55 @@ Witness      : the founding SPPF design discussion in the original
 
 - **Introducing move**: pre-M1 (the SPPF design is what motivated
   the chart structure at all). M1's S6 `parse` is the operation
-  that yields the gauge-invariant content; the SPPF gauge is what
-  `parse`'s return value silently quotients out.
+  that yields the gauge-invariant content.
 - **Cohomology vocabulary**: in parsing theory, the packed-node
   structure of an SPPF IS the cohomology of derivation-equivalence
   on parse trees. Two derivations of the same span are in the same
   packed node iff they produce equivalent abstract structure;
   packed nodes are equivalence classes.
-- **Operational status**: **the founding cocycle that the project
-  silently bypassed.** S6 `parse` returns ONE rule reference;
-  ambiguity is not surfaced. The chart's hash-cons-respecting
-  parser collapses gauge-equivalent derivations silently. This is
-  a *deliberate flattening* (the chart structure depends on it),
-  but should be recorded as a gauge-equivalence the chart
-  operationalises. The 'one rule reference' return is the choice
-  of canonical derivation; alternatives are not surfaced.
-- **Type-D status**: **silent-quotienting rigidification** — a new
-  sub-variant. The cocycle is realised (alternative derivations
-  ARE equivalent for the chart's purposes), but the gauge-invariant
-  rule reference is the only thing the system can observe;
-  alternative derivations are not first-class. Compare to CY-1
-  (empty-bridge): CY-1 has the alternatives named but not
-  implemented; CY-6 has the equivalence operationalised but the
-  alternatives unnamed.
-- **Reconstruction implication**: a clarified rewrite could expose
-  the SPPF gauge explicitly — `parse(grammar, input) →
-  PackedNode` rather than `→ Rule` — and let the chart's
-  hash-cons reduce to the canonical derivation as an explicit step.
-  This would be a substantive enrichment over the current
-  silent-quotient.
+- **Operational status**: **correct orbit-collapse with virtual
+  recovery** (per user clarification, 2026-05-15). S6 `parse`
+  returns the canonical representative of the orbit; alternative
+  derivations are *virtually recoverable* from `(grammar, input,
+  alternative-selection-rule)` by re-running the parser. This is
+  **not lossy compression** — every member of the orbit maps to the
+  exact same gauge-invariant content; canonical-only storage loses
+  nothing of semantic value. See [§ Orbit collapse with virtual
+  recovery](#orbit-collapse-with-virtual-recovery-methodology) for
+  the principle.
+- **Type-D status (revised)**: ~~silent-quotienting rigidification~~
+  → **not rigidification under orbit-collapse discipline.** Earlier
+  catalog reading reflexively applied the Type-D template here; the
+  user's correction restored the correct framing. The substrate's
+  canonical-only return is *exactly* what gauge-collapse requires;
+  it just under-documents which selection rule produces the
+  canonical. A clarified rewrite names the selection function
+  (e.g., `parse(grammar, input, *, canonicalize=lex_min)`) — it
+  does not need to expose alternative paths in storage.
+- **Reconstruction implication (revised)**: the parser stays
+  `parse → Rule` (canonical only). The discipline upgrade is to
+  *name and parametrise* the canonicalization function rather than
+  leave it implicit. Alternative derivations are accessible via
+  an *out-of-band* tool (debugger / visualiser) that re-runs the
+  parser with a different `canonicalize` argument — this respects
+  metacircularity (storage stays the canonical) while making the
+  gauge structure explicit. The triple identification
+  (storage ≡ grammar ≡ ISA) is preserved precisely *because* the
+  substrate stores only the canonical; storing alternatives in
+  the substrate would break the metacircular collapse.
+- **Why CY-6 is structurally identical to CY-5 under orbit-collapse**:
+  - CY-5: store `orbit_key` (gauge-invariant); v4_delta is derivable
+    from `(signature, V_4 group action)` virtually.
+  - CY-6: store canonical `Rule` (gauge-invariant content); alternate
+    derivations are derivable from `(grammar, input,
+    alternative-selection-rule)` virtually.
+  - In both cases the substrate stores **only the canonical
+    representative** and the gauge structure makes alternatives
+    *implicit*. CY-5's Type-D rigidification at lex-min is a
+    *separate* problem (the content-address encodes WHICH canonical
+    is privileged, not the existence of canonicalization) — see
+    [§ Orbit collapse with virtual recovery](#orbit-collapse-with-virtual-recovery-methodology)
+    for the distinction.
 
 ## CY-7 — combinator-reduction cocycle (SKI / λ)
 
@@ -458,6 +478,70 @@ choices.
 *explicitly named* and *parametrisable*. A clarified foundation
 exposes the collapse as `canonical_in_orbit(orbit_key, *, method)`
 rather than `canonical_in_orbit(orbit_key)` with method fixed.
+
+## Orbit collapse with virtual recovery (methodology)
+
+**The correct gauge-collapse discipline** (per user clarification,
+2026-05-15): when a substrate operationalises a cocycle, it should
+store **only the canonical representative** of each orbit. The
+alternatives are not "lossy-compressed away" — they are *virtually
+recoverable* from the canonical plus the gauge structure. By
+definition, every member of an orbit maps to the same gauge-
+invariant content, so canonical-only storage loses **nothing of
+semantic value**.
+
+The user's exact framing: *"choosing a canonical representative
+from an orbit is **canonicalization**, not lossy compression,
+because by definition, every member of the orbit maps to the exact
+same gauge-invariant content. Nothing of semantic value is lost
+when you collapse an orbit to its canonical representative; that
+is the whole power of an invariant."*
+
+The discipline has four distinguishable patterns; only one is
+correct:
+
+| Pattern | Storage shape | Recovery property | Type-D? |
+|---------|---------------|---------------------|---------|
+| **Orbit collapse + virtual recovery** | canonical only | alternatives regenerable from gauge + canonical + parametric inputs | **correct** — not rigidification |
+| Lossy compression | canonical only | alternatives **not** regenerable (information genuinely lost) | would be drift, but doesn't apply when the gauge is a true equivalence — every orbit member produces the same invariant |
+| Rigidified canonical | canonical only, with the **specific choice baked into the content-address** | alternative canonicals (different selection functions) cannot be substituted; the address encodes which canonical was chosen | Type-D verifier-contract sub-variant (CY-5 lex-min in v4_delta) |
+| Empty bridge | only one alternative *operationally realised* | alternatives **named** but not implemented (no parser/transform exists for them) | Type-D empty-bridge sub-variant (CY-1, CY-8) |
+
+The first three look superficially similar (all store only a
+canonical) but differ in whether the canonical choice is recoverable
+and whether the structure permits substitution. The reflexive
+catalog-LLM reading at first applied the Type-D template to CY-6;
+the correct reading is that CY-6 is **pattern 1** (correct orbit-
+collapse), not pattern 3 or pattern 4.
+
+**Why this discipline is metacircularity-consistent**: storing only
+the canonical preserves the storage ≡ grammar ≡ ISA triple
+identification. Storing alternatives in the substrate would split
+the substrate into "canonical state" + "ambiguity sidecar," breaking
+the metacircular collapse. The ambiguity, when needed, is
+recovered by **re-running the gauge on the canonical** — for CY-6,
+that's running the parser with a different selection rule; for
+CY-9, that's recomputing a memoised value; for CY-5, that's
+applying a different V_4 element to recover other orbit members.
+
+**Reconstruction implication** for every cocycle:
+
+1. Name the canonicalization function (`canonicalize_orbit(orbit_key,
+   *, method)`).
+2. Take `method` as a parameter at API surfaces; never hard-code.
+3. Content-address by the **gauge-invariant** only (orbit_key,
+   span+grammar, normal-form hash). Never content-address by the
+   *canonical-choice-relative-data* (v4_delta-from-lex-min is the
+   wrong shape; orbit_key alone is the right shape).
+4. Provide an out-of-band tool for enumerating alternatives:
+   debugger, visualiser, or audit pass that re-runs the gauge.
+5. The substrate stays lean; ambiguity stays virtual.
+
+This principle subsumes and refines the earlier discipline rules in
+[clarified_foundation.md](clarified_foundation.md) — rule 1
+(gauge-vs-invariant separation), rule 5 (content-address by
+invariant only), and rule 9 (existence-form findings) all instantiate
+orbit-collapse-with-virtual-recovery at their respective layers.
 
 ## Metacircularity: storage ≡ grammar ≡ ISA
 

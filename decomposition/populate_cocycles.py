@@ -115,12 +115,16 @@ COCYCLES = [
         "witness_evidence": "MHTML title 'Numpy-backed SPPF datastructure "
                             "design'; S6 parse operation as gauge-"
                             "invariant return",
-        "status": "silently-quotiented (Type-D new sub-variant): "
-                  "alternatives equivalent but not first-class",
-        "notes": "The founding cocycle the project silently bypassed. "
-                 "Parse returns ONE rule reference; alternatives are "
-                 "not surfaced. Reconstruction would expose packed-node "
-                 "structure explicitly.",
+        "status": "correct orbit-collapse with virtual recovery "
+                  "(NOT a Type-D rigidification)",
+        "notes": "Revised 2026-05-15 per user clarification: storing "
+                 "only the canonical Rule is correct gauge-collapse, "
+                 "not lossy compression. Alternatives are virtually "
+                 "recoverable from (grammar, input, "
+                 "alternative-selection-rule) by re-running the parser. "
+                 "Reconstruction upgrade: name and parametrise the "
+                 "canonicalization function, do NOT expose alternatives "
+                 "in storage (would break metacircular collapse).",
     },
     {
         "slug": "cy-7-combinator-reduction",

@@ -284,6 +284,22 @@ re-introducing the Type-D drift catalogued this session.
     introduced at L1–L9 closes with a constructible/reachable/
     observable/coverable check, per K-charter-honored-corpus-wide
     in claims.md.
+11. **Orbit collapse with virtual recovery**: storage holds only
+    the canonical representative of each orbit; alternatives are
+    virtually recoverable from (canonical, gauge structure,
+    parametric inputs). This is *canonicalization* (no information
+    lost — every orbit member maps to the same invariant) and is
+    distinct from *rigidification* (where the specific canonical
+    choice is encoded into the content-address). For CY-6 parse:
+    store the canonical `Rule`, recover alternative derivations by
+    re-running the parser with a different selection rule (not by
+    storing them as sidecar metadata). For CY-9 memoization: store
+    the cached result, recompute on miss. For CY-5 V_4 signatures:
+    store `orbit_key` only — `v4_delta` is the canonical-choice-
+    relative coordinate and should not be in the content-address.
+    See [cocycles.md § Orbit collapse with virtual recovery](cocycles.md#orbit-collapse-with-virtual-recovery-methodology).
+    This rule subsumes rules 1, 5, and 9 at the canonicalization
+    layer.
 
 ## What this foundation does NOT include
 
