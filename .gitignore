@@ -14,3 +14,7 @@ __pycache__/
 
 # Local artifacts
 files*.zip
+
+# Agda build artefacts
+*.agdai
+agda/_build/
