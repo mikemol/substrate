@@ -85,7 +85,11 @@ COCYCLES = [
         "slug": "cy-5-v4-signature",
         "name": "V_4 signature cocycle",
         "layer": "Level 9 — directed witnessed-pair signatures",
-        "base": "24 valid (source, sink, witness) signatures on DCSW",
+        "base": "24 valid signatures = elements of S_4 (per s4_structure.py: "
+                "σ ∈ S_4 ↔ (σ(D), σ(C), σ(S))); the 24 emerge combinatorially "
+                "from C(4,3) × 3! axis-selections × orderings, co-defined "
+                "by the 8-element parity space (4 axes × 2 chiralities) that "
+                "encodes the 3-of-4 quotienting",
         "gauge_group": "V_4 axis swaps {e, (DC)(SW), (DS)(CW), (DW)(CS)}",
         "cohomology_classes": "6 orbits indexed by (pairing, chirality) ∈ "
                               "{α,β,γ} × {even, odd}, 4 elements each",
@@ -95,10 +99,16 @@ COCYCLES = [
                             "(decompose_signature/recompose_signature); "
                             "verify_signature_decomposition_bijection",
         "status": "shown; rigidified-by-lex-min (Type-D verifier-contract)",
-        "notes": "Math admits any V_4 translate as canonical; "
-                 "implementation rigidified lex-min via content-addressing "
-                 "of v4_delta. Recovery: receipts content-address by "
-                 "orbit_key only.",
+        "notes": "The 24 base elements ARE S_4 itself (operationally the "
+                 "architectural symmetry group A_4 × Z_2 per M40). The 8 "
+                 "complement codewords are NOT noise — they're the parity "
+                 "space anchoring the 3-of-4 selection that defines what "
+                 "'directed triple' means. Hodge ★ in dim 4 is the "
+                 "categorical reading of the same structure (24 = Λ^3 "
+                 "ordered triples ↔ 8 = Λ^1 signed singletons). Type-D "
+                 "rigidification at lex-min is in v4_delta content-"
+                 "addressing — receipts encode the canonical choice. "
+                 "Recovery: content-address by orbit_key only.",
     },
     {
         "slug": "cy-6-parse-derivation",

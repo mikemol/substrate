@@ -163,11 +163,56 @@ Witness      : [../applied_grammar.py:861-956](../applied_grammar.py)
   (`canonical_is_lex_min_in_orbit`), and the v17↔v19 agreement
   theorem. See [entailment.md § Type-D drift](entailment.md#type-d-drift-operational-choice-rigidification)
   and [drift_archaeology.md § Finding 2](drift_archaeology.md).
-- **Hodge-dual extension**: the 8 *forbidden* codewords (the
-  parity-sieve complement) are not part of CY-5 but are the
-  Hodge ★ partner of the 24-element base; together they fill
-  the 32-element raw codeword space. See `C-hodge-star-dim4` in
-  [concepts.md](concepts.md).
+- **The 24 + 8 structure as 3-of-4 quotienting** (per user
+  clarification, 2026-05-15): the 8 "forbidden" codewords are NOT
+  noise to be sieved out — they are the **parity space that
+  encodes the three-from-four quotienting** which makes the 24
+  meaningful as directed-witnessed-pair signatures. The
+  combinatorial derivation:
+
+  ```text
+  Choose 3 of 4 axes for (source, sink, witness):  C(4,3) = 4
+  Permute the chosen 3 into a directed tuple:      3! = 6
+  Directed labels:                                 4 × 6 = 24
+
+  Complement (parity space):
+    "which one axis is excluded" × chirality
+    of the excluded singleton:                     4 × 2 = 8
+
+  Total raw codeword space:                        24 + 8 = 32 = 2^5
+  ```
+
+  Equivalently via parity: 12 spatial combinations (unordered)
+  × 2 orientations (chiralities) = 24. The 8 are the signed
+  singletons (one per axis × ± sign) that form the structural
+  anchor. The relationship is reciprocal: the 8 define what an
+  "axis" and a "directed triple" mean in this architecture; the
+  24 are then exactly the configurations where the 3-of-4 selection
+  applies.
+
+- **The 24 ARE S_4** (not "things S_4 acts on"). Per
+  [../s4_structure.py:14-21](../s4_structure.py): *"The 24 valid
+  (source, sink, witness) signatures are precisely the elements of
+  S_4 via σ ∈ S_4 ↔ (σ(D), σ(C), σ(S)) with σ(W) implicit as the
+  'fourth' axis."* The CY-5 base **is** the symmetric group itself.
+  Under M40's identification this group is operationally the
+  architectural symmetry group A_4 × Z_2 — meaning the 24
+  signatures are simultaneously the *base* of CY-5's gauge action
+  AND the *elements of the group* M40 identifies. The cocycle is
+  reflexive at the group-element layer: the gauge acts on what
+  IS the group, partitioning it into 6 V_4-orbits via the V_4 ⋊ S_3
+  factorisation.
+
+- **Hodge-dual reading** (compatible with the parity-space reading
+  above): in dim 4, ★ : Λ^3 → Λ^1 pairs ordered 3-tuples with
+  signed 1-tuples. The 24 ordered triples Hodge-dual to the 8
+  signed singletons. *Same structure, two vocabularies* — the
+  3-of-4 quotienting is the combinatorial reading; the Hodge ★
+  is the categorical reading. See `C-hodge-star-dim4` in
+  [concepts.md](concepts.md) and the verifiers in
+  [../s4_structure.py](../s4_structure.py)
+  (`verify_8_oriented_unordered_triples`,
+  `verify_hodge_complement_is_8_oriented_triples`).
 
 ## CY-6 — parse-derivation cocycle (grammar / SPPF / parsing)
 
