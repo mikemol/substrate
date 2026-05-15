@@ -1,0 +1,365 @@
+============================================================================
+  ENGAGEMENT MATRIX — implemented operations × axis roles
+============================================================================
+
+  Roles: I=input  O=output  R=read  M=mutate  C=create  ·=none
+  Axis capabilities (missing role = structurally barred):
+    D: {C,I,O,R}  (lacks M)
+    C: {C,I,M,O,R}
+    S: {C,I,O,R}  (lacks M)
+    W: {C,I,M,O,R}
+
+  operation                 D     C     S     W    
+  ------------------------- ----- ----- ----- -----
+  S1_nil                    I     ·     ·     ·    
+  S2_cons                   IC    ·     C     ·    
+  S3_left                   IO    ·     ·     ·    
+  S3_right                  IO    ·     ·     ·    
+  S4_eq                     IR    ·     ·     ·    
+  S5_apply                  IO    C     C     ·    
+  S6_parse                  C     ·     C     ·    
+  S7_transform              IO    ·     C     ·    
+  interp                    IO    C     C     ·    
+  workspace_alloc           ·     ·     C     C    
+  workspace_free            ·     ·     ·     IM   
+  store                     I     ·     C     IM   
+  load                      O     ·     ·     IR   
+  workspace_kind            ·     ·     ·     IR   
+  compute_identity          IO    ·     ·     ·    
+  state_identity            ·     ·     C     ·    
+  compute_marker            ·     I     C     IM   
+  workspace_marker          ·     I     C     IM   
+  is_workspace_marker       ·     ·     ·     IR   
+  workspace_witness         IO    C     C     IR   
+  workspace_driven_state    C     C     C     IR   
+
+============================================================================
+  V₄-ROTATION ANALYSIS
+============================================================================
+
+  For each operation, compute its V₄-rotated profiles and check:
+    [TWIN]    — rotated profile == another op's profile (genuine V₄-twin)
+    [BUILD]   — rotated profile realizable but no op has it (constructible)
+    [BARRED]  — rotated profile violates axis capabilities (unrealizable)
+
+
+  ── S1_nil : I    ·    ·    ·    ──
+      α: ·    I    ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    ·    I    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    ·    ·    I     [BUILD] rotated profile is realizable but unimplemented
+
+  ── S2_cons : IC   ·    C    ·    ──
+      α: ·    IC   ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    IC   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    C    ·    IC    [BUILD] rotated profile is realizable but unimplemented
+
+  ── S3_left : IO   ·    ·    ·    ──
+      α: ·    IO   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    ·    IO   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    ·    ·    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── S3_right : IO   ·    ·    ·    ──
+      α: ·    IO   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    ·    IO   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    ·    ·    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── S4_eq : IR   ·    ·    ·    ──
+      α: ·    IR   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    ·    IR   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    ·    ·    IR    [TWIN] matches: workspace_kind, is_workspace_marker
+
+  ── S5_apply : IO   C    C    ·    ──
+      α: C    IO   ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    IO   C     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    C    C    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── S6_parse : C    ·    C    ·    ──
+      α: ·    C    ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    C    ·     [SELF] (V₄-invariant: rotation gives back the same profile)
+      γ: ·    C    ·    C     [BUILD] rotated profile is realizable but unimplemented
+
+  ── S7_transform : IO   ·    C    ·    ──
+      α: ·    IO   ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    IO   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    C    ·    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── interp : IO   C    C    ·    ──
+      α: C    IO   ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    IO   C     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    C    C    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── workspace_alloc : ·    ·    C    C    ──
+      α: ·    ·    C    C     [SELF] (V₄-invariant: rotation gives back the same profile)
+      β: C    C    ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: C    C    ·    ·     [BUILD] rotated profile is realizable but unimplemented
+
+  ── workspace_free : ·    ·    ·    IM   ──
+      α: ·    ·    IM   ·     [BARRED] barred by: S cannot M
+      β: ·    IM   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: IM   ·    ·    ·     [BARRED] barred by: D cannot M
+
+  ── store : I    ·    C    IM   ──
+      α: ·    I    IM   C     [BARRED] barred by: S cannot M
+      β: C    IM   I    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: IM   C    ·    I     [BARRED] barred by: D cannot M
+
+  ── load : O    ·    ·    IR   ──
+      α: ·    O    IR   ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    IR   O    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: IR   ·    ·    O     [BUILD] rotated profile is realizable but unimplemented
+
+  ── workspace_kind : ·    ·    ·    IR   ──
+      α: ·    ·    IR   ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    IR   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: IR   ·    ·    ·     [TWIN] matches: S4_eq
+
+  ── compute_identity : IO   ·    ·    ·    ──
+      α: ·    IO   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    ·    IO   ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    ·    ·    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── state_identity : ·    ·    C    ·    ──
+      α: ·    ·    ·    C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    ·    ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: ·    C    ·    ·     [BUILD] rotated profile is realizable but unimplemented
+
+  ── compute_marker : ·    I    C    IM   ──
+      α: I    ·    IM   C     [BARRED] barred by: S cannot M
+      β: C    IM   ·    I     [BUILD] rotated profile is realizable but unimplemented
+      γ: IM   C    I    ·     [BARRED] barred by: D cannot M
+
+  ── workspace_marker : ·    I    C    IM   ──
+      α: I    ·    IM   C     [BARRED] barred by: S cannot M
+      β: C    IM   ·    I     [BUILD] rotated profile is realizable but unimplemented
+      γ: IM   C    I    ·     [BARRED] barred by: D cannot M
+
+  ── is_workspace_marker : ·    ·    ·    IR   ──
+      α: ·    ·    IR   ·     [BUILD] rotated profile is realizable but unimplemented
+      β: ·    IR   ·    ·     [BUILD] rotated profile is realizable but unimplemented
+      γ: IR   ·    ·    ·     [TWIN] matches: S4_eq
+
+  ── workspace_witness : IO   C    C    IR   ──
+      α: C    IO   IR   C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    IR   IO   C     [BUILD] rotated profile is realizable but unimplemented
+      γ: IR   C    C    IO    [BUILD] rotated profile is realizable but unimplemented
+
+  ── workspace_driven_state : C    C    C    IR   ──
+      α: C    C    IR   C     [BUILD] rotated profile is realizable but unimplemented
+      β: C    IR   C    C     [BUILD] rotated profile is realizable but unimplemented
+      γ: IR   C    C    C     [BUILD] rotated profile is realizable but unimplemented
+
+============================================================================
+  SUMMARY
+============================================================================
+
+    TWIN       3/63  (5%)
+    BUILD     50/63  (79%)
+    BARRED     8/63  (13%)
+    SELF       2/63  (3%)
+
+  Interpretations:
+    TWIN   = V₄ symmetry holds at the engagement-profile level for this rotation.
+    BUILD  = V₄ symmetry could be made to hold if we add the missing operation.
+    BARRED = V₄ symmetry cannot be made to hold without axis-capability refactor.
+    SELF   = operation is V₄-invariant under this swap (carries the symmetry trivially).
+
+============================================================================
+  CONSTRUCTIBLE COMPLEMENTS — operations we could build to close V₄ symmetry
+============================================================================
+
+  Found 34 constructible complement operations.
+
+  • V₄-twin of 'S1_nil' under α:
+      source profile:  I    ·    ·    ·   
+      rotated profile: ·    I    ·    ·   
+      semantics: takes C-axis input
+
+  • V₄-twin of 'S1_nil' under β:
+      source profile:  I    ·    ·    ·   
+      rotated profile: ·    ·    I    ·   
+      semantics: takes S-axis input
+
+  • V₄-twin of 'S1_nil' under γ:
+      source profile:  I    ·    ·    ·   
+      rotated profile: ·    ·    ·    I   
+      semantics: takes W-axis input
+
+  • V₄-twin of 'S2_cons' under α:
+      source profile:  IC   ·    C    ·   
+      rotated profile: ·    IC   ·    C   
+      semantics: takes C-axis input; creates new C-axis entity
+
+  • V₄-twin of 'S2_cons' under β:
+      source profile:  IC   ·    C    ·   
+      rotated profile: C    ·    IC   ·   
+      semantics: takes S-axis input; creates new D-axis entity
+
+  • V₄-twin of 'S2_cons' under γ:
+      source profile:  IC   ·    C    ·   
+      rotated profile: ·    C    ·    IC  
+      semantics: takes W-axis input; creates new C-axis entity
+
+  • V₄-twin of 'S3_left' under α:
+      source profile:  IO   ·    ·    ·   
+      rotated profile: ·    IO   ·    ·   
+      semantics: takes C-axis input; returns C-axis value
+
+  • V₄-twin of 'S3_left' under β:
+      source profile:  IO   ·    ·    ·   
+      rotated profile: ·    ·    IO   ·   
+      semantics: takes S-axis input; returns S-axis value
+
+  • V₄-twin of 'S3_left' under γ:
+      source profile:  IO   ·    ·    ·   
+      rotated profile: ·    ·    ·    IO  
+      semantics: takes W-axis input; returns W-axis value
+
+  • V₄-twin of 'S4_eq' under α:
+      source profile:  IR   ·    ·    ·   
+      rotated profile: ·    IR   ·    ·   
+      semantics: takes C-axis input
+
+  • V₄-twin of 'S4_eq' under β:
+      source profile:  IR   ·    ·    ·   
+      rotated profile: ·    ·    IR   ·   
+      semantics: takes S-axis input
+
+  • V₄-twin of 'S5_apply' under α:
+      source profile:  IO   C    C    ·   
+      rotated profile: C    IO   ·    C   
+      semantics: takes C-axis input; creates new D-axis entity; returns C-axis value
+
+  • V₄-twin of 'S5_apply' under β:
+      source profile:  IO   C    C    ·   
+      rotated profile: C    ·    IO   C   
+      semantics: takes S-axis input; creates new D-axis entity; returns S-axis value
+
+  • V₄-twin of 'S5_apply' under γ:
+      source profile:  IO   C    C    ·   
+      rotated profile: ·    C    C    IO  
+      semantics: takes W-axis input; creates new C-axis entity; returns W-axis value
+
+  • V₄-twin of 'S6_parse' under α:
+      source profile:  C    ·    C    ·   
+      rotated profile: ·    C    ·    C   
+      semantics: creates new C-axis entity
+
+  • V₄-twin of 'S7_transform' under α:
+      source profile:  IO   ·    C    ·   
+      rotated profile: ·    IO   ·    C   
+      semantics: takes C-axis input; creates new W-axis entity; returns C-axis value
+
+  • V₄-twin of 'S7_transform' under β:
+      source profile:  IO   ·    C    ·   
+      rotated profile: C    ·    IO   ·   
+      semantics: takes S-axis input; creates new D-axis entity; returns S-axis value
+
+  • V₄-twin of 'S7_transform' under γ:
+      source profile:  IO   ·    C    ·   
+      rotated profile: ·    C    ·    IO  
+      semantics: takes W-axis input; creates new C-axis entity; returns W-axis value
+
+  • V₄-twin of 'workspace_alloc' under β:
+      source profile:  ·    ·    C    C   
+      rotated profile: C    C    ·    ·   
+      semantics: creates new D-axis entity
+
+  • V₄-twin of 'workspace_free' under β:
+      source profile:  ·    ·    ·    IM  
+      rotated profile: ·    IM   ·    ·   
+      semantics: takes C-axis input; mutates C-axis
+
+  • V₄-twin of 'store' under β:
+      source profile:  I    ·    C    IM  
+      rotated profile: C    IM   I    ·   
+      semantics: takes C-axis input; creates new D-axis entity; mutates C-axis
+
+  • V₄-twin of 'load' under α:
+      source profile:  O    ·    ·    IR  
+      rotated profile: ·    O    IR   ·   
+      semantics: takes S-axis input; returns C-axis value
+
+  • V₄-twin of 'load' under β:
+      source profile:  O    ·    ·    IR  
+      rotated profile: ·    IR   O    ·   
+      semantics: takes C-axis input; returns S-axis value
+
+  • V₄-twin of 'load' under γ:
+      source profile:  O    ·    ·    IR  
+      rotated profile: IR   ·    ·    O   
+      semantics: takes D-axis input; returns W-axis value
+
+  • V₄-twin of 'state_identity' under α:
+      source profile:  ·    ·    C    ·   
+      rotated profile: ·    ·    ·    C   
+      semantics: creates new W-axis entity
+
+  • V₄-twin of 'state_identity' under β:
+      source profile:  ·    ·    C    ·   
+      rotated profile: C    ·    ·    ·   
+      semantics: creates new D-axis entity
+
+  • V₄-twin of 'state_identity' under γ:
+      source profile:  ·    ·    C    ·   
+      rotated profile: ·    C    ·    ·   
+      semantics: creates new C-axis entity
+
+  • V₄-twin of 'compute_marker' under β:
+      source profile:  ·    I    C    IM  
+      rotated profile: C    IM   ·    I   
+      semantics: takes C-axis input; creates new D-axis entity; mutates C-axis
+
+  • V₄-twin of 'workspace_witness' under α:
+      source profile:  IO   C    C    IR  
+      rotated profile: C    IO   IR   C   
+      semantics: takes C-axis input; creates new D-axis entity; returns C-axis value
+
+  • V₄-twin of 'workspace_witness' under β:
+      source profile:  IO   C    C    IR  
+      rotated profile: C    IR   IO   C   
+      semantics: takes C-axis input; creates new D-axis entity; returns S-axis value
+
+  • V₄-twin of 'workspace_witness' under γ:
+      source profile:  IO   C    C    IR  
+      rotated profile: IR   C    C    IO  
+      semantics: takes D-axis input; creates new C-axis entity; returns W-axis value
+
+  • V₄-twin of 'workspace_driven_state' under α:
+      source profile:  C    C    C    IR  
+      rotated profile: C    C    IR   C   
+      semantics: takes S-axis input; creates new D-axis entity
+
+  • V₄-twin of 'workspace_driven_state' under β:
+      source profile:  C    C    C    IR  
+      rotated profile: C    IR   C    C   
+      semantics: takes C-axis input; creates new D-axis entity
+
+  • V₄-twin of 'workspace_driven_state' under γ:
+      source profile:  C    C    C    IR  
+      rotated profile: IR   C    C    C   
+      semantics: takes D-axis input; creates new C-axis entity
+
+
+============================================================================
+  STRUCTURALLY BARRED ROTATIONS — V₄ symmetry the architecture forbids
+============================================================================
+
+  Found 8 barred rotations.
+
+  Aggregated by capability violation:
+
+    D cannot M: blocks 4 rotation(s)
+      - workspace_free/γ
+      - store/γ
+      - compute_marker/γ
+      - workspace_marker/γ
+
+    S cannot M: blocks 4 rotation(s)
+      - workspace_free/α
+      - store/α
+      - compute_marker/α
+      - workspace_marker/α
+
+  Root cause: axis-capability asymmetry.
+    D and S lack M (mutate). C and W have M.
+    Without M on D and S, V₄-rotations that map M onto them are barred.
