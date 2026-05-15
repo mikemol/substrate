@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+"""Populate the cocycles table in cotype_decomposition.sqlite.
+
+Mirror of catalog/cocycles.md. Each row corresponds to one cocycle
+record in the markdown source; the markdown remains authoritative,
+this script makes the data queryable.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sqlite3
+from pathlib import Path
+
+
+COCYCLES = [
+    {
+        "slug": "cy-1-representation",
+        "name": "Representation cocycle",
+        "layer": "Level 2 — rule references",
+        "base": "rule representations {integer-as-path, function-as-path, "
+                "trace-as-path, polynomial-as-path}",
+        "gauge_group": "transform morphisms (S7)",
+        "cohomology_classes": "one class per abstract rule",
+        "gauge_invariant": "abstract rule identity",
+        "introducing_move": "M2",
+        "witness_evidence": "../scratch/chart.py:214-226 (operationally empty bridge)",
+        "status": "empty-bridge rigidification",
+        "notes": "Only integer-as-path operationally realised. M2 named "
+                 "four representations as first-class via S7; transform "
+                 "raises NotImplementedError for non-identity. Type-D "
+                 "empty-bridge sub-variant. Recovery: implement at least "
+                 "trace-as-path.",
+    },
+    {
+        "slug": "cy-2-k-rule-variables",
+        "name": "K-rule variable cocycle",
+        "layer": "Level 4 — K-rule variable assignments",
+        "base": "assignment space V × V (2-variable K-rules)",
+        "gauge_group": "S_n by variable renaming",
+        "cohomology_classes": "{off-diagonal (vx≠vy), diagonal (v,v)}",
+        "gauge_invariant": "partition refinement on slot indices",
+        "introducing_move": "M17",
+        "witness_evidence": "../scratch/search_k_variants.py; "
+                            "cotype-free-self-extending-grammar.md:1339-1410",
+        "status": "shown",
+        "notes": "M17 explicitly: 'M8's cocycle structure becomes directly "
+                 "observable: Orbits are the cohomology classes; entries "
+                 "within an orbit are connected by gauge transformations.'",
+    },
+    {
+        "slug": "cy-3-wht-quotient",
+        "name": "WHT quotient cocycle",
+        "layer": "Level 5 — Walsh-Hadamard codewords",
+        "base": "WHT codeword space (length 2^m at level m)",
+        "gauge_group": "parity-basin equivalence",
+        "cohomology_classes": "parity-basin equivalence classes",
+        "gauge_invariant": "Walsh-row index (axis-signature ↔ Walsh row)",
+        "introducing_move": "M22 (first triplet)",
+        "witness_evidence": "../scratch/walsh_hadamard_readings.py; "
+                            "../scratch/walsh_hadamard_core.py; "
+                            "cotype-free-self-extending-grammar.md:1752-1873",
+        "status": "shown",
+        "notes": "WH projection is the cocycle projection in WH-character "
+                 "vocabulary. Also realises M2's associahedron polytope "
+                 "of representations.",
+    },
+    {
+        "slug": "cy-4-f23-puncturing",
+        "name": "F_2³ puncturing gauge cocycle",
+        "layer": "Level 6 — 8 puncturings of RM(1,3)",
+        "base": "8 coordinate puncturings as an F_2³ torsor",
+        "gauge_group": "F_2³ translation (3-bit XOR)",
+        "cohomology_classes": "single orbit (the WHT core)",
+        "gauge_invariant": "the WHT core itself",
+        "introducing_move": "M22 (second triplet, M22-bis)",
+        "witness_evidence": "../scratch/walsh_hadamard_core.py; "
+                            "cotype-free-self-extending-grammar.md:2221-2331",
+        "status": "shown",
+        "notes": "S (state axis) is the gauge-invariant pivot of the "
+                 "8-frame rotation (M23-bis); the other three (D, C, W) "
+                 "rotate under F_2³.",
+    },
+    {
+        "slug": "cy-5-v4-signature",
+        "name": "V_4 signature cocycle",
+        "layer": "Level 9 — directed witnessed-pair signatures",
+        "base": "24 valid (source, sink, witness) signatures on DCSW",
+        "gauge_group": "V_4 axis swaps {e, (DC)(SW), (DS)(CW), (DW)(CS)}",
+        "cohomology_classes": "6 orbits indexed by (pairing, chirality) ∈ "
+                              "{α,β,γ} × {even, odd}, 4 elements each",
+        "gauge_invariant": "orbit_key = (pairing, chirality)",
+        "introducing_move": "M41 v16 (formalised v19)",
+        "witness_evidence": "../applied_grammar.py:861-956 "
+                            "(decompose_signature/recompose_signature); "
+                            "verify_signature_decomposition_bijection",
+        "status": "shown; rigidified-by-lex-min (Type-D verifier-contract)",
+        "notes": "Math admits any V_4 translate as canonical; "
+                 "implementation rigidified lex-min via content-addressing "
+                 "of v4_delta. Recovery: receipts content-address by "
+                 "orbit_key only.",
+    },
+]
+
+
+GROUP_QUOTIENTS = [
+    {
+        "slug": "q-z2-chirality",
+        "name": "Z_2 chirality (S_4/A_4)",
+        "layer": "Level 7 — directed witnessed pairs",
+        "base": "24 valid signatures",
+        "gauge_group": "Z_2 = S_4/A_4 via inverse-swap (source↔sink)",
+        "cohomology_classes": "12 inverse-pair classes",
+        "gauge_invariant": "(pair, witness) with chirality as fiber coordinate",
+        "introducing_move": "M34",
+        "witness_evidence": "../scratch/chirality_as_parity.py; "
+                            "../scratch/directed_witnessed_pairs.py",
+        "status": "shown; label-only rigidification (sign=0→even is one of "
+                  "two valid conventions)",
+        "notes": "Strictly a Z_2 quotient action, not a cocycle in the "
+                 "M8 sense. Sign homomorphism S_4→Z_2 is canonical; only "
+                 "the integer encoding and even/odd labels are "
+                 "conventional.",
+    },
+    {
+        "slug": "q-z3-3cycle",
+        "name": "Z_3 = A_4/V_4 (3-cycle quotient)",
+        "layer": "Level 7 — 4-axis chained operations",
+        "base": "operations within a V_4 orbit (after V_4 quotient)",
+        "gauge_group": "Z_3 generator",
+        "cohomology_classes": "3-element orbits under Z_3",
+        "gauge_invariant": "V_4 orbit class (already quotiented)",
+        "introducing_move": "M37",
+        "witness_evidence": "../scratch/chart_chained.py; "
+                            "../scratch/verify_chained.py",
+        "status": "shown",
+        "notes": "Z_3 is the 4-axis chaining generator. Combined with V_4 "
+                 "this yields A_4 = V_4 ⋊ Z_3.",
+    },
+    {
+        "slug": "q-a4z2-architectural",
+        "name": "A_4 × Z_2 architectural symmetry",
+        "layer": "Level 8 — full architectural automorphism group",
+        "base": "the 24 architectural operations",
+        "gauge_group": "A_4 × Z_2 (closure of admissible generators)",
+        "cohomology_classes": "single orbit (transitive action on 24 ops)",
+        "gauge_invariant": "the 24-op operation set itself",
+        "introducing_move": "M40 (v3-v6)",
+        "witness_evidence": "../scratch/spectral_view.py "
+                            "(verify_m40_group_is_a4z2_not_s4); "
+                            "../scratch/verify_spectral.py (98/98 tests)",
+        "status": "shown",
+        "notes": "Order 24, distinct from S_4 by center order "
+                 "(|Z(A_4×Z_2)|=2 vs |Z(S_4)|=1) and order distribution. "
+                 "Adding any S_3 transposition extends to S_4 × Z_2 of "
+                 "order 48.",
+    },
+]
+
+
+def ensure_schema(conn: sqlite3.Connection) -> None:
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS cocycles (
+            cocycle_id          INTEGER PRIMARY KEY,
+            slug                TEXT NOT NULL UNIQUE,
+            name                TEXT NOT NULL,
+            kind                TEXT NOT NULL,        -- 'cocycle' | 'quotient'
+            layer               TEXT NOT NULL,
+            base                TEXT NOT NULL,
+            gauge_group         TEXT NOT NULL,
+            cohomology_classes  TEXT NOT NULL,
+            gauge_invariant     TEXT NOT NULL,
+            introducing_move    TEXT NOT NULL,
+            witness_evidence    TEXT NOT NULL,
+            status              TEXT NOT NULL,
+            notes               TEXT,
+            generated_at_utc    TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_cocycles_kind ON cocycles(kind);
+        CREATE INDEX IF NOT EXISTS idx_cocycles_move ON cocycles(introducing_move);
+    """)
+
+
+def populate(conn: sqlite3.Connection) -> None:
+    conn.execute("DELETE FROM cocycles")
+    for r in COCYCLES:
+        conn.execute("""
+            INSERT INTO cocycles (slug, name, kind, layer, base, gauge_group,
+                                  cohomology_classes, gauge_invariant,
+                                  introducing_move, witness_evidence, status, notes)
+            VALUES (?, ?, 'cocycle', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (r["slug"], r["name"], r["layer"], r["base"], r["gauge_group"],
+              r["cohomology_classes"], r["gauge_invariant"],
+              r["introducing_move"], r["witness_evidence"], r["status"], r["notes"]))
+    for r in GROUP_QUOTIENTS:
+        conn.execute("""
+            INSERT INTO cocycles (slug, name, kind, layer, base, gauge_group,
+                                  cohomology_classes, gauge_invariant,
+                                  introducing_move, witness_evidence, status, notes)
+            VALUES (?, ?, 'quotient', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (r["slug"], r["name"], r["layer"], r["base"], r["gauge_group"],
+              r["cohomology_classes"], r["gauge_invariant"],
+              r["introducing_move"], r["witness_evidence"], r["status"], r["notes"]))
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--db", default="decomposition/cotype_decomposition.sqlite")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    db_path = Path(args.db).resolve()
+    with sqlite3.connect(db_path) as conn:
+        ensure_schema(conn)
+        populate(conn)
+        conn.commit()
+        counts = conn.execute("""
+            SELECT kind, COUNT(*) FROM cocycles GROUP BY kind ORDER BY kind
+        """).fetchall()
+    print(f"db: {db_path}")
+    for kind, n in counts:
+        print(f"  {kind}: {n}")
+
+
+if __name__ == "__main__":
+    main()

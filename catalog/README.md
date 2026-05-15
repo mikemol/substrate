@@ -29,6 +29,20 @@ between LLM sessions.
   quote, and a behavioural classification (summary-collapse,
   user-framing operational-drift, silent naturalisation,
   acknowledged-then-abandoned).
+- [cocycles.md](cocycles.md) — normalised catalog of the 5 cocycles
+  plus 3 group quotients the corpus surfaces. Each record carries
+  (layer, base, gauge group, cohomology classes, gauge-invariant,
+  witness). Mirrored to the `cocycles` table in
+  cotype_decomposition.sqlite via
+  [../decomposition/populate_cocycles.py](../decomposition/populate_cocycles.py).
+- [idea_lattice.md](idea_lattice.md) — Hasse-style structural
+  ordering of the ~40 concepts across 9 levels (L0 framing → L9
+  M41 verification). Each concept tagged `[invariant]` or `[gauge]`;
+  the separation is the recovery rule for Type-D rigidifications.
+- [clarified_foundation.md](clarified_foundation.md) — minimum
+  constructive base for a reconstruction. Axioms, theorems, and
+  gauge degrees of freedom across the 9 levels, plus 10 discipline
+  rules that prevent re-introducing the catalogued drift.
 
 ## Schema
 

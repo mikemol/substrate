@@ -77,6 +77,20 @@ Conversation interpretation materialises:
 …and writes [conversation_retrospective.md](conversation_retrospective.md).
 The decoded transcript is at [conversation_transcript.md](conversation_transcript.md).
 
+## Cocycle mirror
+
+The catalog's [cocycles.md](../catalog/cocycles.md) is mirrored to a
+`cocycles` table in the SQLite by:
+
+```bash
+.venv/bin/python decomposition/populate_cocycles.py
+```
+
+Records the 5 cocycles + 3 group quotients with normalised columns
+(layer, base, gauge_group, cohomology_classes, gauge_invariant,
+witness, status). Markdown remains authoritative; this script makes
+the data queryable.
+
 ## Example queries
 
 Count sections and triples:
