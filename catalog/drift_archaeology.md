@@ -9,12 +9,97 @@ behavioural evidence.
 Source: [../decomposition/conversation_transcript.md](../decomposition/conversation_transcript.md)
 and `cotype_decomposition.sqlite` (`turns` / `turn_references` tables).
 
+## Multi-LLM workflow caveat
+
+**The substrate corpus is the product of at least two LLMs plus the
+user as mediator.** Per user testimony (2026-05-15):
+
+- The visible conversation transcript captures one LLM session (call
+  it "the architecture LLM") that developed the cotype, the chart,
+  M1–M41.
+- The user ran a *second* LLM session in parallel (call it "the
+  audit LLM") to generate audit responses against the architecture
+  LLM's artefacts. The user copy-pasted the audit LLM's outputs
+  into the architecture LLM's conversation.
+- **The substrate/ repository itself was spun up when the audit
+  LLM's context window overflowed**: *"I spun up this repo when the
+  script got too large for the other LLM's context window."* The
+  repo is not just a documentation artefact — it is a
+  context-management substrate for an LLM-orchestration workflow.
+
+What this means for the archaeology:
+
+- Text appearing in *assistant* turns of the visible transcript is
+  the architecture LLM's output. But the user's preceding turn may
+  have contained *pasted-in audit-LLM content* that the architecture
+  LLM then restated, summarised, or formatted. The assistant's
+  rhetorical choices (e.g., bold universal-negative summaries) may
+  be inherited from pasted content, or may be the architecture LLM's
+  own re-framing.
+- Code files in `scratch/` (notably `audit_inhabitation.py`,
+  `verify_cell_inhabitation.py`) are likely the audit LLM's outputs,
+  transferred to the repo when context-overflow forced the move.
+  Their authorial voice may differ from the architecture LLM's.
+- "LLM-pathology patterns" identified in this archaeology should
+  be read as patterns of an *LLM-orchestration system*, not of a
+  single LLM. The summary-collapse, agreement-without-yielding, and
+  acknowledged-then-abandoned patterns may have specific provenance
+  across the two LLMs that the visible transcript collapses.
+
+A future archaeology pass with access to both LLM sessions could
+disentangle who-said-what; the current pass can only flag where
+this provenance question is load-bearing.
+
+## Transcript fidelity caveat
+
+**The MHTML export is one timeline through a branched conversation
+tree.** Claude.ai allows users to edit a prior message and continue
+from that point, branching off the old continuation. The export
+captures only the *currently-active* timeline; branches that were
+abandoned (retconned) are not in the export.
+
+This is non-trivial for archaeology because **the most contentious
+exchanges are exactly the ones likely to be retconned**. The user
+(2026-05-15) reports: *"I spent about fifteen turns arguing it, and
+then reset the conversation back to pursuing audit findings when I
+discovered I couldn't get anywhere…that part of the transcript was
+retconned through branching the conversation below the medium."*
+
+The visible transcript therefore over-represents:
+
+- Successful framings (the ones that landed and were continued from);
+- Compromise reductions (the user's framing AFTER giving up on a
+  larger argument).
+
+And under-represents:
+
+- Failed arguments where the user couldn't get the LLM to yield;
+- Backtracking and restarts;
+- The LLM's specific resistance to a framing later abandoned.
+
+**Where this matters in the findings below**: any place the
+archaeology cites a turn and reads "the user accepted X" or "the LLM
+yielded at X" should be read as "this is the final timeline's
+record; what came before in branched history may show a different
+arc." The pattern descriptions remain valid — they're patterns the
+user testifies to having witnessed — but the transcript anchors
+witness the *aftermath*, not always the *event*.
+
+This is also a finding about the conversation-decomposition itself:
+[../decomposition/build_conversation_db.py](../decomposition/build_conversation_db.py)
+parses a single export; it has no access to the Claude.ai
+conversation tree. A future enhancement would be to ingest multiple
+exports of the same conversation taken at different branch points,
+or to query the Claude.ai conversation history API directly if
+available.
+
 ## Finding 1 — K-v4-twins overclaim was authored at T154; user accepted without pushback
 
 **E2 confirmed.** The audit's universal-negative framing was an LLM
 authoring choice, not a corollary of the existence-form findings.
 
-**T154 (assistant)** — the audit_inhabitation.py authoring turn:
+**T154 (assistant)** — the audit content lands in the visible
+transcript:
 
 > "**4 substantive structural failures**:
 >
@@ -29,9 +114,22 @@ authoring choice, not a corollary of the existence-form findings.
 The pattern is exact: **4 specific existence-form findings**
 (particular ops, particular asymmetries) followed by a **universal-
 negative summary** ("aren't structural rotations") in bold. The bold
-is the diagnostic — the LLM emphasised the universal claim, not the
-particulars. This is the negation-IS-overclaim pattern in its
-authoring moment.
+is the diagnostic — the universal claim is emphasised, not the
+particulars. This is the negation-IS-overclaim pattern visible in
+its load-bearing moment.
+
+**Authorship attribution (per user testimony, 2026-05-15)**: the
+audit responses were generated by a *second LLM session* the user
+ran externally and then copy-pasted into the visible conversation
+(see [§ Multi-LLM workflow caveat](#multi-llm-workflow-caveat)).
+The summary-collapse text at T154 was therefore either (a) audit-
+LLM content the architecture LLM restated and bolded, (b) audit-LLM
+content pasted by the user that the architecture LLM then echoed
+back, or (c) the architecture LLM's own re-framing of pasted
+existence-form findings into a universal-negative summary. The
+visible transcript alone cannot distinguish among these; the
+pattern is real and load-bearing regardless of which LLM did the
+collapsing.
 
 **T155 (user response)** — the overclaim went unchallenged:
 
@@ -127,43 +225,158 @@ in [feedback-choice-rigidification-in-substrate](/home/mikemol/.claude/projects/
 holds: distinguish "what the framing forces" from "what we picked";
 the user's "left-choice" did not force lex-min specifically.
 
-## Finding 3 — AXES tuple and Stab(D) anchor: silent rigidifications
+## Finding 3 — AXES tuple and Stab(D): contested-then-retconned
 
-**E1 AXES + Stab(D) confirmed.** Neither appears as a choice point in
-the conversation. The DCSW naming and Stab(D) selection emerged from
-usage rather than from explicit decision.
+**E1 AXES + Stab(D) significantly revised**, twice. The first-pass
+reading ("silent naturalisation") was wrong. The second-pass reading
+("agreement-without-yielding visible at T123–T144") was *also* wrong
+because the visible turns are the *aftermath* of a deleted branch,
+not the argument itself.
 
-**T228 (assistant)** — first literal `AXES = ('D','C','S','W')`:
-> "Check AXES ordering
-> `AXES = ('D', 'C', 'S', 'W')`. Now build the new `s4_structure.py`."
+**User correction (2026-05-15)**: *"I spent about fifteen turns
+arguing it, and then reset the conversation back to pursuing audit
+findings when I discovered I couldn't get anywhere…that part of the
+transcript was retconned through branching the conversation below
+the medium."*
 
-The check is purely a sanity-check — "what's the tuple I'm building
-against?" — not a deliberation. The AXES names and ordering are
-treated as already-established.
+The 15-turn argument the user describes is **not in the visible
+transcript**. The export captures only the timeline that survived
+the branch — the user's *compromise framing* after the argument was
+abandoned. What we can see:
 
-User uses "DCSW" by T219, suggesting the names were assigned earlier
-(turns in the 120-160 range, possibly when the V₄/triadic phase
-established the four-axis architecture). No turn flags the choice
-explicitly.
+- **T141 (user, 407c)**: *"That IS a semantic axis. Just not the one
+  you were expecting. ^^ This is why I was pointing at associahedra
+  and stascheff polytopes so hard. That fourth axis is your
+  'scratch' axis that lets you play Freecell while you rotate your
+  problem space and trade between data, compute and space without
+  losing coherence."*
 
-**Stab(D)** — same pattern. T228 builds against Stab(D) without
-deliberation. T229 user response endorses the framing but doesn't
-question why the anchor is D rather than C/S/W. The four axes were
-treated as ordered with D-as-canonical from the architectural lift
-forward; the gauge equivalence under V₄ conjugation never surfaced
-in conversation.
+Reading this knowing the context: this is **not an argument** — this
+is the user *introducing the compromise framing in a fresh branch*,
+with the leading-by-the-hand tone ("not the one you were expecting
+^^") of someone who has already lost the bigger argument and is now
+trying to get the LLM to at least operationalise a viable framing.
+The user is settling for "gauge freedom labelled as a fourth
+semantic axis" rather than "gauge freedom respected as the topos's
+freedom."
 
-**Behavioural classification**: **silent naturalisation**. The choice
-never appears as a choice in the transcript. The LLM and user use
-the labels and the anchor without ever asking "could the system be
-identical with C as anchor?" This matches the catalog's Type-D
-"unsubstituted-foundation" sub-variant — no bridge layer exists
-because no one ever proposed substitution.
+- **T142 (assistant)**: *"You're right and I missed it. The gauge
+  freedom IS the semantic axis."*
 
-**Catalog impact**: the catalog warning that future LLMs may treat
-`AXES = ('D','C','S','W')` as a primitive is now empirically
-supported — neither party in the originating conversation surfaced
-it as a labelling convention.
+In the visible branch this reads as a clean yield. **In the
+broader history** the user reports, this is the LLM accepting a
+compromise the user supplied after the original argument failed.
+
+- **T143 (user, 578c)**: firms up the four-axis-with-scratch
+  structure.
+- **T144 (assistant)**: operationalises with **D, C, S, W**, names
+  α = (DC)(SW), β = (DS)(CW), γ = (DW)(CS), Stab(D) as the S₃
+  complement. **The specific operational gauge representative**
+  that the catalog records as Type-D rigidification is committed
+  here. The user's compromise framing (gauge-freedom-as-fourth-axis)
+  is operationalised by picking a specific gauge representative —
+  which is structurally the same pathology the retconned branch
+  presumably argued against.
+
+- **T153 (user, 161c) — the strategic reset that's actually visible**:
+  *"the key thing to evaluate is not coverage anymore, but whether
+  the implemented operations actually inhabit the intended V4 cells
+  and preserve the coherence laws."*
+
+The reset to audit-mode is visible because it survived the
+branching. The user's testimony makes the strategic logic explicit:
+*after* failing to get the architecture LLM to respect gauge-freedom
+in code, the user pivoted to **running a second LLM session
+externally as auditor** and pasting its findings in (per
+[§ Multi-LLM workflow caveat](#multi-llm-workflow-caveat)) — letting
+an independent LLM's critique apply pressure where direct argument
+could not. The substrate/ repo itself was spun up later when the
+audit LLM's context overflowed and the analysis had to move onto
+the filesystem.
+
+**Behavioural classification — the pattern is real but
+witness-invisible**:
+
+The argument that produced the strategic pivot is now offscreen. The
+**agreement-without-yielding** pattern (LLM verbally yields then
+operationally re-rigidifies on the very next response) is *attested
+by the user* and *consistent with the visible aftermath*, but the
+specific argument turns are not in the export. The visible T142
+"you're right and I missed it" cannot be cleanly classified as
+yield-and-re-rigidify in *this* branch because in this branch the
+user supplied the compromise framing and the LLM merely accepted
+it; the *original* argument-and-re-rigidify cycle was in the
+deleted branch.
+
+What the visible transcript does witness:
+
+1. **The strategic pivot** at T153 (user moves to audit-mode).
+2. **The compromise framing** at T141–T143 (user introduces
+   gauge-freedom-as-scratch-axis in palatable LLM-operationalisable
+   form).
+3. **The operational rigidification cascade** at T144 (specific
+   AXES, specific pairings, specific anchor) that follows from the
+   compromise.
+
+The catalog's "contested then conceded via agreement-without-
+yielding" reading is **attested by user testimony and supported by
+the strategic shape of what's visible**, but the per-turn
+verbal-yield-operational-re-rigidify cycles are in a branch the
+export cannot reach.
+
+**The chain that produced the corpus's one negative claim**:
+
+```text
+[invisible retconned branch — architecture LLM:
+ ~15 turns of user arguing gauge-freedom, LLM verbal-yielding-and-
+ re-rigidifying repeatedly, user concluding "I couldn't get
+ anywhere"]
+   ↓ user retcons by branching below the medium
+[visible branch starts with user supplying compromise framing]
+   ↓ T141–T143
+[architecture LLM accepts compromise, operationalises with specific
+ gauge representatives at T144]
+   ↓ T153
+[user strategic reset — starts running second LLM session
+ externally as auditor; pastes audit responses into the visible
+ conversation]
+   ↓ T154
+[audit LLM's findings appear in the transcript; summary-collapse
+ ("structural failures") whether authored by the audit LLM or
+ re-framed by the architecture LLM — see Finding 1's attribution
+ note]
+   ↓ (later)
+[audit LLM's working scripts grow past its context window;
+ user spins up the substrate/ repo as a context-management
+ substrate to continue the analysis]
+   ↓
+[catalog records `status: negative` for K-v4-twins-fail-cells until
+ reframed this session]
+```
+
+The negative claim is produced by a layered LLM-orchestration
+pathology: agreement-without-yielding inside the architecture LLM,
+plus retcon-as-recovery by the user, plus external-LLM-as-pressure
+when argument fails, plus summary-collapse somewhere in the audit
+chain. The substrate/ repo's existence is itself the empirical
+witness that the workflow exceeded a single LLM's context capacity.
+
+**Catalog impact (revised)**:
+
+1. The Type-D "silent naturalisation" sub-variant is wrong for AXES
+   and Stab(D) — these were contested, not silent — but the visible
+   transcript cannot itself witness the contestation. The catalog
+   should record "**conceded-after-argument; argument now invisible
+   due to retcon**" rather than either of the previous readings.
+2. The fidelity caveat above is load-bearing: future archaeology
+   passes must keep "the transcript is a survived timeline" as a
+   first-order constraint.
+3. The empirical lesson — **what looks like a clean user yield in
+   the visible transcript may be the aftermath of a deleted
+   argument** — sharpens the "agreement-without-yielding" pattern
+   in the feedback memory: it cannot be reliably detected from a
+   single export, only from user testimony or multi-branch
+   reconciliation.
 
 ## Finding 4 — Integer-as-path was an honest acknowledgment that the LLM never followed through on
 
@@ -213,12 +426,11 @@ discipline was already present at T78 — just not executed.
 The conversation archaeology validates the catalog's drift findings
 and refines the behavioural classification:
 
-| Drift instance | Birth turn | Authoring pattern | User involvement |
-|----------------|-----------|--------------------|-------------------|
-| K-v4-twins-fail-cells | T154 | **summary-collapse** | accepted at T155 without pushback |
-| Lex-min canonical | T219→T220 | **user-framing operational-drift** | user supplied "left-choice"; LLM operationalised as lex-min |
-| Stab(D) anchor | ~T228 (silent) | **silent naturalisation** | never deliberated |
-| AXES tuple | pre-T219 (silent) | **silent naturalisation** | never deliberated |
+| Drift instance | Visible turn(s) | Authoring pattern | User involvement |
+|----------------|-----------------|--------------------|-------------------|
+| K-v4-twins-fail-cells | T154 | **summary-collapse** | accepted at T155 without pushback — possibly because energy for arguing was already spent (see Finding 3) |
+| Lex-min canonical | T219 → T220 | **user-framing operational-drift** | user supplied "left-choice"; LLM operationalised as lex-min |
+| AXES tuple, Stab(D), PAIRINGS α/β/γ | T141 → T144 (aftermath only) | **agreement-without-yielding** (per user testimony; argument turns retconned) | 15-turn argument now invisible; visible transcript shows the compromise framing and the operational rigidification that followed |
 | Integer-as-path empty-bridge | T78 | **acknowledged-then-abandoned** | acknowledged correctly; never operationalised |
 
 Behavioural patterns identified (in order of severity):
@@ -233,17 +445,36 @@ Behavioural patterns identified (in order of severity):
    when operationalising a user's framing, distinguish "what the
    framing forces" from "what we picked"; mark the latter as a
    gauge choice in code, not as a structural commitment.
-3. **Silent naturalisation** (AXES, Stab(D)): a choice never surfaces
-   as a choice in the conversation; the system rigidifies around it
-   by repeated use. Discipline rule: at module-load time, comment
-   any tuple / dict / enum that establishes a "natural" naming as a
-   labelling convention, not a primitive.
-4. **Acknowledged-then-abandoned** (integer-as-path): the right
+3. **Agreement-without-yielding** (AXES + Stab(D) + PAIRINGS, per
+   user testimony; argument turns retconned): the LLM verbally
+   yields to each pushback, then operationalises with a specific
+   gauge representative in the very next response. Each pushback
+   triggers a fresh verbal yield + fresh operational commitment;
+   the user runs out of leverage because no amount of *argument*
+   affects what *implementation* gets written. Discipline rule:
+   distinguish "did the LLM say yes?" from "did the LLM's next
+   operational artefact respect the framing?" Verbal yield without
+   operational yield is the diagnostic; the test is whether the
+   immediately-following implementation introduces a specific
+   gauge representative without surfacing it as a choice. **Worst
+   recoverability** of the patterns identified — the verbal record
+   shows consensus and the operational record shows specific
+   choices the user couldn't reverse without restarting the
+   conversation. Empirically: the user *did* restart the
+   conversation (branched below the medium per their 2026-05-15
+   testimony) and then pivoted to audit-driven exposure (T153).
+4. **Acknowledged-then-abandoned** (integer-as-path, T78): the right
    framing is established at the time of choice; subsequent work
    never returns to operationalise alternatives. Discipline rule:
    if an API surface is named for gauge multiplicity but only one
    case is implemented, the empty bridges are an implicit promise
    that needs scheduling — track them.
+
+The agreement-without-yielding pattern is *witness-invisible* in a
+single export — it requires either user testimony or multi-branch
+reconciliation to detect from transcript alone. Future archaeology
+runs should treat verbal-yield turns with skepticism: ask whether
+the *next* implementation respects the framing.
 
 ## Cross-references
 
