@@ -169,6 +169,440 @@ Witness      : [../applied_grammar.py:861-956](../applied_grammar.py)
   the 32-element raw codeword space. See `C-hodge-star-dim4` in
   [concepts.md](concepts.md).
 
+## CY-6 — parse-derivation cocycle (grammar / SPPF / parsing)
+
+```text
+Layer        : grammars, parses, and the syntactic surface
+Base         : derivations of input strings under a grammar
+Gauge group  : parse-tree equivalence — multiple derivations of the
+               same input span are gauge-equivalent
+Classes      : packed nodes in the SPPF (Shared Packed Parse Forest)
+               — each class is a span with all its alternative
+               derivations grouped
+Invariant    : the language-reading of the input (the meaning, modulo
+               which derivation produced it)
+Witness      : the founding SPPF design discussion in the original
+               conversation (the MHTML's title is literally
+               "Numpy-backed SPPF datastructure design");
+               S6 `parse(grammar, input) → k` as the operation
+               returning the gauge-invariant rule reference
+```
+
+- **Introducing move**: pre-M1 (the SPPF design is what motivated
+  the chart structure at all). M1's S6 `parse` is the operation
+  that yields the gauge-invariant content; the SPPF gauge is what
+  `parse`'s return value silently quotients out.
+- **Cohomology vocabulary**: in parsing theory, the packed-node
+  structure of an SPPF IS the cohomology of derivation-equivalence
+  on parse trees. Two derivations of the same span are in the same
+  packed node iff they produce equivalent abstract structure;
+  packed nodes are equivalence classes.
+- **Operational status**: **the founding cocycle that the project
+  silently bypassed.** S6 `parse` returns ONE rule reference;
+  ambiguity is not surfaced. The chart's hash-cons-respecting
+  parser collapses gauge-equivalent derivations silently. This is
+  a *deliberate flattening* (the chart structure depends on it),
+  but should be recorded as a gauge-equivalence the chart
+  operationalises. The 'one rule reference' return is the choice
+  of canonical derivation; alternatives are not surfaced.
+- **Type-D status**: **silent-quotienting rigidification** — a new
+  sub-variant. The cocycle is realised (alternative derivations
+  ARE equivalent for the chart's purposes), but the gauge-invariant
+  rule reference is the only thing the system can observe;
+  alternative derivations are not first-class. Compare to CY-1
+  (empty-bridge): CY-1 has the alternatives named but not
+  implemented; CY-6 has the equivalence operationalised but the
+  alternatives unnamed.
+- **Reconstruction implication**: a clarified rewrite could expose
+  the SPPF gauge explicitly — `parse(grammar, input) →
+  PackedNode` rather than `→ Rule` — and let the chart's
+  hash-cons reduce to the canonical derivation as an explicit step.
+  This would be a substantive enrichment over the current
+  silent-quotient.
+
+## CY-7 — combinator-reduction cocycle (SKI / λ)
+
+```text
+Layer        : computational semantics
+Base         : λ-terms (or their combinator-encoded equivalents)
+Gauge group  : β-η equivalence (with α-renaming as a sub-gauge);
+               combinator-basis transformations (SK ↔ SKI ↔ BCKW
+               ↔ λ-calculus proper) as a meta-gauge
+Classes      : β-η equivalence classes (denotations / "real"
+               functions)
+Invariant    : the semantic function (the meaning of the term,
+               independent of reduction path or basis encoding)
+Witness      : M1 S5 `apply` (single-step reduction); M3's S/K/I
+               designated as specific cons-trees in chart.py:40-46;
+               M11 meta-circular interpreter operating on
+               combinator terms
+```
+
+- **Introducing move**: M1 S5 (apply as the operational ground);
+  M3 (S/K/I commitment); M11 (meta-circular interpreter).
+- **Cohomology vocabulary**: β-equivalence is the canonical gauge
+  on λ-terms; reduction paths through normal-form computation are
+  cohomology cycles (the cocycle records that all paths yield the
+  same normal form). The Church-Rosser theorem is the assertion
+  that this cohomology is well-defined.
+- **Operational status**: **shown but heavily rigidified**.
+  - Reduction-path equivalence is implicit in CBNeed apply (single-
+    step yields normal form regardless of evaluation order on
+    terminating computations).
+  - **Basis choice rigidified at M3**: `self.S = self.cons(3,3),
+    self.K = self.cons(3,0), self.I = self.cons(0,3)`. The math
+    admits many combinator bases (SK alone is Turing-complete);
+    SKI is one of several valid choices. The integer indices are
+    a per-instance rigidification (see Type-D per-instance
+    sub-variant). The *combinator-basis* choice itself (SKI vs
+    SK vs BCKW vs raw λ) is a Type-D unsubstituted-foundation
+    sub-variant — the corpus never proposes an alternative basis.
+- **Type-D status**: nested — per-instance (specific integer
+  indices) plus unsubstituted-foundation (combinator-basis choice).
+- **Reconstruction implication**: parametrise the combinator basis
+  as a constructor argument. The chart should accept any complete
+  combinator basis and operationalise it; SKI is one convention.
+
+## SP-1 — metacircular fixed point (not a cocycle)
+
+```text
+Categorical kind : fixed point / terminal coalgebra, not a gauge
+                   quotient — the canonical name is the
+                   *metacircular fixpoint*
+Layer            : meta-circular substrate
+Base             : metacircular interpreter implementations
+Generator        : "this grammar can describe itself" — apply on
+                   the parser rule applied to grammar text
+Fixed point      : the LFP (least fixed point) of the metacircular
+                   function — the smallest grammar that contains
+                   its own parser
+Witness          : M11 meta-circular fixpoint
+                   (C-meta-circular-fixpoint in concepts.md);
+                   K-self-extension-closes-L5;
+                   apply(parser-rule, grammar-text) as the
+                   fixed-point operator
+```
+
+- **Why this is NOT a cocycle**: a cocycle structure has a gauge
+  group acting on a base, producing equivalence classes.
+  Metacircularity has no gauge — the LFP is a *unique terminal
+  object* in the appropriate category, not a quotient of
+  alternatives. Listed here because the user asked about
+  self-hosting and because metacircularity is the structural
+  pattern that *unifies* the cocycle tower (see § Metacircularity:
+  storage ≡ grammar ≡ ISA above).
+- **Interaction with cocycles**: SP-1's metacircular fixed point is
+  *gauge-invariant content* across multiple cocycles — it survives
+  all the gauge equivalences of CY-1 (representation), CY-7
+  (combinator basis), CY-6 (parse derivation), and CY-8 (substrate).
+  Different gauge fixings of those cocycles yield bootstrap-
+  equivalent metacircular systems; the fixed point itself is what
+  they all converge to.
+- **Operational status**: shown (M11). No Type-D drift.
+- **Reconstruction implication**: the LFP existence is the
+  load-bearing claim of the entire project. A reconstruction
+  should preserve M11's identification of the metacircular
+  fixpoint as primary, and frame CY-1/CY-6/CY-7/CY-8 as gauge-
+  equivalences that all meet at SP-1.
+
+## CY-8 — substrate-implementation cocycle (micro-architecture)
+
+```text
+Layer        : operational substrate (where rules live)
+Base         : substrate implementations satisfying the realizability
+               charter (Morton-coded heap, sequential array,
+               content-addressed memory, SIMD-packed fat nodes,
+               etc.)
+Gauge group  : substrate-equivalence — any two substrates that
+               realise the same abstract chart semantics are
+               gauge-equivalent
+Classes      : implementations that satisfy the charter (every
+               distinction constructible → reachable → observable
+               → coverable in that substrate)
+Invariant    : the abstract chart semantics (the operational
+               commitment that survives substrate choice) AND
+               the categorical decomposition of operations into
+               (Compute, Data, State, Workspace) — the four
+               architectural categories every substrate must
+               provide
+Witness      : M2's integer-as-path / function-as-path /
+               trace-as-path / polynomial-as-path REPRESENTATIONS
+               framing; M5 chart-as-memoization; M23
+               Hamming-scaling-hardware (hardware acceleration
+               boundary); pre-M1 SIMD-packed fat-node discussion
+               in the founding conversation
+```
+
+**Origin of the four axes (per user clarification, 2026-05-15):**
+The CDSW axis-labels — **Compute, Data, State, Workspace** — come
+from this neighborhood. They are not group-theoretic labels chosen
+to fit S_4 / V_4; they are *substrate-architectural categories*
+naming what every operation engages with:
+
+- **C (Compute)**: the transformation being performed.
+- **D (Data)**: the input read.
+- **S (State)**: the history advanced.
+- **W (Workspace)**: the intermediate scratch.
+
+The V_4 / S_4 algebraic structure on these labels (NB-A's
+neighborhood, especially CY-5) is **downstream**: once the four
+axes exist as substrate categories, S_4 acts on them transitively,
+and the V_4 ⋊ S_3 decomposition follows. This is the natural
+direction of dependency.
+
+The catalog's earlier framing — treating AXES as a Level-6 gauge
+emerging from F_2³ puncturings — gets the dependency partially
+reversed. The substrate-architectural origin is *upstream* of the
+coding-theoretic identification; the four axes existed (at least as
+provisional categories) before the WHT/Hamming structure was named.
+The retconned 15-turn argument (see
+[drift_archaeology.md § Finding 3](drift_archaeology.md)) was, in
+part, the user trying to get the architecture LLM to honor this
+upstream/downstream ordering — to treat CDSW as substrate-given and
+the group structure as derived, rather than rigidifying ('D','C',
+'S','W') as a fixed tuple.
+
+- **Introducing move**: distributed — appears at multiple levels.
+  M2 names the representational substrate; M5 names hash-consing
+  as the memoization mechanism; M23 names the hardware/software
+  partition.
+- **Cohomology vocabulary**: substrate-implementation classes are
+  cohomologically equivalent iff they realise the same abstract
+  chart semantics. The morphisms between substrates (which take
+  one implementation to another while preserving semantics) are
+  the gauge transformations.
+- **Operational status**: closely related to CY-1 (representation
+  gauge). CY-1 is the *representation of rules*; CY-8 is the
+  *substrate that holds the chart*. They share a neighborhood (see
+  below) but operate at different granularities — CY-1's gauge is
+  on each rule's encoding; CY-8's gauge is on the chart structure
+  as a whole.
+- **Type-D status**: **partially rigidified**. The Morton-coded
+  heap-relative addressing is treated as the natural substrate
+  throughout the corpus; alternatives (function-as-path, polynomial-
+  as-path, etc.) are not implemented (this is the same
+  empty-bridge as CY-1, manifested at the substrate layer).
+- **Reconstruction implication**: substrate choice should be a
+  constructor argument to the chart kernel, not a module-load
+  commitment. The discipline rules in [clarified_foundation.md](clarified_foundation.md)
+  apply.
+
+## CY-9 — memoization cocycle
+
+```text
+Layer        : computation traces / reduction paths
+Base         : execution histories (sequences of operations
+               producing results)
+Gauge group  : result-equivalence — paths that compute the same
+               value are gauge-equivalent
+Classes      : equivalence classes of computations by result
+Invariant    : the result (the normal form, the cached value, the
+               fixed point at the end of reduction)
+Witness      : M5 chart-as-memoization; hash-consing as the
+               operational mechanism; M11's apply memoization
+```
+
+- **Introducing move**: M5 (chart-as-memoization recognition); M1
+  S2 (cons's hash-consing requirement).
+- **Cohomology vocabulary**: result-equivalence as the equivalence
+  relation; the cached result is the canonical representative of
+  its equivalence class.
+- **Operational status**: shown. Hash-consing operationalises the
+  cocycle at the term-algebra layer (CY-7's β-η equivalence is the
+  proof that all reduction paths reach the same normal form;
+  hash-consing is what *records* that fact so the second reduction
+  doesn't have to be re-done).
+- **Type-D status**: low. Memoization is well-behaved here because
+  the equivalence (result equality) is a clean structural fact;
+  the canonical (the cached value at the hash-cons reference) is
+  the only natural choice.
+- **Reconstruction implication**: memoization is what makes the
+  cocycle tower computationally tractable — without result-
+  equivalence collapsing, every gauge fixing would have to be
+  re-derived per access. The discipline of "content-address by
+  invariant only" (rule 5 in clarified_foundation.md) is what
+  preserves memoization correctness across gauge fixings.
+
+## Symmetry collapse (methodology, not a cocycle)
+
+**Symmetry collapse** is the operational *mechanism* that turns
+gauge equivalences into reusable canonical representatives. It is
+not a cocycle in its own right — it is the *implementation
+technology* that makes the cocycle tower run.
+
+The corpus uses several specific symmetry-collapse mechanisms:
+
+- **Hash-consing** (M1 S2 + S4): collapses structural equality
+  among cons-tree references. Operationalises CY-7 (β-η yields
+  identical normal forms, hash-cons identifies them) and CY-9
+  (result-equivalence collapses to single cached reference).
+- **Lex-min canonical selection** (M41 v16): collapses V_4 orbits
+  to a single canonical signature. Operationalises CY-5 but with
+  the Type-D rigidification noted — lex-min is one of many valid
+  collapse functions; the catalog records that distinction.
+- **Stab(D) canonical selection** (M41 v19): an *alternative*
+  collapse for CY-5. The v17↔v19 agreement theorem is the
+  *bridge between two collapse functions on the same cocycle*.
+- **Parity sieve** (M41 v16): collapses 32 raw codewords to the 24
+  valid (parity-passing). This is *not* a gauge collapse — it's a
+  filter that defines the cocycle's base.
+
+The methodological pattern: every cocycle in the catalog has at
+least one symmetry-collapse mechanism that turns its equivalence
+classes into accessible canonical content. The Type-D drift findings
+are exactly the cases where the collapse function got rigidified
+into a contract rather than acknowledged as one of several valid
+choices.
+
+**Reconstruction discipline**: symmetry-collapse functions should be
+*explicitly named* and *parametrisable*. A clarified foundation
+exposes the collapse as `canonical_in_orbit(orbit_key, *, method)`
+rather than `canonical_in_orbit(orbit_key)` with method fixed.
+
+## Metacircularity: storage ≡ grammar ≡ ISA
+
+**The corpus's central structural identification** (per user,
+2026-05-15): *"the SPPF structure serves as both the storage and as
+the grammar, the grammar is self-extending and is the compute ISA."*
+
+The **canonical term for what makes this three-way identity
+natural rather than incidental is *metacircularity***. The grammar
+describes its own parser; the parser operates on grammar text; the
+storage substrate IS the grammar's rule set. This is the classical
+metacircular-evaluator pattern (LISP's meta-circular evaluator,
+SICP Ch. 4, the Knot-tying construction in self-applicative
+λ-calculus) — already named in the catalog as
+`C-meta-circular-fixpoint` (M11) and as `K-self-extension-closes-L5`.
+
+The triple identification is what metacircularity *gives you*. In a
+non-metacircular system, storage / grammar / ISA are three distinct
+artefacts that need translation layers between them. In the
+substrate (and any metacircular system), they are **the same
+artefact viewed through three layers of the cocycle tower**:
+
+- **Storage layer** (NB-D substrate, CY-8): where rules live.
+- **Grammar layer** (NB-B content syntax, CY-6): the rule set
+  defining the language.
+- **Compute ISA layer** (NB-A internal architectural, CY-2 through
+  CY-5): the instruction set the architecture executes.
+
+Under metacircularity (SP-1 fixed point), these three layers
+**collapse to the same object**: the SPPF chart structure is
+simultaneously the storage substrate, the grammar that describes
+itself, and the instruction set that operates on grammar text.
+M11's meta-circular fixpoint is the operational witness — apply
+(parser-rule, grammar-text) is the operation that closes all three
+identifications at once.
+
+The triple identification + metacircularity are *together* what the
+substrate corpus's M1 charter actually commits to. The cotype's
+opening line — *"Construct the founding micro-operations for a free
+self-extending grammar that is its own meta-grammar via LFP,
+presents its grammar-image as a topos, and bootstraps a
+self-extending ISA"* — is exactly this commitment with all four
+keywords explicit (self-extending grammar = grammar layer, meta-
+grammar via LFP = metacircular fixpoint, topos = the categorical
+host, self-extending ISA = compute layer).
+
+Cross-cocycle implication:
+
+| Identification | Cocycle pair collapsed |
+|----------------|-------------------------|
+| storage ≡ grammar | CY-8 ≡ CY-6 (the substrate IS the rule set) |
+| grammar ≡ ISA | CY-6 ≡ CY-{2,3,4,5} (the rules ARE the instructions) |
+| storage ≡ ISA | CY-8 ≡ CY-{2,3,4,5} (the substrate's gauge structure IS the ISA's symmetry) |
+
+The triple identification is *load-bearing* for the project's
+charter: it is what makes "self-extending grammar + topos +
+realizability + bootstrappable ISA" coherent. If any of the three
+identifications fails, the project decomposes into a
+storage-grammar-ISA tripartite system rather than a unified
+substrate.
+
+Operational consequence: **gauge structures must be consistent
+across all three layers**. A CY-5 gauge fixing (lex-min canonical
+for V_4 orbits) implicitly fixes the *same* canonical for:
+- CY-6's packed-node representatives (parse-derivation gauge),
+- CY-8's substrate addresses (storage gauge),
+- and the M40 architectural-group representatives (ISA gauge).
+
+This explains *why* the Type-D rigidification at CY-5 was so hard
+to undo (per [drift_archaeology.md](drift_archaeology.md)): changing
+lex-min canonical would propagate through all three layers
+simultaneously. The triple identification is also what makes the
+discipline rule "content-address by invariant only" (rule 5 of
+clarified_foundation.md) load-bearing — content-addressing by the
+gauge representative would break the identification across layers.
+
+**Reconstruction implication**: the triple identification should be
+stated at L0 (the framing rules), not derived at L4 (chart kernel).
+A clarified rewrite would assert "storage ≡ grammar ≡ ISA" as a
+charter commitment, then derive all subsequent cocycle layers as
+gauge-equivalences within this identification.
+
+## Cocycle neighborhoods
+
+The eight cocycles + one fixedpoint cluster into five neighborhoods
+by what they're gauges *of*. Neighborhoods are useful because items
+within a neighborhood share recovery patterns — if one is rigidified,
+the others typically are too in the same way.
+
+### NB-A — Internal architectural gauge (the M8 nested tower)
+
+**The cocycles operating on the architecture's internal symmetry
+structure.** Already documented as the M8 nested gauge tower
+([§ Cross-cocycle structure](#cross-cocycle-structure) above).
+
+- **CY-2** K-rule variable cocycle
+- **CY-3** WHT quotient cocycle
+- **CY-4** F_2³ puncturing gauge cocycle
+- **CY-5** V_4 signature cocycle (the deepest, where the lex-min
+  rigidification lives)
+
+Recovery pattern: gauge-vs-invariant separation enforced at every
+layer; receipts content-address by invariant only.
+
+### NB-B — Content syntax (parse-derivation)
+
+**The cocycles operating on the syntactic surface — grammars and
+their parses.**
+
+- **CY-6** parse-derivation cocycle (the SPPF gauge)
+
+Recovery pattern: surface alternative derivations as first-class;
+do not silently quotient to a single canonical parse without
+recording that the others exist.
+
+### NB-C — Content semantics (combinator reduction)
+
+**The cocycles operating on computational meaning — how terms
+reduce and what bases they're encoded in.**
+
+- **CY-7** combinator-reduction cocycle (SKI / λ)
+
+Recovery pattern: parametrise the combinator basis; reduction-path
+equivalence already operationalised by CBNeed apply.
+
+### NB-D — Operational substrate
+
+**The cocycles operating on how rules are represented and stored.**
+
+- **CY-1** representation cocycle (the empty bridge)
+- **CY-8** substrate-implementation cocycle (the micro-architecture
+  gauge)
+
+Recovery pattern: at least two representations / substrates must be
+operationally realised so the API surface isn't a placeholder.
+
+### NB-E — Meta-recursion (not a gauge structure)
+
+**The fixed-point structure that survives all the above gauges.**
+
+- **SP-1** self-hosting fixed point
+
+Recovery pattern: identify the LFP as primary; the cocycle gauges
+are all *equivalent ways of reaching* SP-1, not alternative SP-1s.
+
 ## Adjacent group quotients (not strictly cocycles but related)
 
 The corpus uses additional Z_n quotients that act like gauges but

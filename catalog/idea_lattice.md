@@ -121,11 +121,20 @@ DCSW axes as the operational substrate.
   [CY-4](cocycles.md#cy-4--f_23-puncturing-gauge-cocycle-m22-bis).
 - **C-S-gauge-pivot** [invariant]: S is the gauge-invariant pivot
   of the 8-frame rotation.
-- **C-DCSW-axes** [gauge — naming convention]: the 4-axis label
-  set {D, C, S, W}. **This is a labelling convention, not a
-  primitive** — see
+- **C-DCSW-axes** [substrate-architectural categories]: the 4-axis
+  label set {C, D, S, W} = **Compute, Data, State, Workspace**.
+  **Origin (per user, 2026-05-15)**: these labels come from the
+  micro-architecture neighborhood
+  ([cocycles.md § CY-8](cocycles.md#cy-8--substrate-implementation-cocycle-micro-architecture))
+  as substrate-level categorical decomposition of what every
+  operation engages — *not* from the F_2³-puncturing structure
+  that arrives at L6. The L6 placement here records *when in the
+  conversation the labels became algebraically load-bearing*, not
+  their origin. The *naming* (which strings, which ordering) is
+  a gauge convention; the *existence* of four substrate-categories
+  is what the V_4 / S_4 structure (NB-A) downstream acts on. See
   [drift_archaeology.md § Finding 3](drift_archaeology.md) for the
-  retconned argument that the user attempted.
+  retconned argument over this dependency direction.
 - **C-triadic-decomposition** [invariant]: (D × C × S) factoring; W
   emerges via Hodge ★ in dim 4.
 
@@ -166,8 +175,8 @@ operation.
   center order (|Z| = 2 vs 1). See
   [K-M40-aggregator](claims.md).
 - **C-oriented-affine-even-vs-full-affine** [invariant]: V_4 ⋊ A_3
-  + central chirality vs V_4 ⋊ GL_2(F₂) — both order 24, non-
-  isomorphic.
+  with central chirality vs V_4 ⋊ GL_2(F₂) — both order 24,
+  non-isomorphic.
 
 ## Level 9 — M41 structural-address stack
 

@@ -28,6 +28,22 @@ the system.
 - **[meta] Gauge-versus-invariant separation.** Operational choices
   among gauge-equivalent options are marked as conventions, not
   encoded as verified contracts. See [§ Discipline rules](#discipline-rules).
+- **[meta] Metacircularity commitment.** The substrate is
+  *metacircular* — the grammar describes its own parser; the
+  parser operates on grammar text; the storage substrate IS the
+  grammar's rule set. This is the charter-level identification
+  **storage ≡ grammar ≡ ISA** that the cocycle tower (CY-1
+  through CY-9) realises as gauge-equivalences and that SP-1's
+  LFP makes operational. See
+  [cocycles.md § Metacircularity](cocycles.md#metacircularity-storage--grammar--isa).
+  M1's opening commitment — *"a free self-extending grammar that
+  is its own meta-grammar via LFP, presents its grammar-image as
+  a topos, and bootstraps a self-extending ISA"* — names exactly
+  this; the canonical term in the literature is
+  *metacircular evaluator* (LISP/SICP heritage). The
+  metacircularity commitment is what makes the triple
+  identification *natural* rather than incidental, and it is what
+  the rest of the foundation derives.
 
 ## L1 — Term algebra
 

@@ -100,6 +100,96 @@ COCYCLES = [
                  "of v4_delta. Recovery: receipts content-address by "
                  "orbit_key only.",
     },
+    {
+        "slug": "cy-6-parse-derivation",
+        "name": "Parse-derivation cocycle (grammar / SPPF / parsing)",
+        "layer": "NB-B content syntax — pre-M1 / M1 S6",
+        "base": "derivations of input strings under a grammar",
+        "gauge_group": "parse-tree equivalence (multiple derivations of "
+                       "same span are gauge-equivalent)",
+        "cohomology_classes": "packed nodes in the SPPF (each is a span "
+                              "with its alternative derivations)",
+        "gauge_invariant": "the language-reading of the input "
+                           "(meaning modulo derivation choice)",
+        "introducing_move": "pre-M1 (founding SPPF design); M1 S6 parse",
+        "witness_evidence": "MHTML title 'Numpy-backed SPPF datastructure "
+                            "design'; S6 parse operation as gauge-"
+                            "invariant return",
+        "status": "silently-quotiented (Type-D new sub-variant): "
+                  "alternatives equivalent but not first-class",
+        "notes": "The founding cocycle the project silently bypassed. "
+                 "Parse returns ONE rule reference; alternatives are "
+                 "not surfaced. Reconstruction would expose packed-node "
+                 "structure explicitly.",
+    },
+    {
+        "slug": "cy-7-combinator-reduction",
+        "name": "Combinator-reduction cocycle (SKI / λ)",
+        "layer": "NB-C content semantics — Level 1/4",
+        "base": "λ-terms (or combinator-encoded equivalents)",
+        "gauge_group": "β-η equivalence (with α-renaming); "
+                       "combinator-basis transformations as meta-gauge",
+        "cohomology_classes": "β-η equivalence classes (denotations)",
+        "gauge_invariant": "the semantic function (meaning of the term)",
+        "introducing_move": "M1 S5 apply; M3 S/K/I commitment; M11 "
+                            "meta-circular interpreter",
+        "witness_evidence": "M1 S5 apply; ../scratch/chart.py:40-46 "
+                            "(self.S/K/I); ../scratch/verify_shadows.py",
+        "status": "shown; doubly rigidified (per-instance integer "
+                  "indices + unsubstituted basis-choice SKI)",
+        "notes": "β-equivalence operationalised via CBNeed apply "
+                 "(Church-Rosser). Basis choice SKI is one of several "
+                 "valid (SK, BCKW, raw λ). Recovery: parametrise basis.",
+    },
+    {
+        "slug": "cy-8-substrate-impl",
+        "name": "Substrate-implementation cocycle (micro-architecture)",
+        "layer": "NB-D operational substrate — multi-level",
+        "base": "substrate implementations satisfying the realizability "
+                "charter (Morton heap, sequential, content-addressed, "
+                "SIMD-packed fat nodes)",
+        "gauge_group": "substrate-equivalence (any two realising same "
+                       "abstract chart semantics)",
+        "cohomology_classes": "charter-satisfying implementation classes",
+        "gauge_invariant": "abstract chart semantics + the (Compute, "
+                           "Data, State, Workspace) categorical "
+                           "decomposition every substrate must provide",
+        "introducing_move": "M2 + M5 + M23 (distributed)",
+        "witness_evidence": "cotype-free-self-extending-grammar.md:1874-2026; "
+                            "../scratch/hamming_scaling_hardware.py; "
+                            "pre-M1 SIMD-packed fat-node discussion",
+        "status": "partially rigidified (only Morton-coded heap "
+                  "realised; alternatives unimplemented)",
+        "notes": "Origin of CDSW axes — Compute/Data/State/Workspace "
+                 "are substrate-architectural categories. The V_4/S_4 "
+                 "structure on them (CY-5) is DOWNSTREAM of this "
+                 "substrate-level origin. Per user 2026-05-15.",
+    },
+]
+
+
+SPECIAL_STRUCTURES = [
+    {
+        "slug": "sp-1-metacircular-fixpoint",
+        "name": "Metacircular fixed point",
+        "layer": "NB-E meta-recursion — M11",
+        "base": "metacircular interpreter implementations",
+        "gauge_group": "(not a gauge — terminal coalgebra / fixed point)",
+        "cohomology_classes": "(not classes — a unique LFP)",
+        "gauge_invariant": "the LFP itself (smallest grammar containing "
+                           "its own parser)",
+        "introducing_move": "M11 (meta-circular fixpoint)",
+        "witness_evidence": "cotype:655-713; ../scratch/chart.py "
+                            "(meta-circular interpreter); "
+                            "K-self-extension-closes-L5",
+        "status": "shown; not a cocycle (listed for completeness)",
+        "notes": "Metacircularity is the canonical term. NOT a cocycle "
+                 "— has no gauge group. The LFP is the gauge-invariant "
+                 "content surviving CY-1 + CY-6 + CY-7 + CY-8 "
+                 "equivalences; all gauge fixings converge to SP-1. "
+                 "This is what gives the storage ≡ grammar ≡ ISA "
+                 "triple identification (see cocycles.md).",
+    },
 ]
 
 
@@ -184,24 +274,19 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
 
 def populate(conn: sqlite3.Connection) -> None:
     conn.execute("DELETE FROM cocycles")
-    for r in COCYCLES:
-        conn.execute("""
-            INSERT INTO cocycles (slug, name, kind, layer, base, gauge_group,
-                                  cohomology_classes, gauge_invariant,
-                                  introducing_move, witness_evidence, status, notes)
-            VALUES (?, ?, 'cocycle', ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (r["slug"], r["name"], r["layer"], r["base"], r["gauge_group"],
-              r["cohomology_classes"], r["gauge_invariant"],
-              r["introducing_move"], r["witness_evidence"], r["status"], r["notes"]))
-    for r in GROUP_QUOTIENTS:
-        conn.execute("""
-            INSERT INTO cocycles (slug, name, kind, layer, base, gauge_group,
-                                  cohomology_classes, gauge_invariant,
-                                  introducing_move, witness_evidence, status, notes)
-            VALUES (?, ?, 'quotient', ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (r["slug"], r["name"], r["layer"], r["base"], r["gauge_group"],
-              r["cohomology_classes"], r["gauge_invariant"],
-              r["introducing_move"], r["witness_evidence"], r["status"], r["notes"]))
+    def insert(records, kind):
+        for r in records:
+            conn.execute("""
+                INSERT INTO cocycles (slug, name, kind, layer, base, gauge_group,
+                                      cohomology_classes, gauge_invariant,
+                                      introducing_move, witness_evidence, status, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (r["slug"], r["name"], kind, r["layer"], r["base"], r["gauge_group"],
+                  r["cohomology_classes"], r["gauge_invariant"],
+                  r["introducing_move"], r["witness_evidence"], r["status"], r["notes"]))
+    insert(COCYCLES, "cocycle")
+    insert(GROUP_QUOTIENTS, "quotient")
+    insert(SPECIAL_STRUCTURES, "fixed-point")
 
 
 def parse_args() -> argparse.Namespace:
