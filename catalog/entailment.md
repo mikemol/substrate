@@ -615,6 +615,143 @@ Until then, `canonical_signature_in_orbit` returning lex-min should
 be read as "lex-min was picked among gauge-equivalent options," not
 "lex-min is THE canonical."
 
+**Instance: AXES = ('D', 'C', 'S', 'W') — the upstream axis-tuple choice.**
+
+The substrate has 4 axes; the math admits any 4-element set with any
+ordering. [../scratch/meta_protocol.py:26](../scratch/meta_protocol.py)
+declares `AXES = ('D', 'C', 'S', 'W')` as a module-load constant.
+This single choice cascades:
+
+- [../s4_structure.py:84](../s4_structure.py): `IDENTITY = Permutation(AXES)`
+  — the group identity is *literally* the tuple `('D','C','S','W')`.
+- [../s4_structure.py:91](../s4_structure.py): `S4_ELEMENTS = [Permutation(p) for p in permutations(AXES)]`
+  — every group element enumerated in AXES-permutation order.
+- [../s4_structure.py:73](../s4_structure.py): `is_identity` is
+  `self.image == AXES` — identity-check is literal tuple comparison
+  with this specific ordering, not abstract.
+- Lex-min canonicality (the prior instance above) is Python tuple
+  comparison on signatures whose components are AXES strings. Since
+  'C' < 'D' < 'S' < 'W' alphabetically, lex-min signatures start
+  with 'C'. **Rename AXES to ('A','B','C','D') in alphabetical order
+  and lex-min picks different signatures.** The lex-min rigidification
+  is downstream of the AXES rigidification.
+- "Anchor axis D" is "the first AXES element"; Stab(D) is "the
+  stabilizer of AXES[0]." Reorder AXES and the anchor moves with it.
+
+The choice has no bridge layer because no later move ever attempted
+to substitute it. The rigidification is so deep it became
+unquestioned — never appeared as a choice point in the corpus once
+made.
+
+**Instance: Stab(D) as the specific S_3 complement.**
+
+The math: S_4 / V_4 ≅ S_3. The S_3 complement to V_4 in S_4 is
+realised concretely as the stabilizer of *some* axis — there are 4
+gauge-equivalent choices (Stab(D) / Stab(C) / Stab(S) / Stab(W)),
+all conjugate under V_4 since V_4 acts transitively on the 4 axes.
+The corpus chose Stab(D) and:
+
+- [../s4_structure.py:204](../s4_structure.py): `stab_d_to_orbit_key`
+  function — keyed by the choice.
+- [../s4_structure.py:702-717](../s4_structure.py): verifiers
+  `verify_stab_d_size`, `verify_stab_d_is_subgroup`,
+  `verify_stab_d_complements_v4` — test the *specific* choice as a
+  contract, not "S_3 = stabilizer of some axis."
+- M41 v22.0 builds AddressedOp / StructuralAddress around
+  `(orbit_key, v4_delta)` where orbit_key ∈ Stab(D)-representatives.
+  Every receipt encodes Stab(D) implicitly.
+
+Cascade: this is downstream of AXES (D is AXES[0]) and adjacent to
+the lex-min instance (lex-min's `'α' = (DC)(SW)` is precisely the V_4
+element that exchanges anchor D with lex-min-letter C — see
+[../cotype-free-self-extending-grammar.md:5864](../cotype-free-self-extending-grammar.md)).
+
+**Instance: PAIRINGS α / β / γ ↦ specific V_4 elements.**
+
+The math: three non-trivial V_4 elements (three double-transpositions
+in S_4); three labels {α, β, γ}; bijection between them is a choice
+(S_3 acts on the labels permuting them; 6 valid label-assignments).
+The corpus chose at [../scratch/meta_protocol.py:29-33](../scratch/meta_protocol.py):
+
+```text
+PAIRINGS = {
+    'α': (frozenset({'D', 'C'}), frozenset({'S', 'W'})),
+    'β': (frozenset({'D', 'S'}), frozenset({'C', 'W'})),
+    'γ': (frozenset({'D', 'W'}), frozenset({'C', 'S'})),
+}
+```
+
+Rigidification:
+
+- [../scratch/meta_protocol.py:226-231](../scratch/meta_protocol.py):
+  `OPERATION_DESCRIPTIONS` is keyed by `(label, chirality)` with
+  semantic content per label — `('α', 'even'): 'apply / reduce'`,
+  `('γ', 'even'): 'compute-validated store'`, etc. Re-labelling
+  α↔β at the dictionary level would re-shuffle which V_4 element
+  is called "apply" — and the labels appear as string literals
+  throughout downstream code, so the choice can't be substituted
+  cleanly.
+- All `signatures_in_orbit` enumerations iterate `('e', 'α', 'β',
+  'γ')` ([../applied_grammar.py:961](../applied_grammar.py)) —
+  the label ordering is baked into iteration order, so any
+  position-dependent code (e.g., "delta='e' is canonical") depends
+  on which element is named 'e' (= identity).
+
+Cascade: this is downstream of AXES (the PAIRINGS reference the
+strings 'D','C','S','W'). Also adjacent to the lex-min cascade
+(lex-min orbit enumeration uses the same label ordering).
+
+### The Type-D cascade
+
+These four instances are not independent; they cascade from a single
+upstream choice.
+
+```text
+AXES = ('D', 'C', 'S', 'W')                  [meta_protocol.py:26]
+    ├── determines string-comparison order
+    │       ↓
+    │       lex-min canonical V_4 translate     [Type-D primary instance]
+    │       ↓
+    │       v17 content-address chain
+    │       ↓
+    │       v17 ↔ v19 agreement theorem        [the residue]
+    │
+    ├── AXES[0] = 'D' (the first axis)
+    │       ↓
+    │       Stab(D) as S_3 complement           [Type-D, axis-anchor]
+    │       ↓
+    │       AddressedOp / StructuralAddress     [downstream]
+    │
+    └── String literals 'D','C','S','W'
+            ↓
+            PAIRINGS bijection α/β/γ → V_4      [Type-D, label-choice]
+            ↓
+            OPERATION_DESCRIPTIONS              [downstream]
+```
+
+The cascade has *no internal bridges* — every layer depends on the
+layers above with no translation theorem. The lex-min ↔ Stab(D)
+bridge (`verify_v17_v19_decomposition_agreement`) exists at one
+specific seam (when v19 introduced Stab(D)-canonical alongside v17's
+already-rigidified lex-min); no analogous bridge exists for AXES
+reordering or PAIRINGS relabelling because the corpus never tried.
+
+This is the structural signature of how an apparent "discovered
+foundation" is actually a stack of choices. **The user-facing risk**:
+a future LLM reading the corpus may treat AXES = ('D','C','S','W')
+as a mathematical primitive rather than as a labelling convention.
+The catalog records here that it is *not* a primitive.
+
+**Recovery action available (deferred for the whole cascade)**:
+parametrise the AXES tuple as an argument to the relevant constructors
+(at minimum: Permutation, the orbit tables, the PAIRINGS dictionary).
+Verifiers should test abstract properties (e.g., "S_3 = Stab of some
+axis," "canonical is a deterministic function of orbit_key") rather
+than literal AXES-dependent values. This is a larger refactor than
+the lex-min recovery and may be best deferred until a concrete
+motivation arises (e.g., extending to a 5-axis system at higher
+Hadamard levels).
+
 ## Open questions surfaced by the catalog
 
 These are not in the corpus explicitly; they emerge from cataloguing.
