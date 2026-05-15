@@ -543,6 +543,15 @@ runnable witnesses available.
 
 ### Type-D drift: operational choice-rigidification
 
+> **Conversation-anchored archaeology** for the Type-D instances below
+> is at [drift_archaeology.md](drift_archaeology.md). It records the
+> specific turn where each rigidification was authored and refines
+> the behavioural classification (summary-collapse, user-framing
+> operational-drift, silent naturalisation, acknowledged-then-
+> abandoned). The lex-min case in particular was user-prompted
+> ("canonical is always left-choice" — T219) and LLM-operationalised
+> (as lex-min specifically — T220), not a unilateral LLM choice.
+
 A gauge-free choice the mathematics permits is treated by an LLM as
 permanent, built into the operational substrate (verified-as-contract,
 content-addressed-against, depended-on by downstream digests), and

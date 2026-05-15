@@ -22,7 +22,13 @@ between LLM sessions.
   (`shown` / `partial` / `open` / `superseded` / `drifted` /
   `abandoned` / `negative`), evidence, concepts used.
 - [entailment.md](entailment.md) — typed edges between concepts and
-  claims, with explicit drift annotations.
+  claims, with explicit drift annotations (Types A/B/C/D).
+- [drift_archaeology.md](drift_archaeology.md) — conversation-anchored
+  evidence for the drift instances entailment.md records. Each
+  drift gets the turn-ordinal where it was authored, the verbatim
+  quote, and a behavioural classification (summary-collapse,
+  user-framing operational-drift, silent naturalisation,
+  acknowledged-then-abandoned).
 
 ## Schema
 
