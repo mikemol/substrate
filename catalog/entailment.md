@@ -153,30 +153,122 @@ either lateral support, an audit-driven correction, or drift.
 
 ## Realisation edges
 
-The corpus contains M8-era abstract framings that were stated as
+The corpus contains M-era abstract framings that were stated as
 placeholders and later realised concretely. The `realizes` relation
-captures these:
+captures these. Empirically, **M8's cocycle / cohomology framing is
+the most realised placeholder in the corpus** — three parallel
+realisations at three different levels share it as a common source.
 
-- K-WHT-quotient-algebra (M22) `realizes` K-cocycle-unifies-formal-systems (M8).
-  - **The identification**: the Walsh-Hadamard projection on WHT_8 is the
-    cocycle projection of M8; the cohomology of representational
-    changes is realised concretely as the parity-basin equivalence
-    that the WH quotient algebra factors out. M8's "cocycle that
-    unifies multiple formal systems" was a placeholder; M22's
-    "axis-signatures index Walsh rows; rule composition is Hadamard
-    multiplication mod parity-basin" is what the placeholder named.
-  - **Evidence**: [../cotype-free-self-extending-grammar.md:472-537](../cotype-free-self-extending-grammar.md)
-    (M8 statement) and [../cotype-free-self-extending-grammar.md:1752-1873](../cotype-free-self-extending-grammar.md)
-    (M22 realisation); [../scratch/walsh_hadamard_readings.py](../scratch/walsh_hadamard_readings.py)
-    exhibits the 8 mutually orthogonal readings of RM(1,3) that
-    instantiate the WH projection.
-  - **Consequence**: K-cocycle-unifies-formal-systems is promoted
-    from status `open` to `shown via realisation`; the M8 framing
-    is no longer a free-standing obligation.
-- K-WHT-quotient-algebra (M22) also `refines` K-K_n-coherence-for-composition (M7).
-  - The Stasheff K_n associahedron coherence (M7's framing for rule
-    composition) is what governs the WH quotient at each Hadamard
-    level — see K-stasheff-per-hadamard-level (M24).
+### M8 cocycle → three parallel realisations
+
+K-cocycle-unifies-formal-systems (M8,
+[../cotype-free-self-extending-grammar.md:472-537](../cotype-free-self-extending-grammar.md))
+abstracts a cohomological pattern: "orbits as cohomology classes;
+gauge-invariant data as the quotient." Three later moves realise this
+pattern at different operational levels:
+
+- **K-K-rule-gauge-structure (M17) `realizes` K-cocycle-unifies-formal-systems (M8)**.
+  - **Level**: K-rule variable assignments (tier-2 search).
+  - **Gauge group**: S_n acting on variable renaming.
+  - **Orbits**: off-diagonal `{(vx, vy) : vx ≠ vy}` and diagonal
+    `{(v, v)}` — distinct cohomology classes with structurally
+    different operator shapes.
+  - **Source's own framing**: M17 explicitly says
+    "M8's cocycle structure becomes directly observable: Orbits are
+    the cohomology classes; entries within an orbit are connected by
+    gauge transformations (renamings); entries across orbits are
+    NOT."
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:1376-1407](../cotype-free-self-extending-grammar.md);
+    [../scratch/search_k_variants.py](../scratch/search_k_variants.py).
+- **K-WHT-quotient-algebra (M22) `realizes` K-cocycle-unifies-formal-systems (M8)**.
+  - **Level**: Walsh-Hadamard codewords (architectural symmetry).
+  - **Gauge**: parity-basin equivalence (the WH projection factors
+    out parity).
+  - **Orbits**: the equivalence classes mod parity that the WH
+    quotient algebra factors out.
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:1752-1873](../cotype-free-self-extending-grammar.md);
+    [../scratch/walsh_hadamard_readings.py](../scratch/walsh_hadamard_readings.py).
+- **K-orbit-canonical-bijection (M41 v16+v19) `realizes` K-cocycle-unifies-formal-systems (M8)**.
+  - **Level**: directed witnessed-pair signatures (the address-space
+    layer).
+  - **Gauge group**: V_4 (Klein-four axis swaps).
+  - **Orbits**: indexed by Stab(D)-representatives ("orbit_key");
+    every valid signature decomposes uniquely as
+    (orbit_key, v4_delta ∈ V_4).
+  - **Cohomology class**: the orbit_key; the v4_delta is the
+    gauge degree of freedom.
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:6411-6593](../cotype-free-self-extending-grammar.md)
+    (v16 introducing the seam), [../applied_grammar.py:861-956](../applied_grammar.py)
+    (the bijection implementation), [../applied_grammar.py:969+](../applied_grammar.py)
+    (`verify_signature_decomposition_bijection`).
+
+**Joint reading**: the M8 abstract framing is now realised at three
+nested levels — the K-rule variable layer (M17), the codeword layer
+(M22), and the signature/address layer (M41 v16). Each realisation
+exhibits the same cohomological pattern with a different specific
+gauge group. The catalog promotes K-cocycle-unifies-formal-systems
+from status `open` → `shown via three parallel realisations`.
+
+### M39 principle → M40 specific identification
+
+- **K-M40-aggregator (M40 v3-v6) `realizes` K-architecture-is-hadamard-mixing (M39)**.
+  - **The identification**: M39 states the principle "the
+    architecture's principal operation is symmetry-governed
+    Hadamard-basis mixing," but does not specify *which* symmetry.
+    M40 fills in the placeholder: the symmetry is A_4 × Z_2
+    (Option A: V_4 ⋊ A_3 + external central chirality), distinct
+    from S_4 (Option B: V_4 ⋊ GL_2(F_2)) at the level of center
+    order (|Z(A_4 × Z_2)| = 2 vs |Z(S_4)| = 1).
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:4360-4485](../cotype-free-self-extending-grammar.md)
+    (M39 principle), [../cotype-free-self-extending-grammar.md:4486-4605](../cotype-free-self-extending-grammar.md)
+    (M40 v6 specification with `verify_m40_group_is_a4z2_not_s4`
+    aggregator); [../scratch/spectral_view.py](../scratch/spectral_view.py)
+    and [../scratch/verify_spectral.py](../scratch/verify_spectral.py).
+  - **Consequence**: the M39 principle is no longer
+    abstract — its "some symmetry" placeholder is filled in
+    concretely. The principle and its specific instantiation are
+    both load-bearing.
+
+### Charter-check practice → M1 realizability charter
+
+- **K-charter-honored-corpus-wide (new) `realizes` C-realizability-charter (M1 / Context)**.
+  - **Pattern**: every major move from M26 onward closes with a
+    "Charter check" table that exhibits the four predicates
+    (Constructible / Reachable / Observable / Coverable) with
+    line-anchored ✓ marks for each distinction the move introduces.
+    The charter is not asserted as a free-floating discipline — it
+    is constructively re-applied at each scale.
+  - **Witnessing tables**: M26 ([../cotype-free-self-extending-grammar.md:2847](../cotype-free-self-extending-grammar.md)),
+    M27 ([line 3011](../cotype-free-self-extending-grammar.md)),
+    M29 ([line 3155](../cotype-free-self-extending-grammar.md)),
+    M30 ([line 3278](../cotype-free-self-extending-grammar.md)),
+    M31 ([line 3401](../cotype-free-self-extending-grammar.md)),
+    M31-post ([line 3525](../cotype-free-self-extending-grammar.md)),
+    M32 ([line 3628](../cotype-free-self-extending-grammar.md)),
+    M33 ([line 3758](../cotype-free-self-extending-grammar.md)),
+    M34 ([line 3896](../cotype-free-self-extending-grammar.md)),
+    M35 ([line 3995](../cotype-free-self-extending-grammar.md)),
+    M36 ([line 4089](../cotype-free-self-extending-grammar.md)),
+    M37 ([line 4203](../cotype-free-self-extending-grammar.md)),
+    M38 ([line 4330](../cotype-free-self-extending-grammar.md)),
+    M40 v6 ([line 4585](../cotype-free-self-extending-grammar.md)).
+  - **Consequence**: the M1 realizability charter is a *practiced
+    discipline*, not a manifesto. The four-stage admission test is
+    constructively verifiable for every distinction the corpus
+    introduces from M26 onward. Earlier moves rely on the discipline
+    implicitly via their probe-state and cumulative-status tables;
+    the explicit charter-check ritual stabilises around M26.
+
+### Subsidiary realisation: M7 → M24
+
+- **K-stasheff-per-hadamard-level (M24) `realizes` K-K_n-coherence-for-composition (M7)**.
+  - **The identification**: M7 frames Stasheff K_n associahedron
+    coherence over formal systems abstractly; M24 instantiates it
+    at each Hadamard level (K_{n=2^m-1} governing composition
+    tradeoff at scale m).
+  - **Evidence**: [../cotype-free-self-extending-grammar.md:403-471](../cotype-free-self-extending-grammar.md)
+    (M7), [../cotype-free-self-extending-grammar.md:2027-2220](../cotype-free-self-extending-grammar.md)
+    (M24); [../scratch/stasheff_per_hadamard_level.py](../scratch/stasheff_per_hadamard_level.py).
 
 ## Drift {#drift}
 

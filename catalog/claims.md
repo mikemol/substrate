@@ -26,6 +26,23 @@ C-ids and [README.md](README.md) for status semantics.
 - **Status**: shown by argument; no executable witness in this repo.
 - **Concepts**: C-apply.
 
+### K-charter-honored-corpus-wide
+- **Statement**: Every distinction introduced in any major move from
+  M26 onward passes the four-stage realizability charter
+  (constructible → reachable → observable → coverable), exhibited
+  via explicit per-move charter-check tables.
+- **Introduced**: derived (realisation of C-realizability-charter
+  across the corpus); the practice stabilises at M26.
+- **Evidence**: 14 charter-check tables — see [entailment.md
+  § Charter-check practice → M1 realizability charter](entailment.md#charter-check-practice--m1-realizability-charter)
+  for the full list with line anchors.
+- **Status**: shown via repeated witness across the corpus.
+- **Concepts**: C-realizability-charter.
+- **Editorial note**: this claim was not originally authored in the
+  narrative; it is the catalog's reading of a pattern the corpus
+  consistently exhibits. The M1 charter is therefore not a manifesto
+  but a *practiced discipline*.
+
 ## Representation algebra (M2–M4)
 
 ### K-representations-associahedron
@@ -73,7 +90,10 @@ C-ids and [README.md](README.md) for status semantics.
   coherences.
 - **Introduced**: M7.
 - **Evidence**: [cotype-free-self-extending-grammar.md:403-471].
-- **Status**: stated; coherence cells not exhaustively verified.
+- **Status**: shown via realisation by K-stasheff-per-hadamard-level
+  (M24). The abstract K_n framing is instantiated concretely at each
+  Hadamard level m as K_{2^m-1}. See [entailment.md § Subsidiary
+  realisation: M7 → M24](entailment.md#subsidiary-realisation-m7--m24).
 - **Concepts**: C-associahedron-K_n.
 
 ### K-cocycle-unifies-formal-systems
@@ -81,11 +101,19 @@ C-ids and [README.md](README.md) for status semantics.
   cocycle in the cohomology of representational changes.
 - **Introduced**: M8.
 - **Evidence**: [cotype-free-self-extending-grammar.md:472-537].
-- **Status**: shown via realisation by K-WHT-quotient-algebra (M22).
-  The Walsh-Hadamard projection IS the cocycle projection; the
-  cohomology of representational changes is realised as the
-  parity-basin equivalence the WH quotient factors out. See the
-  realisation edge in [entailment.md § Realisation edges](entailment.md#realisation-edges).
+- **Status**: **shown via three parallel realisations** at three
+  operational levels:
+  - K-K-rule-gauge-structure (M17) — S_n renaming gauge on K-rule
+    variable assignments; orbits as cohomology classes.
+  - K-WHT-quotient-algebra (M22) — parity-basin equivalence on WHT
+    codewords; the WH projection IS the cocycle projection.
+  - K-orbit-canonical-bijection (M41 v16+v19) — V_4 axis-swap gauge
+    on signatures; orbit_key (∈ Stab(D)-representatives) is the
+    cohomology class, v4_delta is the gauge.
+  All three realisations share the same cohomological pattern
+  ("orbits as cohomology classes; quotient is gauge-invariant data")
+  with different specific gauge groups. See [entailment.md
+  § M8 cocycle → three parallel realisations](entailment.md#m8-cocycle--three-parallel-realisations).
 - **Concepts**: C-cocycle-projection, C-walsh-hadamard-quotient.
 
 ## Chart kernel and self-extension (M9–M11)
@@ -151,7 +179,10 @@ C-ids and [README.md](README.md) for status semantics.
   the table₂ minimum is unique only up to this gauge.
 - **Introduced**: M17.
 - **Evidence**: [cotype-free-self-extending-grammar.md:1339-1410].
-- **Status**: shown.
+- **Status**: shown. Also `realizes` K-cocycle-unifies-formal-systems
+  at the K-rule layer (the S_n renaming gauge gives orbits as
+  cohomology classes; M17 explicitly identifies this as the M8
+  cocycle structure becoming directly observable).
 - **Concepts**: C-K-rule-gauge.
 
 ## Coding-theoretic layer (M18–M22)
@@ -372,7 +403,10 @@ C-ids and [README.md](README.md) for status semantics.
   governed Hadamard-basis mixing.
 - **Introduced**: M39.
 - **Evidence**: [cotype-free-self-extending-grammar.md:4360-4485].
-- **Status**: shown (principle).
+- **Status**: shown (principle), realised at level 2 by
+  K-M40-aggregator (which specifies the symmetry as A_4 × Z_2, not
+  S_4). See [entailment.md § M39 principle → M40 specific
+  identification](entailment.md#m39-principle--m40-specific-identification).
 - **Concepts**: C-symmetry-governed-mixing.
 
 ### K-M40-aggregator
@@ -443,7 +477,11 @@ C-ids and [README.md](README.md) for status semantics.
 - **Introduced**: M41 v16, formalised at v19.
 - **Evidence**: [../applied_grammar.py:861-956](../applied_grammar.py),
   verifier `verify_signature_decomposition_bijection`.
-- **Status**: shown (verifier).
+- **Status**: shown (verifier passes — see 2026-05-15 run).
+  Also `realizes` K-cocycle-unifies-formal-systems at the address-
+  space layer (V_4 axis-swap gauge; orbit_key is the cohomology
+  class, v4_delta is the gauge degree of freedom). See
+  [entailment.md § M8 cocycle → three parallel realisations](entailment.md#m8-cocycle--three-parallel-realisations).
 - **Concepts**: C-orbit-canonical-decomposition.
 
 ### K-v17-v19-agree
