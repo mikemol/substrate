@@ -419,6 +419,76 @@ def collect_term_shape_findings(all_defs_with_modules):
 
 
 # ============================================================
+# Source 4e: def-level Jaccard — lift module-level analysis to
+# (module, def) granularity. Same operations: each def is a node;
+# edges are "def A uses def B's name in its body".
+# ============================================================
+
+def build_def_usage_graph(all_defs):
+    """
+    Build {qname → set of qnames it references}.
+    A qname is `Substrate.X.Y::name`. We match short names against bodies.
+    """
+    short_to_qnames = defaultdict(list)
+    for qname in all_defs:
+        short = qname.split("::", 1)[1]
+        short_to_qnames[short].append(qname)
+    # Compile patterns for performance.
+    patterns = {
+        short: re.compile(r"(?<![A-Za-z0-9_\-'])" + re.escape(short) + r"(?![A-Za-z0-9_\-'])")
+        for short in short_to_qnames
+    }
+    out_nbr = defaultdict(set)
+    for src_qname, rhss in all_defs.items():
+        body = " ".join(rhss)
+        src_short = src_qname.split("::", 1)[1]
+        for short, pat in patterns.items():
+            if short == src_short:
+                continue
+            if pat.search(body):
+                for tgt_qname in short_to_qnames[short]:
+                    if tgt_qname != src_qname:
+                        out_nbr[src_qname].add(tgt_qname)
+    return out_nbr
+
+
+def collect_def_level_jaccard_findings(all_defs):
+    """Emit def-level pair findings above P90 Jaccard."""
+    out_nbr = build_def_usage_graph(all_defs)
+    in_nbr = defaultdict(set)
+    for src, tgts in out_nbr.items():
+        for t in tgts:
+            in_nbr[t].add(src)
+    qnames = sorted(all_defs.keys())
+    sig = {q: out_nbr[q] | in_nbr[q] for q in qnames}
+    # Compute Jaccards; filter by nontrivial neighborhood.
+    pairs = []
+    for i, q1 in enumerate(qnames):
+        if not sig[q1]:
+            continue
+        for q2 in qnames[i + 1:]:
+            if not sig[q2]:
+                continue
+            jv = jaccard(sig[q1], sig[q2])
+            if jv > 0:
+                pairs.append((jv, q1, q2))
+    if not pairs:
+        return []
+    p90 = float(np.percentile([p[0] for p in pairs], 90))
+    findings = []
+    for jv, q1, q2 in pairs:
+        if jv >= p90:
+            findings.append(Finding(
+                level="def-pair",
+                kind="def-jaccard-p90",
+                objects=frozenset({q1, q2}),
+                metric=jv,
+                source="def_level_jaccard",
+            ))
+    return findings
+
+
+# ============================================================
 # Source 4: catalog-claim detector (filling a previously-empty fiber)
 #
 # Catalog claims are referenced from Agda modules via comment lines like:
@@ -510,6 +580,7 @@ def main():
     findings.extend(collect_def_pair_findings(def_group_findings))
     findings.extend(collect_clause_shape_pair_findings(all_defs))
     findings.extend(collect_term_shape_findings(all_defs))
+    findings.extend(collect_def_level_jaccard_findings(all_defs))
 
     catalog_f, claim_to_modules = collect_catalog_findings()
     findings.extend(catalog_f)
