@@ -569,22 +569,19 @@ def collect_orbit_findings():
 
 def collect_partial_coset_findings():
     """
-    Galois-of-orbit-almost-filled detector. Surfaces definitions whose
-    names contain a SPECIFIC constructor of a known finite type, when
-    the parametric counterpart (same name without the constructor)
-    does NOT exist. Each such definition is a partial coset
-    interaction: the named finite-type member is privileged, the
-    others are missing.
+    Galois-of-orbit-almost-filled detector with parametric-counterpart
+    annotation. Surfaces definitions whose names contain a specific
+    constructor of a known finite type AND reports whether a parametric
+    counterpart exists elsewhere (a definition with the same stem but
+    no constructor suffix, OR with the finite type as an explicit
+    parameter in its signature).
 
-    Per user (2026-05-16): "asymmetry-fails-to-surface is the Galois
-    correspondence to orbit-almost-filled". An orbit indexed by a
-    finite type T with N members would be size |T| if symmetric;
-    size < |T| means partial. The "missing" T-members ARE the
-    asymmetry. Equivalently: a DEFINITION named after one specific
-    T-member, with no parametric-over-T counterpart, has the same
-    asymmetry shape inverted (one privileged, others missing).
+    Per user: a partial coset is a partial coset regardless of counterpart
+    existence — the asymmetry will crop up as a refl annoyance
+    somewhere. But the parametric counterpart, when it exists, gives
+    structural guidance for how to annealing-step-close the partial
+    coset (since the parametric shape is already there to instantiate).
     """
-    # Known finite types and their constructors.
     finite_types = {
         "Axis":      ["D", "C", "S", "W"],
         "V₄":        ["e", "α", "β", "γ"],
@@ -593,42 +590,60 @@ def collect_partial_coset_findings():
         "Bool":      ["true", "false"],
     }
 
-    # Collect all definition names across the codebase.
-    all_def_names = set()
+    # Collect all definition names + signatures.
+    all_defs_full = {}  # (mod, name) → signature (or '')
     for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
         mod, text = parse_module_path(path)
         if not mod or not mod.startswith("Substrate"):
             continue
-        for name in parse_definitions(text):
-            all_def_names.add((mod, name))
+        for name, (sig, rhss) in parse_definitions_with_sig(text).items():
+            all_defs_full[(mod, name)] = sig or ""
+
+    all_def_names_by_short = defaultdict(list)
+    for (mod, name) in all_defs_full:
+        all_def_names_by_short[name].append((mod, name))
+
+    def find_parametric_counterpart(stem, ty):
+        """
+        Look for a definition that could be the parametric counterpart:
+          1. A definition named exactly `stem` (no constructor suffix).
+          2. A definition named `stem` with a signature containing
+             `(_ : <ty>)` or `(<name> : <ty>)`.
+        Returns list of qnames (one per match) or [].
+        """
+        candidates = []
+        if stem in all_def_names_by_short:
+            for mod, name in all_def_names_by_short[stem]:
+                sig = all_defs_full.get((mod, name), "")
+                # Check if signature mentions the type — heuristic.
+                if ty in sig or f"Axis" in sig:  # 'Axis' as the most common
+                    candidates.append(f"{mod}::{name}")
+                else:
+                    # Even without explicit Axis parameter, the stem-match
+                    # is suggestive (might use the type implicitly).
+                    candidates.append(f"{mod}::{name}")
+        return candidates
 
     findings = []
     for ty, ctors in finite_types.items():
-        # Index definitions by (suffix-stripped name, the constructor it mentions).
-        # E.g., "Stab-D" → ("Stab", "D"); "case-D-no-fix" → ("case-no-fix", "D")
-        # Patterns: -<C>, _<C>, -<C>-..., <C>-.
         ctor_set = set(ctors)
-        # name-stem → {constructor: qname}
         stem_to_ctor_qnames = defaultdict(dict)
-        for mod, name in all_def_names:
-            # Try suffix `-<ctor>`
+        for (mod, name) in all_defs_full:
             for c in ctors:
                 if name.endswith("-" + c) or name.endswith("_" + c):
                     stem = name[: -(len(c) + 1)]
                     stem_to_ctor_qnames[stem].setdefault(c, []).append((mod, name))
                     continue
-                # Middle pattern `-<ctor>-`
                 marker = "-" + c + "-"
                 if marker in name:
-                    parts = name.split(marker, 1)
-                    stem = "-".join(parts).replace(marker, "-_-")  # rough: stem = name with c replaced by _
+                    stem = name.replace(marker, "-", 1).rstrip("-")
                     stem_to_ctor_qnames[stem].setdefault(c, []).append((mod, name))
-        # For each stem, check if it has only a subset of constructors.
         for stem, ctor_map in stem_to_ctor_qnames.items():
             present = set(ctor_map.keys())
             missing = ctor_set - present
             if missing and present and len(present) < len(ctors):
-                # Partial coset interaction: stem has names for some but not all ctors.
+                # Look for parametric counterpart.
+                counterpart = find_parametric_counterpart(stem, ty)
                 findings.append(Finding(
                     level="partial-coset",
                     kind=f"missing-{ty}-ctors",
@@ -637,7 +652,8 @@ def collect_partial_coset_findings():
                     ),
                     metric=float(len(present)),
                     source="partial_coset_detector",
-                    extra=(ty, tuple(sorted(present)), tuple(sorted(missing)), stem),
+                    extra=(ty, tuple(sorted(present)), tuple(sorted(missing)),
+                           stem, tuple(counterpart)),
                 ))
     return findings
 
@@ -872,16 +888,34 @@ def main():
         print("=== Partial coset interactions (Galois of orbit-almost-filled) ===")
         print("  Definition-name stems where some constructors of a finite type are")
         print("  represented but others are missing. The missing constructors are")
-        print("  the asymmetry — these stems are partial coset interactions.")
+        print("  the asymmetry. WHERE a parametric counterpart exists elsewhere,")
+        print("  it's listed as structural guidance for the annealing fix.")
         print()
-        for metric, extra, members in partial_findings[:15]:
-            ty, present, missing, stem = extra
-            members_short = sorted(short(o) for o in members)
-            print(f"  [{ty}]  stem '{stem}': "
-                  f"present={list(present)}, MISSING={list(missing)}")
-            for m in members_short:
-                print(f"    · {m}")
-            print()
+        # Sort: with-counterpart first (actionable guidance), then orphan.
+        with_cp = [t for t in partial_findings if t[1][4]]
+        without_cp = [t for t in partial_findings if not t[1][4]]
+        if with_cp:
+            print("  --- With parametric counterpart (annealing guidance) ---")
+            for metric, extra, members in with_cp:
+                ty, present, missing, stem, counterparts = extra
+                members_short = sorted(short(o) for o in members)
+                print(f"  [{ty}]  stem '{stem}': "
+                      f"present={list(present)}, MISSING={list(missing)}")
+                print(f"          parametric counterpart: "
+                      f"{', '.join(c.split('::')[-1] for c in counterparts)}")
+                for m in members_short:
+                    print(f"    · {m}")
+                print()
+        if without_cp:
+            print("  --- Orphan partial cosets (no parametric counterpart) ---")
+            for metric, extra, members in without_cp[:15]:
+                ty, present, missing, stem, counterparts = extra
+                members_short = sorted(short(o) for o in members)
+                print(f"  [{ty}]  stem '{stem}': "
+                      f"present={list(present)}, MISSING={list(missing)}")
+                for m in members_short:
+                    print(f"    · {m}")
+                print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
     orbit_findings = [f for f in findings if f.level == "orbit"]
