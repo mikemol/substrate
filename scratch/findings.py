@@ -913,6 +913,48 @@ def main():
 
     leaves = [i for i in range(len(pc_findings_list)) if not finding_deps[i]]
 
+    # 2-deep: cousins. Two partial-coset findings (P1, P2) are cousins
+    # if some third finding P3 has both as dependencies, OR if they share
+    # a common name-stem prefix/template indicating they're parametric
+    # instances of a higher-order pattern.
+    # Reverse-deps: for each finding, who depends on it?
+    rev_deps = {i: set() for i in range(len(pc_findings_list))}
+    for i, deps in finding_deps.items():
+        for j in deps:
+            rev_deps[j].add(i)
+
+    # Build cousin graph: undirected edges between findings sharing an
+    # upstream dependent.
+    cousin_edges = defaultdict(set)
+    for i in range(len(pc_findings_list)):
+        upstream = rev_deps[i]  # findings that depend on i
+        if not upstream:
+            continue
+        # Find other findings j that share an upstream dependent with i.
+        for j in range(len(pc_findings_list)):
+            if j == i: continue
+            shared = upstream & rev_deps[j]
+            if shared:
+                cousin_edges[i].add((j, frozenset(shared)))
+
+    # Group into cousin clusters (connected components).
+    cousin_clusters = []
+    visited = set()
+    for i in range(len(pc_findings_list)):
+        if i in visited: continue
+        cluster = set()
+        stack = [i]
+        while stack:
+            v = stack.pop()
+            if v in visited: continue
+            visited.add(v)
+            cluster.add(v)
+            for (j, _) in cousin_edges[v]:
+                if j not in visited:
+                    stack.append(j)
+        if len(cluster) >= 2:
+            cousin_clusters.append(cluster)
+
     # Partial-coset detector (Galois-of-orbit-almost-filled).
     partial_findings = sorted(
         ((f.metric, f.extra, f.objects, i) for i, f in enumerate(pc_findings_list)),
@@ -946,6 +988,22 @@ def main():
                 })
                 print(f"           depends on stems: {dep_stems}")
             print()
+
+        # 2-deep: cousin clusters.
+        if cousin_clusters:
+            print("  --- Cousin clusters (2-deep: findings sharing an upstream dependent) ---")
+            for cluster in cousin_clusters:
+                cluster_stems = sorted(pc_findings_list[i].extra[3] for i in cluster)
+                # Find shared upstream dependent(s) — intersection of rev_deps.
+                shared = None
+                for i in cluster:
+                    shared = rev_deps[i] if shared is None else (shared & rev_deps[i])
+                shared_stems = (sorted({pc_findings_list[s].extra[3] for s in shared})
+                                if shared else [])
+                print(f"    cluster: {cluster_stems}")
+                if shared_stems:
+                    print(f"      common upstream finding(s): {shared_stems}")
+                print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
     orbit_findings = [f for f in findings if f.level == "orbit"]
