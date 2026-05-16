@@ -249,9 +249,44 @@ extend anchor s = perm , extend-stab anchor s
       }
 
 ------------------------------------------------------------------------
+-- Pointwise congruence: if s, t : SFin.Permutation 3 agree on every
+-- Fin 3 input, then `extend anchor s` and `extend anchor t` agree on
+-- every Axis input. Parametric in anchor. 16-case enumeration.
+------------------------------------------------------------------------
+
+extend-apply-pointwise-cong :
+  (anchor : Axis) (s t : SFin.Permutation 3) →
+  ((i : Fin 3) → SFin.apply s i ≡ SFin.apply t i) →
+  (x : Axis) →
+  applyₛ (proj₁ (extend anchor s)) x ≡ applyₛ (proj₁ (extend anchor t)) x
+extend-apply-pointwise-cong D s t h D = refl
+extend-apply-pointwise-cong D s t h C = cong (fin3-to-non-anchor D) (h zero)
+extend-apply-pointwise-cong D s t h S = cong (fin3-to-non-anchor D) (h (suc zero))
+extend-apply-pointwise-cong D s t h W = cong (fin3-to-non-anchor D) (h (suc (suc zero)))
+extend-apply-pointwise-cong C s t h D = cong (fin3-to-non-anchor C) (h zero)
+extend-apply-pointwise-cong C s t h C = refl
+extend-apply-pointwise-cong C s t h S = cong (fin3-to-non-anchor C) (h (suc zero))
+extend-apply-pointwise-cong C s t h W = cong (fin3-to-non-anchor C) (h (suc (suc zero)))
+extend-apply-pointwise-cong S s t h D = cong (fin3-to-non-anchor S) (h zero)
+extend-apply-pointwise-cong S s t h C = cong (fin3-to-non-anchor S) (h (suc zero))
+extend-apply-pointwise-cong S s t h S = refl
+extend-apply-pointwise-cong S s t h W = cong (fin3-to-non-anchor S) (h (suc (suc zero)))
+extend-apply-pointwise-cong W s t h D = cong (fin3-to-non-anchor W) (h zero)
+extend-apply-pointwise-cong W s t h C = cong (fin3-to-non-anchor W) (h (suc zero))
+extend-apply-pointwise-cong W s t h S = cong (fin3-to-non-anchor W) (h (suc (suc zero)))
+extend-apply-pointwise-cong W s t h W = refl
+
+------------------------------------------------------------------------
 -- Notes
 --
--- Slice 14d will define the cross round-trips (restrict ∘ extend ≈
--- id, extend ∘ restrict ≈ id) and bundle as a custom Iso record.
--- Group homomorphism follows.
+-- Slice 14d defines the cross round-trips (restrict ∘ extend ≈ id,
+-- extend ∘ restrict ≈ id) and bundles as a custom Iso record. Group
+-- homomorphism follows.
+--
+-- `extend-apply-pointwise-cong` lets slice 4 (S4Iso) replace
+-- D-special-cased case analysis with a parametric chain through
+-- extend-restrict: if a classifier produces an SFin element that
+-- agrees pointwise with `restrict anchor (σ, σ-stab)`, then
+-- `extend anchor classified-s` agrees pointwise with σ via
+-- extend-restrict.
 ------------------------------------------------------------------------
