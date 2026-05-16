@@ -39,44 +39,44 @@ open import Substrate.Groups.Stab-S3
   using (Stab; fin3-to-non-anchor)
 
 ------------------------------------------------------------------------
--- extend-apply, extend-invₐ: 16-case enumerations.
+-- Parametric helper: extend a (Fin 3 → Fin 3) function to (Axis →
+-- Axis) by fixing anchor and mapping the 3 non-anchor axes through
+-- their Fin 3 indices.
+--
+-- This factors the 16-case enumeration that previously appeared in
+-- both extend-apply and extend-invₐ. extend-apply and extend-invₐ
+-- below are now ONE-LINERS — `extend-fn` applied to s.apply or
+-- s.invₐ respectively.
+--
+-- Structural consequence: identities like
+--   extend-apply anchor (s SFin.⁻¹) ≡ extend-invₐ anchor s
+-- now hold by `refl` parametrically (since SFin._⁻¹ swaps apply ↔
+-- invₐ definitionally, and both sides factor through extend-fn).
 ------------------------------------------------------------------------
 
+extend-fn : (anchor : Axis) → (Fin 3 → Fin 3) → Axis → Axis
+extend-fn D f D = D
+extend-fn D f C = fin3-to-non-anchor D (f zero)
+extend-fn D f S = fin3-to-non-anchor D (f (suc zero))
+extend-fn D f W = fin3-to-non-anchor D (f (suc (suc zero)))
+extend-fn C f D = fin3-to-non-anchor C (f zero)
+extend-fn C f C = C
+extend-fn C f S = fin3-to-non-anchor C (f (suc zero))
+extend-fn C f W = fin3-to-non-anchor C (f (suc (suc zero)))
+extend-fn S f D = fin3-to-non-anchor S (f zero)
+extend-fn S f C = fin3-to-non-anchor S (f (suc zero))
+extend-fn S f S = S
+extend-fn S f W = fin3-to-non-anchor S (f (suc (suc zero)))
+extend-fn W f D = fin3-to-non-anchor W (f zero)
+extend-fn W f C = fin3-to-non-anchor W (f (suc zero))
+extend-fn W f S = fin3-to-non-anchor W (f (suc (suc zero)))
+extend-fn W f W = W
+
 extend-apply : (anchor : Axis) → SFin.Permutation 3 → Axis → Axis
-extend-apply D s D = D
-extend-apply D s C = fin3-to-non-anchor D (SFin.apply s zero)
-extend-apply D s S = fin3-to-non-anchor D (SFin.apply s (suc zero))
-extend-apply D s W = fin3-to-non-anchor D (SFin.apply s (suc (suc zero)))
-extend-apply C s D = fin3-to-non-anchor C (SFin.apply s zero)
-extend-apply C s C = C
-extend-apply C s S = fin3-to-non-anchor C (SFin.apply s (suc zero))
-extend-apply C s W = fin3-to-non-anchor C (SFin.apply s (suc (suc zero)))
-extend-apply S s D = fin3-to-non-anchor S (SFin.apply s zero)
-extend-apply S s C = fin3-to-non-anchor S (SFin.apply s (suc zero))
-extend-apply S s S = S
-extend-apply S s W = fin3-to-non-anchor S (SFin.apply s (suc (suc zero)))
-extend-apply W s D = fin3-to-non-anchor W (SFin.apply s zero)
-extend-apply W s C = fin3-to-non-anchor W (SFin.apply s (suc zero))
-extend-apply W s S = fin3-to-non-anchor W (SFin.apply s (suc (suc zero)))
-extend-apply W s W = W
+extend-apply anchor s = extend-fn anchor (SFin.apply s)
 
 extend-invₐ : (anchor : Axis) → SFin.Permutation 3 → Axis → Axis
-extend-invₐ D s D = D
-extend-invₐ D s C = fin3-to-non-anchor D (SFin.invₐ s zero)
-extend-invₐ D s S = fin3-to-non-anchor D (SFin.invₐ s (suc zero))
-extend-invₐ D s W = fin3-to-non-anchor D (SFin.invₐ s (suc (suc zero)))
-extend-invₐ C s D = fin3-to-non-anchor C (SFin.invₐ s zero)
-extend-invₐ C s C = C
-extend-invₐ C s S = fin3-to-non-anchor C (SFin.invₐ s (suc zero))
-extend-invₐ C s W = fin3-to-non-anchor C (SFin.invₐ s (suc (suc zero)))
-extend-invₐ S s D = fin3-to-non-anchor S (SFin.invₐ s zero)
-extend-invₐ S s C = fin3-to-non-anchor S (SFin.invₐ s (suc zero))
-extend-invₐ S s S = S
-extend-invₐ S s W = fin3-to-non-anchor S (SFin.invₐ s (suc (suc zero)))
-extend-invₐ W s D = fin3-to-non-anchor W (SFin.invₐ s zero)
-extend-invₐ W s C = fin3-to-non-anchor W (SFin.invₐ s (suc zero))
-extend-invₐ W s S = fin3-to-non-anchor W (SFin.invₐ s (suc (suc zero)))
-extend-invₐ W s W = W
+extend-invₐ anchor s = extend-fn anchor (SFin.invₐ s)
 
 ------------------------------------------------------------------------
 -- extend preserves Stab.

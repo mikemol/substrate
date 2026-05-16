@@ -1,11 +1,11 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Stab-S3-Hom
 --
--- Slice 14e: group-homomorphism properties for the restrict side of
--- the Stab(anchor) ≅ S_3 iso. Shows restrict preserves identity,
--- composition, and inverse.
+-- Slice 14e: group-homomorphism properties for BOTH sides of the
+-- Stab(anchor) ≅ S_3 iso. Shows restrict AND extend each preserve
+-- identity, composition, and inverse.
 --
--- The three homomorphism lemmas (all stated pointwise):
+-- The six homomorphism lemmas (all stated pointwise, anchor-parametric):
 --
 --   restrict-hom-ε   : restrict anchor (ε , Stab-ε anchor) ≈ SFin.ε
 --   restrict-hom-∙   : restrict anchor (σ₁·σ₂ , Stab-∙ p₁ p₂) ≈
@@ -13,20 +13,36 @@
 --                       restrict anchor (σ₂,p₂)
 --   restrict-hom-⁻¹  : restrict anchor (σ⁻¹ , Stab-inv p) ≈
 --                       (restrict anchor (σ,p)) SFin.⁻¹
+--   extend-hom-ε     : extend anchor SFin.ε ≈ ε  (S4-side)
+--   extend-hom-∙     : extend anchor (s₁ SFin.· s₂) ≈
+--                       extend anchor s₁ · extend anchor s₂
+--   extend-hom-⁻¹    : extend anchor (s SFin.⁻¹) ≈ (extend anchor s) ⁻¹
 --
--- For ⁻¹ the equation is refl by definition: both sides are
--- restrict-apply anchor (σ ⁻¹) (Stab-inv anchor σ p) i, since
+-- For restrict-hom-⁻¹ the equation is refl by definition: both sides
+-- are restrict-apply anchor (σ ⁻¹) (Stab-inv anchor σ p) i, since
 -- restrict-invₐ unfolds to restrict-apply (σ⁻¹) (Stab-inv ...).
 --
--- For ε and ∙ the chain uses non-anchor-to-fin3-cong + the bridge
--- round-trips from slice 14a, in the same shape as slices 14b/14d.
+-- For extend-hom-{ε, ⁻¹} the equation is refl per Axis-input (16 cases
+-- each): both sides reduce through fin3-to-non-anchor to the same
+-- expression. For extend-hom-∙: 4 refl cases (anchor-fixed) + 12 axes
+-- × 3 Fin-3 dispatch = 36 sub-cases via `with ... in p`, each closing
+-- by refl after the with-substitution propagates through SFin._·_'s
+-- definition.
+--
+-- For restrict-hom-ε and -∙ the chain uses non-anchor-to-fin3-cong +
+-- the bridge round-trips from slice 14a, in the same shape as slices
+-- 14b/14d.
 --
 -- Side parametric closure laws (added here):
 --   Stab-ε : (anchor : Axis) → Stab anchor ε  (refl, ε.apply = id)
 --   Stab-∙ : (anchor : Axis) {σ τ} → Stab σ → Stab τ → Stab (σ · τ)
 --
--- The extend-side homomorphism (extend-hom-ε / ∙ / ⁻¹) is deferred
--- to slice 14f if needed; the symmetry suggests the same structure.
+-- Symmetry note (patched 2026-05-16): originally slice 14e proved
+-- only the restrict-side hom and deferred the extend-side to a
+-- hypothetical slice 14f. The module-graph Jaccard analysis flagged
+-- the (Stab-S3-Hom ⇄ Stab-S3-Iso) gap as an unrealized symmetry —
+-- Iso used both halves of the iso, Hom only one. The extend-side
+-- lemmas below close that gap.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -52,6 +68,7 @@ open import Substrate.Groups.Stab-S3
          fin3-non-anchor-fin3; stab-preserves-≢)
 open import Substrate.Groups.Stab-S3-Restrict
   using (non-anchor-to-fin3-cong; restrict)
+open import Substrate.Groups.Stab-S3-Extend using (extend)
 
 ------------------------------------------------------------------------
 -- Parametric closure laws for Stab anchor (identity and composition).
@@ -143,6 +160,147 @@ restrict-hom-⁻¹ :
   SFin.apply (restrict anchor (σ ⁻¹ , Stab-inv anchor σ p)) i
   ≡ SFin.apply ((restrict anchor (σ , p)) SFin.⁻¹) i
 restrict-hom-⁻¹ anchor p i = refl
+
+------------------------------------------------------------------------
+-- Extend-side homomorphism (the dual of restrict-hom-*).
+--
+-- Slice 14e originally deferred these to "slice 14f if needed". The
+-- module-Jaccard analysis (slice 18+) flagged the Hom ⇄ Iso asymmetry
+-- (Iso uses both Extend AND Restrict; Hom used only Restrict) as an
+-- unrealized symmetry. Per [[feedback-two-path-commutativity]] and
+-- the user's "no such thing as legitimate distinction" rule, the gap
+-- is patched by adding the parallel extend-side lemmas.
+--
+-- After this patch: Stab-S3-Hom imports both halves of the iso (slice
+-- 14b's restrict + slice 14c's extend), so the (Hom ⇄ Iso) Jaccard
+-- gap closes. Stab-S3-Hom is now the full both-direction
+-- homomorphism module.
+--
+-- The proofs:
+--   extend-hom-ε   : extend anchor SFin.ε ≈ ε        (16 refls — anchor × axis)
+--   extend-hom-∙   : extend anchor (s₁ · s₂) ≈ extend anchor s₁ · extend anchor s₂
+--                    (4 refl-anchor cases + 12 axis cases × 3 Fin-dispatch each)
+--   extend-hom-⁻¹  : extend anchor (s ⁻¹) ≈ (extend anchor s) ⁻¹  (16 refls)
+--
+-- All anchor-parametric.
+------------------------------------------------------------------------
+
+extend-hom-ε :
+  (anchor : Axis) (x : Axis) →
+  applyₛ (proj₁ (extend anchor SFin.ε)) x ≡ applyₛ ε x
+extend-hom-ε D D = refl
+extend-hom-ε D C = refl
+extend-hom-ε D S = refl
+extend-hom-ε D W = refl
+extend-hom-ε C D = refl
+extend-hom-ε C C = refl
+extend-hom-ε C S = refl
+extend-hom-ε C W = refl
+extend-hom-ε S D = refl
+extend-hom-ε S C = refl
+extend-hom-ε S S = refl
+extend-hom-ε S W = refl
+extend-hom-ε W D = refl
+extend-hom-ε W C = refl
+extend-hom-ε W S = refl
+extend-hom-ε W W = refl
+
+------------------------------------------------------------------------
+-- extend-hom-∙: extend preserves composition.
+--
+-- Dispatch on (anchor, x). For x = anchor: refl (extend fixes anchor).
+-- For x ≠ anchor: dispatch on SFin.apply s₂ <Fin-index-of-x> via
+-- `with ... in p` (3 sub-cases per axis), each closing by refl.
+--
+-- The Fin index for axis x under anchor's convention follows
+-- declaration-order of {D, C, S, W} minus anchor (per slice 14a/14c
+-- — [[feedback-ordering-is-chirality-choice]]).
+------------------------------------------------------------------------
+
+extend-hom-∙ :
+  (anchor : Axis) (s₁ s₂ : SFin.Permutation 3) (x : Axis) →
+  applyₛ (proj₁ (extend anchor (s₁ SFin.· s₂))) x
+  ≡ applyₛ ((proj₁ (extend anchor s₁)) · (proj₁ (extend anchor s₂))) x
+-- Anchor-fixed cases (each = anchor):
+extend-hom-∙ D s₁ s₂ D = refl
+extend-hom-∙ C s₁ s₂ C = refl
+extend-hom-∙ S s₁ s₂ S = refl
+extend-hom-∙ W s₁ s₂ W = refl
+-- Anchor D, non-anchor axes (C=0, S=1, W=2):
+extend-hom-∙ D s₁ s₂ C with SFin.apply s₂ zero in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ D s₁ s₂ S with SFin.apply s₂ (suc zero) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ D s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+-- Anchor C, non-anchor axes (D=0, S=1, W=2):
+extend-hom-∙ C s₁ s₂ D with SFin.apply s₂ zero in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ C s₁ s₂ S with SFin.apply s₂ (suc zero) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ C s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+-- Anchor S, non-anchor axes (D=0, C=1, W=2):
+extend-hom-∙ S s₁ s₂ D with SFin.apply s₂ zero in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ S s₁ s₂ C with SFin.apply s₂ (suc zero) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ S s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+-- Anchor W, non-anchor axes (D=0, C=1, S=2):
+extend-hom-∙ W s₁ s₂ D with SFin.apply s₂ zero in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ W s₁ s₂ C with SFin.apply s₂ (suc zero) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+extend-hom-∙ W s₁ s₂ S with SFin.apply s₂ (suc (suc zero)) in p
+... | zero             = refl
+... | suc zero         = refl
+... | suc (suc zero)   = refl
+
+------------------------------------------------------------------------
+-- extend-hom-⁻¹: extend preserves inverse — by definition.
+--
+-- Both sides reduce to fin3-to-non-anchor anchor (SFin.invₐ s <i>)
+-- for non-anchor axes (using SFin._⁻¹.apply = SFin.invₐ and
+-- S4._⁻¹.apply = invₐ, plus extend's record structure with invₐ =
+-- extend-invₐ). For anchor x, both = anchor. 16 refls.
+------------------------------------------------------------------------
+
+extend-hom-⁻¹ :
+  (anchor : Axis) (s : SFin.Permutation 3) (x : Axis) →
+  applyₛ (proj₁ (extend anchor (s SFin.⁻¹))) x
+  ≡ applyₛ ((proj₁ (extend anchor s)) ⁻¹) x
+extend-hom-⁻¹ anchor s x = refl
+-- Both sides reduce to `extend-fn anchor (SFin.invₐ s) x`:
+--   LHS = extend-apply anchor (s SFin.⁻¹) x
+--       = extend-fn anchor (SFin.apply (s SFin.⁻¹)) x
+--       = extend-fn anchor (SFin.invₐ s) x   [SFin._⁻¹ swaps apply ↔ invₐ]
+--   RHS = (extend anchor s) ⁻¹.apply x
+--       = (extend anchor s).invₐ x           [S4._⁻¹ swaps apply ↔ invₐ]
+--       = extend-invₐ anchor s x             [record projection]
+--       = extend-fn anchor (SFin.invₐ s) x
 
 ------------------------------------------------------------------------
 -- Notes
