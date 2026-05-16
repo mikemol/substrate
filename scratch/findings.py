@@ -1000,9 +1000,28 @@ def main():
                     shared = rev_deps[i] if shared is None else (shared & rev_deps[i])
                 shared_stems = (sorted({pc_findings_list[s].extra[3] for s in shared})
                                 if shared else [])
-                print(f"    cluster: {cluster_stems}")
+                # Check if upstream's deps EXACTLY cover the cluster.
+                # If yes, the cluster is structurally complete via upstream
+                # — the positional coverage is handled at the upstream level,
+                # and individual cluster members' "missing" siblings would be
+                # false propositions we don't need to add.
+                structurally_complete = False
+                if shared:
+                    for upstream_idx in shared:
+                        upstream_deps = finding_deps[upstream_idx]
+                        if cluster <= upstream_deps:
+                            structurally_complete = True
+                            break
+                marker = "[COMPLETE-VIA-UPSTREAM]" if structurally_complete else "[partial]"
+                print(f"    cluster {marker}: {cluster_stems}")
                 if shared_stems:
                     print(f"      common upstream finding(s): {shared_stems}")
+                if structurally_complete:
+                    print(f"      The upstream depends on the full cluster; positional")
+                    print(f"      coverage is handled there. Individual cousins'")
+                    print(f"      'missing' siblings would be false propositions.")
+                    print(f"      The asymmetry to fix is at the upstream level, not")
+                    print(f"      at the cousins.")
                 print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
