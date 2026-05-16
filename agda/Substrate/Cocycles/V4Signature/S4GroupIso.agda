@@ -1,0 +1,343 @@
+------------------------------------------------------------------------
+-- Substrate.Cocycles.V4Signature.S4GroupIso
+--
+-- The catalog's primary claim about CY-5 — "the 24 ARE S_4"
+-- (M41 v19) — lifted from set-level bijection (S4Iso, slice 4) to
+-- the GROUP level: TotalSpace and S_4 are isomorphic as groups.
+--
+-- The set-bijection from S4Iso provides:
+--   total-to-s4    : TotalSpace → Permutation
+--   s4-to-total    : Permutation → TotalSpace
+--   σ-round-trip   : total-to-s4 ∘ s4-to-total ≈ id  (pointwise)
+--   total-round-trip : s4-to-total ∘ total-to-s4 ≡ id  (propositional)
+--
+-- This module transfers the S_4 group operations through the
+-- bijection to give TotalSpace a group structure, then bundles
+-- it as a Group with TotalSpace ≅ S_4 as IsGroupIsomorphism.
+--
+-- The ≈ vs ≡ asymmetry needs care:
+--   * Permutation's equivalence is pointwise (_≈_), coarser than
+--     propositional equality (which would require funext or UIP on
+--     the bijection-certificate fields).
+--   * TotalSpace = OrbitKey × V₄ — a finite product of decidable
+--     types, propositional equality is fine.
+--   * Lemma `≈-respects-s4-to-total`: s4-to-total is well-defined
+--     under ≈ because it only inspects apply at three axes.
+--
+-- See:
+--   * catalog/cocycles.md § CY-5 — "the 24 ARE S_4"
+--   * Substrate.Cocycles.V4Signature.S4Iso — the underlying bijection
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Cocycles.V4Signature.S4GroupIso where
+
+open import Level using (0ℓ)
+open import Algebra.Bundles using (Group)
+open import Algebra.Structures
+import Algebra.Morphism.Structures as AlgMorph
+open import Relation.Binary.Morphism.Structures using (IsRelHomomorphism)
+open import Data.Product using (_,_; proj₁; proj₂; ∃; -,_)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; sym; trans; cong; cong₂; isEquivalence)
+open import Relation.Binary.Structures using (IsEquivalence)
+
+open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
+open import Substrate.Groups.V4 as V4 using (V₄)
+open import Substrate.Groups.S4 as S4
+  using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group; ≈-refl;
+         inv-l; inv-r)
+  renaming (apply to applyₛ; invₐ to invₐₛ)
+open import Substrate.Groups.V4-Embedding
+  using (embed; act-axis-involutive)
+open import Substrate.Groups.SemidirectProduct
+  using (Stab-D; v-for; s-for; s-for-fixes-D;
+         v-of-axis; v-of-axis-unique; factorisation)
+open import Substrate.Cocycles.V4Signature
+  using (Pairing; α-pair; β-pair; γ-pair;
+         Chirality; even; odd;
+         OrbitKey)
+open import Substrate.Cocycles.V4Signature.S4Iso
+  using (TotalSpace; total-to-s4; s4-to-total;
+         σ-round-trip; total-round-trip;
+         classify-CS)
+
+------------------------------------------------------------------------
+-- Helper: propositional equality implies pointwise equivalence.
+------------------------------------------------------------------------
+
+≡-to-≈ : {σ τ : Permutation} → σ ≡ τ → σ ≈ τ
+≡-to-≈ refl x = refl
+
+------------------------------------------------------------------------
+-- s4-to-total respects pointwise equivalence.
+--
+-- Proof: s4-to-total σ is built from
+--   v-for σ              = v-of-axis (applyₛ σ D)
+--   stab-d-to-orbit-key  = classify-CS (applyₛ (s-for σ) C)
+--                                       (applyₛ (s-for σ) S)
+-- and `s-for σ`'s apply at z is `act-axis (v-for σ) (applyₛ σ z)`.
+-- All three uses of σ are through its `apply` projection, so any two
+-- pointwise-equivalent permutations produce equal s4-to-total values.
+------------------------------------------------------------------------
+
+≈-respects-s4-to-total :
+  (σ τ : Permutation) → σ ≈ τ → s4-to-total σ ≡ s4-to-total τ
+≈-respects-s4-to-total σ τ σ≈τ = cong₂ _,_ ok-eq v-eq
+  where
+    v-eq : v-for σ ≡ v-for τ
+    v-eq = cong v-of-axis (σ≈τ D)
+
+    s-for-eq-at :
+      (z : Axis) → applyₛ (s-for σ) z ≡ applyₛ (s-for τ) z
+    s-for-eq-at z =
+      trans (cong (act-axis (v-for σ)) (σ≈τ z))
+            (cong (λ v → act-axis v (applyₛ τ z)) v-eq)
+
+    ok-eq :
+      classify-CS (applyₛ (s-for σ) C) (applyₛ (s-for σ) S)
+      ≡ classify-CS (applyₛ (s-for τ) C) (applyₛ (s-for τ) S)
+    ok-eq = cong₂ classify-CS (s-for-eq-at C) (s-for-eq-at S)
+
+------------------------------------------------------------------------
+-- TotalSpace group operations: transfer through the bijection.
+--
+-- a ∙ₜ b := s4-to-total (total-to-s4 a · total-to-s4 b)
+-- εₜ    := s4-to-total ε
+-- a ⁻¹ₜ := s4-to-total ((total-to-s4 a) ⁻¹)
+------------------------------------------------------------------------
+
+infixl 7 _∙ₜ_
+
+_∙ₜ_ : TotalSpace → TotalSpace → TotalSpace
+a ∙ₜ b = s4-to-total (total-to-s4 a · total-to-s4 b)
+
+εₜ : TotalSpace
+εₜ = s4-to-total ε
+
+_⁻¹ₜ : TotalSpace → TotalSpace
+a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
+
+------------------------------------------------------------------------
+-- Group axioms.
+--
+-- Each axiom is proved by:
+--   1. Stating the corresponding S_4 axiom (which holds up to ≈).
+--   2. Using ≈-respects-s4-to-total to transfer to ≡ on TotalSpace.
+--   3. Where round trips appear, σ-round-trip and total-round-trip
+--      close the chain.
+------------------------------------------------------------------------
+
+-- Associativity.
+∙ₜ-assoc : (a b c : TotalSpace) → (a ∙ₜ b) ∙ₜ c ≡ a ∙ₜ (b ∙ₜ c)
+∙ₜ-assoc a b c = ≈-respects-s4-to-total σL σR chain
+  where
+    φa = total-to-s4 a
+    φb = total-to-s4 b
+    φc = total-to-s4 c
+    σL = total-to-s4 (s4-to-total (φa · φb)) · φc
+    σR = φa · total-to-s4 (s4-to-total (φb · φc))
+    -- Key step: applyₛ σL z = applyₛ φa (φb (φc z)) = applyₛ σR z
+    chain : σL ≈ σR
+    chain z =
+      trans (σ-round-trip (φa · φb) (applyₛ φc z))
+            (sym (cong (applyₛ φa) (σ-round-trip (φb · φc) z)))
+
+-- Left identity.
+∙ₜ-identityˡ : (a : TotalSpace) → εₜ ∙ₜ a ≡ a
+∙ₜ-identityˡ a =
+  trans (≈-respects-s4-to-total σL (total-to-s4 a) chain)
+        (total-round-trip a)
+  where
+    σL = total-to-s4 (s4-to-total ε) · total-to-s4 a
+    chain : σL ≈ total-to-s4 a
+    chain z = σ-round-trip ε (applyₛ (total-to-s4 a) z)
+
+-- Right identity.
+∙ₜ-identityʳ : (a : TotalSpace) → a ∙ₜ εₜ ≡ a
+∙ₜ-identityʳ a =
+  trans (≈-respects-s4-to-total σL (total-to-s4 a) chain)
+        (total-round-trip a)
+  where
+    σL = total-to-s4 a · total-to-s4 (s4-to-total ε)
+    chain : σL ≈ total-to-s4 a
+    chain z = cong (applyₛ (total-to-s4 a)) (σ-round-trip ε z)
+
+-- Left inverse.
+∙ₜ-inverseˡ : (a : TotalSpace) → (a ⁻¹ₜ) ∙ₜ a ≡ εₜ
+∙ₜ-inverseˡ a = ≈-respects-s4-to-total σL ε chain
+  where
+    φa = total-to-s4 a
+    σL = total-to-s4 (s4-to-total (φa ⁻¹)) · φa
+    chain : σL ≈ ε
+    chain z =
+      trans (σ-round-trip (φa ⁻¹) (applyₛ φa z))
+            (inv-l φa z)
+
+-- Right inverse.
+∙ₜ-inverseʳ : (a : TotalSpace) → a ∙ₜ (a ⁻¹ₜ) ≡ εₜ
+∙ₜ-inverseʳ a = ≈-respects-s4-to-total σL ε chain
+  where
+    φa = total-to-s4 a
+    σL = φa · total-to-s4 (s4-to-total (φa ⁻¹))
+    chain : σL ≈ ε
+    chain z =
+      trans (cong (applyₛ φa) (σ-round-trip (φa ⁻¹) z))
+            (inv-r φa z)
+
+-- Congruence of _∙ₜ_ wrt ≡ (trivial since TotalSpace uses propositional
+-- equality).
+∙ₜ-cong : {a₁ a₂ b₁ b₂ : TotalSpace} →
+         a₁ ≡ a₂ → b₁ ≡ b₂ → (a₁ ∙ₜ b₁) ≡ (a₂ ∙ₜ b₂)
+∙ₜ-cong refl refl = refl
+
+-- Congruence of _⁻¹ₜ wrt ≡.
+⁻¹ₜ-cong : {a₁ a₂ : TotalSpace} → a₁ ≡ a₂ → (a₁ ⁻¹ₜ) ≡ (a₂ ⁻¹ₜ)
+⁻¹ₜ-cong refl = refl
+
+------------------------------------------------------------------------
+-- Bundle TotalSpace as a Group.
+------------------------------------------------------------------------
+
+isMagmaₜ : IsMagma _≡_ _∙ₜ_
+isMagmaₜ = record
+  { isEquivalence = isEquivalence
+  ; ∙-cong        = ∙ₜ-cong
+  }
+
+isSemigroupₜ : IsSemigroup _≡_ _∙ₜ_
+isSemigroupₜ = record
+  { isMagma = isMagmaₜ
+  ; assoc   = ∙ₜ-assoc
+  }
+
+isMonoidₜ : IsMonoid _≡_ _∙ₜ_ εₜ
+isMonoidₜ = record
+  { isSemigroup = isSemigroupₜ
+  ; identity    = ∙ₜ-identityˡ , ∙ₜ-identityʳ
+  }
+
+isGroupₜ : IsGroup _≡_ _∙ₜ_ εₜ _⁻¹ₜ
+isGroupₜ = record
+  { isMonoid = isMonoidₜ
+  ; inverse  = ∙ₜ-inverseˡ , ∙ₜ-inverseʳ
+  ; ⁻¹-cong  = ⁻¹ₜ-cong
+  }
+
+TotalSpace-Group : Group 0ℓ 0ℓ
+TotalSpace-Group = record
+  { Carrier = TotalSpace
+  ; _≈_     = _≡_
+  ; _∙_     = _∙ₜ_
+  ; ε       = εₜ
+  ; _⁻¹     = _⁻¹ₜ
+  ; isGroup = isGroupₜ
+  }
+
+------------------------------------------------------------------------
+-- The group isomorphism TotalSpace ≅ S_4 via total-to-s4.
+--
+-- Each homomorphism axiom witnesses by σ-round-trip + the
+-- S_4-side axiom (since the S_4 operations were transferred TO
+-- TotalSpace, total-to-s4 ∘ (transferred-op) ≈ (S_4-op) is direct).
+------------------------------------------------------------------------
+
+private
+  module Morph = AlgMorph.GroupMorphisms
+    (Group.rawGroup TotalSpace-Group)
+    (Group.rawGroup S₄-Group)
+
+-- ⟦_⟧ = total-to-s4. Homomorphism axioms.
+
+total-to-s4-homo :
+  (a b : TotalSpace) → total-to-s4 (a ∙ₜ b) ≈ (total-to-s4 a · total-to-s4 b)
+total-to-s4-homo a b = σ-round-trip (total-to-s4 a · total-to-s4 b)
+
+total-to-s4-ε-homo : total-to-s4 εₜ ≈ ε
+total-to-s4-ε-homo = σ-round-trip ε
+
+total-to-s4-⁻¹-homo :
+  (a : TotalSpace) → total-to-s4 (a ⁻¹ₜ) ≈ (total-to-s4 a) ⁻¹
+total-to-s4-⁻¹-homo a = σ-round-trip ((total-to-s4 a) ⁻¹)
+
+-- Built as nested record literals to avoid Agda's anonymous-instantiation
+-- scoping issue with re-exported sub-records (IsMagmaHomomorphism /
+-- IsMonoidHomomorphism inside GroupMorphisms).
+total-to-s4-isGroupHomomorphism : Morph.IsGroupHomomorphism total-to-s4
+total-to-s4-isGroupHomomorphism = record
+  { isMonoidHomomorphism = record
+      { isMagmaHomomorphism = record
+          { isRelHomomorphism =
+              record { cong = λ x≡y → ≡-to-≈ (cong total-to-s4 x≡y) }
+          ; homo              = total-to-s4-homo
+          }
+      ; ε-homo              = total-to-s4-ε-homo
+      }
+  ; ⁻¹-homo                = total-to-s4-⁻¹-homo
+  }
+
+------------------------------------------------------------------------
+-- Group isomorphism: total-to-s4 is bijective in the relevant sense.
+--
+-- Injective: total-to-s4 a ≈ total-to-s4 b ⇒ a ≡ b.
+--   Apply ≈-respects-s4-to-total to lift to ≡ on TotalSpace, then
+--   use total-round-trip on both sides.
+--
+-- Surjective: for any σ ∈ Permutation, ∃ a : TotalSpace with
+--   total-to-s4 a ≈ σ. Take a = s4-to-total σ; σ-round-trip is the
+--   witness.
+------------------------------------------------------------------------
+
+total-to-s4-injective : ∀ {a b} → total-to-s4 a ≈ total-to-s4 b → a ≡ b
+total-to-s4-injective {a} {b} eq =
+  trans (sym (total-round-trip a))
+        (trans (≈-respects-s4-to-total (total-to-s4 a) (total-to-s4 b) eq)
+               (total-round-trip b))
+
+total-to-s4-surjective :
+  ∀ σ → ∃ λ a → ∀ {z} → z ≡ a → total-to-s4 z ≈ σ
+total-to-s4-surjective σ = s4-to-total σ , λ {z} z≡ x →
+  trans (cong (λ w → applyₛ (total-to-s4 w) x) z≡)
+        (σ-round-trip σ x)
+
+total-to-s4-isGroupIsomorphism : Morph.IsGroupIsomorphism total-to-s4
+total-to-s4-isGroupIsomorphism = record
+  { isGroupMonomorphism = record
+      { isGroupHomomorphism = total-to-s4-isGroupHomomorphism
+      ; injective           = total-to-s4-injective
+      }
+  ; surjective              = total-to-s4-surjective
+  }
+
+------------------------------------------------------------------------
+-- Notes
+--
+-- 1. This module closes the catalog's "24 ARE S_4" claim at the
+--    deepest level the catalog asserts. The 24 elements of the CY-5
+--    TotalSpace ARE the elements of S_4 — as groups, not just as
+--    bijection-related sets. The cocycle's gauge group V_4 sits
+--    inside S_4 as a normal subgroup; the cosets are the 6 OrbitKeys.
+--
+-- 2. The asymmetry in equivalence relations (_≡_ on TotalSpace,
+--    _≈_ on Permutation) is real and load-bearing. Without ≈-respects-
+--    s4-to-total, the transfer wouldn't be well-defined. The lemma's
+--    proof exploits that s4-to-total inspects σ.apply at only three
+--    axes — finite information.
+--
+-- 3. The Group structure on TotalSpace is NOT the structure CY-5's
+--    cocycle gauge produces. CY-5's V_4-action on TotalSpace acts
+--    only on the fiber (the second component); it never moves
+--    between OrbitKeys. The Group structure here is the LIFTED
+--    S_4-action, which moves freely across the whole TotalSpace
+--    via the bijection. The two are distinct: the cocycle's V_4-
+--    action is the *fibre-preserving* action, the S_4-action is the
+--    *whole-of-TotalSpace* action.
+--
+-- 4. Cross-references:
+--    - Substrate.Cocycles.V4Signature.S4Iso for the underlying
+--      set-bijection.
+--    - Substrate.Cocycle.IsomorphicCocycleStructure for the cocycle
+--      abstraction CY-5 inhabits.
+--    - catalog/cocycles.md § CY-5 — "the 24 ARE S_4".
+------------------------------------------------------------------------
