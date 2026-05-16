@@ -213,22 +213,30 @@ case-all-fixed τ all-fix = e , match
     match S = proj₁ (proj₂ (proj₂ all-fix))
     match W = proj₂ (proj₂ (proj₂ all-fix))
 
--- Case τ.D = C, no-fixed: τ is α.
+-- Consolidated no-fix case: τ in the no-fixed branch with τ.D = target
+-- (target ≢ D) ⇒ τ is the V₄ element that swaps (D, target) and swaps
+-- the remaining two non-D axes.
+--
+-- This was three case-{C,S,W}-no-fix lemmas (orbit detected by
+-- `scratch/findings.py`); consolidated into one function with
+-- target-dispatch. The dispatcher passes the target ≢ D witness
+-- explicitly (using the axis-distinctness lemmas).
 --
 -- Takes the three relevant inequalities (τ.C ≢ C, τ.S ≢ S, τ.W ≢ W)
 -- directly rather than the bundled `no-fixed τ`. This avoids the
 -- `with...in` substitution that would rewrite `applyₛ τ D` inside the
 -- bundle's type when the dispatcher discriminates on it.
-case-C-no-fix :
+case-D-no-fix :
   (τ : Permutation) → (τ · τ) ≈ ε →
-  applyₛ τ D ≡ C →
+  (target : Axis) → target ≢ D →
+  applyₛ τ D ≡ target →
   applyₛ τ C ≢ C →
   applyₛ τ S ≢ S →
   applyₛ τ W ≢ W →
   V₄-image τ
-case-C-no-fix τ τ² τD≡C τC≢ τS≢ τW≢ = α , α-matches
+case-D-no-fix τ τ² D D≢D _ _ _ _ = ⊥-elim (D≢D refl)
+case-D-no-fix τ τ² C _ τD≡C τC≢ τS≢ τW≢ = α , α-matches
   where
-    -- τ.C = D from τ² at D: τ(τD) = D ⇒ τC = D.
     τC≡D : applyₛ τ C ≡ D
     τC≡D = trans (sym (cong (applyₛ τ) τD≡C)) (τ² D)
 
@@ -251,16 +259,7 @@ case-C-no-fix τ τ² τD≡C τC≢ τS≢ τW≢ = α , α-matches
     α-matches C = τC≡D
     α-matches S = τS≡W
     α-matches W = τW≡S
-
--- Case τ.D = S, no-fixed: τ is β.
-case-S-no-fix :
-  (τ : Permutation) → (τ · τ) ≈ ε →
-  applyₛ τ D ≡ S →
-  applyₛ τ C ≢ C →
-  applyₛ τ S ≢ S →
-  applyₛ τ W ≢ W →
-  V₄-image τ
-case-S-no-fix τ τ² τD≡S τC≢ τS≢ τW≢ = β , β-matches
+case-D-no-fix τ τ² S _ τD≡S τC≢ τS≢ τW≢ = β , β-matches
   where
     τS≡D : applyₛ τ S ≡ D
     τS≡D = trans (sym (cong (applyₛ τ) τD≡S)) (τ² D)
@@ -284,16 +283,7 @@ case-S-no-fix τ τ² τD≡S τC≢ τS≢ τW≢ = β , β-matches
     β-matches C = τC≡W
     β-matches S = τS≡D
     β-matches W = τW≡C
-
--- Case τ.D = W, no-fixed: τ is γ.
-case-W-no-fix :
-  (τ : Permutation) → (τ · τ) ≈ ε →
-  applyₛ τ D ≡ W →
-  applyₛ τ C ≢ C →
-  applyₛ τ S ≢ S →
-  applyₛ τ W ≢ W →
-  V₄-image τ
-case-W-no-fix τ τ² τD≡W τC≢ τS≢ τW≢ = γ , γ-matches
+case-D-no-fix τ τ² W _ τD≡W τC≢ τS≢ τW≢ = γ , γ-matches
   where
     τW≡D : applyₛ τ W ≡ D
     τW≡D = trans (sym (cong (applyₛ τ) τD≡W)) (τ² D)
@@ -328,15 +318,15 @@ is-V₄-shape-classifies τ (_ , inj₁ all-fix) = case-all-fixed τ all-fix
 is-V₄-shape-classifies τ (τ² , inj₂ no-fix)
   with applyₛ τ D in τD-eq
 ... | D = ⊥-elim (proj₁ no-fix refl)
-... | C = case-C-no-fix τ τ² τD-eq
+... | C = case-D-no-fix τ τ² C (λ ()) τD-eq
             (proj₁ (proj₂ no-fix))
             (proj₁ (proj₂ (proj₂ no-fix)))
             (proj₂ (proj₂ (proj₂ no-fix)))
-... | S = case-S-no-fix τ τ² τD-eq
+... | S = case-D-no-fix τ τ² S (λ ()) τD-eq
             (proj₁ (proj₂ no-fix))
             (proj₁ (proj₂ (proj₂ no-fix)))
             (proj₂ (proj₂ (proj₂ no-fix)))
-... | W = case-W-no-fix τ τ² τD-eq
+... | W = case-D-no-fix τ τ² W (λ ()) τD-eq
             (proj₁ (proj₂ no-fix))
             (proj₁ (proj₂ (proj₂ no-fix)))
             (proj₂ (proj₂ (proj₂ no-fix)))
