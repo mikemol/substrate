@@ -887,35 +887,21 @@ def main():
     if partial_findings:
         print("=== Partial coset interactions (Galois of orbit-almost-filled) ===")
         print("  Definition-name stems where some constructors of a finite type are")
-        print("  represented but others are missing. The missing constructors are")
-        print("  the asymmetry. WHERE a parametric counterpart exists elsewhere,")
-        print("  it's listed as structural guidance for the annealing fix.")
+        print("  represented but others are missing. Each partial coset IS the finding;")
+        print("  the parametric counterpart, when listed, is bonus structural guidance")
+        print("  for the annealing fix (not a requirement for the finding to matter).")
         print()
-        # Sort: with-counterpart first (actionable guidance), then orphan.
-        with_cp = [t for t in partial_findings if t[1][4]]
-        without_cp = [t for t in partial_findings if not t[1][4]]
-        if with_cp:
-            print("  --- With parametric counterpart (annealing guidance) ---")
-            for metric, extra, members in with_cp:
-                ty, present, missing, stem, counterparts = extra
-                members_short = sorted(short(o) for o in members)
-                print(f"  [{ty}]  stem '{stem}': "
-                      f"present={list(present)}, MISSING={list(missing)}")
-                print(f"          parametric counterpart: "
-                      f"{', '.join(c.split('::')[-1] for c in counterparts)}")
-                for m in members_short:
-                    print(f"    · {m}")
-                print()
-        if without_cp:
-            print("  --- Orphan partial cosets (no parametric counterpart) ---")
-            for metric, extra, members in without_cp[:15]:
-                ty, present, missing, stem, counterparts = extra
-                members_short = sorted(short(o) for o in members)
-                print(f"  [{ty}]  stem '{stem}': "
-                      f"present={list(present)}, MISSING={list(missing)}")
-                for m in members_short:
-                    print(f"    · {m}")
-                print()
+        for metric, extra, members in partial_findings:
+            ty, present, missing, stem, counterparts = extra
+            members_short = sorted(short(o) for o in members)
+            print(f"  [{ty}]  stem '{stem}': "
+                  f"present={list(present)}, MISSING={list(missing)}")
+            if counterparts:
+                cp_names = ", ".join(c.split("::")[-1] for c in counterparts)
+                print(f"          parametric counterpart: {cp_names}")
+            for m in members_short:
+                print(f"    · {m}")
+            print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
     orbit_findings = [f for f in findings if f.level == "orbit"]
