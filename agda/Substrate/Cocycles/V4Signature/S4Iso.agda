@@ -64,6 +64,11 @@ open import Substrate.Cocycles.V4Signature
          OrbitKey;
          CY5-V4Signature)
 open import Substrate.Cocycle using (IsomorphicCocycleStructure)
+open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Groups.Stab-S3 using (fin3-to-non-anchor)
+open import Substrate.Groups.Stab-S3-Extend using (extend)
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3
+  using (transposition; transposition-fixes-third)
 
 ------------------------------------------------------------------------
 -- S12 — Bijection helper lemmas.
@@ -119,66 +124,21 @@ W≢S ()
 stab-id : Permutation
 stab-id = ε
 
--- (SW): D↔D, C↔C, S↔W. Self-inverse (involution).
+-- (SW): D↔D, C↔C, S↔W. Self-inverse.
+-- Expressed as extend D of the Fin-3 transposition swapping (1, 2),
+-- which corresponds to S↔W under the D-anchor convention 0↔C, 1↔S, 2↔W.
 stab-sw : Permutation
-stab-sw = record
-  { apply = ap
-  ; invₐ  = ap
-  ; inv-l = invo
-  ; inv-r = invo
-  }
-  where
-    ap : Axis → Axis
-    ap D = D
-    ap C = C
-    ap S = W
-    ap W = S
-    invo : (x : Axis) → ap (ap x) ≡ x
-    invo D = refl
-    invo C = refl
-    invo S = refl
-    invo W = refl
+stab-sw = proj₁ (extend D (transposition (suc zero) (suc (suc zero))))
 
--- (CS): D↔D, S↔S? — wait, (CS) swaps C and S; W is fixed.
--- D↔D, W↔W, C↔S. Self-inverse.
+-- (CS): D↔D, W↔W, C↔S. Self-inverse.
+-- Fin-3 transposition (0, 1) = C↔S under D-anchor convention.
 stab-cs : Permutation
-stab-cs = record
-  { apply = ap
-  ; invₐ  = ap
-  ; inv-l = invo
-  ; inv-r = invo
-  }
-  where
-    ap : Axis → Axis
-    ap D = D
-    ap C = S
-    ap S = C
-    ap W = W
-    invo : (x : Axis) → ap (ap x) ≡ x
-    invo D = refl
-    invo C = refl
-    invo S = refl
-    invo W = refl
+stab-cs = proj₁ (extend D (transposition zero (suc zero)))
 
 -- (CW): D↔D, S↔S, C↔W. Self-inverse.
+-- Fin-3 transposition (0, 2) = C↔W under D-anchor convention.
 stab-cw : Permutation
-stab-cw = record
-  { apply = ap
-  ; invₐ  = ap
-  ; inv-l = invo
-  ; inv-r = invo
-  }
-  where
-    ap : Axis → Axis
-    ap D = D
-    ap C = W
-    ap S = S
-    ap W = C
-    invo : (x : Axis) → ap (ap x) ≡ x
-    invo D = refl
-    invo C = refl
-    invo S = refl
-    invo W = refl
+stab-cw = proj₁ (extend D (transposition zero (suc (suc zero))))
 
 -- (CSW): the 3-cycle C→S→W→C, with D fixed.
 -- apply: C→S, S→W, W→C, D→D.
@@ -262,23 +222,25 @@ stab-id-fixes-W = refl
 stab-sw-fixes-D : Stab-D stab-sw
 stab-sw-fixes-D = refl
 
--- stab-sw swaps S↔W; fixes D and C only.
+-- stab-sw swaps S↔W (Fin-3 swap 1↔2); fixes C (Fin-3 index 0) by
+-- transposition-fixes-third. Structural relationship visible:
+-- transposition (1, 2) fixes index 0, lifted by extend-D to C.
 stab-sw-fixes-C : Stab-C stab-sw
-stab-sw-fixes-C = refl
+stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third (suc zero) (suc (suc zero)) zero (λ ()) (λ ()))
 
 stab-cs-fixes-D : Stab-D stab-cs
 stab-cs-fixes-D = refl
 
--- stab-cs swaps C↔S; fixes D and W only.
+-- stab-cs swaps C↔S (Fin-3 swap 0↔1); fixes W (index 2).
 stab-cs-fixes-W : Stab-W stab-cs
-stab-cs-fixes-W = refl
+stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc zero) (suc (suc zero)) (λ ()) (λ ()))
 
 stab-cw-fixes-D : Stab-D stab-cw
 stab-cw-fixes-D = refl
 
--- stab-cw swaps C↔W; fixes D and S only.
+-- stab-cw swaps C↔W (Fin-3 swap 0↔2); fixes S (index 1).
 stab-cw-fixes-S : Stab-S stab-cw
-stab-cw-fixes-S = refl
+stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc (suc zero)) (suc zero) (λ ()) (λ ()))
 
 -- stab-csw, stab-cws are 3-cycles; fix only D.
 -- No -C, -S, or -W siblings to add (those propositions are false).
