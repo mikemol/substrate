@@ -33,17 +33,69 @@
 
 module Substrate.Cocycles.V4Signature.OrbitKey-S3 where
 
+open import Data.Empty using (⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin; zero; suc)
+open import Data.Fin.Properties using (_≟_)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl)
+open import Relation.Nullary using (yes; no)
 
 import Substrate.Groups.SFin as SFin
 open import Substrate.Cocycles.V4Signature
   using (Pairing; α-pair; β-pair; γ-pair;
          Chirality; even; odd;
          OrbitKey)
+
+------------------------------------------------------------------------
+-- Parametric transposition: given i, j : Fin 3, swap them (fix the
+-- third index).
+--
+-- Symmetric in (i, j) — no chirality-choice generators. Each of the
+-- 3 transpositions in S_3 is an instance with specific indices.
+-- Per [[feedback-choice-rigidification-in-substrate]]: avoid picking
+-- canonical generators; expand the cohomological structure (S_3's
+-- transposition conjugacy class is a 3-element orbit under S_3
+-- conjugation) and genericize over the class.
+--
+-- When i ≡ j the result is the identity (no swap to perform).
+------------------------------------------------------------------------
+
+transposition : (i j : Fin 3) → SFin.Permutation 3
+transposition i j = record
+  { apply  = swap-fn
+  ; invₐ   = swap-fn
+  ; inv-l  = swap-invo
+  ; inv-r  = swap-invo
+  }
+  where
+    swap-fn : Fin 3 → Fin 3
+    swap-fn k with k ≟ i
+    ... | yes _ = j
+    ... | no _ with k ≟ j
+    ...           | yes _ = i
+    ...           | no _  = k
+
+    -- swap-fn is self-inverse: swapping twice recovers the original.
+    -- Case analysis on (k ≟ i, k ≟ j); the dispatch in swap-fn drives
+    -- the case-tree.
+    swap-invo : (k : Fin 3) → swap-fn (swap-fn k) ≡ k
+    swap-invo k with k ≟ i
+    ... | yes refl with j ≟ i
+    ...               | yes refl = refl
+    ...               | no _ with j ≟ j
+    ...                          | yes _ = refl
+    ...                          | no q = ⊥-elim (q refl)
+    swap-invo k | no q1 with k ≟ j
+    ... | yes refl with i ≟ i
+    ...               | yes _ = refl
+    ...               | no q = ⊥-elim (q refl)
+    swap-invo k | no q1 | no q2 with k ≟ i
+    ... | yes a = ⊥-elim (q1 a)
+    ... | no _ with k ≟ j
+    ...           | yes b = ⊥-elim (q2 b)
+    ...           | no _ = refl
 
 ------------------------------------------------------------------------
 -- The 6 elements of SFin.Permutation 3.
@@ -53,44 +105,17 @@ open import Substrate.Cocycles.V4Signature
 s3-id : SFin.Permutation 3
 s3-id = SFin.ε
 
--- swap (1 2): 0↦0, 1↦2, 2↦1. Self-inverse.
+-- swap (1 2): 0↦0, 1↦2, 2↦1. Now an instance of `transposition`.
 s3-sw : SFin.Permutation 3
-s3-sw = record { apply = ap ; invₐ = ap ; inv-l = invo ; inv-r = invo }
-  where
-    ap : Fin 3 → Fin 3
-    ap zero             = zero
-    ap (suc zero)       = suc (suc zero)
-    ap (suc (suc zero)) = suc zero
-    invo : (i : Fin 3) → ap (ap i) ≡ i
-    invo zero             = refl
-    invo (suc zero)       = refl
-    invo (suc (suc zero)) = refl
+s3-sw = transposition (suc zero) (suc (suc zero))
 
--- swap (0 1): 0↦1, 1↦0, 2↦2. Self-inverse.
+-- swap (0 1): 0↦1, 1↦0, 2↦2.
 s3-cs : SFin.Permutation 3
-s3-cs = record { apply = ap ; invₐ = ap ; inv-l = invo ; inv-r = invo }
-  where
-    ap : Fin 3 → Fin 3
-    ap zero             = suc zero
-    ap (suc zero)       = zero
-    ap (suc (suc zero)) = suc (suc zero)
-    invo : (i : Fin 3) → ap (ap i) ≡ i
-    invo zero             = refl
-    invo (suc zero)       = refl
-    invo (suc (suc zero)) = refl
+s3-cs = transposition zero (suc zero)
 
--- swap (0 2): 0↦2, 1↦1, 2↦0. Self-inverse.
+-- swap (0 2): 0↦2, 1↦1, 2↦0.
 s3-cw : SFin.Permutation 3
-s3-cw = record { apply = ap ; invₐ = ap ; inv-l = invo ; inv-r = invo }
-  where
-    ap : Fin 3 → Fin 3
-    ap zero             = suc (suc zero)
-    ap (suc zero)       = suc zero
-    ap (suc (suc zero)) = zero
-    invo : (i : Fin 3) → ap (ap i) ≡ i
-    invo zero             = refl
-    invo (suc zero)       = refl
-    invo (suc (suc zero)) = refl
+s3-cw = transposition zero (suc (suc zero))
 
 -- 3-cycle (0 1 2): 0↦1, 1↦2, 2↦0. Inverse: (0 2 1).
 s3-csw : SFin.Permutation 3
