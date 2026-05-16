@@ -1,37 +1,51 @@
 ------------------------------------------------------------------------
 -- Substrate.Cardinality
 --
--- Slice 15: explicit Fin n bijections for the catalog's small types.
--- Makes the catalog's numerical claims (24 signatures, 6 orbits, 8
--- reserved, 4 V_4-translates per orbit, etc.) machine-checked rather
--- than implicit in earlier slices' bijections.
+-- Slice 15: explicit Fin n bijections for the catalog's ATOMIC
+-- small types. Makes the catalog's numerical claims machine-checked
+-- rather than implicit in earlier slices' bijections.
 --
--- Six basic cardinality theorems:
+-- Five atomic cardinality theorems:
 --
 --   Axis ↔ Fin 4         |Axis| = 4
 --   V₄ ↔ Fin 4           |V₄| = 4
 --   Pairing ↔ Fin 3      |Pairing| = 3
 --   Chirality ↔ Fin 2    |Chirality| = 2
---   OrbitKey ↔ Fin 6     |OrbitKey| = 6 (Pairing × Chirality)
---   Axis × Bool ↔ Fin 8  |Reserved-shape| = 8
+--   Bool ↔ Fin 2         |Bool| = 2  (↔-sym of stdlib's 2↔Bool)
+--
+-- "Atomic" here means: the source type is a direct sum-of-constants
+-- (or stdlib primitive), not a product. Product cardinalities —
+-- OrbitKey ↔ Fin 6 (= Pairing × Chirality), Axis × Bool ↔ Fin 8 —
+-- live in Substrate.Cardinality.Product (slice 16), derived via
+-- `cardinality-product` rather than re-enumerated. This split is
+-- the [[feedback-expose-generator-not-orbit]] move: the product
+-- forms are orbit elements of cardinality-product, and the
+-- generator (= cardinality-product) is the right abstraction; only
+-- the genuinely-primitive atomics need enumeration here.
 --
 -- Anchor-parametric ordering note (per
 -- [[feedback-ordering-is-chirality-choice]]): each of these
 -- bijections uses a SPECIFIC ORDERING (declaration order for Axis,
--- V₄, Pairing; even-before-odd for Chirality; etc.). This is a
--- CONVENTION, not a structural fact. The cardinality (|X| = n) is
--- the structural claim; the bijection chooses one presentation
--- among the possible finite enumerations. (The "differs by an
--- inner automorphism of S_n" framing is prose-level; promoting it
--- to a theorem would require a permutation-action on enumerations,
--- not developed here.)
+-- V₄, Pairing; even-before-odd for Chirality; false-before-true
+-- inherited from stdlib's 2↔Bool). This is a CONVENTION, not a
+-- structural fact. The cardinality (|X| = n) is the structural
+-- claim; the bijection chooses one presentation among the possible
+-- finite enumerations. (The "differs by an inner automorphism of
+-- S_n" framing is prose-level; promoting it to a theorem would
+-- require a permutation-action on enumerations, not developed
+-- here.)
 --
--- Downstream cardinalities follow by composition with existing
--- bijections; deferred:
+-- Downstream cardinalities (composed in slice 16 or deferred):
 --
---   Reserved ↔ Fin 8     via Reserved ↔ Axis × Bool (slice 10)
---                         + Axis × Bool ↔ Fin 8 (here).
---   TotalSpace ↔ Fin 24  via OrbitKey × V₄ (= TotalSpace) + product.
+--   OrbitKey ↔ Fin 6     slice 16, via `cardinality-product
+--                         pairing-↔-fin3 chirality-↔-fin2`.
+--   Axis × Bool ↔ Fin 8  slice 16, via `cardinality-product
+--                         axis-↔-fin4 bool-↔-fin2`.
+--   OrbitKey × V₄ ↔ Fin 24
+--                         slice 16.
+--   TotalSpace ↔ Fin 24  slice 16 (definitional unfold).
+--   Reserved ↔ Fin 8     via Reserved ↔ Axis × Bool (slice 10) +
+--                         axis×bool-↔-fin8 (slice 16); deferred.
 --   Permutation ↔[≈] Fin 24
 --                         via TotalSpace ↔ Permutation (slice 4) +
 --                         TotalSpace ↔ Fin 24. Modulo pointwise ≈,
@@ -59,8 +73,9 @@ open import Level using (0ℓ)
 open import Data.Bool using (Bool; true; false)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.Fin.Properties using (2↔Bool)
 open import Function.Bundles using (_↔_; mk↔ₛ′)
+open import Function.Properties.Inverse using (↔-sym)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
 
@@ -68,8 +83,7 @@ open import Substrate.Axes using (Axis; D; C; S; W)
 open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
 open import Substrate.Cocycles.V4Signature
   using (Pairing; α-pair; β-pair; γ-pair;
-         Chirality; even; odd;
-         OrbitKey)
+         Chirality; even; odd)
 
 ------------------------------------------------------------------------
 -- Axis ↔ Fin 4
@@ -184,131 +198,36 @@ chirality-↔-fin2 = mk↔ₛ′ to from to-from from-to
     from-to odd  = refl
 
 ------------------------------------------------------------------------
--- OrbitKey ↔ Fin 6
+-- Bool ↔ Fin 2
 --
--- The 6 (Pairing, Chirality) combinations, enumerated in
--- (α, β, γ) × (even, odd) order.
+-- Re-export of stdlib's `2↔Bool : Fin 2 ↔ Bool` symmetrised, so the
+-- convention is `false ↦ 0, true ↦ 1`. Used by slice 16 to compose
+-- Axis × Bool ↔ Fin 8.
 ------------------------------------------------------------------------
 
-orbitkey-↔-fin6 : OrbitKey ↔ Fin 6
-orbitkey-↔-fin6 = mk↔ₛ′ to from to-from from-to
-  where
-    to : OrbitKey → Fin 6
-    to (α-pair , even) = zero
-    to (α-pair , odd)  = suc zero
-    to (β-pair , even) = suc (suc zero)
-    to (β-pair , odd)  = suc (suc (suc zero))
-    to (γ-pair , even) = suc (suc (suc (suc zero)))
-    to (γ-pair , odd)  = suc (suc (suc (suc (suc zero))))
-
-    from : Fin 6 → OrbitKey
-    from zero                                   = α-pair , even
-    from (suc zero)                             = α-pair , odd
-    from (suc (suc zero))                       = β-pair , even
-    from (suc (suc (suc zero)))                 = β-pair , odd
-    from (suc (suc (suc (suc zero))))           = γ-pair , even
-    from (suc (suc (suc (suc (suc zero)))))     = γ-pair , odd
-
-    to-from : (i : Fin 6) → to (from i) ≡ i
-    to-from zero                                   = refl
-    to-from (suc zero)                             = refl
-    to-from (suc (suc zero))                       = refl
-    to-from (suc (suc (suc zero)))                 = refl
-    to-from (suc (suc (suc (suc zero))))           = refl
-    to-from (suc (suc (suc (suc (suc zero)))))     = refl
-
-    from-to : (k : OrbitKey) → from (to k) ≡ k
-    from-to (α-pair , even) = refl
-    from-to (α-pair , odd)  = refl
-    from-to (β-pair , even) = refl
-    from-to (β-pair , odd)  = refl
-    from-to (γ-pair , even) = refl
-    from-to (γ-pair , odd)  = refl
-
-------------------------------------------------------------------------
--- Axis × Bool ↔ Fin 8
---
--- The 8 (Axis × Bool) combinations, enumerated in (D, C, S, W) ×
--- (false, true) order.
-------------------------------------------------------------------------
-
-axis×bool-↔-fin8 : (Axis × Bool) ↔ Fin 8
-axis×bool-↔-fin8 = mk↔ₛ′ to from to-from from-to
-  where
-    to : Axis × Bool → Fin 8
-    to (D , false) = zero
-    to (D , true)  = suc zero
-    to (C , false) = suc (suc zero)
-    to (C , true)  = suc (suc (suc zero))
-    to (S , false) = suc (suc (suc (suc zero)))
-    to (S , true)  = suc (suc (suc (suc (suc zero))))
-    to (W , false) = suc (suc (suc (suc (suc (suc zero)))))
-    to (W , true)  = suc (suc (suc (suc (suc (suc (suc zero))))))
-
-    from : Fin 8 → Axis × Bool
-    from zero                                                       = D , false
-    from (suc zero)                                                 = D , true
-    from (suc (suc zero))                                           = C , false
-    from (suc (suc (suc zero)))                                     = C , true
-    from (suc (suc (suc (suc zero))))                               = S , false
-    from (suc (suc (suc (suc (suc zero)))))                         = S , true
-    from (suc (suc (suc (suc (suc (suc zero))))))                   = W , false
-    from (suc (suc (suc (suc (suc (suc (suc zero)))))))             = W , true
-
-    to-from : (i : Fin 8) → to (from i) ≡ i
-    to-from zero                                                       = refl
-    to-from (suc zero)                                                 = refl
-    to-from (suc (suc zero))                                           = refl
-    to-from (suc (suc (suc zero)))                                     = refl
-    to-from (suc (suc (suc (suc zero))))                               = refl
-    to-from (suc (suc (suc (suc (suc zero)))))                         = refl
-    to-from (suc (suc (suc (suc (suc (suc zero))))))                   = refl
-    to-from (suc (suc (suc (suc (suc (suc (suc zero)))))))             = refl
-
-    from-to : (xb : Axis × Bool) → from (to xb) ≡ xb
-    from-to (D , false) = refl
-    from-to (D , true)  = refl
-    from-to (C , false) = refl
-    from-to (C , true)  = refl
-    from-to (S , false) = refl
-    from-to (S , true)  = refl
-    from-to (W , false) = refl
-    from-to (W , true)  = refl
+bool-↔-fin2 : Bool ↔ Fin 2
+bool-↔-fin2 = ↔-sym 2↔Bool
 
 ------------------------------------------------------------------------
 -- Notes
 --
--- 1. Each cardinality lemma above commits to a specific ORDERING of
---    its source type. The orderings are CONVENTIONS, not structural
---    facts — per [[feedback-ordering-is-chirality-choice]], the
---    cardinality (|X| = n) is structural; the specific bijection is
---    one presentation among the possible finite enumerations.
---    Downstream code MUST NOT depend on which ordering was chosen
---    (e.g., on whether D ↦ 0 or D ↦ 3).
+-- 1. Each atomic cardinality lemma commits to a specific ORDERING
+--    of its source type. The orderings are CONVENTIONS, not
+--    structural facts — per [[feedback-ordering-is-chirality-
+--    choice]], the cardinality (|X| = n) is structural; the
+--    specific bijection is one presentation among the possible
+--    finite enumerations. Downstream code MUST NOT depend on which
+--    ordering was chosen (e.g., on whether D ↦ 0 or D ↦ 3).
 --
--- 2. The six lemmas combine into downstream cardinalities by
---    composition with the bijections from earlier slices:
---
---    Reserved ↔ Fin 8:
---      slice 10's `Reserved↔SignedAxis` ⊕ `axis×bool-↔-fin8`.
---
---    TotalSpace ↔ Fin 24 (= |OrbitKey × V₄| = 6 × 4 = 24):
---      composition over OrbitKey × V₄. Needs a `Fin m × Fin n ↔ Fin
---      (m * n)` lemma (stdlib has `combine`/`remQuot`; integration
---      deferred).
---
---    Permutation ↔[≈] Fin 24:
---      slice 4's `TotalSpace↔Permutation` ⊕ `TotalSpace ↔ Fin 24`,
---      modulo pointwise ≈ on Permutation (strict _≡_ on Permutation
---      would need funext).
---
---    Live ↔[≈] Fin 24:
---      slice 11d's `Live≃Permutation` ⊕ `Permutation ↔[≈] Fin 24`.
---
---    Stab(anchor) ↔[≈] Fin 6:
---      slice 14d's `stab≃s₃ anchor` ⊕ |SFin.Permutation 3| = 6 (the
---      "S_3 has 6 elements" enumeration, deferred). Parametric in
---      anchor — no anchor-specific cardinality is stated.
+-- 2. Why only ATOMIC enumerations live here: per [[feedback-expose-
+--    generator-not-orbit]], product cardinalities like OrbitKey ↔
+--    Fin 6 (= Pairing × Chirality) and Axis × Bool ↔ Fin 8 are
+--    orbit elements of the `cardinality-product` generator
+--    (Substrate.Cardinality.Product, slice 16). The generator is
+--    the right abstraction; hand-enumerating its orbit elements
+--    would be dead duplication. The five lemmas above are the
+--    genuinely-primitive enumerations that the generator
+--    consumes.
 --
 -- 3. Anchor-parametricity discipline: per slice 14a's redirect, no
 --    Stab(D)-specific cardinality lemma exists. The Stab cardinality
@@ -317,6 +236,9 @@ axis×bool-↔-fin8 = mk↔ₛ′ to from to-from from-to
 --    foundation rule 4).
 --
 -- 4. Cross-references:
+--    * Slice 16: Cardinality.Product — product compositions
+--      (orbitkey-↔-fin6, axis×bool-↔-fin8, orbitkey×v4-↔-fin24,
+--      totalspace-↔-fin24).
 --    * Slice 10: Reserved ↔ Axis × Bool.
 --    * Slice 4: TotalSpace ↔ Permutation.
 --    * Slice 11d: Live ↔ Permutation.
