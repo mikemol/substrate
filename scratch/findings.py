@@ -238,6 +238,8 @@ def collect_clause_findings():
             qname = f"{mod}::{name}"
             all_defs[qname] = rhss
             qname_to_module[qname] = mod
+    # Stash all_defs as an attribute for downstream detectors.
+    collect_clause_findings.all_defs = all_defs
 
     # Group by (clause_count, template_set).
     shape_to_defs = defaultdict(list)
@@ -271,6 +273,149 @@ def collect_clause_findings():
                 extra=(len(rhss),),
             ))
     return findings, qname_to_module
+
+
+# ============================================================
+# Source 4a: module-triple detector (extract 3-faces of simplices).
+# Filling the empty `module-triple` fiber.
+# ============================================================
+
+def collect_module_triple_findings(simplex_findings):
+    """Emit explicit 3-face findings from each (≥3)-simplex."""
+    findings = []
+    for s in simplex_findings:
+        nodes_list = sorted(s.objects)
+        if len(nodes_list) < 3:
+            continue
+        # Every 3-subset is a face.
+        for i in range(len(nodes_list)):
+            for j in range(i + 1, len(nodes_list)):
+                for k in range(j + 1, len(nodes_list)):
+                    findings.append(Finding(
+                        level="module-triple",
+                        kind=f"simplex-3face-θ{s.metric:.1f}",
+                        objects=frozenset({nodes_list[i], nodes_list[j], nodes_list[k]}),
+                        metric=s.metric,
+                        source="simplicial_shape",
+                    ))
+    return findings
+
+
+# ============================================================
+# Source 4b: def-pair detector (pairs within def-groups).
+# Filling the empty `def-pair` fiber.
+# ============================================================
+
+def collect_def_pair_findings(def_group_findings):
+    """Emit every pair within each def-group."""
+    findings = []
+    for dg in def_group_findings:
+        members = sorted(dg.objects)
+        for i in range(len(members)):
+            for j in range(i + 1, len(members)):
+                findings.append(Finding(
+                    level="def-pair",
+                    kind=f"def-group-pair-{int(dg.metric)}m",
+                    objects=frozenset({members[i], members[j]}),
+                    metric=dg.metric,
+                    source="clause_shapes",
+                    extra=(dg.kind,),
+                ))
+    return findings
+
+
+# ============================================================
+# Source 4c: clause-shape-pair detector (pairs of definitions sharing
+# clause-template structure, cross-module).
+# Filling the empty `clause-shape-pair` fiber.
+# ============================================================
+
+def collect_clause_shape_pair_findings(all_defs_with_modules):
+    """
+    For each pair of definitions (in possibly-different modules) whose
+    clause RHSs share the same template-set, emit a finding. Distinct
+    from def-group (which clusters; this enumerates pairs).
+    """
+    findings = []
+    # Build sig -> [qname] map.
+    sig_to_qnames = defaultdict(list)
+    for qname, rhss in all_defs_with_modules.items():
+        if len(rhss) < 2:
+            continue
+        templates = frozenset(shape_template(r) for r in rhss)
+        sig = (len(rhss), templates)
+        sig_to_qnames[sig].append(qname)
+    # Emit pairs for each sig with ≥2 qnames.
+    for (count, templates), qnames in sig_to_qnames.items():
+        if len(qnames) < 2:
+            continue
+        for i in range(len(qnames)):
+            for j in range(i + 1, len(qnames)):
+                findings.append(Finding(
+                    level="clause-shape-pair",
+                    kind=f"shape-match-{count}c",
+                    objects=frozenset({qnames[i], qnames[j]}),
+                    metric=float(count),
+                    source="clause_shapes",
+                ))
+    return findings
+
+
+# ============================================================
+# Source 4d: term-shape detector (recurrent subterm shapes within
+# RHSs). Filling the empty `term-shape` fiber.
+#
+# Tokenize each RHS, abstract identifiers/literals to `_`, keep
+# operators/punctuation. Group RHSs by their token-shape signature.
+# Recurrent signatures with ≥3 occurrences are findings.
+# ============================================================
+
+TOKEN_RE = re.compile(
+    r"[a-zA-Z_][a-zA-Z0-9_\-'≢≈₁₂₃₄₅₆₇₈₉₀ⁿᵐ⁻ᵖᵃˢⁱ]*"  # identifiers
+    r"|[(){};,]"                                          # punctuation
+    r"|[+\-*/=<>≡≢≈→←↔⇒∘·⁻⁺λ∧∨¬]+"                    # operators
+)
+
+
+def term_shape(rhs):
+    """Tokenize RHS and abstract identifiers to `_`, keeping structure."""
+    tokens = TOKEN_RE.findall(rhs)
+    out = []
+    for t in tokens:
+        if re.match(r"^[a-zA-Z_]", t):
+            out.append("_")
+        else:
+            out.append(t)
+    return " ".join(out)
+
+
+def collect_term_shape_findings(all_defs_with_modules):
+    """For each RHS, compute term-shape and find recurrent shapes."""
+    shape_to_owners = defaultdict(list)  # shape -> [(qname, clause_idx)]
+    for qname, rhss in all_defs_with_modules.items():
+        for idx, rhs in enumerate(rhss):
+            shape = term_shape(rhs)
+            if len(shape) < 5:  # filter trivial 1-2-token shapes (most refl etc.)
+                continue
+            shape_to_owners[shape].append((qname, idx))
+
+    findings = []
+    for shape, owners in shape_to_owners.items():
+        if len(owners) < 3:
+            continue
+        # Use the qnames as objects (collapse multiple-clauses-per-def).
+        qnames = frozenset(q for q, _ in owners)
+        if len(qnames) < 2:
+            continue
+        findings.append(Finding(
+            level="term-shape",
+            kind=f"recurrent-term-{len(owners)}occ",
+            objects=qnames,
+            metric=float(len(owners)),
+            source="term_shapes",
+            extra=(shape,),
+        ))
+    return findings
 
 
 # ============================================================
@@ -356,15 +501,26 @@ def main():
     findings.extend(collect_simplex_findings(graph, nodes))
     clause_f, qname_to_module = collect_clause_findings()
     findings.extend(clause_f)
+    all_defs = collect_clause_findings.all_defs
+
+    # Build derived findings.
+    simplex_findings = [f for f in findings if f.level == "module-simplex"]
+    def_group_findings = [f for f in findings if f.level == "def-group"]
+    findings.extend(collect_module_triple_findings(simplex_findings))
+    findings.extend(collect_def_pair_findings(def_group_findings))
+    findings.extend(collect_clause_shape_pair_findings(all_defs))
+    findings.extend(collect_term_shape_findings(all_defs))
+
     catalog_f, claim_to_modules = collect_catalog_findings()
     findings.extend(catalog_f)
 
     print(f"Total findings emitted: {len(findings)}")
-    print(f"  module-pair:    {sum(1 for f in findings if f.level == 'module-pair')}")
-    print(f"  module-simplex: {sum(1 for f in findings if f.level == 'module-simplex')}")
-    print(f"  def-group:      {sum(1 for f in findings if f.level == 'def-group')}")
-    print(f"  def-single:     {sum(1 for f in findings if f.level == 'def-single')}")
-    print(f"  catalog-claim:  {sum(1 for f in findings if f.level == 'catalog-claim')}")
+    for lvl in ["module-pair", "module-triple", "module-simplex",
+                "def-pair", "def-group", "def-single",
+                "clause-shape-pair", "term-shape", "catalog-claim"]:
+        n = sum(1 for f in findings if f.level == lvl)
+        if n > 0:
+            print(f"  {lvl:18s} : {n}")
     print()
 
     # Catalog-claim materialization footprints.
