@@ -604,24 +604,10 @@ def collect_partial_coset_findings():
         all_def_names_by_short[name].append((mod, name))
 
     def find_parametric_counterpart(stem, ty):
-        """
-        Look for a definition that could be the parametric counterpart:
-          1. A definition named exactly `stem` (no constructor suffix).
-          2. A definition named `stem` with a signature containing
-             `(_ : <ty>)` or `(<name> : <ty>)`.
-        Returns list of qnames (one per match) or [].
-        """
         candidates = []
         if stem in all_def_names_by_short:
             for mod, name in all_def_names_by_short[stem]:
-                sig = all_defs_full.get((mod, name), "")
-                # Check if signature mentions the type — heuristic.
-                if ty in sig or f"Axis" in sig:  # 'Axis' as the most common
-                    candidates.append(f"{mod}::{name}")
-                else:
-                    # Even without explicit Axis parameter, the stem-match
-                    # is suggestive (might use the type implicitly).
-                    candidates.append(f"{mod}::{name}")
+                candidates.append(f"{mod}::{name}")
         return candidates
 
     findings = []
@@ -1026,6 +1012,77 @@ def main():
                     print(f"      → Next-leaf-to-tackle: '{upstream_stem}' (was non-leaf,")
                     print(f"        now effectively a leaf since its deps are absorbed).")
                 print()
+
+        # === Speculative shape-match: for each partial-coset finding's
+        # missing constructors, search the codebase for existing
+        # definitions whose name/signature shape suggests they ARE the
+        # missing sibling (just under a different naming convention,
+        # e.g., case difference, lower/upper swap, hyphen variant).
+        # Speculative — surface candidates the strict detector can't
+        # match directly. Useful for finding "this is what we have, the
+        # naming just differs."
+        print("  --- Speculative shape-matches for missing siblings ---")
+        # Build a name → signature map across the whole codebase.
+        _name_to_qnames = defaultdict(list)
+        for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+            mod, text = parse_module_path(path)
+            if not mod or not mod.startswith("Substrate"):
+                continue
+            for nm, (sig, rhss) in parse_definitions_with_sig(text).items():
+                _name_to_qnames[nm].append((mod, sig or "", rhss))
+
+        spec_count = 0
+        for f in pc_findings_list:
+            ty, present, missing, stem, _ = f.extra
+            ctors = {"Axis": ["D", "C", "S", "W"],
+                     "V₄": ["e", "α", "β", "γ"],
+                     "Pairing": ["α-pair", "β-pair", "γ-pair"],
+                     "Chirality": ["even", "odd"],
+                     "Bool": ["true", "false"]}.get(ty, [])
+            # Get one of the present-ctor's qnames for shape baseline.
+            if not f.objects:
+                continue
+            baseline_qname = next(iter(f.objects))
+            baseline_short = baseline_qname.split("::")[-1]
+            baseline_sig = ""
+            for mod, sig, rhss in _name_to_qnames.get(baseline_short, []):
+                baseline_sig = sig
+                break
+            for missing_c in missing:
+                hypotheticals = []
+                # Build candidate names for the missing constructor.
+                hypotheticals.append(stem + "-" + missing_c)
+                hypotheticals.append(stem + "-" + missing_c.lower())
+                hypotheticals.append(stem.replace("-" + missing_c.lower() + "-",
+                                                   "-" + missing_c.lower() + "-")
+                                     + "-" + missing_c)
+                # If stem itself has a lowercase ctor token, try the swap.
+                for c2 in ctors:
+                    c2_lower = c2.lower()
+                    if "-" + c2_lower + "-" in stem and c2 != missing_c:
+                        # The stem already names another ctor in lowercase;
+                        # try swapping.
+                        swap_stem = stem.replace("-" + c2_lower + "-",
+                                                  "-" + missing_c.lower() + "-")
+                        hypotheticals.append(swap_stem + "-" + missing_c)
+                        hypotheticals.append(swap_stem)
+                # Look for hypotheticals in the name map.
+                seen = set()
+                for hyp in hypotheticals:
+                    if hyp in seen: continue
+                    seen.add(hyp)
+                    if hyp in _name_to_qnames:
+                        for mod, sig, rhss in _name_to_qnames[hyp]:
+                            spec_count += 1
+                            if spec_count <= 10:
+                                print(f"    stem '{stem}' missing '{missing_c}':")
+                                print(f"      candidate: {mod}::{hyp}")
+                                print(f"      (existing definition; naming convention differs)")
+        if spec_count == 0:
+            print("    (no speculative matches found)")
+        elif spec_count > 10:
+            print(f"    ... and {spec_count - 10} more speculative matches.")
+        print()
 
         # === Effective leaves after cluster absorption ===
         # A finding becomes an "effective leaf" when its dependencies are all

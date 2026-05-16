@@ -68,7 +68,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Substrate.Groups.Stab-S3 using (fin3-to-non-anchor)
 open import Substrate.Groups.Stab-S3-Extend using (extend)
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3
-  using (transposition; transposition-fixes-third)
+  using (transposition; transposition-fixes-third; orbit-key-to-s3)
 
 ------------------------------------------------------------------------
 -- S12 — Bijection helper lemmas.
@@ -288,6 +288,33 @@ orbit-key-to-stab-d-fixes-D (β-pair , even) = stab-csw-fixes-D
 orbit-key-to-stab-d-fixes-D (β-pair , odd)  = stab-cs-fixes-D
 orbit-key-to-stab-d-fixes-D (γ-pair , even) = stab-cws-fixes-D
 orbit-key-to-stab-d-fixes-D (γ-pair , odd)  = stab-cw-fixes-D
+
+------------------------------------------------------------------------
+-- Anchor siblings of orbit-key-to-stab-d (and its fixes proof). For
+-- each non-D anchor, the corresponding extend-based dispatcher and
+-- its structurally-guaranteed fixes-anchor proof (from extend-stab).
+------------------------------------------------------------------------
+
+orbit-key-to-stab-C : OrbitKey → Permutation
+orbit-key-to-stab-C ok = proj₁ (extend C (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-C-fixes-C :
+  (ok : OrbitKey) → Stab-C (orbit-key-to-stab-C ok)
+orbit-key-to-stab-C-fixes-C ok = proj₂ (extend C (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-S : OrbitKey → Permutation
+orbit-key-to-stab-S ok = proj₁ (extend S (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-S-fixes-S :
+  (ok : OrbitKey) → Stab-S (orbit-key-to-stab-S ok)
+orbit-key-to-stab-S-fixes-S ok = proj₂ (extend S (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-W : OrbitKey → Permutation
+orbit-key-to-stab-W ok = proj₁ (extend W (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-W-fixes-W :
+  (ok : OrbitKey) → Stab-W (orbit-key-to-stab-W ok)
+orbit-key-to-stab-W-fixes-W ok = proj₂ (extend W (orbit-key-to-s3 ok))
 
 ------------------------------------------------------------------------
 -- TotalSpace of the CY-5 cocycle (re-exposed from V4Signature).
