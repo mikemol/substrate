@@ -392,6 +392,41 @@ def main():
             break
     print()
 
+    # === Inverse refinements: for each thick pair, find ambient containers
+    # (simplices it's a face of; def-groups whose modules span it). This is
+    # the contravariant direction of the refinement morphism — given a
+    # finding at level L, list all findings at level L+1 that refine TO it.
+    print("=== Inverse refinements: ambient context per thick point ===")
+    print("    (A thick pair → which simplices/def-groups contain it as a face?)")
+    print()
+    # Index simplices and def-groups by their objects sets.
+    simplices = [f for f in findings if f.level == "module-simplex"]
+    def_groups = [f for f in findings if f.level == "def-group"]
+    pair_findings = sorted(
+        ((len(fs), objs) for objs, fs in by_objects.items() if len(objs) == 2),
+        key=lambda x: -x[0]
+    )
+    pair_findings = [(wc, objs) for wc, objs in pair_findings if wc >= 4]
+    for wc, pair in pair_findings[:12]:
+        ent = ", ".join(short(o) for o in sorted(pair))
+        containing_simplices = [s for s in simplices if pair.issubset(s.objects)]
+        spanning_defgroups = []
+        for dg in def_groups:
+            dg_mods = {qname_to_module.get(q, q.split("::")[0]) for q in dg.objects}
+            if pair.issubset(dg_mods):
+                spanning_defgroups.append(dg)
+        print(f"  [{wc}-witness pair] {{{ent}}}")
+        if containing_simplices:
+            for s in containing_simplices[:2]:
+                s_ent = ", ".join(short(o) for o in sorted(s.objects))
+                print(f"    ⊂ simplex (θ={s.metric:.1f}, n={len(s.objects)}): {{{s_ent}}}")
+        if spanning_defgroups:
+            for dg in spanning_defgroups[:2]:
+                print(f"    ⊂ def-group ({dg.kind}, {int(dg.metric)} defs)")
+        if not containing_simplices and not spanning_defgroups:
+            print(f"    (no ambient simplex or def-group contains this pair)")
+    print()
+
     # === Empty fibers ===
     print("=== Empty fibers (levels with no findings or under-populated) ===")
     levels = {f.level for f in findings}
