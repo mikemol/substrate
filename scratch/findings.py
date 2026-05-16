@@ -226,6 +226,48 @@ def shape_template(rhs):
     return re.sub(r"\s+", " ", t).strip()
 
 
+def parse_definitions_with_sig(text):
+    """
+    Like parse_definitions but ALSO captures the type signature line for
+    each definition. Returns {name: (sig_line_or_None, [rhss])}.
+    """
+    out = defaultdict(lambda: [None, []])
+    # First pass: collect signatures (lines like `name : Type...`).
+    sig_pattern = re.compile(
+        r"^([a-zA-Z_][a-zA-Z0-9_\-'≢≈₁₂₃₄₅₆₇₈₉₀ⁿᵐ⁻ᵖᵃˢⁱ]*)\s*:\s*(.+)$",
+        re.M
+    )
+    for m in sig_pattern.finditer(text):
+        name = m.group(1)
+        if name in {"open", "import", "module", "record", "data", "field",
+                    "private", "postulate", "infixl", "infixr", "infix",
+                    "where", "let", "in", "with"}:
+            continue
+        sig = m.group(2).strip()
+        # Heuristic: keep first signature seen.
+        if out[name][0] is None:
+            out[name][0] = sig
+    # Second pass: collect clauses.
+    for line in text.split("\n"):
+        if not line or line[0].isspace():
+            continue
+        m = CLAUSE_RE.match(line)
+        if not m:
+            continue
+        name, _args, rhs = m.group(1), m.group(2), m.group(3).strip()
+        if name in {"open", "import", "module", "record", "data", "field",
+                    "private", "postulate", "infixl", "infixr", "infix", "where"}:
+            continue
+        if not rhs:
+            continue
+        # Skip signature lines (RHS starts with type-like content typically
+        # not = sign — but CLAUSE_RE matches `=`, so signature lines without
+        # `=` won't match here. We're good).
+        out[name][1].append(rhs)
+    # Convert to plain dict, filter empties.
+    return {name: (val[0], val[1]) for name, val in out.items() if val[1]}
+
+
 def collect_clause_findings():
     findings = []
     all_defs = {}            # qname (full-module::def) -> rhss
@@ -452,6 +494,79 @@ def build_def_usage_graph(all_defs):
     return out_nbr
 
 
+def collect_orbit_findings():
+    """
+    For each pair of definitions across modules:
+      1. Capture signature + RHS clauses.
+      2. Tokenize each into a token sequence.
+      3. Two definitions are 'orbit-equivalent under substitution σ' if:
+         their token sequences differ only by replacing each occurrence
+         of some identifier `a` in one with `a'` in the other, consistently.
+      4. Emit a finding for each orbit (group of mutually-orbit-equivalent defs).
+
+    This is the QUOTIENT detector: defs that are the same shape modulo
+    a consistent renaming. The renaming = "which module-or-helper
+    distinguishes them" the user asked about.
+    """
+    # Re-parse with signatures.
+    all_defs_full = {}  # qname -> (sig, [rhss])
+    qname_to_module = {}
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        for name, (sig, rhss) in parse_definitions_with_sig(text).items():
+            qname = f"{mod}::{name}"
+            all_defs_full[qname] = (sig or "", rhss)
+            qname_to_module[qname] = mod
+
+    # Build token sequence for each def: sig + " || " + concatenated RHSs.
+    def def_tokens(qname):
+        sig, rhss = all_defs_full[qname]
+        body = " || ".join(rhss)
+        whole = f"{sig} || {body}"
+        return TOKEN_RE.findall(whole)
+
+    # Two token sequences are orbit-equivalent if they have the same
+    # length and the same "shape skeleton" (operators + punctuation +
+    # position-of-identifier-occurrences) AND there's a consistent
+    # identifier-to-identifier bijection between them.
+    def skeleton(tokens):
+        """Replace each identifier with a position-stable placeholder."""
+        seen = {}
+        out = []
+        for t in tokens:
+            if re.match(r"^[a-zA-Z_]", t):
+                if t not in seen:
+                    seen[t] = f"#{len(seen)}"
+                out.append(seen[t])
+            else:
+                out.append(t)
+        return tuple(out)
+
+    # Group qnames by skeleton.
+    sk_groups = defaultdict(list)
+    for qname in all_defs_full:
+        toks = def_tokens(qname)
+        if len(toks) < 8:  # filter tiny defs
+            continue
+        sk_groups[skeleton(toks)].append(qname)
+
+    findings = []
+    for sk, qnames in sk_groups.items():
+        if len(qnames) < 2:
+            continue
+        findings.append(Finding(
+            level="orbit",
+            kind=f"shape-quotient-{len(qnames)}m",
+            objects=frozenset(qnames),
+            metric=float(len(qnames)),
+            source="orbit_detector",
+            extra=(len(sk),),  # skeleton length as side info
+        ))
+    return findings
+
+
 def collect_def_level_jaccard_findings(all_defs):
     """Emit def-level pair findings above P90 Jaccard."""
     out_nbr = build_def_usage_graph(all_defs)
@@ -581,6 +696,7 @@ def main():
     findings.extend(collect_clause_shape_pair_findings(all_defs))
     findings.extend(collect_term_shape_findings(all_defs))
     findings.extend(collect_def_level_jaccard_findings(all_defs))
+    findings.extend(collect_orbit_findings())
 
     catalog_f, claim_to_modules = collect_catalog_findings()
     findings.extend(catalog_f)
@@ -588,10 +704,27 @@ def main():
     print(f"Total findings emitted: {len(findings)}")
     for lvl in ["module-pair", "module-triple", "module-simplex",
                 "def-pair", "def-group", "def-single",
-                "clause-shape-pair", "term-shape", "catalog-claim"]:
+                "clause-shape-pair", "term-shape", "orbit",
+                "catalog-claim"]:
         n = sum(1 for f in findings if f.level == lvl)
         if n > 0:
             print(f"  {lvl:18s} : {n}")
+    print()
+
+    # Orbit findings (shape-quotient detections).
+    print("=== Orbits (shape-quotient candidates) ===")
+    print("  Definitions whose (signature, body) tokenize to the same shape-")
+    print("  skeleton modulo a consistent identifier-bijection. These are")
+    print("  parameterization candidates: one parametric definition could")
+    print("  replace each orbit.")
+    print()
+    orbit_findings = sorted(
+        ((f.metric, f.objects) for f in findings if f.level == "orbit"),
+        key=lambda x: -x[0]
+    )
+    for n, members in orbit_findings:
+        m_short = sorted(short(q) for q in members)
+        print(f"  [{int(n)}-element orbit] {{{', '.join(m_short)}}}")
     print()
 
     # Catalog-claim materialization footprints.
