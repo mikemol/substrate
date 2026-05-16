@@ -39,7 +39,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl)
+  using (_≡_; _≢_; refl)
 open import Relation.Nullary using (yes; no)
 
 import Substrate.Groups.SFin as SFin
@@ -96,6 +96,23 @@ transposition i j = record
     ... | no _ with k ≟ j
     ...           | yes b = ⊥-elim (q2 b)
     ...           | no _ = refl
+
+------------------------------------------------------------------------
+-- transposition-fixes-third: a transposition (i j) fixes any index
+-- that's neither i nor j. The 3-cycle pattern relating the three
+-- transpositions in S_3 — each fixes its "third" index — IS this
+-- helper, instantiated at three (i, j, k) triples whose images
+-- under cycle3 form a 3-orbit.
+------------------------------------------------------------------------
+
+transposition-fixes-third :
+  (i j k : Fin 3) → k ≢ i → k ≢ j →
+  SFin.apply (transposition i j) k ≡ k
+transposition-fixes-third i j k k≢i k≢j with k ≟ i
+... | yes p = ⊥-elim (k≢i p)
+... | no _ with k ≟ j
+... | yes p = ⊥-elim (k≢j p)
+... | no _ = refl
 
 ------------------------------------------------------------------------
 -- Parametric 3-cycle: a → b → c → a, fix the remaining index.
