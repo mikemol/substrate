@@ -98,6 +98,19 @@ transposition i j = record
     ...           | no _ = refl
 
 ------------------------------------------------------------------------
+-- Parametric 3-cycle: a → b → c → a, fix the remaining index.
+--
+-- Expressed as composition of two transpositions: (a b)(b c). The
+-- decomposition (a 1-1 with the second conjugacy class of S_3) is
+-- structurally symmetric in (a, b, c) — no chirality choice in the
+-- API. When (a, b, c) are not distinct the result is degenerate but
+-- still well-typed.
+------------------------------------------------------------------------
+
+cycle3 : (a b c : Fin 3) → SFin.Permutation 3
+cycle3 a b c = transposition a b SFin.· transposition b c
+
+------------------------------------------------------------------------
 -- The 6 elements of SFin.Permutation 3.
 ------------------------------------------------------------------------
 
@@ -117,26 +130,9 @@ s3-cs = transposition zero (suc zero)
 s3-cw : SFin.Permutation 3
 s3-cw = transposition zero (suc (suc zero))
 
--- 3-cycle (0 1 2): 0↦1, 1↦2, 2↦0. Inverse: (0 2 1).
+-- 3-cycle (0 1 2): 0↦1, 1↦2, 2↦0.
 s3-csw : SFin.Permutation 3
-s3-csw = record { apply = ap ; invₐ = inv-ap ; inv-l = il ; inv-r = ir }
-  where
-    ap : Fin 3 → Fin 3
-    ap zero             = suc zero
-    ap (suc zero)       = suc (suc zero)
-    ap (suc (suc zero)) = zero
-    inv-ap : Fin 3 → Fin 3
-    inv-ap zero             = suc (suc zero)
-    inv-ap (suc zero)       = zero
-    inv-ap (suc (suc zero)) = suc zero
-    il : (i : Fin 3) → inv-ap (ap i) ≡ i
-    il zero             = refl
-    il (suc zero)       = refl
-    il (suc (suc zero)) = refl
-    ir : (i : Fin 3) → ap (inv-ap i) ≡ i
-    ir zero             = refl
-    ir (suc zero)       = refl
-    ir (suc (suc zero)) = refl
+s3-csw = cycle3 zero (suc zero) (suc (suc zero))
 
 -- 3-cycle (0 2 1): 0↦2, 1↦0, 2↦1. Inverse: (0 1 2) = s3-csw.
 -- Defined via SFin._⁻¹ to collapse the {s3-csw, s3-cws} 2-orbit
