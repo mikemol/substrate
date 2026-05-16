@@ -567,6 +567,82 @@ def collect_orbit_findings():
     return findings
 
 
+def collect_orbit_suborbit_connections(orbit_findings):
+    """
+    For each pair of orbits (parent, child), detect when the parent's
+    members reference the child's members through a 1-1 correspondence
+    at varying token positions.
+
+    These are the points where parametric HELPERS belong: a helper
+    indexed by the child orbit's parameter would collapse the parent.
+    """
+    # Re-parse definitions with sigs (needed to capture varying tokens).
+    all_defs_full = {}
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        for name, (sig, rhss) in parse_definitions_with_sig(text).items():
+            qname = f"{mod}::{name}"
+            all_defs_full[qname] = (sig or "", rhss)
+
+    def def_tokens(qname):
+        sig, rhss = all_defs_full.get(qname, ("", []))
+        body = " || ".join(rhss)
+        whole = f"{sig} || {body}"
+        return TOKEN_RE.findall(whole)
+
+    def def_shorts(qnames):
+        return {q.split("::")[1] for q in qnames}
+
+    # Index: short-name → orbit (membership lookup).
+    short_to_orbit = {}
+    for orb in orbit_findings:
+        for q in orb.objects:
+            short_to_orbit.setdefault(q.split("::")[1], []).append(orb)
+
+    # Also: track per-orbit varying-token sets for the "no suborbit, but
+    # here are the varying tokens" output.
+    orbit_varying = []  # (orbit, [(position, sorted_distinct_tokens)])
+
+    connections = []
+    for parent in orbit_findings:
+        members = sorted(parent.objects)
+        token_seqs = [def_tokens(m) for m in members]
+        if not all(token_seqs) or len({len(ts) for ts in token_seqs}) > 1:
+            continue
+        varying = []
+        for p in range(len(token_seqs[0])):
+            tokens_p = [ts[p] for ts in token_seqs]
+            distinct = sorted(set(tokens_p))
+            if len(distinct) > 1:
+                varying.append((p, distinct))
+        orbit_varying.append((parent, varying))
+        # Strict match (token-set == child orbit's members).
+        for child in orbit_findings:
+            if child.objects == parent.objects:
+                continue
+            child_shorts = def_shorts(child.objects)
+            for p, distinct in varying:
+                tokens_set = set(distinct)
+                if tokens_set == child_shorts:
+                    connections.append((parent, child, p, distinct, "exact"))
+                    break
+        # Subset match (token-set covers child orbit's members partially).
+        for child in orbit_findings:
+            if child.objects == parent.objects:
+                continue
+            child_shorts = def_shorts(child.objects)
+            for p, distinct in varying:
+                tokens_set = set(distinct)
+                if tokens_set < child_shorts or child_shorts < tokens_set:
+                    overlap = tokens_set & child_shorts
+                    if len(overlap) >= 2:
+                        connections.append((parent, child, p, sorted(overlap), "partial"))
+                        break
+    return connections, orbit_varying
+
+
 def collect_def_level_jaccard_findings(all_defs):
     """Emit def-level pair findings above P90 Jaccard."""
     out_nbr = build_def_usage_graph(all_defs)
@@ -710,6 +786,40 @@ def main():
         if n > 0:
             print(f"  {lvl:18s} : {n}")
     print()
+
+    # Orbit-suborbit connections (helper-belongs-here detector).
+    orbit_findings = [f for f in findings if f.level == "orbit"]
+    connections, orbit_varying = collect_orbit_suborbit_connections(orbit_findings)
+    print("=== Orbit ⇄ suborbit connections (helper-placement candidates) ===")
+    if connections:
+        print("  When parent orbit's varying-token-set at some position matches")
+        print("  (or overlaps) a child orbit's members, a helper parameterized")
+        print("  by the child IS the natural way to collapse the parent.")
+        print()
+        for parent, child, pos, tokens, kind in connections:
+            parent_short = sorted(short(o) for o in parent.objects)
+            child_short = sorted(short(o) for o in child.objects)
+            print(f"  [{kind}] parent: {{{', '.join(parent_short)}}}")
+            print(f"          child:  {{{', '.join(child_short)}}}")
+            print(f"          varying tokens at pos {pos}: {{{', '.join(tokens)}}}")
+            print()
+    else:
+        print("  No orbit-suborbit matches found (exact or subset).")
+    print()
+
+    # Always show the varying tokens for each orbit (even with no
+    # suborbit match) — these are the "parameters a helper would take".
+    print("=== Per-orbit varying tokens (helper-parameter signatures) ===")
+    for parent, varying in orbit_varying:
+        members = sorted(short(o) for o in parent.objects)
+        if not varying:
+            continue
+        print(f"  orbit {{{', '.join(members)}}}")
+        for p, distinct in varying[:5]:
+            print(f"    pos {p}: {distinct}")
+        if len(varying) > 5:
+            print(f"    ... and {len(varying) - 5} more positions")
+        print()
 
     # Orbit findings (shape-quotient detections).
     print("=== Orbits (shape-quotient candidates) ===")
