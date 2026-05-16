@@ -69,58 +69,42 @@ open import Substrate.Cocycles.V4Signature.S4Iso
          orbit-key-to-stab-d)
 
 ------------------------------------------------------------------------
--- The 6 bridges: each named stab-X record agrees pointwise with
--- `extend D` applied to its corresponding S_3 element s3-X. All
--- close by refl because both sides reduce to the same Axis constant
--- at every input.
-------------------------------------------------------------------------
-
-stab-id-≈-extend : (x : Axis) → applyₛ stab-id x ≡ applyₛ (proj₁ (extend D s3-id)) x
-stab-id-≈-extend D = refl
-stab-id-≈-extend C = refl
-stab-id-≈-extend S = refl
-stab-id-≈-extend W = refl
-
-stab-sw-≈-extend : (x : Axis) → applyₛ stab-sw x ≡ applyₛ (proj₁ (extend D s3-sw)) x
-stab-sw-≈-extend D = refl
-stab-sw-≈-extend C = refl
-stab-sw-≈-extend S = refl
-stab-sw-≈-extend W = refl
-
-stab-cs-≈-extend : (x : Axis) → applyₛ stab-cs x ≡ applyₛ (proj₁ (extend D s3-cs)) x
-stab-cs-≈-extend D = refl
-stab-cs-≈-extend C = refl
-stab-cs-≈-extend S = refl
-stab-cs-≈-extend W = refl
-
-stab-cw-≈-extend : (x : Axis) → applyₛ stab-cw x ≡ applyₛ (proj₁ (extend D s3-cw)) x
-stab-cw-≈-extend D = refl
-stab-cw-≈-extend C = refl
-stab-cw-≈-extend S = refl
-stab-cw-≈-extend W = refl
-
-stab-csw-≈-extend : (x : Axis) → applyₛ stab-csw x ≡ applyₛ (proj₁ (extend D s3-csw)) x
-stab-csw-≈-extend D = refl
-stab-csw-≈-extend C = refl
-stab-csw-≈-extend S = refl
-stab-csw-≈-extend W = refl
-
-stab-cws-≈-extend : (x : Axis) → applyₛ stab-cws x ≡ applyₛ (proj₁ (extend D s3-cws)) x
-stab-cws-≈-extend D = refl
-stab-cws-≈-extend C = refl
-stab-cws-≈-extend S = refl
-stab-cws-≈-extend W = refl
-
-------------------------------------------------------------------------
--- Lift the per-X bridges to a function over OrbitKey.
+-- The bridge: for each OrbitKey, the named stab record agrees with
+-- `extend D` applied to the corresponding S_3 element s3-X, pointwise
+-- on Axis. All 24 cases close by `refl` because both sides reduce to
+-- the same Axis constant at every input.
+--
+-- Annealing patch (2026-05-16): originally six separate stab-X-≈-extend
+-- definitions (one per X), surfaced by `scratch/findings.py` as a
+-- 6-element shape-quotient orbit. Replaced by this inlined dispatch.
+-- See [[project-annealing-methodology]] — orbit detected, orbit
+-- patched, run the detector again for the next finding.
 ------------------------------------------------------------------------
 
 orbit-key-to-stab-d-≈-extend :
   (ok : OrbitKey) (x : Axis) →
   applyₛ (orbit-key-to-stab-d ok) x ≡ applyₛ (proj₁ (extend D (orbit-key-to-s3 ok))) x
-orbit-key-to-stab-d-≈-extend (α-pair , even) = stab-id-≈-extend
-orbit-key-to-stab-d-≈-extend (α-pair , odd)  = stab-sw-≈-extend
-orbit-key-to-stab-d-≈-extend (β-pair , even) = stab-csw-≈-extend
-orbit-key-to-stab-d-≈-extend (β-pair , odd)  = stab-cs-≈-extend
-orbit-key-to-stab-d-≈-extend (γ-pair , even) = stab-cws-≈-extend
-orbit-key-to-stab-d-≈-extend (γ-pair , odd)  = stab-cw-≈-extend
+orbit-key-to-stab-d-≈-extend (α-pair , even) D = refl
+orbit-key-to-stab-d-≈-extend (α-pair , even) C = refl
+orbit-key-to-stab-d-≈-extend (α-pair , even) S = refl
+orbit-key-to-stab-d-≈-extend (α-pair , even) W = refl
+orbit-key-to-stab-d-≈-extend (α-pair , odd)  D = refl
+orbit-key-to-stab-d-≈-extend (α-pair , odd)  C = refl
+orbit-key-to-stab-d-≈-extend (α-pair , odd)  S = refl
+orbit-key-to-stab-d-≈-extend (α-pair , odd)  W = refl
+orbit-key-to-stab-d-≈-extend (β-pair , even) D = refl
+orbit-key-to-stab-d-≈-extend (β-pair , even) C = refl
+orbit-key-to-stab-d-≈-extend (β-pair , even) S = refl
+orbit-key-to-stab-d-≈-extend (β-pair , even) W = refl
+orbit-key-to-stab-d-≈-extend (β-pair , odd)  D = refl
+orbit-key-to-stab-d-≈-extend (β-pair , odd)  C = refl
+orbit-key-to-stab-d-≈-extend (β-pair , odd)  S = refl
+orbit-key-to-stab-d-≈-extend (β-pair , odd)  W = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , even) D = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , even) C = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , even) S = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , even) W = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , odd)  D = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , odd)  C = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , odd)  S = refl
+orbit-key-to-stab-d-≈-extend (γ-pair , odd)  W = refl
