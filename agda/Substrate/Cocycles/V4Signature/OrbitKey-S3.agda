@@ -113,26 +113,14 @@ s3-csw = record { apply = ap ; invₐ = inv-ap ; inv-l = il ; inv-r = ir }
     ir (suc zero)       = refl
     ir (suc (suc zero)) = refl
 
--- 3-cycle (0 2 1): 0↦2, 1↦0, 2↦1. Inverse: (0 1 2).
+-- 3-cycle (0 2 1): 0↦2, 1↦0, 2↦1. Inverse: (0 1 2) = s3-csw.
+-- Defined via SFin._⁻¹ to collapse the {s3-csw, s3-cws} 2-orbit
+-- surfaced by `scratch/findings.py` — the orbit detector identified
+-- that s3-cws is structurally the inverse of s3-csw modulo a single
+-- substitution, and the swap of (apply, invₐ) is exactly what
+-- SFin._⁻¹ provides.
 s3-cws : SFin.Permutation 3
-s3-cws = record { apply = ap ; invₐ = inv-ap ; inv-l = il ; inv-r = ir }
-  where
-    ap : Fin 3 → Fin 3
-    ap zero             = suc (suc zero)
-    ap (suc zero)       = zero
-    ap (suc (suc zero)) = suc zero
-    inv-ap : Fin 3 → Fin 3
-    inv-ap zero             = suc zero
-    inv-ap (suc zero)       = suc (suc zero)
-    inv-ap (suc (suc zero)) = zero
-    il : (i : Fin 3) → inv-ap (ap i) ≡ i
-    il zero             = refl
-    il (suc zero)       = refl
-    il (suc (suc zero)) = refl
-    ir : (i : Fin 3) → ap (inv-ap i) ≡ i
-    ir zero             = refl
-    ir (suc zero)       = refl
-    ir (suc (suc zero)) = refl
+s3-cws = s3-csw SFin.⁻¹
 
 ------------------------------------------------------------------------
 -- OrbitKey ↔ SFin.Permutation 3 labeling.
