@@ -37,6 +37,7 @@ import networkx as nx
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
+CATALOG_ROOT = Path("/home/mikemol/github/substrate/catalog")
 
 
 @dataclass(frozen=True)
@@ -273,6 +274,67 @@ def collect_clause_findings():
 
 
 # ============================================================
+# Source 4: catalog-claim detector (filling a previously-empty fiber)
+#
+# Catalog claims are referenced from Agda modules via comment lines like:
+#   -- See: catalog/cocycles.md § CY-N — <human description>
+# The claim itself lives in the catalog/*.md file. The set of modules
+# that reference a given claim is the claim's MATERIALIZATION FOOTPRINT —
+# the cohomology section over the catalog at the module level.
+# ============================================================
+
+CATALOG_REF_RE = re.compile(
+    r"catalog/(\w+\.md)\s*§\s*([^—\n]+?)(?:\s*—|\s*$|\s*;|\s*\.)",
+    re.M | re.IGNORECASE
+)
+
+
+def collect_catalog_findings():
+    """
+    Build a map: catalog-claim (file, §-key) → set of Agda modules referencing it.
+    Emit one finding per claim, with the referencing modules as the objects.
+    """
+    claim_to_modules = defaultdict(set)
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        # Re-read raw (we want comments).
+        raw = path.read_text()
+        for m in CATALOG_REF_RE.finditer(raw):
+            catalog_file, key = m.group(1).strip(), m.group(2).strip().rstrip("—.;").strip()
+            claim_to_modules[(catalog_file, key)].add(mod)
+
+    findings = []
+    for (cat_file, key), mods in claim_to_modules.items():
+        # The claim itself is one of the "objects" — represent as a synthetic
+        # entity name so it consolidates with other findings about the same claim.
+        claim_name = f"catalog::{cat_file}§{key}"
+        # Emit as a finding with the modules as objects, the claim name in extra.
+        findings.append(Finding(
+            level="catalog-claim",
+            kind="materialization-footprint",
+            objects=frozenset(mods),
+            metric=float(len(mods)),
+            source="catalog_claims",
+            extra=(claim_name,),
+        ))
+        # Also emit pair-refinements: each (claim, module) pair gets a
+        # 2-object finding so consolidation at the module level picks
+        # up the claim as another witness.
+        for mod in mods:
+            findings.append(Finding(
+                level="module-pair",
+                kind=f"catalog-claim-refinement",
+                objects=frozenset({mod, claim_name}),
+                metric=float(len(mods)),
+                source="catalog_claims",
+                extra=(key,),
+            ))
+    return findings, claim_to_modules
+
+
+# ============================================================
 # Consolidation: the Grothendieck total category
 # ============================================================
 
@@ -294,12 +356,31 @@ def main():
     findings.extend(collect_simplex_findings(graph, nodes))
     clause_f, qname_to_module = collect_clause_findings()
     findings.extend(clause_f)
+    catalog_f, claim_to_modules = collect_catalog_findings()
+    findings.extend(catalog_f)
 
     print(f"Total findings emitted: {len(findings)}")
     print(f"  module-pair:    {sum(1 for f in findings if f.level == 'module-pair')}")
     print(f"  module-simplex: {sum(1 for f in findings if f.level == 'module-simplex')}")
     print(f"  def-group:      {sum(1 for f in findings if f.level == 'def-group')}")
     print(f"  def-single:     {sum(1 for f in findings if f.level == 'def-single')}")
+    print(f"  catalog-claim:  {sum(1 for f in findings if f.level == 'catalog-claim')}")
+    print()
+
+    # Catalog-claim materialization footprints.
+    print("=== Catalog-claim materialization footprints ===")
+    print("  (Each catalog claim referenced by N Agda modules → that's its cohomology")
+    print("   section's support at the module level.)")
+    print()
+    cc_findings = sorted(
+        ((f.metric, f.extra[0], f.objects) for f in findings if f.level == "catalog-claim"),
+        key=lambda x: -x[0]
+    )
+    for n, claim, mods in cc_findings[:15]:
+        claim_short = claim.replace("catalog::", "").replace(".md", "")
+        print(f"  [{int(n)} materializing modules] {claim_short}")
+        for m in sorted(mods):
+            print(f"    · {m.split('.')[-1]}")
     print()
 
     # === Refinement morphisms (Grothendieck construction): each
