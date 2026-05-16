@@ -20,8 +20,11 @@
 -- bijections uses a SPECIFIC ORDERING (declaration order for Axis,
 -- V₄, Pairing; even-before-odd for Chirality; etc.). This is a
 -- CONVENTION, not a structural fact. The cardinality (|X| = n) is
--- the structural claim; the bijection chooses one of n! valid
--- orderings.
+-- the structural claim; the bijection chooses one presentation
+-- among the possible finite enumerations. (The "differs by an
+-- inner automorphism of S_n" framing is prose-level; promoting it
+-- to a theorem would require a permutation-action on enumerations,
+-- not developed here.)
 --
 -- Downstream cardinalities follow by composition with existing
 -- bijections; deferred:
@@ -279,8 +282,9 @@ axis×bool-↔-fin8 = mk↔ₛ′ to from to-from from-to
 --    its source type. The orderings are CONVENTIONS, not structural
 --    facts — per [[feedback-ordering-is-chirality-choice]], the
 --    cardinality (|X| = n) is structural; the specific bijection is
---    one of n! valid options. Downstream code MUST NOT depend on
---    which ordering was chosen (e.g., on whether D ↦ 0 or D ↦ 3).
+--    one presentation among the possible finite enumerations.
+--    Downstream code MUST NOT depend on which ordering was chosen
+--    (e.g., on whether D ↦ 0 or D ↦ 3).
 --
 -- 2. The six lemmas combine into downstream cardinalities by
 --    composition with the bijections from earlier slices:
