@@ -879,28 +879,72 @@ def main():
             print(f"  {lvl:18s} : {n}")
     print()
 
+    # === Dependency analysis between findings ===
+    # For each pair of partial-coset findings (F1, F2), F1 depends on F2 if
+    # any F2 member's short name appears in any F1 member's body or signature.
+    # Leaves (no outgoing deps among finding-set) are smallest annealing steps.
+    pc_findings_list = [f for f in findings if f.level == "partial-coset"]
+
+    # Rebuild all_defs_full to access bodies + sigs by qname.
+    _defs_text = {}
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        for name, (sig, rhss) in parse_definitions_with_sig(text).items():
+            qname = f"{mod}::{name}"
+            _defs_text[qname] = (sig or "") + " || " + " ".join(rhss)
+
+    def member_tokens(qname):
+        return set(TOKEN_RE.findall(_defs_text.get(qname, "")))
+
+    finding_deps = {i: set() for i in range(len(pc_findings_list))}
+    for i, f1 in enumerate(pc_findings_list):
+        f1_token_union = set()
+        for m1 in f1.objects:
+            f1_token_union |= member_tokens(m1)
+        for j, f2 in enumerate(pc_findings_list):
+            if i == j: continue
+            for m2 in f2.objects:
+                m2_short = m2.split("::")[-1]
+                if m2_short in f1_token_union:
+                    finding_deps[i].add(j)
+                    break
+
+    leaves = [i for i in range(len(pc_findings_list)) if not finding_deps[i]]
+
     # Partial-coset detector (Galois-of-orbit-almost-filled).
     partial_findings = sorted(
-        ((f.metric, f.extra, f.objects) for f in findings if f.level == "partial-coset"),
-        key=lambda x: (-x[0], x[1])
+        ((f.metric, f.extra, f.objects, i) for i, f in enumerate(pc_findings_list)),
+        key=lambda x: (0 if x[3] in leaves else 1, -x[0], x[1])
     )
     if partial_findings:
         print("=== Partial coset interactions (Galois of orbit-almost-filled) ===")
         print("  Definition-name stems where some constructors of a finite type are")
         print("  represented but others are missing. Each partial coset IS the finding;")
-        print("  the parametric counterpart, when listed, is bonus structural guidance")
-        print("  for the annealing fix (not a requirement for the finding to matter).")
+        print("  the parametric counterpart, when listed, is bonus structural guidance.")
         print()
-        for metric, extra, members in partial_findings:
+        print(f"  Leaves (no outgoing dependencies on other partial-coset findings) listed first.")
+        print(f"  Total: {len(pc_findings_list)} findings, {len(leaves)} leaves, "
+              f"{len(pc_findings_list) - len(leaves)} non-leaves.")
+        print()
+        for metric, extra, members, idx in partial_findings:
             ty, present, missing, stem, counterparts = extra
             members_short = sorted(short(o) for o in members)
-            print(f"  [{ty}]  stem '{stem}': "
+            leaf_marker = "  [LEAF]" if idx in leaves else "       "
+            print(f"{leaf_marker} [{ty}]  stem '{stem}': "
                   f"present={list(present)}, MISSING={list(missing)}")
             if counterparts:
                 cp_names = ", ".join(c.split("::")[-1] for c in counterparts)
-                print(f"          parametric counterpart: {cp_names}")
+                print(f"           parametric counterpart: {cp_names}")
             for m in members_short:
                 print(f"    · {m}")
+            # Show dependencies on other findings.
+            if finding_deps[idx]:
+                dep_stems = sorted({
+                    pc_findings_list[d].extra[3] for d in finding_deps[idx]
+                })
+                print(f"           depends on stems: {dep_stems}")
             print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
