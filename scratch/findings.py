@@ -990,6 +990,8 @@ def main():
             print()
 
         # 2-deep: cousin clusters.
+        absorbed_members = set()         # finding indices in COMPLETE-VIA-UPSTREAM clusters
+        promoted_leaves_via_cluster = set()  # upstream findings that are next-to-tackle
         if cousin_clusters:
             print("  --- Cousin clusters (2-deep: findings sharing an upstream dependent) ---")
             for cluster in cousin_clusters:
@@ -1001,28 +1003,55 @@ def main():
                 shared_stems = (sorted({pc_findings_list[s].extra[3] for s in shared})
                                 if shared else [])
                 # Check if upstream's deps EXACTLY cover the cluster.
-                # If yes, the cluster is structurally complete via upstream
-                # — the positional coverage is handled at the upstream level,
-                # and individual cluster members' "missing" siblings would be
-                # false propositions we don't need to add.
                 structurally_complete = False
+                completing_upstream = None
                 if shared:
                     for upstream_idx in shared:
                         upstream_deps = finding_deps[upstream_idx]
                         if cluster <= upstream_deps:
                             structurally_complete = True
+                            completing_upstream = upstream_idx
                             break
                 marker = "[COMPLETE-VIA-UPSTREAM]" if structurally_complete else "[partial]"
                 print(f"    cluster {marker}: {cluster_stems}")
                 if shared_stems:
                     print(f"      common upstream finding(s): {shared_stems}")
                 if structurally_complete:
+                    absorbed_members |= cluster
+                    promoted_leaves_via_cluster.add(completing_upstream)
+                    upstream_stem = pc_findings_list[completing_upstream].extra[3]
                     print(f"      The upstream depends on the full cluster; positional")
                     print(f"      coverage is handled there. Individual cousins'")
                     print(f"      'missing' siblings would be false propositions.")
-                    print(f"      The asymmetry to fix is at the upstream level, not")
-                    print(f"      at the cousins.")
+                    print(f"      → Next-leaf-to-tackle: '{upstream_stem}' (was non-leaf,")
+                    print(f"        now effectively a leaf since its deps are absorbed).")
                 print()
+
+        # === Effective leaves after cluster absorption ===
+        # A finding becomes an "effective leaf" when its dependencies are all
+        # in absorbed-members. Strict leaves PLUS findings whose remaining
+        # dependencies are entirely in COMPLETE-VIA-UPSTREAM clusters.
+        effective_leaves = []
+        for i in range(len(pc_findings_list)):
+            if i in absorbed_members:
+                continue  # cluster member, not an independent leaf
+            if not finding_deps[i] or finding_deps[i] <= absorbed_members:
+                effective_leaves.append(i)
+        # Sort: explicitly promoted ones first, then strict leaves.
+        promoted = [i for i in effective_leaves if i in promoted_leaves_via_cluster]
+        strict = [i for i in effective_leaves if i not in promoted_leaves_via_cluster]
+
+        print("  --- Effective leaves (NEXT-TO-TACKLE this iteration) ---")
+        print(f"    Strict leaves (no deps): {len(strict)}")
+        print(f"    Promoted from cousin clusters (upstream of absorbed cluster): {len(promoted)}")
+        for i in promoted:
+            stem = pc_findings_list[i].extra[3]
+            present = pc_findings_list[i].extra[1]
+            missing = pc_findings_list[i].extra[2]
+            print(f"      PROMOTED: stem='{stem}', present={list(present)}, MISSING={list(missing)}")
+        if not promoted:
+            print(f"      (no promotions this iteration)")
+        print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
     orbit_findings = [f for f in findings if f.level == "orbit"]
