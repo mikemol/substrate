@@ -567,6 +567,81 @@ def collect_orbit_findings():
     return findings
 
 
+def collect_partial_coset_findings():
+    """
+    Galois-of-orbit-almost-filled detector. Surfaces definitions whose
+    names contain a SPECIFIC constructor of a known finite type, when
+    the parametric counterpart (same name without the constructor)
+    does NOT exist. Each such definition is a partial coset
+    interaction: the named finite-type member is privileged, the
+    others are missing.
+
+    Per user (2026-05-16): "asymmetry-fails-to-surface is the Galois
+    correspondence to orbit-almost-filled". An orbit indexed by a
+    finite type T with N members would be size |T| if symmetric;
+    size < |T| means partial. The "missing" T-members ARE the
+    asymmetry. Equivalently: a DEFINITION named after one specific
+    T-member, with no parametric-over-T counterpart, has the same
+    asymmetry shape inverted (one privileged, others missing).
+    """
+    # Known finite types and their constructors.
+    finite_types = {
+        "Axis":      ["D", "C", "S", "W"],
+        "V₄":        ["e", "α", "β", "γ"],
+        "Pairing":   ["α-pair", "β-pair", "γ-pair"],
+        "Chirality": ["even", "odd"],
+        "Bool":      ["true", "false"],
+    }
+
+    # Collect all definition names across the codebase.
+    all_def_names = set()
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        for name in parse_definitions(text):
+            all_def_names.add((mod, name))
+
+    findings = []
+    for ty, ctors in finite_types.items():
+        # Index definitions by (suffix-stripped name, the constructor it mentions).
+        # E.g., "Stab-D" → ("Stab", "D"); "case-D-no-fix" → ("case-no-fix", "D")
+        # Patterns: -<C>, _<C>, -<C>-..., <C>-.
+        ctor_set = set(ctors)
+        # name-stem → {constructor: qname}
+        stem_to_ctor_qnames = defaultdict(dict)
+        for mod, name in all_def_names:
+            # Try suffix `-<ctor>`
+            for c in ctors:
+                if name.endswith("-" + c) or name.endswith("_" + c):
+                    stem = name[: -(len(c) + 1)]
+                    stem_to_ctor_qnames[stem].setdefault(c, []).append((mod, name))
+                    continue
+                # Middle pattern `-<ctor>-`
+                marker = "-" + c + "-"
+                if marker in name:
+                    parts = name.split(marker, 1)
+                    stem = "-".join(parts).replace(marker, "-_-")  # rough: stem = name with c replaced by _
+                    stem_to_ctor_qnames[stem].setdefault(c, []).append((mod, name))
+        # For each stem, check if it has only a subset of constructors.
+        for stem, ctor_map in stem_to_ctor_qnames.items():
+            present = set(ctor_map.keys())
+            missing = ctor_set - present
+            if missing and present and len(present) < len(ctors):
+                # Partial coset interaction: stem has names for some but not all ctors.
+                findings.append(Finding(
+                    level="partial-coset",
+                    kind=f"missing-{ty}-ctors",
+                    objects=frozenset(
+                        f"{mod}::{n}" for c, qnames in ctor_map.items() for mod, n in qnames
+                    ),
+                    metric=float(len(present)),
+                    source="partial_coset_detector",
+                    extra=(ty, tuple(sorted(present)), tuple(sorted(missing)), stem),
+                ))
+    return findings
+
+
 def collect_orbit_suborbit_connections(orbit_findings):
     """
     For each pair of orbits (parent, child), detect when the parent's
@@ -773,6 +848,7 @@ def main():
     findings.extend(collect_term_shape_findings(all_defs))
     findings.extend(collect_def_level_jaccard_findings(all_defs))
     findings.extend(collect_orbit_findings())
+    findings.extend(collect_partial_coset_findings())
 
     catalog_f, claim_to_modules = collect_catalog_findings()
     findings.extend(catalog_f)
@@ -781,11 +857,31 @@ def main():
     for lvl in ["module-pair", "module-triple", "module-simplex",
                 "def-pair", "def-group", "def-single",
                 "clause-shape-pair", "term-shape", "orbit",
-                "catalog-claim"]:
+                "partial-coset", "catalog-claim"]:
         n = sum(1 for f in findings if f.level == lvl)
         if n > 0:
             print(f"  {lvl:18s} : {n}")
     print()
+
+    # Partial-coset detector (Galois-of-orbit-almost-filled).
+    partial_findings = sorted(
+        ((f.metric, f.extra, f.objects) for f in findings if f.level == "partial-coset"),
+        key=lambda x: (-x[0], x[1])
+    )
+    if partial_findings:
+        print("=== Partial coset interactions (Galois of orbit-almost-filled) ===")
+        print("  Definition-name stems where some constructors of a finite type are")
+        print("  represented but others are missing. The missing constructors are")
+        print("  the asymmetry — these stems are partial coset interactions.")
+        print()
+        for metric, extra, members in partial_findings[:15]:
+            ty, present, missing, stem = extra
+            members_short = sorted(short(o) for o in members)
+            print(f"  [{ty}]  stem '{stem}': "
+                  f"present={list(present)}, MISSING={list(missing)}")
+            for m in members_short:
+                print(f"    · {m}")
+            print()
 
     # Orbit-suborbit connections (helper-belongs-here detector).
     orbit_findings = [f for f in findings if f.level == "orbit"]
