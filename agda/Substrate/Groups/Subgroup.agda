@@ -36,7 +36,7 @@ open import Substrate.Groups.S4 as S4
   renaming (apply to applyₛ; invₐ to invₐₛ)
 open import Substrate.Groups.V4-Embedding
   using (embed; embed-hom; V₄-image)
-open import Substrate.Groups.SemidirectProduct using (Stab-D)
+open import Substrate.Groups.SemidirectProduct using (Stab-D; Stab-C; Stab-S; Stab-W)
 open import Substrate.Groups.V4-Normality using (V₄-normal)
 
 ------------------------------------------------------------------------
@@ -148,6 +148,89 @@ Stab-D-Subgroup = record
   ; member-ε      = Stab-D-ε
   ; member-∙      = λ {σ} {τ} → Stab-D-∙ {σ} {τ}
   ; member-⁻¹     = λ {σ} → Stab-D-⁻¹ {σ}
+  }
+
+------------------------------------------------------------------------
+-- Stab(X) siblings for X ∈ {C, S, W}: parametric instances of the
+-- same closure structure, added to close the partial-coset findings.
+------------------------------------------------------------------------
+
+Stab-C-resp-≈ :
+  ∀ {σ τ} → σ ≈ τ → Stab-C σ → Stab-C τ
+Stab-C-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ C)) σ-stab
+
+Stab-C-ε : Stab-C ε
+Stab-C-ε = refl
+
+Stab-C-∙ :
+  ∀ {σ τ} → Stab-C σ → Stab-C τ → Stab-C (σ · τ)
+Stab-C-∙ {σ} σ-stab τ-stab =
+  trans (cong (applyₛ σ) τ-stab) σ-stab
+
+Stab-C-⁻¹ :
+  ∀ {σ} → Stab-C σ → Stab-C (σ ⁻¹)
+Stab-C-⁻¹ {σ} σ-stab =
+  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ C)
+
+Stab-C-Subgroup : S₄-Subgroup
+Stab-C-Subgroup = record
+  { member        = Stab-C
+  ; member-resp-≈ = λ {σ} {τ} → Stab-C-resp-≈ {σ} {τ}
+  ; member-ε      = Stab-C-ε
+  ; member-∙      = λ {σ} {τ} → Stab-C-∙ {σ} {τ}
+  ; member-⁻¹     = λ {σ} → Stab-C-⁻¹ {σ}
+  }
+
+Stab-S-resp-≈ :
+  ∀ {σ τ} → σ ≈ τ → Stab-S σ → Stab-S τ
+Stab-S-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ S)) σ-stab
+
+Stab-S-ε : Stab-S ε
+Stab-S-ε = refl
+
+Stab-S-∙ :
+  ∀ {σ τ} → Stab-S σ → Stab-S τ → Stab-S (σ · τ)
+Stab-S-∙ {σ} σ-stab τ-stab =
+  trans (cong (applyₛ σ) τ-stab) σ-stab
+
+Stab-S-⁻¹ :
+  ∀ {σ} → Stab-S σ → Stab-S (σ ⁻¹)
+Stab-S-⁻¹ {σ} σ-stab =
+  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ S)
+
+Stab-S-Subgroup : S₄-Subgroup
+Stab-S-Subgroup = record
+  { member        = Stab-S
+  ; member-resp-≈ = λ {σ} {τ} → Stab-S-resp-≈ {σ} {τ}
+  ; member-ε      = Stab-S-ε
+  ; member-∙      = λ {σ} {τ} → Stab-S-∙ {σ} {τ}
+  ; member-⁻¹     = λ {σ} → Stab-S-⁻¹ {σ}
+  }
+
+Stab-W-resp-≈ :
+  ∀ {σ τ} → σ ≈ τ → Stab-W σ → Stab-W τ
+Stab-W-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ W)) σ-stab
+
+Stab-W-ε : Stab-W ε
+Stab-W-ε = refl
+
+Stab-W-∙ :
+  ∀ {σ τ} → Stab-W σ → Stab-W τ → Stab-W (σ · τ)
+Stab-W-∙ {σ} σ-stab τ-stab =
+  trans (cong (applyₛ σ) τ-stab) σ-stab
+
+Stab-W-⁻¹ :
+  ∀ {σ} → Stab-W σ → Stab-W (σ ⁻¹)
+Stab-W-⁻¹ {σ} σ-stab =
+  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ W)
+
+Stab-W-Subgroup : S₄-Subgroup
+Stab-W-Subgroup = record
+  { member        = Stab-W
+  ; member-resp-≈ = λ {σ} {τ} → Stab-W-resp-≈ {σ} {τ}
+  ; member-ε      = Stab-W-ε
+  ; member-∙      = λ {σ} {τ} → Stab-W-∙ {σ} {τ}
+  ; member-⁻¹     = λ {σ} → Stab-W-⁻¹ {σ}
   }
 
 ------------------------------------------------------------------------

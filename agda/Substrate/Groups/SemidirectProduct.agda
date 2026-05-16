@@ -43,11 +43,26 @@ open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-∙; act-axis-involutive; V₄-image; embed-in-image)
 
 ------------------------------------------------------------------------
--- Stab(D) — the predicate: σ fixes D.
+-- Stab(axis) — the predicate: σ fixes a given axis.
+--
+-- The cocycle USES D as anchor but does not COMMIT to D; the same
+-- predicate exists for each non-D axis as the corresponding gauge-
+-- equivalent. Stab-C, Stab-S, Stab-W are added as siblings of
+-- Stab-D to close the partial-coset finding the detector surfaced
+-- (per [[feedback-use-vs-commit]]).
 ------------------------------------------------------------------------
 
 Stab-D : Permutation → Set
 Stab-D σ = applyₛ σ D ≡ D
+
+Stab-C : Permutation → Set
+Stab-C σ = applyₛ σ C ≡ C
+
+Stab-S : Permutation → Set
+Stab-S σ = applyₛ σ S ≡ S
+
+Stab-W : Permutation → Set
+Stab-W σ = applyₛ σ W ≡ W
 
 ------------------------------------------------------------------------
 -- v-of-axis: given an axis x, the unique V_4 element sending D to x.
@@ -152,6 +167,27 @@ V₄-cap-Stab-D-trivial e _   = refl
 V₄-cap-Stab-D-trivial α ()
 V₄-cap-Stab-D-trivial β ()
 V₄-cap-Stab-D-trivial γ ()
+
+V₄-cap-Stab-C-trivial :
+  (v : V₄) → Stab-C (embed v) → v ≡ e
+V₄-cap-Stab-C-trivial e _   = refl
+V₄-cap-Stab-C-trivial α ()
+V₄-cap-Stab-C-trivial β ()
+V₄-cap-Stab-C-trivial γ ()
+
+V₄-cap-Stab-S-trivial :
+  (v : V₄) → Stab-S (embed v) → v ≡ e
+V₄-cap-Stab-S-trivial e _   = refl
+V₄-cap-Stab-S-trivial α ()
+V₄-cap-Stab-S-trivial β ()
+V₄-cap-Stab-S-trivial γ ()
+
+V₄-cap-Stab-W-trivial :
+  (v : V₄) → Stab-W (embed v) → v ≡ e
+V₄-cap-Stab-W-trivial e _   = refl
+V₄-cap-Stab-W-trivial α ()
+V₄-cap-Stab-W-trivial β ()
+V₄-cap-Stab-W-trivial γ ()
 
 ------------------------------------------------------------------------
 -- Uniqueness of factorisation.

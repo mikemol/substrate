@@ -55,7 +55,8 @@ open import Substrate.Groups.S4 as S4
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive; V₄-image)
 open import Substrate.Groups.SemidirectProduct
-  using (Stab-D; v-of-axis; v-of-axis-unique; v-for; s-for;
+  using (Stab-D; Stab-C; Stab-S; Stab-W;
+         v-of-axis; v-of-axis-unique; v-for; s-for;
          s-for-fixes-D; factorisation)
 open import Substrate.Cocycles.V4Signature
   using (Pairing; α-pair; β-pair; γ-pair;
@@ -248,15 +249,39 @@ stab-cws = record
 stab-id-fixes-D : Stab-D stab-id
 stab-id-fixes-D = refl
 
+-- stab-id is the S₄ identity; fixes every axis.
+stab-id-fixes-C : Stab-C stab-id
+stab-id-fixes-C = refl
+
+stab-id-fixes-S : Stab-S stab-id
+stab-id-fixes-S = refl
+
+stab-id-fixes-W : Stab-W stab-id
+stab-id-fixes-W = refl
+
 stab-sw-fixes-D : Stab-D stab-sw
 stab-sw-fixes-D = refl
+
+-- stab-sw swaps S↔W; fixes D and C only.
+stab-sw-fixes-C : Stab-C stab-sw
+stab-sw-fixes-C = refl
 
 stab-cs-fixes-D : Stab-D stab-cs
 stab-cs-fixes-D = refl
 
+-- stab-cs swaps C↔S; fixes D and W only.
+stab-cs-fixes-W : Stab-W stab-cs
+stab-cs-fixes-W = refl
+
 stab-cw-fixes-D : Stab-D stab-cw
 stab-cw-fixes-D = refl
 
+-- stab-cw swaps C↔W; fixes D and S only.
+stab-cw-fixes-S : Stab-S stab-cw
+stab-cw-fixes-S = refl
+
+-- stab-csw, stab-cws are 3-cycles; fix only D.
+-- No -C, -S, or -W siblings to add (those propositions are false).
 stab-csw-fixes-D : Stab-D stab-csw
 stab-csw-fixes-D = refl
 
