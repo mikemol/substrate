@@ -1,34 +1,39 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.V4-Cosets
 --
--- Slice 13: V_4-coset equivalence in S_4 + unique Stab(D)
--- representative. Captures the structural content of S_4 / V_4 ≅
--- Stab(D) ≅ S_3 at the relational/bijective level — no quotient-group
--- construction (which would require HITs or funext that the
--- extraction discipline forbids).
+-- Slice 13: V_4-coset equivalence in S_4 + unique Stab(X)
+-- representative for arbitrary anchor X ∈ Axis. Captures the
+-- structural content of S_4 / V_4 ≅ Stab(X) ≅ S_3 at the
+-- relational/bijective level — no quotient-group construction
+-- (which would require HITs or funext that the extraction
+-- discipline forbids).
 --
 -- The catalog claim "V_4 ⋊ S_3 ≅ S_4 with quotient ≅ S_3" is closed
--- here as: every V_4-coset in S_4 has a UNIQUE Stab(D)
--- representative. Combined with slice 3's factorisation theorem
--- (every σ ∈ S_4 factors as embed v · s with s ∈ Stab(D)), this is
--- structurally equivalent to the quotient isomorphism.
+-- here as: every V_4-coset in S_4 has a UNIQUE Stab(X) representative
+-- for any chosen anchor X. Combined with slice 3's factorisation
+-- theorem (every σ ∈ S_4 factors as embed v · s with s ∈ Stab(X)),
+-- this is structurally equivalent to the quotient isomorphism.
 --
--- Three load-bearing claims:
+-- Three load-bearing claims, all parametric over X : Axis:
 --
---   _∼V₄_                 — equivalence relation on S_4 with σ ∼V₄ τ
---                           iff τ · σ⁻¹ ∈ V_4-image.
+--   _∼V₄_                — equivalence relation on S_4 with σ ∼V₄ τ
+--                          iff τ · σ⁻¹ ∈ V_4-image. (X-independent.)
 --
---   coset-has-stab-rep    — every σ has some τ ∈ Stab(D) with σ ∼V₄
---                           τ (witness: τ = s-for σ).
+--   coset-has-stab-rep   — every σ has some τ ∈ Stab(X) with σ ∼V₄ τ
+--                          (witness: τ = s-for-anchor X σ).
 --
---   coset-stab-rep-unique — if τ₁, τ₂ ∈ Stab(D) and both ∼V₄-related
---                           to σ, then τ₁ ≈ τ₂. Uses V_4 ∩ Stab(D) =
---                           {e} (slice 3's V₄-cap-Stab-D-trivial).
+--   coset-stab-rep-unique — if τ₁, τ₂ ∈ Stab(X) and both ∼V₄-related
+--                          to σ, then τ₁ ≈ τ₂. Uses V_4 ∩ Stab(X) =
+--                          {e} (slice 3's V₄-cap-Stab-trivial).
+--
+-- Per [[feedback-use-vs-commit]]: the cocycle USES whatever anchor
+-- the caller chooses, but does not COMMIT to D. The parameterized
+-- form makes the gauge-invariance manifest at the type level.
 --
 -- See: catalog/cocycles.md § CY-5 — V_4 ⋊ S_3 ≅ S_4 picture;
 --      Substrate.Groups.SemidirectProduct (slice 3) — factorisation;
 --      Substrate.Groups.Subgroup (slice 12) — V_4-image normal-
---      subgroup closure laws.
+--      subgroup closure laws + parametric Stab-Subgroup.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -48,16 +53,16 @@ open import Substrate.Groups.S4 as S4
          inv-right; ⁻¹-cong; inv-l; inv-r)
   renaming (apply to applyₛ; invₐ to invₐₛ)
 open import Substrate.Groups.V4-Embedding
-  using (embed; V₄-image)
+  using (embed; V₄-image; act-axis-id)
 open import Substrate.Groups.SemidirectProduct
-  using (Stab-D; v-for; s-for; s-for-fixes-D; factorisation;
-         V₄-cap-Stab-D-trivial)
+  using (Stab; v-for-anchor; s-for-anchor; s-for-fixes-anchor;
+         factorisation; V₄-cap-Stab-trivial)
 open import Substrate.Groups.Subgroup
   using (V₄-image-ε; V₄-image-∙; V₄-image-⁻¹; V₄-image-resp-≈;
-         Stab-D-∙; Stab-D-⁻¹; Stab-D-resp-≈)
+         Stab-∙; Stab-⁻¹; Stab-resp-≈)
 
 ------------------------------------------------------------------------
--- The V_4-coset equivalence.
+-- The V_4-coset equivalence (anchor-independent).
 --
 -- σ ∼V₄ τ iff τ and σ differ by a V_4-image element on the right.
 -- Equivalent to "σ and τ are in the same V_4-coset" (using right
@@ -70,7 +75,7 @@ _∼V₄_ : Permutation → Permutation → Set
 σ ∼V₄ τ = V₄-image (τ · (σ ⁻¹))
 
 ------------------------------------------------------------------------
--- Equivalence-relation proofs.
+-- Equivalence-relation proofs (anchor-independent).
 ------------------------------------------------------------------------
 
 -- Reflexivity: σ · σ⁻¹ ≈ ε ∈ V_4-image.
@@ -107,46 +112,46 @@ _∼V₄_ : Permutation → Permutation → Set
     chain x = cong (applyₛ ρ) (inv-l τ (invₐₛ σ x))
 
 ------------------------------------------------------------------------
--- coset-has-stab-rep: every σ has a Stab(D) representative in its
--- V_4-coset.
+-- coset-has-stab-rep: every σ has a Stab(X) representative in its
+-- V_4-coset, for any anchor X.
 --
--- Witness: τ = s-for σ. By slice 3:
---   * s-for-fixes-D: Stab-D (s-for σ).
---   * (s-for σ) · σ⁻¹ ≈ embed (v-for σ) ∈ V_4-image (the V_4
---     witness from the factorisation, peeled off).
+-- Witness: τ = s-for-anchor X σ. By slice 3:
+--   * s-for-fixes-anchor X σ: Stab X (s-for-anchor X σ).
+--   * (s-for-anchor X σ) · σ⁻¹ ≈ embed (v-for-anchor X σ) ∈ V_4-image
+--     (the V_4 witness from the factorisation, peeled off).
 ------------------------------------------------------------------------
 
 coset-has-stab-rep :
-  (σ : Permutation) →
-  Σ Permutation (λ τ → Stab-D τ × σ ∼V₄ τ)
-coset-has-stab-rep σ =
-  s-for σ , s-for-fixes-D σ , v-for σ , prf
+  (X : Axis) (σ : Permutation) →
+  Σ Permutation (λ τ → Stab X τ × σ ∼V₄ τ)
+coset-has-stab-rep X σ =
+  s-for-anchor X σ , s-for-fixes-anchor X σ , v-for-anchor X σ , prf
   where
-    -- ((s-for σ) · σ⁻¹) x
-    --   = act-axis (v-for σ) (applyₛ σ (invₐₛ σ x))
-    --   = act-axis (v-for σ) x                  [inv-r σ]
-    --   = applyₛ (embed (v-for σ)) x.
-    prf : ((s-for σ) · (σ ⁻¹)) ≈ embed (v-for σ)
-    prf x = cong (act-axis (v-for σ)) (inv-r σ x)
+    -- ((s-for-anchor X σ) · σ⁻¹) x
+    --   = act-axis (v-for-anchor X σ) (applyₛ σ (invₐₛ σ x))
+    --   = act-axis (v-for-anchor X σ) x                  [inv-r σ]
+    --   = applyₛ (embed (v-for-anchor X σ)) x.
+    prf : ((s-for-anchor X σ) · (σ ⁻¹)) ≈ embed (v-for-anchor X σ)
+    prf x = cong (act-axis (v-for-anchor X σ)) (inv-r σ x)
 
 ------------------------------------------------------------------------
--- coset-stab-rep-unique: a V_4-coset has at most one Stab(D)
+-- coset-stab-rep-unique: a V_4-coset has at most one Stab(X)
 -- representative.
 --
--- If τ₁, τ₂ ∈ Stab(D) are both ∼V₄-related to σ, then:
+-- If τ₁, τ₂ ∈ Stab(X) are both ∼V₄-related to σ, then:
 --   1. By transitivity: τ₂ · τ₁⁻¹ ∈ V_4-image (i.e., τ₁ ∼V₄ τ₂).
---   2. Stab(D) closure: τ₂ · τ₁⁻¹ ∈ Stab(D).
---   3. V_4 ∩ Stab(D) = {e} (slice 3): the V_4 witness must be e,
+--   2. Stab(X) closure: τ₂ · τ₁⁻¹ ∈ Stab(X).
+--   3. V_4 ∩ Stab(X) = {e} (slice 3): the V_4 witness must be e,
 --      so τ₂ · τ₁⁻¹ ≈ embed e ≈ ε.
 --   4. τ₂ · τ₁⁻¹ ≈ ε ⇒ τ₁ ≈ τ₂.
 ------------------------------------------------------------------------
 
 coset-stab-rep-unique :
-  (σ τ₁ τ₂ : Permutation) →
-  Stab-D τ₁ → Stab-D τ₂ →
+  (X : Axis) (σ τ₁ τ₂ : Permutation) →
+  Stab X τ₁ → Stab X τ₂ →
   σ ∼V₄ τ₁ → σ ∼V₄ τ₂ →
   τ₁ ≈ τ₂
-coset-stab-rep-unique σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ₂ x =
+coset-stab-rep-unique X σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ₂ x =
   sym (trans
         (cong (applyₛ τ₂) (sym (inv-l τ₁ x)))
         (τ₂τ₁⁻¹≈ε (applyₛ τ₁ x)))
@@ -155,10 +160,10 @@ coset-stab-rep-unique σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ₂
     τ₁∼τ₂ : τ₁ ∼V₄ τ₂
     τ₁∼τ₂ = ∼V₄-trans {τ₁} {σ} {τ₂} (∼V₄-sym {σ} {τ₁} σ∼τ₁) σ∼τ₂
 
-    -- Step 2: τ₂ · τ₁⁻¹ ∈ Stab-D (subgroup closure).
-    τ₂τ₁⁻¹-stab : Stab-D (τ₂ · (τ₁ ⁻¹))
+    -- Step 2: τ₂ · τ₁⁻¹ ∈ Stab(X) (subgroup closure).
+    τ₂τ₁⁻¹-stab : Stab X (τ₂ · (τ₁ ⁻¹))
     τ₂τ₁⁻¹-stab =
-      Stab-D-∙ {τ₂} {τ₁ ⁻¹} τ₂-stab (Stab-D-⁻¹ {τ₁} τ₁-stab)
+      Stab-∙ {X} {τ₂} {τ₁ ⁻¹} τ₂-stab (Stab-⁻¹ {X} {τ₁} τ₁-stab)
 
     -- Extract the V_4 witness w with τ₂ · τ₁⁻¹ ≈ embed w.
     w : V₄
@@ -167,50 +172,50 @@ coset-stab-rep-unique σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ₂
     τ₂τ₁⁻¹≈embed-w : (τ₂ · (τ₁ ⁻¹)) ≈ embed w
     τ₂τ₁⁻¹≈embed-w = proj₂ τ₁∼τ₂
 
-    -- Step 3: Stab-D (embed w), then V₄-cap-Stab-D-trivial gives
-    -- w ≡ e.
-    embed-w-stab : Stab-D (embed w)
+    -- Step 3: Stab X (embed w), then V₄-cap-Stab-trivial gives w ≡ e.
+    embed-w-stab : Stab X (embed w)
     embed-w-stab =
-      Stab-D-resp-≈ {τ₂ · (τ₁ ⁻¹)} {embed w} τ₂τ₁⁻¹≈embed-w τ₂τ₁⁻¹-stab
+      Stab-resp-≈ {X} {τ₂ · (τ₁ ⁻¹)} {embed w} τ₂τ₁⁻¹≈embed-w τ₂τ₁⁻¹-stab
 
     w≡e : w ≡ e
-    w≡e = V₄-cap-Stab-D-trivial w embed-w-stab
+    w≡e = V₄-cap-Stab-trivial X w embed-w-stab
 
     -- Step 4: τ₂ · τ₁⁻¹ ≈ ε. Combine the witness with w ≡ e.
     τ₂τ₁⁻¹≈ε : (τ₂ · (τ₁ ⁻¹)) ≈ ε
     τ₂τ₁⁻¹≈ε y =
       trans (τ₂τ₁⁻¹≈embed-w y)
-            (cong (λ v → act-axis v y) w≡e)
+            (trans (cong (λ v → act-axis v y) w≡e)
+                   (act-axis-id y))
 
 ------------------------------------------------------------------------
--- Bundled coset-bijection record.
+-- Bundled coset-bijection record, parametric over anchor X.
 --
--- Packages the structural content of S_4 / V_4 ≅ Stab(D) without
+-- Packages the structural content of S_4 / V_4 ≅ Stab(X) without
 -- explicitly constructing the quotient group.
 ------------------------------------------------------------------------
 
-record S₄/V₄-↔-StabD : Set₁ where
+record S₄/V₄-↔-Stab (X : Axis) : Set₁ where
   field
-    -- The equivalence relation on S_4.
+    -- The equivalence relation on S_4 (anchor-independent).
     _∼_ : Permutation → Permutation → Set
 
-    -- Every σ has a Stab(D) representative in its coset.
+    -- Every σ has a Stab(X) representative in its coset.
     rep : (σ : Permutation) →
-          Σ Permutation (λ τ → Stab-D τ × σ ∼ τ)
+          Σ Permutation (λ τ → Stab X τ × σ ∼ τ)
 
-    -- The Stab(D) representative is unique up to pointwise
+    -- The Stab(X) representative is unique up to pointwise
     -- equivalence.
     rep-unique :
       (σ τ₁ τ₂ : Permutation) →
-      Stab-D τ₁ → Stab-D τ₂ →
+      Stab X τ₁ → Stab X τ₂ →
       σ ∼ τ₁ → σ ∼ τ₂ →
       τ₁ ≈ τ₂
 
-S₄/V₄-↔-StabD-bijection : S₄/V₄-↔-StabD
-S₄/V₄-↔-StabD-bijection = record
+S₄/V₄-↔-Stab-bijection : (X : Axis) → S₄/V₄-↔-Stab X
+S₄/V₄-↔-Stab-bijection X = record
   { _∼_        = _∼V₄_
-  ; rep        = coset-has-stab-rep
-  ; rep-unique = coset-stab-rep-unique
+  ; rep        = coset-has-stab-rep X
+  ; rep-unique = coset-stab-rep-unique X
   }
 
 ------------------------------------------------------------------------
@@ -220,8 +225,7 @@ S₄/V₄-↔-StabD-bijection = record
 --    closed at three levels:
 --    - Factorisation (slice 3): every σ = embed v · s.
 --    - Normality (slice 9 + 12): V_4 is normal.
---    - Quotient bijection (this slice): S_4 / V_4 ↔ Stab(D)
---      structurally.
+--    - Quotient bijection (this slice): S_4 / V_4 ↔ Stab(X) for any X.
 --
 -- 2. The full "S_4 / V_4 ≅ S_3 as GROUPS" statement would require
 --    a quotient-group construction. Setoid-quotient approaches
@@ -229,17 +233,17 @@ S₄/V₄-↔-StabD-bijection = record
 --    layers. Deferred — the relational bijection here is the
 --    structural content the catalog asserts.
 --
--- 3. Stab(D) ≅ S_3 (the second iso in S_4/V_4 ≅ S_3) is implicit
---    in this slice — Stab(D) has 6 elements, S_3 has 6 elements,
---    and they're isomorphic by faithful action on {C, S, W}. The
---    formal iso (Stab-D-Group ≅ S₃-Group) is not constructed here
---    but is mechanical from the explicit Stab(D) elements in
---    Substrate.Cocycles.V4Signature.S4Iso.
+-- 3. Stab(X) ≅ S_3 (the second iso in S_4/V_4 ≅ S_3) is implicit
+--    in this slice — Stab(X) has 6 elements, S_3 has 6 elements,
+--    and they're isomorphic by faithful action on Axis \ {X}. The
+--    formal iso for X=D is built in Substrate.Cocycles.V4Signature.
+--    S4Iso; the parameterization here means the same construction
+--    works at any anchor.
 --
 -- 4. Cross-references:
 --    - Substrate.Groups.SemidirectProduct (slice 3) — factorisation,
---      v-for, s-for, V₄-cap-Stab-D-trivial.
+--      v-for-anchor, s-for-anchor, V₄-cap-Stab-trivial.
 --    - Substrate.Groups.V4-Normality (slice 9) — V₄-normal.
---    - Substrate.Groups.Subgroup (slice 12) — V₄-image and Stab-D
---      subgroup closure laws.
+--    - Substrate.Groups.Subgroup (slice 12) — V₄-image normal
+--      subgroup + parametric Stab-Subgroup closure laws.
 ------------------------------------------------------------------------

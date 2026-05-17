@@ -17,6 +17,14 @@
 -- the image of embed. Equivalently, V_4 is closed under conjugation
 -- by S_4 — the load-bearing claim of S8.
 --
+-- Architecture (per [[feedback-v4-typeclass-architecture]]): act-axis
+-- itself is now defined STRUCTURALLY in Substrate.Axes as
+-- `axis-of-v (v V4.· v-of-axis x)` — the V₄-torsor structure IS the
+-- foundation. Consequently `act-axis-as-V₄-mult` is a definitional
+-- identity (1-line refl), and act-axis-∙ / act-axis-involutive are
+-- short algebraic derivations through V4-Generic's group axioms.
+-- No (V₄ × Axis) enumeration anywhere.
+--
 -- See: catalog/cocycles.md § CY-5 — V_4 ⋊ S_3 ≅ S_4 is the primary
 -- algebraic foundation; this module is the embedding half.
 ------------------------------------------------------------------------
@@ -31,101 +39,76 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
+-- Axis + bijection (v-of-axis / axis-of-v) + round-trips + act-axis
+-- now live in Substrate.Axes. Re-exported here so downstream code
+-- importing this module keeps working unchanged.
+open import Substrate.Axes public
+  using (Axis; D; C; S; W; act-axis;
+         v-of-axis; axis-of-v;
+         axis-of-v-v-of-axis; v-of-axis-axis-of-v)
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ; V₄-Group)
 open import Substrate.Groups.S4 as S4
   using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group)
   renaming (apply to applyₛ; invₐ to invₐₛ)
 
 ------------------------------------------------------------------------
--- act-axis as a V_4 action on Axis.
+-- act-axis IS V₄ multiplication on Axis — DEFINITIONAL identity.
 --
--- The two action axioms (act-id and act-∙) are mechanical case-
--- analysis on the V_4 element and the axis. act-axis-id reduces by
--- definition (act-axis e x = x). act-axis-∙ requires 40+ refl cases;
--- postulated for now with the decomposition documented at the bottom
--- of this file.
+--   act-axis v x ≡ axis-of-v (v V4.· v-of-axis x)
+--
+-- True by `refl`: act-axis is *defined* this way in Substrate.Axes.
+-- Retained as a named lemma for downstream modules that compose
+-- through it explicitly (they get a no-op proof obligation).
+------------------------------------------------------------------------
+
+act-axis-as-V₄-mult :
+  (v : V₄) (x : Axis) →
+  act-axis v x ≡ axis-of-v (v V4.· v-of-axis x)
+act-axis-as-V₄-mult _ _ = refl
+
+------------------------------------------------------------------------
+-- act-axis as a V₄-action.
+--
+-- act-id: act-axis e x ≡ x.
+--   Under the structural definition, this is no longer definitional
+--   for variable x (V₄'s ε-left needs to fire). Proof: chain
+--   V4.ε-left + axis-of-v-v-of-axis through cong axis-of-v.
+--
+-- act-∙: act-axis (g · h) x ≡ act-axis g (act-axis h x).
+--   Algebraic chain through V4.·-assoc + v-of-axis-axis-of-v
+--   round-trip. No (V₄ × V₄ × Axis) enumeration.
 ------------------------------------------------------------------------
 
 act-axis-id : (x : Axis) → act-axis e x ≡ x
-act-axis-id x = refl
+act-axis-id x =
+  trans (cong axis-of-v (V4.ε-left (v-of-axis x)))
+        (axis-of-v-v-of-axis x)
 
--- ∀ (g h : V₄) (x : Axis) → act-axis (g V4.· h) x ≡ act-axis g (act-axis h x)
--- Mechanical: 40 cases (g=e absorbs all (h,x); g=α/β/γ × h=e absorbs all x;
--- (g≠e, h≠e) gives 9 × 4 = 36 (g,h,x) cases). Each is refl after
--- pattern-matching reduces V_4 multiplication and act-axis composition.
 act-axis-∙ :
   (g h : V₄) (x : Axis) →
   act-axis (g V4.· h) x ≡ act-axis g (act-axis h x)
--- g = e: e · h = h, act-axis e _ = _
-act-axis-∙ e h x = refl
--- g ≠ e, h = e: g · e = g, act-axis e x = x
-act-axis-∙ α e x = refl
-act-axis-∙ β e x = refl
-act-axis-∙ γ e x = refl
--- g = α, h = α: α · α = e, act-axis α involutive
-act-axis-∙ α α D = refl
-act-axis-∙ α α C = refl
-act-axis-∙ α α S = refl
-act-axis-∙ α α W = refl
--- g = α, h = β: α · β = γ
-act-axis-∙ α β D = refl
-act-axis-∙ α β C = refl
-act-axis-∙ α β S = refl
-act-axis-∙ α β W = refl
--- g = α, h = γ: α · γ = β
-act-axis-∙ α γ D = refl
-act-axis-∙ α γ C = refl
-act-axis-∙ α γ S = refl
-act-axis-∙ α γ W = refl
--- g = β, h = α: β · α = γ
-act-axis-∙ β α D = refl
-act-axis-∙ β α C = refl
-act-axis-∙ β α S = refl
-act-axis-∙ β α W = refl
--- g = β, h = β: β · β = e
-act-axis-∙ β β D = refl
-act-axis-∙ β β C = refl
-act-axis-∙ β β S = refl
-act-axis-∙ β β W = refl
--- g = β, h = γ: β · γ = α
-act-axis-∙ β γ D = refl
-act-axis-∙ β γ C = refl
-act-axis-∙ β γ S = refl
-act-axis-∙ β γ W = refl
--- g = γ, h = α: γ · α = β
-act-axis-∙ γ α D = refl
-act-axis-∙ γ α C = refl
-act-axis-∙ γ α S = refl
-act-axis-∙ γ α W = refl
--- g = γ, h = β: γ · β = α
-act-axis-∙ γ β D = refl
-act-axis-∙ γ β C = refl
-act-axis-∙ γ β S = refl
-act-axis-∙ γ β W = refl
--- g = γ, h = γ: γ · γ = e
-act-axis-∙ γ γ D = refl
-act-axis-∙ γ γ C = refl
-act-axis-∙ γ γ S = refl
-act-axis-∙ γ γ W = refl
+act-axis-∙ g h x =
+  trans (cong axis-of-v (V4.·-assoc g h (v-of-axis x)))
+        (cong (λ w → axis-of-v (g V4.· w))
+              (sym (v-of-axis-axis-of-v (h V4.· v-of-axis x))))
 
 ------------------------------------------------------------------------
--- act-axis is an involution for non-identity V_4 elements.
--- This follows from V_4 being self-inverse: act-axis g (act-axis g x) ≡ x.
+-- act-axis involutivity — derived from act-axis-∙ + V_4 self-inverse.
+--
+--   act-axis g (act-axis g x)
+--     ≡ act-axis (g · g) x   [sym act-axis-∙]
+--     ≡ act-axis ε x         [V4.inv-left g, since inv = id on V₄]
+--     ≡ x                    [act-axis-id, after V4.ε reduces to e]
+--
+-- Under the structural act-axis, the final step is no longer
+-- definitional and routes through act-axis-id.
 ------------------------------------------------------------------------
 
 act-axis-involutive : (g : V₄) (x : Axis) → act-axis g (act-axis g x) ≡ x
 act-axis-involutive g x =
-  -- act-axis g (act-axis g x) ≡ act-axis (g · g) x ≡ act-axis e x ≡ x
   trans (sym (act-axis-∙ g g x))
-        (case-g g x)
-  where
-    -- For each g, g · g = e, so act-axis (g · g) x = act-axis e x = x.
-    case-g : (g : V₄) (x : Axis) → act-axis (g V4.· g) x ≡ x
-    case-g e _ = refl
-    case-g α _ = refl  -- α · α = e
-    case-g β _ = refl  -- β · β = e
-    case-g γ _ = refl  -- γ · γ = e
+        (trans (cong (λ v → act-axis v x) (V4.inv-left g))
+               (act-axis-id x))
 
 ------------------------------------------------------------------------
 -- The embedding V_4 → S_4.
@@ -160,6 +143,21 @@ V₄-image σ = ∃ λ v → σ ≈ embed v
 embed-in-image : (v : V₄) → V₄-image (embed v)
 embed-in-image v = v , (λ _ → refl)
 
+-- Every V₄-image is self-inverse (since every V₄ element is). One-line
+-- corollary of act-axis-involutive; lifted here from V4-Normality so
+-- S4-Iso can consume it without pulling in the entire Normality proof.
+embed-self-inverse : (v : V₄) → (embed v · embed v) ≈ ε
+embed-self-inverse v x = act-axis-involutive v x
+
+------------------------------------------------------------------------
+-- Note: The previous Is-V₄ instance for Axis (typeclass-style index
+-- into Bool × Bool via the F₂² bijection) has been retired alongside
+-- V4-Index and V4-Generic. The Axis ↔ V₄ correspondence now lives
+-- directly above via `v-of-axis`/`axis-of-v` (which are the relevant
+-- Axis-side names) plus V₄'s 4-ctor data type. No downstream code
+-- consumed Axis-is-V₄, so its deletion is safe.
+------------------------------------------------------------------------
+
 ------------------------------------------------------------------------
 -- Normality: V_4 ⊳ S_4.
 --
@@ -189,16 +187,7 @@ embed-in-image v = v , (λ _ → refl)
 ------------------------------------------------------------------------
 -- TODOs (deferred to follow-on session)
 --
--- 1. Replace `postulate act-axis-∙` with the 64-case refl proof.
---    Mechanical. Approximate shape:
---      act-axis-∙ e h x = refl
---      act-axis-∙ α e x = refl              -- α · e = α
---      act-axis-∙ α α D = refl              -- α · α = e
---      ... (40 more cases)
---    The catalog already verifies this constructively in Python
---    (s4_structure.py v4_swap_consistency).
---
--- 2. Replace `postulate V₄-normal` with the constructive normality
+-- 1. Replace `postulate V₄-normal` with the constructive normality
 --    proof. Approach options:
 --      (a) Case-analysis on v and σ (~73 cases — many sub-cases).
 --      (b) Define `is-V₄-permutation : Permutation → Set` via a
@@ -209,11 +198,11 @@ embed-in-image v = v , (λ _ → refl)
 --          subgroup of S_4 — but this requires more group theory.
 --    Approach (b) is most likely tractable in Agda and reusable.
 --
--- 3. Prove |V_4-image| = 4 (i.e., the embedding is injective). Easy
+-- 2. Prove |V_4-image| = 4 (i.e., the embedding is injective). Easy
 --    once act-axis is known to be injective per g.
 --
--- 4. Construct Stab(D) ⊂ S_4 as the S_3 complement; prove the
+-- 3. Construct Stab(D) ⊂ S_4 as the S_3 complement; prove the
 --    semidirect product theorem (the next-next slice, S9).
 --
--- 5. Construct the bijection TotalSpace ≃ S_4 (S10) once S9 exists.
+-- 4. Construct the bijection TotalSpace ≃ S_4 (S10) once S9 exists.
 ------------------------------------------------------------------------

@@ -28,15 +28,15 @@ open import Data.Product using (∃; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
+open import Substrate.Axes using (Axis)
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
 open import Substrate.Groups.S4 as S4
   using (Permutation; _·_; _⁻¹; ε; _≈_;
          ·-cong; ≈-refl; ≈-sym; ⁻¹-cong; inv-l)
   renaming (apply to applyₛ; invₐ to invₐₛ)
 open import Substrate.Groups.V4-Embedding
-  using (embed; embed-hom; V₄-image)
-open import Substrate.Groups.SemidirectProduct using (Stab-D; Stab-C; Stab-S; Stab-W)
+  using (embed; embed-hom; V₄-image; act-axis-id)
+open import Substrate.Groups.SemidirectProduct using (Stab)
 open import Substrate.Groups.V4-Normality using (V₄-normal)
 
 ------------------------------------------------------------------------
@@ -73,7 +73,7 @@ V₄-image-resp-≈ {σ} {τ} σ≈τ (v , σ≈ev) =
   v , (λ x → trans (sym (σ≈τ x)) (σ≈ev x))
 
 V₄-image-ε : V₄-image ε
-V₄-image-ε = e , (λ _ → refl)
+V₄-image-ε = e , (λ x → sym (act-axis-id x))
 
 embed-self-inv : (v : V₄) → (embed v) ⁻¹ ≈ embed v
 embed-self-inv v _ = refl
@@ -121,125 +121,47 @@ V₄-image-NormalSubgroup = record
   }
 
 ------------------------------------------------------------------------
--- Stab(D) instances. Stab(D) is a subgroup but NOT normal.
+-- Stab(X) subgroup, parametric over the anchor axis X.
+--
+-- Stab(X) is a subgroup of S₄ for every X but is NOT normal (only
+-- V₄-image is normal in S₄). The four X ∈ {D, C, S, W} instances are
+-- specializations `Stab-Subgroup D` etc. — no separate definitions
+-- per anchor.
 ------------------------------------------------------------------------
 
-Stab-D-resp-≈ :
-  ∀ {σ τ} → σ ≈ τ → Stab-D σ → Stab-D τ
-Stab-D-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ D)) σ-stab
+Stab-resp-≈ :
+  ∀ {X σ τ} → σ ≈ τ → Stab X σ → Stab X τ
+Stab-resp-≈ {X} σ≈τ σ-stab = trans (sym (σ≈τ X)) σ-stab
 
-Stab-D-ε : Stab-D ε
-Stab-D-ε = refl
+Stab-ε : ∀ X → Stab X ε
+Stab-ε X = refl
 
-Stab-D-∙ :
-  ∀ {σ τ} → Stab-D σ → Stab-D τ → Stab-D (σ · τ)
-Stab-D-∙ {σ} σ-stab τ-stab =
+Stab-∙ :
+  ∀ {X σ τ} → Stab X σ → Stab X τ → Stab X (σ · τ)
+Stab-∙ {X} {σ} σ-stab τ-stab =
   trans (cong (applyₛ σ) τ-stab) σ-stab
 
-Stab-D-⁻¹ :
-  ∀ {σ} → Stab-D σ → Stab-D (σ ⁻¹)
-Stab-D-⁻¹ {σ} σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ D)
+Stab-⁻¹ :
+  ∀ {X σ} → Stab X σ → Stab X (σ ⁻¹)
+Stab-⁻¹ {X} {σ} σ-stab =
+  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ X)
 
-Stab-D-Subgroup : S₄-Subgroup
-Stab-D-Subgroup = record
-  { member        = Stab-D
-  ; member-resp-≈ = λ {σ} {τ} → Stab-D-resp-≈ {σ} {τ}
-  ; member-ε      = Stab-D-ε
-  ; member-∙      = λ {σ} {τ} → Stab-D-∙ {σ} {τ}
-  ; member-⁻¹     = λ {σ} → Stab-D-⁻¹ {σ}
-  }
-
-------------------------------------------------------------------------
--- Stab(X) siblings for X ∈ {C, S, W}: parametric instances of the
--- same closure structure, added to close the partial-coset findings.
-------------------------------------------------------------------------
-
-Stab-C-resp-≈ :
-  ∀ {σ τ} → σ ≈ τ → Stab-C σ → Stab-C τ
-Stab-C-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ C)) σ-stab
-
-Stab-C-ε : Stab-C ε
-Stab-C-ε = refl
-
-Stab-C-∙ :
-  ∀ {σ τ} → Stab-C σ → Stab-C τ → Stab-C (σ · τ)
-Stab-C-∙ {σ} σ-stab τ-stab =
-  trans (cong (applyₛ σ) τ-stab) σ-stab
-
-Stab-C-⁻¹ :
-  ∀ {σ} → Stab-C σ → Stab-C (σ ⁻¹)
-Stab-C-⁻¹ {σ} σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ C)
-
-Stab-C-Subgroup : S₄-Subgroup
-Stab-C-Subgroup = record
-  { member        = Stab-C
-  ; member-resp-≈ = λ {σ} {τ} → Stab-C-resp-≈ {σ} {τ}
-  ; member-ε      = Stab-C-ε
-  ; member-∙      = λ {σ} {τ} → Stab-C-∙ {σ} {τ}
-  ; member-⁻¹     = λ {σ} → Stab-C-⁻¹ {σ}
-  }
-
-Stab-S-resp-≈ :
-  ∀ {σ τ} → σ ≈ τ → Stab-S σ → Stab-S τ
-Stab-S-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ S)) σ-stab
-
-Stab-S-ε : Stab-S ε
-Stab-S-ε = refl
-
-Stab-S-∙ :
-  ∀ {σ τ} → Stab-S σ → Stab-S τ → Stab-S (σ · τ)
-Stab-S-∙ {σ} σ-stab τ-stab =
-  trans (cong (applyₛ σ) τ-stab) σ-stab
-
-Stab-S-⁻¹ :
-  ∀ {σ} → Stab-S σ → Stab-S (σ ⁻¹)
-Stab-S-⁻¹ {σ} σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ S)
-
-Stab-S-Subgroup : S₄-Subgroup
-Stab-S-Subgroup = record
-  { member        = Stab-S
-  ; member-resp-≈ = λ {σ} {τ} → Stab-S-resp-≈ {σ} {τ}
-  ; member-ε      = Stab-S-ε
-  ; member-∙      = λ {σ} {τ} → Stab-S-∙ {σ} {τ}
-  ; member-⁻¹     = λ {σ} → Stab-S-⁻¹ {σ}
-  }
-
-Stab-W-resp-≈ :
-  ∀ {σ τ} → σ ≈ τ → Stab-W σ → Stab-W τ
-Stab-W-resp-≈ σ≈τ σ-stab = trans (sym (σ≈τ W)) σ-stab
-
-Stab-W-ε : Stab-W ε
-Stab-W-ε = refl
-
-Stab-W-∙ :
-  ∀ {σ τ} → Stab-W σ → Stab-W τ → Stab-W (σ · τ)
-Stab-W-∙ {σ} σ-stab τ-stab =
-  trans (cong (applyₛ σ) τ-stab) σ-stab
-
-Stab-W-⁻¹ :
-  ∀ {σ} → Stab-W σ → Stab-W (σ ⁻¹)
-Stab-W-⁻¹ {σ} σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ W)
-
-Stab-W-Subgroup : S₄-Subgroup
-Stab-W-Subgroup = record
-  { member        = Stab-W
-  ; member-resp-≈ = λ {σ} {τ} → Stab-W-resp-≈ {σ} {τ}
-  ; member-ε      = Stab-W-ε
-  ; member-∙      = λ {σ} {τ} → Stab-W-∙ {σ} {τ}
-  ; member-⁻¹     = λ {σ} → Stab-W-⁻¹ {σ}
+Stab-Subgroup : Axis → S₄-Subgroup
+Stab-Subgroup X = record
+  { member        = Stab X
+  ; member-resp-≈ = λ {σ} {τ} → Stab-resp-≈ {X} {σ} {τ}
+  ; member-ε      = Stab-ε X
+  ; member-∙      = λ {σ} {τ} → Stab-∙ {X} {σ} {τ}
+  ; member-⁻¹     = λ {σ} → Stab-⁻¹ {X} {σ}
   }
 
 ------------------------------------------------------------------------
 -- Notes
 --
--- 1. With both V_4-image-NormalSubgroup and Stab-D-Subgroup in place,
---    the V_4 ⋊ Stab(D) ≅ S_4 picture has full structural recognition.
---    The quotient theorem S_4 / V_4-image ≅ Stab(D) ≅ S_3 follows
---    by:
+-- 1. With both V_4-image-NormalSubgroup and Stab-Subgroup X in
+--    place (for every X : Axis), the V_4 ⋊ Stab(X) ≅ S_4 picture has
+--    full structural recognition. The quotient theorem
+--    S_4 / V_4-image ≅ Stab(X) ≅ S_3 follows by:
 --      * defining the quotient group via the normal-subgroup
 --        equivalence (σ₁ ∼ σ₂ iff σ₁⁻¹ · σ₂ ∈ V_4-image),
 --      * showing the map σ ↦ s-for σ descends through the quotient
@@ -255,7 +177,7 @@ Stab-W-Subgroup = record
 -- 3. Cross-references:
 --    - Substrate.Groups.V4-Embedding (slice 2) — V_4-image,
 --      embed-hom.
---    - Substrate.Groups.SemidirectProduct (slice 3) — Stab-D.
+--    - Substrate.Groups.SemidirectProduct (slice 3) — parametric Stab.
 --    - Substrate.Groups.V4-Normality (slice 9) — V₄-normal,
 --      the underlying conjugation-closure theorem.
 ------------------------------------------------------------------------

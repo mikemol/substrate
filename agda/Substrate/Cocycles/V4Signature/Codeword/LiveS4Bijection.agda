@@ -52,7 +52,10 @@ open import Substrate.Groups.SemidirectProduct
 open import Substrate.Cocycles.V4Signature.S4Iso
   using (stab-id; stab-sw; stab-cs; stab-cw; stab-csw; stab-cws;
          classify-CS; orbit-key-to-stab-d;
-         stab-d-to-orbit-key; stab-round-trip)
+         stab-d-to-orbit-key; stab-round-trip;
+         orbit-key-to-stab-anchor; orbit-key-to-stab-anchor-fixes)
+open import Substrate.Cocycles.V4Signature
+  using (OrbitKey; α-pair; β-pair; γ-pair; even; odd)
 open import Substrate.Cocycles.V4Signature.Codeword
   using (Codeword; IsReserved; Live; axis-from-bits; axis-to-bits)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
@@ -225,6 +228,51 @@ stab-from-selector-fixes-D sel-ftf = refl
 stab-from-selector-fixes-D sel-ttf = refl
 stab-from-selector-fixes-D sel-ftt = refl
 stab-from-selector-fixes-D sel-ttt = refl
+
+------------------------------------------------------------------------
+-- Anchor-parametric stab-from-selector. For each anchor X and each
+-- Selector, picks the corresponding Stab(X) element via the parametric
+-- orbit-key-to-stab-anchor. The X=D specialisation coincides with
+-- stab-from-selector up to definitional reduction.
+--
+-- The selector ↔ OrbitKey bijection is fixed by the convention in
+-- Substrate.Cocycles.V4Signature.Codeword.LiveS4.stab-from-selector
+-- (which maps Selector → specific stab-X values; we invert through
+-- the orbit-key-to-stab-d table).
+--
+-- The C/S/W siblings of stab-from-selector-fixes-D close the partial
+-- coset the detector surfaces on stem 'stab-from-selector-fixes'.
+------------------------------------------------------------------------
+
+selector-to-orbit-key : Selector → OrbitKey
+selector-to-orbit-key sel-fft = α-pair , even   -- stab-id
+selector-to-orbit-key sel-tft = α-pair , odd    -- stab-sw
+selector-to-orbit-key sel-ftf = β-pair , odd    -- stab-cs
+selector-to-orbit-key sel-ttf = γ-pair , odd    -- stab-cw
+selector-to-orbit-key sel-ftt = β-pair , even   -- stab-csw
+selector-to-orbit-key sel-ttt = γ-pair , even   -- stab-cws
+
+stab-from-selector-anchor : Axis → Selector → Permutation
+stab-from-selector-anchor X sel =
+  orbit-key-to-stab-anchor X (selector-to-orbit-key sel)
+
+stab-from-selector-fixes-anchor :
+  (X : Axis) (sel : Selector) →
+  applyₛ (stab-from-selector-anchor X sel) X ≡ X
+stab-from-selector-fixes-anchor X sel =
+  orbit-key-to-stab-anchor-fixes X (selector-to-orbit-key sel)
+
+stab-from-selector-fixes-C :
+  (sel : Selector) → applyₛ (stab-from-selector-anchor C sel) C ≡ C
+stab-from-selector-fixes-C = stab-from-selector-fixes-anchor C
+
+stab-from-selector-fixes-S :
+  (sel : Selector) → applyₛ (stab-from-selector-anchor S sel) S ≡ S
+stab-from-selector-fixes-S = stab-from-selector-fixes-anchor S
+
+stab-from-selector-fixes-W :
+  (sel : Selector) → applyₛ (stab-from-selector-anchor W sel) W ≡ W
+stab-from-selector-fixes-W = stab-from-selector-fixes-anchor W
 
 ------------------------------------------------------------------------
 -- Forward round trip on the Permutation side:

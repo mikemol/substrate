@@ -43,7 +43,7 @@ module Substrate.Cocycles.V4Signature.S4Iso where
 
 open import Level using (0ℓ)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Product using (_,_; proj₁; proj₂)
+open import Data.Product using (_,_; proj₁; proj₂; Σ; Σ-syntax)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
 
@@ -65,10 +65,16 @@ open import Substrate.Cocycles.V4Signature
          CY5-V4Signature)
 open import Substrate.Cocycle using (IsomorphicCocycleStructure)
 open import Data.Fin using (Fin; zero; suc)
-open import Substrate.Groups.Stab-S3 using (fin3-to-non-anchor)
-open import Substrate.Groups.Stab-S3-Extend using (extend)
+open import Substrate.Groups.Stab-S3 using (Stab; fin3-to-non-anchor)
+open import Substrate.Groups.Stab-S3-Extend
+  using (extend; extend-apply-pointwise-cong)
+open import Substrate.Groups.Stab-S3-Restrict using (restrict)
+open import Substrate.Groups.Stab-S3-Iso using (extend-restrict)
+import Substrate.Groups.SFin as SFin
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3
-  using (transposition; transposition-fixes-third; orbit-key-to-s3)
+  using (transposition; transposition-fixes-third; orbit-key-to-s3;
+         s3-id; s3-csw; s3-cws;
+         s3-to-orbit-key; orbit-key-to-s3-of-s3-to-orbit-key)
 
 ------------------------------------------------------------------------
 -- S12 — Bijection helper lemmas.
@@ -120,9 +126,14 @@ W≢S ()
 -- fixing D. We define each as an explicit Permutation record.
 ------------------------------------------------------------------------
 
--- Identity in Stab(D): the S_4 identity (already defined as ε).
+-- Identity in Stab(D): now also expressed as extend D of the SFin
+-- identity (s3-id = SFin.ε), uniform with the other 5 stab-X. This
+-- makes every stab-X a `proj₁ (extend D <SFin element>)` and lets
+-- orbit-key-to-stab-d delegate to orbit-key-to-stab-anchor D
+-- definitionally: each clause of the OLD orbit-key-to-stab-d body
+-- becomes `proj₁ (extend D (orbit-key-to-s3 ok))` already.
 stab-id : Permutation
-stab-id = ε
+stab-id = proj₁ (extend D s3-id)
 
 -- (SW): D↔D, C↔C, S↔W. Self-inverse.
 -- Expressed as extend D of the Fin-3 transposition swapping (1, 2),
@@ -141,66 +152,17 @@ stab-cw : Permutation
 stab-cw = proj₁ (extend D (transposition zero (suc (suc zero))))
 
 -- (CSW): the 3-cycle C→S→W→C, with D fixed.
--- apply: C→S, S→W, W→C, D→D.
--- invₐ:  (CWS) = C→W, W→S, S→C, D→D.
+-- Constructed parametrically: extend D applied to the (0 1 2) 3-cycle
+-- in SFin.Permutation 3. Uniform with stab-{sw,cs,cw} (all four are
+-- now `proj₁ (extend D (some s3 element))`); the level-0 stab-X
+-- family is parametric over the SFin generator.
 stab-csw : Permutation
-stab-csw = record
-  { apply = ap
-  ; invₐ  = inv-ap
-  ; inv-l = il
-  ; inv-r = ir
-  }
-  where
-    ap : Axis → Axis
-    ap D = D
-    ap C = S
-    ap S = W
-    ap W = C
-    inv-ap : Axis → Axis
-    inv-ap D = D
-    inv-ap C = W
-    inv-ap S = C
-    inv-ap W = S
-    il : (x : Axis) → inv-ap (ap x) ≡ x
-    il D = refl
-    il C = refl
-    il S = refl
-    il W = refl
-    ir : (x : Axis) → ap (inv-ap x) ≡ x
-    ir D = refl
-    ir C = refl
-    ir S = refl
-    ir W = refl
+stab-csw = proj₁ (extend D s3-csw)
 
--- (CWS): the 3-cycle C→W→S→C, with D fixed. Inverse of (CSW).
+-- (CWS): the 3-cycle C→W→S→C, with D fixed. Inverse of (CSW),
+-- parametrically constructed via the same template.
 stab-cws : Permutation
-stab-cws = record
-  { apply = ap
-  ; invₐ  = inv-ap
-  ; inv-l = il
-  ; inv-r = ir
-  }
-  where
-    ap : Axis → Axis
-    ap D = D
-    ap C = W
-    ap S = C
-    ap W = S
-    inv-ap : Axis → Axis
-    inv-ap D = D
-    inv-ap C = S
-    inv-ap S = W
-    inv-ap W = C
-    il : (x : Axis) → inv-ap (ap x) ≡ x
-    il D = refl
-    il C = refl
-    il S = refl
-    il W = refl
-    ir : (x : Axis) → ap (inv-ap x) ≡ x
-    ir D = refl
-    ir C = refl
-    ir S = refl
-    ir W = refl
+stab-cws = proj₁ (extend D s3-cws)
 
 ------------------------------------------------------------------------
 -- Verification that each constructed element is in Stab(D).
@@ -271,50 +233,108 @@ stab-cws-fixes-D = refl
 --   (γ, odd):  D & S fixed, C↔W → (CW)
 ------------------------------------------------------------------------
 
-orbit-key-to-stab-d : OrbitKey → Permutation
-orbit-key-to-stab-d (α-pair , even) = stab-id
-orbit-key-to-stab-d (α-pair , odd)  = stab-sw
-orbit-key-to-stab-d (β-pair , even) = stab-csw
-orbit-key-to-stab-d (β-pair , odd)  = stab-cs
-orbit-key-to-stab-d (γ-pair , even) = stab-cws
-orbit-key-to-stab-d (γ-pair , odd)  = stab-cw
+------------------------------------------------------------------------
+-- Parametric anchor dispatcher (and its fixes proof). One template,
+-- four anchor specialisations below. All four (including the cocycle's
+-- chirality-choice anchor `-d`) delegate to the same parametric form;
+-- the chirality choice lives in `orbit-key-to-s3`'s OrbitKey→s3
+-- mapping (not in this per-anchor dispatcher).
+--
+-- The specialised C/S/W siblings are uppercase by convention; `-d` is
+-- lowercase to mark the cocycle anchor under the use-vs-commit
+-- convention (CY-5 USES D as anchor without committing to it).
+------------------------------------------------------------------------
 
--- Each constructed Stab(D) element fixes D (trivially).
+orbit-key-to-stab-anchor : (X : Axis) → OrbitKey → Permutation
+orbit-key-to-stab-anchor X ok = proj₁ (extend X (orbit-key-to-s3 ok))
+
+orbit-key-to-stab-anchor-fixes :
+  (X : Axis) (ok : OrbitKey) → Stab X (orbit-key-to-stab-anchor X ok)
+orbit-key-to-stab-anchor-fixes X ok = proj₂ (extend X (orbit-key-to-s3 ok))
+
+-- D-anchor specialisation: delegates to orbit-key-to-stab-anchor D.
+-- This is now definitionally valid because EVERY stab-X is parametric
+-- (`proj₁ (extend D <s3-X>)`) and the orbit-key-to-s3 mapping picks
+-- the matching s3-X for each ok. The 6 OLD clauses each reduced to
+-- `proj₁ (extend D (orbit-key-to-s3 ok))` already — they were just
+-- writing it out by hand.
+--
+-- The cocycle's chirality choice lives in orbit-key-to-s3's
+-- OrbitKey→s3 mapping — that IS the chirality.
+orbit-key-to-stab-d : OrbitKey → Permutation
+orbit-key-to-stab-d = orbit-key-to-stab-anchor D
+
 orbit-key-to-stab-d-fixes-D :
   (ok : OrbitKey) → Stab-D (orbit-key-to-stab-d ok)
-orbit-key-to-stab-d-fixes-D (α-pair , even) = stab-id-fixes-D
-orbit-key-to-stab-d-fixes-D (α-pair , odd)  = stab-sw-fixes-D
-orbit-key-to-stab-d-fixes-D (β-pair , even) = stab-csw-fixes-D
-orbit-key-to-stab-d-fixes-D (β-pair , odd)  = stab-cs-fixes-D
-orbit-key-to-stab-d-fixes-D (γ-pair , even) = stab-cws-fixes-D
-orbit-key-to-stab-d-fixes-D (γ-pair , odd)  = stab-cw-fixes-D
-
-------------------------------------------------------------------------
--- Anchor siblings of orbit-key-to-stab-d (and its fixes proof). For
--- each non-D anchor, the corresponding extend-based dispatcher and
--- its structurally-guaranteed fixes-anchor proof (from extend-stab).
-------------------------------------------------------------------------
+orbit-key-to-stab-d-fixes-D = orbit-key-to-stab-anchor-fixes D
 
 orbit-key-to-stab-C : OrbitKey → Permutation
-orbit-key-to-stab-C ok = proj₁ (extend C (orbit-key-to-s3 ok))
+orbit-key-to-stab-C = orbit-key-to-stab-anchor C
 
 orbit-key-to-stab-C-fixes-C :
   (ok : OrbitKey) → Stab-C (orbit-key-to-stab-C ok)
-orbit-key-to-stab-C-fixes-C ok = proj₂ (extend C (orbit-key-to-s3 ok))
+orbit-key-to-stab-C-fixes-C = orbit-key-to-stab-anchor-fixes C
 
 orbit-key-to-stab-S : OrbitKey → Permutation
-orbit-key-to-stab-S ok = proj₁ (extend S (orbit-key-to-s3 ok))
+orbit-key-to-stab-S = orbit-key-to-stab-anchor S
 
 orbit-key-to-stab-S-fixes-S :
   (ok : OrbitKey) → Stab-S (orbit-key-to-stab-S ok)
-orbit-key-to-stab-S-fixes-S ok = proj₂ (extend S (orbit-key-to-s3 ok))
+orbit-key-to-stab-S-fixes-S = orbit-key-to-stab-anchor-fixes S
 
 orbit-key-to-stab-W : OrbitKey → Permutation
-orbit-key-to-stab-W ok = proj₁ (extend W (orbit-key-to-s3 ok))
+orbit-key-to-stab-W = orbit-key-to-stab-anchor W
 
 orbit-key-to-stab-W-fixes-W :
   (ok : OrbitKey) → Stab-W (orbit-key-to-stab-W ok)
-orbit-key-to-stab-W-fixes-W ok = proj₂ (extend W (orbit-key-to-s3 ok))
+orbit-key-to-stab-W-fixes-W = orbit-key-to-stab-anchor-fixes W
+
+------------------------------------------------------------------------
+-- Stop anchoring on D. For ANY axis X, any σ ∈ Stab X factors via
+-- extend X: there exists an SFin.Permutation 3 element s such that
+-- proj₁ (extend X s) ≈ σ. The witness s is exactly `restrict X σ`,
+-- and the proof IS `extend-restrict`.
+--
+-- This is the parametric-over-anchor decomposition theorem. The
+-- existing D-specific stab-d-to-orbit-key + stab-round-trip recover
+-- as the X=D instance, composed with s3-to-orbit-key on the OrbitKey
+-- side. The OrbitKey form (Σ[ ok ∈ OrbitKey ] (orbit-key-to-stab-
+-- anchor X ok ≈ σ)) follows once the SFin.Permutation 3 pointwise
+-- round-trip on orbit-key-to-s3 ∘ s3-to-orbit-key is proved (deferred;
+-- ~27 sub-cases over Fin 3 trichotomy + bijection-injectivity).
+------------------------------------------------------------------------
+
+stab-anchor-decomposes :
+  (X : Axis) (σ : Permutation) (σ-stab : Stab X σ) →
+  Σ[ s ∈ SFin.Permutation 3 ]
+    ((x : Axis) → applyₛ (proj₁ (extend X s)) x ≡ applyₛ σ x)
+stab-anchor-decomposes X σ σ-stab =
+  restrict X (σ , σ-stab) , extend-restrict X σ σ-stab
+
+------------------------------------------------------------------------
+-- OrbitKey-form of stab-anchor-decomposes: composes the SFin-form
+-- (extend ∘ restrict ≈ id) with the SFin→OrbitKey round-trip (orbit-
+-- key-to-s3 ∘ s3-to-orbit-key ≈sfin id) via extend-apply-pointwise-cong.
+-- This is the full parametric round-trip — for any anchor X and any
+-- σ ∈ Stab X, we recover the OrbitKey index ok such that orbit-key-
+-- to-stab-anchor X ok ≈ σ.
+------------------------------------------------------------------------
+
+stab-anchor-decomposes-orbitkey :
+  (X : Axis) (σ : Permutation) (σ-stab : Stab X σ) →
+  Σ[ ok ∈ OrbitKey ]
+    ((x : Axis) → applyₛ (proj₁ (extend X (orbit-key-to-s3 ok))) x
+                ≡ applyₛ σ x)
+stab-anchor-decomposes-orbitkey X σ σ-stab =
+  s3-to-orbit-key s , λ x →
+    trans
+      (extend-apply-pointwise-cong X
+         (orbit-key-to-s3 (s3-to-orbit-key s)) s
+         (orbit-key-to-s3-of-s3-to-orbit-key s) x)
+      (extend-restrict X σ σ-stab x)
+  where
+    s : SFin.Permutation 3
+    s = restrict X (σ , σ-stab)
 
 ------------------------------------------------------------------------
 -- TotalSpace of the CY-5 cocycle (re-exposed from V4Signature).

@@ -41,28 +41,36 @@ open import Substrate.Groups.S4 as S4
   renaming (apply to applyₛ)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-∙; act-axis-involutive; V₄-image; embed-in-image)
+-- Re-export v-of-axis (and friends) for downstream modules that
+-- historically imported them from SemidirectProduct.
+open import Substrate.Groups.V4-Embedding public
+  using (v-of-axis; axis-of-v; act-axis-as-V₄-mult;
+         axis-of-v-v-of-axis; v-of-axis-axis-of-v)
 
 ------------------------------------------------------------------------
 -- Stab(axis) — the predicate: σ fixes a given axis.
 --
 -- The cocycle USES D as anchor but does not COMMIT to D; the same
--- predicate exists for each non-D axis as the corresponding gauge-
--- equivalent. Stab-C, Stab-S, Stab-W are added as siblings of
--- Stab-D to close the partial-coset finding the detector surfaced
--- (per [[feedback-use-vs-commit]]).
+-- predicate exists for each axis. Parametric `Stab : Axis → ...` is
+-- the primary form; Stab-D/C/S/W are 1-line aliases retained for
+-- backwards compatibility with downstream modules that historically
+-- pinned the anchor (per [[feedback-use-vs-commit]]).
 ------------------------------------------------------------------------
 
+Stab : Axis → Permutation → Set
+Stab X σ = applyₛ σ X ≡ X
+
 Stab-D : Permutation → Set
-Stab-D σ = applyₛ σ D ≡ D
+Stab-D = Stab D
 
 Stab-C : Permutation → Set
-Stab-C σ = applyₛ σ C ≡ C
+Stab-C = Stab C
 
 Stab-S : Permutation → Set
-Stab-S σ = applyₛ σ S ≡ S
+Stab-S = Stab S
 
 Stab-W : Permutation → Set
-Stab-W σ = applyₛ σ W ≡ W
+Stab-W = Stab W
 
 ------------------------------------------------------------------------
 -- v-of-axis: given an axis x, the unique V_4 element sending D to x.
@@ -71,11 +79,8 @@ Stab-W σ = applyₛ σ W ≡ W
 -- D under V_4 is all four axes; stabilizer of D is trivial).
 ------------------------------------------------------------------------
 
-v-of-axis : Axis → V₄
-v-of-axis D = e
-v-of-axis C = α
-v-of-axis S = β
-v-of-axis W = γ
+-- v-of-axis is now in V4-Embedding (alongside axis-of-v and the
+-- V₄-mult iso act-axis-as-V₄-mult). Re-imported above.
 
 -- The defining property: v-of-axis x acts on D as x.
 v-of-axis-sends-D : (x : Axis) → act-axis (v-of-axis x) D ≡ x
@@ -108,6 +113,82 @@ v-for-sends-D :
 v-for-sends-D σ = v-of-axis-sends-D (applyₛ σ D)
 
 ------------------------------------------------------------------------
+-- Anchor-parametric versions of v-of-axis / v-for and their defining
+-- properties. v-of-axis-anchor X x picks the V₄ element mapping X to
+-- x via composition with v-of-axis X (V₄ is involutive, so
+-- inv (v-of-axis X) = v-of-axis X). The proof of the defining
+-- property composes through act-axis-∙, V₄-involutivity of
+-- act-axis (v-of-axis X) X = D, and the existing D-anchored
+-- v-of-axis-sends-D. No new enumeration: the X∈{C,S,W} siblings
+-- are propositional instances of the parametric form.
+--
+-- The C/S/W siblings below close the partial cosets the detector
+-- surfaces on stems 'v-of-axis-sends' and 'v-for-sends'.
+------------------------------------------------------------------------
+
+v-of-axis-anchor : Axis → Axis → V₄
+v-of-axis-anchor X x = v-of-axis x V4.· v-of-axis X
+
+-- The defining property: v-of-axis-anchor X x acts on X as x.
+--
+-- Uses an internal helper `self-to-D` that proves act-axis (v-of-axis X)
+-- X ≡ D — the mirror of v-of-axis-sends-D. Kept as a where-clause so
+-- the partial-coset detector doesn't pick it up as a sibling-needing
+-- top-level def: its "-D" suffix is the RESULT axis (the cocycle's
+-- chirality anchor), not the anchor parameter, so there's no
+-- meaningful C/S/W sibling. Derived algebraically through
+-- act-axis-as-V₄-mult + V_4 self-inverse: act-axis (v-of-axis Y) Y
+-- ≡ axis-of-v (v-of-axis Y · v-of-axis Y) ≡ axis-of-v ε ≡ axis-of-v e
+-- ≡ D (last two steps definitional).
+v-of-axis-anchor-sends :
+  (X x : Axis) → act-axis (v-of-axis-anchor X x) X ≡ x
+v-of-axis-anchor-sends X x =
+  trans (act-axis-∙ (v-of-axis x) (v-of-axis X) X)
+        (trans (cong (act-axis (v-of-axis x)) (self-to-D X))
+               (v-of-axis-sends-D x))
+  where
+    self-to-D : (Y : Axis) → act-axis (v-of-axis Y) Y ≡ D
+    self-to-D Y =
+      trans (act-axis-as-V₄-mult (v-of-axis Y) Y)
+            (cong axis-of-v (V4.inv-left (v-of-axis Y)))
+
+-- C/S/W siblings of v-of-axis-sends-D, completing the {C,D,S,W}
+-- axis-fanout for stem 'v-of-axis-sends'.
+v-of-axis-sends-C :
+  (x : Axis) → act-axis (v-of-axis-anchor C x) C ≡ x
+v-of-axis-sends-C = v-of-axis-anchor-sends C
+
+v-of-axis-sends-S :
+  (x : Axis) → act-axis (v-of-axis-anchor S x) S ≡ x
+v-of-axis-sends-S = v-of-axis-anchor-sends S
+
+v-of-axis-sends-W :
+  (x : Axis) → act-axis (v-of-axis-anchor W x) W ≡ x
+v-of-axis-sends-W = v-of-axis-anchor-sends W
+
+-- Anchor-parametric v-for. v-for-anchor X σ picks the V₄ element
+-- agreeing with σ on X. The X=D specialisation is the existing v-for.
+v-for-anchor : Axis → Permutation → V₄
+v-for-anchor X σ = v-of-axis-anchor X (applyₛ σ X)
+
+v-for-anchor-sends :
+  (X : Axis) (σ : Permutation) → act-axis (v-for-anchor X σ) X ≡ applyₛ σ X
+v-for-anchor-sends X σ = v-of-axis-anchor-sends X (applyₛ σ X)
+
+-- C/S/W siblings of v-for-sends-D.
+v-for-sends-C :
+  (σ : Permutation) → act-axis (v-for-anchor C σ) C ≡ applyₛ σ C
+v-for-sends-C = v-for-anchor-sends C
+
+v-for-sends-S :
+  (σ : Permutation) → act-axis (v-for-anchor S σ) S ≡ applyₛ σ S
+v-for-sends-S = v-for-anchor-sends S
+
+v-for-sends-W :
+  (σ : Permutation) → act-axis (v-for-anchor W σ) W ≡ applyₛ σ W
+v-for-sends-W = v-for-anchor-sends W
+
+------------------------------------------------------------------------
 -- The Stab(D) residue: s-for σ = (embed (v-for σ)) · σ.
 --
 -- This fixes D, because:
@@ -129,6 +210,39 @@ s-for-fixes-D σ =
   --   = D                                            (act-axis-involutive)
   trans (cong (act-axis (v-for σ)) (sym (v-for-sends-D σ)))
         (act-axis-involutive (v-for σ) D)
+
+------------------------------------------------------------------------
+-- Anchor-parametric s-for: for any axis X, builds a Stab(X) residue
+-- via the X-anchored v-for-anchor. Same composition shape as s-for;
+-- the X=D specialisation propositionally agrees with s-for σ.
+--
+-- The C/S/W siblings of s-for-fixes-D close the partial coset the
+-- detector surfaces on stem 's-for-fixes' — same pattern as the
+-- v-of-axis-sends-D / v-for-sends-D parametrizations above.
+------------------------------------------------------------------------
+
+s-for-anchor : Axis → Permutation → Permutation
+s-for-anchor X σ = embed (v-for-anchor X σ) · σ
+
+s-for-fixes-anchor :
+  (X : Axis) (σ : Permutation) → applyₛ (s-for-anchor X σ) X ≡ X
+s-for-fixes-anchor X σ =
+  -- apply (s-for-anchor X σ) X
+  --   = act-axis (v-for-anchor X σ) (apply σ X)
+  --   = act-axis (v-for-anchor X σ) (act-axis (v-for-anchor X σ) X)
+  --     (sym (v-for-anchor-sends X σ))
+  --   = X (act-axis-involutive)
+  trans (cong (act-axis (v-for-anchor X σ)) (sym (v-for-anchor-sends X σ)))
+        (act-axis-involutive (v-for-anchor X σ) X)
+
+s-for-fixes-C : (σ : Permutation) → Stab-C (s-for-anchor C σ)
+s-for-fixes-C = s-for-fixes-anchor C
+
+s-for-fixes-S : (σ : Permutation) → Stab-S (s-for-anchor S σ)
+s-for-fixes-S = s-for-fixes-anchor S
+
+s-for-fixes-W : (σ : Permutation) → Stab-W (s-for-anchor W σ)
+s-for-fixes-W = s-for-fixes-anchor W
 
 ------------------------------------------------------------------------
 -- The factorisation: σ ≈ embed (v-for σ) · s-for σ.
@@ -155,39 +269,41 @@ factorisation σ x =
   sym (act-axis-involutive (v-for σ) (applyₛ σ x))
 
 ------------------------------------------------------------------------
--- V_4 ∩ Stab(D) = {e}.
+-- V_4 ∩ Stab(X) = {e} for every axis X.
 --
--- No non-identity V_4 element fixes D:
---   α D = C ≠ D, β D = S ≠ D, γ D = W ≠ D.
+-- No non-identity V_4 element fixes any axis (a non-identity element
+-- of V₄ acts as a double-transposition, which has no fixed points on
+-- 4 elements). The anchor-parametric form proves all four
+-- axis-specialisations in one shot through V4-Generic's group axioms;
+-- the X∈{D,C,S,W} wrappers below are thin specialisations.
+--
+-- Proof shape: stab : act-axis v X ≡ X. Push through
+-- act-axis-as-V₄-mult + v-of-axis ∘ axis-of-v round-trip to recover
+-- (v · v-of-axis X ≡ v-of-axis X) on the V₄ side, then apply
+-- V4-Generic's ·-right-cancel-ε to get v ≡ ε ≡ e. NO (V₄ × Axis)
+-- enumeration — the 16-case anti-pattern collapses to one algebraic
+-- chain.
 ------------------------------------------------------------------------
 
-V₄-cap-Stab-D-trivial :
-  (v : V₄) → Stab-D (embed v) → v ≡ e
-V₄-cap-Stab-D-trivial e _   = refl
-V₄-cap-Stab-D-trivial α ()
-V₄-cap-Stab-D-trivial β ()
-V₄-cap-Stab-D-trivial γ ()
+V₄-cap-Stab-trivial :
+  (X : Axis) (v : V₄) → act-axis v X ≡ X → v ≡ e
+V₄-cap-Stab-trivial X v stab =
+  V4.·-right-cancel-ε v (v-of-axis X)
+    (trans (sym (v-of-axis-axis-of-v (v V4.· v-of-axis X)))
+    (trans (cong v-of-axis (sym (act-axis-as-V₄-mult v X)))
+           (cong v-of-axis stab)))
 
-V₄-cap-Stab-C-trivial :
-  (v : V₄) → Stab-C (embed v) → v ≡ e
-V₄-cap-Stab-C-trivial e _   = refl
-V₄-cap-Stab-C-trivial α ()
-V₄-cap-Stab-C-trivial β ()
-V₄-cap-Stab-C-trivial γ ()
+V₄-cap-Stab-D-trivial : (v : V₄) → Stab-D (embed v) → v ≡ e
+V₄-cap-Stab-D-trivial = V₄-cap-Stab-trivial D
 
-V₄-cap-Stab-S-trivial :
-  (v : V₄) → Stab-S (embed v) → v ≡ e
-V₄-cap-Stab-S-trivial e _   = refl
-V₄-cap-Stab-S-trivial α ()
-V₄-cap-Stab-S-trivial β ()
-V₄-cap-Stab-S-trivial γ ()
+V₄-cap-Stab-C-trivial : (v : V₄) → Stab-C (embed v) → v ≡ e
+V₄-cap-Stab-C-trivial = V₄-cap-Stab-trivial C
 
-V₄-cap-Stab-W-trivial :
-  (v : V₄) → Stab-W (embed v) → v ≡ e
-V₄-cap-Stab-W-trivial e _   = refl
-V₄-cap-Stab-W-trivial α ()
-V₄-cap-Stab-W-trivial β ()
-V₄-cap-Stab-W-trivial γ ()
+V₄-cap-Stab-S-trivial : (v : V₄) → Stab-S (embed v) → v ≡ e
+V₄-cap-Stab-S-trivial = V₄-cap-Stab-trivial S
+
+V₄-cap-Stab-W-trivial : (v : V₄) → Stab-W (embed v) → v ≡ e
+V₄-cap-Stab-W-trivial = V₄-cap-Stab-trivial W
 
 ------------------------------------------------------------------------
 -- Uniqueness of factorisation.

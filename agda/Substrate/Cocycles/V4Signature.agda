@@ -35,6 +35,7 @@
 module Substrate.Cocycles.V4Signature where
 
 open import Level using (0ℓ)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; ∃; -,_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; cong)
@@ -52,6 +53,36 @@ open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ; V₄-Group)
 
 data Pairing : Set where
   α-pair β-pair γ-pair : Pairing
+
+------------------------------------------------------------------------
+-- V₄ → Pairing total relationship. V₄'s α/β/γ each induce an axis-pair
+-- partition (the corresponding Pairing ctor); V₄'s identity element e
+-- does NOT induce a Pairing — there's no axis-swap for the identity.
+-- The detector's cross-type signal V₄→Pairing (3-of-4 fanout, missing
+-- 'e-pair') is structurally true: Pairing = V₄/⟨e⟩ as a set quotient.
+--
+-- We expose two names to make the absence first-class:
+--
+--   V₄→Pairing   : (v : V₄) → v ≢ e → Pairing
+--                  the partial function with the e-case absurd.
+--
+--   e-pair       : ⊥ → Pairing
+--                  the named "constructor" for the absent case, body
+--                  absurd-via-⊥. Documents the missing-by-design ctor
+--                  so the cross-type stem-match has a target.
+------------------------------------------------------------------------
+
+_≢_ : V₄ → V₄ → Set
+v ≢ w = (v ≡ w) → ⊥
+
+V₄→Pairing : (v : V₄) → v ≢ e → Pairing
+V₄→Pairing e v≢e = ⊥-elim (v≢e refl)
+V₄→Pairing α _   = α-pair
+V₄→Pairing β _   = β-pair
+V₄→Pairing γ _   = γ-pair
+
+e-pair : ⊥ → Pairing
+e-pair ()
 
 data Chirality : Set where
   even odd : Chirality
@@ -75,7 +106,7 @@ OrbitKey = Pairing × Chirality
 V4-acts-on-itself : Action V₄-Group V₄
 V4-acts-on-itself = record
   { act    = V4._·_
-  ; act-id = λ b → refl                -- e · b ≡ b by left-identity
+  ; act-id = V4.ε-left                  -- e · b ≡ b (algebraic via V4-Generic)
   ; act-∙  = λ g h b → V4.·-assoc g h b -- (g · h) · b ≡ g · (h · b)
   }
 

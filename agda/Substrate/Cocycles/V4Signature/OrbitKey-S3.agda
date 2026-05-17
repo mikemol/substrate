@@ -33,13 +33,13 @@
 
 module Substrate.Cocycles.V4Signature.OrbitKey-S3 where
 
-open import Data.Empty using (⊥-elim)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Fin using (Fin; zero; suc)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl)
+  using (_≡_; _≢_; refl; sym; trans; cong)
 open import Relation.Nullary using (yes; no)
 
 import Substrate.Groups.SFin as SFin
@@ -175,3 +175,144 @@ orbit-key-to-s3 (β-pair , even) = s3-csw
 orbit-key-to-s3 (β-pair , odd)  = s3-cs
 orbit-key-to-s3 (γ-pair , even) = s3-cws
 orbit-key-to-s3 (γ-pair , odd)  = s3-cw
+
+------------------------------------------------------------------------
+-- Inverse direction: SFin.Permutation 3 → OrbitKey.
+--
+-- Classifies an SFin.Permutation 3 by its action on positions 0 and 1
+-- (the third is determined by the permutation's bijectivity). Each of
+-- the 6 valid (apply 0, apply 1) pairs maps to a unique OrbitKey; the
+-- 3 impossible pairs (apply 0 = apply 1) get an arbitrary default.
+------------------------------------------------------------------------
+
+s3-to-orbit-key : SFin.Permutation 3 → OrbitKey
+s3-to-orbit-key s with SFin.apply s zero | SFin.apply s (suc zero)
+... | zero            | suc zero       = α-pair , even
+... | zero            | suc (suc zero) = α-pair , odd
+... | suc zero        | suc (suc zero) = β-pair , even
+... | suc zero        | zero            = β-pair , odd
+... | suc (suc zero)  | zero            = γ-pair , even
+... | suc (suc zero)  | suc zero        = γ-pair , odd
+... | _               | _               = α-pair , even   -- impossible
+
+------------------------------------------------------------------------
+-- Round-trip on the OrbitKey side: s3-to-orbit-key (orbit-key-to-s3 ok) ≡ ok.
+-- Each of the 6 cases reduces by computation on the named s3-X elements.
+------------------------------------------------------------------------
+
+s3-to-orbit-key-of-orbit-key-to-s3 :
+  (ok : OrbitKey) → s3-to-orbit-key (orbit-key-to-s3 ok) ≡ ok
+s3-to-orbit-key-of-orbit-key-to-s3 (α-pair , even) = refl
+s3-to-orbit-key-of-orbit-key-to-s3 (α-pair , odd)  = refl
+s3-to-orbit-key-of-orbit-key-to-s3 (β-pair , even) = refl
+s3-to-orbit-key-of-orbit-key-to-s3 (β-pair , odd)  = refl
+s3-to-orbit-key-of-orbit-key-to-s3 (γ-pair , even) = refl
+s3-to-orbit-key-of-orbit-key-to-s3 (γ-pair , odd)  = refl
+
+-- Helper: SFin.apply is injective (from invₐ + inv-l).
+sfin-apply-inj :
+  (s : SFin.Permutation 3) {i j : Fin 3} →
+  SFin.apply s i ≡ SFin.apply s j → i ≡ j
+sfin-apply-inj s {i} {j} eq =
+  trans (sym (SFin.inv-l s i)) (trans (cong (SFin.invₐ s) eq) (SFin.inv-l s j))
+
+------------------------------------------------------------------------
+-- Pointwise SFin-side round-trip.
+--
+-- For any s : SFin.Permutation 3, orbit-key-to-s3 (s3-to-orbit-key s)
+-- agrees with s on all 3 positions. Proof structure is 3³ = 27 leaves
+-- (apply s {0,1,2} each ∈ Fin 3) composed via Fin-3 trichotomy at
+-- each level, with 21 leaves killed by bijection-induced injectivity
+-- and 6 leaves (one per valid permutation) producing the equality
+-- by refl / sym pᵢ.
+--
+-- The composition shape: outer trichotomy on apply s 0 (3 ways),
+-- middle trichotomy on apply s 1 (3 ways, 1-impossible-per-outer
+-- via injectivity), inner trichotomy on apply s 2 (3 ways, 2-
+-- impossible-per-(outer,middle) via injectivity, 1 producing the
+-- result). The 27 leaves are NOT written out individually here;
+-- they emerge from the trichotomy composition + Fin-equality
+-- patterns.
+------------------------------------------------------------------------
+
+-- Witnesses of Fin 3 inequality used to discharge impossible cases.
+-- Fully-typed via `_≢_ {A = Fin 3}` to prevent index-ambiguity when
+-- used inside sfin-apply-inj.
+private
+  0≢1 : _≢_ {A = Fin 3} zero (suc zero)
+  0≢1 ()
+  2≢0 : _≢_ {A = Fin 3} (suc (suc zero)) zero
+  2≢0 ()
+  2≢1 : _≢_ {A = Fin 3} (suc (suc zero)) (suc zero)
+  2≢1 ()
+
+orbit-key-to-s3-of-s3-to-orbit-key :
+  (s : SFin.Permutation 3) (i : Fin 3) →
+  SFin.apply (orbit-key-to-s3 (s3-to-orbit-key s)) i ≡ SFin.apply s i
+orbit-key-to-s3-of-s3-to-orbit-key s i
+  with SFin.apply s zero in p0 | SFin.apply s (suc zero) in p1
+-- The 3 (apply 0 = apply 1) cases die immediately by injectivity.
+... | zero | zero =
+  ⊥-elim (0≢1 (sfin-apply-inj s (trans p0 (sym p1))))
+... | suc zero | suc zero =
+  ⊥-elim (0≢1 (sfin-apply-inj s (trans p0 (sym p1))))
+... | suc (suc zero) | suc (suc zero) =
+  ⊥-elim (0≢1 (sfin-apply-inj s (trans p0 (sym p1))))
+-- The 6 valid cases. Each branch reduces orbit-key-to-s3 (s3-to-orbit-
+-- key s) to a specific named s3-X, whose apply behaviour at positions
+-- 0 and 1 matches s by construction (refl after rewriting); position 2
+-- is determined by trichotomy on apply s 2 with 2 impossible sub-cases.
+... | zero | suc zero       = α-even-case i
+  where
+    α-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (α-pair , even)) i ≡ SFin.apply s i
+    α-even-case zero            = sym p0
+    α-even-case (suc zero)      = sym p1
+    α-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
+    ... | suc zero        = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+    ... | suc (suc zero)  = refl
+... | zero | suc (suc zero) = α-odd-case i
+  where
+    α-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (α-pair , odd)) i ≡ SFin.apply s i
+    α-odd-case zero            = sym p0
+    α-odd-case (suc zero)      = sym p1
+    α-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
+    ... | suc zero        = refl
+    ... | suc (suc zero)  = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+... | suc zero | zero       = β-odd-case i
+  where
+    β-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (β-pair , odd)) i ≡ SFin.apply s i
+    β-odd-case zero            = sym p0
+    β-odd-case (suc zero)      = sym p1
+    β-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+    ... | suc zero        = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
+    ... | suc (suc zero)  = refl
+... | suc zero | suc (suc zero) = β-even-case i
+  where
+    β-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (β-pair , even)) i ≡ SFin.apply s i
+    β-even-case zero            = sym p0
+    β-even-case (suc zero)      = sym p1
+    β-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = refl
+    ... | suc zero        = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
+    ... | suc (suc zero)  = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+... | suc (suc zero) | zero = γ-even-case i
+  where
+    γ-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (γ-pair , even)) i ≡ SFin.apply s i
+    γ-even-case zero            = sym p0
+    γ-even-case (suc zero)      = sym p1
+    γ-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+    ... | suc zero        = refl
+    ... | suc (suc zero)  = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
+... | suc (suc zero) | suc zero = γ-odd-case i
+  where
+    γ-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (γ-pair , odd)) i ≡ SFin.apply s i
+    γ-odd-case zero            = sym p0
+    γ-odd-case (suc zero)      = sym p1
+    γ-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    ... | zero            = refl
+    ... | suc zero        = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
+    ... | suc (suc zero)  = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
