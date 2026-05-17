@@ -39,7 +39,7 @@ open import Data.Fin using (Fin; zero; suc)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; _≢_; refl; sym; trans; cong)
+  using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
 open import Relation.Nullary using (yes; no)
 
 import Substrate.Groups.SFin as SFin
@@ -185,15 +185,32 @@ orbit-key-to-s3 (γ-pair , odd)  = s3-cw
 -- 3 impossible pairs (apply 0 = apply 1) get an arbitrary default.
 ------------------------------------------------------------------------
 
+-- Factored through s3-to-orbit-key-from so the with-cases unfold under
+-- proof-level `with SFin.apply ... in eq`. Parallel to S4-Iso.agda's
+-- `extract-s-from` refactor (commit a40e9bd).
+s3-to-orbit-key-from : Fin 3 → Fin 3 → OrbitKey
+s3-to-orbit-key-from zero            (suc zero)       = α-pair , even
+s3-to-orbit-key-from zero            (suc (suc zero)) = α-pair , odd
+s3-to-orbit-key-from (suc zero)       (suc (suc zero)) = β-pair , even
+s3-to-orbit-key-from (suc zero)       zero            = β-pair , odd
+s3-to-orbit-key-from (suc (suc zero)) zero            = γ-pair , even
+s3-to-orbit-key-from (suc (suc zero)) (suc zero)       = γ-pair , odd
+s3-to-orbit-key-from _                _                = α-pair , even
+                                                       -- impossible default
+
 s3-to-orbit-key : SFin.Permutation 3 → OrbitKey
-s3-to-orbit-key s with SFin.apply s zero | SFin.apply s (suc zero)
-... | zero            | suc zero       = α-pair , even
-... | zero            | suc (suc zero) = α-pair , odd
-... | suc zero        | suc (suc zero) = β-pair , even
-... | suc zero        | zero            = β-pair , odd
-... | suc (suc zero)  | zero            = γ-pair , even
-... | suc (suc zero)  | suc zero        = γ-pair , odd
-... | _               | _               = α-pair , even   -- impossible
+s3-to-orbit-key s =
+  s3-to-orbit-key-from (SFin.apply s zero) (SFin.apply s (suc zero))
+
+-- Propositional congruence: s3-to-orbit-key only inspects SFin.apply at
+-- zero and suc zero, so pointwise equality at those two indices suffices.
+s3-to-orbit-key-cong :
+  ∀ (s₁ s₂ : SFin.Permutation 3) →
+  SFin.apply s₁ zero ≡ SFin.apply s₂ zero →
+  SFin.apply s₁ (suc zero) ≡ SFin.apply s₂ (suc zero) →
+  s3-to-orbit-key s₁ ≡ s3-to-orbit-key s₂
+s3-to-orbit-key-cong s₁ s₂ eq0 eq1 =
+  cong₂ s3-to-orbit-key-from eq0 eq1
 
 ------------------------------------------------------------------------
 -- Round-trip on the OrbitKey side: s3-to-orbit-key (orbit-key-to-s3 ok) ≡ ok.
