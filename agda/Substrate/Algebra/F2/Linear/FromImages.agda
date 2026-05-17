@@ -1,0 +1,128 @@
+------------------------------------------------------------------------
+-- Substrate.Algebra.F2.Linear.FromImages
+--
+-- Repurposed M-5 of the Cocycles structural-migration plan: the
+-- canonical Linear-from-basis-images combinator. Given a function
+-- `images : Fin k → Vector n` specifying where the k basis vectors
+-- should go, produces the unique linear map satisfying that
+-- prescription (uniqueness by M-3.5 linear-extensionality).
+--
+-- Construction: apply v = sum (λ i → lookup v i *ₛ images i). All
+-- linearity proofs follow from the F₂ algebra of *ₛ over +ⱽ + sum
+-- distribution, packaged here as small helpers.
+--
+-- (Originally-planned M-5 = F₂-affine subspaces deferred; not
+-- needed for the immediate CY-5 migration target.)
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Algebra.F2.Linear.FromImages where
+
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Fin using (Fin)
+  renaming (zero to fz; suc to fs)
+open import Data.Vec using (Vec; []; _∷_; lookup)
+open import Function using (_∘_)
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; refl; sym; trans; cong; cong₂)
+
+open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.Vector
+open import Substrate.Algebra.F2.Vector.Universal
+open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
+
+------------------------------------------------------------------------
+-- Small F₂-Vector helpers (factored for clarity; promoted to
+-- Substrate.Algebra.F2.Vector if used elsewhere).
+------------------------------------------------------------------------
+
+-- Scalar pulls through: c *ₛ 𝟎ⱽ ≡ 𝟎ⱽ.
+*ₛ-zeroʳ : ∀ {n} (c : F₂) → (c *ₛ (𝟎ⱽ {n})) ≡ 𝟎ⱽ
+*ₛ-zeroʳ c = ≡-from-lookup _ _ (λ i →
+  trans (lookup-*ₛ c 𝟎ⱽ i)
+  (trans (cong (c ·_) (lookup-𝟎 i))
+  (trans (·-absorbʳ c)
+         (sym (lookup-𝟎 i)))))
+
+-- Scalar associativity at the vector level: (c · d) *ₛ v ≡ c *ₛ (d *ₛ v).
+*ₛ-·-assoc : ∀ {n} (c d : F₂) (v : Vector n) →
+             ((c · d) *ₛ v) ≡ (c *ₛ (d *ₛ v))
+*ₛ-·-assoc c d v = ≡-from-lookup _ _ (λ i →
+  trans (lookup-*ₛ (c · d) v i)
+  (trans (·-assoc c d (lookup v i))
+  (trans (sym (cong (c ·_) (lookup-*ₛ d v i)))
+         (sym (lookup-*ₛ c (d *ₛ v) i)))))
+
+-- Scalar distributes from the right: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v.
+*ₛ-distribʳ-+ : ∀ {n} (a b : F₂) (v : Vector n) →
+                ((a + b) *ₛ v) ≡ ((a *ₛ v) +ⱽ (b *ₛ v))
+*ₛ-distribʳ-+ a b v = ≡-from-lookup _ _ (λ i →
+  trans (lookup-*ₛ (a + b) v i)
+  (trans (·-distribʳ-+ (lookup v i) a b)
+         (sym (trans (lookup-+ⱽ (a *ₛ v) (b *ₛ v) i)
+                     (cong₂ _+_ (lookup-*ₛ a v i) (lookup-*ₛ b v i))))))
+
+------------------------------------------------------------------------
+-- Sum distributes over componentwise +ⱽ on the family.
+--
+-- sum (λ i → f i +ⱽ g i) ≡ sum f +ⱽ sum g.
+------------------------------------------------------------------------
+
+sum-+ⱽ-distrib :
+  ∀ {n m} (f g : Fin n → Vector m) →
+  sum (λ i → f i +ⱽ g i) ≡ sum f +ⱽ sum g
+sum-+ⱽ-distrib {zero}  f g = sym (+ⱽ-identityˡ 𝟎ⱽ)
+sum-+ⱽ-distrib {suc _} f g =
+  trans (cong (f fz +ⱽ g fz +ⱽ_) (sum-+ⱽ-distrib (f ∘ fs) (g ∘ fs)))
+        (swap-+ⱽ (f fz) (g fz) (sum (f ∘ fs)) (sum (g ∘ fs)))
+  where
+    -- (a +ⱽ b) +ⱽ (c +ⱽ d) ≡ (a +ⱽ c) +ⱽ (b +ⱽ d), via lookup-componentwise
+    -- + F₂ associativity / commutativity.
+    swap-+ⱽ : ∀ {m} (a b c d : Vector m) →
+              ((a +ⱽ b) +ⱽ (c +ⱽ d)) ≡ ((a +ⱽ c) +ⱽ (b +ⱽ d))
+    swap-+ⱽ a b c d = ≡-from-lookup _ _ (λ i →
+      let la = lookup a i; lb = lookup b i
+          lc = lookup c i; ld = lookup d i
+      in trans (lookup-+ⱽ (a +ⱽ b) (c +ⱽ d) i)
+         (trans (cong₂ _+_ (lookup-+ⱽ a b i) (lookup-+ⱽ c d i))
+         (trans (+-assoc la lb (lc + ld))
+         (trans (cong (la +_) (sym (+-assoc lb lc ld)))
+         (trans (cong (λ z → la + (z + ld)) (+-comm lb lc))
+         (trans (cong (la +_) (+-assoc lc lb ld))
+         (trans (sym (+-assoc la lc (lb + ld)))
+                (sym (trans (lookup-+ⱽ (a +ⱽ c) (b +ⱽ d) i)
+                            (cong₂ _+_ (lookup-+ⱽ a c i) (lookup-+ⱽ b d i)))))))))))
+
+------------------------------------------------------------------------
+-- Scalar pulls through sum.
+------------------------------------------------------------------------
+
+*ₛ-sum-distrib :
+  ∀ {n m} (c : F₂) (f : Fin n → Vector m) →
+  (c *ₛ sum f) ≡ sum (λ i → c *ₛ f i)
+*ₛ-sum-distrib {zero}  c f = *ₛ-zeroʳ c
+*ₛ-sum-distrib {suc _} c f =
+  trans (*ₛ-distribˡ-+ⱽ c (f fz) (sum (f ∘ fs)))
+        (cong (c *ₛ f fz +ⱽ_) (*ₛ-sum-distrib c (f ∘ fs)))
+
+------------------------------------------------------------------------
+-- The main construction: linear-from-images.
+------------------------------------------------------------------------
+
+linear-from-images : ∀ {k n} → (Fin k → Vector n) → Linear k n
+linear-from-images images = record
+  { apply        = λ v → sum (λ i → lookup v i *ₛ images i)
+  ; preserves-+  = λ u v →
+      trans (sum-cong (λ i →
+              trans (cong (_*ₛ images i) (lookup-+ⱽ u v i))
+                    (*ₛ-distribʳ-+ (lookup u i) (lookup v i) (images i))))
+            (sum-+ⱽ-distrib (λ i → lookup u i *ₛ images i)
+                              (λ i → lookup v i *ₛ images i))
+  ; preserves-*ₛ = λ c v →
+      trans (sum-cong (λ i →
+              trans (cong (_*ₛ images i) (lookup-*ₛ c v i))
+                    (*ₛ-·-assoc c (lookup v i) (images i))))
+            (sym (*ₛ-sum-distrib c (λ i → lookup v i *ₛ images i)))
+  }
