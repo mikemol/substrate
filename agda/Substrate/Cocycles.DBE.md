@@ -414,6 +414,62 @@ properties + estimated ~10 bridges = **~31 shadows**. This is the
 "shadow count should grow" the user endorsed; the cost is in
 file-count, not in line-count per file.
 
+## Status (2026-05-17 session)
+
+Twelve commits this session built the structural foundation:
+
+| Shadow | File | Commit |
+|--------|------|--------|
+| M-1    | Substrate/Algebra/F2.agda | 93f85df |
+| M-1.5  | Substrate/Algebra/F2/Universal.agda | 93f85df |
+| M-2    | Substrate/Algebra/F2/Vector.agda | e68bb3f |
+| M-2.5  | Substrate/Algebra/F2/Vector/Universal.agda | c0b3a19 |
+| M-3    | Substrate/Algebra/F2/Linear.agda | 45601d2 |
+| M-3.5  | Substrate/Algebra/F2/Linear/Universal.agda | e4b5e76 |
+| M-4    | Substrate/Algebra/F2/Code.agda | a229699 |
+| M-4.5  | Substrate/Algebra/F2/Code/Universal.agda | 5726b5e |
+| M-5    | Substrate/Algebra/F2/Linear/FromImages.agda | 03b5fcd |
+| M-6    | Substrate/Codes/ReedMuller/RM-1-3.agda | 776bc99 |
+| M-7    | Substrate/Codes/Hamming/H-7-4-3.agda | c0e7341 |
+| M-9    | Substrate/Geometry/Fano.agda | de23207 |
+
+Each shadow is its own file (per the decomposition/-template
+discipline), every commit is green under `--safe --without-K`, and
+the universal-property tower at each level reduces downstream
+equalities to single-step applications rather than enumeration.
+
+**Highlights of structural content:**
+
+- `linear-extensionality` (M-3.5) reduces "two linear maps agree"
+  to "agree on n basis vectors."
+- `basis-decomp` (M-2.5) gives the atomic decomposition that powers
+  the extensionality.
+- `linear-from-images` (M-5) is the build combinator: any
+  prescription of basis-images produces a Linear with all axioms.
+- `Image-Equivalent` (M-4.5) is the bridge between two ImageCodes
+  with the same basis-image content.
+- Fano plane (M-9): collinearity of 3 points is DEFINITIONAL from
+  F₂ arithmetic (`(p₁ +ⱽ p₂) +ⱽ p₃ ≡ 𝟎ⱽ`). All 7 line-incidences
+  proven by `refl`. No incidence table.
+
+**Deferred to follow-up sessions:**
+
+- **M-8**: extended Hamming [8, 4, 4] = RM(1, 3) bridge. Needs the
+  dual-code construction (Hamming's generator from its parity-
+  check), which is non-trivial without rank/nullity. Best done
+  alongside M-10 when a consumer needs the relation.
+- **M-10**: F₂-linear V₄-Signature ambient. Needs careful catalog
+  study to map the structural 8 reserved / 24 live to the existing
+  Bool⁵ ambient. Open question: 8 reserved = signed singletons
+  (4×2) per catalog § CY-5, NOT directly RM(1,3) image (which has
+  16 codewords). The bridge is more subtle than just "8 reserved =
+  RM(1,3)."
+- **M-11**: Hodge ★ in dim 4. Conceptually clean (Λ³ ↔ Λ¹), but
+  needs alternating-form machinery to formalise.
+- **M-12-15**: Pairing/Chirality/OrbitKey + S4Iso + Codeword + Live*
+  consumer migrations. These are the hard-coupling work; the items
+  1+2+3 retrospective applies.
+
 ## Cross-references
 
 - catalog/cocycles.md § CY-3, CY-4, CY-5 — the cocycles being
