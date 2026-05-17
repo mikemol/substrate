@@ -20,6 +20,15 @@
 -- primitive — it makes the Fano plane derivable from F₂ arithmetic,
 -- not from a hand-enumerated incidence table.
 --
+-- The reason all 7 `line-i-j-k : Collinear-Three pᵢ pⱼ pₖ` proofs
+-- close by `refl`: each Fano line is itself a 2-dim F₂-subspace of
+-- F₂³, and its 3 collinear points are the V4-Nonzero of that
+-- subspace. The "4th point" (= 𝟎ⱽ, off the Fano plane) is the
+-- parity of the 3 — i.e., (p₁ +ⱽ p₂) +ⱽ p₃ ≡ 𝟎ⱽ by F₂² Klein-four
+-- parity. The 3+1 parity pattern recurs at OrbitKey (6+2 in F₂³),
+-- Live/Reserved (24+8 in F₂⁵), and extended Hamming's parity bit
+-- — see memory `project_3plus1_parity_universal`.
+--
 -- Connection to the rest of the migration:
 --   * Points of Fano = columns of Hamming H (M-7).
 --   * Lines of Fano = codewords of weight 4 in RM(1, 3) excluding

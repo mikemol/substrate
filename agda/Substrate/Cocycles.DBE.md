@@ -454,10 +454,16 @@ equalities to single-step applications rather than enumeration.
 
 **Deferred to follow-up sessions:**
 
-- **M-8**: extended Hamming [8, 4, 4] = RM(1, 3) bridge. Needs the
-  dual-code construction (Hamming's generator from its parity-
-  check), which is non-trivial without rank/nullity. Best done
-  alongside M-10 when a consumer needs the relation.
+- **M-8**: extended Hamming [8, 4, 4] = RM(1, 3) bridge. Originally
+  flagged as "needs dual-code construction (Hamming's generator
+  from its parity-check), non-trivial without rank/nullity." Under
+  the 3+1 parity reading (memory: `project_3plus1_parity_universal`),
+  the *construction* of extended Hamming simplifies: the "overall
+  parity bit" IS the F₂² parity relation lifted to length 8.
+  Construction = append an all-𝟙 row to Hamming's parity-check
+  matrix; ExtHamming = `KernelCode 8 4` of the augmented matrix.
+  The *iso-to-RM(1,3)* part (which would need full dual-code
+  machinery) remains a separate sub-slice.
 - **M-10**: F₂-linear V₄-Signature ambient. Needs careful catalog
   study to map the structural 8 reserved / 24 live to the existing
   Bool⁵ ambient. Open question: 8 reserved = signed singletons
