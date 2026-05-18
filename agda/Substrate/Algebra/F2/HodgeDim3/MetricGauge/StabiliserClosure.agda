@@ -44,6 +44,8 @@ open import Substrate.Algebra.F2.Linear.FromImages
   using (apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser
+open import Substrate.Category.Coalgebra
+  using (FixedPoint)
 
 ------------------------------------------------------------------------
 -- N-1: Per-basis apply reductions for s₁ ∘L s₂.
@@ -164,3 +166,22 @@ s₁∘s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
 --     concrete Linear 3 3 stabiliser to the existing S₃ group
 --     structure in Substrate.Groups.S3.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- N-4: Categorical retrofit — 3-cycle stabilisation as FixedPoint.
+--
+-- Per `feedback_categorical_name_first` and the
+-- Substrate.Category.Primitives roadmap. With `congruence-compose`
+-- eventually formalised (deferred), this witness becomes derivable as
+-- `FixedPoint-of-compose metric-id-fixed-by-cong-act-s₁
+--                        metric-id-fixed-by-cong-act-s₂` modulo the
+-- composition law `congruence-act (s₁ ∘L s₂) ≡
+-- congruence-act s₁ ∘E congruence-act s₂`. Until then, the explicit
+-- wrapper documents the categorical handle without losing the
+-- per-cycle proof's content.
+------------------------------------------------------------------------
+
+metric-id-fixed-by-cong-act-s₁∘s₂ :
+  FixedPoint (congruence-act (s₁ ∘L s₂)) metric-id
+metric-id-fixed-by-cong-act-s₁∘s₂ =
+  record { fixed = s₁∘s₂-stabilises-metric-id }

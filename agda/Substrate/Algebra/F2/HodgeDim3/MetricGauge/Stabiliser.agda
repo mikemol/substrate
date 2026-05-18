@@ -41,6 +41,8 @@ open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
+open import Substrate.Category.Coalgebra
+  using (FixedPoint)
 
 ------------------------------------------------------------------------
 -- N-1: s₁ — basis swap of e₀ and e₁.
@@ -236,3 +238,26 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
 --     to any group action. The concrete instance 28·6=168 then
 --     follows as a corollary.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- N-8: Categorical retrofit — stabilisations as FixedPoint instances.
+--
+-- Per `feedback_categorical_name_first` and the
+-- Substrate.Category.Primitives roadmap: each per-generator
+-- stabilisation lemma above (N-5, N-6) wraps as a FixedPoint witness
+-- of the endomap `congruence-act g : SymBilinForm-3 → SymBilinForm-3`
+-- at the point `metric-id`.
+--
+-- The categorical handle's universal property — FixedPoint γ x is
+-- equivalent to {x} being γ-invariant — composes with the (deferred)
+-- `congruence-compose` lemma via FixedPoint-of-compose to derive
+-- stabilisations of arbitrary group compositions mechanically.
+------------------------------------------------------------------------
+
+metric-id-fixed-by-cong-act-s₁ :
+  FixedPoint (congruence-act s₁) metric-id
+metric-id-fixed-by-cong-act-s₁ = record { fixed = s₁-stabilises-metric-id }
+
+metric-id-fixed-by-cong-act-s₂ :
+  FixedPoint (congruence-act s₂) metric-id
+metric-id-fixed-by-cong-act-s₂ = record { fixed = s₂-stabilises-metric-id }
