@@ -129,6 +129,7 @@ For each match, record: (substrate location, candidate primitive, universal-prop
 - 2026-05-18: Roadmap created.
 - 2026-05-18: Primitive #1 (Coalgebra/FixedPoint) landed (commit 8ce75bf). Retrofits: 3 metric-id stabiliser sites wrap as FixedPoint instances.
 - 2026-05-18: Primitive #2 (Equalizer) landed. Retrofits: `In-Kernel C v` from `Substrate.Algebra.F2.Code` bridges to `Kernel-At (apply (parity-check C)) 𝟎ⱽ v` via a two-direction wrapper. FixedPoint↔IsEqualised bridge connects primitives #1 and #2 categorically. NonDegenerate-4 retrofit deferred (requires primitive #3 Pullback for the per-w intersection structure).
+- 2026-05-18: Primitive #3 (Pullback) landed. Defines binary `Pullback-Of` + `Wide-Meet` for family-indexed intersection. Includes pullback↔equalizer bridge connecting primitives #2 and #3. Retrofits deferred to next annealing step (V4PlaneOrth's `M-orth-to-V4Plane` as binary pullback / wide meet; NonDegenerate-4 radical as wide meet of per-w equalizers).
 
 ---
 
