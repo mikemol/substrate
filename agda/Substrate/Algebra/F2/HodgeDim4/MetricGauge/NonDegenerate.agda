@@ -169,3 +169,52 @@ metric-id-4-non-degenerate v hyp = ≡-from-lookup v 𝟎ⱽ goal
 --     Together with this slice, would establish that the implicit
 --     dot-product non-degeneracy at dim 4 is the metric-id-4 instance.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- N-4: Categorical retrofit — NonDegenerate-4 via Wide-Meet of
+-- per-w equalizers.
+--
+-- Per `feedback_categorical_name_first` and the
+-- Substrate.Category.Primitives roadmap. The radical condition
+-- `(w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘` IS exactly the
+-- Wide-Meet (over w) of the per-w equalizer family
+-- `(λ w v → IsEqualised (λ u → bilinear-form-of-4 M u w) (const 𝟘) v)`.
+--
+-- Wrapping this here makes the categorical handle visible: the
+-- radical of M is the wide meet of "kernel of (u ↦ bilinear-form-of-4
+-- M u w) at 𝟘" for each w. NonDegenerate-4 then states: the radical
+-- contains only the trivial element (i.e., the wide meet is the
+-- singleton {𝟎ⱽ}).
+------------------------------------------------------------------------
+
+open import Function using (const)
+open import Substrate.Category.Equalizer
+  using (IsEqualised; equal)
+open import Substrate.Category.Pullback
+  using (Wide-Meet)
+
+-- The per-w equalizer family for a bilinear form M: each w gives the
+-- equalizer of (u ↦ bilinear-form-of-4 M u w) and the constant-𝟘
+-- function.
+M-pair-eq-family-4 : SymBilinForm-4 → Vector 4 → Vector 4 → Set
+M-pair-eq-family-4 M w v =
+  IsEqualised (λ u → bilinear-form-of-4 M u w) (const 𝟘) v
+
+-- The radical of M as a Wide-Meet of the per-w equalizer family.
+Radical-as-WideMeet-4 : SymBilinForm-4 → Vector 4 → Set
+Radical-as-WideMeet-4 M = Wide-Meet (M-pair-eq-family-4 M)
+
+-- Bridge: the substrate's existing inner condition of NonDegenerate-4
+-- (a function w → equality at 𝟘) IS exactly Radical-as-WideMeet-4 M v
+-- modulo the IsEqualised record wrapping.
+radical-from-existing :
+  (M : SymBilinForm-4) (v : Vector 4) →
+  ((w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘) →
+  Radical-as-WideMeet-4 M v
+radical-from-existing M v pair-zero w = record { equal = pair-zero w }
+
+radical-to-existing :
+  (M : SymBilinForm-4) (v : Vector 4) →
+  Radical-as-WideMeet-4 M v →
+  (w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘
+radical-to-existing M v radical w = equal (radical w)

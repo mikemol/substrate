@@ -168,3 +168,46 @@ e₃-NOT-orth-e₀-under-metric-fully-coupled = refl
 --     HodgeComplement-Dim3-family`: the M-11.dim3 capstone record
 --     lifted to a 28-element parametric family.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- N-7: Categorical retrofit — M-orth-to-V4Plane as Wide-Meet over Fin 2.
+--
+-- Per `feedback_categorical_name_first` and the
+-- Substrate.Category.Primitives roadmap. The substrate's binary
+-- "orthogonal to e₀ AND orthogonal to e₁" pattern IS exactly the
+-- Wide-Meet over the 2-element index set Fin 2 of the
+-- orthogonal-to-basis-vector family.
+--
+-- The categorical handle says: a vector v is V4Plane-orthogonal
+-- iff it lies in the meet of the two basis-orthogonality predicates
+-- in Sub(Vector 3). Wide-Meet at Fin 2 is the binary case; the same
+-- pattern generalises to V4Plane-equivalents in higher dimensions.
+------------------------------------------------------------------------
+
+open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Category.Pullback
+  using (Wide-Meet)
+
+-- The 2-element family: i = zero ↦ orthogonal-to-e₀; i = 1 ↦ -to-e₁.
+V4Plane-basis-orth-family : SymBilinForm-3 → Fin 2 → Vector 3 → Set
+V4Plane-basis-orth-family M zero       v =
+  metric-orthogonal M v (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])
+V4Plane-basis-orth-family M (suc zero) v =
+  metric-orthogonal M v (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])
+
+-- M-orth-to-V4Plane reformulated as the Wide-Meet over Fin 2.
+M-orth-to-V4Plane-as-WideMeet : SymBilinForm-3 → Vector 3 → Set
+M-orth-to-V4Plane-as-WideMeet M = Wide-Meet (V4Plane-basis-orth-family M)
+
+-- Bridge: existing × form → Wide-Meet form.
+M-orth-to-V4Plane→WideMeet :
+  (M : SymBilinForm-3) (v : Vector 3) →
+  M-orth-to-V4Plane M v → M-orth-to-V4Plane-as-WideMeet M v
+M-orth-to-V4Plane→WideMeet M v (orth-e₀ , _)       zero       = orth-e₀
+M-orth-to-V4Plane→WideMeet M v (_ , orth-e₁)       (suc zero) = orth-e₁
+
+-- Bridge: Wide-Meet form → existing × form.
+WideMeet→M-orth-to-V4Plane :
+  (M : SymBilinForm-3) (v : Vector 3) →
+  M-orth-to-V4Plane-as-WideMeet M v → M-orth-to-V4Plane M v
+WideMeet→M-orth-to-V4Plane M v wm = wm zero , wm (suc zero)
