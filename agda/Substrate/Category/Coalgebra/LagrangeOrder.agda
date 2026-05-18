@@ -97,6 +97,30 @@ HasLagrangeOrder : {X : Set ℓ} (n : ℕ) (α : Action n X) → Set ℓ
 HasLagrangeOrder {X = X} n α = (i : Fin n) → HasOrder (α i) n
 
 ------------------------------------------------------------------------
+-- N-2b: At-a-point variant — `HasLagrangeOrder-at n α x`.
+--
+-- Weaker than `HasLagrangeOrder n α`: the order-divides-n property
+-- holds AT THE SPECIFIC POINT x rather than at every x. Useful for
+-- group-action sites where the action fixes only certain points
+-- (e.g., the stabiliser subgroup of a specific element).
+--
+-- For substrate's S₃ stabiliser of metric-id: each of the 6 S₃
+-- elements has `congruence-act g metric-id ≡ metric-id`; this gives
+-- HasLagrangeOrder-at 6 S₃-cong-action metric-id. The action doesn't
+-- fix arbitrary M, only metric-id, so the at-a-point version is the
+-- appropriate predicate.
+------------------------------------------------------------------------
+
+HasLagrangeOrder-at : {X : Set ℓ} (n : ℕ) (α : Action n X) (x : X) → Set ℓ
+HasLagrangeOrder-at n α x = (i : Fin n) → iterate n (α i) x ≡ x
+
+-- The all-points version implies the at-a-point version.
+HasLagrangeOrder→at :
+  {X : Set ℓ} {n : ℕ} {α : Action n X} {x : X} →
+  HasLagrangeOrder n α → HasLagrangeOrder-at n α x
+HasLagrangeOrder→at {x = x} hyp i = hyp i x
+
+------------------------------------------------------------------------
 -- N-3: Specialisation — every action element has HasOrder n.
 --
 -- Direct extraction: given HasLagrangeOrder n α and any index i,
