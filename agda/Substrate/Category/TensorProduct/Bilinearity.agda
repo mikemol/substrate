@@ -137,6 +137,98 @@ pair-+ⱽ-right (a ∷ p) w₁ w₂ =
             (pair-+ⱽ-right p w₁ w₂)
 
 ------------------------------------------------------------------------
+-- N-4b: Scalar multiplication on TensorProduct.
+--
+-- _*T_ c T scales every entry of T by c. Defined via pattern-matching
+-- on the outer Vec for structural induction.
+------------------------------------------------------------------------
+
+_*T_ : ∀ {n m} → F₂ → TensorProduct n m → TensorProduct n m
+c *T []      = []
+c *T (r ∷ T) = (c *ₛ r) ∷ (c *T T)
+
+infixl 7 _*T_
+
+------------------------------------------------------------------------
+-- N-4c: Helper — (a · b) *ₛ v ≡ a *ₛ (b *ₛ v).
+--
+-- Scalar multiplication associativity at the Vector level.
+------------------------------------------------------------------------
+
+*ₛ-assoc : ∀ {n} (a b : F₂) (v : Vector n) →
+           ((a · b) *ₛ v) ≡ (a *ₛ (b *ₛ v))
+*ₛ-assoc a b v = ≡-from-lookup _ _ (λ i →
+  trans (lookup-*ₛ (a · b) v i)
+  (trans (·-assoc a b (lookup v i))
+         (sym (trans (lookup-*ₛ a (b *ₛ v) i)
+                     (cong (a ·_) (lookup-*ₛ b v i))))))
+
+------------------------------------------------------------------------
+-- N-5: pair-*ₛ-left — pair respects scalar multiplication on left.
+--
+--   pair (c *ₛ v) w ≡ c *T pair v w
+--
+-- Proof by induction on v.
+--
+-- Base case (v = []): both sides are []. refl.
+--
+-- Step case (v = a ∷ p):
+--   pair ((c · a) ∷ (c *ₛ p)) w
+--     = ((c · a) *ₛ w) ∷ pair (c *ₛ p) w
+--   c *T pair (a ∷ p) w
+--     = c *T ((a *ₛ w) ∷ pair p w)
+--     = (c *ₛ (a *ₛ w)) ∷ (c *T pair p w)
+--
+-- Need:
+--   * (c · a) *ₛ w ≡ c *ₛ (a *ₛ w)   [*ₛ-assoc]
+--   * pair (c *ₛ p) w ≡ c *T pair p w  [IH]
+------------------------------------------------------------------------
+
+pair-*ₛ-left :
+  ∀ {n m} (c : F₂) (v : Vector n) (w : Vector m) →
+  pair (c *ₛ v) w ≡ (c *T pair v w)
+pair-*ₛ-left c []      w = refl
+pair-*ₛ-left c (a ∷ p) w =
+  cong₂ _∷_ (*ₛ-assoc c a w) (pair-*ₛ-left c p w)
+
+------------------------------------------------------------------------
+-- N-6: pair-*ₛ-right — pair respects scalar multiplication on right.
+--
+--   pair v (c *ₛ w) ≡ c *T pair v w
+--
+-- Proof by induction on v.
+--
+-- Step case (v = a ∷ p):
+--   pair (a ∷ p) (c *ₛ w)
+--     = (a *ₛ (c *ₛ w)) ∷ pair p (c *ₛ w)
+--   c *T pair (a ∷ p) w
+--     = c *T ((a *ₛ w) ∷ pair p w)
+--     = (c *ₛ (a *ₛ w)) ∷ (c *T pair p w)
+--
+-- Need:
+--   * a *ₛ (c *ₛ w) ≡ c *ₛ (a *ₛ w)  [via ·-comm on the scalars]
+--   * pair p (c *ₛ w) ≡ c *T pair p w  [IH]
+--
+-- For the scalar swap: (a · c) *ₛ w ≡ a *ₛ (c *ₛ w) [*ₛ-assoc],
+-- and (a · c) ≡ (c · a) [·-comm], so a *ₛ (c *ₛ w) ≡ (a · c) *ₛ w
+-- ≡ (c · a) *ₛ w ≡ c *ₛ (a *ₛ w).
+------------------------------------------------------------------------
+
+*ₛ-scalar-swap : ∀ {n} (a c : F₂) (v : Vector n) →
+                 (a *ₛ (c *ₛ v)) ≡ (c *ₛ (a *ₛ v))
+*ₛ-scalar-swap a c v =
+  trans (sym (*ₛ-assoc a c v))
+  (trans (cong (_*ₛ v) (·-comm a c))
+         (*ₛ-assoc c a v))
+
+pair-*ₛ-right :
+  ∀ {n m} (c : F₂) (v : Vector n) (w : Vector m) →
+  pair v (c *ₛ w) ≡ (c *T pair v w)
+pair-*ₛ-right c []      w = refl
+pair-*ₛ-right c (a ∷ p) w =
+  cong₂ _∷_ (*ₛ-scalar-swap a c w) (pair-*ₛ-right c p w)
+
+------------------------------------------------------------------------
 -- N-5: Capstone — pair's bilinearity confirmed.
 --
 -- After this slice:
