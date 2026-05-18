@@ -185,6 +185,117 @@ braid-on-v =
     agree-on-basis (suc (suc zero)) = braid-on-e₂
 
 ------------------------------------------------------------------------
+-- N-4: Retrofit — Coxeter relations as HasOrder instances.
+--
+-- Connects this file to Substrate.Category.Coalgebra.FiniteOrder
+-- (primitive #1's HasOrder predicate). The involutions s₁² = s₂² = id
+-- become HasOrder ★ 2 instances; the braid (s₁s₂)³ = e becomes a
+-- HasOrder ★ 3 instance.
+--
+-- The HasOrder instances are derived directly from the apply-pointwise
+-- relations above (no funext required). iterate 2 (apply sᵢ) v
+-- reduces definitionally to apply (sᵢ ∘L sᵢ) v; apply id-L v reduces
+-- to v. So `sᵢ²-on-v v : apply (sᵢ ∘L sᵢ) v ≡ apply id-L v` IS
+-- `iterate 2 (apply sᵢ) v ≡ v` = HasOrder (apply sᵢ) 2 at v.
+--
+-- Per `feedback_categorical_name_first` and the [[project-torsion-
+-- element-universal]] / [[project-composite-torsion-euler-substrate]]
+-- discipline: the s₁²/s₂² involutions and the (s₁s₂)³ = e braid are
+-- concrete instances of the substrate's torsion-element-of-automorphism
+-- universal. Naming them as HasOrder retrofits surfaces the categorical
+-- handle.
+------------------------------------------------------------------------
+
+open import Substrate.Category.Coalgebra using (Endomap)
+open import Substrate.Category.Coalgebra.FiniteOrder
+  using (HasOrder; iterate)
+
+-- s₁ as an endomap of Vector 3.
+s₁-endo : Endomap (Vector 3)
+s₁-endo = apply s₁
+
+-- s₂ as an endomap of Vector 3.
+s₂-endo : Endomap (Vector 3)
+s₂-endo = apply s₂
+
+-- s₁∘L s₂ as an endomap.
+s₁∘s₂-endo : Endomap (Vector 3)
+s₁∘s₂-endo = apply (s₁ ∘L s₂)
+
+-- HasOrder retrofits — involutions.
+HasOrder-s₁ : HasOrder s₁-endo 2
+HasOrder-s₁ = s₁²-on-v
+
+HasOrder-s₂ : HasOrder s₂-endo 2
+HasOrder-s₂ = s₂²-on-v
+
+-- HasOrder retrofit — the 3-cycle s₁∘s₂.
+-- (s₁s₂)³ = e in S₃; iterate 3 (apply (s₁∘L s₂)) v ≡ v for any v.
+-- Proved per-basis using s₁-on-eᵢ + s₂-on-eᵢ chained 3 times, then
+-- lifted to all v via linear-extensionality.
+
+s₁∘s₂-cubed-on-e₀ :
+  apply ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂)) (basis zero)
+    ≡ apply id-L (basis zero)
+s₁∘s₂-cubed-on-e₀ =
+  -- (s₁s₂)³ e₀: e₀ ↦ s₂ e₀ = e₀ ↦ s₁ e₀ = e₁ (first s₁s₂)
+  --              e₁ ↦ s₂ e₁ = e₂ ↦ s₁ e₂ = e₂ (second s₁s₂)
+  --              e₂ ↦ s₂ e₂ = e₁ ↦ s₁ e₁ = e₀ (third s₁s₂) ✓
+  trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂))
+              (cong (apply s₁) s₂-on-e₀)))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂)) s₁-on-e₀))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply s₁) s₂-on-e₁))
+  (trans (cong (apply (s₁ ∘L s₂)) s₁-on-e₂)
+  (trans (cong (apply s₁) s₂-on-e₂)
+         s₁-on-e₁))))
+
+s₁∘s₂-cubed-on-e₁ :
+  apply ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂)) (basis (suc zero))
+    ≡ apply id-L (basis (suc zero))
+s₁∘s₂-cubed-on-e₁ =
+  -- (s₁s₂)³ e₁: e₁ ↦ s₂ e₁ = e₂ ↦ s₁ e₂ = e₂ (first)
+  --              e₂ ↦ s₂ e₂ = e₁ ↦ s₁ e₁ = e₀ (second)
+  --              e₀ ↦ s₂ e₀ = e₀ ↦ s₁ e₀ = e₁ (third) ✓
+  trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂))
+              (cong (apply s₁) s₂-on-e₁)))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂)) s₁-on-e₂))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply s₁) s₂-on-e₂))
+  (trans (cong (apply (s₁ ∘L s₂)) s₁-on-e₁)
+  (trans (cong (apply s₁) s₂-on-e₀)
+         s₁-on-e₀))))
+
+s₁∘s₂-cubed-on-e₂ :
+  apply ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂)) (basis (suc (suc zero)))
+    ≡ apply id-L (basis (suc (suc zero)))
+s₁∘s₂-cubed-on-e₂ =
+  -- (s₁s₂)³ e₂: e₂ ↦ s₂ e₂ = e₁ ↦ s₁ e₁ = e₀ (first)
+  --              e₀ ↦ s₂ e₀ = e₀ ↦ s₁ e₀ = e₁ (second)
+  --              e₁ ↦ s₂ e₁ = e₂ ↦ s₁ e₂ = e₂ (third) ✓
+  trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂))
+              (cong (apply s₁) s₂-on-e₂)))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply (s₁ ∘L s₂)) s₁-on-e₁))
+  (trans (cong (apply (s₁ ∘L s₂)) (cong (apply s₁) s₂-on-e₀))
+  (trans (cong (apply (s₁ ∘L s₂)) s₁-on-e₀)
+  (trans (cong (apply s₁) s₂-on-e₁)
+         s₁-on-e₂))))
+
+-- HasOrder (apply (s₁∘L s₂)) 3 via linear-extensionality.
+HasOrder-s₁∘s₂ : HasOrder s₁∘s₂-endo 3
+HasOrder-s₁∘s₂ v =
+  linear-extensionality
+    ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂))
+    id-L
+    agree-on-basis
+    v
+  where
+    agree-on-basis : (i : Fin 3) →
+                     apply ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂)) (basis i)
+                       ≡ apply id-L (basis i)
+    agree-on-basis zero             = s₁∘s₂-cubed-on-e₀
+    agree-on-basis (suc zero)       = s₁∘s₂-cubed-on-e₁
+    agree-on-basis (suc (suc zero)) = s₁∘s₂-cubed-on-e₂
+
+------------------------------------------------------------------------
 -- N-4: Capstone documentation.
 --
 -- The Coxeter presentation ⟨ s₁, s₂ | s₁² = s₂² = (s₁s₂)³ = e ⟩ for
