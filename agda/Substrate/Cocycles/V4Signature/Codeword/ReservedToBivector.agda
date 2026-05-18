@@ -148,12 +148,28 @@ selfdual-to-reserved (ω , _) =
 --     self-dual coefficient (c₀, c₁, c₂) in a way that's meaningful
 --     for the catalog's "Hodge dual" interpretation? Requires
 --     reading the catalog's intent.
---   * V₄ action correspondence: if V₄ acts on Reserved (e.g., via
---     axis swap), does it correspond to a V₄ action on SelfDual
---     bivectors? Requires identifying the V₄ action on each side.
+--   * V₄ action correspondence: ESTABLISHED IMPOSSIBLE (see memory
+--     `project_reserved_selfdual_bijection_gauge`). The V₄ action on
+--     Reserved (regular representation on axes, free transitive) and
+--     the V₄ action on SelfDual via partition-permutation (V₄ ⊂ S₄
+--     as kernel of S₄ → S₃, trivial on sd-pairs) are STRUCTURALLY
+--     DIFFERENT. No F₂-linear bijection can be V₄-equivariant.
 --   * Live ↔ ordered-triples bridge: the 24 Live codewords should
 --     correspond to "24 ordered triples" per the catalog; this is
 --     a separate slice (M-11.dim4.live-bridge or similar).
+--
+-- **Gauge freedom warning.** The bijection established here is ONE of
+-- 168 F₂-linear choices. The choice of `vector3-to-selfdual` from
+-- ReservedBridge.agda (used as the SelfDual-side construction here)
+-- is the identity permutation on the 3 sd-pair generators. Two
+-- alternatives are formalised in
+-- `Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives`
+-- (cyclic shift + last-two swap). The catalog has no privileged
+-- choice at the F₂-linear level; downstream consumers depending on
+-- the SPECIFIC bijection should declare so explicitly. See memory
+-- `project_reserved_selfdual_bijection_gauge` for the full coset
+-- analysis and the fractal-recurrence observation (the alignment-
+-- axis space itself instantiates 3+1 parity at the meta-level).
 --
 -- This is the LAST PIECE needed to claim the chirality-rotation
 -- framework is GROUNDED in substrate data structures.

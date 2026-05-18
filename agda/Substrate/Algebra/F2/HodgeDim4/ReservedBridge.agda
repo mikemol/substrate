@@ -33,6 +33,19 @@
 -- match an analogous action on SelfDual? does chirality bit on
 -- Reserved correspond to the c₂ pair of SelfDual?) is a follow-up
 -- question.
+--
+-- **Gauge-freedom warning.** The `vector3-to-selfdual` defined here
+-- is ONE of 168 F₂-linear Vector 3 ↔ SelfDual bijections (= the
+-- identity permutation on the 3 sd-pair generators). Two alternatives
+-- are formalised in
+-- `Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives`
+-- (cyclic shift + last-two swap). At the F₂-linear level, none is
+-- privileged; the catalog has no preferred choice. See memory
+-- `project_reserved_selfdual_bijection_gauge` for the full 168-coset
+-- analysis, the V₄-equivariance impossibility, and the fractal
+-- recurrence at the meta-level (alignment-axis space ≅ 3+1 parity
+-- universal). Downstream consumers depending on this specific
+-- bijection should declare so explicitly.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
