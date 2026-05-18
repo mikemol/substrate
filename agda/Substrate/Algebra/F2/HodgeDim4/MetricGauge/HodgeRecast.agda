@@ -55,68 +55,27 @@ open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
 -- after Agda's `𝟘 + y = y`, `𝟙 · y = y`, and `𝟘 · _ = 𝟘` reductions).
 ------------------------------------------------------------------------
 
+-- DEMOTED to instantiation. The original ~50-LoC LHS→canonical /
+-- RHS←canonical bridging proof at dim 4 (per-row residual-𝟘
+-- cleanups + outer assoc/identity manipulations) is now a one-line
+-- corollary of the generic HodgeRecast (`·F-eq-metric-id-bilin-generic`
+-- in Substrate.Algebra.F2.SymBilinForm.HodgeRecast) chained with the
+-- bilinear-form-of-metric-id-4-bridge from GenericBridge.
+--
+-- Original proof preserved in git history at c8a1c8c (dim4.hodge-recast
+-- pre-demotion commit).
+
+open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
+  using (·F-eq-metric-id-bilin-generic)
+open import Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge
+  using (bilinear-form-of-metric-id-4-bridge)
+
 ·F-eq-metric-id-4-bilin :
   (v w : Vector 4) → v ·F w ≡ bilinear-form-of-4 metric-id-4 v w
-·F-eq-metric-id-4-bilin (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ [])
-                        (w₀ ∷ w₁ ∷ w₂ ∷ w₃ ∷ []) =
-  -- LHS = v₀·w₀ + (v₁·w₁ + (v₂·w₂ + (v₃·w₃ + 𝟘)))      [sum-F₂ right-assoc]
-  -- RHS (after Agda reductions) =
-  --   ((v₀ · (((w₀ + 𝟘) + 𝟘) + 𝟘) + v₁ · ((w₁ + 𝟘) + 𝟘))
-  --    + v₂ · (w₂ + 𝟘)) + v₃ · w₃
-  -- Bridge both to canonical = ((v₀·w₀ + v₁·w₁) + v₂·w₂) + v₃·w₃.
-  trans LHS→canonical (sym RHS←canonical)
-  where
-    -- Canonical form for reference: ((v₀·w₀ + v₁·w₁) + v₂·w₂) + v₃·w₃.
+·F-eq-metric-id-4-bilin v w =
+  trans (·F-eq-metric-id-bilin-generic v w)
+        (sym (bilinear-form-of-metric-id-4-bridge v w))
 
-    -- LHS bridge: kill trailing 𝟘, then re-associate twice
-    -- (right-assoc → left-assoc).
-    LHS→canonical :
-      v₀ · w₀ + (v₁ · w₁ + (v₂ · w₂ + (v₃ · w₃ + 𝟘))) ≡
-      ((v₀ · w₀ + v₁ · w₁) + v₂ · w₂) + v₃ · w₃
-    LHS→canonical =
-      trans
-        -- Kill innermost trailing 𝟘.
-        (cong (v₀ · w₀ +_)
-              (cong (v₁ · w₁ +_)
-                    (cong (v₂ · w₂ +_)
-                          (+-identityʳ (v₃ · w₃)))))
-      (trans
-        -- Re-associate outer level: a + (b + (c + d)) ≡ (a + b) + (c + d).
-        (sym (+-assoc (v₀ · w₀) (v₁ · w₁) (v₂ · w₂ + v₃ · w₃)))
-        -- Re-associate inner level: (a + b) + (c + d) ≡ ((a + b) + c) + d.
-        (sym (+-assoc (v₀ · w₀ + v₁ · w₁) (v₂ · w₂) (v₃ · w₃))))
-
-    -- RHS bridge: drop residual +𝟘's row-by-row.
-    --   row-0: v₀ · (((w₀ + 𝟘) + 𝟘) + 𝟘) → v₀ · w₀
-    --   row-1: v₁ · ((w₁ + 𝟘) + 𝟘)        → v₁ · w₁
-    --   row-2: v₂ · (w₂ + 𝟘)              → v₂ · w₂
-    --   row-3: v₃ · w₃                     → v₃ · w₃  (no change)
-    row-0-clean : v₀ · (((w₀ + 𝟘) + 𝟘) + 𝟘) ≡ v₀ · w₀
-    row-0-clean =
-      cong (v₀ ·_)
-           (trans (+-identityʳ ((w₀ + 𝟘) + 𝟘))
-                  (trans (+-identityʳ (w₀ + 𝟘))
-                         (+-identityʳ w₀)))
-
-    row-1-clean : v₁ · ((w₁ + 𝟘) + 𝟘) ≡ v₁ · w₁
-    row-1-clean =
-      cong (v₁ ·_)
-           (trans (+-identityʳ (w₁ + 𝟘))
-                  (+-identityʳ w₁))
-
-    row-2-clean : v₂ · (w₂ + 𝟘) ≡ v₂ · w₂
-    row-2-clean = cong (v₂ ·_) (+-identityʳ w₂)
-
-    RHS←canonical :
-      (v₀ · (((w₀ + 𝟘) + 𝟘) + 𝟘) + v₁ · ((w₁ + 𝟘) + 𝟘))
-        + v₂ · (w₂ + 𝟘)
-        + v₃ · w₃
-      ≡
-      ((v₀ · w₀ + v₁ · w₁) + v₂ · w₂) + v₃ · w₃
-    RHS←canonical =
-      cong (_+ v₃ · w₃)
-           (cong₂ _+_ (cong₂ _+_ row-0-clean row-1-clean)
-                      row-2-clean)
 
 ------------------------------------------------------------------------
 -- N-2: Concrete demonstration of metric-dependence at dim 4.
