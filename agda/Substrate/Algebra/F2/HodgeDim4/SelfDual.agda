@@ -29,6 +29,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.SelfDual where
 
+open import Data.Fin using (Fin)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
 
@@ -64,35 +65,50 @@ sd-pair-03-12 : Bivector            -- e₀ ∧ e₃ + e₁ ∧ e₂
 sd-pair-03-12 = basis b₀₃ +ⱽ basis b₁₂
 
 ------------------------------------------------------------------------
--- Each generator is self-dual.
+-- self-dual-via-complement-pair — named universal property: for any
+-- basis index x, the bivector `basis x +ⱽ basis (complement x)` is
+-- self-dual.
 --
--- Proof recipe: apply hodge-star to (basis x +ⱽ basis y) where
--- complement x = y; preserves-+ + apply-basis on each + +ⱽ-comm.
+-- Chain:
+--   apply ★ (basis x +ⱽ basis (complement x))
+--     ≡ apply ★ (basis x) +ⱽ apply ★ (basis (complement x))
+--                                                      [preserves-+]
+--     ≡ basis (complement x) +ⱽ basis (complement (complement x))
+--                                                      [apply-basis × 2]
+--     ≡ basis (complement x) +ⱽ basis x        [cong on complement-invol]
+--     ≡ basis x +ⱽ basis (complement x)         [+ⱽ-comm]
+--
+-- Each sd-pair-*-self-dual is then a one-liner: pick x; the
+-- right-hand side `basis (complement x)` reduces to the partner
+-- basis vector definitionally (complement is concretely defined).
+------------------------------------------------------------------------
+
+self-dual-via-complement-pair :
+  (x : Fin 6) →
+  SelfDual-Pred (basis x +ⱽ basis (complement x))
+self-dual-via-complement-pair x =
+  trans (preserves-+ hodge-star (basis x) (basis (complement x)))
+  (trans (cong₂ _+ⱽ_
+                (apply-linear-from-images-basis hodge-star-images x)
+                (apply-linear-from-images-basis hodge-star-images (complement x)))
+  (trans (cong (basis (complement x) +ⱽ_)
+               (cong basis (complement-involution x)))
+         (+ⱽ-comm (basis (complement x)) (basis x))))
+
+------------------------------------------------------------------------
+-- Each generator is self-dual: one-line application of the combinator.
+-- The complement of each x reduces to its partner basis index
+-- definitionally, so the resulting goal type matches sd-pair-*.
 ------------------------------------------------------------------------
 
 sd-pair-01-23-self-dual : SelfDual-Pred sd-pair-01-23
-sd-pair-01-23-self-dual =
-  trans (preserves-+ hodge-star (basis b₀₁) (basis b₂₃))
-  (trans (cong₂ _+ⱽ_
-                (apply-linear-from-images-basis hodge-star-images b₀₁)
-                (apply-linear-from-images-basis hodge-star-images b₂₃))
-         (+ⱽ-comm (basis b₂₃) (basis b₀₁)))
+sd-pair-01-23-self-dual = self-dual-via-complement-pair b₀₁
 
 sd-pair-02-13-self-dual : SelfDual-Pred sd-pair-02-13
-sd-pair-02-13-self-dual =
-  trans (preserves-+ hodge-star (basis b₀₂) (basis b₁₃))
-  (trans (cong₂ _+ⱽ_
-                (apply-linear-from-images-basis hodge-star-images b₀₂)
-                (apply-linear-from-images-basis hodge-star-images b₁₃))
-         (+ⱽ-comm (basis b₁₃) (basis b₀₂)))
+sd-pair-02-13-self-dual = self-dual-via-complement-pair b₀₂
 
 sd-pair-03-12-self-dual : SelfDual-Pred sd-pair-03-12
-sd-pair-03-12-self-dual =
-  trans (preserves-+ hodge-star (basis b₀₃) (basis b₁₂))
-  (trans (cong₂ _+ⱽ_
-                (apply-linear-from-images-basis hodge-star-images b₀₃)
-                (apply-linear-from-images-basis hodge-star-images b₁₂))
-         (+ⱽ-comm (basis b₁₂) (basis b₀₃)))
+sd-pair-03-12-self-dual = self-dual-via-complement-pair b₀₃
 
 ------------------------------------------------------------------------
 -- Closure of self-dual under +ⱽ.

@@ -34,6 +34,8 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation
+  using (basis-permutation-involution)
 open import Substrate.Algebra.F2.Linear.Universal
   using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
@@ -55,21 +57,15 @@ hodge-star = linear-from-images hodge-star-images
 ------------------------------------------------------------------------
 -- Involution on basis 2-blades: ★(★(e_i)) ≡ e_i.
 --
--- Chain (each step uses one universal-property lemma):
---   apply hodge-star (apply hodge-star (basis i))
---     ≡ apply hodge-star (basis (complement i))        [apply-basis on inner]
---     ≡ basis (complement (complement i))              [apply-basis on outer]
---     ≡ basis i                                        [complement-involution]
+-- One-line application of the `basis-permutation-involution`
+-- universal-property combinator at σ = complement (which satisfies
+-- σ² = id via `complement-involution`).
 ------------------------------------------------------------------------
 
 hodge-involution-basis :
   (i : Fin 6) →
   apply hodge-star (apply hodge-star (basis i)) ≡ basis i
-hodge-involution-basis i =
-  trans (cong (apply hodge-star)
-              (apply-linear-from-images-basis hodge-star-images i))
-  (trans (apply-linear-from-images-basis hodge-star-images (complement i))
-         (cong basis (complement-involution i)))
+hodge-involution-basis = basis-permutation-involution complement complement-involution
 
 ------------------------------------------------------------------------
 -- Involution on all bivectors: ★² = id.
