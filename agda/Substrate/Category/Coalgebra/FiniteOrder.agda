@@ -157,6 +157,61 @@ HasOrder-multiple {γ = γ} {k = k} hyp (suc n) x =
          (hyp x))
 
 ------------------------------------------------------------------------
+-- N-6b: Iteration of iteration = product iteration.
+--
+--   iterate k (iterate j γ) x ≡ iterate (k * j) γ x
+--
+-- The structural fact that γ^j applied k times = γ^(k·j). Used by
+-- HasOrder-iterate to lift the order property through power-of-γ
+-- constructions.
+--
+-- Proof by induction on k:
+--   k=0: iterate 0 (iterate j γ) x = x = iterate 0 γ x.
+--   k=suc k': iterate (suc k') (iterate j γ) x
+--             = iterate j γ (iterate k' (iterate j γ) x)
+--             ≡ iterate j γ (iterate (k' * j) γ x)         [IH]
+--             ≡ iterate (j + k' * j) γ x                   [sym iterate-add]
+--             = iterate ((suc k') * j) γ x                 [stdlib *-suc]
+------------------------------------------------------------------------
+
+iterate-iterate :
+  {X : Set ℓ} (γ : Endomap X) (k j : ℕ) (x : X) →
+  iterate k (iterate j γ) x ≡ iterate (k * j) γ x
+iterate-iterate γ zero    j x = refl
+iterate-iterate γ (suc k) j x =
+  trans (cong (iterate j γ) (iterate-iterate γ k j x))
+        (sym (iterate-add γ j (k * j) x))
+
+------------------------------------------------------------------------
+-- N-6c: HasOrder-iterate — power of an order-k endomap has order
+-- dividing k.
+--
+-- If `HasOrder γ k`, then for any j ∈ ℕ, `HasOrder (iterate j γ) k`.
+-- I.e., γ^j also satisfies γ^(jk) = id.
+--
+-- Note: this is the "order DIVIDES k" form (HasOrder doesn't enforce
+-- minimal order). The EXACT-order version (γ^j has order exactly k
+-- iff gcd(j, k) = 1) is the φ-gauge content of Euler's totient —
+-- substantial deferred work.
+--
+-- For this lemma:
+--   iterate k (iterate j γ) x
+--   ≡ iterate (k * j) γ x                  [iterate-iterate]
+--   ≡ iterate (j * k) γ x                  [*-comm]
+--   ≡ x                                     [HasOrder-multiple at n = j]
+------------------------------------------------------------------------
+
+open import Data.Nat.Properties using (*-comm)
+
+HasOrder-iterate :
+  {X : Set ℓ} {γ : Endomap X} {k : ℕ} →
+  HasOrder γ k → (j : ℕ) → HasOrder (iterate j γ) k
+HasOrder-iterate {γ = γ} {k = k} hyp j x =
+  trans (iterate-iterate γ k j x)
+  (trans (cong (λ n → iterate n γ x) (*-comm k j))
+         (HasOrder-multiple hyp j x))
+
+------------------------------------------------------------------------
 -- N-7: Capstone — the unification documented.
 --
 -- After this slice, `HasOrder γ k` is the substrate's universal
