@@ -110,6 +110,19 @@ sd-closed-+ⱽ ω₁ ω₂ sd₁ sd₂ =
         (cong₂ _+ⱽ_ sd₁ sd₂)
 
 ------------------------------------------------------------------------
+-- Closure of self-dual under scalar multiplication.
+--
+-- If ω is self-dual, so is c *ₛ ω. Follows from hodge-star's preserves-*ₛ.
+------------------------------------------------------------------------
+
+sd-closed-*ₛ :
+  (c : F₂) (ω : Bivector) →
+  SelfDual-Pred ω → SelfDual-Pred (c *ₛ ω)
+sd-closed-*ₛ c ω sd =
+  trans (preserves-*ₛ hodge-star c ω)
+        (cong (c *ₛ_) sd)
+
+------------------------------------------------------------------------
 -- The zero bivector is self-dual (trivially).
 ------------------------------------------------------------------------
 
