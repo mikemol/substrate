@@ -42,12 +42,17 @@ module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine where
 open import Data.Bool using (Bool; true; false; _xor_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Data.Vec using ([]; _∷_)
+open import Data.Vec.Properties using (≡-dec)
+open import Relation.Binary.Definitions using (DecidableEquality)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; cong₂)
+open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP)
+open import Data.Product.Properties using (Σ-≡,≡→≡)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
+open import Substrate.Algebra.F2.HodgeDim4.HodgeStar using (hodge-star)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual
 open import Substrate.Cocycles.V4Signature.Codeword
   using (Codeword; IsReserved; Reserved)
@@ -248,6 +253,51 @@ v4-equivariance-proj :
   proj₁ (v4-act-selfdual v (reserved-to-selfdual-affine r))
 v4-equivariance-proj (a , b) ((b₀ , b₁ , b₂ , .false , .false) , refl , refl) =
   bivector-equivariance a b b₀ b₁ (base-bivector b₂)
+
+------------------------------------------------------------------------
+-- Phase 1: Σ-level equivariance via proof-irrelevance.
+--
+-- Lifts v4-equivariance-proj (the bivector-projection equivariance)
+-- to the full Σ Bivector SelfDual-Pred level. The self-dual witness
+-- components on both sides are different syntactic terms (built via
+-- different applications of sd-closed-+ⱽ) but prove the same equation
+-- `apply hodge-star ω ≡ ω` for the SAME ω (after bivector equivariance
+-- closes). By Hedberg's theorem (decidable equality on Bivector →
+-- UIP), any two proofs of an equality in Bivector are propositionally
+-- equal — hence the self-dual proofs are equal.
+------------------------------------------------------------------------
+
+-- Decidable equality on Bivector (= Vec F₂ 6), via componentwise F₂ check.
+bivector-≟ : DecidableEquality Bivector
+bivector-≟ = ≡-dec _≟_
+
+-- UIP on Bivector via Hedberg's theorem.
+open Decidable⇒UIP bivector-≟ using () renaming (≡-irrelevant to bivector-uip)
+
+-- Proof-irrelevance for SelfDual-Pred: since SelfDual-Pred ω is itself
+-- a Bivector equality (`apply hodge-star ω ≡ ω`), two proofs are equal
+-- by Bivector UIP.
+selfdual-pred-irr :
+  (ω : Bivector) → (p q : SelfDual-Pred ω) → p ≡ q
+selfdual-pred-irr _ = bivector-uip
+
+------------------------------------------------------------------------
+-- The Σ-level V₄-equivariance.
+--
+-- Σ-≡,≡→≡ from Data.Product.Properties: build a Σ-equality from
+-- (proj₁-equality, subst-along-proj₁-then-proj₂-equality). The first
+-- component is v4-equivariance-proj; the second is the substituted
+-- self-dual proof's equality with the target, which is forced by
+-- selfdual-pred-irr (any two SelfDual-Pred proofs of the same
+-- bivector are equal).
+------------------------------------------------------------------------
+
+v4-equivariance :
+  (v : V₄) (r : Reserved) →
+  reserved-to-selfdual-affine (v4-act-reserved v r) ≡
+  v4-act-selfdual v (reserved-to-selfdual-affine r)
+v4-equivariance v r =
+  Σ-≡,≡→≡ (v4-equivariance-proj v r , selfdual-pred-irr _ _ _)
 
 ------------------------------------------------------------------------
 -- Status (documentation).
