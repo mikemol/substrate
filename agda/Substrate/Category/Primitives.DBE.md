@@ -131,6 +131,7 @@ For each match, record: (substrate location, candidate primitive, universal-prop
 - 2026-05-18: Primitive #2 (Equalizer) landed. Retrofits: `In-Kernel C v` from `Substrate.Algebra.F2.Code` bridges to `Kernel-At (apply (parity-check C)) 𝟎ⱽ v` via a two-direction wrapper. FixedPoint↔IsEqualised bridge connects primitives #1 and #2 categorically. NonDegenerate-4 retrofit deferred (requires primitive #3 Pullback for the per-w intersection structure).
 - 2026-05-18: Primitive #3 (Pullback) landed. Defines binary `Pullback-Of` + `Wide-Meet` for family-indexed intersection. Includes pullback↔equalizer bridge connecting primitives #2 and #3.
 - 2026-05-18: Primitive #3 retrofits landed: (a) `M-orth-to-V4Plane` from V4PlaneOrth as Wide-Meet over `Fin 2` of the basis-orthogonality family; (b) NonDegenerate-4's radical condition reformulated as `Radical-as-WideMeet-4` (Wide-Meet of per-w equalizers). Both retrofits are two-direction bridges keeping the original APIs intact.
+- 2026-05-18: Primitive #4 (Adjunction) landed (Set-level / linear-extension scoped). Names M-3.5 universal-property infrastructure as the adjoint pair it is: `linear-from-images` (L) ⊣ `images-of-linear` (R), `unit` = apply-linear-from-images-basis, `counit` derived via linear-extensionality. Derived: `linear-extension-unique` packages the universal mapping property directly. Substrate-wide retrofit-sweep deferred to follow-on slices.
 
 ---
 
