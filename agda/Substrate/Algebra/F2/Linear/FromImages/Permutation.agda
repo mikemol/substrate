@@ -41,6 +41,35 @@ open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 
 ------------------------------------------------------------------------
+-- N-0: basis-permutation-Linear — the linear map induced by a basis
+-- permutation σ : Fin n → Fin n.
+--
+-- The natural categorical object: any `σ : Fin n → Fin n` lifts to a
+-- linear endomorphism of Vector n that permutes basis vectors as σ
+-- specifies. This is the universal "linear map from a basis function."
+--
+-- Definitionally just `linear-from-images (basis ∘ σ)`; the alias names
+-- the construction at the call site.
+--
+-- After this definition:
+--   * hodge-star = basis-permutation-Linear complement
+--   * (future) cyclic permutations, transposition, sign-changes give
+--     other basis-permutation-Linear instances with order-k structure.
+------------------------------------------------------------------------
+
+basis-permutation-Linear : ∀ {n} → (Fin n → Fin n) → Linear n n
+basis-permutation-Linear σ = linear-from-images (λ j → basis (σ j))
+
+-- The defining property: applying the basis-permutation-Linear at σ
+-- to basis i gives basis (σ i). Direct restatement of
+-- apply-linear-from-images-basis specialised to basis-images.
+apply-basis-permutation-Linear :
+  ∀ {n} (σ : Fin n → Fin n) (i : Fin n) →
+  apply (basis-permutation-Linear σ) (basis i) ≡ basis (σ i)
+apply-basis-permutation-Linear σ i =
+  apply-linear-from-images-basis (λ j → basis (σ j)) i
+
+------------------------------------------------------------------------
 -- N-1: basis-permutation-involution — at basis vectors, iterating the
 -- basis-permutation linear map twice agrees with σ ∘ σ on the index.
 --

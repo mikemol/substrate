@@ -35,13 +35,16 @@ open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (basis-permutation-involution)
+  using (basis-permutation-Linear; basis-permutation-involution)
 open import Substrate.Algebra.F2.Linear.Universal
   using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
 
 ------------------------------------------------------------------------
 -- Hodge ★ basis-images: each basis 2-blade ↦ its complement basis.
+-- Kept for backwards-compatibility with sites citing the images
+-- directly (e.g., apply-linear-from-images-basis hodge-star-images).
+-- Definitionally equal to `basis ∘ complement`.
 ------------------------------------------------------------------------
 
 hodge-star-images : Fin 6 → Vector 6
@@ -49,10 +52,15 @@ hodge-star-images i = basis (complement i)
 
 ------------------------------------------------------------------------
 -- Hodge ★ as an F₂-linear map on bivectors.
+--
+-- Named at the universal-property level: Hodge ★ IS the
+-- basis-permutation-Linear induced by the complement involution on
+-- the 6 basis 2-blade indices. The `linear-from-images` infrastructure
+-- + `complement-involution` give ★² = id mechanically.
 ------------------------------------------------------------------------
 
 hodge-star : Linear 6 6
-hodge-star = linear-from-images hodge-star-images
+hodge-star = basis-permutation-Linear complement
 
 ------------------------------------------------------------------------
 -- Involution on basis 2-blades: ★(★(e_i)) ≡ e_i.
