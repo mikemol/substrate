@@ -50,34 +50,25 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 -- diagonal entries.
 ------------------------------------------------------------------------
 
+-- DEMOTED to instantiation. The original 28-LoC LHS→canonical /
+-- RHS←canonical bridging proof at dim 3 is now a one-line corollary
+-- of the generic HodgeRecast (`·F-eq-metric-id-bilin-generic` in
+-- Substrate.Algebra.F2.SymBilinForm.HodgeRecast) chained with the
+-- bilinear-form-of-metric-id-bridge from GenericBridge.
+--
+-- Original proof preserved in git history at fb7ce42 (HodgeRecast
+-- pre-demotion commit).
+
+open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
+  using (·F-eq-metric-id-bilin-generic)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge
+  using (bilinear-form-of-metric-id-bridge)
+
 ·F-eq-metric-id-bilin :
   (v w : Vector 3) → v ·F w ≡ bilinear-form-of metric-id v w
-·F-eq-metric-id-bilin (v₀ ∷ v₁ ∷ v₂ ∷ []) (w₀ ∷ w₁ ∷ w₂ ∷ []) =
-  -- LHS (from sum-F₂ over Fin 3, right-associated with trailing + 𝟘):
-  --   v₀·w₀ + (v₁·w₁ + (v₂·w₂ + 𝟘))
-  -- RHS (from bilinear-form-of, left-associated; after Agda's F₂
-  --   multiplicative reductions: 𝟙·x=x, 𝟘·x=𝟘, and 𝟘+y=y):
-  --   (v₀·((w₀+𝟘)+𝟘) + v₁·(w₁+𝟘)) + v₂·w₂
-  --
-  -- Bridge LHS ↔ canonical ↔ RHS, where canonical is
-  --   (v₀·w₀ + v₁·w₁) + v₂·w₂   (left-assoc, no spurious +𝟘 or inner +𝟘).
-  trans LHS→canonical (sym RHS←canonical)
-  where
-    LHS→canonical :
-      v₀ · w₀ + (v₁ · w₁ + (v₂ · w₂ + 𝟘)) ≡
-      (v₀ · w₀ + v₁ · w₁) + v₂ · w₂
-    LHS→canonical =
-      trans (cong (v₀ · w₀ +_) (cong (v₁ · w₁ +_) (+-identityʳ (v₂ · w₂))))
-            (sym (+-assoc (v₀ · w₀) (v₁ · w₁) (v₂ · w₂)))
-
-    RHS←canonical :
-      v₀ · ((w₀ + 𝟘) + 𝟘) + v₁ · (w₁ + 𝟘) + v₂ · w₂ ≡
-      (v₀ · w₀ + v₁ · w₁) + v₂ · w₂
-    RHS←canonical =
-      cong (λ x → x + v₂ · w₂)
-           (cong₂ _+_
-                  (cong (v₀ ·_) (trans (+-identityʳ (w₀ + 𝟘)) (+-identityʳ w₀)))
-                  (cong (v₁ ·_) (+-identityʳ w₁)))
+·F-eq-metric-id-bilin v w =
+  trans (·F-eq-metric-id-bilin-generic v w)
+        (sym (bilinear-form-of-metric-id-bridge v w))
 
 ------------------------------------------------------------------------
 -- N-2: Concrete demonstration of metric-dependence.
