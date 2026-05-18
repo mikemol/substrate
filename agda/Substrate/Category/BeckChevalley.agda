@@ -115,6 +115,65 @@ bc-cell : {A B C D : Set ℓ}
 bc-cell sq = cell sq
 
 ------------------------------------------------------------------------
+-- N-3.5: Two specialised constructors for common BC patterns.
+--
+-- factor-via-pair-BCSquare — the "bilinear factors through TensorProduct
+-- via the ⊗-Hom adjunction unit" shape. The g-side is identity; the
+-- agreement is stated in the natural "direct ≡ lin ∘ embed" direction
+-- (= the universal property's "the bilinear is recovered by composing
+-- with the unit"). The combinator absorbs the sym.
+--
+--       embed
+--   A ----> B
+--   |       |
+-- id|       | lin
+--   v       v
+--   A ----> D
+--      direct
+--
+-- Used by:
+--   * polynomial multiplication via TensorProduct (anti-diag-sum ∘ pair)
+--   * bilinear-form-of evaluation via TensorProduct
+--   * any other "linear function out of tensor product" instance
+------------------------------------------------------------------------
+
+factor-via-pair-BCSquare :
+  {A B D : Set ℓ}
+  (embed  : A → B)
+  (lin    : B → D)
+  (direct : A → D) →
+  ((a : A) → direct a ≡ lin (embed a)) →
+  BCSquare embed (λ x → x) lin direct
+factor-via-pair-BCSquare embed lin direct agrees =
+  bc-trivial embed (λ x → x) lin direct (λ a → sym (agrees a))
+
+------------------------------------------------------------------------
+-- section-BCSquare — the "round-trip closes" shape. The g- and k-sides
+-- are identity, so the cell is exactly extract ∘ embed ≡ id (= embed
+-- has a left inverse / is a section).
+--
+--       embed
+--   A ----> B
+--   |       |
+-- id|       | extract
+--   v       v
+--   A ----> A
+--       id
+--
+-- Used by any bridge with a one-sided round-trip witness (Bivector ↔
+-- antisymmetric TensorProduct 4 4, etc.).
+------------------------------------------------------------------------
+
+section-BCSquare :
+  {A B : Set ℓ}
+  (embed   : A → B)
+  (extract : B → A) →
+  ((a : A) → extract (embed a) ≡ a) →
+  BCSquare embed (λ x → x) extract (λ x → x)
+section-BCSquare embed extract roundtrip =
+  bc-trivial embed (λ x → x) extract (λ x → x) roundtrip
+
+------------------------------------------------------------------------
 -- N-4: Capstone — BC primitive #5 introduced.
 --
 -- After this slice, the Category roadmap covers:
