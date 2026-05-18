@@ -148,12 +148,16 @@ selfdual-to-reserved (ω , _) =
 --     self-dual coefficient (c₀, c₁, c₂) in a way that's meaningful
 --     for the catalog's "Hodge dual" interpretation? Requires
 --     reading the catalog's intent.
---   * V₄ action correspondence: ESTABLISHED IMPOSSIBLE (see memory
---     `project_reserved_selfdual_bijection_gauge`). The V₄ action on
---     Reserved (regular representation on axes, free transitive) and
---     the V₄ action on SelfDual via partition-permutation (V₄ ⊂ S₄
---     as kernel of S₄ → S₃, trivial on sd-pairs) are STRUCTURALLY
---     DIFFERENT. No F₂-linear bijection can be V₄-equivariant.
+--   * V₄ action correspondence: NOT achievable within current
+--     premises (F₂-linear + partition-V₄ + bijective). But
+--     ACHIEVABLE via a sacrifice ladder (see memory
+--     `project_reserved_selfdual_bijection_gauge`): sacrificing
+--     F₂-linearity admits F₂-affine V₄ ⊂ Aff(3, F₂) free on F₂³
+--     (2 orbits of 4 matching Reserved); sacrificing the V₄
+--     subgroup choice or cardinality opens other equivariance
+--     routes. The sacrifice-ladder is analogous to Cayley-Dickson
+--     (each step trades a rigidity for an enrichment). Concrete
+--     sacrifice examples not yet formalised.
 --   * Live ↔ ordered-triples bridge: the 24 Live codewords should
 --     correspond to "24 ordered triples" per the catalog; this is
 --     a separate slice (M-11.dim4.live-bridge or similar).
