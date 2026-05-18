@@ -126,3 +126,26 @@ linear-from-images images = record
                     (*ₛ-·-assoc c (lookup v i) (images i))))
             (sym (*ₛ-sum-distrib c (λ i → lookup v i *ₛ images i)))
   }
+
+------------------------------------------------------------------------
+-- Foundational apply-reduction (universal-property discipline).
+--
+-- The canonical componentwise unfolding of `apply (linear-from-images f) v`
+-- at any output coordinate `j`. Used to discharge `apply-Selector-lookup`-
+-- style proofs for any specific Selector without manual F₂-axiom chains.
+--
+-- Per memory `feedback_universal_property_discipline`: this is the
+-- structural primitive that scales to large RM/Hamming codes. Per-
+-- instance unfolding of the sum is replaced by one application of
+-- this lemma plus a `O(k)` collapse over the basis-images. The
+-- per-instance work is bounded by k (number of basis-images), not
+-- 2^n (number of input vectors).
+------------------------------------------------------------------------
+
+apply-linear-from-images-lookup :
+  ∀ {k n} (f : Fin k → Vector n) (v : Vector k) (j : Fin n) →
+  lookup (apply (linear-from-images f) v) j ≡
+  sum-F₂ (λ i → lookup v i · lookup (f i) j)
+apply-linear-from-images-lookup f v j =
+  trans (lookup-sum (λ i → lookup v i *ₛ f i) j)
+        (sum-F₂-cong (λ i → lookup-*ₛ (lookup v i) (f i) j))
