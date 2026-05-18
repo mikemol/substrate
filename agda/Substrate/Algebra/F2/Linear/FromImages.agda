@@ -149,3 +149,59 @@ apply-linear-from-images-lookup :
 apply-linear-from-images-lookup f v j =
   trans (lookup-sum (λ i → lookup v i *ₛ f i) j)
         (sum-F₂-cong (λ i → lookup-*ₛ (lookup v i) (f i) j))
+
+------------------------------------------------------------------------
+-- Apply on basis: the canonical identification of `linear-from-images f`.
+--
+-- Per memory `feedback_universal_property_discipline`: this is the
+-- second foundational primitive for the universal-property tower —
+-- it says `linear-from-images f` does exactly what it claims to do at
+-- basis vectors. Used directly for the Hamming syndrome identification
+-- in M-11.fano and for any future "apply Selector basis" lemmas.
+--
+-- Proof structure:
+--   1. Reduce to componentwise via `apply-linear-from-images-lookup` +
+--      `≡-from-lookup`.
+--   2. Apply `sum-F₂-basis-collapse`: sum-F₂ of (basis_i · g) ≡ g i.
+--
+-- The basis-collapse helper uses that `lookup (basis i) j = 𝟙 iff i ≡ j`
+-- (basis orthogonality from M-2.5).
+------------------------------------------------------------------------
+
+-- Sum collapses when one factor is a basis vector.
+sum-F₂-basis-collapse :
+  ∀ {k} (i : Fin k) (g : Fin k → F₂) →
+  sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
+sum-F₂-basis-collapse {suc k} fz g =
+  trans (cong (_+ tail-sum) (·-identityˡ (g fz)))
+  (trans (cong (g fz +_) (zero-tail g))
+         (+-identityʳ (g fz)))
+  where
+    tail-sum : F₂
+    tail-sum = sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fs j'))
+
+    -- After basis fz unfolds to 𝟙 ∷ 𝟎ⱽ, the suc-indexed summands
+    -- become lookup 𝟎ⱽ j' · g (suc j') = 𝟘.
+    zero-tail : ∀ {k} (g : Fin (suc k) → F₂) →
+      sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fs j')) ≡ 𝟘
+    zero-tail {zero}    _ = refl
+    zero-tail {suc k'} g =
+      trans (cong (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fs (fs j'))))
+                  (·-absorbˡ (g (fs fz))))
+      (trans (+-identityˡ _)
+             (zero-tail (g ∘ fs)))
+sum-F₂-basis-collapse {suc k} (fs i) g =
+  trans (cong (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fs j)))
+              (·-absorbˡ (g fz)))
+  (trans (+-identityˡ _)
+         (sum-F₂-basis-collapse i (g ∘ fs)))
+
+apply-linear-from-images-basis :
+  ∀ {k n} (f : Fin k → Vector n) (i : Fin k) →
+  apply (linear-from-images f) (basis i) ≡ f i
+apply-linear-from-images-basis f i = ≡-from-lookup _ _ goal
+  where
+    goal : (m : Fin _) →
+           lookup (apply (linear-from-images f) (basis i)) m ≡ lookup (f i) m
+    goal m = trans (apply-linear-from-images-lookup f (basis i) m)
+                   (sum-F₂-basis-collapse i (λ j → lookup (f j) m))
