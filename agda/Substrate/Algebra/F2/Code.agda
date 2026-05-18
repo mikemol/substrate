@@ -112,3 +112,28 @@ In-Kernel C v = apply (parity-check C) v ≡ 𝟎ⱽ
     *ₛ-𝟎-is-𝟎 : ∀ {n} (c : F₂) → (c *ₛ (𝟎ⱽ {n})) ≡ 𝟎ⱽ
     *ₛ-𝟎-is-𝟎 𝟘 = *ₛ-absorbˡ 𝟎ⱽ
     *ₛ-𝟎-is-𝟎 𝟙 = *ₛ-identityˡ 𝟎ⱽ
+
+------------------------------------------------------------------------
+-- Categorical retrofit — In-Kernel as an Equalizer-At-Constant instance.
+--
+-- Per `feedback_categorical_name_first` and the
+-- Substrate.Category.Primitives roadmap: `In-Kernel C v` is precisely
+-- the equalizer of (apply (parity-check C)) and the constant-𝟎ⱽ
+-- function at v. The two definitions are definitionally compatible
+-- (both reduce to `apply (parity-check C) v ≡ 𝟎ⱽ`); the bridge below
+-- wraps each direction explicitly so downstream code can cite the
+-- categorical handle.
+------------------------------------------------------------------------
+
+open import Substrate.Category.Equalizer
+  using (IsEqualised; equal; Kernel-At)
+
+In-Kernel→Kernel-At :
+  ∀ {n p} (C : KernelCode n p) (v : Vector n) →
+  In-Kernel C v → Kernel-At (apply (parity-check C)) 𝟎ⱽ v
+In-Kernel→Kernel-At C v in-ker = record { equal = in-ker }
+
+Kernel-At→In-Kernel :
+  ∀ {n p} (C : KernelCode n p) (v : Vector n) →
+  Kernel-At (apply (parity-check C)) 𝟎ⱽ v → In-Kernel C v
+Kernel-At→In-Kernel C v ker-at = equal ker-at

@@ -126,7 +126,9 @@ For each match, record: (substrate location, candidate primitive, universal-prop
 
 ## Status
 
-- 2026-05-18: Roadmap created. Primitive #1 (Coalgebra/FixedPoint) under construction.
+- 2026-05-18: Roadmap created.
+- 2026-05-18: Primitive #1 (Coalgebra/FixedPoint) landed (commit 8ce75bf). Retrofits: 3 metric-id stabiliser sites wrap as FixedPoint instances.
+- 2026-05-18: Primitive #2 (Equalizer) landed. Retrofits: `In-Kernel C v` from `Substrate.Algebra.F2.Code` bridges to `Kernel-At (apply (parity-check C)) 𝟎ⱽ v` via a two-direction wrapper. FixedPoint↔IsEqualised bridge connects primitives #1 and #2 categorically. NonDegenerate-4 retrofit deferred (requires primitive #3 Pullback for the per-w intersection structure).
 
 ---
 
