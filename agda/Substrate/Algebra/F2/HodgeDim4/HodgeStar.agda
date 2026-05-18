@@ -85,3 +85,37 @@ hodge-involution :
   apply hodge-star (apply hodge-star ω) ≡ ω
 hodge-involution =
   linear-extensionality (hodge-star ∘L hodge-star) id-L hodge-involution-basis
+
+------------------------------------------------------------------------
+-- Retrofit — Hodge ★ as a HasOrder instance of the FiniteOrder primitive.
+--
+-- Connects this Hodge ★ to Substrate.Category.Coalgebra.FiniteOrder.
+-- `HasOrder (apply hodge-star) 2` IS the involution `★² = id` lifted
+-- to the categorical primitive's universal property.
+--
+-- iterate 2 (apply hodge-star) ω reduces definitionally to
+-- apply hodge-star (apply hodge-star ω), so HasOrder-hodge-star ω
+-- is literally hodge-involution ω.
+--
+-- Per [[project-torsion-element-universal]]: this is the canonical
+-- order-2 instance of HasOrder in the substrate. The Hodge dual is
+-- the structural "+1" of every torsion-element-of-automorphism site
+-- at order 2 — the simplest non-trivial torsion element acting on
+-- bivectors at dim 4.
+--
+-- Per `feedback_categorical_name_first`: HasOrder is the categorical
+-- handle; `hodge-involution` is the apply-pointwise witness; the
+-- retrofit makes the universal property explicit at the call site.
+------------------------------------------------------------------------
+
+open import Substrate.Category.Coalgebra using (Endomap)
+open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
+
+-- Hodge ★ as an endomap of Vector 6 (= Bivector at dim 4).
+hodge-star-endo : Endomap (Vector 6)
+hodge-star-endo = apply hodge-star
+
+-- Hodge ★ has order 2 — the FLT-for-dimensional-spaces analog at the
+-- substrate's canonical involution.
+HasOrder-hodge-star : HasOrder hodge-star-endo 2
+HasOrder-hodge-star = hodge-involution
