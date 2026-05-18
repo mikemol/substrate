@@ -1,201 +1,107 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.HodgeDim4.MetricGauge.NonDegenerate
 --
--- M-11.metric-gauge.metric-id-4-non-degenerate slice. First non-trivial
--- property of the dim-4 foundation: `metric-id-4 ∈ NonDegenerate-4`,
--- via the kernel-free predicate.
+-- DEMOTED to instantiation. The per-basis kernel-free witness for
+-- metric-id-4 (171 LoC of pair-metric-id-4-with-eᵢ helpers +
+-- componentwise extraction) is now a corollary of the generic
+-- metric-id-non-degenerate-generic proven once at any n in
+-- Substrate.Algebra.F2.SymBilinForm.NonDegenerate.
 --
--- Argument: if v pairs to 𝟘 with every w, then in particular pairing
--- with each basis vector eᵢ gives vᵢ ≡ 𝟘. With v₀ = v₁ = v₂ = v₃ = 𝟘,
--- v ≡ 𝟎ⱽ by `≡-from-lookup`.
+-- The bridge between the dim-4-specific `bilinear-form-of-4 metric-id-4`
+-- and the generic `bilinear-form-of metric-id` is constructed via the
+-- two HodgeRecast lemmas at v and w: both definitions equal `v ·F w`,
+-- so they equal each other.
 --
--- The 4 per-basis pairing lemmas reduce `bilinear-form-of-4 metric-id-4
--- v eᵢ` to vᵢ. After Agda's pattern reductions on `_·_` and `_+_` (both
--- pivot on first arg), the LHS for w = e₀ stabilises at
--- `((v₀·𝟙 + v₁·𝟘) + v₂·𝟘) + v₃·𝟘` — neither term reduces further
--- because the leftmost factor (vᵢ) is a variable, not a constructor.
--- Each lemma chains `·-absorbʳ` (kills off-diagonal vⱼ·𝟘 terms) and
--- `+-identity{ˡ,ʳ}` (collapses the resulting +𝟘's) to reach vᵢ.
+-- Original 171-LoC proof (with 4 `pair-metric-id-4-with-eᵢ` helpers
+-- each chaining ·-absorbʳ + +-identity{ˡ,ʳ} cleanups for residual
+-- F₂-pattern reductions) preserved in git history at d843d8a / 43abf11
+-- pre-demotion commits.
+--
+-- Retained from the original slice:
+--
+--   * `Radical-as-WideMeet-4` — the categorical retrofit naming the
+--     radical condition as a Wide-Meet of per-w equalizers. This was
+--     the primitive #3 (Pullback) retrofit at dim 4 and remains
+--     useful as a bridge to the categorical primitives even after
+--     the demotion.
+--
+-- After this slice:
+--
+--   * `metric-id-4-non-degenerate` is a 5-line derivation, not a
+--     171-line proof.
+--   * The 4 `pair-metric-id-4-with-eᵢ` helpers are no longer needed
+--     (and removed).
+--   * No external module depended on the helpers (per audit grep);
+--     the deletion is safe.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge.NonDegenerate where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Vec using (Vec; []; _∷_; lookup)
+open import Data.Vec using ([]; _∷_)
+open import Function using (const)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Algebra.F2.Vector.DotProduct using (_·F_)
 open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
 
-------------------------------------------------------------------------
--- N-1: Per-basis pairing lemmas.
---
--- bilinear-form-of-4 metric-id-4 v eᵢ ≡ vᵢ for each basis vector eᵢ.
---
--- For e₀ = (𝟙∷𝟘∷𝟘∷𝟘∷[]):
---   bilinear-form-of-4 metric-id-4 (v₀∷v₁∷v₂∷v₃∷[]) e₀
---   reduces (by Agda's first-arg pivot on `_·_` and `_+_`) to:
---     ((v₀·𝟙 + v₁·𝟘) + v₂·𝟘) + v₃·𝟘
---   Need to reach v₀. Chain:
---     ↦ ((v₀·𝟙 + v₁·𝟘) + v₂·𝟘) + 𝟘    [·-absorbʳ v₃]
---     ↦ (v₀·𝟙 + v₁·𝟘) + v₂·𝟘            [+-identityʳ]
---     ↦ (v₀·𝟙 + v₁·𝟘) + 𝟘               [·-absorbʳ v₂]
---     ↦ v₀·𝟙 + v₁·𝟘                      [+-identityʳ]
---     ↦ v₀·𝟙 + 𝟘                         [·-absorbʳ v₁]
---     ↦ v₀·𝟙                             [+-identityʳ]
---     ↦ v₀                               [·-identityʳ]
-------------------------------------------------------------------------
+-- Generic infrastructure.
+open import Substrate.Algebra.F2.SymBilinForm
+  using () renaming (bilinear-form-of to bf-generic;
+                     metric-id        to metric-id-generic;
+                     Radical          to Radical-generic;
+                     pair-eq-family   to pair-eq-family-generic)
+open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate
+  using (metric-id-non-degenerate-generic)
+open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
+  using (·F-eq-metric-id-bilin-generic)
 
-pair-metric-id-4-with-e₀ :
-  (v : Vector 4) →
-  bilinear-form-of-4 metric-id-4 v (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []) ≡ lookup v zero
-pair-metric-id-4-with-e₀ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
-  trans (cong (((v₀ · 𝟙 + v₁ · 𝟘) + v₂ · 𝟘) +_) (·-absorbʳ v₃))
-  (trans (+-identityʳ ((v₀ · 𝟙 + v₁ · 𝟘) + v₂ · 𝟘))
-  (trans (cong ((v₀ · 𝟙 + v₁ · 𝟘) +_) (·-absorbʳ v₂))
-  (trans (+-identityʳ (v₀ · 𝟙 + v₁ · 𝟘))
-  (trans (cong (v₀ · 𝟙 +_) (·-absorbʳ v₁))
-  (trans (+-identityʳ (v₀ · 𝟙))
-         (·-identityʳ v₀))))))
+-- The dim-4 HodgeRecast — bridges bilinear-form-of-4 metric-id-4 to _·F_.
+open import Substrate.Algebra.F2.HodgeDim4.MetricGauge.HodgeRecast
+  using (·F-eq-metric-id-4-bilin)
 
--- For e₁ = (𝟘∷𝟙∷𝟘∷𝟘∷[]):
---   LHS reduces to ((v₀·𝟘 + v₁·𝟙) + v₂·𝟘) + v₃·𝟘. Goal: v₁.
---   Chain: kill v₃·𝟘, then v₂·𝟘, then v₀·𝟘 (leftmost — needs +-identityˡ
---   after absorption), then v₁·𝟙 → v₁.
-pair-metric-id-4-with-e₁ :
-  (v : Vector 4) →
-  bilinear-form-of-4 metric-id-4 v (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) ≡ lookup v (suc zero)
-pair-metric-id-4-with-e₁ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
-  trans (cong (((v₀ · 𝟘 + v₁ · 𝟙) + v₂ · 𝟘) +_) (·-absorbʳ v₃))
-  (trans (+-identityʳ ((v₀ · 𝟘 + v₁ · 𝟙) + v₂ · 𝟘))
-  (trans (cong ((v₀ · 𝟘 + v₁ · 𝟙) +_) (·-absorbʳ v₂))
-  (trans (+-identityʳ (v₀ · 𝟘 + v₁ · 𝟙))
-  (trans (cong (_+ v₁ · 𝟙) (·-absorbʳ v₀))
-  (trans (+-identityˡ (v₁ · 𝟙))
-         (·-identityʳ v₁))))))
-
--- For e₂ = (𝟘∷𝟘∷𝟙∷𝟘∷[]):
---   LHS reduces to ((v₀·𝟘 + v₁·𝟘) + v₂·𝟙) + v₃·𝟘. Goal: v₂.
-pair-metric-id-4-with-e₂ :
-  (v : Vector 4) →
-  bilinear-form-of-4 metric-id-4 v (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []) ≡ lookup v (suc (suc zero))
-pair-metric-id-4-with-e₂ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
-  trans (cong (((v₀ · 𝟘 + v₁ · 𝟘) + v₂ · 𝟙) +_) (·-absorbʳ v₃))
-  (trans (+-identityʳ ((v₀ · 𝟘 + v₁ · 𝟘) + v₂ · 𝟙))
-  (trans (cong (_+ v₂ · 𝟙) (cong (_+ v₁ · 𝟘) (·-absorbʳ v₀)))
-  (trans (cong (_+ v₂ · 𝟙) (+-identityˡ (v₁ · 𝟘)))
-  (trans (cong (_+ v₂ · 𝟙) (·-absorbʳ v₁))
-  (trans (+-identityˡ (v₂ · 𝟙))
-         (·-identityʳ v₂))))))
-
--- For e₃ = (𝟘∷𝟘∷𝟘∷𝟙∷[]):
---   LHS reduces to ((v₀·𝟘 + v₁·𝟘) + v₂·𝟘) + v₃·𝟙. Goal: v₃.
-pair-metric-id-4-with-e₃ :
-  (v : Vector 4) →
-  bilinear-form-of-4 metric-id-4 v (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) ≡ lookup v (suc (suc (suc zero)))
-pair-metric-id-4-with-e₃ (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
-  trans (cong (_+ v₃ · 𝟙) (cong (_+ v₂ · 𝟘) (cong (_+ v₁ · 𝟘) (·-absorbʳ v₀))))
-  (trans (cong (_+ v₃ · 𝟙) (cong (_+ v₂ · 𝟘) (+-identityˡ (v₁ · 𝟘))))
-  (trans (cong (_+ v₃ · 𝟙) (cong (_+ v₂ · 𝟘) (·-absorbʳ v₁)))
-  (trans (cong (_+ v₃ · 𝟙) (+-identityˡ (v₂ · 𝟘)))
-  (trans (cong (_+ v₃ · 𝟙) (·-absorbʳ v₂))
-  (trans (+-identityˡ (v₃ · 𝟙))
-         (·-identityʳ v₃))))))
+open import Substrate.Category.Equalizer using (IsEqualised; equal)
+open import Substrate.Category.Pullback using (Wide-Meet)
 
 ------------------------------------------------------------------------
--- N-2: metric-id-4 ∈ NonDegenerate-4.
+-- N-1: metric-id-4-non-degenerate as instantiation of the generic
+-- theorem.
 --
--- Direct application of N-1 four times: given the hypothesis that
--- bilinear-form-of-4 metric-id-4 v w ≡ 𝟘 for ALL w, specialise to
--- w = eᵢ for i = 0, 1, 2, 3 to extract vᵢ ≡ 𝟘 at each position.
--- Conclude v ≡ 𝟎ⱽ via ≡-from-lookup.
+-- Path: given hyp : (w) → bilinear-form-of-4 metric-id-4 v w ≡ 𝟘,
+-- bridge to (w) → bf-generic metric-id-generic v w ≡ 𝟘 via the
+-- two-recast chain (both equal `v ·F w`). Then apply
+-- metric-id-non-degenerate-generic.
 ------------------------------------------------------------------------
 
 metric-id-4-non-degenerate : NonDegenerate-4 metric-id-4
-metric-id-4-non-degenerate v hyp = ≡-from-lookup v 𝟎ⱽ goal
+metric-id-4-non-degenerate v hyp =
+  metric-id-non-degenerate-generic v radical
   where
-    -- lookup (𝟎ⱽ {4}) i ≡ 𝟘 by computation (𝟎ⱽ = replicate 4 𝟘); no
-    -- explicit lookup-𝟎 bridge needed.
-    goal : (i : Fin 4) → lookup v i ≡ lookup (𝟎ⱽ {4}) i
-    goal zero =
-      trans (sym (pair-metric-id-4-with-e₀ v))
-            (hyp (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []))
-    goal (suc zero) =
-      trans (sym (pair-metric-id-4-with-e₁ v))
-            (hyp (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []))
-    goal (suc (suc zero)) =
-      trans (sym (pair-metric-id-4-with-e₂ v))
-            (hyp (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []))
-    goal (suc (suc (suc zero))) =
-      trans (sym (pair-metric-id-4-with-e₃ v))
-            (hyp (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []))
+    -- Bridge: bf-generic metric-id-generic v w ≡ bilinear-form-of-4 metric-id-4 v w
+    -- via `≡ v ·F w` from both directions.
+    bridge : (w : Vector 4) →
+             bf-generic metric-id-generic v w
+               ≡ bilinear-form-of-4 metric-id-4 v w
+    bridge w = trans (sym (·F-eq-metric-id-bilin-generic v w))
+                     (·F-eq-metric-id-4-bilin v w)
+
+    -- Build the Radical-generic witness pointwise from hyp.
+    radical : Radical-generic metric-id-generic v
+    radical w = record { equal = trans (bridge w) (hyp w) }
 
 ------------------------------------------------------------------------
--- N-3: Capstone documentation.
+-- N-2: Pullback-primitive retrofit (retained from prior slice).
 --
--- The dim-4 diagonal identity metric is non-degenerate. This
--- inhabits the type `Σ SymBilinForm-4 NonDegenerate-4` with the
--- canonical witness, anchoring the GL(4, F₂) orbit at a concrete
--- non-degenerate form (just as `metric-id` does at dim 3).
---
--- The argument pattern (pair with each eᵢ; extract vᵢ; conclude
--- v ≡ 𝟎ⱽ via componentwise extensionality) is the **universal-
--- property template for kernel-free non-degeneracy at any dim n**.
--- The 4 N-1 lemmas are the n=4 instances of a generic
--- "pair-diagonal-with-basis" pattern.
---
--- The proof template's shape — 6-step chain of `·-absorbʳ` +
--- `+-identity{ˡ,ʳ}` collapsing the off-diagonal v's — is identical
--- across the 4 N-1 lemmas modulo which index is the "live" one. A
--- combinator that captures the pattern parametrically (over the live
--- index) is a coalgebraic-unfolding follow-on; explicit per-basis
--- lemmas suffice here because n=4 is small.
---
--- Deferred coalgebraic-unfolding slices:
---
---   * Generalise `pair-diagonal-with-basis` to a generic combinator
---     over (n, diagonal-vector). Would let `metric-id-n-non-degenerate`
---     follow as the all-ones-diagonal instance, applicable at any n.
---
---   * `metric-mixed-4-non-degenerate` and other exemplar non-degeneracy
---     witnesses (each follows the kernel-free pattern; specific
---     algebra differs by off-diagonal coupling).
---
---   * `HodgeRecast-4` (= `_·F_ v w ≡ bilinear-form-of-4 metric-id-4 v w`).
---     Together with this slice, would establish that the implicit
---     dot-product non-degeneracy at dim 4 is the metric-id-4 instance.
+-- The dim-4 radical condition is the Wide-Meet over w of the per-w
+-- equalizer family. Categorical handle for the substrate's recurring
+-- "∀ w. predicate(v, w)" pattern.
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
--- N-4: Categorical retrofit — NonDegenerate-4 via Wide-Meet of
--- per-w equalizers.
---
--- Per `feedback_categorical_name_first` and the
--- Substrate.Category.Primitives roadmap. The radical condition
--- `(w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘` IS exactly the
--- Wide-Meet (over w) of the per-w equalizer family
--- `(λ w v → IsEqualised (λ u → bilinear-form-of-4 M u w) (const 𝟘) v)`.
---
--- Wrapping this here makes the categorical handle visible: the
--- radical of M is the wide meet of "kernel of (u ↦ bilinear-form-of-4
--- M u w) at 𝟘" for each w. NonDegenerate-4 then states: the radical
--- contains only the trivial element (i.e., the wide meet is the
--- singleton {𝟎ⱽ}).
-------------------------------------------------------------------------
-
-open import Function using (const)
-open import Substrate.Category.Equalizer
-  using (IsEqualised; equal)
-open import Substrate.Category.Pullback
-  using (Wide-Meet)
-
--- The per-w equalizer family for a bilinear form M: each w gives the
--- equalizer of (u ↦ bilinear-form-of-4 M u w) and the constant-𝟘
--- function.
+-- The per-w equalizer family for a bilinear form M at dim 4.
 M-pair-eq-family-4 : SymBilinForm-4 → Vector 4 → Vector 4 → Set
 M-pair-eq-family-4 M w v =
   IsEqualised (λ u → bilinear-form-of-4 M u w) (const 𝟘) v
@@ -204,9 +110,8 @@ M-pair-eq-family-4 M w v =
 Radical-as-WideMeet-4 : SymBilinForm-4 → Vector 4 → Set
 Radical-as-WideMeet-4 M = Wide-Meet (M-pair-eq-family-4 M)
 
--- Bridge: the substrate's existing inner condition of NonDegenerate-4
--- (a function w → equality at 𝟘) IS exactly Radical-as-WideMeet-4 M v
--- modulo the IsEqualised record wrapping.
+-- Two-direction bridges between the existing inner-condition form
+-- and Wide-Meet form.
 radical-from-existing :
   (M : SymBilinForm-4) (v : Vector 4) →
   ((w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘) →
@@ -218,3 +123,28 @@ radical-to-existing :
   Radical-as-WideMeet-4 M v →
   (w : Vector 4) → bilinear-form-of-4 M v w ≡ 𝟘
 radical-to-existing M v radical w = equal (radical w)
+
+------------------------------------------------------------------------
+-- N-3: Capstone — demotion achieved.
+--
+-- Before this slice:
+--   * 171 LoC of pair-metric-id-4-with-eᵢ helpers + componentwise
+--     ≡-from-lookup extraction.
+--   * Each pair-metric-id-4-with-eᵢ was a 6-step chain of ·-absorbʳ
+--     + +-identity{ˡ,ʳ} cleaning F₂-pattern residue.
+--
+-- After this slice:
+--   * `metric-id-4-non-degenerate` is a 5-line instantiation of the
+--     generic theorem.
+--   * The bridge is constructed by chaining two HodgeRecast lemmas
+--     (no fresh algebraic work needed).
+--
+-- Per `feedback_categorical_name_first`: the generic theorem
+-- + the recast bridges + the existing dim-4 HodgeRecast jointly
+-- derive the dim-4 non-degeneracy. Per-dim re-proof is unnecessary
+-- once the generic + bridge infrastructure is in place.
+--
+-- The Radical-as-WideMeet-4 retrofit (N-2) names the radical
+-- condition categorically via the Pullback primitive (Wide-Meet),
+-- and is independent of the demotion above.
+------------------------------------------------------------------------
