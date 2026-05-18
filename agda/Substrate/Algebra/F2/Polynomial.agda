@@ -126,6 +126,80 @@ _·c_ = _*ₛ_
 infixl 7 _·c_
 
 ------------------------------------------------------------------------
+-- N-5b: Tensor product factorization of polynomial multiplication.
+--
+-- Polynomial multiplication factors through the tensor product
+-- F₂[x]_{<n} ⊗ F₂[x]_{<m}:
+--
+--   outer        : F₂[x]_{<n} × F₂[x]_{<m} → F₂[x]_{<n} ⊗ F₂[x]_{<m}
+--   anti-diag-sum : F₂[x]_{<n} ⊗ F₂[x]_{<m} → F₂[x]_{<n+m}
+--   _*P_         = anti-diag-sum ∘ outer
+--
+-- The substrate's tensor product representation: `Vec (Polynomial m) n`
+-- (n rows of m-vectors) ≅ F₂^(n × m) ≅ Polynomial n ⊗ Polynomial m
+-- at the F₂-vector-space level.
+--
+-- `outer` is the UNIVERSAL bilinear map (Polynomial n × Polynomial m
+-- → tensor product); `anti-diag-sum` is the SPECIFIC linear projection
+-- from the tensor product to Polynomial (n + m).
+--
+-- Per the structural conversation: this separates the bilinear-lifting
+-- (outer, universal) from the polynomial-specific recombination
+-- (anti-diag-sum). Future TensorProduct primitive would make
+-- the universal property explicit; for now, outer + anti-diag-sum
+-- give the cleaner decomposition than convolution-mashing.
+------------------------------------------------------------------------
+
+open import Data.Vec using (replicate)
+open import Data.Nat.Properties using (+-identityʳ; +-suc)
+  renaming (+-comm to +ℕ-comm)
+open import Relation.Binary.PropositionalEquality using (subst)
+
+-- The outer product: the universal bilinear map.
+-- Given p : Polynomial n and q : Polynomial m, outer p q : Vec (Polynomial m) n
+-- has at row i the polynomial (p_i ·c q).
+--
+-- No length arithmetic — just nested Vecs.
+outer : ∀ {n m} → Polynomial n → Polynomial m → Vec (Polynomial m) n
+outer []      q = []
+outer (a ∷ p) q = (a ·c q) ∷ outer p q
+
+-- pad-end: append k zeros at the high-position end of a polynomial.
+-- Used by anti-diag-sum to align row contributions.
+pad-end : ∀ {n} (k : ℕ) → Polynomial n → Polynomial (n ℕ+ k)
+pad-end k []      = replicate k 𝟘
+pad-end k (x ∷ p) = x ∷ pad-end k p
+
+-- A helper: m ℕ+ suc n' = suc n' ℕ+ m via +-comm, packaged via subst.
+shift-to-suc-on-left :
+  ∀ {m n'} → Polynomial (m ℕ+ suc n') → Polynomial (suc n' ℕ+ m)
+shift-to-suc-on-left {m} {n'} p = subst Polynomial (+ℕ-comm m (suc n')) p
+
+-- Anti-diagonal sum: collapse the n × m tensor to a polynomial of
+-- degree < n + m. The specific linear projection.
+--
+-- Structurally: anti-diag-sum [] gives the zero polynomial at length m;
+-- anti-diag-sum (row ∷ rows) places row at low positions and recurses
+-- with x-shift to position the rest at higher positions.
+--
+-- Length arithmetic via subst at the +-comm boundary (pad-end produces
+-- m + suc n' shape but we need suc n' + m).
+anti-diag-sum : ∀ {n m} → Vec (Polynomial m) n → Polynomial (n ℕ+ m)
+anti-diag-sum {.0}       {m} []           = replicate m 𝟘
+anti-diag-sum {.(suc _)} {m} (row ∷ rows) =
+  -- row : Polynomial m. Pad with (suc n') zeros → Polynomial (m + suc n').
+  -- Re-shape to Polynomial (suc n' + m) via +-comm.
+  -- x-shift (anti-diag-sum rows) : Polynomial (suc (n' + m)) = Polynomial (suc n' + m).
+  -- Sum the two.
+  shift-to-suc-on-left (pad-end _ row) +ⱽ x-shift (anti-diag-sum rows)
+
+-- Polynomial multiplication: composition of outer + anti-diag-sum.
+_*P_ : ∀ {n m} → Polynomial n → Polynomial m → Polynomial (n ℕ+ m)
+_*P_ p q = anti-diag-sum (outer p q)
+
+infixl 7 _*P_
+
+------------------------------------------------------------------------
 -- N-6: Polynomial evaluation at a point — Horner's method.
 --
 -- evaluate p α = a₀ + a₁·α + a₂·α² + ... + a_{n-1}·α^{n-1}.
@@ -147,12 +221,45 @@ evaluate (a ∷ p) α = a + α · evaluate p α
 --   * +P (= +ⱽ alias)
 --   * ·c (scalar multiplication)
 --   * x-shift (multiply by x)
+--   * pad-end (extend degree bound by appending high-position zeros)
+--   * outer (universal bilinear map; unit of ⊗-Hom adjunction at (p, q))
+--   * anti-diag-sum (specific Hom-element giving polynomial structure)
+--   * _*P_ = anti-diag-sum ∘ outer (factored via tensor product)
 --   * degree-bound (find leading nonzero)
 --   * evaluate (Horner at a F₂ point)
 --
--- Polynomial multiplication via convolution (*P) deferred — the
--- length arithmetic (`Polynomial (n ℕ+ m)` with `+-identityʳ`
--- rewriting) is fiddly in Agda; warrants its own slice.
+-- **Categorical reading** — polynomial multiplication via the
+-- ⊗-Hom adjunction:
+--
+-- Tensor product ⊗ is LEFT-ADJOINT to internal-hom in a closed
+-- symmetric monoidal category. The homset isomorphism
+--
+--   Hom(V ⊗ W, U)  ≅  Hom(V, Hom(W, U))  ≅  Bilinear(V × W, U)
+--
+-- IS the universal property: bilinear maps factor uniquely through
+-- the tensor product.
+--
+-- For polynomial multiplication:
+--   outer p q   = unit of ⊗-Hom adjunction at (p, q); the universal
+--                 bilinear lifting (p, q) ↦ p ⊗ q.
+--   anti-diag-sum = a specific element of Hom(V ⊗ W, Polynomial (n+m));
+--                   the linear map chosen by the polynomial algebra
+--                   structure.
+--   _*P_          = anti-diag-sum ∘ outer; composition through the
+--                   homset bijection.
+--
+-- The "more universal substrative move" the structural conversation
+-- pointed at: a future **TensorProduct primitive** (Category #7?)
+-- would name this ⊗-Hom adjoint pair categorically. The substrate's
+-- existing Adjunction primitive (#4) handles single-argument linear
+-- extension; TensorProduct extends it to bilinear / tensor.
+--
+-- Future primitives in dependency order:
+--   * Bivector / exterior algebra (Λ²(V) = antisymmetric quotient
+--     of V ⊗ V; substrate's HodgeDim4.Bivector implicitly uses this).
+--   * Symmetric algebra (Sym²(V) = symmetric quotient of V ⊗ V;
+--     SymBilinForm-n implicitly uses this).
+--   * Free algebra (T(V) = full tensor algebra; F₂[x] is a quotient).
 --
 -- Path to full polynomial EEA:
 --
