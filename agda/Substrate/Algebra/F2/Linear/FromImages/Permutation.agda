@@ -128,6 +128,23 @@ basis-permutation-compose-at-basis σ τ i =
                     (apply-basis-permutation-Linear τ i))))
 
 ------------------------------------------------------------------------
+-- N-0.6: Identity law at the basis level.
+--
+-- basis-permutation-Linear at the identity permutation agrees with
+-- id-L on every basis vector. Direct apply-basis specialization at
+-- σ = identity.
+--
+-- Combined with linear-extensionality: basis-permutation-Linear id
+-- agrees with id-L on all vectors.
+------------------------------------------------------------------------
+
+basis-permutation-id-at-basis :
+  ∀ {n} (i : Fin n) →
+  apply (basis-permutation-Linear (λ x → x)) (basis i) ≡ apply id-L (basis i)
+basis-permutation-id-at-basis i =
+  apply-basis-permutation-Linear (λ x → x) i
+
+------------------------------------------------------------------------
 -- N-1: basis-permutation-involution — at basis vectors, iterating the
 -- basis-permutation linear map twice agrees with σ ∘ σ on the index.
 --
