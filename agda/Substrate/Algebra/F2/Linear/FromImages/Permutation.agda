@@ -33,14 +33,15 @@ module Substrate.Algebra.F2.Linear.FromImages.Permutation where
 open import Data.Fin using (Fin)
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; trans; cong)
+  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
-open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
+open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
+open import Substrate.Category.Coalgebra.FiniteOrder using (iterate; HasOrder)
 
 ------------------------------------------------------------------------
 -- N-(-1): σ-iterate + HasOrderPerm — foundational data for order-k
@@ -171,6 +172,71 @@ basis-permutation-order-k :
   iterate k (apply (basis-permutation-Linear σ)) (basis i) ≡ basis i
 basis-permutation-order-k σ k order-witness i =
   trans (iterate-on-basis σ k i) (cong basis (order-witness i))
+
+------------------------------------------------------------------------
+-- N-1.7: L-iterate + iterate-apply-as-L-iterate — package
+-- function-level iteration as Linear-level composition.
+--
+-- L-iterate k L = L ∘L L ∘L ... ∘L L (k times, with id-L at k=0).
+-- Then `iterate k (apply L) v ≡ apply (L-iterate k L) v` definitionally
+-- at each step (apply (L ∘L M) = apply L ∘ apply M; apply id-L = id).
+--
+-- This is the "iteration commutes with apply" universal property —
+-- the structural bridge between function-iteration (used by HasOrder)
+-- and Linear-iteration (where linear-extensionality applies).
+------------------------------------------------------------------------
+
+L-iterate : ∀ {n} → ℕ → Linear n n → Linear n n
+L-iterate zero    L = id-L
+L-iterate (suc k) L = L ∘L L-iterate k L
+
+iterate-apply-as-L-iterate :
+  ∀ {n} (L : Linear n n) (k : ℕ) (v : Vector n) →
+  iterate k (apply L) v ≡ apply (L-iterate k L) v
+iterate-apply-as-L-iterate L zero    v = refl
+iterate-apply-as-L-iterate L (suc k) v =
+  cong (apply L) (iterate-apply-as-L-iterate L k v)
+
+------------------------------------------------------------------------
+-- N-1.8: HasOrder-from-perm — lift permutation order to Linear order.
+--
+-- Given HasOrderPerm σ k, the linear endomap apply (basis-permutation-
+-- Linear σ) has HasOrder k. This is the structural bridge from
+-- "permutation σ has order k as a function on Fin n" to "the induced
+-- linear map has order k as an endomap on Vector n."
+--
+-- Composition (per the order-k arc):
+--   1. basis-permutation-order-k gives basis-level agreement of
+--      iterate k (apply L) (basis i) with basis i.
+--   2. iterate-apply-as-L-iterate rephrases iterate k (apply L) as
+--      apply (L-iterate k L).
+--   3. linear-extensionality lifts the basis-level agreement between
+--      L-iterate k L and id-L to all vectors.
+--   4. iterate-apply-as-L-iterate (the other way) rephrases back to
+--      iterate k (apply L) v ≡ v.
+--
+-- The "FLT-for-dimensional-spaces" lift, made structural and reusable.
+------------------------------------------------------------------------
+
+HasOrder-from-perm :
+  ∀ {n} (σ : Fin n → Fin n) (k : ℕ) →
+  HasOrderPerm σ k →
+  HasOrder (apply (basis-permutation-Linear σ)) k
+HasOrder-from-perm {n} σ k order-witness v =
+  trans (iterate-apply-as-L-iterate (basis-permutation-Linear σ) k v)
+        (linear-extensionality
+          (L-iterate k (basis-permutation-Linear σ))
+          id-L
+          basis-agreement
+          v)
+  where
+    L = basis-permutation-Linear σ
+
+    basis-agreement :
+      (i : Fin n) → apply (L-iterate k L) (basis i) ≡ apply id-L (basis i)
+    basis-agreement i =
+      trans (sym (iterate-apply-as-L-iterate L k (basis i)))
+            (basis-permutation-order-k σ k order-witness i)
 
 ------------------------------------------------------------------------
 -- N-2: Capstone — universal-property combinator landed.
