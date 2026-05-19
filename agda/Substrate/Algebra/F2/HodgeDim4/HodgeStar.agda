@@ -35,7 +35,8 @@ open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (basis-permutation-Linear; basis-permutation-involution)
+  using (basis-permutation-Linear; basis-permutation-involution;
+         HasOrderPerm; HasOrder-from-perm)
 open import Substrate.Algebra.F2.Linear.Universal
   using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
@@ -97,9 +98,10 @@ hodge-involution =
 -- `HasOrder (apply hodge-star) 2` IS the involution `★² = id` lifted
 -- to the categorical primitive's universal property.
 --
--- iterate 2 (apply hodge-star) ω reduces definitionally to
--- apply hodge-star (apply hodge-star ω), so HasOrder-hodge-star ω
--- is literally hodge-involution ω.
+-- Now derived structurally via the order-k lift: complement is an
+-- involution on Fin 6 (witnessed by complement-involution); the lift
+-- HasOrder-from-perm transports this to HasOrder (apply L) 2 where
+-- L = basis-permutation-Linear complement = hodge-star.
 --
 -- Per [[project-torsion-element-universal]]: this is the canonical
 -- order-2 instance of HasOrder in the substrate. The Hodge dual is
@@ -108,8 +110,8 @@ hodge-involution =
 -- bivectors at dim 4.
 --
 -- Per `feedback_categorical_name_first`: HasOrder is the categorical
--- handle; `hodge-involution` is the apply-pointwise witness; the
--- retrofit makes the universal property explicit at the call site.
+-- handle; the retrofit derives it from the universal permutation-order
+-- lift rather than from the per-instance involution proof.
 ------------------------------------------------------------------------
 
 open import Substrate.Category.Coalgebra using (Endomap)
@@ -119,7 +121,11 @@ open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 hodge-star-endo : Endomap (Vector 6)
 hodge-star-endo = apply hodge-star
 
+-- complement, packaged as a HasOrderPerm witness at order 2.
+complement-HasOrderPerm : HasOrderPerm complement 2
+complement-HasOrderPerm = complement-involution
+
 -- Hodge ★ has order 2 — the FLT-for-dimensional-spaces analog at the
--- substrate's canonical involution.
+-- substrate's canonical involution, derived structurally via the lift.
 HasOrder-hodge-star : HasOrder hodge-star-endo 2
-HasOrder-hodge-star = hodge-involution
+HasOrder-hodge-star = HasOrder-from-perm complement 2 complement-HasOrderPerm
