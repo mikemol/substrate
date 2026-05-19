@@ -174,6 +174,34 @@ section-BCSquare embed extract roundtrip =
   bc-trivial embed (λ x → x) extract (λ x → x) roundtrip
 
 ------------------------------------------------------------------------
+-- retraction-BCSquare — counterpart to section-BCSquare. The "other
+-- round-trip closes" shape: embed ∘ extract ≡ id_B (= embed has a
+-- right inverse / extract is a retraction).
+--
+--       extract
+--   B ----> A
+--   |       |
+-- id|       | embed
+--   v       v
+--   B ----> B
+--       id
+--
+-- Used by bridges whose REVERSE round-trip closes (often on a
+-- subtype, e.g., Bivector ↔ AntisymmetricTensor 4 closes the reverse
+-- on antisymmetric inputs). Pairs with section-BCSquare to give a
+-- full iso (both round-trips close).
+------------------------------------------------------------------------
+
+retraction-BCSquare :
+  {A B : Set ℓ}
+  (extract : B → A)
+  (embed   : A → B) →
+  ((b : B) → embed (extract b) ≡ b) →
+  BCSquare extract (λ x → x) embed (λ x → x)
+retraction-BCSquare extract embed roundtrip =
+  bc-trivial extract (λ x → x) embed (λ x → x) roundtrip
+
+------------------------------------------------------------------------
 -- N-4: Capstone — BC primitive #5 introduced.
 --
 -- After this slice, the Category roadmap covers:
