@@ -149,6 +149,15 @@ normalize-quad a b c d =
   trans (normalize-append a (b ++ (c ++ d)))
         (normalize-cong-right (normalize a) (normalize-triple b c d))
 
+-- Quint version (used for Zₙ Coxeter fifth-power-identity at n=5).
+normalize-quint : (a b c d e : Word) →
+                  normalize (a ++ (b ++ (c ++ (d ++ e)))) ≡
+                  normalize (normalize a ++ (normalize b ++
+                             (normalize c ++ (normalize d ++ normalize e))))
+normalize-quint a b c d e =
+  trans (normalize-append a (b ++ (c ++ (d ++ e))))
+        (normalize-cong-right (normalize a) (normalize-quad b c d e))
+
 ------------------------------------------------------------------------
 -- 6. Inequality lifting through normalize. Used by per-instance
 -- finite-enumeration theorems to bridge `≉` hypotheses across the
