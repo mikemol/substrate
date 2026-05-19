@@ -48,7 +48,7 @@
 module Substrate.Category.Coalgebra.LagrangeOrder where
 
 open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
+open import Data.Nat using (ℕ; _*_)
 open import Level using (Level)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; trans; cong)
@@ -56,7 +56,7 @@ open import Relation.Binary.PropositionalEquality
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
 open import Substrate.Category.Coalgebra.FiniteOrder
-  using (iterate; HasOrder; FixedPoint→periodic)
+  using (iterate; HasOrder; HasOrder-multiple; FixedPoint→periodic)
 
 private
   variable
@@ -150,6 +150,38 @@ global-fixed-point→periodic :
   (i : Fin n) (m : ℕ) → iterate m (α i) x ≡ x
 global-fixed-point→periodic global-fp i m =
   FixedPoint→periodic (global-fp i) m
+
+------------------------------------------------------------------------
+-- N-4b: HasLagrangeOrder-from-multiples — Lagrange from per-element
+-- orders + their multiples-to-n.
+--
+-- If for each action index i we have HasOrder (α i) kᵢ where some
+-- multiple mᵢ · kᵢ equals n, then HasLagrangeOrder n α follows.
+-- Concrete shape:
+--   For each i, the witness pack (kᵢ , mᵢ , prfᵢ : mᵢ * kᵢ ≡ n , HasOrder (α i) kᵢ)
+--   gives, via HasOrder-multiple + subst, the required
+--   HasOrder (α i) n.
+--
+-- Used for: any finite action where individual element orders are
+-- known and divide n. Examples (deferred concrete instances):
+--   * V₄'s 4 elements: orders 1, 2, 2, 2 all dividing 4.
+--   * S₃'s 6 elements: orders 1, 2, 2, 2, 3, 3 all dividing 6.
+--   * Z₄'s 4 elements via the Coxeter pattern: orders 1, 2, 4, 4
+--     all dividing 4.
+------------------------------------------------------------------------
+
+open import Data.Product using (Σ; _,_; _×_)
+open import Relation.Binary.PropositionalEquality using (subst)
+
+HasLagrangeOrder-from-multiples :
+  {X : Set ℓ} (n : ℕ) (α : Action n X) →
+  ((i : Fin n) →
+     Σ ℕ (λ k → Σ ℕ (λ m → (m * k ≡ n) × HasOrder (α i) k))) →
+  HasLagrangeOrder n α
+HasLagrangeOrder-from-multiples n α witnesses i x with witnesses i
+... | k , m , prf , hyp =
+  subst (λ q → iterate q (α i) x ≡ x) prf
+        (HasOrder-multiple hyp m x)
 
 ------------------------------------------------------------------------
 -- N-5: Capstone — Lagrange / Euler-Fermat at the substrate level.
