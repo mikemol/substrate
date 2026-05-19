@@ -97,6 +97,37 @@ apply-basis-permutation-Linear σ i =
   apply-linear-from-images-basis (λ j → basis (σ j)) i
 
 ------------------------------------------------------------------------
+-- N-0.5: Composition law at the basis level.
+--
+-- `basis-permutation-Linear (σ ∘ τ)` agrees with `basis-permutation-
+-- Linear σ ∘L basis-permutation-Linear τ` on every basis vector.
+-- The composition of basis permutations IS the composition of the
+-- induced linear maps — at least at the basis level.
+--
+-- Combined with linear-extensionality, this gives the full-vector
+-- agreement; deferred to the call site for now (extensionality is
+-- one line).
+--
+-- Both sides reduce to `basis (σ (τ i))`:
+--   LHS: apply (basis-permutation-Linear (σ ∘ τ)) (basis i)
+--          ≡ basis ((σ ∘ τ) i) = basis (σ (τ i))  [apply-basis]
+--   RHS: apply (basis-permutation-Linear σ ∘L basis-permutation-Linear τ) (basis i)
+--          = apply L-σ (apply L-τ (basis i))
+--          ≡ apply L-σ (basis (τ i))                [apply-basis on τ]
+--          ≡ basis (σ (τ i))                        [apply-basis on σ]
+------------------------------------------------------------------------
+
+basis-permutation-compose-at-basis :
+  ∀ {n} (σ τ : Fin n → Fin n) (i : Fin n) →
+  apply (basis-permutation-Linear (λ x → σ (τ x))) (basis i)
+    ≡ apply (basis-permutation-Linear σ ∘L basis-permutation-Linear τ) (basis i)
+basis-permutation-compose-at-basis σ τ i =
+  trans (apply-basis-permutation-Linear (λ x → σ (τ x)) i)
+  (trans (sym (apply-basis-permutation-Linear σ (τ i)))
+         (sym (cong (apply (basis-permutation-Linear σ))
+                    (apply-basis-permutation-Linear τ i))))
+
+------------------------------------------------------------------------
 -- N-1: basis-permutation-involution — at basis vectors, iterating the
 -- basis-permutation linear map twice agrees with σ ∘ σ on the index.
 --
