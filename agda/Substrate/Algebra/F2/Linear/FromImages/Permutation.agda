@@ -40,6 +40,7 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
+open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
 
 ------------------------------------------------------------------------
 -- N-(-1): σ-iterate + HasOrderPerm — foundational data for order-k
@@ -124,6 +125,52 @@ basis-permutation-involution σ σ-invol i =
               (apply-linear-from-images-basis (λ j → basis (σ j)) i))
   (trans (apply-linear-from-images-basis (λ j → basis (σ j)) (σ i))
          (cong basis (σ-invol i)))
+
+------------------------------------------------------------------------
+-- N-1.5: iterate-on-basis — iteration of basis-permutation-Linear at a
+-- basis vector tracks σ-iterate at the index.
+--
+--   iterate k (apply (basis-permutation-Linear σ)) (basis i)
+--     ≡ basis (σ-iterate k σ i)
+--
+-- Induction on k:
+--   * k = 0: both sides reduce to basis i.
+--   * k = suc k': apply-basis-permutation-Linear + IH chain.
+--
+-- This is THE structural identity that makes order-k generalization
+-- work: applying L k times at a basis vector permutes the index by
+-- σ^k.
+------------------------------------------------------------------------
+
+iterate-on-basis :
+  ∀ {n} (σ : Fin n → Fin n) (k : ℕ) (i : Fin n) →
+  iterate k (apply (basis-permutation-Linear σ)) (basis i)
+    ≡ basis (σ-iterate k σ i)
+iterate-on-basis σ zero    i = refl
+iterate-on-basis σ (suc k) i =
+  trans (cong (apply (basis-permutation-Linear σ)) (iterate-on-basis σ k i))
+        (apply-basis-permutation-Linear σ (σ-iterate k σ i))
+
+------------------------------------------------------------------------
+-- N-1.6: basis-permutation-order-k — order-k generalization at the
+-- basis level. The order-k analog of basis-permutation-involution.
+--
+-- If HasOrderPerm σ k (= σ^k ≡ id pointwise on Fin n), then iterating
+-- apply (basis-permutation-Linear σ) k times at any basis vector
+-- returns the same basis vector.
+--
+-- Composition: trans iterate-on-basis with cong basis on the order
+-- witness. The "FLT-for-dimensional-spaces" identity at the basis
+-- level for any basis-permutation-Linear.
+------------------------------------------------------------------------
+
+basis-permutation-order-k :
+  ∀ {n} (σ : Fin n → Fin n) (k : ℕ) →
+  HasOrderPerm σ k →
+  (i : Fin n) →
+  iterate k (apply (basis-permutation-Linear σ)) (basis i) ≡ basis i
+basis-permutation-order-k σ k order-witness i =
+  trans (iterate-on-basis σ k i) (cong basis (order-witness i))
 
 ------------------------------------------------------------------------
 -- N-2: Capstone — universal-property combinator landed.
