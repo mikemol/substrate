@@ -31,14 +31,39 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation where
 
 open import Data.Fin using (Fin)
+open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality
-  using (_≡_; trans; cong)
+  using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
+
+------------------------------------------------------------------------
+-- N-(-1): σ-iterate + HasOrderPerm — foundational data for order-k
+-- basis-permutation work.
+--
+-- σ-iterate k σ = σ ∘ σ ∘ ⋯ ∘ σ  (k times).
+-- HasOrderPerm σ k = ∀ i → σ-iterate k σ i ≡ i  (pointwise σ^k = id).
+--
+-- Slice-1 of the order-k arc. These types let later slices state
+-- "if σ has order k as a permutation, then basis-permutation-Linear σ
+-- has order k as a Linear" without re-deriving iteration semantics.
+--
+-- The order-2 special case (σ ∘ σ ≡ id pointwise) is what
+-- complement-involution witnesses; basis-permutation-involution
+-- (N-1 below) is the order-k = 2 specialization of the future
+-- basis-permutation-order-k combinator.
+------------------------------------------------------------------------
+
+σ-iterate : ∀ {n} → ℕ → (Fin n → Fin n) → (Fin n → Fin n)
+σ-iterate zero    σ = λ i → i
+σ-iterate (suc k) σ = λ i → σ (σ-iterate k σ i)
+
+HasOrderPerm : ∀ {n} → (Fin n → Fin n) → ℕ → Set
+HasOrderPerm σ k = ∀ i → σ-iterate k σ i ≡ i
 
 ------------------------------------------------------------------------
 -- N-0: basis-permutation-Linear — the linear map induced by a basis
