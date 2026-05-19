@@ -357,6 +357,35 @@ HasOrder-from-perm {n} σ k order-witness v =
             (basis-permutation-order-k σ k order-witness i)
 
 ------------------------------------------------------------------------
+-- N-1.9: HasOrderPerm-multiple-Linear — convenience combinator
+-- bundling HasOrder-from-perm with HasOrder-multiple from
+-- Substrate.Category.Coalgebra.FiniteOrder.
+--
+-- If HasOrderPerm σ k, then for any multiple m,
+--   HasOrder (apply (basis-permutation-Linear σ)) (m * k)
+--
+-- The composition of two structural lifts:
+--   * HasOrderPerm-multiple: permutation order → permutation order at
+--     multiple (in this module, slice 4 of the order-k arc).
+--   * HasOrder-from-perm: permutation order → Linear order
+--     (also this module, slice 3 of the order-k arc).
+--
+-- Direct composition: first lift HasOrderPerm σ k to HasOrderPerm σ
+-- (m * k); then lift to HasOrder via HasOrder-from-perm. Both
+-- conversions are universal-property combinators.
+------------------------------------------------------------------------
+
+open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder-multiple)
+
+HasOrderPerm-multiple-Linear :
+  ∀ {n} (σ : Fin n → Fin n) (k m : ℕ) →
+  HasOrderPerm σ k →
+  HasOrder (apply (basis-permutation-Linear σ)) (m ℕ* k)
+HasOrderPerm-multiple-Linear σ k m hyp =
+  HasOrder-multiple {γ = apply (basis-permutation-Linear σ)} {k = k}
+                    (HasOrder-from-perm σ k hyp) m
+
+------------------------------------------------------------------------
 -- N-2: Capstone — universal-property combinator landed.
 --
 -- After this slice:
