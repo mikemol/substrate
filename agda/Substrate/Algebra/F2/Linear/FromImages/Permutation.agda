@@ -31,7 +31,7 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation where
 
 open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
 
@@ -66,6 +66,43 @@ open import Substrate.Category.Coalgebra.FiniteOrder using (iterate; HasOrder)
 
 HasOrderPerm : ∀ {n} → (Fin n → Fin n) → ℕ → Set
 HasOrderPerm σ k = ∀ i → σ-iterate k σ i ≡ i
+
+------------------------------------------------------------------------
+-- σ-iterate-add — additivity of iteration in the count.
+--
+--   σ-iterate (a + b) σ i ≡ σ-iterate a σ (σ-iterate b σ i)
+--
+-- The structural fact that σ^(a+b) = σ^a ∘ σ^b, used by
+-- HasOrderPerm-multiple and by future composite-order proofs.
+------------------------------------------------------------------------
+
+σ-iterate-add :
+  ∀ {n} (σ : Fin n → Fin n) (a b : ℕ) (i : Fin n) →
+  σ-iterate (a ℕ+ b) σ i ≡ σ-iterate a σ (σ-iterate b σ i)
+σ-iterate-add σ zero    b i = refl
+σ-iterate-add σ (suc a) b i = cong σ (σ-iterate-add σ a b i)
+
+------------------------------------------------------------------------
+-- HasOrderPerm-multiple — order at any positive multiple.
+--
+-- If HasOrderPerm σ k, then HasOrderPerm σ (m * k) for any m. Proof
+-- by induction on m, using σ-iterate-add to split the iterate count.
+--
+-- The "Lagrange divides" basic shape: if σ has order k, then σ also
+-- has order at every multiple of k. For composite-order work this
+-- handles divisibility-by-known-prime cases directly without needing
+-- a full gcd / lcm infrastructure.
+------------------------------------------------------------------------
+
+HasOrderPerm-multiple :
+  ∀ {n} (σ : Fin n → Fin n) (k m : ℕ) →
+  HasOrderPerm σ k → HasOrderPerm σ (m ℕ* k)
+HasOrderPerm-multiple σ k zero    σ-ord i = refl
+HasOrderPerm-multiple σ k (suc m) σ-ord i =
+  trans (σ-iterate-add σ k (m ℕ* k) i)
+  (trans (cong (σ-iterate k σ)
+               (HasOrderPerm-multiple σ k m σ-ord i))
+         (σ-ord i))
 
 ------------------------------------------------------------------------
 -- N-0: basis-permutation-Linear — the linear map induced by a basis
