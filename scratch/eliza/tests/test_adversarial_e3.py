@@ -152,13 +152,14 @@ MODES = [
     ("+ affine",     dict(speculate_affine=True)),
     ("+ patch1",     dict(speculate_patch1=True)),
     ("+ integrated", dict(speculate_integrated=True)),
+    ("+ alias",      dict(speculate_alias=True)),
 ]
 
 
 def main(size: int = 1024) -> int:
     print(f"=== Adversarial (E3) sweep — {size}B per corpus ===\n")
     header = (f"{'corpus':<18}{'mode':<16}{'b/byte':>9}"
-              f"  {'affine':>7}{'patch1':>8}{'flips':>7}  {'ok':>5}")
+              f"  {'affine':>7}{'patch1':>8}{'alias':>7}  {'ok':>5}")
     print(header)
     any_benefit = False
     for cname, ctor in CORPORA.items():
@@ -187,7 +188,7 @@ def main(size: int = 1024) -> int:
             print(f"{cname:<18}{mname:<16}{bpb:>8.3f}{verdict}"
                   f"  {stats.get('n_affine_emissions', 0):>7}"
                   f"{stats.get('n_patch1_emissions', 0):>8}"
-                  f"{stats.get('n_flip_patch1', 0):>7}"
+                  f"{stats.get('n_alias_defines', 0):>7}"
                   f"  {'OK' if ok else 'FAIL':>5}")
         print()
     print(("BENEFIT observed on at least one (corpus, mode) pair."
