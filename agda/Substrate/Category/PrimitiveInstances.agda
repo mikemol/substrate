@@ -77,6 +77,44 @@ import Substrate.Algebra.F2.HodgeDim4.Bivector-F2Graded
 import Substrate.Groups.ConsolidatedCyclicCoxeter
 
 ------------------------------------------------------------------------
+-- GTorsor instances (#13).
+--
+-- Universal-property unification of gauge-freedom spaces. Each GTorsor
+-- instance packages a discrete gauge family as a single torsor
+-- (free transitive group action on a set).
+--
+-- HodgeDim4 instance: the 168 Reserved↔SelfDual F₂-linear bijections
+-- as a GL(3, F₂)-torsor, with named representatives anchoring each
+-- Sylow-classification layer. See AtlasCatalogue for the full re-export
+-- of named witnesses (canonical, alt-A/B-orbit, swap01/cycle3/singer-
+-- bridges, Hodge-★-trivial-action).
+------------------------------------------------------------------------
+
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AlternativesAsOrbit
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.SylowOrbitWitnesses
+import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGaugeAction
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AtlasCatalogue
+
+------------------------------------------------------------------------
+-- Supporting primitives (Linear/Bijection + GL3F2 from prior arcs).
+--
+-- Substrate.Algebra.F2.Linear.Bijection: F₂-linear bijection primitive
+-- (forward + backward + two-sided inverse witnesses); foundational
+-- for GaugeTorsor and any other torsor at F₂-Vect.
+--
+-- Substrate.Algebra.GL3F2.* — full multi-route equivariance arc;
+-- imported here so PrimitiveInstances exposes the gauge-group
+-- infrastructure as part of the catalog.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.F2.Linear.Bijection
+import Substrate.Algebra.GL3F2
+import Substrate.Algebra.GL3F2.GaugeGenerators
+import Substrate.Algebra.GL3F2.SingerOrder
+import Substrate.Algebra.GL3F2.MultiRouteEquivariance
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
