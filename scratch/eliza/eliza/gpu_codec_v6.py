@@ -448,21 +448,27 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         if affine is not None:
             opc_idx, phase, length = affine
             a_size = alphabet_size(n_used)
-            # Correctness gate: each emitted symbol must fit in a_size
-            # without clamping. Refuse affine if not.
-            if max(24 + opc_idx, phase, length) >= a_size:
-                affine = None
-        if affine is not None:
-            opc_idx, phase, length = affine
+            # Per-symbol cap removed: phase and length encoded as
+            # 2-symbol base-a_size pairs (hi, lo). The opcode index
+            # always fits because opc_idx < n_used < a_size.
             cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
             ctrl_idx = _control_index(S_AFFINE, n_used)
             rc_step_encode(rc, cumfreqs, ctrl_idx, int(cumfreqs[-1]))
             counts[ctrl_idx] += 1
-            for sym in (24 + opc_idx, phase, length):
+            phase_hi, phase_lo = divmod(phase, a_size)
+            length_hi, length_lo = divmod(length, a_size)
+            for sym in (24 + opc_idx, phase_hi, phase_lo,
+                          length_hi, length_lo):
+                if sym >= a_size:
+                    # Truly oversized — would require >2 base-a_size digits;
+                    # extremely rare in practice. Refuse this affine.
+                    affine = None
+                    break
                 cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
                 rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
                 counts[sym] += 1
-            n_affine_emissions += 1
+            if affine is not None:
+                n_affine_emissions += 1
             effective_emit = 24 + opc_idx
             advance = length
             pos += advance
@@ -688,16 +694,19 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 
         n_emissions -= 1
         if emit_idx == _control_index(S_AFFINE, n_used):
-            # U3: read (opcode, phase, length). Encoder skips digram
-            # growth on affine emissions; decoder must mirror.
-            triplet = []
-            for _i in range(3):
+            # U3 / codomain-unbound: read (opcode, phase_hi, phase_lo,
+            # length_hi, length_lo). Encoder skips digram growth on
+            # affine emissions; decoder must mirror.
+            payload = []
+            for _i in range(5):
                 cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
                 sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
                 counts[sym] += 1
-                triplet.append(sym)
-            opc_sym, phase, length = triplet
+                payload.append(sym)
+            opc_sym, phase_hi, phase_lo, length_hi, length_lo = payload
             opc_idx = opc_sym - 24
+            phase = phase_hi * a_size + phase_lo
+            length = length_hi * a_size + length_lo
             body = bodies[opc_idx, phase:phase + length]
             chain_terminals.extend(int(b) for b in (
                 cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
