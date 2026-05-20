@@ -448,16 +448,20 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         if affine is not None:
             opc_idx, phase, length = affine
             a_size = alphabet_size(n_used)
+            # Correctness gate: each emitted symbol must fit in a_size
+            # without clamping. Refuse affine if not.
+            if max(24 + opc_idx, phase, length) >= a_size:
+                affine = None
+        if affine is not None:
+            opc_idx, phase, length = affine
             cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
             ctrl_idx = _control_index(S_AFFINE, n_used)
             rc_step_encode(rc, cumfreqs, ctrl_idx, int(cumfreqs[-1]))
             counts[ctrl_idx] += 1
-            # Emit (opcode, phase, length).
             for sym in (24 + opc_idx, phase, length):
                 cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
-                sym_clamped = min(sym, a_size - 1)
-                rc_step_encode(rc, cumfreqs, sym_clamped, int(cumfreqs[-1]))
-                counts[sym_clamped] += 1
+                rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
+                counts[sym] += 1
             n_affine_emissions += 1
             effective_emit = 24 + opc_idx
             advance = length
@@ -684,7 +688,8 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 
         n_emissions -= 1
         if emit_idx == _control_index(S_AFFINE, n_used):
-            # U3: read (opcode, phase, length).
+            # U3: read (opcode, phase, length). Encoder skips digram
+            # growth on affine emissions; decoder must mirror.
             triplet = []
             for _i in range(3):
                 cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
@@ -696,7 +701,8 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             body = bodies[opc_idx, phase:phase + length]
             chain_terminals.extend(int(b) for b in (
                 cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
-            effective_emit = 24 + opc_idx
+            prev_emission = 24 + opc_idx
+            continue
         elif emit_idx == _control_index(S_PHASE, n_used):
             opc_idx, phase = _decode_phase_tagged(dec_state, counts, a_size)
             L = int(lengths[opc_idx])
