@@ -123,7 +123,17 @@ def apply_to_body(body, action: RuleAction):
                 out[idx] = new_val
         sliced = out
     if action.span_coupling:
-        raise NotImplementedError("span_coupling: U6/U7")
+        import numpy as _np
+        # U6/U7: span_coupling = (right_body, mask_bits). Caller fills
+        # both fields; `sliced` is the LEFT body.
+        right_body, mask_bits = action.span_coupling
+        out = _np.asarray(sliced).copy()
+        for i, m in enumerate(mask_bits):
+            if i >= out.shape[0]:
+                break
+            if m and i < len(right_body):
+                out[i] = right_body[i]
+        sliced = out
     # V₄ residue application also deferred — U-arc currently emits
     # residue='e' only; this slot lands when speculation surfaces a
     # V₄-tagged match. (Today V5/V6 sequitur canonicalisation is off.)

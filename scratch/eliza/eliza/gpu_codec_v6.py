@@ -56,7 +56,10 @@ from eliza.tensor_range_coder import (
 S_PHASE = 0           # U2: per-emission phase tag (legacy inline)
 S_AFFINE = 1          # U3: per-emission affine tag (legacy inline)
 S_FLIP_PATCH1 = 2     # U4: flip-paradigm toggle for k=1 F₂Patch mode
-N_V6_CONTROL_OPCODES = 3
+S_FLIP_PATCHK = 3     # U5: flip-paradigm toggle for k ≤ K F₂Patch mode
+S_FLIP_SPAN = 4       # U6/U7: flip-paradigm toggle for SpanCoupling
+N_V6_CONTROL_OPCODES = 5
+DEFAULT_PATCHK_K = 3  # U5 default sparsity bound
 
 
 def alphabet_size(n_used: int) -> int:
@@ -207,18 +210,21 @@ def _try_patch1_match(walk, pos: int, bodies, lengths, n_used: int,
         L = int(lengths[op_idx])
         if L <= 1:
             continue
-        target_len = min(L, n_chain - pos)
-        if target_len <= best_len_seen:
+        # Only consider FULL-body patches; truncated matches would
+        # require transmitting length, which is U5's job.
+        if L > n_chain - pos:
             continue
-        body_np = (cp.asnumpy(bodies[op_idx, :target_len]) if HAS_CUPY
-                   else np.asarray(bodies[op_idx, :target_len]))
-        diffs = np.flatnonzero(body_np != walk_np[pos:pos + target_len])
+        if L <= best_len_seen:
+            continue
+        body_np = (cp.asnumpy(bodies[op_idx, :L]) if HAS_CUPY
+                   else np.asarray(bodies[op_idx, :L]))
+        diffs = np.flatnonzero(body_np != walk_np[pos:pos + L])
         if diffs.size == 1:
             idx = int(diffs[0])
             repl = int(walk_np[pos + idx])
-            if target_len > best_len_seen:
+            if L > best_len_seen:
                 best_op = op_idx
-                best_len_seen = target_len
+                best_len_seen = L
                 best_idx = idx
                 best_repl = repl
     if best_op < 0 or best_len_seen < best_len + margin:
@@ -498,9 +504,9 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_flip_patch1": n_flip_patch1,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "u_arc_slice": "U4",
+        "u_arc_slice": "U7",
         "action_algebra_factors": ("V4-residue", "start_phase", "length_mask",
-                                     "f2_patch[k=1]"),
+                                     "f2_patch[k≤K]", "span_coupling[F₂]"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -534,6 +540,8 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     max_alphabet = alphabet_size(max_opcodes)
     counts = np.zeros(max_alphabet, dtype=np.int64)
     patch_mode = False    # U4 decoder flip state
+    patchk_mode = False   # U5 decoder flip state
+    span_mode = False     # U6/U7 decoder flip state
 
     n_emissions = n_vm
     while n_emissions > 0:
@@ -542,10 +550,80 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
-        # Flip-paradigm control: S_FLIP_PATCH1 toggles patch_mode and
-        # consumes no emission slot. Decoder loops without decrementing.
+        # Flip-paradigm controls: toggle mode flags. None consume an
+        # emission slot.
         if emit_idx == _control_index(S_FLIP_PATCH1, n_used):
             patch_mode = not patch_mode
+            continue
+        if emit_idx == _control_index(S_FLIP_PATCHK, n_used):
+            patchk_mode = not patchk_mode
+            continue
+        if emit_idx == _control_index(S_FLIP_SPAN, n_used):
+            span_mode = not span_mode
+            continue
+
+        if patchk_mode:
+            # U5: k ≤ K patches. emit_idx is opcode; then read k,
+            # then k × (patch_idx, replacement) pairs.
+            opc_idx = emit_idx - 24
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            k = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+            counts[k] += 1
+            patches = []
+            for _ in range(k):
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                pidx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                counts[pidx] += 1
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                pval = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                counts[pval] += 1
+                patches.append((pidx, pval))
+            L = int(lengths[opc_idx])
+            body_np = (cp.asnumpy(bodies[opc_idx, :L]) if HAS_CUPY
+                       else np.asarray(bodies[opc_idx, :L])).copy()
+            for pidx, pval in patches:
+                if 0 <= pidx < L:
+                    body_np[pidx] = pval
+            chain_terminals.extend(int(b) for b in body_np)
+            effective_emit = 24 + opc_idx
+            n_emissions -= 1
+            prev_emission = effective_emit
+            continue
+
+        if span_mode:
+            # U6/U7: SpanCoupling. emit_idx is rule_left; then read
+            # rule_right and the F₂ overlap mask as a sequence of
+            # mask_length bits packed into the alphabet.
+            opc_left = emit_idx - 24
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            opc_right_sym = rc_step_decode(dec_state, cumfreqs,
+                                              int(cumfreqs[-1]))
+            counts[opc_right_sym] += 1
+            opc_right = opc_right_sym - 24
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            mask_len = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+            counts[mask_len] += 1
+            mask_bits = []
+            for _ in range(mask_len):
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                b = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                counts[b] += 1
+                mask_bits.append(b & 1)
+            # Apply: bit=0 → take left body symbol at that position;
+            # bit=1 → take right body symbol.
+            L_left = int(lengths[opc_left])
+            L_right = int(lengths[opc_right])
+            body_left = (cp.asnumpy(bodies[opc_left, :L_left]) if HAS_CUPY
+                         else np.asarray(bodies[opc_left, :L_left]))
+            body_right = (cp.asnumpy(bodies[opc_right, :L_right]) if HAS_CUPY
+                          else np.asarray(bodies[opc_right, :L_right]))
+            for i, m in enumerate(mask_bits):
+                src = body_right if m else body_left
+                if i < src.shape[0]:
+                    chain_terminals.append(int(src[i]))
+            effective_emit = 24 + opc_left
+            n_emissions -= 1
+            prev_emission = effective_emit
             continue
 
         if patch_mode:
