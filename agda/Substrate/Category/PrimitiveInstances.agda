@@ -222,6 +222,36 @@ import Substrate.Algebra.Sporadic.GriessAlgebra.Aut            -- Z9
 import Substrate.Category.FieldContinuum
 
 ------------------------------------------------------------------------
+-- L-arc instances (Lie + Grassmann + Hodge structures).
+--
+-- Bridges from existing substrate sites + module-parametric instance
+-- modules:
+--
+--   L6 Bivector.AsExterior — HodgeDim4 Λ²(F₂⁴) as L4 WedgeProduct
+--      instance (supplies the wedge pairing missing from the original
+--      Bivector module).
+--   L7 HodgeStar.AsGenericHodge — HodgeDim4 ★ as L5 GenericHodgeStar
+--      instance; fifth universal-property view of the canonical ★.
+--   L14 sl₂ — module-parametric L2 LieAlgebra at Cartan type A₁.
+--   L15 so₃ — module-parametric L2 LieAlgebra at A₁ with angular-
+--      momentum basis (sibling of sl₂).
+--   L17 GriessAlgebra.AsJordan — parametric bridge; substrate does
+--      NOT assert Griess is Jordan (see L17 caveat).
+--   L19 MonsterLieAlgebra — module-parametric L2 LieAlgebra at the
+--      Borcherds-Kac-Moody m (Borcherds 1992).
+--
+-- All parametric per substrate convention; consumers supply the
+-- concrete realisation data.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.F2.HodgeDim4.Bivector.AsExterior        -- L6
+import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGenericHodge   -- L7
+import Substrate.Algebra.Lie.sl2                                  -- L14 (parametric)
+import Substrate.Algebra.Lie.so3                                  -- L15 (parametric)
+import Substrate.Algebra.Sporadic.GriessAlgebra.AsJordan          -- L17 (parametric)
+import Substrate.Algebra.Sporadic.MonsterLieAlgebra               -- L19 (parametric)
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-

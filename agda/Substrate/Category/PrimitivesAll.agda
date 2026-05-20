@@ -175,6 +175,51 @@ import Substrate.Category.Cone.Morphism                         -- Z6
 import Substrate.Category.GTorsor.Morphism                      -- Z7
 
 ------------------------------------------------------------------------
+-- L-arc primitives — Lie + Grassmann + Hodge algebras (L1-L20).
+--
+-- Phase Λ (L1-L5): foundational algebra primitives.
+--   L1 AntiCommutativeAlgebra — base for Lie + graded ACA
+--   L2 LieAlgebra — ACA + Jacobi
+--   L3 ExteriorAlgebra — graded free associative + nilpotent deg-1
+--   L4 WedgeProduct — rank-2 ergonomic slice
+--   L5 GenericHodgeStar — Λᵏ ↔ Λⁿ⁻ᵏ duality
+--
+-- Phase Λ' morphism layers (L8-L10): Grothendieck-closure for L1-L3.
+--   L8 LieAlgebra.Morphism
+--   L9 ExteriorAlgebra.Morphism
+--   L10 AntiCommutativeAlgebra.Morphism
+--
+-- Phase Λ'' (L11-L13): Coxeter ↔ Cartan ↔ Lie bridge.
+--   L11 RootSystem (combinatorial root data)
+--   L12 CartanType (Coxeter matrix)
+--   L13 Coxeter.AsCartanType (bridge from Word algebra)
+--
+-- Phase Λ''' (L16, L18): commutative-non-associative + Lie-adjunction.
+--   L16 JordanAlgebra (commutative + Jordan identity)
+--   L18 UniversalEnvelopingAlgebra (Lie → Assoc left adjoint)
+--
+-- Per [[universal-property-discipline]] + [[continuous-via-discrete-
+-- inference-rules]]: all L-arc primitives capture structure with
+-- abstract carriers; concrete realisations (sl₂, so₃, Bivector,
+-- Griess, MonsterLieAlgebra) are downstream module-parametric
+-- instances exposed via PrimitiveInstances.
+------------------------------------------------------------------------
+
+import Substrate.Category.AntiCommutativeAlgebra                 -- L1
+import Substrate.Category.LieAlgebra                             -- L2
+import Substrate.Category.ExteriorAlgebra                        -- L3
+import Substrate.Category.WedgeProduct                           -- L4
+import Substrate.Category.GenericHodgeStar                       -- L5
+import Substrate.Category.LieAlgebra.Morphism                    -- L8
+import Substrate.Category.ExteriorAlgebra.Morphism               -- L9
+import Substrate.Category.AntiCommutativeAlgebra.Morphism        -- L10
+import Substrate.Category.RootSystem                             -- L11
+import Substrate.Category.CartanType                             -- L12
+import Substrate.Category.Coxeter.AsCartanType                   -- L13 (parametric)
+import Substrate.Category.JordanAlgebra                          -- L16
+import Substrate.Category.UniversalEnvelopingAlgebra             -- L18
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
