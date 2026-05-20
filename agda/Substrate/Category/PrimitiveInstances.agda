@@ -344,6 +344,12 @@ import Substrate.Category.Cat.AsTwoCategory                        -- Q4
 import Substrate.Category.Adjunction.AsTwoCellStructure            -- Q5
 
 ------------------------------------------------------------------------
+-- R-arc instance modules (R9 V♮ as VOA).
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Sporadic.MonsterVOA                       -- R9
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-

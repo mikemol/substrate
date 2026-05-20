@@ -257,6 +257,21 @@ import Substrate.Category.TwoNaturalTransformation               -- Q8
 import Substrate.Category.TwoEquivalence                         -- Q9
 
 ------------------------------------------------------------------------
+-- R-arc primitives (monads / operads / VOAs): R1 Monad, R2 Comonad,
+-- R3 Algebra-of-Monad, R4 Coalgebra-of-Comonad, R5 Kleisli, R6 EM,
+-- R7 Operad, R8 VertexOperatorAlgebra.
+------------------------------------------------------------------------
+
+import Substrate.Category.Monad                                  -- R1
+import Substrate.Category.Comonad                                -- R2
+import Substrate.Category.Algebra-of-Monad                       -- R3
+import Substrate.Category.Coalgebra-of-Comonad                   -- R4
+import Substrate.Category.KleisliCategory                        -- R5
+import Substrate.Category.EilenbergMooreCategory                 -- R6
+import Substrate.Category.Operad                                 -- R7
+import Substrate.Category.VertexOperatorAlgebra                  -- R8
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
