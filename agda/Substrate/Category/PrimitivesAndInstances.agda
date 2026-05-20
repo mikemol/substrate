@@ -1,0 +1,97 @@
+------------------------------------------------------------------------
+-- Substrate.Category.PrimitivesAndInstances
+--
+-- Final capstone for the substrate's categorical infrastructure
+-- arc.
+--
+-- After this arc, the substrate's structure is comprehensively
+-- categorized:
+--
+--   * PrimitivesAll — abstract primitive definitions + combinators
+--     (Coalgebra/FiniteOrder/LagrangeOrder, Equalizer, Pullback,
+--     Adjunction, BeckChevalley + Compose + Horizontal,
+--     FreeLinearization + FromImages, Strict2Monoid + FromCoxeter +
+--     DirectProduct, GradedMonoid/RGradedMonoid + FromCoxeterHom,
+--     Cone + Product + FieldFilling + EdgeApex + WithMorphisms,
+--     FieldBond + MultiFieldBond + FieldFanOut).
+--
+--   * PrimitiveInstances — concrete substrate-level instances of
+--     each primitive (BCInstances at TensorProduct;
+--     V₄/Hamming/HodgeStar/SelfDual cones; Z6/Z6-Tower/168-FanOut
+--     bonds; HodgeStar/Cycle3 FreeLinearizations; cyclic Coxeter
+--     Strict2Monoids; V₄/Bivector F₂-gradings; full cyclic Coxeter
+--     chain instances).
+--
+--   * PrimitivesRoadmapV2 — documentation of current state across
+--     the 12 categorical primitives.
+--
+-- This module imports BOTH the framework AND the instances, giving
+-- downstream code a single import target for the substrate's full
+-- categorical surface.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.PrimitivesAndInstances where
+
+import Substrate.Category.PrimitivesAll
+import Substrate.Category.PrimitiveInstances
+import Substrate.Category.PrimitivesRoadmapV2
+
+------------------------------------------------------------------------
+-- Capstone — substrate's categorical infrastructure complete.
+--
+-- 10-slice arc summary (this arc):
+--
+--   #1 HodgeStar-FreeLinearization                — FreeLin at HodgeStar
+--   #2 Cycle3-FreeLinearization                   — FreeLin at Cycle3
+--   #3 project_freelinearization_substrate_sites  — memory
+--   #4 HodgeStar-ConeWithMorphisms                — Cone.WithMorphisms at ★
+--   #5 project_cones_at_substrate_sites           — memory
+--   #6 PrimeFactor-168-FieldFanOut                — 168-gauge as FanOut
+--   #7 project_168_tower_as_fanout                — memory
+--   #8 project_reserved_selfdual_bijection_gauge  — updated with FanOut
+--   #9 PrimitiveInstances                         — instance catalogue
+--   #10 THIS PrimitivesAndInstances capstone
+--
+-- Substrate's structural development now reaches the point where:
+--
+--   * Original 6-primitive roadmap is closed (across multiple arcs).
+--   * 12 categorical primitives with full combinator + instance
+--     infrastructure.
+--   * 30+ instance modules surfacing concrete substrate-level
+--     realizations.
+--   * Comprehensive memory catalogue of structural insights
+--     (Cone+Bond, 3+1 as cone, multi-field tower, gauge ladders,
+--     etc.).
+--
+-- Per [[feedback-categorical-name-first]]: the substrate's structural
+-- vocabulary is now ANCHORED to standard categorical names at every
+-- primitive level.
+--
+-- Per [[feedback-composable-primitives-over-flat-enumeration]]:
+-- each primitive comes with combinators (FromCoxeter, FromImages,
+-- DirectProduct, vertical/horizontal-paste, etc.) for composing
+-- instances. Per-instance boilerplate is consolidated via parametrics.
+--
+-- Per [[feedback-roll-our-own-via-word-algebra]]: the substrate's
+-- categorical infrastructure is rolled internally, leveraging the
+-- substrate's own Word algebra + Coxeter framework. No heavy stdlib
+-- dependencies.
+--
+-- The substrate's categorical foundation is mature enough that
+-- future arcs can focus on:
+--
+--   * **Substantive structural results** (e.g., dim-3 ↔ dim-4
+--     SymBilinForm bridge as a Cone, completing the 168-FanOut bond
+--     computations, S₄/V_4 group theory).
+--   * **Code-level work** (Hamming families as cone instances at
+--     scale, dual-code bridge via gcd-Poly).
+--   * **Bicategorical / higher-categorical extensions** (BC
+--     interchange law, edge-apex generalizations, n-category
+--     primitives).
+--   * **External-interface work** (Python extraction; downstream
+--     applications).
+--
+-- The categorical-primitive arc is structurally complete.
+------------------------------------------------------------------------
