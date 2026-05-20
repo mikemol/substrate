@@ -32,10 +32,8 @@ import Substrate.Groups.V4-Coxeter-Strict2Monoid
 -- The DirectProduct combinator instances:
 import Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid
 
--- The Z₅ closure (Arc 1 slices 1-5):
+-- The Z₅ closure (now combined into single Z5-Coxeter-Fin module):
 import Substrate.Groups.Z5-Coxeter-Fin
-import Substrate.Groups.Z5-Coxeter-Action
-import Substrate.Groups.Z5-Coxeter-HasOrderPerm
 import Substrate.Groups.Z5-x-FreeCyclic
 import Substrate.Groups.Z5-x-FreeCyclic-PhaseProjection
 import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle5

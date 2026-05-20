@@ -1,9 +1,11 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z5-Coxeter-Fin
 --
--- The bijection between Z5-Coxeter's Canonical word forms and Fin 5.
+-- The full Z₅-Coxeter ↔ Fin 5 chain in one module: bijection,
+-- action-of-a, and HasOrderPerm derivation.
 --
--- Mirror of Z3-Coxeter-Fin and Z4-Coxeter-Fin at n=5.
+-- Mirror of Z3-Coxeter-Fin and Z4-Coxeter-Fin at n=5. All three
+-- pieces (bijection + action + order-witness) live together.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,6 +18,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 import Substrate.Groups.Z5-Coxeter as Z₅
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation
+  using (HasOrderPerm)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle5
+  using (σ₅)
 
 ------------------------------------------------------------------------
 -- N-1: canonical-to-Fin / Fin-to-canonical bijection.
@@ -50,3 +56,35 @@ canonical-roundtrip Z₅.c-a    = refl
 canonical-roundtrip Z₅.c-aa   = refl
 canonical-roundtrip Z₅.c-aaa  = refl
 canonical-roundtrip Z₅.c-aaaa = refl
+
+------------------------------------------------------------------------
+-- N-2: action-of-a-is-σ₅.
+------------------------------------------------------------------------
+
+action-of-a-is-σ₅ :
+  {w : Word Z₅.Gen} (c : Z₅.Canonical w) →
+  canonical-to-Fin (Z₅.insert-canonical Z₅.a c) ≡ σ₅ (canonical-to-Fin c)
+action-of-a-is-σ₅ Z₅.c-ε    = refl
+action-of-a-is-σ₅ Z₅.c-a    = refl
+action-of-a-is-σ₅ Z₅.c-aa   = refl
+action-of-a-is-σ₅ Z₅.c-aaa  = refl
+action-of-a-is-σ₅ Z₅.c-aaaa = refl
+
+------------------------------------------------------------------------
+-- N-3: σ₅-HasOrderPerm via the Coxeter route.
+------------------------------------------------------------------------
+
+σ₅-HasOrderPerm-from-Z5-Coxeter : HasOrderPerm σ₅ 5
+σ₅-HasOrderPerm-from-Z5-Coxeter zero                                  = refl
+σ₅-HasOrderPerm-from-Z5-Coxeter (suc zero)                            = refl
+σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc zero))                      = refl
+σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc (suc zero)))                = refl
+σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc (suc (suc zero))))          = refl
+
+------------------------------------------------------------------------
+-- N-4: Capstone — Z₅ word-algebra connection complete (combined).
+--
+-- Replaces the prior 3-file split (Z5-Coxeter-Fin / Z5-Coxeter-Action /
+-- Z5-Coxeter-HasOrderPerm) with a single combined module, matching
+-- Z3 and Z4.
+------------------------------------------------------------------------
