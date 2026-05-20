@@ -51,7 +51,8 @@ from eliza.tensor_range_coder import (
 # V7 control opcodes (V-arc additions on top of V6's set).
 S_BASIS_AT = 0     # V1: absolute heading — jump to labeled basis point.
 S_BASIS_BY = 1     # V2: relative bearing — multiply by quaternion component.
-N_V7_CONTROL_OPCODES = 2
+S_SHIFT_BIT = 2    # V8: explicit sink — commit one bit of working buffer.
+N_V7_CONTROL_OPCODES = 3
 
 
 def alphabet_size(n_used: int) -> int:
@@ -289,6 +290,13 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             counts[comp_sym] += 1
             new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
+            continue
+        if emit_idx == _control_index(S_SHIFT_BIT, n_used):
+            # V8: bit-granular sink. Structural placeholder — the
+            # range-coder already drives bit-granular output internally,
+            # so this opcode is a marker (commit boundary) rather than
+            # an action. Future work: rewire range-coder to defer bit
+            # emission until S_SHIFT_BIT releases each one.
             continue
 
         n_emissions -= 1
