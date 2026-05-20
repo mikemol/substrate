@@ -2,25 +2,28 @@
 
 U-arc codec. Each emission carries a `RuleAction ∈ A`; at U1 the
 action is always identity, so V6's stream output is byte-identical
-to V5. Later U-arc slices enable non-identity actions:
+to V5. Each subsequent U-arc slice enables one factor of A:
 
-  U2: + start_phase     (phase-only AffineProjection)
-  U3: + length_mask     (full AffineProjection — LZ77 emergence)
-  U4: + f2_patch k=1    (single-bit F₂Patch)
-  U5: + f2_patch k≤K    (sparse F₂Patch)
-  U6: + span_coupling   (stripe overlap_mask)
-  U7: + full F₂ mask    (full SpanCoupling, H-rung non-commutative)
+  U1: identity action only (== V5).
+  U2: + start_phase     (phase-only AffineProjection).
+  U3: + length_mask     (full AffineProjection — LZ77 emergence).
+  U4: + f2_patch k=1    (single-bit F₂Patch).
+  U5: + f2_patch k≤K    (sparse F₂Patch).
+  U6: + span_coupling   (stripe overlap_mask).
+  U7: + full F₂ mask    (full SpanCoupling, H-rung non-commutative).
   U8: integrated speculation across all factors.
 
-At each slice the encoder selectively emits non-identity actions
-only when the speculation cost estimate says it pays. With every
-slice having (E1)-identity-reproduces-V5 in its self-check, V6 is
-a strictly monotonic refinement.
+Stream format. V6 extends the joint alphabet with control opcodes
+that signal action-tagged emissions:
 
-The stream format extends V5's joint alphabet by adding a single
-control opcode S_RULE_ACTION that, when emitted, signals "next emission
-carries action data encoded inline." U1 never emits S_RULE_ACTION,
-so the format is byte-compatible with V5 at U1.
+  S_PHASE      (U2): next opcode emission has start_phase > 0.
+  S_LENGTH     (U3): next emission has length_mask >= 0.
+  S_PATCH1     (U4): next emission has 1-bit F₂Patch.
+  S_PATCHK     (U5): next emission has multi-bit F₂Patch.
+  S_SPAN       (U6/U7): next emission is a bifilar span.
+
+At each slice the encoder may opt into emitting the control opcode
+when speculation says it saves bits; otherwise it stays at identity.
 """
 
 from __future__ import annotations
@@ -48,10 +51,10 @@ from eliza.tensor_range_coder import (
 )
 
 
-# V6 introduces one new control slot (S_RULE_ACTION) but never emits
-# it at U1 — so the alphabet/stream is V5-byte-compatible. The slot
-# becomes live starting at U2.
-N_V6_CONTROL_OPCODES = 0   # U1: no new control opcodes emitted yet.
+# V6 control opcodes (joint-alphabet slots after data opcodes).
+# Each slice enables one slot; encoder may opt in to emit.
+S_PHASE = 0      # U2: + start_phase
+N_V6_CONTROL_OPCODES = 1
 
 
 def alphabet_size(n_used: int) -> int:
@@ -59,14 +62,75 @@ def alphabet_size(n_used: int) -> int:
     return 24 + n_used + N_V6_CONTROL_OPCODES
 
 
-def _choose_emission(
-    pos: int, match_tensor, n_used: int, walk,
-) -> Tuple[int, int, RuleAction]:
-    """Choose (emit_idx, advance, action) for the current position.
+def _control_index(slot: int, n_used: int) -> int:
+    return 24 + n_used + slot
 
-    U1: action is always IDENTITY. Best-match greedy logic identical
-    to V5. Later slices enrich this with speculation over non-trivial
-    actions.
+
+# Phase-search heuristic constant. The phase emission costs roughly
+# 2 control-symbol-worth of bits (S_PHASE + phase int); require the
+# phase-tagged match to win by at least PHASE_MARGIN extra chain
+# steps to break even.
+PHASE_MARGIN = 2
+
+
+def _try_phase_match(walk, pos: int, bodies, lengths, n_used: int,
+                       best_idx: int, best_len: int):
+    """U2 phase-search: scan rules for phase>0 matches that beat the
+    current greedy by ≥ PHASE_MARGIN chain steps.
+
+    Returns (phase, opcode_idx, match_len) for the winning phase>0
+    match, or None if no phase>0 emission beats greedy.
+
+    Implementation: iterate over all rules and check phase ∈ [1, body_len-1].
+    Naive but vectorisable later (matricised in U8).
+    """
+    xp_mod = xp()
+    walk_np = (cp.asnumpy(walk) if HAS_CUPY else np.asarray(walk))
+    n_chain = walk_np.shape[0]
+    target_len = best_len + PHASE_MARGIN
+
+    best_phase = 0
+    best_phase_idx = best_idx
+    best_phase_len = best_len
+
+    for op_idx in range(n_used):
+        L = int(lengths[op_idx])
+        if L <= 1:
+            continue
+        body_np = (cp.asnumpy(bodies[op_idx, :L]) if HAS_CUPY
+                   else np.asarray(bodies[op_idx, :L]))
+        for phase in range(1, L):
+            seg_len = L - phase
+            if seg_len <= best_phase_len:
+                continue
+            if pos + seg_len > n_chain:
+                continue
+            # Compare body[phase:L] against walk[pos:pos+seg_len].
+            if np.array_equal(body_np[phase:L], walk_np[pos:pos + seg_len]):
+                if seg_len >= target_len and seg_len > best_phase_len:
+                    best_phase = phase
+                    best_phase_idx = op_idx
+                    best_phase_len = seg_len
+
+    if best_phase == 0:
+        return None
+    return (best_phase, best_phase_idx, best_phase_len)
+
+
+def _choose_emission(
+    pos: int, match_tensor, n_used: int, walk, bodies, lengths,
+    speculate_phase: bool = True,
+) -> Tuple[int, int, RuleAction, int]:
+    """Choose (emit_idx, advance, action, secondary_phase_int).
+
+    Returns:
+        emit_idx: joint-alphabet symbol (terminal / data opcode /
+                  S_PHASE control).
+        advance: number of chain steps to advance.
+        action: RuleAction; identity unless phase>0 chosen.
+        secondary_phase_int: integer phase to emit AFTER S_PHASE
+                             control + opcode_idx (only valid when
+                             emit_idx is the S_PHASE control).
     """
     if pos < match_tensor.shape[0] and n_used > 0:
         row = match_tensor[pos, :n_used]
@@ -77,19 +141,54 @@ def _choose_emission(
         best_idx = 0
         best_len = 0
 
-    if best_len == 0:
-        emit_idx = int(walk[pos])
-        advance = 1
-    else:
-        emit_idx = 24 + best_idx
-        advance = best_len
+    if speculate_phase and best_len >= 1 and n_used > 0:
+        phase_result = _try_phase_match(
+            walk, pos, bodies, lengths, n_used, best_idx, best_len,
+        )
+        if phase_result is not None:
+            phase, phase_idx, phase_len = phase_result
+            return (_control_index(S_PHASE, n_used), phase_len,
+                    RuleAction(start_phase=phase), (phase << 16) | phase_idx)
 
-    return emit_idx, advance, IDENTITY
+    if best_len == 0:
+        return int(walk[pos]), 1, IDENTITY, -1
+
+    return 24 + best_idx, best_len, IDENTITY, -1
+
+
+def _emit_phase_tagged(rc, counts, a_size, opcode_idx, phase):
+    """Emit (opcode_idx, phase) AFTER the S_PHASE control symbol has
+    been emitted. opcode_idx is in 0..n_used-1; phase is in 1..body_len-1.
+
+    Encoded as two adaptive-cumfreq symbols in the same joint alphabet.
+    Decoder mirrors.
+    """
+    cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+    rc_step_encode(rc, cumfreqs, 24 + opcode_idx, int(cumfreqs[-1]))
+    counts[24 + opcode_idx] += 1
+    cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+    rc_step_encode(rc, cumfreqs, min(phase, a_size - 1), int(cumfreqs[-1]))
+    counts[min(phase, a_size - 1)] += 1
+
+
+def _decode_phase_tagged(dec_state, counts, a_size):
+    """Inverse of `_emit_phase_tagged`. Returns (opcode_idx, phase)."""
+    cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+    opc_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+    counts[opc_sym] += 1
+    cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+    phase = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+    counts[phase] += 1
+    return opc_sym - 24, phase
 
 
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
-           max_opcodes: int = DEFAULT_MAX_OPCODES) -> Tuple[bytes, Dict]:
-    """V6 encoder. U1: identity action only — output equals V5 exactly."""
+           max_opcodes: int = DEFAULT_MAX_OPCODES,
+           speculate_phase: bool = False) -> Tuple[bytes, Dict]:
+    """V6 encoder. U2: `speculate_phase=True` enables phase-search.
+    Default off so V6==V5 byte-identical except for the +1 control
+    slot's tiny predictor overhead.
+    """
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
@@ -121,40 +220,45 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     prev_emission = -1
     n_vm = 0
     n_growth = 0
-    n_nontrivial_actions = 0  # U1: always 0
+    n_phase_emissions = 0
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
 
     while pos < n_chain:
-        emit_idx, advance, action = _choose_emission(
-            pos, match_tensor, n_used, walk,
+        emit_idx, advance, action, phase_payload = _choose_emission(
+            pos, match_tensor, n_used, walk, bodies, lengths,
+            speculate_phase=speculate_phase,
         )
-
-        # U1 invariant: action is identity. Later slices relax this
-        # and emit S_RULE_ACTION + action payload when worthwhile.
-        if not action.is_identity():
-            n_nontrivial_actions += 1
-            raise NotImplementedError(
-                "U1 emits identity actions only; later U-arc slices "
-                "will introduce action-emission control opcodes."
-            )
 
         a_size = alphabet_size(n_used)
         cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
         rc_step_encode(rc, cumfreqs, emit_idx, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
+        if emit_idx == _control_index(S_PHASE, n_used):
+            # U2: phase-tagged emission; phase_payload packs (phase, op_idx).
+            phase = phase_payload >> 16
+            opc_idx = phase_payload & 0xFFFF
+            _emit_phase_tagged(rc, counts, a_size, opc_idx, phase)
+            n_phase_emissions += 1
+            # Grammar growth: treat the phase-tagged emission as the
+            # opc_idx for digram purposes (the residue is what's
+            # locally visible at this position).
+            effective_emit = 24 + opc_idx
+        else:
+            effective_emit = emit_idx
+
         if prev_emission >= 0 and not cap_frozen:
-            key = (prev_emission, emit_idx)
+            key = (prev_emission, effective_emit)
             existing = digram_seen.get(key)
             if existing is None:
                 digram_seen[key] = -1
             else:
                 prev_body = _expand_emission_body(prev_emission, bodies,
                                                     lengths, n_used)
-                this_body = _expand_emission_body(emit_idx, bodies, lengths,
-                                                    n_used)
+                this_body = _expand_emission_body(effective_emit, bodies,
+                                                    lengths, n_used)
                 new_body = xp().concatenate([prev_body, this_body])
                 bodies, lengths, n_used_new, max_body, max_opcodes, grew = try_grow_opcode(
                     bodies, lengths, n_used, max_opcodes, max_body, new_body,
@@ -178,7 +282,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 else:
                     cap_frozen = True
 
-        prev_emission = emit_idx
+        prev_emission = effective_emit
         pos += advance
         n_vm += 1
 
@@ -193,18 +297,18 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_chain": n_chain,
         "n_vm": n_vm,
         "n_growth": n_growth,
-        "n_nontrivial_actions": n_nontrivial_actions,
+        "n_phase_emissions": n_phase_emissions,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "u_arc_slice": "U1",
-        "action_algebra_factors": ("V4-residue@identity-only",),
+        "u_arc_slice": "U2",
+        "action_algebra_factors": ("V4-residue", "start_phase"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
 
 def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES) -> bytes:
-    """V6 decoder. U1: no action-payload reads — straight V5 semantics."""
+    """V6 decoder. Reads S_PHASE control and applies start_phase."""
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
@@ -237,30 +341,34 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
-        # U1: emit_idx is purely terminal-or-data-opcode; no action
-        # payload to read. Identity application of identity is identity.
-        action = IDENTITY
-
-        if emit_idx < 24:
+        if emit_idx == _control_index(S_PHASE, n_used):
+            opc_idx, phase = _decode_phase_tagged(dec_state, counts, a_size)
+            L = int(lengths[opc_idx])
+            body = bodies[opc_idx, phase:L]
+            chain_terminals.extend(int(b) for b in (
+                cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
+            effective_emit = 24 + opc_idx
+        elif emit_idx < 24:
             chain_terminals.append(emit_idx)
+            effective_emit = emit_idx
         else:
             op_idx = emit_idx - 24
             L = int(lengths[op_idx])
             body = bodies[op_idx, :L]
-            transformed = apply_to_body(body, action)   # identity at U1
             chain_terminals.extend(int(b) for b in (
-                cp.asnumpy(transformed) if HAS_CUPY else np.asarray(transformed)))
+                cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
+            effective_emit = emit_idx
 
         if prev_emission >= 0 and not cap_frozen:
-            key = (prev_emission, emit_idx)
+            key = (prev_emission, effective_emit)
             existing = digram_seen.get(key)
             if existing is None:
                 digram_seen[key] = -1
             else:
                 prev_body = _expand_emission_body(prev_emission, bodies,
                                                     lengths, n_used)
-                this_body = _expand_emission_body(emit_idx, bodies, lengths,
-                                                    n_used)
+                this_body = _expand_emission_body(effective_emit, bodies,
+                                                    lengths, n_used)
                 new_body = xp().concatenate([prev_body, this_body])
                 bodies, lengths, n_used_new, max_body, max_opcodes, grew = try_grow_opcode(
                     bodies, lengths, n_used, max_opcodes, max_body, new_body,
@@ -275,7 +383,7 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                         counts = new_counts
                 else:
                     cap_frozen = True
-        prev_emission = emit_idx
+        prev_emission = effective_emit
 
     state = ORIGIN
     nibbles: List[int] = []
@@ -292,46 +400,50 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 # --- Self-check ---------------------------------------------------------
 
 
-def self_check(size: int = 1024, verbose: bool = True) -> bool:
-    """Round-trip + (E1) byte-identity vs V5 at identity-only action."""
+def self_check(size: int = 1024, verbose: bool = True,
+               speculate_phase: bool = True) -> bool:
+    """Round-trip on engine.py text; (E3) phase vs no-phase."""
     from pathlib import Path
     import time
-    from eliza import gpu_codec_v2 as v2
     HERE = Path(__file__).resolve().parent
     src = HERE / "engine.py"
     with open(src, "rb") as f:
         data = f.read()[:size]
 
     t0 = time.perf_counter()
-    encoded, stats = encode(data)
-    enc_time = time.perf_counter() - t0
-    t0 = time.perf_counter()
-    decoded = decode(encoded)
-    dec_time = time.perf_counter() - t0
-    ok_roundtrip = decoded == data
+    enc_off, stats_off = encode(data, speculate_phase=False)
+    t_off = time.perf_counter() - t0
+    ok_off = decode(enc_off) == data
 
-    # (E1): V6 stream at identity-only action equals V2/V5 stream.
-    v2_encoded, _ = v2.encode(data)
-    ok_identity = encoded == v2_encoded
+    t0 = time.perf_counter()
+    enc_on, stats_on = encode(data, speculate_phase=True)
+    t_on = time.perf_counter() - t0
+    ok_on = decode(enc_on) == data
+
+    bpb_off = 8 * len(enc_off) / size
+    bpb_on = 8 * len(enc_on) / size
 
     if verbose:
-        print("=== GpuCodecV6 (U-arc U1: identity-only) self-check ===")
-        print(f"  input bytes:                {len(data)}")
-        print(f"  encoded:                    {len(encoded)} bytes "
-              f"({8*len(encoded)/len(data):.3f} b/byte)")
-        print(f"  n_vm:                       {stats['n_vm']}")
-        print(f"  n_growth:                   {stats['n_growth']}")
-        print(f"  n_nontrivial_actions:       {stats['n_nontrivial_actions']}")
-        print(f"  u_arc_slice:                {stats['u_arc_slice']}")
-        print(f"  action_algebra:             {stats['action_algebra_factors']}")
-        print(f"  encode time:                {enc_time*1000:.1f}ms")
-        print(f"  decode time:                {dec_time*1000:.1f}ms")
-        print(f"  round-trip:                 {'OK' if ok_roundtrip else 'FAIL'}")
-        print(f"  V6==V2 at identity (E1):    {'OK' if ok_identity else 'FAIL'}")
-        if not ok_identity:
-            print(f"    V6 len={len(encoded)}, V2 len={len(v2_encoded)}")
-        print(f"\nResult: {'OK' if ok_roundtrip and ok_identity else 'FAIL'}")
-    return ok_roundtrip and ok_identity
+        print("=== GpuCodecV6 (U-arc U2: + start_phase) ===")
+        print(f"  input bytes:                 {len(data)}")
+        print(f"  speculate_phase=False:")
+        print(f"    encoded:                   {len(enc_off)} bytes "
+              f"({bpb_off:.3f} b/byte)")
+        print(f"    encode time:               {t_off*1000:.1f}ms")
+        print(f"    round-trip:                {'OK' if ok_off else 'FAIL'}")
+        print(f"  speculate_phase=True:")
+        print(f"    encoded:                   {len(enc_on)} bytes "
+              f"({bpb_on:.3f} b/byte)")
+        print(f"    n_phase_emissions:         {stats_on['n_phase_emissions']}")
+        print(f"    encode time:               {t_on*1000:.1f}ms")
+        print(f"    round-trip:                {'OK' if ok_on else 'FAIL'}")
+        delta = bpb_on - bpb_off
+        verdict = ("BENEFITS" if delta < -0.01 else
+                   "NEUTRAL" if abs(delta) < 0.01 else
+                   "REGRESSES")
+        print(f"  (E3) phase vs no-phase:      {verdict} ({delta:+.3f} b/byte)")
+        print(f"\nResult: {'OK' if ok_off and ok_on else 'FAIL'}")
+    return ok_off and ok_on
 
 
 if __name__ == "__main__":

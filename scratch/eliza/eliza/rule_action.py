@@ -102,14 +102,24 @@ def compose(a: "RuleAction", b: "RuleAction") -> "RuleAction":
 def apply_to_body(body, action: RuleAction):
     """Apply an action to a chain-symbol body (sequence of S₄ indices).
 
-    U1: returns body unchanged when action is identity (the only case
-    the U1 encoder emits). Non-identity application is a stub that
-    raises — guards against accidentally emitting non-identity before
-    the corresponding slice lands.
+    U2: handles `start_phase` (slice body from phase). Other non-identity
+    factors raise NotImplementedError until their slice lands; this is
+    the annealing guard.
     """
     if action.is_identity():
         return body
-    raise NotImplementedError(
-        "non-identity RuleAction application not yet implemented; "
-        "current U-arc slice is U1 (identity-only)"
-    )
+    # U2: start_phase slicing.
+    sliced = body
+    if action.start_phase > 0:
+        sliced = sliced[action.start_phase:]
+    # U3+: length_mask, f2_patch, span_coupling land here in turn.
+    if action.length_mask != -1:
+        raise NotImplementedError("length_mask: U3")
+    if action.f2_patch:
+        raise NotImplementedError("f2_patch: U4/U5")
+    if action.span_coupling:
+        raise NotImplementedError("span_coupling: U6/U7")
+    # V₄ residue application also deferred — U-arc currently emits
+    # residue='e' only; this slot lands when speculation surfaces a
+    # V₄-tagged match. (Today V5/V6 sequitur canonicalisation is off.)
+    return sliced
