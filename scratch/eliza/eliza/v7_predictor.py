@@ -97,10 +97,24 @@ def _context_pair(context):
         return (None, None)
     if isinstance(context, int):
         return (context, None)
-    # Tuple-like.
     p = context[0] if len(context) > 0 else None
     p2 = context[1] if len(context) > 1 else None
     return (p, p2)
+
+
+def _context_full(context):
+    """Normalize context to (prev, prev2, chamber, quat) quadruple.
+    Missing/invalid fields → None. Accepts None / int / tuple-of-any-length.
+    """
+    if context is None:
+        return (None, None, None, None)
+    if isinstance(context, int):
+        return (context, None, None, None)
+    fields = []
+    for i in range(4):
+        v = context[i] if len(context) > i else None
+        fields.append(v if (v is None or v >= 0) else None)
+    return tuple(fields)
 
 
 class BigramPredictor(Predictor):
@@ -183,9 +197,83 @@ class TrigramPredictor(Predictor):
         if new_alphabet_size > self.max_alphabet:
             old = self.max_alphabet
             self.max_alphabet = new_alphabet_size
-            # Grow each existing row.
             for key in list(self.rows):
                 old_row = self.rows[key]
                 new_row = np.zeros(new_alphabet_size, dtype=np.int64)
                 new_row[:old_row.shape[0]] = old_row
                 self.rows[key] = new_row
+
+
+class ChamberContextPredictor(Predictor):
+    """Context = current walk-chamber (S₄ index 0..23 or -1 if absent).
+
+    Storage: 24 rows × alphabet (small, dense). Captures the
+    chain-walk's chamber-state correlation with the next emission.
+    """
+
+    name = "chamber-context"
+    N_CHAMBERS = 24
+
+    def __init__(self, max_alphabet: int):
+        self.counts = np.zeros(
+            (self.N_CHAMBERS, max_alphabet), dtype=np.int64)
+
+    def _row(self, context):
+        _, _, chamber, _ = _context_full(context)
+        if chamber is None or chamber < 0 or chamber >= self.N_CHAMBERS:
+            return np.zeros(self.counts.shape[1], dtype=np.int64)
+        return self.counts[chamber]
+
+    def cumfreqs(self, alphabet_size, context=None):
+        return _smoothed_cumfreqs(self._row(context), alphabet_size)
+
+    def update(self, emit_idx, context=None):
+        _, _, chamber, _ = _context_full(context)
+        if chamber is None or chamber < 0 or chamber >= self.N_CHAMBERS:
+            return
+        self.counts[chamber, emit_idx] += 1
+
+    def grow_to(self, new_alphabet_size):
+        old = self.counts.shape[1]
+        if new_alphabet_size > old:
+            new_counts = np.zeros(
+                (self.N_CHAMBERS, new_alphabet_size), dtype=np.int64)
+            new_counts[:, :old] = self.counts
+            self.counts = new_counts
+
+
+class QuaternionContextPredictor(Predictor):
+    """Context = current basis_state.quat (Q₈ index 0..7).
+
+    Constructive use of V2's quaternion-bearing state. Storage:
+    8 rows × alphabet.
+    """
+
+    name = "quat-context"
+    N_QUAT = 8
+
+    def __init__(self, max_alphabet: int):
+        self.counts = np.zeros((self.N_QUAT, max_alphabet), dtype=np.int64)
+
+    def _row(self, context):
+        _, _, _, quat = _context_full(context)
+        if quat is None or quat < 0 or quat >= self.N_QUAT:
+            return np.zeros(self.counts.shape[1], dtype=np.int64)
+        return self.counts[quat]
+
+    def cumfreqs(self, alphabet_size, context=None):
+        return _smoothed_cumfreqs(self._row(context), alphabet_size)
+
+    def update(self, emit_idx, context=None):
+        _, _, _, quat = _context_full(context)
+        if quat is None or quat < 0 or quat >= self.N_QUAT:
+            return
+        self.counts[quat, emit_idx] += 1
+
+    def grow_to(self, new_alphabet_size):
+        old = self.counts.shape[1]
+        if new_alphabet_size > old:
+            new_counts = np.zeros(
+                (self.N_QUAT, new_alphabet_size), dtype=np.int64)
+            new_counts[:, :old] = self.counts
+            self.counts = new_counts

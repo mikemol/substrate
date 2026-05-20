@@ -47,7 +47,8 @@ from eliza.tensor_range_coder import (
     RCDecoderState, RCState, rc_finish, rc_step_decode, rc_step_encode,
 )
 from eliza.v7_predictor import (
-    BigramPredictor, Predictor, TrigramPredictor, UnigramPredictor,
+    BigramPredictor, ChamberContextPredictor, Predictor,
+    QuaternionContextPredictor, TrigramPredictor, UnigramPredictor,
 )
 
 
@@ -83,8 +84,8 @@ def _build_predictors(max_alphabet: int) -> Dict[BasisLabel, Predictor]:
         BasisLabel.ALGEBRAIC:       UnigramPredictor(max_alphabet),
         BasisLabel.SPECTRAL:        BigramPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_TRIV:   TrigramPredictor(max_alphabet),
-        BasisLabel.ISOTYPIC_SIGN:   UnigramPredictor(max_alphabet),
-        BasisLabel.ISOTYPIC_STD:    UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_SIGN:   ChamberContextPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_STD:    QuaternionContextPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_STDSGN: UnigramPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_2D:     UnigramPredictor(max_alphabet),
     }
@@ -115,8 +116,14 @@ def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
     costs = {L: (0.0 if L == current_label else switch_overhead)
              for L in predictors}
     sim_pos = pos
-    sim_prev, sim_prev_prev = context if isinstance(context, tuple) \
-                              else (context, -1)
+    if isinstance(context, tuple):
+        sim_prev = context[0] if len(context) > 0 else -1
+        sim_prev_prev = context[1] if len(context) > 1 else -1
+        sim_quat = context[3] if len(context) > 3 else 0
+    else:
+        sim_prev = context if context is not None else -1
+        sim_prev_prev = -1
+        sim_quat = 0
     steps = 0
     while steps < K and sim_pos < n_chain:
         if sim_pos < match_tensor.shape[0] and n_used > 0:
@@ -133,7 +140,8 @@ def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
         else:
             emit_idx = 24 + best_idx
             advance = best_len
-        sim_ctx = (sim_prev, sim_prev_prev)
+        sim_wc = int(walk[sim_pos - 1]) if sim_pos > 0 else -1
+        sim_ctx = (sim_prev, sim_prev_prev, sim_wc, sim_quat)
         for L, pred in predictors.items():
             costs[L] += pred.cost(emit_idx, a_size, sim_ctx)
         sim_prev_prev = sim_prev
@@ -230,7 +238,12 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     pos = 0
 
     def _ctx():
-        return (prev_emission, prev_prev_emission)
+        # Encoder context: (prev, prev2, walk_chamber_just_before_pos, quat).
+        # walk_chamber: chamber-state at start of current emission. For
+        # pos=0, no previous chamber, use -1 (predictor falls back to
+        # uniform).
+        wc = int(walk[pos - 1]) if pos > 0 else -1
+        return (prev_emission, prev_prev_emission, wc, basis_state.quat)
 
     while pos < n_chain:
         if pos < match_tensor.shape[0] and n_used > 0:
@@ -378,7 +391,11 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     basis_state = IDENTITY
 
     def _dctx():
-        return (prev_emission, prev_prev_emission)
+        # Decoder context: mirrors encoder. walk_chamber on the decoder
+        # side = last chain symbol output (= chamber state just before
+        # next emission).
+        wc = chain_terminals[-1] if chain_terminals else -1
+        return (prev_emission, prev_prev_emission, wc, basis_state.quat)
 
     n_emissions = n_vm
     while n_emissions > 0:
