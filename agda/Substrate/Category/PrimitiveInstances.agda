@@ -133,6 +133,21 @@ import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AsPFG           -- T7
 import Substrate.Algebra.Sporadic.Monster.AsCoalgebra                -- T8
 
 ------------------------------------------------------------------------
+-- WithCharacters instances (U3, U4 of next arc).
+--
+-- GL3F2.Characters: concrete 6×6 character table for GL(3, F₂) ≅
+-- PSL(2, 7). The substrate's first concrete WithCharacters-style
+-- data (32 of 36 cells correctly populated as ℤ; 4 algebraic cells
+-- marked as placeholders).
+--
+-- Monster.WithCharacters: parametric placeholder for the Monster's
+-- 194 × 194 character data; concrete data is external.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.GL3F2.Characters
+import Substrate.Algebra.Sporadic.Monster.WithCharacters
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific

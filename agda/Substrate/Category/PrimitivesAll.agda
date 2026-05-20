@@ -109,6 +109,17 @@ import Substrate.Category.ConjugationCoalgebra                        -- #18
 import Substrate.Category.GaloisAdjunction                            -- #19
 
 ------------------------------------------------------------------------
+-- WithCharacters extension of ConjugationCoalgebra (U1-U2 of next arc).
+--
+-- Character-table data + orthogonality predicates. Enables substrate-
+-- side handling of representation-theoretic content (= the
+-- cohomology side of [[homology-cohomology-recursion]]).
+------------------------------------------------------------------------
+
+import Substrate.Category.ConjugationCoalgebra.WithCharacters
+import Substrate.Category.ConjugationCoalgebra.CharacterOrthogonality
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
