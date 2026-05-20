@@ -159,6 +159,22 @@ import Substrate.Category.SylowDecomposition.FromWord
 import Substrate.Category.PrimeFactoredGauge.FromPresented
 
 ------------------------------------------------------------------------
+-- Grothendieck-closure remediation (Z-arc, Z1-Z5 foundations).
+--
+-- Closes the substrate's "no morphism layer" gap across primitives
+-- + provides Aut(_) + GrothendieckConstruction + DescentTree +
+-- CategoryOf primitives.
+------------------------------------------------------------------------
+
+import Substrate.Category.Morphism                              -- Z1
+import Substrate.Category.AutomorphismGroup                     -- Z2
+import Substrate.Category.GrothendieckConstruction              -- Z3
+import Substrate.Category.CentralizerDescent.Tree               -- Z4
+import Substrate.Category.CategoryOf                            -- Z5
+import Substrate.Category.Cone.Morphism                         -- Z6
+import Substrate.Category.GTorsor.Morphism                      -- Z7
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 

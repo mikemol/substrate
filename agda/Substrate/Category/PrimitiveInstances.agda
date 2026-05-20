@@ -201,6 +201,17 @@ import Substrate.Algebra.Sporadic.Monster.AsPresented          -- Y7+Y8
 import Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent  -- Y9
 
 ------------------------------------------------------------------------
+-- Grothendieck-closure instances (Z-arc, Z8 + Z9).
+--
+-- Happy Family as single descent-tree object (Z8) + Monster
+-- reconstructed as Aut(GriessAlgebra) via Z2 (Z9). Closes
+-- Gaps #2 and #3 from the Grothendieck-closure audit.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Sporadic.HappyFamily.AsTree           -- Z8
+import Substrate.Algebra.Sporadic.GriessAlgebra.Aut            -- Z9
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific
