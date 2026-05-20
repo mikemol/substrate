@@ -305,6 +305,21 @@ import Substrate.Algebra.F2.Linear.AsDaggerCategory                -- N8
 import Substrate.Category.GaloisAdjunction.UnitCounit              -- N9
 
 ------------------------------------------------------------------------
+-- O-arc (O1-O10): compound functors, Monster-as-Grothendieck, Cartan↔
+-- Root equivalence, Jordan→CNAA forgetful + capstone.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.F2.Linear.AsCompactClosed                 -- O1
+import Substrate.Category.GrothendieckOfAut                        -- O2
+import Substrate.Category.PrimeFactoredGauge.ActedUponByAut        -- O3
+import Substrate.Category.GaloisAdjunction.AsAdjunction            -- O4
+import Substrate.Algebra.Sporadic.Monster.AsGrothendieckObject     -- O5
+import Substrate.Category.CartanType.AsRootSystem                  -- O6
+import Substrate.Category.RootSystem.AsCartanType                  -- O7
+import Substrate.Category.CartanRootEquivalence                    -- O8
+import Substrate.Category.JordanAlgebra.UnderlyingCNAA             -- O9
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
