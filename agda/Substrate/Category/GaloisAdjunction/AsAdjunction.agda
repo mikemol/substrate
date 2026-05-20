@@ -11,7 +11,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Level using (Level)
+open import Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
@@ -37,7 +37,7 @@ module Substrate.Category.GaloisAdjunction.AsAdjunction
 -- user-supplied separately as downstream witnesses.
 ------------------------------------------------------------------------
 
-record GaloisAdjunction-AsAdjunction : Set where
+record GaloisAdjunction-AsAdjunction : Set (lsuc (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD)) where
   field
     forward  : Functor C D
     backward : Functor D C
