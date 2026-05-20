@@ -158,6 +158,26 @@ normalize-quint a b c d e =
   trans (normalize-append a (b ++ (c ++ (d ++ e))))
         (normalize-cong-right (normalize a) (normalize-quad b c d e))
 
+-- Sext version (used for Zₙ Coxeter sixth-power identities).
+normalize-sext : (a b c d e f : Word) →
+                 normalize (a ++ (b ++ (c ++ (d ++ (e ++ f))))) ≡
+                 normalize (normalize a ++ (normalize b ++
+                            (normalize c ++ (normalize d ++
+                             (normalize e ++ normalize f)))))
+normalize-sext a b c d e f =
+  trans (normalize-append a (b ++ (c ++ (d ++ (e ++ f)))))
+        (normalize-cong-right (normalize a) (normalize-quint b c d e f))
+
+-- Sept version (used for Zₙ Coxeter seventh-power-identity at n=7).
+normalize-sept : (a b c d e f g : Word) →
+                 normalize (a ++ (b ++ (c ++ (d ++ (e ++ (f ++ g)))))) ≡
+                 normalize (normalize a ++ (normalize b ++
+                            (normalize c ++ (normalize d ++
+                             (normalize e ++ (normalize f ++ normalize g))))))
+normalize-sept a b c d e f g =
+  trans (normalize-append a (b ++ (c ++ (d ++ (e ++ (f ++ g))))))
+        (normalize-cong-right (normalize a) (normalize-sext b c d e f g))
+
 ------------------------------------------------------------------------
 -- 6. Inequality lifting through normalize. Used by per-instance
 -- finite-enumeration theorems to bridge `≉` hypotheses across the
