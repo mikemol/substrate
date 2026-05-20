@@ -1,0 +1,84 @@
+------------------------------------------------------------------------
+-- Substrate.Category.PrimitivesRoadmapV2
+--
+-- Updated roadmap reflecting the closure of original-roadmap
+-- primitive #6 (FreeLinearization) and the addition of
+-- Cone.WithMorphisms + FieldFanOut.
+--
+-- Supersedes Substrate.Category.PrimitivesRoadmapUpdate in that it
+-- includes #6's closure (which was pending at the prior capstone).
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.PrimitivesRoadmapV2 where
+
+------------------------------------------------------------------------
+-- Original roadmap status (all 6 primitives now closed):
+--
+--   #1 Coalgebra (FixedPoint, InvariantSubset) ✓
+--      + FiniteOrder (HasOrder, iterate, iterate-add)
+--      + LagrangeOrder (Action, HasLagrangeOrder)
+--   #2 Equalizer (Equalizer-Of, IsEqualised) ✓
+--      + Cone.EqualizerInstance (discrete Cone retrofit)
+--      + Cone.EqualizerWithMorphisms (with-morphisms Cone retrofit)
+--   #3 Pullback (Pullback-Of, IsInPullback, Wide-Meet) ✓
+--      + Cone.PullbackInstance (discrete Cone retrofit)
+--      + Cone.PullbackWithMorphisms (with-morphisms Cone retrofit)
+--   #4 Adjunction (unit/counit) ✓
+--   #5 BeckChevalley (BCSquare, cell) ✓
+--      + BCSquare.Compose (vertical-paste)
+--      + BCSquare.Horizontal (horizontal-paste)
+--      + BCInstances (3 concrete substrate instances)
+--   #6 FreeLinearization ✓ (THIS ARC) — closes original-roadmap deferred.
+--      = Substrate.Category.FreeLinearization + FromImages constructor.
+--
+-- Added primitives across subsequent arcs:
+--
+--   #7  Strict2Monoid — 1-object strict 2-category record
+--       + FromCoxeter constructor
+--       + DirectProduct combinator
+--   #8  GradedMonoid (ℕ-graded) + RGradedMonoid (R-graded)
+--       + FromCoxeterHomomorphism combinator
+--       + F₂-CommutativeMonoid (the canonical R = F₂)
+--   #9  Cone — apex with finite base + legs
+--       + Cone.Product (= categorical product)
+--       + Cone.FieldFilling (cardinality-fills-prime-power)
+--       + Cone.EdgeApex (apex generalized to Arr(C) object)
+--       + Cone.WithMorphisms (base-internal morphisms first-class)
+--   #10 FieldBond — oriented inter-field bond
+--   #11 FieldTower (n+1 fields, n bonds, chain shape)
+--   #12 FieldFanOut (1 source, n targets, fan-out shape)
+--
+-- Status of structural arcs:
+--
+--   * Cone family is comprehensive (discrete + WithMorphisms +
+--     EdgeApex + FieldFilling).
+--   * Multi-field bond infrastructure covers chains (FieldTower) +
+--     fan-out (FieldFanOut); composite trees deferred.
+--   * BC 2-cell-calculus has vertical + horizontal pasting;
+--     interchange law deferred.
+--   * F₂-graded structures + 3 V₄ instances + Bivector weight-parity
+--     instance.
+--   * Strict2Monoid instances for cyclic Coxeter + V₄ + 2-D direct
+--     products.
+--
+-- Per [[project-cone-subsumes-equalizer-pullback]]: Cone (#9) frames
+-- Equalizer (#2) + Pullback (#3) as specific shape instances.
+--
+-- Per [[project-freelinearization-names-linear-from-images]]:
+-- FreeLinearization (#6) names the substrate's
+-- linear-from-images discipline categorically.
+--
+-- Per [[project-tree-shaped-field-bonds]]: bond infrastructure
+-- has chain + fan-out shapes; gauge choice is structural.
+--
+-- Deferred follow-ons (next arcs):
+--
+--   * **#9 Cone.WithMorphisms higher-arity bases**: cones over more
+--     elaborate diagrams (e.g., V₄'s 3+1 with internal morphisms).
+--   * **#12 FieldTree (generic DAG)**: arbitrary tree of bonds.
+--   * **BC interchange law**: vertical + horizontal commute formally.
+--   * **Concrete #6 instances at substrate sites**: re-cast existing
+--     uses of linear-from-images as FreeLinearization instances.
+------------------------------------------------------------------------
