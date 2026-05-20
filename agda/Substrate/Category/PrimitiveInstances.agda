@@ -320,6 +320,21 @@ import Substrate.Category.CartanRootEquivalence                    -- O8
 import Substrate.Category.JordanAlgebra.UnderlyingCNAA             -- O9
 
 ------------------------------------------------------------------------
+-- P-arc (P1-P10): Hodge-dagger and bijection structures, F₂-Linear
+-- abelian/exact category, HodgeDim4 as groupoid.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap            -- P1
+import Substrate.Algebra.F2.Linear.Bijection.AsDagger                       -- P2
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor.AsNaturalTransformation  -- P3
+import Substrate.Algebra.F2.Linear.AsRigidCategory                          -- P4
+import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsSelfDualMorphism          -- P5
+import Substrate.Algebra.F2.HodgeDim4.Bivector.AsCompactClosedDual          -- P6
+import Substrate.Algebra.F2.HodgeDim4.AsGroupoid                            -- P7
+import Substrate.Algebra.F2.Linear.AsAbelianCategory                        -- P8
+import Substrate.Algebra.F2.Linear.AsExactCategory                          -- P9
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
