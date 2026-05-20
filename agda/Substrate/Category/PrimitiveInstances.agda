@@ -171,6 +171,18 @@ import Substrate.Algebra.Abelian.Z30-as-PFG
 import Substrate.Algebra.GL3F2.JointGenScaffold
 
 ------------------------------------------------------------------------
+-- Griess algebra + Monster identification (X4-X5 of next arc).
+--
+-- The 196,884-dim Griess algebra (Griess 1982; FLM 1988 V♮ weight-2)
+-- as a CommutativeNonAssociativeAlgebra instance + Monster ≅
+-- Aut(GriessAlgebra) identification module. Closes the substrate-
+-- side bridge to the canonical top-down Monster construction.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Sporadic.GriessAlgebra
+import Substrate.Algebra.Sporadic.Monster.AsGriessAlgebra
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific

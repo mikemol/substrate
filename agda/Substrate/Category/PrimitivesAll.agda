@@ -134,6 +134,19 @@ import Substrate.Category.CentralizerDescent
 import Substrate.Category.AbelianPFG
 
 ------------------------------------------------------------------------
+-- Continuum lifts + algebra (X1-X3 of next arc).
+--
+-- S1-Lift / S2-Lift: discrete-to-continuum constructors for cyclic
+-- and projective limits. CommutativeNonAssociativeAlgebra: algebra
+-- primitive for Griess + similar commutative-non-associative
+-- structures.
+------------------------------------------------------------------------
+
+import Substrate.Category.S1-Lift
+import Substrate.Category.S2-Lift
+import Substrate.Category.CommutativeNonAssociativeAlgebra
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
