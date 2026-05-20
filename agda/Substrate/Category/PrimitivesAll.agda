@@ -127,6 +127,13 @@ import Substrate.Category.ConjugationCoalgebra.CharacterOrthogonality
 import Substrate.Category.CentralizerDescent
 
 ------------------------------------------------------------------------
+-- AbelianPFG (W1 of next arc) — PFG specialization for abelian
+-- gauge groups; CRT product decomposition.
+------------------------------------------------------------------------
+
+import Substrate.Category.AbelianPFG
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 

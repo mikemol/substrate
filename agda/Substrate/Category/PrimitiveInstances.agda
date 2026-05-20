@@ -160,6 +160,17 @@ import Substrate.Algebra.Sporadic.Monster.WithCharacters
 import Substrate.Algebra.Sporadic.HappyFamily
 
 ------------------------------------------------------------------------
+-- AbelianPFG instances (W2-W4 of next arc).
+--
+-- CRT-abelian PrimeFactoredGauge instances at small primes (Z/6,
+-- Z/30) + GL(3, F₂) joint-gen scaffold.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Abelian.Z6-as-PFG
+import Substrate.Algebra.Abelian.Z30-as-PFG
+import Substrate.Algebra.GL3F2.JointGenScaffold
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific
