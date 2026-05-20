@@ -243,6 +243,20 @@ import Substrate.Category.DaggerCategory                         -- M4
 import Substrate.Category.OrphanAudit                            -- M10 (audit doc)
 
 ------------------------------------------------------------------------
+-- Q-arc primitives (higher categories): Q1 TwoCategory, Q2 Modification
+-- (3-cells), Q6 PseudoFunctor, Q7 LaxFunctor, Q8 TwoNatTrans, Q9
+-- TwoEquivalence. Q3/Q4/Q5 are concrete-bridge modules (in
+-- PrimitiveInstances).
+------------------------------------------------------------------------
+
+import Substrate.Category.TwoCategory                            -- Q1
+import Substrate.Category.Modification                           -- Q2
+import Substrate.Category.PseudoFunctor                          -- Q6
+import Substrate.Category.LaxFunctor                             -- Q7
+import Substrate.Category.TwoNaturalTransformation               -- Q8
+import Substrate.Category.TwoEquivalence                         -- Q9
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 

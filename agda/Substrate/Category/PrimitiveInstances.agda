@@ -335,6 +335,15 @@ import Substrate.Algebra.F2.Linear.AsAbelianCategory                        -- P
 import Substrate.Algebra.F2.Linear.AsExactCategory                          -- P9
 
 ------------------------------------------------------------------------
+-- Q-arc concrete-bridge modules (Q3 ∫ as 2-functor, Q4 Cat as 2-cat,
+-- Q5 Adjunction as 2-cell structure).
+------------------------------------------------------------------------
+
+import Substrate.Category.GrothendieckConstruction.AsTwoFunctor    -- Q3
+import Substrate.Category.Cat.AsTwoCategory                        -- Q4
+import Substrate.Category.Adjunction.AsTwoCellStructure            -- Q5
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
