@@ -220,6 +220,29 @@ import Substrate.Category.JordanAlgebra                          -- L16
 import Substrate.Category.UniversalEnvelopingAlgebra             -- L18
 
 ------------------------------------------------------------------------
+-- M-arc primitives — functorial closure of the L-arc (M1-M10).
+--
+-- Per [[grothendieck-coherence-rule]]: every "X ↦ S(X)" substrate
+-- assignment must be Functor-ified or it surfaces as a hidden orphan
+-- on the next Grothendieck lift. M1-M4 supply the higher-categorical
+-- carriers (Functor + NaturalTransformation + SymmetricMonoidal +
+-- Dagger); M5-M9 close the specific L-arc orphan gaps.
+--
+--   M1 Functor — 1-cells of Cat
+--   M2 NaturalTransformation — 2-cells of Cat
+--   M3 SymmetricMonoidal — ⊗ + I + σ + σ-involution
+--   M4 DaggerCategory — †² = id involutive structure
+--
+-- M5-M9 are concrete-bridge modules and live in PrimitiveInstances.
+------------------------------------------------------------------------
+
+import Substrate.Category.Functor                                -- M1
+import Substrate.Category.NaturalTransformation                  -- M2
+import Substrate.Category.SymmetricMonoidal                      -- M3
+import Substrate.Category.DaggerCategory                         -- M4
+import Substrate.Category.OrphanAudit                            -- M10 (audit doc)
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 

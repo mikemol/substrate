@@ -252,6 +252,30 @@ import Substrate.Algebra.Sporadic.GriessAlgebra.AsJordan          -- L17 (parame
 import Substrate.Algebra.Sporadic.MonsterLieAlgebra               -- L19 (parametric)
 
 ------------------------------------------------------------------------
+-- M-arc functorial-closure bridges (M5-M9).
+--
+-- Per [[grothendieck-coherence-rule]]: each module lifts a previous
+-- L-arc primitive from "record-instance" to "M1 Functor" or "M2
+-- NaturalTransformation," closing latent orphan gaps.
+--
+--   M5 ExteriorAlgebra.AsFunctor — Λ : Vect → ExtAlg as Functor
+--   M6 LieAlgebra.AsFunctor — U_Lie : Assoc → Lie as Functor
+--   M7 UniversalEnvelopingAlgebra.AsFunctor — U : Lie → Assoc as Functor
+--   M8 Coxeter.AsCartanType.Functor — L13 lifted to functorial action
+--   M9 HodgeStar.AsNaturalTransformation — ★ as M2 nat-trans, closing
+--      "★ commutes with wedge-morphisms" as the naturality square
+--
+-- All parametric; consumers supply the concrete CategoryOf instances
+-- + functor/nat-trans data per substrate convention.
+------------------------------------------------------------------------
+
+import Substrate.Category.ExteriorAlgebra.AsFunctor                    -- M5
+import Substrate.Category.LieAlgebra.AsFunctor                          -- M6
+import Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor          -- M7
+import Substrate.Category.Coxeter.AsCartanType.Functor                  -- M8
+import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsNaturalTransformation -- M9
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
