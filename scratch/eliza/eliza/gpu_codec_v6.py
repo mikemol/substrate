@@ -294,16 +294,36 @@ def _scan_patch1_run(walk, pos: int, bodies, lengths, n_used: int,
     return out
 
 
+def _affine_beats_greedy(affine_len: int, best_len: int, a_size: int) -> bool:
+    """U8 cost-aware test: does affine (4 symbols, advance=affine_len)
+    beat greedy (1 symbol, advance=best_len) in bits-per-walk-chain?
+
+    Approximation: each range-coded symbol costs ≈ log₂(a_size) bits
+    under uniform-prior adaptive coding. The factor's worth shows up
+    in symbols-per-chain efficiency, not bit-perfect cost.
+    """
+    if best_len <= 0:
+        return affine_len > 4   # any affine longer than 4 beats no-match
+    cost_greedy = 1.0 / best_len           # symbols per walk chain
+    cost_affine = 4.0 / max(affine_len, 1)
+    return cost_affine < cost_greedy
+
+
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES,
            speculate_phase: bool = False,
            speculate_affine: bool = False,
-           speculate_patch1: bool = False) -> Tuple[bytes, Dict]:
-    """V6 encoder. U-arc speculation flags (each defaults off so V6 ==
-    V5 byte-identical at speculation_off):
-      * speculate_phase  — per-emission phase tag (U2, legacy inline).
-      * speculate_affine — per-emission affine tag (U3, legacy inline).
-      * speculate_patch1 — flip-paradigm k=1 patch-mode (U4).
+           speculate_patch1: bool = False,
+           speculate_integrated: bool = False) -> Tuple[bytes, Dict]:
+    """V6 encoder. U-arc speculation flags:
+      * speculate_phase       — per-emission phase tag (U2, inline).
+      * speculate_affine      — per-emission affine tag (U3, inline,
+                                 unconditional — regresses without U8).
+      * speculate_patch1      — flip-paradigm k=1 patch-mode (U4).
+      * speculate_integrated  — U8 cost-aware: commit to affine ONLY
+                                 when its symbols-per-chain rate beats
+                                 greedy's. Subsumes speculate_affine
+                                 with cost-gate.
     """
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
                       else build_full_opcode_set()
@@ -396,8 +416,23 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 n_vm += 1
                 prev_emission = effective_emit
                 continue
-        # U3 affine-search runs first (subsumes U2's phase-only).
-        if speculate_affine and n_used > 0:
+        # U8 integrated mode runs first (subsumes affine with cost-gate).
+        if speculate_integrated and n_used > 0:
+            if pos < match_tensor.shape[0]:
+                row = match_tensor[pos, :n_used]
+                best_len_now = int(row[xp().argmax(row)])
+            else:
+                best_len_now = 0
+            affine = _try_affine_match(
+                walk, pos, bodies, lengths, n_used, best_len_now,
+                margin=0,
+            )
+            if affine is not None:
+                _opc, _phase, _len = affine
+                if not _affine_beats_greedy(_len, best_len_now,
+                                              alphabet_size(n_used)):
+                    affine = None
+        elif speculate_affine and n_used > 0:
             # Determine current greedy best_len at pos.
             if pos < match_tensor.shape[0]:
                 row = match_tensor[pos, :n_used]
@@ -731,14 +766,26 @@ def self_check(size: int = 1024, verbose: bool = True) -> bool:
         data = f.read()[:size]
 
     cases = [
-        ("identity (U1)", dict(speculate_phase=False, speculate_affine=False,
-                                speculate_patch1=False)),
-        ("+ phase (U2)",   dict(speculate_phase=True,  speculate_affine=False,
-                                speculate_patch1=False)),
-        ("+ affine (U3)",  dict(speculate_phase=False, speculate_affine=True,
-                                speculate_patch1=False)),
-        ("+ patch1 (U4)",  dict(speculate_phase=False, speculate_affine=False,
-                                speculate_patch1=True)),
+        ("identity (U1)",       dict(speculate_phase=False,
+                                       speculate_affine=False,
+                                       speculate_patch1=False,
+                                       speculate_integrated=False)),
+        ("+ phase (U2)",        dict(speculate_phase=True,
+                                       speculate_affine=False,
+                                       speculate_patch1=False,
+                                       speculate_integrated=False)),
+        ("+ affine (U3)",       dict(speculate_phase=False,
+                                       speculate_affine=True,
+                                       speculate_patch1=False,
+                                       speculate_integrated=False)),
+        ("+ patch1 (U4)",       dict(speculate_phase=False,
+                                       speculate_affine=False,
+                                       speculate_patch1=True,
+                                       speculate_integrated=False)),
+        ("+ integrated (U8)",   dict(speculate_phase=False,
+                                       speculate_affine=False,
+                                       speculate_patch1=False,
+                                       speculate_integrated=True)),
     ]
     results = []
     for name, kw in cases:
