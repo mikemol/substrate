@@ -93,14 +93,24 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     )
 
     max_alphabet = alphabet_size(max_opcodes)
-    counts = np.zeros(max_alphabet, dtype=np.int64)
+    # V3: parallel predictors per basis label. counts_by_basis[L] is
+    # the count array for emissions made while basis_state.label = L.
+    # At V3 only ALGEBRAIC's counts are exercised (encoder never
+    # switches), but the infrastructure is in place.
+    counts_by_basis = {
+        L: np.zeros(max_alphabet, dtype=np.int64)
+        for L in BasisLabel
+    }
 
     rc = RCState()
     prev_emission = -1
     n_vm = 0
     n_growth = 0
     n_basis_at = 0
-    basis_state = IDENTITY     # V1: stays at IDENTITY throughout
+    basis_state = IDENTITY     # V3: stays at IDENTITY throughout
+
+    def _current_counts():
+        return counts_by_basis[basis_state.label]
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
@@ -123,6 +133,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
             advance = best_len
 
         a_size = alphabet_size(n_used)
+        counts = _current_counts()
         cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
         rc_step_encode(rc, cumfreqs, emit_idx, int(cumfreqs[-1]))
         counts[emit_idx] += 1
@@ -152,11 +163,13 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                     digram_seen[key] = n_used_new - 1
                     n_used = n_used_new
                     n_growth += 1
-                    if alphabet_size(max_opcodes) > counts.shape[0]:
-                        new_counts = np.zeros(alphabet_size(max_opcodes),
-                                                 dtype=np.int64)
-                        new_counts[:counts.shape[0]] = counts
-                        counts = new_counts
+                    # V3: grow ALL per-basis count arrays in lockstep.
+                    target = alphabet_size(max_opcodes)
+                    for L, cnt in list(counts_by_basis.items()):
+                        if target > cnt.shape[0]:
+                            new_c = np.zeros(target, dtype=np.int64)
+                            new_c[:cnt.shape[0]] = cnt
+                            counts_by_basis[L] = new_c
                 else:
                     cap_frozen = True
 
@@ -178,9 +191,9 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V2",
-        "operad_axes": ("basis-torsor@identity-only",
-                          "quaternion-bearing@identity-only"),
+        "v_arc_slice": "V3",
+        "operad_axes": ("basis-torsor", "quaternion-bearing",
+                          "per-basis-predictors@identity-only"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -213,18 +226,25 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     max_alphabet = alphabet_size(max_opcodes)
-    counts = np.zeros(max_alphabet, dtype=np.int64)
-    basis_state = IDENTITY      # V1: stays at IDENTITY
+    # V3: parallel predictors per basis label, mirrored from encoder.
+    counts_by_basis = {
+        L: np.zeros(max_alphabet, dtype=np.int64) for L in BasisLabel
+    }
+    basis_state = IDENTITY
+
+    def _current_counts():
+        return counts_by_basis[basis_state.label]
 
     n_emissions = n_vm
     while n_emissions > 0:
         a_size = alphabet_size(n_used)
+        counts = _current_counts()
         cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
         if emit_idx == _control_index(S_BASIS_AT, n_used):
-            # V1 dispatch: read the target basis label and update state.
+            counts = _current_counts()
             cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
             label_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
             counts[label_sym] += 1
@@ -234,8 +254,7 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             )
             continue
         if emit_idx == _control_index(S_BASIS_BY, n_used):
-            # V2 dispatch: read the quaternion component (W/I/J/K) and
-            # multiply current quaternion state by it.
+            counts = _current_counts()
             cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
             comp_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
             counts[comp_sym] += 1
@@ -273,11 +292,12 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                 if grew:
                     digram_seen[key] = n_used_new - 1
                     n_used = n_used_new
-                    if alphabet_size(max_opcodes) > counts.shape[0]:
-                        new_counts = np.zeros(alphabet_size(max_opcodes),
-                                                 dtype=np.int64)
-                        new_counts[:counts.shape[0]] = counts
-                        counts = new_counts
+                    target = alphabet_size(max_opcodes)
+                    for L, cnt in list(counts_by_basis.items()):
+                        if target > cnt.shape[0]:
+                            new_c = np.zeros(target, dtype=np.int64)
+                            new_c[:cnt.shape[0]] = cnt
+                            counts_by_basis[L] = new_c
                 else:
                     cap_frozen = True
         prev_emission = effective_emit
