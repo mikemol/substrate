@@ -59,7 +59,7 @@ class RuleAction:
     residue: str = V4_IDENTITY
     start_phase: int = 0
     length_mask: int = -1
-    f2_patch: tuple = ()             # tuple of int indices (sparse F₂)
+    f2_patch: tuple = ()             # tuple of (idx, new_value) pairs
     span_coupling: tuple = ()        # () or (rule_right_id, overlap_mask)
 
     def is_identity(self) -> bool:
@@ -114,9 +114,14 @@ def apply_to_body(body, action: RuleAction):
         sliced = sliced[action.start_phase:]
     if action.length_mask != -1:
         sliced = sliced[:action.length_mask]
-    # U4+: f2_patch, span_coupling land here in turn.
+    # U4/U5: f2_patch as (idx, new_value) substitutions.
     if action.f2_patch:
-        raise NotImplementedError("f2_patch: U4/U5")
+        import numpy as _np
+        out = _np.asarray(sliced).copy()
+        for idx, new_val in action.f2_patch:
+            if 0 <= idx < out.shape[0]:
+                out[idx] = new_val
+        sliced = out
     if action.span_coupling:
         raise NotImplementedError("span_coupling: U6/U7")
     # V₄ residue application also deferred — U-arc currently emits

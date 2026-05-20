@@ -53,9 +53,10 @@ from eliza.tensor_range_coder import (
 
 # V6 control opcodes (joint-alphabet slots after data opcodes).
 # Each slice enables one slot; encoder may opt in to emit.
-S_PHASE = 0       # U2: + start_phase
-S_AFFINE = 1      # U3: + length_mask (full AffineProjection)
-N_V6_CONTROL_OPCODES = 2
+S_PHASE = 0           # U2: per-emission phase tag (legacy inline)
+S_AFFINE = 1          # U3: per-emission affine tag (legacy inline)
+S_FLIP_PATCH1 = 2     # U4: flip-paradigm toggle for k=1 F₂Patch mode
+N_V6_CONTROL_OPCODES = 3
 
 
 def alphabet_size(n_used: int) -> int:
@@ -183,6 +184,48 @@ def _decode_phase_tagged(dec_state, counts, a_size):
     return opc_sym - 24, phase
 
 
+def _try_patch1_match(walk, pos: int, bodies, lengths, n_used: int,
+                        best_len: int, margin: int = 1):
+    """U4 single-bit F₂Patch search: find a rule whose body differs
+    from `walk[pos:pos+L]` in exactly one chain-symbol position.
+
+    Returns (opcode_idx, length, patch_idx, replacement) if a k=1
+    near-match's effective length exceeds best_len + margin; else None.
+
+    Under flip-paradigm, the per-emission cost in patch-mode is 3
+    symbols (opcode + patch_idx + replacement); the flip-in/flip-out
+    are amortised across the run. So the per-emission margin is
+    just `margin = 1` (one extra symbol-worth of beneficence).
+    """
+    walk_np = (cp.asnumpy(walk) if HAS_CUPY else np.asarray(walk))
+    n_chain = walk_np.shape[0]
+    best_op = -1
+    best_len_seen = 0
+    best_idx = -1
+    best_repl = -1
+    for op_idx in range(n_used):
+        L = int(lengths[op_idx])
+        if L <= 1:
+            continue
+        target_len = min(L, n_chain - pos)
+        if target_len <= best_len_seen:
+            continue
+        body_np = (cp.asnumpy(bodies[op_idx, :target_len]) if HAS_CUPY
+                   else np.asarray(bodies[op_idx, :target_len]))
+        diffs = np.flatnonzero(body_np != walk_np[pos:pos + target_len])
+        if diffs.size == 1:
+            idx = int(diffs[0])
+            repl = int(walk_np[pos + idx])
+            if target_len > best_len_seen:
+                best_op = op_idx
+                best_len_seen = target_len
+                best_idx = idx
+                best_repl = repl
+    if best_op < 0 or best_len_seen < best_len + margin:
+        return None
+    return (best_op, best_len_seen, best_idx, best_repl)
+
+
 def _try_affine_match(walk, pos: int, bodies, lengths, n_used: int,
                         best_len: int, margin: int = 3):
     """U3 affine-search: scan (rule, phase, length) for the longest
@@ -222,14 +265,39 @@ def _try_affine_match(walk, pos: int, bodies, lengths, n_used: int,
     return (best_op, best_phase, best_length)
 
 
+def _scan_patch1_run(walk, pos: int, bodies, lengths, n_used: int,
+                       horizon: int = 8):
+    """Look ahead up to `horizon` positions: at each, check whether a
+    k=1 patch-match exists with effective_len > 0.
+
+    Returns list of patch1 results [(opc, length, idx, repl), ...] —
+    indexed by position offset; entries are None when no k=1 match.
+
+    Used by the U4 flip-paradigm encoder to decide whether the
+    upcoming run is patch-friendly enough to flip into patch-mode.
+    """
+    out = []
+    walk_np = (cp.asnumpy(walk) if HAS_CUPY else np.asarray(walk))
+    n_chain = walk_np.shape[0]
+    p = pos
+    while p < min(pos + horizon, n_chain) and len(out) < horizon:
+        out.append(_try_patch1_match(walk, p, bodies, lengths, n_used, 0))
+        # Advance optimistically; the encoder's main loop will use
+        # actual advance after committing to greedy or patch.
+        p += 1
+    return out
+
+
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES,
            speculate_phase: bool = False,
-           speculate_affine: bool = False) -> Tuple[bytes, Dict]:
-    """V6 encoder. U2: `speculate_phase=True` enables phase-only search;
-    U3: `speculate_affine=True` enables full (phase, length) search.
-    Both default off so V6==V5 byte-identical except for the +2 control
-    slot's tiny predictor overhead.
+           speculate_affine: bool = False,
+           speculate_patch1: bool = False) -> Tuple[bytes, Dict]:
+    """V6 encoder. U-arc speculation flags (each defaults off so V6 ==
+    V5 byte-identical at speculation_off):
+      * speculate_phase  — per-emission phase tag (U2, legacy inline).
+      * speculate_affine — per-emission affine tag (U3, legacy inline).
+      * speculate_patch1 — flip-paradigm k=1 patch-mode (U4).
     """
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
                       else build_full_opcode_set()
@@ -264,11 +332,64 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_growth = 0
     n_phase_emissions = 0
     n_affine_emissions = 0
+    n_patch1_emissions = 0
+    n_flip_patch1 = 0
+    patch_mode = False     # U4 flip state: are we in patch-tagged mode?
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
 
     while pos < n_chain:
+        # U4 flip-paradigm: at each position decide whether to flip
+        # in / out of patch-mode based on lookahead.
+        if speculate_patch1 and n_used > 0:
+            ahead = _scan_patch1_run(walk, pos, bodies, lengths, n_used,
+                                       horizon=4)
+            run_count = sum(1 for x in ahead if x is not None)
+            if not patch_mode and run_count >= 2:
+                # Flip IN to patch-mode.
+                a_size = alphabet_size(n_used)
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                ctrl = _control_index(S_FLIP_PATCH1, n_used)
+                rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+                counts[ctrl] += 1
+                patch_mode = True
+                n_flip_patch1 += 1
+            elif patch_mode and run_count == 0:
+                # Flip OUT of patch-mode.
+                a_size = alphabet_size(n_used)
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                ctrl = _control_index(S_FLIP_PATCH1, n_used)
+                rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+                counts[ctrl] += 1
+                patch_mode = False
+                n_flip_patch1 += 1
+
+        if patch_mode:
+            patch = _try_patch1_match(walk, pos, bodies, lengths, n_used, 0)
+            if patch is None:
+                # Forced flip out — no patch match here.
+                a_size = alphabet_size(n_used)
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                ctrl = _control_index(S_FLIP_PATCH1, n_used)
+                rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+                counts[ctrl] += 1
+                patch_mode = False
+                n_flip_patch1 += 1
+            else:
+                opc, length, patch_idx, repl = patch
+                a_size = alphabet_size(n_used)
+                for sym in (24 + opc, patch_idx, repl):
+                    cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                    s = min(sym, a_size - 1)
+                    rc_step_encode(rc, cumfreqs, s, int(cumfreqs[-1]))
+                    counts[s] += 1
+                n_patch1_emissions += 1
+                effective_emit = 24 + opc
+                pos += length
+                n_vm += 1
+                prev_emission = effective_emit
+                continue
         # U3 affine-search runs first (subsumes U2's phase-only).
         if speculate_affine and n_used > 0:
             # Determine current greedy best_len at pos.
@@ -373,10 +494,13 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_growth": n_growth,
         "n_phase_emissions": n_phase_emissions,
         "n_affine_emissions": n_affine_emissions,
+        "n_patch1_emissions": n_patch1_emissions,
+        "n_flip_patch1": n_flip_patch1,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "u_arc_slice": "U3",
-        "action_algebra_factors": ("V4-residue", "start_phase", "length_mask"),
+        "u_arc_slice": "U4",
+        "action_algebra_factors": ("V4-residue", "start_phase", "length_mask",
+                                     "f2_patch[k=1]"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -409,13 +533,43 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     cap_frozen = False
     max_alphabet = alphabet_size(max_opcodes)
     counts = np.zeros(max_alphabet, dtype=np.int64)
+    patch_mode = False    # U4 decoder flip state
 
-    for _ in range(n_vm):
+    n_emissions = n_vm
+    while n_emissions > 0:
         a_size = alphabet_size(n_used)
         cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
+        # Flip-paradigm control: S_FLIP_PATCH1 toggles patch_mode and
+        # consumes no emission slot. Decoder loops without decrementing.
+        if emit_idx == _control_index(S_FLIP_PATCH1, n_used):
+            patch_mode = not patch_mode
+            continue
+
+        if patch_mode:
+            # Read (opc_sym, patch_idx, replacement) AFTER the symbol
+            # already read serves AS opc_sym. So emit_idx == opc_sym.
+            opc_idx = emit_idx - 24
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            patch_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+            counts[patch_idx] += 1
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            repl = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+            counts[repl] += 1
+            L = int(lengths[opc_idx])
+            body_np = (cp.asnumpy(bodies[opc_idx, :L]) if HAS_CUPY
+                       else np.asarray(bodies[opc_idx, :L])).copy()
+            if 0 <= patch_idx < L:
+                body_np[patch_idx] = repl
+            chain_terminals.extend(int(b) for b in body_np)
+            effective_emit = 24 + opc_idx
+            n_emissions -= 1
+            prev_emission = effective_emit
+            continue
+
+        n_emissions -= 1
         if emit_idx == _control_index(S_AFFINE, n_used):
             # U3: read (opcode, phase, length).
             triplet = []
@@ -499,9 +653,14 @@ def self_check(size: int = 1024, verbose: bool = True) -> bool:
         data = f.read()[:size]
 
     cases = [
-        ("identity (U1)", dict(speculate_phase=False, speculate_affine=False)),
-        ("+ phase (U2)",   dict(speculate_phase=True,  speculate_affine=False)),
-        ("+ affine (U3)",  dict(speculate_phase=False, speculate_affine=True)),
+        ("identity (U1)", dict(speculate_phase=False, speculate_affine=False,
+                                speculate_patch1=False)),
+        ("+ phase (U2)",   dict(speculate_phase=True,  speculate_affine=False,
+                                speculate_patch1=False)),
+        ("+ affine (U3)",  dict(speculate_phase=False, speculate_affine=True,
+                                speculate_patch1=False)),
+        ("+ patch1 (U4)",  dict(speculate_phase=False, speculate_affine=False,
+                                speculate_patch1=True)),
     ]
     results = []
     for name, kw in cases:
@@ -519,7 +678,9 @@ def self_check(size: int = 1024, verbose: bool = True) -> bool:
             print(f"  {name}:")
             print(f"    bytes: {len(enc)}  ({bpb:.3f} b/byte)  "
                   f"phase={stats.get('n_phase_emissions',0)} "
-                  f"affine={stats.get('n_affine_emissions',0)}")
+                  f"affine={stats.get('n_affine_emissions',0)} "
+                  f"patch1={stats.get('n_patch1_emissions',0)} "
+                  f"flips={stats.get('n_flip_patch1',0)}")
             print(f"    time: {t*1000:.0f}ms   round-trip: "
                   f"{'OK' if ok else 'FAIL'}")
         bpb_id = results[0][5]
