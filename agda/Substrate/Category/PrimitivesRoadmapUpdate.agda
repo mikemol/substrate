@@ -1,0 +1,79 @@
+------------------------------------------------------------------------
+-- Substrate.Category.PrimitivesRoadmapUpdate
+--
+-- Capstone documentation for the categorical primitives roadmap as
+-- of this arc's completion. Updates the original roadmap (see
+-- Substrate.Category.Primitives.DBE.md) with the primitives added
+-- across subsequent arcs.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.PrimitivesRoadmapUpdate where
+
+------------------------------------------------------------------------
+-- Original roadmap primitives (per Substrate.Category.Primitives.DBE.md):
+--
+--   #1 Coalgebra (FixedPoint, InvariantSubset) ✓
+--   #2 Equalizer (Equalizer-Of, IsEqualised) ✓
+--   #3 Pullback (Pullback-Of, IsInPullback, Wide-Meet) ✓
+--   #4 Adjunction (unit/counit) ✓
+--   #5 BeckChevalley (BCSquare, cell) ✓
+--   #6 FreeLinearization — DEFERRED (still untouched).
+--
+-- Coalgebra extensions added after:
+--   #1a FiniteOrder (HasOrder, HasLagrangeOrder; iterate, iterate-add)
+--   #1b LagrangeOrder (Action, HasLagrangeOrder, HasLagrangeOrder-at)
+--
+-- New primitives added across the arcs:
+--
+--   #7  Strict2Monoid — 1-object strict 2-category record + FromCoxeter.
+--   #8  GradedMonoid — ℕ-graded monoid; generalised to
+--       RGradedMonoid for any CommutativeMonoid R.
+--   #9  Cone — apex with finite base + legs (Substrate.Category.Cone).
+--       Includes Cone.Product, Cone.FieldFilling, Cone.EdgeApex,
+--       Cone.EqualizerInstance, Cone.PullbackInstance.
+--
+-- Tower-level primitives:
+--   #10 FieldBond — oriented bond between two host fields.
+--   #11 MultiFieldBond.FieldTower — chain of n+1 fields with n bonds.
+--
+-- TensorProduct family (#5 supporting):
+--   TensorProduct, TensorProduct.Antisymmetric,
+--   TensorProduct.Bilinearity, TensorProduct.AntisymmetricTensor,
+--   TensorProduct.BCInstances.
+--
+-- BC 2-cell calculus operations (this arc):
+--   BeckChevalley.Compose (vertical-paste),
+--   BeckChevalley.Horizontal (horizontal-paste).
+--
+-- Status of major retrofits:
+--
+--   * Equalizer (#2) AS Cone instance: Cone.EqualizerInstance ✓
+--   * Pullback (#3) AS Cone instance: Cone.PullbackInstance ✓
+--   * BC composition combinators: vertical + horizontal pastings ✓
+--   * FreeLinearization (#6): still deferred.
+--
+-- Per [[project-cone-subsumes-equalizer-pullback]]: Equalizer and
+-- Pullback are now realized as Cone instances; the older primitives
+-- remain for ergonomics but the framework relationship is named.
+--
+-- Per [[project-3plus1-is-cone-instance]]: the Cone primitive
+-- frames the substrate's 3+1 parity universal at the proper
+-- categorical level.
+--
+-- Per [[project-multi-field-tower-architecture]]: FieldTower
+-- handles composite-prime-power counts via chained bonds.
+--
+-- Deferred follow-ons (next arcs):
+--
+--   * **#6 FreeLinearization**: still the next untouched primitive
+--     from the original roadmap.
+--   * **Cone.WithMorphisms**: extend Cone to handle base-internal
+--     morphisms (Equalizer's parallel pair, Pullback's cospan as
+--     first-class).
+--   * **Tree-shaped FieldBond**: generalize FieldTower from chains
+--     to arbitrary DAG structures (parallel CRT projections).
+--   * **BC interchange law**: vertical + horizontal pasting commute
+--     (the 2-categorical interchange).
+------------------------------------------------------------------------
