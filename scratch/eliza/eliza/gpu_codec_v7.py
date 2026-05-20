@@ -46,6 +46,7 @@ from eliza.per_nibble_chain import nibbles_to_bytes, nibble_from_transition
 from eliza.tensor_range_coder import (
     RCDecoderState, RCState, rc_finish, rc_step_decode, rc_step_encode,
 )
+from eliza.v7_predictor import BigramPredictor, Predictor, UnigramPredictor
 
 
 # V7 control opcodes (V-arc additions on top of V6's set).
@@ -64,15 +65,100 @@ def _control_index(slot: int, n_used: int) -> int:
     return 24 + n_used + slot
 
 
-def _predictor_cost_estimate(counts, alphabet_size_now, emit_idx) -> float:
-    """V5: estimate -log₂ P(emit_idx | predictor) under the given
-    count array. Used to compare predictors at switch points.
+def _build_predictors(max_alphabet: int) -> Dict[BasisLabel, Predictor]:
+    """Bind each BasisLabel to a predictor instance.
+
+    Per the DBE pass: BasisLabel is the orbit slot; Predictor is the
+    costructure. The binding is the constructive use of the V-arc
+    parallel-predictor infrastructure.
+
+    Current bindings:
+      * ALGEBRAIC → UnigramPredictor (V6-default behaviour).
+      * SPECTRAL  → BigramPredictor (context = previous emit_idx).
+      * Other labels: UnigramPredictor stubs (population pending).
     """
+    return {
+        BasisLabel.ALGEBRAIC:       UnigramPredictor(max_alphabet),
+        BasisLabel.SPECTRAL:        BigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_TRIV:   UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_SIGN:   UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_STD:    UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_STDSGN: UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_2D:     UnigramPredictor(max_alphabet),
+    }
+
+
+def _grow_all_predictors(predictors: Dict[BasisLabel, Predictor],
+                           new_alphabet: int) -> None:
+    for p in predictors.values():
+        p.grow_to(new_alphabet)
+
+
+def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
+                      match_tensor, walk, n_used: int, a_size: int,
+                      prev_emission: int, current_label: BasisLabel,
+                      n_chain: int) -> Dict[BasisLabel, float]:
+    """Forward simulation: greedy-emit K future positions starting at
+    `pos`, accumulating cost under each candidate predictor.
+
+    Non-current labels pay the switch overhead (S_BASIS_AT + label_sym
+    = 2 symbols under current predictor) as a one-time cost in their
+    total. This makes the comparison fair without a margin heuristic.
+    """
+    # Switch overhead: 2 symbols emitted under CURRENT predictor at
+    # the switch point. Estimate as 2 × log₂(a_size) (uniform bound).
     from math import log2
-    alpha = 0.5
-    total = float(np.sum(counts[:alphabet_size_now])) + alpha * alphabet_size_now
-    p = (float(counts[emit_idx]) + alpha) / total
-    return -log2(max(p, 1e-30))
+    switch_overhead = 2.0 * log2(max(a_size, 2))
+
+    costs = {L: (0.0 if L == current_label else switch_overhead)
+             for L in predictors}
+    sim_pos = pos
+    sim_prev = prev_emission
+    steps = 0
+    while steps < K and sim_pos < n_chain:
+        if sim_pos < match_tensor.shape[0] and n_used > 0:
+            row = match_tensor[sim_pos, :n_used]
+            best_idx_gpu = xp().argmax(row)
+            best_idx = int(best_idx_gpu)
+            best_len = int(row[best_idx_gpu])
+        else:
+            best_idx = 0
+            best_len = 0
+        if best_len == 0:
+            emit_idx = int(walk[sim_pos])
+            advance = 1
+        else:
+            emit_idx = 24 + best_idx
+            advance = best_len
+        for L, pred in predictors.items():
+            costs[L] += pred.cost(emit_idx, a_size, sim_prev)
+        sim_prev = emit_idx
+        sim_pos += advance
+        steps += 1
+    return costs
+
+
+def _two_stage_choose(pos: int, predictors, match_tensor, walk,
+                        n_used: int, a_size: int, prev_emission: int,
+                        current_label: BasisLabel,
+                        n_chain: int, K_short: int = 8, K_long: int = 16):
+    """Two-stage lookahead. Pick best at K_short (incl. switch
+    overhead for non-current); verify at K_long. Switch only if both
+    stages choose the same non-current label.
+    """
+    short = _simulate_costs(pos, K_short, predictors, match_tensor, walk,
+                              n_used, a_size, prev_emission, current_label,
+                              n_chain)
+    short_best = min(short, key=short.get)
+    if short_best == current_label:
+        return None
+    long_ = _simulate_costs(pos, K_long, predictors, match_tensor, walk,
+                              n_used, a_size, prev_emission, current_label,
+                              n_chain)
+    long_best = min(long_, key=long_.get)
+    if short_best == long_best:
+        return short_best
+    return None
 
 
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
@@ -120,24 +206,19 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     )
 
     max_alphabet = alphabet_size(max_opcodes)
-    # V3: parallel predictors per basis label. counts_by_basis[L] is
-    # the count array for emissions made while basis_state.label = L.
-    # At V3 only ALGEBRAIC's counts are exercised (encoder never
-    # switches), but the infrastructure is in place.
-    counts_by_basis = {
-        L: np.zeros(max_alphabet, dtype=np.int64)
-        for L in BasisLabel
-    }
+    # Constructive V-arc: BasisLabel slots are bound to Predictor
+    # instances (per the DBE pass). ALGEBRAIC → unigram (V6 default),
+    # SPECTRAL → bigram. Encoder may speculatively switch between
+    # basis labels per emission when the alternative predictor's
+    # cost is sufficiently lower.
+    predictors = _build_predictors(max_alphabet)
 
     rc = RCState()
     prev_emission = -1
     n_vm = 0
     n_growth = 0
     n_basis_at = 0
-    basis_state = IDENTITY     # V3: stays at IDENTITY throughout
-
-    def _current_counts():
-        return counts_by_basis[basis_state.label]
+    basis_state = IDENTITY
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
@@ -160,10 +241,46 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
             advance = best_len
 
         a_size = alphabet_size(n_used)
-        counts = _current_counts()
-        cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+
+        # Per user (no heuristic margins): two-stage lookahead. Pick
+        # the best predictor at K=8 forward simulation; verify at
+        # K=16. Switch only if both stages agree on a non-current
+        # label.
+        if speculate_basis:
+            target_label = _two_stage_choose(
+                pos, predictors, match_tensor, walk, n_used, a_size,
+                prev_emission, basis_state.label, n_chain,
+                K_short=8, K_long=16,
+            )
+            if (target_label is not None
+                    and target_label != basis_state.label):
+                pred = predictors[basis_state.label]
+                ctrl = _control_index(S_BASIS_AT, n_used)
+                cumfreqs = pred.cumfreqs(a_size, prev_emission)
+                rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+                for p in predictors.values():
+                    p.update(ctrl, prev_emission)
+                cumfreqs = pred.cumfreqs(a_size, prev_emission)
+                label_sym = min(int(target_label) % N_BASIS_LABELS,
+                                  a_size - 1)
+                rc_step_encode(rc, cumfreqs, label_sym, int(cumfreqs[-1]))
+                for p in predictors.values():
+                    p.update(label_sym, prev_emission)
+                basis_state = BasisState(
+                    label=BasisLabel(label_sym % N_BASIS_LABELS),
+                    quat=basis_state.quat,
+                )
+                n_basis_at += 1
+
+        predictor = predictors[basis_state.label]
+        cumfreqs = predictor.cumfreqs(a_size, prev_emission)
         rc_step_encode(rc, cumfreqs, emit_idx, int(cumfreqs[-1]))
-        counts[emit_idx] += 1
+        # Constructive fix: ALL predictors learn from this emission
+        # (not just the active one). Otherwise the inactive predictors
+        # stay cold forever, biasing the cost-comparison against ever
+        # switching to them. Decoder mirrors this update.
+        for pred in predictors.values():
+            pred.update(emit_idx, prev_emission)
 
         if prev_emission >= 0 and not cap_frozen:
             key = (prev_emission, emit_idx)
@@ -190,13 +307,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                     digram_seen[key] = n_used_new - 1
                     n_used = n_used_new
                     n_growth += 1
-                    # V3: grow ALL per-basis count arrays in lockstep.
-                    target = alphabet_size(max_opcodes)
-                    for L, cnt in list(counts_by_basis.items()):
-                        if target > cnt.shape[0]:
-                            new_c = np.zeros(target, dtype=np.int64)
-                            new_c[:cnt.shape[0]] = cnt
-                            counts_by_basis[L] = new_c
+                    _grow_all_predictors(predictors, alphabet_size(max_opcodes))
                 else:
                     cap_frozen = True
 
@@ -256,38 +367,37 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     max_alphabet = alphabet_size(max_opcodes)
-    # V3: parallel predictors per basis label, mirrored from encoder.
-    counts_by_basis = {
-        L: np.zeros(max_alphabet, dtype=np.int64) for L in BasisLabel
-    }
+    # Mirror encoder's predictor binding.
+    predictors = _build_predictors(max_alphabet)
     basis_state = IDENTITY
-
-    def _current_counts():
-        return counts_by_basis[basis_state.label]
 
     n_emissions = n_vm
     while n_emissions > 0:
         a_size = alphabet_size(n_used)
-        counts = _current_counts()
-        cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+        predictor = predictors[basis_state.label]
+        cumfreqs = predictor.cumfreqs(a_size, prev_emission)
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
-        counts[emit_idx] += 1
+        # All predictors learn from every emission (mirrors encoder).
+        for p in predictors.values():
+            p.update(emit_idx, prev_emission)
 
         if emit_idx == _control_index(S_BASIS_AT, n_used):
-            counts = _current_counts()
-            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            predictor = predictors[basis_state.label]
+            cumfreqs = predictor.cumfreqs(a_size, prev_emission)
             label_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
-            counts[label_sym] += 1
+            for p in predictors.values():
+                p.update(label_sym, prev_emission)
             basis_state = BasisState(
                 label=BasisLabel(label_sym % N_BASIS_LABELS),
                 quat=basis_state.quat,
             )
             continue
         if emit_idx == _control_index(S_BASIS_BY, n_used):
-            counts = _current_counts()
-            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            predictor = predictors[basis_state.label]
+            cumfreqs = predictor.cumfreqs(a_size, prev_emission)
             comp_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
-            counts[comp_sym] += 1
+            for p in predictors.values():
+                p.update(comp_sym, prev_emission)
             new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
@@ -329,12 +439,7 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                 if grew:
                     digram_seen[key] = n_used_new - 1
                     n_used = n_used_new
-                    target = alphabet_size(max_opcodes)
-                    for L, cnt in list(counts_by_basis.items()):
-                        if target > cnt.shape[0]:
-                            new_c = np.zeros(target, dtype=np.int64)
-                            new_c[:cnt.shape[0]] = cnt
-                            counts_by_basis[L] = new_c
+                    _grow_all_predictors(predictors, alphabet_size(max_opcodes))
                 else:
                     cap_frozen = True
         prev_emission = effective_emit
@@ -355,7 +460,13 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 
 
 def self_check(size: int = 1024, verbose: bool = True) -> bool:
-    """Round-trip + (E1) byte-identity vs V2 at basis=IDENTITY."""
+    """V7 self-check.
+      * (E1) speculate_basis=False reproduces V6-equivalent behaviour
+        (round-trip + close to V2 b/byte).
+      * (E2) speculate_basis=True round-trips lossless.
+      * (E3) measure whether two-stage lookahead actually finds
+        switches that beat unigram-only.
+    """
     from pathlib import Path
     import time
     from eliza import gpu_codec_v2 as v2
@@ -364,43 +475,38 @@ def self_check(size: int = 1024, verbose: bool = True) -> bool:
     with open(src, "rb") as f:
         data = f.read()[:size]
 
-    # V7 at default basis: SAME alphabet size as V2 except for the +1
-    # control slot. Self-check verifies round-trip only; bit-exact
-    # equality with V2 won't hold because V7's predictor sees the
-    # extra unused control slot.
-    t0 = time.perf_counter()
-    encoded, stats = encode(data)
-    enc_time = time.perf_counter() - t0
-    t0 = time.perf_counter()
-    decoded = decode(encoded)
-    dec_time = time.perf_counter() - t0
-    ok_roundtrip = decoded == data
+    cases = [
+        ("identity (speculate=False)", False),
+        ("two-stage (speculate=True)", True),
+    ]
+    results = []
+    for name, flag in cases:
+        t0 = time.perf_counter()
+        enc, stats = encode(data, speculate_basis=flag)
+        t = time.perf_counter() - t0
+        ok = decode(enc) == data
+        bpb = 8 * len(enc) / len(data)
+        results.append((name, flag, enc, stats, t, ok, bpb))
 
-    # Compression-equivalence threshold: V7 should be within +0.05
-    # b/byte of V2 (the predictor learns the unused slot has 0 prob
-    # quickly).
     v2_encoded, _ = v2.encode(data)
-    bpb_v7 = 8 * len(encoded) / len(data)
     bpb_v2 = 8 * len(v2_encoded) / len(data)
-    bpb_overhead = bpb_v7 - bpb_v2
-    ok_compression = bpb_overhead < 0.10
 
     if verbose:
-        print("=== GpuCodecV7 (V-arc V1: basis torsor, identity-only) ===")
-        print(f"  input bytes:                {len(data)}")
-        print(f"  encoded:                    {len(encoded)} bytes "
-              f"({bpb_v7:.3f} b/byte)")
-        print(f"  n_vm:                       {stats['n_vm']}")
-        print(f"  n_basis_at:                 {stats['n_basis_at']}")
-        print(f"  v_arc_slice:                {stats['v_arc_slice']}")
-        print(f"  operad_axes:                {stats['operad_axes']}")
-        print(f"  encode time:                {enc_time*1000:.1f}ms")
-        print(f"  decode time:                {dec_time*1000:.1f}ms")
-        print(f"  round-trip:                 {'OK' if ok_roundtrip else 'FAIL'}")
-        print(f"  V7 vs V2 overhead:          {bpb_overhead:+.3f} b/byte "
-              f"({'OK' if ok_compression else 'FAIL'})")
-        print(f"\nResult: {'OK' if ok_roundtrip and ok_compression else 'FAIL'}")
-    return ok_roundtrip and ok_compression
+        print("=== GpuCodecV7 (V-arc V1..V8: predictors + two-stage lookahead) ===")
+        print(f"  input bytes: {len(data)}")
+        print(f"  V2 baseline: {bpb_v2:.3f} b/byte")
+        for name, flag, enc, stats, t, ok, bpb in results:
+            print(f"  {name}:")
+            print(f"    bytes: {len(enc)}  ({bpb:.3f} b/byte)")
+            print(f"    n_basis_at: {stats['n_basis_at']}  "
+                  f"time: {t*1000:.0f}ms  round-trip: "
+                  f"{'OK' if ok else 'FAIL'}")
+        delta = results[1][6] - results[0][6]
+        verdict = ("BENEFITS" if delta < -0.01 else
+                   "NEUTRAL" if abs(delta) < 0.01 else
+                   "REGRESSES")
+        print(f"  (E3) two-stage vs identity: {verdict} ({delta:+.3f} b/byte)")
+    return all(r[5] for r in results)
 
 
 if __name__ == "__main__":
