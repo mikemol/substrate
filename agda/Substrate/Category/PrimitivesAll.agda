@@ -80,6 +80,17 @@ import Substrate.Category.Cone.PullbackWithMorphisms
 import Substrate.Category.FieldBond
 import Substrate.Category.MultiFieldBond
 import Substrate.Category.FieldFanOut
+import Substrate.Category.FieldContinuum
+
+------------------------------------------------------------------------
+-- Torsor family (#13).
+--
+-- G-torsor universal property: free transitive group action on a set.
+-- Captures gauge-freedom spaces (e.g., the 168 Reserved↔SelfDual
+-- bridges at HodgeDim4) as single universal-property objects.
+------------------------------------------------------------------------
+
+import Substrate.Category.GTorsor
 
 ------------------------------------------------------------------------
 -- Roadmap documentation modules.

@@ -49,6 +49,14 @@ module Substrate.Category.PrimitivesRoadmapV2 where
 --   #10 FieldBond — oriented inter-field bond
 --   #11 FieldTower (n+1 fields, n bonds, chain shape)
 --   #12 FieldFanOut (1 source, n targets, fan-out shape)
+--   #13 GTorsor — free transitive G-action on a set
+--       (captures gauge-freedom spaces as universal-property objects;
+--        HodgeDim4 GaugeTorsor = 168 Reserved↔SelfDual bridges as a
+--        GL(3, F₂)-torsor; closes [[reserved-selfdual-bijection-gauge]]
+--        question structurally)
+--   #14 FieldContinuum — 5th gauge class (continuum-field couplings:
+--       Fluidic/Magnetic/Photonic limit beyond discrete Sylow framework;
+--       completes the 4+1 meta-pattern at multi-field architecture)
 --
 -- Status of structural arcs:
 --

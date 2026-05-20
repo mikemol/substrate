@@ -115,6 +115,16 @@ import Substrate.Algebra.GL3F2.SingerOrder
 import Substrate.Algebra.GL3F2.MultiRouteEquivariance
 
 ------------------------------------------------------------------------
+-- FieldContinuum primitive (#14) — exposed as a primitive but no
+-- substrate-side instances yet. Per
+-- [[continuous-via-discrete-inference-rules]]: domain-specific
+-- instances (Fluidic / Magnetic / Photonic) supply the Continuum
+-- target as an abstract Set; not in scope as substrate-side content.
+------------------------------------------------------------------------
+
+import Substrate.Category.FieldContinuum
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
