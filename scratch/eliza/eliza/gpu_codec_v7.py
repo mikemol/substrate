@@ -46,7 +46,9 @@ from eliza.per_nibble_chain import nibbles_to_bytes, nibble_from_transition
 from eliza.tensor_range_coder import (
     RCDecoderState, RCState, rc_finish, rc_step_decode, rc_step_encode,
 )
-from eliza.v7_predictor import BigramPredictor, Predictor, UnigramPredictor
+from eliza.v7_predictor import (
+    BigramPredictor, Predictor, TrigramPredictor, UnigramPredictor,
+)
 
 
 # V7 control opcodes (V-arc additions on top of V6's set).
@@ -80,7 +82,7 @@ def _build_predictors(max_alphabet: int) -> Dict[BasisLabel, Predictor]:
     return {
         BasisLabel.ALGEBRAIC:       UnigramPredictor(max_alphabet),
         BasisLabel.SPECTRAL:        BigramPredictor(max_alphabet),
-        BasisLabel.ISOTYPIC_TRIV:   UnigramPredictor(max_alphabet),
+        BasisLabel.ISOTYPIC_TRIV:   TrigramPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_SIGN:   UnigramPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_STD:    UnigramPredictor(max_alphabet),
         BasisLabel.ISOTYPIC_STDSGN: UnigramPredictor(max_alphabet),
@@ -96,24 +98,25 @@ def _grow_all_predictors(predictors: Dict[BasisLabel, Predictor],
 
 def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
                       match_tensor, walk, n_used: int, a_size: int,
-                      prev_emission: int, current_label: BasisLabel,
+                      context, current_label: BasisLabel,
                       n_chain: int) -> Dict[BasisLabel, float]:
     """Forward simulation: greedy-emit K future positions starting at
     `pos`, accumulating cost under each candidate predictor.
 
+    `context` is a tuple (prev_emission, prev_prev_emission) per the
+    multi-order predictor interface.
+
     Non-current labels pay the switch overhead (S_BASIS_AT + label_sym
-    = 2 symbols under current predictor) as a one-time cost in their
-    total. This makes the comparison fair without a margin heuristic.
+    = 2 symbols under current predictor) as a one-time cost.
     """
-    # Switch overhead: 2 symbols emitted under CURRENT predictor at
-    # the switch point. Estimate as 2 × log₂(a_size) (uniform bound).
     from math import log2
     switch_overhead = 2.0 * log2(max(a_size, 2))
 
     costs = {L: (0.0 if L == current_label else switch_overhead)
              for L in predictors}
     sim_pos = pos
-    sim_prev = prev_emission
+    sim_prev, sim_prev_prev = context if isinstance(context, tuple) \
+                              else (context, -1)
     steps = 0
     while steps < K and sim_pos < n_chain:
         if sim_pos < match_tensor.shape[0] and n_used > 0:
@@ -130,8 +133,10 @@ def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
         else:
             emit_idx = 24 + best_idx
             advance = best_len
+        sim_ctx = (sim_prev, sim_prev_prev)
         for L, pred in predictors.items():
-            costs[L] += pred.cost(emit_idx, a_size, sim_prev)
+            costs[L] += pred.cost(emit_idx, a_size, sim_ctx)
+        sim_prev_prev = sim_prev
         sim_prev = emit_idx
         sim_pos += advance
         steps += 1
@@ -139,7 +144,7 @@ def _simulate_costs(pos: int, K: int, predictors: Dict[BasisLabel, Predictor],
 
 
 def _two_stage_choose(pos: int, predictors, match_tensor, walk,
-                        n_used: int, a_size: int, prev_emission: int,
+                        n_used: int, a_size: int, context,
                         current_label: BasisLabel,
                         n_chain: int, K_short: int = 8, K_long: int = 16):
     """Two-stage lookahead. Pick best at K_short (incl. switch
@@ -147,13 +152,13 @@ def _two_stage_choose(pos: int, predictors, match_tensor, walk,
     stages choose the same non-current label.
     """
     short = _simulate_costs(pos, K_short, predictors, match_tensor, walk,
-                              n_used, a_size, prev_emission, current_label,
+                              n_used, a_size, context, current_label,
                               n_chain)
     short_best = min(short, key=short.get)
     if short_best == current_label:
         return None
     long_ = _simulate_costs(pos, K_long, predictors, match_tensor, walk,
-                              n_used, a_size, prev_emission, current_label,
+                              n_used, a_size, context, current_label,
                               n_chain)
     long_best = min(long_, key=long_.get)
     if short_best == long_best:
@@ -215,6 +220,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
 
     rc = RCState()
     prev_emission = -1
+    prev_prev_emission = -1
     n_vm = 0
     n_growth = 0
     n_basis_at = 0
@@ -222,6 +228,9 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
+
+    def _ctx():
+        return (prev_emission, prev_prev_emission)
 
     while pos < n_chain:
         if pos < match_tensor.shape[0] and n_used > 0:
@@ -249,23 +258,23 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         if speculate_basis:
             target_label = _two_stage_choose(
                 pos, predictors, match_tensor, walk, n_used, a_size,
-                prev_emission, basis_state.label, n_chain,
+                _ctx(), basis_state.label, n_chain,
                 K_short=8, K_long=16,
             )
             if (target_label is not None
                     and target_label != basis_state.label):
                 pred = predictors[basis_state.label]
                 ctrl = _control_index(S_BASIS_AT, n_used)
-                cumfreqs = pred.cumfreqs(a_size, prev_emission)
+                cumfreqs = pred.cumfreqs(a_size, _ctx())
                 rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
                 for p in predictors.values():
-                    p.update(ctrl, prev_emission)
-                cumfreqs = pred.cumfreqs(a_size, prev_emission)
+                    p.update(ctrl, _ctx())
+                cumfreqs = pred.cumfreqs(a_size, _ctx())
                 label_sym = min(int(target_label) % N_BASIS_LABELS,
                                   a_size - 1)
                 rc_step_encode(rc, cumfreqs, label_sym, int(cumfreqs[-1]))
                 for p in predictors.values():
-                    p.update(label_sym, prev_emission)
+                    p.update(label_sym, _ctx())
                 basis_state = BasisState(
                     label=BasisLabel(label_sym % N_BASIS_LABELS),
                     quat=basis_state.quat,
@@ -273,14 +282,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 n_basis_at += 1
 
         predictor = predictors[basis_state.label]
-        cumfreqs = predictor.cumfreqs(a_size, prev_emission)
+        cumfreqs = predictor.cumfreqs(a_size, _ctx())
         rc_step_encode(rc, cumfreqs, emit_idx, int(cumfreqs[-1]))
-        # Constructive fix: ALL predictors learn from this emission
-        # (not just the active one). Otherwise the inactive predictors
-        # stay cold forever, biasing the cost-comparison against ever
-        # switching to them. Decoder mirrors this update.
         for pred in predictors.values():
-            pred.update(emit_idx, prev_emission)
+            pred.update(emit_idx, _ctx())
 
         if prev_emission >= 0 and not cap_frozen:
             key = (prev_emission, emit_idx)
@@ -311,6 +316,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 else:
                     cap_frozen = True
 
+        prev_prev_emission = prev_emission
         prev_emission = emit_idx
         pos += advance
         n_vm += 1
@@ -363,30 +369,32 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 
     dec_state = RCDecoderState.from_stream(payload)
     prev_emission = -1
+    prev_prev_emission = -1
     chain_terminals: List[int] = []
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     max_alphabet = alphabet_size(max_opcodes)
-    # Mirror encoder's predictor binding.
     predictors = _build_predictors(max_alphabet)
     basis_state = IDENTITY
+
+    def _dctx():
+        return (prev_emission, prev_prev_emission)
 
     n_emissions = n_vm
     while n_emissions > 0:
         a_size = alphabet_size(n_used)
         predictor = predictors[basis_state.label]
-        cumfreqs = predictor.cumfreqs(a_size, prev_emission)
+        cumfreqs = predictor.cumfreqs(a_size, _dctx())
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
-        # All predictors learn from every emission (mirrors encoder).
         for p in predictors.values():
-            p.update(emit_idx, prev_emission)
+            p.update(emit_idx, _dctx())
 
         if emit_idx == _control_index(S_BASIS_AT, n_used):
             predictor = predictors[basis_state.label]
-            cumfreqs = predictor.cumfreqs(a_size, prev_emission)
+            cumfreqs = predictor.cumfreqs(a_size, _dctx())
             label_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
             for p in predictors.values():
-                p.update(label_sym, prev_emission)
+                p.update(label_sym, _dctx())
             basis_state = BasisState(
                 label=BasisLabel(label_sym % N_BASIS_LABELS),
                 quat=basis_state.quat,
@@ -394,10 +402,10 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             continue
         if emit_idx == _control_index(S_BASIS_BY, n_used):
             predictor = predictors[basis_state.label]
-            cumfreqs = predictor.cumfreqs(a_size, prev_emission)
+            cumfreqs = predictor.cumfreqs(a_size, _dctx())
             comp_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
             for p in predictors.values():
-                p.update(comp_sym, prev_emission)
+                p.update(comp_sym, _dctx())
             new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
@@ -442,6 +450,7 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                     _grow_all_predictors(predictors, alphabet_size(max_opcodes))
                 else:
                     cap_frozen = True
+        prev_prev_emission = prev_emission
         prev_emission = effective_emit
 
     state = ORIGIN

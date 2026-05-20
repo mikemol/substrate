@@ -89,11 +89,24 @@ class UnigramPredictor(Predictor):
             self.counts = new_counts
 
 
+def _context_pair(context):
+    """Normalize context into (prev, prev2) pair. Accepts None, int, or
+    a tuple. Returns (prev_or_None, prev2_or_None).
+    """
+    if context is None:
+        return (None, None)
+    if isinstance(context, int):
+        return (context, None)
+    # Tuple-like.
+    p = context[0] if len(context) > 0 else None
+    p2 = context[1] if len(context) > 1 else None
+    return (p, p2)
+
+
 class BigramPredictor(Predictor):
     """Context = previous emit_idx; one row of counts per prev symbol.
 
-    For context=None (no previous emission), falls back to a uniform-
-    prior row.
+    Accepts context as int OR tuple (uses element 0).
     """
 
     name = "bigram"
@@ -102,18 +115,19 @@ class BigramPredictor(Predictor):
         self.counts = np.zeros((max_alphabet, max_alphabet), dtype=np.int64)
 
     def _row(self, context):
-        if context is None or context < 0 or context >= self.counts.shape[0]:
-            # No context — use a synthetic uniform row.
+        prev, _ = _context_pair(context)
+        if prev is None or prev < 0 or prev >= self.counts.shape[0]:
             return np.zeros(self.counts.shape[1], dtype=np.int64)
-        return self.counts[context]
+        return self.counts[prev]
 
     def cumfreqs(self, alphabet_size, context=None):
         return _smoothed_cumfreqs(self._row(context), alphabet_size)
 
     def update(self, emit_idx, context=None):
-        if context is None or context < 0 or context >= self.counts.shape[0]:
-            return  # nothing to update without context
-        self.counts[context, emit_idx] += 1
+        prev, _ = _context_pair(context)
+        if prev is None or prev < 0 or prev >= self.counts.shape[0]:
+            return
+        self.counts[prev, emit_idx] += 1
 
     def grow_to(self, new_alphabet_size):
         old = self.counts.shape[0]
@@ -122,3 +136,56 @@ class BigramPredictor(Predictor):
                 (new_alphabet_size, new_alphabet_size), dtype=np.int64)
             new_counts[:old, :old] = self.counts
             self.counts = new_counts
+
+
+class TrigramPredictor(Predictor):
+    """Context = (prev_emit_idx, prev_prev_emit_idx).
+
+    Sparse dict-backed storage — only seen (prev2, prev) pairs occupy
+    memory. Trigram storage is O(alphabet³) dense; sparse keeps it
+    bounded to ~observed pairs (typically O(stream_length)).
+    """
+
+    name = "trigram"
+
+    def __init__(self, max_alphabet: int):
+        self.max_alphabet = max_alphabet
+        self.rows: dict = {}     # key (prev2, prev) → count row (np.ndarray)
+
+    def _row(self, context):
+        prev, prev2 = _context_pair(context)
+        if prev is None or prev2 is None:
+            return np.zeros(self.max_alphabet, dtype=np.int64)
+        key = (prev2, prev)
+        return self.rows.get(key,
+                              np.zeros(self.max_alphabet, dtype=np.int64))
+
+    def cumfreqs(self, alphabet_size, context=None):
+        return _smoothed_cumfreqs(self._row(context), alphabet_size)
+
+    def update(self, emit_idx, context=None):
+        prev, prev2 = _context_pair(context)
+        if prev is None or prev2 is None:
+            return
+        key = (prev2, prev)
+        row = self.rows.get(key)
+        if row is None:
+            row = np.zeros(self.max_alphabet, dtype=np.int64)
+            self.rows[key] = row
+        elif emit_idx >= row.shape[0]:
+            new_row = np.zeros(self.max_alphabet, dtype=np.int64)
+            new_row[:row.shape[0]] = row
+            self.rows[key] = new_row
+            row = new_row
+        row[emit_idx] += 1
+
+    def grow_to(self, new_alphabet_size):
+        if new_alphabet_size > self.max_alphabet:
+            old = self.max_alphabet
+            self.max_alphabet = new_alphabet_size
+            # Grow each existing row.
+            for key in list(self.rows):
+                old_row = self.rows[key]
+                new_row = np.zeros(new_alphabet_size, dtype=np.int64)
+                new_row[:old_row.shape[0]] = old_row
+                self.rows[key] = new_row
