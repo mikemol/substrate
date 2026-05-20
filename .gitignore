@@ -18,3 +18,6 @@ files*.zip
 # Agda build artefacts
 *.agdai
 agda/_build/
+
+# Local codec state (SQLite caches, etc.)
+scratch/eliza/state/
