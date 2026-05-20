@@ -148,6 +148,18 @@ import Substrate.Algebra.GL3F2.Characters
 import Substrate.Algebra.Sporadic.Monster.WithCharacters
 
 ------------------------------------------------------------------------
+-- HappyFamily — 20 sporadic groups (V2-V5 of next arc).
+--
+-- All Happy Family members as parametric ConjugationCoalgebras:
+-- Monster + BabyMonster + Conway × 3 + Mathieu × 5 + Fischer × 3
+-- + HN/Th/He/J₂/HS/McL/Suz. The substrate now spans half of the
+-- 26 sporadic simple groups (the 6 Pariahs documented but out of
+-- scope).
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Sporadic.HappyFamily
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific

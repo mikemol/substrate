@@ -120,6 +120,13 @@ import Substrate.Category.ConjugationCoalgebra.WithCharacters
 import Substrate.Category.ConjugationCoalgebra.CharacterOrthogonality
 
 ------------------------------------------------------------------------
+-- CentralizerDescent (V1 of next arc) — recursive centralizer
+-- structure enabling the Happy Family hierarchy from the Monster.
+------------------------------------------------------------------------
+
+import Substrate.Category.CentralizerDescent
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
