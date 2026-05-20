@@ -276,6 +276,35 @@ import Substrate.Category.Coxeter.AsCartanType.Functor                  -- M8
 import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsNaturalTransformation -- M9
 
 ------------------------------------------------------------------------
+-- N-arc functorial closures of M-arc audit (N1-N9).
+--
+-- Each N-arc slice closes one OrphanAudit row (= one substrate
+-- mechanism that was implicit "X ↦ S(X)" but not named as M1
+-- Functor / M2 NaturalTransformation / M3 SymmetricMonoidal / M4
+-- DaggerCategory).
+--
+--   N1 AutomorphismGroup.AsFunctor — Z2 Aut as M1 Functor
+--   N2 CategoryOf.AsFunctor — Z5 CategoryOf as M1 Functor
+--   N3 GrothendieckConstruction.AsFunctor — Z3 ∫ as M1 Functor
+--   N4 PrimeFactoredGauge.AsFunctor — T7 PFG as M1 Functor
+--   N5 S1-Lift.AsFunctor — X1 S¹-Lift as M1 Functor
+--   N6 S2-Lift.AsFunctor — X2 S²-Lift as M1 Functor
+--   N7 F2.Linear.AsSymmetricMonoidal — F₂-Linear as M3 instance
+--   N8 F2.Linear.AsDaggerCategory — F₂-Linear as M4 instance
+--   N9 GaloisAdjunction.UnitCounit — η + ε as M2 nat-trans
+------------------------------------------------------------------------
+
+import Substrate.Category.AutomorphismGroup.AsFunctor              -- N1
+import Substrate.Category.CategoryOf.AsFunctor                     -- N2
+import Substrate.Category.GrothendieckConstruction.AsFunctor       -- N3
+import Substrate.Category.PrimeFactoredGauge.AsFunctor             -- N4
+import Substrate.Category.S1-Lift.AsFunctor                        -- N5
+import Substrate.Category.S2-Lift.AsFunctor                        -- N6
+import Substrate.Algebra.F2.Linear.AsSymmetricMonoidal             -- N7
+import Substrate.Algebra.F2.Linear.AsDaggerCategory                -- N8
+import Substrate.Category.GaloisAdjunction.UnitCounit              -- N9
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-

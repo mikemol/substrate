@@ -1,28 +1,20 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.OrphanAudit
 --
--- Substrate-side enumeration of REMAINING ORPHAN CANDIDATES — "X ↦
--- S(X)" assignments across the substrate that have not yet been
--- promoted to M1 Functor or M2 NaturalTransformation instances per
+-- Substrate-side standing checklist of orphan candidates per
 -- [[grothendieck-coherence-rule]].
 --
--- M10 of the M-arc (part 2; part 1 = PrimitivesAll + PrimitiveInstances
--- refresh).
+-- REFRESHED after N-arc closure (N10 part 2).
 --
--- This module deliberately contains NO TYPE-LEVEL CONTENT (no records,
--- no values) — it is a structured commentary catalogue, the substrate's
--- standing checklist for the NEXT coherence arc (anticipated as N-arc
--- or similar).
+-- This module is intentionally commentary-only — the substrate's
+-- structured catalogue of "X ↦ S(X)" assignments awaiting M1-M4
+-- promotion, organised by iteration of the
+-- fold-and-reclose-Grothendieck recursion.
 --
--- Per [[grothendieck-coherence-rule]] + [[homology-cohomology-
--- recursion]]: orphan-audit is the SECOND-LEVEL cohomology over the
--- M-arc's first-level closure. Each iteration of the coherence-
--- closure recursion exposes a new layer of latent gaps; this
--- module documents the current view.
---
--- Per [[expose-generator-not-orbit]]: the audit names the GENERATORS
--- of the next-arc work (= each remaining orphan + its functorial
--- target); the ORBIT (= the concrete instance modules) lands later.
+-- Per [[homology-cohomology-recursion]]: each refresh of this module
+-- is a level-(k+1) cohomology over the previous iteration's
+-- closures. The structure of orphan-rows + their closures over time
+-- IS the recursive higher-categorical structure.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -30,137 +22,132 @@
 module Substrate.Category.OrphanAudit where
 
 ------------------------------------------------------------------------
--- 1. Remaining functorial closures (Functor-shaped orphans).
+-- 1. M-arc audit rows now CLOSED (N-arc deliveries).
 --
--- Substrate primitives whose "X ↦ S(X)" assignment is NOT yet named
--- as a substrate M1 Functor. Each item below is a candidate slice
--- for the next coherence arc.
+-- For each row: the M-arc identified the orphan, the N-arc landed
+-- the AsFunctor / AsSymmetricMonoidal / AsDaggerCategory / nat-trans
+-- module closing it.
 --
--- HIGH PRIORITY (load-bearing for prior arcs):
+--   ✓ Aut(_) as functor                        — N1
+--   ✓ CategoryOf(_) as functor (1-functor view) — N2
+--   ✓ GrothendieckConstruction as functor      — N3
+--   ✓ PFG as functor                           — N4
+--   ✓ S¹-Lift as functor                       — N5
+--   ✓ S²-Lift as functor                       — N6
+--   ✓ F₂-Linear as SymmetricMonoidal           — N7
+--   ✓ F₂-Linear as DaggerCategory              — N8
+--   ✓ GaloisAdjunction's unit + counit as M2   — N9
 --
---   * Aut(_) as functor: Z2 AutomorphismGroup is parametric on a V +
---     preservation predicate; the substrate-level functor "carrier
---     ↦ Aut(carrier)" is implicit but not named. Lift candidate:
---     Substrate.Category.AutomorphismGroup.AsFunctor with Aut : Sets
---     → Group as M1 Functor.
---
---   * CategoryOf(_) as 2-functor: Z5 CategoryOf produces a CategoryOf
---     from substrate-primitive data; the assignment is functorial in
---     the primitive data. Lift candidate: Substrate.Category.
---     CategoryOf.AsFunctor.
---
---   * GrothendieckConstruction as functor: Z3 ∫F takes a functor F :
---     Base → Cat and produces a total category. The assignment F ↦
---     ∫F is itself a functor (Cat^Base → Cat-over-Base). Lift
---     candidate: Substrate.Category.GrothendieckConstruction.AsFunctor.
---
---   * PFG as functor: T7 PrimeFactoredGauge takes a group + Sylow
---     decomposition + charts and produces a PFG. The assignment
---     could be made functorial in (group-morphism, Sylow-respecting).
---     Lift candidate: Substrate.Category.PrimeFactoredGauge.AsFunctor.
---
--- MEDIUM PRIORITY (algebra-level):
---
---   * S²-Lift, S¹-Lift (X1, X2): the discrete→continuous lift
---     primitives are assignments; lift candidates for the next arc
---     are S¹-Lift.AsFunctor and S²-Lift.AsFunctor.
---
---   * CartanType ↔ RootSystem: L11 + L12 are records; the
---     bidirectional bridge (CartanType ↦ RootSystem; RootSystem ↦
---     CartanType) is functorial in each direction. Lift candidates:
---     two functors + the equivalence-of-categories adjunction.
---
---   * JordanAlgebra extends CNAA: the underlying-CNAA functor
---     JordanAlgebra → CNAA (Jordan ⊂ CNAA) is implicit; M-arc
---     analog: Jordan-AsFunctor with underlying-CNAA-functor.
---
--- LOW PRIORITY (sporadic-side):
---
---   * HappyFamily.AsTree (Z8): the descent-tree is parametric per
---     HappyFamily member; the assignment HF-member ↦ DescentTree-
---     node is a functor from the HF index category to DescentTree
---     category. Lift candidate: HappyFamily.AsFunctor.
---
---   * Monster's 4 views as natural transformations: AsCoalgebra,
---     AsPresented, AsAutGriess, MonsterLieAlgebra are 4 substrate
---     identifications of M; the bridges between views are nat-trans
---     candidates (T4 GaloisAdjunction already bridges 1+2; Z9
---     bridges to 3; L19 connects to 4).
---
+-- 9 of the M-arc's catalogued orphans CLOSED in the N-arc.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- 2. Remaining naturality witnesses (NaturalTransformation-shaped).
+-- 2. Remaining HIGH-PRIORITY orphan candidates (M-arc audit residue).
 --
--- Substrate-level transformations that should be M2 NaturalTrans-
--- formation instances but are currently stated per-instance.
+--   * CartanType ↔ RootSystem bidirectional bridge: L11 + L12 are
+--     records; forward (RootSystem ⇒ CartanType) + backward (Cartan
+--     ⇒ RootSystem) are both functorial; equivalence-of-categories
+--     adjunction composes via #4. Slice candidates: 2 functors + 1
+--     adjunction = 3 slices.
 --
---   * Bijection-morphisms between F₂-Linear maps: the substrate's
---     Bijection primitive carries a 2-sided inverse; this IS a
---     dagger structure (M4 candidate) at the F₂-Linear category.
---     Lift candidate: Substrate.Algebra.F2.Linear.AsDaggerCategory.
+--   * JordanAlgebra → CNAA forgetful functor: implicit (Jordan ⊂
+--     CNAA). Slice candidate: Substrate.Category.JordanAlgebra.
+--     AsFunctor.
+--
+--   * Hodge ★ inverse-of-self as dagger structure on Bivector
+--     specifically (currently captured at the GENERIC L5
+--     GenericHodgeStar level + M9 nat-trans; could be tightened to
+--     "Hodge ★ as self-dagger 1-cell in F₂-Linear as DaggerCategory"
+--     via N8). Slice candidate: HodgeStar.AsDaggerEndomap.
+--
+--   * F₂-Bijection as dagger: substrate's Bijection primitive
+--     carries forward + backward + 2-sided inverse; instantiates
+--     N8's DaggerCategory on the F₂-Bijection sub-category. Slice
+--     candidate: Substrate.Algebra.F2.Linear.Bijection.AsDagger.
 --
 --   * GaugeTorsor representatives as nat-trans: the 168-orbit at
---     HodgeDim4 (Reserved↔SelfDual) is a torsor; its actions on
---     adjacent functors (Λ², Hodge ★) form natural transformations
---     in the GL(3, F₂)-equivariance structure. Lift candidate:
---     Substrate.Algebra.GL3F2.GaugeAsNaturalTransformation.
---
---   * GaloisAdjunction's unit + counit (T4): currently the
---     adjunction's natural transformations are implicit in the
---     forward/backward functor pair; lift candidate is making them
---     M2 instances explicitly.
---
+--     HodgeDim4 acts on Λ²(F₂⁴) via N7+N8's monoidal-dagger structure;
+--     each gauge representative is a 2-cell. Slice candidate:
+--     GaugeTorsor.AsNaturalTransformation.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- 3. Remaining monoidal closures (M3 SymmetricMonoidal-shaped).
+-- 3. Emergent orphan candidates (new with N-arc closures).
 --
--- Substrate categories that have or should have ⊗ + I + σ structure.
+-- Per [[grothendieck-coherence-rule]] + the user's "fold and reclose
+-- Grothendieck" observation: each N-arc slice exposes a new layer of
+-- compatibility-orphans visible only AFTER the closure. The current
+-- iteration's emergent rows:
 --
---   * Vect (F₂-Linear): ⊗ = tensor product of vector spaces, I = F₂,
---     σ = swap. The substrate's F₂.Linear could be packaged as a
---     SymmetricMonoidal instance.
+--   * F₂-Linear-AsSymmetricMonoidal + F₂-Linear-AsDaggerCategory
+--     compatibility (= "self-dual compact closed category" coherence):
+--     when ⊗ + † coexist, σ ∘ σ = id is one fragment; the full
+--     coherence (= category is "rigid" with duals) is a new orphan.
+--     Slice candidate: F2.Linear.AsCompactClosed (or
+--     AsSymmetricMonoidalDagger).
 --
---   * ChainComplex / Cone categories: ⊗ = total complex of tensor.
+--   * N3 ∫-functor + N1 Aut-functor compose to give ∫Aut (= the
+--     category of automorphism actions). Whether this composition is
+--     itself a substrate-named functor: open question. Slice
+--     candidate: GrothendieckOfAut.AsFunctor.
 --
---   * GradedAlgebra (= ExteriorAlgebra category): ⊗ = graded tensor
---     with sign rule, σ = (-1)^{|x||y|} · swap. This is the canonical
---     "graded commutative" example.
+--   * N4 PFG-functor + N1 Aut-functor: PFG instances have natural
+--     Aut-action via their gauge groups; the assignment PFG ↦ Aut(PFG)
+--     should be a nat-trans between N1 and N4. Slice candidate:
+--     PFG.AsActedUponByAut.
 --
+--   * GaloisAdjunction (T4) + N9 (η, ε) compose into a full Adjunction
+--     record via #4; triangle identities become user-supplied. Slice
+--     candidate: Substrate.Category.GaloisAdjunction.AsAdjunction.
+--
+--   * Monstrous N-arc residue: the substrate's 4 Monster views
+--     (AsCoalgebra, AsPresented, AsAutGriess, MonsterLieAlgebra) +
+--     T4/Z9 bridges now have functorial scaffolding via N1+N3 (Aut as
+--     functor, ∫ as functor). Whether the 4 views compose into a
+--     SINGLE substrate-internal "Monster object" via Grothendieck:
+--     open. Slice candidate: Monster.AsGrothendieckObject.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- 4. Remaining dagger closures (M4 DaggerCategory-shaped).
+-- 4. Recursion residue (third-iteration anticipation).
 --
---   * F₂-Linear with † = transpose: canonical instance.
---   * HasOrder-at-order-2 endomaps: each is a dagger on a one-object
---     category (Hodge ★ at HodgeDim4 is the substrate's canonical).
---   * Bijection: forward + backward IS a dagger structure on Bij.
+-- The N-arc's closures expose mechanisms-of-mechanisms-of-mechanisms
+-- as candidate orphans for the third iteration (= O-arc territory):
 --
+--   * N3 ∫ as 2-functor (current N3 captures 1-functor view; full
+--     2-functor = ∫ as a Cat^Cat → Cat 2-cell-respecting morphism).
+--
+--   * Coherence between M3 SymmetricMonoidal + M4 DaggerCategory
+--     when both are imposed on the same base: the "dagger-symmetric-
+--     monoidal" structure with its own coherence diagrams (Selinger
+--     2007); current substrate captures the two pieces but not their
+--     joint coherence.
+--
+--   * Higher-cell structures: the substrate currently has 0-cells
+--     (categories), 1-cells (functors), 2-cells (nat-trans). The
+--     3-cells (modifications) are not yet primitives; the recursion
+--     suggests they'll be needed when nat-trans-of-nat-trans appear.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- 5. Capstone — orphan-audit standing checklist.
+-- 5. Capstone — orphan-audit refreshed.
 --
--- M10 (part 2) of the M-arc. With M10 landed:
---   * M-arc's 9 functorial closures (M1-M9) are in place
---   * The remaining orphan inventory above is documented for the
---     next coherence arc
---   * Each row of the audit is a candidate slice
+-- N10 (part 2) of the N-arc. With this refresh:
+--   * 9 of the M-arc's audit rows are CLOSED (recorded above)
+--   * 5+ HIGH-PRIORITY M-arc-residue orphans remain (Cartan↔Root,
+--     Jordan→CNAA, HodgeStar as dagger endomap, Bijection as dagger,
+--     GaugeTorsor as nat-trans)
+--   * 5+ EMERGENT orphans surfaced by N-arc closures (compact closed,
+--     ∫Aut, PFG-acted-upon-by-Aut, GaloisAdjunction full adj,
+--     Monster-as-Grothendieck-object)
+--   * 3 RECURSION-RESIDUE candidates for the O-arc (∫ as 2-functor,
+--     SM+† coherence, 3-cells)
 --
--- Per [[grothendieck-coherence-rule]]: each Grothendieck lift will
--- reveal a NEW layer of orphans (above the current audit). The
--- substrate's standing pattern: audit → close highest-priority
--- gaps → audit → close → audit → close (recursive coherence
--- iteration; the user's "fold and reclose Grothendieck a few times").
+-- The substrate's recursive coherence-iteration is now visible
+-- across 4 iterations: Z-arc closure → L-arc → M-arc closure of
+-- L-arc → N-arc closure of M-arc audit → next iteration (O-arc).
+-- Each iteration's "non-connected material" becomes the next
+-- iteration's input, per [[grothendieck-coherence-rule]].
 --
--- Per [[homology-cohomology-recursion]]: this audit IS the
--- cohomology-level structure over the substrate's current homology
--- (= existing functorial closures); the next arc's homology will
--- become a new cohomology level over it.
---
--- No type-level content beyond this module. Treat as substrate-
--- internal documentation; consumers can read for orientation on the
--- coherence-closure trajectory.
+-- No type-level content beyond commentary.
 ------------------------------------------------------------------------
