@@ -365,6 +365,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_alias_defines = 0
     patch_mode = False     # U4 flip state: are we in patch-tagged mode?
     digram_seen: Dict[Tuple[int, int], int] = {}
+    # Reuse predictor for alias mode: only define on 2nd+ sighting of
+    # the same (source_opc, phase, length) slice — 1st sighting paid
+    # by greedy, 2nd defines the alias, 3rd+ greedy on the new rule.
+    slice_seen: Dict[Tuple[int, int, int], bool] = {}
     cap_frozen = False
     pos = 0
 
@@ -386,8 +390,15 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
             if ali is not None and not cap_frozen:
                 source_opc, phase, length = ali
                 a_size = alphabet_size(n_used)
-                # Skip alias if encoding params won't fit in 2 base-a_size digits.
-                if phase < a_size * a_size and length < a_size * a_size:
+                slice_key = (source_opc, phase, length)
+                first_sighting = slice_key not in slice_seen
+                if first_sighting:
+                    slice_seen[slice_key] = True
+                # Only define on 2nd+ sighting; 1st falls through to greedy.
+                define_now = (not first_sighting
+                                and phase < a_size * a_size
+                                and length < a_size * a_size)
+                if define_now:
                     # Define new rule with body = source[phase:phase+length].
                     sliced = bodies[source_opc, phase:phase + length]
                     bodies, lengths, n_used_new, max_body, max_opcodes, grew = try_grow_opcode(
