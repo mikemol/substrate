@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+-- Substrate.Category.Operad
+--
+-- R7 of the R-arc. Operad primitive: collection of operations of
+-- specified arities + composition + identity + equivariance under
+-- arity-permutations.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.Operad where
+
+open import Level using (Level)
+open import Data.Nat using (ℕ)
+
+record Operad : Set₁ where
+  field
+    Ops : ℕ → Set
+    id-op : Ops 1
+    -- Composition + arity-permutation equivariance + associativity:
+    -- user obligations per substrate-pragmatic minimum.
