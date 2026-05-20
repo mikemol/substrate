@@ -147,6 +147,18 @@ import Substrate.Category.S2-Lift
 import Substrate.Category.CommutativeNonAssociativeAlgebra
 
 ------------------------------------------------------------------------
+-- Word→InGenerated bridge + PresentedGroup→joint-gen pipeline
+-- (Y1 + Y2 of next arc).
+--
+-- The substrate's universal mechanism for discharging joint-gen
+-- via presentation, not enumeration. Per the user's "find the
+-- pullback" observation: joint-gen IS word structure.
+------------------------------------------------------------------------
+
+import Substrate.Category.SylowDecomposition.FromWord
+import Substrate.Category.PrimeFactoredGauge.FromPresented
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 

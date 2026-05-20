@@ -183,6 +183,24 @@ import Substrate.Algebra.Sporadic.GriessAlgebra
 import Substrate.Algebra.Sporadic.Monster.AsGriessAlgebra
 
 ------------------------------------------------------------------------
+-- Joint-gen-via-presentation instances (Y3-Y9 of next arc).
+--
+-- Replaces W4's "168-case enumeration" scaffold with the substrate's
+-- universal-property approach: every group's joint-gen is dischargeable
+-- via its presentation + Y2's pipeline.
+--
+-- Per the user's "find the pullback" observation: NO enumeration
+-- anywhere; joint-gen IS word structure (Y1 + Y2).
+------------------------------------------------------------------------
+
+import Substrate.Algebra.GL3F2.AsPresented                     -- Y3
+import Substrate.Algebra.GL3F2.JointGenViaPresentation         -- Y4
+import Substrate.Algebra.Abelian.Z6JointGenViaProduct          -- Y5
+import Substrate.Algebra.Abelian.Z30JointGenViaProduct         -- Y6
+import Substrate.Algebra.Sporadic.Monster.AsPresented          -- Y7+Y8
+import Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent  -- Y9
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific
