@@ -58,7 +58,8 @@ S_AFFINE = 1          # U3: per-emission affine tag (legacy inline)
 S_FLIP_PATCH1 = 2     # U4: flip-paradigm toggle for k=1 F₂Patch mode
 S_FLIP_PATCHK = 3     # U5: flip-paradigm toggle for k ≤ K F₂Patch mode
 S_FLIP_SPAN = 4       # U6/U7: flip-paradigm toggle for SpanCoupling
-N_V6_CONTROL_OPCODES = 5
+S_DEFINE_ALIAS = 5    # U-arc post: define new rule = source[phase:phase+length]
+N_V6_CONTROL_OPCODES = 6
 DEFAULT_PATCHK_K = 3  # U5 default sparsity bound
 
 
@@ -314,7 +315,8 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            speculate_phase: bool = False,
            speculate_affine: bool = False,
            speculate_patch1: bool = False,
-           speculate_integrated: bool = False) -> Tuple[bytes, Dict]:
+           speculate_integrated: bool = False,
+           speculate_alias: bool = False) -> Tuple[bytes, Dict]:
     """V6 encoder. U-arc speculation flags:
       * speculate_phase       — per-emission phase tag (U2, inline).
       * speculate_affine      — per-emission affine tag (U3, inline,
@@ -360,12 +362,71 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_affine_emissions = 0
     n_patch1_emissions = 0
     n_flip_patch1 = 0
+    n_alias_defines = 0
     patch_mode = False     # U4 flip state: are we in patch-tagged mode?
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
 
     while pos < n_chain:
+        # Affine-alias: on finding a useful affine match, define a NEW
+        # rule whose body is the sliced expansion, then advance. After
+        # the define, future matches at the same chain pattern fire as
+        # ordinary opcode emissions via greedy (cost = 1 symbol).
+        if speculate_alias and n_used > 0:
+            if pos < match_tensor.shape[0]:
+                row = match_tensor[pos, :n_used]
+                best_len_now = int(row[xp().argmax(row)])
+            else:
+                best_len_now = 0
+            ali = _try_affine_match(
+                walk, pos, bodies, lengths, n_used, best_len_now,
+                margin=2,
+            )
+            if ali is not None and not cap_frozen:
+                source_opc, phase, length = ali
+                a_size = alphabet_size(n_used)
+                # Skip alias if encoding params won't fit in 2 base-a_size digits.
+                if phase < a_size * a_size and length < a_size * a_size:
+                    # Define new rule with body = source[phase:phase+length].
+                    sliced = bodies[source_opc, phase:phase + length]
+                    bodies, lengths, n_used_new, max_body, max_opcodes, grew = try_grow_opcode(
+                        bodies, lengths, n_used, max_opcodes, max_body, sliced,
+                    )
+                    if grew:
+                        # Emit S_DEFINE_ALIAS + (source, phase_hi, phase_lo,
+                        # length_hi, length_lo) — single 6-symbol payload.
+                        cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                        ctrl = _control_index(S_DEFINE_ALIAS, n_used)
+                        rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+                        counts[ctrl] += 1
+                        phase_hi, phase_lo = divmod(phase, a_size)
+                        length_hi, length_lo = divmod(length, a_size)
+                        for sym in (24 + source_opc, phase_hi, phase_lo,
+                                      length_hi, length_lo):
+                            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                            rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
+                            counts[sym] += 1
+                        # Append match-tensor column for the new rule.
+                        new_match = gpu_opcode_match_vectorized(
+                            walk_gpu, bodies[n_used:n_used_new],
+                            lengths[n_used:n_used_new],
+                        )
+                        match_tensor = xp().concatenate(
+                            [match_tensor, new_match], axis=1)
+                        n_used = n_used_new
+                        n_growth += 1
+                        n_alias_defines += 1
+                        if alphabet_size(max_opcodes) > counts.shape[0]:
+                            new_counts = np.zeros(alphabet_size(max_opcodes),
+                                                     dtype=np.int64)
+                            new_counts[:counts.shape[0]] = counts
+                            counts = new_counts
+                        # Advance — the new rule's body IS walk[pos:pos+length].
+                        pos += length
+                        n_vm += 1
+                        prev_emission = 24 + (n_used - 1)
+                        continue
         # U4 flip-paradigm: at each position decide whether to flip
         # in / out of patch-mode based on lookahead.
         if speculate_patch1 and n_used > 0:
@@ -547,6 +608,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_affine_emissions": n_affine_emissions,
         "n_patch1_emissions": n_patch1_emissions,
         "n_flip_patch1": n_flip_patch1,
+        "n_alias_defines": n_alias_defines,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
         "u_arc_slice": "U7",
@@ -693,7 +755,36 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             continue
 
         n_emissions -= 1
-        if emit_idx == _control_index(S_AFFINE, n_used):
+        if emit_idx == _control_index(S_DEFINE_ALIAS, n_used):
+            # Read (source_opc_sym, phase_hi, phase_lo, length_hi, length_lo).
+            payload = []
+            for _i in range(5):
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                counts[sym] += 1
+                payload.append(sym)
+            src_sym, phase_hi, phase_lo, length_hi, length_lo = payload
+            source_opc = src_sym - 24
+            phase = phase_hi * a_size + phase_lo
+            length = length_hi * a_size + length_lo
+            sliced = bodies[source_opc, phase:phase + length]
+            bodies, lengths, n_used_new, max_body, max_opcodes, grew = try_grow_opcode(
+                bodies, lengths, n_used, max_opcodes, max_body, sliced,
+            )
+            if grew:
+                n_used = n_used_new
+                if alphabet_size(max_opcodes) > counts.shape[0]:
+                    new_counts = np.zeros(alphabet_size(max_opcodes),
+                                             dtype=np.int64)
+                    new_counts[:counts.shape[0]] = counts
+                    counts = new_counts
+                # Output the sliced body as chain terminals.
+                body = bodies[n_used - 1, :int(lengths[n_used - 1])]
+                chain_terminals.extend(int(b) for b in (
+                    cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
+                prev_emission = 24 + (n_used - 1)
+            continue
+        elif emit_idx == _control_index(S_AFFINE, n_used):
             # U3 / codomain-unbound: read (opcode, phase_hi, phase_lo,
             # length_hi, length_lo). Encoder skips digram growth on
             # affine emissions; decoder must mirror.
