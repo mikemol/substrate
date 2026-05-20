@@ -272,6 +272,23 @@ import Substrate.Category.Operad                                 -- R7
 import Substrate.Category.VertexOperatorAlgebra                  -- R8
 
 ------------------------------------------------------------------------
+-- S-arc primitives (geometric/topos infrastructure): S1 Sheaf, S2
+-- Limit (generic), S3 Colimit, S4 KanExtension, S5 PresheafCategory,
+-- S6 YonedaEmbedding, S7 SubobjectClassifier, S8 Topos, S9 Groupoid-
+-- Cardinality.
+------------------------------------------------------------------------
+
+import Substrate.Category.Sheaf                                  -- S1
+import Substrate.Category.Limit                                  -- S2
+import Substrate.Category.Colimit                                -- S3
+import Substrate.Category.KanExtension                           -- S4
+import Substrate.Category.PresheafCategory                       -- S5
+import Substrate.Category.YonedaEmbedding                        -- S6
+import Substrate.Category.SubobjectClassifier                    -- S7
+import Substrate.Category.Topos                                  -- S8
+import Substrate.Category.GroupoidCardinality                    -- S9
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
