@@ -57,6 +57,25 @@ module Substrate.Category.PrimitivesRoadmapV2 where
 --   #14 FieldContinuum — 5th gauge class (continuum-field couplings:
 --       Fluidic/Magnetic/Photonic limit beyond discrete Sylow framework;
 --       completes the 4+1 meta-pattern at multi-field architecture)
+--   #15 SylowDecomposition — prime-factor + Sylow subgroup witnesses +
+--       joint-generation predicate; foundational for #16
+--   #16 PrimeFactoredGauge — universal mechanism for multi-chart-atlas
+--       equivariance for any prime-factored gauge group; unifies the
+--       multi-route arc's GL(3, F₂) work as a single instance + scales
+--       to Monster (T8); the substrate-side "extended Euclid for
+--       groups" via the derived atlas-decomposition function. Closes
+--       [[reserved-selfdual-bijection-gauge]] structurally.
+--   #17 PresentedGroup — group with custom equivalence ∼ (= equality in
+--       quotient); strictly more general than Coxeter framework (no
+--       computable normal form required); enables Monster scaling via
+--       Y₅₅₅ + spider presentation (where word-problem is intractable).
+--   #18 ConjugationCoalgebra — top-down primitive (group + conjugacy
+--       classes + introspection-and-diffraction structure); the
+--       coalgebraic dual to PresentedGroup. Required for Monster (where
+--       bottom-up is intractable but ATLAS class data is available).
+--   #19 GaloisAdjunction — the bridge between PresentedGroup (#17) and
+--       ConjugationCoalgebra (#18); forward-only in practice (= full
+--       equivalence is the ideal); enables Monster facts in either view.
 --
 -- Status of structural arcs:
 --

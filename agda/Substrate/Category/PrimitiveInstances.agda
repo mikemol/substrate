@@ -115,6 +115,24 @@ import Substrate.Algebra.GL3F2.SingerOrder
 import Substrate.Algebra.GL3F2.MultiRouteEquivariance
 
 ------------------------------------------------------------------------
+-- PrimeFactoredGauge instances (#16) — substrate's first concrete
+-- PFG instance + supporting Sylow decomposition.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.GL3F2.SylowDecomposition                    -- T6
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AsPFG           -- T7
+
+------------------------------------------------------------------------
+-- ConjugationCoalgebra instances (#18) — extreme-case demonstration.
+--
+-- Sporadic.Monster.AsCoalgebra: the Monster as a ConjugationCoalgebra,
+-- module-parametric in ATLAS class data. Demonstrates the substrate's
+-- top-down framework scales to the largest sporadic simple group.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.Sporadic.Monster.AsCoalgebra                -- T8
+
+------------------------------------------------------------------------
 -- FieldContinuum primitive (#14) — exposed as a primitive but no
 -- substrate-side instances yet. Per
 -- [[continuous-via-discrete-inference-rules]]: domain-specific

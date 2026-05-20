@@ -93,6 +93,22 @@ import Substrate.Category.FieldContinuum
 import Substrate.Category.GTorsor
 
 ------------------------------------------------------------------------
+-- Prime-factored gauge family (#15-#19).
+--
+-- Universal mechanism for using the multi-chart atlas as bridging
+-- equivariance for any construct built from conjugations of prime-
+-- numbered fields. Closes [[reserved-selfdual-bijection-gauge]]
+-- generically + scales to the Monster.
+------------------------------------------------------------------------
+
+import Substrate.Category.SylowDecomposition                          -- #15
+import Substrate.Category.PrimeFactoredGauge                          -- #16
+import Substrate.Category.PrimeFactoredGauge.MultiRouteEquivariance   -- (theorem on #16)
+import Substrate.Category.PresentedGroup                              -- #17
+import Substrate.Category.ConjugationCoalgebra                        -- #18
+import Substrate.Category.GaloisAdjunction                            -- #19
+
+------------------------------------------------------------------------
 -- Roadmap documentation modules.
 ------------------------------------------------------------------------
 
