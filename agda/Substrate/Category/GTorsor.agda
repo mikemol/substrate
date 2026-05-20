@@ -41,33 +41,41 @@ open import Data.Product using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong)
 
-private
-  variable
-    ℓ ℓ′ : Level
+-- (Level variables introduced per-record / per-function below.)
 
 ------------------------------------------------------------------------
 -- 1. GTorsor — the record.
 --
--- Parameters: a group (G, _·G_, εG) and a carrier X. The record
--- bundles a right-action (act : G → X → X) with the action axioms
--- (act-εG = id, act-·G = composition) plus the torsor properties:
--- transitive (any two points are related by some g) and free (that g
--- is unique).
+-- Parameters: a group (G, _·G_, εG) with carrier-level equivalence
+-- _≈G_ and a carrier X with equivalence _≈X_. The record bundles a
+-- right-action (act : G → X → X) with the action axioms (act-εG = id,
+-- act-·G = composition) plus the torsor properties: transitive (any
+-- two points are related by some g) and free (that g is unique).
+--
+-- Equivalences are taken as parameters rather than fixing
+-- propositional equality, because substrate carriers often carry
+-- functional content (e.g., GL3F2 records hold Linear maps whose
+-- equality requires funext); pointwise / structural equivalences
+-- side-step the funext dependency per substrate discipline.
 --
 -- Group axioms (associativity, identity, inverse) are presupposed —
 -- the user supplies a genuine group structure on G when constructing
 -- a GTorsor. Substrate-pattern minimum-axioms record.
 ------------------------------------------------------------------------
 
-record GTorsor (G : Set ℓ) (X : Set ℓ′)
-               (_·G_ : G → G → G) (εG : G) : Set (ℓ ⊔ ℓ′) where
+record GTorsor {ℓG ℓX ℓEG ℓEX : Level}
+               (G : Set ℓG) (X : Set ℓX)
+               (_·G_ : G → G → G) (εG : G)
+               (_≈G_ : G → G → Set ℓEG)
+               (_≈X_ : X → X → Set ℓEX) :
+               Set (ℓG ⊔ ℓX ⊔ ℓEG ⊔ ℓEX) where
   constructor mkGTorsor
   field
     act         : G → X → X
-    act-id      : (x : X) → act εG x ≡ x
-    act-·G      : (g h : G) (x : X) → act (g ·G h) x ≡ act g (act h x)
-    transitive  : (x y : X) → Σ G (λ g → act g x ≡ y)
-    free        : (x : X) (g₁ g₂ : G) → act g₁ x ≡ act g₂ x → g₁ ≡ g₂
+    act-id      : (x : X) → act εG x ≈X x
+    act-·G      : (g h : G) (x : X) → act (g ·G h) x ≈X act g (act h x)
+    transitive  : (x y : X) → Σ G (λ g → act g x ≈X y)
+    free        : (x : X) (g₁ g₂ : G) → act g₁ x ≈X act g₂ x → g₁ ≈G g₂
 
 open GTorsor public
 
@@ -80,15 +88,19 @@ open GTorsor public
 ------------------------------------------------------------------------
 
 orbit-element :
-  {G : Set ℓ} {X : Set ℓ′} {_·G_ : G → G → G} {εG : G}
-  (τ : GTorsor G X _·G_ εG) →
+  {ℓG ℓX ℓEG ℓEX : Level}
+  {G : Set ℓG} {X : Set ℓX} {_·G_ : G → G → G} {εG : G}
+  {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
+  (τ : GTorsor G X _·G_ εG _≈G_ _≈X_) →
   (x₀ x : X) → G
 orbit-element τ x₀ x = proj₁ (transitive τ x₀ x)
 
 orbit-element-act :
-  {G : Set ℓ} {X : Set ℓ′} {_·G_ : G → G → G} {εG : G}
-  (τ : GTorsor G X _·G_ εG) →
-  (x₀ x : X) → act τ (orbit-element τ x₀ x) x₀ ≡ x
+  {ℓG ℓX ℓEG ℓEX : Level}
+  {G : Set ℓG} {X : Set ℓX} {_·G_ : G → G → G} {εG : G}
+  {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
+  (τ : GTorsor G X _·G_ εG _≈G_ _≈X_) →
+  (x₀ x : X) → _≈X_ (act τ (orbit-element τ x₀ x) x₀) x
 orbit-element-act τ x₀ x = proj₂ (transitive τ x₀ x)
 
 ------------------------------------------------------------------------
