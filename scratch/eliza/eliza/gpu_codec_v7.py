@@ -63,10 +63,36 @@ def _control_index(slot: int, n_used: int) -> int:
     return 24 + n_used + slot
 
 
+def _predictor_cost_estimate(counts, alphabet_size_now, emit_idx) -> float:
+    """V5: estimate -log₂ P(emit_idx | predictor) under the given
+    count array. Used to compare predictors at switch points.
+    """
+    from math import log2
+    alpha = 0.5
+    total = float(np.sum(counts[:alphabet_size_now])) + alpha * alphabet_size_now
+    p = (float(counts[emit_idx]) + alpha) / total
+    return -log2(max(p, 1e-30))
+
+
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
-           max_opcodes: int = DEFAULT_MAX_OPCODES) -> Tuple[bytes, Dict]:
-    """V7 encoder. V1: identity basis only — output equals V6/V2
-    byte-identical at the default basis.
+           max_opcodes: int = DEFAULT_MAX_OPCODES,
+           speculate_basis: bool = False) -> Tuple[bytes, Dict]:
+    """V7 encoder.
+
+    V1: BasisState torsor (S_BASIS_AT).
+    V2: quaternion-word bearing (S_BASIS_BY).
+    V3: per-basis parallel predictors.
+    V4: `speculate_basis=True` arms the encoder to MAYBE switch.
+    V5: cost-gate refuses switches that don't pay off (current
+        gate is a no-op since predictors start identical — switching
+        cannot beat staying until predictors diverge, which only
+        happens once switches happen; bootstrap problem deferred).
+    V6: generator-ring framing — rules and predictors are peers in
+        the speculation set.
+    V7: predictor variants exist as ring elements (currently the
+        seven BasisLabel predictors all maintain independent counts).
+
+    Output at `speculate_basis=False` is V6-equivalent.
     """
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
                       else build_full_opcode_set()
@@ -191,9 +217,12 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V3",
+        "v_arc_slice": "V7",
         "operad_axes": ("basis-torsor", "quaternion-bearing",
-                          "per-basis-predictors@identity-only"),
+                          "per-basis-predictors",
+                          "speculation-gate", "generator-ring",
+                          "predictor-variants"),
+        "speculate_basis": speculate_basis,
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
