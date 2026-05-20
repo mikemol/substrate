@@ -1,0 +1,122 @@
+{
+  "text-bits-5000B": {
+    "n_keys_present": 29,
+    "signature": "befd27f885a4a540",
+    "selected_floats": {
+      "gt_total_bits": 18742.744874983488,
+      "grammar_n_rules": 853,
+      "coalg_total_bits": 27.757249006603264,
+      "ratio": 1.0287338172324962
+    }
+  },
+  "text-crumbs-5000B": {
+    "n_keys_present": 29,
+    "signature": "b0269399bcd374e6",
+    "selected_floats": {
+      "gt_total_bits": 16761.411643029416,
+      "grammar_n_rules": 790,
+      "coalg_total_bits": 39003.56785100533,
+      "ratio": 2.0803148064142323
+    }
+  },
+  "text-nibbles-5000B": {
+    "n_keys_present": 29,
+    "signature": "d167d0552345aa09",
+    "selected_floats": {
+      "gt_total_bits": 12877.664681602315,
+      "grammar_n_rules": 591,
+      "coalg_total_bits": 19692.804973998012,
+      "ratio": 1.8024667701821762
+    }
+  },
+  "text-binary-5000B": {
+    "n_keys_present": 29,
+    "signature": "0637139ff8a364d9",
+    "selected_floats": {
+      "gt_total_bits": 11090.895531705326,
+      "grammar_n_rules": 438,
+      "coalg_total_bits": 6889.192427825304,
+      "ratio": 1.3859184179117898
+    }
+  },
+  "elf-bits-5000B": {
+    "n_keys_present": 29,
+    "signature": "d546ccf79f119268",
+    "selected_floats": {
+      "gt_total_bits": 12644.22602936132,
+      "grammar_n_rules": 579,
+      "coalg_total_bits": 27.757249006603264,
+      "ratio": 2.409269896230778
+    }
+  },
+  "elf-crumbs-5000B": {
+    "n_keys_present": 29,
+    "signature": "13b40cf02513e67b",
+    "selected_floats": {
+      "gt_total_bits": 12946.12321412503,
+      "grammar_n_rules": 590,
+      "coalg_total_bits": 16648.814695962872,
+      "ratio": 5.126554328682345
+    }
+  },
+  "elf-nibbles-5000B": {
+    "n_keys_present": 29,
+    "signature": "306aede96ec2dbe4",
+    "selected_floats": {
+      "gt_total_bits": 9157.043655789916,
+      "grammar_n_rules": 425,
+      "coalg_total_bits": 8955.75866440356,
+      "ratio": 3.1091206617659983
+    }
+  },
+  "elf-binary-5000B": {
+    "n_keys_present": 29,
+    "signature": "7865c21bd2ac00b2",
+    "selected_floats": {
+      "gt_total_bits": 7744.12788489447,
+      "grammar_n_rules": 245,
+      "coalg_total_bits": 3017.5002371485925,
+      "ratio": 2.3054080774443406
+    }
+  },
+  "zeros-bits-5000B": {
+    "n_keys_present": 29,
+    "signature": "d1e6f4e6b51c3647",
+    "selected_floats": {
+      "gt_total_bits": 16.0,
+      "grammar_n_rules": 14,
+      "coalg_total_bits": 27.757249006603264,
+      "ratio": 4722.552298792637
+    }
+  },
+  "zeros-crumbs-5000B": {
+    "n_keys_present": 29,
+    "signature": "b193dc01b2af69f8",
+    "selected_floats": {
+      "gt_total_bits": 37.529325012980806,
+      "grammar_n_rules": 14,
+      "coalg_total_bits": 27.7571949031722,
+      "ratio": 3367.1483660437802
+    }
+  },
+  "zeros-nibbles-5000B": {
+    "n_keys_present": 29,
+    "signature": "44ca00be2f29e64a",
+    "selected_floats": {
+      "gt_total_bits": 19.22941968823042,
+      "grammar_n_rules": 12,
+      "coalg_total_bits": 24.757046110705016,
+      "ratio": 453.49460037241545
+    }
+  },
+  "zeros-binary-5000B": {
+    "n_keys_present": 29,
+    "signature": "764ffc6c22a0df11",
+    "selected_floats": {
+      "gt_total_bits": 32.24278372675022,
+      "grammar_n_rules": 11,
+      "coalg_total_bits": 23.25677555127176,
+      "ratio": 46.460593657816915
+    }
+  }
+}
