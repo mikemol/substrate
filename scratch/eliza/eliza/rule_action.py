@@ -108,13 +108,13 @@ def apply_to_body(body, action: RuleAction):
     """
     if action.is_identity():
         return body
-    # U2: start_phase slicing.
+    # U2: start_phase slicing. U3: length_mask truncation.
     sliced = body
     if action.start_phase > 0:
         sliced = sliced[action.start_phase:]
-    # U3+: length_mask, f2_patch, span_coupling land here in turn.
     if action.length_mask != -1:
-        raise NotImplementedError("length_mask: U3")
+        sliced = sliced[:action.length_mask]
+    # U4+: f2_patch, span_coupling land here in turn.
     if action.f2_patch:
         raise NotImplementedError("f2_patch: U4/U5")
     if action.span_coupling:

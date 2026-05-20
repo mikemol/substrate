@@ -53,8 +53,9 @@ from eliza.tensor_range_coder import (
 
 # V6 control opcodes (joint-alphabet slots after data opcodes).
 # Each slice enables one slot; encoder may opt in to emit.
-S_PHASE = 0      # U2: + start_phase
-N_V6_CONTROL_OPCODES = 1
+S_PHASE = 0       # U2: + start_phase
+S_AFFINE = 1      # U3: + length_mask (full AffineProjection)
+N_V6_CONTROL_OPCODES = 2
 
 
 def alphabet_size(n_used: int) -> int:
@@ -182,11 +183,52 @@ def _decode_phase_tagged(dec_state, counts, a_size):
     return opc_sym - 24, phase
 
 
+def _try_affine_match(walk, pos: int, bodies, lengths, n_used: int,
+                        best_len: int, margin: int = 3):
+    """U3 affine-search: scan (rule, phase, length) for the longest
+    `body[phase:phase+length]` matching `walk[pos:pos+length]`.
+
+    Returns (opcode_idx, phase, length) if the match length exceeds
+    `best_len + margin` (margin = cost of S_AFFINE + opc + phase +
+    length symbols ≈ 3); else None.
+
+    Subsumes the U2 phase-only case (length = body_len - phase).
+    Naive O(n_used × max_body²); matricised in U8.
+    """
+    walk_np = (cp.asnumpy(walk) if HAS_CUPY else np.asarray(walk))
+    n_chain = walk_np.shape[0]
+    best_op = -1
+    best_phase = 0
+    best_length = 0
+    for op_idx in range(n_used):
+        L = int(lengths[op_idx])
+        if L <= 1:
+            continue
+        body_np = (cp.asnumpy(bodies[op_idx, :L]) if HAS_CUPY
+                   else np.asarray(bodies[op_idx, :L]))
+        for phase in range(0, L):
+            max_len = min(L - phase, n_chain - pos)
+            if max_len <= best_length:
+                continue
+            k = 0
+            while k < max_len and body_np[phase + k] == walk_np[pos + k]:
+                k += 1
+            if k > best_length:
+                best_op = op_idx
+                best_phase = phase
+                best_length = k
+    if best_op < 0 or best_length < best_len + margin:
+        return None
+    return (best_op, best_phase, best_length)
+
+
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES,
-           speculate_phase: bool = False) -> Tuple[bytes, Dict]:
-    """V6 encoder. U2: `speculate_phase=True` enables phase-search.
-    Default off so V6==V5 byte-identical except for the +1 control
+           speculate_phase: bool = False,
+           speculate_affine: bool = False) -> Tuple[bytes, Dict]:
+    """V6 encoder. U2: `speculate_phase=True` enables phase-only search;
+    U3: `speculate_affine=True` enables full (phase, length) search.
+    Both default off so V6==V5 byte-identical except for the +2 control
     slot's tiny predictor overhead.
     """
     initial_opcodes = initial_opcodes if initial_opcodes is not None \
@@ -221,11 +263,47 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_vm = 0
     n_growth = 0
     n_phase_emissions = 0
+    n_affine_emissions = 0
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
     pos = 0
 
     while pos < n_chain:
+        # U3 affine-search runs first (subsumes U2's phase-only).
+        if speculate_affine and n_used > 0:
+            # Determine current greedy best_len at pos.
+            if pos < match_tensor.shape[0]:
+                row = match_tensor[pos, :n_used]
+                best_len_now = int(row[xp().argmax(row)])
+            else:
+                best_len_now = 0
+            affine = _try_affine_match(
+                walk, pos, bodies, lengths, n_used, best_len_now,
+            )
+        else:
+            affine = None
+
+        if affine is not None:
+            opc_idx, phase, length = affine
+            a_size = alphabet_size(n_used)
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            ctrl_idx = _control_index(S_AFFINE, n_used)
+            rc_step_encode(rc, cumfreqs, ctrl_idx, int(cumfreqs[-1]))
+            counts[ctrl_idx] += 1
+            # Emit (opcode, phase, length).
+            for sym in (24 + opc_idx, phase, length):
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                sym_clamped = min(sym, a_size - 1)
+                rc_step_encode(rc, cumfreqs, sym_clamped, int(cumfreqs[-1]))
+                counts[sym_clamped] += 1
+            n_affine_emissions += 1
+            effective_emit = 24 + opc_idx
+            advance = length
+            pos += advance
+            n_vm += 1
+            prev_emission = effective_emit
+            continue
+
         emit_idx, advance, action, phase_payload = _choose_emission(
             pos, match_tensor, n_used, walk, bodies, lengths,
             speculate_phase=speculate_phase,
@@ -237,14 +315,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         counts[emit_idx] += 1
 
         if emit_idx == _control_index(S_PHASE, n_used):
-            # U2: phase-tagged emission; phase_payload packs (phase, op_idx).
             phase = phase_payload >> 16
             opc_idx = phase_payload & 0xFFFF
             _emit_phase_tagged(rc, counts, a_size, opc_idx, phase)
             n_phase_emissions += 1
-            # Grammar growth: treat the phase-tagged emission as the
-            # opc_idx for digram purposes (the residue is what's
-            # locally visible at this position).
             effective_emit = 24 + opc_idx
         else:
             effective_emit = emit_idx
@@ -298,10 +372,11 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_vm": n_vm,
         "n_growth": n_growth,
         "n_phase_emissions": n_phase_emissions,
+        "n_affine_emissions": n_affine_emissions,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "u_arc_slice": "U2",
-        "action_algebra_factors": ("V4-residue", "start_phase"),
+        "u_arc_slice": "U3",
+        "action_algebra_factors": ("V4-residue", "start_phase", "length_mask"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -341,7 +416,21 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         emit_idx = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
         counts[emit_idx] += 1
 
-        if emit_idx == _control_index(S_PHASE, n_used):
+        if emit_idx == _control_index(S_AFFINE, n_used):
+            # U3: read (opcode, phase, length).
+            triplet = []
+            for _i in range(3):
+                cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+                sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                counts[sym] += 1
+                triplet.append(sym)
+            opc_sym, phase, length = triplet
+            opc_idx = opc_sym - 24
+            body = bodies[opc_idx, phase:phase + length]
+            chain_terminals.extend(int(b) for b in (
+                cp.asnumpy(body) if HAS_CUPY else np.asarray(body)))
+            effective_emit = 24 + opc_idx
+        elif emit_idx == _control_index(S_PHASE, n_used):
             opc_idx, phase = _decode_phase_tagged(dec_state, counts, a_size)
             L = int(lengths[opc_idx])
             body = bodies[opc_idx, phase:L]
@@ -400,9 +489,8 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 # --- Self-check ---------------------------------------------------------
 
 
-def self_check(size: int = 1024, verbose: bool = True,
-               speculate_phase: bool = True) -> bool:
-    """Round-trip on engine.py text; (E3) phase vs no-phase."""
+def self_check(size: int = 1024, verbose: bool = True) -> bool:
+    """Round-trip on engine.py text + (E3) per-factor measurement."""
     from pathlib import Path
     import time
     HERE = Path(__file__).resolve().parent
@@ -410,40 +498,38 @@ def self_check(size: int = 1024, verbose: bool = True,
     with open(src, "rb") as f:
         data = f.read()[:size]
 
-    t0 = time.perf_counter()
-    enc_off, stats_off = encode(data, speculate_phase=False)
-    t_off = time.perf_counter() - t0
-    ok_off = decode(enc_off) == data
-
-    t0 = time.perf_counter()
-    enc_on, stats_on = encode(data, speculate_phase=True)
-    t_on = time.perf_counter() - t0
-    ok_on = decode(enc_on) == data
-
-    bpb_off = 8 * len(enc_off) / size
-    bpb_on = 8 * len(enc_on) / size
+    cases = [
+        ("identity (U1)", dict(speculate_phase=False, speculate_affine=False)),
+        ("+ phase (U2)",   dict(speculate_phase=True,  speculate_affine=False)),
+        ("+ affine (U3)",  dict(speculate_phase=False, speculate_affine=True)),
+    ]
+    results = []
+    for name, kw in cases:
+        t0 = time.perf_counter()
+        enc, stats = encode(data, **kw)
+        t = time.perf_counter() - t0
+        ok = decode(enc) == data
+        bpb = 8 * len(enc) / size
+        results.append((name, enc, stats, t, ok, bpb))
 
     if verbose:
-        print("=== GpuCodecV6 (U-arc U2: + start_phase) ===")
-        print(f"  input bytes:                 {len(data)}")
-        print(f"  speculate_phase=False:")
-        print(f"    encoded:                   {len(enc_off)} bytes "
-              f"({bpb_off:.3f} b/byte)")
-        print(f"    encode time:               {t_off*1000:.1f}ms")
-        print(f"    round-trip:                {'OK' if ok_off else 'FAIL'}")
-        print(f"  speculate_phase=True:")
-        print(f"    encoded:                   {len(enc_on)} bytes "
-              f"({bpb_on:.3f} b/byte)")
-        print(f"    n_phase_emissions:         {stats_on['n_phase_emissions']}")
-        print(f"    encode time:               {t_on*1000:.1f}ms")
-        print(f"    round-trip:                {'OK' if ok_on else 'FAIL'}")
-        delta = bpb_on - bpb_off
-        verdict = ("BENEFITS" if delta < -0.01 else
-                   "NEUTRAL" if abs(delta) < 0.01 else
-                   "REGRESSES")
-        print(f"  (E3) phase vs no-phase:      {verdict} ({delta:+.3f} b/byte)")
-        print(f"\nResult: {'OK' if ok_off and ok_on else 'FAIL'}")
-    return ok_off and ok_on
+        print("=== GpuCodecV6 (U-arc U3: + length_mask) ===")
+        print(f"  input bytes: {len(data)}")
+        for name, enc, stats, t, ok, bpb in results:
+            print(f"  {name}:")
+            print(f"    bytes: {len(enc)}  ({bpb:.3f} b/byte)  "
+                  f"phase={stats.get('n_phase_emissions',0)} "
+                  f"affine={stats.get('n_affine_emissions',0)}")
+            print(f"    time: {t*1000:.0f}ms   round-trip: "
+                  f"{'OK' if ok else 'FAIL'}")
+        bpb_id = results[0][5]
+        for name, _, _, _, _, bpb in results[1:]:
+            delta = bpb - bpb_id
+            verdict = ("BENEFITS" if delta < -0.01 else
+                       "NEUTRAL" if abs(delta) < 0.01 else
+                       "REGRESSES")
+            print(f"  (E3) {name} vs identity: {verdict} ({delta:+.3f} b/byte)")
+    return all(r[4] for r in results)
 
 
 if __name__ == "__main__":
