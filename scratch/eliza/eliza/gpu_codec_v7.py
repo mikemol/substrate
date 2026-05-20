@@ -29,6 +29,7 @@ import numpy as np
 from eliza.alphabets import NIBBLE_TO_PERM, ORIGIN, perm_compose
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
+    QuaternionComponent, apply_quat_component,
 )
 from eliza.chain_symbol import ChainSymbol
 from eliza.gpu_codec_v2 import (
@@ -48,9 +49,9 @@ from eliza.tensor_range_coder import (
 
 
 # V7 control opcodes (V-arc additions on top of V6's set).
-# V1: just S_BASIS_AT for absolute jump.
-S_BASIS_AT = 0
-N_V7_CONTROL_OPCODES = 1
+S_BASIS_AT = 0     # V1: absolute heading — jump to labeled basis point.
+S_BASIS_BY = 1     # V2: relative bearing — multiply by quaternion component.
+N_V7_CONTROL_OPCODES = 2
 
 
 def alphabet_size(n_used: int) -> int:
@@ -177,8 +178,9 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V1",
-        "operad_axes": ("basis-torsor@identity-only",),
+        "v_arc_slice": "V2",
+        "operad_axes": ("basis-torsor@identity-only",
+                          "quaternion-bearing@identity-only"),
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -223,11 +225,22 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
 
         if emit_idx == _control_index(S_BASIS_AT, n_used):
             # V1 dispatch: read the target basis label and update state.
-            # The label is encoded in [0, N_BASIS_LABELS) as a small int.
             cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
             label_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
             counts[label_sym] += 1
-            basis_state = BasisState(label=BasisLabel(label_sym % N_BASIS_LABELS))
+            basis_state = BasisState(
+                label=BasisLabel(label_sym % N_BASIS_LABELS),
+                quat=basis_state.quat,
+            )
+            continue
+        if emit_idx == _control_index(S_BASIS_BY, n_used):
+            # V2 dispatch: read the quaternion component (W/I/J/K) and
+            # multiply current quaternion state by it.
+            cumfreqs = adaptive_cumfreqs(counts[:a_size], a_size)
+            comp_sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+            counts[comp_sym] += 1
+            new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
+            basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
 
         n_emissions -= 1
