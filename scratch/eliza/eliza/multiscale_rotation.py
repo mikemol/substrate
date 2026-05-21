@@ -368,6 +368,58 @@ def bitshift_stream(data: bytes, shift: int) -> bytes:
     return bitshift_stream_left(data, shift)
 
 
+def find_best_bit_shift(data: bytes, estimator=None) -> int:
+    """CC8: find the bit shift ∈ [0, 8) that minimises the estimator.
+
+    Defaults to `chain_symbol_entropy_estimator` (substrate-aligned)
+    per CC1. Returns the best shift index.
+    """
+    if estimator is None:
+        estimator = chain_symbol_entropy_estimator
+    best_shift = 0
+    best_score = estimator(data)
+    for s in range(1, 8):
+        shifted = bitshift_stream_left(data, s)
+        score = estimator(shifted)
+        if score < best_score:
+            best_score = score
+            best_shift = s
+    return best_shift
+
+
+def speculate_block_rotations_with_inertia(data: bytes, block_size: int,
+                                              scale: int,
+                                              inertia_margin: float = 0.05,
+                                              estimator=None) -> list:
+    """CC5: per-block rotation auto-speculation with inertia.
+
+    Same as `speculate_block_rotations` but the encoder REFUSES to
+    switch rotation unless the new rotation's score is BETTER than
+    the current rotation's score by ≥ `inertia_margin`. Reduces
+    rotation-table overhead by amortising across runs.
+    """
+    if estimator is None:
+        estimator = chain_symbol_entropy_estimator
+    rotations = []
+    current_rot = None
+    for block_start in range(0, len(data), block_size):
+        block = data[block_start:block_start + block_size]
+        candidate_k, candidate_f, candidate_score = find_best_rotation_for_block(
+            block, scale, estimator)
+        if current_rot is None:
+            current_rot = (scale, candidate_k, candidate_f)
+            rotations.append(current_rot)
+            continue
+        # Compare candidate to current.
+        current_score = estimator(
+            apply_rotation_to_bytes(
+                block, current_rot[0], current_rot[1], current_rot[2]))
+        if candidate_score < current_score - inertia_margin:
+            current_rot = (scale, candidate_k, candidate_f)
+        rotations.append(current_rot)
+    return rotations
+
+
 # --- Self-check --------------------------------------------------------
 
 

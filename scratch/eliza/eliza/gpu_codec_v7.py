@@ -39,7 +39,9 @@ from eliza.multiscale_rotation import (
     apply_block_rotations, apply_rotation_to_bytes,
     bitshift_stream_left, bitshift_stream_right,
     chain_symbol_entropy_estimator,
+    find_best_bit_shift,
     speculate_block_rotations,
+    speculate_block_rotations_with_inertia,
 )
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
@@ -207,8 +209,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            speculate_block_rotation: bool = False,
            block_rotations: list = None,
            bit_shift: int = 0,
+           speculate_bit_shift: bool = False,
            coxeter_word: list = None,
-           coxeter_scale: int = 3) -> Tuple[bytes, Dict]:
+           coxeter_scale: int = 3,
+           rotation_inertia: float = 0.05) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -230,7 +234,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
 
-    # CC6: stream-level bit shift FIRST (Z/8 group, outermost layer).
+    # CC6+CC8: stream-level bit shift. If speculate_bit_shift is on,
+    # auto-discover the best shift via chain-symbol entropy (CC1).
+    if speculate_bit_shift:
+        bit_shift = find_best_bit_shift(data)
     if bit_shift % 8 != 0:
         shifted_data = bitshift_stream_left(data, bit_shift)
     else:
@@ -252,8 +259,11 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         rotated_data = apply_block_rotations(
             shifted_data, block_size, effective_block_rotations)
     elif speculate_block_rotation and block_size > 0:
-        effective_block_rotations = speculate_block_rotations(
-            shifted_data, block_size, rotation_scale)
+        # CC5: use inertia-aware speculation to amortise rotation
+        # changes across runs.
+        effective_block_rotations = speculate_block_rotations_with_inertia(
+            shifted_data, block_size, rotation_scale,
+            inertia_margin=rotation_inertia)
         rotated_data = apply_block_rotations(
             shifted_data, block_size, effective_block_rotations)
     elif rotation_k != 0 or rotation_f != 0:
