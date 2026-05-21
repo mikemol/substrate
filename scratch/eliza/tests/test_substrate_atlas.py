@@ -102,10 +102,36 @@ def substrate_opcodes(n_bytes: int = 4096) -> bytes:
     return bytes(out[:n_bytes])
 
 
+def t1t2_handcrafted(n_bytes: int = 4096) -> bytes:
+    """Ad-hoc test pattern materialised from U-arc / V-arc development.
+
+    Two byte templates T1 and T2 are concatenated with zero-separators
+    repeatedly; the corpus then continues with T2-alone instances. This
+    is the structurally-designed corpus that the alias-define mechanism
+    (commit a016442) and the V7 two-stage lookahead (commit b8871a6)
+    were validated on — the structural alias for T2-as-suffix-of-(T1+T2)
+    rule produces the (E3) BENEFITS those commits report.
+
+    Materialised here as a real test fixture so the measurement is
+    reproducible per [[negative-findings-corpus-bound]] (bounded
+    measurement requires the corpus to be inspectable, not living only
+    in commit messages).
+    """
+    T1 = bytes([0x01, 0x23, 0x45, 0x67, 0x89])
+    T2 = bytes([0xAB, 0xCD, 0xEF, 0xFE, 0xDC, 0xBA, 0x98])
+    SEP = b"\x00" * 4
+    seed = (T1 + T2 + SEP) * 20 + (T2 + SEP) * 40
+    out = bytearray(seed)
+    while len(out) < n_bytes:
+        out.extend(seed)
+    return bytes(out[:n_bytes])
+
+
 CORPORA = {
     "substrate_agda":     substrate_agda,
     "substrate_memory":   substrate_memory,
     "substrate_opcodes":  substrate_opcodes,
+    "t1t2_handcrafted":   t1t2_handcrafted,
 }
 
 
