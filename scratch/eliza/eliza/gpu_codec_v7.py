@@ -34,6 +34,8 @@ from eliza.backref import (
 )
 from eliza.multiscale_rotation import (
     apply_block_rotations, apply_rotation_to_bytes,
+    bitshift_stream_left, bitshift_stream_right,
+    chain_symbol_entropy_estimator,
     speculate_block_rotations,
 )
 from eliza.basis_state import (
@@ -67,7 +69,8 @@ S_BASIS_BY = 1       # V2: relative bearing — multiply by quaternion component
 S_SHIFT_BIT = 2      # V8: explicit sink — commit one bit of working buffer.
 S_REF_RECENT = 3     # Z1: chain-symbol backref (distance, length).
 S_SCALE_ROTATE = 4   # BB2: multiscale Cayley-Dickson rotation (scale, k, f).
-N_V7_CONTROL_OPCODES = 5
+S_BIT_SHIFT = 5      # CC6: stream-level Z/8 bit shift (3-bit payload).
+N_V7_CONTROL_OPCODES = 6
 
 
 def alphabet_size(n_used: int) -> int:
@@ -198,7 +201,8 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            rotation_f: int = 0,
            block_size: int = 0,
            speculate_block_rotation: bool = False,
-           block_rotations: list = None) -> Tuple[bytes, Dict]:
+           block_rotations: list = None,
+           bit_shift: int = 0) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -220,7 +224,13 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
 
-    # BB3+BB5: rotation. Three modes (in priority order):
+    # CC6: stream-level bit shift FIRST (Z/8 group, outermost layer).
+    if bit_shift % 8 != 0:
+        shifted_data = bitshift_stream_left(data, bit_shift)
+    else:
+        shifted_data = data
+
+    # BB3+BB5: byte-level rotation. Three modes (priority order):
     #   1. block_rotations provided: per-block sticky rotation.
     #   2. speculate_block_rotation=True: encoder finds best per-block.
     #   3. else: single global rotation (BB3 original).
@@ -228,17 +238,17 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     if block_rotations is not None and block_size > 0:
         effective_block_rotations = list(block_rotations)
         rotated_data = apply_block_rotations(
-            data, block_size, effective_block_rotations)
+            shifted_data, block_size, effective_block_rotations)
     elif speculate_block_rotation and block_size > 0:
         effective_block_rotations = speculate_block_rotations(
-            data, block_size, rotation_scale)
+            shifted_data, block_size, rotation_scale)
         rotated_data = apply_block_rotations(
-            data, block_size, effective_block_rotations)
+            shifted_data, block_size, effective_block_rotations)
     elif rotation_k != 0 or rotation_f != 0:
         rotated_data = apply_rotation_to_bytes(
-            data, rotation_scale, rotation_k, rotation_f)
+            shifted_data, rotation_scale, rotation_k, rotation_f)
     else:
-        rotated_data = data
+        rotated_data = shifted_data
 
     next_table = _build_next_chamber_table(chambers, idx_map)
     walk = int_chamber_walk(rotated_data, chambers, idx_map, next_table)
@@ -465,6 +475,8 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     header.append(rotation_scale & 0xFF)
     header.append(rotation_k & 0xFF)
     header.append(rotation_f & 0xFF)
+    # CC6: bit-shift in header (1 byte; 3 bits used, rest reserved).
+    header.append(bit_shift & 0xFF)
     # BB5: per-block rotations. Header byte for block_size (0 = no
     # block rotations; >0 = block_size in bytes / 16 to fit a byte
     # for sizes up to 4096); then num_blocks × 3 bytes (scale, k, f).
@@ -519,22 +531,24 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     rotation_scale = encoded[12]
     rotation_k = encoded[13]
     rotation_f = encoded[14]
+    # CC6: bit-shift from header.
+    decoder_bit_shift = encoded[15] & 0xFF
     # BB5: optional per-block rotations.
-    bs_byte = encoded[15]
+    bs_byte = encoded[16]
     decoder_block_rotations = None
     decoder_block_size = 0
     if bs_byte > 0:
         decoder_block_size = bs_byte * 16
-        n_blocks = encoded[16] | (encoded[17] << 8)
+        n_blocks = encoded[17] | (encoded[18] << 8)
         decoder_block_rotations = []
-        off = 18
+        off = 19
         for _i in range(n_blocks):
             decoder_block_rotations.append(
                 (encoded[off], encoded[off + 1], encoded[off + 2]))
             off += 3
         payload = encoded[off:]
     else:
-        payload = encoded[16:]
+        payload = encoded[17:]
 
     initial_max_body = max(op.length for op in initial_opcodes)
     max_body = max(DEFAULT_MAX_BODY, initial_max_body)
@@ -692,15 +706,21 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         nibbles.append(n)
         state = after
     rotated_bytes = nibbles_to_bytes(nibbles)
-    # BB4+BB5: apply inverse rotation. All rotations are involutions
-    # so the same rotation undoes itself.
+    # BB4+BB5: apply byte-level inverse rotation. F₂ⁿ × F₂ rotations
+    # are involutions; the same rotation undoes itself.
     if decoder_block_rotations is not None:
-        return apply_block_rotations(
+        shifted_bytes = apply_block_rotations(
             rotated_bytes, decoder_block_size, decoder_block_rotations)
-    if rotation_k == 0 and rotation_f == 0:
-        return rotated_bytes
-    return apply_rotation_to_bytes(rotated_bytes, rotation_scale,
-                                       rotation_k, rotation_f)
+    elif rotation_k != 0 or rotation_f != 0:
+        shifted_bytes = apply_rotation_to_bytes(
+            rotated_bytes, rotation_scale, rotation_k, rotation_f)
+    else:
+        shifted_bytes = rotated_bytes
+    # CC6: apply stream-level Z/8 RIGHT shift to invert encoder's left
+    # shift. (Z/8 is NOT involutive — left & right are paired inverses.)
+    if decoder_bit_shift % 8 != 0:
+        return bitshift_stream_right(shifted_bytes, decoder_bit_shift)
+    return shifted_bytes
 
 
 # --- Self-check ---------------------------------------------------------

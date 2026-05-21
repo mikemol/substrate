@@ -223,9 +223,9 @@ def find_best_rotation_for_block(block: bytes, scale: int,
 
 
 def byte_entropy_estimator(data: bytes) -> float:
-    """Quick proxy for compressibility: byte-frequency entropy.
-
-    Lower entropy → more compressible. Used as the BB6 score function.
+    """LEGACY (BB-arc): byte-frequency entropy. RIGIDIFIES scale to
+    bytes per [[octonion-loop-expressivity-limit]] — use
+    `chain_symbol_entropy_estimator` for substrate-aligned estimation.
     """
     if not data:
         return 0.0
@@ -234,6 +234,41 @@ def byte_entropy_estimator(data: bytes) -> float:
     for b in data:
         counts[b] += 1
     n = len(data)
+    h = 0.0
+    for c in counts:
+        if c > 0:
+            p = c / n
+            h -= p * math.log2(p)
+    return h
+
+
+def chain_symbol_entropy_estimator(data: bytes) -> float:
+    """CC1: scale-agnostic entropy estimator using the codec's
+    chain-symbol distribution.
+
+    Performs the chamber walk on `data` and histograms the 24
+    chain-symbol (S₄ chamber) outputs. Lower entropy → more
+    compressible under the codec's actual cost function (which
+    operates on chain symbols, not bytes).
+
+    Per the user's audit: replaces byte_entropy_estimator's
+    scale=3 rigidification with the codec's natural granularity.
+    """
+    if not data:
+        return 0.0
+    import math
+    from eliza.alphabets import NIBBLE_TO_PERM, ORIGIN, perm_compose
+    from eliza.matrix_ops import _manifold_index
+    chambers, idx_map = _manifold_index()
+    counts = [0] * len(chambers)
+    state = ORIGIN
+    for byte in data:
+        for nibble in ((byte >> 4) & 0xF, byte & 0xF):
+            state = perm_compose(state, NIBBLE_TO_PERM[nibble])
+            counts[idx_map[state]] += 1
+    n = sum(counts)
+    if n == 0:
+        return 0.0
     h = 0.0
     for c in counts:
         if c > 0:
@@ -259,19 +294,76 @@ def apply_block_rotations(data: bytes, block_size: int,
 
 
 def speculate_block_rotations(data: bytes, block_size: int,
-                                scale: int) -> list:
+                                scale: int,
+                                estimator=None) -> list:
     """BB6 auto-speculation: per block, find the best rotation at the
     given scale; return list of (scale, k, f).
 
-    Uses byte-frequency entropy as the cost estimator (cheap proxy).
+    The estimator defaults to `chain_symbol_entropy_estimator` (CC1)
+    which uses the codec's natural granularity. The legacy
+    `byte_entropy_estimator` can be passed explicitly for the BB-arc
+    behaviour but is structurally rigidified to scale=3.
     """
+    if estimator is None:
+        estimator = chain_symbol_entropy_estimator
     rotations = []
     for block_start in range(0, len(data), block_size):
         block = data[block_start:block_start + block_size]
-        k, f, _ = find_best_rotation_for_block(
-            block, scale, byte_entropy_estimator)
+        k, f, _ = find_best_rotation_for_block(block, scale, estimator)
         rotations.append((scale, k, f))
     return rotations
+
+
+# --- CC6: Stream-level bit shift (Z/8 group) --------------------------
+
+
+def bitshift_stream_left(data: bytes, shift: int) -> bytes:
+    """Left-shift the whole byte stream by `shift` bits (0..7).
+
+    Treats `data` as a single big-endian bit sequence. The last
+    `shift` bits are dropped; the first `shift` bits of the output
+    come from positions shifted forward.
+    """
+    shift = shift % 8
+    if shift == 0:
+        return bytes(data)
+    n = len(data)
+    if n == 0:
+        return data
+    out = bytearray(n)
+    for i in range(n):
+        hi = (data[i] << shift) & 0xFF
+        lo = (data[i + 1] >> (8 - shift)) if i + 1 < n else 0
+        out[i] = hi | lo
+    return bytes(out)
+
+
+def bitshift_stream_right(data: bytes, shift: int) -> bytes:
+    """Inverse of `bitshift_stream_left`. Right-shifts by `shift`.
+
+    Implementing as the matched inverse so encoder.shift_left(k) +
+    decoder.shift_right(k) round-trips. (Note: left/right shifts are
+    Z/8 inverses, not involutions.)
+    """
+    shift = shift % 8
+    if shift == 0:
+        return bytes(data)
+    n = len(data)
+    if n == 0:
+        return data
+    out = bytearray(n)
+    for i in range(n):
+        lo = data[i] >> shift
+        hi = (data[i - 1] << (8 - shift)) & 0xFF if i > 0 else 0
+        out[i] = lo | hi
+    return bytes(out)
+
+
+def bitshift_stream(data: bytes, shift: int) -> bytes:
+    """Convenience: encoder-side left shift. Use bitshift_stream_right
+    for the matching decoder-side inverse.
+    """
+    return bitshift_stream_left(data, shift)
 
 
 # --- Self-check --------------------------------------------------------
