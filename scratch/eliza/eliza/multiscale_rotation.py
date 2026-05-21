@@ -318,11 +318,14 @@ def speculate_block_rotations(data: bytes, block_size: int,
 
 
 def bitshift_stream_left(data: bytes, shift: int) -> bytes:
-    """Left-shift the whole byte stream by `shift` bits (0..7).
+    """CYCLIC left-shift of the whole byte stream by `shift` bits.
 
-    Treats `data` as a single big-endian bit sequence. The last
-    `shift` bits are dropped; the first `shift` bits of the output
-    come from positions shifted forward.
+    Treats `data` as a single big-endian bit sequence of length 8n;
+    rotates by `shift` positions, with the top bits wrapping to the
+    end of the stream. Lossless under matched right-shift inverse.
+
+    A non-cyclic left-shift would drop the top `shift` bits of
+    `data[0]` — fix per CC7 sweep round-trip failures on text corpora.
     """
     shift = shift % 8
     if shift == 0:
@@ -333,17 +336,16 @@ def bitshift_stream_left(data: bytes, shift: int) -> bytes:
     out = bytearray(n)
     for i in range(n):
         hi = (data[i] << shift) & 0xFF
-        lo = (data[i + 1] >> (8 - shift)) if i + 1 < n else 0
+        lo = data[(i + 1) % n] >> (8 - shift)
         out[i] = hi | lo
     return bytes(out)
 
 
 def bitshift_stream_right(data: bytes, shift: int) -> bytes:
-    """Inverse of `bitshift_stream_left`. Right-shifts by `shift`.
+    """CYCLIC right-shift; inverse of `bitshift_stream_left`.
 
-    Implementing as the matched inverse so encoder.shift_left(k) +
-    decoder.shift_right(k) round-trips. (Note: left/right shifts are
-    Z/8 inverses, not involutions.)
+    The Z/8 group action is cyclic; left and right are paired
+    inverses.
     """
     shift = shift % 8
     if shift == 0:
@@ -354,7 +356,7 @@ def bitshift_stream_right(data: bytes, shift: int) -> bytes:
     out = bytearray(n)
     for i in range(n):
         lo = data[i] >> shift
-        hi = (data[i - 1] << (8 - shift)) & 0xFF if i > 0 else 0
+        hi = (data[(i - 1) % n] << (8 - shift)) & 0xFF
         out[i] = lo | hi
     return bytes(out)
 
