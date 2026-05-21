@@ -27,7 +27,10 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 from eliza.alphabets import NIBBLE_TO_PERM, ORIGIN, perm_compose
-from eliza.backref import apply_chain_backref, find_chain_backref
+from eliza.backref import (
+    apply_chain_backref, apply_v4_chain, find_chain_backref,
+    find_chain_backref_with_residue,
+)
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
     QuaternionComponent, apply_quat_component,
@@ -180,6 +183,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES,
            speculate_basis: bool = False,
            speculate_backref: bool = False,
+           speculate_residue: bool = False,
            backref_window: int = 4096,
            backref_min_length: int = 6) -> Tuple[bytes, Dict]:
     """V7 encoder.
@@ -261,24 +265,41 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
             best_idx = 0
             best_len = 0
 
-        # Z1: backref speculation. If backref_length > 5 × greedy
-        # match length, the 5-symbol backref payload beats 1-symbol
-        # greedy emissions per chain-position.
+        # Z1 + AA1+AA2: backref speculation, optionally with V₄
+        # residue composition. Payload-size-aware margin: identity
+        # backref = 5 symbols; residue backref = 6 symbols. Threshold
+        # = payload_size × greedy_length.
         backref_match = None
+        backref_sigma = 0  # V₄ identity by default
         if speculate_backref:
-            backref_match = find_chain_backref(
-                walk, pos, max_back=backref_window,
-                min_length=max(backref_min_length, 5 * max(best_len, 1) + 1),
-            )
+            id_margin_min = max(backref_min_length,
+                                  5 * max(best_len, 1) + 1)
+            res_margin_min = max(backref_min_length,
+                                   6 * max(best_len, 1) + 1)
+            if speculate_residue:
+                m = find_chain_backref_with_residue(
+                    walk, pos, max_back=backref_window,
+                    min_length=res_margin_min,
+                )
+                if m is not None:
+                    distance, length, sig_idx = m
+                    # Only prefer non-identity σ if it actually saves
+                    # bits over the identity-only path. Identity σ
+                    # under residue search reverts to plain backref.
+                    backref_match = (distance, length)
+                    backref_sigma = sig_idx
+            else:
+                backref_match = find_chain_backref(
+                    walk, pos, max_back=backref_window,
+                    min_length=id_margin_min,
+                )
 
         if backref_match is not None:
             distance, length = backref_match
             a_size = alphabet_size(n_used)
-            # Encode (distance, length) as base-a_size 2-symbol pairs.
             d_hi, d_lo = divmod(distance, a_size)
             l_hi, l_lo = divmod(length, a_size)
-            # Refuse backref if any payload component overflows.
-            if max(d_hi, d_lo, l_hi, l_lo) >= a_size:
+            if max(d_hi, d_lo, l_hi, l_lo, backref_sigma) >= a_size:
                 backref_match = None
 
         if backref_match is not None:
@@ -292,7 +313,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 p.update(ctrl, _ctx())
             d_hi, d_lo = divmod(distance, a_size)
             l_hi, l_lo = divmod(length, a_size)
-            for sym in (d_hi, d_lo, l_hi, l_lo):
+            # AA2: σ_idx is the 5th payload symbol (0..3 for V₄ identity
+            # / α / β / γ). Identity (σ=0) costs ~0 bits once the
+            # predictor learns its prevalence.
+            for sym in (d_hi, d_lo, l_hi, l_lo, backref_sigma):
                 cumfreqs = predictor.cumfreqs(a_size, _ctx())
                 rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
                 for p in predictors.values():
@@ -397,13 +421,15 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V7+Z1",
+        "v_arc_slice": "V7+Z1+AA2",
         "operad_axes": ("basis-torsor", "quaternion-bearing",
                           "per-basis-predictors",
                           "speculation-gate", "generator-ring",
-                          "predictor-variants", "chain-backref"),
+                          "predictor-variants", "chain-backref",
+                          "v4-residue-on-backref"),
         "speculate_basis": speculate_basis,
         "speculate_backref": speculate_backref,
+        "speculate_residue": speculate_residue,
         "n_backref": n_backref,
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
@@ -478,21 +504,28 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
         if emit_idx == _control_index(S_REF_RECENT, n_used):
-            # Z1 dispatch: read (d_hi, d_lo, l_hi, l_lo); copy from
-            # chain_terminals history. Encoder skips digram growth on
-            # backref emissions (no rule reference); decoder mirrors.
+            # Z1 + AA2 dispatch: read (d_hi, d_lo, l_hi, l_lo, σ_idx);
+            # copy from chain_terminals history with V₄ residue applied.
             payload = []
-            for _i in range(4):
+            for _i in range(5):
                 predictor = predictors[basis_state.label]
                 cumfreqs = predictor.cumfreqs(a_size, _dctx())
                 sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
                 for p in predictors.values():
                     p.update(sym, _dctx())
                 payload.append(sym)
-            d_hi, d_lo, l_hi, l_lo = payload
+            d_hi, d_lo, l_hi, l_lo, sig_idx = payload
             distance = d_hi * a_size + d_lo
             length = l_hi * a_size + l_lo
-            apply_chain_backref(chain_terminals, distance, length)
+            sig_idx = sig_idx % 4   # V₄ has 4 elements; clamp defensively
+            # AA2: copy with V₄ residue applied per chain symbol.
+            start = len(chain_terminals) - distance
+            if start < 0:
+                raise ValueError(
+                    f"backref distance {distance} exceeds chain history")
+            for i in range(length):
+                src = chain_terminals[start + i]
+                chain_terminals.append(apply_v4_chain(src, sig_idx))
             prev_prev_emission = prev_emission
             prev_emission = _control_index(S_REF_RECENT, n_used)
             n_emissions -= 1

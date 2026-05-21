@@ -26,6 +26,84 @@ from typing import Optional, Tuple
 
 import numpy as np
 
+from eliza.alphabets import V4_PERMS, perm_compose
+
+
+# --- V₄ action table on chain symbols (AA1+AA2 unification) -----------
+
+_V4_ACTION_TABLE: Optional[np.ndarray] = None
+
+
+def get_v4_action_table() -> np.ndarray:
+    """Precompute V_ACTION[σ_idx, c_idx] = perm-index of σ ∘ c.
+
+    Lazily computed; once cached, lookups are O(1).
+    """
+    global _V4_ACTION_TABLE
+    if _V4_ACTION_TABLE is not None:
+        return _V4_ACTION_TABLE
+    from eliza.matrix_ops import _manifold_index
+    chambers, idx_map = _manifold_index()
+    n_v4 = len(V4_PERMS)
+    n_chambers = len(chambers)
+    table = np.zeros((n_v4, n_chambers), dtype=np.int64)
+    for sig_idx, sig_perm in enumerate(V4_PERMS):
+        for c_idx, c_perm in enumerate(chambers):
+            new_perm = perm_compose(sig_perm, c_perm)
+            table[sig_idx, c_idx] = idx_map[new_perm]
+    _V4_ACTION_TABLE = table
+    return table
+
+
+def find_chain_backref_with_residue(
+    walk, pos: int,
+    max_back: int = 4096,
+    min_length: int = 4,
+    max_length: int = 256,
+) -> Optional[Tuple[int, int, int]]:
+    """AA1: search over (distance, length, σ ∈ V₄). Returns
+    (distance, length, sigma_idx) or None.
+
+    For each candidate σ, checks whether
+        table[σ, walk[pos-d+i]] == walk[pos+i]   for i in 0..length-1.
+    Equivalent to: σ · history_chunk matches walk at pos.
+
+    4× the naive backref's cost; reduce max_back if too slow.
+    """
+    n = walk.shape[0]
+    if pos == 0 or pos >= n:
+        return None
+    walk_np = walk if isinstance(walk, np.ndarray) else np.asarray(walk)
+    table = get_v4_action_table()
+
+    best_d = 0
+    best_l = 0
+    best_sig = 0
+    upper_d = min(pos, max_back)
+    max_l = min(max_length, n - pos)
+
+    for d in range(1, upper_d + 1):
+        for sig_idx in range(4):
+            l = 0
+            while l < max_l and table[sig_idx, walk_np[pos - d + l]] == walk_np[pos + l]:
+                l += 1
+            if l >= min_length and l > best_l:
+                best_l = l
+                best_d = d
+                best_sig = sig_idx
+                if best_l == max_l:
+                    return (best_d, best_l, best_sig)
+    if best_l == 0:
+        return None
+    return (best_d, best_l, best_sig)
+
+
+def apply_v4_chain(chain_symbol: int, sigma_idx: int) -> int:
+    """AA2: apply V₄ residue σ to a single chain symbol via the lookup table."""
+    if sigma_idx == 0:
+        return chain_symbol
+    return int(get_v4_action_table()[sigma_idx, chain_symbol])
+
 
 def find_chain_backref(walk, pos: int,
                          max_back: int = 4096,
