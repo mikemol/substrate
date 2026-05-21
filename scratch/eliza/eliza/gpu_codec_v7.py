@@ -32,6 +32,9 @@ from eliza.backref import (
     find_chain_backref, find_chain_backref_with_residue,
     find_chain_backref_with_s4_residue,
 )
+from eliza.coxeter_perm import (
+    apply_coxeter_word_to_bytes, invert_coxeter_word,
+)
 from eliza.multiscale_rotation import (
     apply_block_rotations, apply_rotation_to_bytes,
     bitshift_stream_left, bitshift_stream_right,
@@ -70,7 +73,8 @@ S_SHIFT_BIT = 2      # V8: explicit sink — commit one bit of working buffer.
 S_REF_RECENT = 3     # Z1: chain-symbol backref (distance, length).
 S_SCALE_ROTATE = 4   # BB2: multiscale Cayley-Dickson rotation (scale, k, f).
 S_BIT_SHIFT = 5      # CC6: stream-level Z/8 bit shift (3-bit payload).
-N_V7_CONTROL_OPCODES = 6
+S_COXETER_BIT_PERM = 6  # CC3: Coxeter word permutation (scale + word).
+N_V7_CONTROL_OPCODES = 7
 
 
 def alphabet_size(n_used: int) -> int:
@@ -202,7 +206,9 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            block_size: int = 0,
            speculate_block_rotation: bool = False,
            block_rotations: list = None,
-           bit_shift: int = 0) -> Tuple[bytes, Dict]:
+           bit_shift: int = 0,
+           coxeter_word: list = None,
+           coxeter_scale: int = 3) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -229,6 +235,12 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         shifted_data = bitshift_stream_left(data, bit_shift)
     else:
         shifted_data = data
+
+    # CC3: Coxeter word permutation at the byte/word/nibble level.
+    # If coxeter_word is supplied, apply it; otherwise pass through.
+    if coxeter_word:
+        shifted_data = apply_coxeter_word_to_bytes(
+            shifted_data, coxeter_scale, coxeter_word)
 
     # BB3+BB5: byte-level rotation. Three modes (priority order):
     #   1. block_rotations provided: per-block sticky rotation.
@@ -477,6 +489,13 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     header.append(rotation_f & 0xFF)
     # CC6: bit-shift in header (1 byte; 3 bits used, rest reserved).
     header.append(bit_shift & 0xFF)
+    # CC3: Coxeter word in header (1 byte scale, 1 byte length, then
+    # length bytes of generator indices). Empty word = length=0.
+    cw = coxeter_word or []
+    header.append(coxeter_scale & 0xFF)
+    header.append(len(cw) & 0xFF)
+    for gen_idx in cw:
+        header.append(gen_idx & 0xFF)
     # BB5: per-block rotations. Header byte for block_size (0 = no
     # block rotations; >0 = block_size in bytes / 16 to fit a byte
     # for sizes up to 4096); then num_blocks × 3 bytes (scale, k, f).
@@ -533,22 +552,30 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     rotation_f = encoded[14]
     # CC6: bit-shift from header.
     decoder_bit_shift = encoded[15] & 0xFF
+    # CC3: Coxeter word from header.
+    decoder_coxeter_scale = encoded[16] & 0xFF
+    decoder_coxeter_word_len = encoded[17] & 0xFF
+    coxeter_off = 18
+    decoder_coxeter_word = list(
+        encoded[coxeter_off:coxeter_off + decoder_coxeter_word_len])
+    after_coxeter = coxeter_off + decoder_coxeter_word_len
     # BB5: optional per-block rotations.
-    bs_byte = encoded[16]
+    bs_byte = encoded[after_coxeter]
     decoder_block_rotations = None
     decoder_block_size = 0
     if bs_byte > 0:
         decoder_block_size = bs_byte * 16
-        n_blocks = encoded[17] | (encoded[18] << 8)
+        n_blocks = (encoded[after_coxeter + 1]
+                    | (encoded[after_coxeter + 2] << 8))
         decoder_block_rotations = []
-        off = 19
+        off = after_coxeter + 3
         for _i in range(n_blocks):
             decoder_block_rotations.append(
                 (encoded[off], encoded[off + 1], encoded[off + 2]))
             off += 3
         payload = encoded[off:]
     else:
-        payload = encoded[17:]
+        payload = encoded[after_coxeter + 1:]
 
     initial_max_body = max(op.length for op in initial_opcodes)
     max_body = max(DEFAULT_MAX_BODY, initial_max_body)
@@ -716,6 +743,12 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             rotated_bytes, rotation_scale, rotation_k, rotation_f)
     else:
         shifted_bytes = rotated_bytes
+    # CC3: apply Coxeter word INVERSE (reverse the word) at the
+    # same scale to undo the encoder's permutation.
+    if decoder_coxeter_word:
+        inverse_word = invert_coxeter_word(decoder_coxeter_word)
+        shifted_bytes = apply_coxeter_word_to_bytes(
+            shifted_bytes, decoder_coxeter_scale, inverse_word)
     # CC6: apply stream-level Z/8 RIGHT shift to invert encoder's left
     # shift. (Z/8 is NOT involutive — left & right are paired inverses.)
     if decoder_bit_shift % 8 != 0:
