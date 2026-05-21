@@ -318,10 +318,23 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                 p.update(ctrl, _ctx())
             d_hi, d_lo = divmod(distance, a_size)
             l_hi, l_lo = divmod(length, a_size)
-            # AA2: σ_idx is the 5th payload symbol (0..3 for V₄ identity
-            # / α / β / γ). Identity (σ=0) costs ~0 bits once the
-            # predictor learns its prevalence.
-            for sym in (d_hi, d_lo, l_hi, l_lo, backref_sigma):
+            # AA-arc unified payload: 8 symbols
+            #   (d_hi, d_lo, l_hi, l_lo, σ, source, phase, basis_target)
+            # AA1+AA2+AA4: σ ∈ S₄ (chamber index 0..23).
+            # AA5: source ∈ {0=Recent, 1=Rule}; encoder emits 0 by
+            #      default; structural slot for the U-arc QUOT unification.
+            # AA6: phase ∈ [0, length); slice offset within the source.
+            #      Encoder emits 0 by default (full-span); structural
+            #      slot for the affine-on-reference factor.
+            # AA7: basis_target ∈ BasisLabel; interpretation basis for
+            #      the reference content. Encoder emits current basis
+            #      by default; structural slot for V-arc basis-aware
+            #      emission alphabet on reference content.
+            source = 0
+            phase = 0
+            basis_target = int(basis_state.label) % N_BASIS_LABELS
+            for sym in (d_hi, d_lo, l_hi, l_lo, backref_sigma,
+                          source, phase, basis_target):
                 cumfreqs = predictor.cumfreqs(a_size, _ctx())
                 rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
                 for p in predictors.values():
@@ -426,12 +439,15 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V7+Z1+AA2",
+        "v_arc_slice": "V7+AA-arc",
         "operad_axes": ("basis-torsor", "quaternion-bearing",
                           "per-basis-predictors",
                           "speculation-gate", "generator-ring",
                           "predictor-variants", "chain-backref",
-                          "v4-residue-on-backref"),
+                          "s4-residue-on-backref",
+                          "rule-or-recent-source",
+                          "affine-on-reference",
+                          "basis-target-on-reference"),
         "speculate_basis": speculate_basis,
         "speculate_backref": speculate_backref,
         "speculate_residue": speculate_residue,
@@ -509,32 +525,47 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
         if emit_idx == _control_index(S_REF_RECENT, n_used):
-            # Z1 + AA2 dispatch: read (d_hi, d_lo, l_hi, l_lo, σ_idx);
-            # copy from chain_terminals history with V₄ residue applied.
+            # AA-arc unified payload: 8 symbols
+            #   (d_hi, d_lo, l_hi, l_lo, σ, source, phase, basis_target)
             payload = []
-            for _i in range(5):
+            for _i in range(8):
                 predictor = predictors[basis_state.label]
                 cumfreqs = predictor.cumfreqs(a_size, _dctx())
                 sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
                 for p in predictors.values():
                     p.update(sym, _dctx())
                 payload.append(sym)
-            d_hi, d_lo, l_hi, l_lo, sig_idx = payload
+            d_hi, d_lo, l_hi, l_lo, sig_idx, source, phase, basis_t = payload
             distance = d_hi * a_size + d_lo
             length = l_hi * a_size + l_lo
-            sig_idx = sig_idx % 24   # S₄ has 24 elements; clamp defensively.
-            # AA2+AA4 unified: copy with S₄ residue applied per chain
-            # symbol. Identity σ (sig_idx=0) returns the chain symbol
-            # unchanged; non-identity applies the chamber-composition
-            # via the S₄ action table. The V₄ ⋊ S₃ factorisation is
-            # implicit in the chamber-index encoding (V₄ × S₃ = 24).
-            start = len(chain_terminals) - distance
-            if start < 0:
-                raise ValueError(
-                    f"backref distance {distance} exceeds chain history")
-            for i in range(length):
-                src = chain_terminals[start + i]
-                chain_terminals.append(apply_s4_chain(src, sig_idx))
+            sig_idx = sig_idx % 24
+            source = source % 2
+            basis_t = basis_t % N_BASIS_LABELS
+            # AA5: source ∈ {0=Recent, 1=Rule}. Currently encoder only
+            # emits source=0; the source=1 path applies σ to a rule
+            # body slice (Rule-source dispatch when activated).
+            if source == 0:
+                start = len(chain_terminals) - distance
+                if start < 0:
+                    raise ValueError(
+                        f"backref distance {distance} exceeds chain history")
+                # AA6: phase shifts the source span start.
+                start = start + (phase if phase < length else 0)
+                for i in range(length):
+                    src = chain_terminals[start + i]
+                    chain_terminals.append(apply_s4_chain(src, sig_idx))
+            else:
+                # AA5: source=Rule — distance reinterpreted as rule_id.
+                rule_id = distance
+                if rule_id < n_used:
+                    L = int(lengths[rule_id])
+                    body_np = (cp.asnumpy(bodies[rule_id, :L]) if HAS_CUPY
+                               else np.asarray(bodies[rule_id, :L]))
+                    start = phase if phase < L else 0
+                    end = min(start + length, L)
+                    for i in range(start, end):
+                        chain_terminals.append(
+                            apply_s4_chain(int(body_np[i]), sig_idx))
             prev_prev_emission = prev_emission
             prev_emission = _control_index(S_REF_RECENT, n_used)
             n_emissions -= 1
