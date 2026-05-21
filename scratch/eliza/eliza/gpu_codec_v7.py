@@ -32,6 +32,7 @@ from eliza.backref import (
     find_chain_backref, find_chain_backref_with_residue,
     find_chain_backref_with_s4_residue,
 )
+from eliza.multiscale_rotation import apply_rotation_to_bytes
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
     QuaternionComponent, apply_quat_component,
@@ -58,11 +59,12 @@ from eliza.v7_predictor import (
 
 
 # V7 control opcodes (V-arc additions on top of V6's set).
-S_BASIS_AT = 0     # V1: absolute heading — jump to labeled basis point.
-S_BASIS_BY = 1     # V2: relative bearing — multiply by quaternion component.
-S_SHIFT_BIT = 2    # V8: explicit sink — commit one bit of working buffer.
-S_REF_RECENT = 3   # Z1: chain-symbol backref (distance, length).
-N_V7_CONTROL_OPCODES = 4
+S_BASIS_AT = 0       # V1: absolute heading — jump to labeled basis point.
+S_BASIS_BY = 1       # V2: relative bearing — multiply by quaternion component.
+S_SHIFT_BIT = 2      # V8: explicit sink — commit one bit of working buffer.
+S_REF_RECENT = 3     # Z1: chain-symbol backref (distance, length).
+S_SCALE_ROTATE = 4   # BB2: multiscale Cayley-Dickson rotation (scale, k, f).
+N_V7_CONTROL_OPCODES = 5
 
 
 def alphabet_size(n_used: int) -> int:
@@ -187,7 +189,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            speculate_residue: bool = False,
            speculate_s4_residue: bool = False,
            backref_window: int = 4096,
-           backref_min_length: int = 6) -> Tuple[bytes, Dict]:
+           backref_min_length: int = 6,
+           rotation_scale: int = 3,
+           rotation_k: int = 0,
+           rotation_f: int = 0) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -209,8 +214,17 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
 
+    # BB3: apply Cayley-Dickson rotation to input BEFORE chain walk.
+    # Identity rotation = (scale=3, k=0, f=0) — preserves V2/V6 behaviour.
+    is_identity_rot = (rotation_k == 0 and rotation_f == 0)
+    if not is_identity_rot:
+        rotated_data = apply_rotation_to_bytes(
+            data, rotation_scale, rotation_k, rotation_f)
+    else:
+        rotated_data = data
+
     next_table = _build_next_chamber_table(chambers, idx_map)
-    walk = int_chamber_walk(data, chambers, idx_map, next_table)
+    walk = int_chamber_walk(rotated_data, chambers, idx_map, next_table)
     n_chain = len(walk)
 
     initial_max_body = max(op.length for op in initial_opcodes)
@@ -430,6 +444,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     header.extend(n_chain.to_bytes(4, "little"))
     header.extend(n_initial_opcodes.to_bytes(4, "little"))
     header.extend(n_vm.to_bytes(4, "little"))
+    # BB3: rotation triple in header (3 bytes: scale, k, f).
+    header.append(rotation_scale & 0xFF)
+    header.append(rotation_k & 0xFF)
+    header.append(rotation_f & 0xFF)
     output = bytes(header) + encoded
     return output, {
         "encoded_bytes": len(output),
@@ -466,7 +484,11 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     n_chain = int.from_bytes(encoded[:4], "little")
     n_initial = int.from_bytes(encoded[4:8], "little")
     n_vm = int.from_bytes(encoded[8:12], "little")
-    payload = encoded[12:]
+    # BB3: read rotation triple from header.
+    rotation_scale = encoded[12]
+    rotation_k = encoded[13]
+    rotation_f = encoded[14]
+    payload = encoded[15:]
 
     initial_max_body = max(op.length for op in initial_opcodes)
     max_body = max(DEFAULT_MAX_BODY, initial_max_body)
@@ -623,7 +645,12 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             raise ValueError(f"invalid chain transition")
         nibbles.append(n)
         state = after
-    return nibbles_to_bytes(nibbles)
+    rotated_bytes = nibbles_to_bytes(nibbles)
+    # BB4: apply inverse rotation (= same, since all are involutions).
+    if rotation_k == 0 and rotation_f == 0:
+        return rotated_bytes
+    return apply_rotation_to_bytes(rotated_bytes, rotation_scale,
+                                       rotation_k, rotation_f)
 
 
 # --- Self-check ---------------------------------------------------------
