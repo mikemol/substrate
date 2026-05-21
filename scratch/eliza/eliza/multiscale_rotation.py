@@ -193,6 +193,87 @@ def all_rotations(scale: int):
             yield (k, f)
 
 
+# --- BB5+BB6: per-block rotation with auto-speculation ----------------
+
+
+def find_best_rotation_for_block(block: bytes, scale: int,
+                                    bpb_estimator) -> tuple:
+    """BB6: search (k, f) at the given scale; return (k, f, score)
+    where lowest score wins.
+
+    `bpb_estimator(rotated_bytes) → float` is the cost estimator
+    (cheaper estimator → faster search; only needs to be ordinally
+    comparable, not absolute).
+    """
+    bit_width = 1 << scale if scale > 0 else 1
+    best_k = 0
+    best_f = 0
+    best_score = bpb_estimator(block)
+    for k in range(bit_width):
+        for f in range(2):
+            if k == 0 and f == 0:
+                continue   # already measured
+            rotated = apply_rotation_to_bytes(block, scale, k, f)
+            score = bpb_estimator(rotated)
+            if score < best_score:
+                best_score = score
+                best_k = k
+                best_f = f
+    return (best_k, best_f, best_score)
+
+
+def byte_entropy_estimator(data: bytes) -> float:
+    """Quick proxy for compressibility: byte-frequency entropy.
+
+    Lower entropy → more compressible. Used as the BB6 score function.
+    """
+    if not data:
+        return 0.0
+    import math
+    counts = [0] * 256
+    for b in data:
+        counts[b] += 1
+    n = len(data)
+    h = 0.0
+    for c in counts:
+        if c > 0:
+            p = c / n
+            h -= p * math.log2(p)
+    return h
+
+
+def apply_block_rotations(data: bytes, block_size: int,
+                           rotations: list) -> bytes:
+    """Apply per-block rotations to a byte stream.
+
+    `rotations` is a list of (scale, k, f) tuples, one per block.
+    If shorter than the number of blocks, the LAST entry is reused.
+    """
+    out = bytearray()
+    for i, block_start in enumerate(range(0, len(data), block_size)):
+        block = data[block_start:block_start + block_size]
+        rot = rotations[min(i, len(rotations) - 1)]
+        rotated = apply_rotation_to_bytes(block, rot[0], rot[1], rot[2])
+        out.extend(rotated)
+    return bytes(out)
+
+
+def speculate_block_rotations(data: bytes, block_size: int,
+                                scale: int) -> list:
+    """BB6 auto-speculation: per block, find the best rotation at the
+    given scale; return list of (scale, k, f).
+
+    Uses byte-frequency entropy as the cost estimator (cheap proxy).
+    """
+    rotations = []
+    for block_start in range(0, len(data), block_size):
+        block = data[block_start:block_start + block_size]
+        k, f, _ = find_best_rotation_for_block(
+            block, scale, byte_entropy_estimator)
+        rotations.append((scale, k, f))
+    return rotations
+
+
 # --- Self-check --------------------------------------------------------
 
 

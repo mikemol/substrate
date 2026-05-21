@@ -32,7 +32,10 @@ from eliza.backref import (
     find_chain_backref, find_chain_backref_with_residue,
     find_chain_backref_with_s4_residue,
 )
-from eliza.multiscale_rotation import apply_rotation_to_bytes
+from eliza.multiscale_rotation import (
+    apply_block_rotations, apply_rotation_to_bytes,
+    speculate_block_rotations,
+)
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
     QuaternionComponent, apply_quat_component,
@@ -192,7 +195,10 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            backref_min_length: int = 6,
            rotation_scale: int = 3,
            rotation_k: int = 0,
-           rotation_f: int = 0) -> Tuple[bytes, Dict]:
+           rotation_f: int = 0,
+           block_size: int = 0,
+           speculate_block_rotation: bool = False,
+           block_rotations: list = None) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -214,10 +220,21 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
                       else build_full_opcode_set()
     chambers, idx_map = _manifold_index()
 
-    # BB3: apply Cayley-Dickson rotation to input BEFORE chain walk.
-    # Identity rotation = (scale=3, k=0, f=0) — preserves V2/V6 behaviour.
-    is_identity_rot = (rotation_k == 0 and rotation_f == 0)
-    if not is_identity_rot:
+    # BB3+BB5: rotation. Three modes (in priority order):
+    #   1. block_rotations provided: per-block sticky rotation.
+    #   2. speculate_block_rotation=True: encoder finds best per-block.
+    #   3. else: single global rotation (BB3 original).
+    effective_block_rotations = None
+    if block_rotations is not None and block_size > 0:
+        effective_block_rotations = list(block_rotations)
+        rotated_data = apply_block_rotations(
+            data, block_size, effective_block_rotations)
+    elif speculate_block_rotation and block_size > 0:
+        effective_block_rotations = speculate_block_rotations(
+            data, block_size, rotation_scale)
+        rotated_data = apply_block_rotations(
+            data, block_size, effective_block_rotations)
+    elif rotation_k != 0 or rotation_f != 0:
         rotated_data = apply_rotation_to_bytes(
             data, rotation_scale, rotation_k, rotation_f)
     else:
@@ -448,6 +465,20 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     header.append(rotation_scale & 0xFF)
     header.append(rotation_k & 0xFF)
     header.append(rotation_f & 0xFF)
+    # BB5: per-block rotations. Header byte for block_size (0 = no
+    # block rotations; >0 = block_size in bytes / 16 to fit a byte
+    # for sizes up to 4096); then num_blocks × 3 bytes (scale, k, f).
+    if effective_block_rotations is not None:
+        bs_byte = min(block_size // 16, 255)
+        header.append(bs_byte)
+        header.append(len(effective_block_rotations) & 0xFF)
+        header.append((len(effective_block_rotations) >> 8) & 0xFF)
+        for rot in effective_block_rotations:
+            header.append(rot[0] & 0xFF)
+            header.append(rot[1] & 0xFF)
+            header.append(rot[2] & 0xFF)
+    else:
+        header.append(0)   # bs_byte = 0 marker
     output = bytes(header) + encoded
     return output, {
         "encoded_bytes": len(output),
@@ -488,7 +519,22 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     rotation_scale = encoded[12]
     rotation_k = encoded[13]
     rotation_f = encoded[14]
-    payload = encoded[15:]
+    # BB5: optional per-block rotations.
+    bs_byte = encoded[15]
+    decoder_block_rotations = None
+    decoder_block_size = 0
+    if bs_byte > 0:
+        decoder_block_size = bs_byte * 16
+        n_blocks = encoded[16] | (encoded[17] << 8)
+        decoder_block_rotations = []
+        off = 18
+        for _i in range(n_blocks):
+            decoder_block_rotations.append(
+                (encoded[off], encoded[off + 1], encoded[off + 2]))
+            off += 3
+        payload = encoded[off:]
+    else:
+        payload = encoded[16:]
 
     initial_max_body = max(op.length for op in initial_opcodes)
     max_body = max(DEFAULT_MAX_BODY, initial_max_body)
@@ -646,7 +692,11 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         nibbles.append(n)
         state = after
     rotated_bytes = nibbles_to_bytes(nibbles)
-    # BB4: apply inverse rotation (= same, since all are involutions).
+    # BB4+BB5: apply inverse rotation. All rotations are involutions
+    # so the same rotation undoes itself.
+    if decoder_block_rotations is not None:
+        return apply_block_rotations(
+            rotated_bytes, decoder_block_size, decoder_block_rotations)
     if rotation_k == 0 and rotation_f == 0:
         return rotated_bytes
     return apply_rotation_to_bytes(rotated_bytes, rotation_scale,
