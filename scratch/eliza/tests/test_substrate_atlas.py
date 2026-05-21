@@ -150,20 +150,22 @@ class MeasurementCell:
 
 
 MODES = [
-    ("identity",   False),
-    ("two-stage",  True),
+    ("identity",   {"speculate_basis": False, "speculate_backref": False}),
+    ("two-stage",  {"speculate_basis": True,  "speculate_backref": False}),
+    ("backref",    {"speculate_basis": False, "speculate_backref": True}),
+    ("ring",       {"speculate_basis": True,  "speculate_backref": True}),
 ]
 
 
 def measure(corpus_name: str, corpus_data: bytes) -> List[MeasurementCell]:
-    """Run V7 identity + two-stage on a single corpus; return cells."""
+    """Run V7 across modes; return cells."""
     import time
     cells: List[MeasurementCell] = []
     base_bpb = None
-    for mode_name, flag in MODES:
+    for mode_name, kw in MODES:
         t0 = time.perf_counter()
         try:
-            enc, stats = encode(corpus_data, speculate_basis=flag)
+            enc, stats = encode(corpus_data, **kw)
             elapsed_ms = (time.perf_counter() - t0) * 1000
             dec = decode(enc)
             ok = dec == corpus_data
@@ -172,13 +174,15 @@ def measure(corpus_name: str, corpus_data: bytes) -> List[MeasurementCell]:
             elapsed_ms = (time.perf_counter() - t0) * 1000
             ok = False
             bpb = -1.0
-            stats = {"n_basis_at": 0}
+            stats = {"n_basis_at": 0, "n_backref": 0}
         if base_bpb is None:
             base_bpb = bpb
         delta = bpb - base_bpb if base_bpb > 0 else 0.0
         cells.append(MeasurementCell(
             corpus=corpus_name, mode=mode_name, bpb=bpb,
-            n_switches=stats.get("n_basis_at", 0), ok=ok,
+            n_switches=stats.get("n_basis_at", 0)
+                + stats.get("n_backref", 0),
+            ok=ok,
             delta_vs_identity=delta, encode_ms=elapsed_ms,
         ))
     return cells
