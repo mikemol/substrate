@@ -150,10 +150,16 @@ class MeasurementCell:
 
 
 MODES = [
-    ("identity",   {"speculate_basis": False, "speculate_backref": False}),
-    ("two-stage",  {"speculate_basis": True,  "speculate_backref": False}),
-    ("backref",    {"speculate_basis": False, "speculate_backref": True}),
-    ("ring",       {"speculate_basis": True,  "speculate_backref": True}),
+    ("identity",      {"speculate_basis": False, "speculate_backref": False,
+                          "speculate_residue": False}),
+    ("two-stage",     {"speculate_basis": True,  "speculate_backref": False,
+                          "speculate_residue": False}),
+    ("backref",       {"speculate_basis": False, "speculate_backref": True,
+                          "speculate_residue": False}),
+    ("backref+V4",    {"speculate_basis": False, "speculate_backref": True,
+                          "speculate_residue": True}),
+    ("ring",          {"speculate_basis": True,  "speculate_backref": True,
+                          "speculate_residue": True}),
 ]
 
 
