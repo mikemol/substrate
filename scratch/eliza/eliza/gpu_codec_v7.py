@@ -27,6 +27,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 from eliza.alphabets import NIBBLE_TO_PERM, ORIGIN, perm_compose
+from eliza.backref import apply_chain_backref, find_chain_backref
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
     QuaternionComponent, apply_quat_component,
@@ -56,7 +57,8 @@ from eliza.v7_predictor import (
 S_BASIS_AT = 0     # V1: absolute heading — jump to labeled basis point.
 S_BASIS_BY = 1     # V2: relative bearing — multiply by quaternion component.
 S_SHIFT_BIT = 2    # V8: explicit sink — commit one bit of working buffer.
-N_V7_CONTROL_OPCODES = 3
+S_REF_RECENT = 3   # Z1: chain-symbol backref (distance, length).
+N_V7_CONTROL_OPCODES = 4
 
 
 def alphabet_size(n_used: int) -> int:
@@ -176,7 +178,10 @@ def _two_stage_choose(pos: int, predictors, match_tensor, walk,
 
 def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            max_opcodes: int = DEFAULT_MAX_OPCODES,
-           speculate_basis: bool = False) -> Tuple[bytes, Dict]:
+           speculate_basis: bool = False,
+           speculate_backref: bool = False,
+           backref_window: int = 4096,
+           backref_min_length: int = 6) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -232,6 +237,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_vm = 0
     n_growth = 0
     n_basis_at = 0
+    n_backref = 0
     basis_state = IDENTITY
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
@@ -254,6 +260,49 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         else:
             best_idx = 0
             best_len = 0
+
+        # Z1: backref speculation. If backref_length > 5 × greedy
+        # match length, the 5-symbol backref payload beats 1-symbol
+        # greedy emissions per chain-position.
+        backref_match = None
+        if speculate_backref:
+            backref_match = find_chain_backref(
+                walk, pos, max_back=backref_window,
+                min_length=max(backref_min_length, 5 * max(best_len, 1) + 1),
+            )
+
+        if backref_match is not None:
+            distance, length = backref_match
+            a_size = alphabet_size(n_used)
+            # Encode (distance, length) as base-a_size 2-symbol pairs.
+            d_hi, d_lo = divmod(distance, a_size)
+            l_hi, l_lo = divmod(length, a_size)
+            # Refuse backref if any payload component overflows.
+            if max(d_hi, d_lo, l_hi, l_lo) >= a_size:
+                backref_match = None
+
+        if backref_match is not None:
+            distance, length = backref_match
+            a_size = alphabet_size(n_used)
+            ctrl = _control_index(S_REF_RECENT, n_used)
+            predictor = predictors[basis_state.label]
+            cumfreqs = predictor.cumfreqs(a_size, _ctx())
+            rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
+            for p in predictors.values():
+                p.update(ctrl, _ctx())
+            d_hi, d_lo = divmod(distance, a_size)
+            l_hi, l_lo = divmod(length, a_size)
+            for sym in (d_hi, d_lo, l_hi, l_lo):
+                cumfreqs = predictor.cumfreqs(a_size, _ctx())
+                rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
+                for p in predictors.values():
+                    p.update(sym, _ctx())
+            n_backref += 1
+            prev_prev_emission = prev_emission
+            prev_emission = ctrl
+            pos += length
+            n_vm += 1
+            continue
 
         if best_len == 0:
             emit_idx = int(walk[pos])
@@ -348,12 +397,14 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "n_basis_at": n_basis_at,
         "n_final_opcodes": int(n_used),
         "cap_frozen": cap_frozen,
-        "v_arc_slice": "V7",
+        "v_arc_slice": "V7+Z1",
         "operad_axes": ("basis-torsor", "quaternion-bearing",
                           "per-basis-predictors",
                           "speculation-gate", "generator-ring",
-                          "predictor-variants"),
+                          "predictor-variants", "chain-backref"),
         "speculate_basis": speculate_basis,
+        "speculate_backref": speculate_backref,
+        "n_backref": n_backref,
         "backend": "GPU" if HAS_CUPY else "CPU",
     }
 
@@ -425,6 +476,26 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                 p.update(comp_sym, _dctx())
             new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
+            continue
+        if emit_idx == _control_index(S_REF_RECENT, n_used):
+            # Z1 dispatch: read (d_hi, d_lo, l_hi, l_lo); copy from
+            # chain_terminals history. Encoder skips digram growth on
+            # backref emissions (no rule reference); decoder mirrors.
+            payload = []
+            for _i in range(4):
+                predictor = predictors[basis_state.label]
+                cumfreqs = predictor.cumfreqs(a_size, _dctx())
+                sym = rc_step_decode(dec_state, cumfreqs, int(cumfreqs[-1]))
+                for p in predictors.values():
+                    p.update(sym, _dctx())
+                payload.append(sym)
+            d_hi, d_lo, l_hi, l_lo = payload
+            distance = d_hi * a_size + d_lo
+            length = l_hi * a_size + l_lo
+            apply_chain_backref(chain_terminals, distance, length)
+            prev_prev_emission = prev_emission
+            prev_emission = _control_index(S_REF_RECENT, n_used)
+            n_emissions -= 1
             continue
         if emit_idx == _control_index(S_SHIFT_BIT, n_used):
             # V8: bit-granular sink. Structural placeholder — the
