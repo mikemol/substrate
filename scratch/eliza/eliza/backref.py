@@ -105,6 +105,80 @@ def apply_v4_chain(chain_symbol: int, sigma_idx: int) -> int:
     return int(get_v4_action_table()[sigma_idx, chain_symbol])
 
 
+# --- AA4: full S₄ action table on chain symbols -----------------------
+
+_S4_ACTION_TABLE: Optional[np.ndarray] = None
+
+
+def get_s4_action_table() -> np.ndarray:
+    """Precompute S4_ACTION[σ_idx, c_idx] = perm-index of σ ∘ c,
+    where σ_idx ranges over ALL 24 chambers (S₄ permutations).
+
+    σ_idx == 0 is identity. σ_idx in [1..3] are V₄ involutions
+    (covering 4 V₄ elements with the identity). σ_idx in [4..23]
+    are S₃-coset extensions.
+    """
+    global _S4_ACTION_TABLE
+    if _S4_ACTION_TABLE is not None:
+        return _S4_ACTION_TABLE
+    from eliza.matrix_ops import _manifold_index
+    chambers, idx_map = _manifold_index()
+    n_chambers = len(chambers)
+    table = np.zeros((n_chambers, n_chambers), dtype=np.int64)
+    for sig_idx, sig_perm in enumerate(chambers):
+        for c_idx, c_perm in enumerate(chambers):
+            new_perm = perm_compose(sig_perm, c_perm)
+            table[sig_idx, c_idx] = idx_map[new_perm]
+    _S4_ACTION_TABLE = table
+    return table
+
+
+def find_chain_backref_with_s4_residue(
+    walk, pos: int,
+    max_back: int = 4096,
+    min_length: int = 4,
+    max_length: int = 256,
+) -> Optional[Tuple[int, int, int]]:
+    """AA4: search over (distance, length, σ ∈ S₄). Returns
+    (distance, length, sigma_chamber_idx ∈ [0, 24)) or None.
+
+    6× the V₄-residue matcher's cost; vectorisable.
+    """
+    n = walk.shape[0]
+    if pos == 0 or pos >= n:
+        return None
+    walk_np = walk if isinstance(walk, np.ndarray) else np.asarray(walk)
+    table = get_s4_action_table()    # (24, 24)
+
+    best_d = 0
+    best_l = 0
+    best_sig = 0
+    upper_d = min(pos, max_back)
+    max_l = min(max_length, n - pos)
+
+    for d in range(1, upper_d + 1):
+        for sig_idx in range(24):
+            l = 0
+            while l < max_l and table[sig_idx, walk_np[pos - d + l]] == walk_np[pos + l]:
+                l += 1
+            if l >= min_length and l > best_l:
+                best_l = l
+                best_d = d
+                best_sig = sig_idx
+                if best_l == max_l:
+                    return (best_d, best_l, best_sig)
+    if best_l == 0:
+        return None
+    return (best_d, best_l, best_sig)
+
+
+def apply_s4_chain(chain_symbol: int, sigma_idx: int) -> int:
+    """AA4: apply S₄ residue σ to a chain symbol via the lookup table."""
+    if sigma_idx == 0:
+        return chain_symbol
+    return int(get_s4_action_table()[sigma_idx, chain_symbol])
+
+
 def find_chain_backref(walk, pos: int,
                          max_back: int = 4096,
                          min_length: int = 4,

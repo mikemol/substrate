@@ -28,8 +28,9 @@ import numpy as np
 
 from eliza.alphabets import NIBBLE_TO_PERM, ORIGIN, perm_compose
 from eliza.backref import (
-    apply_chain_backref, apply_v4_chain, find_chain_backref,
-    find_chain_backref_with_residue,
+    apply_chain_backref, apply_s4_chain, apply_v4_chain,
+    find_chain_backref, find_chain_backref_with_residue,
+    find_chain_backref_with_s4_residue,
 )
 from eliza.basis_state import (
     BasisLabel, BasisState, DEFAULT_BASIS, IDENTITY, N_BASIS_LABELS,
@@ -184,6 +185,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            speculate_basis: bool = False,
            speculate_backref: bool = False,
            speculate_residue: bool = False,
+           speculate_s4_residue: bool = False,
            backref_window: int = 4096,
            backref_min_length: int = 6) -> Tuple[bytes, Dict]:
     """V7 encoder.
@@ -270,22 +272,25 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         # backref = 5 symbols; residue backref = 6 symbols. Threshold
         # = payload_size × greedy_length.
         backref_match = None
-        backref_sigma = 0  # V₄ identity by default
+        backref_sigma = 0  # S₄ identity = chambers[0] by convention.
         if speculate_backref:
             id_margin_min = max(backref_min_length,
                                   5 * max(best_len, 1) + 1)
             res_margin_min = max(backref_min_length,
                                    6 * max(best_len, 1) + 1)
-            if speculate_residue:
-                m = find_chain_backref_with_residue(
+            # Unified on the S₄ table. speculate_residue or
+            # speculate_s4_residue both engage the unified search; the
+            # only difference is the matcher's iteration range
+            # (V₄-subset vs full S₄). σ in payload is always a
+            # chamber-index ∈ [0, 24) — encoding the V₄ ⋊ S₃ composition
+            # the substrate's semidirect product naturally provides.
+            if speculate_s4_residue or speculate_residue:
+                m = find_chain_backref_with_s4_residue(
                     walk, pos, max_back=backref_window,
                     min_length=res_margin_min,
                 )
                 if m is not None:
                     distance, length, sig_idx = m
-                    # Only prefer non-identity σ if it actually saves
-                    # bits over the identity-only path. Identity σ
-                    # under residue search reverts to plain backref.
                     backref_match = (distance, length)
                     backref_sigma = sig_idx
             else:
@@ -517,15 +522,19 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             d_hi, d_lo, l_hi, l_lo, sig_idx = payload
             distance = d_hi * a_size + d_lo
             length = l_hi * a_size + l_lo
-            sig_idx = sig_idx % 4   # V₄ has 4 elements; clamp defensively
-            # AA2: copy with V₄ residue applied per chain symbol.
+            sig_idx = sig_idx % 24   # S₄ has 24 elements; clamp defensively.
+            # AA2+AA4 unified: copy with S₄ residue applied per chain
+            # symbol. Identity σ (sig_idx=0) returns the chain symbol
+            # unchanged; non-identity applies the chamber-composition
+            # via the S₄ action table. The V₄ ⋊ S₃ factorisation is
+            # implicit in the chamber-index encoding (V₄ × S₃ = 24).
             start = len(chain_terminals) - distance
             if start < 0:
                 raise ValueError(
                     f"backref distance {distance} exceeds chain history")
             for i in range(length):
                 src = chain_terminals[start + i]
-                chain_terminals.append(apply_v4_chain(src, sig_idx))
+                chain_terminals.append(apply_s4_chain(src, sig_idx))
             prev_prev_emission = prev_emission
             prev_emission = _control_index(S_REF_RECENT, n_used)
             n_emissions -= 1
