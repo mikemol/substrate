@@ -119,7 +119,45 @@ module Substrate.Category.OrphanAudit where
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- 4. Capstone — orphan-audit refreshed for 50-slice closure.
+-- 4. Skeleton-as-pullback / 1:N cone witness arc (closed).
+--
+-- Substrate-naming AsX modules absorbed via per-structure AsNamed
+-- skeletons + thin renaming/projection legs:
+--
+--   ✓ Opposite primitive                                      — SP1
+--   ✓ Functor.Opposite (opposite-Functor coercion)            — SP2
+--   ✓ Comonad ≡ Monad on Opposite (alias)                     — SP3
+--   ✓ Colimit ≡ Limit on Opposite (alias)                     — SP4
+--   ✓ Coalgebra-of-Comonad ≡ Algebra-of-Monad on Opposite     — SP5
+--   ✓ RightKanExtension ≡ LeftKan on Opposite (alias)         — SP6
+--   ✓ Coequalizer + Pushout primitives (Set-level duals)      — SP7
+--   ✓ Monad.DerivedCategoryOf (Kleisli + EM 1:N cone)         — SP8
+--   ✓ DaggerCategory.AsNamed (1:N for dagger naming)          — SP9
+--   ✓ SymmetricMonoidal.AsNamed (1:N for SM naming)           — SP10
+--
+-- Memory references: [[skeleton-as-pullback]],
+-- [[named-categorical-structure-skeletons]].
+--
+-- Pending dagger/SM legs that would absorb via SP9/SP10:
+--   * HodgeStar.AsNaturalTransformation ↔ GaugeTorsor /
+--     AsNaturalTransformation (would need NaturalTransformation.AsNamed)
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- 5. Orphan-sweep (PrimitiveInstances catalog refresh).
+--
+-- 34 sub-orphan children swept into PrimitiveInstances so they're
+-- reachable via the global catalog. Parent shims are content-bearing
+-- (children import them; re-export would cycle); the catalog route
+-- preserves file-per-lemma per [[s3-on-v4-file-per-lemma]] and
+-- [[skeleton-as-pullback]].
+--
+-- Result: tree-orphan count 123 → 89 (13.6% → 9.8%).
+-- Non-designed orphans 98 → 64.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- 6. Capstone — orphan-audit refreshed for 50-slice closure.
 --
 -- S10 (part 2) of the S-arc. With this refresh:
 --   * 45 closures from O/P/Q/R/S arcs catalogued above

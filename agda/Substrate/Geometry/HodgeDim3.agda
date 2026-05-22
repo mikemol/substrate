@@ -65,6 +65,10 @@ open import Substrate.Geometry.HodgeDim3.Orthogonality
   using (v4-chir-orthogonal)
 
 -- File-per-lemma child re-exported here so consumers see the
+-- HodgeDim3 surface through one import.
+open import Substrate.Geometry.HodgeDim3.Fano public
+
+-- File-per-lemma child re-exported here so consumers see the
 -- HodgeDim3 surface through one import. Per [[s3-on-v4-file-per-lemma]]
 -- the child stays in its own file.
 open import Substrate.Geometry.HodgeDim3.Fano public
