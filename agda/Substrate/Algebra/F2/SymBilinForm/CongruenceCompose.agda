@@ -38,7 +38,7 @@
 module Substrate.Algebra.F2.SymBilinForm.CongruenceCompose where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat as ℕ using (ℕ)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
@@ -91,23 +91,23 @@ bilinear-form-of-sum-right :
   ∀ {n k} (M : BilinForm n) (u : Vector n) (f : Fin k → Vector n) →
   bilinear-form-of M u (sum f) ≡ sum-F₂ (λ j → bilinear-form-of M u (f j))
 bilinear-form-of-sum-right {k = ℕ.zero}  M u f = bilinear-form-of-𝟎ⱽ-right M u
-  where import Data.Nat as ℕ
+  -- ℕ namespace from Substrate.Foundation.Nat
 bilinear-form-of-sum-right {k = ℕ.suc _} M u f =
   trans (bilinear-form-of-+ⱽ-right M u (f zero) (sum (f ∘ suc)))
         (cong (bilinear-form-of M u (f zero) +_)
               (bilinear-form-of-sum-right M u (f ∘ suc)))
-  where import Data.Nat as ℕ
+  -- ℕ namespace from Substrate.Foundation.Nat
 
 bilinear-form-of-sum-left :
   ∀ {n k} (M : BilinForm n) (f : Fin k → Vector n) (w : Vector n) →
   bilinear-form-of M (sum f) w ≡ sum-F₂ (λ i → bilinear-form-of M (f i) w)
 bilinear-form-of-sum-left {k = ℕ.zero}  M f w = bilinear-form-of-𝟎ⱽ-left M w
-  where import Data.Nat as ℕ
+  -- ℕ namespace from Substrate.Foundation.Nat
 bilinear-form-of-sum-left {k = ℕ.suc _} M f w =
   trans (bilinear-form-of-+ⱽ-left M (f zero) (sum (f ∘ suc)) w)
         (cong (bilinear-form-of M (f zero) w +_)
               (bilinear-form-of-sum-left M (f ∘ suc) w))
-  where import Data.Nat as ℕ
+  -- ℕ namespace from Substrate.Foundation.Nat
 
 ------------------------------------------------------------------------
 -- N-3: Double-scalar helper.
