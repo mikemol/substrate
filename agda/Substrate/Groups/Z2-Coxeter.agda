@@ -46,6 +46,20 @@ insert-canonical a c-ε = c-a
 insert-canonical a c-a = c-ε
 
 ------------------------------------------------------------------------
+-- Canonical-cover for Z₂: 2-tuple of per-position proofs onto any
+-- `Canonical w`. Heterogeneous-output via each refl's own implicit {x}.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+canonical-cover :
+  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
+  P c-ε × P c-a →
+  ∀ {w} (c : Canonical w) → P c
+canonical-cover _ (p , _) c-ε = p
+canonical-cover _ (_ , p) c-a = p
+
+------------------------------------------------------------------------
 -- 3. Open ListPresentation with Z/2's atoms.
 ------------------------------------------------------------------------
 
@@ -57,13 +71,14 @@ open import Substrate.Groups.Coxeter.ListPresentation
 ------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed c-ε = refl
-canonical-is-fixed c-a = refl
+canonical-is-fixed =
+  canonical-cover (λ {w} _ → normalize w ≡ w) (refl , refl)
 
 insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                     insert g (insert g w) ≡ w
-insert-cycle-id a c-ε = refl
-insert-cycle-id a c-a = refl
+insert-cycle-id a = canonical-cover
+  (λ {w} _ → insert a (insert a w) ≡ w)
+  (refl , refl)
 
 insert-append-lemma :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -88,16 +103,6 @@ gen-≟ a a = yes refl
 
 open import Substrate.Groups.Coxeter.SameCanonical
   using (same-canonical-via-Gen)
-open import Substrate.Foundation.Product using (_×_; _,_)
-
--- Canonical-cover for Z₂: 2-tuple of per-position proofs onto any
--- `Canonical w`.
-canonical-cover :
-  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P c-ε × P c-a →
-  ∀ {w} (c : Canonical w) → P c
-canonical-cover _ (p , _) c-ε = p
-canonical-cover _ (_ , p) c-a = p
 
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
@@ -115,8 +120,9 @@ private
 
   self-inverse-canonical :
     {w : Word Gen} → Canonical w → normalize (w ++ w) ≡ []
-  self-inverse-canonical c-ε = refl
-  self-inverse-canonical c-a = refl
+  self-inverse-canonical = canonical-cover
+    (λ {w} _ → normalize (w ++ w) ≡ [])
+    (refl , refl)
 
 self-inverse : (w : Word Gen) → (w · w) ≈ []
 self-inverse w =

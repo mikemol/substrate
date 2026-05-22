@@ -337,10 +337,8 @@ open import Substrate.Category.KanExtension public
 -- Cover/dispatch (§1):
 --   dep-Pow, fin-cover, fin×fin-cover, fin-cover-2², fin-cover-2⁴,
 --   tabulate, v4-cover, v4×v4-cover, v4×v4×v4-cover, axis-cover,
---   axis×axis-cover, Z_nC.canonical-cover (uniform across n=2/3/4/5/7
---   after the canonical-cover rename pass; Z₅/Z₇ live in
---   Z5-Coxeter-Cover / Z7-Coxeter-Cover until their cores are
---   decomposed).
+--   axis×axis-cover, Z_nC.canonical-cover (uniform across n=2/3/4/5/7,
+--   all in-core).
 --
 -- Payload shape (§2):
 --   Pow, copies, n-refls, 2²-refls / 2³-refls / 2⁴-refls /

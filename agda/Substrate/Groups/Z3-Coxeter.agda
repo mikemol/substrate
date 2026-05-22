@@ -55,6 +55,22 @@ insert-canonical a c-a  = c-aa
 insert-canonical a c-aa = c-ε
 
 ------------------------------------------------------------------------
+-- Canonical-cover for Z₃: dispatches a 3-tuple of per-position
+-- proofs onto any `Canonical w`. Each refl literal infers its own
+-- implicit {x} so heterogeneous-output Cayley tables work too.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+canonical-cover :
+  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
+  P c-ε × P c-a × P c-aa →
+  ∀ {w} (c : Canonical w) → P c
+canonical-cover _ (p , _ , _) c-ε  = p
+canonical-cover _ (_ , p , _) c-a  = p
+canonical-cover _ (_ , _ , p) c-aa = p
+
+------------------------------------------------------------------------
 -- 3. Open ListPresentation with Z/3's atoms.
 ------------------------------------------------------------------------
 
@@ -72,15 +88,14 @@ open import Substrate.Groups.Coxeter.ListPresentation
 ------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed c-ε  = refl
-canonical-is-fixed c-a  = refl
-canonical-is-fixed c-aa = refl
+canonical-is-fixed =
+  canonical-cover (λ {w} _ → normalize w ≡ w) (refl , refl , refl)
 
 insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
               insert g (insert g (insert g w)) ≡ w
-insert-cycle-id a c-ε  = refl
-insert-cycle-id a c-a  = refl
-insert-cycle-id a c-aa = refl
+insert-cycle-id a = canonical-cover
+  (λ {w} _ → insert a (insert a (insert a w)) ≡ w)
+  (refl , refl , refl)
 
 insert-append-lemma :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -105,21 +120,6 @@ gen-≟ a a = yes refl
 
 open import Substrate.Groups.Coxeter.SameCanonical
   using (same-canonical-via-Gen)
-open import Substrate.Foundation.Product using (_×_; _,_)
-
-------------------------------------------------------------------------
--- Canonical-cover for Z₃: dispatches a 3-tuple of per-position
--- proofs onto any `Canonical w`. Each refl literal infers its own
--- implicit {x} so heterogeneous-output Cayley tables work too.
-------------------------------------------------------------------------
-
-canonical-cover :
-  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P c-ε × P c-a × P c-aa →
-  ∀ {w} (c : Canonical w) → P c
-canonical-cover _ (p , _ , _) c-ε  = p
-canonical-cover _ (_ , p , _) c-a  = p
-canonical-cover _ (_ , _ , p) c-aa = p
 
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
@@ -167,9 +167,9 @@ private
 
   cube-canonical : {w : Word Gen} → Canonical w →
                    normalize (w ++ (w ++ w)) ≡ []
-  cube-canonical c-ε  = refl
-  cube-canonical c-a  = refl
-  cube-canonical c-aa = refl
+  cube-canonical = canonical-cover
+    (λ {w} _ → normalize (w ++ (w ++ w)) ≡ [])
+    (refl , refl , refl)
 
 cube-identity : (w : Word Gen) → ((w · w) · w) ≈ ε
 cube-identity w =
@@ -186,24 +186,24 @@ cube-identity w =
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
                      normalize (inv w ++ w) ≡ []
-inv-left-canonical c-ε  = refl
-inv-left-canonical c-a  = refl
-inv-left-canonical c-aa = refl
+inv-left-canonical = canonical-cover
+  (λ {w} _ → normalize (inv w ++ w) ≡ [])
+  (refl , refl , refl)
 
 inv-right-canonical : {w : Word Gen} → Canonical w →
                       normalize (w ++ inv w) ≡ []
-inv-right-canonical c-ε  = refl
-inv-right-canonical c-a  = refl
-inv-right-canonical c-aa = refl
+inv-right-canonical = canonical-cover
+  (λ {w} _ → normalize (w ++ inv w) ≡ [])
+  (refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- 10. inv is involutive on canonical forms: inv (inv w) ≡ w.
 ------------------------------------------------------------------------
 
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
-inv-inv-canonical c-ε  = refl
-inv-inv-canonical c-a  = refl
-inv-inv-canonical c-aa = refl
+inv-inv-canonical = canonical-cover
+  (λ {w} _ → inv (inv w) ≡ w)
+  (refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- 11. Z/3 is abelian, so inv distributes (not anti-distributes) over
@@ -216,12 +216,21 @@ inv-inv-canonical c-aa = refl
 inv-distrib-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ →
                         normalize (inv (normalize (w₁ ++ w₂))) ≡
                         normalize (inv w₁ ++ inv w₂)
-inv-distrib-canonical c-ε  c-ε  = refl
-inv-distrib-canonical c-ε  c-a  = refl
-inv-distrib-canonical c-ε  c-aa = refl
-inv-distrib-canonical c-a  c-ε  = refl
-inv-distrib-canonical c-a  c-a  = refl
-inv-distrib-canonical c-a  c-aa = refl
-inv-distrib-canonical c-aa c-ε  = refl
-inv-distrib-canonical c-aa c-a  = refl
-inv-distrib-canonical c-aa c-aa = refl
+inv-distrib-canonical c₁ c₂ = canonical-cover
+  (λ {w₁} _ → ∀ {w₂} (c₂' : Canonical w₂) →
+              normalize (inv (normalize (w₁ ++ w₂))) ≡
+              normalize (inv w₁ ++ inv w₂))
+  ( canonical-cover
+      (λ {w₂} _ → normalize (inv (normalize ([] ++ w₂))) ≡
+                  normalize (inv [] ++ inv w₂))
+      (refl , refl , refl)
+  , canonical-cover
+      (λ {w₂} _ → normalize (inv (normalize ((a ∷ []) ++ w₂))) ≡
+                  normalize (inv (a ∷ []) ++ inv w₂))
+      (refl , refl , refl)
+  , canonical-cover
+      (λ {w₂} _ → normalize (inv (normalize ((a ∷ a ∷ []) ++ w₂))) ≡
+                  normalize (inv (a ∷ a ∷ []) ++ inv w₂))
+      (refl , refl , refl)
+  )
+  c₁ c₂

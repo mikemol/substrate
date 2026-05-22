@@ -60,6 +60,24 @@ insert-canonical a c-aaa  = c-aaaa
 insert-canonical a c-aaaa = c-ε
 
 ------------------------------------------------------------------------
+-- Canonical-cover for Z₅: dispatches a 5-tuple of per-position
+-- proofs onto any `Canonical w`. Heterogeneous-output via each
+-- refl's own implicit {x}.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+canonical-cover :
+  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
+  P c-ε × P c-a × P c-aa × P c-aaa × P c-aaaa →
+  ∀ {w} (c : Canonical w) → P c
+canonical-cover _ (p , _ , _ , _ , _) c-ε    = p
+canonical-cover _ (_ , p , _ , _ , _) c-a    = p
+canonical-cover _ (_ , _ , p , _ , _) c-aa   = p
+canonical-cover _ (_ , _ , _ , p , _) c-aaa  = p
+canonical-cover _ (_ , _ , _ , _ , p) c-aaaa = p
+
+------------------------------------------------------------------------
 -- 3. Open ListPresentation with Z/5's atoms.
 ------------------------------------------------------------------------
 
@@ -71,19 +89,15 @@ open import Substrate.Groups.Coxeter.ListPresentation
 ------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed c-ε    = refl
-canonical-is-fixed c-a    = refl
-canonical-is-fixed c-aa   = refl
-canonical-is-fixed c-aaa  = refl
-canonical-is-fixed c-aaaa = refl
+canonical-is-fixed =
+  canonical-cover (λ {w} _ → normalize w ≡ w)
+    (refl , refl , refl , refl , refl)
 
 insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                      insert g (insert g (insert g (insert g (insert g w)))) ≡ w
-insert-cycle-id a c-ε    = refl
-insert-cycle-id a c-a    = refl
-insert-cycle-id a c-aa   = refl
-insert-cycle-id a c-aaa  = refl
-insert-cycle-id a c-aaaa = refl
+insert-cycle-id a = canonical-cover
+  (λ {w} _ → insert a (insert a (insert a (insert a (insert a w)))) ≡ w)
+  (refl , refl , refl , refl , refl)
 
 insert-append-lemma :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -149,11 +163,9 @@ private
 
   fifth-canonical : {w : Word Gen} → Canonical w →
                     normalize (w ++ (w ++ (w ++ (w ++ w)))) ≡ []
-  fifth-canonical c-ε    = refl
-  fifth-canonical c-a    = refl
-  fifth-canonical c-aa   = refl
-  fifth-canonical c-aaa  = refl
-  fifth-canonical c-aaaa = refl
+  fifth-canonical = canonical-cover
+    (λ {w} _ → normalize (w ++ (w ++ (w ++ (w ++ w)))) ≡ [])
+    (refl , refl , refl , refl , refl)
 
 fifth-power-identity : (w : Word Gen) → ((((w · w) · w) · w) · w) ≈ ε
 fifth-power-identity w =
@@ -166,27 +178,21 @@ fifth-power-identity w =
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
                      normalize (inv w ++ w) ≡ []
-inv-left-canonical c-ε    = refl
-inv-left-canonical c-a    = refl
-inv-left-canonical c-aa   = refl
-inv-left-canonical c-aaa  = refl
-inv-left-canonical c-aaaa = refl
+inv-left-canonical = canonical-cover
+  (λ {w} _ → normalize (inv w ++ w) ≡ [])
+  (refl , refl , refl , refl , refl)
 
 inv-right-canonical : {w : Word Gen} → Canonical w →
                       normalize (w ++ inv w) ≡ []
-inv-right-canonical c-ε    = refl
-inv-right-canonical c-a    = refl
-inv-right-canonical c-aa   = refl
-inv-right-canonical c-aaa  = refl
-inv-right-canonical c-aaaa = refl
+inv-right-canonical = canonical-cover
+  (λ {w} _ → normalize (w ++ inv w) ≡ [])
+  (refl , refl , refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- 9. inv is involutive on canonical forms.
 ------------------------------------------------------------------------
 
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
-inv-inv-canonical c-ε    = refl
-inv-inv-canonical c-a    = refl
-inv-inv-canonical c-aa   = refl
-inv-inv-canonical c-aaa  = refl
-inv-inv-canonical c-aaaa = refl
+inv-inv-canonical = canonical-cover
+  (λ {w} _ → inv (inv w) ≡ w)
+  (refl , refl , refl , refl , refl)

@@ -17,7 +17,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Z7-Coxeter as Z₇
-open import Substrate.Groups.Z7-Coxeter-Cover using (canonical-cover)
+open Z₇ using (canonical-cover)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
