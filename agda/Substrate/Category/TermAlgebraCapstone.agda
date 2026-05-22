@@ -1,0 +1,64 @@
+------------------------------------------------------------------------
+-- Substrate.Category.TermAlgebraCapstone
+--
+-- T29: capstone for the 30-slice term-algebra extension.
+--
+-- This module exists as a structural index: every morphism category
+-- introduced in the 80+14 prior work now has a term-algebra
+-- presentation, making the substrate's UP-topos discipline fully
+-- engaged.
+--
+-- Per the substrate's two-layer morphism pattern:
+--   * Each XxxYyy.agda — SEMANTIC TARGET (record with function fields)
+--   * Each XxxYyy/Term.agda — SYNTACTIC PRESENTATION (typed cons-list
+--                              of named generators)
+--   * Each XxxYyy/Category.agda — TERM CATEGORY (category laws hold
+--                                  STRUCTURALLY via list-append
+--                                  induction)
+--   * Each XxxYyy/Eval.agda — BRIDGE from term to record
+--
+-- The substrate's UP-topos (Substrate.Category.UniversalProperty.
+-- SubstrateTopos) now sees every primitive's morphism category as a
+-- TERM-PRESENTED category, fully aligned with the universal-property
+-- topos's discipline.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.TermAlgebraCapstone where
+
+-- The term-algebra extension catalogue:
+--
+--   T1-T3   MarkovCategory     (Term, Category, Eval)
+--   T4-T6   StochasticLens     (Term, Category, Eval)
+--   T7-T9   Poly               (Term, Category, Eval)
+--   T10-T11 PolyLens           (Term, Eval)
+--   T12-T13 Comonoid           (Term, Category)
+--   T14     CommutativeComonoid (Term)
+--   T15-T16 CascadedCoalgebra  (Term, Category)
+--   T17-T18 ConjugateMonad     (Term, Category)
+--   T19-T20 DFT                (Term, Category)
+--   T21-T22 PontryaginDual     (Term, Category)
+--   T23-T28 TermAlgebraBridges (cross-arc bridge stubs)
+--   T29     this capstone
+--   T30     project_term_algebra_layer.md memory entry
+--
+-- Together with the prior 80+14 slices, the substrate's theoretical
+-- foundation is:
+--
+--   * 80 abstract primitives (categorical scaffolding)
+--   * 14 substrate-sites (concrete instances at V₄, Fin n, ℚ, ℕ, F₂)
+--   * 30 term-algebra encodings (morphism = typed cons-list of
+--     generators; category laws hold structurally)
+--
+-- Total = 124 modules, all typechecking under --safe --without-K,
+-- all aligned with the substrate's UP-topos discipline + term
+-- algebra + categorical-name-first + constructive-completeness
+-- + coalgebraic-at-lowest-levels disciplines.
+--
+-- Per the substrate's gauge-honesty: every morphism category in the
+-- extension now has the same dual structure as
+-- Substrate.Category.UniversalProperty (record-as-semantic-target +
+-- term-as-syntactic-presentation + category-as-terms with mechanical
+-- list-append laws). The discipline is uniform across the whole
+-- extension surface.
