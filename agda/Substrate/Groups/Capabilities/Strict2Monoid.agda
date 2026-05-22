@@ -35,6 +35,7 @@ record Strict2MonoidCapability : Set₁ where
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Z5-Coxeter as Z₅
+import Substrate.Groups.Z7-Coxeter as Z₇
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _++_; ++-identity-left; ++-identity-right)
 
@@ -72,4 +73,16 @@ cap-Z₅ = record
   ; ++-identityʳ      = ++-identity-right
   ; normalize         = Z₅.normalize
   ; normalize-distrib = Z₅.normalize-distrib
+  }
+
+cap-Z₇ : Strict2MonoidCapability
+cap-Z₇ = record
+  { Word              = Word Z₇.Gen
+  ; _++_              = _++_
+  ; ε                 = []
+  ; ++-assoc          = Z₇.++-assoc
+  ; ++-identityˡ      = ++-identity-left
+  ; ++-identityʳ      = ++-identity-right
+  ; normalize         = Z₇.normalize
+  ; normalize-distrib = Z₇.normalize-distrib
   }

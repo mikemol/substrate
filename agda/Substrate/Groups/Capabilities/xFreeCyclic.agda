@@ -90,3 +90,22 @@ cap-Z₅ = record
   ; Zn-canonical-is-fixed  = Z₅.canonical-is-fixed-Z5
   ; Zn-normalize-distrib   = Z₅.normalize-distrib
   }
+
+------------------------------------------------------------------------
+-- Z₇ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z7-Coxeter as Z₇
+
+cap-Z₇ : xFreeCyclicCapability
+cap-Z₇ = record
+  { Zn-Word                = Z₇.Word Z₇.Gen
+  ; _Zn-++_                = Z₇._++_
+  ; Zn-ε                   = Z₇.ε
+  ; Zn-++-assoc            = Z₇.++-assoc
+  ; Zn-Canonical           = Z₇.Canonical
+  ; Zn-normalize           = Z₇.normalize
+  ; Zn-normalize-canonical = Z₇.normalize-canonical
+  ; Zn-canonical-is-fixed  = Z₇.canonical-is-fixed-Z7
+  ; Zn-normalize-distrib   = Z₇.normalize-distrib
+  }

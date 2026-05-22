@@ -79,3 +79,21 @@ cap-Z₅ = record
   ; _F-++_       = F._++_
   ; F-normalize  = F.normalize
   }
+
+------------------------------------------------------------------------
+-- Z₇ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z7-Coxeter as Z₇
+
+cap-Z₇ : PhaseProjectionCapability
+cap-Z₇ = record
+  { Zn-Word      = Z₇.Word Z₇.Gen
+  ; Zn-ε         = Z₇.ε
+  ; _Zn-++_      = Z₇._++_
+  ; Zn-normalize = Z₇.normalize
+  ; F-Word       = F.Word F.Gen
+  ; F-ε          = F.ε
+  ; _F-++_       = F._++_
+  ; F-normalize  = F.normalize
+  }

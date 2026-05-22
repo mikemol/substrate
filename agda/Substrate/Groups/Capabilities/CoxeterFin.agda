@@ -112,3 +112,25 @@ cap-Z₅ = record
   ; action-of-a-is-σ  = Z₅-Fin.action-of-a-is-σ₅
   ; σ-aⁿ=ε            = Z₅-Fin.σ₅-HasOrderPerm-from-Z5-Coxeter
   }
+
+------------------------------------------------------------------------
+-- Z₇ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z7-Coxeter as Z₇
+import Substrate.Groups.Z7-Coxeter-Fin as Z₇-Fin
+import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle7 as Cycle₇
+
+cap-Z₇ : CoxeterFinCapability 7
+cap-Z₇ = record
+  { Gen               = Z₇.Gen
+  ; a                 = Z₇.a
+  ; Canonical         = Z₇.Canonical
+  ; insert            = Z₇.insert
+  ; insert-canonical  = Z₇.insert-canonical
+  ; canonical-to-Fin  = Z₇-Fin.canonical-to-Fin
+  ; Fin-to-canonical  = Z₇-Fin.Fin-to-canonical
+  ; σ                 = Cycle₇.σ₇
+  ; action-of-a-is-σ  = Z₇-Fin.action-of-a-is-σ₇
+  ; σ-aⁿ=ε            = Z₇-Fin.σ₇-HasOrderPerm-from-Z7-Coxeter
+  }
