@@ -170,12 +170,13 @@ module Substrate.Category.OrphanAudit where
 -- arc seeds.
 --
 -- Result trail:
---   start    → 123 orphans / 904 modules (13.6%)
---   round 1+2 →  89 / 908   (9.8%)
---   round 3   →  31 / 988   (3.1%)
---   round 4   →  28 / 1019  (2.7%)
+--   start     → 123 orphans / 904 modules  (13.6%)
+--   round 1+2 →  89 / 908                   (9.8%)
+--   round 3   →  31 / 988                   (3.1%)
+--   round 4   →  28 / 1019                  (2.7%)
+--   round 5   →  see latest audit numbers
 --
--- Non-designed orphans 98 → 64 → 7 → 4.
+-- Non-designed orphans 98 → 64 → 7 → 4 → 2.
 --
 -- Round 4: chased the three pre-existing-error orphans:
 --   * Geometry.PG       (5364525) — stale Data.Nat.suc → Foundation.Nat;
@@ -185,10 +186,20 @@ module Substrate.Category.OrphanAudit where
 --   * Pipeline.Sequent  (4bb7f67) — Foundation.Product.swap added.
 -- All three wired into respective catalogs (e8bd4cb).
 --
--- The remaining 4 non-designed orphans are intentional:
---   * PrimitivesAndInstances, PrimitivesRoadmapUpdate
---     — superseded by PrimitivesAll / PrimitiveInstances; deletion
---       or DEPRECATED-mark pending decision.
+-- Round 5: deleted two superseded arc-capstone documentation modules:
+--   * PrimitivesAndInstances    — three-import wrapper, redundant once
+--                                 PrimitivesAll + PrimitiveInstances
+--                                 became the direct downstream import
+--                                 targets.
+--   * PrimitivesRoadmapUpdate   — prose snapshot superseded within 24h
+--                                 by PrimitivesRoadmapV2 (which
+--                                 includes the #6 FreeLinearization
+--                                 closure pending at the prior
+--                                 capstone).
+-- Both contained no type-level content; full text remains in git
+-- history for arc-narrative preservation.
+--
+-- The remaining 2 non-designed orphans are intentional:
 --   * Raven.PhaseTransition.* sub-modules — active parallel-agent WIP.
 ------------------------------------------------------------------------
 
