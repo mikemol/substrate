@@ -29,3 +29,13 @@ open import Substrate.Foundation.Empty using (⊥)
 
 <-irrefl : (n : ℕ) → suc n ≤ n → ⊥
 <-irrefl (suc n) (s≤s p) = <-irrefl n p
+
+------------------------------------------------------------------------
+-- <→≤ : strict-to-loose order inclusion.
+--
+-- `m < n` is `suc m ≤ n`, so `n = suc n'` with `m ≤ n'`. Lift via
+-- ≤-suc-r to `m ≤ suc n' = n`.
+------------------------------------------------------------------------
+
+<→≤ : ∀ {m n} → m < n → m ≤ n
+<→≤ (s≤s p) = ≤-suc-r p
