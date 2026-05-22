@@ -88,16 +88,16 @@ canonical-is-fixed c-aaaa   = refl
 canonical-is-fixed c-aaaaa  = refl
 canonical-is-fixed c-aaaaaa = refl
 
-insert-seventh-power : (g : Gen) {w : Word Gen} → Canonical w →
+insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                        insert g (insert g (insert g (insert g
                               (insert g (insert g (insert g w)))))) ≡ w
-insert-seventh-power a c-ε      = refl
-insert-seventh-power a c-a      = refl
-insert-seventh-power a c-aa     = refl
-insert-seventh-power a c-aaa    = refl
-insert-seventh-power a c-aaaa   = refl
-insert-seventh-power a c-aaaaa  = refl
-insert-seventh-power a c-aaaaaa = refl
+insert-cycle-id a c-ε      = refl
+insert-cycle-id a c-a      = refl
+insert-cycle-id a c-aa     = refl
+insert-cycle-id a c-aaa    = refl
+insert-cycle-id a c-aaaa   = refl
+insert-cycle-id a c-aaaaa  = refl
+insert-cycle-id a c-aaaaaa = refl
 
 insert-append-lemma-Z7 :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -109,7 +109,7 @@ insert-append-lemma-Z7 a {a ∷ a ∷ a ∷ []}               w₂ c-aaa    = re
 insert-append-lemma-Z7 a {a ∷ a ∷ a ∷ a ∷ []}           w₂ c-aaaa   = refl
 insert-append-lemma-Z7 a {a ∷ a ∷ a ∷ a ∷ a ∷ []}       w₂ c-aaaaa  = refl
 insert-append-lemma-Z7 a {a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ []}   w₂ c-aaaaaa =
-  sym (insert-seventh-power a (normalize-canonical w₂))
+  sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.

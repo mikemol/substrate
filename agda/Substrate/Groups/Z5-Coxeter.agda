@@ -77,13 +77,13 @@ canonical-is-fixed c-aa   = refl
 canonical-is-fixed c-aaa  = refl
 canonical-is-fixed c-aaaa = refl
 
-insert-fifth-power : (g : Gen) {w : Word Gen} → Canonical w →
+insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                      insert g (insert g (insert g (insert g (insert g w)))) ≡ w
-insert-fifth-power a c-ε    = refl
-insert-fifth-power a c-a    = refl
-insert-fifth-power a c-aa   = refl
-insert-fifth-power a c-aaa  = refl
-insert-fifth-power a c-aaaa = refl
+insert-cycle-id a c-ε    = refl
+insert-cycle-id a c-a    = refl
+insert-cycle-id a c-aa   = refl
+insert-cycle-id a c-aaa  = refl
+insert-cycle-id a c-aaaa = refl
 
 insert-append-lemma-Z5 :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -93,7 +93,7 @@ insert-append-lemma-Z5 a {a ∷ []}             w₂ c-a    = refl
 insert-append-lemma-Z5 a {a ∷ a ∷ []}         w₂ c-aa   = refl
 insert-append-lemma-Z5 a {a ∷ a ∷ a ∷ []}     w₂ c-aaa  = refl
 insert-append-lemma-Z5 a {a ∷ a ∷ a ∷ a ∷ []} w₂ c-aaaa =
-  sym (insert-fifth-power a (normalize-canonical w₂))
+  sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.

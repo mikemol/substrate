@@ -90,7 +90,7 @@ open import Substrate.Groups.Coxeter.ListPresentation
 --
 -- canonical-is-fixed: trivial 4-refl enumeration.
 --
--- insert-fourth-power: the a⁴ = ε relation lifted to insert level —
+-- insert-cycle-id: the a⁴ = ε relation lifted to insert level —
 -- inserting `a` four times restores the input. Used by case [a,a,a]
 -- of insert-append-lemma.
 ------------------------------------------------------------------------
@@ -99,9 +99,9 @@ canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
 canonical-is-fixed =
   canonical-cover (λ {w} _ → normalize w ≡ w) (refl , refl , refl , refl)
 
-insert-fourth-power : (g : Gen) {w : Word Gen} → Canonical w →
+insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                       insert g (insert g (insert g (insert g w))) ≡ w
-insert-fourth-power a = canonical-cover
+insert-cycle-id a = canonical-cover
   (λ {w} _ → insert a (insert a (insert a (insert a w))) ≡ w)
   (refl , refl , refl , refl)
 
@@ -112,7 +112,7 @@ insert-append-lemma-Z4 a {[]}             w₂ c-ε   = refl
 insert-append-lemma-Z4 a {a ∷ []}         w₂ c-a   = refl
 insert-append-lemma-Z4 a {a ∷ a ∷ []}     w₂ c-aa  = refl
 insert-append-lemma-Z4 a {a ∷ a ∷ a ∷ []} w₂ c-aaa =
-  sym (insert-fourth-power a (normalize-canonical w₂))
+  sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.

@@ -60,17 +60,17 @@ canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
 canonical-is-fixed c-ε = refl
 canonical-is-fixed c-a = refl
 
-insert-involution : (g : Gen) {w : Word Gen} → Canonical w →
+insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
                     insert g (insert g w) ≡ w
-insert-involution a c-ε = refl
-insert-involution a c-a = refl
+insert-cycle-id a c-ε = refl
+insert-cycle-id a c-a = refl
 
 insert-append-lemma-Z2 :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
 insert-append-lemma-Z2 a {[]}     w₂ c-ε = refl
 insert-append-lemma-Z2 a {a ∷ []} w₂ c-a =
-  sym (insert-involution a (normalize-canonical w₂))
+  sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.

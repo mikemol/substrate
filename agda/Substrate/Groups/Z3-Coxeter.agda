@@ -6,7 +6,7 @@
 -- Smallest cyclic group of odd order; first Coxeter instance whose
 -- generator is NOT an involution (cf. Z2-Coxeter / V4-Coxeter). Validates
 -- that Substrate.Groups.Coxeter.Core handles non-involutive cyclic
--- relations via `insert-cube` (the a³ = ε analog of Z/2's
+-- relations via `insert-cycle-id` (the a³ = ε analog of Z/2's
 -- insert-involution).
 --
 -- Useful theorem: `cube-identity` — every element cubes to ε
@@ -66,7 +66,7 @@ open import Substrate.Groups.Coxeter.ListPresentation
 --
 -- canonical-is-fixed: trivial 3-refl enumeration.
 --
--- insert-cube: the a³ = ε relation lifted to the insert level —
+-- insert-cycle-id: the a³ = ε relation lifted to the insert level —
 -- inserting `a` three times restores the input. Used by case [a,a] of
 -- insert-append-lemma.
 ------------------------------------------------------------------------
@@ -76,11 +76,11 @@ canonical-is-fixed c-ε  = refl
 canonical-is-fixed c-a  = refl
 canonical-is-fixed c-aa = refl
 
-insert-cube : (g : Gen) {w : Word Gen} → Canonical w →
+insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
               insert g (insert g (insert g w)) ≡ w
-insert-cube a c-ε  = refl
-insert-cube a c-a  = refl
-insert-cube a c-aa = refl
+insert-cycle-id a c-ε  = refl
+insert-cycle-id a c-a  = refl
+insert-cycle-id a c-aa = refl
 
 insert-append-lemma-Z3 :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -88,7 +88,7 @@ insert-append-lemma-Z3 :
 insert-append-lemma-Z3 a {[]}         w₂ c-ε  = refl
 insert-append-lemma-Z3 a {a ∷ []}     w₂ c-a  = refl
 insert-append-lemma-Z3 a {a ∷ a ∷ []} w₂ c-aa =
-  sym (insert-cube a (normalize-canonical w₂))
+  sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
