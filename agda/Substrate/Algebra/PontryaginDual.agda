@@ -100,14 +100,26 @@ open PontryaginDual public
 -- Stated as a record at the abstract level; concrete instances
 -- (for finite abelian groups, etc.) supply the isomorphism.
 
+-- Per [[coalgebraic-not-consumer-driven]]: capture the iso
+-- obligation as a record of consumer-supplied witnesses. For finite
+-- abelian groups the double-dual carrier is canonically A itself
+-- via the evaluation pairing a ↦ (χ ↦ χ a); the consumer supplies
+-- this carrier + the iso bridges.
+
 record PontryaginDualityTheorem
        (A : Set)
        (RootsType : Set)
        (G : LocallyCompactAbelian A)
-       (G-dual : PontryaginDual A RootsType) : Set where
-  -- The theorem's content: A ≅ Chars (Chars (...)). Stated
-  -- abstractly; concrete instances supply the isomorphism witnesses.
-  no-eta-equality
+       (G-dual : PontryaginDual A RootsType) : Set₁ where
+  field
+    -- The double-dual carrier (consumer-supplied; usually A itself
+    -- via the evaluation pairing).
+    DoubleDual : Set
+    -- The canonical iso A ≅ DoubleDual.
+    to         : A → DoubleDual
+    from       : DoubleDual → A
+    to-from    : (d : DoubleDual) → to (from d) ≡ d
+    from-to    : (a : A) → from (to a) ≡ a
 
 open PontryaginDualityTheorem public
 
@@ -125,10 +137,22 @@ open PontryaginDualityTheorem public
 -- Stated structurally; concrete F₂ⁿ instances supply the self-dual
 -- isomorphism.
 
-record F2nSelfDual (n : ℕ) : Set where
-  -- Structural marker that the n-dimensional F₂-vector space is
-  -- isomorphic to its own Pontryagin dual via the standard
-  -- bilinear form.
-  no-eta-equality
+-- Per [[coalgebraic-not-consumer-driven]]: the self-dual iso is
+-- consumer-supplied: forward map v ↦ χ_v (using the standard
+-- bilinear form ⟨u, v⟩) + backward + round-trips. The consumer's
+-- F₂ⁿ-vector type is parametric in the carrier (Vector n, or
+-- similar substrate-native form).
+
+record F2nSelfDual (n : ℕ) : Set₁ where
+  field
+    -- The consumer's F₂ⁿ-vector carrier (e.g., Substrate.Algebra.F2.Vector.Vector n).
+    F2nVec     : Set
+    -- The characters carrier (= F2nVec for self-duality, but the
+    -- record allows the consumer to supply a re-named alias).
+    F2nChars   : Set
+    to         : F2nVec → F2nChars
+    from       : F2nChars → F2nVec
+    to-from    : (c : F2nChars) → to (from c) ≡ c
+    from-to    : (v : F2nVec) → from (to v) ≡ v
 
 open F2nSelfDual public

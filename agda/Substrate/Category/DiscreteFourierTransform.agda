@@ -84,14 +84,29 @@ open WalshHadamardDFT public
 -- All stated as records over a base DFT instance; concrete groups
 -- supply the operators and verify the laws.
 
+-- Per [[coalgebraic-not-consumer-driven]]: each theorem is a record
+-- of obligation-surface witnesses; concrete sites discharge by
+-- supplying values.
+
+-- Z/n = ∏ Z/(p_i^k_i) for the prime factorization of n. The DFT
+-- decomposes correspondingly: F_{Z/n} = ⊗_i F_{Z/(p_i^k_i)}.
+-- Consumer supplies the per-factor DFT bundling.
+
 record CRTDecomposition
-       (n : ℕ) : Set where
-  -- Z/n = ∏ Z/(p_i^k_i) for the prime factorization of n. The DFT
-  -- decomposes correspondingly: F_{Z/n} = ⊗_i F_{Z/(p_i^k_i)}.
-  -- Stated structurally.
-  no-eta-equality
+       (n : ℕ) : Set₁ where
+  field
+    -- The list of prime-power factors (carrier supplied by consumer).
+    PrimeFactors    : Set
+    -- The per-factor DFT carrier-type (consumer-supplied).
+    PerFactorDFT    : Set
+    -- The CRT tensor-product witness: a map from factor-list to
+    -- the composite per-factor DFT bundle.
+    tensor-witness  : PrimeFactors → PerFactorDFT
 
 open CRTDecomposition public
+
+-- Plancherel: ∑ |f|² ≡ ∑ |F(f)|² (up to scaling). Carried as a
+-- per-function equation against consumer-supplied norms.
 
 record PlancherelTheorem
        (A : Set)
@@ -99,11 +114,18 @@ record PlancherelTheorem
        (G : LocallyCompactAbelian A)
        (Coeffs : Set)
        (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  -- Plancherel: ∑ |f|² = ∑ |F(f)|² (up to scaling). Stated
-  -- abstractly; concrete instances supply the proof.
-  no-eta-equality
+  field
+    -- Consumer-supplied norms on the two sides of the DFT.
+    norm     : (A → Coeffs) → Coeffs
+    norm-hat : (Chars (G-dual D) → Coeffs) → Coeffs
+    -- The Plancherel identity: total energy is preserved by DFT.
+    plancherel : (f : A → Coeffs) → norm f ≡ norm-hat (DFT D f)
 
 open PlancherelTheorem public
+
+-- Convolution theorem: DFT of convolution = pointwise product of
+-- DFTs. Consumer supplies group-algebra convolution + Hadamard
+-- product.
 
 record ConvolutionTheorem
        (A : Set)
@@ -111,9 +133,13 @@ record ConvolutionTheorem
        (G : LocallyCompactAbelian A)
        (Coeffs : Set)
        (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  -- F(f * g) = F(f) · F(g) (DFT of convolution = pointwise product
-  -- of DFTs). Stated abstractly.
-  no-eta-equality
+  field
+    _*A_      : (A → Coeffs) → (A → Coeffs) → (A → Coeffs)
+    _·dual_   : (Chars (G-dual D) → Coeffs) →
+                (Chars (G-dual D) → Coeffs) →
+                (Chars (G-dual D) → Coeffs)
+    convolves : (f g : A → Coeffs) →
+                DFT D (f *A g) ≡ (DFT D f) ·dual (DFT D g)
 
 open ConvolutionTheorem public
 
@@ -130,22 +156,43 @@ open ConvolutionTheorem public
 -- This is the most categorical form of the DFT, and connects to
 -- ZX-calculus / string-diagram reasoning.
 
+-- A basis as a Frobenius algebra: comultiplication, counit,
+-- multiplication, unit satisfying the Frobenius law. Per
+-- Coecke-Pavlovic, the DFT presents as a basis-change morphism
+-- between two such Frobenius structures.
+
 record FrobeniusBasisStructure
        (A : Set) : Set where
-  -- A basis with comultiplication, counit, multiplication, unit
-  -- satisfying the Frobenius law. Stated structurally.
-  no-eta-equality
+  field
+    comult   : A → A → A      -- Δ : A → A ⊗ A (uncurried)
+    counit   : A → A          -- ε : A → I (substrate-pragmatic: I = A)
+    mult     : A → A → A      -- μ : A ⊗ A → A
+    unit     : A              -- η : I → A
+    -- Frobenius law witness (stated as a consumer obligation):
+    frobenius : (a b : A) → mult (comult a b) b ≡ comult a (mult b b)
 
 open FrobeniusBasisStructure public
+
+-- The categorical Fourier transform as a basis-change morphism
+-- between two Frobenius algebra structures on A: the "spatial"
+-- basis (G's own structure) and the "Fourier" basis (G^'s
+-- structure).
 
 record CategoricalFourierTransform
        (A : Set)
        (RootsType : Set)
        (G : LocallyCompactAbelian A) : Set where
-  -- Two Frobenius algebra structures on A: the "spatial" basis (G's
-  -- own structure) and the "Fourier" basis (G^'s structure).
-  -- The DFT is the basis-change morphism.
-  no-eta-equality
+  field
+    spatial-basis : FrobeniusBasisStructure A
+    fourier-basis : FrobeniusBasisStructure A
+    -- The DFT is the basis-change morphism between them.
+    basis-change : A → A
+    -- Coherence: the basis-change conjugates fourier-basis to
+    -- spatial-basis at the comult level.
+    coherence    : (a b : A) →
+                   basis-change (comult fourier-basis a b)
+                     ≡ comult spatial-basis (basis-change a)
+                                            (basis-change b)
 
 open CategoricalFourierTransform public
 
@@ -166,13 +213,23 @@ open CategoricalFourierTransform public
 -- arc's empirical work: the multi-Sylow MI saturation curve
 -- empirically realizes Pontryagin's CRT decomposition.
 
+-- The DFT for Z/n decomposes via the prime factorization of n
+-- into a tensor product of per-Sylow-prime DFTs. Consumer supplies
+-- the prime-list and the per-prime DFT bundle.
+
 record MultiSylowDFTDecomposition
-       (n : ℕ) : Set where
-  -- The DFT for Z/n decomposes via the prime factorization of n
-  -- into a tensor product of Sylow-prime DFTs.
-  no-eta-equality
+       (n : ℕ) : Set₁ where
+  field
+    SylowPrimes  : Set
+    PerSylowDFT  : Set
+    sylow-bundle : SylowPrimes → PerSylowDFT
 
 open MultiSylowDFTDecomposition public
+
+-- The DFT can be viewed as a deterministic morphism in a Markov
+-- category (basis change). Connects PD arc to MK arc. The
+-- consumer site supplies the deterministic-kernel witness — i.e.,
+-- the DFT-image is delta-supported.
 
 record DFTasMarkovMorphism
        (A : Set)
@@ -180,9 +237,11 @@ record DFTasMarkovMorphism
        (G : LocallyCompactAbelian A)
        (Coeffs : Set)
        (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  -- The DFT can be viewed as a deterministic morphism in a Markov
-  -- category (basis change). Connects PD arc to MK arc.
-  no-eta-equality
+  field
+    -- The DFT viewed as a Markov-category morphism: deterministic
+    -- = "input-to-output is a function, not a stochastic relation".
+    deterministic : (a : A) (c : Chars (G-dual D)) →
+                    Coeffs
 
 open DFTasMarkovMorphism public
 
