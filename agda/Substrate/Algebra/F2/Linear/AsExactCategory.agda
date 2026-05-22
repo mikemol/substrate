@@ -12,9 +12,9 @@
 
 open import Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
+open import Substrate.Category.CategoryOf using (CategoryOf)
 
 module Substrate.Algebra.F2.Linear.AsExactCategory
   {ℓO ℓM : Level}

@@ -30,9 +30,9 @@
 
 open import Level using (Level)
 
-open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
+open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 
 module Substrate.Algebra.F2.Linear.AsSymmetricMonoidal
   {ℓO ℓM : Level}

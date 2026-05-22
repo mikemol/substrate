@@ -30,9 +30,9 @@
 
 open import Level using (Level)
 
-open import Substrate.Category.DaggerCategory using (DaggerCategory)
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
+open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Algebra.F2.Linear.AsDaggerCategory
   {ℓO ℓM : Level}
