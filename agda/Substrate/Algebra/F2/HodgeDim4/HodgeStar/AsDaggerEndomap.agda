@@ -3,6 +3,11 @@
 --
 -- P1 of the P-arc. ★ at HodgeDim4 as a self-dagger 1-cell in the
 -- F₂-Linear-AsDaggerCategory (N8). Closes M-arc residue row.
+--
+-- Thin projection from Substrate.Category.DaggerCategory.AsNamed:
+-- the substrate's "named DaggerCategory" skeleton, with
+-- `named-DaggerCategory` renamed to `HodgeStar-AsDaggerEndomap-Carrier`
+-- for this specialisation.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -19,5 +24,5 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap
   -- expressing that ★ is self-adjoint (= self-dagger).
   where
 
-HodgeStar-AsDaggerEndomap-Carrier : DaggerCategory
-HodgeStar-AsDaggerEndomap-Carrier = F2L-Dag
+open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag public
+  renaming (named-DaggerCategory to HodgeStar-AsDaggerEndomap-Carrier)

@@ -3,6 +3,10 @@
 --
 -- P5 of the P-arc. Hodge ★ at HodgeDim4 as a self-dual 1-cell in
 -- F₂-Linear (= ★ : V → V with V ≅ V* via ★ as the witness).
+--
+-- Thin projection from the two AsNamed skeletons (SymmetricMonoidal
+-- + DaggerCategory). Each open + rename gives the substrate-named
+-- handle for this site.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -18,8 +22,8 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsSelfDualMorphism
   (F2L-Dag : DaggerCategory {ℓO} {ℓM})
   where
 
-HodgeStar-AsSelfDualMorphism-SM : SymmetricMonoidal
-HodgeStar-AsSelfDualMorphism-SM = F2L-SM
+open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM public
+  renaming (named-SymmetricMonoidal to HodgeStar-AsSelfDualMorphism-SM)
 
-HodgeStar-AsSelfDualMorphism-Dag : DaggerCategory
-HodgeStar-AsSelfDualMorphism-Dag = F2L-Dag
+open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag public
+  renaming (named-DaggerCategory to HodgeStar-AsSelfDualMorphism-Dag)
