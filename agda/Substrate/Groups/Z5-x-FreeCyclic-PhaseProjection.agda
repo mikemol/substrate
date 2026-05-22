@@ -1,18 +1,13 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z5-x-FreeCyclic-PhaseProjection
 --
--- The phase projection from the 2-D word algebra Z₅ × ℕ back to Z₅
--- as a thin instance of Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection.
+-- Phase projection for Z₅ × ℕ — thin instance via the FromCapability
+-- adapter + cap-Z₅ from Substrate.Groups.Capabilities.PhaseProjection.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z5-x-FreeCyclic-PhaseProjection where
 
-import Substrate.Groups.Z5-Coxeter as Z₅
-import Substrate.Groups.FreeCyclic-Coxeter as F
-
-open import Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection
-  (Z₅.Word Z₅.Gen) Z₅.ε Z₅._++_ Z₅.normalize
-  (F.Word F.Gen)   F.ε  F._++_  F.normalize
-  public
+open import Substrate.Groups.Capabilities.PhaseProjection using (cap-Z₅)
+open import Substrate.Groups.Coxeter.PhaseProjectionFromCapability cap-Z₅ public

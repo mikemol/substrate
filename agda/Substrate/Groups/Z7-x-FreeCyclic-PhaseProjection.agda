@@ -1,18 +1,13 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z7-x-FreeCyclic-PhaseProjection
 --
--- Phase projection for Z₇ × ℕ — thin instance of
--- Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection.
+-- Phase projection for Z₇ × ℕ — thin instance via the FromCapability
+-- adapter + cap-Z₇ from Substrate.Groups.Capabilities.PhaseProjection.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z7-x-FreeCyclic-PhaseProjection where
 
-import Substrate.Groups.Z7-Coxeter as Z₇
-import Substrate.Groups.FreeCyclic-Coxeter as F
-
-open import Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection
-  (Z₇.Word Z₇.Gen) Z₇.ε Z₇._++_ Z₇.normalize
-  (F.Word F.Gen)   F.ε  F._++_  F.normalize
-  public
+open import Substrate.Groups.Capabilities.PhaseProjection using (cap-Z₇)
+open import Substrate.Groups.Coxeter.PhaseProjectionFromCapability cap-Z₇ public
