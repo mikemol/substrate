@@ -36,6 +36,7 @@
 module Substrate.ShadowArchitecture.Charter where
 
 open import Substrate.Foundation.Unit using (⊤; tt) public
+open import Substrate.Foundation.Product using (_,_; _×_)
 
 ------------------------------------------------------------------------
 -- A charter cell: evidence type + witness.
@@ -82,7 +83,6 @@ PassesFourGates r =
   Cell.evidence (Realizability.reachable r) ×
   Cell.evidence (Realizability.observable r) ×
   Cell.evidence (Realizability.coverable r)
-  where open import Data.Product using (_×_)
 
 -- The same with the time-extension column.
 PassesFourPlusOne : Realizability → Set
@@ -92,14 +92,11 @@ PassesFourPlusOne r =
   Cell.evidence (Realizability.observable r) ×
   Cell.evidence (Realizability.coverable r) ×
   Cell.evidence (Realizability.persists-via r)
-  where open import Data.Product using (_×_)
 
 ------------------------------------------------------------------------
 -- The witnesses-bundled-from-cells form the canonical proof of the
 -- conjunction. Each Realizability instance gives one for free.
 ------------------------------------------------------------------------
-
-open import Substrate.Foundation.Product using (_,_)
 
 four-gate-proof : (r : Realizability) → PassesFourGates r
 four-gate-proof r =

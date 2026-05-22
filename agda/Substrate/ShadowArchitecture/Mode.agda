@@ -35,6 +35,7 @@
 module Substrate.ShadowArchitecture.Mode where
 
 open import Substrate.Foundation.Bool using (Bool; true; false; _∨_; T)
+open import Substrate.Foundation.Sum using (inj₁; inj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
@@ -188,11 +189,8 @@ guard-territory-is-star-001 L₇ = refl
 
 -- The point e₃ = p₀₀₁ is on each of L₂, L₃, L₆.
 001-on-L₂ : p₀₀₁ on L₂
-001-on-L₂ = _⊎_.inj₂ (_⊎_.inj₁ refl)
-  where open import Data.Sum
+001-on-L₂ = inj₂ (inj₁ refl)
 001-on-L₃ : p₀₀₁ on L₃
-001-on-L₃ = _⊎_.inj₂ (_⊎_.inj₁ refl)
-  where open import Data.Sum
+001-on-L₃ = inj₂ (inj₁ refl)
 001-on-L₆ : p₀₀₁ on L₆
-001-on-L₆ = _⊎_.inj₁ refl
-  where open import Data.Sum
+001-on-L₆ = inj₁ refl

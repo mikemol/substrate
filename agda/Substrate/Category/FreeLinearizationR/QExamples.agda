@@ -37,7 +37,7 @@ third = mkℚ (+ 1) 2  -- 1/3
 
 example-rational-vector : Vector 3
 example-rational-vector = half ∷ third ∷ 1ℚ ∷ []
-  where open import Data.Vec using (_∷_; [])
+  where open import Substrate.Foundation.Vec using (_∷_; [])
 
 ------------------------------------------------------------------------
 -- 2. Accessing ℚ-LinearAlgebra through the abstract interface.
