@@ -276,7 +276,7 @@ record SequentFixed (A : Set) : Set₁ where
 -- A step counter ensures termination; the canonical predicate is checked
 -- at each step. Returns the result when canonical, or fails (Nothing) if
 -- the bound is exceeded.
-open import Data.Maybe using (Maybe; just; nothing)
+open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 
 iterate-to-canonical

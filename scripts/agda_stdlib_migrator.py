@@ -58,6 +58,15 @@ RULES = [
         re.compile(r"^(\s*)open import Data\.Unit using \(⊤(?:; tt)?\)$", re.MULTILINE),
         r"\1open import Substrate.Foundation.Unit using (⊤; tt)",
     ),
+    # Polymorphic Unit / Empty (used in higher-universe code).
+    (
+        re.compile(r"^open import Data\.Unit\.Polymorphic using \((.*?)\)$", re.MULTILINE),
+        r"open import Substrate.Foundation.Unit.Polymorphic using (\1)",
+    ),
+    (
+        re.compile(r"^open import Data\.Empty\.Polymorphic using \((.*?)\)$", re.MULTILINE),
+        r"open import Substrate.Foundation.Empty.Polymorphic using (\1)",
+    ),
 ]
 
 # No identifier renames needed: Foundation.List exposes the same names
