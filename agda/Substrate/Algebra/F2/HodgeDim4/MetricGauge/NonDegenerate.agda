@@ -55,7 +55,7 @@ open import Substrate.Algebra.F2.SymBilinForm
                      metric-id        to metric-id-generic;
                      Radical          to Radical-generic;
                      pair-eq-family   to pair-eq-family-generic)
-open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate
+open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate.MetricIdNonDegenerate
   using (metric-id-non-degenerate-generic)
 open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
   using (·F-eq-metric-id-bilin-generic)

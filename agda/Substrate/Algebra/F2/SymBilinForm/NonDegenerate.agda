@@ -4,6 +4,16 @@
 -- NonDegenerate M : the radical contains only 𝟎ⱽ. The kernel-free
 -- predicate expressed via categorical primitives (Wide-Meet of
 -- IsEqualised); same structure at any n.
+--
+-- The kernel-free witness for metric-id at generic n lives at:
+--   NonDegenerate.BasisRowEqMetricId    — lookup (basis i) j ≡ metric-id i j
+--   NonDegenerate.PairMetricIdWithBasis — pairing extracts component
+--   NonDegenerate.MetricIdNonDegenerate — the theorem
+--
+-- The submodules are NOT re-exported here to avoid a cycle (they
+-- transitively depend on HodgeRecast, which transitively depends on
+-- the parent SymBilinForm aggregator, which would form a loop).
+-- Consumers import the specific submodule they need.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
