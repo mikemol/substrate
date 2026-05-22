@@ -110,6 +110,20 @@ import Substrate.Groups.ConsolidatedCyclicCoxeter
 import Substrate.Groups.TwoDimWordAlgebra
 
 ------------------------------------------------------------------------
+-- Tier 2 + Tier 3 cross-Zₙ feature-completeness infrastructure.
+--
+-- Capability records (one per genericized capability) + per-Zₙ
+-- witnesses + reflective `Provides` predicate + `complete` covering
+-- theorem. Coverage IS the cross-check.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Capabilities
+import Substrate.Groups.Capabilities.CoxeterFin
+import Substrate.Groups.Capabilities.xFreeCyclic
+import Substrate.Groups.Capabilities.PhaseProjection
+import Substrate.Groups.Capabilities.Strict2Monoid
+
+------------------------------------------------------------------------
 -- Gaps in the (M, N) cone — capabilities NOT yet supplied per Zₙ.
 --
 -- Z₂ (involutive, separate from cyclic Z₃+):

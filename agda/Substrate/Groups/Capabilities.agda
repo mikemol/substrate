@@ -1,0 +1,157 @@
+------------------------------------------------------------------------
+-- Substrate.Groups.Capabilities
+--
+-- Tier 2 + Tier 3 cross-Zₙ feature-completeness infrastructure.
+--
+-- Tier 2: capability records, one per genericized capability,
+-- bundling the parametric generic's parameter list. Each Zₙ supplies
+-- a record value for every capability it has.
+--
+-- Tier 3: the reflective completeness theorem `complete`. Indexed
+-- over `ZnInstance × CapabilityTag`, returns the corresponding
+-- capability record (or ⊤ for gap cells). The function being TOTAL
+-- across the product type is the substrate's static check that
+-- every Zₙ has every capability the cone exposes.
+--
+-- Adding a new Zₙ requires:
+--   * a new ZnInstance constructor,
+--   * a clause in each capability's per-Zₙ witness (one record value),
+--   * a clause in `complete` per capability — the typechecker drives
+--     coverage.
+--
+-- Adding a new capability requires:
+--   * a new Capabilities/<Name>.agda with the record + Z₃/Z₄/Z₅
+--     witnesses,
+--   * a new constructor in `CapabilityTag`,
+--   * a new clause in `complete` per Zₙ.
+--
+-- Adding either kind of cell expansion makes `complete` partial
+-- until the new clauses land — coverage IS the cross-check.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Groups.Capabilities where
+
+------------------------------------------------------------------------
+-- Re-export the four capability modules.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Capabilities.CoxeterFin       public
+  using (CoxeterFinCapability)
+  renaming (cap-Z₃ to coxeterFin-Z₃; cap-Z₄ to coxeterFin-Z₄; cap-Z₅ to coxeterFin-Z₅)
+
+open import Substrate.Groups.Capabilities.xFreeCyclic      public
+  using (xFreeCyclicCapability)
+  renaming (cap-Z₃ to xFreeCyclic-Z₃; cap-Z₄ to xFreeCyclic-Z₄; cap-Z₅ to xFreeCyclic-Z₅)
+
+open import Substrate.Groups.Capabilities.PhaseProjection  public
+  using (PhaseProjectionCapability)
+  renaming (cap-Z₃ to phaseProj-Z₃; cap-Z₄ to phaseProj-Z₄; cap-Z₅ to phaseProj-Z₅)
+
+open import Substrate.Groups.Capabilities.Strict2Monoid    public
+  using (Strict2MonoidCapability)
+  renaming (cap-Z₃ to strict2Monoid-Z₃; cap-Z₄ to strict2Monoid-Z₄; cap-Z₅ to strict2Monoid-Z₅)
+
+------------------------------------------------------------------------
+-- The cone indices: ZnInstance × CapabilityTag.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Nat using (ℕ)
+
+------------------------------------------------------------------------
+-- Lifted ⊤ at Set₁ for gap cells (capability records live at Set₁).
+------------------------------------------------------------------------
+
+record ⊤₁ : Set₁ where
+  constructor tt₁
+
+data ZnInstance : Set where
+  Z₂ Z₃ Z₄ Z₅ Z₇ : ZnInstance
+
+data CapabilityTag : Set where
+  coxeterFin    : CapabilityTag
+  xFreeCyclic   : CapabilityTag
+  phaseProj     : CapabilityTag
+  strict2Monoid : CapabilityTag
+
+------------------------------------------------------------------------
+-- Provides : ZnInstance → CapabilityTag → Set₁.
+--
+-- The cell type at (n, c) in the cone. Filled cells return the
+-- corresponding capability record's type; gap cells return ⊤.
+--
+-- The gap layout (⊤ cells) documents which cells are NOT currently
+-- filled — they typecheck trivially but Tier 3's `complete` returns
+-- `tt` for them, marking the gap explicitly.
+------------------------------------------------------------------------
+
+Provides : ZnInstance → CapabilityTag → Set₁
+
+-- Z₂: only the Coxeter core landed (no derived capabilities yet).
+Provides Z₂ coxeterFin    = ⊤₁
+Provides Z₂ xFreeCyclic   = ⊤₁
+Provides Z₂ phaseProj     = ⊤₁
+Provides Z₂ strict2Monoid = ⊤₁
+
+-- Z₃: all four genericized capabilities filled.
+Provides Z₃ coxeterFin    = CoxeterFinCapability 3
+Provides Z₃ xFreeCyclic   = xFreeCyclicCapability
+Provides Z₃ phaseProj     = PhaseProjectionCapability
+Provides Z₃ strict2Monoid = Strict2MonoidCapability
+
+-- Z₄: all four genericized capabilities filled.
+Provides Z₄ coxeterFin    = CoxeterFinCapability 4
+Provides Z₄ xFreeCyclic   = xFreeCyclicCapability
+Provides Z₄ phaseProj     = PhaseProjectionCapability
+Provides Z₄ strict2Monoid = Strict2MonoidCapability
+
+-- Z₅: all four genericized capabilities filled.
+Provides Z₅ coxeterFin    = CoxeterFinCapability 5
+Provides Z₅ xFreeCyclic   = xFreeCyclicCapability
+Provides Z₅ phaseProj     = PhaseProjectionCapability
+Provides Z₅ strict2Monoid = Strict2MonoidCapability
+
+-- Z₇: only the Coxeter core landed (no derived capabilities yet).
+Provides Z₇ coxeterFin    = ⊤₁
+Provides Z₇ xFreeCyclic   = ⊤₁
+Provides Z₇ phaseProj     = ⊤₁
+Provides Z₇ strict2Monoid = ⊤₁
+
+------------------------------------------------------------------------
+-- The completeness theorem.
+--
+-- `complete` is a TOTAL function over ZnInstance × CapabilityTag.
+-- If the function is not total, the typechecker flags the missing
+-- cell. With the current gap-as-⊤ convention, gap cells are filled
+-- with `tt`; filled cells dispatch to the per-Zₙ witness.
+--
+-- The shape of this function IS the (M, N) cone's covering theorem.
+------------------------------------------------------------------------
+
+complete : (n : ZnInstance) (c : CapabilityTag) → Provides n c
+-- Z₂ row (all gaps for now)
+complete Z₂ coxeterFin    = tt₁
+complete Z₂ xFreeCyclic   = tt₁
+complete Z₂ phaseProj     = tt₁
+complete Z₂ strict2Monoid = tt₁
+-- Z₃ row (filled)
+complete Z₃ coxeterFin    = coxeterFin-Z₃
+complete Z₃ xFreeCyclic   = xFreeCyclic-Z₃
+complete Z₃ phaseProj     = phaseProj-Z₃
+complete Z₃ strict2Monoid = strict2Monoid-Z₃
+-- Z₄ row (filled)
+complete Z₄ coxeterFin    = coxeterFin-Z₄
+complete Z₄ xFreeCyclic   = xFreeCyclic-Z₄
+complete Z₄ phaseProj     = phaseProj-Z₄
+complete Z₄ strict2Monoid = strict2Monoid-Z₄
+-- Z₅ row (filled)
+complete Z₅ coxeterFin    = coxeterFin-Z₅
+complete Z₅ xFreeCyclic   = xFreeCyclic-Z₅
+complete Z₅ phaseProj     = phaseProj-Z₅
+complete Z₅ strict2Monoid = strict2Monoid-Z₅
+-- Z₇ row (all gaps for now)
+complete Z₇ coxeterFin    = tt₁
+complete Z₇ xFreeCyclic   = tt₁
+complete Z₇ phaseProj     = tt₁
+complete Z₇ strict2Monoid = tt₁
