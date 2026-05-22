@@ -228,8 +228,18 @@ open import Substrate.Category.Equalizer public
         ; equalizer-factor
         )
 
+open import Substrate.Category.Coequalizer public
+  using ( Coequalises
+        ; coequalizer-factor
+        )
+
 open import Substrate.Category.Pullback public
   using ( Pullback-Of
+        )
+
+open import Substrate.Category.Pushout public
+  using ( PushoutCocone
+        ; pushout-factor
         )
 
 open import Substrate.Category.Limit public
