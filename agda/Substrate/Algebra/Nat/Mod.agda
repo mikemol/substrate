@@ -132,9 +132,33 @@ mod-suc-suc a n
 ... | no  _   | no  _   | _    = refl
 
 ------------------------------------------------------------------------
--- 6. Capstone.
+-- 6. Two specialised mod-suc identities used by Coxeter.Cyclic's
+-- insert-canonical proof.
+--
+--   suc-mod-suc-lt : a < b → (suc a) mod-suc b ≡ suc a
+--   suc-mod-suc-self : (suc b) mod-suc b ≡ zero
+------------------------------------------------------------------------
+
+suc-mod-suc-lt : (a b : ℕ) → a < b → (suc a) mod-suc b ≡ suc a
+suc-mod-suc-lt a b a<b = mod-suc-id (suc a) b (s≤s a<b)
+
+suc-mod-suc-self : (b : ℕ) → (suc b) mod-suc b ≡ zero
+suc-mod-suc-self b
+  with suc (b mod-suc b) <? suc b
+     | mod-suc-id b b (<-suc-self b)
+... | yes p≡  | bmodb≡b =
+  ⊥-elim (<-irrefl b (subst (λ k → suc k ≤ b) bmodb≡b (s≤s-strip p≡)))
+  where
+    s≤s-strip : ∀ {m k} → suc m < suc k → m < k
+    s≤s-strip (s≤s p) = p
+... | no  _   | _ = refl
+
+------------------------------------------------------------------------
+-- 7. Capstone.
 --
 -- Substrate-native `_mod-suc_` + bound + mod-suc-id + mod-suc-periodic
--- + mod-suc-suc. Downstream: cyclic-suc on Fin (suc n) + HasOrderPerm
--- (Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic).
+-- + mod-suc-suc + suc-mod-suc-lt / suc-mod-suc-self. Downstream:
+-- cyclic-suc on Fin (suc n) + HasOrderPerm
+-- (Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic) +
+-- Substrate.Groups.Coxeter.Cyclic (insert-canonical bridge).
 ------------------------------------------------------------------------

@@ -32,17 +32,21 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s; z≤n)
+open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-irrefl)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
-open import Substrate.Foundation.Fin.Properties using (toℕ-bound)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
+open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
+open import Substrate.Algebra.Nat.Mod
+  using (_mod-suc_; mod-suc-bound; suc-mod-suc-lt; suc-mod-suc-self)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
-  using (cyclic-suc; cyclic-suc-HasOrderPerm)
+  using (cyclic-suc; cyclic-suc-toℕ; cyclic-suc-HasOrderPerm)
 
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
@@ -152,11 +156,66 @@ insert g w with length w <? n
 ... | no  _ = []
 
 ------------------------------------------------------------------------
--- 8. action-of-a-is-σ — structurally trivial at the position-index level.
+-- 8. The bridge: insert a (power (toℕ k)) ≡ power (toℕ (σ k)).
 --
--- The action of `a` on a canonical at position k IS just σ k, by
--- structural definition. Compare to the per-Zₙ files where this
--- required an n-tuple of refls dispatched via canonical-cover.
+-- Case-splits on `toℕ k <? n` (the "room to advance" vs "wrap"
+-- decision); in each case aligns insert's length-check with-clause
+-- (via length-power) and cyclic-suc's mod-suc-bound with-clause
+-- (via suc-mod-suc-lt / suc-mod-suc-self).
+------------------------------------------------------------------------
+
+private
+  -- For k : Fin (suc n) where ¬ (toℕ k < n), toℕ k must equal n
+  -- (since toℕ k < suc n by Fin's bound).
+  not-lt-aux : (x y : ℕ) → x < suc y → ¬ (x < y) → x ≡ y
+  not-lt-aux zero    zero    _              _      = refl
+  not-lt-aux zero    (suc y) _              ¬0<sy  = ⊥-elim (¬0<sy (s≤s z≤n))
+  not-lt-aux (suc x) zero    (s≤s ())       _
+  not-lt-aux (suc x) (suc y) (s≤s x<sy)     ¬sx<sy = cong suc
+    (not-lt-aux x y x<sy (λ x<y → ¬sx<sy (s≤s x<y)))
+
+  not-lt-eq-n : (k : Fin (suc n)) → ¬ (toℕ k < n) → toℕ k ≡ n
+  not-lt-eq-n k ¬k<n = not-lt-aux (toℕ k) n (toℕ-bound k) ¬k<n
+
+  -- Bridge cases.
+  insert-power-eq-yes : (k : Fin (suc n)) → toℕ k < n →
+                        insert a (power (toℕ k)) ≡ power (toℕ (cyclic-suc {n} k))
+  insert-power-eq-yes k k<n
+    rewrite cyclic-suc-toℕ k
+          | suc-mod-suc-lt (toℕ k) n k<n
+    with length (power (toℕ k)) <? n | length-power (toℕ k)
+  ... | yes _  | _     = refl
+  ... | no  ¬p | l≡tk  = ⊥-elim (¬p (subst (λ x → x < n) (sym l≡tk) k<n))
+
+  insert-power-eq-no : (k : Fin (suc n)) → ¬ (toℕ k < n) →
+                       insert a (power (toℕ k)) ≡ power (toℕ (cyclic-suc {n} k))
+  insert-power-eq-no k ¬k<n
+    rewrite cyclic-suc-toℕ k
+          | not-lt-eq-n k ¬k<n
+          | suc-mod-suc-self n
+    with length (power n) <? n | length-power n
+  ... | yes p  | l≡n  = ⊥-elim (<-irrefl n (subst (λ x → x < n) l≡n p))
+  ... | no  _  | _    = refl
+
+insert-power-eq : (k : Fin (suc n)) →
+                  insert a (power (toℕ k)) ≡ power (toℕ (cyclic-suc {n} k))
+insert-power-eq k with toℕ k <? n
+... | yes p  = insert-power-eq-yes k p
+... | no  ¬p = insert-power-eq-no k ¬p
+
+------------------------------------------------------------------------
+-- 9. insert-canonical: the cyclic property at the Canonical level.
+------------------------------------------------------------------------
+
+insert-canonical : (g : Gen) {w : Word Gen} {k : Fin (suc n)} →
+                   Canonical w k → Canonical (insert g w) (cyclic-suc {n} k)
+insert-canonical a (c-here k) =
+  subst (λ w → Canonical w (cyclic-suc {n} k))
+    (sym (insert-power-eq k))
+    (c-here (cyclic-suc {n} k))
+
+------------------------------------------------------------------------
+-- 10. action-of-a-is-σ — structurally trivial at the position-index level.
 ------------------------------------------------------------------------
 
 action-of-a-pos : (k : Fin (suc n)) →
