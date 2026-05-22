@@ -170,19 +170,25 @@ module Substrate.Category.OrphanAudit where
 -- arc seeds.
 --
 -- Result trail:
---   start  → 123 orphans / 904 modules (13.6%)
---   round 1+2 → 89 / 908 (9.8%)
---   round 3   → 31 / 988 (3.1%)
+--   start    → 123 orphans / 904 modules (13.6%)
+--   round 1+2 →  89 / 908   (9.8%)
+--   round 3   →  31 / 988   (3.1%)
+--   round 4   →  28 / 1019  (2.7%)
 --
--- Non-designed orphans 98 → 64 → 7.
+-- Non-designed orphans 98 → 64 → 7 → 4.
 --
--- The remaining 7 non-designed orphans are all blocked or
--- intentional:
+-- Round 4: chased the three pre-existing-error orphans:
+--   * Geometry.PG       (5364525) — stale Data.Nat.suc → Foundation.Nat;
+--                                   file-per-lemma decomposition into
+--                                   Type/Projections/Preserves/Action.
+--   * V4-as-Z2xZ2       (286e848) — canonical-is-fixed-Z2 rename pickup.
+--   * Pipeline.Sequent  (4bb7f67) — Foundation.Product.swap added.
+-- All three wired into respective catalogs (e8bd4cb).
+--
+-- The remaining 4 non-designed orphans are intentional:
 --   * PrimitivesAndInstances, PrimitivesRoadmapUpdate
 --     — superseded by PrimitivesAll / PrimitiveInstances; deletion
 --       or DEPRECATED-mark pending decision.
---   * Geometry.PG, Groups.V4-as-Z2xZ2, Pipeline.Sequent
---     — pre-existing build errors.
 --   * Raven.PhaseTransition.* sub-modules — active parallel-agent WIP.
 ------------------------------------------------------------------------
 
