@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.V4-Coxeter-F2Graded-CountA
 --
--- V₄'s second F₂-grading: count of A generators, mod 2.
--- Refactored via the FromCoxeterHomomorphism combinator.
+-- V₄'s second F₂-grading: count of A generators, mod 2. Thin instance
+-- of FromCoxeterHomomorphism over `count-by sel-A`.
 --
 -- Splits V₄ as {ε, B} (degree 𝟘) vs {A, AB} (degree 𝟙).
 ------------------------------------------------------------------------
@@ -11,28 +11,20 @@
 
 module Substrate.Groups.V4-Coxeter-F2Graded-CountA where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Eq using (refl)
 
 import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word
-  using (Word; []; _∷_; _++_; ++-identity-left; ++-identity-right)
+  using (Word; []; _++_; ++-identity-left; ++-identity-right)
+open import Substrate.Groups.Coxeter.Word.Count using (count-by; count-by-distrib)
 
-------------------------------------------------------------------------
--- count-A — count of A generators (the ℕ-homomorphism).
-------------------------------------------------------------------------
+sel-A : V₄.Gen → ℕ
+sel-A V₄.A = suc zero
+sel-A V₄.B = zero
 
-count-A : Word V₄.Gen → ℕ
-count-A []          = zero
-count-A (V₄.A ∷ w)  = suc (count-A w)
-count-A (V₄.B ∷ w)  = count-A w
-
-count-A-distrib :
-  (a b : Word V₄.Gen) →
-  count-A (a ++ b) ≡ count-A a + count-A b
-count-A-distrib []          b = refl
-count-A-distrib (V₄.A ∷ a)  b = cong suc (count-A-distrib a b)
-count-A-distrib (V₄.B ∷ a)  b = count-A-distrib a b
+count-A = count-by sel-A
+count-A-distrib = count-by-distrib sel-A
 
 ------------------------------------------------------------------------
 -- V₄ as F₂-graded via count-A-parity (via the combinator).

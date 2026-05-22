@@ -108,7 +108,39 @@ same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ �
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
--- 7. Z/2-specific theorem: self-inverse.
+-- 7. Inversion on canonical forms — Z/2 elements are self-inverse:
+--   inv []    = []
+--   inv [a]   = [a]
+--
+-- inv = identity on the canonical level (a is its own inverse).
+-- The same-shape obligations for the GroupAdapter pipe come along
+-- with it. Exposed at this level so Z2-Coxeter-Group stays a thin
+-- adapter like its Z3/Z4/Z5/Z7 siblings.
+------------------------------------------------------------------------
+
+inv : Word Gen → Word Gen
+inv w = w
+
+inv-canonical : {w : Word Gen} → Canonical w → Canonical (inv w)
+inv-canonical c = c
+
+inv-left-canonical : {w : Word Gen} → Canonical w → normalize (inv w ++ w) ≡ []
+inv-left-canonical = canonical-cover
+  (λ {w} _ → normalize (inv w ++ w) ≡ [])
+  (refl , refl)
+
+inv-right-canonical : {w : Word Gen} → Canonical w → normalize (w ++ inv w) ≡ []
+inv-right-canonical = canonical-cover
+  (λ {w} _ → normalize (w ++ inv w) ≡ [])
+  (refl , refl)
+
+inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
+inv-inv-canonical = canonical-cover
+  (λ {w} _ → inv (inv w) ≡ w)
+  (refl , refl)
+
+------------------------------------------------------------------------
+-- 8. Z/2-specific theorem: self-inverse at the Core level.
 ------------------------------------------------------------------------
 
 private
