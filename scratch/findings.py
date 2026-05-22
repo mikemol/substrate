@@ -264,8 +264,10 @@ def parse_definitions_with_sig(text):
         # not = sign — but CLAUSE_RE matches `=`, so signature lines without
         # `=` won't match here. We're good).
         out[name][1].append(rhs)
-    # Convert to plain dict, filter empties.
-    return {name: (val[0], val[1]) for name, val in out.items() if val[1]}
+    # Convert to plain dict, filter empties. Include defs that have
+    # EITHER a signature OR clauses — covers absurd-pattern defs like
+    # `e-pair : ⊥ → Pairing  ;  e-pair ()` (no = clause, but real def).
+    return {name: (val[0], val[1]) for name, val in out.items() if val[0] or val[1]}
 
 
 def collect_clause_findings():
@@ -567,14 +569,130 @@ def collect_orbit_findings():
     return findings
 
 
+def _feed_data_declaration_ctors(all_defs_full=None):
+    """Feeder #1: Agda data-declaration constructors.
+
+    Returns {type_name: [ctor_names]}, extracted from `data X : Set
+    where` blocks in source. Plus Bool as a builtin fallback.
+    """
+    finite_types = {}
+    data_decl_re = re.compile(
+        r"^\s*data\s+([A-Za-z_][A-Za-z0-9_\-'₀-₉]*).*?:\s*Set.*?where\s*$",
+        re.M,
+    )
+    ctor_line_re = re.compile(r"^\s+([^:]+?)\s*:\s*([^\s].*?)$")
+    ident_re = re.compile(r"[A-Za-z_α-ωΑ-Ω₀-₉][A-Za-z0-9_\-'₀-₉α-ωΑ-Ω]*")
+    for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
+        mod, text = parse_module_path(path)
+        if not mod or not mod.startswith("Substrate"):
+            continue
+        lines = text.split("\n")
+        i = 0
+        while i < len(lines):
+            m = data_decl_re.match(lines[i])
+            if m:
+                ty_name = m.group(1)
+                ctors = []
+                j = i + 1
+                while j < len(lines):
+                    line = lines[j]
+                    if not line.strip():
+                        break
+                    if not line.startswith(" ") and not line.startswith("\t"):
+                        break
+                    cm = ctor_line_re.match(line)
+                    if cm:
+                        names_part, type_part = cm.group(1), cm.group(2)
+                        if type_part == ty_name or type_part.startswith(ty_name + " "):
+                            ctors.extend(ident_re.findall(names_part))
+                    j += 1
+                if ctors:
+                    finite_types.setdefault(ty_name, ctors)
+                i = j
+            else:
+                i += 1
+    finite_types.setdefault("Bool", ["true", "false"])
+    return finite_types
+
+
+def _longest_common_suffix(strings):
+    """Longest string that's a suffix of every input string."""
+    if not strings:
+        return ""
+    s0 = strings[0]
+    for i in range(len(s0), 0, -1):
+        suffix = s0[-i:]
+        if all(s.endswith(suffix) for s in strings):
+            return suffix
+    return ""
+
+
+def _feed_sig_return_defs(pool, all_defs_full):
+    """Feeder #2: defs whose name matches the common-suffix pattern
+    of existing ctors AND whose signature returns the type.
+
+    For each type T in the pool:
+      1. Compute the longest common suffix of T's existing ctors.
+      2. If the suffix is meaningful (≥2 chars OR starts with '-'/'_'),
+         scan all defs for names ending in that suffix.
+      3. Admit those defs to pool[T] if their signature's tail
+         identifier matches T.
+
+    Example: Pairing's ctors {α-pair, β-pair, γ-pair} share suffix
+    '-pair'. A def `e-pair : ⊥ → Pairing` ends with '-pair' AND
+    returns Pairing → admitted to pool[Pairing], closing the
+    V₄→Pairing cross-type fanout.
+
+    The common-suffix filter prevents over-admission: Axis's ctors
+    {C, D, S, W} share no common suffix, so arbitrary defs returning
+    Axis (like `act-axis`, `axis-of-v`) are NOT auto-admitted.
+    """
+    tail_ident_re = re.compile(r"[A-Za-z_α-ωΑ-Ω₀-₉][\w\-'α-ωΑ-Ω₀-₉]*\s*$")
+    for ty_name, ctors in list(pool.items()):
+        if len(ctors) < 2:
+            continue
+        suffix = _longest_common_suffix(ctors)
+        if not suffix or (len(suffix) < 2 and not suffix.startswith(("-", "_"))):
+            continue
+        for (mod, name), sig in all_defs_full.items():
+            if not sig:
+                continue
+            if name in pool[ty_name]:
+                continue
+            if name == ty_name:
+                continue  # skip the type itself
+            if not name.endswith(suffix):
+                continue
+            m = tail_ident_re.search(sig.rstrip())
+            if not m:
+                continue
+            tail = m.group(0).strip()
+            tail_leaf = tail.split(".")[-1]
+            if tail_leaf == ty_name:
+                pool[ty_name].append(name)
+    return pool
+
+
+def _build_ctor_pool(all_defs_full):
+    """Compose feeders into a unified ctor pool.
+
+    The pool is a single source of truth that detectors read from.
+    Adding a new way of recognizing "ctor-like names" means adding a
+    feeder, not changing every detector. Data-declaration ctors are
+    one feeder among many; other feeders (sig-return, naming-pattern,
+    etc.) extend the pool compositionally.
+    """
+    pool = _feed_data_declaration_ctors(all_defs_full)
+    pool = _feed_sig_return_defs(pool, all_defs_full)
+    return pool
+
+
 def collect_partial_coset_findings():
     """
     Galois-of-orbit-almost-filled detector with parametric-counterpart
-    annotation. Surfaces definitions whose names contain a specific
-    constructor of a known finite type AND reports whether a parametric
-    counterpart exists elsewhere (a definition with the same stem but
-    no constructor suffix, OR with the finite type as an explicit
-    parameter in its signature).
+    annotation. Surfaces definitions whose names contain a constructor
+    of a known finite type — where "constructor" is whatever the ctor
+    pool admits (data-declaration ctors plus other feeders' admissions).
 
     Per user: a partial coset is a partial coset regardless of counterpart
     existence — the asymmetry will crop up as a refl annoyance
@@ -582,14 +700,6 @@ def collect_partial_coset_findings():
     structural guidance for how to annealing-step-close the partial
     coset (since the parametric shape is already there to instantiate).
     """
-    finite_types = {
-        "Axis":      ["D", "C", "S", "W"],
-        "V₄":        ["e", "α", "β", "γ"],
-        "Pairing":   ["α-pair", "β-pair", "γ-pair"],
-        "Chirality": ["even", "odd"],
-        "Bool":      ["true", "false"],
-    }
-
     # Collect all definition names + signatures.
     all_defs_full = {}  # (mod, name) → signature (or '')
     for path in sorted(SUBSTRATE_ROOT.rglob("*.agda")):
@@ -598,6 +708,12 @@ def collect_partial_coset_findings():
             continue
         for name, (sig, rhss) in parse_definitions_with_sig(text).items():
             all_defs_full[(mod, name)] = sig or ""
+
+    # Build the unified ctor pool. Detectors below consume from this
+    # pool, not the raw data-declaration ctors. Feeders compose into
+    # the pool; adding a new way of recognizing ctor-like names means
+    # adding a feeder, not changing the detectors.
+    finite_types = _build_ctor_pool(all_defs_full)
 
     all_def_names_by_short = defaultdict(list)
     for (mod, name) in all_defs_full:
@@ -641,6 +757,54 @@ def collect_partial_coset_findings():
                     extra=(ty, tuple(sorted(present)), tuple(sorted(missing)),
                            stem, tuple(counterpart)),
                 ))
+
+    # Cross-type ctor-stem-extension detector. For each pair of types
+    # (T1, T2), check whether T2's ctors look like "T1.ctor + suffix"
+    # for some common suffix. If most-but-not-all T1 ctors have such
+    # an extension, the missing ctors form a CROSS-TYPE partial coset
+    # — a signal that one type's "ctor space" is partially indexed by
+    # another's, with some ctors of T1 lacking a T2 counterpart.
+    #
+    # Example: V₄ = {e, α, β, γ}, Pairing = {α-pair, β-pair, γ-pair}.
+    # Pairing ctors are V₄.{α,β,γ} + "-pair"; V₄.e has no counterpart.
+    # Whether the missing 'e-pair' is structurally required or an
+    # intentional quotient is a downstream interpretation question;
+    # the detector just surfaces the asymmetry.
+    type_list = sorted(finite_types.keys())
+    for t1 in type_list:
+        for t2 in type_list:
+            if t1 == t2:
+                continue
+            # Group: suffix → list of (t1_ctor matched, t2_ctor)
+            suffix_groups = defaultdict(list)
+            for c1 in finite_types[t1]:
+                for c2 in finite_types[t2]:
+                    if c2 == c1:
+                        continue
+                    # T2 ctor = T1 ctor + delimited suffix.
+                    for delim in ("-", "_", ""):
+                        prefix = c1 + delim
+                        if c2.startswith(prefix) and len(c2) > len(prefix):
+                            suffix_groups[delim + c2[len(prefix):]].append((c1, c2))
+                            break
+            for suffix, matches in suffix_groups.items():
+                covered = sorted({c1 for c1, _ in matches})
+                missing_t1 = sorted(set(finite_types[t1]) - set(covered))
+                if len(covered) >= 2 and missing_t1:
+                    # Genuine cross-type stem-extension pattern with
+                    # some ctors uncovered.
+                    findings.append(Finding(
+                        level="partial-coset",
+                        kind=f"cross-type-{t1}-to-{t2}-via-suffix",
+                        objects=frozenset(
+                            f"<cross-type::{t1}.{c1}→{t2}.{c2}>"
+                            for c1, c2 in matches
+                        ),
+                        metric=float(len(covered)),
+                        source="cross_type_ctor_detector",
+                        extra=(f"{t1}→{t2}", tuple(covered), tuple(missing_t1),
+                               f"{t1}{suffix}", tuple()),
+                    ))
     return findings
 
 
@@ -1034,11 +1198,8 @@ def main():
         spec_count = 0
         for f in pc_findings_list:
             ty, present, missing, stem, _ = f.extra
-            ctors = {"Axis": ["D", "C", "S", "W"],
-                     "V₄": ["e", "α", "β", "γ"],
-                     "Pairing": ["α-pair", "β-pair", "γ-pair"],
-                     "Chirality": ["even", "odd"],
-                     "Bool": ["true", "false"]}.get(ty, [])
+            # Per-finding ctor universe; no hardcoded type→ctors map.
+            ctors = sorted(set(present) | set(missing))
             # Get one of the present-ctor's qnames for shape baseline.
             if not f.objects:
                 continue
@@ -1300,6 +1461,857 @@ def main():
         if not containing_simplices and not spanning_defgroups:
             print(f"    (no ambient simplex or def-group contains this pair)")
     print()
+
+    # === PROPOSED ACTIONS — synthesizing the structure into concrete steps ===
+    print("=== PROPOSED ACTIONS (synthesized next-iteration steps) ===")
+    print("  Each proposal names a concrete code change AND its expected detector")
+    print("  effect. Listed in priority order: structural collapses first, then")
+    print("  speculative renames, then additive siblings, then accepts.")
+    print()
+
+    proposals_count = 0
+
+    # 1. EXACT orbit-suborbit collapses (clearest structural fix).
+    exact_connections = [
+        (p, c, pos, toks, k) for (p, c, pos, toks, k) in connections if k == "exact"
+    ]
+    if exact_connections:
+        # Build (once) the data needed to surface existing-parametric-helper
+        # candidates: def-level usage graph + ELABORATED type signatures
+        # from scratch/.agda_types.json (built by scratch/agda_types.py).
+        #
+        # Score every candidate def by Jaccard across THREE orthogonal
+        # similarity dimensions:
+        #   - dep-J: Jaccard of def-level dependencies vs the UNION of
+        #     orbit members' deps.
+        #   - sig-J-asis: Jaccard of AsIs-elaborated signature tokens.
+        #     Captures structural identity (Stab-C ≠ Stab-D distinct).
+        #   - sig-J-norm: Jaccard of Normalised-elaborated signature
+        #     tokens. Captures definitional equality (orbit members
+        #     normalise to the same shape modulo one axis token).
+        # Rank by the PRODUCT of all three: a candidate must look like
+        # the orbit in EVERY dimension to score high. A zero in any
+        # dimension zeros out the candidate.
+        def_usage_for_collapse = build_def_usage_graph(all_defs)
+
+        # Load the elaborated-types cache. If absent or stale-and-
+        # unbuildable, fall back to regex-parsed signatures with a
+        # warning. The cache key format matches our qname format:
+        # "Substrate.<Mod>.<Path>::<def-name>".
+        try:
+            from agda_types import load_cache as _agda_load_cache, cache_is_stale as _agda_cache_stale, discover_modules as _agda_discover
+            _elab_cache = _agda_load_cache()
+            if _elab_cache and _agda_cache_stale(_agda_discover()):
+                print(f"      (note: .agda_types.json is STALE relative to source"
+                      f" — rerun `python scratch/agda_types.py --force` to refresh)")
+        except ImportError:
+            _elab_cache = {}
+        if not _elab_cache:
+            print(f"      (note: no .agda_types.json cache found — sig-J dimensions"
+                  f" will be empty. Run `python scratch/agda_types.py` once to build it.)")
+
+        # Token extraction from elaborated types. Agda emits fully-
+        # qualified identifiers like `Substrate.Groups.Stab-S3.Stab`.
+        # We split on whitespace and parens, then for each qualified
+        # token take both the leaf name AND the full path; this lets
+        # us match either at the level of "same operator name" or
+        # "same module-path origin".
+        _split_re = re.compile(r"[\s\(\)\{\}\[\],→]+")
+        def _elab_tokens(s):
+            out = set()
+            for raw in _split_re.split(s or ""):
+                raw = raw.strip().rstrip(".")
+                if not raw:
+                    continue
+                if raw in {":", "→", "=", "λ", ".", "...", "_"}:
+                    continue
+                out.add(raw)
+                if "." in raw:
+                    out.add(raw.split(".")[-1])
+            return out
+
+        def _elab_sig(qname, mode):
+            entry = _elab_cache.get(qname)
+            if not entry:
+                return ""
+            return entry.get(mode, "")
+
+        print("  [1] EXACT orbit-suborbit collapses (highest priority):")
+        for parent, child, pos, tokens, _ in exact_connections:
+            parent_qnames = set(parent.objects)
+            child_qnames = set(child.objects)
+            parent_short = sorted(short(o) for o in parent.objects)
+            child_short = sorted(short(o) for o in child.objects)
+            proposals_count += 1
+            print(f"    PROPOSAL #{proposals_count}: collapse parent orbit")
+            print(f"      Parent members: {{{', '.join(parent_short)}}}")
+            print(f"      Child members:  {{{', '.join(child_short)}}}")
+            print(f"      Action: replace the {len(parent.objects)} parent definitions with")
+            print(f"              ONE parametric helper indexed by the child set.")
+            print(f"      Expected effect: parent orbit closes; helper may compose with")
+            print(f"              other parametric structures (transposition, extend, etc.).")
+
+            # Surface existing definitions that LOOK structurally like the
+            # parametric helper we'd want. Three orthogonal Jaccard
+            # dimensions per candidate:
+            #   - dep-J:      Jaccard against UNION of member deps.
+            #   - sig-J-asis: Jaccard against UNION of AsIs-elaborated sig
+            #                 tokens. (Structural identity preserved.)
+            #   - sig-J-norm: Jaccard against UNION of Normalised-elaborated
+            #                 sig tokens. (Definitional equality unfolded.)
+            # Rank by PRODUCT (dep-J × sig-J-asis × sig-J-norm). Any zero
+            # dimension zeros out the candidate.
+            #
+            # core-coverage (fraction of orbit's shared primitive deps
+            # the candidate uses) shown for context — sharp variant of
+            # dep dimension that's useful even when dep-J is low.
+            member_deps = [def_usage_for_collapse.get(q, set()) for q in parent_qnames]
+            union_deps = (set().union(*member_deps) if member_deps else set())
+            intersection_deps = (set.intersection(*member_deps)
+                                 if member_deps and all(member_deps) else set())
+            axis_short_names = {"C", "S", "W", "D"}
+            def _is_axis_dep(q):
+                return q.split("::")[-1] in axis_short_names
+            union_deps = {q for q in union_deps - parent_qnames - child_qnames
+                          if not _is_axis_dep(q)}
+            intersection_deps = {q for q in intersection_deps - parent_qnames - child_qnames
+                                 if not _is_axis_dep(q)}
+            # Elaborated signature tokens per orbit member, at both
+            # AsIs and Normalised levels.
+            member_short_names = {q.split("::")[-1] for q in parent_qnames}
+            # Axis-token suffixes to strip from token sets (these are
+            # what VARIES across the orbit). Strip both bare axis
+            # constructor names and their per-axis specializations
+            # like "Stab-C" / "orbit-key-to-stab-C".
+            member_asis = [_elab_tokens(_elab_sig(q, "asis")) for q in parent_qnames]
+            member_norm = [_elab_tokens(_elab_sig(q, "normalised")) for q in parent_qnames]
+            union_asis = set().union(*member_asis) if member_asis else set()
+            union_norm = set().union(*member_norm) if member_norm else set()
+            # Symmetric difference is what varies across the orbit; the
+            # INTERSECTION is the parametric-shape skeleton.
+            inter_asis = (set.intersection(*member_asis)
+                          if member_asis and all(member_asis) else set())
+            inter_norm = (set.intersection(*member_norm)
+                          if member_norm and all(member_norm) else set())
+            # Strip orbit member self-references and bare axis names
+            # from all token sets (they're trivially "shared" or
+            # trivially "varying").
+            _strip = member_short_names | axis_short_names
+            for s in (union_asis, union_norm, inter_asis, inter_norm):
+                s -= _strip
+
+            if intersection_deps or inter_asis or inter_norm:
+                # The parametric helpers the orbit ALREADY uses are
+                # exactly the intersection of member-deps (minus axis
+                # constructors). Surface these prominently: they ARE
+                # the answer to "what existing helpers already have
+                # the right shape — the orbit composes them."
+                primitives = sorted({q.split("::")[-1] for q in intersection_deps})
+                if primitives:
+                    print(f"      Existing parametric helpers USED by every orbit member:")
+                    print(f"        {{{', '.join(primitives)}}}")
+                    print(f"        (these are the parametric primitives the orbit composes;")
+                    print(f"         a unified form wraps them with ONE Axis-like parameter,")
+                    print(f"         replacing the {len(parent.objects)} specialised member defs.)")
+                # Display intersections with leaf-name only (de-dup the
+                # qualified+leaf double-counting we keep in the matching
+                # token sets).
+                def _display_leaf(tokens):
+                    return sorted({t.split(".")[-1] if "." in t else t for t in tokens})
+                if inter_asis:
+                    sample = _display_leaf(inter_asis)[:8]
+                    n = len({t.split(".")[-1] if "." in t else t for t in inter_asis})
+                    suffix = f", … (+{n - 8})" if n > 8 else ""
+                    print(f"      Shared AsIs sig-tokens (orbit identity): {{{', '.join(sample)}{suffix}}}")
+                if inter_norm:
+                    sample = _display_leaf(inter_norm)[:8]
+                    n = len({t.split(".")[-1] if "." in t else t for t in inter_norm})
+                    suffix = f", … (+{n - 8})" if n > 8 else ""
+                    print(f"      Shared Normalised sig-tokens (definitional skeleton): {{{', '.join(sample)}{suffix}}}")
+
+            candidates = []
+            for qname in all_defs:
+                if qname in parent_qnames or qname in child_qnames:
+                    continue
+                cand_deps_raw = def_usage_for_collapse.get(qname, set())
+                cand_deps = {q for q in cand_deps_raw - parent_qnames - child_qnames
+                             if not _is_axis_dep(q)}
+                cand_asis = _elab_tokens(_elab_sig(qname, "asis")) - _strip
+                cand_norm = _elab_tokens(_elab_sig(qname, "normalised")) - _strip
+                core = (len(cand_deps & intersection_deps) / len(intersection_deps)
+                        if intersection_deps else 0.0)
+                dep_j = jaccard(cand_deps, union_deps) if union_deps else 0.0
+                asis_j = jaccard(cand_asis, union_asis) if union_asis else 0.0
+                norm_j = jaccard(cand_norm, union_norm) if union_norm else 0.0
+                product = dep_j * asis_j * norm_j
+                if product <= 0.0:
+                    continue
+                candidates.append((product, core, dep_j, asis_j, norm_j, qname))
+            candidates.sort(reverse=True)
+            top = candidates[:5]
+            if top:
+                print(f"      Candidate existing parametric helpers (dot-product rank):")
+                print(f"        (rank = dep-J × sig-J-asis × sig-J-norm — all three")
+                print(f"         dimensions must be nonzero. AsIs preserves structural")
+                print(f"         identity, Normalised exposes definitional equality.)")
+                for product, core, dep_j, asis_j, norm_j, qname in top:
+                    mod = qname.split("::")[0]
+                    nm = qname.split("::")[-1]
+                    mod_short = mod.split(".")[-1] if "." in mod else mod
+                    flag = "  ← FULL primitive coverage" if core >= 0.999 else ""
+                    print(f"        - {mod_short}.{nm}{flag}")
+                    print(f"            product={product:.3f}  (dep={dep_j:.2f}, asis={asis_j:.2f}, norm={norm_j:.2f}, core={core:.2f})")
+            else:
+                # Fall back to two-dimensional product if 3-D was too
+                # strict (likely when one elaborated dimension is empty
+                # because the cache is missing or sparse for this orbit).
+                fallback = []
+                for qname in all_defs:
+                    if qname in parent_qnames or qname in child_qnames:
+                        continue
+                    cand_deps_raw = def_usage_for_collapse.get(qname, set())
+                    cand_deps = {q for q in cand_deps_raw - parent_qnames - child_qnames
+                                 if not _is_axis_dep(q)}
+                    cand_asis = _elab_tokens(_elab_sig(qname, "asis")) - _strip
+                    cand_norm = _elab_tokens(_elab_sig(qname, "normalised")) - _strip
+                    dep_j = jaccard(cand_deps, union_deps) if union_deps else 0.0
+                    asis_j = jaccard(cand_asis, union_asis) if union_asis else 0.0
+                    norm_j = jaccard(cand_norm, union_norm) if union_norm else 0.0
+                    # 2-D fallback: dep × max(asis, norm). Catches the
+                    # "candidate matches in dep + at LEAST one sig
+                    # dimension" case.
+                    best_sig = max(asis_j, norm_j)
+                    product2 = dep_j * best_sig
+                    if product2 <= 0.0:
+                        continue
+                    fallback.append((product2, dep_j, asis_j, norm_j, qname))
+                fallback.sort(reverse=True)
+                top2 = fallback[:5]
+                if top2:
+                    print(f"      No candidates match all 3 dimensions; falling back")
+                    print(f"      to 2-D dot-product: dep-J × max(asis-J, norm-J):")
+                    for product2, dep_j, asis_j, norm_j, qname in top2:
+                        mod = qname.split("::")[0]
+                        nm = qname.split("::")[-1]
+                        mod_short = mod.split(".")[-1] if "." in mod else mod
+                        print(f"        - {mod_short}.{nm}")
+                        print(f"            product2={product2:.3f}  (dep={dep_j:.2f}, asis={asis_j:.2f}, norm={norm_j:.2f})")
+                else:
+                    print(f"      No existing parametric-helper candidates found.")
+                    print(f"      (No def has nonzero similarity in BOTH the dep AND any")
+                    print(f"       sig dimension.) → The helper must be NEWLY constructed;")
+                    print(f"       the inferred signature above gives the shape.")
+            print()
+
+    # ====================================================================
+    # Reasoning-trace infrastructure.
+    #
+    # Each PROPOSAL emitted below carries a TRACE block that shows the
+    # chain of OBSERVATIONS that produced it: what the detectors saw, what
+    # cross-references fired, what alternative readings were considered
+    # and rejected. The trace is what justifies the proposal — without
+    # it, a reader can only take the conclusion on faith.
+    # ====================================================================
+
+    # Orbit-membership: for each qname, list the orbit findings it's in.
+    # NOTE: `orbit_findings` got rebound to (metric, objects) tuples
+    # earlier in main(); re-fetch the Finding objects fresh here.
+    _orbit_findings_fresh = [f for f in findings if f.level == "orbit"]
+    orbits_by_qname = defaultdict(list)
+    for of in _orbit_findings_fresh:
+        for q in of.objects:
+            orbits_by_qname[q].append(of)
+
+    # Per-partial-coset speculative-match map: finding-idx → list of
+    # (missing_axis, candidate-qname). Re-computed here so the trace can
+    # cite alternatives. This duplicates the logic that builds
+    # spec_proposals but indexes per-finding instead of per-(stem,name).
+    pc_spec_matches = defaultdict(list)
+    for i, f in enumerate(pc_findings_list):
+        ty, present, missing, stem, _ = f.extra
+        # Use this finding's own ctor universe (present∪missing); no
+        # hardcoded per-type list. Case-collapse search only applies
+        # when the ctors have distinct upper/lower forms.
+        ctors = sorted(set(present) | set(missing))
+        member_short = {q.split("::")[-1] for q in f.objects}
+        for missing_c in missing:
+            ml = missing_c.lower()
+            if ml == missing_c:
+                # No case distinction — try exact stem+ctor only.
+                candidates = [stem + "-" + missing_c]
+            else:
+                candidates = [stem + "-" + ml] + [
+                    stem.replace("-" + c2.lower() + "-",
+                                 "-" + ml + "-")
+                    for c2 in ctors if c2 != missing_c
+                    and c2.lower() != c2
+                    and "-" + c2.lower() + "-" in stem
+                ]
+            for name in candidates:
+                if name in _name_to_qnames and name not in member_short:
+                    for mod, sig, rhss in _name_to_qnames[name]:
+                        pc_spec_matches[i].append((missing_c, f"{mod}::{name}"))
+                    break
+
+    # Cousin-cluster lookup: for each finding, the cluster (if any) that
+    # absorbs it, plus the cousin-membership map for trace lines.
+    finding_cluster = {}
+    for cluster_idx, members in enumerate(cousin_clusters):
+        for m in members:
+            finding_cluster[m] = (cluster_idx, members)
+
+    # Motif classifier: recognises recurring structural patterns in
+    # the (present, missing) shape. Important distinction the classifier
+    # CAN'T make from (present, missing) alone:
+    #
+    #   * ANCHOR-FANOUT: 3 elements form an unordered symmetric fiber,
+    #     1 distinguished "anchor". No ordering on the 3 at this level.
+    #   * HODGE-DUAL: like anchor-fanout BUT the 3 carry ordering info
+    #     (cyclic, sequential, …) — making the 4th their dual rather
+    #     than just an anchor.
+    #
+    # Detecting Hodge-dual requires looking at the 3 elements' usage at
+    # a higher level (e.g., whether they're cycled by s3-cycles, or
+    # form a sequence). The motif name surfaces the SHAPE; whether
+    # to call it Hodge-dual is a higher-level call the trace flags
+    # but doesn't decide.
+    def _classify_motif(present, missing):
+        total = len(present) + len(missing)
+        p, m = len(present), len(missing)
+        if total == 4 and p == 3 and m == 1:
+            return ("3-of-4 / ANCHOR-FANOUT",
+                    f"3 elements {sorted(present)} form a fiber; missing "
+                    f"'{list(missing)[0]}' is structurally distinguished (anchor). "
+                    f"WHETHER this is a Hodge dual depends on the 3 carrying "
+                    f"ordering info (cyclic, sequential) at a downstream level — "
+                    f"at the type-ctor level alone there's no ordering, so this "
+                    f"is anchor-fanout by default")
+        if total == 4 and p == 1 and m == 3:
+            return ("1-of-4 / ANCHOR-ONLY",
+                    f"present element '{list(present)[0]}' is the distinguished "
+                    f"anchor; the 3-element fiber {sorted(missing)} is absent at "
+                    f"this stem. Dual view of the same anchor-fanout shape")
+        if total == 3 and p == 2 and m == 1:
+            return ("2-of-3 / Z₂-WEDGE",
+                    f"two of three positions in a 3-element fiber; "
+                    f"missing '{list(missing)[0]}' breaks a potential cyclic "
+                    f"symmetry — if the 3 are cyclically ordered at a downstream "
+                    f"level this is a wedge; if unordered it's just 2-of-3")
+        if total == 2 and p == 1 and m == 1:
+            return ("1-of-2 / PARITY-BREAK",
+                    f"half of a 2-element parity pair; the other parity "
+                    f"'{list(missing)[0]}' is missing")
+        if p == total:
+            return ("COMPLETE", "all ctors present")
+        if p > 1 and m > 1:
+            return (f"{p}-of-{total} / SUB-COSET",
+                    f"partial coverage with multiple present and multiple missing; "
+                    f"may indicate a sub-structure rather than a clean motif")
+        return (None, None)
+
+    def _emit_trace_for_pc(idx, kind_label):
+        """Print a reasoning trace for partial-coset finding at idx.
+
+        kind_label is one of PROMOTED / STRICT / SPECULATIVE — informs
+        the closing implication line."""
+        f = pc_findings_list[idx]
+        ty, present, missing, stem, cps = f.extra
+        members_short = sorted({q.split("::")[-1] for q in f.objects})
+        member_qnames = sorted(f.objects)
+        # [a] Observed defs.
+        print(f"      TRACE:")
+        if len(member_qnames) <= 3:
+            for q in member_qnames:
+                mod = q.split("::")[0]
+                nm = q.split("::")[-1]
+                print(f"        [a] observed def: {mod.split('.')[-1]}.{nm}")
+        else:
+            print(f"        [a] observed defs ({len(member_qnames)}): "
+                  f"{', '.join(members_short[:5])}"
+                  f"{', …' if len(member_qnames) > 5 else ''}")
+        # [b] Stem extraction — also surface any LOWERCASE axis markers
+        # embedded in the stem itself. The partial-coset detector strips
+        # the uppercase suffix; if a lowercase axis token (-d-, -c-, etc.)
+        # is in the middle of the stem, that's a separate, MEANINGFUL
+        # signal (e.g., '-d-' marks the cocycle's chirality anchor under
+        # the use-vs-commit convention). The speculative-match detector
+        # case-collapses to find candidates, but the marker itself is
+        # semantically distinct from the matching uppercase axis.
+        print(f"        [b] stem extraction: '{stem}' (after stripping a {ty} suffix)")
+        # Lowercase axis markers — derived from this finding's own ctor
+        # set (present∪missing). If a lowercased version of any ctor
+        # appears inside the stem, that's a SEPARATE signal carried in
+        # the name itself (typically a use-vs-commit chirality marker).
+        type_ctors = sorted(set(present) | set(missing))
+        embedded_lower_axes = []
+        for c in type_ctors:
+            cl = c.lower()
+            if cl == c:
+                continue  # ctor isn't case-distinct (e.g. lowercase ctors like α-pair)
+            marker = "-" + cl + "-"
+            if marker in stem:
+                pos = stem.index(marker) + 1
+                embedded_lower_axes.append((cl, pos))
+            end_marker = "-" + cl
+            if stem.endswith(end_marker):
+                pos = len(stem) - 1
+                embedded_lower_axes.append((cl, pos))
+        if embedded_lower_axes:
+                marks = ", ".join(f"'{a}' at pos {p}" for a, p in embedded_lower_axes)
+                print(f"            stem contains lowercase axis marker(s): {marks}")
+                print(f"            these are NOT counted in present/missing (uppercase-only");
+                print(f"            detector), but they encode a separate signal — typically")
+                print(f"            a chirality anchor under the use-vs-commit convention")
+                print(f"            (the cocycle USES this axis without COMMITTING to it).")
+        # [c] Axis analysis. Derive the type's ctor set from THIS
+        # finding's data — present + missing IS the full type's ctor
+        # set (the detector built present/missing to partition it).
+        # No hardcoded type→ctors map needed: the partition is the
+        # data, and "missing" only has meaning relative to it.
+        all_axes = sorted(set(present) | set(missing))
+        print(f"        [c] {ty} ctors {all_axes}; present={list(present)}, "
+              f"missing={list(missing)}")
+        # [d] Orbit-membership of members. Cross-link the orbit's
+        # per-axis coverage with this finding's missing set. The orbit-
+        # siblings have DIFFERENT stems (each axis carries its own
+        # stem like orbit-key-to-stab-X-fixes for varying X); the per-
+        # sibling axis is extracted from the trailing axis token.
+        #
+        # Coverage universe: derived from BOTH cosets being compared —
+        # the finding's expected axes (present∪missing) AND the orbit-
+        # siblings' suffix-axes (extracted from their qnames). The
+        # cross-product of these two cosets defines what we're
+        # checking coverage of. No hardcoded ctor list.
+        all_ctors = sorted(set(present) | set(missing))
+        orbits_seen = set()
+        for q in f.objects:
+            for of in orbits_by_qname.get(q, []):
+                orbits_seen.add(of)
+        if orbits_seen:
+            for of in sorted(orbits_seen, key=lambda x: -len(x.objects)):
+                others = sorted({q.split("::")[-1] for q in of.objects} - set(members_short))
+                # Extract each sibling's axis from its trailing token,
+                # checking against the finding's known ctor universe
+                # (all_ctors = present∪missing). Siblings whose
+                # trailing token isn't in that universe are skipped —
+                # they're not part of the coset we're checking against.
+                sibling_axes = set()
+                for o in of.objects:
+                    on = o.split("::")[-1]
+                    for c in all_ctors:
+                        if on.endswith("-" + c):
+                            sibling_axes.add(c)
+                            break
+                covered = sibling_axes & set(missing)
+                # The orbit also has its OWN axis (the present one for
+                # this finding's def). All axes covered by the orbit =
+                # sibling_axes ∪ {present}.
+                orbit_axes_total = sibling_axes | set(present)
+                print(f"        [d] orbit-membership: this def is in a "
+                      f"{len(of.objects)}-element orbit")
+                if others:
+                    print(f"            orbit-siblings: {', '.join(others[:5])}"
+                          f"{', …' if len(others) > 5 else ''}")
+                print(f"            orbit covers axes: {sorted(orbit_axes_total)}")
+                if covered:
+                    if covered == set(missing):
+                        print(f"            ALL missing axes {sorted(missing)} ARE")
+                        print(f"            covered by orbit-siblings → the parametric")
+                        print(f"            family is COMPLETE; the per-stem partial-coset")
+                        print(f"            view fragments it into {len(of.objects)} apparent")
+                        print(f"            'incomplete' findings (stem-extraction artifact).")
+                    else:
+                        uncov = sorted(set(missing) - covered)
+                        print(f"            orbit-siblings cover missing axes: "
+                              f"{sorted(covered)}; uncovered: {uncov} → orbit-fanout-PARTIAL")
+                else:
+                    print(f"            orbit's axes don't intersect this finding's "
+                          f"missing set → orbit is structurally independent")
+        else:
+            print(f"        [d] orbit-membership: none (this def is not in any "
+                  f"shape-quotient orbit)")
+        # [e] Speculative cross-name matches per missing axis.
+        spec = pc_spec_matches.get(idx, [])
+        if spec:
+            print(f"        [e] speculative matches under naming-convention-relaxation:")
+            for axis, cand in spec:
+                cand_mod = cand.split("::")[0].split(".")[-1]
+                cand_nm = cand.split("::")[-1]
+                print(f"            missing '{axis}' ← existing {cand_mod}.{cand_nm}")
+        else:
+            print(f"        [e] no speculative cross-name matches for the missing axes")
+        # [f] Cluster status.
+        if idx in finding_cluster:
+            ci, members = finding_cluster[idx]
+            cl_size = len(members)
+            print(f"        [f] cousin-cluster status: member of cluster "
+                  f"#{ci} ({cl_size} sibling findings)")
+        elif idx in promoted_leaves_via_cluster:
+            print(f"        [f] cousin-cluster status: PROMOTED — upstream "
+                  f"cluster absorbs this finding's dependencies")
+        else:
+            print(f"        [f] cousin-cluster status: STRICT leaf "
+                  f"(no upstream cluster, no dependencies on other findings)")
+        # [g] Parametric counterpart.
+        if cps:
+            cp_names = ", ".join(c.split("::")[-1] for c in cps)
+            print(f"        [g] parametric counterpart in scope: {cp_names}")
+        else:
+            print(f"        [g] no parametric counterpart found by short-name lookup")
+        # [h] Implication — joins the separate signals above into a
+        # combined reading, with JUSTIFIED rationale for the join.
+        # Use the SAME sibling-axis-extraction as [d] so the coverage
+        # numbers in [h] match [d]'s.
+        spec_covers = {axis for axis, _ in spec}
+        orbit_covers = set()
+        for of in orbits_seen:
+            for o in of.objects:
+                on = o.split("::")[-1]
+                for c in all_ctors:
+                    if on.endswith("-" + c):
+                        if c in missing:
+                            orbit_covers.add(c)
+                        break
+        fully_covered = (spec_covers | orbit_covers) >= set(missing)
+        is_promoted = idx in promoted_leaves_via_cluster
+        # Promoted findings: cousin-cluster ABSORPTION is the dominant
+        # signal even when spec/orbit don't cover. Don't claim "no
+        # upstream signal" when [f] says PROMOTED.
+        if is_promoted:
+            print(f"        [h] IMPLICATION: PROMOTED — cousin cluster covers this "
+                  f"finding's dependencies; closure is at the cluster level, not "
+                  f"the per-sibling level. No new code unless you want explicit "
+                  f"per-axis names.")
+        elif fully_covered:
+            via = []
+            if orbit_covers >= set(missing): via.append("orbit-fanout")
+            elif orbit_covers: via.append(f"orbit-fanout-partial({sorted(orbit_covers)})")
+            if spec_covers >= set(missing): via.append("speculative-match")
+            elif spec_covers: via.append(f"speculative-match-partial({sorted(spec_covers)})")
+            print(f"        [h] IMPLICATION: missing axes are FULLY COVERED via "
+                  f"{' + '.join(via)}; the partial coset is structurally CLOSED at "
+                  f"a higher level. The asymmetry is a stem-extraction artifact, "
+                  f"not a missing-code TODO.")
+        elif spec_covers or orbit_covers:
+            uncovered = sorted(set(missing) - spec_covers - orbit_covers)
+            covered_via = []
+            if orbit_covers: covered_via.append(f"orbit-fanout({sorted(orbit_covers)})")
+            if spec_covers: covered_via.append(f"speculative-match({sorted(spec_covers)})")
+            print(f"        [h] IMPLICATION: PARTIAL coverage of missing axes via "
+                  f"{' + '.join(covered_via)}; uncovered={uncovered}. Closing the "
+                  f"uncovered portion requires either adding siblings (verify "
+                  f"provability first) or accepting the residual asymmetry.")
+        else:
+            print(f"        [h] IMPLICATION: no upstream signal closes the missing "
+                  f"axes; either the siblings are unprovable (structural truth) "
+                  f"or the type really IS expected to have all {len(all_axes)} ctors "
+                  f"but only {len(present)} are realised at this stem.")
+        # [i] Motif classification — surfaces project-wide recurring
+        # patterns. The 3-vs-4 / Hodge-dual motif is the dominant one:
+        # one element of a 4-ctor type plays an identity/dual role to
+        # the other 3. Naming it explicitly lets the reader connect
+        # this finding to others sharing the same structural shape.
+        motif_name, motif_desc = _classify_motif(present, missing)
+        if motif_name:
+            print(f"        [i] motif: {motif_name}")
+            print(f"            {motif_desc}")
+
+    # 2. SPECULATIVE name-matches (rename or alias). Per-finding ctor
+    # universe = present∪missing (data-derived, no hardcoded list).
+    spec_proposals = []
+    for f in pc_findings_list:
+        ty, present, missing, stem, _ = f.extra
+        ctors = sorted(set(present) | set(missing))
+        for missing_c in missing:
+            ml = missing_c.lower()
+            if ml == missing_c:
+                candidates = [stem + "-" + missing_c]
+            else:
+                candidates = [stem + "-" + ml] + [
+                    stem.replace("-" + c2.lower() + "-",
+                                 "-" + ml + "-")
+                    for c2 in ctors if c2 != missing_c
+                    and c2.lower() != c2
+                    and "-" + c2.lower() + "-" in stem
+                ]
+            for name in candidates:
+                if name in _name_to_qnames and name not in {f.split("::")[-1] for f in f.objects}:
+                    spec_proposals.append((stem, missing_c, name))
+                    break
+
+    # ====================================================================
+    # Codomain enumeration: for each proposal, list ALL possible actions
+    # (the codomain), rate each with justification, then recommend.
+    # Per user methodology: separate signals → joined signal (with
+    # justification) → codomain of possible solutions → rating →
+    # end-to-end justified rationale for each option.
+    # ====================================================================
+    def _emit_codomain_for_pc(idx):
+        f = pc_findings_list[idx]
+        ty, present, missing, stem, cps = f.extra
+        spec = pc_spec_matches.get(idx, [])
+        is_promoted = idx in promoted_leaves_via_cluster
+        # Coverage universe derived from this finding's own coset (no
+        # hardcoded ctor list); orbit-siblings whose suffix isn't in
+        # this universe are out-of-scope for the cross-coset check.
+        all_ctors = sorted(set(present) | set(missing))
+        # Orbit-coverage: extract each sibling's own axis (from its
+        # trailing axis token) and intersect with this finding's
+        # missing set. Same logic as [d] in the trace.
+        orbits_seen = set()
+        for q in f.objects:
+            for of in orbits_by_qname.get(q, []):
+                orbits_seen.add(of)
+        orbit_covers = set()
+        for of in orbits_seen:
+            for o in of.objects:
+                on = o.split("::")[-1]
+                for c in all_ctors:
+                    if on.endswith("-" + c):
+                        if c in missing:
+                            orbit_covers.add(c)
+                        break
+        spec_covers = {axis for axis, _ in spec}
+        print(f"      CODOMAIN OF POSSIBLE ACTIONS:")
+        opt_n = 0
+        # (i) ALIAS via speculative match — usually highest-rated.
+        if spec:
+            opt_n += 1
+            print(f"        ({opt_n}) ALIAS to existing speculative-match def(s):")
+            for axis, cand in spec:
+                cand_short = cand.split("::")[-1]
+                print(f"              {stem}-{axis} = {cand_short}    (axis '{axis}')")
+            print(f"            JUSTIFIED BY: a def under naming-convention relaxation")
+            print(f"                          already realises each missing position; aliasing")
+            print(f"                          makes it findable under both names.")
+            print(f"            PRESERVES: original naming marker (e.g., lowercase '-d'")
+            print(f"                       for cocycle-anchor, uppercase '-X' for axes).")
+            print(f"            COST: {len(spec)} one-line aliases. RATING: ★★★")
+        # (ii) RENAME existing match — usually low-rated (rigidification).
+        if spec:
+            opt_n += 1
+            print(f"        ({opt_n}) RENAME existing speculative-match def(s):")
+            for axis, cand in spec:
+                cand_short = cand.split("::")[-1]
+                print(f"              {cand_short} → {stem}-{axis}")
+            print(f"            JUSTIFIED BY: same observation as ALIAS, but resolved")
+            print(f"                          by erasing the original name rather than")
+            print(f"                          coexistence.")
+            print(f"            ERASES: original naming marker. If the marker encodes a")
+            print(f"                    chirality choice (cocycle anchor, use-vs-commit),")
+            print(f"                    this is a RIGIDIFICATION.")
+            print(f"            COST: high (rename + update all callers, typically tens).")
+            print(f"            RATING: ✗ (avoid unless asymmetry is genuinely unintentional)")
+        # (iii) ADD missing siblings as new defs.
+        opt_n += 1
+        if cps:
+            print(f"        ({opt_n}) ADD missing siblings via parametric counterpart:")
+            print(f"              counterpart found: {', '.join(c.split('::')[-1] for c in cps)}")
+            print(f"              add {len(missing)} aliases (one per missing axis)")
+            print(f"            JUSTIFIED BY: parametric counterpart exists in scope; aliasing")
+            print(f"                          to it is a mechanical instantiation per axis.")
+            print(f"            COST: low ({len(missing)} one-line aliases).")
+            print(f"            RATING: ★★ (mechanical, but adds new identifiers that may")
+            print(f"                       themselves form an orbit triggering further")
+            print(f"                       proposals — verify the codomain shrinks, not grows).")
+        else:
+            print(f"        ({opt_n}) ADD missing siblings as ad-hoc proofs:")
+            print(f"              {len(missing)} new defs with types Stab-X (...) for X in")
+            print(f"              {list(missing)}")
+            print(f"            JUSTIFIED BY: the type schema implies these siblings could")
+            print(f"                          exist by symmetry; we have no parametric")
+            print(f"                          counterpart to derive them from.")
+            print(f"            RISK: may FAIL TO TYPECHECK if the propositions are not")
+            print(f"                  true (e.g., D-anchored dispatcher's outputs don't")
+            print(f"                  uniformly fix C/S/W).")
+            print(f"            RATING: ★ (investigate provability first; structural truth")
+            print(f"                       may forbid closure)")
+        # (iv) PROMOTE-TO-PARAMETRIC — refactor to absorb into upstream.
+        if cps or orbits_seen:
+            opt_n += 1
+            print(f"        ({opt_n}) PROMOTE to parametric upstream:")
+            print(f"              refactor {sorted({q.split('::')[-1] for q in f.objects})}")
+            print(f"              to delegate to a parametric helper indexed by the axis.")
+            print(f"            JUSTIFIED BY: orbit-membership ({len(orbits_seen)} orbit(s))")
+            print(f"                          or parametric counterpart in scope; the def")
+            print(f"                          can be re-expressed as `helper X` for varying X.")
+            print(f"            RISK: downstream proofs may rely on pattern-match exposure;")
+            print(f"                  delegate-form may not reduce definitionally.")
+            print(f"            RATING: ★★ (highest leverage when it works; costliest when")
+            print(f"                       downstream relies on case-analysis structure).")
+        # (v) ACCEPT — always available.
+        opt_n += 1
+        if is_promoted:
+            print(f"        ({opt_n}) ACCEPT: cousin cluster ALREADY absorbs this finding.")
+            print(f"            JUSTIFIED BY: upstream cluster (PROMOTED marker) covers the")
+            print(f"                          parametric structure; this finding is downstream")
+            print(f"                          reportage, not a TODO.")
+            print(f"            RATING: ★★★ (closure already exists at higher level)")
+        elif fully_covered := ((spec_covers | orbit_covers) >= set(missing)):
+            print(f"        ({opt_n}) ACCEPT: missing axes are FULLY COVERED at higher levels")
+            print(f"            JUSTIFIED BY: every missing axis is realised by either an")
+            print(f"                          orbit-sibling ({sorted(orbit_covers)}) or a")
+            print(f"                          speculative-match candidate ({sorted(spec_covers)}).")
+            print(f"            RATING: ★★★ (the partial coset is a stem-extraction artifact)")
+        else:
+            uncov = sorted(set(missing) - spec_covers - orbit_covers)
+            print(f"        ({opt_n}) ACCEPT: structural truth; uncovered={uncov}.")
+            print(f"            JUSTIFIED BY: no upstream signal closes the uncovered axes;")
+            print(f"                          either siblings are unprovable, or the type's")
+            print(f"                          ctors aren't all expected to manifest here.")
+            print(f"            RATING: ★★ (informational; no action — but consider whether")
+            print(f"                       the stem extraction is dropping meaningful tokens)")
+        # Recommendation derived from the joined signal:
+        total_cover = spec_covers | orbit_covers
+        if is_promoted:
+            rec = "ACCEPT (cousin-cluster absorption — closure at higher level)"
+        elif total_cover >= set(missing):
+            if spec:
+                rec = "ALIAS (preserves naming markers; closes coset mechanically)"
+            else:
+                rec = "ACCEPT (orbit-fanout already complete; stem-extraction artifact)"
+        elif orbit_covers and not spec:
+            # Partial orbit coverage but no spec-match for the rest.
+            uncov = sorted(set(missing) - total_cover)
+            rec = (f"ACCEPT for orbit-covered axes {sorted(orbit_covers)} "
+                   f"(parametric family); investigate {uncov} separately "
+                   f"(likely structurally distinct, e.g., cocycle anchor)")
+        elif spec:
+            rec = "ALIAS (closes coset; if asymmetry is intentional, ACCEPT instead)"
+        elif cps:
+            rec = "ADD via parametric counterpart"
+        else:
+            rec = "ACCEPT (no upstream signal; verify provability if you disagree)"
+        print(f"      RECOMMENDED: {rec}")
+
+    if spec_proposals:
+        print("  [2] SPECULATIVE rename/alias proposals (naming-convention asymmetries):")
+        # Build stem → finding-idx map to pull the trace.
+        stem_to_idx = {pc_findings_list[i].extra[3]: i
+                       for i in range(len(pc_findings_list))}
+        seen_pairs = set()
+        for stem, missing_c, existing_name in spec_proposals:
+            key = (stem, existing_name)
+            if key in seen_pairs:
+                continue
+            seen_pairs.add(key)
+            proposals_count += 1
+            print(f"    PROPOSAL #{proposals_count}: stem '{stem}' missing '{missing_c}', "
+                  f"existing match: {existing_name}")
+            idx = stem_to_idx.get(stem)
+            if idx is not None:
+                _emit_trace_for_pc(idx, "SPECULATIVE")
+                _emit_codomain_for_pc(idx)
+            print()
+
+    # 3. EFFECTIVE LEAVES — additive sibling proposals.
+    if promoted or strict:
+        print("  [3] Effective leaves (cousin-cluster-absorbed or strict):")
+        for idx in promoted:
+            finding = pc_findings_list[idx]
+            ty, present, missing, stem, cps = finding.extra
+            proposals_count += 1
+            print(f"    PROPOSAL #{proposals_count}: stem '{stem}' "
+                  f"(PROMOTED via cousin absorption)")
+            _emit_trace_for_pc(idx, "PROMOTED")
+            _emit_codomain_for_pc(idx)
+            print()
+        for idx in strict:
+            finding = pc_findings_list[idx]
+            ty, present, missing, stem, cps = finding.extra
+            # Skip leaves already addressed via speculation.
+            already_proposed = any(stem == s for s, _, _ in spec_proposals)
+            if already_proposed:
+                continue
+            proposals_count += 1
+            print(f"    PROPOSAL #{proposals_count}: stem '{stem}' (strict leaf)")
+            _emit_trace_for_pc(idx, "STRICT")
+            _emit_codomain_for_pc(idx)
+            print()
+
+    # 4. DEPENDENT findings — partial-coset findings that depend on
+    #    other partial-coset findings (NOT leaves). Surfaced explicitly
+    #    so the user can see the FULL fanout picture, not just the
+    #    leaf-filtered slice. Each gets the same trace + codomain
+    #    treatment as leaves; the "depends-on" stem chain is shown
+    #    in [f] cluster status.
+    spec_stems = {s for s, _, _ in spec_proposals}
+    promoted_set = set(promoted)
+    strict_set = set(strict)
+    dependent_idxs = [
+        i for i in range(len(pc_findings_list))
+        if i not in promoted_set and i not in strict_set
+        and i not in absorbed_members
+        and pc_findings_list[i].extra[3] not in spec_stems
+    ]
+    if dependent_idxs:
+        print(f"  [4] Dependent findings (depend on other unresolved findings — shown")
+        print(f"       for full-fanout visibility per the multi-signal discipline):")
+        for idx in dependent_idxs:
+            finding = pc_findings_list[idx]
+            ty, present, missing, stem, cps = finding.extra
+            proposals_count += 1
+            dep_stems = sorted({
+                pc_findings_list[d].extra[3]
+                for d in finding_deps[idx]
+            })
+            print(f"    PROPOSAL #{proposals_count}: stem '{stem}' "
+                  f"(depends on: {dep_stems})")
+            _emit_trace_for_pc(idx, "DEPENDENT")
+            _emit_codomain_for_pc(idx)
+            print()
+
+    if proposals_count == 0:
+        print("  (No actionable proposals — the codebase's partial cosets are at a")
+        print("   structural floor that requires manual interpretation.)")
+        print()
+    else:
+        print(f"  Total proposals: {proposals_count}. Apply one, re-run, iterate.")
+        print()
+
+    # === Meta-motifs: group findings by recurring structural pattern.
+    # Surfaces project-wide motifs like 3-vs-4 / Hodge-dual that the
+    # per-finding traces hint at individually — here they're aggregated
+    # so the reader can see the motif as a coherent feature.
+    motif_groups = defaultdict(list)
+    for i in range(len(pc_findings_list)):
+        f = pc_findings_list[i]
+        ty, present, missing, stem, cps = f.extra
+        motif_name, _ = _classify_motif(present, missing)
+        if motif_name and motif_name != "COMPLETE":
+            motif_groups[motif_name].append((i, ty, present, missing, stem))
+    if motif_groups:
+        print("=== Meta-motifs (project-wide structural patterns) ===")
+        print("  Findings grouped by the structural shape of their (present, missing)")
+        print("  partition. Same motif appearing across multiple type-domains is a")
+        print("  signal that the motif is a project-level feature, not a local quirk.")
+        print()
+        for motif, items in sorted(motif_groups.items(), key=lambda x: -len(x[1])):
+            print(f"  [{motif}] — {len(items)} finding(s):")
+            for i, ty, present, missing, stem in items:
+                miss_str = ", ".join(missing) if missing else "—"
+                print(f"    · {ty}: stem='{stem}', "
+                      f"present={sorted(present)}, missing=[{miss_str}]")
+            # For 3-of-4 / ANCHOR-FANOUT findings, surface the
+            # missing-element frequency so the cross-type "shared anchor"
+            # signal is visible. Whether the anchor is a TRUE Hodge dual
+            # vs. a structurally-privileged element with no ordering on
+            # the 3 is a separate question; this just reports the shape.
+            if "ANCHOR-FANOUT" in motif:
+                miss_counter = Counter()
+                for i, ty, present, missing, stem in items:
+                    for m_elt in missing:
+                        miss_counter[m_elt] += 1
+                if miss_counter:
+                    print(f"    Distinguished-element frequency across this motif:")
+                    for elt, n in miss_counter.most_common():
+                        print(f"      '{elt}' is the distinguished one in {n} finding(s)")
+                    print(f"    → elements that recur in the distinguished position")
+                    print(f"      across multiple findings are the project's chirality")
+                    print(f"      anchors. To know whether they're also Hodge duals,")
+                    print(f"      check whether the 3 carry ordering at a downstream level")
+                    print(f"      (e.g., are they cycled by an s3-cycle? sequenced?).")
+            print()
 
     # === Empty fibers ===
     print("=== Empty fibers (levels with no findings or under-populated) ===")
