@@ -61,15 +61,9 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Bijection
   using (_↔_; mk↔ₛ′; ↔-sym; ↔-trans; _×-↔_)
 
--- TRANSITIONAL: the one remaining stdlib bridge in this file.
--- `*↔×` (from `Data.Fin.Properties`) carries the combine/divide
--- proofs for `Fin (m * n) ↔ₛ (Fin m × Fin n)`. The substrate-native
--- replacement is its own arc (combine/divide round-trip). Until then,
--- this single import is wrapped into substrate `_↔_` immediately
--- and never leaks past `fin-product` below.
-open import Substrate.Foundation.Eq using (refl)
-import Function.Bundles as F
-open import Substrate.Foundation.Fin.Properties using (*↔×)
+-- Substrate-native combine/remQuot bijection for Fin (m * n) ↔ Fin m × Fin n.
+-- Replaces the prior transitional `Function.Bundles` bridge.
+open import Substrate.Foundation.Fin.Combine.Bijection using (*↔×)
 
 open import Substrate.Axes using (Axis)
 open import Substrate.Groups.V4 using (V₄)
@@ -86,20 +80,8 @@ open import Substrate.Cardinality
 -- composition, so we take its symmetry.
 ------------------------------------------------------------------------
 
--- Wrap stdlib's *↔× into substrate _↔_ at the boundary, then
--- symmetrise. Stdlib's `Inverseˡ` shape is `∀ {x y} → x ≡ y →
--- f (g x) ≡ y`; pointwise `refl` recovers the substrate's
--- `(b : B) → f (g b) ≡ b` shape.
--- stdlib's `Inverseˡ` is `∀ {x y} → y ≡ from x → to y ≡ x`, where
--- x lives in the codomain B and y in the domain A. Passing the
--- second implicit y = from x with `refl` recovers
--- `to (from x) ≡ x`. Symmetric story for `Inverseʳ`.
 fin-product : ∀ {m n} → (Fin m × Fin n) ↔ Fin (m * n)
-fin-product {m} {n} = ↔-sym (mk↔ₛ′
-  (F.Inverse.to       (*↔× {m} {n}))
-  (F.Inverse.from     (*↔× {m} {n}))
-  (λ b → F.Inverse.inverseˡ (*↔× {m} {n}) {x = b} refl)
-  (λ a → F.Inverse.inverseʳ (*↔× {m} {n}) {x = a} refl))
+fin-product = ↔-sym *↔×
 
 ------------------------------------------------------------------------
 -- Cardinality composition helper.
