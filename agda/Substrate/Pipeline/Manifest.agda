@@ -7,9 +7,8 @@
 --   Composition  — pipeline composition primitive
 --   Merger       — pipeline merging primitive
 --   Sequent      — sequent-calculus pipeline primitives (exchange, …)
---
--- (Substrate.Pipeline.Examples excluded: uses --safe-incompatible
--- postulates.)
+--   Examples     — parametric brick examples (Char/Counts/Window/…
+--                  supplied at use site)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -19,4 +18,4 @@ module Substrate.Pipeline.Manifest where
 import Substrate.Pipeline.Composition
 import Substrate.Pipeline.Merger
 import Substrate.Pipeline.Sequent
--- (Substrate.Pipeline.Examples excluded: uses --safe-incompatible postulates.)
+import Substrate.Pipeline.Examples

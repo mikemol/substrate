@@ -5,22 +5,27 @@
 -- D-in = Window → D-out = RotIdx. S evolves (cache may grow).
 -- Witnesses D⇒C (the window selects the compute); preserves
 -- selection ranking under predictor evolution.
+--
+-- Module-parametric on the runtime types per the substrate's
+-- standard polymorphism pattern. Concrete runtime implementations
+-- live in scratch/eliza/eliza/.
 ------------------------------------------------------------------------
 
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
-module Substrate.Pipeline.Examples.ChooseRotation where
-
-open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Pipeline.Brick
 
-postulate
-  Window    : Set
-  RotIdx    : Set
-  Predictor : Set
-  Cache     : Set
-  choose-rotation-impl
-    : Window → Predictor × Cache → RotIdx × (Predictor × Cache)
+module Substrate.Pipeline.Examples.ChooseRotation
+  (Window    : Set)
+  (RotIdx    : Set)
+  (Predictor : Set)
+  (Cache     : Set)
+  (choose-rotation-impl
+    : Window → (Predictor × Cache) → (RotIdx × (Predictor × Cache)))
+  where
+
+open import Substrate.Foundation.Product using (_,_)
 
 Chooser-Type : BrickType
 Chooser-Type = record

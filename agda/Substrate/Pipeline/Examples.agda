@@ -11,18 +11,39 @@
 --
 -- Each example covers one of the four main witnessing types of the
 -- Brick schema. Remaining types (S⇒C, C⇒S, C⇒D) sketched in comments
--- below.
+-- in the per-example files.
 --
--- Postulates stand in for runtime types (Char, Counts, Window, ...);
--- runtime implementations live in scratch/eliza/eliza/. The
--- postulate use means this surface module cannot be --safe.
+-- Module-parametric on the runtime types (Char, Counts, Window,
+-- RotIdx, Predictor, Cache) + the runtime operation hooks. Concrete
+-- runtime implementations live in scratch/eliza/eliza/. This
+-- replaces the prior `postulate`-using surface, which forced
+-- --without-K but excluded --safe; the parametric form is fully
+-- --safe-compatible.
 ------------------------------------------------------------------------
 
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
-module Substrate.Pipeline.Examples where
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (_×_)
+
+module Substrate.Pipeline.Examples
+  (Char      : Set)
+  (Counts    : Set)
+  (Window    : Set)
+  (RotIdx    : Set)
+  (Predictor : Set)
+  (Cache     : Set)
+  (update-counts        : Counts → Char → Counts)
+  (surprise-bits        : Counts → Char → ℕ)
+  (choose-rotation-impl :
+     Window → (Predictor × Cache) → (RotIdx × (Predictor × Cache)))
+  where
 
 open import Substrate.Pipeline.Examples.RotateCrumb       public
-open import Substrate.Pipeline.Examples.PredictorUpdate   public
-open import Substrate.Pipeline.Examples.PredictorSurprise public
-open import Substrate.Pipeline.Examples.ChooseRotation    public
+open import Substrate.Pipeline.Examples.PredictorUpdate Char Counts update-counts
+  public
+open import Substrate.Pipeline.Examples.PredictorSurprise Char Counts surprise-bits
+  public
+open import Substrate.Pipeline.Examples.ChooseRotation Window RotIdx Predictor Cache
+                                                       choose-rotation-impl
+  public
