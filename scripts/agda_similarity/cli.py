@@ -14,6 +14,7 @@ import glob as glob_mod
 from itertools import combinations
 from pathlib import Path
 
+from .cluster import cluster_by_percentile
 from .score import print_score
 from .similarity import SCALE_NAMES, pair_similarity, profile
 from .skeleton import construct_skeleton
@@ -160,6 +161,57 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
 
+    # Cluster mode options
+    ap.add_argument(
+        "--cluster",
+        action="store_true",
+        help=(
+            "Percentile-depth clustering: for each file, threshold its "
+            "neighbour scores at the Nth percentile (--cluster-percentile); "
+            "edges connect files mutually inside each other's best "
+            "neighbourhood. Connected components are the clusters. "
+            "Normalises for local density."
+        ),
+    )
+    ap.add_argument(
+        "--cluster-percentile",
+        type=float,
+        default=95.0,
+        help=(
+            "Per-file percentile cutoff for --cluster mode (default 95: "
+            "each file's top ~5%% of matches qualify; higher = stricter)."
+        ),
+    )
+    ap.add_argument(
+        "--cluster-min-score",
+        type=float,
+        default=0.0,
+        help=(
+            "In --cluster mode, also require the pairwise score >= this "
+            "absolute floor before counting as a mutual-NN edge."
+        ),
+    )
+    ap.add_argument(
+        "--cluster-min-size",
+        type=int,
+        default=2,
+        help=(
+            "Minimum cluster size to display in --cluster mode (default 2; "
+            "raise to filter trivial pairs)."
+        ),
+    )
+    ap.add_argument(
+        "--cluster-min-cohesion",
+        type=float,
+        default=0.0,
+        help=(
+            "Drop any cluster whose intra-cluster MEDIAN pairwise score is "
+            "below this floor. Defends against union-find smearing through "
+            "weak chains. 0.40 is a reasonable default if the corpus is "
+            "noisy; 0.0 disables the filter."
+        ),
+    )
+
     # Score mode option
     ap.add_argument(
         "--score",
@@ -203,6 +255,17 @@ def main(argv: list[str] | None = None) -> int:
     anonymize_patterns: list[tuple[str, str]] | None = (
         [(p, r) for p, r in args.anonymize] if args.anonymize else None
     )
+
+    if args.cluster:
+        cluster_by_percentile(
+            paths,
+            args.cluster_percentile,
+            anonymize_patterns=anonymize_patterns,
+            min_score=args.cluster_min_score,
+            min_cluster_size=args.cluster_min_size,
+            min_cohesion=args.cluster_min_cohesion,
+        )
+        return 0
 
     if args.score:
         print_score(paths, anonymize_patterns=anonymize_patterns)
