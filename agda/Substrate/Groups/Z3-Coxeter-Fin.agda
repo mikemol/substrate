@@ -30,7 +30,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
 ------------------------------------------------------------------------
 
 canonical-to-Fin : ∀ {w : Word Z₃.Gen} → Z₃.Canonical w → Fin 3
-canonical-to-Fin = Z₃.canonical-cover-Z3 (λ _ → Fin 3)
+canonical-to-Fin = Z₃.canonical-cover (λ _ → Fin 3)
   ( zero
   , suc zero
   , suc (suc zero)
@@ -51,7 +51,7 @@ Fin-roundtrip = fin-cover
 
 canonical-roundtrip : ∀ {w : Word Z₃.Gen} (c : Z₃.Canonical w) →
   Fin-to-canonical (canonical-to-Fin c) ≡ (w , c)
-canonical-roundtrip = Z₃.canonical-cover-Z3
+canonical-roundtrip = Z₃.canonical-cover
   (λ {w} c → Fin-to-canonical (canonical-to-Fin c) ≡ (w , c))
   (refl , refl , refl)
 
@@ -62,7 +62,7 @@ canonical-roundtrip = Z₃.canonical-cover-Z3
 action-of-a-is-σ₃ :
   ∀ {w : Word Z₃.Gen} (c : Z₃.Canonical w) →
   canonical-to-Fin (Z₃.insert-canonical Z₃.a c) ≡ σ₃ (canonical-to-Fin c)
-action-of-a-is-σ₃ = Z₃.canonical-cover-Z3
+action-of-a-is-σ₃ = Z₃.canonical-cover
   (λ c → canonical-to-Fin (Z₃.insert-canonical Z₃.a c) ≡ σ₃ (canonical-to-Fin c))
   (refl , refl , refl)
 

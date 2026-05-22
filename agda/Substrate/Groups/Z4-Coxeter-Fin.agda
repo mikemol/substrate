@@ -27,7 +27,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle4
 ------------------------------------------------------------------------
 
 canonical-to-Fin : ∀ {w : Word Z₄.Gen} → Z₄.Canonical w → Fin 4
-canonical-to-Fin = Z₄.canonical-cover-Z4 (λ _ → Fin 4)
+canonical-to-Fin = Z₄.canonical-cover (λ _ → Fin 4)
   ( zero
   , suc zero
   , suc (suc zero)
@@ -50,7 +50,7 @@ Fin-roundtrip = fin-cover
 
 canonical-roundtrip : ∀ {w : Word Z₄.Gen} (c : Z₄.Canonical w) →
   Fin-to-canonical (canonical-to-Fin c) ≡ (w , c)
-canonical-roundtrip = Z₄.canonical-cover-Z4
+canonical-roundtrip = Z₄.canonical-cover
   (λ {w} c → Fin-to-canonical (canonical-to-Fin c) ≡ (w , c))
   (refl , refl , refl , refl)
 
@@ -61,7 +61,7 @@ canonical-roundtrip = Z₄.canonical-cover-Z4
 action-of-a-is-σ₄ :
   ∀ {w : Word Z₄.Gen} (c : Z₄.Canonical w) →
   canonical-to-Fin (Z₄.insert-canonical Z₄.a c) ≡ σ₄ (canonical-to-Fin c)
-action-of-a-is-σ₄ = Z₄.canonical-cover-Z4
+action-of-a-is-σ₄ = Z₄.canonical-cover
   (λ c → canonical-to-Fin (Z₄.insert-canonical Z₄.a c) ≡ σ₄ (canonical-to-Fin c))
   (refl , refl , refl , refl)
 

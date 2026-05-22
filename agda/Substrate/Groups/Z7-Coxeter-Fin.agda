@@ -3,7 +3,7 @@
 --
 -- The Z₇-Coxeter ↔ Fin 7 chain as a thin instance of
 -- Substrate.Groups.Coxeter-Fin-Generic, with cover-dispatched
--- payloads. canonical-cover-Z7 lives in Substrate.Groups.Z7-Coxeter-Cover
+-- payloads. canonical-cover lives in Substrate.Groups.Z7-Coxeter-Cover
 -- (separate file because Z7-Coxeter itself is queued for decomposition).
 ------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Z7-Coxeter as Z₇
-open import Substrate.Groups.Z7-Coxeter-Cover using (canonical-cover-Z7)
+open import Substrate.Groups.Z7-Coxeter-Cover using (canonical-cover)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
@@ -29,7 +29,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle7
 ------------------------------------------------------------------------
 
 canonical-to-Fin : ∀ {w : Word Z₇.Gen} → Z₇.Canonical w → Fin 7
-canonical-to-Fin = canonical-cover-Z7 (λ _ → Fin 7)
+canonical-to-Fin = canonical-cover (λ _ → Fin 7)
   ( zero
   , suc zero
   , suc (suc zero)
@@ -58,7 +58,7 @@ Fin-roundtrip = fin-cover
 
 canonical-roundtrip : ∀ {w : Word Z₇.Gen} (c : Z₇.Canonical w) →
   Fin-to-canonical (canonical-to-Fin c) ≡ (w , c)
-canonical-roundtrip = canonical-cover-Z7
+canonical-roundtrip = canonical-cover
   (λ {w} c → Fin-to-canonical (canonical-to-Fin c) ≡ (w , c))
   (refl , refl , refl , refl , refl , refl , refl)
 
@@ -69,7 +69,7 @@ canonical-roundtrip = canonical-cover-Z7
 action-of-a-is-σ₇ :
   ∀ {w : Word Z₇.Gen} (c : Z₇.Canonical w) →
   canonical-to-Fin (Z₇.insert-canonical Z₇.a c) ≡ σ₇ (canonical-to-Fin c)
-action-of-a-is-σ₇ = canonical-cover-Z7
+action-of-a-is-σ₇ = canonical-cover
   (λ c → canonical-to-Fin (Z₇.insert-canonical Z₇.a c) ≡ σ₇ (canonical-to-Fin c))
   (refl , refl , refl , refl , refl , refl , refl)
 

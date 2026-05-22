@@ -69,14 +69,14 @@ insert-canonical a c-aaa = c-ε
 
 open import Substrate.Foundation.Product using (_×_; _,_)
 
-canonical-cover-Z4 :
+canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
   P c-ε × P c-a × P c-aa × P c-aaa →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover-Z4 _ (p , _ , _ , _) c-ε   = p
-canonical-cover-Z4 _ (_ , p , _ , _) c-a   = p
-canonical-cover-Z4 _ (_ , _ , p , _) c-aa  = p
-canonical-cover-Z4 _ (_ , _ , _ , p) c-aaa = p
+canonical-cover _ (p , _ , _ , _) c-ε   = p
+canonical-cover _ (_ , p , _ , _) c-a   = p
+canonical-cover _ (_ , _ , p , _) c-aa  = p
+canonical-cover _ (_ , _ , _ , p) c-aaa = p
 
 ------------------------------------------------------------------------
 -- 3. Open ListPresentation with Z/4's atoms.
@@ -97,11 +97,11 @@ open import Substrate.Groups.Coxeter.ListPresentation
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
 canonical-is-fixed =
-  canonical-cover-Z4 (λ {w} _ → normalize w ≡ w) (refl , refl , refl , refl)
+  canonical-cover (λ {w} _ → normalize w ≡ w) (refl , refl , refl , refl)
 
 insert-fourth-power : (g : Gen) {w : Word Gen} → Canonical w →
                       insert g (insert g (insert g (insert g w))) ≡ w
-insert-fourth-power a = canonical-cover-Z4
+insert-fourth-power a = canonical-cover
   (λ {w} _ → insert a (insert a (insert a (insert a w))) ≡ w)
   (refl , refl , refl , refl)
 
@@ -178,7 +178,7 @@ private
 
   fourth-canonical : {w : Word Gen} → Canonical w →
                      normalize (w ++ (w ++ (w ++ w))) ≡ []
-  fourth-canonical = canonical-cover-Z4
+  fourth-canonical = canonical-cover
     (λ {w} _ → normalize (w ++ (w ++ (w ++ w))) ≡ [])
     (refl , refl , refl , refl)
 
@@ -193,13 +193,13 @@ fourth-power-identity w =
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
                      normalize (inv w ++ w) ≡ []
-inv-left-canonical = canonical-cover-Z4
+inv-left-canonical = canonical-cover
   (λ {w} _ → normalize (inv w ++ w) ≡ [])
   (refl , refl , refl , refl)
 
 inv-right-canonical : {w : Word Gen} → Canonical w →
                       normalize (w ++ inv w) ≡ []
-inv-right-canonical = canonical-cover-Z4
+inv-right-canonical = canonical-cover
   (λ {w} _ → normalize (w ++ inv w) ≡ [])
   (refl , refl , refl , refl)
 
@@ -208,6 +208,6 @@ inv-right-canonical = canonical-cover-Z4
 ------------------------------------------------------------------------
 
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
-inv-inv-canonical = canonical-cover-Z4
+inv-inv-canonical = canonical-cover
   (λ {w} _ → inv (inv w) ≡ w)
   (refl , refl , refl , refl)

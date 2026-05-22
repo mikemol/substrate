@@ -18,14 +18,14 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Groups.Z7-Coxeter
   using (Canonical; c-ε; c-a; c-aa; c-aaa; c-aaaa; c-aaaaa; c-aaaaaa)
 
-canonical-cover-Z7 :
+canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
   P c-ε × P c-a × P c-aa × P c-aaa × P c-aaaa × P c-aaaaa × P c-aaaaaa →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover-Z7 _ (p , _ , _ , _ , _ , _ , _) c-ε      = p
-canonical-cover-Z7 _ (_ , p , _ , _ , _ , _ , _) c-a      = p
-canonical-cover-Z7 _ (_ , _ , p , _ , _ , _ , _) c-aa     = p
-canonical-cover-Z7 _ (_ , _ , _ , p , _ , _ , _) c-aaa    = p
-canonical-cover-Z7 _ (_ , _ , _ , _ , p , _ , _) c-aaaa   = p
-canonical-cover-Z7 _ (_ , _ , _ , _ , _ , p , _) c-aaaaa  = p
-canonical-cover-Z7 _ (_ , _ , _ , _ , _ , _ , p) c-aaaaaa = p
+canonical-cover _ (p , _ , _ , _ , _ , _ , _) c-ε      = p
+canonical-cover _ (_ , p , _ , _ , _ , _ , _) c-a      = p
+canonical-cover _ (_ , _ , p , _ , _ , _ , _) c-aa     = p
+canonical-cover _ (_ , _ , _ , p , _ , _ , _) c-aaa    = p
+canonical-cover _ (_ , _ , _ , _ , p , _ , _) c-aaaa   = p
+canonical-cover _ (_ , _ , _ , _ , _ , p , _) c-aaaaa  = p
+canonical-cover _ (_ , _ , _ , _ , _ , _ , p) c-aaaaaa = p

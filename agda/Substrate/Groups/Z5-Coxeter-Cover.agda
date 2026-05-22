@@ -19,12 +19,12 @@ module Substrate.Groups.Z5-Coxeter-Cover where
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Groups.Z5-Coxeter using (Canonical; c-ε; c-a; c-aa; c-aaa; c-aaaa)
 
-canonical-cover-Z5 :
+canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
   P c-ε × P c-a × P c-aa × P c-aaa × P c-aaaa →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover-Z5 _ (p , _ , _ , _ , _) c-ε    = p
-canonical-cover-Z5 _ (_ , p , _ , _ , _) c-a    = p
-canonical-cover-Z5 _ (_ , _ , p , _ , _) c-aa   = p
-canonical-cover-Z5 _ (_ , _ , _ , p , _) c-aaa  = p
-canonical-cover-Z5 _ (_ , _ , _ , _ , p) c-aaaa = p
+canonical-cover _ (p , _ , _ , _ , _) c-ε    = p
+canonical-cover _ (_ , p , _ , _ , _) c-a    = p
+canonical-cover _ (_ , _ , p , _ , _) c-aa   = p
+canonical-cover _ (_ , _ , _ , p , _) c-aaa  = p
+canonical-cover _ (_ , _ , _ , _ , p) c-aaaa = p

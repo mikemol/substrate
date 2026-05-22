@@ -113,13 +113,13 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 -- implicit {x} so heterogeneous-output Cayley tables work too.
 ------------------------------------------------------------------------
 
-canonical-cover-Z3 :
+canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
   P c-ε × P c-a × P c-aa →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover-Z3 _ (p , _ , _) c-ε  = p
-canonical-cover-Z3 _ (_ , p , _) c-a  = p
-canonical-cover-Z3 _ (_ , _ , p) c-aa = p
+canonical-cover _ (p , _ , _) c-ε  = p
+canonical-cover _ (_ , p , _) c-a  = p
+canonical-cover _ (_ , _ , p) c-aa = p
 
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟

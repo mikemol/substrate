@@ -92,12 +92,12 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 
 -- Canonical-cover for Z₂: 2-tuple of per-position proofs onto any
 -- `Canonical w`.
-canonical-cover-Z2 :
+canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
   P c-ε × P c-a →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover-Z2 _ (p , _) c-ε = p
-canonical-cover-Z2 _ (_ , p) c-a = p
+canonical-cover _ (p , _) c-ε = p
+canonical-cover _ (_ , p) c-a = p
 
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
