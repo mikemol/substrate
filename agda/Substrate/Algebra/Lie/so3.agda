@@ -38,12 +38,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Level using (Level)
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-
-open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
+open import Substrate.Category.LieAlgebra using (LieAlgebra)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Algebra.Lie.so3
   -- The substrate-internal LieAlgebra value witnessing so₃.
