@@ -32,7 +32,7 @@
 
 module Substrate.Category.CascadedCoalgebra where
 
-open import Data.List using (List; []; _∷_; foldl)
+open import Substrate.Foundation.List using (List; []; _∷_; foldl)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_; refl)

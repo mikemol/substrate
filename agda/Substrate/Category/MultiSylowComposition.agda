@@ -44,7 +44,8 @@
 module Substrate.Category.MultiSylowComposition where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s; _⊔_)
-open import Data.List using (List; []; _∷_; length)
+open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 

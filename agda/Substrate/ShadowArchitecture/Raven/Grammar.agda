@@ -38,7 +38,8 @@
 
 module Substrate.ShadowArchitecture.Raven.Grammar where
 
-open import Data.List using (List; []; _∷_; length)
+open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Nat using (ℕ)
 
 ------------------------------------------------------------------------

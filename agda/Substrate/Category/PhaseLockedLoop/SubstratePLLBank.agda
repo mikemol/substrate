@@ -11,7 +11,7 @@
 module Substrate.Category.PhaseLockedLoop.SubstratePLLBank where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Data.List using (List; []; _∷_)
+open import Substrate.Foundation.List using (List; []; _∷_)
 
 open import Substrate.Category.PhaseLockedLoop.AcquisitionStrategies
   using (ThreeCycleStrategy; mkThreeCycle)

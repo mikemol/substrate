@@ -31,7 +31,7 @@
 
 module Substrate.ShadowArchitecture.Raven.Poem where
 
-open import Data.List using (List; []; _∷_)
+open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.Fin using (Fin)
 

@@ -32,7 +32,8 @@ module Substrate.Pipeline.Merger where
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _%_)
-open import Data.List using (List; []; _∷_; length)
+open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Fin using (Fin; zero; suc) renaming (fromℕ to Fin-fromℕ)
 open import Substrate.Pipeline.Brick
 

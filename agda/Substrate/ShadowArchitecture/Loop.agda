@@ -34,7 +34,7 @@
 
 module Substrate.ShadowArchitecture.Loop where
 
-open import Data.List using (List; []; _∷_)
+open import Substrate.Foundation.List using (List; []; _∷_; foldl; foldr)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)

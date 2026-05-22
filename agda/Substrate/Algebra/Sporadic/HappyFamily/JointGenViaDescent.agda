@@ -33,7 +33,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Fin using (Fin)
-open import Data.List using (List)
+open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_)

@@ -40,3 +40,7 @@ record CommutativeComonoid
                swap (comult comonoid x) ≡ comult comonoid x
 
 open CommutativeComonoid public
+
+-- File-per-lemma child re-exported here so consumers see the
+-- CommutativeComonoid surface through one import.
+open import Substrate.Category.CommutativeComonoid.Term public

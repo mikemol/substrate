@@ -34,7 +34,7 @@
 module Substrate.Category.StratifiedSequence where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Data.List using (List; []; _∷_; foldr)
+open import Substrate.Foundation.List using (List; []; _∷_; foldl; foldr)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
