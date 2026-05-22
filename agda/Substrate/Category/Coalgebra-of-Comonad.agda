@@ -13,6 +13,7 @@ open import Level using (Level; _⊔_) renaming (suc to lsuc)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Functor using (Functor)
+open import Substrate.Category.Monad using (Monad)
 open import Substrate.Category.Comonad using (Comonad)
 
 record CoalgebraOfComonad
@@ -21,4 +22,8 @@ record CoalgebraOfComonad
   (W : Comonad C) : Set (ℓO ⊔ ℓM) where
   field
     A : CategoryOf.Obj C
-    β : CategoryOf.Mor C A (Functor.F-obj (Comonad.S W) A)
+    -- W's underlying endofunctor is exposed via Monad.T (since
+    -- Comonad C = Monad (Opposite C)). The endofunctor's object-map
+    -- is shared between C and Opposite C, so F-obj reads the same
+    -- value either way.
+    β : CategoryOf.Mor C A (Functor.F-obj (Monad.T W) A)
