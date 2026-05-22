@@ -440,6 +440,27 @@ import Substrate.ShadowArchitecture.Raven
 import Substrate.Cardinality.Product
 
 ------------------------------------------------------------------------
+-- Sites manifests — concrete-site bundles per arc. Each arc's
+-- Sites.Manifest aggregates its concrete sites so they're reachable.
+-- Per [[coalgebraic-not-consumer-driven]]: abstract records carry
+-- obligation-surface fields; sites discharge by supplying witnesses.
+------------------------------------------------------------------------
+
+import Substrate.Algebra.PontryaginDual.Sites.Manifest
+import Substrate.Algebra.TopologicalGroup.Sites.Manifest
+import Substrate.Category.CommutativeComonoid.Sites.Manifest
+import Substrate.Category.Comonoid.Sites.Manifest
+import Substrate.Category.DiscreteFourierTransform.Sites.Manifest
+import Substrate.Category.Poly.Sites.Manifest
+import Substrate.Category.StochasticLens.Sites.Manifest
+import Substrate.Probability.BaezFritzLeinster.Sites.Manifest
+import Substrate.Probability.ConjugateMonad.Sites.Manifest
+import Substrate.Probability.Entropy.Sites.Manifest
+import Substrate.Probability.KLDivergence.Sites.Manifest
+import Substrate.Probability.MarkovCategory.Sites.Manifest
+import Substrate.Probability.Simplex.Sites.Manifest
+
+------------------------------------------------------------------------
 -- Orphan-sweep round 3: stranded modules without parent shims.
 -- Routed through this catalog so they're reachable.
 ------------------------------------------------------------------------
