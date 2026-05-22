@@ -12,11 +12,11 @@
 
 module Substrate.Groups.V4-Coxeter-F2Graded-CountA where
 
-open import Substrate.Foundation.Nat using (zero; suc)
 open import Substrate.Foundation.Eq using (refl)
+open import Substrate.Foundation.Nat using (zero; suc)
 
-import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word.Count using (count-by; count-by-distrib)
+import Substrate.Groups.V4-Coxeter as V₄
 
 sel-A : V₄.Gen → _
 sel-A V₄.A = suc zero
