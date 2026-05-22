@@ -23,7 +23,7 @@ module Substrate.Category.Poly.Connections where
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Unit.Polymorphic using (⊤; tt)
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; 0ℓ) renaming (suc to lsuc)
 
 open import Substrate.Category.FieldFanOut
 open import Substrate.Category.Poly
@@ -46,7 +46,7 @@ private
 -- y type: given a position (tt) and a function Fin n → y, evaluate
 -- via the n bonds.
 
-fixed-fan-out-as-Poly : ℕ → Poly {Level.zero}
+fixed-fan-out-as-Poly : ℕ → Poly {0ℓ}
 fixed-fan-out-as-Poly n = record
   { Positions  = ⊤
   ; Directions = λ _ → Fin n
@@ -60,7 +60,7 @@ fixed-fan-out-as-Poly n = record
 --   Positions = Base
 --   Directions b = Fin (arity-fn b)
 
-field-fan-out-as-Poly : (Base : Set) (arity-fn : Base → ℕ) → Poly {Level.zero}
+field-fan-out-as-Poly : (Base : Set) (arity-fn : Base → ℕ) → Poly {0ℓ}
 field-fan-out-as-Poly Base arity-fn = record
   { Positions  = Base
   ; Directions = λ b → Fin (arity-fn b)
