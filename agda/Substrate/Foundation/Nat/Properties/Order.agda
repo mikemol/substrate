@@ -39,3 +39,14 @@ open import Substrate.Foundation.Empty using (⊥)
 
 <→≤ : ∀ {m n} → m < n → m ≤ n
 <→≤ (s≤s p) = ≤-suc-r p
+
+------------------------------------------------------------------------
+-- ≤-trans / ≤-<-trans : transitivity of ≤ (and the mixed variant).
+------------------------------------------------------------------------
+
+≤-trans : ∀ {m n p} → m ≤ n → n ≤ p → m ≤ p
+≤-trans z≤n        _         = z≤n
+≤-trans (s≤s m≤n)  (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
+
+≤-<-trans : ∀ {m n p} → m ≤ n → n < p → m < p
+≤-<-trans m≤n n<p = ≤-trans (s≤s m≤n) n<p

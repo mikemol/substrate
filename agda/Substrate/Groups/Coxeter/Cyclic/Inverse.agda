@@ -54,11 +54,14 @@ private
   fromℕ<-power-toℕ k p
     rewrite length-power (toℕ k) = fromℕ<-toℕ-id k p
 
-  inv-power-eq : (k : Fin (suc n)) →
-                 inv (power (toℕ k)) ≡ power (toℕ (inv-pos k))
-  inv-power-eq k with length (power (toℕ k)) <? suc n | length-power (toℕ k)
-  ... | yes p | _    = cong (λ x → power (toℕ (inv-pos x))) (fromℕ<-power-toℕ k p)
-  ... | no ¬p | l≡tk = ⊥-elim (¬p (subst (λ x → x < suc n) (sym l≡tk) (toℕ-bound k)))
+-- inv on `power (toℕ k)` reduces to `power (toℕ (inv-pos k))`. Exposed
+-- so downstream proofs (InvCanonical.{Left, Right, InvInv}) can use it
+-- without re-deriving the length-check + fromℕ<-roundtrip dance.
+inv-power-eq : (k : Fin (suc n)) →
+               inv (power (toℕ k)) ≡ power (toℕ (inv-pos k))
+inv-power-eq k with length (power (toℕ k)) <? suc n | length-power (toℕ k)
+... | yes p | _    = cong (λ x → power (toℕ (inv-pos x))) (fromℕ<-power-toℕ k p)
+... | no ¬p | l≡tk = ⊥-elim (¬p (subst (λ x → x < suc n) (sym l≡tk) (toℕ-bound k)))
 
 inv-canonical : ∀ {w} {k : Fin (suc n)} → Canonical w k → Canonical (inv w) (inv-pos k)
 inv-canonical (c-here k) =

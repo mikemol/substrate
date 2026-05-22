@@ -18,7 +18,10 @@ open import Substrate.Groups.Coxeter.Word public
 open import Substrate.Groups.Coxeter.Cyclic 3 public
   hiding (Canonical; insert-canonical; inv-canonical; c-ε; canonical-cover)
   renaming (Canonical-ex to Canonical; insert-canonical-ex to insert-canonical;
-            inv-canonical-ex to inv-canonical; canonical-cover-ex to canonical-cover-fin)
+            inv-canonical-ex to inv-canonical; canonical-cover-ex to canonical-cover-fin;
+            inv-left-canonical-ex to inv-left-canonical;
+            inv-right-canonical-ex to inv-right-canonical;
+            inv-inv-canonical-ex to inv-inv-canonical)
 
 pattern c-ε   = zero                       , c-here zero
 pattern c-a   = suc zero                   , c-here (suc zero)
@@ -42,21 +45,6 @@ open import Substrate.Groups.Coxeter.SameCanonical
 
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
-
-inv-left-canonical : {w : Word Gen} → Canonical w → normalize (inv w ++ w) ≡ []
-inv-left-canonical = canonical-cover
-  (λ {w} _ → normalize (inv w ++ w) ≡ [])
-  (refl , refl , refl , refl)
-
-inv-right-canonical : {w : Word Gen} → Canonical w → normalize (w ++ inv w) ≡ []
-inv-right-canonical = canonical-cover
-  (λ {w} _ → normalize (w ++ inv w) ≡ [])
-  (refl , refl , refl , refl)
-
-inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
-inv-inv-canonical = canonical-cover
-  (λ {w} _ → inv (inv w) ≡ w)
-  (refl , refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- Z/4-specific theorem: every element to the fourth equals ε.

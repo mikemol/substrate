@@ -27,6 +27,8 @@
 --                 (generic form of Z₃ cube-identity / Z₄ fourth-power-
 --                 identity / Z₅ fifth-power-identity / Z₇ seventh-power-
 --                 identity / Z₂ self-inverse).
+--   InvCanonical — generic inv-left-canonical-ex, inv-right-canonical-ex,
+--                 and inv-inv-canonical-ex over Canonical-ex inputs.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -35,4 +37,5 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.NthPower n public
+open import Substrate.Groups.Coxeter.Cyclic.NthPower     n public
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical n public
