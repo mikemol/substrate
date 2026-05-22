@@ -18,6 +18,7 @@ from .score import print_score
 from .similarity import SCALE_NAMES, pair_similarity, profile
 from .skeleton import construct_skeleton
 from .template import DEFAULT_RECURSIVE_ORDER, print_templates, recursive_template
+from .tokenize import read_anonymized
 
 
 def expand_paths(args: argparse.Namespace) -> list[Path]:
@@ -133,6 +134,23 @@ def build_parser() -> argparse.ArgumentParser:
             "actionable summary without reading full template dumps."
         ),
     )
+
+    # Preprocessing: pattern-based anonymization
+    ap.add_argument(
+        "--anonymize",
+        action="append",
+        nargs=2,
+        metavar=("PATTERN", "REPLACEMENT"),
+        help=(
+            "Apply a regex-based substitution to each file's text "
+            "BEFORE tokenization. Repeatable: each `--anonymize "
+            "PATTERN REPLACEMENT` adds one substitution. Converts "
+            "rename-orbits to structural orbits the analysis can see "
+            "cleanly. Example: `--anonymize 'Z[2-9]' '<Zn>' "
+            "--anonymize 'Z[₂-₉]' '<Zn>'`. Applies to similarity, "
+            "template, recursive, skeleton, and score modes."
+        ),
+    )
     return ap
 
 
@@ -144,8 +162,14 @@ def main(argv: list[str] | None = None) -> int:
     if len(paths) < 2:
         ap.error("Need at least two files (use positional args or --glob)")
 
+    # argparse gives args.anonymize as list[list[str]] (each nargs=2 pair);
+    # convert to list of tuples for clean downstream typing.
+    anonymize_patterns: list[tuple[str, str]] | None = (
+        [(p, r) for p, r in args.anonymize] if args.anonymize else None
+    )
+
     if args.score:
-        print_score(paths)
+        print_score(paths, anonymize_patterns=anonymize_patterns)
         return 0
 
     if args.skeleton:
@@ -153,12 +177,18 @@ def main(argv: list[str] | None = None) -> int:
             paths,
             hole_marker=args.hole_marker,
             max_show=args.max_show,
+            anonymize_patterns=anonymize_patterns,
         )
         return 0
 
     if args.recursive:
         scales = args.scale or list(DEFAULT_RECURSIVE_ORDER)
-        recursive_template(paths, scales, max_show=args.max_show)
+        recursive_template(
+            paths,
+            scales,
+            max_show=args.max_show,
+            anonymize_patterns=anonymize_patterns,
+        )
         return 0
 
     if args.template:
@@ -168,11 +198,14 @@ def main(argv: list[str] | None = None) -> int:
             scales,
             max_show=args.max_show,
             show_holes=not args.no_holes,
+            anonymize_patterns=anonymize_patterns,
         )
         return 0
 
     # ---- similarity mode (default) ----
-    profiles = {p: profile(p.read_text(errors="replace")) for p in paths}
+    profiles = {
+        p: profile(read_anonymized(p, anonymize_patterns)) for p in paths
+    }
 
     results: list[tuple[float, tuple[float, ...], Path, Path]] = []
     for a, b in combinations(paths, 2):

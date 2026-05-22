@@ -5,12 +5,19 @@ dominated by commentary boilerplate. The Counter-returning forms
 feed the cosine similarity pipeline; `units_at_scale` returns a flat
 list, used by the template-extraction pipeline (which counts
 file-membership, not within-file frequency).
+
+`anonymize_text` is a preprocessing pass that lets users normalize
+per-orbit identifier variation (e.g., Z[2-9] → <Zn>) before the
+similarity / template / skeleton pipelines run. This converts
+rename-orbits (files differing only by identifier names) into pure
+structural orbits the analysis can see clearly.
 """
 
 from __future__ import annotations
 
 import re
 from collections import Counter
+from pathlib import Path
 
 # Agda-aware token split: identifiers (letters/digits/unicode chars),
 # operators, punctuation. We treat each as a token unit.
@@ -24,6 +31,33 @@ TOKEN_RE = re.compile(
 # Block separator: blank line, OR a comment rule (---- or more), OR
 # a section heading line that's all dashes.
 BLOCK_SEP_RE = re.compile(r"^\s*(?:--+\s*)?$|^-+\s*$")
+
+
+def anonymize_text(text: str, patterns: list[tuple[str, str]]) -> str:
+    """Apply each (regex_pattern, replacement) pair to text in order.
+
+    Used as a preprocessing pass to make rename-orbits visible to the
+    similarity / template / skeleton pipelines. Each pattern is a
+    Python regex; replacement is the substitution string (supports
+    re.sub's backreferences via `\\1`, `\\g<name>`, etc.).
+
+    Example:
+        anonymize_text(text, [(r"Z[2-9]", "<Zn>"),
+                              (r"Z[₂-₉]", "<Zn>")])
+    """
+    for pattern, replacement in patterns:
+        text = re.sub(pattern, replacement, text)
+    return text
+
+
+def read_anonymized(
+    path: Path, anonymize_patterns: list[tuple[str, str]] | None = None
+) -> str:
+    """Read a file's text, optionally applying anonymization patterns."""
+    text = path.read_text(errors="replace")
+    if anonymize_patterns:
+        text = anonymize_text(text, anonymize_patterns)
+    return text
 
 
 def strip_comment_lines(text: str) -> str:

@@ -16,7 +16,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from .tokenize import TOKEN_RE, strip_comment_lines
+from .tokenize import TOKEN_RE, read_anonymized, strip_comment_lines
 
 
 def _substitute_tokens(text: str, replacements: dict[str, str]) -> str:
@@ -34,6 +34,7 @@ def construct_skeleton(
     hole_marker: str = "<HOLE>",
     line_width: int = 100,
     max_show: int = 30,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> None:
     """Construct a parametric skeleton from a set of files.
 
@@ -47,7 +48,7 @@ def construct_skeleton(
        all lines marked, plus per-file residue counts.
     """
     raw_texts: dict[Path, str] = {
-        p: p.read_text(errors="replace") for p in paths
+        p: read_anonymized(p, anonymize_patterns) for p in paths
     }
     bodies: dict[Path, str] = {
         p: strip_comment_lines(raw_texts[p]) for p in paths

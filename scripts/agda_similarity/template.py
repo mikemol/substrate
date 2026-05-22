@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .tokenize import units_at_scale
+from .tokenize import read_anonymized, units_at_scale
 
 
 DEFAULT_RECURSIVE_ORDER: tuple[str, ...] = ("block", "line", "token", "char3")
@@ -23,7 +23,10 @@ DEFAULT_RECURSIVE_ORDER: tuple[str, ...] = ("block", "line", "token", "char3")
 
 
 def template_at_scale(
-    paths: list[Path], scale: str
+    paths: list[Path],
+    scale: str,
+    *,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> dict[str, set[Path]]:
     """Map each unit at this scale to the set of files containing it.
     Set-presence (a unit appearing 3× in one file counts as "in 1
@@ -31,7 +34,7 @@ def template_at_scale(
     within-file frequency."""
     unit_files: dict[str, set[Path]] = {}
     for path in paths:
-        text = path.read_text(errors="replace")
+        text = read_anonymized(path, anonymize_patterns)
         for unit in set(units_at_scale(text, scale)):
             unit_files.setdefault(unit, set()).add(path)
     return unit_files
@@ -57,11 +60,12 @@ def print_template_for_scale(
     max_show: int,
     show_holes: bool,
     line_width: int = 100,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> None:
     """Print the template at one scale: skeleton + intermediate
     counts + per-file holes."""
     n = len(paths)
-    unit_files = template_at_scale(paths, scale)
+    unit_files = template_at_scale(paths, scale, anonymize_patterns=anonymize_patterns)
     by_count = _bucket_by_count(unit_files)
 
     total_units = sum(len(v) for v in by_count.values())
@@ -117,14 +121,21 @@ def print_templates(
     *,
     max_show: int,
     show_holes: bool,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> None:
     """Print templates at each requested scale."""
     print(f"Template analysis over {len(paths)} files:")
     for p in paths:
         print(f"  {p}")
+    if anonymize_patterns:
+        print(f"  (with anonymization: {len(anonymize_patterns)} patterns)")
     for scale in scales:
         print_template_for_scale(
-            paths, scale, max_show=max_show, show_holes=show_holes
+            paths,
+            scale,
+            max_show=max_show,
+            show_holes=show_holes,
+            anonymize_patterns=anonymize_patterns,
         )
 
 
@@ -139,6 +150,7 @@ def recursive_template(
     *,
     max_show: int,
     line_width: int = 100,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> None:
     """Apply skeleton extraction recursively at coarse-to-fine scales.
 
@@ -152,9 +164,11 @@ def recursive_template(
     print(f"Recursive template over {n} files, scales: {' → '.join(scale_order)}")
     for p in paths:
         print(f"  {p}")
+    if anonymize_patterns:
+        print(f"  (with anonymization: {len(anonymize_patterns)} patterns)")
 
     current: dict[Path, str] = {
-        p: p.read_text(errors="replace") for p in paths
+        p: read_anonymized(p, anonymize_patterns) for p in paths
     }
 
     for level, scale in enumerate(scale_order):

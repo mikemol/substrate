@@ -25,6 +25,8 @@ PARTIAL_ORBIT_THRESHOLD = 0.50
 
 def genericization_score(
     paths: list[Path],
+    *,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
 ) -> dict[str, tuple[int, int, float]]:
     """Per scale, return (shared_count, total_count, ratio).
 
@@ -35,7 +37,9 @@ def genericization_score(
     n = len(paths)
     out: dict[str, tuple[int, int, float]] = {}
     for scale in SCALE_NAMES:
-        unit_files = template_at_scale(paths, scale)
+        unit_files = template_at_scale(
+            paths, scale, anonymize_patterns=anonymize_patterns
+        )
         total = len(unit_files)
         shared = sum(1 for fs in unit_files.values() if len(fs) == n)
         ratio = (shared / total) if total else 0.0
@@ -55,14 +59,20 @@ def verdict(scores: dict[str, tuple[int, int, float]]) -> str:
     return f"WEAK orbit ({max_ratio*100:.1f}% max shared)"
 
 
-def print_score(paths: list[Path]) -> None:
+def print_score(
+    paths: list[Path],
+    *,
+    anonymize_patterns: list[tuple[str, str]] | None = None,
+) -> None:
     """Print genericization score with per-scale bars + verdict line."""
     n = len(paths)
     print(f"Genericization score over {n} files:")
     for p in paths:
         print(f"  {p}")
+    if anonymize_patterns:
+        print(f"  (with anonymization: {len(anonymize_patterns)} patterns)")
     print()
-    scores = genericization_score(paths)
+    scores = genericization_score(paths, anonymize_patterns=anonymize_patterns)
     print(f"  {'scale':6}  {'shared':>6}/{'total':<6}  {'ratio':>5}    bar")
     for scale, (shared, total, ratio) in scores.items():
         bar = "█" * int(ratio * 20)
