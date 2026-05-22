@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.DoubleCategory where
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 DoubleCategory-UP : UPArrow
-DoubleCategory-UP = record { Source = ⊤ ; Target = ⊤ ; Witness = λ _ _ → ⊤ }
+DoubleCategory-UP = placeholder

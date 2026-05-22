@@ -15,12 +15,8 @@
 
 module Substrate.Category.HC.Interchange where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 Interchange-UP : UPArrow
-Interchange-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Interchange-UP = placeholder

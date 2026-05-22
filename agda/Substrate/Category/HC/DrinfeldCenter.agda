@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.DrinfeldCenter where
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 DrinfeldCenter-UP : UPArrow
-DrinfeldCenter-UP = record { Source = ⊤ ; Target = ⊤ ; Witness = λ _ _ → ⊤ }
+DrinfeldCenter-UP = placeholder

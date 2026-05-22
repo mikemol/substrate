@@ -19,8 +19,8 @@
 
 module Substrate.Category.HC.Coherence where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 ------------------------------------------------------------------------
 -- 1. The Coherence-UP.
@@ -31,11 +31,7 @@ open import Substrate.Category.UniversalProperty using (UPArrow)
 ------------------------------------------------------------------------
 
 Coherence-UP : UPArrow
-Coherence-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Coherence-UP = placeholder
 
 ------------------------------------------------------------------------
 -- 2. Capstone for HC1.

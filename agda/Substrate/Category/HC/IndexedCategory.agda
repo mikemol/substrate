@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.IndexedCategory where
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 IndexedCategory-UP : UPArrow
-IndexedCategory-UP = record { Source = ⊤ ; Target = ⊤ ; Witness = λ _ _ → ⊤ }
+IndexedCategory-UP = placeholder

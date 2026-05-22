@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.QuasiCategory where
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 QuasiCategory-UP : UPArrow
-QuasiCategory-UP = record { Source = ⊤ ; Target = ⊤ ; Witness = λ _ _ → ⊤ }
+QuasiCategory-UP = placeholder

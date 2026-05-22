@@ -16,12 +16,8 @@
 
 module Substrate.Category.HC.MacLane where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 MacLane-UP : UPArrow
-MacLane-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+MacLane-UP = placeholder

@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.SpanDouble where
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 SpanDouble-UP : UPArrow
-SpanDouble-UP = record { Source = ⊤ ; Target = ⊤ ; Witness = λ _ _ → ⊤ }
+SpanDouble-UP = placeholder

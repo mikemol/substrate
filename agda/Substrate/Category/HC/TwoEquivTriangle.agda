@@ -12,12 +12,8 @@
 
 module Substrate.Category.HC.TwoEquivTriangle where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 TwoEquivTriangle-UP : UPArrow
-TwoEquivTriangle-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+TwoEquivTriangle-UP = placeholder

@@ -11,12 +11,8 @@
 
 module Substrate.Category.HC.Triangle where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 Triangle-UP : UPArrow
-Triangle-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Triangle-UP = placeholder

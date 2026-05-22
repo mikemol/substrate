@@ -12,12 +12,8 @@
 
 module Substrate.Category.HC.Hexagon where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 Hexagon-UP : UPArrow
-Hexagon-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Hexagon-UP = placeholder

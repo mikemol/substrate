@@ -12,12 +12,8 @@
 
 module Substrate.Category.HC.Pentagon where
 
-open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 
 Pentagon-UP : UPArrow
-Pentagon-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Pentagon-UP = placeholder
