@@ -116,25 +116,14 @@ same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ �
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
--- 9. Inversion on canonical forms — Z/4 table.
---   inv []        = []
---   inv [a]       = [a,a,a]      (a⁻¹ = a³)
---   inv [a,a]     = [a,a]        (a² self-inverse)
---   inv [a,a,a]   = [a]          ((a³)⁻¹ = a)
+-- 9. Inversion via Cyclic's generic inv-pos + Word-level inv.
 ------------------------------------------------------------------------
 
 inv : Word Gen → Word Gen
-inv []               = []
-inv (a ∷ [])         = a ∷ a ∷ a ∷ []
-inv (a ∷ a ∷ [])     = a ∷ a ∷ []
-inv (a ∷ a ∷ a ∷ []) = a ∷ []
-inv w                = w  -- fallback
+inv = Cyc.inv
 
 inv-canonical : {w : Word Gen} → Canonical w → Canonical (inv w)
-inv-canonical c-ε   = c-ε
-inv-canonical c-a   = c-aaa
-inv-canonical c-aa  = c-aa
-inv-canonical c-aaa = c-a
+inv-canonical (k , c) = Cyc.inv-pos k , Cyc.inv-canonical c
 
 ------------------------------------------------------------------------
 -- 10. Z/4-specific theorem: every element to the fourth equals ε.

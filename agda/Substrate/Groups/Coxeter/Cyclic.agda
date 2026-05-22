@@ -31,7 +31,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s; z≤n)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; _<?_; s≤s; z≤n)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-irrefl)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
@@ -221,6 +221,70 @@ insert-canonical a (c-here k) =
 action-of-a-pos : (k : Fin (suc n)) →
                   canonical-to-Fin (c-here (σ k)) ≡ σ (canonical-to-Fin (c-here k))
 action-of-a-pos _ = refl
+
+------------------------------------------------------------------------
+-- 11. inv-pos — the inverse position via (suc n ∸ toℕ k) mod-suc n.
+--
+-- For k = zero: inv-pos zero = zero (since (suc n) mod-suc n = 0).
+-- For k > 0: inv-pos k has toℕ = suc n ∸ toℕ k.
+-- Involutive: inv-pos (inv-pos k) ≡ k.
+--
+-- Cyclic-group inversion at the index level: for cyclic Zₙ₊₁, the
+-- inverse of position k is position (n+1 ∸ k) mod (n+1).
+------------------------------------------------------------------------
+
+inv-pos : Fin (suc n) → Fin (suc n)
+inv-pos k = fromℕ< (mod-suc-bound (suc n ∸ toℕ k) n)
+
+------------------------------------------------------------------------
+-- 12. Word-level inv via length-check + inv-pos.
+--
+-- For canonical inputs (length w ≤ n, i.e., < suc n), inv computes
+-- the canonical word at the inverse position. For non-canonical
+-- inputs (length > n), fallback to the input itself.
+------------------------------------------------------------------------
+
+inv : Word Gen → Word Gen
+inv w with length w <? suc n
+... | yes p = power (toℕ (inv-pos (fromℕ< p)))
+... | no  _ = w
+
+------------------------------------------------------------------------
+-- 13. inv-canonical — the structural property.
+--
+-- For Canonical w k, the inv-result is Canonical at position inv-pos k.
+-- Proved via the bridge `inv (power (toℕ k)) ≡ power (toℕ (inv-pos k))`
+-- using fromℕ<-toℕ + length-power roundtrips.
+------------------------------------------------------------------------
+
+private
+  -- For k : Fin (suc n), `fromℕ< (length-bound)` recovers k.
+  fromℕ<-power-toℕ : (k : Fin (suc n))
+                   → (p : length (power (toℕ k)) < suc n)
+                   → fromℕ< p ≡ k
+  fromℕ<-power-toℕ k p
+    rewrite length-power (toℕ k) = fromℕ<-toℕ-id k p
+    where
+      open import Substrate.Foundation.Eq using (sym)
+      -- fromℕ< using toℕ-bound equals the original. We prove via
+      -- toℕ-injective + toℕ-fromℕ<.
+      fromℕ<-toℕ-id : ∀ (k : Fin (suc n)) (p : toℕ k < suc n) → fromℕ< p ≡ k
+      fromℕ<-toℕ-id k p = aux k p
+        where
+          open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+          aux : ∀ {m} (k : Fin m) (p : toℕ k < m) → fromℕ< p ≡ k
+          aux {suc m} zero    (s≤s _)   = refl
+          aux {suc m} (suc k) (s≤s p')  = cong suc (aux k p')
+
+  inv-power-eq : (k : Fin (suc n)) →
+                 inv (power (toℕ k)) ≡ power (toℕ (inv-pos k))
+  inv-power-eq k with length (power (toℕ k)) <? suc n | length-power (toℕ k)
+  ... | yes p | _    = cong (λ x → power (toℕ (inv-pos x))) (fromℕ<-power-toℕ k p)
+  ... | no ¬p | l≡tk = ⊥-elim (¬p (subst (λ x → x < suc n) (sym l≡tk) (toℕ-bound k)))
+
+inv-canonical : ∀ {w} {k : Fin (suc n)} → Canonical w k → Canonical (inv w) (inv-pos k)
+inv-canonical (c-here k) =
+  subst (λ w → Canonical w (inv-pos k)) (sym (inv-power-eq k)) (c-here (inv-pos k))
 
 ------------------------------------------------------------------------
 -- Capstone — Phase 1 complete.

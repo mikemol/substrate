@@ -81,14 +81,15 @@ same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ �
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
--- Inversion — Z/2 self-inverse: inv = identity.
+-- Inversion via Cyclic's generic inv-pos + Word-level inv.
+-- (Z/2 elements are self-inverse; Cyc.inv at n=1 implements this.)
 ------------------------------------------------------------------------
 
 inv : Word Gen → Word Gen
-inv w = w
+inv = Cyc.inv
 
 inv-canonical : {w : Word Gen} → Canonical w → Canonical (inv w)
-inv-canonical c = c
+inv-canonical (k , c) = Cyc.inv-pos k , Cyc.inv-canonical c
 
 inv-left-canonical : {w : Word Gen} → Canonical w → normalize (inv w ++ w) ≡ []
 inv-left-canonical = canonical-cover
