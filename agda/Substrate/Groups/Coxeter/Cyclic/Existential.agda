@@ -25,6 +25,17 @@ open import Substrate.Groups.Coxeter.Cyclic.Inverse n public
 Canonical-ex : Word Gen → Set
 Canonical-ex w = Σ (Fin (suc n)) (Canonical w)
 
+------------------------------------------------------------------------
+-- Generic position-parametric pattern synonym.
+--
+-- Replaces the per-Zₙ named ladder (c-aa / c-aaa / c-aaaa / …) with
+-- one parametric form `c-pos k`. Downstream consumers that previously
+-- pattern-matched on `Z₃.c-aa` etc. can write `Z₃.c-pos (suc (suc zero))`
+-- — a single uniform shape across all cyclic groups.
+------------------------------------------------------------------------
+
+pattern c-pos k = k , c-here _
+
 c-ε : Canonical-ex []
 c-ε = zero , c-here zero
 
