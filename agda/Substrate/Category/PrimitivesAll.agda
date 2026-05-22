@@ -266,6 +266,7 @@ import Substrate.Category.Monad                                  -- R1
 import Substrate.Category.Comonad                                -- R2
 import Substrate.Category.Algebra-of-Monad                       -- R3
 import Substrate.Category.Coalgebra-of-Comonad                   -- R4
+import Substrate.Category.Monad.DerivedCategoryOf                -- R5/R6 skeleton
 import Substrate.Category.KleisliCategory                        -- R5
 import Substrate.Category.EilenbergMooreCategory                 -- R6
 import Substrate.Category.Operad                                 -- R7

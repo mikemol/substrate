@@ -364,6 +364,16 @@ open import Substrate.Category.KanExtension public
         ; RightKanExtension
         )
 
+-- 1:N cone witness for Monad-derived categories.
+-- Substrate.Category.Monad.DerivedCategoryOf is the apex; its legs
+-- are Substrate.Category.KleisliCategory (R5) and
+-- Substrate.Category.EilenbergMooreCategory (R6), each a thin
+-- renaming projection from this skeleton. New categories-derived-
+-- from-a-monad land as additional renaming legs.
+--
+-- (Parametric modules: not re-exported as values; downstream code
+-- imports the relevant leg directly.)
+
 ------------------------------------------------------------------------
 -- INDEX SUMMARY
 --
