@@ -38,10 +38,12 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Nat.Mod
   using (_mod-suc_; mod-suc-bound; mod-suc-id; mod-suc-periodic; mod-suc-suc)
 
+open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (HasOrderPerm)
+  using (HasOrderPerm; basis-permutation-Linear; HasOrder-from-perm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
   using (σ-iterate)
+open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 
 ------------------------------------------------------------------------
 -- 1. cyclic-suc — the cyclic successor on Fin (suc n).
@@ -95,3 +97,19 @@ cyclic-suc-HasOrderPerm {n} i =
     (trans (σ-iterate-toℕ (suc n) i)
            (trans (mod-suc-periodic (toℕ i) n)
                   (mod-suc-id (toℕ i) n (toℕ-bound i))))
+
+------------------------------------------------------------------------
+-- 5. cyclic-Linear / cyclic-HasOrder — the Linear lift, parametric.
+--
+-- Lifts the cyclic-suc permutation through basis-permutation-Linear to
+-- a Linear (suc n) (suc n), and transports cyclic-suc-HasOrderPerm
+-- through HasOrder-from-perm. Cycle{N}.agda for N ∈ {2, 3, 4, 5, 7}
+-- become thin renamings of these.
+------------------------------------------------------------------------
+
+cyclic-Linear : ∀ {n} → Linear (suc n) (suc n)
+cyclic-Linear {n} = basis-permutation-Linear (cyclic-suc {n})
+
+cyclic-HasOrder : ∀ {n} → HasOrder (apply (cyclic-Linear {n})) (suc n)
+cyclic-HasOrder {n} =
+  HasOrder-from-perm (cyclic-suc {n}) (suc n) (cyclic-suc-HasOrderPerm {n})
