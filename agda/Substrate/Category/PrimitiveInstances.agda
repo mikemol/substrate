@@ -436,6 +436,9 @@ import Substrate.Category.PolyLens.Eval
 import Substrate.Category.TensorProduct.Antisymmetric
 import Substrate.ShadowArchitecture.Raven
 
+-- Cardinality.Product: unblocked by substrate-native *↔× (d064c8e).
+import Substrate.Cardinality.Product
+
 ------------------------------------------------------------------------
 -- Capstone.
 --
