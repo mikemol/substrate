@@ -4,8 +4,10 @@
 -- Tier 2 capability record for the Zₙ × FreeCyclic 2-D word algebra
 -- (Substrate.Groups.Zn-x-FreeCyclic's parameter list).
 --
--- Each Zₙ with the capability supplies the record. Missing fields →
--- typecheck errors.
+-- Every Coxeter Word instance shares the Word constructor + _++_ + ε.
+-- Only Gen, ++-assoc, Canonical, normalize, normalize-canonical,
+-- canonical-is-fixed, normalize-distrib vary. `from-coxeter-data`
+-- packages the shape; per-Zₙ witnesses are one-line applications.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -13,10 +15,10 @@
 module Substrate.Groups.Capabilities.xFreeCyclic where
 
 open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 
 ------------------------------------------------------------------------
--- The capability record. Fields correspond to the Zₙ-Coxeter Core
--- inputs that Zn-x-FreeCyclic asks for.
+-- The capability record.
 ------------------------------------------------------------------------
 
 record xFreeCyclicCapability : Set₁ where
@@ -35,96 +37,59 @@ record xFreeCyclicCapability : Set₁ where
                              Zn-normalize (Zn-normalize a Zn-++ Zn-normalize b)
 
 ------------------------------------------------------------------------
--- Z₂ witness.
+-- from-coxeter-data: build the capability from a Coxeter instance.
+-- Coxeter.Word's `_++_` and `[]` (== Z_n.ε) instantiate the shared
+-- monoid structure; the rest is per-Zₙ.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter.Word using ([])
+
+from-coxeter-data :
+  (Gen : Set)
+  (++-assoc : (a b c : Word Gen) → (a ++ b) ++ c ≡ a ++ (b ++ c))
+  (Canonical : Word Gen → Set)
+  (normalize : Word Gen → Word Gen)
+  (normalize-canonical : (w : Word Gen) → Canonical (normalize w))
+  (canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w)
+  (normalize-distrib : (a b : Word Gen) →
+                       normalize (a ++ b) ≡
+                       normalize (normalize a ++ normalize b)) →
+  xFreeCyclicCapability
+from-coxeter-data Gen assoc Can norm norm-can can-fix distrib = record
+  { Zn-Word                = Word Gen
+  ; _Zn-++_                = _++_
+  ; Zn-ε                   = []
+  ; Zn-++-assoc            = assoc
+  ; Zn-Canonical           = Can
+  ; Zn-normalize           = norm
+  ; Zn-normalize-canonical = norm-can
+  ; Zn-canonical-is-fixed  = can-fix
+  ; Zn-normalize-distrib   = distrib
+  }
+
+------------------------------------------------------------------------
+-- Per-Zₙ witnesses, one line each. The only variation is the per-Zₙ
+-- name of canonical-is-fixed-Zn (Z₂.canonical-is-fixed-Z2, etc.).
 ------------------------------------------------------------------------
 
 import Substrate.Groups.Z2-Coxeter as Z₂
-
-cap-Z₂ : xFreeCyclicCapability
-cap-Z₂ = record
-  { Zn-Word                = Z₂.Word Z₂.Gen
-  ; _Zn-++_                = Z₂._++_
-  ; Zn-ε                   = Z₂.ε
-  ; Zn-++-assoc            = Z₂.++-assoc
-  ; Zn-Canonical           = Z₂.Canonical
-  ; Zn-normalize           = Z₂.normalize
-  ; Zn-normalize-canonical = Z₂.normalize-canonical
-  ; Zn-canonical-is-fixed  = Z₂.canonical-is-fixed-Z2
-  ; Zn-normalize-distrib   = Z₂.normalize-distrib
-  }
-
-------------------------------------------------------------------------
--- Z₃ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z3-Coxeter as Z₃
-
-cap-Z₃ : xFreeCyclicCapability
-cap-Z₃ = record
-  { Zn-Word                = Z₃.Word Z₃.Gen
-  ; _Zn-++_                = Z₃._++_
-  ; Zn-ε                   = Z₃.ε
-  ; Zn-++-assoc            = Z₃.++-assoc
-  ; Zn-Canonical           = Z₃.Canonical
-  ; Zn-normalize           = Z₃.normalize
-  ; Zn-normalize-canonical = Z₃.normalize-canonical
-  ; Zn-canonical-is-fixed  = Z₃.canonical-is-fixed-Z3
-  ; Zn-normalize-distrib   = Z₃.normalize-distrib
-  }
-
-------------------------------------------------------------------------
--- Z₄ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z4-Coxeter as Z₄
-
-cap-Z₄ : xFreeCyclicCapability
-cap-Z₄ = record
-  { Zn-Word                = Z₄.Word Z₄.Gen
-  ; _Zn-++_                = Z₄._++_
-  ; Zn-ε                   = Z₄.ε
-  ; Zn-++-assoc            = Z₄.++-assoc
-  ; Zn-Canonical           = Z₄.Canonical
-  ; Zn-normalize           = Z₄.normalize
-  ; Zn-normalize-canonical = Z₄.normalize-canonical
-  ; Zn-canonical-is-fixed  = Z₄.canonical-is-fixed-Z4
-  ; Zn-normalize-distrib   = Z₄.normalize-distrib
-  }
-
-------------------------------------------------------------------------
--- Z₅ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z5-Coxeter as Z₅
-
-cap-Z₅ : xFreeCyclicCapability
-cap-Z₅ = record
-  { Zn-Word                = Z₅.Word Z₅.Gen
-  ; _Zn-++_                = Z₅._++_
-  ; Zn-ε                   = Z₅.ε
-  ; Zn-++-assoc            = Z₅.++-assoc
-  ; Zn-Canonical           = Z₅.Canonical
-  ; Zn-normalize           = Z₅.normalize
-  ; Zn-normalize-canonical = Z₅.normalize-canonical
-  ; Zn-canonical-is-fixed  = Z₅.canonical-is-fixed-Z5
-  ; Zn-normalize-distrib   = Z₅.normalize-distrib
-  }
-
-------------------------------------------------------------------------
--- Z₇ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z7-Coxeter as Z₇
 
-cap-Z₇ : xFreeCyclicCapability
-cap-Z₇ = record
-  { Zn-Word                = Z₇.Word Z₇.Gen
-  ; _Zn-++_                = Z₇._++_
-  ; Zn-ε                   = Z₇.ε
-  ; Zn-++-assoc            = Z₇.++-assoc
-  ; Zn-Canonical           = Z₇.Canonical
-  ; Zn-normalize           = Z₇.normalize
-  ; Zn-normalize-canonical = Z₇.normalize-canonical
-  ; Zn-canonical-is-fixed  = Z₇.canonical-is-fixed-Z7
-  ; Zn-normalize-distrib   = Z₇.normalize-distrib
-  }
+cap-Z₂ = from-coxeter-data Z₂.Gen Z₂.++-assoc Z₂.Canonical Z₂.normalize
+                           Z₂.normalize-canonical Z₂.canonical-is-fixed-Z2
+                           Z₂.normalize-distrib
+cap-Z₃ = from-coxeter-data Z₃.Gen Z₃.++-assoc Z₃.Canonical Z₃.normalize
+                           Z₃.normalize-canonical Z₃.canonical-is-fixed-Z3
+                           Z₃.normalize-distrib
+cap-Z₄ = from-coxeter-data Z₄.Gen Z₄.++-assoc Z₄.Canonical Z₄.normalize
+                           Z₄.normalize-canonical Z₄.canonical-is-fixed-Z4
+                           Z₄.normalize-distrib
+cap-Z₅ = from-coxeter-data Z₅.Gen Z₅.++-assoc Z₅.Canonical Z₅.normalize
+                           Z₅.normalize-canonical Z₅.canonical-is-fixed-Z5
+                           Z₅.normalize-distrib
+cap-Z₇ = from-coxeter-data Z₇.Gen Z₇.++-assoc Z₇.Canonical Z₇.normalize
+                           Z₇.normalize-canonical Z₇.canonical-is-fixed-Z7
+                           Z₇.normalize-distrib

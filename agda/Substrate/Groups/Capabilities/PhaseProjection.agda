@@ -3,15 +3,21 @@
 --
 -- Tier 2 capability record for the Zₙ × FreeCyclic phase projection
 -- (Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection's parameter list).
+--
+-- The F (FreeCyclic) side is identical across every Zₙ instance; only
+-- the Zₙ-side carrier data varies. `from-coxeter-data` packages the
+-- F side once and takes the Zₙ data as parameters.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Capabilities.PhaseProjection where
 
+open import Substrate.Groups.Coxeter.Word using (Word; _++_)
+import Substrate.Groups.FreeCyclic-Coxeter as F
+
 ------------------------------------------------------------------------
--- The capability record. Fields correspond to the Zₙ + F carrier
--- data that Zn-x-FreeCyclic-PhaseProjection asks for.
+-- The capability record.
 ------------------------------------------------------------------------
 
 record PhaseProjectionCapability : Set₁ where
@@ -26,92 +32,40 @@ record PhaseProjectionCapability : Set₁ where
     F-normalize  : F-Word → F-Word
 
 ------------------------------------------------------------------------
--- Z₂ witness.
+-- from-coxeter-data: build the capability from a Coxeter Word instance.
+-- The Zₙ side uses Coxeter.Word's `_++_` (== Z_n._++_) and `[]` (==
+-- Z_n.ε), so only Gen and normalize vary across instances.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter.Word using ([])
+
+from-coxeter-data :
+  (Gen : Set)
+  (normalize : Word Gen → Word Gen) →
+  PhaseProjectionCapability
+from-coxeter-data Gen norm = record
+  { Zn-Word      = Word Gen
+  ; Zn-ε         = []
+  ; _Zn-++_      = _++_
+  ; Zn-normalize = norm
+  ; F-Word       = F.Word F.Gen
+  ; F-ε          = F.ε
+  ; _F-++_       = F._++_
+  ; F-normalize  = F.normalize
+  }
+
+------------------------------------------------------------------------
+-- Per-Zₙ witnesses, one line each.
 ------------------------------------------------------------------------
 
 import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.FreeCyclic-Coxeter as F
-
-cap-Z₂ : PhaseProjectionCapability
-cap-Z₂ = record
-  { Zn-Word      = Z₂.Word Z₂.Gen
-  ; Zn-ε         = Z₂.ε
-  ; _Zn-++_      = Z₂._++_
-  ; Zn-normalize = Z₂.normalize
-  ; F-Word       = F.Word F.Gen
-  ; F-ε          = F.ε
-  ; _F-++_       = F._++_
-  ; F-normalize  = F.normalize
-  }
-
-------------------------------------------------------------------------
--- Z₃ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z3-Coxeter as Z₃
-
-cap-Z₃ : PhaseProjectionCapability
-cap-Z₃ = record
-  { Zn-Word      = Z₃.Word Z₃.Gen
-  ; Zn-ε         = Z₃.ε
-  ; _Zn-++_      = Z₃._++_
-  ; Zn-normalize = Z₃.normalize
-  ; F-Word       = F.Word F.Gen
-  ; F-ε          = F.ε
-  ; _F-++_       = F._++_
-  ; F-normalize  = F.normalize
-  }
-
-------------------------------------------------------------------------
--- Z₄ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z4-Coxeter as Z₄
-
-cap-Z₄ : PhaseProjectionCapability
-cap-Z₄ = record
-  { Zn-Word      = Z₄.Word Z₄.Gen
-  ; Zn-ε         = Z₄.ε
-  ; _Zn-++_      = Z₄._++_
-  ; Zn-normalize = Z₄.normalize
-  ; F-Word       = F.Word F.Gen
-  ; F-ε          = F.ε
-  ; _F-++_       = F._++_
-  ; F-normalize  = F.normalize
-  }
-
-------------------------------------------------------------------------
--- Z₅ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z5-Coxeter as Z₅
-
-cap-Z₅ : PhaseProjectionCapability
-cap-Z₅ = record
-  { Zn-Word      = Z₅.Word Z₅.Gen
-  ; Zn-ε         = Z₅.ε
-  ; _Zn-++_      = Z₅._++_
-  ; Zn-normalize = Z₅.normalize
-  ; F-Word       = F.Word F.Gen
-  ; F-ε          = F.ε
-  ; _F-++_       = F._++_
-  ; F-normalize  = F.normalize
-  }
-
-------------------------------------------------------------------------
--- Z₇ witness.
-------------------------------------------------------------------------
-
 import Substrate.Groups.Z7-Coxeter as Z₇
 
-cap-Z₇ : PhaseProjectionCapability
-cap-Z₇ = record
-  { Zn-Word      = Z₇.Word Z₇.Gen
-  ; Zn-ε         = Z₇.ε
-  ; _Zn-++_      = Z₇._++_
-  ; Zn-normalize = Z₇.normalize
-  ; F-Word       = F.Word F.Gen
-  ; F-ε          = F.ε
-  ; _F-++_       = F._++_
-  ; F-normalize  = F.normalize
-  }
+cap-Z₂ = from-coxeter-data Z₂.Gen Z₂.normalize
+cap-Z₃ = from-coxeter-data Z₃.Gen Z₃.normalize
+cap-Z₄ = from-coxeter-data Z₄.Gen Z₄.normalize
+cap-Z₅ = from-coxeter-data Z₅.Gen Z₅.normalize
+cap-Z₇ = from-coxeter-data Z₇.Gen Z₇.normalize
