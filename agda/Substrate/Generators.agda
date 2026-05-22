@@ -273,6 +273,15 @@ open import Substrate.Category.Functor.Opposite public
         ; from-opposite-Functor
         )
 
+-- 1:N cone witnesses for substrate-named categorical structures
+-- (per [[named-categorical-structure-skeletons]]). DaggerCategory.AsNamed
+-- and SymmetricMonoidal.AsNamed are the apex modules; substrate-named
+-- legs (HodgeStar.AsDaggerEndomap, Bijection.AsDagger, etc.) become
+-- 2-line `open + renaming` projections from these.
+--
+-- (Parametric modules: not re-exported as values; downstream code
+-- imports the relevant leg directly.)
+
 ------------------------------------------------------------------------
 -- 9. ADJUNCTIONS
 --

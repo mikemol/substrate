@@ -350,6 +350,70 @@ import Substrate.Category.Adjunction.AsTwoCellStructure            -- Q5
 import Substrate.Algebra.Sporadic.MonsterVOA                       -- R9
 
 ------------------------------------------------------------------------
+-- Recently-landed primitives (skeleton-as-pullback witnesses + duals).
+--
+-- Opposite + Functor.Opposite: the duality-witness primitives.
+-- Coequalizer + Pushout: Set-level duals of Equalizer + Pullback.
+-- *.AsNamed: 1:N cone witnesses for substrate-named structures.
+------------------------------------------------------------------------
+
+import Substrate.Category.Opposite
+import Substrate.Category.Functor.Opposite
+import Substrate.Category.Coequalizer
+import Substrate.Category.Pushout
+import Substrate.Category.DaggerCategory.AsNamed
+import Substrate.Category.SymmetricMonoidal.AsNamed
+
+------------------------------------------------------------------------
+-- Orphan-audit sweep: uplink children whose parent is content-bearing
+-- (re-export from parent would cycle). Routed through this catalog
+-- so each child is reachable. Children stay file-per-lemma per
+-- [[s3-on-v4-file-per-lemma]].
+------------------------------------------------------------------------
+
+-- F₂ subtree.
+import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives
+import Substrate.Algebra.F2.Transfer
+import Substrate.Algebra.F2.V4LagrangeInstance
+import Substrate.Algebra.F2.Code.Universal
+import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations
+import Substrate.Algebra.F2.HodgeDim3.MetricGauge.ExemplarOrbits
+import Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth
+import Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor
+import Substrate.Algebra.F2.HodgeDim4.MetricGauge.NonDegenerate
+import Substrate.Algebra.F2.Polynomial.Utilities
+import Substrate.Algebra.F2.Polynomial.Wedge
+
+-- PontryaginDual + Quotient subtree.
+import Substrate.Algebra.PontryaginDual.Category
+import Substrate.Algebra.Quotient.CRT
+import Substrate.Algebra.Quotient.PhaseB
+import Substrate.Algebra.Quotient.V4Cosets
+
+-- Category subtree.
+import Substrate.Category.CascadedCoalgebra.Category
+import Substrate.Category.Coalgebra.StructuralGCD
+import Substrate.Category.Comonoid.Category
+import Substrate.Category.DiscreteFourierTransform.Category
+import Substrate.Category.FreeLinearizationR.AsModule
+import Substrate.Category.StochasticLens.Category
+import Substrate.Category.StochasticLens.Eval
+import Substrate.Category.TensorProduct.Bilinearity
+
+-- Cocycles/V4Signature subtree.
+import Substrate.Cocycles.V4Signature.OrbitKey.Structural
+import Substrate.Cocycles.V4Signature.S4GroupIso
+import Substrate.Cocycles.V4Signature.S4Iso-Bridges
+import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection
+import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivector
+import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorCardinality
+
+-- Probability subtree.
+import Substrate.Probability.ConjugateMonad.Category
+import Substrate.Probability.MarkovCategory.Category
+import Substrate.Probability.MarkovCategory.Eval
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
