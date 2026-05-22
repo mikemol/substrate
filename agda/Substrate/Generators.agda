@@ -241,6 +241,29 @@ open import Substrate.Category.Colimit public
         )
 
 ------------------------------------------------------------------------
+-- 8a. DUALITY-WITNESSING PRIMITIVES
+--
+-- Opposite + Functor-on-Opposite: the substrate's structural vehicle
+-- for absorbing categorical-duality similarity into a single
+-- parametric skeleton. Each dual pair (Monad/Comonad, Limit/Colimit,
+-- Algebra/Coalgebra, …) can be presented as primal-applied-to-
+-- Opposite rather than as a separately-catalogued dual record.
+--
+-- Per the pullback-as-skeleton principle: Opposite is the projection
+-- that lets one parametric witness (e.g. Monad C) cover both
+-- specializations (Monad on C; Monad on Opposite C = Comonad on C).
+------------------------------------------------------------------------
+
+open import Substrate.Category.Opposite public
+  using ( Opposite
+        )
+
+open import Substrate.Category.Functor.Opposite public
+  using ( opposite-Functor
+        ; from-opposite-Functor
+        )
+
+------------------------------------------------------------------------
 -- 9. ADJUNCTIONS
 --
 -- The Free–Forgetful style adjunctions that surface universal arrows.
