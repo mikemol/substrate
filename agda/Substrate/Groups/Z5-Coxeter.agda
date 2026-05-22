@@ -70,12 +70,12 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- 4. Per-relation obligations.
 ------------------------------------------------------------------------
 
-canonical-is-fixed-Z5 : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed-Z5 c-ε    = refl
-canonical-is-fixed-Z5 c-a    = refl
-canonical-is-fixed-Z5 c-aa   = refl
-canonical-is-fixed-Z5 c-aaa  = refl
-canonical-is-fixed-Z5 c-aaaa = refl
+canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
+canonical-is-fixed c-ε    = refl
+canonical-is-fixed c-a    = refl
+canonical-is-fixed c-aa   = refl
+canonical-is-fixed c-aaa  = refl
+canonical-is-fixed c-aaaa = refl
 
 insert-fifth-power : (g : Gen) {w : Word Gen} → Canonical w →
                      insert g (insert g (insert g (insert g (insert g w)))) ≡ w
@@ -99,7 +99,7 @@ insert-append-lemma-Z5 a {a ∷ a ∷ a ∷ a ∷ []} w₂ c-aaaa =
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed-Z5 insert-append-lemma-Z5 public
+open WithLemmas canonical-is-fixed insert-append-lemma-Z5 public
 
 ------------------------------------------------------------------------
 -- 6. Inversion on canonical forms — Z/5 (prime-order cyclic):

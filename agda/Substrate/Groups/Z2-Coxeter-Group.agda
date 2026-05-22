@@ -55,7 +55,7 @@ open import Substrate.Groups.Coxeter.GroupAdapter
   Z₂.c-ε
   Z₂.normalize
   Z₂.normalize-canonical
-  Z₂.canonical-is-fixed-Z2
+  Z₂.canonical-is-fixed
   Z₂.normalize-distrib
   ++-identity-left
   ++-identity-right

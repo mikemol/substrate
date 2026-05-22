@@ -26,7 +26,7 @@ open import Substrate.Groups.Coxeter.GroupAdapter
   Z₇.c-ε
   Z₇.normalize
   Z₇.normalize-canonical
-  Z₇.canonical-is-fixed-Z7
+  Z₇.canonical-is-fixed
   Z₇.normalize-distrib
   ++-identity-left
   ++-identity-right

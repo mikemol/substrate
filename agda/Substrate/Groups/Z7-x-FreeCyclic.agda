@@ -14,5 +14,5 @@ import Substrate.Groups.Z7-Coxeter as Z₇
 open import Substrate.Groups.Zn-x-FreeCyclic
   (Z₇.Word Z₇.Gen) (Z₇._++_) Z₇.ε Z₇.++-assoc
     Z₇.Canonical Z₇.normalize Z₇.normalize-canonical
-    Z₇.canonical-is-fixed-Z7 Z₇.normalize-distrib
+    Z₇.canonical-is-fixed Z₇.normalize-distrib
   public

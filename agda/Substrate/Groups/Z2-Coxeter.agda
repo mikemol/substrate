@@ -56,9 +56,9 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- 4. Per-relation obligations.
 ------------------------------------------------------------------------
 
-canonical-is-fixed-Z2 : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed-Z2 c-ε = refl
-canonical-is-fixed-Z2 c-a = refl
+canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
+canonical-is-fixed c-ε = refl
+canonical-is-fixed c-a = refl
 
 insert-involution : (g : Gen) {w : Word Gen} → Canonical w →
                     insert g (insert g w) ≡ w
@@ -76,7 +76,7 @@ insert-append-lemma-Z2 a {a ∷ []} w₂ c-a =
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed-Z2 insert-append-lemma-Z2 public
+open WithLemmas canonical-is-fixed insert-append-lemma-Z2 public
 
 ------------------------------------------------------------------------
 -- 6. Decidable equality on Canonical forms.

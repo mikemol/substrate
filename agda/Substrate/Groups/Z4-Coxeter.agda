@@ -95,8 +95,8 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- of insert-append-lemma.
 ------------------------------------------------------------------------
 
-canonical-is-fixed-Z4 : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed-Z4 =
+canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
+canonical-is-fixed =
   canonical-cover-Z4 (λ {w} _ → normalize w ≡ w) (refl , refl , refl , refl)
 
 insert-fourth-power : (g : Gen) {w : Word Gen} → Canonical w →
@@ -118,7 +118,7 @@ insert-append-lemma-Z4 a {a ∷ a ∷ a ∷ []} w₂ c-aaa =
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed-Z4 insert-append-lemma-Z4 public
+open WithLemmas canonical-is-fixed insert-append-lemma-Z4 public
 
 ------------------------------------------------------------------------
 -- 6. Decidable equality on Canonical forms.

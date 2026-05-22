@@ -31,7 +31,7 @@ open import Substrate.Groups.Coxeter.GroupAdapter
   Z₃.c-ε
   Z₃.normalize
   Z₃.normalize-canonical
-  Z₃.canonical-is-fixed-Z3
+  Z₃.canonical-is-fixed
   Z₃.normalize-distrib
   ++-identity-left
   ++-identity-right

@@ -4,10 +4,9 @@
 -- Tier 2 capability record for the Zₙ × FreeCyclic 2-D word algebra
 -- (Substrate.Groups.Zn-x-FreeCyclic's parameter list).
 --
--- Every Coxeter Word instance shares the Word constructor + _++_ + ε.
--- Only Gen, ++-assoc, Canonical, normalize, normalize-canonical,
--- canonical-is-fixed, normalize-distrib vary. `from-coxeter-data`
--- packages the shape; per-Zₙ witnesses are one-line applications.
+-- After the canonical-is-fixed rename pass, all Zₙ field names are
+-- uniform; `from-coxeter-data` takes only the per-Zₙ data. Per-Zₙ
+-- witnesses are one-line applications.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -38,8 +37,6 @@ record xFreeCyclicCapability : Set₁ where
 
 ------------------------------------------------------------------------
 -- from-coxeter-data: build the capability from a Coxeter instance.
--- Coxeter.Word's `_++_` and `[]` (== Z_n.ε) instantiate the shared
--- monoid structure; the rest is per-Zₙ.
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter.Word using ([])
@@ -68,8 +65,8 @@ from-coxeter-data Gen assoc Can norm norm-can can-fix distrib = record
   }
 
 ------------------------------------------------------------------------
--- Per-Zₙ witnesses, one line each. The only variation is the per-Zₙ
--- name of canonical-is-fixed-Zn (Z₂.canonical-is-fixed-Z2, etc.).
+-- Per-Zₙ witnesses, one line each (now that canonical-is-fixed is
+-- uniformly named).
 ------------------------------------------------------------------------
 
 import Substrate.Groups.Z2-Coxeter as Z₂
@@ -79,17 +76,17 @@ import Substrate.Groups.Z5-Coxeter as Z₅
 import Substrate.Groups.Z7-Coxeter as Z₇
 
 cap-Z₂ = from-coxeter-data Z₂.Gen Z₂.++-assoc Z₂.Canonical Z₂.normalize
-                           Z₂.normalize-canonical Z₂.canonical-is-fixed-Z2
+                           Z₂.normalize-canonical Z₂.canonical-is-fixed
                            Z₂.normalize-distrib
 cap-Z₃ = from-coxeter-data Z₃.Gen Z₃.++-assoc Z₃.Canonical Z₃.normalize
-                           Z₃.normalize-canonical Z₃.canonical-is-fixed-Z3
+                           Z₃.normalize-canonical Z₃.canonical-is-fixed
                            Z₃.normalize-distrib
 cap-Z₄ = from-coxeter-data Z₄.Gen Z₄.++-assoc Z₄.Canonical Z₄.normalize
-                           Z₄.normalize-canonical Z₄.canonical-is-fixed-Z4
+                           Z₄.normalize-canonical Z₄.canonical-is-fixed
                            Z₄.normalize-distrib
 cap-Z₅ = from-coxeter-data Z₅.Gen Z₅.++-assoc Z₅.Canonical Z₅.normalize
-                           Z₅.normalize-canonical Z₅.canonical-is-fixed-Z5
+                           Z₅.normalize-canonical Z₅.canonical-is-fixed
                            Z₅.normalize-distrib
 cap-Z₇ = from-coxeter-data Z₇.Gen Z₇.++-assoc Z₇.Canonical Z₇.normalize
-                           Z₇.normalize-canonical Z₇.canonical-is-fixed-Z7
+                           Z₇.normalize-canonical Z₇.canonical-is-fixed
                            Z₇.normalize-distrib
