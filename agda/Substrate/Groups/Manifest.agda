@@ -13,10 +13,10 @@
 --   ----------------|----|----|----|----|----|
 --   Coxeter         | ✓  | ✓  | ✓  | ✓  | ✓  |
 --   Coxeter-Group   | ✓  | ✓  | ✓  | ✓  | ✓  |
---   Coxeter-S2M     | ·  | ✓  | ✓  | ✓  | ✓  |
---   Coxeter-Fin     | ·  | ✓  | ✓  | ✓  | ✓  |
---   x-FreeCyclic    | ·  | ✓  | ✓  | ✓  | ✓  |
---   x-FC-PhaseProj  | ·  | ✓  | ✓  | ✓  | ✓  |
+--   Coxeter-S2M     | ✓  | ✓  | ✓  | ✓  | ✓  |
+--   Coxeter-Fin     | ✓  | ✓  | ✓  | ✓  | ✓  |
+--   x-FreeCyclic    | ✓  | ✓  | ✓  | ✓  | ✓  |
+--   x-FC-PhaseProj  | ✓  | ✓  | ✓  | ✓  | ✓  |
 --   x-FC-Degree     | ·  | ✓  | ·  | ·  | ·  |
 --   x-FC-S2M        | ·  | ✓  | ·  | ·  | ·  |
 --
@@ -57,6 +57,7 @@ import Substrate.Groups.Z7-Coxeter-Group
 -- Coxeter-Strict2Monoid: Strict2Monoid via Zn-Coxeter-Strict2Monoid.
 ------------------------------------------------------------------------
 
+import Substrate.Groups.Z2-Coxeter-Strict2Monoid
 import Substrate.Groups.Z3-Coxeter-Strict2Monoid
 import Substrate.Groups.Z4-Coxeter-Strict2Monoid
 import Substrate.Groups.Z5-Coxeter-Strict2Monoid
@@ -67,6 +68,7 @@ import Substrate.Groups.Z7-Coxeter-Strict2Monoid
 -- Coxeter-Fin-Generic.
 ------------------------------------------------------------------------
 
+import Substrate.Groups.Z2-Coxeter-Fin
 import Substrate.Groups.Z3-Coxeter-Fin
 import Substrate.Groups.Z4-Coxeter-Fin
 import Substrate.Groups.Z5-Coxeter-Fin
@@ -76,6 +78,7 @@ import Substrate.Groups.Z7-Coxeter-Fin
 -- x-FreeCyclic: 2-D DirectProduct via Zn-x-FreeCyclic.
 ------------------------------------------------------------------------
 
+import Substrate.Groups.Z2-x-FreeCyclic
 import Substrate.Groups.Z3-x-FreeCyclic
 import Substrate.Groups.Z4-x-FreeCyclic
 import Substrate.Groups.Z5-x-FreeCyclic
@@ -86,6 +89,7 @@ import Substrate.Groups.Z7-x-FreeCyclic
 -- via Zn-x-FreeCyclic-PhaseProjection.
 ------------------------------------------------------------------------
 
+import Substrate.Groups.Z2-x-FreeCyclic-PhaseProjection
 import Substrate.Groups.Z3-x-FreeCyclic-PhaseProjection
 import Substrate.Groups.Z4-x-FreeCyclic-PhaseProjection
 import Substrate.Groups.Z5-x-FreeCyclic-PhaseProjection
@@ -131,14 +135,11 @@ import Substrate.Groups.Capabilities.Strict2Monoid
 ------------------------------------------------------------------------
 -- Gaps in the (M, N) cone — capabilities NOT yet supplied per Zₙ.
 --
--- Z₂ (involutive, separate from cyclic Z₃+):
---   • Z2-Coxeter-Strict2Monoid    — easy via Zn-Coxeter-Strict2Monoid
---   • Z2-Coxeter-Fin              — Z₂ trivially σ₂ = swap; easy
---   • Z2-x-FreeCyclic*            — easy via Zn-x-FreeCyclic
+-- Z₂: filled (Slice 6). σ₂ = cyclic-suc {1} = the swap; the cyclic
+-- Coxeter chain accommodates Z₂'s involution semantics (insert-canonical
+-- alternates c-ε ↔ c-a).
 --
--- Z₇: filled (Slice 5). Includes Coxeter-Group, Coxeter-Strict2Monoid,
--- Coxeter-Fin (with σ₇ = cyclic-suc {6}; HasOrderPerm structural),
--- x-FreeCyclic, x-FreeCyclic-PhaseProjection.
+-- Z₇: filled (Slice 5). σ₇ = cyclic-suc {6}; HasOrderPerm structural.
 --
 -- Z₄ / Z₅ for non-orbit capabilities (single Z₃ instance, not yet
 -- promoted to orbit; defer per [[feedback-coalgebraic-not-consumer-driven]]):

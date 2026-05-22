@@ -35,6 +35,25 @@ record xFreeCyclicCapability : Set₁ where
                              Zn-normalize (Zn-normalize a Zn-++ Zn-normalize b)
 
 ------------------------------------------------------------------------
+-- Z₂ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z2-Coxeter as Z₂
+
+cap-Z₂ : xFreeCyclicCapability
+cap-Z₂ = record
+  { Zn-Word                = Z₂.Word Z₂.Gen
+  ; _Zn-++_                = Z₂._++_
+  ; Zn-ε                   = Z₂.ε
+  ; Zn-++-assoc            = Z₂.++-assoc
+  ; Zn-Canonical           = Z₂.Canonical
+  ; Zn-normalize           = Z₂.normalize
+  ; Zn-normalize-canonical = Z₂.normalize-canonical
+  ; Zn-canonical-is-fixed  = Z₂.canonical-is-fixed-Z2
+  ; Zn-normalize-distrib   = Z₂.normalize-distrib
+  }
+
+------------------------------------------------------------------------
 -- Z₃ witness.
 ------------------------------------------------------------------------
 

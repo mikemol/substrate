@@ -48,6 +48,28 @@ record CoxeterFinCapability (n : ℕ) : Set₁ where
     σ-aⁿ=ε            : HasOrderPerm σ n
 
 ------------------------------------------------------------------------
+-- Z₂ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z2-Coxeter as Z₂
+import Substrate.Groups.Z2-Coxeter-Fin as Z₂-Fin
+import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle2 as Cycle₂
+
+cap-Z₂ : CoxeterFinCapability 2
+cap-Z₂ = record
+  { Gen               = Z₂.Gen
+  ; a                 = Z₂.a
+  ; Canonical         = Z₂.Canonical
+  ; insert            = Z₂.insert
+  ; insert-canonical  = Z₂.insert-canonical
+  ; canonical-to-Fin  = Z₂-Fin.canonical-to-Fin
+  ; Fin-to-canonical  = Z₂-Fin.Fin-to-canonical
+  ; σ                 = Cycle₂.σ₂
+  ; action-of-a-is-σ  = Z₂-Fin.action-of-a-is-σ₂
+  ; σ-aⁿ=ε            = Z₂-Fin.σ₂-HasOrderPerm-from-Z2-Coxeter
+  }
+
+------------------------------------------------------------------------
 -- Z₃ witness.
 ------------------------------------------------------------------------
 

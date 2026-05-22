@@ -26,11 +26,29 @@ record PhaseProjectionCapability : Set₁ where
     F-normalize  : F-Word → F-Word
 
 ------------------------------------------------------------------------
+-- Z₂ witness.
+------------------------------------------------------------------------
+
+import Substrate.Groups.Z2-Coxeter as Z₂
+import Substrate.Groups.FreeCyclic-Coxeter as F
+
+cap-Z₂ : PhaseProjectionCapability
+cap-Z₂ = record
+  { Zn-Word      = Z₂.Word Z₂.Gen
+  ; Zn-ε         = Z₂.ε
+  ; _Zn-++_      = Z₂._++_
+  ; Zn-normalize = Z₂.normalize
+  ; F-Word       = F.Word F.Gen
+  ; F-ε          = F.ε
+  ; _F-++_       = F._++_
+  ; F-normalize  = F.normalize
+  }
+
+------------------------------------------------------------------------
 -- Z₃ witness.
 ------------------------------------------------------------------------
 
 import Substrate.Groups.Z3-Coxeter as Z₃
-import Substrate.Groups.FreeCyclic-Coxeter as F
 
 cap-Z₃ : PhaseProjectionCapability
 cap-Z₃ = record

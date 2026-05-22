@@ -32,12 +32,25 @@ record Strict2MonoidCapability : Set₁ where
 -- Z₃ / Z₄ / Z₅ witnesses.
 ------------------------------------------------------------------------
 
+import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Z5-Coxeter as Z₅
 import Substrate.Groups.Z7-Coxeter as Z₇
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _++_; ++-identity-left; ++-identity-right)
+
+cap-Z₂ : Strict2MonoidCapability
+cap-Z₂ = record
+  { Word              = Word Z₂.Gen
+  ; _++_              = _++_
+  ; ε                 = []
+  ; ++-assoc          = Z₂.++-assoc
+  ; ++-identityˡ      = ++-identity-left
+  ; ++-identityʳ      = ++-identity-right
+  ; normalize         = Z₂.normalize
+  ; normalize-distrib = Z₂.normalize-distrib
+  }
 
 cap-Z₃ : Strict2MonoidCapability
 cap-Z₃ = record

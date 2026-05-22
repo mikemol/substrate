@@ -39,23 +39,27 @@ module Substrate.Groups.Capabilities where
 
 open import Substrate.Groups.Capabilities.CoxeterFin       public
   using (CoxeterFinCapability)
-  renaming ( cap-Z₃ to coxeterFin-Z₃; cap-Z₄ to coxeterFin-Z₄
-           ; cap-Z₅ to coxeterFin-Z₅; cap-Z₇ to coxeterFin-Z₇)
+  renaming ( cap-Z₂ to coxeterFin-Z₂; cap-Z₃ to coxeterFin-Z₃
+           ; cap-Z₄ to coxeterFin-Z₄; cap-Z₅ to coxeterFin-Z₅
+           ; cap-Z₇ to coxeterFin-Z₇)
 
 open import Substrate.Groups.Capabilities.xFreeCyclic      public
   using (xFreeCyclicCapability)
-  renaming ( cap-Z₃ to xFreeCyclic-Z₃; cap-Z₄ to xFreeCyclic-Z₄
-           ; cap-Z₅ to xFreeCyclic-Z₅; cap-Z₇ to xFreeCyclic-Z₇)
+  renaming ( cap-Z₂ to xFreeCyclic-Z₂; cap-Z₃ to xFreeCyclic-Z₃
+           ; cap-Z₄ to xFreeCyclic-Z₄; cap-Z₅ to xFreeCyclic-Z₅
+           ; cap-Z₇ to xFreeCyclic-Z₇)
 
 open import Substrate.Groups.Capabilities.PhaseProjection  public
   using (PhaseProjectionCapability)
-  renaming ( cap-Z₃ to phaseProj-Z₃; cap-Z₄ to phaseProj-Z₄
-           ; cap-Z₅ to phaseProj-Z₅; cap-Z₇ to phaseProj-Z₇)
+  renaming ( cap-Z₂ to phaseProj-Z₂; cap-Z₃ to phaseProj-Z₃
+           ; cap-Z₄ to phaseProj-Z₄; cap-Z₅ to phaseProj-Z₅
+           ; cap-Z₇ to phaseProj-Z₇)
 
 open import Substrate.Groups.Capabilities.Strict2Monoid    public
   using (Strict2MonoidCapability)
-  renaming ( cap-Z₃ to strict2Monoid-Z₃; cap-Z₄ to strict2Monoid-Z₄
-           ; cap-Z₅ to strict2Monoid-Z₅; cap-Z₇ to strict2Monoid-Z₇)
+  renaming ( cap-Z₂ to strict2Monoid-Z₂; cap-Z₃ to strict2Monoid-Z₃
+           ; cap-Z₄ to strict2Monoid-Z₄; cap-Z₅ to strict2Monoid-Z₅
+           ; cap-Z₇ to strict2Monoid-Z₇)
 
 ------------------------------------------------------------------------
 -- The cone indices: ZnInstance × CapabilityTag.
@@ -92,11 +96,11 @@ data CapabilityTag : Set where
 
 Provides : ZnInstance → CapabilityTag → Set₁
 
--- Z₂: only the Coxeter core landed (no derived capabilities yet).
-Provides Z₂ coxeterFin    = ⊤₁
-Provides Z₂ xFreeCyclic   = ⊤₁
-Provides Z₂ phaseProj     = ⊤₁
-Provides Z₂ strict2Monoid = ⊤₁
+-- Z₂: all four genericized capabilities filled (Slice 6).
+Provides Z₂ coxeterFin    = CoxeterFinCapability 2
+Provides Z₂ xFreeCyclic   = xFreeCyclicCapability
+Provides Z₂ phaseProj     = PhaseProjectionCapability
+Provides Z₂ strict2Monoid = Strict2MonoidCapability
 
 -- Z₃: all four genericized capabilities filled.
 Provides Z₃ coxeterFin    = CoxeterFinCapability 3
@@ -134,11 +138,11 @@ Provides Z₇ strict2Monoid = Strict2MonoidCapability
 ------------------------------------------------------------------------
 
 complete : (n : ZnInstance) (c : CapabilityTag) → Provides n c
--- Z₂ row (all gaps for now)
-complete Z₂ coxeterFin    = tt₁
-complete Z₂ xFreeCyclic   = tt₁
-complete Z₂ phaseProj     = tt₁
-complete Z₂ strict2Monoid = tt₁
+-- Z₂ row (filled)
+complete Z₂ coxeterFin    = coxeterFin-Z₂
+complete Z₂ xFreeCyclic   = xFreeCyclic-Z₂
+complete Z₂ phaseProj     = phaseProj-Z₂
+complete Z₂ strict2Monoid = strict2Monoid-Z₂
 -- Z₃ row (filled)
 complete Z₃ coxeterFin    = coxeterFin-Z₃
 complete Z₃ xFreeCyclic   = xFreeCyclic-Z₃
