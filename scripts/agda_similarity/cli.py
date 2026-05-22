@@ -14,6 +14,7 @@ import glob as glob_mod
 from itertools import combinations
 from pathlib import Path
 
+from .score import print_score
 from .similarity import SCALE_NAMES, pair_similarity, profile
 from .skeleton import construct_skeleton
 from .template import DEFAULT_RECURSIVE_ORDER, print_templates, recursive_template
@@ -121,6 +122,17 @@ def build_parser() -> argparse.ArgumentParser:
         default="<HOLE>",
         help="Hole marker for skeleton mode (default: <HOLE>)",
     )
+
+    # Score mode option
+    ap.add_argument(
+        "--score",
+        action="store_true",
+        help=(
+            "Genericization-score mode: print per-scale shared/total "
+            "ratios + a STRONG/PARTIAL/WEAK orbit verdict. Quick "
+            "actionable summary without reading full template dumps."
+        ),
+    )
     return ap
 
 
@@ -131,6 +143,10 @@ def main(argv: list[str] | None = None) -> int:
     paths = expand_paths(args)
     if len(paths) < 2:
         ap.error("Need at least two files (use positional args or --glob)")
+
+    if args.score:
+        print_score(paths)
+        return 0
 
     if args.skeleton:
         construct_skeleton(
