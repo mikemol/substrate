@@ -3,78 +3,45 @@
 --
 -- ℤ/7ℤ as a Coxeter-style presentation: ⟨a | a⁷ = ε⟩.
 --
--- Mirror of Substrate.Groups.Z3/Z4/Z5-Coxeter at n=7: explicit
--- Canonical constructors c-ε through c-a⁶ (7 in total), insert wraps
--- at length 7, seventh-power-identity replaces the lower-n versions.
---
--- Built as the Sylow-7 carrier for the GL(3, F₂) ≅ PSL(2, 7) work
--- (per [[multi-route-equivariance-recovery]] +
--- [[klein-quartic-kinematic-anatomy]]): the 168-tower-as-fanout
--- decomposes as 2³ · 3 · 7, and the order-7 cyclic component (Singer
--- cyclic on the Fano plane) lives here.
---
--- Per [[feedback-roll-our-own-via-word-algebra]]: fourth concrete
--- instance in the Zₙ-Coxeter family (n=2, 3, 4, 5, now 7); the pattern
--- continues to scale mechanically.
+-- Phase 4 migration of Path 2: thin instance of
+-- Substrate.Groups.Coxeter.Cyclic 6 (group order 7).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z7-Coxeter where
 
-open import Substrate.Groups.Coxeter.Word public
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _×_; _,_)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; _≢_)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; _≢_)
+
+open import Substrate.Groups.Coxeter.Word public
+import Substrate.Groups.Coxeter.Cyclic 6 as Cyc
+
+open Cyc public using (Gen; a; power)
 
 ------------------------------------------------------------------------
--- 1. Z/7-specific data.
+-- Canonical = existential view + 7 pattern synonyms.
 ------------------------------------------------------------------------
 
-data Gen : Set where
-  a : Gen
+Canonical : Word Gen → Set
+Canonical w = Σ (Fin 7) (Cyc.Canonical w)
 
-data Canonical : Word Gen → Set where
-  c-ε      : Canonical []
-  c-a      : Canonical (a ∷ [])
-  c-aa     : Canonical (a ∷ a ∷ [])
-  c-aaa    : Canonical (a ∷ a ∷ a ∷ [])
-  c-aaaa   : Canonical (a ∷ a ∷ a ∷ a ∷ [])
-  c-aaaaa  : Canonical (a ∷ a ∷ a ∷ a ∷ a ∷ [])
-  c-aaaaaa : Canonical (a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ [])
-
-------------------------------------------------------------------------
--- 2. The insert step: encodes a⁷ = ε as a 7-cyclic wrap on canonical
--- forms — [] → [a] → [a,a] → … → [a,a,a,a,a,a] → [].
-------------------------------------------------------------------------
+pattern c-ε      = zero                                              , Cyc.c-here zero
+pattern c-a      = suc zero                                          , Cyc.c-here (suc zero)
+pattern c-aa     = suc (suc zero)                                    , Cyc.c-here (suc (suc zero))
+pattern c-aaa    = suc (suc (suc zero))                              , Cyc.c-here (suc (suc (suc zero)))
+pattern c-aaaa   = suc (suc (suc (suc zero)))                        , Cyc.c-here (suc (suc (suc (suc zero))))
+pattern c-aaaaa  = suc (suc (suc (suc (suc zero))))                  , Cyc.c-here (suc (suc (suc (suc (suc zero)))))
+pattern c-aaaaaa = suc (suc (suc (suc (suc (suc zero)))))            , Cyc.c-here (suc (suc (suc (suc (suc (suc zero))))))
 
 insert : Gen → Word Gen → Word Gen
-insert a []                           = a ∷ []
-insert a (a ∷ [])                     = a ∷ a ∷ []
-insert a (a ∷ a ∷ [])                 = a ∷ a ∷ a ∷ []
-insert a (a ∷ a ∷ a ∷ [])             = a ∷ a ∷ a ∷ a ∷ []
-insert a (a ∷ a ∷ a ∷ a ∷ [])         = a ∷ a ∷ a ∷ a ∷ a ∷ []
-insert a (a ∷ a ∷ a ∷ a ∷ a ∷ [])     = a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ []
-insert a (a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ []) = []
-insert g w                            = g ∷ w  -- fallback (unreachable for Canonical inputs)
+insert = Cyc.insert
 
 insert-canonical : (g : Gen) {w : Word Gen} → Canonical w → Canonical (insert g w)
-insert-canonical a c-ε      = c-a
-insert-canonical a c-a      = c-aa
-insert-canonical a c-aa     = c-aaa
-insert-canonical a c-aaa    = c-aaaa
-insert-canonical a c-aaaa   = c-aaaaa
-insert-canonical a c-aaaaa  = c-aaaaaa
-insert-canonical a c-aaaaaa = c-ε
-
-------------------------------------------------------------------------
--- Canonical-cover for Z₇: dispatches a 7-tuple of per-position
--- proofs onto any `Canonical w`. Heterogeneous-output via each
--- refl's own implicit {x}.
-------------------------------------------------------------------------
-
-open import Substrate.Foundation.Product using (_×_; _,_)
+insert-canonical g (k , c) = Cyc.σ k , Cyc.insert-canonical g c
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
@@ -88,16 +55,8 @@ canonical-cover _ (_ , _ , _ , _ , p , _ , _) c-aaaa   = p
 canonical-cover _ (_ , _ , _ , _ , _ , p , _) c-aaaaa  = p
 canonical-cover _ (_ , _ , _ , _ , _ , _ , p) c-aaaaaa = p
 
-------------------------------------------------------------------------
--- 3. Open ListPresentation with Z/7's atoms.
-------------------------------------------------------------------------
-
 open import Substrate.Groups.Coxeter.ListPresentation
   Gen Canonical c-ε insert insert-canonical public
-
-------------------------------------------------------------------------
--- 4. Per-relation obligations.
-------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
 canonical-is-fixed =
@@ -124,23 +83,19 @@ insert-append-lemma a {a ∷ a ∷ a ∷ a ∷ a ∷ []}       w₂ c-aaaaa  = r
 insert-append-lemma a {a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ []}   w₂ c-aaaaaa =
   sym (insert-cycle-id a (normalize-canonical w₂))
 
-------------------------------------------------------------------------
--- 5. Open WithLemmas to inherit the full abstract Core surface.
-------------------------------------------------------------------------
-
 open WithLemmas canonical-is-fixed insert-append-lemma public
 
+gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ a a = yes refl
+
+open import Substrate.Groups.Coxeter.SameCanonical
+  using (same-canonical-via-Gen)
+
+same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
+same-canonical = same-canonical-via-Gen gen-≟
+
 ------------------------------------------------------------------------
--- 6. Inversion on canonical forms — Z/7 (prime-order cyclic):
---   inv []              = []
---   inv [a]             = [a,a,a,a,a,a]   (a⁻¹ = a⁶)
---   inv [a,a]           = [a,a,a,a,a]     ((a²)⁻¹ = a⁵)
---   inv [a,a,a]         = [a,a,a,a]       ((a³)⁻¹ = a⁴)
---   inv [a,a,a,a]       = [a,a,a]         ((a⁴)⁻¹ = a³)
---   inv [a,a,a,a,a]     = [a,a]           ((a⁵)⁻¹ = a²)
---   inv [a,a,a,a,a,a]   = [a]             ((a⁶)⁻¹ = a)
--- Z/7 has no non-trivial subgroups (prime order); every non-identity
--- element generates the full group.
+-- Inversion — Z/7 (prime-order cyclic).
 ------------------------------------------------------------------------
 
 inv : Word Gen → Word Gen
@@ -151,7 +106,7 @@ inv (a ∷ a ∷ a ∷ [])             = a ∷ a ∷ a ∷ a ∷ []
 inv (a ∷ a ∷ a ∷ a ∷ [])         = a ∷ a ∷ a ∷ []
 inv (a ∷ a ∷ a ∷ a ∷ a ∷ [])     = a ∷ a ∷ []
 inv (a ∷ a ∷ a ∷ a ∷ a ∷ a ∷ []) = a ∷ []
-inv w                            = w  -- fallback
+inv w                            = w
 
 inv-canonical : {w : Word Gen} → Canonical w → Canonical (inv w)
 inv-canonical c-ε      = c-ε
@@ -163,7 +118,7 @@ inv-canonical c-aaaaa  = c-aa
 inv-canonical c-aaaaaa = c-a
 
 ------------------------------------------------------------------------
--- 7. Z/7-specific theorem: every element to the seventh equals ε.
+-- Z/7-specific theorem: every element to the seventh equals ε.
 ------------------------------------------------------------------------
 
 private
@@ -199,7 +154,7 @@ seventh-power-identity w =
         (seventh-canonical (normalize-canonical w))
 
 ------------------------------------------------------------------------
--- 8. Inverse-composition theorems on canonical forms.
+-- Inverse-composition theorems.
 ------------------------------------------------------------------------
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
@@ -213,10 +168,6 @@ inv-right-canonical : {w : Word Gen} → Canonical w →
 inv-right-canonical = canonical-cover
   (λ {w} _ → normalize (w ++ inv w) ≡ [])
   (refl , refl , refl , refl , refl , refl , refl)
-
-------------------------------------------------------------------------
--- 9. inv is involutive on canonical forms.
-------------------------------------------------------------------------
 
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
 inv-inv-canonical = canonical-cover

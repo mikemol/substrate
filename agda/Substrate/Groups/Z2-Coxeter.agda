@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z2-Coxeter
 --
--- ℤ/2ℤ as a Coxeter presentation: ⟨a | a² = ε⟩.
+-- ℤ/2ℤ as a Coxeter-style presentation: ⟨a | a² = ε⟩.
 --
--- The SMALLEST non-trivial Coxeter instance. Uses the custom
--- Substrate.Groups.Coxeter.Word (NOT Data.List) — eliminates the
--- clashing-definition friction that arose when Core re-exports
--- alongside Data.List imports.
+-- Phase 4 migration of Path 2: thin instance of
+-- Substrate.Groups.Coxeter.Cyclic 1 (group order 2). Z₂'s involution
+-- semantics (a² = ε, inv = identity) drop out of the cyclic structure
+-- at n=1.
 --
 -- Useful theorem: `self-inverse` (every element is its own inverse).
 ------------------------------------------------------------------------
@@ -15,42 +15,32 @@
 
 module Substrate.Groups.Z2-Coxeter where
 
-open import Substrate.Groups.Coxeter.Word public
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _×_; _,_)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; _≢_)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; _≢_)
+
+open import Substrate.Groups.Coxeter.Word public
+import Substrate.Groups.Coxeter.Cyclic 1 as Cyc
+
+open Cyc public using (Gen; a; power)
 
 ------------------------------------------------------------------------
--- 1. Z/2-specific data.
+-- Canonical = existential view + 2 pattern synonyms.
 ------------------------------------------------------------------------
 
-data Gen : Set where
-  a : Gen
+Canonical : Word Gen → Set
+Canonical w = Σ (Fin 2) (Cyc.Canonical w)
 
-data Canonical : Word Gen → Set where
-  c-ε : Canonical []
-  c-a : Canonical (a ∷ [])
-
-------------------------------------------------------------------------
--- 2. The insert step: encodes a² = ε via cancellation.
-------------------------------------------------------------------------
+pattern c-ε = zero     , Cyc.c-here zero
+pattern c-a = suc zero , Cyc.c-here (suc zero)
 
 insert : Gen → Word Gen → Word Gen
-insert a []       = a ∷ []
-insert a (a ∷ []) = []
-insert g w        = g ∷ w  -- fallback (unreachable for Canonical inputs)
+insert = Cyc.insert
 
 insert-canonical : (g : Gen) {w : Word Gen} → Canonical w → Canonical (insert g w)
-insert-canonical a c-ε = c-a
-insert-canonical a c-a = c-ε
-
-------------------------------------------------------------------------
--- Canonical-cover for Z₂: 2-tuple of per-position proofs onto any
--- `Canonical w`. Heterogeneous-output via each refl's own implicit {x}.
-------------------------------------------------------------------------
-
-open import Substrate.Foundation.Product using (_×_; _,_)
+insert-canonical g (k , c) = Cyc.σ k , Cyc.insert-canonical g c
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
@@ -59,23 +49,15 @@ canonical-cover :
 canonical-cover _ (p , _) c-ε = p
 canonical-cover _ (_ , p) c-a = p
 
-------------------------------------------------------------------------
--- 3. Open ListPresentation with Z/2's atoms.
-------------------------------------------------------------------------
-
 open import Substrate.Groups.Coxeter.ListPresentation
   Gen Canonical c-ε insert insert-canonical public
-
-------------------------------------------------------------------------
--- 4. Per-relation obligations.
-------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
 canonical-is-fixed =
   canonical-cover (λ {w} _ → normalize w ≡ w) (refl , refl)
 
 insert-cycle-id : (g : Gen) {w : Word Gen} → Canonical w →
-                    insert g (insert g w) ≡ w
+                  insert g (insert g w) ≡ w
 insert-cycle-id a = canonical-cover
   (λ {w} _ → insert a (insert a w) ≡ w)
   (refl , refl)
@@ -87,17 +69,8 @@ insert-append-lemma a {[]}     w₂ c-ε = refl
 insert-append-lemma a {a ∷ []} w₂ c-a =
   sym (insert-cycle-id a (normalize-canonical w₂))
 
-------------------------------------------------------------------------
--- 5. Open WithLemmas to inherit the full abstract Core surface.
-------------------------------------------------------------------------
-
 open WithLemmas canonical-is-fixed insert-append-lemma public
 
-------------------------------------------------------------------------
--- 6. Decidable equality on Canonical forms.
-------------------------------------------------------------------------
-
--- Decidable Gen equality (Z₂'s Gen has a single constructor).
 gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
 gen-≟ a a = yes refl
 
@@ -108,14 +81,7 @@ same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ �
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
--- 7. Inversion on canonical forms — Z/2 elements are self-inverse:
---   inv []    = []
---   inv [a]   = [a]
---
--- inv = identity on the canonical level (a is its own inverse).
--- The same-shape obligations for the GroupAdapter pipe come along
--- with it. Exposed at this level so Z2-Coxeter-Group stays a thin
--- adapter like its Z3/Z4/Z5/Z7 siblings.
+-- Inversion — Z/2 self-inverse: inv = identity.
 ------------------------------------------------------------------------
 
 inv : Word Gen → Word Gen
@@ -140,7 +106,7 @@ inv-inv-canonical = canonical-cover
   (refl , refl)
 
 ------------------------------------------------------------------------
--- 8. Z/2-specific theorem: self-inverse at the Core level.
+-- Z/2-specific theorem: self-inverse at the Core level.
 ------------------------------------------------------------------------
 
 private
