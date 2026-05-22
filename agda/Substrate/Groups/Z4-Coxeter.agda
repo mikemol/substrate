@@ -60,28 +60,9 @@ inv-inv-canonical = canonical-cover
 
 ------------------------------------------------------------------------
 -- Z/4-specific theorem: every element to the fourth equals ε.
+-- Specialization of the generic nth-power-identity from Coxeter.Cyclic
+-- at n = 3 (apply-power-suc w 3 = ((w · w) · w) · w by definition).
 ------------------------------------------------------------------------
 
-private
-  flatten-quad-self-product :
-    (w : Word Gen) →
-    normalize (((w · w) · w) · w) ≡
-    normalize (normalize w ++ (normalize w ++ (normalize w ++ normalize w)))
-  flatten-quad-self-product w =
-    trans (normalize-idem ((normalize (normalize (w ++ w) ++ w)) ++ w))
-    (trans (sym (normalize-append (normalize (w ++ w) ++ w) w))
-    (trans (cong normalize (++-assoc (normalize (w ++ w)) w w))
-    (trans (sym (normalize-append (w ++ w) (w ++ w)))
-    (trans (cong normalize (++-assoc w w (w ++ w)))
-           (normalize-quad w w w w)))))
-
-  fourth-canonical : {w : Word Gen} → Canonical w →
-                     normalize (w ++ (w ++ (w ++ w))) ≡ []
-  fourth-canonical = canonical-cover
-    (λ {w} _ → normalize (w ++ (w ++ (w ++ w))) ≡ [])
-    (refl , refl , refl , refl)
-
 fourth-power-identity : (w : Word Gen) → (((w · w) · w) · w) ≈ ε
-fourth-power-identity w =
-  trans (flatten-quad-self-product w)
-        (fourth-canonical (normalize-canonical w))
+fourth-power-identity = nth-power-identity

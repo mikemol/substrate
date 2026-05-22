@@ -23,6 +23,10 @@
 --                 iter / iter-insert-pos / insert-cycle-id-word,
 --                 normalize-power-prepend, insert-append-lemma,
 --                 opens WithLemmas (the Coxeter Core surface).
+--   NthPower    — apply-power-suc + the (suc n)-power identity
+--                 (generic form of Z₃ cube-identity / Z₄ fourth-power-
+--                 identity / Z₅ fifth-power-identity / Z₇ seventh-power-
+--                 identity / Z₂ self-inverse).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -31,4 +35,4 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Core n public
+open import Substrate.Groups.Coxeter.Cyclic.NthPower n public

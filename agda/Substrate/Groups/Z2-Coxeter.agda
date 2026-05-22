@@ -56,23 +56,10 @@ inv-inv-canonical = canonical-cover
   (refl , refl)
 
 ------------------------------------------------------------------------
--- Z/2-specific theorem: self-inverse at the Core level.
+-- Z/2-specific theorem: self-inverse. Specialization of the generic
+-- nth-power-identity from Coxeter.Cyclic at n = 1
+-- (apply-power-suc w 1 = w · w by definition).
 ------------------------------------------------------------------------
 
-private
-  flatten-self-product :
-    (w : Word Gen) → normalize (w · w) ≡ normalize (normalize w ++ normalize w)
-  flatten-self-product w =
-    trans (normalize-idem (w ++ w))
-          (normalize-distrib w w)
-
-  self-inverse-canonical :
-    {w : Word Gen} → Canonical w → normalize (w ++ w) ≡ []
-  self-inverse-canonical = canonical-cover
-    (λ {w} _ → normalize (w ++ w) ≡ [])
-    (refl , refl)
-
 self-inverse : (w : Word Gen) → (w · w) ≈ []
-self-inverse w =
-  trans (flatten-self-product w)
-        (self-inverse-canonical (normalize-canonical w))
+self-inverse = nth-power-identity

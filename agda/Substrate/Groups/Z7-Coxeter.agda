@@ -66,36 +66,9 @@ inv-inv-canonical = canonical-cover
 
 ------------------------------------------------------------------------
 -- Z/7-specific theorem: every element to the seventh equals ε.
+-- Specialization of the generic nth-power-identity from Coxeter.Cyclic
+-- at n = 6 (apply-power-suc w 6 = ((((((w·w)·w)·w)·w)·w)·w) by definition).
 ------------------------------------------------------------------------
 
-private
-  flatten-sept-self-product :
-    (w : Word Gen) →
-    normalize ((((((w · w) · w) · w) · w) · w) · w) ≡
-    normalize (normalize w ++ (normalize w ++
-               (normalize w ++ (normalize w ++
-                (normalize w ++ (normalize w ++ normalize w))))))
-  flatten-sept-self-product w =
-    trans (normalize-idem ((normalize ((normalize ((normalize ((normalize (normalize (w ++ w) ++ w)) ++ w)) ++ w)) ++ w)) ++ w))
-    (trans (sym (normalize-append ((normalize ((normalize ((normalize (normalize (w ++ w) ++ w)) ++ w)) ++ w)) ++ w) w))
-    (trans (cong normalize (++-assoc (normalize ((normalize ((normalize (normalize (w ++ w) ++ w)) ++ w)) ++ w)) w w))
-    (trans (sym (normalize-append (normalize ((normalize ((normalize (w ++ w) ++ w)) ++ w)) ++ w) (w ++ w)))
-    (trans (cong normalize (++-assoc (normalize ((normalize (normalize (w ++ w) ++ w)) ++ w)) w (w ++ w)))
-    (trans (sym (normalize-append ((normalize (normalize (w ++ w) ++ w)) ++ w) (w ++ (w ++ w))))
-    (trans (cong normalize (++-assoc (normalize (normalize (w ++ w) ++ w)) w (w ++ (w ++ w))))
-    (trans (sym (normalize-append (normalize (w ++ w) ++ w) (w ++ (w ++ (w ++ w)))))
-    (trans (cong normalize (++-assoc (normalize (w ++ w)) w (w ++ (w ++ (w ++ w)))))
-    (trans (sym (normalize-append (w ++ w) (w ++ (w ++ (w ++ (w ++ w))))))
-    (trans (cong normalize (++-assoc w w (w ++ (w ++ (w ++ (w ++ w))))))
-           (normalize-sept w w w w w w w)))))))))))
-
-  seventh-canonical : {w : Word Gen} → Canonical w →
-                      normalize (w ++ (w ++ (w ++ (w ++ (w ++ (w ++ w)))))) ≡ []
-  seventh-canonical = canonical-cover
-    (λ {w} _ → normalize (w ++ (w ++ (w ++ (w ++ (w ++ (w ++ w)))))) ≡ [])
-    (refl , refl , refl , refl , refl , refl , refl)
-
 seventh-power-identity : (w : Word Gen) → ((((((w · w) · w) · w) · w) · w) · w) ≈ ε
-seventh-power-identity w =
-  trans (flatten-sept-self-product w)
-        (seventh-canonical (normalize-canonical w))
+seventh-power-identity = nth-power-identity

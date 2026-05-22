@@ -85,30 +85,13 @@ inv-inv-canonical = canonical-cover
   (refl , refl , refl)
 
 ------------------------------------------------------------------------
--- Z/3-specific theorem: every element cubes to ε.
+-- Z/3-specific theorem: every element cubes to ε. Specialization of
+-- the generic nth-power-identity from Coxeter.Cyclic at n = 2
+-- (apply-power-suc w 2 = (w · w) · w by definition).
 ------------------------------------------------------------------------
 
-private
-  flatten-triple-self-product :
-    (w : Word Gen) →
-    normalize ((w · w) · w) ≡
-    normalize (normalize w ++ (normalize w ++ normalize w))
-  flatten-triple-self-product w =
-    trans (normalize-idem (normalize (w ++ w) ++ w))
-    (trans (sym (normalize-append (w ++ w) w))
-    (trans (cong normalize (++-assoc w w w))
-           (normalize-triple w w w)))
-
-  cube-canonical : {w : Word Gen} → Canonical w →
-                   normalize (w ++ (w ++ w)) ≡ []
-  cube-canonical = canonical-cover
-    (λ {w} _ → normalize (w ++ (w ++ w)) ≡ [])
-    (refl , refl , refl)
-
 cube-identity : (w : Word Gen) → ((w · w) · w) ≈ ε
-cube-identity w =
-  trans (flatten-triple-self-product w)
-        (cube-canonical (normalize-canonical w))
+cube-identity = nth-power-identity
 
 ------------------------------------------------------------------------
 -- Z/3 is abelian: inv distributes over the product. 9 refls via

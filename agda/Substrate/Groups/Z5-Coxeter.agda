@@ -62,31 +62,9 @@ inv-inv-canonical = canonical-cover
 
 ------------------------------------------------------------------------
 -- Z/5-specific theorem: every element to the fifth equals ε.
+-- Specialization of the generic nth-power-identity from Coxeter.Cyclic
+-- at n = 4 (apply-power-suc w 4 = (((w · w) · w) · w) · w by definition).
 ------------------------------------------------------------------------
 
-private
-  flatten-quint-self-product :
-    (w : Word Gen) →
-    normalize ((((w · w) · w) · w) · w) ≡
-    normalize (normalize w ++ (normalize w ++
-               (normalize w ++ (normalize w ++ normalize w))))
-  flatten-quint-self-product w =
-    trans (normalize-idem ((normalize ((normalize (normalize (w ++ w) ++ w)) ++ w)) ++ w))
-    (trans (sym (normalize-append ((normalize (normalize (w ++ w) ++ w)) ++ w) w))
-    (trans (cong normalize (++-assoc (normalize (normalize (w ++ w) ++ w)) w w))
-    (trans (sym (normalize-append (normalize (w ++ w) ++ w) (w ++ w)))
-    (trans (cong normalize (++-assoc (normalize (w ++ w)) w (w ++ w)))
-    (trans (sym (normalize-append (w ++ w) (w ++ (w ++ w))))
-    (trans (cong normalize (++-assoc w w (w ++ (w ++ w))))
-           (normalize-quint w w w w w)))))))
-
-  fifth-canonical : {w : Word Gen} → Canonical w →
-                    normalize (w ++ (w ++ (w ++ (w ++ w)))) ≡ []
-  fifth-canonical = canonical-cover
-    (λ {w} _ → normalize (w ++ (w ++ (w ++ (w ++ w)))) ≡ [])
-    (refl , refl , refl , refl , refl)
-
 fifth-power-identity : (w : Word Gen) → ((((w · w) · w) · w) · w) ≈ ε
-fifth-power-identity w =
-  trans (flatten-quint-self-product w)
-        (fifth-canonical (normalize-canonical w))
+fifth-power-identity = nth-power-identity
