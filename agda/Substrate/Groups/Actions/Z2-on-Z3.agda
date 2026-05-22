@@ -60,7 +60,7 @@ act-canonical h n =
     (Z₃.normalize-canonical n)
 
 normalize-act : ∀ h n → Z₃.normalize (act h n) ≡ act h n
-normalize-act h n = Z₃.canonical-is-fixed-Z3 (act-canonical h n)
+normalize-act h n = Z₃.canonical-is-fixed (act-canonical h n)
 
 ------------------------------------------------------------------------
 -- 3. act-cong: depends only on (Z₂.normalize h, Z₃.normalize n),
@@ -168,7 +168,7 @@ act-∙ h₁ h₂ n =
     -- Z₃.normalize of it equals itself (canonicality of act-letter output).
     inner-canonical : Z₃.normalize (act-letter (Z₂.normalize h₂) inner-n) ≡
                       act-letter (Z₂.normalize h₂) inner-n
-    inner-canonical = Z₃.canonical-is-fixed-Z3 (act-letter-canonical c₂ c-n)
+    inner-canonical = Z₃.canonical-is-fixed (act-letter-canonical c₂ c-n)
   in
   trans (cong (λ x → Z₃.normalize (act-letter x inner-n)) bridge-h)
   (trans (cong Z₃.normalize composed)
