@@ -17,7 +17,7 @@ module Substrate.Probability.Entropy.Sites.QFin where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 
 open import Substrate.Algebra.Q using (ℚ; mkℚ)
 open import Substrate.Algebra.Z using (0ℤ)
@@ -29,7 +29,7 @@ open import Substrate.Probability.Entropy
 ------------------------------------------------------------------------
 -- The Fin-n Shannon entropy functor at ℚ probabilities + ℚ entropy.
 
-ℚ-EntropyFunctor : EntropyFunctor {Level.zero}
+ℚ-EntropyFunctor : EntropyFunctor {0ℓ}
 ℚ-EntropyFunctor = record
   { PS        = ℚ-PS
   ; EntropyTy = ℚ                  -- entropy values in ℚ

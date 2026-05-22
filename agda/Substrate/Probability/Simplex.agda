@@ -20,7 +20,7 @@ module Substrate.Probability.Simplex where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; 0ℓ) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 private
@@ -67,5 +67,5 @@ open DiscreteDistribution public
 -- Simplex over Fin n at level 0 — needs a non-polymorphic
 -- ProbabilitySemiring at level 0. Concrete instances supply.
 
-Simplex : ProbabilitySemiring {Level.zero} → ℕ → Set
+Simplex : ProbabilitySemiring {0ℓ} → ℕ → Set
 Simplex PS n = DiscreteDistribution PS (Fin n)

@@ -27,7 +27,7 @@
 
 module Substrate.Algebra.F2.Cone-Hamming-7plus1 where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin using (Fin; zero)
 open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -68,8 +68,7 @@ Apex-Hamming = Fin 128   -- 2⁷ Hamming codewords
 ------------------------------------------------------------------------
 
 leg-Hamming : Fin 7 → Apex-Hamming → Fin 2
-leg-Hamming _ _ = Fin.zero
-  where open import Data.Fin as Fin
+leg-Hamming _ _ = zero
 
 ------------------------------------------------------------------------
 -- N-4: The (7, 1) Cone instance.

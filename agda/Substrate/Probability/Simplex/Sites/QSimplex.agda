@@ -16,7 +16,7 @@ module Substrate.Probability.Simplex.Sites.QSimplex where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 
 open import Substrate.Algebra.Q using (ℚ; mkℚ)
 open import Substrate.Algebra.Z using (ℤ; 0ℤ; 1ℤ; +_)
@@ -29,7 +29,7 @@ open import Substrate.Probability.Simplex
 -- Carrier = ℚ; zero-p = 0/1; one-p = 1/1; plus-p stubbed for the
 -- structural site (concrete numerical addition supplied at use-site).
 
-ℚ-PS : ProbabilitySemiring {Level.zero}
+ℚ-PS : ProbabilitySemiring {0ℓ}
 ℚ-PS = record
   { Carrier = ℚ
   ; zero-p  = mkℚ 0ℤ 0   -- 0/1

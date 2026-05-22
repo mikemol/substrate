@@ -35,7 +35,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
@@ -48,7 +48,7 @@ module Substrate.Algebra.Sporadic.Monster.AsGriessAlgebra
   (_·M_ : M → M → M)
   (εM : M)
   -- The Griess algebra.
-  (GriessAlg : CommutativeNonAssociativeAlgebra {Level.zero} {Level.zero})
+  (GriessAlg : CommutativeNonAssociativeAlgebra {0ℓ} {0ℓ})
   -- The action ρ : M → (V → V) (each m acts as a function on V).
   -- For each m ∈ M, ρ(m) is a linear map V → V preserving · and ⟨_,_⟩.
   -- For this slice, just record the action signature; the

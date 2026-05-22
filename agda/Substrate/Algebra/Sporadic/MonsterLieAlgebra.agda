@@ -49,7 +49,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 
@@ -57,7 +57,7 @@ module Substrate.Algebra.Sporadic.MonsterLieAlgebra
   -- The substrate-internal LieAlgebra value witnessing the Monster
   -- Lie algebra m (= Borcherds-Kac-Moody Lie algebra associated to
   -- V♮; cited Borcherds 1992).
-  (m : LieAlgebra {Level.zero})
+  (m : LieAlgebra {0ℓ})
   where
 
 ------------------------------------------------------------------------

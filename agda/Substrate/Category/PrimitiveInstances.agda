@@ -414,6 +414,29 @@ import Substrate.Probability.MarkovCategory.Category
 import Substrate.Probability.MarkovCategory.Eval
 
 ------------------------------------------------------------------------
+-- Orphan-sweep round 2: children previously blocked by build errors,
+-- now unblocked via Foundation refactors:
+--   * Foundation.Nat._^_       — needed by Cone.FieldFilling
+--   * Foundation.Vec polymorph — needed by ChainDecomposition,
+--     IsoBCSquare, TensorProduct.Antisymmetric, etc.
+--   * Foundation.Vec.tabulate  — needed by SymBilinForm.TensorProductBridge
+--   * SymBilinForm.CongruenceCompose Data.Nat drop — unblocks S3Stabiliser
+--   * Poly.Connections 0ℓ→0ℓ
+--   * ShadowArchitecture.Persistence Data.Bool drop — unblocks Raven
+------------------------------------------------------------------------
+
+import Substrate.Algebra.GL3F2.AsChainDecomp
+import Substrate.Algebra.F2.Universal
+import Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser
+import Substrate.Algebra.F2.HodgeDim4.Bivector.IsoBCSquare
+import Substrate.Algebra.F2.SymBilinForm.TensorProductBridge
+import Substrate.Category.Poly.Category
+import Substrate.Category.Poly.Connections
+import Substrate.Category.PolyLens.Eval
+import Substrate.Category.TensorProduct.Antisymmetric
+import Substrate.ShadowArchitecture.Raven
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-

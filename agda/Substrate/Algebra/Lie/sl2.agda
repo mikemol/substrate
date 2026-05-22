@@ -34,7 +34,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Foundation.Eq using (_≡_; refl)
@@ -43,7 +43,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Algebra.Lie.sl2
   -- The substrate-internal LieAlgebra value witnessing sl₂.
-  (L : LieAlgebra {Level.zero})
+  (L : LieAlgebra {0ℓ})
   -- The three Chevalley basis elements.
   (E H F : LieAlgebra.V L)
   -- The standard sl₂ relations (Chevalley basis form).

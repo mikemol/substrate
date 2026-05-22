@@ -43,7 +43,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
@@ -55,7 +55,7 @@ module Substrate.Algebra.Sporadic.GriessAlgebra.Aut
   -- The Griess algebra (= an X4 CommutativeNonAssociativeAlgebra
   -- instance at dimension 196,884; supplied by user citing X4 +
   -- Griess 1982 + FLM 1988).
-  (GriessAlg : CommutativeNonAssociativeAlgebra {Level.zero} {Level.zero})
+  (GriessAlg : CommutativeNonAssociativeAlgebra {0ℓ} {0ℓ})
   -- The preservation predicate: a function on V preserves both
   -- the algebra product and the bilinear form. (User supplies the
   -- explicit definition; the substrate provides the structural

@@ -7,12 +7,12 @@
 
 module Substrate.Category.CascadedCoalgebra.Term where
 
+open import Substrate.Foundation.Product using (_,_; _×_)
+
 -- A cascade state-pair (inner-state-type, outer-state-type).
 
 CascadeState : Set₁
 CascadeState = Set × Set
-  where open import Data.Product using (_×_)
-open import Substrate.Foundation.Product using (_,_; _×_)
 
 data CascadeGen : CascadeState → CascadeState → Set₁ where
   lift-cascade : (s₁ s₂ : CascadeState) → CascadeGen s₁ s₂

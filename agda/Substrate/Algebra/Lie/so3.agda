@@ -37,7 +37,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Foundation.Eq using (_≡_; refl)
@@ -46,7 +46,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Algebra.Lie.so3
   -- The substrate-internal LieAlgebra value witnessing so₃.
-  (L : LieAlgebra {Level.zero})
+  (L : LieAlgebra {0ℓ})
   -- The three angular-momentum basis elements.
   (Lx Ly Lz : LieAlgebra.V L)
   -- The standard so₃ relations (angular-momentum form).

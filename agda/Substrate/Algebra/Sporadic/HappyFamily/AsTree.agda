@@ -38,7 +38,7 @@
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.ConjugationCoalgebra
@@ -71,9 +71,9 @@ module Substrate.Algebra.Sporadic.HappyFamily.AsTree
   --   17 = Mathieu M₂₂
   --   18 = Mathieu M₁₂
   --   19 = Mathieu M₁₁
-  (HF-CCA : Fin 20 → ConjugationCoalgebra {Level.zero})
+  (HF-CCA : Fin 20 → ConjugationCoalgebra {0ℓ})
   -- Per-node centralizer-descent witness (from V1).
-  (HF-descent : Fin 20 → CentralizerDescent {Level.zero})
+  (HF-descent : Fin 20 → CentralizerDescent {0ℓ})
   where
 
 ------------------------------------------------------------------------

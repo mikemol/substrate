@@ -26,7 +26,7 @@ module Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ; suc; zero; _+_)
-open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 
 open import Substrate.Algebra.Q using (ℚ; mkℚ)
 open import Substrate.Algebra.Z using (0ℤ)
@@ -69,7 +69,7 @@ predict-dirichlet cv i = mkℚ 0ℤ 0
 ------------------------------------------------------------------------
 -- Dirichlet-Multinomial as a ConjugateMonad.
 
-DirichletMultinomial : (n : ℕ) → ConjugateMonad {Level.zero}
+DirichletMultinomial : (n : ℕ) → ConjugateMonad {0ℓ}
 DirichletMultinomial n = record
   { Parameter   = CountVector n
   ; Observation = Fin n

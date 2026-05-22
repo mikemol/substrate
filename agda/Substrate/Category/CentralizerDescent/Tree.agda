@@ -37,7 +37,7 @@
 
 module Substrate.Category.CentralizerDescent.Tree where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; 0ℓ; _⊔_) renaming (suc to lsuc)
 import Level
 open import Substrate.Foundation.Eq using (_≡_)
 
@@ -73,13 +73,13 @@ record DescentTree : Set₁ where
   field
     Nodes : Set
     Root  : Nodes
-    CCA-at : Nodes → ConjugationCoalgebra {Level.zero}
+    CCA-at : Nodes → ConjugationCoalgebra {0ℓ}
     parent : Nodes → Nodes
     parent-of-root : parent Root ≡ Root
     -- Per-edge descent witness: for any node n, there's a
     -- CentralizerDescent relating parent's CCA to this node's CCA
     -- (or, for Root, trivially related to itself).
-    descent-at : Nodes → CentralizerDescent {Level.zero}
+    descent-at : Nodes → CentralizerDescent {0ℓ}
 
 open DescentTree public
 
