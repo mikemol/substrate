@@ -46,6 +46,10 @@ lookup : {A : Set ℓ} {n : ℕ} → Vec A n → Fin n → A
 lookup (x ∷ _)  zero    = x
 lookup (_ ∷ xs) (suc i) = lookup xs i
 
+tabulate : {A : Set ℓ} {n : ℕ} → (Fin n → A) → Vec A n
+tabulate {n = zero}  _ = []
+tabulate {n = suc _} f = f zero ∷ tabulate (λ i → f (suc i))
+
 map : {A : Set ℓ} {B : Set ℓ′} {n : ℕ} → (A → B) → Vec A n → Vec B n
 map _ []       = []
 map f (x ∷ xs) = f x ∷ map f xs
