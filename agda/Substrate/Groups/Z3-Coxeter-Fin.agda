@@ -26,7 +26,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
-  using (σ₃)
+  using (σ₃; σ₃-HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- Per-Z₃ data: bijection between (canonical Z₃-Words) and Fin 3.
@@ -66,14 +66,13 @@ action-of-a-is-σ₃ Z₃.c-a  = refl
 action-of-a-is-σ₃ Z₃.c-aa = refl
 
 ------------------------------------------------------------------------
--- Per-Z₃ data: σ₃-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
--- through the bijection. Per-position enumeration at Fin 3.
+-- σ₃-HasOrderPerm — the Coxeter a³ = ε relation lifted through the
+-- bijection. Re-exported from Cycle3 under the chain's canonical
+-- name; no per-position enumeration here (Cycle3 owns the witness).
 ------------------------------------------------------------------------
 
 σ₃-HasOrderPerm-from-Z3-Coxeter : HasOrderPerm σ₃ 3
-σ₃-HasOrderPerm-from-Z3-Coxeter zero                = refl
-σ₃-HasOrderPerm-from-Z3-Coxeter (suc zero)          = refl
-σ₃-HasOrderPerm-from-Z3-Coxeter (suc (suc zero))    = refl
+σ₃-HasOrderPerm-from-Z3-Coxeter = σ₃-HasOrderPerm
 
 ------------------------------------------------------------------------
 -- Apply the generic chain: takes the per-Z₃ pieces, produces the

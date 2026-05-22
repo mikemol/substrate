@@ -26,7 +26,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle4
-  using (σ₄)
+  using (σ₄; σ₄-HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- Per-Z₄ data: bijection between (canonical Z₄-Words) and Fin 4.
@@ -71,15 +71,13 @@ action-of-a-is-σ₄ Z₄.c-aa  = refl
 action-of-a-is-σ₄ Z₄.c-aaa = refl
 
 ------------------------------------------------------------------------
--- Per-Z₄ data: σ₄-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
--- through the bijection. Per-position enumeration at Fin 4.
+-- σ₄-HasOrderPerm — the Coxeter a⁴ = ε relation lifted through the
+-- bijection. Re-exported from Cycle4 under the chain's canonical
+-- name; no per-position enumeration here (Cycle4 owns the witness).
 ------------------------------------------------------------------------
 
 σ₄-HasOrderPerm-from-Z4-Coxeter : HasOrderPerm σ₄ 4
-σ₄-HasOrderPerm-from-Z4-Coxeter zero                            = refl
-σ₄-HasOrderPerm-from-Z4-Coxeter (suc zero)                      = refl
-σ₄-HasOrderPerm-from-Z4-Coxeter (suc (suc zero))                = refl
-σ₄-HasOrderPerm-from-Z4-Coxeter (suc (suc (suc zero)))          = refl
+σ₄-HasOrderPerm-from-Z4-Coxeter = σ₄-HasOrderPerm
 
 ------------------------------------------------------------------------
 -- Apply the generic chain: takes the per-Z₄ pieces, produces the

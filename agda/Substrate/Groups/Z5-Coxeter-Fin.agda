@@ -26,7 +26,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle5
-  using (σ₅)
+  using (σ₅; σ₅-HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- Per-Z₅ data: bijection between (canonical Z₅-Words) and Fin 5.
@@ -76,16 +76,13 @@ action-of-a-is-σ₅ Z₅.c-aaa  = refl
 action-of-a-is-σ₅ Z₅.c-aaaa = refl
 
 ------------------------------------------------------------------------
--- Per-Z₅ data: σ₅-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
--- through the bijection. Per-position enumeration at Fin 5.
+-- σ₅-HasOrderPerm — the Coxeter a⁵ = ε relation lifted through the
+-- bijection. Re-exported from Cycle5 under the chain's canonical
+-- name; no per-position enumeration here (Cycle5 owns the witness).
 ------------------------------------------------------------------------
 
 σ₅-HasOrderPerm-from-Z5-Coxeter : HasOrderPerm σ₅ 5
-σ₅-HasOrderPerm-from-Z5-Coxeter zero                                  = refl
-σ₅-HasOrderPerm-from-Z5-Coxeter (suc zero)                            = refl
-σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc zero))                      = refl
-σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc (suc zero)))                = refl
-σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc (suc (suc zero))))          = refl
+σ₅-HasOrderPerm-from-Z5-Coxeter = σ₅-HasOrderPerm
 
 ------------------------------------------------------------------------
 -- Apply the generic chain: takes the per-Z₅ pieces, produces the

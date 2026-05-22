@@ -91,12 +91,27 @@ module Substrate.Groups.Coxeter-Fin-Generic
 σₙ-HasOrderPerm = σₙ-aⁿ=ε
 
 ------------------------------------------------------------------------
--- Future structural strengthening (NOT a deferral — this is the
--- arc's natural next slice):
+-- Future structural strengthening (substantive next arc, not a
+-- slice-budget follow-on):
 --
 -- A truly generative `cyclic-suc-HasOrderPerm : ∀ {n} → HasOrderPerm
--- (cyclic-suc {n}) (suc n)` could be proved via _mod-suc_ structural
--- reasoning, eliminating the n-case HasOrderPerm enumeration entirely.
--- That requires `(k + n) mod-suc n ≡ k` from
--- Substrate.Algebra.Nat.Mod, which is a small follow-on.
+-- (cyclic-suc {n}) (suc n)` would eliminate the σₙ-HasOrderPerm
+-- per-position enumeration that currently lives in
+-- Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycleₙ
+-- (n ∈ {3, 4, 5}). Each instance presently re-exports its Cycleₙ's
+-- witness under the chain's canonical name; this dedupes the witness
+-- between the Cycle and Coxeter-Fin layers but leaves it as an
+-- enumeration at the Cycle layer.
+--
+-- The full structural derivation needs:
+--   * `cyclic-suc : ∀ {n} → Fin (suc n) → Fin (suc n)` (defined via
+--     `fromℕ<` + `mod-suc-bound`).
+--   * `mod-suc-id : a < suc b → a mod-suc b ≡ a` (mod fixes below).
+--   * `mod-suc-periodic : (a + suc b) mod-suc b ≡ a mod-suc b`
+--     (period = suc b).
+--   * Roundtrip lemmas in Substrate.Foundation.Fin.Properties
+--     (toℕ-fromℕ<, toℕ-injective, toℕ-bound — already landed).
+--
+-- The mod-suc-id / mod-suc-periodic proofs require careful with-
+-- abstraction over the mod-suc clauses; that's a separate Mod arc.
 ------------------------------------------------------------------------
