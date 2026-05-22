@@ -28,7 +28,7 @@ module Substrate.Category.BoundaryEvent where
 
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 private
@@ -46,7 +46,7 @@ private
 -- universe levels (e.g., Base = ℕ at Set₀, FiberState at Set₁).
 -- The result type lives at the supremum of the three.
 
-open import Level using (_⊔_)
+open import Substrate.Foundation.Level using (_⊔_)
 
 record BoundaryEvent (Base : Set ℓb)
                        (FiberState : Set ℓf)

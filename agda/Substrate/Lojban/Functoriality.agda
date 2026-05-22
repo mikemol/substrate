@@ -35,7 +35,7 @@
 module Substrate.Lojban.Functoriality where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 open import Substrate.Lojban.PlaceStructure

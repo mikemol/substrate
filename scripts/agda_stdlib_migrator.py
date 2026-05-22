@@ -67,6 +67,12 @@ RULES = [
         re.compile(r"^open import Data\.Empty\.Polymorphic using \((.*?)\)$", re.MULTILINE),
         r"open import Substrate.Foundation.Empty.Polymorphic using (\1)",
     ),
+    # Level — substrate's Foundation.Level re-exports Agda.Primitive with
+    # `suc to lsuc` renames. Backwards-compatible for all common patterns.
+    (
+        re.compile(r"^open import Level using \((.*?)\)(\s+renaming \(.*?\))?$", re.MULTILINE),
+        r"open import Substrate.Foundation.Level using (\1)\2",
+    ),
 ]
 
 # No identifier renames needed: Foundation.List exposes the same names

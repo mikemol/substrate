@@ -20,7 +20,7 @@
 
 module Substrate.Category.Comonoid where
 
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 
 private
   variable

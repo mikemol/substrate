@@ -42,7 +42,7 @@ module Substrate.Lojban.AsCCC where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec)
   renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; sym)
 

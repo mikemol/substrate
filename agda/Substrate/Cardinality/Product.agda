@@ -53,7 +53,7 @@
 
 module Substrate.Cardinality.Product where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
 open import Substrate.Foundation.Fin using (Fin)

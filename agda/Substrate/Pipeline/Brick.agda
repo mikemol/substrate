@@ -45,7 +45,7 @@
 module Substrate.Pipeline.Brick where
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Level using (Level; _⊔_; suc) renaming (zero to lzero)
+open import Substrate.Foundation.Level using (Level; _⊔_; suc) renaming (zero to lzero)
 
 ------------------------------------------------------------------------
 -- 1. The six witnessings.

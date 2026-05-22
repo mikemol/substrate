@@ -42,7 +42,7 @@ module Substrate.Category.Equalizer where
 
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Function using (id; const)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 

@@ -43,7 +43,7 @@
 
 module Substrate.Category.UniversalEnvelopingAlgebra where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.LieAlgebra using (LieAlgebra)

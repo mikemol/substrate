@@ -25,7 +25,7 @@
 module Substrate.Algebra.PontryaginDual where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Algebra.AbelianGroup

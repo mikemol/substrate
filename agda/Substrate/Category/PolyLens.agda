@@ -21,7 +21,7 @@
 module Substrate.Category.PolyLens where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.Poly

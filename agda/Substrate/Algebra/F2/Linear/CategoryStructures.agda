@@ -21,7 +21,7 @@
 
 module Substrate.Algebra.F2.Linear.CategoryStructures where
 
-open import Level using (Level; suc; _⊔_)
+open import Substrate.Foundation.Level using (Level; suc; _⊔_)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)

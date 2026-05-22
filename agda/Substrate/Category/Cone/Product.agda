@@ -21,7 +21,7 @@ module Substrate.Category.Cone.Product where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.Cone
 

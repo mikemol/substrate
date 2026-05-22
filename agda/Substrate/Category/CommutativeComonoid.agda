@@ -13,7 +13,7 @@
 
 module Substrate.Category.CommutativeComonoid where
 
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Comonoid

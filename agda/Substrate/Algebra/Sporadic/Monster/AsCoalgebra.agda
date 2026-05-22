@@ -44,7 +44,7 @@
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra; mkConjugationCoalgebra)

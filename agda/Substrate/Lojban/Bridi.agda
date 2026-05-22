@@ -26,7 +26,7 @@ module Substrate.Lojban.Bridi where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Lojban.PlaceStructure
   using (Selbri; mkSelbri; apply; selbri-postcompose; selbri-precompose)

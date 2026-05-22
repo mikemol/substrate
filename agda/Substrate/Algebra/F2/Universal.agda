@@ -26,7 +26,7 @@
 
 module Substrate.Algebra.F2.Universal where
 
-open import Level using (Level; suc)
+open import Substrate.Foundation.Level using (Level; suc)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Eq

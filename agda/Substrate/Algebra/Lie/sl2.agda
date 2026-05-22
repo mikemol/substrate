@@ -34,7 +34,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Foundation.Eq using (_≡_; refl)

@@ -11,7 +11,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 open import Substrate.Category.DaggerCategory using (DaggerCategory)

@@ -31,7 +31,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector.AsExterior where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; cong₂)

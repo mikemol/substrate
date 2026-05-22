@@ -31,7 +31,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4 where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 

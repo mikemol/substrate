@@ -13,7 +13,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 

@@ -35,7 +35,7 @@
 
 module Substrate.Category.GTorsor.Morphism where
 
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.GTorsor using (GTorsor; act)
 open import Substrate.Category.Morphism using (Morphism; mkMorphism)

@@ -31,7 +31,7 @@
 module Substrate.Category.Coalgebra.FiniteOrder where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 

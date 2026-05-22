@@ -23,7 +23,7 @@
 
 module Substrate.Groups.Subgroup where
 
-open import Level using (0ℓ; suc)
+open import Substrate.Foundation.Level using (0ℓ; suc)
 open import Substrate.Foundation.Product using (∃; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)

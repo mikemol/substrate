@@ -24,7 +24,7 @@
 
 module Substrate.Groups.Stab-S3-Restrict where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)

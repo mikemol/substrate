@@ -37,7 +37,7 @@
 
 module Substrate.Category.CentralizerDescent.Tree where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 import Level
 open import Substrate.Foundation.Eq using (_≡_)
 

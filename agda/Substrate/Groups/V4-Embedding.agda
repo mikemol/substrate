@@ -33,7 +33,7 @@
 
 module Substrate.Groups.V4-Embedding where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; _,_; -,_)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Eq

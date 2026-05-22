@@ -10,7 +10,7 @@
 
 module Substrate.Category.Operad where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Nat using (ℕ)
 
 record Operad : Set₁ where

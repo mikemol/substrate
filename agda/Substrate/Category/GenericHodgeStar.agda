@@ -44,7 +44,7 @@
 
 module Substrate.Category.GenericHodgeStar where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_)

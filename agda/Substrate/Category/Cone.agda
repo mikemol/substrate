@@ -35,7 +35,7 @@ module Substrate.Category.Cone where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 
 private
   variable

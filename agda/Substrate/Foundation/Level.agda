@@ -12,3 +12,7 @@ module Substrate.Foundation.Level where
 open import Agda.Primitive public
   using (Level; _⊔_; Setω)
   renaming (lzero to zero; lsuc to suc)
+
+-- Convenience alias matching stdlib's `Level.0ℓ`.
+0ℓ : Level
+0ℓ = zero

@@ -12,7 +12,7 @@
 
 module Substrate.Category.Modification where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Functor using (Functor)

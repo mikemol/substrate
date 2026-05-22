@@ -69,7 +69,7 @@
 
 module Substrate.Cardinality where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq

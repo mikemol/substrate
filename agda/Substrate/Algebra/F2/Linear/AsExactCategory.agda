@@ -10,7 +10,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)

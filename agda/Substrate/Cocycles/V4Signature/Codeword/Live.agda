@@ -23,7 +23,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.Live where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ; Σ-syntax)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)

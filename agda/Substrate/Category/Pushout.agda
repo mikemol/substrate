@@ -31,7 +31,7 @@
 
 module Substrate.Category.Pushout where
 
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 private

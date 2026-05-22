@@ -41,7 +41,7 @@
 
 module Substrate.Category.BeckChevalley where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 

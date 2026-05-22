@@ -34,7 +34,7 @@
 
 module Substrate.Category.Strict2Monoid where
 
-open import Level using (Level; _⊔_; suc)
+open import Substrate.Foundation.Level using (Level; _⊔_; suc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 private

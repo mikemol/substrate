@@ -29,7 +29,7 @@
 
 module Substrate.Algebra.Abelian.Z6-AsChainDecomp where
 
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)

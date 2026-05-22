@@ -20,7 +20,7 @@
 
 module Substrate.Category.Opposite where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; sym)
 
 open import Substrate.Category.CategoryOf using (CategoryOf; mkCategoryOf)

@@ -23,7 +23,7 @@ module Substrate.Category.MultiFieldBond where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 
 private
   variable

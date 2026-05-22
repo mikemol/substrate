@@ -25,7 +25,7 @@
 
 module Substrate.Groups.S4-AsOpcodeAlgebra where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_)
 

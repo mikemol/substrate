@@ -31,7 +31,7 @@
 
 module Substrate.Category.Coequalizer where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Function using (id)
 

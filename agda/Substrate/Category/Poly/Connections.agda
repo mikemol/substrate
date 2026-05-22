@@ -23,7 +23,7 @@ module Substrate.Category.Poly.Connections where
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Unit.Polymorphic using (⊤; tt)
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 
 open import Substrate.Category.FieldFanOut
 open import Substrate.Category.Poly

@@ -40,7 +40,7 @@
 
 module Substrate.Groups.V4-Cosets where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; Σ; Σ-syntax; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)

@@ -21,7 +21,7 @@ module Substrate.Category.Cone.PullbackWithMorphisms where
 
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 
 open import Substrate.Category.Cone.WithMorphisms

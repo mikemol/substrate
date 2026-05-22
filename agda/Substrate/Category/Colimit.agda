@@ -24,7 +24,7 @@
 
 module Substrate.Category.Colimit where
 
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Functor using (Functor)

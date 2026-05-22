@@ -49,7 +49,7 @@
 
 module Substrate.Groups.Stab-S3-Hom where
 
-open import Level using (0ℓ)
+open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)

@@ -26,7 +26,7 @@ module Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ; suc; zero; _+_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Algebra.Q using (ℚ; mkℚ)
 open import Substrate.Algebra.Z using (0ℤ)

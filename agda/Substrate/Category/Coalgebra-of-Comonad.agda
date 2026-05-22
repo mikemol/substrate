@@ -22,7 +22,7 @@
 
 module Substrate.Category.Coalgebra-of-Comonad where
 
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.Algebra-of-Monad using (AlgebraOfMonad)
 open import Substrate.Category.CategoryOf using (CategoryOf)

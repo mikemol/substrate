@@ -30,7 +30,7 @@ module Substrate.Category.Cone.FieldFilling where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Cone

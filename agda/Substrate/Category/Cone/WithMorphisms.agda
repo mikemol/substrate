@@ -25,7 +25,7 @@ module Substrate.Category.Cone.WithMorphisms where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq using (_≡_)
 
 private

@@ -22,7 +22,7 @@
 
 module Substrate.Category.S2-Lift where
 
-open import Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Nat using (ℕ)
 
 private

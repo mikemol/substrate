@@ -7,7 +7,7 @@
 
 module Substrate.Category.Comonoid.Term where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 -- A comonoid morphism between two comonoid carriers (each carrier is
 -- abstract). The term datatype indexes by (carrier, tensor-on-carrier).

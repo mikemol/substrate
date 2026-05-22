@@ -16,7 +16,7 @@ module Substrate.Probability.Simplex.Sites.QSimplex where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Algebra.Q using (ℚ; mkℚ)
 open import Substrate.Algebra.Z using (ℤ; 0ℤ; 1ℤ; +_)

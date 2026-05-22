@@ -31,7 +31,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Unit.Polymorphic using (⊤; tt)
 open import Substrate.Foundation.Empty.Polymorphic using (⊥)
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 private

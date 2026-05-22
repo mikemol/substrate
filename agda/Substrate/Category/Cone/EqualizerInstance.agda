@@ -22,7 +22,7 @@ module Substrate.Category.Cone.EqualizerInstance where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (_,_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Cone

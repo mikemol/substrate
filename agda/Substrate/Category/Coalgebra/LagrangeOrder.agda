@@ -49,7 +49,7 @@ module Substrate.Category.Coalgebra.LagrangeOrder where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 

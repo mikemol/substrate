@@ -32,7 +32,7 @@
 
 module Substrate.Category.SylowDecomposition.FromWord where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Nat using (ℕ)

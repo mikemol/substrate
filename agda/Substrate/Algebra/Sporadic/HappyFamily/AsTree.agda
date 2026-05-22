@@ -38,7 +38,7 @@
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.ConjugationCoalgebra

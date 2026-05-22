@@ -21,7 +21,7 @@ module Substrate.Category.Cone.PullbackInstance where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (_,_)
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.Cone
 open import Substrate.Category.Pullback

@@ -20,7 +20,7 @@
 module Substrate.Category.Strict2Monoid.DirectProduct where
 
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; cong₂)
 

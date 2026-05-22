@@ -21,7 +21,7 @@
 
 module Substrate.Category.BeckChevalley.Horizontal where
 
-open import Level using (Level)
+open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
   using (_≡_; trans; cong)
 

@@ -42,7 +42,7 @@
 
 module Substrate.Category.Morphism where
 
-open import Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 
 private
   variable

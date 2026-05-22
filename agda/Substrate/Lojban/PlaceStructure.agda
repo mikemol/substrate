@@ -37,7 +37,7 @@ module Substrate.Lojban.PlaceStructure where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec)
-open import Level using (Level; _⊔_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; cong)
 
