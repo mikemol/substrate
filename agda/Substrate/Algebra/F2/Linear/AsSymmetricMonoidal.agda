@@ -18,9 +18,8 @@
 -- symmetry structure required by future tensor-bearing primitives
 -- (Λ at degree-1+, ChainComplex, GradedAlgebra).
 --
--- Module-parametric per substrate convention: the F₂-Linear
--- CategoryOf instance + tensor / unit / symmetry data are user-
--- supplied; the substrate names the identification.
+-- Projects the symmetric-monoidal facet from the bundled
+-- F2LinearCategoryStructures record.
 --
 -- This is the N-arc's first M3 SymmetricMonoidal instance — closing
 -- the orphan loop for tensor structure at the substrate's
@@ -31,15 +30,13 @@
 
 open import Level using (Level)
 
-open import Substrate.Category.SymmetricMonoidal
-  using (SymmetricMonoidal)
+open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
+open import Substrate.Algebra.F2.Linear.CategoryStructures
+  using (F2LinearCategoryStructures)
 
 module Substrate.Algebra.F2.Linear.AsSymmetricMonoidal
   {ℓO ℓM : Level}
-  -- The substrate-internal SymmetricMonoidal value witnessing F₂-
-  -- Linear with ⊗ + I + σ structure (user-supplied; concrete
-  -- consumer constructs via the F₂.Linear.* infrastructure).
-  (F2Linear-SM : SymmetricMonoidal {ℓO} {ℓM})
+  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
   where
 
 ------------------------------------------------------------------------
@@ -47,7 +44,8 @@ module Substrate.Algebra.F2.Linear.AsSymmetricMonoidal
 ------------------------------------------------------------------------
 
 F2Linear-AsSymmetricMonoidal : SymmetricMonoidal
-F2Linear-AsSymmetricMonoidal = F2Linear-SM
+F2Linear-AsSymmetricMonoidal =
+  F2LinearCategoryStructures.asSymmetricMonoidal structures
 
 ------------------------------------------------------------------------
 -- 2. Capstone — F₂-Linear as M3 SymmetricMonoidal.
@@ -59,8 +57,8 @@ F2Linear-AsSymmetricMonoidal = F2Linear-SM
 --
 -- Per [[universal-property-discipline]]: full coherence (pentagon,
 -- triangle, hexagon) is downstream specialisation per M3's
--- substrate-pragmatic minimum; the user's F2Linear-SM supplies
--- whichever coherence level the consumer needs.
+-- substrate-pragmatic minimum; the bundled structures record
+-- supplies whichever coherence level the consumer needs.
 --
 -- Next: N8 F2.Linear.AsDaggerCategory.
 ------------------------------------------------------------------------

@@ -22,7 +22,8 @@
 -- endomaps (Hodge ★ being the canonical example) sit inside this
 -- dagger category as the involutive 1-cells.
 --
--- Module-parametric per substrate convention.
+-- Projects the dagger-category facet from the bundled
+-- F2LinearCategoryStructures record.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -30,13 +31,12 @@
 open import Level using (Level)
 
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Algebra.F2.Linear.CategoryStructures
+  using (F2LinearCategoryStructures)
 
 module Substrate.Algebra.F2.Linear.AsDaggerCategory
   {ℓO ℓM : Level}
-  -- The substrate-internal DaggerCategory value witnessing F₂-Linear
-  -- with † = transpose structure (user-supplied; concrete consumer
-  -- constructs via the F₂.Linear matrix-transpose primitive).
-  (F2Linear-Dagger : DaggerCategory {ℓO} {ℓM})
+  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
   where
 
 ------------------------------------------------------------------------
@@ -44,7 +44,8 @@ module Substrate.Algebra.F2.Linear.AsDaggerCategory
 ------------------------------------------------------------------------
 
 F2Linear-AsDaggerCategory : DaggerCategory
-F2Linear-AsDaggerCategory = F2Linear-Dagger
+F2Linear-AsDaggerCategory =
+  F2LinearCategoryStructures.asDaggerCategory structures
 
 ------------------------------------------------------------------------
 -- 2. Capstone — F₂-Linear as M4 DaggerCategory.

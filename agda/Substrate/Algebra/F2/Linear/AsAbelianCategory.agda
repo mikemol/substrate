@@ -3,6 +3,9 @@
 --
 -- P8 of the P-arc. F₂-Linear as abelian category (kernels, cokernels,
 -- additive structure, exact sequences).
+--
+-- Projects the abelian-category facet from the bundled
+-- F2LinearCategoryStructures record.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -10,13 +13,14 @@
 open import Level using (Level)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Algebra.F2.Linear.CategoryStructures
+  using (F2LinearCategoryStructures)
 
 module Substrate.Algebra.F2.Linear.AsAbelianCategory
   {ℓO ℓM : Level}
-  (F2L-Abelian : CategoryOf {ℓO} {ℓM})
-  -- Abelian-category data (kernels, cokernels, additive structure)
-  -- supplied via user obligations.
+  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
   where
 
 F2Linear-AsAbelianCategory : CategoryOf
-F2Linear-AsAbelianCategory = F2L-Abelian
+F2Linear-AsAbelianCategory =
+  F2LinearCategoryStructures.asAbelianCategory structures
