@@ -39,15 +39,15 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine where
 
-open import Data.Bool using (Bool; true; false; _xor_)
-open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
-open import Data.Vec using ([]; _∷_)
-open import Data.Vec.Properties using (≡-dec)
-open import Relation.Binary.Definitions using (DecidableEquality)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Product
+  using (_×_; _,_; proj₁; proj₂; Σ; Σ-≡,≡→≡)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Vec.Properties using (≡-dec)
+open import Substrate.Foundation.Hedberg
+  using (DecidableEquality; Decidable⇒UIP)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
-open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP)
-open import Data.Product.Properties using (Σ-≡,≡→≡)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -272,7 +272,8 @@ bivector-≟ : DecidableEquality Bivector
 bivector-≟ = ≡-dec _≟_
 
 -- UIP on Bivector via Hedberg's theorem.
-open Decidable⇒UIP bivector-≟ using () renaming (≡-irrelevant to bivector-uip)
+bivector-uip : {x y : Bivector} (p q : x ≡ y) → p ≡ q
+bivector-uip = Decidable⇒UIP bivector-≟
 
 -- Proof-irrelevance for SelfDual-Pred: since SelfDual-Pred ω is itself
 -- a Bivector equality (`apply hodge-star ω ≡ ω`), two proofs are equal

@@ -37,20 +37,20 @@
 
 module Substrate.Cocycles.KRule where
 
-open import Level using (0ℓ)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin; _≟_)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
-open import Relation.Nullary using (Dec; yes; no)
+open import Substrate.Foundation.Negation using (Dec; yes; no)
 
 open import Substrate.Groups.SFin as SFin
   using (Permutation; _·_; ε; _⁻¹; _≈_; S-Group; σ-injective)
   renaming (apply to applyₛ)
 open import Substrate.Cocycle
-  using (WeakCocycleStructure; Action)
+  using (WeakCocycleStructure)
+open import Substrate.Algebra.SetoidGroup.Action using (Action)
 
 ------------------------------------------------------------------------
 -- The cocycle is parametric in n (the size of the variable space).
@@ -141,11 +141,11 @@ module _ (n : ℕ) where
   -- WeakCocycleStructure packaging.
   ----------------------------------------------------------------------
 
-  KRule-Cocycle : WeakCocycleStructure 0ℓ 0ℓ 0ℓ
+  KRule-Cocycle : WeakCocycleStructure
   KRule-Cocycle = record
     { Base                    = Assignment
     ; Gauge                   = S-Group
-    ; action                  = action
+    ; action-w                = action
     ; Invariant               = DistPattern
     ; project                 = dist
     ; project-gauge-invariant = dist-gauge-inv

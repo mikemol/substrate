@@ -32,8 +32,8 @@
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4 where
 
 open import Level using (0ℓ)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)

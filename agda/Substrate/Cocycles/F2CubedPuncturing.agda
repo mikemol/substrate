@@ -30,9 +30,8 @@
 
 module Substrate.Cocycles.F2CubedPuncturing where
 
-open import Level using (0ℓ)
-open import Data.Product using (_,_; ∃; -,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_,_; ∃; -,_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Groups.F2Cubed
@@ -40,6 +39,9 @@ open import Substrate.Groups.F2Cubed
          +-assoc; +-identityˡ; +-identityʳ; +-self)
 open import Substrate.Cocycle
   using (IsomorphicCocycleStructure; Action; IsTorsor)
+open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
+
+F₂³-Group-Setoid = to-setoid F₂³-Group
 
 ------------------------------------------------------------------------
 -- The invariant: the WHT core, the architecturally-meaningful
@@ -91,7 +93,7 @@ puncturing-act-∙ :
   puncturing-act (g + h) p ≡ puncturing-act g (puncturing-act h p)
 puncturing-act-∙ = +-assoc
 
-puncturing-action : Action F₂³-Group PunctureIndex
+puncturing-action : Action F₂³-Group-Setoid PunctureIndex
 puncturing-action = record
   { act    = puncturing-act
   ; act-id = puncturing-act-id
@@ -129,7 +131,7 @@ puncturing-transitive t₁ t₂ = (t₂ + t₁) , proof
             (trans (cong (t₂ +_) (+-self t₁))
                    (+-identityʳ t₂))
 
-fiber-is-torsor : (i : WHTCore) → IsTorsor F₂³-Group (Fiber i)
+fiber-is-torsor : (i : WHTCore) → IsTorsor F₂³-Group-Setoid (Fiber i)
 fiber-is-torsor wht-core = record
   { action     = puncturing-action
   ; free       = puncturing-free
@@ -140,10 +142,10 @@ fiber-is-torsor wht-core = record
 -- IsomorphicCocycleStructure packaging.
 ------------------------------------------------------------------------
 
-F2³-Puncturing-Cocycle : IsomorphicCocycleStructure 0ℓ 0ℓ
+F2³-Puncturing-Cocycle : IsomorphicCocycleStructure
 F2³-Puncturing-Cocycle = record
   { Invariant    = WHTCore
-  ; Gauge        = F₂³-Group
+  ; Gauge        = F₂³-Group-Setoid
   ; Fiber        = Fiber
   ; fiber-torsor = fiber-is-torsor
   }

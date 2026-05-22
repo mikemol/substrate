@@ -34,14 +34,16 @@
 
 module Substrate.Cocycles.V4Signature where
 
-open import Level using (0ℓ)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Product using (_×_; _,_; proj₁; proj₂; ∃; -,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; ∃; -,_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; cong)
 
 open import Substrate.Cocycle
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ; V₄-Group)
+open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
+
+V₄-Group-Setoid = to-setoid V₄-Group
 
 ------------------------------------------------------------------------
 -- The orbit_key components.
@@ -103,7 +105,7 @@ OrbitKey = Pairing × Chirality
 -- baseline" question doesn't arise at the type level.
 ------------------------------------------------------------------------
 
-V4-acts-on-itself : Action V₄-Group V₄
+V4-acts-on-itself : Action V₄-Group-Setoid V₄
 V4-acts-on-itself = record
   { act    = V4._·_
   ; act-id = V4.ε-left                  -- e · b ≡ b (algebraic via V4-Generic)
@@ -145,7 +147,7 @@ V4-transitive γ t₂ = (t₂ V4.· γ) , aux
     aux : (t₂ V4.· γ) V4.· γ ≡ t₂
     aux rewrite V4.·-assoc t₂ γ γ = V4.ε-right t₂
 
-V4-is-torsor : IsTorsor V₄-Group V₄
+V4-is-torsor : IsTorsor V₄-Group-Setoid V₄
 V4-is-torsor = record
   { action     = V4-acts-on-itself
   ; free       = V4-left-cancel
@@ -165,17 +167,17 @@ V4-is-torsor = record
 Fiber : OrbitKey → Set
 Fiber _ = V₄
 
-fiber-torsor : (i : OrbitKey) → IsTorsor V₄-Group (Fiber i)
+fiber-torsor : (i : OrbitKey) → IsTorsor V₄-Group-Setoid (Fiber i)
 fiber-torsor _ = V4-is-torsor
 
 ------------------------------------------------------------------------
 -- The CY-5 cocycle, as an IsomorphicCocycleStructure.
 ------------------------------------------------------------------------
 
-CY5-V4Signature : IsomorphicCocycleStructure 0ℓ 0ℓ
+CY5-V4Signature : IsomorphicCocycleStructure
 CY5-V4Signature = record
   { Invariant    = OrbitKey
-  ; Gauge        = V₄-Group
+  ; Gauge        = V₄-Group-Setoid
   ; Fiber        = Fiber
   ; fiber-torsor = fiber-torsor
   }

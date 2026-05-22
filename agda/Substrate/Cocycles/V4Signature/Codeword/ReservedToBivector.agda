@@ -22,10 +22,10 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivector where
 
-open import Data.Bool using (Bool; true; false)
-open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ)
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2

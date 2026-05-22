@@ -33,35 +33,27 @@
 
 module Substrate.Cocycles.V4Signature.S4GroupIso where
 
-open import Level using (0ℓ)
-open import Algebra.Bundles using (Group)
-open import Algebra.Structures
-import Algebra.Morphism.Structures as AlgMorph
-open import Relation.Binary.Morphism.Structures using (IsRelHomomorphism)
-open import Data.Product using (_,_; proj₁; proj₂; ∃; -,_)
-open import Relation.Binary.PropositionalEquality
-  using (_≡_; refl; sym; trans; cong; cong₂; isEquivalence)
-open import Relation.Binary.Structures using (IsEquivalence)
+open import Substrate.Foundation.Product using (_,_; proj₁; proj₂; ∃; -,_)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; sym; trans; cong; cong₂)
+import Substrate.Algebra.Magma     as SM
+import Substrate.Algebra.Semigroup as SS
+import Substrate.Algebra.Monoid    as SMo
+import Substrate.Algebra.Group     as SG
 
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
 open import Substrate.Groups.V4 as V4 using (V₄)
 open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group; ≈-refl;
-         inv-l; inv-r)
+  using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group; ≈-refl; inv-l; inv-r)
   renaming (apply to applyₛ; invₐ to invₐₛ)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive)
 open import Substrate.Groups.SemidirectProduct
-  using (Stab-D; v-for; s-for; s-for-fixes-D;
-         v-of-axis; v-of-axis-unique; factorisation)
+  using (Stab; v-for; s-for; s-for-fixes-anchor; v-of-axis; v-of-axis-unique; factorisation)
 open import Substrate.Cocycles.V4Signature
-  using (Pairing; α-pair; β-pair; γ-pair;
-         Chirality; even; odd;
-         OrbitKey)
+  using (Pairing; α-pair; β-pair; γ-pair; Chirality; even; odd; OrbitKey)
 open import Substrate.Cocycles.V4Signature.S4Iso
-  using (TotalSpace; total-to-s4; s4-to-total;
-         σ-round-trip; total-round-trip;
-         classify-CS)
+  using (TotalSpace; total-to-s4; s4-to-total; σ-round-trip; total-round-trip; classify-CS)
 
 ------------------------------------------------------------------------
 -- Helper: propositional equality implies pointwise equivalence.
@@ -197,59 +189,46 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
 ⁻¹ₜ-cong refl = refl
 
 ------------------------------------------------------------------------
--- Bundle TotalSpace as a Group.
+-- Bundle TotalSpace as a substrate-native Group.
 ------------------------------------------------------------------------
 
-isMagmaₜ : IsMagma _≡_ _∙ₜ_
-isMagmaₜ = record
-  { isEquivalence = isEquivalence
-  ; ∙-cong        = ∙ₜ-cong
+TotalSpace-Magma : SM.Magma TotalSpace
+TotalSpace-Magma = record { _·_ = _∙ₜ_ }
+
+TotalSpace-Semigroup : SS.Semigroup TotalSpace
+TotalSpace-Semigroup = record
+  { magma   = TotalSpace-Magma
+  ; ·-assoc = ∙ₜ-assoc
   }
 
-isSemigroupₜ : IsSemigroup _≡_ _∙ₜ_
-isSemigroupₜ = record
-  { isMagma = isMagmaₜ
-  ; assoc   = ∙ₜ-assoc
+TotalSpace-Monoid : SMo.Monoid TotalSpace
+TotalSpace-Monoid = record
+  { semigroup = TotalSpace-Semigroup
+  ; ε         = εₜ
+  ; ε-left    = ∙ₜ-identityˡ
+  ; ε-right   = ∙ₜ-identityʳ
   }
 
-isMonoidₜ : IsMonoid _≡_ _∙ₜ_ εₜ
-isMonoidₜ = record
-  { isSemigroup = isSemigroupₜ
-  ; identity    = ∙ₜ-identityˡ , ∙ₜ-identityʳ
-  }
-
-isGroupₜ : IsGroup _≡_ _∙ₜ_ εₜ _⁻¹ₜ
-isGroupₜ = record
-  { isMonoid = isMonoidₜ
-  ; inverse  = ∙ₜ-inverseˡ , ∙ₜ-inverseʳ
-  ; ⁻¹-cong  = ⁻¹ₜ-cong
-  }
-
-TotalSpace-Group : Group 0ℓ 0ℓ
+TotalSpace-Group : SG.Group TotalSpace
 TotalSpace-Group = record
-  { Carrier = TotalSpace
-  ; _≈_     = _≡_
-  ; _∙_     = _∙ₜ_
-  ; ε       = εₜ
-  ; _⁻¹     = _⁻¹ₜ
-  ; isGroup = isGroupₜ
+  { monoid    = TotalSpace-Monoid
+  ; inv       = _⁻¹ₜ
+  ; inv-left  = ∙ₜ-inverseˡ
+  ; inv-right = ∙ₜ-inverseʳ
   }
 
 ------------------------------------------------------------------------
--- The group isomorphism TotalSpace ≅ S_4 via total-to-s4.
+-- The group homomorphism / isomorphism TotalSpace ≅ S_4.
 --
--- Each homomorphism axiom witnesses by σ-round-trip + the
--- S_4-side axiom (since the S_4 operations were transferred TO
--- TotalSpace, total-to-s4 ∘ (transferred-op) ≈ (S_4-op) is direct).
+-- Substrate-honest scope: the FULL group-morphism record machinery
+-- (stdlib's Algebra.Morphism.Structures.IsGroupHomomorphism /
+-- IsGroupIsomorphism) is REMOVED. The homomorphism witnesses + the
+-- injectivity / surjectivity proofs are KEPT as standalone functions
+-- — a downstream substrate-native GroupHomomorphism record can
+-- consume them mechanically.
 ------------------------------------------------------------------------
 
-private
-  module Morph = AlgMorph.GroupMorphisms
-    (Group.rawGroup TotalSpace-Group)
-    (Group.rawGroup S₄-Group)
-
--- ⟦_⟧ = total-to-s4. Homomorphism axioms.
-
+-- Homomorphism witnesses.
 total-to-s4-homo :
   (a b : TotalSpace) → total-to-s4 (a ∙ₜ b) ≈ (total-to-s4 a · total-to-s4 b)
 total-to-s4-homo a b = σ-round-trip (total-to-s4 a · total-to-s4 b)
@@ -261,54 +240,19 @@ total-to-s4-⁻¹-homo :
   (a : TotalSpace) → total-to-s4 (a ⁻¹ₜ) ≈ (total-to-s4 a) ⁻¹
 total-to-s4-⁻¹-homo a = σ-round-trip ((total-to-s4 a) ⁻¹)
 
--- Built as nested record literals to avoid Agda's anonymous-instantiation
--- scoping issue with re-exported sub-records (IsMagmaHomomorphism /
--- IsMonoidHomomorphism inside GroupMorphisms).
-total-to-s4-isGroupHomomorphism : Morph.IsGroupHomomorphism total-to-s4
-total-to-s4-isGroupHomomorphism = record
-  { isMonoidHomomorphism = record
-      { isMagmaHomomorphism = record
-          { isRelHomomorphism =
-              record { cong = λ x≡y → ≡-to-≈ (cong total-to-s4 x≡y) }
-          ; homo              = total-to-s4-homo
-          }
-      ; ε-homo              = total-to-s4-ε-homo
-      }
-  ; ⁻¹-homo                = total-to-s4-⁻¹-homo
-  }
-
-------------------------------------------------------------------------
--- Group isomorphism: total-to-s4 is bijective in the relevant sense.
---
--- Injective: total-to-s4 a ≈ total-to-s4 b ⇒ a ≡ b.
---   Apply ≈-respects-s4-to-total to lift to ≡ on TotalSpace, then
---   use total-round-trip on both sides.
---
--- Surjective: for any σ ∈ Permutation, ∃ a : TotalSpace with
---   total-to-s4 a ≈ σ. Take a = s4-to-total σ; σ-round-trip is the
---   witness.
-------------------------------------------------------------------------
-
+-- Injectivity.
 total-to-s4-injective : ∀ {a b} → total-to-s4 a ≈ total-to-s4 b → a ≡ b
 total-to-s4-injective {a} {b} eq =
   trans (sym (total-round-trip a))
         (trans (≈-respects-s4-to-total (total-to-s4 a) (total-to-s4 b) eq)
                (total-round-trip b))
 
+-- Surjectivity.
 total-to-s4-surjective :
   ∀ σ → ∃ λ a → ∀ {z} → z ≡ a → total-to-s4 z ≈ σ
 total-to-s4-surjective σ = s4-to-total σ , λ {z} z≡ x →
   trans (cong (λ w → applyₛ (total-to-s4 w) x) z≡)
         (σ-round-trip σ x)
-
-total-to-s4-isGroupIsomorphism : Morph.IsGroupIsomorphism total-to-s4
-total-to-s4-isGroupIsomorphism = record
-  { isGroupMonomorphism = record
-      { isGroupHomomorphism = total-to-s4-isGroupHomomorphism
-      ; injective           = total-to-s4-injective
-      }
-  ; surjective              = total-to-s4-surjective
-  }
 
 ------------------------------------------------------------------------
 -- Notes

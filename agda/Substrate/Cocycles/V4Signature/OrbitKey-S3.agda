@@ -33,14 +33,14 @@
 
 module Substrate.Cocycles.V4Signature.OrbitKey-S3 where
 
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Fin.Properties using (_≟_)
-open import Data.Product using (_,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Properties using (_≟_)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
-open import Relation.Nullary using (yes; no)
+open import Substrate.Foundation.Negation using (yes; no)
 
 import Substrate.Groups.SFin as SFin
 open import Substrate.Cocycles.V4Signature

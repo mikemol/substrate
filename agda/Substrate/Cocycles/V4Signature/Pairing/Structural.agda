@@ -24,8 +24,8 @@
 
 module Substrate.Cocycles.V4Signature.Pairing.Structural where
 
-open import Data.Fin using (zero; suc)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Foundations.Bijection

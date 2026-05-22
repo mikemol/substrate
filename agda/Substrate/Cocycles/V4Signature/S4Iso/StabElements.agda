@@ -1,0 +1,99 @@
+------------------------------------------------------------------------
+-- Substrate.Cocycles.V4Signature.S4Iso.StabElements
+--
+-- The 6 canonical Stab(D) elements (stab-id, stab-sw, stab-cs, stab-cw,
+-- stab-csw, stab-cws) and their fixes-* verifications. Each is built
+-- parametrically via `extend D <SFin element>`.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Cocycles.V4Signature.S4Iso.StabElements where
+
+open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+
+open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Groups.S4 using (Permutation)
+open import Substrate.Groups.SemidirectProduct
+  using (Stab)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Groups.Stab-S3 using (fin3-to-non-anchor)
+open import Substrate.Groups.Stab-S3-Extend using (extend)
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3
+  using (transposition; transposition-fixes-third; s3-id; s3-csw; s3-cws)
+
+------------------------------------------------------------------------
+-- Identity in Stab(D).
+------------------------------------------------------------------------
+
+stab-id : Permutation
+stab-id = proj₁ (extend D s3-id)
+
+------------------------------------------------------------------------
+-- Three transpositions.
+------------------------------------------------------------------------
+
+-- (SW): D↔D, C↔C, S↔W.
+stab-sw : Permutation
+stab-sw = proj₁ (extend D (transposition (suc zero) (suc (suc zero))))
+
+-- (CS): D↔D, W↔W, C↔S.
+stab-cs : Permutation
+stab-cs = proj₁ (extend D (transposition zero (suc zero)))
+
+-- (CW): D↔D, S↔S, C↔W.
+stab-cw : Permutation
+stab-cw = proj₁ (extend D (transposition zero (suc (suc zero))))
+
+------------------------------------------------------------------------
+-- Two 3-cycles.
+------------------------------------------------------------------------
+
+-- (CSW): C→S→W→C, D fixed.
+stab-csw : Permutation
+stab-csw = proj₁ (extend D s3-csw)
+
+-- (CWS): C→W→S→C, D fixed. Inverse of (CSW).
+stab-cws : Permutation
+stab-cws = proj₁ (extend D s3-cws)
+
+------------------------------------------------------------------------
+-- Verification that each constructed element is in Stab(D).
+------------------------------------------------------------------------
+
+stab-id-fixes-D : Stab D stab-id
+stab-id-fixes-D = refl
+
+stab-id-fixes-C : Stab C stab-id
+stab-id-fixes-C = refl
+
+stab-id-fixes-S : Stab S stab-id
+stab-id-fixes-S = refl
+
+stab-id-fixes-W : Stab W stab-id
+stab-id-fixes-W = refl
+
+stab-sw-fixes-D : Stab D stab-sw
+stab-sw-fixes-D = refl
+
+stab-sw-fixes-C : Stab C stab-sw
+stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third (suc zero) (suc (suc zero)) zero (λ ()) (λ ()))
+
+stab-cs-fixes-D : Stab D stab-cs
+stab-cs-fixes-D = refl
+
+stab-cs-fixes-W : Stab W stab-cs
+stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc zero) (suc (suc zero)) (λ ()) (λ ()))
+
+stab-cw-fixes-D : Stab D stab-cw
+stab-cw-fixes-D = refl
+
+stab-cw-fixes-S : Stab S stab-cw
+stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc (suc zero)) (suc zero) (λ ()) (λ ()))
+
+stab-csw-fixes-D : Stab D stab-csw
+stab-csw-fixes-D = refl
+
+stab-cws-fixes-D : Stab D stab-cws
+stab-cws-fixes-D = refl

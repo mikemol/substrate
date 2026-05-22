@@ -26,7 +26,7 @@
 
 module Substrate.Cocycles.V4Signature.Chirality.Structural where
 
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Foundations.Bijection

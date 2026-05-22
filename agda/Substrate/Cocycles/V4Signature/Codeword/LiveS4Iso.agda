@@ -29,8 +29,8 @@
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso where
 
 open import Level using (0ℓ)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
@@ -40,7 +40,7 @@ open import Substrate.Groups.S4 as S4
   renaming (apply to applyₛ)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
-  using (v-of-axis; v-of-axis-sends-D; v-for; s-for; s-for-fixes-D;
+  using (v-of-axis; v-of-axis-anchor-sends; v-for; s-for; s-for-fixes-anchor;
          factorisation)
 open import Substrate.Cocycles.V4Signature.S4Iso
   using (stab-id; stab-sw; stab-cs; stab-cw; stab-csw; stab-cws)
@@ -141,7 +141,7 @@ permutation-to-live σ =
 --     — by v-of-axis-axis-of-v-id on (v-for σ).
 --   * stab-from-selector (selector-from-stab (s-for σ)) ≈ s-for σ
 --     — requires that (applyₛ (s-for σ) C , applyₛ (s-for σ) S) is
---     one of the 6 valid (s.C, s.S) pairs, by s-for-fixes-D and
+--     one of the 6 valid (s.C, s.S) pairs, by s-for-fixes-anchor and
 --     the structural properties of Stab(D).
 --
 -- Plus the factorisation σ ≈ embed (v-for σ) · s-for σ from

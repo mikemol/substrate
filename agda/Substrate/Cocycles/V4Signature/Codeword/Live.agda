@@ -24,13 +24,13 @@
 module Substrate.Cocycles.V4Signature.Codeword.Live where
 
 open import Level using (0ℓ)
-open import Data.Bool using (Bool; true; false)
-open import Data.Product using (_×_; _,_; proj₁; proj₂; Σ; Σ-syntax)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no; ¬_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ; Σ-syntax)
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
-open import Function.Bundles using (_↔_; mk↔ₛ′)
+open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
 open import Substrate.Cocycles.V4Signature.Codeword

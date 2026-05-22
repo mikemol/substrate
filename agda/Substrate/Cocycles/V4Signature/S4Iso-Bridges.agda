@@ -49,8 +49,8 @@
 
 module Substrate.Cocycles.V4Signature.S4Iso-Bridges where
 
-open import Data.Product using (_,_; proj₁)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_,_; proj₁)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
