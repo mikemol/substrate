@@ -453,9 +453,10 @@ import Substrate.Codes.Manifest
 import Substrate.Algebra.Nat.Bezout
 import Substrate.Algebra.Abelian.Z6-AsChainDecomp
 
--- Geometry orphans (Substrate.Geometry.PG excluded — pre-existing error).
+-- Geometry orphans.
 import Substrate.Geometry.HodgeDim3
 import Substrate.Geometry.ChiralityRotation
+import Substrate.Geometry.PG
 
 -- TokiPona / Linguistic capstone-style orphans.
 import Substrate.TokiPona.QCapstone
@@ -464,10 +465,11 @@ import Substrate.Linguistic.ClosureCapstone
 import Substrate.Linguistic.YonedaCapstone
 import Substrate.Linguistic.YonedaRespect
 
--- Groups orphans (Substrate.Groups.V4-as-Z2xZ2 excluded — pre-existing error).
+-- Groups orphans.
 import Substrate.Groups.Coxeter.Lifted
 import Substrate.Groups.S4-AsOpcodeAlgebra
 import Substrate.Groups.Stab-S3-Hom
+import Substrate.Groups.V4-as-Z2xZ2
 import Substrate.Groups.V4.Axioms.Lifted
 
 -- Category orphans (speculative arc seeds, all compile clean).
