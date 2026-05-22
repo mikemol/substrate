@@ -50,3 +50,21 @@ open import Substrate.Foundation.Empty using (⊥)
 
 ≤-<-trans : ∀ {m n p} → m ≤ n → n < p → m < p
 ≤-<-trans m≤n n<p = ≤-trans (s≤s m≤n) n<p
+
+------------------------------------------------------------------------
+-- ≤-tight: if suc m ≤ suc b AND ¬ (suc m ≤ b), then m ≡ b.
+--
+-- Used by DivMod reconstruction: when the mod-suc wraps (the NO
+-- branch of `suc (a mod-suc b) <? suc b`), the remainder is exactly b.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+
+≤-tight : (m b : ℕ) → suc m ≤ suc b → ¬ (suc m ≤ b) → m ≡ b
+≤-tight zero    zero    _         _      = refl
+≤-tight zero    (suc b) _         ¬sm≤b  = ⊥-elim (¬sm≤b (s≤s z≤n))
+≤-tight (suc m) zero    (s≤s ()) _
+≤-tight (suc m) (suc b) (s≤s sm≤sb) ¬sm≤b' =
+  cong suc (≤-tight m b sm≤sb (λ p → ¬sm≤b' (s≤s p)))

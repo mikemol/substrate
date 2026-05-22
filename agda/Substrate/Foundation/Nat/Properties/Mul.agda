@@ -60,3 +60,13 @@ open import Substrate.Foundation.Nat.Properties.Add
   trans (*-comm (m + n) a)
   (trans (*-distribˡ-+ a m n)
          (cong₂ _+_ (*-comm a m) (*-comm a n)))
+
+------------------------------------------------------------------------
+-- Associativity. Reduce on the leftmost factor via *-distribʳ-+.
+------------------------------------------------------------------------
+
+*-assoc : (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
+*-assoc zero    _ _ = refl
+*-assoc (suc m) n p =
+  trans (*-distribʳ-+ p n (m * n))
+        (cong (n * p +_) (*-assoc m n p))
