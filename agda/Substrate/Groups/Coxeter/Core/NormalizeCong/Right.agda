@@ -1,17 +1,21 @@
 ------------------------------------------------------------------------
--- Substrate.Groups.Coxeter.Core.NormalizeCongRight
+-- Substrate.Groups.Coxeter.Core.NormalizeCong.Right
 --
--- Section 4 of Coxeter.Core. cong-right at the normalize level:
---   normalize-cong-right a eq :
---     normalize (a ++ b₁) ≡ normalize (a ++ b₂)
---   given eq : normalize b₁ ≡ normalize b₂.
+-- normalize-cong-right a eq :
+--   normalize (a ++ b₁) ≡ normalize (a ++ b₂)
+-- given eq : normalize b₁ ≡ normalize b₂.
+--
+-- Closes via the right asymmetric distributor: peel normalize off the
+-- right operand on both sides, apply cong, peel back. Mirror of
+-- NormalizeCong.Left — exposed as a sibling pair so the similarity
+-- checker can surface the chirality structure.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
 
-module Substrate.Groups.Coxeter.Core.NormalizeCongRight
+module Substrate.Groups.Coxeter.Core.NormalizeCong.Right
   (Word : Set)
   (_++_ : Word → Word → Word)
   (Canonical : Word → Set)

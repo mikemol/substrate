@@ -23,7 +23,7 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Sext
 
 open import Substrate.Groups.Coxeter.Core.NormalizeAppend
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
-open import Substrate.Groups.Coxeter.Core.NormalizeCongRight
+open import Substrate.Groups.Coxeter.Core.NormalizeCong
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
 open import Substrate.Groups.Coxeter.Core.HigherArity.Quint
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib

@@ -20,7 +20,7 @@
 --   Core.Operations          — _·_ / _≈_ / _≉_ / ε
 --   Core.NormalizeIdem       — idempotency of normalize
 --   Core.NormalizeAppend     — left/right asymmetric distributors
---   Core.NormalizeCongRight  — cong-right at normalize level
+--   Core.NormalizeCong        — cong at normalize level (Left + Right pair)
 --   Core.HigherArity         — triple / quad / quint / sext / sept
 --   Core.IdemInequality      — ≉-idem lifting
 --   Core.Clash               — Canonical-vs-≉ ⊥-elim macro
@@ -60,7 +60,7 @@ open import Substrate.Groups.Coxeter.Core.NormalizeIdem
 open import Substrate.Groups.Coxeter.Core.NormalizeAppend
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
 
-open import Substrate.Groups.Coxeter.Core.NormalizeCongRight
+open import Substrate.Groups.Coxeter.Core.NormalizeCong
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
 
 open import Substrate.Groups.Coxeter.Core.HigherArity
