@@ -440,6 +440,67 @@ import Substrate.ShadowArchitecture.Raven
 import Substrate.Cardinality.Product
 
 ------------------------------------------------------------------------
+-- Orphan-sweep round 3: stranded modules without parent shims.
+-- Routed through this catalog so they're reachable.
+------------------------------------------------------------------------
+
+-- New per-subtree manifests.
+import Substrate.Conway.Manifest
+import Substrate.Pipeline.Manifest
+import Substrate.Codes.Manifest
+
+-- Algebra orphans.
+import Substrate.Algebra.Nat.Bezout
+import Substrate.Algebra.Abelian.Z6-AsChainDecomp
+
+-- Geometry orphans (Substrate.Geometry.PG excluded — pre-existing error).
+import Substrate.Geometry.HodgeDim3
+import Substrate.Geometry.ChiralityRotation
+
+-- TokiPona / Linguistic capstone-style orphans.
+import Substrate.TokiPona.QCapstone
+import Substrate.Linguistic.BicategoricalCapstone
+import Substrate.Linguistic.ClosureCapstone
+import Substrate.Linguistic.YonedaCapstone
+import Substrate.Linguistic.YonedaRespect
+
+-- Groups orphans (Substrate.Groups.V4-as-Z2xZ2 excluded — pre-existing error).
+import Substrate.Groups.Coxeter.Lifted
+import Substrate.Groups.S4-AsOpcodeAlgebra
+import Substrate.Groups.Stab-S3-Hom
+import Substrate.Groups.V4.Axioms.Lifted
+
+-- Category orphans (speculative arc seeds, all compile clean).
+import Substrate.Category.AtlasOfProbes
+import Substrate.Category.BWTEmergence
+import Substrate.Category.CascadedCoalgebra
+import Substrate.Category.CliffordEmissionAlgebra
+import Substrate.Category.CoarseResidueEmission
+import Substrate.Category.Coherence
+import Substrate.Category.ComposedReference
+import Substrate.Category.CompressionAtlas
+import Substrate.Category.ConeBondArchitecture
+import Substrate.Category.CoxeterPermutationGroup
+import Substrate.Category.F2Graded
+import Substrate.Category.GeneratorOperad
+import Substrate.Category.GradedBicategorical
+import Substrate.Category.HC.InfCapstone
+import Substrate.Category.MultiPrimeSpectralProfile
+import Substrate.Category.MultiSylowComposition
+import Substrate.Category.MultiscaleOctonionLoop
+import Substrate.Category.PhaseLockedLoop
+import Substrate.Category.PredictorRing
+import Substrate.Category.PrimeSampledChain
+import Substrate.Category.ReedMullerHierarchy
+import Substrate.Category.ReferenceOrbit
+import Substrate.Category.ResidueCompensation
+import Substrate.Category.RuleAction
+import Substrate.Category.StochasticLens
+import Substrate.Category.StratifiedSequence
+import Substrate.Category.TermAlgebraBridges
+import Substrate.Category.TermAlgebraCapstone
+
+------------------------------------------------------------------------
 -- Capstone.
 --
 -- After this module: an import-target for the FULL set of substrate-
