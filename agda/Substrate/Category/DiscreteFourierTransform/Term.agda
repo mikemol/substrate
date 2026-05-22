@@ -8,11 +8,11 @@
 
 module Substrate.Category.DiscreteFourierTransform.Term where
 
+open import Substrate.Foundation.Product using (_,_; _×_)
+
 -- DFT context = (carrier-type, coefficient-type).
 DFTContext : Set₁
 DFTContext = Set × Set
-  where open import Data.Product using (_×_)
-open import Substrate.Foundation.Product using (_,_; _×_)
 
 data DFTGen : DFTContext → DFTContext → Set₁ where
   forward-DFT : (s₁ s₂ : DFTContext) → DFTGen s₁ s₂

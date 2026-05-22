@@ -11,11 +11,11 @@
 
 module Substrate.Probability.ConjugateMonad.Term where
 
+open import Substrate.Foundation.Product using (_,_; _×_)
+
 -- Conjugate-monad parameter pair: (parameter-type, observation-type).
 ConjState : Set₁
 ConjState = Set × Set
-  where open import Data.Product using (_×_)
-open import Substrate.Foundation.Product using (_,_; _×_)
 
 data ConjGen : ConjState → ConjState → Set₁ where
   lift-conj : (s₁ s₂ : ConjState) → ConjGen s₁ s₂
