@@ -32,7 +32,7 @@
 
 module Substrate.ShadowArchitecture.Persistence where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -113,9 +113,6 @@ empty-bottom c =
 -- (Symmetrically for `populate-line`.)
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Negation using (does)
-import Relation.Nullary.Decidable as Dec
-
 -- We need decidable equality on Point. The substrate's FanoPlane
 -- uses 7 named constructors; equality is decidable by case analysis.
 -- Rather than depend on a stdlib instance, we inline the check.
@@ -142,25 +139,23 @@ eq-Line _  _  = false
 
 populate-point : Point → Cotype → Cotype
 populate-point q c = record
-  { populated-point = λ p → Cotype.populated-point c p Data.Bool.∨ eq-Point p q
+  { populated-point = λ p → Cotype.populated-point c p ∨ eq-Point p q
   ; populated-line  = Cotype.populated-line c
   }
-  where import Data.Bool
+  -- ∨ from Substrate.Foundation.Bool (imported at file scope)
 
 populate-line : Line → Cotype → Cotype
 populate-line m c = record
   { populated-point = Cotype.populated-point c
-  ; populated-line  = λ ℓ → Cotype.populated-line c ℓ Data.Bool.∨ eq-Line ℓ m
+  ; populated-line  = λ ℓ → Cotype.populated-line c ℓ ∨ eq-Line ℓ m
   }
-  where import Data.Bool
+  -- ∨ from Substrate.Foundation.Bool (imported at file scope)
 
 ------------------------------------------------------------------------
 -- 7. Monotonicity of `populate-point` / `populate-line`.
 --
 -- Each accumulation step preserves all prior populations.
 ------------------------------------------------------------------------
-
-open import Substrate.Foundation.Bool using (_∨_)
 
 bool-or-preserves :
   ∀ {a b : Bool} → a ≡ true → (a ∨ b) ≡ true
