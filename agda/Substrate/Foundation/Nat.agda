@@ -28,6 +28,7 @@ data ℕ : Set where
 
 infixl 6 _+_ _∸_
 infixl 7 _*_
+infixr 8 _^_
 
 _+_ : ℕ → ℕ → ℕ
 zero  + n = n
@@ -36,6 +37,10 @@ suc m + n = suc (m + n)
 _*_ : ℕ → ℕ → ℕ
 zero  * n = zero
 suc m * n = n + (m * n)
+
+_^_ : ℕ → ℕ → ℕ
+m ^ zero  = suc zero
+m ^ suc n = m * (m ^ n)
 
 _∸_ : ℕ → ℕ → ℕ
 m     ∸ zero  = m
