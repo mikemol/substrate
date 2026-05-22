@@ -2,13 +2,12 @@
 -- Substrate.Groups.Coxeter.Core.HigherArity.Sext
 --
 -- 6-operand distributor — used for Zₙ Coxeter sixth-power identities.
--- Compose normalize-append on `a` with normalize-cong-right on
--- normalize-quint b c d e f.
+-- Cons `a` onto normalize-quint b c d e f.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; trans)
+open import Substrate.Foundation.Eq using (_≡_)
 
 module Substrate.Groups.Coxeter.Core.HigherArity.Sext
   (Word : Set)
@@ -21,9 +20,7 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Sext
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
 
-open import Substrate.Groups.Coxeter.Core.NormalizeAppend
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
-open import Substrate.Groups.Coxeter.Core.NormalizeCong
+open import Substrate.Groups.Coxeter.Core.HigherArity.Step
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
 open import Substrate.Groups.Coxeter.Core.HigherArity.Quint
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
@@ -33,6 +30,4 @@ normalize-sext : (a b c d e f : Word) →
                  normalize (normalize a ++ (normalize b ++
                             (normalize c ++ (normalize d ++
                              (normalize e ++ normalize f)))))
-normalize-sext a b c d e f =
-  trans (normalize-append a (b ++ (c ++ (d ++ (e ++ f)))))
-        (normalize-cong-right (normalize a) (normalize-quint b c d e f))
+normalize-sext a b c d e f = normalize-cons a (normalize-quint b c d e f)

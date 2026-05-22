@@ -2,13 +2,12 @@
 -- Substrate.Groups.Coxeter.Core.HigherArity.Sept
 --
 -- 7-operand distributor — used for Z₇ Coxeter seventh-power identity.
--- Compose normalize-append on `a` with normalize-cong-right on
--- normalize-sext b c d e f g.
+-- Cons `a` onto normalize-sext b c d e f g.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; trans)
+open import Substrate.Foundation.Eq using (_≡_)
 
 module Substrate.Groups.Coxeter.Core.HigherArity.Sept
   (Word : Set)
@@ -21,9 +20,7 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Sept
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
 
-open import Substrate.Groups.Coxeter.Core.NormalizeAppend
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
-open import Substrate.Groups.Coxeter.Core.NormalizeCong
+open import Substrate.Groups.Coxeter.Core.HigherArity.Step
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
 open import Substrate.Groups.Coxeter.Core.HigherArity.Sext
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
@@ -33,6 +30,4 @@ normalize-sept : (a b c d e f g : Word) →
                  normalize (normalize a ++ (normalize b ++
                             (normalize c ++ (normalize d ++
                              (normalize e ++ (normalize f ++ normalize g))))))
-normalize-sept a b c d e f g =
-  trans (normalize-append a (b ++ (c ++ (d ++ (e ++ (f ++ g))))))
-        (normalize-cong-right (normalize a) (normalize-sext b c d e f g))
+normalize-sept a b c d e f g = normalize-cons a (normalize-sext b c d e f g)

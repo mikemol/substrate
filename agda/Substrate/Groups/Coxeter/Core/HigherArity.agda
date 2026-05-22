@@ -5,16 +5,18 @@
 -- decomposed file-per-lemma to expose the inductive shape to the
 -- similarity checker:
 --
+--   HigherArity.Step    — normalize-cons (the shared arity-step combinator)
 --   HigherArity.Triple  — 3 operands  (V₄ etc.)
 --   HigherArity.Quad    — 4 operands  (V₄-4-product)
 --   HigherArity.Quint   — 5 operands  (Z₅ fifth-power)
 --   HigherArity.Sext    — 6 operands  (Zₙ sixth-power)
 --   HigherArity.Sept    — 7 operands  (Z₇ seventh-power)
 --
--- Each step n+1 is `normalize-append a (rest) `trans` cong-right
--- (normalize-(n-1) ...)`. The five sibling files share an identical
--- body shape; once the typed-hole similarity checker reads them, a
--- single parametric "arity-step" combinator should become extractable.
+-- Each leaf is `normalize-cons a (previous-arity-lemma ...)` — the
+-- single `normalize-append + normalize-cong-right` step is extracted
+-- in `HigherArity.Step` as `normalize-cons`, and every Triple…Sept
+-- leaf is a one-line specialization. Consumer surfaces (the
+-- per-arity names) are preserved.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -31,6 +33,9 @@ module Substrate.Groups.Coxeter.Core.HigherArity
   (normalize-distrib :
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
+
+open import Substrate.Groups.Coxeter.Core.HigherArity.Step
+  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
 
 open import Substrate.Groups.Coxeter.Core.HigherArity.Triple
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
