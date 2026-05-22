@@ -105,20 +105,20 @@ insert-cycle-id a = canonical-cover
   (λ {w} _ → insert a (insert a (insert a (insert a w))) ≡ w)
   (refl , refl , refl , refl)
 
-insert-append-lemma-Z4 :
+insert-append-lemma :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
-insert-append-lemma-Z4 a {[]}             w₂ c-ε   = refl
-insert-append-lemma-Z4 a {a ∷ []}         w₂ c-a   = refl
-insert-append-lemma-Z4 a {a ∷ a ∷ []}     w₂ c-aa  = refl
-insert-append-lemma-Z4 a {a ∷ a ∷ a ∷ []} w₂ c-aaa =
+insert-append-lemma a {[]}             w₂ c-ε   = refl
+insert-append-lemma a {a ∷ []}         w₂ c-a   = refl
+insert-append-lemma a {a ∷ a ∷ []}     w₂ c-aa  = refl
+insert-append-lemma a {a ∷ a ∷ a ∷ []} w₂ c-aaa =
   sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed insert-append-lemma-Z4 public
+open WithLemmas canonical-is-fixed insert-append-lemma public
 
 ------------------------------------------------------------------------
 -- 6. Decidable equality on Canonical forms.

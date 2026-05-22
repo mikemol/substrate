@@ -85,21 +85,21 @@ insert-cycle-id a c-aa   = refl
 insert-cycle-id a c-aaa  = refl
 insert-cycle-id a c-aaaa = refl
 
-insert-append-lemma-Z5 :
+insert-append-lemma :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
-insert-append-lemma-Z5 a {[]}                 w₂ c-ε    = refl
-insert-append-lemma-Z5 a {a ∷ []}             w₂ c-a    = refl
-insert-append-lemma-Z5 a {a ∷ a ∷ []}         w₂ c-aa   = refl
-insert-append-lemma-Z5 a {a ∷ a ∷ a ∷ []}     w₂ c-aaa  = refl
-insert-append-lemma-Z5 a {a ∷ a ∷ a ∷ a ∷ []} w₂ c-aaaa =
+insert-append-lemma a {[]}                 w₂ c-ε    = refl
+insert-append-lemma a {a ∷ []}             w₂ c-a    = refl
+insert-append-lemma a {a ∷ a ∷ []}         w₂ c-aa   = refl
+insert-append-lemma a {a ∷ a ∷ a ∷ []}     w₂ c-aaa  = refl
+insert-append-lemma a {a ∷ a ∷ a ∷ a ∷ []} w₂ c-aaaa =
   sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed insert-append-lemma-Z5 public
+open WithLemmas canonical-is-fixed insert-append-lemma public
 
 ------------------------------------------------------------------------
 -- 6. Inversion on canonical forms — Z/5 (prime-order cyclic):
