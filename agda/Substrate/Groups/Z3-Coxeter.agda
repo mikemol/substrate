@@ -3,64 +3,67 @@
 --
 -- ℤ/3ℤ as a Coxeter-style presentation: ⟨a | a³ = ε⟩.
 --
--- Smallest cyclic group of odd order; first Coxeter instance whose
--- generator is NOT an involution (cf. Z2-Coxeter / V4-Coxeter). Validates
--- that Substrate.Groups.Coxeter.Core handles non-involutive cyclic
--- relations via `insert-cycle-id` (the a³ = ε analog of Z/2's
--- insert-involution).
+-- Phase 4 migration of Path 2: this file is a thin instance of
+-- Substrate.Groups.Coxeter.Cyclic 2 (group order 3). The named-
+-- constructor enumeration (data Canonical with c-ε / c-a / c-aa) is
+-- replaced by Cyclic's existential view + pattern synonyms.
+-- Downstream pattern-matches like `f Z₃.c-ε = …` continue to work
+-- transparently.
 --
--- Useful theorem: `cube-identity` — every element cubes to ε
--- (the Z/3 parallel of Z/2's `self-inverse`).
---
--- Used by: future Substrate.Groups.S3 = Z/3 ⋊ Z/2 via the planned
--- SemidirectProduct combinator (S₄ = V₄ ⋊ S₃, see CY-5).
+-- Useful theorem: `cube-identity` — every element cubes to ε.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z3-Coxeter where
 
-open import Substrate.Groups.Coxeter.Word public
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _×_; _,_)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; _≢_)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; _≢_)
+
+open import Substrate.Groups.Coxeter.Word public
+import Substrate.Groups.Coxeter.Cyclic 2 as Cyc
 
 ------------------------------------------------------------------------
--- 1. Z/3-specific data.
+-- 1. Re-export the Z₃ generator + cyclic-suc machinery from Cyclic 2.
 ------------------------------------------------------------------------
 
-data Gen : Set where
-  a : Gen
-
-data Canonical : Word Gen → Set where
-  c-ε  : Canonical []
-  c-a  : Canonical (a ∷ [])
-  c-aa : Canonical (a ∷ a ∷ [])
+open Cyc public using (Gen; a; power)
 
 ------------------------------------------------------------------------
--- 2. The insert step: encodes a³ = ε as a 3-cyclic wrap on canonical
--- forms — [] → [a] → [a,a] → [].
+-- 2. Canonical = the existential view + pattern synonyms.
+--
+-- The substrate's downstream pattern-matches on c-ε / c-a / c-aa
+-- continue to work through the synonyms. Each synonym is BOTH a
+-- pattern (for case-split) and an expression (for construction).
+------------------------------------------------------------------------
+
+Canonical : Word Gen → Set
+Canonical w = Σ (Fin 3) (Cyc.Canonical w)
+
+pattern c-ε  = zero               , Cyc.c-here zero
+pattern c-a  = suc zero           , Cyc.c-here (suc zero)
+pattern c-aa = suc (suc zero)     , Cyc.c-here (suc (suc zero))
+
+------------------------------------------------------------------------
+-- 3. insert + insert-canonical via Cyclic. The Word-level insert
+-- comes from Cyclic; the existential-lift inserts at the Σ level.
 ------------------------------------------------------------------------
 
 insert : Gen → Word Gen → Word Gen
-insert a []           = a ∷ []
-insert a (a ∷ [])     = a ∷ a ∷ []
-insert a (a ∷ a ∷ []) = []
-insert g w            = g ∷ w  -- fallback (unreachable for Canonical inputs)
+insert = Cyc.insert
 
 insert-canonical : (g : Gen) {w : Word Gen} → Canonical w → Canonical (insert g w)
-insert-canonical a c-ε  = c-a
-insert-canonical a c-a  = c-aa
-insert-canonical a c-aa = c-ε
+insert-canonical g (k , c) = Cyc.σ k , Cyc.insert-canonical g c
 
 ------------------------------------------------------------------------
--- Canonical-cover for Z₃: dispatches a 3-tuple of per-position
--- proofs onto any `Canonical w`. Each refl literal infers its own
--- implicit {x} so heterogeneous-output Cayley tables work too.
+-- 4. canonical-cover — dispatch via the pattern synonyms.
+--
+-- The Fin-indexed dispatch lives in Cyc.canonical-cover; this is the
+-- substrate's named-constructor form for downstream compat.
 ------------------------------------------------------------------------
-
-open import Substrate.Foundation.Product using (_×_; _,_)
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
@@ -71,20 +74,14 @@ canonical-cover _ (_ , p , _) c-a  = p
 canonical-cover _ (_ , _ , p) c-aa = p
 
 ------------------------------------------------------------------------
--- 3. Open ListPresentation with Z/3's atoms.
+-- 5. Open ListPresentation with the existential Canonical.
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter.ListPresentation
   Gen Canonical c-ε insert insert-canonical public
 
 ------------------------------------------------------------------------
--- 4. Per-relation obligations.
---
--- canonical-is-fixed: trivial 3-refl enumeration.
---
--- insert-cycle-id: the a³ = ε relation lifted to the insert level —
--- inserting `a` three times restores the input. Used by case [a,a] of
--- insert-append-lemma.
+-- 6. Per-relation obligations — same cover-dispatch as before.
 ------------------------------------------------------------------------
 
 canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
@@ -106,13 +103,13 @@ insert-append-lemma a {a ∷ a ∷ []} w₂ c-aa =
   sym (insert-cycle-id a (normalize-canonical w₂))
 
 ------------------------------------------------------------------------
--- 5. Open WithLemmas to inherit the full abstract Core surface.
+-- 7. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
 open WithLemmas canonical-is-fixed insert-append-lemma public
 
 ------------------------------------------------------------------------
--- 6. Decidable equality on Canonical forms.
+-- 8. Decidable equality on Canonical forms.
 ------------------------------------------------------------------------
 
 gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
@@ -125,21 +122,14 @@ same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ �
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
--- 7. Inversion on canonical forms — Z/3 elements are NOT self-inverse:
---   inv []     = []
---   inv [a]    = [a,a]
---   inv [a,a]  = [a]
---
--- Exposed as a per-instance operation; the eventual Z3.agda adapter
--- will use this when constructing the Group bundle. The Core's
--- _·_/_≈_/ε layer remains inverse-free.
+-- 9. Inversion on canonical forms — Z/3 elements are NOT self-inverse.
 ------------------------------------------------------------------------
 
 inv : Word Gen → Word Gen
 inv []           = []
 inv (a ∷ [])     = a ∷ a ∷ []
 inv (a ∷ a ∷ []) = a ∷ []
-inv w            = w  -- fallback (unreachable for Canonical inputs)
+inv w            = w  -- fallback
 
 inv-canonical : {w : Word Gen} → Canonical w → Canonical (inv w)
 inv-canonical c-ε  = c-ε
@@ -147,11 +137,7 @@ inv-canonical c-a  = c-aa
 inv-canonical c-aa = c-a
 
 ------------------------------------------------------------------------
--- 8. Z/3-specific theorem: every element cubes to ε.
---
--- Parallel of Z2-Coxeter's `self-inverse`. Composes a flatten-step
--- (bridge `(w · w) · w` to a flat 3-arg form) with a 3-refl
--- enumeration on Canonical w.
+-- 10. Z/3-specific theorem: every element cubes to ε.
 ------------------------------------------------------------------------
 
 private
@@ -177,11 +163,7 @@ cube-identity w =
         (cube-canonical (normalize-canonical w))
 
 ------------------------------------------------------------------------
--- 9. Inverse-composition theorems on canonical forms.
---
--- inv-left-canonical / inv-right-canonical: on Canonical w, the
--- composition `inv w · w` and `w · inv w` both yield ε. 3 refl cases
--- each. Used by the eventual Z3.agda adapter to build the Group bundle.
+-- 11. Inverse-composition theorems on canonical forms.
 ------------------------------------------------------------------------
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
@@ -196,21 +178,14 @@ inv-right-canonical = canonical-cover
   (λ {w} _ → normalize (w ++ inv w) ≡ [])
   (refl , refl , refl)
 
-------------------------------------------------------------------------
--- 10. inv is involutive on canonical forms: inv (inv w) ≡ w.
-------------------------------------------------------------------------
-
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
 inv-inv-canonical = canonical-cover
   (λ {w} _ → inv (inv w) ≡ w)
   (refl , refl , refl)
 
 ------------------------------------------------------------------------
--- 11. Z/3 is abelian, so inv distributes (not anti-distributes) over
--- the product. 9 refl cases on canonical inputs.
---
--- Stated in the "after-normalize" form needed by the Z/2 → Aut(Z/3)
--- action: normalize (inv (normalize (w₁ ++ w₂))) ≡ normalize (inv w₁ ++ inv w₂).
+-- 12. Z/3 is abelian: inv distributes over the product. 9 refls
+-- via nested cover (3 outer × 3 inner) on canonical inputs.
 ------------------------------------------------------------------------
 
 inv-distrib-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ →
