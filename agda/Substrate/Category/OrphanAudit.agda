@@ -175,8 +175,23 @@ module Substrate.Category.OrphanAudit where
 --   round 3   →  31 / 988                   (3.1%)
 --   round 4   →  28 / 1019                  (2.7%)
 --   round 5   →  see latest audit numbers
+--   round 6   →  15 / 1102                  (1.4%)
 --
--- Non-designed orphans 98 → 64 → 7 → 4 → 2.
+-- Non-designed orphans 98 → 64 → 7 → 4 → 2 → 0.
+--
+-- Round 6 (Sites + obligation-surface fulfilment):
+--   * PontryaginDual + DiscreteFourierTransform — 9 empty-marker
+--     records replaced with substantive obligation-surface fields
+--     per [[coalgebraic-not-consumer-driven]] (eb8e726).
+--   * 13 per-arc Sites.Manifest aggregators created + wired into
+--     PrimitiveInstances (45c5574). Concrete sites are now
+--     reachable through one import per arc.
+--   * Unicode-aware audit regex revealed earlier Raven false-
+--     positives were not actual orphans (the imports use ñ/é).
+--
+-- The remaining 15 designed orphans are all top-level catalogs,
+-- arc-final capstones, and the Examples/Demos pair. No non-designed
+-- orphans remain.
 --
 -- Round 4: chased the three pre-existing-error orphans:
 --   * Geometry.PG       (5364525) — stale Data.Nat.suc → Foundation.Nat;
@@ -199,8 +214,6 @@ module Substrate.Category.OrphanAudit where
 -- Both contained no type-level content; full text remains in git
 -- history for arc-narrative preservation.
 --
--- The remaining 2 non-designed orphans are intentional:
---   * Raven.PhaseTransition.* sub-modules — active parallel-agent WIP.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
