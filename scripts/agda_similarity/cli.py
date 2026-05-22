@@ -135,6 +135,30 @@ def build_parser() -> argparse.ArgumentParser:
             "mode if not."
         ),
     )
+    ap.add_argument(
+        "--emit-template",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "In --skeleton mode, if all files reduce to one template, "
+            "write that template text to PATH. Suitable as the body "
+            "of the consolidating parametric module (user wraps it "
+            "with the target language's module-declaration syntax)."
+        ),
+    )
+    ap.add_argument(
+        "--emit-map",
+        type=Path,
+        default=None,
+        metavar="PATH",
+        help=(
+            "In --skeleton mode, write a JSON substitution map to "
+            "PATH: {mode, template, files, groups|substitutions}. "
+            "Drives downstream tooling that turns the orbit into "
+            "thin instances."
+        ),
+    )
 
     # Score mode option
     ap.add_argument(
@@ -191,6 +215,8 @@ def main(argv: list[str] | None = None) -> int:
             typed_holes=args.typed_holes,
             max_show=args.max_show,
             anonymize_patterns=anonymize_patterns,
+            emit_template=args.emit_template,
+            emit_map=args.emit_map,
         )
         return 0
 

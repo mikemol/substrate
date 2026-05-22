@@ -26,6 +26,7 @@ marked `*`.
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -105,6 +106,56 @@ def _derive_marker(values: list[str], index: int) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Artifact emission helpers (for downstream tooling).
+# ---------------------------------------------------------------------------
+
+
+def _build_substitution_map(
+    paths: list[Path],
+    use_typed: bool,
+    markers: list[str],
+    groups: list[dict[Path, str]],
+    residue_per_file: dict[Path, set[str]],
+    hole_marker: str,
+    template_text: str,
+) -> dict:
+    """Build a JSON-serializable substitution map from a successful
+    skeleton construction. Format:
+      {
+        "mode": "typed-holes" | "single-hole",
+        "template": "<unified template text>",
+        "files": [<path>, ...],
+        "groups": [
+          {"marker": "<H1>", "values": {"file_a": "val_a", ...}},
+          ...
+        ]  # in typed-holes mode
+        | "substitutions": {
+          "<file>": {"<marker>": "<value>", ...}, ...
+        }  # in single-hole mode
+      }
+    """
+    base = {
+        "mode": "typed-holes" if use_typed else "single-hole",
+        "template": template_text,
+        "files": [str(p) for p in paths],
+    }
+    if use_typed:
+        base["groups"] = [
+            {
+                "marker": marker,
+                "values": {str(p): groups[i][p] for p in paths},
+            }
+            for i, marker in enumerate(markers)
+        ]
+    else:
+        base["marker"] = hole_marker
+        base["substitutions"] = {
+            str(p): {hole_marker: sorted(residue_per_file[p])} for p in paths
+        }
+    return base
+
+
+# ---------------------------------------------------------------------------
 # Skeleton construction.
 # ---------------------------------------------------------------------------
 
@@ -117,6 +168,8 @@ def construct_skeleton(
     line_width: int = 100,
     max_show: int = 30,
     anonymize_patterns: list[tuple[str, str]] | None = None,
+    emit_template: Path | None = None,
+    emit_map: Path | None = None,
 ) -> None:
     """Construct a parametric skeleton from a set of files.
 
@@ -226,6 +279,18 @@ def construct_skeleton(
                 print(f"# {p.name}:")
                 for t in tokens_:
                     print(f"#   {hole_marker}  ←  {t}")
+
+        # Optional artifact emission for downstream tooling.
+        if emit_template is not None:
+            emit_template.write_text(first_skel)
+            print(f"\n# Template written to: {emit_template}")
+        if emit_map is not None:
+            payload = _build_substitution_map(
+                paths, use_typed, markers, groups, residue_per_file,
+                hole_marker, first_skel,
+            )
+            emit_map.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
+            print(f"# Substitution map written to: {emit_map}")
         return
 
     # Partial alignment: some lines line up across substituted files.
