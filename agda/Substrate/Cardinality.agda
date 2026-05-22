@@ -70,14 +70,14 @@
 module Substrate.Cardinality where
 
 open import Level using (0ℓ)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
+open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Cover using (fin-cover)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
 open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
