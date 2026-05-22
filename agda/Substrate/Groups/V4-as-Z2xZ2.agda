@@ -54,8 +54,8 @@ import Substrate.Groups.Z2-Coxeter as Z₂
 open import Substrate.Groups.Coxeter.DirectProduct
   (Z₁.Word Z₁.Gen) (Z₁._++_) Z₁.ε Z₁.++-assoc
     Z₁.Canonical Z₁.normalize Z₁.normalize-canonical
-    Z₁.canonical-is-fixed-Z2 Z₁.normalize-distrib
+    Z₁.canonical-is-fixed Z₁.normalize-distrib
   (Z₂.Word Z₂.Gen) (Z₂._++_) Z₂.ε Z₂.++-assoc
     Z₂.Canonical Z₂.normalize Z₂.normalize-canonical
-    Z₂.canonical-is-fixed-Z2 Z₂.normalize-distrib
+    Z₂.canonical-is-fixed Z₂.normalize-distrib
   public
