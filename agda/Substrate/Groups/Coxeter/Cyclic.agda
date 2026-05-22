@@ -287,6 +287,144 @@ inv-canonical (c-here k) =
   subst (λ w → Canonical w (inv-pos k)) (sym (inv-power-eq k)) (c-here (inv-pos k))
 
 ------------------------------------------------------------------------
+-- 14. Existential view of Canonical — needed to integrate with the
+-- substrate's Coxeter.ListPresentation framework which expects a
+-- single-index Canonical : Word Gen → Set.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+
+Canonical-ex : Word Gen → Set
+Canonical-ex w = Σ (Fin (suc n)) (Canonical w)
+
+c-ε : Canonical-ex []
+c-ε = zero , c-here zero
+
+canonical-cover-ex :
+  ∀ {ℓ} (P : ∀ {w} → Canonical-ex w → Set ℓ) →
+  ((k : Fin (suc n)) → P (k , c-here k)) →
+  ∀ {w} (c : Canonical-ex w) → P c
+canonical-cover-ex P f (k , c-here .k) = f k
+
+insert-canonical-ex : (g : Gen) {w : Word Gen} → Canonical-ex w → Canonical-ex (insert g w)
+insert-canonical-ex g (k , c) = σ k , insert-canonical g c
+
+inv-canonical-ex : ∀ {w} → Canonical-ex w → Canonical-ex (inv w)
+inv-canonical-ex (k , c) = inv-pos k , inv-canonical c
+
+------------------------------------------------------------------------
+-- 15. Open ListPresentation's outer module — provides normalize +
+-- normalize-canonical. WithLemmas (the inner sub-module) is opened
+-- AFTER we prove canonical-is-fixed + insert-append-lemma below.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex public
+
+------------------------------------------------------------------------
+-- 16. power-canonical-bounded: normalize is identity on power words
+-- below the cycle boundary. Structural induction on k.
+------------------------------------------------------------------------
+
+private
+  -- For k < n, insert a (power k) simply prepends `a`.
+  insert-power-advance : (k : ℕ) → k < n → insert a (power k) ≡ a ∷ power k
+  insert-power-advance k k<n
+    with length (power k) <? n | length-power k
+  ... | yes _  | _    = refl
+  ... | no  ¬p | l≡k  = ⊥-elim (¬p (subst (λ x → x < n) (sym l≡k) k<n))
+
+  -- For k = n, insert a (power n) wraps to [].
+  insert-power-wrap : insert a (power n) ≡ []
+  insert-power-wrap
+    with length (power n) <? n | length-power n
+  ... | yes p  | l≡n  = ⊥-elim (<-irrefl n (subst (λ x → x < n) l≡n p))
+  ... | no  _  | _    = refl
+
+power-canonical-bounded : (k : ℕ) → k < suc n → normalize (power k) ≡ power k
+power-canonical-bounded zero    _         = refl
+power-canonical-bounded (suc k) (s≤s k<n) =
+  trans (cong (insert a) (power-canonical-bounded k (≤-suc-r k<n)))
+        (insert-power-advance k k<n)
+
+------------------------------------------------------------------------
+-- 17. canonical-is-fixed for the existential Canonical-ex view.
+------------------------------------------------------------------------
+
+canonical-is-fixed : {w : Word Gen} → Canonical-ex w → normalize w ≡ w
+canonical-is-fixed =
+  canonical-cover-ex (λ {w} _ → normalize w ≡ w)
+    (λ k → power-canonical-bounded (toℕ k) (toℕ-bound k))
+
+------------------------------------------------------------------------
+-- 18. iter / iter-insert lemmas, derived insert-cycle-id-word.
+--
+-- iter m f x = f^m x. Connects per-Word iterated-insert to per-Fin
+-- σ-iterate via the insert-power-eq bridge. Then σ-HasOrderPerm gives
+-- iter (suc n) (insert a) w ≡ w for canonical w.
+------------------------------------------------------------------------
+
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+  using (σ-iterate)
+
+iter : ℕ → (Word Gen → Word Gen) → Word Gen → Word Gen
+iter zero    f x = x
+iter (suc m) f x = f (iter m f x)
+
+private
+  iter-insert-pos : (m : ℕ) (k : Fin (suc n)) →
+                    iter m (insert a) (power (toℕ k)) ≡ power (toℕ (σ-iterate m σ k))
+  iter-insert-pos zero    k = refl
+  iter-insert-pos (suc m) k =
+    trans (cong (insert a) (iter-insert-pos m k))
+          (insert-power-eq (σ-iterate m σ k))
+
+insert-cycle-id-word : ∀ {w} → Canonical-ex w → iter (suc n) (insert a) w ≡ w
+insert-cycle-id-word (k , c-here .k) =
+  trans (iter-insert-pos (suc n) k)
+        (cong (λ k' → power (toℕ k')) (σ-HasOrderPerm k))
+
+------------------------------------------------------------------------
+-- 19. normalize-power-prepend: normalize on (power k ++ w₂) reduces
+-- by iteration of insert a. Inductive on k.
+------------------------------------------------------------------------
+
+normalize-power-prepend : (k : ℕ) (w₂ : Word Gen) →
+                         normalize (power k ++ w₂) ≡ iter k (insert a) (normalize w₂)
+normalize-power-prepend zero    w₂ = refl
+normalize-power-prepend (suc k) w₂ = cong (insert a) (normalize-power-prepend k w₂)
+
+------------------------------------------------------------------------
+-- 20. insert-append-lemma for the existential Canonical-ex view.
+--
+-- Case-splits on `toℕ k <? n`:
+--   yes (k < last): insert advances, both sides reduce to insert a
+--     (normalize (power (toℕ k) ++ w₂)) by normalize's definition.
+--   no  (k = last): insert wraps to [], use insert-cycle-id-word +
+--     normalize-power-prepend.
+------------------------------------------------------------------------
+
+insert-append-lemma : (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical-ex w →
+                     normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
+insert-append-lemma a w₂ (k , c-here .k) with toℕ k <? n
+... | yes p
+  rewrite insert-power-advance (toℕ k) p
+  = refl  -- normalize (a ∷ (power (toℕ k) ++ w₂)) = insert a (normalize (power (toℕ k) ++ w₂))
+... | no ¬p
+  rewrite not-lt-eq-n k ¬p
+        | insert-power-wrap
+        | normalize-power-prepend n w₂
+  = sym (insert-cycle-id-word (normalize-canonical w₂))
+
+------------------------------------------------------------------------
+-- 21. Open WithLemmas — derives normalize-distrib + the abstract Core
+-- surface (_·_, _≈_, ε, normalize-idem/append/distrib/triple/quad,
+-- ≉-idem, clash, ++-assoc-4, etc.).
+------------------------------------------------------------------------
+
+open WithLemmas canonical-is-fixed insert-append-lemma public
+
+------------------------------------------------------------------------
 -- Capstone — Phase 1 complete.
 --
 -- Landed: Gen, power, length-power, Canonical (Fin-indexed),
