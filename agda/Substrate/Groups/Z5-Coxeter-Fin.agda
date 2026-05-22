@@ -1,11 +1,16 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z5-Coxeter-Fin
 --
--- The full Z₅-Coxeter ↔ Fin 5 chain in one module: bijection,
--- action-of-a, and HasOrderPerm derivation.
+-- The Z₅-Coxeter ↔ Fin 5 chain as a thin instance of
+-- Substrate.Groups.Coxeter-Fin-Generic.
 --
--- Mirror of Z3-Coxeter-Fin and Z4-Coxeter-Fin at n=5. All three
--- pieces (bijection + action + order-witness) live together.
+-- Per [[expose-generator-not-orbit]]: the Z₃/Z₄/Z₅-Coxeter-Fin chain
+-- shape — bijection + action + HasOrderPerm — is the orbit; the
+-- generic IS the chain. This file supplies the per-Z₅ data and
+-- applies the generic to get the consolidated chain.
+--
+-- Per [[feedback-roll-our-own-via-word-algebra]]: Z₅-Coxeter's relation
+-- `a⁵ = ε` is the structural source of truth for σ₅'s order on Fin 5.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -24,7 +29,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle5
   using (σ₅)
 
 ------------------------------------------------------------------------
--- N-1: canonical-to-Fin / Fin-to-canonical bijection.
+-- Per-Z₅ data: bijection between (canonical Z₅-Words) and Fin 5.
 ------------------------------------------------------------------------
 
 canonical-to-Fin : {w : Word Z₅.Gen} → Z₅.Canonical w → Fin 5
@@ -58,7 +63,7 @@ canonical-roundtrip Z₅.c-aaa  = refl
 canonical-roundtrip Z₅.c-aaaa = refl
 
 ------------------------------------------------------------------------
--- N-2: action-of-a-is-σ₅.
+-- Per-Z₅ data: action-of-a corresponds to σ₅.
 ------------------------------------------------------------------------
 
 action-of-a-is-σ₅ :
@@ -71,7 +76,8 @@ action-of-a-is-σ₅ Z₅.c-aaa  = refl
 action-of-a-is-σ₅ Z₅.c-aaaa = refl
 
 ------------------------------------------------------------------------
--- N-3: σ₅-HasOrderPerm via the Coxeter route.
+-- Per-Z₅ data: σ₅-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
+-- through the bijection. Per-position enumeration at Fin 5.
 ------------------------------------------------------------------------
 
 σ₅-HasOrderPerm-from-Z5-Coxeter : HasOrderPerm σ₅ 5
@@ -82,9 +88,21 @@ action-of-a-is-σ₅ Z₅.c-aaaa = refl
 σ₅-HasOrderPerm-from-Z5-Coxeter (suc (suc (suc (suc zero))))          = refl
 
 ------------------------------------------------------------------------
--- N-4: Capstone — Z₅ word-algebra connection complete (combined).
+-- Apply the generic chain: takes the per-Z₅ pieces, produces the
+-- consolidated σₙ-HasOrderPerm under the chain's canonical name.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter-Fin-Generic
+  5 Z₅.Gen Z₅.a Z₅.Canonical Z₅.insert Z₅.insert-canonical
+  canonical-to-Fin Fin-to-canonical σ₅
+  action-of-a-is-σ₅ σ₅-HasOrderPerm-from-Z5-Coxeter
+  public
+
+------------------------------------------------------------------------
+-- Capstone — Z₅ word-algebra ↔ Fin 5 chain complete.
 --
--- Replaces the prior 3-file split (Z5-Coxeter-Fin / Z5-Coxeter-Action /
--- Z5-Coxeter-HasOrderPerm) with a single combined module, matching
--- Z3 and Z4.
+-- This file's structural value is the per-Z₅ data (bijection +
+-- round-trips + action + order-witness); the consolidated chain
+-- shape lives at [[Coxeter-Fin-Generic]] and ships across Z₃/Z₄/Z₅
+-- uniformly.
 ------------------------------------------------------------------------

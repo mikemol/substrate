@@ -1,17 +1,16 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z4-Coxeter-Fin
 --
--- The full Z₄-Coxeter ↔ Fin 4 chain in one module: bijection,
--- action-of-a, and HasOrderPerm derivation.
+-- The Z₄-Coxeter ↔ Fin 4 chain as a thin instance of
+-- Substrate.Groups.Coxeter-Fin-Generic.
 --
--- Mirrors the Z₃ chain (Z3-Coxeter-Fin / Z3-Coxeter-Action /
--- Z3-Coxeter-HasOrderPerm) at n=4. The split-vs-combined granularity
--- is a presentation choice; here we keep all three pieces together
--- to demonstrate the mechanical reusability of the pattern.
+-- Per [[expose-generator-not-orbit]]: the Z₃/Z₄/Z₅-Coxeter-Fin chain
+-- shape — bijection + action + HasOrderPerm — is the orbit; the
+-- generic IS the chain. This file supplies the per-Z₄ data and
+-- applies the generic to get the consolidated chain.
 --
 -- Per [[feedback-roll-our-own-via-word-algebra]]: Z₄-Coxeter's relation
--- `a⁴ = ε` (insert-fourth-power) is the structural source of truth
--- for σ₄'s order on Fin 4.
+-- `a⁴ = ε` is the structural source of truth for σ₄'s order on Fin 4.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -30,7 +29,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle4
   using (σ₄)
 
 ------------------------------------------------------------------------
--- N-1: canonical-to-Fin / Fin-to-canonical bijection.
+-- Per-Z₄ data: bijection between (canonical Z₄-Words) and Fin 4.
 ------------------------------------------------------------------------
 
 canonical-to-Fin : {w : Word Z₄.Gen} → Z₄.Canonical w → Fin 4
@@ -60,8 +59,7 @@ canonical-roundtrip Z₄.c-aa  = refl
 canonical-roundtrip Z₄.c-aaa = refl
 
 ------------------------------------------------------------------------
--- N-2: action-of-a-is-σ₄ — Z₄-Coxeter's `insert a` corresponds to σ₄
--- on Fin 4 via the bijection.
+-- Per-Z₄ data: action-of-a corresponds to σ₄.
 ------------------------------------------------------------------------
 
 action-of-a-is-σ₄ :
@@ -73,12 +71,8 @@ action-of-a-is-σ₄ Z₄.c-aa  = refl
 action-of-a-is-σ₄ Z₄.c-aaa = refl
 
 ------------------------------------------------------------------------
--- N-3: σ₄-HasOrderPerm-from-Z4-Coxeter — order witness via the
--- Coxeter route at n=4.
---
--- Mirror of σ₃-HasOrderPerm-from-Z3-Coxeter. Per inhabitant of Fin 4,
--- the proof is refl after unfolding through the bridge + insert-fourth-
--- power. Source of truth: Z₄-Coxeter's relation `a⁴ = ε`.
+-- Per-Z₄ data: σ₄-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
+-- through the bijection. Per-position enumeration at Fin 4.
 ------------------------------------------------------------------------
 
 σ₄-HasOrderPerm-from-Z4-Coxeter : HasOrderPerm σ₄ 4
@@ -88,42 +82,21 @@ action-of-a-is-σ₄ Z₄.c-aaa = refl
 σ₄-HasOrderPerm-from-Z4-Coxeter (suc (suc (suc zero)))          = refl
 
 ------------------------------------------------------------------------
--- N-4: Capstone — Z₄ word-algebra connection complete.
+-- Apply the generic chain: takes the per-Z₄ pieces, produces the
+-- consolidated σₙ-HasOrderPerm under the chain's canonical name.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter-Fin-Generic
+  4 Z₄.Gen Z₄.a Z₄.Canonical Z₄.insert Z₄.insert-canonical
+  canonical-to-Fin Fin-to-canonical σ₄
+  action-of-a-is-σ₄ σ₄-HasOrderPerm-from-Z4-Coxeter
+  public
+
+------------------------------------------------------------------------
+-- Capstone — Z₄ word-algebra ↔ Fin 4 chain complete.
 --
--- After this slice, the substrate has both Z₃ and Z₄ examples
--- demonstrating the word-algebra → Fin n → basis-permutation-Linear
--- → HasOrder chain. The pattern is mechanical: any future Zₙ-Coxeter
--- instance gets the same chain via the same proof structure.
---
--- The 10-slice arc closes with:
---
---   * Z₃, Z₄, Z₅ Coxeter modules + Group adapters (Block A).
---   * Z₃ bijection + action + HasOrderPerm route (Block B).
---   * HasOrderPerm-multiple-Linear + HasLagrangeOrder-from-multiples
---     (Block C — Linear-level closures).
---   * Z₄ full chain in this module (Block D capstone).
---
--- Z₅ chain is deferred but structurally identical; can be added when
--- a concrete order-5 use site appears.
---
--- Per [[feedback-roll-our-own-via-word-algebra]]: this completes the
--- substrate-native cyclic-torsion architecture. Stdlib's
--- Data.Fin.Permutation / Data.Nat.DivMod are not used; the Coxeter
--- Word framework's canonical-form discipline is the substrate's
--- alternative.
---
--- Deferred follow-ons:
---
---   * **σ₃-from-Coxeter** / **σ₄-from-Coxeter**: redefine the
---     cyclic-shift functions structurally via the bijection + action
---     rather than as per-case pattern matches. Makes the Cycle3/Cycle4
---     modules derived rather than parallel.
---
---   * **Z₅ chain**: bijection + action + HasOrderPerm at n=5,
---     mirroring this module's pattern.
---
---   * **Generic-Zₙ-Fin via length-indexed Canonical**: a generic-
---     over-n version where Canonical is indexed by Fin n (length
---     witness) and the bijection is structural. Substantial design
---     work; deferred until a use site demands it.
+-- This file's structural value is the per-Z₄ data (bijection +
+-- round-trips + action + order-witness); the consolidated chain
+-- shape lives at [[Coxeter-Fin-Generic]] and ships across Z₃/Z₄/Z₅
+-- uniformly.
 ------------------------------------------------------------------------

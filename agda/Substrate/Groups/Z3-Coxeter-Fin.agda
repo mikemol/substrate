@@ -1,16 +1,16 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z3-Coxeter-Fin
 --
--- The full Z₃-Coxeter ↔ Fin 3 chain in one module: bijection,
--- action-of-a, and HasOrderPerm derivation.
+-- The Z₃-Coxeter ↔ Fin 3 chain as a thin instance of
+-- Substrate.Groups.Coxeter-Fin-Generic.
 --
--- Mirrors the Z₄ chain (Z4-Coxeter-Fin). All three pieces (bijection
--- + action + order-witness) live together for locality; pattern is
--- mechanical and applies uniformly across Zₙ-Coxeter instances.
+-- Per [[expose-generator-not-orbit]]: the Z₃/Z₄/Z₅-Coxeter-Fin chain
+-- shape — bijection + action + HasOrderPerm — is the orbit; the
+-- generic IS the chain. This file supplies the per-Z₃ data and
+-- applies the generic to get the consolidated chain.
 --
 -- Per [[feedback-roll-our-own-via-word-algebra]]: Z₃-Coxeter's relation
--- `a³ = ε` (cube-identity / insert-cube) is the structural source of
--- truth for σ₃'s order on Fin 3.
+-- `a³ = ε` is the structural source of truth for σ₃'s order on Fin 3.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -29,7 +29,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
   using (σ₃)
 
 ------------------------------------------------------------------------
--- N-1: canonical-to-Fin / Fin-to-canonical bijection.
+-- Per-Z₃ data: bijection between (canonical Z₃-Words) and Fin 3.
 ------------------------------------------------------------------------
 
 canonical-to-Fin : {w : Word Z₃.Gen} → Z₃.Canonical w → Fin 3
@@ -55,8 +55,7 @@ canonical-roundtrip Z₃.c-a  = refl
 canonical-roundtrip Z₃.c-aa = refl
 
 ------------------------------------------------------------------------
--- N-2: action-of-a-is-σ₃ — Z₃-Coxeter's `insert a` corresponds to
--- σ₃ on Fin 3 via the bijection.
+-- Per-Z₃ data: action-of-a corresponds to σ₃.
 ------------------------------------------------------------------------
 
 action-of-a-is-σ₃ :
@@ -67,13 +66,8 @@ action-of-a-is-σ₃ Z₃.c-a  = refl
 action-of-a-is-σ₃ Z₃.c-aa = refl
 
 ------------------------------------------------------------------------
--- N-3: σ₃-HasOrderPerm-from-Z3-Coxeter — order witness via the
--- Coxeter route.
---
--- Per inhabitant of Fin 3, the proof is refl after unfolding through
--- the bridge (σ₃ ↔ insert a) and insert-cube (insert³ = id at the
--- Canonical witness level). Source of truth: Z₃-Coxeter's relation
--- a³ = ε.
+-- Per-Z₃ data: σ₃-HasOrderPerm — the Coxeter aⁿ = ε relation lifted
+-- through the bijection. Per-position enumeration at Fin 3.
 ------------------------------------------------------------------------
 
 σ₃-HasOrderPerm-from-Z3-Coxeter : HasOrderPerm σ₃ 3
@@ -82,13 +76,21 @@ action-of-a-is-σ₃ Z₃.c-aa = refl
 σ₃-HasOrderPerm-from-Z3-Coxeter (suc (suc zero))    = refl
 
 ------------------------------------------------------------------------
--- N-4: Capstone — Z₃ word-algebra connection complete (combined).
+-- Apply the generic chain: takes the per-Z₃ pieces, produces the
+-- consolidated σₙ-HasOrderPerm under the chain's canonical name.
+------------------------------------------------------------------------
+
+open import Substrate.Groups.Coxeter-Fin-Generic
+  3 Z₃.Gen Z₃.a Z₃.Canonical Z₃.insert Z₃.insert-canonical
+  canonical-to-Fin Fin-to-canonical σ₃
+  action-of-a-is-σ₃ σ₃-HasOrderPerm-from-Z3-Coxeter
+  public
+
+------------------------------------------------------------------------
+-- Capstone — Z₃ word-algebra ↔ Fin 3 chain complete.
 --
--- Replaces the prior 3-file split (Z3-Coxeter-Fin / Z3-Coxeter-Action /
--- Z3-Coxeter-HasOrderPerm) with a single combined module, matching
--- Z4-Coxeter-Fin's pattern.
---
--- Per [[feedback-roll-our-own-via-word-algebra]]: substrate-native
--- bridge from Z₃'s word algebra to Fin 3 / σ₃ / HasOrderPerm. The
--- relation a³ = ε is the source of truth at every level.
+-- This file's structural value is the per-Z₃ data (bijection +
+-- round-trips + action + order-witness); the consolidated chain
+-- shape lives at [[Coxeter-Fin-Generic]] and ships across Z₃/Z₄/Z₅
+-- uniformly.
 ------------------------------------------------------------------------
