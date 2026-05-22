@@ -65,6 +65,13 @@ syntax ∃-syntax (λ x → B) = ∃[ x ] B
 -,_ {x = x} b = x , b
 
 ------------------------------------------------------------------------
+-- swap : (A × B) → (B × A).
+------------------------------------------------------------------------
+
+swap : {A : Set a} {B : Set b} → A × B → B × A
+swap (x , y) = y , x
+
+------------------------------------------------------------------------
 -- Σ-equality combinator: build a Σ-equality from component equalities.
 -- Substrate-native replacement for stdlib's Data.Product.Properties.Σ-≡,≡→≡.
 ------------------------------------------------------------------------
