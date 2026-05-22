@@ -76,7 +76,9 @@ S_REF_RECENT = 3     # Z1: chain-symbol backref (distance, length).
 S_SCALE_ROTATE = 4   # BB2: multiscale Cayley-Dickson rotation (scale, k, f).
 S_BIT_SHIFT = 5      # CC6: stream-level Z/8 bit shift (3-bit payload).
 S_COXETER_BIT_PERM = 6  # CC3: Coxeter word permutation (scale + word).
-N_V7_CONTROL_OPCODES = 7
+S_CLIFFORD_OP = 7    # DD4: Cl(ℝⁿ) graded emission (grade, basis_mask).
+S_COARSE_REF = 8     # FF3: S_REF_RECENT variant with σ as 4-bit nibble.
+N_V7_CONTROL_OPCODES = 9
 
 
 def alphabet_size(n_used: int) -> int:
@@ -212,7 +214,18 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
            speculate_bit_shift: bool = False,
            coxeter_word: list = None,
            coxeter_scale: int = 3,
-           rotation_inertia: float = 0.05) -> Tuple[bytes, Dict]:
+           rotation_inertia: float = 0.05,
+           clifford_mask: int = 0,
+           speculate_clifford: bool = False,
+           clifford_grade_cap: int = 8,
+           word_mask: int = 0,
+           speculate_word_mask: bool = False,
+           block_clifford_size: int = 0,
+           speculate_block_clifford: bool = False,
+           block_clifford_inertia: float = 0.03,
+           block_clifford_masks: list = None,
+           disable_coarse_ref: bool = False,
+           expose_spectral_atlas: bool = False) -> Tuple[bytes, Dict]:
     """V7 encoder.
 
     V1: BasisState torsor (S_BASIS_AT).
@@ -272,6 +285,54 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     else:
         rotated_data = shifted_data
 
+    # DD5: Clifford XOR-mask speculation. Optional byte-level XOR with
+    # a basis blade e_mask. Two-stage gate ensures mask robust across
+    # halves. Per [[chain-walk-blocks-rotation-factor]]: XOR is the
+    # F₂-linear part of Cl(ℝ⁸); the chain walk does NOT factor it.
+    from eliza.clifford_tracer import (
+        apply_clifford_mask, find_best_clifford_mask, mask_grade,
+    )
+    if speculate_clifford:
+        clifford_mask, _ = find_best_clifford_mask(
+            rotated_data, grade_cap=clifford_grade_cap)
+    if clifford_mask:
+        rotated_data = apply_clifford_mask(rotated_data, clifford_mask)
+    clifford_grade = mask_grade(clifford_mask)
+
+    # EE10/EE11: Per-block Clifford mask with sticky inertia. When
+    # active, OVERRIDES the single clifford_mask above by applying
+    # different masks per block_clifford_size-byte chunk.
+    effective_block_clifford_masks = None
+    if block_clifford_masks is not None and block_clifford_size > 0:
+        effective_block_clifford_masks = list(block_clifford_masks)
+        from eliza.clifford_tracer import apply_block_clifford_masks
+        rotated_data = apply_block_clifford_masks(
+            rotated_data, effective_block_clifford_masks,
+            block_clifford_size)
+    elif speculate_block_clifford and block_clifford_size > 0:
+        from eliza.clifford_tracer import (
+            apply_block_clifford_masks, speculate_block_clifford_masks,
+        )
+        effective_block_clifford_masks = speculate_block_clifford_masks(
+            rotated_data, block_clifford_size,
+            grade_cap=clifford_grade_cap,
+            inertia_margin=block_clifford_inertia)
+        rotated_data = apply_block_clifford_masks(
+            rotated_data, effective_block_clifford_masks,
+            block_clifford_size)
+
+    # EE4: Scale-4 RM(2, 4) word-level XOR mask. Applied AFTER the
+    # byte-level Clifford mask, BEFORE the chain walk. Per
+    # [[expose-generator-not-orbit]]: GL(4, F₂) gauge axis at scale 4.
+    from eliza.word_mask import (
+        apply_word_mask, find_best_word_mask, word_mask_grade,
+    )
+    if speculate_word_mask:
+        word_mask, _ = find_best_word_mask(rotated_data)
+    if word_mask:
+        rotated_data = apply_word_mask(rotated_data, word_mask)
+    word_mask_g = word_mask_grade(word_mask)
+
     next_table = _build_next_chamber_table(chambers, idx_map)
     walk = int_chamber_walk(rotated_data, chambers, idx_map, next_table)
     n_chain = len(walk)
@@ -307,6 +368,7 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     n_growth = 0
     n_basis_at = 0
     n_backref = 0
+    n_coarse_ref = 0
     basis_state = IDENTITY
     digram_seen: Dict[Tuple[int, int], int] = {}
     cap_frozen = False
@@ -373,7 +435,22 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         if backref_match is not None:
             distance, length = backref_match
             a_size = alphabet_size(n_used)
-            ctrl = _control_index(S_REF_RECENT, n_used)
+            # FF4: if σ is reachable as one-step chain-walk transition
+            # (= NIBBLE_TO_PERM image), emit via S_COARSE_REF with σ
+            # encoded as a 4-bit nibble index. Otherwise fall back to
+            # S_REF_RECENT with full chamber-idx σ.
+            from eliza.coarse_residue import (
+                nibble_to_sigma, sigma_in_image, sigma_to_nibble,
+            )
+            use_coarse = (sigma_in_image(backref_sigma)
+                          and not disable_coarse_ref)
+            if use_coarse:
+                ctrl = _control_index(S_COARSE_REF, n_used)
+                sigma_symbol = sigma_to_nibble(backref_sigma)
+                n_coarse_ref += 1
+            else:
+                ctrl = _control_index(S_REF_RECENT, n_used)
+                sigma_symbol = backref_sigma
             predictor = predictors[basis_state.label]
             cumfreqs = predictor.cumfreqs(a_size, _ctx())
             rc_step_encode(rc, cumfreqs, ctrl, int(cumfreqs[-1]))
@@ -383,20 +460,13 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
             l_hi, l_lo = divmod(length, a_size)
             # AA-arc unified payload: 8 symbols
             #   (d_hi, d_lo, l_hi, l_lo, σ, source, phase, basis_target)
-            # AA1+AA2+AA4: σ ∈ S₄ (chamber index 0..23).
-            # AA5: source ∈ {0=Recent, 1=Rule}; encoder emits 0 by
-            #      default; structural slot for the U-arc QUOT unification.
-            # AA6: phase ∈ [0, length); slice offset within the source.
-            #      Encoder emits 0 by default (full-span); structural
-            #      slot for the affine-on-reference factor.
-            # AA7: basis_target ∈ BasisLabel; interpretation basis for
-            #      the reference content. Encoder emits current basis
-            #      by default; structural slot for V-arc basis-aware
-            #      emission alphabet on reference content.
+            # Under S_COARSE_REF: σ is nibble (0..15) in NIBBLE image;
+            #                    decoder recovers via nibble_to_sigma.
+            # Under S_REF_RECENT: σ is chamber idx (0..23) directly.
             source = 0
             phase = 0
             basis_target = int(basis_state.label) % N_BASIS_LABELS
-            for sym in (d_hi, d_lo, l_hi, l_lo, backref_sigma,
+            for sym in (d_hi, d_lo, l_hi, l_lo, sigma_symbol,
                           source, phase, basis_target):
                 cumfreqs = predictor.cumfreqs(a_size, _ctx())
                 rc_step_encode(rc, cumfreqs, sym, int(cumfreqs[-1]))
@@ -506,6 +576,26 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
     header.append(len(cw) & 0xFF)
     for gen_idx in cw:
         header.append(gen_idx & 0xFF)
+    # DD5: Clifford XOR-mask in header (1 byte). 0 = no mask.
+    header.append(clifford_mask & 0xFF)
+    # EE4: Scale-4 word XOR mask in header (2 bytes little-endian).
+    header.append(word_mask & 0xFF)
+    header.append((word_mask >> 8) & 0xFF)
+    # EE10/EE11: Per-block Clifford masks. Header layout:
+    #   byte: block_clifford_size (in 16-byte units; 0 = no per-block).
+    #   if non-zero:
+    #     2 bytes: num_blocks (little-endian).
+    #     num_blocks bytes: per-block mask values.
+    if effective_block_clifford_masks is not None:
+        bcs_byte = min(block_clifford_size // 16, 255)
+        header.append(bcs_byte)
+        nb = len(effective_block_clifford_masks)
+        header.append(nb & 0xFF)
+        header.append((nb >> 8) & 0xFF)
+        for _start, m in effective_block_clifford_masks:
+            header.append(m & 0xFF)
+    else:
+        header.append(0)
     # BB5: per-block rotations. Header byte for block_size (0 = no
     # block rotations; >0 = block_size in bytes / 16 to fit a byte
     # for sizes up to 4096); then num_blocks × 3 bytes (scale, k, f).
@@ -543,6 +633,15 @@ def encode(data: bytes, initial_opcodes: List[Opcode] = None,
         "speculate_residue": speculate_residue,
         "n_backref": n_backref,
         "backend": "GPU" if HAS_CUPY else "CPU",
+        "clifford_mask": int(clifford_mask),
+        "clifford_grade": int(clifford_grade),
+        "word_mask": int(word_mask),
+        "word_mask_grade": int(word_mask_g),
+        "n_coarse_ref": int(n_coarse_ref),
+        "spectral_class": (
+            __import__("eliza.spectral_predictor",
+                       fromlist=["classify_spectrum"]).classify_spectrum(data)
+            if expose_spectral_atlas else None),
     }
 
 
@@ -569,6 +668,27 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
     decoder_coxeter_word = list(
         encoded[coxeter_off:coxeter_off + decoder_coxeter_word_len])
     after_coxeter = coxeter_off + decoder_coxeter_word_len
+    # DD5: Clifford XOR-mask from header.
+    decoder_clifford_mask = encoded[after_coxeter] & 0xFF
+    after_coxeter += 1
+    # EE4: Scale-4 word XOR mask (2 bytes little-endian).
+    decoder_word_mask = (encoded[after_coxeter] |
+                         (encoded[after_coxeter + 1] << 8)) & 0xFFFF
+    after_coxeter += 2
+    # EE10/EE11: Per-block Clifford masks.
+    decoder_bcs_byte = encoded[after_coxeter]
+    after_coxeter += 1
+    decoder_block_clifford_size = 0
+    decoder_block_clifford_masks = None
+    if decoder_bcs_byte > 0:
+        decoder_block_clifford_size = decoder_bcs_byte * 16
+        nb = encoded[after_coxeter] | (encoded[after_coxeter + 1] << 8)
+        after_coxeter += 2
+        decoder_block_clifford_masks = []
+        for i in range(nb):
+            decoder_block_clifford_masks.append(
+                (i * decoder_block_clifford_size, encoded[after_coxeter]))
+            after_coxeter += 1
     # BB5: optional per-block rotations.
     bs_byte = encoded[after_coxeter]
     decoder_block_rotations = None
@@ -643,9 +763,13 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
             new_quat = apply_quat_component(basis_state.quat, comp_sym % 4)
             basis_state = BasisState(label=basis_state.label, quat=new_quat)
             continue
-        if emit_idx == _control_index(S_REF_RECENT, n_used):
+        if (emit_idx == _control_index(S_REF_RECENT, n_used)
+                or emit_idx == _control_index(S_COARSE_REF, n_used)):
+            is_coarse = emit_idx == _control_index(S_COARSE_REF, n_used)
             # AA-arc unified payload: 8 symbols
             #   (d_hi, d_lo, l_hi, l_lo, σ, source, phase, basis_target)
+            # FF5: under S_COARSE_REF, σ symbol is 4-bit nibble idx;
+            # recover σ_chamber via nibble_to_sigma lookup.
             payload = []
             for _i in range(8):
                 predictor = predictors[basis_state.label]
@@ -654,10 +778,14 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                 for p in predictors.values():
                     p.update(sym, _dctx())
                 payload.append(sym)
-            d_hi, d_lo, l_hi, l_lo, sig_idx, source, phase, basis_t = payload
+            d_hi, d_lo, l_hi, l_lo, sig_sym, source, phase, basis_t = payload
             distance = d_hi * a_size + d_lo
             length = l_hi * a_size + l_lo
-            sig_idx = sig_idx % 24
+            if is_coarse:
+                from eliza.coarse_residue import nibble_to_sigma
+                sig_idx = nibble_to_sigma(sig_sym & 0xF)
+            else:
+                sig_idx = sig_sym % 24
             source = source % 2
             basis_t = basis_t % N_BASIS_LABELS
             # AA5: source ∈ {0=Recent, 1=Rule}. Currently encoder only
@@ -686,7 +814,7 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
                         chain_terminals.append(
                             apply_s4_chain(int(body_np[i]), sig_idx))
             prev_prev_emission = prev_emission
-            prev_emission = _control_index(S_REF_RECENT, n_used)
+            prev_emission = emit_idx
             n_emissions -= 1
             continue
         if emit_idx == _control_index(S_SHIFT_BIT, n_used):
@@ -743,6 +871,21 @@ def decode(encoded: bytes, initial_opcodes: List[Opcode] = None,
         nibbles.append(n)
         state = after
     rotated_bytes = nibbles_to_bytes(nibbles)
+    # EE4: undo scale-4 word mask FIRST (encoder applied it last,
+    # decoder reverses in inverse order). Involution.
+    if decoder_word_mask:
+        from eliza.word_mask import apply_word_mask
+        rotated_bytes = apply_word_mask(rotated_bytes, decoder_word_mask)
+    # EE10/EE11: undo per-block Clifford masks (involution).
+    if decoder_block_clifford_masks is not None:
+        from eliza.clifford_tracer import apply_block_clifford_masks
+        rotated_bytes = apply_block_clifford_masks(
+            rotated_bytes, decoder_block_clifford_masks,
+            decoder_block_clifford_size)
+    # DD5: undo Clifford XOR-mask (involution; same op undoes).
+    if decoder_clifford_mask:
+        from eliza.clifford_tracer import apply_clifford_mask
+        rotated_bytes = apply_clifford_mask(rotated_bytes, decoder_clifford_mask)
     # BB4+BB5: apply byte-level inverse rotation. F₂ⁿ × F₂ rotations
     # are involutions; the same rotation undoes itself.
     if decoder_block_rotations is not None:
