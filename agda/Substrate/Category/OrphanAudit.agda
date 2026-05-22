@@ -146,14 +146,44 @@ module Substrate.Category.OrphanAudit where
 ------------------------------------------------------------------------
 -- 5. Orphan-sweep (PrimitiveInstances catalog refresh).
 --
--- 34 sub-orphan children swept into PrimitiveInstances so they're
--- reachable via the global catalog. Parent shims are content-bearing
+-- Round 1+2 (commits 3727e89, 901a486): 34 sub-orphan children
+-- swept into PrimitiveInstances. Parent shims are content-bearing
 -- (children import them; re-export would cycle); the catalog route
--- preserves file-per-lemma per [[s3-on-v4-file-per-lemma]] and
--- [[skeleton-as-pullback]].
+-- preserves file-per-lemma.
 --
--- Result: tree-orphan count 123 → 89 (13.6% → 9.8%).
--- Non-designed orphans 98 → 64.
+-- Round 3 (commit fa5091c): 30 additional stranded orphans wired in,
+-- plus three per-subtree manifests:
+--
+--   Substrate.Conway.Manifest    — Add / AsCone / AsField /
+--                                  IntegerEmbedding / Capstone
+--   Substrate.Pipeline.Manifest  — Composition / Merger
+--                                  (Examples + Sequent excluded:
+--                                   --safe + pre-existing errors)
+--   Substrate.Codes.Manifest     — Hamming.H-7-4-3 / H-8-4-4 /
+--                                  ReedMuller.RM-1-3
+--
+-- Other round-3 wirings: Algebra.Nat.Bezout, Algebra.Abelian.Z6-
+-- AsChainDecomp, Geometry.{HodgeDim3, ChiralityRotation},
+-- TokiPona.QCapstone, Linguistic.{Bicategorical, Closure, Yoneda,
+-- YonedaRespect}Capstone, Groups.{Coxeter.Lifted, S4-AsOpcodeAlgebra,
+-- Stab-S3-Hom, V4.Axioms.Lifted}, plus 20+ Category speculative-
+-- arc seeds.
+--
+-- Result trail:
+--   start  → 123 orphans / 904 modules (13.6%)
+--   round 1+2 → 89 / 908 (9.8%)
+--   round 3   → 31 / 988 (3.1%)
+--
+-- Non-designed orphans 98 → 64 → 7.
+--
+-- The remaining 7 non-designed orphans are all blocked or
+-- intentional:
+--   * PrimitivesAndInstances, PrimitivesRoadmapUpdate
+--     — superseded by PrimitivesAll / PrimitiveInstances; deletion
+--       or DEPRECATED-mark pending decision.
+--   * Geometry.PG, Groups.V4-as-Z2xZ2, Pipeline.Sequent
+--     — pre-existing build errors.
+--   * Raven.PhaseTransition.* sub-modules — active parallel-agent WIP.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
