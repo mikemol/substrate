@@ -123,6 +123,18 @@ def build_parser() -> argparse.ArgumentParser:
         default="<HOLE>",
         help="Hole marker for skeleton mode (default: <HOLE>)",
     )
+    ap.add_argument(
+        "--typed-holes",
+        action="store_true",
+        help=(
+            "In --skeleton mode, group residue tokens by first-"
+            "appearance position across files and assign each group "
+            "its own marker (derived from common prefix/suffix when "
+            "meaningful, else <H1>, <H2>, ...). Requires all files "
+            "have equal residue counts; falls back to single-hole "
+            "mode if not."
+        ),
+    )
 
     # Score mode option
     ap.add_argument(
@@ -176,6 +188,7 @@ def main(argv: list[str] | None = None) -> int:
         construct_skeleton(
             paths,
             hole_marker=args.hole_marker,
+            typed_holes=args.typed_holes,
             max_show=args.max_show,
             anonymize_patterns=anonymize_patterns,
         )
