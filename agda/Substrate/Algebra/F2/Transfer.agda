@@ -36,8 +36,8 @@
 
 module Substrate.Algebra.F2.Transfer where
 
-open import Data.Nat using (ℕ)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2

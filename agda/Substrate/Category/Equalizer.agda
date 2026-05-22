@@ -40,10 +40,10 @@
 
 module Substrate.Category.Equalizer where
 
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Function using (id; const)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Function using (id; const)
 open import Level using (Level; _⊔_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Coalgebra

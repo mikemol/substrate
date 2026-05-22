@@ -30,9 +30,9 @@
 
 module Substrate.Category.Coalgebra.FiniteOrder where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Coalgebra
@@ -201,7 +201,7 @@ iterate-iterate γ (suc k) j x =
 --   ≡ x                                     [HasOrder-multiple at n = j]
 ------------------------------------------------------------------------
 
-open import Data.Nat.Properties using (*-comm)
+open import Substrate.Foundation.Nat.Properties using (*-comm)
 
 HasOrder-iterate :
   {X : Set ℓ} {γ : Endomap X} {k : ℕ} →

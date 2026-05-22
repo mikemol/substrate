@@ -26,8 +26,8 @@
 module Substrate.Groups.S4-AsOpcodeAlgebra where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (Σ; _,_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.Category.OpcodeAlgebra
   using (OpcodeAlgebra; OpcodeCategory;

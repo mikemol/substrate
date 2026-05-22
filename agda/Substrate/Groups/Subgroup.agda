@@ -24,8 +24,8 @@
 module Substrate.Groups.Subgroup where
 
 open import Level using (0ℓ; suc)
-open import Data.Product using (∃; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (∃; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Axes using (Axis)

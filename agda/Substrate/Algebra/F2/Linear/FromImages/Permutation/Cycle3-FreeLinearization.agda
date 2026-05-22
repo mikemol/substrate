@@ -16,7 +16,7 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3-FreeLinearization where
 
-open import Data.Fin using (Fin)
+open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3 using (σ₃)

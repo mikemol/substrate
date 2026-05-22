@@ -33,7 +33,7 @@
 module Substrate.Groups.FreeCyclic-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word public
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; trans; sym)
 
 ------------------------------------------------------------------------

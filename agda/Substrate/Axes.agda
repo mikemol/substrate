@@ -27,8 +27,10 @@
 
 module Substrate.Axes where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations public
+  using (v4-cover; v4×v4-cover; v4×v4×v4-cover)
 
 ------------------------------------------------------------------------
 -- The four axes.
@@ -57,17 +59,46 @@ axis-of-v α = C
 axis-of-v β = S
 axis-of-v γ = W
 
+------------------------------------------------------------------------
+-- Constructor-cover combinator for Axis. Mirror of fin-cover for the
+-- 4-element Axis enumeration. Heterogeneous payload via 4 separate
+-- refls (each refl infers its own implicit {x}).
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+axis-cover :
+  ∀ {ℓ} (P : Axis → Set ℓ) →
+  P D × P C × P S × P W →
+  ∀ a → P a
+axis-cover _ (p , _ , _ , _) D = p
+axis-cover _ (_ , p , _ , _) C = p
+axis-cover _ (_ , _ , p , _) S = p
+axis-cover _ (_ , _ , _ , p) W = p
+
+------------------------------------------------------------------------
+-- v4-cover / v4×v4-cover / v4×v4×v4-cover are sourced from
+-- Substrate.Groups.V4.Operations and re-exported above. The
+-- axis-side product cover is the analogous composition for Axis.
+------------------------------------------------------------------------
+
+axis×axis-cover :
+  ∀ {ℓ} (P : Axis → Axis → Set ℓ) →
+  (P D D × P D C × P D S × P D W) ×
+  (P C D × P C C × P C S × P C W) ×
+  (P S D × P S C × P S S × P S W) ×
+  (P W D × P W C × P W S × P W W) →
+  ∀ a x → P a x
+axis×axis-cover P rows a x =
+  axis-cover (P a)
+    (axis-cover (λ a' → P a' D × P a' C × P a' S × P a' W) rows a)
+    x
+
 axis-of-v-v-of-axis : (a : Axis) → axis-of-v (v-of-axis a) ≡ a
-axis-of-v-v-of-axis D = refl
-axis-of-v-v-of-axis C = refl
-axis-of-v-v-of-axis S = refl
-axis-of-v-v-of-axis W = refl
+axis-of-v-v-of-axis = axis-cover _ (refl , refl , refl , refl)
 
 v-of-axis-axis-of-v : (v : V₄) → v-of-axis (axis-of-v v) ≡ v
-v-of-axis-axis-of-v e = refl
-v-of-axis-axis-of-v α = refl
-v-of-axis-axis-of-v β = refl
-v-of-axis-axis-of-v γ = refl
+v-of-axis-axis-of-v = v4-cover _ (refl , refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- V₄ action on Axis — defined STRUCTURALLY through V₄ multiplication.

@@ -40,9 +40,9 @@
 
 module Substrate.Geometry.Fano where
 
-open import Data.Fin using (Fin)
-open import Data.Vec using ([]; _∷_; lookup)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2
@@ -93,7 +93,7 @@ Collinear-Three p₁ p₂ p₃ =
 -- 0-indexed.)
 ------------------------------------------------------------------------
 
-open import Data.Fin using (zero; suc)
+open import Substrate.Foundation.Fin using (zero; suc)
 
 -- 1 = Fin index 0, 2 = Fin index 1, ..., 7 = Fin index 6.
 p₁ p₂ p₃ p₄ p₅ p₆ p₇ : Point

@@ -26,8 +26,8 @@
 
 module Substrate.Groups.Z3-x-Z4-x-FreeCyclic where
 
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 import Substrate.Groups.Z3-Coxeter as Z₃

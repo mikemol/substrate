@@ -33,9 +33,9 @@
 
 module Substrate.Algebra.F2.Cone-V4-3plus1 where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ; _+_; _^_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.Cone
 open import Substrate.Category.Cone.FieldFilling

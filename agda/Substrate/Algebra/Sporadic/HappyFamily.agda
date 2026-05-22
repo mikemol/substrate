@@ -28,8 +28,8 @@
 
 module Substrate.Algebra.Sporadic.HappyFamily where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra; mkConjugationCoalgebra)

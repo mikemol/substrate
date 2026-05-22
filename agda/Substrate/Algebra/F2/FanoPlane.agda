@@ -22,9 +22,9 @@
 
 module Substrate.Algebra.F2.FanoPlane where
 
-open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_)

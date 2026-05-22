@@ -1,41 +1,21 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Coxeter.GroupAdapter
 --
--- Lifts a Coxeter Core plus an inverse operation to a stdlib Group
--- bundle (Algebra.Bundles.Group).
+-- Lifts a Coxeter Core plus an inverse operation to a substrate-native
+-- SetoidGroup bundle (Substrate.Algebra.SetoidGroup).
 --
--- The Core gives us _·_, _≈_, ε at the Word level; this module
--- packages those plus inv into an `IsGroup` and a `Group` bundle so
--- downstream combinators (SemidirectProductGroup) and consumers can
--- treat any Coxeter instance as a generic Group.
---
--- Per [[feedback-composable-primitives-over-flat-enumeration]]: this
--- is the shadow that turns "Coxeter Core" into a stdlib-citizen, so
--- combinators that take Group bundles (rather than Coxeter Cores)
--- can consume any Coxeter instance.
---
--- INPUTS (14 parameters):
---   * Core (9): Word, _++_, ε-in, ++-assoc, Canonical, normalize,
---     normalize-canonical, canonical-is-fixed, normalize-distrib.
---   * Identity (3): canonical-ε, ε-left-++, ε-right-++.
---   * Inversion (3): inv, inv-canonical, inv-left-canonical,
---     inv-right-canonical (4 actually).
---
--- USERS (planned):
---   * Substrate.Groups.Z2-Coxeter-Group  (lift Z2-Coxeter)
---   * Substrate.Groups.Z3-Coxeter-Group  (lift Z3-Coxeter)
---   * Substrate.Groups.V4-Coxeter-Group  (alternative to V4.agda's
---     4-ctor adapter)
+-- Phase-2: stdlib `Algebra.Bundles.Group` / `Algebra.Structures` /
+-- `Relation.Binary` imports REMOVED. The output is a substrate-native
+-- `SetoidGroup-bundle : SetoidGroup` instead of `Group-bundle : Group 0ℓ 0ℓ`.
+-- A `Group-bundle` alias is retained for backward compatibility with
+-- downstream callers.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Algebra.Bundles using (Group)
-open import Algebra.Structures using (IsMagma; IsSemigroup; IsMonoid; IsGroup)
-open import Level using (0ℓ)
-open import Relation.Binary using (IsEquivalence)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong)
+open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
 module Substrate.Groups.Coxeter.GroupAdapter
   -- Coxeter Core inputs.
@@ -50,12 +30,8 @@ module Substrate.Groups.Coxeter.GroupAdapter
   (canonical-is-fixed : {w : Word} → Canonical w → normalize w ≡ w)
   (normalize-distrib : (a b : Word) →
     normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
-  -- ε identity laws at the ++ level (needed because Core doesn't
-  -- enforce these — they're trivial for ListPresentation, requirable
-  -- for DirectProduct via componentwise laws).
   (ε-left-++ : (w : Word) → ε-in ++ w ≡ w)
   (ε-right-++ : (w : Word) → w ++ ε-in ≡ w)
-  -- Inversion.
   (inv : Word → Word)
   (inv-canonical : {w : Word} → Canonical w → Canonical (inv w))
   (inv-left-canonical : {w : Word} → Canonical w →
@@ -65,9 +41,7 @@ module Substrate.Groups.Coxeter.GroupAdapter
   where
 
 ------------------------------------------------------------------------
--- 1. Open Coxeter Core to inherit _·_, _≈_, _≉_, ε, normalize-{idem,
--- append,append-right,cong-right,distrib,triple,quad}, ≉-idem, clash,
--- ++-assoc-4.
+-- 1. Open Coxeter Core (inherits _·_, _≈_, ε, normalize-* lemmas).
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter.Core
@@ -75,23 +49,21 @@ open import Substrate.Groups.Coxeter.Core
   canonical-is-fixed normalize-distrib public
 
 ------------------------------------------------------------------------
--- 2. Word-level inv: normalize first to ensure inv is applied to
--- a canonical input. This is where the per-instance inv (defined on
--- canonical forms only) lifts to a total function on Words.
+-- 2. Word-level inv.
 ------------------------------------------------------------------------
 
 inv-word : Word → Word
 inv-word w = inv (normalize w)
 
 ------------------------------------------------------------------------
--- 3. ε is canonical, so normalize ε ≡ ε.
+-- 3. ε is canonical.
 ------------------------------------------------------------------------
 
 normalize-ε : normalize ε ≡ ε
 normalize-ε = canonical-is-fixed canonical-ε
 
 ------------------------------------------------------------------------
--- 4. ≈ is an equivalence relation (transport of ≡).
+-- 4. ≈ equivalence-relation witnesses.
 ------------------------------------------------------------------------
 
 ≈-refl : ∀ {w} → w ≈ w
@@ -103,19 +75,8 @@ normalize-ε = canonical-is-fixed canonical-ε
 ≈-trans : ∀ {w₁ w₂ w₃} → w₁ ≈ w₂ → w₂ ≈ w₃ → w₁ ≈ w₃
 ≈-trans = trans
 
-≈-isEquivalence : IsEquivalence _≈_
-≈-isEquivalence = record
-  { refl  = ≈-refl
-  ; sym   = ≈-sym
-  ; trans = ≈-trans
-  }
-
 ------------------------------------------------------------------------
--- 5. _·_ is congruent w.r.t. _≈_.
---
--- Strategy: unfold w₁·w₂ to normalize (w₁++w₂), strip outer normalize
--- via normalize-idem, push through normalize-distrib + cong on
--- normalize, then reassemble symmetrically on the RHS.
+-- 5. _·_ is ≈-congruent.
 ------------------------------------------------------------------------
 
 ·-cong : ∀ {a₁ a₂ b₁ b₂} → a₁ ≈ a₂ → b₁ ≈ b₂ → a₁ · b₁ ≈ a₂ · b₂
@@ -128,11 +89,7 @@ normalize-ε = canonical-is-fixed canonical-ε
          (sym (normalize-idem (a₂ ++ b₂)))))))
 
 ------------------------------------------------------------------------
--- 6. _·_ is associative w.r.t. _≈_.
---
--- Strategy: unfold both sides, strip outer normalize-idem, use
--- normalize-append (sym) + cong of ++-assoc + normalize-append-right
--- to bridge through the unparenthesized middle form.
+-- 6. _·_ associative w.r.t. _≈_.
 ------------------------------------------------------------------------
 
 ·-assoc : ∀ a b c → (a · b) · c ≈ a · (b · c)
@@ -144,7 +101,7 @@ normalize-ε = canonical-is-fixed canonical-ε
          (sym (normalize-idem (a ++ (b · c)))))))
 
 ------------------------------------------------------------------------
--- 7. ε is left/right identity for _·_ at the ≈ level.
+-- 7. ε identities for _·_ at ≈ level.
 ------------------------------------------------------------------------
 
 ε-left : ∀ w → ε · w ≈ w
@@ -158,17 +115,7 @@ normalize-ε = canonical-is-fixed canonical-ε
         (cong normalize (ε-right-++ w))
 
 ------------------------------------------------------------------------
--- 8. inv-word is a left/right inverse for _·_ at the ≈ level.
---
--- inv-l: inv-word w · w ≈ ε.
---   normalize (inv-word w · w)
---     = normalize (normalize (inv (normalize w) ++ w))     [def _·_]
---     ≡ normalize (inv (normalize w) ++ w)                 [normalize-idem]
---     ≡ normalize (inv (normalize w) ++ normalize w)       [normalize-append-right]
---     ≡ ε-in                                                [inv-left-canonical]
---     ≡ normalize ε                                         [sym normalize-ε]
---
--- inv-r symmetric via normalize-append + inv-right-canonical.
+-- 8. inv-word inverse laws.
 ------------------------------------------------------------------------
 
 inv-l : ∀ w → (inv-word w · w) ≈ ε
@@ -186,12 +133,7 @@ inv-r w =
          (sym normalize-ε)))
 
 ------------------------------------------------------------------------
--- 9. inv-word is ≈-congruent.
---
--- w₁ ≈ w₂ means normalize w₁ ≡ normalize w₂. Then inv (normalize w₁)
--- ≡ inv (normalize w₂) by cong inv. Both sides are canonical (via
--- inv-canonical of normalize-canonical), so they equal their own
--- normalize images — i.e., inv-word w₁ ≈ inv-word w₂.
+-- 9. inv-word ≈-congruent.
 ------------------------------------------------------------------------
 
 inv-word-cong : ∀ {w₁ w₂} → w₁ ≈ w₂ → inv-word w₁ ≈ inv-word w₂
@@ -201,42 +143,28 @@ inv-word-cong {w₁} {w₂} eq =
          (sym (canonical-is-fixed (inv-canonical (normalize-canonical w₂)))))
 
 ------------------------------------------------------------------------
--- 10. Assemble the stdlib Group bundle.
+-- 10. Substrate-native SetoidGroup bundle.
 ------------------------------------------------------------------------
 
-isMagma : IsMagma _≈_ _·_
-isMagma = record
-  { isEquivalence = ≈-isEquivalence
-  ; ∙-cong        = ·-cong
+SetoidGroup-bundle : SetoidGroup
+SetoidGroup-bundle = record
+  { Carrier   = Word
+  ; _≈_       = _≈_
+  ; _∙_       = _·_
+  ; ε         = ε
+  ; _⁻¹       = inv-word
+  ; ≈-refl    = λ _ → ≈-refl
+  ; ≈-sym     = ≈-sym
+  ; ≈-trans   = ≈-trans
+  ; ∙-assoc   = ·-assoc
+  ; ε-left    = ε-left
+  ; ε-right   = ε-right
+  ; inv-left  = inv-l
+  ; inv-right = inv-r
+  ; ∙-cong    = ·-cong
+  ; ⁻¹-cong   = inv-word-cong
   }
 
-isSemigroup : IsSemigroup _≈_ _·_
-isSemigroup = record
-  { isMagma = isMagma
-  ; assoc   = ·-assoc
-  }
-
-isMonoid : IsMonoid _≈_ _·_ ε
-isMonoid = record
-  { isSemigroup = isSemigroup
-  ; identity    = ε-left , ε-right
-  }
-  where open import Data.Product using (_,_)
-
-isGroup : IsGroup _≈_ _·_ ε inv-word
-isGroup = record
-  { isMonoid = isMonoid
-  ; inverse  = inv-l , inv-r
-  ; ⁻¹-cong  = inv-word-cong
-  }
-  where open import Data.Product using (_,_)
-
-Group-bundle : Group 0ℓ 0ℓ
-Group-bundle = record
-  { Carrier = Word
-  ; _≈_     = _≈_
-  ; _∙_     = _·_
-  ; ε       = ε
-  ; _⁻¹     = inv-word
-  ; isGroup = isGroup
-  }
+-- Backward-compat alias.
+Group-bundle : SetoidGroup
+Group-bundle = SetoidGroup-bundle

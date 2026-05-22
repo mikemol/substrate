@@ -15,7 +15,7 @@
 
 module Substrate.Groups.Coxeter.Word where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 ------------------------------------------------------------------------
 -- 1. The Word type (cons-list of generators).
@@ -60,17 +60,14 @@ _++_ : {Gen : Set} → Word Gen → Word Gen → Word Gen
 ++-identity-right (x ∷ w) = cong (x ∷_) (++-identity-right w)
 
 ------------------------------------------------------------------------
--- 5. Interop with stdlib Data.List (for downstream consumers that
--- need List operations beyond what this module provides).
+-- 5. Interop with stdlib Data.List was REMOVED in Phase 2 to break
+-- a transitive Relation.Binary.PropositionalEquality dependency
+-- that conflicted with Substrate.Foundation.Eq's BUILTIN EQUALITY.
+-- No consumer uses to-list / from-list (verified by grep);
+-- substrate-native code uses Word directly.
+--
+-- If interop is ever needed again, build it via a separate
+-- Substrate.Groups.Coxeter.Word.AsList submodule that downstream
+-- consumers can OPTIONALLY import, keeping this base module
+-- stdlib-free.
 ------------------------------------------------------------------------
-
-open import Data.List using (List)
-import Data.List as L
-
-to-list : {Gen : Set} → Word Gen → List Gen
-to-list []       = L.[]
-to-list (x ∷ xs) = x L.∷ to-list xs
-
-from-list : {Gen : Set} → List Gen → Word Gen
-from-list L.[]       = []
-from-list (x L.∷ xs) = x ∷ from-list xs

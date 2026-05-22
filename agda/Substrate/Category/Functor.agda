@@ -36,7 +36,7 @@
 module Substrate.Category.Functor where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CategoryOf using (CategoryOf)
 
@@ -84,7 +84,7 @@ record Functor
 -- preserves identity + composition.
 ------------------------------------------------------------------------
 
-open import Relation.Binary.PropositionalEquality using (refl)
+open import Substrate.Foundation.Eq using (refl)
 
 id-Functor : (C : CategoryOf {ℓOC} {ℓMC}) → Functor C C
 id-Functor C = mkFunctor
@@ -118,7 +118,7 @@ compose-Functor {C = C} {D = D} {E = E} G F = mkFunctor
     module F = Functor F
     module G = Functor G
 
-    open import Relation.Binary.PropositionalEquality
+    open import Substrate.Foundation.Eq
       using (trans; cong)
 
     id-pres : (a : C.Obj) →

@@ -24,8 +24,8 @@
 
 module Substrate.Groups.FreeCyclic-Coxeter-GradedMonoid where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong)
 
 import Substrate.Groups.FreeCyclic-Coxeter as F

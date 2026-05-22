@@ -25,9 +25,9 @@
 module Substrate.Groups.Z4-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word public
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; _≢_)
 
 ------------------------------------------------------------------------
@@ -62,6 +62,23 @@ insert-canonical a c-aa  = c-aaa
 insert-canonical a c-aaa = c-ε
 
 ------------------------------------------------------------------------
+-- Canonical-cover for Z₄: dispatches a 4-tuple of per-position
+-- proofs onto any `Canonical w`. Heterogeneous-output via each
+-- refl's own implicit {x}.
+------------------------------------------------------------------------
+
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+canonical-cover-Z4 :
+  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
+  P c-ε × P c-a × P c-aa × P c-aaa →
+  ∀ {w} (c : Canonical w) → P c
+canonical-cover-Z4 _ (p , _ , _ , _) c-ε   = p
+canonical-cover-Z4 _ (_ , p , _ , _) c-a   = p
+canonical-cover-Z4 _ (_ , _ , p , _) c-aa  = p
+canonical-cover-Z4 _ (_ , _ , _ , p) c-aaa = p
+
+------------------------------------------------------------------------
 -- 3. Open ListPresentation with Z/4's atoms.
 ------------------------------------------------------------------------
 
@@ -79,17 +96,14 @@ open import Substrate.Groups.Coxeter.ListPresentation
 ------------------------------------------------------------------------
 
 canonical-is-fixed-Z4 : {w : Word Gen} → Canonical w → normalize w ≡ w
-canonical-is-fixed-Z4 c-ε   = refl
-canonical-is-fixed-Z4 c-a   = refl
-canonical-is-fixed-Z4 c-aa  = refl
-canonical-is-fixed-Z4 c-aaa = refl
+canonical-is-fixed-Z4 =
+  canonical-cover-Z4 (λ {w} _ → normalize w ≡ w) (refl , refl , refl , refl)
 
 insert-fourth-power : (g : Gen) {w : Word Gen} → Canonical w →
                       insert g (insert g (insert g (insert g w))) ≡ w
-insert-fourth-power a c-ε   = refl
-insert-fourth-power a c-a   = refl
-insert-fourth-power a c-aa  = refl
-insert-fourth-power a c-aaa = refl
+insert-fourth-power a = canonical-cover-Z4
+  (λ {w} _ → insert a (insert a (insert a (insert a w))) ≡ w)
+  (refl , refl , refl , refl)
 
 insert-append-lemma-Z4 :
   (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
@@ -110,23 +124,14 @@ open WithLemmas canonical-is-fixed-Z4 insert-append-lemma-Z4 public
 -- 6. Decidable equality on Canonical forms.
 ------------------------------------------------------------------------
 
+gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ a a = yes refl
+
+open import Substrate.Groups.Coxeter.SameCanonical
+  using (same-canonical-via-Gen)
+
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
-same-canonical c-ε   c-ε   = yes refl
-same-canonical c-a   c-a   = yes refl
-same-canonical c-aa  c-aa  = yes refl
-same-canonical c-aaa c-aaa = yes refl
-same-canonical c-ε   c-a   = no (λ ())
-same-canonical c-ε   c-aa  = no (λ ())
-same-canonical c-ε   c-aaa = no (λ ())
-same-canonical c-a   c-ε   = no (λ ())
-same-canonical c-a   c-aa  = no (λ ())
-same-canonical c-a   c-aaa = no (λ ())
-same-canonical c-aa  c-ε   = no (λ ())
-same-canonical c-aa  c-a   = no (λ ())
-same-canonical c-aa  c-aaa = no (λ ())
-same-canonical c-aaa c-ε   = no (λ ())
-same-canonical c-aaa c-a   = no (λ ())
-same-canonical c-aaa c-aa  = no (λ ())
+same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
 -- 7. Inversion on canonical forms — Z/4 inversion table:
@@ -173,10 +178,9 @@ private
 
   fourth-canonical : {w : Word Gen} → Canonical w →
                      normalize (w ++ (w ++ (w ++ w))) ≡ []
-  fourth-canonical c-ε   = refl
-  fourth-canonical c-a   = refl
-  fourth-canonical c-aa  = refl
-  fourth-canonical c-aaa = refl
+  fourth-canonical = canonical-cover-Z4
+    (λ {w} _ → normalize (w ++ (w ++ (w ++ w))) ≡ [])
+    (refl , refl , refl , refl)
 
 fourth-power-identity : (w : Word Gen) → (((w · w) · w) · w) ≈ ε
 fourth-power-identity w =
@@ -189,24 +193,21 @@ fourth-power-identity w =
 
 inv-left-canonical : {w : Word Gen} → Canonical w →
                      normalize (inv w ++ w) ≡ []
-inv-left-canonical c-ε   = refl
-inv-left-canonical c-a   = refl
-inv-left-canonical c-aa  = refl
-inv-left-canonical c-aaa = refl
+inv-left-canonical = canonical-cover-Z4
+  (λ {w} _ → normalize (inv w ++ w) ≡ [])
+  (refl , refl , refl , refl)
 
 inv-right-canonical : {w : Word Gen} → Canonical w →
                       normalize (w ++ inv w) ≡ []
-inv-right-canonical c-ε   = refl
-inv-right-canonical c-a   = refl
-inv-right-canonical c-aa  = refl
-inv-right-canonical c-aaa = refl
+inv-right-canonical = canonical-cover-Z4
+  (λ {w} _ → normalize (w ++ inv w) ≡ [])
+  (refl , refl , refl , refl)
 
 ------------------------------------------------------------------------
 -- 10. inv is involutive on canonical forms: inv (inv w) ≡ w.
 ------------------------------------------------------------------------
 
 inv-inv-canonical : {w : Word Gen} → Canonical w → inv (inv w) ≡ w
-inv-inv-canonical c-ε   = refl
-inv-inv-canonical c-a   = refl
-inv-inv-canonical c-aa  = refl
-inv-inv-canonical c-aaa = refl
+inv-inv-canonical = canonical-cover-Z4
+  (λ {w} _ → inv (inv w) ≡ w)
+  (refl , refl , refl , refl)

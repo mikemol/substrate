@@ -21,10 +21,10 @@
 
 module Substrate.Category.Cone.EqualizerWithMorphisms where
 
-open import Data.Bool using (Bool; true; false)
-open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 
 open import Substrate.Category.Cone.WithMorphisms
 open import Substrate.Category.Equalizer

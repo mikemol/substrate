@@ -30,10 +30,10 @@
 module Substrate.Algebra.Abelian.Z6-AsChainDecomp where
 
 open import Level using (Level; _⊔_)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Category.ChainDecomposition

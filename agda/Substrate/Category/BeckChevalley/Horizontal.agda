@@ -22,7 +22,7 @@
 module Substrate.Category.BeckChevalley.Horizontal where
 
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; trans; cong)
 
 open import Substrate.Category.BeckChevalley using (BCSquare; cell)

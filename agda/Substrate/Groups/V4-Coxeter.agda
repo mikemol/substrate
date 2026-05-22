@@ -25,9 +25,9 @@
 module Substrate.Groups.V4-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word public
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; cong₂; _≢_)
 
 ------------------------------------------------------------------------
@@ -157,23 +157,17 @@ open WithLemmas canonical-is-fixed-V4 insert-append-lemma-V4 public
 -- the 4 ctors). Used by eval-canonical's clash dispatcher.
 ------------------------------------------------------------------------
 
+gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ A A = yes refl
+gen-≟ A B = no (λ ())
+gen-≟ B A = no (λ ())
+gen-≟ B B = yes refl
+
+open import Substrate.Groups.Coxeter.SameCanonical
+  using (same-canonical-via-Gen)
+
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
-same-canonical c-ε  c-ε  = yes refl
-same-canonical c-A  c-A  = yes refl
-same-canonical c-B  c-B  = yes refl
-same-canonical c-AB c-AB = yes refl
-same-canonical c-ε  c-A  = no (λ ())
-same-canonical c-ε  c-B  = no (λ ())
-same-canonical c-ε  c-AB = no (λ ())
-same-canonical c-A  c-ε  = no (λ ())
-same-canonical c-A  c-B  = no (λ ())
-same-canonical c-A  c-AB = no (λ ())
-same-canonical c-B  c-ε  = no (λ ())
-same-canonical c-B  c-A  = no (λ ())
-same-canonical c-B  c-AB = no (λ ())
-same-canonical c-AB c-ε  = no (λ ())
-same-canonical c-AB c-A  = no (λ ())
-same-canonical c-AB c-B  = no (λ ())
+same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
 -- 7. V₄-specific theorem: 4 pairwise-distinct V₄ elements multiply

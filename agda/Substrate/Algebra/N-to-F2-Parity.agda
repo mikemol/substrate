@@ -19,8 +19,8 @@
 
 module Substrate.Algebra.N-to-F2-Parity where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong)
 
 open import Substrate.Algebra.F2
@@ -63,7 +63,7 @@ parity-+ (suc a) b =
   trans (cong (𝟙 +F_) (parity-+ a b))
         (sym (+F-assoc 𝟙 (parity a) (parity b)))
   where
-    open import Relation.Binary.PropositionalEquality using (trans; sym)
+    open import Substrate.Foundation.Eq using (trans; sym)
 
 ------------------------------------------------------------------------
 -- N-4: Capstone — parity homomorphism lands.

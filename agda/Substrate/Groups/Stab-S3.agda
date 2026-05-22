@@ -42,14 +42,15 @@
 module Substrate.Groups.Stab-S3 where
 
 open import Level using (0ℓ)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (Σ; _,_; proj₁; proj₂; _×_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
+open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Axes using (Axis; D; C; S; W; axis-cover; axis×axis-cover)
+open import Substrate.Foundation.Fin.Cover using (fin-cover)
 open import Substrate.Groups.S4 as S4
   using (Permutation; _≈_; _·_; _⁻¹; ε; ≈-refl; ≈-sym; inv-l; inv-r)
   renaming (apply to applyₛ; invₐ to invₐₛ)
@@ -103,18 +104,12 @@ fin3-to-non-anchor W (suc (suc zero)) = S
 
 fin3-to-non-anchor-≢ :
   (anchor : Axis) (i : Fin 3) → fin3-to-non-anchor anchor i ≢ anchor
-fin3-to-non-anchor-≢ D zero             ()
-fin3-to-non-anchor-≢ D (suc zero)       ()
-fin3-to-non-anchor-≢ D (suc (suc zero)) ()
-fin3-to-non-anchor-≢ C zero             ()
-fin3-to-non-anchor-≢ C (suc zero)       ()
-fin3-to-non-anchor-≢ C (suc (suc zero)) ()
-fin3-to-non-anchor-≢ S zero             ()
-fin3-to-non-anchor-≢ S (suc zero)       ()
-fin3-to-non-anchor-≢ S (suc (suc zero)) ()
-fin3-to-non-anchor-≢ W zero             ()
-fin3-to-non-anchor-≢ W (suc zero)       ()
-fin3-to-non-anchor-≢ W (suc (suc zero)) ()
+fin3-to-non-anchor-≢ = axis-cover _
+  ( fin-cover _ ((λ ()) , (λ ()) , (λ ()))
+  , fin-cover _ ((λ ()) , (λ ()) , (λ ()))
+  , fin-cover _ ((λ ()) , (λ ()) , (λ ()))
+  , fin-cover _ ((λ ()) , (λ ()) , (λ ()))
+  )
 
 non-anchor-to-fin3 : (anchor x : Axis) → x ≢ anchor → Fin 3
 non-anchor-to-fin3 D D x≢a = ⊥-elim (x≢a refl)
@@ -138,38 +133,22 @@ fin3-non-anchor-fin3 :
   (anchor : Axis) (i : Fin 3) →
   non-anchor-to-fin3 anchor (fin3-to-non-anchor anchor i)
                             (fin3-to-non-anchor-≢ anchor i) ≡ i
-fin3-non-anchor-fin3 D zero             = refl
-fin3-non-anchor-fin3 D (suc zero)       = refl
-fin3-non-anchor-fin3 D (suc (suc zero)) = refl
-fin3-non-anchor-fin3 C zero             = refl
-fin3-non-anchor-fin3 C (suc zero)       = refl
-fin3-non-anchor-fin3 C (suc (suc zero)) = refl
-fin3-non-anchor-fin3 S zero             = refl
-fin3-non-anchor-fin3 S (suc zero)       = refl
-fin3-non-anchor-fin3 S (suc (suc zero)) = refl
-fin3-non-anchor-fin3 W zero             = refl
-fin3-non-anchor-fin3 W (suc zero)       = refl
-fin3-non-anchor-fin3 W (suc (suc zero)) = refl
+fin3-non-anchor-fin3 = axis-cover _
+  ( fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  )
 
 non-anchor-fin3-non-anchor :
   (anchor x : Axis) (x≢a : x ≢ anchor) →
   fin3-to-non-anchor anchor (non-anchor-to-fin3 anchor x x≢a) ≡ x
-non-anchor-fin3-non-anchor D D x≢a = ⊥-elim (x≢a refl)
-non-anchor-fin3-non-anchor D C _   = refl
-non-anchor-fin3-non-anchor D S _   = refl
-non-anchor-fin3-non-anchor D W _   = refl
-non-anchor-fin3-non-anchor C D _   = refl
-non-anchor-fin3-non-anchor C C x≢a = ⊥-elim (x≢a refl)
-non-anchor-fin3-non-anchor C S _   = refl
-non-anchor-fin3-non-anchor C W _   = refl
-non-anchor-fin3-non-anchor S D _   = refl
-non-anchor-fin3-non-anchor S C _   = refl
-non-anchor-fin3-non-anchor S S x≢a = ⊥-elim (x≢a refl)
-non-anchor-fin3-non-anchor S W _   = refl
-non-anchor-fin3-non-anchor W D _   = refl
-non-anchor-fin3-non-anchor W C _   = refl
-non-anchor-fin3-non-anchor W S _   = refl
-non-anchor-fin3-non-anchor W W x≢a = ⊥-elim (x≢a refl)
+non-anchor-fin3-non-anchor = axis×axis-cover _
+  ( ( (λ x≢a → ⊥-elim (x≢a refl)) , (λ _ → refl) , (λ _ → refl) , (λ _ → refl) )
+  , ( (λ _ → refl) , (λ x≢a → ⊥-elim (x≢a refl)) , (λ _ → refl) , (λ _ → refl) )
+  , ( (λ _ → refl) , (λ _ → refl) , (λ x≢a → ⊥-elim (x≢a refl)) , (λ _ → refl) )
+  , ( (λ _ → refl) , (λ _ → refl) , (λ _ → refl) , (λ x≢a → ⊥-elim (x≢a refl)) )
+  )
 
 ------------------------------------------------------------------------
 -- Forward restriction at the function level: Σ Permutation (Stab

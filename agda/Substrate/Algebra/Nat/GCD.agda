@@ -24,7 +24,7 @@
 
 module Substrate.Algebra.Nat.GCD where
 
-open import Data.Nat
+open import Substrate.Foundation.Nat
   using (ℕ; zero; suc; _+_; _*_; _<_; NonZero)
 open import Data.Nat.Divisibility
   using (_∣_; divides; divides-refl; ∣-refl; ∣-trans;
@@ -32,10 +32,10 @@ open import Data.Nat.Divisibility
 open import Data.Nat.DivMod
   using (_%_; _/_; m%n<n; m≡m%n+[m/n]*n)
 open import Data.Nat.Induction using (<-wellFounded-fast)
-open import Data.Nat.Properties using (+-comm; <-cmp)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Nat.Properties using (+-comm; <-cmp)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Induction.WellFounded using (Acc; acc)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; subst)
 
 ------------------------------------------------------------------------

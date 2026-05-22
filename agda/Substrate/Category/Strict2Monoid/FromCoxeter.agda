@@ -23,7 +23,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 module Substrate.Category.Strict2Monoid.FromCoxeter

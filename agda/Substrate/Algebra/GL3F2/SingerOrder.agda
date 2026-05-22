@@ -29,8 +29,8 @@
 
 module Substrate.Algebra.GL3F2.SingerOrder where
 
-open import Data.Vec using (_∷_; [])
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Vec using (_∷_; [])
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
 open import Substrate.Algebra.F2.Vector using (Vector)

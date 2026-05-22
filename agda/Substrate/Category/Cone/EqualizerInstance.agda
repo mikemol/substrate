@@ -20,10 +20,10 @@
 
 module Substrate.Category.Cone.EqualizerInstance where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (_,_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (_,_)
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Cone
 open import Substrate.Category.Equalizer using (Equalizer-Of; IsEqualised; equalizer-incl)

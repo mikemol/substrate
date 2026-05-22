@@ -23,9 +23,9 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance where
 
-open import Data.Fin using (Fin)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
 import Substrate.Groups.Z3-Coxeter as Z₃

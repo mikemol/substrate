@@ -17,7 +17,7 @@ module Substrate.Groups.Z2-Coxeter-Group where
 import Substrate.Groups.Z2-Coxeter as Z₂
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _++_; ++-identity-left; ++-identity-right)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
 -- 1. Z/2 inversion = identity (every element is its own inverse).

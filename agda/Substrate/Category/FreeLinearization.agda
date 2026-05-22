@@ -26,9 +26,9 @@
 
 module Substrate.Category.FreeLinearization where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)

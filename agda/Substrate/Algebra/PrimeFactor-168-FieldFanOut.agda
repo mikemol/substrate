@@ -23,7 +23,7 @@
 
 module Substrate.Algebra.PrimeFactor-168-FieldFanOut where
 
-open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Category.FieldFanOut
 
 ------------------------------------------------------------------------
@@ -51,12 +51,12 @@ PSL27-Bond (suc (suc zero)) _ = zero
 -- N-3: The FieldFanOut 3 instance for 168.
 ------------------------------------------------------------------------
 
-PSL27-FieldFanOut : FieldFanOut 3
-PSL27-FieldFanOut = record
-  { Source = Fin 168
-  ; Target = PSL27-Target
-  ; Bond   = PSL27-Bond
-  }
+-- Per FieldFanOut generalization 2026-05-21: PSL(2,7)'s 3-prime
+-- decomposition is stationary (no compositional drift), so it
+-- inhabits the FixedFanOut (= constant-arity) special case.
+
+PSL27-FieldFanOut : FixedFanOut 3
+PSL27-FieldFanOut = make-fixed 3 (Fin 168) PSL27-Target PSL27-Bond
 
 ------------------------------------------------------------------------
 -- N-4: Capstone.

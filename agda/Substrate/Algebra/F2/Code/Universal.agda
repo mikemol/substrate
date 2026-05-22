@@ -21,10 +21,10 @@
 
 module Substrate.Algebra.F2.Code.Universal where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin)
-open import Data.Product using (_,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong)
 
 open import Substrate.Algebra.F2.Vector

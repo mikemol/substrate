@@ -28,8 +28,8 @@
 module Substrate.Category.ConjugationCoalgebra.CharacterOrthogonality where
 
 open import Level using (Level; _⊔_)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ)
 
 private
   variable

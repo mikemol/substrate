@@ -33,9 +33,9 @@
 module Substrate.Category.Cone.Morphism where
 
 open import Level using (Level; _⊔_)
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Cone using (Cone; leg)

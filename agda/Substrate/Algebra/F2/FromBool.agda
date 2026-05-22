@@ -19,8 +19,8 @@
 
 module Substrate.Algebra.F2.FromBool where
 
-open import Data.Bool using (Bool; true; false)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2

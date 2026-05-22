@@ -14,7 +14,7 @@
 
 module Substrate.Category.BeckChevalley.ComposeInstance where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.BeckChevalley using (BCSquare; bc-trivial)
 open import Substrate.Category.BeckChevalley.Compose using (vertical-paste)

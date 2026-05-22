@@ -13,8 +13,8 @@
 
 module Substrate.Groups.Coxeter.Word.Length where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 open import Substrate.Groups.Coxeter.Word
 

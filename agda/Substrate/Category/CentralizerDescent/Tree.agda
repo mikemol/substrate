@@ -39,7 +39,7 @@ module Substrate.Category.CentralizerDescent.Tree where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
 import Level
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra)

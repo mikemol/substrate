@@ -17,9 +17,9 @@
 
 module Substrate.Groups.Z3-Coxeter-Fin where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Z3-Coxeter as Z₃
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)

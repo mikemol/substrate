@@ -38,7 +38,7 @@
 module Substrate.Category.WedgeProduct where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 private
   variable

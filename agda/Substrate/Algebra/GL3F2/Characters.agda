@@ -50,8 +50,8 @@
 
 module Substrate.Algebra.GL3F2.Characters where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Integer using (ℤ; +_; -[1+_])
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 
 ------------------------------------------------------------------------
 -- 1. Sentinel values for the 4 algebraic-valued cells.
@@ -65,7 +65,7 @@ open import Data.Integer using (ℤ; +_; -[1+_])
 α-placeholder = +_ 999
 
 ᾱ-placeholder : ℤ
-ᾱ-placeholder = -[1+_] 998   -- = - 999
+ᾱ-placeholder = -suc_ 998   -- = - 999
 
 ------------------------------------------------------------------------
 -- 2. The character table as a function.
@@ -90,14 +90,14 @@ GL3F2-Char zero             (suc (suc (suc (suc zero))))          = +_ 1
 GL3F2-Char zero             (suc (suc (suc (suc (suc zero)))))    = +_ 1
 -- Row χ₂ (3a): [3, -1, 0, 1, α, ᾱ]
 GL3F2-Char (suc zero)       zero                                  = +_ 3
-GL3F2-Char (suc zero)       (suc zero)                            = -[1+_] 0
+GL3F2-Char (suc zero)       (suc zero)                            = -suc_ 0
 GL3F2-Char (suc zero)       (suc (suc zero))                      = +_ 0
 GL3F2-Char (suc zero)       (suc (suc (suc zero)))                = +_ 1
 GL3F2-Char (suc zero)       (suc (suc (suc (suc zero))))          = α-placeholder
 GL3F2-Char (suc zero)       (suc (suc (suc (suc (suc zero)))))    = ᾱ-placeholder
 -- Row χ₃ (3b): [3, -1, 0, 1, ᾱ, α]
 GL3F2-Char (suc (suc zero)) zero                                  = +_ 3
-GL3F2-Char (suc (suc zero)) (suc zero)                            = -[1+_] 0
+GL3F2-Char (suc (suc zero)) (suc zero)                            = -suc_ 0
 GL3F2-Char (suc (suc zero)) (suc (suc zero))                      = +_ 0
 GL3F2-Char (suc (suc zero)) (suc (suc (suc zero)))                = +_ 1
 GL3F2-Char (suc (suc zero)) (suc (suc (suc (suc zero))))          = ᾱ-placeholder
@@ -107,19 +107,19 @@ GL3F2-Char (suc (suc (suc zero))) zero                                  = +_ 6
 GL3F2-Char (suc (suc (suc zero))) (suc zero)                            = +_ 2
 GL3F2-Char (suc (suc (suc zero))) (suc (suc zero))                      = +_ 0
 GL3F2-Char (suc (suc (suc zero))) (suc (suc (suc zero)))                = +_ 0
-GL3F2-Char (suc (suc (suc zero))) (suc (suc (suc (suc zero))))          = -[1+_] 0
-GL3F2-Char (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero)))))    = -[1+_] 0
+GL3F2-Char (suc (suc (suc zero))) (suc (suc (suc (suc zero))))          = -suc_ 0
+GL3F2-Char (suc (suc (suc zero))) (suc (suc (suc (suc (suc zero)))))    = -suc_ 0
 -- Row χ₅ (7): [7, -1, 1, -1, 0, 0]
 GL3F2-Char (suc (suc (suc (suc zero)))) zero                                  = +_ 7
-GL3F2-Char (suc (suc (suc (suc zero)))) (suc zero)                            = -[1+_] 0
+GL3F2-Char (suc (suc (suc (suc zero)))) (suc zero)                            = -suc_ 0
 GL3F2-Char (suc (suc (suc (suc zero)))) (suc (suc zero))                      = +_ 1
-GL3F2-Char (suc (suc (suc (suc zero)))) (suc (suc (suc zero)))                = -[1+_] 0
+GL3F2-Char (suc (suc (suc (suc zero)))) (suc (suc (suc zero)))                = -suc_ 0
 GL3F2-Char (suc (suc (suc (suc zero)))) (suc (suc (suc (suc zero))))          = +_ 0
 GL3F2-Char (suc (suc (suc (suc zero)))) (suc (suc (suc (suc (suc zero)))))    = +_ 0
 -- Row χ₆ (8 Steinberg): [8, 0, -1, 0, 1, 1]
 GL3F2-Char (suc (suc (suc (suc (suc zero))))) zero                                  = +_ 8
 GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc zero)                            = +_ 0
-GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc (suc zero))                      = -[1+_] 0
+GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc (suc zero))                      = -suc_ 0
 GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc (suc (suc zero)))                = +_ 0
 GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc zero))))          = +_ 1
 GL3F2-Char (suc (suc (suc (suc (suc zero))))) (suc (suc (suc (suc (suc zero)))))    = +_ 1

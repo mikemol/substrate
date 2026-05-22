@@ -19,8 +19,8 @@
 
 module Substrate.Category.Cone.Product where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
 open import Level using (Level)
 
 open import Substrate.Category.Cone

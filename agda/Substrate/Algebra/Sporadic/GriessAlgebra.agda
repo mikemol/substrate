@@ -35,7 +35,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
   using (CommutativeNonAssociativeAlgebra; mkCNAA)
@@ -69,7 +69,7 @@ GriessAlgebra = mkCNAA
 -- 2. Documented dimension (= 196,884; ATLAS / Griess 1982 / FLM 1988).
 ------------------------------------------------------------------------
 
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Nat using (ℕ)
 
 GriessAlgebra-dimension : ℕ
 GriessAlgebra-dimension = 196884

@@ -23,7 +23,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Groups.Coxeter.Word
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong)
 
 module Substrate.Groups.Coxeter.ListPresentation

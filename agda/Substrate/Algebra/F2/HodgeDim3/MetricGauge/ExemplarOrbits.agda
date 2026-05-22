@@ -28,9 +28,9 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.ExemplarOrbits where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Vec using ([]; _∷_; lookup)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2

@@ -18,8 +18,8 @@
 
 module Substrate.Pipeline.Composition where
 
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong; sym)
 open import Substrate.Pipeline.Brick
 

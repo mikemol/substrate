@@ -24,9 +24,25 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Vec using ([]; _∷_; lookup)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Cover using (fin-cover; fin-cover-2⁴)
+open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Groups.Coxeter.CanonicalCover using (n-refls)
+
+------------------------------------------------------------------------
+-- F₂² ↔ Fin 4 conversion. V₄ ≅ F₂² makes Fin 4 the binary fan-out
+-- (i₁, i₂) ∈ Fin 2 × Fin 2 ↔ i ∈ Fin 4. Used to dispatch the 16-cell
+-- 4×4 Cayley as a 2⁴ binary tree via `fin-cover-2⁴`.
+------------------------------------------------------------------------
+
+private
+  to-fin4 : Fin 2 → Fin 2 → Fin 4
+  to-fin4 zero       zero       = zero
+  to-fin4 zero       (suc zero) = suc zero
+  to-fin4 (suc zero) zero       = suc (suc zero)
+  to-fin4 (suc zero) (suc zero) = suc (suc (suc zero))
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Linear using (apply)
@@ -50,36 +66,69 @@ open import Substrate.Category.TensorProduct.AntisymmetricTensor
 -- refl positions for diag-zero.
 ------------------------------------------------------------------------
 
+-- Cayley enumeration collapsed via compositional cover from
+-- Substrate.Foundation.Fin.Cover: the 16-case Fin 4 × Fin 4 table
+-- IS the orbit of two fin4-cover applications composed via the
+-- product structure (the atlas-of-charts view, per the user's
+-- observation: the 4 blocks of 4 lines in any 4×4-cover are
+-- screaming for the tensor decomposition). Refl tokens are nested
+-- into 4-tuples-of-4-tuples matching the row structure; each refl's
+-- {x} unifies independently with its position's predicate.
+-- Binary fan-out dispatch: Fin 4 × Fin 4 = (Fin 2 × Fin 2) × (Fin 2 ×
+-- Fin 2) = F₂⁴. The 16-cell Cayley reads as four nested binary
+-- decisions via `fin-cover-2⁴`. Each `refl` literal carries its own
+-- implicit {x} (heterogeneous cells per (i₁, i₂, j₁, j₂) bit pattern).
+bivector-to-tensor-symmetric-bin :
+  (v : Bivector) →
+  (i₁ i₂ j₁ j₂ : Fin 2) →
+  lookup (lookup (bivector-to-tensor v) (to-fin4 i₁ i₂)) (to-fin4 j₁ j₂)
+    ≡ lookup (lookup (bivector-to-tensor v) (to-fin4 j₁ j₂)) (to-fin4 i₁ i₂)
+bivector-to-tensor-symmetric-bin (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) =
+  fin-cover-2⁴ _
+    ((((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))) ,
+     (((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))))
+
+-- Original Fin 4 × Fin 4 surface, derived by composing the binary
+-- dispatch with the bit-decomposition of each Fin 4 index.
 bivector-to-tensor-symmetric :
   (v : Bivector) →
   (i j : Fin 4) →
   lookup (lookup (bivector-to-tensor v) i) j
     ≡ lookup (lookup (bivector-to-tensor v) j) i
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) zero                            zero                            = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) zero                            (suc zero)                      = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) zero                            (suc (suc zero))                = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) zero                            (suc (suc (suc zero)))          = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc zero)                      zero                            = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc zero)                      (suc zero)                      = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc zero)                      (suc (suc zero))                = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc zero)                      (suc (suc (suc zero)))          = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc zero))                zero                            = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc zero))                (suc zero)                      = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc zero))                (suc (suc zero))                = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc zero))                (suc (suc (suc zero)))          = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc (suc zero)))          zero                            = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc (suc zero)))          (suc zero)                      = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc (suc zero)))          (suc (suc zero))                = refl
-bivector-to-tensor-symmetric (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc (suc zero)))          (suc (suc (suc zero)))          = refl
+bivector-to-tensor-symmetric v i j =
+  fin4-fin4-route i j
+  where
+    -- Bit-decompose i, j ∈ Fin 4 to (Fin 2 × Fin 2) × (Fin 2 × Fin 2)
+    -- and dispatch via the binary cover.
+    fin4-fin4-route : (i j : Fin 4) →
+      lookup (lookup (bivector-to-tensor v) i) j
+        ≡ lookup (lookup (bivector-to-tensor v) j) i
+    fin4-fin4-route zero                     zero                     = bivector-to-tensor-symmetric-bin v zero zero zero zero
+    fin4-fin4-route zero                     (suc zero)               = bivector-to-tensor-symmetric-bin v zero zero zero (suc zero)
+    fin4-fin4-route zero                     (suc (suc zero))         = bivector-to-tensor-symmetric-bin v zero zero (suc zero) zero
+    fin4-fin4-route zero                     (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v zero zero (suc zero) (suc zero)
+    fin4-fin4-route (suc zero)               zero                     = bivector-to-tensor-symmetric-bin v zero (suc zero) zero zero
+    fin4-fin4-route (suc zero)               (suc zero)               = bivector-to-tensor-symmetric-bin v zero (suc zero) zero (suc zero)
+    fin4-fin4-route (suc zero)               (suc (suc zero))         = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) zero
+    fin4-fin4-route (suc zero)               (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) (suc zero)
+    fin4-fin4-route (suc (suc zero))         zero                     = bivector-to-tensor-symmetric-bin v (suc zero) zero zero zero
+    fin4-fin4-route (suc (suc zero))         (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) zero zero (suc zero)
+    fin4-fin4-route (suc (suc zero))         (suc (suc zero))         = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) zero
+    fin4-fin4-route (suc (suc zero))         (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) (suc zero)
+    fin4-fin4-route (suc (suc (suc zero)))   zero                     = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero zero
+    fin4-fin4-route (suc (suc (suc zero)))   (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero (suc zero)
+    fin4-fin4-route (suc (suc (suc zero)))   (suc (suc zero))         = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) zero
+    fin4-fin4-route (suc (suc (suc zero)))   (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) (suc zero)
 
+-- diag-zero is the UNIFORM case (every cell reduces to 𝟘 ≡ 𝟘), so
+-- the polymorphic `4-refls` from CanonicalCover applies directly:
+-- one polymorphic {x = 𝟘} unifies across all 4 positions.
 bivector-to-tensor-diag-zero :
   (v : Bivector) →
   (i : Fin 4) →
   lookup (lookup (bivector-to-tensor v) i) i ≡ 𝟘
-bivector-to-tensor-diag-zero (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) zero                            = refl
-bivector-to-tensor-diag-zero (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc zero)                      = refl
-bivector-to-tensor-diag-zero (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc zero))                = refl
-bivector-to-tensor-diag-zero (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) (suc (suc (suc zero)))          = refl
+bivector-to-tensor-diag-zero (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) =
+  fin-cover _ (n-refls 4)
 
 ------------------------------------------------------------------------
 -- N-2: antisymmetric-from-bivector — package the antisymmetry

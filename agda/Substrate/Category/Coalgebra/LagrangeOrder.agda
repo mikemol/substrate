@@ -47,10 +47,10 @@
 
 module Substrate.Category.Coalgebra.LagrangeOrder where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ; _*_)
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
 open import Substrate.Category.Coalgebra
@@ -170,8 +170,8 @@ global-fixed-point→periodic global-fp i m =
 --     all dividing 4.
 ------------------------------------------------------------------------
 
-open import Data.Product using (Σ; _,_; _×_)
-open import Relation.Binary.PropositionalEquality using (subst)
+open import Substrate.Foundation.Product using (Σ; _,_; _×_)
+open import Substrate.Foundation.Eq using (subst)
 
 HasLagrangeOrder-from-multiples :
   {X : Set ℓ} (n : ℕ) (α : Action n X) →

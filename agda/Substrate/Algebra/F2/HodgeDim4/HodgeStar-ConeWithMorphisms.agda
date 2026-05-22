@@ -30,8 +30,8 @@
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar-ConeWithMorphisms where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Linear using (apply)

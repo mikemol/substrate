@@ -39,10 +39,10 @@
 
 module Substrate.Geometry.HodgeDim3.Fano where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (Σ; _,_)
-open import Data.Vec using ([]; _∷_; lookup)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2

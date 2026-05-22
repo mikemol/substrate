@@ -5,15 +5,8 @@
 -- Thin adapter over Substrate.Groups.Symmetric instantiated at Axis.
 --
 -- All operations (_·_, ε, _⁻¹), equivalence (_≈_), congruences,
--- group axioms, and the stdlib Group bundle are inherited from
--- Symmetric. The only S₄-specific content is the alias S₄-Group
--- for the bundled Group record, preserving the name downstream
--- modules import.
---
--- Per [[feedback-v4-typeclass-architecture]]: zero duplicated
--- machinery. New symmetric groups (over different carriers) live in
--- Substrate.Groups.SFin (over Fin n) or instantiate Symmetric
--- directly.
+-- group axioms, and the substrate-native SetoidGroup bundle are
+-- inherited from Symmetric.
 --
 -- See: catalog/cocycles.md § CY-5 — S_4 ≅ V_4 ⋊ S_3 identification.
 ------------------------------------------------------------------------
@@ -22,17 +15,13 @@
 
 module Substrate.Groups.S4 where
 
-open import Algebra.Bundles using (Group)
-open import Level using (0ℓ)
-
+open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Axes using (Axis; D; C; S; W)
 
--- Inherit all symmetric-group machinery: Permutation, _≈_, _·_, ε,
--- _⁻¹, ≈-{refl,sym,trans}, ·-{assoc,cong}, ε-{left,right},
--- inv-{left,right}, ⁻¹-cong, isMagma/Semigroup/Monoid/Group,
--- Symmetric-Group, σ-injective.
+-- Inherit all symmetric-group machinery via the Axis instance.
 open import Substrate.Groups.Symmetric Axis public
 
--- Alias the bundled Group as S₄-Group for backwards compatibility.
-S₄-Group : Group 0ℓ 0ℓ
+-- Alias the bundled SetoidGroup as S₄-Group for backwards
+-- compatibility with downstream importers.
+S₄-Group : SetoidGroup
 S₄-Group = Symmetric-Group

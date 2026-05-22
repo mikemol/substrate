@@ -18,10 +18,10 @@
 
 module Substrate.Geometry.HodgeDim3.Orthogonality where
 
-open import Data.Fin using (zero; suc)
-open import Data.Product using (_,_)
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2

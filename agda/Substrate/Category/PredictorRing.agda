@@ -26,10 +26,10 @@
 
 module Substrate.Category.PredictorRing where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Data.List using (List; []; _∷_; length)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
 -- Abstract predictor structure.

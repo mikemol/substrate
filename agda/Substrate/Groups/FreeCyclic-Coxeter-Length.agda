@@ -24,8 +24,8 @@
 
 module Substrate.Groups.FreeCyclic-Coxeter-Length where
 
-open import Data.Nat using (ℕ; zero; suc)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; trans)
 
 import Substrate.Groups.FreeCyclic-Coxeter as F

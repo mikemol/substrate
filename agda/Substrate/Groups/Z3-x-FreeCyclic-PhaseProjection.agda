@@ -20,8 +20,8 @@
 
 module Substrate.Groups.Z3-x-FreeCyclic-PhaseProjection where
 
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.FreeCyclic-Coxeter as F

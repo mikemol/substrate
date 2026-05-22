@@ -33,9 +33,9 @@
 
 module Substrate.Groups.Z3-x-FreeCyclic-Degree where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Product using (_,_; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Product using (_,_; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
 import Substrate.Groups.Z3-Coxeter as Z₃

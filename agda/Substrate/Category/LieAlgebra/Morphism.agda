@@ -27,7 +27,7 @@
 module Substrate.Category.LieAlgebra.Morphism where
 
 open import Level using (Level; _⊔_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Category.LieAlgebra using (LieAlgebra)

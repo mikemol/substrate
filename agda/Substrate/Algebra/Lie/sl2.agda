@@ -35,9 +35,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Level using (Level)
-open import Data.Nat using (ℕ; suc; zero)
-open import Data.Fin using (Fin)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Nat using (ℕ; suc; zero)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)

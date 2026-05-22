@@ -23,9 +23,9 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector-F2Graded where
 
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Vec using (Vec; []; _∷_; zipWith)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong; cong₂)
 
 open import Substrate.Algebra.F2
@@ -61,7 +61,7 @@ shuffle x y a b =
   (trans (cong (x +_) (+-assoc a y b))
          (sym (+-assoc x a (y + b))))))
   where
-    open import Relation.Binary.PropositionalEquality using (sym)
+    open import Substrate.Foundation.Eq using (sym)
 
 weight-parity-+ⱽ :
   ∀ {n} (u v : Vector n) →

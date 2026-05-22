@@ -37,8 +37,8 @@
 module Substrate.Category.GTorsor where
 
 open import Level using (Level; _⊔_)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 -- (Level variables introduced per-record / per-function below.)

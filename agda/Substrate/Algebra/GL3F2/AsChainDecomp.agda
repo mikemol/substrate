@@ -31,9 +31,9 @@
 module Substrate.Algebra.GL3F2.AsChainDecomp where
 
 open import Level using (Level; _⊔_)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Vec using (Vec; []; _∷_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 
 open import Substrate.Category.ChainDecomposition
   using (ChainDecomposition; mkChain; reconstruct-chain)

@@ -27,8 +27,8 @@
 
 module Substrate.Algebra.GL3F2 where
 
-open import Data.Nat using (ℕ; zero; suc)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (Vector)

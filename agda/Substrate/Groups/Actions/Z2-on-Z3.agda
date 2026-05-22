@@ -28,7 +28,7 @@ import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z2-Coxeter-Group as Z₂G
 import Substrate.Groups.Z3-Coxeter-Group as Z₃G
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong)
 
 ------------------------------------------------------------------------
@@ -74,7 +74,7 @@ act-cong {h₁} {h₂} {n₁} {n₂} h-eq n-eq =
   -- act h₁ n₁ ≡ act h₂ n₂ propositionally via cong on act-letter.
   -- ≈ on top: Z₃.normalize equality preserved by cong.
   cong Z₃.normalize (cong₂ act-letter h-eq n-eq)
-  where open import Relation.Binary.PropositionalEquality using (cong₂)
+  where open import Substrate.Foundation.Eq using (cong₂)
 
 ------------------------------------------------------------------------
 -- 4. act-ε: act ε₂ n ≈ n.

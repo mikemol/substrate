@@ -42,7 +42,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGaugeAction where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Linear using (apply)

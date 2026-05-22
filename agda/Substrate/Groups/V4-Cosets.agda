@@ -41,8 +41,8 @@
 module Substrate.Groups.V4-Cosets where
 
 open import Level using (0ℓ)
-open import Data.Product using (∃; Σ; Σ-syntax; _,_; proj₁; proj₂; _×_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (∃; Σ; Σ-syntax; _,_; proj₁; proj₂; _×_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)

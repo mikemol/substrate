@@ -33,8 +33,8 @@
 
 module Substrate.Codes.ReedMuller.RM-1-3 where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Vec using ([]; _∷_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Vec using ([]; _∷_)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector

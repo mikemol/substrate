@@ -36,10 +36,10 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ)
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra)

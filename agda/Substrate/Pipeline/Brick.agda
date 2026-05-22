@@ -44,7 +44,7 @@
 
 module Substrate.Pipeline.Brick where
 
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Level using (Level; _⊔_; suc) renaming (zero to lzero)
 
 ------------------------------------------------------------------------

@@ -16,8 +16,8 @@
 
 module Substrate.Pipeline.Examples where
 
-open import Data.Product using (_×_; _,_)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Pipeline.Brick
 
 ------------------------------------------------------------------------

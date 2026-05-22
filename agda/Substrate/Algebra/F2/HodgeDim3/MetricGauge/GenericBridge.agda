@@ -36,9 +36,9 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Algebra.F2
@@ -222,7 +222,7 @@ metric-id-3-eq-bridged (suc (suc zero)) (suc (suc zero)) = refl
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Data.Vec using (lookup)
+open import Substrate.Foundation.Vec using (lookup)
 
 bilinear-form-of-metric-id-bridge :
   (v w : Vector 3) →

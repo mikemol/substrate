@@ -20,8 +20,8 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-Recovery where
 
-open import Data.Product using (_,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z4-Coxeter as Z₄

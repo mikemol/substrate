@@ -29,8 +29,8 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.HodgeRecast where
 
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Algebra.F2

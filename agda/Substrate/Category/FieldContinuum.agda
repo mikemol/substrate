@@ -39,7 +39,7 @@ module Substrate.Category.FieldContinuum where
 
 open import Level using (Level) renaming (suc to lsuc)
 
-open import Substrate.Category.FieldFanOut using (FieldFanOut)
+open import Substrate.Category.FieldFanOut using (FieldFanOut; FixedFanOut)
 
 private
   variable
@@ -63,7 +63,12 @@ private
 -- continuum instances (Fluidic / Magnetic / Photonic) supply it.
 ------------------------------------------------------------------------
 
-record FieldContinuum {n : _} (𝒹 : FieldFanOut {ℓ} n) : Set (lsuc ℓ) where
+-- Per FieldFanOut generalization 2026-05-21: the discrete-predecessor
+-- is a stationary (= constant-arity) FanOut, modelled here as
+-- FixedFanOut. The continuum-limit lift takes a FixedFanOut to its
+-- continuum target.
+
+record FieldContinuum {n : _} (𝒹 : FixedFanOut {ℓ} n) : Set (lsuc ℓ) where
   open FieldFanOut 𝒹
   field
     Continuum      : Set ℓ

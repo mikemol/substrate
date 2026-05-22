@@ -25,9 +25,9 @@
 
 module Substrate.Algebra.Z6-FieldBond where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FieldBond
 

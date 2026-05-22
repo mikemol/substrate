@@ -37,7 +37,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Level using (Level)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.JordanAlgebra
   using (JordanAlgebra; mkJordanAlgebra)

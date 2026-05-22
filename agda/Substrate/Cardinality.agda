@@ -70,13 +70,13 @@
 module Substrate.Cardinality where
 
 open import Level using (0ℓ)
-open import Data.Bool using (Bool; true; false)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Fin.Properties using (2↔Bool)
-open import Function.Bundles using (_↔_; mk↔ₛ′)
-open import Function.Properties.Inverse using (↔-sym)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Cover using (fin-cover)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
@@ -105,10 +105,7 @@ axis-↔-fin4 = mk↔ₛ′ to from to-from from-to
     from (suc (suc (suc zero)))     = W
 
     to-from : (i : Fin 4) → to (from i) ≡ i
-    to-from zero                       = refl
-    to-from (suc zero)                 = refl
-    to-from (suc (suc zero))           = refl
-    to-from (suc (suc (suc zero)))     = refl
+    to-from = fin-cover _ (refl , refl , refl , refl)
 
     from-to : (x : Axis) → from (to x) ≡ x
     from-to D = refl
@@ -136,10 +133,7 @@ v4-↔-fin4 = mk↔ₛ′ to from to-from from-to
     from (suc (suc (suc zero)))     = γ
 
     to-from : (i : Fin 4) → to (from i) ≡ i
-    to-from zero                       = refl
-    to-from (suc zero)                 = refl
-    to-from (suc (suc zero))           = refl
-    to-from (suc (suc (suc zero)))     = refl
+    to-from = fin-cover _ (refl , refl , refl , refl)
 
     from-to : (v : V₄) → from (to v) ≡ v
     from-to e = refl
@@ -165,9 +159,7 @@ pairing-↔-fin3 = mk↔ₛ′ to from to-from from-to
     from (suc (suc zero)) = γ-pair
 
     to-from : (i : Fin 3) → to (from i) ≡ i
-    to-from zero             = refl
-    to-from (suc zero)       = refl
-    to-from (suc (suc zero)) = refl
+    to-from = fin-cover _ (refl , refl , refl)
 
     from-to : (p : Pairing) → from (to p) ≡ p
     from-to α-pair = refl
@@ -190,8 +182,7 @@ chirality-↔-fin2 = mk↔ₛ′ to from to-from from-to
     from (suc zero) = odd
 
     to-from : (i : Fin 2) → to (from i) ≡ i
-    to-from zero       = refl
-    to-from (suc zero) = refl
+    to-from = fin-cover _ (refl , refl)
 
     from-to : (c : Chirality) → from (to c) ≡ c
     from-to even = refl
@@ -206,7 +197,22 @@ chirality-↔-fin2 = mk↔ₛ′ to from to-from from-to
 ------------------------------------------------------------------------
 
 bool-↔-fin2 : Bool ↔ Fin 2
-bool-↔-fin2 = ↔-sym 2↔Bool
+bool-↔-fin2 = mk↔ₛ′ to from to-from from-to
+  where
+    to : Bool → Fin 2
+    to false = zero
+    to true  = suc zero
+
+    from : Fin 2 → Bool
+    from zero       = false
+    from (suc zero) = true
+
+    to-from : (i : Fin 2) → to (from i) ≡ i
+    to-from = fin-cover _ (refl , refl)
+
+    from-to : (b : Bool) → from (to b) ≡ b
+    from-to false = refl
+    from-to true  = refl
 
 ------------------------------------------------------------------------
 -- Notes

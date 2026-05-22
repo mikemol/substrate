@@ -26,8 +26,8 @@
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGenericHodge where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)

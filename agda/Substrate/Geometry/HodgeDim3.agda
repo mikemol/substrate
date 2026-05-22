@@ -47,9 +47,9 @@
 
 module Substrate.Geometry.HodgeDim3 where
 
-open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2

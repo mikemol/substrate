@@ -30,9 +30,9 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
 

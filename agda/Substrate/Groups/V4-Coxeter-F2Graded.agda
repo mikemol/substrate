@@ -19,7 +19,7 @@ import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _++_; ++-identity-left; ++-identity-right)
 open import Substrate.Groups.Coxeter.Word.Length using (length; length-distrib)
-open import Relation.Binary.PropositionalEquality using (refl)
+open import Substrate.Foundation.Eq using (refl)
 
 ------------------------------------------------------------------------
 -- V₄ as F₂-graded via length-parity (via the combinator).

@@ -17,7 +17,7 @@
 module Substrate.Category.CommutativeMonoid where
 
 open import Level using (Level) renaming (suc to lsuc)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 private
   variable

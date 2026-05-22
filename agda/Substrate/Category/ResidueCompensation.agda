@@ -23,9 +23,9 @@
 
 module Substrate.Category.ResidueCompensation where
 
-open import Data.Nat using (ℕ)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
 -- The four V₄ elements (mirrors Substrate.Category.RuleAction).

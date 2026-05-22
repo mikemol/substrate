@@ -36,8 +36,8 @@
 
 module Substrate.Category.TensorProduct.BCInstances where
 
-open import Data.Nat using (ℕ) renaming (_+_ to _ℕ+_)
-open import Data.Product using (_×_; _,_)
+open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Product using (_×_; _,_)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector

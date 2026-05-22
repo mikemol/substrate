@@ -23,8 +23,8 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Cone-HodgeStar-EdgeApex where
 
-open import Data.Fin using (Fin; zero)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Linear using (apply)

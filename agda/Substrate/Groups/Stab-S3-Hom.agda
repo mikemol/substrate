@@ -50,13 +50,14 @@
 module Substrate.Groups.Stab-S3-Hom where
 
 open import Level using (0ℓ)
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Axes using (Axis; D; C; S; W; axis×axis-cover)
+open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Groups.S4 as S4
   using (Permutation; _·_; _⁻¹; ε)
   renaming (apply to applyₛ; invₐ to invₐₛ)
@@ -188,22 +189,12 @@ restrict-hom-⁻¹ anchor p i = refl
 extend-hom-ε :
   (anchor : Axis) (x : Axis) →
   applyₛ (proj₁ (extend anchor SFin.ε)) x ≡ applyₛ ε x
-extend-hom-ε D D = refl
-extend-hom-ε D C = refl
-extend-hom-ε D S = refl
-extend-hom-ε D W = refl
-extend-hom-ε C D = refl
-extend-hom-ε C C = refl
-extend-hom-ε C S = refl
-extend-hom-ε C W = refl
-extend-hom-ε S D = refl
-extend-hom-ε S C = refl
-extend-hom-ε S S = refl
-extend-hom-ε S W = refl
-extend-hom-ε W D = refl
-extend-hom-ε W C = refl
-extend-hom-ε W S = refl
-extend-hom-ε W W = refl
+extend-hom-ε =
+  axis×axis-cover _
+    ((refl , refl , refl , refl) ,
+     (refl , refl , refl , refl) ,
+     (refl , refl , refl , refl) ,
+     (refl , refl , refl , refl))
 
 ------------------------------------------------------------------------
 -- extend-hom-∙: extend preserves composition.

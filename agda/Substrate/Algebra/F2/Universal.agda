@@ -27,9 +27,9 @@
 module Substrate.Algebra.F2.Universal where
 
 open import Level using (Level; suc)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym)
 
 open import Substrate.Algebra.F2

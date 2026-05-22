@@ -34,9 +34,9 @@
 module Substrate.Groups.V4-Embedding where
 
 open import Level using (0ℓ)
-open import Data.Product using (∃; _,_; -,_)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (∃; _,_; -,_)
+open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 -- Axis + bijection (v-of-axis / axis-of-v) + round-trips + act-axis

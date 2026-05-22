@@ -23,10 +23,10 @@
 
 module Substrate.Category.Cone.WithMorphisms where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
 open import Level using (Level; _⊔_)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 private
   variable

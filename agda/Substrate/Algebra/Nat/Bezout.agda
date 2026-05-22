@@ -32,12 +32,12 @@
 
 module Substrate.Algebra.Nat.Bezout where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Nat.Properties using (*-zeroˡ; +-identityʳ; +-identityˡ;
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Nat.Properties using (*-zeroˡ; +-identityʳ; +-identityˡ;
                                        *-identityˡ)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.Nat.GCD using (EEATrace; base; step)

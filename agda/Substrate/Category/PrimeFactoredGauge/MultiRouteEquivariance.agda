@@ -39,9 +39,9 @@
 module Substrate.Category.PrimeFactoredGauge.MultiRouteEquivariance where
 
 open import Level using (Level; _⊔_)
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.Category.GTorsor using (act; transitive)
 open import Substrate.Category.SylowDecomposition

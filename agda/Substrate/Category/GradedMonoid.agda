@@ -29,9 +29,9 @@
 
 module Substrate.Category.GradedMonoid where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 private
   variable

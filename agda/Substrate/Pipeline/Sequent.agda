@@ -47,7 +47,7 @@
 
 module Substrate.Pipeline.Sequent where
 
-open import Data.Product using (_×_; _,_; proj₁; proj₂; swap)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; swap)
 open import Substrate.Pipeline.Brick
 
 ------------------------------------------------------------------------
@@ -179,7 +179,7 @@ cut-sequent s₁ s₂ = record
 -- S edges).
 ------------------------------------------------------------------------
 
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong)
 
 -- For composition with sequents, we need both the sequent's A and B
@@ -277,7 +277,7 @@ record SequentFixed (A : Set) : Set₁ where
 -- at each step. Returns the result when canonical, or fails (Nothing) if
 -- the bound is exceeded.
 open import Data.Maybe using (Maybe; just; nothing)
-open import Data.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 
 iterate-to-canonical
   : ∀ {A : Set}

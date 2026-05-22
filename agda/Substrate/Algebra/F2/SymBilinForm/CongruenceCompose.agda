@@ -37,11 +37,11 @@
 
 module Substrate.Algebra.F2.SymBilinForm.CongruenceCompose where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ)
-open import Data.Vec using (lookup)
-open import Function using (_∘_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Vec using (lookup)
+open import Substrate.Foundation.Function using (_∘_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Algebra.F2

@@ -36,8 +36,8 @@
 
 module Substrate.Algebra.GL3F2.GaugeGenerators where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation

@@ -44,12 +44,12 @@
 
 module Substrate.Category.RuleAction where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Data.List using (List; []; _∷_)
 open import Data.Maybe using (Maybe; just; nothing)
-open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
 -- V₄ residue: Coxeter framework requires a presentation; we mirror

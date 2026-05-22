@@ -35,10 +35,10 @@
 
 module Substrate.Algebra.GL3F2.SylowDecomposition where
 
-open import Data.Fin using (Fin; zero; suc; toℕ)
-open import Data.Nat using (ℕ)
-open import Data.Product using (Σ; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.GL3F2

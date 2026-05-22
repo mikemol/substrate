@@ -32,9 +32,9 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth where
 
-open import Data.Product using (_×_; _,_)
-open import Data.Vec using ([]; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2
@@ -184,7 +184,7 @@ e₃-NOT-orth-e₀-under-metric-fully-coupled = refl
 -- pattern generalises to V4Plane-equivalents in higher dimensions.
 ------------------------------------------------------------------------
 
-open import Data.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Category.Pullback
   using (Wide-Meet)
 

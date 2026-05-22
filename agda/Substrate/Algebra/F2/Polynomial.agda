@@ -35,11 +35,11 @@
 
 module Substrate.Algebra.F2.Polynomial where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
-open import Data.Vec using (Vec; []; _∷_; lookup; replicate)
-open import Function using (_∘_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; replicate)
+open import Substrate.Foundation.Function using (_∘_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
 open import Substrate.Algebra.F2
@@ -150,10 +150,10 @@ infixl 7 _·c_
 -- give the cleaner decomposition than convolution-mashing.
 ------------------------------------------------------------------------
 
-open import Data.Vec using (replicate)
-open import Data.Nat.Properties using (+-identityʳ; +-suc)
+open import Substrate.Foundation.Vec using (replicate)
+open import Substrate.Foundation.Nat.Properties using (+-identityʳ; +-suc)
   renaming (+-comm to +ℕ-comm)
-open import Relation.Binary.PropositionalEquality using (subst)
+open import Substrate.Foundation.Eq using (subst)
 
 -- The outer product: the universal bilinear map.
 -- Given p : Polynomial n and q : Polynomial m, outer p q : Vec (Polynomial m) n

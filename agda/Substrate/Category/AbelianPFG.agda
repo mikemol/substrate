@@ -36,7 +36,7 @@
 module Substrate.Category.AbelianPFG where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge)

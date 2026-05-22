@@ -40,10 +40,10 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Data.Fin using (Fin)
+open import Substrate.Foundation.Fin using (Fin)
 open import Data.List using (List; []; _∷_)
-open import Data.Product using (Σ; _,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.GL3F2 using (GL3F2; _·G_; id-GL)

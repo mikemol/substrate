@@ -22,8 +22,8 @@
 module Substrate.Foundations.Bijection where
 
 open import Level using (Level; _⊔_)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; cong₂)
 
 ------------------------------------------------------------------------

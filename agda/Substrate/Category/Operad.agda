@@ -11,7 +11,7 @@
 module Substrate.Category.Operad where
 
 open import Level using (Level)
-open import Data.Nat using (ℕ)
+open import Substrate.Foundation.Nat using (ℕ)
 
 record Operad : Set₁ where
   field

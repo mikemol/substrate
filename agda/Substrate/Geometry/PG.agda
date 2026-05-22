@@ -30,11 +30,11 @@
 
 module Substrate.Geometry.PG where
 
-open import Data.Nat using (ℕ)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
   using (_≡_)
-open import Relation.Nullary using (¬_)
+open import Substrate.Foundation.Negation using (¬_)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector

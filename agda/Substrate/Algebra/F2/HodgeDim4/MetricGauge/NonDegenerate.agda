@@ -39,9 +39,9 @@
 
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge.NonDegenerate where
 
-open import Data.Vec using ([]; _∷_)
-open import Function using (const)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Vec using ([]; _∷_)
+open import Substrate.Foundation.Function using (const)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans)
 
 open import Substrate.Algebra.F2

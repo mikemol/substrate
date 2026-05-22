@@ -48,12 +48,11 @@
 
 module Substrate.Discipline where
 
-open import Level using (Level; _⊔_; suc; 0ℓ)
-open import Algebra.Bundles using (Group)
-open import Data.Product using (Σ; Σ-syntax; _,_; proj₁; proj₂; ∃; -,_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Product using (Σ; Σ-syntax; _,_; proj₁; proj₂; ∃; -,_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
+open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Cocycle as Cocycle
   using (IsomorphicCocycleStructure; WeakCocycleStructure;
          Action; IsTorsor)
@@ -75,14 +74,14 @@ open import Substrate.Cocycle as Cocycle
 -- second component.
 ------------------------------------------------------------------------
 
-module Rule1 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) where
+module Rule1 (𝒞 : IsomorphicCocycleStructure) where
 
   open IsomorphicCocycleStructure 𝒞
   open Cocycle.Downcast 𝒞
 
   -- The named claim. Reduces to refl by construction.
   project-gauge-equivariant :
-    (g : Group.Carrier Gauge) (x : TotalSpace) →
+    (g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
     project (total-act g x) ≡ project x
   project-gauge-equivariant = proj-gauge-inv
 
@@ -96,7 +95,7 @@ module Rule1 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) w
 
   lift-is-gauge-invariant :
     ∀ {ℓa} {A : Set ℓa} (f : Invariant → A)
-    (g : Group.Carrier Gauge) (x : TotalSpace) →
+    (g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
     lift-from-invariant f (total-act g x) ≡ lift-from-invariant f x
   lift-is-gauge-invariant f g x = cong f (project-gauge-equivariant g x)
 
@@ -117,7 +116,7 @@ module Rule1 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) w
 -- move between any two fiber elements over the same invariant).
 ------------------------------------------------------------------------
 
-module Rule5 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) where
+module Rule5 (𝒞 : IsomorphicCocycleStructure) where
 
   open IsomorphicCocycleStructure 𝒞
   open Cocycle.Downcast 𝒞
@@ -126,7 +125,7 @@ module Rule5 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) w
   content-by-invariant :
     ∀ {ℓa} {A : Set ℓa}
     (f : TotalSpace → A) →
-    ((g : Group.Carrier Gauge) (x : TotalSpace) →
+    ((g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
      f (total-act g x) ≡ f x) →
     (i : Invariant) (t₁ t₂ : Fiber i) →
     f (i , t₁) ≡ f (i , t₂)
@@ -170,9 +169,7 @@ module Rule5 {ℓi ℓg : Level} (𝒞 : IsomorphicCocycleStructure ℓi ℓg) w
 
 -- A Section of a weak cocycle structure: a choice of canonical
 -- representative per invariant. The Type-D rigidification move.
-record Section {ℓb ℓi ℓg : Level}
-               (𝒲 : WeakCocycleStructure ℓb ℓi ℓg)
-               : Set (ℓb ⊔ ℓi) where
+record Section (𝒲 : WeakCocycleStructure) : Set where
   open WeakCocycleStructure 𝒲
   field
     -- The chosen canonical for each invariant.
@@ -191,16 +188,15 @@ module Rule11 where
   -- ICS → WCS is functorial (no choices). Re-export Downcast.weak
   -- here under the rule's name.
   strong-to-weak :
-    ∀ {ℓi ℓg} → IsomorphicCocycleStructure ℓi ℓg →
-    WeakCocycleStructure ℓi ℓi ℓg
+    IsomorphicCocycleStructure → WeakCocycleStructure
   strong-to-weak 𝒞 = Cocycle.Downcast.weak 𝒞
 
   -- A "rigidified" weak cocycle: a WCS bundled with a Section.
   -- This is what the strong discipline forbids by structural absence:
   -- there is no slot in ICS where a Section would go.
-  record RigidifiedWCS (ℓb ℓi ℓg : Level) : Set (suc (ℓb ⊔ ℓi ⊔ ℓg)) where
+  record RigidifiedWCS : Set₁ where
     field
-      base       : WeakCocycleStructure ℓb ℓi ℓg
+      base       : WeakCocycleStructure
       section    : Section base
 
 ------------------------------------------------------------------------
@@ -224,14 +220,14 @@ module Demo where
   module CY5 where
     open Rule1 CY5-V4Signature public
     open Rule5 CY5-V4Signature public
-    weak : WeakCocycleStructure _ _ _
+    weak : WeakCocycleStructure
     weak = Rule11.strong-to-weak CY5-V4Signature
 
   -- CY-4: strong cocycle, all three rules apply at the ICS level.
   module CY4 where
     open Rule1 F2³-Puncturing-Cocycle public
     open Rule5 F2³-Puncturing-Cocycle public
-    weak : WeakCocycleStructure _ _ _
+    weak : WeakCocycleStructure
     weak = Rule11.strong-to-weak F2³-Puncturing-Cocycle
 
   -- CY-2: weak cocycle. Rule 1's "project is gauge-invariant" is

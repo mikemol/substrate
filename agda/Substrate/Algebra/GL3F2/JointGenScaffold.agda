@@ -30,8 +30,8 @@
 
 module Substrate.Algebra.GL3F2.JointGenScaffold where
 
-open import Data.Fin using (Fin; zero; suc)
-open import Data.Product using (Σ; _,_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.Algebra.GL3F2 using (GL3F2; _·G_; id-GL)
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance

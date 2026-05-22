@@ -35,7 +35,7 @@
 module Substrate.Category.Coalgebra where
 
 open import Level using (Level; _⊔_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 private

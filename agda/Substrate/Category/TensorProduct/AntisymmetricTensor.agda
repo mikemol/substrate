@@ -32,10 +32,10 @@
 
 module Substrate.Category.TensorProduct.AntisymmetricTensor where
 
-open import Data.Fin using (Fin)
-open import Data.Nat using (ℕ)
-open import Data.Vec using (lookup)
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Vec using (lookup)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Algebra.F2
 open import Substrate.Category.TensorProduct using (TensorProduct)

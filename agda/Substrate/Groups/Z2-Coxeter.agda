@@ -16,9 +16,9 @@
 module Substrate.Groups.Z2-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word public
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; _≢_)
 
 ------------------------------------------------------------------------
@@ -82,11 +82,25 @@ open WithLemmas canonical-is-fixed-Z2 insert-append-lemma-Z2 public
 -- 6. Decidable equality on Canonical forms.
 ------------------------------------------------------------------------
 
+-- Decidable Gen equality (Z₂'s Gen has a single constructor).
+gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ a a = yes refl
+
+open import Substrate.Groups.Coxeter.SameCanonical
+  using (same-canonical-via-Gen)
+open import Substrate.Foundation.Product using (_×_; _,_)
+
+-- Canonical-cover for Z₂: 2-tuple of per-position proofs onto any
+-- `Canonical w`.
+canonical-cover-Z2 :
+  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
+  P c-ε × P c-a →
+  ∀ {w} (c : Canonical w) → P c
+canonical-cover-Z2 _ (p , _) c-ε = p
+canonical-cover-Z2 _ (_ , p) c-a = p
+
 same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
-same-canonical c-ε c-ε = yes refl
-same-canonical c-a c-a = yes refl
-same-canonical c-ε c-a = no (λ ())
-same-canonical c-a c-ε = no (λ ())
+same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
 -- 7. Z/2-specific theorem: self-inverse.

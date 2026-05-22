@@ -12,7 +12,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Substrate.Foundation.Eq using (_≡_)
 
 module Substrate.Groups.Zn-x-FreeCyclic
   (Zn-Word        : Set)

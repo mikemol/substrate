@@ -23,9 +23,9 @@
 
 module Substrate.Algebra.F2.Polynomial.TensorProductView where
 
-open import Data.Nat using (ℕ) renaming (_+_ to _ℕ+_)
-open import Data.Vec using (Vec; []; _∷_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; cong)
 
 open import Substrate.Algebra.F2

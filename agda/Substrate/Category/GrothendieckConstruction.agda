@@ -40,7 +40,7 @@
 module Substrate.Category.GrothendieckConstruction where
 
 open import Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Data.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 private
   variable

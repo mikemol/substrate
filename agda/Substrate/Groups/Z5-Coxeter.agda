@@ -20,9 +20,9 @@
 module Substrate.Groups.Z5-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word public
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; _≢_)
 
 ------------------------------------------------------------------------

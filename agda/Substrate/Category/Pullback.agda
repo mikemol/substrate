@@ -44,10 +44,10 @@
 
 module Substrate.Category.Pullback where
 
-open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
-open import Function using (id; _∘_)
+open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Function using (id; _∘_)
 open import Level using (Level; _⊔_)
-open import Relation.Binary.PropositionalEquality
+open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Equalizer

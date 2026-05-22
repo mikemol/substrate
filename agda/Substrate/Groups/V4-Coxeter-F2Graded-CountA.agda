@@ -11,8 +11,8 @@
 
 module Substrate.Groups.V4-Coxeter-F2Graded-CountA where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word
