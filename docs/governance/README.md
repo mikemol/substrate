@@ -22,6 +22,7 @@ properties, cover combinators) rather than a documentation request.
 | [universal_property_discipline.md](universal_property_discipline.md) | Reach for UP bridges before per-instance unfolding | Direct (linear-extensionality, FreeLinearization, etc.) |
 | [project_culture_coalgebraic.md](project_culture_coalgebraic.md) | Defer work by slice-scope discipline, not consumer demand | Cultural (about work planning) |
 | [file_size_one_pass_rewrite.md](file_size_one_pass_rewrite.md) | Files small enough to rewrite in one pass; decompose past 400-line warning zone | Cultural (judgement-based threshold) |
+| [shadow_architecture/](shadow_architecture/README.md) | Four-discipline lattice for cross-session work: decompose / regroup / snap + meta | Direct (formalised at `Substrate.ShadowArchitecture/*`) |
 
 ## Status
 
