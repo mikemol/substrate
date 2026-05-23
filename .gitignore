@@ -21,3 +21,7 @@ agda/_build/
 
 # Local codec state (SQLite caches, etc.)
 scratch/eliza/state/
+
+# Claude Code session configuration
+.claude/
+
