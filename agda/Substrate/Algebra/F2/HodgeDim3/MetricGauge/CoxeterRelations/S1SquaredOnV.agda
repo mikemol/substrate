@@ -26,5 +26,5 @@ s₁²-on-v = linear-extensionality (s₁ ∘L s₁) id-L agree-on-basis
     agree-on-basis : (i : Fin 3) →
                      apply (s₁ ∘L s₁) (basis i) ≡ apply id-L (basis i)
     agree-on-basis zero             = s₁²-on-e₀
-    agree-on-basis (suc zero)       = s₁²-on-e₁
+    agree-on-basis ₁       = s₁²-on-e₁
     agree-on-basis ₂ = s₁²-on-e₂

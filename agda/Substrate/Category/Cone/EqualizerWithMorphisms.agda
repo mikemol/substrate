@@ -22,6 +22,7 @@
 module Substrate.Category.Cone.EqualizerWithMorphisms where
 
 open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
@@ -44,7 +45,7 @@ private
 
 eq-Base : (A B : Set ℓ) → Fin 2 → Set ℓ
 eq-Base A B zero       = A
-eq-Base A B (suc zero) = B
+eq-Base A B ₁ = B
 
 eq-mor-src : Bool → Fin 2
 eq-mor-src _ = zero
@@ -87,6 +88,6 @@ equalizer-as-cone-with-morphisms :
 equalizer-as-cone-with-morphisms f g = record
   { leg = λ where
       zero       → equalizer-incl
-      (suc zero) → λ e → f (equalizer-incl e)
+      ₁ → λ e → f (equalizer-incl e)
   ; commute = eq-commute f g
   }

@@ -100,7 +100,7 @@ open import Substrate.Foundation.Fin using (zero; suc)
 p₁ p₂ p₃ p₄ p₅ p₆ p₇ : Point
 p₁ = zero
 p₂ = suc zero
-p₃ = suc (suc zero)
+p₃ = suc ₁
 p₄ = suc ₂
 p₅ = suc ₃
 p₆ = suc ₄

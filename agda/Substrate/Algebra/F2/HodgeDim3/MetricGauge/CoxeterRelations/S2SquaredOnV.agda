@@ -25,5 +25,5 @@ s₂²-on-v = linear-extensionality (s₂ ∘L s₂) id-L agree-on-basis
     agree-on-basis : (i : Fin 3) →
                      apply (s₂ ∘L s₂) (basis i) ≡ apply id-L (basis i)
     agree-on-basis zero             = s₂²-on-e₀
-    agree-on-basis (suc zero)       = s₂²-on-e₁
+    agree-on-basis ₁       = s₂²-on-e₁
     agree-on-basis ₂ = s₂²-on-e₂

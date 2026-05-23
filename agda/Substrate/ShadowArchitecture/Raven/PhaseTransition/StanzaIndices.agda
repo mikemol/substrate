@@ -12,11 +12,11 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₁; ₁₀; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉; ₁₀; ₁₁; ₁₂; ₁₃; ₁₄; ₁₅; ₁₆)
 
 s1  : Fin 18 ; s1  = zero
 s2  : Fin 18 ; s2  = suc zero
-s3  : Fin 18 ; s3  = suc (suc zero)
+s3  : Fin 18 ; s3  = suc ₁
 s4  : Fin 18 ; s4  = suc ₂
 s5  : Fin 18 ; s5  = suc ₃
 s6  : Fin 18 ; s6  = suc ₄
@@ -26,9 +26,9 @@ s9  : Fin 18 ; s9  = suc ₇
 s10 : Fin 18 ; s10 = suc ₈
 s11 : Fin 18 ; s11 = suc ₉
 s12 : Fin 18 ; s12 = suc ₁₀
-s13 : Fin 18 ; s13 = suc (suc ₁₀)
-s14 : Fin 18 ; s14 = suc (suc (suc ₁₀))
-s15 : Fin 18 ; s15 = suc (suc (suc (suc ₁₀)))
-s16 : Fin 18 ; s16 = suc (suc (suc (suc (suc ₁₀))))
-s17 : Fin 18 ; s17 = suc (suc (suc (suc (suc (suc ₁₀)))))
-s18 : Fin 18 ; s18 = suc (suc (suc (suc (suc (suc (suc ₁₀))))))
+s13 : Fin 18 ; s13 = suc ₁₁
+s14 : Fin 18 ; s14 = suc ₁₂
+s15 : Fin 18 ; s15 = suc ₁₃
+s16 : Fin 18 ; s16 = suc ₁₄
+s17 : Fin 18 ; s17 = suc ₁₅
+s18 : Fin 18 ; s18 = suc ₁₆

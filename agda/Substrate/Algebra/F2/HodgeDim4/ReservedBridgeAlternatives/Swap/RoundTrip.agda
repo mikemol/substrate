@@ -32,11 +32,11 @@ selfdual-coefficients-swap-roundtrip (c₀ ∷ c₁ ∷ c₂ ∷ []) =
   trans (cong (λ x →
                 x ∷
                 lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷
-                lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ∷ [])
+                lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ∷ [])
               (lookup-0-swap c₀ c₁ c₂))
   (trans (cong (λ x →
                  c₀ ∷ x ∷
-                 lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ∷ [])
+                 lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ∷ [])
                (lookup-2-swap c₀ c₁ c₂))
          (cong (λ x → c₀ ∷ c₁ ∷ x ∷ [])
                (lookup-1-swap c₀ c₁ c₂)))

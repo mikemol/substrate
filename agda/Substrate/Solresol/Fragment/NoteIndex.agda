@@ -20,7 +20,7 @@ note-count = 7
 note-index : Note → Fin note-count
 note-index do₁ = zero
 note-index re₁ = suc zero
-note-index mi₁ = suc (suc zero)
+note-index mi₁ = suc ₁
 note-index fa₁ = suc ₂
 note-index sol = suc ₃
 note-index la₁ = suc ₄

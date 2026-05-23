@@ -24,23 +24,23 @@ open import Substrate.Cocycles.V4Signature
   using (α-pair; β-pair; γ-pair; even; odd; OrbitKey)
 
 s3-to-orbit-key-from : Fin 3 → Fin 3 → OrbitKey
-s3-to-orbit-key-from zero            (suc zero)       = α-pair , even
+s3-to-orbit-key-from zero            ₁       = α-pair , even
 s3-to-orbit-key-from zero            ₂ = α-pair , odd
-s3-to-orbit-key-from (suc zero)       ₂ = β-pair , even
-s3-to-orbit-key-from (suc zero)       zero            = β-pair , odd
+s3-to-orbit-key-from ₁       ₂ = β-pair , even
+s3-to-orbit-key-from ₁       zero            = β-pair , odd
 s3-to-orbit-key-from ₂ zero            = γ-pair , even
-s3-to-orbit-key-from ₂ (suc zero)       = γ-pair , odd
+s3-to-orbit-key-from ₂ ₁       = γ-pair , odd
 s3-to-orbit-key-from _                _                = α-pair , even
                                                        -- impossible default
 
 s3-to-orbit-key : SFin.Permutation 3 → OrbitKey
 s3-to-orbit-key s =
-  s3-to-orbit-key-from (SFin.apply s zero) (SFin.apply s (suc zero))
+  s3-to-orbit-key-from (SFin.apply s zero) (SFin.apply s ₁)
 
 s3-to-orbit-key-cong :
   ∀ (s₁ s₂ : SFin.Permutation 3) →
   SFin.apply s₁ zero ≡ SFin.apply s₂ zero →
-  SFin.apply s₁ (suc zero) ≡ SFin.apply s₂ (suc zero) →
+  SFin.apply s₁ ₁ ≡ SFin.apply s₂ ₁ →
   s3-to-orbit-key s₁ ≡ s3-to-orbit-key s₂
 s3-to-orbit-key-cong s₁ s₂ eq0 eq1 =
   cong₂ s3-to-orbit-key-from eq0 eq1

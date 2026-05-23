@@ -62,7 +62,7 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 T-id-to-fully-coupled-images : Fin 3 → Vector 3
 T-id-to-fully-coupled-images zero          = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 T-id-to-fully-coupled-images (suc zero)    = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []
-T-id-to-fully-coupled-images (suc (suc _)) = 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []
+T-id-to-fully-coupled-images ₂ = 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []
 
 T-id-to-fully-coupled : Linear 3 3
 T-id-to-fully-coupled = linear-from-images T-id-to-fully-coupled-images

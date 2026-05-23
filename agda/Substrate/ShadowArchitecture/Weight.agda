@@ -29,6 +29,7 @@
 module Substrate.ShadowArchitecture.Weight where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -62,7 +63,7 @@ Orbit = Fin 3
 
 pattern wt-1 = zero
 pattern wt-2 = suc zero
-pattern wt-3 = suc (suc zero)
+pattern wt-3 = suc ₁
 
 point-orbit : Point → Orbit
 point-orbit p₁₀₀ = wt-1

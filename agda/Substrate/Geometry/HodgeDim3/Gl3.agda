@@ -30,6 +30,7 @@
 module Substrate.Geometry.HodgeDim3.Gl3 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -54,7 +55,7 @@ open import Substrate.Geometry.Fano
 σ-images : Fin 3 → Vector 3
 σ-images zero          = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₀ ↦ e₁
 σ-images (suc zero)    = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []      -- e₁ ↦ e₂
-σ-images (suc (suc _)) = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []      -- e₂ ↦ e₀
+σ-images ₂ = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []      -- e₂ ↦ e₀
 
 σ : Linear 3 3
 σ = linear-from-images σ-images
@@ -70,7 +71,7 @@ open import Substrate.Geometry.Fano
 τ-images : Fin 3 → Vector 3
 τ-images zero          = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₀ ↦ e₀ + e₁
 τ-images (suc zero)    = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₁ ↦ e₁
-τ-images (suc (suc _)) = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []      -- e₂ ↦ e₂
+τ-images ₂ = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []      -- e₂ ↦ e₂
 
 τ : Linear 3 3
 τ = linear-from-images τ-images

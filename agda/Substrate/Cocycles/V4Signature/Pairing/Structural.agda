@@ -52,7 +52,7 @@ Pairing→V4-Nonzero γ-pair = v4nz-γ
 V4-Nonzero→Pairing : V4-Nonzero → Pairing
 V4-Nonzero→Pairing zero          = α-pair
 V4-Nonzero→Pairing (suc zero)    = β-pair
-V4-Nonzero→Pairing (suc (suc _)) = γ-pair
+V4-Nonzero→Pairing ₂ = γ-pair
 
 ------------------------------------------------------------------------
 -- Round-trips.

@@ -17,4 +17,4 @@ open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 
 selfdual-coefficients-cyclic : Bivector → Vector 3
 selfdual-coefficients-cyclic ω =
-  lookup ω (suc zero) ∷ lookup ω ₂ ∷ lookup ω zero ∷ []
+  lookup ω ₁ ∷ lookup ω ₂ ∷ lookup ω zero ∷ []

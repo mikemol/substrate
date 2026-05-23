@@ -61,7 +61,7 @@ open import Substrate.Category.Coalgebra
 s₁-images : Fin 3 → Vector 3
 s₁-images zero          = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []
 s₁-images (suc zero)    = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
-s₁-images (suc (suc _)) = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []
+s₁-images ₂ = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []
 
 s₁ : Linear 3 3
 s₁ = linear-from-images s₁-images
@@ -82,7 +82,7 @@ s₁ = linear-from-images s₁-images
 s₂-images : Fin 3 → Vector 3
 s₂-images zero          = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 s₂-images (suc zero)    = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []
-s₂-images (suc (suc _)) = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []
+s₂-images ₂ = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []
 
 s₂ : Linear 3 3
 s₂ = linear-from-images s₂-images

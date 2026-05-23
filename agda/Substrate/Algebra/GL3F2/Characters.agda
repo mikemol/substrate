@@ -84,42 +84,42 @@ n ℤ = n
 GL3F2-Char : Fin 6 → Fin 6 → ℤ
 -- Row χ₁ (trivial): all 1s.
 GL3F2-Char zero             zero                                  = +_ 1
-GL3F2-Char zero             (suc zero)                            = +_ 1
+GL3F2-Char zero             ₁                            = +_ 1
 GL3F2-Char zero             ₂                      = +_ 1
 GL3F2-Char zero             ₃                = +_ 1
 GL3F2-Char zero             ₄          = +_ 1
 GL3F2-Char zero             ₅    = +_ 1
 -- Row χ₂ (3a): [3, -1, 0, 1, α, ᾱ]
-GL3F2-Char (suc zero)       zero                                  = +_ 3
-GL3F2-Char (suc zero)       (suc zero)                            = -suc_ 0
-GL3F2-Char (suc zero)       ₂                      = +_ 0
-GL3F2-Char (suc zero)       ₃                = +_ 1
-GL3F2-Char (suc zero)       ₄          = α-placeholder
-GL3F2-Char (suc zero)       ₅    = ᾱ-placeholder
+GL3F2-Char ₁       zero                                  = +_ 3
+GL3F2-Char ₁       ₁                            = -suc_ 0
+GL3F2-Char ₁       ₂                      = +_ 0
+GL3F2-Char ₁       ₃                = +_ 1
+GL3F2-Char ₁       ₄          = α-placeholder
+GL3F2-Char ₁       ₅    = ᾱ-placeholder
 -- Row χ₃ (3b): [3, -1, 0, 1, ᾱ, α]
 GL3F2-Char ₂ zero                                  = +_ 3
-GL3F2-Char ₂ (suc zero)                            = -suc_ 0
+GL3F2-Char ₂ ₁                            = -suc_ 0
 GL3F2-Char ₂ ₂                      = +_ 0
 GL3F2-Char ₂ ₃                = +_ 1
 GL3F2-Char ₂ ₄          = ᾱ-placeholder
 GL3F2-Char ₂ ₅    = α-placeholder
 -- Row χ₄ (6): [6, 2, 0, 0, -1, -1]
 GL3F2-Char ₃ zero                                  = +_ 6
-GL3F2-Char ₃ (suc zero)                            = +_ 2
+GL3F2-Char ₃ ₁                            = +_ 2
 GL3F2-Char ₃ ₂                      = +_ 0
 GL3F2-Char ₃ ₃                = +_ 0
 GL3F2-Char ₃ ₄          = -suc_ 0
 GL3F2-Char ₃ ₅    = -suc_ 0
 -- Row χ₅ (7): [7, -1, 1, -1, 0, 0]
 GL3F2-Char ₄ zero                                  = +_ 7
-GL3F2-Char ₄ (suc zero)                            = -suc_ 0
+GL3F2-Char ₄ ₁                            = -suc_ 0
 GL3F2-Char ₄ ₂                      = +_ 1
 GL3F2-Char ₄ ₃                = -suc_ 0
 GL3F2-Char ₄ ₄          = +_ 0
 GL3F2-Char ₄ ₅    = +_ 0
 -- Row χ₆ (8 Steinberg): [8, 0, -1, 0, 1, 1]
 GL3F2-Char ₅ zero                                  = +_ 8
-GL3F2-Char ₅ (suc zero)                            = +_ 0
+GL3F2-Char ₅ ₁                            = +_ 0
 GL3F2-Char ₅ ₂                      = -suc_ 0
 GL3F2-Char ₅ ₃                = +_ 0
 GL3F2-Char ₅ ₄          = +_ 1
@@ -131,7 +131,7 @@ GL3F2-Char ₅ ₅    = +_ 1
 
 class-size : Fin 6 → ℤ
 class-size zero                                  = +_ 1     -- 1A
-class-size (suc zero)                            = +_ 21    -- 2A
+class-size ₁                            = +_ 21    -- 2A
 class-size ₂                      = +_ 56    -- 3A
 class-size ₃                = +_ 42    -- 4A
 class-size ₄          = +_ 24    -- 7A
@@ -143,7 +143,7 @@ class-size ₅    = +_ 24    -- 7B
 
 centralizer-order : Fin 6 → ℤ
 centralizer-order zero                                  = +_ 168
-centralizer-order (suc zero)                            = +_ 8
+centralizer-order ₁                            = +_ 8
 centralizer-order ₂                      = +_ 3
 centralizer-order ₃                = +_ 4
 centralizer-order ₄          = +_ 7

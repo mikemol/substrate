@@ -70,7 +70,7 @@ phase-advance-Z₃-as-σ₃ :
   Z₃-Fin.canonical-to-Fin (Z₃.insert-canonical Z₃.a c)
     ≡ σ₃ (Z₃-Fin.canonical-to-Fin c)
 phase-advance-Z₃-as-σ₃ (Z₃.c-pos zero)  = refl
-phase-advance-Z₃-as-σ₃ (Z₃.c-pos (suc zero))  = refl
+phase-advance-Z₃-as-σ₃ (Z₃.c-pos ₁)  = refl
 phase-advance-Z₃-as-σ₃ (Z₃.c-pos ₂) = refl
 
 ------------------------------------------------------------------------
@@ -87,7 +87,7 @@ phase-advance-Z₄-as-σ₄ :
   Z₄-Fin.canonical-to-Fin (Z₄.insert-canonical Z₄.a c)
     ≡ σ₄ (Z₄-Fin.canonical-to-Fin c)
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos zero)   = refl
-phase-advance-Z₄-as-σ₄ (Z₄.c-pos (suc zero))   = refl
+phase-advance-Z₄-as-σ₄ (Z₄.c-pos ₁)   = refl
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos ₂)  = refl
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos ₃) = refl
 

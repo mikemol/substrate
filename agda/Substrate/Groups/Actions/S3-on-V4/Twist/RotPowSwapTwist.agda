@@ -14,7 +14,7 @@ import Substrate.Groups.V4 as V4
 open V4 using (V₄)
 import Substrate.Groups.Z3-Coxeter as Z₃
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Axes using (v4-cover)
@@ -24,5 +24,5 @@ open import Substrate.Groups.Actions.S3-on-V4.Generators using (rot-pow; swap-α
 rot-pow-swap-twist : ∀ {n} → Z₃.Canonical n → (v : V₄) →
                      swap-αβ (rot-pow n v) ≡ rot-pow (Z₃.inv n) (swap-αβ v)
 rot-pow-swap-twist (Z₃.c-pos zero)  = v4-cover _ (refl , refl , refl , refl)
-rot-pow-swap-twist (Z₃.c-pos (suc zero))  = v4-cover _ (refl , refl , refl , refl)
+rot-pow-swap-twist (Z₃.c-pos ₁)  = v4-cover _ (refl , refl , refl , refl)
 rot-pow-swap-twist (Z₃.c-pos ₂) = v4-cover _ (refl , refl , refl , refl)

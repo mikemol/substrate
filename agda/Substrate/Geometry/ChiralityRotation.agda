@@ -79,7 +79,7 @@ open import Substrate.Geometry.HodgeDim3.Gl3
 ------------------------------------------------------------------------
 
 σ-rotates-p₂-to-p₄ : apply σ (point-coords p₂) ≡ point-coords p₄
-σ-rotates-p₂-to-p₄ = apply-linear-from-images-basis σ-images (suc zero)
+σ-rotates-p₂-to-p₄ = apply-linear-from-images-basis σ-images ₁
 
 ------------------------------------------------------------------------
 -- σ rotates p₄ to p₁ (closing the 3-cycle).

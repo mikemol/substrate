@@ -25,7 +25,7 @@ open import Substrate.Algebra.F2.Linear.FromImages
 T-id-to-mixed-images : Fin 3 → Vector 3
 T-id-to-mixed-images zero          = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []
 T-id-to-mixed-images (suc zero)    = 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []
-T-id-to-mixed-images (suc (suc _)) = 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []
+T-id-to-mixed-images ₂ = 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []
 
 T-id-to-mixed : Linear 3 3
 T-id-to-mixed = linear-from-images T-id-to-mixed-images

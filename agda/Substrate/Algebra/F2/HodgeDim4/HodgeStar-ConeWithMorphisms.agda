@@ -31,6 +31,7 @@
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar-ConeWithMorphisms where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -45,7 +46,7 @@ open import Substrate.Category.Cone.WithMorphisms
 
 bivector-Base : Fin 2 → Set
 bivector-Base zero       = Bivector
-bivector-Base (suc zero) = Bivector
+bivector-Base ₁ = Bivector
 
 -- One morphism: ★. Use ⊤ as the name type since there's only one.
 data StarMor : Set where
@@ -83,7 +84,7 @@ HodgeStar-Cone-WithMorphisms :
 HodgeStar-Cone-WithMorphisms = record
   { leg = λ where
       zero       → λ _ → 𝟎ⱽ
-      (suc zero) → λ _ → 𝟎ⱽ
+      ₁ → λ _ → 𝟎ⱽ
   ; commute = λ where
       star v → preserves-𝟎 hodge-star
   }

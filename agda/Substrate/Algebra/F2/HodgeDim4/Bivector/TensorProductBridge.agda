@@ -79,11 +79,11 @@ bivector-to-tensor (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) =
 
 tensor-to-bivector : TensorProduct 4 4 → Bivector
 tensor-to-bivector T =
-  lookup (lookup T zero) (suc zero) ∷            -- (0, 1) = a
+  lookup (lookup T zero) ₁ ∷            -- (0, 1) = a
   lookup (lookup T zero) ₂ ∷      -- (0, 2) = b
   lookup (lookup T zero) ₃ ∷ -- (0, 3) = c
-  lookup (lookup T (suc zero)) ₂ ∷ -- (1, 2) = d
-  lookup (lookup T (suc zero)) ₃ ∷ -- (1, 3) = e
+  lookup (lookup T ₁) ₂ ∷ -- (1, 2) = d
+  lookup (lookup T ₁) ₃ ∷ -- (1, 3) = e
   lookup (lookup T ₂) ₃ ∷ -- (2, 3) = f
   []
 

@@ -34,7 +34,7 @@
 module Substrate.Algebra.F2.Cone-V4-3plus1 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -73,9 +73,9 @@ Apex-V4 = Fin 4
 
 leg-V4 : Fin 4 → Fin 3
 leg-V4 zero               = zero
-leg-V4 (suc zero)         = zero
+leg-V4 ₁         = zero
 leg-V4 ₂   = suc zero
-leg-V4 ₃ = suc (suc zero)
+leg-V4 ₃ = suc ₁
 
 ------------------------------------------------------------------------
 -- N-4: The (3, 1) Cone instance.

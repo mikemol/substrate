@@ -96,7 +96,7 @@ H-ext-cols ₃                              = ext-col₄
 H-ext-cols ₄                        = ext-col₅
 H-ext-cols ₅                  = ext-col₆
 H-ext-cols ₆            = ext-col₇
-H-ext-cols (suc (suc (suc (suc (suc (suc (suc _)))))))         = ext-col₈
+H-ext-cols ₇         = ext-col₈
 
 ------------------------------------------------------------------------
 -- The extended Hamming [8, 4, 4] code as a KernelCode.

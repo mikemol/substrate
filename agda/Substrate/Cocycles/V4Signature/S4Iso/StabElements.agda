@@ -37,11 +37,11 @@ stab-id = proj₁ (extend D s3-id)
 
 -- (SW): D↔D, C↔C, S↔W.
 stab-sw : Permutation
-stab-sw = proj₁ (extend D (transposition (suc zero) ₂))
+stab-sw = proj₁ (extend D (transposition ₁ ₂))
 
 -- (CS): D↔D, W↔W, C↔S.
 stab-cs : Permutation
-stab-cs = proj₁ (extend D (transposition zero (suc zero)))
+stab-cs = proj₁ (extend D (transposition zero ₁))
 
 -- (CW): D↔D, S↔S, C↔W.
 stab-cw : Permutation
@@ -79,19 +79,19 @@ stab-sw-fixes-D : Stab D stab-sw
 stab-sw-fixes-D = refl
 
 stab-sw-fixes-C : Stab C stab-sw
-stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third (suc zero) ₂ zero (λ ()) (λ ()))
+stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third ₁ ₂ zero (λ ()) (λ ()))
 
 stab-cs-fixes-D : Stab D stab-cs
 stab-cs-fixes-D = refl
 
 stab-cs-fixes-W : Stab W stab-cs
-stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc zero) ₂ (λ ()) (λ ()))
+stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero ₁ ₂ (λ ()) (λ ()))
 
 stab-cw-fixes-D : Stab D stab-cw
 stab-cw-fixes-D = refl
 
 stab-cw-fixes-S : Stab S stab-cw
-stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero ₂ (suc zero) (λ ()) (λ ()))
+stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero ₂ ₁ (λ ()) (λ ()))
 
 stab-csw-fixes-D : Stab D stab-csw
 stab-csw-fixes-D = refl

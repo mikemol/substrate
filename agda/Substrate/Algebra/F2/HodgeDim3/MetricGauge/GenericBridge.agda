@@ -69,13 +69,13 @@ open import Substrate.Algebra.F2.SymBilinForm
 
 SymBilinForm-3-to-generic : SymBilinForm-3 → BilinForm-generic 3
 SymBilinForm-3-to-generic M zero             zero             = entry-a M
-SymBilinForm-3-to-generic M zero             (suc zero)       = entry-d M
+SymBilinForm-3-to-generic M zero             ₁       = entry-d M
 SymBilinForm-3-to-generic M zero             ₂ = entry-e M
-SymBilinForm-3-to-generic M (suc zero)       zero             = entry-d M
-SymBilinForm-3-to-generic M (suc zero)       (suc zero)       = entry-b M
-SymBilinForm-3-to-generic M (suc zero)       ₂ = entry-f M
+SymBilinForm-3-to-generic M ₁       zero             = entry-d M
+SymBilinForm-3-to-generic M ₁       ₁       = entry-b M
+SymBilinForm-3-to-generic M ₁       ₂ = entry-f M
 SymBilinForm-3-to-generic M ₂ zero             = entry-e M
-SymBilinForm-3-to-generic M ₂ (suc zero)       = entry-f M
+SymBilinForm-3-to-generic M ₂ ₁       = entry-f M
 SymBilinForm-3-to-generic M ₂ ₂ = entry-c M
 
 ------------------------------------------------------------------------
@@ -196,13 +196,13 @@ metric-id-3-eq-bridged :
   (i j : Fin 3) →
   SymBilinForm-3-to-generic metric-id i j ≡ metric-id-generic i j
 metric-id-3-eq-bridged zero             zero             = refl
-metric-id-3-eq-bridged zero             (suc zero)       = refl
+metric-id-3-eq-bridged zero             ₁       = refl
 metric-id-3-eq-bridged zero             ₂ = refl
-metric-id-3-eq-bridged (suc zero)       zero             = refl
-metric-id-3-eq-bridged (suc zero)       (suc zero)       = refl
-metric-id-3-eq-bridged (suc zero)       ₂ = refl
+metric-id-3-eq-bridged ₁       zero             = refl
+metric-id-3-eq-bridged ₁       ₁       = refl
+metric-id-3-eq-bridged ₁       ₂ = refl
 metric-id-3-eq-bridged ₂ zero             = refl
-metric-id-3-eq-bridged ₂ (suc zero)       = refl
+metric-id-3-eq-bridged ₂ ₁       = refl
 metric-id-3-eq-bridged ₂ ₂ = refl
 
 ------------------------------------------------------------------------

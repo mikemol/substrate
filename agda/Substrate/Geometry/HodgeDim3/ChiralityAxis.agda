@@ -24,6 +24,7 @@
 module Substrate.Geometry.HodgeDim3.ChiralityAxis where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
@@ -47,7 +48,7 @@ open import Substrate.Algebra.F2.Code
 v4-coords-images : Fin 3 → Vector 2
 v4-coords-images zero          = 𝟙 ∷ 𝟘 ∷ []
 v4-coords-images (suc zero)    = 𝟘 ∷ 𝟙 ∷ []
-v4-coords-images (suc (suc _)) = 𝟎ⱽ
+v4-coords-images ₂ = 𝟎ⱽ
 
 ------------------------------------------------------------------------
 -- The F₂-linear projection itself.

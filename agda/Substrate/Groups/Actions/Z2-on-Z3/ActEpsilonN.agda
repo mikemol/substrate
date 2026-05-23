@@ -16,13 +16,14 @@ import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z3-Coxeter-Group as Z₃G
 open import Substrate.Groups.Coxeter.Word using ([])
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Fin using (zero; suc)
 
 open import Substrate.Groups.Actions.Z2-on-Z3.Act using (act; act-letter)
 
 act-letter-ε : ∀ {h} → Z₂.Canonical h → act-letter h [] ≡ []
 act-letter-ε (Z₂.c-pos zero) = refl
-act-letter-ε (Z₂.c-pos (suc zero)) = refl
+act-letter-ε (Z₂.c-pos ₁) = refl
 
 act-ε-N : ∀ h → act h Z₃G.ε Z₃G.≈ Z₃G.ε
 act-ε-N h =

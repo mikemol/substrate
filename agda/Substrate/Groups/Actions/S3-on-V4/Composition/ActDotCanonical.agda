@@ -16,6 +16,7 @@ import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.S3 as S₃
 open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Eq using (_≡_)
 
@@ -32,6 +33,6 @@ act-∙-canonical : ∀ {n₁ h₁ n₂ h₂} →
                   act ((n₁ , h₁) S₃.∙ (n₂ , h₂)) v ≡
                   act-on-canonical n₁ h₁ (act-on-canonical n₂ h₂ v)
 act-∙-canonical c-n₁ (Z₂.c-pos zero) c-n₂ (Z₂.c-pos zero) v = act-∙-canonical-00 c-n₁ c-n₂ v
-act-∙-canonical c-n₁ (Z₂.c-pos zero) c-n₂ (Z₂.c-pos (suc zero)) v = act-∙-canonical-01 c-n₁ c-n₂ v
-act-∙-canonical c-n₁ (Z₂.c-pos (suc zero)) c-n₂ (Z₂.c-pos zero) v = act-∙-canonical-10 c-n₁ c-n₂ v
-act-∙-canonical c-n₁ (Z₂.c-pos (suc zero)) c-n₂ (Z₂.c-pos (suc zero)) v = act-∙-canonical-11 c-n₁ c-n₂ v
+act-∙-canonical c-n₁ (Z₂.c-pos zero) c-n₂ (Z₂.c-pos ₁) v = act-∙-canonical-01 c-n₁ c-n₂ v
+act-∙-canonical c-n₁ (Z₂.c-pos ₁) c-n₂ (Z₂.c-pos zero) v = act-∙-canonical-10 c-n₁ c-n₂ v
+act-∙-canonical c-n₁ (Z₂.c-pos ₁) c-n₂ (Z₂.c-pos ₁) v = act-∙-canonical-11 c-n₁ c-n₂ v

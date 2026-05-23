@@ -43,7 +43,7 @@ open import Substrate.Algebra.F2.Code
 chirality-bit-images : Fin 3 → Vector 1
 chirality-bit-images zero          = 𝟎ⱽ
 chirality-bit-images (suc zero)    = 𝟎ⱽ
-chirality-bit-images (suc (suc _)) = 𝟙 ∷ []
+chirality-bit-images ₂ = 𝟙 ∷ []
 
 ------------------------------------------------------------------------
 -- The F₂-linear projection itself.

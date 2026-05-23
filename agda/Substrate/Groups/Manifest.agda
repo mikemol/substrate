@@ -137,7 +137,7 @@ import Substrate.Groups.Capabilities.Strict2Monoid
 --
 -- Z₂: filled (Slice 6). σ₂ = cyclic-suc {1} = the swap; the cyclic
 -- Coxeter chain accommodates Z₂'s involution semantics (insert-canonical
--- alternates (c-pos zero) ↔ (c-pos (suc zero))).
+-- alternates (c-pos zero) ↔ (c-pos ₁)).
 --
 -- Z₇: filled (Slice 5). σ₇ = cyclic-suc {6}; HasOrderPerm structural.
 --

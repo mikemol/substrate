@@ -34,5 +34,5 @@ HasOrder-s₁∘s₂ v =
                      apply ((s₁ ∘L s₂) ∘L (s₁ ∘L s₂) ∘L (s₁ ∘L s₂)) (basis i)
                        ≡ apply id-L (basis i)
     agree-on-basis zero             = s₁∘s₂-cubed-on-e₀
-    agree-on-basis (suc zero)       = s₁∘s₂-cubed-on-e₁
+    agree-on-basis ₁       = s₁∘s₂-cubed-on-e₁
     agree-on-basis ₂ = s₁∘s₂-cubed-on-e₂

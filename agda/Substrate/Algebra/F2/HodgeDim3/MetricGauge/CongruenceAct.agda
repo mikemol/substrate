@@ -28,5 +28,5 @@ congruence-act T M =
   bilinear-form-of M Te₁ Te₂ ∷ []
   where
     Te₀ = apply T (basis zero)
-    Te₁ = apply T (basis (suc zero))
+    Te₁ = apply T (basis ₁)
     Te₂ = apply T (basis ₂)

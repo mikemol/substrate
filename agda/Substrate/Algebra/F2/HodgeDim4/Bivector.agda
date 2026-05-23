@@ -31,7 +31,7 @@
 module Substrate.Algebra.F2.HodgeDim4.Bivector where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₀₂; ₀₃; ₁; ₁₂; ₁₃; ₂; ₂₃; ₃; ₄; ₅)
+open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₁; ₀₂; ₂; ₀₃; ₃; ₄; ₅; ₁₂; ₁₃; ₂₃)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
@@ -67,7 +67,7 @@ complement (suc zero)                            = b₁₃   -- {0,2} ↔ {1,3}
 complement ₂                      = b₁₂   -- {0,3} ↔ {1,2}
 complement ₃                = b₀₃   -- {1,2} ↔ {0,3}
 complement ₄          = b₀₂   -- {1,3} ↔ {0,2}
-complement (suc (suc (suc (suc (suc _)))))       = b₀₁   -- {2,3} ↔ {0,1}
+complement ₅       = b₀₁   -- {2,3} ↔ {0,1}
 
 ------------------------------------------------------------------------
 -- The complement is an involution: complement (complement i) ≡ i.

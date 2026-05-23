@@ -104,7 +104,7 @@ vector3-to-selfdual-sd (c₀ ∷ c₁ ∷ c₂ ∷ []) =
 
 selfdual-coefficients : Bivector → Vector 3
 selfdual-coefficients ω =
-  lookup ω zero ∷ lookup ω (suc zero) ∷ lookup ω ₂ ∷ []
+  lookup ω zero ∷ lookup ω ₁ ∷ lookup ω ₂ ∷ []
 
 ------------------------------------------------------------------------
 -- Round-trip (backward-then-forward): coefficients ∘ vector3-to-selfdual ≡ id.
@@ -133,7 +133,7 @@ lookup-0-roundtrip c₀ c₁ c₂ =
 -- After reduction: = (c₀ · 𝟘) + ((c₁ · 𝟙) + (c₂ · 𝟘))
 lookup-1-roundtrip :
   (c₀ c₁ c₂ : F₂) →
-  lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ≡ c₁
+  lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ≡ c₁
 lookup-1-roundtrip c₀ c₁ c₂ =
   trans (cong (_+ ((c₁ · 𝟙) + (c₂ · 𝟘))) (·-absorbʳ c₀))
   (trans (+-identityˡ _)
@@ -160,7 +160,7 @@ selfdual-coefficients-roundtrip :
 selfdual-coefficients-roundtrip (c₀ ∷ c₁ ∷ c₂ ∷ []) =
   trans (cong (λ x →
                 x ∷
-                lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ∷
+                lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ∷
                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷ [])
               (lookup-0-roundtrip c₀ c₁ c₂))
   (trans (cong (λ x →

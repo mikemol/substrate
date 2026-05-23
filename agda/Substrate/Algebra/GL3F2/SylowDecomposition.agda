@@ -87,7 +87,7 @@ Sylow-7-pred = in-cyclic-of 7 singer-GL
 
 Sylow-predicates : Fin 3 → GL3F2 → Set
 Sylow-predicates zero             = Sylow-2-pred
-Sylow-predicates (suc zero)       = Sylow-3-pred
+Sylow-predicates ₁       = Sylow-3-pred
 Sylow-predicates ₂ = Sylow-7-pred
 
 ------------------------------------------------------------------------
@@ -96,7 +96,7 @@ Sylow-predicates ₂ = Sylow-7-pred
 
 Sylow-primes : Fin 3 → ℕ
 Sylow-primes zero             = 2
-Sylow-primes (suc zero)       = 3
+Sylow-primes ₁       = 3
 Sylow-primes ₂ = 7
 
 -- Multiplicity = 1 for our cyclic-sub-Sylow choice (order p, not p^k).
@@ -105,7 +105,7 @@ Sylow-primes ₂ = 7
 -- discrepancy with classical "Sylow theory."
 Sylow-multiplicities : Fin 3 → ℕ
 Sylow-multiplicities zero             = 1  -- cyclic Z/2 ⊂ Sylow-2 (D₈)
-Sylow-multiplicities (suc zero)       = 1  -- full Sylow-3 = Z/3
+Sylow-multiplicities ₁       = 1  -- full Sylow-3 = Z/3
 Sylow-multiplicities ₂ = 1  -- full Sylow-7 = Z/7
 
 ------------------------------------------------------------------------

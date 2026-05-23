@@ -28,7 +28,7 @@
 module Substrate.TokiPona.Nimi where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; zero)
-open import Substrate.Foundation.Fin.Literals using (₁₀; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉; ₁₀; ₁₁; ₁₂; ₁₃; ₁₄; ₁₅; ₁₆; ₁₇; ₁₈; ₁₉; ₂₀; ₂₁; ₂₂; ₂₃; ₂₄; ₂₅; ₂₆; ₂₇; ₂₈; ₂₉; ₃₀)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 
 ------------------------------------------------------------------------
@@ -149,7 +149,7 @@ nimi-count = 32
 nimi-index : Nimi → Fin nimi-count
 nimi-index jan      = zero
 nimi-index soweli   = suc zero
-nimi-index kili     = suc (suc zero)
+nimi-index kili     = suc ₁
 nimi-index moku     = suc ₂
 nimi-index tomo     = suc ₃
 nimi-index ma       = suc ₄
@@ -159,23 +159,23 @@ nimi-index ijo      = suc ₇
 nimi-index pona     = suc ₈
 nimi-index ike      = suc ₉
 nimi-index suli     = suc ₁₀
-nimi-index lili     = suc (suc ₁₀)
-nimi-index wawa     = suc (suc (suc ₁₀))
-nimi-index sin      = suc (suc (suc (suc ₁₀)))
-nimi-index toki     = suc (suc (suc (suc (suc ₁₀))))
-nimi-index olin     = suc (suc (suc (suc (suc (suc ₁₀)))))
-nimi-index pana     = suc (suc (suc (suc (suc (suc (suc ₁₀))))))
-nimi-index mi       = suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))
-nimi-index sina     = suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))
-nimi-index ona      = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))
-nimi-index ni       = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))
-nimi-index li-p     = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))))
-nimi-index e-p      = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))))
-nimi-index pi-p     = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))))))
-nimi-index la-p     = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))))))
-nimi-index o-p      = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))))))))
-nimi-index en       = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))))))))
-nimi-index tan      = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))))))))))
-nimi-index tawa     = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))))))))))
-nimi-index lon      = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀)))))))))))))))))))
-nimi-index kepeken  = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc ₁₀))))))))))))))))))))
+nimi-index lili     = suc ₁₁
+nimi-index wawa     = suc ₁₂
+nimi-index sin      = suc ₁₃
+nimi-index toki     = suc ₁₄
+nimi-index olin     = suc ₁₅
+nimi-index pana     = suc ₁₆
+nimi-index mi       = suc ₁₇
+nimi-index sina     = suc ₁₈
+nimi-index ona      = suc ₁₉
+nimi-index ni       = suc ₂₀
+nimi-index li-p     = suc ₂₁
+nimi-index e-p      = suc ₂₂
+nimi-index pi-p     = suc ₂₃
+nimi-index la-p     = suc ₂₄
+nimi-index o-p      = suc ₂₅
+nimi-index en       = suc ₂₆
+nimi-index tan      = suc ₂₇
+nimi-index tawa     = suc ₂₈
+nimi-index lon      = suc ₂₉
+nimi-index kepeken  = suc ₃₀

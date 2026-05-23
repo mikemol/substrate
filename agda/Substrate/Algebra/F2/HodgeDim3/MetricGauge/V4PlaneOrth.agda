@@ -33,6 +33,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth where
 
 open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -192,7 +193,7 @@ open import Substrate.Category.Pullback
 V4Plane-basis-orth-family : SymBilinForm-3 → Fin 2 → Vector 3 → Set
 V4Plane-basis-orth-family M zero       v =
   metric-orthogonal M v (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])
-V4Plane-basis-orth-family M (suc zero) v =
+V4Plane-basis-orth-family M ₁ v =
   metric-orthogonal M v (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])
 
 -- M-orth-to-V4Plane reformulated as the Wide-Meet over Fin 2.
@@ -204,10 +205,10 @@ M-orth-to-V4Plane→WideMeet :
   (M : SymBilinForm-3) (v : Vector 3) →
   M-orth-to-V4Plane M v → M-orth-to-V4Plane-as-WideMeet M v
 M-orth-to-V4Plane→WideMeet M v (orth-e₀ , _)       zero       = orth-e₀
-M-orth-to-V4Plane→WideMeet M v (_ , orth-e₁)       (suc zero) = orth-e₁
+M-orth-to-V4Plane→WideMeet M v (_ , orth-e₁)       ₁ = orth-e₁
 
 -- Bridge: Wide-Meet form → existing × form.
 WideMeet→M-orth-to-V4Plane :
   (M : SymBilinForm-3) (v : Vector 3) →
   M-orth-to-V4Plane-as-WideMeet M v → M-orth-to-V4Plane M v
-WideMeet→M-orth-to-V4Plane M v wm = wm zero , wm (suc zero)
+WideMeet→M-orth-to-V4Plane M v wm = wm zero , wm ₁

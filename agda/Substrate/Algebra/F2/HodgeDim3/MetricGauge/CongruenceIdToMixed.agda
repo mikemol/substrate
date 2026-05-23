@@ -41,12 +41,12 @@ congruence-id-to-mixed = ≡-from-lookup _ _ goal
            lookup metric-mixed i
     goal zero =
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₀
-    goal (suc zero) =
+    goal ₁ =
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₁
     goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₂
     goal ₃ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis (suc zero)))) T-on-e₀)
+      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₁))) T-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-on-e₁)
     goal ₄ =
       trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₂))) T-on-e₀)

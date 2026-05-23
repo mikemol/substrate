@@ -16,6 +16,7 @@ import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.S3 as S₃
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_; _++_)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
@@ -43,5 +44,5 @@ act-∙-canonical-11 {n₁} {n₂} c-n₁ c-n₂ v = trans LHS-to-pow (sym RHS-t
     RHS-to-pow : act-on-canonical n₁ (Z₂.a ∷ []) (act-on-canonical n₂ (Z₂.a ∷ []) v) ≡
                  rot-pow n₁ (swap-αβ (rot-pow n₂ (swap-αβ v)))
     RHS-to-pow =
-      trans (act-equals-pow c-n₁ (Z₂.c-pos (suc zero)) (act-on-canonical n₂ (Z₂.a ∷ []) v))
-            (cong (λ x → rot-pow n₁ (swap-αβ x)) (act-equals-pow c-n₂ (Z₂.c-pos (suc zero)) v))
+      trans (act-equals-pow c-n₁ (Z₂.c-pos ₁) (act-on-canonical n₂ (Z₂.a ∷ []) v))
+            (cong (λ x → rot-pow n₁ (swap-αβ x)) (act-equals-pow c-n₂ (Z₂.c-pos ₁) v))

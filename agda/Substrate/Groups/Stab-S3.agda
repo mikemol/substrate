@@ -91,16 +91,16 @@ Stab-inv anchor σ σ-stab =
 
 fin3-to-non-anchor : Axis → Fin 3 → Axis
 fin3-to-non-anchor D zero             = C
-fin3-to-non-anchor D (suc zero)       = S
+fin3-to-non-anchor D ₁       = S
 fin3-to-non-anchor D ₂ = W
 fin3-to-non-anchor C zero             = D
-fin3-to-non-anchor C (suc zero)       = S
+fin3-to-non-anchor C ₁       = S
 fin3-to-non-anchor C ₂ = W
 fin3-to-non-anchor S zero             = D
-fin3-to-non-anchor S (suc zero)       = C
+fin3-to-non-anchor S ₁       = C
 fin3-to-non-anchor S ₂ = W
 fin3-to-non-anchor W zero             = D
-fin3-to-non-anchor W (suc zero)       = C
+fin3-to-non-anchor W ₁       = C
 fin3-to-non-anchor W ₂ = S
 
 fin3-to-non-anchor-≢ :
@@ -116,18 +116,18 @@ non-anchor-to-fin3 : (anchor x : Axis) → x ≢ anchor → Fin 3
 non-anchor-to-fin3 D D x≢a = ⊥-elim (x≢a refl)
 non-anchor-to-fin3 D C _   = zero
 non-anchor-to-fin3 D S _   = suc zero
-non-anchor-to-fin3 D W _   = suc (suc zero)
+non-anchor-to-fin3 D W _   = suc ₁
 non-anchor-to-fin3 C D _   = zero
 non-anchor-to-fin3 C C x≢a = ⊥-elim (x≢a refl)
 non-anchor-to-fin3 C S _   = suc zero
-non-anchor-to-fin3 C W _   = suc (suc zero)
+non-anchor-to-fin3 C W _   = suc ₁
 non-anchor-to-fin3 S D _   = zero
 non-anchor-to-fin3 S C _   = suc zero
 non-anchor-to-fin3 S S x≢a = ⊥-elim (x≢a refl)
-non-anchor-to-fin3 S W _   = suc (suc zero)
+non-anchor-to-fin3 S W _   = suc ₁
 non-anchor-to-fin3 W D _   = zero
 non-anchor-to-fin3 W C _   = suc zero
-non-anchor-to-fin3 W S _   = suc (suc zero)
+non-anchor-to-fin3 W S _   = suc ₁
 non-anchor-to-fin3 W W x≢a = ⊥-elim (x≢a refl)
 
 fin3-non-anchor-fin3 :

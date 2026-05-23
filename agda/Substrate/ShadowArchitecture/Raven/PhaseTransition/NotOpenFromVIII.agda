@@ -11,7 +11,7 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₁₀; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉; ₁₀)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
@@ -25,7 +25,7 @@ private
   -- Indices 0..10 correspond to stanzas VIII..XVIII.
   lift-11-to-18 : Fin 11 → Fin 18
   lift-11-to-18 zero                                                                    = s8
-  lift-11-to-18 (suc zero)                                                              = s9
+  lift-11-to-18 ₁                                                              = s9
   lift-11-to-18 ₂                                                        = s10
   lift-11-to-18 ₃                                                  = s11
   lift-11-to-18 ₄                                            = s12
@@ -39,7 +39,7 @@ private
 not-open-from-VIII :
   ∀ (i : Fin 11) → ¬ (history-phase-at raven (lift-11-to-18 i) ≡ open-phase)
 not-open-from-VIII zero                                                              ()
-not-open-from-VIII (suc zero)                                                        ()
+not-open-from-VIII ₁                                                        ()
 not-open-from-VIII ₂                                                  ()
 not-open-from-VIII ₃                                            ()
 not-open-from-VIII ₄                                      ()

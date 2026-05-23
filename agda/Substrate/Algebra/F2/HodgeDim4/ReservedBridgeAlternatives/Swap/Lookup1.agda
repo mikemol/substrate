@@ -9,6 +9,7 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup1 where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
 open import Substrate.Algebra.F2
@@ -21,7 +22,7 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Forwa
 
 lookup-1-swap :
   (c₀ c₁ c₂ : F₂) →
-  lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ≡ c₂
+  lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ≡ c₂
 lookup-1-swap c₀ c₁ c₂ =
   trans (cong (_+ ((c₁ · 𝟘) + (c₂ · 𝟙))) (·-absorbʳ c₀))
   (trans (+-identityˡ _)

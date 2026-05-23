@@ -17,4 +17,4 @@ open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 
 selfdual-coefficients-swap : Bivector → Vector 3
 selfdual-coefficients-swap ω =
-  lookup ω zero ∷ lookup ω ₂ ∷ lookup ω (suc zero) ∷ []
+  lookup ω zero ∷ lookup ω ₂ ∷ lookup ω ₁ ∷ []

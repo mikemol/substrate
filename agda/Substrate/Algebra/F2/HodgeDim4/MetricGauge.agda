@@ -90,7 +90,7 @@ SymBilinForm-4 = Vector 10
 -- the six off-diagonals in lex-order (e=01, f=02, g=03, h=12, i=13, j=23).
 entry-a entry-b entry-c entry-d : SymBilinForm-4 → F₂
 entry-a m = lookup m zero
-entry-b m = lookup m (suc zero)
+entry-b m = lookup m ₁
 entry-c m = lookup m ₂
 entry-d m = lookup m ₃
 
@@ -205,7 +205,7 @@ congruence-act-4 T M =
   bilinear-form-of-4 M Te₂ Te₃ ∷ []
   where
     Te₀ = apply T (basis zero)
-    Te₁ = apply T (basis (suc zero))
+    Te₁ = apply T (basis ₁)
     Te₂ = apply T (basis ₂)
     Te₃ = apply T (basis ₃)
 

@@ -221,55 +221,55 @@ extend-hom-∙ W s₁ s₂ W = refl
 -- Anchor D, non-anchor axes (C=0, S=1, W=2):
 extend-hom-∙ D s₁ s₂ C with SFin.apply s₂ zero in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
-extend-hom-∙ D s₁ s₂ S with SFin.apply s₂ (suc zero) in p
+... | ₁         = refl
+... | ₂   = refl
+extend-hom-∙ D s₁ s₂ S with SFin.apply s₂ ₁ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 extend-hom-∙ D s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 -- Anchor C, non-anchor axes (D=0, S=1, W=2):
 extend-hom-∙ C s₁ s₂ D with SFin.apply s₂ zero in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
-extend-hom-∙ C s₁ s₂ S with SFin.apply s₂ (suc zero) in p
+... | ₁         = refl
+... | ₂   = refl
+extend-hom-∙ C s₁ s₂ S with SFin.apply s₂ ₁ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 extend-hom-∙ C s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 -- Anchor S, non-anchor axes (D=0, C=1, W=2):
 extend-hom-∙ S s₁ s₂ D with SFin.apply s₂ zero in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
-extend-hom-∙ S s₁ s₂ C with SFin.apply s₂ (suc zero) in p
+... | ₁         = refl
+... | ₂   = refl
+extend-hom-∙ S s₁ s₂ C with SFin.apply s₂ ₁ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 extend-hom-∙ S s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 -- Anchor W, non-anchor axes (D=0, C=1, S=2):
 extend-hom-∙ W s₁ s₂ D with SFin.apply s₂ zero in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
-extend-hom-∙ W s₁ s₂ C with SFin.apply s₂ (suc zero) in p
+... | ₁         = refl
+... | ₂   = refl
+extend-hom-∙ W s₁ s₂ C with SFin.apply s₂ ₁ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 extend-hom-∙ W s₁ s₂ S with SFin.apply s₂ ₂ in p
 ... | zero             = refl
-... | suc zero         = refl
-... | suc (suc zero)   = refl
+... | ₁         = refl
+... | ₂   = refl
 
 ------------------------------------------------------------------------
 -- extend-hom-⁻¹: extend preserves inverse — by definition.

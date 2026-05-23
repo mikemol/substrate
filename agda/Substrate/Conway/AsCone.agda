@@ -24,6 +24,7 @@
 module Substrate.Conway.AsCone where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₄)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
@@ -57,7 +58,7 @@ Surreal-Cone n = record { leg = surreal-leg }
   where
     surreal-leg : Fin 2 → SurrealFinite (suc n) → Word (SurrealFinite n)
     surreal-leg zero       = get-L
-    surreal-leg (suc zero) = get-R
+    surreal-leg ₁ = get-R
     surreal-leg (suc (suc ()))
 
 ------------------------------------------------------------------------

@@ -66,7 +66,7 @@ generators : Fin 4 → Vector 8
 generators zero                = g₀
 generators (suc zero)          = g₁
 generators ₂    = g₂
-generators (suc (suc (suc _))) = g₃
+generators ₃ = g₃
 
 ------------------------------------------------------------------------
 -- The RM(1, 3) code.

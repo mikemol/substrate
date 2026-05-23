@@ -21,7 +21,7 @@
 --     id-GL: represent = [] (empty word)
 --     swap01-GL: represent = [zero]
 --     cycle3-GL: represent = [suc zero]
---     singer-GL: represent = [suc (suc zero)]
+--     singer-GL: represent = [suc ₁]
 --     products: represent = concatenation of representations
 --
 --   General GL3F2 element representations come from Schreier-Sims-
@@ -41,6 +41,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq

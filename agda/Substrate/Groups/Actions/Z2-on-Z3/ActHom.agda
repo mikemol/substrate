@@ -5,7 +5,7 @@
 -- act h (n₁ ∙ n₂) ≈ act h n₁ ∙ act h n₂.
 --
 -- Case on canonical h. For (c-pos zero): both sides ≈ n₁ ∙ n₂.
--- For (c-pos (suc zero)): uses Z₃.inv-distrib-canonical (Z/3 is abelian, so inv is
+-- For (c-pos ₁): uses Z₃.inv-distrib-canonical (Z/3 is abelian, so inv is
 -- a homomorphism).
 ------------------------------------------------------------------------
 
@@ -18,6 +18,7 @@ import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z3-Coxeter-Group as Z₃G
 open import Substrate.Groups.Coxeter.Word using (_++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Fin using (zero; suc)
 
 open import Substrate.Groups.Actions.Z2-on-Z3.Act using (act; act-letter)
@@ -33,7 +34,7 @@ act-letter-hom (Z₂.c-pos zero) {n₁} {n₂} c-n₁ c-n₂ =
   -- LHS: Z₃.normalize (n₁ ·₃ n₂) = Z₃.normalize (Z₃.normalize (n₁ ++ n₂)) = Z₃.normalize (n₁ ++ n₂).
   -- RHS: Z₃.normalize (n₁ ·₃ n₂) = same.
   refl
-act-letter-hom (Z₂.c-pos (suc zero)) {n₁} {n₂} c-n₁ c-n₂ =
+act-letter-hom (Z₂.c-pos ₁) {n₁} {n₂} c-n₁ c-n₂ =
   -- LHS evaluates to: Z₃.normalize (Z₃.inv (Z₃.normalize (n₁ ++ n₂))).
   -- RHS evaluates to: Z₃.normalize (Z₃.normalize (Z₃.inv n₁ ++ Z₃.inv n₂)).
   trans (Z₃.inv-distrib-canonical c-n₁ c-n₂)

@@ -18,6 +18,7 @@ import Substrate.Groups.Z2-Coxeter-Group as Z₂G
 import Substrate.Groups.Z3-Coxeter-Group as Z₃G
 open import Substrate.Groups.Coxeter.Word using (_++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Fin using (zero; suc)
 
 open import Substrate.Groups.Actions.Z2-on-Z3.Act using (act; act-letter)
@@ -33,12 +34,12 @@ act-letter-compose :
   act-letter (Z₂.normalize (h₁ ++ h₂)) x ≡
   act-letter h₁ (act-letter h₂ x)
 act-letter-compose (Z₂.c-pos zero) (Z₂.c-pos zero) c-x = refl
-act-letter-compose (Z₂.c-pos zero) (Z₂.c-pos (suc zero)) c-x = refl
-act-letter-compose (Z₂.c-pos (suc zero)) (Z₂.c-pos zero) {x} c-x =
+act-letter-compose (Z₂.c-pos zero) (Z₂.c-pos ₁) c-x = refl
+act-letter-compose (Z₂.c-pos ₁) (Z₂.c-pos zero) {x} c-x =
   -- LHS: act-letter (Z₂.normalize ([a] ++ [])) x = act-letter [a] x = Z₃.inv x.
   -- RHS: act-letter [a] (act-letter [] x) = act-letter [a] x = Z₃.inv x.
   refl
-act-letter-compose (Z₂.c-pos (suc zero)) (Z₂.c-pos (suc zero)) {x} c-x =
+act-letter-compose (Z₂.c-pos ₁) (Z₂.c-pos ₁) {x} c-x =
   -- LHS: act-letter (Z₂.normalize ([a] ++ [a])) x = act-letter [] x = x.
   -- RHS: act-letter [a] (act-letter [a] x) = Z₃.inv (Z₃.inv x).
   -- For canonical x: Z₃.inv (Z₃.inv x) = x via inv-inv-canonical.

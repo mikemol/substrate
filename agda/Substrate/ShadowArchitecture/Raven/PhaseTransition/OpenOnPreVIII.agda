@@ -10,7 +10,7 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₅; ₆)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
@@ -23,7 +23,7 @@ open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase
 private
   inject-7-to-18 : Fin 7 → Fin 18
   inject-7-to-18 zero                                       = s1
-  inject-7-to-18 (suc zero)                                 = s2
+  inject-7-to-18 ₁                                 = s2
   inject-7-to-18 ₂                           = s3
   inject-7-to-18 ₃                     = s4
   inject-7-to-18 ₄               = s5
@@ -32,7 +32,7 @@ private
 
 open-on-pre-VIII : ∀ (i : Fin 7) → history-phase-at raven (inject-7-to-18 i) ≡ open-phase
 open-on-pre-VIII zero                                       = stanza-I-phase
-open-on-pre-VIII (suc zero)                                 = stanza-II-phase
+open-on-pre-VIII ₁                                 = stanza-II-phase
 open-on-pre-VIII ₂                           = stanza-III-phase
 open-on-pre-VIII ₃                     = stanza-IV-phase
 open-on-pre-VIII ₄               = stanza-V-phase

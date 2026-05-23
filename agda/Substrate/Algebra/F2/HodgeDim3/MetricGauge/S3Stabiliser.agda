@@ -78,7 +78,7 @@ congruence-act-id-L-metric-id = ≡-from-lookup _ _ goal
     goal : (k : Fin 6) →
            lookup (congruence-act id-L metric-id) k ≡ lookup metric-id k
     goal zero                                  = refl
-    goal (suc zero)                            = refl
+    goal ₁                            = refl
     goal ₂                      = refl
     goal ₃                = refl
     goal ₄          = refl
@@ -100,7 +100,7 @@ congruence-act-id-L-metric-id = ≡-from-lookup _ _ goal
 
 S₃-elements : Fin 6 → Linear 3 3
 S₃-elements zero                                  = id-L
-S₃-elements (suc zero)                            = s₁
+S₃-elements ₁                            = s₁
 S₃-elements ₂                      = s₂
 S₃-elements ₃                = s₁ ∘L s₂
 S₃-elements ₄          = s₂ ∘L s₁
@@ -134,7 +134,7 @@ S₃-stabilises-metric-id : HasLagrangeOrder-at 6 S₃-cong-action metric-id
 S₃-stabilises-metric-id zero =
   iterate-at-fixed-point {γ = congruence-act id-L}
                          congruence-act-id-L-metric-id 6
-S₃-stabilises-metric-id (suc zero) =
+S₃-stabilises-metric-id ₁ =
   iterate-at-fixed-point {γ = congruence-act s₁}
                          s₁-stabilises-metric-id 6
 S₃-stabilises-metric-id ₂ =

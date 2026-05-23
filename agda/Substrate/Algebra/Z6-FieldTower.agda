@@ -24,7 +24,7 @@
 module Substrate.Algebra.Z6-FieldTower where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₅)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Category.MultiFieldBond
 
 ------------------------------------------------------------------------
@@ -33,11 +33,11 @@ open import Substrate.Category.MultiFieldBond
 
 mod3-of-6 : Fin 6 → Fin 3
 mod3-of-6 zero                                                = zero
-mod3-of-6 (suc zero)                                          = suc zero
-mod3-of-6 ₂                                    = suc (suc zero)
+mod3-of-6 ₁                                          = suc zero
+mod3-of-6 ₂                                    = suc ₁
 mod3-of-6 ₃                              = zero
 mod3-of-6 ₄                        = suc zero
-mod3-of-6 ₅                  = suc (suc zero)
+mod3-of-6 ₅                  = suc ₁
 
 ------------------------------------------------------------------------
 -- N-2: Bond Z/3 → Z/1 (always zero, since Z/1 has one inhabitant).
@@ -54,11 +54,11 @@ Z6-FieldTower : FieldTower 2
 Z6-FieldTower = record
   { Field = λ where
       zero             → Fin 6
-      (suc zero)       → Fin 3
+      ₁       → Fin 3
       ₂ → Fin 1
   ; Bond = λ where
       zero       → mod3-of-6
-      (suc zero) → to-trivial
+      ₁ → to-trivial
   }
 
 ------------------------------------------------------------------------

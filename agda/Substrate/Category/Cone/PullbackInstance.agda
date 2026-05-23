@@ -38,7 +38,7 @@ private
 
 pullback-Base : (A B C : Set ℓ) → Fin 3 → Set ℓ
 pullback-Base A B C zero             = A
-pullback-Base A B C (suc zero)       = B
+pullback-Base A B C ₁       = B
 pullback-Base A B C ₂ = C
 
 ------------------------------------------------------------------------
@@ -54,7 +54,7 @@ pullback-as-Cone :
 pullback-as-Cone {A = A} {B = B} {C = C} f g = record
   { leg = λ where
       zero             → pullback-π₁
-      (suc zero)       → pullback-π₂
+      ₁       → pullback-π₂
       ₂ → λ p → f (pullback-π₁ p)
   }
 

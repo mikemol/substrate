@@ -27,6 +27,7 @@
 module Substrate.ShadowArchitecture.AxisDualLine where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₂₃)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq
@@ -49,7 +50,7 @@ Axis = Fin 3
 
 pattern ax₁ = zero
 pattern ax₂ = suc zero
-pattern ax₃ = suc (suc zero)
+pattern ax₃ = suc ₁
 
 axis-dual : Axis → Line
 axis-dual ax₁ = L₃

@@ -70,7 +70,7 @@
 module Substrate.Cardinality where
 
 open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq
@@ -96,12 +96,12 @@ axis-↔-fin4 = mk↔ₛ′ to from to-from from-to
     to : Axis → Fin 4
     to D = zero
     to C = suc zero
-    to S = suc (suc zero)
+    to S = suc ₁
     to W = suc ₂
 
     from : Fin 4 → Axis
     from zero                       = D
-    from (suc zero)                 = C
+    from ₁                 = C
     from ₂           = S
     from ₃     = W
 
@@ -124,12 +124,12 @@ v4-↔-fin4 = mk↔ₛ′ to from to-from from-to
     to : V₄ → Fin 4
     to e = zero
     to α = suc zero
-    to β = suc (suc zero)
+    to β = suc ₁
     to γ = suc ₂
 
     from : Fin 4 → V₄
     from zero                       = e
-    from (suc zero)                 = α
+    from ₁                 = α
     from ₂           = β
     from ₃     = γ
 
@@ -152,11 +152,11 @@ pairing-↔-fin3 = mk↔ₛ′ to from to-from from-to
     to : Pairing → Fin 3
     to α-pair = zero
     to β-pair = suc zero
-    to γ-pair = suc (suc zero)
+    to γ-pair = suc ₁
 
     from : Fin 3 → Pairing
     from zero             = α-pair
-    from (suc zero)       = β-pair
+    from ₁       = β-pair
     from ₂ = γ-pair
 
     to-from : (i : Fin 3) → to (from i) ≡ i
@@ -180,7 +180,7 @@ chirality-↔-fin2 = mk↔ₛ′ to from to-from from-to
 
     from : Fin 2 → Chirality
     from zero       = even
-    from (suc zero) = odd
+    from ₁ = odd
 
     to-from : (i : Fin 2) → to (from i) ≡ i
     to-from = fin-cover _ (refl , refl)
@@ -206,7 +206,7 @@ bool-↔-fin2 = mk↔ₛ′ to from to-from from-to
 
     from : Fin 2 → Bool
     from zero       = false
-    from (suc zero) = true
+    from ₁ = true
 
     to-from : (i : Fin 2) → to (from i) ≡ i
     to-from = fin-cover _ (refl , refl)

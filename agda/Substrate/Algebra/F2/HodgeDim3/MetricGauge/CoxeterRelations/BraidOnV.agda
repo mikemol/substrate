@@ -29,5 +29,5 @@ braid-on-v =
                      apply (s₁ ∘L s₂ ∘L s₁) (basis i)
                        ≡ apply (s₂ ∘L s₁ ∘L s₂) (basis i)
     agree-on-basis zero             = braid-on-e₀
-    agree-on-basis (suc zero)       = braid-on-e₁
+    agree-on-basis ₁       = braid-on-e₁
     agree-on-basis ₂ = braid-on-e₂

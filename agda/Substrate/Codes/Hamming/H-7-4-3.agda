@@ -67,7 +67,7 @@ H-cols ₂                      = col₃
 H-cols ₃                = col₄
 H-cols ₄          = col₅
 H-cols ₅    = col₆
-H-cols (suc (suc (suc (suc (suc (suc _)))))) = col₇
+H-cols ₆ = col₇
 
 ------------------------------------------------------------------------
 -- The Hamming [7, 4, 3] code as a KernelCode.

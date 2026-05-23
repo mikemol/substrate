@@ -42,7 +42,7 @@ private
 
 pb-Base : (A B C : Set ℓ) → Fin 3 → Set ℓ
 pb-Base A B C zero             = A
-pb-Base A B C (suc zero)       = B
+pb-Base A B C ₁       = B
 pb-Base A B C ₂ = C
 
 pb-mor-src : Bool → Fin 3
@@ -50,7 +50,7 @@ pb-mor-src false = zero               -- f : A → C
 pb-mor-src true  = suc zero           -- g : B → C
 
 pb-mor-tgt : Bool → Fin 3
-pb-mor-tgt _ = suc (suc zero)         -- both target C
+pb-mor-tgt _ = suc ₁         -- both target C
 
 pb-mor-apply :
   {A B C : Set ℓ} (f : A → C) (g : B → C) →
@@ -75,7 +75,7 @@ pullback-as-cone-with-morphisms :
 pullback-as-cone-with-morphisms f g = record
   { leg = λ where
       zero             → pullback-π₁
-      (suc zero)       → pullback-π₂
+      ₁       → pullback-π₂
       ₂ → λ p → f (pullback-π₁ p)
   ; commute = λ where
       false p → refl

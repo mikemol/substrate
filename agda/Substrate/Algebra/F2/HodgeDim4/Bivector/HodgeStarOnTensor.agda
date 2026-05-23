@@ -41,9 +41,9 @@ open import Substrate.Groups.Coxeter.CanonicalCover using (n-refls)
 private
   to-fin4 : Fin 2 → Fin 2 → Fin 4
   to-fin4 zero       zero       = zero
-  to-fin4 zero       (suc zero) = suc zero
-  to-fin4 (suc zero) zero       = suc (suc zero)
-  to-fin4 (suc zero) (suc zero) = suc ₂
+  to-fin4 zero       ₁ = suc zero
+  to-fin4 ₁ zero       = suc ₁
+  to-fin4 ₁ ₁ = suc ₂
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Linear using (apply)
@@ -105,21 +105,21 @@ bivector-to-tensor-symmetric v i j =
       lookup (lookup (bivector-to-tensor v) i) j
         ≡ lookup (lookup (bivector-to-tensor v) j) i
     fin4-fin4-route zero                     zero                     = bivector-to-tensor-symmetric-bin v zero zero zero zero
-    fin4-fin4-route zero                     (suc zero)               = bivector-to-tensor-symmetric-bin v zero zero zero (suc zero)
-    fin4-fin4-route zero                     ₂         = bivector-to-tensor-symmetric-bin v zero zero (suc zero) zero
-    fin4-fin4-route zero                     ₃   = bivector-to-tensor-symmetric-bin v zero zero (suc zero) (suc zero)
-    fin4-fin4-route (suc zero)               zero                     = bivector-to-tensor-symmetric-bin v zero (suc zero) zero zero
-    fin4-fin4-route (suc zero)               (suc zero)               = bivector-to-tensor-symmetric-bin v zero (suc zero) zero (suc zero)
-    fin4-fin4-route (suc zero)               ₂         = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) zero
-    fin4-fin4-route (suc zero)               ₃   = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) (suc zero)
-    fin4-fin4-route ₂         zero                     = bivector-to-tensor-symmetric-bin v (suc zero) zero zero zero
-    fin4-fin4-route ₂         (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) zero zero (suc zero)
-    fin4-fin4-route ₂         ₂         = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) zero
-    fin4-fin4-route ₂         ₃   = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) (suc zero)
-    fin4-fin4-route ₃   zero                     = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero zero
-    fin4-fin4-route ₃   (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero (suc zero)
-    fin4-fin4-route ₃   ₂         = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) zero
-    fin4-fin4-route ₃   ₃   = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) (suc zero)
+    fin4-fin4-route zero                     ₁               = bivector-to-tensor-symmetric-bin v zero zero zero ₁
+    fin4-fin4-route zero                     ₂         = bivector-to-tensor-symmetric-bin v zero zero ₁ zero
+    fin4-fin4-route zero                     ₃   = bivector-to-tensor-symmetric-bin v zero zero ₁ ₁
+    fin4-fin4-route ₁               zero                     = bivector-to-tensor-symmetric-bin v zero ₁ zero zero
+    fin4-fin4-route ₁               ₁               = bivector-to-tensor-symmetric-bin v zero ₁ zero ₁
+    fin4-fin4-route ₁               ₂         = bivector-to-tensor-symmetric-bin v zero ₁ ₁ zero
+    fin4-fin4-route ₁               ₃   = bivector-to-tensor-symmetric-bin v zero ₁ ₁ ₁
+    fin4-fin4-route ₂         zero                     = bivector-to-tensor-symmetric-bin v ₁ zero zero zero
+    fin4-fin4-route ₂         ₁               = bivector-to-tensor-symmetric-bin v ₁ zero zero ₁
+    fin4-fin4-route ₂         ₂         = bivector-to-tensor-symmetric-bin v ₁ zero ₁ zero
+    fin4-fin4-route ₂         ₃   = bivector-to-tensor-symmetric-bin v ₁ zero ₁ ₁
+    fin4-fin4-route ₃   zero                     = bivector-to-tensor-symmetric-bin v ₁ ₁ zero zero
+    fin4-fin4-route ₃   ₁               = bivector-to-tensor-symmetric-bin v ₁ ₁ zero ₁
+    fin4-fin4-route ₃   ₂         = bivector-to-tensor-symmetric-bin v ₁ ₁ ₁ zero
+    fin4-fin4-route ₃   ₃   = bivector-to-tensor-symmetric-bin v ₁ ₁ ₁ ₁
 
 -- diag-zero is the UNIFORM case (every cell reduces to 𝟘 ≡ 𝟘), so
 -- the polymorphic `4-refls` from CanonicalCover applies directly:

@@ -27,6 +27,7 @@
 module Substrate.Algebra.F2.V4-Nonzero where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -62,7 +63,7 @@ v4nz-γ = suc (suc zero)
 ------------------------------------------------------------------------
 -- The coordinates dispatcher.
 --
--- Maps each Fin 3 position to its nonzero F₂² vector. The (suc (suc _))
+-- Maps each Fin 3 position to its nonzero F₂² vector. The ₂
 -- catch-all is forced by Fin 3's structure: the only remaining
 -- inhabitant after `zero` and `suc zero` is `suc (suc zero)`.
 ------------------------------------------------------------------------
@@ -70,7 +71,7 @@ v4nz-γ = suc (suc zero)
 coords : V4-Nonzero → Vector 2
 coords zero                = vec-α
 coords (suc zero)          = vec-β
-coords (suc (suc _))       = vec-γ
+coords ₂       = vec-γ
 
 ------------------------------------------------------------------------
 -- The defining F₂-linear relation: α + β = γ.

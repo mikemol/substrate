@@ -21,6 +21,7 @@
 module Substrate.Category.Cone.EqualizerInstance where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_)
@@ -38,7 +39,7 @@ private
 
 equalizer-Base : (A B : Set ℓ) → Fin 2 → Set ℓ
 equalizer-Base A B zero       = A
-equalizer-Base A B (suc zero) = B
+equalizer-Base A B ₁ = B
 
 ------------------------------------------------------------------------
 -- N-2: Equalizer's Cone — apex is Equalizer-Of f g; legs project to
@@ -52,7 +53,7 @@ equalizer-as-Cone :
 equalizer-as-Cone f g = record
   { leg = λ where
       zero       → equalizer-incl
-      (suc zero) → λ e → f (equalizer-incl e)
+      ₁ → λ e → f (equalizer-incl e)
   }
 
 ------------------------------------------------------------------------

@@ -54,7 +54,7 @@ open import Substrate.Category.Coalgebra.LagrangeOrder
 
 V4-elements : Fin 4 → Vector 2
 V4-elements zero                   = 𝟘 ∷ 𝟘 ∷ []
-V4-elements (suc zero)             = 𝟙 ∷ 𝟘 ∷ []
+V4-elements ₁             = 𝟙 ∷ 𝟘 ∷ []
 V4-elements ₂       = 𝟘 ∷ 𝟙 ∷ []
 V4-elements ₃ = 𝟙 ∷ 𝟙 ∷ []
 

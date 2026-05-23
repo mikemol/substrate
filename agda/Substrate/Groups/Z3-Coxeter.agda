@@ -10,7 +10,7 @@
 -- normalize-distrib / etc.). Consumers use `(Z₃.c-pos k)` for the
 -- k-th canonical witness (k ∈ Fin 3); no per-arity pattern names are
 -- needed. This file just supplies:
---   * canonical-cover (tuple-style dispatcher over (c-pos zero/(suc zero)/₂))
+--   * canonical-cover (tuple-style dispatcher over (c-pos zero/₁/₂))
 --   * same-canonical (single-Gen decidability)
 --   * cube-identity + inv-distrib-canonical (Z₃-specific theorems)
 ------------------------------------------------------------------------
@@ -42,10 +42,10 @@ open import Substrate.Groups.Coxeter.Cyclic 2 public
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P (c-pos zero) × P (c-pos (suc zero)) × P (c-pos ₂) →
+  P (c-pos zero) × P (c-pos ₁) × P (c-pos ₂) →
   ∀ {w} (c : Canonical w) → P c
 canonical-cover _ (p , _ , _) (c-pos zero)             = p
-canonical-cover _ (_ , p , _) (c-pos (suc zero))       = p
+canonical-cover _ (_ , p , _) (c-pos ₁)       = p
 canonical-cover _ (_ , _ , p) (c-pos ₂) = p
 
 ------------------------------------------------------------------------
