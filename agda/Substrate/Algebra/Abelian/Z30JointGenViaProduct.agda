@@ -22,11 +22,8 @@ open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
-open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
-open import Substrate.Category.PrimeFactoredGauge.FromPresented
-  using (joint-gen-from-presentation-≡)
 
 module Substrate.Algebra.Abelian.Z30JointGenViaProduct
   -- The Z/30 carrier + ops.
@@ -46,18 +43,15 @@ module Substrate.Algebra.Abelian.Z30JointGenViaProduct
     evaluate-word gen-Z30 _+Z30_ 0Z30 (represent-Z30 g) ≡ g)
   where
 
-Z30-joint-gen :
-  (g : Z30) →
-  InGenerated (λ z → Σ (Fin 3) (λ i → Sylow-pred-Z30 i z))
-              _+Z30_ 0Z30 g
-Z30-joint-gen =
-  joint-gen-from-presentation-≡
-    gen-Z30
-    _+Z30_ 0Z30
-    Sylow-pred-Z30
-    gen-Z30-sylow
-    represent-Z30
-    represent-Z30-correct
+-- Thin instance of [[JointGenWrapper]] at (nSylow = 3, nGen = 3);
+-- closes W3's joint-gen parameter.
+open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
+  Z30 _+Z30_ 0Z30
+  3 Sylow-pred-Z30
+  3 gen-Z30 gen-Z30-sylow
+  represent-Z30 represent-Z30-correct
+  public
+  renaming (joint-gen to Z30-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Z/30 joint-gen dischargeable; closes W3.

@@ -37,11 +37,8 @@ open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
-open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
-open import Substrate.Category.PrimeFactoredGauge.FromPresented
-  using (joint-gen-from-presentation-≡)
 
 module Substrate.Algebra.Abelian.Z6JointGenViaProduct
   -- The Z/6 carrier + ops.
@@ -64,22 +61,17 @@ module Substrate.Algebra.Abelian.Z6JointGenViaProduct
 ------------------------------------------------------------------------
 -- The Z/6 joint-gen discharge.
 --
--- Mechanical via Y2's pipeline + the CRT representation. Closes
--- W2's joint-gen parameter.
+-- Thin instance of [[JointGenWrapper]] at (nSylow = 2, nGen = 2);
+-- closes W2's joint-gen parameter.
 ------------------------------------------------------------------------
 
-Z6-joint-gen :
-  (g : Z6) →
-  InGenerated (λ z → Σ (Fin 2) (λ i → Sylow-pred-Z6 i z))
-              _+Z6_ 0Z6 g
-Z6-joint-gen =
-  joint-gen-from-presentation-≡
-    gen-Z6
-    _+Z6_ 0Z6
-    Sylow-pred-Z6
-    gen-Z6-sylow
-    represent-Z6
-    represent-Z6-correct
+open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
+  Z6 _+Z6_ 0Z6
+  2 Sylow-pred-Z6
+  2 gen-Z6 gen-Z6-sylow
+  represent-Z6 represent-Z6-correct
+  public
+  renaming (joint-gen to Z6-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Z/6 joint-gen dischargeable from CRT representation.

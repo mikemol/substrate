@@ -79,15 +79,16 @@ module Generic-Descent
     evaluate-word gen-H _·H_ εH (represent-H g) ≡ g)
   where
 
-  H-joint-gen :
-    (g : H) →
-    InGenerated (λ z → Σ (Fin nSylow) (λ i → Sylow-pred-H i z))
-                _·H_ εH g
-  H-joint-gen =
-    joint-gen-from-presentation-≡
-      gen-H _·H_ εH
-      Sylow-pred-H gen-H-sylow
-      represent-H represent-H-correct
+  -- Thin instance of [[JointGenWrapper]] — H-joint-gen exposes the
+  -- wrapper's joint-gen at the HF member's (carrier, ops, nSylow,
+  -- nGen, representation).
+  open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
+    H _·H_ εH
+    nSylow Sylow-pred-H
+    nGen gen-H gen-H-sylow
+    represent-H represent-H-correct
+    public
+    renaming (joint-gen to H-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — HF-wide joint-gen propagation framework.

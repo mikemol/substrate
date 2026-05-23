@@ -30,11 +30,8 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
-open import Substrate.Category.PrimeFactoredGauge.FromPresented
-  using (joint-gen-from-presentation-≡)
 
 module Substrate.Algebra.Sporadic.Monster.AsPresented
   -- The Monster carrier + group ops.
@@ -67,18 +64,15 @@ module Substrate.Algebra.Sporadic.Monster.AsPresented
 -- Closes T8's joint-gen as a derivation from the presentation.
 ------------------------------------------------------------------------
 
-Monster-joint-gen :
-  (g : M) →
-  InGenerated (λ z → Σ (Fin 15) (λ i → Sylow-pred-M i z))
-              _·M_ εM g
-Monster-joint-gen =
-  joint-gen-from-presentation-≡
-    gen-M
-    _·M_ εM
-    Sylow-pred-M
-    gen-M-sylow
-    represent-M
-    represent-M-correct
+-- Thin instance of [[JointGenWrapper]] at (nSylow = 15, nGen = 16);
+-- the Y₅₅₅+spider presentation supplies the deltas.
+open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
+  M _·M_ εM
+  15 Sylow-pred-M
+  16 gen-M gen-M-sylow
+  represent-M represent-M-correct
+  public
+  renaming (joint-gen to Monster-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Monster joint-gen dischargeable from presentation.
