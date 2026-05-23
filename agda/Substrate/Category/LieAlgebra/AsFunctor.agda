@@ -48,9 +48,9 @@ module Substrate.Category.LieAlgebra.AsFunctor
 -- 1. U-Lie as the substrate's named underlying-Lie functor.
 ------------------------------------------------------------------------
 
-UnderlyingLie-Functor : Functor Assoc Lie
-UnderlyingLie-Functor = U-Lie
-
+open import Substrate.Category.Functor.AsNamed
+  Assoc Lie U-Lie public
+  renaming (named-Functor to UnderlyingLie-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — U_Lie : Assoc → Lie as a substrate Functor.
 --

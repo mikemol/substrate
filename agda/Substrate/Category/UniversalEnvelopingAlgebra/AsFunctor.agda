@@ -47,9 +47,9 @@ module Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor
 -- 1. U as the substrate's named universal-enveloping-algebra functor.
 ------------------------------------------------------------------------
 
-U-Functor : Functor Lie Assoc
-U-Functor = U
-
+open import Substrate.Category.Functor.AsNamed
+  Lie Assoc U public
+  renaming (named-Functor to U-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — U : Lie → Assoc as a substrate Functor.
 --

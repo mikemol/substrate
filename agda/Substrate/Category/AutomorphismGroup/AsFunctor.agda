@@ -45,10 +45,14 @@ module Substrate.Category.AutomorphismGroup.AsFunctor
 
 ------------------------------------------------------------------------
 -- 1. Aut as the substrate's named automorphism-group functor.
+--
+-- Thin projection from [[Category.Functor.AsNamed]] — the 1:N cone
+-- witness for substrate-level Functor naming.
 ------------------------------------------------------------------------
 
-Aut-Functor : Functor CarrierCat GroupCat
-Aut-Functor = Aut
+open import Substrate.Category.Functor.AsNamed
+  CarrierCat GroupCat Aut public
+  renaming (named-Functor to Aut-Functor)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — Aut as M1 Functor.

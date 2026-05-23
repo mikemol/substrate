@@ -44,9 +44,9 @@ module Substrate.Category.PrimeFactoredGauge.AsFunctor
 -- 1. PFG as the substrate's named prime-factored-gauge functor.
 ------------------------------------------------------------------------
 
-PFG-Functor : Functor SylowGroupCat PFGCat
-PFG-Functor = PFG-assign
-
+open import Substrate.Category.Functor.AsNamed
+  SylowGroupCat PFGCat PFG-assign public
+  renaming (named-Functor to PFG-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — PFG as M1 Functor.
 --

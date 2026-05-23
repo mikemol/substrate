@@ -47,9 +47,9 @@ module Substrate.Category.CategoryOf.AsFunctor
 -- 1. CategoryOf as the substrate's named meta-functor.
 ------------------------------------------------------------------------
 
-CategoryOf-Functor : Functor PrimitiveMeta CatMeta
-CategoryOf-Functor = CategoryOf-assignment
-
+open import Substrate.Category.Functor.AsNamed
+  PrimitiveMeta CatMeta CategoryOf-assignment public
+  renaming (named-Functor to CategoryOf-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — CategoryOf as M1 Functor (meta-level).
 --

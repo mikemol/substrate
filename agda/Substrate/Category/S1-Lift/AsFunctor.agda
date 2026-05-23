@@ -43,9 +43,9 @@ module Substrate.Category.S1-Lift.AsFunctor
 -- 1. S¹-Lift as the substrate's named continuous-lift functor.
 ------------------------------------------------------------------------
 
-S1-Lift-Functor : Functor CyclicCat ContinuousCat
-S1-Lift-Functor = S1-Lift
-
+open import Substrate.Category.Functor.AsNamed
+  CyclicCat ContinuousCat S1-Lift public
+  renaming (named-Functor to S1-Lift-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — S¹-Lift as M1 Functor.
 --

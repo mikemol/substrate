@@ -20,5 +20,6 @@ module Substrate.Category.JordanAlgebra.UnderlyingCNAA
   (Jordan→CNAA : Functor JordanCat CNAA-Cat)
   where
 
-Jordan-UnderlyingCNAA-Functor : Functor JordanCat CNAA-Cat
-Jordan-UnderlyingCNAA-Functor = Jordan→CNAA
+open import Substrate.Category.Functor.AsNamed
+  JordanCat CNAA-Cat Jordan→CNAA public
+  renaming (named-Functor to Jordan-UnderlyingCNAA-Functor)

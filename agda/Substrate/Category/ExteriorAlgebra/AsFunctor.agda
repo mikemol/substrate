@@ -45,8 +45,9 @@ module Substrate.Category.ExteriorAlgebra.AsFunctor
 -- 1. Λ as the substrate's named exterior-algebra functor.
 ------------------------------------------------------------------------
 
-Λ-Functor : Functor Vect ExtAlg
-Λ-Functor = Λ
+open import Substrate.Category.Functor.AsNamed
+  Vect ExtAlg Λ public
+  renaming (named-Functor to Λ-Functor)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — Λ as a substrate Functor.

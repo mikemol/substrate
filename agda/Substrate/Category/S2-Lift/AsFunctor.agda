@@ -43,9 +43,9 @@ module Substrate.Category.S2-Lift.AsFunctor
 -- 1. S²-Lift as the substrate's named 2-dim continuous-lift functor.
 ------------------------------------------------------------------------
 
-S2-Lift-Functor : Functor ProjectiveCat ContinuousCat
-S2-Lift-Functor = S2-Lift
-
+open import Substrate.Category.Functor.AsNamed
+  ProjectiveCat ContinuousCat S2-Lift public
+  renaming (named-Functor to S2-Lift-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — S²-Lift as M1 Functor.
 --

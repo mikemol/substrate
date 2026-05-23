@@ -47,9 +47,9 @@ module Substrate.Category.GrothendieckConstruction.AsFunctor
 -- 1. ∫ as the substrate's named Grothendieck-construction functor.
 ------------------------------------------------------------------------
 
-Grothendieck-Functor : Functor FunctorCat CatOverBase
-Grothendieck-Functor = ∫
-
+open import Substrate.Category.Functor.AsNamed
+  FunctorCat CatOverBase ∫ public
+  renaming (named-Functor to Grothendieck-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — Grothendieck construction as M1 Functor.
 --

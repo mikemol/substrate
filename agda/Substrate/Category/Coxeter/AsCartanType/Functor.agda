@@ -47,9 +47,9 @@ module Substrate.Category.Coxeter.AsCartanType.Functor
 -- 1. The Coxeter ↦ Cartan functor.
 ------------------------------------------------------------------------
 
-Coxeter-AsCartan-Functor : Functor CoxeterCat CartanCat
-Coxeter-AsCartan-Functor = Coxeter→Cartan
-
+open import Substrate.Category.Functor.AsNamed
+  CoxeterCat CartanCat Coxeter→Cartan public
+  renaming (named-Functor to Coxeter-AsCartan-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — L13 lifted to a functor.
 --
