@@ -38,6 +38,8 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
+open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
+open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -86,15 +88,12 @@ SymBilinForm-3-to-generic M ₂ ₂ = entry-c M
 
 is-symmetric-bridged-3 : (M : SymBilinForm-3) →
                          IsSymmetric-generic (SymBilinForm-3-to-generic M)
-is-symmetric-bridged-3 M zero             zero             = refl
-is-symmetric-bridged-3 M zero             (suc zero)       = refl
-is-symmetric-bridged-3 M zero             ₂ = refl
-is-symmetric-bridged-3 M (suc zero)       zero             = refl
-is-symmetric-bridged-3 M (suc zero)       (suc zero)       = refl
-is-symmetric-bridged-3 M (suc zero)       ₂ = refl
-is-symmetric-bridged-3 M ₂ zero             = refl
-is-symmetric-bridged-3 M ₂ (suc zero)       = refl
-is-symmetric-bridged-3 M ₂ ₂ = refl
+is-symmetric-bridged-3 M =
+  fin×fin-cover (λ i j → SymBilinForm-3-to-generic M i j
+                       ≡ SymBilinForm-3-to-generic M j i)
+    ( (refl , refl , refl)
+    , (refl , refl , refl)
+    ,  refl , refl , refl )
 
 ------------------------------------------------------------------------
 -- N-3: bilinear-form-of-bridge-3 — the two definitions agree.

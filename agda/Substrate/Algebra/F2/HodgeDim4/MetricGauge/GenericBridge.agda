@@ -43,6 +43,8 @@ module Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
+open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
+open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -74,23 +76,23 @@ open import Substrate.Algebra.F2.SymBilinForm
 
 SymBilinForm-4-to-generic : SymBilinForm-4 → BilinForm-generic 4
 -- Row 0
-SymBilinForm-4-to-generic M zero                   zero                   = entry-a M
-SymBilinForm-4-to-generic M zero                   (suc zero)             = entry-e M
-SymBilinForm-4-to-generic M zero                   ₂       = entry-f M
-SymBilinForm-4-to-generic M zero                   ₃ = entry-g M
+SymBilinForm-4-to-generic M ₀ ₀                   = entry-a M
+SymBilinForm-4-to-generic M ₀                   ₁             = entry-e M
+SymBilinForm-4-to-generic M ₀                   ₂       = entry-f M
+SymBilinForm-4-to-generic M ₀                   ₃ = entry-g M
 -- Row 1
-SymBilinForm-4-to-generic M (suc zero)             zero                   = entry-e M
-SymBilinForm-4-to-generic M (suc zero)             (suc zero)             = entry-b M
-SymBilinForm-4-to-generic M (suc zero)             ₂       = entry-h M
-SymBilinForm-4-to-generic M (suc zero)             ₃ = entry-i M
+SymBilinForm-4-to-generic M ₁ ₀                   = entry-e M
+SymBilinForm-4-to-generic M ₁             ₁             = entry-b M
+SymBilinForm-4-to-generic M ₁             ₂       = entry-h M
+SymBilinForm-4-to-generic M ₁             ₃ = entry-i M
 -- Row 2
-SymBilinForm-4-to-generic M ₂       zero                   = entry-f M
-SymBilinForm-4-to-generic M ₂       (suc zero)             = entry-h M
+SymBilinForm-4-to-generic M ₂ ₀                   = entry-f M
+SymBilinForm-4-to-generic M ₂       ₁             = entry-h M
 SymBilinForm-4-to-generic M ₂       ₂       = entry-c M
 SymBilinForm-4-to-generic M ₂       ₃ = entry-j M
 -- Row 3
-SymBilinForm-4-to-generic M ₃ zero                   = entry-g M
-SymBilinForm-4-to-generic M ₃ (suc zero)             = entry-i M
+SymBilinForm-4-to-generic M ₃ ₀                   = entry-g M
+SymBilinForm-4-to-generic M ₃ ₁             = entry-i M
 SymBilinForm-4-to-generic M ₃ ₂       = entry-j M
 SymBilinForm-4-to-generic M ₃ ₃ = entry-d M
 
@@ -100,23 +102,13 @@ SymBilinForm-4-to-generic M ₃ ₃ = entry-d M
 
 is-symmetric-bridged-4 : (M : SymBilinForm-4) →
                          IsSymmetric-generic (SymBilinForm-4-to-generic M)
--- Row 0 ↔ Row 0
-is-symmetric-bridged-4 M zero                   zero                   = refl
-is-symmetric-bridged-4 M zero                   (suc zero)             = refl
-is-symmetric-bridged-4 M zero                   ₂       = refl
-is-symmetric-bridged-4 M zero                   ₃ = refl
-is-symmetric-bridged-4 M (suc zero)             zero                   = refl
-is-symmetric-bridged-4 M (suc zero)             (suc zero)             = refl
-is-symmetric-bridged-4 M (suc zero)             ₂       = refl
-is-symmetric-bridged-4 M (suc zero)             ₃ = refl
-is-symmetric-bridged-4 M ₂       zero                   = refl
-is-symmetric-bridged-4 M ₂       (suc zero)             = refl
-is-symmetric-bridged-4 M ₂       ₂       = refl
-is-symmetric-bridged-4 M ₂       ₃ = refl
-is-symmetric-bridged-4 M ₃ zero                   = refl
-is-symmetric-bridged-4 M ₃ (suc zero)             = refl
-is-symmetric-bridged-4 M ₃ ₂       = refl
-is-symmetric-bridged-4 M ₃ ₃ = refl
+is-symmetric-bridged-4 M =
+  fin×fin-cover (λ i j → SymBilinForm-4-to-generic M i j
+                       ≡ SymBilinForm-4-to-generic M j i)
+    ( (refl , refl , refl , refl)
+    , (refl , refl , refl , refl)
+    , (refl , refl , refl , refl)
+    ,  refl , refl , refl , refl )
 
 ------------------------------------------------------------------------
 -- N-3: bilinear-form-of-bridge-4 — the two definitions agree.
@@ -221,19 +213,19 @@ metric-id-4-eq-bridged :
   SymBilinForm-4-to-generic metric-id-4 i j ≡ metric-id-generic i j
 -- All 16 cases by refl (both sides reduce to 𝟙 on diagonal, 𝟘 off).
 metric-id-4-eq-bridged zero                   zero                   = refl
-metric-id-4-eq-bridged zero                   (suc zero)             = refl
+metric-id-4-eq-bridged zero                   ₁             = refl
 metric-id-4-eq-bridged zero                   ₂       = refl
 metric-id-4-eq-bridged zero                   ₃ = refl
-metric-id-4-eq-bridged (suc zero)             zero                   = refl
-metric-id-4-eq-bridged (suc zero)             (suc zero)             = refl
-metric-id-4-eq-bridged (suc zero)             ₂       = refl
-metric-id-4-eq-bridged (suc zero)             ₃ = refl
+metric-id-4-eq-bridged ₁             zero                   = refl
+metric-id-4-eq-bridged ₁             ₁             = refl
+metric-id-4-eq-bridged ₁             ₂       = refl
+metric-id-4-eq-bridged ₁             ₃ = refl
 metric-id-4-eq-bridged ₂       zero                   = refl
-metric-id-4-eq-bridged ₂       (suc zero)             = refl
+metric-id-4-eq-bridged ₂       ₁             = refl
 metric-id-4-eq-bridged ₂       ₂       = refl
 metric-id-4-eq-bridged ₂       ₃ = refl
 metric-id-4-eq-bridged ₃ zero                   = refl
-metric-id-4-eq-bridged ₃ (suc zero)             = refl
+metric-id-4-eq-bridged ₃ ₁             = refl
 metric-id-4-eq-bridged ₃ ₂       = refl
 metric-id-4-eq-bridged ₃ ₃ = refl
 
