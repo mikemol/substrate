@@ -37,6 +37,7 @@
 module Substrate.Algebra.GL3F2.GaugeGenerators where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁₂; ₂; ₃; ₈)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
@@ -60,12 +61,12 @@ open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 σ₂ : Fin 3 → Fin 3
 σ₂ zero             = suc zero
 σ₂ (suc zero)       = zero
-σ₂ (suc (suc zero)) = suc (suc zero)
+σ₂ ₂ = suc (suc zero)
 
 σ₂-HasOrderPerm : HasOrderPerm σ₂ 2
 σ₂-HasOrderPerm zero             = refl
 σ₂-HasOrderPerm (suc zero)       = refl
-σ₂-HasOrderPerm (suc (suc zero)) = refl
+σ₂-HasOrderPerm ₂ = refl
 
 swap01-Linear : Linear 3 3
 swap01-Linear = basis-permutation-Linear σ₂

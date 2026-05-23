@@ -13,6 +13,7 @@
 module Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip where
 
 open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; _≢_; refl; sym; trans)
@@ -30,9 +31,9 @@ open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
 private
   0≢1 : _≢_ {A = Fin 3} zero (suc zero)
   0≢1 ()
-  2≢0 : _≢_ {A = Fin 3} (suc (suc zero)) zero
+  2≢0 : _≢_ {A = Fin 3} ₂ zero
   2≢0 ()
-  2≢1 : _≢_ {A = Fin 3} (suc (suc zero)) (suc zero)
+  2≢1 : _≢_ {A = Fin 3} ₂ (suc zero)
   2≢1 ()
 
 orbit-key-to-s3-of-s3-to-orbit-key :
@@ -51,7 +52,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     α-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (α-pair , even)) i ≡ SFin.apply s i
     α-even-case zero            = sym p0
     α-even-case (suc zero)      = sym p1
-    α-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    α-even-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
     ... | suc zero        = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
     ... | suc (suc zero)  = refl
@@ -60,7 +61,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     α-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (α-pair , odd)) i ≡ SFin.apply s i
     α-odd-case zero            = sym p0
     α-odd-case (suc zero)      = sym p1
-    α-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    α-odd-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
     ... | suc zero        = refl
     ... | suc (suc zero)  = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
@@ -69,7 +70,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     β-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (β-pair , odd)) i ≡ SFin.apply s i
     β-odd-case zero            = sym p0
     β-odd-case (suc zero)      = sym p1
-    β-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    β-odd-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
     ... | suc zero        = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
     ... | suc (suc zero)  = refl
@@ -78,7 +79,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     β-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (β-pair , even)) i ≡ SFin.apply s i
     β-even-case zero            = sym p0
     β-even-case (suc zero)      = sym p1
-    β-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    β-even-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = refl
     ... | suc zero        = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
     ... | suc (suc zero)  = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
@@ -87,7 +88,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     γ-even-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (γ-pair , even)) i ≡ SFin.apply s i
     γ-even-case zero            = sym p0
     γ-even-case (suc zero)      = sym p1
-    γ-even-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    γ-even-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
     ... | suc zero        = refl
     ... | suc (suc zero)  = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))
@@ -96,7 +97,7 @@ orbit-key-to-s3-of-s3-to-orbit-key s i
     γ-odd-case : (i : Fin 3) → SFin.apply (orbit-key-to-s3 (γ-pair , odd)) i ≡ SFin.apply s i
     γ-odd-case zero            = sym p0
     γ-odd-case (suc zero)      = sym p1
-    γ-odd-case (suc (suc zero)) with SFin.apply s (suc (suc zero)) in p2
+    γ-odd-case ₂ with SFin.apply s ₂ in p2
     ... | zero            = refl
     ... | suc zero        = ⊥-elim (2≢1 (sfin-apply-inj s (trans p2 (sym p1))))
     ... | suc (suc zero)  = ⊥-elim (2≢0 (sfin-apply-inj s (trans p2 (sym p0))))

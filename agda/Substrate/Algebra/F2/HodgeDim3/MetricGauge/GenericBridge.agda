@@ -37,6 +37,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -67,13 +68,13 @@ open import Substrate.Algebra.F2.SymBilinForm
 SymBilinForm-3-to-generic : SymBilinForm-3 → BilinForm-generic 3
 SymBilinForm-3-to-generic M zero             zero             = entry-a M
 SymBilinForm-3-to-generic M zero             (suc zero)       = entry-d M
-SymBilinForm-3-to-generic M zero             (suc (suc zero)) = entry-e M
+SymBilinForm-3-to-generic M zero             ₂ = entry-e M
 SymBilinForm-3-to-generic M (suc zero)       zero             = entry-d M
 SymBilinForm-3-to-generic M (suc zero)       (suc zero)       = entry-b M
-SymBilinForm-3-to-generic M (suc zero)       (suc (suc zero)) = entry-f M
-SymBilinForm-3-to-generic M (suc (suc zero)) zero             = entry-e M
-SymBilinForm-3-to-generic M (suc (suc zero)) (suc zero)       = entry-f M
-SymBilinForm-3-to-generic M (suc (suc zero)) (suc (suc zero)) = entry-c M
+SymBilinForm-3-to-generic M (suc zero)       ₂ = entry-f M
+SymBilinForm-3-to-generic M ₂ zero             = entry-e M
+SymBilinForm-3-to-generic M ₂ (suc zero)       = entry-f M
+SymBilinForm-3-to-generic M ₂ ₂ = entry-c M
 
 ------------------------------------------------------------------------
 -- N-2: Symmetry of the bridged matrix.
@@ -87,13 +88,13 @@ is-symmetric-bridged-3 : (M : SymBilinForm-3) →
                          IsSymmetric-generic (SymBilinForm-3-to-generic M)
 is-symmetric-bridged-3 M zero             zero             = refl
 is-symmetric-bridged-3 M zero             (suc zero)       = refl
-is-symmetric-bridged-3 M zero             (suc (suc zero)) = refl
+is-symmetric-bridged-3 M zero             ₂ = refl
 is-symmetric-bridged-3 M (suc zero)       zero             = refl
 is-symmetric-bridged-3 M (suc zero)       (suc zero)       = refl
-is-symmetric-bridged-3 M (suc zero)       (suc (suc zero)) = refl
-is-symmetric-bridged-3 M (suc (suc zero)) zero             = refl
-is-symmetric-bridged-3 M (suc (suc zero)) (suc zero)       = refl
-is-symmetric-bridged-3 M (suc (suc zero)) (suc (suc zero)) = refl
+is-symmetric-bridged-3 M (suc zero)       ₂ = refl
+is-symmetric-bridged-3 M ₂ zero             = refl
+is-symmetric-bridged-3 M ₂ (suc zero)       = refl
+is-symmetric-bridged-3 M ₂ ₂ = refl
 
 ------------------------------------------------------------------------
 -- N-3: bilinear-form-of-bridge-3 — the two definitions agree.
@@ -197,13 +198,13 @@ metric-id-3-eq-bridged :
   SymBilinForm-3-to-generic metric-id i j ≡ metric-id-generic i j
 metric-id-3-eq-bridged zero             zero             = refl
 metric-id-3-eq-bridged zero             (suc zero)       = refl
-metric-id-3-eq-bridged zero             (suc (suc zero)) = refl
+metric-id-3-eq-bridged zero             ₂ = refl
 metric-id-3-eq-bridged (suc zero)       zero             = refl
 metric-id-3-eq-bridged (suc zero)       (suc zero)       = refl
-metric-id-3-eq-bridged (suc zero)       (suc (suc zero)) = refl
-metric-id-3-eq-bridged (suc (suc zero)) zero             = refl
-metric-id-3-eq-bridged (suc (suc zero)) (suc zero)       = refl
-metric-id-3-eq-bridged (suc (suc zero)) (suc (suc zero)) = refl
+metric-id-3-eq-bridged (suc zero)       ₂ = refl
+metric-id-3-eq-bridged ₂ zero             = refl
+metric-id-3-eq-bridged ₂ (suc zero)       = refl
+metric-id-3-eq-bridged ₂ ₂ = refl
 
 ------------------------------------------------------------------------
 -- N-5: bilinear-form-of-metric-id-bridge — direct equality at

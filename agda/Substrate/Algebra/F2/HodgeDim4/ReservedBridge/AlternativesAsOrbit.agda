@@ -42,6 +42,7 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AlternativesAsOrbit where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -79,12 +80,12 @@ open import Substrate.Algebra.GL3F2.MultiRouteEquivariance using (cycle3-GL)
 σ-swap12 : Fin 3 → Fin 3
 σ-swap12 zero             = zero
 σ-swap12 (suc zero)       = suc (suc zero)
-σ-swap12 (suc (suc zero)) = suc zero
+σ-swap12 ₂ = suc zero
 
 σ-swap12-HasOrderPerm : HasOrderPerm σ-swap12 2
 σ-swap12-HasOrderPerm zero             = refl
 σ-swap12-HasOrderPerm (suc zero)       = refl
-σ-swap12-HasOrderPerm (suc (suc zero)) = refl
+σ-swap12-HasOrderPerm ₂ = refl
 
 swap12-Linear : Linear 3 3
 swap12-Linear = basis-permutation-Linear σ-swap12

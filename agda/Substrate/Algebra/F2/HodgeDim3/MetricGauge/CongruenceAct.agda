@@ -11,6 +11,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Vector using (basis)
@@ -28,4 +29,4 @@ congruence-act T M =
   where
     Te₀ = apply T (basis zero)
     Te₁ = apply T (basis (suc zero))
-    Te₂ = apply T (basis (suc (suc zero)))
+    Te₂ = apply T (basis ₂)

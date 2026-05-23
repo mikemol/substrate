@@ -10,6 +10,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Groups.Coxeter.Word using (Word; [])
@@ -30,7 +31,7 @@ Canonical-ex w = Σ (Fin (suc n)) (Canonical w)
 --
 -- Replaces the per-Zₙ named ladder (c-aa / c-aaa / c-aaaa / …) with
 -- one parametric form `c-pos k`. Downstream consumers that previously
--- pattern-matched on `Z₃.c-aa` etc. can write `Z₃.c-pos (suc (suc zero))`
+-- pattern-matched on `Z₃.c-aa` etc. can write `Z₃.c-pos ₂`
 -- — a single uniform shape across all cyclic groups.
 ------------------------------------------------------------------------
 

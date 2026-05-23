@@ -20,6 +20,7 @@
 module Substrate.Category.Cone.PullbackWithMorphisms where
 
 open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
@@ -42,7 +43,7 @@ private
 pb-Base : (A B C : Set ℓ) → Fin 3 → Set ℓ
 pb-Base A B C zero             = A
 pb-Base A B C (suc zero)       = B
-pb-Base A B C (suc (suc zero)) = C
+pb-Base A B C ₂ = C
 
 pb-mor-src : Bool → Fin 3
 pb-mor-src false = zero               -- f : A → C
@@ -75,7 +76,7 @@ pullback-as-cone-with-morphisms f g = record
   { leg = λ where
       zero             → pullback-π₁
       (suc zero)       → pullback-π₂
-      (suc (suc zero)) → λ p → f (pullback-π₁ p)
+      ₂ → λ p → f (pullback-π₁ p)
   ; commute = λ where
       false p → refl
       true  p → sym (pullback-square p)

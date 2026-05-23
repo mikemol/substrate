@@ -16,6 +16,7 @@
 module Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; cong₂)
 import Substrate.Groups.SFin as SFin
@@ -24,11 +25,11 @@ open import Substrate.Cocycles.V4Signature
 
 s3-to-orbit-key-from : Fin 3 → Fin 3 → OrbitKey
 s3-to-orbit-key-from zero            (suc zero)       = α-pair , even
-s3-to-orbit-key-from zero            (suc (suc zero)) = α-pair , odd
-s3-to-orbit-key-from (suc zero)       (suc (suc zero)) = β-pair , even
+s3-to-orbit-key-from zero            ₂ = α-pair , odd
+s3-to-orbit-key-from (suc zero)       ₂ = β-pair , even
 s3-to-orbit-key-from (suc zero)       zero            = β-pair , odd
-s3-to-orbit-key-from (suc (suc zero)) zero            = γ-pair , even
-s3-to-orbit-key-from (suc (suc zero)) (suc zero)       = γ-pair , odd
+s3-to-orbit-key-from ₂ zero            = γ-pair , even
+s3-to-orbit-key-from ₂ (suc zero)       = γ-pair , odd
 s3-to-orbit-key-from _                _                = α-pair , even
                                                        -- impossible default
 

@@ -36,6 +36,7 @@
 module Substrate.Algebra.GL3F2.SylowDecomposition where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₈)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_)
@@ -87,7 +88,7 @@ Sylow-7-pred = in-cyclic-of 7 singer-GL
 Sylow-predicates : Fin 3 → GL3F2 → Set
 Sylow-predicates zero             = Sylow-2-pred
 Sylow-predicates (suc zero)       = Sylow-3-pred
-Sylow-predicates (suc (suc zero)) = Sylow-7-pred
+Sylow-predicates ₂ = Sylow-7-pred
 
 ------------------------------------------------------------------------
 -- 4. The 3 Sylow primes and multiplicities (cyclic-sub-Sylow choice).
@@ -96,7 +97,7 @@ Sylow-predicates (suc (suc zero)) = Sylow-7-pred
 Sylow-primes : Fin 3 → ℕ
 Sylow-primes zero             = 2
 Sylow-primes (suc zero)       = 3
-Sylow-primes (suc (suc zero)) = 7
+Sylow-primes ₂ = 7
 
 -- Multiplicity = 1 for our cyclic-sub-Sylow choice (order p, not p^k).
 -- For FULL Sylow-2 (= D₈) we'd use multiplicity 3; for cyclic-Z/2
@@ -105,7 +106,7 @@ Sylow-primes (suc (suc zero)) = 7
 Sylow-multiplicities : Fin 3 → ℕ
 Sylow-multiplicities zero             = 1  -- cyclic Z/2 ⊂ Sylow-2 (D₈)
 Sylow-multiplicities (suc zero)       = 1  -- full Sylow-3 = Z/3
-Sylow-multiplicities (suc (suc zero)) = 1  -- full Sylow-7 = Z/7
+Sylow-multiplicities ₂ = 1  -- full Sylow-7 = Z/7
 
 ------------------------------------------------------------------------
 -- 5. SylowDecomposition constructor: takes the joint-generation

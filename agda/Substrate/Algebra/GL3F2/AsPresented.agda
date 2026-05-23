@@ -35,6 +35,7 @@
 module Substrate.Algebra.GL3F2.AsPresented where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -66,7 +67,7 @@ gen-singer = suc (suc zero)
 gen-to-GL3F2 : Gen → GL3F2
 gen-to-GL3F2 zero             = swap01-GL
 gen-to-GL3F2 (suc zero)       = cycle3-GL
-gen-to-GL3F2 (suc (suc zero)) = singer-GL
+gen-to-GL3F2 ₂ = singer-GL
 
 ------------------------------------------------------------------------
 -- 3. Each generator's Sylow witness.
@@ -95,7 +96,7 @@ cycle3-in-Sylow-3 : Sylow-predicates (suc zero) cycle3-GL
 cycle3-in-Sylow-3 = suc zero , (λ v → refl)
 
 -- singer-GL ∈ Sylow-7 at index 1.
-singer-in-Sylow-7 : Sylow-predicates (suc (suc zero)) singer-GL
+singer-in-Sylow-7 : Sylow-predicates ₂ singer-GL
 singer-in-Sylow-7 = suc zero , (λ v → refl)
 
 ------------------------------------------------------------------------
@@ -105,7 +106,7 @@ singer-in-Sylow-7 = suc zero , (λ v → refl)
 gen-to-sylow : (g : Gen) → Σ (Fin 3) (λ i → Sylow-predicates i (gen-to-GL3F2 g))
 gen-to-sylow zero             = zero , swap01-in-Sylow-2
 gen-to-sylow (suc zero)       = suc zero , cycle3-in-Sylow-3
-gen-to-sylow (suc (suc zero)) = suc (suc zero) , singer-in-Sylow-7
+gen-to-sylow ₂ = suc (suc zero) , singer-in-Sylow-7
 
 ------------------------------------------------------------------------
 -- 5. Capstone — generator data for GL(3, F₂) in place.

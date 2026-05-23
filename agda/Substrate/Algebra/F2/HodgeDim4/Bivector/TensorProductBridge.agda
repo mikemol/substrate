@@ -32,6 +32,7 @@
 module Substrate.Algebra.F2.HodgeDim4.Bivector.TensorProductBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
@@ -79,11 +80,11 @@ bivector-to-tensor (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ []) =
 tensor-to-bivector : TensorProduct 4 4 → Bivector
 tensor-to-bivector T =
   lookup (lookup T zero) (suc zero) ∷            -- (0, 1) = a
-  lookup (lookup T zero) (suc (suc zero)) ∷      -- (0, 2) = b
-  lookup (lookup T zero) (suc (suc (suc zero))) ∷ -- (0, 3) = c
-  lookup (lookup T (suc zero)) (suc (suc zero)) ∷ -- (1, 2) = d
-  lookup (lookup T (suc zero)) (suc (suc (suc zero))) ∷ -- (1, 3) = e
-  lookup (lookup T (suc (suc zero))) (suc (suc (suc zero))) ∷ -- (2, 3) = f
+  lookup (lookup T zero) ₂ ∷      -- (0, 2) = b
+  lookup (lookup T zero) ₃ ∷ -- (0, 3) = c
+  lookup (lookup T (suc zero)) ₂ ∷ -- (1, 2) = d
+  lookup (lookup T (suc zero)) ₃ ∷ -- (1, 3) = e
+  lookup (lookup T ₂) ₃ ∷ -- (2, 3) = f
   []
 
 ------------------------------------------------------------------------

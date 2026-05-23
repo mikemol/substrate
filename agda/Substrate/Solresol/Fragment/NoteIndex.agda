@@ -9,6 +9,7 @@
 module Substrate.Solresol.Fragment.NoteIndex where
 
 open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Solresol.Fragment.Note
   using (Note; do₁; re₁; mi₁; fa₁; sol; la₁; si₁)
@@ -20,7 +21,7 @@ note-index : Note → Fin note-count
 note-index do₁ = zero
 note-index re₁ = suc zero
 note-index mi₁ = suc (suc zero)
-note-index fa₁ = suc (suc (suc zero))
-note-index sol = suc (suc (suc (suc zero)))
-note-index la₁ = suc (suc (suc (suc (suc zero))))
-note-index si₁ = suc (suc (suc (suc (suc (suc zero)))))
+note-index fa₁ = suc ₂
+note-index sol = suc ₃
+note-index la₁ = suc ₄
+note-index si₁ = suc ₅

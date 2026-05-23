@@ -44,6 +44,7 @@
 module Substrate.Codes.Hamming.H-8-4-4 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 
 open import Substrate.Algebra.F2
@@ -90,11 +91,11 @@ ext-col₈ = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []
 H-ext-cols : Fin 8 → Vector 4
 H-ext-cols zero                                                = ext-col₁
 H-ext-cols (suc zero)                                          = ext-col₂
-H-ext-cols (suc (suc zero))                                    = ext-col₃
-H-ext-cols (suc (suc (suc zero)))                              = ext-col₄
-H-ext-cols (suc (suc (suc (suc zero))))                        = ext-col₅
-H-ext-cols (suc (suc (suc (suc (suc zero)))))                  = ext-col₆
-H-ext-cols (suc (suc (suc (suc (suc (suc zero))))))            = ext-col₇
+H-ext-cols ₂                                    = ext-col₃
+H-ext-cols ₃                              = ext-col₄
+H-ext-cols ₄                        = ext-col₅
+H-ext-cols ₅                  = ext-col₆
+H-ext-cols ₆            = ext-col₇
 H-ext-cols (suc (suc (suc (suc (suc (suc (suc _)))))))         = ext-col₈
 
 ------------------------------------------------------------------------

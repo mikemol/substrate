@@ -37,6 +37,7 @@
 module Substrate.Groups.Stab-S3-Iso where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
@@ -71,10 +72,10 @@ restrict-extend D s (suc zero) =
   trans (non-anchor-to-fin3-cong D refl _
           (fin3-to-non-anchor-≢ D (SFin.apply s (suc zero))))
         (fin3-non-anchor-fin3 D (SFin.apply s (suc zero)))
-restrict-extend D s (suc (suc zero)) =
+restrict-extend D s ₂ =
   trans (non-anchor-to-fin3-cong D refl _
-          (fin3-to-non-anchor-≢ D (SFin.apply s (suc (suc zero)))))
-        (fin3-non-anchor-fin3 D (SFin.apply s (suc (suc zero))))
+          (fin3-to-non-anchor-≢ D (SFin.apply s ₂)))
+        (fin3-non-anchor-fin3 D (SFin.apply s ₂))
 restrict-extend C s zero =
   trans (non-anchor-to-fin3-cong C refl _
           (fin3-to-non-anchor-≢ C (SFin.apply s zero)))
@@ -83,10 +84,10 @@ restrict-extend C s (suc zero) =
   trans (non-anchor-to-fin3-cong C refl _
           (fin3-to-non-anchor-≢ C (SFin.apply s (suc zero))))
         (fin3-non-anchor-fin3 C (SFin.apply s (suc zero)))
-restrict-extend C s (suc (suc zero)) =
+restrict-extend C s ₂ =
   trans (non-anchor-to-fin3-cong C refl _
-          (fin3-to-non-anchor-≢ C (SFin.apply s (suc (suc zero)))))
-        (fin3-non-anchor-fin3 C (SFin.apply s (suc (suc zero))))
+          (fin3-to-non-anchor-≢ C (SFin.apply s ₂)))
+        (fin3-non-anchor-fin3 C (SFin.apply s ₂))
 restrict-extend S s zero =
   trans (non-anchor-to-fin3-cong S refl _
           (fin3-to-non-anchor-≢ S (SFin.apply s zero)))
@@ -95,10 +96,10 @@ restrict-extend S s (suc zero) =
   trans (non-anchor-to-fin3-cong S refl _
           (fin3-to-non-anchor-≢ S (SFin.apply s (suc zero))))
         (fin3-non-anchor-fin3 S (SFin.apply s (suc zero)))
-restrict-extend S s (suc (suc zero)) =
+restrict-extend S s ₂ =
   trans (non-anchor-to-fin3-cong S refl _
-          (fin3-to-non-anchor-≢ S (SFin.apply s (suc (suc zero)))))
-        (fin3-non-anchor-fin3 S (SFin.apply s (suc (suc zero))))
+          (fin3-to-non-anchor-≢ S (SFin.apply s ₂)))
+        (fin3-non-anchor-fin3 S (SFin.apply s ₂))
 restrict-extend W s zero =
   trans (non-anchor-to-fin3-cong W refl _
           (fin3-to-non-anchor-≢ W (SFin.apply s zero)))
@@ -107,10 +108,10 @@ restrict-extend W s (suc zero) =
   trans (non-anchor-to-fin3-cong W refl _
           (fin3-to-non-anchor-≢ W (SFin.apply s (suc zero))))
         (fin3-non-anchor-fin3 W (SFin.apply s (suc zero)))
-restrict-extend W s (suc (suc zero)) =
+restrict-extend W s ₂ =
   trans (non-anchor-to-fin3-cong W refl _
-          (fin3-to-non-anchor-≢ W (SFin.apply s (suc (suc zero)))))
-        (fin3-non-anchor-fin3 W (SFin.apply s (suc (suc zero))))
+          (fin3-to-non-anchor-≢ W (SFin.apply s ₂)))
+        (fin3-non-anchor-fin3 W (SFin.apply s ₂))
 
 ------------------------------------------------------------------------
 -- extend-restrict: round trip on the Σ Permutation (Stab anchor) side.
@@ -129,7 +130,7 @@ extend-restrict D σ σ-stab S =
     (stab-preserves-≢ D σ σ-stab S (fin3-to-non-anchor-≢ D (suc zero)))
 extend-restrict D σ σ-stab W =
   non-anchor-fin3-non-anchor D (applyₛ σ W)
-    (stab-preserves-≢ D σ σ-stab W (fin3-to-non-anchor-≢ D (suc (suc zero))))
+    (stab-preserves-≢ D σ σ-stab W (fin3-to-non-anchor-≢ D ₂))
 extend-restrict C σ σ-stab D =
   non-anchor-fin3-non-anchor C (applyₛ σ D)
     (stab-preserves-≢ C σ σ-stab D (fin3-to-non-anchor-≢ C zero))
@@ -139,7 +140,7 @@ extend-restrict C σ σ-stab S =
     (stab-preserves-≢ C σ σ-stab S (fin3-to-non-anchor-≢ C (suc zero)))
 extend-restrict C σ σ-stab W =
   non-anchor-fin3-non-anchor C (applyₛ σ W)
-    (stab-preserves-≢ C σ σ-stab W (fin3-to-non-anchor-≢ C (suc (suc zero))))
+    (stab-preserves-≢ C σ σ-stab W (fin3-to-non-anchor-≢ C ₂))
 extend-restrict S σ σ-stab D =
   non-anchor-fin3-non-anchor S (applyₛ σ D)
     (stab-preserves-≢ S σ σ-stab D (fin3-to-non-anchor-≢ S zero))
@@ -149,7 +150,7 @@ extend-restrict S σ σ-stab C =
 extend-restrict S σ σ-stab S = sym σ-stab
 extend-restrict S σ σ-stab W =
   non-anchor-fin3-non-anchor S (applyₛ σ W)
-    (stab-preserves-≢ S σ σ-stab W (fin3-to-non-anchor-≢ S (suc (suc zero))))
+    (stab-preserves-≢ S σ σ-stab W (fin3-to-non-anchor-≢ S ₂))
 extend-restrict W σ σ-stab D =
   non-anchor-fin3-non-anchor W (applyₛ σ D)
     (stab-preserves-≢ W σ σ-stab D (fin3-to-non-anchor-≢ W zero))
@@ -158,7 +159,7 @@ extend-restrict W σ σ-stab C =
     (stab-preserves-≢ W σ σ-stab C (fin3-to-non-anchor-≢ W (suc zero)))
 extend-restrict W σ σ-stab S =
   non-anchor-fin3-non-anchor W (applyₛ σ S)
-    (stab-preserves-≢ W σ σ-stab S (fin3-to-non-anchor-≢ W (suc (suc zero))))
+    (stab-preserves-≢ W σ σ-stab S (fin3-to-non-anchor-≢ W ₂))
 extend-restrict W σ σ-stab W = sym σ-stab
 
 ------------------------------------------------------------------------

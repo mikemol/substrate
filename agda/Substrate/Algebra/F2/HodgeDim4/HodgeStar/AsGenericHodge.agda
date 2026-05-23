@@ -27,6 +27,7 @@
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGenericHodge where
 
 open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -49,7 +50,7 @@ open import Substrate.Category.GenericHodgeStar
 HodgeStar-AsGenericHodge : GenericHodgeStar
 HodgeStar-AsGenericHodge = mkGenericHodgeStar
   4                                  -- n = 4
-  (suc (suc zero))                   -- k = 2 ∈ Fin 5
+  ₂                   -- k = 2 ∈ Fin 5
   (Vector 6)                         -- LamK = Λ²(F₂⁴)
   (Vector 6)                         -- LamNk = Λ²(F₂⁴) (since n-k = 2)
   (apply hodge-star)                 -- star

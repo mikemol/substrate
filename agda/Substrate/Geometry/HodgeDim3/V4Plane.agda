@@ -11,7 +11,7 @@
 -- Two views, with a bridge between them:
 --   * KernelCode form: V₄-plane = ker (V4Plane-Selector : Linear 3 1)
 --     where V4Plane-Selector projects to the chirality bit.
---   * Predicate form:  V₄-plane-Pred v = lookup v (suc (suc zero)) ≡ 𝟘
+--   * Predicate form:  V₄-plane-Pred v = lookup v ₂ ≡ 𝟘
 --     (direct bit constraint; easier for computational arguments).
 ------------------------------------------------------------------------
 
@@ -20,6 +20,7 @@
 module Substrate.Geometry.HodgeDim3.V4Plane where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
@@ -65,7 +66,7 @@ V4-Plane = record { parity-check = V4Plane-Selector }
 ------------------------------------------------------------------------
 
 V4-Plane-Pred : Vector 3 → Set
-V4-Plane-Pred v = lookup v (suc (suc zero)) ≡ 𝟘
+V4-Plane-Pred v = lookup v ₂ ≡ 𝟘
 
 ------------------------------------------------------------------------
 -- Application of V4Plane-Selector reduces to the chirality bit.
@@ -76,7 +77,7 @@ V4-Plane-Pred v = lookup v (suc (suc zero)) ≡ 𝟘
 
 apply-V4Plane-Selector-lookup :
   (v : Vector 3) →
-  lookup (apply V4Plane-Selector v) zero ≡ lookup v (suc (suc zero))
+  lookup (apply V4Plane-Selector v) zero ≡ lookup v ₂
 apply-V4Plane-Selector-lookup (a ∷ b ∷ c ∷ []) =
   -- LHS unfolds to: a · 𝟘 + (b · 𝟘 + (c · 𝟙 + 𝟘))
   -- Chain: simplify each summand, then collapse identities to c.

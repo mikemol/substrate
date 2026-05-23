@@ -13,6 +13,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2 using (𝟘; 𝟙)
@@ -35,5 +36,5 @@ T-on-e₀ = apply-linear-from-images-basis T-id-to-mixed-images zero
 T-on-e₁ : apply T-id-to-mixed (basis (suc zero)) ≡ (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ [])
 T-on-e₁ = apply-linear-from-images-basis T-id-to-mixed-images (suc zero)
 
-T-on-e₂ : apply T-id-to-mixed (basis (suc (suc zero))) ≡ (𝟙 ∷ 𝟙 ∷ 𝟙 ∷ [])
-T-on-e₂ = apply-linear-from-images-basis T-id-to-mixed-images (suc (suc zero))
+T-on-e₂ : apply T-id-to-mixed (basis ₂) ≡ (𝟙 ∷ 𝟙 ∷ 𝟙 ∷ [])
+T-on-e₂ = apply-linear-from-images-basis T-id-to-mixed-images ₂

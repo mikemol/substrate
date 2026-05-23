@@ -30,6 +30,7 @@
 module Substrate.Algebra.F2.V4LagrangeInstance where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
@@ -54,8 +55,8 @@ open import Substrate.Category.Coalgebra.LagrangeOrder
 V4-elements : Fin 4 → Vector 2
 V4-elements zero                   = 𝟘 ∷ 𝟘 ∷ []
 V4-elements (suc zero)             = 𝟙 ∷ 𝟘 ∷ []
-V4-elements (suc (suc zero))       = 𝟘 ∷ 𝟙 ∷ []
-V4-elements (suc (suc (suc zero))) = 𝟙 ∷ 𝟙 ∷ []
+V4-elements ₂       = 𝟘 ∷ 𝟙 ∷ []
+V4-elements ₃ = 𝟙 ∷ 𝟙 ∷ []
 
 ------------------------------------------------------------------------
 -- N-2: V₄ action — each element acts on Vector 2 by XOR translation.

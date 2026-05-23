@@ -32,6 +32,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
@@ -77,19 +78,19 @@ congruence-act-bridge-3 T M zero zero =
 congruence-act-bridge-3 T M (suc zero) (suc zero) =
   bilinear-form-of-bridge-3 M
     (apply T (basis (suc zero))) (apply T (basis (suc zero)))
-congruence-act-bridge-3 T M (suc (suc zero)) (suc (suc zero)) =
+congruence-act-bridge-3 T M ₂ ₂ =
   bilinear-form-of-bridge-3 M
-    (apply T (basis (suc (suc zero)))) (apply T (basis (suc (suc zero))))
+    (apply T (basis ₂)) (apply T (basis ₂))
 -- Upper off-diagonal cases.
 congruence-act-bridge-3 T M zero (suc zero) =
   bilinear-form-of-bridge-3 M
     (apply T (basis zero)) (apply T (basis (suc zero)))
-congruence-act-bridge-3 T M zero (suc (suc zero)) =
+congruence-act-bridge-3 T M zero ₂ =
   bilinear-form-of-bridge-3 M
-    (apply T (basis zero)) (apply T (basis (suc (suc zero))))
-congruence-act-bridge-3 T M (suc zero) (suc (suc zero)) =
+    (apply T (basis zero)) (apply T (basis ₂))
+congruence-act-bridge-3 T M (suc zero) ₂ =
   bilinear-form-of-bridge-3 M
-    (apply T (basis (suc zero))) (apply T (basis (suc (suc zero))))
+    (apply T (basis (suc zero))) (apply T (basis ₂))
 -- Lower off-diagonal cases: bridge then swap arguments via symmetry.
 congruence-act-bridge-3 T M (suc zero) zero =
   trans (bilinear-form-of-bridge-3 M
@@ -98,20 +99,20 @@ congruence-act-bridge-3 T M (suc zero) zero =
            (SymBilinForm-3-to-generic M)
            (is-symmetric-bridged-3 M)
            (apply T (basis zero)) (apply T (basis (suc zero))))
-congruence-act-bridge-3 T M (suc (suc zero)) zero =
+congruence-act-bridge-3 T M ₂ zero =
   trans (bilinear-form-of-bridge-3 M
-           (apply T (basis zero)) (apply T (basis (suc (suc zero)))))
+           (apply T (basis zero)) (apply T (basis ₂)))
         (bilinear-form-of-sym-arg
            (SymBilinForm-3-to-generic M)
            (is-symmetric-bridged-3 M)
-           (apply T (basis zero)) (apply T (basis (suc (suc zero)))))
-congruence-act-bridge-3 T M (suc (suc zero)) (suc zero) =
+           (apply T (basis zero)) (apply T (basis ₂)))
+congruence-act-bridge-3 T M ₂ (suc zero) =
   trans (bilinear-form-of-bridge-3 M
-           (apply T (basis (suc zero))) (apply T (basis (suc (suc zero)))))
+           (apply T (basis (suc zero))) (apply T (basis ₂)))
         (bilinear-form-of-sym-arg
            (SymBilinForm-3-to-generic M)
            (is-symmetric-bridged-3 M)
-           (apply T (basis (suc zero))) (apply T (basis (suc (suc zero)))))
+           (apply T (basis (suc zero))) (apply T (basis ₂)))
 
 ------------------------------------------------------------------------
 -- N-2: Pointwise-substitution helpers.
@@ -163,12 +164,12 @@ bridge-injectivity-3 M₁ M₂ eq =
     goal : (k : Fin 6) → lookup M₁ k ≡ lookup M₂ k
     goal zero                                  = eq zero zero
     goal (suc zero)                            = eq (suc zero) (suc zero)
-    goal (suc (suc zero))                      = eq (suc (suc zero))
-                                                    (suc (suc zero))
-    goal (suc (suc (suc zero)))                = eq zero (suc zero)
-    goal (suc (suc (suc (suc zero))))          = eq zero (suc (suc zero))
-    goal (suc (suc (suc (suc (suc zero)))))    = eq (suc zero)
-                                                    (suc (suc zero))
+    goal ₂                      = eq ₂
+                                                    ₂
+    goal ₃                = eq zero (suc zero)
+    goal ₄          = eq zero ₂
+    goal ₅    = eq (suc zero)
+                                                    ₂
 
 ------------------------------------------------------------------------
 -- N-4: congruence-compose-3 — dim-3 specific composition law.

@@ -9,6 +9,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnV where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear using (apply; _∘L_)
@@ -29,4 +30,4 @@ braid-on-v =
                        ≡ apply (s₂ ∘L s₁ ∘L s₂) (basis i)
     agree-on-basis zero             = braid-on-e₀
     agree-on-basis (suc zero)       = braid-on-e₁
-    agree-on-basis (suc (suc zero)) = braid-on-e₂
+    agree-on-basis ₂ = braid-on-e₂

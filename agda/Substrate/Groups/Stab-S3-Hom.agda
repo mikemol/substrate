@@ -50,6 +50,7 @@
 module Substrate.Groups.Stab-S3-Hom where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
@@ -226,7 +227,7 @@ extend-hom-∙ D s₁ s₂ S with SFin.apply s₂ (suc zero) in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
-extend-hom-∙ D s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+extend-hom-∙ D s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
@@ -239,7 +240,7 @@ extend-hom-∙ C s₁ s₂ S with SFin.apply s₂ (suc zero) in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
-extend-hom-∙ C s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+extend-hom-∙ C s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
@@ -252,7 +253,7 @@ extend-hom-∙ S s₁ s₂ C with SFin.apply s₂ (suc zero) in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
-extend-hom-∙ S s₁ s₂ W with SFin.apply s₂ (suc (suc zero)) in p
+extend-hom-∙ S s₁ s₂ W with SFin.apply s₂ ₂ in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
@@ -265,7 +266,7 @@ extend-hom-∙ W s₁ s₂ C with SFin.apply s₂ (suc zero) in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl
-extend-hom-∙ W s₁ s₂ S with SFin.apply s₂ (suc (suc zero)) in p
+extend-hom-∙ W s₁ s₂ S with SFin.apply s₂ ₂ in p
 ... | zero             = refl
 ... | suc zero         = refl
 ... | suc (suc zero)   = refl

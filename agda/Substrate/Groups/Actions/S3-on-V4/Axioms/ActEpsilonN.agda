@@ -15,6 +15,7 @@ open V4 using (V₄; e)
 import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
 open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄)
 open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -24,10 +25,10 @@ act-ε-N-on-canonical : ∀ {n h} → Z₃.Canonical n → Z₂.Canonical h →
                        act-on-canonical n h e ≡ e
 act-ε-N-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos zero) = refl
 act-ε-N-on-canonical (Z₃.c-pos (suc zero))  (Z₂.c-pos zero) = refl
-act-ε-N-on-canonical (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos zero) = refl
+act-ε-N-on-canonical (Z₃.c-pos ₂) (Z₂.c-pos zero) = refl
 act-ε-N-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos (suc zero)) = refl
 act-ε-N-on-canonical (Z₃.c-pos (suc zero))  (Z₂.c-pos (suc zero)) = refl
-act-ε-N-on-canonical (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos (suc zero)) = refl
+act-ε-N-on-canonical (Z₃.c-pos ₂) (Z₂.c-pos (suc zero)) = refl
 
 act-ε-N : ∀ s → act s e ≡ e
 act-ε-N (n , h) = act-ε-N-on-canonical (Z₃.normalize-canonical n) (Z₂.normalize-canonical h)

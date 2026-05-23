@@ -41,6 +41,7 @@
 module Substrate.Geometry.Fano where
 
 open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -100,10 +101,10 @@ p₁ p₂ p₃ p₄ p₅ p₆ p₇ : Point
 p₁ = zero
 p₂ = suc zero
 p₃ = suc (suc zero)
-p₄ = suc (suc (suc zero))
-p₅ = suc (suc (suc (suc zero)))
-p₆ = suc (suc (suc (suc (suc zero))))
-p₇ = suc (suc (suc (suc (suc (suc zero)))))
+p₄ = suc ₂
+p₅ = suc ₃
+p₆ = suc ₄
+p₇ = suc ₅
 
 line-1-2-3 : Collinear-Three p₁ p₂ p₃
 line-1-2-3 = refl

@@ -30,6 +30,7 @@
 module Substrate.Algebra.Abelian.Z6-AsChainDecomp where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₆)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
@@ -72,12 +73,12 @@ x ≈₆ y = x ≡ y
 
 data IsSylow2 : Z6 → Set where
   zero-in-sylow2  : IsSylow2 zero
-  three-in-sylow2 : IsSylow2 (suc (suc (suc zero)))
+  three-in-sylow2 : IsSylow2 ₃
 
 data IsSylow3 : Z6 → Set where
   zero-in-sylow3 : IsSylow3 zero
-  two-in-sylow3  : IsSylow3 (suc (suc zero))
-  four-in-sylow3 : IsSylow3 (suc (suc (suc (suc zero))))
+  two-in-sylow3  : IsSylow3 ₂
+  four-in-sylow3 : IsSylow3 ₄
 
 ------------------------------------------------------------------------
 -- 3. The type of "chain decomposition of n ∈ Z/6 across (Z/2, Z/3)".
@@ -111,18 +112,18 @@ chain-of-0 : Z6ChainData zero
 chain-of-0 = mkZ6Chain zero zero zero-in-sylow2 zero-in-sylow3
 
 -- 2 = 0 + 2
-chain-of-2 : Z6ChainData (suc (suc zero))
-chain-of-2 = mkZ6Chain zero (suc (suc zero))
+chain-of-2 : Z6ChainData ₂
+chain-of-2 = mkZ6Chain zero ₂
               zero-in-sylow2 two-in-sylow3
 
 -- 3 = 3 + 0
-chain-of-3 : Z6ChainData (suc (suc (suc zero)))
-chain-of-3 = mkZ6Chain (suc (suc (suc zero))) zero
+chain-of-3 : Z6ChainData ₃
+chain-of-3 = mkZ6Chain ₃ zero
               three-in-sylow2 zero-in-sylow3
 
 -- 4 = 0 + 4
-chain-of-4 : Z6ChainData (suc (suc (suc (suc zero))))
-chain-of-4 = mkZ6Chain zero (suc (suc (suc (suc zero))))
+chain-of-4 : Z6ChainData ₄
+chain-of-4 = mkZ6Chain zero ₄
               zero-in-sylow2 four-in-sylow3
 
 ------------------------------------------------------------------------

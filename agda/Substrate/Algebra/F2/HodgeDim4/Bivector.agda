@@ -31,6 +31,7 @@
 module Substrate.Algebra.F2.HodgeDim4.Bivector where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₀₂; ₀₃; ₁; ₁₂; ₁₃; ₂; ₂₃; ₃; ₄; ₅)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
@@ -52,9 +53,9 @@ b₀₁ b₀₂ b₀₃ b₁₂ b₁₃ b₂₃ : Fin 6
 b₀₁ = zero                                  -- e₀ ∧ e₁
 b₀₂ = suc zero                              -- e₀ ∧ e₂
 b₀₃ = suc (suc zero)                        -- e₀ ∧ e₃
-b₁₂ = suc (suc (suc zero))                  -- e₁ ∧ e₂
-b₁₃ = suc (suc (suc (suc zero)))            -- e₁ ∧ e₃
-b₂₃ = suc (suc (suc (suc (suc zero))))      -- e₂ ∧ e₃
+b₁₂ = suc ₂                  -- e₁ ∧ e₂
+b₁₃ = suc ₃            -- e₁ ∧ e₃
+b₂₃ = suc ₄      -- e₂ ∧ e₃
 
 ------------------------------------------------------------------------
 -- The complement map: each basis 2-blade index → its Hodge-dual index.
@@ -63,9 +64,9 @@ b₂₃ = suc (suc (suc (suc (suc zero))))      -- e₂ ∧ e₃
 complement : Fin 6 → Fin 6
 complement zero                                  = b₂₃   -- {0,1} ↔ {2,3}
 complement (suc zero)                            = b₁₃   -- {0,2} ↔ {1,3}
-complement (suc (suc zero))                      = b₁₂   -- {0,3} ↔ {1,2}
-complement (suc (suc (suc zero)))                = b₀₃   -- {1,2} ↔ {0,3}
-complement (suc (suc (suc (suc zero))))          = b₀₂   -- {1,3} ↔ {0,2}
+complement ₂                      = b₁₂   -- {0,3} ↔ {1,2}
+complement ₃                = b₀₃   -- {1,2} ↔ {0,3}
+complement ₄          = b₀₂   -- {1,3} ↔ {0,2}
 complement (suc (suc (suc (suc (suc _)))))       = b₀₁   -- {2,3} ↔ {0,1}
 
 ------------------------------------------------------------------------
@@ -77,7 +78,7 @@ complement (suc (suc (suc (suc (suc _)))))       = b₀₁   -- {2,3} ↔ {0,1}
 complement-involution : (i : Fin 6) → complement (complement i) ≡ i
 complement-involution zero                                  = refl
 complement-involution (suc zero)                            = refl
-complement-involution (suc (suc zero))                      = refl
-complement-involution (suc (suc (suc zero)))                = refl
-complement-involution (suc (suc (suc (suc zero))))          = refl
-complement-involution (suc (suc (suc (suc (suc zero)))))    = refl
+complement-involution ₂                      = refl
+complement-involution ₃                = refl
+complement-involution ₄          = refl
+complement-involution ₅    = refl

@@ -53,6 +53,7 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -103,7 +104,7 @@ vector3-to-selfdual-sd (c₀ ∷ c₁ ∷ c₂ ∷ []) =
 
 selfdual-coefficients : Bivector → Vector 3
 selfdual-coefficients ω =
-  lookup ω zero ∷ lookup ω (suc zero) ∷ lookup ω (suc (suc zero)) ∷ []
+  lookup ω zero ∷ lookup ω (suc zero) ∷ lookup ω ₂ ∷ []
 
 ------------------------------------------------------------------------
 -- Round-trip (backward-then-forward): coefficients ∘ vector3-to-selfdual ≡ id.
@@ -144,7 +145,7 @@ lookup-1-roundtrip c₀ c₁ c₂ =
 -- After reduction: = (c₀ · 𝟘) + ((c₁ · 𝟘) + (c₂ · 𝟙))
 lookup-2-roundtrip :
   (c₀ c₁ c₂ : F₂) →
-  lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc (suc zero)) ≡ c₂
+  lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ≡ c₂
 lookup-2-roundtrip c₀ c₁ c₂ =
   trans (cong (_+ ((c₁ · 𝟘) + (c₂ · 𝟙))) (·-absorbʳ c₀))
   (trans (+-identityˡ _)
@@ -160,11 +161,11 @@ selfdual-coefficients-roundtrip (c₀ ∷ c₁ ∷ c₂ ∷ []) =
   trans (cong (λ x →
                 x ∷
                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ∷
-                lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc (suc zero)) ∷ [])
+                lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷ [])
               (lookup-0-roundtrip c₀ c₁ c₂))
   (trans (cong (λ x →
                  c₀ ∷ x ∷
-                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc (suc zero)) ∷ [])
+                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷ [])
                (lookup-1-roundtrip c₀ c₁ c₂))
          (cong (λ x → c₀ ∷ c₁ ∷ x ∷ [])
                (lookup-2-roundtrip c₀ c₁ c₂)))

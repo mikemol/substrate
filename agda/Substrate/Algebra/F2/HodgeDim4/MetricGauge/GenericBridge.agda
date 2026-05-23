@@ -42,6 +42,7 @@
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
@@ -75,23 +76,23 @@ SymBilinForm-4-to-generic : SymBilinForm-4 → BilinForm-generic 4
 -- Row 0
 SymBilinForm-4-to-generic M zero                   zero                   = entry-a M
 SymBilinForm-4-to-generic M zero                   (suc zero)             = entry-e M
-SymBilinForm-4-to-generic M zero                   (suc (suc zero))       = entry-f M
-SymBilinForm-4-to-generic M zero                   (suc (suc (suc zero))) = entry-g M
+SymBilinForm-4-to-generic M zero                   ₂       = entry-f M
+SymBilinForm-4-to-generic M zero                   ₃ = entry-g M
 -- Row 1
 SymBilinForm-4-to-generic M (suc zero)             zero                   = entry-e M
 SymBilinForm-4-to-generic M (suc zero)             (suc zero)             = entry-b M
-SymBilinForm-4-to-generic M (suc zero)             (suc (suc zero))       = entry-h M
-SymBilinForm-4-to-generic M (suc zero)             (suc (suc (suc zero))) = entry-i M
+SymBilinForm-4-to-generic M (suc zero)             ₂       = entry-h M
+SymBilinForm-4-to-generic M (suc zero)             ₃ = entry-i M
 -- Row 2
-SymBilinForm-4-to-generic M (suc (suc zero))       zero                   = entry-f M
-SymBilinForm-4-to-generic M (suc (suc zero))       (suc zero)             = entry-h M
-SymBilinForm-4-to-generic M (suc (suc zero))       (suc (suc zero))       = entry-c M
-SymBilinForm-4-to-generic M (suc (suc zero))       (suc (suc (suc zero))) = entry-j M
+SymBilinForm-4-to-generic M ₂       zero                   = entry-f M
+SymBilinForm-4-to-generic M ₂       (suc zero)             = entry-h M
+SymBilinForm-4-to-generic M ₂       ₂       = entry-c M
+SymBilinForm-4-to-generic M ₂       ₃ = entry-j M
 -- Row 3
-SymBilinForm-4-to-generic M (suc (suc (suc zero))) zero                   = entry-g M
-SymBilinForm-4-to-generic M (suc (suc (suc zero))) (suc zero)             = entry-i M
-SymBilinForm-4-to-generic M (suc (suc (suc zero))) (suc (suc zero))       = entry-j M
-SymBilinForm-4-to-generic M (suc (suc (suc zero))) (suc (suc (suc zero))) = entry-d M
+SymBilinForm-4-to-generic M ₃ zero                   = entry-g M
+SymBilinForm-4-to-generic M ₃ (suc zero)             = entry-i M
+SymBilinForm-4-to-generic M ₃ ₂       = entry-j M
+SymBilinForm-4-to-generic M ₃ ₃ = entry-d M
 
 ------------------------------------------------------------------------
 -- N-2: Symmetry of the bridged matrix. 16 cases (all refl).
@@ -102,20 +103,20 @@ is-symmetric-bridged-4 : (M : SymBilinForm-4) →
 -- Row 0 ↔ Row 0
 is-symmetric-bridged-4 M zero                   zero                   = refl
 is-symmetric-bridged-4 M zero                   (suc zero)             = refl
-is-symmetric-bridged-4 M zero                   (suc (suc zero))       = refl
-is-symmetric-bridged-4 M zero                   (suc (suc (suc zero))) = refl
+is-symmetric-bridged-4 M zero                   ₂       = refl
+is-symmetric-bridged-4 M zero                   ₃ = refl
 is-symmetric-bridged-4 M (suc zero)             zero                   = refl
 is-symmetric-bridged-4 M (suc zero)             (suc zero)             = refl
-is-symmetric-bridged-4 M (suc zero)             (suc (suc zero))       = refl
-is-symmetric-bridged-4 M (suc zero)             (suc (suc (suc zero))) = refl
-is-symmetric-bridged-4 M (suc (suc zero))       zero                   = refl
-is-symmetric-bridged-4 M (suc (suc zero))       (suc zero)             = refl
-is-symmetric-bridged-4 M (suc (suc zero))       (suc (suc zero))       = refl
-is-symmetric-bridged-4 M (suc (suc zero))       (suc (suc (suc zero))) = refl
-is-symmetric-bridged-4 M (suc (suc (suc zero))) zero                   = refl
-is-symmetric-bridged-4 M (suc (suc (suc zero))) (suc zero)             = refl
-is-symmetric-bridged-4 M (suc (suc (suc zero))) (suc (suc zero))       = refl
-is-symmetric-bridged-4 M (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
+is-symmetric-bridged-4 M (suc zero)             ₂       = refl
+is-symmetric-bridged-4 M (suc zero)             ₃ = refl
+is-symmetric-bridged-4 M ₂       zero                   = refl
+is-symmetric-bridged-4 M ₂       (suc zero)             = refl
+is-symmetric-bridged-4 M ₂       ₂       = refl
+is-symmetric-bridged-4 M ₂       ₃ = refl
+is-symmetric-bridged-4 M ₃ zero                   = refl
+is-symmetric-bridged-4 M ₃ (suc zero)             = refl
+is-symmetric-bridged-4 M ₃ ₂       = refl
+is-symmetric-bridged-4 M ₃ ₃ = refl
 
 ------------------------------------------------------------------------
 -- N-3: bilinear-form-of-bridge-4 — the two definitions agree.
@@ -221,20 +222,20 @@ metric-id-4-eq-bridged :
 -- All 16 cases by refl (both sides reduce to 𝟙 on diagonal, 𝟘 off).
 metric-id-4-eq-bridged zero                   zero                   = refl
 metric-id-4-eq-bridged zero                   (suc zero)             = refl
-metric-id-4-eq-bridged zero                   (suc (suc zero))       = refl
-metric-id-4-eq-bridged zero                   (suc (suc (suc zero))) = refl
+metric-id-4-eq-bridged zero                   ₂       = refl
+metric-id-4-eq-bridged zero                   ₃ = refl
 metric-id-4-eq-bridged (suc zero)             zero                   = refl
 metric-id-4-eq-bridged (suc zero)             (suc zero)             = refl
-metric-id-4-eq-bridged (suc zero)             (suc (suc zero))       = refl
-metric-id-4-eq-bridged (suc zero)             (suc (suc (suc zero))) = refl
-metric-id-4-eq-bridged (suc (suc zero))       zero                   = refl
-metric-id-4-eq-bridged (suc (suc zero))       (suc zero)             = refl
-metric-id-4-eq-bridged (suc (suc zero))       (suc (suc zero))       = refl
-metric-id-4-eq-bridged (suc (suc zero))       (suc (suc (suc zero))) = refl
-metric-id-4-eq-bridged (suc (suc (suc zero))) zero                   = refl
-metric-id-4-eq-bridged (suc (suc (suc zero))) (suc zero)             = refl
-metric-id-4-eq-bridged (suc (suc (suc zero))) (suc (suc zero))       = refl
-metric-id-4-eq-bridged (suc (suc (suc zero))) (suc (suc (suc zero))) = refl
+metric-id-4-eq-bridged (suc zero)             ₂       = refl
+metric-id-4-eq-bridged (suc zero)             ₃ = refl
+metric-id-4-eq-bridged ₂       zero                   = refl
+metric-id-4-eq-bridged ₂       (suc zero)             = refl
+metric-id-4-eq-bridged ₂       ₂       = refl
+metric-id-4-eq-bridged ₂       ₃ = refl
+metric-id-4-eq-bridged ₃ zero                   = refl
+metric-id-4-eq-bridged ₃ (suc zero)             = refl
+metric-id-4-eq-bridged ₃ ₂       = refl
+metric-id-4-eq-bridged ₃ ₃ = refl
 
 ------------------------------------------------------------------------
 -- N-5: Direct equality at metric-id-4.

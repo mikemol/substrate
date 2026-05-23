@@ -31,6 +31,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
@@ -96,8 +97,8 @@ s₁-on-e₀ = apply-linear-from-images-basis s₁-images zero
 s₁-on-e₁ : apply s₁ (basis (suc zero)) ≡ (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])
 s₁-on-e₁ = apply-linear-from-images-basis s₁-images (suc zero)
 
-s₁-on-e₂ : apply s₁ (basis (suc (suc zero))) ≡ (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])
-s₁-on-e₂ = apply-linear-from-images-basis s₁-images (suc (suc zero))
+s₁-on-e₂ : apply s₁ (basis ₂) ≡ (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])
+s₁-on-e₂ = apply-linear-from-images-basis s₁-images ₂
 
 ------------------------------------------------------------------------
 -- N-4: Per-basis apply reductions for s₂.
@@ -109,8 +110,8 @@ s₂-on-e₀ = apply-linear-from-images-basis s₂-images zero
 s₂-on-e₁ : apply s₂ (basis (suc zero)) ≡ (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])
 s₂-on-e₁ = apply-linear-from-images-basis s₂-images (suc zero)
 
-s₂-on-e₂ : apply s₂ (basis (suc (suc zero))) ≡ (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])
-s₂-on-e₂ = apply-linear-from-images-basis s₂-images (suc (suc zero))
+s₂-on-e₂ : apply s₂ (basis ₂) ≡ (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])
+s₂-on-e₂ = apply-linear-from-images-basis s₂-images ₂
 
 ------------------------------------------------------------------------
 -- N-5: s₁ stabilises metric-id.
@@ -136,16 +137,16 @@ s₁-stabilises-metric-id = ≡-from-lookup _ _ goal
       cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₀
     goal (suc zero) =
       cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₁
-    goal (suc (suc zero)) =
+    goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₂
-    goal (suc (suc (suc zero))) =
+    goal ₃ =
       trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc zero)))) s₁-on-e₀)
             (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₁)
-    goal (suc (suc (suc (suc zero)))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc (suc zero))))) s₁-on-e₀)
+    goal ₄ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₀)
             (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₂)
-    goal (suc (suc (suc (suc (suc zero))))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc (suc zero))))) s₁-on-e₁)
+    goal ₅ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₁)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₁-on-e₂)
 
 ------------------------------------------------------------------------
@@ -162,16 +163,16 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
       cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₀
     goal (suc zero) =
       cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₁
-    goal (suc (suc zero)) =
+    goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₂
-    goal (suc (suc (suc zero))) =
+    goal ₃ =
       trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc zero)))) s₂-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₁)
-    goal (suc (suc (suc (suc zero)))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc (suc zero))))) s₂-on-e₀)
+    goal ₄ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₂)
-    goal (suc (suc (suc (suc (suc zero))))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc (suc zero))))) s₂-on-e₁)
+    goal ₅ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₁)
             (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])) s₂-on-e₂)
 
 ------------------------------------------------------------------------

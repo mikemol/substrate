@@ -11,6 +11,7 @@
 module Substrate.Cocycles.V4Signature.S4Iso.StabElements where
 
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
@@ -36,7 +37,7 @@ stab-id = proj₁ (extend D s3-id)
 
 -- (SW): D↔D, C↔C, S↔W.
 stab-sw : Permutation
-stab-sw = proj₁ (extend D (transposition (suc zero) (suc (suc zero))))
+stab-sw = proj₁ (extend D (transposition (suc zero) ₂))
 
 -- (CS): D↔D, W↔W, C↔S.
 stab-cs : Permutation
@@ -44,7 +45,7 @@ stab-cs = proj₁ (extend D (transposition zero (suc zero)))
 
 -- (CW): D↔D, S↔S, C↔W.
 stab-cw : Permutation
-stab-cw = proj₁ (extend D (transposition zero (suc (suc zero))))
+stab-cw = proj₁ (extend D (transposition zero ₂))
 
 ------------------------------------------------------------------------
 -- Two 3-cycles.
@@ -78,19 +79,19 @@ stab-sw-fixes-D : Stab D stab-sw
 stab-sw-fixes-D = refl
 
 stab-sw-fixes-C : Stab C stab-sw
-stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third (suc zero) (suc (suc zero)) zero (λ ()) (λ ()))
+stab-sw-fixes-C = cong (fin3-to-non-anchor D) (transposition-fixes-third (suc zero) ₂ zero (λ ()) (λ ()))
 
 stab-cs-fixes-D : Stab D stab-cs
 stab-cs-fixes-D = refl
 
 stab-cs-fixes-W : Stab W stab-cs
-stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc zero) (suc (suc zero)) (λ ()) (λ ()))
+stab-cs-fixes-W = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc zero) ₂ (λ ()) (λ ()))
 
 stab-cw-fixes-D : Stab D stab-cw
 stab-cw-fixes-D = refl
 
 stab-cw-fixes-S : Stab S stab-cw
-stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero (suc (suc zero)) (suc zero) (λ ()) (λ ()))
+stab-cw-fixes-S = cong (fin3-to-non-anchor D) (transposition-fixes-third zero ₂ (suc zero) (λ ()) (λ ()))
 
 stab-csw-fixes-D : Stab D stab-csw
 stab-csw-fixes-D = refl

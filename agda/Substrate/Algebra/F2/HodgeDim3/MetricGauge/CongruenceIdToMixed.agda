@@ -17,6 +17,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceIdToMixed where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
 open import Substrate.Algebra.F2 using (𝟘; 𝟙)
@@ -42,14 +43,14 @@ congruence-id-to-mixed = ≡-from-lookup _ _ goal
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₀
     goal (suc zero) =
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₁
-    goal (suc (suc zero)) =
+    goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) T-on-e₂
-    goal (suc (suc (suc zero))) =
+    goal ₃ =
       trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis (suc zero)))) T-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-on-e₁)
-    goal (suc (suc (suc (suc zero)))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis (suc (suc zero))))) T-on-e₀)
+    goal ₄ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₂))) T-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-on-e₂)
-    goal (suc (suc (suc (suc (suc zero))))) =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis (suc (suc zero))))) T-on-e₁)
+    goal ₅ =
+      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₂))) T-on-e₁)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ [])) T-on-e₂)

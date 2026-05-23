@@ -26,6 +26,7 @@ open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong)
@@ -57,19 +58,19 @@ open import Substrate.Groups.Stab-S3
 extend-fn : (anchor : Axis) → (Fin 3 → Fin 3) → Axis → Axis
 extend-fn D f D = D
 extend-fn D f C = fin3-to-non-anchor D (f zero)
-extend-fn D f S = fin3-to-non-anchor D (f (suc zero))
-extend-fn D f W = fin3-to-non-anchor D (f (suc (suc zero)))
+extend-fn D f S = fin3-to-non-anchor D (f ₁)
+extend-fn D f W = fin3-to-non-anchor D (f ₂)
 extend-fn C f D = fin3-to-non-anchor C (f zero)
 extend-fn C f C = C
-extend-fn C f S = fin3-to-non-anchor C (f (suc zero))
-extend-fn C f W = fin3-to-non-anchor C (f (suc (suc zero)))
+extend-fn C f S = fin3-to-non-anchor C (f ₁)
+extend-fn C f W = fin3-to-non-anchor C (f ₂)
 extend-fn S f D = fin3-to-non-anchor S (f zero)
-extend-fn S f C = fin3-to-non-anchor S (f (suc zero))
+extend-fn S f C = fin3-to-non-anchor S (f ₁)
 extend-fn S f S = S
-extend-fn S f W = fin3-to-non-anchor S (f (suc (suc zero)))
+extend-fn S f W = fin3-to-non-anchor S (f ₂)
 extend-fn W f D = fin3-to-non-anchor W (f zero)
-extend-fn W f C = fin3-to-non-anchor W (f (suc zero))
-extend-fn W f S = fin3-to-non-anchor W (f (suc (suc zero)))
+extend-fn W f C = fin3-to-non-anchor W (f ₁)
+extend-fn W f S = fin3-to-non-anchor W (f ₂)
 extend-fn W f W = W
 
 extend-apply : (anchor : Axis) → SFin.Permutation 3 → Axis → Axis
@@ -126,54 +127,54 @@ extend-inv-l :
 extend-inv-l D s D = refl
 extend-inv-l D s C with SFin.apply s zero in p
 ... | zero           = inv-l-helper D s zero zero p
-... | suc zero       = inv-l-helper D s zero (suc zero) p
-... | suc (suc zero) = inv-l-helper D s zero (suc (suc zero)) p
-extend-inv-l D s S with SFin.apply s (suc zero) in p
-... | zero           = inv-l-helper D s (suc zero) zero p
-... | suc zero       = inv-l-helper D s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-l-helper D s (suc zero) (suc (suc zero)) p
-extend-inv-l D s W with SFin.apply s (suc (suc zero)) in p
-... | zero           = inv-l-helper D s (suc (suc zero)) zero p
-... | suc zero       = inv-l-helper D s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-l-helper D s (suc (suc zero)) (suc (suc zero)) p
+... | ₁       = inv-l-helper D s zero ₁ p
+... | ₂ = inv-l-helper D s zero ₂ p
+extend-inv-l D s S with SFin.apply s ₁ in p
+... | zero           = inv-l-helper D s ₁ zero p
+... | ₁       = inv-l-helper D s ₁ ₁ p
+... | ₂ = inv-l-helper D s ₁ ₂ p
+extend-inv-l D s W with SFin.apply s ₂ in p
+... | zero           = inv-l-helper D s ₂ zero p
+... | ₁       = inv-l-helper D s ₂ ₁ p
+... | ₂ = inv-l-helper D s ₂ ₂ p
 extend-inv-l C s D with SFin.apply s zero in p
 ... | zero           = inv-l-helper C s zero zero p
-... | suc zero       = inv-l-helper C s zero (suc zero) p
-... | suc (suc zero) = inv-l-helper C s zero (suc (suc zero)) p
+... | ₁       = inv-l-helper C s zero ₁ p
+... | ₂ = inv-l-helper C s zero ₂ p
 extend-inv-l C s C = refl
-extend-inv-l C s S with SFin.apply s (suc zero) in p
-... | zero           = inv-l-helper C s (suc zero) zero p
-... | suc zero       = inv-l-helper C s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-l-helper C s (suc zero) (suc (suc zero)) p
-extend-inv-l C s W with SFin.apply s (suc (suc zero)) in p
-... | zero           = inv-l-helper C s (suc (suc zero)) zero p
-... | suc zero       = inv-l-helper C s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-l-helper C s (suc (suc zero)) (suc (suc zero)) p
+extend-inv-l C s S with SFin.apply s ₁ in p
+... | zero           = inv-l-helper C s ₁ zero p
+... | ₁       = inv-l-helper C s ₁ ₁ p
+... | ₂ = inv-l-helper C s ₁ ₂ p
+extend-inv-l C s W with SFin.apply s ₂ in p
+... | zero           = inv-l-helper C s ₂ zero p
+... | ₁       = inv-l-helper C s ₂ ₁ p
+... | ₂ = inv-l-helper C s ₂ ₂ p
 extend-inv-l S s D with SFin.apply s zero in p
 ... | zero           = inv-l-helper S s zero zero p
-... | suc zero       = inv-l-helper S s zero (suc zero) p
-... | suc (suc zero) = inv-l-helper S s zero (suc (suc zero)) p
-extend-inv-l S s C with SFin.apply s (suc zero) in p
-... | zero           = inv-l-helper S s (suc zero) zero p
-... | suc zero       = inv-l-helper S s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-l-helper S s (suc zero) (suc (suc zero)) p
+... | ₁       = inv-l-helper S s zero ₁ p
+... | ₂ = inv-l-helper S s zero ₂ p
+extend-inv-l S s C with SFin.apply s ₁ in p
+... | zero           = inv-l-helper S s ₁ zero p
+... | ₁       = inv-l-helper S s ₁ ₁ p
+... | ₂ = inv-l-helper S s ₁ ₂ p
 extend-inv-l S s S = refl
-extend-inv-l S s W with SFin.apply s (suc (suc zero)) in p
-... | zero           = inv-l-helper S s (suc (suc zero)) zero p
-... | suc zero       = inv-l-helper S s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-l-helper S s (suc (suc zero)) (suc (suc zero)) p
+extend-inv-l S s W with SFin.apply s ₂ in p
+... | zero           = inv-l-helper S s ₂ zero p
+... | ₁       = inv-l-helper S s ₂ ₁ p
+... | ₂ = inv-l-helper S s ₂ ₂ p
 extend-inv-l W s D with SFin.apply s zero in p
 ... | zero           = inv-l-helper W s zero zero p
-... | suc zero       = inv-l-helper W s zero (suc zero) p
-... | suc (suc zero) = inv-l-helper W s zero (suc (suc zero)) p
-extend-inv-l W s C with SFin.apply s (suc zero) in p
-... | zero           = inv-l-helper W s (suc zero) zero p
-... | suc zero       = inv-l-helper W s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-l-helper W s (suc zero) (suc (suc zero)) p
-extend-inv-l W s S with SFin.apply s (suc (suc zero)) in p
-... | zero           = inv-l-helper W s (suc (suc zero)) zero p
-... | suc zero       = inv-l-helper W s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-l-helper W s (suc (suc zero)) (suc (suc zero)) p
+... | ₁       = inv-l-helper W s zero ₁ p
+... | ₂ = inv-l-helper W s zero ₂ p
+extend-inv-l W s C with SFin.apply s ₁ in p
+... | zero           = inv-l-helper W s ₁ zero p
+... | ₁       = inv-l-helper W s ₁ ₁ p
+... | ₂ = inv-l-helper W s ₁ ₂ p
+extend-inv-l W s S with SFin.apply s ₂ in p
+... | zero           = inv-l-helper W s ₂ zero p
+... | ₁       = inv-l-helper W s ₂ ₁ p
+... | ₂ = inv-l-helper W s ₂ ₂ p
 extend-inv-l W s W = refl
 
 extend-inv-r :
@@ -182,54 +183,54 @@ extend-inv-r :
 extend-inv-r D s D = refl
 extend-inv-r D s C with SFin.invₐ s zero in p
 ... | zero           = inv-r-helper D s zero zero p
-... | suc zero       = inv-r-helper D s zero (suc zero) p
-... | suc (suc zero) = inv-r-helper D s zero (suc (suc zero)) p
-extend-inv-r D s S with SFin.invₐ s (suc zero) in p
-... | zero           = inv-r-helper D s (suc zero) zero p
-... | suc zero       = inv-r-helper D s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-r-helper D s (suc zero) (suc (suc zero)) p
-extend-inv-r D s W with SFin.invₐ s (suc (suc zero)) in p
-... | zero           = inv-r-helper D s (suc (suc zero)) zero p
-... | suc zero       = inv-r-helper D s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-r-helper D s (suc (suc zero)) (suc (suc zero)) p
+... | ₁       = inv-r-helper D s zero ₁ p
+... | ₂ = inv-r-helper D s zero ₂ p
+extend-inv-r D s S with SFin.invₐ s ₁ in p
+... | zero           = inv-r-helper D s ₁ zero p
+... | ₁       = inv-r-helper D s ₁ ₁ p
+... | ₂ = inv-r-helper D s ₁ ₂ p
+extend-inv-r D s W with SFin.invₐ s ₂ in p
+... | zero           = inv-r-helper D s ₂ zero p
+... | ₁       = inv-r-helper D s ₂ ₁ p
+... | ₂ = inv-r-helper D s ₂ ₂ p
 extend-inv-r C s D with SFin.invₐ s zero in p
 ... | zero           = inv-r-helper C s zero zero p
-... | suc zero       = inv-r-helper C s zero (suc zero) p
-... | suc (suc zero) = inv-r-helper C s zero (suc (suc zero)) p
+... | ₁       = inv-r-helper C s zero ₁ p
+... | ₂ = inv-r-helper C s zero ₂ p
 extend-inv-r C s C = refl
-extend-inv-r C s S with SFin.invₐ s (suc zero) in p
-... | zero           = inv-r-helper C s (suc zero) zero p
-... | suc zero       = inv-r-helper C s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-r-helper C s (suc zero) (suc (suc zero)) p
-extend-inv-r C s W with SFin.invₐ s (suc (suc zero)) in p
-... | zero           = inv-r-helper C s (suc (suc zero)) zero p
-... | suc zero       = inv-r-helper C s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-r-helper C s (suc (suc zero)) (suc (suc zero)) p
+extend-inv-r C s S with SFin.invₐ s ₁ in p
+... | zero           = inv-r-helper C s ₁ zero p
+... | ₁       = inv-r-helper C s ₁ ₁ p
+... | ₂ = inv-r-helper C s ₁ ₂ p
+extend-inv-r C s W with SFin.invₐ s ₂ in p
+... | zero           = inv-r-helper C s ₂ zero p
+... | ₁       = inv-r-helper C s ₂ ₁ p
+... | ₂ = inv-r-helper C s ₂ ₂ p
 extend-inv-r S s D with SFin.invₐ s zero in p
 ... | zero           = inv-r-helper S s zero zero p
-... | suc zero       = inv-r-helper S s zero (suc zero) p
-... | suc (suc zero) = inv-r-helper S s zero (suc (suc zero)) p
-extend-inv-r S s C with SFin.invₐ s (suc zero) in p
-... | zero           = inv-r-helper S s (suc zero) zero p
-... | suc zero       = inv-r-helper S s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-r-helper S s (suc zero) (suc (suc zero)) p
+... | ₁       = inv-r-helper S s zero ₁ p
+... | ₂ = inv-r-helper S s zero ₂ p
+extend-inv-r S s C with SFin.invₐ s ₁ in p
+... | zero           = inv-r-helper S s ₁ zero p
+... | ₁       = inv-r-helper S s ₁ ₁ p
+... | ₂ = inv-r-helper S s ₁ ₂ p
 extend-inv-r S s S = refl
-extend-inv-r S s W with SFin.invₐ s (suc (suc zero)) in p
-... | zero           = inv-r-helper S s (suc (suc zero)) zero p
-... | suc zero       = inv-r-helper S s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-r-helper S s (suc (suc zero)) (suc (suc zero)) p
+extend-inv-r S s W with SFin.invₐ s ₂ in p
+... | zero           = inv-r-helper S s ₂ zero p
+... | ₁       = inv-r-helper S s ₂ ₁ p
+... | ₂ = inv-r-helper S s ₂ ₂ p
 extend-inv-r W s D with SFin.invₐ s zero in p
 ... | zero           = inv-r-helper W s zero zero p
-... | suc zero       = inv-r-helper W s zero (suc zero) p
-... | suc (suc zero) = inv-r-helper W s zero (suc (suc zero)) p
-extend-inv-r W s C with SFin.invₐ s (suc zero) in p
-... | zero           = inv-r-helper W s (suc zero) zero p
-... | suc zero       = inv-r-helper W s (suc zero) (suc zero) p
-... | suc (suc zero) = inv-r-helper W s (suc zero) (suc (suc zero)) p
-extend-inv-r W s S with SFin.invₐ s (suc (suc zero)) in p
-... | zero           = inv-r-helper W s (suc (suc zero)) zero p
-... | suc zero       = inv-r-helper W s (suc (suc zero)) (suc zero) p
-... | suc (suc zero) = inv-r-helper W s (suc (suc zero)) (suc (suc zero)) p
+... | ₁       = inv-r-helper W s zero ₁ p
+... | ₂ = inv-r-helper W s zero ₂ p
+extend-inv-r W s C with SFin.invₐ s ₁ in p
+... | zero           = inv-r-helper W s ₁ zero p
+... | ₁       = inv-r-helper W s ₁ ₁ p
+... | ₂ = inv-r-helper W s ₁ ₂ p
+extend-inv-r W s S with SFin.invₐ s ₂ in p
+... | zero           = inv-r-helper W s ₂ zero p
+... | ₁       = inv-r-helper W s ₂ ₁ p
+... | ₂ = inv-r-helper W s ₂ ₂ p
 extend-inv-r W s W = refl
 
 ------------------------------------------------------------------------
@@ -261,19 +262,19 @@ extend-apply-pointwise-cong :
   applyₛ (proj₁ (extend anchor s)) x ≡ applyₛ (proj₁ (extend anchor t)) x
 extend-apply-pointwise-cong D s t h D = refl
 extend-apply-pointwise-cong D s t h C = cong (fin3-to-non-anchor D) (h zero)
-extend-apply-pointwise-cong D s t h S = cong (fin3-to-non-anchor D) (h (suc zero))
-extend-apply-pointwise-cong D s t h W = cong (fin3-to-non-anchor D) (h (suc (suc zero)))
+extend-apply-pointwise-cong D s t h S = cong (fin3-to-non-anchor D) (h ₁)
+extend-apply-pointwise-cong D s t h W = cong (fin3-to-non-anchor D) (h ₂)
 extend-apply-pointwise-cong C s t h D = cong (fin3-to-non-anchor C) (h zero)
 extend-apply-pointwise-cong C s t h C = refl
-extend-apply-pointwise-cong C s t h S = cong (fin3-to-non-anchor C) (h (suc zero))
-extend-apply-pointwise-cong C s t h W = cong (fin3-to-non-anchor C) (h (suc (suc zero)))
+extend-apply-pointwise-cong C s t h S = cong (fin3-to-non-anchor C) (h ₁)
+extend-apply-pointwise-cong C s t h W = cong (fin3-to-non-anchor C) (h ₂)
 extend-apply-pointwise-cong S s t h D = cong (fin3-to-non-anchor S) (h zero)
-extend-apply-pointwise-cong S s t h C = cong (fin3-to-non-anchor S) (h (suc zero))
+extend-apply-pointwise-cong S s t h C = cong (fin3-to-non-anchor S) (h ₁)
 extend-apply-pointwise-cong S s t h S = refl
-extend-apply-pointwise-cong S s t h W = cong (fin3-to-non-anchor S) (h (suc (suc zero)))
+extend-apply-pointwise-cong S s t h W = cong (fin3-to-non-anchor S) (h ₂)
 extend-apply-pointwise-cong W s t h D = cong (fin3-to-non-anchor W) (h zero)
-extend-apply-pointwise-cong W s t h C = cong (fin3-to-non-anchor W) (h (suc zero))
-extend-apply-pointwise-cong W s t h S = cong (fin3-to-non-anchor W) (h (suc (suc zero)))
+extend-apply-pointwise-cong W s t h C = cong (fin3-to-non-anchor W) (h ₁)
+extend-apply-pointwise-cong W s t h S = cong (fin3-to-non-anchor W) (h ₂)
 extend-apply-pointwise-cong W s t h W = refl
 
 ------------------------------------------------------------------------

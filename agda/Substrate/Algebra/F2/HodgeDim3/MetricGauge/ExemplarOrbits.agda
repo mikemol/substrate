@@ -29,6 +29,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.ExemplarOrbits where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
@@ -76,8 +77,8 @@ T-fc-on-e₀ = apply-linear-from-images-basis T-id-to-fully-coupled-images zero
 T-fc-on-e₁ : apply T-id-to-fully-coupled (basis (suc zero)) ≡ (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])
 T-fc-on-e₁ = apply-linear-from-images-basis T-id-to-fully-coupled-images (suc zero)
 
-T-fc-on-e₂ : apply T-id-to-fully-coupled (basis (suc (suc zero))) ≡ (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ [])
-T-fc-on-e₂ = apply-linear-from-images-basis T-id-to-fully-coupled-images (suc (suc zero))
+T-fc-on-e₂ : apply T-id-to-fully-coupled (basis ₂) ≡ (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ [])
+T-fc-on-e₂ = apply-linear-from-images-basis T-id-to-fully-coupled-images ₂
 
 ------------------------------------------------------------------------
 -- N-3: The transitivity witness equation.
@@ -102,20 +103,20 @@ congruence-id-to-fully-coupled = ≡-from-lookup _ _ goal
     goal (suc zero) =
       -- b' = (1,1,0)·(1,1,0) = 0
       cong (λ x → bilinear-form-of metric-id x x) T-fc-on-e₁
-    goal (suc (suc zero)) =
+    goal ₂ =
       -- c' = (1,0,1)·(1,0,1) = 0
       cong (λ x → bilinear-form-of metric-id x x) T-fc-on-e₂
-    goal (suc (suc (suc zero))) =
+    goal ₃ =
       -- d' = (1,0,0)·(1,1,0) = 1
       trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis (suc zero)))) T-fc-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) T-fc-on-e₁)
-    goal (suc (suc (suc (suc zero)))) =
+    goal ₄ =
       -- e' = (1,0,0)·(1,0,1) = 1
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis (suc (suc zero))))) T-fc-on-e₀)
+      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis ₂))) T-fc-on-e₀)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) T-fc-on-e₂)
-    goal (suc (suc (suc (suc (suc zero))))) =
+    goal ₅ =
       -- f' = (1,1,0)·(1,0,1) = 1
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis (suc (suc zero))))) T-fc-on-e₁)
+      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis ₂))) T-fc-on-e₁)
             (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-fc-on-e₂)
 
 ------------------------------------------------------------------------

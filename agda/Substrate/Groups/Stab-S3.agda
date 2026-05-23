@@ -42,6 +42,7 @@
 module Substrate.Groups.Stab-S3 where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
@@ -91,16 +92,16 @@ Stab-inv anchor σ σ-stab =
 fin3-to-non-anchor : Axis → Fin 3 → Axis
 fin3-to-non-anchor D zero             = C
 fin3-to-non-anchor D (suc zero)       = S
-fin3-to-non-anchor D (suc (suc zero)) = W
+fin3-to-non-anchor D ₂ = W
 fin3-to-non-anchor C zero             = D
 fin3-to-non-anchor C (suc zero)       = S
-fin3-to-non-anchor C (suc (suc zero)) = W
+fin3-to-non-anchor C ₂ = W
 fin3-to-non-anchor S zero             = D
 fin3-to-non-anchor S (suc zero)       = C
-fin3-to-non-anchor S (suc (suc zero)) = W
+fin3-to-non-anchor S ₂ = W
 fin3-to-non-anchor W zero             = D
 fin3-to-non-anchor W (suc zero)       = C
-fin3-to-non-anchor W (suc (suc zero)) = S
+fin3-to-non-anchor W ₂ = S
 
 fin3-to-non-anchor-≢ :
   (anchor : Axis) (i : Fin 3) → fin3-to-non-anchor anchor i ≢ anchor

@@ -26,6 +26,7 @@
 module Substrate.Algebra.Z6-FieldBond where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₅; ₇)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -50,10 +51,10 @@ F₂×F₃ = Fin 2 × Fin 3
 crt-forward : Z6 → F₂×F₃
 crt-forward zero                                                = zero , zero
 crt-forward (suc zero)                                          = suc zero , suc zero
-crt-forward (suc (suc zero))                                    = zero , suc (suc zero)
-crt-forward (suc (suc (suc zero)))                              = suc zero , zero
-crt-forward (suc (suc (suc (suc zero))))                        = zero , suc zero
-crt-forward (suc (suc (suc (suc (suc zero)))))                  = suc zero , suc (suc zero)
+crt-forward ₂                                    = zero , suc (suc zero)
+crt-forward ₃                              = suc zero , zero
+crt-forward ₄                        = zero , suc zero
+crt-forward ₅                  = suc zero , suc (suc zero)
 
 ------------------------------------------------------------------------
 -- N-3: The CRT reverse map F₂ × F₃ → Z/6.
@@ -65,9 +66,9 @@ crt-backward : F₂×F₃ → Z6
 crt-backward (zero , zero)                          = zero
 crt-backward (suc zero , suc zero)                  = suc zero
 crt-backward (zero , suc (suc zero))                = suc (suc zero)
-crt-backward (suc zero , zero)                      = suc (suc (suc zero))
-crt-backward (zero , suc zero)                      = suc (suc (suc (suc zero)))
-crt-backward (suc zero , suc (suc zero))            = suc (suc (suc (suc (suc zero))))
+crt-backward (suc zero , zero)                      = suc ₂
+crt-backward (zero , suc zero)                      = suc ₃
+crt-backward (suc zero , suc (suc zero))            = suc ₄
 
 ------------------------------------------------------------------------
 -- N-4: The roundtrip — crt-backward ∘ crt-forward ≡ id on Z/6.
@@ -78,10 +79,10 @@ crt-backward (suc zero , suc (suc zero))            = suc (suc (suc (suc (suc ze
 crt-roundtrip : (n : Z6) → crt-backward (crt-forward n) ≡ n
 crt-roundtrip zero                                                = refl
 crt-roundtrip (suc zero)                                          = refl
-crt-roundtrip (suc (suc zero))                                    = refl
-crt-roundtrip (suc (suc (suc zero)))                              = refl
-crt-roundtrip (suc (suc (suc (suc zero))))                        = refl
-crt-roundtrip (suc (suc (suc (suc (suc zero)))))                  = refl
+crt-roundtrip ₂                                    = refl
+crt-roundtrip ₃                              = refl
+crt-roundtrip ₄                        = refl
+crt-roundtrip ₅                  = refl
 
 ------------------------------------------------------------------------
 -- N-5: The two FieldBond instances.

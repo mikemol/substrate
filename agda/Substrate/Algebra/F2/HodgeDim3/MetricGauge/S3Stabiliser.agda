@@ -36,6 +36,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
@@ -78,10 +79,10 @@ congruence-act-id-L-metric-id = ≡-from-lookup _ _ goal
            lookup (congruence-act id-L metric-id) k ≡ lookup metric-id k
     goal zero                                  = refl
     goal (suc zero)                            = refl
-    goal (suc (suc zero))                      = refl
-    goal (suc (suc (suc zero)))                = refl
-    goal (suc (suc (suc (suc zero))))          = refl
-    goal (suc (suc (suc (suc (suc zero)))))    = refl
+    goal ₂                      = refl
+    goal ₃                = refl
+    goal ₄          = refl
+    goal ₅    = refl
 
 ------------------------------------------------------------------------
 -- N-2: S₃-elements — enumeration of the 6 S₃ elements via Coxeter
@@ -100,10 +101,10 @@ congruence-act-id-L-metric-id = ≡-from-lookup _ _ goal
 S₃-elements : Fin 6 → Linear 3 3
 S₃-elements zero                                  = id-L
 S₃-elements (suc zero)                            = s₁
-S₃-elements (suc (suc zero))                      = s₂
-S₃-elements (suc (suc (suc zero)))                = s₁ ∘L s₂
-S₃-elements (suc (suc (suc (suc zero))))          = s₂ ∘L s₁
-S₃-elements (suc (suc (suc (suc (suc zero)))))    = s₁ ∘L s₂ ∘L s₁
+S₃-elements ₂                      = s₂
+S₃-elements ₃                = s₁ ∘L s₂
+S₃-elements ₄          = s₂ ∘L s₁
+S₃-elements ₅    = s₁ ∘L s₂ ∘L s₁
 
 ------------------------------------------------------------------------
 -- N-3: S₃-cong-action — the congruence action of each S₃ element on
@@ -136,16 +137,16 @@ S₃-stabilises-metric-id zero =
 S₃-stabilises-metric-id (suc zero) =
   iterate-at-fixed-point {γ = congruence-act s₁}
                          s₁-stabilises-metric-id 6
-S₃-stabilises-metric-id (suc (suc zero)) =
+S₃-stabilises-metric-id ₂ =
   iterate-at-fixed-point {γ = congruence-act s₂}
                          s₂-stabilises-metric-id 6
-S₃-stabilises-metric-id (suc (suc (suc zero))) =
+S₃-stabilises-metric-id ₃ =
   iterate-at-fixed-point {γ = congruence-act (s₁ ∘L s₂)}
                          s₁∘s₂-stabilises-metric-id 6
-S₃-stabilises-metric-id (suc (suc (suc (suc zero)))) =
+S₃-stabilises-metric-id ₄ =
   iterate-at-fixed-point {γ = congruence-act (s₂ ∘L s₁)}
                          s₂∘s₁-stabilises-metric-id 6
-S₃-stabilises-metric-id (suc (suc (suc (suc (suc zero))))) =
+S₃-stabilises-metric-id ₅ =
   iterate-at-fixed-point {γ = congruence-act (s₁ ∘L s₂ ∘L s₁)}
                          s₁∘s₂∘s₁-stabilises-metric-id 6
 

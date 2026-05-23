@@ -70,6 +70,7 @@
 module Substrate.Cardinality where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq
@@ -96,13 +97,13 @@ axis-↔-fin4 = mk↔ₛ′ to from to-from from-to
     to D = zero
     to C = suc zero
     to S = suc (suc zero)
-    to W = suc (suc (suc zero))
+    to W = suc ₂
 
     from : Fin 4 → Axis
     from zero                       = D
     from (suc zero)                 = C
-    from (suc (suc zero))           = S
-    from (suc (suc (suc zero)))     = W
+    from ₂           = S
+    from ₃     = W
 
     to-from : (i : Fin 4) → to (from i) ≡ i
     to-from = fin-cover _ (refl , refl , refl , refl)
@@ -124,13 +125,13 @@ v4-↔-fin4 = mk↔ₛ′ to from to-from from-to
     to e = zero
     to α = suc zero
     to β = suc (suc zero)
-    to γ = suc (suc (suc zero))
+    to γ = suc ₂
 
     from : Fin 4 → V₄
     from zero                       = e
     from (suc zero)                 = α
-    from (suc (suc zero))           = β
-    from (suc (suc (suc zero)))     = γ
+    from ₂           = β
+    from ₃     = γ
 
     to-from : (i : Fin 4) → to (from i) ≡ i
     to-from = fin-cover _ (refl , refl , refl , refl)
@@ -156,7 +157,7 @@ pairing-↔-fin3 = mk↔ₛ′ to from to-from from-to
     from : Fin 3 → Pairing
     from zero             = α-pair
     from (suc zero)       = β-pair
-    from (suc (suc zero)) = γ-pair
+    from ₂ = γ-pair
 
     to-from : (i : Fin 3) → to (from i) ≡ i
     to-from = fin-cover _ (refl , refl , refl)

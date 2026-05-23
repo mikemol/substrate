@@ -10,6 +10,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1S2 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.Linear using (apply; id-L; _∘L_)
@@ -34,4 +35,4 @@ HasOrder-s₁∘s₂ v =
                        ≡ apply id-L (basis i)
     agree-on-basis zero             = s₁∘s₂-cubed-on-e₀
     agree-on-basis (suc zero)       = s₁∘s₂-cubed-on-e₁
-    agree-on-basis (suc (suc zero)) = s₁∘s₂-cubed-on-e₂
+    agree-on-basis ₂ = s₁∘s₂-cubed-on-e₂

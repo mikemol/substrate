@@ -14,6 +14,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Algebra.F2     using (F₂)
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -24,7 +25,7 @@ SymBilinForm-3 = Vector 6
 entry-a entry-b entry-c entry-d entry-e entry-f : SymBilinForm-3 → F₂
 entry-a m = lookup m zero
 entry-b m = lookup m (suc zero)
-entry-c m = lookup m (suc (suc zero))
-entry-d m = lookup m (suc (suc (suc zero)))
-entry-e m = lookup m (suc (suc (suc (suc zero))))
-entry-f m = lookup m (suc (suc (suc (suc (suc zero)))))
+entry-c m = lookup m ₂
+entry-d m = lookup m ₃
+entry-e m = lookup m ₄
+entry-f m = lookup m ₅

@@ -10,6 +10,7 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.RoundTrip where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -30,7 +31,7 @@ selfdual-coefficients-swap-roundtrip :
 selfdual-coefficients-swap-roundtrip (c₀ ∷ c₁ ∷ c₂ ∷ []) =
   trans (cong (λ x →
                 x ∷
-                lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc (suc zero)) ∷
+                lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷
                 lookup (vector3-to-selfdual-swap (c₀ ∷ c₁ ∷ c₂ ∷ [])) (suc zero) ∷ [])
               (lookup-0-swap c₀ c₁ c₂))
   (trans (cong (λ x →

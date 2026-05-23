@@ -56,6 +56,7 @@
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
@@ -90,16 +91,16 @@ SymBilinForm-4 = Vector 10
 entry-a entry-b entry-c entry-d : SymBilinForm-4 → F₂
 entry-a m = lookup m zero
 entry-b m = lookup m (suc zero)
-entry-c m = lookup m (suc (suc zero))
-entry-d m = lookup m (suc (suc (suc zero)))
+entry-c m = lookup m ₂
+entry-d m = lookup m ₃
 
 entry-e entry-f entry-g entry-h entry-i entry-j : SymBilinForm-4 → F₂
-entry-e m = lookup m (suc (suc (suc (suc zero))))
-entry-f m = lookup m (suc (suc (suc (suc (suc zero)))))
-entry-g m = lookup m (suc (suc (suc (suc (suc (suc zero))))))
-entry-h m = lookup m (suc (suc (suc (suc (suc (suc (suc zero)))))))
-entry-i m = lookup m (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))
-entry-j m = lookup m (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))
+entry-e m = lookup m ₄
+entry-f m = lookup m ₅
+entry-g m = lookup m ₆
+entry-h m = lookup m ₇
+entry-i m = lookup m ₈
+entry-j m = lookup m ₉
 
 ------------------------------------------------------------------------
 -- N-2: bilinear-form-of-4 — pair-by-matrix-by-pair evaluation.
@@ -205,8 +206,8 @@ congruence-act-4 T M =
   where
     Te₀ = apply T (basis zero)
     Te₁ = apply T (basis (suc zero))
-    Te₂ = apply T (basis (suc (suc zero)))
-    Te₃ = apply T (basis (suc (suc (suc zero))))
+    Te₂ = apply T (basis ₂)
+    Te₃ = apply T (basis ₃)
 
 ------------------------------------------------------------------------
 -- N-6: Capstone — the dim-4 metric gauge foundation.

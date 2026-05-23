@@ -35,6 +35,7 @@
 module Substrate.Codes.Hamming.H-7-4-3 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 
 open import Substrate.Algebra.F2
@@ -62,10 +63,10 @@ col₇ = 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []
 H-cols : Fin 7 → Vector 3
 H-cols zero                                  = col₁
 H-cols (suc zero)                            = col₂
-H-cols (suc (suc zero))                      = col₃
-H-cols (suc (suc (suc zero)))                = col₄
-H-cols (suc (suc (suc (suc zero))))          = col₅
-H-cols (suc (suc (suc (suc (suc zero)))))    = col₆
+H-cols ₂                      = col₃
+H-cols ₃                = col₄
+H-cols ₄          = col₅
+H-cols ₅    = col₆
 H-cols (suc (suc (suc (suc (suc (suc _)))))) = col₇
 
 ------------------------------------------------------------------------

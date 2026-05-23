@@ -10,7 +10,7 @@
 -- normalize-distrib / etc.). Consumers use `(Z₃.c-pos k)` for the
 -- k-th canonical witness (k ∈ Fin 3); no per-arity pattern names are
 -- needed. This file just supplies:
---   * canonical-cover (tuple-style dispatcher over (c-pos zero/(suc zero)/(suc (suc zero))))
+--   * canonical-cover (tuple-style dispatcher over (c-pos zero/(suc zero)/₂))
 --   * same-canonical (single-Gen decidability)
 --   * cube-identity + inv-distrib-canonical (Z₃-specific theorems)
 ------------------------------------------------------------------------
@@ -20,6 +20,7 @@
 module Substrate.Groups.Z3-Coxeter where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
 open import Substrate.Foundation.Product using (Σ; _×_; _,_)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
@@ -41,11 +42,11 @@ open import Substrate.Groups.Coxeter.Cyclic 2 public
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P (c-pos zero) × P (c-pos (suc zero)) × P (c-pos (suc (suc zero))) →
+  P (c-pos zero) × P (c-pos (suc zero)) × P (c-pos ₂) →
   ∀ {w} (c : Canonical w) → P c
 canonical-cover _ (p , _ , _) (c-pos zero)             = p
 canonical-cover _ (_ , p , _) (c-pos (suc zero))       = p
-canonical-cover _ (_ , _ , p) (c-pos (suc (suc zero))) = p
+canonical-cover _ (_ , _ , p) (c-pos ₂) = p
 
 ------------------------------------------------------------------------
 -- Decidable equality.

@@ -34,6 +34,7 @@
 module Substrate.Codes.ReedMuller.RM-1-3 where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 
 open import Substrate.Algebra.F2
@@ -64,7 +65,7 @@ g₃ = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ [
 generators : Fin 4 → Vector 8
 generators zero                = g₀
 generators (suc zero)          = g₁
-generators (suc (suc zero))    = g₂
+generators ₂    = g₂
 generators (suc (suc (suc _))) = g₃
 
 ------------------------------------------------------------------------

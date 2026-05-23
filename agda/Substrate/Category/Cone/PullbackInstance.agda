@@ -20,6 +20,7 @@
 module Substrate.Category.Cone.PullbackInstance where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Level using (Level)
 
@@ -38,7 +39,7 @@ private
 pullback-Base : (A B C : Set ℓ) → Fin 3 → Set ℓ
 pullback-Base A B C zero             = A
 pullback-Base A B C (suc zero)       = B
-pullback-Base A B C (suc (suc zero)) = C
+pullback-Base A B C ₂ = C
 
 ------------------------------------------------------------------------
 -- N-2: Pullback's Cone — apex is Pullback-Of f g.
@@ -54,7 +55,7 @@ pullback-as-Cone {A = A} {B = B} {C = C} f g = record
   { leg = λ where
       zero             → pullback-π₁
       (suc zero)       → pullback-π₂
-      (suc (suc zero)) → λ p → f (pullback-π₁ p)
+      ₂ → λ p → f (pullback-π₁ p)
   }
 
 ------------------------------------------------------------------------

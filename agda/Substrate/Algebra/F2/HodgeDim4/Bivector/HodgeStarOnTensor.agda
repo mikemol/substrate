@@ -25,6 +25,7 @@
 module Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Fin.Cover using (fin-cover; fin-cover-2⁴)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl)
@@ -42,7 +43,7 @@ private
   to-fin4 zero       zero       = zero
   to-fin4 zero       (suc zero) = suc zero
   to-fin4 (suc zero) zero       = suc (suc zero)
-  to-fin4 (suc zero) (suc zero) = suc (suc (suc zero))
+  to-fin4 (suc zero) (suc zero) = suc ₂
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Linear using (apply)
@@ -105,20 +106,20 @@ bivector-to-tensor-symmetric v i j =
         ≡ lookup (lookup (bivector-to-tensor v) j) i
     fin4-fin4-route zero                     zero                     = bivector-to-tensor-symmetric-bin v zero zero zero zero
     fin4-fin4-route zero                     (suc zero)               = bivector-to-tensor-symmetric-bin v zero zero zero (suc zero)
-    fin4-fin4-route zero                     (suc (suc zero))         = bivector-to-tensor-symmetric-bin v zero zero (suc zero) zero
-    fin4-fin4-route zero                     (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v zero zero (suc zero) (suc zero)
+    fin4-fin4-route zero                     ₂         = bivector-to-tensor-symmetric-bin v zero zero (suc zero) zero
+    fin4-fin4-route zero                     ₃   = bivector-to-tensor-symmetric-bin v zero zero (suc zero) (suc zero)
     fin4-fin4-route (suc zero)               zero                     = bivector-to-tensor-symmetric-bin v zero (suc zero) zero zero
     fin4-fin4-route (suc zero)               (suc zero)               = bivector-to-tensor-symmetric-bin v zero (suc zero) zero (suc zero)
-    fin4-fin4-route (suc zero)               (suc (suc zero))         = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) zero
-    fin4-fin4-route (suc zero)               (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) (suc zero)
-    fin4-fin4-route (suc (suc zero))         zero                     = bivector-to-tensor-symmetric-bin v (suc zero) zero zero zero
-    fin4-fin4-route (suc (suc zero))         (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) zero zero (suc zero)
-    fin4-fin4-route (suc (suc zero))         (suc (suc zero))         = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) zero
-    fin4-fin4-route (suc (suc zero))         (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) (suc zero)
-    fin4-fin4-route (suc (suc (suc zero)))   zero                     = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero zero
-    fin4-fin4-route (suc (suc (suc zero)))   (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero (suc zero)
-    fin4-fin4-route (suc (suc (suc zero)))   (suc (suc zero))         = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) zero
-    fin4-fin4-route (suc (suc (suc zero)))   (suc (suc (suc zero)))   = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) (suc zero)
+    fin4-fin4-route (suc zero)               ₂         = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) zero
+    fin4-fin4-route (suc zero)               ₃   = bivector-to-tensor-symmetric-bin v zero (suc zero) (suc zero) (suc zero)
+    fin4-fin4-route ₂         zero                     = bivector-to-tensor-symmetric-bin v (suc zero) zero zero zero
+    fin4-fin4-route ₂         (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) zero zero (suc zero)
+    fin4-fin4-route ₂         ₂         = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) zero
+    fin4-fin4-route ₂         ₃   = bivector-to-tensor-symmetric-bin v (suc zero) zero (suc zero) (suc zero)
+    fin4-fin4-route ₃   zero                     = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero zero
+    fin4-fin4-route ₃   (suc zero)               = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) zero (suc zero)
+    fin4-fin4-route ₃   ₂         = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) zero
+    fin4-fin4-route ₃   ₃   = bivector-to-tensor-symmetric-bin v (suc zero) (suc zero) (suc zero) (suc zero)
 
 -- diag-zero is the UNIFORM case (every cell reduces to 𝟘 ≡ 𝟘), so
 -- the polymorphic `4-refls` from CanonicalCover applies directly:

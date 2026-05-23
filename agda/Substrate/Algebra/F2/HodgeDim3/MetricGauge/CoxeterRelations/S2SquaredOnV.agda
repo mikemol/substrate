@@ -9,6 +9,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnV where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear using (apply; id-L; _∘L_)
@@ -25,4 +26,4 @@ s₂²-on-v = linear-extensionality (s₂ ∘L s₂) id-L agree-on-basis
                      apply (s₂ ∘L s₂) (basis i) ≡ apply id-L (basis i)
     agree-on-basis zero             = s₂²-on-e₀
     agree-on-basis (suc zero)       = s₂²-on-e₁
-    agree-on-basis (suc (suc zero)) = s₂²-on-e₂
+    agree-on-basis ₂ = s₂²-on-e₂

@@ -25,6 +25,7 @@
 module Substrate.Cocycles.V4Signature.Pairing.Structural where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
@@ -60,7 +61,7 @@ V4-Nonzero→Pairing (suc (suc _)) = γ-pair
 to-from-Pairing : (v : V4-Nonzero) → Pairing→V4-Nonzero (V4-Nonzero→Pairing v) ≡ v
 to-from-Pairing zero          = refl
 to-from-Pairing (suc zero)    = refl
-to-from-Pairing (suc (suc zero)) = refl
+to-from-Pairing ₂ = refl
 
 from-to-Pairing : (p : Pairing) → V4-Nonzero→Pairing (Pairing→V4-Nonzero p) ≡ p
 from-to-Pairing α-pair = refl

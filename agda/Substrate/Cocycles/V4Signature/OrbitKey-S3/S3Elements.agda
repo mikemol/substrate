@@ -17,6 +17,7 @@
 module Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂)
 import Substrate.Groups.SFin as SFin
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition
   using (transposition)
@@ -27,16 +28,16 @@ s3-id : SFin.Permutation 3
 s3-id = SFin.ε
 
 s3-sw : SFin.Permutation 3
-s3-sw = transposition (suc zero) (suc (suc zero))
+s3-sw = transposition (suc zero) ₂
 
 s3-cs : SFin.Permutation 3
 s3-cs = transposition zero (suc zero)
 
 s3-cw : SFin.Permutation 3
-s3-cw = transposition zero (suc (suc zero))
+s3-cw = transposition zero ₂
 
 s3-csw : SFin.Permutation 3
-s3-csw = cycle3 zero (suc zero) (suc (suc zero))
+s3-csw = cycle3 zero (suc zero) ₂
 
 -- Inverse of s3-csw via SFin._⁻¹.
 s3-cws : SFin.Permutation 3

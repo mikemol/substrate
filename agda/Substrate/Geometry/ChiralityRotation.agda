@@ -42,6 +42,7 @@
 module Substrate.Geometry.ChiralityRotation where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -85,7 +86,7 @@ open import Substrate.Geometry.HodgeDim3.Gl3
 ------------------------------------------------------------------------
 
 σ-rotates-p₄-to-p₁ : apply σ (point-coords p₄) ≡ point-coords p₁
-σ-rotates-p₄-to-p₁ = apply-linear-from-images-basis σ-images (suc (suc zero))
+σ-rotates-p₄-to-p₁ = apply-linear-from-images-basis σ-images ₂
 
 ------------------------------------------------------------------------
 -- Framework summary (documentation).

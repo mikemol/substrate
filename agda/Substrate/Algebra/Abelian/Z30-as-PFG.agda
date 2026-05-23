@@ -31,6 +31,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
@@ -54,7 +55,7 @@ module Substrate.Algebra.Abelian.Z30-as-PFG
   -- The 3 Sylow predicates:
   --   Sylow-pred zero               = "in Sylow-2 = {0, 15}"
   --   Sylow-pred (suc zero)         = "in Sylow-3 = {0, 10, 20}"
-  --   Sylow-pred (suc (suc zero))   = "in Sylow-5 = {0, 6, 12, 18, 24}"
+  --   Sylow-pred ₂   = "in Sylow-5 = {0, 6, 12, 18, 24}"
   (Sylow-pred-Z30 : Fin 3 → Z30 → Set)
   -- Joint-generation witness.
   (joint-gen-Z30 :
@@ -74,12 +75,12 @@ module Substrate.Algebra.Abelian.Z30-as-PFG
 Z30-primes : Fin 3 → ℕ
 Z30-primes zero             = 2
 Z30-primes (suc zero)       = 3
-Z30-primes (suc (suc zero)) = 5
+Z30-primes ₂ = 5
 
 Z30-multiplicities : Fin 3 → ℕ
 Z30-multiplicities zero             = 1
 Z30-multiplicities (suc zero)       = 1
-Z30-multiplicities (suc (suc zero)) = 1
+Z30-multiplicities ₂ = 1
 
 Z30-SylowDecomposition : SylowDecomposition Z30 _+Z30_ 0Z30 3
 Z30-SylowDecomposition = mkSylowDecomposition

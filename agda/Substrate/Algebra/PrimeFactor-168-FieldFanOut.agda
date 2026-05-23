@@ -24,6 +24,7 @@
 module Substrate.Algebra.PrimeFactor-168-FieldFanOut where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₇)
 open import Substrate.Category.FieldFanOut
 
 ------------------------------------------------------------------------
@@ -33,7 +34,7 @@ open import Substrate.Category.FieldFanOut
 PSL27-Target : Fin 3 → Set
 PSL27-Target zero                = Fin 8   -- F₂³ component (size 2³)
 PSL27-Target (suc zero)          = Fin 3   -- F₃ component
-PSL27-Target (suc (suc zero))    = Fin 7   -- F₇ component
+PSL27-Target ₂    = Fin 7   -- F₇ component
 
 ------------------------------------------------------------------------
 -- N-2: Bond functions — PLACEHOLDER (return zero) for each target.
@@ -45,7 +46,7 @@ PSL27-Target (suc (suc zero))    = Fin 7   -- F₇ component
 PSL27-Bond : (i : Fin 3) → Fin 168 → PSL27-Target i
 PSL27-Bond zero             _ = zero
 PSL27-Bond (suc zero)       _ = zero
-PSL27-Bond (suc (suc zero)) _ = zero
+PSL27-Bond ₂ _ = zero
 
 ------------------------------------------------------------------------
 -- N-3: The FieldFanOut 3 instance for 168.

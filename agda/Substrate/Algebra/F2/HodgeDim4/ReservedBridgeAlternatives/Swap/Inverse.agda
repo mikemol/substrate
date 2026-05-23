@@ -10,10 +10,11 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Inverse where
 
 open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 
 selfdual-coefficients-swap : Bivector → Vector 3
 selfdual-coefficients-swap ω =
-  lookup ω zero ∷ lookup ω (suc (suc zero)) ∷ lookup ω (suc zero) ∷ []
+  lookup ω zero ∷ lookup ω ₂ ∷ lookup ω (suc zero) ∷ []
