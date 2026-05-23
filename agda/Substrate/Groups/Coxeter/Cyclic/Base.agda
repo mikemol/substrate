@@ -28,6 +28,12 @@ module Substrate.Groups.Coxeter.Cyclic.Base (n : ℕ) where
 data Gen : Set where
   a : Gen
 
+-- Decidable equality on Gen. Identical across every Z_n-Coxeter
+-- instance because Gen is the single-generator type; previously
+-- re-declared verbatim in Z2/Z3/Z4/Z5/Z7-Coxeter.
+gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ a a = yes refl
+
 ------------------------------------------------------------------------
 -- 2. power k = aᵏ as a Word.
 ------------------------------------------------------------------------

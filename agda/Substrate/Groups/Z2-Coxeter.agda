@@ -34,9 +34,6 @@ canonical-cover :
 canonical-cover _ (p , _) c-ε = p
 canonical-cover _ (_ , p) c-a = p
 
-gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
-gen-≟ a a = yes refl
-
 open import Substrate.Groups.Coxeter.SameCanonical
   using (same-canonical-via-Gen)
 
