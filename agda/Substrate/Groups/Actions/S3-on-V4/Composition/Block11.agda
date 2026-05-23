@@ -21,6 +21,8 @@ open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch using (act; act-on-canonical)
 open import Substrate.Groups.Actions.S3-on-V4.Twist
+open import Substrate.Groups.Actions.S3-on-V4.Composition.RotPowComposeChain
+  using (rot-pow-compose-chain)
 
 act-∙-canonical-11 : ∀ {n₁ n₂} →
                      Z₃.Canonical n₁ → Z₃.Canonical n₂ →
@@ -33,12 +35,10 @@ act-∙-canonical-11 {n₁} {n₂} c-n₁ c-n₂ v = trans LHS-to-pow (sym RHS-t
                  rot-pow n₁ (swap-αβ (rot-pow n₂ (swap-αβ v)))
     LHS-to-pow =
       trans (act-equals-pow (Z₃.normalize-canonical (Z₃.normalize (n₁ ++ Z₃.inv (Z₃.normalize n₂)))) Z₂.c-ε v)
-      (trans (cong (λ w → rot-pow w v) (Z₃.normalize-idem (n₁ ++ Z₃.inv (Z₃.normalize n₂))))
-      (trans (sym (rot-pow-normalize-eq (n₁ ++ Z₃.inv (Z₃.normalize n₂)) v))
-      (trans (rot-pow-append n₁ (Z₃.inv (Z₃.normalize n₂)) v)
+      (trans (rot-pow-compose-chain n₁ (Z₃.inv (Z₃.normalize n₂)) v)
       (trans (cong (λ w → rot-pow n₁ (rot-pow (Z₃.inv w) v)) (Z₃.canonical-is-fixed c-n₂))
       (trans (cong (λ x → rot-pow n₁ (rot-pow (Z₃.inv n₂) x)) (sym (swap-αβ²-id v)))
-             (cong (rot-pow n₁) (sym (rot-pow-swap-twist c-n₂ (swap-αβ v)))))))))
+             (cong (rot-pow n₁) (sym (rot-pow-swap-twist c-n₂ (swap-αβ v)))))))
     RHS-to-pow : act-on-canonical n₁ (Z₂.a ∷ []) (act-on-canonical n₂ (Z₂.a ∷ []) v) ≡
                  rot-pow n₁ (swap-αβ (rot-pow n₂ (swap-αβ v)))
     RHS-to-pow =
