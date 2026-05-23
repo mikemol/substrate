@@ -13,4 +13,4 @@ import Substrate.Groups.Z3-Coxeter as Z₃
 open import Substrate.Groups.Capabilities.CoxeterGroup using (cap-Z₃)
 open import Substrate.Groups.Coxeter.GroupFromCapability cap-Z₃ public
 
-open Z₃ public using (Gen; a; c-ε; c-a; c-aa)
+open Z₃ public using (Gen; a; c-pos)

@@ -17,6 +17,7 @@
 
 module Substrate.Groups.Capabilities.CoxeterGroup where
 
+open import Substrate.Foundation.Fin using (zero)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Groups.Coxeter.Word using (Word; _++_; [])
 
@@ -55,7 +56,7 @@ cap-Z₂ : CoxeterGroupCapability
 cap-Z₂ = record
   { Gen                = Z₂.Gen
   ; Canonical          = Z₂.Canonical
-  ; c-ε                = Z₂.c-ε
+  ; c-ε                = Z₂.c-pos zero
   ; ++-assoc           = Z₂.++-assoc
   ; normalize          = Z₂.normalize
   ; normalize-canonical = Z₂.normalize-canonical
@@ -71,7 +72,7 @@ cap-Z₃ : CoxeterGroupCapability
 cap-Z₃ = record
   { Gen                = Z₃.Gen
   ; Canonical          = Z₃.Canonical
-  ; c-ε                = Z₃.c-ε
+  ; c-ε                = Z₃.c-pos zero
   ; ++-assoc           = Z₃.++-assoc
   ; normalize          = Z₃.normalize
   ; normalize-canonical = Z₃.normalize-canonical
@@ -87,7 +88,7 @@ cap-Z₄ : CoxeterGroupCapability
 cap-Z₄ = record
   { Gen                = Z₄.Gen
   ; Canonical          = Z₄.Canonical
-  ; c-ε                = Z₄.c-ε
+  ; c-ε                = Z₄.c-pos zero
   ; ++-assoc           = Z₄.++-assoc
   ; normalize          = Z₄.normalize
   ; normalize-canonical = Z₄.normalize-canonical
@@ -103,7 +104,7 @@ cap-Z₅ : CoxeterGroupCapability
 cap-Z₅ = record
   { Gen                = Z₅.Gen
   ; Canonical          = Z₅.Canonical
-  ; c-ε                = Z₅.c-ε
+  ; c-ε                = Z₅.c-pos zero
   ; ++-assoc           = Z₅.++-assoc
   ; normalize          = Z₅.normalize
   ; normalize-canonical = Z₅.normalize-canonical
@@ -119,7 +120,7 @@ cap-Z₇ : CoxeterGroupCapability
 cap-Z₇ = record
   { Gen                = Z₇.Gen
   ; Canonical          = Z₇.Canonical
-  ; c-ε                = Z₇.c-ε
+  ; c-ε                = Z₇.c-pos zero
   ; ++-assoc           = Z₇.++-assoc
   ; normalize          = Z₇.normalize
   ; normalize-canonical = Z₇.normalize-canonical

@@ -3,14 +3,15 @@
 --
 -- ℤ/3ℤ as a Coxeter-style presentation: ⟨a | a³ = ε⟩.
 --
--- Path 2 Phase 5: thin instance of Substrate.Groups.Coxeter.Cyclic 2.
--- Cyclic provides Gen / Canonical-ex / canonical-cover / σ / insert /
--- insert-canonical-ex / inv / inv-canonical-ex AND the ListPresentation
--- + WithLemmas surface (normalize / _·_ / _≈_ / ε / normalize-distrib /
--- etc.). This file just supplies:
---   * Named-constructor pattern synonyms (c-ε, c-a, c-aa)
---   * Named-version canonical-cover (uses the synonyms)
---   * gen-≟ + same-canonical (single-Gen decidability)
+-- Thin instance of Substrate.Groups.Coxeter.Cyclic 2. Cyclic provides
+-- Gen / Canonical-ex / canonical-cover-ex / σ / insert / insert-canonical-ex
+-- / inv / inv-canonical-ex / the parametric c-pos pattern synonym AND
+-- the ListPresentation + WithLemmas surface (normalize / _·_ / _≈_ / ε /
+-- normalize-distrib / etc.). Consumers use `(Z₃.c-pos k)` for the
+-- k-th canonical witness (k ∈ Fin 3); no per-arity pattern names are
+-- needed. This file just supplies:
+--   * canonical-cover (tuple-style dispatcher over (c-pos zero/(suc zero)/(suc (suc zero))))
+--   * same-canonical (single-Gen decidability)
 --   * cube-identity + inv-distrib-canonical (Z₃-specific theorems)
 ------------------------------------------------------------------------
 
@@ -26,7 +27,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; _≢_)
 
 open import Substrate.Groups.Coxeter.Word public
 open import Substrate.Groups.Coxeter.Cyclic 2 public
-  hiding (Canonical; insert-canonical; inv-canonical; c-ε; canonical-cover)
+  hiding (Canonical; insert-canonical; inv-canonical; canonical-cover)
   renaming (Canonical-ex to Canonical; insert-canonical-ex to insert-canonical;
             inv-canonical-ex to inv-canonical; canonical-cover-ex to canonical-cover-fin;
             inv-left-canonical-ex to inv-left-canonical;
@@ -34,24 +35,17 @@ open import Substrate.Groups.Coxeter.Cyclic 2 public
             inv-inv-canonical-ex to inv-inv-canonical)
 
 ------------------------------------------------------------------------
--- Named-constructor pattern synonyms.
-------------------------------------------------------------------------
-
-pattern c-ε  = zero               , c-here zero
-pattern c-a  = suc zero           , c-here (suc zero)
-pattern c-aa = suc (suc zero)     , c-here (suc (suc zero))
-
-------------------------------------------------------------------------
--- Named-version canonical-cover (dispatches via the synonyms).
+-- Tuple-style canonical-cover, built on the parametric c-pos pattern
+-- synonym (no per-Zₙ legacy ladder needed).
 ------------------------------------------------------------------------
 
 canonical-cover :
   ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P c-ε × P c-a × P c-aa →
+  P (c-pos zero) × P (c-pos (suc zero)) × P (c-pos (suc (suc zero))) →
   ∀ {w} (c : Canonical w) → P c
-canonical-cover _ (p , _ , _) c-ε  = p
-canonical-cover _ (_ , p , _) c-a  = p
-canonical-cover _ (_ , _ , p) c-aa = p
+canonical-cover _ (p , _ , _) (c-pos zero)             = p
+canonical-cover _ (_ , p , _) (c-pos (suc zero))       = p
+canonical-cover _ (_ , _ , p) (c-pos (suc (suc zero))) = p
 
 ------------------------------------------------------------------------
 -- Decidable equality.

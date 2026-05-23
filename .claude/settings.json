@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Skill(decomposable-by-entailment)",
+      "Skill(decomposable-by-entailment:*)",
+      "Bash(git mv *)",
+      "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/verify_meta_protocol.py)",
+      "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/verify_s4_structure.py)",
+      "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python verify_applied_grammar.py)",
+      "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/audit_inhabitation.py)",
+      "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/verify_cell_inhabitation.py)",
+      "Bash(.venv/bin/python -c \"import bs4; print\\('bs4', bs4.__version__\\)\")",
+      "Bash(.venv/bin/python -c \"from email import policy; print\\('email policy ok'\\)\")",
+      "Bash(.venv/bin/pip install *)",
+      "Read(//home/mikemol/.agda/**)",
+      "Bash(apt-cache search *)",
+      "Read(//usr/share/**)",
+      "Skill(shadow-architecture)",
+      "Skill(shadow-architecture:*)",
+      "Bash(agda --safe Substrate/Groups/SemidirectProduct.agda)",
+      "Bash(agda --safe Substrate/Cocycles/V4Signature/S4Iso.agda)",
+      "Bash(agda --safe Substrate/Groups/F2Cubed.agda)",
+      "Bash(echo \"EXIT=$?\")"
+    ]
+  }
+}

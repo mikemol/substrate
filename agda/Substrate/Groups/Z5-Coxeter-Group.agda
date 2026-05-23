@@ -13,4 +13,4 @@ import Substrate.Groups.Z5-Coxeter as Z₅
 open import Substrate.Groups.Capabilities.CoxeterGroup using (cap-Z₅)
 open import Substrate.Groups.Coxeter.GroupFromCapability cap-Z₅ public
 
-open Z₅ public using (Gen; a; c-ε; c-a; c-aa; c-aaa; c-aaaa)
+open Z₅ public using (Gen; a; c-pos)

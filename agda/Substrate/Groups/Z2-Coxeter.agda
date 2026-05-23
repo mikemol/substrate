@@ -17,22 +17,12 @@ open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; _≢_)
 
 open import Substrate.Groups.Coxeter.Word public
 open import Substrate.Groups.Coxeter.Cyclic 1 public
-  hiding (Canonical; insert-canonical; inv-canonical; c-ε; canonical-cover)
+  hiding (Canonical; insert-canonical; inv-canonical; canonical-cover)
   renaming (Canonical-ex to Canonical; insert-canonical-ex to insert-canonical;
             inv-canonical-ex to inv-canonical; canonical-cover-ex to canonical-cover-fin;
             inv-left-canonical-ex to inv-left-canonical;
             inv-right-canonical-ex to inv-right-canonical;
             inv-inv-canonical-ex to inv-inv-canonical)
-
-pattern c-ε = zero     , c-here zero
-pattern c-a = suc zero , c-here (suc zero)
-
-canonical-cover :
-  ∀ {ℓ} (P : ∀ {w} → Canonical w → Set ℓ) →
-  P c-ε × P c-a →
-  ∀ {w} (c : Canonical w) → P c
-canonical-cover _ (p , _) c-ε = p
-canonical-cover _ (_ , p) c-a = p
 
 open import Substrate.Groups.Coxeter.SameCanonical
   using (same-canonical-via-Gen)

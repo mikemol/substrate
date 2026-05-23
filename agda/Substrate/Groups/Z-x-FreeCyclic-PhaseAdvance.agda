@@ -23,7 +23,7 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -68,9 +68,9 @@ phase-advance-Z₃-as-σ₃ :
   (c : Z₃.Canonical w-p) →
   Z₃-Fin.canonical-to-Fin (Z₃.insert-canonical Z₃.a c)
     ≡ σ₃ (Z₃-Fin.canonical-to-Fin c)
-phase-advance-Z₃-as-σ₃ Z₃.c-ε  = refl
-phase-advance-Z₃-as-σ₃ Z₃.c-a  = refl
-phase-advance-Z₃-as-σ₃ Z₃.c-aa = refl
+phase-advance-Z₃-as-σ₃ (Z₃.c-pos zero)  = refl
+phase-advance-Z₃-as-σ₃ (Z₃.c-pos (suc zero))  = refl
+phase-advance-Z₃-as-σ₃ (Z₃.c-pos (suc (suc zero))) = refl
 
 ------------------------------------------------------------------------
 -- N-3: Z₄ phase advance.
@@ -85,10 +85,10 @@ phase-advance-Z₄-as-σ₄ :
   (c : Z₄.Canonical w-p) →
   Z₄-Fin.canonical-to-Fin (Z₄.insert-canonical Z₄.a c)
     ≡ σ₄ (Z₄-Fin.canonical-to-Fin c)
-phase-advance-Z₄-as-σ₄ Z₄.c-ε   = refl
-phase-advance-Z₄-as-σ₄ Z₄.c-a   = refl
-phase-advance-Z₄-as-σ₄ Z₄.c-aa  = refl
-phase-advance-Z₄-as-σ₄ Z₄.c-aaa = refl
+phase-advance-Z₄-as-σ₄ (Z₄.c-pos zero)   = refl
+phase-advance-Z₄-as-σ₄ (Z₄.c-pos (suc zero))   = refl
+phase-advance-Z₄-as-σ₄ (Z₄.c-pos (suc (suc zero)))  = refl
+phase-advance-Z₄-as-σ₄ (Z₄.c-pos (suc (suc (suc zero)))) = refl
 
 ------------------------------------------------------------------------
 -- N-4: Capstone — phase-advance correspondence to cyclic-shift lands.

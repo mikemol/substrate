@@ -14,6 +14,7 @@ open V4 using (V₄)
 import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
 open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Fin using (zero; suc)
 
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch using (act-on-canonical)
 open import Substrate.Groups.Actions.S3-on-V4.HomRotations.HomId    using (hom-id)
@@ -28,9 +29,9 @@ act-hom-on-canonical :
   ∀ v₁ v₂ →
   act-on-canonical n h (v₁ V4.· v₂) ≡
   act-on-canonical n h v₁ V4.· act-on-canonical n h v₂
-act-hom-on-canonical Z₃.c-ε  Z₂.c-ε = hom-id
-act-hom-on-canonical Z₃.c-a  Z₂.c-ε = hom-rot
-act-hom-on-canonical Z₃.c-aa Z₂.c-ε = hom-rot²
-act-hom-on-canonical Z₃.c-ε  Z₂.c-a = hom-swap-αβ
-act-hom-on-canonical Z₃.c-a  Z₂.c-a = hom-swap-αγ
-act-hom-on-canonical Z₃.c-aa Z₂.c-a = hom-swap-βγ
+act-hom-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos zero) = hom-id
+act-hom-on-canonical (Z₃.c-pos (suc zero))  (Z₂.c-pos zero) = hom-rot
+act-hom-on-canonical (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos zero) = hom-rot²
+act-hom-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos (suc zero)) = hom-swap-αβ
+act-hom-on-canonical (Z₃.c-pos (suc zero))  (Z₂.c-pos (suc zero)) = hom-swap-αγ
+act-hom-on-canonical (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos (suc zero)) = hom-swap-βγ

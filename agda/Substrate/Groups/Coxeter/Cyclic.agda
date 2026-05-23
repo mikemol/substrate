@@ -3,7 +3,7 @@
 --
 -- The cyclic Coxeter framework as a single parametric module, indexed
 -- by the order n+1 of the group. The per-Zₙ named-constructor
--- enumeration (c-ε / c-a / c-aa / …) collapses into one structural
+-- enumeration ((c-pos zero) / (c-pos (suc zero)) / (c-pos (suc (suc zero))) / …) collapses into one structural
 -- constructor `c-here k` for k : Fin (suc n).
 --
 -- Thin re-export shim — implementation lives in the per-concern
@@ -34,6 +34,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (zero; suc)
 
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
