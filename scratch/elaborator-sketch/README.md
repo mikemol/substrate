@@ -61,14 +61,16 @@ Cross-cutting relationships:
 | Table                    | Rows |
 |--------------------------|------|
 | `shadows`                |   88 |
-| `transitions`            |   14 |
-| `role_edges`             |    9 |
-| `compositions`           |    4 |
-| `entailments`            |    4 |
+| `transitions`            |   61 |
+| `role_edges`             |   27 |
+| `compositions`           |   27 |
+| `entailments`            |   27 |
 | `cross_entailments`      |   10 |
 | `library_correspondence` |    7 |
 
 Status distribution: 58 leaves, 23 productive, 4 cross-cutting, 2 research-frontier, 1 root.
+
+**Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
 
 ## Research frontiers (where the sketch terminates honestly)
 

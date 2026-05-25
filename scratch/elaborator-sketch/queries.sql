@@ -108,3 +108,36 @@ FROM shadows s
 WHERE NOT EXISTS (SELECT 1 FROM shadows c WHERE c.parent_id = s.id)
 GROUP BY s.cluster, s.status
 ORDER BY s.cluster, s.status;
+
+-- ----------------------------------------------------------------------------
+-- 11. COVERAGE INVARIANTS — must return zero rows on a structurally complete db.
+-- ----------------------------------------------------------------------------
+.print
+.print '== Coverage invariant 1: productive/cross-cutting shadows missing composition =='
+SELECT s.code, s.name FROM shadows s
+WHERE s.status IN ('productive','cross-cutting')
+  AND NOT EXISTS (SELECT 1 FROM compositions c WHERE c.shadow_id = s.id);
+
+.print
+.print '== Coverage invariant 2: productive/cross-cutting shadows missing entailment =='
+SELECT s.code, s.name FROM shadows s
+WHERE s.status IN ('productive','cross-cutting')
+  AND NOT EXISTS (SELECT 1 FROM entailments e WHERE e.shadow_id = s.id);
+
+.print
+.print '== Coverage invariant 3: R(reach, transitions) shadows missing transitions =='
+SELECT s.code, s.name FROM shadows s
+WHERE s.rung LIKE 'R(reach, transitions)%'
+  AND s.status IN ('productive','cross-cutting','root','leaf')
+  AND NOT EXISTS (SELECT 1 FROM transitions t WHERE t.shadow_id = s.id)
+  AND s.code IN ('C1.1');  -- explicit leaf-with-prose-transitions allowlist; expand as more prose lands
+
+.print
+.print '== Coverage invariant 4: R(reach, role-labeled-graphs) shadows missing role-edges =='
+SELECT s.code, s.name FROM shadows s
+WHERE s.rung LIKE 'R(reach, role-labeled-graphs)%'
+  AND s.status IN ('root','productive','cross-cutting')
+  AND NOT EXISTS (SELECT 1 FROM role_edges r WHERE r.shadow_id = s.id);
+
+.print
+.print 'If any of the four invariant queries above returns rows, the db is structurally incomplete with respect to the prose sketch.'

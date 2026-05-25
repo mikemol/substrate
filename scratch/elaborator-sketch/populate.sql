@@ -429,6 +429,290 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
   ((SELECT id FROM shadows WHERE code='C3.1'),     'agda_similarity --skeleton --typed-holes',                         'Read-only view of the production-index residue surface.'),
   ((SELECT id FROM shadows WHERE code='C2.2'),     'section-then-lemma topology hint',                                 'Parametric modules induce constraint-graph shape predictable from file layout.');
 
+-- ============================================================================
+-- STRUCTURAL BACKFILL — transitions / role-edges / compositions / entailments
+-- for every productive shadow whose depth-3 or depth-4 prose described them.
+--
+-- The initial INSERTs above carried the spine (1 root, layer-1 transitions,
+-- root role-edges). The depth-3 and depth-4 expansion described state-
+-- transitions and role-edges for many sub-shadows; without this section the
+-- database is structurally incomplete with respect to the prose sketch.
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- Transitions for depth-3 productive shadows.
+-- ----------------------------------------------------------------------------
+
+-- C1.1 structural-hash (leaf, but has explicit transition sequence)
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.1'), 1, 'term-AST',              'canonical-encode(de-Bruijn, sort-implicit-args)', 'no-name-capture',           'canonical-byte-sequence'),
+  ((SELECT id FROM shadows WHERE code='C1.1'), 2, 'canonical-byte-sequence','hash(BLAKE3 or xxhash3)',                         'hash-fn-collision-bound-known','256-bit content-key');
+
+-- C2.1 meta-allocator
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C2.1'), 1, '(Gamma-snapshot, Delta)','gensym-meta-id(counter++)',           'counter-monotone',                                  'fresh-meta-id'),
+  ((SELECT id FROM shadows WHERE code='C2.1'), 2, 'fresh-meta-id',          'record-scope(meta-id, type-ctx, src-loc)','type-ctx-references-only-Gamma-or-prior-metas','Delta union {meta-id -> open-with-type-ctx}');
+
+-- C2.3 left-rule applicator
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C2.3'), 1, 'focused-meta(id, constraint)','extract-RHS-shape-from-constraint','constraint-has-canonical-RHS-form','shape-key'),
+  ((SELECT id FROM shadows WHERE code='C2.3'), 2, 'shape-key',                'query-C3.1-index(shape-key)',          'index-current',                  'candidate-production-set'),
+  ((SELECT id FROM shadows WHERE code='C2.3'), 3, 'candidate-production-set', 'filter-by-type-unification(candidates, constraint)','each-candidate-attempted','viable-production OR no-match (defer)'),
+  ((SELECT id FROM shadows WHERE code='C2.3'), 4, 'viable-production',        'emit-cut-request(C3, viable, meta-id)','request-well-formed',             'cut-request-queued');
+
+-- C3.3 cut-normalizer
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C3.3'), 1, 'term-with-cuts',          'find-leftmost-outermost-redex',         'redex-detected OR normal-form',         'redex-position'),
+  ((SELECT id FROM shadows WHERE code='C3.3'), 2, 'redex-position',          'substitute(production-RHS-for-LHS)',    'substitution-from-C3.2.2',              'term-after-one-reduction'),
+  ((SELECT id FROM shadows WHERE code='C3.3'), 3, 'term-after-one-reduction','repeat-until-no-redex',                 'subformula-property-guarantees-termination','normal-form');
+
+-- C4.1 cut-soundness check
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.1'), 1, 'proposed-extraction(name, RHS, expansion)','extract-RHS-and-expansion',  'both-syntactically-well-formed','(RHS-term, expansion-term)'),
+  ((SELECT id FROM shadows WHERE code='C4.1'), 2, '(RHS-term, expansion-term)','invoke-typechecker(RHS == expansion in Gamma)','Gamma-snapshot-pinned','judgement (ok or fail)'),
+  ((SELECT id FROM shadows WHERE code='C4.1'), 3, 'judgement',                'commit-or-reject',                       'no-partial-Gamma-mutation',     'Gamma-extended OR Gamma-unchanged');
+
+-- C4.3 subformula-property check
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.3'), 1, 'candidate-production(LHS, RHS)','collect-bound-vars(LHS)',             'LHS-is-applicative-spine',    'bound-var-set'),
+  ((SELECT id FROM shadows WHERE code='C4.3'), 2, 'bound-var-set',                  'traverse-RHS-collecting-free-vars',   'RHS-is-Term',                 'free-var-set'),
+  ((SELECT id FROM shadows WHERE code='C4.3'), 3, 'free-var-set',                   'check-subset(free-vars subset bound-vars)','predicate-decidable',    'ok (subformula-local) OR fail (escape-detected)');
+
+-- ----------------------------------------------------------------------------
+-- Transitions for depth-4 productive shadows.
+-- ----------------------------------------------------------------------------
+
+-- C1.2.2 index-update-protocol
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.2.2'), 1, 'ingest-event(production-key, body-AST)','walk-body-AST(top-down-BFS)','parents-visited-before-children','pending-insert-set'),
+  ((SELECT id FROM shadows WHERE code='C1.2.2'), 2, 'pending-insert-set',                    'batch-into-single-transaction','batch-size <= DB-page-budget','pending-transaction'),
+  ((SELECT id FROM shadows WHERE code='C1.2.2'), 3, 'pending-transaction',                   'commit-or-rollback-on-C4-decision','C4.1.2-result-bound',    'index-updated OR index-untouched');
+
+-- C1.2.3 query-by-subterm-API
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.2.3'), 1, 'query(content-key, optional-type-filter)','normalize-query-shape',            'shape-canonical-form',          'canonical-shape-key'),
+  ((SELECT id FROM shadows WHERE code='C1.2.3'), 2, 'canonical-shape-key',                     'lookup-in-index(shape-key)',       'index-current',                  'candidate-key-set'),
+  ((SELECT id FROM shadows WHERE code='C1.2.3'), 3, 'candidate-key-set',                       'push-down-type-filter-if-present', 'filter-decidable-against-index-metadata','filtered-candidate-set (lazy iterator)');
+
+-- C1.3.2 transaction-boundaries
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.3.2'), 1, 'module-load-request',  'begin-transaction(isolation = serializable)','no-other-writer-in-flight OR rejected','in-flight-transaction'),
+  ((SELECT id FROM shadows WHERE code='C1.3.2'), 2, 'in-flight-transaction','execute-all-module-mutations',              'each-passes-C4',                'pending-commit'),
+  ((SELECT id FROM shadows WHERE code='C1.3.2'), 3, 'pending-commit',       'commit-or-abort',                            'C4-aggregate-result',           'persistent-Gamma-updated OR unchanged');
+
+-- C1.3.3 incremental-load-protocol
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.3.3'), 1, 'agda-invocation(target-module)','topological-walk-of-imports','import-DAG-acyclic',            'ordered-dependency-list'),
+  ((SELECT id FROM shadows WHERE code='C1.3.3'), 2, 'ordered-dependency-list',       'for-each-dep: load-snapshot-or-rebuild','snapshot-id-cached', 'Gamma-snapshot-ready-for-target'),
+  ((SELECT id FROM shadows WHERE code='C1.3.3'), 3, 'Gamma-snapshot-ready-for-target','begin-transaction-for-target', 'C1.3.2-pre',                    'ready-for-elaboration');
+
+-- C2.2.3 cycle-detection (Tarjan SCC)
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C2.2.3'), 1, 'constraint-graph-G',           'DFS-walk(G, push-to-stack-on-visit)','graph-has-finite-nodes',     'nodes-with-low-link-annotations'),
+  ((SELECT id FROM shadows WHERE code='C2.2.3'), 2, 'nodes-with-low-link-annotations','emit-SCC-on-low-link-equals-id',     'low-link-computed',           'SCC-partition-of-G'),
+  ((SELECT id FROM shadows WHERE code='C2.2.3'), 3, 'SCC-partition-of-G',           'flag-non-trivial-SCCs-as-cycles',    '|SCC| >= 2 or self-loop',     'cycle-set');
+
+-- C4.2.1 chirality-pair-detector
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.2.1'), 1, 'file-registered(path, AST)',     'match-name-pattern',                'conventions-loaded',         'name-match(side = Left | Right | ...)'),
+  ((SELECT id FROM shadows WHERE code='C4.2.1'), 2, 'name-match',                     'look-for-mirror(opposite-side)',    'filesystem-readable',        'mirror-found OR mirror-absent'),
+  ((SELECT id FROM shadows WHERE code='C4.2.1'), 3, 'mirror-found',                   'verify-structural-mirror',          'mirror-AST-loaded',          'paired-and-verified OR divergent');
+
+-- C4.2.2 section-then-lemma-detector
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.2.2'), 1, 'directory-registered(path)',     'scan-for-section-module',           'convention-loaded',          'section-module-found OR no-section'),
+  ((SELECT id FROM shadows WHERE code='C4.2.2'), 2, 'section-module-found',           'extract-parametric-signature',      'section-is-parametric',      'parameter-set-S'),
+  ((SELECT id FROM shadows WHERE code='C4.2.2'), 3, 'parameter-set-S',                'verify-siblings-import-section(S)', 'siblings-enumerable',        'section-bundle-verified OR siblings-disagree');
+
+-- C4.2.3 completion-suggester
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.2.3'), 1, 'chirality-detector-output(unpaired)','check-cooldown(file)',           'cooldown-table-readable',    'not-in-cooldown OR in-cooldown'),
+  ((SELECT id FROM shadows WHERE code='C4.2.3'), 2, 'not-in-cooldown',                  'generate-mirror-template',         'template-engine-loaded',     'template-text'),
+  ((SELECT id FROM shadows WHERE code='C4.2.3'), 3, 'template-text',                    'emit-suggestion(diagnostic)',      'diagnostic-channel-open',    'suggestion-shown OR suppressed');
+
+-- ----------------------------------------------------------------------------
+-- Transitions for cross-cutting infrastructure (X1, X3 are R(reach, trans)).
+-- ----------------------------------------------------------------------------
+
+-- X1 wire-format
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='X1'), 1, 'in-memory-term (Haskell ADT)','canonical-encode(de-Bruijn-CBOR)',  'no-name-capture; deterministic-byte-order','CBOR-byte-sequence'),
+  ((SELECT id FROM shadows WHERE code='X1'), 2, 'CBOR-byte-sequence',           'hash(BLAKE3, 256-bit output)',       'hash-fn-fixed',                   '32-byte content-key'),
+  ((SELECT id FROM shadows WHERE code='X1'), 3, '32-byte content-key',          'marshal-to-backend(sqlite-blob or LMDB-key)','byte-sequence-faithful',  'persistent-key');
+
+-- X3 error-ux
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='X3'), 1, 'C4.1.2-fail from typechecker', 'extract-failing-subterm-pointer(error-context)','error-format-stable','subterm-key + context'),
+  ((SELECT id FROM shadows WHERE code='X3'), 2, 'subterm-key + context',        'resolve-key-to-source-span(via C1.3)','source-map-cached',           'source-span(file, line, column-range)'),
+  ((SELECT id FROM shadows WHERE code='X3'), 3, 'source-span(file, line, column-range)','format-as-diagnostic(span + reason)','diagnostic-channel-format-known','user-facing-error');
+
+-- ----------------------------------------------------------------------------
+-- Role-edges for R(reach, role-labeled-graphs) shadows.
+-- ----------------------------------------------------------------------------
+
+-- C1.2 production-ref-index PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.2'), 'index', ':nodes',    'n', 'Gamma-production-keys union subterm-keys'),
+  ((SELECT id FROM shadows WHERE code='C1.2'), 'index', ':edges',    'e', 'contains-as-subterm'),
+  ((SELECT id FROM shadows WHERE code='C1.2'), 'index', ':supports', 'q', 'query-by-subterm-key');
+
+-- C2.2 constraint-graph PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='C2.2'), 'Delta-graph', ':nodes',  'n', 'meta-id-with-constraint-shape'),
+  ((SELECT id FROM shadows WHERE code='C2.2'), 'Delta-graph', ':edges',  'e', 'depends-on-resolution-of'),
+  ((SELECT id FROM shadows WHERE code='C2.2'), 'Delta-graph', ':cycles', 'c', 'require-fixed-point-via-C3.3');
+
+-- C3.1 production-index PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='C3.1'), 'prod-index', ':keys',       'k', 'RHS-head-symbol x arity'),
+  ((SELECT id FROM shadows WHERE code='C3.1'), 'prod-index', ':values',     'v', 'set-of-production-keys'),
+  ((SELECT id FROM shadows WHERE code='C3.1'), 'prod-index', ':rebuild-on', 'r', 'Gamma-extension-event from C4');
+
+-- C4.2 structural-rule-discipline PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='C4.2'), 'structural-discipline', ':exchange-rule',    'er', 'chirality-pair-completeness'),
+  ((SELECT id FROM shadows WHERE code='C4.2'), 'structural-discipline', ':contraction-rule', 'cr', 'section-then-lemma'),
+  ((SELECT id FROM shadows WHERE code='C4.2'), 'structural-discipline', ':weakening-rule',   'wr', 'file-per-lemma');
+
+-- X2 concurrency-model PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='X2'), 'concurrency', ':writer-lock',    'wl', 'cooperative-mutex-on-Gamma-store'),
+  ((SELECT id FROM shadows WHERE code='X2'), 'concurrency', ':reader-handles', 'rh', 'snapshot-id-pinned-readers'),
+  ((SELECT id FROM shadows WHERE code='X2'), 'concurrency', ':handoff-event',  'he', 'commit-publishes-new-snapshot-id');
+
+-- X4 parametric-module-handling PENMAN
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='X4'), 'param-module', ':module-params',      'mp',  'abstract-parameter-set'),
+  ((SELECT id FROM shadows WHERE code='X4'), 'param-module', ':module-productions', 'mpr', 'productions-with-mp-free-vars'),
+  ((SELECT id FROM shadows WHERE code='X4'), 'param-module', ':instantiation-rule', 'ir',  'closed-application-instantiates-all-productions');
+
+-- ----------------------------------------------------------------------------
+-- Compositions for every productive and cross-cutting shadow.
+-- ----------------------------------------------------------------------------
+
+INSERT INTO compositions (shadow_id, description) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.2'),
+   'ingest-definition invokes update (C1.2.2); search-Gamma (C3.1) invokes query (C1.2.3); both operate over the edge representation (C1.2.1).'),
+  ((SELECT id FROM shadows WHERE code='C1.3'),
+   'C1.3.3 sequences C1.3.2; C1.3.2 wraps writes to C1.3.1.'),
+  ((SELECT id FROM shadows WHERE code='C2.1'),
+   'C2.1.2 produces the key; C2.1.1 records the value; the pair becomes the entry in Delta.'),
+  ((SELECT id FROM shadows WHERE code='C2.2'),
+   'Nodes and edges added incrementally as C2.1 allocates metas and C2.3 poses dependent constraints; C2.2.3 invoked before C3 attempts discharge.'),
+  ((SELECT id FROM shadows WHERE code='C2.3'),
+   'Pipeline: extract -> query -> filter -> emit. Each step is total (returns either an answer or "defer this meta to later").'),
+  ((SELECT id FROM shadows WHERE code='C3.1'),
+   'C3.1.3 maintains C3.1.2 as C4.1 mutates Gamma; C2.3 and the search loop in C3 query C3.1.2 via a thin API.'),
+  ((SELECT id FROM shadows WHERE code='C3.2'),
+   'unify invokes occurs-check first (C3.2.3), then attempts type-equality (C3.2.1), then composes the resulting substitution (C3.2.2).'),
+  ((SELECT id FROM shadows WHERE code='C3.3'),
+   'Fixed-point loop: detect -> reduce -> re-detect until normal-form holds.'),
+  ((SELECT id FROM shadows WHERE code='C4.1'),
+   'Pipeline: extract -> typecheck -> commit. Each step is total; failure is communicated, not silent.'),
+  ((SELECT id FROM shadows WHERE code='C4.2'),
+   'Each new file passes through C4.2.1 then C4.2.2; suggestions emitted by C4.2.3 are advisory and do not block registration.'),
+  ((SELECT id FROM shadows WHERE code='C4.3'),
+   'Sequential: collect bounds, then traverse RHS, then test subset.'),
+  ((SELECT id FROM shadows WHERE code='C1.2.2'),
+   'Traversal generates inserts; batching collects them; transaction guarantees atomicity.'),
+  ((SELECT id FROM shadows WHERE code='C1.2.3'),
+   'Sequential: normalize the query shape, lookup, then optionally push down a type filter; result is a lazy iterator.'),
+  ((SELECT id FROM shadows WHERE code='C1.3.2'),
+   'begin -> execute-mutations -> commit-or-abort. All mutations within one transaction; abort path resets in-flight changes.'),
+  ((SELECT id FROM shadows WHERE code='C1.3.3'),
+   'Topological walk of imports identifies dependencies; per-dep snapshot caching avoids redundant rebuild; fresh transaction frames the target module.'),
+  ((SELECT id FROM shadows WHERE code='C2.2.3'),
+   'Tarjan SCC: DFS with low-link tracking; on low-link == index, pop stack to enumerate one SCC.'),
+  ((SELECT id FROM shadows WHERE code='C4.2.1'),
+   'Sequential: pattern-match the file name; look for the opposite-side mirror file; verify structural alignment via the mirror map.'),
+  ((SELECT id FROM shadows WHERE code='C4.2.2'),
+   'Sequential: identify the section module in the directory; extract its parameter set; verify each sibling lemma imports the section with matching parameters.'),
+  ((SELECT id FROM shadows WHERE code='C4.2.3'),
+   'gap-detector feeds template-generator feeds emitter; noise-suppression sits above the pipeline as a guard.'),
+  ((SELECT id FROM shadows WHERE code='X1'),
+   'Sequential: canonical encode, then hash, then marshal to backend storage format.'),
+  ((SELECT id FROM shadows WHERE code='X2'),
+   'Writer-lock serializes mutators; readers pin to a snapshot at session-start; handoff event publishes a new snapshot-id on commit.'),
+  ((SELECT id FROM shadows WHERE code='X3'),
+   'Sequential: parse the typechecker error, resolve content-key to source-span via sidecar, format as LSP diagnostic.'),
+  ((SELECT id FROM shadows WHERE code='X4'),
+   'Module parameters are tagged metas; each parametric production has parameter-free-vars in its LHS; instantiation substitutes once across all productions in the module.');
+
+-- ----------------------------------------------------------------------------
+-- Entailments for every productive and cross-cutting shadow.
+-- ----------------------------------------------------------------------------
+
+INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
+  ((SELECT id FROM shadows WHERE code='C1.2'),
+   'C1.2.2 transactional AND C1.2.3 reads consistent snapshot',
+   'queries observe a referentially closed index'),
+  ((SELECT id FROM shadows WHERE code='C1.3'),
+   'transactions ACID (delegated to backend) AND import-order topological',
+   'every C1.3.3 load sees a consistent point-in-time Gamma-snapshot'),
+  ((SELECT id FROM shadows WHERE code='C2.1'),
+   'counter monotone within a session',
+   'meta-ids pairwise distinct; Delta well-defined as finite map'),
+  ((SELECT id FROM shadows WHERE code='C2.2'),
+   'graph acyclic OR cycles handled by C3.3 fixed-point',
+   'topological-order discharge terminates'),
+  ((SELECT id FROM shadows WHERE code='C2.3'),
+   'index-query soundness (C1.2.3) AND unifier soundness (C3.2)',
+   'every emitted cut-request is valid; applying preserves Gamma-Delta-consistency'),
+  ((SELECT id FROM shadows WHERE code='C3.1'),
+   'every Gamma-mutation triggers a C3.1.3 update',
+   'index stays consistent with Gamma; queries return complete candidate set'),
+  ((SELECT id FROM shadows WHERE code='C3.2'),
+   'C3.2.1 sound + complete for chosen unification fragment AND C3.2.3 rejects occurs-violations',
+   'unify returns most-general unifier when one exists, none otherwise'),
+  ((SELECT id FROM shadows WHERE code='C3.3'),
+   'subformula property (C4.3) holds for every production in Gamma',
+   'each reduction strictly decreases a well-founded measure; loop terminates; unique normal form'),
+  ((SELECT id FROM shadows WHERE code='C4.1'),
+   'Agda existing typechecker is sound (axiom)',
+   'OK from C4.1.2 implies extraction is cut-sound; Gamma remains consistent after registration'),
+  ((SELECT id FROM shadows WHERE code='C4.2'),
+   'chirality pairs complete AND section-then-lemma respected',
+   'Gamma admits sequent-calculus structural rules; C3 search invariant under hypothesis-reordering and duplicate-elimination'),
+  ((SELECT id FROM shadows WHERE code='C4.3'),
+   'predicate holds (free-vars subset bound-vars)',
+   'every reduction step strictly decreases a well-founded measure; cut-elimination terminates'),
+  ((SELECT id FROM shadows WHERE code='C1.2.2'),
+   'atomicity of C1.2.2.3',
+   'no partial Gamma-mutation on extraction-soundness failure; Gamma remains consistent grammar'),
+  ((SELECT id FROM shadows WHERE code='C1.2.3'),
+   'lazy iteration AND filter pushdown',
+   'peak memory for a query is O(answer-prefix-the-caller-consumes), not O(total-matches)'),
+  ((SELECT id FROM shadows WHERE code='C1.3.2'),
+   'serializability',
+   'Gamma history is a linear sequence of consistent snapshots; every read returns a valid grammar state'),
+  ((SELECT id FROM shadows WHERE code='C1.3.3'),
+   'snapshot-caching sound (same source -> same snapshot-id, content-addressed)',
+   'incremental load returns the same Gamma as a from-scratch load; elaboration deterministic across cache states'),
+  ((SELECT id FROM shadows WHERE code='C2.2.3'),
+   'Tarjan correctness theorem (textbook)',
+   'emitted partition is exactly the set of SCCs of G; C3.3 invocations target true cycles'),
+  ((SELECT id FROM shadows WHERE code='C4.2.1'),
+   'completeness predicate holds for a pair',
+   'Gamma chirality structural rule (exchange between the pair) is sound at file level; C3 search can permute paired productions'),
+  ((SELECT id FROM shadows WHERE code='C4.2.2'),
+   'verified section-then-lemma cluster',
+   'Gamma admits contraction; C3.1 can share parameter representation across the lemma productions, reducing index size'),
+  ((SELECT id FROM shadows WHERE code='C4.2.3'),
+   'gap-detection completeness (C4.2.1) AND template-correctness (mirror-map injectivity)',
+   'every emitted suggestion is a valid mirror candidate'),
+  ((SELECT id FROM shadows WHERE code='X1'),
+   'canonical encoder injectivity (up to alpha) AND hash collision-resistance',
+   'content-key uniquely identifies the structural term modulo intended equivalence'),
+  ((SELECT id FROM shadows WHERE code='X2'),
+   'single-writer AND snapshot-pinning',
+   'no read-write conflicts; each reader observes a consistent Gamma throughout its session'),
+  ((SELECT id FROM shadows WHERE code='X3'),
+   'C1.3 source-span sidecar maintained',
+   'every error points to user-visible source; error UX no worse than current Agda'),
+  ((SELECT id FROM shadows WHERE code='X4'),
+   'instantiation substitution-respecting (delegated to C3.2.2)',
+   'parametric modules sound across instantiation; section-then-lemma discipline mechanically supported');
+
 COMMIT;
 
 -- ============================================================================
