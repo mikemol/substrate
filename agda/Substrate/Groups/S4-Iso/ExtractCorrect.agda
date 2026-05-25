@@ -18,7 +18,8 @@ import Substrate.Groups.Actions.S3-on-V4 as φ
 open import Substrate.Groups.S4 using (Permutation; _≈_)
 open Permutation
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; trans; sym; cong; sym-trans; trans-sym; cong-trans)
 
 open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃)
 open import Substrate.Groups.S4-Iso.Extract using (extract-s; extract-s-from)
@@ -29,7 +30,7 @@ open import Substrate.Groups.S4-Iso.Extract using (extract-s; extract-s-from)
 
 apply-inj : (s : Permutation) → ∀ {x y} → apply s x ≡ apply s y → x ≡ y
 apply-inj s {x} {y} eq =
-  trans (sym (inv-l s x)) (trans (cong (invₐ s) eq) (inv-l s y))
+  sym-trans (inv-l s x) (cong-trans (invₐ s) eq (inv-l s y))
 
 ------------------------------------------------------------------------
 -- embed-S₃ recovers D at the D-axis via φ.act-ε-N.
@@ -64,16 +65,16 @@ extract-s-correct : (s : Permutation) → apply s D ≡ D →
 extract-s-correct s sD D = trans (embed-S₃-D (extract-s s)) (sym sD)
 
 extract-s-correct s sD C with apply s C in eqC | apply s S in eqS
-... | D | D = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | C = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | S = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | W = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | C | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | S | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | W | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | C | C = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | S | S = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | W | W = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
+... | D | D = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | C = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | S = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | W = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | C | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | S | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | W | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | C | C = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | S | S = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | W | W = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
 ... | C | S = refl
 ... | S | W = refl
 ... | W | C = refl
@@ -82,16 +83,16 @@ extract-s-correct s sD C with apply s C in eqC | apply s S in eqS
 ... | C | W = refl
 
 extract-s-correct s sD S with apply s C in eqC | apply s S in eqS
-... | D | D = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | C = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | S = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | W = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | C | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | S | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | W | D = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | C | C = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | S | S = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | W | W = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
+... | D | D = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | C = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | S = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | W = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | C | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | S | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | W | D = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | C | C = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | S | S = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | W | W = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
 ... | C | S = refl
 ... | S | W = refl
 ... | W | C = refl
@@ -100,16 +101,16 @@ extract-s-correct s sD S with apply s C in eqC | apply s S in eqS
 ... | C | W = refl
 
 extract-s-correct s sD W with apply s C in eqC | apply s S in eqS | apply s W in eqW
-... | D | D | _ = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | C | _ = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | S | _ = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | D | W | _ = ⊥-elim (C≢D (apply-inj s (trans eqC (sym sD))))
-... | C | D | _ = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | S | D | _ = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | W | D | _ = ⊥-elim (S≢D (apply-inj s (trans eqS (sym sD))))
-... | C | C | _ = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | S | S | _ = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
-... | W | W | _ = ⊥-elim (C≢S (apply-inj s (trans eqC (sym eqS))))
+... | D | D | _ = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | C | _ = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | S | _ = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | D | W | _ = ⊥-elim (C≢D (apply-inj s (trans-sym eqC sD)))
+... | C | D | _ = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | S | D | _ = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | W | D | _ = ⊥-elim (S≢D (apply-inj s (trans-sym eqS sD)))
+... | C | C | _ = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | S | S | _ = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
+... | W | W | _ = ⊥-elim (C≢S (apply-inj s (trans-sym eqC eqS)))
 ... | C | S | D = ⊥-elim (W≢D (apply-inj s (trans eqW (sym sD))))
 ... | C | S | C = ⊥-elim (C≢W (apply-inj s (trans eqC (sym eqW))))
 ... | C | S | S = ⊥-elim (S≢W (apply-inj s (trans eqS (sym eqW))))

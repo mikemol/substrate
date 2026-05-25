@@ -17,7 +17,7 @@ import Substrate.Groups.Actions.S3-on-V4 as φ
 open import Substrate.Groups.V4-Embedding using (embed; act-axis-as-V₄-mult)
 open import Substrate.Groups.S4 using (_·_; _≈_)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; trans-sym)
 
 open import Substrate.Groups.S4-Iso.Foundation public
 
@@ -28,7 +28,7 @@ open import Substrate.Groups.S4-Iso.Foundation public
 forward-hom : (s₁ s₂ : S4C.Carrier) →
               compositional-to-perm (s₁ S4C.∙ s₂) ≈
               (compositional-to-perm s₁ · compositional-to-perm s₂)
-forward-hom (v₁ , sa) (v₂ , sb) x = trans LHS-form (sym RHS-form)
+forward-hom (v₁ , sa) (v₂ , sb) x = trans-sym LHS-form RHS-form
   where
     open import Substrate.Groups.S4 using (Permutation)
     open Permutation

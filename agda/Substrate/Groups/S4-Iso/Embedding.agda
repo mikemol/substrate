@@ -22,7 +22,8 @@ open import Substrate.Groups.S4 as S4
   using (Permutation; _·_)
 open Permutation
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; trans; sym; cong; sym-trans; cong-trans)
 
 ------------------------------------------------------------------------
 -- Internal apply / inv-apply combinators for embed-S₃.
@@ -43,21 +44,21 @@ private
   s3-apply-inv-r : (s : S₃.Carrier) (x : Axis) →
                    s3-apply s (s3-inv-apply s x) ≡ x
   s3-apply-inv-r s x =
-    trans (cong (λ y → axis-of-v (φ.act s y))
-                (v-of-axis-axis-of-v (φ.act (s S₃.⁻¹) (v-of-axis x))))
-    (trans (sym (cong axis-of-v (φ.act-∙ s (s S₃.⁻¹) (v-of-axis x))))
-    (trans (cong axis-of-v (φ-cong-v (s S₃.∙ s S₃.⁻¹) S₃.ε (v-of-axis x) (S₃.inv-right s)))
-    (trans (cong axis-of-v (φ.act-ε (v-of-axis x)))
+    cong-trans (λ y → axis-of-v (φ.act s y))
+               (v-of-axis-axis-of-v (φ.act (s S₃.⁻¹) (v-of-axis x)))
+    (sym-trans (cong axis-of-v (φ.act-∙ s (s S₃.⁻¹) (v-of-axis x)))
+    (cong-trans axis-of-v (φ-cong-v (s S₃.∙ s S₃.⁻¹) S₃.ε (v-of-axis x) (S₃.inv-right s))
+    (cong-trans axis-of-v (φ.act-ε (v-of-axis x))
            (axis-of-v-v-of-axis x))))
 
   s3-inv-apply-l : (s : S₃.Carrier) (x : Axis) →
                    s3-inv-apply s (s3-apply s x) ≡ x
   s3-inv-apply-l s x =
-    trans (cong (λ y → axis-of-v (φ.act (s S₃.⁻¹) y))
-                (v-of-axis-axis-of-v (φ.act s (v-of-axis x))))
-    (trans (sym (cong axis-of-v (φ.act-∙ (s S₃.⁻¹) s (v-of-axis x))))
-    (trans (cong axis-of-v (φ-cong-v (s S₃.⁻¹ S₃.∙ s) S₃.ε (v-of-axis x) (S₃.inv-left s)))
-    (trans (cong axis-of-v (φ.act-ε (v-of-axis x)))
+    cong-trans (λ y → axis-of-v (φ.act (s S₃.⁻¹) y))
+               (v-of-axis-axis-of-v (φ.act s (v-of-axis x)))
+    (sym-trans (cong axis-of-v (φ.act-∙ (s S₃.⁻¹) s (v-of-axis x)))
+    (cong-trans axis-of-v (φ-cong-v (s S₃.⁻¹ S₃.∙ s) S₃.ε (v-of-axis x) (S₃.inv-left s))
+    (cong-trans axis-of-v (φ.act-ε (v-of-axis x))
            (axis-of-v-v-of-axis x))))
 
 ------------------------------------------------------------------------
