@@ -26,7 +26,7 @@ module Substrate.Groups.Subgroup where
 open import Substrate.Foundation.Level using (0ℓ; suc)
 open import Substrate.Foundation.Product using (∃; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; sym-trans)
 
 open import Substrate.Axes using (Axis)
 open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
@@ -70,7 +70,7 @@ record S₄-NormalSubgroup : Set₁ where
 V₄-image-resp-≈ :
   {σ τ : Permutation} → σ ≈ τ → V₄-image σ → V₄-image τ
 V₄-image-resp-≈ {σ} {τ} σ≈τ (v , σ≈ev) =
-  v , (λ x → trans (sym (σ≈τ x)) (σ≈ev x))
+  v , (λ x → sym-trans (σ≈τ x) (σ≈ev x))
 
 V₄-image-ε : V₄-image ε
 V₄-image-ε = e , (λ x → sym (act-axis-id x))
@@ -131,7 +131,7 @@ V₄-image-NormalSubgroup = record
 
 Stab-resp-≈ :
   ∀ {X σ τ} → σ ≈ τ → Stab X σ → Stab X τ
-Stab-resp-≈ {X} σ≈τ σ-stab = trans (sym (σ≈τ X)) σ-stab
+Stab-resp-≈ {X} σ≈τ σ-stab = sym-trans (σ≈τ X) σ-stab
 
 Stab-ε : ∀ X → Stab X ε
 Stab-ε X = refl
@@ -144,7 +144,7 @@ Stab-∙ {X} {σ} σ-stab τ-stab =
 Stab-⁻¹ :
   ∀ {X σ} → Stab X σ → Stab X (σ ⁻¹)
 Stab-⁻¹ {X} {σ} σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ X)
+  sym-trans (cong (invₐₛ σ) σ-stab) (inv-l σ X)
 
 Stab-Subgroup : Axis → S₄-Subgroup
 Stab-Subgroup X = record

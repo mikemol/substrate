@@ -48,7 +48,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; trans; cong)
+  using (_≡_; _≢_; refl; sym; trans; cong; sym-trans; trans-sym; cong-trans)
 
 open import Substrate.Axes using (Axis; D; C; S; W; axis-cover; axis×axis-cover)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
@@ -72,18 +72,18 @@ Stab anchor σ = applyₛ σ anchor ≡ anchor
   (σ : Permutation) (x y : Axis) →
   applyₛ σ x ≡ applyₛ σ y → x ≡ y
 σ-injective σ x y eq =
-  trans (sym (inv-l σ x)) (trans (cong (invₐₛ σ) eq) (inv-l σ y))
+  sym-trans (inv-l σ x) (cong-trans (invₐₛ σ) eq (inv-l σ y))
 
 stab-preserves-≢ :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ →
   (x : Axis) → x ≢ anchor → applyₛ σ x ≢ anchor
 stab-preserves-≢ anchor σ σ-stab x x≢anc σx≡anc =
-  x≢anc (σ-injective σ x anchor (trans σx≡anc (sym σ-stab)))
+  x≢anc (σ-injective σ x anchor (trans-sym σx≡anc σ-stab))
 
 Stab-inv :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ → Stab anchor (σ ⁻¹)
 Stab-inv anchor σ σ-stab =
-  trans (sym (cong (invₐₛ σ) σ-stab)) (inv-l σ anchor)
+  sym-trans (cong (invₐₛ σ) σ-stab) (inv-l σ anchor)
 
 ------------------------------------------------------------------------
 -- Fin 3 ↔ non-anchor-axis bridges. 12 cases each direction.
