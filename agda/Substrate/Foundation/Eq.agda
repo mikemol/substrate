@@ -42,6 +42,32 @@ subst : {A : Set a} (P : A → Set b) {x y : A} → x ≡ y → P x → P y
 subst _ refl p = p
 
 ------------------------------------------------------------------------
+-- Naturality-step combinator: `trans (cong f p) q` packaged as one
+-- inference rule. Categorically a chain-cong / naturality-square step;
+-- recognisable site-shape across the repo (338+ occurrences in 124
+-- files at extraction time). Naming the step makes the rewrite-chain
+-- structure visible to the similarity checker.
+------------------------------------------------------------------------
+
+cong-trans : {A : Set a} {B : Set b} (f : A → B) {x y : A} {z : B} →
+             x ≡ y → f y ≡ z → f x ≡ z
+cong-trans f p q = trans (cong f p) q
+
+------------------------------------------------------------------------
+-- Sym-composition pair. `sym-trans p q` rewrites the source of `q`
+-- backwards along `p`; `trans-sym p q` rewrites the target of `p`
+-- backwards along `q`. Together they package the two dual triangles
+-- against a shared endpoint: `sym-trans` shares the source, `trans-sym`
+-- shares the target. 72 + 81 occurrences across the repo at extraction.
+------------------------------------------------------------------------
+
+sym-trans : {A : Set a} {x y z : A} → x ≡ y → x ≡ z → y ≡ z
+sym-trans p q = trans (sym p) q
+
+trans-sym : {A : Set a} {x y z : A} → x ≡ y → z ≡ y → x ≡ z
+trans-sym p q = trans p (sym q)
+
+------------------------------------------------------------------------
 -- Equational-reasoning syntax.
 ------------------------------------------------------------------------
 
