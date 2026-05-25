@@ -13,7 +13,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; trans-sym)
 
 module Substrate.Groups.Coxeter.Core.NormalizeCong.Right
   (Word : Set)
@@ -34,5 +34,5 @@ normalize-cong-right : (a : Word) {b₁ b₂ : Word} →
                        normalize (a ++ b₁) ≡ normalize (a ++ b₂)
 normalize-cong-right a {b₁} {b₂} eq =
   trans (normalize-append-right a b₁)
-  (trans (cong (λ x → normalize (a ++ x)) eq)
-         (sym (normalize-append-right a b₂)))
+  (trans-sym (cong (λ x → normalize (a ++ x)) eq)
+             (normalize-append-right a b₂))

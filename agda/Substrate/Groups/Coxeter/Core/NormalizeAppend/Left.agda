@@ -9,7 +9,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; trans-sym)
 
 module Substrate.Groups.Coxeter.Core.NormalizeAppend.Left
   (Word : Set)
@@ -27,7 +27,7 @@ open import Substrate.Groups.Coxeter.Core.NormalizeIdem
 
 normalize-append : (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ b)
 normalize-append a b =
-  trans (normalize-distrib a b)
-        (sym (trans (normalize-distrib (normalize a) b)
-                    (cong (λ x → normalize (x ++ normalize b))
-                          (normalize-idem a))))
+  trans-sym (normalize-distrib a b)
+            (trans (normalize-distrib (normalize a) b)
+                   (cong (λ x → normalize (x ++ normalize b))
+                         (normalize-idem a)))
