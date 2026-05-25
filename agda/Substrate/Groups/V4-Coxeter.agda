@@ -28,7 +28,7 @@ open import Substrate.Groups.Coxeter.Word public
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; cong₂; _≢_)
+  using (_≡_; refl; trans; sym; cong; cong₂; _≢_; sym-trans; cong-trans)
 
 ------------------------------------------------------------------------
 -- 1. V₄-specific data: generators, canonical forms, insert.
@@ -136,10 +136,10 @@ insert-append-lemma-V4 B {A ∷ []}     w₂ c-A  =
 insert-append-lemma-V4 B {B ∷ []}     w₂ c-B  =
   sym (insert-involution B (normalize-canonical w₂))
 insert-append-lemma-V4 B {A ∷ B ∷ []} w₂ c-AB =
-  trans (sym (cong (insert A)
-                   (insert-involution B (normalize-canonical w₂))))
-        (sym (insert-commute B A
-                (insert-canonical B (normalize-canonical w₂))))
+  sym-trans (cong (insert A)
+                  (insert-involution B (normalize-canonical w₂)))
+            (sym (insert-commute B A
+                    (insert-canonical B (normalize-canonical w₂))))
 
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
@@ -192,9 +192,9 @@ private
     normalize (normalize w₁ ++ normalize w₂ ++ normalize w₃ ++ normalize w₄)
   flatten-product w₁ w₂ w₃ w₄ =
     trans (normalize-idem (normalize (w₁ ++ w₂) ++ normalize (w₃ ++ w₄)))
-    (trans (sym (normalize-append (w₁ ++ w₂) (normalize (w₃ ++ w₄))))
-    (trans (sym (normalize-append-right (w₁ ++ w₂) (w₃ ++ w₄)))
-    (trans (cong normalize (++-assoc-4 w₁ w₂ w₃ w₄))
+    (sym-trans (normalize-append (w₁ ++ w₂) (normalize (w₃ ++ w₄)))
+    (sym-trans (normalize-append-right (w₁ ++ w₂) (w₃ ++ w₄))
+    (cong-trans normalize (++-assoc-4 w₁ w₂ w₃ w₄)
            (normalize-quad w₁ w₂ w₃ w₄))))
 
   -- eval-canonical: on 4 Canonical proofs + 6 pairwise ≉, the

@@ -37,7 +37,7 @@ open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; _,_; -,_)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; sym-trans; cong-trans)
 
 -- Axis + bijection (v-of-axis / axis-of-v) + round-trips + act-axis
 -- now live in Substrate.Axes. Re-exported here so downstream code
@@ -81,16 +81,16 @@ act-axis-as-V₄-mult _ _ = refl
 
 act-axis-id : (x : Axis) → act-axis e x ≡ x
 act-axis-id x =
-  trans (cong axis-of-v (V4.ε-left (v-of-axis x)))
-        (axis-of-v-v-of-axis x)
+  cong-trans axis-of-v (V4.ε-left (v-of-axis x))
+             (axis-of-v-v-of-axis x)
 
 act-axis-∙ :
   (g h : V₄) (x : Axis) →
   act-axis (g V4.· h) x ≡ act-axis g (act-axis h x)
 act-axis-∙ g h x =
-  trans (cong axis-of-v (V4.·-assoc g h (v-of-axis x)))
-        (cong (λ w → axis-of-v (g V4.· w))
-              (sym (v-of-axis-axis-of-v (h V4.· v-of-axis x))))
+  cong-trans axis-of-v (V4.·-assoc g h (v-of-axis x))
+             (cong (λ w → axis-of-v (g V4.· w))
+                   (sym (v-of-axis-axis-of-v (h V4.· v-of-axis x))))
 
 ------------------------------------------------------------------------
 -- act-axis involutivity — derived from act-axis-∙ + V_4 self-inverse.
@@ -106,9 +106,9 @@ act-axis-∙ g h x =
 
 act-axis-involutive : (g : V₄) (x : Axis) → act-axis g (act-axis g x) ≡ x
 act-axis-involutive g x =
-  trans (sym (act-axis-∙ g g x))
-        (trans (cong (λ v → act-axis v x) (V4.inv-left g))
-               (act-axis-id x))
+  sym-trans (act-axis-∙ g g x)
+        (cong-trans (λ v → act-axis v x) (V4.inv-left g)
+                    (act-axis-id x))
 
 ------------------------------------------------------------------------
 -- The embedding V_4 → S_4.

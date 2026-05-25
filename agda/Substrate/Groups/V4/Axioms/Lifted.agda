@@ -30,7 +30,8 @@
 
 module Substrate.Groups.V4.Axioms.Lifted where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; sym; trans; cong; sym-trans; cong-trans)
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 -- The polymorphic n-refls primitive lives in Coxeter.CanonicalCover —
@@ -76,8 +77,8 @@ to-c-· a b =
   (w₁ w₂ w₃ : C.Word C.Gen) →
   (w₁ C.· w₂) C.· w₃ ≡ w₁ C.· (w₂ C.· w₃)
 ·-assoc-Word w₁ w₂ w₃ =
-  trans (sym (C.normalize-append (w₁ ++ w₂) w₃))
-  (trans (cong C.normalize (++-assoc w₁ w₂ w₃))
+  sym-trans (C.normalize-append (w₁ ++ w₂) w₃)
+  (cong-trans C.normalize (++-assoc w₁ w₂ w₃)
          (C.normalize-append-right w₁ (w₂ ++ w₃)))
 
 canonical-cover :
@@ -184,8 +185,8 @@ inv-inverse = inv-left , inv-right
 -- a · b ≡ b ⟹ a ≡ a · (b · b) ⟹ a ≡ (a · b) · b ≡ b · b ≡ ε.
 ·-right-cancel-ε : (a b : V₄) → a · b ≡ b → a ≡ ε
 ·-right-cancel-ε a b a·b≡b =
-  trans (sym (ε-right a))
-  (trans (cong (a ·_) (sym (inv-right b)))
-  (trans (sym (·-assoc a b b))
-  (trans (cong (_· b) a·b≡b)
+  sym-trans (ε-right a)
+  (cong-trans (a ·_) (sym (inv-right b))
+  (sym-trans (·-assoc a b b)
+  (cong-trans (_· b) a·b≡b
          (inv-right b))))

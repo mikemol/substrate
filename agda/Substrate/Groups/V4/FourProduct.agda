@@ -12,7 +12,7 @@
 module Substrate.Groups.V4.FourProduct where
 
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; _≢_)
+  using (_≡_; refl; sym; trans; cong; _≢_; sym-trans; cong-trans)
 
 import Substrate.Groups.V4-Coxeter as C
 open import Substrate.Groups.Coxeter.Word using ([])
@@ -47,9 +47,9 @@ private
   ≢→≉ : {x y : V₄} → x ≢ y → to-c x C.≉ to-c y
   ≢→≉ {x} {y} ineq normalize-eq =
     ineq (to-c-injective x y
-            (trans (sym (C.canonical-is-fixed-V4 (to-c-canonical x)))
-                   (trans normalize-eq
-                          (C.canonical-is-fixed-V4 (to-c-canonical y)))))
+            (sym-trans (C.canonical-is-fixed-V4 (to-c-canonical x))
+                       (trans normalize-eq
+                              (C.canonical-is-fixed-V4 (to-c-canonical y)))))
 
   -- Bridge: to-c (a · b) ≡ to-c a C.· to-c b.
   to-c-· : (a b : V₄) → to-c (a · b) ≡ to-c a C.· to-c b
@@ -79,10 +79,10 @@ V₄-4-product a b c d a≢b a≢c a≢d b≢c b≢d c≢d =
     bridge : to-c ((a · b) · (c · d)) ≡ []
     bridge =
       trans (to-c-· (a · b) (c · d))
-      (trans (cong (λ x → C.normalize (x C.++ to-c (c · d)))
-                   (to-c-· a b))
-      (trans (cong (λ x → C.normalize ((to-c a C.· to-c b) C.++ x))
-                   (to-c-· c d))
-      (trans (sym (C.normalize-idem
-                    ((to-c a C.· to-c b) C.++ (to-c c C.· to-c d))))
-             coxeter-result)))
+      (cong-trans (λ x → C.normalize (x C.++ to-c (c · d)))
+                  (to-c-· a b)
+      (cong-trans (λ x → C.normalize ((to-c a C.· to-c b) C.++ x))
+                  (to-c-· c d)
+      (sym-trans (C.normalize-idem
+                    ((to-c a C.· to-c b) C.++ (to-c c C.· to-c d)))
+                 coxeter-result)))
