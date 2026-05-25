@@ -100,3 +100,40 @@ CREATE TABLE library_correspondence (
 );
 
 CREATE INDEX idx_lib_corr_shadow ON library_correspondence(shadow_id);
+
+-- ============================================================================
+-- Γ-INSTANCE TABLES
+-- ============================================================================
+-- The sketch's C1 cluster claims to be a Γ-store of productions. These tables
+-- instantiate that claim: each row in `productions` is an actual right-rule
+-- introduction registered in the substrate library by an extraction commit,
+-- and each row in `production_usages` records a left-rule application
+-- (a call site that consumes the production).
+--
+-- The file thereby becomes a small instance of the architecture it sketches.
+-- ============================================================================
+
+CREATE TABLE productions (
+  id                  INTEGER PRIMARY KEY,
+  code                TEXT NOT NULL UNIQUE,
+  module_path         TEXT NOT NULL,
+  lhs_signature       TEXT NOT NULL,
+  rhs_expansion       TEXT NOT NULL,
+  status              TEXT NOT NULL CHECK (status IN ('extracted','proposed','retired')),
+  extraction_commit   TEXT,
+  notes               TEXT
+);
+
+CREATE INDEX idx_productions_status ON productions(status);
+
+CREATE TABLE production_usages (
+  id                  INTEGER PRIMARY KEY,
+  production_id       INTEGER NOT NULL REFERENCES productions(id),
+  file_path           TEXT NOT NULL,
+  occurrence_count    INTEGER NOT NULL,
+  observed_at_commit  TEXT,
+  UNIQUE (production_id, file_path)
+);
+
+CREATE INDEX idx_pu_production ON production_usages(production_id);
+CREATE INDEX idx_pu_file ON production_usages(file_path);

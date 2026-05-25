@@ -66,11 +66,21 @@ Cross-cutting relationships:
 | `compositions`           |   27 |
 | `entailments`            |   27 |
 | `cross_entailments`      |   10 |
-| `library_correspondence` |    7 |
+| `library_correspondence` |    9 |
+| `productions`            |    3 |
+| `production_usages`      |   28 |
 
 Status distribution: 58 leaves, 23 productive, 4 cross-cutting, 2 research-frontier, 1 root.
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
+
+## Γ-instance: the file is the architecture it sketches
+
+The `productions` and `production_usages` tables instantiate the C1 cluster (`Γ-store`). Each row in `productions` is an actual right-rule introduction registered in the substrate library by an extraction commit; each row in `production_usages` records a left-rule call site.
+
+Current Γ-instance: 3 productions (`cong-trans`, `sym-trans`, `trans-sym` from `Substrate.Foundation.Eq`, extracted at commit `894cd8a`); 28 usage rows across the 14 files that have adopted them. The library_correspondence rows link `C1` ↔ `productions table` and `C1.2` ↔ `production_usages table`.
+
+This closes a structural loop: the sqlite file *is* a small Γ-store, holding the same productions whose extraction-discipline it describes in its shadow tree.
 
 ## Research frontiers (where the sketch terminates honestly)
 

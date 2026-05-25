@@ -713,6 +713,84 @@ INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
    'instantiation substitution-respecting (delegated to C3.2.2)',
    'parametric modules sound across instantiation; section-then-lemma discipline mechanically supported');
 
+-- ============================================================================
+-- Γ-INSTANCE DATA — actual productions registered in the substrate library
+-- via extraction commits. Each row is a right-rule introduction by the
+-- sketch's terms; production_usages records left-rule call sites.
+-- ============================================================================
+
+INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status, extraction_commit, notes) VALUES
+  ('cong-trans', 'Substrate.Foundation.Eq',
+   '(f : A → B) {x y : A} {z : B} → x ≡ y → f y ≡ z → f x ≡ z',
+   'trans (cong f p) q',
+   'extracted', '894cd8a',
+   'Naturality-step combinator. Highest-frequency Eq composition (338 sites at extraction time).'),
+  ('sym-trans', 'Substrate.Foundation.Eq',
+   '{x y z : A} → x ≡ y → x ≡ z → y ≡ z',
+   'trans (sym p) q',
+   'extracted', '894cd8a',
+   'Shared-source triangle. Second-highest frequency (72 sites at extraction time).'),
+  ('trans-sym', 'Substrate.Foundation.Eq',
+   '{x y z : A} → x ≡ y → z ≡ y → x ≡ z',
+   'trans p (sym q)',
+   'extracted', '894cd8a',
+   'Shared-target triangle. Third-highest frequency (81 sites at extraction time).');
+
+-- ----------------------------------------------------------------------------
+-- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
+-- backfill). Counts include the import line; subtract 1 for raw call-site count.
+-- ----------------------------------------------------------------------------
+
+-- cong-trans usages
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Cyclic/Lookup0.agda', 3, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Cyclic/Lookup1.agda', 5, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Cyclic/Lookup2.agda', 4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Swap/Lookup0.agda',   5, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Swap/Lookup1.agda',   3, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridgeAlternatives/Swap/Lookup2.agda',   4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/S4-Iso/Embedding.agda',                                        7, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/S4-Iso/ExtractCorrect.agda',                                   2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Stab-S3.agda',                                                 2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/V4-Coxeter.agda',                                              2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/V4-Embedding.agda',                                            4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/V4/Axioms/Lifted.agda',                                        4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/V4/FourProduct.agda',                                          3, '6664ea5');
+
+-- sym-trans usages
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/S4-Iso/Embedding.agda',           3, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/S4-Iso/ExtractCorrect.agda',      2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/Stab-S3.agda',                    3, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/Subgroup.agda',                   4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/V4-Coxeter.agda',                 4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/V4-Embedding.agda',               2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/V4/Axioms/Lifted.agda',           4, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/V4/FourProduct.agda',             3, '6664ea5');
+
+-- trans-sym usages
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/Coxeter/Core/NormalizeAppend/Left.agda',  2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/Coxeter/Core/NormalizeAppend/Right.agda', 2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/Coxeter/Core/NormalizeCong/Left.agda',    2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/Coxeter/Core/NormalizeCong/Right.agda',   2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/S4-Iso/ExtractCorrect.agda',              31, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/S4-Iso/ForwardHom.agda',                  2, '6664ea5'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Groups/Stab-S3.agda',                            2, '6664ea5');
+
+-- ----------------------------------------------------------------------------
+-- Link the productions table back to C1 (Γ-store): the table IS C1 at the
+-- library-discipline level for the substrate's recent extractions.
+-- ----------------------------------------------------------------------------
+
+INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'productions table',
+   'The productions table is a literal Γ-store instance for the substrate library; each row is a right-rule introduction.'),
+  ((SELECT id FROM shadows WHERE code='C1.2'),
+   'production_usages table',
+   'production_usages is a forward-direction instance of the production-ref index: production -> set of containing files.');
+
 COMMIT;
 
 -- ============================================================================

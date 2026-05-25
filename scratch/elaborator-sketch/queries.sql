@@ -141,3 +141,43 @@ WHERE s.rung LIKE 'R(reach, role-labeled-graphs)%'
 
 .print
 .print 'If any of the four invariant queries above returns rows, the db is structurally incomplete with respect to the prose sketch.'
+
+-- ----------------------------------------------------------------------------
+-- 12. Γ-INSTANCE QUERIES — exercise the productions / production_usages tables.
+-- ----------------------------------------------------------------------------
+
+.print
+.print '== Productions registered in Gamma (the substrate library) =='
+SELECT code, module_path, status, extraction_commit FROM productions ORDER BY code;
+
+.print
+.print '== Usage count totals per production =='
+SELECT p.code, COUNT(u.id) AS usage_files, SUM(u.occurrence_count) AS total_occurrences
+FROM productions p LEFT JOIN production_usages u ON u.production_id = p.id
+GROUP BY p.id ORDER BY p.code;
+
+.print
+.print '== Top adopter files (= files adopting most distinct productions) =='
+SELECT u.file_path, COUNT(DISTINCT u.production_id) AS distinct_productions, SUM(u.occurrence_count) AS total_occurrences
+FROM production_usages u
+GROUP BY u.file_path
+ORDER BY distinct_productions DESC, total_occurrences DESC
+LIMIT 10;
+
+.print
+.print '== Productions and their containing-file count (forward production-ref index view) =='
+SELECT p.code, p.lhs_signature, COUNT(u.id) AS files
+FROM productions p LEFT JOIN production_usages u ON u.production_id = p.id
+GROUP BY p.id ORDER BY files DESC;
+
+-- ----------------------------------------------------------------------------
+-- 13. CROSS-VIEW — productions linked to architecture shadows via correspondence.
+-- ----------------------------------------------------------------------------
+
+.print
+.print '== Architecture shadows that have library-level Gamma-instances =='
+SELECT s.code, s.name, lc.library_discipline, lc.notes
+FROM shadows s
+JOIN library_correspondence lc ON lc.shadow_id = s.id
+WHERE lc.library_discipline LIKE '%table%' OR lc.library_discipline LIKE '%production%'
+ORDER BY s.code;
