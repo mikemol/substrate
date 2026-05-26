@@ -60,18 +60,20 @@ Cross-cutting relationships:
 
 | Table                    | Rows |
 |--------------------------|------|
-| `shadows`                |   88 |
-| `transitions`            |   61 |
-| `role_edges`             |   27 |
-| `compositions`           |   27 |
-| `entailments`            |   27 |
-| `cross_entailments`      |   10 |
-| `library_correspondence` |    9 |
+| `shadows`                |  108 |
+| `transitions`            |   65 |
+| `role_edges`             |   34 |
+| `compositions`           |   35 |
+| `entailments`            |   35 |
+| `cross_entailments`      |   15 |
+| `library_correspondence` |   12 |
 | `productions`            |    3 |
 | `production_usages`      |   45 |
 | `extraction_candidates`  |   39 |
 
-Status distribution: 58 leaves, 23 productive, 4 cross-cutting, 2 research-frontier, 1 root.
+Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
+
+**Clusters now include C5 (gap-detector-precision-layer).** Added in the same commit that records the depth-4 sketch of the precision sub-architecture. C5 sits between raw regex gap-detection and `C4.2.3` candidate registration; discriminates real candidates from substring false positives via three precision tiers (lexical / AST-aware / semantic). The cluster is the architectural response to the structural-strictifier finding from commit `136c901` (regex catches `cong₂` as `cong`, `sym-sum-cong` as `sym`).
 
 Candidates distribution: 21 proposed (cong-trans: 20, sym-trans: 1), 16 done (trans-sym arc closed in `f429d6f`: 2 files; multi-production cohort migrated in `136c901`: 7 files × 2 productions = 14), 2 rejected. The trans-sym arc is closed; the sym-trans arc is one file from closure (`Cocycles/F2CubedPuncturing.agda`).
 

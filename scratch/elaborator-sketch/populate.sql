@@ -871,6 +871,167 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   -- Opportunistic trans-sym site picked up in FromImages.agda during the multi-production migration.
   ((SELECT id FROM productions WHERE code='trans-sym'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                   2, '136c901');
 
+-- ============================================================================
+-- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
+--
+-- Introduced after the structural-strictifier finding in commit 136c901:
+-- the gap-detector's grep patterns catch substring matches inside cong₂
+-- and identifiers like sym-sum-cong as false positives. C5 is the new
+-- sub-architecture that intercepts raw regex output before it reaches
+-- C4.2.3 (completion-suggester), discriminating real candidates from
+-- regex false positives via three precision tiers.
+-- ============================================================================
+
+-- LAYER 1 — the new cluster.
+INSERT INTO shadows (code, parent_id, name, depth, cluster, status, rung, description) VALUES
+  ('C5', (SELECT id FROM shadows WHERE code='arch'), 'gap-detector-precision-layer', 1, 'C5', 'productive',
+   'R(reach, role-labeled-graphs)',
+   'Sub-architecture between raw regex gap-detection and C4.2.3 candidate registration; discriminates real candidates from substring false positives via three precision tiers.');
+
+-- Layer-1 PENMAN role-edges
+INSERT INTO role_edges (shadow_id, source_node, role_label, target_node, target_role) VALUES
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':sits-between',      'sb', 'raw-grep-output and C4.2.3-completion-suggester'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':decomposes-into',   'p1', 'lexical-discriminator'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':decomposes-into',   'p2', 'ast-discriminator'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':decomposes-into',   'p3', 'semantic-discriminator'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':strengths-ordered', 'so', 'P.1-cheapest-P.3-strongest-only-when-needed'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':discharges',        'd',  'regex-false-positives'),
+  ((SELECT id FROM shadows WHERE code='C5'), 'C5', ':preserves',         'pr', 'current-true-positive-recall');
+
+INSERT INTO compositions (shadow_id, description) VALUES
+  ((SELECT id FROM shadows WHERE code='C5'),
+   'Short-circuit pipeline: regex matches enter C5.1; verdict spurious -> reject, verdict real -> pass to C4.2.3, verdict indeterminate -> escalate to C5.2; same again for C5.2 -> C5.3.');
+
+INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
+  ((SELECT id FROM shadows WHERE code='C5'),
+   'C5.1.2 rule-table sound AND C5.2 AST-walk sound AND C5.3 unifier sound',
+   'every C5-real candidate is a left-rule-applicable site, not a syntactic false positive');
+
+-- LAYER 2 — three precision tiers.
+INSERT INTO shadows (code, parent_id, name, depth, cluster, status, rung, description) VALUES
+  ('C5.1', (SELECT id FROM shadows WHERE code='C5'), 'lexical-discriminator', 2, 'C5', 'productive',
+   'R(reach, transitions)',
+   'Cheapest precision tier; word-boundary tests against rule table.'),
+  ('C5.2', (SELECT id FROM shadows WHERE code='C5'), 'ast-discriminator', 2, 'C5', 'productive',
+   'R(reach, transitions)',
+   'Mid-tier; parses enclosing Agda expression and walks ancestors to check outer-context.'),
+  ('C5.3', (SELECT id FROM shadows WHERE code='C5'), 'semantic-discriminator', 2, 'C5', 'productive',
+   'R(cov, types)',
+   'Strongest tier; type-checks whether candidate is a valid left-rule-application.');
+
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1'), 1, 'regex-match-event(file, pos, match-text)', 'extract-token-boundaries-around-match', 'match-position-known',  'token-boundary-quadruple'),
+  ((SELECT id FROM shadows WHERE code='C5.1'), 2, 'token-boundary-quadruple',                  'apply-word-boundary-tests',             'token-rules-loaded',    'discriminator-verdict (real | spurious | indeterminate)');
+
+INSERT INTO transitions (shadow_id, ordinal, before_state, morphism, preconditions, after_state) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.2'), 1, 'indeterminate-verdict-from-C5.1(file, pos, match-text)', 'parse-enclosing-expression-via-agda-parser', 'agda-parser-available', 'term-AST-with-pinpointed-subterm'),
+  ((SELECT id FROM shadows WHERE code='C5.2'), 2, 'term-AST-with-pinpointed-subterm',                       'walk-AST-checking-outer-operator',           'AST-shape-known',       'discriminator-verdict (real | spurious | indeterminate)');
+
+INSERT INTO compositions (shadow_id, description) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1'), 'Sequential: extract token window, then apply rule-table classification; if any rule fires, emit verdict; else emit indeterminate.'),
+  ((SELECT id FROM shadows WHERE code='C5.2'), 'Sequential: parse, ancestor-walk, classify. Defer to C5.3 only if AST classification is ambiguous.'),
+  ((SELECT id FROM shadows WHERE code='C5.3'), 'Call into C3.2 unifier with production LHS and candidate site; extract substitution; construct applicability witness.');
+
+INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1'),
+   'rule-table covers all known false-positive shapes',
+   'C5.1 returns "real" only for tokens that are exact production-name applications'),
+  ((SELECT id FROM shadows WHERE code='C5.2'),
+   'Agda parser is sound AND ancestor-walk respects its depth limit',
+   'C5.2 verdict is sound: real iff outer-context permits a production-as-head reading'),
+  ((SELECT id FROM shadows WHERE code='C5.3'),
+   'C3.2 unifier is sound (delegated)',
+   'C5.3 "real" verdict is a typed proof of left-rule applicability — strongest possible precision');
+
+-- LAYER 3 — sub-sub-shadows.
+INSERT INTO shadows (code, parent_id, name, depth, cluster, status, description) VALUES
+  ('C5.1.1', (SELECT id FROM shadows WHERE code='C5.1'), 'token-boundary-extractor', 3, 'C5', 'leaf',
+   'Slices N chars before/after match position; tokenises via char-class rules (alpha, digit, subscript, hyphen, paren, whitespace).'),
+  ('C5.1.2', (SELECT id FROM shadows WHERE code='C5.1'), 'rule-table', 3, 'C5', 'productive',
+   'Per-production word-boundary tables. Positive contexts vs negative-known-false-positive contexts.'),
+  ('C5.1.3', (SELECT id FROM shadows WHERE code='C5.1'), 'verdict-emitter', 3, 'C5', 'leaf',
+   'Returns real | spurious | indeterminate; indeterminate when window-context is not classifiable.'),
+  ('C5.2.1', (SELECT id FROM shadows WHERE code='C5.2'), 'agda-parser-invocation', 3, 'C5', 'leaf',
+   'Uses existing Agda front-end or tree-sitter grammar; output is AST with match position marked.'),
+  ('C5.2.2', (SELECT id FROM shadows WHERE code='C5.2'), 'ancestor-walk', 3, 'C5', 'productive',
+   'Walks N ancestors of marker node checking outer-operator; bounded by depth limit.'),
+  ('C5.2.3', (SELECT id FROM shadows WHERE code='C5.2'), 'outer-context-classifier', 3, 'C5', 'leaf',
+   'Maps ancestor fingerprint to verdict via a classification table.'),
+  ('C5.3.1', (SELECT id FROM shadows WHERE code='C5.3'), 'unifier-invocation', 3, 'C5', 'productive',
+   'Calls into C3.2 unifier with production LHS and candidate site; returns Just unifier or Nothing.'),
+  ('C5.3.2', (SELECT id FROM shadows WHERE code='C5.3'), 'substitution-extractor', 3, 'C5', 'leaf',
+   'From successful unification, extracts substitution mapping production params to candidate args.'),
+  ('C5.3.3', (SELECT id FROM shadows WHERE code='C5.3'), 'applicability-witness', 3, 'C5', 'leaf',
+   'Typed proof that applying production RHS at candidate site produces a term of the same type.');
+
+INSERT INTO compositions (shadow_id, description) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1.2'),
+   'Lookup-then-decide: try positive contexts first, then negative, then fall back.'),
+  ((SELECT id FROM shadows WHERE code='C5.2.2'),
+   'Recursive descent with bounded depth (default 3); at each step, check parent operator against wrapping table.'),
+  ((SELECT id FROM shadows WHERE code='C5.3.1'),
+   'Single-step delegation to C3.2 unifier.');
+
+INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1.2'),
+   'positive ∪ negative ∪ unknown partitions the context space',
+   'verdict is total'),
+  ((SELECT id FROM shadows WHERE code='C5.2.2'),
+   'bounded depth (3) AND finite wrapping-table',
+   'recursion terminates'),
+  ((SELECT id FROM shadows WHERE code='C5.3.1'),
+   'C3.2 unifier total + decidable',
+   'C5.3.1 returns definite Just unifier or Nothing in finite time');
+
+-- LAYER 4 — sub-sub-sub-shadows (where productive).
+INSERT INTO shadows (code, parent_id, name, depth, cluster, status, description) VALUES
+  ('C5.1.2.1', (SELECT id FROM shadows WHERE code='C5.1.2'), 'positive-context-generation', 4, 'C5', 'leaf',
+   'For each production, canonical application shape is <production-name> followed by ws and ( or identifier; generated from production syntactic name.'),
+  ('C5.1.2.2', (SELECT id FROM shadows WHERE code='C5.1.2'), 'negative-context-catalogue', 4, 'C5', 'productive',
+   'Per-session-discovered false positives (cong₂, cong-trans, sym-sum-cong, sym-trans-id, ...); grows as new false positives are found.'),
+  ('C5.1.2.3', (SELECT id FROM shadows WHERE code='C5.1.2'), 'fallback-policy', 4, 'C5', 'leaf',
+   'Any context not in positive ∪ negative sets returns indeterminate, deferring to C5.2.'),
+  ('C5.2.2.1', (SELECT id FROM shadows WHERE code='C5.2.2'), 'parent-operator-extractor', 4, 'C5', 'leaf',
+   'Given a marker node, returns the operator at its direct AST parent.'),
+  ('C5.2.2.2', (SELECT id FROM shadows WHERE code='C5.2.2'), 'wrapping-operator-table', 4, 'C5', 'leaf',
+   'Which parent operators change the semantics of the matched substring (sym wrapping cong makes regex match a substring of sym (cong ...) rather than a real trans (cong ...) site).'),
+  ('C5.2.2.3', (SELECT id FROM shadows WHERE code='C5.2.2'), 'walk-up-depth-limit', 4, 'C5', 'leaf',
+   'Default 3; deeper walks are rare and expensive.'),
+  ('C5.3.1.1', (SELECT id FROM shadows WHERE code='C5.3.1'), 'c3.2-call-shim', 4, 'C5', 'leaf',
+   'Adapter: converts C5 candidate format to C3.2 unifier input format.');
+
+INSERT INTO compositions (shadow_id, description) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1.2.2'),
+   'Mutable append-only list; each migration commit that discovers a new false-positive shape appends a row.');
+
+INSERT INTO entailments (shadow_id, antecedent, consequent) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1.2.2'),
+   'append-only discipline + each row records discovering-commit',
+   'catalogue is auditable and grows monotonically; never silently corrects past entries');
+
+-- Cross-shadow entailment edges connecting C5 to existing clusters.
+INSERT INTO cross_entailments (from_shadow_id, to_shadow_id, claim) VALUES
+  ((SELECT id FROM shadows WHERE code='C5'),     (SELECT id FROM shadows WHERE code='C4.2.3'),
+   'C5 verdict "real" ⊢ candidate is safe to register via C4.2.3 completion-suggester'),
+  ((SELECT id FROM shadows WHERE code='C5.1'),   (SELECT id FROM shadows WHERE code='C5.2'),
+   'C5.1 verdict "indeterminate" ⊢ defer to C5.2'),
+  ((SELECT id FROM shadows WHERE code='C5.2'),   (SELECT id FROM shadows WHERE code='C5.3'),
+   'C5.2 verdict "indeterminate" ⊢ defer to C5.3'),
+  ((SELECT id FROM shadows WHERE code='C5.3.1'), (SELECT id FROM shadows WHERE code='C3.2'),
+   'C5.3.1 delegates unification soundness to C3.2'),
+  ((SELECT id FROM shadows WHERE code='C5.1.2.2'),(SELECT id FROM shadows WHERE code='C4.2.1'),
+   'C5.1.2.2 catalogue grows in parallel with chirality-pair-detector findings; both record substrate-discovered structural facts');
+
+-- Library-discipline correspondence: extraction_candidates.notes column IS the
+-- depth-2 instance of C5.1.2.2 negative-context catalogue.
+INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
+  ((SELECT id FROM shadows WHERE code='C5.1.2.2'),
+   'extraction_candidates.notes column (false-positive rationale)',
+   'Each "Migrated in <sha>; N real sites, M <kind> false positives" note in extraction_candidates.notes IS one row in C5.1.2.2 negative-context catalogue. The notes column is the live append-only log of discovered false-positive shapes.'),
+  ((SELECT id FROM shadows WHERE code='C5'),
+   'manual per-file inspection in commit 136c901',
+   'Commit 136c901 manually executed C5.1 + C5.2 by hand for 3 files (Vector/Universal, FromImages); the new cluster names that work as automatable architecture.');
+
 COMMIT;
 
 -- ============================================================================
