@@ -34,7 +34,7 @@ open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
+  using (_≡_; refl; trans; cong; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -140,14 +140,14 @@ s₁-stabilises-metric-id = ≡-from-lookup _ _ goal
     goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₂
     goal ₃ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc zero)))) s₁-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₁)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc zero)))) s₁-on-e₀
+                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₁)
     goal ₄ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₂)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₀
+                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₂)
     goal ₅ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₁)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₁-on-e₂)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₁
+                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₁-on-e₂)
 
 ------------------------------------------------------------------------
 -- N-6: s₂ stabilises metric-id.
@@ -166,14 +166,14 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
     goal ₂ =
       cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₂
     goal ₃ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc zero)))) s₂-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₁)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc zero)))) s₂-on-e₀
+                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₁)
     goal ₄ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₂)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₀
+                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₂)
     goal ₅ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₁)
-            (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])) s₂-on-e₂)
+      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₁
+                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])) s₂-on-e₂)
 
 ------------------------------------------------------------------------
 -- N-7: Capstone documentation.

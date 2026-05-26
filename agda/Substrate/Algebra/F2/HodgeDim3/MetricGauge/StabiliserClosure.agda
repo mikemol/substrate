@@ -45,7 +45,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.StabiliserClosure where
 
 open import Substrate.Foundation.Eq
-  using (_≡_; trans; cong)
+  using (_≡_; trans; cong; cong-trans)
 
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
@@ -73,8 +73,8 @@ s₁∘s₂-stabilises-metric-id :
   congruence-act (s₁ ∘L s₂) metric-id ≡ metric-id
 s₁∘s₂-stabilises-metric-id =
   trans (congruence-compose-3 s₁ s₂ metric-id)
-  (trans (cong (congruence-act s₂) s₁-stabilises-metric-id)
-         s₂-stabilises-metric-id)
+  (cong-trans (congruence-act s₂) s₁-stabilises-metric-id
+              s₂-stabilises-metric-id)
 
 ------------------------------------------------------------------------
 -- N-2: Categorical retrofit — 3-cycle stabilisation as FixedPoint.
@@ -116,22 +116,22 @@ s₂∘s₁-stabilises-metric-id :
   congruence-act (s₂ ∘L s₁) metric-id ≡ metric-id
 s₂∘s₁-stabilises-metric-id =
   trans (congruence-compose-3 s₂ s₁ metric-id)
-  (trans (cong (congruence-act s₁) s₂-stabilises-metric-id)
-         s₁-stabilises-metric-id)
+  (cong-trans (congruence-act s₁) s₂-stabilises-metric-id
+              s₁-stabilises-metric-id)
 
 s₁∘s₂∘s₁-stabilises-metric-id :
   congruence-act (s₁ ∘L s₂ ∘L s₁) metric-id ≡ metric-id
 s₁∘s₂∘s₁-stabilises-metric-id =
   trans (congruence-compose-3 s₁ (s₂ ∘L s₁) metric-id)
-  (trans (cong (congruence-act (s₂ ∘L s₁)) s₁-stabilises-metric-id)
-         s₂∘s₁-stabilises-metric-id)
+  (cong-trans (congruence-act (s₂ ∘L s₁)) s₁-stabilises-metric-id
+              s₂∘s₁-stabilises-metric-id)
 
 s₂∘s₁∘s₂-stabilises-metric-id :
   congruence-act (s₂ ∘L s₁ ∘L s₂) metric-id ≡ metric-id
 s₂∘s₁∘s₂-stabilises-metric-id =
   trans (congruence-compose-3 s₂ (s₁ ∘L s₂) metric-id)
-  (trans (cong (congruence-act (s₁ ∘L s₂)) s₂-stabilises-metric-id)
-         s₁∘s₂-stabilises-metric-id)
+  (cong-trans (congruence-act (s₁ ∘L s₂)) s₂-stabilises-metric-id
+              s₁∘s₂-stabilises-metric-id)
 
 ------------------------------------------------------------------------
 -- N-4: FixedPoint retrofits for the remaining 3 elements.
