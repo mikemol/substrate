@@ -806,18 +806,18 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                           'trans (cong', 11, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/Q/AsModule.agda',                                            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                           'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',            'trans (cong', 10, 'done', 'a9ebf0e', 'Migrated in b2050d4 (HodgeDim3/MetricGauge cohort). 4 stabiliser-closure lemmas, same 3-line template.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                              'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector.agda',                                             'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                   'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                   'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in b2050d4. 6 sites: 3 per s₁/s₂ generator.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/ShiftHom.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/CongruenceCompose.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda',             'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₂.'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₁.'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₀.'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda',             'trans (cong',  5, 'rejected', 'a9ebf0e', 'All 5 reported sites are gap-detector false positives: trans (congruence-act-…) / trans (congruence-compose-…) identifier-prefix matches the regex `trans (cong`. File has 0 real cong-trans patterns. Discovered in b2050d4.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Symmetric.agda',                                              'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/S4-Iso/Foundation.agda',                                      'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/GroupAdapter.agda',                                   'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
@@ -875,6 +875,14 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
 INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/F2CubedPuncturing.agda', 3, '4b49216'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/F2CubedPuncturing.agda', 4, '4b49216');
+
+-- HodgeDim3/MetricGauge cohort migration (commit b2050d4) — 5 files.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',                       5, 'b2050d4'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                              7, 'b2050d4'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda',          6, 'b2050d4'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda',          6, 'b2050d4'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda',          6, 'b2050d4');
 
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
@@ -1035,7 +1043,10 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'Each "Migrated in <sha>; N real sites, M <kind> false positives" note in extraction_candidates.notes IS one row in C5.1.2.2 negative-context catalogue. The notes column is the live append-only log of discovered false-positive shapes.'),
   ((SELECT id FROM shadows WHERE code='C5'),
    'manual per-file inspection in commit 136c901',
-   'Commit 136c901 manually executed C5.1 + C5.2 by hand for 3 files (Vector/Universal, FromImages); the new cluster names that work as automatable architecture.');
+   'Commit 136c901 manually executed C5.1 + C5.2 by hand for 3 files (Vector/Universal, FromImages); the new cluster names that work as automatable architecture.'),
+  ((SELECT id FROM shadows WHERE code='C5.1.2.2'),
+   'identifier-prefix false-positive shape: trans (congruence-* …)',
+   'CongruenceBridge.agda has 5 sites of `trans (congruence-act-…)` / `trans (congruence-compose-…)` where `congruence-` is a single identifier starting with `cong-`. Generalises the cong-trans false-positive class beyond `cong₂` to any identifier prefixed by `cong<separator>`. Discovered in b2050d4 during MetricGauge cohort migration.');
 
 COMMIT;
 

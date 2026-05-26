@@ -66,23 +66,23 @@ Cross-cutting relationships:
 | `compositions`           |   35 |
 | `entailments`            |   35 |
 | `cross_entailments`      |   15 |
-| `library_correspondence` |   12 |
+| `library_correspondence` |   13 |
 | `productions`            |    3 |
-| `production_usages`      |   45 |
+| `production_usages`      |   52 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
 
 **Clusters now include C5 (gap-detector-precision-layer).** Added in the same commit that records the depth-4 sketch of the precision sub-architecture. C5 sits between raw regex gap-detection and `C4.2.3` candidate registration; discriminates real candidates from substring false positives via three precision tiers (lexical / AST-aware / semantic). The cluster is the architectural response to the structural-strictifier finding from commit `136c901` (regex catches `cong₂` as `cong`, `sym-sum-cong` as `sym`).
 
-Candidates distribution: 21 proposed (cong-trans: 20, sym-trans: 1), 16 done (trans-sym arc closed in `f429d6f`: 2 files; multi-production cohort migrated in `136c901`: 7 files × 2 productions = 14), 2 rejected. The trans-sym arc is closed; the sym-trans arc is one file from closure (`Cocycles/F2CubedPuncturing.agda`).
+Candidates distribution: 14 proposed (all cong-trans), 22 done (trans-sym arc `f429d6f`: 2 files; multi-production cohort `136c901`: 14; sym-trans arc closure `4b49216`: 1; HodgeDim3/MetricGauge cohort `b2050d4`: 5), 3 rejected (Foundation/Eq cong-trans definition site; Hedberg local `trans-sym-id` lemma; CongruenceBridge `congruence-*` identifier-prefix false positives). The sym-trans and trans-sym arcs are both closed; cong-trans is the sole open arc.
 
 Adoption picture per production:
 
 | Production   | Files | Total sites |
 |--------------|-------|-------------|
-| `cong-trans` |    20 |          98 |
-| `sym-trans`  |    15 |          47 |
+| `cong-trans` |    26 |         132 |
+| `sym-trans`  |    16 |          50 |
 | `trans-sym`  |    10 |          72 |
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
