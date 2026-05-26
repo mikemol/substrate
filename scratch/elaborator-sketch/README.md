@@ -67,8 +67,8 @@ Cross-cutting relationships:
 | `entailments`            |   35 |
 | `cross_entailments`      |   15 |
 | `library_correspondence` |   13 |
-| `productions`            |    9 |
-| `production_usages`      |   82 |
+| `productions`            |   10 |
+| `production_usages`      |   88 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
@@ -87,6 +87,7 @@ Adoption picture per production:
 | `pred-at-i→kernel-at-i` |     2 |           3 |
 | `kernel-at-i→pred-at-i` |     2 |           3 |
 | `cubed-orbit-walk`      |     3 |           3 |
+| `squared-orbit-walk`    |     6 |           6 |
 | `diag-bf-step`          |     3 |          12 |
 | `off-diag-bf-step`      |     3 |          12 |
 | `compose-stabilises`    |     1 |           4 |
@@ -97,7 +98,7 @@ Adoption picture per production:
 
 The `productions` and `production_usages` tables instantiate the C1 cluster (`Γ-store`). Each row in `productions` is an actual right-rule introduction registered in the substrate library by an extraction commit; each row in `production_usages` records a left-rule call site.
 
-Current Γ-instance: 3 productions (`cong-trans`, `sym-trans`, `trans-sym` from `Substrate.Foundation.Eq`, extracted at commit `894cd8a`); 28 usage rows across the 14 files that have adopted them. The library_correspondence rows link `C1` ↔ `productions table` and `C1.2` ↔ `production_usages table`.
+Current Γ-instance: 10 productions; 88 usage rows across the files that have adopted them. The original trio (`cong-trans`, `sym-trans`, `trans-sym` from `Substrate.Foundation.Eq`, extracted at commit `894cd8a`) has since been joined by 7 additional productions including the orbit-walk pair (`squared-orbit-walk`, `cubed-orbit-walk`) covering the 12 Coxeter-relation orbit cells. The library_correspondence rows link `C1` ↔ `productions table` and `C1.2` ↔ `production_usages table`.
 
 This closes a structural loop: the sqlite file *is* a small Γ-store, holding the same productions whose extraction-discipline it describes in its shadow tree.
 

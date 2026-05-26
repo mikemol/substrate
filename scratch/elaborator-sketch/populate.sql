@@ -764,7 +764,12 @@ INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status
    '(T₁ T₂ : Linear 3 3) → congruence-act T₁ metric-id ≡ metric-id → congruence-act T₂ metric-id ≡ metric-id → congruence-act (T₁ ∘L T₂) metric-id ≡ metric-id',
    'trans (congruence-compose-3 T₁ T₂ metric-id) (cong-trans (congruence-act T₂) stab-T₁ stab-T₂)',
    'extracted', '70fe1ce',
-   'Substrate instance of "stabiliser closes under composition" for congruence-act + metric-id. 4 sites: the 4 composite-stabiliser-of-metric-id lemmas in StabiliserClosure.agda. Together with the 2 Coxeter generator witnesses, generates the full 6-element S₃ stabiliser.');
+   'Substrate instance of "stabiliser closes under composition" for congruence-act + metric-id. 4 sites: the 4 composite-stabiliser-of-metric-id lemmas in StabiliserClosure.agda. Together with the 2 Coxeter generator witnesses, generates the full 6-element S₃ stabiliser.'),
+  ('squared-orbit-walk', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.SquaredOrbitWalk',
+   '(s : Linear n n) (a₀ : Vector n) {a₁ a₂ : Vector n} → apply s a₀ ≡ a₁ → apply s a₁ ≡ a₂ → apply (s ∘L s) a₀ ≡ a₂',
+   'trans (cong (apply s) e₀) e₁',
+   'extracted', '94fb778',
+   'Parametric involution-step / s² orbit walk. Companion to cubed-orbit-walk: handles the Coxeter s² relation as cubed handles (s₁∘s₂)³. 6 sites: S{1,2}SquaredOn{E0,E1,E2}, each collapses 3-line body to 1-line call. Same a₀-explicit treatment as cubed-orbit-walk to avoid unification deadlock when s is built via linear-from-images.');
 
 -- ----------------------------------------------------------------------------
 -- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
@@ -970,6 +975,15 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   -- that off-diag-bf-step's internal use of cong-trans now absorbs.
   ((SELECT id FROM productions WHERE code='cong-trans'),       'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda', 3, '394b85b');
 
+-- SquaredOrbitWalk extraction + migration (commit 94fb778) — 6 seed sites.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1SquaredOnE0.agda', 1, '94fb778'),
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1SquaredOnE1.agda', 1, '94fb778'),
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1SquaredOnE2.agda', 1, '94fb778'),
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S2SquaredOnE0.agda', 1, '94fb778'),
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S2SquaredOnE1.agda', 1, '94fb778'),
+  ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S2SquaredOnE2.agda', 1, '94fb778');
+
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
 --
@@ -1138,7 +1152,10 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'Higher-order Γ-production: discovered by typed-holes on ChiralityAxis ↔ V4Plane AFTER the Foundation.Eq trio arc closed. Bridges (a) component-equality predicate form and (b) kernel-of-linear-map form for F₂-vector subspaces. Composes the trio with lookup-𝟎; each per-site call collapses ~3 lines per index. Demonstrates the iterated-SPPF principle at depth-2: trio extraction surfaces NEW bridges that the trio alone couldn''t express.'),
   ((SELECT id FROM shadows WHERE code='C1'),
    'CubedOrbitWalk module (parametric Coxeter (s₁∘s₂)³ on basis)',
-   'Parametric production extracted under the fine-grained-over-coarse discipline. The 3 S1S2CubedOn{E0,E1,E2} files shared a 5-call cong-trans chain template with 6 swap-lemma argument positions varying per starting basis. Was initially declined under DBE''s over-decomposition warning; reinstated when the user clarified that fine-grained primitives are mechanically recomposable while coarse-grained primitives cause context-flood for rearrangement.');
+   'Parametric production extracted under the fine-grained-over-coarse discipline. The 3 S1S2CubedOn{E0,E1,E2} files shared a 5-call cong-trans chain template with 6 swap-lemma argument positions varying per starting basis. Was initially declined under DBE''s over-decomposition warning; reinstated when the user clarified that fine-grained primitives are mechanically recomposable while coarse-grained primitives cause context-flood for rearrangement.'),
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'SquaredOrbitWalk module (parametric Coxeter s² involution on vector)',
+   'Companion to CubedOrbitWalk: extracts the 1-step `trans (cong (apply s) e₀) e₁` chain shared by all 6 S{1,2}SquaredOn{E0,E1,E2} cells. Together with cubed-orbit-walk, the two productions cover the 6+6 = 12 Coxeter-relation orbit cells. Each per-site call collapses 3-line body to 1-line. a₀ is explicit (same treatment as cubed-orbit-walk) to avoid unification deadlock when s is built via linear-from-images and basis vectors don''t reduce mechanically.');
 
 COMMIT;
 
