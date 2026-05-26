@@ -137,3 +137,24 @@ CREATE TABLE production_usages (
 
 CREATE INDEX idx_pu_production ON production_usages(production_id);
 CREATE INDEX idx_pu_file ON production_usages(file_path);
+
+-- ============================================================================
+-- EXTRACTION CANDIDATES — gap-detector view of where productions could land.
+-- Concretises the C4.2.3 completion-suggester shadow with real library data.
+-- Each row says: "this file contains N raw-pattern matches that production_id
+-- could absorb, but the file hasn't yet been migrated."
+-- ============================================================================
+CREATE TABLE extraction_candidates (
+  id                     INTEGER PRIMARY KEY,
+  production_id          INTEGER NOT NULL REFERENCES productions(id),
+  file_path              TEXT NOT NULL,
+  raw_pattern            TEXT NOT NULL,
+  occurrence_count       INTEGER NOT NULL,
+  status                 TEXT NOT NULL CHECK (status IN ('proposed','migrating','done','rejected')),
+  discovered_at_commit   TEXT,
+  notes                  TEXT,
+  UNIQUE (production_id, file_path)
+);
+
+CREATE INDEX idx_ec_production ON extraction_candidates(production_id);
+CREATE INDEX idx_ec_status ON extraction_candidates(status);

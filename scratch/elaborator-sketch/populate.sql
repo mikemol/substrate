@@ -789,7 +789,63 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'The productions table is a literal Γ-store instance for the substrate library; each row is a right-rule introduction.'),
   ((SELECT id FROM shadows WHERE code='C1.2'),
    'production_usages table',
-   'production_usages is a forward-direction instance of the production-ref index: production -> set of containing files.');
+   'production_usages is a forward-direction instance of the production-ref index: production -> set of containing files.'),
+  ((SELECT id FROM shadows WHERE code='C4.2.3'),
+   'extraction_candidates table',
+   'extraction_candidates is a literal gap-detector instance of the completion-suggester shadow: produces left-rule-applicable sites awaiting migration.');
+
+-- ============================================================================
+-- EXTRACTION-CANDIDATE DATA — discovered gap sites where the trio could land.
+-- Counts taken at commit a9ebf0e via grep -c against the relevant raw pattern.
+-- ============================================================================
+
+-- cong-trans candidates: files with 3+ unmigrated `trans (cong` sites.
+INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurrence_count, status, discovered_at_commit, notes) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Linear/FromImages.agda',                                  'trans (cong', 12, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda',                              'trans (cong', 11, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                           'trans (cong', 11, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/Q/AsModule.agda',                                            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                           'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                              'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector.agda',                                             'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                   'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/ShiftHom.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/CongruenceCompose.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda','trans (cong', 5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda',             'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Symmetric.agda',                                              'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/S4-Iso/Foundation.agda',                                      'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/GroupAdapter.agda',                                   'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',                                    'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivector.agda',              'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Reverse.agda',         'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Category/Coalgebra/FiniteOrder.agda',                                'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector/Universal.agda',                                   'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/Bivector-F2Graded.agda',                        'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/AsModule.agda',                                           'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Eq.agda',                                                 'trans (cong',  2, 'rejected', 'a9ebf0e', 'These two sites are the cong-trans definition itself.');
+
+-- sym-trans candidates: all unmigrated sites count >= 2, with Hedberg flagged.
+INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurrence_count, status, discovered_at_commit, notes) VALUES
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Foundation/Hedberg.agda',                                            'trans (sym', 12, 'rejected', 'a9ebf0e', 'Local trans-sym-id definition uses trans (sym ...); not a substrate.Foundation.Eq.sym-trans candidate.'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/Symmetric.agda',                                              'trans (sym',  3, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/ShiftHom.agda','trans (sym', 3, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/Coxeter/GroupAdapter.agda',                                   'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda',                              'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/F2CubedPuncturing.agda',                                    'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Vector/Universal.agda',                                   'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                  'trans (sym',  2, 'proposed', 'a9ebf0e', NULL);
+
+-- trans-sym candidates: the two unmigrated sites.
+INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurrence_count, status, discovered_at_commit, notes) VALUES
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Cases.agda',     'trans X (sym Y)', 18, 'proposed', 'a9ebf0e', 'S4Iso roundtrip case-analysis; densest unmigrated trans-sym site in the repo.'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Roundtrips.agda', 'trans X (sym Y)',  7, 'proposed', 'a9ebf0e', 'S4Iso roundtrips; companion to Cases.agda.');
 
 COMMIT;
 

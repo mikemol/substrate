@@ -181,3 +181,52 @@ FROM shadows s
 JOIN library_correspondence lc ON lc.shadow_id = s.id
 WHERE lc.library_discipline LIKE '%table%' OR lc.library_discipline LIKE '%production%'
 ORDER BY s.code;
+
+-- ----------------------------------------------------------------------------
+-- 14. GAP-DETECTOR QUERIES — exercise the extraction_candidates table.
+-- ----------------------------------------------------------------------------
+
+.print
+.print '== Top 10 highest-density extraction candidates (proposed only) =='
+SELECT p.code AS production, ec.file_path, ec.occurrence_count
+FROM extraction_candidates ec
+JOIN productions p ON p.id = ec.production_id
+WHERE ec.status = 'proposed'
+ORDER BY ec.occurrence_count DESC
+LIMIT 10;
+
+.print
+.print '== Candidate summary by production =='
+SELECT p.code AS production,
+       SUM(CASE WHEN ec.status='proposed' THEN 1 ELSE 0 END) AS proposed_files,
+       SUM(CASE WHEN ec.status='proposed' THEN ec.occurrence_count ELSE 0 END) AS proposed_total_sites,
+       SUM(CASE WHEN ec.status='rejected' THEN 1 ELSE 0 END) AS rejected_files
+FROM productions p
+LEFT JOIN extraction_candidates ec ON ec.production_id = p.id
+GROUP BY p.code ORDER BY p.code;
+
+.print
+.print '== Total adoption picture: production X (migrated + proposed + rejected) =='
+SELECT p.code AS production,
+       (SELECT COUNT(*) FROM production_usages u WHERE u.production_id = p.id)   AS migrated_files,
+       (SELECT COALESCE(SUM(u.occurrence_count),0) FROM production_usages u WHERE u.production_id = p.id) AS migrated_sites,
+       (SELECT COUNT(*) FROM extraction_candidates ec WHERE ec.production_id = p.id AND ec.status='proposed') AS proposed_files,
+       (SELECT COALESCE(SUM(ec.occurrence_count),0) FROM extraction_candidates ec WHERE ec.production_id = p.id AND ec.status='proposed') AS proposed_sites
+FROM productions p ORDER BY p.code;
+
+.print
+.print '== Rejected candidates with rationale (false positives) =='
+SELECT p.code AS production, ec.file_path, ec.occurrence_count, ec.notes
+FROM extraction_candidates ec
+JOIN productions p ON p.id = ec.production_id
+WHERE ec.status = 'rejected';
+
+.print
+.print '== Files that are candidates for MULTIPLE productions (high-payoff migration targets) =='
+SELECT ec.file_path, GROUP_CONCAT(p.code, ', ') AS productions, SUM(ec.occurrence_count) AS total_sites
+FROM extraction_candidates ec
+JOIN productions p ON p.id = ec.production_id
+WHERE ec.status = 'proposed'
+GROUP BY ec.file_path
+HAVING COUNT(DISTINCT p.id) > 1
+ORDER BY total_sites DESC;

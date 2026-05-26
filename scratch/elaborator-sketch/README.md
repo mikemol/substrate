@@ -34,7 +34,7 @@ sqlite3 sketch.db < queries.sql
 
 The shadow tree is the spine. Every node in the sketch is one row in `shadows`:
 
-```
+```sql
 shadows(id, parent_id, code, name, depth, cluster, status, rung, description)
 ```
 
@@ -69,8 +69,11 @@ Cross-cutting relationships:
 | `library_correspondence` |    9 |
 | `productions`            |    3 |
 | `production_usages`      |   28 |
+| `extraction_candidates`  |   39 |
 
 Status distribution: 58 leaves, 23 productive, 4 cross-cutting, 2 research-frontier, 1 root.
+
+Candidates distribution: 37 proposed (across cong-trans / sym-trans / trans-sym), 2 rejected (false positives at the cong-trans definition site and Hedberg's local `trans-sym-id` lemma).
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
 
