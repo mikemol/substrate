@@ -769,7 +769,12 @@ INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status
    '(s : Linear n n) (a₀ : Vector n) {a₁ a₂ : Vector n} → apply s a₀ ≡ a₁ → apply s a₁ ≡ a₂ → apply (s ∘L s) a₀ ≡ a₂',
    'trans (cong (apply s) e₀) e₁',
    'extracted', '94fb778',
-   'Parametric involution-step / s² orbit walk. Companion to cubed-orbit-walk: handles the Coxeter s² relation as cubed handles (s₁∘s₂)³. 6 sites: S{1,2}SquaredOn{E0,E1,E2}, each collapses 3-line body to 1-line call. Same a₀-explicit treatment as cubed-orbit-walk to avoid unification deadlock when s is built via linear-from-images.');
+   'Parametric involution-step / s² orbit walk. Companion to cubed-orbit-walk: handles the Coxeter s² relation as cubed handles (s₁∘s₂)³. 6 sites: S{1,2}SquaredOn{E0,E1,E2}, each collapses 3-line body to 1-line call. Same a₀-explicit treatment as cubed-orbit-walk to avoid unification deadlock when s is built via linear-from-images.'),
+  ('braid-walk', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidWalk',
+   '(s₁ s₂ : Linear n n) (a₀ : Vector n) {a₁ a₂ b₁ b₂ m : Vector n} → 6 step-equations (3 forward LHS walk + 3 forward RHS walk, meeting at m) → apply (s₁ ∘L s₂ ∘L s₁) a₀ ≡ apply (s₂ ∘L s₁ ∘L s₂) a₀',
+   '6-step trans-chain with 3 forward + 3 sym/backward, joined at meet point m',
+   'extracted', 'beeb396',
+   'Parametric Coxeter braid relation witness s₁s₂s₁ ≡ s₂s₁s₂. Third member of the orbit-walk trio with cubed-orbit-walk and squared-orbit-walk: together they cover the 12 Coxeter-relation orbit cells uniformly (3 braid + 6 squared + 3 cubed). 3 sites: BraidOnE{0,1,2}, each collapses 6-line trans/sym chain to 1-line call. Same a₀-explicit treatment as the other walks.');
 
 -- ----------------------------------------------------------------------------
 -- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
@@ -984,6 +989,12 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S2SquaredOnE1.agda', 1, '94fb778'),
   ((SELECT id FROM productions WHERE code='squared-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S2SquaredOnE2.agda', 1, '94fb778');
 
+-- BraidWalk extraction + migration (commit beeb396) — 3 seed sites.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='braid-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/BraidOnE0.agda', 1, 'beeb396'),
+  ((SELECT id FROM productions WHERE code='braid-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/BraidOnE1.agda', 1, 'beeb396'),
+  ((SELECT id FROM productions WHERE code='braid-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/BraidOnE2.agda', 1, 'beeb396');
+
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
 --
@@ -1155,7 +1166,13 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'Parametric production extracted under the fine-grained-over-coarse discipline. The 3 S1S2CubedOn{E0,E1,E2} files shared a 5-call cong-trans chain template with 6 swap-lemma argument positions varying per starting basis. Was initially declined under DBE''s over-decomposition warning; reinstated when the user clarified that fine-grained primitives are mechanically recomposable while coarse-grained primitives cause context-flood for rearrangement.'),
   ((SELECT id FROM shadows WHERE code='C1'),
    'SquaredOrbitWalk module (parametric Coxeter s² involution on vector)',
-   'Companion to CubedOrbitWalk: extracts the 1-step `trans (cong (apply s) e₀) e₁` chain shared by all 6 S{1,2}SquaredOn{E0,E1,E2} cells. Together with cubed-orbit-walk, the two productions cover the 6+6 = 12 Coxeter-relation orbit cells. Each per-site call collapses 3-line body to 1-line. a₀ is explicit (same treatment as cubed-orbit-walk) to avoid unification deadlock when s is built via linear-from-images and basis vectors don''t reduce mechanically.');
+   'Companion to CubedOrbitWalk: extracts the 1-step `trans (cong (apply s) e₀) e₁` chain shared by all 6 S{1,2}SquaredOn{E0,E1,E2} cells. Together with cubed-orbit-walk, the two productions cover the 6+6 = 12 Coxeter-relation orbit cells. Each per-site call collapses 3-line body to 1-line. a₀ is explicit (same treatment as cubed-orbit-walk) to avoid unification deadlock when s is built via linear-from-images and basis vectors don''t reduce mechanically.'),
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'BraidWalk module (parametric Coxeter braid s₁s₂s₁ ≡ s₂s₁s₂ on vector)',
+   'Third member of the orbit-walk trio (with CubedOrbitWalk and SquaredOrbitWalk). Extracts the 6-step trans/sym chain shared by BraidOnE{0,1,2} for the braid relation. The proof shape is two 3-step walks (LHS via s₁,s₂,s₁ forward; RHS via s₂,s₁,s₂ forward but applied in sym to meet at common point m). Each per-site call collapses 6-line body to 1-line. Together the three walks cover the 12 Coxeter-relation orbit cells uniformly. a₀ is explicit (same treatment as the other two walks).'),
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'fin-cover inline (named-cover discipline at V/HasOrder cells)',
+   'Refactor at S1SquaredOnV, S2SquaredOnV, BraidOnV, HasOrderS1S2 (4 sites): the hand-written where-clause `agree-on-basis : (i : Fin 3) → ...; agree zero = ...; agree ₁ = ...; agree ₂ = ...` becomes `fin-cover _ (lem₀ , lem₁ , lem₂)`. No new module needed; substrate''s existing universal-property primitives (linear-extensionality + fin-cover) directly compose. The named-cover discipline replaces the anonymous helper at the call site. Each per-site collapse: ~5 lines (where-clause) → 1 line (inline application).');
 
 COMMIT;
 
