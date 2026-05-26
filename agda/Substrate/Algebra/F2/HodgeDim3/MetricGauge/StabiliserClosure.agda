@@ -58,10 +58,25 @@ open import Substrate.Category.Coalgebra
   using (FixedPoint)
 
 ------------------------------------------------------------------------
--- N-1: s₁∘s₂-stabilises-metric-id — demoted to 3 lines.
+-- N-0: compose-stabilises — the parametric primitive that names the
+-- "stabiliser closes under composition" property at the congruence-act
+-- level. Each of the 4 named lemmas below collapses to one invocation.
 --
--- Derivation via congruence-compose-3 + the two Coxeter generator
--- stabiliser witnesses:
+-- Structurally: if T₁ and T₂ each stabilise metric-id, then T₁ ∘L T₂
+-- also stabilises metric-id, via the dim-3 congruence-compose-3 step.
+------------------------------------------------------------------------
+
+compose-stabilises :
+  (T₁ T₂ : Linear 3 3) →
+  congruence-act T₁ metric-id ≡ metric-id →
+  congruence-act T₂ metric-id ≡ metric-id →
+  congruence-act (T₁ ∘L T₂) metric-id ≡ metric-id
+compose-stabilises T₁ T₂ stab-T₁ stab-T₂ =
+  trans (congruence-compose-3 T₁ T₂ metric-id)
+        (cong-trans (congruence-act T₂) stab-T₁ stab-T₂)
+
+------------------------------------------------------------------------
+-- N-1: s₁∘s₂-stabilises-metric-id — derived via compose-stabilises.
 --
 --   congruence-act (s₁ ∘L s₂) metric-id
 --     ≡ congruence-act s₂ (congruence-act s₁ metric-id)   [congruence-compose-3]
@@ -72,9 +87,7 @@ open import Substrate.Category.Coalgebra
 s₁∘s₂-stabilises-metric-id :
   congruence-act (s₁ ∘L s₂) metric-id ≡ metric-id
 s₁∘s₂-stabilises-metric-id =
-  trans (congruence-compose-3 s₁ s₂ metric-id)
-  (cong-trans (congruence-act s₂) s₁-stabilises-metric-id
-              s₂-stabilises-metric-id)
+  compose-stabilises s₁ s₂ s₁-stabilises-metric-id s₂-stabilises-metric-id
 
 ------------------------------------------------------------------------
 -- N-2: Categorical retrofit — 3-cycle stabilisation as FixedPoint.
@@ -115,23 +128,17 @@ metric-id-fixed-by-cong-act-s₁∘s₂ =
 s₂∘s₁-stabilises-metric-id :
   congruence-act (s₂ ∘L s₁) metric-id ≡ metric-id
 s₂∘s₁-stabilises-metric-id =
-  trans (congruence-compose-3 s₂ s₁ metric-id)
-  (cong-trans (congruence-act s₁) s₂-stabilises-metric-id
-              s₁-stabilises-metric-id)
+  compose-stabilises s₂ s₁ s₂-stabilises-metric-id s₁-stabilises-metric-id
 
 s₁∘s₂∘s₁-stabilises-metric-id :
   congruence-act (s₁ ∘L s₂ ∘L s₁) metric-id ≡ metric-id
 s₁∘s₂∘s₁-stabilises-metric-id =
-  trans (congruence-compose-3 s₁ (s₂ ∘L s₁) metric-id)
-  (cong-trans (congruence-act (s₂ ∘L s₁)) s₁-stabilises-metric-id
-              s₂∘s₁-stabilises-metric-id)
+  compose-stabilises s₁ (s₂ ∘L s₁) s₁-stabilises-metric-id s₂∘s₁-stabilises-metric-id
 
 s₂∘s₁∘s₂-stabilises-metric-id :
   congruence-act (s₂ ∘L s₁ ∘L s₂) metric-id ≡ metric-id
 s₂∘s₁∘s₂-stabilises-metric-id =
-  trans (congruence-compose-3 s₂ (s₁ ∘L s₂) metric-id)
-  (cong-trans (congruence-act (s₁ ∘L s₂)) s₂-stabilises-metric-id
-              s₁∘s₂-stabilises-metric-id)
+  compose-stabilises s₂ (s₁ ∘L s₂) s₂-stabilises-metric-id s₁∘s₂-stabilises-metric-id
 
 ------------------------------------------------------------------------
 -- N-4: FixedPoint retrofits for the remaining 3 elements.

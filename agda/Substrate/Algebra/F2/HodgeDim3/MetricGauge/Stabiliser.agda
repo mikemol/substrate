@@ -42,6 +42,8 @@ open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
+  using (diag-bf-step; off-diag-bf-step)
 open import Substrate.Category.Coalgebra
   using (FixedPoint)
 
@@ -131,23 +133,12 @@ s₁-stabilises-metric-id = ≡-from-lookup _ _ goal
   where
     goal : (i : Fin 6) →
            lookup (congruence-act s₁ metric-id) i ≡ lookup metric-id i
-    goal zero =
-      -- a' = bilinear-form-of metric-id (s₁ e₀) (s₁ e₀)
-      --    = bilinear-form-of metric-id (0,1,0) (0,1,0) = 1 = a
-      cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₀
-    goal (suc zero) =
-      cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₁
-    goal ₂ =
-      cong (λ x → bilinear-form-of metric-id x x) s₁-on-e₂
-    goal ₃ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis (suc zero)))) s₁-on-e₀
-                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₁)
-    goal ₄ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₀
-                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ [])) s₁-on-e₂)
-    goal ₅ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₁ (basis ₂))) s₁-on-e₁
-                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₁-on-e₂)
+    goal zero       = diag-bf-step metric-id s₁ (basis zero)       s₁-on-e₀
+    goal (suc zero) = diag-bf-step metric-id s₁ (basis (suc zero)) s₁-on-e₁
+    goal ₂          = diag-bf-step metric-id s₁ (basis ₂)          s₁-on-e₂
+    goal ₃          = off-diag-bf-step metric-id s₁ (basis zero)       (basis (suc zero)) s₁-on-e₀ s₁-on-e₁
+    goal ₄          = off-diag-bf-step metric-id s₁ (basis zero)       (basis ₂)          s₁-on-e₀ s₁-on-e₂
+    goal ₅          = off-diag-bf-step metric-id s₁ (basis (suc zero)) (basis ₂)          s₁-on-e₁ s₁-on-e₂
 
 ------------------------------------------------------------------------
 -- N-6: s₂ stabilises metric-id.
@@ -159,21 +150,12 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
   where
     goal : (i : Fin 6) →
            lookup (congruence-act s₂ metric-id) i ≡ lookup metric-id i
-    goal zero =
-      cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₀
-    goal (suc zero) =
-      cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₁
-    goal ₂ =
-      cong (λ x → bilinear-form-of metric-id x x) s₂-on-e₂
-    goal ₃ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis (suc zero)))) s₂-on-e₀
-                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₁)
-    goal ₄ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₀
-                 (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) s₂-on-e₂)
-    goal ₅ =
-      cong-trans (λ x → bilinear-form-of metric-id x (apply s₂ (basis ₂))) s₂-on-e₁
-                 (cong (bilinear-form-of metric-id (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ [])) s₂-on-e₂)
+    goal zero       = diag-bf-step metric-id s₂ (basis zero)       s₂-on-e₀
+    goal (suc zero) = diag-bf-step metric-id s₂ (basis (suc zero)) s₂-on-e₁
+    goal ₂          = diag-bf-step metric-id s₂ (basis ₂)          s₂-on-e₂
+    goal ₃          = off-diag-bf-step metric-id s₂ (basis zero)       (basis (suc zero)) s₂-on-e₀ s₂-on-e₁
+    goal ₄          = off-diag-bf-step metric-id s₂ (basis zero)       (basis ₂)          s₂-on-e₀ s₂-on-e₂
+    goal ₅          = off-diag-bf-step metric-id s₂ (basis (suc zero)) (basis ₂)          s₂-on-e₁ s₂-on-e₂
 
 ------------------------------------------------------------------------
 -- N-7: Capstone documentation.
