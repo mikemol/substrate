@@ -842,10 +842,15 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Vector/Universal.agda',                                   'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                  'trans (sym',  2, 'proposed', 'a9ebf0e', NULL);
 
--- trans-sym candidates: the two unmigrated sites.
+-- trans-sym candidates: both migrated in commit f429d6f, closing the trans-sym arc.
 INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurrence_count, status, discovered_at_commit, notes) VALUES
-  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Cases.agda',     'trans X (sym Y)', 18, 'proposed', 'a9ebf0e', 'S4Iso roundtrip case-analysis; densest unmigrated trans-sym site in the repo.'),
-  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Roundtrips.agda', 'trans X (sym Y)',  7, 'proposed', 'a9ebf0e', 'S4Iso roundtrips; companion to Cases.agda.');
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Cases.agda',     'trans X (sym Y)', 18, 'done', 'a9ebf0e', 'Densest unmigrated trans-sym site at discovery (18 occurrences across 6 case-functions); migrated in f429d6f.'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Roundtrips.agda', 'trans X (sym Y)',  7, 'done', 'a9ebf0e', 'Migrated in f429d6f. 3 cong-trans sites at lines 64/88/94 remain unmigrated (separate arc).');
+
+-- trans-sym usages added by the migration commit f429d6f.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Cases.agda',     19, 'f429d6f'),
+  ((SELECT id FROM productions WHERE code='trans-sym'), 'Substrate/Cocycles/V4Signature/S4Iso/Roundtrips.agda', 8, 'f429d6f');
 
 COMMIT;
 
