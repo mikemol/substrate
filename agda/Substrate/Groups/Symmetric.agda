@@ -17,7 +17,7 @@
 module Substrate.Groups.Symmetric (A : Set) where
 
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 open import Substrate.Foundation.Function
   using (id)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
@@ -62,9 +62,9 @@ _·_ : Permutation → Permutation → Permutation
   { apply = λ x → apply σ (apply τ x)
   ; invₐ  = λ x → invₐ τ (invₐ σ x)
   ; inv-l = λ x →
-      trans (cong (invₐ τ) (inv-l σ (apply τ x))) (inv-l τ x)
+      cong-trans (invₐ τ) (inv-l σ (apply τ x)) (inv-l τ x)
   ; inv-r = λ x →
-      trans (cong (apply σ) (inv-r τ (invₐ σ x))) (inv-r σ x)
+      cong-trans (apply σ) (inv-r τ (invₐ σ x)) (inv-r σ x)
   }
 
 ε : Permutation
@@ -111,15 +111,15 @@ inv-right σ x = inv-r σ x
   {σ₁ σ₂ τ₁ τ₂ : Permutation} →
   σ₁ ≈ σ₂ → τ₁ ≈ τ₂ → (σ₁ · τ₁) ≈ (σ₂ · τ₂)
 ·-cong {σ₁} {σ₂} {τ₁} {τ₂} σ₁≈σ₂ τ₁≈τ₂ x =
-  trans (cong (apply σ₁) (τ₁≈τ₂ x))
-        (σ₁≈σ₂ (apply τ₂ x))
+  cong-trans (apply σ₁) (τ₁≈τ₂ x)
+             (σ₁≈σ₂ (apply τ₂ x))
 
 ⁻¹-cong :
   {σ τ : Permutation} → σ ≈ τ → (σ ⁻¹) ≈ (τ ⁻¹)
 ⁻¹-cong {σ} {τ} σ≈τ x =
   let step : apply τ (invₐ σ x) ≡ x
-      step = trans (sym (σ≈τ (invₐ σ x))) (inv-r σ x)
-  in trans (sym (inv-l τ (invₐ σ x))) (cong (invₐ τ) step)
+      step = sym-trans (σ≈τ (invₐ σ x)) (inv-r σ x)
+  in sym-trans (inv-l τ (invₐ σ x)) (cong (invₐ τ) step)
 
 ------------------------------------------------------------------------
 -- Bundle as a substrate-native SetoidGroup.
@@ -151,5 +151,5 @@ Symmetric-Group = record
 σ-injective :
   (σ : Permutation) (x y : A) → apply σ x ≡ apply σ y → x ≡ y
 σ-injective σ x y eq =
-  trans (sym (inv-l σ x))
-        (trans (cong (invₐ σ) eq) (inv-l σ y))
+  sym-trans (inv-l σ x)
+            (cong-trans (invₐ σ) eq (inv-l σ y))

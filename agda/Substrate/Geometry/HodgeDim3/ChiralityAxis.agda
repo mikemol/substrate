@@ -28,7 +28,7 @@ open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -81,11 +81,11 @@ apply-ChirAxis-Selector-lookup-0 :
   lookup (apply ChiralityAxis-Selector v) zero ≡ lookup v zero
 apply-ChirAxis-Selector-lookup-0 (a ∷ b ∷ c ∷ []) =
   -- LHS unfolds to: a · 𝟙 + (b · 𝟘 + (c · 𝟘 + 𝟘))
-  trans (cong (_+ (b · 𝟘 + (c · 𝟘 + 𝟘))) (·-identityʳ a))
-  (trans (cong (a +_) (cong (_+ (c · 𝟘 + 𝟘)) (·-absorbʳ b)))
-  (trans (cong (a +_) (+-identityˡ _))
-  (trans (cong (a +_) (cong (_+ 𝟘) (·-absorbʳ c)))
-  (trans (cong (a +_) (+-identityˡ _))
+  cong-trans (_+ (b · 𝟘 + (c · 𝟘 + 𝟘))) (·-identityʳ a)
+  (cong-trans (a +_) (cong (_+ (c · 𝟘 + 𝟘)) (·-absorbʳ b))
+  (cong-trans (a +_) (+-identityˡ _)
+  (cong-trans (a +_) (cong (_+ 𝟘) (·-absorbʳ c))
+  (cong-trans (a +_) (+-identityˡ _)
          (+-identityʳ a)))))
 
 apply-ChirAxis-Selector-lookup-1 :
@@ -93,11 +93,11 @@ apply-ChirAxis-Selector-lookup-1 :
   lookup (apply ChiralityAxis-Selector v) (suc zero) ≡ lookup v (suc zero)
 apply-ChirAxis-Selector-lookup-1 (a ∷ b ∷ c ∷ []) =
   -- LHS unfolds to: a · 𝟘 + (b · 𝟙 + (c · 𝟘 + 𝟘))
-  trans (cong (_+ (b · 𝟙 + (c · 𝟘 + 𝟘))) (·-absorbʳ a))
+  cong-trans (_+ (b · 𝟙 + (c · 𝟘 + 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (trans (cong (_+ (c · 𝟘 + 𝟘)) (·-identityʳ b))
-  (trans (cong (b +_) (cong (_+ 𝟘) (·-absorbʳ c)))
-  (trans (cong (b +_) (+-identityˡ _))
+  (cong-trans (_+ (c · 𝟘 + 𝟘)) (·-identityʳ b)
+  (cong-trans (b +_) (cong (_+ 𝟘) (·-absorbʳ c))
+  (cong-trans (b +_) (+-identityˡ _)
          (+-identityʳ b)))))
 
 ------------------------------------------------------------------------
@@ -118,9 +118,9 @@ kernel→pred : (w : Vector 3) → In-Kernel ChiralityAxis w → ChiralityAxis-P
 kernel→pred w ker = pred-0 , pred-1
   where
     pred-0 : lookup w zero ≡ 𝟘
-    pred-0 = trans (sym (apply-ChirAxis-Selector-lookup-0 w))
-                   (trans (cong (λ u → lookup u zero) ker) (lookup-𝟎 {2} zero))
+    pred-0 = sym-trans (apply-ChirAxis-Selector-lookup-0 w)
+                       (cong-trans (λ u → lookup u zero) ker (lookup-𝟎 {2} zero))
 
     pred-1 : lookup w (suc zero) ≡ 𝟘
-    pred-1 = trans (sym (apply-ChirAxis-Selector-lookup-1 w))
-                   (trans (cong (λ u → lookup u (suc zero)) ker) (lookup-𝟎 {2} (suc zero)))
+    pred-1 = sym-trans (apply-ChirAxis-Selector-lookup-1 w)
+                       (cong-trans (λ u → lookup u (suc zero)) ker (lookup-𝟎 {2} (suc zero)))

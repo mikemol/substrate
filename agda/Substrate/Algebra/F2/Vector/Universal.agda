@@ -27,7 +27,7 @@ open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans)
 open import Substrate.Foundation.Negation using (¬_)
 
 open import Substrate.Algebra.F2
@@ -129,10 +129,10 @@ lookup-decomp-aux {suc _} (x ∷ xs) zero =
       trans (cong₂ _+_ (·-absorbʳ y) (vanish-suc-from-zero ys)) refl
 lookup-decomp-aux {suc _} (x ∷ xs) (suc j) =
   -- i = 0 contributes x · lookup 𝟎ⱽ j ≡ x · 𝟘 ≡ 𝟘; recurse on the tail.
-  trans (cong (_+ sum-F₂ (λ i → lookup xs i · lookup (basis (suc i)) (suc j)))
-              (trans (cong (x ·_) (lookup-𝟎 j)) (·-absorbʳ x)))
-  (trans (+-identityˡ _)
-         (lookup-decomp-aux xs j))
+  cong-trans (_+ sum-F₂ (λ i → lookup xs i · lookup (basis (suc i)) (suc j)))
+             (cong-trans (x ·_) (lookup-𝟎 j) (·-absorbʳ x))
+             (trans (+-identityˡ _)
+                    (lookup-decomp-aux xs j))
 
 ------------------------------------------------------------------------
 -- The atomic decomposition itself.
@@ -150,7 +150,7 @@ basis-decomp v = ≡-from-lookup v (sum (λ i → lookup v i *ₛ basis i)) goal
     goal : (j : _) →
            lookup v j ≡ lookup (sum (λ i → lookup v i *ₛ basis i)) j
     goal j =
-      trans (sym (lookup-decomp-aux v j))
+      sym-trans (lookup-decomp-aux v j)
       (trans (sym-sum-cong j)
              (sym (lookup-sum (λ i → lookup v i *ₛ basis i) j)))
       where

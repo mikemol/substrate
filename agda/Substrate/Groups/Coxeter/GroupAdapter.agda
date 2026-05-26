@@ -14,7 +14,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong)
+  using (_≡_; refl; trans; sym; cong; cong-trans; sym-trans)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
 module Substrate.Groups.Coxeter.GroupAdapter
@@ -83,9 +83,9 @@ normalize-ε = canonical-is-fixed canonical-ε
 ·-cong {a₁} {a₂} {b₁} {b₂} a-eq b-eq =
   trans (normalize-idem (a₁ ++ b₁))
   (trans (normalize-distrib a₁ b₁)
-  (trans (cong (λ x → normalize (x ++ normalize b₁)) a-eq)
-  (trans (cong (λ x → normalize (normalize a₂ ++ x)) b-eq)
-  (trans (sym (normalize-distrib a₂ b₂))
+  (cong-trans (λ x → normalize (x ++ normalize b₁)) a-eq
+  (cong-trans (λ x → normalize (normalize a₂ ++ x)) b-eq
+  (sym-trans (normalize-distrib a₂ b₂)
          (sym (normalize-idem (a₂ ++ b₂)))))))
 
 ------------------------------------------------------------------------
@@ -95,8 +95,8 @@ normalize-ε = canonical-is-fixed canonical-ε
 ·-assoc : ∀ a b c → (a · b) · c ≈ a · (b · c)
 ·-assoc a b c =
   trans (normalize-idem ((a · b) ++ c))
-  (trans (sym (normalize-append (a ++ b) c))
-  (trans (cong normalize (++-assoc a b c))
+  (sym-trans (normalize-append (a ++ b) c)
+  (cong-trans normalize (++-assoc a b c)
   (trans (normalize-append-right a (b ++ c))
          (sym (normalize-idem (a ++ (b · c)))))))
 
@@ -139,7 +139,7 @@ inv-r w =
 inv-word-cong : ∀ {w₁ w₂} → w₁ ≈ w₂ → inv-word w₁ ≈ inv-word w₂
 inv-word-cong {w₁} {w₂} eq =
   trans (canonical-is-fixed (inv-canonical (normalize-canonical w₁)))
-  (trans (cong inv eq)
+  (cong-trans inv eq
          (sym (canonical-is-fixed (inv-canonical (normalize-canonical w₂)))))
 
 ------------------------------------------------------------------------

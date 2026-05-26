@@ -25,7 +25,7 @@ open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans; trans-sym)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -42,9 +42,9 @@ open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
 *ₛ-zeroʳ : ∀ {n} (c : F₂) → (c *ₛ (𝟎ⱽ {n})) ≡ 𝟎ⱽ
 *ₛ-zeroʳ c = ≡-from-lookup _ _ (λ i →
   trans (lookup-*ₛ c 𝟎ⱽ i)
-  (trans (cong (c ·_) (lookup-𝟎 i))
-  (trans (·-absorbʳ c)
-         (sym (lookup-𝟎 i)))))
+  (cong-trans (c ·_) (lookup-𝟎 i)
+  (trans-sym (·-absorbʳ c)
+             (lookup-𝟎 i))))
 
 -- Scalar associativity at the vector level: (c · d) *ₛ v ≡ c *ₛ (d *ₛ v).
 *ₛ-·-assoc : ∀ {n} (c d : F₂) (v : Vector n) →
@@ -52,8 +52,8 @@ open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
 *ₛ-·-assoc c d v = ≡-from-lookup _ _ (λ i →
   trans (lookup-*ₛ (c · d) v i)
   (trans (·-assoc c d (lookup v i))
-  (trans (sym (cong (c ·_) (lookup-*ₛ d v i)))
-         (sym (lookup-*ₛ c (d *ₛ v) i)))))
+  (sym-trans (cong (c ·_) (lookup-*ₛ d v i))
+             (sym (lookup-*ₛ c (d *ₛ v) i)))))
 
 -- Scalar distributes from the right: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v.
 *ₛ-distribʳ-+ : ∀ {n} (a b : F₂) (v : Vector n) →
@@ -75,8 +75,8 @@ sum-+ⱽ-distrib :
   sum (λ i → f i +ⱽ g i) ≡ sum f +ⱽ sum g
 sum-+ⱽ-distrib {zero}  f g = sym (+ⱽ-identityˡ 𝟎ⱽ)
 sum-+ⱽ-distrib {suc _} f g =
-  trans (cong (f fz +ⱽ g fz +ⱽ_) (sum-+ⱽ-distrib (f ∘ fs) (g ∘ fs)))
-        (swap-+ⱽ (f fz) (g fz) (sum (f ∘ fs)) (sum (g ∘ fs)))
+  cong-trans (f fz +ⱽ g fz +ⱽ_) (sum-+ⱽ-distrib (f ∘ fs) (g ∘ fs))
+             (swap-+ⱽ (f fz) (g fz) (sum (f ∘ fs)) (sum (g ∘ fs)))
   where
     -- (a +ⱽ b) +ⱽ (c +ⱽ d) ≡ (a +ⱽ c) +ⱽ (b +ⱽ d), via lookup-componentwise
     -- + F₂ associativity / commutativity.
@@ -88,10 +88,10 @@ sum-+ⱽ-distrib {suc _} f g =
       in trans (lookup-+ⱽ (a +ⱽ b) (c +ⱽ d) i)
          (trans (cong₂ _+_ (lookup-+ⱽ a b i) (lookup-+ⱽ c d i))
          (trans (+-assoc la lb (lc + ld))
-         (trans (cong (la +_) (sym (+-assoc lb lc ld)))
-         (trans (cong (λ z → la + (z + ld)) (+-comm lb lc))
-         (trans (cong (la +_) (+-assoc lc lb ld))
-         (trans (sym (+-assoc la lc (lb + ld)))
+         (cong-trans (la +_) (sym (+-assoc lb lc ld))
+         (cong-trans (λ z → la + (z + ld)) (+-comm lb lc)
+         (cong-trans (la +_) (+-assoc lc lb ld)
+         (sym-trans (+-assoc la lc (lb + ld))
                 (sym (trans (lookup-+ⱽ (a +ⱽ c) (b +ⱽ d) i)
                             (cong₂ _+_ (lookup-+ⱽ a c i) (lookup-+ⱽ b d i)))))))))))
 
@@ -116,14 +116,14 @@ linear-from-images images = record
   { apply        = λ v → sum (λ i → lookup v i *ₛ images i)
   ; preserves-+  = λ u v →
       trans (sum-cong (λ i →
-              trans (cong (_*ₛ images i) (lookup-+ⱽ u v i))
-                    (*ₛ-distribʳ-+ (lookup u i) (lookup v i) (images i))))
+              cong-trans (_*ₛ images i) (lookup-+ⱽ u v i)
+                         (*ₛ-distribʳ-+ (lookup u i) (lookup v i) (images i))))
             (sum-+ⱽ-distrib (λ i → lookup u i *ₛ images i)
                               (λ i → lookup v i *ₛ images i))
   ; preserves-*ₛ = λ c v →
       trans (sum-cong (λ i →
-              trans (cong (_*ₛ images i) (lookup-*ₛ c v i))
-                    (*ₛ-·-assoc c (lookup v i) (images i))))
+              cong-trans (_*ₛ images i) (lookup-*ₛ c v i)
+                         (*ₛ-·-assoc c (lookup v i) (images i))))
             (sym (*ₛ-sum-distrib c (λ i → lookup v i *ₛ images i)))
   }
 
@@ -173,8 +173,8 @@ sum-F₂-basis-collapse :
   ∀ {k} (i : Fin k) (g : Fin k → F₂) →
   sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
 sum-F₂-basis-collapse {suc k} fz g =
-  trans (cong (_+ tail-sum) (·-identityˡ (g fz)))
-  (trans (cong (g fz +_) (zero-tail g))
+  cong-trans (_+ tail-sum) (·-identityˡ (g fz))
+  (cong-trans (g fz +_) (zero-tail g)
          (+-identityʳ (g fz)))
   where
     tail-sum : F₂
@@ -186,13 +186,13 @@ sum-F₂-basis-collapse {suc k} fz g =
       sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fs j')) ≡ 𝟘
     zero-tail {zero}    _ = refl
     zero-tail {suc k'} g =
-      trans (cong (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fs (fs j'))))
-                  (·-absorbˡ (g (fs fz))))
+      cong-trans (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fs (fs j'))))
+                 (·-absorbˡ (g (fs fz)))
       (trans (+-identityˡ _)
              (zero-tail (g ∘ fs)))
 sum-F₂-basis-collapse {suc k} (fs i) g =
-  trans (cong (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fs j)))
-              (·-absorbˡ (g fz)))
+  cong-trans (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fs j)))
+             (·-absorbˡ (g fz))
   (trans (+-identityˡ _)
          (sum-F₂-basis-collapse i (g ∘ fs)))
 
