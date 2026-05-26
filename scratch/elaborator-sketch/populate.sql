@@ -838,7 +838,7 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Groups/Coxeter/GroupAdapter.agda',                                   'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda',                              'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
-  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/F2CubedPuncturing.agda',                                    'trans (sym',  2, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/F2CubedPuncturing.agda',                                    'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 4b49216 (sym-trans arc closure). Plus 3 opportunistic cong-trans sites also picked up.'),
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Vector/Universal.agda',                                   'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort); 1 real sym-trans site, 1 sym-sum-cong identifier false positive.'),
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                  'trans (sym',  2, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).');
 
@@ -870,6 +870,11 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                   3, '136c901'),
   -- Opportunistic trans-sym site picked up in FromImages.agda during the multi-production migration.
   ((SELECT id FROM productions WHERE code='trans-sym'),  'Substrate/Algebra/F2/Linear/FromImages.agda',                                   2, '136c901');
+
+-- sym-trans arc closure (commit 4b49216) + opportunistic cong-trans for the same file.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Cocycles/F2CubedPuncturing.agda', 3, '4b49216'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/F2CubedPuncturing.agda', 4, '4b49216');
 
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
