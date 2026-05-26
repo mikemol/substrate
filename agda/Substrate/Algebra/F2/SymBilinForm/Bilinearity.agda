@@ -39,7 +39,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -58,9 +58,9 @@ open import Substrate.Algebra.F2.SymBilinForm
 +-rearrange : (a b c d : F₂) → (a + b) + (c + d) ≡ (a + c) + (b + d)
 +-rearrange a b c d =
   trans (+-assoc a b (c + d))
-  (trans (cong (a +_) (sym (+-assoc b c d)))
-  (trans (cong (a +_) (cong (_+ d) (+-comm b c)))
-  (trans (cong (a +_) (+-assoc c b d))
+  (cong-trans (a +_) (sym (+-assoc b c d))
+  (cong-trans (a +_) (cong (_+ d) (+-comm b c))
+  (cong-trans (a +_) (+-assoc c b d)
          (sym (+-assoc a c (b + d))))))
 
 -- sum-F₂ distributes pointwise + into a sum of sums.
@@ -69,9 +69,9 @@ sum-F₂-+-distribute :
   sum-F₂ (λ i → f i + g i) ≡ sum-F₂ f + sum-F₂ g
 sum-F₂-+-distribute {zero}  f g = refl
 sum-F₂-+-distribute {suc _} f g =
-  trans (cong ((f zero + g zero) +_)
-              (sum-F₂-+-distribute (f ∘ suc) (g ∘ suc)))
-        (+-rearrange (f zero) (g zero) (sum-F₂ (f ∘ suc)) (sum-F₂ (g ∘ suc)))
+  cong-trans ((f zero + g zero) +_)
+             (sum-F₂-+-distribute (f ∘ suc) (g ∘ suc))
+             (+-rearrange (f zero) (g zero) (sum-F₂ (f ∘ suc)) (sum-F₂ (g ∘ suc)))
 
 -- sum-F₂ pulls a left-scalar out of each summand.
 sum-F₂-scalar :
@@ -79,8 +79,8 @@ sum-F₂-scalar :
   sum-F₂ (λ i → c · f i) ≡ c · sum-F₂ f
 sum-F₂-scalar {zero}  c f = sym (·-absorbʳ c)
 sum-F₂-scalar {suc _} c f =
-  trans (cong (c · f zero +_) (sum-F₂-scalar c (f ∘ suc)))
-        (sym (·-distribˡ-+ c (f zero) (sum-F₂ (f ∘ suc))))
+  cong-trans (c · f zero +_) (sum-F₂-scalar c (f ∘ suc))
+             (sym (·-distribˡ-+ c (f zero) (sum-F₂ (f ∘ suc))))
 
 ------------------------------------------------------------------------
 -- N-2: Right-additivity — bilinear-form-of M v (a +ⱽ b) is additive
@@ -109,8 +109,8 @@ bilinear-form-of-+ⱽ-right {n} M v a b =
     (sum-F₂-cong {n} (λ i →
       cong (lookup v i ·_)
            (sum-F₂-cong {n} (λ j →
-             trans (cong (M i j ·_) (lookup-+ⱽ a b j))
-                   (·-distribˡ-+ (M i j) (lookup a j) (lookup b j))))))
+             cong-trans (M i j ·_) (lookup-+ⱽ a b j)
+                        (·-distribˡ-+ (M i j) (lookup a j) (lookup b j))))))
   (trans
     -- Distribute inner sum across +.
     (sum-F₂-cong {n} (λ i →
@@ -149,10 +149,10 @@ bilinear-form-of-+ⱽ-left {n} M u v w =
   trans
     -- Push lookup-+ⱽ inside outer factor, distribute over +.
     (sum-F₂-cong {n} (λ i →
-      trans (cong (_· sum-F₂ (λ j → M i j · lookup w j))
-                  (lookup-+ⱽ u v i))
-            (·-distribʳ-+ (sum-F₂ (λ j → M i j · lookup w j))
-                          (lookup u i) (lookup v i))))
+      cong-trans (_· sum-F₂ (λ j → M i j · lookup w j))
+                 (lookup-+ⱽ u v i)
+                 (·-distribʳ-+ (sum-F₂ (λ j → M i j · lookup w j))
+                               (lookup u i) (lookup v i))))
     -- Distribute outer sum across +.
     (sum-F₂-+-distribute
       (λ i → lookup u i · sum-F₂ (λ j → M i j · lookup w j))
@@ -176,10 +176,10 @@ bilinear-form-of-*ₛ-left :
 bilinear-form-of-*ₛ-left {n} M c v w =
   trans
     (sum-F₂-cong {n} (λ i →
-      trans (cong (_· sum-F₂ (λ j → M i j · lookup w j))
-                  (lookup-*ₛ c v i))
-            (·-assoc c (lookup v i)
-                       (sum-F₂ (λ j → M i j · lookup w j)))))
+      cong-trans (_· sum-F₂ (λ j → M i j · lookup w j))
+                 (lookup-*ₛ c v i)
+                 (·-assoc c (lookup v i)
+                            (sum-F₂ (λ j → M i j · lookup w j)))))
     (sum-F₂-scalar c
       (λ i → lookup v i · sum-F₂ (λ j → M i j · lookup w j)))
 
@@ -199,7 +199,7 @@ bilinear-form-of-*ₛ-left {n} M c v w =
 shuffle-scalar : (a c b : F₂) → a · (c · b) ≡ c · (a · b)
 shuffle-scalar a c b =
   trans (sym (·-assoc a c b))
-  (trans (cong (_· b) (·-comm a c))
+  (cong-trans (_· b) (·-comm a c)
          (·-assoc c a b))
 
 bilinear-form-of-*ₛ-right :
@@ -211,8 +211,8 @@ bilinear-form-of-*ₛ-right {n} M c v w =
     (sum-F₂-cong {n} (λ i →
       cong (lookup v i ·_)
            (sum-F₂-cong {n} (λ j →
-             trans (cong (M i j ·_) (lookup-*ₛ c w j))
-                   (shuffle-scalar (M i j) c (lookup w j))))))
+             cong-trans (M i j ·_) (lookup-*ₛ c w j)
+                        (shuffle-scalar (M i j) c (lookup w j))))))
   (trans
     -- Pull c out of inner sum.
     (sum-F₂-cong {n} (λ i →

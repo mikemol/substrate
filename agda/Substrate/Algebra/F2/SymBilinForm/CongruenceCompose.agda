@@ -42,7 +42,7 @@ open import Substrate.Foundation.Nat as ℕ using (ℕ)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -68,7 +68,7 @@ bilinear-form-of-𝟎ⱽ-right :
   ∀ {n} (M : BilinForm n) (u : Vector n) →
   bilinear-form-of M u 𝟎ⱽ ≡ 𝟘
 bilinear-form-of-𝟎ⱽ-right M u =
-  trans (cong (bilinear-form-of M u) (sym (*ₛ-absorbˡ 𝟎ⱽ)))
+  cong-trans (bilinear-form-of M u) (sym (*ₛ-absorbˡ 𝟎ⱽ))
   (trans (bilinear-form-of-*ₛ-right M 𝟘 u 𝟎ⱽ)
          (·-absorbˡ (bilinear-form-of M u 𝟎ⱽ)))
 
@@ -76,7 +76,7 @@ bilinear-form-of-𝟎ⱽ-left :
   ∀ {n} (M : BilinForm n) (w : Vector n) →
   bilinear-form-of M 𝟎ⱽ w ≡ 𝟘
 bilinear-form-of-𝟎ⱽ-left M w =
-  trans (cong (λ x → bilinear-form-of M x w) (sym (*ₛ-absorbˡ 𝟎ⱽ)))
+  cong-trans (λ x → bilinear-form-of M x w) (sym (*ₛ-absorbˡ 𝟎ⱽ))
   (trans (bilinear-form-of-*ₛ-left M 𝟘 𝟎ⱽ w)
          (·-absorbˡ (bilinear-form-of M 𝟎ⱽ w)))
 
@@ -161,7 +161,7 @@ bilinear-form-of-congruence-act {n} T M v w =
       (u : Vector n) →
       apply T u ≡ sum (λ i → lookup u i *ₛ apply T (basis i))
     apply-T-sum u =
-      trans (cong (apply T) (basis-decomp u))
+      cong-trans (apply T) (basis-decomp u)
       (trans (preserves-sum T (λ i → lookup u i *ₛ basis i))
              (sum-cong (λ i → preserves-*ₛ T (lookup u i) (basis i))))
 
@@ -197,11 +197,11 @@ bilinear-form-of-congruence-act {n} T M v w =
       bilinear-form-of (congruence-act T M) v w ≡ canonical
     lhs-to-canonical =
       sum-F₂-cong {n} (λ i →
-        trans (cong (lookup v i ·_)
-                    (sum-F₂-cong {n} (λ j →
-                      ·-comm (bf i j) (lookup w j))))
-              (sym (sum-F₂-scalar (lookup v i)
-                                  (λ j → lookup w j · bf i j))))
+        cong-trans (lookup v i ·_)
+                   (sum-F₂-cong {n} (λ j →
+                     ·-comm (bf i j) (lookup w j)))
+                   (sym (sum-F₂-scalar (lookup v i)
+                                       (λ j → lookup w j · bf i j))))
 
 ------------------------------------------------------------------------
 -- N-5: congruence-compose-pointwise — the composition law at the
