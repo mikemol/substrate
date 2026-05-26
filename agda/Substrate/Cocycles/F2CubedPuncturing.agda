@@ -32,7 +32,7 @@ module Substrate.Cocycles.F2CubedPuncturing where
 
 open import Substrate.Foundation.Product using (_,_; ∃; -,_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 
 open import Substrate.Groups.F2Cubed
   using (F₂³; _+_; -_; ε; F₂³-Group;
@@ -117,10 +117,10 @@ puncturing-action = record
 puncturing-free :
   (g : F₂³) (t : PunctureIndex) → g + t ≡ t → g ≡ ε
 puncturing-free g t eq =
-  trans (sym (+-identityʳ g))
-   (trans (cong (g +_) (sym (+-self t)))
-    (trans (sym (+-assoc g t t))
-     (trans (cong (_+ t) eq) (+-self t))))
+  sym-trans (+-identityʳ g)
+   (cong-trans (g +_) (sym (+-self t))
+    (sym-trans (+-assoc g t t)
+     (cong-trans (_+ t) eq (+-self t))))
 
 puncturing-transitive :
   (t₁ t₂ : PunctureIndex) → ∃ λ g → puncturing-act g t₁ ≡ t₂
@@ -128,7 +128,7 @@ puncturing-transitive t₁ t₂ = (t₂ + t₁) , proof
   where
     proof : (t₂ + t₁) + t₁ ≡ t₂
     proof = trans (+-assoc t₂ t₁ t₁)
-            (trans (cong (t₂ +_) (+-self t₁))
+            (cong-trans (t₂ +_) (+-self t₁)
                    (+-identityʳ t₂))
 
 fiber-is-torsor : (i : WHTCore) → IsTorsor F₂³-Group-Setoid (Fiber i)
