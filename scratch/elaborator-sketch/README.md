@@ -68,12 +68,20 @@ Cross-cutting relationships:
 | `cross_entailments`      |   10 |
 | `library_correspondence` |    9 |
 | `productions`            |    3 |
-| `production_usages`      |   30 |
+| `production_usages`      |   45 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 58 leaves, 23 productive, 4 cross-cutting, 2 research-frontier, 1 root.
 
-Candidates distribution: 35 proposed (cong-trans: 27, sym-trans: 8), 2 done (the trans-sym arc — Cases.agda and Roundtrips.agda, completed in `f429d6f`), 2 rejected (the cong-trans definition itself and Hedberg's local `trans-sym-id` lemma). The trans-sym extraction arc is closed: 0 proposed trans-sym candidates remain.
+Candidates distribution: 21 proposed (cong-trans: 20, sym-trans: 1), 16 done (trans-sym arc closed in `f429d6f`: 2 files; multi-production cohort migrated in `136c901`: 7 files × 2 productions = 14), 2 rejected. The trans-sym arc is closed; the sym-trans arc is one file from closure (`Cocycles/F2CubedPuncturing.agda`).
+
+Adoption picture per production:
+
+| Production   | Files | Total sites |
+|--------------|-------|-------------|
+| `cong-trans` |    20 |          98 |
+| `sym-trans`  |    15 |          47 |
+| `trans-sym`  |    10 |          72 |
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
 
