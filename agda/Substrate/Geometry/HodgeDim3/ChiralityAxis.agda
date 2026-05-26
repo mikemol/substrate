@@ -34,6 +34,8 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
+open import Substrate.Algebra.F2.Linear.KernelPredBridge
+  using (pred-at-i→kernel-at-i; kernel-at-i→pred-at-i)
 open import Substrate.Algebra.F2.Code
 
 ------------------------------------------------------------------------
@@ -107,20 +109,13 @@ apply-ChirAxis-Selector-lookup-1 (a ∷ b ∷ c ∷ []) =
 pred→kernel : (w : Vector 3) → ChiralityAxis-Pred w → In-Kernel ChiralityAxis w
 pred→kernel w (p0 , p1) = ≡-from-lookup _ _ goal
   where
+    S = ChiralityAxis-Selector
     goal : (j : Fin 2) →
-           lookup (apply ChiralityAxis-Selector w) j ≡ lookup (𝟎ⱽ {2}) j
-    goal zero       = trans (apply-ChirAxis-Selector-lookup-0 w)
-                            (trans p0 (sym (lookup-𝟎 {2} zero)))
-    goal (suc zero) = trans (apply-ChirAxis-Selector-lookup-1 w)
-                            (trans p1 (sym (lookup-𝟎 {2} (suc zero))))
+           lookup (apply S w) j ≡ lookup (𝟎ⱽ {2}) j
+    goal zero       = pred-at-i→kernel-at-i S w zero       (apply-ChirAxis-Selector-lookup-0 w) p0
+    goal (suc zero) = pred-at-i→kernel-at-i S w (suc zero) (apply-ChirAxis-Selector-lookup-1 w) p1
 
 kernel→pred : (w : Vector 3) → In-Kernel ChiralityAxis w → ChiralityAxis-Pred w
-kernel→pred w ker = pred-0 , pred-1
-  where
-    pred-0 : lookup w zero ≡ 𝟘
-    pred-0 = sym-trans (apply-ChirAxis-Selector-lookup-0 w)
-                       (cong-trans (λ u → lookup u zero) ker (lookup-𝟎 {2} zero))
-
-    pred-1 : lookup w (suc zero) ≡ 𝟘
-    pred-1 = sym-trans (apply-ChirAxis-Selector-lookup-1 w)
-                       (cong-trans (λ u → lookup u (suc zero)) ker (lookup-𝟎 {2} (suc zero)))
+kernel→pred w ker =
+  kernel-at-i→pred-at-i ChiralityAxis-Selector w zero       (apply-ChirAxis-Selector-lookup-0 w) ker ,
+  kernel-at-i→pred-at-i ChiralityAxis-Selector w (suc zero) (apply-ChirAxis-Selector-lookup-1 w) ker

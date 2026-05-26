@@ -29,6 +29,8 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
+open import Substrate.Algebra.F2.Linear.KernelPredBridge
+  using (pred-at-i→kernel-at-i; kernel-at-i→pred-at-i)
 open import Substrate.Algebra.F2.Code
 
 ------------------------------------------------------------------------
@@ -97,10 +99,8 @@ pred→kernel v pred = ≡-from-lookup _ _ goal
   where
     goal : (j : Fin 1) →
            lookup (apply V4Plane-Selector v) j ≡ lookup (𝟎ⱽ {1}) j
-    goal zero = trans (apply-V4Plane-Selector-lookup v)
-                      (trans pred (sym (lookup-𝟎 {1} zero)))
+    goal zero = pred-at-i→kernel-at-i V4Plane-Selector v zero (apply-V4Plane-Selector-lookup v) pred
 
 kernel→pred : (v : Vector 3) → In-Kernel V4-Plane v → V4-Plane-Pred v
 kernel→pred v ker =
-  sym-trans (apply-V4Plane-Selector-lookup v)
-            (cong-trans (λ w → lookup w zero) ker (lookup-𝟎 {1} zero))
+  kernel-at-i→pred-at-i V4Plane-Selector v zero (apply-V4Plane-Selector-lookup v) ker
