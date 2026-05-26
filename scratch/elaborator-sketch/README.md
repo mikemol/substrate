@@ -68,20 +68,20 @@ Cross-cutting relationships:
 | `cross_entailments`      |   15 |
 | `library_correspondence` |   13 |
 | `productions`            |    3 |
-| `production_usages`      |   61 |
+| `production_usages`      |   67 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
 
 **Clusters now include C5 (gap-detector-precision-layer).** Added in the same commit that records the depth-4 sketch of the precision sub-architecture. C5 sits between raw regex gap-detection and `C4.2.3` candidate registration; discriminates real candidates from substring false positives via three precision tiers (lexical / AST-aware / semantic). The cluster is the architectural response to the structural-strictifier finding from commit `136c901` (regex catches `cong₂` as `cong`, `sym-sum-cong` as `sym`).
 
-Candidates distribution: 6 proposed (all cong-trans, all 4-5 sites each), 30 done (trans-sym arc `f429d6f`: 2; multi-production cohort `136c901`: 14; sym-trans arc closure `4b49216`: 1; HodgeDim3/MetricGauge cohort `b2050d4`: 5; SymBilinForm cohort `c0c6983`: 2; ReservedBridge `63200fe`: 1; Algebra/F2 + Geometry/HodgeDim3 cohorts `bddf677`: 5), 3 rejected.
+Candidates distribution: **0 proposed**, 36 done, 3 rejected. **All three Foundation.Eq trio extraction arcs are closed**: cong-trans, sym-trans, and trans-sym. The remaining 3 rejected candidates are documented false positives in Foundation/Eq (the cong-trans definition itself), Hedberg.agda (local `trans-sym-id` lemma), and CongruenceBridge.agda (`congruence-*` identifier prefix).
 
 Adoption picture per production:
 
 | Production   | Files | Total sites |
 |--------------|-------|-------------|
-| `cong-trans` |    34 |         187 |
+| `cong-trans` |    40 |         222 |
 | `sym-trans`  |    17 |          52 |
 | `trans-sym`  |    10 |          72 |
 
