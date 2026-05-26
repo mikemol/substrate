@@ -136,9 +136,9 @@ s₁-stabilises-metric-id = ≡-from-lookup _ _ goal
     goal zero       = diag-bf-step metric-id s₁ (basis zero)       s₁-on-e₀
     goal (suc zero) = diag-bf-step metric-id s₁ (basis (suc zero)) s₁-on-e₁
     goal ₂          = diag-bf-step metric-id s₁ (basis ₂)          s₁-on-e₂
-    goal ₃          = off-diag-bf-step metric-id s₁ (basis zero)       (basis (suc zero)) s₁-on-e₀ s₁-on-e₁
-    goal ₄          = off-diag-bf-step metric-id s₁ (basis zero)       (basis ₂)          s₁-on-e₀ s₁-on-e₂
-    goal ₅          = off-diag-bf-step metric-id s₁ (basis (suc zero)) (basis ₂)          s₁-on-e₁ s₁-on-e₂
+    goal ₃          = off-diag-bf-step metric-id s₁ (basis zero)       (basis (suc zero)) (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) s₁-on-e₀ s₁-on-e₁
+    goal ₄          = off-diag-bf-step metric-id s₁ (basis zero)       (basis ₂)          (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []) (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) s₁-on-e₀ s₁-on-e₂
+    goal ₅          = off-diag-bf-step metric-id s₁ (basis (suc zero)) (basis ₂)          (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) s₁-on-e₁ s₁-on-e₂
 
 ------------------------------------------------------------------------
 -- N-6: s₂ stabilises metric-id.
@@ -153,9 +153,9 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
     goal zero       = diag-bf-step metric-id s₂ (basis zero)       s₂-on-e₀
     goal (suc zero) = diag-bf-step metric-id s₂ (basis (suc zero)) s₂-on-e₁
     goal ₂          = diag-bf-step metric-id s₂ (basis ₂)          s₂-on-e₂
-    goal ₃          = off-diag-bf-step metric-id s₂ (basis zero)       (basis (suc zero)) s₂-on-e₀ s₂-on-e₁
-    goal ₄          = off-diag-bf-step metric-id s₂ (basis zero)       (basis ₂)          s₂-on-e₀ s₂-on-e₂
-    goal ₅          = off-diag-bf-step metric-id s₂ (basis (suc zero)) (basis ₂)          s₂-on-e₁ s₂-on-e₂
+    goal ₃          = off-diag-bf-step metric-id s₂ (basis zero)       (basis (suc zero)) (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) s₂-on-e₀ s₂-on-e₁
+    goal ₄          = off-diag-bf-step metric-id s₂ (basis zero)       (basis ₂)          (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []) s₂-on-e₀ s₂-on-e₂
+    goal ₅          = off-diag-bf-step metric-id s₂ (basis (suc zero)) (basis ₂)          (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) (𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []) s₂-on-e₁ s₂-on-e₂
 
 ------------------------------------------------------------------------
 -- N-7: Capstone documentation.

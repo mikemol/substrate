@@ -31,6 +31,8 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId    using (metric
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricMixed using (metric-mixed)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed
   using (T-id-to-mixed; T-on-e₀; T-on-e₁; T-on-e₂)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
+  using (diag-bf-step; off-diag-bf-step)
 
 congruence-id-to-mixed :
   congruence-act T-id-to-mixed metric-id ≡ metric-mixed
@@ -39,18 +41,9 @@ congruence-id-to-mixed = ≡-from-lookup _ _ goal
     goal : (i : Fin 6) →
            lookup (congruence-act T-id-to-mixed metric-id) i ≡
            lookup metric-mixed i
-    goal zero =
-      cong (λ x → bilinear-form-of metric-id x x) T-on-e₀
-    goal ₁ =
-      cong (λ x → bilinear-form-of metric-id x x) T-on-e₁
-    goal ₂ =
-      cong (λ x → bilinear-form-of metric-id x x) T-on-e₂
-    goal ₃ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₁))) T-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-on-e₁)
-    goal ₄ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₂))) T-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-on-e₂)
-    goal ₅ =
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-mixed (basis ₂))) T-on-e₁)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ [])) T-on-e₂)
+    goal zero       = diag-bf-step metric-id T-id-to-mixed (basis zero) T-on-e₀
+    goal ₁          = diag-bf-step metric-id T-id-to-mixed (basis ₁)    T-on-e₁
+    goal ₂          = diag-bf-step metric-id T-id-to-mixed (basis ₂)    T-on-e₂
+    goal ₃          = off-diag-bf-step metric-id T-id-to-mixed (basis zero) (basis ₁) (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []) T-on-e₀ T-on-e₁
+    goal ₄          = off-diag-bf-step metric-id T-id-to-mixed (basis zero) (basis ₂) (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []) T-on-e₀ T-on-e₂
+    goal ₅          = off-diag-bf-step metric-id T-id-to-mixed (basis ₁)    (basis ₂) (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []) (𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []) T-on-e₁ T-on-e₂

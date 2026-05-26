@@ -40,6 +40,8 @@ open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
+  using (diag-bf-step; off-diag-bf-step)
 
 ------------------------------------------------------------------------
 -- N-1: T-id-to-fully-coupled.
@@ -96,28 +98,12 @@ congruence-id-to-fully-coupled = ≡-from-lookup _ _ goal
     goal : (i : Fin 6) →
            lookup (congruence-act T-id-to-fully-coupled metric-id) i ≡
            lookup metric-fully-coupled i
-    goal zero =
-      -- a' = bilinear-form-of metric-id (T e₀) (T e₀)
-      -- After T-fc-on-e₀: = bilinear-form-of metric-id (1,0,0) (1,0,0) = 1
-      cong (λ x → bilinear-form-of metric-id x x) T-fc-on-e₀
-    goal (suc zero) =
-      -- b' = (1,1,0)·(1,1,0) = 0
-      cong (λ x → bilinear-form-of metric-id x x) T-fc-on-e₁
-    goal ₂ =
-      -- c' = (1,0,1)·(1,0,1) = 0
-      cong (λ x → bilinear-form-of metric-id x x) T-fc-on-e₂
-    goal ₃ =
-      -- d' = (1,0,0)·(1,1,0) = 1
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis (suc zero)))) T-fc-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) T-fc-on-e₁)
-    goal ₄ =
-      -- e' = (1,0,0)·(1,0,1) = 1
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis ₂))) T-fc-on-e₀)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ [])) T-fc-on-e₂)
-    goal ₅ =
-      -- f' = (1,1,0)·(1,0,1) = 1
-      trans (cong (λ x → bilinear-form-of metric-id x (apply T-id-to-fully-coupled (basis ₂))) T-fc-on-e₁)
-            (cong (bilinear-form-of metric-id (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])) T-fc-on-e₂)
+    goal zero       = diag-bf-step metric-id T-id-to-fully-coupled (basis zero) T-fc-on-e₀
+    goal (suc zero) = diag-bf-step metric-id T-id-to-fully-coupled (basis ₁)    T-fc-on-e₁
+    goal ₂          = diag-bf-step metric-id T-id-to-fully-coupled (basis ₂)    T-fc-on-e₂
+    goal ₃          = off-diag-bf-step metric-id T-id-to-fully-coupled (basis zero) (basis ₁) (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []) T-fc-on-e₀ T-fc-on-e₁
+    goal ₄          = off-diag-bf-step metric-id T-id-to-fully-coupled (basis zero) (basis ₂) (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []) T-fc-on-e₀ T-fc-on-e₂
+    goal ₅          = off-diag-bf-step metric-id T-id-to-fully-coupled (basis ₁)    (basis ₂) (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []) (𝟙 ∷ 𝟘 ∷ 𝟙 ∷ []) T-fc-on-e₁ T-fc-on-e₂
 
 ------------------------------------------------------------------------
 -- N-4: Status documentation.

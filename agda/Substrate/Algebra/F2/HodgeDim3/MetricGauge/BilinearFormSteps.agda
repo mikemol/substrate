@@ -45,10 +45,10 @@ diag-bf-step M _ _ lem = cong (λ x → bilinear-form-of M x x) lem
 ------------------------------------------------------------------------
 
 off-diag-bf-step :
-  (M : SymBilinForm-3) (s : Linear 3 3) (e₁ e₂ : Vector 3) {r₁ r₂ : Vector 3} →
+  (M : SymBilinForm-3) (s : Linear 3 3) (e₁ e₂ r₁ r₂ : Vector 3) →
   apply s e₁ ≡ r₁ →
   apply s e₂ ≡ r₂ →
   bilinear-form-of M (apply s e₁) (apply s e₂) ≡ bilinear-form-of M r₁ r₂
-off-diag-bf-step M s _ e₂ {r₁} lem-1 lem-2 =
+off-diag-bf-step M s _ e₂ r₁ _ lem-1 lem-2 =
   cong-trans (λ x → bilinear-form-of M x (apply s e₂)) lem-1
              (cong (bilinear-form-of M r₁) lem-2)
