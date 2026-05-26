@@ -22,7 +22,7 @@ open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
+  using (_≡_; refl; trans; cong; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -51,14 +51,14 @@ v4-chir-orthogonal-pred :
   v ·F w ≡ 𝟘
 v4-chir-orthogonal-pred (a ∷ b ∷ c ∷ []) (x ∷ y ∷ z ∷ []) v∈ (w∈0 , w∈1) =
   -- Goal: a · x + (b · y + (c · z + 𝟘)) ≡ 𝟘
-  trans (cong (λ k → a · k + (b · y + (c · z + 𝟘))) w∈0)
-  (trans (cong (_+ (b · y + (c · z + 𝟘))) (·-absorbʳ a))
+  cong-trans (λ k → a · k + (b · y + (c · z + 𝟘))) w∈0
+  (cong-trans (_+ (b · y + (c · z + 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (trans (cong (λ k → b · k + (c · z + 𝟘)) w∈1)
-  (trans (cong (_+ (c · z + 𝟘)) (·-absorbʳ b))
+  (cong-trans (λ k → b · k + (c · z + 𝟘)) w∈1
+  (cong-trans (_+ (c · z + 𝟘)) (·-absorbʳ b)
   (trans (+-identityˡ _)
-  (trans (cong (λ k → k · z + 𝟘) v∈)
-  (trans (cong (_+ 𝟘) (·-absorbˡ z))
+  (cong-trans (λ k → k · z + 𝟘) v∈
+  (cong-trans (_+ 𝟘) (·-absorbˡ z)
          (+-identityˡ 𝟘))))))))
 
 ------------------------------------------------------------------------

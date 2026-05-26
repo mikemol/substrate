@@ -19,7 +19,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
   using (F₂; 𝟘; 𝟙; _+_; _·_; -_;
@@ -68,7 +68,7 @@ open import Substrate.Algebra.Module.Free using (FreeCarrier)
   (λ i →
     trans (lookup-*ₛ (r · s) v i)
     (trans (·-assoc r s (lookup v i))
-           (trans (cong (r ·_) (sym (lookup-*ₛ s v i)))
+           (cong-trans (r ·_) (sym (lookup-*ₛ s v i))
                   (sym (lookup-*ₛ r (s *ₛ v) i)))))
 
 ------------------------------------------------------------------------
@@ -99,7 +99,7 @@ F₂Vec-+-Monoid = record
 +ⱽ-invˡ v = ≡-from-lookup ((-ⱽ v) +ⱽ v) 𝟎ⱽ
   (λ i →
     trans (lookup-+ⱽ (-ⱽ v) v i)
-    (trans (cong (_+ lookup v i) (lookup--ⱽ v i))
+    (cong-trans (_+ lookup v i) (lookup--ⱽ v i)
     (trans (Substrate.Algebra.F2.+-inverseˡ (lookup v i))
            (sym (lookup-𝟎 i)))))
 
@@ -107,7 +107,7 @@ F₂Vec-+-Monoid = record
 +ⱽ-invʳ v = ≡-from-lookup (v +ⱽ (-ⱽ v)) 𝟎ⱽ
   (λ i →
     trans (lookup-+ⱽ v (-ⱽ v) i)
-    (trans (cong (lookup v i +_) (lookup--ⱽ v i))
+    (cong-trans (lookup v i +_) (lookup--ⱽ v i)
     (trans (Substrate.Algebra.F2.+-inverseʳ (lookup v i))
            (sym (lookup-𝟎 i)))))
 

@@ -24,7 +24,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate; lookup; zipWith; map)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
 
@@ -136,13 +136,13 @@ basis-lookup-same (suc i) = basis-lookup-same i
 +ⱽ-identityˡ : ∀ {n} (v : Vector n) → (𝟎ⱽ +ⱽ v) ≡ v
 +ⱽ-identityˡ v = ≡-from-lookup (𝟎ⱽ +ⱽ v) v
   (λ i → trans (lookup-+ⱽ 𝟎ⱽ v i)
-        (trans (cong (_+ lookup v i) (lookup-𝟎 i))
+        (cong-trans (_+ lookup v i) (lookup-𝟎 i)
                (+-identityˡ (lookup v i))))
 
 +ⱽ-identityʳ : ∀ {n} (v : Vector n) → (v +ⱽ 𝟎ⱽ) ≡ v
 +ⱽ-identityʳ v = ≡-from-lookup (v +ⱽ 𝟎ⱽ) v
   (λ i → trans (lookup-+ⱽ v 𝟎ⱽ i)
-        (trans (cong (lookup v i +_) (lookup-𝟎 i))
+        (cong-trans (lookup v i +_) (lookup-𝟎 i)
                (+-identityʳ (lookup v i))))
 
 +ⱽ-comm : ∀ {n} (u v : Vector n) → (u +ⱽ v) ≡ (v +ⱽ u)
@@ -160,9 +160,9 @@ basis-lookup-same (suc i) = basis-lookup-same i
         rk-uvw = lookup-+ⱽ u (v +ⱽ w) i
         rl-vw  = lookup-+ⱽ v w i
     in trans li-uvw
-       (trans (cong (_+ lookup w i) lj-uv)
+       (cong-trans (_+ lookup w i) lj-uv
        (trans (+-assoc (lookup u i) (lookup v i) (lookup w i))
-       (trans (cong (lookup u i +_) (sym rl-vw))
+       (cong-trans (lookup u i +_) (sym rl-vw)
               (sym rk-uvw)))))
 
 +ⱽ-self-inverse : ∀ {n} (v : Vector n) → (v +ⱽ v) ≡ 𝟎ⱽ
@@ -190,7 +190,7 @@ basis-lookup-same (suc i) = basis-lookup-same i
 *ₛ-distribˡ-+ⱽ c u v = ≡-from-lookup (c *ₛ (u +ⱽ v)) ((c *ₛ u) +ⱽ (c *ₛ v))
   (λ i →
     trans (lookup-*ₛ c (u +ⱽ v) i)
-    (trans (cong (c ·_) (lookup-+ⱽ u v i))
+    (cong-trans (c ·_) (lookup-+ⱽ u v i)
     (trans (·-distribˡ-+ c (lookup u i) (lookup v i))
     (trans (cong₂ _+_ (sym (lookup-*ₛ c u i)) (sym (lookup-*ₛ c v i)))
            (sym (lookup-+ⱽ (c *ₛ u) (c *ₛ v) i))))))

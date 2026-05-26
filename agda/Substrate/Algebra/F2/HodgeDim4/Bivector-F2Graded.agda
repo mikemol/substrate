@@ -26,7 +26,7 @@ module Substrate.Algebra.F2.HodgeDim4.Bivector-F2Graded where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong; cong₂)
+  using (_≡_; refl; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -56,9 +56,9 @@ shuffle :
   (x + y) + (a + b) ≡ (x + a) + (y + b)
 shuffle x y a b =
   trans (+-assoc x y (a + b))
-  (trans (cong (x +_) (sym (+-assoc y a b)))
-  (trans (cong (λ z → x + (z + b)) (+-comm y a))
-  (trans (cong (x +_) (+-assoc a y b))
+  (cong-trans (x +_) (sym (+-assoc y a b))
+  (cong-trans (λ z → x + (z + b)) (+-comm y a)
+  (cong-trans (x +_) (+-assoc a y b)
          (sym (+-assoc x a (y + b))))))
   where
     open import Substrate.Foundation.Eq using (sym)
@@ -68,8 +68,8 @@ weight-parity-+ⱽ :
   weight-parity (u +ⱽ v) ≡ weight-parity u + weight-parity v
 weight-parity-+ⱽ []      []      = refl
 weight-parity-+ⱽ (x ∷ u) (y ∷ v) =
-  trans (cong ((x + y) +_) (weight-parity-+ⱽ u v))
-        (shuffle x y (weight-parity u) (weight-parity v))
+  cong-trans ((x + y) +_) (weight-parity-+ⱽ u v)
+             (shuffle x y (weight-parity u) (weight-parity v))
 
 ------------------------------------------------------------------------
 -- N-3: Bivector as F₂-graded monoid.

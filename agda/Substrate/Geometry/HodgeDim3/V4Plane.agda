@@ -23,7 +23,7 @@ open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -81,11 +81,11 @@ apply-V4Plane-Selector-lookup :
 apply-V4Plane-Selector-lookup (a ∷ b ∷ c ∷ []) =
   -- LHS unfolds to: a · 𝟘 + (b · 𝟘 + (c · 𝟙 + 𝟘))
   -- Chain: simplify each summand, then collapse identities to c.
-  trans (cong (_+ (b · 𝟘 + (c · 𝟙 + 𝟘))) (·-absorbʳ a))
+  cong-trans (_+ (b · 𝟘 + (c · 𝟙 + 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (trans (cong (_+ (c · 𝟙 + 𝟘)) (·-absorbʳ b))
+  (cong-trans (_+ (c · 𝟙 + 𝟘)) (·-absorbʳ b)
   (trans (+-identityˡ _)
-  (trans (cong (_+ 𝟘) (·-identityʳ c))
+  (cong-trans (_+ 𝟘) (·-identityʳ c)
          (+-identityʳ c)))))
 
 ------------------------------------------------------------------------
@@ -102,5 +102,5 @@ pred→kernel v pred = ≡-from-lookup _ _ goal
 
 kernel→pred : (v : Vector 3) → In-Kernel V4-Plane v → V4-Plane-Pred v
 kernel→pred v ker =
-  trans (sym (apply-V4Plane-Selector-lookup v))
-        (trans (cong (λ w → lookup w zero) ker) (lookup-𝟎 {1} zero))
+  sym-trans (apply-V4Plane-Selector-lookup v)
+            (cong-trans (λ w → lookup w zero) ker (lookup-𝟎 {1} zero))
