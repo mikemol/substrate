@@ -15,7 +15,7 @@ module Substrate.Cocycles.V4Signature.S4Iso.Roundtrips where
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; trans-sym)
 
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
 open import Substrate.Groups.S4
@@ -40,19 +40,19 @@ stab-round-trip :
   orbit-key-to-stab-d (stab-d-to-orbit-key σ σ-stab) ≈ σ
 stab-round-trip σ σ-stab z
   with applyₛ σ C in pC | applyₛ σ S in pS
-... | D | _ = ⊥-elim (C≢D (σ-injective σ C D (trans pC (sym σ-stab))))
-... | C | D = ⊥-elim (S≢D (σ-injective σ S D (trans pS (sym σ-stab))))
-... | S | D = ⊥-elim (S≢D (σ-injective σ S D (trans pS (sym σ-stab))))
-... | W | D = ⊥-elim (S≢D (σ-injective σ S D (trans pS (sym σ-stab))))
-... | C | C = ⊥-elim (S≢C (σ-injective σ S C (trans pS (sym pC))))
+... | D | _ = ⊥-elim (C≢D (σ-injective σ C D (trans-sym pC σ-stab)))
+... | C | D = ⊥-elim (S≢D (σ-injective σ S D (trans-sym pS σ-stab)))
+... | S | D = ⊥-elim (S≢D (σ-injective σ S D (trans-sym pS σ-stab)))
+... | W | D = ⊥-elim (S≢D (σ-injective σ S D (trans-sym pS σ-stab)))
+... | C | C = ⊥-elim (S≢C (σ-injective σ S C (trans-sym pS pC)))
 ... | C | S = sym (case-α-even σ σ-stab pC pS z)
 ... | C | W = sym (case-α-odd  σ σ-stab pC pS z)
 ... | S | C = sym (case-β-odd  σ σ-stab pC pS z)
-... | S | S = ⊥-elim (C≢S (σ-injective σ C S (trans pC (sym pS))))
+... | S | S = ⊥-elim (C≢S (σ-injective σ C S (trans-sym pC pS)))
 ... | S | W = sym (case-β-even σ σ-stab pC pS z)
 ... | W | C = sym (case-γ-even σ σ-stab pC pS z)
 ... | W | S = sym (case-γ-odd  σ σ-stab pC pS z)
-... | W | W = ⊥-elim (C≢S (σ-injective σ C S (trans pC (sym pS))))
+... | W | W = ⊥-elim (C≢S (σ-injective σ C S (trans-sym pC pS)))
 
 ------------------------------------------------------------------------
 -- S₄-side round-trip.
