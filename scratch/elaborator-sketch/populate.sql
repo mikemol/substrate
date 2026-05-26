@@ -960,6 +960,16 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='off-diag-bf-step'),   'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',         6, '70fe1ce'),
   ((SELECT id FROM productions WHERE code='compose-stabilises'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',  4, '70fe1ce');
 
+-- diag-bf-step / off-diag-bf-step propagation (commit 394b85b) — 2 new files each.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='diag-bf-step'),     'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda', 3, '394b85b'),
+  ((SELECT id FROM productions WHERE code='diag-bf-step'),     'Substrate/Algebra/F2/HodgeDim3/MetricGauge/ExemplarOrbits.agda',      3, '394b85b'),
+  ((SELECT id FROM productions WHERE code='off-diag-bf-step'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda', 3, '394b85b'),
+  ((SELECT id FROM productions WHERE code='off-diag-bf-step'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/ExemplarOrbits.agda',      3, '394b85b'),
+  -- Opportunistic cong-trans pickup: CongruenceIdToMixed had 3 unmigrated trans (cong …) sites
+  -- that off-diag-bf-step's internal use of cong-trans now absorbs.
+  ((SELECT id FROM productions WHERE code='cong-trans'),       'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda', 3, '394b85b');
+
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
 --

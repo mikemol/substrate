@@ -68,7 +68,7 @@ Cross-cutting relationships:
 | `cross_entailments`      |   15 |
 | `library_correspondence` |   13 |
 | `productions`            |    9 |
-| `production_usages`      |   77 |
+| `production_usages`      |   82 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
@@ -81,14 +81,14 @@ Adoption picture per production:
 
 | Production              | Files | Total sites |
 |-------------------------|-------|-------------|
-| `cong-trans`            |    40 |         222 |
+| `cong-trans`            |    41 |         225 |
 | `sym-trans`             |    17 |          52 |
 | `trans-sym`             |    10 |          72 |
 | `pred-at-i→kernel-at-i` |     2 |           3 |
 | `kernel-at-i→pred-at-i` |     2 |           3 |
 | `cubed-orbit-walk`      |     3 |           3 |
-| `diag-bf-step`          |     1 |           6 |
-| `off-diag-bf-step`      |     1 |           6 |
+| `diag-bf-step`          |     3 |          12 |
+| `off-diag-bf-step`      |     3 |          12 |
 | `compose-stabilises`    |     1 |           4 |
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
