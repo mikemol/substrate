@@ -734,7 +734,17 @@ INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status
    '{x y z : A} → x ≡ y → z ≡ y → x ≡ z',
    'trans p (sym q)',
    'extracted', '894cd8a',
-   'Shared-target triangle. Third-highest frequency (81 sites at extraction time).');
+   'Shared-target triangle. Third-highest frequency (81 sites at extraction time).'),
+  ('pred-at-i→kernel-at-i', 'Substrate.Algebra.F2.Linear.KernelPredBridge',
+   '(S : Linear n p) (w : Vector n) (i : Fin p) {pi-of-w : F₂} → lookup (apply S w) i ≡ pi-of-w → pi-of-w ≡ 𝟘 → lookup (apply S w) i ≡ lookup (𝟎ⱽ {p}) i',
+   'trans-sym (trans sl pi) (lookup-𝟎 i)',
+   'extracted', '30eb9b7',
+   'Per-index bridge: predicate-i-clause + selector-lookup-i → kernel-at-i. Composes with ≡-from-lookup at call site. Surfaced via typed-holes on ChiralityAxis ↔ V4Plane after the Foundation.Eq trio arc closed.'),
+  ('kernel-at-i→pred-at-i', 'Substrate.Algebra.F2.Linear.KernelPredBridge',
+   '(S : Linear n p) (w : Vector n) (i : Fin p) {pi-of-w : F₂} → lookup (apply S w) i ≡ pi-of-w → apply S w ≡ 𝟎ⱽ → pi-of-w ≡ 𝟘',
+   'sym-trans sl (cong-trans (λ x → lookup x i) ker (lookup-𝟎 i))',
+   'extracted', '30eb9b7',
+   'Per-index bridge: in-kernel + selector-lookup-i → predicate-i-clause. Companion to pred-at-i→kernel-at-i.');
 
 -- ----------------------------------------------------------------------------
 -- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
@@ -911,6 +921,13 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Reverse.agda',          5, 'b0fdf7b'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Category/Coalgebra/FiniteOrder.agda',                                 5, 'b0fdf7b');
 
+-- KernelPredBridge extraction + migration (commit 30eb9b7) — 2 seed sites.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='pred-at-i→kernel-at-i'), 'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda', 2, '30eb9b7'),
+  ((SELECT id FROM productions WHERE code='pred-at-i→kernel-at-i'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',       1, '30eb9b7'),
+  ((SELECT id FROM productions WHERE code='kernel-at-i→pred-at-i'), 'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda', 2, '30eb9b7'),
+  ((SELECT id FROM productions WHERE code='kernel-at-i→pred-at-i'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',       1, '30eb9b7');
+
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
 --
@@ -1073,7 +1090,10 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'Commit 136c901 manually executed C5.1 + C5.2 by hand for 3 files (Vector/Universal, FromImages); the new cluster names that work as automatable architecture.'),
   ((SELECT id FROM shadows WHERE code='C5.1.2.2'),
    'identifier-prefix false-positive shape: trans (congruence-* …)',
-   'CongruenceBridge.agda has 5 sites of `trans (congruence-act-…)` / `trans (congruence-compose-…)` where `congruence-` is a single identifier starting with `cong-`. Generalises the cong-trans false-positive class beyond `cong₂` to any identifier prefixed by `cong<separator>`. Discovered in b2050d4 during MetricGauge cohort migration.');
+   'CongruenceBridge.agda has 5 sites of `trans (congruence-act-…)` / `trans (congruence-compose-…)` where `congruence-` is a single identifier starting with `cong-`. Generalises the cong-trans false-positive class beyond `cong₂` to any identifier prefixed by `cong<separator>`. Discovered in b2050d4 during MetricGauge cohort migration.'),
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'KernelPredBridge module (pred-at-i↔kernel-at-i pair)',
+   'Higher-order Γ-production: discovered by typed-holes on ChiralityAxis ↔ V4Plane AFTER the Foundation.Eq trio arc closed. Bridges (a) component-equality predicate form and (b) kernel-of-linear-map form for F₂-vector subspaces. Composes the trio with lookup-𝟎; each per-site call collapses ~3 lines per index. Demonstrates the iterated-SPPF principle at depth-2: trio extraction surfaces NEW bridges that the trio alone couldn''t express.');
 
 COMMIT;
 

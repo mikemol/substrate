@@ -67,8 +67,8 @@ Cross-cutting relationships:
 | `entailments`            |   35 |
 | `cross_entailments`      |   15 |
 | `library_correspondence` |   13 |
-| `productions`            |    3 |
-| `production_usages`      |   67 |
+| `productions`            |    5 |
+| `production_usages`      |   71 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
@@ -79,11 +79,13 @@ Candidates distribution: **0 proposed**, 36 done, 3 rejected. **All three Founda
 
 Adoption picture per production:
 
-| Production   | Files | Total sites |
-|--------------|-------|-------------|
-| `cong-trans` |    40 |         222 |
-| `sym-trans`  |    17 |          52 |
-| `trans-sym`  |    10 |          72 |
+| Production              | Files | Total sites |
+|-------------------------|-------|-------------|
+| `cong-trans`            |    40 |         222 |
+| `sym-trans`             |    17 |          52 |
+| `trans-sym`             |    10 |          72 |
+| `pred-at-i→kernel-at-i` |     2 |           3 |
+| `kernel-at-i→pred-at-i` |     2 |           3 |
 
 **Coverage invariants.** Every productive and cross-cutting shadow has exactly one `compositions` and one `entailments` row. Every shadow with `rung = 'R(reach, transitions)'` has its prose-described transitions in `transitions`. Every shadow with `rung = 'R(reach, role-labeled-graphs)'` has its PENMAN edges in `role_edges`. These invariants can be checked by the queries in `queries.sql`.
 
