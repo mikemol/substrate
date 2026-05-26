@@ -807,9 +807,9 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/Q/AsModule.agda',                                            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                           'trans (cong', 10, 'done', 'a9ebf0e', 'Migrated in c0c6983 (SymBilinForm cohort). 9 real sites; 1 cong₂ false positive.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',            'trans (cong', 10, 'done', 'a9ebf0e', 'Migrated in b2050d4 (HodgeDim3/MetricGauge cohort). 4 stabiliser-closure lemmas, same 3-line template.'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                              'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                              'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in bddf677 (Geometry/HodgeDim3 cohort). 7 real sites (off-by-one in gap-detector per-line count).'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector.agda',                                             'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector.agda',                                             'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in bddf677 (Algebra/F2 cohort). 5 real sites; 1 cong₂ false positive in +ⱽ-self-inverse chain.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                   'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in b2050d4. 6 sites: 3 per s₁/s₂ generator.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/ShiftHom.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
@@ -821,13 +821,13 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Symmetric.agda',                                              'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/S4-Iso/Foundation.agda',                                      'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/GroupAdapter.agda',                                   'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',                                    'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',                                    'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in bddf677 (Geometry/HodgeDim3 cohort). Also picked up 1 sym-trans opportunistically.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivector.agda',              'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Reverse.agda',         'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Category/Coalgebra/FiniteOrder.agda',                                'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector/Universal.agda',                                   'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort); 2 real cong-trans sites, 2 cong₂ false positives.'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/Bivector-F2Graded.agda',                        'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/AsModule.agda',                                           'trans (cong',  4, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/Bivector-F2Graded.agda',                        'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in bddf677 (Algebra/F2 cohort).'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/AsModule.agda',                                           'trans (cong',  4, 'done', 'a9ebf0e', 'Migrated in bddf677 (Algebra/F2 cohort). 3 real sites; 1 cong₂ false positive.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Eq.agda',                                                 'trans (cong',  2, 'rejected', 'a9ebf0e', 'These two sites are the cong-trans definition itself.');
 
 -- sym-trans candidates: all unmigrated sites count >= 2, with Hedberg flagged.
@@ -892,6 +892,15 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
 -- ReservedBridge single-file migration (commit 63200fe) — densest remaining single file.
 INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                          12, '63200fe');
+
+-- Algebra/F2 + Geometry/HodgeDim3 cohorts migration (commit bddf677) — 5 files.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Vector.agda',                                              6, 'bddf677'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/AsModule.agda',                                            4, 'bddf677'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/Bivector-F2Graded.agda',                         5, 'bddf677'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                               7, 'bddf677'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',                                     5, 'bddf677'),
+  ((SELECT id FROM productions WHERE code='sym-trans'),  'Substrate/Geometry/HodgeDim3/V4Plane.agda',                                     2, 'bddf677');
 
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
