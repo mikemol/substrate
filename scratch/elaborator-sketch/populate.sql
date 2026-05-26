@@ -749,7 +749,22 @@ INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status
    '(s₁ s₂ : Linear n n) (a₀ : Vector n) {a₁..a₆ : Vector n} → 6 step-equations → apply ((s₁ ∘L s₂)³) a₀ ≡ a₆',
    '5-call cong-trans chain with 6 swap-lemma slots',
    'extracted', '93e2764',
-   'Parametric Coxeter (s₁∘s₂)³ orbit-walk witness. Extracted under fine-grained-over-coarse discipline. 3 sites: S1S2CubedOnE0/E1/E2, each collapses 7-line body to 1-line call.');
+   'Parametric Coxeter (s₁∘s₂)³ orbit-walk witness. Extracted under fine-grained-over-coarse discipline. 3 sites: S1S2CubedOnE0/E1/E2, each collapses 7-line body to 1-line call.'),
+  ('diag-bf-step', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps',
+   '(M : SymBilinForm-3) (s : Linear 3 3) (e : Vector 3) {r : Vector 3} → apply s e ≡ r → bilinear-form-of M (apply s e) (apply s e) ≡ bilinear-form-of M r r',
+   'cong (λ x → bilinear-form-of M x x) lem',
+   'extracted', '70fe1ce',
+   'Diagonal bilinear-form-of rewrite step; same vector on both arguments. 6 sites: Stabiliser.agda diagonal goals (3 per generator × 2 generators).'),
+  ('off-diag-bf-step', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps',
+   '(M : SymBilinForm-3) (s : Linear 3 3) (e₁ e₂ : Vector 3) {r₁ r₂ : Vector 3} → apply s e₁ ≡ r₁ → apply s e₂ ≡ r₂ → bilinear-form-of M (apply s e₁) (apply s e₂) ≡ bilinear-form-of M r₁ r₂',
+   'cong-trans (λ x → bilinear-form-of M x (apply s e₂)) lem-1 (cong (bilinear-form-of M r₁) lem-2)',
+   'extracted', '70fe1ce',
+   'Off-diagonal bilinear-form-of rewrite step; different vectors on each argument. 6 sites: Stabiliser.agda off-diagonal goals (3 per generator × 2 generators).'),
+  ('compose-stabilises', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.StabiliserClosure',
+   '(T₁ T₂ : Linear 3 3) → congruence-act T₁ metric-id ≡ metric-id → congruence-act T₂ metric-id ≡ metric-id → congruence-act (T₁ ∘L T₂) metric-id ≡ metric-id',
+   'trans (congruence-compose-3 T₁ T₂ metric-id) (cong-trans (congruence-act T₂) stab-T₁ stab-T₂)',
+   'extracted', '70fe1ce',
+   'Substrate instance of "stabiliser closes under composition" for congruence-act + metric-id. 4 sites: the 4 composite-stabiliser-of-metric-id lemmas in StabiliserClosure.agda. Together with the 2 Coxeter generator witnesses, generates the full 6-element S₃ stabiliser.');
 
 -- ----------------------------------------------------------------------------
 -- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
@@ -938,6 +953,12 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda', 1, '93e2764'),
   ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda', 1, '93e2764'),
   ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda', 1, '93e2764');
+
+-- Stabiliser-primitives extractions + migrations (commit 70fe1ce).
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='diag-bf-step'),       'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',         6, '70fe1ce'),
+  ((SELECT id FROM productions WHERE code='off-diag-bf-step'),   'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',         6, '70fe1ce'),
+  ((SELECT id FROM productions WHERE code='compose-stabilises'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',  4, '70fe1ce');
 
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
