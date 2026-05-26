@@ -744,7 +744,12 @@ INSERT INTO productions (code, module_path, lhs_signature, rhs_expansion, status
    '(S : Linear n p) (w : Vector n) (i : Fin p) {pi-of-w : F₂} → lookup (apply S w) i ≡ pi-of-w → apply S w ≡ 𝟎ⱽ → pi-of-w ≡ 𝟘',
    'sym-trans sl (cong-trans (λ x → lookup x i) ker (lookup-𝟎 i))',
    'extracted', '30eb9b7',
-   'Per-index bridge: in-kernel + selector-lookup-i → predicate-i-clause. Companion to pred-at-i→kernel-at-i.');
+   'Per-index bridge: in-kernel + selector-lookup-i → predicate-i-clause. Companion to pred-at-i→kernel-at-i.'),
+  ('cubed-orbit-walk', 'Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.CubedOrbitWalk',
+   '(s₁ s₂ : Linear n n) (a₀ : Vector n) {a₁..a₆ : Vector n} → 6 step-equations → apply ((s₁ ∘L s₂)³) a₀ ≡ a₆',
+   '5-call cong-trans chain with 6 swap-lemma slots',
+   'extracted', '93e2764',
+   'Parametric Coxeter (s₁∘s₂)³ orbit-walk witness. Extracted under fine-grained-over-coarse discipline. 3 sites: S1S2CubedOnE0/E1/E2, each collapses 7-line body to 1-line call.');
 
 -- ----------------------------------------------------------------------------
 -- Per-file occurrence counts as observed at commit 6664ea5 (structural-coverage
@@ -928,6 +933,12 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='kernel-at-i→pred-at-i'), 'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda', 2, '30eb9b7'),
   ((SELECT id FROM productions WHERE code='kernel-at-i→pred-at-i'), 'Substrate/Geometry/HodgeDim3/V4Plane.agda',       1, '30eb9b7');
 
+-- CubedOrbitWalk extraction + migration (commit 93e2764) — 3 seed sites.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda', 1, '93e2764'),
+  ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda', 1, '93e2764'),
+  ((SELECT id FROM productions WHERE code='cubed-orbit-walk'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda', 1, '93e2764');
+
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)
 --
@@ -1093,7 +1104,10 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
    'CongruenceBridge.agda has 5 sites of `trans (congruence-act-…)` / `trans (congruence-compose-…)` where `congruence-` is a single identifier starting with `cong-`. Generalises the cong-trans false-positive class beyond `cong₂` to any identifier prefixed by `cong<separator>`. Discovered in b2050d4 during MetricGauge cohort migration.'),
   ((SELECT id FROM shadows WHERE code='C1'),
    'KernelPredBridge module (pred-at-i↔kernel-at-i pair)',
-   'Higher-order Γ-production: discovered by typed-holes on ChiralityAxis ↔ V4Plane AFTER the Foundation.Eq trio arc closed. Bridges (a) component-equality predicate form and (b) kernel-of-linear-map form for F₂-vector subspaces. Composes the trio with lookup-𝟎; each per-site call collapses ~3 lines per index. Demonstrates the iterated-SPPF principle at depth-2: trio extraction surfaces NEW bridges that the trio alone couldn''t express.');
+   'Higher-order Γ-production: discovered by typed-holes on ChiralityAxis ↔ V4Plane AFTER the Foundation.Eq trio arc closed. Bridges (a) component-equality predicate form and (b) kernel-of-linear-map form for F₂-vector subspaces. Composes the trio with lookup-𝟎; each per-site call collapses ~3 lines per index. Demonstrates the iterated-SPPF principle at depth-2: trio extraction surfaces NEW bridges that the trio alone couldn''t express.'),
+  ((SELECT id FROM shadows WHERE code='C1'),
+   'CubedOrbitWalk module (parametric Coxeter (s₁∘s₂)³ on basis)',
+   'Parametric production extracted under the fine-grained-over-coarse discipline. The 3 S1S2CubedOn{E0,E1,E2} files shared a 5-call cong-trans chain template with 6 swap-lemma argument positions varying per starting basis. Was initially declined under DBE''s over-decomposition warning; reinstated when the user clarified that fine-grained primitives are mechanically recomposable while coarse-grained primitives cause context-flood for rearrangement.');
 
 COMMIT;
 
