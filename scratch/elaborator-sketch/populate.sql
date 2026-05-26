@@ -803,9 +803,9 @@ INSERT INTO library_correspondence (shadow_id, library_discipline, notes) VALUES
 INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurrence_count, status, discovered_at_commit, notes) VALUES
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/Linear/FromImages.agda',                                  'trans (cong', 12, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort). 10 real cong-trans sites; 12 reported count included 1 cong₂ and 1 sym(cong...) false positives.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/ChiralityAxis.agda',                              'trans (cong', 11, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                           'trans (cong', 11, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                           'trans (cong', 11, 'done', 'a9ebf0e', 'Migrated in 63200fe (densest single-file remaining). 11 real sites across 4 round-trip lemmas; no false positives.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/Q/AsModule.agda',                                            'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                           'trans (cong', 10, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                           'trans (cong', 10, 'done', 'a9ebf0e', 'Migrated in c0c6983 (SymBilinForm cohort). 9 real sites; 1 cong₂ false positive.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/StabiliserClosure.agda',            'trans (cong', 10, 'done', 'a9ebf0e', 'Migrated in b2050d4 (HodgeDim3/MetricGauge cohort). 4 stabiliser-closure lemmas, same 3-line template.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Geometry/HodgeDim3/Orthogonality.agda',                              'trans (cong',  6, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Foundation/Nat/Properties/Mul.agda',                                 'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
@@ -813,7 +813,7 @@ INSERT INTO extraction_candidates (production_id, file_path, raw_pattern, occurr
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda',                   'trans (cong',  6, 'done', 'a9ebf0e', 'Migrated in b2050d4. 6 sites: 3 per s₁/s₂ generator.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/ShiftHom.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in 136c901 (multi-production cohort).'),
-  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/CongruenceCompose.agda',                     'trans (cong',  5, 'proposed', 'a9ebf0e', NULL),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/CongruenceCompose.agda',                     'trans (cong',  5, 'done', 'a9ebf0e', 'Migrated in c0c6983 (SymBilinForm cohort). 4 real sites; 1 cong₂ false positive.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₂.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₁.'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda','trans (cong', 5, 'done', 'a9ebf0e', 'Migrated in b2050d4. 3-cycle Coxeter braid relation on e₀.'),
@@ -883,6 +883,15 @@ INSERT INTO production_usages (production_id, file_path, occurrence_count, obser
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE0.agda',          6, 'b2050d4'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE1.agda',          6, 'b2050d4'),
   ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim3/MetricGauge/CoxeterRelations/S1S2CubedOnE2.agda',          6, 'b2050d4');
+
+-- SymBilinForm cohort migration (commit c0c6983) — 2 files.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/Bilinearity.agda',                          11, 'c0c6983'),
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/SymBilinForm/CongruenceCompose.agda',                     5, 'c0c6983');
+
+-- ReservedBridge single-file migration (commit 63200fe) — densest remaining single file.
+INSERT INTO production_usages (production_id, file_path, occurrence_count, observed_at_commit) VALUES
+  ((SELECT id FROM productions WHERE code='cong-trans'), 'Substrate/Algebra/F2/HodgeDim4/ReservedBridge.agda',                          12, '63200fe');
 
 -- ============================================================================
 -- C5 — GAP-DETECTOR-PRECISION-LAYER (depth-4 sketch extension)

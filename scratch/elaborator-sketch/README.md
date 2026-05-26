@@ -68,20 +68,20 @@ Cross-cutting relationships:
 | `cross_entailments`      |   15 |
 | `library_correspondence` |   13 |
 | `productions`            |    3 |
-| `production_usages`      |   52 |
+| `production_usages`      |   55 |
 | `extraction_candidates`  |   39 |
 
 Status distribution: 70 leaves, 31 productive, 4 cross-cutting, 2 research-frontier, 1 root.
 
 **Clusters now include C5 (gap-detector-precision-layer).** Added in the same commit that records the depth-4 sketch of the precision sub-architecture. C5 sits between raw regex gap-detection and `C4.2.3` candidate registration; discriminates real candidates from substring false positives via three precision tiers (lexical / AST-aware / semantic). The cluster is the architectural response to the structural-strictifier finding from commit `136c901` (regex catches `cong₂` as `cong`, `sym-sum-cong` as `sym`).
 
-Candidates distribution: 14 proposed (all cong-trans), 22 done (trans-sym arc `f429d6f`: 2 files; multi-production cohort `136c901`: 14; sym-trans arc closure `4b49216`: 1; HodgeDim3/MetricGauge cohort `b2050d4`: 5), 3 rejected (Foundation/Eq cong-trans definition site; Hedberg local `trans-sym-id` lemma; CongruenceBridge `congruence-*` identifier-prefix false positives). The sym-trans and trans-sym arcs are both closed; cong-trans is the sole open arc.
+Candidates distribution: 11 proposed (all cong-trans), 25 done (trans-sym arc `f429d6f`: 2; multi-production cohort `136c901`: 14; sym-trans arc closure `4b49216`: 1; HodgeDim3/MetricGauge cohort `b2050d4`: 5; SymBilinForm cohort `c0c6983`: 2; ReservedBridge `63200fe`: 1), 3 rejected. The sym-trans and trans-sym arcs are both closed; cong-trans is the sole open arc.
 
 Adoption picture per production:
 
 | Production   | Files | Total sites |
 |--------------|-------|-------------|
-| `cong-trans` |    26 |         132 |
+| `cong-trans` |    29 |         160 |
 | `sym-trans`  |    16 |          50 |
 | `trans-sym`  |    10 |          72 |
 
