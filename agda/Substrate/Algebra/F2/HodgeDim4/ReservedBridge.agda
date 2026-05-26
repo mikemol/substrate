@@ -56,7 +56,7 @@ open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -123,10 +123,10 @@ lookup-0-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) zero ≡ c₀
 lookup-0-roundtrip c₀ c₁ c₂ =
-  trans (cong (_+ ((c₁ · 𝟘) + (c₂ · 𝟘))) (·-identityʳ c₀))
-  (trans (cong (c₀ +_) (cong (_+ (c₂ · 𝟘)) (·-absorbʳ c₁)))
-  (trans (cong (c₀ +_) (+-identityˡ _))
-  (trans (cong (c₀ +_) (·-absorbʳ c₂))
+  cong-trans (_+ ((c₁ · 𝟘) + (c₂ · 𝟘))) (·-identityʳ c₀)
+  (cong-trans (c₀ +_) (cong (_+ (c₂ · 𝟘)) (·-absorbʳ c₁))
+  (cong-trans (c₀ +_) (+-identityˡ _)
+  (cong-trans (c₀ +_) (·-absorbʳ c₂)
          (+-identityʳ c₀))))
 
 -- Helper: lookup at index 1 is c₁.
@@ -135,10 +135,10 @@ lookup-1-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ≡ c₁
 lookup-1-roundtrip c₀ c₁ c₂ =
-  trans (cong (_+ ((c₁ · 𝟙) + (c₂ · 𝟘))) (·-absorbʳ c₀))
+  cong-trans (_+ ((c₁ · 𝟙) + (c₂ · 𝟘))) (·-absorbʳ c₀)
   (trans (+-identityˡ _)
-  (trans (cong (_+ (c₂ · 𝟘)) (·-identityʳ c₁))
-  (trans (cong (c₁ +_) (·-absorbʳ c₂))
+  (cong-trans (_+ (c₂ · 𝟘)) (·-identityʳ c₁)
+  (cong-trans (c₁ +_) (·-absorbʳ c₂)
          (+-identityʳ c₁))))
 
 -- Helper: lookup at index 2 is c₂.
@@ -147,9 +147,9 @@ lookup-2-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ≡ c₂
 lookup-2-roundtrip c₀ c₁ c₂ =
-  trans (cong (_+ ((c₁ · 𝟘) + (c₂ · 𝟙))) (·-absorbʳ c₀))
+  cong-trans (_+ ((c₁ · 𝟘) + (c₂ · 𝟙))) (·-absorbʳ c₀)
   (trans (+-identityˡ _)
-  (trans (cong (_+ (c₂ · 𝟙)) (·-absorbʳ c₁))
+  (cong-trans (_+ (c₂ · 𝟙)) (·-absorbʳ c₁)
   (trans (+-identityˡ _)
          (·-identityʳ c₂))))
 
@@ -158,14 +158,14 @@ selfdual-coefficients-roundtrip :
   (v : Vector 3) →
   selfdual-coefficients (vector3-to-selfdual v) ≡ v
 selfdual-coefficients-roundtrip (c₀ ∷ c₁ ∷ c₂ ∷ []) =
-  trans (cong (λ x →
+  cong-trans (λ x →
                 x ∷
                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ∷
                 lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷ [])
-              (lookup-0-roundtrip c₀ c₁ c₂))
-  (trans (cong (λ x →
+             (lookup-0-roundtrip c₀ c₁ c₂)
+  (cong-trans (λ x →
                  c₀ ∷ x ∷
                  lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ∷ [])
-               (lookup-1-roundtrip c₀ c₁ c₂))
-         (cong (λ x → c₀ ∷ c₁ ∷ x ∷ [])
-               (lookup-2-roundtrip c₀ c₁ c₂)))
+              (lookup-1-roundtrip c₀ c₁ c₂)
+              (cong (λ x → c₀ ∷ c₁ ∷ x ∷ [])
+                    (lookup-2-roundtrip c₀ c₁ c₂)))
