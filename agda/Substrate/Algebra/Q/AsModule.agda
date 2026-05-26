@@ -23,7 +23,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate; lookup; zipWith; map)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
+  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Arithmetic using (_+ℚ_; _*ℚ_; -ℚ_)
@@ -94,13 +94,13 @@ module Lifters (o : ℚ-Field-Obligation) where
   +ℚⱽ-identityˡ : ∀ {n} (v : Vector n) → (𝟎ℚⱽ +ℚⱽ v) ≡ v
   +ℚⱽ-identityˡ v = ≡-from-lookup-ℚ (𝟎ℚⱽ +ℚⱽ v) v
     (λ i → trans (lookup-+ℚⱽ 𝟎ℚⱽ v i)
-          (trans (cong (_+ℚ lookup v i) (lookup-𝟎ℚⱽ i))
+          (cong-trans (_+ℚ lookup v i) (lookup-𝟎ℚⱽ i)
                  (+ℚ-identityˡ (lookup v i))))
 
   +ℚⱽ-identityʳ : ∀ {n} (v : Vector n) → (v +ℚⱽ 𝟎ℚⱽ) ≡ v
   +ℚⱽ-identityʳ v = ≡-from-lookup-ℚ (v +ℚⱽ 𝟎ℚⱽ) v
     (λ i → trans (lookup-+ℚⱽ v 𝟎ℚⱽ i)
-          (trans (cong (lookup v i +ℚ_) (lookup-𝟎ℚⱽ i))
+          (cong-trans (lookup v i +ℚ_) (lookup-𝟎ℚⱽ i)
                  (+ℚ-identityʳ (lookup v i))))
 
   +ℚⱽ-comm : ∀ {n} (u v : Vector n) → (u +ℚⱽ v) ≡ (v +ℚⱽ u)
@@ -115,22 +115,22 @@ module Lifters (o : ℚ-Field-Obligation) where
   +ℚⱽ-assoc u v w = ≡-from-lookup-ℚ ((u +ℚⱽ v) +ℚⱽ w) (u +ℚⱽ (v +ℚⱽ w))
     (λ i →
       trans (lookup-+ℚⱽ (u +ℚⱽ v) w i)
-      (trans (cong (_+ℚ lookup w i) (lookup-+ℚⱽ u v i))
+      (cong-trans (_+ℚ lookup w i) (lookup-+ℚⱽ u v i)
       (trans (+ℚ-assoc (lookup u i) (lookup v i) (lookup w i))
-      (trans (cong (lookup u i +ℚ_) (sym (lookup-+ℚⱽ v w i)))
+      (cong-trans (lookup u i +ℚ_) (sym (lookup-+ℚⱽ v w i))
              (sym (lookup-+ℚⱽ u (v +ℚⱽ w) i))))))
 
   +ℚⱽ-inverseˡ : ∀ {n} (v : Vector n) → ((-ℚⱽ v) +ℚⱽ v) ≡ 𝟎ℚⱽ
   +ℚⱽ-inverseˡ v = ≡-from-lookup-ℚ ((-ℚⱽ v) +ℚⱽ v) 𝟎ℚⱽ
     (λ i → trans (lookup-+ℚⱽ (-ℚⱽ v) v i)
-          (trans (cong (_+ℚ lookup v i) (lookup--ℚⱽ v i))
+          (cong-trans (_+ℚ lookup v i) (lookup--ℚⱽ v i)
           (trans (+ℚ-inverseˡ (lookup v i))
                  (sym (lookup-𝟎ℚⱽ i)))))
 
   +ℚⱽ-inverseʳ : ∀ {n} (v : Vector n) → (v +ℚⱽ (-ℚⱽ v)) ≡ 𝟎ℚⱽ
   +ℚⱽ-inverseʳ v = ≡-from-lookup-ℚ (v +ℚⱽ (-ℚⱽ v)) 𝟎ℚⱽ
     (λ i → trans (lookup-+ℚⱽ v (-ℚⱽ v) i)
-          (trans (cong (lookup v i +ℚ_) (lookup--ℚⱽ v i))
+          (cong-trans (lookup v i +ℚ_) (lookup--ℚⱽ v i)
           (trans (+ℚ-inverseʳ (lookup v i))
                  (sym (lookup-𝟎ℚⱽ i)))))
 
@@ -145,7 +145,7 @@ module Lifters (o : ℚ-Field-Obligation) where
     ≡-from-lookup-ℚ (c *ℚₛ (u +ℚⱽ v)) ((c *ℚₛ u) +ℚⱽ (c *ℚₛ v))
     (λ i →
       trans (lookup-*ℚₛ c (u +ℚⱽ v) i)
-      (trans (cong (c *ℚ_) (lookup-+ℚⱽ u v i))
+      (cong-trans (c *ℚ_) (lookup-+ℚⱽ u v i)
       (trans (distribˡ c (lookup u i) (lookup v i))
       (trans (cong₂ _+ℚ_ (sym (lookup-*ℚₛ c u i)) (sym (lookup-*ℚₛ c v i)))
              (sym (lookup-+ℚⱽ (c *ℚₛ u) (c *ℚₛ v) i))))))
@@ -168,7 +168,7 @@ module Lifters (o : ℚ-Field-Obligation) where
     (λ i →
       trans (lookup-*ℚₛ (r *ℚ s) v i)
       (trans (*ℚ-assoc r s (lookup v i))
-      (trans (cong (r *ℚ_) (sym (lookup-*ℚₛ s v i)))
+      (cong-trans (r *ℚ_) (sym (lookup-*ℚₛ s v i))
              (sym (lookup-*ℚₛ r (s *ℚₛ v) i)))))
 
   ----------------------------------------------------------------------

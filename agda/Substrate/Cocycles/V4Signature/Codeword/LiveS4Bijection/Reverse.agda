@@ -14,7 +14,7 @@ module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Reverse where
 
 open import Substrate.Foundation.Product using (_,_; proj₁)
 open import Substrate.Foundation.Eq
-  using (_≡_; sym; trans; cong; cong₂)
+  using (_≡_; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Axes using (Axis; D; C; S; act-axis)
 open import Substrate.Groups.S4
@@ -90,23 +90,23 @@ live-σ-live-roundtrip :
   ≡ proj₁ lv
 live-σ-live-roundtrip lv with live-to-axis-selector lv in p-decoded
 ... | a , sel =
-  trans (cong (λ as → proj₁ (axis-selector-to-live as)) recovers)
-        cw-via-roundtrip
+  cong-trans (λ as → proj₁ (axis-selector-to-live as)) recovers
+             cw-via-roundtrip
   where
     σ' : Permutation
     σ' = embed (v-of-axis a) · stab-from-selector sel
 
     σ'D≡a : applyₛ σ' D ≡ a
-    σ'D≡a = trans (cong (act-axis (v-of-axis a))
-                        (stab-from-selector-fixes-D sel))
-                  (v-of-axis-anchor-sends D a)
+    σ'D≡a = cong-trans (act-axis (v-of-axis a))
+                       (stab-from-selector-fixes-D sel)
+                       (v-of-axis-anchor-sends D a)
 
     v-for-σ'-eq : v-for σ' ≡ v-of-axis a
     v-for-σ'-eq = cong v-of-axis σ'D≡a
 
     axis-recovers : axis-of-v (v-for σ') ≡ a
-    axis-recovers = trans (cong axis-of-v v-for-σ'-eq)
-                          (axis-of-v-v-of-axis-id a)
+    axis-recovers = cong-trans axis-of-v v-for-σ'-eq
+                               (axis-of-v-v-of-axis-id a)
 
     selector-recovers : selector-from-stab (s-for σ') ≡ sel
     selector-recovers =
@@ -122,6 +122,6 @@ live-σ-live-roundtrip lv with live-to-axis-selector lv in p-decoded
 
     cw-via-roundtrip : proj₁ (axis-selector-to-live (a , sel)) ≡ proj₁ lv
     cw-via-roundtrip =
-      trans (cong (λ as → proj₁ (axis-selector-to-live as))
-                  (sym p-decoded))
-            (axis-selector-roundtrip-cw lv)
+      cong-trans (λ as → proj₁ (axis-selector-to-live as))
+                 (sym p-decoded)
+                 (axis-selector-roundtrip-cw lv)

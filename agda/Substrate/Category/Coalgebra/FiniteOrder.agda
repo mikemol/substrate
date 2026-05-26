@@ -33,7 +33,7 @@ module Substrate.Category.Coalgebra.FiniteOrder where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans)
 
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
@@ -120,7 +120,7 @@ iterate-at-fixed-point :
   γ x ≡ x → (k : ℕ) → iterate k γ x ≡ x
 iterate-at-fixed-point fp zero    = refl
 iterate-at-fixed-point {γ = γ} {x = x} fp (suc k) =
-  trans (cong γ (iterate-at-fixed-point fp k)) fp
+  cong-trans γ (iterate-at-fixed-point fp k) fp
 
 -- Specialised: a FixedPoint witness gives periodicity at every order.
 FixedPoint→periodic :
@@ -153,7 +153,7 @@ HasOrder-multiple {γ = γ} {k = k} hyp (suc n) x =
   -- = iterate k γ x                  [IH: HasOrder-multiple hyp n x]
   -- = x                              [HasOrder hyp at x]
   trans (iterate-add γ k (n * k) x)
-  (trans (cong (iterate k γ) (HasOrder-multiple hyp n x))
+  (cong-trans (iterate k γ) (HasOrder-multiple hyp n x)
          (hyp x))
 
 ------------------------------------------------------------------------
@@ -179,8 +179,8 @@ iterate-iterate :
   iterate k (iterate j γ) x ≡ iterate (k * j) γ x
 iterate-iterate γ zero    j x = refl
 iterate-iterate γ (suc k) j x =
-  trans (cong (iterate j γ) (iterate-iterate γ k j x))
-        (sym (iterate-add γ j (k * j) x))
+  cong-trans (iterate j γ) (iterate-iterate γ k j x)
+             (sym (iterate-add γ j (k * j) x))
 
 ------------------------------------------------------------------------
 -- N-6c: HasOrder-iterate — power of an order-k endomap has order
@@ -208,7 +208,7 @@ HasOrder-iterate :
   HasOrder γ k → (j : ℕ) → HasOrder (iterate j γ) k
 HasOrder-iterate {γ = γ} {k = k} hyp j x =
   trans (iterate-iterate γ k j x)
-  (trans (cong (λ n → iterate n γ x) (*-comm k j))
+  (cong-trans (λ n → iterate n γ x) (*-comm k j)
          (HasOrder-multiple hyp j x))
 
 ------------------------------------------------------------------------

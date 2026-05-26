@@ -26,7 +26,7 @@ open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+  using (_≡_; refl; sym; trans; cong; cong-trans)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector using (Vector)
@@ -76,12 +76,12 @@ roundtrip-V3 :
   (v : Vector 3) →
   reserved-to-vector3 (vector3-to-reserved v) ≡ v
 roundtrip-V3 (x ∷ y ∷ z ∷ []) =
-  trans (cong (λ a → a ∷ bool→F₂ (F₂→bool y) ∷ bool→F₂ (F₂→bool z) ∷ [])
-              (F₂→bool→F₂ x))
-  (trans (cong (λ a → x ∷ a ∷ bool→F₂ (F₂→bool z) ∷ [])
-               (F₂→bool→F₂ y))
-         (cong (λ a → x ∷ y ∷ a ∷ [])
-               (F₂→bool→F₂ z)))
+  cong-trans (λ a → a ∷ bool→F₂ (F₂→bool y) ∷ bool→F₂ (F₂→bool z) ∷ [])
+             (F₂→bool→F₂ x)
+  (cong-trans (λ a → x ∷ a ∷ bool→F₂ (F₂→bool z) ∷ [])
+              (F₂→bool→F₂ y)
+              (cong (λ a → x ∷ y ∷ a ∷ [])
+                    (F₂→bool→F₂ z)))
 
 ------------------------------------------------------------------------
 -- N-4b: round-trip in the Reserved direction (Reserved → V3 → Reserved).
@@ -96,12 +96,12 @@ roundtrip-Reserved :
   (r : Reserved) →
   vector3-to-reserved (reserved-to-vector3 r) ≡ r
 roundtrip-Reserved ((b₀ , b₁ , b₂ , .false , .false) , refl , refl) =
-  trans (cong (λ a → make-reserved a (F₂→bool (bool→F₂ b₁)) (F₂→bool (bool→F₂ b₂)))
-              (bool→F₂→bool b₀))
-  (trans (cong (λ a → make-reserved b₀ a (F₂→bool (bool→F₂ b₂)))
-               (bool→F₂→bool b₁))
-         (cong (λ a → make-reserved b₀ b₁ a)
-               (bool→F₂→bool b₂)))
+  cong-trans (λ a → make-reserved a (F₂→bool (bool→F₂ b₁)) (F₂→bool (bool→F₂ b₂)))
+             (bool→F₂→bool b₀)
+  (cong-trans (λ a → make-reserved b₀ a (F₂→bool (bool→F₂ b₂)))
+              (bool→F₂→bool b₁)
+              (cong (λ a → make-reserved b₀ b₁ a)
+                    (bool→F₂→bool b₂)))
 
 ------------------------------------------------------------------------
 -- N-5: composition with M-11.dim4.reserved-bridge.

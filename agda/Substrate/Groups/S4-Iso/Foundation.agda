@@ -21,7 +21,7 @@ open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.S4
   using (Permutation; _·_)
 open Permutation
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; cong-trans)
 
 open import Substrate.Groups.S4-Iso.Embedding public
 
@@ -31,8 +31,8 @@ open import Substrate.Groups.S4-Iso.Embedding public
 
 embed-S₃-ε : (x : Axis) → apply (embed-S₃ S₃.ε) x ≡ x
 embed-S₃-ε x =
-  trans (cong axis-of-v (φ.act-ε (v-of-axis x)))
-        (axis-of-v-v-of-axis x)
+  cong-trans axis-of-v (φ.act-ε (v-of-axis x))
+             (axis-of-v-v-of-axis x)
 
 ------------------------------------------------------------------------
 -- embed-S₃ is a Group homomorphism (pointwise).
@@ -43,9 +43,9 @@ embed-S₃-hom : (s₁ s₂ : S₃.Carrier) →
                apply (embed-S₃ (s₁ S₃.∙ s₂)) x ≡
                apply (embed-S₃ s₁ · embed-S₃ s₂) x
 embed-S₃-hom s₁ s₂ x =
-  trans (cong axis-of-v (φ.act-∙ s₁ s₂ (v-of-axis x)))
-        (cong (λ y → axis-of-v (φ.act s₁ y))
-              (sym (v-of-axis-axis-of-v (φ.act s₂ (v-of-axis x)))))
+  cong-trans axis-of-v (φ.act-∙ s₁ s₂ (v-of-axis x))
+             (cong (λ y → axis-of-v (φ.act s₁ y))
+                   (sym (v-of-axis-axis-of-v (φ.act s₂ (v-of-axis x)))))
 
 ------------------------------------------------------------------------
 -- The defining "S₃ conjugates V₄" relation at the Permutation level.
@@ -62,11 +62,11 @@ swap-relation s v x = trans LHS-to-canonical (sym RHS-to-canonical)
       apply (embed-S₃ s · embed v) x ≡
       axis-of-v (φ.act s v V4.· φ.act s (v-of-axis x))
     LHS-to-canonical =
-      trans (cong (λ y → axis-of-v (φ.act s (v-of-axis y)))
-                  (act-axis-as-V₄-mult v x))
-      (trans (cong (λ y → axis-of-v (φ.act s y))
-                   (v-of-axis-axis-of-v (v V4.· v-of-axis x)))
-             (cong axis-of-v (φ.act-hom s v (v-of-axis x))))
+      cong-trans (λ y → axis-of-v (φ.act s (v-of-axis y)))
+                 (act-axis-as-V₄-mult v x)
+      (cong-trans (λ y → axis-of-v (φ.act s y))
+                  (v-of-axis-axis-of-v (v V4.· v-of-axis x))
+                  (cong axis-of-v (φ.act-hom s v (v-of-axis x))))
     RHS-to-canonical :
       apply (embed (φ.act s v) · embed-S₃ s) x ≡
       axis-of-v (φ.act s v V4.· φ.act s (v-of-axis x))

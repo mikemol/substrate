@@ -23,7 +23,7 @@ open import Substrate.Foundation.Nat.Properties.Sub
   using (∸-≤-self; ∸-suc-l; ∸-∸-cancel)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong-trans)
 open import Substrate.Algebra.Nat.Mod
   using (_mod-suc_; mod-suc-bound; mod-suc-id; suc-mod-suc-self)
 
@@ -58,13 +58,13 @@ toℕ-inv-pos-inv-pos : (k : Fin (suc n)) →
                       toℕ (inv-pos (inv-pos k)) ≡ toℕ k
 toℕ-inv-pos-inv-pos zero =
   trans (toℕ-inv-pos (inv-pos zero))
-  (trans (cong (λ x → (suc n ∸ x) mod-suc n) toℕ-inv-pos-zero)
+  (cong-trans (λ x → (suc n ∸ x) mod-suc n) toℕ-inv-pos-zero
          (suc-mod-suc-self n))
 toℕ-inv-pos-inv-pos (suc k') =
   trans (toℕ-inv-pos (inv-pos (suc k')))
-  (trans (cong (λ x → (suc n ∸ x) mod-suc n) (toℕ-inv-pos-suc k'))
-  (trans (cong (_mod-suc n) (∸-suc-l n (n ∸ toℕ k') (∸-≤-self n (toℕ k'))))
-  (trans (cong (λ x → (suc x) mod-suc n) (∸-∸-cancel n (toℕ k') (<→≤ (toℕ-bound k'))))
+  (cong-trans (λ x → (suc n ∸ x) mod-suc n) (toℕ-inv-pos-suc k')
+  (cong-trans (_mod-suc n) (∸-suc-l n (n ∸ toℕ k') (∸-≤-self n (toℕ k')))
+  (cong-trans (λ x → (suc x) mod-suc n) (∸-∸-cancel n (toℕ k') (<→≤ (toℕ-bound k')))
          (mod-suc-id (suc (toℕ k')) n (toℕ-bound (suc k'))))))
 
 ------------------------------------------------------------------------
@@ -79,6 +79,6 @@ inv-inv-canonical-ex = canonical-cover-ex
     per-pos : (k : Fin (suc n)) →
               inv (inv (power (toℕ k))) ≡ power (toℕ k)
     per-pos k =
-      trans (cong inv (inv-power-eq k))
+      cong-trans inv (inv-power-eq k)
       (trans (inv-power-eq (inv-pos k))
              (cong power (toℕ-inv-pos-inv-pos k)))
