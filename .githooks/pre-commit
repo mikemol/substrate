@@ -5,6 +5,9 @@
 # regress. Currently:
 #   * def/proof separation (load-bound memory policy) —
 #     scripts/check_def_proof_separation.sh
+#   * UP non-vacuity (no ⊤-collapse universal properties) —
+#     scripts/check_up_nonvacuity.sh
+#   * build-makefile tree in sync — scripts/gen_build_makefiles.py --check
 #
 # Each check prints its own diagnostics and returns non-zero on failure;
 # a failing check aborts the commit. To bypass in an emergency:
@@ -27,6 +30,11 @@ run "def/proof separation" "$ROOT/scripts/check_def_proof_separation.sh" --quiet
 if [ "$fail" -ne 0 ]; then
   "$ROOT/scripts/check_def_proof_separation.sh" || true
 fi
+
+# UP non-vacuity: no ⊤-collapse universal properties outside the sanctioned
+# trivial-UP / PlaceholderUP. Hard gate (tree at 0 since the 2026-06-03
+# audit/fix); --quiet stays silent on success but prints offenders on failure.
+run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 
 # Build-makefile tree must stay in sync with the source tree (new/removed
 # .agda files or directories require regenerating the per-dir makefiles).

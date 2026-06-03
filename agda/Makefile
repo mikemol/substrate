@@ -5,14 +5,14 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
-.PHONY: all clean check check-makefiles check-defproof advise
+.PHONY: all clean check check-makefiles check-defproof check-vacuity advise
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
-# def/proof separation + makefile-tree sync. Blocking. Run before push.
-check: check-defproof check-makefiles
+# def/proof separation + makefile-tree sync + UP non-vacuity. Blocking.
+check: check-defproof check-makefiles check-vacuity
 	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
@@ -20,6 +20,9 @@ check-makefiles:
 # Verify def/proof separation (definition-providers import no proof modules).
 check-defproof:
 	@../scripts/check_def_proof_separation.sh
+# Verify no vacuous (⊤-collapse) universal properties outside the sanctioned two.
+check-vacuity:
+	@../scripts/check_up_nonvacuity.sh
 # ADVISORY (non-blocking): theorem-per-file pressure report. Deliberately
 # NOT part of `check` / the hook — signature-counting has false positives
 # (cohesive primitives modules), so it informs judgment, never gates.
