@@ -108,67 +108,14 @@ sum-+ⱽ-distrib {suc _} f g =
         (cong (c *ₛ f fz +ⱽ_) (*ₛ-sum-distrib c (f ∘ fs)))
 
 ------------------------------------------------------------------------
--- The main construction: linear-from-images.
+-- Basis-collapse helper (does NOT mention linear-from-images; kept
+-- OUTSIDE the opacity boundary so the sealed block can use it).
+--
+-- Sum collapses when one factor is a basis vector:
+--   sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
+-- Uses `lookup (basis i) j = 𝟙 iff i ≡ j` (basis orthogonality).
 ------------------------------------------------------------------------
 
-linear-from-images : ∀ {k n} → (Fin k → Vector n) → Linear k n
-linear-from-images images = record
-  { apply        = λ v → sum (λ i → lookup v i *ₛ images i)
-  ; preserves-+  = λ u v →
-      trans (sum-cong (λ i →
-              cong-trans (_*ₛ images i) (lookup-+ⱽ u v i)
-                         (*ₛ-distribʳ-+ (lookup u i) (lookup v i) (images i))))
-            (sum-+ⱽ-distrib (λ i → lookup u i *ₛ images i)
-                              (λ i → lookup v i *ₛ images i))
-  ; preserves-*ₛ = λ c v →
-      trans (sum-cong (λ i →
-              cong-trans (_*ₛ images i) (lookup-*ₛ c v i)
-                         (*ₛ-·-assoc c (lookup v i) (images i))))
-            (sym (*ₛ-sum-distrib c (λ i → lookup v i *ₛ images i)))
-  }
-
-------------------------------------------------------------------------
--- Foundational apply-reduction (universal-property discipline).
---
--- The canonical componentwise unfolding of `apply (linear-from-images f) v`
--- at any output coordinate `j`. Used to discharge `apply-Selector-lookup`-
--- style proofs for any specific Selector without manual F₂-axiom chains.
---
--- Per memory `feedback_universal_property_discipline`: this is the
--- structural primitive that scales to large RM/Hamming codes. Per-
--- instance unfolding of the sum is replaced by one application of
--- this lemma plus a `O(k)` collapse over the basis-images. The
--- per-instance work is bounded by k (number of basis-images), not
--- 2^n (number of input vectors).
-------------------------------------------------------------------------
-
-apply-linear-from-images-lookup :
-  ∀ {k n} (f : Fin k → Vector n) (v : Vector k) (j : Fin n) →
-  lookup (apply (linear-from-images f) v) j ≡
-  sum-F₂ (λ i → lookup v i · lookup (f i) j)
-apply-linear-from-images-lookup f v j =
-  trans (lookup-sum (λ i → lookup v i *ₛ f i) j)
-        (sum-F₂-cong (λ i → lookup-*ₛ (lookup v i) (f i) j))
-
-------------------------------------------------------------------------
--- Apply on basis: the canonical identification of `linear-from-images f`.
---
--- Per memory `feedback_universal_property_discipline`: this is the
--- second foundational primitive for the universal-property tower —
--- it says `linear-from-images f` does exactly what it claims to do at
--- basis vectors. Used directly for the Hamming syndrome identification
--- in M-11.fano and for any future "apply Selector basis" lemmas.
---
--- Proof structure:
---   1. Reduce to componentwise via `apply-linear-from-images-lookup` +
---      `≡-from-lookup`.
---   2. Apply `sum-F₂-basis-collapse`: sum-F₂ of (basis_i · g) ≡ g i.
---
--- The basis-collapse helper uses that `lookup (basis i) j = 𝟙 iff i ≡ j`
--- (basis orthogonality from M-2.5).
-------------------------------------------------------------------------
-
--- Sum collapses when one factor is a basis vector.
 sum-F₂-basis-collapse :
   ∀ {k} (i : Fin k) (g : Fin k → F₂) →
   sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
@@ -196,12 +143,65 @@ sum-F₂-basis-collapse {suc k} (fs i) g =
   (trans (+-identityˡ _)
          (sum-F₂-basis-collapse i (g ∘ fs)))
 
-apply-linear-from-images-basis :
-  ∀ {k n} (f : Fin k → Vector n) (i : Fin k) →
-  apply (linear-from-images f) (basis i) ≡ f i
-apply-linear-from-images-basis f i = ≡-from-lookup _ _ goal
-  where
-    goal : (m : Fin _) →
-           lookup (apply (linear-from-images f) (basis i)) m ≡ lookup (f i) m
-    goal m = trans (apply-linear-from-images-lookup f (basis i) m)
-                   (sum-F₂-basis-collapse i (λ j → lookup (f j) m))
+------------------------------------------------------------------------
+-- The main construction: linear-from-images, sealed behind `opaque`.
+--
+-- OPACITY BOUNDARY (memory architecture, the source-level generalization
+-- of the Cycle7 fix): linear-from-images represents a dense F₂ linear
+-- map as `apply v = sum (λ i → lookup v i *ₛ images i)`. If transparent,
+-- any consumer that normalizes through `apply (linear-from-images f)` —
+-- iterating it, composing it, raising it to a power — forces the dense
+-- sum into normal form, which is super-exponential in the dimension
+-- (this is exactly what made Cycle7 = cyclic-* {6} OOM the machine).
+--
+-- Sealing `apply` here fixes the WHOLE dense-linear-map family at the
+-- source (fan-in 213): cyclic, Hodge ★, Fano, FreeLinearization, every
+-- permutation-as-matrix. Consumers interact through the two proven
+-- characterizing equations below (apply-...-lookup / -basis), NOT through
+-- reduction — the prime is sealed; compounds reduce down to it and halt.
+--
+-- The two characterizing lemmas live INSIDE the block so their proofs
+-- may unfold `linear-from-images` (opaque-block members unfold each
+-- other); externally they are the equational interface.
+------------------------------------------------------------------------
+
+opaque
+  linear-from-images : ∀ {k n} → (Fin k → Vector n) → Linear k n
+  linear-from-images images = record
+    { apply        = λ v → sum (λ i → lookup v i *ₛ images i)
+    ; preserves-+  = λ u v →
+        trans (sum-cong (λ i →
+                cong-trans (_*ₛ images i) (lookup-+ⱽ u v i)
+                           (*ₛ-distribʳ-+ (lookup u i) (lookup v i) (images i))))
+              (sum-+ⱽ-distrib (λ i → lookup u i *ₛ images i)
+                                (λ i → lookup v i *ₛ images i))
+    ; preserves-*ₛ = λ c v →
+        trans (sum-cong (λ i →
+                cong-trans (_*ₛ images i) (lookup-*ₛ c v i)
+                           (*ₛ-·-assoc c (lookup v i) (images i))))
+              (sym (*ₛ-sum-distrib c (λ i → lookup v i *ₛ images i)))
+    }
+
+  -- Foundational apply-reduction (universal-property discipline): the
+  -- canonical componentwise unfolding at output coordinate j. The
+  -- per-instance work is bounded by k (number of basis-images), not 2^n.
+  apply-linear-from-images-lookup :
+    ∀ {k n} (f : Fin k → Vector n) (v : Vector k) (j : Fin n) →
+    lookup (apply (linear-from-images f) v) j ≡
+    sum-F₂ (λ i → lookup v i · lookup (f i) j)
+  apply-linear-from-images-lookup f v j =
+    trans (lookup-sum (λ i → lookup v i *ₛ f i) j)
+          (sum-F₂-cong (λ i → lookup-*ₛ (lookup v i) (f i) j))
+
+  -- Apply on basis: linear-from-images f does exactly what it claims at
+  -- basis vectors. THE characterizing equation consumers use in place of
+  -- reducing the dense sum.
+  apply-linear-from-images-basis :
+    ∀ {k n} (f : Fin k → Vector n) (i : Fin k) →
+    apply (linear-from-images f) (basis i) ≡ f i
+  apply-linear-from-images-basis f i = ≡-from-lookup _ _ goal
+    where
+      goal : (m : Fin _) →
+             lookup (apply (linear-from-images f) (basis i)) m ≡ lookup (f i) m
+      goal m = trans (apply-linear-from-images-lookup f (basis i) m)
+                     (sum-F₂-basis-collapse i (λ j → lookup (f j) m))
