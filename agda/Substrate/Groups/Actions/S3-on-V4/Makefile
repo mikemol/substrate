@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
 FILES := AsAction.agda Axioms.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
-SUBDIRS := Axioms Composition Dispatch Generators HomRotations HomSwaps Twist
+SUBDIRS := Axioms Composition Dispatch Generators HomSwaps Twist
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -68,13 +68,6 @@ Generators:
 	fi
 	@$(MAKE) -C $@
 
-HomRotations:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 HomSwaps:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -94,7 +87,6 @@ clean:
 	@$(MAKE) -C Composition clean 2>/dev/null || true
 	@$(MAKE) -C Dispatch clean 2>/dev/null || true
 	@$(MAKE) -C Generators clean 2>/dev/null || true
-	@$(MAKE) -C HomRotations clean 2>/dev/null || true
 	@$(MAKE) -C HomSwaps clean 2>/dev/null || true
 	@$(MAKE) -C Twist clean 2>/dev/null || true
 	@true

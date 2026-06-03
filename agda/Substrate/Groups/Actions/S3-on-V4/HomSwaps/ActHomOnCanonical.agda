@@ -1,8 +1,18 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical
 --
--- Dispatches act-hom-on-canonical across the 6 canonical S₃-pair cases,
--- routing each to its rotation/swap homomorphism witness.
+-- act-hom-on-canonical : for canonical n, h, the action act-on-canonical
+-- n h is a V₄-homomorphism.
+--
+-- STRUCTURAL PROOF (replaces the former 6-way dispatch onto per-canonical
+-- 16-refl tables — HomId/HomRot/HomRot²/HomSwap{AB,AG,BG}). Since
+--   act-on-canonical n h ≡ rot-pow n ∘ swap-pow h          (act-equals-pow)
+-- and rot-pow = iter-pow rotate, swap-pow = iter-pow swap-αβ are iterates
+-- of the two generators — each a homomorphism (rotate-IsHom, swap-αβ-IsHom)
+-- — the composite is a homomorphism by ∘-IsHom + iter-pow-IsHom, for ANY
+-- n,h. The homomorphism property is thus the COMBINATORICS of two
+-- generator facts, not 6 Cayley tables. The 6 leaf hom-* files are no
+-- longer needed.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -13,26 +23,32 @@ import Substrate.Groups.V4 as V4
 open V4 using (V₄)
 import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z3-Coxeter as Z₃
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
-open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong₂)
 
+open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
+open import Substrate.Groups.V4.IsHomomorphism.Compose using (∘-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch using (act-on-canonical)
-open import Substrate.Groups.Actions.S3-on-V4.HomRotations.HomId    using (hom-id)
-open import Substrate.Groups.Actions.S3-on-V4.HomRotations.HomRot   using (hom-rot)
-open import Substrate.Groups.Actions.S3-on-V4.HomRotations.HomRot2  using (hom-rot²)
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapAB    using (hom-swap-αβ)
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapAG    using (hom-swap-αγ)
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapBG    using (hom-swap-βγ)
+open import Substrate.Groups.Actions.S3-on-V4.Generators
+  using (rot-pow; swap-pow)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapABIsHom using (swap-αβ-IsHom)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.IterPowIsHom using (iter-pow-IsHom)
+open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow using (act-equals-pow)
 
 act-hom-on-canonical :
   ∀ {n h} (c-n : Z₃.Canonical n) (c-h : Z₂.Canonical h) →
   ∀ v₁ v₂ →
   act-on-canonical n h (v₁ V4.· v₂) ≡
   act-on-canonical n h v₁ V4.· act-on-canonical n h v₂
-act-hom-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos zero) = hom-id
-act-hom-on-canonical (Z₃.c-pos ₁)  (Z₂.c-pos zero) = hom-rot
-act-hom-on-canonical (Z₃.c-pos ₂) (Z₂.c-pos zero) = hom-rot²
-act-hom-on-canonical (Z₃.c-pos zero)  (Z₂.c-pos ₁) = hom-swap-αβ
-act-hom-on-canonical (Z₃.c-pos ₁)  (Z₂.c-pos ₁) = hom-swap-αγ
-act-hom-on-canonical (Z₃.c-pos ₂) (Z₂.c-pos ₁) = hom-swap-βγ
+act-hom-on-canonical {n} {h} c-n c-h v₁ v₂ =
+  trans (act-equals-pow c-n c-h (v₁ V4.· v₂))
+  (trans (pow-hom v₁ v₂)
+         (sym (cong₂ V4._·_ (act-equals-pow c-n c-h v₁)
+                            (act-equals-pow c-n c-h v₂))))
+  where
+    -- rot-pow n ∘ swap-pow h is a homomorphism: iterate of rotate after
+    -- iterate of swap-αβ, both generator-homs.
+    pow-hom : IsHomomorphism (λ v → rot-pow n (swap-pow h v))
+    pow-hom = ∘-IsHom {f = rot-pow n} {g = swap-pow h}
+                      (iter-pow-IsHom rotate-IsHom n)
+                      (iter-pow-IsHom swap-αβ-IsHom h)

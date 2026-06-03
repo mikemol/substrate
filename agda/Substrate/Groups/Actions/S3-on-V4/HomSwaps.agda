@@ -1,14 +1,14 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Actions.S3-on-V4.HomSwaps
 --
--- V₄-homomorphism witnesses for the three swap-type canonical S₃
--- elements + the act-hom dispatcher and lifted full-action property
--- (file-per-lemma):
---   HomSwaps.HomSwapAB           — swap αβ ([], [a])
---   HomSwaps.HomSwapAG           — swap αγ ([a], [a])
---   HomSwaps.HomSwapBG           — swap βγ ([a,a], [a])
---   HomSwaps.ActHomOnCanonical   — 6-case dispatcher
---   HomSwaps.ActHom              — full action lifted via normalize-canonical
+-- Re-export shim for the S₃-on-V₄ homomorphism story. The per-swap
+-- Cayley-table leaves (HomSwapAB/AG/BG) were retired along with the
+-- rotation leaves: ActHomOnCanonical now proves the action is a
+-- homomorphism STRUCTURALLY (act-on-canonical ≡ rot-pow ∘ swap-pow,
+-- iterates of the two generator-homs), so the 6 per-canonical tables are
+-- corollaries and were dead. Surfaces the live pieces:
+--   HomSwaps.ActHomOnCanonical — homomorphism for every canonical n,h
+--   HomSwaps.ActHom            — full action lifted via normalize-canonical
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,8 +16,5 @@
 module Substrate.Groups.Actions.S3-on-V4.HomSwaps where
 
 open import Substrate.Groups.Actions.S3-on-V4.HomRotations              public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapAB         public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapAG         public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.HomSwapBG         public
 open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical public
 open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHom            public

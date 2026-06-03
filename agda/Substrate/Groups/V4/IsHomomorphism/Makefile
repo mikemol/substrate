@@ -8,9 +8,9 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../../..
+AGDA_ROOT := ../../../..
 
-FILES := IterPow.agda IterPowIsHom.agda RotPow.agda RotPowAppend.agda RotPowNormalizeEq.agda Rotate.agda RotateCubeId.agda RotateIsHom.agda SwapAB.agda SwapABIsHom.agda SwapPow.agda SwapPowAppend.agda SwapPowNormalizeEq.agda SwapSquareId.agda
+FILES := Compose.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
