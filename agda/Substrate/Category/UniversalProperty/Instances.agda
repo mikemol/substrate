@@ -1,18 +1,15 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.UniversalProperty.Instances
 --
--- UP8 of the UP-topos arc per [scratch/up_topos_arc_plan.md].
+-- UP8 of the UP-topos arc. Five canonical UPArrow instances exhibiting the
+-- substrate's universal-property records AS objects of UPCategory.
 --
--- Concrete UPArrow instances exhibiting the substrate's existing
--- universal-property records AS objects of UPCategory.
---
--- Each substrate UP becomes a UPArrow with:
---   * Source  : the spec / data-of-the-UP
---   * Target  : the underlying type of solutions
---   * Witness : the universal-property witness relation
---
--- This slice supplies five canonical instances; future arcs add
--- more as the catalogue grows.
+-- VACUITY-AUDIT REPAIR (2026-06-03): these were ⊤-collapse placeholders
+-- ("abstracted via ⊤ ... concrete bridge at UP9"). The real content now
+-- exists, so each is wired to its genuine Contentful UPArrow — projected from
+-- the real (Set₁) universal property at a concrete target via FreeUP-UPArrow
+-- / LimitUP-UPArrow. Each carries its non-vacuity certificate, so the vacuity
+-- detector reads them as real (not ⊤). See scratch/up_nonvacuity_policy.md.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -21,105 +18,68 @@ module Substrate.Category.UniversalProperty.Instances where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Unit using (⊤; tt)
-
+open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Product using (_,_)
+import Substrate.Foundation.Fin as F
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
+open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow; free-Set)
+open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (free-monoid)
+open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (free-F2Module)
+open import Substrate.Category.LimitUniversalProperty using (LimitUP-UPArrow; product-LimitUP)
+
+private
+  1≢0 : (1 ≡ 0) → ⊥
+  1≢0 ()
 
 ------------------------------------------------------------------------
--- 1. UP-instance: FreeMonoid-over-Set.
---
--- Spec    = "a set A to free-generate over"
--- Inst    = "a monoid M with an embedding A → M"
--- Witness = "M is the free monoid on A"
---
--- The witness relation is the universal-property record (we package
--- it abstractly here — concrete bridge to Substrate.Algebra.Monoid
--- is at UP9).
+-- 1. FreeMonoid — Coxeter.Word ⊤ is the free monoid (extend = fold).
 ------------------------------------------------------------------------
 
--- (UPArrow's Source / Target live in Set; the spec/inst types
--- that involve Set itself are abstracted via ⊤. The detailed
--- bridge to substrate records lives at UP9.)
 FreeMonoid-UP : UPArrow
-FreeMonoid-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+FreeMonoid-UP = FreeUP-UPArrow (free-monoid ⊤) ℕ
+
+FreeMonoid-contentful : Contentful FreeMonoid-UP
+FreeMonoid-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w tt)
 
 ------------------------------------------------------------------------
--- 2. UP-instance: FreeModule-over-Ring.
---
--- Spec    = a (Ring, n) pair
--- Inst    = a Set + module structure
--- Witness = the FreeBasisUniversal record
+-- 2. FreeModule — Vector k is the free F₂-module on Fin k.
 ------------------------------------------------------------------------
 
--- Substrate-honest abstract: at the UPArrow record, Source/Target
--- must be Set. The detailed spec (Ring carrier + dim) lives in the
--- per-instance bridge record (UP9); here we abstract via ⊤-based
--- structure to stay in Set.
 FreeModule-UP : UPArrow
-FreeModule-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+FreeModule-UP = FreeUP-UPArrow (free-F2Module 1) ℕ
+
+FreeModule-contentful : Contentful FreeModule-UP
+FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
 
 ------------------------------------------------------------------------
--- 3. UP-instance: Cone-over-Diagram (Limit).
---
--- Spec    = a diagram (small functor D)
--- Inst    = a cone with apex
--- Witness = "the cone is universal"
+-- 3. Cone / Limit — the product is the limit of a discrete diagram.
 ------------------------------------------------------------------------
 
 ConeLimit-UP : UPArrow
-ConeLimit-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+ConeLimit-UP = LimitUP-UPArrow (product-LimitUP 1 (λ _ → ℕ)) ⊤
+
+ConeLimit-contentful : Contentful ConeLimit-UP
+ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w F.zero tt)
 
 ------------------------------------------------------------------------
--- 4. UP-instance: Adjunction.
---
--- Spec    = a functor F (or its diagrammatic data)
--- Inst    = its right adjoint G + unit + counit
--- Witness = the triangle identities
+-- 4. Adjunction — the trivial Free ⊣ Forgetful (free-Set: F = B, η = id).
 ------------------------------------------------------------------------
 
 Adjunction-UP : UPArrow
-Adjunction-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+Adjunction-UP = FreeUP-UPArrow (free-Set ℕ) ℕ
+
+Adjunction-contentful : Contentful Adjunction-UP
+Adjunction-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w 0)
 
 ------------------------------------------------------------------------
--- 5. UP-instance: FreeLinearization-over-R.
---
--- Spec    = LinearAlgebra instance (FLQ1)
--- Inst    = a Linear-extension function
--- Witness = the FreeLinearization-record's uniqueness
+-- 5. FreeLinearization — free linearization = the free F₂-module UP
+--    (here dim 2; the dedicated FreeLinearization module is the same UP).
 ------------------------------------------------------------------------
 
 FreeLinearization-UP : UPArrow
-FreeLinearization-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+FreeLinearization-UP = FreeUP-UPArrow (free-F2Module 2) ℕ
 
-------------------------------------------------------------------------
--- 6. Capstone for UP8.
---
--- Five canonical UP-instances landed. Each names the SHAPE of the
--- substrate's existing universal-property record at UPArrow level.
--- The Witness fields are abstracted to ⊤ for the catalogue surface;
--- concrete bridge functions at UP9+ wire each instance to the
--- substrate's per-record witness data.
---
--- The substrate's universal-property catalogue is now CATEGORIFIED:
--- each UP is an object in UPCategory, and refinements (UPTerms)
--- between them inhabit Hom.
-------------------------------------------------------------------------
+FreeLinearization-contentful : Contentful FreeLinearization-UP
+FreeLinearization-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)

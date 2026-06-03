@@ -34,8 +34,11 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Unit using (⊤; tt)
 
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
 open import Substrate.Algebra.Quotient using (Quotient)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Quotient
   using (QuotientUP; Respects)
 
@@ -144,12 +147,20 @@ open QuotientProduct public
 -- 4. UPArrow registration.
 ------------------------------------------------------------------------
 
+-- VACUITY-AUDIT REPAIR (2026-06-03): was a ⊤-collapse placeholder. Wired to
+-- the real Contentful quotient-PRODUCT — CRT: a residue pair (mod 3, mod 5)
+-- is jointly solved by any x agreeing with both. This IS the joint quotient
+-- ℕ ↠ ℤ/3 × ℤ/5 ≅ ℤ/15. Content-bearing: (1,2) is not solved by 0.
 QuotientProduct-UPArrow : UPArrow
 QuotientProduct-UPArrow = record
-  { Source  = ⊤   -- "two quotients (Q₁, Q₂) on same carrier"
-  ; Target  = ⊤   -- "joint quotient + splitter"
-  ; Witness = λ _ _ → ⊤   -- "Q₁ ∩ Q₂ ≅ Q₁ × Q₂ with round-trips"
+  { Source  = ℕ × ℕ   -- "two residues (mod 3, mod 5)"
+  ; Target  = ℕ       -- "a joint representative (mod 15)"
+  ; Witness = λ p x → (x mod-suc 2 ≡ proj₁ p mod-suc 2)
+                    × (x mod-suc 4 ≡ proj₂ p mod-suc 4)
   }
+
+QuotientProduct-contentful : Contentful QuotientProduct-UPArrow
+QuotientProduct-contentful = (1 , 2) , 0 , λ { (() , _) }
 
 ------------------------------------------------------------------------
 -- 5. Capstone for QU10.

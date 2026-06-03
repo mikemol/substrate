@@ -37,8 +37,11 @@ module Substrate.Category.UniversalProperty.Quotient where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Unit using (⊤; tt)
 
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
 open import Substrate.Algebra.Quotient using (Quotient; ≈-refl; ≈-sym; ≈-trans)
 open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 
 ------------------------------------------------------------------------
 -- 1. Respecting maps.
@@ -115,12 +118,20 @@ trivial-QuotientUP {A} {_≈_} Q = record
 -- record is `QuotientUP` above, used directly by downstream slices.
 ------------------------------------------------------------------------
 
+-- VACUITY-AUDIT REPAIR (2026-06-03): was a ⊤-collapse placeholder. Wired to
+-- a real Contentful quotient — the quotient map ℕ ↠ ℤ/3: an element is
+-- "solved" by any representative identified with it (≡ mod 3). The structural
+-- QuotientUP record above is the general statement; this is its UPArrow-level
+-- catalogue entry, now content-bearing (1 is not identified with 0).
 Quotient-UPArrow : UPArrow
 Quotient-UPArrow = record
-  { Source  = ⊤   -- "(Quotient A _≈_) + respecting f : A → B"
-  ; Target  = ⊤   -- "factor map f̃ : A → B"
-  ; Witness = λ _ _ → ⊤   -- "f̃ uniquely factorises f through the quotient"
+  { Source  = ℕ   -- "an element to be classified"
+  ; Target  = ℕ   -- "a representative of its class"
+  ; Witness = λ a x → x mod-suc 2 ≡ a mod-suc 2   -- "x and a are identified by ℕ ↠ ℤ/3"
   }
+
+Quotient-contentful : Contentful Quotient-UPArrow
+Quotient-contentful = 1 , 0 , λ ()
 
 ------------------------------------------------------------------------
 -- 5. Capstone for QU2.

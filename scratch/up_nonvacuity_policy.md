@@ -109,3 +109,22 @@ UPs collapsed to `Set`-level `⊤` shadows. The honest fix is to replace each
 0 backed-by-reality. (Source/Target become richer than `⊤`; consumers list-only,
 so safe. Watch import order — `Instances` would gain deps on
 `FreeUniversalProperty`/`LimitUniversalProperty`.)
+
+### FIXED (2026-06-03)
+
+All 7 repaired — detector now reads **0 vacuous debt** (the only remaining
+`⊤`-Witnesses are the sanctioned `trivial-UP` / `PlaceholderUP`). Each stub is
+now a genuine Contentful UPArrow carrying its non-vacuity certificate:
+
+- `Instances.agda` — `FreeMonoid-UP` = `FreeUP-UPArrow (free-monoid ⊤) ℕ`;
+  `FreeModule-UP` = `FreeUP-UPArrow (free-F2Module 1) ℕ`; `ConeLimit-UP` =
+  `LimitUP-UPArrow (product-LimitUP 1 _) ⊤`; `Adjunction-UP` =
+  `FreeUP-UPArrow (free-Set ℕ) ℕ` (the trivial Free⊣Forgetful); 
+  `FreeLinearization-UP` = `FreeUP-UPArrow (free-F2Module 2) ℕ`. Each + a
+  `*-contentful` proof.
+- `Quotient.agda` — `Quotient-UPArrow` = the quotient map ℕ ↠ ℤ/3 (mod-3
+  residue), `Quotient-contentful = 1 , 0 , λ ()`.
+- `QuotientProduct.agda` — `QuotientProduct-UPArrow` = the CRT joint quotient
+  ℕ ↠ ℤ/3 × ℤ/5, `QuotientProduct-contentful = (1,2) , 0 , λ {(() , _)}`.
+
+Consumers `Phase1` / `PhaseA` recompile unchanged (catalogue listing only).
