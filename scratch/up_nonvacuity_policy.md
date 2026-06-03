@@ -75,3 +75,37 @@ fake and the typechecker cannot pass on a vacuous claim.
 - **Obligation-only `⊤`-stubs (self-reported; census worklist):**
   `Instances.agda` ×5, `Quotient`, `QuotientProduct`. At least one
   (FreeMonoid-UP) has real content elsewhere — wire, don't re-prove.
+
+## Vacuity audit (2026-06-03)
+
+The detector flags **exactly 7**, nothing else (broader `⊤`/`tt`-collapse
+sweeps are clean). All seven are the **same artifact**: "UPArrow registration"
+stubs — level-0 (`Set`) *catalogue shadows* of universal properties that are
+genuinely `Set₁` (they quantify over `Set`: any monoid / module / diagram /
+ring). The `⊤`-collapse is a **level artifact, not missing mathematics**; the
+files' own comments admit it ("the full structural record is `QuotientUP`
+above", "abstracted via ⊤ ... concrete bridge at UP9"). Reality-triage — every
+one is backed elsewhere:
+
+| stub | real, content-bearing backing |
+|---|---|
+| `FreeMonoid-UP` | `FreeUniversalProperty.FreeMonoid.free-monoid` (via `FreeUP-UPArrow`) |
+| `FreeModule-UP` | `FreeUniversalProperty.FreeF2Module.free-F2Module` (via `FreeUP-UPArrow`) |
+| `ConeLimit-UP` | `LimitUniversalProperty.product-LimitUP` (via `LimitUP-UPArrow`) |
+| `Adjunction-UP` | `Category.Adjunction` |
+| `FreeLinearization-UP` | `Category.FreeLinearization` |
+| `Quotient-UPArrow` | `PresentedUniversalProperty` + `CyclicZ2` (and `QuotientUP` in-file) |
+| `QuotientProduct-UPArrow` | `Algebra.Quotient.CRT` (CRT-as-QuotientProduct) |
+
+**Consumers:** `Phase1` imports the five (catalogue listing only — no reliance
+on `⊤`); `PhaseA` lists `Quotient-UPArrow` as a catalogue entry;
+`QuotientProduct-UPArrow` is unconsumed. So none rely on the `⊤`-ness — a fix
+that swaps in a Contentful UPArrow (keeping the names) is consumer-safe.
+
+**Conclusion:** zero *genuine* debt — no missing math. The 7 are real `Set₁`
+UPs collapsed to `Set`-level `⊤` shadows. The honest fix is to replace each
+`⊤`-stub with the real Contentful projection (`FreeUP-UPArrow` /
+`LimitUP-UPArrow` exist; the rest have real records), driving the detector to
+0 backed-by-reality. (Source/Target become richer than `⊤`; consumers list-only,
+so safe. Watch import order — `Instances` would gain deps on
+`FreeUniversalProperty`/`LimitUniversalProperty`.)
