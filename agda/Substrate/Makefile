@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ..
 
 FILES := All.agda Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
-SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona
+SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona WitnessTower
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -201,6 +201,13 @@ TokiPona:
 	fi
 	@$(MAKE) -C $@
 
+WitnessTower:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 clean:
 	@$(MAKE) -C Algebra clean 2>/dev/null || true
 	@$(MAKE) -C Axes clean 2>/dev/null || true
@@ -225,4 +232,5 @@ clean:
 	@$(MAKE) -C ShadowArchitecture clean 2>/dev/null || true
 	@$(MAKE) -C Solresol clean 2>/dev/null || true
 	@$(MAKE) -C TokiPona clean 2>/dev/null || true
+	@$(MAKE) -C WitnessTower clean 2>/dev/null || true
 	@true
