@@ -26,16 +26,25 @@ open import Substrate.Category.UniversalProperty using (UPArrow)
 open import Substrate.Category.UniversalProperty.Vacuity using (Vacuous)
 open import Substrate.Category.UniversalProperty.Backed
   using (BackedUP; arrow; backed-non-vacuous; eq-backed; crt-backed)
+open import Substrate.Category.UniversalProperty.Interop
+  using (Z3-backed; Z5-backed)
 
 ------------------------------------------------------------------------
 -- The registry: the structures REALLY backed by a non-vacuous bridge.
 -- (Each entry compiled ⟹ each is a genuine, content-bearing universal
 --  property — the typechecker is the gate, not a grep.)
+--
+-- This List is the ADDITIVE seed (⊕ = ++, the free monoid) of the topos
+-- ring K₀(Backed, ⊕, ⊗). The MULTIPLICATIVE operation ⊗ is Interop._⊗_∣_
+-- (the backed combination of a pair); the first ring identity it backs is
+-- [ℤ/3] ⊗ [ℤ/5] = [ℤ/15] (Interop.crt-ring-identity).
 ------------------------------------------------------------------------
 
 registry : List BackedUP
-registry = eq-backed
-         ∷ crt-backed
+registry = eq-backed       -- equality UP (the identity bridge)
+         ∷ Z3-backed       -- ℤ/3 residue UP   ⎫ the two factors…
+         ∷ Z5-backed       -- ℤ/5 residue UP   ⎭
+         ∷ crt-backed      -- …and their product [ℤ/3] ⊗ [ℤ/5] = [ℤ/15]
          ∷ []
 
 -- Every registered backing is non-vacuous — and this is FORCED by typing,
