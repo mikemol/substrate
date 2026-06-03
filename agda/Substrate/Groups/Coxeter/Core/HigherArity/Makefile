@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../..
 
-FILES := Quad.agda Quint.agda Sept.agda Sext.agda Step.agda Triple.agda
+FILES := Chain.agda Quad.agda Step.agda Triple.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

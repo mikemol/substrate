@@ -20,13 +20,14 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Quad
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
 
-open import Substrate.Groups.Coxeter.Core.HigherArity.Step
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
-open import Substrate.Groups.Coxeter.Core.HigherArity.Triple
+open import Substrate.Foundation.Vec using (_∷_; [])
+open import Substrate.Groups.Coxeter.Core.HigherArity.Chain
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
 
+-- Named arity-4 instance of the generic normalize-chain (chain reduces
+-- definitionally to the right-nested ++, so this is a one-line projection).
 normalize-quad : (a b c d : Word) →
                  normalize (a ++ (b ++ (c ++ d))) ≡
                  normalize (normalize a ++ (normalize b ++
                             (normalize c ++ normalize d)))
-normalize-quad a b c d = normalize-cons a (normalize-triple b c d)
+normalize-quad a b c d = normalize-chain (a ∷ b ∷ c ∷ d ∷ [])

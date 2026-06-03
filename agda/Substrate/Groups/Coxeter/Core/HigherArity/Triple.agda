@@ -23,10 +23,12 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Triple
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
 
-open import Substrate.Groups.Coxeter.Core.HigherArity.Step
+open import Substrate.Foundation.Vec using (_∷_; [])
+open import Substrate.Groups.Coxeter.Core.HigherArity.Chain
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
 
+-- Named arity-3 instance of the generic normalize-chain.
 normalize-triple : (a b c : Word) →
                    normalize (a ++ (b ++ c)) ≡
                    normalize (normalize a ++ (normalize b ++ normalize c))
-normalize-triple a b c = normalize-cons a (normalize-distrib b c)
+normalize-triple a b c = normalize-chain (a ∷ b ∷ c ∷ [])

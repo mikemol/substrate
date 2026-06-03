@@ -1,22 +1,19 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Coxeter.Core.HigherArity
 --
--- Section 5 of Coxeter.Core. Higher-arity distribution ladder,
--- decomposed file-per-lemma to expose the inductive shape to the
--- similarity checker:
+-- Section 5 of Coxeter.Core. Higher-arity distribution.
 --
 --   HigherArity.Step    — normalize-cons (the shared arity-step combinator)
---   HigherArity.Triple  — 3 operands  (V₄ etc.)
---   HigherArity.Quad    — 4 operands  (V₄-4-product)
---   HigherArity.Quint   — 5 operands  (Z₅ fifth-power)
---   HigherArity.Sext    — 6 operands  (Zₙ sixth-power)
---   HigherArity.Sept    — 7 operands  (Z₇ seventh-power)
+--   HigherArity.Chain   — normalize-chain : the GENERIC arity lemma over
+--                         Vec Word (suc n); any arity is free, no new file.
+--   HigherArity.Triple  — normalize-triple (named arity-3 instance of Chain)
+--   HigherArity.Quad    — normalize-quad   (named arity-4 instance; the one
+--                         live consumer is V4-Coxeter)
 --
--- Each leaf is `normalize-cons a (previous-arity-lemma ...)` — the
--- single `normalize-append + normalize-cong-right` step is extracted
--- in `HigherArity.Step` as `normalize-cons`, and every Triple…Sept
--- leaf is a one-line specialization. Consumer surfaces (the
--- per-arity names) are preserved.
+-- The former file-per-arity ladder (Quint/Sext/Sept) was an open-ended
+-- antipattern — every new arity meant a new file — and Quint/Sext/Sept had
+-- ZERO consumers. Replaced by the single inductive normalize-chain; the two
+-- live named rungs (Triple, Quad) now derive from it in one line.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -37,17 +34,11 @@ module Substrate.Groups.Coxeter.Core.HigherArity
 open import Substrate.Groups.Coxeter.Core.HigherArity.Step
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
 
+open import Substrate.Groups.Coxeter.Core.HigherArity.Chain
+  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
+
 open import Substrate.Groups.Coxeter.Core.HigherArity.Triple
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
 
 open import Substrate.Groups.Coxeter.Core.HigherArity.Quad
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
-
-open import Substrate.Groups.Coxeter.Core.HigherArity.Quint
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
-
-open import Substrate.Groups.Coxeter.Core.HigherArity.Sext
-  Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
-
-open import Substrate.Groups.Coxeter.Core.HigherArity.Sept
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib public
