@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
 FILES := AbelianPFG.agda Adjunction.agda Algebra-of-Monad.agda AntiCommutativeAlgebra.agda AtlasOfProbes.agda AutomorphismGroup.agda BWTEmergence.agda BeckChevalley.agda BoundaryEvent.agda CartanRootEquivalence.agda CartanType.agda CascadedCoalgebra.agda CategoryOf.agda CentralizerDescent.agda ChainDecomposition.agda CliffordEmissionAlgebra.agda Coalgebra-of-Comonad.agda Coalgebra.agda CoarseResidueEmission.agda Coequalizer.agda Coherence.agda Colimit.agda CommutativeComonoid.agda CommutativeMonoid.agda CommutativeNonAssociativeAlgebra.agda Comonad.agda Comonoid.agda ComposedReference.agda CompressionAtlas.agda Cone.agda ConeBondArchitecture.agda ConjugationCoalgebra.agda CoxeterPermutationGroup.agda DaggerCategory.agda DiscreteFourierTransform.agda EilenbergMooreCategory.agda Equalizer.agda ExteriorAlgebra.agda F2Graded.agda FieldBond.agda FieldContinuum.agda FieldFanOut.agda FreeLinearization.agda FreeLinearizationR.agda FreeOverBasis.agda FreeUniversalProperty.agda Functor.agda GTorsor.agda GaloisAdjunction.agda GeneratorOperad.agda GenericHodgeStar.agda GradedBicategorical.agda GradedMonoid.agda GrothendieckConstruction.agda GrothendieckOfAut.agda GroupoidCardinality.agda JordanAlgebra.agda KanExtension.agda KleisliCategory.agda LaxFunctor.agda LieAlgebra.agda Limit.agda LimitUniversalProperty.agda LinearAlgebra.agda Modification.agda Monad.agda Morphism.agda MultiFieldBond.agda MultiPrimeSpectralProfile.agda MultiSylowComposition.agda MultiscaleOctonionLoop.agda NaturalTransformation.agda OpcodeAlgebra.agda Operad.agda Opposite.agda OrphanAudit.agda PhaseLockedLoop.agda Poly.agda PolyLens.agda PredictorRing.agda PresentedGroup.agda PresentedUniversalProperty.agda PresheafCategory.agda PrimeFactoredGauge.agda PrimeSampledChain.agda PrimitiveInstances.agda PrimitivesAll.agda PrimitivesRoadmapV2.agda PseudoFunctor.agda Pullback.agda Pushout.agda RGradedMonoid.agda ReedMullerHierarchy.agda ReferenceOrbit.agda ResidueCompensation.agda RootSystem.agda RuleAction.agda S1-Lift.agda S2-Lift.agda Sheaf.agda Site.agda StochasticLens.agda StratifiedBundle.agda StratifiedSequence.agda Strict2Monoid.agda SubobjectClassifier.agda SylowDecomposition.agda SymmetricMonoidal.agda TensorProduct.agda TermAlgebraBridges.agda TermAlgebraCapstone.agda Topos.agda TwoCategory.agda TwoEquivalence.agda TwoNaturalTransformation.agda UniversalEnvelopingAlgebra.agda UniversalProperty.agda VertexOperatorAlgebra.agda WedgeProduct.agda YonedaEmbedding.agda
-SUBDIRS := Adjunction AntiCommutativeAlgebra AutomorphismGroup BeckChevalley CartanType CascadedCoalgebra Cat CategoryOf CentralizerDescent Coalgebra CommutativeComonoid Comonoid ComposedReference Cone ConjugationCoalgebra Coxeter DaggerCategory DiscreteFourierTransform ExteriorAlgebra FreeLinearization FreeLinearizationR FreeUniversalProperty Functor GTorsor GaloisAdjunction GrothendieckConstruction HC JordanAlgebra LieAlgebra Monad NaturalTransformation PhaseLockedLoop Poly PolyLens PrimeFactoredGauge RGradedMonoid ReferenceOrbit RootSystem RuleAction S1-Lift S2-Lift StochasticLens Strict2Monoid SylowDecomposition SymmetricMonoidal TensorProduct UniversalEnvelopingAlgebra UniversalProperty
+SUBDIRS := Adjunction AntiCommutativeAlgebra AutomorphismGroup BeckChevalley CartanType CascadedCoalgebra Cat CategoryOf CentralizerDescent Coalgebra CommutativeComonoid Comonoid ComposedReference Cone ConjugationCoalgebra Coxeter DaggerCategory DiscreteFourierTransform ExteriorAlgebra FreeLinearization FreeLinearizationR FreeUniversalProperty Functor GTorsor GaloisAdjunction GrothendieckConstruction HC JordanAlgebra LieAlgebra Monad NaturalTransformation PhaseLockedLoop Poly PolyLens PresentedUniversalProperty PrimeFactoredGauge RGradedMonoid ReferenceOrbit RootSystem RuleAction S1-Lift S2-Lift StochasticLens Strict2Monoid SylowDecomposition SymmetricMonoidal TensorProduct UniversalEnvelopingAlgebra UniversalProperty
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -278,6 +278,13 @@ PolyLens:
 	fi
 	@$(MAKE) -C $@
 
+PresentedUniversalProperty:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 PrimeFactoredGauge:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -411,6 +418,7 @@ clean:
 	@$(MAKE) -C PhaseLockedLoop clean 2>/dev/null || true
 	@$(MAKE) -C Poly clean 2>/dev/null || true
 	@$(MAKE) -C PolyLens clean 2>/dev/null || true
+	@$(MAKE) -C PresentedUniversalProperty clean 2>/dev/null || true
 	@$(MAKE) -C PrimeFactoredGauge clean 2>/dev/null || true
 	@$(MAKE) -C RGradedMonoid clean 2>/dev/null || true
 	@$(MAKE) -C ReferenceOrbit clean 2>/dev/null || true
