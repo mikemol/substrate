@@ -69,3 +69,37 @@ laws (→≡)**. Records of laws over recursive carriers — the algebraic spine
   empty-record signature-stubs (tag vs fill); (d) walk the SPPF *up* the dep
   chain to find cross-LAYER motifs (a foundation shape recurring at a high layer
   = an isomorphism across silos — the north-star bridge, found structurally).
+
+## Cross-layer ranking (2026-06-03) — `scripts/type_sppf_crosslayer.py`
+
+Ranked the 34 iso classes by the dependency-depth span their members cross
+(annotated with silo-count and structural weight). The lesson is the
+Hough-resolution rule [[feedback_hough_resolution]]:
+
+- **Span rewards shape-ubiquity, not correspondence.** The widest classes
+  (span 16-17, many silos) are **finite enums** (`Distinction-Name`,
+  `Selector`, `SylowPrime`, `Axis`, …) — isomorphic only as "K atoms," spanning
+  everything because enums are everywhere. NOISE, not bridges. At skeleton
+  resolution the SPPF measures SHAPE, and shape-iso conflates "same structure"
+  with "same meaning."
+
+- **The genuine cross-silo correspondences are the RICH classes** (high weight,
+  contentful shape):
+  - **`Character ≅ FieldBond ≅ FreeOverBasis`** — all `record { f : A → B }`,
+    a single wrapped morphism. `FreeOverBasis.η` IS the free-construction unit
+    (the center); so the Pontryagin character (`chi`) and the field-tower bond
+    (`bond`) are *structurally the center's unit*. A real bridge: the
+    morphism-carrier / unit motif recurring across 3 silos.
+  - `Dec ≅ Either` — binary sum (Dec is a specialised Either).
+  - `ConditionalEntropy ≅ JointEntropy ≅ KLDivergence` — info-theory measures.
+  - term-algebra `Gen`/`Term` families (weight 11, the richest) — one motif,
+    a generic begging to be written.
+  - the `≃`-witness shape (`Live≃Permutation`, `TotalSpace≃S₄`).
+
+- **Methodological correction:** do NOT sort cross-silo candidates by span.
+  Sort by (structural weight × silo-count), filtering finite-enum / ⊤ shapes.
+  To find TRUE bridges rather than shape-coincidence, raise resolution: TYPED
+  skeletons that record whether a field's two endpoints are the *same* carrier
+  vs unrelated types — then enums stop collapsing together and the
+  morphism-carrier motif resolves into which instances are the same
+  construction. (Resolution-increase, exactly as the Hough rule prescribes.)
