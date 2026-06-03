@@ -10,8 +10,8 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Arithmetic.agda
-SUBDIRS := Properties
+FILES := Arithmetic.agda Bezout.agda
+SUBDIRS := Bezout Properties
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,6 +40,13 @@ files:
 
 subdirs: $(SUBDIRS)
 
+Bezout:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 Properties:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -48,5 +55,6 @@ Properties:
 	@$(MAKE) -C $@
 
 clean:
+	@$(MAKE) -C Bezout clean 2>/dev/null || true
 	@$(MAKE) -C Properties clean 2>/dev/null || true
 	@true
