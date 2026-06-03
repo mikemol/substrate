@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
+AGDA_ROOT := ../../../..
 
-FILES := AsChainDecomp.agda AsPresented.agda Characters.agda GaugeGenerators.agda JointGenScaffold.agda JointGenViaPresentation.agda MultiRouteEquivariance.agda SingerOrder.agda SylowDecomposition.agda
-SUBDIRS := MultiRouteEquivariance SingerOrder
+FILES := Commutes.agda HasOrder.agda Iterate.agda OnBasis.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,21 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-MultiRouteEquivariance:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-SingerOrder:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C MultiRouteEquivariance clean 2>/dev/null || true
-	@$(MAKE) -C SingerOrder clean 2>/dev/null || true
 	@true
