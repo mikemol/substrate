@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Axioms.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
+FILES := AsAction.agda Axioms.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
 SUBDIRS := Axioms Composition Dispatch Generators HomRotations HomSwaps Twist
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

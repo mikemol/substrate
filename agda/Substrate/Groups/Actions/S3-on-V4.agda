@@ -43,3 +43,4 @@ open import Substrate.Groups.Actions.S3-on-V4.Axioms       public
 open import Substrate.Groups.Actions.S3-on-V4.Generators   public
 open import Substrate.Groups.Actions.S3-on-V4.Twist        public
 open import Substrate.Groups.Actions.S3-on-V4.Composition  public
+open import Substrate.Groups.Actions.S3-on-V4.AsAction     public
