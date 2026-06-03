@@ -5,11 +5,18 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
-.PHONY: all clean check-makefiles
+.PHONY: all clean check check-makefiles check-defproof
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
+# Aggregate invariant gate (same checks the pre-commit hook runs):
+# def/proof separation + makefile-tree sync. Run before pushing.
+check: check-defproof check-makefiles
+	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
 	@python3 ../scripts/gen_build_makefiles.py --check
+# Verify def/proof separation (definition-providers import no proof modules).
+check-defproof:
+	@../scripts/check_def_proof_separation.sh
