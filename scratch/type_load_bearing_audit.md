@@ -106,6 +106,27 @@ Highest direct fan-in (the import-spine): `Foundation.Eq` (595),
 
 326 of 493 types are cross-module load-bearing; ~166 are module-local.
 
+## The inverse: least fan-in (the canopy)
+
+Type fan-in distribution (external modules naming it): 166 at 0 (module-local),
+**91 at exactly 1**, 44 at 2, 31 at 3, tapering. The 91 single-consumer types
+are overwhelmingly **feeder → aggregator** pairs: a type in its own module,
+consumed by exactly one collector (`Capstone`, `Phase{1,2,3}`, `PrimitivesAll`,
+`PrimitiveInstances`, `TermAlgebraBridges`). Not redundancy — the file-per-lemma
+discipline (build once, collect once). The young wedge arc shows the same youth
+signature (`Interop`→`Registry`, `MulDivStr`/`Two`→`CrossMul`, `WedgeIso`→`Registry`).
+
+Module fan-in: 31 at 0 (capstones / `All` / entry points), **516 at exactly 1**
+(44% of the tree — the decomposition's leaves, each feeding one parent), 250 at
+2, 101 at 3.
+
+**Shape of the repo:** strongly bimodal — a tiny deeply-shared foundation (the
+spine, ~90% transitive reach) under a wide shallow canopy of single-consumer
+leaves (44% fan-in-1 modules), with little in the moderately-shared middle.
+That is the signature of aggressive decomposition over a minimal core — the
+canopy is load-bearing-by-one *on purpose*, NOT debt. (Tool:
+`scripts/audit_import_reach.py`; inverse via the fan-in distribution.)
+
 ## Recommended actions (in order of safety)
 
 1. Delete the 7 dead + decide `LeftKanExtension` (zero risk — nothing depends).
