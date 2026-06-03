@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Versioned pre-commit hook (enabled via: git config core.hooksPath .githooks)
+#
+# Enforces repo invariants that are cheap to check and expensive to let
+# regress. Currently:
+#   * def/proof separation (load-bound memory policy) —
+#     scripts/check_def_proof_separation.sh
+#
+# Each check prints its own diagnostics and returns non-zero on failure;
+# a failing check aborts the commit. To bypass in an emergency:
+#   git commit --no-verify
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+fail=0
+
+run() {
+  local name="$1"; shift
+  if ! "$@"; then
+    echo "pre-commit: FAILED — $name" >&2
+    fail=1
+  fi
+}
+
+run "def/proof separation" "$ROOT/scripts/check_def_proof_separation.sh" --quiet \
+  || true   # --quiet is silent; re-run verbose on failure for the message
+if [ "$fail" -ne 0 ]; then
+  "$ROOT/scripts/check_def_proof_separation.sh" || true
+fi
+
+# Build-makefile tree must stay in sync with the source tree (new/removed
+# .agda files or directories require regenerating the per-dir makefiles).
+run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --check
+
+if [ "$fail" -ne 0 ]; then
+  echo "pre-commit: one or more checks failed; commit aborted (use --no-verify to override)." >&2
+  exit 1
+fi
+exit 0
