@@ -1,0 +1,114 @@
+------------------------------------------------------------------------
+-- Substrate.Category.LimitUniversalProperty
+--
+-- The LIMIT / cofree half of the center — the genuine DUAL of
+-- Category.FreeUniversalProperty, completing the symmetric picture:
+--
+--   colimit side   FreeUP   (unit η : B → F ; map OUT: extend)
+--   limit side     LimitUP  (legs π : L → Base i ; map IN: mediate)
+--
+-- All arrows reversed. FreeUP states "free over generators": for any
+-- target + map FROM the basis, a unique map OUT of the free object.
+-- LimitUP states "limit of a diagram": for any apex + maps TO the base
+-- (a cone), a unique map INTO the limit. This is Category.Cone given the
+-- content-bearing universal property Cone itself lacked (Cone had only the
+-- leg shape; this adds mediate + commutes + uniqueness).
+--
+-- Uniqueness is OBSERVATIONAL (up to agreement on all legs), funext-free —
+-- the dual of FreeUP stating extend-unique pointwise on the carrier. Two
+-- maps into a limit are "equal" exactly when they agree after every
+-- projection; that is the limit's natural equality, and --without-K has no
+-- funext to make it propositional on the function-typed apex.
+--
+-- Per [[project_cone_subsumes_equalizer_pullback]]: Equalizer / Pullback
+-- are LimitUP at special base diagrams; this names the universal property
+-- they share. Discrete base here (a product); base-diagram morphisms add
+-- a commutativity side-condition (deferred, as in Cone).
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.LimitUniversalProperty where
+
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Category.Cone using (Cone)
+open import Substrate.Category.UniversalProperty using (UPArrow)
+
+------------------------------------------------------------------------
+-- 1. THE LIMIT CENTER. Dual of FreeUP. (Discrete base ⇒ product.)
+------------------------------------------------------------------------
+
+record LimitUP (n : ℕ) (Base : Fin n → Set) (L : Set) : Set₁ where
+  field
+    -- the legs (projections) — dual to FreeUP's unit η.
+    leg : (i : Fin n) → L → Base i
+
+    -- THE universal property: every cone (apex A + maps to the base)
+    -- factors through L by a mediating map — dual to extend …
+    mediate :
+      {A : Set} → ((i : Fin n) → A → Base i) → (A → L)
+    -- … which commutes with the legs (π ∘ mediate ≡ f) — dual to
+    -- extend-extends …
+    mediate-commutes :
+      {A : Set} (f : (i : Fin n) → A → Base i) (i : Fin n) (a : A) →
+      leg i (mediate f a) ≡ f i a
+    -- … and is the UNIQUE such map, observationally (any commuting g
+    -- agrees with mediate after every projection) — dual to
+    -- extend-unique, funext-free.
+    mediate-unique :
+      {A : Set} (f : (i : Fin n) → A → Base i) (g : A → L) →
+      ((i : Fin n) (a : A) → leg i (g a) ≡ f i a) →
+      (a : A) (i : Fin n) → leg i (g a) ≡ leg i (mediate f a)
+
+open LimitUP public
+
+------------------------------------------------------------------------
+-- 2. A LimitUP forgets to the existing Cone shape (so Category.Cone is
+--    exactly the data of a LimitUP minus the universal property).
+------------------------------------------------------------------------
+
+LimitUP→Cone : {n : ℕ} {Base : Fin n → Set} {L : Set} →
+               LimitUP n Base L → Cone n Base L
+LimitUP→Cone lim = record { leg = leg lim }
+
+------------------------------------------------------------------------
+-- 3. NON-VACUITY: the dependent product IS the limit of a discrete base.
+--    leg = projection, mediate = tupling. (Dual to free-Set.)
+------------------------------------------------------------------------
+
+product-LimitUP :
+  (n : ℕ) (Base : Fin n → Set) → LimitUP n Base ((i : Fin n) → Base i)
+product-LimitUP n Base = record
+  { leg              = λ i g → g i
+  ; mediate          = λ f a i → f i a
+  ; mediate-commutes = λ f i a → refl
+  ; mediate-unique   = λ f g g-comm a i → g-comm i a
+  }
+
+------------------------------------------------------------------------
+-- 4. A LimitUP IS a (content-bearing) UPArrow, per apex A — DUAL of
+--    FreeUP-UPArrow (Source/Target roles swapped):
+--      Source  = cones with apex A (maps A → Base i)   (the "problem")
+--      Target  = mediating maps A → L                  (the "solution")
+--      Witness = the candidate IS a cone-map for the problem.
+------------------------------------------------------------------------
+
+LimitUP-UPArrow :
+  {n : ℕ} {Base : Fin n → Set} {L : Set} →
+  LimitUP n Base L → (A : Set) → UPArrow
+LimitUP-UPArrow {n} {Base} {L} lim A = record
+  { Source  = (i : Fin n) → A → Base i
+  ; Target  = A → L
+  ; Witness = λ f g → (i : Fin n) (a : A) → leg lim i (g a) ≡ f i a
+  }
+
+------------------------------------------------------------------------
+-- The center is now symmetric, both sides content-bearing:
+--   colimit  FreeUP   (Category.FreeUniversalProperty) + PresentedUP
+--   limit    LimitUP  (here)                            + (Cone shape)
+-- over one AlgebraClass-indexed / Cone-indexed family, all UPArrow
+-- instances. Equalizer / Pullback are LimitUP at non-discrete bases
+-- (deferred, per Cone). See [[project_center_free_universal_property]].
+------------------------------------------------------------------------
