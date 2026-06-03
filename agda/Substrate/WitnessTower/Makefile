@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := Codeword.agda Core.agda Enumerate.agda FirstAppearance.agda Hodge.agda Link.agda Puncture.agda SharedMiddle.agda WholeTower.agda WhyThreeV2.agda
+FILES := Codeword.agda Core.agda Enumerate.agda FirstAppearance.agda Hodge.agda KleinCensus.agda Link.agda Puncture.agda SharedMiddle.agda WholeTower.agda WhyThreeV2.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
