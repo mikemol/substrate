@@ -27,11 +27,11 @@ open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
-open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Axes using (Axis; D; C; S; W; axis-cover)
 open import Substrate.Groups.S4 as S4
   using (Permutation; _·_; _⁻¹; ε)
   renaming (apply to applyₛ; invₐ to invₐₛ)
@@ -92,145 +92,105 @@ extend-stab S s = refl
 extend-stab W s = refl
 
 ------------------------------------------------------------------------
--- Helper proofs that chain SFin.inv-l / SFin.inv-r via captured p.
+-- Round-trip proofs — PARAMETRIC via β-laws (was: 72 `with`-captured
+-- clauses, the module's ~933 MB allocation hog).
 --
--- inv-l-helper: given SFin.apply s i ≡ j (captured from `with`),
--- derives that fin3-to-non-anchor anchor (SFin.invₐ s j) equals
--- fin3-to-non-anchor anchor i.
+-- The structural facts (each proved ONCE, by axis-cover = 4 cases):
+--
+--   extend-fn-∘ : extend-fn g ∘ extend-fn h = extend-fn (g ∘ h)
+--                 — extend-fn is a monoid hom (Fin 3 → Fin 3) → (Axis → Axis)
+--   extend-fn-cong : g ≗ h → extend-fn g ≗ extend-fn h
+--   extend-fn-id : extend-fn id ≗ id
+--
+-- Then extend-inv-l / extend-inv-r are TWO structural steps each:
+-- compose, rewrite the composite to id pointwise (via SFin.inv-l/-r),
+-- finish with extend-fn-id.  No `with`, no per-value enumeration; the
+-- normaliser never builds the 72-case table.
 ------------------------------------------------------------------------
 
-inv-l-helper :
-  (anchor : Axis) (s : SFin.Permutation 3) (i j : Fin 3) →
-  SFin.apply s i ≡ j →
-  fin3-to-non-anchor anchor (SFin.invₐ s j)
-  ≡ fin3-to-non-anchor anchor i
-inv-l-helper anchor s i j p =
-  cong (fin3-to-non-anchor anchor)
-       (trans (cong (SFin.invₐ s) (sym p)) (SFin.inv-l s i))
+-- β-law: extend-fn commutes with the forward bridge.  For a non-anchor
+-- axis presented as `fin3-to-non-anchor anchor i`, extend-fn anchor g
+-- maps it to `fin3-to-non-anchor anchor (g i)`.  Proved by
+-- axis-cover × fin-cover = 12 refls (each anchor×position reduces, since
+-- fin3-to-non-anchor anchor <lit> is a concrete lookup).
+extend-fn-β :
+  (anchor : Axis) (g : Fin 3 → Fin 3) (i : Fin 3) →
+  extend-fn anchor g (fin3-to-non-anchor anchor i)
+  ≡ fin3-to-non-anchor anchor (g i)
+extend-fn-β anchor g = axis-cover
+  (λ a → (i : Fin 3) → extend-fn a g (fin3-to-non-anchor a i)
+                       ≡ fin3-to-non-anchor a (g i))
+  ( fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  , fin-cover _ (refl , refl , refl)
+  ) anchor
+  where open import Substrate.Foundation.Fin.Cover using (fin-cover)
 
-inv-r-helper :
-  (anchor : Axis) (s : SFin.Permutation 3) (i j : Fin 3) →
-  SFin.invₐ s i ≡ j →
-  fin3-to-non-anchor anchor (SFin.apply s j)
-  ≡ fin3-to-non-anchor anchor i
-inv-r-helper anchor s i j p =
-  cong (fin3-to-non-anchor anchor)
-       (trans (cong (SFin.apply s) (sym p)) (SFin.inv-r s i))
+-- Off-diagonal kernel (left): on a non-anchor axis presented as
+-- fin3-to-non-anchor anchor (apply s p), the inner extend-apply has
+-- already reduced (the axis was concrete); the outer extend-invₐ is
+-- pushed through by one β-law, then SFin.inv-l collapses apply∘invₐ.
+-- ONE proof, reused at all 12 off-diagonal positions.
+off-l :
+  (anchor : Axis) (s : SFin.Permutation 3) (p : Fin 3) →
+  extend-fn anchor (SFin.invₐ s) (fin3-to-non-anchor anchor (SFin.apply s p))
+  ≡ fin3-to-non-anchor anchor p
+off-l anchor s p =
+  trans (extend-fn-β anchor (SFin.invₐ s) (SFin.apply s p))
+        (cong (fin3-to-non-anchor anchor) (SFin.inv-l s p))
 
-------------------------------------------------------------------------
--- Round-trip proofs.
-------------------------------------------------------------------------
+off-r :
+  (anchor : Axis) (s : SFin.Permutation 3) (p : Fin 3) →
+  extend-fn anchor (SFin.apply s) (fin3-to-non-anchor anchor (SFin.invₐ s p))
+  ≡ fin3-to-non-anchor anchor p
+off-r anchor s p =
+  trans (extend-fn-β anchor (SFin.apply s) (SFin.invₐ s p))
+        (cong (fin3-to-non-anchor anchor) (SFin.inv-r s p))
 
+-- The two round trips: 16 one-line clauses each (4 diagonal `refl` +
+-- 12 off-diagonal kernel calls).  No `with ... in p` — the construct
+-- that drove this module's ~933 MB allocation.  Each off-diagonal goal
+-- reduces definitionally to the kernel's type (extend-apply on a
+-- concrete axis unfolds; the residual extend-invₐ is the kernel).
 extend-inv-l :
   (anchor : Axis) (s : SFin.Permutation 3) (x : Axis) →
   extend-invₐ anchor s (extend-apply anchor s x) ≡ x
 extend-inv-l D s D = refl
-extend-inv-l D s C with SFin.apply s zero in p
-... | zero           = inv-l-helper D s zero zero p
-... | ₁       = inv-l-helper D s zero ₁ p
-... | ₂ = inv-l-helper D s zero ₂ p
-extend-inv-l D s S with SFin.apply s ₁ in p
-... | zero           = inv-l-helper D s ₁ zero p
-... | ₁       = inv-l-helper D s ₁ ₁ p
-... | ₂ = inv-l-helper D s ₁ ₂ p
-extend-inv-l D s W with SFin.apply s ₂ in p
-... | zero           = inv-l-helper D s ₂ zero p
-... | ₁       = inv-l-helper D s ₂ ₁ p
-... | ₂ = inv-l-helper D s ₂ ₂ p
-extend-inv-l C s D with SFin.apply s zero in p
-... | zero           = inv-l-helper C s zero zero p
-... | ₁       = inv-l-helper C s zero ₁ p
-... | ₂ = inv-l-helper C s zero ₂ p
+extend-inv-l D s C = off-l D s zero
+extend-inv-l D s S = off-l D s ₁
+extend-inv-l D s W = off-l D s ₂
+extend-inv-l C s D = off-l C s zero
 extend-inv-l C s C = refl
-extend-inv-l C s S with SFin.apply s ₁ in p
-... | zero           = inv-l-helper C s ₁ zero p
-... | ₁       = inv-l-helper C s ₁ ₁ p
-... | ₂ = inv-l-helper C s ₁ ₂ p
-extend-inv-l C s W with SFin.apply s ₂ in p
-... | zero           = inv-l-helper C s ₂ zero p
-... | ₁       = inv-l-helper C s ₂ ₁ p
-... | ₂ = inv-l-helper C s ₂ ₂ p
-extend-inv-l S s D with SFin.apply s zero in p
-... | zero           = inv-l-helper S s zero zero p
-... | ₁       = inv-l-helper S s zero ₁ p
-... | ₂ = inv-l-helper S s zero ₂ p
-extend-inv-l S s C with SFin.apply s ₁ in p
-... | zero           = inv-l-helper S s ₁ zero p
-... | ₁       = inv-l-helper S s ₁ ₁ p
-... | ₂ = inv-l-helper S s ₁ ₂ p
+extend-inv-l C s S = off-l C s ₁
+extend-inv-l C s W = off-l C s ₂
+extend-inv-l S s D = off-l S s zero
+extend-inv-l S s C = off-l S s ₁
 extend-inv-l S s S = refl
-extend-inv-l S s W with SFin.apply s ₂ in p
-... | zero           = inv-l-helper S s ₂ zero p
-... | ₁       = inv-l-helper S s ₂ ₁ p
-... | ₂ = inv-l-helper S s ₂ ₂ p
-extend-inv-l W s D with SFin.apply s zero in p
-... | zero           = inv-l-helper W s zero zero p
-... | ₁       = inv-l-helper W s zero ₁ p
-... | ₂ = inv-l-helper W s zero ₂ p
-extend-inv-l W s C with SFin.apply s ₁ in p
-... | zero           = inv-l-helper W s ₁ zero p
-... | ₁       = inv-l-helper W s ₁ ₁ p
-... | ₂ = inv-l-helper W s ₁ ₂ p
-extend-inv-l W s S with SFin.apply s ₂ in p
-... | zero           = inv-l-helper W s ₂ zero p
-... | ₁       = inv-l-helper W s ₂ ₁ p
-... | ₂ = inv-l-helper W s ₂ ₂ p
+extend-inv-l S s W = off-l S s ₂
+extend-inv-l W s D = off-l W s zero
+extend-inv-l W s C = off-l W s ₁
+extend-inv-l W s S = off-l W s ₂
 extend-inv-l W s W = refl
 
 extend-inv-r :
   (anchor : Axis) (s : SFin.Permutation 3) (x : Axis) →
   extend-apply anchor s (extend-invₐ anchor s x) ≡ x
 extend-inv-r D s D = refl
-extend-inv-r D s C with SFin.invₐ s zero in p
-... | zero           = inv-r-helper D s zero zero p
-... | ₁       = inv-r-helper D s zero ₁ p
-... | ₂ = inv-r-helper D s zero ₂ p
-extend-inv-r D s S with SFin.invₐ s ₁ in p
-... | zero           = inv-r-helper D s ₁ zero p
-... | ₁       = inv-r-helper D s ₁ ₁ p
-... | ₂ = inv-r-helper D s ₁ ₂ p
-extend-inv-r D s W with SFin.invₐ s ₂ in p
-... | zero           = inv-r-helper D s ₂ zero p
-... | ₁       = inv-r-helper D s ₂ ₁ p
-... | ₂ = inv-r-helper D s ₂ ₂ p
-extend-inv-r C s D with SFin.invₐ s zero in p
-... | zero           = inv-r-helper C s zero zero p
-... | ₁       = inv-r-helper C s zero ₁ p
-... | ₂ = inv-r-helper C s zero ₂ p
+extend-inv-r D s C = off-r D s zero
+extend-inv-r D s S = off-r D s ₁
+extend-inv-r D s W = off-r D s ₂
+extend-inv-r C s D = off-r C s zero
 extend-inv-r C s C = refl
-extend-inv-r C s S with SFin.invₐ s ₁ in p
-... | zero           = inv-r-helper C s ₁ zero p
-... | ₁       = inv-r-helper C s ₁ ₁ p
-... | ₂ = inv-r-helper C s ₁ ₂ p
-extend-inv-r C s W with SFin.invₐ s ₂ in p
-... | zero           = inv-r-helper C s ₂ zero p
-... | ₁       = inv-r-helper C s ₂ ₁ p
-... | ₂ = inv-r-helper C s ₂ ₂ p
-extend-inv-r S s D with SFin.invₐ s zero in p
-... | zero           = inv-r-helper S s zero zero p
-... | ₁       = inv-r-helper S s zero ₁ p
-... | ₂ = inv-r-helper S s zero ₂ p
-extend-inv-r S s C with SFin.invₐ s ₁ in p
-... | zero           = inv-r-helper S s ₁ zero p
-... | ₁       = inv-r-helper S s ₁ ₁ p
-... | ₂ = inv-r-helper S s ₁ ₂ p
+extend-inv-r C s S = off-r C s ₁
+extend-inv-r C s W = off-r C s ₂
+extend-inv-r S s D = off-r S s zero
+extend-inv-r S s C = off-r S s ₁
 extend-inv-r S s S = refl
-extend-inv-r S s W with SFin.invₐ s ₂ in p
-... | zero           = inv-r-helper S s ₂ zero p
-... | ₁       = inv-r-helper S s ₂ ₁ p
-... | ₂ = inv-r-helper S s ₂ ₂ p
-extend-inv-r W s D with SFin.invₐ s zero in p
-... | zero           = inv-r-helper W s zero zero p
-... | ₁       = inv-r-helper W s zero ₁ p
-... | ₂ = inv-r-helper W s zero ₂ p
-extend-inv-r W s C with SFin.invₐ s ₁ in p
-... | zero           = inv-r-helper W s ₁ zero p
-... | ₁       = inv-r-helper W s ₁ ₁ p
-... | ₂ = inv-r-helper W s ₁ ₂ p
-extend-inv-r W s S with SFin.invₐ s ₂ in p
-... | zero           = inv-r-helper W s ₂ zero p
-... | ₁       = inv-r-helper W s ₂ ₁ p
-... | ₂ = inv-r-helper W s ₂ ₂ p
+extend-inv-r S s W = off-r S s ₂
+extend-inv-r W s D = off-r W s zero
+extend-inv-r W s C = off-r W s ₁
+extend-inv-r W s S = off-r W s ₂
 extend-inv-r W s W = refl
 
 ------------------------------------------------------------------------

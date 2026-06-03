@@ -46,6 +46,7 @@ open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong; sym-trans; trans-sym; cong-trans)
@@ -89,19 +90,31 @@ Stab-inv anchor σ σ-stab =
 -- Fin 3 ↔ non-anchor-axis bridges. 12 cases each direction.
 ------------------------------------------------------------------------
 
+-- The common substructure of the forward bridge: the 3 non-anchor
+-- axes of each anchor, "skip anchor, then declaration order (D,C,S,W)".
+-- THIS vector IS the gauge convention the module header documents; the
+-- forward map is lookup into it. (Any other ordering is an equally-valid
+-- bridge differing by an inner S_3-automorphism — see header.)
+--
+-- NOTE: structurally this bridge pair IS the punctured-finite-set
+-- bijection Fin (suc n) ∖ {k} ≅ Fin n, named generically in
+-- Substrate.Foundation.Fin.Punctured (punchIn / punchOut) and
+-- transported to the Axis layer in Substrate.Axes.Punctured.  Routing
+-- THESE definitions through that primitive was attempted and reverted:
+-- the transport makes the bridge non-definitional, which breaks the
+-- DEFINITIONAL round-trip proofs in Stab-S3-Iso / Stab-S3-Hom (they
+-- rely on `refl` reducing the concrete-anchor cases).  Migrating those
+-- two consumers to subst-based round-trips is a scoped follow-up; until
+-- then the lookup form below is kept because it preserves the 7
+-- consumers' definitional proofs.
+non-anchors : Axis → Vec Axis 3
+non-anchors D = C ∷ S ∷ W ∷ []
+non-anchors C = D ∷ S ∷ W ∷ []
+non-anchors S = D ∷ C ∷ W ∷ []
+non-anchors W = D ∷ C ∷ S ∷ []
+
 fin3-to-non-anchor : Axis → Fin 3 → Axis
-fin3-to-non-anchor D zero             = C
-fin3-to-non-anchor D ₁       = S
-fin3-to-non-anchor D ₂ = W
-fin3-to-non-anchor C zero             = D
-fin3-to-non-anchor C ₁       = S
-fin3-to-non-anchor C ₂ = W
-fin3-to-non-anchor S zero             = D
-fin3-to-non-anchor S ₁       = C
-fin3-to-non-anchor S ₂ = W
-fin3-to-non-anchor W zero             = D
-fin3-to-non-anchor W ₁       = C
-fin3-to-non-anchor W ₂ = S
+fin3-to-non-anchor anchor = lookup (non-anchors anchor)
 
 fin3-to-non-anchor-≢ :
   (anchor : Axis) (i : Fin 3) → fin3-to-non-anchor anchor i ≢ anchor

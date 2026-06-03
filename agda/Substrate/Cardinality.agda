@@ -81,6 +81,10 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
+-- axis-↔-fin4 lives at the Axes layer (single source of truth) and is
+-- re-exported here so existing consumers (Cardinality.Product) that
+-- import it from this module are unaffected.
+open import Substrate.Axes.Punctured public using (axis-↔-fin4)
 open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
 open import Substrate.Cocycles.V4Signature
   using (Pairing; α-pair; β-pair; γ-pair;
@@ -88,31 +92,13 @@ open import Substrate.Cocycles.V4Signature
 
 ------------------------------------------------------------------------
 -- Axis ↔ Fin 4
+--
+-- Single source of truth: Substrate.Axes.Punctured.axis-↔-fin4
+-- (re-exported above).  This deduplicates the bijection that the
+-- punctured-Fin bridge and this cardinality module both need; it lives
+-- at the Axes layer, below both Cardinality and Groups, so there is no
+-- backward edge.
 ------------------------------------------------------------------------
-
-axis-↔-fin4 : Axis ↔ Fin 4
-axis-↔-fin4 = mk↔ₛ′ to from to-from from-to
-  where
-    to : Axis → Fin 4
-    to D = zero
-    to C = suc zero
-    to S = suc ₁
-    to W = suc ₂
-
-    from : Fin 4 → Axis
-    from zero                       = D
-    from ₁                 = C
-    from ₂           = S
-    from ₃     = W
-
-    to-from : (i : Fin 4) → to (from i) ≡ i
-    to-from = fin-cover _ (refl , refl , refl , refl)
-
-    from-to : (x : Axis) → from (to x) ≡ x
-    from-to D = refl
-    from-to C = refl
-    from-to S = refl
-    from-to W = refl
 
 ------------------------------------------------------------------------
 -- V₄ ↔ Fin 4
