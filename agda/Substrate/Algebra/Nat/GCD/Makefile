@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := ADividesLcm.agda BDividesLcm.agda ComputeTrace.agda ConstructWedge.agda EEATrace.agda Fold.agda GcdDividesLeft.agda GcdDividesRight.agda GcdN.agda LcmN.agda TraceDivides.agda Wedge.agda
+FILES := ADividesLcm.agda BDividesLcm.agda BezoutMod.agda ComputeTrace.agda ConstructWedge.agda EEATrace.agda Fold.agda GcdDividesLeft.agda GcdDividesRight.agda GcdN.agda LcmN.agda TraceDivides.agda Wedge.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
