@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := Core.agda Hodge.agda Link.agda SharedMiddle.agda
+FILES := Core.agda Hodge.agda Link.agda SharedMiddle.agda WhyThreeV2.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
