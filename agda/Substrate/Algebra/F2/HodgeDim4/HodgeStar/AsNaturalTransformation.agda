@@ -28,9 +28,9 @@
 -- functors" — the F₂-chirality element exposed at the M-arc 2-cell
 -- layer.
 --
--- Module-parametric per substrate convention. User supplies the
--- two functors + the NaturalTransformation data (= per-V ★_V +
--- naturality).
+-- Thin projection of [[Category.NaturalTransformation.AsNamed]] (the
+-- AsNamed-family cone witness); see that module for the shared
+-- naming pattern. This file supplies only the HodgeStar-specific math.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -59,10 +59,12 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsNaturalTransformation
 
 ------------------------------------------------------------------------
 -- 1. ★ as the substrate's named Hodge natural transformation.
+--    Thin projection from Category.NaturalTransformation.AsNamed.
 ------------------------------------------------------------------------
 
-HodgeStar-NaturalTransformation : NaturalTransformation Λᵏ Λⁿ⁻ᵏ
-HodgeStar-NaturalTransformation = ★
+open import Substrate.Category.NaturalTransformation.AsNamed
+  Vect Vect' Λᵏ Λⁿ⁻ᵏ ★ public
+  renaming (named-NaturalTransformation to HodgeStar-NaturalTransformation)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — HodgeStar as M2 NaturalTransformation.

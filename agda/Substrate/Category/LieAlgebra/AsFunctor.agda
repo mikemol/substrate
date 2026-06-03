@@ -15,19 +15,14 @@
 -- This is the substrate's first canonical adjunction at the algebra
 -- level.
 --
--- Per [[categorical-name-first]]: "underlying-Lie functor" / "Lie
--- bracket via commutator" / "Lie-ification of an associative algebra"
--- are standard names. Universal property: U_Lie is right adjoint to
--- U; equivalently, the forgetful functor in the Assoc → Lie
--- adjunction.
---
 -- Per [[grothendieck-coherence-rule]]: this functor closes one half
 -- of the M-arc's Lie/Assoc bridge; M7 closes the other half. Together
 -- they witness the Lie ⊣ Assoc adjunction at the substrate functor
 -- level.
 --
--- Module-parametric per substrate convention: user supplies Assoc and
--- Lie categories + the functor data.
+-- Thin projection of [[Category.Functor.AsNamed]] (the AsNamed-family
+-- cone witness); see that module for the shared functor-naming pattern.
+-- This file supplies only the underlying-Lie-specific math.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}

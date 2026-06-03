@@ -22,5 +22,8 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor.AsNaturalTransf
   (GaugeAction : NaturalTransformation F G)
   where
 
-GaugeTorsor-AsNaturalTransformation : NaturalTransformation F G
-GaugeTorsor-AsNaturalTransformation = GaugeAction
+-- Thin projection from Category.NaturalTransformation.AsNamed (the
+-- AsNamed-family cone witness for substrate-naming a NaturalTransformation).
+open import Substrate.Category.NaturalTransformation.AsNamed
+  C D F G GaugeAction public
+  renaming (named-NaturalTransformation to GaugeTorsor-AsNaturalTransformation)
