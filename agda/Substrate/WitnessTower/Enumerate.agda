@@ -28,7 +28,8 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 
 ------------------------------------------------------------------------
@@ -101,6 +102,38 @@ length-all-positions : (n : ℕ) → lengthL (all-positions n) ≡ n
 length-all-positions zero    = refl
 length-all-positions (suc n) =
   cong suc (trans (len-map suc (all-positions n)) (length-all-positions n))
+
+-- length distributes over append.
+length-++ : ∀ {a} {A : Set a} (xs ys : List A) →
+            lengthL (xs ++ ys) ≡ lengthL xs + lengthL ys
+length-++ []       ys = refl
+length-++ (x ∷ xs) ys = cong suc (length-++ xs ys)
+
+-- a concatMap whose blocks all have the same length c sums to |xs| · c.
+length-concatMapL-const :
+  ∀ {a b} {A : Set a} {B : Set b}
+  (c : ℕ) (g : A → List B) (xs : List A) →
+  (∀ x → lengthL (g x) ≡ c) →
+  lengthL (concatMapL g xs) ≡ lengthL xs * c
+length-concatMapL-const c g []       hyp = refl
+length-concatMapL-const c g (x ∷ xs) hyp =
+  trans (length-++ (g x) (concatMapL g xs))
+        (cong₂ _+_ (hyp x) (length-concatMapL-const c g xs hyp))
+
+-- THE GLUE, proved in general (not just spot-checked): |perms n| = n!.
+-- |perms (suc n)| = |perms n| · (n+1) because each smaller perm spawns
+-- exactly (n+1) children (one per insertion position), and n! · (n+1) =
+-- (n+1)! by *-comm.
+perms-length : (n : ℕ) → lengthL (perms n) ≡ factorial n
+perms-length zero    = refl
+perms-length (suc n) =
+  trans (length-concatMapL-const (suc n)
+           (λ σ → mapL (λ p → insert-at p σ) (all-positions (suc n)))
+           (perms n)
+           (λ σ → trans (len-map (λ p → insert-at p σ) (all-positions (suc n)))
+                        (length-all-positions (suc n))))
+        (trans (cong (_* suc n) (perms-length n))
+               (*-comm (factorial n) (suc n)))
 
 ------------------------------------------------------------------------
 -- The count check: perms 4 has 24 entries (S₄), by computation.
