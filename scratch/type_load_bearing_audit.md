@@ -68,12 +68,43 @@ family** — `Z2/Z4/Z5/Z7-Coxeter` (mean 0.85). Per-n instances of one
 construction; candidates for the generic `Coxeter.Cyclic` treatment (Z3 differs
 enough to stay separate).
 
-## The load-bearing spine (top degree = # modules depending on it)
+## The load-bearing spine — individual vs transitive
 
-`_≡_` (630), `ℕ` (368), `Fin` (297), `Vec` (137), `Word` (133), `Linear` (121),
-`V4`/`V₄`, `Σ`, `Permutation`, `UPArrow` (73), `Canonical`, `List`, `Gen`,
-`CategoryOf`. 326 of 493 types are cross-module load-bearing; ~166 are
-module-local (load-bearing only to their own proofs).
+The first census counts **individual / direct** load (degree-1: files that
+literally name the type). `scripts/audit_import_reach.py` adds the
+**transitive** reach via the import graph (modules that transitively import a
+direct user) + degrees-of-separation. They diverge:
+
+| type | direct | transitive-downstream | total | max-sep |
+|---|---|---|---|---|
+| `_≡_` | 576 | 468 | 1044 | 5 |
+| `ℕ` | 336 | 467 | 803 | 7 |
+| `Fin` | 272 | 330 | 602 | 6 |
+| `Σ` | 72 | **414** | 486 | 5 |
+| `Vec` | 135 | 253 | 388 | 4 |
+| `Word` | 92 | 209 | 301 | 6 |
+| `Gen` | 46 | 249 | 295 | 6 |
+| `Linear` | 112 | 135 | 247 | 4 |
+| `Canonical` | 39 | 183 | 222 | 6 |
+| `Permutation` | 73 | 62 | 135 | 3 |
+| `UPArrow` | 75 | 28 | 103 | 3 |
+| `Wedge` | 27 | 13 | 40 | 3 |
+| `DivStr` | 11 | 1 | 12 | 1 |
+
+Key shift: **`Σ` is rank-9 by direct use but rank-4 by transitive reach** — few
+modules name it, but it sits under `Product`, which ~half the tree imports. So
+"individual" undercounts foundation types and overcounts leaf types
+(`Linear`/`Permutation`/`UPArrow` are more leaf-like — high direct, low
+downstream). The honest load-bearing order is the transitive one.
+
+Degrees of separation: cones are **shallow-and-wide** — most transitive
+importers are 1–2 hops from a direct user, with thin tails to depth 5–7 (`ℕ`
+reaches 7). The import graph's longest dependency chain is **depth 11**.
+Highest direct fan-in (the import-spine): `Foundation.Eq` (595),
+`Foundation.Nat` (342), `Foundation.Fin` (264), `Foundation.Product` (239),
+`Foundation.Level` (160), `Algebra.F2.Vector` (142), `Foundation.Vec` (131).
+
+326 of 493 types are cross-module load-bearing; ~166 are module-local.
 
 ## Recommended actions (in order of safety)
 
