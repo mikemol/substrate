@@ -107,9 +107,23 @@ cyclic-suc-HasOrderPerm {n} i =
 -- become thin renamings of these.
 ------------------------------------------------------------------------
 
-cyclic-Linear : ∀ {n} → Linear (suc n) (suc n)
-cyclic-Linear {n} = basis-permutation-Linear (cyclic-suc {n})
+-- OPACITY BOUNDARY (memory architecture): the dense Linear lift and its
+-- order witness are sealed in an `opaque` block. They are type-checked
+-- ONCE here, generically at abstract n (cheap — this module is light).
+-- A consumer that instantiates at a concrete n (e.g. Cycle7 = {6}) then
+-- references them as black boxes and NEVER normalises the
+-- `linear-from-images` sum / the L-iterate matrix power. Without this,
+-- instantiating `cyclic-HasOrder {6}` forces a 7×7 dense map raised to
+-- the 7th power in normal form — the super-exponential blowup that made
+-- Cycle7 the single heaviest file in the repo (OOM). The proven basis-
+-- level equation (basis-permutation-order-k) already lives behind
+-- HasOrder-from-perm, so nothing downstream needs the dense unfolding.
+-- Same lesson as the def/proof split, one level deeper: hand consumers
+-- the lemma, not the unfolded construction.
+opaque
+  cyclic-Linear : ∀ {n} → Linear (suc n) (suc n)
+  cyclic-Linear {n} = basis-permutation-Linear (cyclic-suc {n})
 
-cyclic-HasOrder : ∀ {n} → HasOrder (apply (cyclic-Linear {n})) (suc n)
-cyclic-HasOrder {n} =
-  HasOrder-from-perm (cyclic-suc {n}) (suc n) (cyclic-suc-HasOrderPerm {n})
+  cyclic-HasOrder : ∀ {n} → HasOrder (apply (cyclic-Linear {n})) (suc n)
+  cyclic-HasOrder {n} =
+    HasOrder-from-perm (cyclic-suc {n}) (suc n) (cyclic-suc-HasOrderPerm {n})
