@@ -23,9 +23,12 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; tran
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc; ++-identity-left; ++-identity-right)
+open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; mkAlgebraClass)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
+open import Substrate.Category.PresentedUniversalProperty
+  using (PresentedUP; Free-as-Presented)
 
 ------------------------------------------------------------------------
 -- 1. The monoid structure as an AlgebraClass.
@@ -99,3 +102,16 @@ module _ (Gen : Set) where
       uniq mM f g (g-ε , g-∙) g-sing (a ∷ w) =
         trans (g-∙ (a ∷ []) w)
               (cong₂ (_∙_ mM) (g-sing a) (uniq mM f g (g-ε , g-∙) g-sing w))
+
+------------------------------------------------------------------------
+-- 4. Coxeter.Word in the QUOTIENT half too: the free monoid is the EMPTY
+--    presentation (no relations), connecting it to PresentedUP. id is the
+--    quotient map and a monoid hom (refl, refl). This makes Coxeter.Word a
+--    visible instance of BOTH halves of the center.
+------------------------------------------------------------------------
+
+word-as-presented :
+  (Gen : Set) →
+  PresentedUP monoid-class (Word Gen) (word-monoid Gen) ⊥ (λ ()) (λ ()) (Word Gen)
+word-as-presented Gen =
+  Free-as-Presented {monoid-class} {Word Gen} (word-monoid Gen) (refl , λ _ _ → refl)
