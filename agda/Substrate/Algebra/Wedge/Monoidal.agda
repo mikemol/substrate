@@ -27,7 +27,10 @@
 -- (associativity, §4) and the TRIANGLE (unit, §6) — the unit object `⊤-div`,
 -- the unitors λ/ρ, and the triangle identity, all `refl` (⊤ is a no-field
 -- record, so it too has η). Pentagon + triangle is exactly Mac Lane's
--- coherence hypothesis: the sphere is fully closed.
+-- coherence hypothesis: the sphere is fully closed. §8 adds the SYMMETRY
+-- (the braiding σ : A⊗B ≅ B⊗A) + its hexagon, making this a SYMMETRIC
+-- monoidal structure — and that braiding IS the twist of the twisted arrow
+-- category (its two directions = the two twist conventions; no choice to make).
 --
 -- HONEST SCOPE: the coherence diagrams are stated at the level of the forward
 -- bridges' `translate` (morphism equality = action equality), the honest
@@ -207,3 +210,38 @@ unitʳ-nat : {A A′ : DivStr} (f : Bridge A A′) (x : Carrier (A ⊗ᴰ ⊤-di
   translate (unitʳ→ A′ ⊚ (f ⊗ᵇ id-bridge ⊤-div)) x
     ≡ translate (f ⊚ unitʳ→ A) x
 unitʳ-nat f x = refl
+
+------------------------------------------------------------------------
+-- 8. THE SYMMETRY (braiding) = THE TWIST. The swap A⊗B ≅ B⊗A. This is the
+--    twist of the twisted arrow category: NOT a chosen convention (divisor-
+--    vs residue-contravariant) but the braiding itself — its two directions
+--    ARE the two conventions. With §4 (pentagon) and §6 (triangle), plus the
+--    hexagon below, this is a SYMMETRIC monoidal structure. All refl (Σ-η).
+------------------------------------------------------------------------
+
+braid→ : (A B : DivStr) → Bridge (A ⊗ᴰ B) (B ⊗ᴰ A)
+braid→ A B = record
+  { translate = λ p → proj₂ p , proj₁ p
+  ; respects  = λ _ _ _ → refl
+  ; z-pres    = refl
+  }
+
+braidᴰ : (A B : DivStr) → WedgeIso (A ⊗ᴰ B) (B ⊗ᴰ A)
+braidᴰ A B = record
+  { fwd = braid→ A B ; bwd = braid→ B A
+  ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
+
+-- the braiding is involutive (its own inverse): the twist's two directions
+-- compose to the identity — so "divisor-contra" and "residue-contra" are one.
+braid-involutive : (A B : DivStr) (x : Carrier (A ⊗ᴰ B)) →
+  translate (braid→ B A ⊚ braid→ A B) x ≡ x
+braid-involutive A B x = refl
+
+-- the HEXAGON: the braiding coheres with the associator (the symmetric-
+-- monoidal coherence beyond pentagon/triangle). Both paths reshuffle
+-- ((a,b),c) to (b,(c,a)).
+hexagon : (A B C : DivStr) (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C)) →
+  translate (assoc→ B C A ⊚ (braid→ A (B ⊗ᴰ C) ⊚ assoc→ A B C)) x
+    ≡ translate ((id-bridge B ⊗ᵇ braid→ A C)
+                 ⊚ (assoc→ B A C ⊚ (braid→ A B ⊗ᵇ id-bridge C))) x
+hexagon A B C x = refl
