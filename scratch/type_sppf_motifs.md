@@ -73,18 +73,23 @@ laws (→≡)**. Records of laws over recursive carriers — the algebraic spine
 ## Cross-layer ranking (2026-06-03) — `scripts/type_sppf_crosslayer.py`
 
 Ranked the 34 iso classes by the dependency-depth span their members cross
-(annotated with silo-count and structural weight). The lesson is the
-Hough-resolution rule [[feedback_hough_resolution]]:
+(annotated with silo-count and structural weight). The classes split into two
+honest KINDS of motif — neither is noise (correction to an earlier draft that
+mislabeled the enums "noise"):
 
-- **Span rewards shape-ubiquity, not correspondence.** The widest classes
-  (span 16-17, many silos) are **finite enums** (`Distinction-Name`,
-  `Selector`, `SylowPrime`, `Axis`, …) — isomorphic only as "K atoms," spanning
-  everything because enums are everywhere. NOISE, not bridges. At skeleton
-  resolution the SPPF measures SHAPE, and shape-iso conflates "same structure"
-  with "same meaning."
+- **PATTERN motifs** — one design pattern, many *independent* instances with
+  *different* meanings. The widest class (span 16-17, 8 silos) is the **finite
+  enum** (`Distinction-Name`, `Selector`, `SylowPrime`, `Axis`, …): a finite set
+  of named atoms = a **forced distinction = a partition**. This is the
+  substrate's most fundamental and most-recurring motif — the partition
+  primitive ("Peano derives from partition") realized at the type level. Its
+  ubiquity is the *signal of its fundamentality*, not an artifact. You CATALOG
+  pattern motifs (they are the substrate's vocabulary); you do NOT collapse
+  them (`Distinction-Name` and `SylowPrime` are *different* partitions).
 
-- **The genuine cross-silo correspondences are the RICH classes** (high weight,
-  contentful shape):
+- **CONVERGENCE motifs** — different-named things that may be the *same*
+  construction (bridge candidates). These are the RICH classes: high weight,
+  contentful shape, members plausibly unifiable:
   - **`Character ≅ FieldBond ≅ FreeOverBasis`** — all `record { f : A → B }`,
     a single wrapped morphism. `FreeOverBasis.η` IS the free-construction unit
     (the center); so the Pontryagin character (`chi`) and the field-tower bond
@@ -96,10 +101,19 @@ Hough-resolution rule [[feedback_hough_resolution]]:
     a generic begging to be written.
   - the `≃`-witness shape (`Live≃Permutation`, `TotalSpace≃S₄`).
 
-- **Methodological correction:** do NOT sort cross-silo candidates by span.
-  Sort by (structural weight × silo-count), filtering finite-enum / ⊤ shapes.
-  To find TRUE bridges rather than shape-coincidence, raise resolution: TYPED
-  skeletons that record whether a field's two endpoints are the *same* carrier
-  vs unrelated types — then enums stop collapsing together and the
-  morphism-carrier motif resolves into which instances are the same
-  construction. (Resolution-increase, exactly as the Hough rule prescribes.)
+- **The level discipline (correction):** at this level **shapes are primary**,
+  by design. The SPPF is the substrate's **shape algebra** — the carrier-free
+  structural base (`Shape.agda` for *all* types: a type = a carrier-free shape +
+  a carrier filling its positions). Same-shape *is* the primary identity; the
+  differing meanings are the **fiber** over the shape, not evidence the shape is
+  wrong. So:
+  - Do NOT "filter" the enums or treat shape-iso as coincidence — the shapes are
+    the object. The widest shape is the partition; that it is widest is the
+    truth, not noise.
+  - PATTERN vs CONVERGENCE is a **fiber-level** question (do two members' fibers
+    coincide?) layered *over* the primary shape classes — a separate, optional
+    ascent, NOT a "resolution fix" to the shape level. Typed skeletons would
+    climb to the fiber, not repair the base.
+  - The right primary deliverable is therefore a **catalogue of the shape
+    alphabet** (each iso class = one primary shape), with the fiber (which
+    meanings sit over each shape) as a second, derived layer.
