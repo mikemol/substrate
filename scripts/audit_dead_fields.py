@@ -68,7 +68,28 @@ for f in allnames:
     pat=re.compile(re.escape(f)+r"\s*=(?!=)")
     wr[f]=sum(len(pat.findall(t)) for t in text.values())
 
+# producers: a record name appearing as the RESULT type of some signature =
+# the record is constructed somewhere (a law-field is then discharged at build).
+def split_arrows(s):
+    out=[];d=0;cur=""
+    for ch in s:
+        if ch in "([{":d+=1
+        elif ch in ")]}":d-=1
+        if ch=="→" and d==0: out.append(cur);cur=""
+        else: cur+=ch
+    out.append(cur);return out
+recnames={R for (R,_) in rec_fields}
+produced=set()
+sig=re.compile(r"^\s*[^\s:]+\s*:\s*(.+)$")
+for t in text.values():
+    for line in t.splitlines():
+        m=sig.match(line)
+        if not m: continue
+        res=split_arrows(m.group(1))[-1]
+        produced|={w for w in re.split(r"[\s()\[\]{};,.]+",res) if w in recnames}
+
 data_dead=collections.defaultdict(list); law_dead=collections.defaultdict(list)
+law_unexercised=collections.defaultdict(list)
 ambiguous=0; total_fields=0
 for nm,owners in field_owners.items():
     total_fields+=1
@@ -76,7 +97,11 @@ for nm,owners in field_owners.items():
     reads=tok[nm]-wr[nm]-1
     if reads<=0:
         (R,p)=owners[0]
-        (law_dead if is_law(nm) else data_dead)[(R,p)].append(nm)
+        if is_law(nm):
+            law_dead[(R,p)].append(nm)
+            if R not in produced: law_unexercised[(R,p)].append(nm)  # never built ⇒ never exercised
+        else:
+            data_dead[(R,p)].append(nm)
 
 rel=lambda p: os.path.relpath(p,ROOT)
 nd=sum(len(v) for v in data_dead.values()); nl=sum(len(v) for v in law_dead.values())
@@ -85,8 +110,12 @@ print(f"## DATA fields set but never read — {nd} across {len(data_dead)} recor
 print(f"   (data carried but no consumer reads it — the using code is unwritten):")
 for (R,p),fs in sorted(data_dead.items(), key=lambda kv:-len(kv[1])):
     print(f"   {R:28s} {rel(p)}\n        {', '.join(sorted(fs))}")
+nu=sum(len(v) for v in law_unexercised.values())
 print(f"\n## LAW/obligation fields never projected — {nl} across {len(law_dead)} records")
-print(f"   (provability owed; INERT only if the record is never constructed —"
-      f" else discharged at construction). Records with the most:")
-for (R,p),fs in sorted(law_dead.items(), key=lambda kv:-len(kv[1]))[:12]:
-    print(f"   {R:28s} {len(fs):2d} laws  {rel(p)}")
+print(f"   UNEXERCISED ({nu} laws / {len(law_unexercised)} records): never projected AND")
+print(f"   record never constructed ⇒ no proof relies on it ⇒ forces NO distinction")
+print(f"   (the realizability hole — implementation owed):")
+for (R,p),fs in sorted(law_unexercised.items(), key=lambda kv:-len(kv[1])):
+    print(f"      {R:28s} {len(fs):2d}  {rel(p)}")
+print(f"   ({nl-nu} other never-projected laws ARE discharged at construction — "
+      f"they force their distinction at build, exercised, fine.)")
