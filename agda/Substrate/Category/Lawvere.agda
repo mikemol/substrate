@@ -56,7 +56,7 @@
 
 module Substrate.Category.Lawvere where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
@@ -178,3 +178,36 @@ module _ {I V : Set} (ir : InvolutiveResidue V) where
   -- value — the flip and the return are genuinely the two ends of the Z/2.
   round-trip-no-fixpoint : (g : I → V) (i : I) → round-trip g i ≡ g i → ⊥
   round-trip-no-fixpoint g i eq = InvolutiveResidue.δ-free ir (g i) eq
+
+------------------------------------------------------------------------
+-- 5. TWO FLIPS MAKE A V₄ — the first Klein four (user). A single graded flip
+--    is Z/2 (§4). TWO COMMUTING flips generate V₄ = Z/2 × Z/2:
+--    {id, δ₁, δ₂, δ₁∘δ₂}. The crux is that the COMPOSITE of two commuting
+--    involutions is again an involution (δ₁₂-inv), so the set CLOSES — Klein
+--    four. Instantiated at V = F₂² (the tetrahedron's 4 vertices), δ₁/δ₂ are
+--    the two coordinate translations: this is the first V₄ that manifests in
+--    the witness tower (rung 3→4, WitnessTower.V4Seam). The three nonidentity
+--    elements {δ₁, δ₂, δ₁₂} are the three involutions, each generating a Z/2 —
+--    the "shared V₂" by which two V₄'s overlap (a common flip). S₃ = Aut(V₄)
+--    permutes the three. (Literal iso to the Coxeter-backed V₄ / V4Seam's
+--    klein-pairs, and the F₂² instance with its freeness, are the next bridge.)
+------------------------------------------------------------------------
+
+record CommutingInvolutions (V : Set) : Set where
+  field
+    δ₁ δ₂   : V → V
+    δ₁-inv  : (v : V) → δ₁ (δ₁ v) ≡ v
+    δ₂-inv  : (v : V) → δ₂ (δ₂ v) ≡ v
+    commute : (v : V) → δ₂ (δ₁ v) ≡ δ₁ (δ₂ v)
+
+  -- the third involution: the composite flip — the "both" element of V₄.
+  δ₁₂ : V → V
+  δ₁₂ v = δ₁ (δ₂ v)
+
+  -- the composite of two commuting involutions is itself an involution, so
+  -- {id, δ₁, δ₂, δ₁₂} closes under composition — Klein four (V₄).
+  δ₁₂-inv : (v : V) → δ₁₂ (δ₁₂ v) ≡ v
+  δ₁₂-inv v =
+    trans (cong δ₁ (commute (δ₂ v)))
+    (trans (cong (λ w → δ₁ (δ₁ w)) (δ₂-inv v))
+           (δ₁-inv v))

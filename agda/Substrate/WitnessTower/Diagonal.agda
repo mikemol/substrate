@@ -37,14 +37,16 @@ module Substrate.WitnessTower.Diagonal where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Vec using (Vec; _∷_; head; lookup)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; head; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙; +-assoc)
-open import Substrate.Algebra.F2.Vector using (Vector)
+open import Substrate.Algebra.F2.Vector
+  using (Vector; _+ⱽ_; +ⱽ-assoc; +ⱽ-comm; +ⱽ-self-inverse; +ⱽ-identityˡ)
 open import Substrate.WitnessTower.FaceSet using (Face; ★)
 open import Substrate.Category.Lawvere
-  using (FixedPointFree; diag; diag-not-in-family; InvolutiveResidue)
+  using (FixedPointFree; diag; diag-not-in-family; InvolutiveResidue;
+         CommutingInvolutions)
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. The residue 𝟙 + b never equals its source b. Constructive:
@@ -113,4 +115,26 @@ F₂-ir = record
   { δ       = 𝟙 +_
   ; δ-free  = flip-disagrees
   ; δ-invol = λ b → sym (+-assoc 𝟙 𝟙 b)
+  }
+
+-- THE FIRST V₄ IN THE TOWER. F₂² = the tetrahedron's 4 vertices; the two
+-- coordinate-translation flips e₁ +ⱽ_ and e₂ +ⱽ_ are commuting involutions
+-- (reusing Algebra.F2.Vector's group laws), so {id, +e₁, +e₂, +e₁₂} is Klein
+-- four. The single graded flip (F₂-ir) is one Z/2; this is two of them — the
+-- V₄ that debuts at rung 3→4 (V4Seam). Each nonidentity translation is a Z/2 =
+-- a "shared V₂"; S₃ = Aut(V₄) permutes the three.
+e₁ e₂ : Vector 2
+e₁ = 𝟙 ∷ 𝟘 ∷ []
+e₂ = 𝟘 ∷ 𝟙 ∷ []
+
+F₂²-V₄ : CommutingInvolutions (Vector 2)
+F₂²-V₄ = record
+  { δ₁ = e₁ +ⱽ_
+  ; δ₂ = e₂ +ⱽ_
+  ; δ₁-inv = λ v → trans (sym (+ⱽ-assoc e₁ e₁ v))
+                   (trans (cong (_+ⱽ v) (+ⱽ-self-inverse e₁)) (+ⱽ-identityˡ v))
+  ; δ₂-inv = λ v → trans (sym (+ⱽ-assoc e₂ e₂ v))
+                   (trans (cong (_+ⱽ v) (+ⱽ-self-inverse e₂)) (+ⱽ-identityˡ v))
+  ; commute = λ v → trans (sym (+ⱽ-assoc e₂ e₁ v))
+                    (trans (cong (_+ⱽ v) (+ⱽ-comm e₂ e₁)) (+ⱽ-assoc e₁ e₂ v))
   }
