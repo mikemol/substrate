@@ -43,6 +43,7 @@ open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.WitnessTower.FaceSet using (Face; ★)
+open import Substrate.Category.Lawvere using (FixedPointFree; diag; diag-not-in-family)
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. The residue 𝟙 + b never equals its source b. Constructive:
@@ -82,3 +83,22 @@ cantor-diagonal :
 cantor-diagonal M D is-flip i eq =
   flip-disagrees (lookup (M i) i)
     (trans (sym (is-flip i)) (cong (λ v → lookup v i) eq))
+
+------------------------------------------------------------------------
+-- 5. ALL THREE ARE LAWVERE'S THEOREM (Category.Lawvere). The atom is the
+--    δ-free of a fixed-point-free endo on F₂; the diagonal is the Set
+--    instance of diag-not-in-family. So the cone apex/base distinction, the
+--    grade ★'s fixed-point-freeness, and Cantor are not three theorems — they
+--    are this one base theorem, read over F₂. (The wedge residue is the δ;
+--    the certified r<b would make δ canonical over every carrier = keystone.)
+------------------------------------------------------------------------
+
+-- F₂ with the residue δ = (𝟙 +_) is a fixed-point-free carrier; its δ-free
+-- IS flip-disagrees. The whole arc's atom, packaged as a Lawvere instance.
+F₂-fpf : FixedPointFree F₂
+F₂-fpf = record { δ = 𝟙 +_ ; δ-free = flip-disagrees }
+
+-- the diagonal, re-derived as Lawvere's theorem at V = F₂ (function form):
+-- no family I → (I → F₂) contains its own diagonal twist.
+cantor-lawvere : {I : Set} (M : I → I → F₂) (i : I) → diag F₂-fpf M ≡ M i → ⊥
+cantor-lawvere = diag-not-in-family F₂-fpf
