@@ -108,3 +108,8 @@ print(f"\n-- rank-1 HOLES ({len(holes)} non-mixfix; {len(mixfix_h)} mixfix exclu
 for T in holes:
     d=depth.get(modof.get(home[T],""),0)
     print(f"   depth {d:2d}  {T:28s} {kind[T]:6s} {rel(T)}")
+
+peak=sorted((T for T in known if ranks[T]==4), key=lambda T: -reach(modof.get(home[T],"")))
+print(f"\n-- rank-4 PEAK ({len(peak)}) — covered/bounded, by transitive reach (the summits) --")
+for T in peak:
+    print(f"   reach {reach(modof.get(home[T],'')):4d}  {T:24s} {kind[T]:6s} {rel(T)}")
