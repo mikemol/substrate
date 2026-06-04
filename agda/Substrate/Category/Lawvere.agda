@@ -224,3 +224,30 @@ fpf-≠-has-fixpoint : {V : Set} {f h : V → V} (x : V) →
                      (f x ≡ x → ⊥) → h x ≡ x → f ≡ h → ⊥
 fpf-≠-has-fixpoint x f-free h-fix f≡h =
   f-free (trans (cong (λ k → k x) f≡h) h-fix)
+
+------------------------------------------------------------------------
+-- 7. THE RESIDUE POPULATES FixedPointFree (keystone #1 direction). A
+--    carrier whose translations have the unit as their ONLY fixed translator
+--    (g ∙ x ≡ x ⟹ g ≡ e — cancellation/torsor-freeness) gives, for every
+--    NON-unit g, a fixed-point-free flip (g ∙_). The wedge's residue r, when
+--    r ≢ z, is exactly such a non-unit: so a non-trivial residue is a genuine
+--    fixed-point-free distinction — over ANY such carrier. This is the
+--    carrier-generic flip-disagrees, the universal form the F₂ atom was an
+--    instance of. (The full "r<b = the Free⊣Forgetful adjoint correction"
+--    identity — the adjunction triangle — remains the open part of #1; this
+--    lands the residue ⟹ FixedPointFree direction generically.)
+------------------------------------------------------------------------
+
+record TorsorAtom (A : Set) : Set where
+  field
+    _∙_      : A → A → A
+    e        : A
+    fix→unit : (g x : A) → (g ∙ x) ≡ x → g ≡ e
+
+open TorsorAtom public
+
+-- translation by a NON-unit is fixed-point-free — the carrier-generic flip.
+translate-fpf : {A : Set} (T : TorsorAtom A) (g : A) →
+                (g ≡ e T → ⊥) → FixedPointFree A
+translate-fpf T g g≢e =
+  record { δ = _∙_ T g ; δ-free = λ v eq → g≢e (fix→unit T g v eq) }
