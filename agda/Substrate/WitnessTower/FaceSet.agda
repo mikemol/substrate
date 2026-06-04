@@ -37,7 +37,7 @@ module Substrate.WitnessTower.FaceSet where
 open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Foundation.Vec using (Vec; _∷_; replicate; head; tail)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
 open import Substrate.Algebra.F2.Vector
   using (Vector; _+ⱽ_; 𝟎ⱽ;
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-comm; +ⱽ-assoc; +ⱽ-self-inverse)
@@ -130,3 +130,27 @@ wedge-recon {n} S =
 -- ★ (universe) = nothing: wedging the universe out of itself leaves nothing.
 ★-universe : (n : ℕ) → ★ (universe n) ≡ nothing-face n
 ★-universe n = +ⱽ-self-inverse (universe n)
+
+------------------------------------------------------------------------
+-- 5. The closed-universe split is RECURSIVE IN DIMENSION (user, 2026-06-04):
+--    "the residue plus the portion quotiented away compose to produce the
+--    total universe — which, conveniently, is something we have for k−1."
+--    Through the cone, the universe at dimension n+1 is its apex bit 𝟙 on
+--    the universe at dimension n; so the residue ★ at dimension n+1 is the
+--    apex bit's OWN residue (𝟙 + b) consed onto the residue ★ at dimension
+--    n. The split we need at k is assembled from the split at k−1, all the
+--    way down to the point (n=0, the self-dual seed). That descent is the
+--    inductive form of the Free⊣Forgetful reconstruction `a = recon q b r`
+--    (keystone #1): the universe is rebuilt level by level from its faces.
+------------------------------------------------------------------------
+
+-- the universe at dimension n+1 is its apex (𝟙) on the universe at n.
+universe-cons : (n : ℕ) → universe (suc n) ≡ 𝟙 ∷ universe n
+universe-cons n = refl
+
+-- THE RECURSION: the residue at dimension n+1 of a face (b ∷ f) is the apex
+-- bit's residue (𝟙 + b) consed onto the residue of f at dimension n — the
+-- k−1 residue we already have. (𝟙 + b) is itself the apex coordinate's wedge
+-- residue: quotient b plus residue (𝟙 + b) gives the universe bit 𝟙.
+★-cons : {n : ℕ} (b : F₂) (f : Face n) → ★ (b ∷ f) ≡ (𝟙 + b) ∷ ★ f
+★-cons b f = refl
