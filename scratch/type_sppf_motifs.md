@@ -117,3 +117,31 @@ mislabeled the enums "noise"):
   - The right primary deliverable is therefore a **catalogue of the shape
     alphabet** (each iso class = one primary shape), with the fiber (which
     meanings sit over each shape) as a second, derived layer.
+
+## Reaction-primary inversion (POSIWID) — `scripts/type_reaction.py`
+
+Further correction (per user): *meaning is use; a system's purpose is what it
+does*. So the enumerators are NOT primary — **what reacts to them is**. Profile
+each type by its eliminators (functions `f : … T … → R`: T consumed, `R` the
+reaction). Evidence the inversion is right — the introduction-iso enum class
+*fragments completely* by reaction:
+
+| type (one shape) | reacts → (its meaning) |
+|---|---|
+| `SylowPrime` | `ℕ` (indexes a prime) |
+| `Chirality` | `F₂` (a binary sign) |
+| `Selector` | `Bool`, `Permutation` (selects/decides) |
+| `Axis` | `V₄`, `Permutation`, `Stab≃S₃` (a geometric thing groups act on) |
+| `Gen` | `Word`, `Dec`, `Canonical` (builds words, decides) |
+| `Line` | `Point` (incidence) |
+
+Identical as partitions, distinct as meanings. And reaction-keying recovers
+**use-based classes introduction missed**: `{BackedUP, Interop}`, `{ℚ, ℤ}`,
+`{Gen, Word}`, `{Mode, WedgeCoalg}` (all → `Bool`/decisions).
+
+This is **Free ⊣ Forgetful one level up**: the introduction-SPPF is the
+constructor/Free view (how built); the reaction-SPPF is the observation/
+Forgetful view (how used). Meaning lives on the Forgetful/use side — a finite
+enum is Free-trivial and means nothing until its eliminators give it behavior.
+So the PRIMARY catalogue is **reaction-keyed** (the cover / "expose generator"
+shape over each distinction); the introduction shape is the secondary index.
