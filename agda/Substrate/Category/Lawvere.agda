@@ -211,3 +211,16 @@ record CommutingInvolutions (V : Set) : Set where
     trans (cong δ₁ (commute (δ₂ v)))
     (trans (cong (λ w → δ₁ (δ₁ w)) (δ₂-inv v))
            (δ₁-inv v))
+
+------------------------------------------------------------------------
+-- 6. THE FLIP ATOM DISTINGUISHES FREE FROM POINT-FIXING. A fixed-point-free
+--    map differs from ANY map with a fixed point. This is the discriminator
+--    that separates a gauge V₄ (all flips free) from an interface V₄ (whose
+--    extra generators fix points) and so locates their shared V₂ — without
+--    enumerating subgroup sets.
+------------------------------------------------------------------------
+
+fpf-≠-has-fixpoint : {V : Set} {f h : V → V} (x : V) →
+                     (f x ≡ x → ⊥) → h x ≡ x → f ≡ h → ⊥
+fpf-≠-has-fixpoint x f-free h-fix f≡h =
+  f-free (trans (cong (λ k → k x) f≡h) h-fix)

@@ -37,7 +37,7 @@ module Substrate.WitnessTower.Diagonal where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Vec using (Vec; []; _∷_; head; lookup)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; head; tail; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙; +-assoc)
@@ -46,7 +46,7 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.WitnessTower.FaceSet using (Face; ★)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; diag; diag-not-in-family; InvolutiveResidue;
-         CommutingInvolutions)
+         CommutingInvolutions; fpf-≠-has-fixpoint)
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. The residue 𝟙 + b never equals its source b. Constructive:
@@ -193,3 +193,41 @@ interface-V₄ = record
 -- shared d is free: gauge ∩ interface = ⟨d⟩, located by δ-free alone.
 shared-d-free : (v : Vector 2) → (e₁₂ +ⱽ v) ≡ v → ⊥
 shared-d-free (a ∷ b ∷ []) eq = flip-disagrees a (cong head eq)
+
+------------------------------------------------------------------------
+-- FREENESS of the gauge V₄ (the regular action = the real tetrahedron V₄):
+-- every non-identity gauge flip is fixed-point-free, each by the flip atom at
+-- its nonzero coordinate. So the gauge V₄ acts freely on the 4 points.
+------------------------------------------------------------------------
+
+gauge-e₁-free : (v : Vector 2) → (e₁ +ⱽ v) ≡ v → ⊥
+gauge-e₁-free (a ∷ b ∷ []) eq = flip-disagrees a (cong head eq)
+
+gauge-e₂-free : (v : Vector 2) → (e₂ +ⱽ v) ≡ v → ⊥
+gauge-e₂-free (a ∷ b ∷ []) eq = flip-disagrees b (cong (λ w → head (tail w)) eq)
+
+-- (gauge-e₁₂-free is shared-d-free above: the three non-identity gauge flips
+-- e₁, e₂, e₁₂ are all fixed-point-free ⟹ the gauge action is regular.)
+
+------------------------------------------------------------------------
+-- THE SEAM, pinned by the atom (no subgroup-set enumeration). The interface's
+-- extra generators FIX points: σ fixes the origin (σ-fixes-origin), and σ∘d
+-- fixes (𝟙,𝟘). Every gauge flip is free. By fpf-≠-has-fixpoint, no gauge flip
+-- equals σ or σ∘d — so the only interface elements that can lie in the gauge
+-- are id and the shared d. gauge ∩ interface = ⟨d⟩, located by δ-free alone.
+------------------------------------------------------------------------
+
+-- σ∘d fixes the point (𝟙,𝟘) — a witnessed fixed point.
+σd-fixes : σ (e₁₂ +ⱽ (𝟙 ∷ 𝟘 ∷ [])) ≡ (𝟙 ∷ 𝟘 ∷ [])
+σd-fixes = refl
+
+-- the gauge flips are not the interface's point-fixing extras: e.g. +e₁ ≠ σ
+-- and +e₁ ≠ σ∘d, because +e₁ is free where σ, σ∘d fix a point.
+e₁-≠-σ : (e₁ +ⱽ_) ≡ σ → ⊥
+e₁-≠-σ = fpf-≠-has-fixpoint (𝟘 ∷ 𝟘 ∷ []) (gauge-e₁-free (𝟘 ∷ 𝟘 ∷ [])) σ-fixes-origin
+
+e₁-≠-σd : (e₁ +ⱽ_) ≡ (λ v → σ (e₁₂ +ⱽ v)) → ⊥
+e₁-≠-σd = fpf-≠-has-fixpoint (𝟙 ∷ 𝟘 ∷ []) (gauge-e₁-free (𝟙 ∷ 𝟘 ∷ [])) σd-fixes
+
+e₂-≠-σ : (e₂ +ⱽ_) ≡ σ → ⊥
+e₂-≠-σ = fpf-≠-has-fixpoint (𝟘 ∷ 𝟘 ∷ []) (gauge-e₂-free (𝟘 ∷ 𝟘 ∷ [])) σ-fixes-origin
