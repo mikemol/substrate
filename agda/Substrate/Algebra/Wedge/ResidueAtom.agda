@@ -41,6 +41,7 @@ module Substrate.Algebra.Wedge.ResidueAtom where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟙≢𝟘)
@@ -80,3 +81,9 @@ suc-inj refl = refl
 -- the ℕ residue flip (translate by a non-zero suc k): fixed-point-free.
 ℕ-residue-fpf : (k : ℕ) → FixedPointFree ℕ
 ℕ-residue-fpf k = translate-fpf ℕ-torsor (suc k) (λ ())
+
+-- decidable "is it the unit (zero)?" on ℕ — the prove-or-correct decision,
+-- shared by ℕ-prove-or-correct and the EEATrace classification.
+ℕ-zero? : (g : ℕ) → (g ≡ zero) ⊎ (g ≡ zero → ⊥)
+ℕ-zero? zero    = inj₁ refl
+ℕ-zero? (suc k) = inj₂ (λ ())

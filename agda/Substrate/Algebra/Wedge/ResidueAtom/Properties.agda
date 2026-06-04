@@ -31,7 +31,7 @@ open import Substrate.Algebra.Wedge using (forget; forget-correct; ℕ-div; C)
   renaming (Wedge to Wedge⟦7b68bbe8⟧)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; TorsorAtom; prove-or-correct; e)
-open import Substrate.Algebra.Wedge.ResidueAtom using (F₂-torsor; ℕ-torsor)
+open import Substrate.Algebra.Wedge.ResidueAtom using (F₂-torsor; ℕ-torsor; ℕ-zero?)
 
 ------------------------------------------------------------------------
 -- HALF 1 — the triangle is the wedge witness (the reconstruction half).
@@ -55,8 +55,4 @@ F₂-prove-or-correct = prove-or-correct F₂-torsor f2-dec
 
 -- ℕ: 0 reconstructs cleanly; any suc k is a fixed-point-free correction.
 ℕ-prove-or-correct : (g : ℕ) → (g ≡ zero) ⊎ FixedPointFree ℕ
-ℕ-prove-or-correct = prove-or-correct ℕ-torsor n-dec
-  where
-    n-dec : (g : ℕ) → (g ≡ zero) ⊎ (g ≡ zero → ⊥)
-    n-dec zero    = inj₁ refl
-    n-dec (suc k) = inj₂ (λ ())
+ℕ-prove-or-correct = prove-or-correct ℕ-torsor ℕ-zero?

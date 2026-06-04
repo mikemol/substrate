@@ -1,19 +1,22 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Nat.GCD.EEATrace.Keystone
 --
--- EEATrace IS KEYSTONE #1, ITERATED. The Euclidean trace is the wedge applied
--- recursively, shedding a residue at every step until it vanishes (the gcd).
--- Each `step` carries a CERTIFIED wedge (Algebra.Nat.GCD.Wedge, with r < b —
--- the smallness the keystone's certified residue needs, already present for ℕ),
--- sheds `remainder w`, and recurses on (suc b, remainder w). The `base` case is
--- the residue reaching 0 — the clean reconstruction end (gcd(a,0) = a).
+-- EEATrace IS KEYSTONE #1, ITERATED — and (find the common structure,
+-- recursively) it is now the ℕ INSTANCE of the carrier-generic residue-shedding
+-- on the wedge Trace (Algebra.Wedge.Trace.Residues), reached via
+-- Algebra.Wedge.fromEEATrace. The Euclidean trace is the wedge applied
+-- recursively, shedding a residue each step until it vanishes (the gcd); each
+-- `step` carries a CERTIFIED wedge (Algebra.Nat.GCD.Wedge, with r < b).
 --
--- Read through prove-or-correct (Category.Lawvere / ResidueAtom.Properties):
--- every shed residue is EITHER 0 (stop — reconstruct cleanly) OR a fixed-point-
--- free correction (shed and recurse). EEA never dead-ends, and it TERMINATES
--- because r < b strictly decreases — the certified smallness is the well-founded
--- measure. So "EEA does the recursive factoring, shedding residues" is exactly
--- keystone #1's prove-or-correct engine run to the gcd fixpoint.
+--   eea-residues  = trace-residues ∘ fromEEATrace   — the shed residues.
+--   eea-classify  = trace-classify ℕ-torsor ℕ-zero? ∘ fromEEATrace — each shed
+--                   residue tagged by prove-or-correct (0 = stop/gcd, ≠0 =
+--                   fixed-point-free correction & recurse).
+--
+-- The ONE part that does NOT lift to the generic Trace is the certified
+-- smallness r < b: fromEEATrace forgets it (the generic Trace uses the loose
+-- wedge), so eea-head-small-< stays the ℕ-GCD specialization's extra — the
+-- well-founded measure that makes the recursion terminate.
 --
 -- Zero postulates, --safe --without-K.
 ------------------------------------------------------------------------
@@ -23,27 +26,33 @@
 module Substrate.Algebra.Nat.GCD.EEATrace.Keystone where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
-open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Sum using (_⊎_)
-open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Algebra.Nat.GCD.Wedge using (remainder; r<b)
-open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
+open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; step)
+open import Substrate.Algebra.Wedge using (fromEEATrace)
+open import Substrate.Algebra.Wedge.Trace.Residues using (trace-residues; trace-classify)
+open import Substrate.Algebra.Wedge.ResidueAtom using (ℕ-torsor; ℕ-zero?)
 open import Substrate.Category.Lawvere using (FixedPointFree)
-open import Substrate.Algebra.Wedge.ResidueAtom.Properties using (ℕ-prove-or-correct)
 
 ------------------------------------------------------------------------
--- 1. The residues EEA sheds, in order — the recursive factoring's leftovers.
+-- 1. The shed residues + their prove-or-correct tags = the carrier-generic
+--    Trace operations specialised to ℕ via fromEEATrace.
 ------------------------------------------------------------------------
 
 eea-residues : {a b g : ℕ} → EEATrace a b g → List ℕ
-eea-residues (base _)       = []
-eea-residues (step _ w rec) = remainder w ∷ eea-residues rec
+eea-residues t = trace-residues (fromEEATrace t)
+
+eea-classify : {a b g : ℕ} → EEATrace a b g →
+               List (Σ ℕ (λ r → (r ≡ zero) ⊎ FixedPointFree ℕ))
+eea-classify t = trace-classify ℕ-torsor ℕ-zero? (fromEEATrace t)
 
 ------------------------------------------------------------------------
--- 2. The certified smallness at each step IS the well-founded measure: the
---    shed residue is strictly smaller than the divisor it was shed against.
---    (r < b, directly from the certified wedge — the keystone's r<b, live.)
+-- 2. The certified smallness — the part fromEEATrace forgets, so it stays
+--    here: each shed residue is < the divisor (the well-founded measure ⟹
+--    termination). This is the certified r<b live at every EEA step.
 ------------------------------------------------------------------------
 
 eea-head-small : {a g : ℕ} (b′ : ℕ) (t : EEATrace a (suc b′) g) → ℕ
@@ -52,15 +61,3 @@ eea-head-small b′ (step _ w _) = remainder w
 eea-head-small-< : {a g : ℕ} (b′ : ℕ) (t : EEATrace a (suc b′) g) →
                    eea-head-small b′ t < suc b′
 eea-head-small-< b′ (step _ w _) = r<b w
-
-------------------------------------------------------------------------
--- 3. EEA classified by prove-or-correct: each shed residue is either 0 (stop,
---    the gcd is reached) or a fixed-point-free correction (shed and recurse).
---    Keystone #1's prove-or-correct, iterated to the gcd fixpoint.
-------------------------------------------------------------------------
-
-eea-classify : {a b g : ℕ} → EEATrace a b g →
-               List (Σ ℕ (λ r → (r ≡ zero) ⊎ FixedPointFree ℕ))
-eea-classify (base _)       = []
-eea-classify (step _ w rec) =
-  (remainder w , ℕ-prove-or-correct (remainder w)) ∷ eea-classify rec
