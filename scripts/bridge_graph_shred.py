@@ -180,15 +180,21 @@ for t in text.values():
 # bridge/iso edges: `<name> : Bridge X Y` or `: WedgeIso X Y` with X,Y roots.
 base_edges = []        # (kind, carrierX, carrierY, defname)
 structural_iso = 0     # tensor-level structure maps (skipped as base edges)
-edgere = re.compile(r":\s*(Bridge|WedgeIso)\s+(.+)$")
+# match the codomain Bridge/WedgeIso anywhere in a type signature line (so a
+# parametric `name : (n) → Bridge ℕ-div (Cyc-div n)` is caught, not just direct).
+edgere = re.compile(r"\b(Bridge|WedgeIso)\s+(.+)$")
 for t in text.values():
     for line in t.splitlines():
+        if " : " not in line:
+            continue
         m = edgere.search(line)
         if not m:
             continue
-        args = m.group(2).split()
-        if len(args) == 2 and args[0] in root_carrier and args[1] in root_carrier:
-            base_edges.append((m.group(1), root_carrier[args[0]], root_carrier[args[1]], line.split(":")[0].strip()))
+        # extract known-root tokens (handles applied/parametric roots like
+        # `Bridge ℕ-div (Cyc-div n)`); a base edge needs ≥2 distinct roots.
+        rtoks = [t for t in re.split(r"[\s()]+", m.group(2)) if t in root_carrier]
+        if len(rtoks) >= 2:
+            base_edges.append((m.group(1), root_carrier[rtoks[0]], root_carrier[rtoks[1]], line.split(":")[0].strip()))
         else:
             structural_iso += 1
 

@@ -42,8 +42,10 @@ open import Substrate.Algebra.Wedge.Monoidal using (⊤-div; assocᴰ; unitᴸ; 
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.List.Wedge using (List-div)
+open import Substrate.Algebra.Fin.Wedge using (Cyc-div)
 open import Substrate.Algebra.Wedge.ParityBridge using (parity-bridge)
 open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
+open import Substrate.Algebra.Fin.Wedge.ModBridge using (modn-bridge)
 
 ------------------------------------------------------------------------
 -- 1. Objects: the wedge-founded roots (vertices of the sphere).
@@ -51,7 +53,8 @@ open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 
 objects : List DivStr
 objects = ℕ-div            -- the Euclidean carrier (continued fractions)
-        ∷ F₂-div           -- the field F₂ (parity)
+        ∷ F₂-div           -- the field F₂ (parity = mod 2)
+        ∷ Cyc-div 2        -- the cyclic quotient Z/3 (general-n parity, mod n)
         ∷ ℤ-div            -- the integers (signed Bézout's operand)
         ∷ List-div ⊤       -- the free monoid (wedge's native carrier)
         ∷ two-div          -- the square-zero / infinitesimal carrier
@@ -88,8 +91,9 @@ BridgeEntry : Set₁
 BridgeEntry = Σ DivStr (λ A → Σ DivStr (λ B → Bridge A B))
 
 bridges : List BridgeEntry
-bridges = (ℕ-div , F₂-div , parity-bridge)    -- parity (mod 2): ℕ ↠ F₂
-        ∷ (ℕ-div , ℤ-div , include-ℕℤ)        -- inclusion: ℕ ↪ ℤ
+bridges = (ℕ-div , F₂-div , parity-bridge)        -- parity (mod 2): ℕ ↠ F₂
+        ∷ (ℕ-div , Cyc-div 2 , modn-bridge 2)     -- mod 3: ℕ ↠ Z/3 (general-n)
+        ∷ (ℕ-div , ℤ-div , include-ℕℤ)            -- inclusion: ℕ ↪ ℤ
         ∷ []
 
 ------------------------------------------------------------------------
