@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := B3Split.agda Codeword.agda Complete.agda Core.agda CycleType.agda Decompose.agda DuplicateFree.agda Enumerate.agda FamilyWitness.agda FirstAppearance.agda Hodge.agda IsPermutation.agda KleinCensus.agda Link.agda Puncture.agda SharedMiddle.agda Sn.agda SnGroup.agda SupportGrading.agda Surjective.agda SymBridge.agda WholeTower.agda WhyThreeV2.agda
+FILES := B3Split.agda Codeword.agda Complete.agda Core.agda CycleType.agda Decompose.agda DuplicateFree.agda Enumerate.agda FaceCount.agda FamilyWitness.agda FirstAppearance.agda Hodge.agda IsPermutation.agda KleinCensus.agda Link.agda Puncture.agda SharedMiddle.agda Sn.agda SnGroup.agda SupportGrading.agda Surjective.agda SymBridge.agda WholeTower.agda WhyThreeV2.agda
 SUBDIRS := Wedge
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
