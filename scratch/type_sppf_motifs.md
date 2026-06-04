@@ -174,3 +174,23 @@ classification** (code / projection / typechecker / catalogue / nothing) — the
 POSIWID catalogue. It surfaces a genuine category: **typechecker-only types**
 (theorems & obligations, purpose = provability) — where the `SubstrateTopos` /
 `*-stated` obligation surface lives.
+
+### Field-level dead = an INCOMPLETENESS MAP (`scripts/audit_dead_fields.py`)
+
+Extend "dead" to fields never consulted (set, never projected). Same reactor
+split, one level down:
+
+- **DATA/operation fields never read — 249 across 157 records.** These point at
+  *incomplete implementation*: a structure declared but its using code
+  unwritten. Clearest: algebraic structures whose **operations nothing calls** —
+  `UniversalEnvelopingAlgebra` (`_*U_`,`_+U_`,`0U`,`1U`), `TwoCategory`
+  (`comp-*`,`id-*`), `LinearAlgebra`, `Semiring`, `PLL`, `MultiPrimeAtlas`
+  (`spec2/3/5/7` — profile built, never analysed). A TODO map.
+- **LAW/obligation fields never projected — 141.** Provability owed; INERT only
+  if the record is never constructed (else discharged at construction). The
+  `*-stated` surface lives here too.
+
+(High-confidence slice: uniquely-named fields only; 205 name-collisions
+skipped. Caveat: record-pattern reads look like writes. Next precision: cross
+with record-instantiation — a never-built record's fields are fully inert; a
+built record with never-read data fields has a missing consumer.)
