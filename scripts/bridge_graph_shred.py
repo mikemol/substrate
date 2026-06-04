@@ -177,6 +177,30 @@ for t in text.values():
         if m:
             root_carrier[m.group(1)] = m.group(2)
 
+# also recognize GRADED roots (Algebra.Wedge.Graded.GradedDivStr) — multi-line
+# records the single-line rootdef regex misses (e.g. tower-graded). Detected by
+# type signature; the graded carrier (C : ℕ → Set) is read from the record body.
+graded_carrier = {}
+gradedsig = re.compile(r"^([^\s:]+)\s*:\s*GradedDivStr\b", re.M)
+for t in text.values():
+    for gm in gradedsig.finditer(t):
+        nm = gm.group(1)
+        cm = re.search(re.escape(nm) + r"\s*=\s*record\s*\{[^}]*?\bC\s*=\s*([^\s;]+)", t, re.S)
+        if cm:
+            graded_carrier[nm] = cm.group(1)
+
+# the LAWVERE ATOM axis: the flip/residue atom (Category.Lawvere) instantiated
+# across silos — the cross-silo composability orthogonal to wedge-carrier
+# bridges. Direct instances `name : <Atom> <carrier>` (record declarations and
+# combinators have other shapes after the colon, so are excluded).
+atom_re = re.compile(
+    r"^([^\s:]+)\s*:\s*(FixedPointFree|InvolutiveResidue|CommutingInvolutions|TorsorAtom)\b\s*(.*)$",
+    re.M)
+atom_instances = []
+for p, t in text.items():
+    for am in atom_re.finditer(t):
+        atom_instances.append((am.group(1), am.group(2), am.group(3).strip(), modof.get(p, "")))
+
 # bridge/iso edges: `<name> : Bridge X Y` or `: WedgeIso X Y` with X,Y roots.
 base_edges = []        # (kind, carrierX, carrierY, defname)
 structural_iso = 0     # tensor-level structure maps (skipped as base edges)
@@ -241,3 +265,23 @@ for T, n in cand.most_common():
 
 print(f"\n(structure-map isos skipped as base edges: {structural_iso}; "
       f"identity achieved when RIGID and UNFOUNDED are both empty.)")
+
+# ---- 4. the GRADED roots (index = grade) — invisible to the plain shred ------
+if graded_carrier:
+    print("\n== GRADED roots (GradedDivStr — the index-is-grade lift) ==")
+    for r, c in sorted(graded_carrier.items()):
+        print(f"   {r:18s} carries {c:8s}  (ℕ-graded; the plain-DivStr shred is blind to these)")
+
+# ---- 5. the ATOM axis — cross-silo composability the bridge graph can't see --
+if atom_instances:
+    print("\n== ATOM axis (Lawvere flip/residue, shared across silos) ==")
+    by_struct = collections.defaultdict(list)
+    for nm, st, arg, mod in atom_instances:
+        by_struct[st].append((nm, arg, mod))
+    for st in sorted(by_struct):
+        print(f"   {st}:")
+        for nm, arg, mod in sorted(by_struct[st]):
+            print(f"      {nm:18s} {arg:16s} [{mod}]")
+    silos = sorted({mod for _, _, _, mod in atom_instances if mod})
+    print(f"   → the SAME atom instantiated across {len(silos)} module(s): the cross-silo")
+    print("     composability the wedge-carrier graph cannot see (Cantor = grade-★ = cone = V₄).")
