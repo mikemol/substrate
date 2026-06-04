@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := AsField.agda AsLinearAlgebra.agda AsModule.agda Code.agda Cone-Hamming-7plus1.agda Cone-V4-3plus1.agda FanoPlane.agda FromBool.agda Linear.agda Polynomial.agda SymBilinForm.agda Transfer.agda Universal.agda V4-Nonzero.agda V4LagrangeInstance.agda Vector.agda
+FILES := AsField.agda AsLinearAlgebra.agda AsModule.agda Code.agda Cone-Hamming-7plus1.agda Cone-V4-3plus1.agda FanoPlane.agda FromBool.agda Linear.agda Polynomial.agda SymBilinForm.agda Transfer.agda Universal.agda V4-Nonzero.agda V4LagrangeInstance.agda Vector.agda Wedge.agda
 SUBDIRS := Code HodgeDim3 HodgeDim4 Linear Polynomial SymBilinForm Vector
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
