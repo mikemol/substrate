@@ -40,6 +40,15 @@
 -- needs the UPArrow-as-exponential identification + its equality — deferred;
 -- the relationship is exhibited here, the literal instance is the next bridge.)
 --
+-- ARE THEY INVERSE? (FixedPoint = ι/promote vs this diagonal.) NO, and the
+-- proof is the residue. collapse (diag / ι) and lift (promote-row / promote)
+-- compose to δ, not id (diag-promote); a true inverse would force δ to have a
+-- fixed point (diag-promote-not-id), refuted by δ-free. So they are NOT an
+-- isomorphism — they are a Free⊣Forgetful-style ADJOINT pair whose (co)unit
+-- defect is exactly the wedge residue δ. "Inverse up to the residue" IS the
+-- wedge equation a = recon q b r; the residue is the adjoint correction
+-- (keystone #1). The correct categorical name is adjunction, not inverse.
+--
 -- Zero postulates, --safe --without-K.
 ------------------------------------------------------------------------
 
@@ -47,7 +56,7 @@
 
 module Substrate.Category.Lawvere where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
@@ -79,6 +88,26 @@ module _ {I V : Set} (fpf : FixedPointFree V) where
   -- So no family I → (I → V) is onto — the generic diagonalization.
   diag-not-in-family : (M : I → I → V) (i : I) → diag M ≡ M i → ⊥
   diag-not-in-family M i eq = δ-free fpf (M i i) (cong (λ f → f i) eq)
+
+  -- ARE diag (collapse, meta→base = FixedPoint.ι) and a lift (base→meta =
+  -- FixedPoint.promote) INVERSE? No — and the residue is exactly why.
+  -- `promote-row` lifts a row to a square (constant in the diagonal-free slot).
+  promote-row : (I → V) → (I → I → V)
+  promote-row g = λ _ j → g j
+
+  -- the composite diag ∘ promote-row is NOT the identity: it is δ ∘ g. The
+  -- DEFECT from identity is precisely the residue δ — collapse and lift are
+  -- inverse UP TO δ, never on the nose.
+  diag-promote : (g : I → V) (i : I) → diag (promote-row g) i ≡ δ fpf (g i)
+  diag-promote g i = refl
+
+  -- so the lift is NOT a section of the collapse (no true inverse): a genuine
+  -- diag ∘ promote = id would force δ to fix every value, refuted by δ-free.
+  -- The failure of invertibility IS the diagonal. This is the keystone shape:
+  -- the residue is the adjoint correction measuring the gap from inverse, i.e.
+  -- the r in the wedge a = recon q b r — "inverse up to residue".
+  diag-promote-not-id : (g : I → V) (i : I) → diag (promote-row g) i ≡ g i → ⊥
+  diag-promote-not-id g i eq = δ-free fpf (g i) eq
 
 ------------------------------------------------------------------------
 -- 3. LAWVERE, POSITIVE DIRECTION. A point-surjection forces fixed points —
