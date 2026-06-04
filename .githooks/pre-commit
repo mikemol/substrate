@@ -44,6 +44,10 @@ run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --c
 # name→shape map disambiguates for the reader). Regenerate: sppf_node_index.py
 run "shape-node index current" python3 "$ROOT/scripts/sppf_node_index.py" --check
 
+# Import-shape ratchet: no NEW bare imports of genuinely-ambiguous names — a
+# colliding name must be specialized by shape (renaming). Count may only drop.
+run "import-shape ratchet" python3 "$ROOT/scripts/check_import_shape.py" --quiet
+
 if [ "$fail" -ne 0 ]; then
   echo "pre-commit: one or more checks failed; commit aborted (use --no-verify to override)." >&2
   exit 1
