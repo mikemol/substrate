@@ -59,6 +59,7 @@ module Substrate.Category.Lawvere where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. A fixed-point-free endomap on values: the residue that
@@ -251,3 +252,16 @@ translate-fpf : {A : Set} (T : TorsorAtom A) (g : A) →
                 (g ≡ e T → ⊥) → FixedPointFree A
 translate-fpf T g g≢e =
   record { δ = _∙_ T g ; δ-free = λ v eq → g≢e (fix→unit T g v eq) }
+
+-- THE PROVE-OR-CORRECT ENGINE (operational keystone #1, as a green combinator).
+-- With a decision "is it the unit?", every g EITHER is the unit (the wedge
+-- reconstructs cleanly, residue = z) OR yields a fixed-point-free CORRECTION
+-- (translate by g). No third branch: the residue is never a dead end — it is
+-- either absent or a genuine flip. This is the engine "never dead-ends" claim
+-- made a function, not prose.
+prove-or-correct : {A : Set} (T : TorsorAtom A) →
+                   ((g : A) → (g ≡ e T) ⊎ (g ≡ e T → ⊥)) →
+                   (g : A) → (g ≡ e T) ⊎ FixedPointFree A
+prove-or-correct T dec g with dec g
+... | inj₁ g≡e = inj₁ g≡e
+... | inj₂ g≢e = inj₂ (translate-fpf T g g≢e)

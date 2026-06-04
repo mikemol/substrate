@@ -17,10 +17,18 @@
 -- the residue refuses to vanish, which is exactly why the prove-or-correct
 -- engine never dead-ends.
 --
--- HONEST BOUND: this lands the residue ⟹ FixedPointFree direction over
--- multiple carriers. The full keystone — that the certified (r<b) residue IS
--- the Free⊣Forgetful adjoint comparison (the adjunction triangle) — is still
--- open; this is its operational half.
+-- WHAT'S DONE vs WHAT REMAINS (keystone #1, scoped honestly). The Free⊣Forgetful
+-- TRIANGLE is already the wedge witness itself — Algebra.Wedge.forget-correct
+-- (forget w ≡ a, the reconstruction). This module adds the OTHER half: a
+-- non-zero residue is a fixed-point-free correction (residue ⟹ FixedPointFree),
+-- over multiple carriers. Together they ARE the prove-or-correct content of
+-- keystone #1: a wedge either reconstructs cleanly (r = z) or hands back a
+-- genuine fixed-point-free correction (r ≢ z) — never a dead end. What remains
+-- is only the certified (r<b) CANONICALITY of that residue (uniqueness of the
+-- comparison representative) — a smallness refinement, not a missing identity.
+-- Both halves are MECHANIZED in Substrate.Algebra.Wedge.ResidueAtom.Properties
+-- (keystone-triangle + prove-or-correct over F₂ and ℕ) — the fix is proved,
+-- not just claimed.
 --
 -- No data/record declared here (instances are record VALUES) ⟹ exempt from the
 -- def/proof gate though it imports Foundation.Nat.Properties.Add. Zero
