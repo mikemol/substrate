@@ -117,12 +117,17 @@ F₂-ir = record
   ; δ-invol = λ b → sym (+-assoc 𝟙 𝟙 b)
   }
 
--- THE FIRST V₄ IN THE TOWER. F₂² = the tetrahedron's 4 vertices; the two
--- coordinate-translation flips e₁ +ⱽ_ and e₂ +ⱽ_ are commuting involutions
+-- THE GAUGE V₄ (one of TWO V₄ kinds). F₂² = the tetrahedron's 4 vertices; the
+-- two coordinate-translation flips e₁ +ⱽ_ and e₂ +ⱽ_ are commuting involutions
 -- (reusing Algebra.F2.Vector's group laws), so {id, +e₁, +e₂, +e₁₂} is Klein
--- four. The single graded flip (F₂-ir) is one Z/2; this is two of them — the
--- V₄ that debuts at rung 3→4 (V4Seam). Each nonidentity translation is a Z/2 =
--- a "shared V₂"; S₃ = Aut(V₄) permutes the three.
+-- four — the NORMAL "gauge" V₄ of all double-transpositions (the translation
+-- regular rep). It is NOT the whole V₄ story: S₄ also has three INTERFACE V₄s
+-- (one double-transposition d + two transpositions), and gauge ∩ interface =
+-- a shared V₂ = ⟨d⟩ — the seam (WitnessTower.B3Split splits the 4 Klein-fours
+-- by cycle type; WitnessTower.SharedMiddle models the shared-middle V₂ on the
+-- certified Groups.V4; the EXACT intersection is posited there, not yet built).
+-- So: one graded flip = one Z/2; this gauge V₄ = two commuting flips; the
+-- shared V₂ between gauge and interface is one common flip d.
 e₁ e₂ : Vector 2
 e₁ = 𝟙 ∷ 𝟘 ∷ []
 e₂ = 𝟘 ∷ 𝟙 ∷ []
@@ -138,3 +143,53 @@ F₂²-V₄ = record
   ; commute = λ v → trans (sym (+ⱽ-assoc e₂ e₁ v))
                     (trans (cong (_+ⱽ v) (+ⱽ-comm e₂ e₁)) (+ⱽ-assoc e₁ e₂ v))
   }
+
+------------------------------------------------------------------------
+-- THE TWO V₄s SHARING A V₂, on the FLIP FOUNDATION (not group enumeration).
+-- The gauge V₄ above is the translations — every non-identity flip is
+-- fixed-point-FREE. An INTERFACE V₄ shares the V₂ ⟨d⟩ (d = +e₁₂, the double-
+-- transposition) but its OTHER generator σ (coordinate swap) FIXES a point.
+-- So the shared element is exactly the fixed-point-free one: the flip atom
+-- (δ-free) IS the discriminator that locates the seam — gauge ∩ interface =
+-- the free part of the interface = ⟨d⟩. (The full subgroup-set intersection
+-- as 4-element sets is the remaining concrete step; the WHY is now atomic.)
+------------------------------------------------------------------------
+
+-- the shared double-transposition d = translation by e₁₂ = e₁ +ⱽ e₂.
+e₁₂ : Vector 2
+e₁₂ = 𝟙 ∷ 𝟙 ∷ []
+
+-- the interface's transposition: swap the two coordinates. It is an
+-- involution, and it FIXES the origin (unlike a translation).
+σ : Vector 2 → Vector 2
+σ (a ∷ b ∷ []) = b ∷ a ∷ []
+
+σ-involution : (v : Vector 2) → σ (σ v) ≡ v
+σ-involution (a ∷ b ∷ []) = refl
+
+-- σ FIXES a point — so it is NOT a free flip (NOT a translation/gauge element).
+σ-fixes-origin : σ (𝟘 ∷ 𝟘 ∷ []) ≡ (𝟘 ∷ 𝟘 ∷ [])
+σ-fixes-origin = refl
+
+-- σ commutes with the shared d (so the interface is a V₄).
+σ-commutes-d : (v : Vector 2) → σ (e₁₂ +ⱽ v) ≡ e₁₂ +ⱽ (σ v)
+σ-commutes-d (a ∷ b ∷ []) = refl
+
+-- the INTERFACE V₄ = ⟨shared d, σ⟩: two commuting involutions, one shared
+-- with the gauge (d) and one that fixes a point (σ).
+interface-V₄ : CommutingInvolutions (Vector 2)
+interface-V₄ = record
+  { δ₁ = e₁₂ +ⱽ_                 -- the SHARED V₂ generator d
+  ; δ₂ = σ                       -- the transposition (fixes the origin)
+  ; δ₁-inv = λ v → trans (sym (+ⱽ-assoc e₁₂ e₁₂ v))
+                   (trans (cong (_+ⱽ v) (+ⱽ-self-inverse e₁₂)) (+ⱽ-identityˡ v))
+  ; δ₂-inv = σ-involution
+  ; commute = σ-commutes-d
+  }
+
+-- THE SEAM, atomic. The shared d is fixed-point-FREE (a genuine flip), via the
+-- flip atom at coordinate 0 — so it lies in the (all-free) gauge V₄. σ is NOT
+-- (σ-fixes-origin). So among the interface's non-identity elements, exactly the
+-- shared d is free: gauge ∩ interface = ⟨d⟩, located by δ-free alone.
+shared-d-free : (v : Vector 2) → (e₁₂ +ⱽ v) ≡ v → ⊥
+shared-d-free (a ∷ b ∷ []) eq = flip-disagrees a (cong head eq)
