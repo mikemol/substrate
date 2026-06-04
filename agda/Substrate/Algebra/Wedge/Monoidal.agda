@@ -181,3 +181,29 @@ triangle : (A B : DivStr) (x : Carrier ((A ⊗ᴰ ⊤-div) ⊗ᴰ B)) →
   translate ((id-bridge A ⊗ᵇ unitˡ→ B) ⊚ assoc→ A ⊤-div B) x
     ≡ translate (unitʳ→ A ⊗ᵇ id-bridge B) x
 triangle A B x = refl
+
+------------------------------------------------------------------------
+-- 7. NATURALITY — α, λ, ρ are natural in their arguments. The coherence
+--    diagrams (§4, §6) say the structure maps cohere with each other; these
+--    say they cohere with every bridge between objects. Both sides reshuffle
+--    to the same projection tree with the component bridges applied → refl.
+--    Together with §4/§6 this makes (DivStr, _⊗ᴰ_, ⊤-div, α, λ, ρ) a genuine
+--    monoidal structure (natural isos + coherence), not just a pile of isos.
+------------------------------------------------------------------------
+
+assoc-nat : {A A′ B B′ C C′ : DivStr}
+            (f : Bridge A A′) (g : Bridge B B′) (h : Bridge C C′)
+            (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C)) →
+  translate (assoc→ A′ B′ C′ ⊚ ((f ⊗ᵇ g) ⊗ᵇ h)) x
+    ≡ translate ((f ⊗ᵇ (g ⊗ᵇ h)) ⊚ assoc→ A B C) x
+assoc-nat f g h x = refl
+
+unitˡ-nat : {A A′ : DivStr} (f : Bridge A A′) (x : Carrier (⊤-div ⊗ᴰ A)) →
+  translate (unitˡ→ A′ ⊚ (id-bridge ⊤-div ⊗ᵇ f)) x
+    ≡ translate (f ⊚ unitˡ→ A) x
+unitˡ-nat f x = refl
+
+unitʳ-nat : {A A′ : DivStr} (f : Bridge A A′) (x : Carrier (A ⊗ᴰ ⊤-div)) →
+  translate (unitʳ→ A′ ⊚ (f ⊗ᵇ id-bridge ⊤-div)) x
+    ≡ translate (f ⊚ unitʳ→ A) x
+unitʳ-nat f x = refl
