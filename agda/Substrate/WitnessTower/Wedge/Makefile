@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../..
+AGDA_ROOT := ../../..
 
-FILES := B3Split.agda Codeword.agda Complete.agda Core.agda CycleType.agda Decompose.agda DuplicateFree.agda Enumerate.agda FamilyWitness.agda FirstAppearance.agda Hodge.agda IsPermutation.agda KleinCensus.agda Link.agda Puncture.agda SharedMiddle.agda Sn.agda SnGroup.agda SupportGrading.agda Surjective.agda SymBridge.agda WholeTower.agda WhyThreeV2.agda
-SUBDIRS := Wedge
+FILES := Action.agda Factoradic.agda V4Seam.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,13 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Wedge:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C Wedge clean 2>/dev/null || true
 	@true
