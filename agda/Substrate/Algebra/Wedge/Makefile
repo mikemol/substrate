@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
 FILES := Adjunction.agda Bridge.agda Coalgebra.agda Compose.agda Correspondence.agda Cross.agda CrossMul.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda Monoidal.agda Mul.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda Sphere.agda VecGraded.agda
-SUBDIRS := Compose ResidueAtom Shape Trace
+SUBDIRS := Compose Product ResidueAtom Shape Trace
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -47,6 +47,13 @@ Compose:
 	fi
 	@$(MAKE) -C $@
 
+Product:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 ResidueAtom:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -70,6 +77,7 @@ Trace:
 
 clean:
 	@$(MAKE) -C Compose clean 2>/dev/null || true
+	@$(MAKE) -C Product clean 2>/dev/null || true
 	@$(MAKE) -C ResidueAtom clean 2>/dev/null || true
 	@$(MAKE) -C Shape clean 2>/dev/null || true
 	@$(MAKE) -C Trace clean 2>/dev/null || true
