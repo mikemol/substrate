@@ -194,3 +194,32 @@ split, one level down:
 skipped. Caveat: record-pattern reads look like writes. Next precision: cross
 with record-instantiation — a never-built record's fields are fully inert; a
 built record with never-read data fields has a missing consumer.)
+
+### THE REALIZABILITY SURFACE (`scripts/realizability_surface.py`)
+
+The empirical reaction-gradient IS the **Realizability Charter** gate-chain
+(`Charter.agda`: `ε ▷ recipe ▷ manifest ▷ measure ▷ bounded`, con ⊑ rea ⊑ obs ⊑
+cov, ordering forced). Per type, read the rank off its reactions:
+
+| rank | charter gate | empirical | count |
+|---|---|---|---|
+| 1 | recipe | declared, never produced/consumed (HOLE) | 138 (126 non-mixfix) |
+| 2 | manifest | constructed (produced), never observed | 203 |
+| 3 | measure | observed (consumed / projected) | 123 |
+| 4 | bounded | covered (wide transitive reach) | 29 |
+
+Rank = height, dep-depth = base ⇒ a **topological surface**: a recipe-only
+FLOOR of holes (the incompleteness frontier — `Preserves-*`, `TwoEquivalence`,
+`GaloisAdjunction`, `RootSystem`, `*Obligation`, `*Theorem`, `SheafAdjointPair`,
+`UniversalEnvelopingAlgebra`, depths 0–7), a wide manifest-unmeasured plateau
+(203), a measured core (123), a small covered peak (29).
+
+A LAW forces a distinction only if exercised; an unexercised law is a rank-1
+hole (recipe, never manifest). So the realizability surface, the POSIWID
+reactor-kinds, the dead/incompleteness map, and the Charter gate-ranking are
+**one structure**: how far up `recipe→manifest→measure→bounded` each element is
+realized. The floor is what implementation owes.
+
+Caveat: rank is a LOWER bound (infix/projection under-counted ⇒ the rank-2
+plateau is inflated; the reliable signals are the rank-1 non-mixfix floor and
+the rank-4 peak).
