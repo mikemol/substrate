@@ -145,3 +145,32 @@ Forgetful view (how used). Meaning lives on the Forgetful/use side — a finite
 enum is Free-trivial and means nothing until its eliminators give it behavior.
 So the PRIMARY catalogue is **reaction-keyed** (the cover / "expose generator"
 shape over each distinction); the introduction shape is the secondary index.
+
+### POSIWID dead ends, and the reactor-KIND taxonomy (`scripts/type_dead_ends.py`)
+
+A type nothing reacts to is a dead end. But "reaction" has KINDS a signature
+scan can't see — which is why a naive "no arg-eliminator" scan over-flags
+(it even flagged `_≡_`, consumed *infix*). The kinds:
+
+- **code-reaction** — consumed as an argument / pattern-matched.
+- **projection-reaction** — a record eliminated by projecting fields
+  (`content crt-recognized`); records are consumed this way, invisible to an
+  arg-scan. (`RecognizedUP` was falsely flagged — it's used by projection.)
+- **provability-reaction — the typechecker is the reactor.** Theorems /
+  obligations (`PontryaginDualityTheorem`, `ℚ-Field-Obligation`, the `*-stated`
+  surface) exist *to be inhabited*; being proved IS the act. POSIWID: "what it
+  does" = "it is provable." Not dead — propositions.
+- **catalogue-reaction** — named by a `Capstone`/`PrimitivesAll` aggregator.
+- **nothing** — no reactor of any kind: the TRUE dead ends.
+
+Result: once projection / provability / catalogue reactors are subtracted, the
+true-dead set does NOT grow beyond the **7 already found** (referenced nowhere —
+no code, projection, proof, or catalogue). That is the strongest dead
+certificate: dead by *every* reaction-kind. Everything else the crude scan
+flagged is alive through a reactor the scan can't see.
+
+The real deliverable is therefore not a flat dead-list but the **reactor-KIND
+classification** (code / projection / typechecker / catalogue / nothing) — the
+POSIWID catalogue. It surfaces a genuine category: **typechecker-only types**
+(theorems & obligations, purpose = provability) — where the `SubstrateTopos` /
+`*-stated` obligation surface lives.
