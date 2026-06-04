@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../..
+AGDA_ROOT := ../../../../..
 
-FILES := Double.agda Register.agda Transport.agda Twist.agda
-SUBDIRS := Register
+FILES := Properties.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,13 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Register:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C Register clean 2>/dev/null || true
 	@true
