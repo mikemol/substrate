@@ -27,32 +27,76 @@
 module Substrate.WitnessTower.Hodge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Fin using (Fin; zero; suc; fromℕ)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
 
 ------------------------------------------------------------------------
 -- 1. Rung grades of the ambient n-simplex: a face has a grade in
 --    Fin (suc n) (0 = empty/point-witness end, n = full simplex). The
---    Hodge dual of grade k is grade n−k, given as a concrete involution
---    on Fin (suc n). We build it for the tetrahedron (n = 3): grades
---    0,1,2,3 with dual 3,2,1,0.
+--    Hodge dual of grade k is grade n−k, given as a STRUCTURAL involution
+--    on Fin (suc n) — built for EVERY ambient n, not just the tetrahedron.
+--
+--    This is the narration's grade spine, founded from the bottom:
+--    "In the beginning there was nothing; then came the first point, which
+--     witnessed the universe (nothing else to differentiate against)."
+--    That first point is the n=0 ambient — Fin 1, one grade — and it is
+--    its OWN Hodge dual (`dual-grade-point`): the FIRST ★. Each climb to
+--    ambient n+1 wraps a fresh (Λ⁰, Λⁿ⁺¹) dual pair — the new point and
+--    the new simplex, the two ends that "both witness the universe" —
+--    around the prior simplex, which becomes an interior face. The clean
+--    involution lives at the GRADE-LABEL level; the cell COUNTS behind the
+--    grades (Δ³: 4 vertices, 6 edges, 4 faces, 1 cell) are NOT label-
+--    symmetric — that divergence (6 edges vs 4 faces) is the grading
+--    boundary made manifest, the very thing this spine traces by climbing
+--    from the point (where label and cell coincide) upward. See §3.
 ------------------------------------------------------------------------
 
--- dual grade in the n=3 ambient (the tetrahedron's faces): k ↦ 3−k.
-dual-grade₃ : Fin 4 → Fin 4
-dual-grade₃ zero                = suc (suc (suc zero))   -- Λ⁰ ↔ Λ³
-dual-grade₃ (suc zero)          = suc (suc zero)         -- Λ¹ ↔ Λ²
-dual-grade₃ (suc (suc zero))    = suc zero               -- Λ² ↔ Λ¹
-dual-grade₃ (suc (suc (suc zero))) = zero                -- Λ³ ↔ Λ⁰
+-- inject a grade as the non-top end of the next ambient (Λᵏ ↪ Λᵏ at n+1).
+inject₁ : {n : ℕ} → Fin n → Fin (suc n)
+inject₁ zero    = zero
+inject₁ (suc i) = suc (inject₁ i)
 
--- The duality is an involution: ★★ = id at the grade level. Proved by
--- computation on all 4 grades — this is the narration's "witness of a
--- witness returns the simplex" at the index level.
+-- the Hodge dual at the grade level in ambient n: k ↦ n − k.
+-- dual-grade 0 = id (the self-dual point); each suc wraps the prior dual
+-- inside inject₁, so the top grade (fromℕ n) pairs with the point (zero).
+dual-grade : (n : ℕ) → Fin (suc n) → Fin (suc n)
+dual-grade n       zero    = fromℕ n
+dual-grade (suc m) (suc i) = inject₁ (dual-grade m i)
+
+-- the top grade Λⁿ is the dual of the point Λ⁰ (the (point, simplex) pair).
+dual-grade-fromℕ : (n : ℕ) → dual-grade n (fromℕ n) ≡ zero
+dual-grade-fromℕ zero    = refl
+dual-grade-fromℕ (suc m) = cong inject₁ (dual-grade-fromℕ m)
+
+-- dual commutes with the non-top embedding: the spine respects the climb.
+dual-grade-inject₁ : (n : ℕ) (i : Fin (suc n)) →
+                     dual-grade (suc n) (inject₁ i) ≡ suc (dual-grade n i)
+dual-grade-inject₁ n       zero    = refl
+dual-grade-inject₁ (suc m) (suc i) = cong inject₁ (dual-grade-inject₁ m i)
+
+-- THE GENERAL INVOLUTION: ★★ = id in every ambient n — the narration's
+-- "the witness of a witness returns the simplex", at every rung at once.
+dual-grade-involution : (n : ℕ) (i : Fin (suc n)) →
+                        dual-grade n (dual-grade n i) ≡ i
+dual-grade-involution n       zero    = dual-grade-fromℕ n
+dual-grade-involution (suc m) (suc i) =
+  trans (dual-grade-inject₁ m (dual-grade m i))
+        (cong suc (dual-grade-involution m i))
+
+-- THE FIRST POINT IS THE FIRST ★: ambient n=0 has one grade, self-dual.
+-- "There was nothing else to differentiate against." Proved by refl.
+dual-grade-point : dual-grade 0 zero ≡ zero
+dual-grade-point = refl
+
+-- The tetrahedron (n=3) is now an INSTANCE of the general spine, not a
+-- parallel definition: k ↦ 3−k. dual-grade 3 computes to Λ⁰↔Λ³, Λ¹↔Λ².
+dual-grade₃ : Fin 4 → Fin 4
+dual-grade₃ = dual-grade 3
+
+-- The involution at n=3 is the general lemma specialised — the four refl
+-- cases collapse into `dual-grade-involution 3`.
 dual-grade₃-involution : (i : Fin 4) → dual-grade₃ (dual-grade₃ i) ≡ i
-dual-grade₃-involution zero                      = refl
-dual-grade₃-involution (suc zero)                = refl
-dual-grade₃-involution (suc (suc zero))          = refl
-dual-grade₃-involution (suc (suc (suc zero)))    = refl
+dual-grade₃-involution = dual-grade-involution 3
 
 ------------------------------------------------------------------------
 -- 2. The witness pairing. In the n=3 ambient the witnessing step pairs a
