@@ -23,13 +23,17 @@
 -- groupoid — you transport along it without ever re-deriving a bridge, no
 -- retrofits. `roots-pentagon` grounds the coherence at the actual roots.
 --
--- HONEST SCOPE: this is the ASSOCIATIVITY face of Mac Lane coherence — the
--- pentagon, proven. The UNIT face (a unit object ⊤-div, the unitors λ/ρ, and
--- the triangle identity) is the remaining face for full coherence; it is the
--- next lift, not claimed here. The pentagon is stated at the level of the
--- forward bridges' `translate` (morphism equality = action equality), the
--- honest --without-K statement — full WedgeIso equality would need
--- proof-irrelevance of the round-trip fields, which we do not assume.
+-- BOTH FACES of Mac Lane coherence are closed here: the PENTAGON
+-- (associativity, §4) and the TRIANGLE (unit, §6) — the unit object `⊤-div`,
+-- the unitors λ/ρ, and the triangle identity, all `refl` (⊤ is a no-field
+-- record, so it too has η). Pentagon + triangle is exactly Mac Lane's
+-- coherence hypothesis: the sphere is fully closed.
+--
+-- HONEST SCOPE: the coherence diagrams are stated at the level of the forward
+-- bridges' `translate` (morphism equality = action equality), the honest
+-- --without-K statement — full WedgeIso equality would need proof-irrelevance
+-- of the round-trip fields, which we do not assume. Naturality of α/λ/ρ (the
+-- squares, as opposed to the coherence pentagons/triangle) is a further lift.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -37,6 +41,7 @@
 module Substrate.Algebra.Wedge.Monoidal where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; cong₂)
+open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div) renaming (C to Carrier)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
@@ -133,3 +138,46 @@ roots-pentagon :
                  ⊚ (assoc→ F₂-div (ℕ-div ⊗ᴰ ℤ-div) F₂-div
                     ⊚ (assoc→ F₂-div ℕ-div ℤ-div ⊗ᵇ id-bridge F₂-div))) x
 roots-pentagon = pentagon F₂-div ℕ-div ℤ-div F₂-div
+
+------------------------------------------------------------------------
+-- 6. THE UNIT FACE — unit object, unitors, and the triangle identity.
+--    ⊤-div is the monoidal unit; the unitors strip it; the triangle says
+--    the associator and the unitors agree. All refl (⊤ has η).
+------------------------------------------------------------------------
+
+⊤-div : DivStr
+⊤-div = record { C = ⊤ ; z = tt ; recon = λ _ _ _ → tt }
+
+-- left unitor: ⊤-div ⊗ᴰ A ≃ A  (drop the unit on the left).
+unitˡ→ : (A : DivStr) → Bridge (⊤-div ⊗ᴰ A) A
+unitˡ→ A = record { translate = λ p → proj₂ p ; respects = λ _ _ _ → refl ; z-pres = refl }
+
+unitˡ← : (A : DivStr) → Bridge A (⊤-div ⊗ᴰ A)
+unitˡ← A = record { translate = λ a → tt , a ; respects = λ _ _ _ → refl ; z-pres = refl }
+
+unitᴸ : (A : DivStr) → WedgeIso (⊤-div ⊗ᴰ A) A
+unitᴸ A = record
+  { fwd = unitˡ→ A ; bwd = unitˡ← A ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
+
+-- right unitor: A ⊗ᴰ ⊤-div ≃ A  (drop the unit on the right).
+unitʳ→ : (A : DivStr) → Bridge (A ⊗ᴰ ⊤-div) A
+unitʳ→ A = record { translate = λ p → proj₁ p ; respects = λ _ _ _ → refl ; z-pres = refl }
+
+unitʳ← : (A : DivStr) → Bridge A (A ⊗ᴰ ⊤-div)
+unitʳ← A = record { translate = λ a → a , tt ; respects = λ _ _ _ → refl ; z-pres = refl }
+
+unitᴿ : (A : DivStr) → WedgeIso (A ⊗ᴰ ⊤-div) A
+unitᴿ A = record
+  { fwd = unitʳ→ A ; bwd = unitʳ← A ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
+
+-- THE TRIANGLE: (id_A ⊗ λ_B) ∘ α_{A,⊤,B}  =  ρ_A ⊗ id_B   on (A ⊗ ⊤) ⊗ B.
+--
+--   (A ⊗ ⊤) ⊗ B ──────α──────→ A ⊗ (⊤ ⊗ B)
+--        │                           │
+--      ρ ⊗ id                      id ⊗ λ
+--        ▼                           ▼
+--        A ⊗ B ════════════════════ A ⊗ B
+triangle : (A B : DivStr) (x : Carrier ((A ⊗ᴰ ⊤-div) ⊗ᴰ B)) →
+  translate ((id-bridge A ⊗ᵇ unitˡ→ B) ⊚ assoc→ A ⊤-div B) x
+    ≡ translate (unitʳ→ A ⊗ᵇ id-bridge B) x
+triangle A B x = refl
