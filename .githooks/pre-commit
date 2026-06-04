@@ -40,6 +40,10 @@ run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 # .agda files or directories require regenerating the per-dir makefiles).
 run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --check
 
+# Shape-node collision index must stay current (names are vacuous; the visible
+# name→shape map disambiguates for the reader). Regenerate: sppf_node_index.py
+run "shape-node index current" python3 "$ROOT/scripts/sppf_node_index.py" --check
+
 if [ "$fail" -ne 0 ]; then
   echo "pre-commit: one or more checks failed; commit aborted (use --no-verify to override)." >&2
   exit 1

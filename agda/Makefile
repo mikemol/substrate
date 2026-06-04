@@ -5,14 +5,14 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
-.PHONY: all clean check check-makefiles check-defproof check-vacuity advise
+.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index advise
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
-# def/proof separation + makefile-tree sync + UP non-vacuity. Blocking.
-check: check-defproof check-makefiles check-vacuity
+# def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
+check: check-defproof check-makefiles check-vacuity check-index
 	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
@@ -23,6 +23,9 @@ check-defproof:
 # Verify no vacuous (⊤-collapse) universal properties outside the sanctioned two.
 check-vacuity:
 	@../scripts/check_up_nonvacuity.sh
+# Verify the shape-node collision index is current (names→shapes, visible).
+check-index:
+	@python3 ../scripts/sppf_node_index.py --check
 # ADVISORY (non-blocking): theorem-per-file pressure report. Deliberately
 # NOT part of `check` / the hook — signature-counting has false positives
 # (cohesive primitives modules), so it informs judgment, never gates.
