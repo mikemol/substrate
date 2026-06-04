@@ -169,7 +169,7 @@ module Rule5 (𝒞 : IsomorphicCocycleStructure) where
 
 -- A Section of a weak cocycle structure: a choice of canonical
 -- representative per invariant. The Type-D rigidification move.
-record Section (𝒲 : WeakCocycleStructure) : Set where
+record Section (𝒲 : WeakCocycleStructure) : Set where      -- ⟦shape:1650cc88 representative,projects-to⟧
   open WeakCocycleStructure 𝒲
   field
     -- The chosen canonical for each invariant.

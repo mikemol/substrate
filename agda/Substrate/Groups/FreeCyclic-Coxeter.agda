@@ -44,7 +44,7 @@ data Gen : Set where
   a : Gen
 
 -- Every word is canonical (no relations to satisfy).
-data Canonical : Word Gen → Set where
+data Canonical : Word Gen → Set where      -- ⟦shape:0c35b127 c-any⟧
   c-any : (w : Word Gen) → Canonical w
 
 ------------------------------------------------------------------------

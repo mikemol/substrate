@@ -40,7 +40,7 @@ data SectionKind : Set where
 -- kind  : classification
 ------------------------------------------------------------------------
 
-record Section : Set where
+record Section : Set where      -- ⟦shape:940c0ab1 title,body,kind⟧
   constructor mkSection
   field
     title : TextSymbol

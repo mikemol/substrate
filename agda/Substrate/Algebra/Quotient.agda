@@ -67,7 +67,7 @@ open Quotient public
 -- canonical representatives.
 ------------------------------------------------------------------------
 
-record Canonical
+record Canonical      -- ⟦shape:30f92ad5 {A,canonical,canonical-idempotent⟧
   {A : Set} {_≈_ : A → A → Set} (Q : Quotient A _≈_) : Set where
   field
     canonical            : A → A

@@ -21,7 +21,7 @@ open import Substrate.Algebra.Torsor using (IsTorsor)
 -- The substrate-native IsomorphicCocycleStructure record.
 ------------------------------------------------------------------------
 
-record IsomorphicCocycleStructure : Set₁ where
+record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:f0833aa8 Invariant,GaugeCarrier,Gauge⟧
   field
     Invariant    : Set
     -- Carrier of the gauge group.

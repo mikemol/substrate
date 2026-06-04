@@ -32,7 +32,7 @@ open import Substrate.Algebra.F2.Vector
 -- F₂-linear map: record bundling apply + linearity proofs.
 ------------------------------------------------------------------------
 
-record Linear (n m : ℕ) : Set where
+record Linear (n m : ℕ) : Set where      -- ⟦shape:62b90d64 apply,preserves-+,preserves-*ₛ⟧
   field
     apply         : Vector n → Vector m
     preserves-+   : (u v : Vector n) → apply (u +ⱽ v) ≡ apply u +ⱽ apply v

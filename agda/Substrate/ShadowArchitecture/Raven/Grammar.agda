@@ -84,7 +84,7 @@ data L7-Body-Reference : Set where
 -- lives in the module-level comments of `Raven.Poem`.
 ------------------------------------------------------------------------
 
-record Line : Set where
+record Line : Set where      -- ⟦shape:d00b0e66 rel,terminal,L7-reference⟧
   constructor mk-line
   field
     rel           : KelenRelation

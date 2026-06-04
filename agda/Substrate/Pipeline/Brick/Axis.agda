@@ -9,7 +9,7 @@
 
 module Substrate.Pipeline.Brick.Axis where
 
-data Axis : Set where
+data Axis : Set where      -- ⟦shape:cacdc9fc 𝔻,𝕊,ℂ⟧
   𝔻 : Axis  -- Data witnesses
   𝕊 : Axis  -- State witnesses
   ℂ : Axis  -- Compute witnesses

@@ -55,7 +55,7 @@ open DivStr public
 -- 2. The generic wedge: the triple (quotient, remainder, witness).
 ------------------------------------------------------------------------
 
-record Wedge (D : DivStr) (a b : C D) : Set where
+record Wedge (D : DivStr) (a b : C D) : Set where      -- ⟦shape:7b68bbe8 quot,rem,wedge-eq⟧
   field
     quot     : ℕ
     rem      : C D

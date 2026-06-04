@@ -31,7 +31,7 @@ for dp,_,fns in os.walk(ROOT):
                 while j<len(lines) and (lines[j].strip()=="" or lines[j][:1] in " \t"):
                     if " : " in lines[j]: body.append(lines[j].split(" : ",1)[1])
                     j+=1
-                sh=hashlib.sha1((kind+"|"+"|".join(sorted(body))).encode()).hexdigest()[:8]
+                sh=hashlib.sha1((kind+"|"+"|".join(sorted(" ".join(b.split()) for b in body))).encode()).hexdigest()[:8]
                 decls[name].append(sh); i=j; continue
             i+=1
 genuine={n for n,shs in decls.items() if len(set(shs))>1} - ALLOW

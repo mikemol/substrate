@@ -48,6 +48,10 @@ run "shape-node index current" python3 "$ROOT/scripts/sppf_node_index.py" --chec
 # colliding name must be specialized by shape (renaming). Count may only drop.
 run "import-shape ratchet" python3 "$ROOT/scripts/check_import_shape.py" --quiet
 
+# Decl-site shape tags: every genuinely-ambiguous declaration carries a visible
+# ⟦shape:…⟧ tag so the reader sees which node. Regenerate: decl_shape_tag.py --fix
+run "decl-site shape tags" python3 "$ROOT/scripts/decl_shape_tag.py"
+
 if [ "$fail" -ne 0 ]; then
   echo "pre-commit: one or more checks failed; commit aborted (use --no-verify to override)." >&2
   exit 1

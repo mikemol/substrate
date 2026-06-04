@@ -27,7 +27,7 @@ open import Substrate.Algebra.SetoidGroup.Action public
 -- IsTorsor — SetoidGroup-parametric.
 ------------------------------------------------------------------------
 
-record IsTorsor (G : SetoidGroup) (T : Set) : Set where
+record IsTorsor (G : SetoidGroup) (T : Set) : Set where      -- ⟦shape:8ffbc99a action,(g,(t₁ t₂⟧
   open SetoidGroup G
   field
     action     : Action G T
@@ -45,7 +45,7 @@ open IsTorsor public
 -- IsomorphicCocycleStructure — primary abstraction.
 ------------------------------------------------------------------------
 
-record IsomorphicCocycleStructure : Set₁ where
+record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:ffdd236e Invariant,Gauge,Fiber⟧
   field
     Invariant    : Set
     Gauge        : SetoidGroup

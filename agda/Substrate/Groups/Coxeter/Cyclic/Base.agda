@@ -50,7 +50,7 @@ length-power (suc k) = cong suc (length-power k)
 -- 3. Canonical w k — length-indexed.
 ------------------------------------------------------------------------
 
-data Canonical : Word Gen → Fin (suc n) → Set where
+data Canonical : Word Gen → Fin (suc n) → Set where      -- ⟦shape:421aa4ad c-here⟧
   c-here : (k : Fin (suc n)) → Canonical (power (toℕ k)) k
 
 ------------------------------------------------------------------------

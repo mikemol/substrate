@@ -68,7 +68,7 @@ open PrimePair public
 ------------------------------------------------------------------------
 -- A crumb is a 2-bit value ∈ {0, 1, 2, 3}.
 
-record Crumb : Set where
+record Crumb : Set where      -- ⟦shape:20f7bed4 value⟧
   field
     value : ℕ        -- value < 4 enforced by use
 

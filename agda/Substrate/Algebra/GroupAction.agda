@@ -19,7 +19,7 @@ open import Substrate.Algebra.Group using (Group; monoid)
 -- A left action of G on a set B.
 ------------------------------------------------------------------------
 
-record Action {A : Set} (G : Group A) (B : Set) : Set where
+record Action {A : Set} (G : Group A) (B : Set) : Set where      -- ⟦shape:ff6bbf7c act,act-id,(g h⟧
   field
     act     : A → B → B
     act-id  : (b : B) → act (ε (monoid G)) b ≡ b

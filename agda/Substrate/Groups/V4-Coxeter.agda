@@ -37,7 +37,7 @@ open import Substrate.Foundation.Eq
 data Gen : Set where
   A B : Gen
 
-data Canonical : Word Gen → Set where
+data Canonical : Word Gen → Set where      -- ⟦shape:ab211b40 c-ε,c-A,c-B⟧
   c-ε  : Canonical []
   c-A  : Canonical (A ∷ [])
   c-B  : Canonical (B ∷ [])

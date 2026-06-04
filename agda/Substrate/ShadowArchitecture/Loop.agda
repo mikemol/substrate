@@ -50,7 +50,7 @@ open import Substrate.ShadowArchitecture.Mode
 -- 1. The five loop steps.
 ------------------------------------------------------------------------
 
-data Step : Set where
+data Step : Set where      -- ⟦shape:cd0b14ad Step-A,Step-B,Step-C⟧
   Step-A : Step  -- Classify
   Step-B : Step  -- Externalise
   Step-C : Step  -- Fire probes

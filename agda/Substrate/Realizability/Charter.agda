@@ -303,7 +303,7 @@ dedup-rejected = audit-reject refl
 -- one-object specialisation).
 ------------------------------------------------------------------------
 
-record Step (s t : ℕ) : Set where
+record Step (s t : ℕ) : Set where      -- ⟦shape:0ff9a2a9 carries,audited⟧
   constructor step
   field
     carries : Distinction

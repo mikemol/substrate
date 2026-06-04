@@ -58,7 +58,7 @@ open import Substrate.Algebra.F2.Linear
 -- drop discards.
 ------------------------------------------------------------------------
 
-record Section (m n : ℕ) : Set where
+record Section (m n : ℕ) : Set where      -- ⟦shape:35bdd582 lift,drop,drop-lift⟧
   field
     lift      : Linear m n
     drop      : Linear n m

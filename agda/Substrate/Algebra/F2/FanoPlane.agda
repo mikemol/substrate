@@ -132,7 +132,7 @@ singer-Linear = linear-from-images singer-basis
 --   L₁₂-₁₃ = {e₁₂, e₁₃, e₂₃}    — all-pairwise-sums line
 ------------------------------------------------------------------------
 
-data Line : Set where
+data Line : Set where      -- ⟦shape:dcb2f19f L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃⟧
   L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃ : Line
 
 -- Line-points: the three points lying on each line.

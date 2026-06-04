@@ -36,7 +36,7 @@ open import Substrate.Groups.V4.Operations public
 -- The four axes.
 ------------------------------------------------------------------------
 
-data Axis : Set where
+data Axis : Set where      -- ⟦shape:cd5319ed D C S W⟧
   D C S W : Axis
 
 ------------------------------------------------------------------------

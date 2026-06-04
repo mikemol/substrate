@@ -14,7 +14,7 @@ module Substrate.Algebra.Nat.GCD.Wedge where
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_; _<_)
 open import Substrate.Foundation.Eq using (_≡_)
 
-record Wedge (a b : ℕ) : Set where
+record Wedge (a b : ℕ) : Set where      -- ⟦shape:b7e6a995 quotient,remainder,wedge-eq⟧
   field
     quotient  : ℕ
     remainder : ℕ

@@ -35,7 +35,7 @@ for dp,_,fns in os.walk(ROOT):
                     if " : " in s: heads.append(s.split(" : ",1)[0].strip()); body.append(s.split(" : ",1)[1])
                     j+=1
                 desc=f"{kind} {{{', '.join(heads[:5])}{'…' if len(heads)>5 else ''}}}" if heads else kind
-                sh=hashlib.sha1((kind+"|"+"|".join(sorted(body))).encode()).hexdigest()[:8]
+                sh=hashlib.sha1((kind+"|"+"|".join(sorted(" ".join(b.split()) for b in body))).encode()).hexdigest()[:8]
                 decls[name].append((mod,kind,desc,sh))
                 i=j; continue
             i+=1

@@ -24,7 +24,7 @@ open import Substrate.Algebra.Q.Vector using (Vector; _+ℚⱽ_; _*ℚₛ_)
 -- 1. ℚ-linear map: record bundling apply + linearity proofs.
 ------------------------------------------------------------------------
 
-record Linear (n m : ℕ) : Set where
+record Linear (n m : ℕ) : Set where      -- ⟦shape:f21965c7 apply,(u v,(c⟧
   field
     apply         : Vector n → Vector m
     preserves-+   :

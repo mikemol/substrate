@@ -14,7 +14,7 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Pipeline.Brick
 
 -- Atomic types.
-data Crumb : Set where
+data Crumb : Set where      -- ⟦shape:16b523ba c₀ c₁ c₂ c₃⟧
   c₀ c₁ c₂ c₃ : Crumb
 
 data V4Label : Set where
