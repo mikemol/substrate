@@ -40,10 +40,11 @@ open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (Vec; _∷_; head; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙)
+open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙; +-assoc)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.WitnessTower.FaceSet using (Face; ★)
-open import Substrate.Category.Lawvere using (FixedPointFree; diag; diag-not-in-family)
+open import Substrate.Category.Lawvere
+  using (FixedPointFree; diag; diag-not-in-family; InvolutiveResidue)
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. The residue 𝟙 + b never equals its source b. Constructive:
@@ -102,3 +103,14 @@ F₂-fpf = record { δ = 𝟙 +_ ; δ-free = flip-disagrees }
 -- no family I → (I → F₂) contains its own diagonal twist.
 cantor-lawvere : {I : Set} (M : I → I → F₂) (i : I) → diag F₂-fpf M ≡ M i → ⊥
 cantor-lawvere = diag-not-in-family F₂-fpf
+
+-- F₂'s residue is moreover a fixed-point-free INVOLUTION (δ² = id, the green
+-- double-negation): 𝟙 + (𝟙 + b) = b by +-assoc (𝟙 + 𝟙 = 𝟘, then 𝟘 + b = b).
+-- So the collapse∘lift round-trip is its own inverse — the graded flip, and the
+-- Z/2 that contains both ends (degree 1 = the diagonal, degree 0 = the return).
+F₂-ir : InvolutiveResidue F₂
+F₂-ir = record
+  { δ       = 𝟙 +_
+  ; δ-free  = flip-disagrees
+  ; δ-invol = λ b → sym (+-assoc 𝟙 𝟙 b)
+  }

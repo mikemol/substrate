@@ -70,7 +70,8 @@ record FixedPointFree (V : Set) : Set where
     δ      : V → V
     δ-free : (v : V) → δ v ≡ v → ⊥
 
-open FixedPointFree public
+-- (not opened publicly: InvolutiveResidue below also has a field δ; we keep
+-- the projections qualified to avoid an overload clash.)
 
 ------------------------------------------------------------------------
 -- 2. LAWVERE'S DIAGONAL THEOREM (Set instance). The diagonal twist of a
@@ -82,12 +83,12 @@ module _ {I V : Set} (fpf : FixedPointFree V) where
   -- the diagonal twist of a family of maps: at i, flip the i-th map's i-th
   -- value. (For I = positions, V = bits, this is Cantor's anti-diagonal.)
   diag : (I → I → V) → (I → V)
-  diag M i = δ fpf (M i i)
+  diag M i = FixedPointFree.δ fpf (M i i)
 
   -- the diagonal twist is in NO row: it differs from every M i (at i).
   -- So no family I → (I → V) is onto — the generic diagonalization.
   diag-not-in-family : (M : I → I → V) (i : I) → diag M ≡ M i → ⊥
-  diag-not-in-family M i eq = δ-free fpf (M i i) (cong (λ f → f i) eq)
+  diag-not-in-family M i eq = FixedPointFree.δ-free fpf (M i i) (cong (λ f → f i) eq)
 
   -- ARE diag (collapse, meta→base = FixedPoint.ι) and a lift (base→meta =
   -- FixedPoint.promote) INVERSE? No — and the residue is exactly why.
@@ -98,7 +99,7 @@ module _ {I V : Set} (fpf : FixedPointFree V) where
   -- the composite diag ∘ promote-row is NOT the identity: it is δ ∘ g. The
   -- DEFECT from identity is precisely the residue δ — collapse and lift are
   -- inverse UP TO δ, never on the nose.
-  diag-promote : (g : I → V) (i : I) → diag (promote-row g) i ≡ δ fpf (g i)
+  diag-promote : (g : I → V) (i : I) → diag (promote-row g) i ≡ FixedPointFree.δ fpf (g i)
   diag-promote g i = refl
 
   -- so the lift is NOT a section of the collapse (no true inverse): a genuine
@@ -107,7 +108,7 @@ module _ {I V : Set} (fpf : FixedPointFree V) where
   -- the residue is the adjoint correction measuring the gap from inverse, i.e.
   -- the r in the wedge a = recon q b r — "inverse up to residue".
   diag-promote-not-id : (g : I → V) (i : I) → diag (promote-row g) i ≡ g i → ⊥
-  diag-promote-not-id g i eq = δ-free fpf (g i) eq
+  diag-promote-not-id g i eq = FixedPointFree.δ-free fpf (g i) eq
 
 ------------------------------------------------------------------------
 -- 3. LAWVERE, POSITIVE DIRECTION. A point-surjection forces fixed points —
@@ -127,3 +128,53 @@ module _ {A V : Set} where
     (φ : A → A → V) → PointSurjective φ → (f : V → V) → Σ V (λ v → f v ≡ v)
   lawvere-fixed-point φ surj f with surj (λ a → f (φ a a))
   ... | (a , p) = φ a a , sym (cong (λ h → h a) p)
+
+------------------------------------------------------------------------
+-- 4. THE THING SEEN FROM BOTH DIRECTIONS — the graded flip. promote and diag
+--    are not inverse (round-trip = δ, §2). But when δ is an INVOLUTION
+--    (δ² = id) — a fixed-point-free FLIP — the round-trip is its OWN inverse:
+--    ^-1^-1 = id. The object containing both ends is the Z/2 the involution
+--    generates: degree 1 = δ (the FLIP = Lawvere's diagonal); degree 0 = δ² =
+--    id (the RETURN = FixedPoint's reflexive fixed point). One involution,
+--    seen from both directions — the thing that contains the two ends.
+--
+--    WHY THIS IS LEM-FAITHFUL IN A CONSTRUCTIVE SHOP (user). Classical Cantor
+--    flips with ¬ and leans on ¬¬P = P — a LEM-equivalent axiom. Here the flip
+--    is δ, and δ² = id is a GREEN THEOREM (δ-invol), not an axiom — the
+--    constructive avatar of double-negation-elimination, earned exactly on the
+--    decidable carrier (F₂, where the residue 𝟙 +_ is provably involutive). So
+--    we get the BEHAVIOUR of the classical diagonal (flip disagrees, flip-flip
+--    returns) WITHOUT LEM: the involution earns constructively what LEM
+--    postulates. The graded flip is double-negation made into a theorem.
+------------------------------------------------------------------------
+
+-- a residue that is a fixed-point-free INVOLUTION: the constructive flip.
+record InvolutiveResidue (V : Set) : Set where
+  field
+    δ       : V → V
+    δ-free  : (v : V) → δ v ≡ v → ⊥
+    δ-invol : (v : V) → δ (δ v) ≡ v
+
+  -- the fixed-point-free endo underneath, so diag / the diagonal apply as is.
+  asFixedPointFree : FixedPointFree V
+  asFixedPointFree = record { δ = δ ; δ-free = δ-free }
+
+module _ {I V : Set} (ir : InvolutiveResidue V) where
+
+  fpf : FixedPointFree V
+  fpf = InvolutiveResidue.asFixedPointFree ir
+
+  -- the collapse∘lift round-trip on rows (diag ∘ promote-row of §2 = δ ∘ g).
+  round-trip : (I → V) → (I → V)
+  round-trip g = diag fpf (promote-row fpf g)
+
+  -- ^-1^-1 = id : the round-trip is its OWN inverse. promote/diag are not
+  -- inverse, but applying the round-trip TWICE returns the identity — the
+  -- graded flip = the constructive double-negation (δ² = id, green).
+  round-trip-involution : (g : I → V) (i : I) → round-trip (round-trip g) i ≡ g i
+  round-trip-involution g i = InvolutiveResidue.δ-invol ir (g i)
+
+  -- the two grades never coincide: degree 1 (flip) ≠ degree 0 (return) at every
+  -- value — the flip and the return are genuinely the two ends of the Z/2.
+  round-trip-no-fixpoint : (g : I → V) (i : I) → round-trip g i ≡ g i → ⊥
+  round-trip-no-fixpoint g i eq = InvolutiveResidue.δ-free ir (g i) eq
