@@ -5,14 +5,14 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
-.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag advise
+.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier advise
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
-check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag
+check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier
 	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
@@ -32,6 +32,9 @@ check-import:
 # Every genuinely-ambiguous declaration carries a visible shape tag.
 check-decltag:
 	@python3 ../scripts/decl_shape_tag.py
+# Canonical operators live in their carrier's home, one-per-file (no forks/buckets).
+check-carrier:
+	@python3 ../scripts/check_carrier_locality.py --quiet
 # ADVISORY (non-blocking): theorem-per-file pressure report. Deliberately
 # NOT part of `check` / the hook — signature-counting has false positives
 # (cohesive primitives modules), so it informs judgment, never gates.
