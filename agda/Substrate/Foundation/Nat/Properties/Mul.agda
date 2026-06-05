@@ -71,3 +71,16 @@ open import Substrate.Foundation.Nat.Properties.Add
 *-assoc (suc m) n p =
   trans (*-distribʳ-+ p n (m * n))
         (cong (n * p +_) (*-assoc m n p))
+
+------------------------------------------------------------------------
+-- Middle-factor interchange of a product of two products (reusable for
+-- multi-factor reassociations, e.g. ℚ distributivity denominators).
+------------------------------------------------------------------------
+
+quad : (w x y z : ℕ) → (w * x) * (y * z) ≡ (w * y) * (x * z)
+quad w x y z =
+  trans (*-assoc w x (y * z))
+  (trans (cong (w *_) (sym (*-assoc x y z)))
+  (trans (cong (λ t → w * (t * z)) (*-comm x y))
+  (trans (cong (w *_) (*-assoc y x z))
+         (sym (*-assoc w y (x * z))))))

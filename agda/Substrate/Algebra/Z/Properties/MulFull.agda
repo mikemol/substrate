@@ -140,3 +140,13 @@ neg-+ℤ (-suc m) (-suc n) = cong (λ z → + suc z) (sym (+-suc m n))
 *ℤ-swap₂₃ x y z =
   trans (*ℤ-assoc x y z)
         (trans (cong (x *ℤ_) (*ℤ-comm y z)) (sym (*ℤ-assoc x z y)))
+
+-- middle-factor interchange of a product of two products (ℤ analogue of
+-- Nat.Properties.Mul.quad); used to normalize ℚ distributivity numerators.
+quadℤ : (w x y z : ℤ) → (w *ℤ x) *ℤ (y *ℤ z) ≡ (w *ℤ y) *ℤ (x *ℤ z)
+quadℤ w x y z =
+  trans (*ℤ-assoc w x (y *ℤ z))
+  (trans (cong (w *ℤ_) (sym (*ℤ-assoc x y z)))
+  (trans (cong (λ t → w *ℤ (t *ℤ z)) (*ℤ-comm x y))
+  (trans (cong (w *ℤ_) (*ℤ-assoc y x z))
+         (sym (*ℤ-assoc w y (x *ℤ z))))))
