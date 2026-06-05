@@ -55,9 +55,19 @@ open import Substrate.Algebra.Magma using (Magma)
 ------------------------------------------------------------------------
 -- 3. ℚ-Field obligation record.
 --
--- Names the exact lemmas needed to upgrade the Magma scaffolding
--- to a full Field instance. The Q-arc's deferred ring-laws ARE
--- these fields.
+-- ⚠ SUPERSEDED / UNSATISFIABLE OVER ≡. This record states the field laws as
+-- propositional `_≡_` equalities. The 12 non-inverse laws hold over `≡`, but
+-- the two INVERSE fields are SYNTACTICALLY FALSE: (-ℚ a) +ℚ a reduces to
+-- 0/(suc d)² ≢ 0/1 = 0ℚ AS RECORDS (the denominators differ), so no instance
+-- of this record can ever be constructed. The laws hold only up to SEMANTIC
+-- (cross-multiplication) equality `_≈ℚ_`.
+--
+-- The canonical, FULLY-DISCHARGED target is now the module
+--   Substrate.Algebra.Q.Properties.Field
+-- which proves all 14 laws over `_≈ℚ_` (+ℚ-assoc, …, distribˡ/ʳ). This record
+-- is retained only so its
+-- existing parametric consumers (Q.AsModule.Lifters, Module.Capstone) keep
+-- type-checking; migrating them to the `≈ℚ` setoid ladder is a separate arc.
 ------------------------------------------------------------------------
 
 record ℚ-Field-Obligation : Set where
