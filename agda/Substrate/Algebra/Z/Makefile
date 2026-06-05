@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Arithmetic.agda Bezout.agda Residue.agda Wedge.agda
+FILES := Add.agda Arithmetic.agda Bezout.agda Mul.agda Residue.agda Sub.agda Wedge.agda
 SUBDIRS := Bezout Properties
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
