@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda DecidableEq.agda Embeddings.agda Equiv.agda Linear.agda Mul.agda Neg.agda Order.agda Reduction.agda Sub.agda Vector.agda
+FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda DecidableEq.agda Embeddings.agda Equiv.agda Linear.agda Mul.agda Neg.agda Order.agda Reduce.agda Reduction.agda Sub.agda Vector.agda
 SUBDIRS := Properties
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

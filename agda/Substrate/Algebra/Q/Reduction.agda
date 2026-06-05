@@ -6,13 +6,14 @@
 -- Reduction predicate for ℚ. A rational p/q is REDUCED iff
 -- gcd(|p|, q) = 1 (numerator and denominator are coprime).
 --
--- Uses substrate-native Substrate.Algebra.Nat.GCD.gcd-ℕ. The
--- actual reduction function (mapping arbitrary ℚ to its reduced
--- form) requires division on ℤ with the gcd as divisor, which
--- needs NonZero handling deferred per
--- [[feedback-coalgebraic-not-consumer-driven]]. This slice
--- provides the predicate + the gcd computation; full reduction
--- function surfaces when a consumer requires it.
+-- Uses substrate-native Substrate.Algebra.Nat.GCD.gcd-ℕ.
+--
+-- UPDATE: the full reduction function `reduce : ℚ → ℚ` is LANDED in
+-- Substrate.Algebra.Q.Reduce (with soundness q ≈ℚ reduce q in
+-- Q.Properties.Reduce). It needs NO new ℤ÷ℕ division — the cofactors num/gcd
+-- and den/gcd are the witness quotients already kept by gcd-divides-left/right
+-- ("we never discard residue"). The earlier "deferred — needs NonZero ℤ÷ℕ"
+-- framing was a forgotten residue, not a missing algorithm.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
