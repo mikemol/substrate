@@ -10,8 +10,8 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Adjunction.agda Bridge.agda Certified.agda Coalgebra.agda Compose.agda Correspondence.agda Cross.agda CrossMul.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda Monoidal.agda Mul.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda Sphere.agda VecGraded.agda
-SUBDIRS := Compose Product ResidueAtom Shape Trace
+FILES := Adjunction.agda AxisWord.agda Bridge.agda Certified.agda Coalgebra.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda Monoidal.agda Mul.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda Sphere.agda VecGraded.agda
+SUBDIRS := AxisWord Compose Contextuality Graded Product ResidueAtom Shape Trace
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,7 +40,28 @@ files:
 
 subdirs: $(SUBDIRS)
 
+AxisWord:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 Compose:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+Contextuality:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+Graded:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
@@ -76,7 +97,10 @@ Trace:
 	@$(MAKE) -C $@
 
 clean:
+	@$(MAKE) -C AxisWord clean 2>/dev/null || true
 	@$(MAKE) -C Compose clean 2>/dev/null || true
+	@$(MAKE) -C Contextuality clean 2>/dev/null || true
+	@$(MAKE) -C Graded clean 2>/dev/null || true
 	@$(MAKE) -C Product clean 2>/dev/null || true
 	@$(MAKE) -C ResidueAtom clean 2>/dev/null || true
 	@$(MAKE) -C Shape clean 2>/dev/null || true

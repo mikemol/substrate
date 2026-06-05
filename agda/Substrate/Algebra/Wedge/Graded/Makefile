@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
+AGDA_ROOT := ../../../..
 
-FILES := Action.agda Factoradic.agda Graded.agda PackedBridge.agda V4Seam.agda
-SUBDIRS := 
+FILES := Adjunction.agda MonoidalAdjunction.agda Morphism.agda
+SUBDIRS := MonoidalAdjunction
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,5 +40,13 @@ files:
 
 subdirs: $(SUBDIRS)
 
+MonoidalAdjunction:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 clean:
+	@$(MAKE) -C MonoidalAdjunction clean 2>/dev/null || true
 	@true

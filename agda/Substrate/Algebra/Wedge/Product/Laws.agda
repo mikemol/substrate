@@ -39,6 +39,10 @@ open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; C; u; _∧_; vec-product)
 open import Substrate.Category.GradedMonoid using (GradedMonoid)
+-- The law PREDICATES live in (proof-free) Product.LawTypes so law-bundling
+-- records can import the field types without a proof dependency; re-exported.
+open import Substrate.Algebra.Wedge.Product.LawTypes public
+  using (GradedAssoc; GradedUnitˡ; GradedUnitʳ)
 
 ------------------------------------------------------------------------
 -- 1. subst over Vec commutes with cons (a grade-lift through a head).
@@ -68,22 +72,10 @@ subst-∷ refl x w = refl
         (cong (x ∷_) (++-identityʳ xs))
 
 ------------------------------------------------------------------------
--- 3. The graded laws abstractly, for ANY GradedProduct (the home of the assoc
---    laws over the wedge product). A GradedProduct P satisfies the graded
---    monoid laws iff it provides these three; Vec (above) is the witness that
---    they are inhabited. The left unit is definitional (u ∧ a : C (0 + i) = C i).
+-- 3. The graded-law PREDICATES (GradedAssoc / GradedUnitˡ / GradedUnitʳ) are
+--    defined in Substrate.Algebra.Wedge.Product.LawTypes and re-exported above.
+--    Vec (below) is the witness that they are inhabited.
 ------------------------------------------------------------------------
-
-GradedAssoc : GradedProduct → Set
-GradedAssoc P = {i j k : ℕ} (a : C P i) (b : C P j) (c : C P k) →
-                subst (C P) (+-assoc i j k) (_∧_ P (_∧_ P a b) c) ≡ _∧_ P a (_∧_ P b c)
-
-GradedUnitˡ : GradedProduct → Set
-GradedUnitˡ P = {i : ℕ} (a : C P i) → _∧_ P (u P) a ≡ a
-
-GradedUnitʳ : GradedProduct → Set
-GradedUnitʳ P = {i : ℕ} (a : C P i) →
-                subst (C P) (+-identityʳ i) (_∧_ P a (u P)) ≡ a
 
 ------------------------------------------------------------------------
 -- 4. Vec satisfies all three graded laws.

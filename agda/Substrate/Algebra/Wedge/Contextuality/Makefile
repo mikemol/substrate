@@ -8,9 +8,9 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
+AGDA_ROOT := ../../../..
 
-FILES := Action.agda Factoradic.agda Graded.agda PackedBridge.agda V4Seam.agda
+FILES := Cochain.agda CochainCombine.agda General.agda Models.agda Models2.agda Reintern.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
