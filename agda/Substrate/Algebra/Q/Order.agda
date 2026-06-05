@@ -18,7 +18,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; _*_)
   renaming (z≤n to ℕ-z≤n; s≤s to ℕ-s≤s)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
-open import Substrate.Algebra.Q.Arithmetic using (_*ℤ_)
+open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
 
 ------------------------------------------------------------------------
 -- 1. ℤ ordering.
