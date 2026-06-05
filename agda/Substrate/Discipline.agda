@@ -22,9 +22,9 @@
 --
 --   Rule 11 (isomorphic-storage vs orbit-collapse-with-virtual-recovery):
 --     The ICS → WCS direction is functorial (Downcast). The reverse
---     requires a Section — a choice of canonical representative per
---     invariant. Section IS the Type-D rigidification move; ICS has
---     no Section field, making rigidification literally inexpressible
+--     requires a CocycleSection — a choice of canonical representative per
+--     invariant. CocycleSection IS the Type-D rigidification move; ICS has
+--     no CocycleSection field, making rigidification literally inexpressible
 --     in the strong-discipline shape.
 --
 -- Rules not encoded here (because they live above the abstraction
@@ -149,9 +149,9 @@ module Rule5 (𝒞 : IsomorphicCocycleStructure) where
 --     pick. Rigidification is inexpressible.
 --
 --   * Weak (orbit-collapse + virtual recovery) = WeakCocycleStructure
---     Has Base, Invariant, project. A `Section` (defined below) is
+--     Has Base, Invariant, project. A `CocycleSection` (defined below) is
 --     OPTIONAL extra data: a chosen canonical representative per
---     invariant. With a Section, the structure becomes a Type-D
+--     invariant. With a CocycleSection, the structure becomes a Type-D
 --     rigidification candidate.
 --
 -- The ICS → WCS direction is functorial (Substrate.Cocycle.Downcast):
@@ -163,13 +163,13 @@ module Rule5 (𝒞 : IsomorphicCocycleStructure) where
 --   "The strong version eliminates rather than fixes the Type-D
 --    verifier-contract rigidification at CY-5."
 --
--- "Eliminates" at the Agda level: ICS has no Section field; one
+-- "Eliminates" at the Agda level: ICS has no CocycleSection field; one
 -- cannot SHOW a section without leaving the strong shape.
 ------------------------------------------------------------------------
 
--- A Section of a weak cocycle structure: a choice of canonical
+-- A CocycleSection of a weak cocycle structure: a choice of canonical
 -- representative per invariant. The Type-D rigidification move.
-record Section (𝒲 : WeakCocycleStructure) : Set where      -- ⟦shape:1650cc88 representative,projects-to⟧
+record CocycleSection (𝒲 : WeakCocycleStructure) : Set where      -- ⟦shape:1650cc88 representative,projects-to⟧
   open WeakCocycleStructure 𝒲
   field
     -- The chosen canonical for each invariant.
@@ -179,7 +179,7 @@ record Section (𝒲 : WeakCocycleStructure) : Set where      -- ⟦shape:1650cc
 
 ------------------------------------------------------------------------
 -- The asymmetry, made structural: every ICS Downcasts to a WCS, but
--- adding a Section to the result is an ACTIVE CHOICE that the strong
+-- adding a CocycleSection to the result is an ACTIVE CHOICE that the strong
 -- discipline rejects.
 ------------------------------------------------------------------------
 
@@ -191,13 +191,13 @@ module Rule11 where
     IsomorphicCocycleStructure → WeakCocycleStructure
   strong-to-weak 𝒞 = Cocycle.Downcast.weak 𝒞
 
-  -- A "rigidified" weak cocycle: a WCS bundled with a Section.
+  -- A "rigidified" weak cocycle: a WCS bundled with a CocycleSection.
   -- This is what the strong discipline forbids by structural absence:
-  -- there is no slot in ICS where a Section would go.
+  -- there is no slot in ICS where a CocycleSection would go.
   record RigidifiedWCS : Set₁ where
     field
       base       : WeakCocycleStructure
-      section    : Section base
+      section    : CocycleSection base
 
 ------------------------------------------------------------------------
 -- Demonstration: applying the rules to our three cocycle instances.
@@ -233,12 +233,12 @@ module Demo where
   -- CY-2: weak cocycle. Rule 1's "project is gauge-invariant" is
   -- directly a field of WCS (project-gauge-invariant). Rule 5
   -- doesn't apply at the WCS level (no fiber structure). Rule 11's
-  -- Section type IS applicable — but we don't construct one, because
+  -- CocycleSection type IS applicable — but we don't construct one, because
   -- doing so would be the rigidification move.
   --
   -- (See KRule-Cocycle's `project-gauge-invariant` field for Rule 1.)
   --
-  -- Demonstration: a Section on CY-2 (for n = 2) WOULD have shape:
+  -- Demonstration: a CocycleSection on CY-2 (for n = 2) WOULD have shape:
   --   representative diagonal     = (zero , zero)
   --   representative off-diagonal = (zero , suc zero)
   -- We don't construct it here — the absence IS the discipline.
@@ -258,7 +258,7 @@ module Demo where
 --    — the strong-discipline structure delivers exactly the fact
 --    needed for the rule to hold.
 --
--- 3. Rule 11's asymmetry (no Section field on ICS, optional Section
+-- 3. Rule 11's asymmetry (no CocycleSection field on ICS, optional CocycleSection
 --    on WCS) is the type-level expression of the catalog's claim:
 --    "The strong version eliminates rather than fixes the Type-D
 --    verifier-contract rigidification." The elimination is

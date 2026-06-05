@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Transfer
 --
--- M-11 full machinery sub-slice 3. Section/lift operations + the
+-- M-11 full machinery sub-slice 3. SplitSection/lift operations + the
 -- transfer map: the cohomological composite F₂^m → F₂^n → F₂^n → F₂^m
 -- (lift via a section, apply an automorphism, project back).
 --
@@ -11,7 +11,7 @@
 -- transitioning between chirality phases via codes.
 --
 -- Structure:
---   * `Section m n` record bundles (lift, drop, drop-lift-witness)
+--   * `SplitSection m n` record bundles (lift, drop, drop-lift-witness)
 --     for a left-inverse pair `lift : Linear m n` and `drop : Linear n m`
 --     with `drop ∘L lift ≡ id` (pointwise).
 --   * `transfer-map S τ` for τ : Linear n n produces an endomorphism
@@ -45,7 +45,7 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 
 ------------------------------------------------------------------------
--- Section record: a left-inverse pair of F₂-linear maps.
+-- SplitSection record: a left-inverse pair of F₂-linear maps.
 --
 -- (lift : Linear m n, drop : Linear n m) with `drop ∘ lift ≡ id`.
 -- The section "lifts" m-dim vectors into n-dim space (n ≥ m); drop
@@ -58,7 +58,7 @@ open import Substrate.Algebra.F2.Linear
 -- drop discards.
 ------------------------------------------------------------------------
 
-record Section (m n : ℕ) : Set where      -- ⟦shape:35bdd582 lift,drop,drop-lift⟧
+record SplitSection (m n : ℕ) : Set where      -- ⟦shape:35bdd582 lift,drop,drop-lift⟧
   field
     lift      : Linear m n
     drop      : Linear n m
@@ -78,9 +78,9 @@ record Section (m n : ℕ) : Set where      -- ⟦shape:35bdd582 lift,drop,drop-
 ------------------------------------------------------------------------
 
 transfer-map :
-  ∀ {m n} → Section m n → Linear n n → Linear m m
+  ∀ {m n} → SplitSection m n → Linear n n → Linear m m
 transfer-map S τ = drop S ∘L (τ ∘L lift S)
-  where open Section
+  where open SplitSection
 
 ------------------------------------------------------------------------
 -- The transfer-id property: transfer with identity automorphism is
@@ -92,10 +92,10 @@ transfer-map S τ = drop S ∘L (τ ∘L lift S)
 ------------------------------------------------------------------------
 
 transfer-id :
-  ∀ {m n} (S : Section m n) (v : Vector m) →
+  ∀ {m n} (S : SplitSection m n) (v : Vector m) →
   apply (transfer-map S id-L) v ≡ v
 transfer-id S v = drop-lift v
-  where open Section S
+  where open SplitSection S
 
 ------------------------------------------------------------------------
 -- Cohomological interpretation (documentation).
