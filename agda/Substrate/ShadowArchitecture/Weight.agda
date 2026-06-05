@@ -75,17 +75,17 @@ point-orbit p₀₁₁ = wt-2
 point-orbit p₁₁₁ = wt-3
 
 ------------------------------------------------------------------------
--- 3. Line weight and line orbit (via the normal-vector duality).
+-- 3. FanoLine weight and line orbit (via the normal-vector duality).
 --
 -- The duality preserves the orbit partition: weight of a line equals
 -- weight of its normal-vector, so the three line orbits coincide
 -- (as sets, under the bijection) with the three point orbits.
 ------------------------------------------------------------------------
 
-line-weight : Line → ℕ
+line-weight : FanoLine → ℕ
 line-weight ℓ = point-weight (normal-vector ℓ)
 
-line-orbit : Line → Orbit
+line-orbit : FanoLine → Orbit
 line-orbit ℓ = point-orbit (normal-vector ℓ)
 
 ------------------------------------------------------------------------

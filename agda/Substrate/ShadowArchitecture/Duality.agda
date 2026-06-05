@@ -5,7 +5,7 @@
 -- self-dual: each line has a unique normal-vector (a nonzero F₂³
 -- vector orthogonal to every point on the line under the standard
 -- inner product), and each point determines the line whose normal it
--- is. Together these give a bijection Point ↔ Line.
+-- is. Together these give a bijection Point ↔ FanoLine.
 --
 -- This is Shadow A of the arc plan. The two ★ self-references
 -- (L₆-normal = 110 = e₁₂, L₇-normal = 111 = e₁₂₃) follow as `refl`
@@ -55,7 +55,7 @@ open import Substrate.ShadowArchitecture.FanoLabeling
 -- every point on the line) is proven below.
 ------------------------------------------------------------------------
 
-normal-vector : Line → Point
+normal-vector : FanoLine → Point
 normal-vector L₁ = p₀₀₁
 normal-vector L₂ = p₀₁₀
 normal-vector L₃ = p₁₀₀
@@ -67,13 +67,13 @@ normal-vector L₇ = p₁₁₁
 ------------------------------------------------------------------------
 -- 2. Inverse: dual-line map.
 --
--- The inverse Point → Line of normal-vector. Defined directly; that
+-- The inverse Point → FanoLine of normal-vector. Defined directly; that
 -- normal-vector ∘ dual-line ≡ id and dual-line ∘ normal-vector ≡ id
 -- are stated as round-trip lemmas below (each closes by case analysis
 -- + refl).
 ------------------------------------------------------------------------
 
-dual-line : Point → Line
+dual-line : Point → FanoLine
 dual-line p₀₀₁ = L₁
 dual-line p₀₁₀ = L₂
 dual-line p₁₀₀ = L₃
@@ -86,7 +86,7 @@ dual-line p₁₁₁ = L₇
 -- 3. Round-trip: the two maps are mutually inverse.
 --
 -- Per [[feedback-expose-generator-not-orbit-applies]] Layer 1 — the
--- 7-constructor Point/Line enumerations collapse via per-type covers
+-- 7-constructor Point/FanoLine enumerations collapse via per-type covers
 -- that dispatch a heterogeneous refl-tuple. Each refl literal infers
 -- its own implicit {x}.
 ------------------------------------------------------------------------
@@ -105,7 +105,7 @@ private
   point-cover _ (_ , _ , _ , _ , _ , _ , p) p₁₁₁ = p
 
   line-cover :
-    ∀ {ℓ} (P : Line → Set ℓ) →
+    ∀ {ℓ} (P : FanoLine → Set ℓ) →
     P L₁ × P L₂ × P L₃ × P L₄ × P L₅ × P L₆ × P L₇ →
     ∀ l → P l
   line-cover _ (p , _ , _ , _ , _ , _ , _) L₁ = p
@@ -120,7 +120,7 @@ normal-dual-line : ∀ (p : Point) → normal-vector (dual-line p) ≡ p
 normal-dual-line =
   point-cover _ (refl , refl , refl , refl , refl , refl , refl)
 
-dual-line-normal : ∀ (ℓ : Line) → dual-line (normal-vector ℓ) ≡ ℓ
+dual-line-normal : ∀ (ℓ : FanoLine) → dual-line (normal-vector ℓ) ≡ ℓ
 dual-line-normal =
   line-cover _ (refl , refl , refl , refl , refl , refl , refl)
 

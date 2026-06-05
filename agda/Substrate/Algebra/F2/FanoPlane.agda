@@ -132,11 +132,11 @@ singer-Linear = linear-from-images singer-basis
 --   L₁₂-₁₃ = {e₁₂, e₁₃, e₂₃}    — all-pairwise-sums line
 ------------------------------------------------------------------------
 
-data Line : Set where      -- ⟦shape:dcb2f19f L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃⟧
-  L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃ : Line
+data FanoLine : Set where      -- ⟦shape:dcb2f19f L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃⟧
+  L₁₂ L₁₃ L₂₃ L₁-₂₃ L₂-₁₃ L₃-₁₂ L₁₂-₁₃ : FanoLine
 
 -- Line-points: the three points lying on each line.
-line-points : Line → Point × Point × Point
+line-points : FanoLine → Point × Point × Point
 line-points L₁₂    = e₁ , e₂ , e₁₂
 line-points L₁₃    = e₁ , e₃ , e₁₃
 line-points L₂₃    = e₂ , e₃ , e₂₃
@@ -162,7 +162,7 @@ line-points L₁₂-₁₃ = e₁₂ , e₁₃ , e₂₃
 --   L₁₃   = {e₁,e₃,e₁₃}     ↦ {e₂,e₁₂,e₁}      = L₁₂
 ------------------------------------------------------------------------
 
-singer-line : Line → Line
+singer-line : FanoLine → FanoLine
 singer-line L₁₂    = L₂₃
 singer-line L₂₃    = L₃-₁₂
 singer-line L₃-₁₂  = L₁₂-₁₃
@@ -171,12 +171,12 @@ singer-line L₁-₂₃  = L₂-₁₃
 singer-line L₂-₁₃  = L₁₃
 singer-line L₁₃    = L₁₂
 
-singer-line⁷ : Line → Line
+singer-line⁷ : FanoLine → FanoLine
 singer-line⁷ l =
   singer-line (singer-line (singer-line (singer-line
    (singer-line (singer-line (singer-line l))))))
 
-singer-line⁷-id : (l : Line) → singer-line⁷ l ≡ l
+singer-line⁷-id : (l : FanoLine) → singer-line⁷ l ≡ l
 singer-line⁷-id L₁₂    = refl
 singer-line⁷-id L₁₃    = refl
 singer-line⁷-id L₂₃    = refl

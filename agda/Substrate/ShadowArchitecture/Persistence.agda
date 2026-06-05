@@ -50,7 +50,7 @@ open import Substrate.ShadowArchitecture.FanoLabeling
 record Cotype : Set where
   field
     populated-point : Point → Bool
-    populated-line  : Line  → Bool
+    populated-line  : FanoLine  → Bool
 
 ------------------------------------------------------------------------
 -- 2. The empty cotype: no populations yet.
@@ -73,7 +73,7 @@ _⊑_ : Cotype → Cotype → Set
 c₁ ⊑ c₂ =
     (∀ (p : Point) → Cotype.populated-point c₁ p ≡ true → Cotype.populated-point c₂ p ≡ true)
   ×
-    (∀ (ℓ : Line)  → Cotype.populated-line  c₁ ℓ ≡ true → Cotype.populated-line  c₂ ℓ ≡ true)
+    (∀ (ℓ : FanoLine)  → Cotype.populated-line  c₁ ℓ ≡ true → Cotype.populated-line  c₂ ℓ ≡ true)
 
 ------------------------------------------------------------------------
 -- 4. Preorder laws.
@@ -127,15 +127,15 @@ eq-Point p₀₁₁ p₀₁₁ = true
 eq-Point p₁₁₁ p₁₁₁ = true
 eq-Point _    _    = false
 
-eq-Line : Line → Line → Bool
-eq-Line L₁ L₁ = true
-eq-Line L₂ L₂ = true
-eq-Line L₃ L₃ = true
-eq-Line L₄ L₄ = true
-eq-Line L₅ L₅ = true
-eq-Line L₆ L₆ = true
-eq-Line L₇ L₇ = true
-eq-Line _  _  = false
+eq-FanoLine : FanoLine → FanoLine → Bool
+eq-FanoLine L₁ L₁ = true
+eq-FanoLine L₂ L₂ = true
+eq-FanoLine L₃ L₃ = true
+eq-FanoLine L₄ L₄ = true
+eq-FanoLine L₅ L₅ = true
+eq-FanoLine L₆ L₆ = true
+eq-FanoLine L₇ L₇ = true
+eq-FanoLine _  _  = false
 
 populate-point : Point → Cotype → Cotype
 populate-point q c = record
@@ -144,10 +144,10 @@ populate-point q c = record
   }
   -- ∨ from Substrate.Foundation.Bool (imported at file scope)
 
-populate-line : Line → Cotype → Cotype
+populate-line : FanoLine → Cotype → Cotype
 populate-line m c = record
   { populated-point = Cotype.populated-point c
-  ; populated-line  = λ ℓ → Cotype.populated-line c ℓ ∨ eq-Line ℓ m
+  ; populated-line  = λ ℓ → Cotype.populated-line c ℓ ∨ eq-FanoLine ℓ m
   }
   -- ∨ from Substrate.Foundation.Bool (imported at file scope)
 
@@ -168,10 +168,10 @@ populate-point-monotone q c =
   , (λ _ ev → ev)
 
 populate-line-monotone :
-  ∀ (m : Line) (c : Cotype) → c ⊑ populate-line m c
+  ∀ (m : FanoLine) (c : Cotype) → c ⊑ populate-line m c
 populate-line-monotone m c =
     (λ _ ev → ev)
-  , (λ ℓ ev → bool-or-preserves {Cotype.populated-line c ℓ} {eq-Line ℓ m} ev)
+  , (λ ℓ ev → bool-or-preserves {Cotype.populated-line c ℓ} {eq-FanoLine ℓ m} ev)
 
 ------------------------------------------------------------------------
 -- 8. The W5 deletion-prohibition is now a type-level fact.

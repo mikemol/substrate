@@ -23,7 +23,7 @@
 -- — are also stated explicitly. The warning at the end of Increment 6
 -- (re-instantiating the modes as separate skills loses the cross-mode
 -- entailments at L₄/L₅) is the operational reason these subsets must
--- be defined over the same underlying Line type.
+-- be defined over the same underlying FanoLine type.
 --
 -- The guard's full star = star-of-001: the three Fano lines through
 -- the point e₃ = p₀₀₁ are exactly {L₂, L₃, L₆}. Surfaced as
@@ -59,7 +59,7 @@ data Mode : Set where
 -- uniqueness, and sharing facts reduce by `refl`.
 ------------------------------------------------------------------------
 
-in-mode : Mode → Line → Bool
+in-mode : Mode → FanoLine → Bool
 
 -- decomp: L₁ unique, L₄ shared with snap.
 in-mode decomp L₁ = true
@@ -102,10 +102,10 @@ in-mode guard L₇ = false
 -- 3. Coverage: every line lies in at least one mode's territory.
 ------------------------------------------------------------------------
 
-covered : Line → Bool
+covered : FanoLine → Bool
 covered ℓ = in-mode decomp ℓ ∨ in-mode snap ℓ ∨ in-mode regroup ℓ ∨ in-mode guard ℓ
 
-coverage : ∀ (ℓ : Line) → covered ℓ ≡ true
+coverage : ∀ (ℓ : FanoLine) → covered ℓ ≡ true
 coverage L₁ = refl
 coverage L₂ = refl
 coverage L₃ = refl
@@ -168,7 +168,7 @@ L₅-not-guard = refl
 -- The guard's territory matches exactly.
 ------------------------------------------------------------------------
 
-star-of-001 : Line → Bool
+star-of-001 : FanoLine → Bool
 star-of-001 L₁ = false
 star-of-001 L₂ = true
 star-of-001 L₃ = true
@@ -178,7 +178,7 @@ star-of-001 L₆ = true
 star-of-001 L₇ = false
 
 guard-territory-is-star-001 :
-  ∀ (ℓ : Line) → in-mode guard ℓ ≡ star-of-001 ℓ
+  ∀ (ℓ : FanoLine) → in-mode guard ℓ ≡ star-of-001 ℓ
 guard-territory-is-star-001 L₁ = refl
 guard-territory-is-star-001 L₂ = refl
 guard-territory-is-star-001 L₃ = refl

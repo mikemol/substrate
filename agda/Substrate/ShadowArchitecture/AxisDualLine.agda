@@ -52,7 +52,7 @@ pattern ax₁ = zero
 pattern ax₂ = suc zero
 pattern ax₃ = suc ₁
 
-axis-dual : Axis → Line
+axis-dual : Axis → FanoLine
 axis-dual ax₁ = L₃
 axis-dual ax₂ = L₂
 axis-dual ax₃ = L₁
@@ -93,7 +93,7 @@ axis-3-dual-coord-zero p₁₁₀ (inj₂ (inj₂ refl)) = refl
 ------------------------------------------------------------------------
 -- 3. The three axes form one S₃-orbit (Increment 1's structural
 -- claim). Operationally: axis-dual is a bijection Axis ↔
--- {weight-1 lines = wt-1 orbit of Line}. This is a recapitulation
+-- {weight-1 lines = wt-1 orbit of FanoLine}. This is a recapitulation
 -- of `Substrate.ShadowArchitecture.Weight`'s line-orbit-1 set
 -- {L₁, L₂, L₃} as the image of axis-dual.
 --

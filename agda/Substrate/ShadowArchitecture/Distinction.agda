@@ -81,8 +81,8 @@ charter-axis-sigs = realizable
 ------------------------------------------------------------------------
 -- Row 2: 7 Fano-lines.
 --
--- constructible: Line type (triple-check on 3-tuples of points)
--- reachable:     line-points (every Line has a definite triple)
+-- constructible: FanoLine type (triple-check on 3-tuples of points)
+-- reachable:     line-points (every FanoLine has a definite triple)
 -- observable:    completion/gap via incidence       (operational)
 -- coverable:     line-orbit synthesis from F₂³      (line-orbit)
 -- persists-via:  probe-state section                 (operational)
@@ -90,10 +90,10 @@ charter-axis-sigs = realizable
 
 charter-fano-lines : Realizability
 charter-fano-lines = realizable
-    (cell Line L₁)                                -- a Line witness
-    (cell (Line → _) line-points)                  -- triple-lookup
+    (cell FanoLine L₁)                                -- a FanoLine witness
+    (cell (FanoLine → _) line-points)                  -- triple-lookup
     op-cell
-    (cell (Line → Orbit) line-orbit)               -- orbit classifier
+    (cell (FanoLine → Orbit) line-orbit)               -- orbit classifier
     op-cell
 
 ------------------------------------------------------------------------
@@ -108,7 +108,7 @@ charter-fano-lines = realizable
 
 charter-guard-response : Realizability
 charter-guard-response = realizable
-    (cell (∀ (ℓ : Line) → in-mode guard ℓ ≡ _) guard-territory-is-star-001)
+    (cell (∀ (ℓ : FanoLine) → in-mode guard ℓ ≡ _) guard-territory-is-star-001)
     op-cell
     op-cell
     (cell Point p₀₀₁)

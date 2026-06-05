@@ -52,7 +52,7 @@ open import Substrate.ShadowArchitecture.Weight
 
 infix 4 _on_
 
-_on_ : Point → Line → Set
+_on_ : Point → FanoLine → Set
 p on L₁ = (p ≡ p₁₀₀) ⊎ ((p ≡ p₀₁₀) ⊎ (p ≡ p₁₁₀))
 p on L₂ = (p ≡ p₁₀₀) ⊎ ((p ≡ p₀₀₁) ⊎ (p ≡ p₁₀₁))
 p on L₃ = (p ≡ p₀₁₀) ⊎ ((p ≡ p₀₀₁) ⊎ (p ≡ p₀₁₁))
@@ -112,7 +112,7 @@ p₁₁₁-only-wt-3 p₁₀₁ ()
 p₁₁₁-only-wt-3 p₀₁₁ ()
 p₁₁₁-only-wt-3 p₁₁₁ refl = refl
 
-L₇-only-wt-3 : ∀ (ℓ : Line) → line-orbit ℓ ≡ wt-3 → ℓ ≡ L₇
+L₇-only-wt-3 : ∀ (ℓ : FanoLine) → line-orbit ℓ ≡ wt-3 → ℓ ≡ L₇
 L₇-only-wt-3 L₁ ()
 L₇-only-wt-3 L₂ ()
 L₇-only-wt-3 L₃ ()
@@ -127,7 +127,7 @@ L₇-only-wt-3 L₇ refl = refl
 ------------------------------------------------------------------------
 
 S₃-fixed-pair-non-incident :
-  ∀ (p : Point) (ℓ : Line) →
+  ∀ (p : Point) (ℓ : FanoLine) →
   point-orbit p ≡ wt-3 → line-orbit ℓ ≡ wt-3 → ¬ (p on ℓ)
 S₃-fixed-pair-non-incident p ℓ ep eℓ p-on-ℓ =
   let p≡111 = p₁₁₁-only-wt-3 p ep

@@ -117,7 +117,7 @@ NonReachable = ⊥
 -- 5. The fixed-pair preservation: S₃ acts trivially on the wt-3
 -- structures {111, L₇}.
 --
--- The full theorem (S₃ fixes 111 as a Point and L₇ as a Line) is
+-- The full theorem (S₃ fixes 111 as a Point and L₇ as a FanoLine) is
 -- structurally evident from `Substrate.ShadowArchitecture.Weight`'s
 -- uniqueness lemmas (`p₁₁₁-only-wt-3`, `L₇-only-wt-3`): any
 -- automorphism preserving weight must fix the unique wt-3 inhabitant.
@@ -139,7 +139,7 @@ wt-3-uniqueness : ∀ (f : Point → Point) →
 wt-3-uniqueness f preserves = p₁₁₁-only-wt-3 (f p₁₁₁) (preserves p₁₁₁)
 
 -- Same for Lines: any orbit-preserving function on Lines fixes L₇.
-L₇-uniqueness : ∀ (g : Line → Line) →
+L₇-uniqueness : ∀ (g : FanoLine → FanoLine) →
                 (∀ ℓ → line-orbit (g ℓ) ≡ line-orbit ℓ) →
                 g L₇ ≡ L₇
 L₇-uniqueness g preserves = L₇-only-wt-3 (g L₇) (preserves L₇)

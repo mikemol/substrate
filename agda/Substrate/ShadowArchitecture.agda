@@ -10,12 +10,12 @@
 --
 --   FanoLabeling    — bit-pattern / sequential aliases over
 --                     `Substrate.Algebra.F2.FanoPlane`.
---   Duality         — `normal-vector : Line → Point` and its inverse,
+--   Duality         — `normal-vector : FanoLine → Point` and its inverse,
 --                     orthogonality proofs.
 --   Weight          — Hamming weight + three-orbit partition.
 --   SelfReference   — ★ L₆-normal=110, L₇-normal=111, the wt-3 fixed
 --                     pair non-incidence.
---   AxisDualLine    — `axis-dual : Axis → Line`.
+--   AxisDualLine    — `axis-dual : Axis → FanoLine`.
 --   Mode            — decomp / snap / regroup / guard as line-subsets
 --                     with coverage theorem; guard territory =
 --                     star of 001.

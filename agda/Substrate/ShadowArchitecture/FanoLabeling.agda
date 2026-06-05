@@ -44,7 +44,7 @@
 module Substrate.ShadowArchitecture.FanoLabeling where
 
 open import Substrate.Algebra.F2.FanoPlane public
-  using (Point; Line;
+  using (Point; FanoLine;
          e₁; e₂; e₃; e₁₂; e₁₃; e₂₃; e₁₂₃;
          L₁₂; L₁₃; L₂₃; L₁-₂₃; L₂-₁₃; L₃-₁₂; L₁₂-₁₃;
          point-to-vec; line-points)
