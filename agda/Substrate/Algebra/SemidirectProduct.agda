@@ -25,7 +25,7 @@ open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup; ε)
 open import Substrate.Algebra.Group using (Group; monoid; inv)
-open import Substrate.Algebra.GroupAction using (Action; act)
+open import Substrate.Algebra.GroupAction using (Actionᴳ; act)
 
 ------------------------------------------------------------------------
 -- The semidirect-product carrier + operations.
@@ -34,7 +34,7 @@ open import Substrate.Algebra.GroupAction using (Action; act)
 module Build
   {N H : Set}
   (G_N : Group N) (G_H : Group H)
-  (φ : Action G_H N)
+  (φ : Actionᴳ G_H N)
   where
 
   Carrier⋊ : Set
@@ -63,7 +63,7 @@ module Build
 record SemidirectGroupObligation
   {N H : Set}
   (G_N : Group N) (G_H : Group H)
-  (φ : Action G_H N)
+  (φ : Actionᴳ G_H N)
   : Set where
   open Build G_N G_H φ public
   field

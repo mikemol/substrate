@@ -19,7 +19,7 @@ open import Substrate.Algebra.Group using (Group; monoid)
 -- A left action of G on a set B.
 ------------------------------------------------------------------------
 
-record Action {A : Set} (G : Group A) (B : Set) : Set where      -- ⟦shape:ff6bbf7c act,act-id,(g h⟧
+record Actionᴳ {A : Set} (G : Group A) (B : Set) : Set where      -- ⟦shape:ff6bbf7c act,act-id,(g h⟧
   field
     act     : A → B → B
     act-id  : (b : B) → act (ε (monoid G)) b ≡ b
@@ -28,4 +28,4 @@ record Action {A : Set} (G : Group A) (B : Set) : Set where      -- ⟦shape:ff6
       let _·_ = Magma._·_ (magma (semigroup (monoid G)))
       in act (g · h) b ≡ act g (act h b)
 
-open Action public
+open Actionᴳ public

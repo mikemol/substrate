@@ -13,15 +13,15 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (∃; _,_)
 open import Substrate.Algebra.Monoid using (ε)
 open import Substrate.Algebra.Group using (Group; monoid)
-open import Substrate.Algebra.GroupAction using (Action; act)
+open import Substrate.Algebra.GroupAction using (Actionᴳ; act)
 
 ------------------------------------------------------------------------
--- A G-torsor on a carrier T: an Action that is free + transitive.
+-- A G-torsor on a carrier T: an Actionᴳ that is free + transitive.
 ------------------------------------------------------------------------
 
 record IsTorsorᴳ {A : Set} (G : Group A) (T : Set) : Set where      -- ⟦shape:70906623 action,(g,(t₁ t₂⟧
   field
-    action     : Action G T
+    action     : Actionᴳ G T
     -- Free: only the identity fixes any point.
     free       :
       (g : A) (t : T) →
