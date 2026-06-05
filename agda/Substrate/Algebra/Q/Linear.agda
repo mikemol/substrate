@@ -24,7 +24,7 @@ open import Substrate.Algebra.Q.Vector using (Vector; _+ℚⱽ_; _*ℚₛ_)
 -- 1. ℚ-linear map: record bundling apply + linearity proofs.
 ------------------------------------------------------------------------
 
-record Linear (n m : ℕ) : Set where      -- ⟦shape:f21965c7 apply,(u v,(c⟧
+record Linearℚ (n m : ℕ) : Set where      -- ⟦shape:f21965c7 apply,(u v,(c⟧
   field
     apply         : Vector n → Vector m
     preserves-+   :
@@ -32,13 +32,13 @@ record Linear (n m : ℕ) : Set where      -- ⟦shape:f21965c7 apply,(u v,(c⟧
     preserves-*ₛ  :
       (c : ℚ) (v : Vector n) → apply (c *ℚₛ v) ≡ c *ℚₛ apply v
 
-open Linear public
+open Linearℚ public
 
 ------------------------------------------------------------------------
 -- 2. Identity linear map.
 ------------------------------------------------------------------------
 
-id-LQ : ∀ {n} → Linear n n
+id-LQ : ∀ {n} → Linearℚ n n
 id-LQ = record
   { apply        = id
   ; preserves-+  = λ _ _ → refl
@@ -53,7 +53,7 @@ id-LQ = record
 
 compose-LQ :
   ∀ {n m k} →
-  Linear m k → Linear n m → Linear n k
+  Linearℚ m k → Linearℚ n m → Linearℚ n k
 compose-LQ {n} {m} {k} g f = record
   { apply        = λ v → apply g (apply f v)
   ; preserves-+  = λ u v →

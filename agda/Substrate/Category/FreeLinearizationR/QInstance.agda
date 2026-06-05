@@ -31,7 +31,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Algebra.Q.Vector using (Vector; basis-ℚ)
-open import Substrate.Algebra.Q.Linear using (Linear)
+open import Substrate.Algebra.Q.Linear using (Linearℚ)
 open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
 
 ------------------------------------------------------------------------
@@ -45,7 +45,7 @@ open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
 record QFreeLinearizationSketch : Set where
   field
     can-linearize-from-images :
-      {n m : ℕ} → (Fin n → Vector m) → Linear n m
+      {n m : ℕ} → (Fin n → Vector m) → Linearℚ n m
 
 ------------------------------------------------------------------------
 -- 2. Note on the identity case.

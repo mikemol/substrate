@@ -25,7 +25,7 @@ open import Substrate.TokiPona.QSemanticSpace
   using (QSemVec; basis-ℚ)
 open import Substrate.TokiPona.QNimiSpace using (nimi-as-Q-vector)
 
-open import Substrate.Algebra.Q.Linear using (Linear; apply; id-LQ)
+open import Substrate.Algebra.Q.Linear using (Linearℚ; apply; id-LQ)
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
 
@@ -41,7 +41,7 @@ open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
 record QNimiFreeLinearization (m : ℕ) : Set where
   field
     q-nimi-image  : Nimi → QSemVec m
-    q-extension   : Linear nimi-count m
+    q-extension   : Linearℚ nimi-count m
     q-on-basis    :
       (n : Nimi) →
       apply q-extension (basis-ℚ (nimi-index n)) ≡ q-nimi-image n

@@ -21,7 +21,7 @@ module Substrate.Algebra.Q.AsLinearAlgebra where
 open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Vector
   using (Vector; 𝟎ℚⱽ; _+ℚⱽ_; _*ℚₛ_; basis-ℚ)
-open import Substrate.Algebra.Q.Linear using (Linear; apply)
+open import Substrate.Algebra.Q.Linear using (Linearℚ; apply)
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 
 ------------------------------------------------------------------------
@@ -32,7 +32,7 @@ open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 ℚ-LinearAlgebra = record
   { R      = ℚ
   ; Vector = Vector
-  ; Linear = Linear
+  ; Linear = Linearℚ
   ; zeroR  = 0ℚ
   ; oneR   = 1ℚ
   ; zeroV  = 𝟎ℚⱽ
