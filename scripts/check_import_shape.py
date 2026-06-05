@@ -53,7 +53,7 @@ for p,t in texts.items():
 # RATCHET: a large codebase can't retrofit 90 sites at once. Gate on NO NEW
 # bare colliding imports (count may only go down). Lower BASELINE as they're
 # fixed; the policy is enforced for new code today.
-BASELINE = 13
+BASELINE = 11
 n=sum(len(v) for v in viol.values())
 over = n > BASELINE
 if "--quiet" not in sys.argv or over:

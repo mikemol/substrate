@@ -26,7 +26,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.Nat.ModEquiv
   using (_≡[_]_; _mod-suc_; ≡[m]-refl; ≡[m]-sym; ≡[m]-trans)
-open import Substrate.Algebra.Quotient using (Quotient; Canonical)
+open import Substrate.Algebra.Quotient using (Quotient)
 
 ------------------------------------------------------------------------
 -- 1. Per-modulus Quotient instance.

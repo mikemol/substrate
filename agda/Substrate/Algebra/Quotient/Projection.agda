@@ -6,11 +6,11 @@
 -- The canonical projection q : A → A/~ in the substrate's HIT-free
 -- encoding:
 --
---   * Without a `Canonical Q` extension, "A/~" is just (A, _≈_),
+--   * Without a `Canonical⟦30f92ad5⟧ Q` extension, "A/~" is just (A, _≈_),
 --     and q is the identity. The structure is carried by demanding
 --     downstream maps respect _≈_.
 --
---   * With a `Canonical Q` extension, q : A → A is the canonical-
+--   * With a `Canonical⟦30f92ad5⟧ Q` extension, q : A → A is the canonical-
 --     form function itself. This q satisfies:
 --       q-respects-≈ : a ≈ b → q a ≡ q b      (canonical-respects-≈)
 --       q-idempotent : q (q a) ≡ q a           (canonical-idempotent)
@@ -26,8 +26,9 @@ module Substrate.Algebra.Quotient.Projection where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Quotient
-  using (Quotient; Canonical; canonical;
+  using (Quotient; canonical;
          canonical-idempotent; canonical-respects-≈; ≈-canonical)
+  renaming (Canonical to Canonical⟦30f92ad5⟧)
 
 ------------------------------------------------------------------------
 -- 1. Trivial projection: identity. Always available, regardless of
@@ -46,12 +47,12 @@ trivial-projection-id _ = refl
 
 ------------------------------------------------------------------------
 -- 2. Canonical projection: pick the canonical-form representative.
--- Requires a `Canonical Q` extension.
+-- Requires a `Canonical⟦30f92ad5⟧ Q` extension.
 ------------------------------------------------------------------------
 
 canonical-projection :
   {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
-  (C : Canonical Q) → A → A
+  (C : Canonical⟦30f92ad5⟧ Q) → A → A
 canonical-projection C = canonical C
 
 ------------------------------------------------------------------------
@@ -60,13 +61,13 @@ canonical-projection C = canonical C
 
 q-respects-≈ :
   {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
-  (C : Canonical Q) →
+  (C : Canonical⟦30f92ad5⟧ Q) →
   {a b : A} → a ≈ b → canonical-projection C a ≡ canonical-projection C b
 q-respects-≈ = canonical-respects-≈
 
 q-idempotent :
   {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
-  (C : Canonical Q) →
+  (C : Canonical⟦30f92ad5⟧ Q) →
   (a : A) →
   canonical-projection C (canonical-projection C a)
     ≡ canonical-projection C a
@@ -74,7 +75,7 @@ q-idempotent = canonical-idempotent
 
 q-≈ :
   {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
-  (C : Canonical Q) →
+  (C : Canonical⟦30f92ad5⟧ Q) →
   (a : A) → a ≈ canonical-projection C a
 q-≈ = ≈-canonical
 
