@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.IsomorphicCocycle
 --
--- Substrate-native IsomorphicCocycleStructure: the primary cocycle
+-- Substrate-native IsomorphicCocycleStructureᴳ: the primary cocycle
 -- abstraction (per Substrate.Cocycle's narrative) built over
 -- substrate-native Group + Torsor + Action.
 --
@@ -18,10 +18,10 @@ open import Substrate.Algebra.Group using (Group)
 open import Substrate.Algebra.Torsor using (IsTorsorᴳ)
 
 ------------------------------------------------------------------------
--- The substrate-native IsomorphicCocycleStructure record.
+-- The substrate-native IsomorphicCocycleStructureᴳ record.
 ------------------------------------------------------------------------
 
-record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:157a673b Invariant,GaugeCarrier,Gauge⟧
+record IsomorphicCocycleStructureᴳ : Set₁ where      -- ⟦shape:157a673b Invariant,GaugeCarrier,Gauge⟧
   field
     Invariant    : Set
     -- Carrier of the gauge group.
@@ -34,4 +34,4 @@ record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:157a673b Invar
   TotalSpace : Set
   TotalSpace = Σ Invariant Fiber
 
-open IsomorphicCocycleStructure public
+open IsomorphicCocycleStructureᴳ public

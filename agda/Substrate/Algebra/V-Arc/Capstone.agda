@@ -83,7 +83,7 @@ open import Substrate.Algebra.SetoidGroup.Action     public
 open import Substrate.Algebra.Torsor                 public
   using (IsTorsorᴳ)
 open import Substrate.Algebra.IsomorphicCocycle      public
-  using (IsomorphicCocycleStructure)
+  using (IsomorphicCocycleStructureᴳ)
 open import Substrate.Algebra.SemidirectProduct      public
   using (SemidirectGroupObligation)
 open import Substrate.Algebra.Group.ToSetoid         public
