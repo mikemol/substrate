@@ -81,7 +81,7 @@ open import Substrate.Algebra.SetoidGroup.Action     public
 -- Note: Substrate.Algebra.GroupAction also defines `Action` (the
 -- Group-on-≡ variant); consumers needing it import directly.
 open import Substrate.Algebra.Torsor                 public
-  using (IsTorsor)
+  using (IsTorsorᴳ)
 open import Substrate.Algebra.IsomorphicCocycle      public
   using (IsomorphicCocycleStructure)
 open import Substrate.Algebra.SemidirectProduct      public

@@ -19,7 +19,7 @@ open import Substrate.Algebra.GroupAction using (Action; act)
 -- A G-torsor on a carrier T: an Action that is free + transitive.
 ------------------------------------------------------------------------
 
-record IsTorsor {A : Set} (G : Group A) (T : Set) : Set where      -- ⟦shape:70906623 action,(g,(t₁ t₂⟧
+record IsTorsorᴳ {A : Set} (G : Group A) (T : Set) : Set where      -- ⟦shape:70906623 action,(g,(t₁ t₂⟧
   field
     action     : Action G T
     -- Free: only the identity fixes any point.
@@ -31,4 +31,4 @@ record IsTorsor {A : Set} (G : Group A) (T : Set) : Set where      -- ⟦shape:7
     transitive :
       (t₁ t₂ : T) → ∃ λ g → act action g t₁ ≡ t₂
 
-open IsTorsor public
+open IsTorsorᴳ public

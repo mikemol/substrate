@@ -15,20 +15,20 @@ module Substrate.Algebra.IsomorphicCocycle where
 
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Algebra.Group using (Group)
-open import Substrate.Algebra.Torsor using (IsTorsor)
+open import Substrate.Algebra.Torsor using (IsTorsorᴳ)
 
 ------------------------------------------------------------------------
 -- The substrate-native IsomorphicCocycleStructure record.
 ------------------------------------------------------------------------
 
-record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:f0833aa8 Invariant,GaugeCarrier,Gauge⟧
+record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:157a673b Invariant,GaugeCarrier,Gauge⟧
   field
     Invariant    : Set
     -- Carrier of the gauge group.
     GaugeCarrier : Set
     Gauge        : Group GaugeCarrier
     Fiber        : Invariant → Set
-    fiber-torsor : (i : Invariant) → IsTorsor Gauge (Fiber i)
+    fiber-torsor : (i : Invariant) → IsTorsorᴳ Gauge (Fiber i)
 
   -- Total operational space = Σ Invariant Fiber.
   TotalSpace : Set
