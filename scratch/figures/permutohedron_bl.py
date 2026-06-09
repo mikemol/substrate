@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""S4 permutohedron breathing along Fiedler — Blender/Cycles.
+
+Run:  blender --background --python scratch/figures/permutohedron_bl.py
+"""
+
+import pathlib
+import sys
+
+_H = pathlib.Path(__file__).resolve().parent
+sys.path[:0] = [str(_H), str(_H.parents[1] / ".venv/lib/python3.14/site-packages")]
+
+import numpy as np
+import _blender as B
+from _perm import Permutohedron
+from _lift3d import radial
+
+B.OUT = _H / "out"
+B.OUT.mkdir(exist_ok=True)
+
+
+def coolwarm(t):  # t in [0,1] -> blue–white–red, returned as sRGB hex
+    t = max(0.0, min(1.0, t))
+    lo, mid, hi = np.array([0.23, 0.30, 0.75]), np.array([0.95, 0.95, 0.95]), np.array([0.71, 0.05, 0.15])
+    c = lo + (mid - lo) * (t / 0.5) if t < 0.5 else mid + (hi - mid) * ((t - 0.5) / 0.5)
+    return "#%02x%02x%02x" % tuple(int(round(x * 255)) for x in c)
+
+
+P = Permutohedron()
+LIFT = radial(0.9)
+base = np.array([P.coords3[p] for p in P.nodes_list])
+scalar = np.array([P.fiedler[P.index(p)] for p in P.nodes_list])
+coords = LIFT(base, scalar)
+cmax = float(np.abs(scalar).max())
+
+idx = {p: i for i, p in enumerate(P.nodes_list)}
+gen_color = {"s1": B.PALETTE[0], "s2": B.PALETTE[1], "s3": B.PALETTE[3]}
+
+B.reset()
+B.scene(samples=160, haze=0.0)
+B.lights()
+
+mats = {g: B.material(c, rough=0.4) for g, c in gen_color.items()}
+for u, v, d in P.graph.edges(data=True):
+    B.tube(coords[idx[u]], coords[idx[v]], 0.012, mats[d["generator"]])
+for i, p in enumerate(P.nodes_list):
+    t = (scalar[i] / cmax + 1) / 2
+    B.sphere(coords[i], 0.07, B.material(coolwarm(t), rough=0.35, metallic=0.1))
+
+b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(),
+     coords[:, 1].max(), coords[:, 2].min(), coords[:, 2].max())
+B.diegetic_box(b, pad=0.2)
+B.frame(coords, direction=(1.0, -0.95, 0.62), dist_mult=4.3, shift=(0.05, -0.06))
+B.render("permutohedron_bl")
