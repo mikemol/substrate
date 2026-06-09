@@ -13,9 +13,9 @@
 
 module Substrate.Algebra.Nat.GCD.GcdPos where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans)
-open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; s≤s; z≤n)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₂)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ)
 open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
@@ -31,3 +31,7 @@ gcd-pos : (n d : ℕ) → Σ ℕ (λ g′ → gcd-ℕ n (suc d) ≡ suc g′)
 gcd-pos n d with gcd-ℕ n (suc d) | gcd-divides-right n (suc d)
 ... | zero  | z∣sd = ⊥-elim (zero∤suc z∣sd)
 ... | suc g | _    = g , refl
+
+-- The order form (positivity), for callers that want `0 < gcd` directly.
+gcd-suc-pos : (n d : ℕ) → 0 < gcd-ℕ n (suc d)
+gcd-suc-pos n d = subst (0 <_) (sym (proj₂ (gcd-pos n d))) (s≤s z≤n)

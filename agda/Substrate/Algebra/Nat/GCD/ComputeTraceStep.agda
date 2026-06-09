@@ -22,11 +22,12 @@ module Substrate.Algebra.Nat.GCD.ComputeTraceStep where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
 open import Substrate.Foundation.List using (_∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
 open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
-open import Substrate.Algebra.Nat.GCD.Wedge using (quotient; remainder; r<b)
+open import Substrate.Algebra.Nat.GCD.Wedge
+  using (quotient; remainder; r<b) renaming (Wedge to Wedge⟦b7e6a995⟧)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; step)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace-acc; compute-trace)
@@ -62,9 +63,21 @@ compute-trace-step : (a b : ℕ) →
          (proj₂ (compute-trace (suc b) (remainder (construct-wedge a b)))))
 compute-trace-step a b = cta-step a b (<-wellFounded (suc b))
 
--- The continued-fraction recurrence on the EXTERIOR compute-trace.
+-- The INTERIOR recurrence: shape peels the leading quotient off a `step`.
+-- Refl on the EEATrace constructor (the same fact the keystone induction uses).
+shape-step : {a b′ g : ℕ}
+             (w : Wedge⟦b7e6a995⟧ a (suc b′)) (sub : EEATrace (suc b′) (remainder w) g) →
+             ℕ-shape (step b′ w sub) ≡ quotient w ∷ ℕ-shape sub
+shape-step w sub = refl
+
+-- The continued-fraction recurrence on the EXTERIOR compute-trace, exhibited as
+-- the exterior step (compute-trace-step, via result-irrelevance) FOLLOWED BY the
+-- interior step (shape-step) — the two views cross-navigated in one term.
 cf-step : (a b : ℕ) →
   ℕ-shape (proj₂ (compute-trace a (suc b)))
   ≡ quotient (construct-wedge a b)
     ∷ ℕ-shape (proj₂ (compute-trace (suc b) (remainder (construct-wedge a b))))
-cf-step a b = cong (λ s → ℕ-shape (proj₂ s)) (compute-trace-step a b)
+cf-step a b =
+  trans (cong (λ s → ℕ-shape (proj₂ s)) (compute-trace-step a b))
+        (shape-step (construct-wedge a b)
+                    (proj₂ (compute-trace (suc b) (remainder (construct-wedge a b)))))
