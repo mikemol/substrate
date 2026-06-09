@@ -38,5 +38,5 @@ zmax = (len(levels) - 1) * GAP
 B.tube((0, 0, 0), (0, 0, zmax), 0.1, B.material("#cccccc", rough=0.6))
 
 data = B.join_data()
-B.driven_rig(data, direction=(1, -0.85, 0.5), vbias=0.4, shift=(0.05, 0.18))
+B.driven_rig(data, direction=(1, -0.85, 0.5), align=(0, 0, -1), shift=(0.05, 0.18))
 B.render("idea_bl")

@@ -50,5 +50,5 @@ for i, p in enumerate(P.nodes_list):
 # Declarative rig: join the data, then let the box scale to 1.5x its bbox and
 # the camera back off to frame it — both driven, no manual bounds/distance.
 data = B.join_data()
-B.driven_rig(data, direction=(1.0, -0.95, 0.62), vbias=0.0, shift=(0.05, -0.05))
+B.driven_rig(data, direction=(1.0, -0.95, 0.62), shift=(0.05, -0.05))
 B.render("permutohedron_bl")

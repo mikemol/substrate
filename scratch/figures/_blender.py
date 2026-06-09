@@ -322,81 +322,96 @@ def _bbox(obj):
     return center, dims
 
 
-def driven_box(data, factor=1.5, vbias=0.0, color="#dadada", floor_only=False):
-    """Floor + two back walls whose scale and position are DRIVEN by data's
-    bbox: box = factor x data (3-D rule-of-thirds), vbias seats it low."""
-    (cx, cy, cz), (dx, dy, dz) = _bbox(data)
-    import os
-    if os.environ.get("BL_DEBUG"):                       # wireframe both boxes
-        box_wire((cx - dx / 2, cx + dx / 2, cy - dy / 2, cy + dy / 2,
-                  cz - dz / 2, cz + dz / 2), "#00cc44")   # data bbox (green)
-        zc = cz + vbias * 0.5 * (factor - 1) * dz
-        box_wire((cx - 0.5 * factor * dx, cx + 0.5 * factor * dx,
-                  cy - 0.5 * factor * dy, cy + 0.5 * factor * dy,
-                  zc - 0.5 * factor * dz, zc + 0.5 * factor * dz), "#ff3333")  # box (red)
-    mat = material(color, rough=0.9)
-    D = [("dx", data, "dimensions[0]"), ("dy", data, "dimensions[1]"),
-         ("dz", data, "dimensions[2]")]
-    f = factor
-    zoff = f"({vbias}*0.5*({f}-1))*dz"          # box-centre z shift (object low)
-
-    def plane(name, rot, loc, scale):
-        bpy.ops.mesh.primitive_plane_add()
-        o = bpy.context.active_object
-        o.name = name
-        o.rotation_euler = rot
-        o.data.materials.append(mat)
-        for i, spec in enumerate(loc):
-            if spec is None:
-                o.location[i] = (cx, cy, cz)[i]
-            else:
-                _driver(o, "location", i, spec[0], spec[1])
-        for i, spec in enumerate(scale):           # only x,y of a plane matter
-            if spec is not None:
-                _driver(o, "scale", i, spec[0], spec[1])
-
-    plane("floor", (0, 0, 0),
-          [None, None, (f"{cz} + ({vbias}*0.5*({f}-1) - 0.5*{f})*dz", [D[2]])],
-          [(f"0.5*{f}*dx", [D[0]]), (f"0.5*{f}*dy", [D[1]]), None])
-    if not floor_only:
-        plane("back", (math.pi / 2, 0, 0),
-              [None, (f"{cy} + 0.5*{f}*dy", [D[1]]), (f"{cz} + {zoff}", [D[2]])],
-              [(f"0.5*{f}*dx", [D[0]]), (f"0.5*{f}*dz", [D[2]]), None])
-        plane("left", (0, math.pi / 2, 0),
-              [(f"{cx} - 0.5*{f}*dx", [D[0]]), None, (f"{cz} + {zoff}", [D[2]])],
-              [(f"0.5*{f}*dz", [D[2]]), (f"0.5*{f}*dy", [D[1]]), None])
-
-
 # The sole framing policy: leave this fraction of the frame as margin (label
 # room) outside the box. Everything else in the distance is forced by geometry.
 MARGIN = 0.22
 
 
-def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
-                  sensor=36, shift=(0.07, -0.07), fstop=2.0, factor=1.5, vbias=0.0):
-    """Aim at and frame the *diegetic box* (the container), not the raw data —
-    so the box (factor x data, shifted by vbias) is what sits on the viewport
-    rule-of-thirds, consistently on every side.
+def _box_center_coeffs(align, factor):
+    """Per-axis box-centre offset coefficient k: box_centre = data_centre + k·dim.
 
-    The distance is the exact closed-form fit, not a tuned constant: for the
-    box's bounding sphere R = ½·factor·|data diagonal| to project to (1−margin)
-    of the frame half-height, D = R / ((1−margin)·tan(½·fov)). |data diagonal|
-    is read live from data.dimensions (driver variables), so any non-modal data
-    change reflows; only `margin` (label room) is a chosen policy."""
-    (cx, cy, cz), (_, _, dz) = _bbox(data)
+    Because the box is factor=1.5 x the data, the data is exactly 2/3 of the box
+    per axis, so the rule-of-thirds is a *relative* constraint between them and
+    placement is a per-axis index `align` ∈ {-1, 0, +1}: data flush-min (edge on
+    the box's lower 1/3 line) / centred / flush-max."""
+    return [-align[i] * 0.5 * (factor - 1) for i in range(3)]
+
+
+def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada", floor_only=False):
+    """Floor + two back walls driven to box = factor x data, with the data
+    placed per the `align` thirds-index on each axis (see _box_center_coeffs)."""
+    (cx, cy, cz), (dx, dy, dz) = _bbox(data)
+    f = factor
+    c = (cx, cy, cz); dd = (dx, dy, dz)
+    k = _box_center_coeffs(align, f)
+    D = {"dx": ("dx", data, "dimensions[0]"), "dy": ("dy", data, "dimensions[1]"),
+         "dz": ("dz", data, "dimensions[2]")}
+    import os
+    if os.environ.get("BL_DEBUG"):
+        box_wire((cx-dx/2, cx+dx/2, cy-dy/2, cy+dy/2, cz-dz/2, cz+dz/2), "#00cc44")
+        bc = [c[i] + k[i]*dd[i] for i in range(3)]
+        box_wire((bc[0]-0.5*f*dx, bc[0]+0.5*f*dx, bc[1]-0.5*f*dy, bc[1]+0.5*f*dy,
+                  bc[2]-0.5*f*dz, bc[2]+0.5*f*dz), "#ff3333")
+    mat = material(color, rough=0.9)
+
+    def lin(const, coef, dim):                  # location channel: const + coef·dim
+        if abs(coef) < 1e-12:
+            return str(const), []
+        return f"{const} + ({coef})*{dim}", [D[dim]]
+
+    def sca(coef, dim):                         # scale (half-extent) channel
+        return f"({coef})*{dim}", [D[dim]]
+
+    def plane(name, rot, locx, locy, locz, scx, scy):
+        bpy.ops.mesh.primitive_plane_add()
+        o = bpy.context.active_object; o.name = name; o.rotation_euler = rot
+        o.data.materials.append(mat)
+        for i, (e, v) in enumerate((locx, locy, locz)):
+            _driver(o, "location", i, e, v)
+        for i, (e, v) in enumerate((scx, scy)):
+            _driver(o, "scale", i, e, v)
+
+    plane("floor", (0, 0, 0),
+          lin(cx, k[0], "dx"), lin(cy, k[1], "dy"), lin(cz, k[2] - 0.5*f, "dz"),
+          sca(0.5*f, "dx"), sca(0.5*f, "dy"))
+    if not floor_only:
+        plane("back", (math.pi/2, 0, 0),
+              lin(cx, k[0], "dx"), lin(cy, k[1] + 0.5*f, "dy"), lin(cz, k[2], "dz"),
+              sca(0.5*f, "dx"), sca(0.5*f, "dz"))
+        plane("left", (0, math.pi/2, 0),
+              lin(cx, k[0] - 0.5*f, "dx"), lin(cy, k[1], "dy"), lin(cz, k[2], "dz"),
+              sca(0.5*f, "dz"), sca(0.5*f, "dy"))
+
+
+def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
+                  sensor=36, shift=(0.07, -0.07), fstop=2.0, factor=1.5,
+                  align=(0, 0, 0)):
+    """Aim at and frame the diegetic box (the container), placed per `align`.
+
+    Distance is the exact closed-form fit (no tuned constant): the box's
+    bounding sphere R = ½·factor·|data diagonal| projects to (1−margin) of the
+    frame half-height, D = R/((1−margin)·tan(½·fov)). |data diagonal| is read
+    live from data.dimensions, so non-modal data changes reflow; only `margin`
+    (label room) is policy."""
+    (cx, cy, cz), (dx, dy, dz) = _bbox(data)
+    f = factor
+    c = (cx, cy, cz); dd = (dx, dy, dz); dims = ["dx", "dy", "dz"]
+    k = _box_center_coeffs(align, f)
     d = np.asarray(direction, float); d = d / np.linalg.norm(d)
-    half_fov = math.atan(sensor / (2.0 * lens))
-    K = (1.0 - margin) * math.tan(half_fov)
-    dist = f"0.5*{factor}*sqrt(dx*dx+dy*dy+dz*dz)/{K}"
-    zoff = f"{vbias}*0.5*({factor}-1)*dz"     # box centre sits above data centre
-    bcz = cz + vbias * 0.5 * (factor - 1) * dz
+    K = (1.0 - margin) * math.tan(math.atan(sensor / (2.0 * lens)))
+    dist = f"0.5*{f}*sqrt(dx*dx+dy*dy+dz*dz)/{K}"
     D = [("dx", data, "dimensions[0]"), ("dy", data, "dimensions[1]"),
          ("dz", data, "dimensions[2]")]
 
+    def cen(i):                                 # box centre on axis i
+        return str(c[i]) if abs(k[i]) < 1e-12 else f"({c[i]} + ({k[i]})*{dims[i]})"
+
+    bc = [c[i] + k[i] * dd[i] for i in range(3)]
     focus = bpy.data.objects.new("Focus", None)
     bpy.context.scene.collection.objects.link(focus)
-    focus.location = (cx, cy, bcz)
-    _driver(focus, "location", 2, f"{cz} + {zoff}", [D[2]])
+    focus.location = tuple(bc)
+    for i in range(3):
+        _driver(focus, "location", i, cen(i), D)
 
     cam = bpy.data.cameras.new("c")
     cam.lens = lens
@@ -406,9 +421,8 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
     o = bpy.data.objects.new("c", cam)
     bpy.context.scene.collection.objects.link(o)
     bpy.context.scene.camera = o
-    _driver(o, "location", 0, f"{cx} + {d[0]}*({dist})", D)
-    _driver(o, "location", 1, f"{cy} + {d[1]}*({dist})", D)
-    _driver(o, "location", 2, f"{cz} + {zoff} + {d[2]}*({dist})", D)
+    for i in range(3):
+        _driver(o, "location", i, f"{cen(i)} + {d[i]}*({dist})", D)
     _driver(cam, "dof.focus_distance", -1, dist, D, data_path_obj=cam)
     con = o.constraints.new("TRACK_TO")
     con.target = focus
@@ -417,12 +431,12 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
     return o
 
 
-def driven_rig(data, direction=(1.0, -0.9, 0.62), vbias=0.0, factor=1.5,
+def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
                shift=(0.07, -0.07), margin=MARGIN, floor_only=False, color="#dadada"):
-    """Box + camera in one call, sharing factor/vbias so they can't drift."""
-    driven_box(data, factor=factor, vbias=vbias, color=color, floor_only=floor_only)
+    """Box + camera in one call, sharing factor/align so they can't drift."""
+    driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only)
     return driven_camera(data, direction=direction, margin=margin, shift=shift,
-                         factor=factor, vbias=vbias)
+                         factor=factor, align=align)
 
 
 def _overlay_thirds(path):
