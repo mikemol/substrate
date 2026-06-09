@@ -71,7 +71,7 @@ def _enable_gpu():
     return None
 
 
-def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
+def scene(samples=192, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
     import os
     # Env overrides for fast iteration: BL_SAMPLES=24 BL_RES=480x400 (preview).
     samples = int(os.environ.get("BL_SAMPLES", samples))
@@ -91,6 +91,9 @@ def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
     try:
         sc.cycles.use_denoising = True
         sc.cycles.denoiser = "OPENIMAGEDENOISE"
+        # Guide the denoiser with albedo + normal — far cleaner in dark GI.
+        sc.cycles.denoising_input_passes = "RGB_ALBEDO_NORMAL"
+        sc.cycles.denoising_prefilter = "ACCURATE"
     except Exception:
         pass
     backend = _enable_gpu()
@@ -117,16 +120,30 @@ def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
     return sc
 
 
-def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0):
+def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0,
+             emission_backface=False, emission_color=None):
     mat = bpy.data.materials.new("m")
     mat.use_nodes = True
-    b = mat.node_tree.nodes["Principled BSDF"]
+    nt = mat.node_tree
+    b = nt.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = rgba(color)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Metallic"].default_value = metallic
     if "Emission Color" in b.inputs:
-        b.inputs["Emission Color"].default_value = rgba(color)
-        b.inputs["Emission Strength"].default_value = emission
+        b.inputs["Emission Color"].default_value = rgba(emission_color or color)
+        if emission_backface and emission > 0:
+            # Emit only from the *interior* faces: gate Emission Strength by the
+            # Geometry node's Backfacing (1 on the back side of each poly). With
+            # outward-pointing normals that is the concave side — a soft inner
+            # glow that bounces into the seams where facets diverge, while the
+            # exterior keeps reading as dark reflective gold.
+            geo = nt.nodes.new("ShaderNodeNewGeometry")
+            mul = nt.nodes.new("ShaderNodeMath"); mul.operation = "MULTIPLY"
+            mul.inputs[1].default_value = emission
+            nt.links.new(geo.outputs["Backfacing"], mul.inputs[0])
+            nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
+        else:
+            b.inputs["Emission Strength"].default_value = emission
     if alpha < 1.0:
         b.inputs["Alpha"].default_value = alpha
     return mat
@@ -534,6 +551,102 @@ def _overlay_thirds(path):
             ax.plot(fx * w, fy * h, "+", color="#ff2222", ms=12, mew=1.5)
     ax.set_xlim(0, w); ax.set_ylim(h, 0)
     fig.savefig(path, dpi=100); plt.close(fig)
+
+
+def pip(main_name, inset_name, out_name, frac=0.42, pad_frac=0.025, border=5,
+        label=None):
+    """Composite `inset` as a picture-in-picture into `main`'s lower-right corner
+    and save as `out`. Pure bpy + numpy (no matplotlib), so it runs under
+    Blender's Python. Reads/writes in 'Raw' colour space to keep byte values."""
+    main = bpy.data.images.load(str(OUT / f"{main_name}.png"))
+    inset = bpy.data.images.load(str(OUT / f"{inset_name}.png"))
+    for im in (main, inset):
+        im.colorspace_settings.name = "Non-Color"
+    mw, mh = main.size
+    iw, ih = inset.size
+    M = np.array(main.pixels[:], dtype=np.float32).reshape(mh, mw, 4)
+    I = np.array(inset.pixels[:], dtype=np.float32).reshape(ih, iw, 4)
+    tw, th = int(frac * mw), int(frac * mh)
+    # Area-average downscale (box filter) — NOT nearest-neighbour decimation,
+    # which would stair-step the thin facet silhouettes in the thumbnail.
+    yb = (np.arange(ih) * th) // ih           # source row → target bin
+    xb = (np.arange(iw) * tw) // iw           # source col → target bin
+    R = np.zeros((th, tw, 4), np.float32)
+    cnt = np.zeros((th, tw), np.float32)
+    np.add.at(R, (yb[:, None], xb[None, :]), I)
+    np.add.at(cnt, (yb[:, None], xb[None, :]), 1.0)
+    R /= np.maximum(cnt, 1.0)[..., None]
+    R = R.copy()
+    R[:border] = R[-border:] = R[:, :border] = R[:, -border:] = (0.9, 0.9, 0.9, 1)
+    R[..., 3] = 1.0
+    pad = int(pad_frac * mw)
+    x0, y0 = mw - tw - pad, pad                     # bottom-right (origin bottom-left)
+    M[y0:y0 + th, x0:x0 + tw] = R
+    out = bpy.data.images.new(out_name, mw, mh, alpha=True)
+    out.colorspace_settings.name = "Non-Color"
+    out.pixels = M.flatten()
+    out.filepath_raw = str(OUT / f"{out_name}.png")
+    out.file_format = "PNG"
+    out.save()
+    print(f"BL_WROTE {OUT / f'{out_name}.png'}")
+
+
+def render_pip(name, main_cam, inset_cam, frac=0.4, pad_frac=0.03, hdr=True):
+    """Picture-in-picture the Duke-Nukem-3D way: two cameras on ONE scene's
+    geometry, both rendered live in a single pass and composited — the inset is
+    never collapsed to a flat image in between.
+
+    `scene.copy()` makes an "inset scene" that LINKS the same objects (the mesh
+    stays single-user — geometry in memory exactly once), carrying only its own
+    camera and a smaller resolution. The main scene's compositor then pulls TWO
+    live Render Layers (one per scene) and lays the inset over the main; rendering
+    the main scene renders both and composites them in the same invocation."""
+    sc = bpy.context.scene
+    sc.camera = main_cam
+    W, H = sc.render.resolution_x, sc.render.resolution_y
+
+    # Inset scene: shares geometry / lights / world (linked); own camera. Same
+    # resolution as the main so the two render layers live in one compositor
+    # domain (a smaller domain gets auto-fit/upscaled to the canvas — wrong); the
+    # inset is shrunk with a Scale node instead.
+    inset_sc = sc.copy()
+    inset_sc.name = f"{name}_inset_scene"
+    inset_sc.camera = inset_cam
+    inset_sc.compositing_node_group = None              # the inset renders raw
+
+    # Main compositor: two live render layers (main + inset) → Scale → Translate
+    # → Alpha Over.
+    nt = bpy.data.node_groups.new(f"{name}_pip", "CompositorNodeTree")
+    nt.interface.new_socket("Image", in_out="OUTPUT", socket_type="NodeSocketColor")
+    n = nt.nodes
+    rl_main = n.new("CompositorNodeRLayers"); rl_main.scene = sc
+    rl_in = n.new("CompositorNodeRLayers"); rl_in.scene = inset_sc
+    scl = n.new("CompositorNodeScale")
+    scl.inputs[2].default_value = frac                  # X (Type already Relative)
+    scl.inputs[3].default_value = frac                  # Y
+    try:
+        scl.inputs[5].default_value = "Anisotropic"     # mip-filtered downscale
+    except Exception:
+        pass                                            # fall back to Bilinear
+    tr = n.new("CompositorNodeTranslate")
+    pad = pad_frac * W
+    tr.inputs[1].default_value = (W * (1 - frac) / 2) - pad     # to the right
+    tr.inputs[2].default_value = -((H * (1 - frac) / 2) - pad)  # and down
+    ao = n.new("CompositorNodeAlphaOver")
+    go = n.new("NodeGroupOutput")
+    L = nt.links
+    L.new(rl_in.outputs["Image"], scl.inputs[0])
+    L.new(scl.outputs[0], tr.inputs[0])
+    L.new(rl_main.outputs["Image"], ao.inputs[0])       # Background = main
+    L.new(tr.outputs[0], ao.inputs[1])                  # Foreground = inset
+    L.new(ao.outputs[0], go.inputs[0])
+    sc.compositing_node_group = nt
+
+    sc.render.image_settings.color_mode = "RGB"
+    render(name, hdr=hdr)                                # renders BOTH, composites
+    sc.compositing_node_group = None
+    # (the inset scene lingers until process exit — removing it mid-run trips a
+    #  Cycles teardown callback on the half-freed view layer, which is noisy.)
 
 
 def render(name, hdr=True):

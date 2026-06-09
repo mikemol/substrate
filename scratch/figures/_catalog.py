@@ -5,7 +5,8 @@ Shared by the 2D idea_lattice figure and its 3D tower sibling.
 
 import re
 
-from _gallery import REPO_ROOT
+import pathlib
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]  # figures→scratch→repo
 
 SRC = REPO_ROOT / "catalog" / "idea_lattice.md"
 _LEVEL_RE = re.compile(r"^## Level (\d+)\s+—\s+(.*)$")

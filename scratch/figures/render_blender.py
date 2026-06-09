@@ -24,7 +24,9 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-BLENDER = "blender"
+# The snap build (official Blender) has the OpenImageDenoise/OptiX denoiser and
+# the OptiX backend; the distro /usr/bin/blender has neither. Prefer the snap.
+BLENDER = "/snap/bin/blender" if Path("/snap/bin/blender").exists() else "blender"
 
 
 def render_one(fig: Path, backend: str):
@@ -46,8 +48,9 @@ def render_one(fig: Path, backend: str):
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("filters", nargs="*", help="Only figures whose stem contains these.")
-    ap.add_argument("--devices", default="CUDA",
-                    help="Comma list of backends to spread across (e.g. CUDA,ONEAPI).")
+    ap.add_argument("--devices", default="",
+                    help="Comma list of backends to pin/spread across (e.g. "
+                         "CUDA,ONEAPI). Empty = auto-pick (OptiX > CUDA).")
     ap.add_argument("--jobs", type=int, default=0, help="Concurrent instances (default = #devices).")
     a = ap.parse_args(argv)
 
@@ -58,7 +61,8 @@ def main(argv):
         print("no matching *_bl.py figures")
         return 1
 
-    devices = [d.strip() for d in a.devices.split(",") if d.strip()]
+    # Empty → one auto stream (no BL_BACKEND pin; _blender picks OptiX first).
+    devices = [d.strip() for d in a.devices.split(",") if d.strip()] or [None]
     jobs = a.jobs or len(devices)
     assign = [(f, devices[i % len(devices)]) for i, f in enumerate(figs)]
     print(f"rendering {len(figs)} figures · devices={devices} · jobs={jobs}")

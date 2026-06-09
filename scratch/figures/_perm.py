@@ -79,8 +79,14 @@ class Permutohedron:
                     queue.append(nxt)
 
     def _spectrum(self):
-        L = nx.laplacian_matrix(self.graph, nodelist=self.nodes_list).todense()
-        self.laplacian = np.asarray(L, dtype=float)
+        # Dense Laplacian L = D - A in pure numpy (no scipy via networkx, so this
+        # runs under Blender's bundled Python, which has no scipy).
+        idx = {node: i for i, node in enumerate(self.nodes_list)}
+        n = len(self.nodes_list)
+        A = np.zeros((n, n))
+        for u, v in self.graph.edges():
+            A[idx[u], idx[v]] = A[idx[v], idx[u]] = 1.0
+        self.laplacian = np.diag(A.sum(axis=1)) - A
         self.eigenvalues, self.eigenvectors = np.linalg.eigh(self.laplacian)
         # Sign-fix the Fiedler vector for reproducibility.
         oi = self.nodes_list.index(ORIGIN)

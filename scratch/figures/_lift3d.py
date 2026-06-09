@@ -21,9 +21,10 @@ LiftMap type. Same move, one level down.
 
 from __future__ import annotations
 
-import matplotlib as mpl
 import numpy as np
-from matplotlib.colors import LightSource, Normalize
+# matplotlib is imported lazily inside the drawing helpers (shade_surface) so the
+# pure-numpy LiftMaps can be imported under Blender's Python, which has no
+# matplotlib. See shade_surface.
 
 # --------------------------------------------------------------------------
 # LiftMaps — (P: (N,2|3) array, s: (N,) scalar) -> (N,3) array
@@ -182,6 +183,8 @@ def shade_surface(ax, Z, cmap="viridis", azdeg=315, altdeg=45, vert_exag=1.0,
     while the height stays Z — so a non-negative |amplitude| surface can still
     show sign as colour. diverging: symmetric colour norm centred at 0.
     """
+    import matplotlib as mpl
+    from matplotlib.colors import LightSource, Normalize
     Z = np.asarray(Z, float)
     ny, nx = Z.shape
     if extent is None:

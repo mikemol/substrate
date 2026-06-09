@@ -5,7 +5,8 @@ import pathlib
 import sys
 
 _H = pathlib.Path(__file__).resolve().parent
-sys.path[:0] = [str(_H), str(_H.parents[1] / ".venv/lib/python3.14/site-packages")]
+sys.path.insert(0, str(_H))
+sys.path.append(str(_H.parents[1] / ".venv/lib/python3.14/site-packages"))
 
 import numpy as np
 import networkx as nx

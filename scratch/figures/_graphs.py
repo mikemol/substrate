@@ -11,7 +11,8 @@ from collections import Counter
 
 import networkx as nx
 
-from _gallery import REPO_ROOT
+import pathlib
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]  # figures→scratch→repo
 
 
 def similarity_graph(glob, threshold):
