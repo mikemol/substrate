@@ -1,4 +1,4 @@
-"""Interactive remainder plot tied to Euler's totient.
+"""Remainder plot tied to Euler's totient.
 
 Pick a modulus m. The plot scatters (k, k mod m) for k = 1..N.
 All remainders sit strictly below the horizontal line y = m.
@@ -6,7 +6,9 @@ Points coloured by gcd(k, m): coprime points (gcd = 1) are the ones
 counted by φ(m). The legend reports φ(m) and the prime factorisation
 of m.
 
-Controls:
+By default this renders a static figure and saves it into the gallery
+(scratch/figures/out/). Pass --interactive for the live slider UI:
+
     N max         slider — how many k's to plot
     Modulus m     slider — horizontal modulus line
     Only coprime  checkbox — hide non-coprime remainders
@@ -14,15 +16,29 @@ Controls:
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# The gallery plumbing lives alongside the other figures.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "figures"))
+from _gallery import make_parser, set_style, finish  # noqa: E402
+
+parser = make_parser("totient")
+parser.add_argument("--m", type=int, default=12, help="Modulus m (static mode).")
+parser.add_argument("--N", type=int, default=200, help="Max k (static mode).")
+args = parser.parse_args()
+set_style()
+
 import numpy as np
 import matplotlib
 
-for _backend in ("QtAgg", "TkAgg", "GTK3Agg"):
-    try:
-        matplotlib.use(_backend)
-        break
-    except (ImportError, ValueError):
-        continue
+if args.interactive:
+    for _backend in ("QtAgg", "TkAgg", "GTK3Agg"):
+        try:
+            matplotlib.use(_backend)
+            break
+        except (ImportError, ValueError):
+            continue
 
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, CheckButtons
@@ -59,8 +75,8 @@ def factor_string(n: int) -> str:
     return " · ".join(parts)
 
 
-INITIAL_LIMIT = 200
-INITIAL_M = 12
+INITIAL_LIMIT = args.N
+INITIAL_M = args.m
 HARD_LIMIT = 5000
 
 phi = totient_sieve(HARD_LIMIT)
@@ -133,38 +149,37 @@ def redraw():
     fig.canvas.draw_idle()
 
 
-ax_limit = plt.axes([0.08, 0.10, 0.62, 0.03])
-ax_m = plt.axes([0.08, 0.05, 0.62, 0.03])
-s_limit = Slider(ax_limit, "N max", 10, HARD_LIMIT, valinit=INITIAL_LIMIT, valstep=1)
-s_m = Slider(ax_m, "Modulus m", 2, 200, valinit=INITIAL_M, valstep=1)
-
-
-def on_limit(val):
-    state["limit"] = int(val)
-    redraw()
-
-
-def on_m(val):
-    state["m"] = int(val)
-    redraw()
-
-
-s_limit.on_changed(on_limit)
-s_m.on_changed(on_m)
-
-ax_check = plt.axes([0.81, 0.50, 0.16, 0.13])
-c_opts = CheckButtons(ax_check, ["only coprime", "log x"], [False, False])
-
-
-def on_check(label):
-    if label == "only coprime":
-        state["only_coprime"] = not state["only_coprime"]
-    elif label == "log x":
-        state["log_x"] = not state["log_x"]
-    redraw()
-
-
-c_opts.on_clicked(on_check)
-
 redraw()
-plt.show()
+
+if not args.interactive:
+    # Static gallery render.
+    finish(fig, "totient", args)
+else:
+    ax_limit = plt.axes([0.08, 0.10, 0.62, 0.03])
+    ax_m = plt.axes([0.08, 0.05, 0.62, 0.03])
+    s_limit = Slider(ax_limit, "N max", 10, HARD_LIMIT, valinit=INITIAL_LIMIT, valstep=1)
+    s_m = Slider(ax_m, "Modulus m", 2, 200, valinit=INITIAL_M, valstep=1)
+
+    def on_limit(val):
+        state["limit"] = int(val)
+        redraw()
+
+    def on_m(val):
+        state["m"] = int(val)
+        redraw()
+
+    s_limit.on_changed(on_limit)
+    s_m.on_changed(on_m)
+
+    ax_check = plt.axes([0.81, 0.50, 0.16, 0.13])
+    c_opts = CheckButtons(ax_check, ["only coprime", "log x"], [False, False])
+
+    def on_check(label):
+        if label == "only coprime":
+            state["only_coprime"] = not state["only_coprime"]
+        elif label == "log x":
+            state["log_x"] = not state["log_x"]
+        redraw()
+
+    c_opts.on_clicked(on_check)
+    plt.show()
