@@ -34,6 +34,6 @@ for n in nodes:
 
 b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max(),
      coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b, pad=0.15)
-B.frame(coords, direction=(1, -0.9, 0.55), dist_mult=2.6, shift=(0.05, 0.05))
+B.diegetic_box(b)
+B.frame(coords, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
 B.render("similarity_bl")

@@ -31,6 +31,6 @@ for r in range(8):
         centers.append((c, r, h))
 centers = np.array(centers + [[3.5, 3.5, 0]])
 
-B.diegetic_box((0, 7, 0, 7, 0, 7), pad=0.14)
-B.frame(centers, direction=(0.8, -1.0, 0.7), dist_mult=2.4, shift=(0.05, 0.12))
+B.diegetic_box((0, 7, 0, 7, 0, 7), vbias=0.3)
+B.frame(centers, direction=(0.8, -1.0, 0.7), shift=(0.05, 0.12))
 B.render("octonion_bl")

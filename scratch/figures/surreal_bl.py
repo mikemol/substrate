@@ -69,6 +69,6 @@ for v, d in nodes:
 
 b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max(),
      coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b, pad=0.12)
-B.frame(coords, direction=(0.35, -1.0, 0.5), dist_mult=2.6, shift=(0.0, 0.1))
+B.diegetic_box(b)
+B.frame(coords, direction=(0.35, -1.0, 0.5), shift=(0.0, 0.08))
 B.render("surreal_bl")

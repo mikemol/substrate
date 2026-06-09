@@ -12,6 +12,8 @@ area-light soft shadows *and* correct transparency (the Fano planes tint the
 floor and cast partial shadows at once), plus global illumination and DOF haze.
 """
 
+import math
+
 import bpy
 import mathutils
 import numpy as np
@@ -180,10 +182,19 @@ def box_cube(center, size, mat):
 
 # --- diegetic box (floor + two back walls), real Cycles shadow-catchers ---
 
-def diegetic_box(bounds, pad=0.15, color="#dadada", floor_only=False):
+def diegetic_box(bounds, factor=1.5, vbias=0.0, color="#dadada", floor_only=False):
+    """A box `factor`x the object (default 1.5x → object fills the inner 2/3,
+    walls at the outer third: a 3-D rule-of-thirds). vbias in [-1,1] shifts the
+    object within the box vertically — vbias>0 gives headroom above (object
+    sits low, for things that open upward)."""
     x0, x1, y0, y1, z0, z1 = bounds
-    dx, dy, dz = x1 - x0, y1 - y0, z1 - z0
-    x0 -= pad * dx; x1 += pad * dx; y0 -= pad * dy; y1 += pad * dy; z0 -= pad * dz
+
+    def expand(a, b, vb=0.0):
+        m = (factor - 1.0) * (b - a)          # total extra margin on this axis
+        return a - m * (0.5 - vb * 0.5), b + m * (0.5 + vb * 0.5)
+    x0, x1 = expand(x0, x1)
+    y0, y1 = expand(y0, y1)
+    z0, z1 = expand(z0, z1, vbias)
     mat = material(color, rough=0.9)
     cx, cy, cz = (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2
 
@@ -217,13 +228,25 @@ def lights(key=(6, -5, 9), key_energy=1500, key_size=8, fill=(-7, -3, 5),
 
 # --- camera: rule-of-thirds via lens shift, optional DOF haze ---
 
-def frame(points, direction=(1.0, -0.9, 0.62), dist_mult=3.0, lens=50,
-          shift=(0.08, -0.10), dof=True, fstop=2.0):
+def frame(points, direction=(1.0, -0.9, 0.62), fill=0.58, lens=50, sensor=36,
+          shift=(0.07, -0.07), dof=True, fstop=2.0, dist_mult=None):
+    """Rule-of-thirds viewport framing.
+
+    `fill` is the fraction of the frame half-height the object's outermost point
+    reaches: ~0.58 keeps the bulk inward of the third-cell centres while the one
+    extreme touches the rule-of-thirds region; `shift` (lens shift) offsets the
+    subject to a power point. Pass dist_mult to override the auto distance.
+    """
     points = np.asarray(points, float)
     focal = points.mean(axis=0)
     R = float(np.linalg.norm(points - focal, axis=1).max()) or 1.0
     d = np.asarray(direction, float); d = d / np.linalg.norm(d)
-    loc = focal + d * dist_mult * R
+    if dist_mult is not None:
+        dist = dist_mult * R
+    else:
+        half_fov = math.atan(sensor / (2.0 * lens))
+        dist = R / (fill * math.tan(half_fov))
+    loc = focal + d * dist
 
     cam = bpy.data.cameras.new("c")
     cam.lens = lens

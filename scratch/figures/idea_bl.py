@@ -39,6 +39,6 @@ B.tube((0, 0, 0), (0, 0, zmax), 0.1, B.material("#cccccc", rough=0.6))
 
 allpts = np.array(allpts)
 b = (allpts[:, 0].min(), allpts[:, 0].max(), allpts[:, 1].min(), allpts[:, 1].max(), 0, zmax)
-B.diegetic_box(b, pad=0.12)
-B.frame(allpts, direction=(1, -0.85, 0.5), dist_mult=2.6, shift=(0.05, 0.18))
+B.diegetic_box(b, vbias=0.4)
+B.frame(allpts, direction=(1, -0.85, 0.5), shift=(0.05, 0.18))
 B.render("idea_bl")

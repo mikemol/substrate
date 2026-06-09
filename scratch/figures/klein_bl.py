@@ -31,6 +31,6 @@ B.polys(polys, B.material("#E69F00", rough=0.45), smooth=True)
 
 b = (verts[:, 0].min(), verts[:, 0].max(), verts[:, 1].min(), verts[:, 1].max(),
      verts[:, 2].min(), verts[:, 2].max())
-B.diegetic_box(b, pad=0.18)
-B.frame(verts, direction=(0.85, -0.8, 0.9), dist_mult=2.9, shift=(0.05, 0.16))
+B.diegetic_box(b, vbias=0.45)            # bowl opens up → headroom above
+B.frame(verts, direction=(0.85, -0.8, 0.9), shift=(0.05, 0.16))
 B.render("klein_bl")

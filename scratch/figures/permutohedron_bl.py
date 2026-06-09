@@ -49,6 +49,6 @@ for i, p in enumerate(P.nodes_list):
 
 b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(),
      coords[:, 1].max(), coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b, pad=0.2)
-B.frame(coords, direction=(1.0, -0.95, 0.62), dist_mult=4.3, shift=(0.05, -0.06))
+B.diegetic_box(b)
+B.frame(coords, direction=(1.0, -0.95, 0.62), shift=(0.05, -0.05))
 B.render("permutohedron_bl")
