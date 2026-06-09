@@ -1,0 +1,4 @@
+# Regenerable render artifacts and bytecode.
+out/
+__pycache__/
+*.pyc
