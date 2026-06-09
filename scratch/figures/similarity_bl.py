@@ -32,8 +32,6 @@ for u, v in G.edges():
 for n in nodes:
     B.sphere(coords[nidx[n]], 0.13, mats[comp_of[n]])
 
-b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max(),
-     coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b)
-B.frame(coords, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
+data = B.join_data()
+B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
 B.render("similarity_bl")

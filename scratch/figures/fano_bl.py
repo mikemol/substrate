@@ -55,6 +55,6 @@ while len(order) < 7:
 for a, b in zip(order, order[1:] + order[:1]):
     B.tube(V[a], V[b], 0.011, smat)
 
-B.diegetic_box((0, 1, 0, 1, 0, 1))
-B.frame(np.array(list(V.values())), direction=(1, -0.9, 0.55), shift=(0.06, -0.06))
+data = B.join_data()
+B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.06, -0.06))
 B.render("fano_bl")

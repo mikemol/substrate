@@ -29,8 +29,6 @@ for r in range(8):
             continue
         B.box_cube((c, r, h / 2), (0.82, 0.82, h), POS if sign[r, c] >= 0 else NEG)
         centers.append((c, r, h))
-centers = np.array(centers + [[3.5, 3.5, 0]])
-
-B.diegetic_box((0, 7, 0, 7, 0, 7), vbias=0.3)
-B.frame(centers, direction=(0.8, -1.0, 0.7), shift=(0.05, 0.12))
+data = B.join_data()
+B.driven_rig(data, direction=(0.8, -1.0, 0.7), vbias=0.3, shift=(0.05, 0.12))
 B.render("octonion_bl")

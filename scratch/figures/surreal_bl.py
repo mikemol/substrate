@@ -67,8 +67,6 @@ for a, b in edges:
 for v, d in nodes:
     B.sphere(coord(v), 0.15, B.material(ramp(d / DEPTH), rough=0.4))
 
-b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max(),
-     coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b)
-B.frame(coords, direction=(0.35, -1.0, 0.5), shift=(0.0, 0.08))
+data = B.join_data()
+B.driven_rig(data, direction=(0.35, -1.0, 0.5), shift=(0.0, 0.08))
 B.render("surreal_bl")

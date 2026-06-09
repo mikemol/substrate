@@ -37,8 +37,6 @@ for lvl, _t, concepts in levels:
 zmax = (len(levels) - 1) * GAP
 B.tube((0, 0, 0), (0, 0, zmax), 0.1, B.material("#cccccc", rough=0.6))
 
-allpts = np.array(allpts)
-b = (allpts[:, 0].min(), allpts[:, 0].max(), allpts[:, 1].min(), allpts[:, 1].max(), 0, zmax)
-B.diegetic_box(b, vbias=0.4)
-B.frame(allpts, direction=(1, -0.85, 0.5), shift=(0.05, 0.18))
+data = B.join_data()
+B.driven_rig(data, direction=(1, -0.85, 0.5), vbias=0.4, shift=(0.05, 0.18))
 B.render("idea_bl")

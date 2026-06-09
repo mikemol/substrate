@@ -180,6 +180,17 @@ def box_cube(center, size, mat):
     return o
 
 
+def box_wire(bounds, color="#ff3333", radius=0.01, emission=3.0):
+    """The 12 edges of a box (bounds = x0,x1,y0,y1,z0,z1) as glowing tubes."""
+    x0, x1, y0, y1, z0, z1 = bounds
+    corners = [(x, y, z) for x in (x0, x1) for y in (y0, y1) for z in (z0, z1)]
+    mat = material(color, emission=emission)
+    for i, a in enumerate(corners):
+        for b in corners[i + 1:]:
+            if sum(1 for k in range(3) if a[k] != b[k]) == 1:
+                tube(a, b, radius, mat)
+
+
 # --- diegetic box (floor + two back walls), real Cycles shadow-catchers ---
 
 def diegetic_box(bounds, factor=1.5, vbias=0.0, color="#dadada", floor_only=False):
@@ -264,9 +275,173 @@ def frame(points, direction=(1.0, -0.9, 0.62), fill=0.58, lens=50, sensor=36,
     return o
 
 
+# --- declarative rig: box + camera DRIVEN by the data's bounding box ---
+# (Blender drivers evaluate headless; arithmetic expressions aren't blocked by
+#  the script-autoexec security flag.) The diegetic box scales itself to 1.5x
+#  the data bbox and the camera backs off along its rail to satisfy the framing
+#  — so the environment reflows if the geometry changes, no per-figure tuning.
+
+def _driver(obj, prop, index, expr, variables, data_path_obj=None):
+    fc = (data_path_obj or obj).driver_add(prop, index)
+    drv = fc.driver
+    drv.type = "SCRIPTED"
+    for name, target, path in variables:
+        v = drv.variables.new()
+        v.name = name
+        v.type = "SINGLE_PROP"
+        v.targets[0].id = target
+        v.targets[0].data_path = path
+    drv.expression = expr
+    return fc
+
+
+def join_data(name="Data"):
+    """Join every mesh in the scene into one object (so its .dimensions is the
+    live bounding box that the box/camera read). Call AFTER building the data
+    geometry and BEFORE driven_box / driven_camera."""
+    meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+    if not meshes:
+        return None
+    for o in bpy.context.scene.objects:
+        o.select_set(False)
+    for o in meshes:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = meshes[0]
+    if len(meshes) > 1:
+        bpy.ops.object.join()
+    obj = bpy.context.view_layer.objects.active
+    obj.name = name
+    return obj
+
+
+def _bbox(obj):
+    cs = [obj.matrix_world @ mathutils.Vector(c) for c in obj.bound_box]
+    xs = [c.x for c in cs]; ys = [c.y for c in cs]; zs = [c.z for c in cs]
+    center = ((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, (min(zs) + max(zs)) / 2)
+    dims = (max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs))
+    return center, dims
+
+
+def driven_box(data, factor=1.5, vbias=0.0, color="#dadada", floor_only=False):
+    """Floor + two back walls whose scale and position are DRIVEN by data's
+    bbox: box = factor x data (3-D rule-of-thirds), vbias seats it low."""
+    (cx, cy, cz), (dx, dy, dz) = _bbox(data)
+    import os
+    if os.environ.get("BL_DEBUG"):                       # wireframe both boxes
+        box_wire((cx - dx / 2, cx + dx / 2, cy - dy / 2, cy + dy / 2,
+                  cz - dz / 2, cz + dz / 2), "#00cc44")   # data bbox (green)
+        zc = cz + vbias * 0.5 * (factor - 1) * dz
+        box_wire((cx - 0.5 * factor * dx, cx + 0.5 * factor * dx,
+                  cy - 0.5 * factor * dy, cy + 0.5 * factor * dy,
+                  zc - 0.5 * factor * dz, zc + 0.5 * factor * dz), "#ff3333")  # box (red)
+    mat = material(color, rough=0.9)
+    D = [("dx", data, "dimensions[0]"), ("dy", data, "dimensions[1]"),
+         ("dz", data, "dimensions[2]")]
+    f = factor
+    zoff = f"({vbias}*0.5*({f}-1))*dz"          # box-centre z shift (object low)
+
+    def plane(name, rot, loc, scale):
+        bpy.ops.mesh.primitive_plane_add()
+        o = bpy.context.active_object
+        o.name = name
+        o.rotation_euler = rot
+        o.data.materials.append(mat)
+        for i, spec in enumerate(loc):
+            if spec is None:
+                o.location[i] = (cx, cy, cz)[i]
+            else:
+                _driver(o, "location", i, spec[0], spec[1])
+        for i, spec in enumerate(scale):           # only x,y of a plane matter
+            if spec is not None:
+                _driver(o, "scale", i, spec[0], spec[1])
+
+    plane("floor", (0, 0, 0),
+          [None, None, (f"{cz} + ({vbias}*0.5*({f}-1) - 0.5*{f})*dz", [D[2]])],
+          [(f"0.5*{f}*dx", [D[0]]), (f"0.5*{f}*dy", [D[1]]), None])
+    if not floor_only:
+        plane("back", (math.pi / 2, 0, 0),
+              [None, (f"{cy} + 0.5*{f}*dy", [D[1]]), (f"{cz} + {zoff}", [D[2]])],
+              [(f"0.5*{f}*dx", [D[0]]), (f"0.5*{f}*dz", [D[2]]), None])
+        plane("left", (0, math.pi / 2, 0),
+              [(f"{cx} - 0.5*{f}*dx", [D[0]]), None, (f"{cz} + {zoff}", [D[2]])],
+              [(f"0.5*{f}*dz", [D[2]]), (f"0.5*{f}*dy", [D[1]]), None])
+
+
+def driven_camera(data, direction=(1.0, -0.9, 0.62), fill=0.78, lens=50,
+                  sensor=36, shift=(0.07, -0.07), fstop=2.0, factor=1.5, vbias=0.0):
+    """Aim at and frame the *diegetic box* (the container), not the raw data —
+    so the box (factor x data, shifted by vbias) is what sits on the viewport
+    rule-of-thirds, consistently on every side. Distance is driven by the box
+    extent; the Track-To target follows the box centre."""
+    (cx, cy, cz), (_, _, dz) = _bbox(data)
+    d = np.asarray(direction, float); d = d / np.linalg.norm(d)
+    K = fill * math.tan(math.atan(sensor / (2.0 * lens)))
+    # Frame the box's bounding SPHERE (furthest corner) at `fill`, so every
+    # corner of the box fits with margin — room for labels — at any view angle.
+    dist = f"0.5*{factor}*sqrt(dx*dx+dy*dy+dz*dz)/{K}"
+    zoff = f"{vbias}*0.5*({factor}-1)*dz"     # box centre sits above data centre
+    bcz = cz + vbias * 0.5 * (factor - 1) * dz
+    D = [("dx", data, "dimensions[0]"), ("dy", data, "dimensions[1]"),
+         ("dz", data, "dimensions[2]")]
+
+    focus = bpy.data.objects.new("Focus", None)
+    bpy.context.scene.collection.objects.link(focus)
+    focus.location = (cx, cy, bcz)
+    _driver(focus, "location", 2, f"{cz} + {zoff}", [D[2]])
+
+    cam = bpy.data.cameras.new("c")
+    cam.lens = lens
+    cam.shift_x, cam.shift_y = shift
+    cam.dof.use_dof = True
+    cam.dof.aperture_fstop = fstop
+    o = bpy.data.objects.new("c", cam)
+    bpy.context.scene.collection.objects.link(o)
+    bpy.context.scene.camera = o
+    _driver(o, "location", 0, f"{cx} + {d[0]}*({dist})", D)
+    _driver(o, "location", 1, f"{cy} + {d[1]}*({dist})", D)
+    _driver(o, "location", 2, f"{cz} + {zoff} + {d[2]}*({dist})", D)
+    _driver(cam, "dof.focus_distance", -1, dist, D, data_path_obj=cam)
+    con = o.constraints.new("TRACK_TO")
+    con.target = focus
+    con.track_axis = "TRACK_NEGATIVE_Z"
+    con.up_axis = "UP_Y"
+    return o
+
+
+def driven_rig(data, direction=(1.0, -0.9, 0.62), vbias=0.0, factor=1.5,
+               shift=(0.07, -0.07), fill=0.78, floor_only=False, color="#dadada"):
+    """Box + camera in one call, sharing factor/vbias so they can't drift."""
+    driven_box(data, factor=factor, vbias=vbias, color=color, floor_only=floor_only)
+    return driven_camera(data, direction=direction, fill=fill, shift=shift,
+                         factor=factor, vbias=vbias)
+
+
+def _overlay_thirds(path):
+    """Draw the rule-of-thirds grid + power-point ticks on the rendered PNG."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+    img = mpimg.imread(path)
+    h, w = img.shape[:2]
+    fig = plt.figure(figsize=(w / 100, h / 100), dpi=100)
+    ax = fig.add_axes([0, 0, 1, 1]); ax.imshow(img); ax.set_axis_off()
+    for fr in (1 / 3, 2 / 3):
+        ax.axvline(fr * w, color="#ff2222", lw=0.8, alpha=0.55)
+        ax.axhline(fr * h, color="#ff2222", lw=0.8, alpha=0.55)
+    for fx in (1 / 3, 2 / 3):
+        for fy in (1 / 3, 2 / 3):
+            ax.plot(fx * w, fy * h, "+", color="#ff2222", ms=12, mew=1.5)
+    ax.set_xlim(0, w); ax.set_ylim(h, 0)
+    fig.savefig(path, dpi=100); plt.close(fig)
+
+
 def render(name):
+    import os
     sc = bpy.context.scene
     path = str(OUT / f"{name}.png")
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
+    if os.environ.get("BL_DEBUG"):
+        _overlay_thirds(path)
     print(f"BL_WROTE {path}")

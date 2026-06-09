@@ -47,8 +47,8 @@ for i, p in enumerate(P.nodes_list):
     t = (scalar[i] / cmax + 1) / 2
     B.sphere(coords[i], 0.07, B.material(coolwarm(t), rough=0.35, metallic=0.1))
 
-b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(),
-     coords[:, 1].max(), coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b)
-B.frame(coords, direction=(1.0, -0.95, 0.62), shift=(0.05, -0.05))
+# Declarative rig: join the data, then let the box scale to 1.5x its bbox and
+# the camera back off to frame it — both driven, no manual bounds/distance.
+data = B.join_data()
+B.driven_rig(data, direction=(1.0, -0.95, 0.62), vbias=0.0, shift=(0.05, -0.05))
 B.render("permutohedron_bl")

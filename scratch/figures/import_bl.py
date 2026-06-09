@@ -33,8 +33,6 @@ for q in nodes:
     rad = 0.14 + 0.42 * (pkg_modules[q] / mx)
     B.sphere(coords[nidx[q]], rad, B.material(color_of[q], rough=0.4, metallic=0.1))
 
-b = (coords[:, 0].min(), coords[:, 0].max(), coords[:, 1].min(), coords[:, 1].max(),
-     coords[:, 2].min(), coords[:, 2].max())
-B.diegetic_box(b)
-B.frame(coords, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
+data = B.join_data()
+B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
 B.render("import_bl")

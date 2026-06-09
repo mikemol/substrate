@@ -43,7 +43,6 @@ for a, b, col in ((0, 3, "#D55E00"), (1, 2, "#0072B2")):
     for i in range(len(pts) - 1):
         B.tube(pts[i], pts[i + 1], 0.035, cmat)
 
-allpts = np.array(allpts)
-B.diegetic_box((-2, 2, -2, 2, 0, 3 * GAP), vbias=0.4)
-B.frame(allpts, direction=(1, -0.8, 0.45), shift=(0.05, 0.16))
+data = B.join_data()
+B.driven_rig(data, direction=(1, -0.8, 0.45), vbias=0.4, shift=(0.05, 0.16))
 B.render("hodge_bl")
