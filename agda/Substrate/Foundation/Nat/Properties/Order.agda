@@ -89,6 +89,17 @@ n≤m+n (suc m) n = ≤-suc-r (n≤m+n m n)
 +-monoʳ-≤ zero    p = p
 +-monoʳ-≤ (suc k) p = s≤s (+-monoʳ-≤ k p)
 
++-monoˡ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → m + k ≤ n + k
++-monoˡ-≤ k z≤n     = n≤m+n _ k
++-monoˡ-≤ k (s≤s p) = s≤s (+-monoˡ-≤ k p)
+
++-mono-≤ : {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ {n = n} {p = p} mn pq = ≤-trans (+-monoˡ-≤ p mn) (+-monoʳ-≤ n pq)
+
 *-monoˡ-≤ : (n : ℕ) {r b : ℕ} → r ≤ b → r * n ≤ b * n
 *-monoˡ-≤ n z≤n      = z≤n
 *-monoˡ-≤ n (s≤s p)  = +-monoʳ-≤ n (*-monoˡ-≤ n p)
+
+*-monoʳ-≤ : (n : ℕ) {r b : ℕ} → r ≤ b → n * r ≤ n * b
+*-monoʳ-≤ zero    p = z≤n
+*-monoʳ-≤ (suc n) p = +-mono-≤ p (*-monoʳ-≤ n p)

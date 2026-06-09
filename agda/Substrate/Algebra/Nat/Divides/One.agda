@@ -12,9 +12,9 @@
 
 module Substrate.Algebra.Nat.Divides.One where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
 open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
-open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ; *-comm)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 
@@ -28,3 +28,10 @@ open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 ∣-one {suc (suc m)} (divides zero ())
 ∣-one {suc (suc m)} (divides (suc q) eq) with suc-injective eq
 ... | ()
+
+-- A product equal to 1 forces each factor to 1 (both handednesses, via ∣-one).
+*≡1ˡ : (m n : ℕ) → m * n ≡ 1 → m ≡ 1
+*≡1ˡ m n eq = ∣-one (divides n (trans (sym eq) (*-comm m n)))
+
+*≡1ʳ : (m n : ℕ) → m * n ≡ 1 → n ≡ 1
+*≡1ʳ m n eq = *≡1ˡ n m (trans (*-comm n m) eq)
