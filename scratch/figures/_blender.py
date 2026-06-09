@@ -71,7 +71,7 @@ def _enable_gpu():
     return None
 
 
-def scene(samples=128, res=(1100, 950), bg="#e9eef5", haze=0.0):
+def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0):
     import os
     # Env overrides for fast iteration: BL_SAMPLES=24 BL_RES=480x400 (preview).
     samples = int(os.environ.get("BL_SAMPLES", samples))
@@ -384,59 +384,49 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada", floor_only=Fa
 
 
 def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
-                  sensor=36, shift=(0.07, -0.07), fstop=2.0, factor=1.5,
-                  align=(0, 0, 0)):
-    """Aim at and frame the diegetic box (the container), placed per `align`.
+                  sensor=36, fstop=2.0, factor=1.5, align=(0, 0, 0)):
+    """Frame the diegetic box with Blender's *native* fit.
 
-    Distance is the exact closed-form fit (no tuned constant): the box's
-    bounding sphere R = ½·factor·|data diagonal| projects to (1−margin) of the
-    frame half-height, D = R/((1−margin)·tan(½·fov)). |data diagonal| is read
-    live from data.dimensions, so non-modal data changes reflow; only `margin`
-    (label room) is policy."""
+    Object.camera_fit_coords(depsgraph, corners) returns the exact camera
+    location that frames given world points, with sensor / lens / aspect handled
+    by Blender — so there is no hand-rolled fov/shift arithmetic (the thing that
+    kept going wrong). The box is centred in frame; the `align` thirds-index
+    places the data within the box, which lands the data on a viewport third
+    without any lens shift. `margin` inflates the fit target so the box keeps a
+    label border."""
     (cx, cy, cz), (dx, dy, dz) = _bbox(data)
     f = factor
-    c = (cx, cy, cz); dd = (dx, dy, dz); dims = ["dx", "dy", "dz"]
+    c = (cx, cy, cz); dd = (dx, dy, dz)
     k = _box_center_coeffs(align, f)
+    bc = [c[i] + k[i] * dd[i] for i in range(3)]            # box centre
+    inflate = 1.0 / (1.0 - margin)                         # leave a label border
+    half = [0.5 * f * dd[i] * inflate for i in range(3)]
+    corners = [v for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)
+               for v in (bc[0] + sx * half[0], bc[1] + sy * half[1], bc[2] + sz * half[2])]
+
     d = np.asarray(direction, float); d = d / np.linalg.norm(d)
-    K = (1.0 - margin) * math.tan(math.atan(sensor / (2.0 * lens)))
-    dist = f"0.5*{f}*sqrt(dx*dx+dy*dy+dz*dz)/{K}"
-    D = [("dx", data, "dimensions[0]"), ("dy", data, "dimensions[1]"),
-         ("dz", data, "dimensions[2]")]
-
-    def cen(i):                                 # box centre on axis i
-        return str(c[i]) if abs(k[i]) < 1e-12 else f"({c[i]} + ({k[i]})*{dims[i]})"
-
-    bc = [c[i] + k[i] * dd[i] for i in range(3)]
-    focus = bpy.data.objects.new("Focus", None)
-    bpy.context.scene.collection.objects.link(focus)
-    focus.location = tuple(bc)
-    for i in range(3):
-        _driver(focus, "location", i, cen(i), D)
-
     cam = bpy.data.cameras.new("c")
     cam.lens = lens
-    cam.shift_x, cam.shift_y = shift
+    cam.sensor_width = sensor
     cam.dof.use_dof = True
     cam.dof.aperture_fstop = fstop
     o = bpy.data.objects.new("c", cam)
     bpy.context.scene.collection.objects.link(o)
     bpy.context.scene.camera = o
-    for i in range(3):
-        _driver(o, "location", i, f"{cen(i)} + {d[i]}*({dist})", D)
-    _driver(cam, "dof.focus_distance", -1, dist, D, data_path_obj=cam)
-    con = o.constraints.new("TRACK_TO")
-    con.target = focus
-    con.track_axis = "TRACK_NEGATIVE_Z"
-    con.up_axis = "UP_Y"
+    o.rotation_euler = mathutils.Vector(tuple(d)).to_track_quat("Z", "Y").to_euler()
+    bpy.context.view_layer.update()
+    loc, _ = o.camera_fit_coords(bpy.context.evaluated_depsgraph_get(), corners)
+    o.location = loc
+    cam.dof.focus_distance = (mathutils.Vector(loc) - mathutils.Vector(bc)).length
     return o
 
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
-               shift=(0.07, -0.07), margin=MARGIN, floor_only=False, color="#dadada"):
-    """Box + camera in one call, sharing factor/align so they can't drift."""
+               margin=MARGIN, floor_only=False, color="#dadada"):
+    """Box (drivers) + camera (native fit), sharing factor/align."""
     driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only)
-    return driven_camera(data, direction=direction, margin=margin, shift=shift,
-                         factor=factor, align=align)
+    return driven_camera(data, direction=direction, margin=margin, factor=factor,
+                         align=align)
 
 
 def _overlay_thirds(path):

@@ -30,5 +30,5 @@ B.lights(key=(5, -5, 9), key_size=9)
 B.polys(polys, B.material("#E69F00", rough=0.45), smooth=True)
 
 data = B.join_data()
-B.driven_rig(data, direction=(0.85, -0.8, 0.9), align=(0, 0, -1), shift=(0.05, 0.16))
+B.driven_rig(data, direction=(0.85, -0.8, 0.9), align=(0, 0, -1))
 B.render("klein_bl")

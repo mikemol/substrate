@@ -33,5 +33,5 @@ for n in nodes:
     B.sphere(coords[nidx[n]], 0.13, mats[comp_of[n]])
 
 data = B.join_data()
-B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
+B.driven_rig(data, direction=(1, -0.9, 0.55))
 B.render("similarity_bl")

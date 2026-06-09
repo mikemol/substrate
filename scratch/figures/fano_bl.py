@@ -56,5 +56,5 @@ for a, b in zip(order, order[1:] + order[:1]):
     B.tube(V[a], V[b], 0.011, smat)
 
 data = B.join_data()
-B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.06, -0.06))
+B.driven_rig(data, direction=(1, -0.9, 0.55))
 B.render("fano_bl")

@@ -34,5 +34,5 @@ for q in nodes:
     B.sphere(coords[nidx[q]], rad, B.material(color_of[q], rough=0.4, metallic=0.1))
 
 data = B.join_data()
-B.driven_rig(data, direction=(1, -0.9, 0.55), shift=(0.05, 0.05))
+B.driven_rig(data, direction=(1, -0.9, 0.55))
 B.render("import_bl")

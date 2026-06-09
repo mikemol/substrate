@@ -30,5 +30,5 @@ for r in range(8):
         B.box_cube((c, r, h / 2), (0.82, 0.82, h), POS if sign[r, c] >= 0 else NEG)
         centers.append((c, r, h))
 data = B.join_data()
-B.driven_rig(data, direction=(0.8, -1.0, 0.7), align=(0, 0, -1), shift=(0.05, 0.12))
+B.driven_rig(data, direction=(0.8, -1.0, 0.7), align=(0, 0, -1))
 B.render("octonion_bl")

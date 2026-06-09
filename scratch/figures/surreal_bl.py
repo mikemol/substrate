@@ -68,5 +68,5 @@ for v, d in nodes:
     B.sphere(coord(v), 0.15, B.material(ramp(d / DEPTH), rough=0.4))
 
 data = B.join_data()
-B.driven_rig(data, direction=(0.35, -1.0, 0.5), shift=(0.0, 0.08))
+B.driven_rig(data, direction=(0.35, -1.0, 0.5))
 B.render("surreal_bl")
