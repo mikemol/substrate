@@ -26,7 +26,6 @@ verts = np.vstack(polys)
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(5, -5, 9), key_size=9)
 B.polys(polys, B.material("#E69F00", rough=0.45), smooth=True)
 
 data = B.join_data()

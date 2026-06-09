@@ -27,7 +27,6 @@ V = {k: np.array(v, float) for k, v in POINT_VEC.items()}
 
 B.reset()
 B.scene(samples=200)
-B.lights(key=(4, -5, 7), key_size=7)
 
 # Cube scaffold.
 cube_mat = B.material(CUBE_C, rough=0.6)

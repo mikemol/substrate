@@ -17,7 +17,6 @@ sign, idx = octonion_table()
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(6, -6, 10), key_size=10, target=(3.5, 3.5, 1))
 POS = B.material("#E69F00", rough=0.4)   # materials AFTER reset (reset wipes data)
 NEG = B.material("#0072B2", rough=0.4)
 

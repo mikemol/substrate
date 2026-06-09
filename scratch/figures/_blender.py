@@ -339,9 +339,29 @@ def _box_center_coeffs(align, factor):
     return [-align[i] * 0.5 * (factor - 1) for i in range(3)]
 
 
-def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada", floor_only=False):
+def parametric_diagonal_rig(diag, r, theta_deg=5.0):
+    """Closed-form soft-beam rig along a diagonal of length `diag` (generalises a
+    cube's S·√3 to any box). Inputs: diagonal length, pin-hole radius r, cone
+    expansion half-angle θ. Returns (d2, d1, R): pin-hole→target, light→pin-hole,
+    and the light-disk radius R that sets the penumbra. Pure algebra — one sqrt,
+    no solver, no branches.  Real iff diag·tanθ ≥ 5.83·r (keep r small)."""
+    tan_t = math.tan(math.radians(theta_deg))
+    B = r - diag * tan_t
+    d2 = (-B - math.sqrt(B * B - 4.0 * r * diag * tan_t)) / (2.0 * tan_t)
+    d1 = diag - d2
+    R = r * diag / d2
+    return d2, d1, R
+
+
+def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
+               floor_only=False, spots=True, spot_deg=5.0, spot_energy=300.0,
+               pinhole=0.012):
     """Floor + two back walls driven to box = factor x data, with the data
-    placed per the `align` thirds-index on each axis (see _box_center_coeffs)."""
+    placed per the `align` thirds-index on each axis (see _box_center_coeffs).
+
+    `spots`: the box's default museum lighting — a spotlight at each of the 8
+    box corners aimed at the opposing corner (through the centre), a tight
+    `spot_deg`° cone. Positions are driven, so the rig reflows with the box."""
     (cx, cy, cz), (dx, dy, dz) = _bbox(data)
     f = factor
     c = (cx, cy, cz); dd = (dx, dy, dz)
@@ -383,6 +403,53 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada", floor_only=Fa
         plane("left", (0, math.pi/2, 0),
               lin(cx, k[0] - 0.5*f, "dx"), lin(cy, k[1], "dy"), lin(cz, k[2], "dz"),
               sca(0.5*f, "dz"), sca(0.5*f, "dy"))
+
+    if spots:
+        # Museum: a dark room so the box spot rig reads.
+        w = bpy.context.scene.world
+        if w and w.use_nodes and w.node_tree.nodes.get("Background"):
+            w.node_tree.nodes["Background"].inputs[1].default_value = 0.0
+        dims3 = ("dx", "dy", "dz")
+        # Box-centre target (driven), aimed-through by every corner spot.
+        focus = bpy.data.objects.new("BoxFocus", None)
+        bpy.context.scene.collection.objects.link(focus)
+        focus.location = tuple(c[i] + k[i] * dd[i] for i in range(3))
+        for i in range(3):
+            e, v = lin(c[i], k[i], dims3[i])
+            _driver(focus, "location", i, e, v)
+        # Soft-beam rig (closed form): R sets the penumbra (→ emitter radius).
+        diag = math.sqrt(sum((factor * dd[i]) ** 2 for i in range(3)))
+        _, _, R_disk = parametric_diagonal_rig(diag, pinhole * diag, spot_deg)
+
+        # A corner touches a rendered wall iff it's on the floor (sz=-1), the
+        # back wall (sy=+1) or the left wall (sx=-1); the lone open corner
+        # (+1,-1,+1) faces the camera. Keep a spot only if BOTH its source and
+        # its target corner touch a wall — no light from the camera point, none
+        # aimed into the camera.
+        def on_wall(t):
+            return t[2] == -1 or t[1] == 1 or t[0] == -1
+
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                for sz in (-1, 1):
+                    s = (sx, sy, sz)
+                    if not on_wall(s) or not on_wall((-sx, -sy, -sz)):
+                        continue
+                    ld = bpy.data.lights.new("boxspot", "SPOT")
+                    ld.spot_size = math.radians(2.0 * spot_deg)   # full cone = 2θ
+                    ld.spot_blend = 0.35
+                    ld.shadow_soft_size = R_disk                  # penumbra
+                    ld.energy = spot_energy
+                    lo = bpy.data.objects.new("boxspot", ld)
+                    bpy.context.scene.collection.objects.link(lo)
+                    lo.location = tuple(c[i] + (k[i] + s[i] * 0.5 * f) * dd[i] for i in range(3))
+                    for i in range(3):       # corner = box_centre + s·half_extent
+                        e, v = lin(c[i], k[i] + s[i] * 0.5 * f, dims3[i])
+                        _driver(lo, "location", i, e, v)
+                    con = lo.constraints.new("TRACK_TO")
+                    con.target = focus
+                    con.track_axis = "TRACK_NEGATIVE_Z"
+                    con.up_axis = "UP_Y"
 
 
 def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,

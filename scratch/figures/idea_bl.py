@@ -19,7 +19,6 @@ levels = parse_levels()
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(6, -6, 12), key_size=11, target=(0, 0, 7))
 mat = {"invariant": B.material("#0072B2", rough=0.4, metallic=0.1),
        "gauge": B.material("#D55E00", rough=0.4, metallic=0.1),
        "other": B.material("#999999", rough=0.5)}

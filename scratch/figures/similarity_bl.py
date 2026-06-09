@@ -24,7 +24,6 @@ coords = np.array([pos[n] for n in nodes]) * 6.0
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(6, -6, 10), key_size=10)
 mats = [B.material(B.PALETTE[i % len(B.PALETTE)], rough=0.4, metallic=0.1) for i in range(len(comps))]
 emat = B.material("#bbbbbb", rough=0.6)
 for u, v in G.edges():

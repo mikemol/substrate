@@ -25,7 +25,6 @@ mx = max(pkg_modules.values())
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(6, -6, 10), key_size=11)
 emat = B.material("#bbbbbb", rough=0.6)
 for a, b in G.edges():
     B.tube(coords[nidx[a]], coords[nidx[b]], 0.018, emat)

@@ -60,7 +60,6 @@ def ramp(t):
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(3, -7, 9), key_size=10)
 emat = B.material("#cccccc", rough=0.6)
 for a, b in edges:
     B.tube(coord(a), coord(b), 0.02, emat)

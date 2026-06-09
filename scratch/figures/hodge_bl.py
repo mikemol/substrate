@@ -19,7 +19,6 @@ GAP = 1.3
 
 B.reset()
 B.scene(samples=128)
-B.lights(key=(6, -6, 11), key_size=10, target=(0, 0, 2))
 mats = {k: B.material(c, rough=0.4, metallic=0.1) for k, c in PAIR.items()}
 
 allpts = []

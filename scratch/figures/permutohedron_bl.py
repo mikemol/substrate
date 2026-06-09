@@ -38,7 +38,6 @@ gen_color = {"s1": B.PALETTE[0], "s2": B.PALETTE[1], "s3": B.PALETTE[3]}
 
 B.reset()
 B.scene(samples=160, haze=0.0)
-B.lights()
 
 mats = {g: B.material(c, rough=0.4) for g, c in gen_color.items()}
 for u, v, d in P.graph.edges(data=True):
