@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Abs.agda Canonical.agda CanonicalBezout.agda Congruence.agda Field.agda Reduce.agda Uniqueness.agda
+FILES := Abs.agda Canonical.agda CanonicalBezout.agda Congruence.agda Decidable.agda Field.agda Reduce.agda Uniqueness.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
