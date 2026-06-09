@@ -429,27 +429,40 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
         def on_wall(t):
             return t[2] == -1 or t[1] == 1 or t[0] == -1
 
-        for sx in (-1, 1):
+        def make_spot(level):
+            # `level` = per-axis position in box half-extents (±1 = a face,
+            # ±1/3 = a rule-of-thirds boundary). Aim through centre; keep only if
+            # the source and its target (−level) both touch a rendered wall.
+            if not on_wall(level) or not on_wall([-x for x in level]):
+                return
+            ld = bpy.data.lights.new("boxspot", "SPOT")
+            ld.spot_size = math.radians(2.0 * spot_deg)   # full cone = 2θ
+            ld.spot_blend = 0.35
+            ld.shadow_soft_size = R_disk                  # penumbra
+            ld.energy = spot_energy
+            lo = bpy.data.objects.new("boxspot", ld)
+            bpy.context.scene.collection.objects.link(lo)
+            lo.location = tuple(c[i] + (k[i] + level[i] * 0.5 * f) * dd[i] for i in range(3))
+            for i in range(3):
+                e, v = lin(c[i], k[i] + level[i] * 0.5 * f, dims3[i])
+                _driver(lo, "location", i, e, v)
+            con = lo.constraints.new("TRACK_TO")
+            con.target = focus
+            con.track_axis = "TRACK_NEGATIVE_Z"
+            con.up_axis = "UP_Y"
+
+        for sx in (-1, 1):                              # 8 corners
             for sy in (-1, 1):
                 for sz in (-1, 1):
-                    s = (sx, sy, sz)
-                    if not on_wall(s) or not on_wall((-sx, -sy, -sz)):
-                        continue
-                    ld = bpy.data.lights.new("boxspot", "SPOT")
-                    ld.spot_size = math.radians(2.0 * spot_deg)   # full cone = 2θ
-                    ld.spot_blend = 0.35
-                    ld.shadow_soft_size = R_disk                  # penumbra
-                    ld.energy = spot_energy
-                    lo = bpy.data.objects.new("boxspot", ld)
-                    bpy.context.scene.collection.objects.link(lo)
-                    lo.location = tuple(c[i] + (k[i] + s[i] * 0.5 * f) * dd[i] for i in range(3))
-                    for i in range(3):       # corner = box_centre + s·half_extent
-                        e, v = lin(c[i], k[i] + s[i] * 0.5 * f, dims3[i])
-                        _driver(lo, "location", i, e, v)
-                    con = lo.constraints.new("TRACK_TO")
-                    con.target = focus
-                    con.track_axis = "TRACK_NEGATIVE_Z"
-                    con.up_axis = "UP_Y"
+                    make_spot([sx, sy, sz])
+        for vary in range(3):                           # edge rule-of-thirds pts
+            o0, o1 = [a for a in range(3) if a != vary]
+            for f0 in (-1, 1):
+                for f1 in (-1, 1):
+                    for vt in (-1.0 / 3, 1.0 / 3):
+                        level = [0.0, 0.0, 0.0]
+                        level[o0] = f0; level[o1] = f1; level[vary] = vt
+                        make_spot(level)
 
 
 def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
@@ -518,12 +531,25 @@ def _overlay_thirds(path):
     fig.savefig(path, dpi=100); plt.close(fig)
 
 
-def render(name):
+def render(name, hdr=True):
+    """Render once; save a tonemapped SDR PNG and (hdr) a scene-referred 32-bit
+    OpenEXR — the museum's dark room + bright spots exceed SDR range, so the EXR
+    keeps the full dynamic range for grading."""
     import os
     sc = bpy.context.scene
-    path = str(OUT / f"{name}.png")
-    sc.render.filepath = path
-    bpy.ops.render.render(write_still=True)
+    png = OUT / f"{name}.png"
+    sc.render.filepath = str(png)
+    sc.render.image_settings.file_format = "PNG"
+    sc.render.image_settings.color_depth = "8"
+    bpy.ops.render.render(write_still=True)            # renders + saves the PNG
+    print(f"BL_WROTE {png}")
+    if hdr:
+        result = bpy.data.images.get("Render Result")
+        if result is not None:
+            exr = OUT / f"{name}.exr"
+            sc.render.image_settings.file_format = "OPEN_EXR"
+            sc.render.image_settings.color_depth = "32"
+            result.save_render(str(exr))               # HDR, scene-linear
+            print(f"BL_WROTE {exr}")
     if os.environ.get("BL_DEBUG"):
-        _overlay_thirds(path)
-    print(f"BL_WROTE {path}")
+        _overlay_thirds(str(png))
