@@ -34,7 +34,8 @@ open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-sym; ≈ℚ-trans;
 open import Substrate.Algebra.Q.Reduce using (reduce; reduce-build; sign-of)
 open import Substrate.Algebra.Q.Reduction using (is-reduced; abs-ℤ)
 open import Substrate.Algebra.Q.Properties.Reduce using (≈-canonical)
-open import Substrate.Algebra.Q.Properties.Abs using (abs-sign-of; abs-*ℤ-pos; ℤ-sign-mag)
+open import Substrate.Algebra.Q.Properties.Abs using (abs-sign-of)
+open import Substrate.Algebra.Q.Properties.Uniqueness using (mag-cross-of-≈; uniq-from-mag-den)
 open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
@@ -68,14 +69,11 @@ reduce-is-reduced q =
 -- 2. Two REDUCED, ≈ℚ-equal ℚ are propositionally equal (shape uniqueness).
 ------------------------------------------------------------------------
 
+-- Route 1 (CF shape): the components come from cf-injective on the two coprime
+-- traces, compared DIRECTLY (KEYSTONE #1 value-invariance feeds KEYSTONE #2).
 reduced-≈⇒≡ : (p q : ℚ) → is-reduced p → is-reduced q → p ≈ℚ q → p ≡ q
-reduced-≈⇒≡ p q rp rq pq = cong₂ mkℚ num-eq (suc-injective den-eq)
+reduced-≈⇒≡ p q rp rq pq = uniq-from-mag-den p q (proj₁ inj) (proj₂ inj) pq
   where
-    -- magnitude cross-equation (sign-stripped p ≈ℚ q)
-    mag-cross : abs-ℤ (num p) * denominator q ≡ abs-ℤ (num q) * denominator p
-    mag-cross = trans (sym (abs-*ℤ-pos (num p) (den-1 q)))
-                (trans (cong abs-ℤ pq) (abs-*ℤ-pos (num q) (den-1 p)))
-    -- coprime traces of the two reduced fractions, compared directly
     inj : (abs-ℤ (num p) ≡ abs-ℤ (num q)) × (denominator p ≡ denominator q)
     inj = cf-injective
             (coprime-trace (abs-ℤ (num p)) (denominator p) rp)
@@ -83,11 +81,7 @@ reduced-≈⇒≡ p q rp rq pq = cong₂ mkℚ num-eq (suc-injective den-eq)
             (shape-value-invariance
               (coprime-trace (abs-ℤ (num p)) (denominator p) rp)
               (coprime-trace (abs-ℤ (num q)) (denominator q) rq)
-              (s≤s z≤n) (s≤s z≤n) mag-cross)
-    den-eq : denominator p ≡ denominator q
-    den-eq = proj₂ inj
-    num-eq : num p ≡ num q
-    num-eq = ℤ-sign-mag (num p) (num q) (den-1 q) (den-1 p) pq (proj₁ inj)
+              (s≤s z≤n) (s≤s z≤n) (mag-cross-of-≈ p q pq))
 
 ------------------------------------------------------------------------
 -- 3. The capstone obligation + the instance.

@@ -10,7 +10,8 @@
 --   Divides.Mul    — m∣m*n, n∣m*n
 --   Divides.Sum    — ∣m∣n⇒∣m+n : c ∣ m → c ∣ n → c ∣ (m + n)
 --   Divides.Zero   — ∣-zero : m ∣ 0
---   Divides.One    — ∣-one : m ∣ 1 → m ≡ 1
+--   Divides.One    — ∣-one : m ∣ 1 → m ≡ 1 (+ *≡1ˡ / *≡1ʳ)
+--   Divides.Antisym— ∣-antisym : a ∣ b → b ∣ a → a ≡ b
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -23,4 +24,5 @@ open import Substrate.Algebra.Nat.Divides.Trans public
 open import Substrate.Algebra.Nat.Divides.Mul   public
 open import Substrate.Algebra.Nat.Divides.Sum   public
 open import Substrate.Algebra.Nat.Divides.Zero  public
-open import Substrate.Algebra.Nat.Divides.One   public
+open import Substrate.Algebra.Nat.Divides.One     public
+open import Substrate.Algebra.Nat.Divides.Antisym public
