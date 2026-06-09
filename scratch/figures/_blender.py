@@ -367,17 +367,26 @@ def driven_box(data, factor=1.5, vbias=0.0, color="#dadada", floor_only=False):
               [(f"0.5*{f}*dz", [D[2]]), (f"0.5*{f}*dy", [D[1]]), None])
 
 
-def driven_camera(data, direction=(1.0, -0.9, 0.62), fill=0.78, lens=50,
+# The sole framing policy: leave this fraction of the frame as margin (label
+# room) outside the box. Everything else in the distance is forced by geometry.
+MARGIN = 0.22
+
+
+def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
                   sensor=36, shift=(0.07, -0.07), fstop=2.0, factor=1.5, vbias=0.0):
     """Aim at and frame the *diegetic box* (the container), not the raw data —
     so the box (factor x data, shifted by vbias) is what sits on the viewport
-    rule-of-thirds, consistently on every side. Distance is driven by the box
-    extent; the Track-To target follows the box centre."""
+    rule-of-thirds, consistently on every side.
+
+    The distance is the exact closed-form fit, not a tuned constant: for the
+    box's bounding sphere R = ½·factor·|data diagonal| to project to (1−margin)
+    of the frame half-height, D = R / ((1−margin)·tan(½·fov)). |data diagonal|
+    is read live from data.dimensions (driver variables), so any non-modal data
+    change reflows; only `margin` (label room) is a chosen policy."""
     (cx, cy, cz), (_, _, dz) = _bbox(data)
     d = np.asarray(direction, float); d = d / np.linalg.norm(d)
-    K = fill * math.tan(math.atan(sensor / (2.0 * lens)))
-    # Frame the box's bounding SPHERE (furthest corner) at `fill`, so every
-    # corner of the box fits with margin — room for labels — at any view angle.
+    half_fov = math.atan(sensor / (2.0 * lens))
+    K = (1.0 - margin) * math.tan(half_fov)
     dist = f"0.5*{factor}*sqrt(dx*dx+dy*dy+dz*dz)/{K}"
     zoff = f"{vbias}*0.5*({factor}-1)*dz"     # box centre sits above data centre
     bcz = cz + vbias * 0.5 * (factor - 1) * dz
@@ -409,10 +418,10 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), fill=0.78, lens=50,
 
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), vbias=0.0, factor=1.5,
-               shift=(0.07, -0.07), fill=0.78, floor_only=False, color="#dadada"):
+               shift=(0.07, -0.07), margin=MARGIN, floor_only=False, color="#dadada"):
     """Box + camera in one call, sharing factor/vbias so they can't drift."""
     driven_box(data, factor=factor, vbias=vbias, color=color, floor_only=floor_only)
-    return driven_camera(data, direction=direction, fill=fill, shift=shift,
+    return driven_camera(data, direction=direction, margin=margin, shift=shift,
                          factor=factor, vbias=vbias)
 
 
