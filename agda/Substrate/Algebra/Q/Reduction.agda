@@ -66,18 +66,22 @@ is-reduced q = gcd-of-ℚ q ≡ 1
 
 open import Substrate.Algebra.Q using (0ℚ; 1ℚ; -1ℚ)
 
--- These can be discharged once gcd-ℕ's behaviour at small inputs
--- is verified. The actual proofs would unfold gcd-ℕ; deferred to
--- a follow-up slice that exercises Substrate.Algebra.Nat.GCD's
--- compute-trace at small inputs.
+private
+  -- gcd-ℕ at small closed inputs computes; the Q4-deferred oracles now
+  -- discharge by refl (gcd(0,1) = gcd(1,1) = 1).
+  _ : is-reduced 0ℚ
+  _ = refl
+  _ : is-reduced 1ℚ
+  _ = refl
+  _ : is-reduced -1ℚ
+  _ = refl
 
 ------------------------------------------------------------------------
 -- 5. Capstone for Q4.
 --
--- Reduction predicate + gcd-of-ℚ landed. The full reduce :
--- ℚ → ℚ function (mapping any ℚ to its reduced form) requires
--- ℤ-by-ℕ division with NonZero handling and lives in a follow-up
--- slice. Q5 (Arithmetic) can operate on UNREDUCED ℚ values; users
--- needing canonical-form comparisons would apply reduce after
--- arithmetic.
+-- Reduction predicate + gcd-of-ℚ landed. The full `reduce : ℚ → ℚ` is in
+-- Substrate.Algebra.Q.Reduce (NO ℤ-by-ℕ division — the cofactors are the kept
+-- gcd-divisibility witnesses); reduced-form uniqueness (the Canonical instance)
+-- is in Q.Properties.Canonical. Q5 (Arithmetic) operates on UNREDUCED ℚ; apply
+-- reduce for canonical-form comparison.
 ------------------------------------------------------------------------
