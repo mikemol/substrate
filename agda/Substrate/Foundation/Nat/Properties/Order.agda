@@ -10,7 +10,7 @@
 module Substrate.Foundation.Nat.Properties.Order where
 
 open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _≤_; _<_; s≤s; z≤n)
+  using (ℕ; zero; suc; _+_; _≤_; _<_; s≤s; z≤n)
 open import Substrate.Foundation.Empty using (⊥)
 
 ≤-suc-r : ∀ {m n} → m ≤ n → m ≤ suc n
@@ -68,3 +68,15 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 ≤-tight (suc m) zero    (s≤s ()) _
 ≤-tight (suc m) (suc b) (s≤s sm≤sb) ¬sm≤b' =
   cong suc (≤-tight m b sm≤sb (λ p → ¬sm≤b' (s≤s p)))
+
+------------------------------------------------------------------------
+-- Additive order: a summand is ≤ the sum. (The chirality pair.)
+------------------------------------------------------------------------
+
+m≤m+n : (m n : ℕ) → m ≤ m + n
+m≤m+n zero    n = z≤n
+m≤m+n (suc m) n = s≤s (m≤m+n m n)
+
+n≤m+n : (m n : ℕ) → n ≤ m + n
+n≤m+n zero    n = ≤-refl n
+n≤m+n (suc m) n = ≤-suc-r (n≤m+n m n)
