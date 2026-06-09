@@ -10,7 +10,7 @@
 module Substrate.Foundation.Nat.Properties.Order where
 
 open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _≤_; _<_; s≤s; z≤n)
+  using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s; z≤n)
 open import Substrate.Foundation.Empty using (⊥)
 
 ≤-suc-r : ∀ {m n} → m ≤ n → m ≤ suc n
@@ -80,3 +80,15 @@ m≤m+n (suc m) n = s≤s (m≤m+n m n)
 n≤m+n : (m n : ℕ) → n ≤ m + n
 n≤m+n zero    n = ≤-refl n
 n≤m+n (suc m) n = ≤-suc-r (n≤m+n m n)
+
+------------------------------------------------------------------------
+-- Monotonicity: right-summand and left-factor preserve ≤.
+------------------------------------------------------------------------
+
++-monoʳ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → k + m ≤ k + n
++-monoʳ-≤ zero    p = p
++-monoʳ-≤ (suc k) p = s≤s (+-monoʳ-≤ k p)
+
+*-monoˡ-≤ : (n : ℕ) {r b : ℕ} → r ≤ b → r * n ≤ b * n
+*-monoˡ-≤ n z≤n      = z≤n
+*-monoˡ-≤ n (s≤s p)  = +-monoʳ-≤ n (*-monoˡ-≤ n p)
