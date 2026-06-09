@@ -71,7 +71,7 @@ def _enable_gpu():
     return None
 
 
-def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0):
+def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
     import os
     # Env overrides for fast iteration: BL_SAMPLES=24 BL_RES=480x400 (preview).
     samples = int(os.environ.get("BL_SAMPLES", samples))
@@ -83,6 +83,11 @@ def scene(samples=128, res=(1000, 1000), bg="#e9eef5", haze=0.0):
     sc.cycles.samples = samples
     sc.cycles.use_adaptive_sampling = True
     sc.cycles.adaptive_threshold = 0.01
+    # More light bounces → the dark room fills from wall-to-wall reflections
+    # (Cycles defaults to only 4 diffuse bounces).
+    sc.cycles.max_bounces = bounces
+    sc.cycles.diffuse_bounces = bounces
+    sc.cycles.glossy_bounces = max(8, bounces // 2)
     try:
         sc.cycles.use_denoising = True
         sc.cycles.denoiser = "OPENIMAGEDENOISE"
@@ -354,7 +359,7 @@ def parametric_diagonal_rig(diag, r, theta_deg=5.0):
 
 
 def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
-               floor_only=False, spots=True, spot_deg=5.0, spot_energy=300.0,
+               floor_only=False, spots=True, spot_deg=5.0, spot_energy=900.0,
                pinhole=0.012):
     """Floor + two back walls driven to box = factor x data, with the data
     placed per the `align` thirds-index on each axis (see _box_center_coeffs).
