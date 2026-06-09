@@ -322,9 +322,11 @@ def _bbox(obj):
     return center, dims
 
 
-# The sole framing policy: leave this fraction of the frame as margin (label
-# room) outside the box. Everything else in the distance is forced by geometry.
-MARGIN = 0.22
+# Framing policy. The diegetic box's corners are fit to TOUCH the frame edges
+# (the box fills the viewport); label room is the box *interior* — the outer-
+# third gap between the data and the walls, given for free by the 1.5x ratio.
+# Raise MARGIN only to inset the whole box (a border outside it); 0 = touch.
+MARGIN = 0.0
 
 
 def _box_center_coeffs(align, factor):
