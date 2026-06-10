@@ -417,7 +417,7 @@ def parametric_diagonal_rig(diag, r, theta_deg=5.0):
 
 def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
                floor_only=False, spots=True, spot_deg=30.0, spot_energy=300.0,
-               pinhole=0.012, graze_factor=0.5):
+               pinhole=0.012, graze_factor=0.5, wall_rough=0.9):
     """Floor + two back walls driven to box = factor x data, with the data
     placed per the `align` thirds-index on each axis (see _box_center_coeffs).
 
@@ -436,7 +436,7 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
         bc = [c[i] + k[i]*dd[i] for i in range(3)]
         box_wire((bc[0]-0.5*f*dx, bc[0]+0.5*f*dx, bc[1]-0.5*f*dy, bc[1]+0.5*f*dy,
                   bc[2]-0.5*f*dz, bc[2]+0.5*f*dz), "#ff3333")
-    mat = material(color, rough=0.9)
+    mat = material(color, rough=wall_rough)
     # The walls live in their own collection so a view layer can hole-punch them:
     # render_pip can exclude "DiegeticBox" from the inset scene's view layer, so
     # the closeup camera sees straight through the walls to the geometry inside.
@@ -603,10 +603,11 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
 
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
-               margin=MARGIN, floor_only=False, color="#dadada", graze_factor=0.5):
+               margin=MARGIN, floor_only=False, color="#dadada", graze_factor=0.5,
+               wall_rough=0.9):
     """Box (drivers) + camera (native fit), sharing factor/align."""
     driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only,
-               graze_factor=graze_factor)
+               graze_factor=graze_factor, wall_rough=wall_rough)
     return driven_camera(data, direction=direction, margin=margin, factor=factor,
                          align=align)
 

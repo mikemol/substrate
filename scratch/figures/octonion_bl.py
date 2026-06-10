@@ -40,5 +40,5 @@ data = B.join_data()
 # away-face backlight isn't pooling on it: the box's nested rule-of-thirds is 9
 # cells/axis, one align unit = box/6 = 1.5 cells, so a cell = align 2/3. A full
 # cell forward (two half-cells) = align −2/3; forward (off the +Y wall) is negative.
-B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0))
+B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0), wall_rough=0.1)
 B.render("octonion_bl")
