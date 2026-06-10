@@ -25,10 +25,59 @@ _H = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(_H))
 sys.path.append(str(_H.parents[1] / ".venv/lib/python3.14/site-packages"))
 
+import math
+
 import numpy as np
+import bpy
+import bmesh
 import _blender as B
 
 B.OUT = _H / "out"; B.OUT.mkdir(exist_ok=True)
+
+GLOW = None   # inset inscription glow material; built after B.reset() (which wipes data)
+
+
+def inscribe(cap, label, x, y, rad, zt, updown, size=0.28, pitch=0.34, depth=0.08):
+    """Engrave `label` vertically into the −Y front of capsule `cap` (at world x,y,
+    spanning band magnitude [.., zt] on the `updown` side) and glow the recess
+    floor. Top→down; downward capsules (updown<0) are flipped upside-down so they
+    read like an inverted column."""
+    objs = []
+    for i, ch in enumerate(label):
+        cu = bpy.data.curves.new("t", "FONT")
+        cu.body = ch; cu.size = size; cu.extrude = depth
+        cu.align_x = "CENTER"; cu.align_y = "CENTER"
+        o = bpy.data.objects.new("ch", cu)
+        bpy.context.scene.collection.objects.link(o)
+        o.rotation_euler = (-math.pi / 2, math.pi if updown < 0 else 0.0, 0.0)
+        o.location = (x, y - rad - 0.02 + depth, updown * (zt - pitch * (i + 0.7)))
+        for s in bpy.context.selected_objects:
+            s.select_set(False)
+        o.select_set(True); bpy.context.view_layer.objects.active = o
+        bpy.ops.object.convert(target="MESH")
+        objs.append(o)
+    for s in bpy.context.selected_objects:
+        s.select_set(False)
+    for o in objs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+    bpy.ops.object.join()
+    cutter = bpy.context.view_layer.objects.active
+    m = cap.modifiers.new("inscribe", "BOOLEAN")
+    m.operation = "DIFFERENCE"; m.object = cutter; m.solver = "EXACT"
+    bpy.context.view_layer.objects.active = cap
+    bpy.ops.object.modifier_apply(modifier=m.name)
+    bpy.data.objects.remove(cutter)
+    me = cap.data
+    if GLOW.name not in me.materials:
+        me.materials.append(GLOW)
+    gi = me.materials.find(GLOW.name)
+    bm = bmesh.new(); bm.from_mesh(me)
+    for f in bm.faces:                         # recess floor: recessed, faces the lens
+        cen = f.calc_center_median()
+        if cen.y > y - rad + 0.03 and cen.y < y and f.normal.y < -0.3:
+            f.material_index = gi
+    bm.to_mesh(me); bm.free()
 
 
 def cd_mult(level, i, j):
@@ -57,6 +106,7 @@ LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 
 
 B.reset()
 B.scene(samples=128)
+GLOW = B.material("#ffffff", emission=32.0)   # inset inscription glow (blooms later)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
 # sign — emission &= (my-normal-axis == sign-axis). σ_L=+ glows from the back (+Y)
@@ -90,7 +140,10 @@ for r in range(8):
         x, y, mat = pos[c], pos[r], level_mat[(L, sd)]
         # One-mesh capsule spanning [z0, z1] on the updown side — no cylinder/cap
         # seam, so the backlight gate gradients smoothly over the pawn.
-        B.capsule((x, y, updown * z0), (x, y, updown * z1), 0.4, mat)
+        cap = B.capsule((x, y, updown * z0), (x, y, updown * z1), 0.4, mat)
+        # Inscribe the result unit e_{r⊕c}, engraved + glowing, top→down (flipped
+        # on downward pawns so they read upside-down).
+        inscribe(cap, "e" + str(r ^ c), x, y, 0.4, z1, updown)
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
