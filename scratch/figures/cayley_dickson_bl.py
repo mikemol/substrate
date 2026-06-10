@@ -87,13 +87,10 @@ for r in range(8):
         L = h.bit_length()
         z0, z1 = BOUND[L - 1], h
         sd = 1 if sigma[L] > 0 else -1            # per-level sign σ_L → which side glows
-        x, y, mat, rad = pos[c], pos[r], level_mat[(L, sd)], 0.4
-        # Capsule spanning [z0, z1]: cylinder between the hemisphere centres (inset
-        # one radius from each tip) + a sphere cap at each centre.
-        ca, cb = updown * (z0 + rad), updown * (z1 - rad)
-        B.tube((x, y, ca), (x, y, cb), rad, mat, verts=24)
-        B.sphere((x, y, ca), rad, mat)
-        B.sphere((x, y, cb), rad, mat)
+        x, y, mat = pos[c], pos[r], level_mat[(L, sd)]
+        # One-mesh capsule spanning [z0, z1] on the updown side — no cylinder/cap
+        # seam, so the backlight gate gradients smoothly over the pawn.
+        B.capsule((x, y, updown * z0), (x, y, updown * z1), 0.4, mat)
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.

@@ -15,6 +15,7 @@ floor and cast partial shadows at once), plus global illumination and DOF haze.
 import math
 
 import bpy
+import bmesh
 import mathutils
 import numpy as np
 
@@ -219,6 +220,58 @@ def tube(a, b, radius, mat, verts=14):
     o = bpy.context.active_object
     o.rotation_euler = mathutils.Vector(vec).to_track_quat("Z", "Y").to_euler()
     bpy.ops.object.shade_smooth()
+    o.data.materials.append(mat)
+    return o
+
+
+def capsule(a, b, radius, mat, seg=24, cap_rings=6):
+    """A VERTICAL capsule (cylinder + hemispherical caps) as ONE smooth mesh from
+    a to b. Built as a single stack of rings sharing the equator vertices, so
+    smooth-shaded normals blend continuously across the cylinder↔cap join — no
+    seam (and no doubled surface) the way a tube + two spheres would give."""
+    a = np.asarray(a, float); b = np.asarray(b, float)
+    x, y = float(a[0]), float(a[1])
+    z_lo, z_hi = min(float(a[2]), float(b[2])), max(float(a[2]), float(b[2]))
+    radius = min(radius, (z_hi - z_lo) / 2.0)
+    cyl_lo, cyl_hi = z_lo + radius, z_hi - radius
+    rings = []                                   # (z, r), poles excluded
+    for i in range(1, cap_rings + 1):            # bottom hemisphere up to equator
+        phi = (math.pi / 2) * i / cap_rings
+        rings.append((cyl_lo - radius * math.cos(phi), radius * math.sin(phi)))
+    for i in range(cap_rings):                   # top hemisphere from equator up
+        phi = (math.pi / 2) * i / cap_rings
+        rings.append((cyl_hi + radius * math.sin(phi), radius * math.cos(phi)))
+    verts = [(x, y, z_lo)]                        # bottom pole = vertex 0
+    ring_start = []
+    for (z, r) in rings:
+        ring_start.append(len(verts))
+        for j in range(seg):
+            ang = 2 * math.pi * j / seg
+            verts.append((x + r * math.cos(ang), y + r * math.sin(ang), z))
+    verts.append((x, y, z_hi))                    # top pole
+    top = len(verts) - 1
+    faces = []
+    fr = ring_start[0]
+    for j in range(seg):                          # bottom pole fan
+        faces.append((0, fr + (j + 1) % seg, fr + j))
+    for k in range(len(rings) - 1):               # side bands (one is the cylinder)
+        r0, r1 = ring_start[k], ring_start[k + 1]
+        for j in range(seg):
+            jn = (j + 1) % seg
+            faces.append((r0 + j, r0 + jn, r1 + jn, r1 + j))
+    lr = ring_start[-1]
+    for j in range(seg):                          # top pole fan
+        faces.append((top, lr + j, lr + (j + 1) % seg))
+    mesh = bpy.data.meshes.new("capsule")
+    mesh.from_pydata(verts, [], faces)
+    mesh.update()
+    bm = bmesh.new(); bm.from_mesh(mesh)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)   # outward, consistent
+    bm.to_mesh(mesh); bm.free()
+    for p in mesh.polygons:
+        p.use_smooth = True
+    o = bpy.data.objects.new("capsule", mesh)
+    bpy.context.scene.collection.objects.link(o)
     o.data.materials.append(mat)
     return o
 
