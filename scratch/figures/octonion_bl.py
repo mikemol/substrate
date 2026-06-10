@@ -36,5 +36,9 @@ for r in range(8):
         B.box_cube((c, r, s * h / 2), (0.82, 0.82, h), POS if s > 0 else NEG)
         centers.append((c, r, s * h))
 data = B.join_data()
-B.driven_rig(data, direction=VIEW, align=(0, 0, 0))
+# Pull the bars forward (−Y, toward the camera) off the back wall so the
+# away-face backlight isn't pooling on it: half a cell of the box's nested
+# rule-of-thirds (9 cells/axis). One align unit = box/6 = 1.5 cells, so half a
+# cell = align 1/3; forward (away from the +Y back wall) is negative.
+B.driven_rig(data, direction=VIEW, align=(0, -1.0 / 3, 0))
 B.render("octonion_bl")
