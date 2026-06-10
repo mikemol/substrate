@@ -18,8 +18,9 @@ sign, idx = octonion_table()
 
 B.reset()
 B.scene(samples=128)
-POS = B.material("#E69F00", rough=0.15, emission=30.0, emission_backface=True)
-NEG = B.material("#0072B2", rough=0.15, emission=30.0, emission_backface=True)
+VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
+POS = B.material("#E69F00", rough=0.15, emission=30.0, emission_away=VIEW)
+NEG = B.material("#0072B2", rough=0.15, emission=30.0, emission_away=VIEW)
 
 centers = []
 for r in range(8):
@@ -34,5 +35,5 @@ for r in range(8):
         B.box_cube((c, r, s * h / 2), (0.82, 0.82, h), POS if s > 0 else NEG)
         centers.append((c, r, s * h))
 data = B.join_data()
-B.driven_rig(data, direction=(0.8, -1.0, 0.7), align=(0, 0, 0))
+B.driven_rig(data, direction=VIEW, align=(0, 0, 0))
 B.render("octonion_bl")

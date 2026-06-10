@@ -121,7 +121,8 @@ def scene(samples=192, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
 
 
 def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0,
-             emission_backface=False, emission_horizontal=False, emission_color=None):
+             emission_backface=False, emission_horizontal=False,
+             emission_away=None, emission_color=None):
     mat = bpy.data.materials.new("m")
     mat.use_nodes = True
     nt = mat.node_tree
@@ -155,6 +156,25 @@ def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0,
             mul.inputs[1].default_value = emission
             nt.links.new(absz.outputs[0], mul.inputs[0])
             nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
+        elif emission_away is not None and emission > 0:
+            # Emit from the OUTER faces whose normals point AWAY from the camera:
+            # strength = max(0, -(normal · cam_dir)) · emission, where cam_dir
+            # points toward the camera. These faces are occluded, so the result is
+            # backlight — glow on the wall behind and between neighbours, bouncing
+            # back toward the lens. (Unlike Backfacing, which on a closed solid
+            # only tags the sealed interior and emits nowhere visible.)
+            d = mathutils.Vector(emission_away).normalized()
+            geo = nt.nodes.new("ShaderNodeNewGeometry")
+            dot = nt.nodes.new("ShaderNodeVectorMath"); dot.operation = "DOT_PRODUCT"
+            dot.inputs[1].default_value = (d.x, d.y, d.z)
+            nt.links.new(geo.outputs["Normal"], dot.inputs[0])
+            neg = nt.nodes.new("ShaderNodeMath"); neg.operation = "MULTIPLY"
+            neg.inputs[1].default_value = -emission   # away (dot<0) → +emission
+            nt.links.new(dot.outputs["Value"], neg.inputs[0])
+            clamp = nt.nodes.new("ShaderNodeMath"); clamp.operation = "MAXIMUM"
+            clamp.inputs[1].default_value = 0.0
+            nt.links.new(neg.outputs[0], clamp.inputs[0])
+            nt.links.new(clamp.outputs[0], b.inputs["Emission Strength"])
         else:
             b.inputs["Emission Strength"].default_value = emission
     if alpha < 1.0:
