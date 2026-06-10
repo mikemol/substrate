@@ -16,10 +16,8 @@ z-slices stay one colour, and the band boundaries 1,3,7 are the doublings.
 Position is the grid (center-out: 𝕆 on the rim).
 
     blender --background --python scratch/figures/cayley_dickson_bl.py
-    BL_MAXIMAL=1 ...   # only the top doubling's band (line-of-sight freed)
 """
 
-import os
 import pathlib
 import sys
 
@@ -60,7 +58,6 @@ LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 
 B.reset()
 B.scene(samples=128)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
-MAXIMAL = bool(os.environ.get("BL_MAXIMAL"))   # show only the top doubling's band
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
 # sign — emission &= (my-normal-axis == sign-axis). σ_L=+ glows from the back (+Y)
 # away-face, σ_L=− from the left (−X). The away-gate keeps it off the lens; no
@@ -84,15 +81,14 @@ for r in range(8):
         if h <= 0:
             continue
         updown = 1 if s >= 0 else -1             # overall product sign: up (+) / down (−)
-        for L in range(1, 4):
-            z0, z1 = BOUND[L - 1], min(BOUND[L], h)
-            if z1 <= z0:
-                break                            # height-h column doesn't reach level L
-            if MAXIMAL and L != h.bit_length():
-                continue
-            sd = 1 if sigma[L] > 0 else -1        # per-level sign σ_L → which side glows
-            B.box_cube((pos[c], pos[r], updown * (z0 + z1) / 2.0),
-                       (0.82, 0.82, z1 - z0), level_mat[(L, sd)])
+        # Show ONLY the top doubling of each bar — the segment in the unit's own
+        # level band (L = h.bit_length(), z = [BOUND[L-1], h]) — so each column is
+        # just its top-level cap, clearing the lower bands' occlusion.
+        L = h.bit_length()
+        z0, z1 = BOUND[L - 1], h
+        sd = 1 if sigma[L] > 0 else -1            # per-level sign σ_L → which side glows
+        B.box_cube((pos[c], pos[r], updown * (z0 + z1) / 2.0),
+                   (0.82, 0.82, z1 - z0), level_mat[(L, sd)])
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
