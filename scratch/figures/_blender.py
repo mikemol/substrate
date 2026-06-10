@@ -485,7 +485,8 @@ def parametric_diagonal_rig(diag, r, theta_deg=5.0):
 
 def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
                floor_only=False, spots=True, spot_deg=30.0, spot_energy=300.0,
-               pinhole=0.012, graze_factor=0.5, wall_rough=0.9, wall_metallic=0.0):
+               pinhole=0.012, graze_factor=0.5, wall_rough=0.9, wall_metallic=0.0,
+               wall_span=None):
     """Floor + two back walls driven to box = factor x data, with the data
     placed per the `align` thirds-index on each axis (see _box_center_coeffs).
 
@@ -494,6 +495,10 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
     `spot_deg`° cone. Positions are driven, so the rig reflows with the box."""
     (cx, cy, cz), (dx, dy, dz) = _bbox(data)
     f = factor
+    # Wall PLANES can extend past the framing box (so the camera ends up inside the
+    # box volume and the mirrors fill the frame): scale them by `ws`, but keep their
+    # POSITIONS at the f-box faces so the data still sits in the corner.
+    ws = wall_span if wall_span is not None else f
     c = (cx, cy, cz); dd = (dx, dy, dz)
     k = _box_center_coeffs(align, f)
     D = {"dx": ("dx", data, "dimensions[0]"), "dy": ("dy", data, "dimensions[1]"),
@@ -533,14 +538,14 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
 
     plane("floor", (0, 0, 0),
           lin(cx, k[0], "dx"), lin(cy, k[1], "dy"), lin(cz, k[2] - 0.5*f, "dz"),
-          sca(0.5*f, "dx"), sca(0.5*f, "dy"))
+          sca(0.5*ws, "dx"), sca(0.5*ws, "dy"))
     if not floor_only:
         plane("back", (math.pi/2, 0, 0),
               lin(cx, k[0], "dx"), lin(cy, k[1] + 0.5*f, "dy"), lin(cz, k[2], "dz"),
-              sca(0.5*f, "dx"), sca(0.5*f, "dz"))
+              sca(0.5*ws, "dx"), sca(0.5*ws, "dz"))
         plane("left", (0, math.pi/2, 0),
               lin(cx, k[0] - 0.5*f, "dx"), lin(cy, k[1], "dy"), lin(cz, k[2], "dz"),
-              sca(0.5*f, "dz"), sca(0.5*f, "dy"))
+              sca(0.5*ws, "dz"), sca(0.5*ws, "dy"))
 
     if spots:
         # Museum: a dark room so the box spot rig reads.
@@ -672,11 +677,11 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
                margin=MARGIN, floor_only=False, color="#dadada", graze_factor=0.5,
-               wall_rough=0.9, wall_metallic=0.0, fstop=2.0):
+               wall_rough=0.9, wall_metallic=0.0, fstop=2.0, wall_span=None):
     """Box (drivers) + camera (native fit), sharing factor/align."""
     driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only,
                graze_factor=graze_factor, wall_rough=wall_rough,
-               wall_metallic=wall_metallic)
+               wall_metallic=wall_metallic, wall_span=wall_span)
     return driven_camera(data, direction=direction, margin=margin, factor=factor,
                          align=align, fstop=fstop)
 

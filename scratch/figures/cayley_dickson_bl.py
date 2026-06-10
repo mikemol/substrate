@@ -95,5 +95,5 @@ data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
 B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0),
-             wall_rough=0.1, wall_metallic=0.6, fstop=8.0)
+             wall_rough=0.1, wall_metallic=0.6, fstop=8.0, wall_span=10.0)
 B.render("cayley_dickson_bl")
