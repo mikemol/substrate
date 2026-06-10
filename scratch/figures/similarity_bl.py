@@ -29,7 +29,7 @@ mats = [B.material(B.PALETTE[i % len(B.PALETTE)], rough=0.2, alpha=0.4)
         for i in range(len(comps))]
 # Light up the EDGES (the similarity web), coloured by connected component —
 # every edge is intra-component, so each cluster's web glows in its own colour.
-emats = [B.material(B.PALETTE[i % len(B.PALETTE)], emission=32.0,
+emats = [B.material(B.PALETTE[i % len(B.PALETTE)], emission=16.0,
                     emission_color=B.PALETTE[i % len(B.PALETTE)])
          for i in range(len(comps))]
 for u, v in G.edges():

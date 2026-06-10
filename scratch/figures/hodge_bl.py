@@ -34,7 +34,7 @@ for k in range(4):
         B.sphere(c, 0.16, mats[k])
 # Center pole-light: a bright white emissive axis that dominates the room.
 B.tube((0, 0, 0), (0, 0, 3 * GAP), 0.05,
-       B.material("#ffffff", emission=60.0, emission_color="#ffffff"))
+       B.material("#ffffff", emission=30.0, emission_color="#ffffff"))
 
 # ★ fold arcs as bowed tubes (sampled splines via short segments).
 for a, b, col in ((0, 3, "#D55E00"), (1, 2, "#0072B2")):

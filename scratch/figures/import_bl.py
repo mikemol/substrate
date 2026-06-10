@@ -26,7 +26,7 @@ mx = max(pkg_modules.values())
 
 B.reset()
 B.scene(samples=128)
-emat = B.material("#7fd4ff", emission=5.0, emission_color="#7fd4ff")
+emat = B.material("#7fd4ff", emission=2.5, emission_color="#7fd4ff")
 for a, b in G.edges():
     B.tube(coords[nidx[a]], coords[nidx[b]], 0.018, emat)
 for q in nodes:

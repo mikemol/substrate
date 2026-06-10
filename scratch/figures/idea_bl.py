@@ -37,7 +37,7 @@ for lvl, _t, concepts in levels:
 zmax = (len(levels) - 1) * GAP
 # Center pole-light: a bright white emissive axis that dominates the room.
 B.tube((0, 0, 0), (0, 0, zmax), 0.1,
-       B.material("#ffffff", emission=60.0, emission_color="#ffffff"))
+       B.material("#ffffff", emission=30.0, emission_color="#ffffff"))
 
 data = B.join_data()
 B.driven_rig(data, direction=(1, -0.85, 0.5), align=(0, 0, -1), graze_factor=0.1)
