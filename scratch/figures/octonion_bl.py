@@ -40,9 +40,8 @@ data = B.join_data()
 # away-face backlight isn't pooling on it: the box's nested rule-of-thirds is 9
 # cells/axis, one align unit = box/6 = 1.5 cells, so a cell = align 2/3. A full
 # cell forward (two half-cells) = align −2/3; forward (off the +Y wall) is negative.
-# Partial metal mirror (0.6) + shallow DOF: the reflected tiles recede behind the
-# mirror walls and the open aperture blurs the deeper ones — nature's tiled
-# perspective view.
+# Partial metal mirror (0.6) + deep DOF (tight aperture, high f-stop): keep the
+# floor reflections and the tiled-perspective echo sharp through the recession.
 B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0),
-             wall_rough=0.1, wall_metallic=0.6, fstop=1.2)
+             wall_rough=0.1, wall_metallic=0.6, fstop=8.0)
 B.render("octonion_bl")
