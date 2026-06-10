@@ -61,7 +61,10 @@ B.reset()
 B.scene(samples=128)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 MAXIMAL = bool(os.environ.get("BL_MAXIMAL"))   # show only the top doubling's band
-level_mat = {L: B.material(c, rough=0.3, emission=1.8) for L, c in LEVEL_HUE.items()}
+# Emit AWAY from the camera only (never into the lens): the level colour
+# backlights and reflects rather than firing flat at the viewer.
+level_mat = {L: B.material(c, rough=0.3, emission=5.0, emission_away=VIEW)
+             for L, c in LEVEL_HUE.items()}
 
 # Center-out layout: reorder each axis so the CD level forms a VALLEY (low centre,
 # high ends), so the 𝕆 step rides the rim and the structure grows centre-out.
