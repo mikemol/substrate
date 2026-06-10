@@ -30,6 +30,7 @@ import math
 import numpy as np
 import bpy
 import bmesh
+import mathutils
 import _blender as B
 
 B.OUT = _H / "out"; B.OUT.mkdir(exist_ok=True)
@@ -37,11 +38,18 @@ B.OUT = _H / "out"; B.OUT.mkdir(exist_ok=True)
 GLOW = None   # inset inscription glow material; built after B.reset() (which wipes data)
 
 
-def inscribe(cap, label, x, y, rad, zt, updown, size=0.28, pitch=0.34, depth=0.08):
-    """Engrave `label` vertically into the −Y front of capsule `cap` (at world x,y,
-    spanning band magnitude [.., zt] on the `updown` side) and glow the recess
-    floor. Top→down; downward capsules (updown<0) are flipped upside-down so they
-    read like an inverted column."""
+def inscribe(cap, label, x, y, rad, zt, updown, face, size=0.28, pitch=0.34, depth=0.08):
+    """Engrave `label` vertically into the CAMERA-FACING side of capsule `cap` (at
+    world x,y, band magnitude .. zt on the `updown` side) and glow the recess floor.
+    `face` = horizontal unit vector toward the camera, so we look straight into the
+    recess. Top→down; downward capsules (updown<0) flip upside-down."""
+    n = mathutils.Vector((face[0], face[1], 0.0)).normalized()
+    up = mathutils.Vector((0.0, 0.0, 1.0))
+    xax = up.cross(n).normalized()
+    # text local axes (X baseline, Y up, Z normal→camera); flip = upside-down
+    rows = (-xax, -up, n) if updown < 0 else (xax, up, n)
+    rot = mathutils.Matrix(rows).transposed().to_euler()
+    d_n = rad + 0.02 - depth                   # text centre out along n (front just proud)
     objs = []
     for i, ch in enumerate(label):
         cu = bpy.data.curves.new("t", "FONT")
@@ -49,8 +57,8 @@ def inscribe(cap, label, x, y, rad, zt, updown, size=0.28, pitch=0.34, depth=0.0
         cu.align_x = "CENTER"; cu.align_y = "CENTER"
         o = bpy.data.objects.new("ch", cu)
         bpy.context.scene.collection.objects.link(o)
-        o.rotation_euler = (-math.pi / 2, math.pi if updown < 0 else 0.0, 0.0)
-        o.location = (x, y - rad - 0.02 + depth, updown * (zt - pitch * (i + 0.7)))
+        o.rotation_euler = rot
+        o.location = (x + d_n * n.x, y + d_n * n.y, updown * (zt - pitch * (i + 0.7)))
         for s in bpy.context.selected_objects:
             s.select_set(False)
         o.select_set(True); bpy.context.view_layer.objects.active = o
@@ -73,9 +81,11 @@ def inscribe(cap, label, x, y, rad, zt, updown, size=0.28, pitch=0.34, depth=0.0
         me.materials.append(GLOW)
     gi = me.materials.find(GLOW.name)
     bm = bmesh.new(); bm.from_mesh(me)
-    for f in bm.faces:                         # recess floor: recessed, faces the lens
-        cen = f.calc_center_median()
-        if cen.y > y - rad + 0.03 and cen.y < y and f.normal.y < -0.3:
+    for f in bm.faces:                         # recess FLOOR only: a curved body face
+        cen = f.calc_center_median()           # sits ON the cylinder (p_n == rad·nn);
+        p_n = (cen.x - x) * n.x + (cen.y - y) * n.y   # the engraved floor is recessed
+        nn = f.normal.dot(n)                   # BELOW that, so p_n < rad·nn.
+        if nn > 0.5 and p_n < rad * nn - 0.04:
             f.material_index = gi
     bm.to_mesh(me); bm.free()
 
@@ -106,7 +116,7 @@ LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 
 
 B.reset()
 B.scene(samples=128)
-GLOW = B.material("#ffffff", emission=32.0)   # inset inscription glow (blooms later)
+GLOW = B.material("#ffffff", emission=12.0)   # inset inscription glow (blooms later)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
 # sign — emission &= (my-normal-axis == sign-axis). σ_L=+ glows from the back (+Y)
@@ -141,9 +151,9 @@ for r in range(8):
         # One-mesh capsule spanning [z0, z1] on the updown side — no cylinder/cap
         # seam, so the backlight gate gradients smoothly over the pawn.
         cap = B.capsule((x, y, updown * z0), (x, y, updown * z1), 0.4, mat)
-        # Inscribe the result unit e_{r⊕c}, engraved + glowing, top→down (flipped
-        # on downward pawns so they read upside-down).
-        inscribe(cap, "e" + str(r ^ c), x, y, 0.4, z1, updown)
+        # Inscribe the result unit e_{r⊕c}, engraved + glowing, facing the camera,
+        # top→down (flipped on downward pawns so they read upside-down).
+        inscribe(cap, "e" + str(r ^ c), x, y, 0.4, z1, updown, VIEW)
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
