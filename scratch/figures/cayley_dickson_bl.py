@@ -8,11 +8,12 @@ each a single hue (ℂ blue, ℍ green, 𝕆 orange). So a horizontal z=n slice 
 level = ONE colour for every column at that height — colour is a pure function of
 z — and the dimension-doubling is legible as the band heights.
 
-For each product e_r·e_c, every doubling level L it spans (1 … max operand level)
-gets a segment in level L's band, placed ABOVE the grid plane if σ_L = + and BELOW
-if σ_L = −. So the per-level sign is read as up/down per band, while the colour
-stays locked to the level. Position is the grid (center-out: 𝕆 on the rim); the
-result unit is e_{r⊕c} (recoverable from position).
+Each product is a column of height h = |result index| (e_{r⊕c}), rising (+) or
+descending (−) by the product's overall sign, coloured by the level bands it
+passes through — so it tops out in its OWN level's band (h=1 → ℂ, h∈[2,3] → ℍ,
+h∈[4,7] → 𝕆). Column heights vary 1…7 (the result magnitude, as in octonion_bl),
+z-slices stay one colour, and the band boundaries 1,3,7 are the doublings.
+Position is the grid (center-out: 𝕆 on the rim).
 
     blender --background --python scratch/figures/cayley_dickson_bl.py
     BL_MAXIMAL=1 ...   # only the top doubling's band (line-of-sight freed)
@@ -69,20 +70,21 @@ pos = [0] * 8
 for slot, u in enumerate(AXIS):
     pos[u] = slot
 
+BOUND = [0, 1, 3, 7]   # level z-boundaries = max result index per level; heights 1,2,4
 for r in range(8):
     for c in range(8):
         h, s, sigma = cd_mult(3, r, c)
         if h <= 0:
             continue
-        maxlev = max(int(r).bit_length(), int(c).bit_length())   # levels this product spans
-        for L in range(1, maxlev + 1):
-            if MAXIMAL and L != maxlev:
+        side = 1 if s >= 0 else -1               # overall product sign: up (+) / down (−)
+        for L in range(1, 4):
+            z0, z1 = BOUND[L - 1], min(BOUND[L], h)
+            if z1 <= z0:
+                break                            # height-h column doesn't reach level L
+            if MAXIMAL and L != h.bit_length():
                 continue
-            side = 1 if sigma[L] > 0 else -1     # σ_L: + above the grid plane, − below
-            height = 2 ** (L - 1)                # CD dimension doubling: ℂ 1, ℍ 2, 𝕆 4
-            center = (height - 1) + height / 2.0  # contiguous bands |z|: [0,1],[1,3],[3,7]
-            B.box_cube((pos[c], pos[r], side * center), (0.82, 0.82, height * 0.9),
-                       level_mat[L])
+            B.box_cube((pos[c], pos[r], side * (z0 + z1) / 2.0),
+                       (0.82, 0.82, z1 - z0), level_mat[L])
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
