@@ -2,10 +2,11 @@
 """Octonion table as a Cayley–Dickson tower — z IS the CD level. Blender/Cycles.
 
 The CD sign cocycle factorises: e_i·e_j = (∏_L σ_L)·e_{i⊕j}, with σ_L ∈ {±1} the
-sign introduced at doubling level L. Here the VERTICAL axis is the level itself:
-ℂ occupies |z|∈[0,1], ℍ |z|∈[1,2], 𝕆 |z|∈[2,3], each a single hue
-(ℂ blue, ℍ green, 𝕆 orange). So a horizontal z=n slice is ONE level = ONE colour,
-for every column at that height — colour is a pure function of z.
+sign introduced at doubling level L. Here the VERTICAL axis is the level itself, and each band's HEIGHT doubles with
+the CD dimension (ℂ 1, ℍ 2, 𝕆 4): ℂ occupies |z|∈[0,1], ℍ |z|∈[1,3], 𝕆 |z|∈[3,7],
+each a single hue (ℂ blue, ℍ green, 𝕆 orange). So a horizontal z=n slice is ONE
+level = ONE colour for every column at that height — colour is a pure function of
+z — and the dimension-doubling is legible as the band heights.
 
 For each product e_r·e_c, every doubling level L it spans (1 … max operand level)
 gets a segment in level L's band, placed ABOVE the grid plane if σ_L = + and BELOW
@@ -78,7 +79,9 @@ for r in range(8):
             if MAXIMAL and L != maxlev:
                 continue
             side = 1 if sigma[L] > 0 else -1     # σ_L: + above the grid plane, − below
-            B.box_cube((pos[c], pos[r], side * (L - 0.5)), (0.82, 0.82, 0.9),
+            height = 2 ** (L - 1)                # CD dimension doubling: ℂ 1, ℍ 2, 𝕆 4
+            center = (height - 1) + height / 2.0  # contiguous bands |z|: [0,1],[1,3],[3,7]
+            B.box_cube((pos[c], pos[r], side * center), (0.82, 0.82, height * 0.9),
                        level_mat[L])
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
