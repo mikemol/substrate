@@ -19,8 +19,8 @@ sign, idx = octonion_table()
 B.reset()
 B.scene(samples=128)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
-POS = B.material("#E69F00", rough=0.15, emission=30.0, emission_away=VIEW)
-NEG = B.material("#0072B2", rough=0.15, emission=30.0, emission_away=VIEW)
+POS = B.material("#E69F00", rough=0.15, emission=15.0, emission_away=VIEW)
+NEG = B.material("#0072B2", rough=0.15, emission=15.0, emission_away=VIEW)
 
 centers = []
 for r in range(8):
