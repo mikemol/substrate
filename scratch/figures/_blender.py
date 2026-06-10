@@ -121,7 +121,7 @@ def scene(samples=192, res=(1000, 1000), bg="#e9eef5", haze=0.0, bounces=32):
 
 
 def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0,
-             emission_backface=False, emission_color=None):
+             emission_backface=False, emission_horizontal=False, emission_color=None):
     mat = bpy.data.materials.new("m")
     mat.use_nodes = True
     nt = mat.node_tree
@@ -141,6 +141,19 @@ def material(color, rough=0.5, alpha=1.0, metallic=0.0, emission=0.0,
             mul = nt.nodes.new("ShaderNodeMath"); mul.operation = "MULTIPLY"
             mul.inputs[1].default_value = emission
             nt.links.new(geo.outputs["Backfacing"], mul.inputs[0])
+            nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
+        elif emission_horizontal and emission > 0:
+            # Emit only from HORIZONTAL faces (the bar caps): gate Emission
+            # Strength by |normal.z| — 1 on ±Z-facing faces, 0 on the vertical
+            # sides. (World-space normal; the bars are axis-aligned boxes.)
+            geo = nt.nodes.new("ShaderNodeNewGeometry")
+            sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+            nt.links.new(geo.outputs["Normal"], sep.inputs[0])
+            absz = nt.nodes.new("ShaderNodeMath"); absz.operation = "ABSOLUTE"
+            nt.links.new(sep.outputs["Z"], absz.inputs[0])
+            mul = nt.nodes.new("ShaderNodeMath"); mul.operation = "MULTIPLY"
+            mul.inputs[1].default_value = emission
+            nt.links.new(absz.outputs[0], mul.inputs[0])
             nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
         else:
             b.inputs["Emission Strength"].default_value = emission
@@ -333,6 +346,13 @@ def join_data(name="Data"):
         bpy.ops.object.join()
     obj = bpy.context.view_layer.objects.active
     obj.name = name
+    # Bake the join target's transform into the mesh. The join inherits meshes[0]'s
+    # matrix_world; if that first mesh was a tube (which carries an aim rotation),
+    # obj.dimensions — measured along the object's LOCAL axes — would disagree with
+    # _bbox's WORLD axes, and the dimension-driven walls would land on the wrong
+    # axes while the box maths stayed correct. Applying rotation/scale makes local
+    # == world, so dimensions and _bbox agree for every figure.
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
     return obj
 
 
@@ -377,7 +397,7 @@ def parametric_diagonal_rig(diag, r, theta_deg=5.0):
 
 def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
                floor_only=False, spots=True, spot_deg=30.0, spot_energy=300.0,
-               pinhole=0.012):
+               pinhole=0.012, graze_factor=0.5):
     """Floor + two back walls driven to box = factor x data, with the data
     placed per the `align` thirds-index on each axis (see _box_center_coeffs).
 
@@ -497,7 +517,7 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
         # Grazing wall-wash: spots running ALONG the box edges, aimed parallel to
         # the wall (a constant axis — NOT through the centre), so the beam skims
         # the surface. Driven position (reflows with the box), constant rotation.
-        graze_energy = spot_energy * 0.5
+        graze_energy = spot_energy * graze_factor
         def make_grazer(level, aim, up="Z"):
             ld = bpy.data.lights.new("grazer", "SPOT")
             ld.spot_size = math.radians(2.0 * spot_deg)
@@ -563,9 +583,10 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
 
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
-               margin=MARGIN, floor_only=False, color="#dadada"):
+               margin=MARGIN, floor_only=False, color="#dadada", graze_factor=0.5):
     """Box (drivers) + camera (native fit), sharing factor/align."""
-    driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only)
+    driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only,
+               graze_factor=graze_factor)
     return driven_camera(data, direction=direction, margin=margin, factor=factor,
                          align=align)
 

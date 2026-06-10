@@ -32,7 +32,9 @@ for k in range(4):
         c = (radius * math.cos(ang), radius * math.sin(ang), z)
         allpts.append(c)
         B.sphere(c, 0.16, mats[k])
-B.tube((0, 0, 0), (0, 0, 3 * GAP), 0.05, B.material("#cccccc", rough=0.6))
+# Center pole-light: a bright white emissive axis that dominates the room.
+B.tube((0, 0, 0), (0, 0, 3 * GAP), 0.05,
+       B.material("#ffffff", emission=60.0, emission_color="#ffffff"))
 
 # ★ fold arcs as bowed tubes (sampled splines via short segments).
 for a, b, col in ((0, 3, "#D55E00"), (1, 2, "#0072B2")):
@@ -44,5 +46,5 @@ for a, b, col in ((0, 3, "#D55E00"), (1, 2, "#0072B2")):
         B.tube(pts[i], pts[i + 1], 0.035, cmat)
 
 data = B.join_data()
-B.driven_rig(data, direction=(1, -0.8, 0.45), align=(0, 0, -1))
+B.driven_rig(data, direction=(1, -0.8, 0.45), align=(0, 0, -1), graze_factor=0.1)
 B.render("hodge_bl")

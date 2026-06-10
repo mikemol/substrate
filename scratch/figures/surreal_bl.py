@@ -61,7 +61,7 @@ def ramp(t):
 
 B.reset()
 B.scene(samples=128)
-emat = B.material("#cccccc", rough=0.6)
+emat = B.material("#ffffff", emission=15.0, emission_color="#ffffff")
 for a, b in edges:
     B.tube(coord(a), coord(b), 0.02, emat)
 for v, d in nodes:

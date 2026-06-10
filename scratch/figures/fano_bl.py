@@ -37,9 +37,19 @@ for a in corners:
         if abs(np.sum(np.abs(a - b)) - 1) < 1e-9 and tuple(a) < tuple(b):
             B.tube(a, b, 0.006, cube_mat)
 
-# The 7 Fano lines as translucent teal triangles (real Cycles transparency).
-line_mat = B.material(LINE_C, rough=0.3, alpha=0.4)
-B.polys([np.array([V[t] for t in tri]) for tri in LINES.values()], line_mat, smooth=True)
+# The 7 Fano lines as translucent triangles (real Cycles transparency), cycled
+# through the Okabe-Ito palette in SINGER 7-cycle order — the colour progression
+# tracks the same cyclic symmetry drawn as the Singer orbit below (line k is the
+# k-th Singer image of the base line).
+OKABE7 = ["#E69F00", "#56B4E9", "#009E73", "#F0E442",
+          "#0072B2", "#D55E00", "#CC79A7"]
+by_set = {frozenset(tri): tri for tri in LINES.values()}
+cur = frozenset(next(iter(LINES.values())))
+for i in range(7):
+    tri = by_set[cur]
+    B.polys([np.array([V[t] for t in tri])],
+            B.material(OKABE7[i], rough=0.3, alpha=0.45), smooth=True)
+    cur = frozenset(SINGER[p] for p in cur)
 
 # Points (blue) + origin (grey).
 pmat = B.material(POINT_C, rough=0.35, metallic=0.1)

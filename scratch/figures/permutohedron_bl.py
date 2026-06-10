@@ -40,7 +40,8 @@ gen_color = {"s1": B.PALETTE[0], "s2": B.PALETTE[1], "s3": B.PALETTE[3]}
 B.reset()
 B.scene(samples=160, haze=0.0)
 
-mats = {g: B.material(c, rough=0.4) for g, c in gen_color.items()}
+mats = {g: B.material(c, rough=0.4, emission=16.0, emission_color=c)
+        for g, c in gen_color.items()}
 for u, v, d in P.graph.edges(data=True):
     B.tube(coords[idx[u]], coords[idx[v]], 0.012, mats[d["generator"]])
 for i, p in enumerate(P.nodes_list):
@@ -50,5 +51,5 @@ for i, p in enumerate(P.nodes_list):
 # Declarative rig: join the data, then let the box scale to 1.5x its bbox and
 # the camera back off to frame it — both driven, no manual bounds/distance.
 data = B.join_data()
-B.driven_rig(data, direction=(1.0, -0.95, 0.62))
+B.driven_rig(data, direction=(1.0, -0.95, 0.62), graze_factor=0.1)
 B.render("permutohedron_bl")

@@ -25,12 +25,17 @@ coords = np.array([pos[n] for n in nodes]) * 6.0
 
 B.reset()
 B.scene(samples=128)
-mats = [B.material(B.PALETTE[i % len(B.PALETTE)], rough=0.4, metallic=0.1) for i in range(len(comps))]
-emat = B.material("#bbbbbb", rough=0.6)
+mats = [B.material(B.PALETTE[i % len(B.PALETTE)], rough=0.2, alpha=0.4)
+        for i in range(len(comps))]
+# Light up the EDGES (the similarity web), coloured by connected component —
+# every edge is intra-component, so each cluster's web glows in its own colour.
+emats = [B.material(B.PALETTE[i % len(B.PALETTE)], emission=32.0,
+                    emission_color=B.PALETTE[i % len(B.PALETTE)])
+         for i in range(len(comps))]
 for u, v in G.edges():
-    B.tube(coords[nidx[u]], coords[nidx[v]], 0.02, emat)
+    B.tube(coords[nidx[u]], coords[nidx[v]], 0.05, emats[comp_of[u]])
 for n in nodes:
-    B.sphere(coords[nidx[n]], 0.13, mats[comp_of[n]])
+    B.sphere(coords[nidx[n]], 0.38, mats[comp_of[n]])
 
 data = B.join_data()
 B.driven_rig(data, direction=(1, -0.9, 0.55))
