@@ -116,14 +116,14 @@ LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 
 
 B.reset()
 B.scene(samples=128, haze=0.07)               # volumetric haze → bloom near lights
-GLOW = B.material("#ffffff", emission=12.0)   # inset inscription glow
+GLOW = B.material("#ffffff", emission=30.0)   # inset inscription glow (bloom seed)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
 # sign — emission &= (my-normal-axis == sign-axis). σ_L=+ glows from the back (+Y)
 # away-face, σ_L=− from the left (−X). The away-gate keeps it off the lens; no
 # camera change needed.
 SIGN_AXIS = {1: (0, 1, 0), -1: (1, 0, 0)}   # +: +Y back  ;  −: −X left
-level_mat = {(L, sd): B.material(c, rough=0.3, emission=5.0,
+level_mat = {(L, sd): B.material(c, rough=0.3, emission=12.0,
                                  emission_away=VIEW, emission_axis=SIGN_AXIS[sd])
              for L, c in LEVEL_HUE.items() for sd in (1, -1)}
 
