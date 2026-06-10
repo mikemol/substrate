@@ -37,8 +37,8 @@ for r in range(8):
         centers.append((c, r, s * h))
 data = B.join_data()
 # Pull the bars forward (−Y, toward the camera) off the back wall so the
-# away-face backlight isn't pooling on it: half a cell of the box's nested
-# rule-of-thirds (9 cells/axis). One align unit = box/6 = 1.5 cells, so half a
-# cell = align 1/3; forward (away from the +Y back wall) is negative.
-B.driven_rig(data, direction=VIEW, align=(0, -1.0 / 3, 0))
+# away-face backlight isn't pooling on it: the box's nested rule-of-thirds is 9
+# cells/axis, one align unit = box/6 = 1.5 cells, so a cell = align 2/3. A full
+# cell forward (two half-cells) = align −2/3; forward (off the +Y wall) is negative.
+B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0))
 B.render("octonion_bl")
