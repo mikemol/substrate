@@ -376,7 +376,7 @@ def parametric_diagonal_rig(diag, r, theta_deg=5.0):
 
 
 def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
-               floor_only=False, spots=True, spot_deg=5.0, spot_energy=900.0,
+               floor_only=False, spots=True, spot_deg=30.0, spot_energy=300.0,
                pinhole=0.012):
     """Floor + two back walls driven to box = factor x data, with the data
     placed per the `align` thirds-index on each axis (see _box_center_coeffs).
@@ -397,6 +397,11 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
         box_wire((bc[0]-0.5*f*dx, bc[0]+0.5*f*dx, bc[1]-0.5*f*dy, bc[1]+0.5*f*dy,
                   bc[2]-0.5*f*dz, bc[2]+0.5*f*dz), "#ff3333")
     mat = material(color, rough=0.9)
+    # The walls live in their own collection so a view layer can hole-punch them:
+    # render_pip can exclude "DiegeticBox" from the inset scene's view layer, so
+    # the closeup camera sees straight through the walls to the geometry inside.
+    box_coll = bpy.data.collections.new("DiegeticBox")
+    bpy.context.scene.collection.children.link(box_coll)
 
     def lin(const, coef, dim):                  # location channel: const + coef·dim
         if abs(coef) < 1e-12:
@@ -410,6 +415,9 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
         bpy.ops.mesh.primitive_plane_add()
         o = bpy.context.active_object; o.name = name; o.rotation_euler = rot
         o.data.materials.append(mat)
+        for coll in list(o.users_collection):   # relink into the box collection
+            coll.objects.unlink(o)
+        box_coll.objects.link(o)
         for i, (e, v) in enumerate((locx, locy, locz)):
             _driver(o, "location", i, e, v)
         for i, (e, v) in enumerate((scx, scy)):
@@ -485,6 +493,35 @@ def driven_box(data, factor=1.5, align=(0, 0, 0), color="#dadada",
                         level = [0.0, 0.0, 0.0]
                         level[o0] = f0; level[o1] = f1; level[vary] = vt
                         make_spot(level)
+
+        # Grazing wall-wash: spots running ALONG the box edges, aimed parallel to
+        # the wall (a constant axis — NOT through the centre), so the beam skims
+        # the surface. Driven position (reflows with the box), constant rotation.
+        graze_energy = spot_energy * 0.5
+        def make_grazer(level, aim, up="Z"):
+            ld = bpy.data.lights.new("grazer", "SPOT")
+            ld.spot_size = math.radians(2.0 * spot_deg)
+            ld.spot_blend = 0.5
+            ld.shadow_soft_size = R_disk
+            ld.energy = graze_energy
+            lo = bpy.data.objects.new("grazer", ld)
+            bpy.context.scene.collection.objects.link(lo)
+            lo.location = tuple(c[i] + (k[i] + level[i] * 0.5 * f) * dd[i] for i in range(3))
+            for i in range(3):
+                e, v = lin(c[i], k[i] + level[i] * 0.5 * f, dims3[i])
+                _driver(lo, "location", i, e, v)
+            lo.rotation_euler = mathutils.Vector(aim).to_track_quat("-Z", up).to_euler()
+
+        SAMP = (-0.6, 0.0, 0.6)
+        for s in SAMP:
+            # Top edges → rake straight down, parallel to the vertical walls.
+            make_grazer([s, 1.0, 1.0], (0, 0, -1), up="Y")     # top-back
+            make_grazer([-1.0, s, 1.0], (0, 0, -1), up="Y")    # top-left
+            make_grazer([s, -1.0, 1.0], (0, 0, -1), up="Y")    # top-front (outer)
+            make_grazer([1.0, s, 1.0], (0, 0, -1), up="Y")     # top-right (outer)
+            # Outer vertical edges → rake horizontally along the rendered walls.
+            make_grazer([-1.0, -1.0, s], (0, 1, 0))            # left wall, toward back
+            make_grazer([1.0, 1.0, s], (-1, 0, 0))             # back wall, toward left
 
 
 def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
@@ -591,7 +628,8 @@ def pip(main_name, inset_name, out_name, frac=0.42, pad_frac=0.025, border=5,
     print(f"BL_WROTE {OUT / f'{out_name}.png'}")
 
 
-def render_pip(name, main_cam, inset_cam, frac=0.4, pad_frac=0.03, hdr=True):
+def render_pip(name, main_cam, inset_cam, frac=0.4, pad_frac=0.03, hdr=True,
+               inset_hide=()):
     """Picture-in-picture the Duke-Nukem-3D way: two cameras on ONE scene's
     geometry, both rendered live in a single pass and composited — the inset is
     never collapsed to a flat image in between.
@@ -600,7 +638,11 @@ def render_pip(name, main_cam, inset_cam, frac=0.4, pad_frac=0.03, hdr=True):
     stays single-user — geometry in memory exactly once), carrying only its own
     camera and a smaller resolution. The main scene's compositor then pulls TWO
     live Render Layers (one per scene) and lays the inset over the main; rendering
-    the main scene renders both and composites them in the same invocation."""
+    the main scene renders both and composites them in the same invocation.
+
+    `inset_hide`: collection names to exclude from the INSET scene's view layer
+    only — a per-view hole-punch (e.g. "DiegeticBox" so the closeup sees through
+    the walls). The main scene keeps them; same geometry, two visibility sets."""
     sc = bpy.context.scene
     sc.camera = main_cam
     W, H = sc.render.resolution_x, sc.render.resolution_y
@@ -613,6 +655,14 @@ def render_pip(name, main_cam, inset_cam, frac=0.4, pad_frac=0.03, hdr=True):
     inset_sc.name = f"{name}_inset_scene"
     inset_sc.camera = inset_cam
     inset_sc.compositing_node_group = None              # the inset renders raw
+    inset_sc.render.film_transparent = True             # only geometry is opaque —
+    # the empty background stays alpha-0 so the inset doesn't occlude the main
+    # diorama (leaves the area clear for metrical marks / annotations).
+    # Hole-punch: drop the named collections from the inset's view layer only.
+    for cname in inset_hide:
+        lc = inset_sc.view_layers[0].layer_collection.children.get(cname)
+        if lc is not None:
+            lc.exclude = True
 
     # Main compositor: two live render layers (main + inset) → Scale → Translate
     # → Alpha Over.
