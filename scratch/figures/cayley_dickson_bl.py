@@ -50,6 +50,15 @@ for step, (cp, cm) in CD_PAIRS.items():
     mats[(step, 1)] = B.material(cp, rough=0.15, emission=6.5, emission_away=VIEW)
     mats[(step, -1)] = B.material(cm, rough=0.15, emission=6.5, emission_away=VIEW)
 
+# Center-out layout: reorder each axis so the CD level forms a VALLEY — lowest at
+# the centre, highest at the ends — so max(level(r),level(c)) reads as concentric
+# square rings: ℂ at the 2×2 core, ℍ as the 4×4 ring, 𝕆 on the rim. The octonion
+# step sits at the rim and the structure grows centre-out, not corner-to-corner.
+AXIS = [4, 5, 2, 0, 1, 3, 6, 7]   # unit at each axis slot (levels 3,3,2,0,1,2,3,3)
+pos = [0] * 8
+for slot, u in enumerate(AXIS):
+    pos[u] = slot
+
 centers = []
 for r in range(8):
     for c in range(8):
@@ -59,8 +68,9 @@ for r in range(8):
         # +products rise above the z=0 grid plane, −products descend below it;
         # hue = the CD doubling the sign comes from, light/dark = the sign.
         s = 1 if sign[r, c] >= 0 else -1
-        B.box_cube((c, r, s * h / 2), (0.82, 0.82, h), mats[(cd_step(r, c), s)])
-        centers.append((c, r, s * h))
+        B.box_cube((pos[c], pos[r], s * h / 2), (0.82, 0.82, h),
+                   mats[(cd_step(r, c), s)])
+        centers.append((pos[c], pos[r], s * h))
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
