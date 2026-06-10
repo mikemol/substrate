@@ -604,13 +604,13 @@ def driven_camera(data, direction=(1.0, -0.9, 0.62), margin=MARGIN, lens=50,
 
 def driven_rig(data, direction=(1.0, -0.9, 0.62), align=(0, 0, 0), factor=1.5,
                margin=MARGIN, floor_only=False, color="#dadada", graze_factor=0.5,
-               wall_rough=0.9, wall_metallic=0.0):
+               wall_rough=0.9, wall_metallic=0.0, fstop=2.0):
     """Box (drivers) + camera (native fit), sharing factor/align."""
     driven_box(data, factor=factor, align=align, color=color, floor_only=floor_only,
                graze_factor=graze_factor, wall_rough=wall_rough,
                wall_metallic=wall_metallic)
     return driven_camera(data, direction=direction, margin=margin, factor=factor,
-                         align=align)
+                         align=align, fstop=fstop)
 
 
 def _overlay_thirds(path):
