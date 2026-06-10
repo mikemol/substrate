@@ -115,7 +115,7 @@ def cd_mult(level, i, j):
 LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 𝕆 orange
 
 B.reset()
-B.scene(samples=128, haze=0.03)               # light volumetric haze → bloom near lights
+B.scene(samples=128, haze=0.07)               # volumetric haze → bloom near lights
 GLOW = B.material("#ffffff", emission=12.0)   # inset inscription glow
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
@@ -158,5 +158,5 @@ data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
 B.driven_rig(data, direction=VIEW, align=(0, -2.0 / 3, 0),
-             wall_rough=0.1, wall_metallic=1.0, fstop=8.0, wall_span=10.0)
+             wall_rough=0.1, wall_metallic=1.0, fstop=16.0, wall_span=10.0)
 B.render("cayley_dickson_bl")
