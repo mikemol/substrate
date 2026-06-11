@@ -2592,3 +2592,42 @@ vs the brick protocol. None are bibliographic. SCHEMA UPGRADE
 PROVENANCE/INDEPENDENCE field — every future convergence claim
 declares the construction paths and their independence status
 before it may be typed as cogrounding.
+
+## S36: ERRATUM — PROVENANCE OF THE REVIEW AND THE WORKS-CITED;
+## A COGROUNDING CLAIM WITHDRAWN AS SELF-OVERLAP
+AUTHOR CORRECTION, two steps. (i) The external review and its followup
+literature map (S31's B-series source) were a USER-RELAYED message,
+one context flush back; their object was the ATLAS TARBALL — correctly
+typed in S31, restated here for the record. (ii) SPECIFICALLY: the
+22-entry "Works cited" at the end of 05-analysis-treatise.md was
+PROVIDED BY THAT SAME REVIEWING LLM after it reviewed the atlas
+script, and entered the Drive doc thereafter — it is reviewer-
+provenance (June 2026), NOT January corpus, despite residing in the
+fetched doc. WITHDRAWN from S35: "the semiring bridge sits in the
+source's own bibliography" and "the overlap is itself cogrounding
+evidence." The claimed overlap compared the reviewer's required set
+with the reviewer's own URL list — SELF-OVERLAP, evidence of nothing.
+Semiring-weighted Earley appears NOWHERE in the January body; the
+reviewer cited it because it had just read the atlas's semiring
+claims. SURVIVES: (a) the January body's INLINE references are the
+genuine source-side anchors — Parsing-as-Deduction, HoTT/Martin-Lof,
+homological stability stated with its formula, Simplicial Complex
+Representation Learning, Merkle, Lojban, AMR, Structuralism, the Coq
+"admit" comparison; (b) the cogrounding evidence class reduces to the
+STRUCTURAL convergences only — IntegerDef as the cross-addition
+carrier, proof-carrying authorization vs v3.8, prohibition-as-
+de-stating, Boolean-where-decidable, Fact/Potential vs the grace
+stratification — none bibliographic; (c) COC-1, COC-2, COC-3
+unaffected (all body-level); the Lojban/AMR seal, homological-
+stability thread, and Betti-profile glue unaffected (body-level).
+B7 PROVENANCE SPLIT: reviewer-provided URL list = candidate anchors
+to verify before import; body-inline mentions = corpus-side
+references. PROTOCOL UPGRADE (brick reading): recovered documents can
+be TEMPORALLY COMPOSITE — captures gain a PROVENANCE STRATUM (type
+the when-layer per section; in-doc position is not authorship;
+recovery headers record fetch-time content only). Sidecar
+PROVENANCE-NOTE.md added beside the snapshots, snapshots unmodified.
+LESSON (charter-grade): a cogrounding claim must pass an independence-
+of-construction-paths gate before banking; bibliographic material
+fails it by default, and fetch-time document membership is not a
+construction path.

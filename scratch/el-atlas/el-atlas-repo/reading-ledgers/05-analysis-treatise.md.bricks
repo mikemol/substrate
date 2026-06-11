@@ -165,3 +165,11 @@ B2 73-287 DONE
 ## bibliographic overlap between two LLM-assembled lists is common-cause,
 ## not convergence. The works-cited entries remain candidate anchors for
 ## B7 under verify-then-import. Original text retained per append-only.
+
+## ERRATUM (author correction, 2026-06-11) — works-cited provenance
+The H2 ACT entry attributing the 22-entry works-cited to the source is
+WITHDRAWN. The list is the external reviewer's output (provided to the
+author after it reviewed the atlas script) and is not January corpus.
+Body-inline references survive as the source-side anchors (see
+recovered/system-pi-v2.37.1/PROVENANCE-NOTE.md). The "merge-and-extend
++ overlap as cogrounding" line is corrected in cotype S36.
