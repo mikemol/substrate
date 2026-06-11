@@ -1275,3 +1275,48 @@ as we adopt them... zero-divisors can be resolved through REPRESENTATION-AS-RATI
 ZD-locus ↔ tropical-corner functor itself (the corpus program's open problem 6.1/7.3
 — upstream of the atlas; adjacency only).
 Draft 18 committed; structured-edition regen expected no-op (claim set unchanged).
+
+## v3.3: THE CLEAVAGE RUN (user: "if we add a bunch and discover no new cleavages, that's weird")
+**The user's suspicion was correct and aimed at the instrument:** the draft-17/18 regen
+no-ops were GUARANTEED (claim set never grew) — non-informative, not reassuring. Fixed
+per the admission rule: knobs coeff∈{real,gf2}, cdlevel∈{2,4,8,16}, norm+='pinned_l2'
+(provenance: char-2 collapse [W]; radial entailment; two-magnitude-pinnings); claims
++= TWN (the twist), RAD (Hurwitz radial schedule), ZDG (zero-divisor schedule), PR2
+(sphere prohibition). New space S_94763a8b62ea (36,864 models, exhaustive).
+
+**DISCOVERED CLEAVAGES (machine-found, not asserted):**
+1. **{TWN, PHS} SEPARATED — 768 truth-separators, co-movement 0.94.** PHASE IS NOT THE
+   TWIST: there are models with the twist present and phase false (wrong/affine
+   sections) or unstatable (forced/absent sections). Phase = the twist AS SEEN AGAINST
+   the classical section — draft-13's "phase = extension class" refined: the class
+   alone is necessary, not sufficient; the section supplies the support. One-way
+   dependence PHS→TWN now explicit in the digraph.
+2. **{RAD, ZDG} NEW CIRCLE — unseparated, co-movement 1.00.** The Hurwitz schedule and
+   the zero-divisor schedule co-move across the entire space: radial-multiplicativity
+   loss and zero-divisor appearance are (so far) one structure — the instrument
+   rediscovering composition-algebra ⇔ no-zero-divisors as a co-movement fact. RAD is
+   never F in-space → classifier marks the circle expressibility-flavored; honesty
+   note: both are schedule-iff claims, so co-movement is partly built into their
+   shared form — frontier work: separate the schedules' WITNESS structure.
+3. **{D4C, TWN} NEW CIRCLE — unseparated 1.00** at layer 1. Honesty note: TWN is near
+   D4C's content restated at the interface level; co-movement partly by construction.
+4. **THE CHARACTERISTIC-2 CLEAVAGE:** coeff=gf2 moves {TWN F, RAD V, ZDG F, V4I F,
+   D4C F, PHS V, RLS F, T53 V} and leaves every carrier-codec claim fixed — the claim
+   set now PARTITIONS into sign-structure vs carrier-codec families along a single
+   knob. New separating axis for previously-fused pairs; knob-sensitivity rows updated.
+5. **{PRO, PR2} and {PUR, PR2}: 0 truth-separators ever; 4096 kind-separators;
+   co-movement 0.88.** PR2, like PRO, is never F — BOTH prohibitions are theorems; the
+   two never truth-separate. THE PROHIBITION IS PINNING-GENERIC: one theorem schema,
+   two magnitude instances (L1 simplex / L2 sphere). Kind-separations arise where one
+   pinning leaves the other's theorem statable (test-semantics note: PRO's V-guard
+   currently keys on L1-pinning only; a symmetric guard would change kind-counts, NOT
+   the zero-truth-separator headline).
+6. **Old circles re-survive the 12× larger space:** {LOC,L26} and {PUR,PRO} unseparated
+   at 1.00 again — second space extension survived; ledger now carries the
+   S_666bf26b7779 verdicts forward.
+
+**STRUCTURED EDITION — REAL STRUCTURAL EVENTS (first non-trivial regen):** 12→14
+chapters; circles {D4C,TWN} and {RAD,ZDG} appear; D4C moves layer 2→1; {PRO,PUR}
+moves layer 3→2; PR2 enters at layer 3 beside T53 and PHS. New perspectives CHAR-2,
+SEDENION, SPHERE in every visibility table. New fingerprint S_94763a8b62ea; all prior
+verdicts retained under their indices.

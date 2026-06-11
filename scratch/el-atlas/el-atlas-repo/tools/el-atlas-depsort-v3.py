@@ -1,5 +1,5 @@
 """
-el-atlas-depsort-v3.py (v3.2) — empirical constitutive analysis (reviewer's name, adopted).
+el-atlas-depsort-v3.py (v3.3) — empirical constitutive analysis (reviewer's name, adopted).
 
 FORMAL SEMANTICS (per the second review, adopted verbatim):
   Claim:        C : S -> {P, F, U, V}
@@ -46,11 +46,12 @@ from itertools import product
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
              ops=['diagonal','linear'],
              lock=['available','unavailable','wrong','clipped','affine','noisy','partial','forced'],
-             norm=['free','pinned'], two_ops=[True,False],
-             basis_def=['ok','singular'])
+             norm=['free','pinned','pinned_l2'], two_ops=[True,False],
+             basis_def=['ok','singular'], coeff=['real','gf2'], cdlevel=[2,4,8,16])
 SPACE = [dict(zip(KNOBS, vals)) for vals in product(*KNOBS.values())]
 BASE = dict(pins=2, adj=True, ident=True, neg=True, ops='linear',
-            lock='available', norm='free', two_ops=True, basis_def='ok')
+            lock='available', norm='free', two_ops=True, basis_def='ok',
+            coeff='real', cdlevel=2)
 TOL = 1e-9
 
 def locus(u, lk):
@@ -101,18 +102,21 @@ def t_L26(m):
     return 'P' if (abs(p[1]-q[0])<TOL and abs(p[0]-q[1])<TOL) else 'F'
 def t_T53(m):
     if not m['neg']: return 'V'
+    if m.get('coeff')=='gf2': return 'V'   # the signed-chart NOT is unstatable in char 2
     if not m['two_ops']: return 'F'
     r=t_L26(m)
     return r if r in ('V','U') else ('P' if r=='P' else 'F')
 def t_V4I(m):
     if m['pins'] < 2 or not m['neg']: return 'V'
+    if m.get('coeff')=='gf2': return 'F'   # -1=+1: the four sign maps collapse; no V4
     return 'P'
 def t_D4C(m):
     if m['pins'] < 2 or not m['neg']: return 'V'
     if m['ops']=='diagonal': return 'V'
+    if m.get('coeff')=='gf2': return 'F'   # NS=SN in char 2: braid trivial
     return 'P'
 def t_PHS(m):
-    if t_D4C(m)!='P': return 'V'
+    if t_D4C(m)!='P': return 'V'   # includes coeff=gf2: no braid, no phase
     if m['lock'] in ('unavailable','forced'): return 'V'
     if m['lock']=='partial': return 'U'
     if m['lock']=='noisy':   return 'U'
@@ -122,6 +126,7 @@ def t_PHS(m):
     return 'P' if (triv_on and not np.allclose(mid@off, S@off)) else 'F'
 def t_RLS(m):
     if m['pins'] < 2 or not m['neg']: return 'V'
+    if m.get('coeff')=='gf2': return 'F'   # negate=identity: F-rail does not land on B
     if m['lock']=='unavailable': return 'V'
     if m['lock'] in ('clipped','partial'): return 'V'   # no rails to state
     if m['lock']=='noisy': return 'U'                   # rail-scale tolerance undecided
@@ -132,8 +137,88 @@ def t_NOE(m):
     if m['pins'] < 2: return 'V'
     return 'P'
 
+import functools as _ft
+
+def _cd_mult_real(x, y):
+    n=len(x)
+    if n==1: return [x[0]*y[0]]
+    h=n//2; a,b=x[:h],x[h:]; c,d=y[:h],y[h:]
+    def conj(z):
+        if len(z)==1: return z
+        hh=len(z)//2
+        return conj(z[:hh])+[-v for v in z[hh:]]
+    ac=_cd_mult_real(a,c); db=_cd_mult_real(conj(d),b)
+    da=_cd_mult_real(d,a); bc=_cd_mult_real(b,conj(c))
+    return [p-q for p,q in zip(ac,db)]+[p+q for p,q in zip(da,bc)]
+
+@_ft.lru_cache(None)
+def _rad_mult_ok(dim):
+    """norm multiplicativity N(xy)=N(x)N(y) over R at this CD level (sampled)."""
+    rng=np.random.default_rng(dim)
+    for _ in range(40):
+        x=list(rng.standard_normal(dim)); y=list(rng.standard_normal(dim))
+        z=_cd_mult_real(x,y)
+        if abs(sum(v*v for v in z) - sum(v*v for v in x)*sum(v*v for v in y)) > 1e-6*max(1,sum(v*v for v in x)*sum(v*v for v in y)):
+            return False
+    return True
+
+@_ft.lru_cache(None)
+def _zd_exists_real(dim):
+    """search basis combinations (e_i+e_j)(e_k-e_l)=0 for a real zero divisor."""
+    if dim < 16: 
+        # exact: composition algebras through dim 8 have no zero divisors
+        return False
+    basis=lambda i: [1.0 if k==i else 0.0 for k in range(dim)]
+    import itertools as _it
+    for i,j in _it.combinations(range(1,dim),2):
+        x=[a+b for a,b in zip(basis(i),basis(j))]
+        for k,l in _it.combinations(range(1,dim),2):
+            if {k,l} & {i,j}: continue
+            y=[a-b for a,b in zip(basis(k),basis(l))]
+            z=_cd_mult_real(x,y)
+            if max(abs(v) for v in z) < 1e-9:
+                return True
+    return False
+
+@_ft.lru_cache(None)
+def _zd_exists_gf2(dim):
+    if dim < 2: return False
+    # (1 + g)^2 = 0 in GF(2)[(Z/2)^n]: e0+e1 squares to zero
+    x=[1,1]+[0]*(dim-2)
+    out=[0]*dim
+    for i in range(dim):
+        if x[i]:
+            for j in range(dim):
+                if x[j]: out[i^j]^=1
+    return max(out)==0
+
+def t_TWN(m):  # the twist is a nontrivial central element of the level group
+    if m['pins'] < 2 or not m['neg']: return 'V'
+    if m['ops']=='diagonal': return 'V'     # the braid needs the cross-read
+    return 'F' if m.get('coeff')=='gf2' else 'P'
+
+def t_RAD(m):  # radial schedule: norm multiplicative iff cdlevel <= 8 (Hurwitz)
+    if m.get('coeff')=='gf2': return 'V'    # norm degenerates: no radius to schedule
+    ok=_rad_mult_ok(m['cdlevel'])
+    return 'P' if (ok == (m['cdlevel'] <= 8)) else 'F'
+
+def t_ZDG(m):  # zero-divisor schedule: ZDs exist iff cdlevel >= 16
+    if m.get('coeff')=='gf2':
+        return 'F'                           # char 2: ZDs at EVERY level >= 2 - schedule violated
+    return 'P' if (_zd_exists_real(m['cdlevel']) == (m['cdlevel'] >= 16)) else 'F'
+
+def t_PR2(m):  # the sphere is also a one-mode decode: r-pinning conflates radius
+    if m['pins'] < 2: return 'V'
+    if m['ops']=='diagonal': return 'V'
+    if m['norm']!='free': return 'V'         # cannot witness from inside a pinned model
+    import math
+    nz=lambda p:(p[0]/math.hypot(*p), p[1]/math.hypot(*p))
+    a,b=(3.0,4.0),(6.0,8.0)
+    return 'P' if (np.allclose(nz(a),nz(b)) and math.hypot(*a)!=math.hypot(*b)) else 'F'
+
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
-            L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE)
+            L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE,
+            TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2)
 
 def space_fingerprint():
     manifest = {k:[str(v) for v in vals] for k,vals in KNOBS.items()}
@@ -154,6 +239,8 @@ KNOB_PROVENANCE = {
  'norm':      ("prohibition/purchase, spec 5.8a",           "falsifies PUR while de-stating PRO"),
  'two_ops':   ("Theorem 5.3 single-op collapse",            "T53 from the locus circle"),
  'basis_def': ("v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode)", "CRS from NOE"),
+ 'coeff':     ("char-2 collapse theorem (draft 17, [W])",                "sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims"),
+ 'cdlevel':   ("radial entailment (d17) + zero-divisor geography (d18)", "the Hurwitz/ZD schedules across doubling rungs"),
 }
 # SCRUTINY STRATA (where "why?" migrates as each level is indexed):
 #   knob VALUES (enumerated: this space) -> knob SET (KNOB_PROVENANCE) ->
@@ -173,6 +260,9 @@ PRIOR_LEDGER = {
   frozenset({'CRS','NOE'}): [("S_v3 (9 knobs, no basis_def)", "unseparated-in-S_v3"),
                               ("S_v2 (characteristic-break basis + basis_def probe)", "separated (basis_def='singular')")],
   frozenset({'BAL','CDC'}):  [("S_v2 (characteristic-break basis)", "separated (adj; identical-frames)")],
+  frozenset({'LOC','L26'}):  [("S_666bf26b7779 (3072 models)", "unseparated, co-movement 1.00"),
+                              ("S_v3 (9 knobs)", "unseparated")],
+  frozenset({'PUR','PRO'}):  [("S_666bf26b7779 (3072 models)", "unseparated, co-movement 1.00; PRO never F (expressibility-intrinsic)")],
 }
 
 def run():
@@ -205,7 +295,8 @@ def run():
           CLAIMS['D4C'](dict(BASE,ident=False)), CLAIMS['D4C'](dict(BASE,adj=False)),
           CLAIMS['D4C'](dict(BASE,pins=3)), "\n")
     print("=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_"+fp+" ===")
-    for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE')]:
+    for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE'),
+                ('RAD','ZDG'),('TWN','D4C'),('TWN','PHS'),('PRO','PR2'),('PUR','PR2')]:
         st=sk=co=either=0; wit=None
         for i in res:
             a,b=res[i][X],res[i][Y]

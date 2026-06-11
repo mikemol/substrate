@@ -36,19 +36,26 @@ META = {
  'D4C': ("The braided V₄ (D₄)", "Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id.", "Theorem 5.4, Remark 5.5"),
  'PHS': ("The phase support theorem", "The extension class (the phase bit) is trivial exactly on the classical section and nontrivial exactly off it; a single pin has no phase.", "§5.8c, §8.5–8.6"),
  'RLS': ("The classical rails", "The locus endpoints are T and F; composed NOT exchanges them; independent negation at a rail lands on conflict. The rails are a compactification fact, detachable from the section.", "§5.7 worked rails"),
+ 'TWN': ("The twist", "The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.", "§5.9, Theorem 5.4"),
+ 'RAD': ("The radial schedule", "The CD pinning's quadratic norm is multiplicative exactly through the octonion rung (Hurwitz); radial multiplicativity is a sacrifice-ladder rung.", "§5.9"),
+ 'ZDG': ("The zero-divisor schedule", "Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact.", "§5.9 (Z-series)"),
+ 'PR2': ("The sphere prohibition", "Pinning the quadratic radius (L2 normalization) is also a one-mode decode: it conflates states differing only in radius — the prohibition's arity argument, second magnitude instance.", "§5.9"),
 }
 BREAKS = dict(ADJ=M(adj=False), BAL=M(ident=False), CDC=M(ident=False),
               CRS=M(basis_def='singular'), PUR=M(norm='pinned'), PRO=M(norm='pinned'),
               LOC=M(lock='wrong'), L26=M(lock='wrong'), T53=M(two_ops=False),
               V4I=M(neg=False), D4C=M(ops='diagonal'), PHS=M(lock='forced'),
-              RLS=M(lock='wrong'), NOE=M(pins=1))
+              RLS=M(lock='wrong'), NOE=M(pins=1),
+              TWN=M(coeff='gf2'), RAD=M(coeff='gf2'), ZDG=M(coeff='gf2'),
+              PR2=M(norm='pinned_l2'))
 PERSP = [
  ("FULL", BASE, "the full evidence atlas"), ("P1", M(pins=1), "single pin"),
  ("P2-I", M(ops='diagonal'), "independent pins"), ("CLASSICAL", M(lock='forced'), "the classical section"),
  ("PROB", M(norm='pinned'), "the probability slice"), ("NO-CODEC", M(adj=False), "broken chart pair"),
  ("NO-ANCHOR", M(ident=False), "identity forgotten"), ("ONE-OP", M(two_ops=False), "single operation"),
  ("NO-NEG", M(neg=False), "negation-free"), ("SING-BASIS", M(basis_def='singular'), "singular crossbar basis"),
- ("NOISY-LOCK", M(lock='noisy'), "noisy section"),
+ ("NOISY-LOCK", M(lock='noisy'), "noisy section"), ("CHAR-2", M(coeff='gf2'), "GF(2) coefficients — the twist invisible"),
+ ("SEDENION", M(cdlevel=16), "the sedenion rung"), ("SPHERE", M(norm='pinned_l2'), "the radius-pinned slice"),
 ]
 vis = {n: {p[0]: CLAIMS[n](p[1]) for p in PERSP} for n in names}
 base_res = {n: CLAIMS[n](BASE) for n in names}
