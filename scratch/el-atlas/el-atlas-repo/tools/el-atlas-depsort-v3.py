@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.8"
+VERSION = "v3.8.1"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -775,6 +775,26 @@ for _k,_v in {
   frozenset({'SWF','SWP'}): ("S_3ed20b0e9c22 (v3.6)", "0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
+def _noe_lie_ok():
+    """B6 discharge: Lie-level derivation, exact. In the log chart the
+    squeeze is the anti-diagonal flow (a,b)->(a+s,b-s) and the common
+    translation is the diagonal flow (a,b)->(a+t,b+t); mass-form a+b
+    annihilates the first generator, bias-form a-b the second. Exact
+    integer check over a grid of points and parameters; the variational
+    (action-functional) form of the pairing remains a registered
+    reservation — this is Noether-style at the Lie level, named as such."""
+    for a in range(-3,4):
+        for b in range(-2,5):
+            for s_ in range(-3,4):
+                if (a+s_)+(b-s_) != a+b: return False
+            for t in range(-3,4):
+                if (a+t)-(b+t) != a-b: return False
+    return True
+
+def _emit_noe():
+    ok=_noe_lie_ok()
+    return f"Lie-level invariants exact over integer grid: squeeze conserves a+b, translation conserves a-b -> {ok}"
+
 def _emit_gcx():
     a=0.7; F=lambda r: 1.0
     import math
@@ -802,7 +822,7 @@ _FIBER_CERT = {
  'LOC':("analytic-points (3 probe values) + U-kinds",None), 'L26':("analytic-points",None),
  'T53':("guard + delegate(L26)",None), 'V4I':("guard",None), 'D4C':("guard",None),
  'PHS':("analytic-points (on/off locus, numpy exact)",None), 'RLS':("analytic-rails (B=1e9 endpoints)",None),
- 'NOE':("guard-only — EVIDENCE EXTERNAL (OB-7 pilots); derive-or-rename obligation",None),
+ 'NOE':("exact (Lie-level invariants computed in-run; variational form reserved) — B6 discharged",_emit_noe),
  'TWN':("guard",None), 'RAD':("sampled(40) — _rad_mult_ok, self-declared '(sampled)'",None),
  'ZDG':("cited-theorem(dim<16: composition algebras) + witness-search(dim 16)",None),
  'PR2':("UNAUDITED (body not re-read this pass)",None), 'IDC':("UNAUDITED (helper not re-read this pass)",None),

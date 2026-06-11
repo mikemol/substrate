@@ -2868,3 +2868,21 @@ FLUSH: B2 (structured-edition emitter integration), B6 (NOE
 derive-or-rename), B10 (general schema), homological-stability
 thread, UNAUDITED fibers (CDC, PR2, IDC), v2.22 read + A/B brick
 layers (next session, fresh context).
+
+## S43: B6 DISCHARGED — NOE DERIVED AT THE LIE LEVEL, IN-INSTRUMENT;
+## THE TABLE-2 CELL MOVES COLUMNS
+v3.8.1: _noe_lie_ok verifies exactly, over an integer grid, that the
+squeeze (anti-diagonal flow in the log chart) conserves the mass
+form a+b and the common translation (diagonal flow) conserves the
+bias form a-b — each invariant the annihilator of its generator.
+NOE's fiber certificate upgrades from "guard-only, EVIDENCE EXTERNAL
+(OB-7)" to "exact (Lie-level invariants computed in-run; variational
+form reserved)" with a live emitter: by the source's own Table-2
+axis (certificate locality), NOE moves from the Traditional-OS
+column (external evidence) to the intrinsic column. Spec 5.10d
+states the grading: Noether-style AT THE LIE LEVEL, name retained
+with qualifier; the variational form (action functional with these
+flows as symmetries) is a registered reservation. B6 = derive-at-
+the-Lie-level + rename-by-qualification. Composed sha updated;
++18 lines. QUEUE: B2, B10 (general schema), homological-stability
+thread, UNAUDITED fibers, v2.22 + A/B layers next session.

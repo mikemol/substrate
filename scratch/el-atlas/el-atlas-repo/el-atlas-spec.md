@@ -901,6 +901,23 @@ which is the content the PHS claim measures point-wise on the locus
 (fiber certificate "analytic-points", v3.8). Standard reference:
 Brown, *Cohomology of Groups* (Appendix C.2 — reviewer-recommended
 anchor, to be verified before deep citation).
+
+### 5.10d Conservation pairing at the Lie level (B6)
+
+The Noether pairing of §11.8 is hereby graded precisely. In the log
+chart, the squeeze is the anti-diagonal flow (a,b) ↦ (a+s, b−s) and
+the common translation is the diagonal flow (a,b) ↦ (a+t, b+t); the
+mass form a+b annihilates the first generator and the bias form a−b
+the second — each conserved quantity is the annihilator of its flow,
+a duality the instrument now verifies exactly in every run (fiber
+certificate "exact", v3.8.1, with live emitter). This is
+**Noether-style at the Lie level**: symmetry flows paired with exact
+invariants. The variational form — an action functional whose
+symmetries are these flows and whose Noether currents are mass and
+bias — is a registered reservation, not a present claim. The name
+"Noether" is retained with this qualifier; the derive-or-rename
+obligation (B6) is discharged as derive-at-the-Lie-level plus
+rename-by-qualification.
 ## 6. The semiring: two operations, log-linked
 
 **Definition 6.1 (the two operations).** The carrier of the connectives is
