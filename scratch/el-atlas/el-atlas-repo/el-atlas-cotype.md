@@ -1590,3 +1590,20 @@ RETAINED CONTRAST: rail-label oscillations (cost/strength) remain
 ladder-law territory — orientation of a fixed algebra requires a
 DECLARED reading. Declaration for orientations; adjudication for
 referents. Sweep doc §5 rewritten, §8 added, §3 softened.
+
+## I1: SPEC DECOMPOSED INTO COMPOSABLE SOURCES (author-instructed)
+The monolithic spec (128,500 bytes) outgrew confident one-pass editing;
+anchor-splice edits were the standing shed-risk. Split at section
+boundaries into spec-src/ — 21 parts, every part <16KB, MANIFEST carries
+order — with byte-exact reassembly VERIFIED (sha256 equality on first
+composition; composer reports "identical, nothing to write").
+tools/compose-spec.py is now the only write path to el-atlas-spec.md:
+it checks manifest completeness, warns on unmanifested parts, prints a
+line-level diffstat vs the prior composition with a shed-lines preview,
+and refuses net shrink without ALLOW_SHRINK=1 (intentional deletion must
+be explicit). Standing rule recorded in README: working docs >~20KB get
+decomposed; the cotype stays append-only (size-safe by construction);
+the structured edition stays generated. The composed spec remains the
+committed deliverable; spec-src/ is the editing surface. This is the
+projection-plurality discipline applied to our own documents: the parts
+are authoritative, the monolith is a composed read.
