@@ -1689,3 +1689,29 @@ of a forced disambiguation. carrier : probability :: SPPF : pruned parse
 tree. Remark 3.6's clause verbatim: when an operation would lose
 information, do not perform it; encode it. Candidate for the overlay
 appendix when it next boards a run.
+
+## S7 / T-SERIES: TARSKI + PARSING/GRAMMAR THREADS INTERNED; SWP PILOT PASSED
+User-prompted interning pass. New doc theory-threads.md. TARSKI: truth-as-
+parse-success = Convention-T-shaped truth definition with a DECIDABLE
+(syntactic) truth predicate — consistent under the deflationary reading;
+the v2.37.1 oscillation = crossing the undefinability boundary, a
+DECLARATION flaw (ladder law) not a structural one; indexed verdicts =
+truth-in-a-declared-context (Tarskian relativization; Kripke-Joyal
+adjacency joins the OCAL candidate); scrutiny strata = an object/meta
+truth-predicate tower. PARSING: Earley commitment shown corpus-wide [S];
+SPPF = pre-quotient (S6) with genealogy NFA-subset-construction -> SPPF ->
+carrier; PACKED NODE = the 2-cell equality witness; LangSec convergence.
+SWP PILOT PASSED (tools/swp-carrier-parsing-pilot.py): one CKY chart,
+pluggable semiring, 5-way-ambiguous grammar — (1) carrier root E+ = 5 =
+derivation count (mass carries SPPF multiplicity); (2) probability =
+positive-rail SECTION (root E+ = inside = 5p^3q^4 exactly, E- = 0);
+(3) Viterbi = idempotent PINNING (multiplicity unrecoverable — argmax is
+pruning); (4) conflation witness: lexicons (2,1)/(4,2) equal G-shadow 16.0,
+masses 85 vs 1360 — the ratio-quotient blind to evidence volume at the
+parse level. Goodman semiring parsing = projection plurality for parsing;
+the semiring choice IS the quotient choice; provenance: the v2.37.1
+treatise itself cites semiring-weighted Earley. NEW CANDIDATE: Nedge's
+open vE = PACKED-NODE semantics (disjunction held with case-masses;
+elimination = projection over the pack) — queued for N-series pilot.
+Claim SWP defined (guards coeff/pins), boards the next run WITH GCX.
+No spec import (v3.3 lesson).
