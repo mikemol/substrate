@@ -2,7 +2,7 @@
 
 **A paraconsistent evidence logic over exp/log charts, without probability**
 
-Specification — draft 16 (CHIP-(N+1), deliberately non-closed)
+Specification — draft 17 (CHIP-(N+1), deliberately non-closed)
 
 ---
 
@@ -443,6 +443,22 @@ no negatives — Caveat 2.4a, stated on the value side). Frame mismatch is
 identity element is the anchor; remembering the frame *is* remembering
 where balance sits. **[W]**
 
+**Codec family extension (corpus import).** The consolidation report's C3
+adds a third valid encoding family: the **shifted log**, e ↦ ln(1 + e/κ)
+(equivalently the shifted embedding e ↦ 1 + e/κ before the log), with
+identity image 0 and **κ as a headroom/scale parameter** — joining ℛ and
+Maslov h on OB-1's axis (§5.8g). The anchor discipline extends unchanged:
+every codec family must declare its identity image. **[S]**
+
+**The projection inventory (corpus C4: "these must not be conflated").**
+There is no single privileged scalar shadow of the pair. The corpus names
+five: **total commitment** (mass m), **differential tilt** (balance b),
+**unsigned decisiveness** (|b| — gate-adjacent, mode 3), **single-conductor
+collapse** (read one pin), and the bridge's **ratio/null-test** shadow
+(level 2). The worked-rails result locates exactly where they coincide:
+at the saturated rails, and only there — in the interior they diverge,
+which is why conflating them is the C4 error. **[S]**
+
 **A pair of pins: two channels, or one channel differentially encoded.**
 The real components of a pair either hold **two channels' balances
 independently** (P2-I: two propositions, diagonal operations only), or
@@ -542,6 +558,58 @@ the encoding's analog headroom between the rails: h → 0 = tropical
 saturation = rails-only = the classical limit. The graded interior is what
 finite headroom buys; OB-1's openness = the headroom is a model parameter.
 **[S]**
+
+### 5.9 The doubling interface and the radial chart (corpus imports, H-series)
+
+**The interface (correcting a name).** The recursion of §5.7 and the tree of
+§13.2 are instances of one type: a **binary tree with a conjugation
+operator** — (A, σ) ↦ (A², σ′), with the level conjugation's eigenspaces
+giving the modes (d, c) and the composition rule twisted by a per-level
+cochain. Cayley–Dickson is only the most famous pinning, not the type:
+**cocycle = 0** pins the untwisted tree — the Walsh/Hadamard/RM layer (the
+characters of (ℤ/2)ⁿ are the Walsh functions); **cocycle = the CD
+sign-twist** pins ℝ→ℂ→ℍ→𝕆 with its per-level property sacrifices. The
+twist class at a level is that level's **phase** — at n = 2 the cocycle
+classes are exactly the central extensions of V₄ (Theorem 5.4's D₄, and
+Q₈ as the other Arf class). **[S]**
+
+**Theorem (char-2 collapse). [W]** Over GF(2) the twist dies: conjugation
+trivializes (−b = b) and CD multiplication at dims 2, 4, 8, 16 is
+bit-identical to XOR-indexed convolution, the group algebra GF(2)[(ℤ/2)ⁿ]
+— commutative and associative even at octonion/sedenion levels (verified,
+200 random triples per dim). The sign-twisted and untwisted towers are
+**one tree differing only in a cocycle that characteristic 2 cannot see**;
+the corpus's CD-over-GF(2) addressing scheme (XOR norms, conjugate-bit
+flips) is this collapse used as engineering. (Filed as a *rhyme* with the
+phase support theorem — coefficient characteristic vs section degeneracy
+are different invisibility mechanisms — not an identity. **[C]**)
+
+**The radial entailment (a caution that is also a purchase).** The CD
+pinning implies **accessibility of a radial coordinate space**: the
+conjugation yields a quadratic norm N(x) = x x̄ (a sum of squares), hence
+a radius and a **polar chart** (magnitude × direction) at every level —
+structure the untwisted pinning provably lacks (its "norm" degenerates to
+the XOR-sum). Two disciplines attach: (i) the radius is **quadratic
+magnitude, not the crossbar's linear mass** — do not conflate ‖·‖₂ with
+m = E⁺+E⁻; (ii) the radius's compatibility with the product is
+rung-limited: N(xy) = N(x)N(y) holds exactly through 𝕆 (Hurwitz;
+composition algebras at dims 1, 2, 4, 8) and fails at sedenions (zero
+divisors) — radial multiplicativity is itself a rung of the sacrifice
+ladder. **[S]** The payoff: there are **two magnitude-pinnings**, and they
+are the two normalizations — pinning the linear mass c gives the simplex
+(probability, §5.8a); pinning the quadratic radius gives the sphere
+(amplitude normalization, the natural home of §8's amplitude reading).
+The prohibition's arity argument applies to both: each is a one-mode
+decode of a two-mode encoding, differing only in which magnitude it pins.
+**[C]**
+
+**The bundle reading (n = 1 geometry).** The pair is the **double cover**
+of the single channel; the pin-swap is the **deck transformation**; the
+twist is **ℤ/2 monodromy** — the Möbius picture from the corpus
+(one base traversal swaps the fiber; the cover's cylinder has the swap as
+its sheet-exchange). The band's lack of a global sheet-distinguishing
+section is the bundle-level face of the frame-invisibility obstruction
+(Theorem 5.4). **[C]**
 
 ## 6. The semiring: two operations, log-linked
 
@@ -967,6 +1035,19 @@ instrument recovers **both** carrier coordinates that the odds-line
 collapse destroys — the full carrier, measured. Lemma 3.2's
 impossibility, and its repair, both have hardware. **[W]**
 
+**External grounding (recovered from corpus T1129/T1130, web-verified
+there).** The corner-representation half of Theorem 5.4 and this section's
+W-axis have published anchors: S₄ = V₄ ⋊ S₃ is standard (the normal
+Klein four of double transpositions; quotient S₃); the **tetrahedron
+algebra** g_⊠ ≅ sl₂ ⊗ A (arXiv math/0604218, Elduque / Hartwig–Terwilliger)
+realizes the S₄ action as exactly *Klein-four automorphisms plus an S₃
+action* — published Lie theory for the holomorph structure; and the
+dimension-4 **Hodge star** gives Λ¹ ↔ Λ³ (the witness↔triangle duality)
+with Λ² (dim 6) splitting 3 + 3 self-dual/anti-self-dual — the W-axis's
+form-theoretic home. **[S]** Inherited residue: the binding of the tetrad
+(source, sink, witness, apex) to the tetrahedron algebra's four sl₂-points
+is cited in the corpus but not yet constructed.
+
 ### 11.5 Conflict as stored potential (dynamics for §1's regions)
 
 In a static label system, B is just a label. In the circuit realization,
@@ -1158,6 +1239,9 @@ phantom tower is a communication stack — what a level cannot read as
 signal is re-encoded as the next level's channel. This is the
 no-collapse discipline (Remark 8.4) as a transmission architecture: the
 quotient is never taken; the residue is promoted. **[S]**
+(Corpus locus: the Evidence–Differential consolidation report tags this
+source [E4]; the hierarchy is the named external anchor of this section's
+recursion.)
 
 **Pilot result (OB-12, witnessed) — and a frame correction.** The
 structure here is, in its own right, a **recursive binary tree with a
@@ -1848,6 +1932,20 @@ Corpus note: D-1's provenance discipline ([E] external / [U] user-origin
 
 ## Appendix B. The prior-art adjacency map (external literature as overlay instances)
 
+**B.0 Lineage (corpus-internal, recovered by the H-series re-sweep).** The
+atlas formalizes a program the corpus already named: **BK4VL**, the user's
+local term for a *resource-aware extension of the Belnap–Dunn / B4 /
+bilattice family*, consolidated in the March 2026
+"Evidence–Differential" construction cluster — which contains the carrier
+verbatim ((e⁺, e⁻), 0 = no evidence), the l-space additive hull
+("enriches, not replaces" the semiring), the bridge as
+comparison-of-comparisons, the doubling tower with conjugation (§5.9's
+interface, there under its famous instance-name), the Poulton phantom
+hierarchy as [E4], and its own [E]/[U]/[I] provenance discipline. The
+atlas's relationship to that cluster: same program, rigorized — with the
+locus-closure caution (its C1) and the projection plurality (its C4) now
+theorems and inventories rather than warnings. **[S]**
+
 This is the generative reading of the external review. Each mature
 literature the atlas touches is a **second network** sharing a common
 structure S with the atlas; the review's "prior art" findings are the
@@ -1994,17 +2092,18 @@ and are the substance of this appendix.
 
 ---
 
-*End of draft 16. CHIP state: OPEN CHIP-(N+1), gated on OB-1. Draft 16
-adds §5.8, the codec sweep: the prohibition demoted from law to type
-theorem (collapse = arity-mismatched decode; probability = the c-pinned
-slice, the simplex a level set of the purchased axis); classical logic
-identified as the zero-mass section (the locus is c ≡ 0 — the single-pin
-channel embedded in the pair — explaining Lemma 2.6, the inverse-lock of
-Theorem 5.3, and splitting Belnap into channel-level T/F and
-encoding-level B/N); a support theorem for phase (the D₄ extension class
-is nontrivial exactly off the classical section — a single pin has no
-phase); the completed three-error taxonomy (arity, frame, range); the
-instrument simplifications (CMR's legitimacy condition; arity-restoration
-reading of the two-readout repair); OB-11 sharpened to the c-degenerate
-region proposal; and OB-1 read as codec headroom (h → 0 = the classical
-rails-only limit). Non-closure remains the design, not the defect.*
+*End of draft 17. CHIP state: OPEN CHIP-(N+1), gated on OB-1. Draft 17
+imports the H-series corpus recoveries, all seven candidates: the
+binary-tree-with-conjugation interface (§5.9; Cayley–Dickson demoted to
+the famous pinning; char-2 collapse theorem [W]; twist class = per-level
+phase) with the radial entailment (the CD pinning buys a quadratic norm,
+polar charts, and the L2 magnitude-pinning — the sphere — beside the
+crossbar's L1 simplex, the prohibition's arity argument covering both)
+and the bundle reading (pair = double cover, swap = deck transformation,
+phase = monodromy); the shifted-log codec family with headroom κ joining
+OB-1's axis; the five-shadow projection inventory with the rails as the
+only coincidence locus; the published grounding of the holomorph and
+W-axis (tetrahedron algebra sl₂⊗A; dimension-4 Hodge star); the Poulton
+corpus-locus note; and the BK4VL lineage (Appendix B.0) — the atlas named
+as the rigorization of the corpus's own prior program. Non-closure
+remains the design, not the defect.*
