@@ -70,6 +70,20 @@ epistemological model derivation: a claim is touched under complex ONLY if
 carries its named breaker (_COMPLEX_STANCE); no stance may reach 'extends'
 except by its breaker passing; the reading question itself is a registered
 alias circumstance. See retrospectives/2026-06-11-v35-complex-guard.md.
+
+v3.6 (S-series): claims RDW/ZDW board — the T2 discharge recorded IN the
+instrument as a DELIBERATE 2nd-order pair (S22): their verdict maps
+coincide by construction (both theorem-shaped at the sedenion rung over
+the reals); the separation lives at the EXHIBIT stratum (ZD pairs are a
+strict subset of norm-failure pairs) — see FRONTIER. Claim SWF boards:
+the order-free part of semiring parsing (counting, inside,
+inside-outside, conflation — no Viterbi), whose named breaker EXECUTES:
+the checks pass verbatim over C, earning the FIRST 'EXTENDS' stance —
+the complex slice gains its first non-V cell, flipped by the breaker the
+R-V35 architecture demanded, not by assumption. The extension is
+reading-robust: the test touches only the ring structure of C, identical
+under base-field and CD-rung readings (the reading declaration itself
+remains queued).
 """
 import numpy as np
 import hashlib, json, inspect, io
@@ -447,10 +461,104 @@ def t_NVE(m):  # vE: the split is a section; the bridge is the instrument of the
     if m['ops']=='diagonal': return 'V'    # the bridge is a composed read across pins
     return 'P' if _nve_ok() else 'F'
 
+def _cdm(x,y):
+    n=len(x)
+    if n==1: return (x[0]*y[0],)
+    k=n//2; a,b,c,d=x[:k],x[k:],y[:k],y[k:]
+    cj=lambda w:(w[0],)+tuple(-t for t in w[1:])
+    return tuple(i-j for i,j in zip(_cdm(a,c),_cdm(cj(d),b)))+tuple(i+j for i,j in zip(_cdm(d,a),_cdm(b,cj(c))))
+
+@_ft.lru_cache(None)
+def _rdw_ok():
+    """norm failure WITHOUT zero division exists at the sedenion rung."""
+    import random as _r
+    rng=_r.Random(5); Nq=lambda v: sum(t*t for t in v)
+    for _ in range(60):
+        u=tuple(rng.gauss(0,1) for _ in range(16)); v=tuple(rng.gauss(0,1) for _ in range(16))
+        p=_cdm(u,v)
+        if abs(Nq(p)-Nq(u)*Nq(v))>1e-3*Nq(u)*Nq(v) and Nq(p)>1e-6: return True
+    return False
+
+@_ft.lru_cache(None)
+def _zdw_ok():
+    """the ZD exhibit (e1+e10)(e4-e15)=0 verifies, and is a norm-failure witness."""
+    x=tuple((1.0 if i==1 else 0.0)+(1.0 if i==10 else 0.0) for i in range(16))
+    y=tuple((1.0 if i==4 else 0.0)-(1.0 if i==15 else 0.0) for i in range(16))
+    Nq=lambda v: sum(t*t for t in v)
+    return Nq(_cdm(x,y))==0.0 and Nq(x)*Nq(y)>0
+
+def t_RDW(m):  # witness structure: the radial failure mode exceeds the ZD mode
+    if m.get('coeff')!='real': return 'V'   # gf2: no radius; complex: reading undeclared
+    if m['cdlevel']<16: return 'V'          # no failure rung below the sedenions
+    return 'P' if _rdw_ok() else 'F'
+
+def t_ZDW(m):  # witness structure: every ZD is a norm-failure witness (and ZDs exist)
+    if m.get('coeff')!='real': return 'V'
+    if m['cdlevel']<16: return 'V'
+    return 'P' if _zdw_ok() else 'F'
+
+@_ft.lru_cache(None)
+def _swf_ok(field):
+    """the ORDER-FREE parsing checks over the named field: counting, inside,
+    inside x outside, conflation. No Viterbi — nothing here needs an order.
+    Running this with field='complex' IS the named breaker for SWF's stance."""
+    N=4
+    def inside(w_a,w_SS,plus,times):
+        I={(i,i+1):w_a for i in range(N)}
+        for L in range(2,N+1):
+            for i in range(N-L+1):
+                j=i+L; acc=None
+                for k in range(i+1,j):
+                    t=times(times(I[(i,k)],I[(k,j)]),w_SS)
+                    acc=t if acc is None else plus(acc,t)
+                I[(i,j)]=acc
+        return I
+    Ic=inside(1,1,lambda a,b:a+b,lambda a,b:a*b)
+    if Ic[(0,N)]!=5: return False
+    p,q=(0.4,0.6) if field=='real' else (complex(0.3,0.4),complex(0.5,-0.2))
+    Ip=inside(q,p,lambda a,b:a+b,lambda a,b:a*b)
+    if abs(Ip[(0,N)]-5*p**3*q**4)>1e-9: return False
+    def trees(i,j):
+        if j==i+1: return [frozenset([(i,j)])]
+        return [L|R|frozenset([(i,j)]) for k in range(i+1,j) for L in trees(i,k) for R in trees(k,j)]
+    T=trees(0,N)
+    O={sp:None for sp in Ic}; O[(0,N)]=1
+    for L in range(N,1,-1):
+        for i in range(N-L+1):
+            j=i+L
+            if O[(i,j)] is None: continue
+            for k in range(i+1,j):
+                cL=O[(i,j)]*Ic[(k,j)]; cR=O[(i,j)]*Ic[(i,k)]
+                O[(i,k)]=cL if O[(i,k)] is None else O[(i,k)]+cL
+                O[(k,j)]=cR if O[(k,j)] is None else O[(k,j)]+cR
+    for sp in Ic:
+        if O[sp] is not None and Ic[sp]*O[sp]!=sum(sp in t for t in T): return False
+    padd=lambda A,B:(A[0]+B[0],A[1]+B[1]); pmul=lambda A,B:(A[0]*B[0],A[1]*B[1])
+    one=1.0 if field=='real' else complex(1,0)
+    def insideP(w_a,w_SS):
+        I={(i,i+1):w_a for i in range(N)}
+        for L in range(2,N+1):
+            for i in range(N-L+1):
+                j=i+L; acc=None
+                for k in range(i+1,j):
+                    t=pmul(pmul(I[(i,k)],I[(k,j)]),w_SS)
+                    acc=t if acc is None else padd(acc,t)
+                I[(i,j)]=acc
+        return I
+    rA=insideP((2*one,one),(one,one))[(0,N)]; rB=insideP((4*one,2*one),(one,one))[(0,N)]
+    if abs(rA[0]/rA[1]-rB[0]/rB[1])>1e-9 or abs(rA[0]+rA[1]-(rB[0]+rB[1]))<1.0: return False
+    return True
+
+def t_SWF(m):  # the order-free face of SWP: extends over C by its own breaker
+    if m['pins']<2: return 'V'
+    if m.get('coeff')=='gf2': return 'V'    # counting collapses mod 2
+    if m.get('coeff')=='complex': return 'P' if _swf_ok('complex') else 'F'
+    return 'P' if _swf_ok('real') else 'F'
+
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
             L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE,
             TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2,
-            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC,GCX=t_GCX,SWP=t_SWP,NVE=t_NVE)
+            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC,GCX=t_GCX,SWP=t_SWP,NVE=t_NVE,RDW=t_RDW,ZDW=t_ZDW,SWF=t_SWF)
 
 
 _RAW_CLAIMS = dict(CLAIMS)
@@ -462,7 +570,8 @@ _CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
     NOE=('pins',), TWN=('pins','neg','ops','coeff'), RAD=('coeff','cdlevel'),
     ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
     NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',),
-    GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff'))
+    GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff'),
+    RDW=('coeff','cdlevel'), ZDW=('coeff','cdlevel'), SWF=('pins','coeff'))
 # v3.5a: per-claim complex stances. Applied ONLY where 'coeff' is in the
 # claim's declared support — coeff-independent claims are coeff-independent
 # BY DECLARATION and are never overridden (the v3.5 blanket guard violated
@@ -482,11 +591,14 @@ _COMPLEX_STANCE = {
  'GCX': "V — the subject is the REAL-log codec; complex log is multivalued; breaker: a branch-cut formulation",
  'SWP': "V — the Viterbi member is undefinable without order (no argmax on C; S16 cousin); breaker: split the claim into ordered / order-free parts (checks 1,2,5 are char-0 generic)",
  'NVE': "V — the bridge reading is signed; breaker: none known without order",
+ 'RDW': "V — as RAD: the tower over C is reading-dependent; breaker: reading declaration",
+ 'ZDW': "V — as RAD",
+ 'SWF': "EXTENDS — earned: the order-free checks pass verbatim over C (breaker executed inside _swf_ok('complex')); reading-robust: only the ring structure of C is touched, identical under base-field and CD-rung readings",
 }
 def _memo(name, f):
     cache={}; ks=_CLAIM_DEPS[name]
     def g(m, _c=cache, _f=f, _ks=ks, _n=name):
-        if m.get('coeff')=='complex' and 'coeff' in _ks:
+        if m.get('coeff')=='complex' and 'coeff' in _ks and not _COMPLEX_STANCE.get(_n,'V').startswith('EXTENDS'):
             return 'V'   # stance earned per-claim; reason + breaker in _COMPLEX_STANCE[_n]
         k=tuple(m[x] for x in _ks)
         r=_c.get(k)
@@ -529,6 +641,10 @@ KNOB_PROVENANCE = {
 # FRONTIER: for circles unseparated-in-S, what a separator WOULD require, and at
 # which stratum the residual openness lives.
 FRONTIER = {
+ frozenset({'RDW','ZDW'}): ("their verdict maps coincide BY CONSTRUCTION (both theorem-shaped at the "
+   "sedenion rung over the reals): a DELIBERATE 2nd-order pair (S22). The separation is real and lives "
+   "at the EXHIBIT stratum — ZD pairs are a STRICT subset of norm-failure pairs (xy=0 vs xy!=0 witnesses, "
+   "radzdg-witness pilot); instrumenting it requires witness-valued verdicts (registered program)"),
  frozenset({'LOC','L26'}): ("a model with f != -id yet c == 0 on it, or f == -id with "
    "swap != constrained-negation — both excluded by the shared arithmetic of the current "
    "test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum"),
@@ -570,6 +686,13 @@ for _k,_v in {
   frozenset({'GCX','CDC'}): ("S_f117b7f53a8e (v3.5 first form, same caveat)", "separated, 27648 truth — the sighting is not a restatement"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
+for _k,_v in {
+  frozenset({'GCX','SWP'}): ("S_2738ddb8c926 (165888, v3.5a corrected)", "unseparated in truth 0/18432; theorem-cluster member"),
+  frozenset({'NVE','NVL'}): ("S_2738ddb8c926 (v3.5a)", "separated, 6144 truth"),
+  frozenset({'GCX','CDC'}): ("S_2738ddb8c926 (v3.5a)", "separated, 27648 truth"),
+  frozenset({'RAD','ZDG'}): ("S_2738ddb8c926 (v3.5a) + radzdg-witness pilot", "unseparated-in-truth; SEPARATED AT THE WITNESS STRATUM (ZD strictly inside norm-failure) — T2 discharged"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
+
 def run():
     names=list(CLAIMS)
     manifest, fp = space_fingerprint()
@@ -603,7 +726,8 @@ def run():
     for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE'),
                 ('RAD','ZDG'),('TWN','D4C'),('TWN','PHS'),('PRO','PR2'),('PUR','PR2'),
                 ('NVL','PUR'),('NVL','PR2'),('NVL','PRO'),('NGL','PRO'),('NGL','T53'),('IDC','NOE'),
-                ('GCX','SWP'),('GCX','CDC'),('SWP','NGL'),('SWP','NVE'),('NVE','NVL'),('NVE','NGL')]:
+                ('GCX','SWP'),('GCX','CDC'),('SWP','NGL'),('SWP','NVE'),('NVE','NVL'),('NVE','NGL'),
+                ('RDW','ZDW'),('RDW','RAD'),('ZDW','ZDG'),('SWF','SWP'),('SWF','GCX')]:
         st=sk=co=either=0; wit=None
         for i in res:
             a,b=res[i][X],res[i][Y]
