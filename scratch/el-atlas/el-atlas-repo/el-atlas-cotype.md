@@ -2946,3 +2946,15 @@ identifications. The btree took the new leaf at 05/03.md with no
 manifest ceremony — the coordinate IS the placement. QUEUE:
 homological-stability thread, UNAUDITED fibers (CDC, PR2, IDC),
 OB-7 variational residue, v2.22 + A/B layers (next session).
+
+## S44a: SPACE-MOVE LEDGER NOTE (discipline repair) + COUNT ERRATUM
+The fingerprint moved at v3.8.1: S_5c1b4fe911fd -> S_335c8a0650cb
+(the fingerprint hashes claim-adjacent source; the NOE
+helper/emitter/cert changes moved it). S43 failed to ledger the move
+— repaired here. VERIFIED: all circle/separator lines of the v3.8
+and v3.8.1 runs are IDENTICAL modulo the space index (diff after
+index normalization: empty) — the truth content crossed unchanged;
+the move is source-hash-kind, not verdict-kind. ERRATUM: S44 wrote
+"28 certificate lines"; the generation contains 27. Standing check
+reaffirmed: every run/regen output gets its space index compared to
+the last ledgered index before banking.
