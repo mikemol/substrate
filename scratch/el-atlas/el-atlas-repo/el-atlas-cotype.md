@@ -3052,3 +3052,24 @@ PROCESS RESIDUE: first patch attempt extracted the registry to the
 first closing brace (inside a frozenset literal) — the defensive
 assert stopped the move with zero writes; extraction corrected to
 the dict-terminal brace. W2 closes here.
+
+
+## S49 (W3): SPLIT-TEST EXECUTED — STABILITY HOLDS; THE MARGIN CHART
+## IS THE PROVENANCE TABLE READ BACKWARDS
+Exhaustive over S_4c3345b9126a: ZERO ledgered-circle hits. No circle
+ever declared by the atlas was split by a later knob admission — the
+circles are stable homology classes under probe-space inclusion,
+thread 20 confirmed retrospectively at instrument grade. DIVIDEND
+(unrequested, banked): the single-axis separation map — ~130
+separated pairs whose ENTIRE truth-separation requires exactly one
+knob off-base, organized cleanly by claim family (ident carries the
+codec-contract separations; probe carries IDC's; lock the locus
+family's; coeff the CD-rung's; norm NVL/PUR's; basis_def CRS's;
+two_ops T53's). This verifies every KNOB_PROVENANCE "separates:"
+claim exhaustively AND charts the pairs at distance one from
+circlehood — the margin structure 1.2.3 of the source ("Margin of
+Truth") asked for, computed. Candidate follow-up (queued, cheap via
+the S23 ride): emit the margin chart as a standing run section.
+W3 closes here; the flushable queue is again empty — remaining items
+({TWN,D4C} 2-cell, proof tier, christening hunt, v2.22, A/B layers)
+are next-session by weight or by design.

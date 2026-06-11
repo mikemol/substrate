@@ -804,3 +804,19 @@ maps explicitly and test whether any historical knob admission ever
 SPLIT a circle (the records say no — RAD/ZDG gained internal witness
 structure without truth-splitting); a split would be the
 H-instability event the lock schedule predicts at purchased axes.
+
+### 20a. The split-test executed (W3): stability holds; the margin chart falls out
+
+tools/hstab-split-pilot.py, exhaustive over S_4c3345b9126a: ZERO
+ledgered-circle hits — no circle the atlas ever declared was split by
+a subsequent knob admission. Thread 20's prediction confirmed
+retrospectively at instrument grade. DIVIDEND: the test computes, for
+every separated pair, whether one knob carries the ENTIRE truth
+separation — yielding the SINGLE-AXIS SEPARATION MAP (~130 pairs),
+which is KNOB_PROVENANCE verified backwards and exhaustively: each
+knob's "separates:" claim holds as sole-axis fact (CDC-pairs on
+ident; IDC-pairs on probe; the locus family on lock; CD-rung vs
+guard-claims on coeff; NVL/PUR on norm; CRS on basis_def; T53 on
+two_ops). These pairs sit at DISTANCE ONE from circlehood: remove the
+axis and they unify — the margin chart of the atlas, and the precise
+sense in which each knob admission purchased its distinctions.
