@@ -1020,3 +1020,26 @@ lets the caveat be caught. Adopted structurally, not editorially:
 a frame-mismatch in waiting (the silent-balance-flip failure mode, at the meta level).
 Same grammar as the scenario catalog: name the relation under which the claim holds,
 in a form the machine carries so prose cannot drop it.
+
+## STRUCTURED EDITION REGENERATED (S_666bf26b7779; generator saved as a tool)
+Generator now persisted: tools/el-atlas-structured-gen.py (imports the v3.1 harness;
+queued next-work discharged). The edition inherits: space manifest + fingerprint in the
+front matter; P/F/U/V legend (U excluded from dep edges); indexed circle verdicts with
+separation ledgers; two new perspectives (SING-BASIS, NOISY-LOCK — the latter exhibits
+U in the tables). STRUCTURAL EVENTS detected by regeneration (the workflow doing its
+job — none of these were edited in, all computed):
+1. {CRS,NOE} chapter-pair DISSOLVED: CRS's characteristic break is now basis_def
+   (in-space since v3.1), so CRS moved layer 0 → 1 and NOE stands alone at the
+   foundations. The dep edge reads "CRS depends on the pair substrate (NOE's
+   characteristic structure)" — break-naming semantics, annotated as such.
+2. {BAL,CDC} now render as same-layer characteristic-break COINCIDENCE chapters
+   (mutual digraph edges via the shared ident break; 768 in-space separators) —
+   the digraph-circle vs exhaustive-separation disagreement is now typographically
+   explicit rather than collapsed.
+3. {LOC,L26} kept as the one truth-intrinsic chapter; RLS extracted beside it as a
+   coincidence chapter (clipped-lock separator; rails = compactification fact).
+4. {PRO,PUR} chapter now titled expressibility-intrinsic, with the theorem clause
+   (PRO never F) and the de-stating asymmetry inline.
+Chapter grouping is now COMPUTED from exhaustive pairwise separator search (union-find
+on unseparated pairs within each digraph SCC), not asserted: intrinsic cores get unity,
+coincidences get adjacency with ledgers. 14 claims, 4 layers, 12 chapters.
