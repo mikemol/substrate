@@ -1425,3 +1425,19 @@ the artifactual verdict retained in PRIOR_LEDGER under its colliding ID.
 Witness inspection caught both: the discipline working as designed.
 Structured edition regenerated: 4 layers, 16 chapters; layer 0 = {ADJ}{NOE}
 {IDC}; new chapter {NGL,V4I}; NVL a layer-2 single beside PR2 and {PRO,PUR}.
+
+## N4 / DRAFT 19: SPEC IMPORT — §5.7e FAMOUS INSTANCE (Nedge G-Value Calculus)
+Inserted §5.7e between §5.7 and §5.8: observed core [O]; DECLARED READING
+(strength; ladder law satisfied — the source's cost/strength oscillation
+resolved by declaration, orientation-reversal noted as structurally inert);
+six identifications with grades (codec [S/near-W]; quotient shadow [S];
+LIFT THEOREM [W] with NGL index and the {NGL,V4I} one-structure finding;
+resistance-difference G_res [S]; L1-normalization conditional [S]; TWO-GATE
+THEOREM [W] with NVL index, both-pinnings result, 3072-separator witness);
+lineage consequence + the source's own open ∨E flagged with the carrier as
+candidate [C]. Remark 3.6 gains the deployed-instance cross-reference;
+B.0 sharpened: adjacency -> QUOTIENT (atlas = pre-quotient of Nedge L2).
+nedge-decomposition.md §6 status: queued -> landed (S_fd5ddbe7ac57).
+All instrument indices cite the corrected space (post-artifact, full-module
+fingerprint). Regen check: structured edition already regenerated at N3
+with the same claim set this import cites — no further regen owed.

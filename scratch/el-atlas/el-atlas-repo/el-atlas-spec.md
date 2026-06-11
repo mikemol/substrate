@@ -266,6 +266,8 @@ structure remains addressable**: keep the formal pair instead of
 evaluating. The carrier's refusal of E⁺/E⁻ and the zero-divisor
 resolution by formal quotient are one design principle — when an
 operation would lose information, do not perform it; encode it. **[S]**
+*(Deployed instance: the Nedge G-Value Calculus is exactly this
+arithmetic with the quotient taken — §5.7e, lift theorem.)*
 
 ---
 
@@ -511,6 +513,86 @@ locus-constrained NOT exchanges them (F → T); *independent* single-pin
 negation at the F rail leaves the locus and lands on conflict, B — the
 classical NOT is the composed one (Theorem 5.3's inverse-lock as rail
 dynamics). **[W]**
+
+### 5.7e Famous instance: the Nedge G-Value Calculus (the quotient shadow, lifted)
+
+The corpus's own Nedge program (Appendix B.0; N-series decomposition,
+`nedge-decomposition.md`) carries a quantitative semantic engine — the
+**G-Value Calculus** — whose Master Specification defines: a scalar
+G(P) ∈ [0,∞] ("evidence strength"; rails 0 and ∞); G_NOT(G) = 1/G;
+G_AND(G₁,G₂) = G₁G₂/(G₁+G₂) (series conductance); G_OR = Σ (parallel);
+DeMorgan exact; non-idempotent (AND(G,G) = G/2, OR(G,G) = 2G);
+non-distributive; an "L-space" L = ln G with L_NOT = −L, L_OR = LogSumExp,
+L_AND = −LogSumExp(−·), idempotence failure ±ln 2 read via Landauer;
+residuated implication G_res(P⇒Q) = G(P)G(Q)/(G(P)−G(Q)) when
+G(P) > G(Q), else ∞; conditional G(Q|P) = G(Q)/(G(P)+G(Q)); local
+consistency G(P)·G(¬P) = 1; least-fixed-point network equilibrium; and a
+confidence chart Conf(G) = G/(G+1). **[O]** (Artifact B, Sections IV–IX.)
+
+**Declared reading (ladder law).** The source oscillates between *cost*
+and *strength* labels for its rails; this import takes the **strength**
+reading: G large = strong net support, G = ∞ the ⊤ rail, G = 0 the ⊥
+rail, so L = ln G is the balance coordinate in standard orientation. The
+cost reading is the orientation-reversed import (L ↦ −L) and changes
+nothing structural; what matters is that one is declared before any
+identification is made. **[S]**
+
+The identifications, in increasing depth:
+
+1. **The codec identification.** L-space ≅ 𝔸 and G-space ≅ 𝕄, and the
+   spec's "L-space isomorphism" is Lemma 2.5b's exp ⊣ log codec formula
+   for formula, identity images included (G = 1 ↔ L = 0). **[S, near-W]**
+
+2. **The quotient shadow.** G is the odds — the ratio §3 refuses.
+   G(P)·G(¬P) = 1 is the antipode constraint of a balance channel with
+   **no mass axis**: G = 1 cannot distinguish massive conflict from total
+   ignorance — a Lemma 3.2 instance inside Nedge's own Layer 2, while its
+   Layer-3 four-valued logic (confidence × consistency) demands exactly
+   the information the scalar destroys. **[S]**
+
+3. **The lift theorem.** On formal-quotient pairs (n, d) with class n/d:
+   G_OR is fraction addition, G_NOT is the swap, G_AND is swap-conjugated
+   fraction addition, and DeMorgan exactness is the swap distributing.
+   Non-idempotence is the **mass-growth shadow**:
+   (n,d) ⊕ (n,d) = (2nd, d²) ~ 2n/d — the calculus's "resource
+   sensitivity" is the quotient remembering the extruded magnitude axis
+   in distorted form. **The entire G-Value Calculus is ⟨fraction-⊕, swap⟩
+   on formal-quotient pairs.** **[W]** (Pilot, 2000 trials; instrumented
+   as claim NGL, S_fd5ddbe7ac57. The instrument further finds {NGL, V4I}
+   to be one structure: identical precondition support ⟨pair, involution,
+   char 0⟩, diverging only in *kind* at characteristic 2 — the exact V₄
+   is falsified there, the lift merely de-stated.)
+   *Cross-reference, Remark 3.6:* representation-as-rationals is this
+   lift made policy. Three positions on one move: Nedge takes the
+   quotient; the corpus's rationals move works pre-quotient; the atlas
+   refuses the quotient entirely.
+
+4. **The differential reading.** G_res is a resistance **difference**:
+   1/G_res = 1/G(Q) − 1/G(P), residuation adjointness exact —
+   implication as a differential taken in the swap-dual chart. **[S]**
+
+5. **The c-pinning instance.** G(Q|P) = G(Q)/(G(P)+G(Q)) is the
+   L1-normalization of the pair (G(P), G(Q)) — conditional belief is a
+   simplex projection; Conf(G) = sigmoid(L) is the same chart one level
+   down. **[S]**
+
+6. **The two-gate theorem (machine-found).** Nedge's four-valued gate
+   (confidence × consistency = mass × conflict) and the Belnap chart
+   (bias-sign × rail) are distinct four-cell gates on one carrier, and
+   **either magnitude pinning degenerates the Nedge gate**: the c-pin
+   (§3, §5.8a) kills the mass axis exactly; the r-pin (§5.9, PR2) leaves
+   one dimension on which mass and conflict are monotonically locked. A
+   four-valued logic needs the **unpinned pair** — both prohibitions bite
+   it. **[W]** (Claim NVL, S_fd5ddbe7ac57: F under both pinnings, P only
+   on the free carrier; separated from PUR by the r-pin slice, 3072
+   truth-separators.)
+
+**Lineage consequence** (sharpens Appendix B.0): the atlas is the
+**pre-quotient of Nedge's own Layer-2 semantic engine.** Open in the
+source itself: the ∨E (proof-by-cases) G-value transformation, flagged
+there as "a key area for precise axiomatic definition" — the carrier
+treatment is the natural candidate (the pair keeps the case-mass the
+scalar loses); queued as N-series work. **[C]**
 
 ### 5.8 What the codec view clarifies (a sweep)
 
@@ -1986,7 +2068,13 @@ interface, there under its famous instance-name), the Poulton phantom
 hierarchy as [E4], and its own [E]/[U]/[I] provenance discipline. The
 atlas's relationship to that cluster: same program, rigorized — with the
 locus-closure caution (its C1) and the projection plurality (its C4) now
-theorems and inventories rather than warnings. **[S]**
+theorems and inventories rather than warnings. **[S]** Sharpened by the
+N-series (N2/N3): the relationship is not adjacency but **quotient** —
+the atlas is the pre-quotient of Nedge's own Layer-2 semantic engine;
+the G-Value Calculus is the carrier modulo the diagonal (§5.7e lift
+theorem, claim NGL), and Nedge's Layer-3 four-valued logic demands
+exactly the axis that quotient removes (§5.7e two-gate theorem, claim
+NVL, S_fd5ddbe7ac57). **[S/W]**
 
 This is the generative reading of the external review. Each mature
 literature the atlas touches is a **second network** sharing a common

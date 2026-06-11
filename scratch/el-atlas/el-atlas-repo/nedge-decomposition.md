@@ -163,8 +163,11 @@ non-idempotence tames cycles (no self-amplification from tautological loops).
 **NGL** (Nedge G-lift): the six lift identities as executable checks over
 carrier knobs. Coeff scope: real only — fraction arithmetic degenerates over
 GF(2) (denominator products collapse), so NGL takes a coeff-guard like
-T53/PHS. Queued with NVL/IDC for the next claim-set extension run (per the
-v3.3 lesson: no import without instrument extension).
+T53/PHS. Landed: v3.4 run **S_fd5ddbe7ac57** (110,592 models) — NGL/NVL/IDC
+aboard; the two-gate theorem machine-found (NVL = F under BOTH pinnings,
+P only free); {NGL,V4I} one structure; IDC orthogonal to every carrier
+knob (co-movement 0.20 with NOE, lowest in the instrument). Spec import:
+§5.7e (draft 19).
 
 ### Residue from this read
 
