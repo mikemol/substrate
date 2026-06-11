@@ -26,8 +26,14 @@ A paraconsistent evidence logic, specified witness-first and deliberately non-cl
   fingerprint (sha256 over manifest + claim-test sources). "Unseparated" is never
   uttered bare — only "unseparated-in-S_<fp>". Known spaces where the verdict differs
   travel with it as a residue ledger; separations carry a minimal witness mutation.
-- **Commit discipline:** commit per draft or per instrument run; the message names the
-  triggering correction or finding, so `git log` reads as the reasoning path.
+- **Commit discipline:** commit on EACH MOVE (edit, instrument run, correction,
+  regeneration) — not batched; the message names the triggering correction or finding,
+  so `git log` reads as the reasoning path at move resolution.
+- **Post-commit hook** (`tools/hooks/post-commit`; install:
+  `cp tools/hooks/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit`):
+  vacuums the object store (`git gc` — packs loose objects, hardening against
+  flaky-mount I/O) and rolls `../el-atlas-repo.tar.gz` for presentation after every
+  commit. The hook is tracked here because `.git/hooks/` itself is not.
 
 ## Regeneration workflow
 

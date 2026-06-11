@@ -1043,3 +1043,12 @@ job — none of these were edited in, all computed):
 Chapter grouping is now COMPUTED from exhaustive pairwise separator search (union-find
 on unseparated pairs within each digraph SCC), not asserted: intrinsic cores get unity,
 coincidences get adjacency with ledgers. 14 claims, 4 layers, 12 chapters.
+
+## COMMIT-PER-MOVE + POST-COMMIT HOOK (vacuum + presentation tarball)
+Discipline tightened (user): one commit per MOVE, not per turn/draft. Post-commit hook
+installed and TRACKED at tools/hooks/post-commit (hooks dir is untracked; the hook's own
+provenance must live in history): git gc --quiet (packs loose objects — also the
+mitigation for the transient loose-object I/O error seen on this mount) then tarballs
+the whole repo (worktree + .git, so history travels) to ../el-atlas-repo.tar.gz after
+every commit. Resilient: warnings non-fatal. This commit is the hook's first firing —
+self-demonstrating, like the cotype's repo-init entry.
