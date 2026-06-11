@@ -21,6 +21,13 @@ A paraconsistent evidence logic, specified witness-first and deliberately non-cl
 - **Vacuity is its own value.** Tests return P/F/V; "not statable here" is not "false."
 - **Circles:** intrinsic (persists under basis refinement; mutual constitution;
   ∀-over-bases, open-by-design) vs coincidence (splits; shared substrate).
+- **Knob admission rule (why this space).** No knob is a-priori: a knob enters the
+  declared space S when a distinction proves load-bearing (first witness recorded in
+  KNOB_PROVENANCE in the harness); knobs are monotonic — never removed. Scrutiny
+  strata, each indexed: knob values (enumerated) → knob set (provenance) → test
+  semantics (source-hashed in the fingerprint) → claim formalization (spec + cotype).
+  Intrinsic verdicts carry a FRONTIER: what a separator would require, and at which
+  stratum the residual openness lives.
 - **No unindexed verdicts.** Every instrument verdict is emitted relative to a
   reconstructible space: the run prints a SPACE MANIFEST (knobs + value sets) and a
   fingerprint (sha256 over manifest + claim-test sources). "Unseparated" is never

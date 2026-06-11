@@ -1057,3 +1057,28 @@ ADDENDUM: the outputs mount refuses the executable bit (hook exec denied). Remed
 core.hooksPath -> /home/claude/el-atlas-hooks (exec-capable); tracked copy in
 tools/hooks/ stays canonical; README carries the noexec install variant. Hook fired
 manually once for the prior commit; fires automatically from this commit on.
+
+## SECOND REVIEW: RETRACTION RECEIVED; FORMAL SEMANTICS ADOPTED; "WHY THIS SPACE" INSTRUMENTED (v3.2)
+**The review retracts the probe-artifact concern** and reframes the instrument better
+than we had: "empirical constitutive analysis"; criterion = UNSEPARABILITY UNDER
+DECLARED PERTURBATION, not circularity — "resistance to separation as evidence of
+identity." Adopted verbatim into the harness docstring (Claim C: S→{P,F,U,V};
+Separator ∃s; Intrinsic@S ∀s; Dependence via {F,V}; Layer = condensation depth).
+Reviewer's observation logged: our own framework rejects "circularity alone is
+sufficient" — {BAL,CDC}, {CRS,NOE}, RLS are the in-house counterexamples.
+
+**Remaining concern — "why this space? knob choices are now axioms" — answered with
+provenance, then instrumented:** no knob was a-priori; each was ADMITTED by a
+correction event (pins ← scenario catalog; lock family ← reviewer's own Break 1;
+basis_def ← the v2 split + indexed-verdict episode; ident ← codec contract; norm ←
+prohibition; ops ← reading-relation ladder; neg/two_ops ← Thm 5.3; adj ← Lemma 2.5b).
+v3.2 adds KNOB_PROVENANCE printed with every manifest, a knob-admission rule in README
+(monotonic, witness-recorded), and SCRUTINY STRATA naming where "why?" migrates next:
+values (enumerated) → knob set (provenance) → test semantics (ALREADY source-hashed in
+the fingerprint) → claim formalization (spec/cotype). FRONTIER fields added to the two
+intrinsic verdicts: a {LOC,L26} separator would need f≠−id with c≡0 or f=−id with
+swap≠constrained-neg — excluded by the shared arithmetic of the test semantics, so the
+residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum;
+same for {PUR,PRO} (a pinning that fails to conflate, or statable-but-false PRO).
+Fingerprint UNCHANGED (S_666bf26b7779): annotation grew, the verdict space did not —
+the index behaving exactly as designed.
