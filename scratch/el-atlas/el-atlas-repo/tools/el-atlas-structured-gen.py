@@ -5,7 +5,7 @@ Computed (not hand-arranged): ToC ordering (condensation layers of the
 characteristic-break dep digraph, U excluded from edges), chapter grouping
 (digraph SCCs refined by exhaustive pairwise separator search into intrinsic
 cores vs coincidences), perspective-visibility tables (each claim EXECUTED under
-eleven named vantage configs; P/F/U/V), circle verdicts WITH space index and
+the named vantage configs; P/F/U/V), circle verdicts WITH space index and
 residue ledger (no unindexed verdicts), glossary, cross-reference index.
 Hand-written: claim metadata sentences and spec pointers only.
 """
@@ -42,6 +42,9 @@ META = {
  'PR2': ("The sphere prohibition", "Pinning the quadratic radius (L2 normalization) is also a one-mode decode: it conflates states differing only in radius — the prohibition's arity argument, second magnitude instance.", "§5.9"),
  'NGL': ("The G-value lift", "Nedge's G-Value Calculus is ⟨fraction-addition, swap⟩ on formal-quotient pairs — the carrier quotiented by the diagonal; non-idempotence is the mass-growth shadow; resource sensitivity is the quotient remembering the extruded axis.", "§5.7e, nedge-decomposition §6"),
  'NVL': ("The two-gate theorem", "Nedge's 4VL (confidence × consistency) and Belnap's chart (bias-sign × rail) are distinct four-cell gates on one carrier; either magnitude pinning degenerates the gate — a four-valued logic needs the unpinned pair.", "§4, §5.7e, nedge-decomposition §2/§6"),
+ 'GCX': ("The third codec sighting", "GALAXY's W ↔ ASPF's log-decode: the exponential codec is exact on the rank-sum quotient, and the quotient genuinely collides — GALAXY is a one-mode decode of the ASPF carrier.", "corpus-sweep §6 (S4); §5.8"),
+ 'SWP': ("Semiring-weighted parsing", "One chart, pluggable semiring: the carrier semiring carries the SPPF's packed multiplicity; probability is the positive-rail section, Viterbi the idempotent pinning; inside×outside is the zipper product.", "theory-threads §2/§8/§9 (S7/S12/S13)"),
+ 'NVE': ("The ∨E bridge", "Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold.", "§5.7e; nedge-decomposition §8 (S8/S9)"),
  'IDC': ("The identity-collapse schedule", "Bare nodes collapse; minimally-stabilized twins still collapse; distinct participation separates — identity is unseparated-in-probe-space, and differentiation is probe-space extension.", "nedge-decomposition §2 (N-series)"),
 }
 BREAKS = dict(ADJ=M(adj=False), BAL=M(ident=False), CDC=M(ident=False),
@@ -51,7 +54,8 @@ BREAKS = dict(ADJ=M(adj=False), BAL=M(ident=False), CDC=M(ident=False),
               RLS=M(lock='wrong'), NOE=M(pins=1),
               TWN=M(coeff='gf2'), RAD=M(coeff='gf2'), ZDG=M(coeff='gf2'),
               PR2=M(norm='pinned_l2'),
-              NGL=M(coeff='gf2'), NVL=M(norm='pinned'), IDC=M(probe='mention'))
+              NGL=M(coeff='gf2'), NVL=M(norm='pinned'), IDC=M(probe='mention'),
+              GCX=M(coeff='gf2'), SWP=M(pins=1), NVE=M(ops='diagonal'))
 PERSP = [
  ("FULL", BASE, "the full evidence atlas"), ("P1", M(pins=1), "single pin"),
  ("P2-I", M(ops='diagonal'), "independent pins"), ("CLASSICAL", M(lock='forced'), "the classical section"),
@@ -61,6 +65,7 @@ PERSP = [
  ("NOISY-LOCK", M(lock='noisy'), "noisy section"), ("CHAR-2", M(coeff='gf2'), "GF(2) coefficients — the twist invisible"),
  ("SEDENION", M(cdlevel=16), "the sedenion rung"), ("SPHERE", M(norm='pinned_l2'), "the radius-pinned slice"),
  ("MENTION", M(probe='mention'), "mention-only probe — identity by existence"),
+ ("COMPLEX", M(coeff='complex'), "complex coefficients — admitted v3.5; claims V-pending-port"),
 ]
 vis = {n: {p[0]: CLAIMS[n](p[1]) for p in PERSP} for n in names}
 base_res = {n: CLAIMS[n](BASE) for n in names}

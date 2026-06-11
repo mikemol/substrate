@@ -47,6 +47,20 @@ thesis (identity = unseparated-in-probe-space). Claim evaluation memoized on
 each claim's declared knob support (the space is now 110,592 models).
 v3.4a: NVL adaptive bit gains a variation tolerance (no FP-noise splits);
 fingerprint widened to hash the full module source (helpers are semantics).
+
+v3.5 (S-series): claims GCX (the GALAXY codec is exact on the rank-sum
+quotient, and the quotient genuinely collides — third codec sighting), SWP
+(semiring-weighted parsing: the carrier semiring carries packed multiplicity;
+probability = positive-rail section, Viterbi = idempotent pinning; the
+inside-outside identity), NVE (vE = single/double pin split/join carrier
+expansion; the Wheatstone bridge reads the case-bias; classical vE lives on
+the balance manifold). Knob value coeff='complex' ADMITTED (provenance: OB-9
+re-posed via the S10 kill-audit; the gf2-cleavage family precedent; the
+stationary-phase regime, S16). Existing claims return V-pending-port under
+complex — honest unstatability-as-written, enforced centrally in _memo so no
+claim silently falls through to its real branch (Caveat 2.4a at the
+instrument level). Porting the characteristic-sensitive family
+{PHS,TWN,RAD,ZDG} to complex is named frontier work. Space: 165,888 models.
 """
 import numpy as np
 import hashlib, json, inspect, io
@@ -56,7 +70,7 @@ KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False
              ops=['diagonal','linear'],
              lock=['available','unavailable','wrong','clipped','affine','noisy','partial','forced'],
              norm=['free','pinned','pinned_l2'], two_ops=[True,False],
-             basis_def=['ok','singular'], coeff=['real','gf2'], cdlevel=[2,4,8,16],
+             basis_def=['ok','singular'], coeff=['real','gf2','complex'], cdlevel=[2,4,8,16],
              probe=['full','depth1','mention'])
 SPACE = [dict(zip(KNOBS, vals)) for vals in product(*KNOBS.values())]
 BASE = dict(pins=2, adj=True, ident=True, neg=True, ops='linear',
@@ -310,10 +324,124 @@ def t_NVL(m):  # the two-gate theorem: a four-valued gate needs the unpinned pai
     if m['ops']=='diagonal': return 'V'    # the crossbar read is composed
     return 'P' if _nvl_two_gates(m['norm']) else 'F'
 
+@_ft.lru_cache(None)
+def _gcx_ok():
+    """GALAXY<->ASPF codec (merged_ontology Thm 9.1): exact on the rank-sum
+    quotient (exp_a -| log_a identities) AND the quotient genuinely collides
+    (rank-sets {1,4} vs {2,3}: equal alpha-shadow, distinct prime carrier)."""
+    import math, random as _r
+    rng=_r.Random(13); a=0.7
+    F=lambda ranks: math.prod(a**r for r in ranks)
+    W=lambda ranks: sum(ranks)                      # log_a F
+    for _ in range(500):
+        s=[rng.randint(1,6) for _ in range(rng.randint(1,5))]
+        t=[rng.randint(1,6) for _ in range(rng.randint(1,5))]
+        if abs(a**W(s)-F(s))>1e-9: return False                       # roundtrip
+        if abs(F(s+t)-F(s)*F(t))>1e-9: return False                   # hom <-> W adds
+        k=rng.randint(1,4)
+        if abs(F(s)**k - a**(k*W(s)))>1e-9: return False              # power law
+    if abs(F([])-1.0)>1e-12 or W([])!=0: return False                 # identity
+    pr={1:2,2:3,3:5,4:7}
+    A,B=[1,4],[2,3]
+    quotient_collides = abs(F(A)-F(B))<1e-12 and W(A)==W(B)
+    carrier_separates = math.prod(pr[r] for r in A)!=math.prod(pr[r] for r in B)
+    return quotient_collides and carrier_separates
+
+def t_GCX(m):  # third codec sighting: GALAXY = one-mode decode of the ASPF carrier
+    if m.get('coeff')!='real': return 'V'  # real log; gf2 has none, complex is multivalued
+    return 'P' if _gcx_ok() else 'F'
+
+@_ft.lru_cache(None)
+def _swp_ok():
+    """semiring-weighted parsing, exact on S->SS|'a', input 'aaaa' (5 trees):
+    carrier mass = packed multiplicity; inside = positive-rail section;
+    Viterbi = idempotent pinning; equal-G/different-mass conflation;
+    inside x outside = containment count at every span (S12)."""
+    N=4
+    def io_pass(w_a,w_SS,plus,times,one):
+        I={}
+        for i in range(N): I[(i,i+1)]=w_a
+        for L in range(2,N+1):
+            for i in range(N-L+1):
+                j=i+L; acc=None
+                for k in range(i+1,j):
+                    t=times(times(I[(i,k)],I[(k,j)]),w_SS)
+                    acc=t if acc is None else plus(acc,t)
+                I[(i,j)]=acc
+        O={sp:None for sp in I}; O[(0,N)]=one
+        for L in range(N,1,-1):
+            for i in range(N-L+1):
+                j=i+L
+                if O[(i,j)] is None: continue
+                for k in range(i+1,j):
+                    cL=times(times(O[(i,j)],I[(k,j)]),w_SS); cR=times(times(O[(i,j)],I[(i,k)]),w_SS)
+                    O[(i,k)]=cL if O[(i,k)] is None else plus(O[(i,k)],cL)
+                    O[(k,j)]=cR if O[(k,j)] is None else plus(O[(k,j)],cR)
+        return I,O
+    padd=lambda a,b:(a[0]+b[0],a[1]+b[1]); pmul=lambda a,b:(a[0]*b[0],a[1]*b[1])
+    I,_=io_pass((1.0,0.0),(1.0,1.0),padd,pmul,(1.0,1.0))
+    if abs(I[(0,N)][0]-5)>1e-9: return False                          # mass = multiplicity
+    p,q=0.4,0.6
+    Ip,_=io_pass((q,0.0),(p,0.0),padd,pmul,(1.0,1.0))
+    if abs(Ip[(0,N)][0]-5*p**3*q**4)>1e-12 or Ip[(0,N)][1]!=0.0: return False  # inside section
+    Iv,_=io_pass(q,p,max,lambda a,b:a*b,1.0)
+    if abs(Iv[(0,N)]-p**3*q**4)>1e-12: return False                   # Viterbi pinning
+    IA,_=io_pass((2.0,1.0),(1.0,1.0),padd,pmul,(1.0,1.0))
+    IB,_=io_pass((4.0,2.0),(1.0,1.0),padd,pmul,(1.0,1.0))
+    rA,rB=IA[(0,N)],IB[(0,N)]
+    if abs(rA[0]/rA[1]-rB[0]/rB[1])>1e-9 or abs(sum(rA)-sum(rB))<1.0: return False  # conflation
+    Ic,Oc=io_pass(1,1,lambda a,b:a+b,lambda a,b:a*b,1)
+    def trees(i,j):
+        if j==i+1: return [frozenset([(i,j)])]
+        return [L|R|frozenset([(i,j)]) for k in range(i+1,j) for L in trees(i,k) for R in trees(k,j)]
+    T=trees(0,N)
+    for sp in Ic:
+        if Oc[sp] is None: continue
+        if Ic[sp]*Oc[sp]!=sum(sp in t for t in T): return False       # inside x outside
+    return True
+
+def t_SWP(m):  # one chart, pluggable semiring: the semiring choice IS the quotient choice
+    if m['pins']<2: return 'V'             # the carrier checks need the pair
+    if m.get('coeff')=='gf2': return 'V'   # counting collapses mod 2
+    if m.get('coeff')=='complex': return 'V'  # Viterbi needs an order; none on C
+    return 'P' if _swp_ok() else 'F'
+
+@_ft.lru_cache(None)
+def _nve_ok():
+    """vE = split/join + Wheatstone bridge: null iff determinant (sign-faithful);
+    high-impedance reading = difference of L1-normalized conditionals; the
+    join conflates splits the bridge separates; equal odds at any mass nulls."""
+    import random as _r
+    rng=_r.Random(11)
+    def bridge(G1,G2,G3,G4,g,V=1.0):
+        a,d=G1+G2+g,G3+G4+g; det=a*d-g*g
+        VB=(G1*V*d+g*G3*V)/det; VD=(a*G3*V+G1*V*g)/det
+        return g*(VB-VD)
+    for _ in range(800):
+        G1,G2,G3,G4=(rng.uniform(.1,10) for _ in range(4))
+        ig=bridge(G1,G2,G3,G4,.5); D=G1*G4-G2*G3
+        if abs(D)>1e-9 and (ig>0)!=(D>0): return False
+        if abs(bridge(G1,G2,G3,G2*G3/G1,.5))>1e-9: return False        # constructed null
+    for _ in range(400):
+        G1,G2,G3,G4=(rng.uniform(.1,10) for _ in range(4))
+        lim=bridge(G1,G2,G3,G4,1e-12)/1e-12
+        if abs(lim-(G1/(G1+G2)-G3/(G3+G4)))>1e-6: return False         # diff of conditionals
+    iA,iB=bridge(3,7,2,3,.5),bridge(5,5,2,3,.5)
+    if not(abs((3+7)-(5+5))<1e-12 and abs(iA-iB)>1e-3): return False   # join conflates, bridge separates
+    if abs(bridge(3,7,6,14,.5))>1e-12: return False                    # equal odds, any mass: null
+    return True
+
+def t_NVE(m):  # vE: the split is a section; the bridge is the instrument of the purchased axis
+    if m['pins']<2: return 'V'             # the split IS a pin expansion
+    if not m['neg']: return 'V'            # the bridge reading is signed
+    if m.get('coeff')!='real': return 'V'  # signed currents and ratio order need char-0 reals
+    if m['ops']=='diagonal': return 'V'    # the bridge is a composed read across pins
+    return 'P' if _nve_ok() else 'F'
+
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
             L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE,
             TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2,
-            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC)
+            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC,GCX=t_GCX,SWP=t_SWP,NVE=t_NVE)
 
 
 _RAW_CLAIMS = dict(CLAIMS)
@@ -324,10 +452,15 @@ _CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
     PHS=('pins','neg','ops','coeff','lock'), RLS=('pins','neg','coeff','lock'),
     NOE=('pins',), TWN=('pins','neg','ops','coeff'), RAD=('coeff','cdlevel'),
     ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
-    NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',))
+    NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',),
+    GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff'))
+_COMPLEX_PORTED = set()   # claims with complex semantics actually derived (per-algebra,
+                          # Caveat 2.4a); everything else is V-pending-port under complex.
 def _memo(name, f):
     cache={}; ks=_CLAIM_DEPS[name]
-    def g(m, _c=cache, _f=f, _ks=ks):
+    def g(m, _c=cache, _f=f, _ks=ks, _n=name):
+        if m.get('coeff')=='complex' and _n not in _COMPLEX_PORTED:
+            return 'V'   # unstatable-as-written: no silent fall-through to the real branch
         k=tuple(m[x] for x in _ks)
         r=_c.get(k)
         if r is None: r=_c[k]=_f(m)
@@ -358,7 +491,7 @@ KNOB_PROVENANCE = {
  'norm':      ("prohibition/purchase, spec 5.8a",           "falsifies PUR while de-stating PRO"),
  'two_ops':   ("Theorem 5.3 single-op collapse",            "T53 from the locus circle"),
  'basis_def': ("v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode)", "CRS from NOE"),
- 'coeff':     ("char-2 collapse theorem (draft 17, [W])",                "sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims"),
+ 'coeff':     ("char-2 collapse theorem (draft 17, [W]); 'complex' admitted v3.5 (OB-9 re-posed via S10 kill-audit + stationary-phase regime S16 + gf2-cleavage precedent; claims V-pending-port)", "sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims; complex slice currently all-V (porting = frontier)"),
  'cdlevel':   ("radial entailment (d17) + zero-divisor geography (d18)", "the Hurwitz/ZD schedules across doubling rungs"),
  'probe':     ("Nedge identity-collapse decomposition (N-series)",        "IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented"),
 }
@@ -397,6 +530,13 @@ for _k,_v in {
                              "6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
+for _k,_v in {
+  frozenset({'LOC','L26'}): ("S_fd5ddbe7ac57 (110592, v3.4a)", "unseparated, co-movement 1.00"),
+  frozenset({'PUR','PRO'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated; PRO never F"),
+  frozenset({'RAD','ZDG'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated 1.00; witness-structure split = standing frontier (T2)"),
+  frozenset({'TWN','D4C'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated 1.00 (partly by construction)"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
+
 def run():
     names=list(CLAIMS)
     manifest, fp = space_fingerprint()
@@ -429,7 +569,8 @@ def run():
     print("=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_"+fp+" ===")
     for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE'),
                 ('RAD','ZDG'),('TWN','D4C'),('TWN','PHS'),('PRO','PR2'),('PUR','PR2'),
-                ('NVL','PUR'),('NVL','PR2'),('NVL','PRO'),('NGL','PRO'),('NGL','T53'),('IDC','NOE')]:
+                ('NVL','PUR'),('NVL','PR2'),('NVL','PRO'),('NGL','PRO'),('NGL','T53'),('IDC','NOE'),
+                ('GCX','SWP'),('GCX','CDC'),('SWP','NGL'),('SWP','NVE'),('NVE','NVL'),('NVE','NGL')]:
         st=sk=co=either=0; wit=None
         for i in res:
             a,b=res[i][X],res[i][Y]

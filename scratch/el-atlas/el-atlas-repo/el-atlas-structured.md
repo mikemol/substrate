@@ -1,10 +1,10 @@
 # The EL-Atlas, Structured Edition
 
 *Mechanically derived by `tools/el-atlas-structured-gen.py` from the v3.1 harness.*
-*All verdicts indexed: space **S_fd5ddbe7ac57** (110592 models, exhaustive); manifest below.*
+*All verdicts indexed: space **S_f117b7f53a8e** (165888 models, exhaustive); manifest below.*
 *Hand-written content: claim metadata sentences and spec pointers only.*
 
-**Space manifest S_fd5ddbe7ac57:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}.
+**Space manifest S_f117b7f53a8e:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2, complex}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}.
 *Why this space: no knob is a-priori — each was admitted by a named correction*
 *event (KNOB_PROVENANCE in the harness); knobs are monotonic. Intrinsic verdicts*
 *below carry a frontier: what a separator would require, and at which scrutiny*
@@ -18,25 +18,24 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **Part 1 — Layer 0 (foundations)**
 - [The chart adjunction (exp ⊣ log)](#the-chart-adjunction-exp--log)
-- [The Noether pairings](#the-noether-pairings)
+- [The braided V₄ (D₄) ≡ The ∨E bridge ≡ The twist](#the-braided-v4-d4) *(one structure — expressibility-intrinsic)*
+- [The third codec sighting ≡ The radial schedule ≡ The zero-divisor schedule](#the-third-codec-sighting) *(one structure — expressibility-intrinsic)*
+- [The G-value lift ≡ The exact V₄](#the-g-value-lift) *(one structure — expressibility-intrinsic)*
+- [The Noether pairings](#the-noether-pairings) *(characteristic-break coincidence; separated in-space)*
+- [Semiring-weighted parsing](#semiring-weighted-parsing) *(characteristic-break coincidence; separated in-space)*
 - [The identity-collapse schedule](#the-identity-collapse-schedule)
 
 **Part 2 — Layer 1**
 - [The balance channel](#the-balance-channel) *(characteristic-break coincidence; separated in-space)*
 - [The codec contract](#the-codec-contract) *(characteristic-break coincidence; separated in-space)*
 - [The crossbar](#the-crossbar)
-- [The braided V₄ (D₄) ≡ The twist](#the-braided-v4-d4) *(one structure — truth-intrinsic)*
-- [The G-value lift ≡ The exact V₄](#the-g-value-lift) *(one structure — expressibility-intrinsic)*
-- [The radial schedule ≡ The zero-divisor schedule](#the-radial-schedule) *(one structure — expressibility-intrinsic)*
-
-**Part 3 — Layer 2**
 - [The two-gate theorem](#the-two-gate-theorem) *(characteristic-break coincidence; separated in-space)*
 - [The sphere prohibition](#the-sphere-prohibition) *(characteristic-break coincidence; separated in-space)*
 - [The prohibition ≡ The differential purchase](#the-prohibition) *(one structure — expressibility-intrinsic)*
 - [The involution coincidence ≡ The classical section](#the-involution-coincidence) *(one structure — truth-intrinsic)*
 - [The classical rails](#the-classical-rails) *(characteristic-break coincidence; separated in-space)*
 
-**Part 4 — Layer 3**
+**Part 3 — Layer 2**
 - [The De Morgan requirements](#the-de-morgan-requirements)
 - [The phase support theorem](#the-phase-support-theorem)
 
@@ -52,27 +51,143 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **ADJ — The chart adjunction (exp ⊣ log)** (§2, Lemma 2.5b). The two per-pin charts — semiring magnitudes and the signed line — form an adjoint equivalence; the codec pair whose round-trips are identities.
 
 
-*Perspective visibility — ADJ (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — ADJ (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | F | P | P | P | P | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | F | P | P | P | P | P | P | P | P | P | V |
 
-*Cross-reference — ADJ:* depends on —; required by ['BAL']; independent of 19 claims (CDC, CRS, PUR, PRO, LOC…).
+*Cross-reference — ADJ:* depends on —; required by ['BAL']; independent of 22 claims (CDC, CRS, PUR, PRO, LOC…).
+
+
+## The braided V₄ (D₄) ≡ The ∨E bridge ≡ The twist — one structure
+
+**D4C — The braided V₄ (D₄)** (Theorem 5.4, Remark 5.5). Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id.
+
+**NVE — The ∨E bridge** (§5.7e; nedge-decomposition §8 (S8/S9)). Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold.
+
+**TWN — The twist** (§5.9, Theorem 5.4). The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.
+
+*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 156672/156672 = 1.00; but NVE is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+
+*Perspective visibility — D4C (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
+
+*Perspective visibility — NVE (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | P | P | P | P | V | P | P | V | P | P | P | V |
+
+*Perspective visibility — TWN (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
+
+*Cross-reference — D4C:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'SWP', 'V4I', 'ZDG']; required by ['NVL', 'PHS', 'PR2', 'PRO', 'PUR']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
+
+*Cross-reference — NVE:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'SWP', 'V4I', 'ZDG']; required by ['NVL', 'PHS', 'PR2', 'PRO', 'PUR']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
+
+*Cross-reference — TWN:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'SWP', 'V4I', 'ZDG']; required by ['GCX', 'NGL', 'NVL', 'PHS', 'RAD', 'RLS', 'SWP', 'T53', 'V4I', 'ZDG']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
+
+
+## The third codec sighting ≡ The radial schedule ≡ The zero-divisor schedule — one structure
+
+**GCX — The third codec sighting** (corpus-sweep §6 (S4); §5.8). GALAXY's W ↔ ASPF's log-decode: the exponential codec is exact on the rank-sum quotient, and the quotient genuinely collides — GALAXY is a one-mode decode of the ASPF carrier.
+
+**RAD — The radial schedule** (§5.9). The CD pinning's quadratic norm is multiplicative exactly through the octonion rung (Hurwitz); radial multiplicativity is a sacrifice-ladder rung.
+
+**ZDG — The zero-divisor schedule** (§5.9 (Z-series)). Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact.
+
+*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 110592/110592 = 1.00; but GCX, RAD is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+
+*Perspective visibility — GCX (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
+
+*Perspective visibility — RAD (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
+
+*Perspective visibility — ZDG (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | F | P | P | P | V |
+
+*Cross-reference — GCX:* depends on ['NGL', 'TWN']; required by ['D4C', 'NGL', 'NVE', 'NVL', 'PHS', 'RLS', 'SWP', 'T53', 'TWN', 'V4I']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
+
+*Cross-reference — RAD:* depends on ['NGL', 'TWN']; required by ['D4C', 'NGL', 'NVE', 'NVL', 'PHS', 'RLS', 'SWP', 'T53', 'TWN', 'V4I']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
+
+*Cross-reference — ZDG:* depends on ['NGL', 'TWN']; required by ['D4C', 'NGL', 'NVE', 'NVL', 'PHS', 'RLS', 'SWP', 'T53', 'TWN', 'V4I']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
+
+
+## The G-value lift ≡ The exact V₄ — one structure
+
+**NGL — The G-value lift** (§5.7e, nedge-decomposition §6). Nedge's G-Value Calculus is ⟨fraction-addition, swap⟩ on formal-quotient pairs — the carrier quotiented by the diagonal; non-idempotence is the mass-growth shadow; resource sensitivity is the quotient remembering the extruded axis.
+
+**V4I — The exact V₄** (§5, Theorem 5.4, §5.6 P2-I). Under independence, the only admissible linear maps are diagonal; their sign-involutions form the Klein four-group exactly — no swap, no braid.
+
+*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 147456/147456 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+
+*Perspective visibility — NGL (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | V | P | P | V | P | P | P | V |
+
+*Perspective visibility — V4I (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | V | P | P | F | P | P | P | V |
+
+*Cross-reference — NGL:* depends on ['GCX', 'NOE', 'RAD', 'SWP', 'TWN', 'ZDG']; required by ['D4C', 'GCX', 'NVE', 'NVL', 'PHS', 'RAD', 'RLS', 'SWP', 'T53', 'TWN', 'ZDG']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
+
+*Cross-reference — V4I:* depends on ['GCX', 'NOE', 'RAD', 'SWP', 'TWN', 'ZDG']; required by ['D4C', 'NVE', 'NVL', 'PHS', 'RLS', 'T53', 'TWN']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 ## The Noether pairings
 
 **NOE — The Noether pairings** (§11.8, OB-7). The squeeze conserves mass; the common translation conserves bias — the two charges of the pair's symmetry flows.
 
+*Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NVE', 'RAD', 'SWP', 'TWN', 'V4I', 'ZDG'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Perspective visibility — NOE (executed, S_fd5ddbe7ac57 configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | P | P | P | P | P |
+*Perspective visibility — NOE (executed, S_f117b7f53a8e configs):*
 
-*Cross-reference — NOE:* depends on —; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'T53', 'TWN', 'V4I']; independent of 6 claims (ADJ, BAL, CDC, RAD, ZDG…).
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | P | P | P | P | P | P | P | V |
+
+*Cross-reference — NOE:* depends on ['SWP']; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'SWP', 'T53', 'TWN', 'V4I']; independent of 7 claims (ADJ, BAL, CDC, RAD, ZDG…).
+
+
+## Semiring-weighted parsing
+
+**SWP — Semiring-weighted parsing** (theory-threads §2/§8/§9 (S7/S12/S13)). One chart, pluggable semiring: the carrier semiring carries the SPPF's packed multiplicity; probability is the positive-rail section, Viterbi the idempotent pinning; inside×outside is the zipper product.
+
+*Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'TWN', 'V4I', 'ZDG'] (shared break in the dep digraph); separated in-space — see ledger.*
+
+
+*Perspective visibility — SWP (executed, S_f117b7f53a8e configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
+
+*Cross-reference — SWP:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'TWN', 'ZDG']; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NOE', 'NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'T53', 'TWN', 'V4I']; independent of 4 claims (ADJ, BAL, CDC, IDC).
 
 
 ## The identity-collapse schedule
@@ -80,13 +195,13 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **IDC — The identity-collapse schedule** (nedge-decomposition §2 (N-series)). Bare nodes collapse; minimally-stabilized twins still collapse; distinct participation separates — identity is unseparated-in-probe-space, and differentiation is probe-space extension.
 
 
-*Perspective visibility — IDC (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — IDC (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | P | P | P | F |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | P | P | P | F | V |
 
-*Cross-reference — IDC:* depends on —; required by —; independent of 20 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — IDC:* depends on —; required by —; independent of 23 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 # Part 2 — Layer 1
@@ -98,16 +213,16 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['CDC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger BAL–CDC:* separated-in-S_fd5ddbe7ac57 (27648 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
+*Separation ledger BAL–CDC:* separated-in-S_f117b7f53a8e (27648 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
 
 
-*Perspective visibility — BAL (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — BAL (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | F | F | P | P | P | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | F | F | P | P | P | P | P | P | P | P | V |
 
-*Cross-reference — BAL:* depends on ['ADJ', 'CDC']; required by ['CDC']; independent of 18 claims (CRS, PUR, PRO, LOC, L26…).
+*Cross-reference — BAL:* depends on ['ADJ', 'CDC']; required by ['CDC']; independent of 21 claims (CRS, PUR, PRO, LOC, L26…).
 
 
 ## The codec contract
@@ -117,110 +232,29 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 *Characteristic-break coincidence with ['BAL'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — CDC (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — CDC (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | F | P | P | P | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | F | P | P | P | P | P | P | P | P | V |
 
-*Cross-reference — CDC:* depends on ['BAL']; required by ['BAL']; independent of 19 claims (ADJ, CRS, PUR, PRO, LOC…).
+*Cross-reference — CDC:* depends on ['BAL']; required by ['BAL']; independent of 22 claims (ADJ, CRS, PUR, PRO, LOC…).
 
 
 ## The crossbar
 
 **CRS — The crossbar** (§4). (mass, bias) = (E⁺+E⁻, E⁺−E⁻) is an invertible change of basis on the pair.
 
-*Separation ledger CRS–NOE:* separated-in-S_fd5ddbe7ac57 (36864 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
+*Separation ledger CRS–NOE:* separated-in-S_f117b7f53a8e (36864 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
 
 
-*Perspective visibility — CRS (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — CRS (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | F | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | P | F | P | P | P | P | P | V |
 
-*Cross-reference — CRS:* depends on ['NOE']; required by —; independent of 19 claims (ADJ, BAL, CDC, PUR, PRO…).
-
-
-## The braided V₄ (D₄) ≡ The twist — one structure
-
-**D4C — The braided V₄ (D₄)** (Theorem 5.4, Remark 5.5). Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id.
-
-**TWN — The twist** (§5.9, Theorem 5.4). The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.
-
-*Verdict (S_fd5ddbe7ac57, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 101376/101376 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
-
-
-*Perspective visibility — D4C (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P |
-
-*Perspective visibility — TWN (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P |
-
-*Cross-reference — D4C:* depends on ['NGL', 'NOE', 'RAD', 'V4I', 'ZDG']; required by ['NVL', 'PHS', 'PR2', 'PRO', 'PUR']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
-
-*Cross-reference — TWN:* depends on ['NGL', 'NOE', 'RAD', 'V4I', 'ZDG']; required by ['NGL', 'NVL', 'PHS', 'RAD', 'RLS', 'T53', 'V4I', 'ZDG']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
-
-
-## The G-value lift ≡ The exact V₄ — one structure
-
-**NGL — The G-value lift** (§5.7e, nedge-decomposition §6). Nedge's G-Value Calculus is ⟨fraction-addition, swap⟩ on formal-quotient pairs — the carrier quotiented by the diagonal; non-idempotence is the mass-growth shadow; resource sensitivity is the quotient remembering the extruded axis.
-
-**V4I — The exact V₄** (§5, Theorem 5.4, §5.6 P2-I). Under independence, the only admissible linear maps are diagonal; their sign-involutions form the Klein four-group exactly — no swap, no braid.
-
-*Verdict (S_fd5ddbe7ac57, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 92160/92160 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
-
-
-*Perspective visibility — NGL (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | V | P | P | V | P | P | P |
-
-*Perspective visibility — V4I (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | V | P | P | F | P | P | P |
-
-*Cross-reference — NGL:* depends on ['NOE', 'RAD', 'TWN', 'ZDG']; required by ['D4C', 'NVL', 'PHS', 'RAD', 'RLS', 'T53', 'TWN', 'ZDG']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
-
-*Cross-reference — V4I:* depends on ['NOE', 'RAD', 'TWN', 'ZDG']; required by ['D4C', 'NVL', 'PHS', 'RLS', 'T53', 'TWN']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
-
-
-## The radial schedule ≡ The zero-divisor schedule — one structure
-
-**RAD — The radial schedule** (§5.9). The CD pinning's quadratic norm is multiplicative exactly through the octonion rung (Hurwitz); radial multiplicativity is a sacrifice-ladder rung.
-
-**ZDG — The zero-divisor schedule** (§5.9 (Z-series)). Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact.
-
-*Verdict (S_fd5ddbe7ac57, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 55296/55296 = 1.00; but RAD is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
-
-
-*Perspective visibility — RAD (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P |
-
-*Perspective visibility — ZDG (executed, S_fd5ddbe7ac57 configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | F | P | P | P |
-
-*Cross-reference — RAD:* depends on ['NGL', 'TWN']; required by ['D4C', 'NGL', 'NVL', 'PHS', 'RLS', 'T53', 'TWN', 'V4I']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
-
-*Cross-reference — ZDG:* depends on ['NGL', 'TWN']; required by ['D4C', 'NGL', 'NVL', 'PHS', 'RLS', 'T53', 'TWN', 'V4I']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
-
-
-# Part 3 — Layer 2
+*Cross-reference — CRS:* depends on ['NOE', 'SWP']; required by —; independent of 21 claims (ADJ, BAL, CDC, PUR, PRO…).
 
 
 ## The two-gate theorem
@@ -229,16 +263,16 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['PR2', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger NVL–PUR:* separated-in-S_fd5ddbe7ac57 (3072 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
+*Separation ledger NVL–PUR:* separated-in-S_f117b7f53a8e (3072 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
 
 
-*Perspective visibility — NVL (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — NVL (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | F | P | P | P | V | P | P | V | P | F | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | F | P | P | P | V | P | P | V | P | F | P | V |
 
-*Cross-reference — NVL:* depends on ['D4C', 'NGL', 'NOE', 'PR2', 'PRO', 'PUR', 'RAD', 'TWN', 'V4I', 'ZDG']; required by ['PR2', 'PRO', 'PUR']; independent of 10 claims (ADJ, BAL, CDC, CRS, LOC…).
+*Cross-reference — NVL:* depends on ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'PR2', 'PRO', 'PUR', 'RAD', 'SWP', 'TWN', 'V4I', 'ZDG']; required by ['PR2', 'PRO', 'PUR']; independent of 10 claims (ADJ, BAL, CDC, CRS, LOC…).
 
 
 ## The sphere prohibition
@@ -247,16 +281,16 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['NVL', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger PR2–PRO:* separated-in-S_fd5ddbe7ac57 (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
+*Separation ledger PR2–PRO:* separated-in-S_f117b7f53a8e (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PR2 (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — PR2 (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | V | P | P | P | P | P | P | P | P | V | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | V | P | P | P | P | P | P | P | P | V | P | V |
 
-*Cross-reference — PR2:* depends on ['D4C', 'NOE', 'NVL', 'PRO', 'PUR']; required by ['NVL']; independent of 15 claims (ADJ, BAL, CDC, CRS, LOC…).
+*Cross-reference — PR2:* depends on ['D4C', 'NOE', 'NVE', 'NVL', 'PRO', 'PUR', 'SWP']; required by ['NVL']; independent of 16 claims (ADJ, BAL, CDC, CRS, LOC…).
 
 
 ## The prohibition ≡ The differential purchase — one structure
@@ -265,26 +299,26 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **PUR — The differential purchase** (§5.7). Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis.
 
-*Verdict (S_fd5ddbe7ac57, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 86016/86016 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 141312/141312 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
 *Frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum.*
 
 
-*Perspective visibility — PRO (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — PRO (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | V | P | P | P | P | P | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | V | P | P | P | P | P | P | P | P | P | P | V |
 
-*Perspective visibility — PUR (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — PUR (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | F | P | P | P | P | P | P | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | F | P | P | P | P | P | P | P | P | P | P | V |
 
-*Cross-reference — PRO:* depends on ['D4C', 'NOE', 'NVL']; required by ['NVL', 'PR2']; independent of 15 claims (ADJ, BAL, CDC, CRS, LOC…).
+*Cross-reference — PRO:* depends on ['D4C', 'NOE', 'NVE', 'NVL', 'SWP']; required by ['NVL', 'PR2']; independent of 16 claims (ADJ, BAL, CDC, CRS, LOC…).
 
-*Cross-reference — PUR:* depends on ['D4C', 'NOE', 'NVL']; required by ['NVL', 'PR2']; independent of 15 claims (ADJ, BAL, CDC, CRS, LOC…).
+*Cross-reference — PUR:* depends on ['D4C', 'NOE', 'NVE', 'NVL', 'SWP']; required by ['NVL', 'PR2']; independent of 16 claims (ADJ, BAL, CDC, CRS, LOC…).
 
 
 ## The involution coincidence ≡ The classical section — one structure
@@ -293,26 +327,26 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **LOC — The classical section** (Lemma 2.6, §5.8b). The inverse-locked locus (u, −u) is exactly c ≡ 0: the balance channel embedded in the pair; classical logic with the purchased axis off.
 
-*Verdict (S_fd5ddbe7ac57, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 82944/82944 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
+*Verdict (S_f117b7f53a8e, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 138240/138240 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
 
 *Frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum.*
 
 
-*Perspective visibility — L26 (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — L26 (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | F | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | P | P | F | P | P | P | P | V |
 
-*Perspective visibility — LOC (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — LOC (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | U | P | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | P | P | U | P | P | P | P | V |
 
-*Cross-reference — L26:* depends on ['NOE', 'RLS']; required by ['PHS', 'RLS', 'T53']; independent of 15 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — L26:* depends on ['NOE', 'RLS', 'SWP']; required by ['PHS', 'RLS', 'T53']; independent of 17 claims (ADJ, BAL, CDC, CRS, PUR…).
 
-*Cross-reference — LOC:* depends on ['NOE', 'RLS']; required by ['PHS', 'RLS', 'T53']; independent of 15 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — LOC:* depends on ['NOE', 'RLS', 'SWP']; required by ['PHS', 'RLS', 'T53']; independent of 17 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 ## The classical rails
@@ -322,16 +356,16 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 *Characteristic-break coincidence with ['L26', 'LOC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — RLS (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — RLS (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | V | P | U | F | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | P | V | P | U | F | P | P | P | V |
 
-*Cross-reference — RLS:* depends on ['L26', 'LOC', 'NGL', 'NOE', 'RAD', 'TWN', 'V4I', 'ZDG']; required by ['L26', 'LOC', 'PHS', 'T53']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — RLS:* depends on ['GCX', 'L26', 'LOC', 'NGL', 'NOE', 'RAD', 'SWP', 'TWN', 'V4I', 'ZDG']; required by ['L26', 'LOC', 'PHS', 'T53']; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
-# Part 4 — Layer 3
+# Part 3 — Layer 2
 
 
 ## The De Morgan requirements
@@ -339,76 +373,82 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **T53 — The De Morgan requirements** (Theorem 5.3). NOT(AND) ≡ OR requires two operations (one collapses OR into AND) and the inverse-lock (the classical section).
 
 
-*Perspective visibility — T53 (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — T53 (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | F | V | P | F | V | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | P | P | P | P | P | F | V | P | F | V | P | P | P | V |
 
-*Cross-reference — T53:* depends on ['L26', 'LOC', 'NGL', 'NOE', 'RAD', 'RLS', 'TWN', 'V4I', 'ZDG']; required by —; independent of 11 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — T53:* depends on ['GCX', 'L26', 'LOC', 'NGL', 'NOE', 'RAD', 'RLS', 'SWP', 'TWN', 'V4I', 'ZDG']; required by —; independent of 12 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 ## The phase support theorem
 
 **PHS — The phase support theorem** (§5.8c, §8.5–8.6). The extension class (the phase bit) is trivial exactly on the classical section and nontrivial exactly off it; a single pin has no phase.
 
-*Separation ledger PHS–TWN:* separated-in-S_fd5ddbe7ac57 (2304 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
+*Separation ledger PHS–TWN:* separated-in-S_f117b7f53a8e (2304 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PHS (executed, S_fd5ddbe7ac57 configs):*
+*Perspective visibility — PHS (executed, S_f117b7f53a8e configs):*
 
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | V | P | P | P | P | V | P | U | V | P | P | P |
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | V | P | P | P | P | V | P | U | V | P | P | P | V |
 
-*Cross-reference — PHS:* depends on ['D4C', 'L26', 'LOC', 'NGL', 'NOE', 'RAD', 'RLS', 'TWN', 'V4I', 'ZDG']; required by —; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — PHS:* depends on ['D4C', 'GCX', 'L26', 'LOC', 'NGL', 'NOE', 'NVE', 'RAD', 'RLS', 'SWP', 'TWN', 'V4I', 'ZDG']; required by —; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 ---
 
 # Glossary (computed)
 
-**The De Morgan requirements** [T53] — NOT(AND) ≡ OR requires two operations (one collapses OR into AND) and the inverse-lock (the classical section). *(Layer 3; Theorem 5.3)*
+**Semiring-weighted parsing** [SWP] — One chart, pluggable semiring: the carrier semiring carries the SPPF's packed multiplicity; probability is the positive-rail section, Viterbi the idempotent pinning; inside×outside is the zipper product. *(Layer 0; theory-threads §2/§8/§9 (S7/S12/S13))*
 
-**The G-value lift** [NGL] — Nedge's G-Value Calculus is ⟨fraction-addition, swap⟩ on formal-quotient pairs — the carrier quotiented by the diagonal; non-idempotence is the mass-growth shadow; resource sensitivity is the quotient remembering the extruded axis. *(Layer 1; §5.7e, nedge-decomposition §6; expr-intrinsic circle member)*
+**The De Morgan requirements** [T53] — NOT(AND) ≡ OR requires two operations (one collapses OR into AND) and the inverse-lock (the classical section). *(Layer 2; Theorem 5.3)*
+
+**The G-value lift** [NGL] — Nedge's G-Value Calculus is ⟨fraction-addition, swap⟩ on formal-quotient pairs — the carrier quotiented by the diagonal; non-idempotence is the mass-growth shadow; resource sensitivity is the quotient remembering the extruded axis. *(Layer 0; §5.7e, nedge-decomposition §6; expr-intrinsic circle member)*
 
 **The Noether pairings** [NOE] — The squeeze conserves mass; the common translation conserves bias — the two charges of the pair's symmetry flows. *(Layer 0; §11.8, OB-7)*
 
 **The balance channel** [BAL] — A single pin's real component holds the balance of the evidence, read relative to its frame's identity element; conflict is inexpressible. *(Layer 1; §5.7)*
 
-**The braided V₄ (D₄)** [D4C] — Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id. *(Layer 1; Theorem 5.4, Remark 5.5; truth-intrinsic circle member)*
+**The braided V₄ (D₄)** [D4C] — Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id. *(Layer 0; Theorem 5.4, Remark 5.5; expr-intrinsic circle member)*
 
 **The chart adjunction (exp ⊣ log)** [ADJ] — The two per-pin charts — semiring magnitudes and the signed line — form an adjoint equivalence; the codec pair whose round-trips are identities. *(Layer 0; §2, Lemma 2.5b)*
 
-**The classical rails** [RLS] — The locus endpoints are T and F; composed NOT exchanges them; independent negation at a rail lands on conflict. The rails are a compactification fact, detachable from the section. *(Layer 2; §5.7 worked rails)*
+**The classical rails** [RLS] — The locus endpoints are T and F; composed NOT exchanges them; independent negation at a rail lands on conflict. The rails are a compactification fact, detachable from the section. *(Layer 1; §5.7 worked rails)*
 
-**The classical section** [LOC] — The inverse-locked locus (u, −u) is exactly c ≡ 0: the balance channel embedded in the pair; classical logic with the purchased axis off. *(Layer 2; Lemma 2.6, §5.8b; truth-intrinsic circle member)*
+**The classical section** [LOC] — The inverse-locked locus (u, −u) is exactly c ≡ 0: the balance channel embedded in the pair; classical logic with the purchased axis off. *(Layer 1; Lemma 2.6, §5.8b; truth-intrinsic circle member)*
 
 **The codec contract** [CDC] — Ring or semiring encoding is indifferent iff encode matches decode; frame mismatch silently flips balance; negative+semiring is ill-typed. *(Layer 1; §5.7, Caveat 2.4a)*
 
 **The crossbar** [CRS] — (mass, bias) = (E⁺+E⁻, E⁺−E⁻) is an invertible change of basis on the pair. *(Layer 1; §4)*
 
-**The differential purchase** [PUR] — Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis. *(Layer 2; §5.7; expr-intrinsic circle member)*
+**The differential purchase** [PUR] — Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis. *(Layer 1; §5.7; expr-intrinsic circle member)*
 
-**The exact V₄** [V4I] — Under independence, the only admissible linear maps are diagonal; their sign-involutions form the Klein four-group exactly — no swap, no braid. *(Layer 1; §5, Theorem 5.4, §5.6 P2-I; expr-intrinsic circle member)*
+**The exact V₄** [V4I] — Under independence, the only admissible linear maps are diagonal; their sign-involutions form the Klein four-group exactly — no swap, no braid. *(Layer 0; §5, Theorem 5.4, §5.6 P2-I; expr-intrinsic circle member)*
 
 **The identity-collapse schedule** [IDC] — Bare nodes collapse; minimally-stabilized twins still collapse; distinct participation separates — identity is unseparated-in-probe-space, and differentiation is probe-space extension. *(Layer 0; nedge-decomposition §2 (N-series))*
 
-**The involution coincidence** [L26] — On the classical section, constrained negation equals the pin-swap — they coincide iff the section is exactly f = −id. *(Layer 2; Lemma 2.6; truth-intrinsic circle member)*
+**The involution coincidence** [L26] — On the classical section, constrained negation equals the pin-swap — they coincide iff the section is exactly f = −id. *(Layer 1; Lemma 2.6; truth-intrinsic circle member)*
 
-**The phase support theorem** [PHS] — The extension class (the phase bit) is trivial exactly on the classical section and nontrivial exactly off it; a single pin has no phase. *(Layer 3; §5.8c, §8.5–8.6)*
+**The phase support theorem** [PHS] — The extension class (the phase bit) is trivial exactly on the classical section and nontrivial exactly off it; a single pin has no phase. *(Layer 2; §5.8c, §8.5–8.6)*
 
-**The prohibition** [PRO] — Pinning the purchased axis (normalization) conflates conflict with ignorance; collapse is an arity-mismatched decode; probability is the c-pinned slice. *(Layer 2; §3, §5.8a; expr-intrinsic circle member)*
+**The prohibition** [PRO] — Pinning the purchased axis (normalization) conflates conflict with ignorance; collapse is an arity-mismatched decode; probability is the c-pinned slice. *(Layer 1; §3, §5.8a; expr-intrinsic circle member)*
 
-**The radial schedule** [RAD] — The CD pinning's quadratic norm is multiplicative exactly through the octonion rung (Hurwitz); radial multiplicativity is a sacrifice-ladder rung. *(Layer 1; §5.9; expr-intrinsic circle member)*
+**The radial schedule** [RAD] — The CD pinning's quadratic norm is multiplicative exactly through the octonion rung (Hurwitz); radial multiplicativity is a sacrifice-ladder rung. *(Layer 0; §5.9; expr-intrinsic circle member)*
 
-**The sphere prohibition** [PR2] — Pinning the quadratic radius (L2 normalization) is also a one-mode decode: it conflates states differing only in radius — the prohibition's arity argument, second magnitude instance. *(Layer 2; §5.9)*
+**The sphere prohibition** [PR2] — Pinning the quadratic radius (L2 normalization) is also a one-mode decode: it conflates states differing only in radius — the prohibition's arity argument, second magnitude instance. *(Layer 1; §5.9)*
 
-**The twist** [TWN] — The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2. *(Layer 1; §5.9, Theorem 5.4; truth-intrinsic circle member)*
+**The third codec sighting** [GCX] — GALAXY's W ↔ ASPF's log-decode: the exponential codec is exact on the rank-sum quotient, and the quotient genuinely collides — GALAXY is a one-mode decode of the ASPF carrier. *(Layer 0; corpus-sweep §6 (S4); §5.8; expr-intrinsic circle member)*
 
-**The two-gate theorem** [NVL] — Nedge's 4VL (confidence × consistency) and Belnap's chart (bias-sign × rail) are distinct four-cell gates on one carrier; either magnitude pinning degenerates the gate — a four-valued logic needs the unpinned pair. *(Layer 2; §4, §5.7e, nedge-decomposition §2/§6)*
+**The twist** [TWN] — The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2. *(Layer 0; §5.9, Theorem 5.4; expr-intrinsic circle member)*
 
-**The zero-divisor schedule** [ZDG] — Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact. *(Layer 1; §5.9 (Z-series); expr-intrinsic circle member)*
+**The two-gate theorem** [NVL] — Nedge's 4VL (confidence × consistency) and Belnap's chart (bias-sign × rail) are distinct four-cell gates on one carrier; either magnitude pinning degenerates the gate — a four-valued logic needs the unpinned pair. *(Layer 1; §4, §5.7e, nedge-decomposition §2/§6)*
+
+**The zero-divisor schedule** [ZDG] — Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact. *(Layer 0; §5.9 (Z-series); expr-intrinsic circle member)*
+
+**The ∨E bridge** [NVE] — Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold. *(Layer 0; §5.7e; nedge-decomposition §8 (S8/S9); expr-intrinsic circle member)*
 
 
 # Cross-Reference Index (computed)
@@ -418,23 +458,26 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 | ADJ | 0 | — | BAL | — |
 | BAL | 1 | ADJ, CDC | CDC | — |
 | CDC | 1 | BAL | BAL | — |
-| CRS | 1 | NOE | — | — |
-| PUR | 2 | D4C, NOE, NVL, PRO | NVL, PR2, PRO | PRO ≡ PUR |
-| PRO | 2 | D4C, NOE, NVL, PUR | NVL, PR2, PUR | PRO ≡ PUR |
-| LOC | 2 | L26, NOE, RLS | L26, PHS, RLS, T53 | L26 ≡ LOC |
-| L26 | 2 | LOC, NOE, RLS | LOC, PHS, RLS, T53 | L26 ≡ LOC |
-| T53 | 3 | L26, LOC, NGL, NOE, RAD, RLS, TWN, V4I, ZDG | — | — |
-| V4I | 1 | NGL, NOE, RAD, TWN, ZDG | D4C, NGL, NVL, PHS, RLS, T53, TWN | NGL ≡ V4I |
-| D4C | 1 | NGL, NOE, RAD, TWN, V4I, ZDG | NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ TWN |
-| PHS | 3 | D4C, L26, LOC, NGL, NOE, RAD, RLS, TWN, V4I, ZDG | — | — |
-| RLS | 2 | L26, LOC, NGL, NOE, RAD, TWN, V4I, ZDG | L26, LOC, PHS, T53 | — |
-| NOE | 0 | — | CRS, D4C, L26, LOC, NGL, NVL, PHS, PR2, PRO, PUR, RLS, T53, TWN, V4I | — |
-| TWN | 1 | D4C, NGL, NOE, RAD, V4I, ZDG | D4C, NGL, NVL, PHS, RAD, RLS, T53, V4I, ZDG | D4C ≡ TWN |
-| RAD | 1 | NGL, TWN, ZDG | D4C, NGL, NVL, PHS, RLS, T53, TWN, V4I, ZDG | RAD ≡ ZDG |
-| ZDG | 1 | NGL, RAD, TWN | D4C, NGL, NVL, PHS, RAD, RLS, T53, TWN, V4I | RAD ≡ ZDG |
-| PR2 | 2 | D4C, NOE, NVL, PRO, PUR | NVL | — |
-| NGL | 1 | NOE, RAD, TWN, V4I, ZDG | D4C, NVL, PHS, RAD, RLS, T53, TWN, V4I, ZDG | NGL ≡ V4I |
-| NVL | 2 | D4C, NGL, NOE, PR2, PRO, PUR, RAD, TWN, V4I, ZDG | PR2, PRO, PUR | — |
+| CRS | 1 | NOE, SWP | — | — |
+| PUR | 1 | D4C, NOE, NVE, NVL, PRO, SWP | NVL, PR2, PRO | PRO ≡ PUR |
+| PRO | 1 | D4C, NOE, NVE, NVL, PUR, SWP | NVL, PR2, PUR | PRO ≡ PUR |
+| LOC | 1 | L26, NOE, RLS, SWP | L26, PHS, RLS, T53 | L26 ≡ LOC |
+| L26 | 1 | LOC, NOE, RLS, SWP | LOC, PHS, RLS, T53 | L26 ≡ LOC |
+| T53 | 2 | GCX, L26, LOC, NGL, NOE, RAD, RLS, SWP, TWN, V4I, ZDG | — | — |
+| V4I | 0 | GCX, NGL, NOE, RAD, SWP, TWN, ZDG | D4C, NGL, NVE, NVL, PHS, RLS, T53, TWN | NGL ≡ V4I |
+| D4C | 0 | GCX, NGL, NOE, NVE, RAD, SWP, TWN, V4I, ZDG | NVE, NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ NVE ≡ TWN |
+| PHS | 2 | D4C, GCX, L26, LOC, NGL, NOE, NVE, RAD, RLS, SWP, TWN, V4I, ZDG | — | — |
+| RLS | 1 | GCX, L26, LOC, NGL, NOE, RAD, SWP, TWN, V4I, ZDG | L26, LOC, PHS, T53 | — |
+| NOE | 0 | SWP | CRS, D4C, L26, LOC, NGL, NVE, NVL, PHS, PR2, PRO, PUR, RLS, SWP, T53, TWN, V4I | — |
+| TWN | 0 | D4C, GCX, NGL, NOE, NVE, RAD, SWP, V4I, ZDG | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RLS, SWP, T53, V4I, ZDG | D4C ≡ NVE ≡ TWN |
+| RAD | 0 | GCX, NGL, TWN, ZDG | D4C, GCX, NGL, NVE, NVL, PHS, RLS, SWP, T53, TWN, V4I, ZDG | GCX ≡ RAD ≡ ZDG |
+| ZDG | 0 | GCX, NGL, RAD, TWN | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RLS, SWP, T53, TWN, V4I | GCX ≡ RAD ≡ ZDG |
+| PR2 | 1 | D4C, NOE, NVE, NVL, PRO, PUR, SWP | NVL | — |
+| NGL | 0 | GCX, NOE, RAD, SWP, TWN, V4I, ZDG | D4C, GCX, NVE, NVL, PHS, RAD, RLS, SWP, T53, TWN, V4I, ZDG | NGL ≡ V4I |
+| NVL | 1 | D4C, GCX, NGL, NOE, NVE, PR2, PRO, PUR, RAD, SWP, TWN, V4I, ZDG | PR2, PRO, PUR | — |
 | IDC | 0 | — | — | — |
+| GCX | 0 | NGL, RAD, TWN, ZDG | D4C, NGL, NVE, NVL, PHS, RAD, RLS, SWP, T53, TWN, V4I, ZDG | GCX ≡ RAD ≡ ZDG |
+| SWP | 0 | GCX, NGL, NOE, RAD, TWN, ZDG | CRS, D4C, L26, LOC, NGL, NOE, NVE, NVL, PHS, PR2, PRO, PUR, RLS, T53, TWN, V4I | — |
+| NVE | 0 | D4C, GCX, NGL, NOE, RAD, SWP, TWN, V4I, ZDG | D4C, NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ NVE ≡ TWN |
 
-*Independence count: 139 of 210 pairs carry no dependence in either direction (S_fd5ddbe7ac57).*
+*Independence count: 163 of 276 pairs carry no dependence in either direction (S_f117b7f53a8e).*
