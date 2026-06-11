@@ -1,0 +1,3 @@
+1. equal-bias states with unequal-bias merges: 2376 witnesses; first: ((0, 0), (1, 1), (0, 1), (0, 1), (1, 1))
+2. mass diverges: True (mass_60 = 3.365e+08);  G = E+/E- converges: True (G* = 1.350781059)
+3. re-merge same source: (4.0, 1.0) (idempotent);  distinct source: (8.0, 2.0) (additive)

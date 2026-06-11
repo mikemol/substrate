@@ -179,3 +179,46 @@ declaration is not; any spec import must declare it first. The
 "Confidence Topography" = sigmoid(L) chart suggests Nedge's US_v2 plateaus
 live where the carrier's c-axis information would disambiguate — connects to
 the NVL claim but is not yet instrumented.
+
+## 7. Addendum — the runtime bridge (review-prompted, R1)
+
+An external LLM review asked how the static, correct-by-construction map
+bridges to dynamic runtime allocation at the memory layer. The question is
+legitimate (the no-runtime-story residue was already ledgered); three
+pieces of it are checkable, and all three checked (tools/
+runtime-bridge-pilot.py, output committed):
+
+1. **The prohibition is already deployed at the memory layer.** Replicated
+   evidence with join-merge: the diagonal quotient b = E⁺−E⁻ is NOT a
+   congruence for merge — 2,376 small-grid witnesses of equal-bias states
+   with unequal-bias merges (first: (0,0) vs (1,1) against (0,1)). This is
+   the PN-counter CRDT design fact: production distributed counters keep
+   the pair *because the evaluated difference does not merge*. The
+   refusal-to-quotient is load-bearing for eventual consistency — the
+   carrier's famous instance at the runtime layer. [W pilot / S framing]
+
+2. **Per-channel convergence dissolves the divergence worry.** Under
+   cyclic support (pair power-iteration, positive weights) mass diverges
+   monotonically while G = E⁺/E⁻ converges (Perron): the scalar
+   G-calculus's least-fixed-point equilibrium is the projective shadow of
+   carrier dynamics. The quotient was doing normalization work; the codec
+   localizes it — fixed-point queries read the balance coordinate, mass is
+   a monotone ledger (iteration/provenance weight) for GC and compaction
+   policy. [W pilot for the linear instance / C general]
+
+3. **Source-indexing dissolves the double-count.** The runtime carrier is
+   the source-indexed pair vector: within-source merge idempotent
+   (re-merging the same evidence does not double), cross-source read
+   additive. G_OR(G,G) = 2G — the calculus's "overcounting bias if sources
+   are not truly independent" — is the scalar shadow of erased provenance;
+   contraction-halving is its worst-case dual. [W pilot / S]
+
+Held open, unattributed (the review imported parsing vocabulary — ASPF,
+SPPF, content-addressed memory — that appears nowhere in the corpus): SPPF
+*packed nodes* share structurally identical derivations, which is the
+identity-collapse principle as a storage discipline (IDC as the
+content-address). Plausible import edge, not a document claim. [C]
+
+Honest remainder: operational complexity (space per edge = 2×|sources|
+scalars; equilibrium scheduling; compaction safety against the lift) is
+genuinely open — the review's core point stands and stays in the ledger.

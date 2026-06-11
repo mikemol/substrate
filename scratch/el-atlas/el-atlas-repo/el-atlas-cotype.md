@@ -1458,3 +1458,37 @@ source for the N4 read = Drive doc 1vmHdXjhhi6xoWTn1N-nZ8ScazSX_D1jX
 observed core is preserved in §5.7e [O] and nedge-decomposition §6.
 (4) Loose-copy README in /mnt/user-data/outputs was stale; re-synced from
 the repo (repo is canonical; loose copies are exports).
+
+## R1: EXTERNAL LLM REVIEW — TRIAGE, ERRATA, AND THE RUNTIME PILOTS
+CONFIRMED ACCURATE: expr-intrinsic/truth-intrinsic distinction as a
+contribution; two-gate theorem reading; classical-rails-as-section reading;
+not-novel classifications (Hurwitz, V4/D4 motifs, Noether pairings) — all
+consistent with the spec's own claims (novelty asserted for the indexing/
+scheduling, never the underlying algebra); BOTH not-well-supported items
+land exactly on already-ledgered residue (TEST-FORMALIZATION stratum;
+absent runtime story) — independent confirmation that the residue ledger is
+placed honestly. Reviewer correctly read the NVL FP-artifact ledger entry.
+ERRATA: (E1) knob count is 12, not 15 (110,592 = 3·2·2·2·2·8·3·2·2·2·4·3).
+(E2) PUR is truth-falsifiable (F under the c-pin); the never-F exemplars
+are PRO, PR2, NGL — "Differential purchase" misfiled. (E3) ASPF / SPPF /
+"content-addressed memory model" / "parse forest" appear NOWHERE in the
+corpus documents — reviewer-imported vocabulary; treated as adjacency, not
+attribution. (E4) "boolean validity ... is absolute" is against house
+style: every verdict is indexed (unseparated-in-S; ∀-over-declared-spaces;
+never closes).
+ADJACENCY HELD OPEN [C]: SPPF packed-node sharing = identity-collapse as a
+storage discipline (IDC as content-address). Unattributed import edge.
+RUNTIME QUESTION ANSWERED WITH PILOTS (tools/runtime-bridge-pilot.py +
+out): (1) merge does not factor through the diagonal quotient — 2,376
+witnesses, grid [0,6)^6; the PN-counter CRDT keeps the pair because the
+evaluated difference does not merge: the prohibition DEPLOYED at the
+memory layer [W/S]. (2) cyclic support: mass diverges (1.5e+08 @ t=60),
+G = E+/E- converges (Perron, G* ≈ 1.354 — nontrivial, not the G=1
+conflation point); the scalar least-fixed-point equilibrium is the
+projective shadow of carrier dynamics [W linear instance / C general].
+(3) source-indexed carrier: within-source merge idempotent, cross-source
+read additive; OR(G,G)=2G = the shadow of erased provenance [W/S].
+Decomposition gains §7 (runtime bridge). Honest remainder kept: operational
+complexity/scheduling/compaction genuinely open — the review's core point
+stands. First pilot matrix had Perron ratio exactly 1.0 (the conflation
+point — a misleading exhibit); replaced before commit.
