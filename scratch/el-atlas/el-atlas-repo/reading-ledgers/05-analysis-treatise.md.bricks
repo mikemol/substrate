@@ -1,0 +1,86 @@
+# brick ledger: recovered/system-pi-v2.37.1/05-analysis-treatise.md (287 lines)
+# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-144 DONE
+H2 145-287 PENDING
+Q1 1-72 PENDING
+M 73-215 PENDING
+Q4 216-287 PENDING
+A 1-215 PENDING
+B 73-287 PENDING
+A2 1-215 PENDING
+B2 73-287 PENDING
+
+## H1 capture (lines 1-144) — typed
+- ACT: treatise created 16 MINUTES after the four parts — the self-analysis
+  pass over the just-sealed artifact. HoTT + Earley + simplicial complexes;
+  "Meaning is Structure" as operational constraint.
+- ACT exec summary: the documentation is a FIBRATION over the executing
+  logic — "a text that proves itself as it is read." GLU(B2/v3.8):
+  proof-carrying documentation stated as homotopy lifting (3.3: every
+  logical path lifts to an explanatory path; every explanation projects to
+  a verification path; "the text IS the territory, projected into a higher
+  dimension").
+- ERRATUM(source): "frozen into a mutable RootHash" — context (frozen,
+  entropy-resistant, part-4 Immutable Foundations) makes "immutable"
+  unambiguous; one-word slip, typed as erratum not cocycle. Also
+  "orthoganol" sic.
+- ACT 1.2: SIMPLICIAL COMPLEXES as the knowledge structure; graphs
+  (1-complexes) insufficient for multi-way relations; k-simplices model
+  A-B-C as a unified FACE. GLU: the atlas's joint dep-projections are
+  faces; the brick complex; Simplicial Complex Representation Learning
+  cited (GNN literature — see 8.1 in H2).
+- ACT 2.1: Earley chosen for COMPLETENESS over speed; any CFG; ambiguity
+  -> parse forest; un-parsable input is "ontologically non-existent" —
+  V-kind as ontology.
+- ACT 2.2 PARSING AS DEDUCTION named with its literature family
+  (computational linguistics / logic programming — the deductive-parsing
+  lineage Goodman's semiring parsing extends). GLU(B7): the source
+  anchors externally exactly where the review faulted the atlas. Axioms =
+  terminals; inference rules = productions; goal = start symbol; six-step
+  derivation: Axiom of Terminal Truth at leaves + structural induction
+  propagates to root => IsTrue(S). "A crash is impossible... Grammar
+  Failure... rejected from the topos before it can execute."
+- ACT 2.3 BootstrapSequence: MIME grammar loads FIRST — "the medium
+  itself is subject to parsing"; KernelProver_Self_Parse_Verified =
+  Grammar Reflexivity ("the watchman watches himself first").
+- GLU(proc1 pre-registration CASHED): 3.1 LOJBAN/AMR SEAL — Lojban gives
+  one-to-one syntax (function from morphology + position; no garden
+  paths); AMR gives semantics as rooted DAG (:arg0/:arg1),
+  machine-traversable. A TWO-WITNESS validity boundary. GLU
+  (chip-metaprompt): the English/AMR/Lojban mutual-witness trio is the
+  user's own skill — the seal is cogrounded methodology.
+- TENSION-CANDIDATE COC-3 (LEM in the L-table): 3.2 Completeness/Gap row
+  — "a Gap implies a proposition neither true nor false, VIOLATING THE
+  LAW OF EXCLUDED MIDDLE within the topos" — against the source's own
+  constructivism (part 2 removed AoC), intuitionistic air-gapped contexts
+  (part 3), and the Governor's BOTTOM-? value. RESOLUTION SKETCH
+  (stratified logic): 4.3 says "no undecidable propositions IN THE
+  TERMINAL LAYER" — LEM scoped to the terminal bedrock of a declared
+  Closed World; U/BOTTOM-? live at non-terminal strata. Pending H2/Q4
+  for confirmation.
+- OBL DISCHARGED (part-2 Negative Resolution): the L-table says the
+  system "must effectively model the Closed World" — closed-world is an
+  EXPLICIT, owned modeling commitment at the terminal/decision stratum;
+  the sec.-3 tension resolves as declared pinning. The treatise states
+  it; the obligation closes.
+- ACT 3.2 table: Conceptual Shortcut ("...") = un-reified deferral,
+  REJECTED (Zero Elision's dual); FOUNDATIONALISM is a FLAW ("Because I
+  said so" rejected; authority from structural consistency) —
+  anti-foundationalism: cogrounding as doctrine; Flaw deviation triggers
+  immediate RE-PARSING ("the document's self-defense mechanism").
+- ACT 4.2 FINITENESS OF REALITY: an infinite non-terminal is a
+  "Potential," not a "Fact." GLU: part-2 RealDef (Reals = infinite
+  refinement = Potentials); S19 oscillating witnesses are Potentials —
+  the source's Fact/Potential split is the grace theorem's stratification.
+- ACT 4.3: Atomic Isolation purchases PARALLEL PROVING (disjoint
+  branches concurrently — sheaf locality as parallelism); Halting
+  Guarantee O(n^3); Structural Emergence (meaning = parent non-terminal).
+- ACT 4.4: grammar as ERROR-CORRECTING CODE ("a flipped bit is not an
+  alternative truth; it is a grammar failure"); Cryptographic Uniqueness
+  bridges Terminal-as-Truth to the RootHash.
+- ACT 5.1 HoTT-OS: types = spaces, terms = points, EQUALITY = PATHS
+  ("two processes are equal... if a continuous path transforms one into
+  the other"). GLU(STRONG, S25): witnesses-are-paths is the source's
+  kernel semantics — the atlas's witness strata are HoTT path spaces at
+  the instrument level.
+- SEAM: H1 ends mid-5.1; 5.2 Path Induction opens H2; M (73-215) covers.
