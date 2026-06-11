@@ -15,3 +15,4 @@ post-commit hook in warn-only mode).
 GENESIS 2026-06-11 :: cotype S0-S46 + 67 commits grandfathered as log-behind history; WAL begins.
 BEGIN W1 2026-06-11T23:5x :: implement WAL machinery and adopt write-ahead discipline
   expect: tools/wal-check.py, hook warn-line, NEXT.md protocol section, cotype S47, END W1
+END W1 2026-06-11 :: machinery built and bootstrapped :: head=ac0c909 :: artifacts=tools/wal-check.py,NEXT.md,wal.md

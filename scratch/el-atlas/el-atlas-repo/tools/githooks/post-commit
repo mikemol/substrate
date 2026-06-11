@@ -11,6 +11,7 @@
 # autoDetach off so background gc never races the tarball on flaky I/O.
 sha=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
 git gc --auto --quiet 2>/dev/null || echo "post-commit: gc warning (non-fatal)"
+python3 "$(git rev-parse --show-toplevel)/tools/wal-check.py" --quiet || echo "post-commit: WAL-CHECK WARNING (investigate before next move)"
 top=$(git rev-parse --show-toplevel)
 parent=$(dirname "$top"); base=$(basename "$top")
 tar -czf "$parent/el-atlas-repo.tar.gz" -C "$parent" "$base" 2>/dev/null \

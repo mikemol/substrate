@@ -33,7 +33,18 @@ is spec-src/15/00/ (one leaf per OB).
 - Space fingerprint moves are universe moves: ledger every move with
   its cause, verify truth content index-only when expected.
 
+## WAL protocol (S47 — this supersedes ad-hoc pre-flush prep)
+- wal.md is write-ahead: BEGIN (intent + expected artifacts) is
+  COMMITTED BEFORE a multi-step move executes; END (outcome,
+  head=<sha>, artifacts=<paths>) commits with the result; ABORT with
+  reason if abandoned. tools/wal-check.py enforces: no dirty tree
+  without an open BEGIN; last END's head an ancestor of HEAD;
+  declared artifacts exist. SESSION START = run wal-check FIRST (the
+  recovery replay); an open BEGIN at start means the prior window
+  died mid-move — verify, redo, or ABORT before anything else.
+
 ## Opening moves, in order
+0. python3 tools/wal-check.py  (recovery replay — before all else)
 1. A/B/A2/B2 brick layers for parts 2-5 (ledgers mark them DEFERRED)
    — structurally fresh in a new context; the M/Q layers yielded
    4/4 and 5/6, so expect catches, and report zero-yields honestly.

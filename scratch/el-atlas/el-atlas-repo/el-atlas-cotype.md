@@ -3005,3 +3005,26 @@ moment-map, pilot exact — B6+OB-7 discharged"; SPACE MOVE LEDGERED:
 S_6c040a08a0f2 (cert-text kind; truth content index-only per S44a/S45
 precedent). The session's deferred set is now exactly: v2.22 read,
 A/B brick layers — both next-session by design.
+
+## S47: WRITE-AHEAD DISCIPLINE ADOPTED (AUTHOR) — THE COTYPE IS
+## LOG-BEHIND; THE WAL SANCTIONS STATE BEFORE IT EXISTS
+The author's elevation: continuation-readiness is not a pre-flush
+activity but an invariant — work is WAL'd, the WAL committed and
+CHECKABLE AGAINST STATE. Honest audit of our rituals: commit-per-move
+and the cotype are LOG-BEHIND (narration in the same commit as the
+state change); the S43 incident (+934 executed-but-unledgered bytes
+from an interrupted turn) is precisely the failure class write-ahead
+prevents — with a committed BEGIN, recovery KNOWS whether a delta was
+sanctioned instead of inferring it forensically. MACHINERY: wal.md
+(append-only; GENESIS grandfathers S0-S46 as historical log-behind;
+BEGIN committed before the move, END/ABORT after, with head and
+artifacts); tools/wal-check.py (pairing, sanctioned-dirty-only,
+END-head ancestry, artifact existence); the post-commit hook runs the
+checker warn-only on every commit; NEXT.md opening move 0 is the
+recovery replay — an open BEGIN at session start means the prior
+window died mid-move. BOOTSTRAPPED PROPERLY: W1's BEGIN was committed
+(ac0c909) before this machinery existed; this entry and END W1 close
+it. The symmetry with the source noted and bounded: their
+Verification-at-Load-Time checks artifact-against-proof; our
+wal-check checks state-against-intent — load-bearing difference: the
+WAL also covers work that DIDN'T finish.
