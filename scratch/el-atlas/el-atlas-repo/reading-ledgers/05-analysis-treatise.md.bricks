@@ -158,3 +158,10 @@ B2 73-287 DONE
   inherits the artifact's claims (COC-1, COC-2 re-asserted, not caught).
   COC-3 resolved within the treatise itself (decidability-stratified
   LEM). ERRATUM: "mutable RootHash" (exec summary) for "immutable."
+
+## ERRATUM (see cotype S36): the H2-capture line "the overlap is itself
+## cogrounding evidence" is WITHDRAWN — the review/literature-map was a
+## user-relayed message about the ATLAS TARBALL, not system corpus;
+## bibliographic overlap between two LLM-assembled lists is common-cause,
+## not convergence. The works-cited entries remain candidate anchors for
+## B7 under verify-then-import. Original text retained per append-only.

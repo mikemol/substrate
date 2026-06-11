@@ -2561,3 +2561,34 @@ question only. READING PROGRAM TOTALS: 5 documents, 45/45 bricks,
 every cut interior to some brick, 5 per-document ledgers, 2 confirmed
 cocycles + 1 resolved-with-mechanism + 1 discharged inter-complex
 tension + 2 errata; the protocol's redundancy purchased every catch.
+
+## S36: ERRATUM TO S35 — PROVENANCE CORRECTION (AUTHOR CATCH); A
+## COGROUNDING CLAIM WITHDRAWN
+PROVENANCE RESTATED: the external review AND its followup literature
+map were a USER-RELAYED message (one context flush back), whose
+object was the ATLAS TARBALL — they are not part of the SYSTEM Pi
+corpus. S31 typed this correctly at ingest; S35 then drew an
+inference across the provenance line. WITHDRAWN: "the overlap is
+itself cogrounding evidence" (S35; also treatise ledger H2 capture,
+retained in place per append-only discipline). The two citation
+lists concern DIFFERENT OBJECTS (review -> atlas; treatise
+works-cited -> SYSTEM Pi) and were both assembled by LLMs over
+adjacent subject matter: their overlap is COMMON-CAUSE (shared
+literature, shared priors), not independent convergence — counting
+bibliographic overlap as cogrounding inflates the program's central
+evidence class. Charter reading: the claim fails the
+independence-of-construction-path gate; bibliographies of
+LLM-generated documents fail it BY DEFAULT. WHAT SURVIVES: (a) B7 as
+merge-and-extend is operationally unchanged — the treatise's 22
+refs are candidate anchors to VERIFY-THEN-IMPORT (Pereira-Warren,
+semiring-weighted Earley, the HoTT book are real anchors regardless
+of assembler); (b) the cogrounding evidence class now contains
+STRUCTURAL convergences only: IntegerDef = the carrier with
+cross-addition equality; proof-carrying authorization vs v3.8;
+prohibition-as-de-stating (V-kind ethics); Boolean-where-decidable
+stratification matching U-kind placement; the simplicial self-check
+vs the brick protocol. None are bibliographic. SCHEMA UPGRADE
+(B10): the equivalence-certificate schema gains a mandatory
+PROVENANCE/INDEPENDENCE field — every future convergence claim
+declares the construction paths and their independence status
+before it may be typed as cogrounding.
