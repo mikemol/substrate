@@ -2,9 +2,9 @@
 # states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-144 DONE
 H2 145-287 DONE
-Q1 1-72 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q1 1-72 DONE-FRESH 2026-06-11 (two prints; diff below)
 M 73-215 DONE-FRESH 2026-06-11 (re-executed in two prints; diff below)
-Q4 216-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q4 216-287 DONE-FRESH 2026-06-11 (216-277 fresh; 278-287 read twice prior incl. provenance audit; diff below)
 A 1-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 73-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A2 1-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -209,3 +209,36 @@ arrival), evidence the M-layer pays when performed.
 - ERRATUM(minor): "This axioms enforce" (4.2), sic.
 - VERDICT: fresh pass yielded the COC-2 operational sharpening — the
   largest single yield of the M-layer. Four for four.
+
+## Q1 fresh-pass capture-diff (lines 1-72) — 2026-06-11
+- NEW — UNIVALENCE PROMISED, NEVER DELIVERED: the executive summary
+  announces "path induction AND UNIVALENCE" applied to security; the
+  body (sec. V) delivers path induction only — univalence never
+  reappears. A promised-undelivered concept within the treatise. NOTE:
+  univalence (equivalence = equality) is precisely the formal
+  principle GCX-style identification needs — the source gestures at
+  the license for GALAXY = ASPF and never uses it. Banked for B4.
+- NEW — CONVERGENCE MAP COMPLETED (extends S38): mime-grammar-v1.0 is
+  the only v1.0 component. Four strata: v1.0 (the envelope), v1.1
+  (prover, logic, quiescence), v2.2 (category laws), v2.37 (system
+  content) — and the FOUNDATIONAL GRAMMAR ITSELF is v2.37: the
+  system's own language was the most-iterated component. The
+  effort-topography's sharpest reading: the hard part was saying it,
+  not ending it.
+## Q4 fresh-pass capture-diff (lines 216-287) — 2026-06-11
+- NEW NUANCE (COC-1): 7.3 says Merkle structure is "(implied by the
+  term RootHash and truth-forest)" — the analyst SELF-MARKS the
+  mechanism as inference, not specification. The seal's mechanism was
+  never specified anywhere; the treatise's hedge is an honest-analyst
+  marker that sharpens the nominal-seal finding.
+- NEW — TABLE 2'S HIDDEN AXIS: every row opposes External to
+  Intrinsic verification (unit tests vs self-parsing; signed binaries
+  vs RootHash) — the organizing principle is CERTIFICATE LOCALITY,
+  i.e. the atlas's proof-carrying axis (B2) and the v3.8
+  evidence-location flag. By the source's own table, "NOE: guard-only,
+  evidence external (OB-7)" sits in the Traditional-OS column —
+  Table 2 is an indictment our instrument already printed against
+  itself.
+- ERRATUM(minor): 8.3 "nuclear control, autonomous, financial cores"
+  — dangling adjective, sic.
+- VERDICT: Q-layer on the treatise: 4 new captures + 1 nuance.

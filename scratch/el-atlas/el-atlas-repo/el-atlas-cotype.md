@@ -2719,3 +2719,46 @@ this session's M-layer correction address at the reading stratum);
 quantitative trace of WHERE the human-LLM iteration effort
 concentrated — effort-topography as version metadata. The part-2
 "deliberate stability" adjudication stands, now with mechanism.
+
+## S39: Q-LAYER FRESH PASSES (PARTS 2-3, TREATISE) COMPLETE; HOOK
+## MEMOIZED AND MADE MOUNT-PROOF
+Q-LAYER YIELDS. Part 2: two recovered drops — 1.2.2 MORPHISM
+PROTECTION (the Governor was the inter-topos morphism gatekeeper from
+part 2 on; part 3's veto was not an escalation — the H1 drop
+manufactured an apparent power-grant) and 1.1.1's mandate-indexed
+least privilege; plus COC-4 — the Foundationalism Correction claims
+the system "remains intuitionistic" ten lines before a Completeness
+Proposition stating FULL LUB for every bounded set, which is not
+constructively valid (needs locatedness; full LUB implies LPO); the
+Body is Cauchy-flavored and constructive — a proposition/body
+mismatch introduced BY the same self-audit that claimed intuitionism.
+Part 3: Q1 ZERO-YIELD, reported honestly (confirmation is a valid
+result; uniform per-pass findings would indicate yield-inflation);
+Q4 — THE METHOD SPLIT AT THE WORLD BOUNDARY: WorldModelFunctor's
+Integrity uses Method('Functorial_Integrity_Check'), the only
+non-TopologicalTruthEvaluator proof in the corpus, at exactly the
+boundary where the Closed World meets external observation; the
+method is invoked once and DEFINED NOWHERE READ (COC-5 candidate;
+pre-registered for v2.22; if undefined there, a second boot-halt
+Gap). Treatise: UNIVALENCE promised in the executive summary and
+never delivered — and univalence is precisely the license GCX needs
+(banked to B4); the convergence map completes to four strata with
+the FOUNDATIONAL GRAMMAR ITSELF at v2.37 — the system's language was
+the most-iterated component (the hard part was saying it, not ending
+it); the treatise self-marks Merkle as inference (COC-1 nuance);
+TABLE 2's hidden axis is CERTIFICATE LOCALITY — External vs
+Intrinsic — the source's own table places v3.8's "NOE: evidence
+external" in the Traditional-OS column. RUNNING TOTALS for the
+re-execution program: M-layer 4/4 yield; Q-layer 5/6 yield with one
+honest zero. HOOK (author-directed fix): the old post-commit ran
+UNCONDITIONAL git gc — full repack of the whole object store every
+commit, cost growing with history, no on-disk memoization; that blew
+the 90s timeout. Now gc --auto (threshold 256 loose objects;
+autoDetach off; state persisted in the object store itself — git's
+own memoization) with the canonical script TRACKED at
+tools/githooks/post-commit. The mount then began dropping exec bits
+entirely (held for 50 commits, then degraded), so the STANDING
+PATTERN is: invoke `sh tools/githooks/post-commit` after commits —
+sh needs no exec bit; the script persists in git. A/B/A2/B2 layers
+remain DEFERRED as the next session's opening move, where every
+window is fresh by necessity.
