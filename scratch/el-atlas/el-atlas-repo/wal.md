@@ -22,3 +22,5 @@ END W2 2026-06-11 :: both pairs resolved (EQUAL; ISO-WITH-REFRAMING via PR2); on
 BEGIN W3 2026-06-11 :: homological-stability split-test (thread 20): for each separated pair, find knobs whose base-restriction removes all truth-separators — pairs that looked intrinsic before a knob arrived; cross-check against ledgered circles
   expect: tools/hstab-split-pilot.py(+out), theory-threads 20 updated, cotype S49, END W3
 END W3 2026-06-11 :: stability holds (0 hits); margin chart banked :: head=1bedf7b :: artifacts=tools/hstab-split-pilot.py,tools/hstab-split-pilot-out.txt
+BEGIN W4 2026-06-11 :: persist the flush-recovery doctrine (resent-prompt signal; active re-read as refresh; double-execution guard)
+  expect: NEXT.md recovery-protocol subsection, cotype S50, END W4
