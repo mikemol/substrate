@@ -2802,3 +2802,36 @@ scan; glue = completion; cocycle = item pending at end-of-input. The
 protocol we converged on is the source's own parser, applied to
 itself. HOUSEKEEPING: dead exec-bit hook copy removed; standing
 pattern remains `sh tools/githooks/post-commit` after commits.
+
+## S41: B4'S LICENSE CORRECTED — YONEDA + QUOTIENT, NOT UNIVALENCE
+## (AUTHOR); B3 GETS ITS FRAME FROM THE SAME MOVE
+AUTHOR CORRECTION: univalence is "just Yoneda and quotienting" — the
+type-theory specifics Martin-Lof exhibited as emergent in what Curry,
+Howard, and Yoneda had already walked. The S40 attachment of
+univalence to B4 is REPLACED: GCX's license is the LEMMA, not the
+axiom. THE FRAME, made precise: the knob space S is a category of
+probes/contexts; each claim's verdict map is a presheaf on S; the
+instrument's separator search compares restricted Yoneda embeddings
+— "zero separators" = the embeddings are naturally isomorphic over
+the declared probe category; a CIRCLE is a Yoneda-equivalence class
+relative to S, with provenance (KNOB_PROVENANCE) declaring the
+probe category's construction. THEOREM GCX (B4 sketch, corrected):
+phi: ASPF-carrier -> GALAXY is the quotient by the rank-sum kernel
+(ordinary Grothendieck-style quotient — the construction the
+source's own IntegerDef uses for number); the identification claim
+is that the restricted Yoneda embeddings of the two systems coincide
+on S, with the fiber/reconstruction data exhibiting the quotient's
+sections. No univalence anywhere; identifying the isomorphic needs
+no axiom when the isomorphism is exhibited. B3 (formal statability)
+INHERITS THE FRAME: statability = representability over the probe
+category; V-kind = outside the domain of the restricted embedding;
+separation = a probe distinguishing hom-sets — this IS the
+model-theoretic formalization the external review demanded, and it
+falls out of the same lemma. LINEAGE NOTE: Curry-Howard is already
+IN SOURCE (SoundnessProof: parse = constructive proof — C-H for
+grammars), and the treatise's Structuralism ("no quality but
+relations to other elements") is the Yoneda lemma stated as
+philosophy — Levi-Strauss rendered as representable functors. The
+treatise's UNIVALENCE-UNDELIVERED finding STANDS unchanged (the
+document promised what it did not deliver); only the B4 attachment
+is corrected — what GCX needs was never the missing delivery.

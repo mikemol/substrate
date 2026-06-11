@@ -252,3 +252,9 @@ arrival), evidence the M-layer pays when performed.
 ## Coherence 1.1 (self-parse with no Unknown node) and the Empty
 ## Queue (no pending items) are the checks it fails. Quiescence was
 ## declared over an incomplete chart. COC-2 stands, sharper.
+
+## NOTE to Q1 diff (author correction, 2026-06-11): the
+## univalence-undelivered FINDING stands; its B4 attachment is
+## corrected in cotype S41 — GCX's license is Yoneda + quotient
+## (statability = representability over the probe category), not the
+## univalence axiom.
