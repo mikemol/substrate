@@ -941,3 +941,14 @@ features/01_coverage_audit.md.
    still open by design).
 6. The two novelty seeds (CMR-as-collapse; doubling-functor) → standalone writeup
    candidates; these are where external priority is cleanest.
+
+## REPO INITIALIZED (git provenance layer)
+Folder: el-atlas-repo/ — spec, cotype, structured edition, features/, tools/ (depsort +
+draft-16 run transcript), README (document map, conventions, regeneration workflow).
+git init + initial commit 9ca55ed "Draft 16 state: the EL-Atlas at the codec turn"
+(18 files). Conventions adopted: commit per draft or per instrument run; message names
+the triggering correction/finding so `git log` reads as the reasoning path; corrections
+remain monotonic IN-document (RETRACTED markers), with git supplying the BETWEEN-document
+history. The cotype stays the semantic provenance log; git is its mechanical complement
+(the cotype says WHY, the diff says WHAT). This entry is itself the second commit —
+the loop demonstrated.
