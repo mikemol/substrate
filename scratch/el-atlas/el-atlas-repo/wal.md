@@ -16,3 +16,5 @@ GENESIS 2026-06-11 :: cotype S0-S46 + 67 commits grandfathered as log-behind his
 BEGIN W1 2026-06-11T23:5x :: implement WAL machinery and adopt write-ahead discipline
   expect: tools/wal-check.py, hook warn-line, NEXT.md protocol section, cotype S47, END W1
 END W1 2026-06-11 :: machinery built and bootstrapped :: head=ac0c909 :: artifacts=tools/wal-check.py,NEXT.md,wal.md
+BEGIN W2 2026-06-11 :: resolve waiting joiner pairs {LOC,L26}, {PUR,PRO} at the witness stratum; register results in WITNESS_RELATIONS (v3.8.4)
+  expect: tools/joiner-pairs-pilot.py(+out), harness v3.8.4 with two new relations, run txt, regen, space-move ledger, cotype S48, END W2
