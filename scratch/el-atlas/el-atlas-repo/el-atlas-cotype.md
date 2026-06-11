@@ -1203,3 +1203,32 @@ sign-twisted pinning, per-level twist = phase" → unifies §5.7 recursion, §13
 §5.8c phase, draft-13 extensions under one type. H3's "Cayley–Dickson step" entries
 re-read accordingly (the consolidation's own C6 caution — "Cayley–Dickson-LIKE
 hyper-tower" — already pointed at the interface, not the instance).
+
+## DRAFT 17: ALL SEVEN H-SERIES IMPORTS COMMITTED (user: "everything, don't care on order")
+(a) Poulton corpus-locus note → §11.10 (source was already named in-spec; the
+    consolidation's [E4] tag now cited as its corpus anchor).
+(b) Shifted-log codec family e↦ln(1+e/κ) → §5.7; κ joins ℛ/Maslov-h on OB-1's
+    headroom axis; anchor discipline extended (every family declares its identity image).
+(c) Five-shadow projection inventory (corpus C4) → §5.7: mass / balance / unsigned
+    decisiveness / single-conductor / bridge ratio-null; worked-rails result re-scoped
+    as the coincidence locus (rails only).
+(d) Bundle reading → §5.9 closing: pair = double cover, swap = deck, phase = Z/2
+    monodromy; no-global-section ↔ frame invisibility. [C]
+(e) Holomorph/W-axis grounding → §11.4: S4=V4⋊S3 standard; tetrahedron algebra
+    sl2⊗A (math/0604218) = Klein-four autos + S3; dim-4 Hodge Λ1↔Λ3, Λ2=3+3.
+    Inherited residue carried verbatim (tetrad→g_⊠ binding: cited, not constructed). [S]
+(f) THE INTERFACE → new §5.9: binary-tree-with-conjugation; CD = famous pinning;
+    cocycle 0 = Walsh/RM layer; twist class = per-level phase (n=2: V4 extensions);
+    char-2 collapse theorem [W]. PLUS THE USER'S RADIAL CAUTION, integrated as the
+    pinning's entailment: CD pinning ⇒ quadratic norm N(x)=xx̄ ⇒ radial coordinate +
+    polar chart, absent from the untwisted pinning (norm degenerates to XOR-sum).
+    Disciplines: radius = QUADRATIC magnitude ≠ crossbar's LINEAR mass; N(xy)=N(x)N(y)
+    only through 𝕆 (Hurwitz) — radial multiplicativity is a sacrifice-ladder rung.
+    Payoff [C]: TWO magnitude-pinnings = the two normalizations — c-pin → simplex
+    (probability), r-pin → sphere (amplitude, §8's home); the prohibition's arity
+    argument covers both.
+(g) BK4VL lineage → Appendix B.0: the atlas as the rigorization of the corpus's own
+    prior program (C1 → locus-closure theorem; C4 → inventory).
+Structured edition regeneration after draft 17: NO-OP CONFIRMED (claim set unchanged;
+spec refs in claim metadata stable) — the instrument distinguishing prose growth from
+structural change, as designed.
