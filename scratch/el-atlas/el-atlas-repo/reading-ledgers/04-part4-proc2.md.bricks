@@ -2,13 +2,13 @@
 # states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-63 DONE
 H2 64-126 DONE
-Q1 1-32 DONE
-M 33-94 DONE
-Q4 95-126 DONE
-A 1-94 DONE
-B 33-126 DONE
-A2 1-94 DONE
-B2 33-126 DONE
+Q1 1-32 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 33-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q4 95-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+B 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A2 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+B2 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 
 ## H1 capture (lines 1-63) — typed
 - ACT: Part 4 of N; Phase 4 Self-Reification Engine + Phase 5 Quiescence;
@@ -126,3 +126,9 @@ status retained for capture bookkeeping; the PASS verdicts on non-H
 bricks carry this weaker certificate class. Exception note: proc1's M
 was examined as a seam unit and yielded a finding (1.1.1.gamma
 arrival), evidence the M-layer pays when performed.
+
+## REGRADE (author correction): the Q/M/A/B brick entries above were
+## gluing ASSERTIONS over context held in a lossy window, not fresh
+## window-passes. In-context recall is not a certificate. M-layer
+## (seam windows) now being re-executed as fresh prints with capture
+## diffs; Q and A/B layers honestly DEFERRED pending decision.
