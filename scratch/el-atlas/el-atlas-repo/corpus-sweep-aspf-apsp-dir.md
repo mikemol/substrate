@@ -346,3 +346,25 @@ optimization strategies"); SystemPi.agda cognitive harness
 Filter is the realizability-charter lineage; AMR/Lojban semantic
 domain). Plural readings, one presumed synthesis, adjudication
 structural only.
+
+## 10. S5: SYSTEM Π v2.37.1 RECOVERED (the author believed it lost)
+
+The v2.37.1 ARTIFACT survives in Drive — not just the analysis treatise.
+It lives as four conversation-export documents whose titles do not match
+their part numbers; the correct reading order is **proc1 → Proc3 → Proc4 →
+Proc2** = Parts 1→4 of "the final instantiation and concatenation of
+SYSTEM Π v2.37.1," all created 2026-01-09 within one minute of each other,
+with the analysis treatise generated sixteen minutes later. The
+distribution appears COMPLETE: Phases 0, 1, 2, 3, 3.5, 4, 5 all reified,
+through the QuiescenceProof, the symbolic RootHash seal, and the
+SelfContainmentAssertion ("It is finished."). Full text snapshot committed
+at `recovered/system-pi-v2.37.1/` (six files incl. provenance README with
+all Drive IDs); Drive remains canonical.
+
+Hooks recorded in the snapshot README, unadjudicated: Terminal-as-Truth
+locality = sheaf local sections (the OCAL/locale thread, in the author's
+own distribution); EthicalGovernor prunes SPPF *action* branches (contrast
+with the non-pruning knowledge charter); "axioms are the prime numbers of
+the grammar" (ASPF adjacency); Lemma_TheKnot = the Nedge-Quine shape;
+RootHash content-addressable truth-forest (the IDC storage thread);
+Lojban/AMR coherent-duality seal.

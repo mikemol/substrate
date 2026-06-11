@@ -1631,3 +1631,25 @@ ANSWER to "anything to import/process": done today = merged_ontology +
 GCX gate + System Pi family interned; queued = System Pi v2.22 dedicated
 read; GCX boards v3.5 with the spec note riding it; too-large ASPF docs
 need a fetch strategy; three APSP Drive folders unenumerated.
+
+## S5: RECOVERY EVENT — SYSTEM Π v2.37.1 FOUND INTACT
+User believed v2.37.1 lost. Drive sweep (fullText 'v2.37') found the
+ARTIFACT itself, not merely the analysis: four conversation exports titled
+proc1/Proc2/Proc3/Proc4 whose TITLES DO NOT MATCH PART NUMBERS — correct
+order proc1(P1) → Proc3(P2) → Proc4(P3) → Proc2(P4) — comprising the
+complete final concatenated quiescent instantiation (Phases 0–5: bootstrap
+manifest + MIME grammar + KernelProver/Earley + foundational logic;
+HoTT-OS kernel + category laws; number systems; control/dynamical systems;
+EthicalGovernor + WorldModelFunctor; Total Coherence Proposition +
+canonized lemmas; QuiescenceProof + RootHash + SelfContainmentAssertion).
+All five docs (parts + treatise) fetched IN FULL and committed verbatim as
+recovered/system-pi-v2.37.1/ with provenance README (Drive IDs, creation
+times, reading order, canonical-source note, formatting-artifact caveat).
+This is a deliberate, documented exception to the no-vendoring pattern:
+loss-risk justifies a git-versioned redundant copy; the tarball now
+carries it. Hooks (held, unadjudicated): terminal truth as LOCAL SECTION
+(sheaf — the OCAL thread in author voice); Governor prunes SPPF actions
+(knowledge stays; contrast non-pruning charter); axioms as "prime numbers
+of the grammar" (ASPF); Lemma_TheKnot (Nedge-Quine); RootHash content-
+addressing (IDC). RootHash is a symbolic seal string, not a computed
+digest — noted, not corrected (the artifact is preserved as-is).
