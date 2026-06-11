@@ -3,7 +3,7 @@
 H1 1-63 DONE
 H2 64-126 DONE
 Q1 1-32 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-M 33-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 33-94 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 95-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -132,3 +132,21 @@ arrival), evidence the M-layer pays when performed.
 ## window-passes. In-context recall is not a certificate. M-layer
 ## (seam windows) now being re-executed as fresh prints with capture
 ## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 33-94, seam 63|64) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): divider + Terminal Closure body
+  whole in M. PASS, earned.
+- NEW — VERSION STRATIGRAPHY COMPLETED (extends the part2-M finding):
+  three strata visible — v1.1 (lib-kernel-prover, lib-foundational-
+  logic, AND quiescence-proof-v1.1), v2.2 (category-theory), v2.37
+  (everything else). The QUIESCENCE PROOF is among the OLDEST
+  components: the system's ending was written near its beginning and
+  never revised. The closure machinery predates the content it closes.
+- RECOVERED (dropped from the H2 held-context capture): 2.3.1
+  Autonomous Bootstrap and 2.3.2 REFLECTIVE EQUILIBRIUM — the named
+  Rawlsian method, assigned to the Governor ("contradictions resolved
+  or pruned by the Governor"). Reinforces the part3-M synthesis:
+  the Governor is the controller driving the system to quiescence;
+  equilibrium-finding is its explicit job description.
+- VERDICT: fresh pass yielded 1 stratigraphy completion + 2 recovered
+  drops (one with a named method). Three for three on fresh-pass yield.
