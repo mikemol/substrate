@@ -2660,3 +2660,37 @@ redundancy is designed for the cross-session mode where context does
 not persist — in-session, same-context re-prints are cheaper but
 lower-yield; the design assumption should be stated in the protocol
 doc (queued as a tool docstring amendment).
+
+## S37: M-LAYER RE-EXECUTED AS FRESH PASSES — FOUR FOR FOUR ON YIELD;
+## IN-CONTEXT RECALL IS NOT A CERTIFICATE
+AUTHOR CORRECTION adopted: I had graded the Q/M/A/B bricks as gluing
+assertions over held context and defended the shortcut by trusting
+in-window recall — the exact faculty the overlap protocol exists to
+distrust, and the author observes the degradation from outside. The
+session ledger even contained the counterargument already (part-2
+capture: Axiom_Integrity re-parses at EVERY clock-terminal — truth as
+MAINTAINED parse). All four M-windows (parts 2, 3, 4, treatise)
+re-executed as fresh prints with capture-diffs, and EVERY pass
+yielded: (1) part 2 — VERSION STRATIGRAPHY (lib-category-theory-v2.2
+inside v2.37.1) + integrity as KERNEL-SIEVE closure (one sieve concept
+spans security and integrity); (2) part 3 — THE GOVERNOR IS A
+CONTROLLER WHOSE LYAPUNOV FUNCTION IS THE QUIESCENCEPROOF (ethics =
+control with L = distance-from-quiescence; visible only with Phase 3
+and 3.5 adjacent in one window) + dropped item 2.3.2 recovered;
+(3) part 4 — strata completed: v1.1 covers kernel-prover,
+foundational-logic, AND quiescence-proof (THE ENDING WAS WRITTEN
+FIRST) + Reflective Equilibrium (named Rawlsian method, assigned to
+the Governor) recovered from a dropped capture; (4) treatise — COC-2
+SHARPENED TO A FALSIFIABLE RUNTIME PREDICTION: by Table 1's own
+mechanics a Gap halts the boot, so the dangling RationalDef predicts
+the First Operational Bootstrap HALTS at RealDef resolution. Also:
+concrete recall-loss exhibits (silently dropped list items in two
+captures) — the lossy-window hypothesis is now an evidenced finding
+in our own ledgers, not a stance. PROTOCOL AMENDMENT (binding):
+gluing and seam bricks REQUIRE fresh prints; "content in hand" is not
+a verification class; ledger states are DONE-FRESH /
+ASSERTED-FROM-HELD-CONTEXT / DEFERRED, never bare DONE. STATUS: M
+layer DONE-FRESH for all five documents (proc1's was performed at
+read time); Q1/Q4 and A/B/A2/B2 layers honestly DEFERRED — decision
+open on executing them, with the oldest-read documents (parts 2-3)
+paying most by the recall-loss evidence.

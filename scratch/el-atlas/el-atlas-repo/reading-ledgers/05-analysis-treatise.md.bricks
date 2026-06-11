@@ -3,7 +3,7 @@
 H1 1-144 DONE
 H2 145-287 DONE
 Q1 1-72 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-M 73-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 73-215 DONE-FRESH 2026-06-11 (re-executed in two prints; diff below)
 Q4 216-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A 1-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 73-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -189,3 +189,23 @@ arrival), evidence the M-layer pays when performed.
 ## window-passes. In-context recall is not a certificate. M-layer
 ## (seam windows) now being re-executed as fresh prints with capture
 ## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 73-215, seam 144|145) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): the 5.1 paradigm-shift paragraph +
+  5.2 + 5.3 read whole across the cut. PASS, earned.
+- NEW — COC-2 SHARPENED TO AN OPERATIONAL PREDICTION: Table 1 (3.2)
+  states that any Flaw-deviation "triggers an immediate re-parsing...
+  and the boot process will HALT," and a Gap = missing parse path. The
+  dangling RationalDef IS a Gap under the source's own definition;
+  therefore the source's self-defense mechanism predicts the offered
+  First Operational Bootstrap HALTS at RealDef -> RationalDef
+  resolution. COC-2 upgrades from claim-tension to a falsifiable
+  runtime prediction about the artifact.
+- NEW (structural reuse note): treatise 5.3 files Resistance-to-
+  Collapse and Cycle-Preservation under Phase-1 Topos Stability;
+  part 4 presents the same two bullets under Phase-4 Coherence —
+  verbatim reuse across phase boundaries; not a conflict, but the
+  treatise re-files Coherence content as Stability content.
+- ERRATUM(minor): "This axioms enforce" (4.2), sic.
+- VERDICT: fresh pass yielded the COC-2 operational sharpening — the
+  largest single yield of the M-layer. Four for four.
