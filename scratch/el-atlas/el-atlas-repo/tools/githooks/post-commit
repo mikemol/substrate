@@ -1,0 +1,15 @@
+#!/bin/sh
+# EL-Atlas post-commit hook (tracked: tools/githooks/, core.hooksPath).
+# v2 (S39): MEMOIZED. The old hook ran unconditional `git gc` — a full
+# repack of the whole object store on EVERY commit, cost growing with
+# history, no on-disk persistence of prior packing work; on a stalling
+# mount this blew commit timeouts. Now: `gc --auto` packs only past the
+# configured loose-object threshold (state = the object store itself);
+# autoDetach off so background gc never races the tarball on flaky I/O.
+sha=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
+git gc --auto --quiet 2>/dev/null || echo "post-commit: gc warning (non-fatal)"
+top=$(git rev-parse --show-toplevel)
+parent=$(dirname "$top"); base=$(basename "$top")
+tar -czf "$parent/el-atlas-repo.tar.gz" -C "$parent" "$base" 2>/dev/null \
+  && echo "post-commit: tarballed at $sha (gc memoized via --auto)" \
+  || echo "post-commit: tarball warning (non-fatal)"

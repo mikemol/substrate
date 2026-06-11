@@ -2,9 +2,9 @@
 # states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-68 DONE
 H2 69-136 DONE
-Q1 1-34 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q1 1-34 DONE-FRESH 2026-06-11 (diff below)
 M 35-102 DONE-FRESH 2026-06-11 (re-executed; diff below)
-Q4 103-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q4 103-136 DONE-FRESH 2026-06-11 (diff below)
 A 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 35-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A2 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -145,3 +145,34 @@ arrival), evidence the M-layer pays when performed.
 ## lib-category-theory-v2.2 converged in few cycles (standard
 ## mathematics; nothing to iterate); v2.37 blobs carried the long
 ## refinements. Version = iteration depth = where the work was.
+
+## Q1 fresh-pass capture-diff (lines 1-34) — 2026-06-11
+- RECOVERED (dropped from H1 capture): 1.2.2 MORPHISM PROTECTION —
+  "Geometric morphisms between contexts are filtered by the
+  EthicalGovernor." A THIRD Governor role (besides action-pruning and
+  equilibrium): the Governor is the INTER-TOPOS MORPHISM GATEKEEPER.
+  Cross-part continuity: part 3's Axiomatic Loyalty (Governor vetoes
+  the MorphismGenerator) was NOT new power — part 2 already granted
+  the morphism filter. The Governor's jurisdiction was constant; the
+  H1 drop made part 3 look like an escalation.
+- RECOVERED (dropped from H1 capture): 1.1.1 Rule-Based Least
+  Privilege — grammar minimal "for the system's CURRENT MANDATE."
+  The mandate vocabulary spans parts: part 4's Operational Silence
+  ends "evolutionary mandates"; least-privilege is mandate-indexed
+  grammar minimality.
+## Q4 fresh-pass capture-diff (lines 103-136) — 2026-06-11
+- NEW TENSION-CANDIDATE COC-4 (the narrow window's catch — audit claim
+  and proposition sit 10 lines apart): the Foundationalism Correction
+  asserts the system "remains intuitionistic" (AoC removed), but the
+  RealDef Completeness Proposition states FULL LUB — "Every bounded
+  set of Reals has a least upper bound" — which is NOT constructively
+  valid in general (constructive analysis requires located/order-
+  located sets, or Cauchy completeness instead; full LUB implies LPO).
+  The Body's "convergent sequence of terminals" gestures at Cauchy
+  completeness, but the Proposition as stated is classical.
+  ADJUDICATION SKETCH: proposition/body mismatch — the body is
+  constructive, the proposition classical; a statement-level slip the
+  self-audit introduced IN THE SAME CORRECTION that claimed
+  intuitionism. Carried as candidate; treatise did not address it.
+- VERDICT: 2 recovered drops + 1 new cocycle candidate. Q-layer
+  paying at M-layer rates.
