@@ -1,0 +1,2 @@
+LIFT PILOT: OR=fraction-add True; AND=swap-conj-add True; NOT=swap True
+            non-idempotence=mass-shadow True; res=resistance-difference True; cond=L1-normalization True; DeMorgan-via-swap True

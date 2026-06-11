@@ -1441,3 +1441,20 @@ nedge-decomposition.md §6 status: queued -> landed (S_fd5ddbe7ac57).
 All instrument indices cite the corrected space (post-artifact, full-module
 fingerprint). Regen check: structured edition already regenerated at N3
 with the same claim set this import cites — no further regen owed.
+
+## RIGOR PASS (housekeeping, with one substantive repair)
+(1) tools/__pycache__/*.pyc had been TRACKED (compiled bytecode in version
+control); untracked, .gitignore added. (2) SUBSTANTIVE: the N2 lift pilot —
+the witness grounding the [W] grade cited in spec §5.7e identification 3 —
+existed only in the conversation transcript, not as a repo artifact.
+Committed as tools/ngl-lift-pilot.py (seed 42, 2000 trials) with output
+tools/ngl-lift-pilot-out.txt (all seven checks True); the harness claim NGL
+re-encodes identities 1-6 at 200 trials, so the instrument carried the
+content, but a cited witness must be reproducible from the repo alone.
+(3) CORRECTION to the N2 entry's closing line: "n4.txt retained in
+/home/claude" overstates — /home/claude is ephemeral scratch. Canonical
+source for the N4 read = Drive doc 1vmHdXjhhi6xoWTn1N-nZ8ScazSX_D1jX
+(Appendix A pattern: corpus docs referenced by ID, not vendored); the
+observed core is preserved in §5.7e [O] and nedge-decomposition §6.
+(4) Loose-copy README in /mnt/user-data/outputs was stale; re-synced from
+the repo (repo is canonical; loose copies are exports).
