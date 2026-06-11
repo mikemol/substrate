@@ -1,14 +1,14 @@
 # brick ledger: recovered/system-pi-v2.37.1/05-analysis-treatise.md (287 lines)
-# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-144 DONE
-H2 145-287 PENDING
-Q1 1-72 PENDING
-M 73-215 PENDING
-Q4 216-287 PENDING
-A 1-215 PENDING
-B 73-287 PENDING
-A2 1-215 PENDING
-B2 73-287 PENDING
+H2 145-287 DONE
+Q1 1-72 DONE
+M 73-215 DONE
+Q4 216-287 DONE
+A 1-215 DONE
+B 73-287 DONE
+A2 1-215 DONE
+B2 73-287 DONE
 
 ## H1 capture (lines 1-144) — typed
 - ACT: treatise created 16 MINUTES after the four parts — the self-analysis
@@ -84,3 +84,77 @@ B2 73-287 PENDING
   kernel semantics — the atlas's witness strata are HoTT path spaces at
   the instrument level.
 - SEAM: H1 ends mid-5.1; 5.2 Path Induction opens H2; M (73-215) covers.
+
+## H2 capture (lines 145-287) — typed
+- ACT 5.2 PATH INDUCTION as security: secure at reflexivity + all ops are
+  invariant-preserving paths => secure in every reachable state; "if no
+  path exists, the transition is topologically impossible." GLU: charter
+  reachability gate; part-3 actuator impossibility — security by
+  path-nonexistence.
+- ACT 5.3 HOMOLOGICAL STABILITY named with the mathematics (H_i stabilizes
+  as n grows): as modules load, the system's homology stabilizes.
+  GLU(NEW THEORY THREAD): the atlas HAS this phenomenon empirically —
+  circles/clusters persisted as the space grew 13,824 -> 165,888 across
+  v3.3-v3.8; truth-separators identical across v3.5/v3.5a. Circle
+  persistence under knob extension = homological stability of the claim
+  complex. Candidate spec framing; queue it.
+- ACT 5.3/6.1: a Topos "supports constructive logic"; Closed World
+  Assumption NAMED ("nothing exists outside the parse tree") — the
+  part-2 OBL discharge confirmed twice; "no debt in the economy of truth."
+- COC-3 RESOLVED BY STRATIFICATION (and earned, not assumed): 3.2 demands
+  LEM in the topos; 5.3 says topoi are constructive. Resolution: the
+  TERMINAL layer is decidable (4.3 halting guarantee, O(n^3)) —
+  decidability PURCHASES excluded middle locally; the bedrock is Boolean
+  because decidable, the superstructure constructive. GLU: the atlas's
+  U-kinds live exactly where decidability fails (noisy/partial locks) —
+  same stratification: LEM where decidable, U where not. Downgraded from
+  tension-candidate to resolved-with-mechanism.
+- ACT 6.2: the Simplicial Resolution "mirrors computing the BETTI
+  NUMBERS"; "a coherent system has a specific Betti profile (likely
+  trivial in the dimensions that correspond to contradiction)."
+  GLU(chip-metaprompt): H0/H1/H2 sketches compute exactly this; our
+  per-document Cech verdicts are Betti-profile statements.
+- ACT 6.3: axiom independence as linear independence; Kolmogorov-
+  complexity commitment (max structural signal / min lexical noise).
+- COC-2 CONFIRMED (the principal finding): 7.2 re-asserts Empty Queue,
+  explicitly forbidding Coq-style "admit" in the final artifact, and
+  cites the Gap Correction — while RationalDef dangles in ALL FIVE
+  documents (treatise scan: zero hits; only "operational"/"radical"
+  substring matches). The self-audit AND the 16-minutes-later analysis
+  pass both missed a live "admit." The source lacks an UNAUDITED
+  honesty class; the atlas's v3.8 UNAUDITED row is the repair pattern.
+- COC-1 CONFIRMED: 7.3 quotes the nominal string AS the RootHash and
+  explains Merkle verification over it — the analysis pass treats the
+  name as the value; content-addressable existence claimed, address
+  never computed. Externally discharged by the recovery snapshot's
+  CHECKSUMS.sha3-512.
+- ACT 7.4: Immutable Infrastructure — no patching, no learning; change =
+  new artifact + new RootHash; "a static, crystalline structure of
+  logic — a Terminal Simplicial Complex."
+- ACT 8.1: GNN -> simplicial parallel; "logical holes (non-trivial Betti
+  numbers) that a linear compiler would miss." GLU: 2nd-order breakers
+  ARE logical holes; the witness-stratum machinery detects non-trivial
+  classes.
+- ACT 8.2: Saussure/Lacan — the Symbolic (Grammar) structures the Real
+  (Terminals); Lojban/AMR = "Perfect Language" aligning signifier and
+  signified. 8.3: attacks as topologically disconnected paths; Table 2
+  traditional-vs-Pi comparison. IX: "when meaning is structure, truth
+  is inevitable."
+- ACT WORKS CITED (22 refs): includes PARSING AS DEDUCTION (ACL
+  P83-1021, Pereira-Warren 1983 — canonical), the HoTT book,
+  homological stability (Wahl ICM), Merkle/integrity, Lojban, AMR
+  survey, simplicial representation learning — and #6 "EFFICIENT
+  SEMIRING-WEIGHTED EARLEY PARSING": the semiring bridge between source
+  and atlas sits in the source's OWN bibliography. GLU(B7, STRONG): the
+  citation-backbone task becomes merge-and-extend of the source's
+  works-cited with the review's required set; the overlap (deductive
+  parsing, semiring parsing, HoTT) is itself cogrounding evidence.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2)
+- SEAM(H1|H2 at 144/145): cut mid-5.1; M (73-215) holds 5.1-7.2 whole.
+  PASS. Q1 (exec summary + I-II) and Q4 (7.3-IX + works cited)
+  consistent on re-read; A/B/A2/B2: no further overlap conflicts.
+- DOCUMENT CECH VERDICT: intra-treatise clean except where the treatise
+  inherits the artifact's claims (COC-1, COC-2 re-asserted, not caught).
+  COC-3 resolved within the treatise itself (decidability-stratified
+  LEM). ERRATUM: "mutable RootHash" (exec summary) for "immutable."

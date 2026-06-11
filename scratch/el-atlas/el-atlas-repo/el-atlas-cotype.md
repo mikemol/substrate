@@ -2517,3 +2517,47 @@ inter-complex tension resolved-in-progress, two cocycle candidates
 carried forward. NEXT: the treatise (05, 35KB) — acquire-once,
 digest-in-bricks; first action there: scan for RationalDef to settle
 COC-2.
+
+## S35: TREATISE READ COMPLETE — THE v2.37.1 READING PROGRAM CLOSES
+## (45/45 BRICKS, 5 DOCUMENTS); FINAL CECH VERDICT
+The treatise (written 16 minutes after the seal) is the source's
+self-analysis pass, and the reading program's final verdict over the
+whole complex is: COC-1 CONFIRMED — the RootHash is a nominal token;
+the treatise quotes the name as the value and explains Merkle
+verification over it; content-addressable existence claimed, the
+address never computed (externally discharged by our recovery's
+CHECKSUMS.sha3-512). COC-2 CONFIRMED, the principal finding —
+RationalDef dangles across all five documents while the artifact
+forbids Coq-style "admit" and the treatise re-asserts the Empty Queue:
+a live admit survived both the self-audit and the self-analysis. The
+diagnosis in atlas terms: the source lacks an UNAUDITED honesty class;
+v3.8's UNAUDITED row is the repair pattern. COC-3 RESOLVED WITH
+MECHANISM — LEM demanded in the topos vs constructive topos logic
+stratifies as Boolean-where-decidable: the terminal layer's halting
+guarantee EARNS excluded middle locally; constructive superstructure
+above; identical to the atlas's U-kinds living exactly where
+decidability fails. OBL-DISCHARGE confirmed: Closed World named twice
+as an owned modeling commitment. NEW THEORY THREAD (queued):
+HOMOLOGICAL STABILITY — the source names the mathematics; the atlas
+has the phenomenon empirically (circles/clusters persisted as the
+space grew 13,824 -> 165,888 across v3.3-v3.8; truth-separators
+identical across v3.5/v3.5a): circle persistence under knob extension
+= homological stability of the claim complex; candidate spec framing.
+GLUES: Betti-profile coherence (6.2) = chip-metaprompt's H0/H1/H2;
+2nd-order breakers = "logical holes a linear compiler would miss"
+(8.1); path-induction security = reachability-gate + part-3
+impossibility-by-construction; Fact/Potential = the S19 grace
+stratification. B7 UPDATE: the source's 22-entry works-cited includes
+Pereira-Warren Parsing-as-Deduction, the HoTT book, homological
+stability, AND "Efficient Semiring-Weighted Earley Parsing" — the
+semiring bridge to the atlas sits in the source's own bibliography;
+B7 becomes merge-and-extend, and the overlap is itself cogrounding
+evidence. ERRATUM: "mutable RootHash" for "immutable" (exec summary).
+THE LOJBAN/AMR SEAL (3.1) cashed in the treatise: a two-witness
+validity boundary (Lojban one-to-one syntax; AMR machine-traversable
+semantics) — the chip-metaprompt trio as the source's own
+methodology; the v2.22 pre-registration narrows to the locale-verdict
+question only. READING PROGRAM TOTALS: 5 documents, 45/45 bricks,
+every cut interior to some brick, 5 per-document ledgers, 2 confirmed
+cocycles + 1 resolved-with-mechanism + 1 discharged inter-complex
+tension + 2 errata; the protocol's redundancy purchased every catch.
