@@ -2,7 +2,7 @@
 
 **A paraconsistent evidence logic over exp/log charts, without probability**
 
-Specification — draft 17 (CHIP-(N+1), deliberately non-closed)
+Specification — draft 18 (CHIP-(N+1), deliberately non-closed)
 
 ---
 
@@ -254,6 +254,18 @@ legitimate *external, named* projection; conflating them, or treating any
 one as "the" value of the pair, is the collapse Law 3.1 forbids. The
 prohibition is not "never project" but "every projection is plural,
 external, and named." **[W]** (corpus-witnessed, D-1 §C4.)
+
+**Remark 3.6 (annihilation is a collapse; the resolution is
+representational).** The corpus's zero-divisor design move — *"zero-divisors
+can be resolved through representation-as-rationals (the number becomes
+structured)"* — is this section's prohibition stated at the multiplicative
+level. Annihilation (a · b = 0 with a, b ≠ 0) destroys the factors'
+structure exactly as the quotient destroys the pair's; the resolution in
+both cases is to **upgrade the representation so the operation's input
+structure remains addressable**: keep the formal pair instead of
+evaluating. The carrier's refusal of E⁺/E⁻ and the zero-divisor
+resolution by formal quotient are one design principle — when an
+operation would lose information, do not perform it; encode it. **[S]**
 
 ---
 
@@ -610,6 +622,36 @@ twist is **ℤ/2 monodromy** — the Möbius picture from the corpus
 its sheet-exchange). The band's lack of a global sheet-distinguishing
 section is the bundle-level face of the frame-invisibility obstruction
 (Theorem 5.4). **[C]**
+
+**The breakdown locus is geography (Z-series corpus import).** The radial
+caution above has a corpus-quantified continuation: when radial
+multiplicativity fails (sedenions and beyond), the failure locus is not
+scattered pathology but **enumerated, oriented structure** — the corpus's
+conservation-law program ("zero divisors aren't a problem, they're
+orienting features" once their number and placement are predictable).
+Externally anchored there: Moreno's characterization — a sedenion pair
+(v₁, v₂) is a zero divisor **iff ‖v₁‖ = ‖v₂‖ and ⟨v₁, v₂⟩ = 0**; the
+normalized zero-divisor pairs form G₂ = Aut(𝕆); dim ZD(Aₙ) = 2ⁿ − 5
+(Moreno; Biss–Dugger–Isaksen), filling the ambient space as n → ∞ while
+the law-release schedule exhausts at n = 4 ("the information suppressed by
+each trivial law is exactly the information that becomes expressible when
+it is released" — a law being *trivial* when it holds without witness
+structure, the charter's own vocabulary). **[S]** Two atlas readings:
+(i) **the conservation principle is the algebraic dual of the §11.10
+recursion** — residue-at-level-n becomes structure-at-level-(n+1) on the
+signal side (common mode → next channel) and on the algebra side
+(released law → zero-divisor geography); what the radial codec cannot
+multiplicatively transport is re-encoded as the next level's terrain.
+**[S]** (ii) Moreno's condition read in atlas coordinates: equal norm =
+**balance on the radial channel**; orthogonality = maximal directional
+opposition — the zero-divisor locus is the radial chart's *conflict
+corner*, and annihilation (v(ab) = ∞, the product at the bottom rail) is
+what conflict does at the multiplicative level. **[C]** (candidate
+reading, not identity). Register consequence: the high-rung tropical
+limit (OB-1) requires a **zero-divisor-indexed valuation** — the corpus
+program's "index the valuation relative to the ZD locus and let the locus
+do the geometric work" names exactly the blocker its open-problems ledger
+records for standard tropicalization. **[S]**
 
 ## 6. The semiring: two operations, log-linked
 
@@ -2092,18 +2134,16 @@ and are the substance of this appendix.
 
 ---
 
-*End of draft 17. CHIP state: OPEN CHIP-(N+1), gated on OB-1. Draft 17
-imports the H-series corpus recoveries, all seven candidates: the
-binary-tree-with-conjugation interface (§5.9; Cayley–Dickson demoted to
-the famous pinning; char-2 collapse theorem [W]; twist class = per-level
-phase) with the radial entailment (the CD pinning buys a quadratic norm,
-polar charts, and the L2 magnitude-pinning — the sphere — beside the
-crossbar's L1 simplex, the prohibition's arity argument covering both)
-and the bundle reading (pair = double cover, swap = deck transformation,
-phase = monodromy); the shifted-log codec family with headroom κ joining
-OB-1's axis; the five-shadow projection inventory with the rails as the
-only coincidence locus; the published grounding of the holomorph and
-W-axis (tetrahedron algebra sl₂⊗A; dimension-4 Hodge star); the Poulton
-corpus-locus note; and the BK4VL lineage (Appendix B.0) — the atlas named
-as the rigorization of the corpus's own prior program. Non-closure
-remains the design, not the defect.*
+*End of draft 18. CHIP state: OPEN CHIP-(N+1), gated on OB-1. Draft 18
+imports the Z-series (zero-divisor) corpus thread: the breakdown locus of
+radial multiplicativity as enumerated, G₂-oriented geography
+(dim ZD = 2ⁿ − 5; Moreno's equal-norm-and-orthogonal characterization,
+read as the radial chart's conflict corner [C]); the conservation
+principle as the algebraic dual of the §11.10 recursion — residue at
+level n is structure at level n + 1 on both the signal and algebra
+sides; the OB-1 consequence that high-rung tropical limits need a
+zero-divisor-indexed valuation; and Remark 3.6, joining the corpus's
+representation-as-rationals zero-divisor resolution to the prohibition
+as one design principle: when an operation would lose information,
+encode it instead of performing it. Non-closure remains the design,
+not the defect.*
