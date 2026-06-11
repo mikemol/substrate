@@ -172,7 +172,13 @@ makes the column a one-parameter family — (ℝ₊,+,×) → (ℝ,max,+) as
 recoverable from the ħ-correction (k = exp(−(F−min)/ħ), exact for
 equal-cost geodesics). **[W]** (Claim SWP, S_2738ddb8c926; pilots:
 swp-carrier-parsing, bdp-inside-outside, pit-zipper, apsp-tropical,
-act-stationary.)
+act-stationary.) The column splits along the order axis (v3.6): the
+ORDER-FREE face — counting, inside, inside×outside, conflation — extends
+verbatim over ℂ (claim SWF, S_9a577e722039: the first stance flipped by
+its own named breaker rather than by assumption; the extension is
+reading-robust, touching only the ring structure of ℂ), while the
+ORDERED face (Viterbi) is undefinable without an order — the idempotent
+member of the Maslov family needs the (max,+) order that ℂ lacks.
 
 **(i) Third codec sighting.** GALAXY's W ↔ ASPF's F is exp_α ⊣ log_α
 verbatim — exact on the rank-sum quotient, and the quotient genuinely
@@ -265,3 +271,32 @@ program's "index the valuation relative to the ZD locus and let the locus
 do the geometric work" names exactly the blocker its open-problems ledger
 records for standard tropicalization. **[S]**
 
+**The lock schedule (S25; instrument v3.6a, S_9a577e722039).** One
+certificate rides the whole tower: det L_x, the determinant of the
+left-multiplication operator. Through the octonions it is **locked to
+the radial chart** — det L_x = N(x)^(d/2) exactly (sampled ratio
+1.000000 at d = 2, 4, 8): one invariant, two charts, a codec; because
+det is a function of the norm alone, the kernel is empty and there are
+no left zero divisors. At the sedenions the lock breaks (ratio spread
+≈ [0.03, 0.76]) — **not a failure of the certificate but the purchase
+of an axis**: det becomes an independent coordinate, and the pair
+(N, det) carries strictly more than either. The two witness modes of
+the rung-16 boundary are the two readings of the unlocked pair:
+norm-failure (the N-reading) and kernel (the det-reading), the kernel
+mode strictly contained in the norm-failure mode (claims RDW/ZDW,
+Π-formalized: fiber-contentful at every rung, the witness being the
+section over rungs — a 1-path, displayed in verdict geometry as
+cdlevel-inertness). The annihilator of a zero divisor is **compiled,
+not searched**: it is ker L_x (a 4-plane for the exhibit
+(e₁+e₁₀)(e₄−e₁₅) = 0), the alignment system's coefficients being
+octonion multiplication data — the last locked rung parameterizes the
+first unlocked one, EEA's final-vector-just-prior structurally. The
+determinant variety {det L_x = 0} is measure-zero: sampling never
+lands on it; riding the certificate is the only access. Verdict-level
+consequence, recorded against the spec's own instrument: the five
+claims {GCX, RAD, RDW, ZDG, ZDW} share ONE verdict map in
+S_9a577e722039 and differ only at the witness stratum — five
+statements, five witness structures, one P/F/V profile: the verdict
+lattice undercounts content, and witness-valued verdicts (the
+2nd-order breaker/joiner program) are the registered remedy. **[W]**
+(Pilots: det-lock, radzdg-witness, hyperplane-ride, second-order-zd.)
