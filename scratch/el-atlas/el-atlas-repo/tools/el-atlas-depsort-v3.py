@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.8.1"
+VERSION = "v3.8.2"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -817,7 +817,7 @@ def _emit_nve():
     return f"constructed null bridge(3,7,6,14) = {br(3,7,6,14):.2e}; conflation splits (3,7)/(5,5): currents {br(3,7,2,3):+.6f} / {br(5,5,2,3):+.6f}"
 
 _FIBER_CERT = {
- 'ADJ':("guard",None), 'BAL':("analytic-points (s=-0.2)",None), 'CDC':("UNAUDITED (body not re-read this pass)",None),
+ 'ADJ':("guard",None), 'BAL':("analytic-points (s=-0.2)",None), 'CDC':("analytic-point (codec range at s=-0.2) + guard(ident) — audited S45",None),
  'CRS':("guard",None), 'PUR':("guard",None), 'PRO':("guard (truth-stable by arithmetic; see spec 5.8a)",None),
  'LOC':("analytic-points (3 probe values) + U-kinds",None), 'L26':("analytic-points",None),
  'T53':("guard + delegate(L26)",None), 'V4I':("guard",None), 'D4C':("guard",None),
@@ -825,7 +825,7 @@ _FIBER_CERT = {
  'NOE':("exact (Lie-level invariants computed in-run; variational form reserved) — B6 discharged",_emit_noe),
  'TWN':("guard",None), 'RAD':("sampled(40) — _rad_mult_ok, self-declared '(sampled)'",None),
  'ZDG':("cited-theorem(dim<16: composition algebras) + witness-search(dim 16)",None),
- 'PR2':("UNAUDITED (body not re-read this pass)",None), 'IDC':("UNAUDITED (helper not re-read this pass)",None),
+ 'PR2':("witness (constructed exact collision: (3,4)~(6,8) under r-pinning) — audited S45",None), 'IDC':("exact (WL signatures on declared exhibits; probe-indexed rounds) — audited S45",None),
  'NGL':("sampled(200) identities",_emit_ngl), 'NVL':("exact-exhaustive (declared 24-point grid, adaptive bits)",None),
  'GCX':("mixed: sampled(500) identities + exact collision witness",_emit_gcx),
  'SWP':("exact (CKY + exhaustive containment)",_emit_swp), 'SWF':("exact (both fields; the complex run IS the breaker)",None),

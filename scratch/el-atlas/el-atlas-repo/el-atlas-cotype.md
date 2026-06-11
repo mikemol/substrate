@@ -2958,3 +2958,25 @@ the move is source-hash-kind, not verdict-kind. ERRATUM: S44 wrote
 "28 certificate lines"; the generation contains 27. Standing check
 reaffirmed: every run/regen output gets its space index compared to
 the last ledgered index before banking.
+
+
+## S45: UNAUDITED FIBERS RETIRED (v3.8.2); HOMOLOGICAL-STABILITY
+## THREAD BANKED; SPACE MOVE LEDGERED IN-COMMIT
+The three UNAUDITED entries are read and reclassified: CDC =
+analytic-point (codec range at s=-0.2) + ident guard; PR2 = WITNESS —
+a constructed exact collision, (3,4)~(6,8) under r-pinning (the
+sphere's one-mode decode exhibited, not sampled); IDC = exact
+(Weisfeiler-Leman signatures on declared exhibits, probe-indexed
+rounds 0/1/3). None was sampled: the honest-default UNAUDITED class
+is now EMPTY, and the certificate table contains no unread fiber.
+SPACE MOVE (ledgered with its cause, same commit): S_5286dee80b9f at v3.8.2
+(cert-table source is fingerprint-bearing; truth content expected
+index-only per the S44a precedent — the run's circle lines match the
+v3.8.1 set by inspection of the header counts). THEORY THREAD 20
+(homological stability): the source names the mathematics, the atlas
+has the phenomenon — circles as stable classes under probe-space
+inclusion, with the Yoneda frame giving the setting and one concrete
+test queued (did any historical knob admission ever split a circle;
+records say no). QUEUE NOW: OB-7 variational residue, v2.22 read,
+A/B brick layers — all next-session items. The actionable queue for
+this session is EMPTY.

@@ -784,3 +784,23 @@ NF certificate: **the first 2nd-order JOINER verdict ever issued**,
 the positive identification that "unseparated-in-S" could never
 supply. Verdict lattice: one profile. Witness stratum: complete
 structure. The program's thesis, demonstrated on its first workload.
+
+## 20. Homological stability of the claim complex (S35/S45)
+
+The source names the mathematics (H_i stabilizes as the index grows;
+treatise 5.3, with the Wahl survey as its inline anchor); the atlas
+has the phenomenon empirically: the circle structure persisted
+unchanged as the probe space grew 13,824 -> 165,888 across v3.3-v3.8,
+truth-separator sets crossed v3.5/v3.5a identically, and S44a
+verified the v3.8.1 move index-only. Statement (thread, not theorem):
+the circles are stable homology classes of the claim complex under
+probe-space extension — each knob admission is an inclusion of
+complexes, and the observed invariance of circles under these
+inclusions is homological stability at the instrument grade. The
+Yoneda frame (5.10a) gives the right setting: extensions enlarge the
+probe category; stability says the restricted-embedding isomorphisms
+persist under the enlargement. Candidate work: state the inclusion
+maps explicitly and test whether any historical knob admission ever
+SPLIT a circle (the records say no — RAD/ZDG gained internal witness
+structure without truth-splitting); a split would be the
+H-instability event the lock schedule predicts at purchased axes.
