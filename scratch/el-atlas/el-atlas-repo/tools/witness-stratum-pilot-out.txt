@@ -1,0 +1,19 @@
+1. Z strictly inside NF: exhibit in Z: True, in NF: True (the kernel member IS a norm-failure member)
+   excess member found (in NF, not in Z): True  -> containment STRICT
+2. RDW ⊥ ZDW by construction (xy=0 vs xy!=0): exhibit in ZDW not RDW: True; excess member in RDW not ZDW: True
+3. partition RDW ⊔ ZDW = W(RAD): every NF member lands in exactly one cell (both exhibits): True
+   — the unlocked det-axis PARTITIONS the parent's witness set: the purchased coordinate, acting on witnesses.
+4. W(ZDG) = W(ZDW) as sets (both defined as Z): witness-ISO (identity map) — THE FIRST 2nd-ORDER JOINER VERDICT;
+   ZDW refines each member with its NF certificate (annotation: N(xy)=0 < N(x)N(y)=4) — refinement, not difference.
+5. W(GCX) lives on rank multisets (codec trials; collision ({1,4},{2,3})): DISJOINT-BY-TYPE from all four CD-pair sets.
+
+WITNESS-STRATUM RELATION MATRIX (indexed to the radzdg/det-lock witness formalizations):
+        GCX        RAD        RDW        ZDG        ZDW
+  GCX    =         ⊥type      ⊥type      ⊥type      ⊥type
+  RAD               =         ⊋          ⊋          ⊋
+  RDW                          =          ∅∩         ∅∩  (RDW ⊔ ZDW = RAD)
+  ZDG                                     =          ≅ (iso; ZDW = annotation-refined)
+  ZDW                                                =
+ALL TEN PAIRS RESOLVED one stratum below the verdict lattice: 4 type-disjoint, 3 strict
+containments, 1 partition-complement pair, 1 iso-with-refinement. The verdict-level circle
+{GCX,RAD,RDW,ZDG,ZDW} is fully structured at the witness stratum.

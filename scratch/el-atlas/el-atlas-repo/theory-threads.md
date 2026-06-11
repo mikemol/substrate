@@ -755,3 +755,32 @@ MISLABELED run artifact (a Σ-space run under a v3.6a filename): the
 run-label was authored by intent, not by reading (the S24a shape at
 the artifact-naming stratum). Guard adopted: patch success is verified
 before any run is named; the artifact was replaced by the true run.
+
+## 19. S27 — Γ read; the witness stratum delivers its first matrix
+
+**SYSTEM Γ** (doc read in full, created 2025-07-22T19:27 — now the
+EARLIEST located use of the name; the christening bound tightens a
+day, and the doc's own footnote proves a still-earlier Π document):
+LLM_Interface ::= (SYSTEM Γ / SYSTEM Π) = λp ⇒ Generate(p), the Lambek
+residual typing the LLM as "what extends Π into Γ," whose output Term
+must pass Π's EvaluateAndEvolve. TESTIMONY PROPOSES, MACHINERY
+DISPOSES has a type signature in the source: propose-then-audit is
+Γ's defining rule (EvaluateAndEvolveWithLLM). Residuation adjacency
+(G_res, the CF/EEA "what extends" reading) held [C]; the typing
+itself [S, the doc].
+
+**The witness stratum's first deliverable** (pilot
+tools/witness-stratum-pilot.py): the five-claim verdict-level circle
+{GCX, RAD, RDW, ZDG, ZDW} of S_9a577e722039 is FULLY STRUCTURED one
+stratum down — all ten pairs resolved, indexed to the declared witness
+formalizations: four DISJOINT-BY-TYPE (GCX's rank-multiset witnesses
+vs the CD-pair sets — no comparison without a declared functor), three
+STRICT CONTAINMENTS (Z ⊊ NF and its consequences), one
+PARTITION-COMPLEMENT pair (W(RDW) ⊔ W(ZDW) = W(RAD): the unlocked
+det-axis PARTITIONS the parent's witness set — the purchased
+coordinate acting on witnesses), and one ISO-WITH-REFINEMENT —
+W(ZDG) ≅ W(ZDW), the identity map, ZDW refining each member with its
+NF certificate: **the first 2nd-order JOINER verdict ever issued**,
+the positive identification that "unseparated-in-S" could never
+supply. Verdict lattice: one profile. Witness stratum: complete
+structure. The program's thesis, demonstrated on its first workload.

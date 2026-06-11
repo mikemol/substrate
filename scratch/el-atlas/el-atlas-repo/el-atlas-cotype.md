@@ -2244,3 +2244,27 @@ session); DREN folder contents; ASPF oversized docs + three APSP
 folders; Toulmin; v3.7 projected mode; witness-valued verdicts (the
 five-claim workload); complex-reading declaration (involution fork);
 OB-12 ∃-search; OB-3/OB-11/tetrad/GRC; SL₂/deck.
+
+## S27: Γ READ (CHRISTENING BOUND TIGHTENED); WITNESS-STRATUM MATRIX —
+## FIRST JOINER VERDICT
+Γ doc read in full: LLM_Interface ::= (Γ/Π) = λp ⇒ Generate(p) — the
+Lambek RESIDUAL typing the LLM interface; output Term gated by Π's
+EvaluateAndEvolve: propose-then-audit IS Γ's defining rule — S14's
+"testimony proposes, machinery disposes" typed in the source. Created
+2025-07-22T19:27 = EARLIEST located use of the name (bound tightened a
+day); its footnote proves a still-earlier Π doc. Residuation adjacency
+held [C]. WITNESS-STRATUM FIRST DELIVERABLE
+(tools/witness-stratum-pilot.py): the five-claim cluster fully
+structured one stratum down, ALL TEN PAIRS resolved (indexed to the
+radzdg/det-lock formalizations): 4 disjoint-by-type (GCX), 3 strict
+containments (Z ⊊ NF lineage), 1 partition-complement (W(RDW)⊔W(ZDW) =
+W(RAD) — the unlocked det-axis partitions the parent's witnesses), 1
+ISO-WITH-REFINEMENT: W(ZDG) ≅ W(ZDW) by the identity map, ZDW
+annotation-refined — THE FIRST 2ND-ORDER JOINER VERDICT (the positive
+identification circles have always lacked). One verdict profile;
+complete witness-level structure. REMAINING QUEUE (deferred, reasons
+standing): v2.22 read (115KB, fresh context); DREN contents; ASPF
+oversized + APSP folders; Toulmin; v3.7 projected mode; complex-reading
+declaration (involution fork); witness-valued verdicts AS INSTRUMENT
+MODE (the matrix is the prototype); OB-12/OB-3/OB-11/tetrad/GRC;
+SL₂/deck; christening artifact (bound now ≤ 2025-07-22T19:27).
