@@ -2268,3 +2268,26 @@ oversized + APSP folders; Toulmin; v3.7 projected mode; complex-reading
 declaration (involution fork); witness-valued verdicts AS INSTRUMENT
 MODE (the matrix is the prototype); OB-12/OB-3/OB-11/tetrad/GRC;
 SL₂/deck; christening artifact (bound now ≤ 2025-07-22T19:27).
+
+## S28: v3.7 — THE PILOTS BECOME THE INSTRUMENT (S_b92e9b4ffde6)
+Two modes absorbed, the process maturing into the tool per the
+compaction-insurance discipline (save the enrichments as CODE, not
+context): (1) THE RIDE: every searched pair's separator counts
+recomputed on its joint dep-projection and cross-checked against full
+enumeration in the same output — 26/26 ride==full: True this run
+(projections ×1,536 to ×27,648); every future run self-audits on the
+dep certificate; at larger spaces the projected mode can run alone
+between full audits. (2) THE WITNESS STRATUM: WITNESS_RELATIONS
+registry — circle verdicts now print their 2nd-order status: JOINED
+({ZDG,ZDW}: iso, annotation-refined — the joiner verdict is now
+machine-printed), strict containments (Z ⊊ NF lineage),
+partition-complement ({RDW,ZDW} = halves of W(RAD)), disjoint-by-type
+(GCX row), and UNREGISTERED as the honest default ({LOC,L26} and
+{PUR,PRO} = the waiting joiner candidates; {TWN,D4C} noted: their
+extension-class witnesses are 2-CELL data — the comparison lives one
+rung up the path tower). v3.6a results ledgered before the space
+moved. A circle verdict in this instrument is now a three-stratum
+report: truth (indexed to S), certificate (ride==full), witness
+(relation or honest absence). Run retained:
+tools/el-atlas-depsort-v3.7-run.txt; structured edition regenerated
+against S_b92e9b4ffde6.

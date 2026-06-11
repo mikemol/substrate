@@ -101,6 +101,19 @@ verdict geometry; 1-path witnesses are not the top of the tower (the
 D₄/TWN extension class is 2-cocycle data; S22's joiner is a 2-path
 between witnesses; the corpus names AspfTwoCellWitness). The Σ-form run
 is retained as S_3ed20b0e9c22.
+
+v3.7: two instrument modes absorbed from pilots — the process maturing
+into the tool. (1) THE RIDE (S23): every searched pair's separator
+counts are recomputed on its joint dep-projection (cells x cylinder
+multiplier) and cross-checked against full enumeration IN THE SAME
+OUTPUT — two sensors, every run self-auditing on the dep certificate;
+at larger spaces the projected mode can run alone between full audits.
+(2) THE WITNESS STRATUM (S22/S27): WITNESS_RELATIONS registers
+2nd-order relations for verdict-level circles — JOINED (witness-iso),
+strict containment, partition-complement, disjoint-by-type, or
+UNREGISTERED (the honest default) — printed with the separator
+verdicts, so a circle now carries its second-order status instead of
+bare unseparation. v3.6a results ledgered before the space moved.
 """
 import numpy as np
 import hashlib, json, inspect, io
@@ -743,6 +756,43 @@ for _k,_v in {
   frozenset({'SWF','SWP'}): ("S_3ed20b0e9c22 (v3.6)", "0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
+WITNESS_RELATIONS = {
+ frozenset({'ZDG','ZDW'}): "JOINED: witness-iso (identity map on Z); ZDW = annotation-refined (NF certificate per member) — the first 2nd-order joiner verdict (S27)",
+ frozenset({'RDW','ZDW'}): "partition-complement: W(RDW) ⊔ W(ZDW) = W(RAD) — the unlocked det-axis partitions the parent's witnesses (S27)",
+ frozenset({'RAD','ZDG'}): "strict containment: Z ⊊ NF (T2, radzdg-witness)",
+ frozenset({'RAD','RDW'}): "strict containment: NF\\Z ⊊ NF (S27)",
+ frozenset({'RAD','ZDW'}): "strict containment: Z ⊊ NF (S27)",
+ frozenset({'GCX','RAD'}): "disjoint-by-type: rank-multiset vs CD-pair witnesses (no comparison functor declared)",
+ frozenset({'GCX','RDW'}): "disjoint-by-type (as GCX/RAD)",
+ frozenset({'GCX','ZDG'}): "disjoint-by-type (as GCX/RAD)",
+ frozenset({'GCX','ZDW'}): "disjoint-by-type (as GCX/RAD)",
+ frozenset({'GCX','SWP'}): "disjoint-by-type: rank-multiset vs parse-chart witnesses",
+ frozenset({'LOC','L26'}): "UNREGISTERED — waiting joiner candidate (S22): compare section-witnesses",
+ frozenset({'PUR','PRO'}): "UNREGISTERED — waiting joiner candidate (S22)",
+ frozenset({'TWN','D4C'}): "UNREGISTERED — extension-class witnesses are 2-cell data (S25); comparison lives one rung up",
+}
+
+for _k,_v in {
+  frozenset({'RDW','ZDW'}): ("S_9a577e722039 (165888, v3.6a Pi-forms)", "0/0 perfect circle; witness-stratum: partition-complement halves of W(RAD)"),
+  frozenset({'RAD','RDW'}): ("S_9a577e722039 (v3.6a)", "0/0 — merged at verdict level by the promotion; witness-stratum: strict containment"),
+  frozenset({'ZDG','ZDW'}): ("S_9a577e722039 (v3.6a)", "0/0; witness-stratum: JOINED (iso, annotation-refined) — first joiner verdict"),
+  frozenset({'SWF','SWP'}): ("S_9a577e722039 (v3.6a)", "0 truth / 36864 kind — the EXTENDS footprint, stable across v3.6/v3.6a"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
+
+def _sep_projected(X, Y):
+    """S23 mode: exact separator counts on the joint dep-projection x cylinder volume."""
+    from itertools import product as _pr
+    joint = sorted(set(_CLAIM_DEPS[X]) | set(_CLAIM_DEPS[Y]))
+    mult = 1
+    for k in KNOBS:
+        if k not in joint: mult *= len(KNOBS[k])
+    st = sk = 0
+    for vals in _pr(*(KNOBS[k] for k in joint)):
+        m = dict(BASE); m.update(dict(zip(joint, vals)))
+        a, b = CLAIMS[X](m), CLAIMS[Y](m)
+        st += (a=='F' and b=='P') or (b=='F' and a=='P'); sk += ((a!='P') != (b!='P'))
+    return st*mult, sk*mult, mult
+
 def run():
     names=list(CLAIMS)
     manifest, fp = space_fingerprint()
@@ -796,6 +846,10 @@ def run():
             print(f"      frontier: a separator would require {FRONTIER[frozenset({X,Y})]}")
         for space_id, prior in PRIOR_LEDGER.get(frozenset({X,Y}), []):
             print(f"      ledger: {prior}  @ {space_id}")
+        pst, psk, pm = _sep_projected(X, Y)
+        print(f"      ride==full: {pst==st and psk==sk} (projection x{pm})")
+        wr = WITNESS_RELATIONS.get(frozenset({X,Y}))
+        if st==0 and wr: print(f"      witness-stratum: {wr}")
     mN=dict(BASE,lock='noisy')
     print(f"\n  Break 3 exhibit (noisy lock): LOC={CLAIMS['LOC'](mN)}, L26={CLAIMS['L26'](mN)}")
     print("  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old")
