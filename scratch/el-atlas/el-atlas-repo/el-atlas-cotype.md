@@ -2694,3 +2694,28 @@ layer DONE-FRESH for all five documents (proc1's was performed at
 read time); Q1/Q4 and A/B/A2/B2 layers honestly DEFERRED — decision
 open on executing them, with the oldest-read documents (parts 2-3)
 paying most by the recall-loss evidence.
+
+## S38: AUTHOR TESTIMONY — VERSIONS ARE PER-BLOB ITERATION COUNTERS;
+## STRATIGRAPHY IS A CONVERGENCE-RATE MAP
+Correction to S37's part-4 reading: "the ending was written first" is
+WITHDRAWN. The author versioned each MIME blob so that versioned
+chunks could be exchanged with an LLM across iterations; some blobs
+iterated more than others; the document was not written
+start-to-finish. Therefore the version field records PER-BLOB
+ITERATION DEPTH, and the stratigraphy is a CONVERGENCE-RATE MAP of
+the collaboration: quiescence-proof-v1.1 and the kernel-prover/
+foundational-logic blobs converged almost immediately;
+category-theory stabilized at v2.2 (standard mathematics — nothing
+to iterate); the v2.37 blobs are where the work was — the components
+that resisted formulation through many exchange cycles. GLUES:
+(a) S19 grace — each blob ran its own refinement schedule; the
+artifact ships fixpoints with iteration indices attached; low index =
+fast convergence; (b) DREN Git-as-History at CHUNK granularity —
+versioned-MIME exchange is hand-rolled version control inside a chat
+interface, the author's standing defense against cross-exchange
+drift and context loss (the same failure mode the brick protocol and
+this session's M-layer correction address at the reading stratum);
+(c) the fossil-record reading: the sealed artifact carries a
+quantitative trace of WHERE the human-LLM iteration effort
+concentrated — effort-topography as version metadata. The part-2
+"deliberate stability" adjudication stands, now with mechanism.

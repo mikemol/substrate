@@ -150,3 +150,10 @@ arrival), evidence the M-layer pays when performed.
   equilibrium-finding is its explicit job description.
 - VERDICT: fresh pass yielded 1 stratigraphy completion + 2 recovered
   drops (one with a named method). Three for three on fresh-pass yield.
+
+## ERRATUM to M-diff (author testimony, 2026-06-11): "the ending was
+## written first" WITHDRAWN. Versions are PER-BLOB ITERATION COUNTERS:
+## each MIME blob was versioned so versioned chunks could be exchanged
+## with an LLM across iterations; some blobs iterated more than others.
+## quiescence-proof-v1.1 = converged almost immediately, not written
+## first. Stratigraphy = convergence-rate map, not chronology.

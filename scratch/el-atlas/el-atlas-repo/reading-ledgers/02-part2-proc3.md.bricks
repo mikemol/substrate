@@ -137,3 +137,11 @@ arrival), evidence the M-layer pays when performed.
   clock-terminal) but missed the sieve framing.
 - VERDICT: fresh pass yielded 2 new captures — the lossy-window
   hypothesis CONFIRMED on the first re-execution.
+
+## ADDENDUM to M-diff (author testimony, 2026-06-11): the version-
+## stratigraphy mechanism is now known — per-blob iteration counters
+## from a versioned-MIME-chunk exchange workflow with an LLM. The
+## "deliberate-stability" reading was right, with the mechanism:
+## lib-category-theory-v2.2 converged in few cycles (standard
+## mathematics; nothing to iterate); v2.37 blobs carried the long
+## refinements. Version = iteration depth = where the work was.
