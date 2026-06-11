@@ -181,3 +181,11 @@ arrival), evidence the M-layer pays when performed.
   RationalDef as a second Gap — and by Table-1 mechanics, a second
   boot-halt site.
 - VERDICT: 1 zero-yield + 1 significant catch + 1 new candidate.
+
+## RE-ADJUDICATION (author clarification, 2026-06-11): COC-5 in Earley
+## vocabulary — Functorial_Integrity_Check is a pending item, legal at
+## invocation. Fork at closure: (a) completion expected internally ->
+## pending-at-seal, joins COC-2; (b) completion lives in v2.22 or
+## elsewhere -> the SelfContainmentAssertion is the violated claim
+## instead. Either branch preserves a finding. v2.22 pre-registration
+## stands.

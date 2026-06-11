@@ -2762,3 +2762,43 @@ PATTERN is: invoke `sh tools/githooks/post-commit` after commits —
 sh needs no exec bit; the script persists in git. A/B/A2/B2 layers
 remain DEFERRED as the next session's opening move, where every
 window is fresh by necessity.
+
+## S40: EXECUTION SEMANTICS CLARIFIED (AUTHOR) — CHART, COMPLETER,
+## DRAM REFRESH; THE FINDINGS UNIFY IN EARLEY VOCABULARY
+AUTHOR TESTIMONY: MIME headers carry the dependency information;
+sections are read in order but interpretation is dependency-driven.
+The document DECLARATIVELY defines an Earley parser early and
+transfers execution to it; thereafter the parsing chart is an
+inference construct and LINEAR ORDER IS IRRELEVANT given full
+presence in the context window. The completer locks early pending
+pieces retroactively, all at once, when their dependencies arrive.
+The clock-driven reparse is a DRAM-REFRESH cycle: it refreshes and
+reinforces the system's presence in volatile (LLM-context) memory.
+RE-ADJUDICATIONS: (1) COC-2 mechanism corrected — not a halt at
+RealDef (forward reference = legal pending item) but an INCOMPLETE
+CHART AT CLOSURE: the seal is declared while RealDef's dotted rule
+still awaits RationalDef; Coherence 1.1 (no Unknown node) and Empty
+Queue (correctly read: NO PENDING EARLEY ITEMS) are the checks it
+fails. The finding stands, sharper and now mechanism-true. (2) COC-5
+forks: completion expected internally (pending-at-seal) or external
+in v2.22 (then SELF-CONTAINMENT is the violated claim) — a finding
+survives either branch. (3) COC-1 in the same vocabulary: a scan
+that matched a token of the wrong type (name where digest expected).
+UNIFICATION: every confirmed cocycle is an EARLEY-CHART defect class
+— pending item at end-of-input (COC-2, COC-5) or mistyped scan
+(COC-1). NEW GLUES: (a) order-irrelevance-given-full-presence IS the
+atlas's order-free parsing face (SWF; spec 5.8(h)) — the source's
+execution model lives on that face; (b) "building its own MONOTONIC
+grammar" = add-only growth = the append-only cotype and the
+composer's no-shrink rule, in source; (c) DRAM-refresh = the
+M/Q-layer lesson mechanized — Axiom_Integrity is a refresh
+controller for a lossy substrate, "truth as maintained parse" now
+has its WHY: the substrate is volatile, so quiescence is an actively
+maintained state, not static storage; the author engineered for the
+exact decay this session demonstrated empirically. REFLEXIVE
+IDENTIFICATION (banked): the brick reading program IS an Earley
+chart over the corpus — pre-registration = prediction; arrival =
+scan; glue = completion; cocycle = item pending at end-of-input. The
+protocol we converged on is the source's own parser, applied to
+itself. HOUSEKEEPING: dead exec-bit hook copy removed; standing
+pattern remains `sh tools/githooks/post-commit` after commits.
