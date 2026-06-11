@@ -1,0 +1,59 @@
+# brick ledger: recovered/system-pi-v2.37.1/02-part2-proc3.md (136 lines)
+# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-68 DONE
+H2 69-136 PENDING
+Q1 1-34 PENDING
+M 35-102 PENDING
+Q4 103-136 PENDING
+A 1-102 PENDING
+B 35-136 PENDING
+A2 1-102 PENDING
+B2 35-136 PENDING
+
+## H1 capture (lines 1-68) — typed
+- ACT: Part 2 of N; reifies Phase 1 (System Kernel) + Phase 2 (Mathematical
+  Foundations); Recursive Orthogonal Implication Protocol per notion.
+- GLU(proc1-H2 turn prompt): "Contextual Security" ARRIVED as pre-registered.
+  Defined as SIEVE / sub-grammar, explicitly NOT a boundary wall.
+- ACT 1.1 Syntactic Authorization: action authorized iff a valid parse-path
+  exists for (Principal, Action) in SecurityGrammar. GLU: proc1 SoundnessProof
+  (parse = constructive truth-path) extended from truth to AUTHORIZATION.
+- ACT 1.2 Topological Isolation: security domains = independent sheaves;
+  User_Topos compromise yields no parse-path into Root_Topos. GLU: proc1
+  axiom 1.1 (truth as local section) — security inherits sheaf locality.
+- ACT 1.3 Negative Resolution: absence of Permit == presence of Deny ("Total
+  Silence as Security"). TENSION-CANDIDATE (typed, not yet a cocycle): this is
+  closed-world negation — deriving a negative from absence — which the atlas
+  PROHIBITS on the evidence carrier (sec. 3). Resolution sketch: the source
+  applies it at the DECISION stratum (action interface), i.e. a declared
+  PINNING at the boundary, not an evidence-stratum claim. OBL: check whether
+  the treatise (05) addresses closed-world vs evidence explicitly.
+- ACT 1.1.2 Auditability: every action leaves the trace of the production
+  rules that justified it — witness-carrying ACTIONS. GLU: S20
+  extended-Euclid; v3.8 proof-carrying run output.
+- ACT 1.1.3 Formal Revocation: remove a production rule -> un-parsable.
+- ACT 1.2.3 PROOF-CARRYING AUTHORIZATION: "every request must be accompanied
+  by the IOU of its own parse-path" — VERBATIM convergence with v3.8.
+  COGROUNDING INSTANCE (B11): instrument and source converged independently.
+- ACT 1.3.1 Default Deny: Earley fails if no covering found.
+- ACT 1.3.2 Error Masking: security parse errors return the same terminal as
+  "Unknown" — DELIBERATE verdict-collapse to prevent leakage. GLU(IDC):
+  identity-collapse purchased intentionally; quotient-as-shield —
+  non-observability as a security feature, the dual reading of IDC.
+- ACT 1.3.3 Structural Obfuscation: grammar may be randomized if terminal
+  identity is constant — observational equivalence used DEFENSIVELY
+  (invariance under presentation).
+- ACT 1.2.1 Air-Gapped Logic: contexts may run different foundational logics
+  (classical vs intuitionistic) without interference. GLU: locale-per-domain;
+  feeds the v2.22 locale-verdict target (with proc1 Lojban-seal pointer).
+- ACT 1.2.1.beta: logic-switching cost = graded attention-economy metric
+  (chart transitions are COSTED — codec cost made explicit).
+- ACT 1.2.1.gamma: identity re-verified at every topos-boundary crossing.
+- ACT Phase-1 MIME: HoTT_OS_Kernel — Topology Sh(C,J) over SystemState-Space;
+  KernelProver as urn:uuid dependency (v3.8 lineage pointer confirmed in
+  source); Axiom_Integrity: kernel functional iff state resolves to READY,
+  RE-PARSED AT EVERY CLOCK-TERMINAL (truth as maintained parse).
+- ACT Category_Laws_v2.2: Associativity proved via deterministic Earley
+  (composition = production-rule expansion; both groupings -> identical
+  terminal sequences); Identity = null-expansion rule preserving terminal
+  leaves. SEAM: H1 ends MID-Identity-proof — cut interior, M/H2 must cover.
