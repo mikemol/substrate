@@ -1960,3 +1960,51 @@ hierarchy/epochs held as separate adjacency. Sibling: GALAXY =
 quotient shadow of ASPF (S4), APSP = ħ→0 shadow of the ensemble (S17)
 — the corpus's two big systems are both shadows of held structures
 with recoverable corrections.
+
+## S18: v3.5 RUN — GCX/SWP/NVE BOARD; coeff=complex ADMITTED; RETROSPECTIVE
+## R-V35 RUN MID-FLIGHT; v3.5a BREAKER-HINGED CORRECTION
+THE RUN: claims GCX, SWP (5 checks incl. inside×outside), NVE board;
+coeff='complex' admitted (provenances: OB-9/S10, gf2-cleavage family,
+stationary-phase/S16). First form S_f117b7f53a8e (165,888) FROZEN at
+10aabbe with a known flaw caught by the author within one turn: a CENTRAL
+_memo V-guard under complex overrode the per-claim knob support declared
+in _CLAIM_DEPS — eleven coeff-independent claims forced to V; Break-2
+artifactual. Author's diagnosis: my "fall-through to the real branch is
+semantically wrong" was an UNINDEXED VERDICT assuming complex =
+Cayley-Dickson, "which it is not (necessarily)"; the fix must LIFT THE
+DISTINCTION AS A BREAKER and hinge on it — "feature flagging as
+epistemological model derivation." PRINCIPLE INTERNED: before fixing a
+"bug" in test semantics, name the breaker the fix hinges on; the flag's
+value is DERIVED, never assumed; 'extends' reachable only by the named
+breaker passing.
+RETROSPECTIVE (nine gates, retrospectives/2026-06-11-v35-complex-guard.md):
+precommit recovered verbatim (and itself contained the flaw); freeze =
+commit 10aabbe; delta = declared-independence overridden + reading
+undeclared + smoke test written by the same assumption as the code;
+root cause SYSTEMIC (admission loop lacks a reading-declaration gate and
+a stance-derivation step; the architecture priced the blanket move
+cheapest); decorrelated findings F2 (deps-contradiction, ledgered), F3
+(spec imports must cite corrected space; smoke tests need a
+deps-EXCLUDING claim with declaration-derived expectation — standing
+rule), F4 (stances must name breakers); fixpoint reached;
+HANDOFF blind spot named: stance reasons are my readings of my own test
+code, and dep-tuple correctness is trusted by bug and fix alike —
+instrumentation of ACTUAL knob reads = external-review residue.
+v3.5a (S_2738ddb8c926): _COMPLEX_STANCE applied ONLY where coeff ∈
+declared deps, every entry reason+breaker; coeff-independent claims
+verified untouched (ADJ row = ['adj'] alone; smoke with
+declaration-derived expectations); 'complex' READING UNDECLARED is now a
+REGISTERED ALIAS CIRCUMSTANCE in the knob provenance — declaring it is
+itself a breaker. CONSISTENCY CHECK: truth-separators identical across
+both runs (GCX↔CDC 27,648; NVE↔NVL 6,144) — the artifact lived entirely
+in V-kind, never truth. RESULTS (S_2738ddb8c926): {GCX,SWP,NVE,NGL}
+pairwise 0 truth-separators (co-movement .82–.94) — a new theorem-shaped
+guard-geography cluster (held-object-richer-than-pinning family);
+internal separation lives at the TEST-FORMALIZATION stratum (same
+frontier-shape as {RAD,ZDG}); GCX↔CDC and NVE↔NVL separated (the
+sighting is not a restatement; the bridge is not the two-gate theorem).
+Condensation: NVE joins {D4C,TWN}; GCX joins {RAD,ZDG}; SWP layer-0
+singleton. SPEC IMPORTS (composer's first real use, +46/−0): §5.7e ∨E
+ANSWERED appended (flag retained per S9), §5.8 gains (h) the parsing
+column with the Maslov family and (i) the third codec sighting — all
+indexed to S_2738ddb8c926 only. Both run outputs retained in-tree.

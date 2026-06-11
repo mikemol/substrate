@@ -78,6 +78,26 @@ there as "a key area for precise axiomatic definition" — the carrier
 treatment is the natural candidate (the pair keeps the case-mass the
 scalar loses); queued as N-series work. **[C]**
 
+**Answered (S8, author construction; instrument v3.5a).** The flag above
+is retained per the supersession-as-alias rule (S9); the answer: ∨E is
+the **single/double pin split/join carrier expansion**, witnessed by the
+**Wheatstone bridge**. The split is a section choice the scalar quotient
+erases — splits (3,7) and (5,5) of joined G = 10 conflate in the
+parallel join yet read as equal-and-opposite bridge currents (∓0.043478
+against reference (2,3)). The high-impedance bridge reading is exactly
+the difference of two L1-normalized conditionals (identification 5
+stitched to identification 4), nulling on equal odds at any mass — the
+bridge is itself a shadow-level instrument: galvanometer = bias read,
+source current = mass read, the crossbar as a circuit. Classical ∨E
+lives on the balance manifold, where case identity is invisible. Three
+layers, one answer: packed node (storage) / split-join (arithmetic) /
+bridge (measurement); the n-ary form is a lattice of exactly n−1
+partition readings plus the mass channel (pack tomography — necessity
+and sufficiency both pilot-witnessed). **[W]** (Claim NVE,
+S_2738ddb8c926: P wherever statable; separated from NVL by 6,144
+truth-separators; guards pins ≥ 2, neg, linear ops, real coefficients.
+Pilots: nve-bridge, nve-alias-delta.)
+
 ### 5.8 What the codec view clarifies (a sweep)
 
 The §5.7 semantics re-derives structure the spec previously stipulated.
@@ -136,6 +156,32 @@ the encoding's analog headroom between the rails: h → 0 = tropical
 saturation = rails-only = the classical limit. The graded interior is what
 finite headroom buys; OB-1's openness = the headroom is a model parameter.
 **[S]**
+
+**(h) The sweep gains a parsing column.** Goodman semiring parsing is
+projection plurality for parsing: one chart, pluggable semiring, and the
+semiring choice IS the quotient choice. Boolean = the classical section;
+inside (probability) = the positive-rail slice; Viterbi = the idempotent
+argmax pinning; the carrier semiring keeps what each discards (root mass
+= the SPPF's packed multiplicity; the equal-G/different-mass conflation
+is POINTWISE — at every span, not just the root). Inside × outside is
+the decategorified zipper, exact precisely because context-free means
+the filling family is constant over contexts. Maslov dequantization
+makes the column a one-parameter family — (ℝ₊,+,×) → (ℝ,max,+) as
+ħ → 0 — so Viterbi is the classical limit of inside, APSP/geodesics the
+(min,+) member, and the multiplicity the idempotent member discards is
+recoverable from the ħ-correction (k = exp(−(F−min)/ħ), exact for
+equal-cost geodesics). **[W]** (Claim SWP, S_2738ddb8c926; pilots:
+swp-carrier-parsing, bdp-inside-outside, pit-zipper, apsp-tropical,
+act-stationary.)
+
+**(i) Third codec sighting.** GALAXY's W ↔ ASPF's F is exp_α ⊣ log_α
+verbatim — exact on the rank-sum quotient, and the quotient genuinely
+collides (rank-sets {1,4} and {2,3}: equal α-shadow, distinct prime
+carrier): GALAXY is a one-mode decode of the ASPF carrier, the corpus's
+own probability : carrier instance. Sightings now three: Nedge L ↔ G;
+the atlas 𝔸 ↔ 𝕄; GALAXY ↔ ASPF. **[W]** (Claim GCX, S_2738ddb8c926;
+separated from CDC by 27,648 truth-separators — a sighting, not a
+restatement.)
 
 ### 5.9 The doubling interface and the radial chart (corpus imports, H-series)
 

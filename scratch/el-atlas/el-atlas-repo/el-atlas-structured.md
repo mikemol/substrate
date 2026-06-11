@@ -1,10 +1,10 @@
 # The EL-Atlas, Structured Edition
 
 *Mechanically derived by `tools/el-atlas-structured-gen.py` from the v3.1 harness.*
-*All verdicts indexed: space **S_f117b7f53a8e** (165888 models, exhaustive); manifest below.*
+*All verdicts indexed: space **S_2738ddb8c926** (165888 models, exhaustive); manifest below.*
 *Hand-written content: claim metadata sentences and spec pointers only.*
 
-**Space manifest S_f117b7f53a8e:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2, complex}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}.
+**Space manifest S_2738ddb8c926:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2, complex}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}.
 *Why this space: no knob is a-priori — each was admitted by a named correction*
 *event (KNOB_PROVENANCE in the harness); knobs are monotonic. Intrinsic verdicts*
 *below carry a frontier: what a separator would require, and at which scrutiny*
@@ -51,11 +51,11 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **ADJ — The chart adjunction (exp ⊣ log)** (§2, Lemma 2.5b). The two per-pin charts — semiring magnitudes and the signed line — form an adjoint equivalence; the codec pair whose round-trips are identities.
 
 
-*Perspective visibility — ADJ (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — ADJ (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | F | P | P | P | P | P | P | P | P | P | V |
+| P | P | P | P | P | F | P | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — ADJ:* depends on —; required by ['BAL']; independent of 22 claims (CDC, CRS, PUR, PRO, LOC…).
 
@@ -68,22 +68,24 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **TWN — The twist** (§5.9, Theorem 5.4). The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.
 
-*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 156672/156672 = 1.00; but NVE is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_2738ddb8c926, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 156672/156672 = 1.00; but NVE is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+*Separation ledger NVE–NVL:* separated-in-S_2738ddb8c926 (6144 truth-separators); separated, 6144 truth @ S_f117b7f53a8e (v3.5 first form, same caveat).
 
 
-*Perspective visibility — D4C (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — D4C (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
 
-*Perspective visibility — NVE (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — NVE (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | V | P | P | P | P | P | V | P | P | V | P | P | P | V |
 
-*Perspective visibility — TWN (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — TWN (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -104,22 +106,24 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **ZDG — The zero-divisor schedule** (§5.9 (Z-series)). Zero divisors first appear at the sedenion rung and are enumerated, oriented geography (dim 2ⁿ−5, G₂); in characteristic 2 they appear at every rung — the schedule is a char-0 fact.
 
-*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 110592/110592 = 1.00; but GCX, RAD is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_2738ddb8c926, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 110592/110592 = 1.00; but GCX, RAD is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+*Separation ledger GCX–SWP:* separated-in-S_2738ddb8c926 (0 truth-separators); unseparated in truth, 0/18432; kind counts carry the blanket-guard semantics @ S_f117b7f53a8e (165888, v3.5 first form — central complex V-guard overrode declared knob support; Break-2 coeff rows artifactual; retrospective R-V35).
 
 
-*Perspective visibility — GCX (executed, S_f117b7f53a8e configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
-
-*Perspective visibility — RAD (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — GCX (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
 
-*Perspective visibility — ZDG (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — RAD (executed, S_2738ddb8c926 configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
+
+*Perspective visibility — ZDG (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -138,16 +142,16 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **V4I — The exact V₄** (§5, Theorem 5.4, §5.6 P2-I). Under independence, the only admissible linear maps are diagonal; their sign-involutions form the Klein four-group exactly — no swap, no braid.
 
-*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 147456/147456 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_2738ddb8c926, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 147456/147456 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
 
-*Perspective visibility — NGL (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — NGL (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | P | P | P | P | P | P | V | P | P | V | P | P | P | V |
 
-*Perspective visibility — V4I (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — V4I (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -165,11 +169,11 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 *Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NVE', 'RAD', 'SWP', 'TWN', 'V4I', 'ZDG'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — NOE (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — NOE (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | P | P | P | P | P | V |
+| P | V | P | P | P | P | P | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — NOE:* depends on ['SWP']; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'SWP', 'T53', 'TWN', 'V4I']; independent of 7 claims (ADJ, BAL, CDC, RAD, ZDG…).
 
@@ -181,7 +185,7 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 *Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'TWN', 'V4I', 'ZDG'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — SWP (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — SWP (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -195,11 +199,11 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **IDC — The identity-collapse schedule** (nedge-decomposition §2 (N-series)). Bare nodes collapse; minimally-stabilized twins still collapse; distinct participation separates — identity is unseparated-in-probe-space, and differentiation is probe-space extension.
 
 
-*Perspective visibility — IDC (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — IDC (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | P | P | P | F | V |
+| P | P | P | P | P | P | P | P | P | P | P | P | P | P | F | P |
 
 *Cross-reference — IDC:* depends on —; required by —; independent of 23 claims (ADJ, BAL, CDC, CRS, PUR…).
 
@@ -213,14 +217,14 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['CDC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger BAL–CDC:* separated-in-S_f117b7f53a8e (27648 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
+*Separation ledger BAL–CDC:* separated-in-S_2738ddb8c926 (41472 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
 
 
-*Perspective visibility — BAL (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — BAL (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | F | F | P | P | P | P | P | P | P | P | V |
+| P | P | P | P | P | F | F | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — BAL:* depends on ['ADJ', 'CDC']; required by ['CDC']; independent of 21 claims (CRS, PUR, PRO, LOC, L26…).
 
@@ -231,12 +235,14 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['BAL'] (shared break in the dep digraph); separated in-space — see ledger.*
 
+*Separation ledger CDC–GCX:* separated-in-S_2738ddb8c926 (27648 truth-separators); separated, 27648 truth — the sighting is not a restatement @ S_f117b7f53a8e (v3.5 first form, same caveat).
 
-*Perspective visibility — CDC (executed, S_f117b7f53a8e configs):*
+
+*Perspective visibility — CDC (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | F | P | P | P | P | P | P | P | P | V |
+| P | P | P | P | P | P | F | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — CDC:* depends on ['BAL']; required by ['BAL']; independent of 22 claims (ADJ, CRS, PUR, PRO, LOC…).
 
@@ -245,14 +251,14 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **CRS — The crossbar** (§4). (mass, bias) = (E⁺+E⁻, E⁺−E⁻) is an invertible change of basis on the pair.
 
-*Separation ledger CRS–NOE:* separated-in-S_f117b7f53a8e (36864 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
+*Separation ledger CRS–NOE:* separated-in-S_2738ddb8c926 (55296 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
 
 
-*Perspective visibility — CRS (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — CRS (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | F | P | P | P | P | P | V |
+| P | V | P | P | P | P | P | P | P | F | P | P | P | P | P | P |
 
 *Cross-reference — CRS:* depends on ['NOE', 'SWP']; required by —; independent of 21 claims (ADJ, BAL, CDC, PUR, PRO…).
 
@@ -263,10 +269,10 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['PR2', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger NVL–PUR:* separated-in-S_f117b7f53a8e (3072 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
+*Separation ledger NVL–PUR:* separated-in-S_2738ddb8c926 (3072 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
 
 
-*Perspective visibility — NVL (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — NVL (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -281,14 +287,14 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Characteristic-break coincidence with ['NVL', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger PR2–PRO:* separated-in-S_f117b7f53a8e (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
+*Separation ledger PR2–PRO:* separated-in-S_2738ddb8c926 (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PR2 (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — PR2 (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | V | P | P | P | P | P | P | P | P | V | P | V |
+| P | V | V | P | V | P | P | P | P | P | P | P | P | V | P | P |
 
 *Cross-reference — PR2:* depends on ['D4C', 'NOE', 'NVE', 'NVL', 'PRO', 'PUR', 'SWP']; required by ['NVL']; independent of 16 claims (ADJ, BAL, CDC, CRS, LOC…).
 
@@ -299,22 +305,22 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **PUR — The differential purchase** (§5.7). Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis.
 
-*Verdict (S_f117b7f53a8e, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 141312/141312 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_2738ddb8c926, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 129024/129024 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
 *Frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum.*
 
 
-*Perspective visibility — PRO (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — PRO (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | V | P | P | P | P | P | P | P | P | P | P | V |
+| P | V | V | P | V | P | P | P | P | P | P | P | P | P | P | P |
 
-*Perspective visibility — PUR (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — PUR (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | F | P | P | P | P | P | P | P | P | P | P | V |
+| P | V | V | P | F | P | P | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — PRO:* depends on ['D4C', 'NOE', 'NVE', 'NVL', 'SWP']; required by ['NVL', 'PR2']; independent of 16 claims (ADJ, BAL, CDC, CRS, LOC…).
 
@@ -327,22 +333,22 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **LOC — The classical section** (Lemma 2.6, §5.8b). The inverse-locked locus (u, −u) is exactly c ≡ 0: the balance channel embedded in the pair; classical logic with the purchased axis off.
 
-*Verdict (S_f117b7f53a8e, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 138240/138240 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
+*Verdict (S_2738ddb8c926, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 124416/124416 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
 
 *Frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum.*
 
 
-*Perspective visibility — L26 (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — L26 (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | F | P | P | P | P | V |
+| P | V | P | P | P | P | P | P | P | P | F | P | P | P | P | P |
 
-*Perspective visibility — LOC (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — LOC (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | P | P | P | P | P | P | P | P | U | P | P | P | P | V |
+| P | V | P | P | P | P | P | P | P | P | U | P | P | P | P | P |
 
 *Cross-reference — L26:* depends on ['NOE', 'RLS', 'SWP']; required by ['PHS', 'RLS', 'T53']; independent of 17 claims (ADJ, BAL, CDC, CRS, PUR…).
 
@@ -356,7 +362,7 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 *Characteristic-break coincidence with ['L26', 'LOC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — RLS (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — RLS (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -373,7 +379,7 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **T53 — The De Morgan requirements** (Theorem 5.3). NOT(AND) ≡ OR requires two operations (one collapses OR into AND) and the inverse-lock (the classical section).
 
 
-*Perspective visibility — T53 (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — T53 (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -386,10 +392,10 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 **PHS — The phase support theorem** (§5.8c, §8.5–8.6). The extension class (the phase bit) is trivial exactly on the classical section and nontrivial exactly off it; a single pin has no phase.
 
-*Separation ledger PHS–TWN:* separated-in-S_f117b7f53a8e (2304 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
+*Separation ledger PHS–TWN:* separated-in-S_2738ddb8c926 (2304 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PHS (executed, S_f117b7f53a8e configs):*
+*Perspective visibility — PHS (executed, S_2738ddb8c926 configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -480,4 +486,4 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 | SWP | 0 | GCX, NGL, NOE, RAD, TWN, ZDG | CRS, D4C, L26, LOC, NGL, NOE, NVE, NVL, PHS, PR2, PRO, PUR, RLS, T53, TWN, V4I | — |
 | NVE | 0 | D4C, GCX, NGL, NOE, RAD, SWP, TWN, V4I, ZDG | D4C, NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ NVE ≡ TWN |
 
-*Independence count: 163 of 276 pairs carry no dependence in either direction (S_f117b7f53a8e).*
+*Independence count: 163 of 276 pairs carry no dependence in either direction (S_2738ddb8c926).*

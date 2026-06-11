@@ -56,11 +56,20 @@ inside-outside identity), NVE (vE = single/double pin split/join carrier
 expansion; the Wheatstone bridge reads the case-bias; classical vE lives on
 the balance manifold). Knob value coeff='complex' ADMITTED (provenance: OB-9
 re-posed via the S10 kill-audit; the gf2-cleavage family precedent; the
-stationary-phase regime, S16). Existing claims return V-pending-port under
-complex — honest unstatability-as-written, enforced centrally in _memo so no
-claim silently falls through to its real branch (Caveat 2.4a at the
-instrument level). Porting the characteristic-sensitive family
-{PHS,TWN,RAD,ZDG} to complex is named frontier work. Space: 165,888 models.
+stationary-phase regime, S16). Space: 165,888 models.
+
+v3.5a (retrospective R-V35, author-caught): the first v3.5 form enforced a
+CENTRAL V-guard for every claim under complex, overriding the per-claim knob
+support declared in _CLAIM_DEPS (eleven coeff-independent claims forced to V;
+the Break-2 table of S_f117b7f53a8e carries the artifact). The blanket
+diagnosis "fall-through to the real branch is semantically wrong" was an
+unindexed verdict presupposing an undeclared reading of 'complex' (it is not
+necessarily the CD rung). Corrected discipline — feature flags as
+epistemological model derivation: a claim is touched under complex ONLY if
+'coeff' is in its declared support; its stance is EARNED per-claim and
+carries its named breaker (_COMPLEX_STANCE); no stance may reach 'extends'
+except by its breaker passing; the reading question itself is a registered
+alias circumstance. See retrospectives/2026-06-11-v35-complex-guard.md.
 """
 import numpy as np
 import hashlib, json, inspect, io
@@ -454,13 +463,31 @@ _CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
     ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
     NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',),
     GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff'))
-_COMPLEX_PORTED = set()   # claims with complex semantics actually derived (per-algebra,
-                          # Caveat 2.4a); everything else is V-pending-port under complex.
+# v3.5a: per-claim complex stances. Applied ONLY where 'coeff' is in the
+# claim's declared support — coeff-independent claims are coeff-independent
+# BY DECLARATION and are never overridden (the v3.5 blanket guard violated
+# exactly this). Each stance is earned and names the breaker that would
+# change it; 'extends' is reachable only by that breaker passing.
+_COMPLEX_STANCE = {
+ 'T53': "V — De Morgan/rails test uses the signed line's order; breaker: order-free reformulation, or reading declaration",
+ 'V4I': "V — the sign-group question CHANGES over C (units {+-1,+-i}); breaker: declare the reading (base-field vs CD-rung), re-derive admissible involutions per Caveat 2.4a",
+ 'D4C': "V — braid/sign structure reading-dependent; breaker: as V4I",
+ 'PHS': "V — phase over C is OB-9's own open question; breaker: reading declaration + per-algebra involutions",
+ 'RLS': "V — rail endpoints are order facts; breaker: order-free reformulation",
+ 'TWN': "V — central -1 vs the richer center of C; breaker: as V4I",
+ 'RAD': "V — the tower over C is reading-dependent (bicomplex has zero divisors at dim 2); breaker: reading declaration",
+ 'ZDG': "V — as RAD",
+ 'NGL': "V — the G_res check uses order (a>b) as written; breaker: order-free test of the residuation identity",
+ 'NVL': "V — the Belnap bias-sign bit needs order; breaker candidate: a THEOREM that the four-cell gate needs an ordered field",
+ 'GCX': "V — the subject is the REAL-log codec; complex log is multivalued; breaker: a branch-cut formulation",
+ 'SWP': "V — the Viterbi member is undefinable without order (no argmax on C; S16 cousin); breaker: split the claim into ordered / order-free parts (checks 1,2,5 are char-0 generic)",
+ 'NVE': "V — the bridge reading is signed; breaker: none known without order",
+}
 def _memo(name, f):
     cache={}; ks=_CLAIM_DEPS[name]
     def g(m, _c=cache, _f=f, _ks=ks, _n=name):
-        if m.get('coeff')=='complex' and _n not in _COMPLEX_PORTED:
-            return 'V'   # unstatable-as-written: no silent fall-through to the real branch
+        if m.get('coeff')=='complex' and 'coeff' in _ks:
+            return 'V'   # stance earned per-claim; reason + breaker in _COMPLEX_STANCE[_n]
         k=tuple(m[x] for x in _ks)
         r=_c.get(k)
         if r is None: r=_c[k]=_f(m)
@@ -491,7 +518,7 @@ KNOB_PROVENANCE = {
  'norm':      ("prohibition/purchase, spec 5.8a",           "falsifies PUR while de-stating PRO"),
  'two_ops':   ("Theorem 5.3 single-op collapse",            "T53 from the locus circle"),
  'basis_def': ("v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode)", "CRS from NOE"),
- 'coeff':     ("char-2 collapse theorem (draft 17, [W]); 'complex' admitted v3.5 (OB-9 re-posed via S10 kill-audit + stationary-phase regime S16 + gf2-cleavage precedent; claims V-pending-port)", "sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims; complex slice currently all-V (porting = frontier)"),
+ 'coeff':     ("char-2 collapse theorem (draft 17, [W]); 'complex' admitted v3.5 (OB-9 re-posed via S10 + stationary-phase regime S16 + gf2-cleavage precedent); READING UNDECLARED — base-field C vs CD-rung is a registered alias circumstance (R-V35); declaring it is itself a named breaker", "per-claim stances in _COMPLEX_STANCE, each with its breaker; coeff-independent claims unaffected (v3.5a)"),
  'cdlevel':   ("radial entailment (d17) + zero-divisor geography (d18)", "the Hurwitz/ZD schedules across doubling rungs"),
  'probe':     ("Nedge identity-collapse decomposition (N-series)",        "IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented"),
 }
@@ -535,6 +562,12 @@ for _k,_v in {
   frozenset({'PUR','PRO'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated; PRO never F"),
   frozenset({'RAD','ZDG'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated 1.00; witness-structure split = standing frontier (T2)"),
   frozenset({'TWN','D4C'}): ("S_fd5ddbe7ac57 (v3.4a)", "unseparated 1.00 (partly by construction)"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
+
+for _k,_v in {
+  frozenset({'GCX','SWP'}): ("S_f117b7f53a8e (165888, v3.5 first form — central complex V-guard overrode declared knob support; Break-2 coeff rows artifactual; retrospective R-V35)", "unseparated in truth, 0/18432; kind counts carry the blanket-guard semantics"),
+  frozenset({'NVE','NVL'}): ("S_f117b7f53a8e (v3.5 first form, same caveat)", "separated, 6144 truth"),
+  frozenset({'GCX','CDC'}): ("S_f117b7f53a8e (v3.5 first form, same caveat)", "separated, 27648 truth — the sighting is not a restatement"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
 def run():
