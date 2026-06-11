@@ -1492,3 +1492,8 @@ Decomposition gains §7 (runtime bridge). Honest remainder kept: operational
 complexity/scheduling/compaction genuinely open — the review's core point
 stands. First pilot matrix had Perron ratio exactly 1.0 (the conflation
 point — a misleading exhibit); replaced before commit.
+
+## R1-ERRATUM (numeric): the R1 entry quoted predicted pilot values
+(mass 1.5e+08; G* ≈ 1.354) where the committed output reads mass_60 =
+3.365e+08 and G* = 1.350781059. tools/runtime-bridge-pilot-out.txt is
+canonical; entries must quote committed output, not anticipation.
