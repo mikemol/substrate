@@ -2449,3 +2449,35 @@ violated the no-interleaved-heredocs rule (two heredocs chained on
 one line, bodies misordered; cotype text fed python stdin) — caught
 by the SyntaxError, nothing executed, clean retry with sequential
 statements.
+
+## S33: PART 3 (proc4) READ COMPLETE — 9/9; ETHICS AS STATABILITY
+## SURGERY; THE TENSION-CANDIDATE WEAKENS
+Both pre-registered notions arrived. STABILITY: Lyapunov functions as
+measure-grammars (the S19 grace schedule is an instance); BIFURCATION
+THRESHOLDS = the knob-admission rule named in source (KNOB_PROVENANCE
+instruments it); MARGIN OF TRUTH = breaker-proximity as a measurement
+(S24's 8,825 cells); PHASE-SPACE COVERING = the charter's coverable
+gate in source; invariant sets = circles under knob flow. ETHICAL
+PRUNING: prohibition implemented as DE-STATING — Harm-terminal actions
+"do not exist as valid expressions" (V-kind deployed normatively; the
+sec.-3 pattern as the source's ethics); the Governor's Watchdog
+returns BOTTOM-? and keeps the action "Unknown and un-executable" — a
+non-classical verdict value at the enforcement point (NVL adjacency in
+source), with Heuristic Safety defaulting to the most restrictive
+sub-grammar under U. Consequence: the part-2 tension-candidate
+(Negative Resolution vs sec. 3) WEAKENS — the source's consistent
+pattern is decision-stratum pinning over a paraconsistent epistemic
+stratum; OBL to the treatise downgraded to
+resolution-sketch-supported. Also: SYMMETRIC VERIFICATION (pruning
+factors through terminal homology — enforcement well-defined on
+classes; the witness-stratum reading of fairness); Actuators
+architecturally unable to process Negated terminals (not-coverable BY
+CONSTRUCTION); "Moral Homology" = harm-cycles in the epistemic graph
+(H1-flavored ethics); the source's own audit performs B6's
+derive-or-rename ("conceptual -> parsable"). NEW TERMS PRE-REGISTERED
+for part 4: AxiomAsHomologyCycle, QuiescenceProof, the cryptographic
+integrity seal (proc1's Lojban pamoi-liste pointer should cash out).
+RationalDef STILL DANGLING. CECH: 0 intra-document cocycles both
+documents running; the one inter-complex finding is being resolved by
+accumulating source evidence, which is the protocol's intended
+mechanics.

@@ -1,14 +1,14 @@
 # brick ledger: recovered/system-pi-v2.37.1/03-part3-proc4.md (132 lines)
-# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-66 DONE
-H2 67-132 PENDING
-Q1 1-33 PENDING
-M 34-99 PENDING
-Q4 100-132 PENDING
-A 1-99 PENDING
-B 34-132 PENDING
-A2 1-99 PENDING
-B2 34-132 PENDING
+H2 67-132 DONE
+Q1 1-33 DONE
+M 34-99 DONE
+Q4 100-132 DONE
+A 1-99 DONE
+B 34-132 DONE
+A2 1-99 DONE
+B2 34-132 DONE
 
 ## H1 capture (lines 1-66) — typed
 - GLU(part2 turn prompt): "Stability" ARRIVED as pre-registered.
@@ -58,3 +58,70 @@ B2 34-132 PENDING
   atlas circles are invariant sets under knob flow.
 - SEAM: H1 ends AT the section-III header ("Ethical Pruning") — body
   entirely in H2; boundary covered by M (34-99).
+
+## H2 capture (lines 67-132) — typed
+- GLU(part2 turn prompt): "Ethical Pruning" ARRIVED as pre-registered.
+- ACT III: Governor = SYNTACTIC FILTER, not moralist; prunes intent
+  pre-reification.
+- ACT 2.1 SYNTACTIC PROHIBITION: Harm-terminal actions are UN-PARSABLE —
+  "do not exist as valid expressions." GLU(STRONG): prohibition implemented
+  as DE-STATING — forbidden != false, forbidden = unstatable. The atlas's
+  V-vs-F distinction deployed NORMATIVELY; the sec.-3 prohibition pattern
+  (prohibit by removing from the language) is the source's ethics.
+- ACT 2.2 Sieve-Filtering on the SPPF (named in source — the B11 carrier:
+  "build the SPPF and get the metatheory for free" is the source's own
+  substrate). 2.3 Self-Consistency: ethical iff execution preserves the
+  system's own QuiescenceProof.
+- ACT 2.1.3 Forbidden Bit-strings: Actuators ARCHITECTURALLY unable to
+  process Negated terminals — constructible impossibility (charter:
+  not-coverable BY CONSTRUCTION, enforcement below policy).
+- ACT 2.2.3 Heuristic Safety: under "Unknown," default to MOST RESTRICTIVE
+  sub-grammar — a declared decision POLICY attached to the U-verdict.
+- ACT 2.3.1 MORAL HOMOLOGY: avoid "cycles of harm" — an action that
+  eventually negates its own justification is a cycle in the epistemic
+  graph. H1-flavored ethics; cascade-cocycle adjacency.
+- ACT 2.3.3 Axiomatic Loyalty: Governor is the ONLY component able to veto
+  a MorphismGenerator violating AxiomAsHomologyCycle. OBL(NEW TERM):
+  AxiomAsHomologyCycle — definition expected part 4/treatise; PRE-REGISTER.
+- ACT 2.1.1.alpha: pruning rule must be REACHABLE from every valid
+  non-terminal (the charter's reachability gate applied to the prohibition
+  itself); .beta: pruning must not prune the KernelProver (no
+  self-decapitation); .gamma SYMMETRIC VERIFICATION: A pruned in C =>
+  every A' with the SAME TERMINAL HOMOLOGY pruned in all C' — enforcement
+  factors through the homology quotient (well-defined on classes; the
+  witness-stratum reading of fair enforcement).
+- ACT Phase-3.5 MIME: EthicalGovernorDef — NegationGrammar
+  EBNF(Harm_Terminals); FilterRule SPPF => Pruned_SPPF;
+  Governor_Soundness: Watchdog on leaf-nodes; a matching leaf makes the
+  parent return the value BOTTOM-? and the action stays "Unknown" and
+  UN-EXECUTABLE. GLU(NVL, STRONG): a non-classical verdict value at the
+  enforcement point, in source — Belnap-flavored carrier; prohibition
+  resolves to paraconsistent Unknown, NOT to F.
+- ACT WorldModelFunctorDef: ExternalObservationCategory ->
+  InternalGrammarCategory; Integrity = internal terminals are a valid
+  parse of external observations. GLU: OB-3 AB-functor target; Remark 3.6
+  at the world boundary.
+- ACT Audit: "Stability" upgraded conceptual -> concrete Lyapunov-Grammar
+  "ensuring the mathematical claim is parsable" — DERIVE-OR-RENAME IN
+  SOURCE (B6's pattern is the source's own audit move); SPPF expanded
+  everywhere (anti-elision); Governor tied to QuiescenceProof so it
+  cannot "suicide by pruning its own foundational logic."
+- OBL(turn prompt): Part 4 = Phase 4 Self-Reification Engine + Phase 5
+  Quiescence, "final closure and the cryptographic integrity seal" —
+  PRE-REGISTER: the seal (proc1 Lojban pamoi-liste pointer should cash
+  out), QuiescenceProof definition, AxiomAsHomologyCycle definition.
+  RationalDef STILL DANGLING after part 3 — carried forward.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2)
+- SEAM(H1|H2 at 66/67): cut at the section-III header; body in H2; M
+  (34-99) holds header + body across the cut. PASS.
+- Q1/Q4/A/B/A2/B2: no overlap conflicts; "terminal", "SPPF",
+  "TopologicalTruthEvaluator", "QuiescenceProof" used consistently.
+- INTER-COMPLEX UPDATE: the part-2 tension-candidate (Negative Resolution
+  vs sec. 3) WEAKENS — part 3 shows the source keeping Unknown
+  un-executable via BOTTOM-? (paraconsistent value, no collapse to F) and
+  defaulting restrictive under U: decision-stratum pinning CONFIRMED as
+  the source's consistent pattern. OBL to treatise remains for explicit
+  statement, downgraded from tension-candidate to
+  resolution-sketch-supported.
+- CECH VERDICT: 0 intra-document cocycles, H0-only.
