@@ -145,3 +145,31 @@ Total Coherence Proposition asserts only that the artifact parses — a
 decidable claim with no consistency-of-arithmetic exposure. Same
 correction shape as S6's Earley-determinism retraction: a criticism
 pinned to one reading, stated as absolute. See kill-audit.md item 11.
+
+## 7. S11 — the parsing-liar breaker for the reading oscillation [S]
+
+The T1 breaker, constructed. v2.37.1 claims self-description capacity
+(Lemma_TheKnot; grammar reflexivity), so parse-predicates are
+expressible; by the standard diagonal construction there is a string λ
+whose content, under the validity reading's interpretation, is
+¬Parses(P, λ, G).
+
+Validity reading (truth = the interpreted content holds): if λ parses,
+Lemma_ParsingAsTruth makes λ true, so ¬Parses(λ) — contradiction. If λ
+does not parse, then ¬Parses(λ) is TRUE but λ is "ontologically
+nonexistent" — a truth the topos cannot contain, violating the
+Completeness quality (no Gaps). Either horn breaks a system commitment.
+
+Deflationary reading (truth := parse-success): λ's content is Noise by
+Asemantic Materialism (axiom 1.3); Parses(λ) is a bare syntactic fact;
+no interpretation map participates in truth; nothing breaks.
+
+So the breaker separates the readings, and the distribution's own axiom
+1.3 is what survives it — the system's axioms adjudicate the oscillation
+toward the deflationary side; the validity-flavored prose drifts against
+the system's own foundation. Tarski undefinability is the general
+theorem behind the asymmetry: the validity reading needs the truth
+predicate inside the language; the deflationary reading keeps it
+syntactic and decidable. Grade [S]: structural derivation (diagonal
+availability via TheKnot assumed, standard); the executable form — an
+actual grammar-quine λ — is constructible if ever wanted.

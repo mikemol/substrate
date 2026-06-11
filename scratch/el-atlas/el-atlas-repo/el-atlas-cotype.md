@@ -1792,3 +1792,26 @@ the characteristic-sensitive family {PHS, TWN, RAD, ZDG} (gf2 already
 cleaves exactly there); queued for the admission rule at v3.5+, not
 auto-admitted. The one purely editorial withdrawal in the history now
 has an instrument path back.
+
+## S11: RULE — TENSION ⇒ INFERABLE BREAKER; LEDGER DISCHARGED
+Author rule adopted, the prospective dual of S9: a recorded tension is a
+claimed distinction, so the realizability chain applies (real ⇒ breaker
+constructible ⇒ buildable ⇒ observable); no constructible breaker ⇒ not
+a valid distinction ⇒ de-state. Discharge states BROKEN / DISSOLVED /
+PENDING(shape named). Gödel's own theorem noted as the canonical
+instance (provable/true tension → diagonal breaker). LEDGER (kill-audit
+Part II): T1 reading-oscillation BROKEN [S] — parsing-liar λ
+(content = ¬Parses(λ)) kills the validity reading on either horn while
+Asemantic Materialism (the system's OWN axiom 1.3) survives it: the
+oscillation adjudicated toward deflationary by the distribution's own
+foundation; criticism sharpened (prose drifts against own axiom);
+derivation theory-threads §7, executable grammar-quine named as the
+runnable form. T3 Governor-vs-non-pruning DISSOLVED by inspection
+(blocks executability, retains the parse — textual witness). T6 (∨E,
+S9 pilot) and T7 (NVL instrument) recorded as precedents: the rule was
+already being practiced. T9 RootHash BROKEN BY EXECUTION: computed
+SHA3-512 manifest minted at recovered/system-pi-v2.37.1/
+CHECKSUMS.sha3-512 (per-part + combined) — the symbolic seal made real
+for the snapshot. PENDING with shapes named: T2 {RAD,ZDG}
+schedule/witness split (now an obligation), T4 OB-12 channel-product
+∃-search, T5 restatement-survival glaze test.

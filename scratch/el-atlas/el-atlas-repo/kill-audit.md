@@ -94,3 +94,48 @@ history acquires a machinery path back. One reclassification (OB-12:
 KILLED → de-stated, search open). One retention note (the conflation-
 manifold matrix). Storage-layer finding: zero net-shrink commits in the
 entire history — every kill was additive-marked.
+
+# Part II — tension ledger (S11): tension ⇒ inferable breaker
+
+Author rule, the prospective dual of S9: **a recorded tension is a
+claimed distinction, so the realizability chain applies in full** — if
+the tension is real, a breaker is constructible; if constructible,
+buildable (exhibit / pilot / claim / knob admission); if observable,
+runnable. If no breaker is even constructible, the tension is not a
+valid distinction: de-state it. Discharge states: BROKEN (breaker
+built), DISSOLVED (reading-pin or inspection), PENDING (breaker-shape
+named, build owed). Gödel's theorem is the canonical instance of the
+rule — the provable/true tension compiled into a diagonal breaker.
+
+- **T1. The v2.37.1 reading oscillation (the "Gödel tension").** BROKEN
+  [S] — breaker constructed (theory-threads §7): the parsing-liar λ with
+  content ¬Parses(λ). The validity reading dies on either horn
+  (contradiction if λ parses; an uncontainable truth if it doesn't); the
+  deflationary reading survives *because of the system's own axiom 1.3*
+  (Asemantic Materialism: content is Noise). The breaker adjudicates the
+  oscillation toward deflationary AND sharpens the criticism: the
+  validity-flavored prose contradicts the distribution's own axiom.
+- **T2. {RAD, ZDG} co-movement 1.00 vs shared-form artifact.** PENDING —
+  breaker-shape: split each into schedule-claim and witness-claim,
+  separator-search the four. Standing frontier item, now an obligation.
+- **T3. EthicalGovernor prunes vs the non-pruning charter.** DISSOLVED by
+  inspection — the Governor blocks *executability* and retains the
+  parse ("the action remains Unknown and un-executable": marked, not
+  deleted). Prune-execution ≠ prune-knowledge; textual witness in
+  Part 3/Phase 3.5.
+- **T4. OB-12 "is CD" vs doubling-only.** PENDING — breaker = the
+  channel-product ∃-search, queued since draft 7 (reclassified at S10).
+- **T5. Author-signal vs model-glaze in flagged passages.** PENDING —
+  breaker-shape: restatement-survival (a constraint that survives
+  paraphrase is signal; an expansion that doesn't is glaze). Semi-formal;
+  apply per-passage on demand.
+- **T6. The two ∨E formulations.** BROKEN at S9 — the alias-delta pilot
+  was the inferred breaker (n≥3 partition exhibit). Precedent.
+- **T7. Nedge 4VL vs Belnap 4VL.** BROKEN by instrument (NVL).
+  Precedent.
+- **T9. RootHash sticker vs content-addressing commitment.** BROKEN by
+  execution — the breaker was trivially runnable, so it was run:
+  recovered/system-pi-v2.37.1/CHECKSUMS.sha3-512 now holds computed
+  SHA3-512 digests per part plus the combined RootHash. The seal
+  v2.37.1 declared symbolically is minted for the recovery snapshot,
+  five months later.
