@@ -19,3 +19,5 @@ END W1 2026-06-11 :: machinery built and bootstrapped :: head=ac0c909 :: artifac
 BEGIN W2 2026-06-11 :: resolve waiting joiner pairs {LOC,L26}, {PUR,PRO} at the witness stratum; register results in WITNESS_RELATIONS (v3.8.4)
   expect: tools/joiner-pairs-pilot.py(+out), harness v3.8.4 with two new relations, run txt, regen, space-move ledger, cotype S48, END W2
 END W2 2026-06-11 :: both pairs resolved (EQUAL; ISO-WITH-REFRAMING via PR2); one safe-abort residue :: head=2d6f448 :: artifacts=tools/joiner-pairs-pilot.py,tools/joiner-pairs-pilot-out.txt,tools/el-atlas-depsort-v3.8.4-run.txt
+BEGIN W3 2026-06-11 :: homological-stability split-test (thread 20): for each separated pair, find knobs whose base-restriction removes all truth-separators — pairs that looked intrinsic before a knob arrived; cross-check against ledgered circles
+  expect: tools/hstab-split-pilot.py(+out), theory-threads 20 updated, cotype S49, END W3
