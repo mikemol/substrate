@@ -2481,3 +2481,39 @@ RationalDef STILL DANGLING. CECH: 0 intra-document cocycles both
 documents running; the one inter-complex finding is being resolved by
 accumulating source evidence, which is the protocol's intended
 mechanics.
+
+## S34: PART 4 (proc2) READ COMPLETE — 9/9; THE TRANSMISSION CLOSES;
+## TWO COCYCLE CANDIDATES — THE PROTOCOL CATCHES
+Coherence + Terminal Closure arrived. AxiomAsHomologyCycle CASHED:
+axioms = non-trivial homology classes, foundational circularity
+embraced as "The Necessary Loop" — cogrounding (B11) formalized as
+homology in source; axioms also typed as PRIMES of the grammar
+("Topological Primality" — S20 adjacency). ATOMIC RESOLUTION (1.3) is
+B2's completion criterion in source: every development IOU resolved
+into an embedded, load-time-verified Proof record; Zero Elision;
+Locality of Truth. Coherence verified by SIMPLICIAL RESOLUTION — the
+source's own self-check is Cech-shaped; the final audit declares the
+document a Terminal Simplicial Complex: our brick protocol has been
+reading Cech over their Cech. CanonizedLemmas bank Parsing-as-Truth,
+Terminal-Bedrock, and The Knot (existence = self-description of own
+parsing). QuiescenceProof CASHED ("The knot is tied... The system is
+now silent"); Empty-Queue as closure criterion (the atlas is
+non-quiescent by this metric, by design). THE FINDINGS — first
+non-trivial Cech output of the program: COC-1 the RootHash is a
+NOMINAL token, not a digest, while the final audit claims the
+placeholder was removed (mitigated: "pointer" wording, binding-time
+reading; our recovery's CHECKSUMS.sha3-512 supplies real digests —
+the recovery process discharged what the source gestured at); COC-2
+RationalDef remains DANGLING across all four parts while the
+SelfContainmentAssertion declares "It is finished" — by the source's
+own Empty-Queue/Saturation/Zero-Elision criteria a dangling reference
+is an uncovered open set; CONFIRMATION PENDING the treatise scan.
+Both are H1-type: locally consistent parts failing to glue to the
+global completeness claim. The source even ARMS the failed check
+itself (Gap Correction ties QuiescenceProof to Empty Queue). Lojban
+seal pointer still bound to v2.22. The four-part transmission is
+fully read: 36/36 bricks, four ledgers, every cut interior, one
+inter-complex tension resolved-in-progress, two cocycle candidates
+carried forward. NEXT: the treatise (05, 35KB) — acquire-once,
+digest-in-bricks; first action there: scan for RationalDef to settle
+COC-2.
