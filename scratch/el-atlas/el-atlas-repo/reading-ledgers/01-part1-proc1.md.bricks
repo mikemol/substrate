@@ -15,10 +15,17 @@ H2 61-121 DONE 2026-06-11
   OBL: Phases 1-2 notions pre-registered for proc2/proc3 reads: 'Contextual Security', 'Recursive Succession'
   NOTE: doc ends with a turn-prompt -- the artifact preserves the Gamma generation loop (propose-then-audit cadence visible in the text itself); BootstrapSequence has per-phase VerificationRequired gates (KernelProver_Self_Parse_Verified, Topos_Stability_Verified)
   COC: none (H1/H2 share no interior; first real overlap test = brick M)
-Q1 1-30 PENDING
-M 31-91 PENDING
-Q4 92-121 PENDING
-A 1-91 PENDING
-B 31-121 PENDING
-A2 1-91 PENDING
-B2 31-121 PENDING
+Q1 1-30 DONE 2026-06-11 (capture pass; content in hand from H1)
+  GLU: finer grain on the L/L2 table -- four quality/flaw PAIRS (Completeness/Gap, Terminal Coherence/Conceptual Shortcut, Functorial Integrity/Foundationalism, Depth/Shallow Treatment): the flaw column is the NEGATION-WITNESS column (each quality named WITH its failure mode) -- witness-carrying at the governance level
+  GLU: 'the order of concatenation is not linear, but a FIBRATION over the foundational Earley Parser' -- the doc's self-structure claim, to be tested against proc2-4 ordering
+M 31-91 DONE 2026-06-11 (THE SEAM TEST: spans the H1/H2 cut at 60/61)
+  GLU (SEAM, the protocol earning its redundancy): Level-3 homotopy 1.1.1.gamma ('each terminal block can be uniquely hashed to seal the local truth') is IMPLEMENTED ~30 lines later as Phase 0's urn:uuid Message-IDs on every MIME part -- the abstract cluster and its concrete realization sit on OPPOSITE SIDES of the H1/H2 cut; only a seam-interior brick sees the implication arrive. Gluing SUCCESS, visible to M alone.
+  GLU: 1.2.1 Halting Guarantee (H1 side) <-> 'Earley_O(n^3)_Completeness_Guaranteed' as a record FIELD (H2 side) -- the same bound, axiom-form and type-form, across the seam
+Q4 92-121 DONE 2026-06-11 (capture pass)
+  GLU: SoundnessProof structure at fine grain -- Method('FOL_Reification'); induction on the parse tree from Axiom_TerminalTruth at the leaves to Val(Root)=T: the proof IS the inside pass (leaf-to-root), stated as FOL
+  OBL: 'Lojban pamoi liste' as the source of the Qualities list -- the L/L2 lists are LOJBAN-SEALED (the Coherent Duality); locale-verdict candidate grounding (the deferred v2.22 read's target) gets a pointer here
+A 1-91 DONE 2026-06-11 (gluing pass): sections from Q1+M consistent; no conflicts
+B 31-121 DONE 2026-06-11 (gluing pass): sections from M+Q4 consistent; no conflicts
+A2 1-91 DONE 2026-06-11 (verification re-pass): agrees with A
+B2 31-121 DONE 2026-06-11 (verification re-pass): agrees with B
+  VERDICT (Cech): all local sections glue; COC count = 0; the document is H0-ONLY (one global section, no monodromy) -- coherent under every entry context tested. proc1 reading COMPLETE: 9/9 bricks.

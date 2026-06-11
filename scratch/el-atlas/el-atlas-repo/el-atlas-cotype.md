@@ -2337,3 +2337,26 @@ L2-flaw remediation (un-reified deferral → bounded O(n³) reference).
 Phases 1-2 notions pre-registered for proc2/3: 'Contextual Security',
 'Recursive Succession'. No cocycles yet (first overlap test = brick
 M). Remaining: Q1, M, Q4, A, B, A2, B2.
+
+## S30: proc1 READING COMPLETE (9/9 BRICKS) — THE SEAM PAID; H⁰-ONLY
+Bricks Q1–B2 executed as capture/gluing passes (full text in hand
+after H1+H2 — the protocol's redundancy converts later bricks into
+overlap checks). THE SEAM TEST PAID EXACTLY AS DESIGNED: brick M
+(spanning the H1/H2 cut) is the ONLY brick that sees Level-3 homotopy
+1.1.1.γ ("each terminal block uniquely hashed to seal the local
+truth") arrive at its implementation — Phase 0's urn:uuid Message-IDs
+on every MIME part — abstract cluster and concrete realization on
+opposite sides of the cut; a half-based reading alone would never
+watch the implication land. Second seam glue: 1.2.1 Halting Guarantee
+↔ O(n³) as a record FIELD (axiom-form and type-form of one bound).
+Fine-grain captures: the L/L2 flaw column is the NEGATION-WITNESS
+column (each quality named WITH its failure mode — witness-carrying
+at the governance level); the SoundnessProof is the INSIDE PASS
+stated as FOL (leaf-to-root induction from Axiom_TerminalTruth);
+the Qualities list is LOJBAN-SEALED ("pamoi liste") — pointer banked
+for the locale-verdict target of the deferred v2.22 read. ČECH
+VERDICT: 0 cocycles; the document is H⁰-ONLY (one global section, no
+monodromy). First full protocol execution: 9/9 bricks, 4 commits,
+flush-proof throughout. Next targets: proc2 ('Contextual Security'),
+proc3 ('Recursive Succession'), proc4, the treatise (35KB — the
+protocol's real test).
