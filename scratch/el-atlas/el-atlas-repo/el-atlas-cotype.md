@@ -1052,3 +1052,8 @@ mitigation for the transient loose-object I/O error seen on this mount) then tar
 the whole repo (worktree + .git, so history travels) to ../el-atlas-repo.tar.gz after
 every commit. Resilient: warnings non-fatal. This commit is the hook's first firing —
 self-demonstrating, like the cotype's repo-init entry.
+
+ADDENDUM: the outputs mount refuses the executable bit (hook exec denied). Remedy:
+core.hooksPath -> /home/claude/el-atlas-hooks (exec-capable); tracked copy in
+tools/hooks/ stays canonical; README carries the noexec install variant. Hook fired
+manually once for the prior commit; fires automatically from this commit on.

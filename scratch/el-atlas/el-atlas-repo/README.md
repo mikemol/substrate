@@ -30,7 +30,9 @@ A paraconsistent evidence logic, specified witness-first and deliberately non-cl
   regeneration) — not batched; the message names the triggering correction or finding,
   so `git log` reads as the reasoning path at move resolution.
 - **Post-commit hook** (`tools/hooks/post-commit`; install:
-  `cp tools/hooks/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit`):
+  `cp tools/hooks/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit`, or if
+  the repo lives on a noexec mount: copy it to an exec-capable dir and
+  `git config core.hooksPath <that dir>`):
   vacuums the object store (`git gc` — packs loose objects, hardening against
   flaky-mount I/O) and rolls `../el-atlas-repo.tar.gz` for presentation after every
   commit. The hook is tracked here because `.git/hooks/` itself is not.
