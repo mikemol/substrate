@@ -134,3 +134,14 @@ one referent at n=2, with the packed node strictly richer at n≥3 until
 the lattice is built. Future instrument work may formalize the pack
 checks and bridge checks as separate claims and let depsort confirm
 same-circle at pins=2 — the full-machinery version of this adjudication.
+
+## 6. S10 note — the Gödel tension is reading-indexed
+
+Correcting an over-broad survival claim from S6: the Gödel tension in
+v2.37.1 does not "stand on its own witnesses" unconditionally. It is
+indexed by the same reading whose oscillation §1.2 names: real under the
+validity reading; DISSOLVED under the deflationary reading, where the
+Total Coherence Proposition asserts only that the artifact parses — a
+decidable claim with no consistency-of-arithmetic exposure. Same
+correction shape as S6's Earley-determinism retraction: a criticism
+pinned to one reading, stated as absolute. See kill-audit.md item 11.

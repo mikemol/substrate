@@ -1766,3 +1766,29 @@ sufficiency from C. theory-threads §5 appended (item 9 adjudicated:
 both formulations retained); nedge-decomposition §8 residue advanced.
 Future: formalize pack-checks and bridge-checks as separate instrument
 claims; depsort same-circle at pins=2 = the full-machinery adjudication.
+
+## S10: KILL AUDIT — FOURTEEN KILLS CLASSIFIED; TWO LIVE REFACTORS
+User-prompted sweep for kills needing the S9 alias treatment. Method:
+kill-verb grep (docs + spec), git numstat shrink scan (ZERO net-shrink
+commits ever — storage layer clean), transcript founding-event checks.
+Deliverable kill-audit.md. RESULTS: nine kills EARNED, four of them
+canonical good forms now named (kill-by-demotion: the founding ratio
+kill; scoped-kill-question-retained: OB-9/DRIFT-4; kill-by-re-derivation:
+matrix→DAG/DRIFT-5; re-index-and-test: fake-SCCs). Three over-executions
+all previously caught (E3, item 9, DRIFT {1a,3}) — the audit adds no new
+casualties. RECLASSIFIED: OB-12 "is CD KILLED" → DE-STATED with ∃-search
+open (absence of witness ≠ separating witness; cotype had already queued
+the search). RETENTION NOTE: R1's discarded first Perron exhibit is a
+natural witness of the conflation manifold (G*=1.0 exactly); survives in
+the draft19-review transcript. NOT-A-KILL: the v3.3 lesson (founded on
+the no-op diagnosis, transcript-verified). LIVE REFACTOR 1: S6's "Gödel
+tension stands" was OVER-BROAD → indexed by reading (real under
+validity; dissolves under deflationary, where Total Coherence = "the
+artifact parses," decidable) — theory-threads §6 appended. LIVE REFACTOR
+2: OB-9's withdrawn complexification RE-POSED AS MACHINERY — knob-
+admission candidate coeff=complex (per-algebra involutions, NOT the
+Caveat 2.4a construction), provenance OB-9, claims plausibly moved =
+the characteristic-sensitive family {PHS, TWN, RAD, ZDG} (gf2 already
+cleaves exactly there); queued for the admission rule at v3.5+, not
+auto-admitted. The one purely editorial withdrawal in the history now
+has an instrument path back.
