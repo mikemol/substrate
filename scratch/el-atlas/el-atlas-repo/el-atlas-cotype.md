@@ -1382,3 +1382,46 @@ queued with NVL/IDC. Residue: ∨E transformation open IN SOURCE; cost-vs-
 strength rail-label oscillation = reading-relation ambiguity (ladder law) —
 declare before import; US_v2 plateaus ↔ missing c-axis info (uninstrumented).
 Pilot source+output in transcript; n4.txt retained in /home/claude.
+
+## N3: v3.4 INSTRUMENT RUN — NGL/NVL/IDC ABOARD (S_fd5ddbe7ac57, 110,592 models)
+Claims added: NGL (G-value lift identities, guards pins/neg/coeff), NVL (two-
+gate theorem, guards pins/neg/coeff/ops + computed by norm), IDC (identity-
+collapse schedule). Knob ADMITTED: probe ∈ {full, depth1, mention} —
+correction event: the N-series identity-collapse decomposition; the knob IS
+the probe space (the claim's own thesis instrumented: identity =
+unseparated-in-probe-space). Claim evaluation memoized on declared knob
+support (_CLAIM_DEPS); fingerprint widened to full module source (see
+correction below). base all-P; self-cert flagged: none.
+FINDINGS:
+(1) TWO-GATE THEOREM, machine-found: NVL = F under BOTH pinnings, P only on
+the free carrier — the c-pin kills the mass axis exactly; the r-pin leaves
+one dimension on which mass and conflict are monotonically locked; a four-
+cell gate needs two dimensions. {NVL,PUR} separated 3072 truth (witness
+norm=pinned_l2: PUR survives the r-pin, the gate does not); {NVL,PRO}
+separated 3072 (same witness); {NVL,PR2} 0 truth / 9216 kind, 0.91. Both
+prohibitions bite the 4VL: it is a two-axis instrument.
+(2) {NGL,V4I} = ONE STRUCTURE (expr-intrinsic chapter, layer 1): identical
+moved-off-P support ⟨pair, involution, char 0⟩; divergence is KIND-only at
+gf2 (V4I falsified F, NGL de-stated V). The G-value lift and the exact V4
+are co-extensive creatures of the same three preconditions.
+(3) {NGL,PRO} 0 truth / 30720 kind, 0.71 — two never-F theorems with
+different guard anatomies. {NGL,T53} separated 12672 truth (witness
+two_ops=False).
+(4) IDC: layer-0 isolated single; sens = {probe} exactly (structurally
+localized); co-movement with NOE 0.20 — lowest in the instrument; the Nedge
+identity discipline is orthogonal to every carrier knob.
+(5) TWN–PHS separation scales 768 -> 2304 (3x with the probe tripling,
+consistent).
+CORRECTION EVENT (recorded, not erased): first v3.4 run had {NVL,PUR} = 6144
+truth with witness {'norm':'pinned'} — contradicting exact-arithmetic
+analysis (c-pin makes mass constant EXACTLY). Diagnosis: the adaptive-
+midpoint bit split floating-point noise around mass==1 and spuriously filled
+the gate. Fix: variation tolerance (axis dead unless range > 1e-9). SECOND
+finding inside the first: the fix did NOT move the fingerprint —
+S_8fecfdc135c8 hashed claim-function sources only; the bug lived in a
+helper. Same ID, two test semantics = the collision the indexing discipline
+exists to prevent. Fingerprint widened to hash the FULL module source;
+the artifactual verdict retained in PRIOR_LEDGER under its colliding ID.
+Witness inspection caught both: the discipline working as designed.
+Structured edition regenerated: 4 layers, 16 chapters; layer 0 = {ADJ}{NOE}
+{IDC}; new chapter {NGL,V4I}; NVL a layer-2 single beside PR2 and {PRO,PUR}.

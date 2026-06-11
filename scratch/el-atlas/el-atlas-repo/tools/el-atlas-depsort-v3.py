@@ -1,5 +1,5 @@
 """
-el-atlas-depsort-v3.py (v3.3) — empirical constitutive analysis (reviewer's name, adopted).
+el-atlas-depsort-v3.py (v3.4) — empirical constitutive analysis (reviewer's name, adopted).
 
 FORMAL SEMANTICS (per the second review, adopted verbatim):
   Claim:        C : S -> {P, F, U, V}
@@ -38,20 +38,30 @@ carried as a RESIDUE LEDGER alongside the verdict. v3.1 also unions v2's
 basis_def knob into the declared space, so the {CRS,NOE} separation is now
 in-space, with its witness mutation printed; the v3 (9-knob) verdict is
 retained in the ledger under its own index.
+
+v3.4 (N-series): claims NGL (the G-value lift theorem), NVL (the two-gate
+theorem: Nedge 4VL vs Belnap chart on one carrier), IDC (identity-collapse
+schedule). New knob `probe` — admitted by the N-series identity-collapse
+decomposition; the knob IS the probe space, instrumenting the claim's own
+thesis (identity = unseparated-in-probe-space). Claim evaluation memoized on
+each claim's declared knob support (the space is now 110,592 models).
+v3.4a: NVL adaptive bit gains a variation tolerance (no FP-noise splits);
+fingerprint widened to hash the full module source (helpers are semantics).
 """
 import numpy as np
-import hashlib, json, inspect
+import hashlib, json, inspect, io
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
              ops=['diagonal','linear'],
              lock=['available','unavailable','wrong','clipped','affine','noisy','partial','forced'],
              norm=['free','pinned','pinned_l2'], two_ops=[True,False],
-             basis_def=['ok','singular'], coeff=['real','gf2'], cdlevel=[2,4,8,16])
+             basis_def=['ok','singular'], coeff=['real','gf2'], cdlevel=[2,4,8,16],
+             probe=['full','depth1','mention'])
 SPACE = [dict(zip(KNOBS, vals)) for vals in product(*KNOBS.values())]
 BASE = dict(pins=2, adj=True, ident=True, neg=True, ops='linear',
             lock='available', norm='free', two_ops=True, basis_def='ok',
-            coeff='real', cdlevel=2)
+            coeff='real', cdlevel=2, probe='full')
 TOL = 1e-9
 
 def locus(u, lk):
@@ -216,13 +226,122 @@ def t_PR2(m):  # the sphere is also a one-mode decode: r-pinning conflates radiu
     a,b=(3.0,4.0),(6.0,8.0)
     return 'P' if (np.allclose(nz(a),nz(b)) and math.hypot(*a)!=math.hypot(*b)) else 'F'
 
+
+# --- v3.4 N-series: the Nedge decomposition instrumented ---
+def _wl_sig(E, node, rounds):
+    """WL-style structural signature; rounds = probe depth (0 = mention-only)."""
+    nodes = {node} | {a for a,_ in E} | {b for _,b in E}
+    col = {x: 0 for x in nodes}
+    for _ in range(rounds):
+        col = {x: hash((col[x],
+                        tuple(sorted(col[b] for a,b in E if a==x)),
+                        tuple(sorted(col[a] for a,b in E if b==x)))) for x in nodes}
+    return col[node]
+
+@_ft.lru_cache(None)
+def _idc_schedule(probe):
+    """collapse-then-separate: bare twins collapse; X{is},Y{is} still collapse;
+    distinct participation separates — iff the probe space is rich enough."""
+    rounds = {'mention':0, 'depth1':1, 'full':3}[probe]
+    base = [('is','is'), ('Nedge','is')]
+    s2 = base + [('X','is'), ('Y','is')]
+    s3 = s2 + [('X','Nedge')]
+    sig = lambda E,n: _wl_sig(tuple(E), n, rounds)
+    c1 = sig(base, 'X') == sig(base, 'Y')          # bare: isolated twins collapse
+    c2 = sig(s2, 'X') == sig(s2, 'Y')              # minimally stabilized: still collapse
+    s  = sig(s3, 'X') != sig(s3, 'Y')              # distinct participation: separate
+    return c1 and c2 and s
+
+def t_IDC(m):  # Nedge identity-collapse schedule, indexed to the probe space
+    return 'P' if _idc_schedule(m['probe']) else 'F'
+
+@_ft.lru_cache(None)
+def _ngl_lift_ok():
+    """the six lift identities: G-calculus = <fraction-add, swap> on formal-quotient pairs."""
+    import random as _r
+    rng = _r.Random(7)
+    fa = lambda p,q: (p[0]*q[1]+q[0]*p[1], p[1]*q[1])
+    sw = lambda p: (p[1],p[0]); cl = lambda p: p[0]/p[1]
+    for _ in range(200):
+        p=(rng.uniform(.1,10),rng.uniform(.1,10)); q=(rng.uniform(.1,10),rng.uniform(.1,10))
+        a,b=cl(p),cl(q)
+        if abs((a+b)-cl(fa(p,q)))>1e-9: return False                              # G_OR = fraction-add
+        if abs(a*b/(a+b)-cl(sw(fa(sw(p),sw(q)))))>1e-9: return False              # G_AND = swap-conj
+        if abs(1/a-cl(sw(p)))>1e-9: return False                                  # G_NOT = swap
+        if abs(cl(fa(p,p))-2*a)>1e-9 or abs(cl(sw(fa(sw(p),sw(p))))-a/2)>1e-9: return False  # mass shadow
+        if a>b:
+            X=a*b/(a-b)
+            if abs(a*X/(a+X)-b)>1e-9 or abs(1/X-(1/b-1/a))>1e-9: return False     # G_res = resistance diff
+        if abs((a*b/(a+b))/a - b/(a+b))>1e-9: return False                        # G(Q|P) = L1-normalization
+    return True
+
+def t_NGL(m):  # the G-Value Calculus lifts to the pre-quotient pair
+    if m['pins'] < 2: return 'V'           # the pair is the lift's carrier
+    if not m['neg']: return 'V'            # G_NOT = the swap; no involution, no calculus
+    if m.get('coeff')=='gf2': return 'V'   # fraction arithmetic degenerates in char 2
+    return 'P' if _ngl_lift_ok() else 'F'
+
+@_ft.lru_cache(None)
+def _nvl_two_gates(norm):
+    """both four-cell gates fully inhabited AND neither partition refines the other.
+    Bits are adaptive (midpoint of observed range): no arbitrary thresholds decide."""
+    import math
+    pts=[(x,y) for x in (0.0,0.15,0.6,1.28,2.5) for y in (0.0,0.15,0.6,1.28,2.5) if (x,y)!=(0.0,0.0)]
+    if norm=='pinned':    pts=[(x/(x+y), y/(x+y)) for x,y in pts]
+    if norm=='pinned_l2': pts=[(x/math.hypot(x,y), y/math.hypot(x,y)) for x,y in pts]
+    def _bit(vals):
+        lo, hi = min(vals), max(vals)
+        if hi - lo < 1e-9:           # no variation (exact-arithmetic constancy): the axis is
+            return [True]*len(vals)  # DEAD — constant bit, never an FP-noise split
+        mid=(lo+hi)/2
+        return [v>=mid for v in vals]
+    mass=[x+y for x,y in pts]; mins=[min(x,y) for x,y in pts]
+    cb=_bit(mass); kb=_bit(mins)
+    nedge =list(zip(cb, kb))                         # confidence x conflict-presence
+    belnap=list(zip([x>=y for x,y in pts], cb))      # bias-sign x mass-rail
+    full=lambda g: len(set(g))==4
+    refines=lambda A,B: all((B[i]==B[j]) for i in range(len(A)) for j in range(len(A)) if A[i]==A[j])
+    return full(nedge) and full(belnap) and not refines(nedge,belnap) and not refines(belnap,nedge)
+
+def t_NVL(m):  # the two-gate theorem: a four-valued gate needs the unpinned pair
+    if m['pins'] < 2: return 'V'
+    if not m['neg']: return 'V'            # the Belnap chart needs the sign
+    if m.get('coeff')=='gf2': return 'V'   # bias = mass in char 2: no second axis to gate
+    if m['ops']=='diagonal': return 'V'    # the crossbar read is composed
+    return 'P' if _nvl_two_gates(m['norm']) else 'F'
+
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
             L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE,
-            TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2)
+            TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2,
+            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC)
+
+
+_RAW_CLAIMS = dict(CLAIMS)
+_CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
+    CRS=('pins','basis_def'), PUR=('pins','ops','norm'), PRO=('pins','ops','norm'),
+    LOC=('pins','lock'), L26=('pins','lock'), T53=('neg','coeff','two_ops','pins','lock'),
+    V4I=('pins','neg','coeff'), D4C=('pins','neg','ops','coeff'),
+    PHS=('pins','neg','ops','coeff','lock'), RLS=('pins','neg','coeff','lock'),
+    NOE=('pins',), TWN=('pins','neg','ops','coeff'), RAD=('coeff','cdlevel'),
+    ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
+    NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',))
+def _memo(name, f):
+    cache={}; ks=_CLAIM_DEPS[name]
+    def g(m, _c=cache, _f=f, _ks=ks):
+        k=tuple(m[x] for x in _ks)
+        r=_c.get(k)
+        if r is None: r=_c[k]=_f(m)
+        return r
+    return g
+for _n in list(CLAIMS): CLAIMS[_n]=_memo(_n, CLAIMS[_n])
 
 def space_fingerprint():
     manifest = {k:[str(v) for v in vals] for k,vals in KNOBS.items()}
-    src = "".join(inspect.getsource(f) for f in CLAIMS.values())
+    # v3.4a: hash the FULL module source. The claim-functions-only hash had a blind
+    # spot: an FP-noise artifact in helper _nvl_two_gates was fixed WITHOUT moving the
+    # fingerprint (S_8fecfdc135c8 named two different test semantics). Helpers are test
+    # semantics; the fingerprint must cover them.
+    src = io.open(__file__, encoding="utf-8").read()
     h = hashlib.sha256((json.dumps(manifest, sort_keys=True)+src).encode()).hexdigest()[:12]
     return manifest, h
 
@@ -241,6 +360,7 @@ KNOB_PROVENANCE = {
  'basis_def': ("v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode)", "CRS from NOE"),
  'coeff':     ("char-2 collapse theorem (draft 17, [W])",                "sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims"),
  'cdlevel':   ("radial entailment (d17) + zero-divisor geography (d18)", "the Hurwitz/ZD schedules across doubling rungs"),
+ 'probe':     ("Nedge identity-collapse decomposition (N-series)",        "IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented"),
 }
 # SCRUTINY STRATA (where "why?" migrates as each level is indexed):
 #   knob VALUES (enumerated: this space) -> knob SET (KNOB_PROVENANCE) ->
@@ -264,6 +384,18 @@ PRIOR_LEDGER = {
                               ("S_v3 (9 knobs)", "unseparated")],
   frozenset({'PUR','PRO'}):  [("S_666bf26b7779 (3072 models)", "unseparated, co-movement 1.00; PRO never F (expressibility-intrinsic)")],
 }
+
+
+for _k,_v in {
+  frozenset({'LOC','L26'}): ("S_94763a8b62ea (36864 models, v3.3)", "unseparated, co-movement 1.00"),
+  frozenset({'PUR','PRO'}): ("S_94763a8b62ea (v3.3)", "unseparated; PRO never F"),
+  frozenset({'TWN','D4C'}): ("S_94763a8b62ea (v3.3)", "unseparated, co-movement 1.00 (partly by construction)"),
+  frozenset({'RAD','ZDG'}): ("S_94763a8b62ea (v3.3)", "unseparated 1.00 (Hurwitz<->no-ZD as co-movement; separate witness structures = frontier)"),
+  frozenset({'TWN','PHS'}): ("S_94763a8b62ea (v3.3)", "SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section)"),
+  frozenset({'PRO','PR2'}): ("S_94763a8b62ea (v3.3)", "0 truth-separators; 4096 kind-separators (PRO's guard keys on L1)"),
+  frozenset({'NVL','PUR'}): ("S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint)",
+                             "6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
 def run():
     names=list(CLAIMS)
@@ -296,7 +428,8 @@ def run():
           CLAIMS['D4C'](dict(BASE,pins=3)), "\n")
     print("=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_"+fp+" ===")
     for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE'),
-                ('RAD','ZDG'),('TWN','D4C'),('TWN','PHS'),('PRO','PR2'),('PUR','PR2')]:
+                ('RAD','ZDG'),('TWN','D4C'),('TWN','PHS'),('PRO','PR2'),('PUR','PR2'),
+                ('NVL','PUR'),('NVL','PR2'),('NVL','PRO'),('NGL','PRO'),('NGL','T53'),('IDC','NOE')]:
         st=sk=co=either=0; wit=None
         for i in res:
             a,b=res[i][X],res[i][Y]
