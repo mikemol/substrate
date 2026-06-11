@@ -1086,3 +1086,90 @@ the index behaving exactly as designed.
 ADDENDUM: structured edition regenerated with frontier lines on both intrinsic
 chapters and the why-this-space provenance note in the front matter. Same
 fingerprint, same layers/chapters — annotation-only regeneration, as expected.
+
+## H-SERIES RE-SWEEP: the "loosely related" pile contained the ancestors (user-triggered)
+Trigger: first corpus sweep was keyed to V4/tetrahedron vocabulary; items graded loose
+under THAT frame re-searched under the session's acquired vocabulary (balance channel,
+differential encoding, codec, c-pinning, phase/extension class, separator). All quotes
+below OBSERVED in search snippets; structural identifications are mine, graded.
+
+**H1 — Möbius/deck (F5, upgraded from loose to load-bearing).** Chat "Cofibrational
+analysis of five papers": Möbius band M = C ×_{Z/2} {A,B}; one base traversal swaps the
+fiber; double cover = cylinder with distinct sheets; "the commutativity relation is the
+DECK TRANSFORMATION." [C] identification: the bundle picture of the carrier — pair =
+double cover of the single channel; pin-swap = deck transformation; the Möbius twist =
+Z/2 MONODROMY = phase; descent/lift = the channel↔pair (differential encoding)
+relationship; Möbius's lack of a global sheet-distinguishing section ↔ our
+frame-invisibility obstruction. Candidate: a bundle-reading remark for §5.8c/§8.6.
+
+**H2 — External grounding ALREADY DONE (chat "Quick review request", June 2026,
+T1129/T1130).** A prior workstream grounded S4 = V4 ⋊ S3 + dim-4 Hodge star with
+web-verified anchors: (1) Groupprops (normal Klein four, quotient S3); (2) tetrahedral
+realization, 24 oriented edges = regular rep; (3) THE TETRAHEDRON ALGEBRA g_box ≅
+sl2⊗A (arXiv math/0604218, Elduque / Hartwig–Terwilliger): S4 action = Klein-four
+automorphisms + S3 action — published Lie theory for exactly our holomorph theorem;
+(4) dim-4 Hodge star: Λ1↔Λ3 (witness↔triangle duality), Λ2 (dim 6) = 3+3
+self-dual/anti-self-dual. DISCHARGES (by citation) the standing F3/§11.4 Hodge-★
+next-work; gives Thm 5.4 a published anchor. Inherited residue from that session:
+the (source,sink,witness,apex) → four sl2-points binding functor — cited, not
+constructed.
+
+**H3 — THE ANCESTOR CLUSTER: "Evidence–Differential–Cayley–Dickson Construction"
+(3 Drive docs + folder "Cayley-Dickson Algebraic Systems"; consolidation report dated
+2026-03-07, provenance-tagged [E]/[U]/[I] — the same discipline as this cotype).**
+Observed in the executive summary + corrections:
+- Carrier VERBATIM: "nonnegative two-channel carrier x = (e+, e−)... 0 meaning no
+  evidence"; Belnap–Dunn/bilattice reading; two-rail conductance reading.
+- "l-space" = log-domain "additive hull": "does not replace the raw semiring; it
+  enriches it" — Lemma 2.5b's atlas-not-replacement, pre-stated.
+- Bridge = "comparison-of-comparisons" (pair-of-pairs) — the level-2 purchase.
+- Cayley–Dickson "retained as a structural operator": recursive doubling +
+  "conjugation-like involution" + "passage from one scalar/common direction to
+  multiple balanced modal directions" — THE PURCHASE RECURSION, with conjugation =
+  pin-swap; the user's "conjugatively-encoded" was Cayley–Dickson-literal.
+- "Poulton's phantom/ghost/wraith hierarchy... common-mode structure at one level
+  becomes the signal-bearing differential structure of the next [E4]" — §11.10's
+  recursion WITH ITS EXTERNAL SOURCE NAMED (Poulton).
+- C1: locus equalities are "nominal balance conditions, not literal algebraic
+  identities... enforcing such equalities as identities generally destroys closure
+  under the usual multiplication" — pre-states our rail demo (independent negate at
+  F exits the locus to B): the lock is a section, not a subalgebra.
+- C4 PROJECTION PLURALITY: "no single privileged projection down to real": total
+  commitment / differential tilt / UNSIGNED DECISIVENESS / single-conductor collapse
+  / bridge ratio-null shadow, "must not be conflated" — pre-states draft-14's
+  ambiguity AND names two shadows our catalog lacks (unsigned decisiveness |b|;
+  ratio/null-test).
+- C3 SHIFTED-LOG codec: e ↦ 1 + e/κ — an UNCATALOGUED CODEC CELL; κ is a
+  scale/headroom parameter (OB-1 adjacency).
+- BK4VL [U1]: user-local name for "a resource-aware extension of the Belnap–Dunn /
+  B4 / bilattice family" — the program's own prior name; the EL-Atlas is plausibly
+  its formalization. Lineage candidate for Appendix B.
+
+**H4 — Cayley–Dickson over GF(2) as allocation/addressing (Drive doc, May 2026).**
+"Every step up the Cayley-Dickson hierarchy exactly doubles the dimension... norm
+becomes a simple XOR-sum (cross-terms vanish)... flipping a conjugate bit...
+orthogonal imaginary dimension... self-similar fractal tree (Tamari link)";
+non-associativity at octonions proposed as isolation boundaries. [C] identification:
+THE MISSING BRIDGE between the two recursions we treat separately — the CD modal
+tower (purchase) and the GF(2)/Hadamard/RM doubling tree (coding) — via char-2
+addressing. Also note the quaternion doc: differential pair of complex lines = ℍ via
+CD — the level-2 composition's algebra; and D4/Q8 as V4's two central extensions
+(Arf) sits adjacent to our phase story.
+
+**H5 — Tropicalization functor (chat "Open problems across three papers"):**
+"boundary-relative tropicalization functor... tropicalization over rings with zero
+divisors... Frobenius-to-semiring" — OB-1 stratum (h→0 rails) adjacency; plus
+Renaudineau–Shaw F2 tropical homology "obstruction to propagation across the
+real/tropical boundary" — the GF(2)-cochain × tropical-limit intersection. Adjacency
+only; no import claim.
+
+**Import-candidate shortlist (none committed; user selection wanted):**
+(a) Poulton citation into §11.10 [S — named source, easily verified];
+(b) shifted-log codec cell e↦1+e/κ into §5.7's typing table + OB-1 link [C];
+(c) the two missing scalar shadows (unsigned decisiveness; ratio/null-test) into the
+    §5.6/5.7 projection inventory [C];
+(d) bundle-reading remark (pair = double cover, swap = deck, phase = monodromy) into
+    §5.8c [C];
+(e) tetrahedron-algebra + Hodge-star citations into Thm 5.4 / §11.4 [S];
+(f) CD↔GF(2) addressing bridge into §13.2/§11.10 [C];
+(g) BK4VL lineage note in Appendix B [S].
