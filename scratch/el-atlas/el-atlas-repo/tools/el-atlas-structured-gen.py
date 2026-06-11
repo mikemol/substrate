@@ -14,6 +14,8 @@ spec = importlib.util.spec_from_file_location("dep", os.path.join(os.path.dirnam
 dep = importlib.util.module_from_spec(spec); spec.loader.exec_module(dep)
 CLAIMS, BASE, SPACE, KNOBS = dep.CLAIMS, dep.BASE, dep.SPACE, dep.KNOBS
 PRIOR_LEDGER = dep.PRIOR_LEDGER
+FRONTIER = getattr(dep, 'FRONTIER', {})
+KNOB_PROVENANCE = getattr(dep, 'KNOB_PROVENANCE', {})
 manifest, FP = dep.space_fingerprint()
 names = list(CLAIMS)
 def M(**kw):
@@ -129,7 +131,11 @@ L.append("# The EL-Atlas, Structured Edition\n")
 L.append(f"*Mechanically derived by `tools/el-atlas-structured-gen.py` from the v3.1 harness.*")
 L.append(f"*All verdicts indexed: space **S_{FP}** ({len(SPACE)} models, exhaustive); manifest below.*")
 L.append("*Hand-written content: claim metadata sentences and spec pointers only.*\n")
-L.append(f"**Space manifest S_{FP}:** " + "; ".join(f"{k} ∈ {{{', '.join(v)}}}" for k,v in manifest.items()) + ".\n")
+L.append(f"**Space manifest S_{FP}:** " + "; ".join(f"{k} ∈ {{{', '.join(v)}}}" for k,v in manifest.items()) + ".")
+L.append("*Why this space: no knob is a-priori — each was admitted by a named correction*")
+L.append("*event (KNOB_PROVENANCE in the harness); knobs are monotonic. Intrinsic verdicts*")
+L.append("*below carry a frontier: what a separator would require, and at which scrutiny*")
+L.append("*stratum the residual openness lives.*\n")
 L.append("**Legend:** P = visible/true from that vantage; F = false there; U = observable but")
 L.append("undecided; V = not statable there. Dependence edges arise from F and V only —")
 L.append("undecided is not destroyed. Circle verdicts carry their space index and ledger.\n")
@@ -159,10 +165,14 @@ for d in range(maxl+1):
         if kind=="truth-intrinsic":
             st,sk,co,either=pairstats(*ns[:2])
             L.append(f"*Verdict (S_{FP}, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement {co}/{either} = {co/either:.2f}. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*\n")
+            fk=frozenset(ns[:2])
+            if fk in FRONTIER: L.append(f"*Frontier: a separator would require {FRONTIER[fk]}.*\n")
         if kind=="expr-intrinsic":
             st,sk,co,either=pairstats(*ns[:2])
             thm=[x for x in ns if never_F(x)]
             L.append(f"*Verdict (S_{FP}, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement {co}/{either} = {co/either:.2f}; but {', '.join(thm)} is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*\n")
+            fk=frozenset(ns[:2])
+            if fk in FRONTIER: L.append(f"*Frontier: a separator would require {FRONTIER[fk]}.*\n")
         if kind=="coincidence":
             L.append(f"*Characteristic-break coincidence with {rest} (shared break in the dep digraph); separated in-space — see ledger.*\n")
         for ln in ledger_lines(ns): L.append(ln+"\n")

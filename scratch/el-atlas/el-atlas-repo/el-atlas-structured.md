@@ -5,6 +5,10 @@
 *Hand-written content: claim metadata sentences and spec pointers only.*
 
 **Space manifest S_666bf26b7779:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}.
+*Why this space: no knob is a-priori — each was admitted by a named correction*
+*event (KNOB_PROVENANCE in the harness); knobs are monotonic. Intrinsic verdicts*
+*below carry a frontier: what a separator would require, and at which scrutiny*
+*stratum the residual openness lives.*
 
 **Legend:** P = visible/true from that vantage; F = false there; U = observable but
 undecided; V = not statable there. Dependence edges arise from F and V only —
@@ -145,6 +149,8 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 
 *Verdict (S_666bf26b7779, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 2304/2304 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
 
+*Frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum.*
+
 
 *Perspective visibility — L26 (executed, S_666bf26b7779 configs):*
 
@@ -203,6 +209,8 @@ undecided is not destroyed. Circle verdicts carry their space index and ledger.
 **PUR — The differential purchase** (§5.7). Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis.
 
 *Verdict (S_666bf26b7779, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 2560/2560 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+
+*Frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum.*
 
 
 *Perspective visibility — PRO (executed, S_666bf26b7779 configs):*

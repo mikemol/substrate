@@ -1082,3 +1082,7 @@ residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value st
 same for {PUR,PRO} (a pinning that fails to conflate, or statable-but-false PRO).
 Fingerprint UNCHANGED (S_666bf26b7779): annotation grew, the verdict space did not —
 the index behaving exactly as designed.
+
+ADDENDUM: structured edition regenerated with frontier lines on both intrinsic
+chapters and the why-this-space provenance note in the front matter. Same
+fingerprint, same layers/chapters — annotation-only regeneration, as expected.
