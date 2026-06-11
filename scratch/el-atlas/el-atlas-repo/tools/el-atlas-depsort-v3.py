@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.8.2"
+VERSION = "v3.8.3"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -822,7 +822,7 @@ _FIBER_CERT = {
  'LOC':("analytic-points (3 probe values) + U-kinds",None), 'L26':("analytic-points",None),
  'T53':("guard + delegate(L26)",None), 'V4I':("guard",None), 'D4C':("guard",None),
  'PHS':("analytic-points (on/off locus, numpy exact)",None), 'RLS':("analytic-rails (B=1e9 endpoints)",None),
- 'NOE':("exact (Lie-level invariants computed in-run; variational form reserved) — B6 discharged",_emit_noe),
+ 'NOE':("exact (Lie-level in-run + variational/moment-map, pilot exact: noe-variational-pilot) — B6+OB-7 discharged",_emit_noe),
  'TWN':("guard",None), 'RAD':("sampled(40) — _rad_mult_ok, self-declared '(sampled)'",None),
  'ZDG':("cited-theorem(dim<16: composition algebras) + witness-search(dim 16)",None),
  'PR2':("witness (constructed exact collision: (3,4)~(6,8) under r-pinning) — audited S45",None), 'IDC':("exact (WL signatures on declared exhibits; probe-indexed rounds) — audited S45",None),

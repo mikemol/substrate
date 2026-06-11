@@ -912,12 +912,23 @@ the second — each conserved quantity is the annihilator of its flow,
 a duality the instrument now verifies exactly in every run (fiber
 certificate "exact", v3.8.1, with live emitter). This is
 **Noether-style at the Lie level**: symmetry flows paired with exact
-invariants. The variational form — an action functional whose
-symmetries are these flows and whose Noether currents are mass and
-bias — is a registered reservation, not a present claim. The name
-"Noether" is retained with this qualifier; the derive-or-rename
-obligation (B6) is discharged as derive-at-the-Lie-level plus
-rename-by-qualification.
+invariants. The name
+"Noether" is retained; the derive-or-rename obligation (B6) was
+discharged as derive-at-the-Lie-level plus rename-by-qualification.
+
+**Variational completion (S46; the 5.10d reservation is lifted and
+OB-7 is discharged).** Give the log chart the symplectic form
+ω = da ∧ db. Then mass and bias are the **moment maps** of the two
+flows: the Hamiltonian vector field of the mass form a+b is the
+squeeze (1,−1), and that of the bias form a−b is the diagonal
+translation — each charge generates exactly the symmetry that
+conserves it, which is Noether in its Hamiltonian form. The two
+charges are canonically conjugate up to scale ({mass, bias} = −2 —
+conjugacy, not involution: bias is rightly *not* conserved along the
+squeeze), and the crossbar (§4) is a canonical transformation up to
+the same constant (C*ω = −2ω): the §4 change of basis is a change of
+canonical coordinates. Pilot: tools/noe-variational-pilot.py — six
+checks including the negative control, all exact, no sampling.
 
 ### 5.10e Equivalence certificates (B10): the schema
 
@@ -1494,9 +1505,11 @@ scaling in 𝕄 — conserves the bias form a−b, and the anti-diagonal
 squeeze conserves the mass form a+b; each invariant is the annihilator
 of its flow, checked exactly in every run (fiber certificate "exact",
 v3.8.1, live emitter). The pairing is graded **Noether-style at the
-Lie level**. What remains of **OB-7** is the variational residue only:
-an action functional whose symmetries are these flows and whose
-Noether currents are mass and bias (registered reservation, §5.10d).
+Lie level**. **OB-7 is discharged** (S46): the variational form is
+Hamiltonian — mass and bias are the moment maps of the squeeze and
+translation flows for ω = da ∧ db, canonically conjugate up to scale,
+and the crossbar is a canonical transformation (§5.10d;
+tools/noe-variational-pilot.py, all checks exact).
 
 **Thévenin.** Stated under the charter: **no corpus document names
 Thévenin or Norton.** The *move*, however, appears twice, unnamed:
@@ -1976,7 +1989,7 @@ deriving them. *Discharge path: check the axioms; the Agda modules give
 the statements machine-visible form. If they hold, 11.7's lineage entry
 promotes to a witness for §§5–6.*
 
-**OB-7 — the Noether statement for the carrier. RESOLVED (clean two-pairing).**
+**OB-7 — the Noether statement for the carrier. RESOLVED, then COMPLETED (S46: variational form — mass and bias are the moment maps of the squeeze and translation flows for ω = da∧db; conjugate up to scale; the crossbar is canonical; pilot exact, §5.10d).**
 A run initially called this inconsistent (the proposed continuous flow
 conserved bias while the discrete pin-swap conserves mass); that was a
 single-chart artifact — the wrong continuous partner was chosen. Corrected

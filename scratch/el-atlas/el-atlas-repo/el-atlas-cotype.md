@@ -2980,3 +2980,28 @@ test queued (did any historical knob admission ever split a circle;
 records say no). QUEUE NOW: OB-7 variational residue, v2.22 read,
 A/B brick layers — all next-session items. The actionable queue for
 this session is EMPTY.
+
+
+## S46: OB-7 DISCHARGED — THE VARIATIONAL FORM IS HAMILTONIAN; MASS
+## AND BIAS ARE MOMENT MAPS; THE CROSSBAR IS CANONICAL
+Pilot tools/noe-variational-pilot.py, six checks, all exact, no
+sampling, one negative control: with omega = da^db on the log chart,
+X_(a+b) = (1,-1) = the squeeze and X_(a-b) = the diagonal
+translation — each charge generates the symmetry conserving it
+(Noether in Hamiltonian form; the charges are the MOMENT MAPS of the
+two flows); {mass,bias} = -2 (canonically conjugate up to scale —
+and the negative control confirms conjugacy-not-involution: bias is
+rightly not conserved along the squeeze); the crossbar pulls omega
+back to -2*omega — THE SECTION-4 CHANGE OF BASIS IS A CHANGE OF
+CANONICAL COORDINATES, a reading the spec did not previously have.
+SPEC: 5.10d reservation LIFTED (variational-completion paragraph);
+11/08.md OB-7 closed; register entry completed. LAZY SPLITS
+EXERCISED TWICE (both nodes touched tonight): 05/02 -> five
+subsection leaves; 15/00 -> per-OB-entry leaves (one leaf per
+obligation — the register is now addressable by obligation
+coordinate), both splits byte-faithful by assertion. INSTRUMENT
+v3.8.3: NOE certificate reads "Lie-level in-run + variational/
+moment-map, pilot exact — B6+OB-7 discharged"; SPACE MOVE LEDGERED:
+S_6c040a08a0f2 (cert-text kind; truth content index-only per S44a/S45
+precedent). The session's deferred set is now exactly: v2.22 read,
+A/B brick layers — both next-session by design.
