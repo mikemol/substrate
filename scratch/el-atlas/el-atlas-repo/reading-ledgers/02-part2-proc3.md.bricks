@@ -3,7 +3,7 @@
 H1 1-68 DONE
 H2 69-136 DONE
 Q1 1-34 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-M 35-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 35-102 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 103-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 35-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -116,3 +116,24 @@ arrival), evidence the M-layer pays when performed.
 ## window-passes. In-context recall is not a certificate. M-layer
 ## (seam windows) now being re-executed as fresh prints with capture
 ## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 35-102, seam 68|69) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): the full Category_Laws block sits
+  whole in M; Identity proof intact across the cut. PASS, earned.
+- NEW (missed by H1+H2 held-context captures): VERSION STRATIGRAPHY —
+  lib-category-theory-v2.2 inside the v2.37.1 distribution, while
+  lib-hott-os and lib-number-systems carry v2.37. The sealed artifact
+  carries heterogeneous library versions: either deliberate (the
+  category laws stabilized at v2.2 and never needed revision — the
+  library lineage exhibits its own homological stability) or stale
+  residue; the self-audit does not remark on it. GLU: DREN
+  Git-as-History (identity = entire preceding history); the version
+  field IS history carried in the artifact. The treatise (5.3) also
+  says v2.2 — consistent, so deliberate-stability is the better read.
+- NEW NUANCE: Axiom_Integrity PROPOSITION reads "System integrity is
+  the successful closure of the Kernel-sieve" — integrity as SIEVE
+  CLOSURE; one sieve concept spans security (part-2 sec. I) and
+  integrity. Prior capture had the mechanism (READY, re-parse per
+  clock-terminal) but missed the sieve framing.
+- VERDICT: fresh pass yielded 2 new captures — the lossy-window
+  hypothesis CONFIRMED on the first re-execution.
