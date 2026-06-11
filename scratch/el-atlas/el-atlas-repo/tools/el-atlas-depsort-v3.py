@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.8.3"
+VERSION = "v3.8.4"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -846,8 +846,8 @@ WITNESS_RELATIONS = {
  frozenset({'GCX','ZDG'}): "disjoint-by-type (as GCX/RAD)",
  frozenset({'GCX','ZDW'}): "disjoint-by-type (as GCX/RAD)",
  frozenset({'GCX','SWP'}): "disjoint-by-type: rank-multiset vs parse-chart witnesses",
- frozenset({'LOC','L26'}): "UNREGISTERED — waiting joiner candidate (S22): compare section-witnesses",
- frozenset({'PUR','PRO'}): "UNREGISTERED — waiting joiner candidate (S22)",
+ frozenset({'LOC','L26'}): "EQUAL witness sets on the mutual probe grid — cell-for-cell (joiner-pairs pilot, W2/S48); kind-divergence outside it (LOC: U where L26: V on degraded locks)",
+ frozenset({'PUR','PRO'}): "ISO-WITH-REFRAMING: the collision family (p, lam*p) is PUR's falsification set AND PRO's truth set (pinned vs free reading); bijection = identity; PR2 exhibits the carrier (W2/S48)",
  frozenset({'TWN','D4C'}): "UNREGISTERED — extension-class witnesses are 2-cell data (S25); comparison lives one rung up",
 }
 

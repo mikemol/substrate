@@ -3028,3 +3028,27 @@ it. The symmetry with the source noted and bounded: their
 Verification-at-Load-Time checks artifact-against-proof; our
 wal-check checks state-against-intent — load-bearing difference: the
 WAL also covers work that DIDN'T finish.
+
+
+## S48 (W2): THE WAITING JOINER PAIRS RESOLVED — ONE EQUALITY, ONE
+## ISO-WITH-REFRAMING THROUGH PR2'S CARRIER
+{LOC,L26}: failure-witness sets EQUAL cell-for-cell on the mutual
+probe grid (4 statable locks x 3 points; joiner-pairs pilot) — the
+strongest second-order verdict the registry holds: not isomorphic,
+EQUAL. Registered grid-relative, with the kind-divergence outside
+the mutual region noted (LOC goes U where L26 goes V on degraded
+locks): the circle's members fail identically wherever both can
+speak and differ only in HOW they decline to speak. {PUR,PRO}:
+ISO-WITH-REFRAMING — the collision family (p, lam*p) is
+simultaneously PUR's falsification witness set (pinned norm
+collapses the pair) and PRO's truth witness set (free double-entry
+keeps them distinct); bijection = identity on the family; PR2's
+exhibit ((3,4)~(6,8)) is the carrier — three claims share one
+witness family read three ways. v3.8.4: both registered; NO
+UNREGISTERED JOINER CANDIDATES REMAIN ({TWN,D4C} stays typed as
+2-cell work, one rung up, queued). SPACE MOVE: S_4c3345b9126a
+(registry-text kind; truth content index-only per precedent).
+PROCESS RESIDUE: first patch attempt extracted the registry to the
+first closing brace (inside a frozenset literal) — the defensive
+assert stopped the move with zero writes; extraction corrected to
+the dict-terminal brace. W2 closes here.

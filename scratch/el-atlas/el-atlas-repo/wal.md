@@ -18,3 +18,4 @@ BEGIN W1 2026-06-11T23:5x :: implement WAL machinery and adopt write-ahead disci
 END W1 2026-06-11 :: machinery built and bootstrapped :: head=ac0c909 :: artifacts=tools/wal-check.py,NEXT.md,wal.md
 BEGIN W2 2026-06-11 :: resolve waiting joiner pairs {LOC,L26}, {PUR,PRO} at the witness stratum; register results in WITNESS_RELATIONS (v3.8.4)
   expect: tools/joiner-pairs-pilot.py(+out), harness v3.8.4 with two new relations, run txt, regen, space-move ledger, cotype S48, END W2
+END W2 2026-06-11 :: both pairs resolved (EQUAL; ISO-WITH-REFRAMING via PR2); one safe-abort residue :: head=2d6f448 :: artifacts=tools/joiner-pairs-pilot.py,tools/joiner-pairs-pilot-out.txt,tools/el-atlas-depsort-v3.8.4-run.txt
