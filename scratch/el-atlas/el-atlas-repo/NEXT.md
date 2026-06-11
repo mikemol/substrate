@@ -43,6 +43,24 @@ is spec-src/15/00/ (one leaf per OB).
   recovery replay); an open BEGIN at start means the prior window
   died mid-move — verify, redo, or ABORT before anything else.
 
+## Flush-recovery doctrine (S50 — author-set, standing)
+- The context window flushes when it flushes; do not try to time it.
+  ACTIVE RE-READING IS THE REFRESH: at every BEGIN, re-read the
+  wal.md tail and this file; trust disk over held context (the
+  source's clock-terminal reparse, applied to the workstream).
+- SIGNAL: if the author appears to RESEND a prompt, a flush
+  happened. Recovery order, before acting on the resent prompt:
+  1. python3 tools/wal-check.py.
+  2. If an OPEN BEGIN exists, compare its intent to the resent
+     prompt. A match means the prompt is a RETRY of an in-flight
+     move: verify what already executed (dirty tree, partial
+     artifacts, cotype tail) and COMPLETE or ABORT+redo — never
+     re-execute blindly. The WAL is the double-execution guard:
+     duplicate cotype entries, twice-applied patches, and repeated
+     spec appends are the failure modes it exists to prevent.
+  3. Re-read the cotype tail (last two entries) and this file; only
+     then respond to the prompt.
+
 ## Opening moves, in order
 0. python3 tools/wal-check.py  (recovery replay — before all else)
 1. A/B/A2/B2 brick layers for parts 2-5 (ledgers mark them DEFERRED)

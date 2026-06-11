@@ -24,3 +24,4 @@ BEGIN W3 2026-06-11 :: homological-stability split-test (thread 20): for each se
 END W3 2026-06-11 :: stability holds (0 hits); margin chart banked :: head=1bedf7b :: artifacts=tools/hstab-split-pilot.py,tools/hstab-split-pilot-out.txt
 BEGIN W4 2026-06-11 :: persist the flush-recovery doctrine (resent-prompt signal; active re-read as refresh; double-execution guard)
   expect: NEXT.md recovery-protocol subsection, cotype S50, END W4
+END W4 2026-06-11 :: doctrine persisted :: head=2a52cd0 :: artifacts=NEXT.md

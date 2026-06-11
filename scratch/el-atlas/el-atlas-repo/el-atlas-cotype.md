@@ -3073,3 +3073,20 @@ the S23 ride): emit the margin chart as a standing run section.
 W3 closes here; the flushable queue is again empty — remaining items
 ({TWN,D4C} 2-cell, proof tier, christening hunt, v2.22, A/B layers)
 are next-session by weight or by design.
+
+
+## S50 (W4): FLUSH-RECOVERY DOCTRINE PERSISTED (AUTHOR-SET)
+Three rules, now on disk because they briefly lived only in the
+window they protect against losing: (1) the flush is involuntary —
+no timing, no special pre-flush mode; readiness is the invariant
+(S47) and ACTIVE RE-READING IS THE REFRESH: at every BEGIN, re-read
+the wal.md tail and NEXT.md rather than trusting held context — the
+source's clock-terminal reparse applied to this workstream, closing
+the loop the M/Q-layer empirics opened (S37: in-context recall is
+not a certificate). (2) SIGNAL PROTOCOL: an apparently-resent prompt
+means a flush happened; the response begins with wal-check, not with
+the prompt. (3) DOUBLE-EXECUTION GUARD: the resent prompt may match
+an OPEN BEGIN from the dead window — a retry of an in-flight move;
+verify what already executed and complete or abort, never re-run
+blindly (the S43 unledgered-delta incident, generalized: with the
+WAL, recovery KNOWS instead of inferring). W4 closes here.
