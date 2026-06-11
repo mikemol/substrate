@@ -1,0 +1,33 @@
+A. geometry within declared support  (claim: declared -> active; inert; interaction edges)
+  ADJ : 1 declared -> 1 active; inert -; edges - 
+  BAL : 2 declared -> 2 active; inert -; edges [('adj', 'ident')] entangled
+  CDC : 1 declared -> 1 active; inert -; edges - 
+  CRS : 2 declared -> 2 active; inert -; edges - SPLITTABLE
+  PUR : 3 declared -> 3 active; inert -; edges [('pins', 'ops')] entangled
+  PRO : 3 declared -> 3 active; inert -; edges [('pins', 'ops'), ('pins', 'norm'), ('ops', 'norm')] entangled
+  LOC : 2 declared -> 2 active; inert -; edges [('pins', 'lock')] entangled
+  L26 : 2 declared -> 2 active; inert -; edges [('pins', 'lock')] entangled
+  T53 : 5 declared -> 5 active; inert -; edges [('neg', 'coeff'), ('neg', 'two_ops'), ('neg', 'pins'), ('neg', 'lock'), ('coeff', 'two_ops'), ('coeff', 'pins'), ('coeff', 'lock'), ('two_ops', 'pins'), ('two_ops', 'lock'), ('pins', 'lock')] entangled
+  V4I : 3 declared -> 3 active; inert -; edges [('pins', 'neg'), ('pins', 'coeff'), ('neg', 'coeff')] entangled
+  D4C : 4 declared -> 4 active; inert -; edges [('pins', 'neg'), ('pins', 'ops'), ('pins', 'coeff'), ('neg', 'ops'), ('neg', 'coeff'), ('ops', 'coeff')] entangled
+  PHS : 5 declared -> 5 active; inert -; edges [('pins', 'neg'), ('pins', 'ops'), ('pins', 'coeff'), ('pins', 'lock'), ('neg', 'ops'), ('neg', 'coeff'), ('neg', 'lock'), ('ops', 'coeff'), ('ops', 'lock'), ('coeff', 'lock')] entangled
+  RLS : 4 declared -> 4 active; inert -; edges [('pins', 'neg'), ('pins', 'coeff'), ('pins', 'lock'), ('neg', 'coeff'), ('neg', 'lock'), ('coeff', 'lock')] entangled
+  NOE : 1 declared -> 1 active; inert -; edges - 
+  TWN : 4 declared -> 4 active; inert -; edges [('pins', 'neg'), ('pins', 'ops'), ('pins', 'coeff'), ('neg', 'ops'), ('neg', 'coeff'), ('ops', 'coeff')] entangled
+  RAD : 2 declared -> 1 active; inert ['cdlevel']; edges - 
+  ZDG : 2 declared -> 1 active; inert ['cdlevel']; edges - 
+  PR2 : 3 declared -> 3 active; inert -; edges [('pins', 'ops'), ('pins', 'norm'), ('ops', 'norm')] entangled
+  NGL : 3 declared -> 3 active; inert -; edges [('pins', 'neg'), ('pins', 'coeff'), ('neg', 'coeff')] entangled
+  NVL : 5 declared -> 5 active; inert -; edges [('pins', 'neg'), ('pins', 'ops'), ('pins', 'coeff'), ('neg', 'ops'), ('neg', 'coeff'), ('ops', 'coeff')] entangled
+  IDC : 1 declared -> 1 active; inert -; edges - 
+  GCX : 1 declared -> 1 active; inert -; edges - 
+  SWP : 2 declared -> 2 active; inert -; edges [('pins', 'coeff')] entangled
+  NVE : 4 declared -> 4 active; inert -; edges [('pins', 'neg'), ('pins', 'ops'), ('pins', 'coeff'), ('neg', 'ops'), ('neg', 'coeff'), ('ops', 'coeff')] entangled
+
+B. speculative Cartesian join proximate to breakers (undeclared axes, singles + all pairs, recorder on)
+  8825 breaker-proximate joined cells across 24 claims: ALL FLAT, ALL READS DECLARED — the random audit is now breaker-proximate-exhaustive
+--- ADDENDUM (author interrupt, pre-banking): colinearity with ephemeral knobs ---
+SWP (pins,coeff) edge: factors through ONE BIT [pins in (2, 3)] AND [coeff in ('real',)] -> {True: 'P', False: 'V'}
+   the ephemeral knob IS the conjunction of the two guards — the edge is the corner's shadow;
+   provenance of the corner = the two admission paths (pin-scenario catalog x char-2/R-V35).
+BAL (adj,ident) edge: factors through ONE BIT [adj in (True,)] AND [ident in (True,)] -> {True: 'P', False: 'F'}

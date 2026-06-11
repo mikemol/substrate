@@ -2132,3 +2132,30 @@ CERTIFICATE, enumeration compiles into algebra (project, solve,
 multiply); no certificate → sampling remains the honest fallback; the
 2nd-order program is what grows the certificate inventory. Queue: v3.7
 projected-mode implementation rides with the v3.6 boarding.
+
+## S24: GEOMETRY STRATUM PILOTED; FRAMING CORRECTED PRE-BANKING
+## (SEPARABILITY IS BASIS-INDEXED; EDGES = SYNTHESIS IMAGES)
+Pilot A (within declared support): three nested certificates instrumented
+— DECLARED ⊇ READ ⊇ GEOMETRICALLY ACTIVE. Findings: RAD/ZDG declare+read
+cdlevel, verdict CONSTANT along it — inert-in-verdict, LOAD-BEARING-IN-
+CONTENT (constancy displays the schedule's universality; no blanket
+judgment). Interaction graphs extracted for all 24 claims (T53/PHS
+richest at 10 edges; CRS the only multi-axis edge-free claim). AUTHOR
+INTERRUPT pre-banking: "entangled" was an UNINDEXED verdict — the
+hyper-partition my test creates is COLINEAR WITH AN UNSTATED/EPHEMERAL
+KNOB; edges are consequences of knob SYNTHESIS (paths through coprime
+witnesses, KNOB_PROVENANCE col 2), so admission-path corners MUST
+register as interaction; separability-in-some-admissible-basis is OPEN
+per-region and iterating it is the framework's normal business.
+REFRAMED: geometry verdicts carry BASIS indices the way truth verdicts
+carry space indices; the interaction graph = knob-admission CANDIDATE
+GENERATOR. Crossbar precedent: (E⁺,E⁻)↔(mass,bias) — entanglement
+rotated away in-house since §4. ADDENDUM: SWP's (pins,coeff) edge
+factors EXACTLY through one bit [pins∈{2,3}]∧[coeff∈{real}] (the
+guard-conjunction = the ephemeral knob, edge = corner's shadow); BAL's
+(adj,ident) edge admits NO 1-bit conjunctive axis — held OPEN, indexed.
+Pilot B unaffected: 8,825 breaker-proximate joins, all reads declared,
+all flat — the dep-audit is now breaker-proximate-exhaustive. CATCH
+LATENCY: R-V35 post-commit → S24 pre-commit; the cadence tightens.
+PRINCIPLE: instrument-created partitions are not space-owned properties
+until their knob is admitted or shown inadmissible.

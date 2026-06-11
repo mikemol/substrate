@@ -630,3 +630,53 @@ enumeration compiles into algebra — project, solve, multiply. Where no
 certificate exists, sampling remains the honest fallback, and the
 2nd-order program (witness-valued verdicts, S22) is precisely what
 grows the certificate inventory.
+
+## 17. S24 — the geometry stratum, REFRAMED MID-FLIGHT: separability is basis-indexed
+
+Pilot tools/geometry-dep-pilot.py (results retained verbatim in the out
+file), author interrupt landing BEFORE the banking step (catch latency:
+R-V35 post-commit → this one pre-commit; the cadence tightens as the
+convergent model predicts).
+
+**What the pilot found, in corrected framing:**
+1. Three nested certificates, all now instrumented: DECLARED support ⊇
+   READ support ⊇ GEOMETRICALLY ACTIVE support. The gaps are findings:
+   RAD and ZDG declare and READ cdlevel, but their verdicts are constant
+   along it — inert-in-verdict yet LOAD-BEARING-IN-CONTENT (the axis is
+   where the schedule's universality is displayed; the test uses the
+   rung to pick what to verify, and constancy IS the theorem). Inertness
+   is a verdict-geometry fact, never a uselessness verdict — blanket
+   judgment refused this time.
+2. Interaction edges are **non-separability IN THE DECLARED BASIS ONLY**
+   — an indexed verdict, never intrinsic entanglement. The crossbar is
+   the house's own precedent: (E⁺,E⁻) vs (mass,bias) — one region, two
+   bases, "entanglement" rotated away. Each edge is COLINEAR WITH AN
+   EPHEMERAL KNOB (a derived coordinate along which the region is a
+   cylinder), and the edges are not discoveries about nature but IMAGES
+   OF THE SYNTHESIS HISTORY: knobs were admitted along paths through
+   coprime witnesses (KNOB_PROVENANCE's second column is that record),
+   so the corner where two admission paths meet MUST register as
+   interaction. The graph is a KNOB-ADMISSION CANDIDATE GENERATOR, not
+   an entanglement detector.
+3. Addendum demonstration: SWP's (pins,coeff) edge factors EXACTLY
+   through one bit — [pins ∈ {2,3}] ∧ [coeff ∈ {real}] — the
+   conjunction of its own two guards; the edge is that corner's shadow,
+   provenance = the two admission paths. BAL's (adj,ident) edge admits
+   NO 1-bit conjunctive axis: its minimal synthetic partition needs
+   more structure, and whether it separates under some admissible basis
+   is OPEN — held open without discomfort, because iterating exactly
+   this question is what the framework does (each future admission can
+   re-factor what looks tangled now; "separable?" has the same
+   open-ended logic as "unseparated-in-S").
+4. Pilot B stands unaffected by the reframe: 8,825 breaker-proximate
+   joined cells across all 24 claims, every read declared, every
+   verdict flat along undeclared axes — the dep-audit upgraded from
+   600 random samples to exhaustive coverage of exactly the corners
+   where conditional reads would hide.
+
+**Principle interned**: a partition the instrument CREATES (a
+hyper-partition from a chosen test) must not be read as a property the
+space OWNS; it is colinear with an unstated knob until that knob is
+either admitted (and the geometry re-coordinatized) or shown
+inadmissible. Geometry verdicts get basis indices, the way truth
+verdicts get space indices.
