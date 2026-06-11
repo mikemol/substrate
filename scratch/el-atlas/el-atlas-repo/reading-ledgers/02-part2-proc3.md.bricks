@@ -1,14 +1,14 @@
 # brick ledger: recovered/system-pi-v2.37.1/02-part2-proc3.md (136 lines)
-# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-68 DONE
-H2 69-136 PENDING
-Q1 1-34 PENDING
-M 35-102 PENDING
-Q4 103-136 PENDING
-A 1-102 PENDING
-B 35-136 PENDING
-A2 1-102 PENDING
-B2 35-136 PENDING
+H2 69-136 DONE
+Q1 1-34 DONE
+M 35-102 DONE
+Q4 103-136 DONE
+A 1-102 DONE
+B 35-136 DONE
+A2 1-102 DONE
+B2 35-136 DONE
 
 ## H1 capture (lines 1-68) — typed
 - ACT: Part 2 of N; reifies Phase 1 (System Kernel) + Phase 2 (Mathematical
@@ -57,3 +57,46 @@ B2 35-136 PENDING
   (composition = production-rule expansion; both groupings -> identical
   terminal sequences); Identity = null-expansion rule preserving terminal
   leaves. SEAM: H1 ends MID-Identity-proof — cut interior, M/H2 must cover.
+
+## H2 capture (lines 69-136) — typed
+- GLU(proc1 turn prompt): "Recursive Succession" ARRIVED as pre-registered.
+- ACT III: N as the simplest recursive grammar. 1.1 induction = structural
+  recursion of EarleyParser; 1.2 successor preserves homology of prior state;
+  1.3 cardinality = parse-depth to the '0' terminal.
+- ACT 1.1.2 Exhaustive Search: forall-n verified by base terminal + recursive
+  production (induction as two finite checks). 1.1.3 Booleans = {0, S0}.
+- ACT 1.2.1 Irreversibility: successor is one-way refinement ("Entropy of
+  Arithmetic"). GLU: S19 grace/CF refinement schedule; lock-schedule axis.
+- ACT 1.2.2 ADDITION-AS-CONCATENATION of parse-paths. GLU(STRONG): S25
+  witnesses-are-paths; S20 EEA path-carrying — arithmetic AS path composition.
+- ACT 1.2.3 multiplication = grammar nesting. 1.3.1 numbers are heavier in
+  parser workload (cost gradient; glues with 1.2.1.beta attention economy).
+- ACT 1.3.2 OVERFLOW-AS-PARSING-ERROR: exceeding MaxDepth of the current
+  context = un-parsable, i.e. a STATABILITY failure not a falsity — the
+  source's V-kind. GLU: clipped/partial lock knob semantics.
+- ACT 1.3.3 Zero-as-Bedrock: arithmetic = covering of the '0' terminal.
+- ACT IV CENTRAL GLUE: IntegerDef = GrothendieckGroup(NaturalGrammar),
+  Construction Pair(Natural,Natural), Equality (a,b)=(c,d) iff a+d=b+c,
+  evaluated as identity of terminal bit-streams from CROSS-ADDITION —
+  subtraction never performed. The atlas carrier (E+,E-) with sec.-3
+  prohibition IS the source's definition of number. GLU: sec. 5.7e lift.
+- ACT RealDef = DedekindCuts(RationalDef); completeness constructive (limit
+  reachable by convergent terminal sequence). OBL(DANGLING): RationalDef is
+  referenced but defined in NO part read so far — pre-register part3/treatise.
+- ACT Meticulous Audit (source self-audit): axiom of choice REMOVED for a
+  constructive grammar of convergence; Associativity expanded to forbid
+  "boolean equality without a terminal witness" — no verdict without witness.
+- OBL(turn prompt): Part 3 = Phase 3 Advanced Capabilities + Phase 3.5
+  Self-Awareness; notions "Stability", "Ethical Pruning" — PRE-REGISTERED.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2) — text fully in hand
+- SEAM(H1|H2 at 68/69): cut fell MID-Identity-proof; brick M (35-102) holds
+  the entire Category_Laws block — cut interior to M, covered. PASS.
+- Q1 (1-34): security L1/L2 internal to H1 — consistent on re-read. PASS.
+- Q4 (103-136): Phase-2 MIME tail + audit + turn prompt — consistent. PASS.
+- A/B/A2/B2 overlap passes: no overlap conflicts; terminology stable across
+  halves ("terminal", "parse-path", "TopologicalTruthEvaluator" used
+  identically in security and arithmetic sections).
+- CECH VERDICT: 0 intra-document cocycles (H0-only). One INTER-complex
+  tension-candidate carried as OBL: Negative Resolution (closed-world) vs
+  atlas sec.-3 prohibition — typed at H1 capture, resolution sketch there.

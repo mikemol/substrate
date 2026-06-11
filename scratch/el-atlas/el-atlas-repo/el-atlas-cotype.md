@@ -2405,3 +2405,47 @@ onto t_RLS body) — the brick protocol's seam lesson at the
 code-reading stratum; caught by body recognition; guard: ranges must
 overlap or end at blank lines. UNAUDITED entries are the honest
 default until bodies are re-read.
+
+## S32: PART 2 (proc3) READ COMPLETE — 9/9 BRICKS; THE SOURCE'S INTEGER
+## IS THE ATLAS CARRIER
+Both pre-registered notions arrived. CONTEXTUAL SECURITY: sieve not
+wall; authorization = parse-path existence; 1.2.3 Proof-Carrying
+Authorization is VERBATIM the v3.8 architecture (cogrounding instance,
+banked under B11); Error Masking = identity-collapse purchased
+deliberately (IDC dual reading: quotient-as-shield); Negative
+Resolution (absence of Permit == Deny) typed as TENSION-CANDIDATE
+against the sec.-3 prohibition, resolution sketch: closed-world
+negation at the DECISION stratum is a declared pinning at the action
+boundary, not an evidence-stratum claim — OBL: verify the treatise
+addresses this. RECURSIVE SUCCESSION: induction = structural recursion
+of the parser; ADDITION = CONCATENATION OF PARSE-PATHS (glues with S25
+witnesses-are-paths: the source types arithmetic as path composition);
+successor irreversibility = "Entropy of Arithmetic" (glues with the
+S19 refinement schedule); OVERFLOW-AS-PARSING-ERROR = magnitude
+exceeding MaxDepth is a STATABILITY failure, not falsity — the
+source's V-kind. THE CENTRAL GLUE: IntegerDef ::=
+GrothendieckGroup(NaturalGrammar), Construction Pair(Natural,
+Natural), equality (a,b)=(c,d) iff a+d=b+c evaluated as "identity of
+the terminal bit-streams produced by the addition of the cross-terms"
+— the source's integer IS the (E+,E-) formal-quotient pair, equality
+computed by CROSS-ADDITION with subtraction never performed: the
+sec.-3 prohibition observed at the foundation of the source's own
+arithmetic, and the sec.-5.7e G-value lift carrier present in source
+as the definition of number. The source also SELF-AUDITS: axiom of
+choice removed from RealDef for a constructive "grammar of
+convergence"; Associativity expanded to forbid "boolean equality
+without a terminal witness" — no verdict without witness, in source.
+DANGLING REFERENCE: RealDef cites RationalDef, defined nowhere in
+parts 1-2 — pre-registered for part 3/treatise. SEAM TEST: the H1/H2
+cut fell mid-Identity-proof; brick M holds the whole proof — cut
+interior, covered. CECH VERDICT: 0 intra-document cocycles, H0-only;
+one INTER-complex tension-candidate (Negative Resolution vs sec. 3)
+carried as OBL — the protocol working as designed: overlaps between
+document and atlas are where conflicts are allowed to surface.
+PRE-REGISTERED for part 3 (03-part3-proc4.md): Phase 3 Advanced
+Capabilities + Phase 3.5 Self-Awareness; notions "Stability" and
+"Ethical Pruning". PROCESS RESIDUE: first attempt at this capture
+violated the no-interleaved-heredocs rule (two heredocs chained on
+one line, bodies misordered; cotype text fed python stdin) — caught
+by the SyntaxError, nothing executed, clean retry with sequential
+statements.
