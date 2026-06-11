@@ -143,7 +143,7 @@ probability slice, and the codec/operation degradations.
 
 **LOC — The classical section** (Lemma 2.6, §5.8b). The inverse-locked locus (u, −u) is exactly c ≡ 0: the balance channel embedded in the pair; classical logic with the purchased axis off.
 
-*Refinement verdict: PERSISTS under every basis refinement tried — candidate-intrinsic; the facets co-break in all probed models. A ∀-over-bases claim: refutable, never provable (open-by-design).*
+*Refinement verdict (v3, exhaustive over 1536 models): TRUTH-INTRINSIC — zero separators of any kind across the full space; co-movement 1.00. Closure-under-break (taxonomy class 3): every perturbation breaks the loop coherently. Break 3 adds kind-structure within the co-movement (noisy lock: LOC=U, L26=F). A ∀-over-declared-bases claim: refutable, never provable (open-by-design).*
 
 
 *Perspective visibility — L26:*
@@ -200,7 +200,7 @@ probability slice, and the codec/operation degradations.
 
 **PUR — The differential purchase** (§5.7). Encoding one channel over two pins gains the conflict/ignorance axis: d carries the balance, c is the purchased mass axis.
 
-*Refinement verdict: PERSISTS under every basis refinement tried — candidate-intrinsic; the facets co-break in all probed models. A ∀-over-bases claim: refutable, never provable (open-by-design).*
+*Refinement verdict (v3, exhaustive over 1536 models): EXPRESSIBILITY-INTRINSIC — zero separators, co-movement 1.00, but PRO is never F anywhere in the space: it is a theorem, truth-stable wherever statable. The circle is mutual constitution at the statability level, one-way at the truth level: pinning falsifies the purchase and de-states the theorem — the theorem outlives the purchase as a truth but loses its subject. Refines the draft-16 'intrinsic' verdict (Break 3's discovery). ∀-over-declared-bases; open-by-design.*
 
 
 *Perspective visibility — PRO:*

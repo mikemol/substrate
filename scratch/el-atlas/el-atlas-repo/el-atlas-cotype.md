@@ -952,3 +952,50 @@ remain monotonic IN-document (RETRACTED markers), with git supplying the BETWEEN
 history. The cotype stays the semantic provenance log; git is its mechanical complement
 (the cotype says WHY, the diff says WHAT). This entry is itself the second commit —
 the loop demonstrated.
+
+## DEPSORT v3: THE FOUR COUNTER-BREAKS (external review; rigorization applied)
+**Trigger:** external review proposing (i) a three-way circularity taxonomy —
+jointly-inhabited (constitutive, fine) / self-certifying (vicious: no intervention
+reaches ground) / closure-under-break (strongest: the loop breaks coherently under
+external perturbation) — and (ii) four counter-breaks. All four implemented
+(tools/el-atlas-depsort-v3.py; run transcript tools/depsort_v3_run.txt). Reviewer's
+refined principle ADOPTED as the instrument's standard: "coherent circularity that
+survives independent intervention is evidence of intrinsic structure."
+
+**Break 1 (randomized breaks):** lock generalized to 8 variants {available, unavailable,
+wrong, clipped, affine, noisy, partial, forced}. {LOC,L26} persists across all.
+
+**Break 2 (orthogonal interventions):** knob-sensitivity audit — every claim moves only
+under its own mechanism's knobs (e.g. LOC/L26: [lock,pins]; D4C: [neg,ops,pins]). D4C
+survives ident=F, adj=F, pins=3: STRUCTURALLY LOCALIZED. No suspiciously-aligned-probe
+artifact found.
+
+**Break 3 (P/F/U/V — the verdict-changer):** U = observable-but-undecided split from
+V = not-statable; U creates NO dependence edges. Two dependence semantics: TRUTH (F
+only) vs EXPRESSIBILITY (F or V). RESULT: **{PUR,PRO} REFINES from 'intrinsic' to
+EXPRESSIBILITY-INTRINSIC** — PRO is never F in any of 1536 models (a theorem: pinning's
+conflation is arithmetic; interventions de-state it, cannot falsify it). The circle is
+mutual constitution at statability level, ONE-WAY at truth level: the theorem outlives
+the purchase as a truth but loses its subject. Old P/F/V would never have seen this.
+Direct exhibit: noisy lock → LOC=U, L26=F (same-direction movement, different kinds —
+co-movement has internal kind-structure now).
+
+**Break 4 (adversarial/meta):** the declared knob space is small enough to ENUMERATE
+(1536 models) — adversarial search made total. {LOC,L26}: 0 separators of any kind,
+co-movement 1152/1152 = 1.00 → **TRUTH-INTRINSIC, taxonomy class 3 (closure-under-
+break)**. {BAL,CDC}: 384 truth-separators, co-movement 0.67 (v2 split confirmed
+adversarially-completely).
+
+**Self-certification audit:** no claim is P-everywhere; none vicious. PRO's never-F is
+theoremhood, not viciousness (interventions reach it — through statability).
+
+**LOAD-BEARING CAVEAT (logged before anyone catches it):** v3 reports {CRS,NOE} with 0
+separators — but v2's basis_def knob (singular crossbar), which DID separate them, is
+not in v3's knob space. "Exhaustive" = exhaustive over the DECLARED space; persistence
+is ∀-over-declared-bases, and every verdict must carry its space index. The instrument's
+own verdicts are construction-relative — the session's master lesson, now applied to
+the session's own tooling. Next-work: union the v2 and v3 knob spaces.
+
+**Structured edition:** the two intrinsic-circle annotations updated (truth-intrinsic
+vs expressibility-intrinsic, with the v3 evidence inline). Full regeneration with the
+generator-saved-as-tool remains queued next-work.
