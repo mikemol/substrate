@@ -1564,3 +1564,29 @@ the author's actual import relations. FRONTIER: fetch System Pi v2.22
 (two cited Drive IDs); author-voice OCAL definition; merged_ontology Thm
 9.1 (GCX gate); Toulmin now doubly indexed (N-series + F_Crucible).
 NO spec import (v3.3 lesson holds).
+
+## S3: OCCLUDED-PROVENANCE RULE ADOPTED; S2 "APSP RESOLVED" CORRECTED
+Author correction (verbatim principle): "The system will sort out what's
+distinct from what on what basis; we don't have to assert that one thing
+is not another without letting the system independently prove it."
+CORRECTION to S2 (append-only): the "APSP oscillation RESOLVED" verdict
+overclaimed. It settled a LEXICAL fact (which expansion one correction
+event used) and promoted it to a REFERENT-identity ruling, demoting the
+other expansion to "back-formation." Under occluded provenance —
+virtually all author usages of APSP name ONE growing synthesis — the
+expansions are plural valid readings of one referent. Same for ASPF
+(related to SPPF): the S1/R2 "reviewer's expansion wrong" ruling is
+RETRACTED to "differs from the glossary's; plural readings, one
+referent presumed." Diagnosis in house terms: S2 separated at
+probe='mention' — the exact move the instrument's own IDC claim
+machine-found impossible (mention probes cannot separate). The rule is
+the corpus's own no-magic-strings / pattern_id-remediation principle
+turned on our triage practice.
+ADOPTED GOVERNANCE: referent identity for accreted names is adjudicated
+by structural separators only; default under occlusion = one referent,
+plural readings; distinctness EARNED, and symmetrically identity earned
+before any merge (hold, don't collapse — non-pruning).
+RETAINED CONTRAST: rail-label oscillations (cost/strength) remain
+ladder-law territory — orientation of a fixed algebra requires a
+DECLARED reading. Declaration for orientations; adjudication for
+referents. Sweep doc §5 rewritten, §8 added, §3 softened.

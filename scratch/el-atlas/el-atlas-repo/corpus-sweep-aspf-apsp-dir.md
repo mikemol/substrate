@@ -90,11 +90,11 @@ E3 claimed ASPF/SPPF/"content-addressed memory"/"parse forest" appear
 "NOWHERE in the corpus." That claim was true only of the EL-Atlas repo
 documents and FALSE of the corpus at large: ASPF is a named, load-bearing,
 white-papered framework of the author's (gabion), and the SPPF
-identification is explicit in the author's own paper. The reviewer's
-acronym *expansion* ("Abstract ... Parse Forest") was wrong — corpus says
-Algebraic Structural Prime Fingerprint — but the *connection* was not
-imported vocabulary; it was (by knowledge or convergence) the author's
-own. Consequence: the held-open adjacency "SPPF packed nodes =
+identification is explicit in the author's own paper. The reviewer's acronym *expansion* differs from the
+glossary's (Algebraic Structural Prime Fingerprint) — see §5/S3: under
+occluded provenance these are plural readings of one referent, and the
+*connection* was in any case not imported vocabulary; it was (by
+knowledge or convergence) the author's own. Consequence: the held-open adjacency "SPPF packed nodes =
 identity-collapse as storage discipline (IDC as content-address)" is
 upgraded from unattributed [C] to **corpus-witnessed [S-candidate]**: the
 gabion corpus already treats packed-node sharing as the identity
@@ -132,26 +132,40 @@ discipline of an interned carrier graph.
    that unified graph; DIR's constraint-as-negative-space is the
    realizability charter's shape (admissibility by what must not happen).
 
-## 5. Label oscillations (declare before any import)
+## 5. Names under occluded provenance (S3; supersedes "label oscillations")
 
-- **APSP**: RESOLVED at the source. The author's usage is the pathfinding
-  system (witness: a Drive doc titled "I point out again that APSP is a
-  pathfinding syste..." — the author correcting a model on exactly this).
-  "Adaptive Processing/Search Protocol" is a Gemini back-formation: the DIR
-  Books use the acronym unexpanded ("Inspired by the APSP framework..."),
-  and the synthesis doc reverse-engineered an expansion from context.
-  Author-attributed APSP content the Books import: the hierarchical
-  community model and the exploration/annealing optimization phases —
-  consistent with the conversation corpus's epochal freeze-and-reuse.
-- **OCAL**: UNRESOLVED in the author's voice. Three competing readings:
-  (a) "Object/Constraint Abstraction Layer" (synthesis doc 1); (b) the
-  Locale/Topos primitives — and synthesis doc 2 *admits* "OCAL" appears as
-  a substring of LocaleDef/LocalFieldDef/LocallyCompactGroupDef in the
-  System Pi specs (l-OCAL-e), i.e. possibly a reified substring; (c) the
-  Aug-2024 Drive doc TITLED "OCAL" contains the DIR Books and never defines
-  the term. The author-voice definition is the missing witness.
-- **ASPF**: reviewer's expansion wrong, corpus expansion canonical
-  (Algebraic Structural Prime Fingerprint).
+S3 correction (author-instructed): virtually all corpus usages of APSP
+refer to ONE general system; the synthesis grew until the acronym's
+provenance became occluded, and multiple expansions are now VALID
+READINGS of the same referent. The same holds for ASPF (related to
+SPPF). Expansions are mention-level data — handles, not identities. The
+S2 verdict "APSP RESOLVED / protocol-expansion = back-formation"
+OVERCLAIMED: it settled which expansion one correction event used and
+illegitimately promoted that to a referent-identity ruling. Under the
+house discipline that was an IDC violation — separating at
+probe='mention', which the instrument itself machine-found to be
+impossible. Distinctness between readings is adjudicated by structural
+separators, never asserted lexically.
+
+- **APSP**: one general system presumed; witnessed expansions include
+  All-Pairs Shortest Paths (the pathfinding correction event) and the
+  synthesis doc's Adaptive Processing/Search Protocol — both held as
+  readings of the one synthesis unless a structural separator is found.
+- **ASPF**: the glossary witnesses "Algebraic Structural Prime
+  Fingerprint"; the reviewer's parse-forest reading points at the same
+  SPPF-related object (the corpus itself makes ASPF an SPPF
+  packed-derivation label). "Wrong" RETRACTED — plural readings, one
+  referent presumed.
+- **OCAL**: plural candidate readings (abstraction-layer; the locale
+  primitives). The structural question is what the OCAL handle's
+  defining co-occurrence set looks like and whether it separates from
+  the locale cluster under structural probes — not what the letters
+  stood for.
+- **Contrast retained**: the Nedge cost/strength RAIL oscillation is a
+  different genus — orientation of a FIXED algebra, where a declared
+  reading IS required (ladder law). Reading-declaration applies to
+  orientations of one structure; structural adjudication applies to
+  referent identity under name accretion. Do not confuse the two.
 
 ## 6. Frontier
 
@@ -257,3 +271,22 @@ model; System Pi formalizes both).
 - merged_ontology Thm 9.1 proof read still pending (GCX gate).
 - Toulmin: F_Crucible maps the Crucible onto the Toulmin model — the
   unread Toulmin analysis is now doubly indexed (N-series + System Pi).
+
+
+## 8. S3: the occluded-provenance rule (author-instructed, adopted)
+
+"The system will sort out what's distinct from what on what basis; *we*
+don't have to assert that one thing is not another without letting the
+system independently prove it." Adopted as standing governance:
+referent-identity questions for accreted names (APSP, ASPF, OCAL, ...)
+are settled by structural separators — instrument claims, co-occurrence
+and participation probes — never by lexical expansion. This is IDC
+applied at the name level: expansions are probe='mention' data, and the
+machine-found result stands (mention probes cannot separate). It is
+also the corpus's own "no magic strings" / pattern_id-remediation
+principle, now pointed at our own triage practice. Default presumption
+under occlusion: ONE referent, plural readings; distinctness must be
+EARNED. Symmetrically, identity must also be earned before any merge
+that destroys a distinction — the presumption holds readings together
+without quotienting them (per the realizability gates: hold, don't
+collapse).
