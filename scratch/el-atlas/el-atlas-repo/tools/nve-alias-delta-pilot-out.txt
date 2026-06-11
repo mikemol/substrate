@@ -1,0 +1,4 @@
+A. n=2 alias witness: bridge-vs-balanced-ref == half normalized pack bias (2000 samples): True
+B. n=3 separation: masses 6.0==6.0; partition-1 readings -0.333333==-0.333333 (blind); partition-2 readings -0.166667 vs -0.083333 (sees): single binary bridge under-determines the pack: True
+C. tomography: mass + (n-1)=2 bridge readings reconstruct the 3-pack exactly (2000 samples): True
+VERDICT: alias at n=2 (one referent, layer-readings); separated at n>=3 by arity; reconciliation = bridge lattice, exactly n-1 readings + mass.

@@ -104,3 +104,33 @@ defined for boarding.
   alternative.
 - Subset-construction genealogy: is determinization-as-reification
   worth a spec overlay row (NFA→DFA, SPPF, carrier)? [C]
+
+## 5. S9 revision note — "superseded" over-executed; item 9 adjudicated as alias
+
+Author rule adopted: **a supersession event is an alias circumstance**
+until the delta is validated — the kill-verb may be an over-executed
+"in this context, this, not that." The S8 edit to item 9 was the case in
+point: an in-place rewrite plus the verb "superseded," while the
+replacement text itself asserted "the same answer one layer up." The
+textual delta survived only because git is append-only at the storage
+layer (15a6954..d221ef3); the semantic delta is now validated by pilot
+(tools/nve-alias-delta-pilot.py, 3/3):
+
+- **Alias at n=2** [W]: against the balanced reference, the bridge
+  reading of a case-pair equals half its L1-normalized internal bias,
+  exactly. The pack's storage-level bias read and the bridge's
+  measurement-level read are the same number — one referent, plural
+  layer-readings (the S3 shape, not supersession).
+- **Separated at n≥3** [W]: the delta is ARITY. Packs (1,2,3) and
+  (1,2.5,2.5) share mass and the partition-{1} reading; differ on
+  partition-{2}: one binary bridge under-determines an n-pack.
+- **Reconciliation** [W, advancing the open n-ary item]: pack tomography
+  = the mass channel + exactly (n−1) partition bridge readings —
+  necessity by the blindness witness, sufficiency by exact linear
+  reconstruction. The multi-arm answer is a bridge LATTICE.
+
+Both formulations of item 9 are therefore RETAINED as layer-readings of
+one referent at n=2, with the packed node strictly richer at n≥3 until
+the lattice is built. Future instrument work may formalize the pack
+checks and bridge checks as separate claims and let depsort confirm
+same-circle at pins=2 — the full-machinery version of this adjudication.

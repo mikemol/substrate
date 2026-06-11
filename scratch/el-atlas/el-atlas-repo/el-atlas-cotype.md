@@ -1738,3 +1738,31 @@ coeff/neg/ops), boards next run with GCX + SWP. nedge-decomposition §8
 written; theory-threads item 9 superseded in place; §6 residue:
 ∨E open → ANSWERED-PENDING-INSTRUMENT. Open inside the answer: n-ary
 case (multi-arm bridge) + the exact lift-coordinate statement.
+
+## S9: RULE — SUPERSESSION IS AN ALIAS CIRCUMSTANCE; ITEM-9 DELTA VALIDATED
+Author rule adopted, generalizing S3: when a formulation is recorded as
+"superseded," treat it as an ALIAS EVENT pending delta validation — the
+replacement may be a contextual disambiguation ("in this context, this,
+not that") that over-executed into a global kill. Kill-language is
+EARNED by a separating witness, exactly as distinctness and identity are
+earned under occluded provenance. Preference henceforth: supersession
+notes APPEND a layer-tag; avoid in-place rewrites of the displaced
+formulation (the S8 edit to theory-threads item 9 was the over-execution:
+in-place rewrite + kill-verb while the new text itself claimed "same
+answer, one layer up" — internal tension the rule resolves). The textual
+delta survived because git is append-only at the storage layer; noted as
+the storage-level instance of the same governance principle.
+DELTA VALIDATED (tools/nve-alias-delta-pilot.py, 3/3): (A) n=2 ALIAS
+WITNESS — bridge-against-balanced-reference = half the pack's
+L1-normalized internal bias, exactly, 2000 samples: storage-read and
+measurement-read are the same number; one referent, plural layer-readings.
+(B) n≥3 SEPARATION WITNESS — packs (1,2,3) vs (1,2.5,2.5): equal mass,
+equal partition-{1} reading, different partition-{2}: a single binary
+bridge under-determines an n-pack; the delta between F_pack and F_bridge
+is ARITY. (C) TOMOGRAPHY — mass + (n−1) partition readings reconstruct
+the pack exactly (linear inversion, 2000 samples): the n-ary multi-arm
+answer = a bridge LATTICE of exactly n−1 comparisons; necessity from B,
+sufficiency from C. theory-threads §5 appended (item 9 adjudicated:
+both formulations retained); nedge-decomposition §8 residue advanced.
+Future: formalize pack-checks and bridge-checks as separate instrument
+claims; depsort same-circle at pins=2 = the full-machinery adjudication.

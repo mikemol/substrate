@@ -279,3 +279,10 @@ spec import ride the next run per the v3.3 lesson). Still open inside the
 answer: the n-ary case (multi-arm bridge / Wheatstone lattice) and the
 ∨E transformation's exact statement in the lift coordinates (fraction
 pairs under split/join).
+
+**Residue advance (S9):** the n-ary open item now has its first concrete
+form: pack tomography = mass + exactly (n−1) partition bridge readings
+(necessity and sufficiency both pilot-witnessed,
+tools/nve-alias-delta-pilot.py) — the multi-arm bridge is a lattice of
+n−1 comparisons over the join. Remaining open: the lift-coordinate
+statement.
