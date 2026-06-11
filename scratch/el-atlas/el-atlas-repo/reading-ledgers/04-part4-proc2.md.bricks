@@ -116,3 +116,13 @@ B2 33-126 DONE
   COC-2 (dangling RationalDef, pending treatise scan). First non-trivial
   findings of the reading program; H1-type: locally consistent parts
   failing to glue to the global completeness claim.
+
+## REGRADE (S37, fiber-certificate honesty applied to the reading)
+Brick verification classes for this document: H1, H2 = PERFORMED READS
+(fresh window prints). Q1/M/Q4/A/B/A2/B2 = ASSERTED-FROM-HELD-CONTEXT
+(gluing claims over text in working context; no fresh window pass).
+Coverage executed: ~1x with one seam, not the designed ~4.5x. DONE
+status retained for capture bookkeeping; the PASS verdicts on non-H
+bricks carry this weaker certificate class. Exception note: proc1's M
+was examined as a seam unit and yielded a finding (1.1.1.gamma
+arrival), evidence the M-layer pays when performed.

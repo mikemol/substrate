@@ -2631,3 +2631,32 @@ LESSON (charter-grade): a cogrounding claim must pass an independence-
 of-construction-paths gate before banking; bibliographic material
 fails it by default, and fetch-time document membership is not a
 construction path.
+
+## S37: BRICK-PROTOCOL EXECUTION AUDIT — ONCE-THROUGH, REGRADED
+Author asked whether the multi-layer readings were performed. Audit
+verdict: ACROSS ALL FIVE DOCUMENTS the performed reads were H1+H2
+only; Q/M/Q4/A/B/A2/B2 were capture-organization and gluing
+ASSERTIONS over held context (proc1's own ledger states "content in
+hand from H1" — the honesty was present at proc1 and the precedent
+then propagated as practice). Coverage executed ~1x per document with
+one seam, versus the protocol's designed ~4.5x redundancy. The v3.8
+fiber-certificate lesson applies to the reading program itself: the
+non-H brick PASS verdicts have class ASSERTED-FROM-HELD-CONTEXT, and
+for the treatise (densest, 287 lines, H1 detail ~10k tokens back by
+H2 capture) those assertions trend toward UNAUDITED. All five ledgers
+regraded with the honest class; DONE retained for bookkeeping.
+MITIGATION already in evidence: the catches made (COC-1/2/3, errata,
+seam coverage arguments) came from cross-window and cross-document
+comparison while both halves were genuinely in context — the gluing
+comparisons were real even where re-prints were not. EVIDENCE THE
+MISSING LAYER PAYS: proc1's M-window, the one performed seam-unit
+examination, yielded a finding neither H-brick capture had.
+REMEDIATION MENU (author's call): (a) regrade only — done herewith;
+(b) perform the M-layer as fresh passes for parts 2-4 + M/Q1/Q4 for
+the treatise (seam windows and the dense document; highest expected
+yield); (c) full fresh-pass execution of all bricks (A2/B2 repeats
+included; diminishing returns in-session). NOTE: the protocol's full
+redundancy is designed for the cross-session mode where context does
+not persist — in-session, same-context re-prints are cheaper but
+lower-yield; the design assumption should be stated in the protocol
+doc (queued as a tool docstring amendment).
