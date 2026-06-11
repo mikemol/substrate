@@ -1653,3 +1653,39 @@ carries it. Hooks (held, unadjudicated): terminal truth as LOCAL SECTION
 of the grammar" (ASPF); Lemma_TheKnot (Nedge-Quine); RootHash content-
 addressing (IDC). RootHash is a symbolic seal string, not a computed
 digest — noted, not corrected (the artifact is preserved as-is).
+
+## S6: CORRECTION TO THE v2.37.1 ASSESSMENT (author-corrected); A PRINCIPLE
+## SHARPENED
+My conversational assessment of v2.37.1 (not previously committed) used
+the associativity Proof body as its "wrong on its face" exhibit, reading
+"the Earley Parser is deterministic" in the grammar-class sense (LR/DCFL)
+and calling it backwards. AUTHOR CORRECTION accepted: the parser is a
+deterministic ALGORITHM — nondeterministic/ambiguous input, deterministic
+result object — and the SPPF preserves the ambiguity rather than
+resolving it: "ambiguity recognized is deterministic." Under the
+document's own declared semantics (Asemantic Materialism +
+Lemma_TerminalBedrock: morphism equality = terminal-yield equality), the
+associativity argument is enthymematic, not vacuous: yields concatenate
+associatively, the deterministic chart makes the yield map well-defined,
+and the SPPF packed node IS the equality witness for the two
+parenthesizations — i.e. the AspfTwoCellWitness mechanism, present in
+v2.37.1 in embryo. My error repeated the violation I was prosecuting:
+adjudicating under an external reading instead of the declared one
+(ladder-law breach), and blanket-grading the Proof bodies instead of
+adjudicating individually (the S3 lesson in another costume). REVISED
+GRADE: "the proofs are not proofs" softens to "the Proof bodies are
+enthymematic against premises established elsewhere in the distribution;
+each requires individual adjudication; some remain assertion-shaped
+(ZeroElision vs the Part-1 placeholder; the symbolic RootHash; the
+truth/grammaticality reading oscillation and the Goedel tension stand on
+their own witnesses)."
+PRINCIPLE INTERNED (author-voice, this session): "the parser takes
+nondeterministic input and produces a deterministic result; stuffing that
+result in an SPPF preserves the ambiguity — ambiguity recognized is
+deterministic." This upgrades the SPPF<->carrier adjacency from
+vocabulary-level to DESIGN-PRINCIPLE-level: the SPPF is the pre-quotient
+of the parse — a deterministic representation OF nondeterminism in place
+of a forced disambiguation. carrier : probability :: SPPF : pruned parse
+tree. Remark 3.6's clause verbatim: when an operation would lose
+information, do not perform it; encode it. Candidate for the overlay
+appendix when it next boards a run.
