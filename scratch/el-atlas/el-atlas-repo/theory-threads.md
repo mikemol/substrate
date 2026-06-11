@@ -454,3 +454,50 @@ category error about bounded witnesses; the correction schedule (S6, S9,
 R-V35) is a convergent sequence: alternating, best-at-budget, error
 bounded by the next stage. Exhausted-from-inside = the current
 convergent, never the limit.
+
+## 13. S20 — one machine, three theorems: Euclid extended, Bézout, CRT
+
+Pilot tools/euclid-bezout-crt-pilot.py, 5/5, exact integers. The S19
+continued-fraction material and the user's three names are a single
+machine viewed at three stations:
+
+1. **The quotient stream is the encoding** [W]: Euclid's quotients ARE
+   the CF partial quotients, and folding them back through the
+   convergent recurrence returns the reduced pair exactly — a lossless
+   codec between a pair and a stream of integers.
+2. **Bézout is the determinant — S19's Pell ±1 was Bézout all along**
+   [W]: the extended algorithm's certificate u·a + v·b = g is the
+   convergent-pair determinant. The "invariant the quotient cannot see"
+   is the COPRIMALITY WITNESS: the pair carries its own certificate.
+3. **Extended vs plain Euclid = witness-carrying vs verdict-only
+   computation** [S — the mapping is structurally tight]: plain gcd
+   returns a verdict; extended returns the verdict plus a certificate
+   that verifies in ONE multiply-add, independent of the computation
+   that produced it (1000 pairs at 10⁵⁰ scale). Lineage in the corpus:
+   AspfTwoCellWitness; v2.37.1's Proof-Carrying Authorization; the
+   harness printing witness mutations with every separation.
+4. **CRT is split/join at the ring level, under a coprimality guard**
+   [W]: Bézout coefficients BUILD the orthogonal idempotents
+   (e₁+e₂ = 1, e₁e₂ = 0 — a discrete resolution of identity);
+   encode/decode round-trips exhaustively and per-pin arithmetic joins
+   to the direct product — independent residue pins, the carrier's
+   two-accumulator shape as arithmetic. The JOIN REQUIRES THE WITNESS:
+   no Bézout, no idempotents, no reconstruction. Guard witnessed both
+   ways for gcd ≠ 1: a collision (1 ≡ 13 across (mod 6, mod 4)) and an
+   unreachable pair ((0 mod 6, 1 mod 4)) — the shared factor is
+   cross-talk; the channels must AGREE on it. The arithmetic instance
+   of the S13 boundary: the product decomposition is valid exactly
+   where the channels are independent.
+5. **Rational reconstruction closes the codec** [W]: from the modular
+   shadow x = p·q⁻¹ mod M, the half-extended algorithm recovers the
+   formal-quotient pair (p, q) EXACTLY (200 trials, M = 2⁶¹−1) — the
+   quotient shadow, lifted, by Euclid himself. Multi-modular computer
+   algebra is this loop as industrial practice: compute in pinned
+   shadows (mod p), CRT-join, reconstruct the pair — the atlas program
+   (work on the carrier; let shadows be shadows; keep the corrections
+   recoverable) running in production for decades.
+
+Held [C]: convergent matrices generate SL₂(ℤ) — adjacency to the
+Möbius/deck-transformation material of §5.9 (the swap as deck map);
+whether the doubling interface's cocycle question meets the modular
+group is a corpus question, not asserted.

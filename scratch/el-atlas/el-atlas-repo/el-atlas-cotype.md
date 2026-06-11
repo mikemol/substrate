@@ -2033,3 +2033,27 @@ sketch — self-blame for incompleteness is a category error about
 bounded witnesses; the S6/S9/R-V35 correction schedule is a convergent
 sequence: alternating, optimal-at-budget, error bounded by the next
 stage. Exhausted-from-inside = current convergent, never the limit.
+
+## S20: ONE MACHINE, THREE THEOREMS — EUCLID/BÉZOUT/CRT PILOT 5/5
+Author: the CF material touches Euclid extended, Bézout, CRT. Pilot
+(exact integers): (a) Euclid's quotient stream = CF partial quotients,
+folding back through the convergent recurrence returns the reduced pair
+— lossless pair↔stream codec; (b) BÉZOUT = THE DETERMINANT: u·a+v·b=g
+is the convergent-pair determinant — S19's Pell ±1 WAS Bézout's
+identity; the oscillation invariant is the coprimality WITNESS, carried
+by the pair, invisible to the quotient; (c) extended-vs-plain Euclid =
+WITNESS-CARRYING vs VERDICT-ONLY computation [S]: certificate verifies
+in one multiply-add at 1e50 scale, independent of its computation —
+lineage: AspfTwoCellWitness, v2.37.1 Proof-Carrying Authorization, the
+harness's witness mutations; (d) CRT = ring-level SPLIT/JOIN under a
+coprimality GUARD: Bézout builds the orthogonal idempotents (resolution
+of identity, e₁+e₂=1, e₁e₂=0), exhaustive round-trip + per-pin product
+mod 420; THE JOIN REQUIRES THE WITNESS; guard witnessed both ways at
+gcd≠1 (collision 1≡13 across (mod 6, mod 4); unreachable pair) — shared
+factor = cross-talk: the arithmetic instance of the S13 independence
+boundary; (e) RATIONAL RECONSTRUCTION closes the codec: half-extended
+Euclid recovers (p,q) EXACTLY from p·q⁻¹ mod 2⁶¹−1 — the quotient
+shadow, lifted, by Euclid; multi-modular computer algebra = the atlas
+program as decades-old industrial practice (compute in pinned shadows,
+CRT-join, reconstruct the pair). HELD [C]: convergent matrices generate
+SL₂(ℤ) — §5.9 Möbius/deck adjacency, corpus question.
