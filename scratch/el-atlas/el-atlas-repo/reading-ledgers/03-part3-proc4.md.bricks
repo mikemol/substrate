@@ -3,7 +3,7 @@
 H1 1-66 DONE
 H2 67-132 DONE
 Q1 1-33 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-M 34-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 34-99 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 100-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 34-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -141,3 +141,22 @@ arrival), evidence the M-layer pays when performed.
 ## window-passes. In-context recall is not a certificate. M-layer
 ## (seam windows) now being re-executed as fresh prints with capture
 ## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 34-99, seam 66|67) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): section-III header + body whole
+  in M. PASS, earned.
+- NEW SYNTHESIS (the M-window adjacency catch — invisible to H1/H2
+  separately): Phase-3 ControlSystem "prunes divergent parse-paths";
+  Phase-3.5 Governor prunes harm-branches; and 2.3 defines ethical as
+  QuiescenceProof-preserving. Identification: THE GOVERNOR IS A
+  CONTROLLER WHOSE LYAPUNOV FUNCTION IS THE QUIESCENCEPROOF — ethics =
+  control with L = distance-from-quiescence. One pruning mechanism,
+  two typings (stability/ethics). This is exactly what the seam brick
+  exists to see: the two blocks lived in different half-windows.
+- RECOVERED (dropped from the H2 held-context capture): 2.3.2
+  Integrity-Driven Governance — "preservation of the TerminalBedrock
+  over transient state-space gains." A concrete recall-loss instance:
+  the held-context capture silently dropped a list item.
+- VERDICT: fresh pass yielded 1 structural synthesis + 1 recovered
+  drop. Lossy-window hypothesis confirmed again, now with a dropped-
+  item exhibit.
