@@ -2,9 +2,9 @@
 # states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
 H1 1-66 DONE
 H2 67-132 DONE
-Q1 1-33 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q1 1-33 DONE-FRESH 2026-06-11 (zero-yield; diff below)
 M 34-99 DONE-FRESH 2026-06-11 (re-executed; diff below)
-Q4 100-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+Q4 100-132 DONE-FRESH 2026-06-11 (diff below)
 A 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B 34-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 A2 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
@@ -160,3 +160,24 @@ arrival), evidence the M-layer pays when performed.
 - VERDICT: fresh pass yielded 1 structural synthesis + 1 recovered
   drop. Lossy-window hypothesis confirmed again, now with a dropped-
   item exhibit.
+
+## Q1 fresh-pass capture-diff (lines 1-33) — 2026-06-11
+- ZERO-YIELD, reported honestly: the H1 capture of Stability L1/L2 was
+  complete; fresh pass confirms with no new items. Confirmation is a
+  valid protocol result — uniform per-pass "findings" would indicate
+  yield-inflation bias.
+## Q4 fresh-pass capture-diff (lines 100-132) — 2026-06-11
+- NEW — THE METHOD SPLIT AT THE WORLD BOUNDARY: WorldModelFunctorDef's
+  Integrity proof uses Method('Functorial_Integrity_Check') — the ONLY
+  proof in the entire read corpus not using
+  Method('TopologicalTruthEvaluator'). It occurs exactly at the world
+  boundary: the one proof comparing internal terminals against
+  EXTERNAL observations, which the internal evaluator cannot perform
+  inside the Closed World. The method split marks where the CWA meets
+  its limit — boundary integrity requires a different checker.
+- DANGLING-DEFINITION CANDIDATE (COC-5): Functorial_Integrity_Check is
+  invoked once and DEFINED NOWHERE in parts 1-4 or the treatise.
+  Pre-register for the v2.22 read. If undefined there too, it joins
+  RationalDef as a second Gap — and by Table-1 mechanics, a second
+  boot-halt site.
+- VERDICT: 1 zero-yield + 1 significant catch + 1 new candidate.

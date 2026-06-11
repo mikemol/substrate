@@ -1,5 +1,8 @@
 #!/bin/sh
-# EL-Atlas post-commit hook (tracked: tools/githooks/, core.hooksPath).
+# EL-Atlas post-commit hook. CANONICAL TRACKED COPY: tools/githooks/post-commit.
+# INSTALL: cp tools/githooks/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
+# (hooksPath was tried; the mount dropped the exec bit on tracked files, so the
+#  hook executes from .git/hooks and persists IN GIT via the tracked canonical copy.)
 # v2 (S39): MEMOIZED. The old hook ran unconditional `git gc` — a full
 # repack of the whole object store on EVERY commit, cost growing with
 # history, no on-disk persistence of prior packing work; on a stalling
