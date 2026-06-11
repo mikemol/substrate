@@ -35,6 +35,20 @@ proposed tests. Nothing else is asserted.
 
 ---
 
+
+**Remark 0.x (the indexed-verdict discipline is a truth-definition
+discipline).** Every verdict in this document is indexed to a declared
+space ("unseparated-in-S_…"; ∀-over-declared-spaces; never closes). This
+is Convention-T-shaped practice: a truth predicate is only ever defined
+relative to a named metalanguage, and the harness's space manifest IS
+that metalanguage, declared rather than presupposed. The scrutiny strata
+(knob values → knob set → test semantics → claim formalization) form the
+object/meta tower; "no unindexed verdicts" is Tarskian relativization
+adopted as policy. The deflationary boundary is respected in both
+directions: verdicts are decidable because they are syntactic facts
+about declared spaces, and nothing in this document claims a truth
+predicate for the language it is itself written in. (theory-threads §1;
+instrument provenance in the run headers.) **[S]**
 ## 1. The carrier: two independent accumulators
 
 **Definition 1.1 (evidence increments and totals).** Distinguish two types:

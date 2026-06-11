@@ -2057,3 +2057,30 @@ shadow, lifted, by Euclid; multi-modular computer algebra = the atlas
 program as decades-old industrial practice (compute in pinned shadows,
 CRT-join, reconstruct the pair). HELD [C]: convergent matrices generate
 SL₂(ℤ) — §5.9 Möbius/deck adjacency, corpus question.
+
+## S21: QUEUE FLUSH — T2 DISCHARGED; ∨E LIFT-COORDINATES CLOSED; TARSKI
+## REMARK IMPORTED
+T2 ({RAD,ZDG} witness-structure breaker, standing across three spaces):
+DISCHARGED with a strata-indexed verdict — unseparated-in-truth (the
+co-movement is a theorem), SEPARATED-AT-WITNESS-STRATUM: ZD pairs ⊊
+norm-failure pairs at dim 16; exhibits (e₁+e₁₀)(e₄−e₁₅)=0 (brute-found)
+vs an 11.1%-deviation pair with xy≠0; octonion sanity 200/200. The
+frontier's own prediction (openness at the TEST-FORMALIZATION stratum)
+confirmed; discharge = exhibit, not knob. RDW/ZDW definable; NOT
+boarded tonight (v3.6 queue). ∨E LIFT-COORDINATE STATEMENT closed
+(last S8 residue): join = fraction-⊕ on pairs (lifts: cl(P⊕Q)=
+cl(P)+cl(Q)); split = point of the join's fiber (section freedom = the
+purchased axis); bridge reading = strictly monotone injective COMPLETE
+coordinate on the binary fiber, factoring through cl per case (the
+algebraic form of "the bridge is shadow-level"); n-ary chart = S9
+tomography. TARSKI REMARK imported to §0 (composer +16/−0… per diffstat
+below): indexed verdicts = Convention-T practice; the manifest is the
+declared metalanguage; strata = the object/meta tower; deflationary
+boundary respected both directions. QUEUE STATE after flush — DEFERRED
+WITH REASONS: System Π v2.22 read (115KB, fresh context); ASPF
+oversized docs + three APSP folders; Nedge folders (Philosophical
+Extensions, v3.1 Historical, DREN) + Toulmin; christening pagination;
+v3.6 boarding (RDW/ZDW + complex-reading declaration + SWP
+ordered/order-free split); OB-12 ∃-search (T4); T5 glaze test
+(on-demand); dep-tuple instrumentation + stance audit (R-V35 G8
+handoff); OB-3/OB-11/tetrad/GRC; SL₂(ℤ)/deck adjacency.

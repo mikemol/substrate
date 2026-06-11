@@ -501,3 +501,33 @@ Held [C]: convergent matrices generate SL₂(ℤ) — adjacency to the
 Möbius/deck-transformation material of §5.9 (the swap as deck map);
 whether the doubling interface's cocycle question meets the modular
 group is a corpus question, not asserted.
+
+## 14. S21 — queue flush: T2 discharged; the ∨E lift-coordinate statement
+
+**T2 ({RAD, ZDG}) discharged with a strata-indexed verdict** [W,
+tools/radzdg-witness-pilot.py]: the pair remains unseparated IN TRUTH
+(the Hurwitz ⟺ no-ZD co-movement is a theorem; three spaces agree) but
+is **SEPARATED AT THE WITNESS STRATUM**: at dim 16, zero-divisor pairs
+are a STRICT subset of norm-failure pairs — exhibit (e₁+e₁₀)(e₄−e₁₅) = 0
+(a ZD, hence a norm-failure witness with N(xy) = 0), against a random
+pair with an 11.1% norm deviation and xy ≠ 0 (norm failure WITHOUT zero
+division); octonion sanity holds (200 pairs multiplicative). The
+frontier entry's own prediction is confirmed: the residual openness
+lived at the test-formalization stratum, and the discharge is an
+exhibit there, not a knob. The pair is not a witness-alias; the
+co-movement is real. Candidate claims RDW/ZDW (witness-structure
+claims) definable for a future boarding; not boarded tonight.
+
+**The ∨E lift-coordinate statement — the last residue inside the S8
+answer — closed** [W, tools/nve-lift-coords-pilot.py]: in lift
+coordinates, ∨E's JOIN is fraction-⊕ on formal-quotient pairs (it
+closes: cl(P⊕Q) = cl(P)+cl(Q)); the SPLIT is a point of the join's
+FIBER — the section freedom IS the purchased axis; and the
+high-impedance bridge reading is a strictly monotone, injective, hence
+COMPLETE coordinate on the binary fiber (one reading + the join
+determines the split), computed entirely through cl per case
+(per-case rescaling invariance: pairs (6,2),(14,2) read identically to
+(3,1),(7,1)) — the algebraic form of S8's physical finding that the
+bridge is a shadow-level instrument. Join on pairs; split in the
+fiber; bridge coordinatizes the fiber through the shadows. The n-ary
+extension (S9): n−1 partition readings + mass = the full fiber chart.
