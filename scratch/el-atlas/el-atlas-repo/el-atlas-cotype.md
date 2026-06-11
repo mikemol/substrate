@@ -1173,3 +1173,33 @@ only; no import claim.
 (e) tetrahedron-algebra + Hodge-star citations into Thm 5.4 / §11.4 [S];
 (f) CD↔GF(2) addressing bridge into §13.2/§11.10 [C];
 (g) BK4VL lineage note in Appendix B [S].
+
+## CORRECTION (user): "Not technically Cayley–Dickson; binary-tree with a conjugation
+## operator. Cayley–Dickson is only the most famous example."
+Interface-over-instance, applied to H3/H4 (the user's master pattern, new instance —
+refuse the famous name, name the structure, demote the famous case to a pinning).
+THE GENERAL OBJECT: a binary tree of doublings (A, σ) ↦ (A², σ′) with a conjugation
+operator at each level; the level conjugation's eigenspaces are the modes (d, c); the
+composition rule is twisted by a per-level cochain. PINNINGS: cocycle = 0 → the
+untwisted tree = the Walsh/Hadamard/RM doubling layer (group algebra of (Z/2)ⁿ; the
+characters ARE the Walsh functions); cocycle = CD's sign-twist → the ℝ→ℂ→ℍ→𝕆 tower
+with its per-level property sacrifices; the twist class at a level = THE PHASE at that
+level (at n=2 the cocycle classes are exactly the central extensions of V₄ — D₄/Q₈,
+the draft-13 story; the purchase recursion of §5.7 is the interface itself).
+
+**Pilot [W]:** over GF(2) the CD twist DIES — conjugation trivializes (−b=b) and CD
+multiplication at dims 2/4/8/16 is bit-identical to XOR-indexed convolution =
+GF(2)[(Z/2)ⁿ], commutative AND associative even at octonion/sedenion levels (200
+random triples per dim). So H4's doc isn't a bridge BETWEEN two towers; it is the
+proof they are ONE TREE differing only in a cocycle that char 2 cannot see — which
+mechanically explains its "cross-terms vanish, norm = XOR-sum." (Adjacent rhyme,
+graded [C], NOT identity: "GF(2) can't see the twist" and "the classical section
+can't see phase" are different invisibility mechanisms — coefficient char vs
+section degeneracy — filed as rhyme pending a real comparison.)
+
+**Import candidate (f) REVISED:** not "CD↔GF(2) bridge" but "the binary-tree-with-
+conjugation interface, cocycle-parameterized; Walsh layer = untwisted pinning, CD =
+sign-twisted pinning, per-level twist = phase" → unifies §5.7 recursion, §13.2 tree,
+§5.8c phase, draft-13 extensions under one type. H3's "Cayley–Dickson step" entries
+re-read accordingly (the consolidation's own C6 caution — "Cayley–Dickson-LIKE
+hyper-tower" — already pointed at the interface, not the instance).
