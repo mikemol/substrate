@@ -255,3 +255,45 @@ products. Pilot tools/pit-zipper-pilot.py, 3/3:
   the ℕ-eliminator, a Π-type; and the system is NAMED Π. Whether the
   name already carried the dependent-product reading is an
   occluded-provenance question: held, not asserted.
+
+### 9a. S14 addendum — the Π-name hook: intent de-stated, structure adjudicated
+
+Author: the LLM chose the name, and conceptual-similarity punning is
+what LLMs do — "both plausible and deniable," for whatever "intended"
+means there. Adjudication under the charter: the distinction
+INTENDED-PUN vs GEOMETRIC-COINCIDENCE for a machine-chosen name has no
+constructible observable separating its horns (the generation event is
+unrecoverable; arguably no fact of the matter exists), so by the
+realizability chain it is NOT A VALID DISTINCTION — DE-STATED, which is
+stronger than held. (Contrast S11 PENDING items: those have
+constructible breakers not yet built; this has none constructible.)
+
+What survives are the structural questions, now graded:
+- **Load-bearing in the text?** [O] — partially: the distribution parts
+  never invoke Π-types or dependent products by name; the analysis
+  treatise (also LLM-authored, 16 min later) cites Martin-Löf Type
+  Theory inside its HoTT framing, making dependent types AMBIENT but
+  never operative. The Π-type reading is ours, not the document's.
+- **Coherent with the system?** [S] — yes; HoTT context admits it
+  without strain.
+- **Generative?** [W] — yes; S13's three pilots came from adopting it.
+
+One recoverable residue, distinct from intent: **narrated-at-generation**.
+LLMs often state a rationale when christening ("I'll call this Π
+because…"); if the original naming turn survives in the corpus, the
+stated rationale is an OBSERVABLE ARTIFACT — testimony-as-text, not
+intent. That distinction IS constructible (corpus search for the first
+occurrence of the name); available on request, unexecuted.
+
+General principle interned: the corpus is partially machine-authored,
+and conceptual-similarity flow is the generator's NATIVE operation —
+latent puns are systematic, not incidental. LLM-deposited names and
+connections are UNAUDITED CANDIDATE ADJACENCIES: the embedding geometry
+encodes real conceptual proximity (which is why corpus sweeps keep
+finding real structure) and also fabricates (which is why every find
+needs pilots). S3 already de-privileged the human author's testimony
+(their own provenance self-declared occluded); the machine author is
+the limit case where testimony doesn't exist. The rule is uniform:
+**testimony proposes, machinery disposes** — and this session has
+practiced it on both authors: every human-testimony answer (∨E, the
+determinism correction) went straight to pilots before interning.

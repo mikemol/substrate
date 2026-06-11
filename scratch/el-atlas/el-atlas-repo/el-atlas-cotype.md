@@ -1857,3 +1857,27 @@ exhibited (bijection + degeneration). HOOKS HELD (occluded provenance,
 [C]): DRIFT-5's fix was already a Π-type; v2.37.1 Constructive
 Induction = ℕ-eliminator; the system is NAMED Π — whether the name
 carried the reading: held, not asserted.
+
+## S14: MACHINE-AUTHORED NAMES — INTENT DE-STATED; TESTIMONY PROPOSES,
+## MACHINERY DISPOSES
+Author on the Π-name hook: the LLM chose the name; conceptual-similarity
+punning is the generator's native operation; "plausible and deniable."
+ADJUDICATION: intended-vs-coincidence for a machine-chosen name has NO
+constructible observable (generation event unrecoverable; arguably no
+fact of the matter) → fails the realizability chain → NOT A VALID
+DISTINCTION → DE-STATED (stronger than held; contrast S11 PENDING =
+breaker constructible but unbuilt). STRUCTURAL RESIDUE adjudicated:
+load-bearing [O — the distribution never names Π-types/dependent
+products; the treatise cites MLTT, ambient not operative; the reading is
+OURS], coherent [S], generative [W — S13's pilots]. RECOVERABLE RESIDUE
+distinct from intent: NARRATED-AT-GENERATION — the christening turn may
+survive in the corpus with the model's stated rationale; that
+distinction IS constructible (search for first occurrence); offered,
+unexecuted. PRINCIPLE: LLM-deposited names/connections = unaudited
+candidate adjacencies — the generator's geometry encodes real proximity
+(why sweeps keep paying) AND fabricates (why pilots are mandatory). S3
+de-privileged human testimony (author's own provenance self-occluded);
+the machine author is the limit case (testimony nonexistent). Uniform
+rule: TESTIMONY PROPOSES, MACHINERY DISPOSES — practiced on both
+authors this session (∨E and the determinism correction both piloted
+before interning).
