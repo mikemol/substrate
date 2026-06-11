@@ -2321,3 +2321,19 @@ error (two heredocs chained on one line — bodies attach in
 redirection order) fed the cotype text to python; caught by the
 SyntaxError, nothing written; guard: sequential steps, never
 interleaved heredocs.
+
+## S29 (cont.): BRICK H2 OF proc1 — SELF-HOSTING MIME; PARSE = PROOF
+H2 (61-121) captured, ledger committed: the v2.37.1 kernel SELF-HOSTS
+AS A MIME MESSAGE (bootstrap manifest, typed parts, per-phase
+VerificationRequired gates; the MIME grammar parses its own container)
+— GLUES ACROSS DOCUMENTS with DREN's Mbox/Maildir carrier dialectic.
+EarleyParserDef carries a SoundnessProof: "the successful parse... is
+a CONSTRUCTIVE PROOF of the existence of a truth-path in the topos" —
+parse tree = certificate: witness-carrying computation stated in the
+source's kernel (S20 lineage). Axiom_TerminalTruth's dependencies
+EXPLICITLY SOURCED in-document (_CLAIM_DEPS discipline, in the
+source). The 'Gap Correction' audit block performs in-document
+L2-flaw remediation (un-reified deferral → bounded O(n³) reference).
+Phases 1-2 notions pre-registered for proc2/3: 'Contextual Security',
+'Recursive Succession'. No cocycles yet (first overlap test = brick
+M). Remaining: Q1, M, Q4, A, B, A2, B2.
