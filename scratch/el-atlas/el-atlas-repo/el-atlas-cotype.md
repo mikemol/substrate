@@ -1881,3 +1881,29 @@ the machine author is the limit case (testimony nonexistent). Uniform
 rule: TESTIMONY PROPOSES, MACHINERY DISPOSES — practiced on both
 authors this session (∨E and the determinism correction both piloted
 before interning).
+
+## S15: THE Π CHRISTENING — TESTIMONY RECOVERED; HALLUCINATION +
+## ACCOMMODATION; LOAD-BEARING GRADE REFINED
+Author testimony: the name "SYSTEM Π" was coined as a HALLUCINATION by
+Gemini deep research while analyzing exported conversation snippets of
+the then-unnamed system; the author accommodated; the name canonized.
+Speech act = presupposed reference accommodated, NOT christening; the
+narrated-at-generation residue (S14's recoverable residue) returns
+EMPTY of rationale — the narration was the confabulation. Intent stays
+DE-STATED, now testimony-confirmed. Provenance decomposed: generation =
+machine confabulation; canonization = human ratification (the
+intentional act). SEARCH FINDINGS: full version stratigraphy surfaced
+(v2.1, v2.2+, v2.3, v2.4, v2.5, v2.22, v2.37.1 + Ouroboros + Handbook
++ HoTT-primitives analyses); "Handbook Index SYSTEM Π Expansion" cites
+NATIVE PiType/SigmaType/UnivalenceAxiom primitives → S14 load-bearing
+grade refined append-only: the Π-type reading is textually realized in
+the v2.x lineage, absent from the v2.37.1 distribution text.
+Chronology: earliest titled doc 2025-07-23T03:32Z (v2.3 Ext/Corr);
+burst v2.1→v2.22 within ~2 days; christening ≤ 2025-07-23; christening
+artifact UNLOCATED (pagination live). Attractor basin held [C]: content
+contained literal Π-type primitives; System T/F/U naming schema;
+π-calculus. S3 MECHANISM UPGRADE [C, 1 witness]: name-accretion =
+confabulation + accommodation; expansion oscillation = attractor
+samples; referent fixed by use. PATTERN NAMED: form-without-act
+(RootHash, the name) with two redemption modes (we minted the hash;
+the author ratified the name).
