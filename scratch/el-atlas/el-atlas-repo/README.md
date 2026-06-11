@@ -21,6 +21,11 @@ A paraconsistent evidence logic, specified witness-first and deliberately non-cl
 - **Vacuity is its own value.** Tests return P/F/V; "not statable here" is not "false."
 - **Circles:** intrinsic (persists under basis refinement; mutual constitution;
   ∀-over-bases, open-by-design) vs coincidence (splits; shared substrate).
+- **No unindexed verdicts.** Every instrument verdict is emitted relative to a
+  reconstructible space: the run prints a SPACE MANIFEST (knobs + value sets) and a
+  fingerprint (sha256 over manifest + claim-test sources). "Unseparated" is never
+  uttered bare — only "unseparated-in-S_<fp>". Known spaces where the verdict differs
+  travel with it as a residue ledger; separations carry a minimal witness mutation.
 - **Commit discipline:** commit per draft or per instrument run; the message names the
   triggering correction or finding, so `git log` reads as the reasoning path.
 

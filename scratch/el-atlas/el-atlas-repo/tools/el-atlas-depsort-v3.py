@@ -1,5 +1,5 @@
 """
-el-atlas-depsort-v3.py — rigorized per external review (the four counter-breaks).
+el-atlas-depsort-v3.py (v3.1) — rigorized per external review; indexed verdicts.
 
 Taxonomy adopted as code (reviewer's three-way split of "circularity"):
   1. jointly-inhabited (constitutive): mutual support with a base witness — fine.
@@ -19,21 +19,27 @@ Break 4 (meta/adversarial): exhaustive enumeration of all 1536 models; per
      circle, search for ANY separator (one member moved off P, the other P).
      Zero separators over the space = adversarial-complete persistence.
 
-VERDICT-RELATIVITY CAVEAT (load-bearing): "exhaustive" means exhaustive over the
-DECLARED knob space. v2's basis_def knob (singular crossbar) separated {CRS,NOE}
-and is not in this space, so v3 reports them unseparated. Persistence claims are
-forall-over-declared-bases: every verdict carries its space index.
+VERDICT-RELATIVITY (v3.1, structural): NO UNINDEXED VERDICTS. "Unseparated" is
+a claim; the emitted form is "unseparated-in-S" with S reconstructible: every
+run prints a SPACE MANIFEST (knobs + value sets) and a fingerprint (sha256 of
+the manifest + claim-test sources). Known spaces where a verdict differs are
+carried as a RESIDUE LEDGER alongside the verdict. v3.1 also unions v2's
+basis_def knob into the declared space, so the {CRS,NOE} separation is now
+in-space, with its witness mutation printed; the v3 (9-knob) verdict is
+retained in the ledger under its own index.
 """
 import numpy as np
+import hashlib, json, inspect
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
              ops=['diagonal','linear'],
              lock=['available','unavailable','wrong','clipped','affine','noisy','partial','forced'],
-             norm=['free','pinned'], two_ops=[True,False])
+             norm=['free','pinned'], two_ops=[True,False],
+             basis_def=['ok','singular'])
 SPACE = [dict(zip(KNOBS, vals)) for vals in product(*KNOBS.values())]
 BASE = dict(pins=2, adj=True, ident=True, neg=True, ops='linear',
-            lock='available', norm='free', two_ops=True)
+            lock='available', norm='free', two_ops=True, basis_def='ok')
 TOL = 1e-9
 
 def locus(u, lk):
@@ -59,7 +65,7 @@ def t_CDC(m):
     return 'P' if (v-1.0 < 0 and v-0.0 > 0) else 'F'
 def t_CRS(m):
     if m['pins'] < 2: return 'V'
-    return 'P'
+    return 'F' if m['basis_def']=='singular' else 'P'
 def t_PUR(m):
     if m['pins'] < 2: return 'V'
     if m['ops']=='diagonal': return 'V'
@@ -118,11 +124,27 @@ def t_NOE(m):
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
             L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE)
 
+def space_fingerprint():
+    manifest = {k:[str(v) for v in vals] for k,vals in KNOBS.items()}
+    src = "".join(inspect.getsource(f) for f in CLAIMS.values())
+    h = hashlib.sha256((json.dumps(manifest, sort_keys=True)+src).encode()).hexdigest()[:12]
+    return manifest, h
+
+PRIOR_LEDGER = {
+  frozenset({'CRS','NOE'}): [("S_v3 (9 knobs, no basis_def)", "unseparated-in-S_v3"),
+                              ("S_v2 (characteristic-break basis + basis_def probe)", "separated (basis_def='singular')")],
+  frozenset({'BAL','CDC'}):  [("S_v2 (characteristic-break basis)", "separated (adj; identical-frames)")],
+}
+
 def run():
     names=list(CLAIMS)
+    manifest, fp = space_fingerprint()
+    print(f"SPACE MANIFEST  S_{fp}  ({len(SPACE)} models, exhaustive):")
+    for k,v in manifest.items(): print(f"  {k}: {v}")
+    print(f"  fingerprint sha256[:12] = {fp}  (manifest + claim-test sources; reconstructible)\n")
     res={i:{n:CLAIMS[n](m) for n in names} for i,m in enumerate(SPACE)}
     base={n:CLAIMS[n](BASE) for n in names}
-    print(f"model space: {len(SPACE)} models (exhaustive). base all-P: {all(v=='P' for v in base.values())}\n")
+    print(f"base all-P: {all(v=='P' for v in base.values())}\n")
     print("=== self-certification audit (P under EVERY model = unconstrained = vicious) ===")
     flagged=[n for n in names if {res[i][n] for i in res}=={'P'}]
     print("  flagged:", flagged if flagged else "none")
@@ -139,17 +161,24 @@ def run():
     print("  D4C under unrelated breaks (ident=F, adj=F, pins=3):",
           CLAIMS['D4C'](dict(BASE,ident=False)), CLAIMS['D4C'](dict(BASE,adj=False)),
           CLAIMS['D4C'](dict(BASE,pins=3)), "\n")
-    print("=== Breaks 1+4: exhaustive (adversarial-complete over this space) separator search ===")
+    print("=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_"+fp+" ===")
     for X,Y in [('LOC','L26'),('PUR','PRO'),('BAL','CDC'),('CRS','NOE')]:
-        st=sk=co=either=0
+        st=sk=co=either=0; wit=None
         for i in res:
             a,b=res[i][X],res[i][Y]
             ma,mb=(a!='P'),(b!='P')
             either += (ma or mb); co += (ma and mb)
-            st += (a=='F' and b=='P') or (b=='F' and a=='P')
+            if (a=='F' and b=='P') or (b=='F' and a=='P'):
+                st += 1
+                d={k:v for k,v in SPACE[i].items() if BASE.get(k)!=v}
+                if wit is None or len(d)<len(wit): wit=d   # minimal witness
             sk += (ma != mb)
-        print(f"  {{{X},{Y}}}: truth-separators={st}  any-kind-separators={sk}  "
-              f"co-movement={co}/{either} = {co/either:.2f}")
+        verdict = f"separated-in-S_{fp}" if st else f"unseparated-in-S_{fp}"
+        print(f"  SEP({{{X},{Y}}} | S_{fp}) = {st} truth / {sk} any-kind ; "
+              f"co-movement {co}/{either} = {co/either:.2f}  -> {verdict}")
+        if wit: print(f"      witness mutation: {wit}")
+        for space_id, prior in PRIOR_LEDGER.get(frozenset({X,Y}), []):
+            print(f"      ledger: {prior}  @ {space_id}")
     mN=dict(BASE,lock='noisy')
     print(f"\n  Break 3 exhibit (noisy lock): LOC={CLAIMS['LOC'](mN)}, L26={CLAIMS['L26'](mN)}")
     print("  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old")

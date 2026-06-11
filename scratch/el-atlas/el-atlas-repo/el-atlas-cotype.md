@@ -999,3 +999,24 @@ the session's own tooling. Next-work: union the v2 and v3 knob spaces.
 **Structured edition:** the two intrinsic-circle annotations updated (truth-intrinsic
 vs expressibility-intrinsic, with the v3 evidence inline). Full regeneration with the
 generator-saved-as-tool remains queued next-work.
+
+## INDEXED VERDICTS (v3.1) — "unseparated" is a claim; the index must be reconstructible
+**USER wording correction:** "reports {CRS,NOE} unseparated" sounds like a claim; it
+must be "unseparated-in-this-space" with "this space" RECONSTRUCTIBLE — that is what
+lets the caveat be caught. Adopted structurally, not editorially:
+- Every run now prints a SPACE MANIFEST (all knobs + value sets) and a fingerprint
+  (sha256[:12] over the manifest + the claim-test sources): S_666bf26b7779 for v3.1.
+- Verdicts emit as indexed records: SEP({X,Y} | S_fp) = n, verdict "separated-in-S_fp"
+  / "unseparated-in-S_fp" — the bare word no longer exists in the output language.
+- RESIDUE LEDGER: known spaces where the verdict differs travel WITH the verdict
+  (e.g. {CRS,NOE} carries "unseparated-in-S_v3 @ 9-knob space" alongside the current
+  separation). Separations print a MINIMAL witness mutation.
+- basis_def UNIONED into the declared space (3072 models): {CRS,NOE} now SEPARATES
+  in-space — witness {'basis_def':'singular'} — while {LOC,L26} and {PUR,PRO} remain
+  unseparated-in-S_666bf26b7779 at co-movement 1.00 over the doubled space (their
+  verdicts strengthen with every space extension survived; never close).
+- README convention added: "No unindexed verdicts."
+**Codec reading:** the space is the verdict's identity anchor; an unindexed verdict is
+a frame-mismatch in waiting (the silent-balance-flip failure mode, at the meta level).
+Same grammar as the scenario catalog: name the relation under which the claim holds,
+in a form the machine carries so prose cannot drop it.
