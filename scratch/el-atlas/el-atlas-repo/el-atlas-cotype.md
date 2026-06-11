@@ -1320,3 +1320,36 @@ chapters; circles {D4C,TWN} and {RAD,ZDG} appear; D4C moves layer 2→1; {PRO,PU
 moves layer 3→2; PR2 enters at layer 3 beside T53 and PHS. New perspectives CHAR-2,
 SEDENION, SPHERE in every visibility table. New fingerprint S_94763a8b62ea; all prior
 verdicts retained under their indices.
+
+## N-SERIES: THE NEDGE DECOMPOSITION BEGUN (user: "we finally have enough cross-referenced formality")
+Sources: five Drive folders located; "Nedge Foundation: Adversarial Justification
+Summary" read IN FULL (gdoc fetch failed empty; Drive read_file_content succeeded);
+v4 docs (Nedge 4 Base, N4, Toulmin) read at snippet depth. Deliverable:
+nedge-decomposition.md (repo root) — observed core, decomposition map, two-way
+purchase, candidate claims, residue ledger.
+**The three deepest joins:**
+1. IDENTITY-COLLAPSE PRINCIPLE = THE SEPARATOR DISCIPLINE. Nedge axiom: identical
+   structural connectivity ⇒ same identity; bare nodes collapse, differentiate as
+   participation grows. That is identity = unseparated-in-S with differentiation =
+   space extension — the indexed-verdict discipline stated as ontology in 2025,
+   before the harness practiced it as method. The Positional Reflection Axiom is
+   "identity = position in the dependency structure" = our condensation chapters. [S]
+2. PBF TREE = THE DOUBLING INTERFACE'S UNTWISTED SHELL. The v4 atom is an ordered
+   pair (Outer, Inner-or-PBF); nesting = binary tree; identity = canonical string.
+   §5.9's interface with cocycle unchosen; the H1 Möbius/deck material was ABOUT this
+   syntax (swap = deck transformation); GRC transformation contexts = the open
+   cocycle question. [S structure / C cocycle]
+3. NEDGE 4VL = THE C-SIDE CORNER GATE. CC/UC/UI/CI = confidence × consistency =
+   (mass-threshold × conflict-threshold) — both bits encoding-level, vs Belnap's
+   (bias-sign × rail). Two independently-invented four-valued logics = two corner-
+   charts of one carrier. Candidate claim NVL queued. G-values + L-SPACE ISOMORPHISM
+   = the carrier with log codec: lineage chain now Nedge → BK4VL → consolidation
+   cluster → atlas (App B.0 extension queued pending full G-value read). [C→claim]
+Also: AJ = break-and-separate at design level (necessity = dep-edge detection;
+identity-impact = separation events; AJ admission = knob admission) [S]; is{is} =
+diagonal seed / origin-degeneracy reading [C]; bootstrap's minimal stabilization
+X{is} = one quantum of mass preventing N-corner identity collapse [C].
+**Residue:** N4 G-value full definition unread (is a G-value the pair?); GRC
+tetrahedron re-verification; three folders unread; multi-element block semantics
+open in source. Claims NVL/IDC defined but NOT implemented — per the v3.3 lesson,
+the next instrument run should carry them.
