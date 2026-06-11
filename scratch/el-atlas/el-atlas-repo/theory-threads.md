@@ -578,3 +578,55 @@ tools/second-order-zd-pilot.py, exact):
    [C as analogy]; the ZD variety's G₂ geography is the literature's
    form of "compiled, not searched" at dim 16 [S, Moreno] — deriving
    our exhibit family from octonion data alone is the named program.
+
+## 16. S23 — riding breaker hyperplanes: coverage compiled, not sampled
+
+Author question: can EEA/CF structure RIDE breaker hyperplanes for
+efficient coverage instead of random sampling? Answer: yes, at three
+levels, two demonstrated exactly (tools/hyperplane-ride-pilot.py).
+
+**Level 1 — the instrument's own ride** [W]: every claim verdict factors
+through its declared knob support, so a pair's separator count is
+EXACTLY (count on the joint dep-projection) × (complementary cylinder
+volume). Verified against full 165,888-model enumeration on five pairs:
+identical truth AND kind counts, at 1,536–27,648× less work — {GCX,CDC}'s
+entire separation structure lives in 6 cells; {NVE,NVL}'s 6,144
+separators are 4 cells × 1,536. Coverage = exhaustive on the breaker's
+own coordinates × certified volume elsewhere. THE LICENSE IS THE
+CERTIFICATE: this is valid because the dep-tuples are audited
+(tools/dep-audit.py, the R-V35 G8 discharge) — the ride is purchased by
+the instrumented trust, not assumed. Registered as a v3.7 candidate
+mode, with full enumeration RETAINED as the audit mode (the ride trusts
+the certificate; the certificate must remain independently checkable —
+the two modes are the two sensors).
+
+**Level 2 — witness varieties** [W]: the sedenion ZD breaker is a
+determinant variety: x is a left zero divisor iff det L_x = 0 (L_x the
+16×16 left-multiplication matrix). Riding it: evaluate the polynomial
+certificate on the structured locus; where it vanishes, the annihilator
+is COMPILED as ker L_x. Results: the S21 exhibit's annihilator is a
+4-DIMENSIONAL kernel (brute search had found ONE point of a 4-plane;
+the compiled fiber contains e₄−e₁₅ and verifies x·y = 0); 50 random
+gaussian x never touch the variety (measure-zero: sampling finds ZDs
+with probability 0 — riding is not an optimization of sampling, it is
+the ONLY access; the stationary-phase lesson in algebraic form); the
+signed-pair slice's geography is now ENUMERATED — 210 determinant
+evaluations yield 84 ZD locus members, where S21's brute search spent
+~44,000 sedenion products to exhibit one. (84 on this slice is a fact
+of the slice; the G₂ account of the full variety is the literature's
+[S, Moreno]; no numerological claim attached.)
+
+**Level 3 — the CF schedule** [S via S19, registered]: for 1-parameter
+boundary crossings, Stern-Brocot/CF refinement yields the
+minimal-denominator certified bracket at every stage (S19's
+best-at-budget theorem) — the breaker witness of least complexity.
+Registered as the refinement schedule for threshold-type breakers; not
+separately piloted (the optimality core is S19's).
+
+**The template, named**: EEA's trajectory carries its invariant at every
+step; wherever a computation's support or constraint is a CARRIED
+CERTIFICATE (declared deps, defining equations, maintained invariants),
+enumeration compiles into algebra — project, solve, multiply. Where no
+certificate exists, sampling remains the honest fallback, and the
+2nd-order program (witness-valued verdicts, S22) is precisely what
+grows the certificate inventory.

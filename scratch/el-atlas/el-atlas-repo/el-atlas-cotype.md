@@ -2109,3 +2109,26 @@ deriving the exhibit family from octonion data = named program].
 G8-handoff dep-audit: CLEAN (every observed read declared; the trust
 both bug and fix shared is now instrumented). v3.6 boarding queue
 unchanged (RDW/ZDW, SWF extends-breaker, reading declaration).
+
+## S23: RIDING BREAKER HYPERPLANES — COVERAGE COMPILED, NOT SAMPLED
+Author: can EEA/CF ride breaker hyperplanes for coverage instead of
+random sampling? YES, demonstrated (tools/hyperplane-ride-pilot.py).
+LEVEL 1 (the instrument): separator counts factor through the joint
+dep-projection × cylinder volume — EXACT equality with full enumeration
+on five pairs at 1,536–27,648× less work ({GCX,CDC}: 6 cells; {NVE,NVL}:
+4 cells × 1,536 = 6,144). THE RIDE IS LICENSED BY THE AUDITED
+CERTIFICATE (dep-audit = the R-V35 G8 discharge pays for the speedup);
+registered as v3.7 candidate mode with full enumeration retained as the
+audit sensor. LEVEL 2 (witness varieties): sedenion ZD = det L_x = 0;
+annihilators COMPILED as kernels — the S21 exhibit's annihilator is a
+4-PLANE (search found one point of it); 50 random gaussians never touch
+the variety (measure-zero: sampling has probability 0 — riding is the
+ONLY access; stationary-phase lesson, algebraic form); signed-pair
+slice ENUMERATED: 210 dets → 84 locus members vs ~44,000 brute products
+for one exhibit. LEVEL 3: CF/Stern-Brocot = the minimal-denominator
+refinement schedule for threshold breakers (S19 best-at-budget; not
+re-piloted). TEMPLATE: wherever support/constraint is a CARRIED
+CERTIFICATE, enumeration compiles into algebra (project, solve,
+multiply); no certificate → sampling remains the honest fallback; the
+2nd-order program is what grows the certificate inventory. Queue: v3.7
+projected-mode implementation rides with the v3.6 boarding.
