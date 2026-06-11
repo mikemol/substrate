@@ -1353,3 +1353,32 @@ X{is} = one quantum of mass preventing N-corner identity collapse [C].
 tetrahedron re-verification; three folders unread; multi-element block semantics
 open in source. Claims NVL/IDC defined but NOT implemented — per the v3.3 lesson,
 the next instrument run should carry them.
+
+## N2: THE G-VALUE SPEC READ; THE LIFT THEOREM (pilot PASSED)
+N4.docx read (tool result too large for context; stored JSON extracted to
+/home/claude/n4.txt, sections IV-IX recovered). OBSERVED: a G-value is a
+SCALAR in [0,∞] — G_NOT=1/G, G_AND=harmonic (series conductance), G_OR=sum
+(parallel), DeMorgan exact, non-idempotent (G/2, 2G), non-distributive;
+L=ln G with L_NOT=−L, L_OR=LSE, L_AND=−LSE(−·), ±ln2 Landauer; G_res =
+G(P)G(Q)/(G(P)−G(Q)) (residuation of harmonic AND); G(Q|P)=G(Q)/(G(P)+G(Q));
+G(P)G(¬P)=1; least-fixed-point network equilibrium; Conf(G)=sigmoid(L).
+IDENTIFICATIONS: (1) L↔G iso = Lemma 2.5b exp⊣log codec exactly [S/near-W];
+(2) G-value = THE QUOTIENT SHADOW — odds, the refused ratio; antipode
+constraint with no mass axis; G=1 conflates conflict with ignorance = Lemma
+3.2 inside Nedge L2 while Nedge L3's 4VL demands the destroyed information;
+atlas = Nedge L2 un-quotiented [S]; (3) LIFT THEOREM [W per pilot, 2000
+trials all True]: G_OR = fraction-add on formal-quotient pairs, G_NOT = swap,
+G_AND = swap-conjugated fraction-add, DeMorgan = swap distributing,
+non-idempotence = the mass-growth shadow ((n,d)+(n,d)=(2nd,d²)~2n/d) — THE
+ENTIRE G-CALCULUS = ⟨fraction-⊕, swap⟩ on formal-quotient pairs; closes the
+loop with Remark 3.6 representation-as-rationals (Nedge = quotient by the
+diagonal; Z2 move = pre-quotient; atlas = no quotient) [W]; (4) G_res =
+resistance-DIFFERENCE (1/X = 1/G_Q − 1/G_P, adjointness exact) — implication
+as differential in the swap-dual chart [S]; (5) conditional = L1-NORMALIZATION
+of (G_P,G_Q) — a c-pinning instance [S]; (6) B.0 lineage sharpened: atlas =
+the pre-quotient of Nedge's own semantic engine [S].
+Claim NGL defined (coeff-guard: real only; GF(2) degenerates fractions),
+queued with NVL/IDC. Residue: ∨E transformation open IN SOURCE; cost-vs-
+strength rail-label oscillation = reading-relation ambiguity (ladder law) —
+declare before import; US_v2 plateaus ↔ missing c-axis info (uninstrumented).
+Pilot source+output in transcript; n4.txt retained in /home/claude.

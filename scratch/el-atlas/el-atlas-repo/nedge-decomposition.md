@@ -52,7 +52,7 @@ OSI layering: L1 algebra/geometry/topology; L2 set theory/FOL; L3 Nedge NUs.
 | Adversarial Justification (necessity / minimality / identity-impact critique) | The break-and-separate loop at design level: necessity = dependency-edge detection; identity-impact = does admission separate collapsed nodes; AJ's admission rule = the knob-admission rule | [S] |
 | `is{is}` diagonal seed; minimal stabilization `X{is}`; collapse-to-void prevention | The carrier origin (0,0) as the unique total-ignorance point where all bare nodes coincide; one quantum of structural participation = mass moving a node off the origin; identity-collapse at zero structure = N-corner degeneracy | [C] |
 | 4VL: CC/UC/UI/CI = confidence × consistency | A **P2-G gate on (mass-threshold, conflict-threshold)** — both Nedge bits are encoding-level functions of the pair (confidence ≈ mass, consistency ≈ conflict-absence), unlike Belnap's (bias-sign × mass-rail) chart. **Two four-valued logics = two corner-charts of one carrier**; neither refines the other | [C] → candidate claim NVL |
-| G-values with L-space isomorphism, G_NOT/G_AND/G_OR, network dynamics | **The evidence carrier with the log codec**: the atlas as the rigorization of Nedge's Layer-2 / G-value semantics; lineage Nedge → BK4VL → Evidence–Differential cluster → atlas (extends Appendix B.0) | [S] lineage / [C] pending full G-value definition |
+| G-values with L-space isomorphism, G_NOT/G_AND/G_OR, network dynamics | **The evidence carrier with the log codec**: the atlas as the rigorization of Nedge's Layer-2 / G-value semantics; lineage Nedge → BK4VL → Evidence–Differential cluster → atlas (extends Appendix B.0) | [S] iso / **[W] lift** (see §6 addendum) |
 | Consistency/confidence over internalized true/false; contextual grounding over fixed axioms | The prohibition + the classical section: truth values are not carried, they are read at a section; classicality is a locus, not a foundation | [S] |
 | GRC tetrahedron: three roles + self | Corner representation: four corners with one anchored (the self = perspective), S₃ = Aut(V₄) as the frame group (Theorem 5.4 corner half; tetrahedron algebra grounding §11.4) | [C] — inherited from G2, re-verification queued |
 | OSI L1/L2/L3 | The atlas's strata (algebraic interface / carrier-codec claims / catalog) | [C] loose |
@@ -84,11 +84,95 @@ quotient-to-probability.
 
 ## 5. Residue ledger
 
-Unread: N4.docx full G-value definitions (is a G-value the pair itself? the
-l-space iso suggests log coordinates of (E⁺,E⁻)); the v3.1 historical spec
+N4 read COMPLETE (§6 addendum); the "is a G-value the pair?" question is
+closed — it is the class of a pair. Still unread: the v3.1 historical spec
 folder; Philosophical Extensions; Nedge/DREN synthesis; Toulmin analysis
 beyond snippet. Unverified: the GRC tetrahedron's exact role structure (G2
 inheritance). Open: the cocycle question for GRC transformation contexts;
 whether `is{is}` as diagonal seed survives a careful reading of the
 multi-element block semantics (`{E1; E2; ...}` formalization is listed as
 open in the source itself).
+
+## 6. Addendum — the N4 read: the G-Value Calculus in atlas coordinates
+
+### Observed core [O] (Master Specification, Artifact B, Sections IV–IX)
+
+**A G-value is a scalar.** G(P) ∈ [0,∞]; primary graded domain (0,∞);
+boundaries 0/∞ are the rails (⊤/⊥ — the document oscillates between cost and
+strength labels for which rail is which, but the algebra is unambiguous).
+Operators: G_NOT(G) = 1/G (involution; exactly odds negation);
+G_AND(G₁,G₂) = G₁G₂/(G₁+G₂) (series conductance; n-ary 1/Σ(1/Gᵢ));
+G_OR = Σ (parallel conductance). Commutative, associative, DeMorgan EXACT,
+non-idempotent (AND(G,G)=G/2, OR(G,G)=2G), non-distributive. Self-classified
+"Reciprocal DeMorgan Resource Algebra"; the spec links it to Torres's dual
+positive semifields, log-semirings, substructural/linear logic (contraction
+halves, weakening is free), and residuated lattices. L-space: L = ln G ∈
+[−∞,∞]; L_NOT = −L; L_OR = LogSumExp; L_AND = −LogSumExp(−·); idempotence
+failure = ±ln 2, read via Landauer. G_res(P⇒Q) = sup{X | AND(G(P),X) ≤ G(Q)}
+= G(P)G(Q)/(G(P)−G(Q)) if G(P) > G(Q), else ∞; G_res(P⇒P) = ∞.
+G(Q|P)_belief = AND(G(P),G(Q))/G(P) = G(Q)/(G(P)+G(Q)) ∈ (0,1). Local
+consistency: G(P)·G(¬P) = 1. Network semantics: least-fixed-point
+equilibrium, semantic-energy minimization, confidence topography
+Conf(G) = G/(G+1) = sigmoid(L) with CMS peaks / ES valleys / US_v2 plateaus;
+non-idempotence tames cycles (no self-amplification from tautological loops).
+
+### Identifications
+
+1. **L-space ≅ 𝔸, G-space ≅ 𝕄, and the L↔G isomorphism IS Lemma 2.5b's
+   exp⊣log codec** — formula for formula, identity images included
+   (G=1 ↔ L=0). Nedge's "L-space isomorphism" and the atlas's two-chart
+   structure are the same object. [S, near-W]
+
+2. **A G-value is the quotient shadow.** G = odds = the ratio the prohibition
+   refuses. G(P)·G(¬P) = 1 is the antipode constraint of a balance channel
+   with NO mass axis: G = 1 conflates massive conflict with total ignorance —
+   a Lemma 3.2 instance sitting inside Nedge's own Layer 2, while Layer 3's
+   4VL (confidence × consistency) demands exactly the mass/conflict
+   information the scalar destroys. The atlas is Nedge Layer 2 repaired by
+   un-quotienting. [S]
+
+3. **THE LIFT THEOREM** [W — pilot, 2000 random trials, all checks pass]: on
+   formal-quotient pairs (n,d) with class n/d,
+   G_OR = fraction addition ((n₁d₂+n₂d₁, d₁d₂)); G_NOT = the swap ((d,n));
+   G_AND = swap-conjugated fraction addition; DeMorgan exactness = the swap
+   distributing. Non-idempotence is the mass-growth shadow:
+   (n,d) ⊕ (n,d) = (2nd, d²) ~ 2n/d, and conjugation gives G/2 — the
+   calculus's "resource sensitivity" is the quotient remembering the extruded
+   magnitude axis in distorted form. **The entire G-Value Calculus =
+   ⟨fraction-⊕, swap⟩ on formal-quotient pairs.** This is Remark 3.6's
+   representation-as-rationals read backwards: Nedge G-values are the carrier
+   quotiented by the diagonal (mass); representation-as-rationals works
+   pre-quotient; the atlas refuses the quotient entirely.
+
+4. **G_res is resistance-difference**: 1/G_res = 1/G(Q) − 1/G(P), adjointness
+   exact (pilot-verified). The implication is a DIFFERENCE taken in the
+   swap-dual chart — the differential/bridge reading. [S]
+
+5. **G(Q|P)_belief is the L1-normalization of the pair (G(P), G(Q))** — a
+   c-pinning instance: conditional belief = the simplex projection of a
+   two-component magnitude vector; Conf(G) = sigmoid(L) is the same chart one
+   level down. [S]
+
+6. **Lineage sharpened** (extends Appendix B.0): Nedge L2 (the quotient) →
+   BK4VL → the consolidation cluster → the atlas (the pre-quotient restored).
+   The atlas is not adjacent to Nedge's semantic engine; it is that engine's
+   pre-quotient. [S]
+
+### Candidate harness claim
+
+**NGL** (Nedge G-lift): the six lift identities as executable checks over
+carrier knobs. Coeff scope: real only — fraction arithmetic degenerates over
+GF(2) (denominator products collapse), so NGL takes a coeff-guard like
+T53/PHS. Queued with NVL/IDC for the next claim-set extension run (per the
+v3.3 lesson: no import without instrument extension).
+
+### Residue from this read
+
+The ∨E (proof-by-cases) G-value transformation is flagged open in the source
+itself ("a key area for precise axiomatic definition in Phase 4"). The
+cost-vs-strength label oscillation (which rail is ⊤) is a reading-relation
+ambiguity — a ladder-law instance: the algebra is fixed, the order
+declaration is not; any spec import must declare it first. The
+"Confidence Topography" = sigmoid(L) chart suggests Nedge's US_v2 plateaus
+live where the carrier's c-axis information would disambiguate — connects to
+the NVL claim but is not yet instrumented.
