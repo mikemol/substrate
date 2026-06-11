@@ -1815,3 +1815,23 @@ CHECKSUMS.sha3-512 (per-part + combined) — the symbolic seal made real
 for the snapshot. PENDING with shapes named: T2 {RAD,ZDG}
 schedule/witness split (now an obligation), T4 OB-12 channel-product
 ∃-search, T5 restatement-survival glaze test.
+
+## S12: BIDIRECTIONALITY PRINCIPLE INTERNED; INSIDE-OUTSIDE PILOT 3/3
+Author principle: thorough reasoning = iterated forward/backward passes
+or alternating generators; Earley both top-down (predictor) and
+bottom-up (completer) named as the exemplar — completeness purchased by
+alternation. Universal form held [C]; instances witnessed: PILOT
+(tools/bdp-inside-outside-pilot.py): (1) inside×outside = exact
+containment count at every span; (2) FORWARD UNDER-DETERMINATION
+witnessed (equal insides, participation 5 vs 2 — the backward pass is
+not optional for per-node questions); (3) carrier-semiring identity in
+pairs with the conflation now POINTWISE (equal G-shadow at every span,
+masses differ at every span — quotient blindness is per-node, not just
+at the root). SWP gains the bidirectional identity as check 5. Mapped:
+adjunction unit/counit = canonical forward-back/backward-forward
+(Lemma 2.5b already aboard); quiescence = alternation fixpoint = chart
+saturation [C/S]; AJ = alternating generators at design level [S];
+S10→S11 OBSERVED as one full governance alternation cycle [O] — the
+cotype is an agenda algorithm: tensions = predictions, witnesses/
+breakers = completions, quiescence = empty agenda. Wider family held
+[C]: forward-backward, backprop, bidirectional typing, CDCL, BP.

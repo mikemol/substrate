@@ -173,3 +173,47 @@ predicate inside the language; the deflationary reading keeps it
 syntactic and decidable. Grade [S]: structural derivation (diagonal
 availability via TheKnot assumed, standard); the executable form — an
 actual grammar-quine λ — is constructible if ever wanted.
+
+## 8. S12 — bidirectionality: completeness is purchased by alternation
+
+Author principle: "all thorough reasoning requires iterating over
+forward and backward passes, or at least iterating over alternating
+generators." Held in the strong universal form as [C]; witnessed
+instances graded individually:
+
+- **Earley itself** [S, textbook]: the predictor is the top-down
+  generator (goal-driven expectation), scanner/completer the bottom-up
+  one (data-driven confirmation), interleaved over a shared chart to a
+  fixpoint. Pure top-down (LL) dies on left recursion; pure bottom-up
+  (LR) demands determinism; the corpus's Earley-for-completeness
+  commitment is secretly a BIDIRECTIONALITY commitment.
+- **Inside–outside** [W — tools/bdp-inside-outside-pilot.py]: the SWP
+  pilot's forward pass answers only the root question. (1) At every
+  span, inside×outside = the count of derivations containing it,
+  exactly; (2) forward under-determination witnessed: spans with equal
+  inside (both 1) have different participation totals (5 vs 2) — the
+  backward pass is not optional for per-node questions; (3) on the
+  carrier semiring the identity holds in pairs, and the (2,1)/(4,2)
+  conflation is POINTWISE: equal G-shadow at every span, masses
+  differing at every span. SWP gains this as its fifth check.
+- **The adjunction is the canonical forward-back/backward-forward** [S]:
+  unit and counit with the triangle identities — Lemma 2.5b's exp ⊣ log
+  already in the spec; iterating a Galois connection stabilizes at
+  closure. Quiescence (v2.37.1 Phase 5: every Question answered by a
+  Fact; the agenda empties) = the alternation's fixpoint, which is also
+  exactly Earley chart saturation. [C/S]
+- **The governance instance, OBSERVED in-session** [O]: S10's backward
+  pass (kill audit) generated forward obligations (T2/T4/T5); S11's
+  forward pass (tension ledger) sharpened a backward criticism (the
+  Gödel adjudication via the parsing-liar). One full alternation cycle.
+  The S9/S11 pair makes the cotype an Earley-style agenda algorithm
+  over the workstream's own claims: tensions = predictions, witnesses
+  and breakers = completions, quiescence = empty agenda.
+- **AJ = alternating generators at design level** [S, N-series]:
+  proposal/critique as the two generators; the admission rule as the
+  chart discipline.
+- Wider family, held as context [C]: forward–backward (HMM posteriors),
+  backpropagation (forward eval + reverse adjoint), bidirectional
+  typing (synthesis ⇑ / checking ⇓), CDCL (decide forward, learn
+  backward), belief propagation, bidirectional search; the user's own
+  APSP epochal system.
