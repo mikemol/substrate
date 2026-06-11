@@ -2835,3 +2835,36 @@ philosophy — Levi-Strauss rendered as representable functors. The
 treatise's UNIVALENCE-UNDELIVERED finding STANDS unchanged (the
 document promised what it did not deliver); only the B4 attachment
 is corrected — what GCX needs was never the missing delivery.
+
+## S42: SPEC IMPORT — B3, B4, B5, B7 DISCHARGED (sha 361a9d66c595,
+## +110/-0)
+Section 5.10 added under S41's corrected license. 5.10a STATABILITY
+AS REPRESENTABILITY (B3 discharged): S = the probe category (finite,
+DISCRETE at instrument grade — enrichment with knob-move morphisms is
+a registered reservation, not a claim); claims are partial verdict
+presheaves; V-kind = outside the restricted embedding's domain;
+separators = distinguishing probes; circles = Yoneda-equivalence
+classes over S with provenance carried; separation counts = margins
+(the source's Margin of Truth, cross-read). 5.10b THEOREM GCX (B4
+discharged): phi = rank-sum, monoid homomorphism (multiset-union to
++); codec exact on the image; kernel = rank-sum equivalence with the
+exhibited collision {1,4}/{2,3} (carriers 14 != 15); fibers carry the
+lost information with the prime-carrier realization as section;
+GALAXY = one-mode decode of the ASPF carrier — identification by
+exhibited quotient, no axiom. Instrument indices inline (pilot,
+fiber certificate, the 27,648-separator GCX/CDC distinction). 5.10c
+PHASE CLASS (B5 discharged): 1 -> Z2 -> D4 -> V4 -> 1, class in
+H2(V4, Z2), cocycle [N,S] = -id, non-trivial since D4 is not V4 x Z2;
+Brown referenced via C.2 with verify-first status. APPENDIX C (B7
+discharged as scaffold): provenance-split anchors — C.1 source-corpus
+inline references (January body), C.2 reviewer-recommended candidates
+(June, object = this atlas; verify before deep citation; Maslov-
+Litvinov added by the workstream), C.3 the rule that the lists'
+overlap carries no cogrounding weight. NOTE: B10 (equivalence-
+certificate schema) is PARTIALLY ADVANCED — 5.10b is the GCX instance
+of the schema (phi / kernel / fibers-with-section / revealing
+indices); the general schema statement remains queued. QUEUE AFTER
+FLUSH: B2 (structured-edition emitter integration), B6 (NOE
+derive-or-rename), B10 (general schema), homological-stability
+thread, UNAUDITED fibers (CDC, PR2, IDC), v2.22 read + A/B brick
+layers (next session, fresh context).
