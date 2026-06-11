@@ -2291,3 +2291,33 @@ report: truth (indexed to S), certificate (ride==full), witness
 (relation or honest absence). Run retained:
 tools/el-atlas-depsort-v3.7-run.txt; structured edition regenerated
 against S_b92e9b4ffde6.
+
+## S29: THE ČECH READING PROTOCOL (AUTHOR METHOD) — TOOL + FIRST BRICK
+Author method interned: documents read as a DYADIC OVERLAPPING COVER
+(9 bricks: halves; quarter/middle/quarter; the two 3/4-spans twice as
+gluing passes), insights captured per brick TYPED (ACT/OBL/GLU/COC),
+COMMIT PER BRICK. Formal content: bricks = cover; captured insights =
+local sections; overlap agreement = gluing; overlap CONFLICT = a
+COCYCLE FINDING (meaning-depends-on-entry-context = monodromy,
+detected by the cover); every cut point interior to some brick (no
+seam is only a seam — a compaction between bricks severs nothing);
+~4.5× redundancy purchases gluing verification (the inside×outside
+purchase, for reading). Acquisition discipline for remote docs: fetch
+once → disk → commit; digest in bricks across sessions. TOOL:
+tools/brick-schedule.py + reading-ledgers/. DEMO EXECUTED: proc1
+(recovered v2.37.1), brick H1 read and captured — (ACT) source axiom
+1.1 "Truth is not a global property but a LOCAL SECTION": the Tarski
+remark's lineage grounded in-source, and the protocol's own
+justification (the doc self-describes as a simplicial complex /
+fibration over the Earley parser — we are sheaf-reading a
+self-declared sheaf); (GLU ×2) axiom 1.3 Asemantic Materialism
+confirmed verbatim at S11's citation; per-terminal hashing = T9's
+minted-manifest practice; (OBL ×3) L/L2 Qualities/Flaws ↔ grade
+vocabulary mapping ("un-reified deferral" is a FLAW — Remark 3.6 in
+source words); 1.2 Finiteness ↔ S19 grace theorem; 1.1.2 Parallel
+Proving ↔ CRT per-pin. Bricks H2–B2 PENDING in the committed ledger,
+resumable after any flush. PROCESS RESIDUE: a heredoc-interleaving
+error (two heredocs chained on one line — bodies attach in
+redirection order) fed the cotype text to python; caught by the
+SyntaxError, nothing written; guard: sequential steps, never
+interleaved heredocs.
