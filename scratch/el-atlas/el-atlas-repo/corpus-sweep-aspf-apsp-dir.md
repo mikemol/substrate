@@ -290,3 +290,59 @@ EARNED. Symmetrically, identity must also be earned before any merge
 that destroys a distinction — the presumption holds readings together
 without quotienting them (per the realizability gates: hold, don't
 collapse).
+
+## 9. S4: merged_ontology read; GCX pilot PASSED with a sharper finding
+
+merged_ontology (Drive 1t-FBAXwRjUda5f6WxDNSo5Nem8W2rwtqPoAVIq7VGaQ) read in
+full: ECHO and Gabion as one framework — six-layer shared architecture,
+unified vocabulary (Table 8.1), three formal theorems, Yoneda + 1-WL +
+prime factorization as the shared ground.
+
+**GCX pilot (tools/gcx-codec-pilot.py, output committed): the third codec
+sighting is CONFIRMED at the codec layer.** Theorem 9.1's substitution
+W <-> log_alpha(F^k) is the exp_alpha -| log_alpha adjunction exactly —
+roundtrip, product<->sum, power<->scalar action, F=1<->W=0, and base
+change as gauge — all five identities exact over 2000 seeded trials.
+Lemma 2.5b's codec now has three independent sightings in the corpus:
+Nedge L<->G, the atlas A<->M, GALAXY<->ASPF (gauge alpha).
+
+**The sharper finding (the document missed it):** the theorem's
+"canonical prime assignment" p(t) = alpha^rank(t) is not a prime
+assignment — alpha-powers collide on equal rank-sums. Demonstrated:
+rank-multisets {1,4} and {2,3} collide on the W-side (5 = 5) and the
+alpha-side (0.168070 both), while genuine prime products distinguish
+them (33 != 35). So Theorem 9.1's "isomorphism" holds exactly on the
+RANK-SUM QUOTIENT: **GALAXY is a one-mode decode — a lossy projection —
+of the ASPF carrier**, and the doc's own normative rule ("prime products
+remain authoritative; reversible") is sacrificed by its own canonical
+assignment. Corrected statement: GALAXY ≅ ASPF / rank-sum-kernel, the
+iso being the codec on the quotient. The prohibition's vocabulary
+applies verbatim: GALAXY : ASPF :: probability : carrier — a useful
+pinned slice, not the carrier. [W pilot for both halves]
+
+**Claim GCX defined and ready to board the next instrument run**: the
+five codec identities + the quotient-collision fact as executable
+checks; guard coeff=real (alpha-powers/log unstatable in char 2).
+Per the v3.3 lesson, the spec import of the third-sighting note (and
+the GALAXY-as-quotient-shadow correction) rides that run, not before.
+
+Theorems 9.2 (ASPF bitmask = collision-free degenerate CONSTELLATION)
+[O, clean] and 9.3 (drift = homotopy; AURORA rotation as the connecting
+1-cell) [C, joins the witness-discipline adjacency] recorded.
+
+**System Pi is occluded name #4** (S3 discipline applies). The family,
+IDs now on record: v2.22 self-hosting formal OS
+(10GrDUQdXh_uLc-bUGBiuXPyYSY8C8ZxwXKd1s3F-dMc, 115KB — QUEUED for a
+dedicated read); "SYSTEM Pi Extended and Corrected" v2.3
+(1pBY47gt1D7HtM9yGfYing_f7yt2RS6t0rlmxJvvwFUY — carries its source chat
+URL; the Epoch 9 canon-restoration is ANOTHER named correction event:
+append-only history enforced against lossy formalization); v2.37.1
+treatise (19ulW-k7h85oEpkOUfijgT-fo8Qzp-ZgR55-9AOWbFc0 — Earley/
+simplicial/quiescence; "Meaning is Structure"); Veritas Core
+PyTorch->JAX transpiler docs (1lx35..., 14a3d..., 1yyKN... — ALSO
+SPPF-threaded: "resolved via a Shared Packed Parse Forest of
+optimization strategies"); SystemPi.agda cognitive harness
+(1MafDyCdW2Z4hj1LPwRxcy1v-QWgVrRUzWi8Ivz1D00o — the Constructibility
+Filter is the realizability-charter lineage; AMR/Lojban semantic
+domain). Plural readings, one presumed synthesis, adjudication
+structural only.

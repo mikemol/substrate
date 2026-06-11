@@ -1,0 +1,3 @@
+CODEC LAYER (Thm 9.1 substitution = exp_a -| log_a, exact): {'roundtrip': True, 'hom': True, 'power': True, 'ident': True, 'gauge': True}
+QUOTIENT: rank-multisets [1, 4] vs [2, 3]: W-side 5 == 5 (collides); alpha-side 0.168070 == 0.168070 (collides); genuine prime products 33 != 35 (carrier distinguishes)
+=> GALAXY W is the rank-sum quotient of the prime-product carrier: True

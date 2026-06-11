@@ -1607,3 +1607,27 @@ the structured edition stays generated. The composed spec remains the
 committed deliverable; spec-src/ is the editing surface. This is the
 projection-plurality discipline applied to our own documents: the parts
 are authoritative, the monolith is a composed read.
+
+## S4: MERGED_ONTOLOGY READ; GCX PILOT PASSED; GALAXY = QUOTIENT SHADOW
+merged_ontology read in full. GCX pilot (2000 trials, seed 42): Theorem
+9.1's substitution W <-> log_alpha(F^k) verified as the exp_alpha -|
+log_alpha codec EXACTLY (roundtrip, hom, power, identity, gauge) — THE
+THIRD CODEC SIGHTING confirmed (Nedge L<->G; atlas A<->M; GALAXY<->ASPF).
+SHARPER FINDING the doc missed: p(t)=alpha^rank(t) is not prime;
+equal rank-sums collide ({1,4} vs {2,3}: W-side 5=5, alpha-side equal,
+genuine primes 33 != 35) — Thm 9.1's "isomorphism" is exact on the
+RANK-SUM QUOTIENT only: GALAXY is a one-mode decode of the ASPF carrier,
+sacrificing the doc's own reversibility rule. GALAXY : ASPF ::
+probability : carrier. Claim GCX defined (codec identities + quotient
+collision; coeff guard), pilot-passed, BOARDS THE NEXT RUN; spec import
+of the third-sighting note rides that run (v3.3 lesson).
+Thm 9.2 [O], Thm 9.3 drift=homotopy [C] recorded. SYSTEM PI = occluded
+name #4: v2.22 formal OS (115KB, queued dedicated read), v2.3 Extended/
+Corrected (Epoch 9 canon-restoration = another author-history correction
+event enforcing append-only against lossy formalization), v2.37.1
+treatise, Veritas Core transpiler (SPPF-threaded), SystemPi.agda harness
+(Constructibility Filter = realizability lineage). All IDs in sweep §9.
+ANSWER to "anything to import/process": done today = merged_ontology +
+GCX gate + System Pi family interned; queued = System Pi v2.22 dedicated
+read; GCX boards v3.5 with the spec note riding it; too-large ASPF docs
+need a fetch strategy; three APSP Drive folders unenumerated.
