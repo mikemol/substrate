@@ -2159,3 +2159,16 @@ all flat — the dep-audit is now breaker-proximate-exhaustive. CATCH
 LATENCY: R-V35 post-commit → S24 pre-commit; the cadence tightens.
 PRINCIPLE: instrument-created partitions are not space-owned properties
 until their knob is admitted or shown inadmissible.
+
+## S24a: ERRATUM — BANKING RACED MEASUREMENT (ONE-CALL LATENCY)
+§17 item 3 / S24 asserted BAL's edge admits no 1-bit axis; the pilot's
+own output in the SAME COMMIT shows BAL factors exactly through
+[adj=True]∧[ident=True] → {P,F}. The intern prose was written in the
+same atomic step as the experiment — predicted, not read (R-V35 F₃b
+shape at the sequencing level). CORRECTED: colinearity demonstration is
+TWO FOR TWO (SWP corner = P/V statability bit; BAL corner = P/F truth
+bit); the "held open" exemplar is unestablished among tested pairs —
+generic openness only (T53/PHS/D4C untested). STANDING RULE made
+explicit: RUN, READ, THEN INTERN — results-dependent prose never ships
+in the same atomic step as its experiment. Append-only correction; the
+false sentence stays, indexed.

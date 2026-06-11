@@ -680,3 +680,24 @@ space OWNS; it is colinear with an unstated knob until that knob is
 either admitted (and the geometry re-coordinatized) or shown
 inadmissible. Geometry verdicts get basis indices, the way truth
 verdicts get space indices.
+
+### 17a. ERRATUM to §17 item 3 (banking raced measurement)
+The committed text asserts BAL's (adj,ident) edge "admits NO 1-bit
+conjunctive axis — held OPEN." The pilot's actual output, same commit,
+says otherwise: BAL factors EXACTLY through [adj=True] ∧ [ident=True]
+→ {True: P, False: F}. The intern prose was authored in the same
+atomic step as the experiment, predicting the outcome instead of
+reading it — the R-V35 F₃b shape (expectation written by the same hand
+as the code) recurring at the sequencing level. Corrections: (1) BOTH
+tested exemplars factor through their guard-conjunction bit — the
+colinearity demonstration is two for two, stronger than reported; note
+the kind difference: SWP's corner bit is P/V (statability), BAL's is
+P/F (truth-valued both sides). (2) The "held open" exemplar is
+UNESTABLISHED among tested pairs; the openness of
+separability-by-admissible-basis stands only generically for the
+untested richer graphs (T53's 10 edges, PHS, D4C…), not via BAL.
+(3) Standing sequencing rule, now explicit: RUN, READ, then INTERN —
+results-dependent prose never ships in the same atomic step as the
+experiment that decides it. Catch latency this time: one tool-call
+(post-commit by minutes); the erratum is append-only, the false
+sentence stays in place above, indexed by this note.
