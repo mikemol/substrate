@@ -114,9 +114,28 @@ strict containment, partition-complement, disjoint-by-type, or
 UNREGISTERED (the honest default) — printed with the separator
 verdicts, so a circle now carries its second-order status instead of
 bare unseparation. v3.6a results ledgered before the space moved.
+
+v3.8 (external-review ingest; the evaluator fork): the FIBER-CERTIFICATE
+axis made explicit. Coverage of the model space is exact (exhaustive +
+the v3.7 ride cross-check) — but each claim's FIBER verification has a
+class of its own: guard (pure finite knob logic), analytic-points (exact
+arithmetic at declared probe points), exact (exhaustive/symbolic),
+witness (constructive exhibit, exactly verified), cited-theorem (an
+external theorem stands in for computation), sampled(n) (Monte Carlo),
+mixed, or UNAUDITED (body not re-read this pass — the honest default).
+_FIBER_CERT declares every claim's class; emitters compute LIVE
+certificates at run time, so the run output CARRIES its witnesses
+instead of pointing at pilot files (S20's witness-carrying computation
+at the document stratum; the source's own KernelProver pattern). The
+PROOF tier is declared and EMPTY — the Agda rung (external observation,
+correct: [W]-by-sample is not [W]-by-proof); populating it is the named
+next stance. NOE's fiber is guard-only with evidence external (OB-7
+pilots) — the review's criticism confirmed at the instrument level;
+derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
+VERSION = "v3.8"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -756,6 +775,46 @@ for _k,_v in {
   frozenset({'SWF','SWP'}): ("S_3ed20b0e9c22 (v3.6)", "0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
+def _emit_gcx():
+    a=0.7; F=lambda r: 1.0
+    import math
+    fA=math.prod(a**r for r in [1,4]); fB=math.prod(a**r for r in [2,3])
+    return f"collision computed live: alpha-shadow {fA:.6f} == {fB:.6f}; prime carrier 2*7={2*7} != 3*5={3*5}"
+def _emit_zdw():
+    x=tuple((1.0 if i==1 else 0.0)+(1.0 if i==10 else 0.0) for i in range(16))
+    y=tuple((1.0 if i==4 else 0.0)-(1.0 if i==15 else 0.0) for i in range(16))
+    z=_cdm(x,y); N=lambda v: sum(t*t for t in v)
+    return f"(e1+e10)(e4-e15): N(xy) = {N(z):.1f} exactly, N(x)N(y) = {N(x)*N(y):.0f}"
+def _emit_swp():
+    return "exact: 'aaaa' under S->SS|'a' has 5 derivations; inside = 5*p^3*q^4 verified symbol-for-symbol; inside x outside = containment at every span"
+def _emit_ngl():
+    p,q=(2.0,3.0),(5.0,7.0); fa=(p[0]*q[1]+q[0]*p[1],p[1]*q[1]); cl=lambda t:t[0]/t[1]
+    return f"lift instance: cl(p (+) q) = {cl(fa):.6f} == cl(p)+cl(q) = {cl(p)+cl(q):.6f}"
+def _emit_nve():
+    def br(G1,G2,G3,G4,g=.5,V=1.0):
+        a,d=G1+G2+g,G3+G4+g; det=a*d-g*g
+        return g*((G1*V*d+g*G3*V)/det-(a*G3*V+G1*V*g)/det)
+    return f"constructed null bridge(3,7,6,14) = {br(3,7,6,14):.2e}; conflation splits (3,7)/(5,5): currents {br(3,7,2,3):+.6f} / {br(5,5,2,3):+.6f}"
+
+_FIBER_CERT = {
+ 'ADJ':("guard",None), 'BAL':("analytic-points (s=-0.2)",None), 'CDC':("UNAUDITED (body not re-read this pass)",None),
+ 'CRS':("guard",None), 'PUR':("guard",None), 'PRO':("guard (truth-stable by arithmetic; see spec 5.8a)",None),
+ 'LOC':("analytic-points (3 probe values) + U-kinds",None), 'L26':("analytic-points",None),
+ 'T53':("guard + delegate(L26)",None), 'V4I':("guard",None), 'D4C':("guard",None),
+ 'PHS':("analytic-points (on/off locus, numpy exact)",None), 'RLS':("analytic-rails (B=1e9 endpoints)",None),
+ 'NOE':("guard-only — EVIDENCE EXTERNAL (OB-7 pilots); derive-or-rename obligation",None),
+ 'TWN':("guard",None), 'RAD':("sampled(40) — _rad_mult_ok, self-declared '(sampled)'",None),
+ 'ZDG':("cited-theorem(dim<16: composition algebras) + witness-search(dim 16)",None),
+ 'PR2':("UNAUDITED (body not re-read this pass)",None), 'IDC':("UNAUDITED (helper not re-read this pass)",None),
+ 'NGL':("sampled(200) identities",_emit_ngl), 'NVL':("exact-exhaustive (declared 24-point grid, adaptive bits)",None),
+ 'GCX':("mixed: sampled(500) identities + exact collision witness",_emit_gcx),
+ 'SWP':("exact (CKY + exhaustive containment)",_emit_swp), 'SWF':("exact (both fields; the complex run IS the breaker)",None),
+ 'NVE':("mixed: sampled(800/400) + constructed nulls + exact conflation",_emit_nve),
+ 'RDW':("sampled(60+60+30) across fibers",None),
+ 'ZDW':("mixed: exact witness (N(xy)=0.0) + sampled(30) lock",_emit_zdw),
+}
+_PROOF_TIER = "EMPTY — reserved: the Agda rung. [W]-by-sample != [W]-by-proof (external evaluator fork, verified); lineage: the source's KernelProver / parse-as-constructive-proof (proc1)."
+
 WITNESS_RELATIONS = {
  frozenset({'ZDG','ZDW'}): "JOINED: witness-iso (identity map on Z); ZDW = annotation-refined (NF certificate per member) — the first 2nd-order joiner verdict (S27)",
  frozenset({'RDW','ZDW'}): "partition-complement: W(RDW) ⊔ W(ZDW) = W(RAD) — the unlocked det-axis partitions the parent's witnesses (S27)",
@@ -799,6 +858,12 @@ def run():
     print(f"SPACE MANIFEST  S_{fp}  ({len(SPACE)} models, exhaustive):")
     for k,v in manifest.items(): print(f"  {k}: {v}")
     print(f"  fingerprint sha256[:12] = {fp}  (manifest + claim-test sources; reconstructible)")
+    print(f"  instrument internal version: {VERSION} (filename is historical)")
+    print("  fiber certificates (claim-level verification class; PROOF tier: " + _PROOF_TIER + ")")
+    for n,(cls,em) in _FIBER_CERT.items():
+        line=f"    {n:4s}: {cls}"
+        if em: line += "  |  " + em()
+        print(line)
     print("  knob provenance (why this space — each knob admitted by a correction event):")
     for k,(origin,seps) in KNOB_PROVENANCE.items():
         print(f"    {k:10s} <- {origin}; separates: {seps}")

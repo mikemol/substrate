@@ -2360,3 +2360,48 @@ monodromy). First full protocol execution: 9/9 bricks, 4 commits,
 flush-proof throughout. Next targets: proc2 ('Contextual Security'),
 proc3 ('Recursive Succession'), proc4, the treatise (35KB — the
 protocol's real test).
+
+## S31: EXTERNAL REVIEW INGESTED AS BREAKERS; v3.8 — PROOF-CARRYING RUN
+## OUTPUT (S_5c1b4fe911fd)
+Not a reply to the reviewer; an ingest. The evaluator observation
+VERIFIED VERBATIM: _rad_mult_ok is sampled(40) and self-declares
+"(sampled)" — right script (tools/el-atlas-depsort-v3.py; filename
+historical, VERSION now printed in the run header), correct at its
+stratum: COVERAGE is exact (exhaustive + ride cross-check) while FIBER
+verification was an ungraded mix. v3.8 makes the axis explicit:
+_FIBER_CERT classes every claim (guard / analytic-points / exact /
+witness / cited-theorem / sampled(n) / mixed / UNAUDITED — three
+honest UNAUDITEDs: CDC, PR2, IDC), live EMITTERS compute witnesses at
+run time (GCX collision, ZDW exhibit N(xy)=0.0, NVE null + conflation
+currents, NGL lift instance, SWP exact statement) — the run output
+CARRIES its certificates instead of pointing at pilot files (S20 at
+the document stratum; the source's KernelProver pattern; the author's
+directive: mechanized output should be proof-carrying). PROOF TIER
+declared EMPTY — the Agda rung, the named next stance. FINDING: NOE
+is guard-only, evidence external (OB-7) — the review's criticism
+confirmed at instrument level; derive-or-rename upgraded. BREAKER
+LEDGER (ingested, typed): B1 fiber axis [ACTIONED v3.8]; B2
+proof-carrying generation [harness side ACTIONED; structured-edition
+emitter integration QUEUED]; B3 formal statability definition
+(definability class) [QUEUED — feeds reading-declaration]; B4 Theorem
+GCX formal statement in spec (φ, ker = rank-sum, fiber
+reconstruction; pilot content exists, spec statement missing)
+[QUEUED]; B5 PHS exact sequence 1→Z₂→D₄→V₄→1, class in H²(V₄,Z₂) +
+Brown cite [QUEUED-CHEAP]; B6 NOE derive-or-rename [UPGRADED]; B7
+external citation backbone appendix (Goodman, Eisner, Mohri, Belnap,
+Ginsberg, Fitting, Baez, Schafer, Moreno, Mac Lane, Hodges, Amari,
+Cover&Thomas, Higham, Davey&Priestley, Brown, Prawitz, Lambek,
+Maslov/Litvinov — the review missed Maslov) [QUEUED]; B8 "space
+engineered not canonical" [ALREADY-IMPLEMENTED: KNOB_PROVENANCE; the
+review's suggested fix is verbatim in the harness comments]; B9
+ledgers/artifact-tracking [CREDITED by review]; B10
+equivalence-certificate schema (φ/kernel/invariants/revealing-knobs)
+for future GCX-style identifications [QUEUED; witness-relations
+registry is the prototype]; B11 framing banked: "cogrounded",
+"productive sufficiency" (carrier as generative substrate, not
+uniqueness claim), "closure under known failure modes". PROCESS
+RESIDUE: my two-range sed spliced a chimera function (t_CDC header
+onto t_RLS body) — the brick protocol's seam lesson at the
+code-reading stratum; caught by body recognition; guard: ranges must
+overlap or end at blank lines. UNAUDITED entries are the honest
+default until bodies are re-read.
