@@ -2172,3 +2172,33 @@ generic openness only (T53/PHS/D4C untested). STANDING RULE made
 explicit: RUN, READ, THEN INTERN — results-dependent prose never ships
 in the same atomic step as its experiment. Append-only correction; the
 false sentence stays, indexed.
+
+## S25: Σ→Π PROMOTION — WITNESSES BECOME PATHS; THE LOCK SCHEDULE;
+## THE FIVE-CLAIM SUB-VERDICT CLUSTER (v3.6a, S_9a577e722039)
+Author catches (two, in sequence): Σ-forms unparlayable ("sum types...
+promote to pi types"); my "certificate stops at 16" contradicted
+S20-S23 (EEA/CRT DELIVER the ZDs — the final-vector-just-prior is the
+parameterization). PILOT det-lock: det L_x / N^(d/2) EXACTLY 1.000000
+at d=2,4,8; spread [0.031,0.756] at 16; ZD exhibit = kernel mode
+(N=2, det=0); varying ratio = independent coordinate. THE LOCK
+SCHEDULE: one certificate, every rung; locked = codec (one invariant,
+two charts); unlock = purchased axis; witness modes = the two readings
+of (N,det). PROMOTION RECIPE INTERNED: formalize the carried
+invariant, not the observation. v3.6a: RDW = excess-mode schedule,
+ZDW = kernel-mode schedule, fiber-contentful at every rung; base
+all-P TRUE restored; Break-2 rows ['coeff'] only; cdlevel inert =
+THE PATH'S DISPLAY (S24 signature formally typed). WITNESSES ARE
+PATHS: Π-inhabitant = section d↦fiber-witness (1-path); EEA trajectory
+and CF convergents retroactively path-typed; tower continues upward
+(TWN/PHS extension class = 2-cocycle; S22 joiner = 2-path;
+AspfTwoCellWitness named in v2.37.1) — ω-tower held [C]. RUN FINDING:
+{RDW,RAD} and {ZDW,ZDG} now 0/0 — the promotion merged witness-mode
+claims into their schedule parents at verdict level; condensation
+holds {GCX,RAD,RDW,ZDG,ZDW} as ONE five-member cluster: five
+statements, one verdict map, five witness structures — the
+witness-valued-verdicts program's first concrete workload. {SWF,SWP}
+footprint stable (36,864). PROCESS RESIDUE: first patch died on a
+mis-wrapped anchor, shell continued, a Σ run got a v3.6a filename —
+label authored by intent not reading (S24a shape, artifact-naming
+stratum); guard: verify patch success before naming runs; artifact
+replaced. Σ-form run retained as S_3ed20b0e9c22 (frozen 2f18efb).

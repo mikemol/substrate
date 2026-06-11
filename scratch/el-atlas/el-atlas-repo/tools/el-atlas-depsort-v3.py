@@ -84,6 +84,23 @@ R-V35 architecture demanded, not by assumption. The extension is
 reading-robust: the test touches only the ring structure of C, identical
 under base-field and CD-rung readings (the reading declaration itself
 remains queued).
+
+v3.6a (type-promotion episode; two author catches in sequence): the
+Σ-forms of RDW/ZDW — point-supported at the d=16 fiber (base all-P broke;
+Break-2 rows degenerated base-relatively) — are PROMOTED to Π-forms. The
+recipe: formalize the CARRIED INVARIANT, not the observation. det L_x is
+ONE certificate defined at every rung: LOCKED to the norm below the
+boundary (det = N^(d/2) — one invariant, two charts, a codec) and
+UNLOCKED at 16, where the break is the purchase of an axis and the two
+witness modes (norm-failure vs kernel) are the two readings of the pair
+(N, det). The machinery does not stop at the zero divisors; it DELIVERS
+them (EEA/Bézout/CRT, S20-S23). Author typing: the promotion makes the
+WITNESS ITSELF A PATH — the Π-inhabitant is the section d ↦
+fiber-witness; S24's inert-axis signature is the path's display in
+verdict geometry; 1-path witnesses are not the top of the tower (the
+D₄/TWN extension class is 2-cocycle data; S22's joiner is a 2-path
+between witnesses; the corpus names AspfTwoCellWitness). The Σ-form run
+is retained as S_3ed20b0e9c22.
 """
 import numpy as np
 import hashlib, json, inspect, io
@@ -487,15 +504,43 @@ def _zdw_ok():
     Nq=lambda v: sum(t*t for t in v)
     return Nq(_cdm(x,y))==0.0 and Nq(x)*Nq(y)>0
 
-def t_RDW(m):  # witness structure: the radial failure mode exceeds the ZD mode
-    if m.get('coeff')!='real': return 'V'   # gf2: no radius; complex: reading undeclared
-    if m['cdlevel']<16: return 'V'          # no failure rung below the sedenions
-    return 'P' if _rdw_ok() else 'F'
+@_ft.lru_cache(None)
+def _det_lock(d):
+    """the radial lock: det L_x == N(x)^(d/2), sampled. Locked = det is a
+    function of the norm alone (no independent kernel coordinate, so no
+    left ZDs for x != 0). The certificate is defined at EVERY rung; its
+    lock schedule is the content."""
+    import random as _r
+    rng=_r.Random(17)
+    for _ in range(30):
+        x=tuple(rng.gauss(0,1) for _ in range(d))
+        Lx=np.array([_cdm(x, tuple(1.0 if t==j else 0.0 for t in range(d))) for j in range(d)]).T
+        if abs(np.linalg.det(Lx)/sum(t*t for t in x)**(d//2) - 1.0) > 1e-6: return False
+    return True
 
-def t_ZDW(m):  # witness structure: every ZD is a norm-failure witness (and ZDs exist)
+@_ft.lru_cache(None)
+def _nf_empty(d):
+    """no norm-failure witnesses at rung d (multiplicativity, sampled)."""
+    import random as _r
+    rng=_r.Random(29); Nq=lambda v: sum(t*t for t in v)
+    for _ in range(60):
+        u=tuple(rng.gauss(0,1) for _ in range(d)); v=tuple(rng.gauss(0,1) for _ in range(d))
+        if abs(Nq(_cdm(u,v))-Nq(u)*Nq(v))>1e-9*Nq(u)*Nq(v): return False
+    return True
+
+def t_RDW(m):  # Pi-form (v3.6a): the EXCESS-mode schedule — (NF minus Z nonempty) iff d >= 16.
+    # The witness is the SECTION d -> fiber-witness (a 1-path); cdlevel
+    # inertness in verdict geometry is the path's display (S24).
+    if m.get('coeff')!='real': return 'V'   # gf2: no radius; complex: reading undeclared
+    d=m['cdlevel']
+    if d<16: return 'P' if _nf_empty(d) else 'F'              # fiber: no failure modes at all
+    return 'P' if (_rdw_ok() and not _det_lock(16)) else 'F'  # fiber: excess exhibited, lock broken
+
+def t_ZDW(m):  # Pi-form (v3.6a): the KERNEL-mode schedule — Z inside NF always; Z nonempty iff d >= 16.
     if m.get('coeff')!='real': return 'V'
-    if m['cdlevel']<16: return 'V'
-    return 'P' if _zdw_ok() else 'F'
+    d=m['cdlevel']
+    if d<16: return 'P' if _det_lock(d) else 'F'              # fiber: det locked to N -> kernel empty
+    return 'P' if (_zdw_ok() and not _det_lock(16)) else 'F'  # fiber: kernel mode exhibited
 
 @_ft.lru_cache(None)
 def _swf_ok(field):
@@ -641,8 +686,8 @@ KNOB_PROVENANCE = {
 # FRONTIER: for circles unseparated-in-S, what a separator WOULD require, and at
 # which stratum the residual openness lives.
 FRONTIER = {
- frozenset({'RDW','ZDW'}): ("their verdict maps coincide BY CONSTRUCTION (both theorem-shaped at the "
-   "sedenion rung over the reals): a DELIBERATE 2nd-order pair (S22). The separation is real and lives "
+ frozenset({'RDW','ZDW'}): ("their verdict maps coincide BY CONSTRUCTION (both theorem-shaped at EVERY rung; "
+   "v3.6a Pi-promotion — the witness is the section d -> fiber-witness, a 1-path): a DELIBERATE 2nd-order pair (S22). The separation is real and lives "
    "at the EXHIBIT stratum — ZD pairs are a STRICT subset of norm-failure pairs (xy=0 vs xy!=0 witnesses, "
    "radzdg-witness pilot); instrumenting it requires witness-valued verdicts (registered program)"),
  frozenset({'LOC','L26'}): ("a model with f != -id yet c == 0 on it, or f == -id with "
@@ -691,6 +736,11 @@ for _k,_v in {
   frozenset({'NVE','NVL'}): ("S_2738ddb8c926 (v3.5a)", "separated, 6144 truth"),
   frozenset({'GCX','CDC'}): ("S_2738ddb8c926 (v3.5a)", "separated, 27648 truth"),
   frozenset({'RAD','ZDG'}): ("S_2738ddb8c926 (v3.5a) + radzdg-witness pilot", "unseparated-in-truth; SEPARATED AT THE WITNESS STRATUM (ZD strictly inside norm-failure) — T2 discharged"),
+}.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
+
+for _k,_v in {
+  frozenset({'RDW','ZDW'}): ("S_3ed20b0e9c22 (165888, v3.6 Sigma-forms — point-supported at the d=16 fiber; base all-P broke; Break-2 rows base-relatively degenerate)", "0 truth / 0 kind, perfect circle by construction; Pi-promoted at v3.6a (witnesses retyped as sections/1-paths)"),
+  frozenset({'SWF','SWP'}): ("S_3ed20b0e9c22 (v3.6)", "0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
 def run():

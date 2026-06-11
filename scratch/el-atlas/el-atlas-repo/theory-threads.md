@@ -701,3 +701,57 @@ results-dependent prose never ships in the same atomic step as the
 experiment that decides it. Catch latency this time: one tool-call
 (post-commit by minutes); the erratum is append-only, the false
 sentence stays in place above, indexed by this note.
+
+## 18. S25 — the Σ→Π promotion: witnesses become paths; the lock schedule
+
+Two author catches reshaped the v3.6 boarding before it settled:
+(1) the Σ-forms of RDW/ZDW were "sum types with no way to parley the
+immediate observation into Π types" — point-supported at the d=16
+fiber (base all-P broke; Break-2 degenerated base-relatively); (2) my
+"the certificate stops working at 16" framing contradicted S20–S23's
+own result that EEA/Bézout/CRT DELIVER the zero divisors rather than
+dying at them.
+
+**The promotion** (pilot tools/det-lock-pilot.py; instrument v3.6a,
+S_9a577e722039): formalize the CARRIED INVARIANT, not the observation.
+det L_x is one certificate defined at every rung: LOCKED to the norm
+through the octonions (det = N^(d/2), ratio exactly 1.000000 at
+d = 2, 4, 8 — one invariant, two charts, a codec) and UNLOCKED at the
+sedenions (ratio spread [0.031, 0.756] — det an independent
+coordinate). The break is the purchase of an axis; the witness modes
+(norm-failure vs kernel) are the two readings of the unlocked pair
+(N, det). RDW becomes the excess-mode schedule, ZDW the kernel-mode
+schedule — fiber-contentful at EVERY rung (low fibers: the lock and
+NF-emptiness; the 16-fiber: both modes exhibited). base all-P: True
+restored; RDW/ZDW Break-2 rows collapse to ['coeff']; cdlevel
+inert-in-verdict — the S24 signature, now read as THE PATH'S DISPLAY.
+
+**Witnesses are paths** (author typing, registered): the Π-inhabitant
+is the section d ↦ fiber-witness — a 1-path. Retroactive typings: the
+EEA witness is the certified trajectory (S22 check 1 verified its
+path-ness step by step); the CF convergent sequence is a path-witness
+whose Pell alternation is a property OF the path; inert axes display
+constant paths. And 1 is not the top: the D₄/TWN extension class is
+2-cocycle data, S22's joiner (witness isomorphism) is a 2-path between
+witnesses, and the corpus names AspfTwoCellWitness outright. The
+ω-tower of the witness stratum is held [C] as the long-form of the
+witness-valued-verdicts program.
+
+**Run finding (read, then interned)**: the promotion merged the
+witness-mode claims into their schedule parents at the verdict level —
+{RDW,RAD} and {ZDW,ZDG} are 0/0 perfect circles, and the chapter
+condensation now holds {GCX,RAD,RDW,ZDG,ZDW} as one five-member
+cluster whose ENTIRE internal structure is sub-verdict: five distinct
+statements (codec sighting, multiplicativity schedule, excess mode,
+ZD schedule, kernel mode), one verdict map, five witness structures.
+The instrument is displaying its own stratum-limit at scale; resolving
+the five IS the witness-valued-verdicts program's first concrete
+workload. {SWF,SWP} footprint unchanged (36,864 = the statable complex
+region).
+
+**Process residue (recorded)**: the first v3.6a patch died on a
+mis-wrapped anchor while the surrounding shell continued — producing a
+MISLABELED run artifact (a Σ-space run under a v3.6a filename): the
+run-label was authored by intent, not by reading (the S24a shape at
+the artifact-naming stratum). Guard adopted: patch success is verified
+before any run is named; the artifact was replaced by the true run.
