@@ -1835,3 +1835,25 @@ S10→S11 OBSERVED as one full governance alternation cycle [O] — the
 cotype is an agenda algorithm: tensions = predictions, witnesses/
 breakers = completions, quiescence = empty agenda. Wider family held
 [C]: forward-backward, backprop, bidirectional typing, CDCL, BP.
+
+## S13: THE PRODUCT PUN ADJUDICATED PRECISE — ZIPPER/Σ/Π PILOT 3/3
+Author: "product" in "product of both passes" stays precise under the
+pun onto Π-types — "here is where we find pi types as evolution of
+state." PILOT (tools/pit-zipper-pilot.py): (1) ZIPPER BIJECTION — for
+every span, derivations-through-v ↦ (context, filling) is a bijection
+onto the FULL cartesian product (n=4, n=5): inside×outside is exact
+BECAUSE of this independence; context-freeness ⇒ constant filling
+family [S one direction]; (2) DEPENDENCE WITNESS — lean/attachment
+agreement condition (context-sensitive): naive product 4, dependent sum
+Σ_c|F(c)| = 2 = brute force: Σ degenerates to × only on the constant
+family; under dependence the backward pass must return a FAMILY;
+(3) EVOLUTION — state-dependent Next(s): trajectory count = iterated
+dependent sum = transfer-matrix product (384=384); constant family
+degenerates to plain product (6561=3·3^7): the matrix product is
+Σ-bookkeeping, the scalar power its context-free shadow; the R1 Perron
+pilot retroactively an instance. METHOD NOTE interned: a pun is an
+alias claim under S9; "precise punning" = the mediating structure
+exhibited (bijection + degeneration). HOOKS HELD (occluded provenance,
+[C]): DRIFT-5's fix was already a Π-type; v2.37.1 Constructive
+Induction = ℕ-eliminator; the system is NAMED Π — whether the name
+carried the reading: held, not asserted.

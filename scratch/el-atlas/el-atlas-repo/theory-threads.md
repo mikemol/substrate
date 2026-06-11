@@ -217,3 +217,41 @@ instances graded individually:
   typing (synthesis ⇑ / checking ⇓), CDCL (decide forward, learn
   backward), belief propagation, bidirectional search; the user's own
   APSP epochal system.
+
+## 9. S13 — the product pun is precise: zipper, Σ/Π, context-freeness
+
+Author move: "product," used loosely in "the product of both passes,"
+remains precise even in punning — and the pun lands on dependent
+products. Pilot tools/pit-zipper-pilot.py, 3/3:
+
+- **The zipper bijection** [W]: for every span v (n=4 and n=5), the
+  pairing tree ↦ (context, filling) is a bijection onto the FULL
+  cartesian product Context(v) × Filling(v). Inside×outside is exact
+  because of this independence — the semiring product is the
+  decategorified zipper. Context-freeness ⇒ the filling family is
+  constant over contexts (standard; one direction [S]).
+- **Dependence breaks the product** [W]: an agreement condition (the
+  filling's lean must match v's attachment side) is context-SENSITIVE;
+  the naive product over-counts (4) and the dependent sum
+  Σ_{c} |Filling(c)| gives the true count (2, = brute force). Σ
+  degenerates to × only on the constant family. The "product of both
+  passes" generalizes: under dependence, the backward pass must compute
+  a FAMILY, not a scalar.
+- **Π as evolution of state** [W]: trajectories of a state-dependent
+  family Next(s) are counted by the iterated dependent sum, which IS
+  the transfer-matrix product (brute 384 = matrix 384); a constant
+  family degenerates to the plain product 3·3^T = 6561. The matrix
+  product is Σ-bookkeeping; the scalar power is its context-free
+  shadow. The R1 Perron pilot was retroactively an instance: carrier
+  evolution under cyclic support = the dependent-sum dynamics whose
+  projective shadow the scalar fixed point reads.
+- **The pun discipline** (method note): under S9, a pun is an alias
+  claim — one word, two readings. It earns "precise" by exhibiting the
+  mediating structure; here the zipper bijection and the Σ-degeneration
+  are that structure. Wordplay as conjecture, machinery as adjudicator.
+- **Corpus hooks, held under occluded provenance** [C]: DRIFT-5's
+  coverage fix was already typed as a Π-type ("inductive step a
+  sufficiently-specified Π-type"); v2.37.1's Constructive Induction is
+  the ℕ-eliminator, a Π-type; and the system is NAMED Π. Whether the
+  name already carried the dependent-product reading is an
+  occluded-provenance question: held, not asserted.
