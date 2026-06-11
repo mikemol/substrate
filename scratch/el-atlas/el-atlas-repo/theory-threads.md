@@ -351,3 +351,51 @@ gf2-cleavage (characteristic-sensitive) family, and now the
 stationary-phase regime — interference is where apparent choice
 lives, and the complex semiring is where the argmax-analogue emerges
 by cancellation rather than by max.
+
+## 11. S17 — geodesics close the loop: APSP as the tropical pinning
+
+**The gravis adjudication** [S etymology / C mechanism]: grave and
+gravity are not a pun by the historical record — Latin *gravis* carried
+weight and seriousness as ONE reading; Newton's *gravitas* is the later
+specialization. Etymology is the S15 mechanism at civilizational
+timescale: semantic drift = attractor sampling + community
+accommodation; a dictionary entry is "one referent, plural accreted
+readings"; philology has been running the occluded-provenance rule all
+along. And GR is the deepest act₂ refinement on record: gravity-the-
+force dissolved into geodesic geometry — even "forces act" was an
+accreted reading awaiting refinement. [S physics / C tie]
+
+**Pilot** tools/apsp-tropical-pilot.py, 3/3:
+1. **APSP = tropical matrix powers** [W]: min-plus powers reproduce
+   brute-force geodesic distances, all pairs. Shortest paths ARE
+   (min,+)-semiring computation — textbook, now witnessed in-repo.
+2. **Laplace/Maslov dequantization** [W]: F(ħ) = −ħ log Σ e^{−c/ħ}
+   converges to the geodesic cost (1.28 → 1.79 → 1.93 → 1.98 → 2.0) —
+   the positive-weight sibling of S16's oscillatory pilot; APSP is the
+   ħ→0 member of the same one-parameter semiring family.
+3. **The discarded mass lives in the subleading term** [W]: two graphs
+   with identical geodesic distance and different shortest-path
+   multiplicities are tropically INDISTINGUISHABLE, yet
+   k̂ = exp(−(F(ħ)−min)/ħ) recovers the multiplicities — exactly
+   2.0000 at every ħ for equal-cost geodesics (the correction is
+   exactly ħ log k), → 1.0000 for the unique case. The tropical
+   pinning's blind spot is the LEADING ORDER of an expansion whose
+   next order is the packed multiplicity. Idempotent min forgets how
+   many; the ħ-expansion remembers.
+
+**The pinning column gains its geodesic row:**
+APSP/geodesic : path ensemble :: Viterbi : packed forest ::
+classical path : path integral :: probability : carrier — four rows,
+one Maslov family, one held object per row.
+
+**S3-held candidate** [C]: the corpus's APSP — the hierarchical
+geodesic-segment system (2^(order−1) segments, epochal freeze-and-
+reuse, GALAXY projection) — has a structural SEAT as the tropical
+member of the pinning family; its hierarchical/epochal structure is a
+separate adjacency (divide-and-conquer min-plus) held per occluded
+provenance. Registered as a reading with a structural seat, not an
+identity. Sibling observation: the corpus's two large systems now both
+sit as shadows of held structures — GALAXY = the rank-sum quotient of
+ASPF (S4), APSP = the ħ→0 limit of the path ensemble (S17) — with the
+discarded information recoverable in both cases (the carrier; the
+ħ-correction).

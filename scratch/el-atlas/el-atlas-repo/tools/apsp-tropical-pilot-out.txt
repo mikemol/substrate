@@ -1,0 +1,5 @@
+1. tropical powers == brute geodesic distance, all pairs: True
+2. dequantization (graph A): geodesic = 2.0; F(h) = 1.0:1.2823, 0.3:1.7920, 0.1:1.9307, 0.03:1.9792 -> converges: True
+3. tropical sees both graphs identically (geodesic 2.0 == 2.0: True);
+   k_hat(A) = ['2.0000', '2.0000', '2.0000'] -> 2 (two geodesics);  k_hat(B) = ['1.1889', '1.0067', '1.0000'] -> 1 (one geodesic)
+   multiplicity recovered from the hbar-correction: True

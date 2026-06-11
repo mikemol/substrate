@@ -1934,3 +1934,29 @@ Viterbi : forest :: probability : carrier. MASLOV DEQUANTIZATION
 classical limit of inside; the pinning list is a one-parameter
 semiring family. coeff=complex accrues THIRD provenance (phase,
 char-sensitive family, stationary-phase regime).
+
+## S17: GEODESICS CLOSE THE LOOP — APSP-TROPICAL PILOT 3/3; GRAVIS
+## ADJUDICATION
+Author pun-volley adjudicated and the content pointer cashed. GRAVIS
+[S]: grave/gravity = one Latin reading, weight-and-seriousness
+undivided; Newton's gravitas the later specialization — etymology IS
+the S15 mechanism (attractor sampling + accommodation) at language
+timescale; philology = occluded provenance in long practice. GR note:
+gravity-the-force dissolved into geodesic motion — "forces act" itself
+an accreted reading later refined [S/C]. PILOT
+(tools/apsp-tropical-pilot.py): (1) APSP = tropical (min,+) matrix
+powers, brute-verified all pairs [W]; (2) Laplace/Maslov
+dequantization F(ħ) → geodesic cost (positive-weight sibling of S16)
+[W]; (3) MULTIPLICITY FROM THE ħ-CORRECTION [W]: tropically
+indistinguishable graphs (same geodesic, 2 vs 1 shortest paths)
+separated by k̂ = exp(−(F−min)/ħ) — exactly 2.0000 (correction =
+ħ log k) vs → 1.0000: the tropical pinning's discarded mass is the
+SUBLEADING TERM of the dequantization. Pinning column gains the
+geodesic row: APSP : path ensemble :: Viterbi : forest :: classical
+path : path integral :: probability : carrier — one Maslov family.
+S3-HELD CANDIDATE [C]: corpus APSP (hierarchical geodesic-segment,
+epochal freeze, GALAXY) has a structural seat as the tropical member;
+hierarchy/epochs held as separate adjacency. Sibling: GALAXY =
+quotient shadow of ASPF (S4), APSP = ħ→0 shadow of the ensemble (S17)
+— the corpus's two big systems are both shadows of held structures
+with recoverable corrections.
