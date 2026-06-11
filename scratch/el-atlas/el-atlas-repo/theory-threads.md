@@ -531,3 +531,50 @@ determines the split), computed entirely through cl per case
 bridge is a shadow-level instrument. Join on pairs; split in the
 fiber; bridge coordinatizes the fiber through the shadows. The n-ary
 extension (S9): n−1 partition readings + mass = the full fiber chart.
+
+## 15. S22 — second-order breakers/joiners; the carried certificate; ZDs compiled, not searched
+
+**Second-order breaker (author deposit, named)** [registered]: a result
+of the form "same verdict map, structurally different witnesses" is not
+a null result — it is a breaker ONE STRATUM DOWN. P/F/U/V is
+first-order; T2's discharge ({RAD,ZDG}: verdict-identical, witness sets
+strictly nested) is the house's first explicit 2nd-order breaker. The
+dual **2nd-order joiner** is the missing positive half of every circle
+verdict: "unseparated-in-S" is absence of a 1st-order breaker, while a
+witness ISOMORPHISM would be presence of identification — the upgrade
+{LOC,L26} and {PUR,PRO} have been waiting for. Program registered:
+witness-valued verdicts as the next instrument axis (the {RDW,ZDW}
+frontier entry, now with a name); claims-as-types reading held [C]
+(witness iso = equivalence; "univalence for the instrument" — name
+held, not asserted).
+
+**EEA/Bézout/CRT hold the structure** (pilot
+tools/second-order-zd-pilot.py, exact):
+1. **The certificate is CARRIED, not computed** [W]: rᵢ = sᵢa + tᵢb at
+   EVERY step of the extended-Euclid trajectory — witness-carrying
+   computation is invariant-carrying computation; "the final vector
+   just prior to zero" is where one stops READING a continuously
+   certified path (rational reconstruction's bounded stop is the same
+   move at a chosen limit).
+2. **Zero divisors are COMPILED from the certificate** [W]: the CRT
+   idempotents (36, 385 in ℤ/420) are themselves a zero-divisor pair,
+   built from the Bézout vector — the split ring's first ZDs come out
+   of EEA with no search.
+3. **The chart classifies the whole ZD witness structure** [W, with a
+   retained failure]: ZD ⟺ some CRT coordinate is a NON-UNIT in its
+   factor (exhaustive, 323 = 419 − φ(420)); annihilators read off
+   coordinates (|ann(x)| = ∏ gcd(x,f)). First form of the check used
+   "coordinate = 0" — the field-product degeneration — and FAILED
+   against the non-reduced factor ℤ/4 (nilpotent 2): retained as the
+   recorded failure; over squarefree 210 the naive reading holds
+   exactly. Existence, classification, annihilators: compiled, zero
+   search.
+4. **The sedenion exhibit is an alignment witness** [W]: in
+   octonion-pair coordinates, (e₁+e₁₀)(e₄−e₁₅) = 0 decomposes as the
+   simultaneous system a·c = d̄·b AND d·a = −(b·c̄) — CROSS-TALK between
+   the doubling halves, with octonion multiplication (the last rung
+   before the boundary: "the final vector just prior") supplying the
+   coefficients. The CD analogue of CRT's non-coprime failure mode
+   [C as analogy]; the ZD variety's G₂ geography is the literature's
+   form of "compiled, not searched" at dim 16 [S, Moreno] — deriving
+   our exhibit family from octonion data alone is the named program.

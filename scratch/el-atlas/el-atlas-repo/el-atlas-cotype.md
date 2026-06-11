@@ -2084,3 +2084,28 @@ v3.6 boarding (RDW/ZDW + complex-reading declaration + SWP
 ordered/order-free split); OB-12 ∃-search (T4); T5 glaze test
 (on-demand); dep-tuple instrumentation + stance audit (R-V35 G8
 handoff); OB-3/OB-11/tetrad/GRC; SL₂(ℤ)/deck adjacency.
+
+## S22: 2ND-ORDER BREAKERS/JOINERS NAMED; CERTIFICATE CARRIED; ZDs
+## COMPILED (PILOT 4/4 WITH ONE RETAINED-AS-FAILED FORM)
+Author deposits: (1) same-verdict-different-witness-structure = a
+2ND-ORDER BREAKER (one stratum below P/F/U/V); dual 2ND-ORDER JOINER =
+witness isomorphism = the positive identification circles have lacked
+(program: witness-valued verdicts; {LOC,L26},{PUR,PRO} are the waiting
+candidates; claims-as-types/univalence name HELD [C]). (2) EEA/CRT/
+Bézout hold the answers STRUCTURALLY — "the final vector at the limit
+just prior to the zero-divisors." PILOT: certificate carried at EVERY
+EEA step (invariant-carrying computation); CRT idempotents (36,385 mod
+420) = a ZD pair COMPILED from the Bézout vector, no search; chart
+classifies ALL ZDs — first form "coordinate=0" FAILED (RETAINED) against
+the non-reduced factor Z/4 (nilpotent 2; 420 not squarefree), corrected
+criterion "coordinate NON-UNIT" exhaustive (323 = 419−φ(420)),
+squarefree 210 confirms the naive reading as the field-product
+degeneration — the failure is the lesson (non-reduced factors are a
+sub-stratum); annihilators read off coordinates. Sedenion exhibit
+(e₁+e₁₀)(e₄−e₁₅)=0 DECOMPOSES as the half-channel ALIGNMENT system
+a·c=d̄·b ∧ d·a=−(b·c̄) — cross-talk in CRT's failure shape, octonion
+coefficients = the last-rung data [C analogy; G₂ geography S/Moreno;
+deriving the exhibit family from octonion data = named program].
+G8-handoff dep-audit: CLEAN (every observed read declared; the trust
+both bug and fix shared is now instrumented). v3.6 boarding queue
+unchanged (RDW/ZDW, SWF extends-breaker, reading declaration).

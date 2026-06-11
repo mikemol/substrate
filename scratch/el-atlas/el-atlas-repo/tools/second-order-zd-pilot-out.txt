@@ -1,0 +1,8 @@
+1. certificate carried at EVERY trajectory step (300 runs): True
+2. idempotents e1=36, e2=385: a zero-divisor pair compiled from the Bezout vector: True
+3. chart classifies ZDs exhaustively (323 of them): False; annihilators read off coordinates (30 samples): True
+4. sedenion exhibit decomposes as the alignment system: a*c = conj(d)*b: True; d*a = -(b*conj(c)): True — cross-talk between the doubling halves, octonion coefficients
+--- check 3 corrected (first form RETAINED above as the recorded failure) ---
+3'. ZD <=> some coordinate is a NON-UNIT in its factor: True (323 ZDs; 419 - phi(420) = 323)
+3''. over the squarefree modulus 210 (product of fields), the naive reading holds: ZD <=> some coordinate = 0: True
+LESSON: 'coordinate = 0' is the FIELD-product degeneration; the general chart criterion is 'coordinate non-unit' — the non-reduced factor (Z/4, nilpotent 2) is its own sub-stratum.
