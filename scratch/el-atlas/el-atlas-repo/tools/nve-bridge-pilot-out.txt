@@ -1,0 +1,4 @@
+1. null<=>det and sign match over 3000 samples: null=True, sign=True
+2. high-impedance bridge = difference of L1-normalized conditionals: True
+3. splits (3,7) and (5,5) of joined G=10: scalar join equal (10==10); bridge readings -0.043478 vs +0.043478 differ: True
+4. classical section: (3,7) vs (6,14) (equal odds, double mass) -> i_g = 0.00e+00 (null: True) — the bridge is a shadow-level (ratio) instrument; the case-pair retains the mass it cannot see

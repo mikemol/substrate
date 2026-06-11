@@ -71,12 +71,13 @@ defined for boarding.
    same span, same yield — packed = the 2-cell (AspfTwoCellWitness in
    embryo in v2.37.1's associativity proof, per S6). Drift = no 2-cell =
    unpacked.
-9. **Candidate semantics for Nedge's open ∨E** [C, new]: the G-calculus
-   leaves proof-by-cases open in its own source. The SPPF answer: a
-   disjunction is a PACKED NODE — the case split held, case-masses
-   intact; elimination is a projection over the pack, not a choice
-   before it. The carrier treatment of ∨E = packed-node semantics with
-   (E+,E-) case weights. Queued for the N-series.
+9. **Nedge's open ∨E — ANSWERED (author, S8)** [W pilot]: the
+   single/double pin split/join carrier expansion plus the Wheatstone
+   bridge (nedge-decomposition §8; tools/nve-bridge-pilot.py). The
+   packed-node reading below survives as the same answer one layer up:
+   the pack is the storage of the held disjunction, the split/join is
+   its arithmetic, the bridge is its measurement. Claim NVE defined;
+   boards with GCX and SWP.
 10. **LangSec convergence** [S]: default-deny as parse failure; the
    parser as the security boundary; v2.37.1's Contextual Security is the
    corpus's independent arrival at language-theoretic security.

@@ -222,3 +222,60 @@ content-address). Plausible import edge, not a document claim. [C]
 Honest remainder: operational complexity (space per edge = 2×|sources|
 scalars; equilibrium scheduling; compaction safety against the lift) is
 genuinely open — the review's core point stands and stays in the ledger.
+
+## 8. Addendum — ∨E answered (author, S8): split/join carrier expansion + the Wheatstone bridge
+
+The source's own open flag ("a key area for precise axiomatic definition")
+is answered by the author: **the G-calculus's ∨E is the single/double pin
+split/join carrier expansion, witnessed by the Wheatstone bridge.** Pilot
+passed on all four checks (tools/nve-bridge-pilot.py, output committed).
+
+**The construction.** A disjunction P∨Q is a SPLIT: the channel expands
+from one pin to a case-pair of pins — the differential purchase (§5.7 PUR)
+performed at the proof level. The split is a *section choice*, not a
+function: distinct case-pairs (3,7) and (5,5) join (parallel law, G_OR) to
+the same scalar G = 10. That non-functionality is exactly why the scalar
+calculus could not define ∨E — the quotient erases which split occurred.
+Each case derivation acts per-pin; elimination is the JOIN: the parallel
+law gives the conclusion's support (the mass read), while the case-bias
+axis — *which case did the work, and how unevenly* — is the purchased
+information the scalar discards.
+
+**The bridge is the instrument of the purchased axis.** With the case
+pair as one divider and a reference as the other: (1) the null condition
+is the determinant, i_g = 0 ⟺ G1·G4 = G2·G3, with sign(i_g) =
+sign(G1G4 − G2G3) — the bridge reads the bias of the
+comparison-of-comparisons (B.0's own phrase, now a circuit); (2) in the
+high-impedance limit the bridge reading is exactly the DIFFERENCE OF TWO
+L1-NORMALIZED CONDITIONALS, V·(G1/(G1+G2) − G3/(G3+G4)) — §5.7e
+identification 5 stitched to §5.7e identification 4: the bridge compares
+conditionals and nulls on equal odds; (3) the two splits of G=10 that the
+scalar conflates read as equal-and-opposite bridge currents (∓0.043478
+against reference (2,3)) — the case-bias recovered, signed; (4) equal
+odds at ANY mass nulls the bridge ((3,7) vs (6,14) → 0): the bridge is
+itself a shadow-level (ratio) instrument, blind to the mass the case-pair
+retains — the two-channel crossbar at the circuit level: galvanometer =
+bias read, source current = mass read.
+
+**The classical section of ∨E.** Case identity is invisible exactly on
+the balance manifold. Classical logic performs ∨E freely because its ∨E
+*lives on that section* — the conclusion is required to be invariant
+across the bridge; the G-calculus stalls off the section because the
+scalar retains no bridge reading after the join. The carrier (equivalently
+the held case-pair; equivalently the SPPF packed node) retains it. One
+answer, three layers: the packed node is the storage of the held
+disjunction, the split/join expansion is its arithmetic, the Wheatstone
+bridge is its measurement.
+
+**Candidate claim NVE** (∨E bridge): the four pilot facts as executable
+checks. Guards: pins < 2 → V (the split IS a pin expansion); coeff = gf2
+→ V (signed bridge current and ratios need char 0); neg = False → V (the
+bridge reading is signed); ops = 'diagonal' → V (the bridge is a composed
+read across pins). Boards the next run with GCX and SWP.
+
+Residue update: §6's "∨E open in source" is now ANSWERED-PENDING-
+INSTRUMENT (author construction + pilot [W]; instrument boarding and the
+spec import ride the next run per the v3.3 lesson). Still open inside the
+answer: the n-ary case (multi-arm bridge / Wheatstone lattice) and the
+∨E transformation's exact statement in the lift coordinates (fraction
+pairs under split/join).

@@ -1715,3 +1715,26 @@ open vE = PACKED-NODE semantics (disjunction held with case-masses;
 elimination = projection over the pack) — queued for N-series pilot.
 Claim SWP defined (guards coeff/pins), boards the next run WITH GCX.
 No spec import (v3.3 lesson).
+
+## S8: ∨E ANSWERED (AUTHOR) — SPLIT/JOIN EXPANSION + WHEATSTONE BRIDGE;
+## NVE PILOT PASSED
+Author supplies the G-calculus's ∨E: the single/double pin split/join
+carrier expansion, witnessed by the Wheatstone bridge. PILOT (4/4,
+tools/nve-bridge-pilot.py): (1) bridge null ⟺ determinant G1G4=G2G3 over
+3000 samples, sign(i_g)=sign(det) — the bias of the comparison-of-
+comparisons (B.0's phrase, now a circuit); (2) high-impedance bridge =
+DIFFERENCE OF TWO L1-NORMALIZED CONDITIONALS exactly — §5.7e ident. 5
+stitched to ident. 4; (3) splits (3,7)/(5,5) of joined G=10: scalar
+conflates, bridge reads ∓0.043478 — the split is a SECTION the quotient
+erases, recovered signed; (4) equal odds at double mass nulls ((3,7) vs
+(6,14)) — the bridge is itself shadow-level (ratio) instrumentation,
+blind to the mass the case-pair keeps: galvanometer = bias read, source
+current = mass read — the crossbar at the circuit level. CLASSICAL
+SECTION OF ∨E identified: case identity invisible on the balance
+manifold; classical logic's free ∨E lives there; the scalar stalls off
+it. Three-layer unification: packed node (storage) / split-join
+(arithmetic) / bridge (measurement). Claim NVE defined (guards pins/
+coeff/neg/ops), boards next run with GCX + SWP. nedge-decomposition §8
+written; theory-threads item 9 superseded in place; §6 residue:
+∨E open → ANSWERED-PENDING-INSTRUMENT. Open inside the answer: n-ary
+case (multi-arm bridge) + the exact lift-coordinate statement.
