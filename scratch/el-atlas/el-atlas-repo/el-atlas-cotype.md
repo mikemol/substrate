@@ -1527,3 +1527,40 @@ author usage (All-Pairs Shortest Paths) and the Gemini OCAL doc
 NO SPEC IMPORT (v3.3 lesson); candidate claim GCX named for if/when
 candidate 1 survives the proof read. Frontier: OCAL doc, merged_ontology
 Thm 9.1, two too-large ASPF docs, three unenumerated APSP folders.
+
+## S2: OCAL READ — SYSTEM PI IS NEDGE'S META-SPEC; ONE OSCILLATION
+## RESOLVED, ONE GENUINELY OPEN
+Three Drive docs fetched in full (both Gemini syntheses + the Aug-2024
+"OCAL" doc = DIR Books 1-4). FINDINGS: (1) System Pi v2.22 = Nedge's
+formal meta-specification (HoTT kernel w/ univalence, directed type
+theory, locales/Grothendieck topos with Heyting local truth, linear
+types, Langlands/trace-formula libraries, the Nedge Quine + F_Crucible ->
+Toulmin). (2) APSP oscillation RESOLVED: author's usage = the pathfinding
+system (witness: Drive doc "I point out again that APSP is a pathfinding
+syste..."); "Adaptive Processing/Search Protocol" = Gemini back-formation
+from the Books' unexpanded acronym; Books import APSP's hierarchical-
+community model + exploration/annealing. (3) OCAL expansion UNRESOLVED in
+author voice: "Object/Constraint Abstraction Layer" (doc 1) vs locale-
+substring l-OCAL-e (doc 2 admits this) vs the "OCAL"-titled doc that
+never defines it. Missing witness = author-voice definition.
+NEW CANDIDATES: (7) PBF Duality-and-Cancellation ("every edge has a
+potential dual; a pair cancels to unit"; falsity = apply-the-dual, never
+delete; OUA ledger preserved) = the antipode/unit constraint practiced
+PRE-QUOTIENT at the edge level — Nedge's editing discipline is carrier-
+shaped even where its G-theory is quotient-shaped; matches R1's merge
+result [S-candidate]. (8) OCAL local truth (Heyting-valued, sheaf-
+segregated contradictions) = verdict-relativity/no-unindexed-verdicts
+formalized — the harness's S_-indexed verdicts as sections over a site
+[strong C]. (9) Trace-formula geometric/spectral claim names the R1
+Perron pilot (spectral side explicitly = "eigenvalues of the G-Value
+Calculus"; our G* = Perron eigen-ratio) [C]. (10) pattern_id Protobuf
+remediation ("lexical contamination" removed; type intrinsic to outer
+handle) = the knob-admission/correction-event governance pattern in the
+author's own history [S-candidate, governance overlay]. (11) First-Iso-
+Theorem context-as-Kernel usage [C]. GLAZE FLAGS: Langlands "Perfect
+Compilation" + body/metabolism/soul triad = synthesis prose, vocabulary
+adjacency only; the grand three-system isomorphism is a Gemini framing of
+the author's actual import relations. FRONTIER: fetch System Pi v2.22
+(two cited Drive IDs); author-voice OCAL definition; merged_ontology Thm
+9.1 (GCX gate); Toulmin now doubly indexed (N-series + F_Crucible).
+NO spec import (v3.3 lesson holds).

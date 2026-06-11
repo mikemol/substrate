@@ -134,12 +134,22 @@ discipline of an interned carrier graph.
 
 ## 5. Label oscillations (declare before any import)
 
-- **APSP**: "All-Pairs Shortest Paths" (conversation corpus, executable
-  math) vs "Adaptive Processing/Search Protocol" (the Gemini-authored OCAL
-  synthesis doc). Same ladder-law obligation as Nedge's cost/strength
-  rails: the algebra may be stable under the renaming, but the reading
-  must be declared. Current evidence favors All-Pairs Shortest Paths as
-  the author's usage.
+- **APSP**: RESOLVED at the source. The author's usage is the pathfinding
+  system (witness: a Drive doc titled "I point out again that APSP is a
+  pathfinding syste..." — the author correcting a model on exactly this).
+  "Adaptive Processing/Search Protocol" is a Gemini back-formation: the DIR
+  Books use the acronym unexpanded ("Inspired by the APSP framework..."),
+  and the synthesis doc reverse-engineered an expansion from context.
+  Author-attributed APSP content the Books import: the hierarchical
+  community model and the exploration/annealing optimization phases —
+  consistent with the conversation corpus's epochal freeze-and-reuse.
+- **OCAL**: UNRESOLVED in the author's voice. Three competing readings:
+  (a) "Object/Constraint Abstraction Layer" (synthesis doc 1); (b) the
+  Locale/Topos primitives — and synthesis doc 2 *admits* "OCAL" appears as
+  a substring of LocaleDef/LocalFieldDef/LocallyCompactGroupDef in the
+  System Pi specs (l-OCAL-e), i.e. possibly a reified substring; (c) the
+  Aug-2024 Drive doc TITLED "OCAL" contains the DIR Books and never defines
+  the term. The author-voice definition is the missing witness.
 - **ASPF**: reviewer's expansion wrong, corpus expansion canonical
   (Algebraic Structural Prime Fingerprint).
 
@@ -155,3 +165,95 @@ discipline of an interned carrier graph.
 - Candidate instrument claim if candidate 1 survives: GCX ("the GALAXY
   codex"), the third codec sighting as an executable check — only then a
   spec import (v3.3 lesson).
+
+
+## 7. S2: the OCAL read (three docs fetched in full)
+
+Docs read: "DIR, APSP, OCAL Isomorphisms Explored" (Gemini synthesis,
+2025-12-07, two identical copies); "PBF Trace and System Pi Isomorphisms"
+(Gemini synthesis, 2025-12-07, two copies); "OCAL" (2024-08-04 — the DIR
+encyclopedic overview + White Paper Books 1–4, OCAL never defined inside).
+
+### Observed [O]
+
+**System Pi (v2.22) is Nedge's formal meta-specification** — HoTT kernel
+(univalence explicitly integrated), category/topos theory libraries,
+directed type theory (DirectedPath, compose_dir, OrthoPath), linear types
+with tensor products, Grothendieck topos with Heyting-valued local truth,
+Langlands/trace-formula libraries, and the Nedge Quine (a PBF set whose
+interpretation instructs handing over that very set; F_Crucible functor
+maps the Crucible debate engine onto the Toulmin model). Drive IDs for
+SYSTEM Pi v2.22 appear in the works-cited:
+1xoOcDPEcCKKArJsDsAQUDgNYOjdUxwhleREneHTvUkw and
+10GrDUQdXh_uLc-bUGBiuXPyYSY8C8ZxwXKd1s3F-dMc (two IDs, unfetched).
+
+**PBF mechanics** (extends the N-series foundation): PBF Trace =
+(Outer/Framer, Inner/Framee), no separate edge label — the predicate IS
+the outer handle; "no magic strings." A named correction event in the
+author's history: the Protobuf pattern_id field was REMOVED as "lexical
+contamination" — type is intrinsic to the outer handle (Compositional
+Identity enforced by remediation, not by fiat). **Duality and
+Cancellation**: "Every edge has a potential dual; a pair cancels to
+unit"; falsity is handled by APPLYING THE DUAL, never by deletion — the
+OUA ledger preserves the full history of the error.
+
+**DIR inside System Pi** = "Directed": directed type theory as the arrow
+of time/causality; the PBF ordered pair is a DirectedPath. **OCAL-side
+primitives** = Locales/Topos: LocaleDef carries a complete Heyting
+algebra; truth is local — a PBF can be true in Locale X and false in
+Locale Y, both maintained without collapse by sheaf segregation.
+
+### Identification candidates [C unless marked]
+
+7. **Duality-and-Cancellation is the antipode constraint at the edge
+   level, practiced pre-quotient.** "Pair cancels to unit" is
+   G(P)·G(¬P) = 1 in the multiplicative chart; "apply the dual, never
+   delete, ledger preserved" is the R1 result (merge does not factor
+   through the quotient; negative evidence is an accumulator, not an
+   eraser) already deployed in Nedge's own editing discipline. The
+   strongest yet evidence that Nedge's practice is carrier-shaped even
+   where its G-value theory is quotient-shaped. [S-candidate]
+8. **OCAL-as-local-truth is verdict-relativity formalized.** Heyting-
+   valued truth over a site, contradictions segregated into sheaves =
+   "no unindexed verdicts": the harness's S_-indexed verdicts are
+   sections over a site of declared model spaces; the atlas's
+   conflict-preservation is the same refusal-to-collapse one level down.
+   If the System Pi LocaleDef survives a direct read, the cotype's
+   epistemics has a formal home in the author's own corpus. [strong C]
+9. **The trace-formula claim names our Perron pilot.** The synthesis doc
+   maps geometric side = PBF graph, spectral side = "eigenvalues of the
+   G-Value Calculus." R1's runtime pilot computed exactly an instance:
+   G* = the Perron eigen-ratio of carrier pair-dynamics (mass diverges,
+   the spectral coordinate converges). Geometric/spectral = carrier/
+   projective-shadow — third sighting of the move. [C, pilot-adjacent]
+10. **The pattern_id remediation is the knob-admission governance
+   pattern**: a distinction (lexical type label) demoted by a named
+   correction event because structure already carries it. Same shape as
+   fingerprint-widening (v3.4a) and the basis_def admission. [S-candidate
+   for the governance overlay, not the spec]
+11. First Isomorphism Theorem as used (concept G, context = Kernel,
+   expressed meaning = Image) — context-as-quotient vocabulary; the
+   atlas would say: the kernel is what the reading relation pins. [C]
+
+### Glaze flags
+
+The Langlands material (compilation = finding the automorphic form;
+"Perfect Compilation"; language = Riemann surface) is grandiose synthesis
+prose; held as vocabulary adjacency only. The "body/metabolism/soul"
+triad framing likewise. The isomorphism TABLE (stream≅path,
+constraint≅proof via Curry-Howard, execution≅homotopy) is standard and
+sound; the grand three-system "isomorphism" is a Gemini framing of the
+author's actual import relations (DIR Books import APSP's community
+model; System Pi formalizes both).
+
+### Frontier updates
+
+- FETCH System Pi v2.22 directly (two Drive IDs above) — author-voice
+  OCAL definition, LocaleDef, DirectedTypeTheoryDef, the G-value/
+  trace-formula passage if present.
+- The author-voice OCAL expansion remains the missing witness; ask or
+  locate the originating conversation (the Aug-2024 "OCAL"-titled doc's
+  source chat).
+- merged_ontology Thm 9.1 proof read still pending (GCX gate).
+- Toulmin: F_Crucible maps the Crucible onto the Toulmin model — the
+  unread Toulmin analysis is now doubly indexed (N-series + System Pi).
