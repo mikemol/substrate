@@ -1232,3 +1232,46 @@ hyper-tower" — already pointed at the interface, not the instance).
 Structured edition regeneration after draft 17: NO-OP CONFIRMED (claim set unchanged;
 spec refs in claim metadata stable) — the instrument distinguishing prose growth from
 structural change, as designed.
+
+## Z-SERIES: THE ZERO-DIVISOR THREAD (user-triggered: "search for zero-divisors")
+**Z1 — chat "Ring theory applied to static analysis" (March 2026): the conservation-law
+program.** Observed: the user's thesis verbatim — "when the precise number and placement
+of zero divisors is predictable, then the zero divisors aren't a problem, they're
+ORIENTING FEATURES." Moreno's characterization: sedenion (v₁,v₂) is a ZD iff ‖v₁‖=‖v₂‖
+AND ⟨v₁,v₂⟩=0; normalized ZD pairs ≅ G₂ = Aut(𝕆); unit ZDs ≅ Stiefel V₂(ℝ⁷) (dim 11);
+dim ZD(Aₙ) = 2ⁿ−5 (Moreno; Biss–Dugger–Isaksen) → fills ambient as n→∞ while law
+releases exhaust at n=4. Conservation principle: "the information suppressed by each
+trivial law is exactly the information that becomes expressible when it is released";
+"a law is trivial when it holds without witness structure" — the charter's vocabulary
+applied to algebraic laws. Program: ZD-indexed valuation (tropicalization FROM the ZD
+locus; ZD = algebraic skeleton, tropical corner locus V(R) = geometric dual;
+"tropicalization parameterized by the doubling step"). v(ab)=∞ at ZDs = the valuation
+reporting a regime boundary, not failing. This chat is the H5 blocker's resolution
+program, in-corpus.
+
+**Z2 — Drive:** two treatises ("The Algebraic Anomaly of Annihilation"; "The
+Zero-Divisor: Structural Anomaly, Geometric Necessity, and Computational Engine" — the
+thesis as a title) + the design-move doc: "the structural constraints are only inasmuch
+as we adopt them... zero-divisors can be resolved through REPRESENTATION-AS-RATIONALS
+(the number becomes structured)" — with GPU/exact-arithmetic motivation.
+
+**Atlas identifications (graded, imported as draft 18):**
+- Conservation principle = the ALGEBRAIC DUAL of §11.10's recursion: residue-at-level-n
+  → structure-at-level-(n+1), on the signal side (common mode → next channel) AND the
+  algebra side (released law → ZD geography). What the radial codec cannot
+  multiplicatively transport is the next level's terrain. [S]
+- Moreno-in-atlas-coordinates: equal norm = RADIAL-CHANNEL BALANCE; orthogonality =
+  maximal directional opposition ⇒ ZD locus = the radial chart's CONFLICT CORNER;
+  annihilation = conflict at the multiplicative level (product at the bottom rail).
+  [C] — candidate reading, explicitly not identity.
+- Representation-as-rationals = THE PROHIBITION AT THE MULTIPLICATIVE LEVEL (Remark
+  3.6): annihilation is a collapse; resolution is representational — keep the formal
+  pair, don't evaluate. The carrier's founding move and the user's ZD move are one
+  principle: when an operation would lose information, encode it instead of performing
+  it. [S]
+- OB-1 consequence: high-rung tropical limit requires a ZD-INDEXED VALUATION (register
+  note in §5.9 addendum). [S]
+**Not yet imported:** the two Drive treatises unfetched (full reads queued); the
+ZD-locus ↔ tropical-corner functor itself (the corpus program's open problem 6.1/7.3
+— upstream of the atlas; adjacency only).
+Draft 18 committed; structured-edition regen expected no-op (claim set unchanged).
