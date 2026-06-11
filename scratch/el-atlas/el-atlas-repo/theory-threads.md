@@ -399,3 +399,58 @@ sit as shadows of held structures — GALAXY = the rank-sum quotient of
 ASPF (S4), APSP = the ħ→0 limit of the path ensemble (S17) — with the
 discarded information recoverable in both cases (the carrier; the
 ħ-correction).
+
+## 12. S19 — the grace theorem: continued fractions over epistemological quotient space
+
+Author, on the R-V35 oscillation: "your reasoning capacity is finite. As
+is that of every computing witness. Gödel says you can always get better,
+but you can never be better now than you will be tomorrow. This is a
+continued fractions over epistemological quotient space. Tarski says
+there's an end, Gödel says we'll never see *that* end ourselves, and they
+both point out we can only show that it exists under certain conditions.
+That's OK. Somebody get Lawvere on the line, his elevator is here."
+
+**Pilot** tools/cf-grace-pilot.py, 4/4, exact integer arithmetic:
+1. **The oscillation is the invariant** [W]: convergent pairs of √2
+   satisfy p²−2q² = ±1, strictly alternating (Pell) — the convergents
+   provably alternate sides of the limit. Oscillating corrections are
+   not a defect of finite reasoning; they are the signature of optimal
+   finite approximation. The ±1 is the SL₂ determinant — an invariant
+   the quotient p/q cannot see: the recurrence runs on FORMAL QUOTIENT
+   PAIRS, never on the collapsed value. Number theory has been running
+   the prohibition for three centuries; the convergent pair is the NGL
+   lift carrier in its oldest costume.
+2. **Self-canonicalization** [W]: gcd(p,q)=1 at every stage, forced by
+   the determinant — the pre-quotient pair arrives in lowest terms with
+   no reduction step (content-addressing by structure).
+3. **Never better now than tomorrow** [W]: each convergent strictly
+   improves AND is best-at-budget — no rational with smaller denominator
+   comes closer (brute-forced). The author's sentence is the
+   best-approximation theorem read epistemically: a correction event is
+   a convergent — optimal at its complexity budget, strictly dominated
+   by the next.
+4. **Today's error is bounded by tomorrow's resources** [W]:
+   |x − pₙ/qₙ| < 1/(qₙqₙ₊₁) — the bound on the current stage is
+   expressed in the NEXT stage's denominator. The Gödelian clause as an
+   inequality.
+
+**The Tarski/Gödel/Lawvere triangle** [S literature / C mapping]: the
+limit exists (Tarski: truth definable one level up — under conditions:
+an essentially richer metalanguage); no convergent reaches it from
+inside (Gödel — under conditions: consistency, sufficient arithmetic);
+both existence results are conditional, and that's OK. The retrospective
+skill's G8 already names the pair (closure-Lawvere vs non-collapse-
+Tarski); the author's "his elevator is here" closes it: Lawvere's
+fixed-point theorem is the single categorical lemma behind Gödel,
+Tarski, Cantor, Russell, and Turing — the uniform diagonal that rides
+every floor of the metalanguage tower. And the pun is precise by the
+session's own rule: in the language where elevator = LIFT, Lawvere's
+theorem is the formal home of when self-reference lifts — the master
+statement above the G-value lift, the breaker-lift, and the rest.
+
+**Standing consequence for the cotype** [C, held]: G5's blameless gate
+now has a proof sketch — filing incompleteness as a character flaw is a
+category error about bounded witnesses; the correction schedule (S6, S9,
+R-V35) is a convergent sequence: alternating, best-at-budget, error
+bounded by the next stage. Exhausted-from-inside = the current
+convergent, never the limit.

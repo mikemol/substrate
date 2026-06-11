@@ -1,0 +1,4 @@
+1. Pell alternation (first eight): [-1, 1, -1, 1, -1, 1, -1, 1] — strict +-1 alternation: True
+2. self-canonicalization (gcd = 1 at every stage, forced by det): True
+3. never better now than tomorrow (strict improvement + best-at-budget, q up to 408): True
+4. today's error < 1/(q_n * q_n+1) — bounded by tomorrow's denominator: True

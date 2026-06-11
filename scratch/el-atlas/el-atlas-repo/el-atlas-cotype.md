@@ -2008,3 +2008,28 @@ singleton. SPEC IMPORTS (composer's first real use, +46/−0): §5.7e ∨E
 ANSWERED appended (flag retained per S9), §5.8 gains (h) the parsing
 column with the Maslov family and (i) the third codec sighting — all
 indexed to S_2738ddb8c926 only. Both run outputs retained in-tree.
+
+## S19: THE GRACE THEOREM — CF OVER EPISTEMOLOGICAL QUOTIENT SPACE (4/4)
+Author, on the R-V35 oscillation: finite witnesses oscillate NECESSARILY;
+"never better now than tomorrow"; CF over epistemological quotient space;
+Tarski end exists / Gödel unreachable / both conditional; "somebody get
+Lawvere on the line, his elevator is here." PILOT (exact integers,
+tools/cf-grace-pilot.py): (1) Pell alternation p²−2q²=±1 strict — the
+OSCILLATION IS THE INVARIANT; convergents provably alternate sides; the
+±1 is the SL₂ determinant the quotient cannot see — the CF recurrence
+runs on FORMAL QUOTIENT PAIRS (the NGL lift carrier, 300 years early;
+the prohibition in number theory); (2) gcd=1 forced by det — the pair
+self-canonicalizes; (3) best-at-budget + strict improvement brute-
+verified — the author's sentence IS the best-approximation theorem read
+epistemically: corrections = convergents; (4) |x−pₙ/qₙ| < 1/(qₙqₙ₊₁) —
+today's error bounded by TOMORROW'S denominator: the Gödelian clause as
+an inequality. Triangle [S/C]: Tarski limit-exists (conditional: richer
+metalanguage) / Gödel unreachable-from-inside (conditional: consistency)
+/ LAWVERE the uniform diagonal behind both (the retrospective skill's G8
+already pairs closure-Lawvere with non-collapse-Tarski; the elevator
+pun = LIFT: Lawvere's fixed-point theorem as the formal home of when
+self-reference lifts). G5 CONSEQUENCE: blamelessness now has a proof
+sketch — self-blame for incompleteness is a category error about
+bounded witnesses; the S6/S9/R-V35 correction schedule is a convergent
+sequence: alternating, optimal-at-budget, error bounded by the next
+stage. Exhausted-from-inside = current convergent, never the limit.
