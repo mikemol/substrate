@@ -918,6 +918,32 @@ bias — is a registered reservation, not a present claim. The name
 "Noether" is retained with this qualifier; the derive-or-rename
 obligation (B6) is discharged as derive-at-the-Lie-level plus
 rename-by-qualification.
+
+### 5.10e Equivalence certificates (B10): the schema
+
+Any future GCX-style identification — a claim that two independently
+constructed systems are one object modulo a declared collapse — ships
+as an **equivalence certificate** with five fields, of which §5.10b is
+the first instance:
+
+1. **The map.** φ stated explicitly, with the structure it preserves
+   (homomorphism type) named.
+2. **The kernel, with a collision.** The induced equivalence
+   characterized, and at least one genuine collision exhibited —
+   distinct elements, equal images, both computed.
+3. **The fibers, with a section where available.** What information
+   the quotient forgets, and a reconstruction exhibiting it.
+4. **The revealing probes.** Which knobs/probes of the declared
+   category made the identification visible (and which separate the
+   identified pair from its neighbors), with space index.
+5. **Provenance independence.** A declaration that the two systems'
+   construction paths are independent with respect to the claimed
+   convergence (S36's gate): fetch-time co-location, shared
+   bibliography, and single-assembler outputs all fail this field.
+
+A certificate missing any field is a candidate, not an identification.
+The instrument's witness-relations registry holds candidates; the spec
+admits only completed certificates.
 ## 6. The semiring: two operations, log-linked
 
 **Definition 6.1 (the two operations).** The carrier of the connectives is

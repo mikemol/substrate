@@ -160,6 +160,10 @@ L.append("*stratum the residual openness lives.*\n")
 L.append("**Legend:** P = visible/true from that vantage; F = false there; U = observable but")
 L.append("undecided; V = not statable there. Dependence edges arise from F and V only —")
 L.append("undecided is not destroyed. Circle verdicts carry their space index and ledger.\n")
+L.append(f"**Proof tier:** {dep._PROOF_TIER}\n")
+L.append("Every claim below carries its fiber certificate, executed at generation time: "
+         "the edition is proof-carrying (B2) — no witness-stratum IOU survives to this artifact; "
+         "the proof tier is the registered empty.\n")
 maxl=max(layer_of.values())
 L.append("## Table of Contents\n")
 for d in range(maxl+1):
@@ -183,6 +187,8 @@ for d in range(maxl+1):
         for n in ns:
             nm,gloss,ref=META[n]
             L.append(f"**{n} — {nm}** ({ref}). {gloss}\n")
+            cls,em=dep._FIBER_CERT.get(n,("UNREGISTERED",None))
+            L.append(f"*Certificate ({cls})*" + (f": {em()}" if em else "") + "\n")
         if kind=="truth-intrinsic":
             st,sk,co,either=pairstats(*ns[:2])
             L.append(f"*Verdict (S_{FP}, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement {co}/{either} = {co/either:.2f}. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*\n")

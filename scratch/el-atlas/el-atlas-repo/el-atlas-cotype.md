@@ -2923,3 +2923,26 @@ QUEUE AFTER FLUSH: B2 (structured-edition emitters), B10 (general
 equivalence-certificate schema; GCX instance done), homological-
 stability thread, UNAUDITED fibers, OB-7 variational residue, v2.22
 + A/B brick layers (next session).
+
+## S44: B2 DISCHARGED — THE STRUCTURED EDITION IS PROOF-CARRYING;
+## B10 DISCHARGED — THE EQUIVALENCE-CERTIFICATE SCHEMA (5.10e)
+B2: el-atlas-structured-gen.py now emits, under every claim heading,
+its fiber certificate EXECUTED AT GENERATION TIME (class + live
+emitter output where registered), and the document header declares
+the proof tier (the registered empty). The generated edition
+satisfies the source's Atomic Resolution at the witness stratum: no
+IOU survives to the artifact — definition and certificate share the
+block (Locality of Truth, in our deliverable). 28 certificate lines
+in the current generation; the five live emitters (GCX collision,
+ZDW exhibit, NVE null + conflation, NGL instance, SWP statement)
+compute fresh at every generation. B10: spec 5.10e states the
+five-field schema — map, kernel-with-collision, fibers-with-section,
+revealing probes, PROVENANCE INDEPENDENCE (S36's gate as a mandatory
+field; fetch-time co-location, shared bibliography, and
+single-assembler outputs all fail it) — with 5.10b as the first
+completed instance; certificates missing fields are candidates held
+in the witness-relations registry, not spec-admitted
+identifications. The btree took the new leaf at 05/03.md with no
+manifest ceremony — the coordinate IS the placement. QUEUE:
+homological-stability thread, UNAUDITED fibers (CDC, PR2, IDC),
+OB-7 variational residue, v2.22 + A/B layers (next session).
