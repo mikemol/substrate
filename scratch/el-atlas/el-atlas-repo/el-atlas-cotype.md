@@ -1497,3 +1497,33 @@ point — a misleading exhibit); replaced before commit.
 (mass 1.5e+08; G* ≈ 1.354) where the committed output reads mass_60 =
 3.365e+08 and G* = 1.350781059. tools/runtime-bridge-pilot-out.txt is
 canonical; entries must quote committed output, not anticipation.
+
+## R2 / S-SERIES: ASPF-APSP-DIR SWEEP — E3 CORRECTED, ADJACENCY UPGRADED
+User-prompted sweep of conversations + Drive for ASPF, APSP, DIR. ALL THREE
+ARE CORPUS-INTERNAL. ASPF = Algebraic Structural Prime Fingerprint (gabion;
+"packed derivation label in an SPPF", Yoneda-grounded, prime-preserving
+cofibrations, 2-cell drift witnesses). APSP = the hierarchical geodesic-
+segment shortest-paths system (2^(order-1) segments, epochal freeze-and-
+reuse; GALAXY = holographic projection; Mersenne hop variant computed).
+DIR = Declarative Intermediate Representation ("declarative LLVM",
+constraint-as-negative-space, white-papered, never executed). NEW: OCAL
+surfaced (Object/Constraint Abstraction Layer; Drive synthesis doc claims
+DIR/APSP/OCAL isomorphism; UNREAD).
+CORRECTION to R1-E3 (append-only): "appears NOWHERE in the corpus" was
+true of the repo documents, FALSE of the corpus at large; the reviewer's
+acronym expansion was wrong but the SPPF connection was the author's own
+vocabulary. The SPPF-packing<->IDC adjacency upgrades from unattributed
+[C] to corpus-witnessed [S-candidate].
+CANDIDATES REGISTERED (corpus-sweep-aspf-apsp-dir.md): (1) GALAXY-ASPF
+Thm 9.1 W <-> log_alpha(F^k) = Lemma 2.5b's codec, third sighting
+(STRONG, hinges on merged_ontology proof read); (2) ASPF normative rules =
+prohibition + projection plurality + codec contract (STRONG); (3) the
+v3.4a fingerprint widening was the ASPF discipline enacted on our own
+instrument; (4) APSP doubling tower / GALAXY as quotient-shadow; (5) DIR
+graph = APSP graph = Nedge graph (chart M009) with the carrier as its
+evidence type. Label oscillation flagged: APSP expansion differs between
+author usage (All-Pairs Shortest Paths) and the Gemini OCAL doc
+("Adaptive Processing/Search Protocol") — declare before import.
+NO SPEC IMPORT (v3.3 lesson); candidate claim GCX named for if/when
+candidate 1 survives the proof read. Frontier: OCAL doc, merged_ontology
+Thm 9.1, two too-large ASPF docs, three unenumerated APSP folders.
