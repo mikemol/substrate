@@ -1461,12 +1461,16 @@ atlas-internal Noether-shaped fact is immediate and checkable:
 > *not* conserve, while the supply reads the one it does. **[S]**
 > (one-line computation; stated here, not yet developed.)
 
-Noether proper requires a *continuous* symmetry. The atlas has a
-candidate: the exp/log transition makes translation in 𝔸 the same
-one-parameter flow as scaling in 𝕄 — a continuous chart symmetry whose
-conserved quantity is unidentified. Promoting the discrete pairing above
-and the corpus's categorical analogy to an actual Noether statement for
-the carrier is **OB-7**.
+Noether proper requires a *continuous* symmetry. The atlas's candidate
+is now identified and instrument-verified (S43; §5.10d): in the log
+chart the diagonal flow — common translation in 𝔸, equivalently common
+scaling in 𝕄 — conserves the bias form a−b, and the anti-diagonal
+squeeze conserves the mass form a+b; each invariant is the annihilator
+of its flow, checked exactly in every run (fiber certificate "exact",
+v3.8.1, live emitter). The pairing is graded **Noether-style at the
+Lie level**. What remains of **OB-7** is the variational residue only:
+an action functional whose symmetries are these flows and whose
+Noether currents are mass and bias (registered reservation, §5.10d).
 
 **Thévenin.** Stated under the charter: **no corpus document names
 Thévenin or Norton.** The *move*, however, appears twice, unnamed:

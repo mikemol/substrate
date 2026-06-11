@@ -2886,3 +2886,40 @@ flows as symmetries) is a registered reservation. B6 = derive-at-
 the-Lie-level + rename-by-qualification. Composed sha updated;
 +18 lines. QUEUE: B2, B10 (general schema), homological-stability
 thread, UNAUDITED fibers, v2.22 + A/B layers next session.
+
+## S43: SPEC-SRC REBUILT AS A BTREE (AUTHOR ARCHITECTURE); B6 FULLY
+## DISCHARGED; OB-7 REDUCED TO ITS VARIATIONAL RESIDUE
+ARCHITECTURE (author-specified): the filesystem is the btree
+substrate. Numeric node folders mirror the document's own numbering
+('0' preamble — sorting before '00' by the prefix rule — through
+'15', then 'A','B','C'); each node carries a METADATA file (title +
+frontmatter, never composed); content lives in NN.md leaves composed
+by recursive lexicographic walk; MANIFEST retired (the tree is the
+manifest); the no-shrink guard survives in the rewritten composer.
+NODES SPLIT LAZILY: only §11 split tonight, because §11 was the node
+being touched — 0140/0150 exploded byte-faithfully into 11/00-10.md.
+MIGRATION VERIFIED BY IDENTITY: recomposition sha 95de3b33dc64 equals
+the pre-migration file exactly; zero content motion. THE DISCIPLINE
+this buys (the author's point): any file you touch must be small
+enough to rewrite confidently in a single pass — no more targeted
+appends against unverified anchors; 11/08.md (65 lines) was rewritten
+whole as the first exercise. PROCESS RESIDUE RATIFIED: the
+interrupted turn's tool call had EXECUTED before the interruption —
+the spec carried an unledgered +934 bytes (the intended 5.10d,
+content verified against git diff and ratified): interrupted turns
+can leave executed-but-unledgered work; byte-accounting at the next
+compose caught it; standing check adopted (compare spec bytes to
+last ledgered compose before building on it). B6 NOW FULLY
+DISCHARGED across all three strata: instrument (v3.8.1 — NOE fiber
+"exact", Lie-level invariants computed in-run with live emitter; the
+Table-2 certificate-locality sting answered: NOE's evidence is now
+INTRINSIC), spec formal statement (5.10d: derive-at-the-Lie-level
+plus rename-by-qualification; variational form a registered
+reservation), and spec cross-site (11/08.md rewritten: the
+previously UNIDENTIFIED conserved quantity of the continuous chart
+symmetry is identified — diagonal flow conserves bias, squeeze
+conserves mass — and OB-7 reduces to the variational residue only).
+QUEUE AFTER FLUSH: B2 (structured-edition emitters), B10 (general
+equivalence-certificate schema; GCX instance done), homological-
+stability thread, UNAUDITED fibers, OB-7 variational residue, v2.22
++ A/B brick layers (next session).
