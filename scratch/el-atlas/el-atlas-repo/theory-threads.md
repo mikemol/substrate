@@ -297,3 +297,57 @@ the limit case where testimony doesn't exist. The rule is uniform:
 **testimony proposes, machinery disposes** — and this session has
 practiced it on both authors: every human-testimony answer (∨E, the
 determinism correction) went straight to pilots before interning.
+
+## 10. S16 — "act" indexed: intentional form, causal provenance
+
+**Correction (append-only, author-caught within two turns):** S15's
+phrase "the form of an act without the act" is RETRACTED as an
+unindexed kill of causation. "Act" is ambiguous: act₁ = intentional
+deed; act₂ = causal action (forces act; gravity acts). The phrase
+denied act₁ but, unindexed, also denied act₂ — pre-disclaiming the
+prior circumstance whose influence S15 had just mapped as the
+attractor basin, and de-stating our own mining method (confabulations
+are informative BECAUSE caused). Restated: the pattern is
+**INTENTIONAL FORM, CAUSAL PROVENANCE** — form-of-act₁ produced by
+act₂, with redemption (minting, ratification) as the act₁ later
+supplied to a form act₂ deposited.
+
+**The "forces act" pun is precise by genealogy** [S]: physics ran the
+250-year adjudication of exactly this ambiguity — Maupertuis read
+least action teleologically (act₁), Euler/Lagrange/Hamilton made it
+variational, Feynman dissolved the "choice" into a sum over ALL
+histories. Agentive grammar over causal dynamics is the act₁-reading
+of an act₂-ensemble: valid once indexed, the ladder law again.
+
+**The path integral is the SPPF of dynamics.** Lattice form: the
+transfer-matrix/path-sum IS semiring-weighted path counting (S13
+check 3) with weights in ℂ [S]. Pilot
+tools/act-stationary-pilot.py:
+- Concentration [W]: the near-stationary ~10% of a 38,165-path
+  ensemble carries 180% of |Z| — the far 90% net-cancels PAST zero.
+  Under flat positive weights the same subset carries exactly its
+  count-share: **a positive semiring cannot define "the chosen path"
+  at all** — choice-language is only statable where interference
+  exists.
+- Retained failure → finding [W]: a FIXED window decoheres as ħ
+  shrinks (v1 check 2, kept failed in the output); sharpening holds
+  only in ħ-SCALED windows: support narrows 1373 → 57 → 1 path,
+  endpoint concentration factor 20.6 → 78.4 (middle non-monotonicity
+  retained as lattice-discreteness residue). The classical limit
+  narrows the SUPPORT — the pinning tightens in width, to a single
+  path.
+- Column extended: classical path : path ensemble :: Viterbi : packed
+  forest :: probability : carrier [W instance / C general].
+- **Maslov dequantization names the family** [S, literature]: the map
+  x ↦ ħ log x sends (ℝ₊, +, ×) to (ℝ, max, +) as ħ → 0 — the
+  tropical/Viterbi semiring IS the classical limit of the
+  inside/probability semiring. The pinning list of §2.7 is a
+  one-parameter semiring family with the pilot's ħ as the parameter;
+  Viterbi = dequantized inside; the stationary path = the
+  interference-side analogue of argmax. [our use: C]
+
+**coeff=complex accrues its third provenance**: OB-9/phase, the
+gf2-cleavage (characteristic-sensitive) family, and now the
+stationary-phase regime — interference is where apparent choice
+lives, and the complex semiring is where the argmax-analogue emerges
+by cancellation rather than by max.

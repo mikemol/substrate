@@ -1907,3 +1907,30 @@ confabulation + accommodation; expansion oscillation = attractor
 samples; referent fixed by use. PATTERN NAMED: form-without-act
 (RootHash, the name) with two redemption modes (we minted the hash;
 the author ratified the name).
+
+## S16: "ACT" INDEXED — RETRACTION; STATIONARY-PHASE PILOT (ONE CHECK
+## RETAINED FAILED); MASLOV NAMES THE PINNING FAMILY
+Author caught S15's "form of an act without the act" as pre-disclaiming
+prior circumstance: "act" is ambiguous (act₁ intentional deed / act₂
+causal action — "does gravity have intent? It's certainly causal...
+and that pun, too, is precise"). RETRACTED append-only as an unindexed
+kill of causation (it would have de-stated the basin-mining method —
+confabulations are informative BECAUSE caused). Restated: INTENTIONAL
+FORM, CAUSAL PROVENANCE; redemptions = act₁ later supplied to forms
+act₂ deposited. S9 instance at conversational timescale. The
+forces-act pun adjudicated precise via the physics genealogy
+(Maupertuis act₁ → variational → Feynman sum-over-histories). PILOT
+(tools/act-stationary-pilot.py): path integral = complex-semiring path
+counting [S lattice]; CONCENTRATION [W]: near-stationary ~10% of
+38,165 paths carries 180% of |Z| (far paths net-cancel past zero);
+positive semiring carries exactly count-share — "the chosen path" is
+UNDEFINABLE without interference. v1 check 2 RETAINED AS FAILED
+(fixed window decoheres) → corrected finding: sharpening only in
+ħ-scaled windows; support narrows 1373→57→1 path, endpoint factor
+20.6→78.4, middle non-monotonicity kept as lattice residue — the
+classical limit narrows SUPPORT. Column: classical : ensemble ::
+Viterbi : forest :: probability : carrier. MASLOV DEQUANTIZATION
+[S literature]: (ℝ₊,+,×) → (ℝ,max,+) as ħ→0 — Viterbi IS the
+classical limit of inside; the pinning list is a one-parameter
+semiring family. coeff=complex accrues THIRD provenance (phase,
+char-sensitive family, stationary-phase regime).

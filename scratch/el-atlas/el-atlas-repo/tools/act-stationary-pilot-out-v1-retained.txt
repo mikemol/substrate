@@ -1,0 +1,5 @@
+ensemble: 38165 paths, near-stationary subset = 3739 (9.8% of paths, S <= 4.0)
+1. flat positive weights: subset carries exactly 9.8% of the total — no concentration definable
+   complex weights, hbar=1.0: subset carries 180.6% of |Z| — concentration: True
+2. hbar=0.4: subset carries 36.1% of |Z| — sharpening toward the classical pinning: False
+VERDICT: 'the chosen path' is the stationary-phase shadow of the held ensemble; choice-language is the act-1 reading of act-2 dynamics, valid once indexed: False
