@@ -56,3 +56,23 @@ exp-cf terms n x =
 
 _ : exp-cf 2 1 sqrt2 ≡ 2 ∷ 2 ∷ []
 _ = refl
+
+------------------------------------------------------------------------
+-- WALKING A TRANSCENDENTAL: e = exp(1) = Σ 1/k!. No input generator needed — the
+-- Horner series AT 1 (horner m 1 1 1 1) is the rational partial sum Σ_{k≤m} 1/k!,
+-- and its continued fraction is e's CF, read straight off the EEA trace. e is
+-- transcendental (Hermite, 1873); its CF is [2;1,2,1,1,4,1,1,6,…]. Here the first
+-- 3 digits, computed through the term window, by refl: exp_3(1) = 8/3 = [2;1,2].
+--
+-- (The continuous e^{iπ}=−1 is a further arc — signed reals + cos/sin + π + ℂ,
+-- since cos π = −1 is negative. Its DISCRETE shadow, the antipode / order-2
+-- half-turn e^{2iπ}=1, is already proved in Logic.Evidence.Verdict.Phase as
+-- negBoth² = id.)
+------------------------------------------------------------------------
+
+e-cf : ℕ → List ℕ
+e-cf m = digits-of-EEA (proj₂ (compute-trace (proj₁ (horner m 1 1 1 1))
+                                             (proj₂ (horner m 1 1 1 1))))
+
+_ : e-cf 3 ≡ 2 ∷ 1 ∷ 2 ∷ []
+_ = refl
