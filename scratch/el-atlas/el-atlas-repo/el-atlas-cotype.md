@@ -3482,3 +3482,26 @@ PROSE-ONLY remainder, honestly: seam migration, version-up-content-
 down, saturation provenance — corpus findings with no computable
 analogue in our model space beyond the closure check already taken
 from them. Lineage: ...49a935bae7dc -> d0ede8d60ddb. W17 closes.
+
+
+## S61a (W18): CORRECTION — THE FINGERPRINT HASHES FULL MODULE
+## SOURCE; EVERY EDIT MOVES THE SPACE, CLASSIFIED BY KIND
+S61 claimed "registry-dict edits do not move the fingerprint, new
+function code does." FALSE. space_fingerprint hashes the FULL module
+source since v3.4a — by design, because a helper-function fix once
+changed test semantics without moving the fingerprint (the def's own
+comment, S_8fecfdc135c8). W11's registry edit therefore DID move the
+space (4c3345b9126a -> 49a935bae7dc, ledgered registry-text kind),
+which the prior ledger records and I misremembered. Correct rule:
+ANY source change moves the fingerprint; moves are classified by
+KIND (registry-text / instrument-source / test-semantics) and
+verified index-only when the manifest is unchanged. Same failure
+shape as S57a within one window: an empirical rule asserted from
+held context against disk that said otherwise — both times the disk
+carried the refutation in plain text (line 55; the def comment).
+Standing lesson sharpened: before ledgering any claim about
+instrument behavior, read the instrument's own source at the
+relevant def; the source comments are part of the cotype in
+practice. W18 closes; intern consistent at S0-S61a, instrument
+v3.9.0, space S_d0ede8d60ddb (lineage ...4c3345b9126a ->
+49a935bae7dc -> d0ede8d60ddb).

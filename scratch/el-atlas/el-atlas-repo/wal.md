@@ -66,3 +66,4 @@ BEGIN W17 2026-06-11 pre=24f5063 :: integration move — promote nodded-at findi
 END W17 2026-06-11 :: v3.9.0 live — rung-2 computed in-run, registry load-bearing, closure check active; first run corrected circle ontology; space move ledgered index-only (...d0ede8d60ddb) :: head=4a47310 :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.9.0-run.txt
 BEGIN W18 2026-06-11 pre=890c5c8 :: micro-move — S61a correcting S61's fingerprint rule (full-source hash since v3.4a per the def's own comment; W11's registry edit DID move the space, ledgered registry-text kind; my 'registry edits do not move it' was held-context confabulation)
   expect: cotype S61a, END W18
+END W18 2026-06-11 :: S61a filed; fingerprint rule corrected to full-source-hash; lineage chain stated :: head=fcf8277 :: artifacts=el-atlas-cotype.md
