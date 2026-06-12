@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Exp.agda Log.agda Ops.agda Properties.agda Unfold.agda Window.agda
+FILES := Exp.agda Log.agda Ops.agda Properties.agda Transcendental.agda Unfold.agda Window.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
