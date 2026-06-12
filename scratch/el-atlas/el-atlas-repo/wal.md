@@ -25,3 +25,5 @@ END W3 2026-06-11 :: stability holds (0 hits); margin chart banked :: head=1bedf
 BEGIN W4 2026-06-11 :: persist the flush-recovery doctrine (resent-prompt signal; active re-read as refresh; double-execution guard)
   expect: NEXT.md recovery-protocol subsection, cotype S50, END W4
 END W4 2026-06-11 :: doctrine persisted :: head=2a52cd0 :: artifacts=NEXT.md
+BEGIN W5 2026-06-11 :: A/B brick layers for parts 2-5, fresh prints with capture-diffs, commit per document. A2/B2 EXPLICITLY DEFERRED with reason: they are literal repeat windows whose design value is decay-spaced repetition; executed back-to-back with A/B they refresh nothing — scheduled as the post-flush window's opening bricks, where decay is guaranteed.
+  expect: per-doc ledger A/B diffs + commits (parts 2,3,4, treatise), cotype S51, END W5
