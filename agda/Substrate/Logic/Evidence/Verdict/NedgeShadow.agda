@@ -33,9 +33,10 @@
 
 module Substrate.Logic.Evidence.Verdict.NedgeShadow where
 
-open import Substrate.Foundation.Bool  using (true; false)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq    using (_≡_; refl)
+open import Substrate.Foundation.Bool    using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Empty   using (⊥)
+open import Substrate.Foundation.Eq      using (_≡_; refl; sym; cong)
+open import Substrate.Foundation.Product using (_×_; _,_)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; ⟨_,_⟩; Verdict; verdict; eU; U≢V)
@@ -83,3 +84,45 @@ bias-cannot-carry-verdict :
   (d : Bias → Verdict) → ((e : Evidence) → d (bias e) ≡ verdict e) → ⊥
 bias-cannot-carry-verdict d h =
   faithful-separates bias d h {eU} {eV} U≢V bias-conflates-U-V
+
+------------------------------------------------------------------------
+-- …BUT THE SCALAR IS NOT A LOSSY PROJECTION — it is a TRUNCATED LOOK at a
+-- non-lossy WEDGE. The single channel is multi-channel under the hood: the
+-- dual rail re-encodes, by a GL(2,F₂) basis change (the discrete rotation),
+-- into a VISIBLE channel (the bias-parity E⁺ xor E⁻, ≈ §8.6 biasShadow) and
+-- a HIDDEN channel (the residue E⁺). The verdict's residue is not discarded
+-- — it is ROTATED into the hidden channel. We never discard anything; we
+-- just may not LOOK where the residue went, and THAT look is the only lossy
+-- step. (Continuous lift: two real rails → one complex carrier E⁺ + i·E⁻,
+-- residue in the phase, a magnitude-look truncating it; the discrete shadow
+-- of that carrier is V₄ ≅ ℤ₂ × ℤ₂, biasShadow the visible factor. Over ℝ the
+-- rotation is the (mass,bias) Hadamard, which DEGENERATES over F₂, so the
+-- discrete rotation is this non-singular GL(2,F₂) element instead.)
+------------------------------------------------------------------------
+
+recode : Evidence → Bool × Bool
+recode ⟨ p , n ⟩ = (p xor n) , p
+
+unrecode : Bool × Bool → Evidence
+unrecode (d , p) = ⟨ p , p xor d ⟩
+
+-- NON-LOSSY: the re-encoding round-trips to the identity, both directions —
+-- "we never discard anything", as a theorem.
+recode-unrecode : (e : Evidence) → unrecode (recode e) ≡ e
+recode-unrecode ⟨ true  , true  ⟩ = refl
+recode-unrecode ⟨ true  , false ⟩ = refl
+recode-unrecode ⟨ false , true  ⟩ = refl
+recode-unrecode ⟨ false , false ⟩ = refl
+
+unrecode-recode : (db : Bool × Bool) → recode (unrecode db) ≡ db
+unrecode-recode (true  , true ) = refl
+unrecode-recode (true  , false) = refl
+unrecode-recode (false , true ) = refl
+unrecode-recode (false , false) = refl
+
+-- So the verdict SURVIVES the wedge: it is a function of the FULL re-encoding
+-- (decode, then read), even though — as bias-cannot-carry-verdict shows — it
+-- is NOT a function of the visible channel alone. The encoding keeps it; only
+-- the look truncates.
+verdict-survives-recode : (e : Evidence) → verdict e ≡ verdict (unrecode (recode e))
+verdict-survives-recode e = cong verdict (sym (recode-unrecode e))
