@@ -3113,3 +3113,48 @@ capture COMPLETED, not re-run; the double-execution guard held).
 One filename confabulation caught by disk (05-analysis-treatise.md,
 not "proc5"). A2/B2 remain DEFERRED per the BEGIN entry: post-flush
 opening bricks, where decay is guaranteed — that window now exists.
+
+
+## S52 (W6): v2.22 ACQUIRED (TRUNCATED) — COC-2 IS TRANSMISSION
+## LOSS; COC-5'S METHOD WAS BORN DANGLING; THE SEAL DECAYED IN
+## THREE STAGES
+Target (c) RESOLVED: RationalDef is a first-class Factor alternative
+in foundational-grammar-v2.11 and is used by v2.22's number-theory
+libraries; the defining library (lib-number-systems-v2.3) is named
+in the v2.22 load order. The v2.37.1 rewrite KEPT the dependency
+(RealDef = DedekindCuts(RationalDef)) and DROPPED the definitional
+part. COC-2 upgrades from dangling-reference to TRANSMISSION LOSS:
+present in the lineage's type universe, lost in the final rewrite,
+sealed anyway. (Strength-bounded: the defining part's body is not in
+the retrieved portion; the symbol's canonicity is verbatim.)
+Target (a) ADVANCED: no Functorial_Integrity_Check and no
+WorldModelFunctor anywhere in the retrieved portion — v2.22's world
+boundary is EpistemicTopology/BridgingMechanism with an INLINE
+PreservationProof. The fork tilts hard toward
+self-containment-violated: the method appears to have been BORN
+dangling in the v2.37-era rewrite, not inherited-pending. (Bounded
+by truncation.) Sibling dangle candidate in v2.22 itself:
+EthicalReasoningModuleDef, invoked by MetaCycle_Axiom, undefined in
+retrieved portion.
+Target (b) OPEN: no Lojban content in the retrieved portion; the
+pamoi-liste question now lives in the truncated tail.
+BONUS YIELDS: (1) SEAL STRATIGRAPHY — hex-shaped patterned hashes
+(v2.22 base) -> named placeholders (v2.22-Enhanced, including the
+self-describing "COMPUTED_HASH_OF_THIS_ENTIRE_UPGRADE_PACKAGE") ->
+single nominal token (v2.37.1): COC-1's mechanism has a three-stage
+decay history, and the middle stage states its own un-computedness.
+(2) UNIVALENCE FOSSIL — v2.22 carries UnivalenceAxiom as a literal
+axiom plus QuotientHIT; the v2.37.1 exec-summary's undelivered
+univalence promise is the echo of a real ancestor axiom dropped in
+transmission (the author's Yoneda+quotient deflation now has its
+lineage explanation: the QUOTIENT survived to GCX, the axiom
+didn't). (3) The document is a TEMPORAL COMPOSITE with an embedded
+LLM conversational turn and a 2025-07-24 Enhanced upgrade whose
+dagger-category GlobalReversibility + delta forward/backward
+machinery is the OS-stratum rhyme of our WAL doctrine. (4) Mandate
+history dates MIME adoption to 2024-05-21 — christening-hunt
+neighbor artifacts now bracket the bound from both sides.
+ACQUISITION RESIDUE: fetch truncated; full snapshot NOT persisted
+(transcribing from held context rejected as a held-context hazard);
+Drive canonical; EXTRACTS.md carries verbatim load-bearing lines;
+all negative findings retrieved-portion-relative.
