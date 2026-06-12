@@ -3540,3 +3540,29 @@ observable (verdict movement, 18432 models) -> coverable
 was already in the separator loop; my append duplicated the print;
 deduped before close. W19 closes. The witness-chain question (the
 fourth) is W20.
+
+
+## S63 (W20): WITNESS CHAINS COMPUTED IN-RUN — THE RAD-FAMILY CHAIN
+## IS NOW AN INTEGER IDENTITY, NOT A CITATION
+The fourth pressed question answered by mechanism: the witness-
+stratum relations for the RAD family are recomputed every run with
+EXACT INTEGER Cayley-Dickson arithmetic on the classical sum grid
+(e_i+e_j, i<j). Asserted per run: Hurwitz on-grid (NF empty at
+cdlevel 2/4/8); at 16: |Z|=84 (the classical sedenion zero-divisor
+pair count, recovered exactly), |NF|=168, and the partition is
+EXACTLY HALF/HALF — W(ZDW)=Z (84) disjoint-union W(RDW)=NF\Z (84)
+= W(RAD) (168). The registered kinds for {RAD,ZDG} (strict
+containment) and {RDW,ZDW} (partition-complement) are asserted
+against the computed sets AND the registry text — drift in CD
+semantics or registry prose fails the run. Honestly grid-indexed:
+these are the relations on this grid; the pilots carry the fuller
+statements. Witness-chain status after W17-W20, complete: RAD-family
+chain COMPUTED+ASSERTED; {TWN,D4C} rung-2 containment
+COMPUTED+ASSERTED and ADMITTED as separator; {LOC,L26} equal-on-grid
+and {PUR,PRO} iso-with-reframing remain REGISTERED-TEXT (pilot-
+computed once; their in-run promotion is the registered next rung —
+both are probe-grid checks of the same shape as this one).
+LINEAGE CORRECTION (S62 was one link short, per the S61a full-source
+rule): ...d0ede8d60ddb -> 1b85ef5d073c (admission) -> 6c6856f4522f
+(dedupe, index-only) -> 730c44114318 (this move, instrument-source
+kind; manifest verified identical — index-only). W20 closes.

@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.10.0"
+VERSION = "v3.11.0"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -938,6 +938,52 @@ def reference_closure_check():
     assert not dang, f"REFERENCE CLOSURE VIOLATION (dangling claim codes): {sorted(dang)}"
     print(f"  reference closure: every claim code in WITNESS_RELATIONS/FRONTIER/PRIOR_LEDGER resolves ({len(known)} claims) — danglers fail the run")
 
+# ===== WITNESS CHAINS IN-RUN (W20, v3.11.0): the RAD-family chain computed ===
+# Exact integer Cayley-Dickson arithmetic; the classical sum grid e_i+e_j
+# (i<j). Asserted each run: Hurwitz (no norm failures at cdlevel<=8), zero
+# divisors exist at 16, Z STRICTLY contained in NF at 16, and the RDW/ZDW
+# partition-complement of W(RAD) on the computed sets. The registered kinds
+# for {RAD,ZDG} and {RDW,ZDW} are checked against the computation: semantic
+# drift in CD arithmetic or the registry FAILS the run. Grid-indexed honestly:
+# these are the relations ON THIS GRID; the pilots carry the fuller statements.
+def _cd_mul(x,y):
+    n=len(x)
+    if n==1: return (x[0]*y[0],)
+    h=n//2; a,b=x[:h],x[h:]; c,d=y[:h],y[h:]
+    cj=lambda z:(z[0],)+tuple(-t for t in z[1:])
+    add=lambda u,v:tuple(p+q for p,q in zip(u,v))
+    sub=lambda u,v:tuple(p-q for p,q in zip(u,v))
+    return sub(_cd_mul(a,c),_cd_mul(cj(d),b)) + add(_cd_mul(d,a),_cd_mul(b,cj(c)))
+def _wchain_sets(n):
+    Z=set(); NF=set()
+    basis=[tuple(1 if k==i else 0 for k in range(n)) for i in range(n)]
+    add=lambda u,v:tuple(p+q for p,q in zip(u,v))
+    nrm=lambda u:sum(t*t for t in u)
+    elems=[(i,j,add(basis[i],basis[j])) for i in range(n) for j in range(i+1,n)]
+    for i,j,x in elems:
+        for k,l,y in elems:
+            p=_cd_mul(x,y)
+            if nrm(p)!=nrm(x)*nrm(y):
+                NF.add((i,j,k,l))
+                if nrm(p)==0: Z.add((i,j,k,l))
+    return Z,NF
+def witness_chain_check():
+    print("\n=== WITNESS CHAINS IN-RUN (exact integer CD; sum grid e_i+e_j) ===")
+    for n in (2,4,8):
+        Z,NF=_wchain_sets(n)
+        assert not NF, f"Hurwitz violated at cdlevel {n}: NF={len(NF)}"
+        print(f"  cdlevel {n:2d}: NF empty (Hurwitz holds) — RAD's schedule confirmed on-grid")
+    Z,NF=_wchain_sets(16)
+    assert Z, "no zero divisors at cdlevel 16 — ZDG's content broke"
+    assert Z < NF, "Z not strictly contained in NF at 16 — {RAD,ZDG} registered kind broke"
+    RDWset = NF - Z
+    assert RDWset and (RDWset | Z)==NF and not (RDWset & Z), "RDW/ZDW partition of W(RAD) broke"
+    print(f"  cdlevel 16: |Z|={len(Z)}  |NF|={len(NF)}  |NF\\Z|={len(RDWset)}")
+    print(f"  chain asserted: Z STRICT< NF ({{RAD,ZDG}} kind); W(RDW) disjoint-union W(ZDW) = W(RAD) ({{RDW,ZDW}} kind) — LOAD-BEARING on this grid")
+    reg_zdg=WITNESS_RELATIONS.get(frozenset({'RAD','ZDG'}),''); reg_pc=WITNESS_RELATIONS.get(frozenset({'RDW','ZDW'}),'')
+    assert 'strict containment' in reg_zdg and 'partition-complement' in reg_pc, "registry kinds drifted from computed chain"
+    print("  registry kinds match the computation")
+
 for _k,_v in {
   frozenset({'RDW','ZDW'}): ("S_9a577e722039 (165888, v3.6a Pi-forms)", "0/0 perfect circle; witness-stratum: partition-complement halves of W(RAD)"),
   frozenset({'RAD','RDW'}): ("S_9a577e722039 (v3.6a)", "0/0 — merged at verdict level by the promotion; witness-stratum: strict containment"),
@@ -1029,6 +1075,7 @@ def run():
     print("  P/F/V scheme merged. Co-movement now has internal kind-structure.")
     rung2_report(res)
     reference_closure_check()
+    witness_chain_check()
 
 if __name__ == "__main__":
     run()
