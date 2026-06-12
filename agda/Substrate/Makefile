@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ..
 
 FILES := All.agda Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
-SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona WitnessTower
+SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Logic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona WitnessTower
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -145,6 +145,13 @@ Linguistic:
 	fi
 	@$(MAKE) -C $@
 
+Logic:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 Lojban:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -224,6 +231,7 @@ clean:
 	@$(MAKE) -C Kelen clean 2>/dev/null || true
 	@$(MAKE) -C Lambda clean 2>/dev/null || true
 	@$(MAKE) -C Linguistic clean 2>/dev/null || true
+	@$(MAKE) -C Logic clean 2>/dev/null || true
 	@$(MAKE) -C Lojban clean 2>/dev/null || true
 	@$(MAKE) -C Pedagogy clean 2>/dev/null || true
 	@$(MAKE) -C Pipeline clean 2>/dev/null || true
