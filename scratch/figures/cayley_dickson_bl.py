@@ -38,56 +38,125 @@ B.OUT = _H / "out"; B.OUT.mkdir(exist_ok=True)
 GLOW = None   # inset inscription glow material; built after B.reset() (which wipes data)
 
 
-def inscribe(cap, label, x, y, rad, zt, updown, face, size=0.28, pitch=0.34, depth=0.08):
-    """Engrave `label` vertically into the CAMERA-FACING side of capsule `cap` (at
-    world x,y, band magnitude .. zt on the `updown` side) and glow the recess floor.
-    `face` = horizontal unit vector toward the camera, so we look straight into the
-    recess. Top→down; downward capsules (updown<0) flip upside-down."""
+def glyph_shapes(state, r):
+    """Euclidean boolean-coordinate mark, unit = pip radius r. Equilateral ABC on
+    edge AB (= 3r), apex C below; A = TRUE (up-left), B = FALSE (up-right). Tail CD
+    is AC produced beyond C with CD = CA, so its line runs through A — the pointer
+    at truth. Pips: filled disc = that point set; an UNSET point renders nothing (it
+    is only a conceptual placeholder). state 1 → A set (true); 0 → B set (false);
+    None → neither (unset, tail only). Read invariantly under 180° flip as 'is the
+    lit pip at the corner the tail points to?'. 2D (u,v): u horizontal (→ arc around
+    the pawn), v vertical (→ meridian). Returns a list of point-lists."""
+    e = 3.0 * r
+    A = mathutils.Vector((-0.5 * e, 0.8660254 * e))   # TRUE
+    Bp = mathutils.Vector((0.5 * e, 0.8660254 * e))   # FALSE
+    C = mathutils.Vector((0.0, 0.0))                  # apex
+    D = C + e * (C - A).normalized()                  # produce AC beyond C, CD = CA
+    rs = 0.5 * r                                  # stroke radius: pip + half line-width
+    shapes = []
+    a0 = math.atan2((D - C).y, (D - C).x)         # tail = 2D capsule (stadium): a
+    sg, tail = 8, []                              # segment with semicircle caps of
+    for k in range(sg + 1):                       # radius rs ⇒ width = pip diameter 2·rs
+        a = a0 - math.pi / 2 + math.pi * k / sg
+        tail.append((D.x + rs * math.cos(a), D.y + rs * math.sin(a)))
+    for k in range(sg + 1):
+        a = a0 + math.pi / 2 + math.pi * k / sg
+        tail.append((C.x + rs * math.cos(a), C.y + rs * math.sin(a)))
+    shapes.append(tail)
+
+    def disc(c):
+        return [(c.x + rs * math.cos(2 * math.pi * k / 14),
+                 c.y + rs * math.sin(2 * math.pi * k / 14)) for k in range(14)]
+    for pt, is_set in ((A, state == 1), (Bp, state == 0)):
+        if is_set:                              # unset → placeholder only, render nothing
+            shapes.append(disc(pt))
+    return shapes
+
+
+def inscribe(cap, bits, x, y, rad, z0, z1, updown, face, depth=0.05):
+    """Engrave the 3 boolean-coordinate glyphs (b2 far tip → b0 near grid) of `bits`
+    onto capsule `cap`, glowing the recess floors. Each glyph is a 2D decal CONFORMED
+    to the capsule surface — wrapped over the endcaps via meridian arc-length and
+    extruded along the LOCAL surface normal — so pips engrave on body and cap alike.
+    Carved one glyph at a time (overlapping cutters self-intersect on stubby pawns);
+    floors selected via the capsule SDF. `face` = horizontal unit toward the camera."""
     n = mathutils.Vector((face[0], face[1], 0.0)).normalized()
-    up = mathutils.Vector((0.0, 0.0, 1.0))
-    xax = up.cross(n).normalized()
-    # text local axes (X baseline, Y up, Z normal→camera); flip = upside-down
-    rows = (-xax, -up, n) if updown < 0 else (xax, up, n)
-    rot = mathutils.Matrix(rows).transposed().to_euler()
-    d_n = rad + 0.02 - depth                   # text centre out along n (front just proud)
-    objs = []
-    for i, ch in enumerate(label):
-        cu = bpy.data.curves.new("t", "FONT")
-        cu.body = ch; cu.size = size; cu.extrude = depth
-        cu.align_x = "CENTER"; cu.align_y = "CENTER"
-        o = bpy.data.objects.new("ch", cu)
-        bpy.context.scene.collection.objects.link(o)
-        o.rotation_euler = rot
-        o.location = (x + d_n * n.x, y + d_n * n.y, updown * (zt - pitch * (i + 0.7)))
-        for s in bpy.context.selected_objects:
-            s.select_set(False)
-        o.select_set(True); bpy.context.view_layer.objects.active = o
-        bpy.ops.object.convert(target="MESH")
-        objs.append(o)
-    for s in bpy.context.selected_objects:
-        s.select_set(False)
-    for o in objs:
-        o.select_set(True)
-    bpy.context.view_layer.objects.active = objs[0]
-    bpy.ops.object.join()
-    cutter = bpy.context.view_layer.objects.active
-    m = cap.modifiers.new("inscribe", "BOOLEAN")
-    m.operation = "DIFFERENCE"; m.object = cutter; m.solver = "EXACT"
-    bpy.context.view_layer.objects.active = cap
-    bpy.ops.object.modifier_apply(modifier=m.name)
-    bpy.data.objects.remove(cutter)
-    me = cap.data
-    if GLOW.name not in me.materials:
-        me.materials.append(GLOW)
-    gi = me.materials.find(GLOW.name)
-    bm = bmesh.new(); bm.from_mesh(me)
-    for f in bm.faces:                         # recess FLOOR only: a curved body face
-        cen = f.calc_center_median()           # sits ON the cylinder (p_n == rad·nn);
-        p_n = (cen.x - x) * n.x + (cen.y - y) * n.y   # the engraved floor is recessed
-        nn = f.normal.dot(n)                   # BELOW that, so p_n < rad·nn.
-        if nn > 0.5 and p_n < rad * nn - 0.04:
+    nperp = mathutils.Vector((-n.y, n.x, 0.0))
+    r = rad * math.radians(22.5) / 2.0           # pip edge at ±22.5° arc ⇒ 45° glyph
+    z_lo, z_hi = min(updown * z0, updown * z1), max(updown * z0, updown * z1)
+    cyl_lo, cyl_hi = z_lo + rad, z_hi - rad
+    qc = rad * math.pi / 2.0
+    bodyL = cyl_hi - cyl_lo
+    S = 2 * qc + bodyL                           # pole-to-pole meridian arc length
+
+    def meridian(s):                             # arc s from bottom pole → (z, ring_r, n_rad, n_z)
+        s = min(max(s, 0.0), S)
+        if s < qc:
+            al = s / rad
+            return (cyl_lo - rad * math.cos(al), rad * math.sin(al), math.sin(al), -math.cos(al))
+        if s < qc + bodyL:
+            return (cyl_lo + (s - qc), rad, 1.0, 0.0)
+        be = (s - qc - bodyL) / rad
+        return (cyl_hi + rad * math.sin(be), rad * math.cos(be), math.cos(be), math.sin(be))
+
+    def surf(u, v, s_c):                         # glyph (u,v) → (surface point, normal)
+        z, rr, nr, nz = meridian(s_c + v)
+        ang = u / rr if rr > 0.06 else 0.0
+        rdir = math.cos(ang) * n + math.sin(ang) * nperp
+        pt = mathutils.Vector((x + rr * rdir.x, y + rr * rdir.y, z))
+        return pt, nr * rdir + mathutils.Vector((0.0, 0.0, nz))
+
+    def cut_one(state, s_c):                     # carve ONE glyph with its own boolean
+        verts, faces = [], []
+        for pts in glyph_shapes(state, r):
+            k = len(pts); st = len(verts)
+            dat = [surf(updown * u, updown * v, s_c) for (u, v) in pts]
+            for (pt, nrm) in dat:
+                verts.append(tuple(pt + depth * nrm))
+            for (pt, nrm) in dat:
+                verts.append(tuple(pt - depth * nrm))
+            faces.append(list(range(st, st + k)))
+            faces.append(list(range(st + 2 * k - 1, st + k - 1, -1)))
+            for i in range(k):
+                j = (i + 1) % k
+                faces.append([st + i, st + j, st + k + j, st + k + i])
+        if not faces:
+            return
+        me = bpy.data.meshes.new("cut"); me.from_pydata(verts, [], faces); me.update()
+        bm0 = bmesh.new(); bm0.from_mesh(me)
+        bmesh.ops.recalc_face_normals(bm0, faces=bm0.faces)
+        bm0.to_mesh(me); bm0.free()
+        cutter = bpy.data.objects.new("cut", me)
+        bpy.context.scene.collection.objects.link(cutter)
+        m = cap.modifiers.new("inscribe", "BOOLEAN")
+        m.operation = "DIFFERENCE"; m.object = cutter; m.solver = "EXACT"
+        bpy.context.view_layer.objects.active = cap
+        bpy.ops.object.modifier_apply(modifier=m.name)
+        bpy.data.objects.remove(cutter)
+
+    gh = 3.1 * r + 0.07                          # glyph reach along meridian + clearance
+    s_lo, s_hi = 0.5 * qc + gh, S - 0.5 * qc - gh  # stay below the caps' 45th parallel
+    if s_hi <= s_lo:                             # too short → centre all three on the body
+        s_lo = s_hi = 0.5 * S
+    order = (s_hi, 0.5 * (s_lo + s_hi), s_lo) if updown > 0 \
+        else (s_lo, 0.5 * (s_lo + s_hi), s_hi)  # b2 far tip → b0 near grid
+    for gi, state in enumerate(bits):
+        cut_one(state, order[gi])
+
+    cme = cap.data                              # glow recessed floors via capsule SDF
+    if GLOW.name not in cme.materials:
+        cme.materials.append(GLOW)
+    gi = cme.materials.find(GLOW.name)
+    bm = bmesh.new(); bm.from_mesh(cme); bm.normal_update()
+    for f in bm.faces:
+        p = f.calc_center_median()
+        cz = min(max(p.z, cyl_lo), cyl_hi)
+        d = mathutils.Vector((p.x - x, p.y - y, p.z - cz)); dl = d.length
+        if dl < 1e-6:
+            continue
+        if dl - rad < -0.4 * depth and f.normal.dot(d / dl) > 0.5:
             f.material_index = gi
-    bm.to_mesh(me); bm.free()
+    bm.to_mesh(cme); bm.free()
 
 
 def cd_mult(level, i, j):
@@ -115,8 +184,8 @@ def cd_mult(level, i, j):
 LEVEL_HUE = {1: "#0072B2", 2: "#009E73", 3: "#D55E00"}   # ℂ blue, ℍ green, 𝕆 orange
 
 B.reset()
-B.scene(samples=128, haze=0.12)               # volumetric haze → bloom near lights
-GLOW = B.material("#ffffff", emission=120.0)  # inset inscription glow (bloom seed)
+B.scene(samples=128, haze=0.04)               # volumetric haze → bloom near lights
+GLOW = B.material("#ffffff", emission=200.0)  # inset inscription glow (bloom seed)
 VIEW = (0.8, -1.0, 0.7)   # camera direction (toward camera); also passed to the rig
 # Per band: the camera-aware away-gate masked to ONE axis chosen by the per-level
 # sign — emission &= (my-normal-axis == sign-axis). σ_L=+ glows from the back (+Y)
@@ -151,9 +220,13 @@ for r in range(8):
         # One-mesh capsule spanning [z0, z1] on the updown side — no cylinder/cap
         # seam, so the backlight gate gradients smoothly over the pawn.
         cap = B.capsule((x, y, updown * z0), (x, y, updown * z1), 0.4, mat)
-        # Inscribe the result unit e_{r⊕c}, engraved + glowing, facing the camera,
-        # top→down (flipped on downward pawns so they read upside-down).
-        inscribe(cap, "e" + str(r ^ c), x, y, 0.4, z1, updown, VIEW)
+        # Inscribe the 3 boolean-coordinate glyphs of the result unit h = r⊕c
+        # (b2 top → b0 bottom): bit set above the unit's highest 1 is UNSET. Engraved
+        # + glowing, facing the camera, rotation-invariant (no flip on downward pawns).
+        u = r ^ c
+        bl = u.bit_length()
+        bits = [(((u >> p) & 1) if p < bl else None) for p in (2, 1, 0)]
+        inscribe(cap, bits, x, y, 0.4, z0, z1, updown, VIEW)
 data = B.join_data()
 # Same gallery as octonion: forward a full cell off the back wall, 0.6 metal
 # mirror, deep f/8 focus keeping the tiled-perspective reflections sharp.
