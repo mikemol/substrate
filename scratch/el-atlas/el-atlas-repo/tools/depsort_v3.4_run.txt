@@ -1,0 +1,100 @@
+SPACE MANIFEST  S_fd5ddbe7ac57  (110592 models, exhaustive):
+  pins: ['1', '2', '3']
+  adj: ['True', 'False']
+  ident: ['True', 'False']
+  neg: ['True', 'False']
+  ops: ['diagonal', 'linear']
+  lock: ['available', 'unavailable', 'wrong', 'clipped', 'affine', 'noisy', 'partial', 'forced']
+  norm: ['free', 'pinned', 'pinned_l2']
+  two_ops: ['True', 'False']
+  basis_def: ['ok', 'singular']
+  coeff: ['real', 'gf2']
+  cdlevel: ['2', '4', '8', '16']
+  probe: ['full', 'depth1', 'mention']
+  fingerprint sha256[:12] = fd5ddbe7ac57  (manifest + claim-test sources; reconstructible)
+  knob provenance (why this space — each knob admitted by a correction event):
+    pins       <- pin-scenario catalog (spec 5.6, draft 14); separates: statability of every pair-structure claim vs P1
+    adj        <- codec pair, Lemma 2.5b; separates: BAL's chart-invariance from CDC (directional split)
+    ident      <- codec contract, spec 5.7 (frame anchor); separates: the identity-anchor claims from everything else
+    neg        <- involution/De Morgan requirements; separates: statability of V4I, D4C, T53, RLS
+    ops        <- reading-relation ladder, spec 5.6; separates: independent-reading vs composed-reading claims
+    lock       <- classical-section family; reviewer Break 1; separates: locus-circle members (clipped isolates RLS; noisy reveals U-kinds)
+    norm       <- prohibition/purchase, spec 5.8a; separates: falsifies PUR while de-stating PRO
+    two_ops    <- Theorem 5.3 single-op collapse; separates: T53 from the locus circle
+    basis_def  <- v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode); separates: CRS from NOE
+    coeff      <- char-2 collapse theorem (draft 17, [W]); separates: sign-structure claims (TWN,V4I,D4C,PHS,RLS,T53) from the carrier-codec claims
+    cdlevel    <- radial entailment (d17) + zero-divisor geography (d18); separates: the Hurwitz/ZD schedules across doubling rungs
+    probe      <- Nedge identity-collapse decomposition (N-series); separates: IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented
+
+base all-P: True
+
+=== self-certification audit (P under EVERY model = unconstrained = vicious) ===
+  flagged: none
+  special case PRO: ['P', 'V'] -> never F: a THEOREM (truth-stable), constrained only by statability.
+
+=== Break 2: knob-sensitivity (which knobs ever move each claim off P) ===
+  ADJ : ['adj']
+  BAL : ['adj', 'ident']
+  CDC : ['ident']
+  CRS : ['basis_def', 'pins']
+  PUR : ['norm', 'ops', 'pins']
+  PRO : ['norm', 'ops', 'pins']
+  LOC : ['lock', 'pins']
+  L26 : ['lock', 'pins']
+  T53 : ['coeff', 'lock', 'neg', 'pins', 'two_ops']
+  V4I : ['coeff', 'neg', 'pins']
+  D4C : ['coeff', 'neg', 'ops', 'pins']
+  PHS : ['coeff', 'lock', 'neg', 'ops', 'pins']
+  RLS : ['coeff', 'lock', 'neg', 'pins']
+  NOE : ['pins']
+  TWN : ['coeff', 'neg', 'ops', 'pins']
+  RAD : ['coeff']
+  ZDG : ['coeff']
+  PR2 : ['norm', 'ops', 'pins']
+  NGL : ['coeff', 'neg', 'pins']
+  NVL : ['coeff', 'neg', 'norm', 'ops', 'pins']
+  IDC : ['probe']
+  D4C under unrelated breaks (ident=F, adj=F, pins=3): P P P 
+
+=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_fd5ddbe7ac57 ===
+  SEP({LOC,L26} | S_fd5ddbe7ac57) = 0 truth / 0 any-kind ; co-movement 82944/82944 = 1.00  -> unseparated-in-S_fd5ddbe7ac57
+      frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum
+      ledger: unseparated, co-movement 1.00  @ S_666bf26b7779 (3072 models)
+      ledger: unseparated  @ S_v3 (9 knobs)
+      ledger: unseparated, co-movement 1.00  @ S_94763a8b62ea (36864 models, v3.3)
+  SEP({PUR,PRO} | S_fd5ddbe7ac57) = 0 truth / 0 any-kind ; co-movement 86016/86016 = 1.00  -> unseparated-in-S_fd5ddbe7ac57
+      frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum
+      ledger: unseparated, co-movement 1.00; PRO never F (expressibility-intrinsic)  @ S_666bf26b7779 (3072 models)
+      ledger: unseparated; PRO never F  @ S_94763a8b62ea (v3.3)
+  SEP({BAL,CDC} | S_fd5ddbe7ac57) = 27648 truth / 27648 any-kind ; co-movement 55296/82944 = 0.67  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'adj': False}
+      ledger: separated (adj; identical-frames)  @ S_v2 (characteristic-break basis)
+  SEP({CRS,NOE} | S_fd5ddbe7ac57) = 36864 truth / 36864 any-kind ; co-movement 36864/73728 = 0.50  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'basis_def': 'singular'}
+      ledger: unseparated-in-S_v3  @ S_v3 (9 knobs, no basis_def)
+      ledger: separated (basis_def='singular')  @ S_v2 (characteristic-break basis + basis_def probe)
+  SEP({RAD,ZDG} | S_fd5ddbe7ac57) = 0 truth / 0 any-kind ; co-movement 55296/55296 = 1.00  -> unseparated-in-S_fd5ddbe7ac57
+      ledger: unseparated 1.00 (Hurwitz<->no-ZD as co-movement; separate witness structures = frontier)  @ S_94763a8b62ea (v3.3)
+  SEP({TWN,D4C} | S_fd5ddbe7ac57) = 0 truth / 0 any-kind ; co-movement 101376/101376 = 1.00  -> unseparated-in-S_fd5ddbe7ac57
+      ledger: unseparated, co-movement 1.00 (partly by construction)  @ S_94763a8b62ea (v3.3)
+  SEP({TWN,PHS} | S_fd5ddbe7ac57) = 2304 truth / 6912 any-kind ; co-movement 101376/108288 = 0.94  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'lock': 'wrong'}
+      ledger: SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section)  @ S_94763a8b62ea (v3.3)
+  SEP({PRO,PR2} | S_fd5ddbe7ac57) = 0 truth / 12288 any-kind ; co-movement 86016/98304 = 0.88  -> unseparated-in-S_fd5ddbe7ac57
+      ledger: 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1)  @ S_94763a8b62ea (v3.3)
+  SEP({PUR,PR2} | S_fd5ddbe7ac57) = 0 truth / 12288 any-kind ; co-movement 86016/98304 = 0.88  -> unseparated-in-S_fd5ddbe7ac57
+  SEP({NVL,PUR} | S_fd5ddbe7ac57) = 3072 truth / 21504 any-kind ; co-movement 86016/107520 = 0.80  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'norm': 'pinned_l2'}
+      ledger: 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source  @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint)
+  SEP({NVL,PR2} | S_fd5ddbe7ac57) = 0 truth / 9216 any-kind ; co-movement 98304/107520 = 0.91  -> unseparated-in-S_fd5ddbe7ac57
+  SEP({NVL,PRO} | S_fd5ddbe7ac57) = 3072 truth / 21504 any-kind ; co-movement 86016/107520 = 0.80  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'norm': 'pinned_l2'}
+  SEP({NGL,PRO} | S_fd5ddbe7ac57) = 0 truth / 30720 any-kind ; co-movement 73728/104448 = 0.71  -> unseparated-in-S_fd5ddbe7ac57
+  SEP({NGL,T53} | S_fd5ddbe7ac57) = 12672 truth / 14976 any-kind ; co-movement 92160/107136 = 0.86  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'two_ops': False}
+  SEP({IDC,NOE} | S_fd5ddbe7ac57) = 24576 truth / 49152 any-kind ; co-movement 12288/61440 = 0.20  -> separated-in-S_fd5ddbe7ac57
+      witness mutation: {'probe': 'mention'}
+
+  Break 3 exhibit (noisy lock): LOC=U, L26=F
+  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old
+  P/F/V scheme merged. Co-movement now has internal kind-structure.

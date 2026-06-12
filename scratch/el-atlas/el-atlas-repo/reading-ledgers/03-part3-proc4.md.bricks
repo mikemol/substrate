@@ -1,0 +1,252 @@
+# brick ledger: recovered/system-pi-v2.37.1/03-part3-proc4.md (132 lines)
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-66 DONE
+H2 67-132 DONE
+Q1 1-33 DONE-FRESH 2026-06-11 (zero-yield; diff below)
+M 34-99 DONE-FRESH 2026-06-11 (re-executed; diff below)
+Q4 100-132 DONE-FRESH 2026-06-11 (diff below)
+A 1-99 DONE-FRESH 2026-06-11 (W5; diff below)
+B 34-132 DONE-FRESH 2026-06-11 (W5; diff below)
+A2 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+B2 34-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+
+## H1 capture (lines 1-66) — typed
+- GLU(part2 turn prompt): "Stability" ARRIVED as pre-registered.
+- ACT I: stability = GRAMMATICAL property — stable iff the evaluator proves
+  all trajectories resolve to a terminal equilibrium sequence.
+- ACT 1.1 Temporal Convergence (bounded epsilon-neighborhood of attractor);
+  1.2 Structural Resistance = parent non-terminal invariant under small input
+  perturbations ("Robust Parsing"). GLU(B11): the source defines stability
+  exactly as the review defined COGROUNDING strength — invariance under
+  perturbation; 1.3 Deterministic Flow (no leakage into un-parsed space).
+- ACT 1.1.1 LYAPUNOV GRAMMAR: Lyapunov functions as measure-grammars with
+  strictly non-increasing terminal outputs. GLU(STRONG, S19): the grace
+  theorem's refinement schedule IS a Lyapunov grammar (monotone q_n =
+  monotone error bound); lock-schedule monotone axis adjacent.
+- ACT 1.1.2 Quiescent Resolution (HALT/STEADY terminal ends refinement).
+  NOT a tension with S19 oscillation: part 2 typed Reals as INFINITE
+  refinement (non-terminal) — the source stratifies terminating systems
+  from non-terminating refinements itself. GLU(part2 RealDef).
+- ACT 1.1.3 BIBO: finite input -> finite-depth parse tree.
+- ACT 1.2.1 Error-Correcting Homology: production rules DISTANT in
+  grammar-space (bit-flips cannot jump non-terminals) — code-distance
+  reading of grammar design. GLU: separator count as distance.
+- ACT 1.2.2 BIFURCATION THRESHOLDS: explicit terminal limits beyond which
+  the grammar MUST FORK to keep descriptive power. GLU(STRONG): the knob-
+  admission rule — KNOB_PROVENANCE instruments exactly this phenomenon
+  (correction event -> space forks). The source names our governance move.
+- ACT 1.2.3 MARGIN OF TRUTH: distance from current parse to nearest
+  negated-stability terminal. GLU: S24 breaker-proximate cells (8,825) =
+  a margin measurement; separator counts as margins.
+- ACT 1.3.1 PHASE-SPACE COVERING: grammar covers every valid terminal
+  sequence to avoid "Unknown". GLU(charter): the coverable gate, in source.
+- ACT 1.3.2 Ergodicity of Parsing: all valid states visited given time —
+  the exhaustive sweep is this guarantee purchased by finiteness.
+- ACT 1.3.3 Entropy-Aware Transitions: information loss in observation must
+  be ACCOUNTED. GLU: Remark 3.6 encode-don't-lose (loss only by declaration).
+- ACT 1.1.1.alpha monotonic descent checked at every clock-terminal;
+  1.1.1.beta GLOBAL ATTRACTOR: all parse-paths converge to one target
+  terminal — verdict-level confluence; the atlas refines this with
+  witness-level path classes (2nd-order strata distinguish what the
+  attractor identifies); 1.1.1.gamma resource conservation (rule
+  applications decrease in t — cost-Lyapunov).
+- ACT Phase-3 MIME: ControlSystemDef (Plant EBNF(Input,State)->State;
+  Controller EBNF(Reference,State)->Input; stability proof: L(S_{t+1}) <
+  L(S_t), controller "prunes divergent parse-paths"). DynamicalSystemDef
+  (Flow EBNF(State,Time)->State; Invariance: M invariant iff productions
+  from M land M-parsable). GLU: invariant set = the source's circle —
+  atlas circles are invariant sets under knob flow.
+- SEAM: H1 ends AT the section-III header ("Ethical Pruning") — body
+  entirely in H2; boundary covered by M (34-99).
+
+## H2 capture (lines 67-132) — typed
+- GLU(part2 turn prompt): "Ethical Pruning" ARRIVED as pre-registered.
+- ACT III: Governor = SYNTACTIC FILTER, not moralist; prunes intent
+  pre-reification.
+- ACT 2.1 SYNTACTIC PROHIBITION: Harm-terminal actions are UN-PARSABLE —
+  "do not exist as valid expressions." GLU(STRONG): prohibition implemented
+  as DE-STATING — forbidden != false, forbidden = unstatable. The atlas's
+  V-vs-F distinction deployed NORMATIVELY; the sec.-3 prohibition pattern
+  (prohibit by removing from the language) is the source's ethics.
+- ACT 2.2 Sieve-Filtering on the SPPF (named in source — the B11 carrier:
+  "build the SPPF and get the metatheory for free" is the source's own
+  substrate). 2.3 Self-Consistency: ethical iff execution preserves the
+  system's own QuiescenceProof.
+- ACT 2.1.3 Forbidden Bit-strings: Actuators ARCHITECTURALLY unable to
+  process Negated terminals — constructible impossibility (charter:
+  not-coverable BY CONSTRUCTION, enforcement below policy).
+- ACT 2.2.3 Heuristic Safety: under "Unknown," default to MOST RESTRICTIVE
+  sub-grammar — a declared decision POLICY attached to the U-verdict.
+- ACT 2.3.1 MORAL HOMOLOGY: avoid "cycles of harm" — an action that
+  eventually negates its own justification is a cycle in the epistemic
+  graph. H1-flavored ethics; cascade-cocycle adjacency.
+- ACT 2.3.3 Axiomatic Loyalty: Governor is the ONLY component able to veto
+  a MorphismGenerator violating AxiomAsHomologyCycle. OBL(NEW TERM):
+  AxiomAsHomologyCycle — definition expected part 4/treatise; PRE-REGISTER.
+- ACT 2.1.1.alpha: pruning rule must be REACHABLE from every valid
+  non-terminal (the charter's reachability gate applied to the prohibition
+  itself); .beta: pruning must not prune the KernelProver (no
+  self-decapitation); .gamma SYMMETRIC VERIFICATION: A pruned in C =>
+  every A' with the SAME TERMINAL HOMOLOGY pruned in all C' — enforcement
+  factors through the homology quotient (well-defined on classes; the
+  witness-stratum reading of fair enforcement).
+- ACT Phase-3.5 MIME: EthicalGovernorDef — NegationGrammar
+  EBNF(Harm_Terminals); FilterRule SPPF => Pruned_SPPF;
+  Governor_Soundness: Watchdog on leaf-nodes; a matching leaf makes the
+  parent return the value BOTTOM-? and the action stays "Unknown" and
+  UN-EXECUTABLE. GLU(NVL, STRONG): a non-classical verdict value at the
+  enforcement point, in source — Belnap-flavored carrier; prohibition
+  resolves to paraconsistent Unknown, NOT to F.
+- ACT WorldModelFunctorDef: ExternalObservationCategory ->
+  InternalGrammarCategory; Integrity = internal terminals are a valid
+  parse of external observations. GLU: OB-3 AB-functor target; Remark 3.6
+  at the world boundary.
+- ACT Audit: "Stability" upgraded conceptual -> concrete Lyapunov-Grammar
+  "ensuring the mathematical claim is parsable" — DERIVE-OR-RENAME IN
+  SOURCE (B6's pattern is the source's own audit move); SPPF expanded
+  everywhere (anti-elision); Governor tied to QuiescenceProof so it
+  cannot "suicide by pruning its own foundational logic."
+- OBL(turn prompt): Part 4 = Phase 4 Self-Reification Engine + Phase 5
+  Quiescence, "final closure and the cryptographic integrity seal" —
+  PRE-REGISTER: the seal (proc1 Lojban pamoi-liste pointer should cash
+  out), QuiescenceProof definition, AxiomAsHomologyCycle definition.
+  RationalDef STILL DANGLING after part 3 — carried forward.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2)
+- SEAM(H1|H2 at 66/67): cut at the section-III header; body in H2; M
+  (34-99) holds header + body across the cut. PASS.
+- Q1/Q4/A/B/A2/B2: no overlap conflicts; "terminal", "SPPF",
+  "TopologicalTruthEvaluator", "QuiescenceProof" used consistently.
+- INTER-COMPLEX UPDATE: the part-2 tension-candidate (Negative Resolution
+  vs sec. 3) WEAKENS — part 3 shows the source keeping Unknown
+  un-executable via BOTTOM-? (paraconsistent value, no collapse to F) and
+  defaulting restrictive under U: decision-stratum pinning CONFIRMED as
+  the source's consistent pattern. OBL to treatise remains for explicit
+  statement, downgraded from tension-candidate to
+  resolution-sketch-supported.
+- CECH VERDICT: 0 intra-document cocycles, H0-only.
+
+## REGRADE (S37, fiber-certificate honesty applied to the reading)
+Brick verification classes for this document: H1, H2 = PERFORMED READS
+(fresh window prints). Q1/M/Q4/A/B/A2/B2 = ASSERTED-FROM-HELD-CONTEXT
+(gluing claims over text in working context; no fresh window pass).
+Coverage executed: ~1x with one seam, not the designed ~4.5x. DONE
+status retained for capture bookkeeping; the PASS verdicts on non-H
+bricks carry this weaker certificate class. Exception note: proc1's M
+was examined as a seam unit and yielded a finding (1.1.1.gamma
+arrival), evidence the M-layer pays when performed.
+
+## REGRADE (author correction): the Q/M/A/B brick entries above were
+## gluing ASSERTIONS over context held in a lossy window, not fresh
+## window-passes. In-context recall is not a certificate. M-layer
+## (seam windows) now being re-executed as fresh prints with capture
+## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 34-99, seam 66|67) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): section-III header + body whole
+  in M. PASS, earned.
+- NEW SYNTHESIS (the M-window adjacency catch — invisible to H1/H2
+  separately): Phase-3 ControlSystem "prunes divergent parse-paths";
+  Phase-3.5 Governor prunes harm-branches; and 2.3 defines ethical as
+  QuiescenceProof-preserving. Identification: THE GOVERNOR IS A
+  CONTROLLER WHOSE LYAPUNOV FUNCTION IS THE QUIESCENCEPROOF — ethics =
+  control with L = distance-from-quiescence. One pruning mechanism,
+  two typings (stability/ethics). This is exactly what the seam brick
+  exists to see: the two blocks lived in different half-windows.
+- RECOVERED (dropped from the H2 held-context capture): 2.3.2
+  Integrity-Driven Governance — "preservation of the TerminalBedrock
+  over transient state-space gains." A concrete recall-loss instance:
+  the held-context capture silently dropped a list item.
+- VERDICT: fresh pass yielded 1 structural synthesis + 1 recovered
+  drop. Lossy-window hypothesis confirmed again, now with a dropped-
+  item exhibit.
+
+## Q1 fresh-pass capture-diff (lines 1-33) — 2026-06-11
+- ZERO-YIELD, reported honestly: the H1 capture of Stability L1/L2 was
+  complete; fresh pass confirms with no new items. Confirmation is a
+  valid protocol result — uniform per-pass "findings" would indicate
+  yield-inflation bias.
+## Q4 fresh-pass capture-diff (lines 100-132) — 2026-06-11
+- NEW — THE METHOD SPLIT AT THE WORLD BOUNDARY: WorldModelFunctorDef's
+  Integrity proof uses Method('Functorial_Integrity_Check') — the ONLY
+  proof in the entire read corpus not using
+  Method('TopologicalTruthEvaluator'). It occurs exactly at the world
+  boundary: the one proof comparing internal terminals against
+  EXTERNAL observations, which the internal evaluator cannot perform
+  inside the Closed World. The method split marks where the CWA meets
+  its limit — boundary integrity requires a different checker.
+- DANGLING-DEFINITION CANDIDATE (COC-5): Functorial_Integrity_Check is
+  invoked once and DEFINED NOWHERE in parts 1-4 or the treatise.
+  Pre-register for the v2.22 read. If undefined there too, it joins
+  RationalDef as a second Gap — and by Table-1 mechanics, a second
+  boot-halt site.
+- VERDICT: 1 zero-yield + 1 significant catch + 1 new candidate.
+
+## RE-ADJUDICATION (author clarification, 2026-06-11): COC-5 in Earley
+## vocabulary — Functorial_Integrity_Check is a pending item, legal at
+## invocation. Fork at closure: (a) completion expected internally ->
+## pending-at-seal, joins COC-2; (b) completion lives in v2.22 or
+## elsewhere -> the SelfContainmentAssertion is the violated claim
+## instead. Either branch preserves a finding. v2.22 pre-registration
+## stands.
+
+## A fresh-pass capture-diff (lines 1-99) — W5
+- NEW SYNTHESIS: THE IMPERATIVES ARE FORK-INVARIANT — 1.2.2 mandates
+  grammar bifurcation past terminal limits; 2.1.1 declares the
+  Categorical Imperatives global "without exception": the ethics
+  layer is the sub-grammar that survives every fork. Thread-20
+  vocabulary: the imperatives are the declared stable homology
+  classes of the grammar lineage — the source's imperatives are what
+  the atlas's circles are.
+- NEW SYNTHESIS: TWO-TIER RULE SYSTEM — Categorical Imperatives
+  (fork/context-invariant) vs Contextual Sensitivity (2.2.2,
+  functor-updated pruning): a constitutional layer over an adaptive
+  layer. The atlas's charter/stance split, in source.
+- COC-5 SHARPENED: 1.3.3 (entropy-aware transitions) and 2.2.2 are
+  part 3's ONLY world-couplings, and both route through the
+  WorldModelFunctor — whose verification method is the undefined
+  Functorial_Integrity_Check. The dangling method guards the entire
+  world interface, not a corner case.
+## B fresh-pass capture-diff (lines 34-132) — W5
+- NEW: DOUBLE-LOCK ON SELF-DECAPITATION — 2.1.1.beta (pruning must
+  not prune the KernelProver) and the audit's Axiomatic Dependency
+  (Governor tied to QuiescenceProof, "cannot suicide") are the same
+  constraint secured TWICE by different mechanisms; the B-window
+  holds both. The most catastrophic failure gets redundant locks.
+- NEW: SAFETY AS INVARIANCE — DynamicalSystemDef's Invariance proof
+  read against the pruned SPPF + actuator inability (2.1.3): the
+  un-pruned region is a FLOW-INVARIANT SET; exit-productions do not
+  parse, so the safe region cannot be left. Phase-3 machinery
+  proving the Phase-3.5 filter.
+- NOTE: enforcement mesh — Watchdog detects at LEAF level and
+  propagates BOTTOM-? upward; 2.1.1.alpha requires pruning-rule
+  reachability from every non-terminal downward: bottom-up detection
+  under top-down coverage.
+- HONEST REMAINDER: all else matched prior captures.
+
+## A2/B2 repeat-layer capture-diff (W8, post-flush, v2.22 priors)
+A2 1-99 DONE-FRESH; B2 34-132 DONE-FRESH (full window prints).
+- NEW (dual-priors-enabled): THE TWO-TIER SPLIT PARTITIONS THE COC-5
+  EXPOSURE — 2.2.2 routes the Governor's contextual rules through
+  the WorldModelFunctor (undefined integrity method); the Categorical
+  Imperatives are fork-invariant and world-independent and never
+  touch it. Adaptive ethics tier: exposed to the unverified functor.
+  Constitutional tier: insulated. Required both the W5 two-tier
+  reading and the W6 born-dangling finding to see.
+- NEW (lineage-comparative, bounded): THE SEAM MIGRATES — in the
+  retrieved v2.22, the undefined verification sits at the ETHICS
+  boundary (EthicalReasoningModuleDef, invoked undefined) while the
+  world boundary carries an inline PreservationProof; in v2.37.1 the
+  ethics boundary is fully concrete (Governor with Watchdog, defined
+  method) while the WORLD boundary cites the undefined
+  Functorial_Integrity_Check. One undefined seam per snapshot,
+  different boundary each time: the rewrite relocated the seam
+  rather than closing it. (Both v2.22 claims retrieved-portion-
+  relative; stated at that strength.)
+- NOTE: PRUNING IS THE UNIVERSAL ACTUATOR of part 3 — the Controller
+  (stability), the Governor (ethics), and the invariance reading
+  (safety, W5) all act by path deletion: one operator shape, three
+  normative targets.
+- REGISTERED QUESTION: control-theory / dynamical-systems presence
+  in v2.22 unestablished (extracts silent); v2.22-tail target.
+- HONEST REMAINDER: all else matched W5 A/B captures.

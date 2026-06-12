@@ -1,0 +1,61 @@
+SPACE MANIFEST  S_666bf26b7779  (3072 models, exhaustive):
+  pins: ['1', '2', '3']
+  adj: ['True', 'False']
+  ident: ['True', 'False']
+  neg: ['True', 'False']
+  ops: ['diagonal', 'linear']
+  lock: ['available', 'unavailable', 'wrong', 'clipped', 'affine', 'noisy', 'partial', 'forced']
+  norm: ['free', 'pinned']
+  two_ops: ['True', 'False']
+  basis_def: ['ok', 'singular']
+  fingerprint sha256[:12] = 666bf26b7779  (manifest + claim-test sources; reconstructible)
+  knob provenance (why this space — each knob admitted by a correction event):
+    pins       <- pin-scenario catalog (spec 5.6, draft 14); separates: statability of every pair-structure claim vs P1
+    adj        <- codec pair, Lemma 2.5b; separates: BAL's chart-invariance from CDC (directional split)
+    ident      <- codec contract, spec 5.7 (frame anchor); separates: the identity-anchor claims from everything else
+    neg        <- involution/De Morgan requirements; separates: statability of V4I, D4C, T53, RLS
+    ops        <- reading-relation ladder, spec 5.6; separates: independent-reading vs composed-reading claims
+    lock       <- classical-section family; reviewer Break 1; separates: locus-circle members (clipped isolates RLS; noisy reveals U-kinds)
+    norm       <- prohibition/purchase, spec 5.8a; separates: falsifies PUR while de-stating PRO
+    two_ops    <- Theorem 5.3 single-op collapse; separates: T53 from the locus circle
+    basis_def  <- v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode); separates: CRS from NOE
+
+base all-P: True
+
+=== self-certification audit (P under EVERY model = unconstrained = vicious) ===
+  flagged: none
+  special case PRO: ['P', 'V'] -> never F: a THEOREM (truth-stable), constrained only by statability.
+
+=== Break 2: knob-sensitivity (which knobs ever move each claim off P) ===
+  ADJ : ['adj']
+  BAL : ['adj', 'ident']
+  CDC : ['ident']
+  CRS : ['basis_def', 'pins']
+  PUR : ['norm', 'ops', 'pins']
+  PRO : ['norm', 'ops', 'pins']
+  LOC : ['lock', 'pins']
+  L26 : ['lock', 'pins']
+  T53 : ['lock', 'neg', 'pins', 'two_ops']
+  V4I : ['neg', 'pins']
+  D4C : ['neg', 'ops', 'pins']
+  PHS : ['lock', 'neg', 'ops', 'pins']
+  RLS : ['lock', 'neg', 'pins']
+  NOE : ['pins']
+  D4C under unrelated breaks (ident=F, adj=F, pins=3): P P P 
+
+=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_666bf26b7779 ===
+  SEP({LOC,L26} | S_666bf26b7779) = 0 truth / 0 any-kind ; co-movement 2304/2304 = 1.00  -> unseparated-in-S_666bf26b7779
+      frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum
+  SEP({PUR,PRO} | S_666bf26b7779) = 0 truth / 0 any-kind ; co-movement 2560/2560 = 1.00  -> unseparated-in-S_666bf26b7779
+      frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum
+  SEP({BAL,CDC} | S_666bf26b7779) = 768 truth / 768 any-kind ; co-movement 1536/2304 = 0.67  -> separated-in-S_666bf26b7779
+      witness mutation: {'adj': False}
+      ledger: separated (adj; identical-frames)  @ S_v2 (characteristic-break basis)
+  SEP({CRS,NOE} | S_666bf26b7779) = 1024 truth / 1024 any-kind ; co-movement 1024/2048 = 0.50  -> separated-in-S_666bf26b7779
+      witness mutation: {'basis_def': 'singular'}
+      ledger: unseparated-in-S_v3  @ S_v3 (9 knobs, no basis_def)
+      ledger: separated (basis_def='singular')  @ S_v2 (characteristic-break basis + basis_def probe)
+
+  Break 3 exhibit (noisy lock): LOC=U, L26=F
+  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old
+  P/F/V scheme merged. Co-movement now has internal kind-structure.

@@ -1,0 +1,2 @@
+title: EL-Atlas specification (root node)
+structure: filesystem-as-btree; numeric node coordinates mirror document numbering; METADATA per node (frontmatter, not composed); leaves are NN.md composed in sorted order; nodes split LAZILY when touched (S43).

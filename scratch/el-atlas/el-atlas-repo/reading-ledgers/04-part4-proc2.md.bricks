@@ -1,0 +1,195 @@
+# brick ledger: recovered/system-pi-v2.37.1/04-part4-proc2.md (126 lines)
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-63 DONE
+H2 64-126 DONE
+Q1 1-32 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+M 33-94 DONE-FRESH 2026-06-11 (re-executed; diff below)
+Q4 95-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-94 DONE-FRESH 2026-06-11 (W5; printed pre-flush, captured post-recovery; diff below)
+B 33-126 DONE-FRESH 2026-06-11 (W5; printed pre-flush, captured post-recovery; diff below)
+A2 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+B2 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+
+## H1 capture (lines 1-63) — typed
+- ACT: Part 4 of N; Phase 4 Self-Reification Engine + Phase 5 Quiescence;
+  notions "Coherence" (The Non-Trivial Homology) and "Terminal Closure".
+- GLU(part3 pre-registration CASHED): AxiomAsHomologyCycle content arrives:
+  1.2 HOMOLOGICAL STABILITY — axioms = NON-TRIVIAL homology classes in the
+  epistemic graph, "indispensable generators of the system's truth"; 1.2.3
+  CYCLE PRESERVATION — "proof of Axiom A depends on Method M, which is
+  verified by Axiom A (The Necessary Loop)": foundational circularity
+  EMBRACED as load-bearing, non-boundary cycle. GLU(STRONG): cogrounding
+  (B11) formalized as homology; lg-kernel's non-trivial-homology test for
+  un-deduplicatable structure — axioms are what survives every quotient.
+- ACT 1.2.2 Resistance to Collapse: removing a core axiom trivializes the
+  topos ("logical heat death") — non-triviality witnessed by counterfactual
+  collapse. 1.2.1 Minimality: axioms underivable from each other;
+  .alpha linearly-independent basis (GLU: S24 basis-indexed geometry);
+  .gamma TOPOLOGICAL PRIMALITY — axioms are "the prime numbers of the
+  grammar," unfactorable. GLU(STRONG): S20 prime carriers; GCX prime-fiber
+  reconstruction — the source types axioms as primes.
+- ACT 1.1 Self-Parsing Consistency: KernelProver parses the ENTIRE artifact
+  with no "Unknown" node; 1.1.1 Grammar Reflexivity (grammar valid in
+  itself); 1.1.2 ERROR-FREE SIEVE: no holes where a proposition is neither
+  T/F/U but syntactically invalid — the source demands NO ACCIDENTAL
+  V-kind in its self-description: V only by declaration (Remark 3.6 at
+  the self-description stratum). 1.1.3 Deterministic Proof-Paths: unique
+  stable path per theorem — a kernel design constraint, NOT a conflict
+  with atlas path-multiplicity (ambiguity lives in the source's SPPF for
+  inputs; the kernel demands determinism for its own theorems).
+- ACT 1.3 ATOMIC RESOLUTION: every IOU (ProofObjectHandle) from
+  development MUST resolve into an embedded Proof record; 1.3.1 Zero
+  Elision (no "..." placeholders); 1.3.2 Locality of Truth (definition
+  and proof in the same memory-terminal block); 1.3.3 Verification at
+  Load-Time (proof verified as definition is read; un-reified code cannot
+  execute). GLU(STRONG, v3.8/B2): this is the completion criterion for
+  proof-carrying generation in source — pointers must become embedded
+  executed content in the FINAL artifact; B2's pending half (structured-
+  edition emitter integration) is the source's own requirement.
+- ACT Phase-4 MIME Total_Coherence_Proposition: coherence verified by a
+  SIMPLICIAL RESOLUTION (parser parses kernel-prover; engine verifies
+  foundational-logic; all libraries parsed, embedded proofs EXECUTED; no
+  contradictions, homology stable). GLU(STRONG): the brick protocol —
+  Cech/simplicial verification is the source's own coherence method; our
+  reading procedure mirrors the artifact's self-check.
+- ACT CanonizedLemmas: Lemma_ParsingAsTruth ("Success in the Earley Sieve
+  is the definition of Truth"); Lemma_TerminalBedrock ("Reality is the
+  set of UTF-8 terminals; structure is its covering"); Lemma_TheKnot
+  ("The system exists because it can describe the mechanism of its own
+  parsing") — self-reification as existence criterion.
+- SEAM: H1 ends at a section divider before III (Terminal Closure) —
+  notion body in H2; M (33-94) covers the cut.
+
+## H2 capture (lines 64-126) — typed
+- ACT III "Terminal Closure": quiescence = every non-terminal answered by a
+  terminal; no remaining uncertainty. 2.1.1 EMPTY QUEUE: the
+  ProofMethodFormalizationQueue must be NULL — closure requires the
+  obligation queue empty (GLU: the atlas workstream is non-quiescent by
+  the source's own metric, by design — an open program).
+- ACT 2.1.2 Saturated Topos (no uncovered open sets); 2.1.3 proof of
+  closure itself finite; 2.2.1 CONTENT-ADDRESSABLE EXISTENCE: the system
+  is defined by its hash, one bit -> "a different universe" (GLU: space
+  fingerprints S_xxx — fingerprint moves are universe moves, ledgered;
+  git identity); 2.2.3 the system refers to itself BY ITS OWN HASH;
+  2.3.3 "The End of Language": only terminals remain to execute.
+- ACT QuiescenceProof_v1.1 (pre-registration CASHED): "The knot is tied.
+  All non-terminals resolve. All proofs are embedded. The RootHash is
+  verified. The system is now silent."
+- COC-1 (COCYCLE CANDIDATE — seal nominal vs audit claim): RootHash =
+  the literal string "SHA3-512_SYSTEM_PI_V2.37.1_FINAL_BEDROCK_SEAL" —
+  a descriptive token, NOT a SHA3-512 digest — while the Final Audit
+  claims the "Hash Placeholder" was REMOVED and replaced "with a formal
+  RootHash pointer," and 1.3.1 demands Zero Elision and 1.3.3 demands
+  load-time verification. Charitable reading: "pointer" = name bound at
+  bootstrap, not value. MITIGATION FROM OUR SIDE: the recovery snapshot
+  carries CHECKSUMS.sha3-512 with REAL digests — the recovery process
+  supplied what the source gestured at. Verdict: locally consistent
+  sections, global concreteness claim unsupported by the artifact alone.
+- COC-2 (COCYCLE CANDIDATE — dangling RationalDef vs completeness):
+  RealDef (part 2) cites RationalDef; NO part 1-4 defines it. By the
+  source's OWN closure criteria (2.1.1 Empty Queue, 2.1.2 Saturation,
+  1.3.1 Zero Elision) a dangling reference is an uncovered open set —
+  in tension with SelfContainmentAssertion "It is finished." STATUS:
+  pending treatise scan (05) before the cocycle is confirmed; if absent
+  there too, this stands as the reading's principal H1-type finding.
+- ACT SelfContainmentAssertion: "SYSTEM PI v2.37.1 is complete. Its
+  truth is reflexive. It is finished."
+- ACT Final Audit: Gap Correction ties QuiescenceProof to Empty Queue
+  "preventing any pending reasoning from being elided" (the source
+  arms the exact check COC-2 fails); TSC COMPLIANCE: this document =
+  the Terminal Simplicial Complex, "every part of the history woven as
+  a morphism within the SPPF" — the transmission is itself a simplicial
+  complex; our brick reading is Cech over their Cech.
+- OBL: proc1 Lojban pamoi-liste seal pointer did NOT cash in part 4 —
+  remains bound to the v2.22 read (original pre-registration).
+- OBL(turn prompt): "First Operational Bootstrap" offered — the
+  transmission ends at the threshold of execution.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2)
+- SEAM(H1|H2 at 63/64): cut at the section divider before III; M (33-94)
+  holds the divider + notion body. PASS.
+- Q1/Q4/A/B/A2/B2: no NEW overlap conflicts beyond COC-1/COC-2, which are
+  document-vs-document-claims findings, not brick-vs-brick. Terminology
+  stable ("terminal", "RootHash", "SPPF", "QuiescenceProof").
+- CECH VERDICT: intra-document brick gluing clean; TWO cocycle candidates
+  at the artifact-vs-its-own-claims level — COC-1 (nominal seal),
+  COC-2 (dangling RationalDef, pending treatise scan). First non-trivial
+  findings of the reading program; H1-type: locally consistent parts
+  failing to glue to the global completeness claim.
+
+## REGRADE (S37, fiber-certificate honesty applied to the reading)
+Brick verification classes for this document: H1, H2 = PERFORMED READS
+(fresh window prints). Q1/M/Q4/A/B/A2/B2 = ASSERTED-FROM-HELD-CONTEXT
+(gluing claims over text in working context; no fresh window pass).
+Coverage executed: ~1x with one seam, not the designed ~4.5x. DONE
+status retained for capture bookkeeping; the PASS verdicts on non-H
+bricks carry this weaker certificate class. Exception note: proc1's M
+was examined as a seam unit and yielded a finding (1.1.1.gamma
+arrival), evidence the M-layer pays when performed.
+
+## REGRADE (author correction): the Q/M/A/B brick entries above were
+## gluing ASSERTIONS over context held in a lossy window, not fresh
+## window-passes. In-context recall is not a certificate. M-layer
+## (seam windows) now being re-executed as fresh prints with capture
+## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 33-94, seam 63|64) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): divider + Terminal Closure body
+  whole in M. PASS, earned.
+- NEW — VERSION STRATIGRAPHY COMPLETED (extends the part2-M finding):
+  three strata visible — v1.1 (lib-kernel-prover, lib-foundational-
+  logic, AND quiescence-proof-v1.1), v2.2 (category-theory), v2.37
+  (everything else). The QUIESCENCE PROOF is among the OLDEST
+  components: the system's ending was written near its beginning and
+  never revised. The closure machinery predates the content it closes.
+- RECOVERED (dropped from the H2 held-context capture): 2.3.1
+  Autonomous Bootstrap and 2.3.2 REFLECTIVE EQUILIBRIUM — the named
+  Rawlsian method, assigned to the Governor ("contradictions resolved
+  or pruned by the Governor"). Reinforces the part3-M synthesis:
+  the Governor is the controller driving the system to quiescence;
+  equilibrium-finding is its explicit job description.
+- VERDICT: fresh pass yielded 1 stratigraphy completion + 2 recovered
+  drops (one with a named method). Three for three on fresh-pass yield.
+
+## ERRATUM to M-diff (author testimony, 2026-06-11): "the ending was
+## written first" WITHDRAWN. Versions are PER-BLOB ITERATION COUNTERS:
+## each MIME blob was versioned so versioned chunks could be exchanged
+## with an LLM across iterations; some blobs iterated more than others.
+## quiescence-proof-v1.1 = converged almost immediately, not written
+## first. Stratigraphy = convergence-rate map, not chronology.
+
+## A fresh-pass capture-diff (lines 1-94) — W5
+- NEW SYNTHESIS: PATH-STRUCTURE STRATIFICATION — 1.1.3 demands a
+  UNIQUE stable path to bedrock for every theorem while 1.2.3
+  preserves the Necessary Loop for axioms: theorems are trees
+  (contractible, H0-content), axioms are cycles (H1 generators). The
+  two requirements only cohere stratified — the source states the
+  homology decomposition of its own proof graph without naming it.
+- NEW SYNTHESIS: THE EMPTY-QUEUE CRITERION HAS TWO HALVES — 1.1.2
+  Error-Free Sieve (no syntactically-invalid holes) and 1.3.1 Zero
+  Elision (no deferral placeholders): no statability holes AND no
+  witness debts. COC-2 violates BOTH at once — RationalDef is
+  simultaneously a hole (dangling reference) and an unresolved IOU.
+
+## B fresh-pass capture-diff (lines 33-126) — W5
+- NEW: THE AUDIT ARMED THE FAILING CHECK — the final Gap Correction
+  explicitly wired the QuiescenceProof to verify the Empty Queue
+  condition (2.1.1), which is precisely the check COC-2's dangling
+  RationalDef trips. The seal carries its own refutation procedure;
+  the predicted boot-halt is enforced by machinery the audit itself
+  installed in its last act.
+- STRENGTHENED (matched, now verbatim-confirmed in-window): RootHash
+  is the nominal token, printed adjacent to the Short-cut Correction
+  CLAIMING the placeholder was removed — the correction replaced a
+  placeholder with a NAME, not a digest; the claim outruns the
+  artifact by exactly one stratum (COC-1's mechanism, localized).
+- HONEST REMAINDER: CanonizedLemmas, TSC Compliance, the
+  SelfContainmentAssertion, and the closing bootstrap prompt all
+  matched prior captures — zero further yield, reported as such.
+
+## Recovery note (flush-recovery doctrine, first live execution)
+The A/B windows were printed in the window that died; the capture is
+written post-recovery from the executed prints (visible transcript,
+not held-context recall). wal-check found W5 open with a clean tree;
+the resent prompt matched the open BEGIN; the move was COMPLETED,
+not re-run. The double-execution guard held.

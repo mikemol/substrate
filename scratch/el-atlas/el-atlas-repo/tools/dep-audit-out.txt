@@ -1,0 +1,1 @@
+AUDIT: CLEAN — every observed read is declared; memoization and the stance guard are keyed correctly

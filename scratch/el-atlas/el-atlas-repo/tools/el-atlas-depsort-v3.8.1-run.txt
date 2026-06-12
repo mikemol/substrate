@@ -1,0 +1,200 @@
+SPACE MANIFEST  S_335c8a0650cb  (165888 models, exhaustive):
+  pins: ['1', '2', '3']
+  adj: ['True', 'False']
+  ident: ['True', 'False']
+  neg: ['True', 'False']
+  ops: ['diagonal', 'linear']
+  lock: ['available', 'unavailable', 'wrong', 'clipped', 'affine', 'noisy', 'partial', 'forced']
+  norm: ['free', 'pinned', 'pinned_l2']
+  two_ops: ['True', 'False']
+  basis_def: ['ok', 'singular']
+  coeff: ['real', 'gf2', 'complex']
+  cdlevel: ['2', '4', '8', '16']
+  probe: ['full', 'depth1', 'mention']
+  fingerprint sha256[:12] = 335c8a0650cb  (manifest + claim-test sources; reconstructible)
+  instrument internal version: v3.8.1 (filename is historical)
+  fiber certificates (claim-level verification class; PROOF tier: EMPTY — reserved: the Agda rung. [W]-by-sample != [W]-by-proof (external evaluator fork, verified); lineage: the source's KernelProver / parse-as-constructive-proof (proc1).)
+    ADJ : guard
+    BAL : analytic-points (s=-0.2)
+    CDC : UNAUDITED (body not re-read this pass)
+    CRS : guard
+    PUR : guard
+    PRO : guard (truth-stable by arithmetic; see spec 5.8a)
+    LOC : analytic-points (3 probe values) + U-kinds
+    L26 : analytic-points
+    T53 : guard + delegate(L26)
+    V4I : guard
+    D4C : guard
+    PHS : analytic-points (on/off locus, numpy exact)
+    RLS : analytic-rails (B=1e9 endpoints)
+    NOE : exact (Lie-level invariants computed in-run; variational form reserved) — B6 discharged  |  Lie-level invariants exact over integer grid: squeeze conserves a+b, translation conserves a-b -> True
+    TWN : guard
+    RAD : sampled(40) — _rad_mult_ok, self-declared '(sampled)'
+    ZDG : cited-theorem(dim<16: composition algebras) + witness-search(dim 16)
+    PR2 : UNAUDITED (body not re-read this pass)
+    IDC : UNAUDITED (helper not re-read this pass)
+    NGL : sampled(200) identities  |  lift instance: cl(p (+) q) = 1.380952 == cl(p)+cl(q) = 1.380952
+    NVL : exact-exhaustive (declared 24-point grid, adaptive bits)
+    GCX : mixed: sampled(500) identities + exact collision witness  |  collision computed live: alpha-shadow 0.168070 == 0.168070; prime carrier 2*7=14 != 3*5=15
+    SWP : exact (CKY + exhaustive containment)  |  exact: 'aaaa' under S->SS|'a' has 5 derivations; inside = 5*p^3*q^4 verified symbol-for-symbol; inside x outside = containment at every span
+    SWF : exact (both fields; the complex run IS the breaker)
+    NVE : mixed: sampled(800/400) + constructed nulls + exact conflation  |  constructed null bridge(3,7,6,14) = 0.00e+00; conflation splits (3,7)/(5,5): currents -0.043478 / +0.043478
+    RDW : sampled(60+60+30) across fibers
+    ZDW : mixed: exact witness (N(xy)=0.0) + sampled(30) lock  |  (e1+e10)(e4-e15): N(xy) = 0.0 exactly, N(x)N(y) = 4
+  knob provenance (why this space — each knob admitted by a correction event):
+    pins       <- pin-scenario catalog (spec 5.6, draft 14); separates: statability of every pair-structure claim vs P1
+    adj        <- codec pair, Lemma 2.5b; separates: BAL's chart-invariance from CDC (directional split)
+    ident      <- codec contract, spec 5.7 (frame anchor); separates: the identity-anchor claims from everything else
+    neg        <- involution/De Morgan requirements; separates: statability of V4I, D4C, T53, RLS
+    ops        <- reading-relation ladder, spec 5.6; separates: independent-reading vs composed-reading claims
+    lock       <- classical-section family; reviewer Break 1; separates: locus-circle members (clipped isolates RLS; noisy reveals U-kinds)
+    norm       <- prohibition/purchase, spec 5.8a; separates: falsifies PUR while de-stating PRO
+    two_ops    <- Theorem 5.3 single-op collapse; separates: T53 from the locus circle
+    basis_def  <- v2 split of {CRS,NOE}; admitted at v3.1 (indexed-verdict episode); separates: CRS from NOE
+    coeff      <- char-2 collapse theorem (draft 17, [W]); 'complex' admitted v3.5 (OB-9 re-posed via S10 + stationary-phase regime S16 + gf2-cleavage precedent); READING UNDECLARED — base-field C vs CD-rung is a registered alias circumstance (R-V35); declaring it is itself a named breaker; separates: per-claim stances in _COMPLEX_STANCE, each with its breaker; coeff-independent claims unaffected (v3.5a)
+    cdlevel    <- radial entailment (d17) + zero-divisor geography (d18); separates: the Hurwitz/ZD schedules across doubling rungs
+    probe      <- Nedge identity-collapse decomposition (N-series); separates: IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented
+
+base all-P: True
+
+=== self-certification audit (P under EVERY model = unconstrained = vicious) ===
+  flagged: none
+  special case PRO: ['P', 'V'] -> never F: a THEOREM (truth-stable), constrained only by statability.
+
+=== Break 2: knob-sensitivity (which knobs ever move each claim off P) ===
+  ADJ : ['adj']
+  BAL : ['adj', 'ident']
+  CDC : ['ident']
+  CRS : ['basis_def', 'pins']
+  PUR : ['norm', 'ops', 'pins']
+  PRO : ['norm', 'ops', 'pins']
+  LOC : ['lock', 'pins']
+  L26 : ['lock', 'pins']
+  T53 : ['coeff', 'lock', 'neg', 'pins', 'two_ops']
+  V4I : ['coeff', 'neg', 'pins']
+  D4C : ['coeff', 'neg', 'ops', 'pins']
+  PHS : ['coeff', 'lock', 'neg', 'ops', 'pins']
+  RLS : ['coeff', 'lock', 'neg', 'pins']
+  NOE : ['pins']
+  TWN : ['coeff', 'neg', 'ops', 'pins']
+  RAD : ['coeff']
+  ZDG : ['coeff']
+  PR2 : ['norm', 'ops', 'pins']
+  NGL : ['coeff', 'neg', 'pins']
+  NVL : ['coeff', 'neg', 'norm', 'ops', 'pins']
+  IDC : ['probe']
+  GCX : ['coeff']
+  SWP : ['coeff', 'pins']
+  NVE : ['coeff', 'neg', 'ops', 'pins']
+  RDW : ['coeff']
+  ZDW : ['coeff']
+  SWF : ['coeff', 'pins']
+  D4C under unrelated breaks (ident=F, adj=F, pins=3): P P P 
+
+=== Breaks 1+4: separator search — ALL VERDICTS INDEXED BY S_335c8a0650cb ===
+  SEP({LOC,L26} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 124416/124416 = 1.00  -> unseparated-in-S_335c8a0650cb
+      frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum
+      ledger: unseparated, co-movement 1.00  @ S_666bf26b7779 (3072 models)
+      ledger: unseparated  @ S_v3 (9 knobs)
+      ledger: unseparated, co-movement 1.00  @ S_94763a8b62ea (36864 models, v3.3)
+      ledger: unseparated, co-movement 1.00  @ S_fd5ddbe7ac57 (110592, v3.4a)
+      ride==full: True (projection x6912)
+      witness-stratum: UNREGISTERED — waiting joiner candidate (S22): compare section-witnesses
+  SEP({PUR,PRO} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 129024/129024 = 1.00  -> unseparated-in-S_335c8a0650cb
+      frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum
+      ledger: unseparated, co-movement 1.00; PRO never F (expressibility-intrinsic)  @ S_666bf26b7779 (3072 models)
+      ledger: unseparated; PRO never F  @ S_94763a8b62ea (v3.3)
+      ledger: unseparated; PRO never F  @ S_fd5ddbe7ac57 (v3.4a)
+      ride==full: True (projection x9216)
+      witness-stratum: UNREGISTERED — waiting joiner candidate (S22)
+  SEP({BAL,CDC} | S_335c8a0650cb) = 41472 truth / 41472 any-kind ; co-movement 82944/124416 = 0.67  -> separated-in-S_335c8a0650cb
+      witness mutation: {'adj': False}
+      ledger: separated (adj; identical-frames)  @ S_v2 (characteristic-break basis)
+      ride==full: True (projection x41472)
+  SEP({CRS,NOE} | S_335c8a0650cb) = 55296 truth / 55296 any-kind ; co-movement 55296/110592 = 0.50  -> separated-in-S_335c8a0650cb
+      witness mutation: {'basis_def': 'singular'}
+      ledger: unseparated-in-S_v3  @ S_v3 (9 knobs, no basis_def)
+      ledger: separated (basis_def='singular')  @ S_v2 (characteristic-break basis + basis_def probe)
+      ride==full: True (projection x27648)
+  SEP({RAD,ZDG} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 110592/110592 = 1.00  -> unseparated-in-S_335c8a0650cb
+      ledger: unseparated 1.00 (Hurwitz<->no-ZD as co-movement; separate witness structures = frontier)  @ S_94763a8b62ea (v3.3)
+      ledger: unseparated 1.00; witness-structure split = standing frontier (T2)  @ S_fd5ddbe7ac57 (v3.4a)
+      ledger: unseparated-in-truth; SEPARATED AT THE WITNESS STRATUM (ZD strictly inside norm-failure) — T2 discharged  @ S_2738ddb8c926 (v3.5a) + radzdg-witness pilot
+      ride==full: True (projection x13824)
+      witness-stratum: strict containment: Z ⊊ NF (T2, radzdg-witness)
+  SEP({TWN,D4C} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 156672/156672 = 1.00  -> unseparated-in-S_335c8a0650cb
+      ledger: unseparated, co-movement 1.00 (partly by construction)  @ S_94763a8b62ea (v3.3)
+      ledger: unseparated 1.00 (partly by construction)  @ S_fd5ddbe7ac57 (v3.4a)
+      ride==full: True (projection x4608)
+      witness-stratum: UNREGISTERED — extension-class witnesses are 2-cell data (S25); comparison lives one rung up
+  SEP({TWN,PHS} | S_335c8a0650cb) = 2304 truth / 6912 any-kind ; co-movement 156672/163584 = 0.96  -> separated-in-S_335c8a0650cb
+      witness mutation: {'lock': 'wrong'}
+      ledger: SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section)  @ S_94763a8b62ea (v3.3)
+      ride==full: True (projection x576)
+  SEP({PRO,PR2} | S_335c8a0650cb) = 0 truth / 18432 any-kind ; co-movement 129024/147456 = 0.88  -> unseparated-in-S_335c8a0650cb
+      ledger: 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1)  @ S_94763a8b62ea (v3.3)
+      ride==full: True (projection x9216)
+  SEP({PUR,PR2} | S_335c8a0650cb) = 0 truth / 18432 any-kind ; co-movement 129024/147456 = 0.88  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x9216)
+  SEP({NVL,PUR} | S_335c8a0650cb) = 3072 truth / 33792 any-kind ; co-movement 129024/162816 = 0.79  -> separated-in-S_335c8a0650cb
+      witness mutation: {'norm': 'pinned_l2'}
+      ledger: 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source  @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint)
+      ride==full: True (projection x1536)
+  SEP({NVL,PR2} | S_335c8a0650cb) = 0 truth / 15360 any-kind ; co-movement 147456/162816 = 0.91  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x1536)
+  SEP({NVL,PRO} | S_335c8a0650cb) = 3072 truth / 33792 any-kind ; co-movement 129024/162816 = 0.79  -> separated-in-S_335c8a0650cb
+      witness mutation: {'norm': 'pinned_l2'}
+      ride==full: True (projection x1536)
+  SEP({NGL,PRO} | S_335c8a0650cb) = 0 truth / 43008 any-kind ; co-movement 116736/159744 = 0.73  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x1536)
+  SEP({NGL,T53} | S_335c8a0650cb) = 12672 truth / 14976 any-kind ; co-movement 147456/162432 = 0.91  -> separated-in-S_335c8a0650cb
+      witness mutation: {'two_ops': False}
+      ride==full: True (projection x576)
+  SEP({IDC,NOE} | S_335c8a0650cb) = 36864 truth / 73728 any-kind ; co-movement 18432/92160 = 0.20  -> separated-in-S_335c8a0650cb
+      witness mutation: {'probe': 'mention'}
+      ride==full: True (projection x18432)
+  SEP({GCX,SWP} | S_335c8a0650cb) = 0 truth / 18432 any-kind ; co-movement 110592/129024 = 0.86  -> unseparated-in-S_335c8a0650cb
+      ledger: unseparated in truth, 0/18432; kind counts carry the blanket-guard semantics  @ S_f117b7f53a8e (165888, v3.5 first form — central complex V-guard overrode declared knob support; Break-2 coeff rows artifactual; retrospective R-V35)
+      ledger: unseparated in truth 0/18432; theorem-cluster member  @ S_2738ddb8c926 (165888, v3.5a corrected)
+      ride==full: True (projection x18432)
+      witness-stratum: disjoint-by-type: rank-multiset vs parse-chart witnesses
+  SEP({GCX,CDC} | S_335c8a0650cb) = 27648 truth / 82944 any-kind ; co-movement 55296/138240 = 0.40  -> separated-in-S_335c8a0650cb
+      witness mutation: {'ident': False}
+      ledger: separated, 27648 truth — the sighting is not a restatement  @ S_f117b7f53a8e (v3.5 first form, same caveat)
+      ledger: separated, 27648 truth  @ S_2738ddb8c926 (v3.5a)
+      ride==full: True (projection x27648)
+  SEP({SWP,NGL} | S_335c8a0650cb) = 0 truth / 18432 any-kind ; co-movement 129024/147456 = 0.88  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x9216)
+  SEP({SWP,NVE} | S_335c8a0650cb) = 0 truth / 27648 any-kind ; co-movement 129024/156672 = 0.82  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x4608)
+  SEP({NVE,NVL} | S_335c8a0650cb) = 6144 truth / 6144 any-kind ; co-movement 156672/162816 = 0.96  -> separated-in-S_335c8a0650cb
+      witness mutation: {'norm': 'pinned'}
+      ledger: separated, 6144 truth  @ S_f117b7f53a8e (v3.5 first form, same caveat)
+      ledger: separated, 6144 truth  @ S_2738ddb8c926 (v3.5a)
+      ride==full: True (projection x1536)
+  SEP({NVE,NGL} | S_335c8a0650cb) = 0 truth / 9216 any-kind ; co-movement 147456/156672 = 0.94  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x4608)
+  SEP({RDW,ZDW} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 110592/110592 = 1.00  -> unseparated-in-S_335c8a0650cb
+      frontier: a separator would require their verdict maps coincide BY CONSTRUCTION (both theorem-shaped at EVERY rung; v3.6a Pi-promotion — the witness is the section d -> fiber-witness, a 1-path): a DELIBERATE 2nd-order pair (S22). The separation is real and lives at the EXHIBIT stratum — ZD pairs are a STRICT subset of norm-failure pairs (xy=0 vs xy!=0 witnesses, radzdg-witness pilot); instrumenting it requires witness-valued verdicts (registered program)
+      ledger: 0 truth / 0 kind, perfect circle by construction; Pi-promoted at v3.6a (witnesses retyped as sections/1-paths)  @ S_3ed20b0e9c22 (165888, v3.6 Sigma-forms — point-supported at the d=16 fiber; base all-P broke; Break-2 rows base-relatively degenerate)
+      ledger: 0/0 perfect circle; witness-stratum: partition-complement halves of W(RAD)  @ S_9a577e722039 (165888, v3.6a Pi-forms)
+      ride==full: True (projection x13824)
+      witness-stratum: partition-complement: W(RDW) ⊔ W(ZDW) = W(RAD) — the unlocked det-axis partitions the parent's witnesses (S27)
+  SEP({RDW,RAD} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 110592/110592 = 1.00  -> unseparated-in-S_335c8a0650cb
+      ledger: 0/0 — merged at verdict level by the promotion; witness-stratum: strict containment  @ S_9a577e722039 (v3.6a)
+      ride==full: True (projection x13824)
+      witness-stratum: strict containment: NF\Z ⊊ NF (S27)
+  SEP({ZDW,ZDG} | S_335c8a0650cb) = 0 truth / 0 any-kind ; co-movement 110592/110592 = 1.00  -> unseparated-in-S_335c8a0650cb
+      ledger: 0/0; witness-stratum: JOINED (iso, annotation-refined) — first joiner verdict  @ S_9a577e722039 (v3.6a)
+      ride==full: True (projection x13824)
+      witness-stratum: JOINED: witness-iso (identity map on Z); ZDW = annotation-refined (NF certificate per member) — the first 2nd-order joiner verdict (S27)
+  SEP({SWF,SWP} | S_335c8a0650cb) = 0 truth / 36864 any-kind ; co-movement 92160/129024 = 0.71  -> unseparated-in-S_335c8a0650cb
+      ledger: 0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count  @ S_3ed20b0e9c22 (v3.6)
+      ledger: 0 truth / 36864 kind — the EXTENDS footprint, stable across v3.6/v3.6a  @ S_9a577e722039 (v3.6a)
+      ride==full: True (projection x18432)
+  SEP({SWF,GCX} | S_335c8a0650cb) = 0 truth / 55296 any-kind ; co-movement 73728/129024 = 0.57  -> unseparated-in-S_335c8a0650cb
+      ride==full: True (projection x18432)
+
+  Break 3 exhibit (noisy lock): LOC=U, L26=F
+  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old
+  P/F/V scheme merged. Co-movement now has internal kind-structure.

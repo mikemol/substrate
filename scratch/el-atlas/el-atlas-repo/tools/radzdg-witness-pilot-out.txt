@@ -1,0 +1,4 @@
+1. ZD witness (dim 16): (e1 + e10)(e4 - e15) = 0 exactly: True; N(x)N(y) = 4 > 0 (so also a norm-failure witness)
+2. RAD witness that is NOT a ZD: N(xy)/N(x)N(y) deviates by 11.1% with N(xy) = 324.768 != 0 — norm failure WITHOUT zero division
+3. octonion sanity (Hurwitz, 200 random pairs): norm multiplicative: True
+VERDICT: witness sets — ZD ⊊ norm-failure at dim 16. {RAD,ZDG}: unseparated-in-truth, SEPARATED-at-witness-stratum.

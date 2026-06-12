@@ -1,0 +1,10 @@
+#!/bin/sh
+# EL-Atlas post-commit hook: vacuum the object store, then tarball for presentation.
+# Resilient by design: warnings, not failures (the mount has shown transient I/O).
+sha=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
+git gc --quiet 2>/dev/null || echo "post-commit: gc warning (non-fatal)"
+top=$(git rev-parse --show-toplevel)
+parent=$(dirname "$top"); base=$(basename "$top")
+tar -czf "$parent/el-atlas-repo.tar.gz" -C "$parent" "$base" 2>/dev/null \
+  && echo "post-commit: vacuumed + tarballed at $sha -> $parent/el-atlas-repo.tar.gz" \
+  || echo "post-commit: tarball warning (non-fatal)"

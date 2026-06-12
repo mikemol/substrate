@@ -1,0 +1,20 @@
+|Z2|=16  |B2|=2  |H2|=8 (expected 8)
+class | extension     | involutions | lam!=0 (D4C content) | TWN content
+  Z2^3 (split)     7            False                  True
+  Z4xZ2            3            False                  True
+  D4               5            True                  True
+  D4               5            True                  True
+  Z4xZ2            3            False                  True
+  Z4xZ2            3            False                  True
+  D4               5            True                  True
+  Q8               1            True                  True
+
+TWN-compatible classes: 8/8 (kernel faithful in every extension, including split)
+D4C-compatible classes: 4/8 (exactly the noncommuting extensions)
+
+realized [N,S] = -I: True
+realized <N,S> class: D4 (involutions=5); lam!=0: True
+
+2-CELL VERDICT: STRICT SEPARATION ONE RUNG UP — truth-identical at stratum 1,
+D4C-classes (4) STRICTLY CONTAINED in TWN-classes (8); realized group in a D4 class.
+TWN survives the split extension where D4C dies: the circle separates only at rung 2.

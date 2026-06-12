@@ -1,0 +1,32 @@
+model space: 1536 models (exhaustive). base all-P: True
+
+=== self-certification audit (P under EVERY model = unconstrained = vicious) ===
+  flagged: none
+  special case PRO: ['P', 'V'] -> never F: a THEOREM (truth-stable), constrained only by statability.
+
+=== Break 2: knob-sensitivity (which knobs ever move each claim off P) ===
+  ADJ : ['adj']
+  BAL : ['adj', 'ident']
+  CDC : ['ident']
+  CRS : ['pins']
+  PUR : ['norm', 'ops', 'pins']
+  PRO : ['norm', 'ops', 'pins']
+  LOC : ['lock', 'pins']
+  L26 : ['lock', 'pins']
+  T53 : ['lock', 'neg', 'pins', 'two_ops']
+  V4I : ['neg', 'pins']
+  D4C : ['neg', 'ops', 'pins']
+  PHS : ['lock', 'neg', 'ops', 'pins']
+  RLS : ['lock', 'neg', 'pins']
+  NOE : ['pins']
+  D4C under unrelated breaks (ident=F, adj=F, pins=3): P P P 
+
+=== Breaks 1+4: exhaustive (adversarial-complete over this space) separator search ===
+  {LOC,L26}: truth-separators=0  any-kind-separators=0  co-movement=1152/1152 = 1.00
+  {PUR,PRO}: truth-separators=0  any-kind-separators=0  co-movement=1280/1280 = 1.00
+  {BAL,CDC}: truth-separators=384  any-kind-separators=384  co-movement=768/1152 = 0.67
+  {CRS,NOE}: truth-separators=0  any-kind-separators=0  co-movement=512/512 = 1.00
+
+  Break 3 exhibit (noisy lock): LOC=U, L26=F
+  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old
+  P/F/V scheme merged. Co-movement now has internal kind-structure.

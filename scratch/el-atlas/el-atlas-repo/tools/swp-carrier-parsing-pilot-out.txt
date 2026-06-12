@@ -1,0 +1,5 @@
+1. counting shadow: root = (5.0, 0.0); E+ == Catalan(3) == 5: True
+2. probability section: root E+ = 0.0414720000; inside = 5 p^3 q^4 = 0.0414720000; equal: True; E- = 0.0 (no-conflict rail)
+3. Viterbi pinning: root = 0.0082944000 = p^3 q^4 = 0.0082944000: True; multiplicity 5 UNRECOVERABLE from it (idempotent plus)
+4. conflation witness: lexicon (2,1) -> root (80.0, 5.0), G = 16.0; lexicon (4,2) -> root (1280.0, 80.0), G = 16.0;
+   equal G-shadow: True; masses differ: True  => the ratio-quotient cannot see evidence volume at the parse level

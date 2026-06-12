@@ -1,0 +1,11 @@
+A. dep-projection ride vs full enumeration (exact-count equality required):
+  {NVE,NVL}: full 6144 truth/6144 kind == projected 4x1536/4x1536: True   work: 108 cells vs 165888 models (1536x less)
+  {GCX,CDC}: full 27648 truth/82944 kind == projected 1x27648/3x27648: True   work: 6 cells vs 165888 models (27648x less)
+  {GCX,SWP}: full 0 truth/18432 kind == projected 0x18432/1x18432: True   work: 9 cells vs 165888 models (18432x less)
+  {LOC,L26}: full 0 truth/0 kind == projected 0x6912/0x6912: True   work: 24 cells vs 165888 models (6912x less)
+  {PUR,PRO}: full 0 truth/0 kind == projected 0x9216/0x9216: True   work: 18 cells vs 165888 models (9216x less)
+
+B. determinant-variety ride (sedenions):
+  exhibit x = e1+e10: det L_x = 0.000e+00; ker dim = 4; kernel vector support = [4, 5, 6, 7, 12, 13, 14, 15] (S21 exhibit was e4 - e15: support [4,15]) ; x*y_rec = 0: True
+  50 random gaussian x: det L_x != 0 every time: True  (the variety is measure-zero — sampling cannot land on it)
+  signed-pair slice: 210 determinant evaluations -> 84 ZD locus members (S21's brute search needed ~44,000 sedenion products to find ONE)

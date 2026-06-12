@@ -1,0 +1,7 @@
+PASS X_mass is the squeeze (1,-1)
+PASS X_bias is the diagonal flow (-1,-1)
+PASS each charge conserved along its own Hamiltonian flow (exact grid x rational times)
+PASS {mass,bias} = -2 (canonically conjugate up to scale)
+PASS crossbar is canonical up to the same constant (C*omega = -2 omega)
+PASS bias NOT conserved along the squeeze (conjugacy, not involution)
+ALL EXACT — OB-7 variational form: mass, bias are the moment maps; the crossbar is a canonical transformation.

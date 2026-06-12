@@ -1,0 +1,33 @@
+base model: {'ADJ': 'P', 'BAL': 'P', 'CDC': 'P', 'CRS': 'P', 'PUR': 'P', 'PRO': 'P', 'LOC': 'P', 'L26': 'P', 'T53': 'P', 'V4I': 'P', 'D4C': 'P', 'PHS': 'P', 'RLS': 'P', 'NOE': 'P'}  all P: True
+
+matrix: rows = claim under test (B); cols = broken claim (A); entry = B's result in break(A)
+        ADJ  BAL  CDC  CRS  PUR  PRO  LOC  L26  T53  V4I  D4C  PHS  RLS  NOE
+  ADJ     F    P    P    P    P    P    P    P    P    P    P    P    P    P
+  BAL     F    F    F    P    P    P    P    P    P    P    P    P    P    P
+  CDC     P    F    F    P    P    P    P    P    P    P    P    P    P    P
+  CRS     P    P    P    V    P    P    P    P    P    P    P    P    P    V
+  PUR     P    P    P    V    F    F    P    P    P    P    V    P    P    V
+  PRO     P    P    P    V    V    V    P    P    P    P    V    P    P    V
+  LOC     P    P    P    V    P    P    F    F    P    P    P    P    F    V
+  L26     P    P    P    V    P    P    F    F    P    P    P    P    F    V
+  T53     P    P    P    F    P    P    F    F    F    V    P    P    F    F
+  V4I     P    P    P    V    P    P    P    P    P    V    P    P    P    V
+  D4C     P    P    P    V    P    P    P    P    P    V    V    P    P    V
+  PHS     P    P    P    V    P    P    F    F    P    V    V    V    F    V
+  RLS     P    P    P    V    P    P    F    F    P    V    P    P    F    V
+  NOE     P    P    P    V    P    P    P    P    P    P    P    P    P    V
+
+SCCs (size>1 = circles; coherent iff jointly witnessed in base):
+  CIRCLE ['BAL', 'CDC']  -> COHERENT (base model inhabits it)
+  CIRCLE ['CRS', 'NOE']  -> COHERENT (base model inhabits it)
+  CIRCLE ['PRO', 'PUR']  -> COHERENT (base model inhabits it)
+  CIRCLE ['L26', 'LOC', 'RLS']  -> COHERENT (base model inhabits it)
+
+topological layers (0 = foundations; higher depends on lower):
+  layer 0: {ADJ}  {CRS,NOE}
+  layer 1: {BAL,CDC}  {V4I}
+  layer 2: {L26,LOC,RLS}  {D4C}
+  layer 3: {PRO,PUR}  {T53}  {PHS}
+
+independent pairs (no dependence either way): 53 of 91
+  samples: [('ADJ', 'CDC'), ('ADJ', 'CRS'), ('ADJ', 'PUR'), ('ADJ', 'PRO'), ('ADJ', 'LOC'), ('ADJ', 'L26'), ('ADJ', 'T53'), ('ADJ', 'V4I')]

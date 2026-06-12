@@ -1,0 +1,81 @@
+# WAL — write-ahead log (append-only; committed before the work it sanctions)
+
+Protocol: every multi-step move opens with a BEGIN entry (intent +
+expected artifacts), COMMITTED BEFORE the move executes; the move
+closes with an END entry (outcome, head, artifacts), committed with
+the resulting state. Recovery rules: a BEGIN without END is an
+incomplete move — verify, redo, or append ABORT with reason; any
+state delta not covered by a BEGIN..END span is unsanctioned —
+investigate before building on it (the S43 class). The cotype
+(S0-S46) is the historical log-behind, grandfathered by this genesis;
+write-ahead discipline applies from W1 forward. Checker:
+tools/wal-check.py (run at session start, before flush, and by the
+post-commit hook in warn-only mode).
+
+GENESIS 2026-06-11 :: cotype S0-S46 + 67 commits grandfathered as log-behind history; WAL begins.
+BEGIN W1 2026-06-11T23:5x :: implement WAL machinery and adopt write-ahead discipline
+  expect: tools/wal-check.py, hook warn-line, NEXT.md protocol section, cotype S47, END W1
+END W1 2026-06-11 :: machinery built and bootstrapped :: head=ac0c909 :: artifacts=tools/wal-check.py,NEXT.md,wal.md
+BEGIN W2 2026-06-11 :: resolve waiting joiner pairs {LOC,L26}, {PUR,PRO} at the witness stratum; register results in WITNESS_RELATIONS (v3.8.4)
+  expect: tools/joiner-pairs-pilot.py(+out), harness v3.8.4 with two new relations, run txt, regen, space-move ledger, cotype S48, END W2
+END W2 2026-06-11 :: both pairs resolved (EQUAL; ISO-WITH-REFRAMING via PR2); one safe-abort residue :: head=2d6f448 :: artifacts=tools/joiner-pairs-pilot.py,tools/joiner-pairs-pilot-out.txt,tools/el-atlas-depsort-v3.8.4-run.txt
+BEGIN W3 2026-06-11 :: homological-stability split-test (thread 20): for each separated pair, find knobs whose base-restriction removes all truth-separators — pairs that looked intrinsic before a knob arrived; cross-check against ledgered circles
+  expect: tools/hstab-split-pilot.py(+out), theory-threads 20 updated, cotype S49, END W3
+END W3 2026-06-11 :: stability holds (0 hits); margin chart banked :: head=1bedf7b :: artifacts=tools/hstab-split-pilot.py,tools/hstab-split-pilot-out.txt
+BEGIN W4 2026-06-11 :: persist the flush-recovery doctrine (resent-prompt signal; active re-read as refresh; double-execution guard)
+  expect: NEXT.md recovery-protocol subsection, cotype S50, END W4
+END W4 2026-06-11 :: doctrine persisted :: head=2a52cd0 :: artifacts=NEXT.md
+BEGIN W5 2026-06-11 :: A/B brick layers for parts 2-5, fresh prints with capture-diffs, commit per document. A2/B2 EXPLICITLY DEFERRED with reason: they are literal repeat windows whose design value is decay-spaced repetition; executed back-to-back with A/B they refresh nothing — scheduled as the post-flush window's opening bricks, where decay is guaranteed.
+  expect: per-doc ledger A/B diffs + commits (parts 2,3,4, treatise), cotype S51, END W5
+END W5 2026-06-11 :: A/B layers complete, all four docs DONE-FRESH; recovery doctrine executed live mid-move :: head=826919d :: artifacts=reading-ledgers/05-analysis-treatise.md.bricks,reading-ledgers/04-part4-proc2.md.bricks
+BEGIN W6 2026-06-11 :: acquire SYSTEM Pi v2.22 (Drive doc 10GrDUQdXh_uLc-bUGBiuXPyYSY8C8ZxwXKd1s3F-dMc), snapshot to recovered/ with provenance, resolve three registered targets: (a) COC-5 fork — Functorial_Integrity_Check defined there or not; (b) Lojban pamoi-liste locale-verdict; (c) RationalDef in lineage (transmission-loss question). Full brick-stratum read of v2.22 scoped OUT of this move (separate BEGIN if undertaken).
+  expect: recovered/system-pi-v2.22/ snapshot + checksum, target findings in cotype S52, END W6
+END W6 2026-06-11 :: targets: (c) resolved (transmission loss), (a) advanced (born dangling, truncation-bounded), (b) open (tail); seal stratigraphy + univalence fossil banked; DEVIATION: full snapshot not persisted (truncated fetch), extracts+provenance instead :: head=60b175d :: artifacts=recovered/system-pi-v2.22/PROVENANCE-NOTE.md,recovered/system-pi-v2.22/EXTRACTS.md
+BEGIN W7 2026-06-11 :: erratum S52a — reversibility-machinery dating (emission-date vs content-date conflation; author correction)
+  expect: cotype S52a, EXTRACTS.md dating note, END W7
+END W7 2026-06-11 :: erratum committed :: head=0e145a5 :: artifacts=recovered/system-pi-v2.22/EXTRACTS.md
+BEGIN W8 2026-06-11 :: A2/B2 repeat layers for parts 2-3 (deferral condition met: pre-flush A/B + guaranteed decay) — lineage-informed pass with v2.22 priors. REGISTERED PREDICTION: v2.37.1's number-systems part is a strict SUBSET inlining of the lineage library ({Natural,Integer,Real} of v2.22's {...,Integer,Rational,Real,Complex,...}); the transmission loss occurred at library-inlining; ComplexDef should be absent AND unreferenced in part 2 (only Rational left a dangling edge).
+  expect: per-doc A2/B2 ledger diffs + commits (parts 2,3), cotype S53, END W8
+END W8 2026-06-11 :: parts 2-3 A2/B2 done; prediction confirmed; seam-migration finding; parts 4/treatise A2/B2 decay-deferred (their A/B were post-flush) :: head=98e3154 :: artifacts=reading-ledgers/02-part2-proc3.md.bricks,reading-ledgers/03-part3-proc4.md.bricks
+BEGIN W9 2026-06-11 :: bank author provenance — the corpus as context-saturation artifact (Gemini 1.5/2 boundary-pushing); mechanism for seam-migration, loss-kinds, seal decay, elision flaws; Table 1 as anti-saturation harness
+  expect: cotype S54, provenance-note appendix, END W9
+END W9 2026-06-11 :: saturation provenance banked; mechanism joined to phenomena with independence preserved :: head=bf8b358 :: artifacts=el-atlas-cotype.md,recovered/system-pi-v2.22/PROVENANCE-NOTE.md
+BEGIN W10 2026-06-11 :: (a) v2.22 tail re-acquisition via alternate Drive tool (targets: Lojban pamoi-liste; kernel-prover version; control-theory presence); (b) christening hunt via Drive search, createdTime ascending, bracket [2024-05-21 MIME adoption, 2025-07-22T19:27 bound]; (c) fold S54a rot-vs-flush observability note
+  expect: findings in cotype S55 (+S54a), END W10
+END W10 2026-06-11 :: full v2.22 acquired+persisted; all targets document-global; lineage map dated (5 versions/16h); christening tightened to Epoch-era; rot-vs-flush banked :: head=902b742 :: artifacts=recovered/system-pi-v2.22/v2.22-full.md,recovered/system-pi-v2.22/PROVENANCE-NOTE.md
+BEGIN W11 2026-06-11 :: the {TWN,D4C} 2-cell — compute H2(V4,Z2) exhaustively, locate both claims' extension classes in it, compare up to coboundary; register the verdict (v3.8.5)
+  expect: tools/twn-d4c-2cell-pilot.py(+out), WITNESS_RELATIONS entry, run txt, regen, cotype S56, END W11
+END W11 2026-06-11 :: strict 2-cell separation established (8 vs 4 classes, exhaustive); first rung-2-only pair; registry complete :: head=8253853 :: artifacts=tools/twn-d4c-2cell-pilot.py,tools/twn-d4c-2cell-pilot-out.txt,tools/el-atlas-depsort-v3.8.5-run.txt
+BEGIN W12 2026-06-11 :: (a) regen-verify el-atlas-structured.md at v3.8.5 (no pipe this time; W11 status UNVERIFIED after BrokenPipeError); (b) christening proper — Drive query bracketed createdTime < 2025-07-23T02:17 with fullText 'SYSTEM Π'; read earliest hit
+  expect: verified regen, christening evidence or honest exhaustion, cotype S57, END W12
+END W12 2026-06-11 :: regen verified byte-identical; CHRISTENING FOUND (2025-07-22T19:02Z, pushout of OMEGA + reflexive evolution); day-one timeline assembled; Nedge G-calculus ancestry discovered (EL-Atlas descended, May 2025) :: head=a25a3ab :: artifacts=recovered/lineage-map.md
+BEGIN W13 2026-06-11 :: the proof tier (the registered empty). Plan: (a) probe for an Agda checker; attempt bounded install if absent; (b) formalize the crossbar core — verdict map from dual-rail evidence pairs, the rail-swap involution, the intertwining theorem, and a no-collapse lemma (S3 prohibition in miniature); (c) machine-check if checker available, else commit artifact marked UNCHECKED with cause ledgered. Conditional structure declared up front.
+  expect: proofs/VerdictCrossbar.agda, check log or UNCHECKED note, cotype S58, END W13
+END W13 2026-06-11 :: proof tier opened — VerdictCrossbar.agda checked clean (--safe --without-K, Agda 2.6.3, zero imports): crossbar intertwining + S3 no-factoring proved; empty narrowed not erased :: head=6a34b25 :: artifacts=proofs/VerdictCrossbar.agda,proofs/CHECKED.md
+BEGIN W14 2026-06-11 pre=c0e021d :: WAL doctrine upgrade (v2.22 TransactionLogEntryDef parallel, S55): BEGIN lines now record pre=<sha> so every move's exact delta is recoverable as pre..head; wal-check gains check (5): each pre must be an ancestor of its move's END head. Convention forward-only; historical moves without pre= tolerated.
+  expect: patched tools/wal-check.py, cotype S59, END W14
+END W14 2026-06-11 :: pre-delta convention live; wal-check check (5) active and passing :: head=cf3ba08 :: artifacts=tools/wal-check.py
+BEGIN W15 2026-06-11 pre=d9d146a :: intern-audit — sweep all structural surfaces (NEXT.md, margin chart, lineage-map, recovered/, theory-threads, registry, cotype tail) against W10-W14 findings; repair staleness and any elisions found; the question is whether anything lives only in conversational context
+  expect: audit verdicts per surface, repairs committed, cotype S60, END W15
+END W15 2026-06-11 :: audit complete — NEXT.md rewritten, lineage-map elisions repaired (violation #5 ledgered), S57a erratum filed, Nedge-Agda proof tier discovered through the repair; all surfaces consistent :: head=d9d146a :: artifacts=NEXT.md,recovered/lineage-map.md
+BEGIN W16 2026-06-11 pre=5308649 :: micro-move — S60a correcting S57a: the evidential axis WAS already in nedge-decomposition.md (line 55, graded [S] iso / [W] lift, lineage stated); the W15 grep printed after the erratum committed; sequencing error ledgered
+  expect: cotype S60a, END W16
+END W16 2026-06-11 :: S60a filed; intern consistent at S0-S60a :: head=fc0c815 :: artifacts=el-atlas-cotype.md
+BEGIN W17 2026-06-11 pre=24f5063 :: integration move — promote nodded-at findings to COMPUTED: (a) rung-2 stratum in the instrument (H2(V4,Z2) enumeration in-run; per-circle rung-2 separation attempted; registered {TWN,D4C} relation ASSERTED against the computation, making the registry load-bearing); (b) reference-closure check on the registry (the W8 edge-retained-loss lesson applied to ourselves: every claim code named in WITNESS_RELATIONS must exist). Bump v3.9.0 (new computed stratum, not registry text).
+  expect: patched instrument, run txt, regen, cotype S61, thread-21 update, END W17
+END W17 2026-06-11 :: v3.9.0 live — rung-2 computed in-run, registry load-bearing, closure check active; first run corrected circle ontology; space move ledgered index-only (...d0ede8d60ddb) :: head=4a47310 :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.9.0-run.txt
+BEGIN W18 2026-06-11 pre=890c5c8 :: micro-move — S61a correcting S61's fingerprint rule (full-source hash since v3.4a per the def's own comment; W11's registry edit DID move the space, ledgered registry-text kind; my 'registry edits do not move it' was held-context confabulation)
+  expect: cotype S61a, END W18
+END W18 2026-06-11 :: S61a filed; fingerprint rule corrected to full-source-hash; lineage chain stated :: head=fcf8277 :: artifacts=el-atlas-cotype.md
+BEGIN W19 2026-06-11 pre=5af07b4 :: KNOB ADMISSION — extclass (the extension class of the level group) admitted to the model space from the W11/W17 rung-2 correction event. Semantics: t_D4C (and t_NVE if its content is the braid) gain F on abelian classes; TWN unmoved (kernel faithful everywhere); PHS inherits via its D4C call; _CLAIM_DEPS updated for ride correctness; {TWN,D4C} registry re-indexed (separated-in-S_new); KNOB_PROVENANCE row added; v3.10.0. The rung-2 distinction completes the charter chain: real -> constructible (W11) -> reachable (this knob) -> observable (verdict movement) -> coverable (exhaustive enlarged space).
+  expect: patched instrument, x4 space run, regen, space-move ledger (kind: knob admission), cotype S62, thread 21b, END W19
+END W19 2026-06-11 :: extclass admitted; {TWN,D4C} truth-separated (18432, witness {extclass:z4xz2}); semantics split F-vs-V per claim content; space x4 exhaustive; lineage ...1b85ef5d073c :: head=581a4af :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.10.0-run.txt
+BEGIN W20 2026-06-11 pre=18c69ba :: witness chains made computational — in-run CD-algebra witness-chain check: exact integer Cayley-Dickson products on the classical sum grid (e_i+e_j); assert Hurwitz (NF empty at cdlevel<=8), Z nonempty at 16, Z strictly contained in NF at 16, and the RDW/ZDW partition-complement of W(RAD) on the computed sets; registry kinds for {RAD,ZDG} and {RDW,ZDW} become load-bearing. v3.11.0. Also: S62 lineage one link short (the dedupe moved the space to 6c6856f4522f) — corrected in this capture.
+  expect: patched instrument, run txt, regen, cotype S63, END W20
+END W20 2026-06-11 :: witness chains in-run — |Z|=84 exact, partition 84/84 computed+asserted; registry kinds load-bearing; lineage corrected through 730c44114318 :: head=39a6a6c :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.11.0-run.txt
+BEGIN W21 2026-06-11 pre=498817e :: EEA/Bezout/CRT recall — (a) disk check: does the banked record carry the era when witness chains were pi-types/paths computed by extended Euclid? (b) answer the sampling question precisely (exhaustive space, sampled fibers); (c) if the structure bites in current machinery, implement: decompose the in-run Z (84 sedenion ZD pairs) by index structure (XOR axis), seeking the clean factorization the author gestures at; path-witnesses between grid points where modular constraints connect them.
+  expect: disk verdict on the era, decomposition computed or honest negative, cotype S64, END W21
+END W21 2026-06-11 :: EEA era found banked (S20-S23); W20 regression repaired — 7x12 XOR decomposition compiled, nullity-4 variety by exact elimination, path-witness in-run, COMPILED==SEARCHED sensor; wart killed pre-commit :: head=c0411b5 :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.12.0-run.txt
+BEGIN W22 2026-06-11 pre=7ddd305 :: alignment system in closed form — derive the sign-predicate ZD(i,j,k,l) <=> same axis AND eps(i,k)=-eps(j,l) AND eps(i,l)=-eps(j,k) (eps = CD sign function, pure index arithmetic); pilot against the searched 84 first; if exact, wire as PRIMARY compile at v3.13.0 with kernel and grid demoted to sensors (three-layer agreement asserted per run).
+  expect: pilot verdict, patched instrument, run txt, cotype S65, END W22
+END W22 2026-06-11 :: closed form live as primary compile; axis theorem derived; three-layer agreement asserted; interrupted-turn duplicate edit refused by anchor guard :: head=01a12ec :: artifacts=tools/el-atlas-depsort-v3.py,tools/el-atlas-depsort-v3.13.0-run.txt

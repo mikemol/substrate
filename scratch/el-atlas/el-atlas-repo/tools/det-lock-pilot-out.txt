@@ -1,0 +1,6 @@
+  d= 2: det L_x / N^1 over 30 samples: spread [1.000000, 1.000000] -> LOCKED: True
+  d= 4: det L_x / N^2 over 30 samples: spread [1.000000, 1.000000] -> LOCKED: True
+  d= 8: det L_x / N^4 over 30 samples: spread [1.000000, 1.000000] -> LOCKED: True
+  d=16: det L_x / N^8 over 30 samples: spread [0.030799, 0.756100] -> LOCKED: False
+  d=16 unlock refines: ZD exhibit has N = 2 != 0, det = 0.0e+00 (kernel mode);
+  generic samples above have det != 0 with VARYING ratio (independent coordinate) — the pair (N, det) is the purchased chart.

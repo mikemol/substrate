@@ -1,0 +1,3 @@
+1. the join lifts: cl(P(+)Q) = cl(P)+cl(Q) (2000 trials): True
+2. bridge reading strictly monotone + injective on the join fiber (399-point grid): True — one reading + the join = the complete binary split
+3. per-case rescaling invariance (pairs (6,2),(14,2) vs (3,1),(7,1)): True — the reading factors through cl per case; shadow-level, as the physical pilot found

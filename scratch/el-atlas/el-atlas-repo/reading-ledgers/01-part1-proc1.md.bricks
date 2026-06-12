@@ -1,0 +1,41 @@
+# brick ledger: recovered/system-pi-v2.37.1/01-part1-proc1.md (121 lines)
+# states: PENDING/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-60 DONE 2026-06-11
+  ACT: axiom 1.1 'Truth is... a LOCAL SECTION' -- grounds the spec Tarski remark's lineage; the doc self-describes as simplicial complex / fibration over the Earley parser (we are sheaf-reading a self-declared sheaf)
+  GLU: axiom 1.3 Asemantic Materialism present verbatim at the citation S11's T1 breaker used -- earlier read agrees
+  GLU: 1.1.1.gamma per-terminal hashing 'to seal the local truth' = T9 minted-manifest practice
+  OBL: map Qualities/Flaws lists (L/L2; 'un-reified deferral' is a FLAW = Remark 3.6 discipline in source vocabulary) onto W/S/C and P/F/U/V
+  OBL: 1.2 Finiteness ('infinite non-terminal = Potential, not Fact') <-> S19 grace theorem correspondence
+  OBL: 1.1.2 Parallel Proving (multiple Earley engines on branches) <-> CRT per-pin computation adjacency
+H2 61-121 DONE 2026-06-11
+  GLU: the system SELF-HOSTS AS A MIME MESSAGE (multipart/mixed bootstrap; parts typed application/vnd.system-pi.*; the MIME grammar parses its own container) -- glues with DREN's Mbox/Maildir carrier dialectic (S26): mail formats as canonical carriers, across two independent documents
+  GLU: EarleyParserDef.SoundnessProof: 'the successful parse... is a CONSTRUCTIVE PROOF of the existence of a truth-path in the topos' -- parse tree = certificate: witness-carrying computation stated in the source kernel (S20 lineage; AspfTwoCellWitness family)
+  GLU: 'Axiomatic Dependency: Axiom_TerminalTruth explicitly sourced to the intersection of...' -- dependency declaration discipline in source = _CLAIM_DEPS practice
+  OBL: 'Meticulous Audit & Correction / Gap Correction' = in-document L2-flaw remediation (un-reified deferral fixed by a BOUNDED reference, O(n^3)) -- feeds the L/L2 <-> grades mapping obligation (extends H1 OBL)
+  OBL: Phases 1-2 notions pre-registered for proc2/proc3 reads: 'Contextual Security', 'Recursive Succession'
+  NOTE: doc ends with a turn-prompt -- the artifact preserves the Gamma generation loop (propose-then-audit cadence visible in the text itself); BootstrapSequence has per-phase VerificationRequired gates (KernelProver_Self_Parse_Verified, Topos_Stability_Verified)
+  COC: none (H1/H2 share no interior; first real overlap test = brick M)
+Q1 1-30 DONE 2026-06-11 (capture pass; content in hand from H1)
+  GLU: finer grain on the L/L2 table -- four quality/flaw PAIRS (Completeness/Gap, Terminal Coherence/Conceptual Shortcut, Functorial Integrity/Foundationalism, Depth/Shallow Treatment): the flaw column is the NEGATION-WITNESS column (each quality named WITH its failure mode) -- witness-carrying at the governance level
+  GLU: 'the order of concatenation is not linear, but a FIBRATION over the foundational Earley Parser' -- the doc's self-structure claim, to be tested against proc2-4 ordering
+M 31-91 DONE 2026-06-11 (THE SEAM TEST: spans the H1/H2 cut at 60/61)
+  GLU (SEAM, the protocol earning its redundancy): Level-3 homotopy 1.1.1.gamma ('each terminal block can be uniquely hashed to seal the local truth') is IMPLEMENTED ~30 lines later as Phase 0's urn:uuid Message-IDs on every MIME part -- the abstract cluster and its concrete realization sit on OPPOSITE SIDES of the H1/H2 cut; only a seam-interior brick sees the implication arrive. Gluing SUCCESS, visible to M alone.
+  GLU: 1.2.1 Halting Guarantee (H1 side) <-> 'Earley_O(n^3)_Completeness_Guaranteed' as a record FIELD (H2 side) -- the same bound, axiom-form and type-form, across the seam
+Q4 92-121 DONE 2026-06-11 (capture pass)
+  GLU: SoundnessProof structure at fine grain -- Method('FOL_Reification'); induction on the parse tree from Axiom_TerminalTruth at the leaves to Val(Root)=T: the proof IS the inside pass (leaf-to-root), stated as FOL
+  OBL: 'Lojban pamoi liste' as the source of the Qualities list -- the L/L2 lists are LOJBAN-SEALED (the Coherent Duality); locale-verdict candidate grounding (the deferred v2.22 read's target) gets a pointer here
+A 1-91 DONE 2026-06-11 (gluing pass): sections from Q1+M consistent; no conflicts
+B 31-121 DONE 2026-06-11 (gluing pass): sections from M+Q4 consistent; no conflicts
+A2 1-91 DONE 2026-06-11 (verification re-pass): agrees with A
+B2 31-121 DONE 2026-06-11 (verification re-pass): agrees with B
+  VERDICT (Cech): all local sections glue; COC count = 0; the document is H0-ONLY (one global section, no monodromy) -- coherent under every entry context tested. proc1 reading COMPLETE: 9/9 bricks.
+
+## REGRADE (S37, fiber-certificate honesty applied to the reading)
+Brick verification classes for this document: H1, H2 = PERFORMED READS
+(fresh window prints). Q1/M/Q4/A/B/A2/B2 = ASSERTED-FROM-HELD-CONTEXT
+(gluing claims over text in working context; no fresh window pass).
+Coverage executed: ~1x with one seam, not the designed ~4.5x. DONE
+status retained for capture bookkeeping; the PASS verdicts on non-H
+bricks carry this weaker certificate class. Exception note: proc1's M
+was examined as a seam unit and yielded a finding (1.1.1.gamma
+arrival), evidence the M-layer pays when performed.

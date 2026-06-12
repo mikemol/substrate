@@ -1,0 +1,5 @@
+a. quotient stream folds back to the reduced pair (300 trials): True
+b. Bezout certificate == convergent determinant (+-1 in lowest terms): True
+c. witness verifies independently of computation (1000 pairs @ 1e50): True
+d. CRT idempotents (resolution of identity), exhaustive round-trip + per-pin product (mod 420): True; non-coprime guard — collision(1,13 mod 24): True, unreachable pair (0 mod 6, 1 mod 4): True
+e. rational reconstruction: the pair recovered exactly from its modular shadow (200 trials, M = 2^61-1): True

@@ -1,0 +1,247 @@
+# brick ledger: recovered/system-pi-v2.37.1/02-part2-proc3.md (136 lines)
+# states: DONE/DONE; append insights as ACT:/OBL:/GLU:/COC: lines under each brick
+H1 1-68 DONE
+H2 69-136 DONE
+Q1 1-34 DONE-FRESH 2026-06-11 (diff below)
+M 35-102 DONE-FRESH 2026-06-11 (re-executed; diff below)
+Q4 103-136 DONE-FRESH 2026-06-11 (diff below)
+A 1-102 DONE-FRESH 2026-06-11 (W5; diff below)
+B 35-136 DONE-FRESH 2026-06-11 (W5; diff below)
+A2 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+B2 35-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+
+## H1 capture (lines 1-68) — typed
+- ACT: Part 2 of N; reifies Phase 1 (System Kernel) + Phase 2 (Mathematical
+  Foundations); Recursive Orthogonal Implication Protocol per notion.
+- GLU(proc1-H2 turn prompt): "Contextual Security" ARRIVED as pre-registered.
+  Defined as SIEVE / sub-grammar, explicitly NOT a boundary wall.
+- ACT 1.1 Syntactic Authorization: action authorized iff a valid parse-path
+  exists for (Principal, Action) in SecurityGrammar. GLU: proc1 SoundnessProof
+  (parse = constructive truth-path) extended from truth to AUTHORIZATION.
+- ACT 1.2 Topological Isolation: security domains = independent sheaves;
+  User_Topos compromise yields no parse-path into Root_Topos. GLU: proc1
+  axiom 1.1 (truth as local section) — security inherits sheaf locality.
+- ACT 1.3 Negative Resolution: absence of Permit == presence of Deny ("Total
+  Silence as Security"). TENSION-CANDIDATE (typed, not yet a cocycle): this is
+  closed-world negation — deriving a negative from absence — which the atlas
+  PROHIBITS on the evidence carrier (sec. 3). Resolution sketch: the source
+  applies it at the DECISION stratum (action interface), i.e. a declared
+  PINNING at the boundary, not an evidence-stratum claim. OBL: check whether
+  the treatise (05) addresses closed-world vs evidence explicitly.
+- ACT 1.1.2 Auditability: every action leaves the trace of the production
+  rules that justified it — witness-carrying ACTIONS. GLU: S20
+  extended-Euclid; v3.8 proof-carrying run output.
+- ACT 1.1.3 Formal Revocation: remove a production rule -> un-parsable.
+- ACT 1.2.3 PROOF-CARRYING AUTHORIZATION: "every request must be accompanied
+  by the IOU of its own parse-path" — VERBATIM convergence with v3.8.
+  COGROUNDING INSTANCE (B11): instrument and source converged independently.
+- ACT 1.3.1 Default Deny: Earley fails if no covering found.
+- ACT 1.3.2 Error Masking: security parse errors return the same terminal as
+  "Unknown" — DELIBERATE verdict-collapse to prevent leakage. GLU(IDC):
+  identity-collapse purchased intentionally; quotient-as-shield —
+  non-observability as a security feature, the dual reading of IDC.
+- ACT 1.3.3 Structural Obfuscation: grammar may be randomized if terminal
+  identity is constant — observational equivalence used DEFENSIVELY
+  (invariance under presentation).
+- ACT 1.2.1 Air-Gapped Logic: contexts may run different foundational logics
+  (classical vs intuitionistic) without interference. GLU: locale-per-domain;
+  feeds the v2.22 locale-verdict target (with proc1 Lojban-seal pointer).
+- ACT 1.2.1.beta: logic-switching cost = graded attention-economy metric
+  (chart transitions are COSTED — codec cost made explicit).
+- ACT 1.2.1.gamma: identity re-verified at every topos-boundary crossing.
+- ACT Phase-1 MIME: HoTT_OS_Kernel — Topology Sh(C,J) over SystemState-Space;
+  KernelProver as urn:uuid dependency (v3.8 lineage pointer confirmed in
+  source); Axiom_Integrity: kernel functional iff state resolves to READY,
+  RE-PARSED AT EVERY CLOCK-TERMINAL (truth as maintained parse).
+- ACT Category_Laws_v2.2: Associativity proved via deterministic Earley
+  (composition = production-rule expansion; both groupings -> identical
+  terminal sequences); Identity = null-expansion rule preserving terminal
+  leaves. SEAM: H1 ends MID-Identity-proof — cut interior, M/H2 must cover.
+
+## H2 capture (lines 69-136) — typed
+- GLU(proc1 turn prompt): "Recursive Succession" ARRIVED as pre-registered.
+- ACT III: N as the simplest recursive grammar. 1.1 induction = structural
+  recursion of EarleyParser; 1.2 successor preserves homology of prior state;
+  1.3 cardinality = parse-depth to the '0' terminal.
+- ACT 1.1.2 Exhaustive Search: forall-n verified by base terminal + recursive
+  production (induction as two finite checks). 1.1.3 Booleans = {0, S0}.
+- ACT 1.2.1 Irreversibility: successor is one-way refinement ("Entropy of
+  Arithmetic"). GLU: S19 grace/CF refinement schedule; lock-schedule axis.
+- ACT 1.2.2 ADDITION-AS-CONCATENATION of parse-paths. GLU(STRONG): S25
+  witnesses-are-paths; S20 EEA path-carrying — arithmetic AS path composition.
+- ACT 1.2.3 multiplication = grammar nesting. 1.3.1 numbers are heavier in
+  parser workload (cost gradient; glues with 1.2.1.beta attention economy).
+- ACT 1.3.2 OVERFLOW-AS-PARSING-ERROR: exceeding MaxDepth of the current
+  context = un-parsable, i.e. a STATABILITY failure not a falsity — the
+  source's V-kind. GLU: clipped/partial lock knob semantics.
+- ACT 1.3.3 Zero-as-Bedrock: arithmetic = covering of the '0' terminal.
+- ACT IV CENTRAL GLUE: IntegerDef = GrothendieckGroup(NaturalGrammar),
+  Construction Pair(Natural,Natural), Equality (a,b)=(c,d) iff a+d=b+c,
+  evaluated as identity of terminal bit-streams from CROSS-ADDITION —
+  subtraction never performed. The atlas carrier (E+,E-) with sec.-3
+  prohibition IS the source's definition of number. GLU: sec. 5.7e lift.
+- ACT RealDef = DedekindCuts(RationalDef); completeness constructive (limit
+  reachable by convergent terminal sequence). OBL(DANGLING): RationalDef is
+  referenced but defined in NO part read so far — pre-register part3/treatise.
+- ACT Meticulous Audit (source self-audit): axiom of choice REMOVED for a
+  constructive grammar of convergence; Associativity expanded to forbid
+  "boolean equality without a terminal witness" — no verdict without witness.
+- OBL(turn prompt): Part 3 = Phase 3 Advanced Capabilities + Phase 3.5
+  Self-Awareness; notions "Stability", "Ethical Pruning" — PRE-REGISTERED.
+
+## Gluing passes (Q1, M, Q4, A, B, A2, B2) — text fully in hand
+- SEAM(H1|H2 at 68/69): cut fell MID-Identity-proof; brick M (35-102) holds
+  the entire Category_Laws block — cut interior to M, covered. PASS.
+- Q1 (1-34): security L1/L2 internal to H1 — consistent on re-read. PASS.
+- Q4 (103-136): Phase-2 MIME tail + audit + turn prompt — consistent. PASS.
+- A/B/A2/B2 overlap passes: no overlap conflicts; terminology stable across
+  halves ("terminal", "parse-path", "TopologicalTruthEvaluator" used
+  identically in security and arithmetic sections).
+- CECH VERDICT: 0 intra-document cocycles (H0-only). One INTER-complex
+  tension-candidate carried as OBL: Negative Resolution (closed-world) vs
+  atlas sec.-3 prohibition — typed at H1 capture, resolution sketch there.
+
+## REGRADE (S37, fiber-certificate honesty applied to the reading)
+Brick verification classes for this document: H1, H2 = PERFORMED READS
+(fresh window prints). Q1/M/Q4/A/B/A2/B2 = ASSERTED-FROM-HELD-CONTEXT
+(gluing claims over text in working context; no fresh window pass).
+Coverage executed: ~1x with one seam, not the designed ~4.5x. DONE
+status retained for capture bookkeeping; the PASS verdicts on non-H
+bricks carry this weaker certificate class. Exception note: proc1's M
+was examined as a seam unit and yielded a finding (1.1.1.gamma
+arrival), evidence the M-layer pays when performed.
+
+## REGRADE (author correction): the Q/M/A/B brick entries above were
+## gluing ASSERTIONS over context held in a lossy window, not fresh
+## window-passes. In-context recall is not a certificate. M-layer
+## (seam windows) now being re-executed as fresh prints with capture
+## diffs; Q and A/B layers honestly DEFERRED pending decision.
+
+## M fresh-pass capture-diff (lines 35-102, seam 68|69) — 2026-06-11
+- SEAM NOW PERFORMED (was asserted): the full Category_Laws block sits
+  whole in M; Identity proof intact across the cut. PASS, earned.
+- NEW (missed by H1+H2 held-context captures): VERSION STRATIGRAPHY —
+  lib-category-theory-v2.2 inside the v2.37.1 distribution, while
+  lib-hott-os and lib-number-systems carry v2.37. The sealed artifact
+  carries heterogeneous library versions: either deliberate (the
+  category laws stabilized at v2.2 and never needed revision — the
+  library lineage exhibits its own homological stability) or stale
+  residue; the self-audit does not remark on it. GLU: DREN
+  Git-as-History (identity = entire preceding history); the version
+  field IS history carried in the artifact. The treatise (5.3) also
+  says v2.2 — consistent, so deliberate-stability is the better read.
+- NEW NUANCE: Axiom_Integrity PROPOSITION reads "System integrity is
+  the successful closure of the Kernel-sieve" — integrity as SIEVE
+  CLOSURE; one sieve concept spans security (part-2 sec. I) and
+  integrity. Prior capture had the mechanism (READY, re-parse per
+  clock-terminal) but missed the sieve framing.
+- VERDICT: fresh pass yielded 2 new captures — the lossy-window
+  hypothesis CONFIRMED on the first re-execution.
+
+## ADDENDUM to M-diff (author testimony, 2026-06-11): the version-
+## stratigraphy mechanism is now known — per-blob iteration counters
+## from a versioned-MIME-chunk exchange workflow with an LLM. The
+## "deliberate-stability" reading was right, with the mechanism:
+## lib-category-theory-v2.2 converged in few cycles (standard
+## mathematics; nothing to iterate); v2.37 blobs carried the long
+## refinements. Version = iteration depth = where the work was.
+
+## Q1 fresh-pass capture-diff (lines 1-34) — 2026-06-11
+- RECOVERED (dropped from H1 capture): 1.2.2 MORPHISM PROTECTION —
+  "Geometric morphisms between contexts are filtered by the
+  EthicalGovernor." A THIRD Governor role (besides action-pruning and
+  equilibrium): the Governor is the INTER-TOPOS MORPHISM GATEKEEPER.
+  Cross-part continuity: part 3's Axiomatic Loyalty (Governor vetoes
+  the MorphismGenerator) was NOT new power — part 2 already granted
+  the morphism filter. The Governor's jurisdiction was constant; the
+  H1 drop made part 3 look like an escalation.
+- RECOVERED (dropped from H1 capture): 1.1.1 Rule-Based Least
+  Privilege — grammar minimal "for the system's CURRENT MANDATE."
+  The mandate vocabulary spans parts: part 4's Operational Silence
+  ends "evolutionary mandates"; least-privilege is mandate-indexed
+  grammar minimality.
+## Q4 fresh-pass capture-diff (lines 103-136) — 2026-06-11
+- NEW TENSION-CANDIDATE COC-4 (the narrow window's catch — audit claim
+  and proposition sit 10 lines apart): the Foundationalism Correction
+  asserts the system "remains intuitionistic" (AoC removed), but the
+  RealDef Completeness Proposition states FULL LUB — "Every bounded
+  set of Reals has a least upper bound" — which is NOT constructively
+  valid in general (constructive analysis requires located/order-
+  located sets, or Cauchy completeness instead; full LUB implies LPO).
+  The Body's "convergent sequence of terminals" gestures at Cauchy
+  completeness, but the Proposition as stated is classical.
+  ADJUDICATION SKETCH: proposition/body mismatch — the body is
+  constructive, the proposition classical; a statement-level slip the
+  self-audit introduced IN THE SAME CORRECTION that claimed
+  intuitionism. Carried as candidate; treatise did not address it.
+- VERDICT: 2 recovered drops + 1 new cocycle candidate. Q-layer
+  paying at M-layer rates.
+
+## A fresh-pass capture-diff (lines 1-102) — W5
+- NEW: "SUBORNING TIME to the requirements of completeness and
+  recursive depth" (line 3) — the source's tempo doctrine, never
+  previously captured: completeness outranks schedule. GLU: the brick
+  protocol's redundancy purchase; tonight's entire M/Q/A re-execution
+  arc is this doctrine practiced.
+- NEW SYNTHESIS (A-window adjacency): the OBSERVABILITY DUAL —
+  Auditability (1.1.2: full production-rule trace for every permitted
+  action) against Error Masking (1.3.2: uniform "Unknown" for every
+  denial) is one designed policy: full witness inside the permit
+  region, deliberate quotient outside it. Witnesses exist exactly
+  where parse-paths exist — the statability boundary deployed as
+  security observability.
+- NEW SYNTHESIS (A-window spans the phase seam): Axiom_Integrity
+  re-parses the Process-List at every clock-terminal; twenty lines
+  later, induction = structural recursion over NaturalGrammar.
+  SYSTEM INTEGRITY IS INDUCTION OVER RUNTIME STATE — the same
+  recursion scheme at two strata (kernel loop / arithmetic), visible
+  only with both blocks in one window.
+- RESIDUE: first A-print elided lines 46-82 with a "[...]" marker —
+  the source's own named Flaw (Conceptual Shortcut), committed inside
+  the protocol that read it; caught immediately, repaired by full
+  print. The economizing instinct survives two corrections; the
+  ledger now holds three instances.
+
+## B fresh-pass capture-diff (lines 35-136) — W5
+- NEW (B-window adjacency): THE AUDIT ASYMMETRY — the same Meticulous
+  Audit tightens and loosens in adjacent bullets: the Elision
+  Correction demands terminal witnesses for Associativity while the
+  Foundationalism Correction introduces classical full-LUB under an
+  intuitionism claim (COC-4's origin). One window shows the
+  self-audit's two corrections moving in opposite directions.
+- HONEST REMAINDER: all other B-window content matched prior captures
+  (IntegerDef, RealDef, NaturalGrammar, turn prompt) — zero further
+  yield, reported as such.
+
+## A2/B2 repeat-layer capture-diff (W8, post-flush, v2.22 priors)
+A2 1-102 DONE-FRESH; B2 35-136 DONE-FRESH (full window prints).
+- NEW (priors-enabled): AIR-GAPPED LOGIC IS COC-4'S MISSED EXIT —
+  1.2.1 licenses per-context foundational logic ("classical vs.
+  intuitionistic... without interference"). The Foundationalism
+  Correction could have DECLARED RealDef's classical completeness
+  inside an air-gapped sub-topos; instead it claimed global
+  intuitionism over a classical proposition. COC-4 final form: not a
+  logic error but a missed use of the system's own pluralism.
+- PREDICTION CONFIRMED (registered in BEGIN W8): ComplexDef absent
+  AND unreferenced (grep: only "Complexity Gradients"). With v2.22's
+  Factor set {...Integer, Rational, Real, Complex...}, v2.37.1's
+  number-systems = {Natural, Integer, Real}: subset inlining.
+  SECOND-ORDER FINDING: transmission loss has TWO KINDS —
+  edge-retained (Rational: detectable, the kept dependency dangles)
+  and edge-free (Complex: SILENT — no edge, no Gap, invisible to the
+  Empty-Queue check by construction). The self-verification
+  machinery can only catch the first kind; closed-world makes silent
+  loss indistinguishable from intentional exclusion.
+- NEW (lineage-comparative): VERSION-UP, CONTENT-DOWN — the inline
+  part is number-systems-v2.37 vs the lineage's lib-number-systems-
+  v2.3: the revision that dropped two number types INCREMENTED the
+  library version. The loss is inside an edition, not a copy.
+- NEW (lineage-comparative): category-theory-v2.2 vs v2.22's v2.1 —
+  one iteration across the span where hott-os went v2.19 to v2.37;
+  differential per-blob iteration rates now measured against the
+  actual ancestor, confirming the convergence map. REGISTERED
+  QUESTION (not finding): kernel-prover-v1.1 in v2.37.1 — its v2.22
+  version is not in our extracts; if also v1.1 there, the VERIFIER
+  IS FROZEN across the whole span while everything it verifies
+  churns. Target for the v2.22 tail.
+- HONEST REMAINDER: all other content matched W5 A/B captures.
