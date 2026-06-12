@@ -40,3 +40,5 @@ END W8 2026-06-11 :: parts 2-3 A2/B2 done; prediction confirmed; seam-migration 
 BEGIN W9 2026-06-11 :: bank author provenance — the corpus as context-saturation artifact (Gemini 1.5/2 boundary-pushing); mechanism for seam-migration, loss-kinds, seal decay, elision flaws; Table 1 as anti-saturation harness
   expect: cotype S54, provenance-note appendix, END W9
 END W9 2026-06-11 :: saturation provenance banked; mechanism joined to phenomena with independence preserved :: head=bf8b358 :: artifacts=el-atlas-cotype.md,recovered/system-pi-v2.22/PROVENANCE-NOTE.md
+BEGIN W10 2026-06-11 :: (a) v2.22 tail re-acquisition via alternate Drive tool (targets: Lojban pamoi-liste; kernel-prover version; control-theory presence); (b) christening hunt via Drive search, createdTime ascending, bracket [2024-05-21 MIME adoption, 2025-07-22T19:27 bound]; (c) fold S54a rot-vs-flush observability note
+  expect: findings in cotype S55 (+S54a), END W10
