@@ -45,3 +45,4 @@ BEGIN W10 2026-06-11 :: (a) v2.22 tail re-acquisition via alternate Drive tool (
 END W10 2026-06-11 :: full v2.22 acquired+persisted; all targets document-global; lineage map dated (5 versions/16h); christening tightened to Epoch-era; rot-vs-flush banked :: head=902b742 :: artifacts=recovered/system-pi-v2.22/v2.22-full.md,recovered/system-pi-v2.22/PROVENANCE-NOTE.md
 BEGIN W11 2026-06-11 :: the {TWN,D4C} 2-cell — compute H2(V4,Z2) exhaustively, locate both claims' extension classes in it, compare up to coboundary; register the verdict (v3.8.5)
   expect: tools/twn-d4c-2cell-pilot.py(+out), WITNESS_RELATIONS entry, run txt, regen, cotype S56, END W11
+END W11 2026-06-11 :: strict 2-cell separation established (8 vs 4 classes, exhaustive); first rung-2-only pair; registry complete :: head=8253853 :: artifacts=tools/twn-d4c-2cell-pilot.py,tools/twn-d4c-2cell-pilot-out.txt,tools/el-atlas-depsort-v3.8.5-run.txt

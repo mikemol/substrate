@@ -820,3 +820,17 @@ guard-claims on coeff; NVL/PUR on norm; CRS on basis_def; T53 on
 two_ops). These pairs sit at DISTANCE ONE from circlehood: remove the
 axis and they unify — the margin chart of the atlas, and the precise
 sense in which each knob admission purchased its distinctions.
+
+### 21. Separation strata: the first rung-2-only pair (W11)
+
+{TWN,D4C} are verdict-identical over the entire 165,888-model space —
+a true stratum-1 circle — yet strictly separated at the 2-cell
+stratum: over H2(V4,Z2), exhaustively, D4C's content (commutator
+lands on the kernel generator) holds in exactly the 4 noncommuting
+extension classes while TWN's content (kernel faithfulness) holds in
+all 8, including the split class where D4C dies; the realized group
+sits in a D4 class. The separation hierarchy is therefore strict in
+practice, not just in principle: stratum-1 circles can carry rung-2
+order. The class-space acts as a probe space one rung up — "which
+extension classes satisfy the claim" is the higher separator, the
+knob-admission pattern lifted.

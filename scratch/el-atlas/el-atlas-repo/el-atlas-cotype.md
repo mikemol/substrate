@@ -3289,3 +3289,25 @@ opens with a claude.ai chat URL: the corpus is MULTI-MODEL. The
 christening proper remains open, tightened: pre-2025-07-23T02:17,
 "Epoch"-era stratum (Epochs 1-9 referenced as already-history at
 v2.1). W10 closes.
+
+
+## S56 (W11): THE {TWN,D4C} 2-CELL — STRICT SEPARATION ONE RUNG UP;
+## THE FIRST RUNG-2-ONLY PAIR
+Exhaustive over H2(V4,Z2): |Z2|=16, |B2|=2, |H2|=8 with the
+classical census (1 split, 3 Z4xZ2, 3 D4, 1 Q8; involution counts
+7/3/5/1 as classifier). TWN (kernel faithfulness) holds in ALL 8
+classes — the twist is a nontrivial central element even in the
+split extension; D4C (commutator = kernel generator) holds in
+EXACTLY the 4 noncommuting classes; the realized <N,S> matrix group
+verifies [N,S]=-I and sits in a D4 class. VERDICT: the pair is
+verdict-identical over all 165,888 models (a true stratum-1 circle)
+and STRICTLY ORDERED at the 2-cell stratum — D4C-classes strictly
+contained in TWN-classes. The registry's first separation that
+exists ONLY at rung 2: circles can carry higher-rung order, and the
+class-space functions as a probe space one rung up (knob-admission
+lifted; thread 21). Instrument v3.8.5, entry registered — NO
+UNREGISTERED PAIRS REMAIN IN WITNESS_RELATIONS. Space move: S_49a935bae7dc
+(registry-text kind, truth content index-only per precedent). W11
+closes; the queue's machinery items are exhausted — remaining:
+christening (Epoch-era), proof tier (the Agda rung), A2/B2
+parts 4/treatise (decay pending).
