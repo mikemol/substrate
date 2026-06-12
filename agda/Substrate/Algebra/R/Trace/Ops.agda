@@ -1,0 +1,64 @@
+------------------------------------------------------------------------
+-- Substrate.Algebra.R.Trace.Ops
+--
+-- Field operations on RealTrace — the CF-NATIVE, productive ones. A continued
+-- fraction makes two operations trivial because they are just digit-position
+-- bookkeeping, needing no Gosper search and no corecursion:
+--
+--   * RECIPROCATION  1/x  — the defining move of a CF. For x>1 (a₀≥1) prepend a
+--     0; for x<1 (a₀=0) drop the leading 0. Involutive by construction.
+--   * TRANSLATION    x+k  (k : ℕ) — touches only the leading digit a₀ ↦ a₀+k.
+--
+-- General `+` and `×` are NOT here: on CF streams they are Gosper's bi-homographic
+-- algorithm, whose "ingest-until-emit" loop is not structurally guarded, so its
+-- productivity is the hard open problem of coinductive exact-real arithmetic in
+-- --safe Agda. Their substrate-honest home is the ℚ-APPROXIMATION view (compute
+-- with the convergents — "reason about ℝ via ℚ"), which is also what B4's exp/log
+-- SERIES need. See [[project_substrate_real_arc]] (B3-next / B4).
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K --guardedness #-}
+
+module Substrate.Algebra.R.Trace.Ops where
+
+open import Substrate.Foundation.Nat  using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.Eq   using (_≡_; refl)
+
+open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take; sqrt2; twos)
+
+------------------------------------------------------------------------
+-- Translation by a natural: x + k changes only the leading CF digit.
+------------------------------------------------------------------------
+
+addℕ : ℕ → RealTrace → RealTrace
+head (addℕ k x) = k + head x
+tail (addℕ k x) = tail x
+
+------------------------------------------------------------------------
+-- Reciprocation 1/x — the CF "shift". `cons0` prepends a 0 digit.
+------------------------------------------------------------------------
+
+cons0 : RealTrace → RealTrace
+head (cons0 x) = 0
+tail (cons0 x) = x
+
+recip-go : RealTrace → ℕ → RealTrace
+recip-go x zero    = tail x      -- x = [0; a₁,…] (x<1) ⇒ 1/x = [a₁; …]
+recip-go x (suc _) = cons0 x      -- x = [a₀; …] (x>1) ⇒ 1/x = [0; a₀, …]
+
+recip : RealTrace → RealTrace
+recip x = recip-go x (head x)
+
+------------------------------------------------------------------------
+-- Concrete: √2+3 = [4;2,2,…]; 1/√2 = [0;1,2,2,…]; recip is involutive on √2.
+------------------------------------------------------------------------
+
+_ : take 4 (addℕ 3 sqrt2) ≡ 4 ∷ 2 ∷ 2 ∷ 2 ∷ []
+_ = refl
+
+_ : take 5 (recip sqrt2) ≡ 0 ∷ 1 ∷ 2 ∷ 2 ∷ 2 ∷ []
+_ = refl
+
+_ : take 4 (recip (recip sqrt2)) ≡ 1 ∷ 2 ∷ 2 ∷ 2 ∷ []
+_ = refl
