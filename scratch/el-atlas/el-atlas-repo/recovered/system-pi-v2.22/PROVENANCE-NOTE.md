@@ -2,11 +2,12 @@
 
 Source: Drive doc 10GrDUQdXh_uLc-bUGBiuXPyYSY8C8ZxwXKd1s3F-dMc
 ("SYSTEM Π v2.22"), created 2025-07-24T22:58Z, modified 2025-07-25.
-Drive is canonical. THE FETCH WAS TRUNCATED by the transport
-("Output abbreviated due to length limit") — a full byte-snapshot
-could not be persisted from this acquisition; EXTRACTS.md holds the
-load-bearing lines verbatim. Negative findings below are therefore
-RETRIEVED-PORTION-RELATIVE, not document-global.
+Drive is canonical. SUPERSEDED (W10): the alternate access path delivered the FULL
+document; v2.22-full.md is the complete snapshot (550,982 chars,
+sha256[:12]=8216a229f629). All W6 portion-relative findings are now
+upgraded or refined at document-global strength (cotype S55).
+Note: the extracted text carries literal backslash-n sequences (one
+physical line) — search it with substring windows, not line tools.
 
 TEMPORAL COMPOSITE (provenance stratum): the document is at least
 three strata — (1) the v2.22 base distribution (whose mandate

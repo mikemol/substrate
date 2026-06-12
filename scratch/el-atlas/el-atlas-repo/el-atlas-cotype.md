@@ -3233,3 +3233,59 @@ model generations: extracting durable coherent structure from
 volatile high-density context. Grading: author testimony, strongly
 consistent, mechanism-level; the findings stand on document evidence
 independently.
+
+
+## S54a: ROT VS FLUSH — THE RECOVERY RITUAL IS A FUNCTION OF THE
+## FAILURE MODE'S OBSERVABILITY (AUTHOR)
+Gemini's context degraded silently — no flush event, "context just
+kinda rots." A detectable flush admits EVENT-TRIGGERED recovery
+(our resent-prompt doctrine); silent rot admits only CONTINUOUS
+refresh (the mandate/re-emission cycle). The two harness generations
+differ exactly where the substrates' failure observability differs.
+
+## S55 (W10): v2.22 COMPLETE; ALL TARGETS DOCUMENT-GLOBAL; THE
+## LINEAGE MAP ASSEMBLED
+FULL ACQUISITION: alternate Drive tool delivered the whole document
+to disk (550,982 chars, sha 8216a229f629) — snapshot persisted,
+truncation note superseded. One-line-file lesson: the extraction
+carries literal backslash-n; line-oriented grep dumps the document
+(caught when the harness truncated a grep). TARGETS, now
+document-global: (a) Functorial_Integrity_Check ABSENT — COC-5's
+method born dangling, upgraded from portion-relative; v2.22's sole
+undefined seam confirmed as EthicalReasoningModuleDef (2 invocations,
+0 definitions) — SEAM MIGRATION now rests on document-global facts at
+both ends. (b) Lojban/pamoi ABSENT ENTIRELY — the Lojban/AMR seal is
+a post-v2.22 invention; the pamoi-liste question relocates to the
+intermediate lineage (v2.23-v2.36 in-chat stream or the v2.37
+conversation). (c-extended) kernel-prover: NO v2.22 library — the
+verifier was an AXIOM (KernelProver_Axiom) and grammar factor;
+lib-kernel-prover-v1.1 is a post-v2.22 REIFICATION (frozen-verifier
+hypothesis resolved: newly reified, consistent with young-blob
+counters). (d) control-theory/dynamical-systems EXIST at v2.19 in
+vast form (LTI/Optimal/Robust/Adaptive/MPC/Hybrid/Networked/
+Stochastic) — v2.37's one-record versions are CONTRACTIONS:
+VERSION-UP CONTENT-DOWN IS LINEAGE-WIDE, not a number-systems quirk.
+The "ultra-ultra-ultra-ultra-advanced" v2.19 libraries are the
+accumulation phase's high-water mark; v2.37.1 is the
+post-saturation condensate. BONUS: TransactionLogEntryDef carries
+PreOpDelta AND PostOpDelta per operation — their WAL recorded both
+state deltas, mechanically replayable in both directions (richer
+than our intent/outcome pair; noted as a possible wal.md upgrade).
+CHRISTENING HUNT (Drive search): the v2.x cascade is DATED —
+v2.1 (2025-07-23T02:28) -> v2.2+ (03:06) -> v2.3 (03:32) -> v2.4
+(14:58) -> v2.5 (18:08): FIVE VERSIONS IN SIXTEEN HOURS, then v2.22
+on 07-24 — v2.6-v2.21 lived in-chat without Drive snapshots
+(iteration-counter doctrine at lineage scale: Drive is a sparse
+sampling of a dense version stream). The v2.4 preamble formalizes
+PrecisionAmplification, SemanticCompression, and the "symbiotic
+relationship with external generative models" — THE LINEAGE
+FORMALIZED ITS OWN GENERATION CONTEXT (S54 corroborated in the
+corpus's own voice, at v2.4, July 2025). v2.5's preamble records
+regeneration-after-"Try again" on a failed Completeness mandate;
+v2.1's records "all elisions have been expanded" — the anti-elision
+war was already running at v2.1. A v2.3-era REVIEWER DOCUMENT exists
+("The Ouroboros Proof") — the treatise pattern recurs. One document
+opens with a claude.ai chat URL: the corpus is MULTI-MODEL. The
+christening proper remains open, tightened: pre-2025-07-23T02:17,
+"Epoch"-era stratum (Epochs 1-9 referenced as already-history at
+v2.1). W10 closes.
