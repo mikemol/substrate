@@ -34,3 +34,5 @@ END W6 2026-06-11 :: targets: (c) resolved (transmission loss), (a) advanced (bo
 BEGIN W7 2026-06-11 :: erratum S52a — reversibility-machinery dating (emission-date vs content-date conflation; author correction)
   expect: cotype S52a, EXTRACTS.md dating note, END W7
 END W7 2026-06-11 :: erratum committed :: head=0e145a5 :: artifacts=recovered/system-pi-v2.22/EXTRACTS.md
+BEGIN W8 2026-06-11 :: A2/B2 repeat layers for parts 2-3 (deferral condition met: pre-flush A/B + guaranteed decay) — lineage-informed pass with v2.22 priors. REGISTERED PREDICTION: v2.37.1's number-systems part is a strict SUBSET inlining of the lineage library ({Natural,Integer,Real} of v2.22's {...,Integer,Rational,Real,Complex,...}); the transmission loss occurred at library-inlining; ComplexDef should be absent AND unreferenced in part 2 (only Rational left a dangling edge).
+  expect: per-doc A2/B2 ledger diffs + commits (parts 2,3), cotype S53, END W8
