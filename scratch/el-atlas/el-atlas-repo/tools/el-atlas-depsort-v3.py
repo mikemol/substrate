@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.9.0"
+VERSION = "v3.10.0"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -143,11 +143,12 @@ KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False
              lock=['available','unavailable','wrong','clipped','affine','noisy','partial','forced'],
              norm=['free','pinned','pinned_l2'], two_ops=[True,False],
              basis_def=['ok','singular'], coeff=['real','gf2','complex'], cdlevel=[2,4,8,16],
-             probe=['full','depth1','mention'])
+             probe=['full','depth1','mention'],
+             extclass=['d4','q8','z4xz2','split'])  # W19: extension class of the level group in H2(V4,Z2); admitted from the rung-2 correction event (W11/W17)
 SPACE = [dict(zip(KNOBS, vals)) for vals in product(*KNOBS.values())]
 BASE = dict(pins=2, adj=True, ident=True, neg=True, ops='linear',
             lock='available', norm='free', two_ops=True, basis_def='ok',
-            coeff='real', cdlevel=2, probe='full')
+            coeff='real', cdlevel=2, probe='full', extclass='d4')  # base = the realized <N,S> class
 TOL = 1e-9
 
 def locus(u, lk):
@@ -210,6 +211,7 @@ def t_D4C(m):
     if m['pins'] < 2 or not m['neg']: return 'V'
     if m['ops']=='diagonal': return 'V'
     if m.get('coeff')=='gf2': return 'F'   # NS=SN in char 2: braid trivial
+    if m.get('extclass','d4') in ('split','z4xz2'): return 'F'  # W19: abelian extension — the commutator misses the kernel generator; content false
     return 'P'
 def t_PHS(m):
     if t_D4C(m)!='P': return 'V'   # includes coeff=gf2: no braid, no phase
@@ -508,6 +510,7 @@ def t_NVE(m):  # vE: the split is a section; the bridge is the instrument of the
     if not m['neg']: return 'V'            # the bridge reading is signed
     if m.get('coeff')!='real': return 'V'  # signed currents and ratio order need char-0 reals
     if m['ops']=='diagonal': return 'V'    # the bridge is a composed read across pins
+    if m.get('extclass','d4')!='d4': return 'V'  # W19: the bridge lives in the REALIZED class; off it the claim is unstatable, not false
     return 'P' if _nve_ok() else 'F'
 
 def _cdm(x,y):
@@ -642,12 +645,12 @@ _RAW_CLAIMS = dict(CLAIMS)
 _CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
     CRS=('pins','basis_def'), PUR=('pins','ops','norm'), PRO=('pins','ops','norm'),
     LOC=('pins','lock'), L26=('pins','lock'), T53=('neg','coeff','two_ops','pins','lock'),
-    V4I=('pins','neg','coeff'), D4C=('pins','neg','ops','coeff'),
-    PHS=('pins','neg','ops','coeff','lock'), RLS=('pins','neg','coeff','lock'),
+    V4I=('pins','neg','coeff'), D4C=('pins','neg','ops','coeff','extclass'),
+    PHS=('pins','neg','ops','coeff','lock','extclass'), RLS=('pins','neg','coeff','lock'),
     NOE=('pins',), TWN=('pins','neg','ops','coeff'), RAD=('coeff','cdlevel'),
     ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
     NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',),
-    GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff'),
+    GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff','extclass'),
     RDW=('coeff','cdlevel'), ZDW=('coeff','cdlevel'), SWF=('pins','coeff'))
 # v3.5a: per-claim complex stances. Applied ONLY where 'coeff' is in the
 # claim's declared support — coeff-independent claims are coeff-independent
@@ -710,6 +713,7 @@ KNOB_PROVENANCE = {
  'coeff':     ("char-2 collapse theorem (draft 17, [W]); 'complex' admitted v3.5 (OB-9 re-posed via S10 + stationary-phase regime S16 + gf2-cleavage precedent); READING UNDECLARED — base-field C vs CD-rung is a registered alias circumstance (R-V35); declaring it is itself a named breaker", "per-claim stances in _COMPLEX_STANCE, each with its breaker; coeff-independent claims unaffected (v3.5a)"),
  'cdlevel':   ("radial entailment (d17) + zero-divisor geography (d18)", "the Hurwitz/ZD schedules across doubling rungs"),
  'probe':     ("Nedge identity-collapse decomposition (N-series)",        "IDC's collapse-then-separate schedule; the knob IS the probe space — the claim's thesis, instrumented"),
+ 'extclass':  ("rung-2 separation, W11 pilot -> W17 in-run stratum -> W19 ADMISSION — the first knob admitted from a rung-2 result; the class-space made behaviorally reachable per the charter (real->constructible->reachable->observable->coverable)", "D4C (F on abelian classes) and NVE (de-stated off the realized class) from TWN; the {TWN,D4C} circle becomes truth-separated"),
 }
 # SCRUTINY STRATA (where "why?" migrates as each level is indexed):
 #   knob VALUES (enumerated: this space) -> knob SET (KNOB_PROVENANCE) ->
@@ -848,7 +852,7 @@ WITNESS_RELATIONS = {
  frozenset({'GCX','SWP'}): "disjoint-by-type: rank-multiset vs parse-chart witnesses",
  frozenset({'LOC','L26'}): "EQUAL witness sets on the mutual probe grid — cell-for-cell (joiner-pairs pilot, W2/S48); kind-divergence outside it (LOC: U where L26: V on degraded locks)",
  frozenset({'PUR','PRO'}): "ISO-WITH-REFRAMING: the collision family (p, lam*p) is PUR's falsification set AND PRO's truth set (pinned vs free reading); bijection = identity; PR2 exhibits the carrier (W2/S48)",
- frozenset({'TWN','D4C'}): "STRICT 2-CELL SEPARATION (W11/S56): in H2(V4,Z2) (8 classes, exhaustive) TWN holds in all 8 (kernel faithful even in the split class), D4C in exactly the 4 noncommuting; realized <N,S> in a D4 class. Truth-identical at stratum 1, strictly ordered at rung 2 — the registry's first rung-2-only separation (twn-d4c-2cell-pilot)",
+ frozenset({'TWN','D4C'}): "STRICT 2-CELL SEPARATION (W11/S56): in H2(V4,Z2) (8 classes, exhaustive) TWN holds in all 8 (kernel faithful even in the split class), D4C in exactly the 4 noncommuting; realized <N,S> in a D4 class. STRICT 2-CELL SEPARATION computed in-run since v3.9.0; ADMITTED as knob extclass at v3.10.0 (W19) — truth-SEPARATED in the enlarged space (extclass in {split,z4xz2}: D4C=F, TWN=P; NVE de-states). Truth-identical only in pre-admission spaces (prior ledger). The first rung-2 result promoted to a stratum-1 separator (twn-d4c-2cell-pilot -> rung2_report -> admission)",
 }
 
 # ===== RUNG-2 STRATUM (W17, v3.9.0): COMPUTED IN-RUN, not registered prose ===
@@ -939,6 +943,7 @@ for _k,_v in {
   frozenset({'RAD','RDW'}): ("S_9a577e722039 (v3.6a)", "0/0 — merged at verdict level by the promotion; witness-stratum: strict containment"),
   frozenset({'ZDG','ZDW'}): ("S_9a577e722039 (v3.6a)", "0/0; witness-stratum: JOINED (iso, annotation-refined) — first joiner verdict"),
   frozenset({'SWF','SWP'}): ("S_9a577e722039 (v3.6a)", "0 truth / 36864 kind — the EXTENDS footprint, stable across v3.6/v3.6a"),
+  frozenset({'TWN','D4C'}): ("S_d0ede8d60ddb (165888, v3.9.0 pre-admission)", "0/0 truth circle; rung-2 strict containment computed in-run — the admission's correction event"),
 }.items(): PRIOR_LEDGER.setdefault(_k, []).append(_v)
 
 def _sep_projected(X, Y):

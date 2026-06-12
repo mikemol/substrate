@@ -3505,3 +3505,38 @@ relevant def; the source comments are part of the cotype in
 practice. W18 closes; intern consistent at S0-S61a, instrument
 v3.9.0, space S_d0ede8d60ddb (lineage ...4c3345b9126a ->
 49a935bae7dc -> d0ede8d60ddb).
+
+
+## S62 (W19): KNOB ADMISSION — extclass; THE RUNG-2 RESULT BECOMES A
+## STRATUM-1 SEPARATOR; THE CHARTER CHAIN COMPLETES
+Direct answers to the four pressed questions, post-move: BREAKERS —
+one admitted: extclass in {d4,q8,z4xz2,split} (the extension class
+of the level group in H2(V4,Z2)), BASE=d4 (the realized class);
+space 165888 -> 663552, exhaustive. SEMANTICS — two functions
+changed, each exercising a different atlas distinction: t_D4C gains
+F on abelian classes (content FALSE there: the commutator misses the
+kernel generator); t_NVE gains V off the realized class (content
+UNSTATABLE there: the bridge lives in the realized instrument) —
+truth-breaking vs de-stating, chosen per claim content, not
+uniformly. t_PHS inherits through its D4C call; deps updated for
+D4C/NVE/PHS (ride correctness); TWN deliberately unmoved (kernel
+faithfulness is class-independent — its constancy across the knob IS
+the separation's other half). INTEGRATION — the W11/W17 rung-2
+result is no longer a parallel report: it is the admission's
+correction event, ledgered in KNOB_PROVENANCE like every other knob.
+RESULT: SEP({TWN,D4C} | S_1b85ef5d073c) = 18432 truth / 18432
+any-kind, co-movement 0.97, minimal witness mutation
+{extclass: z4xz2} — ONE KNOB TURN. The prior ledger now reads as the
+circle's biography: unseparated (v3.3) -> unseparated (v3.4a) ->
+0/0 circle + rung-2 containment (v3.9.0, the correction event) ->
+SEPARATED (v3.10.0, the admission). Registry re-indexed (the
+in-run assertion still passes); reference closure passes; the
+{GCX,RAD,RDW,ZDW} circle persists untouched as expected. Charter
+chain complete for this distinction: real (W11 verdict) ->
+constructible (the pilot) -> behaviorally reachable (the knob) ->
+observable (verdict movement, 18432 models) -> coverable
+(exhaustive). Space move ledgered: kind KNOB ADMISSION, lineage
+...d0ede8d60ddb -> 1b85ef5d073c. Blemish caught in-move: the pair
+was already in the separator loop; my append duplicated the print;
+deduped before close. W19 closes. The witness-chain question (the
+fourth) is W20.

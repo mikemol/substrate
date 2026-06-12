@@ -1,10 +1,10 @@
 # The EL-Atlas, Structured Edition
 
 *Mechanically derived by `tools/el-atlas-structured-gen.py` from the v3.1 harness.*
-*All verdicts indexed: space **S_d0ede8d60ddb** (165888 models, exhaustive); manifest below.*
+*All verdicts indexed: space **S_6c6856f4522f** (663552 models, exhaustive); manifest below.*
 *Hand-written content: claim metadata sentences and spec pointers only.*
 
-**Space manifest S_d0ede8d60ddb:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2, complex}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}.
+**Space manifest S_6c6856f4522f:** pins ∈ {1, 2, 3}; adj ∈ {True, False}; ident ∈ {True, False}; neg ∈ {True, False}; ops ∈ {diagonal, linear}; lock ∈ {available, unavailable, wrong, clipped, affine, noisy, partial, forced}; norm ∈ {free, pinned, pinned_l2}; two_ops ∈ {True, False}; basis_def ∈ {ok, singular}; coeff ∈ {real, gf2, complex}; cdlevel ∈ {2, 4, 8, 16}; probe ∈ {full, depth1, mention}; extclass ∈ {d4, q8, z4xz2, split}.
 *Why this space: no knob is a-priori — each was admitted by a named correction*
 *event (KNOB_PROVENANCE in the harness); knobs are monotonic. Intrinsic verdicts*
 *below carry a frontier: what a separator would require, and at which scrutiny*
@@ -22,12 +22,14 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 **Part 1 — Layer 0 (foundations)**
 - [The chart adjunction (exp ⊣ log)](#the-chart-adjunction-exp--log)
-- [The braided V₄ (D₄) ≡ The ∨E bridge ≡ The twist](#the-braided-v4-d4) *(one structure — expressibility-intrinsic)*
+- [The braided V₄ (D₄)](#the-braided-v4-d4) *(characteristic-break coincidence; separated in-space)*
 - [The third codec sighting ≡ The radial schedule ≡ The radial witness mode ≡ The zero-divisor schedule ≡ The zero-divisor witness mode](#the-third-codec-sighting) *(one structure — expressibility-intrinsic)*
 - [The G-value lift ≡ The exact V₄](#the-g-value-lift) *(one structure — expressibility-intrinsic)*
 - [The Noether pairings](#the-noether-pairings) *(characteristic-break coincidence; separated in-space)*
+- [The ∨E bridge](#the-∨e-bridge) *(characteristic-break coincidence; separated in-space)*
 - [Order-free semiring parsing](#order-free-semiring-parsing) *(characteristic-break coincidence; separated in-space)*
 - [Semiring-weighted parsing](#semiring-weighted-parsing) *(characteristic-break coincidence; separated in-space)*
+- [The twist](#the-twist) *(characteristic-break coincidence; separated in-space)*
 - [The identity-collapse schedule](#the-identity-collapse-schedule)
 
 **Part 2 — Layer 1**
@@ -58,7 +60,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Certificate (guard)*
 
 
-*Perspective visibility — ADJ (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — ADJ (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -67,48 +69,24 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Cross-reference — ADJ:* depends on —; required by ['BAL']; independent of 25 claims (CDC, CRS, PUR, PRO, LOC…).
 
 
-## The braided V₄ (D₄) ≡ The ∨E bridge ≡ The twist — one structure
+## The braided V₄ (D₄)
 
 **D4C — The braided V₄ (D₄)** (Theorem 5.4, Remark 5.5). Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id.
 
 *Certificate (guard)*
 
-**NVE — The ∨E bridge** (§5.7e; nedge-decomposition §8 (S8/S9)). Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold.
+*Characteristic-break coincidence with ['GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWF', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Certificate (mixed: sampled(800/400) + constructed nulls + exact conflation)*: constructed null bridge(3,7,6,14) = 0.00e+00; conflation splits (3,7)/(5,5): currents -0.043478 / +0.043478
-
-**TWN — The twist** (§5.9, Theorem 5.4). The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.
-
-*Certificate (guard)*
-
-*Verdict (S_d0ede8d60ddb, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 156672/156672 = 1.00; but NVE is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
-
-*Separation ledger NVE–NVL:* separated-in-S_d0ede8d60ddb (6144 truth-separators); separated, 6144 truth @ S_f117b7f53a8e (v3.5 first form, same caveat); separated, 6144 truth @ S_2738ddb8c926 (v3.5a).
+*Separation ledger D4C–TWN:* separated-in-S_6c6856f4522f (18432 truth-separators); unseparated, co-movement 1.00 (partly by construction) @ S_94763a8b62ea (v3.3); unseparated 1.00 (partly by construction) @ S_fd5ddbe7ac57 (v3.4a); 0/0 truth circle; rung-2 strict containment computed in-run — the admission's correction event @ S_d0ede8d60ddb (165888, v3.9.0 pre-admission).
 
 
-*Perspective visibility — D4C (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — D4C (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
 
-*Perspective visibility — NVE (executed, S_d0ede8d60ddb configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | P | P | P | P | V | P | P | V | P | P | P | V |
-
-*Perspective visibility — TWN (executed, S_d0ede8d60ddb configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
-
-*Cross-reference — D4C:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'SWP', 'V4I', 'ZDG', 'ZDW']; required by ['NVL', 'PHS', 'PR2', 'PRO', 'PUR']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
-
-*Cross-reference — NVE:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'SWP', 'V4I', 'ZDG', 'ZDW']; required by ['NVL', 'PHS', 'PR2', 'PRO', 'PUR']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
-
-*Cross-reference — TWN:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'SWP', 'V4I', 'ZDG', 'ZDW']; required by ['GCX', 'NGL', 'NVL', 'PHS', 'RAD', 'RDW', 'RLS', 'SWF', 'SWP', 'T53', 'V4I', 'ZDG', 'ZDW']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
+*Cross-reference — D4C:* depends on ['GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWF', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW']; required by ['NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'TWN']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
 
 
 ## The third codec sighting ≡ The radial schedule ≡ The radial witness mode ≡ The zero-divisor schedule ≡ The zero-divisor witness mode — one structure
@@ -133,36 +111,36 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (mixed: exact witness (N(xy)=0.0) + sampled(30) lock)*: (e1+e10)(e4-e15): N(xy) = 0.0 exactly, N(x)N(y) = 4
 
-*Verdict (S_d0ede8d60ddb, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 110592/110592 = 1.00; but GCX, RAD, RDW, ZDW is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_6c6856f4522f, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 442368/442368 = 1.00; but GCX, RAD, RDW, ZDW is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
-*Separation ledger GCX–SWP:* separated-in-S_d0ede8d60ddb (0 truth-separators); unseparated in truth, 0/18432; kind counts carry the blanket-guard semantics @ S_f117b7f53a8e (165888, v3.5 first form — central complex V-guard overrode declared knob support; Break-2 coeff rows artifactual; retrospective R-V35); unseparated in truth 0/18432; theorem-cluster member @ S_2738ddb8c926 (165888, v3.5a corrected).
+*Separation ledger GCX–SWP:* separated-in-S_6c6856f4522f (0 truth-separators); unseparated in truth, 0/18432; kind counts carry the blanket-guard semantics @ S_f117b7f53a8e (165888, v3.5 first form — central complex V-guard overrode declared knob support; Break-2 coeff rows artifactual; retrospective R-V35); unseparated in truth 0/18432; theorem-cluster member @ S_2738ddb8c926 (165888, v3.5a corrected).
 
 
-*Perspective visibility — GCX (executed, S_d0ede8d60ddb configs):*
-
-| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
-
-*Perspective visibility — RAD (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — GCX (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
 
-*Perspective visibility — RDW (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — RAD (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
 
-*Perspective visibility — ZDG (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — RDW (executed, S_6c6856f4522f configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | P | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
+
+*Perspective visibility — ZDG (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | P | P | P | P | P | P | P | P | P | P | F | P | P | P | V |
 
-*Perspective visibility — ZDW (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — ZDW (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -189,16 +167,16 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (guard)*
 
-*Verdict (S_d0ede8d60ddb, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 147456/147456 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_6c6856f4522f, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 589824/589824 = 1.00; but NGL is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
 
-*Perspective visibility — NGL (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — NGL (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | P | P | P | P | P | P | V | P | P | V | P | P | P | V |
 
-*Perspective visibility — V4I (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — V4I (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -218,13 +196,33 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NVE', 'RAD', 'RDW', 'SWF', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — NOE (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — NOE (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | P | P | P | P | P | P | P | P | P | P | P | P | P | P |
 
 *Cross-reference — NOE:* depends on ['SWP']; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'SWF', 'SWP', 'T53', 'TWN', 'V4I']; independent of 9 claims (ADJ, BAL, CDC, RAD, ZDG…).
+
+
+## The ∨E bridge
+
+**NVE — The ∨E bridge** (§5.7e; nedge-decomposition §8 (S8/S9)). Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold.
+
+*Certificate (mixed: sampled(800/400) + constructed nulls + exact conflation)*: constructed null bridge(3,7,6,14) = 0.00e+00; conflation splits (3,7)/(5,5): currents -0.043478 / +0.043478
+
+*Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
+
+*Separation ledger NVE–NVL:* separated-in-S_6c6856f4522f (6144 truth-separators); separated, 6144 truth @ S_f117b7f53a8e (v3.5 first form, same caveat); separated, 6144 truth @ S_2738ddb8c926 (v3.5a).
+
+
+*Perspective visibility — NVE (executed, S_6c6856f4522f configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | P | P | P | P | V | P | P | V | P | P | P | V |
+
+*Cross-reference — NVE:* depends on ['D4C', 'GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW']; required by ['D4C', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'TWN']; independent of 9 claims (ADJ, BAL, CDC, CRS, LOC…).
 
 
 ## Order-free semiring parsing
@@ -235,10 +233,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWP', 'TWN', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger SWF–SWP:* separated-in-S_d0ede8d60ddb (0 truth-separators); 0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count @ S_3ed20b0e9c22 (v3.6); 0 truth / 36864 kind — the EXTENDS footprint, stable across v3.6/v3.6a @ S_9a577e722039 (v3.6a).
+*Separation ledger SWF–SWP:* separated-in-S_6c6856f4522f (0 truth-separators); 0 truth / 36864 kind — exactly the statable complex region: the EXTENDS breaker's footprint as a separator count @ S_3ed20b0e9c22 (v3.6); 0 truth / 36864 kind — the EXTENDS footprint, stable across v3.6/v3.6a @ S_9a577e722039 (v3.6a).
 
 
-*Perspective visibility — SWF (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — SWF (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -256,13 +254,31 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWF', 'TWN', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — SWP (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — SWP (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | P | P | P | P | P | P | P | P | P | V | P | P | P | V |
 
 *Cross-reference — SWP:* depends on ['GCX', 'NGL', 'NOE', 'RAD', 'RDW', 'SWF', 'TWN', 'ZDG', 'ZDW']; required by ['CRS', 'D4C', 'L26', 'LOC', 'NGL', 'NOE', 'NVE', 'NVL', 'PHS', 'PR2', 'PRO', 'PUR', 'RLS', 'SWF', 'T53', 'TWN', 'V4I']; independent of 4 claims (ADJ, BAL, CDC, IDC).
+
+
+## The twist
+
+**TWN — The twist** (§5.9, Theorem 5.4). The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2.
+
+*Certificate (guard)*
+
+*Characteristic-break coincidence with ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWF', 'SWP', 'V4I', 'ZDG', 'ZDW'] (shared break in the dep digraph); separated in-space — see ledger.*
+
+
+*Perspective visibility — TWN (executed, S_6c6856f4522f configs):*
+
+| FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P | V | V | P | P | P | P | P | V | P | P | F | P | P | P | V |
+
+*Cross-reference — TWN:* depends on ['D4C', 'GCX', 'NGL', 'NOE', 'NVE', 'RAD', 'RDW', 'SWF', 'SWP', 'V4I', 'ZDG', 'ZDW']; required by ['D4C', 'GCX', 'NGL', 'NVE', 'NVL', 'PHS', 'RAD', 'RDW', 'RLS', 'SWF', 'SWP', 'T53', 'V4I', 'ZDG', 'ZDW']; independent of 10 claims (ADJ, BAL, CDC, CRS, PUR…).
 
 
 ## The identity-collapse schedule
@@ -272,7 +288,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Certificate (exact (WL signatures on declared exhibits; probe-indexed rounds) — audited S45)*
 
 
-*Perspective visibility — IDC (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — IDC (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -292,10 +308,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Characteristic-break coincidence with ['CDC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger BAL–CDC:* separated-in-S_d0ede8d60ddb (41472 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
+*Separation ledger BAL–CDC:* separated-in-S_6c6856f4522f (165888 truth-separators); separated (adj; identical-frames) @ S_v2 (characteristic-break basis).
 
 
-*Perspective visibility — BAL (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — BAL (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -312,10 +328,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Characteristic-break coincidence with ['BAL'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger CDC–GCX:* separated-in-S_d0ede8d60ddb (27648 truth-separators); separated, 27648 truth — the sighting is not a restatement @ S_f117b7f53a8e (v3.5 first form, same caveat); separated, 27648 truth @ S_2738ddb8c926 (v3.5a).
+*Separation ledger CDC–GCX:* separated-in-S_6c6856f4522f (110592 truth-separators); separated, 27648 truth — the sighting is not a restatement @ S_f117b7f53a8e (v3.5 first form, same caveat); separated, 27648 truth @ S_2738ddb8c926 (v3.5a).
 
 
-*Perspective visibility — CDC (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — CDC (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -330,10 +346,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (guard)*
 
-*Separation ledger CRS–NOE:* separated-in-S_d0ede8d60ddb (55296 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
+*Separation ledger CRS–NOE:* separated-in-S_6c6856f4522f (221184 truth-separators); unseparated-in-S_v3 @ S_v3 (9 knobs, no basis_def); separated (basis_def='singular') @ S_v2 (characteristic-break basis + basis_def probe).
 
 
-*Perspective visibility — CRS (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — CRS (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -350,10 +366,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Characteristic-break coincidence with ['PR2', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger NVL–PUR:* separated-in-S_d0ede8d60ddb (3072 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
+*Separation ledger NVL–PUR:* separated-in-S_6c6856f4522f (12288 truth-separators); 6144 truth, HALF ARTIFACTUAL: NVL spuriously P on the L1 slice (adaptive bit split float noise around mass==1); corrected same-day, fingerprint widened to full module source @ S_8fecfdc135c8 (v3.4 FIRST run — FP-noise artifact in _nvl_two_gates, helper outside the then-fingerprint).
 
 
-*Perspective visibility — NVL (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — NVL (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -370,10 +386,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Characteristic-break coincidence with ['NVL', 'PRO', 'PUR'] (shared break in the dep digraph); separated in-space — see ledger.*
 
-*Separation ledger PR2–PRO:* separated-in-S_d0ede8d60ddb (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
+*Separation ledger PR2–PRO:* separated-in-S_6c6856f4522f (0 truth-separators); 0 truth-separators; 4096 kind-separators (PRO's guard keys on L1) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PR2 (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — PR2 (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -392,18 +408,18 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (guard)*
 
-*Verdict (S_d0ede8d60ddb, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 129024/129024 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
+*Verdict (S_6c6856f4522f, exhaustive): EXPRESSIBILITY-INTRINSIC — zero separators; co-movement 516096/516096 = 1.00; but PRO is never F anywhere in the space: a theorem, truth-stable wherever statable. Mutual constitution at the statability level, one-way at the truth level: interventions de-state the theorem rather than falsify it. ∀-over-declared-spaces; open-by-design.*
 
 *Frontier: a separator would require a pinning that fails to conflate equal-d states, or a model where PRO is statable yet false — excluded by arithmetic; residual openness at the TEST-FORMALIZATION stratum.*
 
 
-*Perspective visibility — PRO (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — PRO (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | V | P | V | P | P | P | P | P | P | P | P | P | P | P |
 
-*Perspective visibility — PUR (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — PUR (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -424,18 +440,18 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (analytic-points (3 probe values) + U-kinds)*
 
-*Verdict (S_d0ede8d60ddb, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 124416/124416 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
+*Verdict (S_6c6856f4522f, exhaustive): TRUTH-INTRINSIC — zero separators of any kind; co-movement 497664/497664 = 1.00. Closure-under-break: every perturbation breaks the loop coherently, with kind-structure inside the co-movement (e.g. noisy lock: U vs F). ∀-over-declared-spaces; strengthens with each space survived; never closes.*
 
 *Frontier: a separator would require a model with f != -id yet c == 0 on it, or f == -id with swap != constrained-negation — both excluded by the shared arithmetic of the current test semantics; residual openness lives at the TEST-FORMALIZATION stratum, not the knob-value stratum.*
 
 
-*Perspective visibility — L26 (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — L26 (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P | V | P | P | P | P | P | P | P | P | F | P | P | P | P | P |
 
-*Perspective visibility — LOC (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — LOC (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -455,7 +471,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Characteristic-break coincidence with ['L26', 'LOC'] (shared break in the dep digraph); separated in-space — see ledger.*
 
 
-*Perspective visibility — RLS (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — RLS (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -474,7 +490,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 *Certificate (guard + delegate(L26))*
 
 
-*Perspective visibility — T53 (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — T53 (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -489,10 +505,10 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 *Certificate (analytic-points (on/off locus, numpy exact))*
 
-*Separation ledger PHS–TWN:* separated-in-S_d0ede8d60ddb (2304 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
+*Separation ledger PHS–TWN:* separated-in-S_6c6856f4522f (4608 truth-separators); SEPARATED: 768 truth-separators (the phase is the twist AS SEEN AGAINST the section) @ S_94763a8b62ea (v3.3).
 
 
-*Perspective visibility — PHS (executed, S_d0ede8d60ddb configs):*
+*Perspective visibility — PHS (executed, S_6c6856f4522f configs):*
 
 | FULL | P1 | P2-I | CLASSICAL | PROB | NO-CODEC | NO-ANCHOR | ONE-OP | NO-NEG | SING-BASIS | NOISY-LOCK | CHAR-2 | SEDENION | SPHERE | MENTION | COMPLEX |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -517,7 +533,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 **The balance channel** [BAL] — A single pin's real component holds the balance of the evidence, read relative to its frame's identity element; conflict is inexpressible. *(Layer 1; §5.7)*
 
-**The braided V₄ (D₄)** [D4C] — Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id. *(Layer 0; Theorem 5.4, Remark 5.5; expr-intrinsic circle member)*
+**The braided V₄ (D₄)** [D4C] — Composed reading licenses the swap; ⟨negate-one, swap⟩ = D₄, the central extension of V₄ by the reversible twist [N,S] = −id. *(Layer 0; Theorem 5.4, Remark 5.5)*
 
 **The chart adjunction (exp ⊣ log)** [ADJ] — The two per-pin charts — semiring magnitudes and the signed line — form an adjoint equivalence; the codec pair whose round-trips are identities. *(Layer 0; §2, Lemma 2.5b)*
 
@@ -549,7 +565,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 **The third codec sighting** [GCX] — GALAXY's W ↔ ASPF's log-decode: the exponential codec is exact on the rank-sum quotient, and the quotient genuinely collides — GALAXY is a one-mode decode of the ASPF carrier. *(Layer 0; corpus-sweep §6 (S4); §5.8; expr-intrinsic circle member)*
 
-**The twist** [TWN] — The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2. *(Layer 0; §5.9, Theorem 5.4; expr-intrinsic circle member)*
+**The twist** [TWN] — The level conjugation pair anticommutes by a central, reversible sign — the cocycle of the doubling interface; trivial in characteristic 2. *(Layer 0; §5.9, Theorem 5.4)*
 
 **The two-gate theorem** [NVL] — Nedge's 4VL (confidence × consistency) and Belnap's chart (bias-sign × rail) are distinct four-cell gates on one carrier; either magnitude pinning degenerates the gate — a four-valued logic needs the unpinned pair. *(Layer 1; §4, §5.7e, nedge-decomposition §2/§6)*
 
@@ -557,7 +573,7 @@ Every claim below carries its fiber certificate, executed at generation time: th
 
 **The zero-divisor witness mode** [ZDW] — Pi-form: the kernel-mode schedule — det L_x locked to N^(d/2) through the octonions (kernel empty), unlocked at the sedenions (kernel inhabited, contained in norm-failure); the lock schedule IS the content. *(Layer 0; §5.9; theory-threads §14 (T2); expr-intrinsic circle member)*
 
-**The ∨E bridge** [NVE] — Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold. *(Layer 0; §5.7e; nedge-decomposition §8 (S8/S9); expr-intrinsic circle member)*
+**The ∨E bridge** [NVE] — Proof-by-cases is the single/double pin split/join expansion; the Wheatstone bridge reads the case-bias the join forgets; classical ∨E lives on the balance manifold. *(Layer 0; §5.7e; nedge-decomposition §8 (S8/S9))*
 
 
 # Cross-Reference Index (computed)
@@ -574,11 +590,11 @@ Every claim below carries its fiber certificate, executed at generation time: th
 | L26 | 1 | LOC, NOE, RLS, SWP | LOC, PHS, RLS, T53 | L26 ≡ LOC |
 | T53 | 2 | GCX, L26, LOC, NGL, NOE, RAD, RDW, RLS, SWF, SWP, TWN, V4I, ZDG, ZDW | — | — |
 | V4I | 0 | GCX, NGL, NOE, RAD, RDW, SWF, SWP, TWN, ZDG, ZDW | D4C, NGL, NVE, NVL, PHS, RLS, T53, TWN | NGL ≡ V4I |
-| D4C | 0 | GCX, NGL, NOE, NVE, RAD, RDW, SWF, SWP, TWN, V4I, ZDG, ZDW | NVE, NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ NVE ≡ TWN |
+| D4C | 0 | GCX, NGL, NOE, NVE, RAD, RDW, SWF, SWP, TWN, V4I, ZDG, ZDW | NVE, NVL, PHS, PR2, PRO, PUR, TWN | — |
 | PHS | 2 | D4C, GCX, L26, LOC, NGL, NOE, NVE, RAD, RDW, RLS, SWF, SWP, TWN, V4I, ZDG, ZDW | — | — |
 | RLS | 1 | GCX, L26, LOC, NGL, NOE, RAD, RDW, SWF, SWP, TWN, V4I, ZDG, ZDW | L26, LOC, PHS, T53 | — |
 | NOE | 0 | SWP | CRS, D4C, L26, LOC, NGL, NVE, NVL, PHS, PR2, PRO, PUR, RLS, SWF, SWP, T53, TWN, V4I | — |
-| TWN | 0 | D4C, GCX, NGL, NOE, NVE, RAD, RDW, SWF, SWP, V4I, ZDG, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWF, SWP, T53, V4I, ZDG, ZDW | D4C ≡ NVE ≡ TWN |
+| TWN | 0 | D4C, GCX, NGL, NOE, NVE, RAD, RDW, SWF, SWP, V4I, ZDG, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWF, SWP, T53, V4I, ZDG, ZDW | — |
 | RAD | 0 | GCX, NGL, RDW, SWF, TWN, ZDG, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RDW, RLS, SWF, SWP, T53, TWN, V4I, ZDG, ZDW | GCX ≡ RAD ≡ RDW ≡ ZDG ≡ ZDW |
 | ZDG | 0 | GCX, NGL, RAD, RDW, SWF, TWN, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWF, SWP, T53, TWN, V4I, ZDW | GCX ≡ RAD ≡ RDW ≡ ZDG ≡ ZDW |
 | PR2 | 1 | D4C, NOE, NVE, NVL, PRO, PUR, SWP | NVL | — |
@@ -587,9 +603,9 @@ Every claim below carries its fiber certificate, executed at generation time: th
 | IDC | 0 | — | — | — |
 | GCX | 0 | NGL, RAD, RDW, SWF, TWN, ZDG, ZDW | D4C, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWF, SWP, T53, TWN, V4I, ZDG, ZDW | GCX ≡ RAD ≡ RDW ≡ ZDG ≡ ZDW |
 | SWP | 0 | GCX, NGL, NOE, RAD, RDW, SWF, TWN, ZDG, ZDW | CRS, D4C, L26, LOC, NGL, NOE, NVE, NVL, PHS, PR2, PRO, PUR, RLS, SWF, T53, TWN, V4I | — |
-| NVE | 0 | D4C, GCX, NGL, NOE, RAD, RDW, SWF, SWP, TWN, V4I, ZDG, ZDW | D4C, NVL, PHS, PR2, PRO, PUR, TWN | D4C ≡ NVE ≡ TWN |
+| NVE | 0 | D4C, GCX, NGL, NOE, RAD, RDW, SWF, SWP, TWN, V4I, ZDG, ZDW | D4C, NVL, PHS, PR2, PRO, PUR, TWN | — |
 | RDW | 0 | GCX, NGL, RAD, SWF, TWN, ZDG, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RLS, SWF, SWP, T53, TWN, V4I, ZDG, ZDW | GCX ≡ RAD ≡ RDW ≡ ZDG ≡ ZDW |
 | ZDW | 0 | GCX, NGL, RAD, RDW, SWF, TWN, ZDG | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWF, SWP, T53, TWN, V4I, ZDG | GCX ≡ RAD ≡ RDW ≡ ZDG ≡ ZDW |
 | SWF | 0 | GCX, NGL, NOE, RAD, RDW, SWP, TWN, ZDG, ZDW | D4C, GCX, NGL, NVE, NVL, PHS, RAD, RDW, RLS, SWP, T53, TWN, V4I, ZDG, ZDW | — |
 
-*Independence count: 195 of 351 pairs carry no dependence in either direction (S_d0ede8d60ddb).*
+*Independence count: 195 of 351 pairs carry no dependence in either direction (S_6c6856f4522f).*

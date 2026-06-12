@@ -844,3 +844,15 @@ up, with the registry entry asserted against the mathematics. First
 run corrected the circle ontology itself: {D4C,TWN} is the verdict
 circle (NVE out; ZDG out of the RAD family circle) — dep-groups and
 verdict-circles are distinct partitions that prose had merged.
+
+### 21b. (W19) Admission: the rung-2 separator becomes a knob
+
+The class-space stopped being "a probe space one rung up" in
+metaphor and became one in mechanism: extclass admitted to the model
+space from the rung-2 correction event, D4C breaking (F) on abelian
+classes while NVE de-states (V) off the realized class — the same
+knob exercising truth-breaking and statability-breaking on different
+claims, per content. The circle's biography across four spaces is
+now a ledger object. General lesson: a rung-2 separation is not an
+endpoint; it is a knob-admission candidate, and the admission is
+what makes the higher-rung distinction behaviorally reachable.
