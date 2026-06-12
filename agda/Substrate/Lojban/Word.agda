@@ -34,6 +34,7 @@ module Substrate.Lojban.Word (Gismu : Set) where
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc; ++-identity-left; ++-identity-right)
+open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (MonoidOn)
 
 ------------------------------------------------------------------------
 -- 1. LojbanWord : a word over the gismu generator alphabet.
@@ -95,3 +96,25 @@ free-merge-identity-left = ++-identity-left
 free-merge-identity-right :
   (w : LojbanWord) → free-merge w ε ≡ w
 free-merge-identity-right = ++-identity-right
+
+------------------------------------------------------------------------
+-- 6. GROUNDED: (LojbanWord, free-merge, ε) IS a substrate-named `MonoidOn`
+-- (Category.FreeUniversalProperty.FreeMonoid) — the morphology free monoid,
+-- an instance of the word-algebra center's free-monoid (cf. `word-monoid`
+-- for any `Word Gen`). The bare laws above witness the named primitive.
+--
+-- Lojban-note: this is the MORPHOLOGY layer only — words as free gismu
+-- sequences. Lojban's LOGIC (the 16 Boolean connectives of the A/JA/GIhA/GUhA
+-- selma'o, the bridi predication, the Cartesian-closed structure) lives in
+-- Bridi / AsCCC / Cmavo, not here; rafsi-merge quotients this free monoid at
+-- L4 (Lujvo). Free monoid is the correct primitive for L2.
+------------------------------------------------------------------------
+
+free-merge-MonoidOn : MonoidOn LojbanWord
+free-merge-MonoidOn = record
+  { ε       = ε
+  ; _∙_     = free-merge
+  ; ∙-assoc = free-merge-assoc
+  ; ε-left  = free-merge-identity-left
+  ; ε-right = free-merge-identity-right
+  }
