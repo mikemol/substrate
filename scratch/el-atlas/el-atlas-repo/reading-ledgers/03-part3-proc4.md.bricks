@@ -5,8 +5,8 @@ H2 67-132 DONE
 Q1 1-33 DONE-FRESH 2026-06-11 (zero-yield; diff below)
 M 34-99 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 100-132 DONE-FRESH 2026-06-11 (diff below)
-A 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-B 34-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-99 DONE-FRESH 2026-06-11 (W5; diff below)
+B 34-132 DONE-FRESH 2026-06-11 (W5; diff below)
 A2 1-99 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B2 34-132 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 
@@ -189,3 +189,37 @@ arrival), evidence the M-layer pays when performed.
 ## elsewhere -> the SelfContainmentAssertion is the violated claim
 ## instead. Either branch preserves a finding. v2.22 pre-registration
 ## stands.
+
+## A fresh-pass capture-diff (lines 1-99) — W5
+- NEW SYNTHESIS: THE IMPERATIVES ARE FORK-INVARIANT — 1.2.2 mandates
+  grammar bifurcation past terminal limits; 2.1.1 declares the
+  Categorical Imperatives global "without exception": the ethics
+  layer is the sub-grammar that survives every fork. Thread-20
+  vocabulary: the imperatives are the declared stable homology
+  classes of the grammar lineage — the source's imperatives are what
+  the atlas's circles are.
+- NEW SYNTHESIS: TWO-TIER RULE SYSTEM — Categorical Imperatives
+  (fork/context-invariant) vs Contextual Sensitivity (2.2.2,
+  functor-updated pruning): a constitutional layer over an adaptive
+  layer. The atlas's charter/stance split, in source.
+- COC-5 SHARPENED: 1.3.3 (entropy-aware transitions) and 2.2.2 are
+  part 3's ONLY world-couplings, and both route through the
+  WorldModelFunctor — whose verification method is the undefined
+  Functorial_Integrity_Check. The dangling method guards the entire
+  world interface, not a corner case.
+## B fresh-pass capture-diff (lines 34-132) — W5
+- NEW: DOUBLE-LOCK ON SELF-DECAPITATION — 2.1.1.beta (pruning must
+  not prune the KernelProver) and the audit's Axiomatic Dependency
+  (Governor tied to QuiescenceProof, "cannot suicide") are the same
+  constraint secured TWICE by different mechanisms; the B-window
+  holds both. The most catastrophic failure gets redundant locks.
+- NEW: SAFETY AS INVARIANCE — DynamicalSystemDef's Invariance proof
+  read against the pruned SPPF + actuator inability (2.1.3): the
+  un-pruned region is a FLOW-INVARIANT SET; exit-productions do not
+  parse, so the safe region cannot be left. Phase-3 machinery
+  proving the Phase-3.5 filter.
+- NOTE: enforcement mesh — Watchdog detects at LEAF level and
+  propagates BOTTOM-? upward; 2.1.1.alpha requires pruning-rule
+  reachability from every non-terminal downward: bottom-up detection
+  under top-down coverage.
+- HONEST REMAINDER: all else matched prior captures.
