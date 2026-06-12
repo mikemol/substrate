@@ -5,8 +5,8 @@ H2 69-136 DONE
 Q1 1-34 DONE-FRESH 2026-06-11 (diff below)
 M 35-102 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 103-136 DONE-FRESH 2026-06-11 (diff below)
-A 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-B 35-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-102 DONE-FRESH 2026-06-11 (W5; diff below)
+B 35-136 DONE-FRESH 2026-06-11 (W5; diff below)
 A2 1-102 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B2 35-136 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 
@@ -176,3 +176,39 @@ arrival), evidence the M-layer pays when performed.
   intuitionism. Carried as candidate; treatise did not address it.
 - VERDICT: 2 recovered drops + 1 new cocycle candidate. Q-layer
   paying at M-layer rates.
+
+## A fresh-pass capture-diff (lines 1-102) — W5
+- NEW: "SUBORNING TIME to the requirements of completeness and
+  recursive depth" (line 3) — the source's tempo doctrine, never
+  previously captured: completeness outranks schedule. GLU: the brick
+  protocol's redundancy purchase; tonight's entire M/Q/A re-execution
+  arc is this doctrine practiced.
+- NEW SYNTHESIS (A-window adjacency): the OBSERVABILITY DUAL —
+  Auditability (1.1.2: full production-rule trace for every permitted
+  action) against Error Masking (1.3.2: uniform "Unknown" for every
+  denial) is one designed policy: full witness inside the permit
+  region, deliberate quotient outside it. Witnesses exist exactly
+  where parse-paths exist — the statability boundary deployed as
+  security observability.
+- NEW SYNTHESIS (A-window spans the phase seam): Axiom_Integrity
+  re-parses the Process-List at every clock-terminal; twenty lines
+  later, induction = structural recursion over NaturalGrammar.
+  SYSTEM INTEGRITY IS INDUCTION OVER RUNTIME STATE — the same
+  recursion scheme at two strata (kernel loop / arithmetic), visible
+  only with both blocks in one window.
+- RESIDUE: first A-print elided lines 46-82 with a "[...]" marker —
+  the source's own named Flaw (Conceptual Shortcut), committed inside
+  the protocol that read it; caught immediately, repaired by full
+  print. The economizing instinct survives two corrections; the
+  ledger now holds three instances.
+
+## B fresh-pass capture-diff (lines 35-136) — W5
+- NEW (B-window adjacency): THE AUDIT ASYMMETRY — the same Meticulous
+  Audit tightens and loosens in adjacent bullets: the Elision
+  Correction demands terminal witnesses for Associativity while the
+  Foundationalism Correction introduces classical full-LUB under an
+  intuitionism claim (COC-4's origin). One window shows the
+  self-audit's two corrections moving in opposite directions.
+- HONEST REMAINDER: all other B-window content matched prior captures
+  (IntegerDef, RealDef, NaturalGrammar, turn prompt) — zero further
+  yield, reported as such.
