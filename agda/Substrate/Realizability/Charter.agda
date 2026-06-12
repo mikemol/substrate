@@ -54,6 +54,7 @@ open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Foundation.Sum     using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Nat     using (ℕ)
 open import Substrate.Foundation.Fin     using (Fin; zero; suc)
+open import Substrate.Category.CategoryOf using (CategoryOf)
 
 ------------------------------------------------------------------------
 -- 0.  The atomic substructure: Bool reflection (∧ for §4, ∨ for §5).
@@ -330,6 +331,23 @@ infixr 5 _++ᵖ_
           → ((p ++ᵖ q) ++ᵖ r) ≡ (p ++ᵖ (q ++ᵖ r))
 ++ᵖ-assoc []      q r = refl
 ++ᵖ-assoc (x ∷ p) q r = cong (x ∷_) (++ᵖ-assoc p q r)
+
+-- GROUNDED: the witness-composition structure above IS a substrate-named
+-- `Category.CategoryOf` — objects = ℕ boundary tags, morphisms = audited
+-- Pipe s t, identity = [], composition = ++ᵖ. This makes §7's own "a free
+-- category; the gate chain is the one-object specialisation" prose
+-- load-bearing: the thin-category laws (idˡ/idʳ/assoc) witness the named
+-- primitive. (compose g f = f ++ᵖ g, so left-id/right-id pair with idʳ/idˡ.)
+WitnessCategory : CategoryOf
+WitnessCategory = record
+  { Obj      = ℕ
+  ; Mor      = Pipe
+  ; id       = λ _ → []
+  ; compose  = λ g f → f ++ᵖ g
+  ; left-id  = ++ᵖ-idʳ
+  ; right-id = ++ᵖ-idˡ
+  ; assoc    = ++ᵖ-assoc
+  }
 
 ------------------------------------------------------------------------
 -- 8.  Lemma 4.3 (determinism ⇒ replayability).
