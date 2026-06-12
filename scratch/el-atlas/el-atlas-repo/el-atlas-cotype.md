@@ -3175,3 +3175,28 @@ doctrine's OS-stratum ancestor therefore predates tonight by one to
 two YEARS: we did not parallel-invent it so much as converge on a
 design the lineage already held. Graded: author testimony +
 consistent in-document markers.
+
+
+## S53 (W8): A2/B2 COMPLETE FOR PARTS 2-3 — THE REPEAT LAYER
+## VINDICATED; THE SEAM MIGRATES; TWO KINDS OF TRANSMISSION LOSS
+The decay-spaced repeat layers, executed with v2.22 priors, produced
+findings the first passes structurally could not reach — the design
+argument for A2/B2 (changed reader, not just elapsed time) is now
+empirically supported on both documents. Part 2: air-gapped logic is
+COC-4's missed exit (the system owned the pluralism it failed to
+invoke); registered prediction CONFIRMED — ComplexDef absent and
+unreferenced, establishing EDGE-RETAINED vs EDGE-FREE transmission
+loss, with the artifact's self-verification constitutionally blind
+to the silent kind; version-up/content-down on the number-systems
+edition; differential iteration rates confirmed against the actual
+ancestor. Part 3: the two-tier rule split exactly partitions the
+COC-5 exposure (adaptive tier through the unverified functor,
+constitutional tier insulated); THE SEAM MIGRATES — one undefined
+verification boundary per lineage snapshot, ethics-side in v2.22,
+world-side in v2.37.1: revision relocated incompleteness rather
+than discharging it. Registered questions riding: kernel-prover
+version in v2.22 (frozen-verifier hypothesis); control-theory
+presence in v2.22. Parts 4/treatise A2/B2: their A/B were
+POST-flush (this window) — their decay condition is NOT met;
+deferred to the next window by the same rule that ripened these.
+W8 closes here.
