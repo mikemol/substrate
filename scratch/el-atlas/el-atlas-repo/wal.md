@@ -61,3 +61,5 @@ END W15 2026-06-11 :: audit complete — NEXT.md rewritten, lineage-map elisions
 BEGIN W16 2026-06-11 pre=5308649 :: micro-move — S60a correcting S57a: the evidential axis WAS already in nedge-decomposition.md (line 55, graded [S] iso / [W] lift, lineage stated); the W15 grep printed after the erratum committed; sequencing error ledgered
   expect: cotype S60a, END W16
 END W16 2026-06-11 :: S60a filed; intern consistent at S0-S60a :: head=fc0c815 :: artifacts=el-atlas-cotype.md
+BEGIN W17 2026-06-11 pre=24f5063 :: integration move — promote nodded-at findings to COMPUTED: (a) rung-2 stratum in the instrument (H2(V4,Z2) enumeration in-run; per-circle rung-2 separation attempted; registered {TWN,D4C} relation ASSERTED against the computation, making the registry load-bearing); (b) reference-closure check on the registry (the W8 edge-retained-loss lesson applied to ourselves: every claim code named in WITNESS_RELATIONS must exist). Bump v3.9.0 (new computed stratum, not registry text).
+  expect: patched instrument, run txt, regen, cotype S61, thread-21 update, END W17
