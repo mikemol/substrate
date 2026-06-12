@@ -55,3 +55,6 @@ END W13 2026-06-11 :: proof tier opened — VerdictCrossbar.agda checked clean (
 BEGIN W14 2026-06-11 pre=c0e021d :: WAL doctrine upgrade (v2.22 TransactionLogEntryDef parallel, S55): BEGIN lines now record pre=<sha> so every move's exact delta is recoverable as pre..head; wal-check gains check (5): each pre must be an ancestor of its move's END head. Convention forward-only; historical moves without pre= tolerated.
   expect: patched tools/wal-check.py, cotype S59, END W14
 END W14 2026-06-11 :: pre-delta convention live; wal-check check (5) active and passing :: head=cf3ba08 :: artifacts=tools/wal-check.py
+BEGIN W15 2026-06-11 pre=d9d146a :: intern-audit — sweep all structural surfaces (NEXT.md, margin chart, lineage-map, recovered/, theory-threads, registry, cotype tail) against W10-W14 findings; repair staleness and any elisions found; the question is whether anything lives only in conversational context
+  expect: audit verdicts per surface, repairs committed, cotype S60, END W15
+END W15 2026-06-11 :: audit complete — NEXT.md rewritten, lineage-map elisions repaired (violation #5 ledgered), S57a erratum filed, Nedge-Agda proof tier discovered through the repair; all surfaces consistent :: head=d9d146a :: artifacts=NEXT.md,recovered/lineage-map.md
