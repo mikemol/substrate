@@ -43,3 +43,47 @@ xor-assoc false true  true  = refl
 xor-assoc false true  false = refl
 xor-assoc false false true  = refl
 xor-assoc false false false = refl
+
+------------------------------------------------------------------------
+-- ∧ / ∨ semilattice laws. Added for the dual-rail evidence connectives
+-- (Substrate.Logic.Evidence.Verdict.Connectives), which lift each rail's
+-- Bool operations; reusable for any F₂ / Boolean lattice structure.
+-- `_∧_` and `_∨_` match on their first argument, so assoc and identityʳ
+-- need only split that one (b, c stay free).
+------------------------------------------------------------------------
+
+∧-comm : (a b : Bool) → a ∧ b ≡ b ∧ a
+∧-comm true  true  = refl
+∧-comm true  false = refl
+∧-comm false true  = refl
+∧-comm false false = refl
+
+∨-comm : (a b : Bool) → a ∨ b ≡ b ∨ a
+∨-comm true  true  = refl
+∨-comm true  false = refl
+∨-comm false true  = refl
+∨-comm false false = refl
+
+∧-assoc : (a b c : Bool) → (a ∧ b) ∧ c ≡ a ∧ (b ∧ c)
+∧-assoc true  b c = refl
+∧-assoc false b c = refl
+
+∨-assoc : (a b c : Bool) → (a ∨ b) ∨ c ≡ a ∨ (b ∨ c)
+∨-assoc true  b c = refl
+∨-assoc false b c = refl
+
+∧-idem : (a : Bool) → a ∧ a ≡ a
+∧-idem true  = refl
+∧-idem false = refl
+
+∨-idem : (a : Bool) → a ∨ a ≡ a
+∨-idem true  = refl
+∨-idem false = refl
+
+∧-identityʳ : (a : Bool) → a ∧ true ≡ a
+∧-identityʳ true  = refl
+∧-identityʳ false = refl
+
+∨-identityʳ : (a : Bool) → a ∨ false ≡ a
+∨-identityʳ true  = refl
+∨-identityʳ false = refl

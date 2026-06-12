@@ -27,7 +27,7 @@
 
 module Substrate.Logic.Evidence.Verdict where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_)
 open import Substrate.Foundation.Eq   using (_≡_; _≢_)
 
 ------------------------------------------------------------------------
@@ -65,6 +65,59 @@ swapV P = F
 swapV F = P
 swapV U = U
 swapV V = V
+
+------------------------------------------------------------------------
+-- The connectives — the "joiners" (el-atlas §1, §5, §6). The carrier is
+-- two INDEPENDENT accumulators (Law 1.3): each connective acts rail-wise,
+-- never reading one rail while writing the other. Two orders, each a
+-- meet/join pair:
+--
+--   * truth order — ∧E (meet) / ∨E (join): the §5/§6 connectives that
+--     De Morgan (= notE = swapE) EXCHANGES (Theorem 5.2). Bounds ⊤t/⊥t.
+--   * info  order — ⊗E (consensus) / ⊕E (accumulate): the §1 independent
+--     accumulators; De Morgan PRESERVES them (the twist-structure). ⊤k/⊥k.
+--
+-- Discrete (Bool²) shadow of §6's log-linked semiring; the continuous
+-- AND ~ log-product / OR ~ log-sum-exp lift is out of scope for the proof
+-- tier. Hosted here, with the carrier they act on (carrier-locality
+-- policy; cf. Foundation.Bool = Bool with its ∧/∨/not). The laws —
+-- De Morgan, twist, the semilattice laws, and the Remark 6.2 non-collapse
+-- — live in .Properties.
+------------------------------------------------------------------------
+
+infixr 7 _∧E_ _⊗E_
+infixr 6 _∨E_ _⊕E_
+
+-- truth meet: support needs BOTH, opposition needs EITHER
+_∧E_ : Evidence → Evidence → Evidence
+⟨ pa , na ⟩ ∧E ⟨ pb , nb ⟩ = ⟨ pa ∧ pb , na ∨ nb ⟩
+
+-- truth join: support needs EITHER, opposition needs BOTH
+_∨E_ : Evidence → Evidence → Evidence
+⟨ pa , na ⟩ ∨E ⟨ pb , nb ⟩ = ⟨ pa ∨ pb , na ∧ nb ⟩
+
+-- info join (accumulate): independently OR each rail (§1 accumulators)
+_⊕E_ : Evidence → Evidence → Evidence
+⟨ pa , na ⟩ ⊕E ⟨ pb , nb ⟩ = ⟨ pa ∨ pb , na ∨ nb ⟩
+
+-- info meet (consensus): independently AND each rail
+_⊗E_ : Evidence → Evidence → Evidence
+⟨ pa , na ⟩ ⊗E ⟨ pb , nb ⟩ = ⟨ pa ∧ pb , na ∧ nb ⟩
+
+-- NOT is the pin-swap (Theorem 5.2 / §6.1): reverses the truth order
+-- (exchanging ∧E / ∨E), preserves the information order.
+notE : Evidence → Evidence
+notE = swapE
+
+-- The two orders' bounds (the four corners). ⊤t/⊥t are the ∧E/∨E units;
+-- ⊤k/⊥k the ⊗E/⊕E units. As values these coincide with the probe points
+-- below (⊤t = eP, ⊥t = eF, ⊤k = eU) — the lattice-bound names for the
+-- same corners.
+⊤t ⊥t ⊤k ⊥k : Evidence
+⊤t = ⟨ true  , false ⟩   -- truth top    (P-corner: pass)
+⊥t = ⟨ false , true  ⟩   -- truth bottom (F-corner: fail)
+⊤k = ⟨ true  , true  ⟩   -- info  top    (U-corner: both)
+⊥k = ⟨ false , false ⟩   -- info  bottom (V-corner: neither)
 
 ------------------------------------------------------------------------
 -- Constructor apartness of the four verdicts. Trivial absurdity proofs

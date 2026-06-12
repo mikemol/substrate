@@ -13,6 +13,11 @@
 --
 -- commutes.  Every case holds by refl after δ-reduction through
 -- `verdict`/`swapE`/`swapV`.
+--
+-- Also: the laws of the connectives (the joiners, defined with the carrier
+-- in `Verdict`): De Morgan (Theorem 5.2), the twist-structure, the
+-- semilattice laws, and the Remark 6.2 "two operations are forced"
+-- non-collapse.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -20,7 +25,10 @@
 module Substrate.Logic.Evidence.Verdict.Properties where
 
 open import Substrate.Foundation.Bool using (true; false)
-open import Substrate.Foundation.Eq   using (_≡_; refl)
+open import Substrate.Foundation.Bool.Properties
+  using (∧-comm; ∨-comm; ∧-assoc; ∨-assoc; ∧-idem; ∨-idem; ∧-identityʳ; ∨-identityʳ)
+open import Substrate.Foundation.Eq
+  using (_≡_; _≢_; refl; sym; cong; cong₂)
 
 open import Substrate.Logic.Evidence.Verdict
 
@@ -46,3 +54,83 @@ intertwine ⟨ true  , false ⟩ = refl
 intertwine ⟨ false , true  ⟩ = refl
 intertwine ⟨ true  , true  ⟩ = refl
 intertwine ⟨ false , false ⟩ = refl
+
+------------------------------------------------------------------------
+-- Theorem 5.2 / §6.1 — De Morgan: notE exchanges the truth connectives
+-- ∧E ↔ ∨E. Pure rail-permutation, hence refl.
+------------------------------------------------------------------------
+
+deMorgan-∧∨ : (a b : Evidence) → notE (a ∧E b) ≡ notE a ∨E notE b
+deMorgan-∧∨ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
+
+deMorgan-∨∧ : (a b : Evidence) → notE (a ∨E b) ≡ notE a ∧E notE b
+deMorgan-∨∧ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
+
+------------------------------------------------------------------------
+-- Twist-structure: notE PRESERVES the info connectives (it reverses the
+-- truth order, but not the information order).
+------------------------------------------------------------------------
+
+notE-⊕ : (a b : Evidence) → notE (a ⊕E b) ≡ notE a ⊕E notE b
+notE-⊕ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
+
+notE-⊗ : (a b : Evidence) → notE (a ⊗E b) ≡ notE a ⊗E notE b
+notE-⊗ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
+
+------------------------------------------------------------------------
+-- Semilattice laws (commutative idempotent monoids). cong₂ on the rails.
+------------------------------------------------------------------------
+
+∧E-comm : (a b : Evidence) → a ∧E b ≡ b ∧E a
+∧E-comm ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = cong₂ ⟨_,_⟩ (∧-comm pa pb) (∨-comm na nb)
+
+∨E-comm : (a b : Evidence) → a ∨E b ≡ b ∨E a
+∨E-comm ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = cong₂ ⟨_,_⟩ (∨-comm pa pb) (∧-comm na nb)
+
+⊕E-comm : (a b : Evidence) → a ⊕E b ≡ b ⊕E a
+⊕E-comm ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = cong₂ ⟨_,_⟩ (∨-comm pa pb) (∨-comm na nb)
+
+⊗E-comm : (a b : Evidence) → a ⊗E b ≡ b ⊗E a
+⊗E-comm ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = cong₂ ⟨_,_⟩ (∧-comm pa pb) (∧-comm na nb)
+
+∧E-assoc : (a b c : Evidence) → (a ∧E b) ∧E c ≡ a ∧E (b ∧E c)
+∧E-assoc ⟨ pa , na ⟩ ⟨ pb , nb ⟩ ⟨ pc , nc ⟩ =
+  cong₂ ⟨_,_⟩ (∧-assoc pa pb pc) (∨-assoc na nb nc)
+
+∨E-assoc : (a b c : Evidence) → (a ∨E b) ∨E c ≡ a ∨E (b ∨E c)
+∨E-assoc ⟨ pa , na ⟩ ⟨ pb , nb ⟩ ⟨ pc , nc ⟩ =
+  cong₂ ⟨_,_⟩ (∨-assoc pa pb pc) (∧-assoc na nb nc)
+
+∧E-idem : (a : Evidence) → a ∧E a ≡ a
+∧E-idem ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∧-idem pa) (∨-idem na)
+
+∨E-idem : (a : Evidence) → a ∨E a ≡ a
+∨E-idem ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∨-idem pa) (∧-idem na)
+
+-- units: ⊤t (= P) is the ∧E identity; ⊥t (= F) is the ∨E identity.
+∧E-identityʳ : (a : Evidence) → a ∧E ⊤t ≡ a
+∧E-identityʳ ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∧-identityʳ pa) (∨-identityʳ na)
+
+∨E-identityʳ : (a : Evidence) → a ∨E ⊥t ≡ a
+∨E-identityʳ ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∨-identityʳ pa) (∧-identityʳ na)
+
+------------------------------------------------------------------------
+-- Remark 6.2 — the two truth operations are GENUINELY DIFFERENT. A single
+-- operation under inversion is self-dual and collapses the ∧/∨ distinction
+-- (Theorem 5.3(2)), leaving De Morgan nothing to exchange; the semiring is
+-- the minimum structure under which NOT has something to swap. Witnessed
+-- on the (P, F) probe — the same distinct-verdict pair that drives
+-- NoCollapse: ⊤t ∧E ⊥t = ⊥t (F) but ⊤t ∨E ⊥t = ⊤t (P).
+------------------------------------------------------------------------
+
+∧E≢∨E : (⊤t ∧E ⊥t) ≢ (⊤t ∨E ⊥t)
+∧E≢∨E eq = P≢F (sym (cong verdict eq))
+
+------------------------------------------------------------------------
+-- The verdict-level reading of NOT is exactly the crossbar intertwining
+-- (notE ≡ swapE on the nose) — the joiners and the crossbar are the same
+-- negation.
+------------------------------------------------------------------------
+
+verdict-notE : (a : Evidence) → verdict (notE a) ≡ swapV (verdict a)
+verdict-notE = intertwine
