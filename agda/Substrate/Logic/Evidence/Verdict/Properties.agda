@@ -28,7 +28,8 @@ open import Substrate.Foundation.Bool using (true; false)
 open import Substrate.Foundation.Bool.Properties
   using (∧-comm; ∨-comm; ∧-assoc; ∨-assoc; ∧-idem; ∨-idem; ∧-identityʳ; ∨-identityʳ)
 open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; cong; cong₂)
+  using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
+open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Verdict
 
@@ -113,6 +114,56 @@ notE-⊗ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
 
 ∨E-identityʳ : (a : Evidence) → a ∨E ⊥t ≡ a
 ∨E-identityʳ ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∨-identityʳ pa) (∧-identityʳ na)
+
+-- the info pair ⊕E (accumulate) / ⊗E (consensus): assoc + units (⊥k = V for
+-- ⊕E, ⊤k = U for ⊗E), so they too are commutative monoids.
+⊕E-assoc : (a b c : Evidence) → (a ⊕E b) ⊕E c ≡ a ⊕E (b ⊕E c)
+⊕E-assoc ⟨ pa , na ⟩ ⟨ pb , nb ⟩ ⟨ pc , nc ⟩ =
+  cong₂ ⟨_,_⟩ (∨-assoc pa pb pc) (∨-assoc na nb nc)
+
+⊗E-assoc : (a b c : Evidence) → (a ⊗E b) ⊗E c ≡ a ⊗E (b ⊗E c)
+⊗E-assoc ⟨ pa , na ⟩ ⟨ pb , nb ⟩ ⟨ pc , nc ⟩ =
+  cong₂ ⟨_,_⟩ (∧-assoc pa pb pc) (∧-assoc na nb nc)
+
+⊕E-identityʳ : (a : Evidence) → a ⊕E ⊥k ≡ a
+⊕E-identityʳ ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∨-identityʳ pa) (∨-identityʳ na)
+
+⊗E-identityʳ : (a : Evidence) → a ⊗E ⊤k ≡ a
+⊗E-identityʳ ⟨ pa , na ⟩ = cong₂ ⟨_,_⟩ (∧-identityʳ pa) (∧-identityʳ na)
+
+------------------------------------------------------------------------
+-- GROUNDED: each joiner IS a substrate-named `Category.CommutativeMonoid` —
+-- the bilattice is four commutative monoids on the Evidence carrier. The
+-- bare laws above witness the named primitives; identityˡ = comm ∘ identityʳ.
+------------------------------------------------------------------------
+
+∧E-CommutativeMonoid : CommutativeMonoid _
+∧E-CommutativeMonoid = record
+  { R = Evidence ; _+R_ = _∧E_ ; 0R = ⊤t
+  ; +R-assoc = ∧E-assoc
+  ; +R-identityˡ = λ a → trans (∧E-comm ⊤t a) (∧E-identityʳ a)
+  ; +R-identityʳ = ∧E-identityʳ ; +R-comm = ∧E-comm }
+
+∨E-CommutativeMonoid : CommutativeMonoid _
+∨E-CommutativeMonoid = record
+  { R = Evidence ; _+R_ = _∨E_ ; 0R = ⊥t
+  ; +R-assoc = ∨E-assoc
+  ; +R-identityˡ = λ a → trans (∨E-comm ⊥t a) (∨E-identityʳ a)
+  ; +R-identityʳ = ∨E-identityʳ ; +R-comm = ∨E-comm }
+
+⊕E-CommutativeMonoid : CommutativeMonoid _
+⊕E-CommutativeMonoid = record
+  { R = Evidence ; _+R_ = _⊕E_ ; 0R = ⊥k
+  ; +R-assoc = ⊕E-assoc
+  ; +R-identityˡ = λ a → trans (⊕E-comm ⊥k a) (⊕E-identityʳ a)
+  ; +R-identityʳ = ⊕E-identityʳ ; +R-comm = ⊕E-comm }
+
+⊗E-CommutativeMonoid : CommutativeMonoid _
+⊗E-CommutativeMonoid = record
+  { R = Evidence ; _+R_ = _⊗E_ ; 0R = ⊤k
+  ; +R-assoc = ⊗E-assoc
+  ; +R-identityˡ = λ a → trans (⊗E-comm ⊤k a) (⊗E-identityʳ a)
+  ; +R-identityʳ = ⊗E-identityʳ ; +R-comm = ⊗E-comm }
 
 ------------------------------------------------------------------------
 -- Remark 6.2 — the two truth operations are GENUINELY DIFFERENT. A single
