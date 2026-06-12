@@ -33,3 +33,4 @@ BEGIN W6 2026-06-11 :: acquire SYSTEM Pi v2.22 (Drive doc 10GrDUQdXh_uLc-bUGBiuX
 END W6 2026-06-11 :: targets: (c) resolved (transmission loss), (a) advanced (born dangling, truncation-bounded), (b) open (tail); seal stratigraphy + univalence fossil banked; DEVIATION: full snapshot not persisted (truncated fetch), extracts+provenance instead :: head=60b175d :: artifacts=recovered/system-pi-v2.22/PROVENANCE-NOTE.md,recovered/system-pi-v2.22/EXTRACTS.md
 BEGIN W7 2026-06-11 :: erratum S52a — reversibility-machinery dating (emission-date vs content-date conflation; author correction)
   expect: cotype S52a, EXTRACTS.md dating note, END W7
+END W7 2026-06-11 :: erratum committed :: head=0e145a5 :: artifacts=recovered/system-pi-v2.22/EXTRACTS.md

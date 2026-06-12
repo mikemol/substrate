@@ -3158,3 +3158,20 @@ ACQUISITION RESIDUE: fetch truncated; full snapshot NOT persisted
 (transcribing from held context rejected as a held-context hazard);
 Drive canonical; EXTRACTS.md carries verbatim load-bearing lines;
 all negative findings retrieved-portion-relative.
+
+
+## S52a: ERRATUM (AUTHOR) — THE REVERSIBILITY DESIGN IS YEARS OLD,
+## NOT MONTHS; EMISSION-DATE/CONTENT-DATE CONFLATION NAMED
+I dated the dagger-reversibility + delta-log design "months before
+tonight" from its carrier's 2025-07-24 timestamp. The author: early
+2025 or even 2024. The carrier SAYS it is a re-emission ("generated
+again"); the relevant mandate is already in a historical-artifacts
+library at v2.22; the mandate chain reaches MIMEAdoptionDirective
+2024-05-21. MECHANISM OF ERROR: dating an idea by the emission
+timestamp of its carrier — precisely the conflation the provenance
+stratum (S35) and the temporal-composite doctrine (S52) exist to
+prevent, committed in the same turn that invoked them. The WAL
+doctrine's OS-stratum ancestor therefore predates tonight by one to
+two YEARS: we did not parallel-invent it so much as converge on a
+design the lineage already held. Graded: author testimony +
+consistent in-document markers.

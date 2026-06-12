@@ -37,7 +37,12 @@ ModularRefactorMandate_20240521; MIMEAdoptionDirective_20240521;
 ReifySYSTEMPIv2_21_Mandate; AtomicReificationMandate_v2_22;
 RingStarDualityImplementation_Mandate.
 
-## Reversibility machinery (Enhanced upgrade)
+## Reversibility machinery (found in the Enhanced wrapper; DESIGN
+## DATES TO EARLY 2025 OR 2024 — author provenance, S52a)
+The 2025-07-24 carrier is an explicit RE-EMISSION ("generated
+again"); RingStarDualityImplementation_Mandate already sits in
+historical-artifacts-v2.7; mandate history reaches 2024-05-21. The
+emission date bounds nothing about the content's age.
 "GlobalReversibility: Plan9DaggerCategoryEnabled";
 SystemStateDef.apply_delta_backward / apply_delta_forward over a
 GlobalTransactionLog — write-ahead-style undo/redo at OS stratum.
