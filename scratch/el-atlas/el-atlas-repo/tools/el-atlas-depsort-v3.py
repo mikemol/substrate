@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.8.5"
+VERSION = "v3.9.0"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -851,6 +851,89 @@ WITNESS_RELATIONS = {
  frozenset({'TWN','D4C'}): "STRICT 2-CELL SEPARATION (W11/S56): in H2(V4,Z2) (8 classes, exhaustive) TWN holds in all 8 (kernel faithful even in the split class), D4C in exactly the 4 noncommuting; realized <N,S> in a D4 class. Truth-identical at stratum 1, strictly ordered at rung 2 — the registry's first rung-2-only separation (twn-d4c-2cell-pilot)",
 }
 
+# ===== RUNG-2 STRATUM (W17, v3.9.0): COMPUTED IN-RUN, not registered prose ===
+# For claims whose content concerns extension classes in H2(V4,Z2), the
+# compatible-class set is computed by exhaustive enumeration each run and used
+# to attempt separation of stratum-1 circles ONE RUNG UP. The {TWN,D4C}
+# registry entry is ASSERTED against the computation: text/math divergence
+# FAILS the run (the registry is load-bearing, not decorative).
+def _h2_v4_z2():
+    from itertools import product as _pr
+    V=[(0,0),(1,0),(0,1),(1,1)]; e=(0,0)
+    add=lambda a,b: ((a[0]+b[0])%2,(a[1]+b[1])%2)
+    NE=[a for a in V if a!=e]; prs=[(a,b) for a in NE for b in NE]
+    Z2c=[]
+    for bits in _pr((0,1),repeat=9):
+        om={}
+        for a in V: om[(a,e)]=0; om[(e,a)]=0
+        for p,bit in zip(prs,bits): om[p]=bit
+        if all((om[(a,b)]+om[(add(a,b),c)]-om[(b,c)]-om[(a,add(b,c))])%2==0
+               for a in V for b in V for c in V): Z2c.append(om)
+    B2=set()
+    for fb in _pr((0,1),repeat=3):
+        f={e:0}
+        for i,a in enumerate(NE): f[a]=fb[i]
+        B2.add(tuple((f[a]+f[b]-f[add(a,b)])%2 for a in V for b in V))
+    key=lambda om: tuple(om[(a,b)] for a in V for b in V)
+    classes={}
+    for om in Z2c:
+        rp=min(tuple((k+bk)%2 for k,bk in zip(key(om),b)) for b in B2)
+        classes.setdefault(rp,om)
+    out=[]
+    for rp,om in sorted(classes.items()):
+        inv=sum(1 for eps in (0,1) for a in V if (eps,a)!=(0,e) and om[(a,a)]%2==0)
+        lam=any((om[(a,b)]+om[(b,a)])%2 for a in V for b in V)
+        out.append(({7:'Z2^3',3:'Z4xZ2',5:'D4',1:'Q8'}[inv], lam))
+    return out
+
+RUNG2_CONTENT = {
+  'TWN': ('kernel-faithful: nontrivial central kernel element', lambda name,lam: True),
+  'D4C': ('commutator lands on the kernel generator',           lambda name,lam: lam),
+}
+
+def rung2_report(res):
+    cls=_h2_v4_z2(); assert len(cls)==8, "H2(V4,Z2) enumeration broke"
+    compat={c:frozenset(i for i,(n,l) in enumerate(cls) if pred(n,l))
+            for c,(_d,pred) in RUNG2_CONTENT.items()}
+    vv={}; order=sorted(res)
+    for c in CLAIMS: vv.setdefault(tuple(res[i][c] for i in order),[]).append(c)
+    circles=[sorted(g) for g in vv.values() if len(g)>1]
+    print("\n=== RUNG-2 STRATUM (computed in-run; H2(V4,Z2), 8 classes, exhaustive) ===")
+    print("  class census:", ' '.join(f"{n}{'+' if l else '-'}" for n,l in cls), " (+ = noncommuting)")
+    for c in sorted(RUNG2_CONTENT):
+        print(f"  {c}: compatible classes {len(compat[c])}/8 — {RUNG2_CONTENT[c][0]}")
+    for circ in sorted(circles):
+        members=[c for c in circ if c in compat]
+        if len(members)>=2:
+            for ix,X in enumerate(members):
+                for Y in members[ix+1:]:
+                    a,b=compat[X],compat[Y]
+                    rel=("EQUAL" if a==b else
+                         (f"STRICT: {Y}-classes < {X}-classes" if b<a else f"STRICT: {X}-classes < {Y}-classes") if (a<b or b<a)
+                         else "INCOMPARABLE")
+                    print(f"  circle {{{','.join(circ)}}}: rung2({X},{Y}) = {rel} — stratum-1 circle carries rung-2 order")
+        elif len(circ)>1:
+            print(f"  circle {{{','.join(circ)}}}: rung-2 content registered for {len(members)}/{len(circ)} members — no in-circle comparison")
+    comp_strict = compat['D4C'] < compat['TWN']
+    reg = WITNESS_RELATIONS.get(frozenset({'TWN','D4C'}),'')
+    reg_strict = 'STRICT 2-CELL SEPARATION' in reg
+    assert comp_strict and reg_strict, (
+      f"REGISTRY/COMPUTATION DIVERGENCE on {{TWN,D4C}}: computed strict={comp_strict}, registered strict={reg_strict}")
+    print(f"  registry check: {{TWN,D4C}} text MATCHES computation "
+          f"(D4C {sorted(compat['D4C'])} < TWN {sorted(compat['TWN'])}) — LOAD-BEARING, divergence fails the run")
+
+# Reference-closure check (W17): the W8 edge-retained-loss lesson applied to
+# ourselves — every claim code named in registry/frontier/ledger keys must be a
+# defined claim. Silent danglers were v2.37.1's failure mode; here they FAIL the run.
+def reference_closure_check():
+    known=set(CLAIMS); dang=set()
+    for tn,tbl in (('WITNESS_RELATIONS',WITNESS_RELATIONS),('FRONTIER',FRONTIER),('PRIOR_LEDGER',PRIOR_LEDGER)):
+        for k in tbl:
+            for code in k:
+                if code not in known: dang.add((tn,code))
+    assert not dang, f"REFERENCE CLOSURE VIOLATION (dangling claim codes): {sorted(dang)}"
+    print(f"  reference closure: every claim code in WITNESS_RELATIONS/FRONTIER/PRIOR_LEDGER resolves ({len(known)} claims) — danglers fail the run")
+
 for _k,_v in {
   frozenset({'RDW','ZDW'}): ("S_9a577e722039 (165888, v3.6a Pi-forms)", "0/0 perfect circle; witness-stratum: partition-complement halves of W(RAD)"),
   frozenset({'RAD','RDW'}): ("S_9a577e722039 (v3.6a)", "0/0 — merged at verdict level by the promotion; witness-stratum: strict containment"),
@@ -939,6 +1022,8 @@ def run():
     print(f"\n  Break 3 exhibit (noisy lock): LOC={CLAIMS['LOC'](mN)}, L26={CLAIMS['L26'](mN)}")
     print("  — same-direction movement, DIFFERENT KINDS (U vs F): divergence the old")
     print("  P/F/V scheme merged. Co-movement now has internal kind-structure.")
+    rung2_report(res)
+    reference_closure_check()
 
 if __name__ == "__main__":
     run()

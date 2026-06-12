@@ -3449,3 +3449,36 @@ auditor one layer deep, which is the protocol working. Also noted
 from the same grep: the decomposition carries an open question "is a
 G-value the pair?" (S6 addendum) — carrier-theoretic, adjacent to
 the Nedge-Agda read now queued in NEXT.md. W16 closes.
+
+
+## S61 (W17): INTEGRATION — THE RUNG-2 STRATUM IS NOW COMPUTED, THE
+## REGISTRY IS LOAD-BEARING, AND THE FIRST RUN ALREADY CORRECTED US
+Answer to "are we integrating or nodding": mostly nodding, now
+fixed where computable. Three integration grades named: ENFORCED
+(W14 checker), COMPUTED, REGISTERED-TEXT/PROSE. v3.9.0 promotes two
+findings to COMPUTED: (1) the rung-2 stratum — H2(V4,Z2) enumerated
+in-run (8 classes, census printed), per-claim compatible-class sets
+from RUNG2_CONTENT (extensible: any claim with extension-class
+content joins by adding a predicate), stratum-1 circles recomputed
+from verdict vectors each run and compared one rung up; the
+{TWN,D4C} registry text is ASSERTED against the computation — text/
+math divergence fails the run. The registry stops being decoration.
+(2) reference-closure check — the W8 edge-retained-loss lesson
+applied to ourselves: every claim code in WITNESS_RELATIONS/
+FRONTIER/PRIOR_LEDGER must resolve to a defined claim (27 resolve;
+danglers fail the run). v2.37.1 sealed over its danglers; we now
+cannot. FIRST-RUN YIELD, TWO CORRECTIONS: (a) the true verdict
+circle is {D4C,TWN} — NVE is NOT verdict-identical to them in
+S_current, and ZDG is not in the {GCX,RAD,RDW,ZDW} circle; the
+structured doc's layer-0 groups are DEPENDENCY-groups, and prior
+prose conflated dep-groups with verdict circles. The computed
+stratum disambiguated the ontology on first contact. (b) SPACE MOVE
+S_49a935bae7dc -> S_d0ede8d60ddb, cause: instrument source addition
+(W17 code); manifest verified IDENTICAL — truth content index-only;
+empirical fingerprint rule sharpened: registry-dict edits do not
+move the fingerprint, new function code does (the hash covers more
+than t_* sources; rule pinned from the def in the run header).
+PROSE-ONLY remainder, honestly: seam migration, version-up-content-
+down, saturation provenance — corpus findings with no computable
+analogue in our model space beyond the closure check already taken
+from them. Lineage: ...49a935bae7dc -> d0ede8d60ddb. W17 closes.

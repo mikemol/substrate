@@ -834,3 +834,13 @@ practice, not just in principle: stratum-1 circles can carry rung-2
 order. The class-space acts as a probe space one rung up — "which
 extension classes satisfy the claim" is the higher separator, the
 knob-admission pattern lifted.
+
+### 21a. (W17 addendum) The rung-2 stratum is in the instrument
+
+Thread 21's separation is now computed in-run, not cited: H2(V4,Z2)
+enumerated each execution, compatible-class sets per registered
+claim, circles recomputed from verdict vectors and compared one rung
+up, with the registry entry asserted against the mathematics. First
+run corrected the circle ontology itself: {D4C,TWN} is the verdict
+circle (NVE out; ZDG out of the RAD family circle) — dep-groups and
+verdict-circles are distinct partitions that prose had merged.
