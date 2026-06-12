@@ -54,3 +54,4 @@ BEGIN W13 2026-06-11 :: the proof tier (the registered empty). Plan: (a) probe f
 END W13 2026-06-11 :: proof tier opened — VerdictCrossbar.agda checked clean (--safe --without-K, Agda 2.6.3, zero imports): crossbar intertwining + S3 no-factoring proved; empty narrowed not erased :: head=6a34b25 :: artifacts=proofs/VerdictCrossbar.agda,proofs/CHECKED.md
 BEGIN W14 2026-06-11 pre=c0e021d :: WAL doctrine upgrade (v2.22 TransactionLogEntryDef parallel, S55): BEGIN lines now record pre=<sha> so every move's exact delta is recoverable as pre..head; wal-check gains check (5): each pre must be an ancestor of its move's END head. Convention forward-only; historical moves without pre= tolerated.
   expect: patched tools/wal-check.py, cotype S59, END W14
+END W14 2026-06-11 :: pre-delta convention live; wal-check check (5) active and passing :: head=cf3ba08 :: artifacts=tools/wal-check.py

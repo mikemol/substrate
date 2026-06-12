@@ -4,7 +4,10 @@ the log. Checks: (1) wal.md well-formed — BEGIN/END(/ABORT) pairing in
 order, at most one open BEGIN and only as the final entry; (2) a dirty
 working tree requires an open BEGIN (unsanctioned deltas fail); (3) the
 last END's recorded head must be HEAD or an ancestor of it; (4) every
-END's declared artifacts must exist. Exit 0 PASS / 1 FAIL.
+END's declared artifacts must exist; (5) any BEGIN carrying pre=<sha>
+must have that sha an ancestor of its matching END's head=<sha> (the
+move's delta pre..head is well-formed; moves predating the W14
+convention carry no pre= and are exempt). Exit 0 PASS / 1 FAIL.
 Usage: wal-check.py [--quiet]"""
 import io, os, re, subprocess, sys
 R=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..')
@@ -28,6 +31,20 @@ for kind,wid,ln in events:
 dirty=subprocess.run(['git','-C',R,'status','--porcelain'],capture_output=True,text=True).stdout.strip()
 if dirty and not open_id: fail('working tree dirty with no open BEGIN — unsanctioned deltas:\n'+dirty[:300])
 ends=[ln for k,w,ln in events if k=='END']
+# check (5): pre..head well-formedness per move
+import collections
+begin_pre={}; end_head={}
+for k,w,ln in events:
+    if k=='BEGIN':
+        m=re.search(r'pre=([0-9a-f]{7,})',ln)
+        if m: begin_pre[w]=m.group(1)
+    if k=='END':
+        m=re.search(r'head=([0-9a-f]{7,})',ln)
+        if m: end_head[w]=m.group(1)
+for w,pre in begin_pre.items():
+    if w in end_head:
+        r=subprocess.run(['git','merge-base','--is-ancestor',pre,end_head[w]],capture_output=True)
+        if r.returncode!=0: fail(f'{w}: pre={pre} is not an ancestor of its END head={end_head[w]}')
 if ends:
     m=re.search(r'head=([0-9a-f]{7,})',ends[-1])
     if m:

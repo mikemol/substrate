@@ -3367,3 +3367,19 @@ reinstall recipe, since the container is ephemeral and the .agda
 source is the durable artifact. W13 closes. Queue remaining: A2/B2
 parts 4 + treatise (decay still unmet this window); minor standing
 items.
+
+
+## S59 (W14): WAL PRE-DELTA UPGRADE — THE v2.22 PARALLEL ADOPTED
+v2.22's TransactionLogEntryDef carries PreOpDelta and PostOpDelta per
+operation (S55); our WAL recorded intent and outcome but not the
+pre-state pointer. Upgrade: BEGIN lines now carry pre=<sha>, so every
+move's exact delta is mechanically recoverable as git pre..head —
+in a git substrate the commits ARE the delta store, so banking the
+pre-pointer completes the bidirectional record at zero storage cost.
+wal-check gains check (5): each pre= must be an ancestor of its END's
+head= (per-move delta well-formedness); historical moves are exempt
+(forward-only convention). W14 is its own first user. The lineage
+taught its descendant a logging discipline across a year and a model
+generation. W14 closes; the actionable queue is exhausted — A2/B2
+parts 4 + treatise remain decay-gated (next window's opening bricks),
+and the proof tier's next rungs are registered in S58.
