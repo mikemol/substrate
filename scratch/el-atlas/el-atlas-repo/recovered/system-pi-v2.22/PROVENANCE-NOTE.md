@@ -15,3 +15,11 @@ duplicated re-emission of the base library sequence, and (3) a
 conversational turn ("You got it! ... generated again") introducing
 SYSTEM_PI_UPGRADE_v2.22_ENHANCED_20250724 — an LLM reply pasted into
 the document, dated two days after the christening-hunt bound.
+
+## Generation context (author testimony, S54)
+The author: this material comes from "pushing at the upper boundaries
+of what Gemini 1.5 and 2 could hold in context coherently" — the
+corpus is a context-saturation artifact. "Context window size doesn't
+matter if the context is as dense as a neutron star's thesis."
+Recorded as testimony; mechanically consistent with every
+independently-observed lineage phenomenon (see cotype S54).

@@ -39,3 +39,4 @@ BEGIN W8 2026-06-11 :: A2/B2 repeat layers for parts 2-3 (deferral condition met
 END W8 2026-06-11 :: parts 2-3 A2/B2 done; prediction confirmed; seam-migration finding; parts 4/treatise A2/B2 decay-deferred (their A/B were post-flush) :: head=98e3154 :: artifacts=reading-ledgers/02-part2-proc3.md.bricks,reading-ledgers/03-part3-proc4.md.bricks
 BEGIN W9 2026-06-11 :: bank author provenance — the corpus as context-saturation artifact (Gemini 1.5/2 boundary-pushing); mechanism for seam-migration, loss-kinds, seal decay, elision flaws; Table 1 as anti-saturation harness
   expect: cotype S54, provenance-note appendix, END W9
+END W9 2026-06-11 :: saturation provenance banked; mechanism joined to phenomena with independence preserved :: head=bf8b358 :: artifacts=el-atlas-cotype.md,recovered/system-pi-v2.22/PROVENANCE-NOTE.md

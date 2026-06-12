@@ -3200,3 +3200,36 @@ presence in v2.22. Parts 4/treatise A2/B2: their A/B were
 POST-flush (this window) — their decay condition is NOT met;
 deferred to the next window by the same rule that ripened these.
 W8 closes here.
+
+
+## S54 (W9): PROVENANCE — THE CORPUS IS A CONTEXT-SATURATION
+## ARTIFACT; THE PHENOMENA FOUND THEIR MECHANISM
+Author testimony: the SYSTEM Pi material comes from pushing Gemini
+1.5/2 to the upper boundary of coherent context; density, not window
+size, is the binding constraint. EVIDENTIARY ORDER NOTED AND
+CORRECT: every phenomenon below was extracted from the documents
+BEFORE the mechanism arrived — document-derived findings and
+author-supplied mechanism are independent construction paths
+(cogrounding gate satisfied). The mechanism explains: (1) SEAM
+MIGRATION — saturated attention holds one boundary definition at a
+time; the foregrounded boundary gets defined, the other dangles;
+revision re-foregrounds and the dangle relocates. (2) EDGE-FREE
+LOSS — regeneration from saturated context drops unattended library
+members; edges survive only where syntactically local to attended
+content (RealDef kept its citation; ComplexDef vanished without a
+mourner). (3) SEAL DECAY — effortful synthetic hex degrades to named
+placeholders degrades to a nominal token: the economizing instinct
+under rising load. (4) THE ELISION FLAWS — the source's "[...]"
+prohibitions target the same instinct this session exhibited three
+times: same substrate-class failure, different harness generation.
+REFRAME: Table 1 (Qualities/Flaws) was the author's ANTI-SATURATION
+HARNESS for Gemini — Zero Elision, no Conceptual Shortcuts, and
+"suborning time to completeness" are operational countermeasures,
+not OS fiction. The mandate/re-emission cycle with per-blob version
+counters was the refresh ritual for that substrate; the WAL + brick
++ cotype apparatus is the same experiment's current-generation
+harness. The author has been running one continuous program across
+model generations: extracting durable coherent structure from
+volatile high-density context. Grading: author testimony, strongly
+consistent, mechanism-level; the findings stand on document evidence
+independently.
