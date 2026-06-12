@@ -27,7 +27,9 @@ module Substrate.Logic.Evidence.Verdict.Phase where
 open import Substrate.Foundation.Bool  using (true; false)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Eq    using (_≡_; refl; cong)
-open import Substrate.Groups.V4        using (V₄; e; α; β; γ; _·_)
+open import Substrate.Groups.V4
+  using (V₄; e; α; β; γ; _·_; ε; ·-assoc; ·-comm; ε-left; ε-right)
+open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; ⟨_,_⟩; pos; swapE; negPos; negNeg; negBoth; eP)
@@ -104,3 +106,23 @@ negBoth-central-swapE ⟨ p , n ⟩ = refl
 
 negBoth-central-negPos : (x : Evidence) → negBoth (negPos x) ≡ negPos (negBoth x)
 negBoth-central-negPos ⟨ p , n ⟩ = refl
+
+------------------------------------------------------------------------
+-- GROUNDED: the diagonal involutions {id, negPos, negNeg, negBoth} ARE V₄
+-- (id↦e, negPos↦α, negNeg↦β, negBoth↦γ — the α·β≡γ link above), and V₄ IS a
+-- substrate-named `Category.CommutativeMonoid` (abelian, exponent 2), reusing
+-- V₄'s own group laws. So the involution structure sits on the categorical
+-- spine; the central twist (the commutator cocycle above) is the non-abelian
+-- residue D₄ carries on top of this abelian V₄.
+------------------------------------------------------------------------
+
+V₄-CommutativeMonoid : CommutativeMonoid _
+V₄-CommutativeMonoid = record
+  { R            = V₄
+  ; _+R_         = _·_
+  ; 0R           = ε
+  ; +R-assoc     = ·-assoc
+  ; +R-identityˡ = ε-left
+  ; +R-identityʳ = ε-right
+  ; +R-comm      = ·-comm
+  }
