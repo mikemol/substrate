@@ -13,7 +13,8 @@
 
 module Substrate.Logic.Evidence.Warrant.Properties where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans)
+open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Warrant
 
@@ -77,3 +78,21 @@ open import Substrate.Logic.Evidence.Warrant
 ⊓w-zeroʳ S = refl
 ⊓w-zeroʳ C = refl
 ⊓w-zeroʳ U = refl
+
+------------------------------------------------------------------------
+-- GROUNDED: the warrant meet (⊓w, identity ⊤w = W) IS a substrate-named
+-- `Category.CommutativeMonoid`. The bare laws above now witness the named
+-- categorical structure rather than standing as a hand-rolled re-proof;
+-- identityˡ is derived (comm ∘ identityʳ).
+------------------------------------------------------------------------
+
+⊓w-CommutativeMonoid : CommutativeMonoid _
+⊓w-CommutativeMonoid = record
+  { R            = Warrant
+  ; _+R_         = _⊓w_
+  ; 0R           = ⊤w
+  ; +R-assoc     = ⊓w-assoc
+  ; +R-identityˡ = λ a → trans (⊓w-comm ⊤w a) (⊓w-identityʳ a)
+  ; +R-identityʳ = ⊓w-identityʳ
+  ; +R-comm      = ⊓w-comm
+  }
