@@ -24,7 +24,7 @@
 
 module Substrate.Algebra.R.Trace where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_; _≤_)
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq      using (_≡_; refl)
@@ -43,6 +43,14 @@ record RealTrace : Set where
     head : ℕ           -- the CF digit aᵢ = the Euclidean quotient at this step
     tail : RealTrace   -- the residual real (the Gauss-map image)
 open RealTrace public
+
+-- Regularity: every CF digit ≥ 1 — the coinductive predicate dual to the
+-- carrier, under which the convergent denominators grow (proved in .Properties).
+record AllPos (r : RealTrace) : Set where
+  coinductive
+  field hd : 1 ≤ head r
+        tl : AllPos (tail r)
+open AllPos public
 
 ------------------------------------------------------------------------
 -- Finite observation 1 — the first n CF digits (the provenance prefix).

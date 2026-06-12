@@ -18,17 +18,21 @@
 
 module Substrate.Algebra.R.Trace.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s)
 open import Substrate.Foundation.Nat.Properties.Mul
-  using (*-comm; *-assoc; *-distribˡ-+; *-distribʳ-+)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+  using (*-comm; *-assoc; *-identityˡ; *-distribˡ-+; *-distribʳ-+)
+open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-assoc)
+open import Substrate.Foundation.Nat.Properties.Order
+  using (≤-refl; ≤-trans; n≤m+n; +-mono-≤; +-monoˡ-≤; *-monoˡ-≤)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 
 open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; -ℤ-involutive)
 open import Substrate.Algebra.Z.Add using (_⊖_)
 open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm; neg-*-left)
 
-open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
+open import Substrate.Algebra.R.Trace
+  using (RealTrace; head; tail; twos; sqrt2; AllPos; hd; tl)
 
 ------------------------------------------------------------------------
 -- Two truncated-difference helpers (direct induction on the ⊖ reduction).
@@ -110,3 +114,50 @@ det-sq (suc n) p₁ q₁ p₀ q₀ r =
 det²≡1 : (n : ℕ) (r : RealTrace) →
          det-after n 1 0 0 1 r *ℤ det-after n 1 0 0 1 r ≡ + 1
 det²≡1 n r = det-sq n 1 0 0 1 r
+
+------------------------------------------------------------------------
+-- The other half of convergence: the denominators GROW WITHOUT BOUND, so the
+-- spacing 1/(qₙqₙ₋₁) from the determinant → 0. This needs regularity: every CF
+-- digit ≥ 1 (`AllPos`) — a coinductive predicate, the dual of the carrier.
+------------------------------------------------------------------------
+
+-- √2 = [1;2,2,…] is regular: every digit ≥ 1.
+allpos-twos : AllPos twos
+hd allpos-twos = s≤s z≤n
+tl allpos-twos = allpos-twos
+
+allpos-sqrt2 : AllPos sqrt2
+hd allpos-sqrt2 = s≤s z≤n
+tl allpos-sqrt2 = allpos-twos
+
+-- The denominator after consuming n digits (the q-column of the convergent
+-- recurrence; same step as det-after, tracking only (qₙ, qₙ₋₁)).
+q-after : ℕ → ℕ → ℕ → RealTrace → ℕ
+q-after zero    q₁ q₀ _ = q₁
+q-after (suc n) q₁ q₀ r = q-after n (head r * q₁ + q₀) q₁ (tail r)
+
+-- LINEAR GROWTH: from a both-positive state, each of the n steps adds ≥ 1 (a
+-- digit ≥ 1 makes a·q₁ ≥ q₁, and q₀ ≥ 1 adds the +1, while q₀'=q₁ keeps both
+-- positive). So qₙ ≥ q₁ + n — unbounded, hence the spacing → 0.
+q-grow : (n q₁ q₀ : ℕ) {r : RealTrace} →
+         1 ≤ q₁ → 1 ≤ q₀ → AllPos r → q₁ + n ≤ q-after n q₁ q₀ r
+q-grow zero    q₁ q₀ _    _    _  rewrite +-identityʳ q₁ = ≤-refl q₁
+q-grow (suc n) q₁ q₀ {r} 1≤q₁ 1≤q₀ ap = ≤-trans key ih
+  where
+    a    = head r
+    q₁'  = a * q₁ + q₀
+    q₁≤aq₁ : q₁ ≤ a * q₁
+    q₁≤aq₁ = subst (_≤ a * q₁) (*-identityˡ q₁) (*-monoˡ-≤ q₁ (hd ap))
+    1≤q₁' : 1 ≤ q₁'
+    1≤q₁' = ≤-trans 1≤q₀ (n≤m+n (a * q₁) q₀)
+    ih : q₁' + n ≤ q-after n q₁' q₁ (tail r)
+    ih = q-grow n q₁' q₁ 1≤q₁' 1≤q₁ (tl ap)
+    base-step : q₁ + 1 ≤ q₁'
+    base-step = +-mono-≤ q₁≤aq₁ 1≤q₀
+    key : q₁ + suc n ≤ q₁' + n
+    key = subst (_≤ q₁' + n) (+-assoc q₁ 1 n) (+-monoˡ-≤ n base-step)
+
+-- √2's convergent denominators grow without bound (from its (q₁,q₀)=(2,1) state
+-- after two digits): 2 + n ≤ qₙ₊₂. Concrete unboundedness of a real irrational.
+sqrt2-q-grows : (n : ℕ) → 2 + n ≤ q-after n 2 1 twos
+sqrt2-q-grows n = q-grow n 2 1 (s≤s z≤n) (s≤s z≤n) allpos-twos
