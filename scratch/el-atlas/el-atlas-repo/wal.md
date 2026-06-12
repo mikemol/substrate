@@ -31,3 +31,5 @@ END W5 2026-06-11 :: A/B layers complete, all four docs DONE-FRESH; recovery doc
 BEGIN W6 2026-06-11 :: acquire SYSTEM Pi v2.22 (Drive doc 10GrDUQdXh_uLc-bUGBiuXPyYSY8C8ZxwXKd1s3F-dMc), snapshot to recovered/ with provenance, resolve three registered targets: (a) COC-5 fork — Functorial_Integrity_Check defined there or not; (b) Lojban pamoi-liste locale-verdict; (c) RationalDef in lineage (transmission-loss question). Full brick-stratum read of v2.22 scoped OUT of this move (separate BEGIN if undertaken).
   expect: recovered/system-pi-v2.22/ snapshot + checksum, target findings in cotype S52, END W6
 END W6 2026-06-11 :: targets: (c) resolved (transmission loss), (a) advanced (born dangling, truncation-bounded), (b) open (tail); seal stratigraphy + univalence fossil banked; DEVIATION: full snapshot not persisted (truncated fetch), extracts+provenance instead :: head=60b175d :: artifacts=recovered/system-pi-v2.22/PROVENANCE-NOTE.md,recovered/system-pi-v2.22/EXTRACTS.md
+BEGIN W7 2026-06-11 :: erratum S52a — reversibility-machinery dating (emission-date vs content-date conflation; author correction)
+  expect: cotype S52a, EXTRACTS.md dating note, END W7
