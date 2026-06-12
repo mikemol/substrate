@@ -45,6 +45,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; cong; cong₂)
+open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc;
@@ -91,6 +92,25 @@ modify-assoc = ⊕-assoc
 
 modify-self-inverse : (v : SemVec m) → modify v v ≡ ∅
 modify-self-inverse = ⊕-self-inverse
+
+------------------------------------------------------------------------
+-- GROUNDED: the default modify (= ⊕) IS a substrate-named
+-- `Category.CommutativeMonoid` per dimension — the additive feature-bag
+-- model. (The asymmetric, genuinely bilinear modify is the basis-pair
+-- action in .WithBasisAction §6; this commutative-monoid grounding is the
+-- simplest instance, as the design note at the top records.)
+------------------------------------------------------------------------
+
+modify-CommutativeMonoid : (m : ℕ) → CommutativeMonoid _
+modify-CommutativeMonoid m = record
+  { R            = SemVec m
+  ; _+R_         = modify
+  ; 0R           = ∅
+  ; +R-assoc     = modify-assoc
+  ; +R-identityˡ = modify-identityˡ
+  ; +R-identityʳ = modify-identityʳ
+  ; +R-comm      = modify-comm
+  }
 
 ------------------------------------------------------------------------
 -- 3. Linearity in EACH argument separately (the honest monoid-

@@ -33,6 +33,7 @@ module Substrate.TokiPona.SemanticSpace where
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 -- Re-export the underlying F₂-Vector machinery publicly so consumers
 -- can `open import Substrate.TokiPona.SemanticSpace` and get the
@@ -101,3 +102,21 @@ _⊕_ = _+ⱽ_
 
 ⊕-self-inverse : ∀ {m} (v : SemVec m) → (v ⊕ v) ≡ ∅
 ⊕-self-inverse = +ⱽ-self-inverse
+
+------------------------------------------------------------------------
+-- 5. GROUNDED: the semantic space (SemVec m, ⊕, ∅) IS a substrate-named
+-- `Category.CommutativeMonoid` per dimension — the additive group of the F₂
+-- semantic vector space (in fact an abelian group / F₂-vector space via
+-- ⊕-self-inverse; CommutativeMonoid is the named primitive the advisory tracks).
+------------------------------------------------------------------------
+
+⊕-CommutativeMonoid : (m : ℕ) → CommutativeMonoid _
+⊕-CommutativeMonoid m = record
+  { R            = SemVec m
+  ; _+R_         = _⊕_
+  ; 0R           = ∅
+  ; +R-assoc     = ⊕-assoc
+  ; +R-identityˡ = ⊕-identityˡ
+  ; +R-identityʳ = ⊕-identityʳ
+  ; +R-comm      = ⊕-comm
+  }
