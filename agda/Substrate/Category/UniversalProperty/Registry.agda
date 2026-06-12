@@ -57,6 +57,12 @@ every-backing-non-vacuous = backed-non-vacuous
 -- COVERAGE NOTE (the checklist, checked against reality):
 --   BACKED (in registry, real): equality UP; CRT(3,5) — the gcd→Bézout→
 --     inverse→idempotent→combine chain as the bridge.
+--   BACKED DOWNSTREAM (a real BackedUP, but homed in the Logic tier because
+--     Category must NOT import Logic): the verdict-tier COEQUALIZER — the
+--     Nedge scalar shadow `bias` collapsing the distinct corners eU∼eV, with
+--     content = U≢V (verdict refuses the collapse, so it is genuinely non-refl)
+--     — in Substrate.Logic.Evidence.Verdict.BiasCoequalizer. There it conses
+--     its backing onto this list as `verdict-registry = bias-coeq-backed ∷ registry`.
 --   PROVED-BUT-NOT-YET-REGISTERED (real content exists; needs a BackedUP
 --     wrapper — these are NOT debt, the reality is backed): free monoid
 --     (FreeUniversalProperty.FreeMonoid), free F₂-module, Z₂ presentation,
