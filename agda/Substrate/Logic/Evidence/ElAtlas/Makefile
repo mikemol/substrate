@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
+AGDA_ROOT := ../../../..
 
-FILES := ElAtlas.agda Graded.agda Verdict.agda Warrant.agda
-SUBDIRS := ElAtlas Graded Verdict Warrant
+FILES := Proofs.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,37 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-ElAtlas:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Graded:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Verdict:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Warrant:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C ElAtlas clean 2>/dev/null || true
-	@$(MAKE) -C Graded clean 2>/dev/null || true
-	@$(MAKE) -C Verdict clean 2>/dev/null || true
-	@$(MAKE) -C Warrant clean 2>/dev/null || true
 	@true
