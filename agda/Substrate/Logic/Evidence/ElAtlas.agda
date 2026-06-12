@@ -29,13 +29,15 @@
 
 module Substrate.Logic.Evidence.ElAtlas where
 
-open import Substrate.Foundation.Bool  using (Bool)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq    using (_≡_)
+open import Substrate.Foundation.Bool    using (Bool)
+open import Substrate.Foundation.Empty   using (⊥)
+open import Substrate.Foundation.Eq      using (_≡_)
+open import Substrate.Foundation.Product using (_×_)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; Verdict; verdict; swapE; swapV; notE; _∧E_; _∨E_; negPos)
-open import Substrate.Logic.Evidence.Verdict.NedgeShadow using (Bias; bias)
+open import Substrate.Logic.Evidence.Verdict.NedgeShadow
+  using (Bias; bias; recode; unrecode)
 open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
 
 ------------------------------------------------------------------------
@@ -46,9 +48,10 @@ open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
 -- CRS crossbar (De Morgan intertwine) · PRO sphere prohibition (no single-rail
 -- quotient) · JOI joiners (dual-rail De Morgan) · WAR provenance warrants
 -- (meet-semilattice) · TWN twist/phase (H² separation [N₊,S]) · NGL G-value
--- lift (scalar bias cannot carry the 4-valued verdict).
+-- lift (scalar bias cannot carry the 4-valued verdict) · ADJ chart adjunction
+-- (lossless two-chart exp ⊣ log adjoint equivalence on the evidence carrier).
 data Claim : Set where
-  CRS PRO JOI WAR TWN NGL : Claim
+  CRS PRO JOI WAR TWN NGL ADJ : Claim
 
 ------------------------------------------------------------------------
 -- Each claim's substrate STATEMENT, dependent on the claim. A type per claim;
@@ -66,6 +69,10 @@ Statement WAR = (a b c : Warrant) → ((a ⊓w b) ⊓w c) ≡ (a ⊓w (b ⊓w c)
 Statement TWN = ((x : Evidence) → negPos (swapE x) ≡ swapE (negPos x)) → ⊥
 Statement NGL = (d : Bias → Verdict) →
                 ((e : Evidence) → d (bias e) ≡ verdict e) → ⊥
+-- ADJ: the lossless adjoint equivalence (round-trips) of the evidence carrier's
+-- two charts — the structural content of exp ⊣ log, realized by `nedge-atlas`.
+Statement ADJ = ((e : Evidence)     → unrecode (recode e) ≡ e)
+              × ((m : Bool × Bool)  → recode (unrecode m) ≡ m)
 
 ------------------------------------------------------------------------
 -- The FRONTIER: structured-edition claims NOT yet on the Agda rung. Names
@@ -76,9 +83,9 @@ Statement NGL = (d : Bias → Verdict) →
 -- discharged set cannot lie.
 ------------------------------------------------------------------------
 
--- ADJ chart adjunction exp ⊣ log (the Atlas record; Layer-0 headline) · SWP
--- semiring-weighted parsing (the deeper SPPF / packed multiplicity) · GCX codec
--- / zero-divisor / Cayley-Dickson schedule · NOE Noether pairings (mass/bias
--- conservation; carrier geometry) · IDC identity-collapse schedule (↔ twins).
+-- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · GCX
+-- codec / zero-divisor / Cayley-Dickson schedule · NOE Noether pairings
+-- (mass/bias conservation; carrier geometry) · IDC identity-collapse schedule
+-- (↔ twins). (ADJ graduated to Claim, discharged by Atlas.nedge-atlas.)
 data Frontier : Set where
-  ADJ SWP GCX NOE IDC : Frontier
+  SWP GCX NOE IDC : Frontier

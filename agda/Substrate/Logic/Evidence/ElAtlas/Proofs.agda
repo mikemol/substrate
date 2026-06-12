@@ -29,10 +29,12 @@
 
 module Substrate.Logic.Evidence.ElAtlas.Proofs where
 
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Eq      using (_≡_)
+open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Logic.Evidence.Verdict using (Evidence; verdict; swapE; swapV)
 open import Substrate.Logic.Evidence.ElAtlas
-  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; Statement)
+  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; ADJ; Statement)
+open import Substrate.Logic.Evidence.Atlas using (nedge-atlas; exp-log; log-exp)
 
 open import Substrate.Logic.Evidence.Verdict.Properties  using (intertwine; deMorgan-∧∨)
 open import Substrate.Logic.Evidence.Verdict.NoCollapse  using (no-single-rail-quotient)
@@ -51,6 +53,7 @@ proof-tier JOI = deMorgan-∧∨
 proof-tier WAR = ⊓w-assoc
 proof-tier TWN = N₊-S-noncommute
 proof-tier NGL = bias-cannot-carry-verdict
+proof-tier ADJ = log-exp nedge-atlas , exp-log nedge-atlas
 
 ------------------------------------------------------------------------
 -- Using the registry: extract a registered claim's proof by EVALUATING the Π.
