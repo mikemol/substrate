@@ -60,3 +60,4 @@ BEGIN W15 2026-06-11 pre=d9d146a :: intern-audit — sweep all structural surfac
 END W15 2026-06-11 :: audit complete — NEXT.md rewritten, lineage-map elisions repaired (violation #5 ledgered), S57a erratum filed, Nedge-Agda proof tier discovered through the repair; all surfaces consistent :: head=d9d146a :: artifacts=NEXT.md,recovered/lineage-map.md
 BEGIN W16 2026-06-11 pre=5308649 :: micro-move — S60a correcting S57a: the evidential axis WAS already in nedge-decomposition.md (line 55, graded [S] iso / [W] lift, lineage stated); the W15 grep printed after the erratum committed; sequencing error ledgered
   expect: cotype S60a, END W16
+END W16 2026-06-11 :: S60a filed; intern consistent at S0-S60a :: head=fc0c815 :: artifacts=el-atlas-cotype.md
