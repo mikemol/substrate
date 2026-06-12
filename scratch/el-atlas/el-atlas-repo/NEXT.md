@@ -1,8 +1,24 @@
 # NEXT — session handoff (REWRITTEN W15, 2026-06-11; supersedes the
 # d5962fd version, which listed since-completed work as opening moves)
 
-Trust DISK over any summary. Memory: el-atlas-cotype.md (S0-S60).
+Trust DISK over any summary. Memory: el-atlas-cotype.md (S0-S66).
 Recovery replay: python3 tools/wal-check.py FIRST, every session.
+
+## CONTINUATION — el-atlas now lives in the substrate (read first)
+el-atlas was merged into github/substrate at 78f2dd4 (full history
+rewritten; see wal.md MERGE marker + W23, cotype S66). It "will not be
+independently run any more." Consequences for this handoff:
+- wal-check FAILS on W1-W22 (their pre=/head= shas are pre-rewrite) —
+  GRANDFATHERED at the MERGE marker, not a regression. New entries use
+  substrate shas and validate.
+- The standalone machinery is RETIRED: the post-commit tarball
+  mis-targets (toplevel = substrate root); the substrate's blocking
+  pre-commit gates + atomic green commits + persistent memory ARE the
+  write-ahead now.
+- STALENESS: this file was rewritten at W15; the WAL ran on to W22
+  (v3.13.0), then the continuation W23. For anything past W15 trust
+  wal.md + cotype over the "State" section below.
+- The proof tier (opening move 3) is COMPLETE — see below.
 
 ## State
 - HEAD: see git; tree clean at last END. Instrument v3.8.5, space
@@ -29,13 +45,22 @@ Recovery replay: python3 tools/wal-check.py FIRST, every session.
    module against our VerdictCrossbar and against the spec's
    line-1987 postulate-vs-derive note (its preamble claims to resolve
    exactly that). Companion: "Agda SPPF G-Value Calculus Synthesis".
-3. Proof-tier next rungs (registered S58): grades; joiners; the H2
-   separation; full S3 over arbitrary quotients (not just Boolean).
+3. ✅ COMPLETE (W23, substrate Agda) — Proof-tier next rungs
+   (registered S58): grades; joiners; the H2 separation; full S3 over
+   arbitrary quotients. All four landed as Substrate.Logic.Evidence.*,
+   machine-checked --safe --without-K, zero postulates (commits
+   19febe2 / fe16462 / ca70a90 / 890b8bf; cotype S66). The H2
+   separation is the Agda twin of W11's H2(V4,Z2) instrument
+   computation; the joiners' two-ops-forced shares NoCollapse's probe;
+   the V4 link is real (alpha.beta=gamma refl in Substrate.Groups.V4).
 4. Pamoi-liste question — RELOCATED to the unsnapshotted v2.23-v2.36
    stream or the v2.37 conversation; needs sources we lack. Parked.
 
 ## Standing operational patterns (unchanged; do not relearn)
-- After every commit: sh tools/githooks/post-commit.
+- After every commit: sh tools/githooks/post-commit. ⚠️ RETIRED post-merge
+  (W23): the hook tarballs `git rev-parse --show-toplevel`, which now
+  resolves to the substrate root, not el-atlas — do NOT run it. The
+  substrate's blocking pre-commit gates replace it.
 - Mount stalls: sync; sleep; retry; verify HEAD.
 - No interleaved heredocs on chained lines.
 - Bricks: fresh prints only (DONE-FRESH / ASSERTED-FROM-HELD-CONTEXT

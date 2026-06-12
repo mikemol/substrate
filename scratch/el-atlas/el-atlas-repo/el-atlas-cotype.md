@@ -3641,3 +3641,63 @@ unchanged). W22 closes. Remaining registered: {LOC,L26}/{PUR,PRO}
 in-run grid promotion; proof-tier rungs (the closed form is now an
 Agda candidate: the predicate and the monomiality lemma are finitely
 checkable); A2/B2 decay-gated reads.
+
+
+## S66 (W23): THE CONTINUATION — MOVE #3 COMPLETE IN THE
+## SUBSTRATE, IN AGDA; THE SURVIVAL MACHINERY SUPERSEDED — [W]
+el-atlas is no longer a standalone repo: it was merged into the
+substrate (github/substrate) at 78f2dd4 — full history rewritten
+(subdir prefix scratch/el-atlas/el-atlas-repo, author -> Mike Mol),
+on the author's declaration "we are the continuation of el-atlas; it
+will not be independently run any more, as it has exceeded the
+capacity of an LLM outside this kind of environment." The whole point
+cashes out here: el-atlas's survival apparatus (the WAL ancestry
+checks, the post-commit tarball, the regeneration hook, "trust DISK
+over summary") was scaffolding built to keep a fragile web-session
+LLM from losing its place; the substrate provides that natively (git
++ blocking pre-commit gates + persistent file memory + flush
+survival), so the scaffolding is RETIRED and the substrate's
+discipline IS the write-ahead equivalent. The history rewrite means
+W1-W22's pre=/head= shas are pre-rewrite and do not resolve; their
+wal-check (5) ancestry is grandfathered at the MERGE marker (the
+S0-S46 genesis class). Sequencing note (monotonic): NEXT.md was last
+rewritten at W15 and is stale (the WAL ran to W22, v3.13.0); the
+MERGE marker + W23 + this entry reconcile it.
+
+THE WORK. Opening move 3 (the S58-registered rung set: grades;
+joiners; the H2 separation; full S3 over arbitrary quotients) is
+CARRIED TO COMPLETION, in Agda, every rung machine-checked
+--safe --without-K with zero postulates and zero holes, as
+Substrate.Logic.Evidence.* — the proof tier W13 opened (the
+self-contained VerdictCrossbar) is now substrate-native and complete:
+  - Verdict (+ .Properties, .NoCollapse, .Phase): the dual-rail
+    carrier on the substrate's Bool; the crossbar identities; the S3
+    no-collapse GENERALIZED from Bool to an arbitrary quotient carrier
+    on the substrate's Quotient record (faithful-refines-verdict — the
+    verdict-kernel is the coarsest faithful quotient; the Boolean
+    no-single-rail-quotient is now a corollary via pigeonhole).
+  - the joiners: the dual-rail De Morgan lattice (§5-6) — De Morgan
+    and the twist by refl; the "two operations are forced" fact
+    (Remark 6.2) witnessed on the SAME (P,F) probe that drives
+    no-collapse.
+  - the grades: the [W]/[S]/[C]/U provenance chain as a meet-
+    semilattice (§0), named Warrant (the substrate already binds Grade
+    to the Clifford-algebra degree; genuine homonyms), riding UNDER
+    the joiners (GradedEvidence = the product of the two semilattices).
+  - the phase / H2 SEPARATION (§5.10c): the chart involutions exhibit
+    the central extension 1 -> Z2 -> D4 -> V4 -> 1; the cocycle is the
+    commutator [N+,S] = -id; the class is non-trivial (N+ and S do not
+    commute, so D4 != V4 x Z2 — witnessed). LINKED to the substrate's
+    own Substrate.Groups.V4: the diagonal involutions' relation
+    negPos o negNeg = negBoth mirrors alpha . beta = gamma, which V4's
+    product computes to by REFL — so the link is real, not prose. This
+    is the Agda proof-tier TWIN of W11's instrument computation of
+    H2(V4,Z2) (8 vs 4 classes) and W19's extclass knob (z4 vs z2xz2).
+Commits (substrate shas): crossbar + NoCollapse 19febe2, joiners
+fe16462, grades/warrants ca70a90, phase/H2 890b8bf. Each landed as an
+atomic green commit behind the substrate's blocking gates. STILL
+open: move 2 (the Nedge G-Value Calculus Agda from Drive, checked
+against this stack and the substrate's zero-postulate Q-Canonical —
+the line-1987 postulate-vs-derive note); move 1 (A2/B2 decay-gated
+reads); move 4 (pamoi-liste, parked). W23 closes; intern consistent
+at S0-S66.
