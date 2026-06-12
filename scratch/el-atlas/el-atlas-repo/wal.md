@@ -46,3 +46,5 @@ END W10 2026-06-11 :: full v2.22 acquired+persisted; all targets document-global
 BEGIN W11 2026-06-11 :: the {TWN,D4C} 2-cell — compute H2(V4,Z2) exhaustively, locate both claims' extension classes in it, compare up to coboundary; register the verdict (v3.8.5)
   expect: tools/twn-d4c-2cell-pilot.py(+out), WITNESS_RELATIONS entry, run txt, regen, cotype S56, END W11
 END W11 2026-06-11 :: strict 2-cell separation established (8 vs 4 classes, exhaustive); first rung-2-only pair; registry complete :: head=8253853 :: artifacts=tools/twn-d4c-2cell-pilot.py,tools/twn-d4c-2cell-pilot-out.txt,tools/el-atlas-depsort-v3.8.5-run.txt
+BEGIN W12 2026-06-11 :: (a) regen-verify el-atlas-structured.md at v3.8.5 (no pipe this time; W11 status UNVERIFIED after BrokenPipeError); (b) christening proper — Drive query bracketed createdTime < 2025-07-23T02:17 with fullText 'SYSTEM Π'; read earliest hit
+  expect: verified regen, christening evidence or honest exhaustion, cotype S57, END W12
