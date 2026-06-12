@@ -41,6 +41,9 @@ import Substrate.Algebra.Semigroup as SS
 import Substrate.Algebra.Monoid    as SMo
 import Substrate.Algebra.Group     as SG
 
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping  using (deloop)
+
 open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
 open import Substrate.Groups.V4 as V4 using (V₄)
 open import Substrate.Groups.S4 as S4
@@ -216,6 +219,19 @@ TotalSpace-Group = record
   ; inv-left  = ∙ₜ-inverseˡ
   ; inv-right = ∙ₜ-inverseʳ
   }
+
+------------------------------------------------------------------------
+-- GROUNDED on the categorical spine via DELOOPING. TotalSpace's monoid
+-- reduct IS the one-object category BG (Substrate.Category.Delooping) —
+-- one object ⋆, hom(⋆,⋆) = TotalSpace, identity = εₜ, composition = ∙ₜ.
+-- The ∙ₜ-assoc / ∙ₜ-identityˡ/ʳ laws above ARE its category laws. This is
+-- the Algebra→Category bridge closing the parallel-hierarchy gap
+-- ([[project-bridge-indexes-algebra-category]]): a structure bundled in
+-- Algebra.Monoid is now a substrate-named Category.CategoryOf, ON the spine.
+------------------------------------------------------------------------
+
+TotalSpace-Category : CategoryOf
+TotalSpace-Category = deloop TotalSpace-Monoid
 
 ------------------------------------------------------------------------
 -- The group homomorphism / isomorphism TotalSpace ≅ S_4.
