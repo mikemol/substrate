@@ -3344,3 +3344,26 @@ evidence-conductance reading all have a May-2025 ancestor. E-OLOG
 banked at recovered/lineage-map.md; christening doc ID retained for
 optional deep read (Epoch 1 axioms). The christening queue item
 CLOSES. W12 closes.
+
+
+## S58 (W13): THE PROOF TIER OPENS — THE CROSSBAR IS MACHINE-CHECKED
+Agda 2.6.3 installed in-container (second attempt; first failed on
+stale indices — refresh + --no-install-recommends landed it).
+proofs/VerdictCrossbar.agda, self-contained (zero imports), checked
+clean FIRST COMPILE under --safe --without-K: the dual-rail carrier
+in miniature (Bool x Bool), the four-corner verdict map, BOTH
+involutions with involutivity proofs, the S4 CROSSBAR as a proved
+intertwining square (verdict o swapE = swapV o verdict), and the S3
+PROHIBITION in miniature as a no-factoring theorem — no quotient of
+the carrier onto a single Boolean admits a decoder recovering the
+verdict map (pigeonhole over three probe points, fully case-checked;
+the eliminator is exhaustive, so the theorem is total). The
+registered empty is FILLED AT THE CORE and honestly NARROWED rather
+than erased: grades, joiners, the H2 separation, and the full S3
+statement (arbitrary quotients, not just Boolean ones) remain
+unformalized — each is now a concrete next rung rather than a blank
+tier. Check provenance banked (proofs/CHECKED.md) including the
+reinstall recipe, since the container is ephemeral and the .agda
+source is the durable artifact. W13 closes. Queue remaining: A2/B2
+parts 4 + treatise (decay still unmet this window); minor standing
+items.
