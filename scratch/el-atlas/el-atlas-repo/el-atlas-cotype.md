@@ -3611,3 +3611,33 @@ commit), kinds instrument-source, manifests unchanged. W21 closes.
 Registered next: the same compile-vs-sensor upgrade for {LOC,L26}
 and {PUR,PRO} grids; the alignment system stated in closed form
 (which 12 of 64 — the kernel predicate as index arithmetic).
+
+
+## S65 (W22): THE ALIGNMENT SYSTEM IN CLOSED FORM — [C ANALOGY]
+## PROMOTED TO EXACT; THE AXIS THEOREM DERIVED, NOT STIPULATED
+The S20 half-channel alignment system, held since that era as [C
+analogy], is now a two-equation sign system, exact and in-run:
+ZD(i,j,k,l) <=> i^j == k^l AND eps(i,k) == -eps(j,l) AND
+eps(i,l) == -eps(j,k), where eps is the CD sign function grounded by
+the monomiality lemma (every basis product is +-e_{i XOR j}, 256/256
+verified per run — the lemma licenses the collapse of four cross-
+terms onto two basis directions, whence the two equations). The
+predicate carries NO axis restriction: the seven box-kite axes
+{9..15} and the emptiness of 1..8 are DERIVED and asserted each run
+— the predicate proves the geography it was fit to. Structure over
+the full 960 same-axis candidates: cond1=402, cond2=558, both=84,
+neither=84 (inclusion-exclusion closes: 960-876=84). Verification is
+now THREE-LAYER with the closed form primary: PREDICATE (index
+arithmetic, O(1)/candidate) == KERNEL-READOFF (nullity-4 variety by
+exact elimination) == GRID-SEARCH (the sensor); any pairwise
+divergence fails the run. OPERATIONAL NOTE, ledgered: W22 spanned an
+interrupted turn — a repair executed whose result arrived after the
+conversation moved on; the line-insert guard (assert-before-write)
+refused the duplicate def on retry. The double-execution protection
+worked at the EDIT level, not just the move level: assert-anchored
+edits are the WAL pattern in miniature. v3.13.0; lineage
+...4b12572ead6c -> 703c582017c8 (instrument-source; manifest
+unchanged). W22 closes. Remaining registered: {LOC,L26}/{PUR,PRO}
+in-run grid promotion; proof-tier rungs (the closed form is now an
+Agda candidate: the predicate and the monomiality lemma are finitely
+checkable); A2/B2 decay-gated reads.

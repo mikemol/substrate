@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.12.0"
+VERSION = "v3.13.0"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -1019,6 +1019,42 @@ def _nullity_exact(M):
         r+=1
         if r==R: break
     return C-r
+# W22 (v3.13.0): THE ALIGNMENT SYSTEM IN CLOSED FORM. The S20 half-channel
+# alignment system, held since that era as [C analogy], is now exact:
+#   ZD(i,j,k,l)  <=>  i^j == k^l  AND  eps(i,k) == -eps(j,l)
+#                                 AND  eps(i,l) == -eps(j,k)
+# where eps is the CD sign function (e_i e_j = eps(i,j) e_{i^j}; monomiality
+# verified 256/256 in-run, grounding the two-direction collapse). The
+# predicate carries NO axis restriction: the seven box-kite axes {9..15} and
+# the emptiness of axes 1..8 are THEOREMS of the sign system, derived and
+# asserted each run. Three-layer agreement: PREDICATE == KERNEL-READOFF ==
+# GRID-SEARCH; the closed form is primary, the other two are sensors.
+def witness_closed_form_check(Z16):
+    n=16
+    basis=[tuple(1 if k==i else 0 for k in range(n)) for i in range(n)]
+    eps={}
+    for i in range(n):
+        for j in range(n):
+            p=_cd_mul(basis[i],basis[j])
+            nz=[(m,v) for m,v in enumerate(p) if v!=0]
+            assert len(nz)==1 and nz[0][0]==(i^j) and abs(nz[0][1])==1, "monomiality broke"
+            eps[(i,j)]=nz[0][1]
+    Pset=set(); c1=c2=both=neither=0
+    for i in range(n):
+        for j in range(i+1,n):
+            for k in range(n):
+                for l in range(k+1,n):
+                    if (i^j)!=(k^l): continue
+                    a=(eps[(i,k)]==-eps[(j,l)]); b=(eps[(i,l)]==-eps[(j,k)])
+                    c1+=a; c2+=b; both+=(a and b); neither+=((not a) and (not b))
+                    if a and b: Pset.add((i,j,k,l))
+    assert Pset==Z16, f"closed form diverged from search ({len(Pset)} vs {len(Z16)})"
+    der_axes=sorted({i^j for (i,j,_k,_l) in Pset})
+    assert der_axes==list(range(9,16)), f"axis theorem broke: {der_axes}"
+    print("  CLOSED FORM (primary compile): ZD <=> same axis AND eps(i,k)=-eps(j,l) AND eps(i,l)=-eps(j,k)")
+    print(f"    monomiality 256/256; predicate set == searched set (84); axes {{9..15}} DERIVED (1..8 emptied by the signs, not by fiat)")
+    print(f"    same-axis structure: cond1={c1} cond2={c2} both={both} neither={neither} — the S20 alignment system, [C analogy] -> exact")
+
 def witness_compile_check(Z16):
     n=16
     basis=[tuple(1 if k==i else 0 for k in range(n)) for i in range(n)]
@@ -1048,6 +1084,7 @@ def witness_compile_check(Z16):
                     print(f"  path-witness: x=e{i}+e{j}; partners e{k1}+e{l1}, e{k2}+e{l2}; the LINE y1+s(y2-y1) annihilates for all s (checked s=1,-1,2 exact) — the kernel is the path space between sampled points")
                     path_shown=True
     assert compiled==Z16, f"COMPILED != SEARCHED ({len(compiled)} vs {len(Z16)}) — the ride lost its license"
+    witness_closed_form_check(Z16)
     print(f"  decomposition: 7 axes (XOR {axes[0]}..{axes[-1]}) x 12 = 84; pure-seam axis 8 empty; compile restricted to same-axis (64 candidates/axis vs 14400 global)")
     print(f"  annihilator nullity over Q (per ZD-bearing x): {sorted(dims)} — the S23 variety dimension, computed by exact elimination")
     print(f"  COMPILED == SEARCHED: True — the EEA-era method live, grid search retained as audit sensor (S23 pattern)")
