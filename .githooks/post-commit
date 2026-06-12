@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Versioned post-commit hook (enabled via: git config core.hooksPath .githooks)
+#
+# Runs the ADVISORY reports AFTER the commit lands. Rationale (the 2026-06-12
+# G9 / correct-by-construction discussion): an advisory must FIRE to be consulted
+# — a `make advise` you have to remember to run is barely above a passive memory
+# note — but it must NOT block (advisories have real false positives; see
+# check_file_sizes.sh and check_categorical_grounding.sh). Post-commit is exactly
+# that binding layer: it auto-fires on every commit yet can never abort one (git
+# ignores the post-commit exit status). Gates live in pre-commit; advisories live
+# here. By design.
+#
+# Currently `make advise`: theorem-per-file pressure + categorical grounding.
+# (For a quieter commit, swap the `advise` recipe for the scripts' --count modes.)
+set -uo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+echo "── post-commit advisories (non-blocking; gates already ran pre-commit) ──"
+make -C "$ROOT/agda" advise || true

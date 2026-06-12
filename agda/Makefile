@@ -35,8 +35,10 @@ check-decltag:
 # Canonical operators live in their carrier's home, one-per-file (no forks/buckets).
 check-carrier:
 	@python3 ../scripts/check_carrier_locality.py --quiet
-# ADVISORY (non-blocking): theorem-per-file pressure report. Deliberately
-# NOT part of `check` / the hook — signature-counting has false positives
-# (cohesive primitives modules), so it informs judgment, never gates.
+# ADVISORY (non-blocking): judgment reports, deliberately NOT in `check` /
+# the hook (each has real false positives, so they inform, never gate):
+#   * theorem-per-file pressure (signature counts)
+#   * categorical grounding (domain algebraic modules w/ no Category dep)
 advise:
 	@../scripts/check_file_sizes.sh
+	@../scripts/check_categorical_grounding.sh
