@@ -20,6 +20,7 @@ open import Substrate.Foundation.Eq
   using (_≡_; refl; cong)
 
 open import Substrate.Probability.MarkovCategory.Term
+open import Substrate.Category.CategoryOf using (CategoryOf)
 
 ------------------------------------------------------------------------
 -- Identity and composition at the term level.
@@ -50,3 +51,22 @@ compose-MarkovTerm g f = f ++ₘ g
   ((t ++ₘ u) ++ₘ v) ≡ (t ++ₘ (u ++ₘ v))
 ++ₘ-assoc []       u v = refl
 ++ₘ-assoc (x ∷ xs) u v = cong (x ∷_) (++ₘ-assoc xs u v)
+
+------------------------------------------------------------------------
+-- GROUNDED: this IS a substrate-named `Category.CategoryOf` — objects = Obj,
+-- morphisms = MarkovTerm, identity = [], composition = ++ₘ. The bare category
+-- laws above witness the named primitive — the morphism layer the
+-- categorical-name-first discipline asks a "category" to carry. (compose g f =
+-- f ++ₘ g, so left-id/right-id pair with ++ₘ-identityʳ/ˡ.)
+------------------------------------------------------------------------
+
+MarkovCategory : CategoryOf
+MarkovCategory = record
+  { Obj      = Obj
+  ; Mor      = MarkovTerm
+  ; id       = id-MarkovTerm
+  ; compose  = compose-MarkovTerm
+  ; left-id  = ++ₘ-identityʳ
+  ; right-id = ++ₘ-identityˡ
+  ; assoc    = ++ₘ-assoc
+  }
