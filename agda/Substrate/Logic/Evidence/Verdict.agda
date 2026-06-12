@@ -27,7 +27,7 @@
 
 module Substrate.Logic.Evidence.Verdict where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_)
+open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_; not)
 open import Substrate.Foundation.Eq   using (_≡_; _≢_)
 
 ------------------------------------------------------------------------
@@ -118,6 +118,27 @@ notE = swapE
 ⊥t = ⟨ false , true  ⟩   -- truth bottom (F-corner: fail)
 ⊤k = ⟨ true  , true  ⟩   -- info  top    (U-corner: both)
 ⊥k = ⟨ false , false ⟩   -- info  bottom (V-corner: neither)
+
+------------------------------------------------------------------------
+-- The chart involutions (el-atlas §5). Besides the pin-swap S (= swapE,
+-- the De Morgan negation) each rail negates on its own:
+--   negPos  = N₊       (flip E⁺),
+--   negNeg  = N₋       (flip E⁻),
+--   negBoth = −id = N₊∘N₋  (flip both; the antipode).
+-- {id, negPos, negNeg, negBoth} is the diagonal Klein four-group V₄
+-- (Thm 5.4); the pin-swap S sits outside it. The H²(V₄,ℤ₂) phase class —
+-- the commutator [N₊,S] = −id and its non-triviality (D₄ ≇ V₄×ℤ₂) — is
+-- proved in `.Phase`, linked to Substrate.Groups.V4.
+------------------------------------------------------------------------
+
+negPos : Evidence → Evidence
+negPos ⟨ p , n ⟩ = ⟨ not p , n ⟩
+
+negNeg : Evidence → Evidence
+negNeg ⟨ p , n ⟩ = ⟨ p , not n ⟩
+
+negBoth : Evidence → Evidence
+negBoth ⟨ p , n ⟩ = ⟨ not p , not n ⟩
 
 ------------------------------------------------------------------------
 -- Constructor apartness of the four verdicts. Trivial absurdity proofs
