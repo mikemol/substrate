@@ -34,6 +34,7 @@ open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc;
          ++-identity-left; ++-identity-right)
 open import Substrate.Kelen.Fragment using (Relational; KelenWord; ε; single)
+open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (MonoidOn)
 
 ------------------------------------------------------------------------
 -- 1. Relation composition at the word level.
@@ -119,3 +120,19 @@ example-assoc = ∘ᴿ-assoc (single la) (single pa) (single jana)
 --   * Dagger structure (relation reversal)
 --   * Residuals / Galois connections
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- GROUNDED: (KelenWord, _∘ᴿ_, ε) IS a substrate-named `MonoidOn` — the free
+-- relation monoid on the relationals, an instance of the word-algebra center's
+-- free-monoid (Category.FreeUniversalProperty.FreeMonoid; cf. its `word-monoid`
+-- for any `Word Gen`). The bare laws above witness the named primitive.
+------------------------------------------------------------------------
+
+∘ᴿ-MonoidOn : MonoidOn KelenWord
+∘ᴿ-MonoidOn = record
+  { ε       = ε
+  ; _∙_     = _∘ᴿ_
+  ; ∙-assoc = ∘ᴿ-assoc
+  ; ε-left  = ∘ᴿ-identityˡ
+  ; ε-right = ∘ᴿ-identityʳ
+  }
