@@ -5,8 +5,8 @@ H2 64-126 DONE
 Q1 1-32 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 M 33-94 DONE-FRESH 2026-06-11 (re-executed; diff below)
 Q4 95-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-A 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-B 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-94 DONE-FRESH 2026-06-11 (W5; printed pre-flush, captured post-recovery; diff below)
+B 33-126 DONE-FRESH 2026-06-11 (W5; printed pre-flush, captured post-recovery; diff below)
 A2 1-94 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B2 33-126 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 
@@ -157,3 +157,39 @@ arrival), evidence the M-layer pays when performed.
 ## with an LLM across iterations; some blobs iterated more than others.
 ## quiescence-proof-v1.1 = converged almost immediately, not written
 ## first. Stratigraphy = convergence-rate map, not chronology.
+
+## A fresh-pass capture-diff (lines 1-94) — W5
+- NEW SYNTHESIS: PATH-STRUCTURE STRATIFICATION — 1.1.3 demands a
+  UNIQUE stable path to bedrock for every theorem while 1.2.3
+  preserves the Necessary Loop for axioms: theorems are trees
+  (contractible, H0-content), axioms are cycles (H1 generators). The
+  two requirements only cohere stratified — the source states the
+  homology decomposition of its own proof graph without naming it.
+- NEW SYNTHESIS: THE EMPTY-QUEUE CRITERION HAS TWO HALVES — 1.1.2
+  Error-Free Sieve (no syntactically-invalid holes) and 1.3.1 Zero
+  Elision (no deferral placeholders): no statability holes AND no
+  witness debts. COC-2 violates BOTH at once — RationalDef is
+  simultaneously a hole (dangling reference) and an unresolved IOU.
+
+## B fresh-pass capture-diff (lines 33-126) — W5
+- NEW: THE AUDIT ARMED THE FAILING CHECK — the final Gap Correction
+  explicitly wired the QuiescenceProof to verify the Empty Queue
+  condition (2.1.1), which is precisely the check COC-2's dangling
+  RationalDef trips. The seal carries its own refutation procedure;
+  the predicted boot-halt is enforced by machinery the audit itself
+  installed in its last act.
+- STRENGTHENED (matched, now verbatim-confirmed in-window): RootHash
+  is the nominal token, printed adjacent to the Short-cut Correction
+  CLAIMING the placeholder was removed — the correction replaced a
+  placeholder with a NAME, not a digest; the claim outruns the
+  artifact by exactly one stratum (COC-1's mechanism, localized).
+- HONEST REMAINDER: CanonizedLemmas, TSC Compliance, the
+  SelfContainmentAssertion, and the closing bootstrap prompt all
+  matched prior captures — zero further yield, reported as such.
+
+## Recovery note (flush-recovery doctrine, first live execution)
+The A/B windows were printed in the window that died; the capture is
+written post-recovery from the executed prints (visible transcript,
+not held-context recall). wal-check found W5 open with a clean tree;
+the resent prompt matched the open BEGIN; the move was COMPLETED,
+not re-run. The double-execution guard held.
