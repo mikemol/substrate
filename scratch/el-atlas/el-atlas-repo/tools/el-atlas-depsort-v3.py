@@ -135,7 +135,7 @@ derive-or-rename obligation upgraded.
 """
 import numpy as np
 import hashlib, json, inspect, io
-VERSION = "v3.11.0"
+VERSION = "v3.12.0"
 from itertools import product
 
 KNOBS = dict(pins=[1,2,3], adj=[True,False], ident=[True,False], neg=[True,False],
@@ -978,11 +978,79 @@ def witness_chain_check():
     assert Z < NF, "Z not strictly contained in NF at 16 — {RAD,ZDG} registered kind broke"
     RDWset = NF - Z
     assert RDWset and (RDWset | Z)==NF and not (RDWset & Z), "RDW/ZDW partition of W(RAD) broke"
+    witness_compile_check(Z)
     print(f"  cdlevel 16: |Z|={len(Z)}  |NF|={len(NF)}  |NF\\Z|={len(RDWset)}")
     print(f"  chain asserted: Z STRICT< NF ({{RAD,ZDG}} kind); W(RDW) disjoint-union W(ZDW) = W(RAD) ({{RDW,ZDW}} kind) — LOAD-BEARING on this grid")
     reg_zdg=WITNESS_RELATIONS.get(frozenset({'RAD','ZDG'}),''); reg_pc=WITNESS_RELATIONS.get(frozenset({'RDW','ZDW'}),'')
     assert 'strict containment' in reg_zdg and 'partition-complement' in reg_pc, "registry kinds drifted from computed chain"
     print("  registry kinds match the computation")
+
+# ---- W21 (v3.12.0): COMPILED, NOT SAMPLED — the S20/S23 EEA-era method
+# restored over the W20 grid search (which regressed against the banked
+# doctrine). The 84 decompose by INDEX ARITHMETIC alone: axis t = i XOR j,
+# seven axes {9..15}, twelve per axis (the box-kites in XOR coordinates);
+# pure-seam axis 8 empty; seam-straddling necessary. Per axis the partner
+# set is read off ker(L_x) — the annihilator VARIETY (S23: a 4-plane;
+# search had found single points of it). The kernel is the PATH SPACE:
+# any two sampled partners are joined by lines inside it (linearity), so
+# paths-between-samples are compiled, not interpolated. Grid search above
+# is RETAINED as the audit sensor (S23 pattern: the ride is licensed by
+# the sensor); COMPILED == SEARCHED is asserted every run.
+def _Lx_matrix(x):
+    n=len(x)
+    cols=[]
+    for m in range(n):
+        em=tuple(1 if k==m else 0 for k in range(n))
+        cols.append(_cd_mul(x,em))
+    return [[cols[m][r] for m in range(n)] for r in range(n)]  # rows
+def _nullity_exact(M):
+    from fractions import Fraction as Fr
+    A=[[Fr(v) for v in row] for row in M]
+    R=len(A); C=len(A[0]); r=0
+    for c in range(C):
+        piv=next((i for i in range(r,R) if A[i][c]!=0),None)
+        if piv is None: continue
+        A[r],A[piv]=A[piv],A[r]
+        pv=A[r][c]
+        A[r]=[v/pv for v in A[r]]
+        for i in range(R):
+            if i!=r and A[i][c]!=0:
+                f=A[i][c]; A[i]=[a-f*b for a,b in zip(A[i],A[r])]
+        r+=1
+        if r==R: break
+    return C-r
+def witness_compile_check(Z16):
+    n=16
+    basis=[tuple(1 if k==i else 0 for k in range(n)) for i in range(n)]
+    add=lambda u,v:tuple(p+q for p,q in zip(u,v))
+    axes=sorted({i^j for (i,j,_k,_l) in Z16})
+    assert all((i^j)==(k^l) for (i,j,k,l) in Z16), "axis-equality broke"
+    assert axes==list(range(9,16)), f"axis set drifted: {axes}"
+    from collections import Counter
+    per=Counter((i^j) for (i,j,_k,_l) in Z16)
+    assert all(per[t]==12 for t in axes), f"12-per-axis broke: {dict(per)}"
+    compiled=set(); dims=set(); path_shown=False
+    for t in axes:
+        prs=[(i,i^t) for i in range(n) if i<(i^t)]
+        for (i,j) in prs:
+            x=add(basis[i],basis[j])
+            partners=[(k,l) for (k,l) in prs
+                      if all(v==0 for v in _cd_mul(x,add(basis[k],basis[l])))]
+            for (k,l) in partners: compiled.add((i,j,k,l))
+            if partners:
+                dims.add(_nullity_exact(_Lx_matrix(x)))
+                if not path_shown and len(partners)>=2:
+                    (k1,l1),(k2,l2)=partners[0],partners[1]
+                    y1=add(basis[k1],basis[l1]); y2=add(basis[k2],basis[l2])
+                    for sgn in (1,-1,2):
+                        ypath=tuple(a+sgn*b for a,b in zip(y1,tuple(p-q for p,q in zip(y2,y1))))
+                        assert all(v==0 for v in _cd_mul(x,ypath)), "path left the annihilator"
+                    print(f"  path-witness: x=e{i}+e{j}; partners e{k1}+e{l1}, e{k2}+e{l2}; the LINE y1+s(y2-y1) annihilates for all s (checked s=1,-1,2 exact) — the kernel is the path space between sampled points")
+                    path_shown=True
+    assert compiled==Z16, f"COMPILED != SEARCHED ({len(compiled)} vs {len(Z16)}) — the ride lost its license"
+    print(f"  decomposition: 7 axes (XOR {axes[0]}..{axes[-1]}) x 12 = 84; pure-seam axis 8 empty; compile restricted to same-axis (64 candidates/axis vs 14400 global)")
+    print(f"  annihilator nullity over Q (per ZD-bearing x): {sorted(dims)} — the S23 variety dimension, computed by exact elimination")
+    print(f"  COMPILED == SEARCHED: True — the EEA-era method live, grid search retained as audit sensor (S23 pattern)")
 
 for _k,_v in {
   frozenset({'RDW','ZDW'}): ("S_9a577e722039 (165888, v3.6a Pi-forms)", "0/0 perfect circle; witness-stratum: partition-complement halves of W(RAD)"),

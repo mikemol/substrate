@@ -856,3 +856,17 @@ claims, per content. The circle's biography across four spaces is
 now a ledger object. General lesson: a rung-2 separation is not an
 endpoint; it is a knob-admission candidate, and the admission is
 what makes the higher-rung distinction behaviorally reachable.
+
+### 22. (W21) Compiled coverage and the kernel as path space
+
+Sampling has three grades in this instrument: exhaustive (the model
+space), ridden (separator counts via the audited dep-projection,
+S23 Level 1), and grid-sampled (fiber/witness checks) — and the
+third grade keeps trying to creep back in (W20 did). The S20-S23
+doctrine, restored: where witnesses satisfy linear/modular
+constraints, COMPILE the variety (Bezout vectors, CRT idempotents,
+kernels by exact elimination) and demote search to audit sensor.
+The annihilator kernel is simultaneously the witness set and the
+PATH SPACE: sampled witnesses are points; the variety connects
+them; elimination computes the connection. Paths between samples
+are not interpolated — they are read off the constraint structure.

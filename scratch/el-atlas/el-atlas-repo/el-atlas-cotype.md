@@ -3566,3 +3566,48 @@ LINEAGE CORRECTION (S62 was one link short, per the S61a full-source
 rule): ...d0ede8d60ddb -> 1b85ef5d073c (admission) -> 6c6856f4522f
 (dedupe, index-only) -> 730c44114318 (this move, instrument-source
 kind; manifest verified identical — index-only). W20 closes.
+
+
+## S64 (W21): THE EEA ERA RECALLED, FOUND BANKED, AND RESTORED —
+## COMPILED OVER SAMPLED; THE KERNEL IS THE PATH SPACE
+The author recalled witness chains as pi-types/paths computed by
+extended Euclid — EEA/Bezout/CRT as structural probes interpreting
+tough knots while the main search walked probe lines — and asked:
+are we still sampling, and could EEA find paths across constraints
+between sampled points? DISK VERDICT: the era is BANKED, S20-S23,
+and went further than the recall — S20: "CRT idempotents (36,385 mod
+420) = a ZD pair COMPILED from the Bezout vector, no search";
+S23: "RIDING BREAKER HYPERPLANES — COVERAGE COMPILED, NOT SAMPLED",
+the author's own question answered YES then, with Level 1 (the
+dep-projection ride, STILL IN PRODUCTION as _sep_projected /
+ride==full) and Level 2 (annihilators compiled as kernels; "the S21
+exhibit's annihilator is a 4-PLANE; search found one point of it;
+50 random gaussians never touch the variety — measure-zero").
+SAMPLING STATUS, three grades, honestly: model space EXHAUSTIVE;
+separator counts RIDDEN (S23 Level 1, licensed by the dep-audit,
+sensor retained); fiber/witness checks GRID-SAMPLED — and W20's
+witness_chain_check was a fresh REGRESSION against the banked S23
+doctrine: I built a grid search the record had already superseded.
+REPAIRED at v3.12.0: (1) DECOMPOSITION COMPILED — the 84 factor by
+index arithmetic alone: axis t = i XOR j; i XOR j = k XOR l for all
+84; exactly SEVEN axes {9..15} x TWELVE each (the box-kites in XOR
+coordinates); pure-seam axis 8 EMPTY; seam-straddling necessary, 12
+of 64 per axis sufficient — the residual is the S20 half-channel
+alignment system, now decided as kernel membership. (2) THE VARIETY
+COMPUTED — ker(L_x) by exact Fraction elimination, nullity 4
+uniformly: S23's 4-plane, perpetual instead of exhibited-once.
+(3) THE PATHS — concrete path-witness in-run: x=e2+e11, partners
+e5+e12 and e6+e15, the LINE y1+s(y2-y1) annihilates at all checked
+integer s; linearity makes every pair of sampled partners endpoints
+of a compiled path inside the annihilator — EEA's sibling
+(elimination) finds the paths across constraints between sampled
+points, exactly as asked. (4) SENSOR — COMPILED == SEARCHED asserted
+every run; the grid search demoted to audit sensor per S23's own
+licensing pattern. Wart caught pre-commit: an accidentally-correct
+truthiness expression computing the elimination twice; removed —
+accidental correctness is the failure mode this window exists to
+kill. Lineage: ...730c44114318 -> 1c4d0c559b30 -> (wart fix; this
+commit), kinds instrument-source, manifests unchanged. W21 closes.
+Registered next: the same compile-vs-sensor upgrade for {LOC,L26}
+and {PUR,PRO} grids; the alignment system stated in closed form
+(which 12 of 64 — the kernel predicate as index arithmetic).
