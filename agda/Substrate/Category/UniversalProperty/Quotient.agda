@@ -36,6 +36,7 @@ module Substrate.Category.UniversalProperty.Quotient where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Unit using (⊤; tt)
+open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
