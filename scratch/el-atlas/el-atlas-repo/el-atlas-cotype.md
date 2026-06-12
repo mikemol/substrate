@@ -3090,3 +3090,26 @@ an OPEN BEGIN from the dead window — a retry of an in-flight move;
 verify what already executed and complete or abort, never re-run
 blindly (the S43 unledgered-delta incident, generalized: with the
 WAL, recovery KNOWS instead of inferring). W4 closes here.
+
+
+## S51 (W5): A/B LAYERS COMPLETE — THE READING PROGRAM CLOSES AT
+## EVERY NON-REPEAT STRATUM
+All four remaining documents carried through A and B whole-document
+windows, fresh prints, capture-diffs committed per document. W5's
+yields: SUBORNING-TIME doctrine; observability dual;
+integrity-as-induction; audit asymmetry (part 2) — fork-invariant
+imperatives; two-tier rules; double-locked self-decapitation; safety
+as invariance; COC-5 guards the whole world-interface (part 3) —
+proof-graph stratification (theorem-trees over axiom-cycles);
+empty-queue two halves, COC-2 violating both; the audit armed its
+own failing check (part 4) — and the treatise failing its own
+Table 1 at the lexical stratum, with the fibration claim making the
+typos load-bearing; the mutable/immutable polarity contradiction;
+terminal-layer decidability near-verbatim; 5.3 as thread-20's
+source-side statement (treatise). PROCESS: W5 spanned a context
+flush — the recovery doctrine executed live for the first time
+(resent prompt -> wal-check -> open W5 found -> in-flight part-4
+capture COMPLETED, not re-run; the double-execution guard held).
+One filename confabulation caught by disk (05-analysis-treatise.md,
+not "proc5"). A2/B2 remain DEFERRED per the BEGIN entry: post-flush
+opening bricks, where decay is guaranteed — that window now exists.

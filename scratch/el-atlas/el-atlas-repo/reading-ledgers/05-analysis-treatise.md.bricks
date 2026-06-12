@@ -5,8 +5,8 @@ H2 145-287 DONE
 Q1 1-72 DONE-FRESH 2026-06-11 (two prints; diff below)
 M 73-215 DONE-FRESH 2026-06-11 (re-executed in two prints; diff below)
 Q4 216-287 DONE-FRESH 2026-06-11 (216-277 fresh; 278-287 read twice prior incl. provenance audit; diff below)
-A 1-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
-B 73-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
+A 1-215 DONE-FRESH 2026-06-11 (W5; diff below)
+B 73-287 DONE-FRESH 2026-06-11 (W5; diff below)
 A2 1-215 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 B2 73-287 ASSERTED-FROM-HELD-CONTEXT (regrade 2026-06-11: not a fresh pass)
 
@@ -258,3 +258,43 @@ arrival), evidence the M-layer pays when performed.
 ## corrected in cotype S41 — GCX's license is Yoneda + quotient
 ## (statability = representability over the probe category), not the
 ## univalence axiom.
+
+## A fresh-pass capture-diff (lines 1-215) — W5
+- NEW: POLARITY ERROR ON THE SEAL — the executive summary writes
+  "frozen into a MUTABLE RootHash"; Table 2 (B-window) declares the
+  state "Quiescent, Immutable, Content-Addressable." The treatise
+  contradicts itself between summary and table on the seal's central
+  property. Typo-class, internally provable.
+- NEW: surface defects in the perfection narrative — "orthoganol"
+  (exec summary), the dangling "autonomous" (8.3). With the polarity
+  error: at least three lexical slips.
+- NEW: the exec summary PROMISES univalence applied to security; the
+  body delivers path induction only (author's deflation, S41,
+  confirmed in-window: the promise's location is the summary).
+- STRENGTHENED: the treatise itself states decidability holds "in
+  the terminal layer" (4.3) — COC-3's Boolean-where-decidable
+  resolution, near-verbatim in source.
+- NEW CONNECTION: 5.3's homological-stability gloss ("as the system
+  loads more modules its homology stabilizes") is the source-side
+  statement of thread 20; the W3 split-test is its mechanization at
+  the atlas stratum — Topos_Stability_Verified, discharged where we
+  could discharge it.
+- NEW: epistemic hedge inside the coherence narrative — the Betti
+  profile is "LIKELY trivial" (6.2): admitted uncertainty in the
+  document of certainty.
+
+## B fresh-pass capture-diff (lines 73-287) — W5
+- NEW SYNTHESIS: THE TREATISE FAILS ITS OWN TABLE 1 AT THE LEXICAL
+  STRATUM. Table 1's mechanics: any Gap or Conceptual Shortcut
+  triggers re-parse and halt. The treatise's own prose carries three
+  such defects — and 3.3's fibration claim ("the text IS the
+  territory") makes them load-bearing: if doc and logic are
+  isomorphic, doc-typos are logic-bugs. The reviewer document
+  describing a system that halts on any Gap contains gaps.
+- STRENGTHENED (verbatim re-confirmed): 7.3 self-marks the Merkle
+  structure as IMPLIED by naming ("implied by the term 'RootHash'")
+  while quoting the nominal token as the hash value — COC-1's
+  mechanism stated in the treatise's own voice.
+- HONEST REMAINDER: Lojban/AMR seal, Qualities/Flaws table content,
+  works-cited (reviewer-provenance per S36 erratum), structuralism
+  synthesis, Logical Singularity close — all matched prior captures.
