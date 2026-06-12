@@ -10,13 +10,12 @@
 # ignores the post-commit exit status). Gates live in pre-commit; advisories live
 # here. By design.
 #
-# CONCISE BY DESIGN: file-size pressure is a standing list (a count is enough; the
-# full list is `make -C agda advise`). Categorical grounding IS the per-commit
-# "is judgment required?" surface, so it prints IN FULL — it is small, and the
-# whole point of auto-firing is that it stays visible, never filtered away.
+# The post-commit advisory IS the per-commit "is judgment required?" surface, and
+# it prints IN FULL — never summarized, never filtered (that hides the magnitude).
+# ONLY the categorical-grounding advisory fires here: it is small, and it is the
+# priority. File-size pressure is a standing list, on demand via `make -C agda
+# advise`; it does not belong in the per-commit view and is not gated on a baseline.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
-echo "── post-commit advisories (non-blocking; gates ran pre-commit) ──"
-fs="$(bash "$ROOT/scripts/check_file_sizes.sh" --count 2>/dev/null || echo '?')"
-echo "file-size pressure: $fs module(s) over signature threshold (detail: make -C agda advise)"
+echo "── post-commit advisory (non-blocking; gates ran pre-commit) ──"
 bash "$ROOT/scripts/check_categorical_grounding.sh" 2>/dev/null || true
