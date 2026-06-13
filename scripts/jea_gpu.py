@@ -574,6 +574,125 @@ def demo_device_build(h=22, s=9, seed=7):
           f"vs host bignum. The trace construction is no longer a host bottleneck.")
 
 
+# ======================================================================
+# M2b/ℚ — the top of the exact-arithmetic ladder. Carrier = exact ℚ as (num : i128,
+# den : i128>0), 32-byte values. The fold's ⊕/⊗ are exact rational add/mul, then the
+# EXPLICIT reduction: gcd(|num|, den) divides both — the wedge/EEA, the substrate spine,
+# never a silent quotient. gcd is a BRANCHLESS fixed-iteration Euclidean (predicated
+# select, no warp divergence; compute is cheap). Overflow of 128-bit num/den (or the
+# intermediate products) is DETECTED → the escalate flag (M2b multi-limb beyond it). The
+# natural ℚ workload is the SWP PROBABILITY carrier: fraction leaves folded by +,× — the
+# positive-rail section, now exact on GPU.
+# ======================================================================
+
+_QDECL = r'''
+typedef unsigned long long u64; typedef unsigned __int128 u128; typedef __int128 i128;
+__device__ __forceinline__ u128 absu(i128 x){ return x < 0 ? (u128)(-x) : (u128)x; }
+__device__ __forceinline__ u128 gcd_u(u128 a, u128 b){      // branchless fixed-iter Euclid
+    for (int k = 0; k < 256; k++){ u128 r = (b != 0) ? (a % b) : (u128)0;
+        a = (b != 0) ? b : a; b = (b != 0) ? r : b; } return a; }
+__device__ __forceinline__ i128 ldn(const u64* lo,const u64* hi,int i){
+    return (i128)(((u128)hi[i] << 64) | lo[i]); }
+__device__ __forceinline__ i128 ldd(const u64* lo,const u64* hi,int i){
+    return (i128)(((u128)hi[i] << 64) | lo[i]); }
+'''
+
+_combine_level_q = cp.RawKernel(_QDECL + r'''
+extern "C" __global__
+void combine_level_q(const u64* anl,const u64* anh,const u64* adl,const u64* adh,
+                     const signed char* tags,
+                     u64* nnl,u64* nnh,u64* ndl,u64* ndh,int* ovf,int n){
+    int i = blockDim.x*(long long)blockIdx.x + threadIdx.x; if (i >= n) return;
+    i128 an=ldn(anl,anh,2*i), ad=ldd(adl,adh,2*i);
+    i128 bn=ldn(anl,anh,2*i+1), bd=ldd(adl,adh,2*i+1);
+    int isMul = (tags[i] == 2);
+    i128 p1 = an*bd, p2 = bn*ad;                          // add-numerator sub-products
+    i128 nm = an*bn,  na = p1 + p2,  D = ad*bd;           // mul-num / add-num / common den
+    int o = 0;                                            // overflow detection (exact, never wrap)
+    o |= (an!=0) && (nm/an != bn);                        // mul-num product
+    o |= (ad!=0) && (D /ad != bd);                        // common-den product
+    o |= (bd!=0) && (p1/bd != an);                        // add sub-product an*bd
+    o |= (ad!=0) && (p2/ad != bn);                        // add sub-product bn*ad
+    o |= ((p1>0)==(p2>0)) && ((na>0) != (p1>0)) && (p1!=0);   // add-numerator SUM overflow
+    i128 N = isMul ? nm : na;
+    u128 g = gcd_u(absu(N), absu(D)); g = (g==0) ? (u128)1 : g;   // EXPLICIT reduction
+    N = N / (i128)g; D = D / (i128)g;
+    nnl[i]=(u64)(u128)N; nnh[i]=(u64)((u128)N>>64);
+    ndl[i]=(u64)(u128)D; ndh[i]=(u64)((u128)D>>64);
+    if (o) ovf[0]=1;
+}
+''', 'combine_level_q', options=('--device-int128',))
+
+
+def _signed128(lo, hi):
+    v = (int(hi) << 64) | int(lo)
+    return v - (1 << 128) if v >= (1 << 127) else v
+
+
+def inside_perlevel_q(nums, dens, tags, block=256):
+    anl = cp.asarray(nums, cp.uint64); anh = cp.zeros(nums.size, cp.uint64)
+    adl = cp.asarray(dens, cp.uint64); adh = cp.zeros(dens.size, cp.uint64)
+    dt = [cp.asarray(t) for t in tags]; ovf = cp.zeros(1, cp.int32)
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    for tg in dt:
+        m = int(tg.size)
+        nnl = cp.empty(m, cp.uint64); nnh = cp.empty(m, cp.uint64)
+        ndl = cp.empty(m, cp.uint64); ndh = cp.empty(m, cp.uint64)
+        _combine_level_q(((m+block-1)//block,), (block,),
+                         (anl,anh,adl,adh,tg, nnl,nnh,ndl,ndh, ovf, np.int32(m)))
+        anl,anh,adl,adh = nnl,nnh,ndl,ndh
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter()-t0)*1e3
+    N = _signed128(anl.get()[0], anh.get()[0]); D = _signed128(adl.get()[0], adh.get()[0])
+    return N, D, ms, int(ovf.get()[0])             # raw (don't build Fraction before ovf check)
+
+
+def _host_fold_q(nums, dens, tags):
+    from fractions import Fraction
+    cur = [Fraction(int(n), int(d)) for n, d in zip(nums, dens)]
+    for tg in tags:                                    # PER-NODE tag (not tg[0]!)
+        cur = [(cur[2*i]*cur[2*i+1]) if tg[i] == TAG_MUL else (cur[2*i]+cur[2*i+1])
+               for i in range(len(cur)//2)]
+    return cur[0]
+
+
+def demo_q(h=6, seed=4):
+    """Exact ℚ on GPU: fraction leaves (the SWP probability carrier) folded by +,× with the
+    EXPLICIT gcd reduction, verified bit-exact against Python's Fraction. Small dens keep
+    the reduced ℚ inside 128-bit; deeper trees overflow → the escalate flag (demo_q_overflow)."""
+    from fractions import Fraction
+    rng = np.random.default_rng(seed); M = 1 << h
+    nums = rng.integers(1, 5, M).astype(np.uint64)
+    dens = rng.integers(1, 5, M).astype(np.uint64)
+    tags = [np.where(rng.integers(0,2, M>>L)==1, TAG_MUL, TAG_ADD).astype(np.int8)
+            for L in range(1, h+1)]
+    truth = _host_fold_q(nums, dens, tags)
+    inside_perlevel_q(nums, dens, tags)                        # warm
+    N, D, ms, ovf = inside_perlevel_q(nums, dens, tags)
+    assert ovf == 0 and D != 0, "ℚ overflowed 128-bit at this depth (escalate to multi-limb)"
+    assert Fraction(N, D) == truth, (N, D, truth)              # EXACT vs Python Fraction
+    print(f"M2b/ℚ exact rational on GPU, h={h} (2^{h}={M} fraction leaves, mixed +/×): root = "
+          f"{truth.numerator}/{truth.denominator} (num {truth.numerator.bit_length()}b, den "
+          f"{truth.denominator.bit_length()}b), VERIFIED bit-exact vs Python Fraction; overflow "
+          f"flag 0; explicit gcd reduction (the wedge/EEA), no hidden quotient. {ms:.2f} ms.")
+
+
+def demo_q_overflow(h=12, seed=4):
+    """Deeper ℚ tree: the reduced denominator exceeds 128 bits → overflow DETECTED (flag),
+    never a silent wrap — the M2b escalate signal (multi-limb is the completion)."""
+    from fractions import Fraction
+    rng = np.random.default_rng(seed); M = 1 << h
+    nums = rng.integers(1, 10, M).astype(np.uint64); dens = rng.integers(1, 10, M).astype(np.uint64)
+    tags = [np.where(rng.integers(0,2, M>>L)==1, TAG_MUL, TAG_ADD).astype(np.int8) for L in range(1,h+1)]
+    truth = _host_fold_q(nums, dens, tags)
+    _, _, _, ovf = inside_perlevel_q(nums, dens, tags)
+    assert ovf == 1, "expected 128-bit ℚ overflow at this depth"
+    bits = max(abs(truth.numerator).bit_length(), truth.denominator.bit_length())
+    print(f"M2b/ℚ escalate-don't-truncate: h={h} ℚ-tree's exact reduced value needs {bits} "
+          f"bits (>128). Overflow flag = {ovf} (DETECTED, not wrapped). The exact value is "
+          f"{truth.numerator.bit_length()}b/{truth.denominator.bit_length()}b. "
+          f"[Multi-limb escalation past 128-bit = the M2b completion.]")
+
+
 if __name__ == "__main__":
     print("Just Enough Agda on GPU — M1: SPPF inside-fold over F₂ (branchless, resident)\n")
     demo_chain(40)
@@ -585,3 +704,6 @@ if __name__ == "__main__":
     demo_overflow_i128()
     print()
     demo_device_build()
+    print()
+    demo_q()
+    demo_q_overflow()
