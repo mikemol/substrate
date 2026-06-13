@@ -36,10 +36,13 @@
 
 module Substrate.Algebra.R.Trace.RationalAdjunction where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
+open import Substrate.Foundation.Eq      using (_≡_; refl; sym; trans; cong₂)
+
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 
 open import Substrate.Algebra.Nat.Mod          using (_mod-suc_)
 open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
@@ -124,6 +127,28 @@ morph-head = ana-head qStep
 
 morph-tail : (s : ℕ × ℕ) → tail (qToRℚ s) ≡ qToRℚ (proj₂ (qStep s))
 morph-tail = ana-tail qStep
+
+------------------------------------------------------------------------
+-- THE RIGHT WAY (user): don't fold globally with `convergent n` (it runs past the
+-- CF length into the padding and drifts). Invert ONE `qStep` LOCALLY via the Wedge
+-- a = q·b + r (`div-mod-eq`), and recurse. `reconStep` is that local inverse: from
+-- the emitted digit q and the next state (b, r), rebuild (q·b + r, b) = the state.
+------------------------------------------------------------------------
+
+reconStep : ℕ → ℕ × ℕ → ℕ × ℕ
+reconStep q (b , r) = q * b + r , b
+
+-- The LOCAL unit, GENERAL (∀ a b, not one case): reconStep inverts qStep exactly,
+-- by the division equation. No convergent, no padding, no drift. This is the body
+-- the full unit recurses — bottoming out at `base` (remainder 0), so it never
+-- reaches the padding that drifted the global form ([[feedback_never_discard_residue]]:
+-- the residue r is exactly what `reconStep` keeps, the Wedge a = q·b + r).
+qStep-recon : (a b : ℕ)
+            → reconStep (proj₁ (qStep (a , suc b))) (proj₂ (qStep (a , suc b))) ≡ (a , suc b)
+qStep-recon a b =
+  cong₂ _,_
+    (trans (+-comm ((a div-suc b) * suc b) (a mod-suc b)) (sym (div-mod-eq a b)))
+    refl
 
 ------------------------------------------------------------------------
 -- THE COUNIT  R → ℚ → R  — a DECOMPOSITION, not identity. Take the depth-n
