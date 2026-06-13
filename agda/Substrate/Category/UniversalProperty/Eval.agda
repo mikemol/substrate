@@ -20,13 +20,13 @@
 
 module Substrate.Category.UniversalProperty.Eval where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
 open import Substrate.Category.UniversalProperty.Term
-  using (UPGen; lift; UPTerm; []; _∷_)
+  using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
 
 ------------------------------------------------------------------------
 -- Record-level identity and composition of UPMorphisms (UP3).
@@ -71,3 +71,46 @@ reify m = lift m ∷ []
 
 eval-reify : {U₁ U₂ : UPArrow} (m : UPMorphism U₁ U₂) → eval (reify m) ≡ m
 eval-reify m = refl
+
+------------------------------------------------------------------------
+-- UPMorphism IS a category (the category laws the capstone deferred): identity
+-- and associativity, all by η (refl) — function-composition assoc on source/target
+-- and identical `coherent` chaining either way.
+------------------------------------------------------------------------
+
+compose-idʳ : {U₁ U₂ : UPArrow} (m : UPMorphism U₁ U₂)
+            → compose-UPMorphism m (id-UPMorphism U₁) ≡ m
+compose-idʳ m = refl
+
+compose-idˡ : {U₁ U₂ : UPArrow} (m : UPMorphism U₁ U₂)
+            → compose-UPMorphism (id-UPMorphism U₂) m ≡ m
+compose-idˡ m = refl
+
+compose-assoc : {U₁ U₂ U₃ U₄ : UPArrow}
+                (h : UPMorphism U₃ U₄) (g : UPMorphism U₂ U₃) (f : UPMorphism U₁ U₂)
+              → compose-UPMorphism (compose-UPMorphism h g) f
+              ≡ compose-UPMorphism h (compose-UPMorphism g f)
+compose-assoc h g f = refl
+
+------------------------------------------------------------------------
+-- eval IS A FUNCTOR (the analysis's real keystone, VERIFIED): it carries term
+-- concatenation to record composition. So semantic composition reduces to
+-- syntactic append — the free/forgetful homomorphism.
+------------------------------------------------------------------------
+
+eval-++ : {U₁ U₂ U₃ : UPArrow} (s : UPTerm U₁ U₂) (t : UPTerm U₂ U₃)
+        → eval (s ++ᵤ t) ≡ compose-UPMorphism (eval t) (eval s)
+eval-++ []           t = sym (compose-idʳ (eval t))
+eval-++ (lift m ∷ s) t =
+  trans (cong (λ X → compose-UPMorphism X m) (eval-++ s t))
+        (compose-assoc (eval t) (eval s) m)
+
+------------------------------------------------------------------------
+-- The EASY half of "make everything commute": equal terms have equal records
+-- (cong eval). The HARD half — getting parallel paths to NORMALISE to the same
+-- term — is the UP4 equational theory, NOT done here. So commutativity reduces to
+-- word equality, but the word equality itself is the remaining work.
+------------------------------------------------------------------------
+
+eval-cong : {U₁ U₂ : UPArrow} {s t : UPTerm U₁ U₂} → s ≡ t → eval s ≡ eval t
+eval-cong = cong eval
