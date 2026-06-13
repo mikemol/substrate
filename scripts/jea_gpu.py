@@ -251,9 +251,43 @@ def _host_fold_tree(leaves, tags):
     return int(cur[0])
 
 
+# M1 baseline on the SAME tree: a per-level GLOBAL fold (every level read from / written
+# to global — no shared-memory residency). This is the apples-to-apples comparator.
+_combine_level_f2 = cp.RawKernel(r'''
+extern "C" __global__
+void combine_level_f2(const signed char* cur, const signed char* tags,
+                      signed char* nxt, int n) {
+    int i = blockDim.x * (long long)blockIdx.x + threadIdx.x;
+    if (i >= n) return;
+    signed char a = cur[2*i], b = cur[2*i+1], tg = tags[i];
+    signed char mm = (tg == 2), ma = (tg == 3);
+    nxt[i] = (signed char)((mm & (a & b)) ^ (ma & (a ^ b)));
+}
+''', 'combine_level_f2')
+
+
+def _fold_levels_device(cur, d_tags, block=256):
+    """Per-level GPU fold from a device level-array `cur` through device tag arrays."""
+    for tg in d_tags:
+        n = int(tg.size); nxt = cp.empty(n, cp.int8)
+        _combine_level_f2(((n + block - 1) // block,), (block,),
+                          (cur, tg, nxt, np.int32(n)))
+        cur = nxt
+    return cur                                         # size-1 device array
+
+
+def inside_perlevel(leaves, tags):
+    """Full per-level GLOBAL fold of the whole tree on GPU (the M1-style baseline)."""
+    cur = cp.asarray(leaves); d_tags = [cp.asarray(t) for t in tags]   # uploads (untimed)
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    root = _fold_levels_device(cur, d_tags)
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter() - t0) * 1e3
+    return int(root.get()[0]), ms
+
+
 def inside_tiled(leaves, tags, s=9):
-    """M1.5: fold the bottom `s` levels in shared memory (one launch, no global spill of
-    internal values), then finish the small top on the host. Returns (root, bytes_global)."""
+    """M1.5: fold the bottom `s` levels in shared memory (one launch, internal values never
+    spill to global), then finish the top per-level — all on GPU. Returns (root, ms)."""
     h = len(tags); M = leaves.size; SEG = 1 << s
     nblk = M >> s
     # btags[b] = concat over levels 1..s of block b's slice (reduction-step order).
@@ -264,42 +298,44 @@ def inside_tiled(leaves, tags, s=9):
             seg = tags[L][b * span:(b + 1) * span]
             btags[b * (SEG - 1) + off: b * (SEG - 1) + off + span] = seg
             off += span; span >>= 1
-    d_leaves = cp.asarray(leaves); d_btags = cp.asarray(btags)
-    d_partial = cp.empty(nblk, cp.int8)
+    d_btags = cp.asarray(btags)                       # host btags layout is untimed setup
+    d_leaves = cp.asarray(leaves); d_partial = cp.empty(nblk, cp.int8)
+    d_toptags = [cp.asarray(t) for t in tags[s:]]
     cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
     _fold_subtree_f2((nblk,), (SEG // 2,),
                      (d_leaves, d_btags, d_partial, np.int32(SEG)),
-                     shared_mem=SEG)                  # SEG int8 of shared per block
-    cp.cuda.Stream.null.synchronize(); gpu_ms = (time.perf_counter() - t0) * 1e3
-    # global traffic of the tiled launch: leaves in + tags in + partials out (internal
-    # bottom-s values stayed in shared, never global).
-    bytes_global = d_leaves.nbytes + d_btags.nbytes + d_partial.nbytes
-    # finish the top (levels s+1..h) on host — it is tiny (nblk values).
-    top = _host_fold_tree(d_partial.get(), tags[s:])
-    return top, bytes_global, gpu_ms
+                     shared_mem=SEG)                  # bottom s levels: all in shared mem
+    root = _fold_levels_device(d_partial, d_toptags)  # top: per-level (small), on GPU
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter() - t0) * 1e3
+    return int(root.get()[0]), ms
 
 
-def demo_tiled(h=22, s=9, seed=3):
-    """M1.5 spit-take: balanced 2^h-leaf F₂ tree, bottom s levels folded in shared memory."""
-    leaves, tags = build_balanced(h, seed)
-    M = leaves.size
-    # M1 baseline (per-level global fold) traffic: every level's children are read and the
-    # result written back to global — ~3 value-bytes per internal node + the tags.
-    n_internal = M - 1
-    m1_global = leaves.nbytes + 3 * n_internal + n_internal           # rough: 2 reads+1 write + tag
-    root, tiled_global, gpu_ms = inside_tiled(leaves, tags, s)
-    assert root == _host_fold_tree(leaves, tags), "tiled ≠ host fold"
-    saved = 100 * (1 - tiled_global / m1_global)
-    print(f"tiled h={h} (2^{h}={M:,} leaves), bottom s={s} levels in shared: root={root}, "
-          f"verified vs host. global traffic ≈ {tiled_global/1e6:.1f} MB vs per-level "
-          f"≈ {m1_global/1e6:.1f} MB ({saved:.0f}% less, analytic); bottom-{s} intermediates "
-          f"never left shared mem. GPU fold {gpu_ms:.2f} ms (host btags layout extra, "
-          f"vectorizable).")
-    # recompute-from-residue crossover, stated honestly for F₂:
-    print(f"  recompute-vs-fetch: an F₂ value is 1 byte = its residue, so FETCH wins here "
-          f"(nothing to save by recomputing). The recompute-from-residue WIN scales with "
-          f"value/residue size ratio → it earns its keep in M2 (exact ℚ: a reduced "
-          f"fraction ≫ its EEA-trace residue; recompute the reduction in-SM, don't move it).")
+def demo_compare(h=22, s=9, seed=3, reps=5):
+    """A/B on the SAME 2^h-leaf balanced F₂ tree, both folds entirely on GPU:
+    per-level GLOBAL fold (M1-style) vs bottom-s SHARED-memory tiled (M1.5).
+    JIT-warmed and min-over-reps so the timing is steady-state, not first-call compile."""
+    leaves, tags = build_balanced(h, seed); M = leaves.size
+    truth = _host_fold_tree(leaves, tags)
+    inside_perlevel(leaves, tags); inside_tiled(leaves, tags, s)        # warm the JIT (discard)
+    pl = [inside_perlevel(leaves, tags) for _ in range(reps)]
+    ti = [inside_tiled(leaves, tags, s) for _ in range(reps)]
+    r_pl, ms_pl = pl[0][0], min(m for _, m in pl)                      # min = least-noise
+    r_ti, ms_ti = ti[0][0], min(m for _, m in ti)
+    assert r_pl == truth and r_ti == truth, (r_pl, r_ti, truth)
+    speedup = ms_pl / ms_ti if ms_ti else float("inf")
+    # global VALUE-traffic the two move (the point of tiling): per-level round-trips every
+    # internal node's value (read 2 children + write = 3 bytes/node); tiled keeps the
+    # bottom-s internal values (≈ M·(1-2^-s) of them) in shared, only partials spill.
+    ni = M - 1
+    pl_val = 3 * ni
+    ti_val = 3 * (M >> s) + leaves.nbytes            # only top internals round-trip; leaves read once
+    print(f"SAME tree h={h} (2^{h}={M:,} leaves, {2*M-1:,} nodes), both GPU, both = host fold ({truth}):")
+    print(f"   per-level GLOBAL fold (M1) : {ms_pl:.2f} ms  | value-traffic ≈ {pl_val/1e6:.1f} MB")
+    print(f"   bottom-{s} SHARED tiled (M1.5): {ms_ti:.2f} ms  | value-traffic ≈ {ti_val/1e6:.1f} MB")
+    print(f"   → tiled is {speedup:.1f}x FASTER (per-level/tiled time); ~{100*(1-ti_val/pl_val):.0f}% "
+          f"less value round-tripped through global (analytic). The win combines fewer "
+          f"launches (s levels → 1) + shared residency; for F₂ (value=1B) the pure-bandwidth "
+          f"part is small and grows with carrier size → M2.")
 
 
 if __name__ == "__main__":
@@ -307,4 +343,4 @@ if __name__ == "__main__":
     demo_chain(40)
     demo_wide()
     print()
-    demo_tiled()
+    demo_compare()
