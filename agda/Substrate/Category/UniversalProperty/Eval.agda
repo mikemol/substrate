@@ -114,3 +114,34 @@ eval-++ (lift m ∷ s) t =
 
 eval-cong : {U₁ U₂ : UPArrow} {s t : UPTerm U₁ U₂} → s ≡ t → eval s ≡ eval t
 eval-cong = cong eval
+
+------------------------------------------------------------------------
+-- THE COMMON STRUCTURE (user: "when faced with an either/or, look for the common
+-- structure, recursively"). The three open threads — det=(−1)ⁿ, UP4 (reify∘eval),
+-- routing a .Term through eval — are NOT separate: they are all the FREE-CATEGORY
+-- FOLD. `foldUPTerm` is the unique functor out of the free category UPTerm,
+-- determined by a target (id + compose) and a generator interpretation. This IS the
+-- centre (Free⊣Forgetful / FreeUP.extend): a word folds uniquely into any target.
+--   • eval            = foldUPTerm into UPMorphism (interp = unlift)   [proved below]
+--   • upterm-parity   = foldUPTerm into ℤ/2 = (Bool, false, xor, const-flip)
+--   • cf-det / list-parity = the same fold on the CF/EEA-trace word
+--   • UP4             = the KERNEL of this fold (terms with equal fold-image)
+-- So the threads collapse to ONE object; each is `foldUPTerm` at a chosen target.
+------------------------------------------------------------------------
+
+foldUPTerm : {T : UPArrow → UPArrow → Set}
+           → ({U : UPArrow} → T U U)
+           → ({U₁ U₂ U₃ : UPArrow} → T U₂ U₃ → T U₁ U₂ → T U₁ U₃)
+           → ({U₁ U₂ : UPArrow} → UPGen U₁ U₂ → T U₁ U₂)
+           → {U₁ U₂ : UPArrow} → UPTerm U₁ U₂ → T U₁ U₂
+foldUPTerm idT cmpT interp []      = idT
+foldUPTerm idT cmpT interp (g ∷ t) = cmpT (foldUPTerm idT cmpT interp t) (interp g)
+
+-- eval IS this fold, at the UPMorphism target with `unlift` the interpretation.
+unlift : {U₁ U₂ : UPArrow} → UPGen U₁ U₂ → UPMorphism U₁ U₂
+unlift (lift m) = m
+
+eval-is-fold : {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂)
+             → eval t ≡ foldUPTerm (λ {U} → id-UPMorphism U) compose-UPMorphism unlift t
+eval-is-fold []           = refl
+eval-is-fold (lift m ∷ t) = cong (λ X → compose-UPMorphism X m) (eval-is-fold t)
