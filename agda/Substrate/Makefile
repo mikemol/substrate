@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ..
 
-FILES := All.agda Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
+FILES := Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
 SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Logic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona WitnessTower
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
