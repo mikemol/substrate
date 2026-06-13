@@ -29,7 +29,9 @@
 -- 3. Morton ≅ Cayley-Dickson via the COCYCLE — Morton(untwisted)/Hilbert(twisted)
 --    = trivial/nontrivial 2-cocycle on F₂ⁿ = CD level; ladder graded loss
 --    (ℂ comm→ℍ noncomm→𝕆 nonassoc) = the commute-edge grade. · conjecture ·
---    home: Cayley-Dickson NOT in substrate (build); Substrate.Cocycle partial.
+--    home: the CD doubling generator IS NOW BUILT — Algebra.CayleyDickson (the
+--    ℕ-indexed tower over ℚ, i²=−1, the 𝕊 zero divisor; same step as the nedge
+--    Evidence carrier-doubling). The COCYCLE/Morton bridge remains the open cell.
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
 --    (Morton/CD). · conjecture · home: new.
 -- 5. nilpotent-not-annihilating ⟹ NO DEAD-END — residues nilpotent (graded
