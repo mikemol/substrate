@@ -81,14 +81,16 @@ apply-V4Plane-Selector-lookup :
   (v : Vector 3) →
   lookup (apply V4Plane-Selector v) zero ≡ lookup v ₂
 apply-V4Plane-Selector-lookup (a ∷ b ∷ c ∷ []) =
-  -- LHS unfolds to: a · 𝟘 + (b · 𝟘 + (c · 𝟙 + 𝟘))
-  -- Chain: simplify each summand, then collapse identities to c.
-  cong-trans (_+ (b · 𝟘 + (c · 𝟙 + 𝟘))) (·-absorbʳ a)
+  -- `linear-from-images` is opaque, so we reach the dense sum via its
+  -- characterising lemma (not by reduction); the sum a · 𝟘 + (b · 𝟘 + (c · 𝟙 + 𝟘))
+  -- then collapses through the identities to c.
+  trans (apply-linear-from-images-lookup chirality-bit-images (a ∷ b ∷ c ∷ []) zero)
+  (cong-trans (_+ (b · 𝟘 + (c · 𝟙 + 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
   (cong-trans (_+ (c · 𝟙 + 𝟘)) (·-absorbʳ b)
   (trans (+-identityˡ _)
   (cong-trans (_+ 𝟘) (·-identityʳ c)
-         (+-identityʳ c)))))
+         (+-identityʳ c))))))
 
 ------------------------------------------------------------------------
 -- Bridges between KernelCode membership and predicate form.

@@ -82,25 +82,29 @@ apply-ChirAxis-Selector-lookup-0 :
   (v : Vector 3) →
   lookup (apply ChiralityAxis-Selector v) zero ≡ lookup v zero
 apply-ChirAxis-Selector-lookup-0 (a ∷ b ∷ c ∷ []) =
-  -- LHS unfolds to: a · 𝟙 + (b · 𝟘 + (c · 𝟘 + 𝟘))
-  cong-trans (_+ (b · 𝟘 + (c · 𝟘 + 𝟘))) (·-identityʳ a)
+  -- opaque `linear-from-images` → reach the dense sum via its characterising
+  -- lemma: a · 𝟙 + (b · 𝟘 + (c · 𝟘 + 𝟘)), which collapses to a.
+  trans (apply-linear-from-images-lookup v4-coords-images (a ∷ b ∷ c ∷ []) zero)
+  (cong-trans (_+ (b · 𝟘 + (c · 𝟘 + 𝟘))) (·-identityʳ a)
   (cong-trans (a +_) (cong (_+ (c · 𝟘 + 𝟘)) (·-absorbʳ b))
   (cong-trans (a +_) (+-identityˡ _)
   (cong-trans (a +_) (cong (_+ 𝟘) (·-absorbʳ c))
   (cong-trans (a +_) (+-identityˡ _)
-         (+-identityʳ a)))))
+         (+-identityʳ a))))))
 
 apply-ChirAxis-Selector-lookup-1 :
   (v : Vector 3) →
   lookup (apply ChiralityAxis-Selector v) (suc zero) ≡ lookup v (suc zero)
 apply-ChirAxis-Selector-lookup-1 (a ∷ b ∷ c ∷ []) =
-  -- LHS unfolds to: a · 𝟘 + (b · 𝟙 + (c · 𝟘 + 𝟘))
-  cong-trans (_+ (b · 𝟙 + (c · 𝟘 + 𝟘))) (·-absorbʳ a)
+  -- opaque `linear-from-images` → reach the dense sum via its characterising
+  -- lemma: a · 𝟘 + (b · 𝟙 + (c · 𝟘 + 𝟘)), which collapses to b.
+  trans (apply-linear-from-images-lookup v4-coords-images (a ∷ b ∷ c ∷ []) (suc zero))
+  (cong-trans (_+ (b · 𝟙 + (c · 𝟘 + 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
   (cong-trans (_+ (c · 𝟘 + 𝟘)) (·-identityʳ b)
   (cong-trans (b +_) (cong (_+ 𝟘) (·-absorbʳ c))
   (cong-trans (b +_) (+-identityˡ _)
-         (+-identityʳ b)))))
+         (+-identityʳ b))))))
 
 ------------------------------------------------------------------------
 -- Bridges between KernelCode membership and predicate form.
