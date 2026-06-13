@@ -32,13 +32,17 @@ module Substrate.Logic.Evidence.ElAtlas where
 open import Substrate.Foundation.Bool    using (Bool)
 open import Substrate.Foundation.Empty   using (⊥)
 open import Substrate.Foundation.Eq      using (_≡_)
-open import Substrate.Foundation.Product using (_×_)
+open import Substrate.Foundation.Product using (_×_; Σ)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; Verdict; verdict; swapE; swapV; notE; _∧E_; _∨E_; negPos)
 open import Substrate.Logic.Evidence.Verdict.NedgeShadow
   using (Bias; bias; recode; unrecode)
 open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
+-- GCX (Cayley-Dickson zero-divisor schedule): the Statement references the tower's
+-- def-level vocabulary only (the witnesses live in `.Proofs`).
+open import Substrate.Algebra.CayleyDickson
+  using (𝕊#; ≈#; mul; zero#; Prod; mulW)
 
 ------------------------------------------------------------------------
 -- The structured-edition claim atoms currently ON the substrate's Agda rung
@@ -51,7 +55,7 @@ open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
 -- lift (scalar bias cannot carry the 4-valued verdict) · ADJ chart adjunction
 -- (lossless two-chart exp ⊣ log adjoint equivalence on the evidence carrier).
 data Claim : Set where
-  CRS PRO JOI WAR TWN NGL ADJ : Claim
+  CRS PRO JOI WAR TWN NGL ADJ GCX : Claim
 
 ------------------------------------------------------------------------
 -- Each claim's substrate STATEMENT, dependent on the claim. A type per claim;
@@ -73,6 +77,15 @@ Statement NGL = (d : Bias → Verdict) →
 -- two charts — the structural content of exp ⊣ log, realized by `nedge-atlas`.
 Statement ADJ = ((e : Evidence)     → unrecode (recode e) ≡ e)
               × ((m : Bool × Bool)  → recode (unrecode m) ≡ m)
+-- GCX: the Cayley-Dickson zero-divisor schedule, el-atlas-style — there exist nonzero
+-- sedenions whose product VALUE collapses to 0, yet whose kept RESIDUE (the just-prior
+-- octonion sub-product, acP) is nonzero. The "wall" is a discarded residue, not nothing.
+Statement GCX =
+  Σ 𝕊# λ x → Σ 𝕊# λ y →
+       (≈# 4 x (zero# 4) → ⊥)                              -- x ≠ 0
+     × (≈# 4 y (zero# 4) → ⊥)                              -- y ≠ 0
+     × ≈# 4 (mul 4 x y) (zero# 4)                          -- product value = 0 (the collapse)
+     × (≈# 3 (Prod.acP (mulW 3 x y)) (zero# 3) → ⊥)        -- but the kept residue ≠ 0
 
 ------------------------------------------------------------------------
 -- The FRONTIER: structured-edition claims NOT yet on the Agda rung. Names
@@ -83,9 +96,9 @@ Statement ADJ = ((e : Evidence)     → unrecode (recode e) ≡ e)
 -- discharged set cannot lie.
 ------------------------------------------------------------------------
 
--- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · GCX
--- codec / zero-divisor / Cayley-Dickson schedule · NOE Noether pairings
--- (mass/bias conservation; carrier geometry) · IDC identity-collapse schedule
--- (↔ twins). (ADJ graduated to Claim, discharged by Atlas.nedge-atlas.)
+-- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · NOE Noether
+-- pairings (mass/bias conservation; carrier geometry) · IDC identity-collapse schedule
+-- (↔ twins). (ADJ graduated → Atlas.nedge-atlas; GCX graduated → CayleyDickson's
+-- sedenion zero divisor with kept residue.)
 data Frontier : Set where
-  SWP GCX NOE IDC : Frontier
+  SWP NOE IDC : Frontier
