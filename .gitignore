@@ -28,3 +28,7 @@ scratch/eliza/state/
 
 # local marker: mtime of the last green full build (pre-commit weekly gate)
 .full-build-stamp
+
+# uv-managed virtualenv (binary; deps tracked in requirements.txt)
+.venv/
+scratch/.venv/
