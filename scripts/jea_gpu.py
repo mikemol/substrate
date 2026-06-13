@@ -185,7 +185,126 @@ def demo_wide(width=1_000_000, layers=64, seed=1):
           f"(kernel verified vs host fold on a 256×12 instance).")
 
 
+# ======================================================================
+# M1.5 — SM shared-memory tiling. A balanced ⊗/⊕ tree (a parse reduction) folded so a
+# CUDA block owns a subtree: load its leaves once, fold the whole subtree IN __shared__
+# (the bottom `s` levels), write only the subtree root. The bottom-s intermediate values
+# NEVER touch global memory — that is the bandwidth win the charter asks for.
+#
+# Branchlessness: the COMBINE is the same masked formula as M1 (no data-dependent branch).
+# The only branch is the reduction's structural stride guard `if (t < half)` — it depends
+# on threadIdx, not on data (uniform per warp except the boundary), the standard shared-
+# reduction shape. Warp-shuffle to remove the sub-warp guard is a further optimization.
+# ======================================================================
+
+# Each block folds SEG = 2·blockDim leaves of a balanced tree into one partial, in shared
+# memory. `btags` holds, per block, that subtree's internal tags in reduction-step order
+# (level1 slice, then level2 slice, …) — SEG-1 tags per block.
+_fold_subtree_f2 = cp.RawKernel(r'''
+extern "C" __global__
+void fold_subtree_f2(const signed char* leaves, const signed char* btags,
+                     signed char* partial, int SEG) {
+    extern __shared__ signed char s[];
+    int t = threadIdx.x; int base = blockIdx.x * SEG; int toff = blockIdx.x * (SEG - 1);
+    s[t]           = leaves[base + t];               // 2 leaves per thread, coalesced
+    s[t + SEG/2]   = leaves[base + t + SEG/2];
+    __syncthreads();
+    int written = 0;
+    for (int half = SEG >> 1; half >= 1; half >>= 1) {
+        // stage reads in registers (adjacent pairs -- the mixed-op tree's pairing
+        // matters), sync, then write back: no read-write race, combine stays branchless.
+        signed char a = 0, b = 0, tg = 0;
+        if (t < half) { a = s[2*t]; b = s[2*t + 1]; tg = btags[toff + written + t]; }
+        __syncthreads();
+        if (t < half) {
+            signed char mm = (tg == 2), ma = (tg == 3);
+            s[t] = (signed char)((mm & (a & b)) ^ (ma & (a ^ b)));
+        }
+        written += half;
+        __syncthreads();
+    }
+    if (t == 0) partial[blockIdx.x] = s[0];
+}
+''', 'fold_subtree_f2')
+
+
+def build_balanced(h, seed=1):
+    """A balanced binary ⊗/⊕ tree: M = 2^h random F₂ leaves; each internal node a random
+    MUL/ADD. Returned level-by-level (level 0 = leaves; level L internal node i combines
+    level L-1 nodes 2i,2i+1). Pure SPPF (gen/⊗/⊕)."""
+    rng = np.random.default_rng(seed)
+    M = 1 << h
+    leaves = rng.integers(0, 2, M, np.int8)
+    tags = []                                         # tags[L-1] = level-L internal tags
+    for L in range(1, h + 1):
+        op = rng.integers(0, 2, M >> L)               # 1 = MUL(AND), 0 = ADD(XOR)
+        tags.append(np.where(op == 1, TAG_MUL, TAG_ADD).astype(np.int8))
+    return leaves, tags
+
+
+def _host_fold_tree(leaves, tags):
+    """Ground-truth: fold the balanced tree on the host, level by level."""
+    cur = leaves.astype(np.int8)
+    for tg in tags:
+        a, b = cur[0::2], cur[1::2]
+        cur = np.where(tg == TAG_MUL, a & b, a ^ b).astype(np.int8)
+    return int(cur[0])
+
+
+def inside_tiled(leaves, tags, s=9):
+    """M1.5: fold the bottom `s` levels in shared memory (one launch, no global spill of
+    internal values), then finish the small top on the host. Returns (root, bytes_global)."""
+    h = len(tags); M = leaves.size; SEG = 1 << s
+    nblk = M >> s
+    # btags[b] = concat over levels 1..s of block b's slice (reduction-step order).
+    btags = np.empty(nblk * (SEG - 1), np.int8)
+    for b in range(nblk):
+        off, span = 0, SEG >> 1
+        for L in range(s):                            # level L+1 has M>>(L+1) tags total
+            seg = tags[L][b * span:(b + 1) * span]
+            btags[b * (SEG - 1) + off: b * (SEG - 1) + off + span] = seg
+            off += span; span >>= 1
+    d_leaves = cp.asarray(leaves); d_btags = cp.asarray(btags)
+    d_partial = cp.empty(nblk, cp.int8)
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    _fold_subtree_f2((nblk,), (SEG // 2,),
+                     (d_leaves, d_btags, d_partial, np.int32(SEG)),
+                     shared_mem=SEG)                  # SEG int8 of shared per block
+    cp.cuda.Stream.null.synchronize(); gpu_ms = (time.perf_counter() - t0) * 1e3
+    # global traffic of the tiled launch: leaves in + tags in + partials out (internal
+    # bottom-s values stayed in shared, never global).
+    bytes_global = d_leaves.nbytes + d_btags.nbytes + d_partial.nbytes
+    # finish the top (levels s+1..h) on host — it is tiny (nblk values).
+    top = _host_fold_tree(d_partial.get(), tags[s:])
+    return top, bytes_global, gpu_ms
+
+
+def demo_tiled(h=22, s=9, seed=3):
+    """M1.5 spit-take: balanced 2^h-leaf F₂ tree, bottom s levels folded in shared memory."""
+    leaves, tags = build_balanced(h, seed)
+    M = leaves.size
+    # M1 baseline (per-level global fold) traffic: every level's children are read and the
+    # result written back to global — ~3 value-bytes per internal node + the tags.
+    n_internal = M - 1
+    m1_global = leaves.nbytes + 3 * n_internal + n_internal           # rough: 2 reads+1 write + tag
+    root, tiled_global, gpu_ms = inside_tiled(leaves, tags, s)
+    assert root == _host_fold_tree(leaves, tags), "tiled ≠ host fold"
+    saved = 100 * (1 - tiled_global / m1_global)
+    print(f"tiled h={h} (2^{h}={M:,} leaves), bottom s={s} levels in shared: root={root}, "
+          f"verified vs host. global traffic ≈ {tiled_global/1e6:.1f} MB vs per-level "
+          f"≈ {m1_global/1e6:.1f} MB ({saved:.0f}% less, analytic); bottom-{s} intermediates "
+          f"never left shared mem. GPU fold {gpu_ms:.2f} ms (host btags layout extra, "
+          f"vectorizable).")
+    # recompute-from-residue crossover, stated honestly for F₂:
+    print(f"  recompute-vs-fetch: an F₂ value is 1 byte = its residue, so FETCH wins here "
+          f"(nothing to save by recomputing). The recompute-from-residue WIN scales with "
+          f"value/residue size ratio → it earns its keep in M2 (exact ℚ: a reduced "
+          f"fraction ≫ its EEA-trace residue; recompute the reduction in-SM, don't move it).")
+
+
 if __name__ == "__main__":
     print("Just Enough Agda on GPU — M1: SPPF inside-fold over F₂ (branchless, resident)\n")
     demo_chain(40)
     demo_wide()
+    print()
+    demo_tiled()
