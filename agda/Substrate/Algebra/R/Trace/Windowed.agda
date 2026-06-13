@@ -23,6 +23,7 @@ module Substrate.Algebra.R.Trace.Windowed where
 open import Substrate.Foundation.Nat     using (ℕ)
 open import Substrate.Foundation.List    using (List)
 open import Substrate.Foundation.Product using (_×_; proj₁; proj₂)
+open import Substrate.Foundation.Eq      using (_≡_; cong)
 
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.R.Trace using (RealTrace; convergent; digits-of-EEA)
@@ -38,3 +39,18 @@ windowed-cf K n x =
       q  = proj₂ (convergent n x)
       ND = K p q
   in digits-of-EEA (proj₂ (compute-trace (proj₁ ND) (proj₂ ND)))
+
+------------------------------------------------------------------------
+-- THE VARIATION BOUNDARY IS EXACTLY THE KERNEL: `windowed-cf K n x` reads K only
+-- at the single point (x's n-th convergent), so the kernel DETERMINES the op
+-- (pointwise). This is the universal content — the op factors through K, and K is
+-- the whole of the variation. (The honest, funext-free form: agreement of kernels
+-- gives agreement of the ops at every (n, x).)
+------------------------------------------------------------------------
+
+windowed-cf-determined :
+  (K₁ K₂ : ℕ → ℕ → ℕ × ℕ) → ((p q : ℕ) → K₁ p q ≡ K₂ p q)
+  → (n : ℕ) (x : RealTrace) → windowed-cf K₁ n x ≡ windowed-cf K₂ n x
+windowed-cf-determined K₁ K₂ eq n x =
+  cong (λ ND → digits-of-EEA (proj₂ (compute-trace (proj₁ ND) (proj₂ ND))))
+       (eq (proj₁ (convergent n x)) (proj₂ (convergent n x)))
