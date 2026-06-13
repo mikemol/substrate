@@ -25,3 +25,6 @@ scratch/eliza/state/
 # Claude Code session configuration
 .claude/
 
+
+# local marker: mtime of the last green full build (pre-commit weekly gate)
+.full-build-stamp

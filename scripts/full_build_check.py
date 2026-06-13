@@ -70,3 +70,4 @@ print(f"\n==== full build: {npass}/{total} PASS, {len(fails)} not-building ===="
 for p, s, m in sorted(fails):
     print(f"  {s}: {os.path.relpath(p, AGDA_DIR)}")
 print(f"\nfull results: {out}")
+sys.exit(1 if fails else 0)   # non-zero ⇒ a module doesn't build (gate-blocking)

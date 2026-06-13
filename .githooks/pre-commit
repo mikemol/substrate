@@ -58,6 +58,33 @@ run "decl-site shape tags" python3 "$ROOT/scripts/decl_shape_tag.py"
 # fork-by-reimplementation class (e.g. _+ℤ_ re-defined under Algebra/Q/).
 run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 
+# Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
+# process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
+# most weekly: a successful run touches "$STAMP"; while that stamp is younger than a
+# week the build is skipped for fast commits. Only attempted when the cheap gates above
+# already passed (no point building on an otherwise-doomed commit). Force a run by
+# deleting the stamp; bypass everything with `git commit --no-verify`.
+STAMP="$ROOT/.full-build-stamp"
+WEEK=$((7 * 24 * 3600))
+if [ "$fail" -eq 0 ]; then
+  age=$WEEK
+  if [ -f "$STAMP" ]; then
+    age=$(( $(date +%s) - $(stat -c %Y "$STAMP") ))
+  fi
+  if [ "$age" -lt "$WEEK" ]; then
+    echo "pre-commit: full build skipped (last $((age / 86400))d ago, < 7d; rm $STAMP to force)."
+  else
+    echo "pre-commit: full build (every module; >7d since last) — running, this may take a while…"
+    if python3 "$ROOT/scripts/full_build_check.py" -j6; then
+      touch "$STAMP"
+      echo "pre-commit: full build OK — stamp refreshed."
+    else
+      echo "pre-commit: FAILED — full build (a module does not typecheck)" >&2
+      fail=1
+    fi
+  fi
+fi
+
 if [ "$fail" -ne 0 ]; then
   echo "pre-commit: one or more checks failed; commit aborted (use --no-verify to override)." >&2
   exit 1
