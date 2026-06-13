@@ -19,6 +19,9 @@
 --        layer is a Markov kernel)
 --   T28: PontryaginDual.Term → Substrate.Groups.Coxeter (cyclic
 --        characters as Coxeter words)
+--   T29: Wedge.Trace → free-monoid word (the EEA free term's continued-
+--        fraction digit word) — CONCRETE (not a stub), via `trace-word`.
+--        Reflects the R-arc / division machinery into this diagram.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -48,6 +51,10 @@ open import Substrate.Category.CascadedCoalgebra.Term
   renaming ([] to []ᶜᶜ; _∷_ to _∷ᶜᶜ_)
 open import Substrate.Algebra.PontryaginDual.Term
   using (CharTerm; CharGen)
+open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
+open import Substrate.Algebra.Wedge.TraceWord using (trace-word)
+open import Substrate.Foundation.List using (List)
+open import Substrate.Foundation.Nat using (ℕ)
 
 ------------------------------------------------------------------------
 -- T23: StochasticLens.Term → MarkovCategory.Term bridge.
@@ -107,6 +114,18 @@ bridge-polylens-poly t = t
 -- Stub: requires Substrate.Groups.Coxeter.FreeCyclic module integration.
 -- The structural connection is named here; the explicit Coxeter
 -- import is deferred to a concrete site.
+
+------------------------------------------------------------------------
+-- T29: Wedge.Trace → free-monoid word (CONCRETE, not a stub).
+--
+-- The R-arc / division machinery's free term is `Algebra.Wedge.Trace` (keep
+-- every wedge step). It bridges into this diagram via `trace-word`: the free
+-- wedge term ↦ its continued-fraction digit word (the free monoid on ℕ),
+-- uniform over every `DivStr` — the same shape as T28 (a term ↦ a word). This
+-- one is fully realized, not deferred.
+
+bridge-wedgetrace-word : {D : DivStr} {a b g : C D} → Trace D a b g → List ℕ
+bridge-wedgetrace-word = trace-word
 
 ------------------------------------------------------------------------
 -- Categorical reading: the bridges form a small DIAGRAM in the
