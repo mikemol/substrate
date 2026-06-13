@@ -19,9 +19,9 @@
 --        layer is a Markov kernel)
 --   T28: PontryaginDual.Term → Substrate.Groups.Coxeter (cyclic
 --        characters as Coxeter words)
---   T29: Wedge.Trace → free-monoid word (the EEA free term's continued-
---        fraction digit word) — CONCRETE (not a stub), via `trace-word`.
---        Reflects the R-arc / division machinery into this diagram.
+--   T29: Wedge.Trace → carrier-free CF shape — CONCRETE (not a stub), via the
+--        EXISTING `Algebra.Wedge.Shape.shape`. Reflects the R-arc / division
+--        machinery into this diagram.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -52,9 +52,7 @@ open import Substrate.Category.CascadedCoalgebra.Term
 open import Substrate.Algebra.PontryaginDual.Term
   using (CharTerm; CharGen)
 open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
-open import Substrate.Algebra.Wedge.TraceWord using (trace-word)
-open import Substrate.Foundation.List using (List)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 
 ------------------------------------------------------------------------
 -- T23: StochasticLens.Term → MarkovCategory.Term bridge.
@@ -116,16 +114,19 @@ bridge-polylens-poly t = t
 -- import is deferred to a concrete site.
 
 ------------------------------------------------------------------------
--- T29: Wedge.Trace → free-monoid word (CONCRETE, not a stub).
+-- T29: Wedge.Trace → carrier-free continued-fraction shape (CONCRETE).
 --
 -- The R-arc / division machinery's free term is `Algebra.Wedge.Trace` (keep
--- every wedge step). It bridges into this diagram via `trace-word`: the free
--- wedge term ↦ its continued-fraction digit word (the free monoid on ℕ),
--- uniform over every `DivStr` — the same shape as T28 (a term ↦ a word). This
--- one is fully realized, not deferred.
+-- every wedge step). Its bridge into this diagram ALREADY EXISTS — it is
+-- `Algebra.Wedge.Shape.shape`: the free wedge term ↦ its carrier-free CF digit
+-- word (`WedgeShape = List ℕ`), uniform over every `DivStr`, with
+-- `Wedge.Shape.Corresponds` (= shape-equality) the cross-silo bridge relation.
+-- (I first wrote a `trace-word` here; it duplicated `shape` exactly and was
+-- removed — convergence over isolation, use the apex.) Same shape as T28
+-- (a term ↦ a word); fully realized, not deferred.
 
-bridge-wedgetrace-word : {D : DivStr} {a b g : C D} → Trace D a b g → List ℕ
-bridge-wedgetrace-word = trace-word
+bridge-wedge-shape : {D : DivStr} {a b g : C D} → Trace D a b g → WedgeShape
+bridge-wedge-shape = shape
 
 ------------------------------------------------------------------------
 -- Categorical reading: the bridges form a small DIAGRAM in the
