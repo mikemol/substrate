@@ -13,9 +13,17 @@
 --   ℝ → ℂ : lose self-conjugacy (ℝ's conj = id; ℂ's does not)
 --   ℂ → ℍ : lose COMMUTATIVITY
 --   ℍ → 𝕆 : lose ASSOCIATIVITY
---   𝕆 → 𝕊 : lose ALTERNATIVITY — and ZERO DIVISORS appear (𝕊 is not a division
---           algebra). This is the "wall" — but it is just the sedenions, and the
---           generator keeps doubling 𝕊 → 𝕋(rigintaduonions) → … with no obstruction.
+--   𝕆 → 𝕊 : lose ALTERNATIVITY — "zero divisors appear". But a zero divisor is
+--           NOT annihilation; it is a multiplicative MODULO where we COLLAPSED the
+--           state to 0 instead of keeping the remainder (user, 2026-06-12). The
+--           doubling product has a residue (the level-n sub-products); the value
+--           cancels (acP − dbP = 0) only because acP ≈ dbP, and the kept remainder
+--           acP = e₁ᴼ·e₄ᴼ = e₅ᴼ is a NONZERO unit octonion. Keep the generator
+--           state (the rational sub-products), exactly as el-atlas keeps the
+--           just-prior-to-zero-divisor vector + the zero-divisor space, rather than
+--           collapsing to 0 ([[feedback_never_discard_residue]],
+--           [[feedback_wedge_not_projection]]). The "wall" is a discarded residue;
+--           the generator keeps doubling 𝕊 → 𝕋(trigintaduonions) → … unobstructed.
 --
 -- The construction here makes "doesn't stop" LITERAL: `Carrier : ℕ → Set` and every
 -- operation is TOTAL in the level `n`, by structural recursion — `Carrier 5`,
@@ -53,7 +61,7 @@ module Substrate.Algebra.CayleyDickson where
 
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (refl)
+open import Substrate.Foundation.Eq      using (_≡_; refl)
 open import Substrate.Foundation.Empty   using (⊥)
 
 open import Substrate.Algebra.Q       using (ℚ; 0ℚ; 1ℚ; -1ℚ)
@@ -126,6 +134,33 @@ mul (suc n) (a , b) (c , d) =
   add n (mul n d a) (mul n b (conj n c))
 
 ------------------------------------------------------------------------
+-- THE PRODUCT WITH ITS RESIDUE (the never-discard-residue spine,
+-- [[feedback_never_discard_residue]] — and the el-atlas zero-divisor handling the
+-- user named: keep the just-prior-to-collapse state, don't collapse to 0).
+--
+-- One doubling product has FOUR level-n sub-products before the two cancellations:
+--   left  coord = acP − dbP   (acP = a·c,  dbP = d*·b)
+--   right coord = daP + bcP   (daP = d·a,  bcP = b·c*)
+-- `mul (suc n)` keeps only the cancelled VALUE; `mulW` keeps the residue. They are
+-- tied by `mul ≡ value ∘ mulW` (refl) — exactly the gcd-ℕ = proj₁ ∘ compute-trace
+-- pattern (the collapsed op is the projection of the trace).
+------------------------------------------------------------------------
+
+record Prod (n : ℕ) : Set where
+  constructor prod
+  field acP dbP daP bcP : Carrier n
+
+mulW : (n : ℕ) → Carrier (suc n) → Carrier (suc n) → Prod n
+mulW n (a , b) (c , d) =
+  prod (mul n a c) (mul n (conj n d) b) (mul n d a) (mul n b (conj n c))
+
+value : (n : ℕ) → Prod n → Carrier (suc n)
+value n (prod ac db da bc) = sub n ac db , add n da bc
+
+mul≡value : (n : ℕ) (x y : Carrier (suc n)) → mul (suc n) x y ≡ value n (mulW n x y)
+mul≡value n (a , b) (c , d) = refl
+
+------------------------------------------------------------------------
 -- Pointwise ℚ-setoid equality on the tower (the carrier is nested ℚ pairs; use
 -- the value equality `≈ℚ`, not representation `≡`).
 ------------------------------------------------------------------------
@@ -146,24 +181,16 @@ i²≈−1 : ≈# 1 (mul 1 i i) (neg 1 (one# 1))
 i²≈−1 = refl , refl
 
 ------------------------------------------------------------------------
--- 𝕆 → 𝕊: the "wall" that isn't one. Alternativity is lost and ZERO DIVISORS
--- appear — but a zero divisor is a NAMED algebraic fact, not a halt. The doubling
--- is deterministic, so we just WRITE a zero divisor and the construction COMPUTES
--- the annihilation: the `refl`s below ARE the Cayley step doing the work (no
--- search, no analysis). The classic one, in our basis: (e₁ + e₁₀)(e₄ − e₁₅) = 0,
--- i.e. in 𝕊 = 𝕆 × 𝕆 the pair (e₁ᴼ, e₂ᴼ) annihilates (e₄ᴼ, −e₇ᴼ).
+-- 𝕆 → 𝕊: the "wall" that isn't one — and the COLLAPSE that hides the residue.
+--
+-- The classic sedenion zero divisor, in our basis: (e₁ + e₁₀)(e₄ − e₁₅), i.e. in
+-- 𝕊 = 𝕆 × 𝕆 the pair (e₁ᴼ, e₂ᴼ) "annihilating" (e₄ᴼ, −e₇ᴼ). Both factors nonzero.
 ------------------------------------------------------------------------
 
 xZD yZD : 𝕊#
 xZD = ((((0ℚ , 1ℚ) , (0ℚ , 0ℚ)) , ((0ℚ , 0ℚ) , (0ℚ , 0ℚ))) , (((0ℚ , 0ℚ) , (1ℚ , 0ℚ)) , ((0ℚ , 0ℚ) , (0ℚ , 0ℚ))))
 yZD = ((((0ℚ , 0ℚ) , (0ℚ , 0ℚ)) , ((1ℚ , 0ℚ) , (0ℚ , 0ℚ))) , (((0ℚ , 0ℚ) , (0ℚ , 0ℚ)) , ((0ℚ , 0ℚ) , (0ℚ , -1ℚ))))
 
--- their product is 0 — computed by the doubled multiplication, pointwise by refl:
-zd-product : ≈# 4 (mul 4 xZD yZD) (zero# 4)
-zd-product = ((((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))) , (((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))))
-
--- …and both factors are nonzero, so it is a GENUINE zero divisor (not 0·y): each
--- has a coordinate equal to 1ℚ, and 1ℚ ≉ℚ 0ℚ.
 1ℚ≉0ℚ : 1ℚ ≈ℚ 0ℚ → ⊥
 1ℚ≉0ℚ ()
 
@@ -172,3 +199,31 @@ xZD≢0 z = 1ℚ≉0ℚ (proj₂ (proj₁ (proj₁ (proj₁ z))))
 
 yZD≢0 : ≈# 4 yZD (zero# 4) → ⊥
 yZD≢0 z = 1ℚ≉0ℚ (proj₁ (proj₁ (proj₂ (proj₁ z))))
+
+------------------------------------------------------------------------
+-- THE COLLAPSED LOOK: the product VALUE is 0. This is the LOSSY projection —
+-- `value` throws the residue away ([[feedback_wedge_not_projection]]).
+------------------------------------------------------------------------
+
+zd-value-0 : ≈# 4 (mul 4 xZD yZD) (zero# 4)
+zd-value-0 = ((((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))) , (((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl))))
+
+------------------------------------------------------------------------
+-- THE RESIDUE WE KEEP (the substrate's point, not the textbook's). A "zero
+-- divisor" is a multiplicative MODULO: the left coordinate `acP − dbP` collapses
+-- to 0 only because acP ≈ dbP — and the kept remainder acP = a·c = e₁ᴼ·e₄ᴼ = e₅ᴼ
+-- is a NONZERO unit octonion. We hold the generator state (the level-3 octonion
+-- sub-products), exactly as el-atlas holds the just-prior-to-zero-divisor vector,
+-- instead of collapsing to 0. The "annihilation" is `acP ≈ dbP`, not nothing.
+------------------------------------------------------------------------
+
+zdW : Prod 3
+zdW = mulW 3 xZD yZD
+
+-- the multiplicative modulo: the two sub-products coincide (so the value cancels):
+zd-residue-coincides : ≈# 3 (Prod.acP zdW) (Prod.dbP zdW)
+zd-residue-coincides = (((refl , refl) , (refl , refl)) , ((refl , refl) , (refl , refl)))
+
+-- but the kept remainder is a NONZERO unit (e₅ᴼ) — the residue, not 0:
+zd-residue-nonzero : ≈# 3 (Prod.acP zdW) (zero# 3) → ⊥
+zd-residue-nonzero z = 1ℚ≉0ℚ (proj₂ (proj₁ (proj₂ z)))
