@@ -60,7 +60,7 @@ open import Substrate.Algebra.Z.Bezout         using (BezoutℤWitness)
 -- lift (scalar bias cannot carry the 4-valued verdict) · ADJ chart adjunction
 -- (lossless two-chart exp ⊣ log adjoint equivalence on the evidence carrier).
 data Claim : Set where
-  CRS PRO JOI WAR TWN NGL ADJ GCX NOE : Claim
+  CRS PRO JOI WAR TWN NGL ADJ GCX NOE IDC : Claim
 
 ------------------------------------------------------------------------
 -- Each claim's substrate STATEMENT, dependent on the claim. A type per claim;
@@ -96,6 +96,12 @@ Statement GCX =
 -- conserved momenta: every EEA trace yields (s,t) with s·a + t·b ≡ g. Statement = the
 -- type of `bezout-ℤ`; the conservation law of the EEA flow.
 Statement NOE = {a b g : ℕ} → EEATrace a b g → BezoutℤWitness a b g
+-- IDC: the identity-collapse schedule, at the codec (recode) probe. Identity is
+-- unseparated-in-probe-space: collapsing two evidences under the recode chart forces
+-- their verdicts to agree — distinct participation (distinct verdict) cannot collapse
+-- under the codec. The general ∀-faithful-probe form (NoCollapse.faithful-refines-
+-- verdict) is Set₁; this is its codec instance, kept in Set, tied to ADJ's recode.
+Statement IDC = {x y : Evidence} → recode x ≡ recode y → verdict x ≡ verdict y
 
 ------------------------------------------------------------------------
 -- The FRONTIER: structured-edition claims NOT yet on the Agda rung. Names
@@ -107,11 +113,9 @@ Statement NOE = {a b g : ℕ} → EEATrace a b g → BezoutℤWitness a b g
 ------------------------------------------------------------------------
 
 -- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity — one chart,
--- pluggable carrier semiring) · IDC identity-collapse schedule (↔ twins). IDC's
--- substrate witness is `NoCollapse.faithful-refines-verdict` (identity unseparated-in-
--- probe-space), but its ∀-over-probe-carrier form is Set₁ — it needs the rung's
--- `Statement : Claim → Set` lifted to Set₁ (or a fixed faithful carrier), a universe
--- decision deferred. (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's sedenion zero
--- divisor with kept residue; NOE → bezout-ℤ, the conserved charge of the Euclidean flow.)
+-- pluggable carrier semiring). The last frontier claim — a real arc against the
+-- Register/PackedTree machinery. (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's
+-- sedenion zero divisor with kept residue; NOE → bezout-ℤ, the conserved charge of the
+-- Euclidean flow; IDC → faithful-refines-verdict at the recode codec probe.)
 data Frontier : Set where
-  SWP IDC : Frontier
+  SWP : Frontier

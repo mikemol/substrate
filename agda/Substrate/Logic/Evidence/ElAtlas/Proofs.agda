@@ -29,19 +29,19 @@
 
 module Substrate.Logic.Evidence.ElAtlas.Proofs where
 
-open import Substrate.Foundation.Eq      using (_≡_)
+open import Substrate.Foundation.Eq      using (_≡_; cong)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Logic.Evidence.Verdict using (Evidence; verdict; swapE; swapV)
 open import Substrate.Logic.Evidence.ElAtlas
-  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; ADJ; GCX; NOE; Statement)
+  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; ADJ; GCX; NOE; IDC; Statement)
 open import Substrate.Logic.Evidence.Atlas using (nedge-atlas; exp-log; log-exp)
 open import Substrate.Algebra.CayleyDickson
   using (xZD; yZD; xZD≢0; yZD≢0; zd-value-0; zd-residue-nonzero)
 open import Substrate.Algebra.Z.Bezout using (bezout-ℤ)
 
 open import Substrate.Logic.Evidence.Verdict.Properties  using (intertwine; deMorgan-∧∨)
-open import Substrate.Logic.Evidence.Verdict.NoCollapse  using (no-single-rail-quotient)
-open import Substrate.Logic.Evidence.Verdict.NedgeShadow using (bias-cannot-carry-verdict)
+open import Substrate.Logic.Evidence.Verdict.NoCollapse  using (no-single-rail-quotient; faithful-refines-verdict)
+open import Substrate.Logic.Evidence.Verdict.NedgeShadow using (bias-cannot-carry-verdict; recode; unrecode)
 open import Substrate.Logic.Evidence.Verdict.Phase       using (N₊-S-noncommute)
 open import Substrate.Logic.Evidence.Warrant.Properties  using (⊓w-assoc)
 
@@ -59,6 +59,10 @@ proof-tier NGL = bias-cannot-carry-verdict
 proof-tier ADJ = log-exp nedge-atlas , exp-log nedge-atlas
 proof-tier GCX = xZD , yZD , xZD≢0 , yZD≢0 , zd-value-0 , zd-residue-nonzero
 proof-tier NOE = bezout-ℤ
+-- IDC: the recode codec is faithful-for-verdict — collapsing under recode forces verdict
+-- agreement. Decoder = verdict ∘ unrecode; its obligation is the ADJ round-trip.
+proof-tier IDC = faithful-refines-verdict recode (λ m → verdict (unrecode m))
+                                          (λ e → cong verdict (log-exp nedge-atlas e))
 
 ------------------------------------------------------------------------
 -- Using the registry: extract a registered claim's proof by EVALUATING the Π.
