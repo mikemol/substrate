@@ -58,6 +58,11 @@ run "decl-site shape tags" python3 "$ROOT/scripts/decl_shape_tag.py"
 # fork-by-reimplementation class (e.g. _+ℤ_ re-defined under Algebra/Q/).
 run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 
+# Apex gate: every relational law-motif (≥3 instances) must have a parametric apex
+# (a parameterizable module — NOT an index, which forces concurrent building). No
+# baseline: a new cluster blocks until its apex is built, snowballing leverage early.
+run "apex gate" python3 "$ROOT/scripts/law_motif_apex.py" --check
+
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
 # process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
 # most weekly: a successful run touches "$STAMP"; while that stamp is younger than a

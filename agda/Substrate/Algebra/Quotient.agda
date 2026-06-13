@@ -148,6 +148,21 @@ split-Canonical F s retract = record
   ; ≈-canonical          = λ a → sym (retract (F a))
   }
 
+-- An IDEMPOTENT e (e∘e ≡ e) is, even more directly, a Canonical form for its OWN
+-- kernel — the most elementary section-based quotient (split-Canonical is the special
+-- case e = s∘F). `canonical-respects-≈` is the identity, since ker e IS "e x ≡ e y".
+-- The apex of the idempotent law-motif f(f x)≡f x (normalize-idem, q-idempotent, …).
+idem-Canonical :
+  {a : Level} {A : Set a}
+  (e : A → A) (idem : (x : A) → e (e x) ≡ e x) →
+  Canonical (ker-Quotient e)
+idem-Canonical e idem = record
+  { canonical            = e
+  ; canonical-idempotent = idem
+  ; canonical-respects-≈ = λ p → p
+  ; ≈-canonical          = λ a → sym (idem a)
+  }
+
 ------------------------------------------------------------------------
 -- 4. Capstone for QU1.
 --

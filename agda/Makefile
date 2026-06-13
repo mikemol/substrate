@@ -5,14 +5,14 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
-.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier advise
+.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
-check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier
+check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-apex
 	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
@@ -35,6 +35,10 @@ check-decltag:
 # Canonical operators live in their carrier's home, one-per-file (no forks/buckets).
 check-carrier:
 	@python3 ../scripts/check_carrier_locality.py --quiet
+# Apex gate: every relational law-motif (≥3 instances) must have a parametric
+# apex (a parameterizable module, NOT an index). No baseline — build the apex.
+check-apex:
+	@python3 ../scripts/law_motif_apex.py --check
 # ADVISORY (non-blocking): judgment reports, deliberately NOT in `check` /
 # the hook (each has real false positives, so they inform, never gate):
 #   * theorem-per-file pressure (signature counts)

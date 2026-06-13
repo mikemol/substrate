@@ -127,11 +127,8 @@ def classify(seg):
     if not is_ident(F) or not fargs: return None
     s, sargs = spine(fargs[-1])             # inner application = s (… x)
     if not is_ident(s) or not sargs:
-        # homomorphism? f (x ⊕ y) ≡ (f x) ⊗ (f y)
-        inner = unwrap(fargs[-1])
-        if any(op in inner for op in ("⊕", "+", "·", "*", "∙")) and rargs:
-            return ("homomorphism        f (x⊕y) ≡ f x ⊗ f y", F, F, inner)
-        return None
+        return None     # (homomorphism f(x⊕y)≡f x⊗f y intentionally NOT matched: the bare
+                        # law has no clean parametric apex, and the heuristic was unreliable.)
     x = unwrap(sargs[-1])
     # retraction / section: f (g x) ≡ x      (rhs is the bare bound var x)
     if not rargs and rh == x:
@@ -184,10 +181,29 @@ for name, rel, ty in sigs:
     if c and c[1] not in bound and c[2] not in bound and c[1] in defnames and c[2] in defnames:
         instances[c[0]].append((name, rel, c[1], c[2]))
 
-# ---- report ----
-print("# law-motif apex scan — relational motifs over function signatures\n")
 instances = {m: sorted(set(v)) for m, v in instances.items()}   # dedup (sig+field overlap)
 apexes    = {m: sorted(set(v)) for m, v in apexes.items()}
+
+# ---- --check: BLOCKING gate (no baseline). A law-motif with ≥MIN instances MUST have a
+# parametric apex; otherwise the leverage is un-captured. Remedy = build the apex (a
+# parameterizable module — NOT an index, which would force concurrent building). ----
+if "--check" in sys.argv:
+    bad = sorted((m, len(instances[m])) for m in instances
+                 if len(instances[m]) >= MIN and m not in apexes)
+    if bad:
+        print(f"apex-gate FAILED — law-motif cluster(s) with ≥{MIN} instances and NO parametric apex:")
+        for m, n in bad:
+            print(f"  ⚠ {m.strip()} — {n} concrete instances, no apex.")
+        print("  Build the PARAMETERIZABLE apex (cf. split-Canonical / idem-Canonical /")
+        print("  invol-injective) and let the instances route through it. Do NOT build an index.")
+        sys.exit(1)
+    covered = sorted(m.split()[0] for m in instances if len(instances[m]) >= MIN)
+    print(f"apex-gate OK — every law-motif (≥{MIN} instances) has a parametric apex "
+          f"[{', '.join(covered)}].")
+    sys.exit(0)
+
+# ---- report ----
+print("# law-motif apex scan — relational motifs over function signatures\n")
 for motif in sorted(set(instances) | set(apexes), key=lambda k: -len(instances.get(k, []))):
     inst = instances.get(motif, []); ap = apexes.get(motif, [])
     if len(inst) < MIN and not ap: continue
