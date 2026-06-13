@@ -32,6 +32,7 @@ module Substrate.Logic.Evidence.ElAtlas where
 open import Substrate.Foundation.Bool    using (Bool)
 open import Substrate.Foundation.Empty   using (⊥)
 open import Substrate.Foundation.Eq      using (_≡_)
+open import Substrate.Foundation.Nat     using (ℕ)
 open import Substrate.Foundation.Product using (_×_; Σ)
 
 open import Substrate.Logic.Evidence.Verdict
@@ -43,6 +44,10 @@ open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
 -- def-level vocabulary only (the witnesses live in `.Proofs`).
 open import Substrate.Algebra.CayleyDickson
   using (𝕊#; ≈#; mul; zero#; Prod; mulW)
+-- NOE (Noether pairings = Bézout): the conserved charge g of the Euclidean reduction
+-- flow, witnessed by the Bézout momenta. Statement = the type of `bezout-ℤ`.
+open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
+open import Substrate.Algebra.Z.Bezout         using (BezoutℤWitness)
 
 ------------------------------------------------------------------------
 -- The structured-edition claim atoms currently ON the substrate's Agda rung
@@ -55,7 +60,7 @@ open import Substrate.Algebra.CayleyDickson
 -- lift (scalar bias cannot carry the 4-valued verdict) · ADJ chart adjunction
 -- (lossless two-chart exp ⊣ log adjoint equivalence on the evidence carrier).
 data Claim : Set where
-  CRS PRO JOI WAR TWN NGL ADJ GCX : Claim
+  CRS PRO JOI WAR TWN NGL ADJ GCX NOE : Claim
 
 ------------------------------------------------------------------------
 -- Each claim's substrate STATEMENT, dependent on the claim. A type per claim;
@@ -86,6 +91,11 @@ Statement GCX =
      × (≈# 4 y (zero# 4) → ⊥)                              -- y ≠ 0
      × ≈# 4 (mul 4 x y) (zero# 4)                          -- product value = 0 (the collapse)
      × (≈# 3 (Prod.acP (mulW 3 x y)) (zero# 3) → ⊥)        -- but the kept residue ≠ 0
+-- NOE: the Noether pairing IS Bézout (user, 2026-06-13). The Euclidean reduction is the
+-- symmetry flow, the gcd g is the conserved charge, and the Bézout coefficients are the
+-- conserved momenta: every EEA trace yields (s,t) with s·a + t·b ≡ g. Statement = the
+-- type of `bezout-ℤ`; the conservation law of the EEA flow.
+Statement NOE = {a b g : ℕ} → EEATrace a b g → BezoutℤWitness a b g
 
 ------------------------------------------------------------------------
 -- The FRONTIER: structured-edition claims NOT yet on the Agda rung. Names
@@ -96,9 +106,9 @@ Statement GCX =
 -- discharged set cannot lie.
 ------------------------------------------------------------------------
 
--- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · NOE Noether
--- pairings (mass/bias conservation; carrier geometry) · IDC identity-collapse schedule
--- (↔ twins). (ADJ graduated → Atlas.nedge-atlas; GCX graduated → CayleyDickson's
--- sedenion zero divisor with kept residue.)
+-- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · IDC
+-- identity-collapse schedule (↔ twins). (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's
+-- sedenion zero divisor with kept residue; NOE → bezout-ℤ, the gcd as the conserved
+-- charge of the Euclidean flow.)
 data Frontier : Set where
-  SWP NOE IDC : Frontier
+  SWP IDC : Frontier
