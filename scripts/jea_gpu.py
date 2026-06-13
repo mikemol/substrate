@@ -490,6 +490,90 @@ def demo_overflow_i128(h=8, seed=1):
           f"flagged invalid, never a silent truncation. [Multi-limb escalation = M2b.]")
 
 
+# ======================================================================
+# Device-side trace builder. The trace construction must not be a host Python bottleneck:
+# leaves, per-level tags, and the per-block `btags` layout for the tiled kernel are all
+# built ON the GPU with vectorised cupy (O(s) ops), never a per-node/per-block Python loop.
+# ======================================================================
+
+def build_balanced_device(h, op='add', leafbits=60, seed=7):
+    """Generate the whole balanced tree on-device: leaves + per-level tags. No host loop."""
+    M = 1 << h
+    d_leaves = cp.random.randint(0, 1 << leafbits, size=M).astype(cp.uint64)
+    tv = np.int8(TAG_MUL if op == 'mul' else TAG_ADD)
+    d_tags = [cp.full(M >> L, tv, cp.int8) for L in range(1, h + 1)]   # level-L tags, device
+    return d_leaves, d_tags
+
+
+def btags_device(d_tags, s):
+    """Per-block btags layout for the tiled kernel, built ENTIRELY on-device: a vectorised
+    reshape+scatter, O(s) cupy ops — replaces the O(nblk·s) host Python loop. For level L,
+    d_tags[L] (size nblk·span) reshapes to (nblk, span) and drops into each block's slot."""
+    SEG = 1 << s; M = int(d_tags[0].size) * 2; nblk = M >> s
+    bt = cp.empty((nblk, SEG - 1), cp.int8)
+    off = 0
+    for L in range(s):
+        span = SEG >> (L + 1)
+        bt[:, off:off + span] = d_tags[L].reshape(nblk, span)
+        off += span
+    return bt.reshape(-1)
+
+
+def inside_tiled_device(d_leaves, d_tags, s=9):
+    """Device-native exact-ℤ tiled fold: inputs already on device, btags built on device."""
+    M = int(d_leaves.size); SEG = 1 << s; nblk = M >> s
+    d_btags = btags_device(d_tags, s)
+    lhi = cp.zeros(M, cp.uint64)
+    plo = cp.empty(nblk, cp.uint64); phi = cp.empty(nblk, cp.uint64); ovf = cp.zeros(1, cp.int32)
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    _fold_subtree_i128((nblk,), (SEG // 2,),
+                       (d_leaves, lhi, d_btags, plo, phi, ovf, np.int32(SEG)),
+                       shared_mem=2 * SEG * 8)
+    clo, chi = plo, phi
+    for tg in d_tags[s:]:
+        n = int(tg.size); nlo = cp.empty(n, cp.uint64); nhi = cp.empty(n, cp.uint64)
+        _combine_level_i128(((n + 255) // 256,), (256,), (clo, chi, tg, nlo, nhi, ovf, np.int32(n)))
+        clo, chi = nlo, nhi
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter() - t0) * 1e3
+    return _i128(clo.get()[0], chi.get()[0]), ms, int(ovf.get()[0])
+
+
+def _host_btags(htags, s, nblk, SEG):
+    """The OLD host Python btags layout (O(nblk·s) iterations) — the bottleneck."""
+    hbt = np.empty(nblk * (SEG - 1), np.int8)
+    for b in range(nblk):
+        off, span = 0, SEG >> 1
+        for L in range(s):
+            hbt[b*(SEG-1)+off : b*(SEG-1)+off+span] = htags[L][b*span:(b+1)*span]
+            off += span; span >>= 1
+    return hbt
+
+
+def _t(fn, reps=5):
+    fn(); cp.cuda.Stream.null.synchronize()                          # warm
+    best = float("inf")
+    for _ in range(reps):
+        t0 = time.perf_counter(); fn(); cp.cuda.Stream.null.synchronize()
+        best = min(best, time.perf_counter() - t0)
+    return best * 1e3
+
+
+def demo_device_build(h=22, s=9, seed=7):
+    """Device btags layout vs the old host Python loop — warmed, apples-to-apples."""
+    SEG = 1 << s; M = 1 << h; nblk = M >> s
+    d_leaves, d_tags = build_balanced_device(h, 'add', 60, seed)
+    htags = [t.get() for t in d_tags]
+    dev_ms  = _t(lambda: btags_device(d_tags, s))                   # device layout, warmed
+    host_ms = _t(lambda: _host_btags(htags, s, nblk, SEG), reps=3)  # host Python loop
+    assert np.array_equal(btags_device(d_tags, s).get(), _host_btags(htags, s, nblk, SEG))
+    root, fold_ms, ovf = inside_tiled_device(d_leaves, d_tags, s)   # device-native fold
+    assert root == _host_fold_int(d_leaves.get(), htags) and ovf == 0
+    print(f"device-side trace builder h={h} (2^{h}={M:,} leaves, nblk={nblk}): btags layout "
+          f"ON GPU {dev_ms:.2f} ms vs host Python loop {host_ms:.0f} ms ({host_ms/dev_ms:.0f}x "
+          f"faster), device==host (verified); device-native fold {fold_ms:.2f} ms, root exact "
+          f"vs host bignum. The trace construction is no longer a host bottleneck.")
+
+
 if __name__ == "__main__":
     print("Just Enough Agda on GPU — M1: SPPF inside-fold over F₂ (branchless, resident)\n")
     demo_chain(40)
@@ -499,3 +583,5 @@ if __name__ == "__main__":
     print()
     demo_compare_i128()
     demo_overflow_i128()
+    print()
+    demo_device_build()
