@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Adjunction.agda AxisWord.agda Bridge.agda Certified.agda Coalgebra.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda Monoidal.agda Mul.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda Sphere.agda VecGraded.agda
+FILES := Adjunction.agda AxisWord.agda BoundedIso.agda Bridge.agda Certified.agda Coalgebra.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda Monoidal.agda Mul.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda Sphere.agda VecGraded.agda
 SUBDIRS := AxisWord Compose Contextuality Graded Product ResidueAtom Shape Trace
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
