@@ -64,10 +64,10 @@ _ = refl
 -- transcendental (Hermite, 1873); its CF is [2;1,2,1,1,4,1,1,6,…]. Here the first
 -- 3 digits, computed through the term window, by refl: exp_3(1) = 8/3 = [2;1,2].
 --
--- (The continuous e^{iπ}=−1 is a further arc — signed reals + cos/sin + π + ℂ,
--- since cos π = −1 is negative. Its DISCRETE shadow, the antipode / order-2
--- half-turn e^{2iπ}=1, is already proved in Logic.Evidence.Verdict.Phase as
--- negBoth² = id.)
+-- (e^{iπ}=−1 is NOT a further analytic arc — that framing was wrong. It is a LOOP
+-- fact: in turns π = ½, the half-turn is the order-2 ANTIPODE = −1 (`Algebra.R.Circle`,
+-- `TranscendentalDigits`; the F₂ shadow is `Verdict.Phase.negBoth² = id`). No
+-- cos/sin/ℂ/limit. See [[feedback_transcendental_phase_is_loop_fact]].)
 ------------------------------------------------------------------------
 
 e-cf : ℕ → List ℕ

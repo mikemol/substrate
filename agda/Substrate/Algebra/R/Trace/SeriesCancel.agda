@@ -23,8 +23,11 @@
 -- This DEMOTES the "separate analytic value-correctness" I claimed one step ago
 -- ([[feedback_trace_inversion_vs_transcendental_limit]]): the ROUND-TRIP's
 -- correctness is this formal cancellation — finite, rational, EEA-supplied, per
--- order. The only genuinely-analytic residue is whether `exp-real x` numerically
--- equals e^x (a windowed-OBSERVATION question), and the round-trip never needs it.
+-- order. (I then hedged that "does `exp-real x` numerically equal e^x" is a
+-- residual analytic question; that too was the reflex — it is the binary-digit
+-- FORCING trap, since e^x is infinite under any digit basis. Dissolved by the
+-- generator basis: e is a generator, π/i are rational in turns
+-- [[feedback_transcendental_value_is_a_digit_basis]]. No analytic residue.)
 --
 -- Truncating log at order m and composing keeps the order-≤m coefficients EXACT
 -- (a high-order tail of log cannot perturb a low-order composite coefficient), so

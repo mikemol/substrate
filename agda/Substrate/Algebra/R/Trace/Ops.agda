@@ -9,12 +9,16 @@
 --     0; for x<1 (a₀=0) drop the leading 0. Involutive by construction.
 --   * TRANSLATION    x+k  (k : ℕ) — touches only the leading digit a₀ ↦ a₀+k.
 --
--- General `+` and `×` are NOT here: on CF streams they are Gosper's bi-homographic
--- algorithm, whose "ingest-until-emit" loop is not structurally guarded, so its
--- productivity is the hard open problem of coinductive exact-real arithmetic in
--- --safe Agda. Their substrate-honest home is the ℚ-APPROXIMATION view (compute
--- with the convergents — "reason about ℝ via ℚ"), which is also what B4's exp/log
--- SERIES need. See [[project_substrate_real_arc]] (B3-next / B4).
+-- General `+` and `×` are NOT here yet: as unbounded Gosper bi-homographic STATE
+-- machines their "ingest-until-emit" loop is not structurally guarded. But that is
+-- a wall only for the state-machine framing — the bounded-OUTPUT / output-index
+-- trick dissolves it the SAME way it did for the unary homographic (`Window`) and
+-- exp/log (`Transcendental`): the n-digit window of x⊕y is a homographic on the
+-- n-th convergents of x and y, structural on n ([[feedback_finite_window_constructive_lem]]).
+-- So it is unbuilt engineering, not the "hard open problem" I once called it.
+-- Meanwhile they live in the windowed ℚ view (compute with the convergents —
+-- "reason about ℝ via ℚ"), which is also what B4's exp/log SERIES use. See
+-- [[project_substrate_real_arc]] (B3-next / B4).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}

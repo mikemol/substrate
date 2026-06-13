@@ -10,8 +10,9 @@
 -- 3+k), assembled by `unfold`. Productive — `unfold` of a TOTAL step — and
 -- fuel-free: the window is the OUTPUT INDEX, which is structural
 -- ([[feedback_finite_window_constructive_lem]]). (Digit stability across the
--- growing window is the convergence content; the round-trip exp(log x) ~ x is a
--- coinductive bisimulation on the spliced generators — B5.)
+-- growing window is observation DEPTH, not an analytic limit; the round-trip
+-- exp(log x) ~ x is formal/coinductive — `SeriesCancel` (exp∘log=1+u, exact per
+-- order), `Cancel`, `Final` — never a forced infinite trace. B5.)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}

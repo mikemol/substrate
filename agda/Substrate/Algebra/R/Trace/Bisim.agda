@@ -9,14 +9,20 @@
 --   * CF-NATIVE ops (digit bookkeeping) round-trip as ≡, DEFINITIONALLY. `recip`
 --     is the multiplicative-inversion involution: for a real > 1 the CF
 --     reciprocal is a digit-shift, so 1/(1/x) = x reduces — `recip-invol` by refl.
---   * TRANSCENDENTAL exp/log round-trip as a BISIMULATION, exp-real(log-real x) ~ x,
---     and that is NOT provable from the windowed generators alone — it needs the
---     analytic convergence (digit stability of the growing window + exp∘log = id).
---     Stated below as the open goal; the honest shape of the continuous facet.
+--   * exp/log round-trip as a BISIMULATION, exp-real(log-real x) ~ x. This is NOT
+--     analytic and NOT "in the limit" (a reflex I was corrected on repeatedly): the
+--     round-trip identity exp∘log = 1+u is FORMAL, exact per order, proved in
+--     `SeriesCancel`; step-inverse generators cancel coinductively in `Cancel`; and
+--     a bisimulation IS equality in the terminal coalgebra, the routine dual of
+--     induction (`Final.ana-unique`). The reason it is not a one-liner HERE is
+--     purely that `exp-real`/`log-real` are defined as two INDEPENDENT windowed
+--     series (they never meet), so the literal `~` needs them re-presented as one
+--     step-inverse coalgebra morphism — engineering, not a wall. See `SeriesCancel`,
+--     `Cancel`, `Final`, `TranscendentalDigits`.
 --
 -- Three el-atlas exp⊣log strengths, each in its true form: `nedge-atlas` exact
 -- discrete bijection (a record), `Atlas.GcdBezout` keep⊣forget, and the
--- continuous one — exact-≡ where CF-native, bisimulation-at-the-limit otherwise.
+-- continuous one — exact-≡ where CF-native, coinductive bisimulation otherwise.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}
@@ -64,12 +70,17 @@ recip-invol : (a : ℕ) (t : RealTrace) →
 recip-invol a t = refl
 
 ------------------------------------------------------------------------
--- The TRANSCENDENTAL round-trip (B5 proper) — a BISIMULATION, and OPEN: it is
--- not provable from the windowed exp/log alone but needs the analytic
--- convergence (digit stability + exp∘log = id). The honest capstone goal:
+-- The exp/log round-trip (B5 proper) — a BISIMULATION:
 --
 --   exp-log-roundtrip : (x : RealTrace) → exp-real (log-real x) ~ x
 --
--- `_~_` is the equality it is stated at; `recip-invol` shows the framework
--- captures genuine round-trips exactly where the operation is exact.
+-- NOT analytic, NOT "in the limit". Its mathematical content (exp∘log = 1+u) is
+-- the FORMAL series identity, exact per order (`SeriesCancel`); the cancellation
+-- mechanism is coinductive step-inverse cancellation (`Cancel.bump-cancel`); and
+-- the `~` itself is equality in the terminal coalgebra (`Final.ana-unique`, the
+-- dual of induction). It is unproven HERE only because `exp-real`/`log-real` are
+-- defined as two independent windowed series rather than one step-inverse
+-- coalgebra morphism — re-presenting them so is engineering, not a wall. `_~_` is
+-- the equality it is stated at; `recip-invol` shows the framework captures genuine
+-- round-trips exactly where the operation is CF-native.
 ------------------------------------------------------------------------

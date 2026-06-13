@@ -18,8 +18,13 @@
 -- case is the corecursive call, the head case the per-step inverse. The exp⊣log
 -- round-trip is THIS shape once exp/log are co-defined step-inverse (the Wedge-
 -- chain: log decomposes keeping residue, exp replays) — the never-discard-residue
--- spine; the value-correctness (it computes exp/log) is a SEPARATE matter from the
--- round-trip (it cancels).
+-- spine.
+--
+-- (I once filed "does it compute the RIGHT exp/log values" as a SEPARATE analytic
+-- obligation. That was the same reflex, corrected later: the value-IDENTITY
+-- exp∘log = 1+u is itself FORMAL (`SeriesCancel`), and "numerically equals a
+-- transcendental" is the binary-digit FORCING trap, dissolved by the generator
+-- basis (`TranscendentalDigits`). No separate analytic matter survives.)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}

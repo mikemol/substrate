@@ -16,7 +16,10 @@
 -- z evaluated at x's convergent pₙ/qₙ is the RATIONAL (a·pₙ+b·qₙ)/(c·pₙ+d·qₙ);
 -- its continued fraction (the EEA trace, `digits-of-EEA`) is the result's CF,
 -- valid on a prefix that grows with n. The window edge (the last digit or two)
--- is where the approximant diverges from the true value — the honest boundary.
+-- is simply not yet COMMITTED — it may still change as the window grows. That is
+-- observation DEPTH, not divergence from a separate "true value": the generator IS
+-- the real, the prefix is an exact observation of it to depth n
+-- ([[feedback_suspended_generators_not_approximations]]).
 --
 -- Reuses B1 wholesale: `convergent` (structural on n) + `digits-of-EEA` (the EEA
 -- quotients ARE a CF) + `compute-trace`. The "reason about ℝ via ℚ in a window."
