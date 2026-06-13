@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Circle.agda Trace.agda
+FILES := Circle.agda Trace.agda TranscendentalDigits.agda
 SUBDIRS := Trace
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
