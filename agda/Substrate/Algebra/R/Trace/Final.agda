@@ -104,3 +104,15 @@ ana-unique {S} c h hh ht s₀ = go s₀ (h s₀) refl
     go : (s : S) (t : RealTrace) → t ≡ h s → t ~ ana c s
     head~ (go s t refl) = hh s
     tail~ (go s t refl) = go (proj₂ (c s)) (tail t) (ht s)
+
+------------------------------------------------------------------------
+-- The h = id corollary: every generator IS the unfold of its own observations.
+-- So "is this generator the right number?" is not a theorem to discharge against
+-- an external value — the generator is canonical up to `~`, and any presentation
+-- with the same structure map is `~` to it (ana-unique). Presentation-uniqueness
+-- is routine; there is no privileged "true value" to match.
+------------------------------------------------------------------------
+
+self-unfold : (x : RealTrace) → x ~ ana out x
+head~ (self-unfold x) = refl
+tail~ (self-unfold x) = self-unfold (tail x)

@@ -29,12 +29,16 @@
 -- (referenced, not imported — Phase sits above Algebra.R). No limit, no forcing,
 -- no analytic residue anywhere in the substrate-ℝ arc.
 --
--- HONESTY: `e-real` is a generator-PRESENTATION of e (its Euler CF); we witness
--- that it agrees with the existing series-window `Exp.e-cf` at finite depth (an
--- OBSERVATION), not that it equals exp(1)'s series-generator (that is a coinductive
--- bisimulation, finite-but-nontrivial, not asserted here). `π-turns`/`i-turns`
--- are the ANGLES in turns — it is the angle in the turn unit that is rational, not
--- the bare number π.
+-- `e-real` IS e — the adopted Euler-CF generator-presentation. Per the digit
+-- basis above, e is the generator; there is no privileged "true e" (a Taylor
+-- generator, a digit string) that `e-real` must be PROVEN equal to. (An earlier
+-- version of this header hedged exactly that — "agrees with the Taylor window but
+-- isn't proven equal to it" — which was the forcing reflex once more: it presumes
+-- a true-value to match. There is none to match; the generator is the number.)
+-- The only generator-equality that IS a theorem is presentation-uniqueness within
+-- a coalgebra — `Final.ana-unique`/`self-unfold` — and that is routine, not a
+-- frontier. `π-turns`/`i-turns` are the ANGLES in turns — it is the angle in the
+-- turn unit that is rational, not the bare number π.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}
@@ -54,7 +58,6 @@ open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.R.Trace        using (RealTrace; take)
 open import Substrate.Algebra.R.Trace.Unfold using (unfold)
 open import Substrate.Algebra.R.Trace.Bisim  using (cons)
-open import Substrate.Algebra.R.Trace.Exp    using (e-cf)
 
 ------------------------------------------------------------------------
 -- e — the DIGIT, as a suspended generator. Euler's regular continued fraction
@@ -70,14 +73,11 @@ e-step (suc (suc _) , k) = 1     , (zero           , suc k)
 e-real : RealTrace
 e-real = cons 2 (unfold e-step (zero , 1))
 
--- The generator emits Euler's CF — exact, by refl (no series, no limit):
+-- The generator emits Euler's CF, by construction — a sanity check that the
+-- `unfold` produces the digits intended, NOT a verification of e against any
+-- external "true" value (there is none to verify against):
 e-real-window : take 6 e-real ≡ 2 ∷ 1 ∷ 2 ∷ 1 ∷ 1 ∷ 4 ∷ []
 e-real-window = refl
-
--- …and it AGREES with the existing series-window `e-cf` at finite depth — the
--- CF-generator and the Taylor-window are the same e, observed (not a full bisim):
-e-real-agrees : take 3 e-real ≡ e-cf 3
-e-real-agrees = refl
 
 ------------------------------------------------------------------------
 -- π and i — the DIGITS, rational in the turn basis.
