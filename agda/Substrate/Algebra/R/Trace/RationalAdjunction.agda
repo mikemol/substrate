@@ -39,10 +39,12 @@ module Substrate.Algebra.R.Trace.RationalAdjunction where
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Eq      using (_≡_; refl; sym; trans; cong₂)
+open import Substrate.Foundation.Eq      using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
+open import Substrate.Algebra.Nat.GCD.Wedge    using (quotient; remainder; wedge-eq)
+open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
 open import Substrate.Algebra.Nat.Mod          using (_mod-suc_)
 open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
@@ -149,6 +151,26 @@ qStep-recon a b =
   cong₂ _,_
     (trans (+-comm ((a div-suc b) * suc b) (a mod-suc b)) (sym (div-mod-eq a b)))
     refl
+
+------------------------------------------------------------------------
+-- THE FULL UNIT, ∀, by recursing the local step to `base` over the FINITE trace.
+-- `EEATrace a b g` is the terminating Euclid trace (it HAS `base`, so the recursion
+-- bottoms out — no padding, no drift). `reconstruct` folds it with `reconStep`,
+-- using the digit (Wedge quotient) at each `step`; `eea-unit` proves it rebuilds
+-- exactly the (a, b) the trace started from — the division equation `wedge-eq` at
+-- every step. This is the general unit the global `convergent` could not give: the
+-- "recurse" the user asked for, over the `1 + −` structure where it is faithful.
+------------------------------------------------------------------------
+
+reconstruct : {a b g : ℕ} → EEATrace a b g → ℕ × ℕ
+reconstruct (base a)        = a , 0
+reconstruct (step b w rest) = reconStep (quotient w) (reconstruct rest)
+
+eea-unit : {a b g : ℕ} (t : EEATrace a b g) → reconstruct t ≡ (a , b)
+eea-unit (base a)        = refl
+eea-unit (step b w rest) =
+  trans (cong (reconStep (quotient w)) (eea-unit rest))
+        (cong₂ _,_ (sym (wedge-eq w)) refl)
 
 ------------------------------------------------------------------------
 -- THE COUNIT  R → ℚ → R  — a DECOMPOSITION, not identity. Take the depth-n
