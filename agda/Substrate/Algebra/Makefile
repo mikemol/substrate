@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := AbelianGroup.agda Bijection.agda F2-CommutativeMonoid.agda F2.agda Field.agda GL3F2.agda Group.agda GroupAction.agda IsomorphicCocycle.agda Magma.agda Module.agda Monoid.agda N-to-F2-Parity.agda PointedSet.agda PontryaginDual.agda PrimeFactor-168-FieldFanOut.agda Q.agda Quotient.agda Ring.agda SemidirectProduct.agda Semigroup.agda Semiring.agda Setoid.agda SetoidGroup.agda TopologicalGroup.agda Torsor.agda Wedge.agda Z.agda Z6-FieldBond.agda Z6-FieldTower.agda
+FILES := AbelianGroup.agda Bijection.agda CayleyDickson.agda F2-CommutativeMonoid.agda F2.agda Field.agda GL3F2.agda Group.agda GroupAction.agda IsomorphicCocycle.agda Magma.agda Module.agda Monoid.agda N-to-F2-Parity.agda PointedSet.agda PontryaginDual.agda PrimeFactor-168-FieldFanOut.agda Q.agda Quotient.agda Ring.agda SemidirectProduct.agda Semigroup.agda Semiring.agda Setoid.agda SetoidGroup.agda TopologicalGroup.agda Torsor.agda Wedge.agda Z.agda Z6-FieldBond.agda Z6-FieldTower.agda
 SUBDIRS := Abelian F1 F2 Fin GL3F2 Group Lie List Module Nat PointedSet PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
