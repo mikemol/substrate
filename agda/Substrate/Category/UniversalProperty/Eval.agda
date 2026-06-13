@@ -145,3 +145,32 @@ eval-is-fold : {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂)
              → eval t ≡ foldUPTerm (λ {U} → id-UPMorphism U) compose-UPMorphism unlift t
 eval-is-fold []           = refl
 eval-is-fold (lift m ∷ t) = cong (λ X → compose-UPMorphism X m) (eval-is-fold t)
+
+------------------------------------------------------------------------
+-- RECURSE AGAIN (user: "again, the common structure recursively — point back at
+-- EEA, Bézout, CRT, the wedge operator, the bidi Lawvere work"). `foldUPTerm` is
+-- itself an instance: it is the UNIVERSAL fold of a free trace into a target
+-- algebra. `foldUPTerm-unique` proves the universal property — ANY G that is a
+-- functor (sends [] to id, g∷t to cmp) IS foldUPTerm. This is `FreeUP.extend`'s
+-- `extend-unique` at UPTerm; the SAME property `Algebra.Nat.GCD.Fold.eea-fold` has
+-- (EEATrace → gcd/Bézout/CRT, one trace folded into many targets), and the wedge
+-- `Trace` reads (forget/cell/keep). So all of them — foldUPTerm, eea-fold, the
+-- wedge reads, CRT-combine — are ONE object: the catamorphism of a free trace =
+-- the centre, Free⊣Forgetful. The recursion bottoms at the centre.
+------------------------------------------------------------------------
+
+foldUPTerm-unique :
+  {T : UPArrow → UPArrow → Set}
+  (idT : {U : UPArrow} → T U U)
+  (cmpT : {U₁ U₂ U₃ : UPArrow} → T U₂ U₃ → T U₁ U₂ → T U₁ U₃)
+  (interp : {U₁ U₂ : UPArrow} → UPGen U₁ U₂ → T U₁ U₂)
+  (G : {U₁ U₂ : UPArrow} → UPTerm U₁ U₂ → T U₁ U₂)
+  → ({U : UPArrow} → G {U} {U} [] ≡ idT {U})
+  → ({U₁ U₂ U₃ : UPArrow} (g : UPGen U₁ U₂) (t : UPTerm U₂ U₃)
+       → G (g ∷ t) ≡ cmpT (G t) (interp g))
+  → {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂) → G t ≡ foldUPTerm idT cmpT interp t
+foldUPTerm-unique idT cmpT interp G Gnil Gcons []      = Gnil
+foldUPTerm-unique idT cmpT interp G Gnil Gcons (g ∷ t) =
+  trans (Gcons g t)
+        (cong (λ X → cmpT X (interp g))
+              (foldUPTerm-unique idT cmpT interp G Gnil Gcons t))
