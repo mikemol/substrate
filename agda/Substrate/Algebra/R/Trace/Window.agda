@@ -30,23 +30,20 @@
 module Substrate.Algebra.R.Trace.Window where
 
 open import Substrate.Foundation.Nat     using (ℕ; _+_; _*_)
-open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
+open import Substrate.Foundation.List    using (List)
+open import Substrate.Foundation.Product using (_,_)
 
-open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
-open import Substrate.Algebra.R.Trace using (RealTrace; convergent; digits-of-EEA; sqrt2)
+open import Substrate.Algebra.R.Trace          using (RealTrace)
+open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf)
 
 ------------------------------------------------------------------------
 -- The bounded-output homographic: the CF of (a·x+b)/(c·x+d) to the precision
--- of x's n-th convergent. Structural on n; no fuel.
+-- of x's n-th convergent. Now a thin kernel over `windowed-cf` (the apex): the
+-- kernel is just the homographic map on the convergent (p, q).
 ------------------------------------------------------------------------
 
 homographic-cf : ℕ → ℕ → ℕ → ℕ → ℕ → RealTrace → List ℕ
-homographic-cf a b c d n x =
-  let p = proj₁ (convergent n x)
-      q = proj₂ (convergent n x)
-  in digits-of-EEA (proj₂ (compute-trace (a * p + b * q) (c * p + d * q)))
+homographic-cf a b c d = windowed-cf (λ p q → a * p + b * q , c * p + d * q)
 
 scaleℕ-cf : ℕ → ℕ → RealTrace → List ℕ
 scaleℕ-cf k n x = homographic-cf k 0 0 1 n x

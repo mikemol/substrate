@@ -18,12 +18,11 @@
 module Substrate.Algebra.R.Trace.Log where
 
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Substrate.Foundation.List    using (List; []; _∷_)
+open import Substrate.Foundation.List    using (List)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
-open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
-open import Substrate.Algebra.R.Trace using (RealTrace; convergent; digits-of-EEA; sqrt2)
+open import Substrate.Algebra.R.Trace          using (RealTrace)
+open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf)
 
 ------------------------------------------------------------------------
 -- The atanh partial sum T = Σ_{k=0}^{terms−1} s²ᵏ/(2k+1) as a rational (Un,Ud),
@@ -40,14 +39,14 @@ ath (suc t) od sn² sd² Un Ud =
 -- log x = 2·atanh s, evaluated at x's n-th convergent (p ≥ q assumed, x ≥ 1).
 ------------------------------------------------------------------------
 
+-- thin kernel over `Windowed.windowed-cf` (the apex): log's kernel is the atanh
+-- series at s = (p−q)/(p+q), scaled by 2.
 log-cf : ℕ → ℕ → RealTrace → List ℕ
-log-cf terms n x =
-  let p  = proj₁ (convergent n x)
-      q  = proj₂ (convergent n x)
-      sn = p ∸ q
+log-cf terms = windowed-cf λ p q →
+  let sn = p ∸ q
       sd = p + q
       U  = ath terms (2 * terms ∸ 1) (sn * sn) (sd * sd) 0 1
-  in digits-of-EEA (proj₂ (compute-trace (2 * sn * proj₁ U) (sd * proj₂ U)))
+  in 2 * sn * proj₁ U , sd * proj₂ U
 
 ------------------------------------------------------------------------
 -- Worked example (computed; left as a comment — the EEA-trace reduction on the

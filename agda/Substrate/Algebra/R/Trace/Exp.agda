@@ -24,7 +24,8 @@ open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
-open import Substrate.Algebra.R.Trace using (RealTrace; convergent; digits-of-EEA; sqrt2)
+open import Substrate.Algebra.R.Trace using (RealTrace; digits-of-EEA; sqrt2)
+open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf)
 
 ------------------------------------------------------------------------
 -- The m-term Taylor partial sum of exp at the rational p/q, as a rational (N,D).
@@ -41,12 +42,10 @@ horner (suc j) p q Bn Bd = horner j p q (q * suc j * Bd + p * Bn) (q * suc j * B
 -- the result's CF via the EEA trace. Bounded-output, structural — no fuel.
 ------------------------------------------------------------------------
 
+-- thin kernel over `Windowed.windowed-cf` (the apex): exp's kernel is the m-term
+-- Taylor Horner at the convergent p/q.
 exp-cf : ℕ → ℕ → RealTrace → List ℕ
-exp-cf terms n x =
-  let p  = proj₁ (convergent n x)
-      q  = proj₂ (convergent n x)
-      ND = horner terms p q 1 1
-  in digits-of-EEA (proj₂ (compute-trace (proj₁ ND) (proj₂ ND)))
+exp-cf terms = windowed-cf (λ p q → horner terms p q 1 1)
 
 ------------------------------------------------------------------------
 -- Worked (small window — a machinery check, not precision): at √2's 1st
