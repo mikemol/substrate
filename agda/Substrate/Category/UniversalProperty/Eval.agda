@@ -28,7 +28,8 @@ open import Substrate.Category.UniversalProperty.Morphism
 open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
 open import Substrate.Algebra.Quotient
-  using (Quotient) renaming (Canonical to Canonical⟦de760d07⟧)
+  using (Quotient; ker-Quotient; split-Canonical)
+  renaming (Canonical to Canonical⟦de760d07⟧)
 
 ------------------------------------------------------------------------
 -- Record-level identity and composition of UPMorphisms (UP3).
@@ -229,24 +230,18 @@ normal→≈ᵤ {s = s} {t} p =
   trans (sym (normalize-eval s)) (trans (cong eval p) (normalize-eval t))
 
 ------------------------------------------------------------------------
--- UPTerm/≈ᵤ IS a substrate Quotient — the literal record, exactly as ℚ
--- (ℚ-Quotient), ModN (ModN-Quotient), and CRT (QuotientProduct) are. ≈ᵤ is the
--- eval-kernel equivalence (≡ pulled back along eval); `normalize = reify ∘ eval` is
--- the Canonical form. So the per-hom-set quotient is machine-checked, not asserted —
--- the same Quotient/Canonical pair the rest of the substrate's quotients instantiate.
+-- UPTerm/≈ᵤ IS a substrate Quotient — and now visibly an INSTANCE of the
+-- split-idempotent apex (Algebra.Quotient.split-Canonical): eval is the fold,
+-- reify the section, eval-reify the retraction (eval ∘ reify ≡ id), and the
+-- split idempotent reify ∘ eval = `normalize` is the canonical form. So the
+-- whole quotient is `split-Canonical eval reify eval-reify` — the same lemma
+-- that realizes ℚ `reduce`, the wedge `recon`, EEA CF-shape, CRT `combine`.
+-- (≈ᵤ = KerRel eval definitionally; normalize etc. above are the unfolded
+-- names this instance produces.)
 ------------------------------------------------------------------------
 
 UPTerm-Quotient : (U₁ U₂ : UPArrow) → Quotient (UPTerm U₁ U₂) _≈ᵤ_
-UPTerm-Quotient U₁ U₂ = record
-  { ≈-refl  = λ _ → refl
-  ; ≈-sym   = sym
-  ; ≈-trans = trans
-  }
+UPTerm-Quotient U₁ U₂ = ker-Quotient (eval {U₁} {U₂})
 
 UPTerm-Canonical : (U₁ U₂ : UPArrow) → Canonical⟦de760d07⟧ (UPTerm-Quotient U₁ U₂)
-UPTerm-Canonical U₁ U₂ = record
-  { canonical            = normalize
-  ; canonical-idempotent = normalize-idem
-  ; canonical-respects-≈ = λ {s} {t} e → ≈ᵤ→normal {s = s} {t = t} e
-  ; ≈-canonical          = λ a → sym (normalize-eval a)
-  }
+UPTerm-Canonical U₁ U₂ = split-Canonical (eval {U₁} {U₂}) reify eval-reify
