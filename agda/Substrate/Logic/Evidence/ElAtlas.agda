@@ -33,7 +33,7 @@ open import Substrate.Foundation.Bool    using (Bool)
 open import Substrate.Foundation.Empty   using (⊥)
 open import Substrate.Foundation.Eq      using (_≡_)
 open import Substrate.Foundation.Nat     using (ℕ)
-open import Substrate.Foundation.Product using (_×_; Σ)
+open import Substrate.Foundation.Product using (_×_; Σ; proj₁)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; Verdict; verdict; swapE; swapV; notE; _∧E_; _∨E_; negPos)
@@ -48,6 +48,10 @@ open import Substrate.Algebra.CayleyDickson
 -- flow, witnessed by the Bézout momenta. Statement = the type of `bezout-ℤ`.
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Z.Bezout         using (BezoutℤWitness)
+-- SWP (semiring-weighted parsing): the packed parse forest folded in the nedge dual
+-- rail; the positive rail is the probability section. Statement references the folds.
+open import Substrate.Algebra.Semiring.SPPF using (SPPF)
+open import Substrate.Logic.Evidence.SWP    using (insideC; insideDR)
 
 ------------------------------------------------------------------------
 -- The structured-edition claim atoms currently ON the substrate's Agda rung
@@ -60,7 +64,7 @@ open import Substrate.Algebra.Z.Bezout         using (BezoutℤWitness)
 -- lift (scalar bias cannot carry the 4-valued verdict) · ADJ chart adjunction
 -- (lossless two-chart exp ⊣ log adjoint equivalence on the evidence carrier).
 data Claim : Set where
-  CRS PRO JOI WAR TWN NGL ADJ GCX NOE IDC : Claim
+  CRS PRO JOI WAR TWN NGL ADJ GCX NOE IDC SWP : Claim
 
 ------------------------------------------------------------------------
 -- Each claim's substrate STATEMENT, dependent on the claim. A type per claim;
@@ -102,6 +106,13 @@ Statement NOE = {a b g : ℕ} → EEATrace a b g → BezoutℤWitness a b g
 -- under the codec. The general ∀-faithful-probe form (NoCollapse.faithful-refines-
 -- verdict) is Set₁; this is its codec instance, kept in Set, tied to ADJ's recode.
 Statement IDC = {x y : Evidence} → recode x ≡ recode y → verdict x ≡ verdict y
+-- SWP: one chart, pluggable semiring — fold a packed forest in the nedge dual rail
+-- (any add/mul), and the POSITIVE RAIL is the probability section: it equals the
+-- single-rail parse of the positive valuation (the negative rail is kept residue).
+Statement SWP = (add mul : ℕ → ℕ → ℕ) (oneℕ : ℕ)
+                (v : ℕ → ℕ × ℕ) (t : SPPF ℕ) →
+                proj₁ (insideDR add mul oneℕ v t)
+                  ≡ insideC add mul oneℕ (λ g → proj₁ (v g)) t
 
 ------------------------------------------------------------------------
 -- The FRONTIER: structured-edition claims NOT yet on the Agda rung. Names
@@ -112,10 +123,10 @@ Statement IDC = {x y : Evidence} → recode x ≡ recode y → verdict x ≡ ver
 -- discharged set cannot lie.
 ------------------------------------------------------------------------
 
--- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity — one chart,
--- pluggable carrier semiring). The last frontier claim — a real arc against the
--- Register/PackedTree machinery. (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's
+-- The frontier is EXHAUSTED — every structured-edition claim has graduated to `Claim`
+-- and is discharged by `proof-tier`. (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's
 -- sedenion zero divisor with kept residue; NOE → bezout-ℤ, the conserved charge of the
--- Euclidean flow; IDC → faithful-refines-verdict at the recode codec probe.)
+-- Euclidean flow; IDC → faithful-refines-verdict at the recode codec probe; SWP →
+-- SWP.posR-section, the dual-rail parse's positive-rail probability section.)
 data Frontier : Set where
-  SWP : Frontier
+  -- (empty: no open frontier claims remain)

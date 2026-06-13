@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Atlas.agda DualRail.agda ElAtlas.agda Graded.agda Verdict.agda Warrant.agda
+FILES := Atlas.agda DualRail.agda ElAtlas.agda Graded.agda NedgeBridge.agda SWP.agda Verdict.agda Warrant.agda
 SUBDIRS := Atlas ElAtlas Graded Verdict Warrant
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

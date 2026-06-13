@@ -33,11 +33,12 @@ open import Substrate.Foundation.Eq      using (_≡_; cong)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Logic.Evidence.Verdict using (Evidence; verdict; swapE; swapV)
 open import Substrate.Logic.Evidence.ElAtlas
-  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; ADJ; GCX; NOE; IDC; Statement)
+  using (Claim; CRS; PRO; JOI; WAR; TWN; NGL; ADJ; GCX; NOE; IDC; SWP; Statement)
 open import Substrate.Logic.Evidence.Atlas using (nedge-atlas; exp-log; log-exp)
 open import Substrate.Algebra.CayleyDickson
   using (xZD; yZD; xZD≢0; yZD≢0; zd-value-0; zd-residue-nonzero)
 open import Substrate.Algebra.Z.Bezout using (bezout-ℤ)
+open import Substrate.Logic.Evidence.SWP using (posR-section)
 
 open import Substrate.Logic.Evidence.Verdict.Properties  using (intertwine; deMorgan-∧∨)
 open import Substrate.Logic.Evidence.Verdict.NoCollapse  using (no-single-rail-quotient; faithful-refines-verdict)
@@ -63,6 +64,7 @@ proof-tier NOE = bezout-ℤ
 -- agreement. Decoder = verdict ∘ unrecode; its obligation is the ADJ round-trip.
 proof-tier IDC = faithful-refines-verdict recode (λ m → verdict (unrecode m))
                                           (λ e → cong verdict (log-exp nedge-atlas e))
+proof-tier SWP = λ add mul oneℕ v t → posR-section add mul oneℕ v t
 
 ------------------------------------------------------------------------
 -- Using the registry: extract a registered claim's proof by EVALUATING the Π.
