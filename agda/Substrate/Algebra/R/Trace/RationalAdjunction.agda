@@ -45,7 +45,7 @@ open import Substrate.Algebra.Nat.Mod          using (_mod-suc_)
 open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
 open import Substrate.Algebra.R.Trace        using (RealTrace; head; tail; take; convergent; sqrt2)
 open import Substrate.Algebra.R.Trace.Bisim  using (_~_)
-open import Substrate.Algebra.R.Trace.Final  using (Coalg; ana; ana-unique)
+open import Substrate.Algebra.R.Trace.Final  using (Coalg; ana; ana-head; ana-tail; ana-unique)
 
 ------------------------------------------------------------------------
 -- ℚ's coalgebra structure: peel one EEA step. State = (numerator, denominator).
@@ -96,6 +96,34 @@ emit-3/2 = refl
 -- on a witness, not yet proved ∀q.)
 unit-3/2 : convergent 2 (qToR 3 1) ≡ (3 , 2)
 unit-3/2 = refl
+
+------------------------------------------------------------------------
+-- FOLLOW-THROUGH on "prove the general unit". Doing so reveals the naive ∀-form is
+-- FALSE, and pins exactly why: the junk-padding past the CF length DRIFTS the
+-- convergent. 3/2 = [1;2] is recovered at depth 2, but at depth 3 the padding
+-- digit corrupts it to 4/3 ≠ 3/2:
+------------------------------------------------------------------------
+
+unit-drift : convergent 3 (qToR 3 1) ≡ (4 , 3)
+unit-drift = refl
+
+-- So the unit is exact ONLY at the CF-length depth; the general ∀q unit needs a
+-- length function AND is broken by the junk-padded embedding (the `1 + −`
+-- termination R lacks — the residue we discarded by padding). The substrate-clean
+-- general unit lives over EEATrace, which HAS `base` (it does not pad); that bridge
+-- is the honest general theorem, NOT a coinductive freebie. (This is why the
+-- "one case" was not idly hedged: the general statement is genuinely different.)
+
+------------------------------------------------------------------------
+-- What IS general and free, by the terminal-coalgebra machinery (∀ state, refl):
+-- qToRℚ commutes with peeling one EEA step — the per-step unit, for every rational.
+------------------------------------------------------------------------
+
+morph-head : (s : ℕ × ℕ) → head (qToRℚ s) ≡ proj₁ (qStep s)
+morph-head = ana-head qStep
+
+morph-tail : (s : ℕ × ℕ) → tail (qToRℚ s) ≡ qToRℚ (proj₂ (qStep s))
+morph-tail = ana-tail qStep
 
 ------------------------------------------------------------------------
 -- THE COUNIT  R → ℚ → R  — a DECOMPOSITION, not identity. Take the depth-n
