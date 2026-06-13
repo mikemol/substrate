@@ -36,7 +36,7 @@
 
 module Substrate.Algebra.R.Trace.RationalAdjunction where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_; _<_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Eq      using (_≡_; refl; sym; trans; cong; cong₂)
@@ -46,8 +46,9 @@ open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 open import Substrate.Algebra.Nat.GCD.Wedge    using (quotient; remainder; wedge-eq)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
-open import Substrate.Algebra.Nat.Mod          using (_mod-suc_)
+open import Substrate.Algebra.Nat.Mod          using (_mod-suc_; mod-suc-bound)
 open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
+open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
 open import Substrate.Algebra.R.Trace        using (RealTrace; head; tail; take; convergent; sqrt2)
 open import Substrate.Algebra.R.Trace.Bisim  using (_~_)
 open import Substrate.Algebra.R.Trace.Final  using (Coalg; ana; ana-head; ana-tail; ana-unique)
@@ -151,6 +152,27 @@ qStep-recon a b =
   cong₂ _,_
     (trans (+-comm ((a div-suc b) * suc b) (a mod-suc b)) (sym (div-mod-eq a b)))
     refl
+
+------------------------------------------------------------------------
+-- EARNING "isomorphism" — the OTHER direction. `qStep ∘ reconStep = id`, BUT only
+-- on Wedge-valid states `r < b`: otherwise qStep renormalizes (the quotient
+-- absorbs the overflow), so reconStep is a section only on the r<b domain. So one
+-- Euclid step is an ISOMORPHISM exactly on `r < b` — which is precisely the
+-- Wedge's `r<b` field. The Wedge IS that constrained step-iso. (Via divmod-unique:
+-- q·b+r determines (q,r) uniquely when r<b.)
+------------------------------------------------------------------------
+
+qStep∘reconStep : (q b r : ℕ) → r < suc b
+                → qStep (reconStep q (suc b , r)) ≡ (q , (suc b , r))
+qStep∘reconStep q b r r<b =
+  cong₂ _,_ (proj₁ du) (cong (suc b ,_) (proj₂ du))
+  where
+    n : ℕ
+    n = q * suc b + r
+    e : (n div-suc b) * suc b + (n mod-suc b) ≡ q * suc b + r
+    e = trans (+-comm ((n div-suc b) * suc b) (n mod-suc b)) (sym (div-mod-eq n b))
+    du : ((n div-suc b) ≡ q) × ((n mod-suc b) ≡ r)
+    du = divmod-unique (n div-suc b) q (n mod-suc b) r b (mod-suc-bound n b) r<b e
 
 ------------------------------------------------------------------------
 -- THE FULL UNIT, ∀, by recursing the local step to `base` over the FINITE trace.
