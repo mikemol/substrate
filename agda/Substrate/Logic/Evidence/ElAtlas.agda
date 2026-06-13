@@ -106,9 +106,12 @@ Statement NOE = {a b g : ℕ} → EEATrace a b g → BezoutℤWitness a b g
 -- discharged set cannot lie.
 ------------------------------------------------------------------------
 
--- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity) · IDC
--- identity-collapse schedule (↔ twins). (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's
--- sedenion zero divisor with kept residue; NOE → bezout-ℤ, the gcd as the conserved
--- charge of the Euclidean flow.)
+-- SWP semiring-weighted parsing (the deeper SPPF / packed multiplicity — one chart,
+-- pluggable carrier semiring) · IDC identity-collapse schedule (↔ twins). IDC's
+-- substrate witness is `NoCollapse.faithful-refines-verdict` (identity unseparated-in-
+-- probe-space), but its ∀-over-probe-carrier form is Set₁ — it needs the rung's
+-- `Statement : Claim → Set` lifted to Set₁ (or a fixed faithful carrier), a universe
+-- decision deferred. (ADJ → Atlas.nedge-atlas; GCX → CayleyDickson's sedenion zero
+-- divisor with kept residue; NOE → bezout-ℤ, the conserved charge of the Euclidean flow.)
 data Frontier : Set where
   SWP IDC : Frontier
