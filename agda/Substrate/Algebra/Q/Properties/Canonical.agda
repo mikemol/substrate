@@ -28,7 +28,7 @@ open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Z using (ℤ)
-open import Substrate.Algebra.Quotient using () renaming (Canonical to Canonical⟦30f92ad5⟧)
+open import Substrate.Algebra.Quotient using () renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-sym; ≈ℚ-trans; ℚ-Quotient)
 open import Substrate.Algebra.Q.Reduce using (reduce; reduce-build; sign-of)
@@ -94,7 +94,7 @@ canonical-respects-≈ {a} {b} hab =
        (≈ℚ-sym {a} {reduce a} (≈-canonical a))
        (≈ℚ-trans {a} {b} {reduce b} hab (≈-canonical b)))
 
-ℚ-Canonical : Canonical⟦30f92ad5⟧ ℚ-Quotient
+ℚ-Canonical : Canonical⟦de760d07⟧ ℚ-Quotient
 ℚ-Canonical = record
   { canonical            = reduce
   ; canonical-idempotent = λ a → sym (canonical-respects-≈ (≈-canonical a))

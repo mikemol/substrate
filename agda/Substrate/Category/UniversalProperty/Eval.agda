@@ -27,6 +27,8 @@ open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
 open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
+open import Substrate.Algebra.Quotient
+  using (Quotient) renaming (Canonical to Canonical⟦de760d07⟧)
 
 ------------------------------------------------------------------------
 -- Record-level identity and composition of UPMorphisms (UP3).
@@ -225,3 +227,26 @@ normalize-idem t = cong reify (normalize-eval t)
 normal→≈ᵤ : {U₁ U₂ : UPArrow} {s t : UPTerm U₁ U₂} → normalize s ≡ normalize t → s ≈ᵤ t
 normal→≈ᵤ {s = s} {t} p =
   trans (sym (normalize-eval s)) (trans (cong eval p) (normalize-eval t))
+
+------------------------------------------------------------------------
+-- UPTerm/≈ᵤ IS a substrate Quotient — the literal record, exactly as ℚ
+-- (ℚ-Quotient), ModN (ModN-Quotient), and CRT (QuotientProduct) are. ≈ᵤ is the
+-- eval-kernel equivalence (≡ pulled back along eval); `normalize = reify ∘ eval` is
+-- the Canonical form. So the per-hom-set quotient is machine-checked, not asserted —
+-- the same Quotient/Canonical pair the rest of the substrate's quotients instantiate.
+------------------------------------------------------------------------
+
+UPTerm-Quotient : (U₁ U₂ : UPArrow) → Quotient (UPTerm U₁ U₂) _≈ᵤ_
+UPTerm-Quotient U₁ U₂ = record
+  { ≈-refl  = λ _ → refl
+  ; ≈-sym   = sym
+  ; ≈-trans = trans
+  }
+
+UPTerm-Canonical : (U₁ U₂ : UPArrow) → Canonical⟦de760d07⟧ (UPTerm-Quotient U₁ U₂)
+UPTerm-Canonical U₁ U₂ = record
+  { canonical            = normalize
+  ; canonical-idempotent = normalize-idem
+  ; canonical-respects-≈ = λ {s} {t} e → ≈ᵤ→normal {s = s} {t = t} e
+  ; ≈-canonical          = λ a → sym (normalize-eval a)
+  }

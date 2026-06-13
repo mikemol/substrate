@@ -37,6 +37,7 @@
 module Substrate.Algebra.Quotient where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
+open import Agda.Primitive using (Level; lzero; lsuc; _⊔_)
 
 ------------------------------------------------------------------------
 -- 1. The base Quotient record: an equivalence relation, nothing more.
@@ -45,7 +46,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
 -- Substrate.Conway.Equivalence.
 ------------------------------------------------------------------------
 
-record Quotient (A : Set) (_≈_ : A → A → Set) : Set where
+record Quotient {a r : Level} (A : Set a) (_≈_ : A → A → Set r) : Set (a ⊔ r) where
   field
     ≈-refl  : (a : A) → a ≈ a
     ≈-sym   : {a b : A} → a ≈ b → b ≈ a
@@ -67,8 +68,8 @@ open Quotient public
 -- canonical representatives.
 ------------------------------------------------------------------------
 
-record Canonical      -- ⟦shape:30f92ad5 {A,canonical,canonical-idempotent⟧
-  {A : Set} {_≈_ : A → A → Set} (Q : Quotient A _≈_) : Set where
+record Canonical      -- ⟦shape:de760d07 {a r,canonical,canonical-idempotent⟧
+  {a r : Level} {A : Set a} {_≈_ : A → A → Set r} (Q : Quotient A _≈_) : Set (a ⊔ r) where
   field
     canonical            : A → A
     canonical-idempotent : (a : A) → canonical (canonical a) ≡ canonical a
@@ -82,12 +83,12 @@ open Canonical public
 ------------------------------------------------------------------------
 
 canonical-≡⇒≈ :
-  {A : Set} {_≈_ : A → A → Set}
+  {ℓ r : Level} {A : Set ℓ} {_≈_ : A → A → Set r}
   {Q : Quotient A _≈_}
   (C : Canonical Q)
   (a b : A) →
   canonical C a ≡ canonical C b → a ≈ b
-canonical-≡⇒≈ {A} {_≈_} {Q = Q} C a b eq = ≈-trans Q step₁ step₂
+canonical-≡⇒≈ {_≈_ = _≈_} {Q = Q} C a b eq = ≈-trans Q step₁ step₂
   where
     step₁ : a ≈ canonical C b
     step₁ rewrite sym eq = ≈-canonical C a
@@ -96,7 +97,7 @@ canonical-≡⇒≈ {A} {_≈_} {Q = Q} C a b eq = ≈-trans Q step₁ step₂
     step₂ = ≈-sym Q (≈-canonical C b)
 
 ≈⇒canonical-≡ :
-  {A : Set} {_≈_ : A → A → Set}
+  {ℓ r : Level} {A : Set ℓ} {_≈_ : A → A → Set r}
   {Q : Quotient A _≈_}
   (C : Canonical Q)
   {a b : A} →
