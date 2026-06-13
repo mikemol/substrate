@@ -145,8 +145,8 @@ def classify(seg):
 # ---- pass 1: collect every top-level signature + the global def-name set ----
 sig_re = re.compile(r"^([A-Za-z_][^\s():{}⦃⦄]*)\s*:\s*(.+?)(?=^\S|\Z)", re.M | re.S)
 field_re = re.compile(r"^\s+([A-Za-z_][^\s():{}⦃⦄]*)\s*:\s*(.+?)(?=^\s*[A-Za-z_]|\Z)", re.M | re.S)
-sigs = []          # (name, file, type_flat)
-defnames = set()
+sigs = []          # (name, file, type_flat)  — top-level defs AND record fields
+defnames = set()   # all identifier names that name a def/field (the "concrete" set)
 corpus_text = ""   # all stripped sources, for counting apex use-sites
 for dp, _, fns in os.walk(ROOT):
     for fn in fns:
@@ -154,9 +154,17 @@ for dp, _, fns in os.walk(ROOT):
         p = os.path.join(dp, fn); rel = os.path.relpath(p, ROOT)
         txt = strip(open(p, encoding="utf-8").read())
         corpus_text += txt + "\n"
-        for m in sig_re.finditer(txt):
-            name, ty = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
-            defnames.add(name); sigs.append((name, rel, ty))
+        # top-level signatures (col-0) AND record/where field signatures (indented) —
+        # laws live in BOTH (e.g. GenericHodgeStar.retraction is a field). Concrete F,s
+        # may be a field too, so fields populate `defnames` as well.
+        for rx in (sig_re, field_re):
+            for m in rx.finditer(txt):
+                name, ty = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+                defnames.add(name); sigs.append((name, rel, ty))
+
+# token-boundary index for the convergence count (avoids substring bleed, e.g.
+# 'sum' inside 'sum-F₂'); Agda idents survive this split intact.
+tok_count = collections.Counter(re.split(r"[\s()\[\]{}⦃⦄:;,]+", corpus_text))
 
 # ---- pass 2: classify each signature as INSTANCE (concrete F,s) or APEX (bound F,s) ----
 instances = collections.defaultdict(list)   # motif -> [(name, file, F, s)]
@@ -178,8 +186,10 @@ for name, rel, ty in sigs:
 
 # ---- report ----
 print("# law-motif apex scan — relational motifs over function signatures\n")
-for motif in sorted(set(instances) | set(apexes), key=lambda k: -len(instances[k])):
-    inst = instances[motif]; ap = apexes.get(motif, [])
+instances = {m: sorted(set(v)) for m, v in instances.items()}   # dedup (sig+field overlap)
+apexes    = {m: sorted(set(v)) for m, v in apexes.items()}
+for motif in sorted(set(instances) | set(apexes), key=lambda k: -len(instances.get(k, []))):
+    inst = instances.get(motif, []); ap = apexes.get(motif, [])
     if len(inst) < MIN and not ap: continue
     print(f"## {motif}   — {len(inst)} concrete instances")
     for name, rel, F, s in sorted(inst)[:SHOW]:
@@ -188,7 +198,7 @@ for motif in sorted(set(instances) | set(apexes), key=lambda k: -len(instances[k
     if ap:
         apex_names = sorted({n for n, _ in ap})
         # convergence: count corpus USE-sites of each apex (occurrences − its 1 def site).
-        uses = sum(max(0, corpus_text.count(an) - 1) for an in apex_names)  # −1 for the def
+        uses = sum(max(0, tok_count[an] - 1) for an in apex_names)  # token-exact, −1 for the def
         print(f"   ✔ APEX PRESENT (parametric over the law): {', '.join(apex_names[:4])}")
         print(f"   → convergence: ~{uses} apex use-site(s) vs {len(inst)} instances — "
               f"{len(inst) - uses} candidate(s) to route through it.")
