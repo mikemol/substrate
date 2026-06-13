@@ -338,9 +338,164 @@ def demo_compare(h=22, s=9, seed=3, reps=5):
           f"part is small and grows with carrier size → M2.")
 
 
+# ======================================================================
+# M2 — exact ℤ carrier (no truncation, escalate-don't-wrap). 128-bit values via
+# `unsigned __int128` (16 bytes each, stored as lo/hi uint64 lanes). Combine is
+# branchless (select, not branch); OVERFLOW is DETECTED (add: carry out; mul: division
+# check) and sets a sticky flag — the ESCALATE signal — never a silent wrap. Values are
+# 16× an F₂ value, so the fold is now bandwidth-bound and the SM-tiling win converts to
+# TIME. (Multi-limb escalation beyond 128 bits, triggered by the flag, is M2b.)
+# ======================================================================
+
+_I128_DECL = r'''
+typedef unsigned long long u64;
+typedef unsigned __int128 u128;
+__device__ __forceinline__ u128 ld(const u64* lo, const u64* hi, int i){
+    return ((u128)hi[i] << 64) | lo[i]; }
+__device__ __forceinline__ int comb(u128 a, u128 b, signed char tg, u128* out){
+    u128 sm = a + b, pr = a * b;          // both computed; select branchlessly
+    int isMul = (tg == 2);
+    *out = isMul ? pr : sm;
+    int o_add = (sm < a);                 // add carry out of 128 bits
+    int o_mul = (a != 0) && (pr / a != b);// mul overflowed 128 bits
+    return isMul ? o_mul : o_add;         // 1 => must escalate (never truncated)
+}
+'''
+
+_combine_level_i128 = cp.RawKernel(_I128_DECL + r'''
+extern "C" __global__
+void combine_level_i128(const u64* clo, const u64* chi, const signed char* tags,
+                        u64* nlo, u64* nhi, int* ovf, int n) {
+    int i = blockDim.x * (long long)blockIdx.x + threadIdx.x;
+    if (i >= n) return;
+    u128 r; int o = comb(ld(clo,chi,2*i), ld(clo,chi,2*i+1), tags[i], &r);
+    nlo[i] = (u64)r; nhi[i] = (u64)(r >> 64);
+    if (o) ovf[0] = 1;
+}
+''', 'combine_level_i128', options=('--device-int128',))
+
+_fold_subtree_i128 = cp.RawKernel(_I128_DECL + r'''
+extern "C" __global__
+void fold_subtree_i128(const u64* llo, const u64* lhi, const signed char* btags,
+                       u64* plo, u64* phi, int* ovf, int SEG) {
+    extern __shared__ u64 sh[];                  // [0,SEG)=lo  [SEG,2SEG)=hi
+    u64* slo = sh; u64* shi = sh + SEG;
+    int t = threadIdx.x; int base = blockIdx.x * SEG; int toff = blockIdx.x * (SEG - 1);
+    slo[t]=llo[base+t]; shi[t]=lhi[base+t];
+    slo[t+SEG/2]=llo[base+t+SEG/2]; shi[t+SEG/2]=lhi[base+t+SEG/2];
+    __syncthreads();
+    int written = 0;
+    for (int half = SEG>>1; half>=1; half>>=1) {
+        u128 a=0,b=0; signed char tg=0;
+        if (t<half){ a=ld(slo,shi,2*t); b=ld(slo,shi,2*t+1); tg=btags[toff+written+t]; }
+        __syncthreads();
+        if (t<half){ u128 r; int o=comb(a,b,tg,&r); slo[t]=(u64)r; shi[t]=(u64)(r>>64);
+                     if(o) ovf[0]=1; }
+        written += half; __syncthreads();
+    }
+    if (t==0){ plo[blockIdx.x]=slo[0]; phi[blockIdx.x]=shi[0]; }
+}
+''', 'fold_subtree_i128', options=('--device-int128',))
+
+
+def build_balanced_int(h, seed, op, leafbits):
+    """Balanced tree, integer leaves in [0,2^leafbits), all nodes the SAME op
+    ('add'=⊕ or 'mul'=⊗) so overflow behaviour is controllable."""
+    rng = np.random.default_rng(seed); M = 1 << h
+    leaves = rng.integers(0, 1 << leafbits, M, dtype=np.uint64)
+    tag = np.int8(TAG_MUL if op == 'mul' else TAG_ADD)
+    tags = [np.full(M >> L, tag, np.int8) for L in range(1, h + 1)]
+    return leaves, tags
+
+
+def _host_fold_int(leaves, tags):
+    """Exact arbitrary-precision ground truth (Python int)."""
+    cur = [int(x) for x in leaves]
+    for tg in tags:
+        mul = (tg[0] == TAG_MUL)
+        cur = [(cur[2*i]*cur[2*i+1]) if mul else (cur[2*i]+cur[2*i+1])
+               for i in range(len(cur)//2)]
+    return cur[0]
+
+
+def _i128(lo, hi):  return (int(hi) << 64) | int(lo)
+
+
+def inside_perlevel_i128(leaves, tags, block=256):
+    clo = cp.asarray(leaves, cp.uint64); chi = cp.zeros(leaves.size, cp.uint64)
+    dt = [cp.asarray(t) for t in tags]; ovf = cp.zeros(1, cp.int32)
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    for tg in dt:
+        n = int(tg.size); nlo = cp.empty(n, cp.uint64); nhi = cp.empty(n, cp.uint64)
+        _combine_level_i128(((n+block-1)//block,), (block,), (clo,chi,tg,nlo,nhi,ovf,np.int32(n)))
+        clo, chi = nlo, nhi
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter()-t0)*1e3
+    return _i128(clo.get()[0], chi.get()[0]), ms, int(ovf.get()[0])
+
+
+def inside_tiled_i128(leaves, tags, s=9):
+    h = len(tags); M = leaves.size; SEG = 1 << s; nblk = M >> s
+    btags = np.empty(nblk*(SEG-1), np.int8)
+    for b in range(nblk):
+        off, span = 0, SEG >> 1
+        for L in range(s):
+            btags[b*(SEG-1)+off : b*(SEG-1)+off+span] = tags[L][b*span:(b+1)*span]
+            off += span; span >>= 1
+    llo = cp.asarray(leaves, cp.uint64); lhi = cp.zeros(M, cp.uint64); dbt = cp.asarray(btags)
+    plo = cp.empty(nblk, cp.uint64); phi = cp.empty(nblk, cp.uint64); ovf = cp.zeros(1, cp.int32)
+    dtop = [cp.asarray(t) for t in tags[s:]]
+    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    _fold_subtree_i128((nblk,), (SEG//2,), (llo,lhi,dbt,plo,phi,ovf,np.int32(SEG)),
+                       shared_mem=2*SEG*8)
+    clo, chi = plo, phi
+    for tg in dtop:
+        n = int(tg.size); nlo = cp.empty(n, cp.uint64); nhi = cp.empty(n, cp.uint64)
+        _combine_level_i128(((n+255)//256,), (256,), (clo,chi,tg,nlo,nhi,ovf,np.int32(n)))
+        clo, chi = nlo, nhi
+    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter()-t0)*1e3
+    return _i128(clo.get()[0], chi.get()[0]), ms, int(ovf.get()[0])
+
+
+def demo_compare_i128(h=22, s=9, seed=5, reps=5):
+    """M2 spit-take: exact 128-bit ⊕-accumulation (large values → bandwidth-bound), same
+    tree, per-level vs SM-tiled — now the SM-residency win should show in TIME."""
+    leaves, tags = build_balanced_int(h, seed, 'add', leafbits=60)   # sums ~2^82, fit 128b
+    truth = _host_fold_int(leaves, tags)
+    inside_perlevel_i128(leaves, tags); inside_tiled_i128(leaves, tags, s)   # warm JIT
+    pl = [inside_perlevel_i128(leaves, tags) for _ in range(reps)]
+    ti = [inside_tiled_i128(leaves, tags, s) for _ in range(reps)]
+    r_pl, ms_pl, o_pl = pl[0][0], min(m for _,m,_ in pl), pl[0][2]
+    r_ti, ms_ti, o_ti = ti[0][0], min(m for _,m,_ in ti), ti[0][2]
+    assert r_pl == truth and r_ti == truth, (r_pl, r_ti, truth)        # EXACT vs Python int
+    assert o_pl == 0 and o_ti == 0                                     # no overflow here
+    M = leaves.size
+    print(f"M2 exact ℤ (128-bit, 16B values), SAME ⊕-tree h={h} (2^{h}={M:,} leaves), both "
+          f"GPU, both = exact host int (a {truth.bit_length()}-bit number), overflow flag 0:")
+    print(f"   per-level GLOBAL fold : {ms_pl:.2f} ms")
+    print(f"   bottom-{s} SHARED tiled : {ms_ti:.2f} ms   → {ms_pl/ms_ti:.2f}x FASTER "
+          f"(16B values are bandwidth-bound, so SM residency now converts to time — the win "
+          f"F₂'s 1B values couldn't show).")
+
+
+def demo_overflow_i128(h=8, seed=1):
+    """Escalate-don't-truncate: a ⊗-tree whose exact product exceeds 128 bits. The flag is
+    SET (detected) and the device result DIFFERS from the exact host int — no silent wrap."""
+    leaves, tags = build_balanced_int(h, seed, 'mul', leafbits=40)    # products explode
+    truth = _host_fold_int(leaves, tags)
+    root, _, ovf = inside_perlevel_i128(leaves, tags)
+    assert ovf == 1, "overflow not detected!"                          # the escalate signal
+    assert truth.bit_length() > 128 and root != truth                 # host exact ≫ 128 bits
+    print(f"M2 escalate-don't-truncate: ⊗-tree exact product is {truth.bit_length()} bits "
+          f"(>128). Overflow flag = {ovf} (DETECTED, not wrapped); the 128-bit result is "
+          f"flagged invalid, never a silent truncation. [Multi-limb escalation = M2b.]")
+
+
 if __name__ == "__main__":
     print("Just Enough Agda on GPU — M1: SPPF inside-fold over F₂ (branchless, resident)\n")
     demo_chain(40)
     demo_wide()
     print()
     demo_compare()
+    print()
+    demo_compare_i128()
+    demo_overflow_i128()
