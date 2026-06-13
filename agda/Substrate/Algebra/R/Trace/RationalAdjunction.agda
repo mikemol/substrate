@@ -37,32 +37,48 @@
 module Substrate.Algebra.R.Trace.RationalAdjunction where
 
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
-open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Algebra.Nat.Mod          using (_mod-suc_)
 open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
-open import Substrate.Algebra.R.Trace        using (RealTrace; take; convergent)
-open import Substrate.Algebra.R.Trace.Unfold using (unfold)
+open import Substrate.Algebra.R.Trace        using (RealTrace; head; tail; take; convergent; sqrt2)
+open import Substrate.Algebra.R.Trace.Bisim  using (_~_)
+open import Substrate.Algebra.R.Trace.Final  using (Coalg; ana; ana-unique)
 
 ------------------------------------------------------------------------
 -- ℚ's coalgebra structure: peel one EEA step. State = (numerator, denominator).
 -- Emit the CF digit ⌊a/b⌋; the next ratio is (denominator / remainder).
 ------------------------------------------------------------------------
 
-qStep : ℕ × ℕ → ℕ × (ℕ × ℕ)
+qStep : Coalg (ℕ × ℕ)        -- = (ℕ × ℕ) → ℕ × (ℕ × ℕ)
 qStep (a , zero)  = a , (a , zero)                       -- terminated at the gcd: junk-pad
 qStep (a , suc b) = a div-suc b , (suc b , a mod-suc b)  -- digit, then (suc b)/remainder
 
 ------------------------------------------------------------------------
--- ℚ → R : the embedding = `ana qStep` (= unfold). The unique coalgebra morphism
--- into the terminal coalgebra RealTrace (`Final.ana-unique`) — forced, not chosen.
--- (a , d) is the rational a/(suc d).
+-- ℚ → R : the embedding = `ana qStep`, the anamorphism into the terminal
+-- coalgebra. `qToRℚ` takes the (num, den) pair directly (so `convergent`'s output
+-- feeds straight back in); `qToR a d` is the rational a/(suc d).
 ------------------------------------------------------------------------
 
+qToRℚ : ℕ × ℕ → RealTrace
+qToRℚ = ana qStep
+
 qToR : ℕ → ℕ → RealTrace
-qToR a d = unfold qStep (a , suc d)
+qToR a d = qToRℚ (a , suc d)
+
+------------------------------------------------------------------------
+-- FORCED, NOT CHOSEN — now a theorem, not prose. By `Final.ana-unique`, ANY
+-- coalgebra morphism from (ℕ×ℕ, qStep) into RealTrace is bisimilar to `qToRℚ`.
+-- So the embedding ℚ → R is the UNIQUE one the terminal coalgebra admits.
+------------------------------------------------------------------------
+
+qToRℚ-unique : (h : ℕ × ℕ → RealTrace)
+             → (∀ s → head (h s) ≡ proj₁ (qStep s))
+             → (∀ s → tail (h s) ≡ h (proj₂ (qStep s)))
+             → ∀ s → h s ~ qToRℚ s
+qToRℚ-unique = ana-unique qStep
 
 ------------------------------------------------------------------------
 -- R → ℚ is `convergent` (in `Trace`): fold the depth-n prefix to (num, den).
@@ -75,5 +91,25 @@ emit-3/2 : take 2 (qToR 3 1) ≡ 1 ∷ 2 ∷ []
 emit-3/2 = refl
 
 -- THE ADJUNCTION UNIT  ℚ → R → ℚ = id  (at the CF depth): 3/2 reconstructs exactly.
+-- (This is one INSTANCE, exact/definitional. The general unit "convergent depth ∘
+-- qToR = id for every rational" is the CF-reconstruction theorem — true, shown here
+-- on a witness, not yet proved ∀q.)
 unit-3/2 : convergent 2 (qToR 3 1) ≡ (3 , 2)
 unit-3/2 = refl
+
+------------------------------------------------------------------------
+-- THE COUNIT  R → ℚ → R  — a DECOMPOSITION, not identity. Take the depth-n
+-- convergent (lossy: a rational) and re-embed it. It agrees with r on the PREFIX
+-- (the first n CF digits — the convergent's CF IS r's truncation), and the
+-- RESIDUE is r's tail beyond depth n. So `counit n` is "keep n digits, drop the
+-- rest" — the finite observation, with the dropped tail as the residue
+-- ([[feedback_wedge_not_projection]]: the truncation is the lossy LOOK; r is the
+-- generator). Witnessed on √2 = [1;2,2,2,…]: depth-2 counit agrees with √2's prefix
+-- (its convergent is 3/2 = [1;2]); the residue is the 2,2,2,… that 3/2 cannot hold.
+------------------------------------------------------------------------
+
+counit : ℕ → RealTrace → RealTrace
+counit n r = qToRℚ (convergent n r)
+
+counit-prefix-√2 : take 2 (counit 2 sqrt2) ≡ take 2 sqrt2
+counit-prefix-√2 = refl
