@@ -20,7 +20,7 @@
 
 module Substrate.Category.UniversalProperty.Eval where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Morphism
@@ -174,3 +174,24 @@ foldUPTerm-unique idT cmpT interp G Gnil Gcons (g ∷ t) =
   trans (Gcons g t)
         (cong (λ X → cmpT X (interp g))
               (foldUPTerm-unique idT cmpT interp G Gnil Gcons t))
+
+------------------------------------------------------------------------
+-- UP4, MADE PRECISE. Not "kernel" loosely — the CONGRUENCE induced by eval's
+-- kernel pair: `s ≈ᵤ t  iff  eval s ≡ eval t`. It RESPECTS composition (`≈ᵤ-cong-++`),
+-- and that is exactly what makes the quotient `UPTerm / ≈ᵤ` a CATEGORY — the
+-- presented category the threads were heading toward. The respect-law follows from
+-- `eval-++` (eval is a functor): the kernel of a functor is automatically a
+-- congruence. So UP4 is no longer "word-equality work" — it is this proven
+-- congruence; the quotient itself is the section-based PresentedUP/normalise step
+-- (no quotient types under --without-K).
+------------------------------------------------------------------------
+
+_≈ᵤ_ : {U₁ U₂ : UPArrow} → UPTerm U₁ U₂ → UPTerm U₁ U₂ → Set
+s ≈ᵤ t = eval s ≡ eval t
+
+≈ᵤ-cong-++ : {U₁ U₂ U₃ : UPArrow} {s s' : UPTerm U₁ U₂} {t t' : UPTerm U₂ U₃}
+           → s ≈ᵤ s' → t ≈ᵤ t' → (s ++ᵤ t) ≈ᵤ (s' ++ᵤ t')
+≈ᵤ-cong-++ {s = s} {s'} {t} {t'} ss tt =
+  trans (eval-++ s t)
+        (trans (cong₂ compose-UPMorphism tt ss)
+               (sym (eval-++ s' t')))
