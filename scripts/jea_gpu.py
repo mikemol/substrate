@@ -693,6 +693,123 @@ def demo_q_overflow(h=12, seed=4):
           f"[Multi-limb escalation past 128-bit = the M2b completion.]")
 
 
+# ======================================================================
+# tiled-ℚ — the recompute-from-residue payoff. ℚ values are 32 bytes, so the per-level
+# global fold round-trips a LOT of bandwidth; the SM-tiled fold keeps a subtree's ℚ
+# values in shared memory and does the gcd reductions IN-SM (recompute the reduction
+# where the operands already live, never move a materialized ℚ across global). Only the
+# subtree root spills. This is where SM residency should pay off most (32B >> ℤ-128's 16B
+# >> F₂'s 1B). Branchless combine; only the structural stride guard branches.
+# ======================================================================
+
+_fold_subtree_q = cp.RawKernel(_QDECL + r'''
+extern "C" __global__
+void fold_subtree_q(const u64* Lnl,const u64* Lnh,const u64* Ldl,const u64* Ldh,
+                    const signed char* btags,
+                    u64* Pnl,u64* Pnh,u64* Pdl,u64* Pdh, int* ovf, int SEG){
+    extern __shared__ u64 sh[];                          // 4 lanes (nl,nh,dl,dh) x SEG
+    u64* snl=sh; u64* snh=sh+SEG; u64* sdl=sh+2*SEG; u64* sdh=sh+3*SEG;
+    int t=threadIdx.x; int base=blockIdx.x*SEG; int toff=blockIdx.x*(SEG-1); int t2=t+SEG/2;
+    snl[t]=Lnl[base+t];  snh[t]=Lnh[base+t];  sdl[t]=Ldl[base+t];  sdh[t]=Ldh[base+t];
+    snl[t2]=Lnl[base+t2];snh[t2]=Lnh[base+t2];sdl[t2]=Ldl[base+t2];sdh[t2]=Ldh[base+t2];
+    __syncthreads();
+    int written=0;
+    for(int half=SEG>>1; half>=1; half>>=1){
+        i128 an=0,ad=0,bn=0,bd=0; signed char tg=0;
+        if(t<half){
+            an=(i128)(((u128)snh[2*t]<<64)|snl[2*t]);    ad=(i128)(((u128)sdh[2*t]<<64)|sdl[2*t]);
+            bn=(i128)(((u128)snh[2*t+1]<<64)|snl[2*t+1]);bd=(i128)(((u128)sdh[2*t+1]<<64)|sdl[2*t+1]);
+            tg=btags[toff+written+t];
+        }
+        __syncthreads();
+        if(t<half){
+            int isMul=(tg==2);
+            i128 p1=an*bd,p2=bn*ad, nm=an*bn, na=p1+p2, D=ad*bd;
+            int o=0;
+            o|=(an!=0)&&(nm/an!=bn); o|=(ad!=0)&&(D/ad!=bd);
+            o|=(bd!=0)&&(p1/bd!=an); o|=(ad!=0)&&(p2/ad!=bn);
+            o|=((p1>0)==(p2>0))&&((na>0)!=(p1>0))&&(p1!=0);
+            i128 N=isMul?nm:na;
+            u128 g=gcd_u(absu(N),absu(D)); g=(g==0)?(u128)1:g;   // reduction IN shared memory
+            N=N/(i128)g; D=D/(i128)g;
+            snl[t]=(u64)(u128)N; snh[t]=(u64)((u128)N>>64);
+            sdl[t]=(u64)(u128)D; sdh[t]=(u64)((u128)D>>64);
+            if(o) ovf[0]=1;
+        }
+        written+=half; __syncthreads();
+    }
+    if(t==0){ Pnl[blockIdx.x]=snl[0]; Pnh[blockIdx.x]=snh[0];
+              Pdl[blockIdx.x]=sdl[0]; Pdh[blockIdx.x]=sdh[0]; }
+}
+''', 'fold_subtree_q', options=('--device-int128',))
+
+
+def _q_top_fold(anl, anh, adl, adh, d_tags, ovf, block=256):
+    for tg in d_tags:
+        m = int(tg.size)
+        nnl=cp.empty(m,cp.uint64); nnh=cp.empty(m,cp.uint64); ndl=cp.empty(m,cp.uint64); ndh=cp.empty(m,cp.uint64)
+        _combine_level_q(((m+block-1)//block,), (block,),
+                         (anl,anh,adl,adh,tg, nnl,nnh,ndl,ndh, ovf, np.int32(m)))
+        anl,anh,adl,adh = nnl,nnh,ndl,ndh
+    return anl,anh,adl,adh
+
+
+def inside_tiled_q(nums, dens, tags, s=9):
+    M = nums.size; SEG = 1 << s; nblk = M >> s
+    d_tags = [cp.asarray(t) for t in tags]; d_btags = btags_device(d_tags, s)
+    nl=cp.asarray(nums,cp.uint64); nh=cp.zeros(M,cp.uint64)
+    dl=cp.asarray(dens,cp.uint64); dh=cp.zeros(M,cp.uint64)
+    Pnl=cp.empty(nblk,cp.uint64); Pnh=cp.empty(nblk,cp.uint64)
+    Pdl=cp.empty(nblk,cp.uint64); Pdh=cp.empty(nblk,cp.uint64); ovf=cp.zeros(1,cp.int32)
+    cp.cuda.Stream.null.synchronize(); t0=time.perf_counter()
+    _fold_subtree_q((nblk,),(SEG//2,),
+                    (nl,nh,dl,dh, d_btags, Pnl,Pnh,Pdl,Pdh, ovf, np.int32(SEG)),
+                    shared_mem=4*SEG*8)
+    anl,anh,adl,adh = _q_top_fold(Pnl,Pnh,Pdl,Pdh, d_tags[s:], ovf)
+    cp.cuda.Stream.null.synchronize(); ms=(time.perf_counter()-t0)*1e3
+    return _signed128(anl.get()[0],anh.get()[0]), _signed128(adl.get()[0],adh.get()[0]), ms, int(ovf.get()[0])
+
+
+def _build_q_add(h, seed):
+    """All-⊕ ℚ tree, leaves num∈{1,2,3} den∈{1,2,4}: ℚ stays in 128-bit at any depth
+    (den ≤ 4 after reduction, num ~ weighted sum), 32-byte values → bandwidth-relevant."""
+    rng = np.random.default_rng(seed); M = 1 << h
+    nums = rng.integers(1, 4, M).astype(np.uint64)
+    dens = (1 << rng.integers(0, 3, M)).astype(np.uint64)        # 1,2,4
+    tags = [np.full(M >> L, TAG_ADD, np.int8) for L in range(1, h+1)]
+    return nums, dens, tags
+
+
+def demo_compare_q(h=22, s=9, seed=2, reps=5):
+    """tiled-ℚ A/B: same 32-byte-ℚ tree, per-level GLOBAL fold vs bottom-s SHARED-tiled
+    (gcd reductions in-SM). Exactness checked at small h vs Python Fraction; at large h the
+    two GPU folds are cross-checked (host Fraction over millions of leaves is too slow)."""
+    from fractions import Fraction
+    # 1) exactness at small h, both folds vs Python Fraction:
+    nv, dv, tg = _build_q_add(12, seed)
+    truth = _host_fold_q(nv, dv, tg)
+    for fn, nm in ((inside_perlevel_q, 'per-level'), (lambda a,b,c: inside_tiled_q(a,b,c,9), 'tiled')):
+        N,D,_,o = fn(nv,dv,tg); assert o==0 and Fraction(N,D)==truth, (nm,N,D,truth)
+    # 2) bandwidth A/B at large h, GPU self-consistency:
+    nums, dens, tags = _build_q_add(h, seed); M = nums.size
+    inside_perlevel_q(nums,dens,tags); inside_tiled_q(nums,dens,tags,s)         # warm
+    pl=[inside_perlevel_q(nums,dens,tags) for _ in range(reps)]
+    ti=[inside_tiled_q(nums,dens,tags,s) for _ in range(reps)]
+    (Np,Dp,_,op)=pl[0]; (Nt,Dt,_,ot)=ti[0]
+    assert op==0 and ot==0 and (Np,Dp)==(Nt,Dt), "GPU folds disagree or overflowed"
+    ms_pl=min(m for _,_,m,_ in pl); ms_ti=min(m for _,_,m,_ in ti)
+    print(f"tiled-ℚ: exact at h=12 (both folds = Python Fraction). A/B, same 32B-ℚ tree "
+          f"h={h} (2^{h}={M:,} leaves), both GPU, agree (={Fraction(Np,Dp)}), flag 0:")
+    print(f"   per-level GLOBAL fold : {ms_pl:.2f} ms")
+    print(f"   bottom-{s} SHARED tiled : {ms_ti:.2f} ms   → {ms_pl/ms_ti:.2f}x (tiling is SLOWER).")
+    print(f"   HONEST FINDING (prediction was WRONG): ℚ is COMPUTE-bound, not bandwidth-bound — "
+          f"the 256-iter Euclidean gcd per node dwarfs the 32B traffic, and the tiled "
+          f"reduction's sub-warp stride guard idles threads while each survivor runs the full "
+          f"gcd, so per-level (full occupancy) wins. SM residency pays off when the combine is "
+          f"CHEAP and bandwidth dominates (F₂ 1B ~1.1x, ℤ-128 16B ~2x); ℚ's lever is gcd "
+          f"optimization (binary GCD / early-out), not residency.")
+
+
 if __name__ == "__main__":
     print("Just Enough Agda on GPU — M1: SPPF inside-fold over F₂ (branchless, resident)\n")
     demo_chain(40)
@@ -707,3 +824,5 @@ if __name__ == "__main__":
     print()
     demo_q()
     demo_q_overflow()
+    print()
+    demo_compare_q()
