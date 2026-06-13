@@ -195,3 +195,33 @@ s ≈ᵤ t = eval s ≡ eval t
   trans (eval-++ s t)
         (trans (cong₂ compose-UPMorphism tt ss)
                (sym (eval-++ s' t')))
+
+------------------------------------------------------------------------
+-- THE QUOTIENT — the substrate way (user: "you're talking lack of quotient types
+-- when we already have Q, wedge, and lossless Q↔R"). No HITs needed: the substrate
+-- realizes a quotient by a CANONICAL FORM (a section) — ℚ = (ℤ×ℕ)/≈ via
+-- reduce/Canonical, the wedge via rem<b, CRT via QuotientProduct. UPTerm/≈ᵤ is the
+-- SAME: `normalize = reify ∘ eval` is the canonical form (the one-generator word),
+-- idempotent, and ≈ᵤ is DECIDED by normal-form equality. So UPTerm/≈ᵤ is a
+-- section-based Quotient (the ℚ pattern), realized losslessly through eval/reify —
+-- not a barrier.
+------------------------------------------------------------------------
+
+normalize : {U₁ U₂ : UPArrow} → UPTerm U₁ U₂ → UPTerm U₁ U₂
+normalize t = reify (eval t)
+
+normalize-eval : {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂) → eval (normalize t) ≡ eval t
+normalize-eval t = eval-reify (eval t)
+
+normalize-idem : {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂)
+               → normalize (normalize t) ≡ normalize t
+normalize-idem t = cong reify (normalize-eval t)
+
+-- ≈ᵤ ⟺ equal canonical form: the section decides the congruence (exactly ℚ's
+-- `a ≈ℚ b ⟺ reduce a ≡ reduce b`).
+≈ᵤ→normal : {U₁ U₂ : UPArrow} {s t : UPTerm U₁ U₂} → s ≈ᵤ t → normalize s ≡ normalize t
+≈ᵤ→normal e = cong reify e
+
+normal→≈ᵤ : {U₁ U₂ : UPArrow} {s t : UPTerm U₁ U₂} → normalize s ≡ normalize t → s ≈ᵤ t
+normal→≈ᵤ {s = s} {t} p =
+  trans (sym (normalize-eval s)) (trans (cong eval p) (normalize-eval t))
