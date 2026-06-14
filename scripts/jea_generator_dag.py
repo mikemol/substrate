@@ -103,9 +103,15 @@ def build_dag(L, seed):
 
 
 def run(L=16, seed=3, K0=4, maxcyc=2_000_000):
+    return run_g(build_dag(L, seed), K0=K0, maxcyc=maxcyc)
+
+
+def run_g(g, K0=4, maxcyc=2_000_000):
+    """Evaluate a GIVEN DAG dict (vN,vD,lch,rch,op,L,N,root[,truth]) on the cooperative
+    generators. Used by run() (random tree) and by jea_agda_bridge (an Agda-emitted term)."""
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     nblocks = min(20, nsm)
-    g = build_dag(L, seed); N = g["N"]
+    N = g["N"]; L = g["L"]
     per_sm, max_resident, _n, regs = residency(_kern, 32)
     assert nblocks <= max_resident
 
