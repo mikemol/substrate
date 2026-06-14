@@ -635,10 +635,69 @@ def t_SWF(m):  # the order-free face of SWP: extends over C by its own breaker
     if m.get('coeff')=='complex': return 'P' if _swf_ok('complex') else 'F'
     return 'P' if _swf_ok('real') else 'F'
 
+@_ft.lru_cache(None)
+def _swb_ok():
+    """SWAR carrier boundaries as a nedge G-Value circuit (structural, coeff-independent).
+    Re-encodes swar-boundary-nedge-pilot.py: the jea SWAR carrier packs N width-L carriers
+    in a 64-bit register as the el-atlas (E+,E-) pair (E+ = sum payload L_i, E- = sum forced
+    expansion W_i-L_i), NOT a quotient. Witnesses: (1) mass = sum W_i = 64 conserved on every
+    valid tiling; (2) op -> crossbar region by room rule: add (W=L) bias +64 = T, mul (W=2L)
+    bias 0 = B (the bridge null), bignum (W>2L) bias <0 = F; (3) validity = series G_AND gate,
+    a leaky lane boundary (mul room < 2L) shorts it to 0; (4) divergence = series resistance
+    G_thru = E+/D, monotone in #distinct-width passes; (5) conflation: equal bias, different D
+    => same efficiency quotient, different throughput (the ratio is blind to divergence as
+    el-atlas's quotient is blind to mass). Plus DeMorgan NOT(AND)=OR on the nedge ops."""
+    from math import ceil, log2
+    import random as _r
+    G_or = lambda a, b: a + b
+    G_and = lambda a, b: 0.0 if a + b == 0 else a * b / (a + b)
+    G_not = lambda g: (1.0 / g) if g else float('inf')
+    def p2(n):
+        W = 1
+        while W < n: W <<= 1
+        return W
+    def rm(op, L, K=3):
+        return L if op == 'add' else (2 * L if op == 'mul'
+               else p2(2 * L + 1 + (ceil(log2(K)) if K > 1 else 0)))
+    def ana(op, lanes, K=3):
+        Ep = sum(L for L, W in lanes); Em = sum(W - L for L, W in lanes); D = len(set(lanes))
+        p2ok = (op == 'add') or all(W & (W - 1) == 0 for _, W in lanes)
+        gv = 1.0 if (Ep + Em == 64 and p2ok and all(W >= rm(op, L, K) for L, W in lanes)) else 0.0
+        return dict(Ep=Ep, mass=Ep + Em, bias=Ep - Em, D=D, gv=gv, gt=(Ep / D if D else 0.0))
+    def uni(op, L, K=3):
+        W = rm(op, L, K); n = 64 // W
+        return [(L, W)] * n if (n >= 1 and 64 % W == 0) else None
+    valid = [(op, ana(op, uni(op, L))) for op in ('add', 'mul', 'bignum')
+             for L in (32, 16, 8, 4, 2, 1) if uni(op, L)]
+    valid = [(op, a) for op, a in valid if a['gv'] > 0]
+    if not all(a['mass'] == 64 for _, a in valid): return False                 # 1
+    sgn = lambda b: (1 if b > 0 else (0 if b == 0 else -1))
+    reg = {}
+    for op, a in valid: reg.setdefault(op, set()).add(sgn(a['bias']))
+    if not (reg.get('add') == {1} and reg.get('mul') == {0} and reg.get('bignum') == {-1}):
+        return False                                                            # 2
+    inv = ana('mul', [(8, 8)] * 8)                                              # 3 leaky boundary shorts
+    if not (inv['gv'] == 0 and all(a['gv'] > 0 for _, a in valid)): return False
+    au = ana('mul', [(4, 8)] * 8); am = ana('mul', [(8, 16), (8, 16)] + [(4, 8)] * 4)
+    if not (au['Ep'] == am['Ep'] and am['D'] > au['D'] and am['gt'] < au['gt']): return False  # 4
+    if not (au['bias'] == am['bias'] and au['D'] != am['D']
+            and abs(au['gt'] - am['gt']) > 1e-9): return False                  # 5 conflation
+    rng = _r.Random(0)
+    for _ in range(500):                                                        # DeMorgan on nedge ops
+        x, y = rng.uniform(.1, 9), rng.uniform(.1, 9)
+        if abs(G_not(G_and(x, y)) - G_or(G_not(x), G_not(y))) > 1e-9: return False
+    return True
+
+def t_SWB(m):  # SWAR carrier boundaries as a nedge G-Value circuit (the kernel-perf weigher)
+    if m['pins'] < 2: return 'V'        # the (E+,E-) carrier needs the pair
+    if not m['two_ops']: return 'V'     # weighing bias (parallel/OR) vs divergence (series/AND) needs both ops
+    return 'P' if _swb_ok() else 'F'
+
 CLAIMS=dict(ADJ=t_ADJ,BAL=t_BAL,CDC=t_CDC,CRS=t_CRS,PUR=t_PUR,PRO=t_PRO,LOC=t_LOC,
             L26=t_L26,T53=t_T53,V4I=t_V4I,D4C=t_D4C,PHS=t_PHS,RLS=t_RLS,NOE=t_NOE,
             TWN=t_TWN,RAD=t_RAD,ZDG=t_ZDG,PR2=t_PR2,
-            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC,GCX=t_GCX,SWP=t_SWP,NVE=t_NVE,RDW=t_RDW,ZDW=t_ZDW,SWF=t_SWF)
+            NGL=t_NGL,NVL=t_NVL,IDC=t_IDC,GCX=t_GCX,SWP=t_SWP,NVE=t_NVE,RDW=t_RDW,ZDW=t_ZDW,SWF=t_SWF,
+            SWB=t_SWB)
 
 
 _RAW_CLAIMS = dict(CLAIMS)
@@ -651,7 +710,8 @@ _CLAIM_DEPS = dict(ADJ=('adj',), BAL=('adj','ident'), CDC=('ident',),
     ZDG=('coeff','cdlevel'), PR2=('pins','ops','norm'),
     NGL=('pins','neg','coeff'), NVL=('pins','neg','ops','coeff','norm'), IDC=('probe',),
     GCX=('coeff',), SWP=('pins','coeff'), NVE=('pins','neg','ops','coeff','extclass'),
-    RDW=('coeff','cdlevel'), ZDW=('coeff','cdlevel'), SWF=('pins','coeff'))
+    RDW=('coeff','cdlevel'), ZDW=('coeff','cdlevel'), SWF=('pins','coeff'),
+    SWB=('pins','two_ops'))  # coeff-independent: the SWAR width-arithmetic is real regardless of the substrate's coeff field
 # v3.5a: per-claim complex stances. Applied ONLY where 'coeff' is in the
 # claim's declared support — coeff-independent claims are coeff-independent
 # BY DECLARATION and are never overridden (the v3.5 blanket guard violated
@@ -811,6 +871,10 @@ def _emit_zdw():
     return f"(e1+e10)(e4-e15): N(xy) = {N(z):.1f} exactly, N(x)N(y) = {N(x)*N(y):.0f}"
 def _emit_swp():
     return "exact: 'aaaa' under S->SS|'a' has 5 derivations; inside = 5*p^3*q^4 verified symbol-for-symbol; inside x outside = containment at every span"
+def _emit_swb():
+    return ("SWAR config grid: mass=64 conserved; regions add/mul/bignum = T/B/F (bias +64/0/<0 by room rule "
+            "W=L / 2L / >2L); invalid mul(room=8<2L=16) shorts G_valid=0; divergence series-R: mul L=4 uniform "
+            "G=E+/D=32/1=32 vs equal-payload D=2 mix G=32/2=16 (conflated by the bias quotient, both bias 0)")
 def _emit_ngl():
     p,q=(2.0,3.0),(5.0,7.0); fa=(p[0]*q[1]+q[0]*p[1],p[1]*q[1]); cl=lambda t:t[0]/t[1]
     return f"lift instance: cl(p (+) q) = {cl(fa):.6f} == cl(p)+cl(q) = {cl(p)+cl(q):.6f}"
@@ -834,6 +898,7 @@ _FIBER_CERT = {
  'GCX':("mixed: sampled(500) identities + exact collision witness",_emit_gcx),
  'SWP':("exact (CKY + exhaustive containment)",_emit_swp), 'SWF':("exact (both fields; the complex run IS the breaker)",None),
  'NVE':("mixed: sampled(800/400) + constructed nulls + exact conflation",_emit_nve),
+ 'SWB':("exact (config-grid structural witnesses: mass/region/insulation/divergence/conflation) + sampled(500) DeMorgan",_emit_swb),
  'RDW':("sampled(60+60+30) across fibers",None),
  'ZDW':("mixed: exact witness (N(xy)=0.0) + sampled(30) lock",_emit_zdw),
 }
