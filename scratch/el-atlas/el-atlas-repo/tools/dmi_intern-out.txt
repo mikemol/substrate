@@ -1,0 +1,23 @@
+DMI interning  (source: dump:/home/mikemol/github/substrate/dmi.data)
+
+1. INTERN DEDUP: 406 raw field-values -> 185 canonical handles (221 duplicates collapsed, 54%); equal value => equal handle True
+     x41: '' -> handle 6
+     x19: 'None' -> handle 28
+     x16: 'Unknown' -> handle 75
+     x15: '1' -> handle 31
+
+2. DERIVED CONDUCTANCE FACTS (interned, structural):
+     cores=10 threads=10 -> HT OFF; max 4700 MHz
+     RAM: 2x DDR4 @ 3200 MT/s, 2-channel, 16 GB
+     DRAM peak BW (structural ceiling) = 51.2 GB/s
+     caches: {'L1 Cache': ['128 kB', '192 kB', '256 kB', '288 kB'], 'L2 Cache': ['2 MB', '7680 kB'], 'L3 Cache': ['24 MB']}
+     PCIe slots: [('J6B2', '0000:00:01.0')]
+
+3. WIRED INTO NEDGE: DMI ceiling 51.2 GB/s vs measured 20.6 GB/s = 40% -> 2.5x headroom (the bw_alloc rung, closed automatically)
+
+DMI INTERN: dedup True; derived-facts True; wired-into-nedge True
+
+  PASS — DMI interns automatically into the nedge pilots: parse the
+  dump once, dedup field values into stable handles (Register pattern), expose derived
+  conductance ceilings (HT, dual-channel DRAM peak BW, cache, slots). dmi_facts() is the
+  import point; the binary dump is capture-once-with-root, run-unprivileged-forever.
