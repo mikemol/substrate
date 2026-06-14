@@ -1,0 +1,46 @@
+DISCOVERED TOPOLOGY (runtime, this machine): 12th Gen Intel(R) Core(TM) i7-12650H
+  core tiers: [(4.7, 2), (4.6, 4), (3.5, 4)] (GHz, #cores)  [hybrid]
+  caches: L1D=32K/private, L1I=64K/private, L2U=1280K/private, L3U=24576K/shared/10
+  largest private data cache: 1280K  (the independent-branch limit)
+  NUMA nodes: 1
+  power tree: package-0(long_term=45W,short_term=115W) | psys(limit n/a)
+  GPUs: NVIDIA GeForce RTX 4050 Laptop GPU [discrete, 30/75W]; iGPU(vendor 0x8086) [integrated]
+
+AUTO-ENUMERATED 10 BREAKERS:
+  - spill>L1(private)                  [capacity ] 32K
+  - spill>L2(private)                  [capacity ] 1280K
+  - spill>L3(shared/10)                [capacity ] 24576K
+  - exceeds-private-cache              [capacity ] 1280K (largest private)
+  - core-heterogeneity                 [compute  ] 3 freq tiers; fastest tier has 2 cores
+  - mem-controller-contention          [bandwidth] 1 controller(s)
+  - power:package-0                    [POWER    ] long_term 45W; short_term 115W
+  - power:psys                         [POWER    ] limit not exposed (needs combined-load measurement)
+  - gpu-power-cap:NVIDIA GeForce RTX   [POWER    ] enforced 30W of 75W
+  - PCIe-gate                          [bandwidth] gen4 x8
+
+AUTO-SURVEY of proposed measurements (confounds flagged from discovered structure):
+   compute-private, working set > largest-private-cache:
+     [expected] spill>L1(private): working set exceeds L1 (private)
+     [expected] spill>L2(private): working set exceeds L2 (private)
+     [CONFOUND] exceeds-private-cache: working set leaves private caches -> resides in a SHARED cache/DRAM (contention)
+                fix: keep working set <= 1280K so each branch stays in its own private cache
+     [CONFOUND] core-heterogeneity: slower/weaker core tier joins -> per-branch rate drops
+                fix: pin to the 2 fastest-tier cores
+     [expected] power:package-0: package-0 budget shared by its consumers (P/E cores + iGPU)
+   compute-private, working set <= largest-private-cache:
+     [expected] spill>L1(private): working set exceeds L1 (private)
+     [expected] power:package-0: package-0 budget shared by its consumers (P/E cores + iGPU)
+   het-sum, host-resident:
+     [expected] power:package-0: package-0 budget shared by its consumers (P/E cores + iGPU)
+     [CONFOUND] power:psys: CHASSIS aggregate (psys): caps CPU package + dGPU TOGETHER -> the het G_OR sum is an UPPER bound
+                fix: measure combined CPU+GPU load power; cap het-sum by it
+     [CONFOUND] gpu-power-cap:NVIDIA GeForce RTX: GPU peak FLOP/s overstated: enforced cap < max -> below boost clock
+                fix: derate GPU peak by ~0.40
+     [expected] PCIe-gate: GPU branch fed over PCIe -> starved for host-streamed low-I work
+
+TOPOLOGY BREAKERS: discovered-structure True; auto-catches-spill True; clean-when-private True
+
+  PASS — every breaker is AUTO-ENUMERATED from the running system; the
+  spill threshold is the DISCOVERED largest private cache, the heterogeneity breaker appears
+  only if >1 freq tier exists, NUMA/GPU/power breakers track what's actually present. Run this
+  on another machine and it rediscovers that machine's breakers -- no hardcoded topology.
