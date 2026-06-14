@@ -1,0 +1,23 @@
+min() is the read-off of the settled (minimum-dissipation) state, not an operator.
+
+1. min EMERGES: G_AND(a,b) vs min(a,b) as they separate:
+     a=1      b=1       : G_AND=0.5000  min=1.0000  ratio G_AND/min=0.5000
+     a=1      b=2       : G_AND=0.6667  min=1.0000  ratio G_AND/min=0.6667
+     a=1      b=10      : G_AND=0.9091  min=1.0000  ratio G_AND/min=0.9091
+     a=1      b=100     : G_AND=0.9901  min=1.0000  ratio G_AND/min=0.9901
+     a=1      b=10000   : G_AND=0.9999  min=1.0000  ratio G_AND/min=0.9999
+   G_AND -> min as conductances separate (settle gives min FOR FREE) True
+
+2. at the ridge a=b=5.0: settle G_AND = 2.5 (= a/2), min = 5.0 (= a) -> min over-predicts by 2x; imposing min puts the knee too high True
+
+3. Thomson: the solved interior voltages MINIMIZE dissipated power -- 2000/2000 random perturbations increase P (settle = the energy minimum) True
+
+4. geodesic / resistance-distance: chain R_eff = 2.030 ~ bottleneck R = 2.000 -> G_eff ~ min(conductances) emerges from the settle, not imposed True
+
+GEODESIC MIN: min-emerges True; min-over-predicts-at-ridge True; settle=energy-min True; geodesic=bottleneck True
+
+  PASS — min() is STRICTLY not the operator: the network settles to the
+  minimum-dissipation state (Thomson = Kirchhoff = a resistance-metric geodesic), and that
+  settled G_eff IS the answer. min is its asymptote where one constraint dominates (emerges
+  for free); at the ridge min over-predicts and the settle gives the true rounded knee. Don't
+  impose min, don't even pick a semiring p -- solve, and read min off the dominated regime.
