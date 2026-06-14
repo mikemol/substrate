@@ -1,0 +1,15 @@
+edge sensitivity from the Kron solve, + the tropical<->conductance semiring clarification.
+
+1. series sensitivity == resistance share: [(0, np.float64(0.441)), (3, np.float64(0.294)), (1, np.float64(0.176)), (2, np.float64(0.088))] vs shares [0.441, 0.176, 0.088, 0.294] True
+2. fractional sensitivities sum to 1 on a K6 mesh (Tellegen): 1.000000 True
+3. analytic dG_eff/dG_i == finite-diff True; top-sensitivity edge = max real gain True (edge (0, 5), dG_eff/dG=1.0000)
+4. Wheatstone bridge-edge sensitivity: unbalanced 0.0351 (>0) ; balanced 3.21e-34 (~0, no current) True
+5. semiring: at a=b=4.0: G_AND=2.0 (p=1, soft knee) < min=4.0 (p->inf, hard bound) < G_OR=8.0; p-norm interpolates True -> NOT min:=G_AND (would halve the ridge) True
+
+PERF SENSITIVITY: series==share True; sums-to-1 True; ==finite-diff True; bridge-null True; semiring-bracket True
+
+  PASS — the bottleneck ranking is dG_eff/dG_i = each edge's share
+  of dissipated power, exact from ONE nodal solve: = resistance share on a chain, but defined
+  on ANY graph (it ranks bridge/mesh edges, and the bridge edge nulls at balance). 'How much
+  fixing it helps' is the literal derivative. And min vs G_AND are the tropical/conductance
+  endpoints of one p-norm family (dequantization) -- parameterize the semiring, don't collapse it.
