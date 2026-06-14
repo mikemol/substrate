@@ -29,6 +29,13 @@ Witnesses (each [W]):
 4. COUNTERINTUITIVE: for a host-streaming low-I kernel the CPU's effective rate EXCEEDS the
    GPU's, because PCIe starves the GPU -- quantified. (The bottleneck-spectrum pilot's PCIe=90%
    finding, now as a dispatch decision.)
+
+CAVEAT (ground-truth correction, het_validate.py): witness 4's CPU-favored result uses the CPU's
+sgemm rate (cpu_flops). That is RATE-DEPENDENT, not a law: a memory-bound elementwise kernel
+measures CPU at ~0.3 GFLOP/s (numpy temporaries), far below sgemm, so the GPU wins even host-
+streamed. The COMPOSITION LAW (witnesses 1-2: peak at f*, ~ r_cpu+r_gpu) is validated against a
+real concurrent sweep; the CPU-favored REGIME (witness 4) needs the SPECIFIC kernel's measured
+branch rates and a CPU-competitive kernel -- a peak constant doesn't decide it. Use measured rates.
 Run output: tools/het-dispatch-nedge-pilot-out.txt.
 """
 import os

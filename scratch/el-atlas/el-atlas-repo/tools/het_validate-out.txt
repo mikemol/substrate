@@ -1,0 +1,25 @@
+AI-2: validating the het-dispatch prediction against a real concurrent CPU+GPU workload.
+
+=== host-streaming, LOW intensity: N=16M float32, degree d=2 (intensity ~ 0.5 FLOP/byte) ===
+  measured solo: r_cpu=   0.3  r_gpu=   0.8 GFLOP/s (GPU host-streamed, incl. PCIe)
+  PREDICT: f* = r_gpu/(r_cpu+r_gpu) = 0.73; peak = r_cpu+r_gpu = 1.1 GFLOP/s
+  sweep (GFLOP/s): 0.0:0 0.1:0 0.2:0 0.3:1 0.4:1 0.5:1 0.6:1 0.7:1 0.8:1 0.9:1 1.0:1
+  MEASURED: best at f=0.60, peak=1.0 GFLOP/s
+  -> optimum near f* (0.60 vs 0.73) True; peak/sum = 0.91 (within ~20%) True; both-beats-either True
+
+=== compute-bound, HIGH intensity: N=16M float32, degree d=64 (intensity ~ 16.0 FLOP/byte) ===
+  measured solo: r_cpu=   0.4  r_gpu=  10.1 GFLOP/s (GPU host-streamed, incl. PCIe)
+  PREDICT: f* = r_gpu/(r_cpu+r_gpu) = 0.96; peak = r_cpu+r_gpu = 10.5 GFLOP/s
+  sweep (GFLOP/s): 0.0:0 0.1:1 0.2:1 0.3:1 0.4:1 0.5:1 0.6:3 0.7:4 0.8:6 0.9:11 1.0:11
+  MEASURED: best at f=0.90, peak=10.7 GFLOP/s
+  -> optimum near f* (0.90 vs 0.96) True; peak/sum = 1.01 (within ~20%) True; both-beats-either N/A (one branch negligible)
+
+HET VALIDATE: composition-law (optimum-near-f* AND peak~sum, both intensities) True; speedup-from-both where branches comparable True; f*-migrates-GPU-ward (0.73 -> 0.96) True
+  CORRECTED by ground truth: low-I was NOT CPU-favored (GPU won both); the pilot's CPU-favored claim used the sgemm rate, irrelevant to this memory-bound kernel.
+
+  PASS — first ground-truth check of the
+  het-dispatch model. The COMPOSITION LAW (peak at f*, ~ r_cpu+r_gpu) holds against a real
+  concurrent sweep, predicted from MEASURED branch rates; shortfall below the sum is the
+  recorded chassis-coupling breaker (upper bound). The optimal split is rate-dependent: it
+  needs the SPECIFIC kernel's measured rates, not a peak constant -- measuring inputs is not
+  validating outputs. The CPU-favored regime needs a CPU-competitive kernel to appear.
