@@ -1,0 +1,25 @@
+structural cotype of the kernel-cost residual:
+
+  residual signature = {'alloc': 1, 'overhead': 1, 'jitter': 1, 'bw_alloc': -1, 'bw_jitter': -1}
+  (positive exp = kernel factor; negative exp = reference-probe factor)
+
+1. CANCELLATION PROVEN: net exponent 0 for ['bw_per_clock', 'clock', 'intensity'] -> NOT the cause (clock cancels structurally, as does raw BW and intensity) True
+2. SUSPECTS ENUMERATED (the only possible causes, by construction): {'alloc': 'kernel', 'overhead': 'kernel', 'jitter': 'kernel', 'bw_alloc': 'probe', 'bw_jitter': 'probe'} True
+     - alloc     [structural-kernel   ] control: buffer reuse / pool  | fresh allocation faults+zeroes pages -> alloc(fresh) < alloc(reuse)
+     - overhead  [structural-kernel   ] control: fuse to one pass  | d per-op python calls -> overhead falls with op count
+     - jitter    [ephemeral-irreducible] control: -  | OS scheduling / other processes
+     - bw_alloc  [reference-probe     ] control: use read+write probe  | the measured_BW probe is itself a kernel (read-only sum) with its own alloc
+     - bw_jitter [reference-probe     ] control: -
+
+3. DISCRIMINATION: fresh/reuse differ only in `alloc` (all else cancels) -> measured residual ratio = 0.31; null 'alloc irrelevant' predicts 1.0 -> alloc CONFIRMED True
+   overshoot (reuse residual 1.4 > 1) is located in bw_alloc: the read-only sum probe under-measures a read+write kernel (predicted by the bw_alloc^-1 term)
+
+4. ASSUMPTION-REVEAL: WRONG model (BW clock-independent) -> residual clock exponent = 1 != 0 -> structure FLAGS 'residual depends on governor' (testable, false); correct model has clock exponent 0 True
+
+COST COTYPE: cancellation-proven True; suspects-enumerated True; alloc-discriminated True; wrong-assumption-flagged True
+
+  PASS — the cost REASONING is now STRUCTURE: cancellations are
+  theorems (clock/BW/intensity drop out by construction), the residual's causes are
+  ENUMERATED (not hand-waved), each is a falsifiable factor with a control knob, and a
+  mis-specified dependency is CAUGHT by the structure (the wrong-clock self-test). This is
+  the structural cotype: prove-or-reveal, so a failed prediction points at the broken factor.
