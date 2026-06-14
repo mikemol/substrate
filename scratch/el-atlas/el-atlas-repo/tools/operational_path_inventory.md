@@ -44,6 +44,18 @@ Research-agent sweep, read-only/unprivileged. The point: find in-path components
 USB/xHCI, Thunderbolt, I2C SerialIO, HECI/ME, SD reader (RTS5288), MT7921 wifi, Realtek GbE, eSPI/EC,
 HD-audio (PCH + NVIDIA HDA), SMBus, SPI flash, NHLT, webcam/HID, battery/charger hwmons.
 
+## Resolved via DMI (root, `dmidecode -t memory`)
+
+Memory is **2x 8 GB Samsung DDR4-3200 SODIMM, DUAL-channel** (both slots populated, 64-bit each,
+rank 1), max capacity 32 GB, Error Correction: None (confirms why igen6/IBECC found nothing). NOT
+DDR5 (the i7-12650H supports both; this board is DDR4). Dual-channel DDR4-3200 peak = 2x64bit x
+3200 MT/s = **51.2 GB/s**. Measured ~24 GB/s saturated = ~47% of peak -> the memory is NOT hard-
+saturated; ~2x structural HEADROOM (single-stream numpy `sum` is strategy-limited, not BW-limited).
+This is the `bw_alloc` rung resolved: DMI gives the structural ceiling (51.2, dual-channel), the
+probe gives the achieved (~24, strategy-laden). Channel count is load-bearing: single-channel would
+make 24 GB/s ~saturated; dual-channel makes it ~half -> headroom exists. Structural conclusions
+(ridge/f*/ranking) unchanged (they used measured BW + clock-cancel).
+
 ## Privilege note
 
 All in-path components are DETECTABLE read-only/unprivileged. Only numeric MAGNITUDES need root:
