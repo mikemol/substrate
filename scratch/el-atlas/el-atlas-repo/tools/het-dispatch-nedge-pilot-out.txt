@@ -1,0 +1,19 @@
+device: NVIDIA GeForce RTX 4050 Laptop GPU  (GPU 10906 GFLOP/s, DRAM 192 GB/s) vs host (CPU ~500 GFLOP/s [est], sysram ~64 GB/s [est], PCIe ~16 GB/s [est])
+
+1. parallel = sum (G_OR): r_cpu=256 + r_gpu=64 = 320 GFLOP/s; swept argmax f_gpu=0.200 (opt 0.200), max=320 == sum True
+2. optimum = bridge balance: at f_gpu=0.200 branch times equal (cpu 3.125 == gpu 3.125 ps/unit) -> idle-difference null True
+3. kernel-type shifts the optimum (f_gpu = GPU's share of the work):
+     host-stream lowI  f_gpu=0.200  (r_cpu=   256, r_gpu=     64 GFLOP/s, total 320)
+     device-resident   f_gpu=0.750  (r_cpu=   256, r_gpu=    768 GFLOP/s, total 1024)
+     compute-bound     f_gpu=0.956  (r_cpu=   500, r_gpu=  10906 GFLOP/s, total 11406)
+   host-streaming low-I is CPU-favored True; device-resident is GPU-favored True
+4. counterintuitive: host-streaming low-I -> r_cpu=256 > r_gpu=64 GFLOP/s (CPU is 4.0x the GPU; PCIe starves the GPU) True
+
+HET DISPATCH NEDGE PILOT: parallel=sum True; optimum=balance True; kernel-type-shifts True; cpu-beats-gpu-when-pcie-bound True
+
+  PASS — heterogeneous CPU+GPU dispatch is a nedge parallel-conductance
+  balance: the two compute resources are PARALLEL branches (G_OR, conductances add), each
+  SERIES-gated by its feed (G_AND). Throughput is MAXED by splitting work in proportion to
+  each branch's effective conductance so both finish together -- the Wheatstone bridge null;
+  total = the parallel sum. The optimum MOVES with the kernel-type knob: PCIe-bound work
+  favors the CPU (the GPU is starved), device-resident/compute-bound favors the GPU.
