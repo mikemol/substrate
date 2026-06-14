@@ -33,8 +33,11 @@ Research-agent sweep, read-only/unprivileged. The point: find in-path components
    clock gate has a thermal cause too). `thermal_zone*/temp` + trip points + INT3400 DPTF policy.
 5. **dGPU ASPM-dynamic link** — gen1 idle / gen4 max; a *variable* conductance edge, not a fixed link.
    `current_link_speed` (poll); LnkSta detail needs root.
-6. **EDAC unbound** — the iMC channel/rank topology surface exists but no driver bound; loading
-   `igen6_edac` would expose memory-channel structure.
+6. **EDAC: DEAD END on this SKU** — loaded `igen6_edac` but it binds to ZERO devices (refcount 0,
+   empty `edac/mc/`, no `0000:*` under the driver): it requires in-band ECC (IBECC) enabled in
+   firmware, absent on this consumer non-ECC laptop. A surface present in the kernel but with no
+   backing hardware feature. Memory-channel count instead lives in DMI/SMBIOS (`dmidecode -t memory`,
+   root) — the populated-DIMM-slot inventory.
 
 ## Edge peripherals — dismissed (not in compute path)
 
