@@ -1,0 +1,17 @@
+device: NVIDIA GeForce RTX 4050 Laptop GPU  (20 SMs, 192 GB/s DRAM, 24 MB L2, 10906 GFLOP/s FP32) -- queried live
+
+1. series = bottleneck: path BW = G_AND_fold = 14.5 GB/s <= slowest link (host/PCIe 16.0); drop it -> 158.6 GB/s. Bottleneck = host/PCIe. True
+2. parallel = sum: 20 SMs G_OR -> 10906 GFLOP/s True; 3 mem channels G_OR -> 192 GB/s True
+3. roofline = bridge null: ridge I* = peakFLOP/peakBW = 56.8 FLOP/byte; compute & memory branches equal there True; bias flips (mem-bound<->compute-bound) True
+4. latency <-> bandwidth = G_NOT (reciprocal swap): R*G=1 True; double-swap=id True
+4b/5. occupancy = binding constraint (series-AND min): @64 regs/thread -> 1024 threads/SM, binding = registers, occupancy = 67% True
+4b/5. occupancy = binding constraint (series-AND min): @32 regs/thread -> 1536 threads/SM, binding = threads, occupancy = 100% True
+
+GPU TOPOLOGY NEDGE PILOT: series=bottleneck True; parallel=sum True; roofline=bridge-null True; latency=recip True; occupancy-gate True
+
+  PASS — GPU hardware topology models as a nedge G-Value conductance
+  network: series links = G_AND (slowest link = the bottleneck), parallel resources = G_OR
+  (sum), roofline ridge = the Wheatstone bridge null between compute and memory, latency =
+  the reciprocal (G_NOT) of bandwidth, occupancy = the series-AND binding constraint. A
+  kernel's achieved throughput = G_AND(algorithm conductance [SWB], hardware bottleneck). Live
+  NVML telemetry scales the edges; the nedge LFP re-solves -> the bottleneck shifts -> rebalance.
