@@ -1,0 +1,16 @@
+host (discovered): single-stream sysram 6.4 GB/s, CPU ceiling 166 GFLOP/s
+
+1. eval-strategy intensity (structural, not measured): eager I = 0.100, 0.100 (d-independent True); fused I = 0.50, 16.00 (scales) True
+2. predicts r_cpu d-independence: eager pred ratio r(64)/r(2) = 1.00 ~ 1; measured 1.33; (fused would be 32x) -> eager explains it True
+3. ephemeral residual (measured/structural): d=2 0.47, d=64 0.63 -- bounded O(1), ~d-stable True (alloc/page-fault/contention; NOT d-structure)
+4. fused is the lever: fused predicts 3.2 -> 101.9 GFLOP/s vs eager 0.64 -> 0.64; fusing the term raises intensity True
+   (the GPU rate DID scale, 0.8->10.1, because at high d compute dominates its transfer;
+    host-streamed GPU = transfer-conductance SERIES compute -- a G_AND, not a black box)
+
+KERNEL COST MODEL: strategy-intensity-structural True; predicts-d-independence True; residual-bounded True; fused-is-lever True
+
+  PASS — the kernel rate is NOT a primitive to measure: it is
+  structural(op-graph + eval strategy) x structural(host conductance) x ephemeral(O(1)).
+  The eager strategy structurally PREDICTS r_cpu's d-independence (the opaque observation
+  that broke the het pilot's I=d/4 assumption) WITHOUT running. Only a bounded scalar is
+  ephemeral. Opacity dissolved; and fuse-vs-eager is the jea evaluator's structural lever.
