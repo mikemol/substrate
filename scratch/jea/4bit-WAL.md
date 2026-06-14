@@ -112,3 +112,65 @@ probe (G7.1), with correctness already entailed.
 **Bottom line of the study:** 4-bit is a **tensor-core question, not an ALU question**. The right
 move is to parametrize width as a controller-tuned gauge and gate the int4 path on a measured win —
 *not* to assume 8→4 repeats the dp4a win of 64→8. Verify the datapath before writing the kernel.
+
+---
+
+## REVISION 2 (2026-06-14) — widths are MANDATORY; the question is least-cost DESCENT 8→4→2→1
+
+**Framing correction (user):** we *will* do 4-bit, then 2-bit (and the trajectory points at 1-bit) —
+**regardless of performance**. So Rev-1's "is it worth it / verify-or-defer" gate is the wrong axis.
+The axis is: **what architecture costs the least to descend the ladder?** This separates two things
+Rev-1 conflated:
+
+- **operate AT width w** (correctness/representation) — *cheap*, and what we actually need now;
+- **exploit width w's packing/tensor datapath** (int4/int1 performance) — *expensive, per-width
+  rework*, and explicitly NOT the goal yet.
+
+The grounded "no nibble ALU MAC" fact (§0) is then a *reason to NOT chase the datapath*, not a reason
+to defer the width: keep **byte storage + dp4a** and change only the **base**.
+
+### Least-cost architecture: parametrize the BASE `B = 2^w`
+
+The 8-bit carrier (`jea_limb_gpu.py`) is *already* base-256. The only base-specific code is the
+carry's `& 0xff` and `>> 8`. Generalize to `& (B-1)` and `>> w`:
+
+- **Multiply (dp4a convolution): UNCHANGED.** Limbs are byte values in `0..B-1` (always ≤255), so
+  `__dp4a` works identically at every w. The accumulator bound `col[k] < (B-1)²·minL` only *relaxes*
+  as B shrinks (B=256→65025·minL; B=2→1·minL). Zero datapath change across the whole ladder.
+- **Carry / scatter: base-B** (`& (B-1)`, `>> w`) — the existing parallel scatter+ripple, one
+  parameter. (col[k] in base B spans ⌈log_B(col_max)⌉ positions; the scatter loop bound follows w.)
+- **Descent 8→4→2→1 = changing one constant B.** Not new carriers. The cheapest possible descent.
+
+**Endpoint design (honoring the trajectory to 1-bit).** At w=1, B=2: WITH carry it's binary integer;
+**CARRYLESS (XOR, no propagate) it is GF(2)** — polynomial/F₂ arithmetic = the substrate's home field
+(commuting-sphere, 3+1 parity, GL(3,F₂)) AND the int1 binary-tensor path (XOR-popcount = GF(2)
+matmul). So add a **carry / carryless MODE** flag; then the GF(2) endpoint is *also* one parameter,
+and **the big-value carrier and the F₂ substrate UNIFY at w=1**. (I won't claim your exact reason,
+but the architecture should be ready for that unification — it's the obvious place the ladder bottoms.)
+
+### Premortem (re-run for the descent)
+
+- **G0 precommit:** be able to operate at any sub-byte width 8→4→2→1 at minimal incremental cost.
+- **G2 delta to avoid:** the expensive failure = building per-width carriers, or optimizing each
+  width's packing/tensor datapath as we descend. Either re-does work per step.
+- **G3 cause:** conflating *operate-at-width* (cheap: base param) with *exploit-width-datapath*
+  (expensive: int4/int1 tensor). Same trend-chasing reflex, one level up.
+- **G6 sustain:** base-agnostic convolution + carry + verify-vs-Python — they already make the descent
+  free; that's the whole point.
+- **G7 commits:** (1) parametrize base B in the carry (`0xff/8 → B-1/w`); (2) verify exact for
+  w∈{8,4,2,1}; (3) add carry/carryless mode, verify w=1 carryless == GF(2) poly-mul; (4) DEFER all
+  int4/int1-tensor datapath work to a separate, perf-gated effort.
+- **G9 escalate:** base B and the carry/carryless mode are **controller gauges** (join K, w). ONE
+  parametric carrier, never per-width forks — correct-by-construction descent.
+
+### Shadow (sharpened costructure)
+
+`Limb(B, carryless)` — base-`B=2^w` little-endian limb stream, optional carryless (GF(2)) mode.
+Composition = `convolution ∘ carry(base B | carryless)`. **Entailment:** correct for every
+w∈{8,4,2,1} and both modes by *one* proof (convolution + base-B carry are base-agnostic; carryless is
+the carry map replaced by XOR). A single verify over the widths+modes discharges the ladder.
+
+**Bottom line (Rev-2):** least-cost descent = **base-parametrize the existing carrier** (`0xff/8 →
+B-1/w`) + a **carry/carryless mode**; 8→4→2→1 is then *changing B*, dp4a unchanged, all widths correct
+by one entailment, and the GF(2)/F₂ endpoint falls out free. Datapath/packing optimization (int4/int1
+tensor) is a separate deferred axis, not on the descent's critical path.
