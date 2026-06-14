@@ -148,6 +148,38 @@ def w_cf_trace(t):
     return ok
 
 
+# The KERNEL-TYPE knob: a kernel's data residence / access pattern selects WHICH level feeds it,
+# hence which rungs are in the loop and where the ridge sits. This is a pilot-level knob (a
+# workload selector), NOT a depsort SPACE knob (that would be a row -- invalidates ledgers).
+KERNEL_TYPES = [
+    ("host-stream",   "host/PCIe", 16.0e9),   # one-pass over host data (ETL); PCIe feeds every op
+    ("dram-stream",   "DRAM",      None),      # device-resident, low reuse (saxpy, stencil-1pass)
+    ("l2-resident",   "L2(24MB)",  None),      # working set fits L2 (blocked/tiled, high reuse)
+    ("l1-resident",   "L1/shared", None),      # set fits shared mem (register/smem-tiled GEMM inner)
+    ("compute-bound", "compute",   None),      # so much reuse the source is irrelevant; FP caps
+]
+
+def w_kernel_type_knob(t):
+    """The kernel type selects the feeding level => moves the ridge. Cache-resident kernels become
+    compute-bound at MUCH lower intensity (their memory ceiling is higher, so the ridge is lower)."""
+    src_bw = {"host/PCIe": 16.0e9, "DRAM": t['dram_bw'], "L2(24MB)": t['dram_bw'] * 6,
+              "L1/shared": t['sms'] * 128 * 2.13e9}
+    rows = []
+    for name, src, _ in KERNEL_TYPES:
+        if src == "compute":
+            rows.append((name, src, float('inf'))); continue
+        ridge = t['fp32'] / src_bw[src]        # I above which this kernel turns compute-bound
+        rows.append((name, src, ridge))
+    finite = [r[2] for r in rows if r[2] != float('inf')]
+    monotone = all(finite[i] < finite[i - 1] for i in range(1, len(finite)))  # slower src -> higher ridge
+    print(f"4b. kernel-type knob (data residence selects the feeding level => moves the ridge):")
+    for name, src, ridge in rows:
+        rs = "inf (always compute-bound)" if ridge == float('inf') else f"{ridge:6.1f} FLOP/byte"
+        print(f"     {name:13s} fed by {src:10s} ridge = {rs}")
+    print(f"   ridge strictly rises as the feeding level slows (host>dram>l2>l1) {monotone}  "
+          f"=> cache-resident kernels saturate compute far sooner")
+    return monotone
+
 def w_remove_top_next(t):
     cons = constraints_at(t, 4.0)
     spec = spectrum(cons)
@@ -168,10 +200,10 @@ if __name__ == "__main__":
     print(f"device: {t['name']}  ({t['sms']} SMs, {t['dram_bw']/1e9:.0f} GB/s DRAM, "
           f"{t['fp32']/1e9:.0f} GFLOP/s FP32) -- queried live\n")
     ws = [w_spectrum_full_ranking(t), w_amdahl(t), w_cascade_multiridge(t),
-          w_cf_trace(t), w_remove_top_next(t)]
+          w_kernel_type_knob(t), w_cf_trace(t), w_remove_top_next(t)]
     ok = all(ws)
     print(f"\nGPU BOTTLENECK SPECTRUM PILOT: full-ranking {ws[0]}; amdahl {ws[1]}; cascade {ws[2]}; "
-          f"cf-trace {ws[3]}; remove-top->next {ws[4]}")
+          f"kernel-type-knob {ws[3]}; cf-trace {ws[4]}; remove-top->next {ws[5]}")
     print(f"\n  {'PASS' if ok else 'FAIL'} — the full bottleneck spectrum is the continued-fraction TRACE of")
     print(f"  the GPU conductance network: the topology pilot's single bottleneck is the TOP of the trace;")
     print(f"  the whole sorted ladder (with Amdahl dominance weights) is the ranking; sweeping intensity")

@@ -10,11 +10,18 @@ device: NVIDIA GeForce RTX 4050 Laptop GPU  (20 SMs, 192 GB/s DRAM, 10906 GFLOP/
 2. Amdahl dominance: shares sum to 1 True; top has max speedup-if-removed True
 3. cascade / multi-ridge (device-resident): bottleneck vs intensity [(1, 'DRAM'), (4, 'DRAM'), (16, 'DRAM'), (56, 'DRAM'), (128, 'compute'), (512, 'compute')]
    identity changes across I True; compute overtakes at high I True; DRAM<->compute crossover (bridge null) at I*=56.8 FLOP/byte
+4b. kernel-type knob (data residence selects the feeding level => moves the ridge):
+     host-stream   fed by host/PCIe  ridge =  681.6 FLOP/byte
+     dram-stream   fed by DRAM       ridge =   56.8 FLOP/byte
+     l2-resident   fed by L2(24MB)   ridge =    9.5 FLOP/byte
+     l1-resident   fed by L1/shared  ridge =    2.0 FLOP/byte
+     compute-bound fed by compute    ridge = inf (always compute-bound)
+   ridge strictly rises as the feeding level slows (host>dram>l2>l1) True  => cache-resident kernels saturate compute far sooner
 4. CF trace: ladder fold -> G_eff = 15.8 GB/s; convergents [16.0, 15.8, 15.8, 15.8] converge to it True
    => the ordered ladder IS the network's continued fraction (same carrier as jea_trace_window)
 5. remove-top -> next: idealize host/PCIe -> new bottleneck = DRAM (predicted #2 = DRAM) True
 
-GPU BOTTLENECK SPECTRUM PILOT: full-ranking True; amdahl True; cascade True; cf-trace True; remove-top->next True
+GPU BOTTLENECK SPECTRUM PILOT: full-ranking True; amdahl True; cascade True; kernel-type-knob True; cf-trace True; remove-top->next True
 
   PASS — the full bottleneck spectrum is the continued-fraction TRACE of
   the GPU conductance network: the topology pilot's single bottleneck is the TOP of the trace;
