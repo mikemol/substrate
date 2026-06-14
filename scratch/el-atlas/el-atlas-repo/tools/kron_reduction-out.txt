@@ -1,0 +1,20 @@
+Kron reduction: EVERY conductance graph reduces by node elimination (series/parallel/Y-Delta
+are its degree<=3 cases). Cross-checked against the nodal solve.
+
+1. degree-2 elimination == series G_AND: 1.200000 == 1.200000  True
+2. fill-in edges merge == parallel G_OR: two G_AND(2.0,3.0) paths -> 2.400000 == 2.400000  True
+3. degree-3 elimination == Y-Delta: triangle G12=0.3333 G13=0.5000 G23=1.0000 match star->mesh formula  True
+4. Wheatstone 'irreducible' bridge FULLY reduces: Kron 1.483871 == nodal solve 1.483871  True
+5. order-invariance: bridge orders agree & == nodal True; K8 mesh under 3 orders all == nodal (12.4558) True
+6. order is a COST gauge (answer invariant): G_eff 4.50000 == 4.50000 True; fill-in min-degree 1 << hub-first 29 True
+   => 'the right order' = minimum-fill ordering = the sparse-elimination problem (min-degree/nested-dissection; optimal NP-hard)
+
+KRON REDUCTION: series True; parallel True; y-delta True; bridge-reduces True; order-invariant True; order-is-cost-gauge True
+
+  PASS — ~all graphs reduce: node elimination (Schur complement) is the
+  ONE recursive reduction, with series (degree-2) / parallel (edge-merge) / Y-Delta (degree-3)
+  its low-degree cases. The bridge is not a wall -- one Y-Delta dissolves it. Fill-in is
+  never-discard-residue (the node's conductance folds into its neighbors). The elimination
+  ORDER is a gauge on the ANSWER (G_eff invariant) but a COST knob (fill-in): 'the right order'
+  is the minimum-fill ordering -- the sparse-Gaussian-elimination problem. G_OR/G_AND were
+  always this one operation, restricted to degree<=2.
