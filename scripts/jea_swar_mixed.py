@@ -34,36 +34,35 @@ def swar_add_mixed(a, b, H, notH):
     return s, cout
 
 
-if __name__ == "__main__":
-    layout = [(0, 32), (32, 16), (48, 8), (56, 8)]    # 32 + 16 + 8 + 8 = 64
+def demo(layout, name):
+    assert sum(w for _, w in layout) == 64 and [o for o, _ in layout] == \
+        list(np.cumsum([0] + [w for _, w in layout])[:-1]), "layout must tile 64 bits"
     H, notH, LANE_LO, VAL = masks(layout)
     rng = np.random.default_rng(0); B = 100000
-    print("mixed-width SWAR: lanes of 32 / 16 / 8 / 8 bits sharing one 64-bit register\n")
-    print(f"  layout {layout}   (H={hex(int(H))})\n")
-
-    # random per-lane values, packed into one 64-bit word each
     vals_a = {off: rng.integers(0, 1 << wid, size=B, dtype=np.uint64) for off, wid in layout}
     vals_b = {off: rng.integers(0, 1 << wid, size=B, dtype=np.uint64) for off, wid in layout}
     a = cp.zeros(B, cp.uint64); b = cp.zeros(B, cp.uint64)
     for off, wid in layout:
         a |= cp.asarray(vals_a[off].astype(np.uint64)) << np.uint64(off)
         b |= cp.asarray(vals_b[off].astype(np.uint64)) << np.uint64(off)
-
     s, cout = swar_add_mixed(a, b, H, notH)
     sh, ch = s.get(), cout.get()
-    allok = True
-    print(f"  {'lane':>10} {'sum mod 2^w':>14} {'carry-out':>12}")
+    allok = True; cells = []
     for off, wid in layout:
-        got_sum = (sh >> off) & ((1 << wid) - 1)
-        got_cout = (ch >> (off + wid - 1)) & 1
+        got_sum = (sh >> off) & ((1 << wid) - 1); got_cout = (ch >> (off + wid - 1)) & 1
         full = vals_a[off].astype(object) + vals_b[off].astype(object)
-        ref_sum = full & ((1 << wid) - 1)
-        ref_cout = full >> wid
-        ok = bool((got_sum == ref_sum).all() and (got_cout == ref_cout).all()); allok &= ok
-        print(f"  {wid:>3}-bit @{off:<2}  {'exact' if (got_sum==ref_sum).all() else 'WRONG':>14} "
-              f"{'exact' if (got_cout==ref_cout).all() else 'WRONG':>12}   ({'OK' if ok else 'FAIL'})")
+        ok = bool((got_sum == (full & ((1 << wid)-1))).all() and (got_cout == (full >> wid)).all())
+        allok &= ok; cells.append(f"{wid}b@{off}:{'ok' if ok else 'FAIL'}")
+    print(f"  {name:32s} {'  '.join(cells)}  -> {'PASS' if allok else 'FAIL'}")
+    return allok
 
-    print(f"\n  {'PASS' if allok else 'FAIL'} — heterogeneous lanes (32/16/8/8) add concurrently in one")
-    print(f"  register, each lane's sum mod 2^w AND carry-out exact, NO bleed across uneven boundaries.")
-    print(f"  Same mask-driven full-adder as uniform SWAR; the layout is just a per-lane mask set.")
-    print(f"  => carriers can be packed at MIXED precisions (pay-for-what-you-use per lane).")
+
+if __name__ == "__main__":
+    print("mixed-width SWAR add: heterogeneous lanes in one 64-bit register, lane-isolated.\n")
+    ok1 = demo([(0,32),(32,16),(48,8),(56,8)], "32/16/8/8")
+    # the conclusion: one lane of EVERY power-of-2 width, 32 down to two 1-bit GF(2) lanes
+    ok2 = demo([(0,32),(32,16),(48,8),(56,4),(60,2),(62,1),(63,1)], "32/16/8/4/2/1/1")
+    print(f"\n  {'PASS' if ok1 and ok2 else 'FAIL'} — SWAR add to its conclusion: ONE lane of every width")
+    print(f"  32->16->8->4->2->1(->1) coexisting in one register, each lane's sum + carry-out exact, no")
+    print(f"  bleed. The two 1-bit lanes ARE GF(2) (sum=XOR, carry=AND). The whole ladder, simultaneously,")
+    print(f"  from one mask-driven full-adder -- carriers at any mix of precisions, pay-for-what-you-use.")
