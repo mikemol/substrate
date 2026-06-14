@@ -1,0 +1,27 @@
+branch independence on 10 cores (single-thread BLAS; k threads = k branches)
+
+  memory branches (shared controller):
+     k= 1  aggregate    6.6 GB/s   (ideal G_OR    6.6)
+     k= 2  aggregate   10.7 GB/s   (ideal G_OR   13.2)
+     k= 4  aggregate   10.9 GB/s   (ideal G_OR   26.3)
+     k= 5  aggregate   19.5 GB/s   (ideal G_OR   32.9)
+     k=10  aggregate   19.5 GB/s   (ideal G_OR   65.8)
+  compute branches (private ALUs):
+     k= 1  aggregate     15 GFLOP/s (ideal G_OR     15)
+     k= 2  aggregate     33 GFLOP/s (ideal G_OR     31)
+     k= 4  aggregate     58 GFLOP/s (ideal G_OR     62)
+     k= 5  aggregate     69 GFLOP/s (ideal G_OR     77)
+     k=10  aggregate    109 GFLOP/s (ideal G_OR    154)
+
+  memory scaling (BW_cores / cores*BW_1) = 0.30  (1.0 = perfect G_OR sum)
+  compute scaling (GFLOP_cores / cores*GFLOP_1) = 0.71
+
+BRANCH INDEPENDENCE NEDGE PILOT: memory-contends True; compute-composes-better True; boundary=shared-resource True
+
+  PASS — G_OR (parallel sum) holds iff branches share no downstream
+  series resource. COMPUTE branches (private ALUs) compose -- aggregate GFLOP/s tracks core
+  count. MEMORY branches CONTEND on the shared controller -- aggregate BW saturates, far below
+  the naive sum (G_AND(controller, sum_k cores), not G_OR). Both regimes on ONE machine: the
+  CPU+GPU het-sum is the independent (valid G_OR) kind; n cores on the controller are NOT.
+  'n branches sum for free' is true only for INDEPENDENT branches -- the shared-resource case
+  is the el-atlas irreducible-beyond-series/parallel (Wheatstone/Y-Delta) regime.
