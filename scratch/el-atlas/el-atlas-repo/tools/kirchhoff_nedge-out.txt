@@ -1,0 +1,25 @@
+nedge on its Kirchhoff foundation: G_OR/G_AND as DERIVED special cases of nodal analysis.
+
+1. series emerges: nodal(A-x-B) = 1.200000 == G_AND(2.0,3.0) = 1.200000  True
+2. parallel emerges: nodal(A=B, 2 edges) = 5.000000 == G_OR(2.0,3.0) = 5.000000  True
+3. shared resource is DERIVED (contention cap is a KCL theorem, not measured):
+     k= 1 branches: G_eff =  6.429 == G_AND(k*g, c)  6.429  (cap c=18.0)
+     k= 2 branches: G_eff =  9.474 == G_AND(k*g, c)  9.474  (cap c=18.0)
+     k= 4 branches: G_eff = 12.414 == G_AND(k*g, c) 12.414  (cap c=18.0)
+     k= 8 branches: G_eff = 14.694 == G_AND(k*g, c) 14.694  (cap c=18.0)
+     k=64 branches: G_eff = 17.508 == G_AND(k*g, c) 17.508  (cap c=18.0)
+   nodal == G_AND(k*g, c) True; saturates toward the shared element True
+4. Wheatstone / irreducible (G_OR/G_AND valid iff the coupling carries no current):
+     unbalanced: nodal 1.483871 vs series-parallel 1.416667 -> differ True
+     balanced  : nodal 3.333333 vs series-parallel 3.333333 -> agree  True
+5. KCL = Noether: internal nodes net-zero True; source +1 / sink -1 True; total conserved True
+
+KIRCHHOFF NEDGE: series=G_AND True; parallel=G_OR True; shared-cap-derived True; wheatstone-irreducible True; kcl=noether True
+
+  PASS — G_OR (sum) and G_AND (harmonic) are NOT primitive: they are the
+  parallel and series REDUCTIONS of the Kirchhoff nodal solve, valid only on series-parallel-
+  reducible graphs. 'The sum holds iff no shared downstream series resource' is the DEFINITION
+  of parallel (same node pair) under KCL -- a given, not a discovery. The shared-resource cap
+  and the Wheatstone bridge fall out by construction; KCL (current conservation = the Noether
+  current of the dissipated-power stationarity) is enforced at every node. The earlier pilots'
+  G_OR/G_AND are this solve restricted to reducible topologies; shared resources need the solve.
