@@ -1,0 +1,22 @@
+HOST (fetched at runtime): 12th Gen Intel(R) Core(TM) i7-12650H  (10 cores avx2, 15.3 GiB, L3 24M, 161 GFLOP/s, sysram 18 GB/s sat)
+
+1. cache hierarchy = queried capacity ladder + measured streaming BW:
+     L1d    48K
+     L2      1M
+     L3     24M
+     RAM    15G
+   strictly increasing capacity True; streaming (>L3) bottleneck = MEASURED DRAM controller BW 18 GB/s
+   (per-level cache BW intentionally NOT measured: numpy call-overhead swamps L1/L2 arrays)
+2. parallel cores, controller cap: 1-core 7.6 -> 10-core 18.5 GB/s; naive G_OR sum 76 GB/s. parallel helps True; controller caps True
+3. CPU roofline: ridge I* = cpu_flops/sysram_BW = 8.7 FLOP/byte; branches equal True; bias flips mem<->compute True
+4. latency <-> bandwidth = G_NOT (reciprocal): R*G=1 & double-swap=id True
+5. capacity/bandwidth Pareto (the dispatch rationale): host 15.3 GiB @ 18 GB/s  vs  GPU 5.6 GiB @ 192 GB/s
+   host owns CAPACITY, GPU owns BANDWIDTH (opposite corners) True -> dispatch splits by which is scarce
+
+HOST TOPOLOGY NEDGE PILOT: cache-hierarchy True; controller-cap True; cpu-roofline True; latency-recip True; cap-bw-pareto True
+
+  PASS — the host (CPU/memory) topology models as the SAME nedge G-Value
+  conductance network as the GPU: series links = G_AND (DRAM controller = the streaming
+  bottleneck), parallel cores = G_OR but CAPPED by the controller (series-over-parallel),
+  CPU roofline ridge = the bridge null, latency = reciprocal of bandwidth, RAM = the
+  capacity gate. Host and device are one calculus; het-dispatch composes the two branches.
