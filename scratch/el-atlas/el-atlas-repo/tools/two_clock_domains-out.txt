@@ -1,0 +1,14 @@
+the power-arms falsification, structurally corrected: `clock` is two clocks.
+
+1. single-clock cotype: ridge signature {'intensity': 1} -> clock exponent 0 -> predicts ridge INVARIANT (scale 1.0); measured 1.81x -> FALSIFIED True
+2. two-clock cotype: ridge signature {'clock_core': 1, 'intensity': 1, 'clock_mem': -1} -> POWER-DEPENDENT (clock_core/clock_mem) True
+3. QUANTITATIVE: predicted ridge scale = compute_scale/mem_scale = 2.60/1.44 = 1.80 == measured 1.81 True
+4. SCOPE: memory-bound residual signature {} -> clock cancels (single domain) -> residual_decompose's claim HOLDS, correctly scoped True
+
+TWO CLOCK DOMAINS: single-clock-falsified True; two-clock-power-dependent True; quantitative-match True; scope-preserved True
+
+  PASS — `clock` was an opaque primitive; the power-arms experiment
+  split it into clock_core (compute) and clock_mem (memory controller). The ridge is a
+  CROSS-domain ratio -> scales as clock_core/clock_mem -> power-dependent (predicted 1.81x ==
+  measured). Same-domain ratios (the memory-bound residual) still cancel. The structural-cotype
+  prove-or-reveal: a falsified prediction pointed exactly at the broken factor, which split.
