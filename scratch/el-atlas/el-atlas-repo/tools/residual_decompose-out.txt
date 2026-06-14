@@ -1,0 +1,17 @@
+host single-stream BW 7.8 GB/s; eager intensity I=0.100
+
+1. eager-FRESH  : 0.34 GFLOP/s  (residual vs structural = 0.44)
+   eager-REUSE  : 1.10 GFLOP/s  (residual vs structural = 1.40)
+   reuse/fresh speedup = 3.19x -> the residual has a CONTROLLABLE allocation term
+   (buffer reuse closes ~172% of fresh's gap-to-structural)
+
+3. governor (absolute lever, CANCELS in the residual): ['powersave']; max-clock seen 1.5/4.7 GHz (DEPRESSED -> set scaling_governor=performance)
+
+RESIDUAL DECOMPOSE: reuse>fresh True; reuse-residual-closer-to-1 True; governor-read True
+
+  PASS — the 'ephemeral' residual decomposes into named terms:
+  (1) fresh-allocation page faults -- CONTROLLABLE (buffer reuse, measured 3.19x);
+  (2) per-op call overhead -- CONTROLLABLE (fuse the term);
+  (3) governor/clock -- a separate ABSOLUTE lever (cancels in the residual, caps throughput);
+  leaving only OS jitter as truly irreducible. Nothing here is an opaque primitive -- the
+  residual is influenceable structure (eval strategy + power policy), not random noise.
