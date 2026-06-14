@@ -1,0 +1,21 @@
+engine on: 12th Gen Intel(R) Core(TM) i7-12650H + NVIDIA GeForce RTX 4050 Laptop GPU
+  (host-streaming path bottleneck and device-resident path, from discover())
+
+1. ONE operator subsumes folds: chain g_eff == G_AND True; parallel g_eff == G_OR True
+2. bottleneck view: host-streaming -> host/PCIe; device-resident -> DRAM True
+3. spectrum view (Kron trace, sorted resistance share):
+     host/PCIe   95.9%  (6.8 GB/s)
+     DRAM         3.4%  (192.0 GB/s)
+     L2           0.6%  (1152.1 GB/s)
+     L1/shared    0.1%  (5760.7 GB/s)
+   top == bottleneck True; shares sum to 1 True
+4. ridge view: GPU compute<->DRAM bridge null = 56.8 FLOP/byte True
+5. dispatch view: structural r_cpu=2.15 r_gpu=0.68 GFLOP/s -> f*=0.24, parallel G_eff=2.83 == sum True
+
+JEA PERF ENGINE: one-operator True; bottleneck True; spectrum True; ridge True; dispatch True  (5/5 views via the ONE Kron solve)
+
+  PASS — six perf pilots collapse to ONE engine: Kron reduction over
+  the discovered conductance graph, with bottleneck/spectrum/ridge/dispatch as orbit-VIEWS of
+  the single solve. Inputs are structural (op-graph intensity + discovered host conductances);
+  only clock (governor) and jitter are runtime, and they cancel in these ratios. The generator,
+  not a wrapper -- the pilots are its orbit, exactly as shadow-architecture's rule 6 predicted.
