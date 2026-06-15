@@ -2,6 +2,16 @@ RUNG: R(observable, transitions)
 
 # JEA-on-GPU unification arc — WAL cotype (the single source of truth)
 
+## == AI ROSTER (labeled, per WAL discipline) ==
+- **AI-Δ0** orchestrator — D1/D2 discharge (jea_live_cost.py), gates, ledgers (main loop).
+- **AI-Δ1** interface cartographer — mapped el-atlas live-machinery signatures (Explore; not resumable).
+- **AI-Δ2** provenance archaeologist — WAL/git audit of live_dispatcher.decide() constants (general-purpose; resume id ad547863434f51211).
+
+**G9 ESCALATION TARGET (class-level, recurring ≥4x: P_coop=20, superset-perturbation, circular-W3, trust-decide-by-name) — NOT YET BUILT:**
+a `make advise`-class linter / shared witness-preamble for jea_*/el-atlas pilot scripts asserting (1) perturbation/sensitivity sets are
+disjoint + comparable, (2) no witness equals its calibration identity, (3) a dependency cited SOUND has its DECISION PATH audited, not its
+name. The provenance measure (memory layer) fires on INPUTS only and did NOT catch these — this gap is the correct-by-construction target.
+
 ## == REFINED TRAJECTORY — the polytope-cotype (sustainable, anti-shedding) ==
 
 **Retrospective (gated) — why we kept shedding parts:**
