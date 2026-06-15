@@ -55,13 +55,14 @@ U1   flat-u64 lanes     --pack-lanes-by-bucket(native dtype, working=2w) + migra
 U2   MODE in dag_mode   --port-MODE(into strat: stratified high-throughput path)-->  MODE in strat
                                           [both exact; lazy 349 vs eager 77 M/s (4.5x); lazy 1-pass/stratum non-canon; I1]
                                           (jea_generator_strat_mode.py; jea_generator_bucket variant = follow-on)
+U3   host-orch escalate --route-escalate-on-device(u64->u128->byte-limb)-->  carrier migration DELIVERS
+                                          [100 combines all exact; tier-2 byte-limb to 1354b; 0 under-routed; M2c,U1,jea_limb_gpu]
+                                          (jea_carrier_escalate.py; in-persistent-kernel spawn-on-flag = follow-on -> APEX-1)
 ```
 
 ### OPEN -> APEX-2 (the bucketed-lattice carrier)
 
 ```
-U3   host-orch escalate  --route-escalate-on-device(u64->u128->byte-limb)-->  in-kernel carrier migration
-                                          [M2c (flag); U1 (bucket migrate); jea_limb_gpu (byte-limb carrier)]
 U4   value-window only   --add-trace-window-lane(CF-shape, compare-by-prefix)-->  value<->trace dual realized
                                           [I1 (lazy = the value side); jea_trace_window]
 U5   byte-limb mul/add    --add-byte-limb-division-->  Q reduce at arbitrary precision
@@ -88,11 +89,12 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 9 DONE + 8 OPEN (6 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
-strictified: 6 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U3,U4,U5 — U1,U2 DONE);
-2 debts. Denominator is OPEN (orbit not saturated — new instances surface as bricks land; that is the
-symmetry-discovery mechanism, not a failure). Follow-ons logged (not blocking): U1 persistent-pool wiring
-+ sub-byte SWAR floor; U2 jea_generator_bucket variant -- the orbit thickening forward, as expected.
+**Count:** 10 DONE + 7 OPEN (5 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
+strictified: 5 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U4,U5 — U1,U2,U3 DONE; the
+carrier-side of APEX-2 is now complete: packed + mode + unbounded escalation); 2 debts. Denominator is
+OPEN (orbit not saturated — new instances surface as bricks land). Follow-ons logged (not blocking): U1
+persistent-pool wiring + sub-byte SWAR floor; U2 jea_generator_bucket variant; U3 in-persistent-kernel
+spawn-on-flag (which is itself a step toward APEX-1's dynamic work production).
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -143,10 +145,10 @@ symmetry-discovery mechanism, not a failure). Follow-ons logged (not blocking): 
 
 ## Status / abort-residue
 
-9 DONE (frozen). 8 OPEN, each a named transition with its preconditions = pick up any whose precondition
-bricks are DONE (U3,U4,U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this
-file + the two apex names reconstruct the whole arc. U1 DONE (jea_carrier_bucketed.py: data-driven
-mixed-width carrier, 2.46x smaller, exact). U2 DONE (jea_generator_strat_mode.py: MODE in the stratified
-high-throughput path, lazy 349 vs eager 77 M/s = 4.5x, both exact). Next natural brick = U3 (route
-escalation on-device u64->u128->byte-limb, unblocked by U1's in-carrier bucket migration) or U4 (the
-trace-window CF-shape lane = the value<->trace dual). Follow-ons logged, not blocking.
+10 DONE (frozen). 7 OPEN, each a named transition with its preconditions = pick up any whose precondition
+bricks are DONE (U4,U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this file
++ the two apex names reconstruct the whole arc. APEX-2 carrier-side COMPLETE: U1 (packed mixed-width,
+2.46x smaller), U2 (MODE in stratified path, 4.5x), U3 (unbounded escalation u64->u128->byte-limb, 1354b
+delivered) all DONE. Next natural brick = U4 (the trace-window CF-shape lane = the genuine value<->trace
+DUAL, the one APEX-2 piece that is real new structure not a carrier-width extension) or U6 (fuse spawn ⊕
+scheduler = the APEX-1 keystone). Follow-ons logged, not blocking.
