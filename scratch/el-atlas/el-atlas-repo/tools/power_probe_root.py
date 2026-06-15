@@ -33,19 +33,22 @@ def gpu_draw():
         return None
 
 
+_GPU_OK = {"loaded": False, "err": ""}
+
 def combined_load(stop, secs):
     def cpu():
-        a = np.random.rand(512, 512).astype(np.float32); b = a.copy()
+        a = (np.random.rand(512, 512).astype(np.float32) * 0.01 + 0.5); b = a.copy()
         while not stop.is_set():
-            a = a @ b
+            a = (a @ b) * 0.5 + 0.25                     # bounded (no overflow spam)
     def gpu():
         try:
             import cupy as cp
             x = cp.random.rand(2048, 2048, dtype=cp.float32); y = x.copy()
+            _GPU_OK["loaded"] = True
             while not stop.is_set():
                 z = x @ y; cp.cuda.Stream.null.synchronize()
-        except Exception:
-            pass
+        except Exception as e:
+            _GPU_OK["err"] = repr(e)
     ts = [threading.Thread(target=cpu) for _ in range(os.cpu_count())] + [threading.Thread(target=gpu)]
     for t in ts: t.start()
     return ts
@@ -80,15 +83,24 @@ if __name__ == "__main__":
     psys = watts("psys") if "psys" in e0 else None
     dgpu = sum(gpu_samples) / len(gpu_samples) if gpu_samples else None
 
-    print(f"under combined CPU+GPU load ({dt:.1f}s):")
-    print(f"  CPU package (incl iGPU) = {pkg:.1f} W" if pkg else "  CPU package: n/a")
-    print(f"  platform (psys)         = {psys:.1f} W" if psys else "  platform (psys): not exposed")
-    print(f"  dGPU (nvidia-smi)       = {dgpu:.1f} W" if dgpu else "  dGPU: n/a")
-    if pkg and dgpu:
-        combined = pkg + dgpu
-        budget = 45 + 30          # PL0 + dGPU enforced
-        print(f"\n  combined pkg+dGPU = {combined:.1f} W  vs  PL0+dGPU budget {budget} W")
-        if psys:
-            print(f"  platform psys = {psys:.1f} W (the true chassis aggregate)")
-        print(f"  -> chassis envelope {'BINDS (sub-additive: combined < PL0+dGPU caps)' if combined < budget*0.9 else 'not binding at this load/governor'}")
-        print(f"  (governor={gov}: if 'powersave', flip to performance for the real cap)")
+    # validity gates (do NOT conclude on confounded inputs)
+    gpu_ok = _GPU_OK["loaded"]
+    psys_ok = (psys is not None and pkg is not None and psys >= pkg * 0.9)   # psys must be >= package
+    print(f"under combined load ({dt:.1f}s):")
+    print(f"  CPU package (incl iGPU) = {pkg:.1f} W  [VALID]" if pkg else "  CPU package: n/a")
+    print(f"  platform (psys)         = {psys:.1f} W  [{'valid' if psys_ok else 'BROKEN counter -- reads < package; ignore'}]"
+          if psys is not None else "  platform (psys): not exposed")
+    print(f"  dGPU (nvidia-smi)       = {dgpu:.1f} W  [{'loaded' if gpu_ok else 'NOT LOADED -- cupy unavailable in this python; idle draw'}]"
+          if dgpu else "  dGPU: n/a")
+    if not gpu_ok:
+        print(f"\n  GPU not loaded ({_GPU_OK['err'] or 'no cupy'}) -> run with the venv python:")
+        print(f"     sudo $HOME/github/substrate/.venv/bin/python {os.path.basename(__file__)}")
+    if pkg and dgpu and gpu_ok:
+        combined = pkg + dgpu; budget = 45 + 30
+        print(f"\n  combined pkg+dGPU = {combined:.1f} W vs PL0+dGPU budget {budget} W"
+              + (f"; psys {psys:.1f} W" if psys_ok else " (psys broken)"))
+        binds = combined < budget * 0.9
+        print(f"  -> chassis envelope {'BINDS (sub-additive)' if binds else 'not binding at governor='+gov}")
+    else:
+        print(f"\n  VERDICT: not a valid combined measurement (GPU idle and/or psys broken). Only CPU")
+        print(f"  package ({pkg:.1f} W, powersave) is valid. Re-run with venv python + performance governor.")
