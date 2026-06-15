@@ -11,11 +11,14 @@ reference build:
   * MODE=0 LAZY  : skip the gcd, emit UNREDUCED -- high throughput, non-canonical (reduce-on-demand).
 Both EXACT (an unreduced fraction is the right rational; reduce at readout recovers canonical).
 
-Made MATURE (not a silent-overflow stub): the u64 carrier's combine is computed in __int128 and
-overflow is DETECTED. Lazy's unreduced products grow faster, so a product that won't fit u64 is REDUCED
-WHEN THE LANE FORCES IT (exactly "reduce only when forced"); if even the reduced value won't fit u64 the
-node ESCALATES (flag, never wrapped) and poison-propagates -- the escalate-don't-truncate law, carried
-into the cooperative readiness gate. Same branchless monotonic body as jea_generator_dag otherwise.
+Made MATURE (not a silent-overflow stub): overflow is PREDICTED from operand bit-widths before the
+multiply (the SWAR W>=2L lane-spacing rule applied dynamically -- a k-bit times an m-bit value is
+< 2^(k+m), so it fits the u64 lane iff the widths sum within it). Provably-safe -> native u64, overflow
+impossible, no __int128. Otherwise -> the wide path computes in __int128 and DETECTS exactly: a product
+that won't fit u64 is REDUCED WHEN THE LANE FORCES it ("reduce only when forced"); if even the reduced
+value won't fit, the node ESCALATES (flag, never wrapped) and poison-propagates -- escalate-don't-
+truncate, in the cooperative readiness gate. Predict (cheap __clzll) beats detect (compute-wide-then-
+check): know before you spend. Same branchless monotonic body as jea_generator_dag otherwise.
 
 The controller still relaxes K (for eager); MODE is read live from its own control slot (the oracle sets
 it, the M2d way, from the workload's canonicality-demand C). run() demonstrates the Pareto on a real
@@ -30,6 +33,7 @@ import jea_core
 from jea_generator_dag import build_dag                       # reuse the random-tree builder
 
 _SRC = jea_core.Q128_CUDA + jea_core.CTRL_CUDA + r'''
+__device__ __forceinline__ int bl(u64 x){ return x ? 64 - __clzll(x) : 0; }   // bit-width (0 for 0)
 extern "C" __global__
 void generator_dag_mode(
     volatile int* Kbuf, volatile int* obsmax, volatile int* pending, volatile int* mode,
@@ -52,17 +56,28 @@ void generator_dag_mode(
                 if (esc[Lc] | esc[Rc]) {                     // poison-propagate
                     esc[slot]=1; naN[slot]=0; naD[slot]=1; a[slot]=0; b[slot]=0;
                 } else {
-                    u128 nl=vN[Lc], dl=vD[Lc], nr=vN[Rc], dr=vD[Rc];
-                    u128 na = (op[slot]==1) ? (nl*nr) : (nl*dr + nr*dl);   // x or + (branchless)
-                    u128 D  = dl*dr;
-                    if (na >= TWO64 || D >= TWO64) {          // product won't fit u64 -> reduce, FORCED
-                        u128 x=na, y=D; while (y){ u128 t=x%y; x=y; y=t; } u128 g=x?x:1;
-                        u128 rn=na/g, rd=D/g;
-                        if (rn>=TWO64 || rd>=TWO64){ esc[slot]=1; naN[slot]=0; naD[slot]=1; } // ESCALATE
-                        else { naN[slot]=(u64)rn; naD[slot]=(u64)rd; }                        // forced-reduced final
-                        a[slot]=0; b[slot]=0;                 // a==b==0 marks "already final" (no window needed)
-                    } else {
-                        naN[slot]=(u64)na; naD[slot]=(u64)D; a[slot]=(u64)na; b[slot]=(u64)D; // normal: window candidate
+                    u64 nl=vN[Lc], dl=vD[Lc], nr=vN[Rc], dr=vD[Rc]; int mul=(op[slot]==1);
+                    // PREDICT overflow from operand bit-widths = the SWAR W>=2L lane-spacing rule applied
+                    // DYNAMICALLY: a k-bit times an m-bit value is < 2^(k+m), so the product fits the u64
+                    // lane when the widths sum within it (mul: <=64; add: each product <=63 so their sum
+                    // <2^64, and dl*dr<=64). When safe, native u64 CANNOT overflow -- no __int128, no check.
+                    int bnl=bl(nl), bdl=bl(dl), bnr=bl(nr), bdr=bl(dr);
+                    int safe = mul ? (bnl+bnr<=64 && bdl+bdr<=64)
+                                   : (bnl+bdr<=63 && bnr+bdl<=63 && bdl+bdr<=64);
+                    if (safe) {                              // FAST PATH: overflow impossible by construction
+                        u64 na = mul ? (nl*nr) : (nl*dr + nr*dl); u64 D = dl*dr;
+                        naN[slot]=na; naD[slot]=D; a[slot]=na; b[slot]=D;
+                    } else {                                 // SLOW PATH: wide compute + EXACT detect + escalate
+                        u128 na = mul ? ((u128)nl*nr) : ((u128)nl*dr + (u128)nr*dl); u128 D = (u128)dl*dr;
+                        if (na >= TWO64 || D >= TWO64) {      // reduce WHEN THE LANE FORCES it
+                            u128 x=na, y=D; while (y){ u128 t=x%y; x=y; y=t; } u128 g=x?x:1;
+                            u128 rn=na/g, rd=D/g;
+                            if (rn>=TWO64 || rd>=TWO64){ esc[slot]=1; naN[slot]=0; naD[slot]=1; } // ESCALATE
+                            else { naN[slot]=(u64)rn; naD[slot]=(u64)rd; }                        // forced-reduced
+                            a[slot]=0; b[slot]=0;             // a==b==0 marks "already final"
+                        } else {
+                            naN[slot]=(u64)na; naD[slot]=(u64)D; a[slot]=(u64)na; b[slot]=(u64)D;
+                        }
                     }
                 }
                 initf[slot]=1;
