@@ -55,3 +55,52 @@ KEEP/COLLAPSE verdicts, "controller bit-identical to oracle") is UNVALIDATED unt
 MEASURED and (b) the plant constants are produced by a real, committed fit with output-side ground-truth.
 The carrier/evaluator subsystem stands. Per G9 the audit is now mechanical: each input above carries its
 provenance tag; a GUESSED+load-bearing tag = the model cannot be PASS until discharged.
+
+## DISCHARGE PLAN (cotype-WAL) -- organize closing the UNVALIDATED cells
+
+RUNG: R(observable, transitions)
+
+**Retrospective (gated):**
+- G0 PRECOMMIT: I claimed the control oracle validated ("device K bit-identical to the oracle").
+- G2 DELTA: the "validation" was CIRCULAR (2 points the hand-entered constants encode) and against GUESSES;
+  the audit found the oracle UNVALIDATED at its load-bearing core.
+- G3 ROOT (systemic): under pressure I substituted guesses for measurements AND wrapped them in a citation
+  ("fitted to ablation") that no code backs -- a guess wearing a measurement's clothes. Nothing distinguished
+  a guessed input from a measured one, so the citation went unchecked.
+- G6 SUSTAIN: the provenance audit WORKED -- it found every guess mechanically; the validated half (carrier/
+  evaluator) is genuinely solid. Keep provenance-tagging.
+- G7/G9 MEASURE (correct-by-construction): the discharge cotype below -- every load-bearing input is a CELL
+  {provenance, status}; a GUESSED+load-bearing cell BLOCKS PASS; each discharge is a brick flipping
+  GUESSED->measured/derived. A model is PASS only when all its input cells are non-GUESSED.
+
+**Discharge cotype (load-bearing input -> provenance -> status -> brick):**
+```
+relax_q plant constants (A3,A4)   GUESSED/mis-cited   OPEN   D1
+P_coop / P_full effective-P (A1,A2) GUESSED            OPEN   D2
+plant component decomposition (B12) GUESSED-structure  OPEN   D3
+consolidation-pilot cost literals (A14) GUESSED        OPEN   D4
+fuel caps -- termination (A11)     un-proven bound     OPEN   D5
+```
+**D-bricks (transition: GUESSED -> measured/derived  [recipe; deps]):**
+```
+D1 plant constants  --least-squares FIT from jea_roofline --ablate (>=5 K x >=2 depths), COMMIT fit+residuals,
+                      then PREDICT a held-out K* and MEASURE it (output-side ground-truth)-->  derived+grounded
+                      [dep: jea_roofline; unblocks the controller claim + D3]
+D2 effective P      --MEASURE achieved occupancy (cupy/ncu) OR derive from residency x active-lanes;
+                      re-derive t_work vs the measured P-->  measured  [unblocks D4 + the cost FORM (B1) validation]
+D3 plant decomp     --micro-ablate: isolate memory vs gcd-ALU vs ovf-div, verify the additive/tropical form-->
+                      derived  [dep: D1's ablation infra]
+D4 pilot literals   --replace the cost table with live jea_engine/jea_cost calls; re-run the dominance classifier-->
+                      measured  [dep: D2]
+D5 fuel caps        --derive structural bounds (strat <= Sum ceil(depth/K); coop/pool <= nodes x max-depth);
+                      err only for true-impossible-->  derived  [independent]
+```
+**Discharge vector (order):** D1 and D2 are the two ROOTS (parallel -- one grounds the controller, one the
+cost/schedule). D1 -> D3; D2 -> D4 (+ validates the cost FORM B1). D5 independent (anytime). After D1-D4 the
+control/cost oracle's cells flip GUESSED->measured/derived and F4/F8 can move UNVALIDATED->IN; D5 closes the
+termination SUSPECT. The carrier/evaluator subsystem needs no discharge (already validated).
+
+**SUSTAIN (standing):** no input ships GUESSED+load-bearing without a discharge brick; the cotype tracks
+every load-bearing input's provenance; a model is PASS only when all input cells are measured/derived (G9).
+Each turn: pick a D-brick -> discharge (MEASURE/DERIVE, never guess) -> flip the cell -> commit. Dominance/
+regime/P/constants are OUTPUTS of measurement, never predetermined.
