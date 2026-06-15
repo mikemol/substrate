@@ -226,9 +226,15 @@ C2  separate schedulers        --schedule as a STRATEGY over the C1 combine-->  
                                           [jea_engine.py: combine_window = ONE device fn; sched_coop + sched_strat CALL it (no copied
                                            combine); coop==strat on same DAG both carriers (schedule orthogonal to combine); reproduces
                                            dag/dag_mode (coop) + strat (strat); C1, strat]
-                                          RE-SCOPE (DBE, honest): "spawn" is NOT a schedule over the Q-combine -- the spawn/rewrite engine
-                                          (jea_universal_engine, U6) is a DIFFERENT evaluation model (dynamic term-rewriting, not a fixed-DAG
-                                          Q-fold). Forcing it here would be artificial; it stays a distinct axis (the rewrite engine).
+                                          RE-SCOPE RETRACTED (user: "when faced with an either-or, find the common structure, recursively"):
+                                          I wrongly called spawn "a distinct axis" -- that WAS the either/or fallacy. The common structure
+                                          (jea_engine_pool.py, PASS): ONE reduce-step `reduce(node) -> EMIT value | SPAWN children`, scheduled by
+                                          readiness over a pool that GROWS iff a rule spawns. Fixed-DAG fold = every rule TERMINAL (no spawn,
+                                          pool static) = the SPECIAL CASE; rewrite = a spawn rule (pool grows); escalation = spawn a wider-carrier
+                                          node = the same act. It is the generator_step primitive (emit-or-carry) recursively: residue = (a,b) gcd
+                                          pair at the VALUE level (combine_window already carries it), = spawned children at the STRUCTURE level.
+                                          Proven: one kernel runs BOTH the Q-fold (70785/8 exact) AND E(n)->2^n. The growable pool is the GENERAL
+                                          scheduler; coop/strat (C2) are no-spawn special cases of it. [revises the C-arc -- see C3'/below]
 C3  3 carrier scripts + 2 limb --carrier OPS as carrier behaviors (bucket / escalate / trace / byte-limb)-->  carrier param
                                           [engine@carrier reproduces U1 / U3 / U4 / U5; C1, U1, U3, U4, U5]
 C4  intern + oracle separate   --wire intern (pre-pass) + nedge oracle (live steer) as engine STAGES-->  one pipeline
@@ -237,10 +243,14 @@ C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER ove
                                           [every prior brick witness passes via the ONE engine = the G9 gate; C1-C4]
 ```
 
-**Status (consolidation):** 2 of 5 C-bricks done. C1 (jea_engine.py: one parameterized combine, carrier
-typedef + mode/K). C2 (same file: combine_window = one device fn, sched_coop + sched_strat call it;
-coop==strat proves schedule orthogonal to combine; spawn re-scoped as a distinct axis, not a schedule).
-**C3 unblocked next** (carrier OPS -- bucket / escalate-tier / trace -- as carrier params). After C1-C5, "both apexes
+**Status (consolidation):** C1 (jea_engine.py: one parameterized combine, carrier typedef + mode/K) + C2
+(combine_window = one device fn, sched_coop/sched_strat call it; coop==strat). C-arc REVISED by the
+common-structure finding (jea_engine_pool.py): the GENERAL scheduler is the GROWABLE POOL with reduce-step
+`reduce -> emit|spawn`; coop/strat are its NO-SPAWN special cases, and spawn/rewrite (U6) + escalation are
+the spawn case -- ONE engine, proven on both the Q-fold and E(n). So C2's "spawn is distinct" is retracted;
+the real apex scheduler is the pool. REMAINING C-bricks (re-cast on the pool engine): C3 carrier OPS
+(bucket/escalate-tier/trace as carrier params -- escalation now = a spawn), C4 oracle/intern as stages,
+C5 regression runner (one engine reproduces every witness = the gate). After C1-C5, "both apexes
 complete" becomes true as an ARTIFACT (one engine, the scripts its callers/tests), not just a proof.
 Trailing: U10 (re-ablate Z-128) -- cleaner once there's a single kernel to ablate. Caveats held: one
 parameterized kernel FAMILY (shared body, compiled per carrier), not literally one launch for all carriers
