@@ -107,3 +107,36 @@ termination SUSPECT. The carrier/evaluator subsystem needs no discharge (already
 every load-bearing input's provenance; a model is PASS only when all input cells are measured/derived (G9).
 Each turn: pick a D-brick -> discharge (MEASURE/DERIVE, never guess) -> flip the cell -> commit. Dominance/
 regime/P/constants are OUTPUTS of measurement, never predetermined.
+
+## CORRECTION -- "structural_bound is NOT a scalar" (WAL-recovered; the scalar recipe is a CATEGORY ERROR)
+
+The earlier discharge recipe (cost_input = structural_bound[scalar] x ephemeral[scalar]/max, "same-domain
+cancels") is RETRACTED -- it is the exact category error the hardware-discover arc's WAL falsified. Recovered
+from the WAL (git log + ai_ledger.md, NOT the tool docstrings which are stale):
+- "structural" is NOT a scalar bound -- it is the DISCOVERED CONDUCTANCE GRAPH solved by Kron node-elimination
+  (Schur complement); the bottleneck is a THEOREM of KCL, emergent from topology, not a number (e97083a, 3299698).
+- Each dynamic EDGE is a (structural bound, live state) PAIR (71cd6b9); the BINDING edge SHIFTS with state
+  (PCIe -> iMC -> thermal, 5d9665d/AI-11). You cannot pre-collapse to a scalar because WHICH edge binds is
+  itself state-dependent -> the winner is the OUTPUT of the live solve.
+- "clock cancels in the ratio" was FALSIFIED (d993110): there are TWO clock domains; the cross-domain ridge
+  (clock_core/clock_mem) does NOT cancel. Same-domain cancellation is a NARROW special case (the memory-bound
+  residual only), NOT a license to scalarize the model.
+- Every killed arc-assumption was a SCALAR/STATIC claim replaced by a STRUCTURAL/relational one (G_OR/G_AND
+  as ops -> reductions of the nodal solve; min as operator -> the geodesic settle; chassis "BINDS" -> retracted,
+  state-dependent; psys/EDAC -> firmware-unpopulated).
+
+**STALE/MISLEADING comments to DISTRUST** (assert the pre-falsification scalar story, never corrected in place;
+read the WAL/git, not these): kernel_cost_model.py docstring ("structural x ephemeral O(1) SCALAR" -- the
+literal source of the category error); cost_cotype.py ("single `clock` cancels" -- falsified by two_clock_domains);
+residual_decompose.py ("cpufreq cancels in the residual" -- same-domain only); jea_perf_engine.py ("clock+jitter
+cancel in the ratios"); aspm_link.py ("state factor cancels"). SOUND: two_clock_domains, kron_reduction,
+kirchhoff_nedge, perf_graph_integrated, live_dispatcher, topology_breakers.
+
+**REFRAMED D1/D2 (the corrected discharge):** the jea schedule/cost is NOT fitted scalars NOR struct x ephem
+scalars -- it is `(bottleneck_id, f*, g_eff) = Kron-solve( discover()-graph with LIVE edge-states )`,
+RE-SOLVED each window (the existing AI-10/AI-11 machinery: topology_breakers.discover -> perf_graph_integrated
+typed GraphElement registry -> live_dispatcher.poll updates edge-states -> kron_reduction.g_eff). The winner is
+the solve OUTPUT under current state; the binding edge shifts; min is READ OFF the dominated regime, never
+imposed. D1 (plant constants) and D2 (P) dissolve into: wire the jea evaluator as a terminal/branch on the
+discovered graph and read the live Kron solve -- do not fit scalars. (governing-law-before-special-case;
+never-discard-residue: solve the network, don't collapse it.)
