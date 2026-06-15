@@ -256,14 +256,19 @@ to the modeled space + cost models, grounded in U1/U2/U9/trace-window/charter):
 - GENUINE knobs (winner flips -> oracle-steered, correctly kept): mode (eager/lazy), repr (value/trace),
   K (window), layout (flat/bucket -- flat wins uniform-large where bucketing gives no density gain; this
   CORRECTED my pre-baked "bucket dominates" assumption -- the pilot caught it; borderline on bucket overhead).
-- DERIVED (data-determined, not free knobs): carrier (predicted by magnitude, C3); schedule = {strat static,
-  pool dynamic} (a data choice).
-- MISSED CONSOLIDATION (the one): **coop scheduler is DOMINATED** -- strat wins static (full-occupancy,
-  deadlock-free), pool wins dynamic; coop (persistent 1-thread/block, deadlocked past ~3/SM) wins NOTHING.
-  ACTION: drop coop as a schedule setting; the consolidated engine's scheduler is {strat, pool}, coop's role
-  subsumed by the pool (the matured cooperative engine). C2 had kept coop -> collapse it.
-Third pre-judgment the discipline caught this arc (either/or -> common structure; detect -> predict; now
-"bucket dominates" -> the model says it's a knob). Running principles as a pre-commit pass, not post-hoc.
+- DERIVED (data-determined, not a free knob): carrier (predicted by magnitude, C3).
+- schedule (coop/strat/pool): GENUINE 3-way knob -- CORRECTED. My first audit called coop "dominated" on the
+  STALE grounding that "coop deadlocks past ~3/SM" -- but that deadlock was FIXED (revisit-readiness gate, no
+  spin-wait; user caught the stale assumption). RE-GROUNDED BY MEASUREMENT: on a deep-narrow chain coop is
+  3.2 ms vs strat 14.0 ms = 4.4x FASTER (one persistent launch vs launch-per-stratum); strat wins wide
+  (occupancy); pool wins dynamic. The launch<->occupancy<->dynamic Pareto -- a real knob the oracle steers.
+- MISSED CONSOLIDATIONS: NONE. Every axis is a genuine knob or data-derived. The earlier "coop dominated"
+  was an audit built on a FIXED bug -- retracted.
+FOUR pre-judgments the discipline caught this arc (either/or->common structure; detect->predict; bucket-
+dominates->knob; coop-dominated-from-stale-deadlock->measured-genuine-knob). The last is the sharpest:
+I asserted dominance from a stale INPUT (a fixed deadlock) instead of MEASURING the output. LESSON: ground
+audits on measurement, not remembered history -- and there are likely MORE forgotten fixes (the silo sprawl
+wrote fixes to individual scripts that never propagated). [-> dispatching fix-archaeology over git history.]
 
 **Status (consolidation):** C1 (jea_engine.py: one parameterized combine, carrier typedef + mode/K) + C2
 (combine_window = one device fn, sched_coop/sched_strat call it; coop==strat). C-arc REVISED by the

@@ -52,14 +52,16 @@ AXES.append(("K window (small/large)", ["K-small", "K-large"], ["shallow-heavy",
              lambda s, w: ({("K-small","shallow-heavy"):1.0, ("K-small","deep-tail"):3.0,
                             ("K-large","shallow-heavy"):2.5, ("K-large","deep-tail"):1.0})[(s, w)]))
 
-# schedule: coop (persistent 1-thread/block, residency gamble) / strat (full-occupancy, deadlock-free,
-# static only) / pool (general, handles dynamic spawn). grounded: charter (coop DEADLOCKED past ~3/SM;
-# strat = "the merge done right", 847M nodes/s; pool = the spawn-general engine). config = workload.
-# INF = cannot do this workload. coop static = high (residency gamble); strat dynamic = INF (no pre-stratify).
-AXES.append(("schedule (coop/strat/pool)", ["coop", "strat", "pool"], ["static-DAG", "dynamic-spawn"],
-             lambda s, w: {("coop","static-DAG"):10.0, ("coop","dynamic-spawn"):1e9,
-                           ("strat","static-DAG"):1.0, ("strat","dynamic-spawn"):1e9,
-                           ("pool","static-DAG"):2.0, ("pool","dynamic-spawn"):1.0}[(s, w)]))
+# schedule: coop (one persistent launch) / strat (full-occupancy, launch-per-stratum) / pool (dynamic).
+# DEADLOCK-FIXED (revisit-readiness, no spin-wait -- the stale "coop deadlocks" grounding was wrong, user
+# caught it). MEASURED (jea_engine.py, this machine): deep-narrow chain coop 3.2 ms vs strat 14.0 ms (coop
+# 4.4x, launch-bound); wide DAG coop 3.1 vs strat 2.7 (strat wins on occupancy). pool handles dynamic (only).
+# So coop WINS deep-narrow (launch axis), strat WINS wide (occupancy axis), pool WINS dynamic -> a genuine
+# 3-way knob (the el-atlas launch<->occupancy Pareto). INF = cannot do this workload.
+AXES.append(("schedule (coop/strat/pool)", ["coop", "strat", "pool"], ["wide-static", "deep-narrow", "dynamic-spawn"],
+             lambda s, w: {("coop","wide-static"):3.1, ("coop","deep-narrow"):3.2, ("coop","dynamic-spawn"):1e9,
+                           ("strat","wide-static"):2.7, ("strat","deep-narrow"):14.0, ("strat","dynamic-spawn"):1e9,
+                           ("pool","wide-static"):4.0, ("pool","deep-narrow"):4.5, ("pool","dynamic-spawn"):1.0}[(s, w)]))
 
 # layout: flat (one lane width = max) vs bucket-packed (lane = MSB+1, + tiny re-bucket overhead).
 # grounded: U1 (2.46x denser on skewed-small); uniform-large -> bucket==flat + epsilon overhead.
@@ -91,14 +93,14 @@ if __name__ == "__main__":
         for name, dom in missed: print(f"  - {name}: collapse {dom}")
     else:
         print("  (none)")
-    print("\n  reading: mode / repr / K / layout are GENUINE Pareto knobs (winner FLIPS -> the oracle steers them).")
-    print("  - layout: NOT dominated (corrected a pre-baked assumption -- I'd guessed bucket dominates). flat wins")
-    print("    uniform-large-magnitude (no density gain, no re-bucket overhead); bucket wins skewed-small. A knob")
-    print("    iff bucket carries nonzero overhead on uniform-large -- model-sensitive; measure the overhead to be sure.")
-    print("  - schedule's 'coop' is the ONE clear DOMINATED setting (strat wins static, pool wins dynamic; coop")
-    print("    wins nothing -- grounded: coop DEADLOCKED past ~3/SM, strat is full-occupancy deadlock-free). DROP coop;")
-    print("    the scheduler is {strat for static, pool for dynamic} = a DERIVED data choice, not a 3-way knob.")
-    print("  - carrier is DERIVED (predicted by magnitude, C3). So: REAL knobs = mode/repr/K/layout (oracle-steered);")
-    print("    carrier+schedule are data-derived; only COOP was a false knob = the one missed consolidation.")
-    print("  BOUND: dominance is over THIS modeled config space + cost models (grounded in U1/U2/U9/trace-window/")
-    print("  charter), not universal; widen the space (esp. the layout overhead) to retest.")
+    print("\n  reading: mode / repr / K / layout / SCHEDULE are ALL GENUINE Pareto knobs (winner FLIPS -> oracle-steered).")
+    print("  - schedule: a genuine 3-way knob (CORRECTED -- my first audit called coop 'dominated' on the STALE")
+    print("    deadlock grounding; the deadlock was FIXED by revisit-readiness). MEASURED: coop WINS deep-narrow")
+    print("    (one persistent launch, 3.2 ms vs strat 14.0 = 4.4x, launch-bound), strat WINS wide (occupancy),")
+    print("    pool WINS dynamic. The launch<->occupancy<->dynamic Pareto -- a real knob, not a false one.")
+    print("  - layout: genuine knob (flat wins uniform-large; bucket wins skewed-small).")
+    print("  - carrier is DERIVED (predicted by magnitude, C3), a data choice not a free knob.")
+    print("  CONCLUSION: NO missed consolidations -- every axis is a genuine knob (mode/repr/K/layout/schedule)")
+    print("  or data-derived (carrier). The earlier 'coop dominated' was an audit built on a fixed bug (stale).")
+    print("  BOUND: dominance over THIS modeled space + cost models (grounded in U1/U2/U9/trace-window + MEASURED")
+    print("  coop/strat timings); widen to retest. LESSON: ground audits on MEASUREMENT, not remembered history.")
