@@ -8,9 +8,9 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../..
+AGDA_ROOT := ../../..
 
-FILES := CommRing.agda Expand.agda Idempotent.agda Mul.agda MulLaws.agda Reduce.agda Ring.agda Xtime.agda
+FILES := Graded.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
