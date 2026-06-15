@@ -49,13 +49,14 @@ I2   detect-by-int128   --bitwidth-predicate(__clzll, SWAR W>=2L dynamic)-->  pr
                                           [bit-identical results; escalation unchanged; I1]
 I3   flat-u64 (no map)  --bucket-by-MSB(pow-2 ladder) + migration-law-->  bucketing structure proven
                                           [law sound pred>=actual; 17x denser pack; reduce=down-migrate; I2]
+U1   flat-u64 lanes     --pack-lanes-by-bucket(native dtype, working=2w) + migrate-->  data-driven mixed-width carrier
+                                          [100k exact; 2.46x smaller; mig sound 0-undersized; 29 escalate>64->byte-limb; I3]
+                                          (jea_carrier_bucketed.py; combine the CARRIER -- persistent-pool wiring = follow-on)
 ```
 
 ### OPEN -> APEX-2 (the bucketed-lattice carrier)
 
 ```
-U1   flat-u64 lanes     --pack-lanes-by-bucket(re-bucket on each migrate)-->  data-driven mixed-width carrier
-                                          [I3; jea_swar_mixed (static packing = the template)]
 U2   MODE in dag_mode    --port-MODE(into strat/bucket)-->  MODE in the high-throughput stratified paths
                                           [I1; jea_generator_strat, jea_generator_bucket]
 U3   host-orch escalate  --route-escalate-on-device(u64->u128->byte-limb)-->  in-kernel carrier migration
@@ -86,10 +87,11 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 7 DONE + 10 OPEN (8 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
-strictified: 8 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U1,U2,U3,U4,U5); 2 debts.
-Denominator is OPEN (orbit not saturated — new instances surface as bricks land; that is the symmetry-
-discovery mechanism, not a failure).
+**Count:** 8 DONE + 9 OPEN (7 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
+strictified: 7 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U2,U3,U4,U5 — U1 DONE);
+2 debts. Denominator is OPEN (orbit not saturated — new instances surface as bricks land; that is the
+symmetry-discovery mechanism, not a failure). U1 spawned a follow-on (persistent-pool wiring + sub-byte
+SWAR floor) -- the orbit thickening forward, as expected.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -140,7 +142,10 @@ discovery mechanism, not a failure).
 
 ## Status / abort-residue
 
-7 DONE (frozen). 10 OPEN, each a named transition with its preconditions = pick up any whose precondition
-bricks are DONE (U1,U2,U4,U5,U6,U9,U10 are unblocked now; U3 needs U1; U7 needs U6; U8 needs U7). If
-context flushes: this file + the two apex names reconstruct the whole arc. Next natural brick = U1 (pack
-the carrier by bucket — the APEX-2 payoff that I3 proved sound).
+8 DONE (frozen). 9 OPEN, each a named transition with its preconditions = pick up any whose precondition
+bricks are DONE (U2,U3,U4,U5,U6,U9,U10 unblocked now — U3 unblocked by U1; U7 needs U6; U8 needs U7). If
+context flushes: this file + the two apex names reconstruct the whole arc. U1 DONE (jea_carrier_bucketed.py:
+the data-driven mixed-width carrier, 2.46x smaller, exact, migration sound, escalate at u64). Next natural
+brick = U3 (route escalation on-device u64->u128->byte-limb, now that U1 gives in-carrier bucket migration)
+or U2 (MODE into the high-throughput stratified paths). U1 follow-on (persistent-pool storage + sub-byte
+SWAR floor) is logged as the thickening orbit, not blocking.
