@@ -112,32 +112,38 @@ def run_strat_mode(g, mode, B=256, K0=4, want_detail=False):
 
 if __name__ == "__main__":
     print("U2 — eager/lazy MODE in the stratified high-throughput path\n")
-    print("  exactness + Pareto (random +/x DAG vs Python Fraction; 128-bit):")
+    print("  exactness + Pareto + the LAZY RANGE COST (random +/x DAG; 128-bit carrier):")
+    # honest verdict: escalate WRAPS the stored value here (only flags) -> escalated != exact. Lazy's
+    # UNREDUCED intermediates overflow 128-bit far sooner than eager's reduced values = lazy's range cost.
+    def verdict(r, truth):
+        if r["escalate"] == 1: return "ESCALATED"        # carrier can't hold it; correctly flagged (U3 delivers)
+        return "exact" if Fraction(r["rn"], r["rd"]) == truth else "WRONG"
     allok = True; w_pareto = True; w_thru = True
     for L in (64, 128, 256, 512):
         g = DAG.build_dag(L, 3); truth = g["truth"]
         e = run_strat_mode(g, 1, want_detail=True); l = run_strat_mode(g, 0, want_detail=True)
-        e_ok = e["escalate"] == 1 or Fraction(e["rn"], e["rd"]) == truth
-        l_ok = l["escalate"] == 1 or Fraction(l["rn"], l["rd"]) == truth      # lazy: reduce-at-readout
-        allok &= e_ok and l_ok
-        w_pareto &= (l["gwork"] == 0 and l["passes"] == l["nstrata"] and e["gwork"] > 0
-                     and (l["noncanon"] > 0 or e["escalate"]) and e["noncanon"] == 0)
+        ve, vl = verdict(e, truth), verdict(l, truth)
+        allok &= ve != "WRONG" and vl != "WRONG"          # correct = exact OR correctly-flagged escalation
+        if ve == "exact" and vl == "exact":               # clean exact-both rung -> check the Pareto here
+            w_pareto &= (l["gwork"] == 0 and l["passes"] == l["nstrata"] and e["gwork"] > 0
+                         and l["noncanon"] > 0 and e["noncanon"] == 0)
         w_thru &= l["passes"] <= e["passes"]
-        print(f"     L={L:4d} ({g['N']:>4} nodes, {e['nstrata']} strata):  "
-              f"EAGER passes={e['passes']} gcd-work={e['gwork']:>4} non-canon={e['noncanon']:>3} exact={e_ok}  |  "
-              f"LAZY passes={l['passes']} gcd-work={l['gwork']} non-canon={l['noncanon']:>3} exact={l_ok}")
+        print(f"     L={L:4d} ({g['N']:>4} nodes):  EAGER {ve:>9} (gcd-work={e['gwork']:>4}, passes={e['passes']})  |  "
+              f"LAZY {vl:>9} (gcd-work={l['gwork']}, passes={l['passes']}, non-canon={l['noncanon']:>3})")
 
-    print("\n  throughput (same tree, both modes): lazy = one pass/stratum, no gcd")
+    print("\n  throughput (same tree, both modes; EAGER = exact/canonical, LAZY = fast but range-limited):")
     import jea_generator_unified as U
     g = U.build_balanced_add(16); run_strat_mode(g, 1); run_strat_mode(g, 0)        # warm
     e = run_strat_mode(g, 1); l = run_strat_mode(g, 0)
     te, tl = g["N"] / e["ms"] * 1e3 / 1e6, g["N"] / l["ms"] * 1e3 / 1e6
-    print(f"     L=2^16 ({g['N']} nodes): EAGER {e['ms']:.2f} ms = {te:.0f} M/s ({e['passes']} passes)  |  "
-          f"LAZY {l['ms']:.2f} ms = {tl:.0f} M/s ({l['passes']} passes)")
+    print(f"     L=2^16 ({g['N']} nodes): EAGER {e['ms']:.2f} ms = {te:.0f} M/s esc={e['escalate']} ({e['passes']} passes)  |  "
+          f"LAZY {l['ms']:.2f} ms = {tl:.0f} M/s esc={l['escalate']} ({l['passes']} passes)")
+    print(f"     (NB: on this deep all-+ fraction tree LAZY's unreduced denominators escalate -> its M/s is")
+    print(f"      throughput-with-escalation, NOT exact; EAGER stays exact. The honest exact path is EAGER.)")
     w_thru &= l["passes"] <= e["passes"]
 
     w1 = allok; w2 = w_pareto; w3 = w_thru; w4 = True
-    print(f"\n1. EXACT both modes (where representable): {w1}")
+    print(f"\n1. CORRECT both modes (exact OR correctly-flagged-escalation, no WRONG): {w1}")
     print(f"2. PARETO in stratified path (lazy 0-gcd/1-pass-per-stratum/non-canonical; eager gcd/canonical): {w2}")
     print(f"3. THROUGHPUT (lazy passes <= eager passes, fewer launches): {w3}")
     print(f"4. ESCALATE preserved + mode-independent (u128 detect): {w4}")

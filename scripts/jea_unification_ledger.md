@@ -53,8 +53,10 @@ U1   flat-u64 lanes     --pack-lanes-by-bucket(native dtype, working=2w) + migra
                                           [100k exact; 2.46x smaller; mig sound 0-undersized; 29 escalate>64->byte-limb; I3]
                                           (jea_carrier_bucketed.py; combine the CARRIER -- persistent-pool wiring = follow-on)
 U2   MODE in dag_mode   --port-MODE(into strat: stratified high-throughput path)-->  MODE in strat
-                                          [both exact; lazy 349 vs eager 77 M/s (4.5x); lazy 1-pass/stratum non-canon; I1]
-                                          (jea_generator_strat_mode.py; jea_generator_bucket variant = follow-on)
+                                          [CORRECT both modes (exact OR correctly-flagged escalation, never silent-WRONG);
+                                           EAGER exact ~0.9 Gnode/s@2^20; LAZY faster but RANGE-LIMITED (unreduced escalates
+                                           at L>=256 where eager still exact); 1-pass/stratum, non-canonical; I1]
+                                          (jea_generator_strat_mode.py; CORRECTED -- earlier "both exact 4.5x" masked lazy escalation)
 U3   host-orch escalate --route-escalate-on-device(u64->u128->byte-limb)-->  carrier migration DELIVERS
                                           [100 combines all exact; tier-2 byte-limb to 1354b; 0 under-routed; M2c,U1,jea_limb_gpu]
                                           (jea_carrier_escalate.py; in-persistent-kernel spawn-on-flag = follow-on -> APEX-1)
