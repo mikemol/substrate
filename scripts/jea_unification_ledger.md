@@ -106,13 +106,17 @@ exploited) = the universal engine, end to end. No open bricks remain on APEX-1.
 ### OPEN -> debts (verification/model, NOT unification)
 
 ```
-U9   nedge model: no refill   --add-mixed-depth-refill-dynamics-->  complete control model
-                                          [jea_nedge_model]
+U9   nedge model: no refill  --add-mixed-depth-refill-dynamics-->  distribution-aware control [DONE]
+                                          [makespan = max(deep-tail, shallow-throughput); validated EXACT (0%) vs
+                                           ground-truth refill sim; model K* == sim K* (bisimulation); shallow-heavy
+                                           K*=64 while max-depth-model picks 256 -> 1.15x over-window; jea_nedge_model]
+                                          (jea_nedge_refill.py; debugging caught an LPT pop-order bug in the sim -- the
+                                           failing witness exposed it, validate-outputs-not-inputs)
 U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verified or retracted
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 15 DONE + 2 OPEN (0 unification + 2 debts). **BOTH APEXES COMPLETE** -- APEX-2 (U1-U5, the full
+**Count:** 16 DONE + 1 OPEN (0 unification + 1 debt: U10). **BOTH APEXES COMPLETE** -- APEX-2 (U1-U5, the full
 Q carrier: arithmetic AND canonical at arbitrary precision) and APEX-1 (U6-U8, the universal engine: spawn
 ⊕ scheduler ⊕ rewrite + interning + real Agda SPPF). The "how many un-unified" answer, strictified: ZERO
 unification bricks left -- both attractors realized. Only 2 DEBTS remain (U9 nedge-model refill, U10
@@ -175,5 +179,7 @@ engine -- spawn⊕scheduler⊕rewrite fused, device interning (TREE->SPPF), real
 exact. THE UNIFICATION WORK OF THIS ARC IS DONE: every U-brick landed, both attractors realized, zero
 unification bricks remain. Only 2 DEBTS left (neither a unification): U9 (nedge-model mixed-depth refill
 dynamics) + U10 (re-ablate the Z-128 tiling claim). If context flushes: this file + the two apex names
-reconstruct the whole arc. Next = U9 or U10 (debts), or any logged follow-on; the arc's structural goal
-is reached.
+reconstruct the whole arc. U9 DONE (jea_nedge_refill.py: distribution-aware control, validated exact vs the
+refill sim; max-depth model over-windows shallow-heavy by 1.15x). Only U10 left (re-ablate the Z-128 tiling
+claim, jea_roofline --ablate) -- a pure verification debt, not modeling or unification. The arc's structural
+goal is reached; U10 is optional cleanup.
