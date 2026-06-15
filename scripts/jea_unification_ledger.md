@@ -27,9 +27,19 @@ RUNG: R(observable, transitions)
   trained link) reproduces the achieved load-balance 0.30-0.32 == decide_groundtruth's empirical f_emp. The edge
   primitive (scripts/jea_edge_states.py) is the shared P, ready for D4. Measured here: PCIe eff ~20%, DRAM ~15%.
 - **D3** [CLOSED] = the efficiency micro-ablation in jea_edge_states.measure_edges (saturating best-of-N per edge).
-- **D4** [OPEN, primitive READY] route jea_consolidation_pilot's hardcoded cost lambdas through the live oracle
-  (jea_live_cost total_time + the jea_edge_states registry) so the dominance audit runs on the live solve, not
-  literal ms. The shared edge primitive exists; this is the second consumer.
+- **D4** [CLOSED, n-path] FIRST cut routed the schedule axis through live re-measurement -- and the live re-read
+  CAUGHT that the frozen "strat wins wide 2.7 vs 3.1" (13%) was WITHIN the noise floor, and the coop/strat verdict
+  flickered run-to-run. User: a noise-floor tie in a CHOICE = stop denoising the 1-path; decompose the options as
+  an n-path. So coop/strat/pool are NOT 3 strategies to adjudicate -- they are CORNERS of a (launch-granularity
+  g∈[1,S], dynamism d) SURFACE over ONE persistent-kernel engine (jea_engine already): coop=(g=1,static),
+  strat=(g=S,static), pool=(g=1,spawn). jea_schedule_surface.py measures the g-axis SLOPE per workload: deep S=199
+  slope ~4 (STEEP, g*=1 a real ~4x min), wide S=9 slope ~0.15 (≈25x flatter -- the tie is a FLAT region of the
+  surface, structural: launch span (S-1)·c_launch negligible for small S). The solve reads g* off the surface; no
+  discrete dominance verdict. jea_consolidation_pilot rewritten: audits the DISCRETE axes (mode/repr/K/layout, all
+  genuine knobs) and DEFERS schedule to the surface. [[feedback_noise_floor_is_flat_region]]
+- **Δ-F8** [finding] coop/strat/pool are not distinct kinds -- they are corners of the (g,d) schedule surface; the
+  launch-granularity g-axis steepness SCALES with S (slope ∝ (S-1)·c_launch/W), so small-S workloads sit on a flat
+  region (no choice) and large-S have a real g*=1 minimum. A noise-floor tie was the signal the 1-path was wrong.
 - **Δ-F5** [finding] correcting ONE edge's efficiency while leaving another structural gives a WRONG f* — the
   overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
 - **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
