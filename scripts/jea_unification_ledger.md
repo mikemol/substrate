@@ -249,6 +249,22 @@ C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER ove
                                           [every prior brick witness passes via the ONE engine = the G9 gate; C1-C4]
 ```
 
+**CONSOLIDATION AUDIT (jea_consolidation_pilot.py -- nedge knobs+measures, dominance check):** validated the
+unification has NO missed consolidations EXCEPT one. A "knob" is genuine iff its winner FLIPS across the
+config space; a setting that wins under all circumstances is a FALSE knob (collapse it). Findings (bounded
+to the modeled space + cost models, grounded in U1/U2/U9/trace-window/charter):
+- GENUINE knobs (winner flips -> oracle-steered, correctly kept): mode (eager/lazy), repr (value/trace),
+  K (window), layout (flat/bucket -- flat wins uniform-large where bucketing gives no density gain; this
+  CORRECTED my pre-baked "bucket dominates" assumption -- the pilot caught it; borderline on bucket overhead).
+- DERIVED (data-determined, not free knobs): carrier (predicted by magnitude, C3); schedule = {strat static,
+  pool dynamic} (a data choice).
+- MISSED CONSOLIDATION (the one): **coop scheduler is DOMINATED** -- strat wins static (full-occupancy,
+  deadlock-free), pool wins dynamic; coop (persistent 1-thread/block, deadlocked past ~3/SM) wins NOTHING.
+  ACTION: drop coop as a schedule setting; the consolidated engine's scheduler is {strat, pool}, coop's role
+  subsumed by the pool (the matured cooperative engine). C2 had kept coop -> collapse it.
+Third pre-judgment the discipline caught this arc (either/or -> common structure; detect -> predict; now
+"bucket dominates" -> the model says it's a knob). Running principles as a pre-commit pass, not post-hoc.
+
 **Status (consolidation):** C1 (jea_engine.py: one parameterized combine, carrier typedef + mode/K) + C2
 (combine_window = one device fn, sched_coop/sched_strat call it; coop==strat). C-arc REVISED by the
 common-structure finding (jea_engine_pool.py): the GENERAL scheduler is the GROWABLE POOL with reduce-step
