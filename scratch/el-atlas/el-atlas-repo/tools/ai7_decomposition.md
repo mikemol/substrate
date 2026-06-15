@@ -34,13 +34,20 @@ the clock edges. A shared node IS the contention (the `G_AND` cap), exactly like
   kernel trips (surface present but firmware-unpopulated, like EDAC/IBECC). OPEN (validate-outputs):
   whether the gate is common-mode (both clocks -> ridge invariant) or core-only (ridge moves) is
   empirically testable (drive temp, watch ridge) -- NOT asserted.
-- **AI-7d — ASPM-dynamic link.** the PCIe edge carries `(structural max, ephemeral current)` — the
-  struct/ephemeral split in one edge. Surface: `current_link_speed`/`max_link_speed`. Witness: the
-  link conductance is a dynamic edge (gen1 idle / gen4 max), not a fixed value.
+- **AI-7d — ASPM-dynamic link. [DISCHARGED -> aspm_link.py]** the PCIe edge carries `(structural max,
+  ephemeral current)`. Surface: `current_link_speed`/`max_link_speed`. Witnessed (PASS): current
+  2.5 GT/s (2.0 GB/s, gen1 ASPM-idle) / max 16 GT/s (15.8 GB/s gen4) x8 -> structural edge = max,
+  link_state factor 0.13. Same bound x ephemeral-state decomposition as clock cur/max and strategy
+  efficiency; the state cancels in structural ratios.
 
 ## Status
 
-7a discharged (dma_path.py). 7b discharged (igpu_contention.py — package-power shared node).
-7c discharged (thermal_gate.py — clock-edge gate; package passive throttle is DPTF firmware-managed,
-not sysfs). 7d remains a specified shadow. Shared-node ledger: iMC sink (7a, 7b), package-power (7b),
-clock edges (7c); PCIe link (7d) pending — last brick, then AI-7 fully discharged.
+**AI-7 FULLY DISCHARGED.** 7a dma_path.py · 7b igpu_contention.py · 7c thermal_gate.py · 7d
+aspm_link.py. Shared-node/edge ledger COMPLETE: iMC sink (7a, 7b), package-power (7b), clock edges
+(7c), PCIe link (7d). All four are discovered GraphElements consumed by the ONE Kron operator over
+shared nodes. Two cross-cutting findings: (i) several surfaces are present-but-firmware-unpopulated
+(EDAC/IBECC, the -274 thermal trips/DPTF) — a third gate-type beyond privilege/unenumerated; (ii) the
+dynamic edges (clock cur/max, PCIe cur/max) and the eval strategy all share ONE decomposition:
+structural bound x ephemeral state, the state cancelling in structural ratios.
+NEXT: integrate these four elements into jea_perf_engine's graph builder (currently standalone
+pilots); then AI-4 (root RAPL energy) and the live dispatcher capstone.
