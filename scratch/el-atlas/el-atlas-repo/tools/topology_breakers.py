@@ -126,9 +126,15 @@ def discover():
     tiers = discover_cpu_tiers()
     caches = discover_caches()
     private = [c for c in caches if c['scope'] == 'private' and c['type'] in ('Data', 'Unified')]
+    dmi = {}
+    try:
+        from dmi_intern import dmi_facts          # interned SMBIOS structural ceilings (first-class input)
+        dmi, _ = dmi_facts()
+    except Exception:
+        pass
     return dict(host=h, tiers=tiers, n_tiers=len(tiers), caches=caches,
                 largest_private=max((c['bytes'] for c in private), default=h['l1d']),
-                numa=discover_numa(), power=discover_power(), gpus=discover_gpus())
+                numa=discover_numa(), power=discover_power(), gpus=discover_gpus(), dmi=dmi)
 
 
 # ---------- BREAKER REGISTRY (built FROM the discovery) ----------

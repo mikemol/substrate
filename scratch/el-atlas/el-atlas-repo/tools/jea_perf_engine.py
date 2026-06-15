@@ -127,14 +127,20 @@ if __name__ == "__main__":
     w4 = 40 < ridge < 80
     print(f"4. ridge view: GPU compute<->DRAM bridge null = {ridge:.1f} FLOP/byte {w4}")
 
-    # 5. dispatch view -- branch conductances STRUCTURAL (intensity x host BW), not measured
+    # 5. dispatch view -- host-memory edge weight from the DMI STRUCTURAL ceiling (interned), with the
+    #    measured probe as the achieved-strategy efficiency (the cost-cotype split, DMI-sourced).
     I_eager = 0.1                                        # from the op-graph + eager strategy (cost cotype)
-    r_cpu = topo['host']['cpu_flops'] and min(topo['host']['cpu_flops'], topo['host']['sysram_bw_n'] * I_eager)
-    r_gpu = min(gpu_flops, (topo['host'].get('pcie_h2d') or 6e9) * I_eager)   # host-streamed GPU
+    dmi = topo.get('dmi') or {}
+    host_mem_ceiling = dmi.get('dram_peak_bw') or topo['host']['sysram_bw_n']   # prefer DMI structural
+    mem_src = "DMI structural" if dmi.get('dram_peak_bw') else "measured probe"
+    strat_eff = topo['host']['sysram_bw_n'] / host_mem_ceiling                  # achieved / ceiling
+    r_cpu = min(topo['host']['cpu_flops'], host_mem_ceiling * I_eager)          # structural edge weight
+    r_gpu = min(gpu_flops, (topo['host'].get('pcie_h2d') or 6e9) * I_eager)     # host-streamed GPU
     fstar, Geff = view_dispatch(r_cpu, r_gpu)
     w5 = abs(Geff - (r_cpu + r_gpu)) < 1e-3 and 0 <= fstar <= 1
-    print(f"5. dispatch view: structural r_cpu={r_cpu/1e9:.2f} r_gpu={r_gpu/1e9:.2f} GFLOP/s -> "
-          f"f*={fstar:.2f}, parallel G_eff={Geff/1e9:.2f} == sum {w5}")
+    print(f"5. dispatch view: host-mem edge {host_mem_ceiling/1e9:.1f} GB/s [{mem_src}] "
+          f"(achieved-strategy eff {strat_eff*100:.0f}%); structural r_cpu={r_cpu/1e9:.2f} "
+          f"r_gpu={r_gpu/1e9:.2f} -> f*={fstar:.2f}, G_eff={Geff/1e9:.2f} == sum {w5}")
 
     routed = 5  # all views above call g_eff / its fold-equivalents
     ok = w1a and w1b and w2 and w3 and w4 and w5
