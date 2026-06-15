@@ -56,9 +56,19 @@ clean self-contained reference build of the on-device dataflow core, with the NE
 (value<->trace) Pareto knob steered by the nedge oracle via zero-copy. This does NOT supersede the
 existing jea_generator_* ladder (more advanced) or the closed Agda bridge (jea_agda_bridge, 8046b4c).
 
-INTEGRATION FOLLOW-ON (the real next step, not blocking): wire M2d's live eager/lazy Pareto steering
-into the production evaluator -- i.e., add the value<->trace reduction-mode knob to jea_generator_dag/
-strat/bucket's controller (which today steers only K, the gcd-window size), and drive an Agda-bridge-
-emitted DAG (jea_agda_bridge) through it. That fuses the new contribution with the existing closed path.
-Other follow-ons: trace-window as a literal CF-shape lane (compare-by-prefix, no reduce pass); byte-limb
-as the escalation target (the carrier in jea_limb_gpu); het CPU+GPU dispatch (het-dispatch nedge pilot).
+INTEGRATION DONE (jea_generator_dag_mode.py + jea_agda_dispatch.py): M2d's eager/lazy (value<->trace)
+reduction-mode knob is now IN the production cooperative-generator evaluator, alongside the K-window
+control. jea_generator_dag_mode = jea_generator_dag + a MODE control slot read live (eager: windowed gcd
+to b==0, canonical; lazy: skip gcd, emit unreduced), made mature with __int128 overflow detection ->
+reduce-when-the-lane-forces -> escalate (poison-propagated), so lazy is not a silent-overflow stub. The
+oracle (M2d's resistance-sum/argmin) picks MODE from measured gcd-work + non-canonical-COMBINE count +
+the workload C; flips across the bridge-null f*. VERIFIED: random tree L=128 both modes exact, Pareto
+real (eager 216 gcd-ops / 0 non-canonical vs lazy 0 / 84), oracle flips at f*=2.57. jea_agda_dispatch
+drives the Agda Emit.agda term (2/3+1/2)*(1/4*3/5)=7/40 through it under oracle control -- EAGER and LAZY
+both == Agda's refl-vouched value; oracle picks EAGER for the canonicality-demanding workload. The M2d
+knob is fused with the closed Agda-on-GPU path; the controller now steers K AND the value<->trace mode.
+Carrier boundary: u64 fits L<=128; L>=256 escalates (the 128-bit carrier jea_generator_dag128 is next).
+
+Other follow-ons (not blocking): same MODE knob into jea_generator_strat/bucket (the high-throughput
+stratified paths); trace-window as a literal CF-shape lane (compare-by-prefix, no reduce pass); byte-limb
+as the escalation target (jea_limb_gpu); het CPU+GPU dispatch (het-dispatch nedge pilot).
