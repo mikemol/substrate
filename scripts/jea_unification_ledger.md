@@ -78,11 +78,20 @@ U1 (packed mixed-width) + U2 (MODE in stratified path) + U3 (unbounded escalatio
 arithmetic AND canonical, at arbitrary precision. Migration lattice realized end to end (pack/escalate/
 reduce/trace all migrations on it). No open bricks remain on APEX-2.
 
+### DONE -> APEX-1 (the universal engine)
+
+```
+U6   spawn-seq || sched-sep --fuse(spawn(+)scheduler(+)rewrite, shared GROWING pool)-->  one universal kernel
+                                          [128 roots E(n)->2^n exact; pool grew 128->400864 (3131x) AT RUNTIME;
+                                           full-grid parallel, deadlock-free (monotonic readiness gate, no blocking);
+                                           jea_ackermann_spec (spawn) + jea_generator_strat (scheduler)]
+                                          (jea_universal_engine.py; Ackermann rule set = follow-on; the 3131x is the
+                                           NO-SHARING cost -> U7 interning collapses it to linear)
+```
+
 ### OPEN -> APEX-1 (the universal engine)
 
 ```
-U6   spawn-seq || sched-sep  --fuse(spawn (+) scheduler (+) rewrite)-->  one universal kernel
-                                          [jea_ackermann_spec (spawn loop); jea_generator_strat (scheduler)]
 U7   host intern only     --device-side-intern(parallel dedup)-->  irregular-trace sharing
                                           [U6; SPPF/Register intern (host side exists)]
 U8   self-contained Emit  --wire-real-substrate-SPPF(+ sharing)-->  real Agda terms on GPU
@@ -98,12 +107,12 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 12 DONE + 5 OPEN (3 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5). The "how many
-un-unified" answer, strictified: 3 unification bricks, all on APEX-1 (U6 fuse spawn⊕scheduler, U7 device
-interning, U8 real substrate SPPF); + 2 debts (U9 nedge-model refill, U10 re-ablate Z-128 tiling).
-Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1 persistent-pool wiring +
-sub-byte SWAR floor; U2 jea_generator_bucket variant; U3 in-persistent-kernel spawn-on-flag (a step toward
-U6/APEX-1); U4 Gosper Mobius CF arithmetic; U5 sub-quadratic/parallel division.
+**Count:** 13 DONE + 4 OPEN (2 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5); **APEX-1 keystone DONE**
+(U6). The "how many un-unified" answer, strictified: 2 unification bricks left, both APEX-1 (U7 device
+interning [now unblocked], U8 real substrate SPPF [needs U7]); + 2 debts (U9 nedge-model refill, U10
+re-ablate Z-128 tiling). Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1
+persistent-pool + sub-byte SWAR; U2 jea_generator_bucket variant; U3 spawn-on-flag; U4 Gosper CF
+arithmetic; U5 sub-quadratic division; U6 Ackermann rule set in the engine.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -154,10 +163,10 @@ U6/APEX-1); U4 Gosper Mobius CF arithmetic; U5 sub-quadratic/parallel division.
 
 ## Status / abort-residue
 
-12 DONE (frozen). 5 OPEN. **APEX-2 COMPLETE** (U1-U5): the full Q carrier -- arithmetic AND reduce/
-canonical -- at arbitrary precision, the migration lattice realized end to end. Remaining: APEX-1 (U6 fuse
-spawn⊕scheduler [keystone], U7 device interning [needs U6], U8 real substrate SPPF [needs U7]) + debts
-(U9, U10, both unblocked). If context flushes: this file + the two apex names reconstruct the whole arc.
-Next natural brick = U6 -- the APEX-1 keystone (fuse the sequential spawn loop [jea_ackermann_spec] with
-the parallel scheduler [jea_generator_strat] into one kernel). U3's in-persistent-kernel spawn-on-flag
-follow-on is itself a step toward U6 (escalation-as-dynamic-work-production is where the two apexes touch).
+13 DONE (frozen). 4 OPEN. **APEX-2 COMPLETE** (U1-U5). **APEX-1 keystone DONE** (U6: spawn⊕scheduler⊕rewrite
+fused, one kernel, dynamic pool grew 3131x at runtime, deadlock-free, E(n)=2^n exact). Remaining: APEX-1
+U7 (device interning, now unblocked) + U8 (real substrate SPPF, needs U7) + debts (U9, U10). If context
+flushes: this file + the two apex names reconstruct the whole arc. Next natural brick = U7 -- device-side
+interning / parallel dedup; its motivation is concrete and measured: U6's no-sharing full-binary expansion
+cost 3131x node growth (400864 nodes for E(n)=2^n); interning collapses shared subterms (E(n-1) appears
+twice -> one node) to near-linear. U7 then unblocks U8 (the real substrate SPPF through the Agda bridge).
