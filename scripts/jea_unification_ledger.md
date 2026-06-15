@@ -91,14 +91,17 @@ U7   host intern only    --device-side-intern(parallel hash-cons, GPU sort+uniqu
                                           [E(18): 524287 nodes -> 19 distinct (27594x collapse); semantics preserved;
                                            distinct == structural min n+1 (maximal sharing, no false merges); TREE->SPPF bridge; U6]
                                           (jea_intern.py; intern-DURING-spawn (U6+U7 fused, never build the blowup) = follow-on)
+U8   self-contained Emit --emit-shared-SPPF-from-Agda(node-list, refl-vouched)-->  real Agda SPPF on GPU
+                                          [EmitDAG.agda --safe vouchers; 6 DAG vs 31 tree (5.2x sharing); shared nodes
+                                           computed ONCE; GPU == Agda value (7/6)^8 = 5764801/1679616 exact; canonical; U6,U7]
+                                          (scratch/jea/EmitDAG.agda + jea_agda_dag.py)
 ```
 
-### OPEN -> APEX-1 (the universal engine)
+### APEX-1 (the universal engine) -- COMPLETE
 
-```
-U8   self-contained Emit  --wire-real-substrate-SPPF(+ sharing)-->  real Agda terms on GPU
-                                          [jea_agda_bridge (closed); U7 (intern/sharing)]
-```
+U6 (fuse spawn⊕scheduler⊕rewrite, one kernel, dynamic pool, deadlock-free) + U7 (device interning =
+TREE->SPPF, 27594x collapse) + U8 (real shared SPPF from Agda, refl-vouched, evaluated exact, sharing
+exploited) = the universal engine, end to end. No open bricks remain on APEX-1.
 
 ### OPEN -> debts (verification/model, NOT unification)
 
@@ -109,12 +112,13 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 14 DONE + 3 OPEN (1 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5); **APEX-1 nearly complete**
-(U6 keystone + U7 interning DONE). The "how many un-unified" answer, strictified: 1 unification brick left
-(U8 real substrate SPPF, now unblocked) + 2 debts (U9 nedge-model refill, U10 re-ablate Z-128 tiling).
-Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1 persistent-pool + sub-byte
-SWAR; U2 jea_generator_bucket variant; U3 spawn-on-flag; U4 Gosper CF arithmetic; U5 sub-quadratic
-division; U6 Ackermann rule set; U7 intern-during-spawn (U6+U7 fused).
+**Count:** 15 DONE + 2 OPEN (0 unification + 2 debts). **BOTH APEXES COMPLETE** -- APEX-2 (U1-U5, the full
+Q carrier: arithmetic AND canonical at arbitrary precision) and APEX-1 (U6-U8, the universal engine: spawn
+⊕ scheduler ⊕ rewrite + interning + real Agda SPPF). The "how many un-unified" answer, strictified: ZERO
+unification bricks left -- both attractors realized. Only 2 DEBTS remain (U9 nedge-model refill, U10
+re-ablate Z-128 tiling), neither a unification. Follow-ons logged (not blocking): U1 persistent-pool +
+sub-byte SWAR; U2 jea_generator_bucket variant; U3 spawn-on-flag; U4 Gosper CF arithmetic; U5
+sub-quadratic division; U6 Ackermann rule set; U7 intern-during-spawn; U8 deeper substrate terms.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -165,10 +169,11 @@ division; U6 Ackermann rule set; U7 intern-during-spawn (U6+U7 fused).
 
 ## Status / abort-residue
 
-14 DONE (frozen). 3 OPEN. **APEX-2 COMPLETE** (U1-U5). **APEX-1 nearly complete**: U6 (spawn⊕scheduler⊕rewrite
-fused) + U7 (device interning: E(18) 524287->19 nodes, 27594x collapse, TREE->SPPF) DONE. Remaining: APEX-1
-U8 (real substrate SPPF through the Agda bridge, now unblocked) + debts (U9 nedge-model refill, U10
-re-ablate Z-128 tiling). If context flushes: this file + the two apex names reconstruct the whole arc.
-Next natural brick = U8 -- drive a REAL substrate-emitted SPPF (already shared, via jea_agda_bridge) through
-the engine; closing it makes BOTH apexes complete and leaves only the two debts. After U8, the arc's
-unification work is done.
+15 DONE (frozen). 2 OPEN. **BOTH APEXES COMPLETE.** APEX-2 (U1-U5): the full Q carrier, arithmetic AND
+canonical, at arbitrary precision -- the migration lattice end to end. APEX-1 (U6-U8): the universal
+engine -- spawn⊕scheduler⊕rewrite fused, device interning (TREE->SPPF), real Agda shared SPPF evaluated
+exact. THE UNIFICATION WORK OF THIS ARC IS DONE: every U-brick landed, both attractors realized, zero
+unification bricks remain. Only 2 DEBTS left (neither a unification): U9 (nedge-model mixed-depth refill
+dynamics) + U10 (re-ablate the Z-128 tiling claim). If context flushes: this file + the two apex names
+reconstruct the whole arc. Next = U9 or U10 (debts), or any logged follow-on; the arc's structural goal
+is reached.
