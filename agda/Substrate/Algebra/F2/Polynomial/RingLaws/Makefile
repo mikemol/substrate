@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../..
+AGDA_ROOT := ../../../../..
 
-FILES := RingLaws.agda TensorProductView.agda Utilities.agda Wedge.agda
-SUBDIRS := RingLaws Utilities Wedge
+FILES := Assoc.agda Basis.agda BasisComm.agda Comm.agda Conv.agda Distrib.agda Identity.agda Nth.agda Scalar.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,29 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-RingLaws:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Utilities:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Wedge:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C RingLaws clean 2>/dev/null || true
-	@$(MAKE) -C Utilities clean 2>/dev/null || true
-	@$(MAKE) -C Wedge clean 2>/dev/null || true
 	@true
