@@ -33,7 +33,9 @@ F0 Evaluation     IN     (combine_window)                              genuine b
 F1 Carrier        PARTIAL (u64/u128 IN; byte-limb SILO jea_limb*)      genuine knob (predicted by magnitude)
 F2 Schedule       IN     (coop/strat IN; pool in jea_engine_pool)      genuine knob (coop/strat/pool, MEASURED)
 F3 Growth         SILO   (spawn in jea_engine_pool, not jea_engine)    genuine (fixed/spawn = one reduce-step)
-F4 Control        SILO   (K IN-partial; oracle in jea_nedge_model/M2d) genuine knob (K) + oracle morphism
+F4 Control        UNVALIDATED (relax_q's plant constants 421376/548/66304 are GUESSED, MIS-CITED "fitted to
+                  ablation" -- no fit code, circular 2-pt check; "device bit-identical to oracle" = consistent w/ a GUESS,
+                  not correct. See jea_provenance.md A3. DISCHARGE: real least-squares fit + output-side ground-truth.)
 F5 Sharing        SILO   (jea_intern U7)                               not yet a knob in the engine
 F6 Representation PARTIAL (value IN; trace SILO jea_carrier_trace)     genuine knob (value/trace, f*)
 F7 Resource       SILO   (bucket U1; residency NOT asserted)           genuine knob (layout) + invariant
