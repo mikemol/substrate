@@ -14,10 +14,13 @@ of term-algebra nodes (SPPF: gen / (+) / (*)), steered by the nedge oracle via z
   queue of independent term-nodes (gen/+/*) EXACTLY-ONCE via atomicAdd head; 200k nodes, correct vs
   host reference, one launch. The real dataflow core (replaces the AI-11b toy bucket stub). int64
   carrier; generalizes to the bignum/Q carrier.
-- **M2b — dependency dataflow.** Nodes consume CHILDREN's results (a node's a/b are indices into res,
-  not immediates) -> the SPPF DAG. A node is ready only when its children are done; respect deps via
-  stratification (topological strata, the cooperative-megakernel pattern) or a ready-flag + spin.
-  Entailment: M2a's exactly-once drain + a readiness gate -> correct DAG evaluation.
+- **M2b — dependency dataflow. [DONE -> jea_m2_dag.py]** Nodes consume CHILDREN's results (a/b are
+  indices into res) -> the SPPF DAG. Persistent DATA-DRIVEN sweep: threads repeatedly scan the node
+  array, atomicCAS-claim (PENDING->CLAIMED) any node whose children are DONE, evaluate from children,
+  fence, mark DONE; loop until completed==n (fixpoint) or stop. Deadlock-free by construction (leaves
+  ready immediately; frontier advances each sweep; DAG = acyclic). 60k nodes, correct vs host DAG
+  reference, ONE launch (no per-stratum relaunch). Entailment realized: M2a's claim + a children-done
+  ready-gate -> correct DAG evaluation.
 - **M2c — gcd-window fusion / real carrier.** Each node processes a WINDOW of the EEA/CF trace (the
   suspended-generator carrier); swap int64 for the bignum/Q carrier (jea_swar_* / jea_trace_window).
   Fuse the gcd/Euclid windows per node (pay-per-unfold). Heterogeneous depths handled by the queue
@@ -28,5 +31,7 @@ of term-algebra nodes (SPPF: gen / (+) / (*)), steered by the nedge oracle via z
   Agda term -> GPU dataflow -> live-scheduled exact evaluation.
 
 ## Status
-M2a DONE (jea_m2_workqueue.py). M2b/c/d are named bricks; pick up from here. Each is mature-or-nothing
-(no stubs). The dispatcher oracle (el-atlas nedge program, ai_ledger.md) is complete and feeds M2d.
+
+M2a DONE (jea_m2_workqueue.py); M2b DONE (jea_m2_dag.py). M2c/d are named bricks; pick up from here.
+Each is mature-or-nothing (no stubs). The dispatcher oracle (el-atlas nedge program, ai_ledger.md) is
+complete and feeds M2d. Next = M2c (gcd-window fusion + bignum/Q carrier).
