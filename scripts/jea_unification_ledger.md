@@ -17,6 +17,16 @@ RUNG: R(observable, transitions)
   This is registry-as-Pi ([[feedback_registry_as_pi_not_markdown]]), not a prose list. The cone's universal
   property mechanized = the unification's actual done-criterion.
 
+**RETRO (recurring, G9 measure) -- PREDETERMINING inputs:** 5+ times this arc I substituted a GUESS for a
+measured/derived value (either/or splits; detect-not-predict; "bucket dominates"; "coop deadlocks"; now
+"work negligible" + P_coop=20) -- the model's STRUCTURE looked principled but an INPUT was guessed, so it
+"validated" against my guess or mispredicted when measured. Root: no provenance distinguishes a measured
+input from a guessed one, so under pressure the guess is the path of least resistance. MEASURE (correct-by-
+construction): **every model/audit input carries PROVENANCE {measured:how | derived:from-what | GUESSED}**,
+and a model with ANY guessed input is UNVALIDATED by construction (verdict can't be PASS). registry-as-Pi
+for inputs + cost_cotype prove-or-reveal. Would have flagged P_coop=20 GUESSED -> C4 UNVALIDATED mechanically.
+Dominance/regime is ALWAYS an OUTPUT of the full model, never predetermined (the fix witness 3 enforces).
+
 **FACES (status in the ONE engine):** IN=in unified engine | SILO=lives in a silo only | HAND-FED=non-structural
 ```
 F0 Evaluation     IN     (combine_window)                              genuine base 0-cell
@@ -27,7 +37,8 @@ F4 Control        SILO   (K IN-partial; oracle in jea_nedge_model/M2d) genuine k
 F5 Sharing        SILO   (jea_intern U7)                               not yet a knob in the engine
 F6 Representation PARTIAL (value IN; trace SILO jea_carrier_trace)     genuine knob (value/trace, f*)
 F7 Resource       SILO   (bucket U1; residency NOT asserted)           genuine knob (layout) + invariant
-F8 Cost           IN-structural (jea_cost.py: launch_count(S)·t_L + fixed; 2 machine constants, no per-cell ms)
+F8 Cost           UNVALIDATED (jea_cost.py: FULL form launch·t_L + work·t_work, dominance-as-OUTPUT -- but an
+                  INPUT is GUESSED: P_coop=20 (real ~7000), so the oracle mispredicts deep. See G9 provenance measure.)
 ```
 **INCIDENCES (face-meets; status = realized as its named construct in the ONE engine?):**
 ```
@@ -40,7 +51,8 @@ F1   predict-place    IN (jea_engine_apex: tier by bit-width)        fix#3   [C3
 F1∩F6 value<->trace   SILO   (jea_carrier_trace)                  -> C4/C-rep
 F1∩F7 bucket-pack     SILO   (U1)                          fix#6   -> C-resource
 F2∩F7 residency       ORPHAN (not asserted)               fix#5   -> C4/C5
-F4∩F8 oracle          IN (jea_cost.py: argmin over structural cost; predicts winner by extrapolation) [C4]
+F4∩F8 oracle          UNVALIDATED (jea_cost.py: argmin over the full cost, but mispredicts deep -- a GUESSED
+                  input P_coop; needs P measured/discovered. NOT IN until the oracle matches measurement with no guessed input.)
 F4∩F2 K-adapt         PARTIAL (Kbuf/relax IN; refill SILO U9)     -> C4
 witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
 ```
