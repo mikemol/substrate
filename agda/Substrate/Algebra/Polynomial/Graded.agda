@@ -22,6 +22,10 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _�
 open import Substrate.Foundation.Nat.Properties renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
+open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 
 -- R[y] over the coefficient operations + commutative-ring laws (flat bundle).
 -- Instantiate `open Over (+) (*) 𝟘 𝟙 …laws…` at A = F₂ (re-derives F₂[x]) or
@@ -235,3 +239,67 @@ module Over {A : Set}
   subst-·c : ∀ {a b} (eq : a ≡ b) (c : A) (v : Poly a)
            → subst Poly eq (c ·c v) ≡ c ·c (subst Poly eq v)
   subst-·c refl c v = refl
+
+  -- 6. Basis machinery: canonical basis, Fin-indexed sums, basis-decomposition.
+  basis : Fin n → Poly n
+  basis {n} i = basis-vec {A} 𝟘 𝟙 {n} i
+
+  -- the coefficient-level (A-valued) Fin sum, and its congruence / zero.
+  sumA : (Fin n → A) → A
+  sumA {zero}  _ = 𝟘
+  sumA {suc _} g = g fz + sumA (λ i → g (fs i))
+
+  sumA-cong : {g h : Fin n → A} → (∀ i → g i ≡ h i) → sumA g ≡ sumA h
+  sumA-cong {zero}  _  = refl
+  sumA-cong {suc _} eq = cong₂ _+_ (eq fz) (sumA-cong (λ i → eq (fs i)))
+
+  sumA-zero : sumA {n} (λ _ → 𝟘) ≡ 𝟘
+  sumA-zero {zero}   = refl
+  sumA-zero {suc n'} = trans (cong (𝟘 +_) (sumA-zero {n'})) (+-identityˡ 𝟘)
+
+  -- the polynomial-level Fin sum (fold +P), its congruence, and nth through it.
+  sum : (Fin n → Poly m) → Poly m
+  sum {zero}  {m} _ = replicate m 𝟘
+  sum {suc _}     f = f fz +P sum (λ i → f (fs i))
+
+  sum-cong : {f g : Fin n → Poly m} → (∀ i → f i ≡ g i) → sum f ≡ sum g
+  sum-cong {zero}  _  = refl
+  sum-cong {suc _} eq = cong₂ _+P_ (eq fz) (sum-cong (λ i → eq (fs i)))
+
+  nth-sum : (f : Fin n → Poly m) (k : ℕ) → nth (sum f) k ≡ sumA (λ i → nth (f i) k)
+  nth-sum {zero}  {m} f k = nth-replicate m k
+  nth-sum {suc _}     f k =
+    trans (nth-+P (f fz) (sum (λ i → f (fs i))) k)
+          (cong (nth (f fz) k +_) (nth-sum (λ i → f (fs i)) k))
+
+  -- basis i is the delta at toℕ i.
+  nth-basis-same : (i : Fin n) → nth (basis i) (toℕ i) ≡ 𝟙
+  nth-basis-same fz     = refl
+  nth-basis-same (fs i) = nth-basis-same i
+
+  nth-basis-other : (i : Fin n) (k : ℕ) → ¬ (k ≡ toℕ i) → nth (basis i) k ≡ 𝟘
+  nth-basis-other fz       zero    neq = ⊥-elim (neq refl)
+  nth-basis-other (fs i)   zero    _   = refl
+  nth-basis-other {suc n'} fz (suc k) _   = nth-replicate n' k
+  nth-basis-other (fs i)   (suc k) neq = nth-basis-other i k (λ e → neq (cong suc e))
+
+  -- the one-hot collapse: Σᵢ (nth v (toℕ i))·(δ_{toℕ i})_k ≡ nth v k.
+  basis-collapse : (v : Poly n) (k : ℕ) → sumA (λ (i : Fin n) → (nth v (toℕ i)) * nth (basis i) k) ≡ nth v k
+  basis-collapse []      k       = refl
+  basis-collapse {suc n'} (x ∷ v) zero =
+    trans (cong₂ _+_ (trans (*-comm x 𝟙) (*-identityˡ x))
+                     (trans (sumA-cong {n'} (λ i → *-absorbʳ (nth v (toℕ i)))) (sumA-zero {n'})))
+          (+-identityʳ x)
+  basis-collapse {suc n'} (x ∷ v) (suc k) =
+    trans (cong₂ _+_ (trans (cong (x *_) (nth-replicate n' k)) (*-absorbʳ x))
+                     (basis-collapse v k))
+          (+-identityˡ (nth v k))
+
+  -- every polynomial IS the sum of its scaled basis vectors.
+  basis-decomp : (v : Poly n) → v ≡ sum (λ (i : Fin n) → nth v (toℕ i) ·c basis i)
+  basis-decomp {n} v = nth-ext v (sum f) (λ k →
+    sym (trans (nth-sum f k)
+        (trans (sumA-cong {n} (λ i → nth-·c (nth v (toℕ i)) (basis {n} i) k))
+               (basis-collapse {n} v k))))
+    where f : Fin n → Poly n
+          f i = nth v (toℕ i) ·c basis {n} i
