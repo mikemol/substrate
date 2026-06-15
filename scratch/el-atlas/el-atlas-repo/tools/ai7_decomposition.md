@@ -27,16 +27,20 @@ the clock edges. A shared node IS the contention (the `G_AND` cap), exactly like
   `drm/card[0-9]` vendor 0x8086, `intel-rapl:0` PL0. Witnessed (PASS): iGPU detected; cores' iMC BW
   51.2 -> 38.4 with iGPU pulling 13 GB/s; cores' PL0 share 45W -> 37W (82% compute headroom) with
   iGPU @ 8W. Adds the package-power shared NODE (7a only had the iMC sink).
-- **AI-7c — thermal gate.** temperature as a multiplier closing the `clock_core`/`clock_mem` edges
-  (ties the two-clock + TDP findings). Surface: `thermal_zone*`, INT3400 DPTF. Witness: temp up ->
-  clock-edge conductance down -> throughput gate.
+- **AI-7c — thermal gate. [DISCHARGED -> thermal_gate.py]** temperature as a multiplier g(T) closing
+  the clock edge(s) (ties two-clock + TDP). Surface: `thermal_zone*`. Witnessed (PASS): trip = 100C
+  (acpitz hot); pkg @ 46C -> g=1 (free); clamps above. FINDING: x86_pkg/TCPU passive trips are
+  DISABLED in sysfs (-274 sentinel) -> package passive throttle is DPTF/INT3400 FIRMWARE policy, not
+  kernel trips (surface present but firmware-unpopulated, like EDAC/IBECC). OPEN (validate-outputs):
+  whether the gate is common-mode (both clocks -> ridge invariant) or core-only (ridge moves) is
+  empirically testable (drive temp, watch ridge) -- NOT asserted.
 - **AI-7d — ASPM-dynamic link.** the PCIe edge carries `(structural max, ephemeral current)` — the
   struct/ephemeral split in one edge. Surface: `current_link_speed`/`max_link_speed`. Witness: the
   link conductance is a dynamic edge (gen1 idle / gen4 max), not a fixed value.
 
 ## Status
 
-7a discharged (dma_path.py). 7b discharged (igpu_contention.py — adds the package-power shared node).
-7c/7d remain specified shadows; each is a thin GraphElement of the named kind over the shared nodes —
-pick up from this file. Shared-node ledger so far: iMC sink (7a, 7b), package-power (7b);
-clock edges (7c), PCIe link (7d) pending.
+7a discharged (dma_path.py). 7b discharged (igpu_contention.py — package-power shared node).
+7c discharged (thermal_gate.py — clock-edge gate; package passive throttle is DPTF firmware-managed,
+not sysfs). 7d remains a specified shadow. Shared-node ledger: iMC sink (7a, 7b), package-power (7b),
+clock edges (7c); PCIe link (7d) pending — last brick, then AI-7 fully discharged.
