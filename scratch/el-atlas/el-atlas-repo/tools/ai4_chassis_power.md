@@ -58,6 +58,23 @@ psys doesn't. Confirms the present-but-firmware-unpopulated category with upstre
 - linux-pm "lose the psys counter"; Intel Community "rapl domain psys issues".
 True platform/wall power on such hardware needs an EXTERNAL meter (battery EC also dead here).
 
+## Fixable by BIOS / microcode? NO — hardware/board omission (web research)
+
+psys is PERMANENTLY unavailable on this machine, not a firmware bug:
+- **Hardware requirement**: per the Intel 12th-Gen (Alder Lake) datasheet, PSys must be PHYSICALLY
+  sourced from a compatible charger/VR and routed to the CPU via SVID, plus BIOS enablement. The
+  platform-energy MSR "reads 0 if not valid". Board 8C2D (HP Victus 15-fa1xxx) almost certainly does
+  not route the PSys/SVID signal -- typical consumer-gaming-laptop omission. The 0.3 W static read is
+  exactly the unwired-counter signature.
+- **Microcode CANNOT fix it**: intel-ucode addresses CPU errata/security only; it cannot synthesize a
+  platform power signal the board never routes. (Confirmed.)
+- **BIOS CANNOT fix it** unless HP had wired the hardware and merely needed an enable bit -- zero
+  evidence, contrary to consumer practice. (HP Victus BIOS changelogs are generic security/stability;
+  none mention RAPL/PSys/power telemetry.) Newer-than-F.20 BIOS may exist but is irrelevant.
+- **No HP WMI/EC power path under Linux**: `hp-wmi-sensors` exposes temp/fan/voltage/current only --
+  NO wattage attributes. So no on-box total-system-watts node.
+Verdict: treat psys as permanently absent; use package+dGPU RAPL proxy; EXTERNAL meter for ground truth.
+
 ## Status
 
 AI-4 is **root-blocked on this hardware**. CONFIRMED: battery `power1_input` reads 0 EVEN AS ROOT
