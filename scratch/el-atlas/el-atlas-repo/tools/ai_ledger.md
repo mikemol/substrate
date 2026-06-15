@@ -44,6 +44,11 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
 
 ## OPEN (named)
 
+- **AI-12 — CHASSIS-CAP BINDING TEST. [TEST BUILT -> chassis_cap_test.py; root+venv run pending]**
+  Measures P_cpu_alone / P_gpu_alone / P_combined (RAPL package + nvidia-smi dGPU) in 3 phases; if a
+  side's power drops under combined -> chassis binds (het-sum sub-additive in power); else AI-4's
+  "binds" was over-claimed. Run: powerprofilesctl set performance; sudo .venv/bin/python
+  chassis_cap_test.py; set power-saver. Closes empirically on the numbers. ORIGINAL spec below:
 - **AI-12 — CHASSIS-CAP BINDING TEST (small).** AI-4's "chassis BINDS" is over-claimed: it compared
   combined draw (59.7 W) to the nameplate cap sum (75 W), but neither side hit its own cap. Measure
   P_cpu_alone + P_gpu_alone (RAPL + nvidia-smi, root, performance governor) vs P_combined: if
