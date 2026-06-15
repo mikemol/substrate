@@ -75,7 +75,10 @@ RUNG: R(observable, transitions)
 
 **Discharge cotype (load-bearing input -> provenance -> status -> brick):**
 ```
-relax_q plant constants (A3,A4)   GUESSED/mis-cited   OPEN   D1
+relax_q plant constants (A3,A4)   GUESSED/mis-cited   OPEN (D1 attempted: ground-truth FALSIFIED the linear
+                                  form -- 57% resid, 53% held-out, on a gcd microkernel; t_mem~0.1ms not 16.46. Form
+                                  unvalidated + microkernel is wrong regime. Re-do on the ACTUAL evaluator at fixed K;
+                                  the form itself needs revision. jea_fit_plant.py)   D1
 P_coop / P_full effective-P (A1,A2) GUESSED            OPEN   D2
 plant component decomposition (B12) GUESSED-structure  OPEN   D3
 consolidation-pilot cost literals (A14) GUESSED        OPEN   D4
