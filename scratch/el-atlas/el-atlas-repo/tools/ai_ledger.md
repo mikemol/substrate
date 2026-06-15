@@ -21,22 +21,13 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
 - **AI-4** chassis power -> CLOSED TO HARDWARE LIMIT (ai4_chassis_power.md): SoC proxy package+dGPU
   = 59.7 W measured; psys permanently unavailable (firmware-unpopulated, unfixable by BIOS/microcode,
   web-confirmed); true platform power needs an external meter.
+- **AI-10** engine integration -> perf_graph_integrated.py. 10a GraphElement registry (all 4 kinds
+  from discover()) · 10b combined multi-terminal graph builder + ONE g_eff · 10c COMPOSITION verified:
+  compute_BW idle 51.2 > +DMA 43.2 > +DMA+iGPU 30.4 (contenders stack at iMC); thermal(130C)->12.2
+  (clock gate); ASPM gen1-idle steals less than gen4. Bricks compose, not just coexist. Supersedes the
+  simplified perf_graph; the engine now models the full operational path over shared nodes.
 
 ## OPEN (named)
-
-- **AI-10 — ENGINE INTEGRATION (the G8 handoff).** The AI-7 bricks + DMI are standalone pilots, NOT
-  in jea_perf_engine's actual graph. Fold them in so the engine models the full operational path.
-  DBE costructure: a discovered **GraphElement registry** (kinds: series-link, shunt, gate, dynamic)
-  that discover() emits and the engine's graph builder consumes; the combined multi-terminal Kron
-  solve over shared nodes. Sub-bricks:
-  - **10a** GraphElement registry: discover() -> a typed list of elements (from the 7a-d + DMI
-    sources), each (name, kind, value, surface, shared-node).
-  - **10b** jea_perf_engine.perf_graph consumes the registry -> builds the combined graph (compute
-    path + DMA path + contention/gate/dynamic edges) over the shared nodes (iMC, package-power, clock).
-  - **10c** re-validate: extend engine_validate to the combined solve (the views still match ground
-    truth with the full graph; bricks compose, not just coexist).
-  Entailment: if each brick reduces (proven 7a-d) and they share the iMC/power/clock nodes (ledger
-  in ai7_decomposition.md), the combined g_eff captures contention/gating by construction.
 
 - **AI-11 — LIVE DISPATCHER (the capstone, session-origin goal).** The static model (discover -> Kron
   settle -> views) made LIVE: NVML/RAPL telemetry (the ephemeral state factors — clock, link-state,
@@ -51,6 +42,7 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
   chassis-throttle from not-maxed. Extends power_probe_root.py with alone/alone/combined phases.
 
 ## Status
-AI-1..9 + 13 + bw_alloc + AI-4 closed. Open: AI-10 (engine integration, 3 sub-bricks),
-AI-11 (live dispatcher, capstone), AI-12 (chassis-cap binding test, small). Nothing remaining is
-un-named. Pick up any open AI from this file.
+
+AI-1..10 + 13 + bw_alloc + AI-4 closed. Open: AI-11 (live dispatcher, capstone — depends on the now-
+built integrated graph), AI-12 (chassis-cap binding test, small). Nothing remaining is un-named.
+Pick up any open AI from this file.
