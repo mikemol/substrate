@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
 FILES := Base.agda Collapse.agda P92.agda P93.agda Pb2.agda Pb3.agda Pd2.agda Pd3.agda Pe2.agda Pe3.agda Proof.agda
-SUBDIRS := Collapse
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,13 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Collapse:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C Collapse clean 2>/dev/null || true
 	@true

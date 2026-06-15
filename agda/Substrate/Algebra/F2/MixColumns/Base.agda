@@ -3,7 +3,8 @@
 -- primitives (abstract gmul ⇒ no constant-gmul normalization) + the byte constants/values.
 module Substrate.Algebra.F2.MixColumns.Base where
 open import Substrate.Algebra.F2 using (𝟘; 𝟙) public
-open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; +ⱽ-identityˡ; +ⱽ-identityʳ) public
+open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; +ⱽ-identityˡ; +ⱽ-identityʳ;
+  +ⱽ-comm; +ⱽ-assoc) public
 open import Substrate.Algebra.F2.GF256 using (gmul; gmul-distribˡ; gmul-distribʳ; gmul-assoc;
   gmul-identityˡ; gmul-identityʳ; gmul-zeroˡ; +ⱽ-rearrange) public
 open import Substrate.Foundation.Vec using (Vec; []; _∷_) public
@@ -53,3 +54,18 @@ dot4-cong : (a0 a1 a2 a3 : Vector 8) {E0 E1 E2 E3 F0 F1 F2 F3 : Vector 8}
 dot4-cong a0 a1 a2 a3 q0 q1 q2 q3 =
   cong₂ _+ⱽ_ (cong₂ _+ⱽ_ (cong (λ z → gmul z a0) q0) (cong (λ z → gmul z a1) q1))
              (cong₂ _+ⱽ_ (cong (λ z → gmul z a2) q2) (cong (λ z → gmul z a3) q3))
+
+-- THE circulant equivariance kernel: rotating the inputs one step equals rotating the
+-- coefficients one step the other way — a single 4-term +ⱽ abelian reassociation, abstract
+-- over all 8 args. Every coordinate of mix/inv's rotation-equivariance is one instance.
+dot4-cyc : (c0 c1 c2 c3 a0 a1 a2 a3 : Vector 8)
+         → dot4 c0 c1 c2 c3 a3 a0 a1 a2 ≡ dot4 c1 c2 c3 c0 a0 a1 a2 a3
+dot4-cyc c0 c1 c2 c3 a0 a1 a2 a3 = cyc4 (gmul c0 a3) (gmul c1 a0) (gmul c2 a1) (gmul c3 a2)
+  where
+    -- (w +ⱽ x) +ⱽ (y +ⱽ z) ≡ (x +ⱽ y) +ⱽ (z +ⱽ w): a one-step cyclic shift of a 4-XOR.
+    cyc4 : (w x y z : Vector 8) → (w +ⱽ x) +ⱽ (y +ⱽ z) ≡ (x +ⱽ y) +ⱽ (z +ⱽ w)
+    cyc4 w x y z =
+      trans (+ⱽ-assoc w x (y +ⱽ z))
+      (trans (cong (w +ⱽ_) (sym (+ⱽ-assoc x y z)))
+      (trans (+ⱽ-comm w ((x +ⱽ y) +ⱽ z))
+             (+ⱽ-assoc (x +ⱽ y) z w)))
