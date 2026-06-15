@@ -148,7 +148,8 @@ def run_g_mode(g, mode, K0=4, maxcyc=4_000_000):
     noncanon = int((np.gcd(gn[L:][live_c], gd[L:][live_c]) != 1).sum())  # combines, not the (maybe-unreduced) leaves
     return dict(rn=int(gn[root]), rd=int(gd[root]), esc_root=int(ge[root]), gwork=int(steps.get().sum()),
                 noncanon=noncanon, nesc=int(ge.sum()), pending=int(pending.get()[0]), err=int(err.get()[0]),
-                Kfinal=int(Kbuf.get()[0]), obsmax=int(obsmax.get()[0]), regs=regs, launched=nblocks)
+                Kfinal=int(Kbuf.get()[0]), obsmax=int(obsmax.get()[0]), regs=regs, launched=nblocks,
+                vN=gn, vD=gd, esc=ge)                          # per-node stored values + escalate flags
 
 
 def oracle_decide(eager, lazy, C, W_T=1.0, W_C=1.0):
