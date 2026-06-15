@@ -60,13 +60,16 @@ U2   MODE in dag_mode   --port-MODE(into strat: stratified high-throughput path)
 U3   host-orch escalate --route-escalate-on-device(u64->u128->byte-limb)-->  carrier migration DELIVERS
                                           [100 combines all exact; tier-2 byte-limb to 1354b; 0 under-routed; M2c,U1,jea_limb_gpu]
                                           (jea_carrier_escalate.py; in-persistent-kernel spawn-on-flag = follow-on -> APEX-1)
+U4   value-window only  --add-trace-window-lane(CF on GPU = the discarded gcd residue)-->  value<->trace DUAL realized
+                                          [50k exact; canonical-on-GPU scale-free (no reduce); CF == value-window's
+                                           DISCARDED gcd residue (free, same Euclid); round-trip=reduce; compare-by-prefix
+                                           no cross-mult; reaches fast+canonical corner lazy can't; I1, jea_trace_window]
+                                          (jea_carrier_trace.py; Gosper Mobius CF arithmetic = follow-on, trace-window's costly arm)
 ```
 
 ### OPEN -> APEX-2 (the bucketed-lattice carrier)
 
 ```
-U4   value-window only   --add-trace-window-lane(CF-shape, compare-by-prefix)-->  value<->trace dual realized
-                                          [I1 (lazy = the value side); jea_trace_window]
 U5   byte-limb mul/add    --add-byte-limb-division-->  Q reduce at arbitrary precision
                                           [jea_limb_gpu (mul/add/carry done; division OPEN)]
 ```
@@ -91,12 +94,12 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 10 DONE + 7 OPEN (5 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
-strictified: 5 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U4,U5 — U1,U2,U3 DONE; the
-carrier-side of APEX-2 is now complete: packed + mode + unbounded escalation); 2 debts. Denominator is
-OPEN (orbit not saturated — new instances surface as bricks land). Follow-ons logged (not blocking): U1
-persistent-pool wiring + sub-byte SWAR floor; U2 jea_generator_bucket variant; U3 in-persistent-kernel
-spawn-on-flag (which is itself a step toward APEX-1's dynamic work production).
+**Count:** 11 DONE + 6 OPEN (4 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
+strictified: 4 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U5 only — U1,U2,U3,U4 DONE;
+APEX-2 now has packed mixed-width + mode + unbounded escalation + the trace-window dual, leaving only
+byte-limb division U5); 2 debts. Denominator is OPEN (orbit not saturated). Follow-ons logged (not
+blocking): U1 persistent-pool wiring + sub-byte SWAR floor; U2 jea_generator_bucket variant; U3
+in-persistent-kernel spawn-on-flag (a step toward APEX-1); U4 Gosper Mobius CF arithmetic.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -147,10 +150,10 @@ spawn-on-flag (which is itself a step toward APEX-1's dynamic work production).
 
 ## Status / abort-residue
 
-10 DONE (frozen). 7 OPEN, each a named transition with its preconditions = pick up any whose precondition
-bricks are DONE (U4,U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this file
-+ the two apex names reconstruct the whole arc. APEX-2 carrier-side COMPLETE: U1 (packed mixed-width,
-2.46x smaller), U2 (MODE in stratified path, 4.5x), U3 (unbounded escalation u64->u128->byte-limb, 1354b
-delivered) all DONE. Next natural brick = U4 (the trace-window CF-shape lane = the genuine value<->trace
-DUAL, the one APEX-2 piece that is real new structure not a carrier-width extension) or U6 (fuse spawn ⊕
-scheduler = the APEX-1 keystone). Follow-ons logged, not blocking.
+11 DONE (frozen). 6 OPEN, each a named transition with its preconditions = pick up any whose precondition
+bricks are DONE (U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this file +
+the two apex names reconstruct the whole arc. APEX-2 nearly complete: U1 (packed mixed-width, 2.46x), U2
+(MODE in stratified path), U3 (unbounded escalation, 1354b delivered), U4 (trace-window dual = the
+discarded gcd residue, canonical+compare-by-prefix on GPU) all DONE -- only U5 (byte-limb division for
+arbitrary-precision reduce) remains on APEX-2. Next natural brick = U6 (fuse spawn ⊕ scheduler = the
+APEX-1 keystone, the bigger structural move) or U5 (finish APEX-2's carrier ops). Follow-ons logged.
