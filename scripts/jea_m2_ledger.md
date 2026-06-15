@@ -1,8 +1,15 @@
 # JEA M2 runtime — WAL cotype (the on-device dataflow scheduler)
 
-Charter M2: the real on-GPU term-algebra evaluator. The kernel-perf nedge arc built the dispatcher
-ORACLE (control law); M2 is the actual on-device scheduler the oracle steers. Built MATURE per
-[[feedback_grow_to_maturity_not_approximate]] -- no stubs that become scar tissue.
+HONEST SCOPE (read first): the on-device dataflow evaluator ALREADY EXISTS and is more advanced than
+these four scripts -- the jea_generator_* ladder (persistent -> exact-Q controller -> cooperative ->
+stratified/bucketized ~847M nodes/s -> Ackermann -> byte-limb -> SWAR), and the primary Agda-on-GPU
+spit-take is ALREADY CLOSED end-to-end via jea_agda_bridge.py (commit 8046b4c). See the charter memory.
+These jea_m2_* scripts are a CLEAN, SELF-CONTAINED, witness-per-script RE-REALIZATION of the core
+dataflow (queue -> DAG -> Q-carrier+escalate -> oracle-steered dispatch), useful as a legible reference
+build. The genuinely NEW contribution is M2d's live value-window<->trace-window (eager/lazy reduction)
+Pareto steering -- a distinct operating-point knob from the existing K-window controller.
+
+Built MATURE per [[feedback_grow_to_maturity_not_approximate]] -- no stubs that become scar tissue.
 
 Shared costructure (strictification): a persistent megakernel draining a lock-free device work-queue
 of term-algebra nodes (SPPF: gen / (+) / (*)), steered by the nedge oracle via zero-copy control
@@ -30,15 +37,28 @@ of term-algebra nodes (SPPF: gen / (+) / (*)), steered by the nedge oracle via z
   escalation: 54039 exact vs host Fraction + canonical (gcd==1); 10 escalated == the unrepresentable
   set EXACTLY (no silent wrap). The "exactness/canonicality" arm of the value<->trace-window Pareto;
   trace-window dual (CF-shape carrier, compare-by-prefix) is the M2d Pareto knob.
-- **M2d — close the dispatch loop.** The nedge oracle (live_dispatcher) sets work distribution /
-  priority over the queue via the zero-copy control buffer (AI-11b) -- live, anytime. The bottleneck/
-  f* decision steers which nodes/strata the kernel prioritizes. This is the "spit-take" demo:
-  Agda term -> GPU dataflow -> live-scheduled exact evaluation.
+- **M2d — close the dispatch loop. [DONE -> jea_m2_dispatch.py]** The el-atlas nedge oracle steers the
+  M2c exact evaluator LIVE via the AI-11b zero-copy channel into a RESIDENT (spin-waiting) kernel. What
+  it steers = the value-window<->trace-window PARETO: MODE=1 EAGER (reduce every op -> canonical, costs
+  gcd-work) vs MODE=0 LAZY (reduce only when the lane forces it -> throughput, non-canonical, reduce-on-
+  demand). Both exact. Measured Pareto (40k DAG): eager 147604 gcd-ops / 0 non-canonical; lazy 5429
+  gcd-ops (27x less) / 33887 non-canonical. Oracle (resistance-sum / geodesic settle) picks MODE from
+  telemetry + workload canonicality-demand C; decision FLIPS across the bridge-null f*=C*=4.20. Live:
+  resident kernel waited 0.10s for the zero-copy GO, then ran the oracle's schedule to completion. NOTE:
+  the DAG here is synthetic (SPPF-SHAPED gen/+/*), not wired to the Agda bridge -- the end-to-end Agda
+  path is the existing jea_agda_bridge (8046b4c); the new piece is oracle-steered LIVE eager/lazy Pareto.
 
 ## Status
 
-M2a DONE (jea_m2_workqueue.py); M2b DONE (jea_m2_dag.py); M2c DONE (jea_m2_qcarrier.py). M2d is the
-last brick. Each is mature-or-nothing (no stubs). The dispatcher oracle (el-atlas nedge program,
-ai_ledger.md) is complete and feeds M2d. Next = M2d: the nedge oracle steers the live sweep via the
-zero-copy control buffer (AI-11b mechanism) + the value-window<->trace-window Pareto choice = the
-spit-take demo (Agda term -> GPU dataflow -> live-scheduled exact evaluation).
+**jea_m2_* RE-REALIZATION COMPLETE.** M2a (jea_m2_workqueue.py) -> M2b (jea_m2_dag.py) -> M2c
+(jea_m2_qcarrier.py) -> M2d (jea_m2_dispatch.py), all DONE, all mature (no stubs), witness-checked. A
+clean self-contained reference build of the on-device dataflow core, with the NEW live eager/lazy
+(value<->trace) Pareto knob steered by the nedge oracle via zero-copy. This does NOT supersede the
+existing jea_generator_* ladder (more advanced) or the closed Agda bridge (jea_agda_bridge, 8046b4c).
+
+INTEGRATION FOLLOW-ON (the real next step, not blocking): wire M2d's live eager/lazy Pareto steering
+into the production evaluator -- i.e., add the value<->trace reduction-mode knob to jea_generator_dag/
+strat/bucket's controller (which today steers only K, the gcd-window size), and drive an Agda-bridge-
+emitted DAG (jea_agda_bridge) through it. That fuses the new contribution with the existing closed path.
+Other follow-ons: trace-window as a literal CF-shape lane (compare-by-prefix, no reduce pass); byte-limb
+as the escalation target (the carrier in jea_limb_gpu); het CPU+GPU dispatch (het-dispatch nedge pilot).
