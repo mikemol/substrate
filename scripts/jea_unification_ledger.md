@@ -2,15 +2,30 @@ RUNG: R(observable, transitions)
 
 # JEA-on-GPU unification arc — WAL cotype (the single source of truth)
 
-## == AI ROSTER (labeled, per WAL discipline) ==
+## == Δ-ARC RETROSPECTIVE LEDGER (labeled; every gate output is a trackable cell) ==
+
+**AIs (G-roster):**
 - **AI-Δ0** orchestrator — D1/D2 discharge (jea_live_cost.py), gates, ledgers (main loop).
 - **AI-Δ1** interface cartographer — mapped el-atlas live-machinery signatures (Explore; not resumable).
 - **AI-Δ2** provenance archaeologist — WAL/git audit of live_dispatcher.decide() constants (general-purpose; resume id ad547863434f51211).
 
-**G9 ESCALATION TARGET (class-level, recurring ≥4x: P_coop=20, superset-perturbation, circular-W3, trust-decide-by-name) — NOT YET BUILT:**
-a `make advise`-class linter / shared witness-preamble for jea_*/el-atlas pilot scripts asserting (1) perturbation/sensitivity sets are
-disjoint + comparable, (2) no witness equals its calibration identity, (3) a dependency cited SOUND has its DECISION PATH audited, not its
-name. The provenance measure (memory layer) fires on INPUTS only and did NOT catch these — this gap is the correct-by-construction target.
+**Findings (G3/G4 — write-once):**
+- **Δ-F1** binding_edge used an INCOMPARABLE (superset) perturbation (iMC relax ⊇ PCIe relax → PCIe could never win). CLOSED (719524f: disjoint single-edge relaxations).
+- **Δ-F2** W3 was a circular witness (identity tau:=measured−L·t_launch printed as a "prediction" at gnorm=1). CLOSED (719524f: labeled identity + throttle PROJECTION).
+- **Δ-F3** live_dispatcher.decide() fstar/bottleneck BYPASS the Kron solve (hand-coded roofline ratio + `g<1`/`link<0.5` ternary); "ONE Kron op" true only for compute_bw. VERDICT recorded (719524f distrust list). FIX = Δ-A1.
+- **Δ-F4** decide() dead/inert constants: I=0.1 CANCELS, 150e9 & 10906e9 never bind → fstar reduces to bandwidth ratio PCIe·link/(iMC·g+PCIe·link); only 6e9(measured)+iMC(measured)+trip(GUESSED 100.0) move it; 0.5 threshold GUESSED. VERDICT recorded. FIX = Δ-A1.
+
+**Verdict changes / commits (G7 — done):**
+- **Δ-C1** D1/D2 DISCHARGED → jea_live_cost.py + F4/F8/oracle ledger flips (commit 719524f).
+- **Δ-C2** live_dispatcher SOUND → poll-sound / decide()-unsound, added to distrust list (719524f).
+- **Δ-C3** retrospective + AI roster + this labeled ledger (commit 2aa8764 / current).
+
+**Open action items (G7/G9 — DISCHARGE BRICKS, one-per-turn):**
+- **Δ-A1** [OPEN, awaiting go; scope=el-atlas tools/live_dispatcher.py] wire decide() to the solve: bottleneck←edge-sensitivity (Δ-F3); fstar←two-terminal parallel-conductance solve (CPU=iMC edge ∥ GPU=PCIe-in-series-with-compute); trip←discover_thermal() not 100.0; DROP I/150e9/10906e9/0.5 (dead, Δ-F4); ADD a ground-truth test of emitted fstar/bottleneck (NONE exists — het_validate.py tests a different hand-coded model).
+- **Δ-A2** [OPEN, NOT built; = the G9 escalation] witness-sanity advisory (make-advise linter / shared preamble for jea_*/el-atlas pilots): (1) perturbation/sensitivity sets disjoint+comparable, (2) no witness equals its calibration identity, (3) a dependency cited SOUND has its DECISION PATH audited, not its name. Class-level (≥4x: P_coop=20, Δ-F1, Δ-F2, Δ-F3). The provenance measure fires on INPUTS only → did NOT catch these; this is the correct-by-construction target.
+
+**Handoff (G8 — exhausted-from-inside, NOT verified):**
+- **Δ-H1** ALL validation used ONE idle host's telemetry. The "PCIe structurally dominated / binding edge ∈ {iMC,thermal}" (W2) and "fstar = bandwidth ratio" (Δ-F4) claims are host-specific, untested on discrete-GPU / no-iGPU hardware or under real thermal load. For an external reviewer with such hardware.
 
 ## == REFINED TRAJECTORY — the polytope-cotype (sustainable, anti-shedding) ==
 
