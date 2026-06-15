@@ -65,14 +65,18 @@ U4   value-window only  --add-trace-window-lane(CF on GPU = the discarded gcd re
                                            DISCARDED gcd residue (free, same Euclid); round-trip=reduce; compare-by-prefix
                                            no cross-mult; reaches fast+canonical corner lazy can't; I1, jea_trace_window]
                                           (jea_carrier_trace.py; Gosper Mobius CF arithmetic = follow-on, trace-window's costly arm)
+U5   byte-limb mul/add   --add-byte-limb-division(restoring-doubling)-->  Q reduce at ARBITRARY precision
+                                          [divmod exact to 398b; gcd exact; reduce k*p/k*q exact to 381b >>2^128;
+                                           CF (U4) past 128b; reuses the byte-limb adder; jea_limb_gpu]
+                                          (jea_limb_div.py; sub-quadratic/parallel division Knuth-D/Newton = perf follow-on)
 ```
 
-### OPEN -> APEX-2 (the bucketed-lattice carrier)
+### APEX-2 (the bucketed-lattice carrier) -- COMPLETE
 
-```
-U5   byte-limb mul/add    --add-byte-limb-division-->  Q reduce at arbitrary precision
-                                          [jea_limb_gpu (mul/add/carry done; division OPEN)]
-```
+U1 (packed mixed-width) + U2 (MODE in stratified path) + U3 (unbounded escalation arithmetic) + U4
+(trace-window dual = discarded gcd residue) + U5 (byte-limb division -> reduce) = the full Q carrier,
+arithmetic AND canonical, at arbitrary precision. Migration lattice realized end to end (pack/escalate/
+reduce/trace all migrations on it). No open bricks remain on APEX-2.
 
 ### OPEN -> APEX-1 (the universal engine)
 
@@ -94,12 +98,12 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 11 DONE + 6 OPEN (4 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
-strictified: 4 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U5 only — U1,U2,U3,U4 DONE;
-APEX-2 now has packed mixed-width + mode + unbounded escalation + the trace-window dual, leaving only
-byte-limb division U5); 2 debts. Denominator is OPEN (orbit not saturated). Follow-ons logged (not
-blocking): U1 persistent-pool wiring + sub-byte SWAR floor; U2 jea_generator_bucket variant; U3
-in-persistent-kernel spawn-on-flag (a step toward APEX-1); U4 Gosper Mobius CF arithmetic.
+**Count:** 12 DONE + 5 OPEN (3 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5). The "how many
+un-unified" answer, strictified: 3 unification bricks, all on APEX-1 (U6 fuse spawn⊕scheduler, U7 device
+interning, U8 real substrate SPPF); + 2 debts (U9 nedge-model refill, U10 re-ablate Z-128 tiling).
+Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1 persistent-pool wiring +
+sub-byte SWAR floor; U2 jea_generator_bucket variant; U3 in-persistent-kernel spawn-on-flag (a step toward
+U6/APEX-1); U4 Gosper Mobius CF arithmetic; U5 sub-quadratic/parallel division.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -150,10 +154,10 @@ in-persistent-kernel spawn-on-flag (a step toward APEX-1); U4 Gosper Mobius CF a
 
 ## Status / abort-residue
 
-11 DONE (frozen). 6 OPEN, each a named transition with its preconditions = pick up any whose precondition
-bricks are DONE (U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this file +
-the two apex names reconstruct the whole arc. APEX-2 nearly complete: U1 (packed mixed-width, 2.46x), U2
-(MODE in stratified path), U3 (unbounded escalation, 1354b delivered), U4 (trace-window dual = the
-discarded gcd residue, canonical+compare-by-prefix on GPU) all DONE -- only U5 (byte-limb division for
-arbitrary-precision reduce) remains on APEX-2. Next natural brick = U6 (fuse spawn ⊕ scheduler = the
-APEX-1 keystone, the bigger structural move) or U5 (finish APEX-2's carrier ops). Follow-ons logged.
+12 DONE (frozen). 5 OPEN. **APEX-2 COMPLETE** (U1-U5): the full Q carrier -- arithmetic AND reduce/
+canonical -- at arbitrary precision, the migration lattice realized end to end. Remaining: APEX-1 (U6 fuse
+spawn⊕scheduler [keystone], U7 device interning [needs U6], U8 real substrate SPPF [needs U7]) + debts
+(U9, U10, both unblocked). If context flushes: this file + the two apex names reconstruct the whole arc.
+Next natural brick = U6 -- the APEX-1 keystone (fuse the sequential spawn loop [jea_ackermann_spec] with
+the parallel scheduler [jea_generator_strat] into one kernel). U3's in-persistent-kernel spawn-on-flag
+follow-on is itself a step toward U6 (escalation-as-dynamic-work-production is where the two apexes touch).
