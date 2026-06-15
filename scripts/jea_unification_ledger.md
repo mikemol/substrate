@@ -22,7 +22,20 @@ RUNG: R(observable, transitions)
 
 **Open action items (G7/G9 — DISCHARGE BRICKS, one-per-turn):**
 - **Δ-A1** [CLOSED] wired decide() to the solve: fstar←discovered-conductance load-balance ratio g_gpu/(g_cpu+g_gpu); bottleneck←edge-sensitivity (3-way shift PCIe/link→iMC/iGPU→thermal); trip←discover_thermal(); I/150e9/10906e9/6e9/0.5/100.0 REMOVED. Ground-truth test BUILT (decide_groundtruth.py): W1 formula validated (f* from measured conductances == empirical makespan argmin), W2 GPU branch PCIe-bound. Found+fixed 2 bugs en route (PCIe GB/s-vs-bytes/s unit mismatch → fstar=0; alloc-bound CPU measurement). Spawned Δ-A3.
-- **Δ-A3** [OPEN] decide() uses STRUCTURAL edge bandwidths; ground-truthed achieved PCIe ~24% of structural max (decide_groundtruth.py W3). f* error stays small only by ratio-cancellation (CPU iMC-ceiling also overestimated vs single-thread achieved) — would diverge on a DRAM-saturating workload. FIX (not magic): feed decide() the ACHIEVED edge bandwidths = (structural bound × measured efficiency-state), the same split link_state already models.
+- **Δ-A3** [CLOSED via P] decide() now takes pcie_eff/cpu_eff (jea_edge_states.measure_edges, D3 micro-ablation):
+  each conductance = structural bound × live_state × MEASURED efficiency, consistent base. decide(both effs @
+  trained link) reproduces the achieved load-balance 0.30-0.32 == decide_groundtruth's empirical f_emp. The edge
+  primitive (scripts/jea_edge_states.py) is the shared P, ready for D4. Measured here: PCIe eff ~20%, DRAM ~15%.
+- **D3** [CLOSED] = the efficiency micro-ablation in jea_edge_states.measure_edges (saturating best-of-N per edge).
+- **D4** [OPEN, primitive READY] route jea_consolidation_pilot's hardcoded cost lambdas through the live oracle
+  (jea_live_cost total_time + the jea_edge_states registry) so the dominance audit runs on the live solve, not
+  literal ms. The shared edge primitive exists; this is the second consumer.
+- **Δ-F5** [finding] correcting ONE edge's efficiency while leaving another structural gives a WRONG f* — the
+  overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
+- **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
+  H2D trains the link to gen4, so pcie_eff bakes in link training). So (bound × eff × live_state) is NOT three
+  independent factors — eff × idle-link_state double-counts. Use eff at the state it was measured, or live_state
+  with eff=1; not both. (Refines the structural-not-scalar (bound,state) pair: state and measured-eff overlap.)
 - **Δ-A2** [CLOSED; = the G9 escalation] witness-sanity CONTRACT built (scripts/witness_sanity.py): callable
   helpers same_scale (catches the Δ-A1 GB/s-vs-bytes/s unit bug), single_edge_gains (makes the Δ-F1 superset
   relaxation UNREPRESENTABLE -- disjoint by construction), not_calibration_identity (catches the Δ-F2 circular

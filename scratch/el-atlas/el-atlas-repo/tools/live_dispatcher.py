@@ -97,18 +97,26 @@ def binding_edge(imc, tel, ref_T=46.0):
     return max(gains, key=gains.get), gains
 
 
-def decide(imc, tel, dma=True, igpu=True):
+def decide(imc, tel, dma=True, igpu=True, pcie_eff=1.0, cpu_eff=1.0):
     """The live decision, READ OFF the solved conductance graph (no roofline magic constants). f* is the
     load-balance ratio of two DISCOVERED path conductances; the bottleneck is edge-sensitivity; the trip
     is the discovered /sys trip. (Replaces the I=0.1 / 150e9 / 10906e9 / 6e9 / 0.5 / 100.0 hand-codes --
-    of which I cancelled and the two FLOP peaks never bound; see jea_provenance.md Delta-F3/Delta-F4.)"""
+    of which I cancelled and the two FLOP peaks never bound; see jea_provenance.md Delta-F3/Delta-F4.)
+
+    pcie_eff / cpu_eff (default 1.0 = structural) are the MEASURED edge efficiency-states (P / Δ-A3,
+    jea_edge_states.measure_edges): achieved = structural bound × efficiency × live_state. The structural
+    PCIe max overestimates achieved H2D ~4x (decide_groundtruth W3); pass the measured efficiency to use
+    the achieved edge. This finishes the (bound × efficiency × live_state) pair instead of assuming eff=1."""
     bw = compute_bw(imc, dma=dma, igpu=igpu, T=tel['T'], link_state=tel['link_state'])
     g = gate(tel['T'], _TRIP)
-    # f* = optimal GPU dispatch fraction = the ratio of path conductances that balances makespan.
-    #   g_cpu = the compute/memory path effective bandwidth (the Kron solve, thermal-gated, DMA-coupled);
-    #   g_gpu = the GPU branch, PCIe-bound for cross-PCIe dispatch = discovered max x live ASPM state.
-    g_cpu = bw
-    g_gpu = _PCIE_MAX_BW * tel['link_state']
+    # f* = optimal GPU dispatch fraction = the ratio of path conductances that balances makespan. Each edge
+    # is (structural bound × live_state × measured efficiency), CONSISTENT base (the eff is measured against
+    # the same structural bound -- mixing bases double-counts):
+    #   g_cpu = iMC ceiling × thermal gate × cpu_eff ;  g_gpu = PCIe max × ASPM link_state × pcie_eff.
+    # NOTE: with eff defaults 1.0 these are the structural ceilings (contention enters the bottleneck call,
+    # not this load-balance); the DMA-steal↔dispatch coupling (g_cpu drops as f rises) is a deferred residual.
+    g_cpu = imc * g * cpu_eff
+    g_gpu = _PCIE_MAX_BW * tel['link_state'] * pcie_eff
     fstar = g_gpu / (g_cpu + g_gpu) if (g_cpu + g_gpu) else 0.0
     bottleneck, _ = binding_edge(imc, tel)
     return dict(compute_bw=bw, fstar=fstar, gate=g, bottleneck=bottleneck)
