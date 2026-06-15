@@ -57,6 +57,7 @@ from live_dispatcher import poll
 import jea_engine as E
 from jea_cost import deep_chain, strata_count, measure
 from jea_generator_dag import build_dag
+from witness_sanity import single_edge_gains      # Δ-A2: disjoint-by-construction binding-edge probe
 
 NSM = cp.cuda.Device().attributes["MultiProcessorCount"]
 _REF = dict(T=46.0, link_state=1.0)          # cool reference state: gnorm(ref) := 1
@@ -86,14 +87,16 @@ def gnorm(imc, tel):
 # ---- Shadow B: binding edge by STRUCTURAL SENSITIVITY over the live graph (NOT decide()'s ternary) ---
 def binding_edge(imc, tel):
     """Which hardware edge BINDS = the one whose relaxation raises the live g_eff most. Each candidate is
-    a DISJOINT single-edge relaxation (so the gains are comparable -- the earlier bug relaxed iMC as a
-    SUPERSET of PCIe, which can never lose). Derived from the real solve (compute_bw), decide-free."""
+    a DISJOINT single-edge relaxation, ENFORCED by witness_sanity.single_edge_gains (the Δ-F1 bug relaxed
+    iMC as a SUPERSET of PCIe, which can never lose -- the contract now makes that unrepresentable).
+    Derived from the real solve (compute_bw), decide-free."""
     base = operating_bw(imc, tel["T"], tel["link_state"])
-    gains = {
-        "iMC/iGPU":  compute_bw(imc, dma=True,  igpu=False, T=tel["T"],  link_state=tel["link_state"]) - base,  # drop iGPU shunt only
-        "PCIe/DMA":  compute_bw(imc, dma=False, igpu=True,  T=tel["T"],  link_state=tel["link_state"]) - base,  # drop DMA shunt only
-        "thermal":   compute_bw(imc, dma=True,  igpu=True,  T=_REF["T"], link_state=tel["link_state"]) - base,  # relax thermal gate only
-    }
+    base_state = dict(dma=True, igpu=True, T=tel["T"], link_state=tel["link_state"])
+    ev = lambda st: compute_bw(imc, dma=st["dma"], igpu=st["igpu"], T=st["T"], link_state=st["link_state"])
+    gains = single_edge_gains(base, base_state,
+                              {"iMC/iGPU": {"igpu": False},          # drop iGPU shunt only
+                               "PCIe/DMA": {"dma": False},           # drop DMA shunt only
+                               "thermal":  {"T": _REF["T"]}}, ev)    # relax thermal gate only
     return max(gains, key=gains.get), gains
 
 

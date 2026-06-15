@@ -23,7 +23,14 @@ RUNG: R(observable, transitions)
 **Open action items (G7/G9 — DISCHARGE BRICKS, one-per-turn):**
 - **Δ-A1** [CLOSED] wired decide() to the solve: fstar←discovered-conductance load-balance ratio g_gpu/(g_cpu+g_gpu); bottleneck←edge-sensitivity (3-way shift PCIe/link→iMC/iGPU→thermal); trip←discover_thermal(); I/150e9/10906e9/6e9/0.5/100.0 REMOVED. Ground-truth test BUILT (decide_groundtruth.py): W1 formula validated (f* from measured conductances == empirical makespan argmin), W2 GPU branch PCIe-bound. Found+fixed 2 bugs en route (PCIe GB/s-vs-bytes/s unit mismatch → fstar=0; alloc-bound CPU measurement). Spawned Δ-A3.
 - **Δ-A3** [OPEN] decide() uses STRUCTURAL edge bandwidths; ground-truthed achieved PCIe ~24% of structural max (decide_groundtruth.py W3). f* error stays small only by ratio-cancellation (CPU iMC-ceiling also overestimated vs single-thread achieved) — would diverge on a DRAM-saturating workload. FIX (not magic): feed decide() the ACHIEVED edge bandwidths = (structural bound × measured efficiency-state), the same split link_state already models.
-- **Δ-A2** [OPEN, NOT built; = the G9 escalation] witness-sanity advisory (make-advise linter / shared preamble for jea_*/el-atlas pilots): (1) perturbation/sensitivity sets disjoint+comparable, (2) no witness equals its calibration identity, (3) a dependency cited SOUND has its DECISION PATH audited, not its name. Class-level (≥4x: P_coop=20, Δ-F1, Δ-F2, Δ-F3). The provenance measure fires on INPUTS only → did NOT catch these; this is the correct-by-construction target.
+- **Δ-A2** [CLOSED; = the G9 escalation] witness-sanity CONTRACT built (scripts/witness_sanity.py): callable
+  helpers same_scale (catches the Δ-A1 GB/s-vs-bytes/s unit bug), single_edge_gains (makes the Δ-F1 superset
+  relaxation UNREPRESENTABLE -- disjoint by construction), not_calibration_identity (catches the Δ-F2 circular
+  W3). __main__ is a REGRESSION proving it fires on all 3 historical bugs + passes their fixed forms. ADOPTED:
+  jea_live_cost.binding_edge routes through single_edge_gains; decide_groundtruth guards its ratio with
+  same_scale. Bonus (applying Δ-A2's own lesson to my test): decide_groundtruth's W1 was a single-shot
+  luck-dependent verdict on a noisy laptop -- denoised to a median-of-K verdict with disclosed noise floor.
+  (3rd check -- decision-path-not-name audit of SOUND deps -- stays a manual checklist item; not mechanizable.)
 
 **Handoff (G8 — exhausted-from-inside, NOT verified):**
 - **Δ-H1** ALL validation used ONE idle host's telemetry. The "PCIe structurally dominated / binding edge ∈ {iMC,thermal}" (W2) and "fstar = bandwidth ratio" (Δ-F4) claims are host-specific, untested on discrete-GPU / no-iGPU hardware or under real thermal load. For an external reviewer with such hardware.
