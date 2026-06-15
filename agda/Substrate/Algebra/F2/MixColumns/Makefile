@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Base.agda Collapse.agda P92.agda P93.agda Pb2.agda Pb3.agda Pd2.agda Pd3.agda Pe2.agda Pe3.agda Proof.agda
+FILES := Base.agda Collapse.agda Mul02.agda Mul03.agda Proof.agda Scale.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

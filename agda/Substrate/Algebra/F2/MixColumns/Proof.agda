@@ -5,14 +5,13 @@
 -- 8 GF products + 4 collapse representatives are used) and the other three coordinates are
 -- `rt-head` transported by `rot` — so rt1/rt2/rt3 and 12 of the 16 collapses EVAPORATE.
 --
--- The whole proof is still ABSTRACT over the constants (every gmul symbolic ⇒ no const×const
--- normalization), instantiated cheaply below. Only const×const cost = the 8 product files.
+-- The whole proof is ABSTRACT over the constants (every gmul symbolic ⇒ no const×const
+-- normalization), instantiated cheaply below. The 8 GF products are now `xtime`+XOR of
+-- constants (Mul02/Mul03 via Scale) — NO const×const normalization remains anywhere.
 module Substrate.Algebra.F2.MixColumns.Proof where
 open import Substrate.Algebra.F2.MixColumns.Base
-open import Substrate.Algebra.F2.MixColumns.Pe2 ; open import Substrate.Algebra.F2.MixColumns.Pe3
-open import Substrate.Algebra.F2.MixColumns.Pb2 ; open import Substrate.Algebra.F2.MixColumns.Pb3
-open import Substrate.Algebra.F2.MixColumns.Pd2 ; open import Substrate.Algebra.F2.MixColumns.Pd3
-open import Substrate.Algebra.F2.MixColumns.P92 ; open import Substrate.Algebra.F2.MixColumns.P93
+open import Substrate.Algebra.F2.MixColumns.Mul02  -- pe2 pb2 pd2 p92 (= xtime of inv-coeffs)
+open import Substrate.Algebra.F2.MixColumns.Mul03  -- pe3 pb3 pd3 p93 (= xtime ⊕ id)
 open import Substrate.Algebra.F2.MixColumns.Collapse
 
 module G
