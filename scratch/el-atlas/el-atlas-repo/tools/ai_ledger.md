@@ -32,13 +32,17 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
   decision is a live function of state: f* rises as the link ramps gen1->gen4 (0.02->0.10), compute_BW
   falls as temp rises (30.4->12.2), the bottleneck identity shifts (PCIe -> iMC -> thermal). The static
   model is now a continual controller. (On-device actuator = AI-11b.)
+- **AI-11b** on-device actuator -> live_dispatcher_ondevice.py. A persistent GPU megakernel (ONE launch,
+  resident until host stop) steered by ZERO-COPY mapped-memory CPU stores -- host writes decisions, the
+  kernel reads them over PCIe (volatile + threadfence_system), no copy/stream/sync. Witnesses PASS:
+  persistent (one launch across 4 pushes), async-push, live-steer (work-bands {1,3,5,9} match pushed
+  knobs exactly). KEY FINDING (the right primitive): async DEVICE-buffer writes via a separate stream
+  do NOT reach a concurrently-resident kernel in cupy (stop never landed -> timeout); ZERO-COPY pinned/
+  mapped host memory (UVA pointer device-accessible) is the correct host->persistent-kernel channel.
+  Deploys AI-11 on the GPU = the jea on-device-dispatcher debt. Toy bucket-work stands in for real work
+  distribution (production fill-in); the MECHANISM is complete.
 
 ## OPEN (named)
-
-- **AI-11b — ON-DEVICE ACTUATOR.** The control loop (AI-11) runs host-side and EMITS decisions;
-  AI-11b wires them into the on-GPU dispatcher (persistent megakernel + device work queue / indirect
-  launches acting on the bottleneck + f* decisions). This is the standing jea "on-device dynamic
-  dispatcher" debt -- the deployment of the now-built control algorithm.
 
 - **AI-12 — CHASSIS-CAP BINDING TEST (small).** AI-4's "chassis BINDS" is over-claimed: it compared
   combined draw (59.7 W) to the nameplate cap sum (75 W), but neither side hit its own cap. Measure
@@ -48,7 +52,8 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
 
 ## Status
 
-AI-1..11 + 13 + bw_alloc + AI-4 closed (the kernel-perf nedge program is complete as a HOST-SIDE
-live controller). Open: AI-11b (on-device actuator -- deploy the control loop on the GPU; = the jea
-on-device-dispatcher debt), AI-12 (chassis-cap binding test, small). Nothing remaining is un-named.
-Pick up any open AI from this file.
+AI-1..11 + 11b + 13 + bw_alloc + AI-4 closed. The kernel-perf nedge program is COMPLETE end-to-end:
+discover -> structural conductance graph -> Kron settle -> views -> host control loop -> on-GPU
+persistent-megakernel actuator (zero-copy steered). Open: AI-12 (chassis-cap binding test, small) --
+the only remaining named AI. Production fill-in for AI-11b (real work distribution replacing the toy
+buckets) is deployment, not modeling. Pick up AI-12 from this file.
