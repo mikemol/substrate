@@ -27,7 +27,7 @@ F4 Control        SILO   (K IN-partial; oracle in jea_nedge_model/M2d) genuine k
 F5 Sharing        SILO   (jea_intern U7)                               not yet a knob in the engine
 F6 Representation PARTIAL (value IN; trace SILO jea_carrier_trace)     genuine knob (value/trace, f*)
 F7 Resource       SILO   (bucket U1; residency NOT asserted)           genuine knob (layout) + invariant
-F8 Cost           HAND-FED (pilot literals; structural in cost_cotype) must become structural (factor-sigs)
+F8 Cost           IN-structural (jea_cost.py: launch_count(S)·t_L + fixed; 2 machine constants, no per-cell ms)
 ```
 **INCIDENCES (face-meets; status = realized as its named construct in the ONE engine?):**
 ```
@@ -40,7 +40,7 @@ F1   predict-place    IN (jea_engine_apex: tier by bit-width)        fix#3   [C3
 F1∩F6 value<->trace   SILO   (jea_carrier_trace)                  -> C4/C-rep
 F1∩F7 bucket-pack     SILO   (U1)                          fix#6   -> C-resource
 F2∩F7 residency       ORPHAN (not asserted)               fix#5   -> C4/C5
-F4∩F8 oracle          SILO   (M2d) + cost not structural          -> C4
+F4∩F8 oracle          IN (jea_cost.py: argmin over structural cost; predicts winner by extrapolation) [C4]
 F4∩F2 K-adapt         PARTIAL (Kbuf/relax IN; refill SILO U9)     -> C4
 witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
 ```
@@ -48,8 +48,10 @@ witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
 1. **C3-apex** [DONE -> jea_engine_apex.py] — Growth x Carrier x Sharing closed: device hash-cons interns
    during spawn (E(120): 121 nodes vs 2.66e36, 2.2e34x collapse), predict-place tier by bit-width (sound,
    err=0), byte-limb delivers 2^150. fixes #1+#2+#3 closed as ONE vertex.
-2. **C4** — Control∩Cost: wire the oracle (telemetry->schedule morphism) + make the cost model STRUCTURAL
-   (factor-signatures, kill hand-fed ms); fold residency-assert (F2∩F7) + K-refill (F4∩F2).
+2. **C4** [CORE DONE -> jea_cost.py] — Control∩Cost: structural schedule cost (launch_count(S)·t_L + fixed,
+   2 machine constants, crossover S*=38 DERIVED) + oracle (argmin), validated by EXTRAPOLATION (calib deep,
+   predicts wide). F8->structural, F4∩F8 oracle IN. C4-REST (still open): residency-assert (F2∩F7),
+   K-refill (F4∩F2, launch_count = U9 refill makespan), point jea_consolidation_pilot at jea_cost.
 3. **C-rep / C-resource** — fold value<->trace (F1∩F6) and bucket-pack (F1∩F7) into the carrier as params.
 4. **C5** — the regression runner = the universal-property check: every prior witness AND every incidence
    cell above is realized via the ONE engine. Closure gate; only then is "unified" honest.
