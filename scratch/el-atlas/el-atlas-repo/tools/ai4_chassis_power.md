@@ -41,7 +41,10 @@ The chassis cap = the sustained combined draw the platform allows; if `Pkg + dGP
 
 ## Status
 
-AI-4 is **root-blocked on this hardware** (battery EC firmware-unpopulated for current/power; RAPL
-root-gated). Structurally it's the package/chassis shared-power NODE already added in AI-7b/7c (power
-contention + thermal gate); only the magnitude needs root. Not fabricated. Recipe above closes it the
-moment a root reading (or external wall meter) is available.
+AI-4 is **root-blocked on this hardware**. CONFIRMED: battery `power1_input` reads 0 EVEN AS ROOT
+(2026-06-14, root@cassian) -> not privilege, the EC genuinely produces no current/power (only voltage)
+-> present-but-firmware-unpopulated, immune to root. But RAPL energy_uj IS just privilege-gated and is
+root-readable, so the empirical close runs via RAPL: **`sudo python3 power_probe_root.py`** (measures
+CPU-package + psys via RAPL energy deltas under self-generated combined CPU+GPU load, + dGPU via
+nvidia-smi; reports whether the chassis envelope binds below PL0+dGPU). Structurally it's the
+package/chassis shared-power NODE already added in AI-7b/7c; only the magnitude needs the root run.
