@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
 FILES := AsField.agda AsLinearAlgebra.agda AsModule.agda Code.agda Cone-Hamming-7plus1.agda Cone-V4-3plus1.agda FanoPlane.agda FromBool.agda GF256.agda Linear.agda Polynomial.agda SymBilinForm.agda Transfer.agda Universal.agda V4-Nonzero.agda V4LagrangeInstance.agda Vector.agda Wedge.agda
-SUBDIRS := Code HodgeDim3 HodgeDim4 Linear MixColumns Polynomial SymBilinForm Vector
+SUBDIRS := Code GF256 HodgeDim3 HodgeDim4 Linear MixColumns Polynomial SymBilinForm Vector
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -41,6 +41,13 @@ files:
 subdirs: $(SUBDIRS)
 
 Code:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+GF256:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
@@ -98,6 +105,7 @@ Vector:
 
 clean:
 	@$(MAKE) -C Code clean 2>/dev/null || true
+	@$(MAKE) -C GF256 clean 2>/dev/null || true
 	@$(MAKE) -C HodgeDim3 clean 2>/dev/null || true
 	@$(MAKE) -C HodgeDim4 clean 2>/dev/null || true
 	@$(MAKE) -C Linear clean 2>/dev/null || true
