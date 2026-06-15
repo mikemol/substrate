@@ -39,6 +39,25 @@ sudo cat /sys/class/powercap/intel-rapl:1/energy_uj   # psys domain, delta over 
 The chassis cap = the sustained combined draw the platform allows; if `Pkg + dGPU` saturates below
 `PL0(45W) + dGPU(30W) = 75W`, the chassis envelope is binding (het-sum is then sub-additive in power).
 
+## Measured (root, venv python, performance EPP, combined CPU+GPU load)
+
+CPU package (incl iGPU) = **35.9 W** (RAPL, valid); dGPU = **23.8 W** (nvidia-smi); combined SoC proxy
+= **59.7 W**. psys = 0.3 W (BROKEN, ignored). This is the SoC PROXY (package+dGPU), NOT the true
+chassis aggregate (excludes display/RAM/VRM/peripherals). The "chassis binds" auto-conclusion is
+OVER-CLAIMED: neither side hit its own cap (CPU 35.9<45, dGPU 23.8<30), which could be the chassis
+throttling OR the workload not maxing them — distinguishing needs P_cpu_alone + P_gpu_alone vs combined.
+
+## psys broken = KNOWN/DOCUMENTED on Alder Lake consumer laptops (web research)
+
+The static psys counter is EXPECTED, not a fault. PSys (platform domain) needs OEM/BIOS platform
+wiring that consumer/gaming laptops omit; the domain still ENUMERATES (kernel exposes it for the CPU
+model) but the MSR is never populated -> energy_uj static, even as root. package-0/core/uncore work;
+psys doesn't. Confirms the present-but-firmware-unpopulated category with upstream sources:
+- Intel kernel PSys patch (Pandruvada): "not all systems will support PSys".
+- Vince Weaver RAPL page: PSys needs platform+BIOS support absent in many systems.
+- linux-pm "lose the psys counter"; Intel Community "rapl domain psys issues".
+True platform/wall power on such hardware needs an EXTERNAL meter (battery EC also dead here).
+
 ## Status
 
 AI-4 is **root-blocked on this hardware**. CONFIRMED: battery `power1_input` reads 0 EVEN AS ROOT
