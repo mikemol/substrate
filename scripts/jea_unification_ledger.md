@@ -33,14 +33,17 @@ F0 Evaluation     IN     (combine_window)                              genuine b
 F1 Carrier        PARTIAL (u64/u128 IN; byte-limb SILO jea_limb*)      genuine knob (predicted by magnitude)
 F2 Schedule       IN     (coop/strat IN; pool in jea_engine_pool)      genuine knob (coop/strat/pool, MEASURED)
 F3 Growth         SILO   (spawn in jea_engine_pool, not jea_engine)    genuine (fixed/spawn = one reduce-step)
-F4 Control        UNVALIDATED (relax_q's plant constants 421376/548/66304 are GUESSED, MIS-CITED "fitted to
-                  ablation" -- no fit code, circular 2-pt check; "device bit-identical to oracle" = consistent w/ a GUESS,
-                  not correct. See jea_provenance.md A3. DISCHARGE: real least-squares fit + output-side ground-truth.)
+F4 Control        VALIDATED-w/-residual (D1/D2 DISCHARGED as reframed, jea_live_cost.py: control reads the LIVE
+                  Kron g_eff -- the binding edge derived by edge-sensitivity over discover()'s graph, re-polled,
+                  NOT relax_q's GUESSED scalars and NOT decide()'s magic-constant ternary. The scalar fit stays
+                  FALSIFIED (correct state). RESIDUAL: cross-thermal extrapolation synthetic-only on idle host.)
 F5 Sharing        SILO   (jea_intern U7)                               not yet a knob in the engine
 F6 Representation PARTIAL (value IN; trace SILO jea_carrier_trace)     genuine knob (value/trace, f*)
 F7 Resource       SILO   (bucket U1; residency NOT asserted)           genuine knob (layout) + invariant
-F8 Cost           UNVALIDATED (jea_cost.py: FULL form launch·t_L + work·t_work, dominance-as-OUTPUT -- but an
-                  INPUT is GUESSED: P_coop=20 (real ~7000), so the oracle mispredicts deep. See G9 provenance measure.)
+F8 Cost           VALIDATED-w/-residual (jea_live_cost.py: total_time = L·t_launch + tau/gnorm; t_launch MEASURED
+                  (noop ~7us), tau MEASURED per schedule, gnorm = LIVE compute_bw ratio (the only per-window var).
+                  GUESSED P_coop=20 + FALSIFIED t_work RETIRED. Oracle matches measurement at live state. RESIDUAL:
+                  W3 live match is by-construction identity + labeled throttle projection; hot-state not validated.)
 ```
 **INCIDENCES (face-meets; status = realized as its named construct in the ONE engine?):**
 ```
@@ -53,8 +56,9 @@ F1   predict-place    IN (jea_engine_apex: tier by bit-width)        fix#3   [C3
 F1∩F6 value<->trace   SILO   (jea_carrier_trace)                  -> C4/C-rep
 F1∩F7 bucket-pack     SILO   (U1)                          fix#6   -> C-resource
 F2∩F7 residency       ORPHAN (not asserted)               fix#5   -> C4/C5
-F4∩F8 oracle          UNVALIDATED (jea_cost.py: argmin over the full cost, but mispredicts deep -- a GUESSED
-                  input P_coop; needs P measured/discovered. NOT IN until the oracle matches measurement with no guessed input.)
+F4∩F8 oracle          IN-w/-residual (jea_live_cost.py: argmin total_time over the live Kron-solve, NO guessed
+                  input -- matches measured coop/strat winner on deep+wide at the live state. coop/strat/pool = ONE
+                  series decomposition over shared live edges (the common structure). RESIDUAL: hot-state synthetic.)
 F4∩F2 K-adapt         PARTIAL (Kbuf/relax IN; refill SILO U9)     -> C4
 witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
 ```

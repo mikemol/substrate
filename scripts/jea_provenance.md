@@ -129,8 +129,11 @@ from the WAL (git log + ai_ledger.md, NOT the tool docstrings which are stale):
 read the WAL/git, not these): kernel_cost_model.py docstring ("structural x ephemeral O(1) SCALAR" -- the
 literal source of the category error); cost_cotype.py ("single `clock` cancels" -- falsified by two_clock_domains);
 residual_decompose.py ("cpufreq cancels in the residual" -- same-domain only); jea_perf_engine.py ("clock+jitter
-cancel in the ratios"); aspm_link.py ("state factor cancels"). SOUND: two_clock_domains, kron_reduction,
-kirchhoff_nedge, perf_graph_integrated, live_dispatcher, topology_breakers.
+cancel in the ratios"); aspm_link.py ("state factor cancels"); live_dispatcher.decide() ("re-solve... ONE Kron
+op" but the bottleneck is a hand-coded `if g<1 elif link<0.5` ternary with magic constants I=0.1/6e9/10906e9 --
+NOT a solve; use edge-sensitivity over the real graph instead, as jea_live_cost.py does). SOUND: two_clock_domains,
+kron_reduction, kirchhoff_nedge, perf_graph_integrated.compute_bw (a real g_eff), live_dispatcher.poll (read-only
+telemetry), topology_breakers.
 
 **REFRAMED D1/D2 (the corrected discharge):** the jea schedule/cost is NOT fitted scalars NOR struct x ephem
 scalars -- it is `(bottleneck_id, f*, g_eff) = Kron-solve( discover()-graph with LIVE edge-states )`,
@@ -140,3 +143,32 @@ the solve OUTPUT under current state; the binding edge shifts; min is READ OFF t
 imposed. D1 (plant constants) and D2 (P) dissolve into: wire the jea evaluator as a terminal/branch on the
 discovered graph and read the live Kron solve -- do not fit scalars. (governing-law-before-special-case;
 never-discard-residue: solve the network, don't collapse it.)
+
+## DISCHARGED -- D1/D2 wired to the live solve (jea_live_cost.py)
+
+D1/D2 are now closed AS REFRAMED (the scalar fit stays FALSIFIED, which is the correct state, not a gap):
+the jea schedule cost is `total_time(sched, tel) = L(sched)*t_launch + tau(sched) / gnorm(tel)`, where the
+ONLY per-window variable gnorm = compute_bw(operating, tel) / compute_bw(operating, ref) IS the live Kron
+g_eff ratio (perf_graph_integrated.compute_bw, re-polled via live_dispatcher.poll). coop/strat/pool are ONE
+series time-decomposition over the SAME live hardware edges, not three scalars -- the common structure.
+
+Provenance flips (jea_live_cost.py, PASS on this host):
+- t_work (A3/A4) FITTED+FALSIFIED  -> the work-RATE is the live compute_bw solve (re-polled). Thermal/
+  contention now live INSIDE gnorm (the solve), no longer folded into a fragile per-schedule scalar.
+- P_coop/P_full (A1/A2) GUESSED=20  -> per-schedule tau MEASURED on the real engine at the live state;
+  launch stage = L (structural launch-count) x t_launch (MEASURED noop = ~7-8 us). No hand-typed P.
+- bottleneck identity: derived by EDGE-SENSITIVITY over the live graph (disjoint single-edge relaxations),
+  NOT live_dispatcher.decide()'s magic-constant `if g<1 elif link<0.5` ternary (that ternary is itself a
+  stale-comment hidden-scalar -- ADD it to the distrust list above; decide() claims "ONE Kron op" but
+  hand-codes the bottleneck with I=0.1/6e9/10906e9).
+- W2 (anti-scalar witness): binding edge SHIFTS iMC/iGPU -> thermal across the 100C trip; HOST FINDING
+  (measured, not forced) -- PCIe/DMA is structurally DOMINATED here (iGPU shunt 12.8 > DMA shunt 7.76 GB/s),
+  so PCIe never binds on THIS box; identity is the solve's per-host output.
+
+STANDING RESIDUAL (honest handoff, NOT a silent PASS): cross-thermal-state extrapolation is structurally
+argued (work-terms scale by gnorm, launch term fixed) but not HOT-validated on this idle host -- W2's
+synthetic state sweep is the reactivity proof, exactly as live_dispatcher's own w3 is synthetic. W3's
+live-state match is a by-construction identity (tau := measured - L*t_launch at gnorm=1), honestly labeled;
+the validated content is the launch/work SPLIT + winner-read-off-solve, plus a labeled throttle PROJECTION
+(gnorm=0.4) showing the schedules respond differently (work inflates, launch fixed). D3 (component
+micro-ablation) and D4 (point jea_consolidation_pilot at the live solve) remain OPEN.
