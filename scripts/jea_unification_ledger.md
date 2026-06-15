@@ -222,8 +222,13 @@ C1  duplicated combine bodies  --carrier-typedef + mode/K runtime params, ONE CU
                                           [jea_engine.py: ONE _SRC compiled per carrier (-DCARRIER_U128); reproduces dag(u64 eager)
                                            canonical / dag_mode(eager,lazy, 84 non-canon) / dag128(u128 escalate); CARRIER WIDENS proven
                                            (81b DAG: carrier64 escalates, carrier128 exact); u128 240b all-mul escalates; jea_core,I1,dag128]
-C2  3 separate schedulers      --schedule as a STRATEGY over the C1 combine-->  one driver, schedule param
-                                          [cooperative / stratified / spawn each reproduce their script; C1, strat, universal_engine]
+C2  separate schedulers        --schedule as a STRATEGY over the C1 combine-->  one driver, schedule param  [DONE]
+                                          [jea_engine.py: combine_window = ONE device fn; sched_coop + sched_strat CALL it (no copied
+                                           combine); coop==strat on same DAG both carriers (schedule orthogonal to combine); reproduces
+                                           dag/dag_mode (coop) + strat (strat); C1, strat]
+                                          RE-SCOPE (DBE, honest): "spawn" is NOT a schedule over the Q-combine -- the spawn/rewrite engine
+                                          (jea_universal_engine, U6) is a DIFFERENT evaluation model (dynamic term-rewriting, not a fixed-DAG
+                                          Q-fold). Forcing it here would be artificial; it stays a distinct axis (the rewrite engine).
 C3  3 carrier scripts + 2 limb --carrier OPS as carrier behaviors (bucket / escalate / trace / byte-limb)-->  carrier param
                                           [engine@carrier reproduces U1 / U3 / U4 / U5; C1, U1, U3, U4, U5]
 C4  intern + oracle separate   --wire intern (pre-pass) + nedge oracle (live steer) as engine STAGES-->  one pipeline
@@ -232,9 +237,10 @@ C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER ove
                                           [every prior brick witness passes via the ONE engine = the G9 gate; C1-C4]
 ```
 
-**Status (consolidation):** 1 of 5 C-bricks done (C1: jea_engine.py, one parameterized combine, carrier
-typedef + mode/K, reproduces dag/dag128/dag_mode). **C2 unblocked next** (schedule as a strategy over the
-C1 combine). After C1-C5, "both apexes
+**Status (consolidation):** 2 of 5 C-bricks done. C1 (jea_engine.py: one parameterized combine, carrier
+typedef + mode/K). C2 (same file: combine_window = one device fn, sched_coop + sched_strat call it;
+coop==strat proves schedule orthogonal to combine; spawn re-scoped as a distinct axis, not a schedule).
+**C3 unblocked next** (carrier OPS -- bucket / escalate-tier / trace -- as carrier params). After C1-C5, "both apexes
 complete" becomes true as an ARTIFACT (one engine, the scripts its callers/tests), not just a proof.
 Trailing: U10 (re-ablate Z-128) -- cleaner once there's a single kernel to ablate. Caveats held: one
 parameterized kernel FAMILY (shared body, compiled per carrier), not literally one launch for all carriers
