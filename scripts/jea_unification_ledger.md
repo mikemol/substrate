@@ -31,10 +31,12 @@ F8 Cost           HAND-FED (pilot literals; structural in cost_cotype) must beco
 ```
 **INCIDENCES (face-meets; status = realized as its named construct in the ONE engine?):**
 ```
-F1∩F3 escalation      ORPHAN (engine flags, no deliver)   fix#1   -> C3-apex
-F3∩F5 interning       ORPHAN (no sharing in pool)         fix#2   -> C3-apex
-F1   predict-place    ORPHAN (engine detects, tiers predicts) fix#3 -> C3-apex
-   ^^ these THREE are ONE vertex: Growth x Carrier x Sharing (the missing apex)
+F1∩F3 escalation      IN (jea_engine_apex: deliver via byte-limb)   fix#1   [C3-apex DONE]
+F3∩F5 interning       IN (jea_engine_apex: device hash-cons during spawn) fix#2 [C3-apex DONE]
+F1   predict-place    IN (jea_engine_apex: tier by bit-width)        fix#3   [C3-apex DONE]
+   ^^ these THREE were ONE vertex: Growth x Carrier x Sharing -- CLOSED as one brick (jea_engine_apex.py):
+   E(120) interned to 121 nodes (vs 2.66e36 full tree = 2.2e34x collapse), root 2^120 exact, tiers predicted
+   (u64x64/u128x57, err=0 sound), 2^150 delivered via byte-limb. The missing apex is closed.
 F1∩F6 value<->trace   SILO   (jea_carrier_trace)                  -> C4/C-rep
 F1∩F7 bucket-pack     SILO   (U1)                          fix#6   -> C-resource
 F2∩F7 residency       ORPHAN (not asserted)               fix#5   -> C4/C5
@@ -43,8 +45,9 @@ F4∩F2 K-adapt         PARTIAL (Kbuf/relax IN; refill SILO U9)     -> C4
 witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
 ```
 **THE VECTOR (ordered closure trajectory toward the apex = the closed n-cell):**
-1. **C3-apex** — close Growth x Carrier x Sharing in the pool engine: predict-place spawn -> right carrier
-   tier, DELIVER byte-limb, INTERN spawned nodes. fixes #1+#2+#3 as ONE vertex (the curvature collapse).
+1. **C3-apex** [DONE -> jea_engine_apex.py] — Growth x Carrier x Sharing closed: device hash-cons interns
+   during spawn (E(120): 121 nodes vs 2.66e36, 2.2e34x collapse), predict-place tier by bit-width (sound,
+   err=0), byte-limb delivers 2^150. fixes #1+#2+#3 closed as ONE vertex.
 2. **C4** — Control∩Cost: wire the oracle (telemetry->schedule morphism) + make the cost model STRUCTURAL
    (factor-signatures, kill hand-fed ms); fold residency-assert (F2∩F7) + K-refill (F4∩F2).
 3. **C-rep / C-resource** — fold value<->trace (F1∩F6) and bucket-pack (F1∩F7) into the carrier as params.
