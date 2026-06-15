@@ -235,8 +235,14 @@ C2  separate schedulers        --schedule as a STRATEGY over the C1 combine-->  
                                           pair at the VALUE level (combine_window already carries it), = spawned children at the STRUCTURE level.
                                           Proven: one kernel runs BOTH the Q-fold (70785/8 exact) AND E(n)->2^n. The growable pool is the GENERAL
                                           scheduler; coop/strat (C2) are no-spawn special cases of it. [revises the C-arc -- see C3'/below]
-C3  3 carrier scripts + 2 limb --carrier OPS as carrier behaviors (bucket / escalate / trace / byte-limb)-->  carrier param
-                                          [engine@carrier reproduces U1 / U3 / U4 / U5; C1, U1, U3, U4, U5]
+C3  carrier ladder, separate   --escalate-tier as a SPAWN, PREDICTED (u64->u128->byte-limb)-->  carrier ladder folded  [PARTIAL]
+                                          [jea_engine_tiers.py: the result tier is PREDICTED from operand bit-widths (migration law) BEFORE
+                                           computing -- the combine is PLACED at the right tier, never compute-narrow-overflow-retry (I2:
+                                           predict don't detect; user caught my detect regression). 8-prime all-mul (240b root): predicted
+                                           tiers {12 u64,2 u128,1 byte-limb}, 3 spawns, prediction SOUND (>=actual, no overflow), root exact,
+                                           byte-limb DELIVERS via jea_limb GPU; same reduce->emit|spawn as E(n). Folds U3+I2]
+                                          DONE: escalate-tier-as-(predicted)-spawn. FOLLOW-ONS (carrier storage/repr params, orthogonal to the
+                                          reduce-step): U1 bucket-pack lanes; U4 trace-window lane; on-device byte-limb tier.
 C4  intern + oracle separate   --wire intern (pre-pass) + nedge oracle (live steer) as engine STAGES-->  one pipeline
                                           [reproduces U7 collapse + M2d/U9 steering; C2, U7, M2d, U9]
 C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER over the single engine-->  unification ENACTED
