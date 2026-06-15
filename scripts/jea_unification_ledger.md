@@ -41,11 +41,14 @@ RUNG: R(observable, transitions)
   combining with a separately-read state is a TOCTOU race (poll link@t1, measure eff@t2, decide@t3 — link
   trains/detrains across, so we compose DIFFERENT world-states). efficiency : (link_state,T,gov)→ratio, not a
   scalar; using eff@gen4 where eff@gen1 is required is a type error surfacing as a wrong number. [[feedback_reread_meters_toctou]]
-- **Δ-A4** [OPEN, corrects P] jea_edge_states.measure_edges returns BARE-SCALAR effs (a snapshot stale the
-  instant returned) + decide() blind-multiplies them by a separately-polled live_state. FIX: (1) re-read the
-  meter at point-of-use where possible (no cached scalar); (2) where prediction is needed, carry each reading
-  STATE-STAMPED (co-read eff + its link_state/T atomically) and re-read / reject-on-mismatch, never blind-multiply
-  a stale factor by a fresh live_state. P (6b6196a) has this latent race; Δ-A4 closes it before D4 consumes P.
+- **Δ-A4** [CLOSED host-side; AI-11b actuator remains] resolved by the CONTROLLER/ACTUATOR split (jea_telemetry.py),
+  not my factor-out patch: the on-GPU evaluator CANNOT call off-GPU, so the HOST listens for events (timer/thermal/
+  ASPM/GPU poll-trigger), re-reads ALL meters in ONE epoch, composes the decision (achieved = bound × live_state@now
+  × intrinsic_eff), and ATOMICALLY SWAPS the telemetry PACKAGE resident in GPU memory (double-buffer: write inactive,
+  flip pointer). GPU is a pure consumer of the active package. Closes Δ-F7 BY CONSTRUCTION (consumer only ever reads
+  a whole single-epoch package -- can't compose t1/t2/t3) and Δ-F6 (eff & state combined once, in-epoch). The fork I
+  posed (GPU re-measure vs cache scalar) was wrong -- the answer is host-reads-on-events + atomic package replace.
+  Remaining: the device-resident buffer + actuator acting on pkg.fstar/bottleneck = AI-11b (standing on-device debt).
 - **Δ-A2** [CLOSED; = the G9 escalation] witness-sanity CONTRACT built (scripts/witness_sanity.py): callable
   helpers same_scale (catches the Δ-A1 GB/s-vs-bytes/s unit bug), single_edge_gains (makes the Δ-F1 superset
   relaxation UNREPRESENTABLE -- disjoint by construction), not_calibration_identity (catches the Δ-F2 circular
