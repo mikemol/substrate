@@ -218,8 +218,10 @@ IFF the engine reproduces every prior brick's committed witness (so C5 is the pr
 **C-brick transitions (state -> morphism -> state  [preconditions = entailment]):**
 
 ```
-C1  duplicated combine bodies  --carrier-typedef + mode/K runtime params, ONE CUDA source-->  one parameterized combine
-                                          [reproduces dag(u64) / dag128(u128) / dag_mode(eager,lazy) bit-exact; jea_core, I1, dag128]
+C1  duplicated combine bodies  --carrier-typedef + mode/K runtime params, ONE CUDA source-->  one parameterized combine  [DONE]
+                                          [jea_engine.py: ONE _SRC compiled per carrier (-DCARRIER_U128); reproduces dag(u64 eager)
+                                           canonical / dag_mode(eager,lazy, 84 non-canon) / dag128(u128 escalate); CARRIER WIDENS proven
+                                           (81b DAG: carrier64 escalates, carrier128 exact); u128 240b all-mul escalates; jea_core,I1,dag128]
 C2  3 separate schedulers      --schedule as a STRATEGY over the C1 combine-->  one driver, schedule param
                                           [cooperative / stratified / spawn each reproduce their script; C1, strat, universal_engine]
 C3  3 carrier scripts + 2 limb --carrier OPS as carrier behaviors (bucket / escalate / trace / byte-limb)-->  carrier param
@@ -230,7 +232,9 @@ C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER ove
                                           [every prior brick witness passes via the ONE engine = the G9 gate; C1-C4]
 ```
 
-**Status (consolidation):** 0 of 5 C-bricks done; **C1 unblocked, start here**. After C1-C5, "both apexes
+**Status (consolidation):** 1 of 5 C-bricks done (C1: jea_engine.py, one parameterized combine, carrier
+typedef + mode/K, reproduces dag/dag128/dag_mode). **C2 unblocked next** (schedule as a strategy over the
+C1 combine). After C1-C5, "both apexes
 complete" becomes true as an ARTIFACT (one engine, the scripts its callers/tests), not just a proof.
 Trailing: U10 (re-ablate Z-128) -- cleaner once there's a single kernel to ablate. Caveats held: one
 parameterized kernel FAMILY (shared body, compiled per carrier), not literally one launch for all carriers
