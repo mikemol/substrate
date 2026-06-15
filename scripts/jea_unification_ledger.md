@@ -34,8 +34,18 @@ RUNG: R(observable, transitions)
   overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
 - **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
   H2D trains the link to gen4, so pcie_eff bakes in link training). So (bound × eff × live_state) is NOT three
-  independent factors — eff × idle-link_state double-counts. Use eff at the state it was measured, or live_state
-  with eff=1; not both. (Refines the structural-not-scalar (bound,state) pair: state and measured-eff overlap.)
+  independent factors — eff × idle-link_state double-counts. (Refines the structural-not-scalar (bound,state)
+  pair: state and measured-eff overlap.) **This is a SYMPTOM of Δ-F7** — my "fix" (pin link_state=1.0 for the
+  validation) treated the symptom by FORCING a world-state (the rigidification reflex), not the cause.
+- **Δ-F7** [finding, the cause] a live reading is DEPENDENTLY TYPED on its read-time state; caching it and
+  combining with a separately-read state is a TOCTOU race (poll link@t1, measure eff@t2, decide@t3 — link
+  trains/detrains across, so we compose DIFFERENT world-states). efficiency : (link_state,T,gov)→ratio, not a
+  scalar; using eff@gen4 where eff@gen1 is required is a type error surfacing as a wrong number. [[feedback_reread_meters_toctou]]
+- **Δ-A4** [OPEN, corrects P] jea_edge_states.measure_edges returns BARE-SCALAR effs (a snapshot stale the
+  instant returned) + decide() blind-multiplies them by a separately-polled live_state. FIX: (1) re-read the
+  meter at point-of-use where possible (no cached scalar); (2) where prediction is needed, carry each reading
+  STATE-STAMPED (co-read eff + its link_state/T atomically) and re-read / reject-on-mismatch, never blind-multiply
+  a stale factor by a fresh live_state. P (6b6196a) has this latent race; Δ-A4 closes it before D4 consumes P.
 - **Δ-A2** [CLOSED; = the G9 escalation] witness-sanity CONTRACT built (scripts/witness_sanity.py): callable
   helpers same_scale (catches the Δ-A1 GB/s-vs-bytes/s unit bug), single_edge_gains (makes the Δ-F1 superset
   relaxation UNREPRESENTABLE -- disjoint by construction), not_calibration_identity (catches the Δ-F2 circular

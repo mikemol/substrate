@@ -15,6 +15,14 @@ This is the ONE primitive under D3 (measure the efficiency), Δ-A3 (feed decide(
 D4 (feed the jea oracle / consolidation pilot the same achieved edges). coop/strat/CPU/GPU all draw on this
 shared edge set -- the common structure (find-the-common-structure-recursively), not per-oracle constants.
 
+WARNING (Δ-F7 / Δ-A4 -- latent TOCTOU, not yet fixed here): measure_edges() returns BARE-SCALAR efficiencies
+-- a snapshot that is STALE the instant it is returned. An efficiency is DEPENDENTLY TYPED on the state it was
+read in (a saturating H2D trains the link to gen4, so pcie_eff is eff@gen4). decide() then multiplies it by a
+SEPARATELY-polled live link_state -> composes two different world-states (TOCTOU). The W2 validation below
+sidesteps this by pinning link_state=1.0 (matching the trained-measurement state) -- that is a SYMPTOM-PATCH,
+not the fix. The real fix (Δ-A4): re-read the meter at point-of-use, or carry each reading STATE-STAMPED and
+re-read/reject on mismatch -- never blind-multiply a stale factor by a fresh live_state. See [[feedback_reread_meters_toctou]].
+
 HONEST VALIDATION SCOPE (do not overclaim): efficiency is measured here with a SATURATING micro-ablation
 (best-of-N full-size transfer/stream). It is the EDGE's intrinsic efficiency (protocol/pinning/single-stream
 overhead), separate from the live_state factor. Because decide_groundtruth measures achieved bandwidth with the
