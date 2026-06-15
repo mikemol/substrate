@@ -40,6 +40,16 @@ RUNG: R(observable, transitions)
 - **Δ-F8** [finding] coop/strat/pool are not distinct kinds -- they are corners of the (g,d) schedule surface; the
   launch-granularity g-axis steepness SCALES with S (slope ∝ (S-1)·c_launch/W), so small-S workloads sit on a flat
   region (no choice) and large-S have a real g*=1 minimum. A noise-floor tie was the signal the 1-path was wrong.
+- **Δ-F9** [finding, regroup -- jea_knob_surfaces.py] EVERY pilot axis is a Knob = (continuous θ, named corners,
+  cost surface c(θ,workload)); the discrete audit is the CORNER-VIEW. n-path is NOT binary discrete-vs-surface --
+  it is the CONVEXITY of c in θ: BANG-BANG (c linear -> optimum always a corner -> discrete view FAITHFUL: mode,
+  repr PROVEN) vs INTERIOR (c convex -> optimum BETWEEN corners -> discrete view UNDERSAMPLES: K/layout/schedule-g
+  FLAGGED). Interior axes may have HYBRID operating points beating every named preset = a missed OPTIMUM (≠ missed
+  consolidation). The engine = one point in the (e,m,K,b,g,d,tier) polytope (= the ledger's faces); solve navigates.
+  PROPAGATE rule: decomposing one axis to a surface should trigger the same on siblings, not wait for a tie.
+- **Δ-A6** [OPEN] ground the convex cost model per interior-candidate axis (U9 for K; occupancy(g) for schedule-g;
+  density-vs-overhead for layout) and locate the interior optimum -- the hybrid operating points the discrete audit
+  cannot see. NOT fabricated in jea_knob_surfaces (bang-bang proven; interior flagged honestly). Hunt the missed OPTIMA.
 - **Δ-F5** [finding] correcting ONE edge's efficiency while leaving another structural gives a WRONG f* — the
   overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
 - **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
