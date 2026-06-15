@@ -2,6 +2,65 @@ RUNG: R(observable, transitions)
 
 # JEA-on-GPU unification arc — WAL cotype (the single source of truth)
 
+## == REFINED TRAJECTORY — the polytope-cotype (sustainable, anti-shedding) ==
+
+**Retrospective (gated) — why we kept shedding parts:**
+- G0 PRECOMMIT: per-brick WAL + commit keeps everything; "unified" was near-done.
+- G2 DELTA: fixes got ORPHANED in silos; audits ran from memory and went stale (coop "deadlocks").
+- G3 ROOT CAUSE (systemic): the cotype was a LINEAR brick-LIST. A list cannot SEE an orphaned cell -- only an
+  enumerated incidence MATRIX (faces x meets) can. We tracked the trajectory's steps, not its OBJECT.
+- G6 SUSTAIN: per-brick WAL+DBE kept us context-stable across ~30 turns -- KEEP it; only upgrade the cotype's
+  SHAPE from list -> polytope (the object the silos are projections of).
+- G9 ESCALATE (the anti-shedding measure, correct-by-construction): make the cotype the POLYTOPE INCIDENCE
+  MATRIX (every face + every meet = a CELL with status); C5's runner = the CLOSURE GATE asserting every cell
+  is realized via the ONE engine. Then a fix is a cell-status update visible to the whole -> cannot orphan.
+  This is registry-as-Pi ([[feedback_registry_as_pi_not_markdown]]), not a prose list. The cone's universal
+  property mechanized = the unification's actual done-criterion.
+
+**FACES (status in the ONE engine):** IN=in unified engine | SILO=lives in a silo only | HAND-FED=non-structural
+```
+F0 Evaluation     IN     (combine_window)                              genuine base 0-cell
+F1 Carrier        PARTIAL (u64/u128 IN; byte-limb SILO jea_limb*)      genuine knob (predicted by magnitude)
+F2 Schedule       IN     (coop/strat IN; pool in jea_engine_pool)      genuine knob (coop/strat/pool, MEASURED)
+F3 Growth         SILO   (spawn in jea_engine_pool, not jea_engine)    genuine (fixed/spawn = one reduce-step)
+F4 Control        SILO   (K IN-partial; oracle in jea_nedge_model/M2d) genuine knob (K) + oracle morphism
+F5 Sharing        SILO   (jea_intern U7)                               not yet a knob in the engine
+F6 Representation PARTIAL (value IN; trace SILO jea_carrier_trace)     genuine knob (value/trace, f*)
+F7 Resource       SILO   (bucket U1; residency NOT asserted)           genuine knob (layout) + invariant
+F8 Cost           HAND-FED (pilot literals; structural in cost_cotype) must become structural (factor-sigs)
+```
+**INCIDENCES (face-meets; status = realized as its named construct in the ONE engine?):**
+```
+F1∩F3 escalation      ORPHAN (engine flags, no deliver)   fix#1   -> C3-apex
+F3∩F5 interning       ORPHAN (no sharing in pool)         fix#2   -> C3-apex
+F1   predict-place    ORPHAN (engine detects, tiers predicts) fix#3 -> C3-apex
+   ^^ these THREE are ONE vertex: Growth x Carrier x Sharing (the missing apex)
+F1∩F6 value<->trace   SILO   (jea_carrier_trace)                  -> C4/C-rep
+F1∩F7 bucket-pack     SILO   (U1)                          fix#6   -> C-resource
+F2∩F7 residency       ORPHAN (not asserted)               fix#5   -> C4/C5
+F4∩F8 oracle          SILO   (M2d) + cost not structural          -> C4
+F4∩F2 K-adapt         PARTIAL (Kbuf/relax IN; refill SILO U9)     -> C4
+witness three-state   ORPHAN (engine can mask escalation) fix#4   -> C5
+```
+**THE VECTOR (ordered closure trajectory toward the apex = the closed n-cell):**
+1. **C3-apex** — close Growth x Carrier x Sharing in the pool engine: predict-place spawn -> right carrier
+   tier, DELIVER byte-limb, INTERN spawned nodes. fixes #1+#2+#3 as ONE vertex (the curvature collapse).
+2. **C4** — Control∩Cost: wire the oracle (telemetry->schedule morphism) + make the cost model STRUCTURAL
+   (factor-signatures, kill hand-fed ms); fold residency-assert (F2∩F7) + K-refill (F4∩F2).
+3. **C-rep / C-resource** — fold value<->trace (F1∩F6) and bucket-pack (F1∩F7) into the carrier as params.
+4. **C5** — the regression runner = the universal-property check: every prior witness AND every incidence
+   cell above is realized via the ONE engine. Closure gate; only then is "unified" honest.
+
+**SUSTAIN (anti-shedding discipline, standing):**
+- The cotype IS this polytope matrix (faces + incidences as cells with status), NOT a brick list -- every
+  fix/build is a cell-status update; an orphan shows up as a SILO/ORPHAN cell that the matrix forces visible.
+- Ground every face/meet on CURRENT CODE + MEASUREMENT, never remembered history.
+- Cost models STRUCTURAL (self-revealing factor-signatures), never hand-fed numbers.
+- Each turn: read the matrix -> close ONE cell -> flip its status -> commit (WAL atomicity, now over cells).
+- "Unified" is FALSE until C5's gate shows every cell IN. Do not re-claim completion before the gate passes.
+
+
+
 Strictified ledger of the M2-runtime + unification arc. Every brick is an AI with an identifier, rendered
 as a TRANSITION (state -> morphism -> state) with its preconditions exposed in the witness column [..] --
 the witnesses ARE the DBE entailment (a brick is reachable only once its precondition bricks are done).
