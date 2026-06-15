@@ -149,3 +149,89 @@ module Over {A : Set}
   nth-ext : (u v : Poly n) → (∀ k → nth u k ≡ nth v k) → u ≡ v
   nth-ext []      []      _  = refl
   nth-ext (x ∷ u) (y ∷ v) eq = cong₂ _∷_ (eq zero) (nth-ext u v (λ k → eq (suc k)))
+
+  -- 4. Bilinear distributivity (nth-ext + nth-*P + the per-coordinate identity).
+  ·-distribʳ : (x y z : A) → (x + y) * z ≡ (x * z) + (y * z)
+  ·-distribʳ x y z = trans (*-comm (x + y) z)
+                     (trans (*-distribˡ z x y) (cong₂ _+_ (*-comm z x) (*-comm z y)))
+
+  rearrange : (w x y z : A) → (w + x) + (y + z) ≡ (w + y) + (x + z)
+  rearrange w x y z =
+    trans (+-assoc w x (y + z))
+    (trans (cong (w +_) (sym (+-assoc x y z)))
+    (trans (cong (λ t → w + (t + z)) (+-comm x y))
+    (trans (cong (w +_) (+-assoc y x z)) (sym (+-assoc w y (x + z))))))
+
+  convCoeff-distrib : (p q : Poly n) (r : Poly m) (k : ℕ)
+                    → convCoeff (p +P q) r k ≡ (convCoeff p r k) + (convCoeff q r k)
+  convCoeff-distrib []      []      r k       = sym (+-identityˡ 𝟘)
+  convCoeff-distrib (a ∷ p) (b ∷ q) r zero    = ·-distribʳ a b (nth r zero)
+  convCoeff-distrib (a ∷ p) (b ∷ q) r (suc k) =
+    trans (cong₂ _+_ (·-distribʳ a b (nth r (suc k))) (convCoeff-distrib p q r k))
+          (rearrange (a * nth r (suc k)) (b * nth r (suc k)) (convCoeff p r k) (convCoeff q r k))
+
+  *P-distribʳ : (p q : Poly n) (r : Poly m) → (p +P q) *P r ≡ (p *P r) +P (q *P r)
+  *P-distribʳ p q r = nth-ext _ _ (λ k →
+    trans (nth-*P (p +P q) r k)
+    (trans (convCoeff-distrib p q r k)
+    (trans (cong₂ _+_ (sym (nth-*P p r k)) (sym (nth-*P q r k)))
+           (sym (nth-+P (p *P r) (q *P r) k)))))
+
+  convCoeff-distribˡ : (r : Poly n) (p q : Poly m) (k : ℕ)
+                     → convCoeff r (p +P q) k ≡ (convCoeff r p k) + (convCoeff r q k)
+  convCoeff-distribˡ []      p q k       = sym (+-identityˡ 𝟘)
+  convCoeff-distribˡ (a ∷ r) p q zero    =
+    trans (cong (a *_) (nth-+P p q zero)) (*-distribˡ a (nth p zero) (nth q zero))
+  convCoeff-distribˡ (a ∷ r) p q (suc k) =
+    trans (cong₂ _+_ (trans (cong (a *_) (nth-+P p q (suc k)))
+                            (*-distribˡ a (nth p (suc k)) (nth q (suc k))))
+                     (convCoeff-distribˡ r p q k))
+          (rearrange (a * nth p (suc k)) (a * nth q (suc k)) (convCoeff r p k) (convCoeff r q k))
+
+  *P-distribˡ : (r : Poly n) (p q : Poly m) → r *P (p +P q) ≡ (r *P p) +P (r *P q)
+  *P-distribˡ r p q = nth-ext _ _ (λ k →
+    trans (nth-*P r (p +P q) k)
+    (trans (convCoeff-distribˡ r p q k)
+    (trans (cong₂ _+_ (sym (nth-*P r p k)) (sym (nth-*P r q k)))
+           (sym (nth-+P (r *P p) (r *P q) k)))))
+
+  -- 5. Scalar-linearity (preserves-·c in each argument) + subst-linearity.
+  swap-· : (a c x : A) → a * (c * x) ≡ c * (a * x)
+  swap-· a c x = trans (sym (*-assoc a c x)) (trans (cong (_* x) (*-comm a c)) (*-assoc c a x))
+
+  convCoeff-scalarˡ : (c : A) (p : Poly n) (q : Poly m) (k : ℕ)
+                    → convCoeff (c ·c p) q k ≡ c * convCoeff p q k
+  convCoeff-scalarˡ c []      q k       = sym (*-absorbʳ c)
+  convCoeff-scalarˡ c (a ∷ p) q zero    = *-assoc c a (nth q zero)
+  convCoeff-scalarˡ c (a ∷ p) q (suc k) =
+    trans (cong₂ _+_ (*-assoc c a (nth q (suc k))) (convCoeff-scalarˡ c p q k))
+          (sym (*-distribˡ c (a * nth q (suc k)) (convCoeff p q k)))
+
+  *P-scalarˡ : (c : A) (p : Poly n) (q : Poly m) → (c ·c p) *P q ≡ c ·c (p *P q)
+  *P-scalarˡ c p q = nth-ext _ _ (λ k →
+    trans (nth-*P (c ·c p) q k)
+    (trans (convCoeff-scalarˡ c p q k)
+    (trans (cong (c *_) (sym (nth-*P p q k))) (sym (nth-·c c (p *P q) k)))))
+
+  convCoeff-scalarʳ : (c : A) (p : Poly n) (q : Poly m) (k : ℕ)
+                    → convCoeff p (c ·c q) k ≡ c * convCoeff p q k
+  convCoeff-scalarʳ c []      q k       = sym (*-absorbʳ c)
+  convCoeff-scalarʳ c (a ∷ p) q zero    =
+    trans (cong (a *_) (nth-·c c q zero)) (swap-· a c (nth q zero))
+  convCoeff-scalarʳ c (a ∷ p) q (suc k) =
+    trans (cong₂ _+_ (trans (cong (a *_) (nth-·c c q (suc k))) (swap-· a c (nth q (suc k))))
+                     (convCoeff-scalarʳ c p q k))
+          (sym (*-distribˡ c (a * nth q (suc k)) (convCoeff p q k)))
+
+  *P-scalarʳ : (c : A) (p : Poly n) (q : Poly m) → p *P (c ·c q) ≡ c ·c (p *P q)
+  *P-scalarʳ c p q = nth-ext _ _ (λ k →
+    trans (nth-*P p (c ·c q) k)
+    (trans (convCoeff-scalarʳ c p q k)
+    (trans (cong (c *_) (sym (nth-*P p q k))) (sym (nth-·c c (p *P q) k)))))
+
+  subst-+P : ∀ {a b} (eq : a ≡ b) (u v : Poly a)
+           → subst Poly eq (u +P v) ≡ (subst Poly eq u) +P (subst Poly eq v)
+  subst-+P refl u v = refl
+  subst-·c : ∀ {a b} (eq : a ≡ b) (c : A) (v : Poly a)
+           → subst Poly eq (c ·c v) ≡ c ·c (subst Poly eq v)
+  subst-·c refl c v = refl
