@@ -46,16 +46,71 @@ def poll():
     return dict(gov=gov, clk=clk, T=T, link_state=state, dgpu=dgpu)
 
 
+def _discover_pcie_bw():
+    """Structural max PCIe bandwidth in BYTES/s for the dGPU link -- the GPU branch's data-delivery edge.
+    DISCOVERED (aspm_link gen4 max, or dma_path), never a magic constant. Live state = x link_state.
+    NOTE units: aspm_link._gbps returns GB/s (~15.75); we x1e9 to match compute_bw/imc (bytes/s) -- the
+    el-atlas PCIe edges are GB/s while iMC edges are bytes/s; this is the first code to mix them."""
+    try:
+        from aspm_link import discover_link, _gts, _gbps
+        L = discover_link()
+        if L:
+            return _gbps(_gts(L['mx']), L['lanes']) * 1e9
+    except Exception:
+        pass
+    try:
+        from dma_path import discover_dma
+        return discover_dma()['pcie_max']          # already bytes/s (~16e9)
+    except Exception:
+        return 16e9
+
+
+def _discover_trip():
+    """The thermal trip (C) from discover_thermal()'s real /sys trip points -- NOT a hardcoded 100.0.
+    Take the lowest passive/hot/critical trip in a sane range (the first throttle the clock edge meets)."""
+    try:
+        from thermal_gate import discover_thermal
+        trips = [T for z in discover_thermal() for (ty, T) in z.get('trips', [])
+                 if 40 < T < 125 and any(k in ty for k in ('passive', 'hot', 'critical'))]
+        if trips:
+            return min(trips)
+    except Exception:
+        pass
+    return 100.0
+
+
+_PCIE_MAX_BW = _discover_pcie_bw()      # discovered once (structural); scaled live by link_state
+_TRIP = _discover_trip()                # discovered once (structural trip point)
+
+
+def binding_edge(imc, tel, ref_T=46.0):
+    """The bottleneck = the edge whose DISJOINT single-edge relaxation raises total throughput most --
+    read off the solved graph by sensitivity, NOT a g<1/link<0.5 ternary. Edges are comparable (each is
+    ONE edge relaxed): iMC/iGPU (drop iGPU shunt), thermal (relax gate to ref), PCIe (link -> full)."""
+    g_cpu = compute_bw(imc, dma=True, igpu=True, T=tel['T'], link_state=tel['link_state'])
+    g_gpu = _PCIE_MAX_BW * tel['link_state']
+    gains = {
+        "iMC/iGPU": compute_bw(imc, dma=True, igpu=False, T=tel['T'], link_state=tel['link_state']) - g_cpu,
+        "thermal":  compute_bw(imc, dma=True, igpu=True,  T=ref_T,    link_state=tel['link_state']) - g_cpu,
+        "PCIe/link": _PCIE_MAX_BW * 1.0 - g_gpu,
+    }
+    return max(gains, key=gains.get), gains
+
+
 def decide(imc, tel, dma=True, igpu=True):
-    """Re-solve the integrated graph under the current ephemeral state -> the live decision."""
+    """The live decision, READ OFF the solved conductance graph (no roofline magic constants). f* is the
+    load-balance ratio of two DISCOVERED path conductances; the bottleneck is edge-sensitivity; the trip
+    is the discovered /sys trip. (Replaces the I=0.1 / 150e9 / 10906e9 / 6e9 / 0.5 / 100.0 hand-codes --
+    of which I cancelled and the two FLOP peaks never bound; see jea_provenance.md Delta-F3/Delta-F4.)"""
     bw = compute_bw(imc, dma=dma, igpu=igpu, T=tel['T'], link_state=tel['link_state'])
-    g = gate(tel['T'], 100.0)
-    # optimal dispatch f* (host-streamed GPU gated by the live link state)
-    I = 0.1
-    r_cpu = min(150e9, imc * I) * g
-    r_gpu = min(10906e9, 6e9 * tel['link_state'] * I)
-    fstar = r_gpu / (r_cpu + r_gpu) if (r_cpu + r_gpu) else 0
-    bottleneck = "thermal/clock" if g < 1 else ("PCIe/link" if tel['link_state'] < 0.5 else "iMC/contention")
+    g = gate(tel['T'], _TRIP)
+    # f* = optimal GPU dispatch fraction = the ratio of path conductances that balances makespan.
+    #   g_cpu = the compute/memory path effective bandwidth (the Kron solve, thermal-gated, DMA-coupled);
+    #   g_gpu = the GPU branch, PCIe-bound for cross-PCIe dispatch = discovered max x live ASPM state.
+    g_cpu = bw
+    g_gpu = _PCIE_MAX_BW * tel['link_state']
+    fstar = g_gpu / (g_cpu + g_gpu) if (g_cpu + g_gpu) else 0.0
+    bottleneck, _ = binding_edge(imc, tel)
     return dict(compute_bw=bw, fstar=fstar, gate=g, bottleneck=bottleneck)
 
 

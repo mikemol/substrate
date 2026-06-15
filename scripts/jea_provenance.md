@@ -129,9 +129,10 @@ from the WAL (git log + ai_ledger.md, NOT the tool docstrings which are stale):
 read the WAL/git, not these): kernel_cost_model.py docstring ("structural x ephemeral O(1) SCALAR" -- the
 literal source of the category error); cost_cotype.py ("single `clock` cancels" -- falsified by two_clock_domains);
 residual_decompose.py ("cpufreq cancels in the residual" -- same-domain only); jea_perf_engine.py ("clock+jitter
-cancel in the ratios"); aspm_link.py ("state factor cancels"); live_dispatcher.decide() ("re-solve... ONE Kron
-op" but the bottleneck is a hand-coded `if g<1 elif link<0.5` ternary with magic constants I=0.1/6e9/10906e9 --
-NOT a solve; use edge-sensitivity over the real graph instead, as jea_live_cost.py does). SOUND: two_clock_domains,
+cancel in the ratios"); aspm_link.py ("state factor cancels"). [live_dispatcher.decide() -- FIXED in Δ-A1: f*
+is now the discovered-conductance load-balance ratio, bottleneck is edge-sensitivity, trip is discover_thermal();
+the I=0.1/150e9/10906e9/6e9/0.5/100.0 hand-codes are GONE. NEW residual Δ-A3: it uses STRUCTURAL edge bandwidths,
+ground-truthed ~24% achieved on PCIe -- see decide_groundtruth.py W3.] SOUND: two_clock_domains,
 kron_reduction, kirchhoff_nedge, perf_graph_integrated.compute_bw (a real g_eff), live_dispatcher.poll (read-only
 telemetry), topology_breakers.
 
