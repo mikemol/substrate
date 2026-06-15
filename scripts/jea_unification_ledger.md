@@ -181,5 +181,57 @@ unification bricks remain. Only 2 DEBTS left (neither a unification): U9 (nedge-
 dynamics) + U10 (re-ablate the Z-128 tiling claim). If context flushes: this file + the two apex names
 reconstruct the whole arc. U9 DONE (jea_nedge_refill.py: distribution-aware control, validated exact vs the
 refill sim; max-depth model over-windows shallow-heavy by 1.15x). Only U10 left (re-ablate the Z-128 tiling
-claim, jea_roofline --ablate) -- a pure verification debt, not modeling or unification. The arc's structural
-goal is reached; U10 is optional cleanup.
+claim, jea_roofline --ablate) -- a pure verification debt, not modeling or unification.
+
+CORRECTION (user caught it): "both apexes complete" was an over-claim -- complete as PROOFS, NOT as a
+unified ARTIFACT. See the CONSOLIDATION ARC below: the unification is enacted only when ONE engine
+reproduces every brick witness. The U-bricks stand as proofs/regression-witnesses; the engine is unbuilt.
+
+## CONSOLIDATION ARC (C-bricks) -- enact the unification as ONE artifact
+
+RUNG: R(observable, transitions)
+
+**Retrospective (gated, on the silo-sprawl finding):**
+- G0 PRECOMMIT: I claimed "both apexes complete."
+- G1 FREEZE: ~dozen jea_* scripts; jea_core shares the CONTROL law but combine BODIES are duplicated
+  (dag_mode + strat_mode each bolted MODE on separately; 3 carrier scripts; engine/intern/oracle separate).
+- G2 DELTA: complete as PROOFS (every piece demonstrated + composes) but NOT as a unified ARTIFACT --
+  unification narrated, never enacted. U6 ("the universal engine") is itself just one more demo script.
+- G3 CAUSE: trigger = narrating "fused" on conceptual composition. Root (systemic): the per-brick WAL/DBE
+  discipline that kept the arc context-flush-stable REWARDS silos (one brick = one standalone artifact);
+  it optimizes verifiability -- the OPPOSITE of "fold into one kernel." Contributing: jea_core shared the
+  control law but not the combine bodies, so the shared spine looked more complete than it was.
+- G5 BLAMELESS: no gate required a unification CLAIM to produce the unified ARTIFACT.
+- G6 SUSTAIN: the scripts are correct + witness-bearing -- keep them AS the regression suite, not delete.
+- G7 COMMIT: build the consolidated engine; scripts reduce to thin callers + a regression runner.
+- G9 ESCALATE (correct-by-construction): C5's regression runner IS the binding gate -- the unification is
+  "done" only when ONE engine reproduces EVERY brick witness; a brick that won't fold FAILS the gate.
+  Claim-requires-artifact, mechanized (not a narrated "complete").
+
+**DBE costructure (the apex):** ONE parameterized engine on jea_core --
+`Engine(carrier, mode, schedule, layout, repr) -> evaluator`. The ~dozen scripts are ORBIT-ELEMENTS of
+this parameter space (RFS: extract the universal above >=3 instances; NOT a wrapper -- the axes are the
+generators). The Agda bridge (jea_agda_*) + ablation harness (jea_roofline) stay separate (not engine
+internals). Composition = each axis lifted to a parameter/step_fn; entailment = consolidation is correct
+IFF the engine reproduces every prior brick's committed witness (so C5 is the proof the fold is faithful).
+
+**C-brick transitions (state -> morphism -> state  [preconditions = entailment]):**
+
+```
+C1  duplicated combine bodies  --carrier-typedef + mode/K runtime params, ONE CUDA source-->  one parameterized combine
+                                          [reproduces dag(u64) / dag128(u128) / dag_mode(eager,lazy) bit-exact; jea_core, I1, dag128]
+C2  3 separate schedulers      --schedule as a STRATEGY over the C1 combine-->  one driver, schedule param
+                                          [cooperative / stratified / spawn each reproduce their script; C1, strat, universal_engine]
+C3  3 carrier scripts + 2 limb --carrier OPS as carrier behaviors (bucket / escalate / trace / byte-limb)-->  carrier param
+                                          [engine@carrier reproduces U1 / U3 / U4 / U5; C1, U1, U3, U4, U5]
+C4  intern + oracle separate   --wire intern (pre-pass) + nedge oracle (live steer) as engine STAGES-->  one pipeline
+                                          [reproduces U7 collapse + M2d/U9 steering; C2, U7, M2d, U9]
+C5  N demo scripts             --demos -> thin callers + a REGRESSION RUNNER over the single engine-->  unification ENACTED
+                                          [every prior brick witness passes via the ONE engine = the G9 gate; C1-C4]
+```
+
+**Status (consolidation):** 0 of 5 C-bricks done; **C1 unblocked, start here**. After C1-C5, "both apexes
+complete" becomes true as an ARTIFACT (one engine, the scripts its callers/tests), not just a proof.
+Trailing: U10 (re-ablate Z-128) -- cleaner once there's a single kernel to ablate. Caveats held: one
+parameterized kernel FAMILY (shared body, compiled per carrier), not literally one launch for all carriers
+(the residency cliff); find the real seams while building.
