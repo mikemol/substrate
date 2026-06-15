@@ -44,11 +44,12 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
 
 ## OPEN (named)
 
-- **AI-12 — CHASSIS-CAP BINDING TEST. [TEST BUILT -> chassis_cap_test.py; root+venv run pending]**
-  Measures P_cpu_alone / P_gpu_alone / P_combined (RAPL package + nvidia-smi dGPU) in 3 phases; if a
-  side's power drops under combined -> chassis binds (het-sum sub-additive in power); else AI-4's
-  "binds" was over-claimed. Run: powerprofilesctl set performance; sudo .venv/bin/python
-  chassis_cap_test.py; set power-saver. Closes empirically on the numbers. ORIGINAL spec below:
+- **AI-12 — CHASSIS-CAP BINDING TEST. [CLOSED -> chassis_cap_test.py]** Measured CPU-alone 48.3W ->
+  combined 51.7W (x1.07); dGPU-alone 25.9W -> combined 30.3W (x1.17, at its 30W cap); alone-sum 74.1W
+  vs combined 82.0W (111%). Both sides ran AT/ABOVE their alone draw under combined -> chassis does NOT
+  bind at this load -> het-sum is ADDITIVE in power (not sub-additive). AI-4's "BINDS" RETRACTED
+  (over-claimed; it compared to nameplate caps not alone-draws). The AI-7 chassis-coupling node exists
+  structurally but does not bind at measured loads. Original spec retained below.
 - **AI-12 — CHASSIS-CAP BINDING TEST (small).** AI-4's "chassis BINDS" is over-claimed: it compared
   combined draw (59.7 W) to the nameplate cap sum (75 W), but neither side hit its own cap. Measure
   P_cpu_alone + P_gpu_alone (RAPL + nvidia-smi, root, performance governor) vs P_combined: if
@@ -57,8 +58,8 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
 
 ## Status
 
-AI-1..11 + 11b + 13 + bw_alloc + AI-4 closed. The kernel-perf nedge program is COMPLETE end-to-end:
-discover -> structural conductance graph -> Kron settle -> views -> host control loop -> on-GPU
-persistent-megakernel actuator (zero-copy steered). Open: AI-12 (chassis-cap binding test, small) --
-the only remaining named AI. Production fill-in for AI-11b (real work distribution replacing the toy
-buckets) is deployment, not modeling. Pick up AI-12 from this file.
+ALL AIs CLOSED: AI-1..12 + 11b + 13 + bw_alloc + AI-4. The kernel-perf nedge program is COMPLETE
+end-to-end and ground-truthed: discover -> structural conductance graph -> Kron settle -> views ->
+host control loop -> on-GPU persistent-megakernel actuator (zero-copy steered); chassis-cap measured
+non-binding (het-sum additive in power at load). No open named AIs. Production fill-ins (AI-11b real
+work distribution; external wall meter for true platform power) are deployment, not modeling.
