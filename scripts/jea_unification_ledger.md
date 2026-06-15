@@ -52,13 +52,14 @@ I3   flat-u64 (no map)  --bucket-by-MSB(pow-2 ladder) + migration-law-->  bucket
 U1   flat-u64 lanes     --pack-lanes-by-bucket(native dtype, working=2w) + migrate-->  data-driven mixed-width carrier
                                           [100k exact; 2.46x smaller; mig sound 0-undersized; 29 escalate>64->byte-limb; I3]
                                           (jea_carrier_bucketed.py; combine the CARRIER -- persistent-pool wiring = follow-on)
+U2   MODE in dag_mode   --port-MODE(into strat: stratified high-throughput path)-->  MODE in strat
+                                          [both exact; lazy 349 vs eager 77 M/s (4.5x); lazy 1-pass/stratum non-canon; I1]
+                                          (jea_generator_strat_mode.py; jea_generator_bucket variant = follow-on)
 ```
 
 ### OPEN -> APEX-2 (the bucketed-lattice carrier)
 
 ```
-U2   MODE in dag_mode    --port-MODE(into strat/bucket)-->  MODE in the high-throughput stratified paths
-                                          [I1; jea_generator_strat, jea_generator_bucket]
 U3   host-orch escalate  --route-escalate-on-device(u64->u128->byte-limb)-->  in-kernel carrier migration
                                           [M2c (flag); U1 (bucket migrate); jea_limb_gpu (byte-limb carrier)]
 U4   value-window only   --add-trace-window-lane(CF-shape, compare-by-prefix)-->  value<->trace dual realized
@@ -87,11 +88,11 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 8 DONE + 9 OPEN (7 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
-strictified: 7 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U2,U3,U4,U5 — U1 DONE);
+**Count:** 9 DONE + 8 OPEN (6 unification toward 2 apexes + 2 debts). The "how many un-unified" answer,
+strictified: 6 unification bricks, converging on APEX-1 (U6,U7,U8) and APEX-2 (U3,U4,U5 — U1,U2 DONE);
 2 debts. Denominator is OPEN (orbit not saturated — new instances surface as bricks land; that is the
-symmetry-discovery mechanism, not a failure). U1 spawned a follow-on (persistent-pool wiring + sub-byte
-SWAR floor) -- the orbit thickening forward, as expected.
+symmetry-discovery mechanism, not a failure). Follow-ons logged (not blocking): U1 persistent-pool wiring
++ sub-byte SWAR floor; U2 jea_generator_bucket variant -- the orbit thickening forward, as expected.
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -142,10 +143,10 @@ SWAR floor) -- the orbit thickening forward, as expected.
 
 ## Status / abort-residue
 
-8 DONE (frozen). 9 OPEN, each a named transition with its preconditions = pick up any whose precondition
-bricks are DONE (U2,U3,U4,U5,U6,U9,U10 unblocked now — U3 unblocked by U1; U7 needs U6; U8 needs U7). If
-context flushes: this file + the two apex names reconstruct the whole arc. U1 DONE (jea_carrier_bucketed.py:
-the data-driven mixed-width carrier, 2.46x smaller, exact, migration sound, escalate at u64). Next natural
-brick = U3 (route escalation on-device u64->u128->byte-limb, now that U1 gives in-carrier bucket migration)
-or U2 (MODE into the high-throughput stratified paths). U1 follow-on (persistent-pool storage + sub-byte
-SWAR floor) is logged as the thickening orbit, not blocking.
+9 DONE (frozen). 8 OPEN, each a named transition with its preconditions = pick up any whose precondition
+bricks are DONE (U3,U4,U5,U6,U9,U10 unblocked now; U7 needs U6; U8 needs U7). If context flushes: this
+file + the two apex names reconstruct the whole arc. U1 DONE (jea_carrier_bucketed.py: data-driven
+mixed-width carrier, 2.46x smaller, exact). U2 DONE (jea_generator_strat_mode.py: MODE in the stratified
+high-throughput path, lazy 349 vs eager 77 M/s = 4.5x, both exact). Next natural brick = U3 (route
+escalation on-device u64->u128->byte-limb, unblocked by U1's in-carrier bucket migration) or U4 (the
+trace-window CF-shape lane = the value<->trace dual). Follow-ons logged, not blocking.
