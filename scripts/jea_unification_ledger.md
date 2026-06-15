@@ -87,13 +87,15 @@ U6   spawn-seq || sched-sep --fuse(spawn(+)scheduler(+)rewrite, shared GROWING p
                                            jea_ackermann_spec (spawn) + jea_generator_strat (scheduler)]
                                           (jea_universal_engine.py; Ackermann rule set = follow-on; the 3131x is the
                                            NO-SHARING cost -> U7 interning collapses it to linear)
+U7   host intern only    --device-side-intern(parallel hash-cons, GPU sort+unique)-->  irregular-trace sharing
+                                          [E(18): 524287 nodes -> 19 distinct (27594x collapse); semantics preserved;
+                                           distinct == structural min n+1 (maximal sharing, no false merges); TREE->SPPF bridge; U6]
+                                          (jea_intern.py; intern-DURING-spawn (U6+U7 fused, never build the blowup) = follow-on)
 ```
 
 ### OPEN -> APEX-1 (the universal engine)
 
 ```
-U7   host intern only     --device-side-intern(parallel dedup)-->  irregular-trace sharing
-                                          [U6; SPPF/Register intern (host side exists)]
 U8   self-contained Emit  --wire-real-substrate-SPPF(+ sharing)-->  real Agda terms on GPU
                                           [jea_agda_bridge (closed); U7 (intern/sharing)]
 ```
@@ -107,12 +109,12 @@ U10  Z-128 tiling unverified   --re-ablate(jea_roofline harness)-->  claim verif
                                           [jea_roofline --ablate]
 ```
 
-**Count:** 13 DONE + 4 OPEN (2 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5); **APEX-1 keystone DONE**
-(U6). The "how many un-unified" answer, strictified: 2 unification bricks left, both APEX-1 (U7 device
-interning [now unblocked], U8 real substrate SPPF [needs U7]); + 2 debts (U9 nedge-model refill, U10
-re-ablate Z-128 tiling). Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1
-persistent-pool + sub-byte SWAR; U2 jea_generator_bucket variant; U3 spawn-on-flag; U4 Gosper CF
-arithmetic; U5 sub-quadratic division; U6 Ackermann rule set in the engine.
+**Count:** 14 DONE + 3 OPEN (1 unification + 2 debts). **APEX-2 COMPLETE** (U1-U5); **APEX-1 nearly complete**
+(U6 keystone + U7 interning DONE). The "how many un-unified" answer, strictified: 1 unification brick left
+(U8 real substrate SPPF, now unblocked) + 2 debts (U9 nedge-model refill, U10 re-ablate Z-128 tiling).
+Denominator is OPEN (orbit not saturated). Follow-ons logged (not blocking): U1 persistent-pool + sub-byte
+SWAR; U2 jea_generator_bucket variant; U3 spawn-on-flag; U4 Gosper CF arithmetic; U5 sub-quadratic
+division; U6 Ackermann rule set; U7 intern-during-spawn (U6+U7 fused).
 
 ## Retrospective ritual (gated — on the M2a -> bucketing arc)
 
@@ -163,10 +165,10 @@ arithmetic; U5 sub-quadratic division; U6 Ackermann rule set in the engine.
 
 ## Status / abort-residue
 
-13 DONE (frozen). 4 OPEN. **APEX-2 COMPLETE** (U1-U5). **APEX-1 keystone DONE** (U6: spawn⊕scheduler⊕rewrite
-fused, one kernel, dynamic pool grew 3131x at runtime, deadlock-free, E(n)=2^n exact). Remaining: APEX-1
-U7 (device interning, now unblocked) + U8 (real substrate SPPF, needs U7) + debts (U9, U10). If context
-flushes: this file + the two apex names reconstruct the whole arc. Next natural brick = U7 -- device-side
-interning / parallel dedup; its motivation is concrete and measured: U6's no-sharing full-binary expansion
-cost 3131x node growth (400864 nodes for E(n)=2^n); interning collapses shared subterms (E(n-1) appears
-twice -> one node) to near-linear. U7 then unblocks U8 (the real substrate SPPF through the Agda bridge).
+14 DONE (frozen). 3 OPEN. **APEX-2 COMPLETE** (U1-U5). **APEX-1 nearly complete**: U6 (spawn⊕scheduler⊕rewrite
+fused) + U7 (device interning: E(18) 524287->19 nodes, 27594x collapse, TREE->SPPF) DONE. Remaining: APEX-1
+U8 (real substrate SPPF through the Agda bridge, now unblocked) + debts (U9 nedge-model refill, U10
+re-ablate Z-128 tiling). If context flushes: this file + the two apex names reconstruct the whole arc.
+Next natural brick = U8 -- drive a REAL substrate-emitted SPPF (already shared, via jea_agda_bridge) through
+the engine; closing it makes BOTH apexes complete and leaves only the two debts. After U8, the arc's
+unification work is done.
