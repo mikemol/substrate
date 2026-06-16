@@ -21,11 +21,30 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jea_sppf as SPPF
-from jea_apex_deliver import run_apex_u128, deliver_subtree
+# NB run_apex_u128 / deliver_subtree are imported LAZILY inside evaluate() so this module's memo/WAL machinery is
+# dependency-light -- jea_apex (which jea_apex_deliver imports) can record decisions here without a circular import.
 
 _SIG = {}     # structural key -> persistent global signature id (hash-cons ACROSS evaluations)
 _MEMO = {}    # signature id    -> reduced Fraction value (the cached, CF-canonical sub-term result)
 _VAL = {}     # reduced value   -> signature id (value-key: value-equal structurally-distinct terms share)
+
+# --- the SUPERVISOR DECISION WAL, held HERE (same module as the eval memo) as ONE trace structure (Δ-Σ-trace c) ---
+# A decision is (evidence -> operating-point). The WAL is the ordered EEA trace of decisions; _DMEMO is its
+# interned form (recurring evidence = ONE node, like the SPPF interns recurring subterms). The supervisor's dout
+# (Δ-Σ-decide) is FOLDED here: the control history becomes a durable, interned trace, not an ephemeral flat array.
+_DMEMO = {}   # evidence key -> operating-point (the interned distinct decisions = SPPF of the control loop)
+_WAL   = []   # ordered (evidence-key, op, was_hit) -- the never-discard residue of the control loop
+
+def record_decision(evkey, op):
+    """Fold one supervisor decision into the WAL/memo. Returns (was_hit, canonical_op). Recurring evidence HITS
+    the memo -> the cached decision is reused (the supervisor need not re-derive), and the trace interns it."""
+    hit = evkey in _DMEMO
+    if not hit: _DMEMO[evkey] = op
+    _WAL.append((evkey, op, hit))
+    return hit, _DMEMO[evkey]
+
+def wal_len(): return len(_WAL)
+def distinct_decisions(): return len(_DMEMO)
 
 
 def _signatures(g):
@@ -41,6 +60,7 @@ def _signatures(g):
 def evaluate(g):
     """Memoized GPU eval: intern -> PRUNE sub-terms whose sig is cached -> drain only the new ones -> record.
     Returns (value, combines_drained, combines_pruned). The persistent memo is consumed by the pruning."""
+    from jea_apex_deliver import run_apex_u128, deliver_subtree  # lazy: keeps the WAL machinery dependency-light
     g,_ = SPPF.intern(g)                                        # structural SPPF (within-eval sharing)
     sig = _signatures(g); N=g["N"]
     op=list(g["op"]); vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]

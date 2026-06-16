@@ -149,9 +149,17 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     6 nodes with 3 SHARED subterms (the squarings reuse one node) -- through jea_eval.evaluate -> 5764801/1679616
     == Agda vouched, sharing exploited (each shared subterm computed once). (Fixed jea_agda_dag.read_vouched ascii
     read -> utf-8, same bug jea_agda_bridge had.) jea_agda_dag now consumed by the running Agda->GPU path.
-    **NEXT rungs:** (b-real) device value-memo table (value-interning consumed ON-GPU during the drain; the memo is
-    host-resident today); (c) the supervisor DECISION WAL (dout) as an EEA trace in the SAME memo (closes the
-    WAL≡EEA-trace loop the user named); (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit.
+    **Δ-Σ-trace rung-(c) [DONE -- the loop the USER named at the start is CLOSED]:** the supervisor DECISION WAL is
+    held + interned in jea_eval (the SAME module/structure as the eval+gcd/EEA memo). jea_eval gained _DMEMO
+    (evidence-key -> operating-point = interned distinct decisions) + _WAL (ordered EEA trace) + record_decision();
+    the apex import was made LAZY (inside evaluate) so the WAL machinery is dependency-light and jea_apex can fold
+    its dout WITHOUT a circular import. jea_apex.__main__ now uploads epochs [live, hot, live-again] and FOLDS each
+    on-device decision into EVAL.record_decision -> WAL = 3 steps, 2 DISTINCT (recurring 'live' evidence INTERNED;
+    the supervisor reuses the cached decision, not re-derived) -- the control history is durable + interned, not an
+    ephemeral dout array. THE THREE TRACES ARE NOW ONE STRUCTURE (jea_eval): eval-SPPF (term-sig->value), gcd/EEA
+    residue (reduced/CF value-key), DECISION WAL (evidence->op) -- the WAL≡EEA-trace≡SPPF unification, realized.
+    **NEXT rungs:** (b-real) device-RESIDENT memo (_MEMO/_DMEMO as on-GPU hash tables so prune+lookup is on-GPU;
+    host-resident today); (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

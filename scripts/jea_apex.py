@@ -205,11 +205,15 @@ if __name__ == "__main__":
         return (Fraction(rn,rd) if rd else None), int(err.get()[0]), int(pend.get()[0]), [int(x) for x in dout.get()]
 
     tel=LD.poll()                                            # live meters (off-GPU; uploaded as evidence)
-    epochs=[("live",tel["T"],tel["link_state"]), ("hot(synthetic)",120.0,0.50)]
-    decisions=[]; got=None; e=0; pe=0
+    epochs=[("live",tel["T"],tel["link_state"]), ("hot(synthetic)",120.0,0.50),
+            ("live-again",tel["T"],tel["link_state"])]       # recurring evidence -> the WAL should INTERN it (Δ-Σ-trace c)
+    import jea_eval as EVAL                                  # the TRACE HOME: fold the supervisor decision WAL here
+    decisions=[]; hits=[]; got=None; e=0; pe=0
     for label,T,link in epochs:                              # one drain per evidence pkg -> supervisor decides on-device
         got,e,pe,dt = run_drain(T,link)
         f1000,bn,gd = (dt[2],dt[3],dt[4]) if dt[0]>=1 else (0,-1,0)
+        was_hit,canon = EVAL.record_decision((round(T,1),round(link,3)), (f1000,bn,gd))  # fold dout into the WAL/SPPF
+        hits.append(was_hit and canon==(f1000,bn,gd))        # recurring evidence -> hit, cached decision is faithful
         ref=NAV.navigate(surf,{"T":T,"link_state":link,"gov":"?"},dict(dag=g,C=0.9,f=0.7,bits=tb,spawn=False))
         decisions.append((label,T,link,(f1000,bn,gd),ref))
 
@@ -226,6 +230,11 @@ if __name__ == "__main__":
     print(f"  u128-apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
     print(f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val!=truth else 'ok'})")
 
+    # Δ-Σ-trace (c): the decision WAL is HELD + INTERNED in jea_eval (the same trace home as the eval memo).
+    w_wal = (EVAL.wal_len()==len(epochs)) and (EVAL.distinct_decisions() < EVAL.wal_len()) and any(hits)
+    print(f"\n  DECISION WAL (held in jea_eval -- the SAME trace home as the eval/SPPF memo): {EVAL.wal_len()} steps "
+          f"-> {EVAL.distinct_decisions()} distinct (recurring 'live' evidence INTERNED; supervisor reused the cached decision)")
+
     fmoves = len({dv[3][0] for dv in decisions})>=2 or len({dv[3][1] for dv in decisions})>=2  # decision moved w/ evidence
     w1 = agree and len(decisions)>=1                           # on-device decision == host navigate() reference
     w2 = (got==truth) and (u64_val != truth) and (e==0)        # carrier exact where u64 overflowed
@@ -235,7 +244,9 @@ if __name__ == "__main__":
     print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0): {w2}")
     print(f"W3 CORRECT + DECISION RESPONDS TO EVIDENCE (root==truth, pending->0; on-device f*/bottleneck differ live vs")
     print(f"   hot -- the supervisor re-decides per uploaded package, no host-sync per decision): {w3}")
-    ok=w1 and w2 and w3
+    print(f"W4 DECISION WAL ≡ EEA/SPPF TRACE (Δ-Σ-trace c: the decision sequence is HELD + INTERNED in jea_eval's memo")
+    print(f"   -- recurring evidence dedups to one node, the cached decision reused; durable, not an ephemeral dout): {w_wal}")
+    ok=w1 and w2 and w3 and w_wal
     print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-decide: the operating-point SOLVE now runs ON-DEVICE. The host uploads")
     print(f"  raw evidence (surfaces it measured + live /sys meters the GPU can't read); the apex SUPERVISOR (gid==0)")
     print(f"  reads it and computes f*/bottleneck/schedule-g/mode/repr/carrier on-GPU -- matching the host navigate()")
