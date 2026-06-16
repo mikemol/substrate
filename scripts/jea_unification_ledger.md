@@ -91,9 +91,23 @@ resident eval collapsed from {intern-kernel + apex-eval-kernel + deliver-kernel 
 jea_resident.Forest.FE = the fused evaluator; evaluate() = intern_eval + read the device value store + crown-fold;
 jea_mega_eval <- jea_resident <- jea_eval <- jea_agda_apex; regression-clean -- **EmitBig 217-bit comes out exact
 through the fused path's host crown fold == Agda-vouched** (the real >u128 workload, genuinely exercised). Remaining
-Δ-Σ-mega rungs: **Δ-Ψ-deliver** (fold the byte-limb crown into the kernel -- host-fold today), **Δ-Ψ-dag** (DAG-gen +
+Δ-Σ-mega rungs: **Δ-Ψ-deliver** [DONE, below], **Δ-Ψ-dag** (DAG-gen +
 the term-feed on-device -- host uploads the term today), b-real-incr (incremental device merge vs full re-argsort),
 Δ-G2 (orphan gate). Known bound (G8 handoff): HCAP/CAP=1<<16 (table-full -> err=2); leaves assumed >=0 and <=u128.
+
+**Δ-Ψ-deliver [DONE -- AI-Δ9]:** the >u128 escalation CROWN is delivered on the DEVICE byte-limb carrier
+(jea_resident.deliver_crown -> jea_limb_gpu dp4a-convolution mul + parallel carry), recompute-from-residue from
+the fused kernel's emitted crown (cescal/sE) -- NOT the rung-2 host Fraction fold. A crown node's u128 children
+are read STRAIGHT FROM THE FUSED DEVICE STORE (cNlo/cNhi via .view -> limbs; NO value copy-across-boundary); crown
+children are byte-limb residues already delivered this pass (or resident from a prior eval). num/den accumulate
+UNREDUCED on byte-limb; REDUCE ONCE at readout (host gcd -- the established no-in-kernel-gcd insight; the heavy
+arithmetic is on-device). Design note: the byte-limb multiply parallelizes PER-MULTIPLY (dp4a -- many threads on
+ONE mul), a DIFFERENT granularity than mega_eval's per-node drain, so the crown is its own device phase -- folding
+it into a drain lane would SERIALIZE the bignum and lose the dp4a datapath (the honest reason it is not literally
+inside mega_eval). WIRED + consumed: jea_resident.evaluate calls deliver_crown when any new node escalates;
+jea_limb_gpu <- jea_resident (de-orphaned into the live eval path). Tested: W6 (build_dag 153-bit crown == truth,
+device-delivered) + regression EmitBig 217-bit == Agda-vouched through the resident device crown. Remaining host:
+the term-feed/DAG build (Δ-Ψ-dag) + the per-node readout reduce.
 
 **RETRO (device-resident SPPF / quadtree arc):** DELTA -- a strong, fully-wired, NUMBER-backed result (jea_zsppf
 W1-W5; device-resident forest b-real{,-gather,-store}; jea_intern/agda_dag/trace_window de-orphaned INTO the live

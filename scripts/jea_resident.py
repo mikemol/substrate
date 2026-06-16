@@ -88,13 +88,47 @@ def _ccode(op, l, r):                                                    # struc
     return (int(morton2(np.array([l]), np.array([r]))[0]) << 2) | (int(op) & 3)   # op high -> mixed-op sets split; keep it low
 
 
+_U128 = 1<<128
+def _trim(arr):                                                          # trailing-zero-trim little-endian uint8 limbs (>=1)
+    nz=cp.nonzero(arr)[0]
+    return arr[:1] if nz.size==0 else arr[:int(nz[-1])+1]
+
+
+def deliver_crown(F, prev, distinct, sE):
+    """Δ-Ψ-deliver: compute the >u128 escalation CROWN on the DEVICE byte-limb carrier (jea_limb_gpu: dp4a-convolution
+    multiply + parallel carry), recompute-from-residue from the fused kernel's emitted crown (cescal/sE) -- NOT a host
+    Fraction fold. A crown node's u128 children are read STRAIGHT FROM THE FUSED DEVICE STORE (cNlo/cNhi -- no value
+    copy-across-boundary); crown children are the byte-limb residues already delivered this pass (or resident from a
+    prior eval). num/den accumulate UNREDUCED on byte-limb; REDUCE ONCE at readout (no in-kernel gcd -- the established
+    carrier insight). The byte-limb multiply parallelizes PER-MULTIPLY (dp4a), a different granularity than the per-node
+    drain, so the crown is its own device phase -- folding it into a drain lane would serialize the bignum and lose dp4a."""
+    from jea_limb_gpu import to_limbs, from_limbs, gpu_add, gpu_mul
+    limbs={}                                                             # this-eval crown cid -> (num,den) device uint8 limbs
+    def u128_dev(lo, hi, c):                                             # read a node's u128 value from the device store -> limbs
+        return _trim(cp.concatenate([lo[c:c+1], hi[c:c+1]]).view(cp.uint8))
+    def child(c):
+        if c in limbs: return limbs[c]                                   # crown child delivered earlier this pass (device)
+        if F.vn[c]>=_U128 or F.vd[c]>=_U128:                             # resident crown value (prior eval, host store) -> upload
+            return cp.asarray(to_limbs(F.vn[c])), cp.asarray(to_limbs(F.vd[c]))
+        return (u128_dev(F.FE.cNlo,F.FE.cNhi,c), u128_dev(F.FE.cDlo,F.FE.cDhi,c))   # non-crown: from the device store
+    for cid in range(prev, distinct):                                    # cid order is topological (children have smaller cid)
+        if F.op[cid]==-1 or not sE[cid-prev]: continue
+        nl,dl=child(F.lch[cid]); nr,dr=child(F.rch[cid])
+        if F.op[cid]==1: num=gpu_mul(nl,nr)[0]; den=gpu_mul(dl,dr)[0]
+        else: num=gpu_add(gpu_mul(nl,dr)[0], gpu_mul(nr,dl)[0]); den=gpu_mul(dl,dr)[0]
+        v=Fraction(from_limbs(num), from_limbs(den))                     # REDUCE at readout (host gcd; arithmetic was on-device)
+        F.vn[cid]=v.numerator; F.vd[cid]=v.denominator
+        limbs[cid]=(cp.asarray(to_limbs(v.numerator)), cp.asarray(to_limbs(v.denominator)))   # reduced -> small for parents
+
+
 def evaluate(g, F):
     """Intern AND evaluate g into the device-resident forest F in ONE fused kernel (Δ-Σ-mega rung-2): the kernel
     hash-conses each node and, if NEW, computes its value once (u64/u128 carrier); SHARED sub-terms reuse the
-    resident value. The host only does node bookkeeping (register the new canon ids, reading their values from the
-    fused device store) and the EXACT crown fold for any node whose value exceeds u128 (recompute-from-residue: the
-    crown folds from resident children, never lost). Returns (value, evaluated_new, shared). Forest persists across calls.
-    (rung-1 used two kernels -- intern + a separate apex eval -- with host orchestration between; this collapses them.)"""
+    resident value. The host only does node bookkeeping (register the new canon ids, reading their u64/u128 values
+    from the fused device store); the >u128 escalation CROWN is delivered ON-DEVICE on the byte-limb carrier
+    (deliver_crown -- recompute-from-residue from the fused kernel's cescal, never lost). Returns (value, evaluated_new,
+    shared). Forest persists across calls. (rung-1 used two kernels -- intern + a separate apex eval; rung-2 fused
+    them; Δ-Ψ-deliver moves the crown off the host onto the byte-limb device carrier.)"""
     N=g["N"]; prev=len(F.op)
     canon, distinct = F.FE.intern_eval(g)                                # ONE fused kernel: intern + combine in one drain pass
     sN, sD, sE = F.FE.read_range(prev, distinct)                         # the new canon ids' values, computed ON-DEVICE
@@ -110,11 +144,10 @@ def evaluate(g, F):
             cl=int(canon[g["lch"][i]]); cr=int(canon[g["rch"][i]])
             F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr)
             F.code.append(_ccode(g["op"][i], cl, cr))
-            if sE[k]:                                                    # escalated (>u128): EXACT crown fold from resident
-                a=F.value(cl); b=F.value(cr); v=(a*b if g["op"][i]==1 else a+b)   #   children (children have smaller cid -> ready)
-                F.vn.append(v.numerator); F.vd.append(v.denominator)
-            else:
-                F.vn.append(sN[k]); F.vd.append(sD[k])                   # value computed ON-DEVICE by the fused kernel
+            if sE[k]: F.vn.append(0); F.vd.append(1)                     # escalated (>u128): placeholder -> deliver_crown fills it
+            else: F.vn.append(sN[k]); F.vd.append(sD[k])                 # value computed ON-DEVICE by the fused kernel
+    if any(sE[cid-prev] for cid in range(prev,distinct) if F.op[cid]!=-1):
+        deliver_crown(F, prev, distinct, sE)                             # Δ-Ψ-deliver: the >u128 crown on the byte-limb DEVICE carrier
     root=int(canon[g["root"]]); frontier=[cid for cid in range(prev,distinct) if F.op[cid]!=-1]
     shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
     F.materialize()                                                      # b-real-store: keep the forest physically code-ordered
@@ -179,8 +212,23 @@ if __name__ == "__main__":
     print(f"      The Phase-2 gather (W4) now reads the REAL physical slots, not a prediction. VALUES stay in the stable/")
     print(f"      byte-limb store (arbitrary magnitude -- EmitBig 217-bit can't pack into int64); only the STRUCTURE is")
     print(f"      physically code-ordered. evaluate materializes it each call; eval exact through the indirection: {w5}")
-    ok=w1 and w2 and w3 and w4 and w5
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are now ONE fused on-device MEGAKERNEL")
-    print(f"  (jea_mega_eval, Δ-Σ-mega rung-2 -- intern-kernel + apex-kernel + deliver-kernel collapsed to one drain),")
-    print(f"  the forest grows by new nodes only, the Phase-2 store is materialized code-order (b-real-store). Remaining")
-    print(f"  host work: the EXACT >u128 crown fold, and the term-feed/DAG build -- the next Δ-Σ-mega rungs (Δ-Ψ-deliver/dag).")
+    # W6: Δ-Ψ-deliver -- the >u128 escalation CROWN is delivered on the DEVICE byte-limb carrier (recompute-from-residue
+    # from the fused kernel's cescal), NOT host-folded. Find a DAG whose intermediates exceed u128; eval == truth.
+    from jea_generator_dag import build_dag
+    big=None
+    for (n,depth) in [(256,8),(256,12),(256,16),(512,16)]:
+        cand=build_dag(n,depth)
+        if max(cand["truth"].numerator.bit_length(), cand["truth"].denominator.bit_length())>128: big=cand; chosen=(n,depth); break
+    Gb=Forest(); vb,_,_=evaluate(big, Gb)
+    crown=sum(1 for cid in range(Gb.size()) if Gb.op[cid]!=-1 and (Gb.vn[cid]>=_U128 or Gb.vd[cid]>=_U128))
+    tb=max(big["truth"].numerator.bit_length(), big["truth"].denominator.bit_length())
+    w6 = (vb==big["truth"]) and (tb>128) and (crown>=1)                   # exact beyond u128, crown delivered on device
+    print(f"\n  W6  Δ-Ψ-DELIVER (build_dag{chosen}, true rational ~{tb} bits > u128): the >u128 CROWN ({crown} nodes) is")
+    print(f"      delivered on the DEVICE byte-limb carrier (jea_limb_gpu dp4a, recompute-from-residue from cescal) --")
+    print(f"      not host-folded. eval == truth exact: {w6}")
+    ok=w1 and w2 and w3 and w4 and w5 and w6
+    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
+    print(f"  and the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver -- off the host, recompute-")
+    print(f"  from-residue from the fused kernel's cescal; u128 children read straight from the device store). The forest")
+    print(f"  grows by new nodes only, the Phase-2 store is materialized code-order. Remaining host: the term-feed/DAG")
+    print(f"  build (Δ-Ψ-dag) + the per-node readout reduce (host gcd; arithmetic is on-device). NEXT: Δ-Ψ-dag.")
