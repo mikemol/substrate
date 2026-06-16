@@ -1,38 +1,24 @@
 ------------------------------------------------------------------------
--- Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold  (B-EEA-FOLD-bez, parts 1+1.5/2)
+-- Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold  (B-EEA-FOLD-bez ✓)
 --
 -- The polynomial Bézout fold over F₂[x] — the residual-fold (allegory ALG-6)
--- over `PolyEEATrace`, producing the (s, t) with s·a + t·b = g, whose g=𝟙 case
--- gives the GF(2⁸) inverse (B-EEA-INV → AI-8).  Faithful port of `Z/Bezout`,
--- retyped for F₂[x].
+-- over `PolyEEATrace`, producing (s, t) with s·a + t·b = g.  The g=𝟙 case is
+-- the GF(2⁸) inverse (B-EEA-INV → AI-8).  A faithful char-2 port of `Z/Bezout`
+-- (base-bezout / step-bezout / eea-fold), retyped for F₂[x].
 --
--- FORMULATION (either/or RESOLVED by the build): convCoeff/nth form, NOT a
+-- FORMULATION (either/or resolved by the build): convCoeff/nth form, NOT a
 -- truncation-ring + pad.  The naive `s *P a +P t *P b ≡ g` is ill-typed (`*P`
 -- length-additive ⇒ the `+P` operands differ in length).  Stated COEFFICIENT-
--- WISE via `convCoeff` (no length match needed) — the `recon-nth` method —
--- reusing that machinery (`convCoeff-distrib`, `nth-*P`, `*P-assoc`, …).
+-- WISE via `convCoeff` (no length match needed) — the `recon-nth` method.
 --
--- DONE (part 1): the witness type + base case.
--- DONE (part 1.5 — the step's reusable infrastructure):
---   * `+-self`              — char-2 self-cancellation x + x ≡ 𝟘.
---   * `convCoeff-cong-r`    — convCoeff congruent in arg 2 under pointwise nth-eq.
---   * `convCoeff-subst-l`   — subst on arg 1 is invisible to convCoeff.
---   * `convCoeff-replicate-zero`, `convCoeff-pad-endˡ` — zero/high-pad invisible to arg 1.
---   * `convCoeff-assoc`     — convCoeff t (q·B) ≡ convCoeff (t·q) B (via *P-assoc).
+--   `bezout-poly : PolyEEATrace a b g → BezoutNthWitness a b g`
+--     = eea-fold-poly base-bezout-poly step-bezout-poly.
 --
--- REMAINING (part 2 — `step-bezout-poly` + `bezout-poly`): the back-substitution
--- assembly.  Recurrence (char-2 of Z/Bezout's (s',t')↦(t',s'−t'·q)):
---   new s = t' ;  new t = s' +P (t' *P q)   [q = q-div (proj₂ a), via pad-end + a
---   length-comm subst on the t'·q summand so the +P operands align].
--- Obligation (∀k):  convCoeff t' a k + convCoeff (s'+t'·q) B k ≡ nth g k.
---   • split new-t via `convCoeff-distrib` + `convCoeff-pad-endˡ`/`convCoeff-subst-l`
---     ⇒ convCoeff s' B k + convCoeff (t'·q) B k.
---   • expand convCoeff t' a via `recon-nth` (a ≡ q·B + R coefficient-wise): build the
---     padded sum P_a = (q*P B) +P pad(R), use `convCoeff-cong-r` (nth P_a ≡ nth a),
---     `convCoeff-distribˡ`, `convCoeff-assoc` ⇒ convCoeff (t'·q) B k + convCoeff t' R k.
---   • the two convCoeff (t'·q) B k terms cancel by `+-self` (char 2); `+-comm` + the
---     sub-invariant `convCoeff s' B k + convCoeff t' R k ≡ nth g k` close it.
--- Then `bezout-poly = eea-fold-poly base-bezout-poly step-bezout-poly`.
+-- The step recurrence is the char-2 form of Z/Bezout's (s',t')↦(t', s'−t'·q):
+-- new s = t', new t = s' +P (t' *P q).  Its correctness expands `convCoeff t' a`
+-- via `recon-nth` (a = q·b + r coefficient-wise) and cancels the two
+-- `convCoeff (t'·q) b` terms by char-2 self-inverse (`+-self`), leaving the
+-- sub-invariant `convCoeff s' b + convCoeff t' r ≡ nth g`.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -40,7 +26,8 @@
 module Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties using ()
+  renaming (+-assoc to +ℕ-assoc; +-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
@@ -48,7 +35,10 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 open F.Over F₂-CommRing
-open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly; zero-q)
+import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
+  using (QPoly; zero-q; divisor-q; div-rem; PolyEEATrace)
+open import Substrate.Algebra.F2.Polynomial.Wedge.EEAFold using (eea-fold-poly)
 
 private variable n m l : ℕ
 
@@ -72,7 +62,7 @@ base-bezout-poly a =
   (λ k → trans (+-identityʳ _) (convCoeff-one (proj₂ a) k))
 
 ------------------------------------------------------------------------
--- the step's reusable infrastructure (part 1.5).
+-- the step's reusable convCoeff infrastructure.
 ------------------------------------------------------------------------
 
 -- char-2 self-cancellation.
@@ -115,3 +105,75 @@ convCoeff-assoc {n} {m} {l} t q B k =
   (trans (cong (λ z → nth z k) (sym (*P-assoc t q B)))
   (trans (nth-subst (+ℕ-assoc n m l) ((t *P q) *P B) k)
          (nth-*P (t *P q) B k)))
+
+-- split convCoeff over a pointwise sum in argument 2 (no padded poly needed).
+convCoeff-split-r : {p : ℕ} (t : Poly n) {Y : Poly m} {Z : Poly l} {X : Poly p}
+                  → ((j : ℕ) → nth X j ≡ nth Y j + nth Z j)
+                  → (k : ℕ) → convCoeff t X k ≡ convCoeff t Y k + convCoeff t Z k
+convCoeff-split-r []      h k       = sym (+-identityˡ 𝟘)
+convCoeff-split-r (a ∷ t) h zero    = trans (cong (a *_) (h zero)) (*-distribˡ a _ _)
+convCoeff-split-r (a ∷ t) {Y} {Z} h (suc k) =
+  trans (cong₂ _+_ (trans (cong (a *_) (h (suc k))) (*-distribˡ a _ _))
+                   (convCoeff-split-r t h k))
+        (rearrange (a * nth Y (suc k)) (a * nth Z (suc k)) (convCoeff t Y k) (convCoeff t Z k))
+
+-- char-2 cancellation rearrangement.
+char2-rearr : (X Y Z : F2.F₂) → (X + Y) + (Z + X) ≡ Z + Y
+char2-rearr X Y Z =
+  trans (+-assoc X Y (Z + X))
+  (trans (cong (X +_) (sym (+-assoc Y Z X)))
+  (trans (cong (X +_) (+-comm (Y + Z) X))
+  (trans (sym (+-assoc X X (Y + Z)))
+  (trans (cong (_+ (Y + Z)) (+-self X))
+  (trans (+-identityˡ (Y + Z)) (+-comm Y Z))))))
+
+------------------------------------------------------------------------
+-- the step and the fold.
+------------------------------------------------------------------------
+
+-- THE STEP: char-2 Bézout back-substitution.  new s = t', new t = s' + t'·q.
+step-bezout-poly : {a g : QPoly} (d : ℕ) (f-lo : Vec F2.F₂ (suc d)) →
+                   BezoutNthWitness (divisor-q d f-lo) (div-rem d f-lo a) g →
+                   BezoutNthWitness a (divisor-q d f-lo) g
+step-bezout-poly {a} {g} d f-lo (s' , t' , eq') = t' , new-t , eq
+  where
+    open D.Over F₂-CommRing d f-lo using (b-poly; q-div; r-div; recon-nth)
+    S = proj₁ s'
+    T = proj₁ t'
+    A = proj₁ a
+    vs' = proj₂ s'
+    vt' = proj₂ t'
+    qd  = q-div (proj₂ a)
+    rd  = r-div (proj₂ a)
+    tq  = vt' *P qd
+
+    new-t : QPoly
+    new-t = (S ℕ+ (T ℕ+ A))
+          , (pad-end (T ℕ+ A) vs' +P subst Poly (+ℕ-comm (T ℕ+ A) S) (pad-end S tq))
+
+    vnt = proj₂ new-t
+
+    stepA : (k : ℕ) → convCoeff vnt b-poly k ≡ convCoeff vs' b-poly k + convCoeff tq b-poly k
+    stepA k =
+      trans (convCoeff-distrib (pad-end (T ℕ+ A) vs')
+                               (subst Poly (+ℕ-comm (T ℕ+ A) S) (pad-end S tq)) b-poly k)
+            (cong₂ _+_ (convCoeff-pad-endˡ (T ℕ+ A) vs' b-poly k)
+                       (trans (convCoeff-subst-l (+ℕ-comm (T ℕ+ A) S) (pad-end S tq) b-poly k)
+                              (convCoeff-pad-endˡ S tq b-poly k)))
+
+    hyp : (j : ℕ) → nth (proj₂ a) j ≡ nth (qd *P b-poly) j + nth rd j
+    hyp j = trans (recon-nth (proj₂ a) j) (cong (_+ nth rd j) (sym (nth-*P qd b-poly j)))
+
+    stepB : (k : ℕ) → convCoeff vt' (proj₂ a) k ≡ convCoeff tq b-poly k + convCoeff vt' rd k
+    stepB k = trans (convCoeff-split-r vt' hyp k)
+                    (cong (_+ convCoeff vt' rd k) (convCoeff-assoc vt' qd b-poly k))
+
+    eq : (k : ℕ) → convCoeff vt' (proj₂ a) k + convCoeff vnt b-poly k ≡ nth (proj₂ g) k
+    eq k = trans (cong₂ _+_ (stepB k) (stepA k))
+           (trans (char2-rearr (convCoeff tq b-poly k) (convCoeff vt' rd k) (convCoeff vs' b-poly k))
+                  (eq' k))
+
+-- THE FOLD: the Bézout bridge over the polynomial EEA trace.
+bezout-poly : {a b g : QPoly} → PolyEEATrace a b g → BezoutNthWitness a b g
+bezout-poly t = eea-fold-poly {T = BezoutNthWitness} base-bezout-poly
+                  (λ {a} {g} d f-lo rec → step-bezout-poly {a} {g} d f-lo rec) t
