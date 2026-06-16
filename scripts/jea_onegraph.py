@@ -22,7 +22,7 @@ import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import jea_graded as GR, jea_branchless as BL
+import jea_graded as GR, jea_branchless as BL, jea_divstr as DV     # DV: ÷ IS the ℚ wedge quotient (Δ-Ω-divstr)
 _TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import decide, binding_edge, _PCIE_MAX_BW, _TRIP   # the el-atlas reference (the Kron solve)
@@ -39,7 +39,7 @@ def q_combine(op, a, b):
     n, d = GR.combine_batch(op, [a.numerator], [a.denominator], [b.numerator], [b.denominator])[0]
     return Fraction(n, d)
 
-def q_recip(a): return Fraction(a.denominator, a.numerator)           # ℚ reciprocal = num/den swap (the divisor inversion)
+def q_recip(a): return DV.Q_DIV.wedge(Fraction(1), a)[0]              # reciprocal = the ℚ WEDGE quotient (Δ-Ω-divstr: the live ÷ IS recon's q)
 
 
 def series_schur(a, b):

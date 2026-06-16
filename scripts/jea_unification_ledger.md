@@ -74,9 +74,17 @@ SAME carrier -- f*=current-divider, Schur=series_schur=a wedge, brick 3 SUBTRACT
 **sign->UNSIGNED carrier** (drop signed; ÷ native swap; - eliminable). ALL LANDED [2de4575, 0b9fa32]; 10/10 jea green.
 (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9/Ω.)
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ω-divstr** -- make the Agda↔jea convergence EXECUTABLE: a jea ℚ-DivStr
-(C=ℚ, recon q b r = q·b+r, exact rem=0) that the Agda recon types, closing Algebra∥jea at the wedge [the named bridge,
-now reachable -- the Agda side LANDED]. **Δ-Ω-onegraph brick 4 (ON-DEVICE)** -- run the {+,×,÷} operating-point solve
+**Δ-Ω-divstr [DONE -- jea_divstr.py]:** the Agda Wedge made EXECUTABLE on the jea carrier. DivStr (C, z, recon:C→C→C→C)
++ generic trace_fold (checks the wedge-eq a==recon(q,b,r) at every step) instantiated over the SAME three carriers:
+N_DIV (ℕ Euclidean, collapse=gcd==math.gcd), Q_DIV (ℚ field, exact rem=0, quot=a/b -- jea's ÷=num/den swap IS this
+wedge quotient), F2_DIV (F₂[x] carryless, ⊗ = jea_carrier_base.clmul -- DE-ORPHANED). W1-W4: recon law holds (3
+carriers); one trace_fold = gcd (ℕ==math.gcd, F₂[x] divides both); ℚ exact + ÷=swap==wedge(1,x).quot; one structure.
+WIRED into the LIVE path: jea_onegraph.q_recip now = DV.Q_DIV.wedge(1,a).quot (the live division IS the wedge
+quotient); jea_carrier_base <- jea_divstr <- jea_onegraph; 11/11 modules PASS. Algebra∥jea CLOSED at the wedge --
+the convergence is executable, not an analogy (ℕ/F₂[x] remainders + ℚ exact = one recon : C→C→C→C, the Agda collapse
+realized in jea). NEXT for it: route the jea_eval SPPF/EEA trace + series_schur through the DivStr Trace explicitly.
+
+**NEXT executors (to dispatch, by symbol):** **Δ-Ω-onegraph brick 4 (ON-DEVICE)** -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
