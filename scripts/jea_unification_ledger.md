@@ -80,11 +80,21 @@ DONE (this session):
   witness-sanity, the judgement audit, AND all of Δ-J1/Δ-J1-rest/Δ-J2 (+ corrections). Did the whole Δ-J arc.
 - **AI-Δ1** interface cartographer — el-atlas live-machinery signatures (Explore; not resumable).
 - **AI-Δ2** provenance archaeologist — WAL/git audit of live_dispatcher.decide() constants (general-purpose; resume id ad547863434f51211).
-NEXT-STEP EXECUTORS (to spawn; the user dispatches by symbol):
-- **AI-Ω** apex assembler — builds **Δ-Ω** (the SNAP, below): the unified on-device evaluator.
-- **AI-Δ3** convex-interior measurer — **Δ-J3** (measure K/layout interior surfaces at runtime).
-- **AI-Δ4** actual-DAG wirer — **Δ-J4** (measure_g_surface on the real workload DAG).
-- **AI-Δ5** constants auditor — **Δ-J5** (residual-constant net-positive audit).
+DONE (executed by AI-Δ0; the AI-Ω/Δ3/Δ4/Δ5 dispatch symbols are now SPENT -- their cells closed):
+- **AI-Ω**/Δ-Ω apex ✓, **AI-Δ3**/Δ-J3 (active-lane interior: no opt on this box/mix) ✓, **AI-Δ4**/Δ-J4 (actual-DAG) ✓,
+  **AI-Δ5**/Δ-J5 (constants) ✓. PLUS Δ-Ω-carrier (u128) ✓, Δ-Ω-deliver (err=2->byte-limb) ✓. Judgement audit DISCHARGED;
+  apex complete (correct, productive, live, exact at ANY magnitude via u64->u128->byte-limb).
+
+== STATE: the GPU half is mature. The next axis is the AGDA half (the charter's term-algebra->GPU). ==
+NEXT-STEP SYMBOLS (dispatch by symbol; AI-Δ0 executes unless a dedicated AI is requested):
+- **AI-Φ / Δ-Φ** [THE NEXT ARC] FOUNDATION BRIDGE: make the Agda TERM-ALGEBRA drive the apex. The DAGs are
+  hand-built (build_dag), not Agda-extracted terms; the charter's PRIMARY goal is term-algebra->GPU. Connect the
+  existing jea_agda_bridge (predates this apex) to the NEW unified apex so an Agda Free-term reduces on-device.
+  This is the next-level SNAP: GPU-evaluator ⊕ Agda-foundation -> "Agda on GPU". (Reuse jea_agda_bridge; don't reinvent.)
+- **AI-Δ6 / Δ-J6** [subordinate polish] K-window + layout INTERIOR surfaces -- the measure-the-surface move (Δ-J3)
+  on THEIR kernels (unmeasured -> unclaimed; per-hardware, nothing baked).
+- **AI-Δ7 / Δ-Ω-deliver-opt** [subordinate polish] subtree-only byte-limb deliver (vs the current full-DAG recompute
+  on escalation) -- an optimization, not a gap.
 
 **Δ-Ω [CLOSED -- jea_apex.py; AI-Ω done]** the snap landed: ONE persistent megakernel (apex) drains the DAG
 work-queue, reads the resident package each sweep, and takes its schedule (active-lane count = on-device
