@@ -62,6 +62,15 @@ orchestration; fold every per-X host loop into the on-device megakernel.** It is
 / move-the-solve-on-device, [[feedback_coordinate_to_geometry]] / [[feedback_demo_proven_is_not_wired]]) applied at
 the orchestration seam -- the charter's "on-GPU resident" taken fully literally. Plus **Δ-G2** [recommended, not built]:
 the orphan-demo pre-commit gate (a class-level finding the loop can skip as a memory -> must be a gate).
+**Δ-Σ-mega rung-1 [DONE -- AI-Δ9]:** the INTERN is now ONE on-device hash-cons MEGAKERNEL (jea_mega.py: a persistent
+device hash table -- atomicCAS insert-or-find on an injective (op,canon_l,canon_r) key -- driven by the apex's
+productivity drain for child-before-parent ordering; NO in-warp spin, the fixpoint retries; EMPTY=0, leaf tag=3).
+The per-height HOST intern loop is GONE: one kernel launch per eval. Tested: same dedup PARTITION as the host
+intern_radix (sort) -- dedup is code-agnostic (W2) -- across E_q(8/10) + the rung-b DAG; cross-eval sharing via the
+persistent table (re-intern -> 0 new). WIRED + consumed: jea_resident.Forest.DI = the interner; evaluate() interns
+via it (host side is now just bookkeeping, NOT the dedup); jea_mega <- jea_resident <- jea_eval <- jea_agda_apex,
+regression-clean (all exact). Remaining Δ-Σ-mega rungs: fold the frontier EVAL (apex drain) into the SAME kernel
+(intern+combine one pass), then crown DELIVER + DAG-gen on-device; b-real-incr (incremental merge); Δ-G2 (gate).
 
 **RETRO (device-resident SPPF / quadtree arc):** DELTA -- a strong, fully-wired, NUMBER-backed result (jea_zsppf
 W1-W5; device-resident forest b-real{,-gather,-store}; jea_intern/agda_dag/trace_window de-orphaned INTO the live

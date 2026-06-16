@@ -26,6 +26,7 @@ import numpy as np, cupy as cp
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_zsppf import morton2, heights
+import jea_mega as MEGA                                         # the on-device hash-cons INTERN megakernel (Δ-Σ-mega)
 
 
 class Forest:
@@ -39,6 +40,7 @@ class Forest:
         # values stay in the stable store (arbitrary magnitude -> byte-limb carrier, not packable into int64).
         self.pslot=cp.zeros(0,cp.int64)                                  # stable id -> physical position (code order)
         self.pstable=cp.zeros(0,cp.int64); self.pcode=cp.zeros(0,cp.int64)   # physical position -> stable id / code (sorted)
+        self.DI=MEGA.DeviceInterner()                                    # the PERSISTENT on-device hash-cons intern (Δ-Σ-mega)
 
     def _new(self, op,l,r,vn,vd,code):
         sid=len(self.op); self.op.append(op); self.lch.append(l); self.rch.append(r); self.vn.append(vn); self.vd.append(vd)
@@ -90,21 +92,22 @@ def evaluate(g, F):
     """Intern g into the device-resident forest F (share via searchsorted / add+merge per height), evaluate ONLY
     the new frontier on the apex, store values. Returns (value, evaluated_new, shared). Forest persists across calls."""
     from jea_apex_deliver import run_apex_u128, deliver_subtree           # lazy: keep module-import light (no apex pull)
-    N=g["N"]; ht=heights(g); H=int(ht.max()) if N else 0; nid=[0]*N; frontier=[]
-    F._pc=[]; F._ps=[]
-    for h in range(H+1):
-        idx=[i for i in range(N) if ht[i]==h]
-        if h==0:
-            for i in idx: nid[i]=F.leaf(int(g["vN"][i]), int(g["vD"][i]))
-            continue
-        codes=[_ccode(g["op"][i], nid[g["lch"][i]], nid[g["rch"][i]]) for i in idx]
-        sids=F.lookup(codes)                                             # DEVICE sharing-lookup
-        for j,i in enumerate(idx):
-            if sids[j]>=0: nid[i]=int(sids[j])                           # SHARE the resident node (referenced)
-            else:
-                s=F.add_combine(codes[j], int(g["op"][i]), nid[g["lch"][i]], nid[g["rch"][i]]); nid[i]=s; frontier.append(s)
-        F.merge()                                                        # DEVICE merge the new combines into the index
-    root=nid[g["root"]]; shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
+    N=g["N"]; prev=len(F.op)
+    canon, distinct = F.DI.intern(g)                                     # ONE on-device hash-cons kernel (no host per-height loop)
+    rep={}
+    for i in range(N): rep.setdefault(int(canon[i]), i)                  # a representative term node per canonical id
+    for cid in range(prev, distinct):                                    # register NEW canonical nodes (bookkeeping, NOT intern)
+        i=rep[cid]
+        if g["op"][i]==-1:
+            vN=int(g["vN"][i]); vD=int(g["vD"][i])
+            F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.vn.append(vN); F.vd.append(vD)
+            F.code.append(int(morton2(np.array([vN&0xFFFF]), np.array([vD&0xFFFF]))[0]))
+        else:
+            cl=int(canon[g["lch"][i]]); cr=int(canon[g["rch"][i]])
+            F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr); F.vn.append(0); F.vd.append(1)
+            F.code.append(_ccode(g["op"][i], cl, cr))
+    root=int(canon[g["root"]]); frontier=[cid for cid in range(prev,distinct) if F.op[cid]!=-1]
+    shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
     if frontier:
         fset=set(frontier); children=set()
         for s in frontier: children.add(F.lch[s]); children.add(F.rch[s])
@@ -141,21 +144,22 @@ if __name__ == "__main__":
     F=Forest()
     S=dict(op=[-1,-1,1],vN=[1,1,0],vD=[2,3,1],lch=[-1,-1,0],rch=[-1,-1,1],N=3,root=2)   # 1/2*1/3 = 1/6
     T1=_embed(S,0,(1,1)); T2=_embed(S,1,(2,1))                                          # both CONTAIN S
-    v1,e1,s1=evaluate(T1,F); sz1=F.size(); idx1=int(F.ccode.size)
-    v2,e2,s2=evaluate(T2,F); sz2=F.size(); idx2=int(F.ccode.size)
-    print(f"  eval(T1=S+1/1)={v1} (==7/6:{v1==Fraction(7,6)})  new={e1} shared={s1}  forest size {sz1} (device index {idx1})")
-    print(f"  eval(T2=S*2/1)={v2} (==1/3:{v2==Fraction(1,3)})  new={e2} shared={s2}  forest size {sz2} (device index {idx2})")
-    print(f"  device index type: {type(F.ccode).__module__}.{type(F.ccode).__name__} (cupy = on-device); searchsorted lookup")
+    v1,e1,s1=evaluate(T1,F); sz1=F.size(); idx1=int(F.DI.nextid.get()[0])
+    v2,e2,s2=evaluate(T2,F); sz2=F.size(); idx2=int(F.DI.nextid.get()[0])
+    print(f"  eval(T1=S+1/1)={v1} (==7/6:{v1==Fraction(7,6)})  new={e1} shared={s1}  forest size {sz1} (device intern table {idx1})")
+    print(f"  eval(T2=S*2/1)={v2} (==1/3:{v2==Fraction(1,3)})  new={e2} shared={s2}  forest size {sz2} (device intern table {idx2})")
+    print(f"  intern: jea_mega on-device hash-cons megakernel (one launch per eval; no host per-height loop)")
 
     growth=sz2-sz1; tot=T2["N"]; shared_nodes=tot-growth      # T2's nodes not re-added = shared from the resident forest
     devresident = type(F.ccode).__module__.startswith("cupy")
     w1 = devresident and (growth < tot) and (s2>=1) and (shared_nodes>=3)   # S's 3 nodes (2 leaves+1 combine) reused
     w2 = (v1==Fraction(7,6)) and (v2==Fraction(1,3))
-    w3 = idx2>idx1 and devresident                            # the device sorted index grew via searchsorted+merge
-    print(f"\nW1 DEVICE-RESIDENT + GROWS-BY-NEW (cupy index; T2 has {tot} nodes, forest grew by {growth} -> {shared_nodes}")
-    print(f"   SHARED from T1's resident S via the device searchsorted lookup -- S computed once, ever): {w1}")
+    w3 = idx2>idx1 and devresident                            # the on-device intern table grew (cross-eval persistent)
+    print(f"\nW1 DEVICE-RESIDENT + GROWS-BY-NEW (T2 has {tot} nodes, forest grew by {growth} -> {shared_nodes} SHARED")
+    print(f"   from T1's resident S via the on-device intern -- S computed once, ever): {w1}")
     print(f"W2 EXACT through the device-resident evaluator (T1=7/6, T2=1/3): {w2}")
-    print(f"W3 SHARING IS A DEVICE LOOKUP (cp.searchsorted into the sorted z-code index + device merge; index {idx1}->{idx2}): {w3}")
+    print(f"W3 INTERN IS AN ON-DEVICE MEGAKERNEL (jea_mega hash-cons; persistent device table grew {idx1}->{idx2}; no")
+    print(f"   host per-height loop -- one kernel launch per eval): {w3}")
 
     # W4: PHASE-2 GATHER -- once the precise working set is known, gather it CODE-LOCALITY ordered (the SM layout)
     # vs stable-id (creation) order; measure HBM tiles touched. Built on a REAL forest (a wide random term).
@@ -166,13 +170,13 @@ if __name__ == "__main__":
         a=int(rng.integers(0,len(vN))); b=int(rng.integers(0,len(vN)))      # stable-SCATTERED (created at various times)
         op.append(int(rng.integers(0,2))); lch.append(a); rch.append(b); vN.append(0); vD.append(1)
     evaluate(dict(op=op,vN=vN,vD=vD,lch=lch,rch=rch,N=len(vN),root=len(vN)-1), G)   # build the resident forest
-    ncomb=int(G.csid.size); csid=[int(x) for x in G.csid.get()]          # code-order stable ids (the linear quadtree)
-    print(f"\n  W4  PHASE-2 GATHER (forest {G.size()} nodes, {ncomb} combines): HBM tiles touched gathering a")
+    order=[int(x) for x in G.pstable.get()]; ncomb=len(order)            # code-order stable ids (the materialized store)
+    print(f"\n  W4  PHASE-2 GATHER (forest {G.size()} nodes): HBM tiles touched gathering a")
     print(f"      structurally-coherent working set (a code-index neighborhood) -- code-locality vs stable-id, T=64:")
     w4=True; off=ncomb//3
     for K in (64,128,256):
         if off+K>ncomb: continue
-        ws=csid[off:off+K]                                              # a contiguous code-order slice = coherent set
+        ws=order[off:off+K]                                             # a contiguous code-order slice = coherent set
         st,lo=G.gather_cost(ws,64)
         print(f"        |working set|={K:4d}:  stable-order tiles={st:3d}  locality tiles={lo:3d}  ({st/max(lo,1):.1f}x fewer)")
         w4 = w4 and (lo<st)
@@ -188,6 +192,7 @@ if __name__ == "__main__":
     print(f"      byte-limb store (arbitrary magnitude -- EmitBig 217-bit can't pack into int64); only the STRUCTURE is")
     print(f"      physically code-ordered. evaluate materializes it each call; eval exact through the indirection: {w5}")
     ok=w1 and w2 and w3 and w4 and w5
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF is a cupy sorted z-code index (a linear quadtree): sharing")
-    print(f"  is cp.searchsorted (device), growth is a device merge, the forest persists + grows by new nodes only. The")
-    print(f"  per-height orchestration is still host; the full on-device form folds intern+eval into one megakernel.")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN is now one on-device hash-cons MEGAKERNEL")
+    print(f"  (jea_mega, Δ-Σ-mega -- the per-height host loop is GONE), the forest grows by new nodes only, the Phase-2")
+    print(f"  store is materialized code-order (b-real-store). Remaining host orchestration: the frontier EVAL (apex")
+    print(f"  drain, a device kernel but host-launched per eval), crown DELIVER, and DAG build -- the next Δ-Σ-mega rungs.")
