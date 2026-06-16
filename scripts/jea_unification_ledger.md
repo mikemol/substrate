@@ -130,10 +130,17 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     canonical SPPF, which run_apex_u128 drains -- each distinct subterm computed ONCE (memoization). Proven:
     E_q(14) tree 32767 nodes -> SPPF 15 nodes (2184x collapse), apex(SPPF)==truth, exact; jea_intern now IMPORTED
     (de-orphaned). "on-GPU resident MEMOIZING traces = SPPF" realized. eval-path regression-clean.
+    **Δ-Σ-trace rung-(b) [DONE]:** the apex no longer DISCARDS the gcd/EEA reduction residue. (i) the kernel now
+    EMITS gg per node (jea_apex gglo/gghi, both gcd loops; run_apex_u128 returns nodes["gg"]) -- reduced*gg ==
+    unreduced, so reduction is a LOSSLESS RETRACTION (gg the inverse cofactor). (ii) the EEA quotient sequence (the
+    canonical CF shape) is materialized by COMPOSING jea_carrier_trace.gpu_cf (de-orphaned, + jea_trace_window) on
+    the reduced output -- scale-free, from_cf round-trips to reduce. jea_residue_trace.py. The held residue BUYS
+    VALUE-interning: on a 9-node DAG with value-equal structurally-distinct nodes, STRUCTURAL intern=7 vs VALUE
+    intern (CF key)=4 (2/4≡1/2; (1/2*2/3)≡(1/6+1/6)=1/3; node8 2/3≡leaf 2/3) -- strictly stronger collapse than
+    rung-1's structural intern, root exact. eval-SPPF + gcd/EEA residue = one never-discard-residue trace. PASS.
     **NEXT rungs:** (a) intern the REAL workloads (build_dag / the Agda SPPF jea_agda_dag) before the apex, not the
-    E_q demonstrator -- de-orphan jea_agda_dag; (b) hold the gcd/EEA REDUCTION residue (jea_carrier_trace/
-    trace_window: the apex's `na/=gg` DISCARDS the gcd -- never-discard-residue violation) in the SPPF; (c) hold the
-    supervisor DECISION WAL (dout) as an EEA trace in the SPPF; (d) the semantic SPPF tools (sppf_*/type_sppf) audit.
+    E_q demonstrator -- de-orphan jea_agda_dag; (c) hold the supervisor DECISION WAL (dout) as an EEA trace in the
+    SPPF (the rung that closes the WAL≡EEA-trace loop the user named); (d) semantic SPPF tools (sppf_*/type_sppf) audit.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

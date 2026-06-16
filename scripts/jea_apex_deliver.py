@@ -70,17 +70,20 @@ def run_apex_u128(g, return_nodes=False):
     qt=cp.full(1,N,cp.int32); er=cp.zeros(1,cp.int32); pk=cp.zeros(2*FIELDS,cp.int32); pk[0]=BLOCKS*THREADS; ac=cp.zeros(1,cp.int32)
     gt=cp.zeros(4,cp.int32); gtn=cp.zeros(1,cp.int32)
     tdum=cp.zeros(1,cp.float64); ddum=cp.zeros(8,cp.int32)       # decide_dev=0: no on-device supervisor (eval path)
+    gglo=cp.ones(N,cp.uint64); gghi=cp.zeros(N,cp.uint64)        # gcd RESIDUE per node (Δ-Σ-trace b; leaves keep 1)
     _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,escal,tier,st,qt,pe,er,np.int32(N),np.int64(N),
                                 pk,ac,np.int32(FIELDS),gt,gtn,np.int32(4),np.int32(0),
-                                tdum,ddum,np.int32(14),np.int32(0),np.int32(BLOCKS*THREADS),np.int32(0)))
+                                tdum,ddum,np.int32(14),np.int32(0),np.int32(BLOCKS*THREADS),np.int32(0),gglo,gghi))
     cp.cuda.Stream.null.synchronize()
     VNL=vnl.get(); VNH=vnh.get(); VDL=vdl.get(); VDH=vdh.get()
     rn=(int(VNH[root])<<64)|int(VNL[root]); rd=(int(VDH[root])<<64)|int(VDL[root])
     val=(Fraction(rn,rd) if rd else None); err=int(er.get()[0])
     if return_nodes:
+        GGL=gglo.get(); GGH=gghi.get()
         nodes=dict(vN=[(int(VNH[i])<<64)|int(VNL[i]) for i in range(N)],
                    vD=[(int(VDH[i])<<64)|int(VDL[i]) for i in range(N)],
-                   escal=[int(x) for x in escal.get()], tier=[int(x) for x in tier.get()])
+                   escal=[int(x) for x in escal.get()], tier=[int(x) for x in tier.get()],
+                   gg=[(int(GGH[i])<<64)|int(GGL[i]) for i in range(N)])   # the held gcd residue per node
         return val, err, nodes
     return val, err
 
