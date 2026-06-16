@@ -36,17 +36,32 @@ module Over {A : Set} (CR : CommutativeRing A) where
     *M = *-monoid SR
     opOf : Monoid A → (A → A → A)
     opOf M = Magma._·_ (magma (semigroup M))
-    _+_ = opOf +M
-    _*_ = opOf *M
-    -- +-comm lives on the abelian group; transport it onto the +-monoid op
-    -- via +-coherent (refl for coherently-built rings, e.g. GF256-Ring).
-    +-comm : (a b : A) → _+_ a b ≡ _+_ b a
-    +-comm = subst (λ op → (a b : A) → op a b ≡ op b a)
-                   (cong opOf (+-coherent R))
-                   (·-comm (+-abelian R))
 
-  open G.Over _+_ _*_ (ε +M) (ε *M)
-    (·-assoc (semigroup +M)) +-comm (ε-left +M) (ε-right +M)
-    (·-assoc (semigroup *M)) (CommutativeRing.*-comm CR) (ε-left *M)
-    (distrib-left SR) (zero-absorb-left SR) (zero-absorb-right SR)
+  -- The coefficient ops + laws, exposed BY NAME (so consumers — B2 reduce-mod-f,
+  -- B3, EEA — get 𝟘/_+_/… and the ring laws, not just the polynomial machinery).
+  𝟘 𝟙 : A
+  𝟘 = ε +M
+  𝟙 = ε *M
+  _+_ _*_ : A → A → A
+  _+_ = opOf +M
+  _*_ = opOf *M
+  +-assoc     = ·-assoc (semigroup +M)
+  +-identityˡ = ε-left +M
+  +-identityʳ = ε-right +M
+  *-assoc     = ·-assoc (semigroup *M)
+  *-comm      = CommutativeRing.*-comm CR
+  *-identityˡ = ε-left *M
+  *-distribˡ  = distrib-left SR
+  *-absorbˡ   = zero-absorb-left SR
+  *-absorbʳ   = zero-absorb-right SR
+  -- +-comm lives on the abelian group; transport it onto the +-monoid op
+  -- via +-coherent (refl for coherently-built rings, e.g. GF256-Ring).
+  +-comm : (a b : A) → a + b ≡ b + a
+  +-comm = subst (λ op → (a b : A) → op a b ≡ op b a)
+                 (cong opOf (+-coherent R))
+                 (·-comm (+-abelian R))
+
+  open G.Over _+_ _*_ 𝟘 𝟙
+    +-assoc +-comm +-identityˡ +-identityʳ
+    *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
     public
