@@ -72,8 +72,17 @@ NEXT-STEP EXECUTORS (to spawn; the user dispatches by symbol):
 work-queue, reads the resident package each sweep, and takes its schedule (active-lane count = on-device
 coop<->strat granularity; lane gid<g participates, stride g covers ALL slots) LIVE from it. Proven 3/3: root =
 70785/8 CORRECT while 3 distinct active-lane counts [20,40,20480] used during the ONE drain (combine ⊥ schedule,
-on-device, no relaunch); drained via pending==0 (productivity, no fuel); err=0 (assertion never fired). u64 carrier
-(deeper DAGs overflow -> the C3 escalation/tiers plug in, orthogonal). Host half = navigate+collect_package+publish.
+on-device, no relaunch); drained via pending==0 (productivity, no fuel); err=0 (assertion never fired). Host half =
+navigate+collect_package+publish.
+  CORRECTION (user): the apex's raw-u64 combine + "use build_dag(64,3) so it fits u64" is a TRUNCATION JUDGEMENT
+  -- fitting the workload to the carrier, the exact escalate-don't-truncate violation ([[feedback_never_discard_residue]],
+  [[project_agda_on_gpu_charter]]). The …/4096 was u64 OVERFLOW, not an apex bug, and NOT to be dodged with a
+  smaller DAG. The system ALREADY has the proven-correct add/mul at any magnitude: jea_engine_apex (predict-place
+  tier by bit-width bw(a)+bw(b) + byte-limb DELIVER), jea_limb_* (byte-limb arb-precision), jea_carrier_escalate.
+- **Δ-Ω-carrier [OPEN; AI-Ω-c] = the apex combine on the PROVEN escalating carrier, not raw u64.** Wire the apex's
+  emit-or-spawn combine to predict-place (escalate u64->u128->byte-limb by bit-width) + byte-limb deliver -- the
+  established proven-correct algebra -- so ANY-magnitude DAG reduces correctly (no workload-fit-to-carrier). This
+  deletes the truncation judgement; the carrier escalation is NOT orthogonal -- it IS the add/mul the apex must use.
 ORIGINAL SCOPE NOTE -->
 **Δ-Ω [APEX -- the snap-to-grid goal the session's shadows serve]:** ONE persistent on-device megakernel =
 jea_actuator (persistent + reads resident telemetry package) ⊕ jea_engine_pool (DAG work-queue, emit-or-spawn,
