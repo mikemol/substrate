@@ -185,6 +185,15 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     interleave worst-axis 0.051 (struct 0.051, value 0.029) vs lex(struct) 0.204 vs lex(value) 0.218 vs random 0.332.
     Each lex zeroes ONE axis (0.003) and scrambles the other; the interleave localizes BOTH (~4x better worst-axis)
     WHILE deduping. Confirmed with numbers: both locality and deduplication, from sorting both dimensions interleaved.
+    W5 HIERARCHY (user: SM vs HBM; "alternation region size ~ SM capacity"): a 2D Morton sort = ALTERNATING 1-bit
+    radix passes -- granularity is the knob. Within an SM-tile locality is FREE (resident) -> 1D, dedup-cheap;
+    across HBM only scatter-gather matters -> Morton (high bits). Measured (256x256 grid, 16x16 access): Morton
+    touches 8.6 HBM tiles vs row-major 20.5 (2.4x fewer). The optimal tile/alternation size is NOT pure over-fetch
+    efficiency (that's monotone -> smaller better); under per-transfer LATENCY cost=tiles*(L+T) there is an INTERIOR
+    optimum -- T*=256 (=footprint b*b; flanked 2549/1877/2475 for T=64/256/1024). So the region size balances latency
+    vs over-fetch (~footprint when L~footprint), CAPPED by SM capacity -- a MEASURED hw knob (L, footprint, SM), not
+    baked. User's intuition confirmed + sharpened: SM capacity is the ceiling; the latency balance picks T* within it.
+    [navigator territory: the sort STRATEGY (interleave granularity) is a live hardware-tuned choice, not a constant.]
     **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
     z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
     (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.

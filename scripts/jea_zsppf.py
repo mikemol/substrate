@@ -175,7 +175,39 @@ if __name__ == "__main__":
           f"({worst['lex(struct)']:.3f}, {worst['lex(value)']:.3f}): {w4} -- the interleaved sort localizes BOTH; each")
     print(f"         lex zeroes one axis and scrambles the other. BOTH locality AND dedup, from one sort.")
 
-    ok = w1 and w2 and w3a and w3b and w3c and w4
+    # W5: the OPTIMAL granularity is HIERARCHY-dependent (user). A 2D Morton sort = alternating 1-bit radix passes;
+    # the alternation granularity is a KNOB. Within an SM-tile locality is free (resident) -> 1D, dedup-cheap; across
+    # HBM only scatter-gather matters -> Morton (high bits). Measured: HBM tiles touched by a 2D-local access, and
+    # efficiency vs tile size T (= SM capacity). B=256 grid, b=16 access box.
+    B=256; NN5=B*B; xs=np.repeat(np.arange(B),B).astype(np.uint64); ys=np.tile(np.arange(B),B).astype(np.uint64)
+    mcode=np.asarray(morton2(xs,ys)); lcode=(xs.astype(np.int64)<<np.int64(8))|ys.astype(np.int64)   # row-major (1D)
+    def pos_of(code): o=np.argsort(code,kind="stable"); p=np.empty(NN5,np.int64); p[o]=np.arange(NN5); return p
+    pos_m=pos_of(mcode); pos_l=pos_of(lcode); rng3=np.random.default_rng(3); b=16
+    def mean_tiles(pos,T,trials=60):
+        tot=0
+        for _ in range(trials):
+            ox=int(rng3.integers(0,B-b)); oy=int(rng3.integers(0,B-b)); s=set()
+            for dx in range(b):
+                base=(ox+dx)*B+oy
+                for dy in range(b): s.add(int(pos[base+dy])//T)
+            tot+=len(s)
+        return tot/trials
+    T0=64; tm=mean_tiles(pos_m,T0); tl=mean_tiles(pos_l,T0)
+    print(f"\n  W5  HIERARCHY: 2D access ({b}x{b}={b*b} pts) over a {B}x{B} grid, SM-tile T={T0} elems -- HBM tiles touched:")
+    print(f"      Morton (interleave high bits) = {tm:.1f}   vs   row-major/1D = {tl:.1f}   ({tl/tm:.1f}x fewer transfers)")
+    L=256                                                      # per-transfer LATENCY (element-equiv) -- the HBM hw knob
+    print(f"      cost = tiles*(L+T), L={L} (latency vs over-fetch); the INTERIOR optimum T* is the alternation region size:")
+    costs={}
+    for T in (16,64,256,1024,4096):
+        tt=mean_tiles(pos_m,T); c=tt*(L+T); costs[T]=c
+        print(f"        T={T:<5} tiles={tt:4.1f}  cost={c:7.0f}" + ("   <- footprint b*b" if T==b*b else ""))
+    Tstar=min(costs,key=costs.get)
+    w5 = (tm < tl*0.5) and (16 < Tstar < 4096)                 # Morton << row-major (HBM) AND an INTERIOR optimal tile size
+    print(f"      -> Morton touches {tl/tm:.1f}x fewer HBM tiles (scatter-gather); within-tile order is SM-free. With")
+    print(f"         per-transfer latency the optimum tile T*={Tstar} is INTERIOR (~footprint when L~footprint): the")
+    print(f"         alternation region size balances latency vs over-fetch -- a MEASURED hw knob (L,footprint), not baked. {w5}")
+
+    ok = w1 and w2 and w3a and w3b and w3c and w4 and w5
     print(f"\n  {'PASS' if ok else 'FAIL'} — THINK QUADTREE (common structure, recursively): a prefix-sort of Morton codes")
     print(f"  IS a (linear) quadtree -- internal nodes = shared prefixes = shared subterms, so the SPPF is a quadtree, not")
     print(f"  a flat sort. The dedup is code-agnostic (W2); the CODE picks WHICH quadtree. Two intrinsic ones: structure =")
