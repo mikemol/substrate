@@ -145,6 +145,17 @@ NEXT-STEP SYMBOLS (dispatch by symbol; AI-Δ0 executes unless a dedicated AI is 
   native). KEY: B*=2 is FAR coarser than the density-only knee (B≈6) -- once launch overhead is MEASURED it
   dominates past B=2, so the density-only answer would have OVER-bucketed. Vindicates measure-the-surface over a
   scalar. Live + reactive (re-measure per carrier/hardware/width-mix); nothing baked. No pending scalars remain in J6.
+  STAGE 3/4 CORRECTION (user): the above still collapsed to a SCALAR B=|allowed| -- a lossy COORDINATE, not the
+  object. The real object is the PARTITION P (the allowed-width subset = group TOPOLOGY). jea_layout_surface.py
+  now sweeps the FULL partition space + measures time(P) (the partition SURFACE): P*={16,64} (a topology, NOT
+  "B=2"); B is provably lossy (same-B differ 1.7x: {16,64}=0.26ms vs {32,64}=0.44ms); the near-optimal REGION
+  spans B=2 AND B=3 ({16,64},{8,32,64}) -- the optimum is a region of the surface, not a scalar. My earlier
+  "B*=2" was right by luck on the NESTED ladder. STAGE 4 SEED: P* satisfies the inclusion BALANCE (each rung in
+  iff it earns its keep; every membership flip is worse) -- the settlement condition; for this small ladder the
+  full sweep IS the solve. The named generalization (NOT built): as the ladder/widths grow, the partition becomes
+  the SOLUTION of a live balance graph whose edge-states are the measured per-rung (gain, overhead) -- a
+  conductance-settlement reactive to hardware (the Kron/Kirchhoff picture). Surface not scalar; topology not
+  coordinate; settled not argmin'd-over-a-handlist. [[feedback_structural_not_scalar]] (structure, not a scalar).
 - **AI-Δ7 / Δ-Ω-deliver-opt** [subordinate polish] subtree-only byte-limb deliver (vs the current full-DAG recompute
   on escalation) -- an optimization, not a gap.
 
