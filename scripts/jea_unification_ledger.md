@@ -31,30 +31,43 @@ the optimum) · judgement-is-demechanization (a coordinate-collapse is a judgeme
 general solve degenerates cheaply).
 
 **AI ROSTER -- ALL labeled; dispatch by symbol.** AGENTS (real model instances): **AI-Δ0** orchestrator (executed
-the ENTIRE arc) · **AI-Δ1** interface cartographer (Explore, spent) · **AI-Δ2** provenance archaeologist
-(general-purpose, resume id ad547863434f51211). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
-Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**. NEXT (open): **Δ-Φ-pernode**.
+the ENTIRE arc incl. this session's Δ-Φ / carrier-slide / deliver-opt) · **AI-Δ1** interface cartographer (Explore,
+spent) · **AI-Δ2** provenance archaeologist (general-purpose, resume id ad547863434f51211) · **AI-Φ** = AI-Δ0
+acting as the Δ-Φ executor (spent) · **AI-Q** Q-layer / AES-tower agent (SEPARATE live model instance; owns
+agda/Substrate/Algebra/{F2,Polynomial/Graded,CommutativeRing,Q,…}; coordinate via the `.md` thread at
+agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
+Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity).
+NEXT executors (to dispatch): **AI-Ψ** (Δ-Ψ on-device residency arc) · **AI-Δ8** (Δ-Φ-pernode, a FACET of Δ-Ψ).
 
-**Δ-Φ / AI-Φ [THE ARC -- DONE].** The Agda TERM-ALGEBRA now drives the evaluator (charter term-algebra->GPU closed
-on the MATURE path). jea_agda_apex.py: Emit.agda (refl-vouched, 7/40) AND EmitBig.agda (refl-vouched, 217-bit,
->u128) -> the DAG (B.to_dag, the geometry the term generates) -> the carrier solve -> == Agda's vouched value,
-EXACT both. Reuse only (jea_agda_bridge parametrized by filename + jea_carrier_solve); no reinvention. PASS.
+**Δ-Φ / AI-Φ [DONE].** Agda TERM-ALGEBRA drives the evaluator (charter term-algebra->GPU on the MATURE path).
+jea_agda_apex.py: Emit.agda (refl 7/40) AND EmitBig.agda (refl 217-bit, >u128) -> B.to_dag (the geometry the term
+generates) -> carrier solve -> == Agda's vouched value, EXACT both. Reuse only; no reinvention. PASS.
 
-**Δ-Ω-carrier-slide [DONE -- a frozen-coordinate finding the USER surfaced via Δ-Φ].** The apex (run_apex_u128)
-was u128-RESIDENT: launch-at-128-and-stay, escalating UP to byte-limb but NEVER sliding DOWN -- a 3-bit value paid
-full u128. The carrier WIDTH was a baked coordinate (128). FIX (jea_carrier_solve.py): carrier width = OUTPUT of a
-live solve over predicted bit-length (O(N) propagate num/den bounds through the DAG) -> dispatch the NARROWEST
-sufficient EXISTING carrier (u64 generators / u128 apex / byte-limb deliver). Proven: small->u64, mid(124b)->u128,
-big(217b)->byte-limb, 3 distinct tiers from ONE solve, all exact. Pay-for-what-you-use restored; u128 floor gone.
-My W3 had called u128 a "degeneration" for 7/40 -- the tell of the baked floor; corrected. NEXT rung: PER-NODE
-carrier placement (each node its narrowest) folded into the on-GPU kernel dispatch (carrier as a per-node surface).
+**Δ-Ω-carrier-slide [DONE -- frozen-coordinate finding the USER surfaced].** apex was u128-RESIDENT (launch-at-128,
+no down-slide; a 3-bit value paid u128). FIX jea_carrier_solve.py: carrier width = OUTPUT of a live solve over
+predicted bit-length -> NARROWEST sufficient EXISTING carrier (u64/u128/byte-limb). small->u64, mid->u128,
+big->byte-limb, exact. Pay-for-what-you-use restored. (My W3 mislabeled u128 a "degeneration" -- the tell; fixed.)
 
-**NEXT (the OPERATIVE LAW again -- replace a coordinate-projection with its generating geometry, a SUBSUMING live
-solve, never a judged-faithful hardcode):**
-- **Δ-Ω-deliver-opt / AI-Δ7 [polish]** the full-DAG recompute on escalation is a COARSE coordinate; the
-  escalation SUBTREE is the geometry actually carrying the overflow. Solve over the subtree-topology, not the DAG.
-- **Δ-Φ-pernode [carrier maturation]** per-node carrier placement (the down-slide currently per-TERM; the full
-  geometry is per-NODE: each node its narrowest carrier, predict-place folded into the on-GPU kernel dispatch).
+**Δ-Ω-deliver-opt / AI-Δ7 [DONE].** Escalation recomputed the WHOLE DAG (coarse coordinate). FIX jea_apex_deliver.py
+deliver_subtree: byte-limb ONLY the escalation CROWN (up-closed pred>128), LIFT the apex's correct u128 values for
+the crown's valid children. build_dag(512,16): 15 byte-limb muls vs 1286, only 7/511 combines redone, exact.
+
+**Δ-G [DONE -- git-integrity, the USER corrected me].** I almost `--no-verify`'d past a stale Q/Makefile gate I'd
+diagnosed as "unrelated" (AI-Q's untracked WIP). The user: bypass skips ALL gates -- you can't prove your change
+tripped nothing else. PROTOCOL (memory feedback_never_noverify_to_bypass_gates): own-your-subtree, stage BY PATH
+(never -A), whoever owns the staleness clears it, `.md` notes for async coord, NEVER --no-verify; keep in-flight
+`.agda` OUT of the build tree (scratch/, invisible to gen_build_makefiles). Resolved with AI-Q; both commits green.
+
+**NEXT -- common structure (RECURSIVE coordinate->geometry): the HOST-SIDE solve I built IS ITSELF A COORDINATE.**
+predict_per_node / carrier_solve / deliver_subtree run OFF-GPU; the GPU consumes the host's choice -- the exact
+on-GPU-can't-call-off-GPU / reread-meters anti-pattern, one level up. The geometry is the solve RESIDENT ON-DEVICE.
+Both remaining steps are FACETS of ONE move = **MOVE THE SOLVE ON-DEVICE** (recompute-from-residue, not
+copy-across-boundary -- the charter's core acceptance criterion):
+- **Δ-Ψ / AI-Ψ [THE ARC]** the host-built DAG is UPLOADED each run (copy-across-boundary). recompute-from-residue
+  means the term-algebra GENERATES + RESIDES the DAG on-device (on-GPU memoizing traces). The host-side carrier
+  SELECT + crown-DELIVER fold into the on-device predict-place (the kernel already computes bln/bld). Subsumes:
+- **Δ-Φ-pernode / AI-Δ8 [carrier facet of Δ-Ψ]** per-NODE carrier placement (down-slide currently per-TERM; full
+  geometry = each node its narrowest carrier, predict-place folded into the on-GPU kernel dispatch).
 LAYOUT UPDATE: Δ-J6 layout matured F0->F3 -- the optimum is the PARTITION TOPOLOGY P*={16,64} (a settlement), NOT
 the scalar B (B is a lossy coordinate: same-B partitions differ 1.7x); F5 conductance-graph named for when the
 ladder grows. (jea_layout_surface.py.) Every "argmin of a scalar surface" cell is a shadow of this same picture.
