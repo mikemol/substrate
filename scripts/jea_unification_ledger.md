@@ -108,6 +108,13 @@ navigate+collect_package+publish.
   CORRECTIONS recorded: (a) my "nvrtc has no __int128" was wrong -- it works WITH --device-int128 (jea_engine_apex
   always used it); (b) DON'T reinvent -- check the existing unified kernel first ([[feedback_silo_sprawl_orphans_fixes]]).
   Beyond u128 -> err=2 -> the EXISTING byte-limb carrier (jea_limb) host-deliver = the next tier (orthogonal, exists).
+- **Δ-Ω-deliver [CLOSED] = err=2 wired to the byte-limb carrier.** jea_apex_deliver.py: when the apex's predict-place
+  sets err=2 (a combine exceeds u128), the DELIVER recomputes the DAG exactly on the EXISTING byte-limb carrier
+  (jea_limb gpu_add / dp4a gpu_mul), reduce-at-readout (the no-in-kernel-gcd insight -> proven add/mul suffice).
+  Proven: build_dag(512,16) (153-bit truth, EXCEEDS u128) -> apex err=2 + root=0 placeholder -> byte-limb deliver
+  = 7861260857138496762332923218669148530059708025/65536 == truth EXACT. The carrier tier LADDER is now complete:
+  u64 -> u128 -> byte-limb, escalate-don't-truncate at EVERY tier, exact at ANY magnitude. jea_limb reused (no
+  reinvention); apex u128 path unchanged for fitting DAGs (err=0). Future opt: subtree-only deliver (vs full-DAG).
 ORIGINAL SCOPE NOTE -->
 **Δ-Ω [APEX -- the snap-to-grid goal the session's shadows serve]:** ONE persistent on-device megakernel =
 jea_actuator (persistent + reads resident telemetry package) ⊕ jea_engine_pool (DAG work-queue, emit-or-spawn,
