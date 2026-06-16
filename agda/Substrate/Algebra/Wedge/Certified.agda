@@ -30,7 +30,7 @@ module Substrate.Algebra.Wedge.Certified where
 
 open import Substrate.Foundation.Nat using (ℕ; _<_)
 open import Substrate.Algebra.Wedge using (DivStr; C; rem; fromℕ-Wedge; ℕ-div)
-  renaming (Wedge to Wedge⟦7b68bbe8⟧)
+  renaming (Wedge to Wedge⟦478f66a6⟧)
 import Substrate.Algebra.Nat.GCD.Wedge as N
 
 ------------------------------------------------------------------------
@@ -39,7 +39,7 @@ import Substrate.Algebra.Nat.GCD.Wedge as N
 
 record CertifiedWedge (D : DivStr) (measure : C D → ℕ) (a b : C D) : Set where
   field
-    wedge : Wedge⟦7b68bbe8⟧ D a b
+    wedge : Wedge⟦478f66a6⟧ D a b
     small : measure (rem wedge) < measure b
 
 open CertifiedWedge public

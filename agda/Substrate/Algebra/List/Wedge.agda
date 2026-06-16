@@ -20,6 +20,7 @@ module Substrate.Algebra.List.Wedge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.List using (List; []; _++_)
+open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Algebra.Wedge using (DivStr)
 
 -- q copies of b, concatenated (the quotient's free-monoid scale).
@@ -27,5 +28,10 @@ lrepeat : {A : Set} → ℕ → List A → List A
 lrepeat zero    _ = []
 lrepeat (suc n) b = b ++ lrepeat n b
 
+-- The quotient is now a CARRIER REPRESENTATIVE (a List), whose LENGTH is the
+-- count: recon q b r = (|q| copies of b) ++ r. The old bare-ℕ count was a frozen
+-- coordinate ([[feedback_coordinate_to_geometry]]); here it is the GRADE (length)
+-- of the quotient word — the count-as-grade reading, in plain-DivStr form. (The
+-- genuinely graded home of the free monoid is `vec-graded`/the GradedProduct.)
 List-div : Set → DivStr
-List-div A = record { C = List A ; z = [] ; recon = λ q b r → lrepeat q b ++ r }
+List-div A = record { C = List A ; z = [] ; recon = λ q b r → lrepeat (length q) b ++ r }

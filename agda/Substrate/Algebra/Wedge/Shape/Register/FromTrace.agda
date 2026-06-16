@@ -23,16 +23,18 @@
 
 module Substrate.Algebra.Wedge.Shape.Register.FromTrace where
 
+open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.List using ([]; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace; done; more; quot)
+open import Substrate.Algebra.Wedge using (Trace; done; more; quot; ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Register using (Register; _∈ᴿ_; intern)
 
 -- Intern every suffix of a trace's shape, bottom-up. Structural recursion on
 -- the inductive trace ⟹ terminating + acyclic for free (no well-founded
 -- measure). Returns the register with the full shape interned + its address.
-intern-trace : {D : DivStr} {a b g : C D} (t : Trace D a b g) (reg : Register) →
+-- (At ℕ-div, where the Register lives — its shape elements are the ℕ quotients.)
+intern-trace : {a b g : ℕ} (t : Trace ℕ-div a b g) (reg : Register) →
                Σ Register (λ reg′ → shape t ∈ᴿ reg′)
 intern-trace (done a)       reg = intern [] reg
 intern-trace (more b w rec) reg with intern-trace rec reg

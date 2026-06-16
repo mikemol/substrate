@@ -65,8 +65,8 @@ _⊗ᵇ_ : {A A′ B B′ : DivStr} → Bridge A A′ → Bridge B B′ →
 f ⊗ᵇ g = record
   { translate = λ p → translate f (proj₁ p) , translate g (proj₂ p)
   ; respects  = λ q p p′ →
-      cong₂ _,_ (respects f q (proj₁ p) (proj₁ p′))
-                (respects g q (proj₂ p) (proj₂ p′))
+      cong₂ _,_ (respects f (proj₁ q) (proj₁ p) (proj₁ p′))
+                (respects g (proj₂ q) (proj₂ p) (proj₂ p′))
   ; z-pres    = cong₂ _,_ (z-pres f) (z-pres g)
   }
 

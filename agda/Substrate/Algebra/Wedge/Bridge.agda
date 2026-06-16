@@ -42,9 +42,9 @@ open import Substrate.Algebra.Wedge
 record Bridge (D₁ D₂ : DivStr) : Set where
   field
     translate : C D₁ → C D₂
-    respects  : (q : ℕ) (b r : C D₁) →
+    respects  : (q b r : C D₁) →        -- the quotient q is a carrier element, so translate maps it too
                 translate (recon D₁ q b r)
-                  ≡ recon D₂ q (translate b) (translate r)
+                  ≡ recon D₂ (translate q) (translate b) (translate r)
     z-pres    : translate (z D₁) ≡ z D₂
 
 open Bridge public
@@ -53,11 +53,11 @@ open Bridge public
 -- 2. The bridge transports the Euclidean structure across silos.
 ------------------------------------------------------------------------
 
--- a wedge in D₁ becomes a wedge in D₂ (same quotient; remainder translated).
+-- a wedge in D₁ becomes a wedge in D₂ (quotient and remainder both translated).
 transport-wedge : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b : C D₁} →
                   Wedge D₁ a b → Wedge D₂ (translate br a) (translate br b)
 transport-wedge br {a} {b} w = record
-  { quot     = quot w
+  { quot     = translate br (quot w)
   ; rem      = translate br (rem w)
   ; wedge-eq = trans (cong (translate br) (wedge-eq w))
                      (respects br (quot w) b (rem w))
@@ -92,8 +92,8 @@ id-bridge D = record
 record LaxBridge (D₁ D₂ : DivStr) : Set where
   field
     translate : C D₁ → C D₂
-    gap : (q : ℕ) (b r : C D₁) →
+    gap : (q b r : C D₁) →
           Wedge D₂ (translate (recon D₁ q b r))
-                   (recon D₂ q (translate b) (translate r))
+                   (recon D₂ (translate q) (translate b) (translate r))
 
 open LaxBridge public

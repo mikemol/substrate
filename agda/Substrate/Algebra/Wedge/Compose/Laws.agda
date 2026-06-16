@@ -25,11 +25,11 @@ open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-assoc
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Compose using (ReconLinear; ReconUnit)
 
-ℕ-recon-linear : ReconLinear ℕ-div
+ℕ-recon-linear : ReconLinear ℕ-div _*_
 ℕ-recon-linear q q′ c r′ r =
   trans (cong (_+ r) (*-distribˡ-+ q (q′ * c) r′))
   (trans (cong (λ w → w + q * r′ + r) (sym (*-assoc q q′ c)))
          (+-assoc ((q * q′) * c) (q * r′) r))
 
-ℕ-recon-unit : ReconUnit ℕ-div
+ℕ-recon-unit : ReconUnit ℕ-div (suc zero)
 ℕ-recon-unit x = trans (+-identityʳ (suc zero * x)) (*-identityˡ x)

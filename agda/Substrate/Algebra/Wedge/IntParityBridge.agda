@@ -23,13 +23,13 @@ module Substrate.Algebra.Wedge.IntParityBridge where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; +-comm; +-identityʳ)
-  renaming (_+_ to _+₂_)
-open import Substrate.Algebra.F2.Wedge using (F₂-div; scale)
+  renaming (_+_ to _+₂_; _·_ to _·₂_)
+open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_; 0ℤ)
 open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_; _⊖_)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge)
-open import Substrate.Algebra.Wedge.ParityBridge using (parity; parity-+; parity-scale)
+open import Substrate.Algebra.Wedge.ParityBridge using (parity; parity-+; parity-*)
 
 ------------------------------------------------------------------------
 -- 1. parity on ℤ — sign-blind (magnitude's parity).
@@ -87,13 +87,16 @@ parity-negPos zero    = refl
 parity-negPos (suc k) = refl
 
 ------------------------------------------------------------------------
--- 6. parity-ℤ respects the ℕ-scaling (+ q) *ℤ b.
+-- 6. parity-ℤ is multiplicative (sign-blind): parity-ℤ (x ·ℤ y) = parity-ℤ x ·₂
+--    parity-ℤ y. One case per sign pair; parity-negPos kills the sign on the two
+--    mixed-sign products, then the ℕ multiplicative leg parity-* closes each.
 ------------------------------------------------------------------------
 
-parity-ℤ-scale : (q : ℕ) (b : ℤ) → parity-ℤ ((+ q) *ℤ b) ≡ scale q (parity-ℤ b)
-parity-ℤ-scale q (+ n)    = parity-scale q n
-parity-ℤ-scale q (-suc n) =
-  trans (parity-negPos (q * suc n)) (parity-scale q (suc n))
+parity-ℤ-* : (x y : ℤ) → parity-ℤ (x *ℤ y) ≡ parity-ℤ x ·₂ parity-ℤ y
+parity-ℤ-* (+ m)    (+ n)    = parity-* m n
+parity-ℤ-* (+ m)    (-suc n) = trans (parity-negPos (m * suc n)) (parity-* m (suc n))
+parity-ℤ-* (-suc m) (+ n)    = trans (parity-negPos (suc m * n)) (parity-* (suc m) n)
+parity-ℤ-* (-suc m) (-suc n) = parity-* (suc m) (suc n)
 
 ------------------------------------------------------------------------
 -- 7. THE BRIDGE: ℤ-div ↠ F₂-div (the mod-2 ring homomorphism).
@@ -103,7 +106,7 @@ int-parity-bridge : Bridge ℤ-div F₂-div
 int-parity-bridge = record
   { translate = parity-ℤ
   ; respects  = λ q b r →
-      trans (parity-ℤ-+ ((+ q) *ℤ b) r)
-            (cong (_+₂ parity-ℤ r) (parity-ℤ-scale q b))
+      trans (parity-ℤ-+ (q *ℤ b) r)
+            (cong (_+₂ parity-ℤ r) (parity-ℤ-* q b))
   ; z-pres    = refl
   }

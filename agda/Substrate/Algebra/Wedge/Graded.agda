@@ -2,8 +2,8 @@
 -- Substrate.Algebra.Wedge.Graded
 --
 -- THE GRADED WEDGE — the indexed lift of Algebra.Wedge.DivStr. The plain
--- DivStr has an UN-indexed carrier C : Set and a NON-dependent recon :
--- ℕ → C → C → C; that is exactly what blocked founding the WitnessTower as
+-- DivStr has an UN-indexed carrier C : Set and a non-dependent recon :
+-- C → C → C → C; that is exactly what blocked founding the WitnessTower as
 -- a single DivStr (WitnessTower.Wedge.Action's obstruction note): the rung
 -- step's base is a Perm n and its remainder a Fin (suc n), both indexed by
 -- the SAME grade n — a link an un-indexed carrier cannot hold.
@@ -12,8 +12,15 @@
 -- a per-grade remainder/digit type R : ℕ → Set, and a grade-RAISING
 -- reconstruction recon n : C n → R n → C (suc n). Then the rung step is a
 -- single graded wedge, not a per-rung family — and the grade index is the
--- handle the grading conjectures (#2/#3/#4) hang on. (The plain DivStr is
--- the degenerate case C n = C, R n = C, recon ignoring n.)
+-- handle the grading conjectures (#2/#3/#4) hang on.
+--
+-- NOT "plain DivStr ⊂ GradedWedge" (a former overclaim — there is no such
+-- degenerate embedding; the plain recon C→C→C→C and the grade-raising recon
+-- C n → R n → C (suc n) are different shapes). The relation between the plain
+-- and graded wedges is the FORMAL ALLEGORY: graded descent is the Φ-chain
+-- refinement of `Category.Allegory.Refinement` (ALG-7), as F₂.Polynomial.Wedge.
+-- TraceDescent realises it for F₂[x]. The allegory, not an embedding, is the
+-- bridge between the two grades.
 --
 -- Zero postulates, --safe --without-K.
 ------------------------------------------------------------------------

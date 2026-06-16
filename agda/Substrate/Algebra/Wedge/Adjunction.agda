@@ -31,7 +31,6 @@
 
 module Substrate.Algebra.Wedge.Adjunction where
 
-open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge
@@ -48,13 +47,14 @@ sym-sym refl = refl
 -- 1. Forgetful (eval) and the term type it evaluates.
 ------------------------------------------------------------------------
 
-eval : (D : DivStr) → ℕ → C D → C D → C D
+eval : (D : DivStr) → C D → C D → C D → C D
 eval = recon
 
--- the FREE term for a against b: a (q, r) decomposing a. (Same orientation
--- as the wedge — so the hom-iso below is definitional.)
+-- the FREE term for a against b: a (q, r) decomposing a, where the quotient q
+-- is a CARRIER REPRESENTATIVE (an element of C D), not a bare ℕ count. (Same
+-- orientation as the wedge — so the hom-iso below is definitional.)
 Term : (D : DivStr) → C D → C D → Set
-Term D a b = Σ ℕ (λ q → Σ (C D) (λ r → a ≡ recon D q b r))
+Term D a b = Σ (C D) (λ q → Σ (C D) (λ r → a ≡ recon D q b r))
 
 ------------------------------------------------------------------------
 -- 2. The hom-set bijection Wedge ≅ Term, uniform in D — DEFINITIONAL.

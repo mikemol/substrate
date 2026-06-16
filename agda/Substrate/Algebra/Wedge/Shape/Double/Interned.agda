@@ -21,23 +21,27 @@
 module Substrate.Algebra.Wedge.Shape.Double.Interned where
 
 open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Algebra.Wedge using (Trace; ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Double using (Corr)
 open import Substrate.Algebra.Wedge.Shape.Register using (Register; _∈ᴿ_; idx; idx-inj)
 open import Substrate.Algebra.Wedge.Shape.Register.Properties using (NoDupᴿ; idx-cong)
 
+-- (At ℕ-div, where the Register lives — its shapes are the ℕ quotient sequences;
+-- Corr is the same-carrier correspondence.)
+
 -- (⟹) a correspondence forces equal addresses (needs the faithful heap).
-corr→addr : {D₁ D₂ : DivStr} {a₁ b₁ g₁ : C D₁} {a₂ b₂ g₂ : C D₂}
-            {t₁ : Trace D₁ a₁ b₁ g₁} {t₂ : Trace D₂ a₂ b₂ g₂} {reg : Register} →
+corr→addr : {a₁ b₁ g₁ a₂ b₂ g₂ : ℕ}
+            {t₁ : Trace ℕ-div a₁ b₁ g₁} {t₂ : Trace ℕ-div a₂ b₂ g₂} {reg : Register} →
             NoDupᴿ reg →
             (p₁ : shape t₁ ∈ᴿ reg) (p₂ : shape t₂ ∈ᴿ reg) →
             Corr t₁ t₂ → idx p₁ ≡ idx p₂
 corr→addr nd p₁ p₂ c = idx-cong nd c p₁ p₂
 
 -- (⟸) equal addresses force a correspondence (sound on any register).
-addr→corr : {D₁ D₂ : DivStr} {a₁ b₁ g₁ : C D₁} {a₂ b₂ g₂ : C D₂}
-            {t₁ : Trace D₁ a₁ b₁ g₁} {t₂ : Trace D₂ a₂ b₂ g₂} {reg : Register} →
+addr→corr : {a₁ b₁ g₁ a₂ b₂ g₂ : ℕ}
+            {t₁ : Trace ℕ-div a₁ b₁ g₁} {t₂ : Trace ℕ-div a₂ b₂ g₂} {reg : Register} →
             (p₁ : shape t₁ ∈ᴿ reg) (p₂ : shape t₂ ∈ᴿ reg) →
             idx p₁ ≡ idx p₂ → Corr t₁ t₂
 addr→corr p₁ p₂ e = idx-inj p₁ p₂ e

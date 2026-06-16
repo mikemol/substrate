@@ -28,7 +28,7 @@ open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟙≢𝟘)
 open import Substrate.Algebra.Wedge using (forget; forget-correct; ℕ-div; C)
-  renaming (Wedge to Wedge⟦7b68bbe8⟧)
+  renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; TorsorAtom; prove-or-correct; e)
 open import Substrate.Algebra.Wedge.ResidueAtom using (F₂-torsor; ℕ-torsor; ℕ-zero?)
@@ -37,7 +37,7 @@ open import Substrate.Algebra.Wedge.ResidueAtom using (F₂-torsor; ℕ-torsor; 
 -- HALF 1 — the triangle is the wedge witness (the reconstruction half).
 ------------------------------------------------------------------------
 
-keystone-triangle : {a b : C ℕ-div} (w : Wedge⟦7b68bbe8⟧ ℕ-div a b) → forget w ≡ a
+keystone-triangle : {a b : C ℕ-div} (w : Wedge⟦478f66a6⟧ ℕ-div a b) → forget w ≡ a
 keystone-triangle = forget-correct
 
 ------------------------------------------------------------------------

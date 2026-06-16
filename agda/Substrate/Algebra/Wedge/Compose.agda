@@ -11,9 +11,10 @@
 --       a = recon q (recon q' c r') r = recon (q*q') c (recon q r' r)
 --     — the RECON-LINEARITY law (ReconLinear).
 --
--- The composition LITERALLY exhibits the wedge's two ℕ-roles as its two legs:
---   * `quot w₁ * quot w₂`  — ℕ-as-Quot — QUANTIFY (multiplicities multiply);
---   * `recon (quot w₁) (rem w₂) (rem w₁)` — ℕ-as-carrier — EXCHANGE (the
+-- The composition LITERALLY exhibits the wedge's two roles as its two legs:
+--   * `quot w₁ ⊗ quot w₂`  — quotient — QUANTIFY (multiplicities multiply, via
+--     the carrier's own multiplication `_⊗_`, the quotient being a carrier rep);
+--   * `recon (quot w₁) (rem w₂) (rem w₁)` — carrier — EXCHANGE (the
 --     residue handed downstream, exactly the EEA step).
 -- This is the carrier-side content; quotienting by the carrier (Shape.agda)
 -- projects composition to concatenation of the quotient sequences.
@@ -28,24 +29,26 @@
 
 module Substrate.Algebra.Wedge.Compose where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Wedge
   using (DivStr; C; z; recon; quot; rem; wedge-eq)
-  renaming (Wedge to Wedge⟦7b68bbe8⟧)   -- specialize the colliding name by shape
+  renaming (Wedge to Wedge⟦478f66a6⟧)   -- specialize the colliding name by shape
 
 ------------------------------------------------------------------------
 -- 1. The two laws a carrier needs to host the wedge category.
+--    The quotient is now a CARRIER element, so "multiplicities multiply" is the
+--    carrier's OWN multiplication `_⊗_` and the identity quotient is `one : C D`
+--    (these were ℕ's `_*_` and `1` when the quotient was a baked count).
 ------------------------------------------------------------------------
 
 -- composition: recon distributes over its own remainder (ring-linearity).
-ReconLinear : DivStr → Set
-ReconLinear D = (q q′ : ℕ) (c r′ r : C D) →
-  recon D q (recon D q′ c r′) r ≡ recon D (q * q′) c (recon D q r′ r)
+ReconLinear : (D : DivStr) → (C D → C D → C D) → Set
+ReconLinear D _⊗_ = (q q′ c r′ r : C D) →
+  recon D q (recon D q′ c r′) r ≡ recon D (q ⊗ q′) c (recon D q r′ r)
 
--- identity: the (1, z) corner reconstructs the element unchanged.
-ReconUnit : DivStr → Set
-ReconUnit D = (x : C D) → recon D (suc zero) x (z D) ≡ x
+-- identity: the (one, z) corner reconstructs the element unchanged.
+ReconUnit : (D : DivStr) → C D → Set
+ReconUnit D one = (x : C D) → recon D one x (z D) ≡ x
 
 ------------------------------------------------------------------------
 -- 2. The category structure: identity (1,z) and composition.
@@ -53,10 +56,10 @@ ReconUnit D = (x : C D) → recon D (suc zero) x (z D) ≡ x
 
 -- composition of wedges: quotients multiply (quantify), remainders
 -- accumulate through recon (exchange).
-wedge-∘ : {D : DivStr} → ReconLinear D → {a b c : C D} →
-          Wedge⟦7b68bbe8⟧ D a b → Wedge⟦7b68bbe8⟧ D b c → Wedge⟦7b68bbe8⟧ D a c
-wedge-∘ {D} lin {c = c} w₁ w₂ = record
-  { quot     = quot w₁ * quot w₂
+wedge-∘ : {D : DivStr} {_⊗_ : C D → C D → C D} → ReconLinear D _⊗_ → {a b c : C D} →
+          Wedge⟦478f66a6⟧ D a b → Wedge⟦478f66a6⟧ D b c → Wedge⟦478f66a6⟧ D a c
+wedge-∘ {D} {_⊗_} lin {c = c} w₁ w₂ = record
+  { quot     = quot w₁ ⊗ quot w₂
   ; rem      = recon D (quot w₁) (rem w₂) (rem w₁)
   ; wedge-eq =
       trans (wedge-eq w₁)
@@ -64,7 +67,7 @@ wedge-∘ {D} lin {c = c} w₁ w₂ = record
              (lin (quot w₁) (quot w₂) c (rem w₂) (rem w₁)))
   }
 
--- the identity wedge a ⟶ a: the (1, z) corner.
-wedge-id : {D : DivStr} → ReconUnit D → (a : C D) → Wedge⟦7b68bbe8⟧ D a a
-wedge-id {D} unit a =
-  record { quot = suc zero ; rem = z D ; wedge-eq = sym (unit a) }
+-- the identity wedge a ⟶ a: the (one, z) corner.
+wedge-id : {D : DivStr} {one : C D} → ReconUnit D one → (a : C D) → Wedge⟦478f66a6⟧ D a a
+wedge-id {D} {one} unit a =
+  record { quot = one ; rem = z D ; wedge-eq = sym (unit a) }

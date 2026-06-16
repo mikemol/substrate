@@ -108,8 +108,11 @@ vec-recon-cons A n v a = refl
 --    (flatten (vec-product A) ≅ List-div: Σ ℕ Vec ≅ List, q copies ++ r.)
 ------------------------------------------------------------------------
 
-flatten-recon : (P : GradedProduct) → ℕ → Σ ℕ (C P) → Σ ℕ (C P) → Σ ℕ (C P)
-flatten-recon P q (i , b) (j , r) = (q * i) + j , _∧_ P (gpower P b q) r
+-- the quotient is now a CARRIER REPRESENTATIVE (a graded element Σ ℕ (C P)); its
+-- GRADE component `qn` is the count (the flattened carrier carries its own grade,
+-- so the count-as-grade reading is intrinsic — no bare ℕ quotient).
+flatten-recon : (P : GradedProduct) → Σ ℕ (C P) → Σ ℕ (C P) → Σ ℕ (C P) → Σ ℕ (C P)
+flatten-recon P (qn , _) (i , b) (j , r) = (qn * i) + j , _∧_ P (gpower P b qn) r
 
 flatten : GradedProduct → DivStr
 flatten P = record { C = Σ ℕ (C P) ; z = 0 , u P ; recon = flatten-recon P }

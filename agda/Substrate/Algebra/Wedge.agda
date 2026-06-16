@@ -3,8 +3,11 @@
 --
 -- THE GENERIC WEDGE — the keystone operator. A wedge of `a` against `b`
 -- is the triple (quotient, remainder, witness : a = recon q b r): "a built
--- as q copies of b, plus a remainder r." Over a carrier that supplies only
--- a reconstruction `recon : ℕ → C → C → C` ("q copies of b, then r").
+-- as q·b, plus a remainder r." Over a carrier that supplies only a
+-- reconstruction `recon : C → C → C → C` ("q·b, then r"), where the quotient q
+-- is itself a CARRIER REPRESENTATIVE (an element of C), not a bare ℕ count — so
+-- a POLYNOMIAL quotient (F₂[x] division) is an instance, not a parallel
+-- construction, and a Bridge's `translate` maps the quotient like any element.
 --
 -- The three universal properties are the three PROJECTIONS of this triple
 -- (see [[project_center_free_universal_property]]):
@@ -26,8 +29,12 @@
 --   * the canonicality refinement `rem < b` (smallness) — that is the
 --     UNIQUENESS / no-gauge certificate (the certified, natural wedge);
 --     this loose wedge keeps the triple, not its canonical representative.
---   * Quot = ℕ is baked (the count = iterated combine = Peano); lifting the
---     quotient type is itself a deformation to track later.
+-- NO LONGER scoped out: the quotient is now a CARRIER REPRESENTATIVE (recon's
+--   first argument is a `C`, was a baked ℕ count). Ring carriers (ℕ, ℤ, F₂[x])
+--   use their own element as the quotient; the old ℕ count was a FROZEN COORDINATE
+--   ([[feedback_coordinate_to_geometry]]). Count carriers (free-monoid List, the
+--   product slices) keep a count via their representative; their mature home is
+--   the grade index of `GradedDivStr`, of which the flat form is the shadow.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -47,7 +54,8 @@ record DivStr : Set₁ where
   field
     C     : Set
     z     : C                 -- the terminal divisor (the recursion stops here)
-    recon : ℕ → C → C → C     -- recon q b r = "q copies of b, then the remainder r"
+    recon : C → C → C → C     -- recon q b r = "q·b, then the remainder r"; the quotient q
+                              -- is a CARRIER REPRESENTATIVE (an element of C), not a count.
 
 open DivStr public
 
@@ -55,9 +63,9 @@ open DivStr public
 -- 2. The generic wedge: the triple (quotient, remainder, witness).
 ------------------------------------------------------------------------
 
-record Wedge (D : DivStr) (a b : C D) : Set where      -- ⟦shape:7b68bbe8 quot,rem,wedge-eq⟧
+record Wedge (D : DivStr) (a b : C D) : Set where      -- ⟦shape:478f66a6 quot,rem,wedge-eq⟧
   field
-    quot     : ℕ
+    quot     : C D
     rem      : C D
     wedge-eq : a ≡ recon D quot b rem
 
@@ -90,6 +98,27 @@ data Trace (D : DivStr) : C D → C D → C D → Set where
 -- Bézout read (Algebra.Nat.GCD.Fold: gcd-fold vs bezout-ℤ are these two).
 collapse : {D : DivStr} {a b g : C D} → Trace D a b g → C D
 collapse {g = g} _ = g
+
+-- THE GENERIC FOLD = the Trace recursor, named so targets are swappable (the
+-- carrier-uniform lift of Algebra.Nat.GCD.Fold.eea-fold: any target T over the
+-- trace is computed structurally). gcd / Bézout / mod are its instances; the ℕ
+-- EEATrace and the F₂[x] PolyEEATrace both fold through it once they are traces.
+trace-fold :
+  {D : DivStr} {T : C D → C D → C D → Set}
+  (base-interp : (a : C D) → T a (z D) a)
+  (step-interp : {a g : C D} (b : C D) (w : Wedge D a b) → T b (rem w) g → T a b g) →
+  {a b g : C D} → Trace D a b g → T a b g
+trace-fold bi si (done a)      = bi a
+trace-fold bi si (more b w tr) = si b w (trace-fold bi si tr)
+
+-- the forgetful fold IS collapse: returning the gcd index g.
+collapse-fold : {D : DivStr} {a b g : C D} → Trace D a b g → C D
+collapse-fold {D} = trace-fold {D} {T = λ _ _ _ → C D} (λ a → a) (λ _ _ rec → rec)
+
+collapse-fold≡collapse : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
+                         collapse-fold t ≡ collapse t
+collapse-fold≡collapse (done a)      = refl
+collapse-fold≡collapse (more b w tr) = collapse-fold≡collapse tr
 
 ------------------------------------------------------------------------
 -- 4. THE INTERFACE TEST: ℕ instance, and the existing wedge + trace fall out.

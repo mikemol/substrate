@@ -4,7 +4,8 @@
 -- F₂ FOUNDED ON THE WEDGE — F₂ as a `DivStr`, so it becomes a wedge-carrier
 -- (a vertex of the foundational quotient algebra) rather than a primitive
 -- data type the wedge cannot reach. The reconstruction is the ring shape
--- `recon q b r = (q copies of b) + r`, with `z = 𝟘` the terminal divisor.
+-- `recon q b r = (q · b) + r`, with `z = 𝟘` the terminal divisor and the
+-- quotient `q` a CARRIER REPRESENTATIVE (an element of F₂), not a ℕ count.
 --
 -- WHY THIS EXISTS: the shred of the realizable peak showed the foundation is
 -- an open DAG with no fluidity — because the roots (F₂, Fin, ℤ, …) are NOT
@@ -16,10 +17,11 @@
 -- tensor `_⊗ᴰ_` and its pentagon coherence (Algebra.Wedge.Monoidal) are
 -- grounded at the actual roots, not merely abstract.
 --
--- NOTE the ℕ-scale is the honest Peano count: `scale q b` is `b` summed `q`
--- times. In F₂ that collapses to `(q mod 2)·b`, but we DON'T optimize — the
--- count IS the wedge's quotient shadow (Quot = ℕ is baked, per Wedge.agda),
--- and keeping it unoptimized keeps `recon`'s quotient the Peano shadow.
+-- NOTE the ℕ-scale `scale` (b summed q times) is RETAINED — it is the Peano
+-- count shadow of the quotient, and is re-used by the parity bridges
+-- (Wedge.ParityBridge / IntParityBridge). But `recon` no longer uses it: with
+-- the quotient now a CARRIER REPRESENTATIVE (an element of F₂), the
+-- reconstruction is F₂'s own ring multiplication `q · b`, not a Peano count.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -27,7 +29,7 @@
 module Substrate.Algebra.F2.Wedge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_)
+open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_; _·_)
 open import Substrate.Algebra.Wedge using (DivStr)
 
 ------------------------------------------------------------------------
@@ -39,8 +41,10 @@ scale zero    _ = 𝟘
 scale (suc n) b = b + scale n b
 
 ------------------------------------------------------------------------
--- 2. F₂ as a wedge-carrier: recon q b r = (q copies of b) + r, z = 𝟘.
+-- 2. F₂ as a wedge-carrier: recon q b r = (q · b) + r, z = 𝟘.
+--    The quotient q is a CARRIER REPRESENTATIVE (an element of F₂), so the
+--    reconstruction is F₂'s ring multiplication, not the ℕ-count `scale`.
 ------------------------------------------------------------------------
 
 F₂-div : DivStr
-F₂-div = record { C = F₂ ; z = 𝟘 ; recon = λ q b r → scale q b + r }
+F₂-div = record { C = F₂ ; z = 𝟘 ; recon = λ q b r → q · b + r }

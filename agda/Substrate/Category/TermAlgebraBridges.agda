@@ -118,14 +118,15 @@ bridge-polylens-poly t = t
 --
 -- The R-arc / division machinery's free term is `Algebra.Wedge.Trace` (keep
 -- every wedge step). Its bridge into this diagram ALREADY EXISTS — it is
--- `Algebra.Wedge.Shape.shape`: the free wedge term ↦ its carrier-free CF digit
--- word (`WedgeShape = List ℕ`), uniform over every `DivStr`, with
+-- `Algebra.Wedge.Shape.shape`: the free wedge term ↦ its CF digit word
+-- (`WedgeShape D = List (C D)`, the quotients now carrier representatives),
+-- uniform over every `DivStr`, with
 -- `Wedge.Shape.Corresponds` (= shape-equality) the cross-silo bridge relation.
 -- (I first wrote a `trace-word` here; it duplicated `shape` exactly and was
 -- removed — convergence over isolation, use the apex.) Same shape as T28
 -- (a term ↦ a word); fully realized, not deferred.
 
-bridge-wedge-shape : {D : DivStr} {a b g : C D} → Trace D a b g → WedgeShape
+bridge-wedge-shape : {D : DivStr} {a b g : C D} → Trace D a b g → WedgeShape D
 bridge-wedge-shape = shape
 
 ------------------------------------------------------------------------

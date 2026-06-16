@@ -38,6 +38,7 @@ open import Substrate.Algebra.Q.Properties.Canonical using (canonical-respects-�
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace; coprime-trace)
 open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
+open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (ℕ-shape; WedgeShape)
 open import Substrate.Algebra.Wedge.Shape.Register using (_≟ˢ_)
 
@@ -45,7 +46,7 @@ open import Substrate.Algebra.Wedge.Shape.Register using (_≟ˢ_)
 -- 1. The shape key (the interned CF of |num|/den) and its faithfulness.
 ------------------------------------------------------------------------
 
-q-key : ℚ → WedgeShape
+q-key : ℚ → WedgeShape ℕ-div
 q-key q = ℕ-shape (gcd-trace (abs-ℤ (num q)) (denominator q))
 
 -- ℕ-shape ignores the gcd index, so transporting it (coprime-trace = subst on

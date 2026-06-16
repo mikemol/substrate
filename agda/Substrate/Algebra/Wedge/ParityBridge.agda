@@ -27,8 +27,9 @@ module Substrate.Algebra.Wedge.ParityBridge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; sym)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; +-assoc) renaming (_+_ to _+₂_)
-open import Substrate.Algebra.F2.Wedge using (F₂-div; scale)
+open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; +-assoc; ·-distribʳ-+; ·-identityˡ)
+  renaming (_+_ to _+₂_; _·_ to _·₂_)
+open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
 
@@ -41,7 +42,9 @@ parity zero    = 𝟘
 parity (suc n) = 𝟙 +₂ parity n
 
 ------------------------------------------------------------------------
--- 2. Parity is a ring hom: additive, and respects the Peano scale.
+-- 2. Parity is a ring hom: additive (parity-+) AND multiplicative (parity-*).
+--    parity-* replaces the old parity-scale now that F₂-div's recon uses F₂'s
+--    own multiplication (q·b), not the Peano count `scale q b`.
 ------------------------------------------------------------------------
 
 parity-+ : (x y : ℕ) → parity (x + y) ≡ parity x +₂ parity y
@@ -50,22 +53,26 @@ parity-+ (suc n) y =
   trans (cong (𝟙 +₂_) (parity-+ n y))
         (sym (+-assoc 𝟙 (parity n) (parity y)))
 
-parity-scale : (q b : ℕ) → parity (q * b) ≡ scale q (parity b)
-parity-scale zero    b = refl
-parity-scale (suc n) b =
-  trans (parity-+ b (n * b))
-        (cong (parity b +₂_) (parity-scale n b))
+-- parity is multiplicative: parity (x·y) = parity x ·₂ parity y (the ℕ→F₂ ring
+-- hom's multiplicative leg). suc-case = distribute, then 𝟙·=id.
+parity-* : (x y : ℕ) → parity (x * y) ≡ parity x ·₂ parity y
+parity-* zero    y = refl
+parity-* (suc n) y =
+  trans (parity-+ y (n * y))
+  (trans (cong (parity y +₂_) (parity-* n y))
+         (sym (trans (·-distribʳ-+ (parity y) 𝟙 (parity n))
+                     (cong (_+₂ (parity n ·₂ parity y)) (·-identityˡ (parity y))))))
 
 ------------------------------------------------------------------------
 -- 3. The bridge: parity respects recon, so it carries the wedge structure.
---    recon ℕ-div q b r = q·b + r ;  recon F₂-div q b r = scale q b +₂ r.
+--    recon ℕ-div q b r = q·b + r ;  recon F₂-div q b r = (parity q)·(parity b) +₂ r.
 ------------------------------------------------------------------------
 
 parity-bridge : Bridge ℕ-div F₂-div
 parity-bridge = record
   { translate = parity
   ; respects  = λ q b r →
-      trans (parity-+ (q * b) r) (cong (_+₂ parity r) (parity-scale q b))
+      trans (parity-+ (q * b) r) (cong (_+₂ parity r) (parity-* q b))
   ; z-pres    = refl
   }
 

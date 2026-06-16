@@ -22,10 +22,11 @@
 module Substrate.Algebra.Wedge.Product.ListIso where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 import Substrate.Foundation.Vec as V
 import Substrate.Foundation.List as L
+open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge)
 open import Substrate.Algebra.Wedge.Product using (vec-product; gpower; flatten)
 open import Substrate.Algebra.List.Wedge using (List-div; lrepeat)
@@ -42,6 +43,12 @@ vecToList-++ : {A : Set} {m n : ℕ} (xs : V.Vec A m) (ys : V.Vec A n) →
                vecToList (xs V.++ ys) ≡ vecToList xs L.++ vecToList ys
 vecToList-++ V.[]       ys = refl
 vecToList-++ (x V.∷ xs) ys = cong (x L.∷_) (vecToList-++ xs ys)
+
+-- vecToList preserves length — so the Vec's grade IS the List-quotient's length
+-- (the count-as-grade bridge: flatten counts by `proj₁`, List-div by `length`).
+vecToList-length : {A : Set} {n : ℕ} (v : V.Vec A n) → length (vecToList v) ≡ n
+vecToList-length V.[]       = refl
+vecToList-length (x V.∷ xs) = cong suc (vecToList-length xs)
 
 -- the q-deep ∧-term (q copies appended) maps to lrepeat (q copies in List).
 vecToList-gpower : {A : Set} {i : ℕ} (a : V.Vec A i) (q : ℕ) →
@@ -60,8 +67,10 @@ flatten-vec→list : (A : Set) → Bridge (flatten (vec-product A)) (List-div A)
 flatten-vec→list A = record
   { translate = λ p → vecToList (proj₂ p)
   ; respects  = λ q b r →
-      trans (vecToList-++ (gpower (vec-product A) (proj₂ b) q) (proj₂ r))
-            (cong (L._++ vecToList (proj₂ r)) (vecToList-gpower (proj₂ b) q))
+      trans (vecToList-++ (gpower (vec-product A) (proj₂ b) (proj₁ q)) (proj₂ r))
+      (trans (cong (L._++ vecToList (proj₂ r)) (vecToList-gpower (proj₂ b) (proj₁ q)))
+             (cong (λ n → lrepeat n (vecToList (proj₂ b)) L.++ vecToList (proj₂ r))
+                   (sym (vecToList-length (proj₂ q)))))
   ; z-pres    = refl
   }
 

@@ -95,9 +95,9 @@ gradedHom→bridge : {P Q : GradedProduct} (h : GradedHom P Q) →
 gradedHom→bridge {P} {Q} h = record
   { translate = flatten-map h
   ; respects  = λ where
-      q (i , bb) (j , rr) →
-        cong ((q * i) + j ,_)
-          (trans (map-∧ h (gpower P bb q) rr)
-                 (cong (λ z → _∧ᵖ_ Q z (map₀ h rr)) (map-gpower h bb q)))
+      (qn , _) (i , bb) (j , rr) →
+        cong ((qn * i) + j ,_)
+          (trans (map-∧ h (gpower P bb qn) rr)
+                 (cong (λ z → _∧ᵖ_ Q z (map₀ h rr)) (map-gpower h bb qn)))
   ; z-pres    = cong (0 ,_) (map-u h)
   }

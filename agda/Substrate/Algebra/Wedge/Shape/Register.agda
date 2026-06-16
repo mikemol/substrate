@@ -7,7 +7,7 @@
 -- Here that exterior picture is made FIRST-CLASS and VERIFIED, so the
 -- coincidence "equal value ⟺ equal address" is a theorem, not a runtime hope:
 --
---   * Register  = List WedgeShape — the heap, made data.
+--   * Register  = List WedgeShape ℕ-div — the heap, made data.
 --   * x ∈ᴿ reg  = a membership; `idx` reads off its position = the address.
 --   * idx-inj   = SOUNDNESS of the fast path: equal index ⟹ equal shape
 --                 (so comparing addresses decides structural equality).
@@ -15,7 +15,7 @@
 --                 address if present, append a new node if not. Equal-by-value
 --                 shapes collapse to one node — copies minimized by construction.
 --
--- value-equality (`_≡_` on WedgeShape) is the SPEC; index-equality is the
+-- value-equality (`_≡_` on WedgeShape ℕ-div) is the SPEC; index-equality is the
 -- IMPLEMENTATION; `idx-inj` is the refinement proof connecting them — the
 -- exterior heap as a verified realization of the interior semantics.
 --
@@ -38,13 +38,14 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape)
 
 ------------------------------------------------------------------------
 -- 1. Decidable equality on shapes (the CMP loop) — built from ℕ's.
 ------------------------------------------------------------------------
 
-_≟ˢ_ : (xs ys : WedgeShape) → Dec (xs ≡ ys)
+_≟ˢ_ : (xs ys : WedgeShape ℕ-div) → Dec (xs ≡ ys)
 []       ≟ˢ []       = yes refl
 []       ≟ˢ (_ ∷ _)  = no (λ ())
 (_ ∷ _)  ≟ˢ []       = no (λ ())
@@ -58,14 +59,14 @@ _≟ˢ_ : (xs ys : WedgeShape) → Dec (xs ≡ ys)
 ------------------------------------------------------------------------
 
 Register : Set
-Register = List WedgeShape
+Register = List (WedgeShape ℕ-div)
 
-data _∈ᴿ_ (x : WedgeShape) : Register → Set where
+data _∈ᴿ_ (x : WedgeShape ℕ-div) : Register → Set where
   here  : {reg : Register} → x ∈ᴿ (x ∷ reg)
-  there : {y : WedgeShape} {reg : Register} → x ∈ᴿ reg → x ∈ᴿ (y ∷ reg)
+  there : {y : WedgeShape ℕ-div} {reg : Register} → x ∈ᴿ reg → x ∈ᴿ (y ∷ reg)
 
 -- the address: the position of a membership in the register.
-idx : {x : WedgeShape} {reg : Register} → x ∈ᴿ reg → ℕ
+idx : {x : WedgeShape ℕ-div} {reg : Register} → x ∈ᴿ reg → ℕ
 idx here      = zero
 idx (there p) = suc (idx p)
 
@@ -73,7 +74,7 @@ idx (there p) = suc (idx p)
 -- 3. SOUNDNESS — equal address ⟹ equal value (the fast path is correct).
 ------------------------------------------------------------------------
 
-idx-inj : {x y : WedgeShape} {reg : Register}
+idx-inj : {x y : WedgeShape ℕ-div} {reg : Register}
           (p : x ∈ᴿ reg) (q : y ∈ᴿ reg) → idx p ≡ idx q → x ≡ y
 idx-inj here      here      _ = refl
 idx-inj here      (there _) ()
@@ -84,7 +85,7 @@ idx-inj (there p) (there q) e = idx-inj p q (suc-injective e)
 -- 4. Hash-cons: decidable membership + append-when-absent.
 ------------------------------------------------------------------------
 
-find : (x : WedgeShape) (reg : Register) → Dec (x ∈ᴿ reg)
+find : (x : WedgeShape ℕ-div) (reg : Register) → Dec (x ∈ᴿ reg)
 find x []        = no (λ ())
 find x (y ∷ reg) with x ≟ˢ y
 ... | yes refl = yes here
@@ -93,14 +94,14 @@ find x (y ∷ reg) with x ≟ˢ y
 ...   | no  x∉reg = no (λ { here → x≢y refl ; (there p) → x∉reg p })
 
 -- a shape appended to the end is a member there.
-∈ᴿ-snoc : (x : WedgeShape) (reg : Register) → x ∈ᴿ (reg ++ (x ∷ []))
+∈ᴿ-snoc : (x : WedgeShape ℕ-div) (reg : Register) → x ∈ᴿ (reg ++ (x ∷ []))
 ∈ᴿ-snoc x []        = here
 ∈ᴿ-snoc x (y ∷ reg) = there (∈ᴿ-snoc x reg)
 
 -- intern: reuse the address if present, append a new node if not. Returns the
 -- register with x guaranteed present, and its membership (the canonical
 -- address). Equal-by-value shapes resolve to the same node.
-intern : (x : WedgeShape) (reg : Register) → Σ Register (λ reg′ → x ∈ᴿ reg′)
+intern : (x : WedgeShape ℕ-div) (reg : Register) → Σ Register (λ reg′ → x ∈ᴿ reg′)
 intern x reg with find x reg
 ... | yes p = reg , p
 ... | no  _ = (reg ++ (x ∷ [])) , ∈ᴿ-snoc x reg

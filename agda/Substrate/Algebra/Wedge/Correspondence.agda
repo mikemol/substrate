@@ -46,7 +46,7 @@ g ⊚ f = record
   { translate = λ x → translate g (translate f x)
   ; respects  = λ q b r →
       trans (cong (translate g) (respects f q b r))
-            (respects g q (translate f b) (translate f r))
+            (respects g (translate f q) (translate f b) (translate f r))
   ; z-pres    = trans (cong (translate g) (z-pres f)) (z-pres g)
   }
 

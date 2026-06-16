@@ -31,6 +31,7 @@ open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Product using (proj₁)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
+open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape)
 open import Substrate.Algebra.Wedge.Shape.Register
   using (Register; _∈ᴿ_; here; there; idx; find; intern; ∈ᴿ-snoc)
@@ -41,7 +42,7 @@ open import Substrate.Algebra.Wedge.Shape.Register
 
 data NoDupᴿ : Register → Set where
   nd-[] : NoDupᴿ []
-  nd-∷  : {x : WedgeShape} {reg : Register} →
+  nd-∷  : {x : WedgeShape ℕ-div} {reg : Register} →
           ¬ (x ∈ᴿ reg) → NoDupᴿ reg → NoDupᴿ (x ∷ reg)
 
 ------------------------------------------------------------------------
@@ -50,7 +51,7 @@ data NoDupᴿ : Register → Set where
 --    the same-parameter double-match is a UIP-shape --without-K refuses.)
 ------------------------------------------------------------------------
 
-idx-unique-gen : {x y : WedgeShape} {reg : Register} →
+idx-unique-gen : {x y : WedgeShape ℕ-div} {reg : Register} →
                  NoDupᴿ reg → (p : x ∈ᴿ reg) (q : y ∈ᴿ reg) → x ≡ y → idx p ≡ idx q
 idx-unique-gen _            here       here       _   = refl
 idx-unique-gen (nd-∷ x∉ _)  here       (there q′) x≡y =
@@ -61,7 +62,7 @@ idx-unique-gen (nd-∷ _  nd) (there p′) (there q′) x≡y =
   cong suc (idx-unique-gen nd p′ q′ x≡y)
 
 -- (⟹): equal shapes intern to the same address.
-idx-cong : {x y : WedgeShape} {reg : Register} →
+idx-cong : {x y : WedgeShape ℕ-div} {reg : Register} →
            NoDupᴿ reg → x ≡ y → (p : x ∈ᴿ reg) (q : y ∈ᴿ reg) → idx p ≡ idx q
 idx-cong nd x≡y p q = idx-unique-gen nd p q x≡y
 
@@ -70,7 +71,7 @@ idx-cong nd x≡y p q = idx-unique-gen nd p q x≡y
 ------------------------------------------------------------------------
 
 -- a member of `reg ++ [x]` is either a member of `reg` or equal to `x`.
-∈ᴿ-++-inv : {y x : WedgeShape} {reg : Register} →
+∈ᴿ-++-inv : {y x : WedgeShape ℕ-div} {reg : Register} →
             y ∈ᴿ (reg ++ (x ∷ [])) → (y ∈ᴿ reg) ⊎ (y ≡ x)
 ∈ᴿ-++-inv {reg = []}    here       = inj₂ refl
 ∈ᴿ-++-inv {reg = []}    (there ())
@@ -80,7 +81,7 @@ idx-cong nd x≡y p q = idx-unique-gen nd p q x≡y
 ... | inj₂ e = inj₂ e
 
 -- appending an absent shape preserves NoDupᴿ.
-NoDupᴿ-snoc : {x : WedgeShape} {reg : Register} →
+NoDupᴿ-snoc : {x : WedgeShape ℕ-div} {reg : Register} →
              NoDupᴿ reg → ¬ (x ∈ᴿ reg) → NoDupᴿ (reg ++ (x ∷ []))
 NoDupᴿ-snoc nd-[]            x∉      = nd-∷ (λ ()) nd-[]
 NoDupᴿ-snoc {x} (nd-∷ {z} z∉r nd) x∉zr =
@@ -92,7 +93,7 @@ NoDupᴿ-snoc {x} (nd-∷ {z} z∉r nd) x∉zr =
     ... | inj₂ z≡x = x∉zr (subst (λ w → w ∈ᴿ (z ∷ _)) z≡x here)
 
 -- intern keeps the register duplicate-free.
-intern-NoDupᴿ : {x : WedgeShape} {reg : Register} →
+intern-NoDupᴿ : {x : WedgeShape ℕ-div} {reg : Register} →
                NoDupᴿ reg → NoDupᴿ (proj₁ (intern x reg))
 intern-NoDupᴿ {x} {reg} nd with find x reg
 ... | yes _  = nd

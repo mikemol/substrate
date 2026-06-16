@@ -81,13 +81,13 @@ data Unfold : Set where
 ------------------------------------------------------------------------
 
 run : {D : DivStr} (co : WedgeCoalg D) → ℕ → List (C D) → (a b : C D) →
-      List ℕ × Unfold
+      List (C D) × Unfold
 run     co zero    seen a b = [] , stop
 run {D} co (suc f) seen a b with eq? co b (z D)
 ... | yes _ = [] , halt
 ... | no  _ = cont (divide co a b)
   where
-    cont : Wedge D a b → List ℕ × Unfold
+    cont : Wedge D a b → List (C D) × Unfold
     cont w with seen? co (rem w) seen
     ... | true  = quot w ∷ [] , loop                 -- residue already a path: close the cycle
     ... | false = let r = run co f (rem w ∷ seen) b (rem w)

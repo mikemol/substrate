@@ -42,7 +42,7 @@ open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-inj
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
 open import Substrate.Algebra.Nat.Mod.Homomorphism
-  using (mod-add-hom; mod-*-right; mod-+-left)
+  using (mod-add-hom; mod-mult-hom; mod-+-left)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
 open import Substrate.Algebra.Fin.Wedge using (Cyc-div; recon-cyc)
@@ -69,12 +69,12 @@ toℕ-reduce n a = toℕ-fromℕ< (mod-suc-bound a n)
 
 respects-ℕ : (n q b r : ℕ) →
              (q * b + r) mod-suc n
-               ≡ (q * (b mod-suc n) + (r mod-suc n)) mod-suc n
+               ≡ ((q mod-suc n) * (b mod-suc n) + (r mod-suc n)) mod-suc n
 respects-ℕ n q b r =
   trans (mod-add-hom (q * b) r n)
         (trans (cong (λ z → (z + (r mod-suc n)) mod-suc n)
-                     (sym (mod-*-right q b n)))
-               (mod-+-left (q * (b mod-suc n)) (r mod-suc n) n))
+                     (mod-mult-hom q b n))
+               (mod-+-left ((q mod-suc n) * (b mod-suc n)) (r mod-suc n) n))
 
 ------------------------------------------------------------------------
 -- 3. Reading the two recon-sides through `toℕ`.
@@ -86,21 +86,23 @@ respects-ℕ n q b r =
 ------------------------------------------------------------------------
 
 toℕ-RHS : (n q b r : ℕ) →
-          toℕ (recon-cyc n q (reduce n b) (reduce n r))
-            ≡ (q * (b mod-suc n) + (r mod-suc n)) mod-suc n
+          toℕ (recon-cyc n (reduce n q) (reduce n b) (reduce n r))
+            ≡ ((q mod-suc n) * (b mod-suc n) + (r mod-suc n)) mod-suc n
 toℕ-RHS n q b r =
-  trans (toℕ-reduce n (q * toℕ (reduce n b) + toℕ (reduce n r)))
-        (trans (cong (λ z → (q * z + toℕ (reduce n r)) mod-suc n)
-                     (toℕ-reduce n b))
-               (cong (λ z → (q * (b mod-suc n) + z) mod-suc n)
-                     (toℕ-reduce n r)))
+  trans (toℕ-reduce n (toℕ (reduce n q) * toℕ (reduce n b) + toℕ (reduce n r)))
+  (trans (cong (λ z → (z * toℕ (reduce n b) + toℕ (reduce n r)) mod-suc n)
+               (toℕ-reduce n q))
+  (trans (cong (λ z → ((q mod-suc n) * z + toℕ (reduce n r)) mod-suc n)
+               (toℕ-reduce n b))
+         (cong (λ z → ((q mod-suc n) * (b mod-suc n) + z) mod-suc n)
+               (toℕ-reduce n r))))
 
 ------------------------------------------------------------------------
 -- 4. The bridge.
 ------------------------------------------------------------------------
 
 respects-cyc : (n q b r : ℕ) →
-               reduce n (q * b + r) ≡ recon-cyc n q (reduce n b) (reduce n r)
+               reduce n (q * b + r) ≡ recon-cyc n (reduce n q) (reduce n b) (reduce n r)
 respects-cyc n q b r = toℕ-injective
   (trans (toℕ-reduce n (q * b + r))
          (trans (respects-ℕ n q b r) (sym (toℕ-RHS n q b r))))
