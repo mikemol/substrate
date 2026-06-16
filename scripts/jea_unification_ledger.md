@@ -164,11 +164,14 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     never-discarded trace is a z-coded number; the SPPF = prefix-sort of those codes. BUILT jea_zsppf.intern_radix:
     interning = a DEVICE radix sort (cupy.unique per height = sort+dedup), GPU-native (sort, not hash). WIRED:
     jea_sppf.intern now delegates to it (jea_zsppf <- jea_sppf <- jea_carrier_solve <- jea_agda_apex, consumed).
-    HONEST findings (tested): (W2) the dedup is CODE-AGNOSTIC -- a plain (op,cl,cr) key and a z-interleaved key give
-    the IDENTICAL sharing partition; z-order is NOT a correctness lever ("SPPF=prefix-sort of codes" holds for any
-    injective code). (W3a) the S and P of SPPF = two sorts: structural-code sort = SHARING; value-code (z-coded
-    reduced num,den) sort = PACKING (value-equal distinct structures collapse; 7->4 on the rung-b DAG). (W3b)
-    z-order's payoff is LOCALITY, not dedup. THINK QUADTREE (user, "find the common structure recursively"): a
+    HONEST findings (tested): (W2) BOTH dedup AND locality from ONE interleaved sort -- in a SORTED structure dedup
+    and locality are the SAME adjacency (equal->adjacent; near->adjacent). USER corrected my first framing ("z-order
+    is just locality, not a correctness lever" treated them as separable): the quadtree's point is you sort BOTH
+    dimensions interleaved and get both. Measured (W3b): plain & z give the IDENTICAL dedup partition, but on
+    (num,den) adjacency z-order=88 vs LEX=337 vs random=704 -- lex dedups yet localizes only the MAJOR axis (minor
+    scrambled); the interleaved sort localizes BOTH axes (~4x lex) WHILE deduping. That is why you interleave.
+    (W3a) the S and P of SPPF = the same interleaved sort over two dimensions: structure (SHARING) + value (PACKING;
+    value-equal distinct structures collapse, 7->4). THINK QUADTREE (user, "find the common structure recursively"): a
     prefix-sort of Morton codes IS a (linear) quadtree (internal nodes = shared prefixes = shared subterms), so the
     SPPF is a quadtree; the CODE picks WHICH quadtree. CORRECTION to my first cut: morton(num,den) is the EXTRINSIC
     (num,den)-PLANE quadtree (plane-locality only). The rational's INTRINSIC quadtree is the STERN-BROCOT tree

@@ -99,8 +99,8 @@ if __name__ == "__main__":
     canon_p,dp=intern_radix(eq,"plain")
     same_partition = (dz==dp) and (partition(canon_z)==partition(canon_p))
     w2 = same_partition
-    print(f"  W2  DEDUP IS CODE-AGNOSTIC: plain key distinct={dp}, z-code distinct={dz}; identical sharing partition: {w2}")
-    print(f"      -> 'SPPF = prefix-sort of codes' holds for ANY injective code; z-order is NOT a correctness lever.")
+    print(f"  W2  BOTH dedup AND locality, one sort: plain & z BOTH dedup (identical sharing partition: {w2}) -- because")
+    print(f"      in a SORTED structure dedup and locality are the SAME adjacency (equal->adjacent; near->adjacent).")
 
     # W3a: SHARED vs PACKED. A DAG with value-equal-but-structurally-distinct nodes: structural intern (sharing) vs
     # value intern (packing). 6=mul(1/2,2/3)=1/3, 7=add(1/6,1/6)=1/3 (distinct structure, same value); 4=2/4≡1/2.
@@ -119,12 +119,14 @@ if __name__ == "__main__":
     # adjacent (num,den) L1 distance is SMALLER under z-order (2D Morton clustering). NOT dedup, NOT value-line.
     rng=np.random.default_rng(0); num=rng.integers(1,1024,400); den=rng.integers(1,1024,400)
     zc=np.asarray(morton2(num,den)); order=np.argsort(zc)
+    lex=np.argsort(num.astype(np.int64)*1024+den)              # 1-D lexicographic: localizes the MAJOR axis only
     def adj_l1(nn,dd): return float(np.mean(np.abs(np.diff(nn.astype(np.int64)))+np.abs(np.diff(dd.astype(np.int64)))))
-    z_l1=adj_l1(num[order],den[order]); rnd_l1=adj_l1(num,den)
-    w3b = z_l1 < rnd_l1*0.5                                     # z-order clusters the (num,den) plane (well under random)
-    print(f"  W3b PLANE QUADTREE (morton num,den): adjacent (num,den) L1 z-sorted={z_l1:.0f} vs random={rnd_l1:.0f} "
-          f"({rnd_l1/z_l1:.1f}x tighter): {w3b}")
-    print(f"      -> morton(num,den) is the EXTRINSIC (num,den)-PLANE quadtree: residue-plane locality, NOT value-line.")
+    z_l1=adj_l1(num[order],den[order]); lex_l1=adj_l1(num[lex],den[lex]); rnd_l1=adj_l1(num,den)
+    w3b = z_l1 < lex_l1                                         # z localizes BOTH axes; lex only one (the point of interleaving)
+    print(f"  W3b BOTH AXES (interleaved) vs ONE (lex): adjacent (num,den) L1 -- z-order={z_l1:.0f}, LEX={lex_l1:.0f}, "
+          f"random={rnd_l1:.0f}: z<lex={w3b}")
+    print(f"      -> lex DEDUPS but localizes only the major axis (minor scrambled); the INTERLEAVED sort gives dedup")
+    print(f"         AND locality on BOTH axes at once -- that is why you interleave (the quadtree), not lex.")
 
     # W3c: the rational's INTRINSIC quadtree = the STERN-BROCOT tree, addressed by the CONTINUED FRACTION (= the EEA
     # residue rung-(b) already keeps). In-order = value order; CF prefix = a Stern-Brocot interval = value-locality.
