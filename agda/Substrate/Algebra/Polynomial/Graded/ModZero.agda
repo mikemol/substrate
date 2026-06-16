@@ -17,9 +17,10 @@
 
 module Substrate.Algebra.Polynomial.Graded.ModZero where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
@@ -81,3 +82,48 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
   modulus-multiple q =
     trans (reduce-*P-expand q b-poly)
           (trans (cong (hsum q) reduce-modulus-zero) (hsum-zeroʳ q))
+
+  ------------------------------------------------------------------------
+  -- B-INV-SPLIT: reduce respects the coefficient-wise Bézout sum.
+  ------------------------------------------------------------------------
+
+  -- reduce of an all-zero-coefficient poly is 𝟎C (any length).
+  reduce-zero-nth : (u : Poly n) → ((k : ℕ) → nth u k ≡ 𝟘)
+                  → reduce-mod-f u ≡ replicate (suc d) 𝟘
+  reduce-zero-nth []      h = refl
+  reduce-zero-nth (a ∷ u) h =
+    trans (cong₂ (λ x z → (x ∷ replicate d 𝟘) +P ytime z) (h 0) (reduce-zero-nth u (λ k → h (suc k))))
+          (trans (cong ((𝟘 ∷ replicate d 𝟘) +P_) ytime-zero) (+P-identityˡ (replicate (suc d) 𝟘)))
+
+  -- reduce is determined by the coefficients (nth), across lengths.
+  reduce-cong-nth : {n′ : ℕ} (u : Poly n) (v : Poly n′)
+                  → ((k : ℕ) → nth u k ≡ nth v k) → reduce-mod-f u ≡ reduce-mod-f v
+  reduce-cong-nth []      v       h = sym (reduce-zero-nth v (λ k → sym (h k)))
+  reduce-cong-nth (a ∷ u) []      h = reduce-zero-nth (a ∷ u) h
+  reduce-cong-nth (a ∷ u) (b ∷ v) h =
+    cong₂ (λ x z → (x ∷ replicate d 𝟘) +P ytime z) (h 0) (reduce-cong-nth u v (λ k → h (suc k)))
+
+  -- THE BRIDGE: from the convCoeff Bézout (convCoeff s a + convCoeff t m ≡ nth g,
+  -- ∀k) to reduce-level additivity — pad both products into one +P, push reduce
+  -- through, match g by reduce-cong-nth.  (B-INV-DROP then drops the t·m term.)
+  reduce-split : {ns na nt nm ng : ℕ}
+                 (sv : Poly ns) (av : Poly na) (tv : Poly nt) (mv : Poly nm) (gv : Poly ng)
+               → ((k : ℕ) → convCoeff sv av k + convCoeff tv mv k ≡ nth gv k)
+               → reduce-mod-f (sv *P av) +P reduce-mod-f (tv *P mv) ≡ reduce-mod-f gv
+  reduce-split {ns} {na} {nt} {nm} sv av tv mv gv bez = trans (sym redW) (reduce-cong-nth W gv nthW)
+    where
+      U  = pad-end (nt ℕ+ nm) (sv *P av)
+      V′ = subst Poly (+ℕ-comm (nt ℕ+ nm) (ns ℕ+ na)) (pad-end (ns ℕ+ na) (tv *P mv))
+      W  = U +P V′
+      redW : reduce-mod-f W ≡ reduce-mod-f (sv *P av) +P reduce-mod-f (tv *P mv)
+      redW = trans (reduce-+P U V′)
+             (cong₂ _+P_ (reduce-pad-end (nt ℕ+ nm) (sv *P av))
+                         (trans (reduce-subst (+ℕ-comm (nt ℕ+ nm) (ns ℕ+ na)) (pad-end (ns ℕ+ na) (tv *P mv)))
+                                (reduce-pad-end (ns ℕ+ na) (tv *P mv))))
+      nthW : (k : ℕ) → nth W k ≡ nth gv k
+      nthW k = trans (nth-+P U V′ k)
+               (trans (cong₂ _+_
+                         (trans (nth-pad-end (nt ℕ+ nm) (sv *P av) k) (nth-*P sv av k))
+                         (trans (nth-subst (+ℕ-comm (nt ℕ+ nm) (ns ℕ+ na)) (pad-end (ns ℕ+ na) (tv *P mv)) k)
+                                (trans (nth-pad-end (ns ℕ+ na) (tv *P mv) k) (nth-*P tv mv k))))
+                      (bez k))
