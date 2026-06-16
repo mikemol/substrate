@@ -26,7 +26,7 @@ import Substrate.Algebra.Polynomial.Graded.Div as D
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
   open D.Over CR d f-lo
 
-  private variable n : ℕ
+  private variable n m : ℕ
 
   -- vlast / vinit of a snoc.
   vlast-snoc : (w : Poly n) (x : A) → vlast (snoc w x) ≡ x
@@ -72,3 +72,12 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
       bp≡ : b-poly ≡ monomial +P snoc (-P f-lo) 𝟘
       bp≡ = sym (trans (snoc-+P (replicate (suc d) 𝟘) (-P f-lo) 𝟙 𝟘)
                        (cong₂ snoc (+P-identityˡ (-P f-lo)) (+-identityʳ 𝟙)))
+
+  -- a MULTIPLE of the modulus reduces to 0 (poly `modulus-multiple`): the exact
+  -- analog of ℕ's `modulus-multiple = mod-mult-hom + suc-mod-self`, here
+  -- `reduce-*P-expand` (the ×P bridge) + `reduce-modulus-zero` + `hsum-zeroʳ`.
+  -- This is the term that vanishes in the Bézout inverse read (B-EEA-INV).
+  modulus-multiple : (q : Poly m) → reduce-mod-f (q *P b-poly) ≡ replicate (suc d) 𝟘
+  modulus-multiple q =
+    trans (reduce-*P-expand q b-poly)
+          (trans (cong (hsum q) reduce-modulus-zero) (hsum-zeroʳ q))
