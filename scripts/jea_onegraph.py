@@ -70,6 +70,15 @@ def fstar_qgraph(gc, gg):
     return q_combine(1, gg, q_recip(s))                              # gg · 1/(gc + gg)    (rat_mul)
 
 
+def fstar_device(gc, gg):
+    """Δ-Ω-onegraph brick 4 (ON-DEVICE): f* = gg/(gc+gg) computed on the GRADED GPU carrier with the values
+    DEVICE-RESIDENT THROUGHOUT -- gr_* thread the bit-sliced planes, recip = plane swap (the ℚ wedge quotient, free),
+    readout ONCE at the end. No host Fraction reconstruction between ops (vs fstar_qgraph's per-op q_combine). The
+    supervisor's operating point is a device-resident graded-ℚ term eval -- self-hosting."""
+    GC, GG = GR.gr_lift(gc), GR.gr_lift(gg)
+    return GR.gr_read(GR.gr_mul(GG, GR.gr_recip(GR.gr_add(GC, GG))))     # gg · 1/(gc+gg), planes threaded on-device
+
+
 def operating_point_qgraph(imc, tel, pcie_eff=1.0, cpu_eff=1.0, ref_T=46.0):
     """The navigator's operating point (f*, bottleneck) ENTIRELY as graded-ℚ graph arithmetic + a BRANCHLESS argmax --
     the same logic+arithmetic as the term eval (Δ-Ω-onegraph), matching live_dispatcher.decide. f* = parallel
@@ -190,8 +199,18 @@ if __name__ == "__main__":
     print(f"  W9  SUBTRACTION-FREE operating point (brick 3): f* = the current divider (== brick 1: {fs_c==f_c}); binding")
     print(f"      edge by RATIO sensitivity (native ÷); reactive cool->hot {bn_sc}->{bn_sh}: {w9}  -- solve is {{+,×,÷}} only")
 
-    ok = w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω-onegraph bricks 1-3: the hardware operating-point solve is ENTIRELY a")
+    # W10 (brick 4): the operating point ON-DEVICE -- f* via the graded carrier, values device-resident THROUGHOUT
+    # (no host Fraction between ops; recip = plane swap). == the host fstar_qgraph == decide. Self-hosting.
+    gc_c = _Q(imc * gate(cool["T"], _TRIP)); gg_c = _Q(_PCIE_MAX_BW * cool["link_state"])
+    gc_h = _Q(imc * gate(hot["T"],  _TRIP)); gg_h = _Q(_PCIE_MAX_BW * hot["link_state"])
+    fd_c = fstar_device(gc_c, gg_c); fd_h = fstar_device(gc_h, gg_h)
+    w10 = (fd_c == fstar_qgraph(gc_c, gg_c)) and (fd_h == fstar_qgraph(gc_h, gg_h)) \
+          and abs(float(fd_c) - decide(imc, cool)["fstar"]) < 1e-9 and (fd_c != fd_h)
+    print(f"\n  W10 ON-DEVICE (brick 4): f* via the graded carrier, values device-resident THROUGHOUT (recip = plane")
+    print(f"      swap, readout once) -- == host fstar_qgraph & decide ({float(fd_c):.4f}/{float(fd_h):.4f}), reactive: {w10}")
+
+    ok = w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9 and w10
+    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω-onegraph bricks 1-4: the hardware operating-point solve is ENTIRELY a")
     print(f"  graded-ℚ graph reduction on the SAME carrier as the term eval -- f* (parallel current-divider) AND the")
     print(f"  iMC/iGPU net (the SCHUR/Kron reduction == series_schur, a graded-ℚ WEDGE: a·b/(a+b)) AND the binding edge")
     print(f"  (branchless ℚ argmax over the gains), matching el-atlas g_eff/compute_bw/binding_edge/decide. Circuit-state-")

@@ -127,3 +127,14 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
                          (trans (nth-subst (+ℕ-comm (nt ℕ+ nm) (ns ℕ+ na)) (pad-end (ns ℕ+ na) (tv *P mv)) k)
                                 (trans (nth-pad-end (ns ℕ+ na) (tv *P mv) k) (nth-*P tv mv k))))
                       (bez k))
+
+  -- B-INV-DROP: the t·m term DROPS (it is a multiple of the modulus).  From a
+  -- Bézout against the divisor b-poly, reduce(s·a) ≡ reduce g.  Mirrors ℕ `drop`.
+  reduce-drop : {ns na nt ng : ℕ}
+                (sv : Poly ns) (av : Poly na) (tv : Poly nt) (gv : Poly ng)
+              → ((k : ℕ) → convCoeff sv av k + convCoeff tv b-poly k ≡ nth gv k)
+              → reduce-mod-f (sv *P av) ≡ reduce-mod-f gv
+  reduce-drop sv av tv gv bez =
+    trans (sym (+P-identityʳ (reduce-mod-f (sv *P av))))
+    (trans (cong (reduce-mod-f (sv *P av) +P_) (sym (modulus-multiple tv)))
+           (reduce-split sv av tv b-poly gv bez))

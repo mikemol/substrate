@@ -113,6 +113,16 @@ def combine_batch(op, nL, dL, nR, dR):
     return [ (lambda f:(f.numerator,f.denominator))(Fraction(RN[i],RD[i])) for i in range(N) ]   # reduce at readout
 
 
+# --- graded RATIONAL as DEVICE-RESIDENT plane-tuples (num_planes, den_planes): thread bit-sliced planes THROUGH a
+#     computation without host Fraction reconstruction between ops; reciprocal = SWAP (the ℚ field quotient, free).
+#     Used for the on-device operating-point solve (Δ-Ω-onegraph brick 4): values never leave the device mid-solve. ---
+def gr_lift(f):  n,_=to_bitsliced([f.numerator]); d,_=to_bitsliced([f.denominator]); return (n, d)   # Fraction -> device planes
+def gr_mul(A, B): return (bs_mul(A[0], B[0]), bs_mul(A[1], B[1]))                     # (na/da)·(nb/db) -- device, no readout
+def gr_add(A, B): return (bs_add(bs_mul(A[0], B[1]), bs_mul(B[0], A[1])), bs_mul(A[1], B[1]))   # cross-mul add -- device
+def gr_recip(A):  return (A[1], A[0])                                                # SWAP num<->den planes = ℚ wedge quotient (free)
+def gr_read(A):   return Fraction(from_bitsliced(A[0], 1)[0], from_bitsliced(A[1], 1)[0])  # reduce ONCE at readout (host gcd)
+
+
 _W = np.uint64(0xFFFFFFFFFFFFFFFF)
 def _extract(buf, off, width):
     """Read `width` bits at bit-offset `off` from a device uint64 bit-buffer -> Python int (only at query/readout)."""
@@ -227,7 +237,15 @@ if __name__ == "__main__":
           f"(borrow 0): {sub_ok}; q_sub (rational a-b via the carrier) == Fraction: {rat_ok} -- ÷ is native (swap), so -")
     print(f"      is the only added additive-inverse (no sign-magnitude): {w8}")
 
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8
+    # W9: graded RATIONAL threaded as DEVICE plane-tuples (gr_*) -- a multi-op computation with NO host Fraction
+    # between ops (recip = plane swap), == Fraction; the on-device-resident solve form (Δ-Ω-onegraph brick 4).
+    fa, fb, fc = Fraction(3,7), Fraction(5,11), Fraction(2,9)
+    dev = gr_read(gr_mul(gr_lift(fb), gr_recip(gr_add(gr_lift(fa), gr_lift(fc)))))    # fb / (fa+fc), device-resident
+    w9 = dev == fb / (fa + fc)
+    print(f"\n  W9  graded RATIONAL as device planes (gr_add/gr_mul/gr_recip=swap, no host Fraction between ops) == "
+          f"Fraction: {dev} == {fb/(fa+fc)}: {w9}")
+
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9
     print(f"\n  {'PASS' if ok else 'FAIL'} — the graded sub-byte carrier: a value is carried at its GRADE (1 bit up), bit-sliced")
     print(f"  so arithmetic (ripple-carry add, ripple-borrow SUB, shift-and-add mul, combine_batch) is per-bit SWAR -- 64")
     print(f"  values/word; GradedStore = the device sub-byte VALUE store. u128 was a frozen coordinate; the grade is the")

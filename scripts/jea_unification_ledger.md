@@ -84,7 +84,18 @@ quotient); jea_carrier_base <- jea_divstr <- jea_onegraph; 11/11 modules PASS. A
 the convergence is executable, not an analogy (ℕ/F₂[x] remainders + ℚ exact = one recon : C→C→C→C, the Agda collapse
 realized in jea). NEXT for it: route the jea_eval SPPF/EEA trace + series_schur through the DivStr Trace explicitly.
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ω-onegraph brick 4 (ON-DEVICE)** -- run the {+,×,÷} operating-point solve
+**Δ-Ω-onegraph brick 4 (ON-DEVICE) [DONE -- jea_onegraph.fstar_device + jea_graded.gr_*]:** the f* operating-point
+solve runs on the GRADED GPU carrier with values DEVICE-RESIDENT THROUGHOUT -- gr_lift/gr_add/gr_mul/gr_recip thread
+the bit-sliced planes through the DAG (no host Fraction reconstruction between ops, unlike fstar_qgraph's per-op
+q_combine round-trip), recip = plane SWAP (the ℚ wedge quotient, free), readout ONCE at the end (reduce-at-readout).
+W9 (jea_graded: gr_* device-threaded == Fraction), W10 (jea_onegraph: fstar_device == host fstar_qgraph == decide,
+reactive). 11/11 PASS. The supervisor's operating point is now a device-resident graded-ℚ term eval -- self-hosting.
+(Honest scope: the gr_* solve doesn't reduce between ops -- num/den grow modestly over the small DAG, reduced at
+readout. Folding the WHOLE operating point [series_schur, gains, argmax] device-resident + the recip op INTO the
+fused mega_eval kernel [one drain incl ÷, vs gr_* host-orchestrated plane-threading] are continuations.)
+
+**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-bitkernel** (fused branchless bit-sliced CUDA kernel -- lets SWAR
+win the dispatch + kills mega_eval divergence; the recip op folds in here) -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
