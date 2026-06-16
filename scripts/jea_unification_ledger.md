@@ -68,6 +68,13 @@ NEXT-STEP EXECUTORS (to spawn; the user dispatches by symbol):
 - **AI-Δ4** actual-DAG wirer — **Δ-J4** (measure_g_surface on the real workload DAG).
 - **AI-Δ5** constants auditor — **Δ-J5** (residual-constant net-positive audit).
 
+**Δ-Ω [CLOSED -- jea_apex.py; AI-Ω done]** the snap landed: ONE persistent megakernel (apex) drains the DAG
+work-queue, reads the resident package each sweep, and takes its schedule (active-lane count = on-device
+coop<->strat granularity; lane gid<g participates, stride g covers ALL slots) LIVE from it. Proven 3/3: root =
+70785/8 CORRECT while 3 distinct active-lane counts [20,40,20480] used during the ONE drain (combine ⊥ schedule,
+on-device, no relaunch); drained via pending==0 (productivity, no fuel); err=0 (assertion never fired). u64 carrier
+(deeper DAGs overflow -> the C3 escalation/tiers plug in, orthogonal). Host half = navigate+collect_package+publish.
+ORIGINAL SCOPE NOTE -->
 **Δ-Ω [APEX -- the snap-to-grid goal the session's shadows serve]:** ONE persistent on-device megakernel =
 jea_actuator (persistent + reads resident telemetry package) ⊕ jea_engine_pool (DAG work-queue, emit-or-spawn,
 PRODUCTIVITY-proven, no fuel) ⊕ jea_megakernel (schedule set LIVE by the package). I.e. a persistent megakernel
