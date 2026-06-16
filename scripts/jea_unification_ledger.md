@@ -10,10 +10,16 @@ bound / live reconfiguration). Per shadow-architecture rule 6 this is S2G (catal
 framework (the operator = [[feedback_judgement_is_demechanization]], already on disk). Ranked by net leverage
 (mechanization-enabled × demechanization-cost-removed):
 
-- **Δ-J1** [HIGHEST] = AI-11b. The DEVICE runs a static compiled schedule -- the navigated operating point never
-  acts on-GPU. Frozen judgement = the static launch. Mechanize = persistent megakernel + device work-queue that
-  consumes the resident telemetry package (jea_telemetry double-buffer) and reconfigures per pkg.fstar/g/etc.
-  Without it the WHOLE navigator is host-side-only; closing the loop unlocks the arc. (charter on-device debt.)
+- **Δ-J1** [CLOSED for the loop; full megakernel remains] = AI-11b. jea_actuator.py: a PERSISTENT megakernel
+  (single lead thread, coop-style) resident on the GPU reads the device-resident telemetry package the HOST
+  publishes (DeviceBuffer = the device-side double-buffer, mirrors jea_telemetry.DoubleBuffer) and ACTUATES on
+  the operating point -- LIVE, no relaunch. Proven (3/3 stable): one kernel instance tracked the host's published
+  sequence [10,11,22,33,11,44] exactly (W2 live-reconfig, W3 atomic-swap/no-torn-read). The static-schedule
+  JUDGEMENT is deleted: device behavior is now a function of the live evidence. CAVEAT (honest): the demo's
+  per-epoch capture is timing-margined (kernel polls >> host publishes) to PROVE tracking; the production actuator
+  just reads the CURRENT active slot (wants the latest operating point, not every historical epoch) -- no torn
+  read either way (double-buffer). REMAINING (the full megakernel, the genuine on-device build): branch real
+  eval-work on the operating point (same read + a switch); wire host side to collect_package + navigate.
 - **Δ-J2** [HIGH, correctness] = D5. The fuel-cap is a frozen judgement standing in for termination. Mechanize =
   a proven/measured bound: Acc descent (like compute-trace-acc) or output-length structural. Aligns with
   [[feedback_finite_window_constructive_lem]] (bound it, don't fuel it). Charter flags fuel as a stand-in.
