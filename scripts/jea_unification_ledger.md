@@ -107,6 +107,13 @@ NEXT-STEP SYMBOLS (dispatch by symbol; AI-Δ0 executes unless a dedicated AI is 
   Identical code, opposite verdict, tracking kernel structure. So "K corner / layout knee B≈6" are TODAY's kernel's
   readings; if gw gains compaction or the carrier changes, re-measuring re-derives. The navigator measures whatever
   kernel it actuates -- nothing baked. ([[feedback_navigator_not_answer]] applied to the interior surfaces too.)
+  LAYOUT B* DRIVEN TO MATURE (jea_layout_surface.py): the "one pending scalar" (per-rung overhead) is GONE --
+  replaced by the MEASURED time(B) surface of the real bucket carrier (one GPU op-group per (width,op); finer B
+  = more group launches [overhead, measured] but tighter native widths [density, measured]). B* = argmin falls
+  out, overhead INSIDE the measurement: B*=2 INTERIOR (0.25ms) beats B=1 (1.05ms flat) AND B=4 (0.34ms full
+  native). KEY: B*=2 is FAR coarser than the density-only knee (B≈6) -- once launch overhead is MEASURED it
+  dominates past B=2, so the density-only answer would have OVER-bucketed. Vindicates measure-the-surface over a
+  scalar. Live + reactive (re-measure per carrier/hardware/width-mix); nothing baked. No pending scalars remain in J6.
 - **AI-Δ7 / Δ-Ω-deliver-opt** [subordinate polish] subtree-only byte-limb deliver (vs the current full-DAG recompute
   on escalation) -- an optimization, not a gap.
 
