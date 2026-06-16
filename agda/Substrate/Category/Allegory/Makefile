@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Division.agda Maps.agda
+FILES := Division.agda Maps.agda Refinement.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
