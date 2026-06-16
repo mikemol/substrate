@@ -58,12 +58,21 @@ if __name__ == "__main__":
     print(f"\n  agda --safe EmitBig.agda: {bline} (refl vouchers hold) -- value {bits} bits (EXCEEDS u128={bits>128})")
     print(f"  apex root [{btier}] == Agda vouched {str(big_agda_val)[:48]}...: {bval == big_agda_val}")
 
+    # 3. WIRED: the SAME vouched terms through the MEMOIZING evaluator (jea_eval -- persistent cross-eval memo).
+    import jea_eval as EV
+    mval,_,_   = EV.evaluate(B.to_dag(B.parse_sexpr(term)))     # Emit through the memoizing evaluator
+    mbval,_,_  = EV.evaluate(B.to_dag(B.parse_sexpr(bterm)))    # EmitBig (>u128) through it too
+    w4 = (mval==agda_val) and (mbval==big_agda_val)
+    print(f"\n  MEMOIZING evaluator (jea_eval, persistent memo): Emit -> {mval} (=={agda_val}:{mval==agda_val}); "
+          f"EmitBig -> {str(mbval)[:30]}... (==vouched:{mbval==big_agda_val}); memo {EV.memo_size()} entries")
+
     w3 = (tier != btier) and (tier in ("u64", "u128")) and ("byte-limb" in btier)  # the carrier SLID by need
     print(f"\nW1 AGDA-VOUCHED -> CARRIER SOLVE (Emit.agda term == Agda's refl-vouched value, on carrier [{tier}]): {w1}")
     print(f"W2 SUBSUMING SOLVE (EmitBig.agda term > u128 -> carrier slides to byte-limb == Agda vouched, exact): {w2}")
     print(f"W3 CARRIER SLIDES BY NEED (small term -> [{tier}], big -> [{btier}]; the carrier width is a LIVE SOLVE over")
     print(f"   predicted bit-length, NOT a baked u128 floor; the term-algebra drove both, no hardcoded DAG/carrier): {w3}")
-    ok = w1 and w2 and w3
+    print(f"W4 MEMOIZING EVALUATOR WIRED (the vouched Agda terms also evaluate through jea_eval's persistent memo, exact): {w4}")
+    ok = w1 and w2 and w3 and w4
     print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Φ: the Agda term-algebra DRIVES the carrier solve. The DAG is the GEOMETRY")
     print(f"  the term generates (not a hand-built coordinate); the carrier WIDTH is a live solve over its predicted")
     print(f"  bit-length -- the small vouched term slides DOWN to [{tier}], the >u128 term escalates to [{btier}],")

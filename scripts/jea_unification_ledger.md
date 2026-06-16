@@ -132,13 +132,18 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     terms exact (interning transparent when no sharing). Import chain jea_intern <- jea_sppf <- jea_carrier_solve <-
     jea_agda_apex = de-orphaned THROUGH THE RUNNING PATH. The earlier jea_sppf_apex.py / jea_residue_trace.py were
     DEMOS (orphans) -- DELETED. [[feedback_demo_proven_is_not_wired]] (I rebuilt the orphan I'd just warned against).
-    **Δ-Σ-trace rung-(b) [HONEST STATUS: NOT wired -- demo+theater reverted].** I built jea_residue_trace.py (a
-    DEMO, orphan) and emitted gg from the kernel (an UNCONSUMED output = theater, like the per-node tier before);
-    the USER caught both. REVERTED the gg kernel emission + deleted the demo. The genuine rung-(b) (the gcd/EEA
-    residue = CF canonical VALUE-key -> VALUE-interning beyond structural) only PAYS with a value-memo LOOKUP during
-    the drain or a cross-eval cache (value-interning is post-eval: you need a node's value to key it, so a one-shot
-    eval consumes nothing). That is the real arc -- a device VALUE-MEMO table (lookup-during-drain) -- NOT a demo.
-    The CF residue is scale-free (recoverable from the reduced value, no kernel gg needed).
+    **Δ-Σ-trace rung-(b) [DONE -- the memoizing evaluator, BUILT not demo'd].** USER: "implement the damn thing
+    properly. Nothing can use it if the infrastructure isn't there, and you keep throwing infrastructure away." (I'd
+    twice built a DEMO + an unconsumed gg = theater, then DELETED the infra citing 'no consumer' -- the chicken-egg
+    of my own making.) BUILT jea_eval.py: a PERSISTENT cross-eval memo (_MEMO: structural-sig -> reduced/CF-canonical
+    value; _VAL: value -> sig), CONSUMED BY PRUNING -- evaluate(g) interns, computes each node's persistent
+    structural signature, PRUNES every node whose sig is already cached (-> a leaf with the cached value), and the
+    apex drains ONLY the genuinely-new sub-terms. Self-consuming (the evaluator IS the consumer). Proven: eval(T2)
+    sharing sub-term S with T1 PRUNES S (drained 1, pruned 1 -- S computed once, ever); value-equal distinct-structure
+    Z=1/12+1/12 keys to S's value 1/6 (the CF/value-key); exact. Any magnitude (run_apex_u128 + deliver on err=2).
+    WIRED into the running path: jea_agda_apex imports jea_eval and evaluates BOTH vouched terms (Emit 7/40, EmitBig
+    >u128) through it, exact -- jea_eval de-orphaned by a real consumer. NEXT: device-RESIDENT _MEMO (on-GPU hash
+    table so prune+lookup is on-GPU); route a STREAM of terms through evaluate() for the resident memoizing trace.
     **NEXT rungs:** (b-real) device value-memo table (value-interning consumed during the drain); (a) intern the
     REAL workloads incl. the Agda SPPF jea_agda_dag (still orphaned) through carrier_solve; (c) the supervisor
     DECISION WAL (dout) as an EEA trace in the SPPF (closes the WAL≡EEA-trace loop); (d) semantic SPPF tools audit.
