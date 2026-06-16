@@ -45,8 +45,11 @@ spent) · **AI-Δ2** provenance archaeologist (general-purpose, resume id ad5478
 acting as the Δ-Φ executor (spent) · **AI-Q** Q-layer / AES-tower agent (SEPARATE live model instance; owns
 agda/Substrate/Algebra/{F2,Polynomial/Graded,CommutativeRing,Q,…}; coordinate via the `.md` thread at
 agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
-Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity).
-NEXT executors (to dispatch): **AI-Ψ** (Δ-Ψ on-device residency arc) · **AI-Δ8** (Δ-Φ-pernode, a FACET of Δ-Ψ).
+Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity),
+**Δ-Ψ-crown**, **Δ-Φ-pernode** (= AI-Ψ / AI-Δ8, both AI-Δ0). NEXT executor (to dispatch): **AI-Σ** -- the on-device
+SUPERVISOR arc Δ-Σ (compose the orphaned control loop; subsumes Δ-Ψ-deliver / Δ-Ψ-dag / the carrier-SELECT). The
+HEADLINE this session: an import-audit (memory [[feedback_demo_proven_is_not_wired]]) found the control loop was
+ORPHANED DEMOS -- "apex COMPLETE / live reactive" was an OVERCLAIM (fake hand-published g). Δ-Σ closes it.
 
 **Δ-Φ / AI-Φ [DONE].** Agda TERM-ALGEBRA drives the evaluator (charter term-algebra->GPU on the MATURE path).
 jea_agda_apex.py: Emit.agda (refl 7/40) AND EmitBig.agda (refl 217-bit, >u128) -> B.to_dag (the geometry the term
