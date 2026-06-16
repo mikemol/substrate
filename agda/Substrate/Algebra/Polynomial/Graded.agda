@@ -398,3 +398,46 @@ module Over {A : Set}
   convCoeff-basis-comm i j k =
     trans (convCoeff-basis-xpower i (basis j) k)
           (trans (xpower-basis-symm i j k) (sym (convCoeff-basis-xpower j (basis i) k)))
+
+  -- multiplicative identity (graded / nth form): basis fz = the polynomial 1.
+  *P-identityˡ-nth : ∀ {n m} (q : Poly m) (k : ℕ) → nth (basis {suc n} fz *P q) k ≡ nth q k
+  *P-identityˡ-nth q k = trans (nth-*P (basis fz) q k) (convCoeff-basis-fz q k)
+
+  -- 9. *P-comm via nested linear-extensionality, bottoming at convCoeff-basis-comm.
+  --    `_*P q` and `subst ∘ (q *P_)` (same codomain via +ℕ-comm) as Linear maps, etc.
+  Lq : ∀ {n m} (q : Poly m) → Linear n (n ℕ+ m)
+  Lq q = record { apply = _*P q
+                ; preserves-+  = λ u v → *P-distribʳ u v q
+                ; preserves-·c = λ c v → *P-scalarˡ c v q }
+  Mq : ∀ {n m} (q : Poly m) → Linear n (n ℕ+ m)
+  Mq {n} {m} q = record
+    { apply = λ p → subst Poly (+ℕ-comm m n) (q *P p)
+    ; preserves-+  = λ u v → trans (cong (subst Poly (+ℕ-comm m n)) (*P-distribˡ q u v))
+                                   (subst-+P (+ℕ-comm m n) (q *P u) (q *P v))
+    ; preserves-·c = λ c v → trans (cong (subst Poly (+ℕ-comm m n)) (*P-scalarʳ c q v))
+                                   (subst-·c (+ℕ-comm m n) c (q *P v)) }
+  Li : ∀ {n m} (i : Fin n) → Linear m (n ℕ+ m)
+  Li i = record { apply = λ q → basis i *P q
+                ; preserves-+  = λ u v → *P-distribˡ (basis i) u v
+                ; preserves-·c = λ c v → *P-scalarʳ c (basis i) v }
+  Mi : ∀ {n m} (i : Fin n) → Linear m (n ℕ+ m)
+  Mi {n} {m} i = record
+    { apply = λ q → subst Poly (+ℕ-comm m n) (q *P basis i)
+    ; preserves-+  = λ u v → trans (cong (subst Poly (+ℕ-comm m n)) (*P-distribʳ u v (basis i)))
+                                   (subst-+P (+ℕ-comm m n) (u *P basis i) (v *P basis i))
+    ; preserves-·c = λ c v → trans (cong (subst Poly (+ℕ-comm m n)) (*P-scalarˡ c v (basis i)))
+                                   (subst-·c (+ℕ-comm m n) c (v *P basis i)) }
+
+  agree-i : ∀ {n m} (i : Fin n) (q : Poly m)
+          → basis i *P q ≡ subst Poly (+ℕ-comm m n) (q *P basis i)
+  agree-i {n} {m} i q = linear-extensionality (Li i) (Mi i) basis-pair q
+    where
+      basis-pair : (j : Fin m) → basis i *P basis j ≡ subst Poly (+ℕ-comm m n) (basis j *P basis i)
+      basis-pair j = nth-ext _ _ (λ k →
+        trans (nth-*P (basis i) (basis j) k)
+        (trans (convCoeff-basis-comm i j k)
+        (trans (sym (nth-*P (basis j) (basis i) k))
+               (sym (nth-subst (+ℕ-comm m n) (basis j *P basis i) k)))))
+
+  *P-comm : ∀ {n m} (p : Poly n) (q : Poly m) → p *P q ≡ subst Poly (+ℕ-comm m n) (q *P p)
+  *P-comm p q = linear-extensionality (Lq q) (Mq q) (λ i → agree-i i q) p
