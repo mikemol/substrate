@@ -48,16 +48,17 @@ agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-
 Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity),
 **Δ-Ψ-crown**, **Δ-Φ-pernode**, **Δ-Σ-wire/decide/trace** (memoizing eval + Agda SPPF + decision WAL), **jea_zsppf**
 (SPPF = prefix-sort of z-codes; W1-W5 quadtree numbers), **Δ-Σ-trace (b-real / b-real-gather / b-real-store)** --
-the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: the INTERN as one on-device hash-cons megakernel, wired
+the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: INTERN as one on-device hash-cons megakernel) + **rung-2**
+(jea_mega_eval: INTERN+COMBINE FUSED into one kernel; intern-kernel+apex-kernel+deliver-kernel -> one drain, wired
 into jea_resident). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.) NEXT executors (to dispatch): **AI-Δ9** continues
-**Δ-Σ-mega** (rung-2 = FUSE the two megakernels: jea_mega INTERN + the apex EVAL drain -> ONE kernel that
-interns+combines in one pass; then crown-deliver + DAG-gen on-device); **AI-d** -- the semantic SPPF tools audit
-(orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire). **Δ-G2** [gate, recommended].
-**The recursion, sharpened:** rung-1 folded INTERN into a megakernel; but it is a SEPARATE kernel from the apex's
-EVAL drain, and the host still does node BOOKKEEPING + per-eval launches between them. The common structure of ALL
-remaining work = collapse the SEPARATE persistent megakernels (intern; eval/apex; +deliver; +dag-gen) into ONE
-resident kernel -- "two megakernels -> one," recursively, until a single GPU-resident kernel ingests terms and
-emits values with no host stage-orchestration. That single kernel IS the charter's "on-GPU resident memoizing trace."
+**Δ-Σ-mega**: **Δ-Ψ-deliver** = fold the byte-limb >u128 crown INTO the fused kernel (host-folds today, exact);
+then **Δ-Ψ-dag** = DAG-gen + the term-feed on-device (host uploads the term today); b-real-incr (incremental merge).
+**AI-d** -- the semantic SPPF tools audit (orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose
+or retire). **Δ-G2** [gate, recommended]. **The recursion, sharpened:** each rung collapses one more SEPARATE
+persistent megakernel into ONE resident kernel -- "two megakernels -> one," recursively. rung-1 folded INTERN;
+rung-2 fused INTERN+COMBINE (one drain hash-conses AND values each new node, shared nodes reuse). What remains host:
+the >u128 crown fold (Δ-Ψ-deliver) and the term-feed/DAG build (Δ-Ψ-dag). The terminus = a single GPU-resident
+kernel that ingests terms and emits values with no host stage-orchestration -- the charter's on-GPU memoizing trace.
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the
@@ -76,8 +77,23 @@ The per-height HOST intern loop is GONE: one kernel launch per eval. Tested: sam
 intern_radix (sort) -- dedup is code-agnostic (W2) -- across E_q(8/10) + the rung-b DAG; cross-eval sharing via the
 persistent table (re-intern -> 0 new). WIRED + consumed: jea_resident.Forest.DI = the interner; evaluate() interns
 via it (host side is now just bookkeeping, NOT the dedup); jea_mega <- jea_resident <- jea_eval <- jea_agda_apex,
-regression-clean (all exact). Remaining Δ-Σ-mega rungs: fold the frontier EVAL (apex drain) into the SAME kernel
-(intern+combine one pass), then crown DELIVER + DAG-gen on-device; b-real-incr (incremental merge); Δ-G2 (gate).
+regression-clean (all exact). [SUPERSEDED in the live eval path by rung-2; jea_mega stays consumed as rung-2's
+partition cross-check -- jea_mega <- jea_mega_eval.]
+
+**Δ-Σ-mega rung-2 [DONE -- AI-Δ9]:** the INTERN and the COMBINE are now ONE fused megakernel (jea_mega_eval.py:
+mega_eval). "Two megakernels -> one": a node, as it drains, hash-conses its key AND, if it is a NEW canon id,
+computes its value ONCE on the u64/u128 carrier (predict-place, gcd-reduce), storing into a CANON-INDEXED device
+value store; a SHARED node reuses the resident value (retry-next-sweep if unpublished -- no in-warp spin). The
+resident eval collapsed from {intern-kernel + apex-eval-kernel + deliver-kernel + host-fold} to {ONE fused kernel
++ exact >u128 crown host-fold}. >u128 nodes are FLAGGED (cescal, err=3) and folded EXACT from resident children
+(recompute-from-residue, never lost). Tested: EXACT (incl 66-bit u128) + MEMOIZED (distinct<<nodes) + CROSS-EVAL
+(0 new) + the fused-intern PARTITION == rung-1 hash-cons partition (dedup unchanged). WIRED + consumed:
+jea_resident.Forest.FE = the fused evaluator; evaluate() = intern_eval + read the device value store + crown-fold;
+jea_mega_eval <- jea_resident <- jea_eval <- jea_agda_apex; regression-clean -- **EmitBig 217-bit comes out exact
+through the fused path's host crown fold == Agda-vouched** (the real >u128 workload, genuinely exercised). Remaining
+Δ-Σ-mega rungs: **Δ-Ψ-deliver** (fold the byte-limb crown into the kernel -- host-fold today), **Δ-Ψ-dag** (DAG-gen +
+the term-feed on-device -- host uploads the term today), b-real-incr (incremental device merge vs full re-argsort),
+Δ-G2 (orphan gate). Known bound (G8 handoff): HCAP/CAP=1<<16 (table-full -> err=2); leaves assumed >=0 and <=u128.
 
 **RETRO (device-resident SPPF / quadtree arc):** DELTA -- a strong, fully-wired, NUMBER-backed result (jea_zsppf
 W1-W5; device-resident forest b-real{,-gather,-store}; jea_intern/agda_dag/trace_window de-orphaned INTO the live

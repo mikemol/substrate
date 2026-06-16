@@ -26,7 +26,7 @@ import numpy as np, cupy as cp
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_zsppf import morton2, heights
-import jea_mega as MEGA                                         # the on-device hash-cons INTERN megakernel (Δ-Σ-mega)
+import jea_mega_eval as MEGAE                                   # the FUSED on-device intern+combine megakernel (Δ-Σ-mega rung-2)
 
 
 class Forest:
@@ -40,7 +40,7 @@ class Forest:
         # values stay in the stable store (arbitrary magnitude -> byte-limb carrier, not packable into int64).
         self.pslot=cp.zeros(0,cp.int64)                                  # stable id -> physical position (code order)
         self.pstable=cp.zeros(0,cp.int64); self.pcode=cp.zeros(0,cp.int64)   # physical position -> stable id / code (sorted)
-        self.DI=MEGA.DeviceInterner()                                    # the PERSISTENT on-device hash-cons intern (Δ-Σ-mega)
+        self.FE=MEGAE.Fused()                                            # the PERSISTENT on-device FUSED intern+combine (Δ-Σ-mega rung-2)
 
     def _new(self, op,l,r,vn,vd,code):
         sid=len(self.op); self.op.append(op); self.lch.append(l); self.rch.append(r); self.vn.append(vn); self.vd.append(vd)
@@ -89,46 +89,34 @@ def _ccode(op, l, r):                                                    # struc
 
 
 def evaluate(g, F):
-    """Intern g into the device-resident forest F (share via searchsorted / add+merge per height), evaluate ONLY
-    the new frontier on the apex, store values. Returns (value, evaluated_new, shared). Forest persists across calls."""
-    from jea_apex_deliver import run_apex_u128, deliver_subtree           # lazy: keep module-import light (no apex pull)
+    """Intern AND evaluate g into the device-resident forest F in ONE fused kernel (Δ-Σ-mega rung-2): the kernel
+    hash-conses each node and, if NEW, computes its value once (u64/u128 carrier); SHARED sub-terms reuse the
+    resident value. The host only does node bookkeeping (register the new canon ids, reading their values from the
+    fused device store) and the EXACT crown fold for any node whose value exceeds u128 (recompute-from-residue: the
+    crown folds from resident children, never lost). Returns (value, evaluated_new, shared). Forest persists across calls.
+    (rung-1 used two kernels -- intern + a separate apex eval -- with host orchestration between; this collapses them.)"""
     N=g["N"]; prev=len(F.op)
-    canon, distinct = F.DI.intern(g)                                     # ONE on-device hash-cons kernel (no host per-height loop)
+    canon, distinct = F.FE.intern_eval(g)                                # ONE fused kernel: intern + combine in one drain pass
+    sN, sD, sE = F.FE.read_range(prev, distinct)                         # the new canon ids' values, computed ON-DEVICE
     rep={}
     for i in range(N): rep.setdefault(int(canon[i]), i)                  # a representative term node per canonical id
-    for cid in range(prev, distinct):                                    # register NEW canonical nodes (bookkeeping, NOT intern)
-        i=rep[cid]
+    for cid in range(prev, distinct):                                    # register NEW canonical nodes (bookkeeping, NOT eval)
+        i=rep[cid]; k=cid-prev
         if g["op"][i]==-1:
             vN=int(g["vN"][i]); vD=int(g["vD"][i])
             F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.vn.append(vN); F.vd.append(vD)
             F.code.append(int(morton2(np.array([vN&0xFFFF]), np.array([vD&0xFFFF]))[0]))
         else:
             cl=int(canon[g["lch"][i]]); cr=int(canon[g["rch"][i]])
-            F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr); F.vn.append(0); F.vd.append(1)
+            F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr)
             F.code.append(_ccode(g["op"][i], cl, cr))
+            if sE[k]:                                                    # escalated (>u128): EXACT crown fold from resident
+                a=F.value(cl); b=F.value(cr); v=(a*b if g["op"][i]==1 else a+b)   #   children (children have smaller cid -> ready)
+                F.vn.append(v.numerator); F.vd.append(v.denominator)
+            else:
+                F.vn.append(sN[k]); F.vd.append(sD[k])                   # value computed ON-DEVICE by the fused kernel
     root=int(canon[g["root"]]); frontier=[cid for cid in range(prev,distinct) if F.op[cid]!=-1]
     shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
-    if frontier:
-        fset=set(frontier); children=set()
-        for s in frontier: children.add(F.lch[s]); children.add(F.rch[s])
-        resident=[s for s in children if s not in fset]                  # the WORKING SET gathered from the forest
-        resident.sort(key=lambda s: F.code[s])                           # Phase-2: gather in CODE-LOCALITY order (leaves
-        local = resident + sorted(fset)                                  #   are order-free; frontier stays topo by sid)
-        li={s:j for j,s in enumerate(local)}
-        op2=[]; vN2=[]; vD2=[]; lch2=[]; rch2=[]
-        for s in local:
-            if s in fset: op2.append(F.op[s]); vN2.append(0); vD2.append(1); lch2.append(li[F.lch[s]]); rch2.append(li[F.rch[s]])
-            else: v=F.value(s); op2.append(-1); vN2.append(v.numerator); vD2.append(v.denominator); lch2.append(-1); rch2.append(-1)
-        g2=dict(op=op2,vN=vN2,vD=vD2,lch=lch2,rch=rch2,N=len(local),root=li[root])
-        val,err,nodes=run_apex_u128(g2, return_nodes=True)
-        if err==2: val,_=deliver_subtree(g2, nodes["vN"], nodes["vD"], escal=nodes["escal"])
-        for s in local:                                                  # store new-node values (crown -> exact host fold)
-            if s not in fset: continue
-            j=li[s]
-            if nodes["escal"][j]==0 and nodes["vD"][j]:
-                F.vn[s]=int(nodes["vN"][j]); F.vd[s]=int(nodes["vD"][j])
-            else:
-                a=F.value(F.lch[s]); b=F.value(F.rch[s]); v=(a*b if F.op[s]==1 else a+b); F.vn[s]=v.numerator; F.vd[s]=v.denominator
     F.materialize()                                                      # b-real-store: keep the forest physically code-ordered
     return F.value(root), len(frontier), shared
 
@@ -144,22 +132,22 @@ if __name__ == "__main__":
     F=Forest()
     S=dict(op=[-1,-1,1],vN=[1,1,0],vD=[2,3,1],lch=[-1,-1,0],rch=[-1,-1,1],N=3,root=2)   # 1/2*1/3 = 1/6
     T1=_embed(S,0,(1,1)); T2=_embed(S,1,(2,1))                                          # both CONTAIN S
-    v1,e1,s1=evaluate(T1,F); sz1=F.size(); idx1=int(F.DI.nextid.get()[0])
-    v2,e2,s2=evaluate(T2,F); sz2=F.size(); idx2=int(F.DI.nextid.get()[0])
-    print(f"  eval(T1=S+1/1)={v1} (==7/6:{v1==Fraction(7,6)})  new={e1} shared={s1}  forest size {sz1} (device intern table {idx1})")
-    print(f"  eval(T2=S*2/1)={v2} (==1/3:{v2==Fraction(1,3)})  new={e2} shared={s2}  forest size {sz2} (device intern table {idx2})")
-    print(f"  intern: jea_mega on-device hash-cons megakernel (one launch per eval; no host per-height loop)")
+    v1,e1,s1=evaluate(T1,F); sz1=F.size(); idx1=int(F.FE.nextid.get()[0])
+    v2,e2,s2=evaluate(T2,F); sz2=F.size(); idx2=int(F.FE.nextid.get()[0])
+    print(f"  eval(T1=S+1/1)={v1} (==7/6:{v1==Fraction(7,6)})  new={e1} shared={s1}  forest size {sz1} (device canon table {idx1})")
+    print(f"  eval(T2=S*2/1)={v2} (==1/3:{v2==Fraction(1,3)})  new={e2} shared={s2}  forest size {sz2} (device canon table {idx2})")
+    print(f"  eval: jea_mega_eval FUSED intern+combine megakernel (ONE launch per eval; intern + value in one drain)")
 
     growth=sz2-sz1; tot=T2["N"]; shared_nodes=tot-growth      # T2's nodes not re-added = shared from the resident forest
     devresident = type(F.ccode).__module__.startswith("cupy")
     w1 = devresident and (growth < tot) and (s2>=1) and (shared_nodes>=3)   # S's 3 nodes (2 leaves+1 combine) reused
     w2 = (v1==Fraction(7,6)) and (v2==Fraction(1,3))
-    w3 = idx2>idx1 and devresident                            # the on-device intern table grew (cross-eval persistent)
+    w3 = idx2>idx1 and devresident                            # the on-device canon table grew (cross-eval persistent)
     print(f"\nW1 DEVICE-RESIDENT + GROWS-BY-NEW (T2 has {tot} nodes, forest grew by {growth} -> {shared_nodes} SHARED")
     print(f"   from T1's resident S via the on-device intern -- S computed once, ever): {w1}")
     print(f"W2 EXACT through the device-resident evaluator (T1=7/6, T2=1/3): {w2}")
-    print(f"W3 INTERN IS AN ON-DEVICE MEGAKERNEL (jea_mega hash-cons; persistent device table grew {idx1}->{idx2}; no")
-    print(f"   host per-height loop -- one kernel launch per eval): {w3}")
+    print(f"W3 INTERN+EVAL ARE ONE FUSED MEGAKERNEL (jea_mega_eval; persistent device canon table grew {idx1}->{idx2};")
+    print(f"   a node hash-conses AND computes its value in one drain -- no separate apex launch): {w3}")
 
     # W4: PHASE-2 GATHER -- once the precise working set is known, gather it CODE-LOCALITY ordered (the SM layout)
     # vs stable-id (creation) order; measure HBM tiles touched. Built on a REAL forest (a wide random term).
@@ -192,7 +180,7 @@ if __name__ == "__main__":
     print(f"      byte-limb store (arbitrary magnitude -- EmitBig 217-bit can't pack into int64); only the STRUCTURE is")
     print(f"      physically code-ordered. evaluate materializes it each call; eval exact through the indirection: {w5}")
     ok=w1 and w2 and w3 and w4 and w5
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN is now one on-device hash-cons MEGAKERNEL")
-    print(f"  (jea_mega, Δ-Σ-mega -- the per-height host loop is GONE), the forest grows by new nodes only, the Phase-2")
-    print(f"  store is materialized code-order (b-real-store). Remaining host orchestration: the frontier EVAL (apex")
-    print(f"  drain, a device kernel but host-launched per eval), crown DELIVER, and DAG build -- the next Δ-Σ-mega rungs.")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are now ONE fused on-device MEGAKERNEL")
+    print(f"  (jea_mega_eval, Δ-Σ-mega rung-2 -- intern-kernel + apex-kernel + deliver-kernel collapsed to one drain),")
+    print(f"  the forest grows by new nodes only, the Phase-2 store is materialized code-order (b-real-store). Remaining")
+    print(f"  host work: the EXACT >u128 crown fold, and the term-feed/DAG build -- the next Δ-Σ-mega rungs (Δ-Ψ-deliver/dag).")
