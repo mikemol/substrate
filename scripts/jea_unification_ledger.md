@@ -95,10 +95,17 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
   depth) and ORCHESTRATES on-device (operating point + schedule g + carrier dispatch) -- no host-sync per decision.
   KILL the hand-published demo g in jea_apex.py __main__: drive g from navigate(collect_package()). Acceptance: an
   import edge from the apex to the (currently orphaned) navigator/telemetry, and the demo g list DELETED.
-  - facet **Δ-Σ-wire** [first rung]: host-side compose first -- jea_apex imports jea_telemetry+jea_navigator,
-    publishes navigate(collect_package()) instead of the hardcoded list. Removes the FAKE input (the orphan).
-  - facet **Δ-Σ-decide** [the deep rung]: move navigate() itself on-device (supervisor computes the operating point
-    from the uploaded telemetry), so orchestration needs no host round-trip.
+  - facet **Δ-Σ-wire** [first rung -- DONE]: jea_apex.py __main__ now imports jea_navigator + jea_telemetry (each on
+    its OWN line so the import-audit grep catches them), DISCOVERS surfaces on the box, COLLECTS telemetry live, and
+    drives the schedule from g = gint(navigate(collect_package())) per workload -- the hardcoded g list is DELETED.
+    Verified: import edge apex->navigator+telemetry exists; both no longer orphaned; result root==truth (combine ⊥
+    schedule); kernel saw navigator-sourced g's [20,20480] (wl0 apex-dag "g free"->20480, wl1 deep_chain "g=1
+    coop"->20) -> live reconfig exercised with REAL g. (jea_navigator pulls jea_edge_states, so that's composed too.)
+    NB jea_actuator / jea_megakernel stay unimported -- they are SUPERSEDED prototypes; their actuator+megakernel
+    capability is inline in the apex kernel (it reads the resident pkg + drains by productivity). Not orphans to
+    wire; mark superseded (or delete) -- do NOT re-add them as a fake "composition".
+  - facet **Δ-Σ-decide** [the deep rung -- NEXT]: navigate() still runs on the HOST. Move the operating-point solve
+    on-device (supervisor computes it from the uploaded telemetry package), so orchestration needs no host round-trip.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

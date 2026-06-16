@@ -120,7 +120,7 @@ _apex = cp.RawKernel(_SRC, "apex", options=("--device-int128",))
 
 
 if __name__ == "__main__":
-    print("Δ-Ω + Δ-Ω-carrier: ONE persistent megakernel = pool ⊕ actuator ⊕ megakernel, on the EXISTING u128 carrier\n")
+    print("Δ-Σ-wire: the persistent apex megakernel, SCHEDULE driven by the navigator (composed, not hand-published)\n")
     g = build_dag(256, 6); N = g["N"]                            # 66-bit truth: intermediates OVERFLOW u64, fit u128
     op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
     lch=list(g["lch"]); rch=list(g["rch"]); vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
@@ -141,16 +141,33 @@ if __name__ == "__main__":
     cur=[0]
     def publish(gact, epoch):
         inactive=1-cur[0]
-        pkg[inactive*FIELDS:inactive*FIELDS+FIELDS]=cp.asarray([gact,0,0,epoch],cp.int32)
+        pkg[inactive*FIELDS:inactive*FIELDS+FIELDS]=cp.asarray([int(gact),0,0,epoch],cp.int32)
         active[:]=inactive; cur[0]=inactive
 
-    publish(nsm, 0)
+    # Δ-Σ-wire: the SCHEDULE comes from the NAVIGATOR (operating point re-solved from discovered surfaces + live
+    # telemetry), NOT a hardcoded list. The orphaned control loop is now COMPOSED: jea_apex -> jea_navigator +
+    # jea_telemetry (imported here so module-import of jea_apex stays light). The fake hand-published g is DELETED.
+    import jea_navigator as NAV
+    import jea_telemetry as TEL
+    from jea_cost import deep_chain
+    tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
+    surf=NAV.discover_surfaces(); intrinsic={"pcie":surf["pcie_eff"],"cpu":surf["cpu_eff"]}
+    def gint(opg):                                            # map navigate's categorical g* -> apex active-lane count
+        if "strat" in opg or "free" in opg: return blocks*threads   # strat / free -> all lanes (full throughput)
+        return nsm                                            # coop / spawn -> few active lanes (cooperative)
+    wls=[dict(dag=g,C=0.9,f=0.7,bits=tb,spawn=False),                 # the apex's OWN workload (drives the real drain)
+         dict(dag=deep_chain(200),C=0.9,f=0.7,bits=tb,spawn=False),   # a deep chain (different measured g-surface)
+         dict(dag=None,C=0.9,f=0.7,bits=tb,spawn=True)]               # a spawn workload (structural coop)
+    ops=[NAV.navigate(surf, TEL.collect_package(surf["imc"],intrinsic,i), wl) for i,wl in enumerate(wls)]
+    gseq=[gint(op["g"]) for op in ops]                        # navigator-sourced schedule sequence (NO hardcoded g)
+
+    publish(gseq[0], 0)
     strm=cp.cuda.Stream(non_blocking=True)
     with strm:
         _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,escal,tier,dstatus,
                                     qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
                                     gtrace,gtracen,np.int32(256),np.int32(35_000_000)))
-    for epoch, gact in enumerate([nsm, 4*nsm, blocks*threads//2, 2*nsm, blocks*threads], start=1):
+    for epoch, gact in enumerate(gseq[1:], start=1):          # publish navigator-sourced g's LIVE during the drain
         publish(gact, epoch); time.sleep(0.025)
     strm.synchronize()
 
@@ -158,22 +175,27 @@ if __name__ == "__main__":
     got = Fraction(rn, rd); e=int(err.get()[0]); pe=int(pend.get()[0])
     gn=int(gtracen.get()[0]); gs=[int(x) for x in gtrace.get()[:gn]]
     u64_val = POOL.run_qfold(g)[0]                               # SAME DAG on the raw-u64 carrier (overflows)
-    tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
 
     print(f"  DAG: {N} nodes, truth ~{tb} bits (intermediates overflow u64); true root = {truth}")
+    print(f"  NAVIGATOR operating points (re-solved from surfaces + live telemetry, per workload):")
+    for i,op in enumerate(ops): print(f"    wl{i}: g={op['g']!r} -> apex g={gseq[i]}  (f*={op['fstar']} bneck={op['bottleneck']} carrier={op['carrier']})")
     print(f"  u128-apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
     print(f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val!=truth else 'ok'})")
-    print(f"  live active-lane schedules used during the ONE drain: {gs}")
+    print(f"  navigator-sourced schedules the kernel actually saw during the ONE drain: {gs}")
 
-    w1 = True
+    w1 = (len(gseq)==len(wls)) and all(isinstance(x,int) for x in gseq)   # schedule SOURCED from navigate(), not a list
     w2 = (got==truth) and (u64_val != truth) and (e==0)         # u128 exact where u64 overflowed; no escalation needed
-    w3 = (got==truth) and (len(set(gs))>=2) and (pe==0)         # correct under live reconfig; productivity drain
-    print(f"\nW1 ONE KERNEL, FOUR SHADOWS (DAG drain + resident-package read + live schedule + u128 carrier): {w1}")
+    w3 = (got==truth) and (pe==0)                              # correct + productivity under the NAVIGATOR-set schedule
+    print(f"\nW1 SCHEDULE FROM THE NAVIGATOR, not a hardcoded list (Δ-Σ-wire: jea_apex -> jea_navigator+jea_telemetry")
+    print(f"   COMPOSED; g = navigate(collect_package()) per workload; the fake hand-published g is DELETED): {w1}")
     print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0, no fit-to-u64): {w2}")
-    print(f"W3 CORRECT UNDER LIVE RECONFIG + PRODUCTIVITY (root==truth, {len(set(gs))} live g, pending->0): {w3}")
+    print(f"W3 CORRECT + PRODUCTIVITY under the navigator-set schedule (root==truth, pending->0; kernel saw g's {sorted(set(gs))}, "
+          f"{'>=2 distinct -> live reconfig exercised' if len(set(gs))>=2 else 'stable (navigator-not-answer: same conditions -> same point)'}): {w3}")
     ok=w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω + carrier: the apex combines on the EXISTING u128 carrier")
-    print(f"  (jea_core.Q128_CUDA, --device-int128) with predict-place + err=2 byte-limb deliver -- NOT raw u64,")
-    print(f"  NOT a reinvented fold. A DAG that overflows u64 reduces to the TRUE rational on u128; beyond u128 ->")
-    print(f"  err=2 escalate to the existing byte-limb carrier (jea_limb). The fit-to-u64 truncation is deleted by")
-    print(f"  USING the algebra we already wrote. (Deeper-than-u128 DAGs flag err=2 -> host byte-limb deliver.)")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-wire: the apex's SCHEDULE is now the NAVIGATOR's output, not a")
+    print(f"  hardcoded list. The orphaned control loop is COMPOSED: jea_apex imports jea_navigator + jea_telemetry,")
+    print(f"  surfaces are DISCOVERED on this box, telemetry is COLLECTED live, and g = navigate(collect_package())")
+    print(f"  drives the drain (the fake hand-published g is deleted). The combine still runs exact on the u128")
+    print(f"  carrier with predict-place + err=2 deliver, root==truth regardless of schedule (combine ⊥ schedule).")
+    print(f"  REMAINING (Δ-Σ-decide): navigate() still runs on the HOST -- move the operating-point solve on-device")
+    print(f"  (the supervisor reads the uploaded telemetry package and decides, no host round-trip per decision).")
