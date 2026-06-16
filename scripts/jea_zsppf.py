@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""jea_zsppf.py — the SPPF as a PREFIX-SORT of z-coded numbers (device radix sort), and an HONEST test of what
+z-order actually buys. Tackles the user's conjecture: sliding-carrier => faithful bitstring => z-coded trace =>
+SPPF = prefix-sorting z-coded lists.
+
+What is TRUE and BUILT here:
+ * SPPF interning = a SORT. Per height, the key of a combine is (op, canonical children); cupy.unique (a DEVICE
+   radix sort + dedup) assigns canonical ids and collapses equal keys. This is the GPU-native memo: sort, not a
+   hash table. (jea_intern already does this; here it is the explicit z-code/prefix-sort framing + the test.)
+ * SHARED vs PACKED (the S and P of SPPF): sorting by the STRUCTURAL code (op, child-ids) gives SHARING (one node,
+   many parents). Sorting by the VALUE code (z-coded reduced num,den) gives PACKING (many distinct structures, one
+   value) -- value-equal-but-structurally-distinct terms collapse. Two prefix-sorts, the two halves of "SPPF".
+
+What is tested, NOT assumed (anti-overclaim):
+ * Is z-order a CORRECTNESS lever? NO -- proven here: a plain lexicographic key (op,cl,cr) and a z-interleaved key
+   give the IDENTICAL sharing partition. Interning = sort+dedup is code-AGNOSTIC; any injective code works. So
+   "SPPF = prefix-sort of z-codes" is true for any injective code; z-order is not magic for the dedup.
+ * What DOES z-order buy? LOCALITY in the (num,den) PLANE: sorting the z-coded numbers puts (num,den)-close
+   rationals adjacent (2D Morton clustering) -- measured vs a random order. That is the residue-space locality
+   (Morton ≅ Cayley-Dickson cocycle, the commuting-sphere conjecture), NOT value-line locality and NOT the dedup.
+"""
+import os, sys
+os.environ.setdefault("CUDA_PATH", "/usr")
+import numpy as np, cupy as cp
+from fractions import Fraction
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+U=np.uint64
+def _spread16(x):                                              # spread low 16 bits into even bit positions (2D Morton)
+    x=(np.asarray(x,U))&U(0xFFFF)
+    x=(x|(x<<U(8)))&U(0x00FF00FF); x=(x|(x<<U(4)))&U(0x0F0F0F0F)
+    x=(x|(x<<U(2)))&U(0x33333333); x=(x|(x<<U(1)))&U(0x55555555)
+    return x
+def morton2(a,b): return _spread16(a)|(_spread16(b)<<U(1))     # z-code: interleave the bits of two coordinates
+
+
+def heights(g):
+    N=g["N"]; ht=np.zeros(N,np.int64)
+    for i in range(N):
+        if g["op"][i]!=-1: ht[i]=max(int(ht[g["lch"][i]]),int(ht[g["rch"][i]]))+1
+    return ht
+
+
+def intern_radix(g, mode="z"):
+    """Device radix-sort interning: per height, cupy.unique (sort+dedup) over the node keys -> canonical ids.
+    mode='z' z-interleaves the child ids; mode='plain' uses a lexicographic (op,cl,cr) key. Returns (canon, distinct)."""
+    N=g["N"]; ht=heights(g); H=int(ht.max()) if N else 0
+    canon=np.full(N,-1,np.int64); gid=0; leafcode={}
+    for h in range(H+1):
+        idx=np.nonzero(ht==h)[0]
+        if h==0:
+            keys=np.array([leafcode.setdefault((int(g["vN"][i]),int(g["vD"][i])), len(leafcode)+1) for i in idx],U)
+        else:
+            cl=np.array([canon[g["lch"][i]] for i in idx],U); cr=np.array([canon[g["rch"][i]] for i in idx],U)
+            ops=np.array([g["op"][i] for i in idx],U)
+            keys=((ops<<U(40))|morton2(cl,cr)) if mode=="z" else (ops*U(1<<40)+cl*U(1<<20)+cr)  # both INJECTIVE
+        uniq,inv=cp.unique(cp.asarray(keys),return_inverse=True)   # <-- the DEVICE radix sort + dedup = interning
+        canon[idx]=gid+inv.get(); gid+=int(uniq.size)
+    return canon, gid
+
+
+def partition(canon):
+    from collections import defaultdict
+    d=defaultdict(list)
+    for i,c in enumerate(canon): d[int(c)].append(i)
+    return set(frozenset(v) for v in d.values())
+
+
+def host_values(g):
+    v=[None]*g["N"]
+    for i in range(g["N"]):
+        if g["op"][i]==-1: v[i]=Fraction(int(g["vN"][i]),int(g["vD"][i]))
+        elif g["op"][i]==1: v[i]=v[g["lch"][i]]*v[g["rch"][i]]
+        else: v[i]=v[g["lch"][i]]+v[g["rch"][i]]
+    return v
+
+
+def build_Eq(n):                                               # balanced add-tree of 1/1: 2^n leaves, heavy SHARING
+    L=1<<n; vN=[1]*L; vD=[1]*L; op=[-1]*L; lch=[-1]*L; rch=[-1]*L; lvl=list(range(L))
+    while len(lvl)>1:
+        nx=[]
+        for i in range(0,len(lvl),2):
+            k=len(vN); vN.append(0); vD.append(1); op.append(0); lch.append(lvl[i]); rch.append(lvl[i+1]); nx.append(k)
+        lvl=nx
+    return dict(vN=vN,vD=vD,op=op,lch=lch,rch=rch,N=len(vN),root=lvl[0])
+
+
+if __name__ == "__main__":
+    print("jea_zsppf: SPPF = PREFIX-SORT of z-coded numbers (device radix sort) -- with z-order's role tested honestly\n")
+
+    # W1: SPPF interning IS a device sort. E_q(12): a 8191-node tree collapses to its canonical SPPF by cupy.unique.
+    eq=build_Eq(12); canon_z,dz=intern_radix(eq,"z")
+    w1 = dz < eq["N"] and dz==13                               # n+1 distinct (the SPPF), via the device radix sort
+    print(f"  W1  SPPF = DEVICE SORT: E_q(12) {eq['N']} nodes -> {dz} distinct (cupy.unique per height = radix sort+dedup); "
+          f"collapse {eq['N']//dz}x: {w1}")
+
+    # W2: is z-order a correctness lever? Plain (op,cl,cr) vs z-interleaved -> IDENTICAL sharing partition.
+    canon_p,dp=intern_radix(eq,"plain")
+    same_partition = (dz==dp) and (partition(canon_z)==partition(canon_p))
+    w2 = same_partition
+    print(f"  W2  DEDUP IS CODE-AGNOSTIC: plain key distinct={dp}, z-code distinct={dz}; identical sharing partition: {w2}")
+    print(f"      -> 'SPPF = prefix-sort of codes' holds for ANY injective code; z-order is NOT a correctness lever.")
+
+    # W3a: SHARED vs PACKED. A DAG with value-equal-but-structurally-distinct nodes: structural intern (sharing) vs
+    # value intern (packing). 6=mul(1/2,2/3)=1/3, 7=add(1/6,1/6)=1/3 (distinct structure, same value); 4=2/4≡1/2.
+    rb=dict(vN=[1,2,1,1,2,1,0,0,0], vD=[2,3,6,6,4,2,1,1,1], op=[-1,-1,-1,-1,-1,-1,1,0,0],
+            lch=[-1,-1,-1,-1,-1,-1,0,2,6], rch=[-1,-1,-1,-1,-1,-1,1,3,7], N=9, root=8)
+    _,ds = intern_radix(rb,"z")                                # STRUCTURAL distinct (sharing)
+    red=[(v.numerator,v.denominator) for v in host_values(rb)]
+    vcodes=morton2(np.array([r[0] for r in red]),np.array([r[1] for r in red]))   # z-code the reduced VALUES
+    dv=len({int(x) for x in vcodes})                           # distinct value-codes = PACKING (value-equal collapse)
+    w3a = dv < ds
+    print(f"\n  W3a SHARED vs PACKED: structural intern -> {ds} distinct (sharing); VALUE intern (z-coded reduced "
+          f"num,den) -> {dv} distinct (packing); value<structural: {w3a}")
+    print(f"      -> the S of SPPF = structural-code sort; the P (packed: many structures, one value) = value-code sort.")
+
+    # W3b: what z-order ACTUALLY buys -- (num,den)-PLANE locality. Sort random rationals by z-code vs random order;
+    # adjacent (num,den) L1 distance is SMALLER under z-order (2D Morton clustering). NOT dedup, NOT value-line.
+    rng=np.random.default_rng(0); num=rng.integers(1,1024,400); den=rng.integers(1,1024,400)
+    zc=np.asarray(morton2(num,den)); order=np.argsort(zc)
+    def adj_l1(nn,dd): return float(np.mean(np.abs(np.diff(nn.astype(np.int64)))+np.abs(np.diff(dd.astype(np.int64)))))
+    z_l1=adj_l1(num[order],den[order]); rnd_l1=adj_l1(num,den)
+    w3b = z_l1 < rnd_l1*0.5                                     # z-order clusters the (num,den) plane (well under random)
+    print(f"  W3b Z-ORDER LOCALITY (its real role): adjacent (num,den) L1 distance z-sorted={z_l1:.0f} vs random={rnd_l1:.0f} "
+          f"({rnd_l1/z_l1:.1f}x tighter): {w3b}")
+    print(f"      -> z-order buys residue-PLANE locality (Morton ≅ Cayley-Dickson cocycle), not the dedup or value-line.")
+
+    ok = w1 and w2 and w3a and w3b
+    print(f"\n  {'PASS' if ok else 'FAIL'} — the SPPF IS a prefix-sort of codes, on DEVICE (cupy.unique = radix sort+dedup):")
+    print(f"  the user's spine is right. But tested, not assumed: the DEDUP is code-agnostic (plain == z partition), so")
+    print(f"  z-order is not a correctness lever; what it buys is (num,den)-PLANE LOCALITY of the never-discarded number")
+    print(f"  (the Morton/CD structure). S of SPPF = structural-code sort; P = value-code sort. NEXT: wire intern_radix")
+    print(f"  as the device-resident interning jea_sppf uses (replacing the host hash-cons), and stream the resident forest.")

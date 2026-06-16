@@ -159,8 +159,21 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     the supervisor reuses the cached decision, not re-derived) -- the control history is durable + interned, not an
     ephemeral dout array. THE THREE TRACES ARE NOW ONE STRUCTURE (jea_eval): eval-SPPF (term-sig->value), gcd/EEA
     residue (reduced/CF value-key), DECISION WAL (evidence->op) -- the WAL≡EEA-trace≡SPPF unification, realized.
-    **NEXT rungs:** (b-real) device-RESIDENT memo (_MEMO/_DMEMO as on-GPU hash tables so prune+lookup is on-GPU;
-    host-resident today); (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
+    **jea_zsppf [DONE -- the SPPF as a device PREFIX-SORT of z-codes; USER conjecture, tested not assumed]:** the
+    sliding carrier => the value is a faithful bitstring (1-bit+chain floor = bitslice/carry-save = F2); the
+    never-discarded trace is a z-coded number; the SPPF = prefix-sort of those codes. BUILT jea_zsppf.intern_radix:
+    interning = a DEVICE radix sort (cupy.unique per height = sort+dedup), GPU-native (sort, not hash). WIRED:
+    jea_sppf.intern now delegates to it (jea_zsppf <- jea_sppf <- jea_carrier_solve <- jea_agda_apex, consumed).
+    HONEST findings (tested): (W2) the dedup is CODE-AGNOSTIC -- a plain (op,cl,cr) key and a z-interleaved key give
+    the IDENTICAL sharing partition; z-order is NOT a correctness lever ("SPPF=prefix-sort of codes" holds for any
+    injective code). (W3a) the S and P of SPPF = two sorts: structural-code sort = SHARING; value-code (z-coded
+    reduced num,den) sort = PACKING (value-equal distinct structures collapse; 7->4 on the rung-b DAG). (W3b)
+    z-order's REAL payoff = (num,den)-PLANE locality (8x tighter adjacent L1 vs random) -- residue-plane clustering,
+    the Morton≅Cayley-Dickson cocycle (commuting_sphere), NOT the dedup and NOT value-line. jea_intern is now
+    SUPERSEDED by jea_zsppf.intern_radix (same device sort, generalized with the z/plain key) -- mark/retire it.
+    **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
+    z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
+    (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

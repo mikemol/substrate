@@ -15,28 +15,14 @@ import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import jea_intern as INT                                       # device hash-cons (cupy.unique per height) -- REUSED
-
-
-def _heights(g):
-    """ht[i] = 0 for leaves, max(ht children)+1 for combines (DAG is leaves-first / children-before-parents)."""
-    N=g["N"]; ht=np.zeros(N, np.int64)
-    for i in range(N):
-        if g["op"][i]!=-1: ht[i]=max(int(ht[g["lch"][i]]), int(ht[g["rch"][i]]))+1
-    return ht
+import jea_zsppf as Z                                          # SPPF = device radix-sort of z-codes (intern_radix)
 
 
 def intern(g):
-    """ℚ-DAG -> canonical shared SPPF (memoization). Returns (gc, distinct) where gc has the apex DAG fields."""
+    """ℚ-DAG -> canonical shared SPPF (memoization). Returns (gc, distinct) where gc has the apex DAG fields.
+    Interning is the DEVICE radix sort (jea_zsppf.intern_radix, the SPPF=prefix-sort-of-z-codes realization)."""
     N=g["N"]
-    leafcodes={}; val=np.zeros(N, np.int64)                    # small injective leaf code (raw values overflow int64)
-    for i in range(N):
-        if g["op"][i]==-1:
-            key=(int(g["vN"][i]), int(g["vD"][i]))
-            val[i]=leafcodes.setdefault(key, len(leafcodes)+1)  # code>0 (combines key on op,children at height>0)
-    gi=dict(val=val, lch=np.array(g["lch"],np.int64), rch=np.array(g["rch"],np.int64),
-            op=np.array(g["op"],np.int64), ht=_heights(g), N=N, root=g["root"])
-    canon, distinct, _v, _h = INT.intern_device(gi)            # the DEVICE-SIDE parallel dedup (reused)
+    canon, distinct = Z.intern_radix(g, "z")                   # the DEVICE-SIDE radix sort + dedup = interning
     rep={}
     for orig in range(N):
         k=int(canon[orig])
