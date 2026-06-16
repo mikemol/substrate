@@ -56,10 +56,26 @@ The audit itself is the G9 escalation of judgement-is-demechanization from memor
 
 ## == Δ-ARC RETROSPECTIVE LEDGER (labeled; every gate output is a trackable cell) ==
 
-**AIs (G-roster):**
-- **AI-Δ0** orchestrator — D1/D2 discharge (jea_live_cost.py), gates, ledgers (main loop).
-- **AI-Δ1** interface cartographer — mapped el-atlas live-machinery signatures (Explore; not resumable).
+**AIs (G-roster) -- every AI has a SYMBOL; dispatch by symbol ("AI-Ω, go" / "tackle Δ-J4"):**
+DONE (this session):
+- **AI-Δ0** orchestrator (main loop) — the CARRIER: D1/D2, navigator, telemetry, edge-states, knob-surfaces,
+  witness-sanity, the judgement audit, AND all of Δ-J1/Δ-J1-rest/Δ-J2 (+ corrections). Did the whole Δ-J arc.
+- **AI-Δ1** interface cartographer — el-atlas live-machinery signatures (Explore; not resumable).
 - **AI-Δ2** provenance archaeologist — WAL/git audit of live_dispatcher.decide() constants (general-purpose; resume id ad547863434f51211).
+NEXT-STEP EXECUTORS (to spawn; the user dispatches by symbol):
+- **AI-Ω** apex assembler — builds **Δ-Ω** (the SNAP, below): the unified on-device evaluator.
+- **AI-Δ3** convex-interior measurer — **Δ-J3** (measure K/layout interior surfaces at runtime).
+- **AI-Δ4** actual-DAG wirer — **Δ-J4** (measure_g_surface on the real workload DAG).
+- **AI-Δ5** constants auditor — **Δ-J5** (residual-constant net-positive audit).
+
+**Δ-Ω [APEX -- the snap-to-grid goal the session's shadows serve]:** ONE persistent on-device megakernel =
+jea_actuator (persistent + reads resident telemetry package) ⊕ jea_engine_pool (DAG work-queue, emit-or-spawn,
+PRODUCTIVITY-proven, no fuel) ⊕ jea_megakernel (schedule set LIVE by the package). I.e. a persistent megakernel
+that DRAINS A DAG WORK-QUEUE whose schedule is read live from the resident package and whose termination is
+proven by productivity. Not a new build -- the JOIN of three existing shadows. Host side: discover+measure
+surfaces -> navigate -> collect_package -> publish. This is the goal the whole arc accumulated toward (Δ-J1
+proved the consume mechanism; Δ-J1-rest the real-work + correctness invariant; Δ-J2 the productivity/no-fuel
+drain). NEXT = Δ-Ω (assemble), or the subordinate cells Δ-J3/J4/J5.
 
 **Findings (G3/G4 — write-once):**
 - **Δ-F1** binding_edge used an INCOMPARABLE (superset) perturbation (iMC relax ⊇ PCIe relax → PCIe could never win). CLOSED (719524f: disjoint single-edge relaxations).
