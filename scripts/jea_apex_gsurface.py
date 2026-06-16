@@ -78,17 +78,21 @@ if __name__ == "__main__":
     w2 = True
     print(f"\n  argmin: g*={g_best} lanes at {t_best:.2f} ms;  corners: g=1 {t_lo:.2f} ms, g=max {t_hi:.2f} ms")
     if interior:
-        verdict = f"INTERIOR OPTIMUM: g*={g_best} beats BOTH corners > {int(noise*100)}% -- the corner-audit UNDERSAMPLED this axis"
+        verdict = f"INTERIOR OPTIMUM here: g*={g_best} beats BOTH corners > {int(noise*100)}% (THIS hardware+mix)"
     elif corner_hi:
-        verdict = "CORNER (max-lanes/strat): monotone-to-plateau, no interior optimum -- corner-audit was FINE (flag refuted for active-lane g)"
+        verdict = ("CORNER here (max-lanes): monotone-to-plateau on THIS hardware+mix -- no interior optimum OBSERVED. "
+                   "NOT a universal law: a box with fewer SMs / more contention / a different mix could surface one. "
+                   "This is exactly WHY we MEASURE g per-hardware (this tool / the navigator) and never bake 'max is best'.")
     else:
-        verdict = "FLAT/NOISE: no robust optimum within the noise floor -- bound to measurement (no interior claim)"
+        verdict = "FLAT/NOISE here: no robust optimum within the noise floor on THIS hardware+mix (no interior claim, nothing baked)"
     print(f"\nW1 INTERIOR MEASURED (apex drain across g, correct each: {allok}): {w1}")
     print(f"W2 ARGMIN CLASSIFIED (read off the measured surface, not a model): {w2}")
     print(f"W3 HONEST VERDICT: {verdict}")
     ok = w1 and w2
     print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-J3: the interior of the active-lane axis is MEASURED (navigator's")
     print(f"  measure-the-surface, generalized past the corners). The interior-candidate flag is now grounded on")
-    print(f"  measurement, not speculation: {('a real interior optimum exists' if interior else 'monotone/flat -- no missed interior optimum here')}.")
-    print(f"  (K-window + layout-bucketing remain interior-candidates on THEIR kernels; same measure-the-surface")
-    print(f"  move applies -- not a fitted convex model. Test-the-wall: measure before asserting an interior win.)")
+    print(f"  measurement, not speculation -- and bound to THIS hardware+mix, NOT universal. The monotone result")
+    print(f"  here does NOT license baking 'max lanes is best': a different box/mix could surface an interior g*.")
+    print(f"  That is precisely WHY the navigator MEASURES g per-hardware (this tool / measure_g_surface) instead of")
+    print(f"  hardcoding the optimum -- the negative result VINDICATES measure-don't-bake. (K/layout remain")
+    print(f"  interior-candidates on THEIR kernels; same measure-the-surface move, per-hardware, nothing baked.)")

@@ -45,9 +45,12 @@ framework (the operator = [[feedback_judgement_is_demechanization]], already on 
 - **Δ-J3** [CLOSED for active-lane-g by measurement; K/layout remain] the interior-candidate flag was SPECULATIVE
   ("flagged, not asserted"), so Δ-J3 = MEASURE the interior, not assert it. jea_apex_gsurface.py measures the apex
   drain across the whole active-lane axis g (now a real continuous knob): surface is MONOTONE-TO-PLATEAU (1.24ms@g=1
-  -> 0.08ms plateau@g>=80), argmin at the corner -> NO interior optimum. The interior-candidate flag is REFUTED by
-  measurement for active-lane g (the corner-audit was fine); test-the-wall + noise-floor-flat-region: measure before
-  asserting a missed interior win. BUG FOUND+FIXED en route (hunt-opacity): the apex's sweep-assertion counted
+  -> 0.08ms plateau@g>=80), argmin at the corner -> NO interior optimum OBSERVED. SCOPE (user): this is true on
+  THIS hardware + the mix tested, NOT universal -- a box with fewer SMs / more contention / a different mix could
+  surface an interior g*. So the flag is not "refuted" as a law; the monotone result here does NOT license baking
+  "max lanes is best". This VINDICATES the navigator/measure-don't-bake design: we MEASURE g per-hardware
+  (jea_apex_gsurface / measure_g_surface) and read g* off the live surface, never hardcode the optimum
+  ([[feedback_negative_findings_corpus_bound]], [[feedback_navigator_not_answer]]). BUG FOUND+FIXED en route (hunt-opacity): the apex's sweep-assertion counted
   IDLE-lane spins (gid>=g lanes busy-spin the while loop, out-spinning the few workers at small g) -> false err=3 at
   g<6 though the VALUE was always correct. Fixed: only ACTIVE lanes (gid<g) count work-sweeps. K-window (U9) +
   layout-bucketing remain interior-candidates on THEIR kernels -- same measure-the-surface move (NOT a fitted convex
