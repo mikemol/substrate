@@ -61,9 +61,30 @@ class Forest:
         s=self._new(op,l,r,0,1,code); self._pc.append(int(code)); self._ps.append(s); return s
 
     def materialize(self):                                               # b-real-store: lay the forest STRUCTURE physically
-        codes=cp.asarray(self.code, cp.int64); order=cp.argsort(codes, kind="stable")   # in code order (DEVICE argsort)
+        codes=cp.asarray(self.code, cp.int64); order=cp.argsort(codes, kind="stable")   # FULL re-argsort (the whole forest)
         self.pcode=codes[order]; self.pstable=order                      # physical pos -> (code, stable id), sorted by code
         self.pslot=cp.empty(codes.size, cp.int64); self.pslot[order]=cp.arange(codes.size)   # stable id -> physical pos
+
+    def materialize_incr(self, prev):                                    # b-real-incr: MERGE only the delta new nodes into the
+        """Incremental device merge (b-real-incr): the physical store pcode/pstable is ALREADY code-sorted from prior
+        evals; merge only the [prev,M) new nodes into it instead of re-argsorting the whole forest. Upload only the new
+        codes (not the full host list); sort the small delta; MERGE the two sorted runs by RANK (vectorized searchsorted
+        + scatter, O(M+delta) -- no O(M log M) comparison sort, no full re-upload). The full re-argsort was O(M log M)
+        + an O(M) host->device transfer EVERY eval; this drops the log factor and transfers only delta."""
+        M=len(self.code); delta=M-prev
+        if delta==0: return
+        nc=cp.asarray(self.code[prev:], cp.int64); ni=cp.arange(prev, M, dtype=cp.int64)   # ONLY the new codes/ids uploaded
+        no=cp.argsort(nc, kind="stable"); nc=nc[no]; ni=ni[no]           # sort the (small) delta
+        if self.pcode.size==0:
+            self.pcode=nc; self.pstable=ni
+        else:
+            oc=self.pcode                                                # the existing sorted run (device-resident)
+            r_old=cp.arange(oc.size)+cp.searchsorted(nc, oc, side="left")    # merge-by-rank: complementary sides ->
+            r_new=cp.arange(nc.size)+cp.searchsorted(oc, nc, side="right")   #   a bijection onto [0, M) (stable)
+            mc=cp.empty(M, cp.int64); ms=cp.empty(M, cp.int64)
+            mc[r_old]=oc; ms[r_old]=self.pstable; mc[r_new]=nc; ms[r_new]=ni
+            self.pcode=mc; self.pstable=ms
+        self.pslot=cp.empty(M, cp.int64); self.pslot[self.pstable]=cp.arange(M)   # stable id -> physical pos (inverse)
 
     def gather(self, sids):                                              # read a working set's physical positions (coalesced
         return self.pslot[cp.asarray(sids, cp.int64)].get()             # for code-coherent sets); values via stable store
@@ -150,7 +171,7 @@ def evaluate(g, F):
         deliver_crown(F, prev, distinct, sE)                             # Δ-Ψ-deliver: the >u128 crown on the byte-limb DEVICE carrier
     root=int(canon[g["root"]]); frontier=[cid for cid in range(prev,distinct) if F.op[cid]!=-1]
     shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
-    F.materialize()                                                      # b-real-store: keep the forest physically code-ordered
+    F.materialize_incr(prev)                                             # b-real-incr: MERGE the delta new nodes (not full re-argsort)
     return F.value(root), len(frontier), shared
 
 
@@ -226,9 +247,29 @@ if __name__ == "__main__":
     print(f"\n  W6  Δ-Ψ-DELIVER (build_dag{chosen}, true rational ~{tb} bits > u128): the >u128 CROWN ({crown} nodes) is")
     print(f"      delivered on the DEVICE byte-limb carrier (jea_limb_gpu dp4a, recompute-from-residue from cescal) --")
     print(f"      not host-folded. eval == truth exact: {w6}")
-    ok=w1 and w2 and w3 and w4 and w5 and w6
+
+    # W7: b-real-incr -- the physical store is merged INCREMENTALLY (materialize_incr) vs the FULL re-argsort
+    # (materialize) every eval. Drive both with the SAME stream of code-batches; measure cumulative materialize time +
+    # verify the incremental store is identical (same sorted multiset, valid pslot inverse). [numbers]
+    import time
+    rng7=np.random.default_rng(7); batches=[rng7.integers(0,1<<40,size=512).astype(np.int64) for _ in range(60)]
+    Gf=Forest(); Gi=Forest(); t_full=0.0; t_incr=0.0
+    for b in batches:
+        Gf.code.extend(int(x) for x in b)
+        cp.cuda.Stream.null.synchronize(); t0=time.perf_counter(); Gf.materialize(); cp.cuda.Stream.null.synchronize(); t_full+=time.perf_counter()-t0
+        pi=len(Gi.code); Gi.code.extend(int(x) for x in b)
+        cp.cuda.Stream.null.synchronize(); t0=time.perf_counter(); Gi.materialize_incr(pi); cp.cuda.Stream.null.synchronize(); t_incr+=time.perf_counter()-t0
+    Mtot=len(Gi.code)
+    isort=bool((Gi.pcode[:-1]<=Gi.pcode[1:]).all())                                    # incremental store is code-sorted
+    iinv=bool((Gi.pstable[Gi.pslot[cp.arange(Mtot)]]==cp.arange(Mtot)).all())          # pslot is the inverse of pstable
+    same=bool((cp.sort(Gi.pcode)==cp.sort(Gf.pcode)).all())                            # same sorted multiset as the full re-argsort
+    w7 = isort and iinv and same and (t_incr < t_full)
+    print(f"\n  W7  b-real-INCR ({len(batches)} evals, forest -> {Mtot} nodes): incremental MERGE vs FULL re-argsort each eval.")
+    print(f"      cumulative materialize: full re-argsort = {t_full*1e3:7.1f} ms   incremental merge = {t_incr*1e3:7.1f} ms"
+          f"   ({t_full/max(t_incr,1e-9):.2f}x)")
+    print(f"      incremental store == full: sorted={isort}  pslot-inverse={iinv}  same-multiset={same}  (only delta uploaded): {w7}")
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
-    print(f"  and the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver -- off the host, recompute-")
-    print(f"  from-residue from the fused kernel's cescal; u128 children read straight from the device store). The forest")
-    print(f"  grows by new nodes only, the Phase-2 store is materialized code-order. Remaining host: the term-feed/DAG")
-    print(f"  build (Δ-Ψ-dag) + the per-node readout reduce (host gcd; arithmetic is on-device). NEXT: Δ-Ψ-dag.")
+    print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver -- recompute-from-residue, off the")
+    print(f"  host), and the physical store is merged INCREMENTALLY (b-real-incr -- delta merge-by-rank, not full re-argsort;")
+    print(f"  only the new codes uploaded). Remaining host: the term-feed/DAG build (Δ-Ψ-dag) + the per-node readout reduce.")

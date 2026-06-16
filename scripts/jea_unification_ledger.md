@@ -91,9 +91,20 @@ resident eval collapsed from {intern-kernel + apex-eval-kernel + deliver-kernel 
 jea_resident.Forest.FE = the fused evaluator; evaluate() = intern_eval + read the device value store + crown-fold;
 jea_mega_eval <- jea_resident <- jea_eval <- jea_agda_apex; regression-clean -- **EmitBig 217-bit comes out exact
 through the fused path's host crown fold == Agda-vouched** (the real >u128 workload, genuinely exercised). Remaining
-Δ-Σ-mega rungs: **Δ-Ψ-deliver** [DONE, below], **Δ-Ψ-dag** (DAG-gen +
-the term-feed on-device -- host uploads the term today), b-real-incr (incremental device merge vs full re-argsort),
-Δ-G2 (orphan gate). Known bound (G8 handoff): HCAP/CAP=1<<16 (table-full -> err=2); leaves assumed >=0 and <=u128.
+Δ-Σ-mega rungs: **Δ-Ψ-deliver** [DONE, below], **b-real-incr** [DONE, below], **Δ-Ψ-dag** (DAG-gen +
+the term-feed on-device -- host uploads the term today), Δ-G2 (orphan gate). Known bound (G8 handoff): HCAP/CAP=1<<16
+(table-full -> err=2); leaves assumed >=0 and <=u128.
+
+**b-real-incr [DONE -- AI-Δ9]:** the physical code-ordered store is now merged INCREMENTALLY each eval
+(jea_resident.Forest.materialize_incr) instead of a FULL cp.argsort of the whole forest. The store pcode/pstable is
+already code-sorted from prior evals; merge only the [prev,M) new nodes: upload ONLY the new codes (not the full
+host list), sort the small delta, MERGE the two sorted runs by RANK (vectorized searchsorted with complementary
+left/right sides -> a bijection onto [0,M); scatter -- O(M+delta), NO O(M log M) comparison sort, NO full re-upload).
+WIRED: evaluate() calls materialize_incr(prev). Tested W7 [numbers]: 60 evals -> 30720 nodes, cumulative materialize
+full re-argsort 77.1ms vs incremental 40.2ms (1.92x), and the incremental store is IDENTICAL to the full re-argsort
+(sorted + valid pslot-inverse + same multiset). regression-clean (EmitBig 217-bit == vouched). materialize() (full)
+kept as the reference. (Still O(M)/eval -- the scatter touches all M; truly sub-linear would need a GPU gap/segmented
+structure, deferred. The win removing the log factor + full re-upload is the honest degree.)
 
 **Δ-Ψ-deliver [DONE -- AI-Δ9]:** the >u128 escalation CROWN is delivered on the DEVICE byte-limb carrier
 (jea_resident.deliver_crown -> jea_limb_gpu dp4a-convolution mul + parallel carry), recompute-from-residue from
