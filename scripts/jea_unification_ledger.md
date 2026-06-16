@@ -51,16 +51,93 @@ agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-
 the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: INTERN megakernel) + **rung-2** (jea_mega_eval:
 INTERN+COMBINE FUSED into one drain) + **Δ-Ψ-deliver** (>u128 crown on the byte-limb DEVICE carrier, off the host) +
 **b-real-incr** (incremental merge-by-rank, not full re-argsort) + **Δ-Ψ-dag** (parametric DAGs GENERATED on-device
-from the parameter, O(distinct) bookkeeping). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.) NEXT executors (to dispatch):
-**AI-Δ9** -> **Δ-Ψ-forest** = THE FINAL RUNG, the forest PAYLOAD host-mirror (F.op/lch/rch/code/vn/vd are Python
-lists; even the O(distinct) bookkeeping reads/writes them) -> device-resident payload arrays + a device byte-limb
-value store keeping the deliver_crown limb residue (never-discard-residue at the forest level), host holds only sizes
-+ root query. **Δ-G2** [gate] = a pre-commit gate running the 6-module jea regression (would have caught the Δ-Ψ-dag
-leaf-code collision -- jea_eval FAILed; needs GPU at commit, run a fast subset). **AI-d** = semantic SPPF tools audit
-(sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire). **The recursion, sharpened:** every rung folds
-ONE host stage onto the device -- intern, combine, deliver, merge, dag-gen -- all instances of "host-mirror ->
-device-resident." Only the forest payload host-mirror remains (Δ-Ψ-forest); closing it = the charter's terminus, a
-single GPU-resident kernel that ingests terms and emits values with no host stage-orchestration.
+from the parameter, O(distinct) bookkeeping) + **Δ-Ψ-forest (a)+(b)+(c)** (the GRADED SUB-BYTE bit-sliced carrier:
+jea_graded -- value carried at its GRADE not u128; (a) carrier+arith, (b) GradedStore is the forest value backend,
+(c) combine_batch = eval-path SWAR; u128-frozen-coordinate dissolved) + **strategy-dispatch** (jea_navigator: SWAR vs
+drain IS the launch-granularity axis; measured-surface argmin; jea_resident.eval_frontier executes -- DONE+green+staged
+but COMMIT HELD on AI-Q's Wedge.agda gate, see below). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.)
+
+**COMMIT HELD [do not redo -- just commit when unblocked]:** the strategy-dispatch batch (jea_navigator + jea_resident
++ this WAL) is STAGED + 8/8 green but pre-commit is blocked by the Q-layer agent's UNSTAGED Algebra/Wedge.agda WIP
+(generic Quot generalization -> trips decl-shape-tag `Wedge` + stale sppf-node-index). NOT --no-verify
+[[feedback_never_noverify_to_bypass_gates]]; coordination note left in Q/GIT_COORDINATION_NOTE.md. Also unstaged:
+scripts/jea_apex.py (a decision-WAL-witness removal I did NOT author -- left unstaged, flagged on the channel).
+
+**BRANCHLESS DIAGNOSIS (user-flagged):** the policy SPLIT. ALIVE: the bit-sliced carrier is branchless by construction
+(bs_add/bs_mul are pure AND/XOR, no data-dependent control flow = no warp divergence); the SWAR batch-by-op-class (c)
+is ALSO the branchless unit (op constant within a batch -> the per-node `if(op==1)` divergence vanishes). So
+branchless -> batch-by-op -> SWAR: the dispatch and the policy are the SAME structure. ERODED (to fix): the SELECTION
+layer went branchful -- navigate's ternary knobs (mode/repr/carrier), eval_frontier's `if strategy`, mega_eval's
+`if(isleaf)/if(op==1)/if(cescal)` (real divergence). Reformulate selects as ARITHMETIC INDICES (carrier=(bits>64)+
+(bits>128); op-select as a blend mul*op+add*(1-op) or batched-constant-op). [[feedback_judgement_is_demechanization]]:
+a branch is a frozen judgement; branchless = arithmetic over a computed coefficient (corners-of-a-parameter).
+**Δ-Ω-branchless [DONE -- the SELECTION layer]:** jea_branchless.py = the branchless vocabulary (step: predicate->0/1;
+tier: #thresholds exceeded -> corner index; pick: table load; corner3: flat-aware 2-cost argmin as an index). Gated
+== the old ternaries exactly (carrier/mode/repr sweeps + 2000 corner3 samples). WIRED: navigate()'s carrier/mode/repr
+/g-corner/eval-strategy + jea_resident.eval_frontier (table-of-thunks dispatch, op-select = pick((add,mul),op)) all
+reformulated -- no `if`/ternary on a knob; 9/9 modules PASS. jea_branchless <- jea_navigator + jea_resident; ports
+verbatim to the on-device supervisor; the decision logic is now ARITHMETIC/DATA (the Δ-Ω-onegraph prereq). REMAINING
+branchless: the on-device mega_eval kernel divergence (if(isleaf)/if(op==1)/if(cescal)) -> Δ-Ψ-bitkernel (kernel
+rewrite); + jea_apex supervisor ternaries -> tier/step when jea_apex settles (currently contested unstaged WIP).
+
+**Δ-Ω-onegraph [THE KEYSTONE DIRECTION -- user-surfaced]:** branchless lets the hardware-model KRON REDUCTION be the
+SAME graph-fold as the term eval. The conductance network (el-atlas perf graph) reduced to f*/binding-edge by Schur
+elimination IS a graph reduced by combining nodes via RATIONAL arithmetic -- the EXACT graded-ℚ carrier (reciprocal =
+num/den swap; Schur G_AA - G_AB G_BB^-1 G_BA = +,×,recip). Branchless + exact-ℚ + the graph's own elimination order =
+NO pivot branch = the IDENTICAL uniform fold the evaluator runs. Schur = a WEDGE (recon with a ℚ quotient -> ties to
+AI-Q's generic-Quot Wedge). Circuit-state-RELAXATION (re-solve on new telemetry) = re-eval on new leaves (the drain
+fixpoint, reactive). PAYOFF: ONE engine; the navigator/supervisor operating-point solve BECOMES a term eval
+(self-hosting -- the scheduler is computed BY the eval), on-device + exact, retiring the el-atlas Python Kron silo.
+The deepest coordinate->geometry: the hardware model was the last scalar coordinate; the geometry is the same graph,
+same arithmetic. FIRST BRICK [DONE -- jea_onegraph.py]: f*=g_gpu/(g_cpu+g_gpu) (a 2-conductance parallel current-divider) computed as
+a graded-ℚ DAG on the SAME carrier (q_combine = jea_graded.combine_batch; q_recip = num/den swap = the divisor
+inversion), bottleneck = a BRANCHLESS argmax (BL.argmax) over the ℚ relaxation gains. W1 f*==gg/(gc+gg) exact; W2 ==
+live_dispatcher.decide (f* within float ε; bottleneck cool=iMC/iGPU, hot=thermal -- matches); W3 RELAXATION = RE-EVAL
+the SAME graph on new telemetry leaves (cool->hot moves f*+bottleneck, reactive). 10/10 modules PASS. jea_onegraph <-
+jea_graded + jea_branchless + live_dispatcher. The supervisor operating-point solve IS a term the evaluator reduces --
+self-hosting. BRICK 2 [DONE -- jea_onegraph.py]: compute_bw's iMC/iGPU net (CORES--IMC--DRAM, Schur-eliminate IMC, ×gate) folded
+into the ℚ graph. series_schur(a,b) = a·b/(a+b) = the SCHUR/Kron reduction as a graded-ℚ WEDGE on the carrier (mul,
+add, recip-swap, mul; commutative+associative -> folds a series path). W4 series_schur == el-atlas g_eff (the Kron
+operator) across avail; W5 compute_bw_qgraph == el-atlas compute_bw across 5 scenarios (idle/+dma/+both/+hot/+aspm);
+W6 the FULL operating point (f* AND the 3 gains via compute_bw_qgraph, bottleneck = BL.argmax) == decide+binding_edge
+(cool & hot) -- brick-1's "gains from reference" deferral CLOSED. The ENTIRE navigator operating-point solve is now a
+graded-ℚ graph reduction on the SAME carrier as the term eval. NEXT: (i) Schur = recon-with-a-ℚ-quotient -> wire onto
+AI-Q's generic-Quot Wedge (the two arcs MEET at the wedge); (ii) SIGN on the carrier (the gain DIFFERENCES are host-ℚ
+today -- the carrier is unsigned bit-sliced); (iii) run it ON-DEVICE (the graded carrier is GPU; the supervisor solve
+becomes a device term eval -- fully self-hosting). PREREQ (Δ-Ω-branchless) was DONE.
+
+**sign-on-carrier -> CORRECTED to UNSIGNED + subtraction-free [user-sharpened, twice]:** I first built signed
+sign-magnitude (signed_sub/sq_sub). User #1: don't carry sign -- the carrier is unsigned; sign NORMALIZES away (the
+onegraph differences are monotone, results>=0), only readout-converted. Dropped signed_sub; q_sub = UNSIGNED rational
+a-b for a>=b (bs_sub = ripple-borrow; ÷ native = num/den swap, so - is the only added additive-inverse). User #2:
+A-B is the log-space of A/B and we have ÷ natively -- AND a conductance network is SUBTRACTION-FREE when contention is
+modeled as SHUNTS + Kron (current-divider), only {+,×,÷}. Realized as **Δ-Ω-onegraph brick 3 [DONE]:** current_divider
+(d_self/(d_self+Σothers), KCL share), compute_bw_shunt (imc·share·gate), operating_point_shunt (f* = the divider;
+binding edge by RATIO sensitivity relaxed/bound -- native ÷, no subtraction). W7 KCL (the 3 shares sum to EXACTLY 1,
+SUBTRACTION-FREE -- conservation via {+,×,÷}), W8 monotone (idle 100 >= +dma 92.6 >= +both 75.2, idle=full imc), W9
+subtraction-free reactive operating point. 10/10 PASS. Brick 3 DIVERGES from el-atlas's fixed-slice avail=imc-steal
+stand-in BY CONSTRUCTION (proportional share vs fixed subtraction) -- validated by NETWORK LAWS, not by ==reference
+(bricks 1-2 keep the exact el-atlas match via q_sub). bs_sub retires from the subtraction-free path (a grade-axis
+primitive only). CARRIER ALGEBRA now minimal: {+, ×, ÷-by-swap} -- and exact-ℚ; the +/×/÷ ⟷ -/+/× exp-log conjugacy
+is EXACT on the grade/exponent axis (the grade IS the log; = carrier_base's w-ladder); the conductance SEMIRING mixes
+Kirchhoff-+ and Ohm-× (log-sum-exp wall -> can't collapse to one op, but ÷ is free and - is eliminable).
+Note: GF(2) (carrier_base w=1) is char-2 -> NO sign; the ℚ/char-0 carrier is unsigned with sign as readout gauge.
+
+**carrier_base RECONCILIATION [user-flagged silo]:** jea_carrier_base.py (FORGOTTEN-context, mine) = the base-B=2^w
+limb carrier, dp4a CONVOLUTION mul, w in {8,4,2,1}, carryless w=1 = GF(2)[x] (the F2 home). That is the VALUE-MAJOR
+sub-byte carrier (one big value's limbs, parallel PER-MULTIPLY); jea_limb_gpu (the crown deliver) is its w=8 carry
+instance. jea_graded = the BIT-MAJOR carrier (bits of MANY values as planes, parallel ACROSS values, SWAR). They are
+the SAME width-w limb carrier in TRANSPOSED layouts (per-multiply convolution vs across-values SWAR) -- the SAME
+granularity tension as crown-deliver vs SWAR-level (Δ-Ψ-forest c). I built jea_graded without connecting; the
+UNIFICATION (one parametric carrier; layout = the data-parallelism gauge; w=1 = the bit/GF(2) floor both reach) is a
+named arc [Δ-Ω-carrier: unify jea_carrier_base + jea_graded + jea_limb_gpu as one width-w/layout-gauge carrier].
+
+**Δ-G2** [gate] = pre-commit running the jea regression (would have caught the Δ-Ψ-dag leaf-code collision). **AI-d** =
+semantic SPPF tools audit (sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire). **The recursion,
+sharpened:** every rung folds ONE host stage onto the device (intern/combine/deliver/merge/dag-gen/value-store) -- all
+"host-mirror -> device-resident"; the carrier became GRADED (the grade, not u128); and now Δ-Ω-onegraph folds the
+HARDWARE MODEL into the same graph-fold. The terminus: one branchless graded-ℚ graph engine that evaluates terms AND
+solves its own hardware/schedule -- the charter's on-GPU resident memoizing trace, self-hosting.
 
 **Δ-Ψ-forest -- THE U128-FROZEN-COORDINATE CATCH (user-surfaced) + the graded carrier:** mid-rung the user stopped
 the u128-based forest store: u128 (two u64 lanes, 256 bits/rational regardless of content) is a FROZEN COORDINATE
@@ -86,11 +163,19 @@ forest level / op-class), N rational combines in ONE bit-sliced SWAR pass (per-b
 level_eval_graded gathers the children's (num,den) from the device GRADED store and combines the whole level via the
 bit-sliced carrier -- graded arithmetic doing the eval, not just storage. Tested: W7 (128 combines one SWAR ==
 Fraction), W9 (200-node same-op level over resident leaves, read from the graded store, == per-node truth, both ops);
-7/7 modules PASS. REMAINING (the integration tail, not a new carrier): DISPATCH bit-sliced-SWAR (wide same-op levels)
-vs the per-node fused drain (dependency-heavy) BY LEVEL SHAPE -- the navigator choice [[feedback_navigator_not_answer]]
-/ [[feedback_noise_floor_is_flat_region]]; + the small int structure INDEX (op/lch/rch/code) stays host (orchestration
-map, not value residue). The graded sub-byte carrier (a) + resident store (b) + eval-path arithmetic (c) are all built,
-wired, gated -- the u128-frozen-coordinate is fully dissolved into the grade.
+7/7 modules PASS. **STRATEGY DISPATCH [DONE -- tied into the telemetry solver, not a new dispatcher]:** the either/or
+(bit-sliced-SWAR vs per-node-drain) dissolves recursively into the navigator's EXISTING launch-granularity axis (g):
+SWAR = coarse (one batched op per level, the coop corner), drain = fine (per-node, the strat corner), with the LEVEL
+SHAPE (width W, grade G) as the telemetry. jea_navigator.measure_eval_strategy_surface(W,G) MEASURES the two corners
+on the real shape; _eval_strategy_choice is the flat-region-aware argmin (same as g*); navigate() returns eval_strategy
+in the operating-point dict; jea_resident.eval_frontier EXECUTES the chosen corner (level_eval_graded vs per-node).
+W5 (navigator: choice moves with the surface + live measurement resolves), W10 (resident: both corners exact vs
+truth); 8/8 modules PASS. HONEST FINDING the surface surfaced [[feedback_validate_outputs_not_inputs]]: the bit-sliced
+path's bs_mul is O(G^2) cupy-op LAUNCHES + host pack/unpack + per-node Fraction-reduce -> launch-bound, LOSES to the
+single fused megakernel on this box; the dispatch correctly defers to drain. A FUSED bit-sliced CUDA kernel (one
+launch, all planes) is what would let SWAR win -- the named next enabler. + the small int structure INDEX
+(op/lch/rch/code) stays host (orchestration map, not value residue). The graded sub-byte carrier (a) + resident store
+(b) + eval-path arithmetic (c) + telemetry-driven dispatch are built, wired, gated -- u128-frozen-coordinate dissolved.
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the

@@ -29,6 +29,7 @@ from jea_zsppf import morton2, heights
 import jea_mega_eval as MEGAE                                   # the FUSED on-device intern+combine megakernel (Δ-Σ-mega rung-2)
 from jea_dag_gen import gen_Eq_device                           # Δ-Ψ-dag: ON-DEVICE DAG generation (no host build loop / upload)
 import jea_graded as GR                                         # Δ-Ψ-forest (b): the GRADED, SUB-BYTE device value store
+import jea_branchless as BL                                     # Δ-Ω-branchless: selects are arithmetic index->table load
 
 
 class Forest:
@@ -197,6 +198,21 @@ def level_eval_graded(F, op, lsids, rsids):
     return GR.combine_batch(op, nL, dL, nR, dR)
 
 
+def _drain_level(F, op, lsids, rsids):                              # per-node drain corner (also the flat/either default)
+    mul=(lambda a,b:a*b); add=(lambda a,b:a+b); comb=BL.pick((add, mul), op)   # op-select as an arithmetic index (op in {0,1})
+    return [ (lambda v:(v.numerator,v.denominator))(comb(F.value(l),F.value(r))) for l,r in zip(lsids,rsids) ]
+
+
+def eval_frontier(F, op, lsids, rsids, strategy):
+    """Δ-Ψ-forest dispatch CONSUMER: execute a level via the strategy the navigator chose (jea_navigator's
+    eval_strategy, an argmin over the MEASURED level surface). BRANCHLESS dispatch: the strategy is a 0/1 INDEX into a
+    table of the two evaluators -- a table load, not an `if` (Δ-Ω-branchless). 1 -> the graded SWAR level eval
+    (level_eval_graded); 0 -> the per-node drain (also the flat/either default). The CHOICE is the telemetry-driven
+    solve; this only executes the selected corner."""
+    table = (lambda: _drain_level(F, op, lsids, rsids), lambda: level_eval_graded(F, op, lsids, rsids))
+    return BL.pick(table, BL.step(strategy.startswith("bit-sliced-SWAR")))()
+
+
 def _embed(sub, host_op, extra):
     N=len(sub["op"]); op=list(sub["op"])+[-1,host_op]; vN=list(sub["vN"])+[extra[0],0]; vD=list(sub["vD"])+[extra[1],1]
     lch=list(sub["lch"])+[-1,sub["root"]]; rch=list(sub["rch"])+[-1,N]
@@ -316,7 +332,15 @@ if __name__ == "__main__":
     print(f"\n  W9  Δ-Ψ-FOREST(c): a {M}-node level of independent same-op combines (children from the device graded store)")
     print(f"      evaluated via the BIT-SLICED carrier in ONE SWAR pass per op-class -- mul=={w9_mul}, add=={w9_add} vs")
     print(f"      per-node truth: {w9} (graded arithmetic IN the eval path, not just storage)")
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9
+
+    # W10: the dispatch CONSUMER -- eval_frontier executes whichever strategy the navigator chose. Both corners give
+    # the truth (the dispatch is correct either way; the navigator's measured argmin picks WHICH on the live box).
+    truth_c=[Fraction(*leaves[l])*Fraction(*leaves[r]) for l,r in zip(ls,rs)]
+    r_swar=eval_frontier(Gc,1,ls,rs,"bit-sliced-SWAR"); r_drain=eval_frontier(Gc,1,ls,rs,"per-node-drain")
+    w10 = all(Fraction(*r_swar[i])==truth_c[i] for i in range(M)) and all(Fraction(*r_drain[i])==truth_c[i] for i in range(M))
+    print(f"\n  W10 DISPATCH CONSUMER (eval_frontier executes the navigator's eval_strategy): both corners exact vs truth")
+    print(f"      -- 'bit-sliced-SWAR' branch and 'per-node-drain' branch both == per-node truth: {w10}")
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9 and w10
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
     print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver), the physical store merges")
     print(f"  INCREMENTALLY (b-real-incr), parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag), the VALUE payload is")

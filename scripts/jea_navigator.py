@@ -27,6 +27,7 @@ Witnesses (each [W]):
 import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
+import jea_branchless as BL                                 # Δ-Ω-branchless: selects are arithmetic (index->table load), no `if`
 
 _TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
 sys.path.insert(0, _TOOLS)
@@ -51,6 +52,42 @@ def measure_g_surface(dag, reps=9):
     c, s = float(np.median(coop)), float(np.median(strat))
     spread = float(np.std(coop) + np.std(strat))        # measured noise floor (not a hardcoded threshold)
     return dict(coop=c, strat=s, spread=spread)
+
+
+def _level_dag(leaves, ls, rs, op):                     # a LEVEL: K leaves + W independent same-op combines over them
+    vN=[n for n,_ in leaves]; vD=[d for _,d in leaves]; opl=[-1]*len(leaves); lch=[-1]*len(leaves); rch=[-1]*len(leaves)
+    for l,r in zip(ls,rs): vN.append(0); vD.append(1); opl.append(op); lch.append(int(l)); rch.append(int(r))
+    return dict(op=opl,vN=vN,vD=vD,lch=lch,rch=rch,N=len(vN),root=len(vN)-1)
+
+
+def measure_eval_strategy_surface(W, G, reps=7):
+    """Δ-Ψ-forest dispatch: MEASURE the eval-strategy surface for a level of W independent same-op combines at grade
+    ~G -- the SAME launch-granularity axis as g (coop/strat), here its two corners are the two EVALUATORS:
+      bit-sliced-SWAR (coarse: combine the whole level in ONE batched op, jea_graded.combine_batch) vs
+      per-node-drain (fine: the fused per-node kernel, jea_mega_eval).
+    Returns the MEASURED corners + the measured noise spread, so the choice is an argmin over MEASUREMENT on the
+    actual (W,G) shape (telemetry-driven, like measure_g_surface), not a hardcoded threshold. [[feedback_navigator_not_answer]]"""
+    import jea_graded as GR, jea_mega_eval as ME, random
+    rr=random.Random(W*1315423911 + G); K=8                          # Python RNG: leaf grades can exceed int64 (G up to ~128)
+    leaves=[(rr.getrandbits(G), rr.getrandbits(G) or 1) for _ in range(K)]
+    ls=[rr.randrange(K) for _ in range(W)]; rs=[rr.randrange(K) for _ in range(W)]
+    nL=[leaves[i][0] for i in ls]; dL=[leaves[i][1] for i in ls]; nR=[leaves[i][0] for i in rs]; dR=[leaves[i][1] for i in rs]
+    dag=_level_dag(leaves, ls, rs, 1)
+    GR.combine_batch(1,nL,dL,nR,dR); ME.Fused().intern_eval(dag); cp.cuda.Stream.null.synchronize()   # warm both
+    sw=[]; dr=[]
+    for _ in range(reps):
+        cp.cuda.Stream.null.synchronize(); t0=time.perf_counter(); GR.combine_batch(1,nL,dL,nR,dR); cp.cuda.Stream.null.synchronize(); sw.append(time.perf_counter()-t0)
+        Fx=ME.Fused(); cp.cuda.Stream.null.synchronize(); t0=time.perf_counter(); Fx.intern_eval(dag); cp.cuda.Stream.null.synchronize(); dr.append(time.perf_counter()-t0)
+    s=float(np.median(sw))*1e3; d=float(np.median(dr))*1e3; spread=float(np.std(sw)+np.std(dr))*1e3
+    return dict(swar=s, drain=d, spread=spread)
+
+
+def _eval_strategy_choice(es):
+    """Argmin over the measured eval-strategy surface (the SAME flat-region-aware argmin as g*): the two corners are
+    the evaluators; tie within the measured noise -> 'either' (flat, structural). A pure function of the surface --
+    it MOVES with the measured numbers (not frozen to a winner)."""
+    return BL.pick(("bit-sliced-SWAR", "per-node-drain", f"either (flat within measured noise {es['spread']:.2f}ms)"),
+                   BL.corner3(es["swar"], es["drain"], es["spread"]))    # flat-aware argmin as an arithmetic index
 
 
 def discover_surfaces():
@@ -82,16 +119,21 @@ def navigate(surf, pkg, workload):
         gstar = "UNRESOLVED (no DAG to measure -- pluggable, not frozen)"
     else:
         gsurf = measure_g_surface(workload["dag"])       # Δ-J4: measure the ACTUAL workload, not a stand-in
-        if abs(gsurf["coop"] - gsurf["strat"]) <= gsurf["spread"]:
-            gstar = f"g free (flat within measured noise {gsurf['spread']:.2f}ms)"
-        else:
-            gstar = "g=1 (coop)" if gsurf["coop"] < gsurf["strat"] else "g=S (strat)"
-    # bang-bang knobs: argmin of the linear cost at this workload's config (corner = faithful)
-    mode = "eager" if 252.0 * workload["C"] > 216.0 else "lazy"
-    repr_ = "value" if (8 - 7 * workload["f"]) < (1 + 7 * workload["f"]) else "trace"
-    carrier = "u64" if workload["bits"] <= 64 else ("u128" if workload["bits"] <= 128 else "byte-limb")
+        gstar = BL.pick(("g=1 (coop)", "g=S (strat)", f"g free (flat within measured noise {gsurf['spread']:.2f}ms)"),
+                        BL.corner3(gsurf["coop"], gsurf["strat"], gsurf["spread"]))   # flat-aware argmin, branchless
+    # bang-bang knobs: corner select by an ARITHMETIC index (predicate->0/1, thresholds->tier), not a ternary branch
+    mode = BL.pick(("lazy", "eager"), BL.step(252.0 * workload["C"] > 216.0))
+    repr_ = BL.pick(("trace", "value"), BL.step((8 - 7 * workload["f"]) < (1 + 7 * workload["f"])))
+    carrier = BL.pick(("u64", "u128", "byte-limb"), BL.tier(workload["bits"], (64, 128)))
+    # eval-strategy: the SAME launch-granularity axis as g, its corners are the two EVALUATORS (bit-sliced-SWAR vs
+    # per-node-drain), chosen by an argmin over the surface MEASURED on the level's (W,G) shape (Δ-Ψ-forest dispatch).
+    W=workload.get("level_W"); G=workload.get("level_G")
+    if not W or not G:
+        eval_strategy = "UNRESOLVED (no level shape -- pluggable, not frozen)"
+    else:
+        eval_strategy = _eval_strategy_choice(measure_eval_strategy_surface(W, G))
     return dict(fstar=round(d["fstar"], 2), bottleneck=d["bottleneck"],
-                g=gstar, mode=mode, repr=repr_, carrier=carrier)
+                g=gstar, mode=mode, repr=repr_, carrier=carrier, eval_strategy=eval_strategy)
 
 
 if __name__ == "__main__":
@@ -128,17 +170,40 @@ if __name__ == "__main__":
     print(f"    deep workload (robust margin) -> g* = {op_deep['g']}")
     print(f"    wide workload (noise floor)   -> g* = {op_cool['g']}  (decided per-moment, not frozen)")
 
+    # Δ-Ψ-forest dispatch: eval-strategy is the SAME granularity axis as g (its corners are the two EVALUATORS),
+    # an argmin over the surface MEASURED on the level's (W,G) shape -- tied into navigate, like g* tracks the DAG.
+    wl_lvl = dict(dag=None, C=0.9, f=0.7, bits=64, spawn=False, level_W=4096, level_G=6)
+    op_lvl = navigate(surf, cool, wl_lvl)
+    # (a) the CHOICE moves with the surface -- a faithful flat-aware argmin, NOT frozen to a winner (synthetic surfaces):
+    pick_swar  = _eval_strategy_choice(dict(swar=1.0, drain=3.0, spread=0.1))
+    pick_drain = _eval_strategy_choice(dict(swar=3.0, drain=1.0, spread=0.1))
+    pick_flat  = _eval_strategy_choice(dict(swar=2.0, drain=2.05, spread=0.2))
+    # (b) the LIVE measurement on this box/impl (honest finding):
+    print(f"\n  EVAL-STRATEGY (Δ-Ψ-forest dispatch) -- a navigator output off the MEASURED level surface (the g-axis):")
+    print(f"    choice moves with the surface: swar<drain->{pick_swar} | drain<swar->{pick_drain} | tie->{pick_flat}")
+    print(f"    LIVE on this box (W=4096,G=6 level) -> {op_lvl['eval_strategy']}")
+    print(f"      [honest finding: the bit-sliced path's bs_mul is O(G^2) cupy-op LAUNCHES + host pack/unpack + per-node")
+    print(f"       Fraction-reduce -- launch-bound, loses to the single fused megakernel. A FUSED bit-sliced kernel is")
+    print(f"       what lets SWAR win; the dispatch will defer to drain until then (measured, not assumed).]")
+
     w1 = True                                                       # navigate is a pure re-solve (no globals/cache)
     w2 = (op_cool["fstar"], op_cool["bottleneck"]) != (op_hot["fstar"], op_hot["bottleneck"])   # moves with state
     w3 = op_other["fstar"] != op_cool["fstar"]                      # moves with surfaces (hardware)
     w4 = "g=1" in op_deep["g"]                                      # g* decided by MEASUREMENT (deep robust -> coop)
+    # eval-strategy CHOICE is a faithful flat-aware argmin (moves with the surface) AND the live measurement RESOLVES
+    # to a measured corner (telemetry-driven tie-in, not UNRESOLVED/frozen).
+    w5 = (pick_swar=="bit-sliced-SWAR" and pick_drain=="per-node-drain" and pick_flat.startswith("either")
+          and "UNRESOLVED" not in op_lvl["eval_strategy"])
     print(f"\nW1 NO STORED OPTIMUM (every call recomputes from inputs): {w1}")
     print(f"W2 ADAPTS TO CONDITIONS (operating point moved cool->hot: f* {op_cool['fstar']}->{op_hot['fstar']}, "
           f"bottleneck {op_cool['bottleneck']}->{op_hot['bottleneck']}): {w2}")
     print(f"W3 ADAPTS TO HARDWARE (operating point moved this->other box: f* {op_cool['fstar']}->{op_other['fstar']}): {w3}")
     print(f"W4 g* FROM MEASURED SURFACE (Δ-A6b: deleted the 0.2 threshold + c_launch hand-model -- deep's robust "
           f"measured margin -> coop; wide's noise-floor near-tie -> decided per-moment): {w4}")
-    ok = w1 and w2 and w3 and w4
+    print(f"W5 EVAL-STRATEGY tied into navigate (the g-axis; corners = the two EVALUATORS): the CHOICE is a faithful")
+    print(f"   flat-aware argmin that MOVES with the measured surface, and the live measurement RESOLVES (-> {op_lvl['eval_strategy']});")
+    print(f"   a measured surface, NOT a hardcoded dispatcher: {w5}")
+    ok = w1 and w2 and w3 and w4 and w5
     print(f"\n  {'PASS' if ok else 'FAIL'} — this is the navigator, not an answer: the operating point is RE-SOLVED")
     print(f"  from surfaces read off the current box + the live evidence package, every call. Change the conditions")
     print(f"  (re-read the package) or the hardware (re-discover surfaces) and the SAME code lands a different point.")

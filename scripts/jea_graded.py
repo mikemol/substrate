@@ -75,6 +75,28 @@ def bs_mul(A, B):
     return acc
 
 
+_F64 = cp.uint64(0xFFFFFFFFFFFFFFFF)
+def bs_sub(A, B):
+    """Bit-sliced ripple-BORROW subtract: (A - B mod 2^G, per-value borrow_out) -- borrow=1 iff A<B. The complement
+    of bs_add; a full-subtractor over bit-planes (diff=a^b^bin; bout=(~a&b)|(~(a^b)&bin)), branch-free SWAR."""
+    G=max(A.shape[0],B.shape[0]); W=A.shape[1]; A=_pad(A,G); B=_pad(B,G)
+    out=cp.zeros((G,W),cp.uint64); bor=cp.zeros(W,cp.uint64)
+    for b in range(G):
+        a=A[b]; bb=B[b]; out[b]=a^bb^bor; bor=((a^_F64)&bb)|(((a^bb)^_F64)&bor)
+    return out, bor
+
+def q_sub(a, b):
+    """Rational a - b for a >= b (result >= 0) via the carrier -- the conductance/throughput domain (differences of
+    MONOTONE quantities). a-b = (a.n·b.d - b.n·a.d)/(a.d·b.d): cross-products via bs_mul, the non-negative numerator
+    difference via bs_sub, all on the carrier. The carrier stays UNSIGNED (the GF(2)/F2-home form); SIGN is a
+    NORMALIZATION/readout gauge, never carried -- bs_sub returns the borrow (the would-be sign bit) so a caller with a
+    possibly-negative result can normalize at the boundary (bias / orient + an F2 bit), not in the carrier."""
+    an,_=to_bitsliced([a.numerator]); ad,_=to_bitsliced([a.denominator])
+    bn,_=to_bitsliced([b.numerator]); bd,_=to_bitsliced([b.denominator])
+    diff, _ = bs_sub(bs_mul(an, bd), bs_mul(bn, ad))                 # (a.n·b.d) - (b.n·a.d), unsigned (a>=b -> borrow 0)
+    return Fraction(from_bitsliced(diff, 1)[0], from_bitsliced(bs_mul(ad, bd), 1)[0])
+
+
 # --- graded RATIONAL: two bit-sliced integers (num, den); arithmetic stays bit-sliced (reduce at readout, host gcd) ---
 def rat_mul(nA,dA, nB,dB):  return bs_mul(nA,nB), bs_mul(dA,dB)                          # (na/da)*(nb/db)
 def rat_add(nA,dA, nB,dB):  return bs_add(bs_mul(nA,dB), bs_mul(nB,dA)), bs_mul(dA,dB)   # cross-multiply add
@@ -191,8 +213,22 @@ if __name__ == "__main__":
     print(f"\n  W7  combine_batch (Δ-Ψ-forest c): {M} independent rational combines in ONE bit-sliced SWAR pass --")
     print(f"      mul-batch == Fraction: {mul_ok}; add-batch == Fraction: {add_ok} (per-bit-plane, no per-node loop): {w7}")
 
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7
+    # W8: UNSIGNED subtraction on the carrier (the carrier stays unsigned; sign is a normalization/readout gauge, NOT
+    # carried -- the conductance/throughput domain's differences are monotone, results >= 0). bs_sub + q_sub, exact.
+    hi=[max(a,b) for a,b in zip([int(rng.integers(0,1<<g)) for g in grades], [int(rng.integers(0,1<<g)) for g in grades])]
+    lo=[int(rng.integers(0,h+1)) for h in hi]                            # lo <= hi (a>=b: the monotone-difference domain)
+    pa,_=to_bitsliced(hi); pb,_=to_bitsliced(lo); diff,bor=bs_sub(pa,pb); D=from_bitsliced(diff,N)
+    sub_ok = all(D[i]==hi[i]-lo[i] for i in range(N)) and int(bor.sum())==0   # a>=b -> exact, borrow 0 (no sign needed)
+    pr=[int(rng.integers(0,1<<6)) for _ in range(40)]; dr=[int(rng.integers(1,1<<6)) for _ in range(40)]
+    rats=[ (Fraction(pr[i],dr[i]), Fraction(int(rng.integers(0,pr[i]+1)), dr[i])) for i in range(40) ]   # a>=b
+    rat_ok=all(q_sub(a,b)==a-b for a,b in rats)
+    w8 = sub_ok and rat_ok
+    print(f"\n  W8  UNSIGNED subtract on the carrier (sign = normalization/readout, NOT carried): bs_sub == a-b for a>=b "
+          f"(borrow 0): {sub_ok}; q_sub (rational a-b via the carrier) == Fraction: {rat_ok} -- ÷ is native (swap), so -")
+    print(f"      is the only added additive-inverse (no sign-magnitude): {w8}")
+
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8
     print(f"\n  {'PASS' if ok else 'FAIL'} — the graded sub-byte carrier: a value is carried at its GRADE (1 bit up), bit-sliced")
-    print(f"  so arithmetic (ripple-carry add, shift-and-add mul, combine_batch) is per-bit SWAR -- 64 values per word; the")
-    print(f"  GradedStore is the device-resident contiguous sub-byte VALUE store. u128 was a frozen coordinate; the grade")
-    print(f"  is the geometry. WIRED: GradedStore is the forest value backend (b); combine_batch is the eval-combine (c).")
+    print(f"  so arithmetic (ripple-carry add, ripple-borrow SUB, shift-and-add mul, combine_batch) is per-bit SWAR -- 64")
+    print(f"  values/word; GradedStore = the device sub-byte VALUE store. u128 was a frozen coordinate; the grade is the")
+    print(f"  geometry. UNSIGNED (sign normalizes away); ÷ native (swap). WIRED: GradedStore=forest(b); combine_batch=eval(c); q_sub=onegraph diffs.")
