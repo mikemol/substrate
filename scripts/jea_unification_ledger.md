@@ -55,8 +55,11 @@ framework (the operator = [[feedback_judgement_is_demechanization]], already on 
   g<6 though the VALUE was always correct. Fixed: only ACTIVE lanes (gid<g) count work-sweeps. K-window (U9) +
   layout-bucketing remain interior-candidates on THEIR kernels -- same measure-the-surface move (NOT a fitted convex
   model); unmeasured here, so unclaimed.
-- **Δ-J4** [LOW-MED, cheap] = measure_g_surface's REPRESENTATIVE-DAG choice (build_dag(512,3)/deep_chain(200)) is
-  a frozen judgement. Mechanize = measure the ACTUAL workload's DAG (re-read the real thing). Easy, immediate.
+- **Δ-J4** [CLOSED] measure_g_surface's REPRESENTATIVE-DAG choice (build_dag(512,3)/deep_chain(200) measured once,
+  decoupled from the navigated workload's actual DAG) was a frozen judgement. Fixed: navigate(surf,pkg,workload)
+  now measures the surface on the WORKLOAD'S OWN DAG (workload['dag']) -- re-read the real thing, no stand-in,
+  re-measured per call (workload+state dependent, measure-don't-bake). Verified: wide->flat / deep->coop from
+  their ACTUAL DAGs; W1-W4 still PASS (no stored optimum; adapts to conditions + hardware; g* from measurement).
 - **Δ-J5** [LOW, opportunistic] = residual magic constants: thermal_gate floor=0.4/k=0.03 (inherited el-atlas),
   jea_schedule_surface NOISE=0.20, witness_sanity max_decades=4. Each: derive/measure OR justify net-positive
   (max_decades is a cheap units guard -- likely net-positive; floor/k are net-negative inherited). Audit + tag.

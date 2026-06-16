@@ -66,24 +66,26 @@ def discover_surfaces():
                 cpu_eff=edges["iMC/DRAM"]["eff"], c_launch=best)
 
 
-def navigate(surf, pkg, workload, gsurf=None):
+def navigate(surf, pkg, workload):
     """Re-solve the operating point from (surfaces, live package, workload). No stored optimum.
-    gsurf = the MEASURED launch-granularity surface for this workload (measure_g_surface); when present, g* is an
-    argmin over MEASUREMENT, with the flat test using the surface's MEASURED noise spread -- not the deleted
-    (S-1)*c_launch/work hand-model + 0.2 threshold (Δ-A6b). gsurf=None -> the g axis is left UNRESOLVED+flagged
-    (a marked pluggable judgement to fill by measuring), never a fabricated/frozen winner."""
+    g* is an argmin over the launch-granularity surface MEASURED ON THE WORKLOAD'S OWN DAG (Δ-J4: re-read the
+    REAL thing -- not a hardcoded representative build_dag(512,3) stand-in), with the flat test using the
+    surface's MEASURED noise spread (Δ-A6b; no (S-1)*c_launch/work hand-model + 0.2 threshold). No DAG -> the g
+    axis is UNRESOLVED+flagged (pluggable, never a fabricated/frozen winner)."""
     tel = dict(T=pkg["T"], link_state=pkg["link_state"], gov=pkg.get("gov", "?"))
     # dispatch: the live Kron-solve with measured edge efficiencies (Δ-A3) -- f*/bottleneck track state+hardware
     d = decide(surf["imc"], tel, pcie_eff=surf["pcie_eff"], cpu_eff=surf["cpu_eff"])
-    # schedule launch-granularity g*: argmin over the MEASURED g-surface; flat test = the MEASURED noise spread.
+    # schedule launch-granularity g*: argmin over the surface measured on THIS workload's actual DAG (re-read).
     if workload.get("spawn"):
         gstar = "g=1+spawn (pool)"                       # structural: only spawn can; not a measured contest
-    elif gsurf is None:
-        gstar = "UNRESOLVED (measure g-surface to fill -- pluggable, not frozen)"
-    elif abs(gsurf["coop"] - gsurf["strat"]) <= gsurf["spread"]:
-        gstar = f"g free (flat within measured noise {gsurf['spread']:.2f}ms)"
+    elif workload.get("dag") is None:
+        gstar = "UNRESOLVED (no DAG to measure -- pluggable, not frozen)"
     else:
-        gstar = "g=1 (coop)" if gsurf["coop"] < gsurf["strat"] else "g=S (strat)"
+        gsurf = measure_g_surface(workload["dag"])       # Δ-J4: measure the ACTUAL workload, not a stand-in
+        if abs(gsurf["coop"] - gsurf["strat"]) <= gsurf["spread"]:
+            gstar = f"g free (flat within measured noise {gsurf['spread']:.2f}ms)"
+        else:
+            gstar = "g=1 (coop)" if gsurf["coop"] < gsurf["strat"] else "g=S (strat)"
     # bang-bang knobs: argmin of the linear cost at this workload's config (corner = faithful)
     mode = "eager" if 252.0 * workload["C"] > 216.0 else "lazy"
     repr_ = "value" if (8 - 7 * workload["f"]) < (1 + 7 * workload["f"]) else "trace"
@@ -100,32 +102,28 @@ if __name__ == "__main__":
 
     cool = dict(T=46, link_state=1.0, gov="powersave")
     hot  = dict(T=120, link_state=0.50, gov="performance")
-    wl_wide = dict(S=9,   work=50.0, C=0.9, f=0.7, bits=120, spawn=False)
-    wl_deep = dict(S=199, work=1.0,  C=0.9, f=0.7, bits=120, spawn=False)
+    # Δ-J4: each workload carries its ACTUAL DAG; navigate measures THAT workload's g-surface (re-read the real
+    # thing), not a hardcoded representative. C/f/bits are the workload's own config.
+    wl_wide = dict(dag=build_dag(512, 3), C=0.9, f=0.7, bits=120, spawn=False)
+    wl_deep = dict(dag=deep_chain(200),   C=0.9, f=0.7, bits=120, spawn=False)
 
-    # Δ-A6b: MEASURE each workload's launch-granularity surface at runtime (the deleted threshold's replacement)
-    gs_wide = measure_g_surface(build_dag(512, 3))
-    gs_deep = measure_g_surface(deep_chain(200))
-    print(f"  MEASURED g-surfaces: wide coop {gs_wide['coop']:.2f}/strat {gs_wide['strat']:.2f} (spread {gs_wide['spread']:.2f}); "
-          f"deep coop {gs_deep['coop']:.2f}/strat {gs_deep['strat']:.2f} (spread {gs_deep['spread']:.2f})\n")
-
-    op_cool = navigate(surf, cool, wl_wide, gs_wide)
-    op_hot  = navigate(surf, hot,  wl_wide, gs_wide)
+    op_cool = navigate(surf, cool, wl_wide)              # measures wl_wide's OWN DAG g-surface, live
+    op_hot  = navigate(surf, hot,  wl_wide)
     print(f"  ADAPTS TO CONDITIONS (same surfaces + workload, different live evidence):")
     print(f"    cool {cool['T']}C link{cool['link_state']:.2f} -> {op_cool}")
     print(f"    hot  {hot['T']}C link{hot['link_state']:.2f} -> {op_hot}")
 
     # hypothetical OTHER box: a faster link (full PCIe eff) + slower iMC -- the SAME code, different surface inputs.
     other = dict(surf, imc=surf["imc"] * 0.5, pcie_eff=min(surf["pcie_eff"] * 3, 1.0), c_launch=surf["c_launch"] * 4)
-    op_other = navigate(other, cool, wl_wide, gs_wide)
+    op_other = navigate(other, cool, wl_wide)
     print(f"\n  ADAPTS TO HARDWARE (same code + evidence, different surfaces read at runtime):")
     print(f"    this box  -> {op_cool}")
     print(f"    other box -> {op_other}")
 
-    # Δ-A6b: g* now comes from the MEASURED surface (deleted the threshold). deep has a robust measured margin
-    # (-> coop); wide is at the noise floor -> the navigator decides per-moment (flat OR whichever measured
-    # faster NOW) -- that IS "the optimal solution under the evidence of the moment", not a frozen winner.
-    op_deep = navigate(surf, cool, wl_deep, gs_deep)
+    # g* from the surface MEASURED ON EACH WORKLOAD'S OWN DAG (Δ-J4 + Δ-A6b). deep has a robust measured margin
+    # (-> coop); wide is at the noise floor -> decided per-moment -- "the optimal solution under the evidence of
+    # the moment", not a frozen winner, and measured on the ACTUAL workload, not a representative.
+    op_deep = navigate(surf, cool, wl_deep)
     print(f"\n  g* FROM MEASUREMENT (Δ-A6b, no threshold/hand-model):")
     print(f"    deep workload (robust margin) -> g* = {op_deep['g']}")
     print(f"    wide workload (noise floor)   -> g* = {op_cool['g']}  (decided per-moment, not frozen)")
