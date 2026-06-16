@@ -48,9 +48,16 @@ agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-
 Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity),
 **Δ-Ψ-crown**, **Δ-Φ-pernode**, **Δ-Σ-wire/decide/trace** (memoizing eval + Agda SPPF + decision WAL), **jea_zsppf**
 (SPPF = prefix-sort of z-codes; W1-W5 quadtree numbers), **Δ-Σ-trace (b-real / b-real-gather / b-real-store)** --
-the device-resident forest. (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8.) NEXT executors (to dispatch): **AI-Δ9** -- the
-on-device MEGAKERNEL arc **Δ-Σ-mega** (the common structure of all remaining work, below); **AI-d** -- the semantic
-SPPF tools audit (orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire).
+the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: the INTERN as one on-device hash-cons megakernel, wired
+into jea_resident). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.) NEXT executors (to dispatch): **AI-Δ9** continues
+**Δ-Σ-mega** (rung-2 = FUSE the two megakernels: jea_mega INTERN + the apex EVAL drain -> ONE kernel that
+interns+combines in one pass; then crown-deliver + DAG-gen on-device); **AI-d** -- the semantic SPPF tools audit
+(orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire). **Δ-G2** [gate, recommended].
+**The recursion, sharpened:** rung-1 folded INTERN into a megakernel; but it is a SEPARATE kernel from the apex's
+EVAL drain, and the host still does node BOOKKEEPING + per-eval launches between them. The common structure of ALL
+remaining work = collapse the SEPARATE persistent megakernels (intern; eval/apex; +deliver; +dag-gen) into ONE
+resident kernel -- "two megakernels -> one," recursively, until a single GPU-resident kernel ingests terms and
+emits values with no host stage-orchestration. That single kernel IS the charter's "on-GPU resident memoizing trace."
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the
