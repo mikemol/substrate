@@ -138,3 +138,15 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
     trans (sym (+P-identityʳ (reduce-mod-f (sv *P av))))
     (trans (cong (reduce-mod-f (sv *P av) +P_) (sym (modulus-multiple tv)))
            (reduce-split sv av tv b-poly gv bez))
+
+  -- B-INV-READ: the inverse property in the quotient ring.  From a Bézout
+  -- against b-poly with gcd = unit, a *Q (reduce s) ≡ 𝟙.  Mirrors ℕ `proof`.
+  reduce-read : {ns nt ng : ℕ}
+                (s : Poly ns) (a : Poly (suc d)) (t : Poly nt) (g : Poly ng)
+              → ((k : ℕ) → convCoeff s a k + convCoeff t b-poly k ≡ nth g k)
+              → reduce-mod-f g ≡ oneC
+              → a *Q (reduce-mod-f s) ≡ oneC
+  reduce-read {ns} s a t g bez gunit =
+    trans (sym (reduce-*-hom a s))
+    (trans (trans (cong reduce-mod-f (*P-comm a s)) (reduce-subst (+ℕ-comm ns (suc d)) (s *P a)))
+    (trans (reduce-drop s a t g bez) gunit))
