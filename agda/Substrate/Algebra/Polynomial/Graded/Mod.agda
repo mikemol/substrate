@@ -21,15 +21,16 @@
 module Substrate.Algebra.Polynomial.Graded.Mod where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
   open F.Over CR public   -- Poly, _+P_, _·c_, nth(-ext), 𝟘/_+_, the ring laws, rearrange, ·-distribʳ …
 
-  private variable n : ℕ
+  private variable n m : ℕ
 
   -- generic polynomial abelian-group laws we need (proved via nth-ext):
   +P-identityˡ : (v : Poly n) → (replicate n 𝟘) +P v ≡ v
@@ -123,3 +124,55 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
     trans (cong₂ _+P_ (cong ((c * a) ∷_) (sym (·c-zeroʳ {d} c)))
                       (trans (cong ytime (reduce-·c c v)) (ytime-·c c (reduce-mod-f v))))
           (sym (·c-+P-distrib c (a ∷ replicate d 𝟘) (ytime (reduce-mod-f v))))
+
+  -- 8. (B2c) the ×P bridge: reduce-mod-f (p *P q) ≡ hsum p (reduce-mod-f q).
+  vinit-zero : vinit (replicate (suc n) 𝟘) ≡ replicate n 𝟘
+  vinit-zero {zero}  = refl
+  vinit-zero {suc n} = cong (𝟘 ∷_) (vinit-zero {n})
+  vlast-zero : vlast (replicate (suc n) 𝟘) ≡ 𝟘
+  vlast-zero {zero}  = refl
+  vlast-zero {suc n} = vlast-zero {n}
+
+  reduce-y-shift : (q : Poly n) → reduce-mod-f (𝟘 ∷ q) ≡ ytime (reduce-mod-f q)
+  reduce-y-shift q = +P-identityˡ (ytime (reduce-mod-f q))
+
+  ytime-zero : ytime (replicate (suc d) 𝟘) ≡ replicate (suc d) 𝟘
+  ytime-zero =
+    trans (cong₂ _+P_ (cong (𝟘 ∷_) (vinit-zero {d}))
+                      (trans (cong (_·c f-lo) (vlast-zero {d})) (·c-absorbˡ f-lo)))
+          (+P-identityˡ (replicate (suc d) 𝟘))
+
+  reduce-𝟎P : reduce-mod-f (replicate n 𝟘) ≡ replicate (suc d) 𝟘
+  reduce-𝟎P {zero}  = refl
+  reduce-𝟎P {suc n} =
+    trans (cong (λ z → (𝟘 ∷ replicate d 𝟘) +P ytime z) (reduce-𝟎P {n}))
+          (trans (cong ((𝟘 ∷ replicate d 𝟘) +P_) ytime-zero)
+                 (+P-identityˡ (replicate (suc d) 𝟘)))
+
+  reduce-subst : ∀ {a b} (eq : a ≡ b) (v : Poly a)
+               → reduce-mod-f (subst Poly eq v) ≡ reduce-mod-f v
+  reduce-subst refl v = refl
+
+  reduce-pad-end : (k : ℕ) (v : Poly n) → reduce-mod-f (pad-end k v) ≡ reduce-mod-f v
+  reduce-pad-end k []      = reduce-𝟎P {k}
+  reduce-pad-end k (x ∷ v) = cong (λ z → (x ∷ replicate d 𝟘) +P ytime z) (reduce-pad-end k v)
+
+  hsum : Poly n → Poly (suc d) → Poly (suc d)
+  hsum []      r = replicate (suc d) 𝟘
+  hsum (a ∷ p) r = (a ·c r) +P hsum p (ytime r)
+
+  hsum-ytime : (p : Poly n) (r : Poly (suc d)) → ytime (hsum p r) ≡ hsum p (ytime r)
+  hsum-ytime []      r = ytime-zero
+  hsum-ytime (a ∷ p) r =
+    trans (ytime-+P (a ·c r) (hsum p (ytime r)))
+          (cong₂ _+P_ (ytime-·c a r) (hsum-ytime p (ytime r)))
+
+  reduce-*P-expand : (p : Poly n) (q : Poly m) → reduce-mod-f (p *P q) ≡ hsum p (reduce-mod-f q)
+  reduce-*P-expand {n = zero}  {m = m} []      q = reduce-𝟎P {m}
+  reduce-*P-expand {n = suc n} {m = m} (a ∷ p) q =
+    trans (reduce-+P (shift-to-suc-on-left (pad-end (suc n) (a ·c q))) (x-shift (p *P q)))
+    (trans (cong₂ _+P_
+              (trans (reduce-subst (+ℕ-comm m (suc n)) (pad-end (suc n) (a ·c q)))
+                     (trans (reduce-pad-end (suc n) (a ·c q)) (reduce-·c a q)))
+              (trans (reduce-y-shift (p *P q)) (cong ytime (reduce-*P-expand p q))))
+           (cong ((a ·c reduce-mod-f q) +P_) (hsum-ytime p (reduce-mod-f q))))
