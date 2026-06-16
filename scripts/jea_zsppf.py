@@ -19,11 +19,12 @@ What is tested, NOT assumed (anti-overclaim):
    rationals adjacent (2D Morton clustering) -- measured vs a random order. That is the residue-space locality
    (Morton ≅ Cayley-Dickson cocycle, the commuting-sphere conjecture), NOT value-line locality and NOT the dedup.
 """
-import os, sys
+import os, sys, functools
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from jea_trace_window import to_cf, cf_less                    # the rational's INTRINSIC quadtree: Stern-Brocot / CF address
 
 U=np.uint64
 def _spread16(x):                                              # spread low 16 bits into even bit positions (2D Morton)
@@ -121,13 +122,31 @@ if __name__ == "__main__":
     def adj_l1(nn,dd): return float(np.mean(np.abs(np.diff(nn.astype(np.int64)))+np.abs(np.diff(dd.astype(np.int64)))))
     z_l1=adj_l1(num[order],den[order]); rnd_l1=adj_l1(num,den)
     w3b = z_l1 < rnd_l1*0.5                                     # z-order clusters the (num,den) plane (well under random)
-    print(f"  W3b Z-ORDER LOCALITY (its real role): adjacent (num,den) L1 distance z-sorted={z_l1:.0f} vs random={rnd_l1:.0f} "
+    print(f"  W3b PLANE QUADTREE (morton num,den): adjacent (num,den) L1 z-sorted={z_l1:.0f} vs random={rnd_l1:.0f} "
           f"({rnd_l1/z_l1:.1f}x tighter): {w3b}")
-    print(f"      -> z-order buys residue-PLANE locality (Morton ≅ Cayley-Dickson cocycle), not the dedup or value-line.")
+    print(f"      -> morton(num,den) is the EXTRINSIC (num,den)-PLANE quadtree: residue-plane locality, NOT value-line.")
 
-    ok = w1 and w2 and w3a and w3b
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the SPPF IS a prefix-sort of codes, on DEVICE (cupy.unique = radix sort+dedup):")
-    print(f"  the user's spine is right. But tested, not assumed: the DEDUP is code-agnostic (plain == z partition), so")
-    print(f"  z-order is not a correctness lever; what it buys is (num,den)-PLANE LOCALITY of the never-discarded number")
-    print(f"  (the Morton/CD structure). S of SPPF = structural-code sort; P = value-code sort. NEXT: wire intern_radix")
-    print(f"  as the device-resident interning jea_sppf uses (replacing the host hash-cons), and stream the resident forest.")
+    # W3c: the rational's INTRINSIC quadtree = the STERN-BROCOT tree, addressed by the CONTINUED FRACTION (= the EEA
+    # residue rung-(b) already keeps). In-order = value order; CF prefix = a Stern-Brocot interval = value-locality.
+    # So the value-code that gives VALUE-LINE locality (which the plane quadtree missed) IS the EEA trace. Loop closed.
+    rats=[(int(num[i]),int(den[i])) for i in range(len(num))]
+    cmp=lambda A,B: -1 if cf_less(to_cf(*A),to_cf(*B)) else (1 if cf_less(to_cf(*B),to_cf(*A)) else 0)
+    cf_order=sorted(rats, key=functools.cmp_to_key(cmp))        # sort by CF = Stern-Brocot in-order
+    def adj_val(seq): return float(np.mean([abs(seq[i][0]/seq[i][1]-seq[i+1][0]/seq[i+1][1]) for i in range(len(seq)-1)]))
+    cf_vl=adj_val(cf_order); mort_vl=adj_val([rats[i] for i in np.argsort(zc)]); rnd_vl=adj_val(rats)
+    monotone=all(cf_order[i][0]/cf_order[i][1] <= cf_order[i+1][0]/cf_order[i+1][1] for i in range(len(cf_order)-1))
+    w3c = monotone and (cf_vl < mort_vl*0.2)                    # CF order = value order; value-line locality (plane misses it)
+    print(f"  W3c VALUE QUADTREE (CF = Stern-Brocot = the EEA residue): adjacent VALUE distance CF-sorted={cf_vl:.2f} vs "
+          f"plane-quadtree={mort_vl:.1f} vs random={rnd_vl:.1f}; CF order monotone-in-value: {monotone} -> {w3c}")
+    print(f"      -> the rational's INTRINSIC recursive subdivision is Stern-Brocot/CF (the residue we already keep);")
+    print(f"         IT gives value-line locality. The plane quadtree was the wrong (extrinsic) one.")
+
+    ok = w1 and w2 and w3a and w3b and w3c
+    print(f"\n  {'PASS' if ok else 'FAIL'} — THINK QUADTREE (common structure, recursively): a prefix-sort of Morton codes")
+    print(f"  IS a (linear) quadtree -- internal nodes = shared prefixes = shared subterms, so the SPPF is a quadtree, not")
+    print(f"  a flat sort. The dedup is code-agnostic (W2); the CODE picks WHICH quadtree. Two intrinsic ones: structure =")
+    print(f"  the (lch,rch) Morton quadtree (W1); value = the STERN-BROCOT tree addressed by the CONTINUED FRACTION = the")
+    print(f"  EEA residue (W3c), which alone gives value-line locality -- morton(num,den) (W3b) was the wrong, extrinsic")
+    print(f"  plane quadtree. Recursion: carrier (binary/CD subdivision) -> value (Stern-Brocot) -> structure ((lch,rch)")
+    print(f"  quadtree) -> SPPF (linear quadtree by radix sort); the EEA trace IS the address at the value level. NEXT:")
+    print(f"  the device-RESIDENT forest = a linear quadtree (persistent Morton-sorted array, merged per eval, GPU-native).")
