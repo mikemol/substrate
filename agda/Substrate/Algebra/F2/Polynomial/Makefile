@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := RingLaws.agda TensorProductView.agda Utilities.agda Wedge.agda
+FILES := Generic.agda RingLaws.agda TensorProductView.agda Utilities.agda Wedge.agda
 SUBDIRS := RingLaws Utilities Wedge
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
