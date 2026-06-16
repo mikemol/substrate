@@ -54,9 +54,14 @@ RUNG: R(observable, transitions)
   stored. Demonstrated: adapts to CONDITIONS (cool->hot: f* 0.46->0.51, bottleneck iMC->thermal) and to HARDWARE
   (this->other surfaces: f* 0.46->0.84), SAME code. The interior-optimum convex models (K/g/layout, the old Δ-A6)
   become PLUGGABLE SURFACES the navigator consumes when measured -- it never freezes a winner. [[feedback_navigator_not_answer]]
-- **Δ-A6b** [OPEN, subordinate] measure the convex surfaces (U9 K-waste, occupancy(g), layout density) at RUNTIME
-  so the navigator can navigate the interior of those axes too -- as discovered+measured inputs, not frozen optima.
-  (The navigator already works on the bang-bang + dispatch axes; this widens its reach, doesn't change its nature.)
+- **Δ-A6b** [DONE for g*; convex-interior still open] applied judgement-is-demechanization to the navigator's g*
+  decision: DELETED the JUDGEMENT (the `g_slope>0.2` threshold + the `(S-1)*c_launch/work` hand-model) and replaced
+  it with a MEASURED surface read at runtime (jea_navigator.measure_g_surface): g* = argmin over the measured
+  launch-granularity corners, and the flat-region test uses the MEASURED noise spread (std over reps), NOT a frozen
+  constant. A judging line became a mechanizing line. Demonstrated: deep workload's robust measured margin -> coop;
+  wide's noise-floor near-tie -> decided PER-MOMENT (the evidence of the moment, not frozen). [[feedback_judgement_is_demechanization]]
+  STILL OPEN: the convex INTERIOR of K/layout (and intermediate-g, once a hybrid scheduler exists) -- measure those
+  surfaces at runtime too. Remaining navigator judgements are now only those flagged-pluggable convex surfaces.
 - **Δ-F5** [finding] correcting ONE edge's efficiency while leaving another structural gives a WRONG f* — the
   overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
 - **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
