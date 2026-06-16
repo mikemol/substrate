@@ -23,11 +23,11 @@ module Substrate.Algebra.F2.Polynomial.Wedge.PolyDiv where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2 using (F₂)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.Wedge
-  using (DivStr; Trace; done; more; collapse; quot; rem)
+  using (DivStr; Trace; done; more; collapse; collapse-fold; collapse-fold≡collapse; quot; rem)
   renaming (Wedge to Wedge⟦478f66a6⟧)   -- specialize the colliding name by shape
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Div as Div
@@ -94,6 +94,15 @@ gcd-fold-poly-is-collapse : {a b g : QPoly} (t : PolyEEATrace a b g) →
                             gcd-fold-poly t ≡ collapse (fromPolyEEATrace t)
 gcd-fold-poly-is-collapse t = gcd-fold-poly-correct t
 
+-- STRONGER: the poly gcd-fold is the generic TRACE-FOLD (not merely the trivial
+-- index-projection `collapse`) — gcd-fold-poly factors through the carrier-uniform
+-- recursor `trace-fold`. This collapse works because the gcd TARGET (the index g)
+-- is INDEPENDENT of the divmod step structure; the Bézout target is NOT (see §6).
+gcd-fold-poly-is-trace-fold : {a b g : QPoly} (t : PolyEEATrace a b g) →
+                              gcd-fold-poly t ≡ collapse-fold (fromPolyEEATrace t)
+gcd-fold-poly-is-trace-fold t =
+  trans (gcd-fold-poly-correct t) (sym (collapse-fold≡collapse (fromPolyEEATrace t)))
+
 ------------------------------------------------------------------------
 -- 5. RECOVER f-lo FROM THE DIVISOR (the bezout-collapse enabler).
 --
@@ -123,3 +132,31 @@ module _ (d : ℕ) (f-lo : Vec F₂ (suc d)) where
   -- f-lo is the low part of the divisor: drop its (monic) top coefficient.
   recover-flo : vinit b-poly ≡ f-lo
   recover-flo = trans (vinit-snoc (-P f-lo) 𝟙) (-P-id f-lo)
+
+  -- …and the divisor RECONSTRUCTS from that recovered low part: the (d, f-lo)
+  -- presentation a Bézout step needs is fully carried by the divisor QPoly.
+  divisor-recovers : divisor-q d (vinit b-poly) ≡ divisor-q d f-lo
+  divisor-recovers = cong (divisor-q d) recover-flo
+
+------------------------------------------------------------------------
+-- 6. WHY BÉZOUT DOES NOT COLLAPSE TO A BARE-TRACE FOLD (the monic boundary).
+--
+-- gcd-fold collapses (above) because its target — the index g — is INDEPENDENT
+-- of the divmod step structure. Bézout's target (BezoutNthWitness: s·a + t·b ≡ g
+-- coefficient-wise) is NOT: its correctness uses `recon-nth` ∀k, which needs the
+-- divisor's monic (d, f-lo) data. A wedge's `wedge-eq` only pins coefficients for
+-- k < |a| (a QPoly ≡ cannot constrain k beyond the length), so the bare wedge is
+-- insufficient; the step must call the real `recon-nth`.
+--
+-- `recover-flo` / `divisor-recovers` show that (d, f-lo) IS recoverable from the
+-- divisor polynomial (char-2). So nothing is lost in `fromPolyEEATrace`. But a
+-- TOTAL `bezout : Trace Poly-div a b g → BezoutNthWitness a b g` still cannot
+-- exist: the bare `Trace Poly-div` admits NON-monic divisors (a `more` step with
+-- an arbitrary wedge), where the recovery does not round-trip and Bézout is
+-- undefined. Bézout folds the MONIC-divisor trace — which IS `PolyEEATrace` (every
+-- `step`'s divisor is `divisor-q d f-lo`, monic by construction). So `bezout-poly`
+-- (Wedge.BezoutFold, the residual fold over PolyEEATrace) is the right home, NOT a
+-- specialization of the generic `trace-fold`. The collapse is exactly as far as
+-- the target's divmod-independence allows: gcd yes, Bézout no. (Allegory ALG-6:
+-- the residual fold lives over the monic refinement chain, not the bare trace.)
+------------------------------------------------------------------------
