@@ -62,6 +62,21 @@ ONE host stage onto the device -- intern, combine, deliver, merge, dag-gen -- al
 device-resident." Only the forest payload host-mirror remains (Δ-Ψ-forest); closing it = the charter's terminus, a
 single GPU-resident kernel that ingests terms and emits values with no host stage-orchestration.
 
+**Δ-Ψ-forest -- THE U128-FROZEN-COORDINATE CATCH (user-surfaced) + the graded carrier:** mid-rung the user stopped
+the u128-based forest store: u128 (two u64 lanes, 256 bits/rational regardless of content) is a FROZEN COORDINATE
+[[feedback_judgement_is_demechanization]] -- a rational is a GRADED value (grade = bit-length, ALREADY emitted by
+predict_per_node / the kernel's bln,bld), and pinning the carrier to 128 pads + discards that residue
+[[feedback_wedge_not_projection]]. Directive: a FULL graded carrier with SUB-BYTE arithmetic (stronger packing than
+the 8-bit limb). Decision: bit-sliced/SWAR IS sub-byte arithmetic (per-bit, the charter's M1 F2-dataflow). Δ-Ψ-forest
+re-decomposes into: **(a) the graded sub-byte carrier [DONE -- jea_graded.py, gated standalone]** -- bit-sliced
+planes (plane[b] = bit b of all values, 64/word), ripple-carry add + shift-and-add mul (per-bit SWAR), graded
+rational (num/den each bit-sliced), exact vs Python; W5 [numbers] grade-packed 2029 bits vs u128 fixed 25600 (12.6x
+denser), 140/200 values SUB-BYTE (grade<8). **(b) the resident graded STORE** [next -- pack forest values bit-sliced
+/sub-byte, grade-indexed]. **(c) graded ARITHMETIC in the eval path** [the arc -- reconcile per-bit-plane SWAR with
+the per-NODE drain; same granularity tension as the crown deliver]. jea_graded is the gated COSTRUCTURE; wiring (b)/(c)
+is the composition. NOTE: jea_graded is a gated primitive PENDING WIRING (not yet a live consumer -- the wiring is the
+committed next rung, NOT an orphan-by-neglect).
+
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the
 frontier eval, the crown byte-limb deliver, the per-merge re-sort, and the DAG build/upload. Every one of those host
