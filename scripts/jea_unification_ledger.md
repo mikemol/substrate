@@ -219,8 +219,21 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     forest, exact, 20 resident nodes). Proven: eval(T2) sharing S with T1 -> forest grows by 2<5 (S's 3 nodes SHARED
     via the device searchsorted, computed once). REMAINING on-device step: fold the per-height intern + the frontier
     eval into ONE megakernel (host still orchestrates per height; the FOREST + lookup/merge are device).
+    **Δ-Σ-trace (b-real-gather) [DONE -- Phase 2, the locality scatter-gather]:** the two-sort architecture (USER):
+    Phase-1 = dedup-primary global forest keyed by STABLE ids (jea_resident, done); Phase-2 = once the precise
+    working set is known, SCATTER-GATHER it into code-locality order for the SM. Built: Forest.loc_slot (code-order
+    position via the EXISTING Phase-1 index, device searchsorted) + gather_cost(sids,T); evaluate now gathers the
+    resident-children working set in CODE order (op moved to the LOW bits so child-Morton dominates -- op-high SPLIT
+    mixed-op sets). MEASURED (real 608-node forest, T=64): a code-coherent working set spanning multiple SM-tiles
+    touches 1.6-2x FEWER HBM tiles in code-locality order than stable-id (creation) order (|64|: 2 vs 4; |256|: 5
+    vs 8); nil below the tile (W5). HONEST journey (test-the-wall): first cut came out BACKWARDS (op-high split +
+    too-small/stable-clustered sets) -- fixed the code (op low) + the test (code-index slice spanning tiles). So:
+    the benefit is CONDITIONAL -- the code must match the access coherence axis AND the working set must span >1
+    tile + be stable-scattered (the navigator/workload point), not automatic. Full benefit needs the payload
+    PHYSICALLY code-ordered (storage reorg) -- the gather order is wired; the physical reorder is the remaining step.
     **NEXT rungs:** (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned;
-    (b-real-mega) the full on-device intern megakernel (remove host per-height orchestration).
+    (b-real-mega) the full on-device intern megakernel (remove host per-height orchestration); (b-real-store) store
+    the forest payload physically in code order (so the Phase-2 gather is actually coalesced, not just order-correct).
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

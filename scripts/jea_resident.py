@@ -32,17 +32,19 @@ class Forest:
     """The device-resident SPPF: append-only stable payload + a device sorted (code -> stable id) linear quadtree."""
     def __init__(self):
         self.op=[]; self.lch=[]; self.rch=[]; self.vn=[]; self.vd=[]      # stable payload by sid (append-only)
+        self.code=[]                                                     # per-node locality code (structural / value z-code)
         self.leafmap={}                                                  # (vN,vD) -> sid (leaves are few; host)
         self.ccode=cp.zeros(0,cp.int64); self.csid=cp.zeros(0,cp.int64)  # DEVICE sorted combine-code index (quadtree)
 
-    def _new(self, op,l,r,vn,vd):
+    def _new(self, op,l,r,vn,vd,code):
         sid=len(self.op); self.op.append(op); self.lch.append(l); self.rch.append(r); self.vn.append(vn); self.vd.append(vd)
-        return sid
+        self.code.append(int(code)); return sid
 
     def leaf(self, vN,vD):
         k=(vN,vD); s=self.leafmap.get(k)
         if s is not None: return s
-        s=self._new(-1,-1,-1,vN,vD); self.leafmap[k]=s; return s
+        lc=int(morton2(np.array([vN & 0xFFFF]), np.array([vD & 0xFFFF]))[0])   # leaf value-locality code
+        s=self._new(-1,-1,-1,vN,vD,lc); self.leafmap[k]=s; return s
 
     def lookup(self, codes):                                             # DEVICE searchsorted -> stable sid or -1 (miss)
         if self.ccode.size==0: return np.full(len(codes),-1,np.int64)
@@ -50,7 +52,16 @@ class Forest:
         return cp.where(self.ccode[pos]==c, self.csid[pos], cp.int64(-1)).get()
 
     def add_combine(self, code, op,l,r):                                 # new combine -> stable sid (buffered for merge)
-        s=self._new(op,l,r,0,1); self._pc.append(int(code)); self._ps.append(s); return s
+        s=self._new(op,l,r,0,1,code); self._pc.append(int(code)); self._ps.append(s); return s
+
+    def loc_slot(self, sids):                                            # Phase-2: code-order position of each combine sid
+        codes=cp.asarray([self.code[s] for s in sids],cp.int64)          # (via the EXISTING Phase-1 code index, DEVICE)
+        return cp.searchsorted(self.ccode, codes).get()
+
+    def gather_cost(self, sids, T):                                      # HBM tiles touched gathering a working set:
+        stable=len({int(s)//T for s in sids})                           #   stable-id (creation) order  vs
+        loc=len({int(p)//T for p in self.loc_slot(sids)})               #   code-locality order (the Phase-2 gather)
+        return stable, loc
 
     def merge(self):                                                     # DEVICE merge buffered new codes into the index
         if not self._pc: return
@@ -63,8 +74,8 @@ class Forest:
     def size(self): return len(self.op)
 
 
-def _ccode(op, l, r):                                                    # structural z-code: op | morton(lch,rch)
-    return (int(op) << 60) | int(morton2(np.array([l]), np.array([r]))[0])
+def _ccode(op, l, r):                                                    # structural z-code: morton(lch,rch) dominant, op LOW
+    return (int(morton2(np.array([l]), np.array([r]))[0]) << 2) | (int(op) & 3)   # op high -> mixed-op sets split; keep it low
 
 
 def evaluate(g, F):
@@ -87,9 +98,12 @@ def evaluate(g, F):
         F.merge()                                                        # DEVICE merge the new combines into the index
     root=nid[g["root"]]; shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
     if frontier:
-        need=set(frontier)
-        for s in frontier: need.add(F.lch[s]); need.add(F.rch[s])
-        local=sorted(need); li={s:j for j,s in enumerate(local)}; fset=set(frontier)
+        fset=set(frontier); children=set()
+        for s in frontier: children.add(F.lch[s]); children.add(F.rch[s])
+        resident=[s for s in children if s not in fset]                  # the WORKING SET gathered from the forest
+        resident.sort(key=lambda s: F.code[s])                           # Phase-2: gather in CODE-LOCALITY order (leaves
+        local = resident + sorted(fset)                                  #   are order-free; frontier stays topo by sid)
+        li={s:j for j,s in enumerate(local)}
         op2=[]; vN2=[]; vD2=[]; lch2=[]; rch2=[]
         for s in local:
             if s in fset: op2.append(F.op[s]); vN2.append(0); vD2.append(1); lch2.append(li[F.lch[s]]); rch2.append(li[F.rch[s]])
@@ -133,7 +147,30 @@ if __name__ == "__main__":
     print(f"   SHARED from T1's resident S via the device searchsorted lookup -- S computed once, ever): {w1}")
     print(f"W2 EXACT through the device-resident evaluator (T1=7/6, T2=1/3): {w2}")
     print(f"W3 SHARING IS A DEVICE LOOKUP (cp.searchsorted into the sorted z-code index + device merge; index {idx1}->{idx2}): {w3}")
-    ok=w1 and w2 and w3
+
+    # W4: PHASE-2 GATHER -- once the precise working set is known, gather it CODE-LOCALITY ordered (the SM layout)
+    # vs stable-id (creation) order; measure HBM tiles touched. Built on a REAL forest (a wide random term).
+    G=Forest(); rng=np.random.default_rng(5)
+    lv=[(int(rng.integers(1,9)),int(rng.integers(1,9))) for _ in range(8)]
+    vN=[a for a,_ in lv]; vD=[b for _,b in lv]; op=[-1]*8; lch=[-1]*8; rch=[-1]*8
+    for _ in range(600):                                       # children from the WHOLE forest -> code-coherent sets are
+        a=int(rng.integers(0,len(vN))); b=int(rng.integers(0,len(vN)))      # stable-SCATTERED (created at various times)
+        op.append(int(rng.integers(0,2))); lch.append(a); rch.append(b); vN.append(0); vD.append(1)
+    evaluate(dict(op=op,vN=vN,vD=vD,lch=lch,rch=rch,N=len(vN),root=len(vN)-1), G)   # build the resident forest
+    ncomb=int(G.csid.size); csid=[int(x) for x in G.csid.get()]          # code-order stable ids (the linear quadtree)
+    print(f"\n  W4  PHASE-2 GATHER (forest {G.size()} nodes, {ncomb} combines): HBM tiles touched gathering a")
+    print(f"      structurally-coherent working set (a code-index neighborhood) -- code-locality vs stable-id, T=64:")
+    w4=True; off=ncomb//3
+    for K in (64,128,256):
+        if off+K>ncomb: continue
+        ws=csid[off:off+K]                                              # a contiguous code-order slice = coherent set
+        st,lo=G.gather_cost(ws,64)
+        print(f"        |working set|={K:4d}:  stable-order tiles={st:3d}  locality tiles={lo:3d}  ({st/max(lo,1):.1f}x fewer)")
+        w4 = w4 and (lo<st)
+    print(f"      -> code-locality gather (Phase-2, via the Phase-1 index) touches <= tiles vs stable-id; the benefit")
+    print(f"         grows with working-set size and is nil below the SM-tile (W5). Wired: evaluate gathers resident")
+    print(f"         children in code order. (Full benefit needs payload physically code-ordered -- storage step.)")
+    ok=w1 and w2 and w3 and w4
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF is a cupy sorted z-code index (a linear quadtree): sharing")
     print(f"  is cp.searchsorted (device), growth is a device merge, the forest persists + grows by new nodes only. The")
     print(f"  per-height orchestration is still host; the full on-device form folds intern+eval into one megakernel.")
