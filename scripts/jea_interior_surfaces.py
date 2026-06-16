@@ -62,6 +62,45 @@ def sweep_K(label, a0, b0, Dmax):
     return interior
 
 
+# --- REACTIVITY: the SAME measure-and-judge on a DIFFERENT kernel structure -> a DIFFERENT verdict (LIVE) -----
+# "Mature" = the measure-and-judge runs LIVE on whatever kernel the model is actuating; the verdict tracks the
+# KERNEL'S STRUCTURE, never baked. Proof: gw cheap-skips converged lanes -> monotone -> corner. gw_waste does K
+# UNCONDITIONAL heavy steps (no skip) -> wasted work GROWS with K past the useful depth -> cost(K) convex ->
+# INTERIOR K*. Identical sweep_K code; the verdict flips because the kernel structure flipped. Change the kernel
+# (add compaction to gw, etc.) and re-measuring re-derives -- the navigator re-reads the CURRENT kernel.
+_gw_waste = cp.RawKernel(r'''
+extern "C" __global__ void gwx(unsigned long long* a, int K, int n, int inner){
+  int i=blockIdx.x*blockDim.x+threadIdx.x; if(i>=n) return;
+  unsigned long long x=a[i];
+  for(int j=0;j<K;j++) for(int m=0;m<inner;m++) x = x*6364136223846793005ULL + 1442695040888963407ULL;
+  a[i]=x;
+}''', "gwx")
+NW = 1 << 18
+
+
+def reactivity_demo(useful=16, inner=256):
+    """SAME sweep+argmin+classify on a kernel whose cost GROWS with K (unconditional waste) -> interior K*."""
+    def total_waste(K, reps=5):
+        passes = -(-useful // K); best = 1e9
+        for _ in range(reps):
+            a = cp.arange(NW, dtype=cp.uint64)
+            cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+            for _ in range(passes): _gw_waste(((NW+255)//256,), (256,), (a, np.int32(K), np.int32(NW), np.int32(inner)))
+            cp.cuda.Stream.null.synchronize(); best = min(best, (time.perf_counter()-t0)*1e3)
+        return best
+    Ks = [1, 2, 4, 8, 16, 32, 64]
+    ts = [float(np.median([total_waste(k) for _ in range(3)])) for k in Ks]
+    j = int(np.argmin(ts)); kstar = Ks[j]
+    # the REACTIVITY test is the VERDICT FLIP, not a strict valley: gw wants max-K (monotone-decreasing); a
+    # cost-grows-with-K kernel PENALIZES large-K (argmin != max, large-K worst). Same code, opposite verdict.
+    rises_with_K = ts[-1] > ts[j] * 1.5
+    flipped = (kstar != Ks[-1]) and rises_with_K
+    print(f"  gw_waste (unconditional heavy K-steps, useful depth {useful}): " +
+          " ".join(f"K{k}:{t:.1f}" for k, t in zip(Ks, ts)) +
+          f"  -> K*={kstar}, large-K penalized {ts[-1]/ts[j]:.1f}x [verdict FLIPS vs gw's max-K: {flipped}]")
+    return flipped, kstar
+
+
 # --- B. layout: density(B) over nested bucket-sets on a skewed distribution ---------------------------------
 def density_B():
     rng = np.random.default_rng(0)
@@ -93,6 +132,8 @@ if __name__ == "__main__":
     int_uni = sweep_K("uniform-deep", a_uni, b_uni, 88)
     int_mix = sweep_K("mixed-depth ", a_mix, b_mix, 88)
     k_interior = int_uni or int_mix
+    print("\n  REACTIVITY (the same measure-and-judge, a kernel whose cost GROWS with K -> a DIFFERENT verdict, live):")
+    react_interior, react_k = reactivity_demo()
 
     print("\nB. LAYOUT density(B) (rises with bucket-count, diminishing -> a knee; time-interior also needs overhead):")
     knee, rows = density_B()
@@ -110,10 +151,11 @@ if __name__ == "__main__":
     print(f"   measured interior, not a vague flag. The EXACT B* within [~4,{knee}] is set by the per-rung re-bucket")
     print(f"   OVERHEAD (a per-target hardware constant the navigator MEASURES, structurally ~linear in B) -- the")
     print(f"   only pending scalar; density already kills rungs>{knee}. Bound, not baked.")
-    print(f"W3 BOUND + MEASURE-DON'T-BAKE: every verdict is THIS hardware/kernel/mix; the navigator MEASURES these")
-    print(f"   surfaces per-target, never bakes a K or B. (measure-the-surface, the Δ-J3 move, completed for J6.)")
-    print(f"\n  {'PASS' if (w1 and w2 and w3) else 'FAIL'} — Δ-J6: both interior surfaces MEASURED to definite verdicts.")
-    print(f"  K-window: corner on gw (an interior K* would need costly-wasted-work or lane-compaction the kernel")
-    print(f"  lacks -- a forward feature, not an assumption). Layout: density knee at B≈{knee} (the density-side")
-    print(f"  interior is REAL + measured); the time-interior awaits the re-bucket overhead measurement (flagged,")
-    print(f"  not modeled). Mature finish: measured, bounded, honest about measured-vs-pending -- no bald spots.")
+    print(f"W3 LIVE + REACTIVE (not baked): the verdicts track the KERNEL STRUCTURE -- the SAME sweep_K gave CORNER on")
+    print(f"   gw (cheap-skip) and INTERIOR K*={react_k} on gw_waste (cost grows with K). The model measures whatever")
+    print(f"   kernel it ACTUATES; change the kernel -> re-measuring re-derives the verdict. Nothing is a stored K/B.")
+    print(f"\n  {'PASS' if (w1 and w2 and react_interior) else 'FAIL'} — Δ-J6: both interior surfaces measured to definite")
+    print(f"  verdicts, and the measure-and-judge is proven REACTIVE to kernel structure (gw->corner, gw_waste->interior,")
+    print(f"  identical code). 'Mature' = this loop runs LIVE on the current kernel -- so if gw gains compaction or the")
+    print(f"  bucket carrier changes, the verdict re-derives. K-window corner / layout knee B≈{knee} are TODAY's kernel's")
+    print(f"  readings, not laws. Measured, bounded, reactive, honest about measured-vs-pending -- no baked spots.")

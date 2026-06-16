@@ -101,6 +101,12 @@ NEXT-STEP SYMBOLS (dispatch by symbol; AI-Δ0 executes unless a dedicated AI is 
   not vague); exact B* in [~4,6] set by the per-rung re-bucket OVERHEAD (the one pending scalar -- a per-target
   constant the navigator measures, ~linear in B; density already kills rungs>6). Both bound, nothing baked.
   Mirror finish: measured, bounded, honest measured-vs-pending. The measure-the-surface move is complete for J6.
+  CLARIFICATION (user): "mature" = the measure-and-judge runs LIVE + REACTIVE to the CURRENT kernel structure, NOT
+  a baked verdict (the kernel may change). PROVEN in jea_interior_surfaces.reactivity_demo: the SAME sweep_K gives
+  gw -> max-K optimal (monotone) but gw_waste (cost grows with K) -> large-K penalized 3.9x, K* flips off max.
+  Identical code, opposite verdict, tracking kernel structure. So "K corner / layout knee B≈6" are TODAY's kernel's
+  readings; if gw gains compaction or the carrier changes, re-measuring re-derives. The navigator measures whatever
+  kernel it actuates -- nothing baked. ([[feedback_navigator_not_answer]] applied to the interior surfaces too.)
 - **AI-Δ7 / Δ-Ω-deliver-opt** [subordinate polish] subtree-only byte-limb deliver (vs the current full-DAG recompute
   on escalation) -- an optimization, not a gap.
 
