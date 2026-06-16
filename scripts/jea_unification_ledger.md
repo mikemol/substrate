@@ -33,16 +33,28 @@ general solve degenerates cheaply).
 **AI ROSTER -- ALL labeled; dispatch by symbol.** AGENTS (real model instances): **AI-Δ0** orchestrator (executed
 the ENTIRE arc) · **AI-Δ1** interface cartographer (Explore, spent) · **AI-Δ2** provenance archaeologist
 (general-purpose, resume id ad547863434f51211). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
-Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver. NEXT executors (to dispatch): **AI-Φ** (Δ-Φ) · **AI-Δ7** (Δ-Ω-deliver-opt).
+Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**. NEXT executors (to dispatch): **AI-Δ7** (Δ-Ω-deliver-opt).
 
-**NEXT (common structure: BOTH remaining steps are the OPERATIVE LAW again -- replace a coordinate-projection
-with its generating geometry, as a SUBSUMING live solve, never a judged-faithful hardcode):**
-- **Δ-Φ / AI-Φ [THE ARC]** the hand-built DAG is a COORDINATE (a frozen sample); the Agda TERM-ALGEBRA is the
-  GEOMETRY that GENERATES DAGs. Drive the apex from the term-algebra (charter primary goal: term-algebra->GPU) --
-  a subsuming solve that evaluates whatever the term-algebra produces, NOT a hardcoded DAG. Connect the existing
-  jea_agda_bridge to the new apex (reuse, don't reinvent). Next-level snap: GPU-evaluator ⊕ Agda-foundation.
+**Δ-Φ / AI-Φ [THE ARC -- DONE].** The Agda TERM-ALGEBRA now drives the evaluator (charter term-algebra->GPU closed
+on the MATURE path). jea_agda_apex.py: Emit.agda (refl-vouched, 7/40) AND EmitBig.agda (refl-vouched, 217-bit,
+>u128) -> the DAG (B.to_dag, the geometry the term generates) -> the carrier solve -> == Agda's vouched value,
+EXACT both. Reuse only (jea_agda_bridge parametrized by filename + jea_carrier_solve); no reinvention. PASS.
+
+**Δ-Ω-carrier-slide [DONE -- a frozen-coordinate finding the USER surfaced via Δ-Φ].** The apex (run_apex_u128)
+was u128-RESIDENT: launch-at-128-and-stay, escalating UP to byte-limb but NEVER sliding DOWN -- a 3-bit value paid
+full u128. The carrier WIDTH was a baked coordinate (128). FIX (jea_carrier_solve.py): carrier width = OUTPUT of a
+live solve over predicted bit-length (O(N) propagate num/den bounds through the DAG) -> dispatch the NARROWEST
+sufficient EXISTING carrier (u64 generators / u128 apex / byte-limb deliver). Proven: small->u64, mid(124b)->u128,
+big(217b)->byte-limb, 3 distinct tiers from ONE solve, all exact. Pay-for-what-you-use restored; u128 floor gone.
+My W3 had called u128 a "degeneration" for 7/40 -- the tell of the baked floor; corrected. NEXT rung: PER-NODE
+carrier placement (each node its narrowest) folded into the on-GPU kernel dispatch (carrier as a per-node surface).
+
+**NEXT (the OPERATIVE LAW again -- replace a coordinate-projection with its generating geometry, a SUBSUMING live
+solve, never a judged-faithful hardcode):**
 - **Δ-Ω-deliver-opt / AI-Δ7 [polish]** the full-DAG recompute on escalation is a COARSE coordinate; the
   escalation SUBTREE is the geometry actually carrying the overflow. Solve over the subtree-topology, not the DAG.
+- **Δ-Φ-pernode [carrier maturation]** per-node carrier placement (the down-slide currently per-TERM; the full
+  geometry is per-NODE: each node its narrowest carrier, predict-place folded into the on-GPU kernel dispatch).
 LAYOUT UPDATE: Δ-J6 layout matured F0->F3 -- the optimum is the PARTITION TOPOLOGY P*={16,64} (a settlement), NOT
 the scalar B (B is a lossy coordinate: same-B partitions differ 1.7x); F5 conductance-graph named for when the
 ladder grows. (jea_layout_surface.py.) Every "argmin of a scalar surface" cell is a shadow of this same picture.

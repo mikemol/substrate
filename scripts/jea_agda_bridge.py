@@ -23,18 +23,19 @@ EMIT_DIR = os.path.join(ROOT, "scratch", "jea")
 EMIT = os.path.join(EMIT_DIR, "Emit.agda")
 
 
-# ---- 1. typecheck Emit.agda: exit 0 == the refl vouchers hold ----
-def typecheck():
-    r = subprocess.run(["agda", "--safe", "Emit.agda"], cwd=EMIT_DIR,
+# ---- 1. typecheck the Agda voucher file: exit 0 == the refl vouchers hold ----
+# (file is a parameter so the same bridge serves Emit.agda, EmitBig.agda, ... ; default preserves callers)
+def typecheck(name="Emit.agda"):
+    r = subprocess.run(["agda", "--safe", name], cwd=EMIT_DIR,
                        capture_output=True, text=True)
     if r.returncode != 0:
-        sys.exit("Emit.agda failed to typecheck (vouchers do NOT hold):\n" + r.stdout + r.stderr)
+        sys.exit(name + " failed to typecheck (vouchers do NOT hold):\n" + r.stdout + r.stderr)
     return r.stdout.strip().splitlines()[-1] if r.stdout.strip() else "checked"
 
 
 # ---- 2. read the Agda-vouched literals ----
-def read_vouched():
-    src = open(EMIT).read()
+def read_vouched(name="Emit.agda"):
+    src = open(os.path.join(EMIT_DIR, name), encoding="utf-8").read()
     term = re.search(r'termStr\s*=\s*"([^"]*)"', src).group(1)
     val = re.search(r'valStr\s*=\s*"([^"]*)"', src).group(1)
     vn, vd = val.split("/")
