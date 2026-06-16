@@ -32,3 +32,6 @@ scratch/eliza/state/
 # uv-managed virtualenv (binary; deps tracked in requirements.txt)
 .venv/
 scratch/.venv/
+
+# local hardware/DMI dump (do-not-commit machine probe data)
+dmi.data
