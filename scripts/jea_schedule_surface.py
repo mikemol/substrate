@@ -37,17 +37,19 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_cost import measure, deep_chain
 from jea_generator_dag import build_dag
 
-NOISE = 0.20            # relative noise floor: |slope| below this => the g-axis is FLAT (inert) in this regime
 
 
 def g_slope(dag, reps=9):
     """Measure the launch-granularity axis at its two corners (g=1 coop, g=S strat), robustly. Return
-    (coop_ms, strat_ms, slope) where slope = (strat - coop)/coop = the cost of traversing g=1 -> g=S."""
+    (coop_ms, strat_ms, slope, rel_spread): slope = (strat-coop)/coop = the cost of traversing g=1 -> g=S;
+    rel_spread = the MEASURED relative noise floor (std/coop), Δ-J5 -- the FLAT test uses this measured noise,
+    NOT a hardcoded 0.20 threshold (consistent with jea_navigator.measure_g_surface's measured-spread)."""
     measure(dag)                                            # warm
     runs = [measure(dag)[0] for _ in range(reps)]
-    c = float(np.median([r["coop"] for r in runs]))
-    s = float(np.median([r["strat"] for r in runs]))
-    return c, s, (s - c) / c
+    coops = [r["coop"] for r in runs]; strats = [r["strat"] for r in runs]
+    c = float(np.median(coops)); s = float(np.median(strats))
+    rel_spread = (float(np.std(coops)) + float(np.std(strats))) / c
+    return c, s, (s - c) / c, rel_spread
 
 
 if __name__ == "__main__":
@@ -56,8 +58,8 @@ if __name__ == "__main__":
                  ("deep-narrow", deep_chain(200), 199)]        # large S -> launch span huge -> g-axis STEEP
     rows = []
     for name, dag, S in workloads:
-        c, s, slope = g_slope(dag)
-        steep = abs(slope) > NOISE
+        c, s, slope, spread = g_slope(dag)
+        steep = abs(slope) > spread          # MEASURED noise floor (Δ-J5), not a hardcoded 0.20
         gstar = ("g=1 (coop)" if s > c else "g=S (strat)") if steep else "ANY (flat -- inert)"
         rows.append((name, S, c, s, slope, steep, gstar))
         kind = "STEEP" if steep else "FLAT "

@@ -34,7 +34,11 @@ def discover_thermal():
 
 
 def gate(T, T_trip, floor=0.4, k=0.03):
-    """Clock-scale factor: 1 below the trip, linearly clamped above it down to a floor."""
+    """Clock-scale factor: 1 below the trip, linearly clamped above it down to a floor.
+    Δ-J5 AUDIT: floor=0.4 and k=0.03 are GUESSED hardware throttle-curve params (the real floor + slope above
+    the trip are board/firmware-specific and need a MEASUREMENT under thermal load -- not available on an idle
+    box, and not exposed by /sys). They are kept PLUGGABLE (kwargs) and flagged GUESSED: feed the measured
+    curve when a thermal-loaded run can characterize it; do NOT treat 0.4/0.03 as ground truth (no fit-to-them)."""
     if T <= T_trip:
         return 1.0
     return max(floor, 1.0 - k * (T - T_trip))

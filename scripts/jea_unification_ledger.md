@@ -60,9 +60,14 @@ framework (the operator = [[feedback_judgement_is_demechanization]], already on 
   now measures the surface on the WORKLOAD'S OWN DAG (workload['dag']) -- re-read the real thing, no stand-in,
   re-measured per call (workload+state dependent, measure-don't-bake). Verified: wide->flat / deep->coop from
   their ACTUAL DAGs; W1-W4 still PASS (no stored optimum; adapts to conditions + hardware; g* from measurement).
-- **Δ-J5** [LOW, opportunistic] = residual magic constants: thermal_gate floor=0.4/k=0.03 (inherited el-atlas),
-  jea_schedule_surface NOISE=0.20, witness_sanity max_decades=4. Each: derive/measure OR justify net-positive
-  (max_decades is a cheap units guard -- likely net-positive; floor/k are net-negative inherited). Audit + tag.
+- **Δ-J5** [CLOSED] residual-constant audit; each tagged + acted:
+  (a) jea_schedule_surface NOISE=0.20 -> MECHANIZED: g_slope now returns the MEASURED relative spread (std/coop);
+      the FLAT/STEEP test uses that measured noise, not 0.20 (consistent with measure_g_surface). Removed the const.
+  (b) witness_sanity max_decades=4 -> JUSTIFIED net-positive GUARD (kept): same-unit ratio quantities rarely span
+      >10^4 (the Δ-A1 bug was 10^9); rare false-positive << the unit-bug caught. Documented; pluggable kwarg.
+  (c) thermal_gate floor=0.4/k=0.03 -> GUESSED hardware throttle-curve params, UNMEASURABLE on an idle box (need
+      a thermal-loaded run; not in /sys). Flagged GUESSED + kept PLUGGABLE (kwargs); do NOT fit-to-them. Not baked.
+  Verdict triad: mechanize-now | justify-net-positive | flag-GUESSED-pluggable -- the judgement-audit applied per constant.
 
 The audit itself is the G9 escalation of judgement-is-demechanization from memory-layer to a standing measure
 (twin of the provenance audit). NEXT = Δ-J1 (highest leverage; everything host-side is inert without it).

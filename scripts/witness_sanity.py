@@ -25,7 +25,10 @@ class WitnessViolation(AssertionError):
 
 def same_scale(name_a, a, name_b, b, max_decades=4):
     """Two quantities combined in a RATIO (a/(a+b), a vs b) must share units -- within max_decades orders
-    of magnitude. Catches the Δ-A1 unit mismatch (g_gpu~15.75 GB/s vs g_cpu~30e9 bytes/s -> fstar≈0)."""
+    of magnitude. Catches the Δ-A1 unit mismatch (g_gpu~15.75 GB/s vs g_cpu~30e9 bytes/s -> fstar≈0).
+    max_decades=4 is a JUSTIFIED net-positive GUARD (Δ-J5 audit), not a magic perf constant: two same-unit
+    quantities meaningfully combined in a ratio rarely span >10^4 (the Δ-A1 bug was 10^9); the cost of a rare
+    false-positive on a genuinely wide-dynamic-range ratio is far less than the unit-bug it catches. Pluggable."""
     if a <= 0 or b <= 0:
         return
     d = abs(math.log10(a) - math.log10(b))
