@@ -19,7 +19,7 @@
 module Substrate.Algebra.Polynomial.Graded where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
@@ -441,3 +441,130 @@ module Over {A : Set}
 
   *P-comm : ∀ {n m} (p : Poly n) (q : Poly m) → p *P q ≡ subst Poly (+ℕ-comm m n) (q *P p)
   *P-comm p q = linear-extensionality (Lq q) (Mq q) (λ i → agree-i i q) p
+
+  -- 10. *P-assoc via 3× nested linear-extensionality, bottoming at mono-assoc (all-basis).
+  convCoeff-comm : ∀ {n m} (p : Poly n) (q : Poly m) (d : ℕ) → convCoeff p q d ≡ convCoeff q p d
+  convCoeff-comm {n} {m} p q d =
+    trans (sym (nth-*P p q d))
+    (trans (cong (λ z → nth z d) (*P-comm p q))
+    (trans (nth-subst (+ℕ-comm m n) (q *P p) d) (nth-*P q p d)))
+
+  convCoeff-basis-right : ∀ {n m} (p : Poly n) (k : Fin m) (d : ℕ)
+                        → convCoeff p (basis k) d ≡ nth (x-power (toℕ k) p) d
+  convCoeff-basis-right p k d = trans (convCoeff-comm p (basis k) d) (convCoeff-basis-xpower k p d)
+
+  nth-xpower-off : ∀ a {m} (q : Poly m) (d : ℕ)
+                 → (∀ b → d ≡ a ℕ+ b → nth q b ≡ 𝟘) → nth (x-power a q) d ≡ 𝟘
+  nth-xpower-off zero    q d       h = h d refl
+  nth-xpower-off (suc a) q zero    _ = refl
+  nth-xpower-off (suc a) q (suc d) h = nth-xpower-off a q d (λ b e → h b (cong suc e))
+
+  mono-assoc : ∀ {n m l} (i : Fin n) (j : Fin m) (k : Fin l)
+             → subst Poly (+ℕ-assoc n m l) ((basis i *P basis j) *P basis k)
+               ≡ basis i *P (basis j *P basis k)
+  mono-assoc {n} {m} {l} i j k = nth-ext _ _ (λ d →
+    trans (nth-subst (+ℕ-assoc n m l) ((basis i *P basis j) *P basis k) d) (coeff d))
+    where
+      P : ℕ
+      P = toℕ i ℕ+ (toℕ j ℕ+ toℕ k)
+      rk : toℕ k ℕ+ (toℕ i ℕ+ toℕ j) ≡ P
+      rk = trans (+ℕ-comm (toℕ k) (toℕ i ℕ+ toℕ j)) (+ℕ-assoc (toℕ i) (toℕ j) (toℕ k))
+      lhsV : (d : ℕ) → nth ((basis i *P basis j) *P basis k) d
+                     ≡ nth (x-power (toℕ k) (basis i *P basis j)) d
+      lhsV d = trans (nth-*P (basis i *P basis j) (basis k) d)
+                     (convCoeff-basis-right (basis i *P basis j) k d)
+      rhsV : (d : ℕ) → nth (basis i *P (basis j *P basis k)) d
+                     ≡ nth (x-power (toℕ i) (basis j *P basis k)) d
+      rhsV d = trans (nth-*P (basis i) (basis j *P basis k) d)
+                     (convCoeff-basis-xpower i (basis j *P basis k) d)
+      ijV : (b : ℕ) → nth (basis i *P basis j) b ≡ nth (x-power (toℕ i) (basis j)) b
+      ijV b = trans (nth-*P (basis i) (basis j) b) (convCoeff-basis-xpower i (basis j) b)
+      jkV : (b : ℕ) → nth (basis j *P basis k) b ≡ nth (x-power (toℕ j) (basis k)) b
+      jkV b = trans (nth-*P (basis j) (basis k) b) (convCoeff-basis-xpower j (basis k) b)
+      coeff : (d : ℕ) → nth ((basis i *P basis j) *P basis k) d
+                      ≡ nth (basis i *P (basis j *P basis k)) d
+      coeff d with d ≟ P
+      ... | yes eq = trans lhs𝟙 (sym rhs𝟙)
+        where
+          rhs𝟙 : nth (basis i *P (basis j *P basis k)) d ≡ 𝟙
+          rhs𝟙 = subst (λ z → nth (basis i *P (basis j *P basis k)) z ≡ 𝟙) (sym eq)
+                   (trans (rhsV P)
+                    (trans (nth-xpower-add (toℕ i) (basis j *P basis k) (toℕ j ℕ+ toℕ k))
+                     (trans (jkV (toℕ j ℕ+ toℕ k)) (nth-xpower-basis-peak (toℕ j) k))))
+          lhs𝟙 : nth ((basis i *P basis j) *P basis k) d ≡ 𝟙
+          lhs𝟙 = subst (λ z → nth ((basis i *P basis j) *P basis k) z ≡ 𝟙) (sym eq)
+                   (trans (lhsV P)
+                    (subst (λ z → nth (x-power (toℕ k) (basis i *P basis j)) z ≡ 𝟙) rk
+                      (trans (nth-xpower-add (toℕ k) (basis i *P basis j) (toℕ i ℕ+ toℕ j))
+                       (trans (ijV (toℕ i ℕ+ toℕ j)) (nth-xpower-basis-peak (toℕ i) j)))))
+      ... | no neq = trans lhs𝟘 (sym rhs𝟘)
+        where
+          rhs𝟘 : nth (basis i *P (basis j *P basis k)) d ≡ 𝟘
+          rhs𝟘 = trans (rhsV d)
+                   (nth-xpower-off (toℕ i) (basis j *P basis k) d
+                     (λ b e → trans (jkV b)
+                       (nth-xpower-basis-off (toℕ j) k b
+                         (λ b-eq → neq (trans e (cong (toℕ i ℕ+_) b-eq))))))
+          lhs𝟘 : nth ((basis i *P basis j) *P basis k) d ≡ 𝟘
+          lhs𝟘 = trans (lhsV d)
+                   (nth-xpower-off (toℕ k) (basis i *P basis j) d
+                     (λ b e → trans (ijV b)
+                       (nth-xpower-basis-off (toℕ i) j b
+                         (λ b-eq → neq (trans (trans e (cong (toℕ k ℕ+_) b-eq)) rk)))))
+
+  *P-assoc : ∀ {n m l} (p : Poly n) (q : Poly m) (r : Poly l)
+           → subst Poly (+ℕ-assoc n m l) ((p *P q) *P r) ≡ p *P (q *P r)
+  *P-assoc {n} {m} {l} p q r = linear-extensionality (Lp q r) (Rp q r) (λ i → agp i q r) p
+    where
+      ae : (n ℕ+ m) ℕ+ l ≡ n ℕ+ (m ℕ+ l)
+      ae = +ℕ-assoc n m l
+      S : Poly ((n ℕ+ m) ℕ+ l) → Poly (n ℕ+ (m ℕ+ l))
+      S = subst Poly ae
+      Lp : (q : Poly m) (r : Poly l) → Linear n (n ℕ+ (m ℕ+ l))
+      Lp q r = record
+        { apply = λ p → S ((p *P q) *P r)
+        ; preserves-+  = λ u v → trans (cong S (trans (cong (_*P r) (*P-distribʳ u v q))
+                                                      (*P-distribʳ (u *P q) (v *P q) r)))
+                                      (subst-+P ae ((u *P q) *P r) ((v *P q) *P r))
+        ; preserves-·c = λ c v → trans (cong S (trans (cong (_*P r) (*P-scalarˡ c v q))
+                                                      (*P-scalarˡ c (v *P q) r)))
+                                       (subst-·c ae c ((v *P q) *P r)) }
+      Rp : (q : Poly m) (r : Poly l) → Linear n (n ℕ+ (m ℕ+ l))
+      Rp q r = record
+        { apply = λ p → p *P (q *P r)
+        ; preserves-+  = λ u v → *P-distribʳ u v (q *P r)
+        ; preserves-·c = λ c v → *P-scalarˡ c v (q *P r) }
+      Lq' : (i : Fin n) (r : Poly l) → Linear m (n ℕ+ (m ℕ+ l))
+      Lq' i r = record
+        { apply = λ q → S ((basis i *P q) *P r)
+        ; preserves-+  = λ u v → trans (cong S (trans (cong (_*P r) (*P-distribˡ (basis i) u v))
+                                                      (*P-distribʳ (basis i *P u) (basis i *P v) r)))
+                                      (subst-+P ae ((basis i *P u) *P r) ((basis i *P v) *P r))
+        ; preserves-·c = λ c v → trans (cong S (trans (cong (_*P r) (*P-scalarʳ c (basis i) v))
+                                                      (*P-scalarˡ c (basis i *P v) r)))
+                                       (subst-·c ae c ((basis i *P v) *P r)) }
+      Rq' : (i : Fin n) (r : Poly l) → Linear m (n ℕ+ (m ℕ+ l))
+      Rq' i r = record
+        { apply = λ q → basis i *P (q *P r)
+        ; preserves-+  = λ u v → trans (cong (basis i *P_) (*P-distribʳ u v r))
+                                      (*P-distribˡ (basis i) (u *P r) (v *P r))
+        ; preserves-·c = λ c v → trans (cong (basis i *P_) (*P-scalarˡ c v r))
+                                       (*P-scalarʳ c (basis i) (v *P r)) }
+      Lr'' : (i : Fin n) (j : Fin m) → Linear l (n ℕ+ (m ℕ+ l))
+      Lr'' i j = record
+        { apply = λ r → S ((basis i *P basis j) *P r)
+        ; preserves-+  = λ u v → trans (cong S (*P-distribˡ (basis i *P basis j) u v))
+                                      (subst-+P ae ((basis i *P basis j) *P u) ((basis i *P basis j) *P v))
+        ; preserves-·c = λ c v → trans (cong S (*P-scalarʳ c (basis i *P basis j) v))
+                                       (subst-·c ae c ((basis i *P basis j) *P v)) }
+      Rr'' : (i : Fin n) (j : Fin m) → Linear l (n ℕ+ (m ℕ+ l))
+      Rr'' i j = record
+        { apply = λ r → basis i *P (basis j *P r)
+        ; preserves-+  = λ u v → trans (cong (basis i *P_) (*P-distribˡ (basis j) u v))
+                                      (*P-distribˡ (basis i) (basis j *P u) (basis j *P v))
+        ; preserves-·c = λ c v → trans (cong (basis i *P_) (*P-scalarʳ c (basis j) v))
+                                       (*P-scalarʳ c (basis i) (basis j *P v)) }
+      agq : (i : Fin n) (j : Fin m) (r : Poly l) → S ((basis i *P basis j) *P r) ≡ basis i *P (basis j *P r)
+      agq i j r = linear-extensionality (Lr'' i j) (Rr'' i j) (λ k → mono-assoc i j k) r
+      agp : (i : Fin n) (q : Poly m) (r : Poly l) → S ((basis i *P q) *P r) ≡ basis i *P (q *P r)
+      agp i q r = linear-extensionality (Lq' i r) (Rq' i r) (λ j → agq i j r) q
