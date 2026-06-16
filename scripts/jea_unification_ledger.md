@@ -48,17 +48,19 @@ agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-
 Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity),
 **Δ-Ψ-crown**, **Δ-Φ-pernode**, **Δ-Σ-wire/decide/trace** (memoizing eval + Agda SPPF + decision WAL), **jea_zsppf**
 (SPPF = prefix-sort of z-codes; W1-W5 quadtree numbers), **Δ-Σ-trace (b-real / b-real-gather / b-real-store)** --
-the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: INTERN as one on-device hash-cons megakernel) + **rung-2**
-(jea_mega_eval: INTERN+COMBINE FUSED into one kernel; intern-kernel+apex-kernel+deliver-kernel -> one drain, wired
-into jea_resident). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.) NEXT executors (to dispatch): **AI-Δ9** continues
-**Δ-Σ-mega**: **Δ-Ψ-deliver** = fold the byte-limb >u128 crown INTO the fused kernel (host-folds today, exact);
-then **Δ-Ψ-dag** = DAG-gen + the term-feed on-device (host uploads the term today); b-real-incr (incremental merge).
-**AI-d** -- the semantic SPPF tools audit (orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose
-or retire). **Δ-G2** [gate, recommended]. **The recursion, sharpened:** each rung collapses one more SEPARATE
-persistent megakernel into ONE resident kernel -- "two megakernels -> one," recursively. rung-1 folded INTERN;
-rung-2 fused INTERN+COMBINE (one drain hash-conses AND values each new node, shared nodes reuse). What remains host:
-the >u128 crown fold (Δ-Ψ-deliver) and the term-feed/DAG build (Δ-Ψ-dag). The terminus = a single GPU-resident
-kernel that ingests terms and emits values with no host stage-orchestration -- the charter's on-GPU memoizing trace.
+the device-resident forest, **Δ-Σ-mega rung-1** (jea_mega: INTERN megakernel) + **rung-2** (jea_mega_eval:
+INTERN+COMBINE FUSED into one drain) + **Δ-Ψ-deliver** (>u128 crown on the byte-limb DEVICE carrier, off the host) +
+**b-real-incr** (incremental merge-by-rank, not full re-argsort) + **Δ-Ψ-dag** (parametric DAGs GENERATED on-device
+from the parameter, O(distinct) bookkeeping). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.) NEXT executors (to dispatch):
+**AI-Δ9** -> **Δ-Ψ-forest** = THE FINAL RUNG, the forest PAYLOAD host-mirror (F.op/lch/rch/code/vn/vd are Python
+lists; even the O(distinct) bookkeeping reads/writes them) -> device-resident payload arrays + a device byte-limb
+value store keeping the deliver_crown limb residue (never-discard-residue at the forest level), host holds only sizes
++ root query. **Δ-G2** [gate] = a pre-commit gate running the 6-module jea regression (would have caught the Δ-Ψ-dag
+leaf-code collision -- jea_eval FAILed; needs GPU at commit, run a fast subset). **AI-d** = semantic SPPF tools audit
+(sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire). **The recursion, sharpened:** every rung folds
+ONE host stage onto the device -- intern, combine, deliver, merge, dag-gen -- all instances of "host-mirror ->
+device-resident." Only the forest payload host-mirror remains (Δ-Ψ-forest); closing it = the charter's terminus, a
+single GPU-resident kernel that ingests terms and emits values with no host stage-orchestration.
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the
