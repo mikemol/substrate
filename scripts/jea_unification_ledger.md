@@ -46,10 +46,33 @@ acting as the Δ-Φ executor (spent) · **AI-Q** Q-layer / AES-tower agent (SEPA
 agda/Substrate/Algebra/{F2,Polynomial/Graded,CommutativeRing,Q,…}; coordinate via the `.md` thread at
 agda/Substrate/Algebra/Q/GIT_COORDINATION_NOTE.md). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
 Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**, **Δ-G** (git-integrity),
-**Δ-Ψ-crown**, **Δ-Φ-pernode** (= AI-Ψ / AI-Δ8, both AI-Δ0). NEXT executor (to dispatch): **AI-Σ** -- the on-device
-SUPERVISOR arc Δ-Σ (compose the orphaned control loop; subsumes Δ-Ψ-deliver / Δ-Ψ-dag / the carrier-SELECT). The
-HEADLINE this session: an import-audit (memory [[feedback_demo_proven_is_not_wired]]) found the control loop was
-ORPHANED DEMOS -- "apex COMPLETE / live reactive" was an OVERCLAIM (fake hand-published g). Δ-Σ closes it.
+**Δ-Ψ-crown**, **Δ-Φ-pernode**, **Δ-Σ-wire/decide/trace** (memoizing eval + Agda SPPF + decision WAL), **jea_zsppf**
+(SPPF = prefix-sort of z-codes; W1-W5 quadtree numbers), **Δ-Σ-trace (b-real / b-real-gather / b-real-store)** --
+the device-resident forest. (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8.) NEXT executors (to dispatch): **AI-Δ9** -- the
+on-device MEGAKERNEL arc **Δ-Σ-mega** (the common structure of all remaining work, below); **AI-d** -- the semantic
+SPPF tools audit (orphan check: sppf_label/node_index/type_sppf{,_crosslayer} -- compose or retire).
+
+**THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
+and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the
+frontier eval, the crown byte-limb deliver, the per-merge re-sort, and the DAG build/upload. Every one of those host
+loops is THE LAST COORDINATE (host↔device boundary); the geometry is the fully on-device supervisor that does them
+all in ONE megakernel. So b-real-mega (intern), Δ-Ψ-deliver (crown), Δ-Ψ-dag (DAG generation+residence), b-real-incr
+(incremental device merge) are NOT separate -- they are facets of **Δ-Σ-mega = remove the remaining host
+orchestration; fold every per-X host loop into the on-device megakernel.** It is the SAME move (coordinate->geometry
+/ move-the-solve-on-device, [[feedback_coordinate_to_geometry]] / [[feedback_demo_proven_is_not_wired]]) applied at
+the orchestration seam -- the charter's "on-GPU resident" taken fully literally. Plus **Δ-G2** [recommended, not built]:
+the orphan-demo pre-commit gate (a class-level finding the loop can skip as a memory -> must be a gate).
+
+**RETRO (device-resident SPPF / quadtree arc):** DELTA -- a strong, fully-wired, NUMBER-backed result (jea_zsppf
+W1-W5; device-resident forest b-real{,-gather,-store}; jea_intern/agda_dag/trace_window de-orphaned INTO the live
+path) reached via a HIGH user-correction rate: prune->share-into-SPPF, z-order->quadtree, dedup-vs-locality (both,
+interleaved), gather came out BACKWARDS (op-high split + too-small sets) -> op-low + code-slice, value-magnitude
+(217-bit can't pack int64) -> structure-only physical store. ROOT (class, persists): I bar at "runs + witnesses
+pass + first coherent framing," not "consumed by an import edge + structurally canonical + tested where it would
+break"; the user's domain steering (quadtree, Stern-Brocot, SM/HBM, two-sort) drove the depth. SUSTAIN: the
+"give numbers" + "verify the import edge before done" disciplines held this arc (every claim measured; jea_resident
+wired+regression-checked before claiming done; reverts not papered over). HANDOFF blind spot: I reconstruct
+structure the user already sees -- an external reviewer should push each claim to its FALSIFYING regime first.
 
 **Δ-Φ / AI-Φ [DONE].** Agda TERM-ALGEBRA drives the evaluator (charter term-algebra->GPU on the MATURE path).
 jea_agda_apex.py: Emit.agda (refl 7/40) AND EmitBig.agda (refl 217-bit, >u128) -> B.to_dag (the geometry the term
