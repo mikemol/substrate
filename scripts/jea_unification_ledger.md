@@ -121,7 +121,19 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     does NOT use the SPPF trace/interning. **Common structure (recurse):** the EVAL trace (SPPF), the gcd/EEA
     reduction residue (carrier), and the DECISION trace (supervisor WAL) are ONE never-discard-residue structure
     the term-algebra SPPF is built to hold -- built ad-hoc/separately = orphaned. Arc: unify them in the SPPF
-    (charter: on-GPU resident MEMOIZING traces = the SPPF). Re-audit the whole sppf/trace cluster first.
+    (charter: on-GPU resident MEMOIZING traces = the SPPF). [[feedback_trace_state_is_sppf_not_adhoc]]
+    **FULL CLUSTER AUDIT (done):** ALL orphaned -- jea_agda_dag (eval SPPF), jea_intern (dedup), sppf_label,
+    sppf_node_index, type_sppf, type_sppf_crosslayer (semantic SPPF tools), jea_carrier_trace (gcd residue) ;
+    only jea_trace_window has importers (carrier_trace + jea_limb_div). They are INDEPENDENT demos (no shared base).
+    **Δ-Σ-trace rung-1 [DONE]:** jea_sppf_apex.py -- the apex evaluates an INTERNED SPPF. A ℚ tree is hash-consed
+    ON-DEVICE by REUSING jea_intern.intern_device (cupy.unique per height; ℚ-leaf encoded as one key) to its
+    canonical SPPF, which run_apex_u128 drains -- each distinct subterm computed ONCE (memoization). Proven:
+    E_q(14) tree 32767 nodes -> SPPF 15 nodes (2184x collapse), apex(SPPF)==truth, exact; jea_intern now IMPORTED
+    (de-orphaned). "on-GPU resident MEMOIZING traces = SPPF" realized. eval-path regression-clean.
+    **NEXT rungs:** (a) intern the REAL workloads (build_dag / the Agda SPPF jea_agda_dag) before the apex, not the
+    E_q demonstrator -- de-orphan jea_agda_dag; (b) hold the gcd/EEA REDUCTION residue (jea_carrier_trace/
+    trace_window: the apex's `na/=gg` DISCARDS the gcd -- never-discard-residue violation) in the SPPF; (c) hold the
+    supervisor DECISION WAL (dout) as an EEA trace in the SPPF; (d) the semantic SPPF tools (sppf_*/type_sppf) audit.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.
