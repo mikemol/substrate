@@ -15,23 +15,37 @@ jea_actuator.py / jea_telemetry.py (device/host package), jea_navigator.py (oper
 / jea_layout_surface.py (live cost surfaces), witness_sanity.py (the rigged-witness gate). The judgement audit
 (Δ-J1..J6) is DISCHARGED; no pending scalars/judgements on the live path.
 
-**PRINCIPLES (charter layer; in auto-memory MEMORY.md -- the operative stance: read current reality, judge live,
-bake nothing):** structural-not-scalar (a bound is a live Kron-solve) · reread-meters-TOCTOU (a reading is
-dependently typed on read-time state) · noise-floor-is-a-flat-region (a tie => decompose to the common
-parameter, n-path) · navigator-not-answer (build the system that recomputes from evidence, never store the
-optimum) · judgement-is-demechanization (every line is a frozen choice; keep it only if it enables more
-mechanization than it costs).
+**OPERATIVE LAW (the project invariant, shadow-engineered -- memory coordinate_to_geometry; SUBSUMES the 5
+charter memories below):** every repair replaces a collapsed scalar COORDINATE with the GEOMETRY it was
+summarizing (ladder F0 scalar -> F1 surface -> F2 region -> F3 settlement -> F4 hypercube -> F5 weighted graph ->
+F6 dynamic graph -> F7 Kron-solved state-dependent network -> F8 reactive control manifold). **NO STOP RULE** --
+"stop, this coordinate is faithful" bakes an UNPROVABLE "won't" (a changed kernel/hw/mix may grow the
+distinction); that stop IS the demechanization. So ALWAYS build the SUBSUMING live solve; the faithful coordinate
+is its DEGENERATE OUTPUT (corner/region/trivial-graph), computed live + reactive, never baked; build it to
+DEGENERATE CHEAPLY (pay for geometry present). "Smallest face" = the solve's OUTPUT, not an offline choice.
+
+**CHARTER PRINCIPLES (facets of the law; MEMORY.md):** structural-not-scalar (a bound is a live Kron-solve) ·
+reread-meters-TOCTOU (a reading is dependently typed on read-time state) · noise-floor-is-a-flat-region (a tie =>
+the coordinate erased a region; decompose, n-path) · navigator-not-answer (recompute from evidence, never store
+the optimum) · judgement-is-demechanization (a coordinate-collapse is a judgement, ~never net-positive since the
+general solve degenerates cheaply).
 
 **AI ROSTER -- ALL labeled; dispatch by symbol.** AGENTS (real model instances): **AI-Δ0** orchestrator (executed
 the ENTIRE arc) · **AI-Δ1** interface cartographer (Explore, spent) · **AI-Δ2** provenance archaeologist
 (general-purpose, resume id ad547863434f51211). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
 Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver. NEXT executors (to dispatch): **AI-Φ** (Δ-Φ) · **AI-Δ7** (Δ-Ω-deliver-opt).
 
-**NEXT (common structure: GPU half mature -> the AGDA half is the axis):**
-- **Δ-Φ / AI-Φ [THE ARC]** make the Agda TERM-ALGEBRA drive the apex (DAGs are hand-built, not Agda-extracted;
-  the charter's PRIMARY goal is term-algebra->GPU). Connect the existing jea_agda_bridge to the new apex. The
-  next-level snap: GPU-evaluator ⊕ Agda-foundation -> "Agda on GPU". Reuse jea_agda_bridge; don't reinvent.
-- **Δ-Ω-deliver-opt / AI-Δ7 [polish]** subtree-only byte-limb deliver (vs full-DAG recompute on escalation).
+**NEXT (common structure: BOTH remaining steps are the OPERATIVE LAW again -- replace a coordinate-projection
+with its generating geometry, as a SUBSUMING live solve, never a judged-faithful hardcode):**
+- **Δ-Φ / AI-Φ [THE ARC]** the hand-built DAG is a COORDINATE (a frozen sample); the Agda TERM-ALGEBRA is the
+  GEOMETRY that GENERATES DAGs. Drive the apex from the term-algebra (charter primary goal: term-algebra->GPU) --
+  a subsuming solve that evaluates whatever the term-algebra produces, NOT a hardcoded DAG. Connect the existing
+  jea_agda_bridge to the new apex (reuse, don't reinvent). Next-level snap: GPU-evaluator ⊕ Agda-foundation.
+- **Δ-Ω-deliver-opt / AI-Δ7 [polish]** the full-DAG recompute on escalation is a COARSE coordinate; the
+  escalation SUBTREE is the geometry actually carrying the overflow. Solve over the subtree-topology, not the DAG.
+LAYOUT UPDATE: Δ-J6 layout matured F0->F3 -- the optimum is the PARTITION TOPOLOGY P*={16,64} (a settlement), NOT
+the scalar B (B is a lossy coordinate: same-B partitions differ 1.7x); F5 conductance-graph named for when the
+ladder grows. (jea_layout_surface.py.) Every "argmin of a scalar surface" cell is a shadow of this same picture.
 
 ## == JUDGEMENT AUDIT (Δ-J) -- next steps as the ORBIT of judgement-is-demechanization ==
 
