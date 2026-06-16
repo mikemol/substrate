@@ -1,17 +1,19 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Polynomial.Generic
 --
--- F₂[x] via the GENERIC functor — the A=F₂ instance of `Polynomial.Graded.Over`
--- (AI-17). The mere fact that this `open` type-checks witnesses that F₂'s
--- hand-built `Polynomial.RingLaws` IS the generic graded-ring construction at
--- A=F₂: `_*P_` here is distrib + comm (`*P-comm`) + assoc (`*P-assoc`) + unital,
--- all from the one functor.
+-- F₂[x] via the GENERIC functor — `Polynomial.Graded.Over` instantiated at A=F₂.
 --
--- This is the NON-DESTRUCTIVE half of AI-17 B1-SPLIT's "supersede F₂ RingLaws":
--- it exhibits the A=F₂ instance WITHOUT swapping the concrete F₂.RingLaws (whose
--- `_*P_` is the `_+ⱽ_`/`_*ₛ_` build, not definitionally this recursive one, and
--- which GF256/Mul + MulLaws depend on). The generic copy is the REUSABLE artifact
--- (it also gives GF(2⁸)[y] etc.); the concrete F₂ copy stays as the optimized one.
+-- WHAT THIS MECHANIZES (the `open` type-checks): the functor applies to F₂, i.e. a
+-- graded-ring construction exists at A=F₂ with `_*P_` distrib + comm (`*P-comm`) +
+-- assoc (`*P-assoc`) + unital, all from the one functor. With GF256/Poly (A=GF(2⁸)),
+-- this is a second witness that the functor is faithful on a real coefficient ring.
+--
+-- WHAT THIS DOES NOT MECHANIZE: that this construction EQUALS F₂'s hand-built
+-- `Polynomial.RingLaws`. They are parallel — this `_*P_` is the recursive `_+P_`/`_·c_`
+-- build, F₂'s is the `_+ⱽ_`/`_*ₛ_` build, NOT definitionally equal — and GF256/Mul +
+-- MulLaws consume the concrete one. Their equivalence is asserted, not proven; the
+-- payment is to MECHANIZE `concrete _*P_ ≡ generic _*P_` (the faithfulness theorem,
+-- AI-17 B-FAITH) — which is what would let a consumer use either, or safely unify them.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
