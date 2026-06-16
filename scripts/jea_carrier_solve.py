@@ -30,6 +30,7 @@ from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_apex_deliver import run_apex_u128, deliver_subtree, predict_per_node
 import jea_generator_dag as G
+import jea_sppf as SPPF                                         # the SPPF interning the eval path USES (memoization)
 
 
 def predict_width(g):
@@ -39,10 +40,13 @@ def predict_width(g):
     return max(max(nb[i], db[i]) for i in range(g["N"]))
 
 
-def carrier_solve(g):
-    """The carrier as a live solve: predict the width, dispatch to the NARROWEST sufficient existing carrier. On
-    escalation the byte-limb deliver solves over the escalation CROWN only (deliver_subtree), reusing the apex's
-    correct u128 values for the rest -- not a whole-DAG recompute."""
+def carrier_solve(g, sppf=True):
+    """The carrier as a live solve: INTERN the DAG to its canonical SPPF (memoization; each distinct subterm
+    computed ONCE), predict the width, dispatch to the NARROWEST sufficient existing carrier. On escalation the
+    byte-limb deliver solves over the CROWN only. Interning is WIRED here (the running eval path), not demo'd --
+    jea_agda_apex consumes it. Root value invariant under interning."""
+    if sppf:
+        g, _distinct = SPPF.intern(g)                          # canonical shared SPPF -> apex computes each subterm once
     W = predict_width(g)
     if W <= 64:
         r = G.run_g(g); return Fraction(int(r["rn"]), int(r["rd"])), "u64", W
@@ -80,6 +84,20 @@ if __name__ == "__main__":
         rows.append((name, carrier, W, ok))
         print(f"  {name:<16} predicted W={W:>3} bits  ->  carrier {carrier:<10}  exact={ok}")
 
+    # MEMOIZATION (the WIRED SPPF intern, Δ-Σ-trace): a sharing-heavy tree evaluates THROUGH carrier_solve, interned.
+    def build_Eq(n):
+        L=1<<n; vN=[1]*L; vD=[1]*L; op=[-1]*L; lch=[-1]*L; rch=[-1]*L; level=list(range(L))
+        while len(level)>1:
+            nxt=[]
+            for i in range(0,len(level),2):
+                k=len(vN); vN.append(0); vD.append(1); op.append(0); lch.append(level[i]); rch.append(level[i+1]); nxt.append(k)
+            level=nxt
+        return dict(vN=vN,vD=vD,op=op,lch=lch,rch=rch,L=L,N=len(vN),root=level[0],truth=Fraction(1<<n,1))
+    eq=build_Eq(12); _gc,distinct=SPPF.intern(eq); mval,mc,_=carrier_solve(eq)   # carrier_solve INTERNS then evaluates
+    memo_ok = (mval==eq["truth"]) and (distinct < eq["N"])
+    print(f"\n  MEMOIZATION wired into carrier_solve: E_q(12) {eq['N']} nodes -> interned {distinct} "
+          f"({eq['N']//distinct}x); each distinct subterm computed ONCE; carrier_solve={mval} ==truth:{mval==eq['truth']}")
+
     carriers = [c for _, c, _, _ in rows]
     w1 = carriers[0] == "u64"                                # small slides DOWN off the u128 floor
     w2 = carriers[1] == "u128" and carriers[2] == "byte-limb"  # mid/big slide UP, by need
@@ -87,7 +105,8 @@ if __name__ == "__main__":
     print(f"\nW1 SLIDE DOWN (small term -> u64, OFF the baked u128 floor; pay-for-what-you-use): {w1}")
     print(f"W2 SLIDE UP (mid -> u128, big -> byte-limb; the same solve outputs each tier by predicted bits): {w2}")
     print(f"W3 EXACT EVERYWHERE + 3 DISTINCT TIERS from ONE live solve (existing carriers, no reinvention): {w3}")
-    ok = w1 and w2 and w3
+    print(f"W4 SPPF MEMOIZATION WIRED (carrier_solve interns the DAG -> apex computes each subterm once; exact): {memo_ok}")
+    ok = w1 and w2 and w3 and memo_ok
     print(f"\n  {'PASS' if ok else 'FAIL'} — the carrier WIDTH is now the OUTPUT of a live solve over the predicted")
     print(f"  bit-length geometry: u64 / u128 / byte-limb selected by NEED, sliding both directions. The apex's")
     print(f"  frozen u128 floor (launch-at-128-and-stay) is dissolved -- a small term pays u64, a huge one escalates")

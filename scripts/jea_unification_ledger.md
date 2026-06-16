@@ -125,22 +125,23 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     **FULL CLUSTER AUDIT (done):** ALL orphaned -- jea_agda_dag (eval SPPF), jea_intern (dedup), sppf_label,
     sppf_node_index, type_sppf, type_sppf_crosslayer (semantic SPPF tools), jea_carrier_trace (gcd residue) ;
     only jea_trace_window has importers (carrier_trace + jea_limb_div). They are INDEPENDENT demos (no shared base).
-    **Δ-Σ-trace rung-1 [DONE]:** jea_sppf_apex.py -- the apex evaluates an INTERNED SPPF. A ℚ tree is hash-consed
-    ON-DEVICE by REUSING jea_intern.intern_device (cupy.unique per height; ℚ-leaf encoded as one key) to its
-    canonical SPPF, which run_apex_u128 drains -- each distinct subterm computed ONCE (memoization). Proven:
-    E_q(14) tree 32767 nodes -> SPPF 15 nodes (2184x collapse), apex(SPPF)==truth, exact; jea_intern now IMPORTED
-    (de-orphaned). "on-GPU resident MEMOIZING traces = SPPF" realized. eval-path regression-clean.
-    **Δ-Σ-trace rung-(b) [DONE]:** the apex no longer DISCARDS the gcd/EEA reduction residue. (i) the kernel now
-    EMITS gg per node (jea_apex gglo/gghi, both gcd loops; run_apex_u128 returns nodes["gg"]) -- reduced*gg ==
-    unreduced, so reduction is a LOSSLESS RETRACTION (gg the inverse cofactor). (ii) the EEA quotient sequence (the
-    canonical CF shape) is materialized by COMPOSING jea_carrier_trace.gpu_cf (de-orphaned, + jea_trace_window) on
-    the reduced output -- scale-free, from_cf round-trips to reduce. jea_residue_trace.py. The held residue BUYS
-    VALUE-interning: on a 9-node DAG with value-equal structurally-distinct nodes, STRUCTURAL intern=7 vs VALUE
-    intern (CF key)=4 (2/4≡1/2; (1/2*2/3)≡(1/6+1/6)=1/3; node8 2/3≡leaf 2/3) -- strictly stronger collapse than
-    rung-1's structural intern, root exact. eval-SPPF + gcd/EEA residue = one never-discard-residue trace. PASS.
-    **NEXT rungs:** (a) intern the REAL workloads (build_dag / the Agda SPPF jea_agda_dag) before the apex, not the
-    E_q demonstrator -- de-orphan jea_agda_dag; (c) hold the supervisor DECISION WAL (dout) as an EEA trace in the
-    SPPF (the rung that closes the WAL≡EEA-trace loop the user named); (d) semantic SPPF tools (sppf_*/type_sppf) audit.
+    **Δ-Σ-trace structural-intern WIRED [DONE, was rung-1-as-demo -- CORRECTED]:** interning is now in the RUNNING
+    eval path, not a demo. jea_sppf.py (intern, reusing jea_intern.intern_device) is imported by jea_carrier_solve,
+    which INTERNS the DAG before the apex drain -- so jea_agda_apex CONSUMES SPPF memoization (each distinct subterm
+    computed once). Verified in-path: carrier_solve on E_q(12) collapses 8191->13 nodes (630x), root exact; agda
+    terms exact (interning transparent when no sharing). Import chain jea_intern <- jea_sppf <- jea_carrier_solve <-
+    jea_agda_apex = de-orphaned THROUGH THE RUNNING PATH. The earlier jea_sppf_apex.py / jea_residue_trace.py were
+    DEMOS (orphans) -- DELETED. [[feedback_demo_proven_is_not_wired]] (I rebuilt the orphan I'd just warned against).
+    **Δ-Σ-trace rung-(b) [HONEST STATUS: NOT wired -- demo+theater reverted].** I built jea_residue_trace.py (a
+    DEMO, orphan) and emitted gg from the kernel (an UNCONSUMED output = theater, like the per-node tier before);
+    the USER caught both. REVERTED the gg kernel emission + deleted the demo. The genuine rung-(b) (the gcd/EEA
+    residue = CF canonical VALUE-key -> VALUE-interning beyond structural) only PAYS with a value-memo LOOKUP during
+    the drain or a cross-eval cache (value-interning is post-eval: you need a node's value to key it, so a one-shot
+    eval consumes nothing). That is the real arc -- a device VALUE-MEMO table (lookup-during-drain) -- NOT a demo.
+    The CF residue is scale-free (recoverable from the reduced value, no kernel gg needed).
+    **NEXT rungs:** (b-real) device value-memo table (value-interning consumed during the drain); (a) intern the
+    REAL workloads incl. the Agda SPPF jea_agda_dag (still orphaned) through carrier_solve; (c) the supervisor
+    DECISION WAL (dout) as an EEA trace in the SPPF (closes the WAL≡EEA-trace loop); (d) semantic SPPF tools audit.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

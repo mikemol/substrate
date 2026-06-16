@@ -53,8 +53,7 @@ extern "C" __global__ void apex(
     u64* vNlo,u64* vNhi,u64* vDlo,u64* vDhi, int* bln, int* bld, int* escal, int* tier, volatile int* status,
     volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long assert_bound,
     volatile int* pkg, volatile int* active, int fields, int* gtrace, int* gtracen, int gtcap, int spin,
-    const double* tpkg, int* dout, int TF, int nsm_p, int full_p, int decide_dev,
-    u64* gglo, u64* gghi)                                       // Delta-Sigma-trace (b): the gcd RESIDUE, kept not discarded
+    const double* tpkg, int* dout, int TF, int nsm_p, int full_p, int decide_dev)
 {
   int gid = blockIdx.x*blockDim.x+threadIdx.x;
   long long sw=0; int last_g=-1; int gn=0; int last_ep=-1;
@@ -132,7 +131,6 @@ extern "C" __global__ void apex(
                 u64 D  = dl*dr;
                 u64 aa=na, bb=D; while(bb){ u64 r=aa%bb; aa=bb; bb=r; } u64 gg=aa?aa:1ULL;
                 na/=gg; D/=gg;
-                gglo[i]=gg; gghi[i]=0;                          // RESIDUE held: reduced * gg == unreduced (lossless)
                 vNlo[i]=na; vNhi[i]=0; vDlo[i]=D; vDhi[i]=0;
                 bln[i]= na ? (64-__clzll(na)) : 0; bld[i]= D ? (64-__clzll(D)) : 0; tier[i]=0;
               } else {                                         // u128 path (each node its narrowest sufficient carrier)
@@ -141,7 +139,6 @@ extern "C" __global__ void apex(
                 u128 D  = dl*dr;
                 u128 aa=na, bb=D; while(bb){ u128 r=aa%bb; aa=bb; bb=r; } u128 gg=aa?aa:(u128)1;  // gcd-reduce (u128 %)
                 na/=gg; D/=gg;
-                gglo[i]=(u64)gg; gghi[i]=(u64)(gg>>64);         // RESIDUE held (u128 gcd): reduced * gg == unreduced
                 st(vNlo,vNhi,i,na); st(vDlo,vDhi,i,D); bln[i]=bitlen128(na); bld[i]=bitlen128(D); tier[i]=1;
               }
               }
@@ -199,11 +196,10 @@ if __name__ == "__main__":
         vec=[surf["imc"],pmax,surf["pcie_eff"],surf["cpu_eff"],float(T),float(link),trip,
              gsf["coop"],gsf["strat"],gsf["spread"],float(tb),0.9,0.7,0.0]                     # raw EVIDENCE
         tpkg=cp.asarray(vec+[0.0]*TF, cp.float64); dout=cp.zeros(1+7*8,cp.int32)
-        gglo=cp.ones(N,cp.uint64); gghi=cp.zeros(N,cp.uint64)
         _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,escal,tier,dstatus,
                                     qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
                                     gtrace,gtracen,np.int32(256),np.int32(0),
-                                    tpkg,dout,np.int32(TF),np.int32(nsm),np.int32(full),np.int32(1),gglo,gghi))
+                                    tpkg,dout,np.int32(TF),np.int32(nsm),np.int32(full),np.int32(1)))
         cp.cuda.Stream.null.synchronize()
         rn=(int(vNhi.get()[root])<<64)|int(vNlo.get()[root]); rd=(int(vDhi.get()[root])<<64)|int(vDlo.get()[root])
         return (Fraction(rn,rd) if rd else None), int(err.get()[0]), int(pend.get()[0]), [int(x) for x in dout.get()]
