@@ -2,6 +2,37 @@ RUNG: R(observable, transitions)
 
 # JEA-on-GPU unification arc — WAL cotype (the single source of truth)
 
+## == REGROUNDING / STATE-OF-ARC (READ FIRST after a context compaction) ==
+
+**DONE -- the unified on-device GPU evaluator (the apex) is COMPLETE.** One persistent megakernel = pool ⊕
+actuator ⊕ megakernel: drains a DAG work-queue, reads a host-published resident telemetry package, takes its
+schedule LIVE from it, terminates by PRODUCTIVITY (no fuel), and combines on an ESCALATING carrier exact at ANY
+magnitude (u64 -> u128 [jea_core.Q128_CUDA] -> byte-limb [jea_limb], err=2 deliver). Every cost surface is
+MEASURED LIVE + REACTIVE -- nothing on the path is a stored optimum, a baked constant, a representative stand-in,
+or a truncation. Files (scripts/): jea_apex.py (Δ-Ω + carrier), jea_apex_deliver.py (err=2->byte-limb),
+jea_actuator.py / jea_telemetry.py (device/host package), jea_navigator.py (operating point), jea_edge_states.py
+(measured efficiencies), jea_engine_pool.py (productivity drain), jea_apex_gsurface.py / jea_interior_surfaces.py
+/ jea_layout_surface.py (live cost surfaces), witness_sanity.py (the rigged-witness gate). The judgement audit
+(Δ-J1..J6) is DISCHARGED; no pending scalars/judgements on the live path.
+
+**PRINCIPLES (charter layer; in auto-memory MEMORY.md -- the operative stance: read current reality, judge live,
+bake nothing):** structural-not-scalar (a bound is a live Kron-solve) · reread-meters-TOCTOU (a reading is
+dependently typed on read-time state) · noise-floor-is-a-flat-region (a tie => decompose to the common
+parameter, n-path) · navigator-not-answer (build the system that recomputes from evidence, never store the
+optimum) · judgement-is-demechanization (every line is a frozen choice; keep it only if it enables more
+mechanization than it costs).
+
+**AI ROSTER -- ALL labeled; dispatch by symbol.** AGENTS (real model instances): **AI-Δ0** orchestrator (executed
+the ENTIRE arc) · **AI-Δ1** interface cartographer (Explore, spent) · **AI-Δ2** provenance archaeologist
+(general-purpose, resume id ad547863434f51211). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
+Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver. NEXT executors (to dispatch): **AI-Φ** (Δ-Φ) · **AI-Δ7** (Δ-Ω-deliver-opt).
+
+**NEXT (common structure: GPU half mature -> the AGDA half is the axis):**
+- **Δ-Φ / AI-Φ [THE ARC]** make the Agda TERM-ALGEBRA drive the apex (DAGs are hand-built, not Agda-extracted;
+  the charter's PRIMARY goal is term-algebra->GPU). Connect the existing jea_agda_bridge to the new apex. The
+  next-level snap: GPU-evaluator ⊕ Agda-foundation -> "Agda on GPU". Reuse jea_agda_bridge; don't reinvent.
+- **Δ-Ω-deliver-opt / AI-Δ7 [polish]** subtree-only byte-limb deliver (vs full-DAG recompute on escalation).
+
 ## == JUDGEMENT AUDIT (Δ-J) -- next steps as the ORBIT of judgement-is-demechanization ==
 
 The open threads are NOT an either/or -- they are orbit-elements of ONE operator: find a remaining FROZEN
