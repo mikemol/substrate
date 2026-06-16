@@ -46,10 +46,10 @@ def carrier_solve(g):
     W = predict_width(g)
     if W <= 64:
         r = G.run_g(g); return Fraction(int(r["rn"]), int(r["rd"])), "u64", W
-    val, err, vN_u128, vD_u128 = run_apex_u128(g, return_nodes=True)
+    val, err, vN_u128, vD_u128, escal = run_apex_u128(g, return_nodes=True)
     if err != 2 and W <= 128:
         return val, "u128", W
-    sub, _muls = deliver_subtree(g, vN_u128, vD_u128)        # CROWN-only byte-limb (Δ-Ω-deliver-opt)
+    sub, _muls = deliver_subtree(g, vN_u128, vD_u128, escal=escal)  # CROWN-only byte-limb, crown = DEVICE residue (Δ-Ψ)
     return sub, "byte-limb", W
 
 

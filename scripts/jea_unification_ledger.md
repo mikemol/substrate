@@ -58,16 +58,26 @@ tripped nothing else. PROTOCOL (memory feedback_never_noverify_to_bypass_gates):
 (never -A), whoever owns the staleness clears it, `.md` notes for async coord, NEVER --no-verify; keep in-flight
 `.agda` OUT of the build tree (scratch/, invisible to gen_build_makefiles). Resolved with AI-Q; both commits green.
 
-**NEXT -- common structure (RECURSIVE coordinate->geometry): the HOST-SIDE solve I built IS ITSELF A COORDINATE.**
-predict_per_node / carrier_solve / deliver_subtree run OFF-GPU; the GPU consumes the host's choice -- the exact
-on-GPU-can't-call-off-GPU / reread-meters anti-pattern, one level up. The geometry is the solve RESIDENT ON-DEVICE.
-Both remaining steps are FACETS of ONE move = **MOVE THE SOLVE ON-DEVICE** (recompute-from-residue, not
-copy-across-boundary -- the charter's core acceptance criterion):
-- **Δ-Ψ / AI-Ψ [THE ARC]** the host-built DAG is UPLOADED each run (copy-across-boundary). recompute-from-residue
-  means the term-algebra GENERATES + RESIDES the DAG on-device (on-GPU memoizing traces). The host-side carrier
-  SELECT + crown-DELIVER fold into the on-device predict-place (the kernel already computes bln/bld). Subsumes:
-- **Δ-Φ-pernode / AI-Δ8 [carrier facet of Δ-Ψ]** per-NODE carrier placement (down-slide currently per-TERM; full
-  geometry = each node its narrowest carrier, predict-place folded into the on-GPU kernel dispatch).
+**Δ-Ψ-crown / AI-Ψ [rung-1 of the on-device arc -- DONE].** The escalation CROWN is now the DEVICE's OWN residue,
+not a host re-derivation. The apex kernel PROPAGATES an escalation mark up the DAG (escal[i]=1 iff node i overflows
+u128 OR a child is marked -- new `int* escal` array, jea_apex.py); run_apex_u128(return_nodes=True) returns it;
+deliver_subtree(...,escal=) READS it instead of re-predicting (recompute-from-residue). FINDING: the device crown
+is DRAMATICALLY tighter than the host unreduced-predict -- build_dag(512,16): device residue = 1 node vs host
+predict 7 (apex gcd-reduces intermediates, so most "predicted overflow" nodes fit after reduction); byte-limb work
+2 muls vs 15, all exact. Validates read-the-device-state-don't-re-derive (reread-meters): the host predict was 7x
+too conservative; the device knows the TRUE crown. carrier_solve now consumes the device crown. (jea_apex.py,
+jea_apex_deliver.py, jea_carrier_solve.py.) NB: kernel source must be ASCII -- a Δ in a kernel COMMENT broke NVRTC.
+
+**NEXT -- remaining FACETS of MOVE THE SOLVE ON-DEVICE (recompute-from-residue, not copy-across-boundary; the host
+solve is the coordinate, the device-resident solve is the geometry):**
+- **Δ-Φ-pernode / AI-Δ8 [carrier facet]** per-NODE carrier placement + the carrier SELECT (tier u64/u128/byte-limb)
+  folded into the on-device predict-place (the kernel already computes bln/bld). Currently the SELECT is still a
+  pre-flight HOST predict (predict_width) -- the one host-side solve-piece left after Δ-Ψ-crown.
+- **Δ-Ψ-deliver [byte-limb on-device]** the crown byte-limb DELIVER is still a HOST python loop calling jea_limb
+  gpu_mul per crown node (cheap -- crown is tiny -- so low priority); the full on-device form is variable-limb
+  arithmetic in the megakernel.
+- **Δ-Ψ-dag [the deep rung]** the DAG is still HOST-built + UPLOADED. recompute-from-residue's end state: the
+  term-algebra GENERATES + RESIDES the DAG on-device (on-GPU memoizing traces, no host round-trip).
 LAYOUT UPDATE: Δ-J6 layout matured F0->F3 -- the optimum is the PARTITION TOPOLOGY P*={16,64} (a settlement), NOT
 the scalar B (B is a lossy coordinate: same-B partitions differ 1.7x); F5 conductance-graph named for when the
 ladder grows. (jea_layout_surface.py.) Every "argmin of a scalar surface" cell is a shadow of this same picture.

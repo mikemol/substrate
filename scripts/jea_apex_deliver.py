@@ -54,7 +54,8 @@ def predict_per_node(g):
 
 def run_apex_u128(g, return_nodes=False):
     """Run the apex on the u128 carrier (full lanes, spin=0). Return (root Fraction-or-None, err); with
-    return_nodes also (vN_u128, vD_u128) = per-node reduced u128 values (correct for non-escalated nodes)."""
+    return_nodes also (vN_u128, vD_u128, escal) -- per-node reduced u128 values (correct for non-crown nodes) and
+    the device-emitted escalation CROWN (escal[i]=1 iff node i overflowed u128 or has a crown descendant)."""
     N = g["N"]; root = g["root"]
     op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
     vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
@@ -63,10 +64,11 @@ def run_apex_u128(g, return_nodes=False):
     vnl=d([v & (2**64-1) for v in vN],cp.uint64); vnh=d([v>>64 for v in vN],cp.uint64)
     vdl=d([v & (2**64-1) for v in vD],cp.uint64); vdh=d([v>>64 for v in vD],cp.uint64)
     bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
+    escal=cp.zeros(N,cp.int32)
     st=d([1 if op[i]==2 else 0 for i in range(N)],cp.int32); pe=cp.full(1,sum(1 for i in range(N) if op[i]!=2),cp.int32)
     qt=cp.full(1,N,cp.int32); er=cp.zeros(1,cp.int32); pk=cp.zeros(2*FIELDS,cp.int32); pk[0]=BLOCKS*THREADS; ac=cp.zeros(1,cp.int32)
     gt=cp.zeros(4,cp.int32); gtn=cp.zeros(1,cp.int32)
-    _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,st,qt,pe,er,np.int32(N),np.int64(N),
+    _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,escal,st,qt,pe,er,np.int32(N),np.int64(N),
                                 pk,ac,np.int32(FIELDS),gt,gtn,np.int32(4),np.int32(0)))
     cp.cuda.Stream.null.synchronize()
     VNL=vnl.get(); VNH=vnh.get(); VDL=vdl.get(); VDH=vdh.get()
@@ -75,7 +77,7 @@ def run_apex_u128(g, return_nodes=False):
     if return_nodes:
         vN_u128=[(int(VNH[i])<<64)|int(VNL[i]) for i in range(N)]
         vD_u128=[(int(VDH[i])<<64)|int(VDL[i]) for i in range(N)]
-        return val, err, vN_u128, vD_u128
+        return val, err, vN_u128, vD_u128, [int(x) for x in escal.get()]
     return val, err
 
 
@@ -94,13 +96,18 @@ def deliver_bytelimb(g):
     return Fraction(from_limbs(num[r]), from_limbs(den[r]))      # REDUCE at readout
 
 
-def deliver_subtree(g, vN_u128, vD_u128):
-    """Δ-Ω-deliver-opt: byte-limb ONLY the escalation CROWN (the up-closed set pred>128), LIFTING the apex's
-    correct u128 values for the crown's non-crown children. Solves over the subtree carrying the overflow, not
-    the whole DAG. Returns (Fraction, limb_muls) -- limb_muls = byte-limb gpu_mul count (the cost that shrinks)."""
+def deliver_subtree(g, vN_u128, vD_u128, escal=None):
+    """Δ-Ω-deliver-opt / Δ-Ψ: byte-limb ONLY the escalation CROWN, LIFTING the apex's correct u128 values for the
+    crown's non-crown children. Solves over the subtree carrying the overflow, not the whole DAG. The crown is the
+    DEVICE's residue (escal[], emitted on-device by the apex's mark-propagation) when given -- recompute-from-
+    residue, tighter than re-predicting on the host; else falls back to the host predict (predict_per_node).
+    Returns (Fraction, limb_muls) -- limb_muls = byte-limb gpu_mul count (the cost that shrinks)."""
     N=g["N"]; op=g["op"]; lch=g["lch"]; rch=g["rch"]; vN=g["vN"]; vD=g["vD"]; root=g["root"]
-    nb,db=predict_per_node(g)
-    crown=lambda i: max(nb[i],db[i])>128                         # up-closed; apex placeholdered exactly a subset
+    if escal is not None:
+        crown=lambda i: escal[i]==1                              # DEVICE-emitted crown (on-device mark propagation)
+    else:
+        nb,db=predict_per_node(g)
+        crown=lambda i: max(nb[i],db[i])>128                     # host fallback: up-closed; apex placeholdered a subset
     num=[None]*N; den=[None]*N; muls=[0]
     def lift(i):                                                 # value of node i in limbs (memoized)
         if num[i] is None:                                       # not crown-computed -> EXACT source: leaf literal
@@ -117,36 +124,43 @@ def deliver_subtree(g, vN_u128, vD_u128):
 
 
 if __name__ == "__main__":
-    print("err=2 -> byte-limb DELIVER: the apex's escalation flag wired to the EXISTING jea_limb carrier\n")
+    print("Δ-Ψ: the escalation CROWN is the DEVICE's residue (on-device mark propagation), not host re-prediction\n")
     # find a DAG whose intermediates exceed u128 (so the apex sets err=2)
     g=None; apex_err=0
     for (n,depth) in [(256,8),(256,12),(256,16),(512,12),(512,16)]:
-        cand=build_dag(n,depth); v,e,vN_u,vD_u=run_apex_u128(cand,return_nodes=True)
-        if e==2: g, apex_val, apex_err, vN_u128, vD_u128 = cand, v, e, vN_u, vD_u; chosen=(n,depth); break
+        cand=build_dag(n,depth); v,e,vN_u,vD_u,esc=run_apex_u128(cand,return_nodes=True)
+        if e==2: g, apex_val, apex_err, vN_u128, vD_u128, escal = cand, v, e, vN_u, vD_u, esc; chosen=(n,depth); break
     if g is None:
         print("  (no u128-overflowing DAG found in the probe set; widen it)"); sys.exit(1)
 
     truth=g["truth"]; tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
     ncomb=sum(1 for i in range(g["N"]) if g["op"][i]!=-1)
-    nb,db=predict_per_node(g); ncrown=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and max(nb[i],db[i])>128)
+    nb,db=predict_per_node(g); host_crown=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and max(nb[i],db[i])>128)
+    dev_crown=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and escal[i]==1)
     print(f"  DAG build_dag{chosen}: {g['N']} nodes ({ncomb} combines), true rational ~{tb} bits (EXCEEDS u128={tb>128})")
-    print(f"  apex (u128 only): err={apex_err} (=2 escalation needed); root={apex_val} (placeholder/incomplete, != truth)")
+    print(f"  apex (u128 only): err={apex_err} (=2); root={apex_val} (placeholder, != truth)")
+    print(f"  crown size: host re-predict (unreduced) = {host_crown}  vs  DEVICE residue (actual reduced) = {dev_crown}  (device <= host)")
 
     full = deliver_bytelimb(g)                                  # COARSE: recompute the WHOLE DAG on byte-limb
-    sub, sub_muls = deliver_subtree(g, vN_u128, vD_u128)        # SUBTREE: byte-limb only the escalation crown
+    sub_h, sub_h_muls = deliver_subtree(g, vN_u128, vD_u128)              # crown via HOST re-predict (fallback)
+    sub_d, sub_d_muls = deliver_subtree(g, vN_u128, vD_u128, escal=escal) # crown via DEVICE residue (Δ-Ψ)
     full_muls = sum((2 if g["op"][i]==1 else 3) for i in range(g["N"]) if g["op"][i]!=-1)
-    print(f"  full-DAG  deliver: root={str(full)[:50]}...  == truth: {full==truth}  (byte-limb muls ~{full_muls}, all {ncomb} combines)")
-    print(f"  SUBTREE   deliver: root={str(sub)[:50]}...  == truth: {sub==truth}   (byte-limb muls {sub_muls}, only {ncrown} crown combines)")
+    print(f"  full-DAG deliver: == truth {full==truth}  (byte-limb muls ~{full_muls}, all {ncomb} combines)")
+    print(f"  host-crown delvr: == truth {sub_h==truth}  (muls {sub_h_muls}, {host_crown} crown combines)")
+    print(f"  DEVICE-crown dlv: == truth {sub_d==truth}  (muls {sub_d_muls}, {dev_crown} crown combines)  <- recompute-from-residue")
 
-    w1 = (apex_err==2) and (apex_val != truth)                  # u128 insufficient, flagged
-    w2 = (full == truth) and (sub == truth) and (tb > 128)      # BOTH exact beyond u128 (subtree == full == truth)
-    w3 = (sub_muls < full_muls) and (ncrown < ncomb)            # subtree solves the CROWN only -- strictly less work
-    print(f"\nW1 ESCALATION FIRES (u128 insufficient -> apex err=2, root != truth): {w1}")
-    print(f"W2 BOTH EXACT beyond u128 (subtree == full == truth, {tb}>128 bits -- the subtree loses nothing): {w2}")
-    print(f"W3 SUBTREE < FULL (byte-limb work {sub_muls} vs {full_muls} muls; only {ncrown}/{ncomb} combines redone -- the")
-    print(f"   crown carrying the overflow, valid nodes LIFTED from the apex's u128 result): {w3}")
+    dev_subset = all((escal[i]==0) or (max(nb[i],db[i])>128) for i in range(g["N"]))  # device crown ⊆ host crown (provable)
+    w1 = (apex_err==2) and (apex_val != truth)                  # u128 insufficient, flagged on-device
+    w2 = (full == truth) and (sub_h == truth) and (sub_d == truth) and (tb > 128)     # all three exact
+    w3 = dev_subset and (dev_crown <= host_crown) and (sub_d_muls <= sub_h_muls) and (dev_crown < ncomb)
+    print(f"\nW1 ESCALATION FIRES on-device (apex err=2, root != truth): {w1}")
+    print(f"W2 ALL EXACT beyond u128 (full == host-crown == DEVICE-crown == truth, {tb}>128 bits): {w2}")
+    print(f"W3 DEVICE RESIDUE ⊆ host re-predict ({dev_crown}<={host_crown}), same-or-less byte-limb work ({sub_d_muls}<={sub_h_muls}),")
+    print(f"   crown < all combines ({dev_crown}<{ncomb}) -- the crown is the device's OWN output, not re-derived on host: {w3}")
     ok=w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω-deliver-opt: escalation no longer recomputes the WHOLE DAG (a coarse")
-    print(f"  coordinate). The escalation CROWN (up-closed pred>128) is the geometry carrying the overflow; only it")
-    print(f"  runs on byte-limb, the apex's correct u128 values for the crown's valid children are LIFTED. Exact and")
-    print(f"  strictly less work, degenerating to the full DAG only when EVERYTHING overflows. Solve over the subtree.")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ψ: the escalation crown is computed ON-DEVICE (the apex propagates an")
+    print(f"  escalation mark up the DAG: a node is crowned iff it overflows u128 OR a child is). The host deliver")
+    print(f"  READS that residue (escal[]) instead of re-predicting -- recompute-from-residue, not copy-across-boundary.")
+    print(f"  The device crown is TIGHTER (actual reduced lengths) ⊆ the host unreduced predict, so it byte-limbs no")
+    print(f"  more nodes, and the host no longer duplicates the device's own escalation solve. NEXT (Δ-Φ-pernode): the")
+    print(f"  carrier SELECT + per-node placement fold into the same on-device pass (the kernel already has bln/bld).")

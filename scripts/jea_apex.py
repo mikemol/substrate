@@ -44,7 +44,7 @@ __device__ __forceinline__ int bitlen128(u128 v){
 }
 extern "C" __global__ void apex(
     int* op,int* narg,int* lch,int* rch,
-    u64* vNlo,u64* vNhi,u64* vDlo,u64* vDhi, int* bln, int* bld, volatile int* status,
+    u64* vNlo,u64* vNhi,u64* vDlo,u64* vDhi, int* bln, int* bld, int* escal, volatile int* status,
     volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long assert_bound,
     volatile int* pkg, volatile int* active, int fields, int* gtrace, int* gtracen, int gtcap, int spin)
 {
@@ -77,11 +77,16 @@ extern "C" __global__ void apex(
           int L=lch[i],R=rch[i];
           if (status[L]==1 && status[R]==1) {
             if (atomicCAS((int*)&status[i],0,2)==0) {
-              // PREDICT-PLACE (Carrier): bit-length of the result before computing -> escalate if > u128
+              // PREDICT-PLACE (Carrier) + ESCALATION-MARK PROPAGATION (Delta-Psi): the crown is the device's OWN residue.
+              // A node is in the crown iff it overflows u128 OR a child is in the crown (escal propagates UP); the
+              // host deliver READS escal[] instead of re-predicting (recompute-from-residue, not copy-across-boundary).
+              if (escal[L] || escal[R]) {                      // ANCESTOR of an escalated node -> escalate (no compute)
+                escal[i]=1; *err=2; vNlo[i]=0;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0; bln[i]=0; bld[i]=1;
+              } else {
               int bn = (o==1) ? (bln[L]+bln[R]) : (max(bln[L]+bld[R], bln[R]+bld[L])+1);
               int bd = bld[L]+bld[R];
-              if (bn>128 || bd>128) {                          // ESCALATE: deliver on byte-limb (host, jea_limb)
-                *err=2; vNlo[i]=0;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0; bln[i]=0; bld[i]=1;
+              if (bn>128 || bd>128) {                          // FRONTIER: this node overflows u128 (actual reduced)
+                escal[i]=1; *err=2; vNlo[i]=0;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0; bln[i]=0; bld[i]=1;
               } else {
                 u128 nl=ld(vNlo,vNhi,L), dl=ld(vDlo,vDhi,L), nr=ld(vNlo,vNhi,R), dr=ld(vDlo,vDhi,R);
                 u128 na = (o==1) ? (nl*nr) : (nl*dr + nr*dl);
@@ -89,6 +94,7 @@ extern "C" __global__ void apex(
                 u128 aa=na, bb=D; while(bb){ u128 r=aa%bb; aa=bb; bb=r; } u128 gg=aa?aa:(u128)1;  // gcd-reduce (u128 %)
                 na/=gg; D/=gg;
                 st(vNlo,vNhi,i,na); st(vDlo,vDhi,i,D); bln[i]=bitlen128(na); bld[i]=bitlen128(D);
+              }
               }
               __threadfence(); status[i]=1; atomicSub((int*)pending,1);
             }
@@ -118,7 +124,7 @@ if __name__ == "__main__":
     vNlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vN],cp.uint64); vNhi=d([v>>64 for v in vN],cp.uint64)
     vDlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vD],cp.uint64); vDhi=d([v>>64 for v in vD],cp.uint64)
     bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
-    dstatus=d(status,cp.int32)
+    escal=cp.zeros(N,cp.int32); dstatus=d(status,cp.int32)
     qtail=cp.full(1,N,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)
     pkg=cp.zeros(2*FIELDS,cp.int32); active=cp.zeros(1,cp.int32)
     gtrace=cp.zeros(256,cp.int32); gtracen=cp.zeros(1,cp.int32)
@@ -133,7 +139,7 @@ if __name__ == "__main__":
     publish(nsm, 0)
     strm=cp.cuda.Stream(non_blocking=True)
     with strm:
-        _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,dstatus,
+        _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,escal,dstatus,
                                     qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
                                     gtrace,gtracen,np.int32(256),np.int32(35_000_000)))
     for epoch, gact in enumerate([nsm, 4*nsm, blocks*threads//2, 2*nsm, blocks*threads], start=1):
