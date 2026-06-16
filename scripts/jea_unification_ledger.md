@@ -71,11 +71,18 @@ the 8-bit limb). Decision: bit-sliced/SWAR IS sub-byte arithmetic (per-bit, the 
 re-decomposes into: **(a) the graded sub-byte carrier [DONE -- jea_graded.py, gated standalone]** -- bit-sliced
 planes (plane[b] = bit b of all values, 64/word), ripple-carry add + shift-and-add mul (per-bit SWAR), graded
 rational (num/den each bit-sliced), exact vs Python; W5 [numbers] grade-packed 2029 bits vs u128 fixed 25600 (12.6x
-denser), 140/200 values SUB-BYTE (grade<8). **(b) the resident graded STORE** [next -- pack forest values bit-sliced
-/sub-byte, grade-indexed]. **(c) graded ARITHMETIC in the eval path** [the arc -- reconcile per-bit-plane SWAR with
-the per-NODE drain; same granularity tension as the crown deliver]. jea_graded is the gated COSTRUCTURE; wiring (b)/(c)
-is the composition. NOTE: jea_graded is a gated primitive PENDING WIRING (not yet a live consumer -- the wiring is the
-committed next rung, NOT an orphan-by-neglect).
+denser), 140/200 values SUB-BYTE (grade<8). **(b) the resident graded STORE [DONE -- jea_graded.GradedStore, WIRED]:**
+the forest's VALUES live in a device-resident, sub-byte, contiguous bit-packed store (each value packed to EXACTLY
+its grade in a device uint64 bit-buffer; per-id (offset,grade) the small host index) -- host vn/vd Python lists are
+GONE. value(sid) extracts grade bits at the offset; is_crown(sid)=grade>128. Forest rewritten: register STRUCTURE
+(op/lch/rch/code), deliver the >u128 crown (now RETURNS {cid:(num,den)}, resident-crown children read from the graded
+store), then append all values to GradedStore in cid order. Dead pre-fused methods (leaf/lookup/merge/add_combine/
+_new/ccode/csid) retired. WIRED + consumed: jea_graded <- jea_resident <- jea_eval <- jea_agda_apex; 7/7 modules
+PASS; **EmitBig 217-bit exact through the graded store** (grade-217 value packed + extracted == Agda-vouched). W5
+[numbers]: 603-node forest graded-packed 45428 bits vs u128 lanes 154368 (3.4x denser). **(c) graded ARITHMETIC in
+the eval path [next -- the arc]:** reconcile per-bit-plane SWAR (bit-sliced add/mul) with the per-NODE drain -- same
+granularity tension as the crown deliver. Honest scope: the small int structure INDEX (op/lch/rch/code) remains host
+(the orchestration map, not the value residue).
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the

@@ -80,6 +80,50 @@ def rat_mul(nA,dA, nB,dB):  return bs_mul(nA,nB), bs_mul(dA,dB)                 
 def rat_add(nA,dA, nB,dB):  return bs_add(bs_mul(nA,dB), bs_mul(nB,dA)), bs_mul(dA,dB)   # cross-multiply add
 
 
+_W = np.uint64(0xFFFFFFFFFFFFFFFF)
+def _extract(buf, off, width):
+    """Read `width` bits at bit-offset `off` from a device uint64 bit-buffer -> Python int (only at query/readout)."""
+    if width==0: return 0
+    w0=off>>6; b0=off&63; nw=((off+width-1)>>6)-w0+1
+    acc=0
+    for j,wd in enumerate(int(x) for x in buf[w0:w0+nw].get()): acc|=wd<<(64*j)
+    return (acc>>b0)&((1<<width)-1)
+
+
+class GradedStore:
+    """Device-resident, SUB-BYTE, contiguous bit-packed value store. Each value is packed to EXACTLY its grade bits
+    (1 bit up) in a device uint64 bit-buffer; per-id (offset,grade) is the small host index. Replaces host Python-int
+    value lists -- the graded RESIDENCY for the forest (Δ-Ψ-forest b): the heavy arbitrary-magnitude VALUES live on
+    the device packed to grade (no u128 padding, no 8-bit-limb floor); the offset/grade index is host (like op/lch)."""
+    def __init__(self):
+        self.nbuf=cp.zeros(64,cp.uint64); self.dbuf=cp.zeros(64,cp.uint64); self._nb=0; self._db=0
+        self.noff=[]; self.ngr=[]; self.doff=[]; self.dgr=[]              # per-id num/den bit-offset + grade (host index)
+
+    def _grow(self, buf, words):
+        if buf.size>=words: return buf
+        cap=buf.size
+        while cap<words: cap*=2
+        nb=cp.zeros(cap,cp.uint64); nb[:buf.size]=buf; return nb
+
+    def _put(self, buf, bits, v, g):
+        o=bits; w0=o>>6; b0=o&63; buf=self._grow(buf, ((o+g-1)>>6)+1); span=((g+b0+63)>>6)
+        cur=[int(x) for x in buf[w0:w0+span].get()]; val=(int(v)<<b0)
+        for j in range(span): cur[j]|=(val>>(64*j))&int(_W)                # OR the value's bits in (merge the partial word)
+        buf[w0:w0+span]=cp.asarray(cur,cp.uint64); return buf, o+g
+
+    def append(self, num, den):
+        num=int(num); den=int(den); gn=grade(num); gd=grade(den)
+        self.noff.append(self._nb); self.ngr.append(gn); self.nbuf,self._nb=self._put(self.nbuf,self._nb,num,gn)
+        self.doff.append(self._db); self.dgr.append(gd); self.dbuf,self._db=self._put(self.dbuf,self._db,den,gd)
+        return len(self.noff)-1
+
+    def value(self, sid):
+        return Fraction(_extract(self.nbuf,self.noff[sid],self.ngr[sid]), _extract(self.dbuf,self.doff[sid],self.dgr[sid]))
+    def is_crown(self, sid): return self.ngr[sid]>128 or self.dgr[sid]>128   # >u128 -> needs the byte-limb deliver path
+    def size(self): return len(self.noff)
+    def bits(self): return self._nb+self._db                             # total VALUE bits resident (sub-byte packed)
+
+
 if __name__ == "__main__":
     print("jea_graded: the GRADED, SUB-BYTE (bit-sliced) value carrier -- carrier width = grade, packs below a byte\n")
     rng=np.random.default_rng(11)
@@ -116,8 +160,18 @@ if __name__ == "__main__":
     print(f"\n  W5  [numbers] PACKING ({N} integers): grade-packed = {packed_bits} bits  vs  u128 fixed lane = {fixed_bits} bits"
           f"  ({fixed_bits/packed_bits:.1f}x denser); {subbyte}/{N} values are SUB-BYTE (grade<8, impossible to pack in the 8-bit limb)")
 
-    ok=w1 and w2 and w3 and w4 and w5
+    # W6: GradedStore -- the resident contiguous sub-byte value store (Δ-Ψ-forest b). Append varied-grade rationals,
+    # value() round-trips exact; the resident bits = Sigma grade (sub-byte), vs the u128 fixed lane.
+    GS=GradedStore(); rats=[(int(rng.integers(0,1<<g)), int(rng.integers(1,1<<g))) for g in grades]
+    for n,d in rats: GS.append(n,d)
+    rt=all(GS.value(i)==Fraction(rats[i][0],rats[i][1]) for i in range(len(rats)))
+    store_bits=GS.bits(); fixed=len(rats)*256                            # u128 num + u128 den per rational = 256 bits
+    w6 = rt and (store_bits < fixed)
+    print(f"\n  W6  GradedStore (Δ-Ψ-forest b): {len(rats)} rationals append+value round-trip exact: {rt}; resident value")
+    print(f"      bits = {store_bits} (sub-byte packed, Sigma grade) vs u128 lanes {fixed} ({fixed/store_bits:.1f}x denser)")
+
+    ok=w1 and w2 and w3 and w4 and w5 and w6
     print(f"\n  {'PASS' if ok else 'FAIL'} — the graded sub-byte carrier: a value is carried at its GRADE (1 bit up), bit-sliced")
-    print(f"  so arithmetic (ripple-carry add, shift-and-add mul) is per-bit SWAR -- 64 values per word, sub-byte packing,")
-    print(f"  exact. u128 was a frozen coordinate; the grade is the geometry. NEXT: wire as the forest value carrier")
-    print(f"  (Δ-Ψ-forest) replacing the u128/byte-limb store -- the fused kernel's bln/bld already emit the grade.")
+    print(f"  so arithmetic (ripple-carry add, shift-and-add mul) is per-bit SWAR -- 64 values per word; the GradedStore")
+    print(f"  is the device-resident contiguous sub-byte VALUE store. u128 was a frozen coordinate; the grade is the")
+    print(f"  geometry. NEXT (Δ-Ψ-forest b wiring): make GradedStore the forest's value backend, dropping host vn/vd.")

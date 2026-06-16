@@ -28,38 +28,20 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_zsppf import morton2, heights
 import jea_mega_eval as MEGAE                                   # the FUSED on-device intern+combine megakernel (Δ-Σ-mega rung-2)
 from jea_dag_gen import gen_Eq_device                           # Δ-Ψ-dag: ON-DEVICE DAG generation (no host build loop / upload)
+import jea_graded as GR                                         # Δ-Ψ-forest (b): the GRADED, SUB-BYTE device value store
 
 
 class Forest:
-    """The device-resident SPPF: append-only stable payload + a device sorted (code -> stable id) linear quadtree."""
+    """Device-resident SPPF (Δ-Ψ-forest). VALUES live ON-DEVICE in a GRADED, SUB-BYTE bit-packed store (GR.GradedStore
+    -- each value packed to exactly its grade, no u128 padding, no 8-bit-limb floor), replacing host Python-int lists.
+    The structure INDEX (op/lch/rch/code) is the small host orchestration map (int, the 'which node' map, NOT values);
+    the physical code-order store (pcode/pstable/pslot) is device. Stable id == canon id (the fused interner's id)."""
     def __init__(self):
-        self.op=[]; self.lch=[]; self.rch=[]; self.vn=[]; self.vd=[]      # stable payload by sid (append-only)
-        self.code=[]                                                     # per-node locality code (structural / value z-code)
-        self.leafmap={}                                                  # (vN,vD) -> sid (leaves are few; host)
-        self.ccode=cp.zeros(0,cp.int64); self.csid=cp.zeros(0,cp.int64)  # DEVICE sorted combine-code index (Phase-1 dedup)
-        # b-real-store: the PHYSICAL store -- payload STRUCTURE laid out code-ordered (the linear quadtree, ALL nodes);
-        # values stay in the stable store (arbitrary magnitude -> byte-limb carrier, not packable into int64).
+        self.op=[]; self.lch=[]; self.rch=[]; self.code=[]               # structure INDEX (host; int orchestration map, NOT values)
+        self.vals=GR.GradedStore()                                       # the VALUE store: device-resident, sub-byte, grade-packed
         self.pslot=cp.zeros(0,cp.int64)                                  # stable id -> physical position (code order)
         self.pstable=cp.zeros(0,cp.int64); self.pcode=cp.zeros(0,cp.int64)   # physical position -> stable id / code (sorted)
-        self.FE=MEGAE.Fused()                                            # the PERSISTENT on-device FUSED intern+combine (Δ-Σ-mega rung-2)
-
-    def _new(self, op,l,r,vn,vd,code):
-        sid=len(self.op); self.op.append(op); self.lch.append(l); self.rch.append(r); self.vn.append(vn); self.vd.append(vd)
-        self.code.append(int(code)); return sid
-
-    def leaf(self, vN,vD):
-        k=(vN,vD); s=self.leafmap.get(k)
-        if s is not None: return s
-        lc=int(morton2(np.array([vN & 0xFFFF]), np.array([vD & 0xFFFF]))[0])   # leaf value-locality code
-        s=self._new(-1,-1,-1,vN,vD,lc); self.leafmap[k]=s; return s
-
-    def lookup(self, codes):                                             # DEVICE searchsorted -> stable sid or -1 (miss)
-        if self.ccode.size==0: return np.full(len(codes),-1,np.int64)
-        c=cp.asarray(codes,cp.int64); pos=cp.clip(cp.searchsorted(self.ccode,c),0,self.ccode.size-1)
-        return cp.where(self.ccode[pos]==c, self.csid[pos], cp.int64(-1)).get()
-
-    def add_combine(self, code, op,l,r):                                 # new combine -> stable sid (buffered for merge)
-        s=self._new(op,l,r,0,1,code); self._pc.append(int(code)); self._ps.append(s); return s
+        self.FE=MEGAE.Fused()                                            # the device <=u128 value store + fused intern+combine kernel
 
     def materialize(self):                                               # b-real-store: lay the forest STRUCTURE physically
         codes=cp.asarray(self.code, cp.int64); order=cp.argsort(codes, kind="stable")   # FULL re-argsort (the whole forest)
@@ -95,14 +77,7 @@ class Forest:
         loc=len({int(p)//T for p in self.gather(sids)})                 #   PHYSICAL code order (b-real-store, real pslot)
         return stable, loc
 
-    def merge(self):                                                     # DEVICE merge buffered new codes into the index
-        if not self._pc: return
-        allc=cp.concatenate([self.ccode, cp.asarray(self._pc,cp.int64)])
-        alls=cp.concatenate([self.csid, cp.asarray(self._ps,cp.int64)])
-        o=cp.argsort(allc,kind="stable"); self.ccode=allc[o]; self.csid=alls[o]; self._pc=[]; self._ps=[]
-
-    _pc=[]; _ps=[]
-    def value(self, sid): return Fraction(self.vn[sid], self.vd[sid])
+    def value(self, sid): return self.vals.value(sid)                    # device-resident graded value store
     def size(self): return len(self.op)
 
 
@@ -125,22 +100,23 @@ def deliver_crown(F, prev, distinct, sE):
     carrier insight). The byte-limb multiply parallelizes PER-MULTIPLY (dp4a), a different granularity than the per-node
     drain, so the crown is its own device phase -- folding it into a drain lane would serialize the bignum and lose dp4a."""
     from jea_limb_gpu import to_limbs, from_limbs, gpu_add, gpu_mul
-    limbs={}                                                             # this-eval crown cid -> (num,den) device uint8 limbs
+    limbs={}; out={}                                                     # this-eval crown cid -> device limbs / reduced (num,den)
     def u128_dev(lo, hi, c):                                             # read a node's u128 value from the device store -> limbs
         return _trim(cp.concatenate([lo[c:c+1], hi[c:c+1]]).view(cp.uint8))
     def child(c):
         if c in limbs: return limbs[c]                                   # crown child delivered earlier this pass (device)
-        if F.vn[c]>=_U128 or F.vd[c]>=_U128:                             # resident crown value (prior eval, host store) -> upload
-            return cp.asarray(to_limbs(F.vn[c])), cp.asarray(to_limbs(F.vd[c]))
-        return (u128_dev(F.FE.cNlo,F.FE.cNhi,c), u128_dev(F.FE.cDlo,F.FE.cDhi,c))   # non-crown: from the device store
+        if c < prev and F.vals.is_crown(c):                              # resident crown value (prior eval, graded store) -> limbs
+            v=F.value(c); return cp.asarray(to_limbs(v.numerator)), cp.asarray(to_limbs(v.denominator))
+        return (u128_dev(F.FE.cNlo,F.FE.cNhi,c), u128_dev(F.FE.cDlo,F.FE.cDhi,c))   # <=u128: from the fused device store
     for cid in range(prev, distinct):                                    # cid order is topological (children have smaller cid)
         if F.op[cid]==-1 or not sE[cid-prev]: continue
         nl,dl=child(F.lch[cid]); nr,dr=child(F.rch[cid])
         if F.op[cid]==1: num=gpu_mul(nl,nr)[0]; den=gpu_mul(dl,dr)[0]
         else: num=gpu_add(gpu_mul(nl,dr)[0], gpu_mul(nr,dl)[0]); den=gpu_mul(dl,dr)[0]
         v=Fraction(from_limbs(num), from_limbs(den))                     # REDUCE at readout (host gcd; arithmetic was on-device)
-        F.vn[cid]=v.numerator; F.vd[cid]=v.denominator
+        out[cid]=(v.numerator, v.denominator)
         limbs[cid]=(cp.asarray(to_limbs(v.numerator)), cp.asarray(to_limbs(v.denominator)))   # reduced -> small for parents
+    return out                                                           # {cid: (num,den)} -- the eval appends these to the graded store
 
 
 def evaluate(g, F):
@@ -156,20 +132,19 @@ def evaluate(g, F):
     sN, sD, sE = F.FE.read_range(prev, distinct)                         # the new canon ids' values, computed ON-DEVICE
     rep={}
     for i in range(N): rep.setdefault(int(canon[i]), i)                  # a representative term node per canonical id
-    for cid in range(prev, distinct):                                    # register NEW canonical nodes (bookkeeping, NOT eval)
-        i=rep[cid]; k=cid-prev
+    for cid in range(prev, distinct):                                    # register NEW canonical nodes' STRUCTURE (not values yet)
+        i=rep[cid]
         if g["op"][i]==-1:
             vN=int(g["vN"][i]); vD=int(g["vD"][i])
-            F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.vn.append(vN); F.vd.append(vD)
+            F.op.append(-1); F.lch.append(-1); F.rch.append(-1)
             F.code.append(int(morton2(np.array([vN&0xFFFF]), np.array([vD&0xFFFF]))[0]))
         else:
             cl=int(canon[g["lch"][i]]); cr=int(canon[g["rch"][i]])
-            F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr)
-            F.code.append(_ccode(g["op"][i], cl, cr))
-            if sE[k]: F.vn.append(0); F.vd.append(1)                     # escalated (>u128): placeholder -> deliver_crown fills it
-            else: F.vn.append(sN[k]); F.vd.append(sD[k])                 # value computed ON-DEVICE by the fused kernel
-    if any(sE[cid-prev] for cid in range(prev,distinct) if F.op[cid]!=-1):
-        deliver_crown(F, prev, distinct, sE)                             # Δ-Ψ-deliver: the >u128 crown on the byte-limb DEVICE carrier
+            F.op.append(int(g["op"][i])); F.lch.append(cl); F.rch.append(cr); F.code.append(_ccode(g["op"][i], cl, cr))
+    crown = deliver_crown(F, prev, distinct, sE) if any(sE) else {}      # Δ-Ψ-deliver: >u128 crown on the byte-limb DEVICE carrier
+    for k in range(distinct-prev):                                       # append VALUES to the GRADED store in cid order (sid==cid)
+        num,den = crown.get(prev+k, (sN[k], sD[k]))                      # crown (device-delivered) or the fused <=u128 value
+        F.vals.append(num, den)
     root=int(canon[g["root"]]); frontier=[cid for cid in range(prev,distinct) if F.op[cid]!=-1]
     shared=sum(1 for i in range(N) if g["op"][i]!=-1)-len(frontier)
     F.materialize_incr(prev)                                             # b-real-incr: MERGE the delta new nodes (not full re-argsort)
@@ -188,22 +163,22 @@ def evaluate_Eq(n, F):
     canon_dev, distinct = canon                                          # canon STAYS on device
     new=distinct-prev
     if new>0:
-        vals, first = cp.unique(canon_dev, return_index=True)            # device: distinct ids present + first occurrence index
-        reps=first[vals>=prev]                                          # representative term-index per NEW id (sorted -> cid=prev+j)
+        uvals, first = cp.unique(canon_dev, return_index=True)           # device: distinct ids present + first occurrence index
+        reps=first[uvals>=prev]                                         # representative term-index per NEW id (sorted -> cid=prev+j)
         rep_op=g["op"][reps].get()                                       # gather only the representatives (O(distinct), not O(N))
         cl=canon_dev[cp.clip(g["lch"][reps],0,None)].get(); cr=canon_dev[cp.clip(g["rch"][reps],0,None)].get()
         sN,sD,sE=F.FE.read_range(prev,distinct)
         lc11=int(morton2(np.array([1]),np.array([1]))[0])               # E_q leaves are all 1/1 -> one leaf code
-        for k in range(new):
-            if rep_op[k]==-1:                                            # leaf 1/1
-                F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.vn.append(1); F.vd.append(1); F.code.append(lc11)
+        for k in range(new):                                            # register STRUCTURE for each new canon id
+            if rep_op[k]==-1:
+                F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.code.append(lc11)
             else:
                 lcn=int(cl[k]); rcn=int(cr[k]); o=int(rep_op[k])
                 F.op.append(o); F.lch.append(lcn); F.rch.append(rcn); F.code.append(_ccode(o,lcn,rcn))
-                if sE[k]: F.vn.append(0); F.vd.append(1)                 # >u128 -> device crown deliver below
-                else: F.vn.append(sN[k]); F.vd.append(sD[k])
-        if any(sE):
-            deliver_crown(F, prev, distinct, sE)                         # Δ-Ψ-deliver reused (device byte-limb crown)
+        crown = deliver_crown(F, prev, distinct, sE) if any(sE) else {}  # Δ-Ψ-deliver (device byte-limb crown)
+        for k in range(new):                                            # append VALUES to the GRADED store in cid order
+            num,den = crown.get(prev+k, (sN[k], sD[k]))                  # crown or the fused <=u128 value (leaf 1/1 included)
+            F.vals.append(num, den)
     root=int(canon_dev[g["root"]].get())
     new_comb=sum(1 for cid in range(prev,distinct) if F.op[cid]!=-1)
     shared=( (1<<n)-1 ) - new_comb                                       # total E_q combines (2^n-1) not re-added = shared
@@ -229,7 +204,7 @@ if __name__ == "__main__":
     print(f"  eval: jea_mega_eval FUSED intern+combine megakernel (ONE launch per eval; intern + value in one drain)")
 
     growth=sz2-sz1; tot=T2["N"]; shared_nodes=tot-growth      # T2's nodes not re-added = shared from the resident forest
-    devresident = type(F.ccode).__module__.startswith("cupy")
+    devresident = type(F.vals.nbuf).__module__.startswith("cupy")   # the VALUE store is device-resident (graded, sub-byte)
     w1 = devresident and (growth < tot) and (s2>=1) and (shared_nodes>=3)   # S's 3 nodes (2 leaves+1 combine) reused
     w2 = (v1==Fraction(7,6)) and (v2==Fraction(1,3))
     w3 = idx2>idx1 and devresident                            # the on-device canon table grew (cross-eval persistent)
@@ -260,15 +235,16 @@ if __name__ == "__main__":
         w4 = w4 and (lo<st)
     print(f"      -> code-locality gather (Phase-2) touches fewer tiles vs stable-id; grows with set size, nil below T (W5).")
 
-    # W5: b-real-store -- the forest is now PHYSICALLY code-ordered (materialize); the Phase-2 gather is REAL, not predicted.
+    # W5: b-real-store + Δ-Ψ-forest(b) -- the structure is PHYSICALLY code-ordered (materialize) AND the VALUES live in
+    # the device-resident GRADED sub-byte store (no host vn/vd). Density: sub-byte packed bits vs the u128 lane.
     pcode=G.pcode.get(); sorted_ok=bool((pcode[:-1]<=pcode[1:]).all())              # physical store is code-sorted
     inv_ok=all(int(G.pstable[int(G.pslot[s])])==s for s in range(0,G.size(),37))    # pslot is the inverse of pstable
-    val_ok=all(F.value(sid)==Fraction(F.vn[sid],F.vd[sid]) for sid in (0,1))        # values stay in the stable store
-    w5 = sorted_ok and inv_ok and (v1==Fraction(7,6)) and (v2==Fraction(1,3))
-    print(f"\n  W5  b-real-STORE: forest physically code-ordered (pcode sorted: {sorted_ok}; pslot inverse of pstable: {inv_ok}).")
-    print(f"      The Phase-2 gather (W4) now reads the REAL physical slots, not a prediction. VALUES stay in the stable/")
-    print(f"      byte-limb store (arbitrary magnitude -- EmitBig 217-bit can't pack into int64); only the STRUCTURE is")
-    print(f"      physically code-ordered. evaluate materializes it each call; eval exact through the indirection: {w5}")
+    no_host_vals=(not hasattr(F,"vn")) and isinstance(F.value(0),Fraction)         # values are device-resident, no host vn/vd list
+    store_bits=G.vals.bits(); fixed=G.size()*256                                   # graded sub-byte bits vs u128 lanes (256/node)
+    w5 = sorted_ok and inv_ok and no_host_vals and (v1==Fraction(7,6)) and (v2==Fraction(1,3))
+    print(f"\n  W5  b-real-STORE + Δ-Ψ-FOREST(b): structure code-ordered (pcode sorted: {sorted_ok}; pslot inverse: {inv_ok});")
+    print(f"      VALUES are device-resident in the GRADED SUB-BYTE store (no host vn/vd: {no_host_vals}). Density on the")
+    print(f"      {G.size()}-node forest: graded-packed {store_bits} bits vs u128 lanes {fixed} ({fixed/max(store_bits,1):.1f}x denser): {w5}")
     # W6: Δ-Ψ-deliver -- the >u128 escalation CROWN is delivered on the DEVICE byte-limb carrier (recompute-from-residue
     # from the fused kernel's cescal), NOT host-folded. Find a DAG whose intermediates exceed u128; eval == truth.
     from jea_generator_dag import build_dag
@@ -277,7 +253,7 @@ if __name__ == "__main__":
         cand=build_dag(n,depth)
         if max(cand["truth"].numerator.bit_length(), cand["truth"].denominator.bit_length())>128: big=cand; chosen=(n,depth); break
     Gb=Forest(); vb,_,_=evaluate(big, Gb)
-    crown=sum(1 for cid in range(Gb.size()) if Gb.op[cid]!=-1 and (Gb.vn[cid]>=_U128 or Gb.vd[cid]>=_U128))
+    crown=sum(1 for cid in range(Gb.size()) if Gb.op[cid]!=-1 and Gb.vals.is_crown(cid))   # >u128 via the graded store's grade
     tb=max(big["truth"].numerator.bit_length(), big["truth"].denominator.bit_length())
     w6 = (vb==big["truth"]) and (tb>128) and (crown>=1)                   # exact beyond u128, crown delivered on device
     print(f"\n  W6  Δ-Ψ-DELIVER (build_dag{chosen}, true rational ~{tb} bits > u128): the >u128 CROWN ({crown} nodes) is")
@@ -314,5 +290,6 @@ if __name__ == "__main__":
     ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
     print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver), the physical store merges")
-    print(f"  INCREMENTALLY (b-real-incr), and parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag: gen_Eq_device -- the")
-    print(f"  host ships n, bookkeeping O(distinct)). Remaining host seam: the forest payload host-mirror (the final rung).")
+    print(f"  INCREMENTALLY (b-real-incr), parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag), and the VALUE payload is")
+    print(f"  device-resident in the GRADED SUB-BYTE store (Δ-Ψ-forest b -- no host vn/vd). Remaining: graded ARITHMETIC")
+    print(f"  in the eval path (Δ-Ψ-forest c -- bit-sliced SWAR vs the per-node drain) + the small host structure index.")
