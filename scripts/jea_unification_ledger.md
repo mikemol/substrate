@@ -33,7 +33,7 @@ general solve degenerates cheaply).
 **AI ROSTER -- ALL labeled; dispatch by symbol.** AGENTS (real model instances): **AI-Δ0** orchestrator (executed
 the ENTIRE arc) · **AI-Δ1** interface cartographer (Explore, spent) · **AI-Δ2** provenance archaeologist
 (general-purpose, resume id ad547863434f51211). CELL-SYMBOLS executed by AI-Δ0 (SPENT): Δ-A1..A4/A6/A6b, D4,
-Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**. NEXT executors (to dispatch): **AI-Δ7** (Δ-Ω-deliver-opt).
+Δ-J1..J6, Δ-Ω/Ω-carrier/Ω-deliver, **Δ-Φ**, **Δ-Ω-carrier-slide**, **Δ-Ω-deliver-opt**. NEXT (open): **Δ-Φ-pernode**.
 
 **Δ-Φ / AI-Φ [THE ARC -- DONE].** The Agda TERM-ALGEBRA now drives the evaluator (charter term-algebra->GPU closed
 on the MATURE path). jea_agda_apex.py: Emit.agda (refl-vouched, 7/40) AND EmitBig.agda (refl-vouched, 217-bit,

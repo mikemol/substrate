@@ -28,36 +28,29 @@ import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from jea_apex_deliver import run_apex_u128, deliver_bytelimb
+from jea_apex_deliver import run_apex_u128, deliver_subtree, predict_per_node
 import jea_generator_dag as G
 
 
 def predict_width(g):
-    """Live O(N) solve over the DAG: upper-bound each node's unreduced num/den bit-length; W = the binding max.
-    (Mirrors the apex's in-kernel bln/bld predict-place; here host-side for the carrier-SELECT, leaves-first.)"""
-    N = g["N"]; op = g["op"]; lch = g["lch"]; rch = g["rch"]; vN = g["vN"]; vD = g["vD"]
-    nb = [0]*N; db = [0]*N
-    for i in range(N):
-        if op[i] == -1:
-            nb[i] = max(1, int(vN[i]).bit_length()); db[i] = max(1, int(vD[i]).bit_length())
-        else:
-            a, b = lch[i], rch[i]
-            if op[i] == 1:                                   # mul: na=nl*nr, da=dl*dr
-                nb[i] = nb[a] + nb[b]; db[i] = db[a] + db[b]
-            else:                                            # add: na=nl*dr+nr*dl, da=dl*dr
-                nb[i] = max(nb[a] + db[b], nb[b] + db[a]) + 1; db[i] = db[a] + db[b]
-    return max(max(nb[i], db[i]) for i in range(N))
+    """W = the binding max of the per-node bit-length upper bounds (predict_per_node, homed in jea_apex_deliver --
+    the SAME formula the apex predict-places with). Mirrors the apex's in-kernel bln/bld; host-side for the SELECT."""
+    nb, db = predict_per_node(g)
+    return max(max(nb[i], db[i]) for i in range(g["N"]))
 
 
 def carrier_solve(g):
-    """The carrier as a live solve: predict the width, dispatch to the NARROWEST sufficient existing carrier."""
+    """The carrier as a live solve: predict the width, dispatch to the NARROWEST sufficient existing carrier. On
+    escalation the byte-limb deliver solves over the escalation CROWN only (deliver_subtree), reusing the apex's
+    correct u128 values for the rest -- not a whole-DAG recompute."""
     W = predict_width(g)
     if W <= 64:
         r = G.run_g(g); return Fraction(int(r["rn"]), int(r["rd"])), "u64", W
-    val, err = run_apex_u128(g)
+    val, err, vN_u128, vD_u128 = run_apex_u128(g, return_nodes=True)
     if err != 2 and W <= 128:
         return val, "u128", W
-    return deliver_bytelimb(g), "byte-limb", W
+    sub, _muls = deliver_subtree(g, vN_u128, vD_u128)        # CROWN-only byte-limb (Δ-Ω-deliver-opt)
+    return sub, "byte-limb", W
 
 
 def _chain(primes):                                          # a mul-chain term in the lf/mul algebra (leaves-first DAG)
