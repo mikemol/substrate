@@ -4,16 +4,25 @@ RUNG: R(observable, transitions)
 
 ## == REGROUNDING / STATE-OF-ARC (READ FIRST after a context compaction) ==
 
-**DONE -- the unified on-device GPU evaluator (the apex) is COMPLETE.** One persistent megakernel = pool ⊕
-actuator ⊕ megakernel: drains a DAG work-queue, reads a host-published resident telemetry package, takes its
-schedule LIVE from it, terminates by PRODUCTIVITY (no fuel), and combines on an ESCALATING carrier exact at ANY
-magnitude (u64 -> u128 [jea_core.Q128_CUDA] -> byte-limb [jea_limb], err=2 deliver). Every cost surface is
-MEASURED LIVE + REACTIVE -- nothing on the path is a stored optimum, a baked constant, a representative stand-in,
-or a truncation. Files (scripts/): jea_apex.py (Δ-Ω + carrier), jea_apex_deliver.py (err=2->byte-limb),
-jea_actuator.py / jea_telemetry.py (device/host package), jea_navigator.py (operating point), jea_edge_states.py
-(measured efficiencies), jea_engine_pool.py (productivity drain), jea_apex_gsurface.py / jea_interior_surfaces.py
-/ jea_layout_surface.py (live cost surfaces), witness_sanity.py (the rigged-witness gate). The judgement audit
-(Δ-J1..J6) is DISCHARGED; no pending scalars/judgements on the live path.
+**DONE -- the on-device GPU EVALUATOR (the apex) is composed + exact.** One persistent megakernel drains a DAG
+work-queue, reads a resident telemetry package for its schedule, terminates by PRODUCTIVITY (no fuel), combines on
+an ESCALATING carrier exact at ANY magnitude (u64 -> u128 -> byte-limb), places EACH NODE on its narrowest carrier
+on-device (Δ-Φ-pernode: tier 0/1/2), and emits the escalation CROWN as device residue (Δ-Ψ). The EVAL path is
+genuinely wired: jea_agda_apex <- jea_carrier_solve <- jea_apex_deliver <- jea_apex <- jea_engine_pool. Term ->
+carrier solve -> apex -> crown deliver, exact, Agda-vouched.
+
+**!! CORRECTION (USER, 2026-06-16) -- the earlier "apex COMPLETE / every cost surface MEASURED LIVE + REACTIVE"
+was an OVERCLAIM. The CONTROL/SUPERVISOR LOOP is ORPHANED DEMOS.** Import audit: jea_navigator (operating-point
+solve), jea_telemetry (host collect/publish), jea_megakernel, jea_actuator are imported by NOBODY -- each proves
+its property in its OWN __main__ and feeds NOTHING. jea_apex.py's __main__ HAND-PUBLISHES the schedule g from a
+hardcoded list ([nsm,4*nsm,...]); it does NOT call navigate(collect_package()). So "live reactive" was shown with
+FAKE hand-fed g; the measure->operating-point->actuate loop drives nothing. This is [[feedback_silo_sprawl_orphans_fixes]]
++ [[feedback_validate_outputs_not_inputs]]: a property proven INSIDE a demo is NOT wired -- "done in a demo" =
+orphaned until something IMPORTS it. The carrier-SELECT being host (my "legitimately stays host" was WRONG) is the
+same error: ORCHESTRATION (operating point + schedule + carrier dispatch) belongs to the ON-DEVICE SUPERVISOR
+reading the host-UPLOADED telemetry package -- the host uploads EVIDENCE (surfaces the GPU can't measure), the
+supervisor DECIDES on-device, no host-sync per decision. See Δ-Σ below. Judgement audit (Δ-J1..J6) discharged for
+the EVALUATOR; the supervisor loop is the open arc.
 
 **OPERATIVE LAW (the project invariant, shadow-engineered -- memory coordinate_to_geometry; SUBSUMES the 5
 charter memories below):** every repair replaces a collapsed scalar COORDINATE with the GEOMETRY it was
@@ -68,16 +77,30 @@ predict 7 (apex gcd-reduces intermediates, so most "predicted overflow" nodes fi
 too conservative; the device knows the TRUE crown. carrier_solve now consumes the device crown. (jea_apex.py,
 jea_apex_deliver.py, jea_carrier_solve.py.) NB: kernel source must be ASCII -- a Δ in a kernel COMMENT broke NVRTC.
 
-**NEXT -- remaining FACETS of MOVE THE SOLVE ON-DEVICE (recompute-from-residue, not copy-across-boundary; the host
-solve is the coordinate, the device-resident solve is the geometry):**
-- **Δ-Φ-pernode / AI-Δ8 [carrier facet]** per-NODE carrier placement + the carrier SELECT (tier u64/u128/byte-limb)
-  folded into the on-device predict-place (the kernel already computes bln/bld). Currently the SELECT is still a
-  pre-flight HOST predict (predict_width) -- the one host-side solve-piece left after Δ-Ψ-crown.
-- **Δ-Ψ-deliver [byte-limb on-device]** the crown byte-limb DELIVER is still a HOST python loop calling jea_limb
-  gpu_mul per crown node (cheap -- crown is tiny -- so low priority); the full on-device form is variable-limb
-  arithmetic in the megakernel.
-- **Δ-Ψ-dag [the deep rung]** the DAG is still HOST-built + UPLOADED. recompute-from-residue's end state: the
-  term-algebra GENERATES + RESIDES the DAG on-device (on-GPU memoizing traces, no host round-trip).
+**Δ-Φ-pernode / AI-Δ8 [DONE -- per-node COMPUTE placement, on-device, in the supervisor kernel].** The apex combine
+now places EACH node on its narrowest carrier using the bln/bld it already computes: result+operands fit u64 ->
+u64 mul+gcd (cheaper); else u128; else byte-limb (crown). New `int* tier` output (0/1/2). build_dag(512,16):
+508/511 combines on u64, 2 u128, 1 crown -- exact, all downstream PASS. NB the carrier SELECT (which kernel to
+launch) is NOT closed here -- it is part of the ORPHAN/supervisor problem (Δ-Σ), NOT "legitimately host".
+
+**NEXT -- Δ-Σ is now THE arc; the rest are facets of it. Common structure: MOVE THE SOLVE (incl. ORCHESTRATION)
+ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a property proven in a demo is NOT done):**
+- **Δ-Σ / AI-Σ [THE ARC -- the on-device SUPERVISOR; subsumes the orphan finding].** Compose the orphaned control
+  loop (jea_navigator operating-point solve, jea_telemetry collect/publish, jea_actuator, jea_megakernel) into the
+  apex. Split: HOST uploads the telemetry PACKAGE (raw measured surfaces the GPU can't read -- PCIe/iMC eff,
+  thermal, link); the ON-DEVICE SUPERVISOR (apex lead thread) reads it + on-device evidence (occupancy, queue
+  depth) and ORCHESTRATES on-device (operating point + schedule g + carrier dispatch) -- no host-sync per decision.
+  KILL the hand-published demo g in jea_apex.py __main__: drive g from navigate(collect_package()). Acceptance: an
+  import edge from the apex to the (currently orphaned) navigator/telemetry, and the demo g list DELETED.
+  - facet **Δ-Σ-wire** [first rung]: host-side compose first -- jea_apex imports jea_telemetry+jea_navigator,
+    publishes navigate(collect_package()) instead of the hardcoded list. Removes the FAKE input (the orphan).
+  - facet **Δ-Σ-decide** [the deep rung]: move navigate() itself on-device (supervisor computes the operating point
+    from the uploaded telemetry), so orchestration needs no host round-trip.
+- **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
+  form = variable-limb arithmetic in the megakernel.
+- **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.
+- **AUDIT TODO**: the other __main__ demos (jea_apex_gsurface, jea_interior_surfaces, jea_layout_surface,
+  witness_sanity) are MEASUREMENT demos feeding the (orphaned) navigator -- re-check each is wired once Δ-Σ lands.
 LAYOUT UPDATE: Δ-J6 layout matured F0->F3 -- the optimum is the PARTITION TOPOLOGY P*={16,64} (a settlement), NOT
 the scalar B (B is a lossy coordinate: same-B partitions differ 1.7x); F5 conductance-graph named for when the
 ladder grows. (jea_layout_surface.py.) Every "argmin of a scalar surface" cell is a shadow of this same picture.

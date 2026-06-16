@@ -54,8 +54,9 @@ def predict_per_node(g):
 
 def run_apex_u128(g, return_nodes=False):
     """Run the apex on the u128 carrier (full lanes, spin=0). Return (root Fraction-or-None, err); with
-    return_nodes also (vN_u128, vD_u128, escal) -- per-node reduced u128 values (correct for non-crown nodes) and
-    the device-emitted escalation CROWN (escal[i]=1 iff node i overflowed u128 or has a crown descendant)."""
+    return_nodes also a `nodes` dict {vN, vD, escal, tier} -- per-node reduced u128 values (correct for non-crown
+    nodes), the device-emitted escalation CROWN (escal[i]=1 iff node i overflowed or has a crown descendant), and
+    the per-node CARRIER TIER the kernel placed each node on (0=u64, 1=u128, 2=byte-limb/crown)."""
     N = g["N"]; root = g["root"]
     op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
     vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
@@ -64,20 +65,21 @@ def run_apex_u128(g, return_nodes=False):
     vnl=d([v & (2**64-1) for v in vN],cp.uint64); vnh=d([v>>64 for v in vN],cp.uint64)
     vdl=d([v & (2**64-1) for v in vD],cp.uint64); vdh=d([v>>64 for v in vD],cp.uint64)
     bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
-    escal=cp.zeros(N,cp.int32)
+    escal=cp.zeros(N,cp.int32); tier=cp.zeros(N,cp.int32)
     st=d([1 if op[i]==2 else 0 for i in range(N)],cp.int32); pe=cp.full(1,sum(1 for i in range(N) if op[i]!=2),cp.int32)
     qt=cp.full(1,N,cp.int32); er=cp.zeros(1,cp.int32); pk=cp.zeros(2*FIELDS,cp.int32); pk[0]=BLOCKS*THREADS; ac=cp.zeros(1,cp.int32)
     gt=cp.zeros(4,cp.int32); gtn=cp.zeros(1,cp.int32)
-    _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,escal,st,qt,pe,er,np.int32(N),np.int64(N),
+    _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,escal,tier,st,qt,pe,er,np.int32(N),np.int64(N),
                                 pk,ac,np.int32(FIELDS),gt,gtn,np.int32(4),np.int32(0)))
     cp.cuda.Stream.null.synchronize()
     VNL=vnl.get(); VNH=vnh.get(); VDL=vdl.get(); VDH=vdh.get()
     rn=(int(VNH[root])<<64)|int(VNL[root]); rd=(int(VDH[root])<<64)|int(VDL[root])
     val=(Fraction(rn,rd) if rd else None); err=int(er.get()[0])
     if return_nodes:
-        vN_u128=[(int(VNH[i])<<64)|int(VNL[i]) for i in range(N)]
-        vD_u128=[(int(VDH[i])<<64)|int(VDL[i]) for i in range(N)]
-        return val, err, vN_u128, vD_u128, [int(x) for x in escal.get()]
+        nodes=dict(vN=[(int(VNH[i])<<64)|int(VNL[i]) for i in range(N)],
+                   vD=[(int(VDH[i])<<64)|int(VDL[i]) for i in range(N)],
+                   escal=[int(x) for x in escal.get()], tier=[int(x) for x in tier.get()])
+        return val, err, nodes
     return val, err
 
 
@@ -128,17 +130,22 @@ if __name__ == "__main__":
     # find a DAG whose intermediates exceed u128 (so the apex sets err=2)
     g=None; apex_err=0
     for (n,depth) in [(256,8),(256,12),(256,16),(512,12),(512,16)]:
-        cand=build_dag(n,depth); v,e,vN_u,vD_u,esc=run_apex_u128(cand,return_nodes=True)
-        if e==2: g, apex_val, apex_err, vN_u128, vD_u128, escal = cand, v, e, vN_u, vD_u, esc; chosen=(n,depth); break
+        cand=build_dag(n,depth); v,e,nd=run_apex_u128(cand,return_nodes=True)
+        if e==2: g, apex_val, apex_err, nodes = cand, v, e, nd; chosen=(n,depth); break
     if g is None:
         print("  (no u128-overflowing DAG found in the probe set; widen it)"); sys.exit(1)
+    vN_u128, vD_u128, escal, tier = nodes["vN"], nodes["vD"], nodes["escal"], nodes["tier"]
 
     truth=g["truth"]; tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
     ncomb=sum(1 for i in range(g["N"]) if g["op"][i]!=-1)
     nb,db=predict_per_node(g); host_crown=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and max(nb[i],db[i])>128)
     dev_crown=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and escal[i]==1)
+    t0=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and tier[i]==0)   # per-node carrier placement (Δ-Φ-pernode):
+    t1=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and tier[i]==1)   # how many combines the kernel placed on
+    t2=sum(1 for i in range(g["N"]) if g["op"][i]!=-1 and tier[i]==2)   # u64 / u128 / byte-limb, EACH its narrowest
     print(f"  DAG build_dag{chosen}: {g['N']} nodes ({ncomb} combines), true rational ~{tb} bits (EXCEEDS u128={tb>128})")
     print(f"  apex (u128 only): err={apex_err} (=2); root={apex_val} (placeholder, != truth)")
+    print(f"  PER-NODE carrier placement (on-device, Δ-Φ-pernode): u64={t0}  u128={t1}  byte-limb(crown)={t2}  of {ncomb} combines")
     print(f"  crown size: host re-predict (unreduced) = {host_crown}  vs  DEVICE residue (actual reduced) = {dev_crown}  (device <= host)")
 
     full = deliver_bytelimb(g)                                  # COARSE: recompute the WHOLE DAG on byte-limb
