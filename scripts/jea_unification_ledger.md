@@ -67,14 +67,22 @@ INTERN+COMBINE FUSED into one drain) + **Δ-Ψ-deliver** (>u128 crown on the byt
 from the parameter, O(distinct) bookkeeping) + **Δ-Ψ-forest (a)+(b)+(c)** (the GRADED SUB-BYTE bit-sliced carrier:
 jea_graded -- value carried at its GRADE not u128; (a) carrier+arith, (b) GradedStore is the forest value backend,
 (c) combine_batch = eval-path SWAR; u128-frozen-coordinate dissolved) + **strategy-dispatch** (jea_navigator: SWAR vs
-drain IS the launch-granularity axis; measured-surface argmin; jea_resident.eval_frontier executes -- DONE+green+staged
-but COMMIT HELD on AI-Q's Wedge.agda gate, see below). (All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9.)
+drain IS the launch-granularity axis; measured-surface argmin; jea_resident.eval_frontier) + **Δ-Ω-branchless**
+(jea_branchless: step/tier/pick/corner3/argmax -- selects are arithmetic index->table load, no if/ternary) +
+**Δ-Ω-onegraph bricks 1-3** (jea_onegraph: the hardware operating-point solve IS a graded-ℚ graph reduction on the
+SAME carrier -- f*=current-divider, Schur=series_schur=a wedge, brick 3 SUBTRACTION-FREE {+,×,÷}; self-hosting) +
+**sign->UNSIGNED carrier** (drop signed; ÷ native swap; - eliminable). ALL LANDED [2de4575, 0b9fa32]; 10/10 jea green.
+(All = AI-Δ0 in role: AI-Φ/Ψ/Σ/Δ7/Δ8/Δ9/Ω.)
 
-**COMMIT HELD [do not redo -- just commit when unblocked]:** the strategy-dispatch batch (jea_navigator + jea_resident
-+ this WAL) is STAGED + 8/8 green but pre-commit is blocked by the Q-layer agent's UNSTAGED Algebra/Wedge.agda WIP
-(generic Quot generalization -> trips decl-shape-tag `Wedge` + stale sppf-node-index). NOT --no-verify
-[[feedback_never_noverify_to_bypass_gates]]; coordination note left in Q/GIT_COORDINATION_NOTE.md. Also unstaged:
-scripts/jea_apex.py (a decision-WAL-witness removal I did NOT author -- left unstaged, flagged on the channel).
+**NEXT executors (to dispatch, by symbol):** **Δ-Ω-divstr** -- make the Agda↔jea convergence EXECUTABLE: a jea ℚ-DivStr
+(C=ℚ, recon q b r = q·b+r, exact rem=0) that the Agda recon types, closing Algebra∥jea at the wedge [the named bridge,
+now reachable -- the Agda side LANDED]. **Δ-Ω-onegraph brick 4 (ON-DEVICE)** -- run the {+,×,÷} operating-point solve
+on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
+the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
+all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
+(bit-major SWAR) + jea_limb_gpu as ONE width-w/layout-gauge carrier. **Δ-G2** [gate, NOW worth building -- 10 modules]
+= pre-commit jea regression. **AI-d** = semantic SPPF tools audit. Loose: scripts/jea_apex.py unstaged
+decision-WAL-witness removal (MINE per the human "all jea is yours" -- decide keep/revert).
 
 **BRANCHLESS DIAGNOSIS (user-flagged):** the policy SPLIT. ALIVE: the bit-sliced carrier is branchless by construction
 (bs_add/bs_mul are pure AND/XOR, no data-dependent control flow = no warp divergence); the SWAR batch-by-op-class (c)
