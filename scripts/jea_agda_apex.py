@@ -66,13 +66,27 @@ if __name__ == "__main__":
     print(f"\n  MEMOIZING evaluator (jea_eval, persistent memo): Emit -> {mval} (=={agda_val}:{mval==agda_val}); "
           f"EmitBig -> {str(mbval)[:30]}... (==vouched:{mbval==big_agda_val}); memo {EV.memo_size()} entries")
 
+    # 4. WIRED rung-(a): the REAL SHARED Agda SPPF (EmitDAG.agda, jea_agda_dag) through the memoizing evaluator.
+    import jea_agda_dag as D
+    D.typecheck(); dterm, dval = D.read_vouched(); dg,_ = D.parse_dag(dterm)
+    refs=[0]*dg["N"]
+    for i in range(dg["N"]):
+        if dg["op"][i]!=-1: refs[dg["lch"][i]]+=1; refs[dg["rch"][i]]+=1
+    nshared=sum(1 for i in range(dg["N"]) if refs[i]>1)
+    sval,_,_ = EV.evaluate(dg)                                  # the shared SPPF (sharing exploited) through jea_eval
+    w5 = (sval==dval) and (nshared>0)
+    print(f"  SHARED Agda SPPF (EmitDAG.agda, {dg['N']} nodes, {nshared} shared subterms): jea_eval -> {sval} "
+          f"(==Agda vouched {dval}: {sval==dval})")
+
     w3 = (tier != btier) and (tier in ("u64", "u128")) and ("byte-limb" in btier)  # the carrier SLID by need
     print(f"\nW1 AGDA-VOUCHED -> CARRIER SOLVE (Emit.agda term == Agda's refl-vouched value, on carrier [{tier}]): {w1}")
     print(f"W2 SUBSUMING SOLVE (EmitBig.agda term > u128 -> carrier slides to byte-limb == Agda vouched, exact): {w2}")
     print(f"W3 CARRIER SLIDES BY NEED (small term -> [{tier}], big -> [{btier}]; the carrier width is a LIVE SOLVE over")
     print(f"   predicted bit-length, NOT a baked u128 floor; the term-algebra drove both, no hardcoded DAG/carrier): {w3}")
     print(f"W4 MEMOIZING EVALUATOR WIRED (the vouched Agda terms also evaluate through jea_eval's persistent memo, exact): {w4}")
-    ok = w1 and w2 and w3 and w4
+    print(f"W5 REAL SHARED Agda SPPF (rung-a: EmitDAG.agda, {nshared} shared subterms, through jea_eval -- jea_agda_dag")
+    print(f"   de-orphaned, sharing exploited) == Agda vouched: {w5}")
+    ok = w1 and w2 and w3 and w4 and w5
     print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Φ: the Agda term-algebra DRIVES the carrier solve. The DAG is the GEOMETRY")
     print(f"  the term generates (not a hand-built coordinate); the carrier WIDTH is a live solve over its predicted")
     print(f"  bit-length -- the small vouched term slides DOWN to [{tier}], the >u128 term escalates to [{btier}],")

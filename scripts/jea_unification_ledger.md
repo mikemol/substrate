@@ -144,9 +144,14 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     WIRED into the running path: jea_agda_apex imports jea_eval and evaluates BOTH vouched terms (Emit 7/40, EmitBig
     >u128) through it, exact -- jea_eval de-orphaned by a real consumer. NEXT: device-RESIDENT _MEMO (on-GPU hash
     table so prune+lookup is on-GPU); route a STREAM of terms through evaluate() for the resident memoizing trace.
-    **NEXT rungs:** (b-real) device value-memo table (value-interning consumed during the drain); (a) intern the
-    REAL workloads incl. the Agda SPPF jea_agda_dag (still orphaned) through carrier_solve; (c) the supervisor
-    DECISION WAL (dout) as an EEA trace in the SPPF (closes the WAL≡EEA-trace loop); (d) semantic SPPF tools audit.
+    **Δ-Σ-trace rung-(a) [DONE]:** the REAL shared Agda SPPF drives the memoizing evaluator. jea_agda_apex imports
+    jea_agda_dag (de-orphaned) and evaluates EmitDAG.agda -- a refl-vouched SHARED SPPF (((7/6)^2)^2)^2 = 7^8/6^8,
+    6 nodes with 3 SHARED subterms (the squarings reuse one node) -- through jea_eval.evaluate -> 5764801/1679616
+    == Agda vouched, sharing exploited (each shared subterm computed once). (Fixed jea_agda_dag.read_vouched ascii
+    read -> utf-8, same bug jea_agda_bridge had.) jea_agda_dag now consumed by the running Agda->GPU path.
+    **NEXT rungs:** (b-real) device value-memo table (value-interning consumed ON-GPU during the drain; the memo is
+    host-resident today); (c) the supervisor DECISION WAL (dout) as an EEA trace in the SAME memo (closes the
+    WAL≡EEA-trace loop the user named); (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

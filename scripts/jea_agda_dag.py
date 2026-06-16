@@ -36,7 +36,7 @@ def typecheck():
 
 
 def read_vouched():
-    src = open(os.path.join(EMIT_DIR, "EmitDAG.agda")).read()
+    src = open(os.path.join(EMIT_DIR, "EmitDAG.agda"), encoding="utf-8").read()
     term = re.search(r'termStr\s*=\s*"([^"]*)"', src).group(1)
     val = re.search(r'valStr\s*=\s*"([^"]*)"', src).group(1)
     vn, vd = val.split("/")
