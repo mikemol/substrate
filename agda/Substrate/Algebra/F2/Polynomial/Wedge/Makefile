@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../..
 
-FILES := DegreeBound.agda DegreeLt.agda EEATrace.agda TrivialWedgePoly.agda WedgePoly.agda XPower.agda
+FILES := DegreeBound.agda DegreeLt.agda EEAFold.agda EEATrace.agda TrivialWedgePoly.agda WedgePoly.agda XPower.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
