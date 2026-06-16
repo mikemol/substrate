@@ -2,6 +2,33 @@ RUNG: R(observable, transitions)
 
 # JEA-on-GPU unification arc — WAL cotype (the single source of truth)
 
+## == JUDGEMENT AUDIT (Δ-J) -- next steps as the ORBIT of judgement-is-demechanization ==
+
+The open threads are NOT an either/or -- they are orbit-elements of ONE operator: find a remaining FROZEN
+JUDGEMENT (un-earned demechanization) in the engine and replace it with mechanization (measured surface / proven
+bound / live reconfiguration). Per shadow-architecture rule 6 this is S2G (catalogue the orbit), NOT a new
+framework (the operator = [[feedback_judgement_is_demechanization]], already on disk). Ranked by net leverage
+(mechanization-enabled × demechanization-cost-removed):
+
+- **Δ-J1** [HIGHEST] = AI-11b. The DEVICE runs a static compiled schedule -- the navigated operating point never
+  acts on-GPU. Frozen judgement = the static launch. Mechanize = persistent megakernel + device work-queue that
+  consumes the resident telemetry package (jea_telemetry double-buffer) and reconfigures per pkg.fstar/g/etc.
+  Without it the WHOLE navigator is host-side-only; closing the loop unlocks the arc. (charter on-device debt.)
+- **Δ-J2** [HIGH, correctness] = D5. The fuel-cap is a frozen judgement standing in for termination. Mechanize =
+  a proven/measured bound: Acc descent (like compute-trace-acc) or output-length structural. Aligns with
+  [[feedback_finite_window_constructive_lem]] (bound it, don't fuel it). Charter flags fuel as a stand-in.
+- **Δ-J3** [MEDIUM, blocked] = the convex INTERIOR of K/layout + intermediate-g (old Δ-A6b-rest). Corner-sampling
+  is the judgement; mechanize = measure the interior surface. BLOCKED: intermediate-g needs a hybrid scheduler to
+  even sample; K/layout need grounded convex models. Do after Δ-J1 (the scheduler) exists.
+- **Δ-J4** [LOW-MED, cheap] = measure_g_surface's REPRESENTATIVE-DAG choice (build_dag(512,3)/deep_chain(200)) is
+  a frozen judgement. Mechanize = measure the ACTUAL workload's DAG (re-read the real thing). Easy, immediate.
+- **Δ-J5** [LOW, opportunistic] = residual magic constants: thermal_gate floor=0.4/k=0.03 (inherited el-atlas),
+  jea_schedule_surface NOISE=0.20, witness_sanity max_decades=4. Each: derive/measure OR justify net-positive
+  (max_decades is a cheap units guard -- likely net-positive; floor/k are net-negative inherited). Audit + tag.
+
+The audit itself is the G9 escalation of judgement-is-demechanization from memory-layer to a standing measure
+(twin of the provenance audit). NEXT = Δ-J1 (highest leverage; everything host-side is inert without it).
+
 ## == Δ-ARC RETROSPECTIVE LEDGER (labeled; every gate output is a trackable cell) ==
 
 **AIs (G-roster):**
