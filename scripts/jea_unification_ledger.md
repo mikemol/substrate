@@ -104,8 +104,24 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     NB jea_actuator / jea_megakernel stay unimported -- they are SUPERSEDED prototypes; their actuator+megakernel
     capability is inline in the apex kernel (it reads the resident pkg + drains by productivity). Not orphans to
     wire; mark superseded (or delete) -- do NOT re-add them as a fake "composition".
-  - facet **Δ-Σ-decide** [the deep rung -- NEXT]: navigate() still runs on the HOST. Move the operating-point solve
-    on-device (supervisor computes it from the uploaded telemetry package), so orchestration needs no host round-trip.
+  - facet **Δ-Σ-decide** [the deep rung -- DONE]: the operating-point SOLVE runs ON-DEVICE. decide()'s arithmetic is
+    closed-form (gate(T,trip); g_cpu=imc*gate*cpu_eff; g_gpu=pcie*link*pcie_eff; fstar=g_gpu/(g_cpu+g_gpu);
+    binding_edge=argmax of 3 single-edge gains) -> ported into the apex kernel's gid==0 SUPERVISOR (new `dgate` +
+    a decide block reading a double EVIDENCE package `tpkg`, params decide_dev/tpkg/dout/TF/nsm_p/full_p). HOST
+    uploads raw evidence (imc/pcie/eff/T/link/trip + the host-measured g-surface coop/strat/spread + workload); the
+    supervisor computes f*/bottleneck/g/mode/repr/carrier on-GPU, writes the schedule. Verified: on-device decision
+    == host navigate() oracle (live f*=0.17 bneck=0; hot f*=0.34 bneck=1) AND responds to evidence; root==truth.
+    run_apex_u128 passes decide_dev=0 (eval path unaffected). NB kernel source must be ASCII (a Δ in a comment broke
+    NVRTC AGAIN -- 3rd time; escalate to a guard, see below).
+  - facet **Δ-Σ-trace** [NEXT -- the WAL/SPPF unification, USER-surfaced]: the on-device decision trace I built
+    (`dout` array) is a WAL, and structurally it IS an EEA/SPPF trace -- it should be HELD BY THE TERM-ALGEBRA
+    SPPF, not an ad-hoc array. **SPPF ORPHAN AUDIT (confirmed):** jea_agda_dag (the real Agda SPPF-on-GPU) and
+    jea_intern (device dedup) are imported by NOBODY; the cluster jea_carrier_trace / jea_trace_window / sppf_label
+    / sppf_node_index / type_sppf{,_crosslayer} likewise un-audited. The apex evaluates hand-built DAG ARRAYS and
+    does NOT use the SPPF trace/interning. **Common structure (recurse):** the EVAL trace (SPPF), the gcd/EEA
+    reduction residue (carrier), and the DECISION trace (supervisor WAL) are ONE never-discard-residue structure
+    the term-algebra SPPF is built to hold -- built ad-hoc/separately = orphaned. Arc: unify them in the SPPF
+    (charter: on-GPU resident MEMOIZING traces = the SPPF). Re-audit the whole sppf/trace cluster first.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

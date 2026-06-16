@@ -69,8 +69,10 @@ def run_apex_u128(g, return_nodes=False):
     st=d([1 if op[i]==2 else 0 for i in range(N)],cp.int32); pe=cp.full(1,sum(1 for i in range(N) if op[i]!=2),cp.int32)
     qt=cp.full(1,N,cp.int32); er=cp.zeros(1,cp.int32); pk=cp.zeros(2*FIELDS,cp.int32); pk[0]=BLOCKS*THREADS; ac=cp.zeros(1,cp.int32)
     gt=cp.zeros(4,cp.int32); gtn=cp.zeros(1,cp.int32)
+    tdum=cp.zeros(1,cp.float64); ddum=cp.zeros(8,cp.int32)       # decide_dev=0: no on-device supervisor (eval path)
     _apex((BLOCKS,),(THREADS,),(dop,dn,dl,dr,vnl,vnh,vdl,vdh,bln,bld,escal,tier,st,qt,pe,er,np.int32(N),np.int64(N),
-                                pk,ac,np.int32(FIELDS),gt,gtn,np.int32(4),np.int32(0)))
+                                pk,ac,np.int32(FIELDS),gt,gtn,np.int32(4),np.int32(0),
+                                tdum,ddum,np.int32(14),np.int32(0),np.int32(BLOCKS*THREADS),np.int32(0)))
     cp.cuda.Stream.null.synchronize()
     VNL=vnl.get(); VNH=vnh.get(); VDL=vdl.get(); VDH=vdh.get()
     rn=(int(VNH[root])<<64)|int(VNL[root]); rd=(int(VDH[root])<<64)|int(VDL[root])

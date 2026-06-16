@@ -42,16 +42,54 @@ __device__ __forceinline__ int bitlen128(u128 v){
   if (lo) return 64 - __clzll(lo);
   return 0;
 }
+// Delta-Sigma-decide: the thermal gate (thermal_gate.gate(T,trip,floor=0.4,k=0.03)) ported on-device.
+__device__ __forceinline__ double dgate(double T, double trip){
+  if (T <= trip) return 1.0;
+  double v = 1.0 - 0.03*(T - trip);
+  return v < 0.4 ? 0.4 : v;
+}
 extern "C" __global__ void apex(
     int* op,int* narg,int* lch,int* rch,
     u64* vNlo,u64* vNhi,u64* vDlo,u64* vDhi, int* bln, int* bld, int* escal, int* tier, volatile int* status,
     volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long assert_bound,
-    volatile int* pkg, volatile int* active, int fields, int* gtrace, int* gtracen, int gtcap, int spin)
+    volatile int* pkg, volatile int* active, int fields, int* gtrace, int* gtracen, int gtcap, int spin,
+    const double* tpkg, int* dout, int TF, int nsm_p, int full_p, int decide_dev)
 {
   int gid = blockIdx.x*blockDim.x+threadIdx.x;
-  long long sw=0; int last_g=-1; int gn=0;
+  long long sw=0; int last_g=-1; int gn=0; int last_ep=-1;
   while (*pending>0) {                                          // STRUCTURAL drain (productivity; no fuel)
-    int a=*active; int g=pkg[a*fields+0]; if (g<1) g=1;        // LIVE schedule = active-lane count
+    int a=*active;
+    if (decide_dev && gid==0) {                                // Delta-Sigma-decide: the SUPERVISOR computes the operating
+      const double* tb = tpkg + (long long)a*TF;               // point ON-DEVICE from the host-UPLOADED evidence
+      double imc=tb[0], pmax=tb[1], peff=tb[2], ceff=tb[3], T=tb[4], link=tb[5], trip=tb[6];
+      double coop=tb[7], strat=tb[8], spread=tb[9], bits=tb[10], C=tb[11], f=tb[12];
+      double gc = imc*dgate(T,trip)*ceff;                      // dispatch (decide): load-balance two conductances
+      double gg = pmax*link*peff;
+      double fstar = (gc+gg>0.0) ? gg/(gc+gg) : 0.0;
+      double gclk = dgate(T,100.0);                            // binding edge: argmax of 3 single-edge relaxations
+      double avail = imc - 8e9*link - imc*0.25; double amin=imc*0.01; if(avail<amin) avail=amin;
+      double gain_imc = imc*0.25*gclk;                         // drop iGPU shunt
+      double gain_th  = avail*(1.0 - gclk);                    // relax thermal to ref (gate(46,100)=1)
+      double gain_pcie= pmax*(1.0 - link);                     // link -> full
+      int bneck = 0; double gmax = gain_imc;
+      if (gain_th  > gmax){ gmax=gain_th;  bneck=1; }
+      if (gain_pcie> gmax){ gmax=gain_pcie; bneck=2; }
+      double d = coop-strat; if (d<0) d=-d;                    // schedule g: coop/strat compare vs measured noise
+      int g_dec = (d<=spread) ? full_p : (coop<strat ? nsm_p : full_p);
+      int mode = (252.0*C > 216.0) ? 1 : 0;                    // bang-bang knobs
+      int rep  = ((8.0-7.0*f) < (1.0+7.0*f)) ? 1 : 0;
+      int carr = (bits<=64) ? 0 : (bits<=128 ? 1 : 2);
+      pkg[a*fields+0] = g_dec;                                 // WRITE the decided schedule for the workers
+      int ep=(int)tb[13];                                      // TRACE the decision on each NEW epoch (robust to read-timing):
+      if (ep!=last_ep) {                                       //   dout = [count, (epoch,f*1000,bneck,g,mode,rep,carr) ...]
+        int c=dout[0];
+        if (c<8) { dout[1+7*c]=ep; dout[2+7*c]=(int)(fstar*1000.0+0.5); dout[3+7*c]=bneck;
+                   dout[4+7*c]=g_dec; dout[5+7*c]=mode; dout[6+7*c]=rep; dout[7+7*c]=carr; dout[0]=c+1; }
+        last_ep=ep;
+      }
+      __threadfence();
+    }
+    int g=pkg[a*fields+0]; if (g<1) g=1;                       // LIVE schedule = active-lane count (now supervisor-decided)
     if (gid==0 && g!=last_g && gn<gtcap) { gtrace[gn++]=g; last_g=g; }
     if (gid < g) {                                              // only ACTIVE lanes do work AND count work-sweeps
       if (sw++ >= assert_bound) { *err=3; break; }             // assertion on ACTIVE-lane work sweeps (idle lanes
@@ -116,86 +154,90 @@ extern "C" __global__ void apex(
   if (gid==0) *gtracen = gn;
 }
 '''
+assert _SRC.isascii(), "kernel source must be ASCII -- NVRTC writes it via the ascii codec; a Greek Δ/Σ in a comment fails the compile"
 _apex = cp.RawKernel(_SRC, "apex", options=("--device-int128",))
 
 
 if __name__ == "__main__":
-    print("Δ-Σ-wire: the persistent apex megakernel, SCHEDULE driven by the navigator (composed, not hand-published)\n")
+    print("Δ-Σ-decide: the apex SUPERVISOR computes the operating point ON-DEVICE from host-uploaded evidence\n")
     g = build_dag(256, 6); N = g["N"]                            # 66-bit truth: intermediates OVERFLOW u64, fit u128
     op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
     lch=list(g["lch"]); rch=list(g["rch"]); vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
     status=[1 if op[i]==2 else 0 for i in range(N)]; pending=sum(1 for i in range(N) if op[i]!=2)
     truth, root = g["truth"], g["root"]
 
-    d=lambda a,t: cp.asarray(a,t)
-    dop=d(op,cp.int32); dnarg=cp.zeros(N,cp.int32); dlch=d(lch,cp.int32); drch=d(rch,cp.int32)
-    vNlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vN],cp.uint64); vNhi=d([v>>64 for v in vN],cp.uint64)
-    vDlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vD],cp.uint64); vDhi=d([v>>64 for v in vD],cp.uint64)
-    bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
-    escal=cp.zeros(N,cp.int32); tier=cp.zeros(N,cp.int32); dstatus=d(status,cp.int32)
-    qtail=cp.full(1,N,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)
-    pkg=cp.zeros(2*FIELDS,cp.int32); active=cp.zeros(1,cp.int32)
-    gtrace=cp.zeros(256,cp.int32); gtracen=cp.zeros(1,cp.int32)
-    nsm=cp.cuda.Device().attributes["MultiProcessorCount"]; blocks,threads=8*nsm,128
-
-    cur=[0]
-    def publish(gact, epoch):
-        inactive=1-cur[0]
-        pkg[inactive*FIELDS:inactive*FIELDS+FIELDS]=cp.asarray([int(gact),0,0,epoch],cp.int32)
-        active[:]=inactive; cur[0]=inactive
-
-    # Δ-Σ-wire: the SCHEDULE comes from the NAVIGATOR (operating point re-solved from discovered surfaces + live
-    # telemetry), NOT a hardcoded list. The orphaned control loop is now COMPOSED: jea_apex -> jea_navigator +
-    # jea_telemetry (imported here so module-import of jea_apex stays light). The fake hand-published g is DELETED.
-    import jea_navigator as NAV
-    import jea_telemetry as TEL
-    from jea_cost import deep_chain
+    d=lambda a,t: cp.asarray(a,t); MASK=0xFFFFFFFFFFFFFFFF
+    nsm=cp.cuda.Device().attributes["MultiProcessorCount"]; blocks,threads=8*nsm,128; full=blocks*threads
     tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
-    surf=NAV.discover_surfaces(); intrinsic={"pcie":surf["pcie_eff"],"cpu":surf["cpu_eff"]}
-    def gint(opg):                                            # map navigate's categorical g* -> apex active-lane count
-        if "strat" in opg or "free" in opg: return blocks*threads   # strat / free -> all lanes (full throughput)
-        return nsm                                            # coop / spawn -> few active lanes (cooperative)
-    wls=[dict(dag=g,C=0.9,f=0.7,bits=tb,spawn=False),                 # the apex's OWN workload (drives the real drain)
-         dict(dag=deep_chain(200),C=0.9,f=0.7,bits=tb,spawn=False),   # a deep chain (different measured g-surface)
-         dict(dag=None,C=0.9,f=0.7,bits=tb,spawn=True)]               # a spawn workload (structural coop)
-    ops=[NAV.navigate(surf, TEL.collect_package(surf["imc"],intrinsic,i), wl) for i,wl in enumerate(wls)]
-    gseq=[gint(op["g"]) for op in ops]                        # navigator-sourced schedule sequence (NO hardcoded g)
 
-    publish(gseq[0], 0)
-    strm=cp.cuda.Stream(non_blocking=True)
-    with strm:
+    # Δ-Σ-decide: the HOST uploads raw EVIDENCE (surfaces it measured + live /sys meters the GPU can't read); the
+    # on-device SUPERVISOR (apex lead thread, gid==0) computes the OPERATING POINT on-GPU. navigate() below is ONLY
+    # the cross-check oracle (not the driver). One evidence pkg per drain here; the mid-drain LIVE swap is Δ-Σ-wire's.
+    # NB the on-device decision TRACE (dout) is a WAL -- it SHOULD be held by the term-algebra SPPF/EEA trace, not
+    # this ad-hoc array (Δ-Σ-trace, recorded as the next arc -- the decision sequence IS a never-discard-residue trace).
+    import jea_navigator as NAV
+    import live_dispatcher as LD
+    surf=NAV.discover_surfaces()
+    gsf=NAV.measure_g_surface(g)                               # g-surface of the apex's OWN dag (host MEASUREMENT)
+    trip=float(LD._TRIP); pmax=float(surf["pcie_max"]); TF=14
+    BN={"iMC/iGPU":0,"thermal":1,"PCIe/link":2}               # host bottleneck string -> on-device index
+
+    def run_drain(T, link):
+        """One full drain under ONE uploaded evidence package: the supervisor decides ON-DEVICE, workers drain.
+        Fresh device arrays each call (the drain mutates them). Returns (root, err, pending, decision-trace dt)."""
+        dop=d(op,cp.int32); dnarg=cp.zeros(N,cp.int32); dlch=d(lch,cp.int32); drch=d(rch,cp.int32)
+        vNlo=d([v&MASK for v in vN],cp.uint64); vNhi=d([v>>64 for v in vN],cp.uint64)
+        vDlo=d([v&MASK for v in vD],cp.uint64); vDhi=d([v>>64 for v in vD],cp.uint64)
+        bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
+        escal=cp.zeros(N,cp.int32); tier=cp.zeros(N,cp.int32); dstatus=d(status,cp.int32)
+        qtail=cp.full(1,N,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)
+        pkg=cp.full(2*FIELDS,full,cp.int32); active=cp.zeros(1,cp.int32)                       # safe default schedule
+        gtrace=cp.zeros(256,cp.int32); gtracen=cp.zeros(1,cp.int32)
+        vec=[surf["imc"],pmax,surf["pcie_eff"],surf["cpu_eff"],float(T),float(link),trip,
+             gsf["coop"],gsf["strat"],gsf["spread"],float(tb),0.9,0.7,0.0]                     # raw EVIDENCE
+        tpkg=cp.asarray(vec+[0.0]*TF, cp.float64); dout=cp.zeros(1+7*8,cp.int32)
         _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,escal,tier,dstatus,
                                     qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
-                                    gtrace,gtracen,np.int32(256),np.int32(35_000_000)))
-    for epoch, gact in enumerate(gseq[1:], start=1):          # publish navigator-sourced g's LIVE during the drain
-        publish(gact, epoch); time.sleep(0.025)
-    strm.synchronize()
+                                    gtrace,gtracen,np.int32(256),np.int32(0),
+                                    tpkg,dout,np.int32(TF),np.int32(nsm),np.int32(full),np.int32(1)))
+        cp.cuda.Stream.null.synchronize()
+        rn=(int(vNhi.get()[root])<<64)|int(vNlo.get()[root]); rd=(int(vDhi.get()[root])<<64)|int(vDlo.get()[root])
+        return (Fraction(rn,rd) if rd else None), int(err.get()[0]), int(pend.get()[0]), [int(x) for x in dout.get()]
 
-    rn = (int(vNhi.get()[root])<<64)|int(vNlo.get()[root]); rd = (int(vDhi.get()[root])<<64)|int(vDlo.get()[root])
-    got = Fraction(rn, rd); e=int(err.get()[0]); pe=int(pend.get()[0])
-    gn=int(gtracen.get()[0]); gs=[int(x) for x in gtrace.get()[:gn]]
-    u64_val = POOL.run_qfold(g)[0]                               # SAME DAG on the raw-u64 carrier (overflows)
+    tel=LD.poll()                                            # live meters (off-GPU; uploaded as evidence)
+    epochs=[("live",tel["T"],tel["link_state"]), ("hot(synthetic)",120.0,0.50)]
+    decisions=[]; got=None; e=0; pe=0
+    for label,T,link in epochs:                              # one drain per evidence pkg -> supervisor decides on-device
+        got,e,pe,dt = run_drain(T,link)
+        f1000,bn,gd = (dt[2],dt[3],dt[4]) if dt[0]>=1 else (0,-1,0)
+        ref=NAV.navigate(surf,{"T":T,"link_state":link,"gov":"?"},dict(dag=g,C=0.9,f=0.7,bits=tb,spawn=False))
+        decisions.append((label,T,link,(f1000,bn,gd),ref))
 
+    u64_val = POOL.run_qfold(g)[0]                              # SAME DAG on the raw-u64 carrier (overflows)
     print(f"  DAG: {N} nodes, truth ~{tb} bits (intermediates overflow u64); true root = {truth}")
-    print(f"  NAVIGATOR operating points (re-solved from surfaces + live telemetry, per workload):")
-    for i,op in enumerate(ops): print(f"    wl{i}: g={op['g']!r} -> apex g={gseq[i]}  (f*={op['fstar']} bneck={op['bottleneck']} carrier={op['carrier']})")
+    print(f"  ON-DEVICE supervisor decisions (one drain per uploaded evidence pkg; the GPU computed each operating point):")
+    agree=True
+    for label,T,link,dev,ref in decisions:
+        f1000,bn,gd=dev; dev_f=f1000/1000.0; ref_bn=BN.get(ref["bottleneck"],-1)
+        ok_f=abs(dev_f-ref["fstar"])<=0.02; ok_bn=(bn==ref_bn)
+        agree=agree and ok_f and ok_bn
+        print(f"    {label:<15} T={T:.0f}C link={link:.2f}: ON-DEVICE f*={dev_f:.2f} bneck={bn} g={gd} "
+              f"| host-ref f*={ref['fstar']} bneck={ref_bn} -> match f*:{ok_f} bneck:{ok_bn}")
     print(f"  u128-apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
     print(f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val!=truth else 'ok'})")
-    print(f"  navigator-sourced schedules the kernel actually saw during the ONE drain: {gs}")
 
-    w1 = (len(gseq)==len(wls)) and all(isinstance(x,int) for x in gseq)   # schedule SOURCED from navigate(), not a list
-    w2 = (got==truth) and (u64_val != truth) and (e==0)         # u128 exact where u64 overflowed; no escalation needed
-    w3 = (got==truth) and (pe==0)                              # correct + productivity under the NAVIGATOR-set schedule
-    print(f"\nW1 SCHEDULE FROM THE NAVIGATOR, not a hardcoded list (Δ-Σ-wire: jea_apex -> jea_navigator+jea_telemetry")
-    print(f"   COMPOSED; g = navigate(collect_package()) per workload; the fake hand-published g is DELETED): {w1}")
-    print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0, no fit-to-u64): {w2}")
-    print(f"W3 CORRECT + PRODUCTIVITY under the navigator-set schedule (root==truth, pending->0; kernel saw g's {sorted(set(gs))}, "
-          f"{'>=2 distinct -> live reconfig exercised' if len(set(gs))>=2 else 'stable (navigator-not-answer: same conditions -> same point)'}): {w3}")
+    fmoves = len({dv[3][0] for dv in decisions})>=2 or len({dv[3][1] for dv in decisions})>=2  # decision moved w/ evidence
+    w1 = agree and len(decisions)>=1                           # on-device decision == host navigate() reference
+    w2 = (got==truth) and (u64_val != truth) and (e==0)        # carrier exact where u64 overflowed
+    w3 = (got==truth) and (pe==0) and fmoves                   # correct+productive; decision RESPONDS to evidence
+    print(f"\nW1 DECISION ON-DEVICE == host reference (the SUPERVISOR computed f*/bottleneck/g/knobs on-GPU from the")
+    print(f"   uploaded evidence; matches navigate() within rounding -- faithful port, no host decision in the drive path): {w1}")
+    print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0): {w2}")
+    print(f"W3 CORRECT + DECISION RESPONDS TO EVIDENCE (root==truth, pending->0; on-device f*/bottleneck differ live vs")
+    print(f"   hot -- the supervisor re-decides per uploaded package, no host-sync per decision): {w3}")
     ok=w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-wire: the apex's SCHEDULE is now the NAVIGATOR's output, not a")
-    print(f"  hardcoded list. The orphaned control loop is COMPOSED: jea_apex imports jea_navigator + jea_telemetry,")
-    print(f"  surfaces are DISCOVERED on this box, telemetry is COLLECTED live, and g = navigate(collect_package())")
-    print(f"  drives the drain (the fake hand-published g is deleted). The combine still runs exact on the u128")
-    print(f"  carrier with predict-place + err=2 deliver, root==truth regardless of schedule (combine ⊥ schedule).")
-    print(f"  REMAINING (Δ-Σ-decide): navigate() still runs on the HOST -- move the operating-point solve on-device")
-    print(f"  (the supervisor reads the uploaded telemetry package and decides, no host round-trip per decision).")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-decide: the operating-point SOLVE now runs ON-DEVICE. The host uploads")
+    print(f"  raw evidence (surfaces it measured + live /sys meters the GPU can't read); the apex SUPERVISOR (gid==0)")
+    print(f"  reads it and computes f*/bottleneck/schedule-g/mode/repr/carrier on-GPU -- matching the host navigate()")
+    print(f"  oracle, NO host round-trip per decision (host = sensor, supervisor = decision). The decision TRACE is a")
+    print(f"  WAL that should live in the term-algebra SPPF/EEA structure (Δ-Σ-trace), not this ad-hoc array.")
