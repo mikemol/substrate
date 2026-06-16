@@ -4,6 +4,19 @@ RUNG: R(observable, transitions)
 
 ## == REGROUNDING / STATE-OF-ARC (READ FIRST after a context compaction) ==
 
+**AGDA WEDGE UNIFICATION LANDED [AI-Q, 97e567f/43c0689] -- the spine the jea carrier now instantiates.** The Agda
+Wedge's quotient is now a CARRIER REP: `DivStr` = (C, z, recon : C→C→C→C) with `recon q b r = q·b + r`; `Wedge` =
+(quot:C, rem:C, a≡recon q b r); ONE `trace-fold` (the generic Trace recursor) -- ℕ EEATrace AND F₂[x] PolyEEATrace
+both fold through it (the parallel poly-trace COLLAPSED). 1472/1472 typecheck. THE CONVERGENCE (Agda spine ∥ jea GPU
+now MEET at recon): jea's graded-ℚ carrier is a DivStr over ℚ -- in a FIELD division is exact (rem=0, quot=a·b⁻¹), so
+jea's **÷ = num/den swap IS the ℚ wedge quotient** (recon's q); the **SPPF/EEA decision trace (jea_eval) IS the generic
+Trace**, gcd-fold = collapse-fold; **series_schur's reciprocal = the ℚ exact-division wedge**; the GRADE = quotient
+length (count carriers derive count from quotient grade -- the Agda pass retired slice-scalar, matching jea's graded
+carrier). So Δ-Ω-onegraph's "Schur = a graded-ℚ wedge" is now LITERALLY an Agda DivStr instance. ℕ/F₂[x] (remainders)
++ ℚ (exact) = one trace-fold. NEXT (the named bridge): a jea ℚ-DivStr that the Agda recon types, closing Algebra∥jea.
+
+
+
 **DONE -- the on-device GPU EVALUATOR (the apex) is composed + exact.** One persistent megakernel drains a DAG
 work-queue, reads a resident telemetry package for its schedule, terminates by PRODUCTIVITY (no fuel), combines on
 an ESCALATING carrier exact at ANY magnitude (u64 -> u128 -> byte-limb), places EACH NODE on its narrowest carrier
