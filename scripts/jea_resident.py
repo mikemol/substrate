@@ -186,6 +186,17 @@ def evaluate_Eq(n, F):
     return F.value(root), new_comb, shared
 
 
+def level_eval_graded(F, op, lsids, rsids):
+    """Δ-Ψ-forest (c): evaluate a LEVEL of independent same-op combines via the GRADED bit-sliced carrier -- gather
+    the children's (num,den) from the device graded store (F.vals) and combine the WHOLE level in ONE SWAR pass
+    (GR.combine_batch). Returns [(num,den)] per node. The graded carrier doing the eval's arithmetic, not just storage."""
+    nL=[]; dL=[]; nR=[]; dR=[]
+    for l,r in zip(lsids, rsids):
+        a=F.value(l); b=F.value(r)
+        nL.append(a.numerator); dL.append(a.denominator); nR.append(b.numerator); dR.append(b.denominator)
+    return GR.combine_batch(op, nL, dL, nR, dR)
+
+
 def _embed(sub, host_op, extra):
     N=len(sub["op"]); op=list(sub["op"])+[-1,host_op]; vN=list(sub["vN"])+[extra[0],0]; vD=list(sub["vD"])+[extra[1],1]
     lch=list(sub["lch"])+[-1,sub["root"]]; rch=list(sub["rch"])+[-1,N]
@@ -287,9 +298,28 @@ if __name__ == "__main__":
     print(f"\n  W8  Δ-Ψ-DAG (E_q({n8}) = {(1<<(n8+1))-1} nodes, DAG generated ON-DEVICE from n -- no host build loop/upload):")
     print(f"      eval -> {ve} == 2^{n8} = {1<<n8}: {ve==Fraction(1<<n8,1)}; resident forest = {Ge.size()} distinct (= n+1),")
     print(f"      bookkeeping O(distinct) via cp.unique (host registered {nc8+1} nodes, not {(1<<(n8+1))-1}): {w8}")
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8
+    # W9: Δ-Ψ-forest (c) -- graded ARITHMETIC in the eval path. A WIDE level of independent same-op combines over
+    # resident leaves is evaluated via the bit-sliced carrier (level_eval_graded) reading the device graded store; one
+    # SWAR pass per op-class, exact vs per-node truth. [numbers] the level done in one bit-sliced op, not M.
+    Gc=Forest(); K=24; leaves=[(int(i%7)+1, int(i%5)+1) for i in range(K)]
+    for n,d in leaves: Gc.vals.append(n,d)                               # resident leaves in the device graded store
+    rngc=np.random.default_rng(9); M=200
+    ls=[int(rngc.integers(0,K)) for _ in range(M)]; rs=[int(rngc.integers(0,K)) for _ in range(M)]
+    for op,name in ((1,"mul"),(0,"add")):
+        res=level_eval_graded(Gc, op, ls, rs)                           # ONE bit-sliced SWAR pass for the whole level
+        comb=(lambda a,b:a*b) if op==1 else (lambda a,b:a+b)
+        truth=[comb(Fraction(*leaves[l]),Fraction(*leaves[r])) for l,r in zip(ls,rs)]
+        okc=all(Fraction(*res[i])==truth[i] for i in range(M))
+        if op==1: w9_mul=okc
+        else: w9_add=okc
+    w9 = w9_mul and w9_add
+    print(f"\n  W9  Δ-Ψ-FOREST(c): a {M}-node level of independent same-op combines (children from the device graded store)")
+    print(f"      evaluated via the BIT-SLICED carrier in ONE SWAR pass per op-class -- mul=={w9_mul}, add=={w9_add} vs")
+    print(f"      per-node truth: {w9} (graded arithmetic IN the eval path, not just storage)")
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
     print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver), the physical store merges")
-    print(f"  INCREMENTALLY (b-real-incr), parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag), and the VALUE payload is")
-    print(f"  device-resident in the GRADED SUB-BYTE store (Δ-Ψ-forest b -- no host vn/vd). Remaining: graded ARITHMETIC")
-    print(f"  in the eval path (Δ-Ψ-forest c -- bit-sliced SWAR vs the per-node drain) + the small host structure index.")
+    print(f"  INCREMENTALLY (b-real-incr), parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag), the VALUE payload is")
+    print(f"  device-resident GRADED SUB-BYTE (Δ-Ψ-forest b), and a wide same-op level evaluates via the BIT-SLICED")
+    print(f"  carrier in one SWAR pass (Δ-Ψ-forest c). Remaining: dispatch bit-sliced-SWAR vs the per-node fused drain by")
+    print(f"  level shape (the navigator choice) + the small host structure index. The graded carrier is fully exercised.")

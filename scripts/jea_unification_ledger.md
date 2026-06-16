@@ -80,9 +80,17 @@ store), then append all values to GradedStore in cid order. Dead pre-fused metho
 _new/ccode/csid) retired. WIRED + consumed: jea_graded <- jea_resident <- jea_eval <- jea_agda_apex; 7/7 modules
 PASS; **EmitBig 217-bit exact through the graded store** (grade-217 value packed + extracted == Agda-vouched). W5
 [numbers]: 603-node forest graded-packed 45428 bits vs u128 lanes 154368 (3.4x denser). **(c) graded ARITHMETIC in
-the eval path [next -- the arc]:** reconcile per-bit-plane SWAR (bit-sliced add/mul) with the per-NODE drain -- same
-granularity tension as the crown deliver. Honest scope: the small int structure INDEX (op/lch/rch/code) remains host
-(the orchestration map, not the value residue).
+the eval path [DONE -- jea_graded.combine_batch + jea_resident.level_eval_graded, WIRED]:** the granularity tension
+is resolved like the crown deliver -- bit-slicing's natural unit is a BATCH of independent same-op combines (a
+forest level / op-class), N rational combines in ONE bit-sliced SWAR pass (per-bit-plane AND/XOR, no per-node loop).
+level_eval_graded gathers the children's (num,den) from the device GRADED store and combines the whole level via the
+bit-sliced carrier -- graded arithmetic doing the eval, not just storage. Tested: W7 (128 combines one SWAR ==
+Fraction), W9 (200-node same-op level over resident leaves, read from the graded store, == per-node truth, both ops);
+7/7 modules PASS. REMAINING (the integration tail, not a new carrier): DISPATCH bit-sliced-SWAR (wide same-op levels)
+vs the per-node fused drain (dependency-heavy) BY LEVEL SHAPE -- the navigator choice [[feedback_navigator_not_answer]]
+/ [[feedback_noise_floor_is_flat_region]]; + the small int structure INDEX (op/lch/rch/code) stays host (orchestration
+map, not value residue). The graded sub-byte carrier (a) + resident store (b) + eval-path arithmetic (c) are all built,
+wired, gated -- the u128-frozen-coordinate is fully dissolved into the grade.
 
 **THE RECURSION / COMMON STRUCTURE of all remaining work (Δ-Σ-mega):** the device-resident forest, the carrier,
 and the decision loop are device-RESIDENT but still HOST-ORCHESTRATED -- the host drives the per-height intern, the

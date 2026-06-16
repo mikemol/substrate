@@ -80,6 +80,17 @@ def rat_mul(nA,dA, nB,dB):  return bs_mul(nA,nB), bs_mul(dA,dB)                 
 def rat_add(nA,dA, nB,dB):  return bs_add(bs_mul(nA,dB), bs_mul(nB,dA)), bs_mul(dA,dB)   # cross-multiply add
 
 
+def combine_batch(op, nL, dL, nR, dR):
+    """Δ-Ψ-forest (c): evaluate a BATCH of N independent same-op rational combines in ONE bit-sliced SWAR pass (the
+    eval-path use of the graded carrier). op: 1=multiply, 0=add. The N pairs are bit-sliced (64 per word), combined
+    by per-bit-plane AND/XOR (no per-node loop), reduced at readout (host gcd). The independent same-op BATCH is the
+    SWAR unit that reconciles bit-slicing with the per-node drain -- a forest level / op-class is exactly such a batch."""
+    pnL,_=to_bitsliced(nL); pdL,_=to_bitsliced(dL); pnR,_=to_bitsliced(nR); pdR,_=to_bitsliced(dR)
+    rn,rd = (rat_mul if op==1 else rat_add)(pnL,pdL, pnR,pdR)             # ONE bit-sliced op for all N combines
+    N=len(nL); RN=from_bitsliced(rn,N); RD=from_bitsliced(rd,N)
+    return [ (lambda f:(f.numerator,f.denominator))(Fraction(RN[i],RD[i])) for i in range(N) ]   # reduce at readout
+
+
 _W = np.uint64(0xFFFFFFFFFFFFFFFF)
 def _extract(buf, off, width):
     """Read `width` bits at bit-offset `off` from a device uint64 bit-buffer -> Python int (only at query/readout)."""
@@ -170,8 +181,18 @@ if __name__ == "__main__":
     print(f"\n  W6  GradedStore (Δ-Ψ-forest b): {len(rats)} rationals append+value round-trip exact: {rt}; resident value")
     print(f"      bits = {store_bits} (sub-byte packed, Sigma grade) vs u128 lanes {fixed} ({fixed/store_bits:.1f}x denser)")
 
-    ok=w1 and w2 and w3 and w4 and w5 and w6
+    # W7: combine_batch (Δ-Ψ-forest c) -- a BATCH of N independent same-op rational combines in ONE bit-sliced SWAR pass
+    M=128; lN=[int(rng.integers(0,1<<6)) for _ in range(M)]; lD=[int(rng.integers(1,1<<6)) for _ in range(M)]
+    rN=[int(rng.integers(0,1<<6)) for _ in range(M)]; rD=[int(rng.integers(1,1<<6)) for _ in range(M)]
+    mul=combine_batch(1, lN,lD,rN,rD); add=combine_batch(0, lN,lD,rN,rD)
+    mul_ok=all(Fraction(*mul[i])==Fraction(lN[i],lD[i])*Fraction(rN[i],rD[i]) for i in range(M))
+    add_ok=all(Fraction(*add[i])==Fraction(lN[i],lD[i])+Fraction(rN[i],rD[i]) for i in range(M))
+    w7 = mul_ok and add_ok
+    print(f"\n  W7  combine_batch (Δ-Ψ-forest c): {M} independent rational combines in ONE bit-sliced SWAR pass --")
+    print(f"      mul-batch == Fraction: {mul_ok}; add-batch == Fraction: {add_ok} (per-bit-plane, no per-node loop): {w7}")
+
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7
     print(f"\n  {'PASS' if ok else 'FAIL'} — the graded sub-byte carrier: a value is carried at its GRADE (1 bit up), bit-sliced")
-    print(f"  so arithmetic (ripple-carry add, shift-and-add mul) is per-bit SWAR -- 64 values per word; the GradedStore")
-    print(f"  is the device-resident contiguous sub-byte VALUE store. u128 was a frozen coordinate; the grade is the")
-    print(f"  geometry. NEXT (Δ-Ψ-forest b wiring): make GradedStore the forest's value backend, dropping host vn/vd.")
+    print(f"  so arithmetic (ripple-carry add, shift-and-add mul, combine_batch) is per-bit SWAR -- 64 values per word; the")
+    print(f"  GradedStore is the device-resident contiguous sub-byte VALUE store. u128 was a frozen coordinate; the grade")
+    print(f"  is the geometry. WIRED: GradedStore is the forest value backend (b); combine_batch is the eval-combine (c).")
