@@ -209,9 +209,18 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
   (unconsumed = theater). HANDOFF blind spot (shared across all my passes): I reconstruct structure the user already
   sees (quadtree, Stern-Brocot, SM/HBM latency) -- an external reviewer should push each claim to its FALSIFYING
   regime + verify the import edge, before I call it done.
-    **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
-    z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
-    (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
+    **Δ-Σ-trace (b-real) [DONE]:** the resident forest is now DEVICE-RESIDENT (jea_resident.Forest): a cupy sorted
+    z-code index = a linear quadtree (op|morton(lch,rch)); sharing-lookup is cp.searchsorted (DEVICE), growth is a
+    device merge (concat+argsort). Stable append-only ids (a sorted-position id would shift on merge + break child
+    refs) + the separate sorted (code->sid) index. evaluate(g,F) interns bottom-up per height (device share/add+merge),
+    evaluates ONLY the new frontier on the apex, stores values (crown nodes host-folded from resident children ->
+    exact at any magnitude). jea_eval.evaluate now DELEGATES to it (module-level persistent _FOREST); WIRED + consumed
+    (jea_resident <- jea_eval <- jea_agda_apex; the Agda terms + the real shared SPPF evaluate through the device
+    forest, exact, 20 resident nodes). Proven: eval(T2) sharing S with T1 -> forest grows by 2<5 (S's 3 nodes SHARED
+    via the device searchsorted, computed once). REMAINING on-device step: fold the per-height intern + the frontier
+    eval into ONE megakernel (host still orchestrates per height; the FOREST + lookup/merge are device).
+    **NEXT rungs:** (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned;
+    (b-real-mega) the full on-device intern megakernel (remove host per-height orchestration).
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.
