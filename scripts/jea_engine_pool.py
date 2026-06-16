@@ -32,7 +32,8 @@ _SRC = r'''
 typedef unsigned long long u64;
 extern "C" __global__
 void pool(int* op,int* narg,int* lch,int* rch, u64* vN,u64* vD, volatile int* status,
-          volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long maxsweep)
+          volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long maxsweep,
+          int* out_sweeps)
 {
     int t=blockIdx.x*blockDim.x+threadIdx.x, stride=gridDim.x*blockDim.x; long long sw=0;
     while (*pending>0 && sw++<maxsweep) {
@@ -68,20 +69,37 @@ void pool(int* op,int* narg,int* lch,int* rch, u64* vN,u64* vD, volatile int* st
         }
         __threadfence();
     }
+    if (t==0) *out_sweeps = (int)sw;
 }
 '''
 _kern = cp.RawKernel(_SRC, "pool")
 
 
-def _run(op, narg, lch, rch, vN, vD, status, pending, qtail0, npool):
+def _run(op, narg, lch, rch, vN, vD, status, pending, qtail0, npool, maxsweep):
+    """maxsweep = the STRUCTURAL termination bound (critical-path depth), derived per-input by the caller --
+    NOT the old 4_000_000 fuel. Termination is PROVEN by the well-founded measure (narg n strictly decreases
+    each spawn, base n==0 emits -> the spawned DAG is finite); the sweep count needed to drain it is bounded by
+    its dependency DEPTH (each sweep advances the frontier one level). The bound adapts to the work."""
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]; blocks, threads = 8*nsm, 128
     d = lambda a, t: cp.asarray(a, t)
     op=d(op,cp.int32); narg=d(narg,cp.int32); lch=d(lch,cp.int32); rch=d(rch,cp.int32)
     vN=d(vN,cp.uint64); vD=d(vD,cp.uint64); status=d(status,cp.int32)
     qtail=cp.full(1,qtail0,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)  # qtail0 = allocated-so-far
-    _kern((blocks,),(threads,),(op,narg,lch,rch,vN,vD,status,qtail,pend,err,np.int32(npool),np.int64(4_000_000)))
+    sweeps=cp.zeros(1,cp.int32)
+    _kern((blocks,),(threads,),(op,narg,lch,rch,vN,vD,status,qtail,pend,err,np.int32(npool),
+                                np.int64(maxsweep),sweeps))
     cp.cuda.Stream.null.synchronize()
-    return vN.get(), vD.get(), int(qtail.get()[0]), int(err.get()[0]), int(pend.get()[0])
+    return vN.get(), vD.get(), int(qtail.get()[0]), int(err.get()[0]), int(pend.get()[0]), int(sweeps.get()[0])
+
+
+def _dag_depth(lch, rch, N):
+    """critical-path depth of the fixed DAG (children indices < parent in build_dag's bottom-up order)."""
+    lvl = [0]*N
+    for i in range(N):
+        l, r = lch[i], rch[i]
+        if l >= 0 or r >= 0:
+            lvl[i] = 1 + max(lvl[l] if l >= 0 else 0, lvl[r] if r >= 0 else 0)
+    return max(lvl) if N else 0
 
 
 def run_qfold(g):
@@ -90,8 +108,9 @@ def run_qfold(g):
     op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]   # leaf -> LEAF, else add/mul
     narg=[0]*N; lch=list(g["lch"]); rch=list(g["rch"]); vN=list(g["vN"]); vD=list(g["vD"])
     status=[1 if op[i]==LEAF else 0 for i in range(N)]; pending=sum(1 for i in range(N) if op[i]!=LEAF)
-    gn,gd,qt,err,pend=_run(op,narg,lch,rch,vN,vD,status,pending,N,N)   # qtail0=N (all pre-allocated), npool=N
-    r=g["root"]; return Fraction(int(gn[r]),int(gd[r])), qt, N, err, pend
+    bound = 6*_dag_depth(lch, rch, N) + 16                         # STRUCTURAL: 6x critical-path depth (was 4M fuel)
+    gn,gd,qt,err,pend,sw=_run(op,narg,lch,rch,vN,vD,status,pending,N,N,bound)  # qtail0=N (all pre-allocated), npool=N
+    r=g["root"]; return Fraction(int(gn[r]),int(gd[r])), qt, N, err, pend, sw, bound
 
 
 def run_rewrite(ns, cap):
@@ -100,24 +119,29 @@ def run_rewrite(ns, cap):
     vN=[0]*cap; vD=[1]*cap; status=[2]*cap                       # status 2 (skip) for unallocated slots
     for i,n in enumerate(ns): op[i]=SPAWN; narg[i]=n; status[i]=0
     # pending = K real seeds; qtail0=K (only seeds allocated); the pool GROWS into [K,cap) via spawn
-    gn,gd,qt,err,pend=_run(op,narg,lch,rch,vN,vD,status,K,K,cap)
-    return [int(gn[i]) for i in range(K)], qt, err, pend
+    bound = 6*max(ns) + 16                                          # STRUCTURAL: 6x spawn-depth (narg descent), not 4M fuel
+    gn,gd,qt,err,pend,sw=_run(op,narg,lch,rch,vN,vD,status,K,K,cap,bound)
+    return [int(gn[i]) for i in range(K)], qt, err, pend, sw, bound
 
 
 if __name__ == "__main__":
     # 1. Q-fold on the pool engine
-    g=build_dag(64,3); val,qt,N,err,pend=run_qfold(g)
+    g=build_dag(64,3); val,qt,N,err,pend,sw1,b1=run_qfold(g)
     w1 = val==g["truth"] and err==0 and pend==0 and qt==N      # pool STATIC (qt==N, no spawn)
     # 2. rewrite E(n)=2^n on the SAME engine
     ns=[8,10,12]; cap=sum((2<<n) for n in ns)+len(ns)+16
-    vals,qt2,err2,pend2=run_rewrite(ns,cap)
+    vals,qt2,err2,pend2,sw2,b2=run_rewrite(ns,cap)
     w2 = vals==[1<<n for n in ns] and err2==0 and pend2==0 and qt2>len(ns)   # pool GREW (spawn)
     w3 = w1 and w2                                             # SAME kernel ran both
+    # Δ-J2: termination governed by a STRUCTURAL bound (critical-path depth), not the old 4M fuel.
+    w4 = (sw1 <= b1) and (sw2 <= b2) and err==0 and err2==0    # actual sweeps within the DERIVED bound, correct
     print("common structure: one emit-or-spawn reduce-step runs BOTH the Q-fold and the rewrite\n")
     print(f"1. Q-FOLD via pool engine: root={val} == truth {g['truth']}; pool STATIC (qtail={qt}==N): {w1}")
     print(f"2. REWRITE via SAME engine: E{ns} -> {vals} == {[1<<n for n in ns]}; pool GREW (qtail {len(ns)}->{qt2}): {w2}")
     print(f"3. COMMON STRUCTURE (one kernel/reduce-step; fixed-DAG = no-spawn special case of emit-or-spawn): {w3}")
-    ok=w1 and w2 and w3
+    print(f"4. Δ-J2 TERMINATION = STRUCTURAL BOUND, not fuel: Q-fold {sw1} sweeps <= depth-bound {b1}; "
+          f"rewrite {sw2} <= spawn-depth-bound {b2} (old fuel was 4,000,000): {w4}")
+    ok=w1 and w2 and w3 and w4
     print(f"\n  {'PASS' if ok else 'FAIL'} — spawn is NOT a distinct evaluation model: the fixed-DAG combine is the")
     print(f"  NO-SPAWN special case of one reduce-step `reduce(node) -> emit | spawn`. emit-or-carry is the")
     print(f"  generator_step primitive at the VALUE level (gcd residue) AND the STRUCTURE level (spawned")

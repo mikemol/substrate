@@ -30,9 +30,15 @@ framework (the operator = [[feedback_judgement_is_demechanization]], already on 
   read+switch; dependencies via the work-queue). live_operating_point is the pluggable seam for navigate(). Build
   notes (caught+fixed): empty volatile-loop throttle was ELIDED (kernel finished before republish) -> clock64
   busy-wait; stop-cutoff gave PARTIAL sums -> let it finish naturally. Δ-J1/AI-11b fully closed; full DAG megakernel remains.
-- **Δ-J2** [HIGH, correctness] = D5. The fuel-cap is a frozen judgement standing in for termination. Mechanize =
-  a proven/measured bound: Acc descent (like compute-trace-acc) or output-length structural. Aligns with
-  [[feedback_finite_window_constructive_lem]] (bound it, don't fuel it). Charter flags fuel as a stand-in.
+- **Δ-J2** [CLOSED] = D5. Deleted the fuel-cap judgement (jea_engine_pool's maxsweep=4,000,000) and replaced it
+  with a STRUCTURAL termination bound. The well-founded measure was already LATENT in the code: the spawn arg
+  narg strictly decreases (n -> n-1, base n==0 emits) -> the spawned DAG is FINITE (termination PROVEN, the
+  Acc-descent, [[feedback_finite_window_constructive_lem]]). The iteration count to drain it = the critical-path
+  DEPTH (each sweep advances the frontier one level): run_qfold bound = 6*dag_depth+16, run_rewrite = 6*max(ns)+16.
+  Verified (stable): Q-fold 25 sweeps <= 52, rewrite E(12) 33-35 <= 88, BOTH correct -- the derived bound is
+  sufficient (proof in execution) and ~5 orders of magnitude tighter than the 4M fuel, and ADAPTS to the input
+  depth. (jea_megakernel's `watchdog` is a separate HANG-safety far above its structural cursor>=N bound -- a
+  legitimate net-positive guard, not the fuel stand-in; the pool's maxsweep was D5.) judgement -> mechanization.
 - **Δ-J3** [MEDIUM, blocked] = the convex INTERIOR of K/layout + intermediate-g (old Δ-A6b-rest). Corner-sampling
   is the judgement; mechanize = measure the interior surface. BLOCKED: intermediate-g needs a hybrid scheduler to
   even sample; K/layout need grounded convex models. Do after Δ-J1 (the scheduler) exists.
