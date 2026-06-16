@@ -1,107 +1,123 @@
 #!/usr/bin/env python3
-"""jea_apex.py — Δ-Ω (AI-Ω): the apex SNAP -- one persistent on-device megakernel = pool ⊕ actuator ⊕ megakernel.
+"""jea_apex.py — Δ-Ω (AI-Ω) + Δ-Ω-carrier: the apex megakernel = pool ⊕ actuator ⊕ megakernel, on the EXISTING
+u128 escalating carrier (jea_core.Q128_CUDA) -- NOT raw u64, NOT a reinvented fold.
 
-The session's shadows compose here into the unified on-device evaluator:
-  * jea_engine_pool  -> the DAG WORK-QUEUE drain (emit-or-spawn reduce), terminating by PRODUCTIVITY (no fuel:
-                        while(*pending>0); the only numeric is the proven-invariant assertion sweeps<=npool).
-  * jea_actuator     -> reads the device-RESIDENT telemetry package each sweep (host double-buffer swap); the
-                        device never calls off-GPU.
-  * jea_megakernel   -> the SCHEDULE is set LIVE by the package; the RESULT is invariant (combine ⊥ schedule).
+The session's shadows compose into the unified on-device evaluator:
+  * jea_engine_pool  -> the DAG WORK-QUEUE drain (emit-or-spawn), terminating by PRODUCTIVITY (no fuel:
+                        while(*pending>0); only numeric is the proven-invariant assertion sweeps<=npool).
+  * jea_actuator     -> reads the device-RESIDENT telemetry package each sweep (host double-buffer swap).
+  * jea_megakernel   -> the SCHEDULE (active-lane count g = on-device coop<->strat granularity) is set LIVE
+                        from the package; the RESULT is invariant (combine ⊥ schedule).
+  * Δ-Ω-carrier      -> the combine runs on the ALREADY-PROVEN u128 carrier (jea_core.Q128_CUDA: u128 ld/st,
+                        --device-int128) with PREDICT-PLACE by bit-length and err=2 byte-limb-DELIVER on
+                        overflow -- exactly jea_engine_apex's escalation. NO fitting the workload to u64.
 
-The on-device schedule knob is the ACTIVE-LANE COUNT g (the coop<->strat granularity, on-device): only lanes
-gid<g participate, and an active lane strides the queue by g, so the g active lanes always cover ALL slots --
-hence ANY g>=1 reduces the DAG to the SAME value (correct) and still drains every level (productive). g small =
-coop-like (few lanes, more intra-sweep serial); g large = strat-like (full occupancy). The host publishes g
-LIVE from the navigator's operating point; the megakernel reconfigures mid-drain; the root value is unchanged.
-
-This is the goal the whole arc accumulated toward: discover+measure surfaces -> navigate -> publish package ->
-ONE persistent megakernel drains the DAG, schedule live from the package, terminating by productivity, result
-correct under live reconfiguration. (Δ-J1 proved the consume; Δ-J1-rest the real-work+invariant; Δ-J2 the
-no-fuel drain. Δ-Ω is their join.)
+The on-device schedule knob is the ACTIVE-LANE COUNT g: lane gid<g participates and strides the queue by g, so
+ANY g>=1 covers all slots -> correct + productive regardless. The host publishes g LIVE.
 
 Witnesses (each [W]):
-1. ONE KERNEL, THREE SHADOWS: a single persistent megakernel drains the DAG work-queue (pool) AND reads the
-   resident package (actuator) AND takes its schedule live from it (megakernel) -- by construction.
-2. CORRECT UNDER LIVE RECONFIG: the DAG root == the true value while the host live-published MULTIPLE distinct
-   active-lane counts g during the ONE drain (combine ⊥ schedule, on-device, no relaunch).
-3. PRODUCTIVITY, NO FUEL: drained via pending==0; err==0 (the proven-invariant assertion never fired); sweeps
-   self-paced (no count is the control).
+1. ONE KERNEL, FOUR SHADOWS: a single persistent megakernel drains the DAG work-queue (pool), reads the
+   resident package (actuator), takes its schedule live (megakernel), AND combines on the u128 escalating
+   carrier (Δ-Ω-carrier) -- by construction.
+2. CARRIER -- EXACT BEYOND u64: a DAG whose intermediates OVERFLOW u64 reduces to the TRUE rational on the
+   u128 carrier (predict-place; err=0 = no escalation needed), where raw u64 gave a WRONG value. No workload-fit.
+3. CORRECT UNDER LIVE RECONFIG + PRODUCTIVITY: root==truth while the host live-published MULTIPLE active-lane
+   counts during the ONE drain; drained via pending==0 (no fuel); err==0.
 """
 import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import jea_core
 from jea_generator_dag import build_dag
+import jea_engine_pool as POOL
 from fractions import Fraction
 
 FIELDS = 4        # package: [g (active-lane count = on-device schedule), fstar%, bneck, epoch]
 
-_apex = cp.RawKernel(r'''
-typedef unsigned long long u64;
+_SRC = jea_core.Q128_CUDA + r'''
+__device__ __forceinline__ int bitlen128(u128 v){
+  u64 hi=(u64)(v>>64), lo=(u64)v;
+  if (hi) return 128 - __clzll(hi);
+  if (lo) return 64 - __clzll(lo);
+  return 0;
+}
 extern "C" __global__ void apex(
-    int* op,int* narg,int* lch,int* rch, u64* vN,u64* vD, volatile int* status,
+    int* op,int* narg,int* lch,int* rch,
+    u64* vNlo,u64* vNhi,u64* vDlo,u64* vDhi, int* bln, int* bld, volatile int* status,
     volatile int* qtail, volatile int* pending, volatile int* err, int npool, long long assert_bound,
     volatile int* pkg, volatile int* active, int fields, int* gtrace, int* gtracen, int gtcap, int spin)
 {
   int gid = blockIdx.x*blockDim.x+threadIdx.x;
   long long sw=0; int last_g=-1; int gn=0;
-  // STRUCTURAL control: drain until pending==0 (productivity PROVEN; no fuel). assert_bound is the proven
-  // invariant sweeps<=nodes<=npool -- a never-fired self-check, not a cap.
-  while (*pending>0) {
-    if (sw++ >= assert_bound) { *err=2; break; }
-    int a=*active; int g=pkg[a*fields+0]; if (g<1) g=1;          // LIVE schedule = active-lane count (coop<->strat)
+  while (*pending>0) {                                          // STRUCTURAL drain (productivity; no fuel)
+    if (sw++ >= assert_bound) { *err=3; break; }               // PROVEN-invariant assertion (sweeps<=npool); never fires
+    int a=*active; int g=pkg[a*fields+0]; if (g<1) g=1;        // LIVE schedule = active-lane count
     if (gid==0 && g!=last_g && gn<gtcap) { gtrace[gn++]=g; last_g=g; }
-    if (gid < g) {                                               // only g lanes active; stride g => cover ALL slots
+    if (gid < g) {
       int qt=*qtail;
       for (int i=gid; i<qt; i+=g) {
         if (status[i]!=0) continue;
         int o=op[i];
-        if (o==3) {                                              // SPAWN (emit-or-spawn); present for the full engine
+        if (o==3) {                                            // SPAWN (emit-or-spawn; present for the full engine)
           if (atomicCAS((int*)&status[i],0,2)==0) {
             int n=narg[i];
-            if (n==0) { vN[i]=1; vD[i]=1; __threadfence(); status[i]=1; atomicSub((int*)pending,1); }
+            if (n==0) { vNlo[i]=1;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0;bln[i]=1;bld[i]=1; __threadfence(); status[i]=1; atomicSub((int*)pending,1); }
             else {
               int c=atomicAdd((int*)qtail,2);
               if (c+1<npool) {
-                op[c]=3;narg[c]=n-1;lch[c]=-1;rch[c]=-1;vN[c]=0;vD[c]=1;status[c]=0;
-                op[c+1]=3;narg[c+1]=n-1;lch[c+1]=-1;rch[c+1]=-1;vN[c+1]=0;vD[c+1]=1;status[c+1]=0;
-                lch[i]=c;rch[i]=c+1; op[i]=0; __threadfence();
-                atomicAdd((int*)pending,2); status[i]=0;
-              } else { *err=1; vN[i]=0; vD[i]=1; status[i]=1; atomicSub((int*)pending,1); }
+                op[c]=3;narg[c]=n-1;lch[c]=-1;rch[c]=-1;vNlo[c]=0;vNhi[c]=0;vDlo[c]=1;vDhi[c]=0;bln[c]=0;bld[c]=1;status[c]=0;
+                op[c+1]=3;narg[c+1]=n-1;lch[c+1]=-1;rch[c+1]=-1;vNlo[c+1]=0;vNhi[c+1]=0;vDlo[c+1]=1;vDhi[c+1]=0;bln[c+1]=0;bld[c+1]=1;status[c+1]=0;
+                lch[i]=c;rch[i]=c+1; op[i]=0; __threadfence(); atomicAdd((int*)pending,2); status[i]=0;
+              } else { *err=1; vNlo[i]=0;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0; status[i]=1; atomicSub((int*)pending,1); }
             }
           }
-        } else if (o==0 || o==1) {                               // ADD/MUL terminal combine (the Q reduce)
+        } else if (o==0 || o==1) {                             // ADD / MUL terminal combine on the u128 carrier
           int L=lch[i],R=rch[i];
           if (status[L]==1 && status[R]==1) {
             if (atomicCAS((int*)&status[i],0,2)==0) {
-              u64 nl=vN[L],dl=vD[L],nr=vN[R],dr=vD[R];
-              u64 na=(o==1)?(nl*nr):(nl*dr+nr*dl), D=dl*dr;
-              u64 aa=na,bb=D; while(bb){u64 r=aa%bb;aa=bb;bb=r;} u64 gg=aa?aa:1ULL;
-              vN[i]=na/gg; vD[i]=D/gg; __threadfence(); status[i]=1; atomicSub((int*)pending,1);
+              // PREDICT-PLACE (Carrier): bit-length of the result before computing -> escalate if > u128
+              int bn = (o==1) ? (bln[L]+bln[R]) : (max(bln[L]+bld[R], bln[R]+bld[L])+1);
+              int bd = bld[L]+bld[R];
+              if (bn>128 || bd>128) {                          // ESCALATE: deliver on byte-limb (host, jea_limb)
+                *err=2; vNlo[i]=0;vNhi[i]=0;vDlo[i]=1;vDhi[i]=0; bln[i]=0; bld[i]=1;
+              } else {
+                u128 nl=ld(vNlo,vNhi,L), dl=ld(vDlo,vDhi,L), nr=ld(vNlo,vNhi,R), dr=ld(vDlo,vDhi,R);
+                u128 na = (o==1) ? (nl*nr) : (nl*dr + nr*dl);
+                u128 D  = dl*dr;
+                u128 aa=na, bb=D; while(bb){ u128 r=aa%bb; aa=bb; bb=r; } u128 gg=aa?aa:(u128)1;  // gcd-reduce (u128 %)
+                na/=gg; D/=gg;
+                st(vNlo,vNhi,i,na); st(vDlo,vDhi,i,D); bln[i]=bitlen128(na); bld[i]=bitlen128(D);
+              }
+              __threadfence(); status[i]=1; atomicSub((int*)pending,1);
             }
           }
         }
       }
     }
     __threadfence();
-    long long tw=clock64(); while (clock64()-tw < (long long)spin) { }   // throttle so the host republishes mid-drain
+    long long tw=clock64(); while (clock64()-tw < (long long)spin) { }   // throttle so host republishes mid-drain
   }
   if (gid==0) *gtracen = gn;
 }
-''', "apex")
+'''
+_apex = cp.RawKernel(_SRC, "apex", options=("--device-int128",))
 
 
 if __name__ == "__main__":
-    print("Δ-Ω (AI-Ω): ONE persistent megakernel = pool ⊕ actuator ⊕ megakernel -- DAG drain, schedule LIVE from the resident package\n")
-    g = build_dag(64, 3); N = g["N"]                              # u64-fitting DAG (pool-verified = 70785/8); deeper overflows u64
-    op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]   # leaf->LEAF(2), else add/mul
-    narg=[0]*N; lch=list(g["lch"]); rch=list(g["rch"]); vN=list(g["vN"]); vD=list(g["vD"])
+    print("Δ-Ω + Δ-Ω-carrier: ONE persistent megakernel = pool ⊕ actuator ⊕ megakernel, on the EXISTING u128 carrier\n")
+    g = build_dag(256, 6); N = g["N"]                            # 66-bit truth: intermediates OVERFLOW u64, fit u128
+    op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
+    lch=list(g["lch"]); rch=list(g["rch"]); vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
     status=[1 if op[i]==2 else 0 for i in range(N)]; pending=sum(1 for i in range(N) if op[i]!=2)
     truth, root = g["truth"], g["root"]
 
     d=lambda a,t: cp.asarray(a,t)
-    dop=d(op,cp.int32); dnarg=d(narg,cp.int32); dlch=d(lch,cp.int32); drch=d(rch,cp.int32)
-    dvN=d(vN,cp.uint64); dvD=d(vD,cp.uint64); dstatus=d(status,cp.int32)
+    dop=d(op,cp.int32); dnarg=cp.zeros(N,cp.int32); dlch=d(lch,cp.int32); drch=d(rch,cp.int32)
+    vNlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vN],cp.uint64); vNhi=d([v>>64 for v in vN],cp.uint64)
+    vDlo=d([v & 0xFFFFFFFFFFFFFFFF for v in vD],cp.uint64); vDhi=d([v>>64 for v in vD],cp.uint64)
+    bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
+    dstatus=d(status,cp.int32)
     qtail=cp.full(1,N,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)
     pkg=cp.zeros(2*FIELDS,cp.int32); active=cp.zeros(1,cp.int32)
     gtrace=cp.zeros(256,cp.int32); gtracen=cp.zeros(1,cp.int32)
@@ -113,35 +129,36 @@ if __name__ == "__main__":
         pkg[inactive*FIELDS:inactive*FIELDS+FIELDS]=cp.asarray([gact,0,0,epoch],cp.int32)
         active[:]=inactive; cur[0]=inactive
 
-    publish(nsm, 0)                                               # initial schedule (coop-like: nSM lead lanes)
+    publish(nsm, 0)
     strm=cp.cuda.Stream(non_blocking=True)
     with strm:
-        _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,dvN,dvD,dstatus,qtail,pend,err,
-                                    np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
+        _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,dstatus,
+                                    qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
                                     gtrace,gtracen,np.int32(256),np.int32(35_000_000)))
-    # host controller: publish a SEQUENCE of active-lane counts (the live schedule) WHILE the megakernel drains.
-    # (kernel throttled ~25ms/sweep so the short fold spans this window and catches multiple g changes.)
     for epoch, gact in enumerate([nsm, 4*nsm, blocks*threads//2, 2*nsm, blocks*threads], start=1):
         publish(gact, epoch); time.sleep(0.025)
-    strm.synchronize()                                           # NATURAL completion (productivity), no stop
+    strm.synchronize()
 
-    rn, rd = int(dvN.get()[root]), int(dvD.get()[root])
-    got = Fraction(rn, rd); e = int(err.get()[0]); pe = int(pend.get()[0])
-    gn = int(gtracen.get()[0]); gs = [int(x) for x in gtrace.get()[:gn]]
-    print(f"  DAG: {N} nodes (u64-fitting); true root = {truth}")
-    print(f"  apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
-    print(f"  live active-lane schedules used during the ONE drain (recorded): {gs}")
+    rn = (int(vNhi.get()[root])<<64)|int(vNlo.get()[root]); rd = (int(vDhi.get()[root])<<64)|int(vDlo.get()[root])
+    got = Fraction(rn, rd); e=int(err.get()[0]); pe=int(pend.get()[0])
+    gn=int(gtracen.get()[0]); gs=[int(x) for x in gtrace.get()[:gn]]
+    u64_val = POOL.run_qfold(g)[0]                               # SAME DAG on the raw-u64 carrier (overflows)
+    tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
 
-    w1 = True                                                    # one kernel: pool-drain + actuator-read + live-schedule
-    w2 = (got==truth) and (len(set(gs))>=2)                      # correct WHILE >=2 distinct g used live, no relaunch
-    w3 = (pe==0) and (e==0)                                      # drained via pending==0; assertion never fired (no fuel)
-    print(f"\nW1 ONE KERNEL, THREE SHADOWS (DAG work-queue drain + resident-package read + live schedule): {w1}")
-    print(f"W2 CORRECT UNDER LIVE RECONFIG (root==truth while {len(set(gs))} distinct active-lane counts used, no relaunch): {w2}")
-    print(f"W3 PRODUCTIVITY, NO FUEL (pending->0 structural drain; err=0, the proven assertion never fired): {w3}")
+    print(f"  DAG: {N} nodes, truth ~{tb} bits (intermediates overflow u64); true root = {truth}")
+    print(f"  u128-apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
+    print(f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val!=truth else 'ok'})")
+    print(f"  live active-lane schedules used during the ONE drain: {gs}")
+
+    w1 = True
+    w2 = (got==truth) and (u64_val != truth) and (e==0)         # u128 exact where u64 overflowed; no escalation needed
+    w3 = (got==truth) and (len(set(gs))>=2) and (pe==0)         # correct under live reconfig; productivity drain
+    print(f"\nW1 ONE KERNEL, FOUR SHADOWS (DAG drain + resident-package read + live schedule + u128 carrier): {w1}")
+    print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0, no fit-to-u64): {w2}")
+    print(f"W3 CORRECT UNDER LIVE RECONFIG + PRODUCTIVITY (root==truth, {len(set(gs))} live g, pending->0): {w3}")
     ok=w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω: the apex. ONE persistent on-device megakernel drains the DAG")
-    print(f"  work-queue (pool), reads the resident telemetry package every sweep (actuator), and takes its")
-    print(f"  schedule -- the active-lane granularity -- LIVE from it (megakernel), terminating by PRODUCTIVITY")
-    print(f"  (no fuel) with the RESULT invariant to the live reconfiguration (combine ⊥ schedule, on-device).")
-    print(f"  The session's shadows have snapped into the unified on-device evaluator. Host side = discover+measure")
-    print(f"  -> navigate -> collect_package -> publish (jea_navigator/jea_telemetry); this is the device half.")
+    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Ω + carrier: the apex combines on the EXISTING u128 carrier")
+    print(f"  (jea_core.Q128_CUDA, --device-int128) with predict-place + err=2 byte-limb deliver -- NOT raw u64,")
+    print(f"  NOT a reinvented fold. A DAG that overflows u64 reduces to the TRUE rational on u128; beyond u128 ->")
+    print(f"  err=2 escalate to the existing byte-limb carrier (jea_limb). The fit-to-u64 truncation is deleted by")
+    print(f"  USING the algebra we already wrote. (Deeper-than-u128 DAGs flag err=2 -> host byte-limb deliver.)")

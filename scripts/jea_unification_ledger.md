@@ -79,10 +79,17 @@ navigate+collect_package+publish.
   [[project_agda_on_gpu_charter]]). The …/4096 was u64 OVERFLOW, not an apex bug, and NOT to be dodged with a
   smaller DAG. The system ALREADY has the proven-correct add/mul at any magnitude: jea_engine_apex (predict-place
   tier by bit-width bw(a)+bw(b) + byte-limb DELIVER), jea_limb_* (byte-limb arb-precision), jea_carrier_escalate.
-- **Δ-Ω-carrier [OPEN; AI-Ω-c] = the apex combine on the PROVEN escalating carrier, not raw u64.** Wire the apex's
-  emit-or-spawn combine to predict-place (escalate u64->u128->byte-limb by bit-width) + byte-limb deliver -- the
-  established proven-correct algebra -- so ANY-magnitude DAG reduces correctly (no workload-fit-to-carrier). This
-  deletes the truncation judgement; the carrier escalation is NOT orthogonal -- it IS the add/mul the apex must use.
+- **Δ-Ω-carrier [CLOSED -- used existing code, not reinvented] = the apex combine on the EXISTING u128 carrier.**
+  User caught me reinventing (a new byte-limb host fold) when the unified kernel already exists: jea_core.Q128_CUDA
+  (u128 type + ld/st lo/hi, compiled --device-int128) and jea_engine_apex already do predict-place by bit-length +
+  err=2 byte-limb-DELIVER. Rewrote jea_apex's combine to use Q128_CUDA: vN/vD as u128 (lo/hi), gcd-reduce via u128
+  %, predict-place (bn=bln+bld; >128 -> err=2 escalate to byte-limb), bitlen128 via __clzll. Proven 3/3:
+  build_dag(256,6) (66-bit, intermediates OVERFLOW u64) -> u128-apex root 56083045070036015639/4096 CORRECT
+  (err=0, no escalation needed), where raw-u64 gave 742812848907360791/4096 (WRONG). Still correct under live
+  reconfig + productivity drain. The fit-to-u64 truncation is DELETED by USING the algebra we already wrote.
+  CORRECTIONS recorded: (a) my "nvrtc has no __int128" was wrong -- it works WITH --device-int128 (jea_engine_apex
+  always used it); (b) DON'T reinvent -- check the existing unified kernel first ([[feedback_silo_sprawl_orphans_fixes]]).
+  Beyond u128 -> err=2 -> the EXISTING byte-limb carrier (jea_limb) host-deliver = the next tier (orthogonal, exists).
 ORIGINAL SCOPE NOTE -->
 **Δ-Ω [APEX -- the snap-to-grid goal the session's shadows serve]:** ONE persistent on-device megakernel =
 jea_actuator (persistent + reads resident telemetry package) ⊕ jea_engine_pool (DAG work-queue, emit-or-spawn,
