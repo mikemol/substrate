@@ -135,15 +135,16 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     **Δ-Σ-trace rung-(b) [DONE -- the memoizing evaluator, BUILT not demo'd].** USER: "implement the damn thing
     properly. Nothing can use it if the infrastructure isn't there, and you keep throwing infrastructure away." (I'd
     twice built a DEMO + an unconsumed gg = theater, then DELETED the infra citing 'no consumer' -- the chicken-egg
-    of my own making.) BUILT jea_eval.py: a PERSISTENT cross-eval memo (_MEMO: structural-sig -> reduced/CF-canonical
-    value; _VAL: value -> sig), CONSUMED BY PRUNING -- evaluate(g) interns, computes each node's persistent
-    structural signature, PRUNES every node whose sig is already cached (-> a leaf with the cached value), and the
-    apex drains ONLY the genuinely-new sub-terms. Self-consuming (the evaluator IS the consumer). Proven: eval(T2)
-    sharing sub-term S with T1 PRUNES S (drained 1, pruned 1 -- S computed once, ever); value-equal distinct-structure
-    Z=1/12+1/12 keys to S's value 1/6 (the CF/value-key); exact. Any magnitude (run_apex_u128 + deliver on err=2).
-    WIRED into the running path: jea_agda_apex imports jea_eval and evaluates BOTH vouched terms (Emit 7/40, EmitBig
-    >u128) through it, exact -- jea_eval de-orphaned by a real consumer. NEXT: device-RESIDENT _MEMO (on-GPU hash
-    table so prune+lookup is on-GPU); route a STREAM of terms through evaluate() for the resident memoizing trace.
+    of my own making.) BUILT jea_eval.py: a PERSISTENT RESIDENT SPPF (_NODES: id -> [op,lch,rch,value]; _ID:
+    hash-cons key -> id; _VAL: value -> id). USER then corrected the MODEL: "you don't prune an SPPF" -- so
+    evaluate(g) INTERNS the term into the growing shared forest (existing sub-term -> SHARE its node id, value
+    resident; new -> ADD a node) and evaluates ONLY the NEW frontier; existing nodes are REFERENCED, never
+    recomputed. The forest GROWS monotonically; NOTHING is pruned (the earlier prune-the-input framing was
+    backwards -- an SPPF is shared into, not cut). Self-consuming (evaluate shares into _NODES). Proven: eval(T2)
+    sharing S with T1 -> 1 new evaluated, S SHARED (computed once, ever); value-equal distinct-structure
+    Z=1/12+1/12 keys to S's value 1/6 (value-key); exact. Any magnitude (run_apex_u128 + deliver on err=2).
+    WIRED: jea_agda_apex imports jea_eval and evaluates BOTH vouched terms (Emit 7/40, EmitBig >u128) through it,
+    exact -- de-orphaned by a real consumer. NEXT: device-RESIDENT _NODES (on-GPU); stream terms through evaluate().
     **Δ-Σ-trace rung-(a) [DONE]:** the REAL shared Agda SPPF drives the memoizing evaluator. jea_agda_apex imports
     jea_agda_dag (de-orphaned) and evaluates EmitDAG.agda -- a refl-vouched SHARED SPPF (((7/6)^2)^2)^2 = 7^8/6^8,
     6 nodes with 3 SHARED subterms (the squarings reuse one node) -- through jea_eval.evaluate -> 5764801/1679616
