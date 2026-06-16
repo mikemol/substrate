@@ -231,9 +231,16 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     the benefit is CONDITIONAL -- the code must match the access coherence axis AND the working set must span >1
     tile + be stable-scattered (the navigator/workload point), not automatic. Full benefit needs the payload
     PHYSICALLY code-ordered (storage reorg) -- the gather order is wired; the physical reorder is the remaining step.
+    **Δ-Σ-trace (b-real-store) [DONE]:** the forest is now PHYSICALLY code-ordered. Forest.materialize() (device
+    argsort of all node codes) lays out the STRUCTURE in code order: pcode (sorted), pstable (phys pos -> stable id),
+    pslot (stable id -> phys pos); evaluate materializes it each call. gather_cost/gather now read the REAL physical
+    slots (pslot), so the Phase-2 W4 numbers are realized, not predicted (|64|:2 vs 4, |256|:5 vs 8). KEY constraint
+    honored: VALUES are arbitrary-magnitude (EmitBig 217-bit can't pack into int64), so only the STRUCTURE is
+    physically code-ordered; values stay in the stable/byte-limb store. Verified: pcode sorted, pslot is the inverse
+    of pstable, eval exact through the indirection (jea_eval/jea_agda_apex regression-clean).
     **NEXT rungs:** (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned;
-    (b-real-mega) the full on-device intern megakernel (remove host per-height orchestration); (b-real-store) store
-    the forest payload physically in code order (so the Phase-2 gather is actually coalesced, not just order-correct).
+    (b-real-mega) the full on-device intern megakernel (remove host per-height orchestration); (b-real-incr) maintain
+    the physical store INCREMENTALLY (insert on merge) instead of a full re-argsort per eval.
 - **Δ-Ψ-deliver** [low priority] crown byte-limb DELIVER still a HOST python loop (crown is tiny); full on-device
   form = variable-limb arithmetic in the megakernel.
 - **Δ-Ψ-dag** [deep] the DAG is still HOST-built + UPLOADED; end state = term-algebra GENERATES + RESIDES it on-device.

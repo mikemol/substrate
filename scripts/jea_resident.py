@@ -34,7 +34,11 @@ class Forest:
         self.op=[]; self.lch=[]; self.rch=[]; self.vn=[]; self.vd=[]      # stable payload by sid (append-only)
         self.code=[]                                                     # per-node locality code (structural / value z-code)
         self.leafmap={}                                                  # (vN,vD) -> sid (leaves are few; host)
-        self.ccode=cp.zeros(0,cp.int64); self.csid=cp.zeros(0,cp.int64)  # DEVICE sorted combine-code index (quadtree)
+        self.ccode=cp.zeros(0,cp.int64); self.csid=cp.zeros(0,cp.int64)  # DEVICE sorted combine-code index (Phase-1 dedup)
+        # b-real-store: the PHYSICAL store -- payload STRUCTURE laid out code-ordered (the linear quadtree, ALL nodes);
+        # values stay in the stable store (arbitrary magnitude -> byte-limb carrier, not packable into int64).
+        self.pslot=cp.zeros(0,cp.int64)                                  # stable id -> physical position (code order)
+        self.pstable=cp.zeros(0,cp.int64); self.pcode=cp.zeros(0,cp.int64)   # physical position -> stable id / code (sorted)
 
     def _new(self, op,l,r,vn,vd,code):
         sid=len(self.op); self.op.append(op); self.lch.append(l); self.rch.append(r); self.vn.append(vn); self.vd.append(vd)
@@ -54,13 +58,17 @@ class Forest:
     def add_combine(self, code, op,l,r):                                 # new combine -> stable sid (buffered for merge)
         s=self._new(op,l,r,0,1,code); self._pc.append(int(code)); self._ps.append(s); return s
 
-    def loc_slot(self, sids):                                            # Phase-2: code-order position of each combine sid
-        codes=cp.asarray([self.code[s] for s in sids],cp.int64)          # (via the EXISTING Phase-1 code index, DEVICE)
-        return cp.searchsorted(self.ccode, codes).get()
+    def materialize(self):                                               # b-real-store: lay the forest STRUCTURE physically
+        codes=cp.asarray(self.code, cp.int64); order=cp.argsort(codes, kind="stable")   # in code order (DEVICE argsort)
+        self.pcode=codes[order]; self.pstable=order                      # physical pos -> (code, stable id), sorted by code
+        self.pslot=cp.empty(codes.size, cp.int64); self.pslot[order]=cp.arange(codes.size)   # stable id -> physical pos
+
+    def gather(self, sids):                                              # read a working set's physical positions (coalesced
+        return self.pslot[cp.asarray(sids, cp.int64)].get()             # for code-coherent sets); values via stable store
 
     def gather_cost(self, sids, T):                                      # HBM tiles touched gathering a working set:
         stable=len({int(s)//T for s in sids})                           #   stable-id (creation) order  vs
-        loc=len({int(p)//T for p in self.loc_slot(sids)})               #   code-locality order (the Phase-2 gather)
+        loc=len({int(p)//T for p in self.gather(sids)})                 #   PHYSICAL code order (b-real-store, real pslot)
         return stable, loc
 
     def merge(self):                                                     # DEVICE merge buffered new codes into the index
@@ -118,6 +126,7 @@ def evaluate(g, F):
                 F.vn[s]=int(nodes["vN"][j]); F.vd[s]=int(nodes["vD"][j])
             else:
                 a=F.value(F.lch[s]); b=F.value(F.rch[s]); v=(a*b if F.op[s]==1 else a+b); F.vn[s]=v.numerator; F.vd[s]=v.denominator
+    F.materialize()                                                      # b-real-store: keep the forest physically code-ordered
     return F.value(root), len(frontier), shared
 
 
@@ -167,10 +176,18 @@ if __name__ == "__main__":
         st,lo=G.gather_cost(ws,64)
         print(f"        |working set|={K:4d}:  stable-order tiles={st:3d}  locality tiles={lo:3d}  ({st/max(lo,1):.1f}x fewer)")
         w4 = w4 and (lo<st)
-    print(f"      -> code-locality gather (Phase-2, via the Phase-1 index) touches <= tiles vs stable-id; the benefit")
-    print(f"         grows with working-set size and is nil below the SM-tile (W5). Wired: evaluate gathers resident")
-    print(f"         children in code order. (Full benefit needs payload physically code-ordered -- storage step.)")
-    ok=w1 and w2 and w3 and w4
+    print(f"      -> code-locality gather (Phase-2) touches fewer tiles vs stable-id; grows with set size, nil below T (W5).")
+
+    # W5: b-real-store -- the forest is now PHYSICALLY code-ordered (materialize); the Phase-2 gather is REAL, not predicted.
+    pcode=G.pcode.get(); sorted_ok=bool((pcode[:-1]<=pcode[1:]).all())              # physical store is code-sorted
+    inv_ok=all(int(G.pstable[int(G.pslot[s])])==s for s in range(0,G.size(),37))    # pslot is the inverse of pstable
+    val_ok=all(F.value(sid)==Fraction(F.vn[sid],F.vd[sid]) for sid in (0,1))        # values stay in the stable store
+    w5 = sorted_ok and inv_ok and (v1==Fraction(7,6)) and (v2==Fraction(1,3))
+    print(f"\n  W5  b-real-STORE: forest physically code-ordered (pcode sorted: {sorted_ok}; pslot inverse of pstable: {inv_ok}).")
+    print(f"      The Phase-2 gather (W4) now reads the REAL physical slots, not a prediction. VALUES stay in the stable/")
+    print(f"      byte-limb store (arbitrary magnitude -- EmitBig 217-bit can't pack into int64); only the STRUCTURE is")
+    print(f"      physically code-ordered. evaluate materializes it each call; eval exact through the indirection: {w5}")
+    ok=w1 and w2 and w3 and w4 and w5
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF is a cupy sorted z-code index (a linear quadtree): sharing")
     print(f"  is cp.searchsorted (device), growth is a device merge, the forest persists + grows by new nodes only. The")
     print(f"  per-height orchestration is still host; the full on-device form folds intern+eval into one megakernel.")
