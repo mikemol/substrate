@@ -180,6 +180,11 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     monotone) -- so the SPPF's VALUE-index IS the EEA trace; the loop closes. RECURSION: carrier (binary/CD
     subdivision) -> value (Stern-Brocot/CF) -> structure ((lch,rch) Morton quadtree) -> SPPF (linear quadtree by
     radix sort); the EEA trace is the value-address. jea_intern SUPERSEDED by jea_zsppf.intern_radix; retire it.
+    W4 EMPIRICAL (user: "numbers"): a 308-node random forest -> BOTH at once from one interleaved sort -- DEDUP:
+    sharing 308->238 structures, packing 308->175 values; LOCALITY (normalized per-axis adjacency, lower=tighter):
+    interleave worst-axis 0.051 (struct 0.051, value 0.029) vs lex(struct) 0.204 vs lex(value) 0.218 vs random 0.332.
+    Each lex zeroes ONE axis (0.003) and scrambles the other; the interleave localizes BOTH (~4x better worst-axis)
+    WHILE deduping. Confirmed with numbers: both locality and deduplication, from sorting both dimensions interleaved.
     **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
     z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
     (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.

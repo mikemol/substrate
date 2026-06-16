@@ -143,7 +143,39 @@ if __name__ == "__main__":
     print(f"      -> the rational's INTRINSIC recursive subdivision is Stern-Brocot/CF (the residue we already keep);")
     print(f"         IT gives value-line locality. The plane quadtree was the wrong (extrinsic) one.")
 
-    ok = w1 and w2 and w3a and w3b and w3c
+    # W4: EMPIRICAL -- ONE interleaved sort over (structure, value) gives locality on BOTH axes + dedup. A random
+    # term forest; each node has a structural id (intern) and a value rank. Measure per-axis adjacency, normalized.
+    rng2=np.random.default_rng(7)
+    leaves=[(int(rng2.integers(1,9)),int(rng2.integers(1,9))) for _ in range(8)]
+    vN=[l[0] for l in leaves]; vD=[l[1] for l in leaves]; op=[-1]*8; lch=[-1]*8; rch=[-1]*8
+    for _ in range(300):                                       # children from a SMALL window -> (op,a,b) recurs (real dedup)
+        w=min(len(vN),16); a=int(rng2.integers(0,w)); b=int(rng2.integers(0,w))
+        op.append(int(rng2.integers(0,2))); lch.append(a); rch.append(b); vN.append(0); vD.append(1)
+    F=dict(vN=vN,vD=vD,op=op,lch=lch,rch=rch,N=len(vN),root=len(vN)-1)
+    canon,ds_struct = intern_radix(F,"z")                      # structural id per node + SHARING count (distinct structures)
+    red=[(v.numerator,v.denominator) for v in host_values(F)]
+    valcmp=lambda i,j: (red[i][0]*red[j][1]-red[j][0]*red[i][1])
+    vrank=[0]*F["N"]
+    for r,i in enumerate(sorted(range(F["N"]), key=functools.cmp_to_key(valcmp))): vrank[i]=r   # value-order rank
+    dv_pack=len({r for r in red})                              # distinct values = PACKING count
+    s=np.array([canon[i] for i in range(F["N"])]); vr=np.array(vrank); S=int(s.max())+1; NN=F["N"]
+    def axes(order):
+        return (float(np.mean(np.abs(np.diff(s[order].astype(np.int64)))))/S,
+                float(np.mean(np.abs(np.diff(vr[order].astype(np.int64)))))/NN)
+    orders={"interleave":np.argsort(np.asarray(morton2(s,vr))), "lex(struct)":np.argsort(s.astype(np.int64)*(1<<20)+vr),
+            "lex(value)":np.argsort(vr.astype(np.int64)*(1<<20)+s), "random":np.arange(NN)}
+    print(f"\n  W4  EMPIRICAL: random forest {NN} nodes -> SHARING {ds_struct} distinct structures, PACKING {dv_pack} "
+          f"distinct values (one sorted structure surfaces both). Per-axis adjacency (normalized 0..1, lower=tighter):")
+    worst={}
+    for nm,od in orders.items():
+        ds,dvv=axes(od); worst[nm]=max(ds,dvv)
+        print(f"      {nm:<12} struct-axis={ds:.3f}  value-axis={dvv:.3f}  worst-axis={worst[nm]:.3f}")
+    w4 = worst["interleave"] < min(worst["lex(struct)"], worst["lex(value)"])   # interleave balances BOTH; lex sacrifices one
+    print(f"      -> interleave worst-axis {worst['interleave']:.3f} < both lex worst-axes "
+          f"({worst['lex(struct)']:.3f}, {worst['lex(value)']:.3f}): {w4} -- the interleaved sort localizes BOTH; each")
+    print(f"         lex zeroes one axis and scrambles the other. BOTH locality AND dedup, from one sort.")
+
+    ok = w1 and w2 and w3a and w3b and w3c and w4
     print(f"\n  {'PASS' if ok else 'FAIL'} — THINK QUADTREE (common structure, recursively): a prefix-sort of Morton codes")
     print(f"  IS a (linear) quadtree -- internal nodes = shared prefixes = shared subterms, so the SPPF is a quadtree, not")
     print(f"  a flat sort. The dedup is code-agnostic (W2); the CODE picks WHICH quadtree. Two intrinsic ones: structure =")
