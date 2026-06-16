@@ -182,9 +182,10 @@ if __name__ == "__main__":
     print(f"\n  EVAL-STRATEGY (Δ-Ψ-forest dispatch) -- a navigator output off the MEASURED level surface (the g-axis):")
     print(f"    choice moves with the surface: swar<drain->{pick_swar} | drain<swar->{pick_drain} | tie->{pick_flat}")
     print(f"    LIVE on this box (W=4096,G=6 level) -> {op_lvl['eval_strategy']}")
-    print(f"      [honest finding: the bit-sliced path's bs_mul is O(G^2) cupy-op LAUNCHES + host pack/unpack + per-node")
-    print(f"       Fraction-reduce -- launch-bound, loses to the single fused megakernel. A FUSED bit-sliced kernel is")
-    print(f"       what lets SWAR win; the dispatch will defer to drain until then (measured, not assumed).]")
+    print(f"      [honest finding, re-measured after Δ-Ψ-bitkernel: the bit-sliced ARITHMETIC is now FUSED (one launch,")
+    print(f"       ~3268x faster bs_mul) -- so the O(G^2)-cupy-launch cost is GONE. The dispatch STILL picks drain because")
+    print(f"       combine_batch's HOST pack/unpack (to/from_bitsliced) + per-node Fraction-reduce is now the bottleneck.")
+    print(f"       To win, route the level eval through the DEVICE-RESIDENT gr_* (no per-value pack/unpack) -- next.]")
 
     w1 = True                                                       # navigate is a pure re-solve (no globals/cache)
     w2 = (op_cool["fstar"], op_cool["bottleneck"]) != (op_hot["fstar"], op_hot["bottleneck"])   # moves with state

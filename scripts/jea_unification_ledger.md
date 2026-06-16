@@ -94,8 +94,21 @@ reactive). 11/11 PASS. The supervisor's operating point is now a device-resident
 readout. Folding the WHOLE operating point [series_schur, gains, argmax] device-resident + the recip op INTO the
 fused mega_eval kernel [one drain incl ÷, vs gr_* host-orchestrated plane-threading] are continuations.)
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-bitkernel** (fused branchless bit-sliced CUDA kernel -- lets SWAR
-win the dispatch + kills mega_eval divergence; the recip op folds in here) -- run the {+,×,÷} operating-point solve
+**Δ-Ψ-bitkernel [DONE -- jea_bitkernel.py] + the HONEST re-measure:** the bit-sliced add/mul/sub are now ONE fused
+CUDA kernel each (jea_bitkernel: bs_add_k/bs_mul_k/bs_sub_k -- one thread per WORD-COLUMN, the plane-loop INSIDE the
+kernel, pure bitwise = branchless, NO warp divergence), replacing jea_graded's O(G)/O(G^2) cupy-op LAUNCHES. W1 exact
+vs Python; W2 == cupy ref (_bs_*_ref kept as oracle); W3 [numbers] bs_mul N=4096,G=39: fused 0.12ms (1 launch) vs
+cupy 384.79ms (~1521 launches) = 3268x. WIRED: jea_graded.bs_add/bs_mul/bs_sub now DELEGATE to the fused kernels ->
+the whole carrier (combine_batch, gr_*, q_sub, onegraph, level_eval_graded) is fused; 12/12 modules PASS. provenance:
+brick-4 code landed in 9346b89 (AI-Q sweep, flagged). HONEST re-measure (validate-outputs): the fused kernel fixed
+the ARITHMETIC, but the navigator STILL picks per-node-drain -- because combine_batch's HOST pack/unpack (to/from_
+bitsliced) + per-node Fraction-reduce is now the bottleneck (the cupy-launch cost is gone; a deeper opacity remained).
+To make SWAR WIN the dispatch: route level_eval_graded through the DEVICE-RESIDENT gr_* (no per-value pack/unpack) --
+named NEXT. recip/÷ stays the free plane-swap (not a kernel). The carrier is branchless; mega_eval's structural
+if(op) divergence is separate (a later fuse-into-the-bitkernel).
+
+**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-swar-win** (route level_eval_graded through gr_* device-resident --
+remove combine_batch's host pack/unpack so SWAR wins the dispatch, closing the brick-3 finding) -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded

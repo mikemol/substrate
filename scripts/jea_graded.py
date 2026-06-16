@@ -54,36 +54,33 @@ def _pad(A, G):
     return A if A.shape[0]>=G else cp.concatenate([A, cp.zeros((G-A.shape[0], A.shape[1]), cp.uint64)])
 
 
-def bs_add(A, B):
-    """Bit-sliced ripple-carry add (SWAR): A,B planes -> (max(Ga,Gb)+1, W). G bitwise steps process all 64*W values."""
+_F64 = cp.uint64(0xFFFFFFFFFFFFFFFF)
+# Reference (cupy-op) carrier ops -- O(G)/O(G^2) cupy LAUNCHES. Kept as the gate oracle; the PUBLIC bs_* below delegate
+# to the FUSED one-launch branchless kernels (jea_bitkernel, Δ-Ψ-bitkernel). _bs_*_ref == bs_* (jea_bitkernel W2).
+def _bs_add_ref(A, B):
     G=max(A.shape[0], B.shape[0]); W=A.shape[1]; A=_pad(A,G); B=_pad(B,G)
     out=cp.zeros((G+1,W), cp.uint64); carry=cp.zeros(W, cp.uint64)
     for b in range(G):
-        a=A[b]; bb=B[b]; out[b]=a^bb^carry; carry=(a&bb)|(carry&(a^bb))   # sum bit + carry-out, per bit-plane
+        a=A[b]; bb=B[b]; out[b]=a^bb^carry; carry=(a&bb)|(carry&(a^bb))
     out[G]=carry
     return out
 
-
-def bs_mul(A, B):
-    """Bit-sliced shift-and-add multiply: A (Ga) x B (Gb) -> (Ga+Gb, W). For each bit-plane c of B, add the per-value
-    masked A shifted up by c planes (multiply by 2^c). Product of grades Ga,Gb fits Ga+Gb planes."""
+def _bs_mul_ref(A, B):
     Ga,W=A.shape; Gb=B.shape[0]; acc=cp.zeros((Ga+Gb,W), cp.uint64)
     for c in range(Gb):
-        masked=A & B[c][None,:]                                          # keep A only where B's bit c is set (per value)
-        partial=cp.zeros((Ga+Gb,W), cp.uint64); partial[c:c+Ga]=masked   # placed at planes [c, c+Ga) = A * 2^c
-        acc=bs_add(acc, partial)[:Ga+Gb]                                 # accumulate (product fits Ga+Gb planes)
+        masked=A & B[c][None,:]; partial=cp.zeros((Ga+Gb,W), cp.uint64); partial[c:c+Ga]=masked
+        acc=_bs_add_ref(acc, partial)[:Ga+Gb]
     return acc
 
-
-_F64 = cp.uint64(0xFFFFFFFFFFFFFFFF)
-def bs_sub(A, B):
-    """Bit-sliced ripple-BORROW subtract: (A - B mod 2^G, per-value borrow_out) -- borrow=1 iff A<B. The complement
-    of bs_add; a full-subtractor over bit-planes (diff=a^b^bin; bout=(~a&b)|(~(a^b)&bin)), branch-free SWAR."""
+def _bs_sub_ref(A, B):
     G=max(A.shape[0],B.shape[0]); W=A.shape[1]; A=_pad(A,G); B=_pad(B,G)
     out=cp.zeros((G,W),cp.uint64); bor=cp.zeros(W,cp.uint64)
     for b in range(G):
         a=A[b]; bb=B[b]; out[b]=a^bb^bor; bor=((a^_F64)&bb)|(((a^bb)^_F64)&bor)
     return out, bor
+
+import jea_bitkernel as _BK                                           # Δ-Ψ-bitkernel: the FUSED branchless carrier (one launch)
+bs_add = _BK.bs_add; bs_mul = _BK.bs_mul; bs_sub = _BK.bs_sub         # PUBLIC carrier ops = the fused kernels (no warp divergence)
 
 def q_sub(a, b):
     """Rational a - b for a >= b (result >= 0) via the carrier -- the conductance/throughput domain (differences of
