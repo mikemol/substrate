@@ -90,3 +90,36 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
                              (ytime-+P (reduce-mod-f u) (reduce-mod-f v))))
           (+P-rearrange (a ∷ replicate d 𝟘) (b ∷ replicate d 𝟘)
                         (ytime (reduce-mod-f u)) (ytime (reduce-mod-f v)))
+
+  -- 7. (B2b) scalar linearity: ytime and reduce-mod-f preserve ·c.
+  ·c-+P-distrib : (c : A) (u v : Poly n) → c ·c (u +P v) ≡ (c ·c u) +P (c ·c v)
+  ·c-+P-distrib c []      []      = refl
+  ·c-+P-distrib c (x ∷ u) (y ∷ v) = cong₂ _∷_ (*-distribˡ c x y) (·c-+P-distrib c u v)
+
+  ·c-assoc : (c a : A) (v : Poly n) → c ·c (a ·c v) ≡ (c * a) ·c v
+  ·c-assoc c a []      = refl
+  ·c-assoc c a (x ∷ v) = cong₂ _∷_ (sym (*-assoc c a x)) (·c-assoc c a v)
+
+  ·c-zeroʳ : (c : A) → c ·c (replicate n 𝟘) ≡ replicate n 𝟘
+  ·c-zeroʳ {zero}  c = refl
+  ·c-zeroʳ {suc n} c = cong₂ _∷_ (*-absorbʳ c) (·c-zeroʳ {n} c)
+
+  vinit-·c : (c : A) (v : Poly (suc n)) → vinit (c ·c v) ≡ c ·c vinit v
+  vinit-·c {zero}  c (x ∷ []) = refl
+  vinit-·c {suc _} c (x ∷ v)  = cong ((c * x) ∷_) (vinit-·c c v)
+  vlast-·c : (c : A) (v : Poly (suc n)) → vlast (c ·c v) ≡ c * vlast v
+  vlast-·c {zero}  c (x ∷ []) = refl
+  vlast-·c {suc _} c (x ∷ v)  = vlast-·c c v
+
+  ytime-·c : (c : A) (v : Poly (suc d)) → ytime (c ·c v) ≡ c ·c ytime v
+  ytime-·c c v =
+    trans (cong₂ _+P_ (cong₂ _∷_ (sym (*-absorbʳ c)) (vinit-·c c v))
+                      (trans (cong (_·c f-lo) (vlast-·c c v)) (sym (·c-assoc c (vlast v) f-lo))))
+          (sym (·c-+P-distrib c (𝟘 ∷ vinit v) (vlast v ·c f-lo)))
+
+  reduce-·c : (c : A) (v : Poly n) → reduce-mod-f (c ·c v) ≡ c ·c reduce-mod-f v
+  reduce-·c c []      = sym (·c-zeroʳ {suc d} c)
+  reduce-·c c (a ∷ v) =
+    trans (cong₂ _+P_ (cong ((c * a) ∷_) (sym (·c-zeroʳ {d} c)))
+                      (trans (cong ytime (reduce-·c c v)) (ytime-·c c (reduce-mod-f v))))
+          (sym (·c-+P-distrib c (a ∷ replicate d 𝟘) (ytime (reduce-mod-f v))))
