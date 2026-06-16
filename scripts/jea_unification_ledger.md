@@ -168,9 +168,15 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     the IDENTICAL sharing partition; z-order is NOT a correctness lever ("SPPF=prefix-sort of codes" holds for any
     injective code). (W3a) the S and P of SPPF = two sorts: structural-code sort = SHARING; value-code (z-coded
     reduced num,den) sort = PACKING (value-equal distinct structures collapse; 7->4 on the rung-b DAG). (W3b)
-    z-order's REAL payoff = (num,den)-PLANE locality (8x tighter adjacent L1 vs random) -- residue-plane clustering,
-    the Morton≅Cayley-Dickson cocycle (commuting_sphere), NOT the dedup and NOT value-line. jea_intern is now
-    SUPERSEDED by jea_zsppf.intern_radix (same device sort, generalized with the z/plain key) -- mark/retire it.
+    z-order's payoff is LOCALITY, not dedup. THINK QUADTREE (user, "find the common structure recursively"): a
+    prefix-sort of Morton codes IS a (linear) quadtree (internal nodes = shared prefixes = shared subterms), so the
+    SPPF is a quadtree; the CODE picks WHICH quadtree. CORRECTION to my first cut: morton(num,den) is the EXTRINSIC
+    (num,den)-PLANE quadtree (plane-locality only). The rational's INTRINSIC quadtree is the STERN-BROCOT tree
+    addressed by the CONTINUED FRACTION = the EEA residue rung-(b) keeps (ordered by jea_trace_window.cf_less, now
+    consumed). Tested W3c: CF order gives VALUE-line locality (adj value-dist 0.27 vs plane 2.4 vs random 5.0,
+    monotone) -- so the SPPF's VALUE-index IS the EEA trace; the loop closes. RECURSION: carrier (binary/CD
+    subdivision) -> value (Stern-Brocot/CF) -> structure ((lch,rch) Morton quadtree) -> SPPF (linear quadtree by
+    radix sort); the EEA trace is the value-address. jea_intern SUPERSEDED by jea_zsppf.intern_radix; retire it.
     **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
     z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
     (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
