@@ -27,6 +27,7 @@ from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_zsppf import morton2, heights
 import jea_mega_eval as MEGAE                                   # the FUSED on-device intern+combine megakernel (Δ-Σ-mega rung-2)
+from jea_dag_gen import gen_Eq_device                           # Δ-Ψ-dag: ON-DEVICE DAG generation (no host build loop / upload)
 
 
 class Forest:
@@ -175,6 +176,41 @@ def evaluate(g, F):
     return F.value(root), len(frontier), shared
 
 
+def evaluate_Eq(n, F):
+    """Δ-Ψ-dag: evaluate E_q(n) with the DAG GENERATED ON-DEVICE (jea_dag_gen.gen_Eq_device) -- the host ships only n,
+    never builds/uploads the O(N) term. The fused kernel interns+evals the device-gen arrays directly; the forest
+    bookkeeping is O(distinct) (not O(N)): cp.unique finds the first-occurrence representative of each NEW canon id on
+    the DEVICE, and only those (n+1 for E_q) are registered on the host. Returns (value, evaluated_new, shared)."""
+    prev=len(F.op)
+    c11=F.FE.leafcodes.setdefault((1,1), len(F.FE.leafcodes)+1)          # the 1/1 leaf code in the interner's SHARED namespace
+    g=gen_Eq_device(n, c11)                                              # device arrays, born from n (no host term)
+    canon=F.FE.intern_eval_dev(g["op"],g["lch"],g["rch"],g["leafkey"],g["lNlo"],g["lNhi"],g["lDlo"],g["lDhi"],g["N"])
+    canon_dev, distinct = canon                                          # canon STAYS on device
+    new=distinct-prev
+    if new>0:
+        vals, first = cp.unique(canon_dev, return_index=True)            # device: distinct ids present + first occurrence index
+        reps=first[vals>=prev]                                          # representative term-index per NEW id (sorted -> cid=prev+j)
+        rep_op=g["op"][reps].get()                                       # gather only the representatives (O(distinct), not O(N))
+        cl=canon_dev[cp.clip(g["lch"][reps],0,None)].get(); cr=canon_dev[cp.clip(g["rch"][reps],0,None)].get()
+        sN,sD,sE=F.FE.read_range(prev,distinct)
+        lc11=int(morton2(np.array([1]),np.array([1]))[0])               # E_q leaves are all 1/1 -> one leaf code
+        for k in range(new):
+            if rep_op[k]==-1:                                            # leaf 1/1
+                F.op.append(-1); F.lch.append(-1); F.rch.append(-1); F.vn.append(1); F.vd.append(1); F.code.append(lc11)
+            else:
+                lcn=int(cl[k]); rcn=int(cr[k]); o=int(rep_op[k])
+                F.op.append(o); F.lch.append(lcn); F.rch.append(rcn); F.code.append(_ccode(o,lcn,rcn))
+                if sE[k]: F.vn.append(0); F.vd.append(1)                 # >u128 -> device crown deliver below
+                else: F.vn.append(sN[k]); F.vd.append(sD[k])
+        if any(sE):
+            deliver_crown(F, prev, distinct, sE)                         # Δ-Ψ-deliver reused (device byte-limb crown)
+    root=int(canon_dev[g["root"]].get())
+    new_comb=sum(1 for cid in range(prev,distinct) if F.op[cid]!=-1)
+    shared=( (1<<n)-1 ) - new_comb                                       # total E_q combines (2^n-1) not re-added = shared
+    F.materialize_incr(prev)
+    return F.value(root), new_comb, shared
+
+
 def _embed(sub, host_op, extra):
     N=len(sub["op"]); op=list(sub["op"])+[-1,host_op]; vN=list(sub["vN"])+[extra[0],0]; vD=list(sub["vD"])+[extra[1],1]
     lch=list(sub["lch"])+[-1,sub["root"]]; rch=list(sub["rch"])+[-1,N]
@@ -268,8 +304,15 @@ if __name__ == "__main__":
     print(f"      cumulative materialize: full re-argsort = {t_full*1e3:7.1f} ms   incremental merge = {t_incr*1e3:7.1f} ms"
           f"   ({t_full/max(t_incr,1e-9):.2f}x)")
     print(f"      incremental store == full: sorted={isort}  pslot-inverse={iinv}  same-multiset={same}  (only delta uploaded): {w7}")
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7
+    # W8: Δ-Ψ-dag -- evaluate E_q(n) with the DAG GENERATED ON-DEVICE (the host ships only n; no O(N) term build/upload),
+    # bookkeeping O(distinct) via cp.unique. eval == 2^n exact; the forest grows by only n+1 distinct nodes.
+    Ge=Forest(); n8=12; ve,nc8,sh8=evaluate_Eq(n8, Ge)
+    w8 = (ve==Fraction(1<<n8,1)) and (Ge.size()==n8+1)                    # E_q(n) -> 2^n; SPPF collapses to n+1 distinct
+    print(f"\n  W8  Δ-Ψ-DAG (E_q({n8}) = {(1<<(n8+1))-1} nodes, DAG generated ON-DEVICE from n -- no host build loop/upload):")
+    print(f"      eval -> {ve} == 2^{n8} = {1<<n8}: {ve==Fraction(1<<n8,1)}; resident forest = {Ge.size()} distinct (= n+1),")
+    print(f"      bookkeeping O(distinct) via cp.unique (host registered {nc8+1} nodes, not {(1<<(n8+1))-1}): {w8}")
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
-    print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver -- recompute-from-residue, off the")
-    print(f"  host), and the physical store is merged INCREMENTALLY (b-real-incr -- delta merge-by-rank, not full re-argsort;")
-    print(f"  only the new codes uploaded). Remaining host: the term-feed/DAG build (Δ-Ψ-dag) + the per-node readout reduce.")
+    print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver), the physical store merges")
+    print(f"  INCREMENTALLY (b-real-incr), and parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag: gen_Eq_device -- the")
+    print(f"  host ships n, bookkeeping O(distinct)). Remaining host seam: the forest payload host-mirror (the final rung).")

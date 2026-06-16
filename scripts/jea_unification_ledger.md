@@ -91,9 +91,25 @@ resident eval collapsed from {intern-kernel + apex-eval-kernel + deliver-kernel 
 jea_resident.Forest.FE = the fused evaluator; evaluate() = intern_eval + read the device value store + crown-fold;
 jea_mega_eval <- jea_resident <- jea_eval <- jea_agda_apex; regression-clean -- **EmitBig 217-bit comes out exact
 through the fused path's host crown fold == Agda-vouched** (the real >u128 workload, genuinely exercised). Remaining
-Δ-Σ-mega rungs: **Δ-Ψ-deliver** [DONE, below], **b-real-incr** [DONE, below], **Δ-Ψ-dag** (DAG-gen +
-the term-feed on-device -- host uploads the term today), Δ-G2 (orphan gate). Known bound (G8 handoff): HCAP/CAP=1<<16
-(table-full -> err=2); leaves assumed >=0 and <=u128.
+Δ-Σ-mega rungs: **Δ-Ψ-deliver** [DONE], **b-real-incr** [DONE], **Δ-Ψ-dag** [DONE -- below], Δ-G2 (orphan gate).
+Known bound (G8 handoff): HCAP/CAP=1<<16 (table-full -> err=2); leaves assumed >=0 and <=u128. THE FINAL RUNG (only
+big host seam left): the forest PAYLOAD host-mirror (F.op/lch/rch/vn/vd are Python lists) -- a device-resident forest
+payload would close "single GPU-resident kernel ingests terms, emits values."
+
+**Δ-Ψ-dag [DONE -- AI-Δ9]:** ON-DEVICE DAG generation for parametric families (jea_dag_gen.gen_Eq_device). The host
+ships only the parameter n (+ n level offsets, O(n)); the E_q(n) term (op/lch/rch/leafkey/leaf-values) is BORN on the
+GPU as cupy arrays (L + n vectorized ops), never built by an O(N) host loop nor uploaded. coordinate->geometry: the
+collapsed coordinate was the materialized O(N) term shipped each eval; the geometry is the GENERATOR (n -> structure)
+evaluated on-device. The fused kernel consumes the device arrays directly (jea_mega_eval.intern_eval_dev -- canon
+STAYS on device); the forest bookkeeping is O(distinct) not O(N) (cp.unique finds each NEW canon id's first-occurrence
+representative on-device; only those n+1 register on the host). WIRED: jea_resident.evaluate_Eq -> jea_eval.evaluate_Eq
+(public). Tested [numbers]: device-gen structure == host build_Eq (n=3..10); host build_Eq(16) 17.2ms vs device-gen
+2.6ms (6.7x); E_q(12) 8191 nodes -> eval 4096=2^12, forest grows by the SPPF (n+1, or n when the 1/1 leaf is already
+resident). BUG caught by the cross-path witness (the "test where it'd break" discipline): the device-gen leaf code
+must come from the interner's SHARED leafcodes namespace -- a hardcoded code collided with another value's code (E_q
+1/1 hashed onto a resident 1/2 -> 2048 not 4096); fixed by threading F.FE.leafcodes[(1,1)]. regression-clean (all 6
+modules PASS). Honest scope: Agda-sourced terms still upload (host-sourced by nature -- the Agda compiler runs on host);
+device-gen is for the parametric stream families. The forest payload host-mirror remains (the final rung).
 
 **b-real-incr [DONE -- AI-Δ9]:** the physical code-ordered store is now merged INCREMENTALLY each eval
 (jea_resident.Forest.materialize_incr) instead of a FULL cp.argsort of the whole forest. The store pcode/pstable is

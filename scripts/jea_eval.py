@@ -25,6 +25,11 @@ def evaluate(g):
     are SHARED (referenced via the device searchsorted), never recomputed. Returns (value, evaluated_new, shared)."""
     return R.evaluate(g, _FOREST)
 
+def evaluate_Eq(n):
+    """Δ-Ψ-dag: evaluate the parametric family E_q(n) with the DAG GENERATED ON-DEVICE (the host ships only n -- no
+    O(N) term construction/upload), shared into the same persistent resident forest. Returns (value, new, shared)."""
+    return R.evaluate_Eq(n, _FOREST)
+
 def memo_size(): return _FOREST.size()                         # resident SPPF size (distinct sub-terms ever seen)
 
 # --- the SUPERVISOR DECISION WAL, held HERE (same module as the eval forest) as ONE trace structure (Δ-Σ-trace c) ---
@@ -54,11 +59,19 @@ if __name__ == "__main__":
     # decision WAL: a stream [live, hot, live] -> recurring 'live' interns (the supervisor reuses the cached decision)
     for ev,opd in [((46,0.5),(170,0,20)), ((120,0.5),(340,1,20)), ((46,0.5),(170,0,20))]: record_decision(ev,opd)
 
+    # Δ-Ψ-dag: the public device-gen path -- evaluate E_q(n) with the DAG generated ON-DEVICE (host ships only n)
+    m3=memo_size(); veq,nceq,_=evaluate_Eq(12); m4=memo_size()
+    print(f"  evaluate_Eq(12) [DAG generated on-device from n] = {veq} (==2^12:{veq==Fraction(4096,1)})  "
+          f"forest grew {m4-m3} of 8191 nodes ({nceq} new combines; the 1/1 leaf was shared from T1 -- host bookkept O(distinct))")
+
     w_eval = (v1==Fraction(7,6)) and (v2==Fraction(1,3)) and (m2-m1 < T2["N"]) and (s2>=1)   # exact + sharing on device
     w_wal  = (wal_len()==3) and (distinct_decisions()==2)                                    # recurring decision interned
+    w_dag  = (veq==Fraction(4096,1)) and (0 < m4-m3 <= 13) and (nceq==12)                    # device-gen E_q(12) -> 2^12; SPPF growth
     print(f"\nW1 EXACT + DEVICE-RESIDENT SHARING (T1=7/6,T2=1/3; forest grew {m2-m1}<{T2['N']} -- S shared, computed once): {w_eval}")
     print(f"W2 DECISION WAL interned in the SAME module ({wal_len()} steps -> {distinct_decisions()} distinct; recurring evidence reused): {w_wal}")
-    ok=w_eval and w_wal
+    print(f"W3 Δ-Ψ-DAG (evaluate_Eq: DAG generated ON-DEVICE from n -> 2^12, forest grew {m4-m3} of 8191; no host term build/upload): {w_dag}")
+    ok=w_eval and w_wal and w_dag
     print(f"\n  {'PASS' if ok else 'FAIL'} — jea_eval is the public memoizing evaluator over the device-resident forest")
     print(f"  (jea_resident) + the decision WAL: eval-SPPF, gcd/EEA value, and decision trace, one structure; sharing")
-    print(f"  is a device searchsorted, the forest grows by new nodes only. Consumed by jea_agda_apex.")
+    print(f"  is a device searchsorted, the forest grows by new nodes only; parametric families generate ON-DEVICE")
+    print(f"  (Δ-Ψ-dag, evaluate_Eq). Consumed by jea_agda_apex.")

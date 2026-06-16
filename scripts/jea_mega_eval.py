@@ -94,10 +94,23 @@ class Fused:
         self.cbln=cp.zeros(CAP,cp.int32); self.cbld=cp.zeros(CAP,cp.int32)
         self.cescal=cp.zeros(CAP,cp.int32); self.cready=cp.zeros(CAP,cp.int32); self.leafcodes={}
 
+    def _launch(self, dop, dl, dr, dlk, dNlo, dNhi, dDlo, dDhi, N):
+        """Run the fused kernel on DEVICE arrays. Returns (canon DEVICE array, distinct). The shared launch core for
+        the host-fed path (intern_eval) and the on-device DAG-gen path (intern_eval_dev -- the term never round-trips)."""
+        canon=cp.full(N,-1,cp.int32); nready=cp.zeros(N,cp.int32); pend=cp.full(1,N,cp.int32); err=cp.zeros(1,cp.int32)
+        _k((_BLK,),(_THR,),(dop,dl,dr,dlk,dNlo,dNhi,dDlo,dDhi,
+                            canon,nready,pend,np.int32(N),self.htkey,self.htval,np.int32(self.HCAP),self.nextid,
+                            self.cNlo,self.cNhi,self.cDlo,self.cDhi,self.cbln,self.cbld,self.cescal,self.cready,
+                            np.int64(8_000_000),err))
+        cp.cuda.Stream.null.synchronize()
+        e=int(err.get()[0])
+        if e in (1,2): raise RuntimeError(f"mega_eval err={e} (1=productivity bound, 2=table full -- raise HCAP/CAP)")
+        return canon, int(self.nextid.get()[0])
+
     def intern_eval(self, g):
-        """Fused intern+combine in ONE kernel. Returns (canon per node, distinct). The CANON-indexed value store
-        (cNlo/cNhi/cDlo/cDhi, cescal) persists on the device -- read new ids with read_range. (err=3 = some node
-        escalated >u128 -> flagged in cescal for the host byte-limb crown fold; that fold is exact, never lost.)"""
+        """Fused intern+combine in ONE kernel (HOST-fed term). Returns (canon per node, distinct). The CANON-indexed
+        value store (cNlo/cNhi/cDlo/cDhi, cescal) persists on the device -- read new ids with read_range. (err=3 = some
+        node escalated >u128 -> flagged in cescal for the host byte-limb crown fold; that fold is exact, never lost.)"""
         N=g["N"]; lk=np.zeros(N,np.uint64); lNlo=np.zeros(N,np.uint64); lNhi=np.zeros(N,np.uint64)
         lDlo=np.zeros(N,np.uint64); lDhi=np.zeros(N,np.uint64)
         for i in range(N):
@@ -108,16 +121,15 @@ class Fused:
                 lk[i]=(np.uint64(3)<<np.uint64(62))|np.uint64(c)
                 lNlo[i]=vN & _M; lNhi[i]=vN>>64; lDlo[i]=vD & _M; lDhi[i]=vD>>64
         d=lambda a,t: cp.asarray(a,t)
-        dop=d(g["op"],cp.int32); dl=d(g["lch"],cp.int32); dr=d(g["rch"],cp.int32)
-        canon=cp.full(N,-1,cp.int32); nready=cp.zeros(N,cp.int32); pend=cp.full(1,N,cp.int32); err=cp.zeros(1,cp.int32)
-        _k((_BLK,),(_THR,),(dop,dl,dr,cp.asarray(lk),cp.asarray(lNlo),cp.asarray(lNhi),cp.asarray(lDlo),cp.asarray(lDhi),
-                            canon,nready,pend,np.int32(N),self.htkey,self.htval,np.int32(self.HCAP),self.nextid,
-                            self.cNlo,self.cNhi,self.cDlo,self.cDhi,self.cbln,self.cbld,self.cescal,self.cready,
-                            np.int64(8_000_000),err))
-        cp.cuda.Stream.null.synchronize()
-        e=int(err.get()[0])
-        if e in (1,2): raise RuntimeError(f"mega_eval err={e} (1=productivity bound, 2=table full -- raise HCAP/CAP)")
-        return [int(x) for x in canon.get()], int(self.nextid.get()[0])
+        canon,distinct=self._launch(d(g["op"],cp.int32),d(g["lch"],cp.int32),d(g["rch"],cp.int32),
+                                    cp.asarray(lk),cp.asarray(lNlo),cp.asarray(lNhi),cp.asarray(lDlo),cp.asarray(lDhi),N)
+        return [int(x) for x in canon.get()], distinct
+
+    def intern_eval_dev(self, dop, dl, dr, dlk, dNlo, dNhi, dDlo, dDhi, N):
+        """Δ-Ψ-dag: fused intern+combine on a DEVICE-GENERATED term -- the op/lch/rch/leaf arrays are built on-device
+        from the generator parameters (jea_dag_gen), NEVER constructed on the host nor uploaded. Returns (canon DEVICE
+        array, distinct); the canon stays on device so the caller can do O(distinct) bookkeeping via cp.unique."""
+        return self._launch(dop, dl, dr, dlk, dNlo, dNhi, dDlo, dDhi, N)
 
     def read_range(self, lo, hi):
         """Read the canon value store for ids [lo,hi): host (vN, vD, escal) lists. Escalated ids (>u128) carry a
