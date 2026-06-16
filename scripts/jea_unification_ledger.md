@@ -194,6 +194,21 @@ ON-DEVICE, and COMPOSE the orphaned demos into ONE running supervisor (a propert
     vs over-fetch (~footprint when L~footprint), CAPPED by SM capacity -- a MEASURED hw knob (L, footprint, SM), not
     baked. User's intuition confirmed + sharpened: SM capacity is the ceiling; the latency balance picks T* within it.
     [navigator territory: the sort STRATEGY (interleave granularity) is a live hardware-tuned choice, not a constant.]
+
+  **RETRO (Δ-Σ-trace arc, ritual applied):** DELTA -- the arc converged to a strong tested result (W1..W5, all
+  consumed, jea_intern/jea_agda_dag/jea_trace_window de-orphaned), but EVERY step needed a USER correction to reach
+  the honest form: (1) built rung-(b) as a __main__ DEMO + unconsumed gg = orphan/theater; (2) "prune the SPPF" --
+  you don't prune, you share-into-a-growing-forest; (3) over-claimed "z-order not a correctness lever / dedup
+  separable from locality"; (4) value-code was extrinsic morton(num,den), the intrinsic is Stern-Brocot/CF (the EEA
+  residue); (5) efficiency metric monotone (no optimum) until per-transfer LATENCY added. ROOT (class-level): I bar
+  at "it runs + witnesses pass + first coherent story," not at "consumed by an import edge + structurally canonical
+  + tested in the regime where it would break." The orphan-demo reflex RECURRED despite [[feedback_demo_proven_is_not_wired]]
+  already saved -- a memory the default loop can skip. G9 ESCALATION (correct-by-construction, NOT yet built;
+  belongs in scripts/ pre-commit, cannot be a memory per the harness rule): a gate that flags a new scripts/jea_*.py
+  carrying a __main__ witness-demo with NO importer (orphan), and/or a kernel output array never read by any caller
+  (unconsumed = theater). HANDOFF blind spot (shared across all my passes): I reconstruct structure the user already
+  sees (quadtree, Stern-Brocot, SM/HBM latency) -- an external reviewer should push each claim to its FALSIFYING
+  regime + verify the import edge, before I call it done.
     **NEXT rungs:** (b-real) device-RESIDENT forest (jea_eval's _NODES + intern living ON-GPU as a persistent sorted
     z-code array, merged per eval -- the sort is already device; the RESIDENCE/merge is the remaining step);
     (d) semantic SPPF tools (sppf_label/node_index/type_sppf{,_crosslayer}) audit -- still orphaned.
