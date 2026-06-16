@@ -42,9 +42,16 @@ framework (the operator = [[feedback_judgement_is_demechanization]], already on 
   correct. THE DISTINCTION: fuel expects to be hit (caps, returns partial); a productivity proof means the
   structural guard is the control and the only numeric is a never-fired invariant check. (jea_megakernel's
   cursor>=N is likewise structural; its watchdog is a hang-safety, not fuel.) Fuel ELIMINATED, not shrunk.
-- **Δ-J3** [MEDIUM, blocked] = the convex INTERIOR of K/layout + intermediate-g (old Δ-A6b-rest). Corner-sampling
-  is the judgement; mechanize = measure the interior surface. BLOCKED: intermediate-g needs a hybrid scheduler to
-  even sample; K/layout need grounded convex models. Do after Δ-J1 (the scheduler) exists.
+- **Δ-J3** [CLOSED for active-lane-g by measurement; K/layout remain] the interior-candidate flag was SPECULATIVE
+  ("flagged, not asserted"), so Δ-J3 = MEASURE the interior, not assert it. jea_apex_gsurface.py measures the apex
+  drain across the whole active-lane axis g (now a real continuous knob): surface is MONOTONE-TO-PLATEAU (1.24ms@g=1
+  -> 0.08ms plateau@g>=80), argmin at the corner -> NO interior optimum. The interior-candidate flag is REFUTED by
+  measurement for active-lane g (the corner-audit was fine); test-the-wall + noise-floor-flat-region: measure before
+  asserting a missed interior win. BUG FOUND+FIXED en route (hunt-opacity): the apex's sweep-assertion counted
+  IDLE-lane spins (gid>=g lanes busy-spin the while loop, out-spinning the few workers at small g) -> false err=3 at
+  g<6 though the VALUE was always correct. Fixed: only ACTIVE lanes (gid<g) count work-sweeps. K-window (U9) +
+  layout-bucketing remain interior-candidates on THEIR kernels -- same measure-the-surface move (NOT a fitted convex
+  model); unmeasured here, so unclaimed.
 - **Δ-J4** [LOW-MED, cheap] = measure_g_surface's REPRESENTATIVE-DAG choice (build_dag(512,3)/deep_chain(200)) is
   a frozen judgement. Mechanize = measure the ACTUAL workload's DAG (re-read the real thing). Easy, immediate.
 - **Δ-J5** [LOW, opportunistic] = residual magic constants: thermal_gate floor=0.4/k=0.03 (inherited el-atlas),

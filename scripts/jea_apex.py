@@ -51,10 +51,11 @@ extern "C" __global__ void apex(
   int gid = blockIdx.x*blockDim.x+threadIdx.x;
   long long sw=0; int last_g=-1; int gn=0;
   while (*pending>0) {                                          // STRUCTURAL drain (productivity; no fuel)
-    if (sw++ >= assert_bound) { *err=3; break; }               // PROVEN-invariant assertion (sweeps<=npool); never fires
     int a=*active; int g=pkg[a*fields+0]; if (g<1) g=1;        // LIVE schedule = active-lane count
     if (gid==0 && g!=last_g && gn<gtcap) { gtrace[gn++]=g; last_g=g; }
-    if (gid < g) {
+    if (gid < g) {                                              // only ACTIVE lanes do work AND count work-sweeps
+      if (sw++ >= assert_bound) { *err=3; break; }             // assertion on ACTIVE-lane work sweeps (idle lanes
+                                                               // must NOT count -- they spin fast and would false-trip it)
       int qt=*qtail;
       for (int i=gid; i<qt; i+=g) {
         if (status[i]!=0) continue;
