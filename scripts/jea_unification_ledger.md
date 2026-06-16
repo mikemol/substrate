@@ -47,9 +47,16 @@ RUNG: R(observable, transitions)
   FLAGGED). Interior axes may have HYBRID operating points beating every named preset = a missed OPTIMUM (≠ missed
   consolidation). The engine = one point in the (e,m,K,b,g,d,tier) polytope (= the ledger's faces); solve navigates.
   PROPAGATE rule: decomposing one axis to a surface should trigger the same on siblings, not wait for a tie.
-- **Δ-A6** [OPEN] ground the convex cost model per interior-candidate axis (U9 for K; occupancy(g) for schedule-g;
-  density-vs-overhead for layout) and locate the interior optimum -- the hybrid operating points the discrete audit
-  cannot see. NOT fabricated in jea_knob_surfaces (bang-bang proven; interior flagged honestly). Hunt the missed OPTIMA.
+- **Δ-A6** [REFRAMED -- the goal is the NAVIGATOR, not the stored optimum] User: don't permanently find the optimal
+  solution; build the SYSTEM that finds it under the evidence of the moment + adapts to new hardware/conditions.
+  My "locate the interior optimum" was the static-answer reflex. jea_navigator.py IS the navigator: operating_point
+  = re-solve over (surfaces DISCOVERED+MEASURED on the current box, LIVE evidence package), every call, nothing
+  stored. Demonstrated: adapts to CONDITIONS (cool->hot: f* 0.46->0.51, bottleneck iMC->thermal) and to HARDWARE
+  (this->other surfaces: f* 0.46->0.84), SAME code. The interior-optimum convex models (K/g/layout, the old Δ-A6)
+  become PLUGGABLE SURFACES the navigator consumes when measured -- it never freezes a winner. [[feedback_navigator_not_answer]]
+- **Δ-A6b** [OPEN, subordinate] measure the convex surfaces (U9 K-waste, occupancy(g), layout density) at RUNTIME
+  so the navigator can navigate the interior of those axes too -- as discovered+measured inputs, not frozen optima.
+  (The navigator already works on the bang-bang + dispatch axes; this widens its reach, doesn't change its nature.)
 - **Δ-F5** [finding] correcting ONE edge's efficiency while leaving another structural gives a WRONG f* — the
   overestimates must move together (ratio-cancellation, the Δ-A1 lesson generalized). Correct all edges or none.
 - **Δ-F6** [finding] a LIVE-measured efficiency already SUBSUMES the live_state it was measured at (a saturating
