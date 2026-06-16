@@ -150,3 +150,23 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
     trans (sym (reduce-*-hom a s))
     (trans (trans (cong reduce-mod-f (*P-comm a s)) (reduce-subst (+ℕ-comm ns (suc d)) (s *P a)))
     (trans (reduce-drop s a t g bez) gunit))
+
+  -- B-INV-UNIT: the gcd unit reduces to 𝟙.  Over F₂ a coprime pair's gcd is the
+  -- constant 𝟙; a g with those coefficients (𝟙 at 0, 𝟘 above) reduces to oneC.
+  reduce-unit : {ng : ℕ} (g : Poly ng)
+              → nth g zero ≡ 𝟙 → ((k : ℕ) → nth g (suc k) ≡ 𝟘)
+              → reduce-mod-f g ≡ oneC
+  reduce-unit g h0 hs = trans (reduce-cong-nth g oneC nth-eq) (reduce-idempotent oneC)
+    where
+      nth-eq : (k : ℕ) → nth g k ≡ nth oneC k
+      nth-eq zero    = h0
+      nth-eq (suc k) = trans (hs k) (sym (nth-replicate d k))
+
+  -- B-INV (composed): the full inverse read.  From a Bézout `s·a + t·b-poly = g`
+  -- (coefficient-wise) with g the unit, `a⁻¹ = reduce-mod-f s` and a *Q a⁻¹ ≡ 𝟙.
+  inverse-from-bezout : {ns nt ng : ℕ}
+                        (s : Poly ns) (a : Poly (suc d)) (t : Poly nt) (g : Poly ng)
+                      → ((k : ℕ) → convCoeff s a k + convCoeff t b-poly k ≡ nth g k)
+                      → nth g zero ≡ 𝟙 → ((k : ℕ) → nth g (suc k) ≡ 𝟘)
+                      → a *Q (reduce-mod-f s) ≡ oneC
+  inverse-from-bezout s a t g bez h0 hs = reduce-read s a t g bez (reduce-unit g h0 hs)
