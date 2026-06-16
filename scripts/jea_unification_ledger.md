@@ -91,8 +91,16 @@ NEXT-STEP SYMBOLS (dispatch by symbol; AI-Δ0 executes unless a dedicated AI is 
   hand-built (build_dag), not Agda-extracted terms; the charter's PRIMARY goal is term-algebra->GPU. Connect the
   existing jea_agda_bridge (predates this apex) to the NEW unified apex so an Agda Free-term reduces on-device.
   This is the next-level SNAP: GPU-evaluator ⊕ Agda-foundation -> "Agda on GPU". (Reuse jea_agda_bridge; don't reinvent.)
-- **AI-Δ6 / Δ-J6** [subordinate polish] K-window + layout INTERIOR surfaces -- the measure-the-surface move (Δ-J3)
-  on THEIR kernels (unmeasured -> unclaimed; per-hardware, nothing baked).
+- **AI-Δ6 / Δ-J6** [CLOSED -- measured to mature verdicts, jea_interior_surfaces.py]:
+  K-WINDOW: total(K) swept on the real gw kernel, UNIFORM (Fib) AND MIXED depth -> MONOTONE both (K*=corner). No
+  interior K* on gw: it has no cost growing with K (converged lanes cheap-skip; K is a loop count). U9's "interior
+  K*" is a MODEL wasted-work term gw does not realize -- refuted by measurement, bound to gw+hardware; a real
+  interior K* would need costly-wasted-work or lane-compaction (a forward feature, NOT assumed).
+  LAYOUT: density(B) swept over nested pow-2 bucket-sets on a skewed dist -> monotone-increasing, KNEE at B≈6
+  (74% vs full 75%); rungs>6 add ~0 density. So the interior B* is FIRMLY BOUNDED <=6 (a REAL measured interior,
+  not vague); exact B* in [~4,6] set by the per-rung re-bucket OVERHEAD (the one pending scalar -- a per-target
+  constant the navigator measures, ~linear in B; density already kills rungs>6). Both bound, nothing baked.
+  Mirror finish: measured, bounded, honest measured-vs-pending. The measure-the-surface move is complete for J6.
 - **AI-Δ7 / Δ-Ω-deliver-opt** [subordinate polish] subtree-only byte-limb deliver (vs the current full-DAG recompute
   on escalation) -- an optimization, not a gap.
 
