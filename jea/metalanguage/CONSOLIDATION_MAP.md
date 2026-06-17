@@ -44,6 +44,27 @@ python3 jea/metalanguage/jea_pysim.py --shape --min-size 10 jea/jea_onegraph.py 
 | 0.92 | `el-atlas-depsort.py` ↔ `el-atlas-depsort-v3.py` (`t_PUR`/`t_PRO`, …) | a versioned rewrite — v3 supersedes v1; candidate to **retire v1**, not merge. |
 | 0.91–0.95 | within `el-atlas-depsort-v3` (`inside`/`insideP`, `_rdw_ok`/`_nf_empty`, `t_RDW`/`t_ZDW`) | parallel helpers; local parameterization if touched. |
 
+## ④ Tool supersession (Π3) — `jea_pysim` ⊇ `scripts/agda_similarity`, retirement GATED
+
+`jea_pysim` (structural) subsumes `agda_similarity` (textual) in **method, surfaces, and precision** —
+and corrects a bug the original still carries:
+
+| `agda_similarity` (textual) | `jea_pysim` (structural) | relation |
+|---|---|---|
+| 4 cosine scales (char3/token/line/block), comment-stripped | depth-grades over the interned SPPF + the `S(g)` SHAPE | structural; the shape is a curve, not a per-scale scalar |
+| `anonymize_text` (hand-written regex per orbit, e.g. `Z[2-9]→<Zn>`) | **exact** α-equivalence (role-lowering, automatic) | exact + automatic ⊇ heuristic + manual |
+| verdict = **MAX** shared-ratio across scales (STRONG 0.80) | the SHAPE classifier (NOT max) | **fixes the bug**: the token scale saturates ~0.999 for *any* two Python files → max-verdict says STRONG for unrelated pairs (measured) |
+| shared n-grams (textual coincidence) | interned fan-in (exact shared subtrees) | no false-positives on comments / names / whitespace |
+| file-level cosine + template | unit-level (def/class) + recursive typehole tree | finer granularity, recursive |
+
+**But the retirement is BLOCKED — coverage gap.** `agda_similarity` tokenizes *text* (Agda-tuned but
+language-general), so it handles **Agda**; `jea_pysim` parses *Python AST*, so it handles **Python only**
+— it cannot read `.agda`. The structural method is strictly better, but it does not yet cover
+`agda_similarity`'s actual domain. **Retirement is gated on `jea_agdai`'s core-intern shim** (the
+Agda-2.8.0 `readInterface` JSON, currently a stub): once Agda core interns into the same forest,
+`jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in *both* method AND coverage (and structurally, beating its
+textual n-grams). Until then `agda_similarity` STAYS — the only Agda-capable similarity tool.
+
 ## The standout finding
 
 The **circuit-solve has three independent reimplementations** — `jea_onegraph` (graded-ℚ, Π2-folded),
