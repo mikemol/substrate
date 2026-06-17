@@ -154,9 +154,15 @@ W11 FAIL). Fires ONLY on jea changes (never blocks the Agda/Q subtree); self-ski
 in spirit (it IS the gate). [The 'computed-findings' check stays a discipline (hard to mechanize 'did you compute the
 why') -- the profiler pattern (jea_graded.profile_combine_batch) is the template.]
 
-**NEXT executors (to dispatch, by symbol):** **AI-d** -- the semantic SPPF tools audit (sppf_label/node_index/
-type_sppf{,_crosslayer} -- compose or retire); loose: scripts/jea_apex.py unstaged decision-WAL-witness removal (MINE;
-decide keep/revert) -- run the {+,×,÷} operating-point solve
+**AI-d [DONE -- audit verdict: COMPOSE, none retired]:** all FOUR semantic-SPPF tools RUN (not bitrotted).
+sppf_node_index = the LIVE collision-index GATE (.githooks/pre-commit + 2 importers; disambiguates colliding NAMES) --
+separate purpose, already composed. sppf_label (same object in >1 module = ≃ bridge), type_sppf (structural-skeleton
+SPPF), type_sppf_crosslayer (iso classes ranked by cross-silo dep-depth span) = three DISTINCT live discovery lenses
+finding REAL unconstructed bridges -- none redundant, none retired. PROOF of value: sppf_label flags ⟦Wedge⟧
+(Nat.GCD.Wedge + Algebra.Wedge), which AI-Q JUST CONSTRUCTED (generic-Quot recon : C→C→C→C) -- a flagged bridge got
+built. COMPOSED into ONE entry (scripts/sppf_discover.py) that runs the three + frames the output as the BRIDGE
+BACKLOG (advisory candidates to construct, NOT a pass/fail gate -- they're a backlog, not invariants). Re-run after
+structural work to refresh. Loose: scripts/jea_apex.py unstaged decision-WAL-witness removal (MINE; decide keep/revert). -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
