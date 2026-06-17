@@ -25,7 +25,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EMIT_DIR = os.path.join(ROOT, "scratch", "jea")
+EMIT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agda-emit")
 
 
 def typecheck():

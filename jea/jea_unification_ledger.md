@@ -993,7 +993,7 @@ U7   host intern only    --device-side-intern(parallel hash-cons, GPU sort+uniqu
 U8   self-contained Emit --emit-shared-SPPF-from-Agda(node-list, refl-vouched)-->  real Agda SPPF on GPU
                                           [EmitDAG.agda --safe vouchers; 6 DAG vs 31 tree (5.2x sharing); shared nodes
                                            computed ONCE; GPU == Agda value (7/6)^8 = 5764801/1679616 exact; canonical; U6,U7]
-                                          (scratch/jea/EmitDAG.agda + jea_agda_dag.py)
+                                          (jea/agda-emit/EmitDAG.agda + jea_agda_dag.py)
 ```
 
 ### APEX-1 (the universal engine) -- COMPLETE

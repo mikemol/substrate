@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
--- scratch/jea/EmitDAG.agda
+-- jea/agda-emit/EmitDAG.agda
 --
 -- U8: the SPPF/DAG end of the Agda-on-GPU bridge. Emit.agda emits a TREE
 -- (every occurrence its own node); this emits the SHARED SPPF form the real

@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
--- scratch/jea/EmitBig.agda
+-- jea/agda-emit/EmitBig.agda
 --
 -- Δ-Φ maturation: a refl-VOUCHED Agda term whose value EXCEEDS u128 (217 bits),
 -- so the Agda-on-GPU path is driven AT A MAGNITUDE the old u64/u128 carriers cannot

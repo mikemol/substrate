@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
--- scratch/jea/Emit.agda
+-- jea/agda-emit/Emit.agda
 --
 -- The Agda end of the Agda-on-GPU bridge. A term algebra defined HERE in Agda;
 -- the GPU cooperative-generator evaluator (scripts/jea_generator_dag*.py) computes

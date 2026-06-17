@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """jea_agda_bridge.py — the end-to-end Agda-on-GPU path. A term algebra defined in Agda
-(scratch/jea/Emit.agda) is evaluated, EXACT, by the cooperative GPU generators
+(jea/agda-emit/Emit.agda) is evaluated, EXACT, by the cooperative GPU generators
 (jea_generator_dag), and must agree with Agda's own value.
 
 The bridge IS the typechecker (substrate --safe spirit, no MAlonzo): Emit.agda proves by refl
@@ -19,7 +19,7 @@ from fractions import Fraction
 os.environ.setdefault("CUDA_PATH", "/usr")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EMIT_DIR = os.path.join(ROOT, "scratch", "jea")
+EMIT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agda-emit")
 EMIT = os.path.join(EMIT_DIR, "Emit.agda")
 
 
