@@ -20,72 +20,28 @@ The cipher-vocabulary mapping (validated on the mat260 corpus):
   Name("()")            -> Symbol("unit")  (the ECB no-op state)
 """
 from __future__ import annotations
-import sys, os, re
+import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern
 from jea_omml import lower_omml
 from jea_octave_gen import _passthrough          # reuse Σ-OCTAVE's translator-seam default
+from jea_ir_unify import project_unified         # THE forest-IR -> sympy projector (reads OMML + sympy dialects)
 import sympy as sp
 from sympy.utilities.codegen import codegen
 
-_IDENT = re.compile(r"^[A-Za-z_]\w*$")
-_BINOP = {
-    "Add":  lambda a, b: a + b,
-    "Sub":  lambda a, b: a - b,
-    "Mult": lambda a, b: a * b,
-    "Div":  lambda a, b: a / b,
-    "Xor":  lambda a, b: sp.Function("bitxor")(a, b),     # ⊕ -> Octave's native bitxor
-}
-
-
-def _name_to_sympy(t: str):
-    if t == "()":
-        return sp.Symbol("unit")                          # the ECB no-op state update
-    nt = t.replace("−", "-")                              # U+2212 minus -> ASCII
-    if _IDENT.match(nt):
-        return sp.Symbol(nt)
-    try:
-        return sp.sympify(nt)                             # an expression-run ("i-1") -> sympy's own parser
-    except Exception:
-        return sp.Symbol(re.sub(r"\W", "_", t))           # last resort: a sanitized identifier
-
-
-def omml_ir_to_sympy(I: Intern, nid: int):
-    """THE IR-bridge: an OMML-lowered forest node -> a sympy expression. Recursive over the OMML-IR kinds."""
-    n = I.nodes[nid]
-    k = n.kind
-    if k == "Name":
-        return _name_to_sympy(n.op or (n.payload[0] if n.payload else "_"))
-    if k == "App":
-        fn = I.nodes[n.children[0]]
-        fname = fn.op or (fn.payload[0] if fn.payload else "f")
-        return sp.Function(fname)(*[omml_ir_to_sympy(I, c) for c in n.children[1:]])
-    if k == "BinOp":
-        op = _BINOP.get(n.op)
-        if op is None:
-            raise KeyError(f"omml_ir_to_sympy: no BinOp mapping for {n.op!r}")
-        return op(omml_ir_to_sympy(I, n.children[0]), omml_ir_to_sympy(I, n.children[1]))
-    if k == "Subscript":
-        base = I.nodes[n.children[0]]
-        base_name = base.op or (base.payload[0] if base.payload else "s")
-        idx = omml_ir_to_sympy(I, n.children[1])
-        # emit s(i-1): in Octave indexing and calls are syntactically identical, so a Function gives the
-        # right text WITHOUT triggering sympy codegen's Indexed array-loop machinery (which rejects a
-        # scalar output). (The index/call conflation is Octave's own -- resolved by its runtime, not us.)
-        return sp.Function(base_name)(idx)
-    if k == "Args":
-        return sp.Tuple(*[omml_ir_to_sympy(I, c) for c in n.children])
-    if k == "Constant":
-        v = n.op or (n.payload[0] if n.payload else "0")
-        return sp.sympify(v.replace("−", "-"))
-    raise KeyError(f"omml_ir_to_sympy: unhandled OMML-IR kind {k!r}")
+# omml_ir_to_sympy RETIRED (Σ-IR-UNIFY): the OMML-IR -> sympy map was a duplicate of the sympy-IR ->
+# sympy map; both are now jea_ir_unify.project_unified (the structured vocabulary both dialects share,
+# n-ary-tolerant, with the OMML Name edge-handling absorbed). Validated: project_unified reproduces the
+# old omml_ir_to_sympy on all 12 mat260 equations. The name is kept as an alias for any caller.
+omml_ir_to_sympy = project_unified
 
 
 def omml_to_sympy(omml_str: str, intern: Intern | None = None):
-    """Lower one OMML string and bridge it to sympy. Returns (expr, partitions, intern)."""
+    """Lower one OMML string and bridge it to sympy via the UNIFIED projector. Returns (expr, partitions,
+    intern)."""
     I = intern or Intern()
     root, parts = lower_omml(omml_str, I)
-    return omml_ir_to_sympy(I, root), parts, I
+    return project_unified(I, root), parts, I
 
 
 def omml_to_octave(omml_str: str, name: str, arg_order=None, translator=_passthrough) -> dict:
