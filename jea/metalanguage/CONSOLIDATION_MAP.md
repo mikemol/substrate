@@ -24,7 +24,7 @@ python3 jea/metalanguage/jea_pysim.py --shape --min-size 10 jea/jea_onegraph.py 
 | frac | pair | the fold |
 |---|---|---|
 | 0.96 / 0.94 | `jea_agda_bridge.{read_vouched,typecheck}` ↔ `jea_agda_dag.{read_vouched,typecheck}` | near-identical (only the emitted filename differs); extract ONE agda-bridge helper parameterized by filename. The cleanest jea/ win. |
-| 0.95 | el-atlas `kirchhoff_nedge` nodal `solve` / `G_AND`/`G_OR` | **perspective-mapped (Φ1 ✅ — see §⑤).** `jea_circuit` now carries `nodal_solve` (the governing law); `series_schur`/`parallel` are its subtraction-free reducible projection; the carrier's subtraction-capability is the mapped axis. `kirchhoff.solve` = the float instance (validatable, no cross-project import). |
+| 0.95 | el-atlas `kirchhoff_nedge` nodal `solve` / `G_AND`/`G_OR` | **perspective-mapped (Φ1′ ✅ — see §⑤).** `jea_circuit` carries TWO coordinates of one governing law: `nodal_solve` (subtractive Gaussian) and `nodal_solve_subfree` (subtraction-free Matrix-Tree ratio). The carrier's subtraction-capability selects the COORDINATE, not which graphs are solvable — the sub-free wedge solves the irreducible Wheatstone too. `kirchhoff.solve` = the float instance of the subtractive coordinate. |
 | 0.94 | `jea_generator_strat._lh` ↔ `jea_generator_unified._lh` | identical limb-split helper; promote to one home. |
 | 0.92 | `jea_carrier_solve.build_Eq` ↔ `jea_zsppf.build_Eq` | duplicated; one definition. |
 | 0.93 | `chassis_cap_test.cpu_worker` ↔ `power_probe_root.cpu` | duplicated power-probe worker. |
@@ -65,7 +65,7 @@ Agda-2.8.0 `readInterface` JSON, currently a stub): once Agda core interns into 
 `jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in *both* method AND coverage (and structurally, beating its
 textual n-grams). Until then `agda_similarity` STAYS — the only Agda-capable similarity tool.
 
-## ⑤ Φ1 — kirchhoff is the nodal PERSPECTIVE, mapped (the carrier's subtraction-axis)
+## ⑤ Φ1′ — kirchhoff is a COORDINATE of one law (subtraction-capability selects the chart, not the graphs)
 
 Π2 unified two circuit-solve instances — `jea_onegraph` (graded-ℚ) and `jea_picircuit` (Fraction) — via
 `jea_circuit`'s pluggable carrier. The Π4 sweep flagged el-atlas `kirchhoff_nedge`'s `G_AND`/`G_OR` (0.95)
@@ -75,17 +75,26 @@ is what the `--shape` instrument does.* (My first pass rejected the fold by priv
 "nodal-primitive" perspective — the exact G9 failure: leading with my judgment over the instrument's mapped
 output. Corrected.)
 
-**The axis is the carrier's subtraction-capability:**
-- `series_schur`/`parallel` = the **subtraction-free** closed form; runs on a sub-free carrier (the graded-ℚ
-  wedge, jea's charter), exact on series-parallel-**reducible** graphs.
-- `nodal_solve` (Φ1, added to `jea_circuit`) = the **governing law** — Kirchhoff nodal analysis, general
-  (handles irreducible graphs: shared resource, Wheatstone bridge); needs a **subtraction-having** carrier
-  (Fraction/float). The closed form **emerges** from it exactly (witnesses w7/w8: nodal == series_schur /
-  parallel on reducible graphs; w9: a balanced Wheatstone resolves).
+**The axis is the carrier's subtraction-capability — but it selects the COORDINATE, not the solvable graphs
+(Φ1′ correction):** the governing law has TWO coordinates, both in `jea_circuit`:
+- `nodal_solve` = the **subtractive** coordinate — Kirchhoff nodal analysis by Gaussian elimination over the
+  Laplacian; needs a **subtraction-having** carrier (the Laplacian's negative off-diagonals + elimination).
+  `kirchhoff.solve` is its float instance. (witnesses w7/w8: nodal == series_schur / parallel on reducible
+  graphs; w9: balanced Wheatstone resolves to 1.)
+- `nodal_solve_subfree` = the **subtraction-free** coordinate — by the **Matrix-Tree theorem**, G_eff is a
+  RATIO of two positive sums-of-products of edge conductances (spanning-tree polynomial T over spanning-
+  2-forest polynomial F_st). Only add/mul/div touch the carrier, **no `.sub`** — so the graded-ℚ wedge runs
+  it on **any** graph, irreducible ones included (w11/w13: it solves the IRREDUCIBLE Wheatstone, exactly, and
+  agrees with `nodal_solve`). The float realization is the log/division/exp route (products→log-sums, the
+  ratio→subtraction-of-logs=division, exp on readout — the exp⊣log retraction).
+- `series_schur`/`parallel` = the closed-form projection for series-parallel-**reducible** graphs.
 
-So the three instances are ONE conductance-eval over two perspective axes — **carrier value-type**
-(graded-ℚ / Fraction / float) and **carrier subtraction-capability** (sub-free → closed form only;
-sub → nodal). `kirchhoff.solve` is the float instance of `nodal_solve`; jea carries its own (validatable
-against el-atlas's the way `jea_onegraph` self-hosts it — a homing choice, no cross-project import/cycle).
-The series-parallel reduction is the sub-free **projection** of the governing law — governing-law-before-
-special-case, with both perspectives now in one module.
+So the instances are ONE conductance-eval over **carrier value-type** (graded-ℚ / Fraction / float) and a
+**coordinate choice** (subtractive Gaussian vs subtraction-free Matrix-Tree) that the carrier's subtraction-
+capability *selects* — it does NOT bound which graphs are solvable. **(Φ1′ correction:** an earlier rung froze
+"sub-free ⟹ closed form only / cannot solve irreducible graphs" and raised `TypeError` to enforce it — a
+collapsed scalar coordinate mistaken for the geometry. The governing law is coordinate-free; subtraction was
+only the Gaussian chart. Removed — the coordinate→geometry discipline: build the subsuming subtraction-free
+solve, the closed form is its reducible-graph degenerate output.) `kirchhoff.solve` is the float instance of
+the subtractive coordinate; jea carries its own solves (validatable the way `jea_onegraph` self-hosts el-atlas
+— a homing choice, no cross-project import/cycle).
