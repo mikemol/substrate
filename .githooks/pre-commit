@@ -71,6 +71,14 @@ if git diff --cached --name-only | grep -qE '^jea/jea_.*\.py$'; then
   run "jea regression (Δ-G2)" python3 "$ROOT/jea/jea_regression_gate.py" --check
 fi
 
+# Λ8: scratch-independence. If anything under a promoted project (jea/, el-atlas/) is staged, assert it
+# makes NO LIVE scratch/ reference (a path-string or import in executable code; comments/docstrings/.md
+# prose exempt). Converts "is jea independent of scratch?" from a hand-grep I answered wrong twice into a
+# non-skippable invariant (the G9 escalation from the 2026-06-17 scratch-dissolution arc).
+if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
+  run "scratch-independence (Λ8)" python3 "$ROOT/scripts/check_scratch_independence.py" --quiet
+fi
+
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
 # process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
 # most weekly: a successful run touches "$STAMP"; while that stamp is younger than a
