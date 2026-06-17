@@ -121,6 +121,14 @@ def chk_picircuit():
     return "PASS"
 
 
+def chk_mat260_verify():
+    import jea_mat260_verify as V
+    rep = V.verify(V._CIPHERS)
+    assert len(rep["classes"]) == 3, f"expected 3 cipher equivalence classes, got {len(rep['classes'])}"
+    assert rep["realizes"] and rep["realizes"][2] == 0, "equal ciphers must gate at degree 0 (REALIZES)"
+    return "PASS"
+
+
 def chk_cuda():
     try:
         import clang.cindex  # noqa: F401
@@ -146,6 +154,7 @@ CHECKS = [
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
     ("jea_octave_gen",  chk_octave),        ("jea_ir_unify",    chk_ir_unify),
     ("jea_omml_octave", chk_omml_octave),   ("jea_picircuit",   chk_picircuit),
+    ("jea_mat260_verify", chk_mat260_verify),
     ("jea_cuda",        chk_cuda),          ("jea_agdai",       chk_agdai),
 ]
 
