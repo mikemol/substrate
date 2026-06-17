@@ -110,6 +110,28 @@ def combine_batch(op, nL, dL, nR, dR):
     return [ (lambda f:(f.numerator,f.denominator))(Fraction(RN[i],RD[i])) for i in range(N) ]   # reduce at readout
 
 
+def profile_combine_batch(N, G, reps=5):
+    """MEASURE combine_batch's three phases -- PACK (to_bitsliced, host), GPU (the fused bs_mul, device), UNPACK+REDUCE
+    (from_bitsliced + Fraction, host) -- and COMPUTE the bottleneck (the measured argmax phase). So the 'why SWAR loses
+    the dispatch' finding is a measured OUTPUT, not asserted prose (and self-updates: route through gr_* to drop
+    pack/unpack and the measured bottleneck moves). [[feedback_judgement_is_demechanization]] applied to the diagnosis."""
+    import time, random
+    rr=random.Random(N*7+G)
+    nL=[rr.getrandbits(G) for _ in range(N)]; dL=[rr.getrandbits(G) or 1 for _ in range(N)]
+    nR=[rr.getrandbits(G) for _ in range(N)]; dR=[rr.getrandbits(G) or 1 for _ in range(N)]
+    def timed(f):
+        f(); cp.cuda.Stream.null.synchronize(); t0=time.perf_counter()
+        for _ in range(reps): f()
+        cp.cuda.Stream.null.synchronize(); return (time.perf_counter()-t0)/reps
+    t_pack = timed(lambda: (to_bitsliced(nL), to_bitsliced(dL), to_bitsliced(nR), to_bitsliced(dR)))
+    pnL,_=to_bitsliced(nL); pdL,_=to_bitsliced(dL); pnR,_=to_bitsliced(nR); pdR,_=to_bitsliced(dR)
+    t_gpu = timed(lambda: rat_mul(pnL,pdL,pnR,pdR))
+    rn,rd = rat_mul(pnL,pdL,pnR,pdR)
+    t_unpack = timed(lambda: [Fraction(a,b) for a,b in zip(from_bitsliced(rn,N), from_bitsliced(rd,N))])
+    phases={"host-pack": t_pack, "gpu-arith(fused)": t_gpu, "host-unpack+reduce": t_unpack}
+    return phases, max(phases, key=phases.get)                       # (breakdown, COMPUTED bottleneck)
+
+
 # --- graded RATIONAL as DEVICE-RESIDENT plane-tuples (num_planes, den_planes): thread bit-sliced planes THROUGH a
 #     computation without host Fraction reconstruction between ops; reciprocal = SWAP (the ℚ field quotient, free).
 #     Used for the on-device operating-point solve (Δ-Ω-onegraph brick 4): values never leave the device mid-solve. ---

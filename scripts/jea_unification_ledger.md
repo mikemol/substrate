@@ -105,7 +105,12 @@ the ARITHMETIC, but the navigator STILL picks per-node-drain -- because combine_
 bitsliced) + per-node Fraction-reduce is now the bottleneck (the cupy-launch cost is gone; a deeper opacity remained).
 To make SWAR WIN the dispatch: route level_eval_graded through the DEVICE-RESIDENT gr_* (no per-value pack/unpack) --
 named NEXT. recip/÷ stays the free plane-swap (not a kernel). The carrier is branchless; mega_eval's structural
-if(op) divergence is separate (a later fuse-into-the-bitkernel).
+if(op) divergence is separate (a later fuse-into-the-bitkernel). **The finding is now COMPUTED, not asserted
+[user-flagged: a hardcoded finding is a frozen judgement that went stale]:** jea_graded.profile_combine_batch MEASURES
+the 3 phases (host-pack / gpu-arith-fused / host-unpack+reduce) and the navigator prints the argmax bottleneck --
+self-updating. LIVE: host-pack 53.6ms, gpu-arith(fused) 0.04ms, host-unpack+reduce 128.7ms -> bottleneck =
+host-unpack+reduce (the Fraction reconstruction); gr_* removes both host phases. Diagnoses, not just verdicts, are
+mechanized now.
 
 **NEXT executors (to dispatch, by symbol):** **Δ-Ψ-swar-win** (route level_eval_graded through gr_* device-resident --
 remove combine_batch's host pack/unpack so SWAR wins the dispatch, closing the brick-3 finding) -- run the {+,×,÷} operating-point solve

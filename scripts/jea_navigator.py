@@ -182,10 +182,11 @@ if __name__ == "__main__":
     print(f"\n  EVAL-STRATEGY (Δ-Ψ-forest dispatch) -- a navigator output off the MEASURED level surface (the g-axis):")
     print(f"    choice moves with the surface: swar<drain->{pick_swar} | drain<swar->{pick_drain} | tie->{pick_flat}")
     print(f"    LIVE on this box (W=4096,G=6 level) -> {op_lvl['eval_strategy']}")
-    print(f"      [honest finding, re-measured after Δ-Ψ-bitkernel: the bit-sliced ARITHMETIC is now FUSED (one launch,")
-    print(f"       ~3268x faster bs_mul) -- so the O(G^2)-cupy-launch cost is GONE. The dispatch STILL picks drain because")
-    print(f"       combine_batch's HOST pack/unpack (to/from_bitsliced) + per-node Fraction-reduce is now the bottleneck.")
-    print(f"       To win, route the level eval through the DEVICE-RESIDENT gr_* (no per-value pack/unpack) -- next.]")
+    import jea_graded as _GR                                          # the finding is COMPUTED, not asserted (it self-updates):
+    _ph, _bottleneck = _GR.profile_combine_batch(4096, 6)            # MEASURE the SWAR path's 3 phases -> argmax bottleneck
+    print(f"      [MEASURED combine_batch breakdown: " + ", ".join(f"{k} {v*1e3:.2f}ms" for k, v in _ph.items()) +
+          f" -> bottleneck = {_bottleneck} (COMPUTED). The arithmetic is fused; the bottleneck is now whichever phase")
+    print(f"       the MEASUREMENT says -- route the level eval through device-resident gr_* to drop the host phases.]")
 
     w1 = True                                                       # navigate is a pure re-solve (no globals/cache)
     w2 = (op_cool["fstar"], op_cool["bottleneck"]) != (op_hot["fstar"], op_hot["bottleneck"])   # moves with state
