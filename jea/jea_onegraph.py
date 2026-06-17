@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
-"""jea_onegraph.py — Δ-Ω-onegraph (brick 1): the HARDWARE operating-point solve is the SAME graded-ℚ graph reduction
-as the term eval. The navigator solves a conductance network by a Kron reduction (Schur-eliminate internal nodes ->
+"""jea_onegraph.py — Δ-Ω-onegraph: the HARDWARE operating-point solve IS the same graded-ℚ graph reduction as the
+term eval. The navigator solves a conductance network by a Kron reduction (Schur-eliminate internal nodes ->
 equivalent conductance -> f*, binding-edge). That is a GRAPH reduced by combining nodes via RATIONAL arithmetic --
-the EXACT graded-ℚ carrier the term evaluator uses (+, ×, and reciprocal = num/den swap; the field ops Schur needs).
+the EXACT graded-ℚ carrier the term evaluator uses (+, ×, and reciprocal = num/den swap = the ℚ wedge quotient,
+Δ-Ω-divstr; the field ops Schur needs). Branchless + exact-ℚ + the graph's own elimination order = NO pivot branch =
+the identical uniform fold the evaluator runs. So the operating point is a TERM the same evaluator reduces --
+self-hosting: the system that schedules the eval is computed BY the eval.
 
-Branchless + exact-ℚ + the graph's own elimination order = NO pivot branch = the IDENTICAL uniform fold the evaluator
-runs (Δ-Ω-branchless is the prereq: the decision logic is arithmetic, not control flow). So the operating point is a
-TERM the same evaluator reduces -- self-hosting: the system that schedules the eval is computed BY the eval.
+Bricks (all built): (1) f* = g_gpu/(g_cpu+g_gpu), a parallel current-divider, as a graded-ℚ DAG on the carrier
+(fstar_qgraph), == live_dispatcher.decide. (2) compute_bw's iMC/iGPU net folded in: series_schur(a,b)=a·b/(a+b) is
+the Kron/Schur reduction as a graded-ℚ WEDGE; operating_point_qgraph computes f* AND the binding edge (BRANCHLESS
+argmax over the gains) on the carrier == decide+binding_edge. (3) SUBTRACTION-FREE form: contention as a current
+divider (current_divider) + RATIO sensitivity, {+,×,÷-by-swap} only, validated by KCL (shares sum to 1) + monotone.
+(4) ON-DEVICE: fstar_device threads the bit-sliced planes (gr_*) device-resident throughout, readout once.
+Circuit-state-RELAXATION = re-eval on new telemetry leaves (reactive).
 
-Brick 1 (this file): the 2-conductance operating point f* = g_gpu/(g_cpu+g_gpu) -- a parallel current-divider -- as
-a graded-ℚ DAG on the carrier (q_combine = jea_graded.combine_batch; q_recip = swap), matching live_dispatcher.decide
-EXACTLY; the bottleneck = a BRANCHLESS argmax over the ℚ relaxation gains. Circuit-state-RELAXATION = re-eval on new
-telemetry leaves (the drain, reactive). Brick 2 (next): fold compute_bw's full iMC/iGPU Kron/Schur into the ℚ graph.
-
-Witnesses ([W], __main__):
-1. f* PARALLEL REDUCTION on the carrier == gg/(gc+gg) exact (the Kron parallel-combine is graded-ℚ arithmetic).
-2. == live_dispatcher.decide (f* matches the real solver within float ε; bottleneck matches via the branchless ℚ argmax).
-3. RELAXATION = RE-EVAL: change the telemetry (cool->hot), re-run the SAME graph -> f*/bottleneck MOVE (reactive).
+Witnesses ([W], __main__): W1 f* parallel reduction == gg/(gc+gg) exact; W2 == decide (f* + bottleneck); W3
+relaxation = re-eval; W4 series_schur == el-atlas g_eff (the Kron operator); W5 compute_bw_qgraph == el-atlas
+compute_bw; W6 full operating point == decide+binding_edge; W7 KCL subtraction-free; W8 monotone contention; W9
+subtraction-free operating point; W10 on-device (device-resident f*).
 """
 import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")

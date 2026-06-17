@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
-"""jea_resident.py — Δ-Σ-trace (b-real): the resident SPPF forest lives ON-DEVICE as a sorted (linear-quadtree)
-code index; sharing-lookup is cp.searchsorted (device), merge is a device sort, and the forest GROWS by new nodes
-only across evaluations. The host orchestrates per height; the FOREST (codes + the sharing test) is device-resident.
+"""jea_resident.py — the DEVICE-RESIDENT SPPF forest. evaluate(g, F) interns AND evaluates g in ONE fused megakernel
+(jea_mega_eval: the kernel hash-conses each node and, if NEW, computes its value once on the u64/u128 carrier; SHARED
+sub-terms reuse the resident value). The forest persists across calls and GROWS by new nodes only (cross-eval sharing
+via the persistent device hash table). Used by jea_eval.
 
-Design: a node's IDENTITY id must be STABLE (append-only) -- a sorted-position id would shift on every merge and
-break child references. So payload (op,lch,rch,value) is append-only by stable id; a SEPARATE device array pair
-(ccode sorted, csid) is the linear-quadtree index used for the device sharing-lookup. The structural code of a
-combine is op | morton(lch_id,rch_id) (jea_zsppf.morton2 -- the z-code, so the index is a quadtree: dedup AND
-locality, W2/W5). Leaves are few -> a host map; combines (the bulk) are the device-resident sorted index.
+Where the state lives (Δ-Ψ-forest): VALUES are device-resident in a GRADED SUB-BYTE store (GR.GradedStore -- each
+value packed to its bit-grade) for >u128 and the fused canon store (FE.cNlo/cNhi) for <=u128; the >u128 escalation
+CROWN is delivered on the byte-limb DEVICE carrier (deliver_crown -- recompute-from-residue, never host-folded). The
+structure INDEX (op/lch/rch/code) is the small host orchestration map (stable id == canon id). The physical
+code-ordered store (pcode/pstable/pslot, a linear quadtree over morton z-codes) is device; merged INCREMENTALLY each
+eval (materialize_incr -- delta merge-by-rank, not full re-argsort).
 
-evaluate(g, F): intern g bottom-up into F (device searchsorted per height -> SHARE existing / ADD new + device
-merge), then evaluate ONLY the new frontier on the apex and store values into F. Exact at any magnitude (crown
-nodes host-folded from resident children). The forest persists across calls (cross-eval sharing). Used by jea_eval.
+Beyond the per-node fused drain: evaluate_Eq generates a parametric DAG ON-DEVICE (no host build/upload);
+level_eval_graded / eval_aligned_planes evaluate a wide same-op level via the BIT-SLICED carrier (SWAR), the strategy
+the navigator's dispatch picks for regular wide layers (eval_frontier executes the chosen corner). Exact at any
+magnitude.
 
-Witnesses ([W], in __main__):
-1. DEVICE-RESIDENT + GROWS-BY-NEW: F.ccode/csid are cupy arrays; eval(T2) sharing S with T1 finds S via
-   cp.searchsorted (device) -> the forest grows ONLY by T2's genuinely-new nodes; shared nodes referenced.
-2. EXACT: root values correct through the device-resident evaluator (any magnitude).
-3. SHARING IS A DEVICE LOOKUP: the per-height share/add is cp.searchsorted into the resident sorted index + a
-   device merge -- not a host hash table.
+Witnesses ([W], in __main__): W1 device-resident + grows-by-new; W2 exact; W3 intern+eval ONE fused megakernel;
+W4 Phase-2 code-locality gather; W5 b-real-store + graded device value store; W6 Δ-Ψ-deliver (device byte-limb crown);
+W7 b-real-incr (incremental merge); W8 Δ-Ψ-dag (on-device DAG gen); W9 Δ-Ψ-forest(c) bit-sliced level eval; W10
+dispatch consumer; W11 Δ-Ψ-swar-win (planes-resident aligned eval beats the drain).
 """
 import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")

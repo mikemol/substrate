@@ -67,8 +67,8 @@ run "apex gate" python3 "$ROOT/scripts/law_motif_apex.py" --check
 # block on a FAIL -- converting "run the jea modules" from a discipline I must remember into a non-skippable gate
 # (would have caught the Δ-Ψ-dag leaf-code collision + the eval_aligned_planes contiguity bug). Fires ONLY on jea
 # changes (never blocks the Agda/Q subtree); self-skips if no GPU. Full suite: jea_regression_gate.py --full.
-if git diff --cached --name-only | grep -qE '^scripts/jea_.*\.py$'; then
-  run "jea regression (Δ-G2)" python3 "$ROOT/scripts/jea_regression_gate.py" --check
+if git diff --cached --name-only | grep -qE '^jea/jea_.*\.py$'; then
+  run "jea regression (Δ-G2)" python3 "$ROOT/jea/jea_regression_gate.py" --check
 fi
 
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
