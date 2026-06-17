@@ -63,6 +63,14 @@ run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 # baseline: a new cluster blocks until its apex is built, snowballing leverage early.
 run "apex gate" python3 "$ROOT/scripts/law_motif_apex.py" --check
 
+# Δ-G2: jea-regression gate. If any scripts/jea_*.py is staged, run the jea correctness suite (fast subset) and
+# block on a FAIL -- converting "run the jea modules" from a discipline I must remember into a non-skippable gate
+# (would have caught the Δ-Ψ-dag leaf-code collision + the eval_aligned_planes contiguity bug). Fires ONLY on jea
+# changes (never blocks the Agda/Q subtree); self-skips if no GPU. Full suite: jea_regression_gate.py --full.
+if git diff --cached --name-only | grep -qE '^scripts/jea_.*\.py$'; then
+  run "jea regression (Δ-G2)" python3 "$ROOT/scripts/jea_regression_gate.py" --check
+fi
+
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
 # process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
 # most weekly: a successful run touches "$STAMP"; while that stamp is younger than a

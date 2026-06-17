@@ -144,8 +144,19 @@ w); W2 SAME 200 products value-major (dp4a/value) == bit-major (SWAR) == truth; 
 w=1 carryless == clmul); W4 layout = the few-big(crown)/many-small(SWAR) dispatch -- THE CARRIER-LAYOUT GAUGE IS the
 navigator's eval-strategy choice (unified at the carrier level). CONSUMES all four carriers (de-orphaned). 7/7 PASS.
 
-**NEXT executors (to dispatch, by symbol):** **Δ-G2** [gate, now 12+ modules -- a pre-commit jea regression + a
-computed-findings check] -- the one cleanly-mechanizable recurring-class gate -- run the {+,×,÷} operating-point solve
+**Δ-G2 [DONE -- jea_regression_gate.py + .githooks/pre-commit]:** the recurring-class gate (G9 escalation). A jea
+pre-commit gate fires when ANY scripts/jea_*.py is staged: runs the jea correctness suite (FAST subset -- the
+cross-path regression catchers, ~9s: jea_branchless/graded/divstr/carrier/dag_gen/mega_eval/eval; --full adds the
+timing/hardware/Agda ones) and BLOCKS on a FAIL. Converts "run the jea modules" from discipline-I-must-remember into
+a non-skippable layer the loop can't skip. Validated: catches a FAIL module (negative test) + passes the live suite;
+WOULD have caught both this arc's regressions (leaf-code collision -> jea_eval FAIL; contiguity bug -> jea_resident
+W11 FAIL). Fires ONLY on jea changes (never blocks the Agda/Q subtree); self-skips with no GPU. NOT --no-verify-able
+in spirit (it IS the gate). [The 'computed-findings' check stays a discipline (hard to mechanize 'did you compute the
+why') -- the profiler pattern (jea_graded.profile_combine_batch) is the template.]
+
+**NEXT executors (to dispatch, by symbol):** **AI-d** -- the semantic SPPF tools audit (sppf_label/node_index/
+type_sppf{,_crosslayer} -- compose or retire); loose: scripts/jea_apex.py unstaged decision-WAL-witness removal (MINE;
+decide keep/revert) -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
