@@ -231,6 +231,19 @@ class Corpus:
             self._depth_fold(c, depth + 1, shared, total)
         return shared, total
 
+    def shape_of_th(self, th: dict) -> dict:
+        """S(g) profile + carrier-hole depths of an ALREADY-built typehole tree (N-way) -- the same
+        depth-fold S() does pairwise, surfaced for the per-cluster CLI readout (Π1). Keeps the SHAPE
+        (curve + hole depths), never collapses it to a scalar."""
+        shared, total = self._depth_fold(th)
+        gmax = max(total) if total else 0
+        prof, cs, ct = [], 0, 0
+        for g in range(gmax + 1):
+            cs += shared.get(g, 0); ct += total.get(g, 0)
+            prof.append((g, round(cs / ct, 2) if ct else 1.0))
+        holes = sorted(hd.get("depth", 0) for hd in self._collect_holes(th))
+        return {"profile": prof, "hole_depths": holes}
+
     def lcp_depth(self, u: Unit, v: Unit, gmax: int = None) -> list:
         """The RAW longest-common-prefix length as a function of g -- the order-faithful
         discriminator the normalized ratio is a view of. The cliff is where lcp_depth STOPS
@@ -788,6 +801,10 @@ def main(argv=None):
                     help="typehole each cluster: shared skeleton + typed holes (the common semantics + the distinctions)")
     ap.add_argument("--metalanguage", action="store_true",
                     help="compute the corpus's implicit metalanguage: generators (alphabet) + cocycles (idioms) vs coboundary (derivable redundancy)")
+    ap.add_argument("--shape", action="store_true",
+                    help="shape consolidation scan: cross-unit S(g) pairs that are shared-shell + carrier-holes "
+                         "(the cross-carrier map canonical clustering misses -- since the free/bound fix made "
+                         "carrier ops distinct, these no longer share canonical support but DO share skeleton)")
     ap.add_argument("--json", action="store_true",
                     help="machine-readable output (the LLM accelerator: run once, parse, don't re-derive)")
     args = ap.parse_args(argv)
@@ -835,12 +852,35 @@ def main(argv=None):
             th = C.typehole(roots)
             # durable handles: path::name:line, stable across runs
             print(f"\n  cluster {ci} ({len(comp)} units) -- {C.typehole_verdict(th)}")
+            sh = C.shape_of_th(th)
+            print(f"    SHAPE S(g)={sh['profile']}  carrier-holes @depths {sh['hole_depths'] or '[]'} "
+                  f"(the curve, not a scalar; a cliff at depth d = a typed hole there)")
             for ui in comp:
                 u = C.units[ui]
                 print(f"    {u.path}::{u.name}:{u.lineno}")
             print("    -- common semantics (skeleton) + distinctions (typed holes):")
             for line in C.render_typehole(th).splitlines():
                 print(f"      {line}")
+
+    if args.shape:
+        import itertools
+        big = [u for u in C.units if len(u.support) >= args.min_size]
+        cands = []
+        for u, v in itertools.combinations(big, 2):
+            sv = C.shape_verdict(u, v)
+            # a consolidation candidate: a STRUCTURED tree (no degenerate label), real shared shell,
+            # holes at INTERIOR depths (a carrier hole, not a root divergence) -- the same-algorithm-
+            # different-carrier shape. (frac >= 0.55 keeps it above the FunctionDef-head floor of 0.5.)
+            if sv["label"] is None and sv["shared_frac"] >= 0.55 and any(d > 0 for d in sv["hole_depths"]):
+                cands.append((sv["shared_frac"], tuple(sv["hole_depths"]), u, v))
+        cands.sort(key=lambda c: -c[0])
+        print("\nshape consolidation candidates (shared shell + carrier holes; the cross-carrier map "
+              "canonical clustering misses):")
+        if not cands:
+            print("  (none -- no pair shares a skeleton shell with interior carrier holes)")
+        for fr, hd, u, v in cands[:15]:
+            print(f"  frac={fr} holes@depths {list(hd)}  {u.path}::{u.name}:{u.lineno}  X  "
+                  f"{v.path}::{v.name}:{v.lineno}")
 
     if args.extract:
         cand = C.extract_candidates(args.min_fanin)
