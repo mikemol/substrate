@@ -112,8 +112,20 @@ self-updating. LIVE: host-pack 53.6ms, gpu-arith(fused) 0.04ms, host-unpack+redu
 host-unpack+reduce (the Fraction reconstruction); gr_* removes both host phases. Diagnoses, not just verdicts, are
 mechanized now.
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-swar-win** (route level_eval_graded through gr_* device-resident --
-remove combine_batch's host pack/unpack so SWAR wins the dispatch, closing the brick-3 finding) -- run the {+,×,÷} operating-point solve
+**Δ-Ψ-swar-win [PARTIAL -- vectorized the boundary; the live flip needs a planes-resident pipeline]:** the profiler
+fingered combine_batch's HOST pack/unpack (the O(N*G) Python loops in to/from_bitsliced) as the SWAR bottleneck.
+VECTORIZED both on-device for G<=64 (G cupy ops over N, vs N*G host iters; host fallback for >u64), gated == the
+host-loop oracle (jea_graded W10) + 12/12 PASS. COMPUTED re-measure (N=4096,G=6): host-pack 53.6->10.9ms,
+host-unpack+reduce 128.7->13.4ms, gpu-arith(fused) 0.06ms. The arithmetic is NEGLIGIBLE; the residual cost is the
+host<->device BOUNDARY crossing (Fraction in/out per combine_batch call). The dispatch STILL picks per-node-drain
+because that boundary is paid PER CALL -- it amortizes to ONCE only in a PLANES-RESIDENT pipeline (pack leaves once,
+thread planes via rat_mul/rat_add level-by-level, readout root once). THE REMAINING FRICTION (honest): bit-sliced
+planes don't support cheap arbitrary per-value gather (selecting a child set from 64-packed words) -- so the
+planes-resident pipeline is clean for ALIGNED/regular wide layers (SWAR's home) and the per-node drain stays for
+irregular scatter (exactly the dispatch's job). NEXT (Δ-Ψ-swar-win finish): a planes-resident ALIGNED-layer evaluator
+(pack-once/readout-once) measured vs the drain -> the dispatch flips to SWAR for regular wide layers.
+
+**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-swar-win finish** (planes-resident aligned-layer evaluator) -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded

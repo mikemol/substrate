@@ -27,10 +27,8 @@ from fractions import Fraction
 def grade(v): return max(1, int(v).bit_length())                         # the GRADE of a value = its bit-length (>=1)
 
 
-def to_bitsliced(vals):
-    """Pack nonneg ints -> bit-sliced planes (G, W) uint64: plane[b] bit (i&63) of word (i>>6) = bit b of vals[i].
-    G = max grade (sub-byte when small). The host bit-extraction is O(N*G); the arithmetic below is device SWAR."""
-    vals=[int(v) for v in vals]; N=len(vals); G=max(1, max((grade(v) for v in vals), default=1)); W=(N+63)//64
+def _to_bitsliced_host(vals):                                        # the O(N*G) host loop -- gate oracle + >u64 fallback
+    N=len(vals); G=max(1, max((grade(v) for v in vals), default=1)); W=(N+63)//64
     host=np.zeros((G,W), np.uint64)
     for i,v in enumerate(vals):
         w=i>>6; one=np.uint64(1)<<np.uint64(i&63); b=0
@@ -39,8 +37,19 @@ def to_bitsliced(vals):
             v>>=1; b+=1
     return cp.asarray(host), N
 
+def to_bitsliced(vals):
+    """Pack nonneg ints -> bit-sliced planes (G,W) uint64. VECTORIZED on-device for G<=64 (the common case: leaves +
+    the SWAR batch -- G cupy ops over N, vs the O(N*G) host loop the profiler fingered as the SWAR pack bottleneck);
+    host fallback for arbitrary precision (>u64). plane[b] bit (i&63) of word (i>>6) = bit b of vals[i]."""
+    vals=[int(v) for v in vals]; N=len(vals); G=max(1, max((grade(v) for v in vals), default=1)); W=(N+63)//64
+    if G>64: return _to_bitsliced_host(vals)
+    a=cp.zeros(W*64, cp.uint64); a[:N]=cp.asarray(vals, cp.uint64); a=a.reshape(W,64)    # (W,64) the values
+    sh=cp.arange(64, dtype=cp.uint64); planes=cp.empty((G,W), cp.uint64)
+    for b in range(G): planes[b] = (((a>>cp.uint64(b))&cp.uint64(1))<<sh).sum(axis=1)     # pack 64 values' bit b per word
+    return planes, N
 
-def from_bitsliced(planes, N):
+
+def _from_bitsliced_host(planes, N):                                 # the O(N*G) host loop -- gate oracle + >u64 fallback
     host=cp.asnumpy(planes); G=host.shape[0]; out=[0]*N
     for i in range(N):
         w=i>>6; bit=np.uint64(i&63); v=0
@@ -48,6 +57,15 @@ def from_bitsliced(planes, N):
             if (host[b,w]>>bit)&np.uint64(1): v|=(1<<b)
         out[i]=v
     return out
+
+def from_bitsliced(planes, N):
+    """Unpack bit-sliced planes -> N ints. VECTORIZED on-device for G<=64 (G cupy ops + one device->host of (N,),
+    vs the O(N*G) host loop -- the profiler's biggest SWAR phase); host fallback for arbitrary precision (>u64)."""
+    G=planes.shape[0]
+    if G>64: return _from_bitsliced_host(planes, N)
+    sh=cp.arange(64, dtype=cp.uint64); out=cp.zeros(planes.shape[1]*64, cp.uint64)
+    for b in range(G): out |= ((planes[b][:,None]>>sh)&cp.uint64(1)).reshape(-1) << cp.uint64(b)   # value i bit b
+    return [int(x) for x in out[:N].get()]
 
 
 def _pad(A, G):
@@ -264,7 +282,18 @@ if __name__ == "__main__":
     print(f"\n  W9  graded RATIONAL as device planes (gr_add/gr_mul/gr_recip=swap, no host Fraction between ops) == "
           f"Fraction: {dev} == {fb/(fa+fc)}: {w9}")
 
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9
+    # W10: the VECTORIZED to/from_bitsliced (device fast path, G<=64) == the host-loop oracle (Δ-Ψ-swar-win); + the
+    # >u64 fallback path. Hard gate -- to/from_bitsliced is the whole carrier's boundary.
+    import random as _rnd; _rr = _rnd.Random(99)
+    vec_ok = True
+    for vv in ([int(rng.integers(0, 1<<g)) for g in grades],                         # mixed grades 1..39 (<=u64 fast path)
+               [_rr.getrandbits(200) for _ in range(50)]):                            # >u64 (host fallback)
+        pv, _ = to_bitsliced(vv); ph, _ = _to_bitsliced_host(vv)
+        vec_ok = vec_ok and bool((pv == ph).all()) and (from_bitsliced(pv, len(vv)) == vv) and (_from_bitsliced_host(ph, len(vv)) == vv)
+    w10 = vec_ok
+    print(f"\n  W10 VECTORIZED to/from_bitsliced (device, G<=64) == host-loop oracle + round-trips (incl >u64 fallback): {w10}")
+
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9 and w10
     print(f"\n  {'PASS' if ok else 'FAIL'} — the graded sub-byte carrier: a value is carried at its GRADE (1 bit up), bit-sliced")
     print(f"  so arithmetic (ripple-carry add, ripple-borrow SUB, shift-and-add mul, combine_batch) is per-bit SWAR -- 64")
     print(f"  values/word; GradedStore = the device sub-byte VALUE store. u128 was a frozen coordinate; the grade is the")
