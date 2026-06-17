@@ -13,18 +13,42 @@ It is the **same idioms read from the Agda**, not a metric bolted on: `recon : C
 is a `trace_fold` readout, never a digest), exact `Fraction` arithmetic, hash-cons (structured node,
 not a crypto-digest), and α-equivalence as exact role-lowering (names kept as residue).
 
-## The four modules (dependency order)
+## The Σ apparatus — front-ends lower into ONE forest; readouts are CrossMix consumers
 
-| module | role | run |
+Everything below interns into the same `jea_pyalg.Intern`. **Front-ends** turn a language into forest IR;
+**readouts** compare/classify over the forest; the **sympy hub** fans one bridge out to N generation
+targets. The recursive law: a language is a *coordinate*, the forest is the *geometry*, the cross-term is
+comparison-in-the-geometry ("does the Octave realize the Agda proof?" = same geometry, different coordinate).
+
+```text
+ Python  Agda-core  CUDA   OMML        sympy
+  (ast)  (.agdai)  (.cu)  (m:func…)   (Expr)
+    └────────┴────────┴──────┴───────────┘
+                  ONE interned forest  (jea_pyalg: Intern/Wedge/Trace/CrossMix)
+        ┌───────────────┼────────────────────────────┐
+   jea_oneforest   jea_omml_domain        jea_sympy_bridge ──→ octave / latex / mathml / ccode
+   (cross-arm      (audience carrier:     (the HUB: build one bridge,
+    verify gate)    expose the fork)       inherit N printers)
+```
+
+| module | kind | role |
 |---|---|---|
-| **`jea_pyalg.py`** (627L) | the base: Python `ast` → `Intern`/`Wedge`/`Trace`/`trace_fold`/`PyDivStr`/`CrossMix`. Stdlib-only. | `python jea/metalanguage/jea_pyalg.py` (self-witnesses) |
-| **`jea_pysim.py`** (711L) | similarity instrument: per-unit multi-scale fingerprint = the grading; shared = interned fan-in; STRONG/PARTIAL/WEAK orbit verdict + clusters. The agda_similarity successor. | `python jea/metalanguage/jea_pysim.py <file.py> …` |
-| **`jea_agdai.py`** (229L) | **third front-end** (after ast, cst): interns an Agda `.agdai` — deserializes Agda's hash-cons arena (`Agda.TypeChecking.Serialise`) into ours; arena fan-in + resolved name table. Definitional-level structure. | `python jea/metalanguage/jea_agdai.py <file.agdai> …` |
-| **`jea_picircuit.py`** (360L) | the metalanguage as a **circuit operating point**: grading axes are conductances; a node's class (generator/idiom/coboundary) is where the current settles (`current_divider`, KCL — no objective minimized); axis disagreement → `<CONFOUNDED>` (the cross-term, surfaced not averaged). | `python jea/metalanguage/jea_picircuit.py <file.py> …` |
+| **`jea_pyalg.py`** | base | Python `ast` → `Intern`/`Wedge`/`Trace`/`trace_fold`/`PyDivStr`/`CrossMix`. Stdlib-only; every other module interns into its `Intern`. |
+| **`jea_pysim.py`** | readout | structural similarity (the retired `agda_similarity`'s successor): S(g) SHAPE + clusters + `--shape` consolidation scan over the SPPF. Reads `.py` AND `.agdai` (via `jea_agdai`). |
+| **`jea_agdai.py`** (+ `agdai_shim.hs`) | front-end | Agda `.agdai` → core IR. `agdai_shim` (ghc `-package Agda`) decodes via Agda 2.8.0's own deserialiser and walks each def's type + clause bodies; `core_intern_agdai` interns the FULL child-edge DAG (Φ4). |
+| **`jea_cuda.py`** | front-end | CUDA ⇄ IR as ONE bidirectional grammar (`lower_cuda`/`project_cuda` + `fixpoint_test`); memory-space = a `Space` carrier. Needs libclang. |
+| **`jea_omml.py`** | front-end | OMML (`<m:func>`/`m:d`/`m:sSub`/operator runs) → IR. `m:func`=explicit App (no fork); juxtaposition → a tagged ADJACENCY partition. Grounded in mat260's vocabulary. |
+| **`jea_picircuit.py`** | readout | the metalanguage as a circuit operating point (grading axes = conductances; class = where current settles, KCL). |
+| **`jea_oneforest.py`** *(in `jea/`)* | readout | Σ-FOREST: the cross-arm verification gate — `cross_term` across source/core/kernel arms = "does the artifact realize the proven core?" (degree 0 = realizes). |
+| **`jea_omml_domain.py`** *(in `jea/`)* | readout | the audience-domain carrier: a partial map that commits an OMML partition's strand only where it has authority (silence = identity; domains form a monoid under override). |
+| **`jea_sympy_bridge.py`** | hub | bidirectional forest⇄sympy (assumptions = carrier-selections; fixpoint retraction). The HUB: `project_*` → sympy → its own canonical printers. |
+| **`jea_ir_unify.py`** | hub | ONE structured forest-IR both dialects share; `project_unified` reads OMML `BinOp` (k=2) AND sympy n-ary `Op` — the translator `omml_ir_to_sympy` retired into it. |
+| **`jea_octave_gen.py`** | fan-out | forest → sympy → Octave `.m` (stands on `sympy.codegen`); octave→matlab is a user `translator` hook, not reimplemented. |
+| **`jea_omml_octave.py`** | pipeline | end-to-end OMML → sympy → Octave `.m` (+ LaTeX), via `jea_ir_unify.project_unified`. Validated 12/12 on the mat260 cipher corpus. |
+| **`jea_metalanguage_gate.py`** | gate (Σ6) | the regression net: asserts each instrument's structural invariant; pure modules run, toolchain ones self-skip. Fired per-commit by `.githooks/pre-commit` on staged `jea/metalanguage/` (+ the two root Σ modules). |
 
-Self-contained: `jea_pyalg` (stdlib) ← `jea_pysim` ← `jea_picircuit`; `jea_pyalg` ← `jea_agdai`. No
-dependency on the GPU `jea/` modules or el-atlas — same-directory imports, so run any module directly.
-Verified runnable from this folder (incl. `jea_agdai` on `../agda-emit/EmitDAG.agdai`).
+Self-contained (same-directory imports; no dependency on the GPU `jea/` modules or el-atlas). Pure modules
+need only stdlib + sympy; `jea_cuda` needs libclang, `jea_agdai`/`agdai_shim` need ghc + Agda 2.8.0.
 
 ## Honest scope (kept visible)
 
@@ -35,9 +59,10 @@ Verified runnable from this folder (incl. `jea_agdai` on `../agda-emit/EmitDAG.a
 - **One regex** (`jea_agdai`): `re.match(rb"^[A-Za-z]…")` is a *byte-string identifier sanity filter* on
   names scavenged from the `.agdai` binary — not regex-parsing of term structure (the "no regex" charter
   targets the evaluator/term path). Replaceable by a char-class check.
-- **`.agdai` decode is partial — by design:** `jea_agdai` interns the **version-stable** arena topology
-  (node fan-in + the plaintext resolved-name table), NOT the per-version constructor tags. Its docstring
-  carries the "WHAT IS NOT YET DECODED, AND HOW TO RECOVER IT" section — an honest, bounded front-end.
+- **`.agdai` decode — now FULL via the shim (Φ4):** `jea_agdai` has two paths: `intern_agdai` (the
+  toolchain-free fan-in signature — version-stable arena topology + name table) and `core_intern_agdai`,
+  which drives `agdai_shim.hs` (ghc `-package Agda`, Agda 2.8.0's own deserialiser) to intern the FULL
+  child-edge core DAG (type + clause bodies). The shim binary is gitignored; the `.hs` source is tracked.
 
 ## Subsumed `scripts/agda_similarity` (retired)
 

@@ -71,6 +71,15 @@ if git diff --cached --name-only | grep -qE '^jea/jea_.*\.py$'; then
   run "jea regression (Δ-G2)" python3 "$ROOT/jea/jea_regression_gate.py" --check
 fi
 
+# Σ6: metalanguage / Σ-instrument regression gate. The cross-language correspondence apparatus (the
+# metalanguage front-ends + readouts, ~11 modules) had no regression net -- an edit could silently break
+# the mat260 OMML→Octave pipeline. Fires on staged jea/metalanguage/*.py OR the two root Σ modules
+# (jea_oneforest, jea_omml_domain); asserts each instrument's structural invariant (pure modules run,
+# toolchain ones self-skip). The G9 escalation from the 2026-06-17 Σ build-out arc.
+if git diff --cached --name-only | grep -qE '^jea/(metalanguage/.*|jea_oneforest|jea_omml_domain)\.py$'; then
+  run "Σ metalanguage regression (Σ6)" python3 "$ROOT/jea/metalanguage/jea_metalanguage_gate.py"
+fi
+
 # Λ8: scratch-independence. If anything under a promoted project (jea/, el-atlas/) is staged, assert it
 # makes NO LIVE scratch/ reference (a path-string or import in executable code; comments/docstrings/.md
 # prose exempt). Converts "is jea independent of scratch?" from a hand-grep I answered wrong twice into a
