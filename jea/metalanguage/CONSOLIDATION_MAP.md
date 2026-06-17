@@ -24,7 +24,7 @@ python3 jea/metalanguage/jea_pysim.py --shape --min-size 10 jea/jea_onegraph.py 
 | frac | pair | the fold |
 |---|---|---|
 | 0.96 / 0.94 | `jea_agda_bridge.{read_vouched,typecheck}` ↔ `jea_agda_dag.{read_vouched,typecheck}` | near-identical (only the emitted filename differs); extract ONE agda-bridge helper parameterized by filename. The cleanest jea/ win. |
-| **0.95** | el-atlas `kirchhoff_nedge` `G_AND`/`G_OR` (series=`a·b/(a+b)`, parallel) | **a THIRD circuit-solve instance** — fold onto `jea_circuit` (extends Π2: onegraph + picircuit + kirchhoff = one solve, three carriers). |
+| 0.95 | el-atlas `kirchhoff_nedge` nodal `solve` / `G_AND`/`G_OR` | **perspective-mapped (Φ1 ✅ — see §⑤).** `jea_circuit` now carries `nodal_solve` (the governing law); `series_schur`/`parallel` are its subtraction-free reducible projection; the carrier's subtraction-capability is the mapped axis. `kirchhoff.solve` = the float instance (validatable, no cross-project import). |
 | 0.94 | `jea_generator_strat._lh` ↔ `jea_generator_unified._lh` | identical limb-split helper; promote to one home. |
 | 0.92 | `jea_carrier_solve.build_Eq` ↔ `jea_zsppf.build_Eq` | duplicated; one definition. |
 | 0.93 | `chassis_cap_test.cpu_worker` ↔ `power_probe_root.cpu` | duplicated power-probe worker. |
@@ -65,9 +65,27 @@ Agda-2.8.0 `readInterface` JSON, currently a stub): once Agda core interns into 
 `jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in *both* method AND coverage (and structurally, beating its
 textual n-grams). Until then `agda_similarity` STAYS — the only Agda-capable similarity tool.
 
-## The standout finding
+## ⑤ Φ1 — kirchhoff is the nodal PERSPECTIVE, mapped (the carrier's subtraction-axis)
 
-The **circuit-solve has three independent reimplementations** — `jea_onegraph` (graded-ℚ, Π2-folded),
-`jea_picircuit` (Fraction, Π2-folded), and `kirchhoff_nedge` (float/nodal, NOT yet folded). Π2 unified
-the first two via `jea_circuit`'s pluggable carrier; folding `kirchhoff_nedge` onto the same solve is
-the natural Π2 extension (a float/nodal carrier — or its nodal `solve` is the carrier's `div`).
+Π2 unified two circuit-solve instances — `jea_onegraph` (graded-ℚ) and `jea_picircuit` (Fraction) — via
+`jea_circuit`'s pluggable carrier. The Π4 sweep flagged el-atlas `kirchhoff_nedge`'s `G_AND`/`G_OR` (0.95)
+as a third instance. That map is **correct** — and the perspective-difference ("`G_AND` primitive" vs
+"nodal `solve` primitive") is itself a mappable axis, not a reason to keep them apart. *Mapping perspectives
+is what the `--shape` instrument does.* (My first pass rejected the fold by privileging kirchhoff's
+"nodal-primitive" perspective — the exact G9 failure: leading with my judgment over the instrument's mapped
+output. Corrected.)
+
+**The axis is the carrier's subtraction-capability:**
+- `series_schur`/`parallel` = the **subtraction-free** closed form; runs on a sub-free carrier (the graded-ℚ
+  wedge, jea's charter), exact on series-parallel-**reducible** graphs.
+- `nodal_solve` (Φ1, added to `jea_circuit`) = the **governing law** — Kirchhoff nodal analysis, general
+  (handles irreducible graphs: shared resource, Wheatstone bridge); needs a **subtraction-having** carrier
+  (Fraction/float). The closed form **emerges** from it exactly (witnesses w7/w8: nodal == series_schur /
+  parallel on reducible graphs; w9: a balanced Wheatstone resolves).
+
+So the three instances are ONE conductance-eval over two perspective axes — **carrier value-type**
+(graded-ℚ / Fraction / float) and **carrier subtraction-capability** (sub-free → closed form only;
+sub → nodal). `kirchhoff.solve` is the float instance of `nodal_solve`; jea carries its own (validatable
+against el-atlas's the way `jea_onegraph` self-hosts it — a homing choice, no cross-project import/cycle).
+The series-parallel reduction is the sub-free **projection** of the governing law — governing-law-before-
+special-case, with both perspectives now in one module.
