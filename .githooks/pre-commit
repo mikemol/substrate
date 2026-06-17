@@ -77,6 +77,11 @@ fi
 # non-skippable invariant (the G9 escalation from the 2026-06-17 scratch-dissolution arc).
 if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
   run "scratch-independence (Λ8)" python3 "$ROOT/scripts/check_scratch_independence.py" --quiet
+  # Λ8b (import-tier): the RUNTIME complement to Λ8's static scan — imports the 5 coupling-surface
+  # modules under a sys.addaudithook, catching a module-level DYNAMIC scratch reach (computed path /
+  # dynamic import) the AST scan can't see. ~3s (import-only; the heavy GPU/agda DEMO surface is NOT
+  # the coupling surface). Self-skips without cupy. Full in-function sweep: check_scratch_runtime.py --full.
+  run "scratch-runtime (Λ8b)" python3 "$ROOT/scripts/check_scratch_runtime.py" --quiet
 fi
 
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda

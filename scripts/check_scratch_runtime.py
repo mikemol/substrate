@@ -39,10 +39,13 @@ TARGETS = [
     "jea/jea_agda_dag.py",
 ]
 
-# Preamble run in each child: install the audit hook BEFORE the target runs, then runpy it as __main__.
-# Pure string ops inside the hook (no audited calls) so it can't recurse. Emits one marker line per hit.
+# Preamble run in each child: install the audit hook BEFORE the target executes. {action} is either
+# an IMPORT (default — runs module-level code: the _TOOLS path-build + el-atlas imports, where the
+# scratch-coupling surface lives; ~0.1-1s/module) or a __main__ RUN (--full — also runs the GPU/agda
+# DEMOS, ~5-16s/module, catching the contrived in-function dynamic reach). Pure string ops inside the
+# hook (no audited calls) so it can't recurse. Emits one marker line per hit.
 _PREAMBLE = r"""
-import sys, os, runpy
+import sys, os, runpy, importlib
 sys.path.insert(0, os.path.dirname({target!r}))   # mimic `python <script>.py` (script-dir on path)
 _SCR = os.path.normpath(os.path.join({repo!r}, "scratch")) + os.sep
 _CWD = os.getcwd()
@@ -57,18 +60,24 @@ def _h(ev, a):
         if os.path.normpath(ap).startswith(_SCR):
             sys.stderr.write("__SCRATCH_HIT__\t" + ev + "\t" + os.path.normpath(ap) + "\n")
 sys.addaudithook(_h)
-runpy.run_path({target!r}, run_name="__main__")
+{action}
 """
 
 MARK = "__SCRATCH_HIT__"
 
 
-def run_one(rel):
+def run_one(rel, full):
     target = os.path.join(REPO, rel)
-    code = _PREAMBLE.format(repo=REPO, target=target)
+    if full:
+        action = "runpy.run_path({target!r}, run_name='__main__')".format(target=target)
+        timeout = 420
+    else:
+        action = "importlib.import_module({mod!r})".format(mod=os.path.basename(rel)[:-3])
+        timeout = 90
+    code = _PREAMBLE.format(repo=REPO, target=target, action=action)
     try:
         proc = subprocess.run([sys.executable, "-c", code], cwd=REPO,
-                              capture_output=True, text=True, timeout=420)
+                              capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         return ("timeout", [])
     hits = [ln for ln in proc.stderr.splitlines() if ln.startswith(MARK)]
@@ -79,9 +88,18 @@ def run_one(rel):
 
 def main():
     quiet = "--quiet" in sys.argv or "--check" in sys.argv
+    full = "--full" in sys.argv
+
+    # Self-skip without GPU (the el-atlas-importing modules need cupy), matching jea_regression_gate.
+    import importlib.util
+    if importlib.util.find_spec("cupy") is None:
+        if not quiet:
+            print("scratch-runtime (Λ8b): SKIPPED (no cupy/GPU) — static gate Λ8 still guards this commit")
+        return 0
     violations, unverified = [], []
+    mode = "full(__main__)" if full else "import"
     for rel in TARGETS:
-        status, hits = run_one(rel)
+        status, hits = run_one(rel, full)
         if hits:
             for ev, path in hits:
                 violations.append((rel, ev, path))
@@ -104,8 +122,8 @@ def main():
 
     if not quiet:
         verified = len(TARGETS) - len(unverified)
-        print(f"scratch-runtime (Λ8b): OK ({verified}/{len(TARGETS)} surface modules ran, 0 runtime scratch "
-              f"access). The static proxy's (Λ8) blind spot is empirically empty.")
+        print(f"scratch-runtime (Λ8b): OK [{mode}] ({verified}/{len(TARGETS)} surface modules, 0 runtime "
+              f"scratch access). The static proxy's (Λ8) blind spot is empirically empty.")
     return 1 if unverified and "--strict" in sys.argv else 0
 
 
