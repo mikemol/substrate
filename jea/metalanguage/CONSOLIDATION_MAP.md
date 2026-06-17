@@ -85,8 +85,12 @@ depends on it (no gate/hook/importer; only docstrings + scratch figures). The st
 better *for built code*. The single residual: `agda_similarity` reads `.agda` SOURCE TEXT (no build), while
 the structural path needs the `.agdai` (build first). For this fully-built repo that niche is marginal —
 retire it (git-recoverable) — but the decision is the user's since it removes the only *unbuilt-source* text
-comparator. (A refinement that would deepen the structural signal: have the shim also walk `theDef` Function
-clauses, not just `defType` — proof bodies, not only types.)
+comparator. **Deepened (Φ4b+):** the shim now also walks `theDef`'s `FunctionDefn` clause bodies — each unit
+is a synthetic `Defn` root over [type, clause-bodies…] (keyed structurally; qname rides the unit marker), so
+the unit captures PROOF/PROGRAM content, exactly what `agda_similarity`'s text saw. Emit corpus: 62→190 core
+nodes; `--shape` now finds true cross-module near-duplicates (`Emit.eval ✕ EmitBig.eval` frac 0.98 hole@d2 —
+same algorithm, carrier literals differ; `render` 0.96; `evalStr` 0.93 cross-file) — which textual n-grams
+miss (different literals). So the structural tool covers `agda_similarity`'s signal AND beats it.
 
 ## ⑤ Φ1′ — kirchhoff is a COORDINATE of one law (subtraction-capability selects the chart, not the graphs)
 

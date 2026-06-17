@@ -21,13 +21,14 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.HashMap.Strict as HMap
 
 import Agda.TypeChecking.Serialise (decodeInterface)
-import Agda.TypeChecking.Monad.Base (runTCMTop, iSignature, _sigDefinitions, defType, Interface)
+import Agda.TypeChecking.Monad.Base
+  ( runTCMTop, iSignature, _sigDefinitions, defType, theDef, Defn(..), funClauses, Interface )
 import Agda.TypeChecking.Monad.Options (setCommandLineOptions)
 import Agda.Interaction.Options (defaultOptions)
 import Agda.Syntax.Common.Pretty (prettyShow)
 import Agda.Syntax.Common (unArg)
 import Agda.Syntax.Internal
-  ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName )
+  ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName, Clause, clauseBody )
 
 fresh :: IORef Int -> IO Int
 fresh r = atomicModifyIORef' r (\n -> (n+1, n))
@@ -48,6 +49,11 @@ esc = concatMap (\c -> case c of '"' -> "\\\""; '\\' -> "\\\\"; _ -> [c])
 
 walkType :: IORef Int -> Type -> IO Int
 walkType r = walkTerm r . unEl
+
+-- the clause-body RHS Terms of a definition (Φ4b-deepen: the proof/program content, not just the type).
+-- funClauses is partial (Function only); the Function{} generator yields [] for any other Defn.
+clauseBodies :: Defn -> [Term]
+clauseBodies d = [ b | FunctionDefn{} <- [d], c <- funClauses d, Just b <- [clauseBody c] ]
 
 walkElim :: IORef Int -> Elim -> IO [Int]
 walkElim r (Apply a)    = (:[]) <$> walkTerm r (unArg a)
@@ -79,11 +85,16 @@ main = do
     Right (Just i)  -> do
       r <- newIORef 0
       let defs = HMap.toList (_sigDefinitions (iSignature i))
-      -- one UNIT per definition (its elaborated type's root) -- the Agda analogue of a Python def/class
-      -- unit. Emitted as {"unit":qname,"root":id} after the def's nodes, so jea_pysim builds per-def units.
+      -- one UNIT per definition: a synthetic Defn root over [the elaborated TYPE, each clause BODY].
+      -- Type + proof/program bodies = what agda_similarity's text comparison saw. The Defn node is keyed
+      -- STRUCTURALLY (no qname in the node) so structurally-identical definitions still intern to ONE node
+      -- (the duplicate signal); the qname rides the unit marker for display only. Emitted as
+      -- {"unit":qname,"root":id} after the def's nodes, so jea_pysim builds per-def units.
       mapM_ (\(qn, d) -> do
-               rid <- walkType r (defType d)
-               putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show rid ++ "}"
+               tr  <- walkType r (defType d)
+               brs <- mapM (walkTerm r) (clauseBodies (theDef d))
+               sid <- emit r "Defn" Nothing Nothing (tr : brs)
+               putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid ++ "}"
             ) defs
       n <- readIORef r
       hPutStrLn stderr ("agdai_shim: " ++ show (length defs) ++ " definitions -> " ++ show n ++ " core nodes")
