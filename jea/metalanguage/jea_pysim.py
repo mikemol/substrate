@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""jea_pysim.py — the similarity script, for Python.  The Agda similarity tool
-(scripts/agda_similarity) operated on Agda files via textual multi-scale n-grams;
-this operates on Python via the term-algebra interner (jea_pyalg), so the multi-scale
+"""jea_pysim.py — the similarity instrument (Python AST + Agda .agdai core).  The textual Agda
+similarity tool (scripts/agda_similarity, now RETIRED) operated on Agda files via multi-scale n-grams;
+this operates structurally via the term-algebra interner (jea_pyalg) over BOTH Python AST and Agda core
+(.agdai, through jea_agdai/agdai_shim — pass a foo.agdai), which subsumed and retired it. The multi-scale
 fingerprint IS the grading, anonymization IS exact alpha-equivalence (role-lowering),
 and "shared across units" IS interned-node fan-in -- computed once at intern, read as a
 lookup, never pairwise.  Two front-ends (ast, and cst if present) lower into ONE forest;

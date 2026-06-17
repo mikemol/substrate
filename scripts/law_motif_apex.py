@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """law_motif_apex.py — surface apex-candidates by clustering FUNCTION SIGNATURES on
-relational LAW-MOTIFS, the index neither agda_similarity (token-cosine) nor type_sppf
-(data/record skeletons) builds.
+relational LAW-MOTIFS, the index neither textual token-cosine (the now-retired agda_similarity)
+nor type_sppf (data/record skeletons) builds.
 
 WHY THE OTHER TOOLS MISS IT
-  agda_similarity is multi-scale token cosine: instances of one categorical law
+  token cosine (agda_similarity, now retired) is multi-scale: instances of one categorical law
   (eval/reify, ℚ reduce, wedge recon, GenericHodgeStar star/star-inv, CRT) live in
   disjoint vocabularies → near-zero overlap → never cluster. The shared content is a
   ~3-token TYPE motif (`f (g x) ≡ x`) drowned in domain tokens and split across a TRIPLE

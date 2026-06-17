@@ -44,7 +44,7 @@ python3 jea/metalanguage/jea_pysim.py --shape --min-size 10 jea/jea_onegraph.py 
 | 0.92 | `el-atlas-depsort.py` ↔ `el-atlas-depsort-v3.py` (`t_PUR`/`t_PRO`, …) | a versioned rewrite — v3 supersedes v1; candidate to **retire v1**, not merge. |
 | 0.91–0.95 | within `el-atlas-depsort-v3` (`inside`/`insideP`, `_rdw_ok`/`_nf_empty`, `t_RDW`/`t_ZDW`) | parallel helpers; local parameterization if touched. |
 
-## ④ Tool supersession (Π3) — `jea_pysim` ⊇ `scripts/agda_similarity`, retirement GATED
+## ④ Tool supersession (Π3 ✅ CLOSED) — `jea_pysim`+`jea_agdai` subsumed `scripts/agda_similarity` (RETIRED)
 
 `jea_pysim` (structural) subsumes `agda_similarity` (textual) in **method, surfaces, and precision** —
 and corrects a bug the original still carries:

@@ -2,7 +2,7 @@
 
 Point the jea term-algebra machinery (`Wedge`/`Trace`/`recon`/hash-cons `Intern`) at **source code
 and Agda interface files** instead of at a GPU eval graph. This is the **structural** successor to the
-textual [`scripts/agda_similarity`](../../scripts/) — and the instrument for **cross-language
+textual `scripts/agda_similarity` (now retired — see below) — and the instrument for **cross-language
 correspondence validation** (a Python `def` and an Agda proof that elaborate to the same core
 structure intern to the same node id — the similarity signal textual n-grams can't see) and for the
 ongoing **consolidation** effort (duplicate/shared structure is interned fan-in, computed once, read as
@@ -39,9 +39,12 @@ Verified runnable from this folder (incl. `jea_agdai` on `../agda-emit/EmitDAG.a
   (node fan-in + the plaintext resolved-name table), NOT the per-version constructor tags. Its docstring
   carries the "WHAT IS NOT YET DECODED, AND HOW TO RECOVER IT" section — an honest, bounded front-end.
 
-## Relationship to `scripts/agda_similarity`
+## Subsumed `scripts/agda_similarity` (retired)
 
-`jea_pysim` is the **structural** instrument; `scripts/agda_similarity` is the **textual** one (multi-scale
-n-grams over file text). They are not yet consolidated — `agda_similarity` stays as the textual baseline
-until `jea_pysim` (+ `jea_agdai` for the Agda side) is validated as a superset. That consolidation is the
-arc this folder was promoted to serve.
+`scripts/agda_similarity` (textual, multi-scale n-grams over file text) was **retired** once `jea_pysim`
+(structural, over the interned SPPF) + `jea_agdai` (Agda `.agdai` core via `agdai_shim`) covered both its
+languages: Python AST and Agda core. The structural tool is strictly better — exact α-equivalence (not regex
+anonymisation), the S(g) SHAPE (not a max-collapse scalar), cross-file hole-localised candidates — and now
+ingests `.agda` interfaces too (`jea_pysim foo.agdai`, walking type + clause bodies). The one thing the
+textual tool did that this does not: compare *unbuilt* `.agda` source text (the structural path needs the
+built `.agdai`). That consolidation is the arc this folder was promoted to serve; it is complete.
