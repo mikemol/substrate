@@ -13,122 +13,33 @@ WHY bidirectional, why a hub (the recursive law, "why wouldn't we?"): sympy is a
     sympy.codegen('octave'), thin, downstream of here.
 
 ASSUMPTIONS ARE NOT RESIDUE — THEY ARE CARRIER-SELECTIONS (pass-13 unification, PROVEN). A sympy
-assumption (`positive=True`) is reified as a REGISTERED OBLIGATION (the type-hole = CrossMul =
-predicate node-kind, one object). To the extent it has a STANDING CARRIER it is discharged by
-carrier-selection: positive-real → the lspace carrier (the lspace→exp detour IS its discharge; lspace
-is the positive cone, so positivity is constitutive, not an annotation). The obligation discharges
-through the SAME resolve(·, domain) path as a binary OMML partition (a predicate = a partition between
-the REFINED and UNREFINED reading; VERIFIED unary≡binary, no new mechanism). Assumptions sympy leaves
+assumption (`positive=True`) is reified as a carrier child: positive-real → the lspace carrier (lspace
+is the positive cone, so positivity is constitutive, not an annotation). Assumptions sympy leaves
 IMPLICIT (never set) are the ONLY genuine residue — and that residue is honest: the info wasn't there.
 
-  assumption (explicit)  ->  carrier-selection (has a standing carrier: positive-real→lspace)
-                         ->  OR a bare predicate-obligation (no standing carrier yet; a RECURRING one
-                             is a carrier waiting to be named = a recurring type-hole is a generator).
-
-This module: sympy→forest (walk .func/.args, register assumptions), forest→sympy (read carriers back),
-fixpoint. Carrier table seeded with positive-real→lspace; extend as carriers are named."""
+Σ5 (IR-UNIFY-full): the bridge no longer carries its OWN flat lowerer/projector. It lowers/projects
+through the UNIFIED structured vocabulary in jea_ir_unify — so sympy-origin terms intern with the SAME
+structured kinds as OMML (App / Op / Subscript / Name / Constant), and ONE projector (project_unified)
+serves sympy AND OMML. The flat kind="Sympy"[op] dialect, its SympyLowerer/SympyProjector, and the
+hand-maintained _SYMPY_CTOR table are RETIRED (the typeholer/CrossMix can now tell Mul from sin on
+sympy-origin terms). The carrier tables moved to jea_ir_unify (the self-contained vocabulary hub; this
+also breaks the old bridge←unify import cycle). lower_sympy/project_sympy are kept as thin aliases so
+downstream callers (jea_octave_gen) are unchanged.
+"""
 from __future__ import annotations
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "metalanguage"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from jea_pyalg import Intern, IR, full_skeleton
+from jea_pyalg import Intern, full_skeleton
 import sympy as sp
-
-# ── the assumption→carrier seed table (DATA, not mechanism — the only new content, pass-13) ──
-# sympy assumption flag -> a carrier op-name the symbol is interned INTO (discharge by carrier-selection).
-_ASSUMPTION_CARRIER = {
-    "positive": "lspace",          # positive-real -> lspace (the lspace→exp detour discharges it)
-    # extend: "integer": "zmod"?, "nonnegative": ...  -- named as carriers are built
-}
-# the reverse: carrier op-name -> the sympy assumption it asserts on a reconstructed Symbol.
-_CARRIER_ASSUMPTION = {v: k for k, v in _ASSUMPTION_CARRIER.items()}
+# the unified vocabulary owns the lowerer/projector AND the carrier tables now (Σ5; one-way import).
+from jea_ir_unify import (lower_sympy_structured, project_unified,
+                          _ASSUMPTION_CARRIER, _CARRIER_ASSUMPTION, _carriers_for)   # noqa: F401 (re-export)
 
 
-def _carriers_for(sym: sp.Symbol) -> tuple[int, ...]:
-    """The carrier nodes a symbol's EXPLICIT assumptions select. Implicit assumptions -> nothing
-    (honest residue)."""
-    return tuple(sorted(flag for flag in _ASSUMPTION_CARRIER
-                        if sym.assumptions0.get(flag) is True))
-
-
-class SympyLowerer:
-    """sympy expression -> interned forest IR (the fold)."""
-    def __init__(self, intern: Intern):
-        self.I = intern
-
-    def _carrier_children(self, sym: sp.Symbol) -> tuple[int, ...]:
-        kids = []
-        for flag in _carriers_for(sym):
-            kids.append(self.I.intern(IR(kind="Carrier", op=_ASSUMPTION_CARRIER[flag], children=())))
-        return tuple(kids)
-
-    def lower(self, e) -> int:
-        # atoms
-        if isinstance(e, sp.Symbol):
-            # a symbol interned INTO its assumption-carriers: positivity is structure (a child), not a tag
-            return self.I.intern(IR(kind="Name", op=e.name,
-                                    children=self._carrier_children(e), payload=(e.name,)))
-        if isinstance(e, sp.Integer):
-            # the VALUE is the constant's identity (atomic referent, like a free name) -> KEY (op),
-            # NOT payload (payload isn't keyed -> all ints would collapse to one node: the agdai-v1 /
-            # abs-vs-str bug class. distinguishing structure goes in the key.)
-            return self.I.intern(IR(kind="Constant", lit="int", op=str(int(e)), children=(),
-                                    payload=(str(int(e)),)))
-        if isinstance(e, sp.Rational):
-            return self.I.intern(IR(kind="Constant", lit="rational", op=f"{e.p}/{e.q}", children=(),
-                                    payload=(str(e.p), str(e.q))))
-        if isinstance(e, sp.Float):
-            return self.I.intern(IR(kind="Constant", lit="float", op=str(e), children=(),
-                                    payload=(str(e),)))
-        # composite: func + args. the func NAME is the op (free/referential identity, like Def/builtin).
-        kids = tuple(self.lower(a) for a in e.args)
-        return self.I.intern(IR(kind="Sympy", op=type(e).__name__, children=kids))
-
-
-# func-name -> sympy constructor, for the reverse direction (the ONE correspondence, both ways)
-_SYMPY_CTOR = {
-    "Mul": sp.Mul, "Add": sp.Add, "Pow": sp.Pow,
-    "sin": sp.sin, "cos": sp.cos, "exp": sp.exp, "log": sp.log,
-    "NegativeOne": lambda: sp.Integer(-1), "One": lambda: sp.Integer(1), "Zero": lambda: sp.Integer(0),
-    "Half": lambda: sp.Rational(1, 2),
-}
-
-
-class SympyProjector:
-    """interned forest IR -> sympy expression (the unfold). Reads carriers back as assumptions."""
-    def __init__(self, intern: Intern):
-        self.I = intern
-
-    def project(self, nid: int):
-        n = self.I.nodes[nid]
-        if n.kind == "Name":
-            # reconstruct the Symbol WITH the assumptions its carriers assert (carrier→assumption)
-            asm = {}
-            for c in n.children:
-                cn = self.I.nodes[c]
-                if cn.kind == "Carrier" and cn.op in _CARRIER_ASSUMPTION:
-                    asm[_CARRIER_ASSUMPTION[cn.op]] = True
-            return sp.Symbol(n.payload[0], **asm)
-        if n.kind == "Constant":
-            if n.lit == "int":      return sp.Integer(int(n.payload[0]))
-            if n.lit == "rational": return sp.Rational(int(n.payload[0]), int(n.payload[1]))
-            if n.lit == "float":    return sp.Float(n.payload[0])
-        if n.kind == "Sympy":
-            args = [self.project(c) for c in n.children]
-            ctor = _SYMPY_CTOR.get(n.op)
-            if ctor is None:
-                raise KeyError(f"no sympy constructor for {n.op!r} (extend _SYMPY_CTOR)")
-            if n.op in ("NegativeOne", "One", "Zero", "Half"):
-                return ctor()
-            return ctor(*args)
-        raise KeyError(f"cannot project node kind {n.kind!r}")
-
-
-def lower_sympy(e, intern: Intern) -> int:
-    return SympyLowerer(intern).lower(e)
-
-def project_sympy(intern: Intern, root: int):
-    return SympyProjector(intern).project(root)
+# the bidirectional map, both directions through the ONE structured vocabulary (no flat Sympy[op]).
+lower_sympy = lower_sympy_structured       # sympy expr -> structured forest IR (the fold)
+project_sympy = project_unified            # structured forest IR -> sympy expr  (the unfold; reads OMML too)
 
 
 def fixpoint_test(e) -> dict:
@@ -138,17 +49,18 @@ def fixpoint_test(e) -> dict:
     I2 = Intern(); r2 = lower_sympy(back, I2)
     sk1, sk2 = full_skeleton(I1, r1), full_skeleton(I2, r2)
     return {"in": e, "back": back, "fixpoint": sk1 == sk2, "n": len(sk1),
-            "back_eq": bool(sp.simplify(e - back) == 0) if e.is_number or True else None}
+            "back_eq": bool(sp.simplify(e - back) == 0)}
 
 
 if __name__ == "__main__":
-    print("=== Σ-BRIDGE: forest↔sympy, assumptions as carrier-selections ===\n")
+    print("=== Σ-BRIDGE: forest↔sympy via the unified structured vocabulary (Σ5) ===\n")
     x = sp.Symbol("x", positive=True); y = sp.Symbol("y"); a, b = sp.symbols("a b")
 
-    cases = [(a*b)/(a+b), sp.sin(x)**2 + sp.Rational(1, 3), x*y + y]
+    cases = [(a * b) / (a + b), sp.sin(x) ** 2 + sp.Rational(1, 3), x * y + y]
     for e in cases:
         r = fixpoint_test(e)
-        print(f"[{'FIXPOINT OK' if r['fixpoint'] else 'DRIFT'}]  ({r['n']} nodes)  {e}  ->  {r['back']}")
+        print(f"[{'FIXPOINT OK' if r['fixpoint'] else 'DRIFT'}]  ({r['n']} nodes)  {e}  ->  {r['back']}"
+              f"  (back_eq={r['back_eq']})")
 
     # the assumption round-trips as a CARRIER: positive x -> lspace child -> back to positive=True
     print("\n--- assumption as carrier-selection (positive-real -> lspace -> positive=True) ---")

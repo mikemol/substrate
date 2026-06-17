@@ -59,8 +59,20 @@ def _name_to_sympy(txt: str, asm: dict):
 
 # sympy func-name -> unified Op operator name (the n-ary operators). Pow stays binary (it IS binary).
 _SYMPY_OP = {"Add": "Add", "Mul": "Mult", "Pow": "Pow"}
-# elementary functions -> App (explicit application), same as OMML m:func.
+# elementary functions -> App (explicit application), same as OMML m:func. On the way BACK, these
+# reconstruct the REAL sympy function (getattr(sp,name)), not an undefined Function -- so the round-trip
+# preserves sin/cos/… (an OMML/user name like E stays an undefined Function, which is right).
 _SYMPY_FUNC = {"sin", "cos", "tan", "exp", "log", "sqrt", "Abs"}
+
+# assumption -> carrier seed (Σ5: MOVED here from jea_sympy_bridge so jea_ir_unify is the self-contained
+# vocabulary hub -- breaks the bridge<-unify cycle, letting jea_sympy_bridge import the unified lowerer).
+_ASSUMPTION_CARRIER = {"positive": "lspace"}            # positive-real -> lspace (lspace→exp discharges it)
+_CARRIER_ASSUMPTION = {v: k for k, v in _ASSUMPTION_CARRIER.items()}
+
+
+def _carriers_for(sym):
+    """The carrier flags a symbol's EXPLICIT assumptions select (implicit -> nothing = honest residue)."""
+    return tuple(sorted(f for f in _ASSUMPTION_CARRIER if sym.assumptions0.get(f) is True))
 
 
 class StructuredSympyLowerer:
@@ -69,7 +81,6 @@ class StructuredSympyLowerer:
         self.I = intern
 
     def _carrier_children(self, sym):
-        from jea_sympy_bridge import _ASSUMPTION_CARRIER, _carriers_for
         return tuple(self.I.intern(IR(kind="Carrier", op=_ASSUMPTION_CARRIER[f], children=()))
                      for f in _carriers_for(sym))
 
@@ -111,7 +122,6 @@ def project_unified(I: Intern, nid: int):
     n = I.nodes[nid]
     k = n.kind
     if k == "Name":
-        from jea_sympy_bridge import _CARRIER_ASSUMPTION
         asm = {_CARRIER_ASSUMPTION[I.nodes[c].op]: True for c in n.children
                if I.nodes[c].kind == "Carrier" and I.nodes[c].op in _CARRIER_ASSUMPTION}
         return _name_to_sympy(n.op or (n.payload[0] if n.payload else "_"), asm)
@@ -121,7 +131,11 @@ def project_unified(I: Intern, nid: int):
         if n.lit == "float":    return sp.Float(n.op)
     if k == "App":
         fn = I.nodes[n.children[0]]; fname = fn.op or (fn.payload[0] if fn.payload else "f")
-        return sp.Function(fname)(*[project_unified(I, c) for c in n.children[1:]])
+        args = [project_unified(I, c) for c in n.children[1:]]
+        # an elementary function reconstructs as the REAL sympy function (so the round-trip preserves
+        # sin/cos/…); a user/OMML name (E, bitxor, Permute) stays an undefined Function -- exactly right.
+        ctor = getattr(sp, fname) if fname in _SYMPY_FUNC else sp.Function(fname)
+        return ctor(*args)
     if k in ("Op", "BinOp"):                              # BinOp = the k=2 Op (dialects merged here)
         ctor = _OP_SYMPY.get(n.op)
         if ctor is None:
