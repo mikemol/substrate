@@ -8,15 +8,14 @@
 -- `affine`/`affine-inv` are the fixed F₂ affine maps of FIPS-197 §5.1.1/§5.3.2.
 --
 -- ROUND-TRIP `inv-sbox ∘ sbox ≡ id` (InvSubBytes ∘ SubBytes) is the composition
--- of two finite F₂ facts, each by REFLECTION over all 256 bytes:
---   affine-rt : affine-inv ∘ affine ≡ id   (pure F₂; fast)
+-- of two facts:
+--   affine-rt : affine-inv ∘ affine ≡ id   (pure F₂, by reflection over 256 bytes; fast)
 --   pinv-inv  : pinv ∘ pinv ≡ id           (the patched inverse is an involution)
 -- FIPS sanity: `affine 0 = 0x63 = S(00)` and (checked) `affine {01} = 0x7C = S(01)`.
 --
--- COST NOTE: `pinv-inv-check` normalises the EEA twice per byte (~512 runs, ~90s).
--- A future optimisation replaces it with the ALGEBRAIC involution (inv(inv a) = a
--- by inverse-uniqueness: inv(inv a) = (a·inv a)·inv(inv a) = a·(inv a·inv(inv a)) = a),
--- which needs no reflection — left as a fast-build follow-up.  Fully --safe, 0 postulates.
+-- `pinv-inv` is ALGEBRAIC (no EEA reflection): `inv(inv a) = (a·inv a)·inv(inv a)
+-- = a·(inv a·inv(inv a)) = a·𝟙 = a` by inverse-uniqueness, with `inv a ≠ 0` from
+-- `0≢1`.  Whole module typechecks in ~2s.  Fully --safe --without-K, 0 postulates.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -27,14 +26,19 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
+open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Empty using (⊥-elim)
 import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2 using (_+_)
+open import Substrate.Algebra.F2 using (_+_; 𝟘≢𝟙)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (m-lo; is-zero8; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
-open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv)
+open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
+open import Substrate.Algebra.F2.Polynomial.Wedge.AsField using (is-zero8-sound; nonzero-bridge)
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly)
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
+open D.Over F₂-CommRing 7 m-lo using (Poly; nth)
+open Q.Over F₂-CommRing 7 m-lo using (_*Q_; 𝟎C; oneC; *Q-assoc; *Q-identityˡ; *Q-identityʳ; *Q-zeroʳ)
 
 -- decidable equality on bit vectors, and its soundness.
 _==F_ : F2.F₂ → F2.F₂ → Bool
@@ -95,16 +99,52 @@ sbox-00 : sbox (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.�
         ≡ (F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ [])
 sbox-00 = refl
 
--- the two finite F₂ facts, by reflection over all 256 bytes.
+-- affine round-trip: affine-inv ∘ affine ≡ id, by reflection (pure F₂; fast).
 affine-rt-check : all-vec (λ a → vec-eq (affine-inv (affine a)) a) ≡ true
 affine-rt-check = refl
-pinv-inv-check : all-vec (λ a → vec-eq (pinv (pinv a)) a) ≡ true
-pinv-inv-check = refl
-
 affine-rt : (a : Poly 8) → affine-inv (affine a) ≡ a
 affine-rt a = vec-eq-sound _ _ (all-vec-sound (λ x → vec-eq (affine-inv (affine x)) x) affine-rt-check a)
+
+-- pinv ∘ pinv ≡ id ALGEBRAICALLY via inverse-uniqueness — NO EEA reflection, fast.
+0≢1 : ¬ (𝟎C ≡ oneC)
+0≢1 eq = 𝟘≢𝟙 (cong (λ v → nth v 0) eq)
+
+-- a≠0 ⇒ inv a ≠ 0 (else a·inv a = a·0 = 0 = 𝟙, contra 0≢1).
+inv-nonzero : (a : Poly 8) → is-zero8 a ≡ false → ¬ (inv a ≡ 𝟎C)
+inv-nonzero a z eq = 0≢1 (sym (trans (sym (inv-law a z)) (trans (cong (a *Q_) eq) (*Q-zeroʳ a))))
+
+-- inv(inv a) = (a·inv a)·inv(inv a) = a·(inv a·inv(inv a)) = a·𝟙 = a.
+inv-involution : (a : Poly 8) → is-zero8 a ≡ false → inv (inv a) ≡ a
+inv-involution a z =
+  trans (sym (*Q-identityˡ (inv (inv a))))
+  (trans (cong (_*Q inv (inv a)) (sym (inv-law a z)))
+  (trans (*Q-assoc a (inv a) (inv (inv a)))
+  (trans (cong (a *Q_) (inv-law (inv a) (nonzero-bridge (inv a) (inv-nonzero a z))))
+         (*Q-identityʳ a))))
+
+F≢T : {X : Set} → false ≡ true → X
+F≢T ()
+
+-- pinv resolved on each branch (so neither `with` pollutes pinv-inv's goal).
+pinv-zero : (a : Poly 8) → is-zero8 a ≡ true → pinv a ≡ a
+pinv-zero a z with is-zero8 a
+... | true  = refl
+... | false = F≢T z
+pinv-nonzero : (a : Poly 8) → is-zero8 a ≡ false → pinv a ≡ inv a
+pinv-nonzero a z with is-zero8 a
+... | false = refl
+... | true  = F≢T (sym z)
+
+-- pinv ∘ pinv ≡ id, by case on is-zero8 a (b explicit ⇒ goal stays unabstracted).
+pinv-inv-aux : (a : Poly 8) (b : Bool) → is-zero8 a ≡ b → pinv (pinv a) ≡ a
+pinv-inv-aux a true  z = trans (cong pinv (pinv-zero a z)) (pinv-zero a z)
+pinv-inv-aux a false z =
+  trans (cong pinv (pinv-nonzero a z))
+  (trans (pinv-nonzero (inv a) (nonzero-bridge (inv a) (inv-nonzero a z)))
+         (inv-involution a z))
+
 pinv-inv : (a : Poly 8) → pinv (pinv a) ≡ a
-pinv-inv a = vec-eq-sound _ _ (all-vec-sound (λ x → vec-eq (pinv (pinv x)) x) pinv-inv-check a)
+pinv-inv a = pinv-inv-aux a (is-zero8 a) refl
 
 -- THE S-BOX ROUND-TRIP: InvSubBytes ∘ SubBytes ≡ id.
 sbox-rt : (a : Poly 8) → inv-sbox (sbox a) ≡ a
