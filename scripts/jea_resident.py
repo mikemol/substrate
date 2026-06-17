@@ -203,6 +203,37 @@ def _drain_level(F, op, lsids, rsids):                              # per-node d
     return [ (lambda v:(v.numerator,v.denominator))(comb(F.value(l),F.value(r))) for l,r in zip(lsids,rsids) ]
 
 
+def _aligned_dag(leaf_n, leaf_d, ops):
+    """The balanced HALVING-reduction DAG (M=2^k leaves; layer combines value j with value j+cnt/2) -- for the drain
+    to evaluate the SAME thing as eval_aligned_planes."""
+    M=len(leaf_n); vN=list(leaf_n); vD=list(leaf_d); op=[-1]*M; lch=[-1]*M; rch=[-1]*M
+    base=0; cnt=M; li=0
+    while cnt>1:
+        o=ops[li]; li+=1
+        for j in range(cnt//2):
+            vN.append(0); vD.append(1); op.append(o); lch.append(base+j); rch.append(base+cnt//2+j)
+        base+=cnt; cnt//=2
+    return dict(op=op,vN=vN,vD=vD,lch=lch,rch=rch,N=len(vN),root=len(vN)-1)
+
+
+def eval_aligned_planes(leaf_n, leaf_d, ops):
+    """Δ-Ψ-swar-win finish: PLANES-RESIDENT aligned-layer eval of the halving tree. The host<->device boundary is paid
+    ONCE (pack leaves vectorized, read out the root); each layer is ONE fused SWAR op (rat_*, no per-combine Fraction).
+    Children = value j and j+M'/2: a WORD-SLICE while >1 word, a bit-shift within the last word -- no arbitrary gather.
+    SWAR's home (regular wide layers); the dispatch flips to this vs the per-node drain. Returns the root Fraction."""
+    nP,_=GR.to_bitsliced(leaf_n); dP,_=GR.to_bitsliced(leaf_d); Mp=len(leaf_n); li=0
+    while Mp>1:
+        op=ops[li]; li+=1; W=nP.shape[1]
+        if W>1:                                                      # across-word halving: top/bottom halves (word slice)
+            h=W//2; ac=cp.ascontiguousarray                          # column slices are non-contiguous; the kernel needs C-contig
+            nL,nR,dL,dR=ac(nP[:,:h]),ac(nP[:,h:]),ac(dP[:,:h]),ac(dP[:,h:])
+        else:                                                        # within the last word: shift by Mp//2 values (bit shift)
+            s=cp.uint64(Mp//2); nL,nR,dL,dR=nP,nP>>s,dP,dP>>s
+        nP,dP=(GR.rat_mul if op==1 else GR.rat_add)(nL,dL,nR,dR)     # ONE fused SWAR combine for the whole layer
+        Mp//=2
+    return Fraction(GR.from_bitsliced(nP,1)[0], GR.from_bitsliced(dP,1)[0])
+
+
 def eval_frontier(F, op, lsids, rsids, strategy):
     """Δ-Ψ-forest dispatch CONSUMER: execute a level via the strategy the navigator chose (jea_navigator's
     eval_strategy, an argmin over the MEASURED level surface). BRANCHLESS dispatch: the strategy is a 0/1 INDEX into a
@@ -340,7 +371,26 @@ if __name__ == "__main__":
     w10 = all(Fraction(*r_swar[i])==truth_c[i] for i in range(M)) and all(Fraction(*r_drain[i])==truth_c[i] for i in range(M))
     print(f"\n  W10 DISPATCH CONSUMER (eval_frontier executes the navigator's eval_strategy): both corners exact vs truth")
     print(f"      -- 'bit-sliced-SWAR' branch and 'per-node-drain' branch both == per-node truth: {w10}")
-    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9 and w10
+    # W11: Δ-Ψ-swar-win FINISH -- the planes-resident aligned-layer eval (boundary paid ONCE) vs the per-node drain,
+    # on the SAME halving tree. EXACT (== drain == truth) + COMPUTED which is faster (the dispatch flips for wide layers).
+    Mh=512; rngh=np.random.default_rng(11)
+    ln=[int(rngh.integers(1,50)) for _ in range(Mh)]; ld=[int(rngh.integers(1,50)) for _ in range(Mh)]
+    ops=[1 if rngh.integers(0,2) else 0 for _ in range(Mh.bit_length())]
+    truth_v=[Fraction(a,b) for a,b in zip(ln,ld)]; base=0; cnt=Mh; li2=0
+    while cnt>1:                                                         # host truth of the halving tree
+        o=ops[li2]; li2+=1; nxt=[(truth_v[base+j]*truth_v[base+cnt//2+j]) if o==1 else (truth_v[base+j]+truth_v[base+cnt//2+j]) for j in range(cnt//2)]
+        truth_v=truth_v+nxt; base+=cnt; cnt//=2
+    root_truth=truth_v[-1]
+    sw=eval_aligned_planes(ln, ld, ops)                                 # planes-resident SWAR (pack once, k ops, readout once)
+    Gd=Forest(); dr,_,_=evaluate(_aligned_dag(ln, ld, ops), Gd)          # the per-node drain (same tree)
+    eval_aligned_planes(ln,ld,ops); cp.cuda.Stream.null.synchronize()   # warm
+    t0=time.perf_counter(); [eval_aligned_planes(ln,ld,ops) for _ in range(5)]; cp.cuda.Stream.null.synchronize(); t_sw=(time.perf_counter()-t0)/5
+    t0=time.perf_counter(); [evaluate(_aligned_dag(ln,ld,ops), Forest()) for _ in range(5)]; cp.cuda.Stream.null.synchronize(); t_dr=(time.perf_counter()-t0)/5
+    w11 = (sw==root_truth) and (dr==root_truth)
+    print(f"\n  W11 Δ-Ψ-SWAR-WIN FINISH (halving tree, M={Mh}): planes-resident SWAR == drain == truth: {w11};")
+    print(f"      [COMPUTED] planes-resident SWAR = {t_sw*1e3:.1f} ms vs per-node drain = {t_dr*1e3:.1f} ms -> "
+          f"{'SWAR WINS' if t_sw<t_dr else 'drain wins'} ({t_dr/max(t_sw,1e-9):.1f}x) -- the dispatch flips for aligned wide layers")
+    ok=w1 and w2 and w3 and w4 and w5 and w6 and w7 and w8 and w9 and w10 and w11
     print(f"\n  {'PASS' if ok else 'FAIL'} — the resident SPPF: INTERN+EVAL are ONE fused on-device megakernel (rung-2),")
     print(f"  the >u128 CROWN is delivered on the byte-limb DEVICE carrier (Δ-Ψ-deliver), the physical store merges")
     print(f"  INCREMENTALLY (b-real-incr), parametric terms are GENERATED ON-DEVICE (Δ-Ψ-dag), the VALUE payload is")

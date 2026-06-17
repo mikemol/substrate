@@ -125,7 +125,18 @@ planes-resident pipeline is clean for ALIGNED/regular wide layers (SWAR's home) 
 irregular scatter (exactly the dispatch's job). NEXT (Δ-Ψ-swar-win finish): a planes-resident ALIGNED-layer evaluator
 (pack-once/readout-once) measured vs the drain -> the dispatch flips to SWAR for regular wide layers.
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ψ-swar-win finish** (planes-resident aligned-layer evaluator) -- run the {+,×,÷} operating-point solve
+**Δ-Ψ-swar-win finish [DONE -- jea_resident.eval_aligned_planes]:** the PLANES-RESIDENT aligned-layer evaluator -- a
+balanced halving tree (combine value j with value j+M'/2), so children are a WORD-SLICE (across-word) then a bit-shift
+(within the last word) -- NO arbitrary gather. The host<->device boundary is paid ONCE (pack leaves vectorized,
+readout root); each layer is ONE fused SWAR op (rat_*). W11: == the per-node drain == host truth (M=512), and
+[COMPUTED] planes-resident SWAR 270.5ms vs drain 368.0ms -> SWAR WINS 1.4x. The dispatch flips to SWAR for aligned
+wide layers (SWAR's home), drain stays for irregular scatter -- exactly the navigator's job. BUG caught by the M-sweep
+debug: column slices nP[:,:h] are NON-contiguous but the fused kernel assumes C-contiguous (plane stride=W) -> wrong
+reads for W>1; fixed with cp.ascontiguousarray. 12/12 PASS. Δ-Ψ-swar-win CLOSED: SWAR is the measured winner for
+regular wide layers, with the boundary amortized + the arithmetic fused (Δ-Ψ-bitkernel) + branchless (no divergence).
+
+**NEXT executors (to dispatch, by symbol):** **Δ-Ω-carrier** (unify jea_carrier_base value-major + jea_graded
+bit-major + jea_limb_gpu as ONE width-w/layout-gauge carrier) -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
