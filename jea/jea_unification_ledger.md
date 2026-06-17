@@ -905,7 +905,7 @@ Strictified ledger of the M2-runtime + unification arc. Every brick is an AI wit
 as a TRANSITION (state -> morphism -> state) with its preconditions exposed in the witness column [..] --
 the witnesses ARE the DBE entailment (a brick is reachable only once its precondition bricks are done).
 Anti-nominalization: no brick is named as a noun ("the packing"); each is a movement. Cotype-as-WAL:
-update this file atomically with each brick, commit together. Companion detail: scripts/jea_m2_ledger.md.
+update this file atomically with each brick, commit together. Companion detail: jea/evolution/04_engine/jea_m2_ledger.md.
 
 ## Apex costructure (the strictified shared structure — what every brick composes into)
 

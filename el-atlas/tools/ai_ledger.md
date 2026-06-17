@@ -1,8 +1,10 @@
 # AI ledger (WAL cotype) — kernel-perf / el-atlas hardware program
 
-Single source of truth for all action items. Updated atomically with the work (cotype-as-WAL).
-"Everything remaining is part of a named AI." Other substrate arcs (CD follow-on, fuel sweep,
-el-atlas Frontier) live in the project_open_threads memory, not here.
+**TYPE (Λ4, 2026-06-17): a CLOSED completion certificate — outcome-indexed (AI-N → artifact +
+finding), not a live worklist or a decision narrative.** It WAS the single source of truth for this
+program's action items (cotype-as-WAL); the program is now COMPLETE (Status: all AIs closed). For
+the *why* behind a decision, read the cited artifact/finding, not this index. New/other substrate
+arcs (CD follow-on, fuel sweep, el-atlas Frontier) live in the project_open_threads memory, not here.
 
 ## CLOSED
 
@@ -42,7 +44,7 @@ el-atlas Frontier) live in the project_open_threads memory, not here.
   Deploys AI-11 on the GPU = the jea on-device-dispatcher debt. Toy bucket-work stands in for real work
   distribution (production fill-in); the MECHANISM is complete.
 
-## OPEN (named)
+## OPEN (named) — NONE remain (AI-12, the last, is CLOSED below; kept for its retraction record)
 
 - **AI-12 — CHASSIS-CAP BINDING TEST. [CLOSED -> chassis_cap_test.py]** Measured CPU-alone 48.3W ->
   combined 51.7W (x1.07); dGPU-alone 25.9W -> combined 30.3W (x1.17, at its 30W cap); alone-sum 74.1W

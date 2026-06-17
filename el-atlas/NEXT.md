@@ -20,7 +20,13 @@ independently run any more." Consequences for this handoff:
   wal.md + cotype over the "State" section below.
 - The proof tier (opening move 3) is COMPLETE — see below.
 
-## State
+## State — ⚠️ FROZEN at W15 (STALE)
+
+> Λ3 (2026-06-17): superseded by wal.md W16–W23 + cotype. Kept verbatim as the W15 snapshot.
+> Known-stale within it: "Proof tier OPEN" is now COMPLETE (W23, see CONTINUATION above);
+> "WAL: 15 moves" ran on to W23; "v3.8.5" advanced to v3.13.0. Trust wal.md's last END for
+> current state; do not read the lines below as live.
+
 - HEAD: see git; tree clean at last END. Instrument v3.8.5, space
   S_49a935bae7dc; WITNESS_RELATIONS COMPLETE (no unregistered pairs).
 - WAL: 15 moves; BEGIN lines now carry pre=<sha> (W14 convention;

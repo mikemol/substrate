@@ -17,7 +17,7 @@ as files on disk:
 
 | direction | family | files | skill |
 |---|---|---|---|
-| **forward** — intent ⟶ artifact | WAL | [`jea/jea_unification_ledger.md`](jea/jea_unification_ledger.md), [`scripts/jea_m2_ledger.md`](scripts/jea_m2_ledger.md), [`el-atlas/wal.md`](el-atlas/wal.md), [`jea/agda-emit/4bit-WAL.md`](jea/agda-emit/4bit-WAL.md) | decomposable-by-entailment |
+| **forward** — intent ⟶ artifact | WAL | [`jea/jea_unification_ledger.md`](jea/jea_unification_ledger.md), [`jea/evolution/04_engine/jea_m2_ledger.md`](jea/evolution/04_engine/jea_m2_ledger.md), [`el-atlas/wal.md`](el-atlas/wal.md), [`jea/agda-emit/4bit-WAL.md`](jea/agda-emit/4bit-WAL.md) | decomposable-by-entailment |
 | **pending** — intent, not yet | NEXT | [`el-atlas/NEXT.md`](el-atlas/NEXT.md) + open obligations (OB-*) | DBE (the remainder) |
 | **backward** — artifact ⟶ lesson | retrospective | [`el-atlas/retrospectives/`](el-atlas/retrospectives/), [`decomposition/cotype_retrospective.md`](decomposition/cotype_retrospective.md), [`decomposition/conversation_retrospective.md`](decomposition/conversation_retrospective.md) | the retrospective ritual |
 | **sideways** — artifacts ⟶ shared shape | cotype | [`el-atlas/el-atlas-cotype.md`](el-atlas/el-atlas-cotype.md), [`el-atlas/tools/cost_cotype.py`](el-atlas/tools/cost_cotype.py), [`decomposition/cotype_decomposition.sqlite`](decomposition/), [`cotype-free-self-extending-grammar.md`](cotype-free-self-extending-grammar.md) | regroup-from-shadows / snap-to-grid |
@@ -43,7 +43,7 @@ And it **recurses — the same shape at three levels**:
 | **I. Read** | [`el-atlas/reading-ledgers/*.bricks`](el-atlas/reading-ledgers/) | how external sources (SYSTEM Π, the literature) were *read* and decomposed — Čech overlapping-cover bricks (H1/H2/Q1/M/Q4 + A/B gluing), typed `ACT:/OBL:/GLU:/COC:`; producer tool [`el-atlas/tools/brick-schedule.py`](el-atlas/tools/brick-schedule.py) |
 | **II. Accumulate** | [`el-atlas/el-atlas-cotype.md`](el-atlas/el-atlas-cotype.md) | the structural vocabulary that accumulated — literature-adjacency shadows (`S-A`…`S-H`: bilattices, evidence logic, tropical, Shannon duality, sheaf contextuality, …) and the honest self-corrections (`DRIFT-1…5`, kept not deleted) |
 | **III. Build · instrument** | [`el-atlas/wal.md`](el-atlas/wal.md), [`el-atlas/NEXT.md`](el-atlas/NEXT.md) | how accumulated structure became the el-atlas instrument — 22 moves (`W1…W22`) with `BEGIN/END`, `pre=/head=` shas, named `tools/` pilots + `proofs/*.agda` |
-| **IV. Build · evaluator** | [`jea/jea_unification_ledger.md`](jea/jea_unification_ledger.md), [`scripts/jea_m2_ledger.md`](scripts/jea_m2_ledger.md), [`jea/agda-emit/4bit-WAL.md`](jea/agda-emit/4bit-WAL.md) | how el-atlas became the GPU evaluator — the `Δ-X` coordinate→geometry arc → `jea/*.py`; the `M2a…M2d` milestone bricks; the `4bit-WAL` premortem (judgment discipline before code) |
+| **IV. Build · evaluator** | [`jea/jea_unification_ledger.md`](jea/jea_unification_ledger.md), [`jea/evolution/04_engine/jea_m2_ledger.md`](jea/evolution/04_engine/jea_m2_ledger.md), [`jea/agda-emit/4bit-WAL.md`](jea/agda-emit/4bit-WAL.md) | how el-atlas became the GPU evaluator — the `Δ-X` coordinate→geometry arc → `jea/*.py`; the `M2a…M2d` milestone bricks; the `4bit-WAL` premortem (judgment discipline before code) |
 | **V. Reflect** | [`el-atlas/retrospectives/`](el-atlas/retrospectives/) | the after-action reviews that fed corrections back — the ten-gate ritual (`G0…G9`) on a specific fault, decorrelation to fixpoint |
 | **VI. Compile** | [`decomposition/`](decomposition/) | the whole thing mined into a queryable provenance DB + onboarding retrospectives — *read this first to onboard* ([README](decomposition/README.md)) |
 | **VII. Prove** | [`Cotypes.agda`](agda/Substrate/ShadowArchitecture/Raven/Semantics/Cotypes.agda), [`Persistence.agda`](agda/Substrate/ShadowArchitecture/Persistence.agda) | the law itself — the cotype's no-deletion monotonicity, type-enforced |
@@ -62,29 +62,29 @@ Legend — **role**: `spine` (teaches the build story) · `index` (maps things) 
 | `decomposition/` suite | ledger-of-ledgers | a triple `(section, subject, predicate, object)` line-anchored to source | explicit + queryable | live | **spine** (meta) |
 | `el-atlas/retrospectives/*.md` | retrospective | a gate `G0…G9` finding with commit shas | explicit (internal) | live / awaiting-fix | **spine** (method) |
 | `jea/agda-emit/4bit-WAL.md` | WAL (premortem) | a shadow / plan-gate `P1…P4`, design-time | design-time | live study | **spine** (judgment) |
-| `scripts/jea_m2_ledger.md` | WAL | an `M2x` brick → reference script + production twin | explicit | **orphaned** (see cracks) | index |
-| `el-atlas/NEXT.md` | NEXT | a numbered opening move + state snapshot | mixed (stale state) | superseded | index |
-| `el-atlas/tools/ai_ledger.md` | WAL | an `AI-N` item → tool file | artifact-only (no *why*) | live | **certificate** |
+| `jea/evolution/04_engine/jea_m2_ledger.md` | WAL | an `M2x` brick → reference script + production twin | explicit | homed (Λ1 ✅) | index |
+| `el-atlas/NEXT.md` | NEXT | a numbered opening move + state snapshot | current header + W15-frozen State | live (Λ3 ✅ banner) | index |
+| `el-atlas/tools/ai_ledger.md` | WAL | an `AI-N` item → tool file + finding | outcome-indexed | closed-record (Λ4 ✅ labeled) | **certificate** |
 | `cotype-free-self-extending-grammar.md` | cotype | a `Move M1…M41` with shadows + probe-state | explicit | live, **bifurcated** (see cracks) | spine, then crisis-journal |
 
 ## Known cracks (kept visible, not hidden)
 
 An honest index records where the record itself is imperfect:
 
-1. **`scripts/jea_m2_ledger.md` is orphaned** — it documents the `M2a…M2d` scripts that now
-   live in [`jea/evolution/04_engine/`](jea/evolution/04_engine/); it belongs beside them.
-2. **`scratch/cotype-free-self-extending-grammar (16).md` is an exact (MD5) duplicate** of the
-   root copy — a redundant, `scratch`-resident artifact.
-3. **`el-atlas/tools/ai_ledger.md` is the one inert ledger** — outcome-only (`AI-N → file`),
-   no recorded intent or lesson. A completion certificate, not a narrative.
-4. **`el-atlas/NEXT.md`'s "State" section is stale** — frozen at `W15`, superseded by
-   `W16…W23`; it reads as current but isn't.
-5. **The cotype-grammar is bifurcated at `M33` and unresolved** — the design ledger claims 9
+1. ✅ **CLOSED (Λ1, L0)** — `jea/evolution/04_engine/jea_m2_ledger.md`: the orphan was `git mv`'d out
+   of `scripts/` to sit beside the `M2a…M2d` scripts it documents.
+2. ✅ **CLOSED (Λ2, L0)** — the exact-MD5 duplicate `scratch/cotype-free-self-extending-grammar (16).md`
+   was deleted; the root copy (the one `decomposition/` ingests) is now the single canonical.
+3. ✅ **ADDRESSED (Λ4, L0)** — `el-atlas/tools/ai_ledger.md` is now labeled for what it is: a CLOSED
+   completion certificate (outcome-indexed; cite the finding for the *why*), not a live worklist.
+4. ✅ **ADDRESSED (Λ3, L0)** — `el-atlas/NEXT.md`'s stale `W15` State block now carries a FROZEN/STALE
+   banner pointing to `wal.md` W16–W23 for current state.
+5. **The cotype-grammar is bifurcated at `M33`** (OPEN — Λ5) — the design ledger claims 9
    `V₄`-twin cells; observation found 4 inhabited. The repair (`M34…M41 v22`) lives *only in the
    cotype*; `scratch/chart.py` and the Agda side were never re-synced. Unlike jea's `fit_plant`
    (an honestly-closed dead-end), this one is still *claiming*.
-6. **`decomposition/` covers only the SPPF/grammar arc** (the 242-turn design conversation +
-   the grammar) — the later el-atlas and jea arcs are not yet in the DB. The autobiography's
+6. **`decomposition/` covers only the SPPF/grammar arc** (OPEN — Λ6) — the 242-turn design conversation
+   + the grammar; the later el-atlas and jea arcs are not yet in the DB. The autobiography's
    meta-layer stops two chapters short.
 
 ## How to onboard
