@@ -177,3 +177,25 @@ step-bezout-poly {a} {g} d f-lo (s' , t' , eq') = t' , new-t , eq
 bezout-poly : {a b g : QPoly} → PolyEEATrace a b g → BezoutNthWitness a b g
 bezout-poly t = eea-fold-poly {T = BezoutNthWitness} base-bezout-poly
                   (λ {a} {g} d f-lo rec → step-bezout-poly {a} {g} d f-lo rec) t
+
+------------------------------------------------------------------------
+-- glue for the fuel-EEA (the buildable, divisor-q-free path to the inverse):
+-- transport a witness across a VALUE-EQUAL divisor (for the trim), and the
+-- gcd-is-unit base.
+------------------------------------------------------------------------
+
+-- the b-index of a Bézout witness can be swapped for any VALUE-EQUAL poly
+-- (same nth) — convCoeff reads its 2nd argument only through nth.
+bezout-cong-b : {a b b′ g : QPoly} → ((j : ℕ) → nth (proj₂ b) j ≡ nth (proj₂ b′) j)
+              → BezoutNthWitness a b g → BezoutNthWitness a b′ g
+bezout-cong-b {a} h (s , t , eq) =
+  s , t , (λ k → trans (cong (convCoeff (proj₂ s) (proj₂ a) k +_)
+                             (convCoeff-cong-r (proj₂ t) (λ j → sym (h j)) k))
+                       (eq k))
+
+-- the gcd-is-unit base: s·b + 𝟙·u = u (s = 0), the Bézout for the terminal
+-- unit remainder.  (The EEA over an irreducible modulus ends here, g = u.)
+unit-bezout : (b u : QPoly) → BezoutNthWitness b u u
+unit-bezout b u =
+  zero-q , (suc zero , (𝟙 ∷ [])) ,
+  (λ k → trans (+-identityˡ (convCoeff (𝟙 ∷ []) (proj₂ u) k)) (convCoeff-one (proj₂ u) k))
