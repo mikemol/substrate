@@ -179,7 +179,64 @@ class FractionCarrier(Carrier):
 FRACTION = FractionCarrier()
 
 
+def _selftest(trials=300, seed=20260617):
+    """Φ5 TRUST: validate nodal_solve_subfree on graphs whose G_eff is NOT known in advance, against an
+    INDEPENDENT oracle (numpy Laplacian pseudoinverse, float). Every __main__ witness uses a KNOWN answer
+    (Wheatstone=1, series=6/5), so the sub-free coordinate was only ever confirmed-on-known. Per trial, a
+    random CONNECTED (multi)graph with random ℚ conductances, checked three ways:
+      (1) nodal_solve_subfree     -- the SUBTRACTION-FREE Matrix-Tree ratio   (exact ℚ)
+      (2) nodal_solve             -- the SUBTRACTIVE Gaussian coordinate       (exact ℚ)
+      (3) (e_s-e_t)·L⁺·(e_s-e_t)  -- the textbook effective-RESISTANCE oracle  (numpy float, INDEPENDENT)
+    PASS iff (1)==(2) exactly and float(1) ≈ (3). (3) is independent of my code, so it guards against a
+    shared conceptual bug in my two coordinates (validate OUTPUTS, not just inputs). Reproducible (seeded).
+    Connected ⟹ the grounded Laplacian is SPD ⟹ Gaussian needs no pivoting (nodal_solve has none)."""
+    import random
+    try:
+        import numpy as np
+    except ImportError:
+        print("jea_circuit --selftest: SKIP (numpy absent; the independent oracle needs it)"); return True
+    rng = random.Random(seed)
+    F = FRACTION
+    worst = 0.0; sample = None
+    for _ in range(trials):
+        n = rng.randint(2, 6)
+        order = list(range(n)); rng.shuffle(order)
+        edges = []
+        for i in range(1, n):                                   # random spanning tree -> CONNECTED
+            edges.append((order[i], order[rng.randint(0, i - 1)],
+                          Fraction(rng.randint(1, 6), rng.randint(1, 6))))
+        for _e in range(rng.randint(0, n)):                     # extra edges -> cycles / irreducible topologies
+            a, b = rng.sample(range(n), 2)
+            edges.append((a, b, Fraction(rng.randint(1, 6), rng.randint(1, 6))))
+        s, t = rng.sample(range(n), 2)
+        sub = nodal_solve_subfree(F, n, edges, s, t)
+        gau = nodal_solve(F, n, edges, s, t)
+        if sub != gau:
+            print(f"jea_circuit --selftest: FAIL (coordinates disagree) n={n} s={s} t={t} edges={edges}: "
+                  f"subfree={sub} gauss={gau}"); return False
+        L = np.zeros((n, n))
+        for (u, v, g) in edges:
+            fg = float(g); L[u, u] += fg; L[v, v] += fg; L[u, v] -= fg; L[v, u] -= fg
+        Lp = np.linalg.pinv(L)
+        oracle = 1.0 / (Lp[s, s] + Lp[t, t] - 2 * Lp[s, t])     # G_eff = 1 / R_eff
+        err = abs(float(sub) - oracle)
+        if err > 1e-6:
+            print(f"jea_circuit --selftest: FAIL (oracle disagrees, |Δ|={err:.2e}) n={n} s={s} t={t} "
+                  f"edges={edges}: subfree={sub}={float(sub):.6f} oracle={oracle:.6f}"); return False
+        if err >= worst:
+            worst = err; sample = (n, len(edges), s, t, sub)
+    n, m, s, t, g = sample
+    print(f"jea_circuit --selftest: PASS ({trials} random graphs, n≤6) — sub-free Matrix-Tree == Gaussian")
+    print(f"  (exact ℚ) AND ≈ the numpy Laplacian-pseudoinverse oracle (worst |Δ|={worst:.2e}). The sub-free")
+    print(f"  coordinate is now validated on UNKNOWN graphs, not just the hand-picked witnesses — e.g. a")
+    print(f"  random n={n} {m}-edge graph gave G_eff({s}→{t}) = {g} = {float(g):.6f} (unpredicted in advance).")
+    return True
+
+
 if __name__ == "__main__":
+    import sys
+    if "--selftest" in sys.argv:
+        sys.exit(0 if _selftest() else 1)
     # WITNESS: the solve is carrier-agnostic -- the SAME code over ℚ (Fraction) and float agrees,
     # and matches the closed forms. (The graded-ℚ wedge carrier lives in jea_onegraph; the device
     # plane carrier in jea_onegraph.fstar_device -- both are further instances of THIS one solve.)
