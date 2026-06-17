@@ -150,23 +150,36 @@ def intern_agdai(path: str, intern: Intern) -> dict:
 
 def intern_signature(json_path: str, intern: Intern) -> dict:
     """Upgrade path (Δ-Π-agdai full): intern the FULL child-edge DAG from the Agda-2.8.0 shim's
-    output. The shim (see module docstring "HOW TO RECOVER IT") emits JSON-lines, one per core
-    node: {"id": int, "constructor": str, "qname": str|null, "children": [int,...]}. Because the
-    shim walks Agda's TYPED AST, `children` are the real parent->child edges -- the segmentation
-    we cannot get from the raw arena without the version-pinned tag->arity table.
+    output. The shim (see module docstring "HOW TO RECOVER IT") emits JSON-lines, one per core node.
 
-    With edges present, each core node interns as
-        IR(kind="AgdaCore", role=qname, op=constructor, children=(interned child ids...))
-    so structural identity is the constructor + child structure (the role-lowering principle:
-    the qname is residue-ish but kept; the SHAPE is the key). Definitional equivalence then
-    falls out of hash-cons: two core terms with the same constructor+children intern to ONE id
-    -- proofs equal up to this structure share a node. The typeholer and the source<->core
-    cross-term run on THIS (they need the edges this provides and the fan-in version lacks).
+    SHIM JSON SCHEMA (what the readInterface walk must emit per node):
+        {"id": int,
+         "constructor": str,          # the Term/Defn constructor: "Var","Def","Con","Lam","Pi",...
+         "qname": str|null,           # for Def/Con/Prim: the FREE qualified name (referential identity)
+         "index": int|null,           # for Var: the de Bruijn INDEX (bound, position identity)
+         "children": [int,...]}
 
-    STATUS: stub. Requires the shim's JSON (needs Agda 2.8.0 toolchain run, present in the
-    build env). Implemented as a topological intern: a node is interned only after its children,
-    so children are real interned ids. Cycles (Agda core is acyclic for terms) are not expected;
-    a back-edge would indicate a metavariable/recursive occurrence to handle as a named ref."""
+    THE = vs ≅ LESSON, in Agda-core terms (carried over from the jea_pyalg free/bound fix):
+    a core node's identity field depends on whether it is BOUND or FREE -- the same split that
+    distinguished a bound var (role-quotiented) from a free global like abs/str (name in the key).
+      * Var (de Bruijn): BOUND. Identity is the INDEX (position), alpha-equivalent under renaming.
+        -> de Bruijn index goes in `role` (the position-quotient field). Two alpha-equivalent terms
+        share a node BECAUSE the index, not a name, carries var identity. (Agda core is ALREADY
+        de-Bruijn, so this is native -- the lesson is automatic here, unlike Python where we had
+        to recover it.)
+      * Def / Con / Prim / PrimSort: FREE referential. Identity is the QNAME (a specific global,
+        like abs/str/Fraction were). -> qname goes in `op` (the KEY), NOT role. Two distinct globals
+        do not collapse; two references to the SAME global share. (The stub previously put qname in
+        `role`, which is the abs-vs-str bug pre-baked: it conflated free referential identity with
+        bound-position identity. Fixed below.)
+      * other constructors (Lam/Pi/App/Sort/...): structural; identity is constructor + children.
+
+    Definitional equivalence then falls out of hash-cons: two core terms equal up to alpha (bound
+    vars) and referential identity (free names) intern to ONE node. The typeholer recurses through
+    `children` (lesson 3, native once edges are present); the depth-fold S(g), telescope, and
+    cohomology are folds over this tree exactly as on the Python side.
+
+    STATUS: stub. Requires the shim's JSON (needs Agda 2.8.0 toolchain, present in the build env)."""
     import json
     raw = {}
     with open(json_path) as fh:
@@ -176,14 +189,31 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
                 rec = json.loads(line)
                 raw[rec["id"]] = rec
     interned: dict[int, int] = {}
+    FREE = {"Def", "Con", "Prim", "PrimSort", "Proj"}     # referential: qname is identity -> KEY
 
     def go(nid: int) -> int:
         if nid in interned:
             return interned[nid]
         rec = raw[nid]
         kids = tuple(go(c) for c in rec.get("children", []))
-        node = IR(kind="AgdaCore", role=rec.get("qname") or "", op=rec.get("constructor", ""),
-                  lit="", children=kids, payload=(rec.get("qname"),) if rec.get("qname") else ())
+        ctor = rec.get("constructor", "")
+        qname = rec.get("qname")
+        if ctor == "Var":
+            # BOUND (de Bruijn): identity = index (position), in `role` -> alpha-equivalent.
+            role = f"db{rec.get('index', '?')}"
+            op = ""
+            payload = ()
+        elif ctor in FREE and qname:
+            # FREE referential: identity = qname, in the KEY (`op`) -> distinct globals stay distinct.
+            role = ""
+            op = qname
+            payload = (qname,)                            # keep the name as residue too (for readout)
+        else:
+            # structural constructor: identity = constructor + children.
+            role = ""
+            op = ctor
+            payload = ()
+        node = IR(kind="AgdaCore", role=role, op=op, lit="", children=kids, payload=payload)
         i = intern.intern(node)
         interned[nid] = i
         return i
