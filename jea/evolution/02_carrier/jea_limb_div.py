@@ -21,6 +21,11 @@ Witnesses (each [W]):
    (the reduce-delivery escalate-don't-truncate was missing -- U3 delivered arithmetic, U5 delivers reduce).
 4. CF AT ARBITRARY PRECISION: the Euclid quotients == host to_cf -- the U4 trace-window now past 128 bits.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

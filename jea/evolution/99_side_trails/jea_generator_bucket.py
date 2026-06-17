@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_bucket.py — bucketized substrata + escalation priority (the scheduler done right).
 
 The stratified evaluator was close but COARSE: one K per whole topological stratum, re-scanning
@@ -16,6 +17,11 @@ Two refinements (user), one principle — PRIORITIZE BY PROGRESS STATE:
 Demonstrated on a heterogeneous batch (mostly-shallow gcd + a few Fibonacci-deep + a few overflow):
 bucketized vs flat re-pass work, and the escalation bucket pulled first.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

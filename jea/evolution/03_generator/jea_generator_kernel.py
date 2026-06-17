@@ -20,6 +20,11 @@ bug terminates the kernel instead of hanging the GPU. Verified by: err==0 (no de
 all workers logged an IDENTICAL K trajectory (async cross-block visibility is coherent), and
 that trajectory transports the injected telemetry schedule (one-tick observe→act lag).
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

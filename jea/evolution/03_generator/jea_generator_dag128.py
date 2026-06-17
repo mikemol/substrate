@@ -13,6 +13,11 @@ is exact in 128-bit; one exceeding 2^128 sets the escalate flag (the signal to w
 Verified: (a) small fold == the u64 result; (b) a fold with intermediates > 2^64 is bit-exact vs
 Python (u64 would wrap), escalate=0; (c) a fold exceeding 2^128 sets escalate=1 (not wrapped).
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

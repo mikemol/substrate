@@ -20,6 +20,11 @@ Witnesses (each [W]):
    off the measured surface, not a model.
 3. HONEST VERDICT: whichever it is, the interior-candidate flag for active-lane g is now GROUNDED on measurement.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

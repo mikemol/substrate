@@ -21,6 +21,11 @@ There is ONE generator body; control is just part of what every generator does e
 scheduler has no distinguished node and no role switch — role dissolved, not floated.
 Verified: reductions bit-exact, all converge, K climbed via the distributed monotonic control.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

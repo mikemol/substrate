@@ -17,6 +17,11 @@ node converges, and K climbs in response to the measured depth. (Carrier = u64 h
 the new MECHANISM in focus; the proven 128-bit _QDECL machinery drops in unchanged — the
 windowed-refill loop is carrier-agnostic.)
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

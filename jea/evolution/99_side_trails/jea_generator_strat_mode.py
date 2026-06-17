@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_strat_mode.py — U2: the eager/lazy MODE knob in the HIGH-THROUGHPUT stratified path.
 
 I1 put the value-window<->trace-window (eager/lazy reduction) knob in the per-node cooperative evaluator
@@ -21,6 +22,11 @@ Witnesses (each [W]):
 3. THROUGHPUT: lazy passes <= eager passes (fewer kernel launches) for every tree -- the structural win.
 4. ESCALATE preserved + mode-independent (detected at the u128 product, never wrapped).
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

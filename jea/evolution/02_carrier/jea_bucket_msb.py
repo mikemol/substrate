@@ -27,6 +27,11 @@ not a host model. Witnesses (each [W]):
 4. PAY-FOR-WHAT-YOU-USE (SWAR pack): packing each component at its bucket width (64/w lanes per register)
    uses far fewer 64-bit words than a flat lane-per-component -- the jea_swar_mixed mixed-width tiling.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np

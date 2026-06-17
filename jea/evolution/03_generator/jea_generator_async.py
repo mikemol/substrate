@@ -18,6 +18,11 @@ ASYNC BENEFIT (measured): the controller free-runs, taking MANY relaxation steps
 window (not gated 1:1), so it grows K to meet the deep node faster than the barriered version.
 Verified: reductions bit-exact vs Python gcd; all converge; residency invariant logged.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

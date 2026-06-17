@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_telemring.py — increment (3), honestly scoped. The "telemetry-ring as an
 O(1)-observe optimization" is MOOT: (5)'s distributed atomicMax(obsmax) already made observe
 O(1); the dedicated-controller scan that motivated a ring is gone. The ring's GENUINE remaining
@@ -12,6 +13,11 @@ into an on-device telemetry ring by free-running cooperative generators; K is re
 ring's windowed-max. Side by side, a baseline K is relaxed off the monotonic obsmax. The ring K
 climbs AND relaxes (tracks both ways); the monotonic K climbs and STAYS HIGH (cannot track down).
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

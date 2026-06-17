@@ -18,6 +18,11 @@ carrier (vs GMP's eager limbs) pays off for TRACTABLE-step / HUGE-value computat
 powers): there the value's CONSTRUCTION is carried and digits unfolded on demand. That is the
 escalation-spawn taken to its conclusion, and the next brick (a separate workload from Ackermann).
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp

@@ -43,12 +43,17 @@ Witnesses (each [W]):
     cross-thermal-state extrapolation is structurally argued (work-terms scale by gnorm) but not
     hot-validated on this idle host -- the synthetic sweep (W2/live_dispatcher mode) is the reactivity proof.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
 # wire in the el-atlas live conductance machinery (the genuinely-structural solve)
-_TOOLS = os.path.join(os.path.dirname(__file__), "..", "scratch", "el-atlas", "el-atlas-repo", "tools")
+_TOOLS = os.path.join(os.path.dirname(__file__), "..", "..", "..", "scratch", "el-atlas", "el-atlas-repo", "tools")
 sys.path.insert(0, os.path.abspath(_TOOLS))
 from topology_breakers import discover
 from perf_graph_integrated import graph_elements, compute_bw

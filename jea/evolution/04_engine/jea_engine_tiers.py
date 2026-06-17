@@ -24,6 +24,11 @@ Witnesses (each [W]):
 4. ONE MECHANISM: escalation-spawn is the SAME `reduce -> emit|spawn` as the structural spawn (E(n));
    carrier escalation is just the spawn-a-wider-carrier case.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 from math import gcd

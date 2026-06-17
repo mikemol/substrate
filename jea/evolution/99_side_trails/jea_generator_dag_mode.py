@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_dag_mode.py — INTEGRATION: M2d's eager/lazy reduction-mode knob, added to the
 production cooperative-generator evaluator (jea_generator_dag).
 
@@ -24,6 +25,11 @@ The controller still relaxes K (for eager); MODE is read live from its own contr
 it, the M2d way, from the workload's canonicality-demand C). run() demonstrates the Pareto on a real
 tree; jea_agda_dispatch drives an Agda-emitted term through this under oracle control.
 """
+# --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
+import os as _os, sys as _sys, glob as _glob
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+_sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
+# --- end bootstrap ---
 import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
