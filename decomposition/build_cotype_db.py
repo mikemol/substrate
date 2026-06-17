@@ -16,6 +16,24 @@ from pathlib import Path
 from typing import Iterable
 
 
+# The project's ledger arcs — every markdown ledger is a source for the SAME decomposition
+# (the sources/sections/triples schema is format-agnostic; the grammar's axis-signature/Move
+# extraction is just one specialization that fires when those patterns are present). Λ6: the
+# meta-ledger covers the whole autobiography, not only the SPPF/grammar arc. `--all` ingests these.
+LEDGER_SOURCES = [
+    "cotype-free-self-extending-grammar.md",        # the grammar / shadow-architecture arc (original)
+    "LEDGERS.md",                                   # the ledger-of-ledgers index (self-ingest)
+    "jea/jea_unification_ledger.md",                # jea evaluator arc (Δ-X cells)
+    "jea/evolution/04_engine/jea_m2_ledger.md",     # jea M2 milestones
+    "jea/agda-emit/4bit-WAL.md",                    # jea 4-bit premortem
+    "jea/evolution/00_SYLLABUS.md",                 # the jea/evolution curriculum
+    "el-atlas/el-atlas-cotype.md",                  # el-atlas cotype (S-x shadows)
+    "el-atlas/NEXT.md",                             # el-atlas pending
+    "el-atlas/wal.md",                              # el-atlas instrument WAL (W1..W23)
+    "el-atlas/tools/ai_ledger.md",                  # kernel-perf AI program (closed)
+]
+
+
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 AXIS_RE = re.compile(r"^\*\*Axis-signature\*\*:\s*(.+)$")
 KEYVAL_RE = re.compile(r"^\*\*([^*]+)\*\*:\s*(.+)$")
@@ -445,7 +463,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source",
         default="cotype-free-self-extending-grammar.md",
-        help="Path to markdown source file",
+        help="Path to a single markdown source file",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Ingest every ledger in LEDGER_SOURCES (the whole autobiography), not just --source",
     )
     parser.add_argument(
         "--db",
@@ -455,34 +478,40 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
-    args = parse_args()
-    source_path = Path(args.source).resolve()
-    db_path = Path(args.db).resolve()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
-
+def ingest_one(conn: sqlite3.Connection, source_path: Path) -> tuple[int, int]:
+    """Decompose one markdown ledger into the shared DB; returns (section_count, triple_count)."""
     lines = read_lines(source_path)
     sections = parse_sections(lines)
     triples = extract_triples(lines, sections)
+    source_id = upsert_source(conn, source_path, len(lines))
+    replace_decomposition(conn, source_id, sections, triples)
+    return len(sections), len(triples)
+
+
+def main() -> None:
+    args = parse_args()
+    db_path = Path(args.db).resolve()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    sources = LEDGER_SOURCES if args.all else [args.source]
 
     with sqlite3.connect(db_path) as conn:
         ensure_schema(conn)
-        source_id = upsert_source(conn, source_path, len(lines))
-        replace_decomposition(conn, source_id, sections, triples)
+        tot_sec = tot_tri = 0
+        for src in sources:
+            source_path = Path(src).resolve()
+            if not source_path.exists():
+                print(f"  SKIP (missing): {src}")
+                continue
+            n_sec, n_tri = ingest_one(conn, source_path)
+            tot_sec += n_sec
+            tot_tri += n_tri
+            print(f"  {src}: {n_sec} sections, {n_tri} triples")
         conn.commit()
+        n_sources = conn.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
 
-        section_count = conn.execute(
-            "SELECT COUNT(*) FROM sections WHERE source_id = ?", (source_id,)
-        ).fetchone()[0]
-        triple_count = conn.execute(
-            "SELECT COUNT(*) FROM triples WHERE source_id = ?", (source_id,)
-        ).fetchone()[0]
-
-    print(f"source: {source_path}")
     print(f"db: {db_path}")
-    print(f"lines: {len(lines)}")
-    print(f"sections: {section_count}")
-    print(f"triples: {triple_count}")
+    print(f"ingested {len(sources)} source(s) this run -> {tot_sec} sections, {tot_tri} triples; "
+          f"{n_sources} sources total in DB")
 
 
 if __name__ == "__main__":

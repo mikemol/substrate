@@ -42,10 +42,14 @@ Conversation side:
 
 ## Refresh the database
 
-Cotype narrative side (run from repository root):
+Cotype narrative side (run from repository root). `--all` ingests **every ledger arc**
+(grammar, jea, el-atlas, the LEDGERS index — see `LEDGER_SOURCES` in `build_cotype_db.py`)
+into the shared `sources`/`sections`/`triples` tables, one `source` row each; bare `--source`
+does a single file. The move-retrospective stays grammar-scoped (it targets the grammar source
+by path):
 
 ```bash
-/usr/bin/python3 decomposition/build_cotype_db.py
+/usr/bin/python3 decomposition/build_cotype_db.py --all
 /usr/bin/python3 decomposition/interpret_cotype_retrospective.py
 ```
 

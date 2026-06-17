@@ -84,9 +84,11 @@ An honest index records where the record itself is imperfect:
    note redirect to M33/M34's corrected framework (V₄-twin holds at signature- not engagement-level;
    4/9 structurally inhabited). RETRACT-not-resync — the `fit_plant` model; no code-logic change. The
    deeper re-sync (`chart.py`/Agda → the witnessed-pair framework) stays optional, not load-bearing.
-6. **`decomposition/` covers only the SPPF/grammar arc** (OPEN — Λ6) — the 242-turn design conversation
-   + the grammar; the later el-atlas and jea arcs are not yet in the DB. The autobiography's
-   meta-layer stops two chapters short.
+6. ✅ **ADDRESSED (Λ6)** — `decomposition/` now ingests **every ledger arc** (`build_cotype_db.py
+   --all` over `LEDGER_SOURCES`): 10 sources / 878 sections / 4857 triples (grammar + jea ×4 +
+   el-atlas ×4 + the LEDGERS index). The move-retrospective stays grammar-scoped (targets the grammar
+   by path). The 242-turn conversation side is unchanged. (Λ9's later grammar relocation only shifts
+   paths — a re-run, not a re-design.)
 
 ## How to onboard
 

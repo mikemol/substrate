@@ -65,17 +65,23 @@ def connect(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def latest_source_id(conn: sqlite3.Connection) -> int:
+def grammar_source_id(conn: sqlite3.Connection) -> int:
+    # The move-retrospective is specific to the grammar arc (its `Move M*` sections + axis
+    # signatures). Target the grammar source BY PATH — not "latest" — because the DB now holds
+    # many ledger sources (Λ6, build_cotype_db --all) and "latest" would mis-select another arc.
     row = conn.execute(
         """
         SELECT source_id
         FROM sources
-        ORDER BY generated_at_utc DESC, source_id DESC
+        WHERE source_path LIKE '%cotype-free-self-extending-grammar.md'
+        ORDER BY source_id DESC
         LIMIT 1
         """
     ).fetchone()
     if row is None:
-        raise RuntimeError("No source rows found. Run build_cotype_db.py first.")
+        raise RuntimeError(
+            "Grammar source not found. Run build_cotype_db.py (grammar is the default --source)."
+        )
     return int(row["source_id"])
 
 
@@ -524,7 +530,7 @@ def main() -> None:
     out_path = Path(args.out).resolve()
 
     with connect(db_path) as conn:
-        source_id = latest_source_id(conn)
+        source_id = grammar_source_id(conn)
         moves = fetch_moves(conn, source_id)
         if not moves:
             raise RuntimeError("No move sections found (title LIKE 'Move %').")

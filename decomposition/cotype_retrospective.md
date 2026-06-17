@@ -1,10 +1,10 @@
 # Retrospective Interpretation of the Cotype
 
-- Generated: 2026-05-15T12:00:20.832790Z
+- Generated: 2026-06-17T17:14:53.983490Z
 - Source: /home/mikemol/github/substrate/cotype-free-self-extending-grammar.md
-- Source SHA-256: 549f6f13cd0051e22a9541fe06e422525132af33f99e1b3e6b1d2bc33770574d
-- Line count: 8158
-- Source decomposed at: 2026-05-15 11:54:14
+- Source SHA-256: 2df99915be9928ed4b088aef057d211e0209d4d4baf1638f6da4a65ed1d4165e
+- Line count: 8170
+- Source decomposed at: 2026-06-17 17:13:33
 
 ## Interpretation Lens
 
@@ -47,38 +47,38 @@ This retrospective interprets the cotype as a time-indexed sequence of moves, ea
 | 31 | Move M27 — The scratch axis: the gauge IS the semantic axis | 2868-2875 | 100 | 100 |
 | 32 | Move M28 — V₄ / Klein-four coverage analysis identifies the under-explored region | 3037-3044 | 110 | 110 |
 | 33 | Move M29 — Formal state machine constructed and verified | 3178-3185 | 111 | 111 |
-| 34 | Move M30 — First V₄-twins constructed, F populated for the first time | 3305-3310 | 110 | 110 |
-| 35 | Move M31 — Complete construction: F populated to entire state space | 3425-3432 | 110 | 110 |
-| 36 | Move M32 — Implementation: workspace axis + V₄-twin operations in chart.py | 3548-3555 | 010 | 010 |
-| 37 | Move M33 — Inhabitation audit: V₄-twin claims fail structurally | 3653-3660 | 010 | 010 |
-| 38 | Move M34 — The directed witnessed-pair framework; chirality is the parity bit of S_4/A_4 | 3783-3794 | 100 | 100 |
-| 39 | Move M35 — Inverse-pair completion via the Z_2 path | 3921-3932 | 100 | 100 |
-| 40 | Move M36 — V_4-extension: completing the S_4 orbit | 4019-4024 | 100 | 100 |
-| 41 | Move M37 — 4-axis chained operations: the Z_3 = A_4/V_4 generator | 4112-4117 | 110 | 110 |
-| 42 | Move M38 — Unified Hamming-coded address space (guardrails for higher levels) | 4229-4234 | 110 | 110 |
-| 43 | Move M39 — The architecture as symmetry-governed Hadamard-basis mixing (principle) | 4360-4363 | 110 | 110 |
-| 44 | Move M40 — The Fourier identification (architecture = WHT system) [v6: theorem aggregator + refined framing] | 4486-4487 | - | - |
-| 45 | Move M40 v5 — closure-equals-algebraic; exhaustive associativity (preserved) | 4668-4669 | - | - |
-| 46 | Move M40 v5 — bottom line | 4815-4822 | - | - |
-| 47 | Move M40 v4 — algebraic proof spine + architectural derivation (preserved) | 4823-4824 | - | - |
-| 48 | Move M40 v4 — bottom line | 4969-4978 | 111 | 111 |
-| 49 | Move M40 v3 — distinguishing the two 24-element groups (preserved) | 4979-5002 | - | - |
-| 50 | Move M40 v3 — bottom line | 5112-5117 | - | - |
-| 51 | Move M41 v22.0 — AddressedOp + registry domain + scope tightening | 5324-5325 | - | - |
-| 52 | Move M41 v21.1 — structural-address obligation closed (preserved) | 5429-5430 | - | - |
-| 53 | Move A: compute_op_address_digest hashes the structural address | 5441-5453 | - | - |
-| 54 | Move B: _check_codeword_bridge collapses to address-equality | 5454-5472 | - | - |
-| 55 | Move C: verify_every_receipt_carries_structural_address umbrella | 5473-5495 | - | - |
-| 56 | Move M41 v21 — receipt-level address obligation (preserved) | 5523-5524 | - | - |
-| 57 | Move M41 v20 — StructuralAddress: object first, codeword last (preserved) | 5630-5631 | - | - |
-| 58 | Move M41 v19 — V_4 ⋊ S_3 as primary formal foundation (preserved) | 5752-5753 | - | - |
-| 59 | Move M41 — Transactional verification + bridge enforcement + ContentAddressedReceiptFields [v18: verification is observationally pure] (preserved) | 5905-5906 | - | - |
-| 60 | Move M41 v17 — Audit fixes and the immediate codeword↔signature bridge (preserved) | 6146-6147 | - | - |
-| 61 | Move M41 v16 — Orbit-canonical decomposition: the Cayley-Dickson seam (preserved) | 6411-6412 | - | - |
-| 62 | Move M41 v15 — Honesty refinements and state cursor seam (preserved) | 6594-6595 | - | - |
-| 63 | Move M41 v14 — Kernel-honesty pass on the v13 merge (preserved) | 6802-6803 | - | - |
-| 64 | Move M41 v13 — Stream merge: rebase on M40 algebra (preserved) | 6995-6996 | - | - |
-| 65 | Move M33 — Strict cell-inhabitation audit: implementations don't fully honor their claimed V₄ cells | 8029-8036 | 011 | 011 |
+| 34 | Move M30 — First V₄-twins constructed, F populated for the first time | 3305-3318 | 110 | 110 |
+| 35 | Move M31 — Complete construction: F populated to entire state space | 3433-3444 | 110 | 110 |
+| 36 | Move M32 — Implementation: workspace axis + V₄-twin operations in chart.py | 3560-3567 | 010 | 010 |
+| 37 | Move M33 — Inhabitation audit: V₄-twin claims fail structurally | 3665-3672 | 010 | 010 |
+| 38 | Move M34 — The directed witnessed-pair framework; chirality is the parity bit of S_4/A_4 | 3795-3806 | 100 | 100 |
+| 39 | Move M35 — Inverse-pair completion via the Z_2 path | 3933-3944 | 100 | 100 |
+| 40 | Move M36 — V_4-extension: completing the S_4 orbit | 4031-4036 | 100 | 100 |
+| 41 | Move M37 — 4-axis chained operations: the Z_3 = A_4/V_4 generator | 4124-4129 | 110 | 110 |
+| 42 | Move M38 — Unified Hamming-coded address space (guardrails for higher levels) | 4241-4246 | 110 | 110 |
+| 43 | Move M39 — The architecture as symmetry-governed Hadamard-basis mixing (principle) | 4372-4375 | 110 | 110 |
+| 44 | Move M40 — The Fourier identification (architecture = WHT system) [v6: theorem aggregator + refined framing] | 4498-4499 | - | - |
+| 45 | Move M40 v5 — closure-equals-algebraic; exhaustive associativity (preserved) | 4680-4681 | - | - |
+| 46 | Move M40 v5 — bottom line | 4827-4834 | - | - |
+| 47 | Move M40 v4 — algebraic proof spine + architectural derivation (preserved) | 4835-4836 | - | - |
+| 48 | Move M40 v4 — bottom line | 4981-4990 | 111 | 111 |
+| 49 | Move M40 v3 — distinguishing the two 24-element groups (preserved) | 4991-5014 | - | - |
+| 50 | Move M40 v3 — bottom line | 5124-5129 | - | - |
+| 51 | Move M41 v22.0 — AddressedOp + registry domain + scope tightening | 5336-5337 | - | - |
+| 52 | Move M41 v21.1 — structural-address obligation closed (preserved) | 5441-5442 | - | - |
+| 53 | Move A: compute_op_address_digest hashes the structural address | 5453-5465 | - | - |
+| 54 | Move B: _check_codeword_bridge collapses to address-equality | 5466-5484 | - | - |
+| 55 | Move C: verify_every_receipt_carries_structural_address umbrella | 5485-5507 | - | - |
+| 56 | Move M41 v21 — receipt-level address obligation (preserved) | 5535-5536 | - | - |
+| 57 | Move M41 v20 — StructuralAddress: object first, codeword last (preserved) | 5642-5643 | - | - |
+| 58 | Move M41 v19 — V_4 ⋊ S_3 as primary formal foundation (preserved) | 5764-5765 | - | - |
+| 59 | Move M41 — Transactional verification + bridge enforcement + ContentAddressedReceiptFields [v18: verification is observationally pure] (preserved) | 5917-5918 | - | - |
+| 60 | Move M41 v17 — Audit fixes and the immediate codeword↔signature bridge (preserved) | 6158-6159 | - | - |
+| 61 | Move M41 v16 — Orbit-canonical decomposition: the Cayley-Dickson seam (preserved) | 6423-6424 | - | - |
+| 62 | Move M41 v15 — Honesty refinements and state cursor seam (preserved) | 6606-6607 | - | - |
+| 63 | Move M41 v14 — Kernel-honesty pass on the v13 merge (preserved) | 6814-6815 | - | - |
+| 64 | Move M41 v13 — Stream merge: rebase on M40 algebra (preserved) | 7007-7008 | - | - |
+| 65 | Move M33 — Strict cell-inhabitation audit: implementations don't fully honor their claimed V₄ cells | 8041-8048 | 011 | 011 |
 
 ## Axis Transition Dynamics
 
@@ -354,222 +354,222 @@ This retrospective interprets the cotype as a time-indexed sequence of moves, ea
 
 ### 34. Move M30 — First V₄-twins constructed, F populated for the first time
 
-- Lines: 3305-3310
+- Lines: 3305-3318
 - Axis profile: 110
 - Focus: First V₄-twins constructed, F populated for the first time
 - Theme signals: focuses_on(1)
 
 ### 35. Move M31 — Complete construction: F populated to entire state space
 
-- Lines: 3425-3432
+- Lines: 3433-3444
 - Axis profile: 110
 - Focus: Complete construction: F populated to entire state space
 - Theme signals: focuses_on(1)
 
 ### 36. Move M32 — Implementation: workspace axis + V₄-twin operations in chart.py
 
-- Lines: 3548-3555
+- Lines: 3560-3567
 - Axis profile: 010
 - Focus: Implementation: workspace axis + V₄-twin operations in chart.py
 - Theme signals: focuses_on(1)
 
 ### 37. Move M33 — Inhabitation audit: V₄-twin claims fail structurally
 
-- Lines: 3653-3660
+- Lines: 3665-3672
 - Axis profile: 010
 - Focus: Inhabitation audit: V₄-twin claims fail structurally
 - Theme signals: focuses_on(1)
 
 ### 38. Move M34 — The directed witnessed-pair framework; chirality is the parity bit of S_4/A_4
 
-- Lines: 3783-3794
+- Lines: 3795-3806
 - Axis profile: 100
 - Focus: The directed witnessed-pair framework; chirality is the parity bit of S_4/A_4
 - Theme signals: focuses_on(1)
 
 ### 39. Move M35 — Inverse-pair completion via the Z_2 path
 
-- Lines: 3921-3932
+- Lines: 3933-3944
 - Axis profile: 100
 - Focus: Inverse-pair completion via the Z_2 path
 - Theme signals: bullet_path_(1)(1), bullet_path_(2)(1), focuses_on(1)
 
 ### 40. Move M36 — V_4-extension: completing the S_4 orbit
 
-- Lines: 4019-4024
+- Lines: 4031-4036
 - Axis profile: 100
 - Focus: V_4-extension: completing the S_4 orbit
 - Theme signals: focuses_on(1)
 
 ### 41. Move M37 — 4-axis chained operations: the Z_3 = A_4/V_4 generator
 
-- Lines: 4112-4117
+- Lines: 4124-4129
 - Axis profile: 110
 - Focus: 4-axis chained operations: the Z_3 = A_4/V_4 generator
 - Theme signals: focuses_on(1)
 
 ### 42. Move M38 — Unified Hamming-coded address space (guardrails for higher levels)
 
-- Lines: 4229-4234
+- Lines: 4241-4246
 - Axis profile: 110
 - Focus: Unified Hamming-coded address space (guardrails for higher levels)
 - Theme signals: focuses_on(1)
 
 ### 43. Move M39 — The architecture as symmetry-governed Hadamard-basis mixing (principle)
 
-- Lines: 4360-4363
+- Lines: 4372-4375
 - Axis profile: 110
 - Focus: The architecture as symmetry-governed Hadamard-basis mixing (principle)
 - Theme signals: focuses_on(1)
 
 ### 44. Move M40 — The Fourier identification (architecture = WHT system) [v6: theorem aggregator + refined framing]
 
-- Lines: 4486-4487
+- Lines: 4498-4499
 - Axis profile: -
 - Focus: The Fourier identification (architecture = WHT system) [v6: theorem aggregator + refined framing]
 - Theme signals: focuses_on(1)
 
 ### 45. Move M40 v5 — closure-equals-algebraic; exhaustive associativity (preserved)
 
-- Lines: 4668-4669
+- Lines: 4680-4681
 - Axis profile: -
 - Focus: closure-equals-algebraic; exhaustive associativity (preserved)
 - Theme signals: focuses_on(1)
 
 ### 46. Move M40 v5 — bottom line
 
-- Lines: 4815-4822
+- Lines: 4827-4834
 - Axis profile: -
 - Focus: bottom line
 - Theme signals: focuses_on(1)
 
 ### 47. Move M40 v4 — algebraic proof spine + architectural derivation (preserved)
 
-- Lines: 4823-4824
+- Lines: 4835-4836
 - Axis profile: -
 - Focus: algebraic proof spine + architectural derivation (preserved)
 - Theme signals: focuses_on(1)
 
 ### 48. Move M40 v4 — bottom line
 
-- Lines: 4969-4978
+- Lines: 4981-4990
 - Axis profile: 111
 - Focus: bottom line
 - Theme signals: focuses_on(1)
 
 ### 49. Move M40 v3 — distinguishing the two 24-element groups (preserved)
 
-- Lines: 4979-5002
+- Lines: 4991-5014
 - Axis profile: -
 - Focus: distinguishing the two 24-element groups (preserved)
 - Theme signals: focuses_on(1)
 
 ### 50. Move M40 v3 — bottom line
 
-- Lines: 5112-5117
+- Lines: 5124-5129
 - Axis profile: -
 - Focus: bottom line
 - Theme signals: focuses_on(1)
 
 ### 51. Move M41 v22.0 — AddressedOp + registry domain + scope tightening
 
-- Lines: 5324-5325
+- Lines: 5336-5337
 - Axis profile: -
 - Focus: AddressedOp + registry domain + scope tightening
 - Theme signals: focuses_on(1)
 
 ### 52. Move M41 v21.1 — structural-address obligation closed (preserved)
 
-- Lines: 5429-5430
+- Lines: 5441-5442
 - Axis profile: -
 - Focus: structural-address obligation closed (preserved)
 - Theme signals: focuses_on(1)
 
 ### 53. Move A: compute_op_address_digest hashes the structural address
 
-- Lines: 5441-5453
+- Lines: 5453-5465
 - Axis profile: -
 - Focus: The pre-v21.1 digest computed hashlib.sha256(_canonical_bytes((op_name, code))).hexdigest() — committing only to the integer codeword. After v21.1, the digest commits to the full structural payload:
 
 ### 54. Move B: _check_codeword_bridge collapses to address-equality
 
-- Lines: 5454-5472
+- Lines: 5466-5484
 - Axis profile: -
 - Focus: equality
 - Theme signals: focuses_on(1)
 
 ### 55. Move C: verify_every_receipt_carries_structural_address umbrella
 
-- Lines: 5473-5495
+- Lines: 5485-5507
 - Axis profile: -
 - Focus: The umbrella verifier the audit asked for, exactly as named:
 
 ### 56. Move M41 v21 — receipt-level address obligation (preserved)
 
-- Lines: 5523-5524
+- Lines: 5535-5536
 - Axis profile: -
 - Focus: receipt-level address obligation (preserved)
 - Theme signals: focuses_on(1)
 
 ### 57. Move M41 v20 — StructuralAddress: object first, codeword last (preserved)
 
-- Lines: 5630-5631
+- Lines: 5642-5643
 - Axis profile: -
 - Focus: StructuralAddress: object first, codeword last (preserved)
 - Theme signals: focuses_on(1)
 
 ### 58. Move M41 v19 — V_4 ⋊ S_3 as primary formal foundation (preserved)
 
-- Lines: 5752-5753
+- Lines: 5764-5765
 - Axis profile: -
 - Focus: V_4 ⋊ S_3 as primary formal foundation (preserved)
 - Theme signals: focuses_on(1)
 
 ### 59. Move M41 — Transactional verification + bridge enforcement + ContentAddressedReceiptFields [v18: verification is observationally pure] (preserved)
 
-- Lines: 5905-5906
+- Lines: 5917-5918
 - Axis profile: -
 - Focus: Transactional verification + bridge enforcement + ContentAddressedReceiptFields [v18: verification is observationally pure] (preserved)
 - Theme signals: focuses_on(1)
 
 ### 60. Move M41 v17 — Audit fixes and the immediate codeword↔signature bridge (preserved)
 
-- Lines: 6146-6147
+- Lines: 6158-6159
 - Axis profile: -
 - Focus: Audit fixes and the immediate codeword↔signature bridge (preserved)
 - Theme signals: focuses_on(1)
 
 ### 61. Move M41 v16 — Orbit-canonical decomposition: the Cayley-Dickson seam (preserved)
 
-- Lines: 6411-6412
+- Lines: 6423-6424
 - Axis profile: -
 - Focus: Orbit-canonical decomposition: the Cayley-Dickson seam (preserved)
 - Theme signals: focuses_on(1)
 
 ### 62. Move M41 v15 — Honesty refinements and state cursor seam (preserved)
 
-- Lines: 6594-6595
+- Lines: 6606-6607
 - Axis profile: -
 - Focus: Honesty refinements and state cursor seam (preserved)
 - Theme signals: focuses_on(1)
 
 ### 63. Move M41 v14 — Kernel-honesty pass on the v13 merge (preserved)
 
-- Lines: 6802-6803
+- Lines: 6814-6815
 - Axis profile: -
 - Focus: Kernel-honesty pass on the v13 merge (preserved)
 - Theme signals: focuses_on(1)
 
 ### 64. Move M41 v13 — Stream merge: rebase on M40 algebra (preserved)
 
-- Lines: 6995-6996
+- Lines: 7007-7008
 - Axis profile: -
 - Focus: Stream merge: rebase on M40 algebra (preserved)
 - Theme signals: focuses_on(1)
 
 ### 65. Move M33 — Strict cell-inhabitation audit: implementations don't fully honor their claimed V₄ cells
 
-- Lines: 8029-8036
+- Lines: 8041-8048
 - Axis profile: 011
 - Focus: Strict cell-inhabitation audit: implementations don't fully honor their claimed V₄ cells
 - Theme signals: focuses_on(1)
