@@ -135,8 +135,17 @@ debug: column slices nP[:,:h] are NON-contiguous but the fused kernel assumes C-
 reads for W>1; fixed with cp.ascontiguousarray. 12/12 PASS. Δ-Ψ-swar-win CLOSED: SWAR is the measured winner for
 regular wide layers, with the boundary amortized + the arithmetic fused (Δ-Ψ-bitkernel) + branchless (no divergence).
 
-**NEXT executors (to dispatch, by symbol):** **Δ-Ω-carrier** (unify jea_carrier_base value-major + jea_graded
-bit-major + jea_limb_gpu as ONE width-w/layout-gauge carrier) -- run the {+,×,÷} operating-point solve
+**Δ-Ω-carrier [DONE -- jea_carrier.py]:** the three carriers UNIFIED as ONE width-w limb carrier in two LAYOUTS (the
+silo closed). VALUE-MAJOR (one value's limbs, dp4a convolution per-multiply, few-big) = jea_carrier_base (w-ladder
+8->4->2->1, GF(2)@w=1) / jea_limb_gpu (w=8 crown); BIT-MAJOR (bit-planes across values, SWAR, many-small) =
+jea_graded / jea_bitkernel. Same bit-matrix (value i, bit b); the layout = the row-major-vs-column-packed storage =
+a data-parallelism GAUGE; the transpose pivots through the int. W1 one value both layouts (transpose lossless every
+w); W2 SAME 200 products value-major (dp4a/value) == bit-major (SWAR) == truth; W3 w=1 = GF(2) floor (carrier_base
+w=1 carryless == clmul); W4 layout = the few-big(crown)/many-small(SWAR) dispatch -- THE CARRIER-LAYOUT GAUGE IS the
+navigator's eval-strategy choice (unified at the carrier level). CONSUMES all four carriers (de-orphaned). 7/7 PASS.
+
+**NEXT executors (to dispatch, by symbol):** **Δ-G2** [gate, now 12+ modules -- a pre-commit jea regression + a
+computed-findings check] -- the one cleanly-mechanizable recurring-class gate -- run the {+,×,÷} operating-point solve
 on the graded GPU carrier (the supervisor solve becomes a device term eval -- fully self-hosting). **Δ-Ψ-bitkernel** --
 the fused branchless bit-sliced CUDA kernel (lets SWAR win the dispatch + kills mega_eval divergence; the one-launch
 all-planes carrier). **Δ-Ω-carrier** -- unify jea_carrier_base (value-major dp4a w-ladder, GF(2)@w=1) + jea_graded
