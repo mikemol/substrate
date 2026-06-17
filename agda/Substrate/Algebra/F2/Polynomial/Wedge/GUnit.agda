@@ -1,3 +1,4 @@
+{-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Polynomial.Wedge.GUnit  (generic g = unit, B-INV-UNIT)
 --
