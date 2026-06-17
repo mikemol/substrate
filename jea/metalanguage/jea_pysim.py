@@ -153,6 +153,110 @@ class Corpus:
         This IS the Agda script's multi-scale breakdown, now a continuous depth axis over one forest."""
         return [(k, self.shared_fraction_at_grade(u, v, k)) for k in range(kmax + 1)]
 
+    # =====================================================================
+    # S(g) -- THE SIMILARITY PROFILE AS A HoTT TRUNCATION (not a scalar collapse).
+    #
+    # The OLD verdict took max-ratio-across-grades -> one %, which returns the COARSEST,
+    # most-saturated grade (the universal node-types near the root) = ~95% for ANY two Python
+    # files. That is the (-1)-truncation ‖·‖_{-1}: the bare proposition "merely similar", the
+    # path discarded. Every control read STRONG because max reports the grade carrying no signal.
+    #
+    # The fix is to TRUNCATE LIKE A PATH, not collapse to a prop. At grade g we keep the
+    # similarity-path structure to depth g and forget above: ‖forget_carrier(u)‖_g. Two terms are
+    # "equal in the g-truncation" iff their carrier-forgotten skeletons agree to depth g. The
+    # CLIFF -- the highest g* with agreement, where g*+1 splits -- is the pair's CONNECTEDNESS
+    # LEVEL, and it IS the hole's location (the structural depth the carrier/divergence sits at).
+    #
+    # Two forgettings composed (this is the load-bearing correction over the old canonical-support
+    # intersection, which showed FLAT-ZERO for carrier-different code that shares no interned ids):
+    #   forget_carrier : drop `lit` (the carrier VALUE), keep kind/role/op -- so two
+    #                    implementations of the same SHAPE match even when no subtree interns equal.
+    #   truncate_g     : keep the head-spine to depth <= g, forget below.
+    # S(g) = longest-common-prefix fraction of the two truncated carrier-forgotten skeletons.
+    # The SHAPE of S(g) classifies; the cliff localizes. Never collapse it to one number.
+    # =====================================================================
+    def _trunc_skeleton(self, root: int, g: int) -> tuple:
+        """‖forget_carrier(root)‖_g : carrier-forgotten head-spine, truncated at depth <= g.
+        forget_carrier = drop `lit` (the carrier value); keep (kind, role, op) = the SHAPE.
+        Pre-order with depth cut -- the n-truncation of the term's skeleton path."""
+        out = []
+        def walk(i, d):
+            if d > g:
+                return
+            n = self.I.nodes[i]
+            out.append((n.kind, n.role, n.op))      # forget_carrier: NO lit
+            for c in n.children:
+                walk(c, d + 1)
+        walk(root, 0)
+        return tuple(out)
+
+    def S(self, u: Unit, v: Unit, gmax: int = None) -> list:
+        """The similarity PROFILE S(g) over the full Trace-depth ladder: at each g, the
+        longest-common-prefix fraction of the two carrier-forgotten skeletons truncated at g.
+        Returns [(g, S_g)] -- the CURVE whose shape classifies the relationship. The tool keeps
+        this; it does NOT collapse it (the principle the old max-verdict violated)."""
+        if gmax is None:
+            gmax = 1 + max(max(u.depth.values(), default=0), max(v.depth.values(), default=0))
+        prof = []
+        for g in range(gmax + 1):
+            su = self._trunc_skeleton(u.root, g)
+            sv = self._trunc_skeleton(v.root, g)
+            # longest common prefix as a fraction of the larger truncated skeleton
+            lcp = 0
+            for a, b in zip(su, sv):
+                if a != b:
+                    break
+                lcp += 1
+            denom = max(len(su), len(sv))
+            prof.append((g, lcp / denom if denom else 1.0))
+        return prof
+
+    @staticmethod
+    def classify_profile(prof: list) -> dict:
+        """Read the SHAPE of S(g) (never a single %). Returns the relationship class + the cliff
+        grade (the hole's location). The discriminator and the hole both live in the shape:
+          flat ~1 throughout            -> DUPLICATE (inf-connected; no hole)
+          plateau through skeleton, cliff-> SAME-ALGORITHM-DIFFERENT-CARRIER (hole = cliff grade)
+          low mid, rises only at fine   -> SHARED-IDIOMS-DIFFERENT-ALGORITHM (no shared skeleton)
+          high only at g=0, decays      -> UNRELATED (baseline; (-1)/0-connected)"""
+        if not prof:
+            return {"class": "EMPTY", "cliff": None, "profile": prof}
+        vals = [s for _, s in prof]
+        g0 = vals[0]
+        drops = [(prof[i][0], vals[i] - vals[i + 1]) for i in range(len(vals) - 1)]
+        cliff_g, cliff_drop = (max(drops, key=lambda t: t[1]) if drops else (None, 0.0))
+        hi = 0.85
+        lo = 0.30
+        mn = min(vals); mx = max(vals); last = vals[-1]
+        # a real PLATEAU requires the high region to extend PAST g=0: there must be a grade g>=1
+        # that is still high, with the cliff AFTER it. A cliff at g=0 (immediate decay) is NOT a
+        # plateau -- it is unrelated/baseline. The plateau length is how far high persists.
+        plateau_len = 0
+        for s in vals:
+            if s >= hi:
+                plateau_len += 1
+            else:
+                break
+        if mn >= hi:
+            cls = "DUPLICATE"; cliff_g = None                  # flat high: inf-connected
+        elif plateau_len >= 2 and cliff_drop >= 0.25 and (cliff_g or 0) >= 1:
+            cls = "SAME-ALGORITHM-DIFFERENT-CARRIER"           # high persists past g0, THEN a cliff
+        elif mx < hi and last > g0 + 0.05:
+            cls = "SHARED-IDIOMS-DIFFERENT-ALGORITHM"; cliff_g = None   # low coarse, rises fine
+        elif g0 >= hi and last <= lo:
+            cls = "UNRELATED"; cliff_g = 0                      # high only at g0, decays (no plateau)
+        else:
+            cls = "PARTIAL"                                    # mixed; cliff_g still reported
+        return {"class": cls, "cliff": cliff_g, "cliff_drop": round(cliff_drop, 2),
+                "plateau_len": plateau_len,
+                "S0": round(g0, 2), "Smin": round(mn, 2), "Smax": round(mx, 2),
+                "profile": [(g, round(s, 2)) for g, s in prof]}
+
+    def shape_verdict(self, u: Unit, v: Unit) -> dict:
+        """The verdict as a SHAPE CLASSIFIER over S(g), reporting the cliff grade as the hole --
+        replacing max-ratio-across-grades (which returned the saturated no-signal grade)."""
+        return self.classify_profile(self.S(u, v))
+
     def genericization(self) -> dict:
         """Per 'scale', the shared/total ratio across ALL units -- the Agda score.genericization_score
         analogue. Trace-3 backward-image: 'shared' counts a node referenced by >=2 distinct UNITS
