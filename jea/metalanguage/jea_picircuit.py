@@ -32,29 +32,30 @@ from fractions import Fraction
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pysim import Corpus, expand
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # jea/ root
+import jea_circuit as CIRC                  # Π2: the shared carrier-parametric circuit-solve (stdlib; no GPU stack)
 
 
 # --------------------------------------------------------------------------
-# The circuit operators -- exact-ℚ, the SAME as jea_onegraph's (series_schur, current_
-# divider), reimplemented on Fraction so Δ-Π-circuit needs no GPU stack. {+, ×, ÷}.
+# The circuit operators -- Π2: the SHARED carrier-parametric solve (jea_circuit) over the plain-
+# Fraction carrier (CIRC.FRACTION), the SAME ONE definition jea_onegraph runs over its graded-ℚ
+# carrier. (Was reimplemented here on Fraction; the jea_pysim --shape scan flagged the duplication
+# -- current_divider<->current_divider, frac 0.62, holes@[1,1,2]; this folds it onto the recon-
+# parametric carrier. jea_circuit is stdlib, so Δ-Π-circuit still needs no GPU stack.)
 # --------------------------------------------------------------------------
 def series_schur(a: Fraction, b: Fraction) -> Fraction:
-    """Schur-eliminate the shared node of a 2-edge series path -> equivalent conductance
-    a·b/(a+b). The Kron reduction step. Folds a series path by the same combine."""
-    s = a + b
-    return (a * b) / s if s != 0 else Fraction(0)
+    """Schur-eliminate the shared node of a 2-edge series path -> a·b/(a+b). The Kron reduction step."""
+    return CIRC.series_schur(CIRC.FRACTION, a, b)
 
 
 def parallel(a: Fraction, b: Fraction) -> Fraction:
     """Parallel conductances add (KCL at the shared node)."""
-    return a + b
+    return CIRC.parallel(CIRC.FRACTION, a, b)
 
 
 def current_divider(d_self: Fraction, others: list[Fraction]) -> Fraction:
-    """The SHARE of current through d_self: d_self / (d_self + Σ others). Shares over all
-    edges at a node sum to 1 (KCL). This is how a node SETTLES among its terminals."""
-    tot = d_self + sum(others)
-    return d_self / tot if tot != 0 else Fraction(0)
+    """The SHARE of current through d_self: d_self / (d_self + Σ others). Shares at a node sum to 1 (KCL)."""
+    return CIRC.current_divider(CIRC.FRACTION, d_self, others)
 
 
 # the three classification terminals the current divides among.

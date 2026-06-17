@@ -25,6 +25,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jea_graded as GR, jea_branchless as BL, jea_divstr as DV     # DV: ÷ IS the ℚ wedge quotient (Δ-Ω-divstr)
+import jea_circuit as CIRC                                          # Π2: the carrier-parametric circuit-solve; this module is its graded-ℚ carrier
 _TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "el-atlas", "tools"))
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import decide, binding_edge, _PCIE_MAX_BW, _TRIP   # the el-atlas reference (the Kron solve)
@@ -44,12 +45,23 @@ def q_combine(op, a, b):
 def q_recip(a): return DV.Q_DIV.wedge(Fraction(1), a)[0]              # reciprocal = the ℚ WEDGE quotient (Δ-Ω-divstr: the live ÷ IS recon's q)
 
 
+class _QCarrier(CIRC.Carrier):
+    """The graded-ℚ carrier for jea_circuit's solve: add/mul via q_combine (jea_graded), div as
+    multiply-by-reciprocal (q_recip = the ℚ wedge quotient) -- SUBTRACTION-FREE, exact (charter).
+    This is the typed hole the carrier-parametric series_schur/current_divider are filled with here."""
+    zero = Fraction(0)
+    def add(self, a, b): return q_combine(0, a, b)
+    def mul(self, a, b): return q_combine(1, a, b)
+    def div(self, a, b): return q_combine(1, a, q_recip(b))           # a · 1/b  (no subtraction)
+QCARRIER = _QCarrier()
+
+
 def series_schur(a, b):
     """SCHUR-eliminate the shared middle node of a 2-edge series path -> equivalent conductance a·b/(a+b). THE Kron
     reduction step, as a graded-ℚ WEDGE on the carrier: mul (a·b), add (a+b), recip (swap), mul. Commutative +
     associative -> FOLD a series path of conductances by the same combine (Schur = recon with a ℚ quotient -> the
     generic-Quot Wedge; AI-Q's Wedge generalization and Δ-Ω-onegraph meet here)."""
-    return q_combine(1, q_combine(1, a, b), q_recip(q_combine(0, a, b)))
+    return CIRC.series_schur(QCARRIER, a, b)                         # Π2: the ONE solve, graded-ℚ carrier
 
 
 def compute_bw_qgraph(imc, dma=False, igpu=False, T=46.0, link_state=1.0, dma_full=8e9, igpu_full=None):
@@ -68,8 +80,7 @@ def compute_bw_qgraph(imc, dma=False, igpu=False, T=46.0, link_state=1.0, dma_fu
 def fstar_qgraph(gc, gg):
     """f* = gg/(gc+gg): two parallel conductances' current-divider, as a graded-ℚ graph reduction on the carrier --
     add (gc+gg), reciprocal (swap), multiply (gg · 1/(gc+gg)). The Kron parallel-combine IS graded-ℚ arithmetic."""
-    s = q_combine(0, gc, gg)                                          # gc + gg            (rat_add)
-    return q_combine(1, gg, q_recip(s))                              # gg · 1/(gc + gg)    (rat_mul)
+    return CIRC.fstar(QCARRIER, gc, gg)                              # Π2: = current_divider(gg, [gc]), graded-ℚ carrier
 
 
 def fstar_device(gc, gg):
@@ -102,9 +113,7 @@ def current_divider(d_self, others):
     """The share of current through d_self at a node it shares with `others` (parallel conductances/demands):
     d_self / (d_self + Σ others) -- pure {+, ÷-by-swap, ×}, NO subtraction (KCL current division). The shares of all
     branches at a node sum to 1 by construction (the denominator IS the sum)."""
-    tot = d_self
-    for o in others: tot = q_combine(0, tot, o)                      # Σ demands (carrier add)
-    return q_combine(1, d_self, q_recip(tot))                       # d_self · 1/Σ   (× recip-swap)
+    return CIRC.current_divider(QCARRIER, d_self, others)            # Π2: the ONE solve, graded-ℚ carrier
 
 
 def compute_bw_shunt(imc, dma=False, igpu=False, T=46.0, link_state=1.0, dma_full=8e9, igpu_full=None):

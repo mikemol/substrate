@@ -15,7 +15,7 @@ import os, sys, subprocess, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # FAST: correctness-critical, no [numbers] timing loops -- the cross-path regression catchers (< ~30s total).
-FAST = ["jea_branchless", "jea_graded", "jea_divstr", "jea_carrier", "jea_dag_gen", "jea_mega_eval", "jea_eval"]
+FAST = ["jea_branchless", "jea_graded", "jea_divstr", "jea_carrier", "jea_dag_gen", "jea_mega_eval", "jea_eval", "jea_circuit"]
 # SLOW: timing-heavy / hardware-discovery / Agda-driving -- run under --full (or CI), not every commit.
 SLOW = ["jea_carrier_solve", "jea_resident", "jea_onegraph", "jea_bitkernel", "jea_navigator", "jea_agda_apex"]
 
