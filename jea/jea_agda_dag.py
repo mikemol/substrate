@@ -20,27 +20,16 @@ Witnesses (each [W]):
    already maximally shared (distinct == N). The device-parallel dedup that would collapse a tree is
    jea_intern; here it confirms canonicality of the real SPPF.
 """
-import os, re, subprocess, sys
+import os
 os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EMIT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agda-emit")
+import jea_agda_voucher as _V
 
 
-def typecheck():
-    r = subprocess.run(["agda", "--safe", "EmitDAG.agda"], cwd=EMIT_DIR, capture_output=True, text=True)
-    if r.returncode != 0:
-        sys.exit("EmitDAG.agda failed to typecheck (vouchers do NOT hold):\n" + r.stdout + r.stderr)
-    return r.stdout.strip().splitlines()[-1] if r.stdout.strip() else "checked"
-
-
-def read_vouched():
-    src = open(os.path.join(EMIT_DIR, "EmitDAG.agda"), encoding="utf-8").read()
-    term = re.search(r'termStr\s*=\s*"([^"]*)"', src).group(1)
-    val = re.search(r'valStr\s*=\s*"([^"]*)"', src).group(1)
-    vn, vd = val.split("/")
-    return term, Fraction(int(vn), int(vd))
+# ---- typecheck + read the Agda-vouched literals (shared protocol; this bridge's default = EmitDAG.agda) ----
+# Body lives in jea_agda_voucher; here we only bind the filename. Default preserves the no-arg callers.
+def typecheck(name="EmitDAG.agda"):    return _V.typecheck(name)
+def read_vouched(name="EmitDAG.agda"): return _V.read_vouched(name)
 
 
 def parse_dag(s):

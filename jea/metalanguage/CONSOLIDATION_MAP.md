@@ -23,7 +23,7 @@ python3 jea/metalanguage/jea_pysim.py --shape --min-size 10 jea/jea_onegraph.py 
 
 | frac | pair | the fold |
 |---|---|---|
-| 0.96 / 0.94 | `jea_agda_bridge.{read_vouched,typecheck}` ↔ `jea_agda_dag.{read_vouched,typecheck}` | near-identical (only the emitted filename differs); extract ONE agda-bridge helper parameterized by filename. The cleanest jea/ win. |
+| 0.96 / 0.94 | `jea_agda_bridge.{read_vouched,typecheck}` ↔ `jea_agda_dag.{read_vouched,typecheck}` | **FOLDED (Φ2 ✅).** The agda-subprocess + literal-read body now lives once in `jea_agda_voucher.{typecheck,read_vouched}(name)`; each bridge keeps a 2-line wrapper binding its default filename (Emit.agda / EmitDAG.agda), so every no-arg caller (`jea_agda_apex`, `jea_agda_dispatch`) is preserved. The filename was the only carrier-hole. |
 | 0.95 | el-atlas `kirchhoff_nedge` nodal `solve` / `G_AND`/`G_OR` | **perspective-mapped (Φ1′ ✅ — see §⑤).** `jea_circuit` carries TWO coordinates of one governing law: `nodal_solve` (subtractive Gaussian) and `nodal_solve_subfree` (subtraction-free Matrix-Tree ratio). The carrier's subtraction-capability selects the COORDINATE, not which graphs are solvable — the sub-free wedge solves the irreducible Wheatstone too. `kirchhoff.solve` = the float instance of the subtractive coordinate. |
 | 0.94 | `jea_generator_strat._lh` ↔ `jea_generator_unified._lh` | identical limb-split helper; promote to one home. |
 | 0.92 | `jea_carrier_solve.build_Eq` ↔ `jea_zsppf.build_Eq` | duplicated; one definition. |
