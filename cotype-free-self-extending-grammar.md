@@ -3304,6 +3304,14 @@ All gates pass. The state machine is a valid runtime artifact.
 
 ## Move M30 — First V₄-twins constructed, F populated for the first time
 
+> ⚠️ **SUPERSEDED — qualify before citing (Λ5, 2026-06-17).** The "orbit-complete F / V₄-twins inhabit
+> distinct cells" claim of M30–M31 holds at the **signature level only**. The M33 inhabitation audit
+> (`scratch/audit_inhabitation.py`) found **4 of 9** operations structurally inhabit their claimed
+> (held, enabled) cells — output-equivalence ≠ cell-coherence; M34 reframes the remainder correctly as
+> witnessed-pairs + chirality. Kept verbatim per the no-deletion law (W5; `Persistence.agda`). Read
+> **M33 + M34** for the corrected structure, not the M30–M31 nine-claim. (Sibling of jea's `fit_plant`:
+> an honestly-flagged overclaim, not a silent one.)
+
 **Axis-signature**: 110 (mediated-composite: state machine artefact mediates between existing shadows and new shadow construction). **WHT scale**: 3. **Stasheff vertex**: K_3 interior (composition with held state). **DS-pair**: triadic-DCSW (uses all four axes via V₄ rotation). **Role**: deliverable (the architecture's first orbit-complete locus).
 
 The user invited application: "Go for it." Following the shadow-engineer loop (Steps A-E) directly without re-instantiating a sub-skill (the four originals are entry conditions, not separate mechanisms).
@@ -3423,6 +3431,10 @@ All gates pass.
 ---
 
 ## Move M31 — Complete construction: F populated to entire state space
+
+> ⚠️ **SUPERSEDED (Λ5): the "F = 32, entire state space orbit-complete" claim below is signature-level.**
+> M33 found 4/9 structural inhabitation; M34 gives the corrected witnessed-pair + chirality framework.
+> See M33 + M34 (kept per the no-deletion law).
 
 **Axis-signature**: 110 (mediated-composite — extended application of state machine procedure). **WHT scale**: 3. **Stasheff vertex**: K_4 interior (composition with 4-axis quadradic operations). **DS-pair**: triadic-DCSW (all four axes via V₄ rotation). **Role**: closure deliverable (architecture's full operational state space populated).
 

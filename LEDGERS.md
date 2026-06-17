@@ -65,7 +65,7 @@ Legend — **role**: `spine` (teaches the build story) · `index` (maps things) 
 | `jea/evolution/04_engine/jea_m2_ledger.md` | WAL | an `M2x` brick → reference script + production twin | explicit | homed (Λ1 ✅) | index |
 | `el-atlas/NEXT.md` | NEXT | a numbered opening move + state snapshot | current header + W15-frozen State | live (Λ3 ✅ banner) | index |
 | `el-atlas/tools/ai_ledger.md` | WAL | an `AI-N` item → tool file + finding | outcome-indexed | closed-record (Λ4 ✅ labeled) | **certificate** |
-| `cotype-free-self-extending-grammar.md` | cotype | a `Move M1…M41` with shadows + probe-state | explicit | live, **bifurcated** (see cracks) | spine, then crisis-journal |
+| `cotype-free-self-extending-grammar.md` | cotype | a `Move M1…M41` with shadows + probe-state | explicit | live; M33 bifurcation Λ5-flagged at claim site | spine, then crisis-journal |
 
 ## Known cracks (kept visible, not hidden)
 
@@ -79,10 +79,11 @@ An honest index records where the record itself is imperfect:
    completion certificate (outcome-indexed; cite the finding for the *why*), not a live worklist.
 4. ✅ **ADDRESSED (Λ3, L0)** — `el-atlas/NEXT.md`'s stale `W15` State block now carries a FROZEN/STALE
    banner pointing to `wal.md` W16–W23 for current state.
-5. **The cotype-grammar is bifurcated at `M33`** (OPEN — Λ5) — the design ledger claims 9
-   `V₄`-twin cells; observation found 4 inhabited. The repair (`M34…M41 v22`) lives *only in the
-   cotype*; `scratch/chart.py` and the Agda side were never re-synced. Unlike jea's `fit_plant`
-   (an honestly-closed dead-end), this one is still *claiming*.
+5. ✅ **ADDRESSED (Λ5, L1)** — the M33 V₄-twin bifurcation is now honestly flagged *at the claim
+   site*: forward-pointing **SUPERSEDED** markers at cotype M30/M31 + a `scratch/chart.py` docstring
+   note redirect to M33/M34's corrected framework (V₄-twin holds at signature- not engagement-level;
+   4/9 structurally inhabited). RETRACT-not-resync — the `fit_plant` model; no code-logic change. The
+   deeper re-sync (`chart.py`/Agda → the witnessed-pair framework) stays optional, not load-bearing.
 6. **`decomposition/` covers only the SPPF/grammar arc** (OPEN — Λ6) — the 242-turn design conversation
    + the grammar; the later el-atlas and jea arcs are not yet in the DB. The autobiography's
    meta-layer stops two chapters short.

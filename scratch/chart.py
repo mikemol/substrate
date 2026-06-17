@@ -19,6 +19,11 @@ M30/M31 EXTENSIONS — fourth axis (W, workspace):
     MV₄-7 compute_marker (V₄-twin of M14_VAR_MARK via α-swap)
     MV₄-9 workspace_marker (V₄-twin of M14_VAR_MARK via γ-swap)
     MV₄-2 workspace_driven_state (V₄-twin of morton_heap via γ-swap)
+
+  ⚠️ V₄-twin INHABITATION is signature-level, NOT engagement-level (Λ5, 2026-06-17): the M33
+  inhabitation audit (audit_inhabitation.py) found 4 of these 9 structurally inhabit their claimed
+  (held, enabled) cells; the rest are nominal V₄-twins. M34 reframes them as witnessed-pairs +
+  chirality. For the true structure cite the cotype's M33/M34 — not the M30/M31 nine-claim.
 """
 
 from typing import Any, List, Optional, Tuple
