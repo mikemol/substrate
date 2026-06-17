@@ -29,7 +29,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 import jea_branchless as BL                                 # Δ-Ω-branchless: selects are arithmetic (index->table load), no `if`
 
-_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
+_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "el-atlas", "tools"))
 sys.path.insert(0, _TOOLS)
 from topology_breakers import discover
 from perf_graph_integrated import graph_elements

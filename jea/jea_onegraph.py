@@ -25,7 +25,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jea_graded as GR, jea_branchless as BL, jea_divstr as DV     # DV: ÷ IS the ℚ wedge quotient (Δ-Ω-divstr)
-_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
+_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "el-atlas", "tools"))
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import decide, binding_edge, _PCIE_MAX_BW, _TRIP   # the el-atlas reference (the Kron solve)
 from perf_graph_integrated import compute_bw                          # reference: the iMC/iGPU conductance net + g_eff

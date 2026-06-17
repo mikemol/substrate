@@ -53,7 +53,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
 # wire in the el-atlas live conductance machinery (the genuinely-structural solve)
-_TOOLS = os.path.join(os.path.dirname(__file__), "..", "..", "..", "scratch", "el-atlas", "el-atlas-repo", "tools")
+_TOOLS = os.path.join(os.path.dirname(__file__), "..", "..", "..", "el-atlas", "tools")
 sys.path.insert(0, os.path.abspath(_TOOLS))
 from topology_breakers import discover
 from perf_graph_integrated import graph_elements, compute_bw

@@ -32,7 +32,7 @@ Witnesses (each [W]):
 import os, sys
 os.environ.setdefault("CUDA_PATH", "/usr")
 
-_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
+_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "el-atlas", "tools"))
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import poll, decide
 

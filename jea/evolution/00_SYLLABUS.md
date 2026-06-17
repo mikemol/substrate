@@ -43,7 +43,7 @@ python jea/evolution/03_generator/jea_generator_kernel.py   # GPU rungs: need cu
 Each rung prints its witnesses and a final `PASS`/`FAIL`. Rungs that build on the foundation
 begin with a small **bootstrap** that puts `jea/` (for `jea_core`, `jea_limb_gpu`, …) and the
 sibling chapters on `sys.path`. Three control rungs (`live_cost`, `megakernel`, `telemetry`)
-additionally reach the el-atlas tools under [`scratch/el-atlas`](../../scratch/el-atlas).
+additionally reach the el-atlas tools under [`el-atlas`](../../el-atlas).
 Standalone rungs (half the ladder) have no bootstrap — they are deliberately pristine.
 
 ## The ordered curriculum

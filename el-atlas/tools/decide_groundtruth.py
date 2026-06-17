@@ -32,7 +32,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "scripts")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "scripts")))
 from topology_breakers import discover
 from perf_graph_integrated import graph_elements
 from live_dispatcher import poll, decide, _PCIE_MAX_BW

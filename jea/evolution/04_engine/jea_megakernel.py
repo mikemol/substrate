@@ -29,7 +29,7 @@ import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
-_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "scratch", "el-atlas", "el-atlas-repo", "tools"))
+_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "el-atlas", "tools"))
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import poll
 

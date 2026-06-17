@@ -3,7 +3,7 @@
 --
 -- The substrate-side of el-atlas's STRUCTURED EDITION as a Π, not a document.
 --
--- `scratch/el-atlas/el-atlas-repo/el-atlas-structured.md` is the instrument's
+-- `el-atlas/el-atlas-structured.md` is the instrument's
 -- output: a claim lattice whose header reserves the integration target —
 --   "Proof tier: EMPTY — reserved: the Agda rung. [W]-by-sample != [W]-by-proof."
 -- That markdown is the FROZEN SNAPSHOT of a function: each el-atlas claim is
