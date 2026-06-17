@@ -209,6 +209,7 @@ class Lowerer(ast.NodeVisitor):
     def __init__(self, intern: Intern):
         self.I = intern
         self.scopes: list[dict] = [{}]      # name -> role, per scope (rename-orbit quotient)
+        self.bound: set = set()             # names that are BOUND somewhere (assigned / parameters)
 
     def _role(self, name: str, ctx_store: bool) -> str:
         for sc in reversed(self.scopes):
@@ -219,6 +220,19 @@ class Lowerer(ast.NodeVisitor):
         role = f"v{len(self.scopes)-1}_{len(sc)}"
         sc[name] = role
         return role
+
+    def _is_bound(self, name: str) -> bool:
+        """A name is BOUND iff it appears in some visible scope (assigned, or a parameter). Bound
+        names are alpha-equivalent -> role-quotiented (identity in `role`, name in payload-residue).
+        A FREE name (never bound, e.g. a global/builtin like abs/str/Fraction) is REFERENTIAL: its
+        identity is the NAME itself, which must live in the KEY, not the residue -- else two distinct
+        globals at the same position intern to one node (the abs-vs-str = vs ≅ bug)."""
+        if name in self.bound:
+            return True
+        for sc in self.scopes:
+            if name in sc:
+                return True
+        return False
 
     def lower(self, node) -> int:
         kind = type(node).__name__
@@ -243,8 +257,19 @@ class Lowerer(ast.NodeVisitor):
             return self.I.intern(IR(kind="Block", children=tuple(child_ids)))
 
         if isinstance(node, ast.Name):
-            role = self._role(node.id, isinstance(node.ctx, ast.Store))
-            payload = (node.id,)                                  # residue: the real name
+            if isinstance(node.ctx, ast.Store) or self._is_bound(node.id):
+                # BOUND: alpha-equivalent, role-quotient. identity in `role`, name in payload-residue.
+                if isinstance(node.ctx, ast.Store):
+                    self.bound.add(node.id)
+                role = self._role(node.id, isinstance(node.ctx, ast.Store))
+                payload = (node.id,)
+            else:
+                # FREE / referential (global, builtin, imported -- abs, str, Fraction): identity IS
+                # the name. Put it in the KEY (`op`) so two distinct free names do NOT intern to one
+                # node. (Was: role-quotiented like a bound var + name in payload -> abs and str
+                # collapsed to the same node = the {unfamiliar,familiar} false-DUPLICATE bug.)
+                op = node.id
+                payload = (node.id,)
         elif isinstance(node, ast.arg):
             # ast represents a parameter as `arg` with the name as a STRING attribute (lossy);
             # cst represents it as a Name binding. Canonicalize to the faithful form: a roled Name.
@@ -266,6 +291,16 @@ class Lowerer(ast.NodeVisitor):
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             payload = (node.name,)
             self.scopes.append({})                                # new scope for the body
+            # PRESCAN: collect names BOUND in this scope (params + any assignment target + nested
+            # def/class names + comprehension/with/for targets) so a name read BEFORE its binding is
+            # still recognized as bound (role-quotiented), not mistaken for a free/referential global.
+            for sub in ast.walk(node):
+                if isinstance(sub, ast.arg):
+                    self.bound.add(sub.arg)
+                elif isinstance(sub, ast.Name) and isinstance(sub.ctx, ast.Store):
+                    self.bound.add(sub.id)
+                elif isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    self.bound.add(sub.name)
 
         # recurse into children in source order (order KEPT -- reordering is a future graded rule)
         for ch in ast.iter_child_nodes(node):

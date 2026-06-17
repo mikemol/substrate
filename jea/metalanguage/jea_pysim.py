@@ -191,25 +191,65 @@ class Corpus:
         return tuple(out)
 
     def S(self, u: Unit, v: Unit, gmax: int = None) -> list:
-        """The similarity PROFILE S(g) over the full Trace-depth ladder: at each g, the
-        longest-common-prefix fraction of the two carrier-forgotten skeletons truncated at g.
-        Returns [(g, S_g)] -- the CURVE whose shape classifies the relationship. The tool keeps
-        this; it does NOT collapse it (the principle the old max-verdict violated)."""
+        """The similarity PROFILE S(g) -- now a DEPTH-FOLD over the recursive typehole tree, NOT a
+        flat pre-order LCP. (The flat LCP was one root-to-divergence PATH through the alignment; it
+        WALLED at the first mismatch -- couldn't see {familiar, unfamiliar, familiar} past the
+        middle divergence, and was fooled into 'DUPLICATE' by {unfamiliar, familiar} root-level
+        differences the skeleton flattens. The typehole tree recurses PAST every divergence on
+        every branch; S(g) is its projection onto the DEPTH axis.)
+
+        S(g) = (shared/skeleton nodes at depth <= g) / (all aligned nodes at depth <= g), read off
+        the typehole tree. A hole at depth d is a cliff at g=d; multiple holes at different depths
+        give MULTIPLE cliffs (the flat LCP could only ever report one). The tail past a hole still
+        counts as shared (so {f,u,f} keeps its trailing familiar); a root hole shows as a g=0 cliff
+        (so {u,f} is NOT a false duplicate). The cliff is a hole projected onto the depth axis."""
+        th = self.typehole([u.root, v.root])
+        by_depth_shared, by_depth_total = self._depth_fold(th)
+        if gmax is None:
+            gmax = max(max(by_depth_total or [0]), 1)
+        prof = []
+        cum_shared = cum_total = 0
+        for g in range(gmax + 1):
+            cum_shared += by_depth_shared.get(g, 0)
+            cum_total += by_depth_total.get(g, 0)
+            prof.append((g, cum_shared / cum_total if cum_total else 1.0))
+        return prof
+
+    def _depth_fold(self, th: dict, depth: int = 0, shared: dict = None, total: dict = None):
+        """Fold the typehole tree into (shared-by-depth, total-by-depth). A `shared`/`skeleton`
+        node counts shared at its depth; a `hole` counts toward total but NOT shared (it is the
+        divergence at that depth). Recurses into skeleton children AND into hole sub-structure
+        (the recurse-into-holes the flat LCP lacked), so every branch is counted, not just one path."""
+        if shared is None:
+            shared, total = {}, {}
+        kind = th.get("kind")
+        total[depth] = total.get(depth, 0) + 1
+        if kind in ("shared", "skeleton"):
+            shared[depth] = shared.get(depth, 0) + 1
+        # recurse into children (skeleton/shared) AND any sub-structure under a recursed hole
+        for c in th.get("children", []):
+            self._depth_fold(c, depth + 1, shared, total)
+        return shared, total
+
+    def lcp_depth(self, u: Unit, v: Unit, gmax: int = None) -> list:
+        """The RAW longest-common-prefix length as a function of g -- the order-faithful
+        discriminator the normalized ratio is a view of. The cliff is where lcp_depth STOPS
+        GROWING while the skeletons keep growing: that g is the connectedness level (the hole).
+        Reading raw depth separates 'deep shared prefix' (real) from 'short head match scaled up'
+        (the FunctionDef preamble), which the min-normalized ratio alone can't tell apart."""
         if gmax is None:
             gmax = 1 + max(max(u.depth.values(), default=0), max(v.depth.values(), default=0))
-        prof = []
+        out = []
         for g in range(gmax + 1):
             su = self._trunc_skeleton(u.root, g)
             sv = self._trunc_skeleton(v.root, g)
-            # longest common prefix as a fraction of the larger truncated skeleton
             lcp = 0
             for a, b in zip(su, sv):
                 if a != b:
                     break
                 lcp += 1
-            denom = max(len(su), len(sv))
-            prof.append((g, lcp / denom if denom else 1.0))
-        return prof
+            out.append((g, lcp, min(len(su), len(sv))))   # (grade, lcp depth, shorter length)
+        return out
 
     @staticmethod
     def classify_profile(prof: list) -> dict:
@@ -253,9 +293,39 @@ class Corpus:
                 "profile": [(g, round(s, 2)) for g, s in prof]}
 
     def shape_verdict(self, u: Unit, v: Unit) -> dict:
-        """The verdict as a SHAPE CLASSIFIER over S(g), reporting the cliff grade as the hole --
-        replacing max-ratio-across-grades (which returned the saturated no-signal grade)."""
-        return self.classify_profile(self.S(u, v))
+        """The verdict IS the typehole tree's structure -- NOT a label. (The recursive law, applied
+        to the classifier itself: a shape-LABEL is ‖tree‖_{-1}, the bare-proposition collapse, the
+        same max-collapse sin one level up. {f,u,f} has no label -- it has a SHAPE: shared shell,
+        holes at specific depths, shared tail. Collapsing it to SHARED-SHELL-MULTI-HOLE throws away
+        the depths and the fraction, which are exactly what distinguish it from an unrelated pair
+        that also happens to have several holes. So we REPORT THE TREE.)
+
+        Returns the hole-depths (the multi-cliff structure), the shared-fraction, and the S(g)
+        profile. `label` is assigned ONLY for genuinely DEGENERATE trees (0 holes -> DUPLICATE; a
+        single hole at depth 0 -> ROOT-DIVERGENT) and is None otherwise -- the structure is the
+        verdict, the label is just a name for the simplest shapes. Don't ship the label as if it
+        were the structure."""
+        th = self.typehole([u.root, v.root])
+        prof = self.S(u, v)
+        s, h = self._th_stats(th)
+        holes = self._collect_holes(th)
+        hole_depths = sorted(hd.get("depth", 0) for hd in holes)
+        shared_frac = s / (s + h) if (s + h) else 1.0
+        # a label ONLY for degenerate trees; otherwise None -- the hole_depths ARE the answer.
+        if h == 0:
+            label = "DUPLICATE"                       # zero holes: the trivial tree
+        elif h == 1 and hole_depths == [0]:
+            label = "ROOT-DIVERGENT"                  # one hole at the root: differ only at top
+        else:
+            label = None                              # structured tree: read hole_depths, do not collapse
+        return {"label": label, "holes": h, "shared_nodes": s, "shared_frac": round(shared_frac, 2),
+                "hole_depths": hole_depths,           # THE VERDICT: where the divergences are (multi-cliff)
+                "profile": [(g, round(sg, 2)) for g, sg in prof],
+                # a human summary that PRESERVES the structure rather than collapsing it:
+                "summary": (f"{s} shared nodes, {h} hole(s)"
+                            + (f" at depths {hole_depths}" if hole_depths else "")
+                            + f"; shared_frac {shared_frac:.2f}"
+                            + (f" [{label}]" if label else ""))}
 
     def genericization(self) -> dict:
         """Per 'scale', the shared/total ratio across ALL units -- the Agda score.genericization_score
