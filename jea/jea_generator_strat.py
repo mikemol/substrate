@@ -58,9 +58,7 @@ void combine_stratum(
 _kern = jea_core.build_kernel(_SRC, "combine_stratum", int128=True)
 
 
-def _lh(vals):
-    M=(1<<64)-1; vals=[int(v) for v in vals]
-    return cp.asarray([v&M for v in vals],cp.uint64), cp.asarray([(v>>64)&M for v in vals],cp.uint64)
+_lh = jea_core.lh                          # shared limb-split, promoted to jea_core (Φ3 fold)
 
 
 def strata_of(g):

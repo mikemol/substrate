@@ -43,6 +43,15 @@ __device__ __forceinline__ void st(u64* lo,u64* hi,int i,u128 v){ lo[i]=(u64)v; 
 '''
 
 
+def lh(vals):
+    """Host-side limb split: ints -> (lo, hi) cupy uint64 arrays, the (lo,hi) pair the device `ld`/`st`
+    above pack/unpack. The shared leaf-loader the cooperative generators use; promoted here from the
+    byte-identical jea_generator_{strat,unified}._lh (Φ3 fold) since both already import jea_core."""
+    M = (1 << 64) - 1
+    vals = [int(v) for v in vals]
+    return cp.asarray([v & M for v in vals], cp.uint64), cp.asarray([(v >> 64) & M for v in vals], cp.uint64)
+
+
 def build_kernel(src, name, int128=False):
     """Compile a RawKernel through the ASCII GATE. CUDA source MUST be ASCII — em-dash, the
     rational symbol, middot, double-arrow etc. in NVRTC comments fail with a cryptic

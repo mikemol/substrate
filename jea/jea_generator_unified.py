@@ -76,10 +76,7 @@ void generator_unified(
 _kern = jea_core.build_kernel(_SRC, "generator_unified", int128=True)
 
 
-def _lh(vals):
-    vals = [int(v) for v in vals]
-    M = (1 << 64) - 1
-    return cp.asarray([v & M for v in vals], cp.uint64), cp.asarray([(v >> 64) & M for v in vals], cp.uint64)
+_lh = jea_core.lh                          # shared limb-split, promoted to jea_core (Φ3 fold)
 
 
 def build_balanced_add(h, seed=1):
