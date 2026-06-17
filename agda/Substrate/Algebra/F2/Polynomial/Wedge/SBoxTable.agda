@@ -1,3 +1,4 @@
+{-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable  (AI-7s: verified S-box = AES)
 --

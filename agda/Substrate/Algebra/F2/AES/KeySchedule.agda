@@ -1,3 +1,4 @@
+{-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.AES.KeySchedule  (AI-12k: AES-128 key expansion)
 --
