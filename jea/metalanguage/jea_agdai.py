@@ -64,9 +64,14 @@ HOW TO RECOVER IT (the toolchain that built this .agdai is present -- Agda 2.8.0
     - the shim links against the same `Agda-2.8.0` package that produced the .agdai, so the
       EmbPrj instances match the magic e3bc4eaa by construction -- no version drift possible.
 
-  Until the shim is run, this module interns the fan-in signature (DONE, useful: the
-  metalanguage classification works on it). `intern_signature` below is the stub that the
-  shim's JSON output plugs into to upgrade from node-fan-in to full child-edge topology.
+  STATUS (Φ4 ✅ — BUILT): the shim is `jea/metalanguage/agdai_shim.hs` (~80 lines, ghc -package Agda).
+  It decodes via Agda 2.8.0's `decodeInterface` (full file bytes; options set via setCommandLineOptions
+  defaultOptions, else a TCM __IMPOSSIBLE__), walks each definition's `defType` over the real
+  `Term`/`Elim'` ADTs, and emits the JSON-lines schema below. `core_intern_agdai` drives it end-to-end.
+  VALIDATED: Emit.agdai -> 18 defs -> 62 core nodes -> interned 20 (3.1x sharing) with full parent->child
+  edges (Emit.render->Emit.term, _≡_ over 4 args, two Pi sharing a domain). The .agdai must be
+  current-toolchain (a stale interface decodes to Nothing -> rebuild). `intern_agdai` (fan-in only) stays
+  as the no-toolchain fallback; `core_intern_agdai` is the full-edge path.
 """
 from __future__ import annotations
 import sys, os, gzip, struct, re, argparse
@@ -179,7 +184,8 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
     `children` (lesson 3, native once edges are present); the depth-fold S(g), telescope, and
     cohomology are folds over this tree exactly as on the Python side.
 
-    STATUS: stub. Requires the shim's JSON (needs Agda 2.8.0 toolchain, present in the build env)."""
+    STATUS: LIVE (Φ4 ✅). The producer is agdai_shim.hs; drive end-to-end via core_intern_agdai (below).
+    VALIDATED on Emit.agdai (62 core nodes -> interned 20, 3.1x, full child edges)."""
     import json
     raw = {}
     with open(json_path) as fh:
@@ -221,6 +227,36 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
     roots = [go(nid) for nid in raw]
     return {"core_nodes": len(raw), "interned": intern.size(),
             "roots": roots, "edges_present": True}
+
+
+def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:
+    """FULL-edge path (Φ4 ✅): drive agdai_shim (the Agda-2.8.0 decoder, agdai_shim.hs) on a .agdai and
+    intern its core-node JSON via intern_signature -> the full parent->child DAG (what the typeholer needs;
+    strictly more than intern_agdai's fan-in signature). shim_bin defaults to ./agdai_shim beside this
+    module (build it per agdai_shim.hs's header). The shim links Agda's OWN version-matched EmbPrj
+    instances, so no tag table is guessed -- Agda's types ARE the segmentation."""
+    import subprocess, tempfile
+    if shim_bin is None:
+        shim_bin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agdai_shim")
+    if not os.path.exists(shim_bin):
+        raise FileNotFoundError(f"agdai_shim not built at {shim_bin} -- build it: "
+                                f"`ghc -package Agda -O0 -o agdai_shim agdai_shim.hs` (needs the Agda "
+                                f"library in the GHC package db; see agdai_shim.hs header)")
+    # run with CWD = the interface's own directory: Agda's option/decode context is project-relative,
+    # and decode only succeeds reliably from within the project tree (measured; from /tmp it -> Nothing).
+    ap = os.path.abspath(agdai_path)
+    r = subprocess.run([shim_bin, ap], capture_output=True, text=True, cwd=os.path.dirname(ap))
+    if r.returncode != 0:
+        raise RuntimeError(f"agdai_shim failed on {agdai_path}: {r.stderr.strip()} -- a stale / "
+                           f"older-version interface decodes to Nothing; rebuild it (`agda --safe ...`).")
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as fh:
+        fh.write(r.stdout); jpath = fh.name
+    try:
+        rep = intern_signature(jpath, intern)
+    finally:
+        os.unlink(jpath)
+    rep["agdai"] = agdai_path
+    return rep
 
 
 def main(argv=None):

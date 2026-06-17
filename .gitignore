@@ -35,3 +35,8 @@ scratch/.venv/
 
 # local hardware/DMI dump (do-not-commit machine probe data)
 dmi.data
+
+# jea/metalanguage Haskell shim build artifacts (source agdai_shim.hs is tracked; binary is not)
+jea/metalanguage/agdai_shim
+jea/metalanguage/*.hi
+jea/metalanguage/*.o

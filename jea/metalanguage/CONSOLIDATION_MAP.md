@@ -57,13 +57,23 @@ and corrects a bug the original still carries:
 | shared n-grams (textual coincidence) | interned fan-in (exact shared subtrees) | no false-positives on comments / names / whitespace |
 | file-level cosine + template | unit-level (def/class) + recursive typehole tree | finer granularity, recursive |
 
-**But the retirement is BLOCKED — coverage gap.** `agda_similarity` tokenizes *text* (Agda-tuned but
-language-general), so it handles **Agda**; `jea_pysim` parses *Python AST*, so it handles **Python only**
-— it cannot read `.agda`. The structural method is strictly better, but it does not yet cover
-`agda_similarity`'s actual domain. **Retirement is gated on `jea_agdai`'s core-intern shim** (the
-Agda-2.8.0 `readInterface` JSON, currently a stub): once Agda core interns into the same forest,
-`jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in *both* method AND coverage (and structurally, beating its
-textual n-grams). Until then `agda_similarity` STAYS — the only Agda-capable similarity tool.
+**Coverage gap — the toolchain blocker is now REMOVED (Φ4 ✅); one integration step remains.**
+`agda_similarity` tokenizes *text*, so it handles **Agda**; `jea_pysim` parses *Python AST*, so it
+handles **Python only** — it cannot read `.agda`. The structural method is strictly better but did not
+cover Agda. **The core-intern shim is now BUILT**: `jea/metalanguage/agdai_shim.hs` (~80 lines, ghc
+-package Agda) decodes a `.agdai` with Agda 2.8.0's OWN deserialiser (`decodeInterface`, no hand-decoded
+tag table — Agda's types ARE the segmentation), walks each definition's `defType` over the real
+`Term`/`Elim'` ADTs, and emits the JSON-lines schema `jea_agdai.intern_signature` consumes.
+`jea_agdai.core_intern_agdai` drives it end-to-end → the FULL parent→child core DAG. VALIDATED:
+Emit.agdai → 62 core nodes → interned 20 (3.1×, full edges); EmitDAG.agdai → 118 → 26. (Contract: the
+`.agdai` must be current-toolchain — a stale interface decodes to Nothing → rebuild; the shim runs from
+the interface's own dir, Agda's decode context being project-relative.)
+
+So Agda core now interns into the same forest as Python — `jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in
+method AND (core) coverage. **Remaining (Φ4b, no longer a toolchain unknown):** grow `jea_pysim` an
+*Agda-corpus mode* — run the shim over a `.agdai` set, intern via `core_intern_agdai`, and run `--shape`
+over Agda core terms (the typeholer/S(g) folds are already edge-generic). THEN `agda_similarity` retires.
+Until that mode lands, `agda_similarity` STAYS — still the only *end-user* Agda similarity entry point.
 
 ## ⑤ Φ1′ — kirchhoff is a COORDINATE of one law (subtraction-capability selects the chart, not the graphs)
 
