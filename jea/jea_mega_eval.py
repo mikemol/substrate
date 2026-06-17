@@ -98,10 +98,11 @@ class Fused:
         """Run the fused kernel on DEVICE arrays. Returns (canon DEVICE array, distinct). The shared launch core for
         the host-fed path (intern_eval) and the on-device DAG-gen path (intern_eval_dev -- the term never round-trips)."""
         canon=cp.full(N,-1,cp.int32); nready=cp.zeros(N,cp.int32); pend=cp.full(1,N,cp.int32); err=cp.zeros(1,cp.int32)
-        _k((_BLK,),(_THR,),(dop,dl,dr,dlk,dNlo,dNhi,dDlo,dDhi,
-                            canon,nready,pend,np.int32(N),self.htkey,self.htval,np.int32(self.HCAP),self.nextid,
-                            self.cNlo,self.cNhi,self.cDlo,self.cDhi,self.cbln,self.cbld,self.cescal,self.cready,
-                            np.int64(8_000_000),err))
+        abound = max(8_000_000, 64 * N)                              # runaway BACKSTOP only (err=1) -- the drain TERMINATES by
+        _k((_BLK,),(_THR,),(dop,dl,dr,dlk,dNlo,dNhi,dDlo,dDhi,        # productivity (every sweep makes progress); this just
+                            canon,nready,pend,np.int32(N),self.htkey,self.htval,np.int32(self.HCAP),self.nextid,  # caps a hypothetical
+                            self.cNlo,self.cNhi,self.cDlo,self.cDhi,self.cbln,self.cbld,self.cescal,self.cready,  # bug, scaled to N
+                            np.int64(abound),err))
         cp.cuda.Stream.null.synchronize()
         e=int(err.get()[0])
         if e in (1,2): raise RuntimeError(f"mega_eval err={e} (1=productivity bound, 2=table full -- raise HCAP/CAP)")

@@ -135,7 +135,8 @@ def compare_by_prefix():
 
 def rep_pareto_bridge():
     """value/trace as a Wheatstone bridge over the workload mix; the crossover is the NULL."""
-    # per-op costs (units): the measured asymmetry of the two reps.
+    # per-op costs (units): an ASSUMED/illustrative asymmetry of the two reps (NOT measured here -- this demos the
+    # Pareto/Wheatstone SHAPE + the crossover null; real costs would come from a profiler like profile_combine_batch).
     va, vc = 1.0, 8.0   # value-window:  arithmetic cheap (1, SWAR limb op); canonical 8 (reduce+cross-mult)
     ta, tc = 8.0, 1.0   # trace-window:  arithmetic 8 (Gosper Mobius state machine); canonical 1 (prefix)
     cost_v = lambda f: f * va + (1 - f) * vc      # f = fraction of ops that are ARITHMETIC

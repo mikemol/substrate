@@ -151,8 +151,7 @@ if __name__ == "__main__":
         print(f"     L=2^{h}={g['L']:>8} ({g['N']:>9} nodes): {r['ms']:7.2f} ms = {thr:7.1f} M nodes/s  "
               f"{r['nblocks']}blk x{r['B']} = {r['threads']} threads  exact={ok}")
 
-    print(f"\n  THE MERGE: ~{thr:.0f} M nodes/s vs the 20-lead-thread cooperative silo (~0.66 M nodes/s) "
-          f"= ~{thr/0.66:.0f}x")
-    print(f"  -- the SAME dynamic control + arbitrary-DAG streaming, now data-parallel AND 128-bit exact.")
+    print(f"\n  THE MERGE: ~{thr:.0f} M nodes/s (measured here) -- data-parallel over blocks, not a single lead-thread")
+    print(f"  cooperative loop -- the SAME dynamic control + arbitrary-DAG streaming, now data-parallel AND 128-bit exact.")
     print(f"\n  UNIFIED {'PASS' if allok else 'FAIL'} — ONE kernel: dynamic (live K, readiness-gated,")
     print(f"  branchless, lock-free) AND data-parallel (full grid) AND exact-128-bit (escalate). Not silos.")

@@ -214,5 +214,5 @@ if __name__ == "__main__":
     print(f"  the (lch,rch) Morton quadtree (W1); value = the STERN-BROCOT tree addressed by the CONTINUED FRACTION = the")
     print(f"  EEA residue (W3c), which alone gives value-line locality -- morton(num,den) (W3b) was the wrong, extrinsic")
     print(f"  plane quadtree. Recursion: carrier (binary/CD subdivision) -> value (Stern-Brocot) -> structure ((lch,rch)")
-    print(f"  quadtree) -> SPPF (linear quadtree by radix sort); the EEA trace IS the address at the value level. NEXT:")
-    print(f"  the device-RESIDENT forest = a linear quadtree (persistent Morton-sorted array, merged per eval, GPU-native).")
+    print(f"  quadtree) -> SPPF (linear quadtree by radix sort); the EEA trace IS the address at the value level. REALIZED:")
+    print(f"  jea_resident IS this device-resident forest -- a code-sorted linear quadtree merged incrementally per eval.")

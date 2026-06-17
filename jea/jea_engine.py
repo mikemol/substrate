@@ -216,5 +216,5 @@ if __name__ == "__main__":
     ok = w1 and w2 and w3 and w4 and w5
     print(f"\n  {'PASS' if ok else 'FAIL'} — C2: scheduling is a STRATEGY over the C1 combine. combine_window is")
     print(f"  one device function; coop + strat call it (no copied combine). coop==strat proves the schedule")
-    print(f"  is orthogonal to the combine. Collapses dag/dag_mode (coop) + strat (strat). NEXT: C3 (carrier")
-    print(f"  ops bucket/escalate-tier/trace as carrier params), C4 (intern+oracle stages), C5 (regression runner).")
+    print(f"  is orthogonal to the combine. Collapses dag/dag_mode (coop) + strat (strat). (C4 = jea_cost's structural")
+    print(f"  oracle, C5 = jea_regression_gate, both built; carrier ops are the graded carrier (jea_carrier). LEGACY dep.)")

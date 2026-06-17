@@ -92,4 +92,4 @@ if __name__ == "__main__":
     print(f"  bit-length -- the small vouched term slides DOWN to [{tier}], the >u128 term escalates to [{btier}],")
     print(f"  the SAME selector, exact both. Charter term-algebra->GPU closed on the MATURE evaluator with the carrier")
     print(f"  sliding by need (reuse of jea_agda_bridge + jea_carrier_solve; no reinvention, no frozen u128 floor).")
-    print(f"  NEXT: PER-NODE carrier placement (each node its narrowest) folded into the on-GPU kernel dispatch.")
+    print(f"  (PER-NODE carrier placement -- each node its narrowest -- IS folded into the apex kernel: tier[]=0/1/2.)")

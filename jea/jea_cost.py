@@ -108,6 +108,5 @@ if __name__ == "__main__":
     ok = w1 and w2 and w3
     print(f"\n  {'PASS' if ok else 'FAIL'} — C4: the schedule cost is STRUCTURAL (op-graph + discover() + one r),")
     print(f"  the oracle is argmin over it, and it REPRODUCES the measured winner on workloads r wasn't fit to")
-    print(f"  (coop deep-narrow, strat wide) -- structural extrapolation, not hand-fed cells. Kills the pilot's")
-    print(f"  literal ms table. F8 HAND-FED -> structural; F4∩F8 oracle IN. NEXT: fold residency-assert (F2∩F7)")
-    print(f"  + K-refill (F4∩F2, jea_nedge_refill) + point jea_consolidation_pilot at this; then C5 closure gate.")
+    print(f"  (coop deep-narrow, strat wide) -- structural extrapolation, not hand-fed cells. CONSUMED by")
+    print(f"  jea_navigator (measure_sched = the launch-granularity g-surface) -- the cost stays a measured output.")

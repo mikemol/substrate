@@ -171,5 +171,5 @@ if __name__ == "__main__":
     print(f"  escalation mark up the DAG: a node is crowned iff it overflows u128 OR a child is). The host deliver")
     print(f"  READS that residue (escal[]) instead of re-predicting -- recompute-from-residue, not copy-across-boundary.")
     print(f"  The device crown is TIGHTER (actual reduced lengths) ⊆ the host unreduced predict, so it byte-limbs no")
-    print(f"  more nodes, and the host no longer duplicates the device's own escalation solve. NEXT (Δ-Φ-pernode): the")
-    print(f"  carrier SELECT + per-node placement fold into the same on-device pass (the kernel already has bln/bld).")
+    print(f"  more nodes, and the host no longer duplicates the device's own escalation solve. (Δ-Φ-pernode DONE: the")
+    print(f"  apex kernel already places EACH node on its narrowest carrier on-device via the emitted tier[] = 0/1/2.)")
