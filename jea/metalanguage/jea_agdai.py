@@ -188,12 +188,16 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
     VALIDATED on Emit.agdai (62 core nodes -> interned 20, 3.1x, full child edges)."""
     import json
     raw = {}
+    unit_markers = []                                         # (qname, shim-local root id) per definition
     with open(json_path) as fh:
         for line in fh:
             line = line.strip()
             if line:
                 rec = json.loads(line)
-                raw[rec["id"]] = rec
+                if "unit" in rec:                             # a per-definition unit marker (Φ4b)
+                    unit_markers.append((rec["unit"], rec["root"]))
+                else:
+                    raw[rec["id"]] = rec
     interned: dict[int, int] = {}
     FREE = {"Def", "Con", "Prim", "PrimSort", "Proj"}     # referential: qname is identity -> KEY
 
@@ -225,8 +229,10 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
         return i
 
     roots = [go(nid) for nid in raw]
+    # map each definition's unit-marker (shim-local root) to its INTERNED root id -> per-def units (Φ4b)
+    units = [(name, interned[r]) for name, r in unit_markers if r in interned]
     return {"core_nodes": len(raw), "interned": intern.size(),
-            "roots": roots, "edges_present": True}
+            "roots": roots, "units": units, "edges_present": True}
 
 
 def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:

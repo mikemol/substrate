@@ -70,10 +70,23 @@ Emit.agdai → 62 core nodes → interned 20 (3.1×, full edges); EmitDAG.agdai 
 the interface's own dir, Agda's decode context being project-relative.)
 
 So Agda core now interns into the same forest as Python — `jea_pysim`+`jea_agdai` ⊇ `agda_similarity` in
-method AND (core) coverage. **Remaining (Φ4b, no longer a toolchain unknown):** grow `jea_pysim` an
-*Agda-corpus mode* — run the shim over a `.agdai` set, intern via `core_intern_agdai`, and run `--shape`
-over Agda core terms (the typeholer/S(g) folds are already edge-generic). THEN `agda_similarity` retires.
-Until that mode lands, `agda_similarity` STAYS — still the only *end-user* Agda similarity entry point.
+method AND (core) coverage. **Φ4b ✅ — the Agda-corpus mode is BUILT:** `jea_pysim` routes `.agdai` files
+through `agdai_shim` (now emitting `{"unit":qname,"root":id}` per definition) → `core_intern_agdai` →
+one `Unit` per definition's elaborated type, in the SAME forest. Every readout (clusters, typehole, S(g),
+`--shape`, cohomology) is front-end-agnostic and runs on Agda core unchanged (Agda nodes carry
+`kind="AgdaCore"`, `op`=constructor/qname, `role`=de-Bruijn; the typeholer keys on `op` as it keys on Python
+`kind`). VALIDATED on the emit corpus: 3 `.agdai` → 58 units → cross-file `--shape` candidates
+(`Emit.term-serialises ✕ term-evaluates` frac 0.83; `Emit.Term.lf ✕ EmitDAG.Node.nmul` frac 0.8 cross-file
+— precisely the structural cross-module signal a textual tool misses). Python path unregressed; `.py`/`.agdai`
+mixable in one corpus.
+
+**Retirement of `agda_similarity` — capability achieved; ONE nuance to weigh (user call).** Nothing live
+depends on it (no gate/hook/importer; only docstrings + scratch figures). The structural tool is strictly
+better *for built code*. The single residual: `agda_similarity` reads `.agda` SOURCE TEXT (no build), while
+the structural path needs the `.agdai` (build first). For this fully-built repo that niche is marginal —
+retire it (git-recoverable) — but the decision is the user's since it removes the only *unbuilt-source* text
+comparator. (A refinement that would deepen the structural signal: have the shim also walk `theDef` Function
+clauses, not just `defType` — proof bodies, not only types.)
 
 ## ⑤ Φ1′ — kirchhoff is a COORDINATE of one law (subtraction-capability selects the chart, not the graphs)
 

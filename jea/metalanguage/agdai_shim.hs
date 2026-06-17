@@ -79,6 +79,11 @@ main = do
     Right (Just i)  -> do
       r <- newIORef 0
       let defs = HMap.toList (_sigDefinitions (iSignature i))
-      mapM_ (\(_, d) -> walkType r (defType d)) defs
+      -- one UNIT per definition (its elaborated type's root) -- the Agda analogue of a Python def/class
+      -- unit. Emitted as {"unit":qname,"root":id} after the def's nodes, so jea_pysim builds per-def units.
+      mapM_ (\(qn, d) -> do
+               rid <- walkType r (defType d)
+               putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show rid ++ "}"
+            ) defs
       n <- readIORef r
       hPutStrLn stderr ("agdai_shim: " ++ show (length defs) ++ " definitions -> " ++ show n ++ " core nodes")

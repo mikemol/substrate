@@ -125,6 +125,28 @@ class Corpus:
                 for nid in sup:                       # record unit-membership (multiplicity fan-in)
                     self.node_units.setdefault(nid, set()).add(uidx)
 
+    def add_agdai(self, path: str, shim_bin: str = None):
+        """Φ4b: ingest an Agda .agdai interface as units = its DEFINITIONS' elaborated core terms.
+        Drives jea_agdai.core_intern_agdai (agdai_shim -> the full child-edge core DAG) into THIS same
+        interner, then makes one Unit per definition. The readouts below are front-end-agnostic -- they
+        read (kind, role, op, lit) + children, and Agda core nodes carry kind='AgdaCore', op=constructor
+        /qname, role=de-Bruijn -- so the typeholer/S(g)/clusters run on Agda exactly as on Python. This
+        is what lets jea_pysim+jea_agdai SUBSUME the textual agda_similarity (structural, cross-file)."""
+        import jea_agdai
+        try:
+            rep = jea_agdai.core_intern_agdai(path, self.I, shim_bin=shim_bin)
+        except (FileNotFoundError, RuntimeError) as e:
+            print(f"  [agda-skip] {path}: {e}", file=sys.stderr)
+            return
+        for name, root in rep.get("units", []):
+            sup = self._support(root)
+            u = Unit(name=name, path=path, lineno=-1, root=root,
+                     support=sup, depth=self._depth_map(root))
+            uidx = len(self.units)
+            self.units.append(u)
+            for nid in sup:
+                self.node_units.setdefault(nid, set()).add(uidx)
+
     # ---- readouts (all lookups over the interned forest, no pairwise distance) ----
 
     def fanin_of(self, node_id: int) -> int:
@@ -784,7 +806,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser(
         description="Multi-scale structural similarity over Python via the term-algebra interner "
                     "(the Agda similarity script, for Python). Units = def/class; sharing = SPPF fan-in.")
-    ap.add_argument("files", nargs="*", help="Python files or globs")
+    ap.add_argument("files", nargs="*", help="Python files/globs, AND/OR Agda .agdai interfaces "
+                    "(Φ4b: .agdai routed through agdai_shim -> Agda core-term units; mixable with .py)")
     ap.add_argument("--min-shared", type=float, default=0.6,
                     help="cluster threshold: min shared-support fraction (default 0.6)")
     ap.add_argument("--min-size", type=int, default=6,
@@ -815,7 +838,10 @@ def main(argv=None):
 
     C = Corpus()
     for f in files:
-        C.add_file(f)
+        if f.endswith(".agdai"):                  # Φ4b: Agda interface -> per-definition core-term units
+            C.add_agdai(f)
+        else:
+            C.add_file(f)
 
     cls = C.clusters(args.min_shared, args.min_size, args.min_cohesion)
     scores = C.genericization()
