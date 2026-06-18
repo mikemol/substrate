@@ -10,7 +10,8 @@
 --   * Pullback-Of f g — the Σ-subtype of A × B at the pullback.
 --   * pullback-π₁, pullback-π₂ — projections.
 --   * pullback-square — the universal square equation.
---   * pullback-factor — universal mapping property.
+--   * pullback-factor — universal mapping property (existence);
+--     pullback-factor-unique-π₁/π₂ — its observational uniqueness half.
 --   * Wide-Meet P — family-indexed meet of predicates.
 --   * wide-meet-factor — wide universal property.
 --
@@ -103,8 +104,11 @@ pullback-square p = over-diagonal (proj₂ p)
 -- N-3: Universal mapping property of the pullback.
 --
 -- A "cone over (f, g)" is a pair of maps (h₁ : Z → A, h₂ : Z → B)
--- with f ∘ h₁ ≡ g ∘ h₂ pointwise. Any such cone factors uniquely
--- through the pullback via the canonical lift.
+-- with f ∘ h₁ ≡ g ∘ h₂ pointwise. Any such cone lifts through the
+-- pullback via the canonical map (EXISTENCE, pullback-factor); the
+-- UNIQUENESS half is pullback-factor-unique-π₁/π₂ below, stated
+-- OBSERVATIONALLY (through each projection) — the honest --without-K
+-- form (full Pullback-Of equality needs IsInPullback to be a prop).
 ------------------------------------------------------------------------
 
 pullback-factor :
@@ -127,6 +131,34 @@ pullback-factor-commutes-π₂ :
   (h₁ : Z → A) (h₂ : Z → B) (sq : (z : Z) → f (h₁ z) ≡ g (h₂ z)) (z : Z) →
   pullback-π₂ {f = f} {g = g} (pullback-factor h₁ h₂ sq z) ≡ h₂ z
 pullback-factor-commutes-π₂ _ _ _ _ = refl
+
+-- The UNIQUENESS half, OBSERVATIONALLY (the LimitUP.mediate-unique idiom,
+-- leg-by-leg): any lift k whose projections agree with the cone legs equals
+-- pullback-factor AS SEEN THROUGH each projection. Full equality
+-- `k z ≡ pullback-factor h₁ h₂ sq z` in Pullback-Of would need IsInPullback
+-- to be a proposition (proof-irrelevance of `over-diagonal`, i.e. C an
+-- h-set), not granted under --without-K; the projection-level equalities ARE
+-- the universal-property uniqueness at the honest observational level
+-- (cf. Algebra.Wedge.Monoidal's HONEST SCOPE note, and Equalizer's
+-- equalizer-factor-unique). Pin {f}{g} explicitly — the higher-order `sq`
+-- type does not solve them.
+pullback-factor-unique-π₁ :
+  {A B C Z : Set ℓ} {f : A → C} {g : B → C}
+  (h₁ : Z → A) (h₂ : Z → B) (sq : (z : Z) → f (h₁ z) ≡ g (h₂ z))
+  (k : Z → Pullback-Of f g) →
+  ((z : Z) → pullback-π₁ (k z) ≡ h₁ z) →
+  (z : Z) → pullback-π₁ (k z) ≡ pullback-π₁ {f = f} {g = g} (pullback-factor h₁ h₂ sq z)
+pullback-factor-unique-π₁ {f = f} {g = g} h₁ h₂ sq k k₁ z =
+  trans (k₁ z) (sym (pullback-factor-commutes-π₁ {f = f} {g = g} h₁ h₂ sq z))
+
+pullback-factor-unique-π₂ :
+  {A B C Z : Set ℓ} {f : A → C} {g : B → C}
+  (h₁ : Z → A) (h₂ : Z → B) (sq : (z : Z) → f (h₁ z) ≡ g (h₂ z))
+  (k : Z → Pullback-Of f g) →
+  ((z : Z) → pullback-π₂ (k z) ≡ h₂ z) →
+  (z : Z) → pullback-π₂ (k z) ≡ pullback-π₂ {f = f} {g = g} (pullback-factor h₁ h₂ sq z)
+pullback-factor-unique-π₂ {f = f} {g = g} h₁ h₂ sq k k₂ z =
+  trans (k₂ z) (sym (pullback-factor-commutes-π₂ {f = f} {g = g} h₁ h₂ sq z))
 
 ------------------------------------------------------------------------
 -- N-4: Wide meet — family-indexed intersection of predicates.

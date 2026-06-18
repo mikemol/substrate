@@ -1,7 +1,8 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.UniversalProperty.Interop
 --
--- INTEROPERABILITY = the universal property of the PAIR. The center
+-- INTEROPERABILITY = the backed CONE over the PAIR (toward the universal
+-- property of the pair — see the caveat below). The center
 -- (Free ⊣ Forgetful, the universal property) recursed one level up: from
 -- objects to pairs of objects. Two backed universal properties A, B
 -- INTEROPERATE iff their combination has a backed cone — an apex object
@@ -10,7 +11,11 @@
 -- backed combination = the structure they share. (Uniqueness/universality
 -- of the cone — that it is THE product, not merely A cone — is the next
 -- tightening; this slice witnesses the cone, and does not yet claim it is
--- terminal among cones.)
+-- terminal among cones. DEFERRED WITH CAUSE: terminality needs a notion of
+-- BackedUP cone-morphism + a terminal-object proof — a separate categorical
+-- layer, not the trivial observational lemma that discharges Equalizer/
+-- Pullback uniqueness. See Equalizer.equalizer-factor-unique for that idiom;
+-- it does not apply here because Interop has no mediating `factor` map yet.)
 --
 -- This is the ⊗ (multiplicative) operation of the topos ring on backed
 -- objects: A ⊗ B = their backed combination, defined exactly where an

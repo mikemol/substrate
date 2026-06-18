@@ -76,9 +76,11 @@ open IsEqualised public
 --
 -- Equalizer-Of f g packages the subtype of A where f and g agree.
 -- equalizer-incl is the canonical inclusion into A; equalizer-eq is
--- the universal equation. equalizer-factor is the universal property:
--- any map Z → A that equalises f and g factors uniquely through the
--- equalizer.
+-- the universal equation. equalizer-factor gives the EXISTENCE half of
+-- the universal property: any map Z → A that equalises f and g lifts
+-- through the equalizer. The UNIQUENESS half is equalizer-factor-unique
+-- below, stated OBSERVATIONALLY (through the inclusion) — the honest
+-- --without-K form (see its note).
 ------------------------------------------------------------------------
 
 Equalizer-Of : {A B : Set ℓ} (f g : A → B) → Set ℓ
@@ -102,13 +104,32 @@ equalizer-factor :
 equalizer-factor h h-equalises z = h z , record { equal = h-equalises z }
 
 -- The factorisation commutes with inclusion: equalizer-incl ∘
--- equalizer-factor h = h. (This is the "uniqueness" half of the
--- universal property at the pointwise level.)
+-- equalizer-factor h = h. (This is the EXISTENCE/commutation half of the
+-- universal property — the lift's inclusion recovers h. Uniqueness is the
+-- separate observational lemma equalizer-factor-unique below.)
 equalizer-factor-commutes :
   {A B Z : Set ℓ} {f g : A → B}
   (h : Z → A) (h-eq : (z : Z) → f (h z) ≡ g (h z)) (z : Z) →
   equalizer-incl {f = f} {g = g} (equalizer-factor h h-eq z) ≡ h z
 equalizer-factor-commutes _ _ _ = refl
+
+-- The UNIQUENESS half, OBSERVATIONALLY: any lift k : Z → Equalizer-Of f g
+-- whose inclusion agrees with h equals equalizer-factor h AS SEEN THROUGH
+-- the inclusion. This is the LimitUP.mediate-unique idiom — uniqueness
+-- stated at the leg/projection (here: inclusion) level. Full equality
+-- `k z ≡ equalizer-factor h h-eq z` in Equalizer-Of would require
+-- IsEqualised to be a proposition (proof-irrelevance of `equal`, i.e. B an
+-- h-set), which --without-K does not grant; the inclusion-level equality IS
+-- the universal-property uniqueness at the honest observational level
+-- (cf. Algebra.Wedge.Monoidal's HONEST SCOPE note).
+equalizer-factor-unique :
+  {A B Z : Set ℓ} {f g : A → B}
+  (h : Z → A) (h-eq : (z : Z) → f (h z) ≡ g (h z))
+  (k : Z → Equalizer-Of f g) →
+  ((z : Z) → equalizer-incl (k z) ≡ h z) →
+  (z : Z) → equalizer-incl (k z) ≡ equalizer-incl {f = f} {g = g} (equalizer-factor h h-eq z)
+equalizer-factor-unique {f = f} {g = g} h h-eq k k-comm z =
+  trans (k-comm z) (sym (equalizer-factor-commutes {f = f} {g = g} h h-eq z))
 
 ------------------------------------------------------------------------
 -- N-3: Kernel-At — kernel of f at a point, as the equalizer of f
