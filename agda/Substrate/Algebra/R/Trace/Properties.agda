@@ -29,19 +29,16 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong�
 open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; -ℤ-involutive)
 open import Substrate.Algebra.Z.Add using (_⊖_)
 open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
-open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm; neg-*-left)
+open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm; neg-*-left; ⊖-cancelˡ)
 
 open import Substrate.Algebra.R.Trace
   using (RealTrace; head; tail; twos; sqrt2; AllPos; hd; tl)
 
 ------------------------------------------------------------------------
--- Two truncated-difference helpers (direct induction on the ⊖ reduction).
+-- Truncated-difference helper (direct induction on the ⊖ reduction).
+-- (Ⓓ: ⊖-cancelˡ was re-proved here identically; it is Z.Properties.Mul's,
+-- imported above. ⊖-cancelˡ over the same ℕ→ℤ `_⊖_`.)
 ------------------------------------------------------------------------
-
--- cancel a common summand on both sides of a difference.
-⊖-cancelˡ : (x m n : ℕ) → (x + m) ⊖ (x + n) ≡ m ⊖ n
-⊖-cancelˡ zero    m n = refl
-⊖-cancelˡ (suc x) m n = ⊖-cancelˡ x m n
 
 -- swapping the operands negates the difference.
 ⊖-swap-neg : (a b : ℕ) → (b ⊖ a) ≡ -ℤ (a ⊖ b)

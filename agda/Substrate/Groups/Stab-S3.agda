@@ -76,11 +76,10 @@ open import Substrate.Groups.SemidirectProduct.Stab using (Stab) public
 -- Basic helpers.
 ------------------------------------------------------------------------
 
-σ-injective :
-  (σ : Permutation) (x y : Axis) →
-  applyₛ σ x ≡ applyₛ σ y → x ≡ y
-σ-injective σ x y eq =
-  sym-trans (inv-l σ x) (cong-trans (invₐₛ σ) eq (inv-l σ y))
+-- Ⓓ: σ-injective is the generic Symmetric.σ-injective (S4 instantiates
+-- Symmetric at Axis and re-exports it); imported + re-exported here (the local
+-- proof was byte-identical). stab-preserves-≢ below uses it.
+open import Substrate.Groups.S4 using (σ-injective) public
 
 stab-preserves-≢ :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ →

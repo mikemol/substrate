@@ -15,8 +15,10 @@ module Substrate.Foundation.Nat.Properties.Cancel where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
-suc-injective : {m n : ℕ} → suc m ≡ suc n → m ≡ n
-suc-injective refl = refl
+-- Ⓓ: suc-injective is Foundation.Nat's (it was re-proved here identically);
+-- re-exported with `public` so this module's existing consumers (which import
+-- suc-injective FROM Cancel) are unaffected. +-cancelˡ below uses it.
+open import Substrate.Foundation.Nat using (suc-injective) public
 
 -- cancel a left addend.
 +-cancelˡ : (k : ℕ) {m n : ℕ} → (k + m) ≡ (k + n) → m ≡ n

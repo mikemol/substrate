@@ -10,29 +10,20 @@
 module Substrate.Cocycles.V4Signature.S4Iso.Injective where
 
 open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
+open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4
-  using (Permutation; inv-l)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
 
 ------------------------------------------------------------------------
 -- apply σ is injective.
+--
+-- Ⓓ: σ-injective is the GENERIC Symmetric.σ-injective — Symmetric is
+-- instantiated at Axis and re-exported by S4, and the local proof here was
+-- byte-identical. Imported + re-exported; the Axis-distinctness lemmas below
+-- are this module's own content.
 ------------------------------------------------------------------------
 
-σ-injective :
-  (σ : Permutation) (x y : Axis) →
-  applyₛ σ x ≡ applyₛ σ y → x ≡ y
-σ-injective σ x y eq =
-  let
-    p₁ : x ≡ invₐₛ σ (applyₛ σ x)
-    p₁ = sym (inv-l σ x)
-    p₂ : invₐₛ σ (applyₛ σ x) ≡ invₐₛ σ (applyₛ σ y)
-    p₂ = cong (invₐₛ σ) eq
-    p₃ : invₐₛ σ (applyₛ σ y) ≡ y
-    p₃ = inv-l σ y
-  in trans p₁ (trans p₂ p₃)
+open import Substrate.Groups.S4 using (σ-injective) public
 
 ------------------------------------------------------------------------
 -- Axis-constructor distinctness (nine obvious lemmas).
