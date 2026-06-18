@@ -2,8 +2,10 @@
 -- Substrate.Algebra.Lie.so3
 --
 -- The Lie algebra so(3) — 3×3 skew-symmetric matrices with bracket
--- [A, B] = AB - BA. Equivalent to sl(2, ℝ) as real Lie algebras
--- (both have Cartan type A₁); commonly realised as the algebra of
+-- [A, B] = AB - BA. Shares the A₁ Cartan type with sl₂ (their
+-- complexifications agree); as a REAL Lie algebra it is the COMPACT
+-- form (≅ su(2)), a DIFFERENT real form from the split sl(2, ℝ) — NOT
+-- isomorphic over ℝ. Commonly realised as the algebra of
 -- infinitesimal rotations in ℝ³ via L_x, L_y, L_z generators
 -- satisfying [L_x, L_y] = L_z (and cyclic).
 --
@@ -38,11 +40,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level; 0ℓ)
-open import Substrate.Category.CartanType using (CartanType; mkCartanType)
+open import Substrate.Category.CartanType using (CartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Algebra.Lie.CartanA1 using (A1-CartanType)
 
 module Substrate.Algebra.Lie.so3
   -- The substrate-internal LieAlgebra value witnessing so₃.
@@ -63,26 +64,18 @@ so3-LieAlgebra : LieAlgebra
 so3-LieAlgebra = L
 
 ------------------------------------------------------------------------
--- 2. so₃'s Cartan type: A₁ (same as sl₂).
+-- 2. so₃'s Cartan type: the SHARED A₁ (Substrate.Algebra.Lie.CartanA1).
 --
--- Rank 1; single generator with order 2. The Cartan type A₁
--- classifies so₃ ≅ sl₂(ℝ) as a Lie algebra.
+-- so3-CartanType IS the one `A1-CartanType` that sl2-CartanType also is — the
+-- "shared CartanType" now a literal shared definition, not asserted prose.
+-- This says their COMPLEXIFICATIONS agree (both = sl₂(ℂ) = A₁). It does NOT
+-- say so₃ ≅ sl₂(ℝ) as real Lie algebras: they are distinct real forms (so₃ ≅
+-- su(2), the compact form; sl₂(ℝ), the split form), NOT isomorphic over ℝ. A
+-- shared Cartan type is the complex classification, not a real iso.
 ------------------------------------------------------------------------
 
-A1-rank : ℕ
-A1-rank = 1
-
-A1-m : Fin A1-rank → Fin A1-rank → ℕ
-A1-m _ _ = 1
-
-A1-m-diag : (i : Fin A1-rank) → A1-m i i ≡ 1
-A1-m-diag _ = refl
-
-A1-m-symm : (i j : Fin A1-rank) → A1-m i j ≡ A1-m j i
-A1-m-symm _ _ = refl
-
 so3-CartanType : CartanType
-so3-CartanType = mkCartanType A1-rank A1-m A1-m-diag A1-m-symm
+so3-CartanType = A1-CartanType
 
 ------------------------------------------------------------------------
 -- 3. Capstone — so₃ as L-arc concrete Lie algebra.
@@ -97,8 +90,9 @@ so3-CartanType = mkCartanType A1-rank A1-m A1-m-diag A1-m-symm
 -- After L15: substrate has the Coxeter ↔ Cartan ↔ Lie bridge with
 -- two concrete instances exhibiting the SAME Cartan type (A₁) under
 -- DIFFERENT bases (sl₂'s Chevalley vs so₃'s angular momentum). The
--- structural equivalence sl₂(ℝ) ≅ so₃ is captured by the shared
--- CartanType + the bridge L13.
+-- shared COMPLEX classification is captured by the literal shared
+-- CartanType (A1-CartanType) + the bridge L13 — NOT a real iso (sl₂ and
+-- so₃ are distinct real forms: split vs compact).
 --
 -- Per [[homology-cohomology-recursion]]: A₁ is the Cartan-type
 -- COHOMOLOGY-side; sl₂ + so₃ are HOMOLOGY-side observations sharing

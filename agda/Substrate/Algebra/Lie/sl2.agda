@@ -35,11 +35,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level; 0ℓ)
-open import Substrate.Category.CartanType using (CartanType; mkCartanType)
+open import Substrate.Category.CartanType using (CartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Algebra.Lie.CartanA1 using (A1-CartanType)
 
 module Substrate.Algebra.Lie.sl2
   -- The substrate-internal LieAlgebra value witnessing sl₂.
@@ -69,27 +68,18 @@ sl2-LieAlgebra : LieAlgebra
 sl2-LieAlgebra = L
 
 ------------------------------------------------------------------------
--- 2. sl₂'s Cartan type: A₁.
+-- 2. sl₂'s Cartan type: the SHARED A₁ (Substrate.Algebra.Lie.CartanA1).
 --
--- Rank 1; the 1×1 m-matrix is (m_00 = 1). The CartanType A₁ is
--- the simplest non-empty Coxeter system: a single generator s with
--- s² = e.
+-- Rank 1; the 1×1 m-matrix is (m₀₀ = 1) — the simplest non-empty Coxeter
+-- system (one generator s with s² = e). sl2-CartanType IS the one
+-- `A1-CartanType` that so3-CartanType also is: the shared A₁ type, literal
+-- (not asserted prose). It records that sl₂ and so₃ have the same COMPLEX
+-- classification; it does NOT make them isomorphic over ℝ (sl₂ is the split
+-- real form, so₃ the compact). See CartanA1's scope note.
 ------------------------------------------------------------------------
 
-A1-rank : ℕ
-A1-rank = 1
-
-A1-m : Fin A1-rank → Fin A1-rank → ℕ
-A1-m _ _ = 1
-
-A1-m-diag : (i : Fin A1-rank) → A1-m i i ≡ 1
-A1-m-diag _ = refl
-
-A1-m-symm : (i j : Fin A1-rank) → A1-m i j ≡ A1-m j i
-A1-m-symm _ _ = refl
-
 sl2-CartanType : CartanType
-sl2-CartanType = mkCartanType A1-rank A1-m A1-m-diag A1-m-symm
+sl2-CartanType = A1-CartanType
 
 ------------------------------------------------------------------------
 -- 3. Capstone — sl₂ as L-arc concrete Lie algebra.
@@ -110,5 +100,6 @@ sl2-CartanType = mkCartanType A1-rank A1-m A1-m-diag A1-m-symm
 -- torus. The substrate's HasOrder primitive applies once a concrete
 -- realisation is in scope.
 --
--- Next: L15 so₃ (= sl₂ over ℝ, real form; same A₁ Cartan type).
+-- Next: L15 so₃ (shares the A₁ Cartan type — same complexification — but is a
+-- DIFFERENT real form: compact ≅ su(2), not the split sl(2,ℝ)).
 ------------------------------------------------------------------------
