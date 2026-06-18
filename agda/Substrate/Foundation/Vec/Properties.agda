@@ -11,7 +11,7 @@ module Substrate.Foundation.Vec.Properties where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
 open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Level using (Level)
 
@@ -66,3 +66,26 @@ tabulate∘lookup :
   (xs : Vec A n) → tabulate (lookup xs) ≡ xs
 tabulate∘lookup []       = refl
 tabulate∘lookup (x ∷ xs) = cong (x ∷_) (tabulate∘lookup xs)
+
+------------------------------------------------------------------------
+-- tabulate-cong + vec-ext: pointwise equality ⟹ vector equality.
+--
+-- The generic Vec extensionality, derived from the two round-trips
+-- above (no funext, no K): if two vectors agree at every index they
+-- are equal. Subsumes F₂'s ≡-from-lookup at any element type, so it
+-- serves both the row level (Vec of rows) and the entry level.
+------------------------------------------------------------------------
+
+tabulate-cong :
+  {A : Set ℓ} {n : ℕ}
+  (f g : Fin n → A) → ((i : Fin n) → f i ≡ g i) → tabulate f ≡ tabulate g
+tabulate-cong {n = zero}  f g p = refl
+tabulate-cong {n = suc _} f g p =
+  cong₂ _∷_ (p zero) (tabulate-cong (λ i → f (suc i)) (λ i → g (suc i)) (λ i → p (suc i)))
+
+vec-ext :
+  {A : Set ℓ} {n : ℕ}
+  (u v : Vec A n) → ((i : Fin n) → lookup u i ≡ lookup v i) → u ≡ v
+vec-ext u v p =
+  trans (sym (tabulate∘lookup u))
+        (trans (tabulate-cong (lookup u) (lookup v) p) (tabulate∘lookup v))

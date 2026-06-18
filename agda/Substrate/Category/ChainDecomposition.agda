@@ -127,10 +127,15 @@ open ChainDecomposition public
 -- The `build_chain` function in that module constructs this Vec for
 -- every g ∈ S₄; the `ChainEquivarianceWitness` verifies round-trip.
 --
--- That runtime instance EMPIRICALLY witnesses the structural claim
--- this Agda module formalises. The Agda postulate is supported by
--- the codec's exhaustive 24-element check (every g ∈ S₄ has a unique
--- chain).
+-- That runtime instance EMPIRICALLY witnesses the structural claim this
+-- Agda module formalises — as an INSTANCE, not a postulate. (There is NO
+-- Agda postulate here: per §2 and the --safe discipline, existence is
+-- carried by inhabitants of the record, not assumed. The earlier wording
+-- "the Agda postulate is supported by …" referred to a postulate that does
+-- not exist.) The codec's exhaustive 24-element check exhibits, for every
+-- g ∈ S₄, ONE chain in the fixed ascending-index order; chains are NOT
+-- unique in general — the order is a chirality choice (§1,
+-- [[ordering-is-chirality-choice]]), so "unique chain" is not claimed.
 --
 -- For larger groups (GL(3, F₂) at 168 elements; Monster at ~10⁵⁴),
 -- explicit ChainDecomposition is intractable as enumeration, but

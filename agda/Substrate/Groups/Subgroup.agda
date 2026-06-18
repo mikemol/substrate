@@ -123,10 +123,12 @@ V₄-image-NormalSubgroup = record
 ------------------------------------------------------------------------
 -- Stab(X) subgroup, parametric over the anchor axis X.
 --
--- Stab(X) is a subgroup of S₄ for every X but is NOT normal (only
--- V₄-image is normal in S₄). The four X ∈ {D, C, S, W} instances are
--- specializations `Stab-Subgroup D` etc. — no separate definitions
--- per anchor.
+-- Stab(X) is a subgroup of S₄ for every X. The four X ∈ {D, C, S, W}
+-- instances are specializations `Stab-Subgroup D` etc. — no separate
+-- definitions per anchor. Its conjugation behaviour (whether it is normal)
+-- is governed by the EQUIVARIANCE Stab-conj-equivariant below, NOT asserted
+-- here — see that lemma's note for why the bare "Stab(X) is not normal"
+-- claim that used to live here was an unbacked negation.
 ------------------------------------------------------------------------
 
 Stab-resp-≈ :
@@ -154,6 +156,30 @@ Stab-Subgroup X = record
   ; member-∙      = λ {σ} {τ} → Stab-∙ {X} {σ} {τ}
   ; member-⁻¹     = λ {σ} → Stab-⁻¹ {X} {σ}
   }
+
+------------------------------------------------------------------------
+-- Stab(X) conjugation-equivariance — the COMMON STRUCTURE under the
+-- normal/not-normal either/or (rejecting the LEM-shaped "not normal by
+-- absence-of-proof" that this comment block used to assert).
+--
+-- Conjugating a stabiliser of X by g yields a stabiliser of g·X: Stab is
+-- conjugation-EQUIVARIANT, following the axis along the action. This is the
+-- positive, proven fact. "Stab(X) is normal" is exactly its degenerate
+-- reading where the axis-orbit is trivial (g·X = X for every g). Since S₄
+-- acts non-trivially on the axes (some g moves X), Stab(X) is therefore not
+-- closed under all conjugations — but that conclusion is now GROUNDED in
+-- this equivariance + a moved axis, not asserted by absence.
+--
+-- A fully constructive ¬-witness (recorded for a follow-on that builds the
+-- concrete S₄ elements — S₄'s apply/invₐ quirks make that its own slice):
+-- X = D, g = (D C), σ = (C S) ∈ Stab D; then (g · σ) · g⁻¹ = (D S), which
+-- moves D, so it is not in Stab D.
+------------------------------------------------------------------------
+
+Stab-conj-equivariant :
+  ∀ {X} (g σ : Permutation) → Stab X σ → Stab (applyₛ g X) ((g · σ) · (g ⁻¹))
+Stab-conj-equivariant {X} g σ σ-stab =
+  cong (applyₛ g) (trans (cong (applyₛ σ) (inv-l g X)) σ-stab)
 
 ------------------------------------------------------------------------
 -- Notes
