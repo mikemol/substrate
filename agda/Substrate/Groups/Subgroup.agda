@@ -183,35 +183,34 @@ Stab-conj-equivariant {X} g σ σ-stab =
   cong (applyₛ g) (trans (cong (applyₛ σ) (inv-l g X)) σ-stab)
 
 ------------------------------------------------------------------------
--- THE SATISFIABILITY CONDITION (the parameter that toggles normal vs not).
+-- THE ORBIT-STABILISER STRUCTURE (one structure, several readings).
 --
--- The HONEST iff is in Substrate.Groups.StabNormalCharacterization:
---   member-normal X  ⟺  stab-fixes-orbit X
--- "Stab(X)'s obligation is satisfiable ⟺ every element of Stab(X) fixes every
--- point of orbit(X)" (the two are the same fact via the conjugation identity
--- (g·n·g⁻¹)∈Stab X ⟺ n∈Stab(g⁻¹·X)).
+-- Stab-conj-equivariant (above) is the ROOT: conjugation by g is the orbit
+-- action on stabilisers (Stab X σ ↦ Stab (g·X) (gσg⁻¹)). Stab(X)'s normality
+-- is entirely a question of how Stab varies over orbit(X), and every fact
+-- about it is a reading of ONE characterisation, in
+-- Substrate.Groups.StabNormalCharacterization:
 --
--- A GLOBAL FIXED POINT (orbit(X) = {X}, applyₛ g X ≡ X ∀g) is SUFFICIENT — the
--- ⟸ half proved below as Stab-normal-when-fixed; via Stab-conj-equivariant the
--- conjugate of a Stab-X element stabilises applyₛ g X = X. It is NOT NECESSARY,
--- and the earlier "satisfiable ⟺ orbit(X) = {X}, distance = |orbit X|" claim
--- was an OVERCLAIM: the orbit→stabiliser map Y ↦ Stab Y is surjective but NOT
--- injective (a regular action has Stab(X) = {ε} normal with a non-trivial
--- orbit), so normality is "all conjugates EQUAL" = "Stab(X) fixes orbit
--- pointwise", not "orbit is a point". (For the S₄ axis-action that map IS
--- injective — distinct axes give distinct S₃'s — so there |orbit X| does track
--- the distance; a feature of THIS action, not the law. The action is
--- transitive with no fixed point ⟹ member-normal X UNSATISFIABLE ∀X, witnessed
--- at D by StabNotNormal.StabD-not-normal. In S₄ = V₄ ⋊ Stab, V₄-image is the
--- normal kernel, Stab(X) the maximally-non-normal complement.)
+--   CHARACTERISATION   member-normal X ⟺ stab-fixes-orbit X
+--     (Stab(X) normal ⟺ every element of Stab(X) fixes every orbit point).
+--
+--   POSITIVE POLE   orbit(X) = {X} ⟹ normal: `fixed→member-normal`
+--     (the iff's ⟸ direction at a trivial orbit). This SUBSUMES the old
+--     Subgroup.Stab-normal-when-fixed, which lived here and is now removed —
+--     it was the same theorem proved twice.
+--
+--   NEGATIVE POLE   not normal at D: `StabNotNormal.StabD-not-normal`
+--     (the iff's ⟹ direction at a CONCRETE orbit-fixing failure) — NOT an
+--     independent ¬, but the negative reading of the same structure.
+--
+-- The earlier "satisfiable ⟺ orbit(X) = {X}, distance = |orbit X|" claim was
+-- an OVERCLAIM: Y ↦ Stab Y is surjective but not injective (a regular action
+-- has Stab(X) = {ε} normal with a large orbit), so normality is "Stab(X) fixes
+-- orbit pointwise", not "orbit is a point". For the S₄ axis-action that map is
+-- injective so |orbit| tracks the distance THERE; the action is transitive
+-- with no fixed point ⟹ every Stab(X) is non-normal, and S₄ = V₄ ⋊ Stab has
+-- V₄-image the normal kernel, Stab(X) the maximally-non-normal complement.
 ------------------------------------------------------------------------
-
-Stab-normal-when-fixed :
-  ∀ {X} → ((h : Permutation) → applyₛ h X ≡ X) →
-  {g n : Permutation} → Stab X n → Stab X ((g · n) · (g ⁻¹))
-Stab-normal-when-fixed {X} fixed {g} {n} sn =
-  trans (cong (applyₛ ((g · n) · (g ⁻¹))) (sym (fixed g)))
-        (trans (Stab-conj-equivariant g n sn) (fixed g))
 
 ------------------------------------------------------------------------
 -- Notes

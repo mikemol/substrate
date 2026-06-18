@@ -45,14 +45,18 @@ open import Substrate.Groups.SemidirectProduct using (Stab)
 -- The two conditions.
 ------------------------------------------------------------------------
 
--- The member-normal obligation for Stab(X) (the field of an
--- S₄-NormalSubgroup over Stab-Subgroup X).
+-- The member-normal obligation for Stab(X) (the S₄-NormalSubgroup field over
+-- Stab-Subgroup X, ∀-quantified explicitly so it composes through the
+-- definitions below — same `apply`-projection reason as stab-fixes-orbit).
 member-normal : Axis → Set
-member-normal X = {g n : Permutation} → Stab X n → Stab X ((g · n) · (g ⁻¹))
+member-normal X = (g n : Permutation) → Stab X n → Stab X ((g · n) · (g ⁻¹))
 
--- Every element of Stab(X) fixes every point of the orbit of X.
+-- Every element of Stab(X) fixes every point of the orbit of X. (g, n are
+-- explicit: this is a ∀-statement applied at concrete witnesses downstream,
+-- and the implicit form can't be instantiated through this abbreviation —
+-- `apply`-projection inference blocks it.)
 stab-fixes-orbit : Axis → Set
-stab-fixes-orbit X = {g n : Permutation} → Stab X n → Stab (apply g X) n
+stab-fixes-orbit X = (g n : Permutation) → Stab X n → Stab (apply g X) n
 
 ------------------------------------------------------------------------
 -- The equivalence. Both directions are the conjugation identity in one
@@ -63,14 +67,14 @@ stab-fixes-orbit X = {g n : Permutation} → Stab X n → Stab (apply g X) n
 -- at the conjugator g⁻¹: it places (g⁻¹·n·g) in Stab(X); transporting by g
 -- (inv-r) reads off that n fixes apply g X.
 member-normal→fixes-orbit : ∀ {X} → member-normal X → stab-fixes-orbit X
-member-normal→fixes-orbit {X} mn {g} {n} sn =
-  trans (sym (inv-r g (apply n (apply g X)))) (cong (apply g) (mn {g ⁻¹} {n} sn))
+member-normal→fixes-orbit {X} mn g n sn =
+  trans (sym (inv-r g (apply n (apply g X)))) (cong (apply g) (mn (g ⁻¹) n sn))
 
 -- ⟸  Stab(X) fixing the orbit ⟹ member-normal. The conjugate (g·n·g⁻¹)
 -- fixes X iff n fixes g⁻¹·X, which orbit-fixing supplies.
 fixes-orbit→member-normal : ∀ {X} → stab-fixes-orbit X → member-normal X
-fixes-orbit→member-normal {X} fo {g} {n} sn =
-  trans (cong (apply g) (fo {g ⁻¹} {n} sn)) (inv-r g X)
+fixes-orbit→member-normal {X} fo g n sn =
+  trans (cong (apply g) (fo (g ⁻¹) n sn)) (inv-r g X)
 
 ------------------------------------------------------------------------
 -- The old sufficient condition recovered: a GLOBAL fixed point makes
@@ -81,11 +85,10 @@ fixes-orbit→member-normal {X} fo {g} {n} sn =
 
 fixed→fixes-orbit :
   ∀ {X} → ((h : Permutation) → apply h X ≡ X) → stab-fixes-orbit X
-fixed→fixes-orbit {X} fixed {g} {n} sn =
+fixed→fixes-orbit {X} fixed g n sn =
   trans (cong (apply n) (fixed g)) (trans sn (sym (fixed g)))
 
 fixed→member-normal :
   ∀ {X} → ((h : Permutation) → apply h X ≡ X) → member-normal X
-fixed→member-normal {X} fixed {g} {n} sn =
-  fixes-orbit→member-normal {X}
-    (λ {g'} {n'} → fixed→fixes-orbit {X} fixed {g'} {n'}) {g} {n} sn
+fixed→member-normal {X} fixed g n sn =
+  fixes-orbit→member-normal {X} (fixed→fixes-orbit {X} fixed) g n sn
