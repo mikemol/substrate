@@ -81,6 +81,14 @@ run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 # baseline: a new cluster blocks until its apex is built, snowballing leverage early.
 run "apex gate" python3 "$ROOT/scripts/law_motif_apex.py" --check
 
+# Ⓖ collapse-check (ADVISORY, non-blocking — code-layer twin of the
+# construct-dont-classify skill). Flags newly-ADDED modules imported by nothing
+# (a possible built-then-orphaned rung — the TrilinearUniversal pattern), and
+# any of their top-level names that overlap another module (a duplicate/parallel
+# -rung hint). Never blocks; the author confirms leaf-vs-thrash. Deep same-
+# content-different-name dup check is jea_pysim --cluster (pointed at, not run).
+python3 "$ROOT/scripts/collapse_check.py" || true
+
 # Δ-G2: jea-regression gate. If any scripts/jea_*.py is staged, run the jea correctness suite (fast subset) and
 # block on a FAIL -- converting "run the jea modules" from a discipline I must remember into a non-skippable gate
 # (would have caught the Δ-Ψ-dag leaf-code collision + the eval_aligned_planes contiguity bug). Fires ONLY on jea
