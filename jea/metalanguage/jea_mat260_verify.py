@@ -87,9 +87,14 @@ def agda_cipher_ops(I: Intern, step_root: int) -> set:
     return ops
 
 
+# the OMML coercion subscript (carrier-pair text) -> the mat260 Op constructor name. The OMML side of
+# the renderOMML coercion link: ι_{𝒮→𝓑} IS renderOMML(opInject), ι_{𝓑→𝔹*} IS renderOMML(opFromBlk).
+_COERCION_SUB_TO_OP = {"𝒮→𝓑": "inject", "𝓑→𝔹*": "fromBlk"}
+
+
 def omml_cipher_ops(omml_str: str) -> set:
-    """The operators an OMML term uses: App heads (E/Inc/Concat/…) + BinOp symbols (⊕). The OMML side
-    of the renderOMML correspondence."""
+    """The operators an OMML term uses: App heads (E/Inc/Concat/…) + BinOp symbols (⊕) + carrier
+    Coercion nodes (ι_{sub} -> inject/fromBlk). The OMML side of the renderOMML correspondence."""
     I = Intern(); root, _ = lower_omml(omml_str, I)
     ops = set()
     for j in range(I.size()):
@@ -99,6 +104,8 @@ def omml_cipher_ops(omml_str: str) -> set:
             ops.add(h.op or (h.payload[0] if h.payload else "?"))
         elif n.kind == "BinOp":
             ops.add("⊕" if n.op == "Xor" else n.op)
+        elif n.kind == "Coercion":                         # ι_{sub} = renderOMML(opInject/opFromBlk)
+            ops.add(_COERCION_SUB_TO_OP.get(n.op, n.op))
         elif n.kind == "Name" and n.op == "()":           # the nullary unit (opUnit), rendered as "()"
             ops.add("()")
     return ops

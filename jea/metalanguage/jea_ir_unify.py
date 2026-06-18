@@ -152,6 +152,9 @@ def project_unified(I: Intern, nid: int):
         return sp.Function(bn)(project_unified(I, n.children[1]))
     if k == "Args":                                       # OMML argument-list (non-func multi-delimiter)
         return sp.Tuple(*[project_unified(I, c) for c in n.children])
+    if k == "Coercion":                                   # ι_{sub}: a carrier inclusion -> identity on
+        return project_unified(I, n.children[0])           # values (full-block ⇒ literal id). O2; render
+                                                           # KEEPS it -- that is the structural read, jea_omml_render.
     raise KeyError(f"project_unified: unhandled kind {k!r}")
 
 

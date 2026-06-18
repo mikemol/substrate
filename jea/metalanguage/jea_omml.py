@@ -15,7 +15,12 @@ ZERO partitions; sloppy/implicit OMML surfaces the fork for the audience-carrier
 THE CLOSED VOCABULARY (measured from mat260's renderOMML; recursive pattern-match, no layout heuristics):
   m:oMath   the equation root
   m:func    EXPLICIT application: m:fName (the op name) + m:e (the arg group)  -> App(Name(op), *args)
-  m:fName   the function-name slot (a single m:r)
+            SPECIAL CASE: when m:fName is m:sSub(m:r "ι", sub) -- a subscripted ι, the carrier-injection
+            COERCION renderOMML emits for opInject/opFromBlk -- lower to Coercion(sub, arg), NOT App.
+  m:fName   the function-name slot (a single m:r; OR an m:sSub for the ι coercion, see m:func)
+  Coercion  a carrier-injection coercion ι_{sub}: op=sub (the carrier-pair text, e.g. "𝒮→𝓑"),
+            one child = the coerced core. A transparent inclusion (identity on values; see
+            project_unified). It is NOT an App(Name "?") -- ι is first-class.
   m:e       a generic element/argument container -> lower its child sequence
   m:d       a delimiter (parens). With several m:e children = an ARGUMENT LIST; with one = grouping.
             m:dPr/begChr/endChr/sepChr are delimiter PROPERTIES (visual) -> ignored for structure.
@@ -62,6 +67,13 @@ class OmmlLowerer:
             return self._collapse([self.lower(c) for c in el])
         if t == "func":
             fname = el.find(_q("fName"))
+            sub = self._coercion_of(fname)
+            if sub is not None:
+                # ι_{sub}: carrier-injection coercion (renderOMML of opInject/opFromBlk). One argument,
+                # the coerced core -> Coercion(sub, core), NOT App(Name "?"). (O1, JeaCoercionAsk §1.)
+                args = self._args_of(el.find(_q("e")))
+                core = args[0] if len(args) == 1 else self.I.intern(IR(kind="Args", children=tuple(args)))
+                return self.I.intern(IR(kind="Coercion", op=sub, children=(core,), payload=(sub,)))
             opname = self._text_of(fname)
             args = self._args_of(el.find(_q("e")))
             fn = self._name(opname)
@@ -95,6 +107,19 @@ class OmmlLowerer:
         if r is not None and r.text:
             return r.text.strip()
         return (el.text or "").strip() or "?"
+
+    def _coercion_of(self, fname):
+        """If m:fName is m:sSub whose base run is "ι" (the carrier-injection coercion), return the
+        subscript's carrier-pair text (e.g. "𝒮→𝓑"); else None. A non-ι subscripted fName is left to
+        the ordinary _text_of path (unchanged). ι-specific by design: ι is the coercion renderOMML emits."""
+        if fname is None:
+            return None
+        ss = fname.find(_q("sSub"))
+        if ss is None:
+            return None
+        if self._text_of(ss.find(_q("e"))) != "ι":
+            return None
+        return self._text_of(ss.find(_q("sub")))
 
     def _args_of(self, e) -> list[int]:
         """A func's m:e holds an m:d whose m:e children are the args (or, no m:d -> the e is one arg)."""

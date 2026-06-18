@@ -142,6 +142,24 @@ def chk_omml_octave():
     return "PASS"
 
 
+def chk_omml_render():
+    # Σ-RENDER (Σ-ι / mat260 JeaCoercionAsk): the render-over-IR leg reproduces mat260 render-notation,
+    # ι-aware. O3: every embedded manifest entry renders exactly (the 2 ι entries are the new capability).
+    # O2: the VALUE projection erases ι (CFB-stUpd's sympy == its ι-free core CFB-output) — the fork that
+    # lets render SHOW ι while octave/value treats it as identity.
+    import jea_omml_render as R
+    from jea_omml_octave import omml_to_sympy
+    for label, (omml, expect) in R._MANIFEST.items():
+        got = R.render_omml(omml)
+        assert got == expect, f"render {label}: got {got!r} != {expect!r}"
+    assert "ι_{𝒮→𝓑}(" in R.render_omml(R._MANIFEST["CFB-stUpd"][0]), "O3: CFB ι coercion must render"
+    assert "ι_{𝓑→𝔹*}(" in R.render_omml(R._MANIFEST["ChaCha20-output"][0]), "O3: ChaCha ι must render"
+    e1, _, _ = omml_to_sympy(R._MANIFEST["CFB-stUpd"][0])
+    e2, _, _ = omml_to_sympy(R._MANIFEST["CFB-output"][0])
+    assert e1 == e2, f"O2: ι must erase on the value side (CFB-stUpd {e1} != CFB-output {e2})"
+    return f"PASS (Σ-ι: {len(R._MANIFEST)}/{len(R._MANIFEST)} render incl. 2 ι; O2 value-erasure holds)"
+
+
 def chk_picircuit():
     import jea_picircuit  # noqa: F401  (import-only: a circuit-classify instrument; covered structurally elsewhere)
     return "PASS"
@@ -254,7 +272,8 @@ CHECKS = [
     ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
     ("jea_octave_gen",  chk_octave),        ("jea_ir_unify",    chk_ir_unify),
-    ("jea_omml_octave", chk_omml_octave),   ("jea_picircuit",   chk_picircuit),
+    ("jea_omml_octave", chk_omml_octave),   ("jea_omml_render", chk_omml_render),
+    ("jea_picircuit",   chk_picircuit),
     ("jea_mat260_verify", chk_mat260_verify),
     ("jea_grammar_fixpoint", chk_grammar_fixpoint),
     ("jea_sppf_torsor",  chk_sppf_torsor),
