@@ -185,21 +185,25 @@ Stab-conj-equivariant {X} g σ σ-stab =
 ------------------------------------------------------------------------
 -- THE SATISFIABILITY CONDITION (the parameter that toggles normal vs not).
 --
--- Stab(X)'s member-normal obligation IS satisfiable — Stab(X) IS normal —
--- exactly when X is a GLOBAL FIXED POINT of the action (orbit(X) = {X}, i.e.
--- applyₛ g X ≡ X for every g): then by Stab-conj-equivariant the conjugate of a
--- Stab-X element stabilises applyₛ g X = X, so it stays in Stab(X). (Proved
--- below — the ⟸ half. The ⟹ converse, member-normal ⟹ X fixed, generalises
--- StabNotNormal.StabD-not-normal and is the remaining half of the iff.)
+-- The HONEST iff is in Substrate.Groups.StabNormalCharacterization:
+--   member-normal X  ⟺  stab-fixes-orbit X
+-- "Stab(X)'s obligation is satisfiable ⟺ every element of Stab(X) fixes every
+-- point of orbit(X)" (the two are the same fact via the conjugation identity
+-- (g·n·g⁻¹)∈Stab X ⟺ n∈Stab(g⁻¹·X)).
 --
--- The STRUCTURAL DISTANCE between satisfiable and not is the ORBIT of X:
--- Stab-conj-equivariant IS the orbit map (conjugating Stab X by g lands in
--- Stab (applyₛ g X)), so the DISTINCT conjugates of Stab(X) are parameterised
--- by orbit(X); distance = |orbit X| = [index of the normaliser], and
--- |orbit X| = 1 ⟺ normal. For S₄ the axis-action is TRANSITIVE, so every orbit
--- is all 4 axes — MAXIMAL distance (StabNotNormal witnesses it at D). In
--- S₄ = V₄ ⋊ Stab, V₄-image is the normal kernel (V₄ acts simply-transitively),
--- Stab(X) the complement — maximally non-normal because the orbit is maximal.
+-- A GLOBAL FIXED POINT (orbit(X) = {X}, applyₛ g X ≡ X ∀g) is SUFFICIENT — the
+-- ⟸ half proved below as Stab-normal-when-fixed; via Stab-conj-equivariant the
+-- conjugate of a Stab-X element stabilises applyₛ g X = X. It is NOT NECESSARY,
+-- and the earlier "satisfiable ⟺ orbit(X) = {X}, distance = |orbit X|" claim
+-- was an OVERCLAIM: the orbit→stabiliser map Y ↦ Stab Y is surjective but NOT
+-- injective (a regular action has Stab(X) = {ε} normal with a non-trivial
+-- orbit), so normality is "all conjugates EQUAL" = "Stab(X) fixes orbit
+-- pointwise", not "orbit is a point". (For the S₄ axis-action that map IS
+-- injective — distinct axes give distinct S₃'s — so there |orbit X| does track
+-- the distance; a feature of THIS action, not the law. The action is
+-- transitive with no fixed point ⟹ member-normal X UNSATISFIABLE ∀X, witnessed
+-- at D by StabNotNormal.StabD-not-normal. In S₄ = V₄ ⋊ Stab, V₄-image is the
+-- normal kernel, Stab(X) the maximally-non-normal complement.)
 ------------------------------------------------------------------------
 
 Stab-normal-when-fixed :
