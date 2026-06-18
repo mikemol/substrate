@@ -232,12 +232,24 @@ def head_spine(t: Trace) -> tuple:
 #     collecting head shapes depth-first. This is the readout that sees the operator (which the
 #     base-spine misses): two structurally-distinct nodes have distinct full skeletons. Similarity
 #     is then the longest common prefix / overlap of full skeletons -- a readout over kept structure. ---
+def full_skeleton_steps(intern: Intern, i: int):
+    """Σ-TRACE-LAZY's TREE dual: yield the full skeleton (kind, role, op, lit) in PRE-ORDER DFS over
+    every child, ITERATIVELY (explicit stack, no recursion). Same retention/frugality split as
+    trace_steps — the forest holds everything; the walk holds only the frontier. Two wins over the old
+    recursion: (1) no RecursionError on a deep/wide forest; (2) a PREFIX consumer (e.g. a longest-common-
+    prefix similarity read) can stop early without materializing the whole tuple."""
+    stack = [i]
+    while stack:
+        n = intern.nodes[stack.pop()]
+        yield (n.kind, n.role, n.op, n.lit)
+        stack.extend(reversed(n.children))     # reversed -> children visited left-to-right (pre-order)
+
+
 def full_skeleton(intern: Intern, i: int) -> tuple:
-    n = intern.nodes[i]
-    out = [(n.kind, n.role, n.op, n.lit)]
-    for c in n.children:
-        out.extend(full_skeleton(intern, c))
-    return tuple(out)
+    """The full skeleton tuple (pre-order DFS over EVERY child) -- the readout that sees the operator,
+    so two structurally-distinct nodes have distinct full skeletons. Now built on full_skeleton_steps
+    (iterative): byte-identical output to the old recursion, but no RecursionError on a deep forest."""
+    return tuple(full_skeleton_steps(intern, i))
 
 
 # ============================================================================

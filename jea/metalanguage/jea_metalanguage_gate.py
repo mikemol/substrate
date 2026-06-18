@@ -39,6 +39,16 @@ def chk_trace_lazy():
     deep = I.intern(A.IR(kind="seq", op="s", children=tuple(
         I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(4000))))
     assert A.trace_fold_lazy(D, deep, lambda a: 0, lambda h, b, r: r + 1) == 4000, "deep-chain lazy grade"
+    # full_skeleton-lazy (the tree dual): generator matches the tuple; a 4000-deep tree survives (the old
+    # recursion RecursionErrors), and the generator early-stops.
+    skel = I.intern(A.IR(kind="op", op="+", children=(
+        I.intern(A.IR(kind="x", op="a", children=())), I.intern(A.IR(kind="x", op="b", children=())))))
+    assert tuple(A.full_skeleton_steps(I, skel)) == A.full_skeleton(I, skel), "skeleton generator must match tuple"
+    nest = I.intern(A.IR(kind="x", op="z", children=()))
+    for _ in range(4000):
+        nest = I.intern(A.IR(kind="w", op="w", children=(nest,)))
+    assert len(A.full_skeleton(I, nest)) == 4001, "deep-tree full_skeleton must not RecursionError"
+    assert next(A.full_skeleton_steps(I, nest)) == ("w", "", "w", ""), "skeleton generator early-stops"
     return "PASS"
 
 
