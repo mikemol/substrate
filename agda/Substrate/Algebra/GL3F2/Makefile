@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := AsChainDecomp.agda AsPresented.agda Characters.agda GaugeGenerators.agda JointGenScaffold.agda JointGenViaPresentation.agda MultiRouteEquivariance.agda SingerOrder.agda SylowDecomposition.agda
+FILES := AsChainDecomp.agda AsPresented.agda Characters.agda GaugeGenerators.agda JointGenViaPresentation.agda MultiRouteEquivariance.agda SingerOrder.agda SylowDecomposition.agda
 SUBDIRS := MultiRouteEquivariance SingerOrder
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
