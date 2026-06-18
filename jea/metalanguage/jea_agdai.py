@@ -195,7 +195,7 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
             if line:
                 rec = json.loads(line)
                 if "unit" in rec:                             # a per-definition unit marker (Φ4b)
-                    unit_markers.append((rec["unit"], rec["root"]))
+                    unit_markers.append((rec["unit"], rec["root"], rec.get("kind", "?")))
                 else:
                     raw[rec["id"]] = rec
     interned: dict[int, int] = {}
@@ -230,9 +230,10 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
 
     roots = [go(nid) for nid in raw]
     # map each definition's unit-marker (shim-local root) to its INTERNED root id -> per-def units (Φ4b)
-    units = [(name, interned[r]) for name, r in unit_markers if r in interned]
+    units = [(name, interned[r]) for name, r, _k in unit_markers if r in interned]
+    kinds = {name: k for name, r, k in unit_markers if r in interned}   # Φ6: per-def Defn kind
     return {"core_nodes": len(raw), "interned": intern.size(),
-            "roots": roots, "units": units, "edges_present": True}
+            "roots": roots, "units": units, "kinds": kinds, "edges_present": True}
 
 
 def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:

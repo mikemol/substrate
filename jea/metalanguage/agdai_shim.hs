@@ -55,6 +55,24 @@ walkType r = walkTerm r . unEl
 clauseBodies :: Defn -> [Term]
 clauseBodies d = [ b | FunctionDefn{} <- [d], c <- funClauses d, Just b <- [clauseBody c] ]
 
+-- Φ6: label each definition's Defn KIND. The non-Function kinds need no extra BODY walk -- their members
+-- (a datatype's constructors, a record's fields) are themselves separate top-level Definitions, walked in
+-- their own right (verified on mat260: every Op/Tm constructor + Transition field is its own unit). So
+-- "handle the non-Function Defns" = RECOGNISE + label them (kind in the unit marker), powering a coverage
+-- readout, not invent a body they don't have.
+defnKind :: Defn -> String
+defnKind d = case d of
+  FunctionDefn{}      -> "Function"
+  DatatypeDefn{}      -> "Datatype"
+  RecordDefn{}        -> "Record"
+  ConstructorDefn{}   -> "Constructor"
+  PrimitiveDefn{}     -> "Primitive"
+  PrimitiveSortDefn{} -> "PrimitiveSort"
+  DataOrRecSigDefn{}  -> "DataOrRecSig"
+  GeneralizableVar{}  -> "GeneralizableVar"
+  AbstractDefn{}      -> "Abstract"
+  _                   -> "Axiom"
+
 walkElim :: IORef Int -> Elim -> IO [Int]
 walkElim r (Apply a)    = (:[]) <$> walkTerm r (unArg a)
 walkElim r (IApply x y z) = mapM (walkTerm r) [x,y,z]
@@ -94,7 +112,8 @@ main = do
                tr  <- walkType r (defType d)
                brs <- mapM (walkTerm r) (clauseBodies (theDef d))
                sid <- emit r "Defn" Nothing Nothing (tr : brs)
-               putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid ++ "}"
+               putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid
+                        ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\"}"
             ) defs
       n <- readIORef r
       hPutStrLn stderr ("agdai_shim: " ++ show (length defs) ++ " definitions -> " ++ show n ++ " core nodes")
