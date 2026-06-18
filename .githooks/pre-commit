@@ -106,10 +106,44 @@ if [ "$fail" -eq 0 ]; then
   if [ -f "$STAMP" ]; then
     age=$(( $(date +%s) - $(stat -c %Y "$STAMP") ))
   fi
-  if [ "$age" -lt "$WEEK" ]; then
-    echo "pre-commit: full build skipped (last $((age / 86400))d ago, < 7d; rm $STAMP to force)."
+
+  # Ε(b′): a STRUCTURAL change forces the full build regardless of the 7-day
+  # throttle. Such a change can break a module NOT in this commit's changed set
+  # (the "modules rot silently" hazard), so the time-throttle alone is an INVALID
+  # precheck for it. (Policy: main is CI-gated; CI must reflect current state, or
+  # the throttle masks breakage for up to a week.) Three robustly-detectable
+  # signals over the staged .agda set:
+  #   (a) a module added / renamed / deleted (file-level structure);
+  #   (b) an import / module / re-export (public / renaming) line changed;
+  #   (c) a top-level type-SIGNATURE line changed (col-0 `name : Type`).
+  # Comments (`--`) and indented lines (record fields, locals) are excluded by
+  # construction; false positives only ever over-run CI (safe), never skip it.
+  structural=""
+  if git diff --cached --name-status --diff-filter=ADR | grep -qE '\.agda$'; then
+    structural="module add/rename/delete"
+  fi
+  if [ -z "$structural" ]; then
+    for f in $(git diff --cached --name-only --diff-filter=M -- '*.agda'); do
+      diffout="$(git diff --cached -U0 -- "$f")"
+      if printf '%s\n' "$diffout" | grep -E '^[+-]' | grep -vE '^[-+]{3}' \
+           | grep -qE '^[+-][[:space:]]*(open import|import |module |public|renaming)'; then
+        structural="import/re-export change ($f)"; break
+      fi
+      if printf '%s\n' "$diffout" | grep -E '^[+-]' | grep -vE '^[-+]{3}' \
+           | grep -qE '^[+-][^[:space:]+-].*[[:space:]]:[[:space:]]'; then
+        structural="signature change ($f)"; break
+      fi
+    done
+  fi
+
+  if [ -z "$structural" ] && [ "$age" -lt "$WEEK" ]; then
+    echo "pre-commit: full build skipped (last $((age / 86400))d ago, < 7d, no structural change; rm $STAMP to force)."
   else
-    echo "pre-commit: full build (every module; >7d since last) — running, this may take a while…"
+    if [ -n "$structural" ]; then
+      echo "pre-commit: full build FORCED — Ε(b′) structural change: $structural — running, this may take a while…"
+    else
+      echo "pre-commit: full build (every module; >7d since last) — running, this may take a while…"
+    fi
     if python3 "$ROOT/scripts/full_build_check.py" -j6; then
       touch "$STAMP"
       echo "pre-commit: full build OK — stamp refreshed."
