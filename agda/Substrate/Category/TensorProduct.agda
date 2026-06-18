@@ -7,14 +7,14 @@
 -- bilinear maps ≅ basis-pair tables, with the four bilinearity laws and the
 -- basis lookup — IS formalised, at the F₂-linear level, in
 -- `Algebra.F2.Linear.BilinearFromImages` (FreeLinearization at arity 2:
--- `apply₂`, `bilinear-from-images-basis`, `Bilinear`). What this module does
--- NOT yet provide is the explicit "every bilinear B factors as L ∘ pair,
--- uniquely" bridge tying `pair` to that apparatus; its EXISTENCE side is
--- BilinearFromImages, its UNIQUENESS side is the (not-yet-built) arity-2
--- `bilinear-extensionality` (sibling of `F2.Linear.Universal.linear-
--- extensionality`). So "factoring uniquely through ⊗" is named here as the
--- intended UP; existence is realized in BilinearFromImages; the pair-
--- factorization + uniqueness bridge is the remaining piece (N-3).
+-- `apply₂`, `bilinear-from-images-basis`, `Bilinear`) for EXISTENCE, and
+-- `Algebra.F2.Linear.BilinearUniversal` for UNIQUENESS
+-- (`bilinear-extensionality`: agreement on basis pairs ⟹ agreement
+-- everywhere; `bilinear-from-images-unique`: any bilinear map IS the free
+-- bilinear map of its basis-pair table). So "factoring uniquely through ⊗"
+-- is now backed at the F₂-linear level. (What remains purely local to THIS
+-- module is only the cosmetic identification of `pair` with that apparatus's
+-- `apply₂` — the substantive UP is the two cited modules.)
 --
 -- For F₂-vector spaces: V ⊗ W ≅ F₂^(n × m) when V = F₂^n, W = F₂^m.
 -- The substrate's natural representation is `Vec (Vec F₂ m) n`

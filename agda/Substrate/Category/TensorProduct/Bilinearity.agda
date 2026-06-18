@@ -6,10 +6,10 @@
 -- structural PREREQUISITE for "pair is the universal bilinear map (unit of
 -- the ⊗-Hom adjunction)"; it does NOT by itself complete that claim. The
 -- universal property proper — bilinear maps ≅ basis-pair tables — is proved
--- in `Algebra.F2.Linear.BilinearFromImages`; the remaining "B = L ∘ pair,
--- uniquely" bridge needs the arity-2 `bilinear-extensionality` (cf.
--- TensorProduct N-3). So this slice establishes the prerequisite, not the
--- full UP.
+-- in `Algebra.F2.Linear.BilinearFromImages` (existence) +
+-- `Algebra.F2.Linear.BilinearUniversal` (uniqueness: `bilinear-extensionality`
+-- / `bilinear-from-images-unique`). So this slice establishes the structural
+-- PREREQUISITE (pair is bilinear); the full UP is those two cited modules.
 --
 -- Pieces:
 --   * _+T_-pattern  — pattern-matching variant of TensorProduct
@@ -27,8 +27,8 @@
 -- Per [[feedback-categorical-name-first]]: bilinearity IS the
 -- universal-property-of-tensor-product's structural content.
 -- Proving pair is bilinear is the PREREQUISITE for it being the universal
--- bilinear map; the UP proper is `Algebra.F2.Linear.BilinearFromImages` +
--- the pair-factorization/uniqueness bridge (not this slice).
+-- bilinear map; the UP proper is `Algebra.F2.Linear.BilinearFromImages`
+-- (existence) + `Algebra.F2.Linear.BilinearUniversal` (uniqueness).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -250,8 +250,8 @@ pair-*ₛ-right c (a ∷ p) w =
 --
 -- Per [[feedback-categorical-name-first]]: bilinearity is the
 -- universal-property-of-tensor-product's structural content — the
--- PREREQUISITE for pair being the universal bilinear map at (V, W), not the
--- full UP (existence: BilinearFromImages; the factorization bridge remains).
+-- PREREQUISITE for pair being the universal bilinear map at (V, W); the full
+-- UP = BilinearFromImages (existence) + BilinearUniversal (uniqueness).
 --
 -- Connection to Polynomial work: `outer` (Polynomial-level) and
 -- `pair` (TensorProduct-level) are definitionally equal (per
