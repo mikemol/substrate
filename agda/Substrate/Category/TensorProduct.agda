@@ -2,9 +2,19 @@
 -- Substrate.Category.TensorProduct
 --
 -- Primitive #7 in the Substrate.Category.Primitives roadmap.
--- Names the tensor product ⊗ as the left-adjoint of internal-hom,
--- and packages the universal property of bilinear maps factoring
--- uniquely through ⊗.
+-- Names the tensor product ⊗ (the carrier `Vec (Vec F₂ m) n`) and the
+-- universal bilinear map `pair`. The bilinear universal property itself —
+-- bilinear maps ≅ basis-pair tables, with the four bilinearity laws and the
+-- basis lookup — IS formalised, at the F₂-linear level, in
+-- `Algebra.F2.Linear.BilinearFromImages` (FreeLinearization at arity 2:
+-- `apply₂`, `bilinear-from-images-basis`, `Bilinear`). What this module does
+-- NOT yet provide is the explicit "every bilinear B factors as L ∘ pair,
+-- uniquely" bridge tying `pair` to that apparatus; its EXISTENCE side is
+-- BilinearFromImages, its UNIQUENESS side is the (not-yet-built) arity-2
+-- `bilinear-extensionality` (sibling of `F2.Linear.Universal.linear-
+-- extensionality`). So "factoring uniquely through ⊗" is named here as the
+-- intended UP; existence is realized in BilinearFromImages; the pair-
+-- factorization + uniqueness bridge is the remaining piece (N-3).
 --
 -- For F₂-vector spaces: V ⊗ W ≅ F₂^(n × m) when V = F₂^n, W = F₂^m.
 -- The substrate's natural representation is `Vec (Vec F₂ m) n`
