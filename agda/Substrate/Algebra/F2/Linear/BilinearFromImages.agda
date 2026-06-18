@@ -51,100 +51,19 @@ open import Substrate.Algebra.F2.Linear.FromImages
   using ( linear-from-images
         ; apply-linear-from-images-lookup
         ; apply-linear-from-images-basis )
+-- Ⓑ′: the image-family properties now live at their base (ImagesProps), and
+-- this special (n=2) module imports the GENERIC (MultilinearFromImages) —
+-- special = instance of generic, the right direction (the inversion is gone).
+open import Substrate.Algebra.F2.Linear.ImagesProps
+  using (images-cong; images-add; images-scale)
+open import Substrate.Algebra.F2.Linear.MultilinearFromImages
+  using (apply-n)
+open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
+open import Substrate.Foundation.Unit using (tt)
 
-------------------------------------------------------------------------
--- sum-F₂ additivity / scaling.
---
--- Neither already exists (Vector.Universal has only sum-F₂ + sum-F₂-cong
--- and the vector-valued sum-+ⱽ-distrib / *ₛ-sum-distrib). They are the
--- scalar analogues, proved here by induction on the index count.
-------------------------------------------------------------------------
-
--- sum-F₂ (λ i → a i + b i) ≡ sum-F₂ a + sum-F₂ b.
-sum-F₂-+-distrib :
-  ∀ {n} (a b : Fin n → F₂) →
-  sum-F₂ (λ i → a i + b i) ≡ (sum-F₂ a + sum-F₂ b)
-sum-F₂-+-distrib {zero}  a b = refl
-sum-F₂-+-distrib {suc _} a b =
-  -- (a₀ + b₀) + Σ(aᵢ + bᵢ) ≡ (a₀ + Σaᵢ) + (b₀ + Σbᵢ)
-  cong-trans ((a fz + b fz) +_) (sum-F₂-+-distrib (a ∘ fs) (b ∘ fs))
-  (swap-+ (a fz) (b fz) (sum-F₂ (a ∘ fs)) (sum-F₂ (b ∘ fs)))
-  where
-    -- (w + x) + (y + z) ≡ (w + y) + (x + z), via F₂ assoc/comm.
-    swap-+ : (w x y z : F₂) → ((w + x) + (y + z)) ≡ ((w + y) + (x + z))
-    swap-+ w x y z =
-      trans (+-assoc w x (y + z))
-      (cong-trans (w +_) (sym (+-assoc x y z))
-      (cong-trans (λ t → w + (t + z)) (+-comm x y)
-      (cong-trans (w +_) (+-assoc y x z)
-      (sym (+-assoc w y (x + z))))))
-
--- sum-F₂ (λ i → c · a i) ≡ c · sum-F₂ a.
-sum-F₂-·-distrib :
-  ∀ {n} (c : F₂) (a : Fin n → F₂) →
-  sum-F₂ (λ i → c · a i) ≡ (c · sum-F₂ a)
-sum-F₂-·-distrib {zero}  c a = sym (·-absorbʳ c)
-sum-F₂-·-distrib {suc _} c a =
-  trans (cong (c · a fz +_) (sum-F₂-·-distrib c (a ∘ fs)))
-        (sym (·-distribˡ-+ c (a fz) (sum-F₂ (a ∘ fs))))
-
-------------------------------------------------------------------------
--- apply-congruence in the images family.
---
--- If two image families agree pointwise, the arity-1 maps they generate
--- agree on every input. Proved through the equational interface
--- (apply-linear-from-images-lookup + sum-F₂-cong), NOT by unfolding the
--- sealed `apply`.
-------------------------------------------------------------------------
-
-images-cong :
-  ∀ {k n} {g h : Fin k → Vector n} → (∀ i → g i ≡ h i) →
-  (u : Vector k) →
-  apply (linear-from-images g) u ≡ apply (linear-from-images h) u
-images-cong {g = g} {h = h} eq u = ≡-from-lookup _ _ (λ j →
-  trans (apply-linear-from-images-lookup g u j)
-  (trans (sum-F₂-cong (λ i → cong (λ w → lookup u i · lookup w j) (eq i)))
-         (sym (apply-linear-from-images-lookup h u j))))
-
-------------------------------------------------------------------------
--- images-additivity / images-scaling: the arity-1 map is additive /
--- scalar-homogeneous in its IMAGES argument (this is the "right" leg's
--- workhorse — the outer layer must push a combination of inner images
--- through).
-------------------------------------------------------------------------
-
--- apply (lfi (λ i → g i +ⱽ h i)) u ≡ apply (lfi g) u +ⱽ apply (lfi h) u.
-images-add :
-  ∀ {k n} (g h : Fin k → Vector n) (u : Vector k) →
-  apply (linear-from-images (λ i → g i +ⱽ h i)) u ≡
-  (apply (linear-from-images g) u +ⱽ apply (linear-from-images h) u)
-images-add g h u = ≡-from-lookup _ _ (λ j →
-  trans (apply-linear-from-images-lookup (λ i → g i +ⱽ h i) u j)
-  (trans (sum-F₂-cong (λ i →
-            cong-trans (lookup u i ·_) (lookup-+ⱽ (g i) (h i) j)
-                       (·-distribˡ-+ (lookup u i) (lookup (g i) j) (lookup (h i) j))))
-  (trans (sum-F₂-+-distrib (λ i → lookup u i · lookup (g i) j)
-                           (λ i → lookup u i · lookup (h i) j))
-         (sym (trans (lookup-+ⱽ (apply (linear-from-images g) u)
-                                (apply (linear-from-images h) u) j)
-                     (cong₂ _+_ (apply-linear-from-images-lookup g u j)
-                                (apply-linear-from-images-lookup h u j)))))))
-
--- apply (lfi (λ i → c *ₛ g i)) u ≡ c *ₛ apply (lfi g) u.
-images-scale :
-  ∀ {k n} (c : F₂) (g : Fin k → Vector n) (u : Vector k) →
-  apply (linear-from-images (λ i → c *ₛ g i)) u ≡
-  (c *ₛ apply (linear-from-images g) u)
-images-scale c g u = ≡-from-lookup _ _ (λ j →
-  trans (apply-linear-from-images-lookup (λ i → c *ₛ g i) u j)
-  (trans (sum-F₂-cong (λ i →
-            cong-trans (lookup u i ·_) (lookup-*ₛ c (g i) j)
-            (trans (sym (·-assoc (lookup u i) c (lookup (g i) j)))
-            (cong-trans (_· lookup (g i) j) (·-comm (lookup u i) c)
-                        (·-assoc c (lookup u i) (lookup (g i) j))))))
-  (trans (sum-F₂-·-distrib c (λ i → lookup u i · lookup (g i) j))
-         (trans (cong (c ·_) (sym (apply-linear-from-images-lookup g u j)))
-                (sym (lookup-*ₛ c (apply (linear-from-images g) u) j))))))
+-- sum-F₂-+-distrib / sum-F₂-·-distrib and images-cong / images-add /
+-- images-scale moved to Substrate.Algebra.F2.Linear.ImagesProps (their base
+-- layer; imported above). The four bilinearity laws below use them from there.
 
 ------------------------------------------------------------------------
 -- The arity-2 construction.
@@ -241,3 +160,18 @@ bilinear-from-images f = record
   ; preserves-+ᵣ  = bilinear-+ᵣ f
   ; preserves-*ₛᵣ = bilinear-*ₛᵣ f
   }
+
+------------------------------------------------------------------------
+-- Ⓑ: apply₂ IS the n=2 instance of the generic apply-n. The bilinear
+-- existence map reduces, DEFINITIONALLY (function-η on the inner table), to
+-- apply-n at arity (k ∷ l ∷ []) on the uncurried basis-pair table — so the
+-- existence side is ONE INSTANCE of the generic, the mirror of the uniqueness
+-- side (BilinearUniversal: bilinear-extensionality = multilinear-extensionality
+-- at n=2). The either/or "apply₂ vs apply-n" dissolves: apply₂ is apply-n at n=2.
+------------------------------------------------------------------------
+
+apply₂-is-apply-n :
+  ∀ {k l n} (f : Fin k → Fin l → Vector n) (u : Vector k) (v : Vector l) →
+  apply₂ f u v
+    ≡ apply-n {ks = k ∷ l ∷ []} (λ idx → f (proj₁ idx) (proj₁ (proj₂ idx))) (u , v , tt)
+apply₂-is-apply-n f u v = refl
