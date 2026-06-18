@@ -19,7 +19,7 @@ module Substrate.Category.OrphanAudit where
 --   ✓ Monster.AsGrothendieckObject (4 views as ∫)             — O5
 --   ✓ CartanType.AsRootSystem (forward)                       — O6
 --   ✓ RootSystem.AsCartanType (backward)                      — O7
---   ✓ CartanRootEquivalence (full equivalence)                — O8
+--   ✓ CartanRootEquivalence (full equivalence — nat-iso witnesses)  — O8
 --   ✓ JordanAlgebra.UnderlyingCNAA (forgetful)                — O9
 --   ✓ HodgeStar.AsDaggerEndomap                               — P1
 --   ✓ F₂.Bijection.AsDagger                                   — P2

@@ -20,31 +20,13 @@
 
 module Substrate.Category.DeloopingGroup where
 
-open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Group using (Group; monoid; inv; inv-left; inv-right)
-open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
 
-private
-  variable
-    ℓO ℓM : Level
-
-open CategoryOf
-
-------------------------------------------------------------------------
--- A morphism f : Mor a b is an ISOMORPHISM if it has a two-sided inverse.
-------------------------------------------------------------------------
-
-record IsIso (C : CategoryOf {ℓO} {ℓM}) {a b : Obj C} (f : Mor C a b) : Set ℓM where
-  field
-    inv⁻  : Mor C b a
-    iso-l : compose C f inv⁻ ≡ id C b
-    iso-r : compose C inv⁻ f ≡ id C a
-
--- C is a GROUPOID iff every morphism is an isomorphism.
-IsGroupoid : CategoryOf {ℓO} {ℓM} → Set (ℓO ⊔ ℓM)
-IsGroupoid C = {a b : Obj C} (f : Mor C a b) → IsIso C f
+-- IsIso / IsGroupoid now live in Category.Iso (pure CategoryOf notions);
+-- re-exported here so existing importers (WitnessTower.M40Groupoid) are
+-- unaffected.
+open import Substrate.Category.Iso using (IsIso; IsGroupoid) public
 
 ------------------------------------------------------------------------
 -- THE bridge: delooping a Group yields a groupoid. inverse = group inverse;
