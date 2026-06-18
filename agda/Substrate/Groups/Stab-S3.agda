@@ -60,10 +60,17 @@ import Substrate.Groups.SFin as SFin
 
 ------------------------------------------------------------------------
 -- The parametric Stab predicate.
+--
+-- Ⓢ: defined ONCE, in Substrate.Groups.SemidirectProduct.Stab, and
+-- re-exported here. It was duplicated (an identical `applyₛ σ X ≡ X` lived
+-- here too), fragmenting the Stab lemmas across two homes — the same split
+-- that bred the Stab-normal-when-fixed duplicate. One canonical predicate,
+-- one place; this module's lemmas (Stab-inv, restrict-apply, …) below use the
+-- shared Stab (definitionally `applyₛ σ anchor ≡ anchor`, since both modules'
+-- `applyₛ` is S4.apply).
 ------------------------------------------------------------------------
 
-Stab : Axis → Permutation → Set
-Stab anchor σ = applyₛ σ anchor ≡ anchor
+open import Substrate.Groups.SemidirectProduct.Stab using (Stab) public
 
 ------------------------------------------------------------------------
 -- Basic helpers.
