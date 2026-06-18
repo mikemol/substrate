@@ -170,10 +170,11 @@ Stab-Subgroup X = record
 -- closed under all conjugations — but that conclusion is now GROUNDED in
 -- this equivariance + a moved axis, not asserted by absence.
 --
--- A fully constructive ¬-witness (recorded for a follow-on that builds the
--- concrete S₄ elements — S₄'s apply/invₐ quirks make that its own slice):
--- X = D, g = (D C), σ = (C S) ∈ Stab D; then (g · σ) · g⁻¹ = (D S), which
--- moves D, so it is not in Stab D.
+-- A fully constructive ¬-witness is now PROVED in Substrate.Groups.StabNotNormal
+-- (`StabD-not-normal`): X = D, g = (D C), σ = (C S) ∈ Stab D; the conjugate
+-- (g · σ) · g⁻¹ sends D ↦ C ↦ S ↦ S = S ≠ D, so `Stab D ((g·n)·g⁻¹)` reduces to
+-- `S ≡ D` — absurd. Hence the member-normal obligation for Stab(D) is
+-- unsatisfiable (a `→ ⊥`, not absence-of-proof).
 ------------------------------------------------------------------------
 
 Stab-conj-equivariant :
