@@ -10,12 +10,45 @@
 # ignores the post-commit exit status). Gates live in pre-commit; advisories live
 # here. By design.
 #
-# The post-commit advisory IS the per-commit "is judgment required?" surface, and
-# it prints IN FULL — never summarized, never filtered (that hides the magnitude).
-# ONLY the categorical-grounding advisory fires here: it is small, and it is the
-# priority. File-size pressure is a standing list, on demand via `make -C agda
-# advise`; it does not belong in the per-commit view and is not gated on a baseline.
+# It also FOLDS its advisory output into the just-made commit's message, by
+# amending (the post-commit complement to prepare-commit-msg, which folds in the
+# pre-commit gate report). Together: every commit records both its gate results
+# and its advisory in its own message. The amend uses --no-verify (no gate
+# re-run) and is guarded so it never recurses (the amend re-fires post-commit)
+# and never rewrites a commit mid-rebase/merge/cherry-pick.
 set -uo pipefail
+
+# Guard: the amend below re-fires post-commit — exit immediately so we neither
+# re-print nor re-amend (no recursion).
+[ -n "${_POST_COMMIT_AMENDING:-}" ] && exit 0
+
 ROOT="$(git rev-parse --show-toplevel)"
-echo "── post-commit advisory (non-blocking; gates ran pre-commit) ──"
-bash "$ROOT/scripts/check_categorical_grounding.sh" 2>/dev/null || true
+GITDIR="$(git rev-parse --git-dir)"
+
+# Run the advisory, capturing its output (shown live AND folded into the message).
+advisory="$(
+  echo "── post-commit advisory (non-blocking; gates ran pre-commit) ──"
+  bash "$ROOT/scripts/check_categorical_grounding.sh" 2>/dev/null || true
+)"
+printf '%s\n' "$advisory"
+
+# Amend the just-made commit to append the advisory — but NOT mid-rebase/merge/
+# cherry-pick/revert (would rewrite the wrong commit). git ignores post-commit
+# status and the amend is `|| true`, so a failed amend never harms the commit.
+for m in rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD; do
+  [ -e "$GITDIR/$m" ] && exit 0
+done
+
+# Idempotent: don't append the advisory twice (e.g. a manual --amend).
+if git log -1 --format=%B | grep -q 'post-commit advisory (auto-captured)'; then
+  exit 0
+fi
+
+if [ -n "$advisory" ]; then
+  msg="$(git log -1 --format=%B)
+
+post-commit advisory (auto-captured):
+$(printf '%s\n' "$advisory" | sed 's/^/    /')"
+  _POST_COMMIT_AMENDING=1 git commit --amend --no-verify -F - <<<"$msg" >/dev/null 2>&1 || true
+fi
+exit 0

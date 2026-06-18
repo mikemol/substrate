@@ -14,6 +14,24 @@
 #   git commit --no-verify
 set -euo pipefail
 
+# --- Fold the gate output into the commit message (transparency: the gates'
+# results become part of the commit record). Re-exec this hook with its output
+# teed to a report file; the prepare-commit-msg hook then appends that report to
+# the message. The pipeline is SYNCHRONOUS (tee finishes writing the report
+# before we read its exit status) — no background-process race — and live
+# terminal output is preserved. Guarded by _PRECOMMIT_TEE so the gates run
+# exactly once (in the re-exec'd child). On failure the report is deleted, so an
+# aborted commit never leaves a stale report for the next commit to pick up.
+if [ -z "${_PRECOMMIT_TEE:-}" ]; then
+  export _PRECOMMIT_TEE=1
+  _pcm_report="$(git rev-parse --absolute-git-dir)/precommit-report.txt"
+  set +e
+  "$0" "$@" 2>&1 | tee "$_pcm_report"
+  _pcm_st=${PIPESTATUS[0]}
+  if [ "$_pcm_st" -ne 0 ]; then rm -f "$_pcm_report"; fi
+  exit "$_pcm_st"
+fi
+
 ROOT="$(git rev-parse --show-toplevel)"
 fail=0
 

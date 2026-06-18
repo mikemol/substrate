@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Versioned prepare-commit-msg hook (enabled via: git config core.hooksPath .githooks)
+#
+# Folds the PRE-COMMIT gate report into the commit message body, automatically —
+# so the gate results become part of the commit record (transparency). The
+# pre-commit hook tees its output to $GITDIR/precommit-report.txt (synchronously,
+# see that hook); this hook appends it (the noisy full-build progress lines
+# filtered out) and CONSUMES the file (one-shot). The post-commit hook then
+# amends the message with the advisory output (the other half).
+#
+# Bulletproof by construction: a failure here would ABORT the commit, so there is
+# NO `set -e` and every step is guarded. With --no-verify (pre-commit skipped) no
+# report is written, so this no-ops; an amend likewise finds the report already
+# consumed and appends nothing further.
+MSG="${1:-}"
+SRC="${2:-}"
+
+[ -n "$MSG" ] || exit 0
+REPORT="$(git rev-parse --absolute-git-dir 2>/dev/null)/precommit-report.txt"
+[ -f "$REPORT" ] || exit 0
+
+# Don't clutter auto-generated merge/squash messages.
+case "$SRC" in
+  merge|squash) rm -f "$REPORT"; exit 0 ;;
+esac
+
+# Idempotent: if the report was already folded in (e.g. a manual --amend), skip.
+if grep -q 'pre-commit gate report (auto-captured)' "$MSG" 2>/dev/null; then
+  rm -f "$REPORT"; exit 0
+fi
+
+{
+  echo
+  echo "pre-commit gate report (auto-captured):"
+  # Drop the full-build per-module progress ([N/total]) and blank lines; indent
+  # the rest so it reads as a block and never collides with git's '#' comments.
+  grep -vE '^\[[0-9]+/[0-9]+\] ' "$REPORT" 2>/dev/null \
+    | grep -vE '^[[:space:]]*$' 2>/dev/null \
+    | sed 's/^/    /'
+} >> "$MSG" 2>/dev/null
+
+rm -f "$REPORT"
+exit 0
