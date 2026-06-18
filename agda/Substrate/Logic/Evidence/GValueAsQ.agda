@@ -23,10 +23,11 @@
 
 module Substrate.Logic.Evidence.GValueAsQ where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Algebra.Z using (ℤ; +_; 1ℤ)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_; _+_)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-comm; *-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
+open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 1ℤ)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-identityˡ; *ℤ-identityʳ)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; 1ℚ)
@@ -89,15 +90,59 @@ gor-non-idempotent : (gor 1ℚ 1ℚ ≈ℚ 1ℚ) → ⊥
 gor-non-idempotent ()
 
 ------------------------------------------------------------------------
--- SCOPE of this module (honest):
---   * G_NOT (reciprocal/antipode) + G_OR (parallel/Σ) + their laws + the
---     signature non-idempotence are DERIVED here.
---   * G_AND(G₁,G₂) = G₁G₂/(G₁+G₂) (series conductance) needs ℚ DIVISION; for
---     positive G it is recip(recip G₁ +ℚ recip G₂) (positive-reciprocal, total),
---     but general ℚ division is deferred (NonZero) — left for a follow-on.
---     DeMorgan (G_NOT(G_OR) ≈ G_AND(G_NOT,G_NOT)) then follows.
---   * L-space (L = ln G; L_NOT = −L; L_OR = LogSumExp) is the exp⊣log codec — a
---     SUSPENDED GENERATOR / coinductive bisimulation, NOT a ℚ value; OUT of this
---     module's scope by the substrate's transcendental-digit discipline
---     ([[feedback_trace_inversion_vs_transcendental_limit]]). It belongs with the
---     exp⊣log construction, not the rational G-space.
+-- G_NOT as a TOTAL reciprocal (the el-atlas division primitive). The num/den
+-- swap; total (the 0 case is junk, never reached by a positive G-value), and
+-- the genuine multiplicative inverse for nonzero ℚ. On a positive G-value it
+-- IS the antipode, so the inverse law is `gvalue-antipode` (no new proof).
+------------------------------------------------------------------------
+
+recip : ℚ → ℚ
+recip (mkℚ (+ suc n) d) = mkℚ (+ suc d) n
+recip (mkℚ (+ zero)  d) = mkℚ (+ zero) d
+recip (mkℚ (-suc n)  d) = mkℚ (-suc d) n
+
+recip-of-gvalue : (na' db : ℕ) → recip (gvalue na' db) ≡ antipode-of na' db
+recip-of-gvalue na' db = refl
+
+-- G_AND(G₁,G₂) = G₁·G₂/(G₁+G₂) — series conductance (= 1/Σ(1/Gᵢ)).
+gand : ℚ → ℚ → ℚ
+gand a b = (a *ℚ b) *ℚ recip (a +ℚ b)
+
+------------------------------------------------------------------------
+-- DeMorgan EXACT:  G_NOT(G_OR(G₁,G₂)) ≈ G_AND(G_NOT G₁, G_NOT G₂).
+-- Cross-multiplication reduces it to a ℕ identity: the two channel-sums
+-- S = n₁d₂ + n₂d₁ and T = d₁n₂ + d₂n₁ agree up to *-comm and +-comm.
+------------------------------------------------------------------------
+
+demorgan : (na'₁ db₁ na'₂ db₂ : ℕ) →
+           recip (gor (gvalue na'₁ db₁) (gvalue na'₂ db₂))
+           ≈ℚ gand (recip (gvalue na'₁ db₁)) (recip (gvalue na'₂ db₂))
+demorgan na'₁ db₁ na'₂ db₂ = cong +_ demorgan-ℕ
+  where
+    n₁ d₁ n₂ d₂ : ℕ
+    n₁ = suc na'₁ ; d₁ = suc db₁ ; n₂ = suc na'₂ ; d₂ = suc db₂
+    DD NN S T : ℕ
+    DD = d₁ * d₂        -- numerator of both sides
+    NN = n₁ * n₂
+    S  = n₁ * d₂ + n₂ * d₁     -- denom of LHS  (G_OR's numerator)
+    T  = d₁ * n₂ + d₂ * n₁     -- the AND-side channel sum
+    T≡S : T ≡ S
+    T≡S = trans (cong₂ _+_ (*-comm d₁ n₂) (*-comm d₂ n₁)) (+-comm (n₂ * d₁) (n₁ * d₂))
+    demorgan-ℕ : DD * (NN * T) ≡ (DD * NN) * S
+    demorgan-ℕ = trans (cong (λ z → DD * (NN * z)) T≡S) (sym (*-assoc DD NN S))
+
+------------------------------------------------------------------------
+-- SCOPE / status:
+--   * DERIVED here: G_NOT (recip/antipode), G_OR (parallel/Σ), G_AND (series,
+--     via the total `recip`), their laws, non-idempotence, and DeMorgan EXACT.
+--     The whole rational G-space conductance algebra is machine-checked.
+--   * L-space (L = ln G; L_OR = LogSumExp; G=1 ↔ L=0): the el-atlas spec
+--     (§Identifications.1) says the L↔G isomorphism IS Lemma 2.5b's exp⊣log
+--     codec. Per [[feedback_trace_inversion_vs_transcendental_limit]] that codec
+--     is a FORMAL coinductive bisimulation (step-inverse generators cancel at
+--     every depth — a finite proof of an infinite equality), NOT an analytic
+--     ln-VALUE. So L-space is NOT blocked by transcendence (the "transcendental,
+--     out-of-scope" reading was an OVERREAD of that lesson): it is a real,
+--     buildable bridge — the multiplicative G-space (ℚ₊,·,1) ↔ the additive
+--     L-space, the substrate's own exp⊣log codec (Algebra.R) — a genuine
+--     follow-on (Ω3-L), not out-of-reach.
