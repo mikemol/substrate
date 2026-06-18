@@ -183,6 +183,33 @@ Stab-conj-equivariant {X} g σ σ-stab =
   cong (applyₛ g) (trans (cong (applyₛ σ) (inv-l g X)) σ-stab)
 
 ------------------------------------------------------------------------
+-- THE SATISFIABILITY CONDITION (the parameter that toggles normal vs not).
+--
+-- Stab(X)'s member-normal obligation IS satisfiable — Stab(X) IS normal —
+-- exactly when X is a GLOBAL FIXED POINT of the action (orbit(X) = {X}, i.e.
+-- applyₛ g X ≡ X for every g): then by Stab-conj-equivariant the conjugate of a
+-- Stab-X element stabilises applyₛ g X = X, so it stays in Stab(X). (Proved
+-- below — the ⟸ half. The ⟹ converse, member-normal ⟹ X fixed, generalises
+-- StabNotNormal.StabD-not-normal and is the remaining half of the iff.)
+--
+-- The STRUCTURAL DISTANCE between satisfiable and not is the ORBIT of X:
+-- Stab-conj-equivariant IS the orbit map (conjugating Stab X by g lands in
+-- Stab (applyₛ g X)), so the DISTINCT conjugates of Stab(X) are parameterised
+-- by orbit(X); distance = |orbit X| = [index of the normaliser], and
+-- |orbit X| = 1 ⟺ normal. For S₄ the axis-action is TRANSITIVE, so every orbit
+-- is all 4 axes — MAXIMAL distance (StabNotNormal witnesses it at D). In
+-- S₄ = V₄ ⋊ Stab, V₄-image is the normal kernel (V₄ acts simply-transitively),
+-- Stab(X) the complement — maximally non-normal because the orbit is maximal.
+------------------------------------------------------------------------
+
+Stab-normal-when-fixed :
+  ∀ {X} → ((h : Permutation) → applyₛ h X ≡ X) →
+  {g n : Permutation} → Stab X n → Stab X ((g · n) · (g ⁻¹))
+Stab-normal-when-fixed {X} fixed {g} {n} sn =
+  trans (cong (applyₛ ((g · n) · (g ⁻¹))) (sym (fixed g)))
+        (trans (Stab-conj-equivariant g n sn) (fixed g))
+
+------------------------------------------------------------------------
 -- Notes
 --
 -- 1. With both V_4-image-NormalSubgroup and Stab-Subgroup X in
