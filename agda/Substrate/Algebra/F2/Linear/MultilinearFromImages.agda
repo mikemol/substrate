@@ -39,7 +39,7 @@ open import Substrate.Algebra.F2.Linear using (Linear; apply; preserves-+; prese
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.BilinearFromImages
-  using (images-cong; images-add; images-scale)
+  using (images-cong; images-add; images-scale; apply₂)
 open import Substrate.Algebra.F2.Linear.MultilinearUniversal
   using ( Args; BasisIndices; basis-tuple; IsLinear; IsMultilinear
         ; multilinear-extensionality )
@@ -125,3 +125,25 @@ multilinear-from-images-unique :
 multilinear-from-images-unique f g gml matches =
   multilinear-extensionality g (apply-n f) gml (apply-n-multilinear f)
     (λ idx → trans (matches idx) (sym (multilinear-from-images-basis f idx)))
+
+------------------------------------------------------------------------
+-- Ⓑ: BilinearFromImages IS the n=2 instance of this generic construction.
+-- `apply₂` (the bilinear existence map) reduces, DEFINITIONALLY, to `apply-n`
+-- at arity (k ∷ l ∷ []) on the uncurried basis-pair table — so the existence
+-- side, like the uniqueness side (BilinearUniversal: bilinear-extensionality =
+-- multilinear-extensionality at n=2), is ONE INSTANCE of the generic, not a
+-- parallel build. The either/or "apply₂ vs apply-n" dissolves: apply₂ is
+-- apply-n, read at n=2.
+--
+-- (Ⓑ′ deferred — the module-level dependency inversion: relocating images-cong
+-- /add/scale to a base module so BilinearFromImages imports this one rather
+-- than vice-versa. Those are base-level linear-from-images properties with 3+
+-- consumers (Bilinear, Multilinear, SymBilinForm); moving them is a separate
+-- mechanical multi-file refactor, not bundled here.)
+------------------------------------------------------------------------
+
+apply₂-is-apply-n :
+  ∀ {k l n} (f : Fin k → Fin l → Vector n) (u : Vector k) (v : Vector l) →
+  apply₂ f u v
+    ≡ apply-n {ks = k ∷ l ∷ []} (λ idx → f (proj₁ idx) (proj₁ (proj₂ idx))) (u , v , tt)
+apply₂-is-apply-n f u v = refl
