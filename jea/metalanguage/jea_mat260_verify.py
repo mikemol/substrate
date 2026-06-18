@@ -27,7 +27,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern, CrossMix
 from jea_omml import lower_omml
 
-# the 12 mat260 cipher transitions (OMML), embedded so this is self-contained (no cross-repo path dep).
+# an ILLUSTRATIVE SUBSET of mat260 cipher transitions (OMML), embedded so this is self-contained (no
+# cross-repo path dep). NOT the full/live corpus -- it is a small CORRECT fixture for the demo + the Σ6
+# gate; the live source of truth is omml-manifest.tsv via --manifest (which is what gives the full 12 +
+# the 6/6 operator-faithfulness). Keep this fixture CORRECT but do not let it pretend to be the corpus.
 _CIPHERS = {
     "ECB-stUpd":  "<m:oMath><m:r>()</m:r></m:oMath>",
     "ECB-output": ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
@@ -38,16 +41,16 @@ _CIPHERS = {
                    '<m:dPr><m:begChr m:val="("/><m:endChr m:val=")"/></m:dPr><m:e><m:r>p</m:r><m:r>⊕</m:r>'
                    '<m:sSub><m:e><m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e>'
                    '</m:d></m:e></m:func></m:oMath>'),
-    "CFB-stUpd":  ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
-                   '<m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr><m:e><m:r>k</m:r></m:e><m:e><m:sSub><m:e>'
-                   '<m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e></m:func></m:oMath>'),
     "CTR-stUpd":  ('<m:oMath><m:func><m:fName><m:r>Inc</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
                    '<m:endChr m:val=")"/></m:dPr><m:e><m:r>i</m:r></m:e></m:d></m:e></m:func></m:oMath>'),
 }
-# CBC-output == CBC-stUpd, OFB-stUpd == CFB-stUpd, ChaCha20-stUpd == CTR-stUpd (mat260: same formula) --
-# aliases included so the equivalence classes are exercised from the embedded set.
+# Two CORRECT equivalence pairs (mat260: same formula): CBC stUpd==output (E(k,p⊕s)); CTR stUpd ==
+# ChaCha20 stUpd (Inc(i)). (CFB-stUpd was DROPPED here -- mat260's F2 fix made it p⊕trim(E(k,s)), and the
+# old "OFB-stUpd == CFB-stUpd" alias was STALE/BOGUS once they diverged. Audit caught it from the mat260
+# side; see commit msg.) This embedded set is an ILLUSTRATIVE SUBSET (correct as of 2026-06-17), NOT the
+# live corpus -- pass --manifest <omml-manifest.tsv> for the full 12 (the source of truth; --manifest +
+# --agdai is what produced the 6/6 operator-faithfulness).
 _CIPHERS["CBC-output"]      = _CIPHERS["CBC-stUpd"]
-_CIPHERS["OFB-stUpd"]       = _CIPHERS["CFB-stUpd"]
 _CIPHERS["ChaCha20-stUpd"]  = _CIPHERS["CTR-stUpd"]
 
 

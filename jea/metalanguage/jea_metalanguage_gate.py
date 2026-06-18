@@ -162,8 +162,11 @@ def chk_grammar_fixpoint():
 def chk_mat260_verify():
     import jea_mat260_verify as V
     rep = V.verify(V._CIPHERS)
-    assert len(rep["classes"]) == 3, f"expected 3 cipher equivalence classes, got {len(rep['classes'])}"
-    assert rep["realizes"] and rep["realizes"][2] == 0, "equal ciphers must gate at degree 0 (REALIZES)"
+    # the embedded fixture has TWO correct equivalence pairs (CBC stUpd==output; CTR==ChaCha20 stUpd).
+    # (Asserting the machinery on a controlled fixture -- NOT mat260-corpus facts, which drift; the live
+    # corpus is verified via --manifest. The old "== 3" asserted a now-stale CFB≡OFB class.)
+    assert len(rep["classes"]) == 2, f"expected 2 fixture equivalence classes, got {len(rep['classes'])}"
+    assert rep["realizes"] and rep["realizes"][2] == 0, "equal terms must gate at degree 0 (REALIZES)"
     # Σ4b operator extraction (the agdai-free side; the full agda-vs-omml gate runs on the real .agdai)
     assert V.omml_cipher_ops(V._CIPHERS["ECB-output"]) == {"E"}, "OMML op extraction (E)"
     assert V.omml_cipher_ops(V._CIPHERS["ECB-stUpd"]) == {"()"}, "OMML unit op ()"
