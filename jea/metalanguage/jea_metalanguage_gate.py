@@ -121,6 +121,18 @@ def chk_picircuit():
     return "PASS"
 
 
+def chk_grammar_fixpoint():
+    import jea_grammar_fixpoint as G
+    anbn = {"S": [["a", "S", "b"], []]}
+    assert G.recognize(anbn, ["a", "a", "b", "b"], "S")["accept"], "aⁿbⁿ must accept aabb"
+    assert not G.recognize(anbn, ["a", "a", "b"], "S")["accept"], "aⁿbⁿ must reject aab"
+    r = G.recognize({"E": [["E", "+", "E"], ["x"]]}, ["x", "+", "x", "+", "x"], "E")
+    assert r["accept"], "ambiguous E must accept"
+    xid = r["intern"].table.get(("tok", "", "x", "", ()))
+    assert xid is not None and r["intern"].fanin[xid] >= 2, "shared token must have fan-in (SPPF sharing)"
+    return "PASS"
+
+
 def chk_mat260_verify():
     import jea_mat260_verify as V
     rep = V.verify(V._CIPHERS)
@@ -155,6 +167,7 @@ CHECKS = [
     ("jea_octave_gen",  chk_octave),        ("jea_ir_unify",    chk_ir_unify),
     ("jea_omml_octave", chk_omml_octave),   ("jea_picircuit",   chk_picircuit),
     ("jea_mat260_verify", chk_mat260_verify),
+    ("jea_grammar_fixpoint", chk_grammar_fixpoint),
     ("jea_cuda",        chk_cuda),          ("jea_agdai",       chk_agdai),
 ]
 
