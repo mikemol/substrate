@@ -18,6 +18,7 @@
 module Substrate.Category.FreeLinearizationR.F2Bridge where
 
 open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.FreeLinearization
   using (FreeLinearization)
   renaming (extension to F₂-extension;
@@ -65,10 +66,31 @@ R-to-F₂ flr = record
   }
 
 ------------------------------------------------------------------------
--- 3. Capstone for FLQ5.
+-- 3. The round-trips: the two lifts are mutually inverse (the WITNESS the
+--    "and back / essentially the identity" prose asserted but did not prove).
 --
--- F₂ bridge complete. The parametric FreeLinearizationR is a
--- strict generalisation: every existing F₂-FreeLinearization
--- lifts to the parametric version (and back). FLQ6 supplies
--- the ℚ instance; FLQ7 the ℚ free-linearize constructor.
+-- Both records have identical field types, so each lift just re-packages the
+-- other's projections; by record-η the round-trip is the identity — refl. So
+-- F₂-FreeLinearization ≅ FreeLinearizationR-at-F₂ (a genuine iso, both legs +
+-- both round-trips), not "essentially" one. The lift is not ONLY one
+-- direction; it is the two-sided identity.
+------------------------------------------------------------------------
+
+R-to-F₂∘F₂-to-R :
+  {n m : ℕ} (fl : FreeLinearization n m) → R-to-F₂ (F₂-to-R fl) ≡ fl
+R-to-F₂∘F₂-to-R fl = refl
+
+F₂-to-R∘R-to-F₂ :
+  {n m : ℕ} (flr : FreeLinearizationR F₂-LinearAlgebra n m) →
+  F₂-to-R (R-to-F₂ flr) ≡ flr
+F₂-to-R∘R-to-F₂ flr = refl
+
+------------------------------------------------------------------------
+-- 4. Capstone for FLQ5.
+--
+-- F₂ bridge complete and WITNESSED. The parametric FreeLinearizationR is a
+-- strict generalisation: every existing F₂-FreeLinearization lifts to the
+-- parametric version and back, the two legs mutually inverse (§3 — proved,
+-- no longer asserted). FLQ6 supplies the ℚ instance; FLQ7 the ℚ
+-- free-linearize constructor.
 ------------------------------------------------------------------------
