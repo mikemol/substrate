@@ -26,6 +26,22 @@ def chk_pyalg():
     return "PASS"
 
 
+def chk_trace_lazy():
+    import jea_pyalg as A
+    I = A.Intern(); D = A.PyDivStr(I)
+    root = I.intern(A.IR(kind="seq", op="s", children=tuple(
+        I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(5))))
+    t = D.trace(root)
+    assert tuple(h for h, _ in D.trace_steps(root)) == A.head_spine(t), "trace_steps must match eager head_spine"
+    assert A.trace_fold_lazy(D, root, lambda a: 0, lambda h, b, r: r + 1) == A.grade(t), "lazy grade must match"
+    assert A.trace_fold_lazy(D, root, lambda a: a, lambda h, b, r: r) == A.collapse(t), "lazy collapse must match"
+    # deep chain: the lazy path survives where eager trace() RecursionErrors (Σ-TRACE-LAZY's whole point)
+    deep = I.intern(A.IR(kind="seq", op="s", children=tuple(
+        I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(4000))))
+    assert A.trace_fold_lazy(D, deep, lambda a: 0, lambda h, b, r: r + 1) == 4000, "deep-chain lazy grade"
+    return "PASS"
+
+
 def chk_pysim():
     import jea_pysim
     src = "def f(x):\n    return x + x\ndef g(y):\n    return y + y\n"   # f,g alpha-equivalent
@@ -161,7 +177,8 @@ def chk_agdai():
 
 
 CHECKS = [
-    ("jea_pyalg",       chk_pyalg),         ("jea_pysim",       chk_pysim),
+    ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
+    ("jea_pysim",       chk_pysim),
     ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
     ("jea_octave_gen",  chk_octave),        ("jea_ir_unify",    chk_ir_unify),

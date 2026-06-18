@@ -154,6 +154,30 @@ class PyDivStr:
             return Trace(a=i, head=w.quot, base=w.base, sub=self.trace(w.base))
         return Trace(a=i, head=w.quot, base=w.base, sub=self.trace(w.rem))
 
+    def trace_steps(self, i: int):
+        """Σ-TRACE-LAZY: the LAZY dual of trace() — a generator yielding (head, base) per wedge step in
+        chain order, ITERATIVELY (no recursion; O(1) working set). trace() builds the whole nested Trace
+        before any read AND recurses, so it RecursionErrors on a chain deeper than the Python stack; this
+        walks the SAME descent emitting one step at a time, so a readout over a deeply-nested / 50GiB
+        forest streams. The deep correction (BEZOUT_READOUT.md): retention is the FOREST's job (interned
+        nodes persist), frugality the READ's (keep nothing). Terminal atom = trace_atom(i)."""
+        cur = i
+        while True:
+            w = self.wedge(cur)
+            if w is None:
+                return
+            yield (w.quot, w.base)
+            cur = w.base if w.rem == -1 else w.rem
+
+    def trace_atom(self, i: int) -> int:
+        """The terminal atom of the trace descent (the collapse target / base case), O(1) iterative."""
+        cur = i
+        while True:
+            w = self.wedge(cur)
+            if w is None:
+                return cur
+            cur = w.base if w.rem == -1 else w.rem
+
     def faithful_check(self, i: int) -> bool:
         """wedge_eq, checked not discarded: recon(decomposition) re-interns to exactly i."""
         w = self.wedge(i)
@@ -172,6 +196,20 @@ def trace_fold(base_interp, step_interp, t: Trace):
     if t.is_base():
         return base_interp(t.a)
     return step_interp(t.head, t.base, trace_fold(base_interp, step_interp, t.sub))
+
+
+def trace_fold_lazy(divstr, i, base_interp, step_interp):
+    """Σ-TRACE-LAZY: trace_fold WITHOUT materializing the nested Trace or recursing. Same RESULT as
+    trace_fold(base_interp, step_interp, divstr.trace(i)) for ANY step_interp, but ITERATIVE — walk
+    trace_steps to a flat (head, base) list, then fold right over it. No recursion (survives chains
+    deeper than the Python stack, where trace()/trace_fold() RecursionError), and a flat list rather
+    than O(chain) nested Trace dataclasses. Left-foldable readouts (grade, head_spine, collapse) stream
+    in O(1) directly over trace_steps; this is the general drop-in for the right-fold."""
+    steps = list(divstr.trace_steps(i))
+    acc = base_interp(divstr.trace_atom(i))
+    for head, base in reversed(steps):
+        acc = step_interp(head, base, acc)
+    return acc
 
 
 # --- target 1: FORGETFUL collapse -- return the node id (the annihilating read). ---

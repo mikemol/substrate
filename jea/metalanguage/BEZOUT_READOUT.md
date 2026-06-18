@@ -187,6 +187,16 @@ And the report that rides with this to the core: **`trace()` and `trace_fold()` 
 inherit O(1) state. That is `Σ-TRACE-LAZY`, and it is the one core change this whole arc actually
 motivates — offered as a report, not a unilateral edit, because `jea_pyalg` is shared ground.
 
+> **UPDATE (Σ-TRACE-LAZY landed, 2026-06-17):** the lazy primitives are now in `jea_pyalg` —
+> `PyDivStr.trace_steps(i)` (generator, O(1) working set, iterative) + `trace_atom(i)`, and
+> `trace_fold_lazy(divstr, i, base, step)` (iterative drop-in for `trace_fold`, any step). The eager
+> `trace`/`trace_fold` stay (correct + clean for small terms); the lazy ones are additions. Verified:
+> they reproduce `head_spine`/`grade`/`collapse` exactly, and on a 4000-deep chain the lazy path
+> computes the answer while eager `trace()` RecursionErrors — the O(1) win, demonstrated. Netted in the
+> Σ6 gate (`chk_trace_lazy`). (`stream_rhs` is left as-is: the grammar walk has its own termination —
+> stop at the RHS end, not descend into the last symbol — so it is a sibling of the lazy walk, not a
+> consumer of it.)
+
 ---
 
 ## 7. One-paragraph summary
