@@ -218,6 +218,20 @@ def chk_agdai():
             f"{len(clause_arities)} clauses, members on {len(rep['members'])} parent(s))")
 
 
+def chk_sppf_torsor():
+    # the parse forest is a torsor-bundle over the input-position line (fiber = invariant
+    # recognition, span = gauge; free+transitive shift action). Run the verifier; it exits
+    # nonzero if equivariance/freeness/transitivity/nondegeneracy fails. The SHAPE that B1's
+    # witness-mandatory obligation (Σ-SEAM-GLUE) and ΞG's gauge-invariance both instantiate.
+    import subprocess, os
+    here = os.path.dirname(os.path.abspath(__file__))
+    r = subprocess.run([sys.executable, os.path.join(here, "jea_sppf_torsor.py")],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, f"torsor verdict failed: {r.stdout.strip().splitlines()[-1:] }"
+    assert "IS a torsor-bundle" in r.stdout, "torsor verifier did not confirm the bundle"
+    return "PASS (parse forest = torsor-bundle: fiber invariant, span gauge, free+transitive)"
+
+
 CHECKS = [
     ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
     ("jea_pysim",       chk_pysim),
@@ -227,6 +241,7 @@ CHECKS = [
     ("jea_omml_octave", chk_omml_octave),   ("jea_picircuit",   chk_picircuit),
     ("jea_mat260_verify", chk_mat260_verify),
     ("jea_grammar_fixpoint", chk_grammar_fixpoint),
+    ("jea_sppf_torsor",  chk_sppf_torsor),
     ("jea_cuda",        chk_cuda),          ("jea_agdai",       chk_agdai),
 ]
 
