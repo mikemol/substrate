@@ -1,22 +1,23 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Linear.BilinearUniversal
 --
--- The UNIQUENESS half of the bilinear universal property — the arity-2
--- sibling of `Linear.Universal.linear-extensionality`. A bilinear map's
--- behaviour is DETERMINED by its behaviour on basis PAIRS (eᵢ, eⱼ): two
--- bilinear maps agreeing on every basis pair agree everywhere.
+-- The UNIQUENESS half of the bilinear universal property, obtained as the
+-- arity-2 INSTANCE of the generic `multilinear-extensionality` (ⁿ̌ᵘ) — NOT a
+-- parallel hand-proof. A `Bilinear` is exhibited as an `IsMultilinear` over
+-- the two-arity vector `k ∷ l ∷ []` (its four leg-laws ARE the slot-indexed
+-- `IsMultilinear` fields), and bilinear-extensionality is then the generic
+-- theorem read back through that adapter.
 --
--- Together with `BilinearFromImages` (the EXISTENCE half: a bilinear map
--- built from any basis-pair table, with apply₂ f (eᵢ,eⱼ) ≡ f i j), this is
--- the full universal property of the tensor — what `Category.TensorProduct`
--- N-3 / `Category.TensorProduct.Bilinearity` named as the deferred piece.
+-- This discharges what an earlier note asserted but did not prove — that the
+-- bilinear/trilinear/n-linear extensionalities "run the same recipe": the
+-- recipe is the generic fold, and the lower arities are its instances. The
+-- arity-1 leg machinery this file used to carry (left-leg/right-leg +
+-- linear-extensionality ×2) is exactly what the generic fold performs
+-- internally, so it is gone from here.
 --
--- The proof does NOT rebuild the sum machinery: each leg of a `Bilinear` IS
--- an arity-1 `Linear` map (its leg-laws are exactly preserves-+/-*ₛ), so the
--- arity-1 `linear-extensionality` applies TWICE — fix the left basis vector
--- and run it on the right leg, then run it on the left leg. (Attempting this
--- is what revealed it is a clean reuse, not the "nested basis-expansion
--- plumbing" an unattempted estimate had walled it as.)
+-- Together with `BilinearFromImages` (the EXISTENCE half), this is the full
+-- universal property of the tensor — what `Category.TensorProduct` N-3 /
+-- `Category.TensorProduct.Bilinearity` named as the deferred piece.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -24,50 +25,49 @@
 module Substrate.Algebra.F2.Linear.BilinearUniversal where
 
 open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Vec using (_∷_; [])
+open import Substrate.Foundation.Unit using (tt)
+open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
-open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Algebra.F2.Linear.BilinearFromImages
   using ( Bilinear; apply₂′
         ; preserves-+ₗ; preserves-*ₛₗ; preserves-+ᵣ; preserves-*ₛᵣ
         ; bilinear-from-images; bilinear-from-images-basis )
+open import Substrate.Algebra.F2.Linear.MultilinearUniversal
+  using ( Args; IsMultilinear; basis-tuple; multilinear-extensionality )
 
 ------------------------------------------------------------------------
--- Each leg of a bilinear map is an arity-1 linear map.
+-- A Bilinear IS a 2-ary multilinear map: uncurry it onto Args (k ∷ l ∷ [])
+-- and read the four leg-laws as the IsMultilinear fields.
 ------------------------------------------------------------------------
 
--- left leg: fix the right argument v; u ↦ B(u, v) is Linear.
-left-leg : ∀ {k l n} → Bilinear k l n → Vector l → Linear k n
-left-leg B v = record
-  { apply        = λ u → apply₂′ B u v
-  ; preserves-+  = λ u u' → preserves-+ₗ B u u' v
-  ; preserves-*ₛ = λ c u → preserves-*ₛₗ B c u v
-  }
+b→f : ∀ {k l n} → Bilinear k l n → Args (k ∷ l ∷ []) → Vector n
+b→f B args = apply₂′ B (proj₁ args) (proj₁ (proj₂ args))
 
--- right leg: fix the left argument u; v ↦ B(u, v) is Linear.
-right-leg : ∀ {k l n} → Bilinear k l n → Vector k → Linear l n
-right-leg B u = record
-  { apply        = λ v → apply₂′ B u v
-  ; preserves-+  = λ v v' → preserves-+ᵣ B u v v'
-  ; preserves-*ₛ = λ c v → preserves-*ₛᵣ B c u v
-  }
+b→ml : ∀ {k l n} (B : Bilinear k l n) → IsMultilinear (k ∷ l ∷ []) n (b→f B)
+b→ml B =
+    (λ rest → ( (λ u u' → preserves-+ₗ B u u' (proj₁ rest))
+              , (λ c u → preserves-*ₛₗ B c u (proj₁ rest)) ))
+  , (λ u → ( (λ rest' → ( (λ v v' → preserves-+ᵣ B u v v')
+                        , (λ c v → preserves-*ₛᵣ B c u v) ))
+           , (λ v → tt) ))
 
 ------------------------------------------------------------------------
 -- Bilinear extensionality: agreement on all basis PAIRS ⟹ agreement
--- everywhere. (linear-extensionality applied twice: right leg per basis
--- row, then left leg.)
+-- everywhere — the generic multilinear-extensionality at arity 2.
 ------------------------------------------------------------------------
 
 bilinear-extensionality :
   ∀ {k l n} (B B' : Bilinear k l n) →
   ((i : Fin k) (j : Fin l) → apply₂′ B (basis i) (basis j) ≡ apply₂′ B' (basis i) (basis j)) →
   (u : Vector k) (v : Vector l) → apply₂′ B u v ≡ apply₂′ B' u v
-bilinear-extensionality B B' agree u v =
-  linear-extensionality (left-leg B v) (left-leg B' v)
-    (λ i → linear-extensionality (right-leg B (basis i)) (right-leg B' (basis i)) (agree i) v)
-    u
+bilinear-extensionality {k} {l} {n} B B' agree u v =
+  multilinear-extensionality {ks = k ∷ l ∷ []} {m = n}
+    (b→f B) (b→f B') (b→ml B) (b→ml B')
+    (λ { (i , j , _) → agree i j })
+    (u , v , tt)
 
 ------------------------------------------------------------------------
 -- Capstone — the UNIVERSAL PROPERTY of the tensor, in full: any bilinear

@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := AsAbelianCategory.agda AsCompactClosed.agda AsDaggerCategory.agda AsExactCategory.agda AsRigidCategory.agda AsSymmetricMonoidal.agda Bijection.agda BilinearFromImages.agda BilinearUniversal.agda CategoryStructures.agda FromImages.agda KernelPredBridge.agda MultilinearFromImages.agda MultilinearUniversal.agda TrilinearUniversal.agda Universal.agda
+FILES := AsAbelianCategory.agda AsCompactClosed.agda AsDaggerCategory.agda AsExactCategory.agda AsRigidCategory.agda AsSymmetricMonoidal.agda Bijection.agda BilinearFromImages.agda BilinearUniversal.agda CategoryStructures.agda FromImages.agda KernelPredBridge.agda MultilinearFromImages.agda MultilinearUniversal.agda Universal.agda
 SUBDIRS := Bijection FromImages
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

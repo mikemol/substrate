@@ -4,14 +4,15 @@
 -- The GENERIC arity-n rung of the multilinear extensionality ladder: an
 -- n-linear map is determined by its values on basis n-TUPLES. The fold of
 -- `linear-extensionality` over a `Vec ℕ n` of arities — the "generator of
--- generators" at the uniqueness side. It runs the SAME RECIPE that
--- `linear-extensionality` (n=1), `bilinear-extensionality` (n=2, β̌), and
--- `trilinear-extensionality` (n=3) run by hand: peel one slot with
--- `linear-extensionality`, recurse on the rest. (Those rungs bundle their
--- maps as records over curried arguments; this one takes uncurried `Args`
--- and an unbundled `IsMultilinear` predicate — the same theorem, a
--- representation chosen so the arity can fold. A formal `Trilinear ↔ n=3`
--- bridge is not built here; the shared recipe is the claim.)
+-- generators" at the uniqueness side. It IS the proof the lower arities are
+-- instances of: `bilinear-extensionality` (n=2, β̌) is now literally this
+-- theorem read through a `Bilinear → IsMultilinear (k∷l∷[])` adapter (see
+-- `BilinearUniversal`), and `linear-extensionality` (n=1) is the base it
+-- folds. (The Bilinear record bundles curried arguments + named leg-laws for
+-- ergonomic consumption; this generic form takes uncurried `Args` and the
+-- unbundled `IsMultilinear` predicate so the arity can fold — the adapter
+-- bridges the two representations. The earlier standalone n=3 rung was
+-- redundant once this existed and has been removed.)
 --
 -- The arguments are kept UNCURRIED: `ap : Args ks → Vector m`, a
 -- heterogeneous product `Args ks = Vector k₀ × ⋯ × Vector kₙ₋₁ × ⊤`. The
