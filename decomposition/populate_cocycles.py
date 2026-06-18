@@ -250,7 +250,7 @@ GROUP_QUOTIENTS = [
         "cohomology_classes": "single orbit (transitive action on 24 ops)",
         "gauge_invariant": "the 24-op operation set itself",
         "introducing_move": "M40 (v3-v6)",
-        "witness_evidence": "../scratch/spectral_view.py "
+        "witness_evidence": "../jea/metalanguage/spectral_view.py "
                             "(verify_m40_group_is_a4z2_not_s4); "
                             "../scratch/verify_spectral.py (98/98 tests)",
         "status": "shown",

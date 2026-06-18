@@ -232,6 +232,22 @@ def chk_sppf_torsor():
     return "PASS (parse forest = torsor-bundle: fiber invariant, span gauge, free+transitive)"
 
 
+def chk_seam_provenance():
+    # Ξ7: the Agda `compose` (M40Closure) transcribes the a4z2 compose-law operator-for-operator
+    # — the M2 transcription link, mechanically checked. Opportunistic: needs M40Closure.agdai
+    # built in _build; SKIPs cleanly otherwise (the agda decode is on-demand, jea_agdai discipline).
+    import subprocess, os
+    here = os.path.dirname(os.path.abspath(__file__))
+    r = subprocess.run([sys.executable, os.path.join(here, "jea_seam_provenance.py")],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        raise AssertionError(f"provenance DIVERGED: {r.stdout.strip().splitlines()[-1:]}")
+    if "SKIP:" in r.stdout:
+        return "SKIP: M40Closure.agdai not built (provenance check is on-demand)"
+    assert "FAITHFUL" in r.stdout, "provenance check did not confirm faithful transcription"
+    return "PASS (Agda compose ↔ a4z2 compose-law: faithful, operator-for-operator)"
+
+
 CHECKS = [
     ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
     ("jea_pysim",       chk_pysim),
@@ -242,6 +258,7 @@ CHECKS = [
     ("jea_mat260_verify", chk_mat260_verify),
     ("jea_grammar_fixpoint", chk_grammar_fixpoint),
     ("jea_sppf_torsor",  chk_sppf_torsor),
+    ("jea_seam_provenance", chk_seam_provenance),
     ("jea_cuda",        chk_cuda),          ("jea_agdai",       chk_agdai),
 ]
 

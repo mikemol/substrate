@@ -174,6 +174,8 @@ from dataclasses import dataclass
 from typing import List, Tuple, Optional, Dict, Any, Callable, Union, FrozenSet
 from chart_chained import ChartChained
 from unified_address import encode_op, UnifiedCodeword
+import sys as _sv_sys, os as _sv_os  # spectral_view promoted scratch → jea/metalanguage/ (Ξ7)
+_sv_sys.path.insert(0, _sv_os.path.join(_sv_os.path.dirname(_sv_os.path.abspath(__file__)), "jea", "metalanguage"))
 from spectral_view import fwht
 
 

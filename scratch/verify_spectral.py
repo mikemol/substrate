@@ -11,6 +11,8 @@ Verifies:
   - Spectral matrix-product composition matches V_4 algebra
 """
 
+import sys as _sv_sys, os as _sv_os  # spectral_view promoted scratch → jea/metalanguage/ (Ξ7)
+_sv_sys.path.insert(0, _sv_os.path.join(_sv_os.path.dirname(_sv_os.path.dirname(_sv_os.path.abspath(__file__))), "jea", "metalanguage"))
 from spectral_view import (
     hadamard_matrix, matvec, matmat, transpose, identity,
     fwht, v4_translation, chirality_flip,
