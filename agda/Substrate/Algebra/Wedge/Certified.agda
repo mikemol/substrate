@@ -12,8 +12,9 @@
 --   * residue-decreases — the measure strictly decreases (the termination
 --     measure; the certified residue is the smallest KEPT correction —
 --     never-drop + smallness together).
---   * fromℕ-cert — the ℕ-GCD Wedge is the canonical instance (measure = id,
---     smallness = its own r<b).
+--   * fromℕ-cert — the ℕ-GCD Wedge is the natural/standard instance (measure
+--     = id, smallness = its own r<b).  ("Natural" is prose: no universal
+--     property / terminality / uniqueness is proved here.)
 --
 -- MEASURE = GRADE: for a flattened graded product (Product.flatten, carrier
 -- Σ ℕ C), the natural measure is proj₁ — the GRADE. So "certified residue =
@@ -50,8 +51,9 @@ residue-decreases : {D : DivStr} {measure : C D → ℕ} {a b : C D} →
 residue-decreases w = small w
 
 ------------------------------------------------------------------------
--- 2. The ℕ-GCD wedge is the canonical certified instance: measure = id, the
---    smallness is its own r<b. (The certified-r<b that EEATrace iterates,
+-- 2. The ℕ-GCD wedge is the natural/standard certified instance: measure = id,
+--    the smallness is its own r<b. (No UP/terminality proved — "natural" is
+--    prose.) (The certified-r<b that EEATrace iterates,
 --    here as a CertifiedWedge.)
 ------------------------------------------------------------------------
 

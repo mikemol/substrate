@@ -66,11 +66,14 @@ open IsCoequalising public
 -- through the coequalizer B / (f∼g)" without materialising the
 -- quotient carrier.
 --
--- The universal property: any h coequalising (f, g) IS the factoring
--- map. There is no separate `coequalizer-factor` here because, in the
--- absence of HITs, h itself plays the role of the factorisation.
--- The non-trivial content is the COEQUALISES predicate; the
--- factorisation is its content.
+-- The coequalising PREDICATE (the no-HIT formulation): with no
+-- quotient object, h itself is the factor. There is no separate
+-- `coequalizer-factor` here because, in the absence of HITs, h itself
+-- plays the role of the factorisation. The non-trivial content is the
+-- COEQUALISES predicate; the factorisation is its content.
+-- The coequalizer-OBJECT universal property — terminality among
+-- coequalising maps — is not formalized here; it awaits the
+-- CategoryOf-level lift noted above.
 ------------------------------------------------------------------------
 
 Coequalises : {A B Z : Set ℓ} (f g : A → B) (h : B → Z) → Set ℓ

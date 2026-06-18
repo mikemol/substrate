@@ -113,7 +113,8 @@ record ℚ-Field-Obligation : Set where
 --     record to point at.
 --   * Future per-arithmetic slices discharge the obligation
 --     fields one-by-one; each fills a Field-record slot directly.
---   * F₁ + F₂ as Field instances are complete TODAY (M3, M9).
+--   * F₂ lands as a Field instance (M9); F₁ is the trivial-Monoid
+--     stage (M3) — not both "complete Field instances".
 --
 -- The Mod-arc (slices 11-20) builds Module-over-Ring on top of
 -- M7; F₂-Vector and ℚ-Vector retrofits land at Mod6-Mod7.

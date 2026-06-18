@@ -1,8 +1,10 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.GaloisAdjunction.AsAdjunction
 --
--- O4 of the O-arc. Substrate-level naming of the full GaloisAdjunction
--- as a categorical adjunction (= N9 η + ε + triangle identities).
+-- O4 of the O-arc. Substrate-level naming of the GaloisAdjunction as a
+-- categorical adjunction: bundles N9 η + ε. (NOT "full" — the triangle
+-- identities are USER OBLIGATIONS supplied separately, not fields/lemmas
+-- here; so this is the η/ε bundle, not yet a coherence-complete adjunction.)
 --
 -- Per [[universal-property-discipline]]: N9 named the unit + counit;
 -- O4 bundles them with the triangle identity obligations into a

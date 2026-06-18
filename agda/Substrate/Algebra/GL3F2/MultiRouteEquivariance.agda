@@ -23,6 +23,8 @@
 --
 -- Joint-generation theorem (META, justified by classical group theory):
 --
+--   (Meta-theorem, per PSL(2,7) simplicity; constructive enumeration is
+--    out of scope here — prose.)
 --   ⟨swap01-GL, cycle3-GL, singer-GL⟩ = GL(3, F₂)
 --
 -- Justification chain: PSL(2, 7) is a simple group of order 2³·3·7;

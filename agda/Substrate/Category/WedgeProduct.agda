@@ -11,10 +11,12 @@
 -- physics (angular momentum, 2-form fields, etc.) without needing
 -- the full graded-algebra apparatus.
 --
--- The substrate-level universal property: WedgeProduct V is the
--- universal alternating bilinear map ω : V × V → W such that
--- ω(v, v) = 0. Any alternating bilinear map V × V → W' factors
--- through it.
+-- The substrate-level universal property (prose): WedgeProduct V is
+-- INTENDED as the universal alternating bilinear map ω : V × V → W
+-- such that ω(v, v) = 0; classically any alternating bilinear map
+-- V × V → W' factors through it. The record carries only the
+-- `alternating` axiom — the bilinearity/factorization/uniqueness is
+-- not a field here.
 --
 -- Per [[categorical-name-first]]: "wedge product" / "Λ²" / "rank-2
 -- exterior product" are standard names. The universal property is

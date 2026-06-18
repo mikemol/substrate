@@ -10,7 +10,9 @@
 --   Sylow-7 of order 7 (cyclic; Singer cycles on F₂³)
 --
 -- Every g ∈ GL(3, F₂) admits a chain decomposition (g₂, g₃, g₇) where
--- gᵢ ∈ Sylowᵢ. The substrate's existing Y-arc machinery
+-- gᵢ ∈ Sylowᵢ.  (Existence realized in JointGenViaPresentation; this
+-- module fixes the type-level SHAPE, not the existence.)
+-- The substrate's existing Y-arc machinery
 -- (`Substrate.Algebra.GL3F2.JointGenViaPresentation`) supplies the
 -- constructive Word-based proof; this module re-packages that as the
 -- ChainDecomposition instance.

@@ -17,10 +17,12 @@
 -- a DISCRETE constraint (finite sum over Fin n = number of conjugacy
 -- classes); substrate-safe regardless of V's continuous structure.
 --
--- Per [[universal-property-discipline]] + [[categorical-name-first]]:
--- row + column orthogonality ARE the universal property of a
--- character table — they uniquely characterize it as the data of
--- an irreducible decomposition of the regular representation.
+-- Per [[universal-property-discipline]] + [[categorical-name-first]]
+-- (prose: row + column orthogonality are INTENDED as the universal
+-- property of a character table — characterizing it as the data of
+-- an irreducible decomposition of the regular representation. These
+-- are predicate signatures only; the characterization is not proved
+-- in this slice.)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}

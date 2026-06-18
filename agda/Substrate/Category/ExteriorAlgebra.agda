@@ -5,14 +5,16 @@
 --
 -- An exterior algebra Λ(V) over a base vector space V is the free
 -- associative algebra on V modulo the relation v ∧ v = 0V (for
--- v ∈ V at degree 1). The defining nilpotency at degree-1 +
--- bilinearity forces graded-anti-commutativity:
+-- v ∈ V at degree 1). (prose: classically the defining nilpotency
+-- at degree-1 + bilinearity force graded-anti-commutativity
 --   x ∧ y = (-1)^(|x|·|y|) (y ∧ x)
--- at all degrees.
+-- at all degrees; this is not derived here — no bilinearity field /
+-- induction in this slice.)
 --
 -- L3 of the 20-slice L-arc. The substrate-level primitive captures
 -- the universal property minimally (free + nilpotent-at-degree-1);
--- specialised graded-anti-commutativity is derived.
+-- specialised graded-anti-commutativity is INTENDED to be derived
+-- downstream (prose — not derived in this slice).
 --
 -- Per [[categorical-name-first]]: "exterior algebra" / "Grassmann
 -- algebra" / "Λ(V)" are standard names. The universal property is
@@ -60,10 +62,11 @@ private
 --   * incl : V_base → V_alg — the degree-1 inclusion
 --   * nilpotent : (v : V_base) → (incl v) ∧ (incl v) ≡ 0V
 --
--- The universal property: V_alg ≅ T(V_base) / ⟨v ⊗ v⟩ where T is the
--- tensor algebra. From bilinearity of ∧ + nilpotent, graded-anti-
--- commutativity follows at degree-1; higher-degree anti-commutativity
--- follows by induction.
+-- The universal property (prose): V_alg ≅ T(V_base) / ⟨v ⊗ v⟩ where
+-- T is the tensor algebra. Classically, from bilinearity of ∧ +
+-- nilpotent, graded-anti-commutativity follows at degree-1 and by
+-- induction at higher degrees. Not derived here — there is no
+-- bilinearity field and no induction in this slice.
 ------------------------------------------------------------------------
 
 record ExteriorAlgebra : Set (lsuc (ℓ ⊔ ℓB)) where

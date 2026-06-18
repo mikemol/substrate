@@ -2,7 +2,10 @@
 -- Substrate.Category.YonedaEmbedding
 --
 -- S6 of the S-arc. Yoneda embedding y : C ↪ [C^op, Set] sending
--- c ↦ Hom(_, c). Fully faithful by Yoneda lemma.
+-- c ↦ Hom(_, c).
+-- (Classically the Yoneda embedding is fully faithful; here `y` is a
+-- supplied module parameter and full faithfulness is NOT proved —
+-- prose.)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}

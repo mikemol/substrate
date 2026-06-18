@@ -73,8 +73,10 @@ open import Substrate.Algebra.F2.Linear.Universal
 --   L : (Fin n → Vector m) → Linear n m
 --   R : Linear n m → (Fin n → Vector m)
 --
--- with the unit/counit pair satisfying the triangle identities (here
--- expressed as pointwise equalities, avoiding funext).
+-- with the unit/counit EQUATIONS (pointwise R∘L≡id and L∘R≡id, avoiding
+-- funext). NOTE: those are the unit/counit equations themselves; the
+-- triangle identities proper are a separate coherence condition, listed in
+-- the deferred sweep below — NOT recorded as fields here.
 ------------------------------------------------------------------------
 
 record IsLinearAdjunction (n m : ℕ) : Set where

@@ -5,11 +5,12 @@
 --
 -- N1 of the N-arc (first slice of the second coherence iteration).
 --
--- Z2 AutomorphismGroup is parametric on (V, Preserves); the assignment
--- "carrier V ↦ group Aut(V)" is functorial in V (in the appropriate
--- subcategory respecting Preserves). Per [[grothendieck-coherence-
--- rule]]: this assignment was a hidden orphan after the Z-arc; N1
--- closes it by naming Aut as an M1 Functor.
+-- Z2 AutomorphismGroup is parametric on (V, Preserves). This slice
+-- NAMES a user-supplied Aut : Functor (the assignment "carrier V ↦
+-- group Aut(V)"); functoriality in V is the caller's obligation, not
+-- built here. Per [[grothendieck-coherence-rule]]: this assignment
+-- was a hidden orphan after the Z-arc; N1 closes it by naming Aut as
+-- an M1 Functor.
 --
 -- Module-parametric per substrate convention. The functor's source
 -- (= category of carriers + preservation-respecting morphisms) and
@@ -20,10 +21,11 @@
 -- because Z2 Aut(_) is the universal-property mechanism for Z9
 -- Monster.AsAutGriess and similar identifications.
 --
--- Per [[universal-property-discipline]]: Aut is the right adjoint
--- to the "free group on a set" functor (in a categorical-monoid
--- sense); the substrate's N1 names the functor, the adjunction
--- composes via #4 Adjunction primitive.
+-- Per [[universal-property-discipline]] (prose: classically Aut is
+-- the right adjoint to the "free group on a set" functor in a
+-- categorical-monoid sense). The right-adjoint framing is prose — no
+-- Adjunction instance is constructed here; N1 only names the functor.
+-- The adjunction would compose via the #4 Adjunction primitive.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}

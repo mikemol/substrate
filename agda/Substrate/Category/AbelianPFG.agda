@@ -8,15 +8,18 @@
 -- W1 of the 20-slice arc per [[prime-factored-gauge-arc]] follow-on.
 -- Sub-arc W (Abelian/CRT instances + joint-gen discharge) foundation.
 --
--- Structural framing. For finite abelian G with order ∏ pᵢ^kᵢ:
+-- Structural framing (prose: the primary decomposition is classical).
+-- For finite abelian G with order ∏ pᵢ^kᵢ:
 --   * Each Sylow-pᵢ subgroup Pᵢ is normal (abelian ⇒ all subgroups
 --     normal).
 --   * G ≅ P₁ × P₂ × ... × Pₙ (the product decomposition, = abelian
 --     specialization of CRT).
---   * Joint-generation is TRIVIALLY derivable from the product
---     decomposition: every g ∈ G factors uniquely as g = p₁·p₂·...·pₙ
---     with pᵢ ∈ Pᵢ; the InGenerated chain follows by repeated
---     product application.
+--   * Joint-generation: every g ∈ G factors uniquely as
+--     g = p₁·p₂·...·pₙ with pᵢ ∈ Pᵢ; the InGenerated chain follows by
+--     repeated product application.
+-- The record below establishes only commutativity (`abelian-comm`),
+-- NOT the iso G ≅ ∏ Pᵢ nor the unique factorization — those remain
+-- prose / per-instance.
 --
 -- Per [[composite-torsion-euler-substrate]]: this is the substrate
 -- naming for the CRT-abelian special case. Extended Euclid is the

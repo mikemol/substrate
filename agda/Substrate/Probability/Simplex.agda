@@ -11,7 +11,9 @@
 -- assumptions needed (zero, one, plus, sum-to-one).
 --
 -- A discrete probability distribution over a finite type A is a
--- function A → Probability such that summing all values gives 1.
+-- function A → Probability (the sum-to-one law is a separate
+-- structural commitment supplied by concrete instances, not enforced
+-- by this record).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -61,8 +63,9 @@ open DiscreteDistribution public
 ------------------------------------------------------------------------
 -- The simplex over Fin n.
 --
--- Δⁿ⁻¹ = { p : Fin n → Carrier | sum p ≡ one }.
--- Concrete instances supply the sum operator.
+-- Δⁿ⁻¹ = { p : Fin n → Carrier | sum p ≡ one } (set-builder is prose:
+-- the `sum p ≡ one` predicate is NOT enforced by the type below —
+-- concrete instances supply the sum operator and the proof).
 
 -- Simplex over Fin n at level 0 — needs a non-polymorphic
 -- ProbabilitySemiring at level 0. Concrete instances supply.

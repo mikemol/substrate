@@ -164,12 +164,11 @@ embed-self-inverse v x = act-axis-involutive v x
 -- For any σ ∈ S_4 and v ∈ V_4, the conjugate (σ · embed v) · σ⁻¹ is
 -- in the V_4 image. This is the load-bearing claim of S8.
 --
--- The proof is deferred to Substrate.Groups.V4-Embedding.Normality,
--- which postulates it (and is not compiled with --safe — see that
--- module's header for the decomposition). The core module here stays
--- under --safe; downstream code that needs the normality fact imports
--- from the Normality submodule explicitly, advertising the dependency
--- on an unproven theorem.
+-- V₄-normality is proved constructively under --safe in
+-- Substrate.Groups.S4-Iso.V4Normal (V₄-normal-compositional),
+-- re-exported by V4-Normality — NOT a postulate. The core module
+-- here stays under --safe; downstream code that needs the normality
+-- fact imports from V4-Normality explicitly.
 --
 -- Type signature, as documentation:
 --
@@ -187,16 +186,12 @@ embed-self-inverse v x = act-axis-involutive v x
 ------------------------------------------------------------------------
 -- TODOs (deferred to follow-on session)
 --
--- 1. Replace `postulate V₄-normal` with the constructive normality
---    proof. Approach options:
---      (a) Case-analysis on v and σ (~73 cases — many sub-cases).
---      (b) Define `is-V₄-permutation : Permutation → Set` via a
---          structural predicate ("doubles disjoint transpositions"),
---          prove conjugation preserves this predicate, then convert
---          to V₄-image via enumeration.
---      (c) Use the fact V_4 is the unique non-trivial proper normal
---          subgroup of S_4 — but this requires more group theory.
---    Approach (b) is most likely tractable in Agda and reusable.
+-- 1. DONE — V₄-normality is now proved constructively under --safe in
+--    Substrate.Groups.S4-Iso.V4Normal (V₄-normal-compositional),
+--    re-exported by V4-Normality. No postulate remains. (Historical
+--    approach options that were considered: (a) ~73-case analysis on
+--    v and σ; (b) a structural `is-V₄-permutation` predicate preserved
+--    under conjugation; (c) uniqueness of the proper normal subgroup.)
 --
 -- 2. Prove |V_4-image| = 4 (i.e., the embedding is injective). Easy
 --    once act-axis is known to be injective per g.

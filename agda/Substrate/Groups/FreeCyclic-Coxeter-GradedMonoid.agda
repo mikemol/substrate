@@ -73,9 +73,10 @@ FreeCyclic-GradedMonoid = record
 -- with explicit degree structure.
 --
 -- The degree homomorphism length-distrib is the structural witness
--- that ++ adds the lengths of the operands. Combined with the
--- monoid structure, this makes Word F.Gen / ++ / [] a faithful
--- representation of (ℕ, +, 0) via length.
+-- that ++ adds the lengths of the operands; length is a degree
+-- HOMOMORPHISM here. Combined with the length bijection (proved in
+-- FreeCyclic-Coxeter-Length, not here) it is faithful — that
+-- injectivity is NOT proved in this module.
 --
 -- Per [[project-graded-bicategorical-arc]]: the next slices use
 -- FreeCyclic-GradedMonoid as the "grading axis" of more complex

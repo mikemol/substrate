@@ -65,7 +65,9 @@ private
 --   * compose : Aut-X → Aut-X → Aut-X — composition operation
 --   * compose-applies : composition acts as function-composition pointwise
 --
--- Group axioms (associativity, identity laws) hold pointwise via apply.
+-- Group axioms (associativity, identity laws) hold pointwise ON
+-- `apply` (up to the chosen carrier-equivalence); not asserted on
+-- Aut-X elements directly.
 ------------------------------------------------------------------------
 
 record AutomorphismGroup

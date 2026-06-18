@@ -120,6 +120,30 @@ V4-has-lagrange-order : HasLagrangeOrder 4 V4-action
 V4-has-lagrange-order = V4-each-has-order-4
 
 ------------------------------------------------------------------------
+-- N-5½: the translation action is SIMPLY TRANSITIVE — free + transitive.
+-- (The "free (orbit = F₂² itself)" capstone bullet, proved. Stated at the
+-- translation level g = V4-elements i, where V4-action i v = g +ⱽ v; both
+-- are pure +ⱽ-cancellation, the char-2 fact g ⊕ g = 0.)
+------------------------------------------------------------------------
+
+-- FREE: only the zero translation fixes a point (g ⊕ v ≡ v ⟹ g ≡ 𝟎).
+V4-action-free : (g v : Vector 2) → (g +ⱽ v) ≡ v → g ≡ 𝟎ⱽ
+V4-action-free g v eq =
+  trans (sym (+ⱽ-identityʳ g))
+  (trans (cong (g +ⱽ_) (sym (+ⱽ-self-inverse v)))
+  (trans (sym (+ⱽ-assoc g v v))
+  (trans (cong (_+ⱽ v) eq)
+         (+ⱽ-self-inverse v))))
+
+-- TRANSITIVE: the translation (w ⊕ v) carries v to w, so every point's
+-- orbit is all of F₂² (orbit = F₂² itself).
+V4-action-transitive : (v w : Vector 2) → ((w +ⱽ v) +ⱽ v) ≡ w
+V4-action-transitive v w =
+  trans (+ⱽ-assoc w v v)
+  (trans (cong (w +ⱽ_) (+ⱽ-self-inverse v))
+         (+ⱽ-identityʳ w))
+
+------------------------------------------------------------------------
 -- N-6: Capstone — V₄ as the substrate's canonical composite-torsion
 -- example.
 --
@@ -127,8 +151,10 @@ V4-has-lagrange-order = V4-each-has-order-4
 -- LagrangeOrder instance:
 --
 --   * |V₄| = 4 with each element of exponent dividing 2
---   * Aut(V₄) = GL(2, F₂) of order 6 (not φ(4) = 2 — V₄ ≠ Z/4)
---   * Translation action on F₂² is free (orbit = F₂² itself)
+--   * Translation action on F₂² is SIMPLY TRANSITIVE — PROVED:
+--     `V4-action-free` (free) + `V4-action-transitive` (orbit = F₂²).
+--   * (prose: Aut(V₄) = GL(2, F₂) of order 6 — not φ(4)=2, V₄ ≠ Z/4 — is
+--     classical; the automorphism group is NOT computed/formalized here.)
 --
 -- This is the simplest non-cyclic composite torsion in the substrate;
 -- demonstrates LagrangeOrder primitive handles non-cyclic cases where

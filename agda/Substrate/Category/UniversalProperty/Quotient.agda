@@ -15,6 +15,11 @@
 --   AND f̃ depends only on the equivalence class of a (i.e., f̃
 --   also respects _≈_).
 --
+-- (NOTE: the proved `factor-unique` below assumes g agrees with f on
+--  ALL of A — it is uniqueness GIVEN agreement, not the
+--  representative-level uniqueness of a quotient; the latter needs
+--  the canonical-form layer.)
+--
 -- Substrate-honest scope per [[project-agda-cubical-extraction-
 -- discipline]]: A/~ is NOT introduced as a new HIT'd carrier; the
 -- factorisation lives at the level of `respecting maps out of A`,
@@ -65,7 +70,9 @@ Respects {A} _≈_ f = {a b : A} → a ≈ b → f a ≡ f b
 --       a factor map  f̃ : A → B
 --       the factor agrees with f on all inputs
 --       the factor respects _≈_
---       uniqueness: any other respecting factor agrees with f̃
+--       uniqueness: any other respecting factor that ALREADY agrees
+--         with f on all of A agrees with f̃ (uniqueness given
+--         agreement — see NOTE above; not representative-level)
 ------------------------------------------------------------------------
 
 record QuotientUP

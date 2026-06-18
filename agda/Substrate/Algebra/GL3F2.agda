@@ -6,8 +6,9 @@
 -- inverse witness (two-sided pointwise inverse).
 --
 -- Per [[multi-route-equivariance-recovery]] +
--- [[klein-quartic-kinematic-anatomy]]: GL(3, F₂) ≅ PSL(2, 7), simple
--- of order 168. The substrate's multi-route equivariance arc generates
+-- [[klein-quartic-kinematic-anatomy]]: (Classically GL(3,F₂) ≅ PSL(2,7),
+-- simple of order 168 — cited, NOT formalized here.) The substrate's
+-- multi-route equivariance arc generates
 -- it from three Sylow-canonical witnesses (one each from Sylow-2,
 -- Sylow-3, Sylow-7). The full 168-element enumeration is OUT of scope
 -- for this slice; this module provides only the type, group operations,
