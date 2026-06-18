@@ -141,7 +141,8 @@ if [ "$fail" -eq 0 ]; then
   # signals over the staged .agda set:
   #   (a) a module added / renamed / deleted (file-level structure);
   #   (b) an import / module / re-export (public / renaming) line changed;
-  #   (c) a top-level type-SIGNATURE line changed (col-0 `name : Type`).
+  #   (c) a top-level type-SIGNATURE line changed (col-0 `name :` — including a
+  #       MULTI-LINE signature whose `:` ends the line, type on the next).
   # Comments (`--`) and indented lines (record fields, locals) are excluded by
   # construction; false positives only ever over-run CI (safe), never skip it.
   structural=""
@@ -156,7 +157,7 @@ if [ "$fail" -eq 0 ]; then
         structural="import/re-export change ($f)"; break
       fi
       if printf '%s\n' "$diffout" | grep -E '^[+-]' | grep -vE '^[-+]{3}' \
-           | grep -qE '^[+-][^[:space:]+-].*[[:space:]]:[[:space:]]'; then
+           | grep -qE '^[+-][^[:space:]+-].*[[:space:]]:([[:space:]]|$)'; then
         structural="signature change ($f)"; break
       fi
     done
