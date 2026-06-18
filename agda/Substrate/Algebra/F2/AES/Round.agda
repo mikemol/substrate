@@ -24,7 +24,9 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; zipWith)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2 using (F₂; _+_; +-assoc; +-identityˡ; +-self-inverse)
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox; inv-sbox; sbox-rt)
+-- B-deep: canonical table S-box + re-derived round-trip (= the GF-inversion
+-- S-box, proven via SBoxTable.sbox≡gf); cheap to force.
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox; inv-sbox; sbox-rt)
 open import Substrate.Algebra.F2.MixColumns.Proof using (mix; mixcolumns-round-trip)
   renaming (inv to mix-inv)
 

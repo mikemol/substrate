@@ -39,7 +39,9 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.AsField using (GF2⁸-Field) p
 open import Substrate.Algebra.F2.MixColumns.Proof using (mix; mixcolumns-round-trip) public
 
 -- AI-10 — the S-box and its round-trip.
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox; inv-sbox; sbox-rt) public
+-- B-deep: canonical table S-box (= the GF-inversion S-box, proven by
+-- SBoxTable.sbox≡gf); cheap to force, FIPS rigor preserved.
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox; inv-sbox; sbox-rt) public
 
 -- AI-11 — the AES round (normal + final) and their round-trips.
 open import Substrate.Algebra.F2.AES.Round

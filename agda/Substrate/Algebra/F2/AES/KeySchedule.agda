@@ -23,7 +23,9 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2 using (_+_)
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox)
+-- B-deep: canonical S-box = the proven table lookup (cheap to force), so the
+-- key-schedule KAT is a table lookup not a GF inversion. (= sbox-gf, proven.)
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox)
 open import Substrate.Algebra.F2.AES.Round using (Byte; Col; State)
 open import Substrate.Algebra.F2.AES.Cipher using (encrypt; decrypt; cipher-rt)
 
