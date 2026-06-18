@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := AdjointPair.agda ArrowOfArrow.agda Backed.agda Capstone.agda Category.agda Compose.agda ConcreteCovers.agda ConstantSheaf.agda Coverage.agda CoverageAxioms.agda Discriminator.agda Eval.agda FixedPoint.agda GeometricMorphism.agda HigherCatAsInternal.agda Instances.agda InternalHom.agda InternalLogic.agda Interop.agda MatchingFamily.agda Morphism.agda Omega.agda Phase1.agda Phase2.agda Phase3.agda Powerset.agda Presheaf.agda Pretopology.agda Quotient.agda QuotientProduct.agda Recognized.agda Refinement.agda Registry.agda Saturation.agda Sheaf.agda SheafPullback.agda Sheafify.agda Sieve.agda SieveClosure.agda SubstrateSheaves.agda SubstrateTopos.agda Term.agda TermParity.agda Terminal.agda Topos.agda TruthValues.agda Vacuity.agda WedgeUP.agda WindowedCF.agda Yoneda.agda
+FILES := AdjointPair.agda ArrowOfArrow.agda Backed.agda Capstone.agda Category.agda Compose.agda ConcreteCovers.agda ConstantSheaf.agda Coverage.agda CoverageAxioms.agda Discriminator.agda Eval.agda FixedPoint.agda GeometricMorphism.agda HigherCatAsInternal.agda Instances.agda InternalHom.agda InternalLogic.agda Interop.agda MatchingFamily.agda Morphism.agda Omega.agda Phase1.agda Phase2.agda Phase3.agda Powerset.agda Presheaf.agda Pretopology.agda Quotient.agda QuotientProduct.agda Recognized.agda Refinement.agda Registry.agda Saturation.agda Sheaf.agda SheafPullback.agda Sheafify.agda Sieve.agda SieveClosure.agda SubstrateSheaves.agda SubstrateTopos.agda Term.agda TermParity.agda Terminal.agda Topos.agda TruthValues.agda Unique.agda Vacuity.agda WedgeUP.agda WindowedCF.agda Yoneda.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

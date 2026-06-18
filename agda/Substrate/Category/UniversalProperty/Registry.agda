@@ -3,14 +3,18 @@
 --
 -- The REALITY anchor for universal-property-backed interoperability.
 --
--- A structure REALLY has a non-vacuous universal-property bridge iff a
--- BackedUP term exists for it AND TYPECHECKS — because backed-non-vacuous
--- makes the checker REFUSE a ⊤-collapse. So conformance is not "absence of a
--- ⊤-stub" (an obligation / self-report a grep can read) but "presence of a
--- compiled BackedUP" (reality the typechecker enforces). This module IS the
--- mechanical checklist: every entry below is a real, non-vacuous bridge by
--- the mere fact that this file compiles. To register a primitive is to back
--- it for real; the registry cannot be padded with vacuous claims.
+-- A structure REALLY has a non-vacuous SOLVER bridge (the EXISTENCE half)
+-- iff a BackedUP term exists for it AND TYPECHECKS — because
+-- backed-non-vacuous makes the checker REFUSE a ⊤-collapse. So conformance is
+-- not "absence of a ⊤-stub" (an obligation / self-report a grep can read) but
+-- "presence of a compiled BackedUP" (reality the typechecker enforces). This
+-- module IS the mechanical checklist: every entry below is a real, non-vacuous
+-- SOLVER by the mere fact that this file compiles. To register a primitive is
+-- to back its existence for real; the registry cannot be padded with vacuous
+-- claims. NOTE: typechecking forces EXISTENCE + non-vacuity, NOT universality
+-- (uniqueness) — that is the separate `UniversalProperty.Unique.WitnessUnique`
+-- layer, available relative to a bound. So an entry here is a backed solver;
+-- "the universal property" in full = this entry ⊕ its WitnessUnique.
 --
 -- COVERAGE (the unification metric) = registry entries vs the primitives
 -- that claim a universal property. Grow this list to unify the repo.

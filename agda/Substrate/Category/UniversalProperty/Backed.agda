@@ -1,8 +1,9 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.UniversalProperty.Backed
 --
--- THE COMMON NON-VACUOUS BRIDGE backing a universal property. Across the
--- whole arc every universal property has the same backing shape:
+-- THE COMMON NON-VACUOUS SOLVER backing the EXISTENCE half of a universal
+-- property. Across the whole arc every universal property has the same
+-- backing shape:
 --   * a UPArrow (the problem↛solution span),
 --   * a `solve` returning the mediating witness for every problem (THE
 --     BRIDGE — recognition returns the witness, not a residue),
@@ -10,11 +11,16 @@
 --   * `content`: a Contentful certificate (the wedge is non-vacuous —
 --     some problem genuinely excludes some candidate).
 --
--- This bundle is "the common non-vacuous bridge the universal property is
--- backed by." It is gated by the vacuity recognizer: the ⊤-collapse has no
--- BackedUP (it cannot supply `content`). And the concrete number-theoretic
--- wedges instantiate it — notably the CRT-Witness (built from gcd via
--- Bézout→inverse→idempotent→combine) IS the bridge backing the CRT UP.
+-- SCOPE: BackedUP certifies EXISTENCE (a non-vacuous solver), NOT
+-- universality. The UNIQUENESS half — that the solution is THE solution —
+-- is a SEPARATE layer, `UniversalProperty.Unique.WitnessUnique`, and is
+-- available only relative to a BOUND (e.g. the wedge's r < b); `solver-unique`
+-- there shows a backed solver IS the unique admissible solution. So this
+-- bundle is "the common non-vacuous SOLVER," not the full universal property.
+-- It is gated by the vacuity recognizer: the ⊤-collapse has no BackedUP (it
+-- cannot supply `content`). And the concrete number-theoretic wedges
+-- instantiate it — notably the CRT-Witness (built from gcd via
+-- Bézout→inverse→idempotent→combine) IS the solver backing the CRT UP.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
