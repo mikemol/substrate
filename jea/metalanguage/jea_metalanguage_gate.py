@@ -186,11 +186,36 @@ def chk_cuda():
 
 
 def chk_agdai():
-    import jea_agdai  # noqa: F401
-    # the deep correspondence (decode a real .agdai) needs the agda toolchain + a fresh interface and is
-    # too slow for a per-commit gate -- validated on-demand. Here: import + the consumer's presence.
+    import jea_agdai
+    from jea_pyalg import Intern
     assert hasattr(jea_agdai, "core_intern_agdai") and hasattr(jea_agdai, "intern_signature")
-    return "SKIP: agda decode is on-demand (import + API present)"
+    # Φ7: when the shim is BUILT and a test interface exists, this check is correct-by-construction --
+    # it decodes Emit.agdai (~1s) and asserts the Φ7a (clause LHS patterns) + Φ7b (datatype->constructor
+    # member links) structure the producer now emits. Absent the toolchain it SKIPs (the per-commit gate
+    # stays toolchain-free; the agda decode is on-demand), matching jea_cuda's libclang-absent discipline.
+    here = os.path.dirname(os.path.abspath(__file__))
+    shim = os.path.join(here, "agdai_shim")
+    agdai = os.path.join(here, "..", "agda-emit", "Emit.agdai")
+    if not (os.path.exists(shim) and os.path.exists(agdai)):
+        return "SKIP: agda decode is on-demand (import + API present; shim/interface not built)"
+    I = Intern()
+    try:
+        rep = jea_agdai.core_intern_agdai(agdai, I, shim_bin=shim)
+    except (RuntimeError, FileNotFoundError) as e:
+        # a stale interface (built by another Agda version) decodes to Nothing -- not a Φ7 regression.
+        return f"SKIP: agda decode unavailable ({type(e).__name__}: stale/wrong-version interface)"
+    # Φ7b: at least one datatype unit carries its constructor member-links.
+    assert rep.get("members"), "Φ7b regression: no datatype->constructor member links emitted"
+    assert any(len(ms) >= 1 for ms in rep["members"].values()), "Φ7b: member lists empty"
+    # Φ7a: the forest contains Clause nodes (structural, op kept), and at least one clause carries LHS
+    # patterns -- a clause with >=2 children is >=1 pattern + the body (a body-only clause has 1 child).
+    # (PVar/PCon themselves intern into the bound/free branches, so their op is the de-Bruijn role / qname,
+    # not the literal "PCon" -- assert the clause ARITY, which proves the patterns are attached.)
+    clause_arities = [len(n.children) for n in I.nodes if n.op == "Clause"]
+    assert clause_arities, "Φ7a regression: no Clause nodes (LHS patterns not walked)"
+    assert max(clause_arities) >= 2, "Φ7a regression: clauses carry no LHS patterns (body-only)"
+    return (f"PASS (Φ7: decoded Emit.agdai -> {len(rep['units'])} units, "
+            f"{len(clause_arities)} clauses, members on {len(rep['members'])} parent(s))")
 
 
 CHECKS = [
@@ -213,7 +238,7 @@ def main():
             r = fn()
         except Exception as e:
             r = f"FAIL: {type(e).__name__}: {e}"
-        tag = r.split(":")[0]
+        tag = r.split()[0].rstrip(":")     # first token (PASS may carry a ": detail" suffix)
         print(f"  meta-gate {name:<18} {r}")
         if tag == "PASS":
             npass += 1

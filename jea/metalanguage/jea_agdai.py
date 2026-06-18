@@ -188,18 +188,24 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
     VALIDATED on Emit.agdai (62 core nodes -> interned 20, 3.1x, full child edges)."""
     import json
     raw = {}
-    unit_markers = []                                         # (qname, shim-local root id) per definition
+    unit_markers = []                                         # (qname, shim-local root id, kind, members) per def
     with open(json_path) as fh:
         for line in fh:
             line = line.strip()
             if line:
                 rec = json.loads(line)
                 if "unit" in rec:                             # a per-definition unit marker (Φ4b)
-                    unit_markers.append((rec["unit"], rec["root"], rec.get("kind", "?")))
+                    unit_markers.append((rec["unit"], rec["root"], rec.get("kind", "?"),
+                                         tuple(rec.get("members", []))))   # Φ7b: parent->member links
                 else:
                     raw[rec["id"]] = rec
     interned: dict[int, int] = {}
-    FREE = {"Def", "Con", "Prim", "PrimSort", "Proj"}     # referential: qname is identity -> KEY
+    # referential: qname is identity -> KEY. Pattern constructors (Φ7a) join the term-level ones:
+    # PCon/PDef/PProj are free referential exactly as Con/Def/Proj are.
+    FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}
+    # bound (de Bruijn): identity = index (position) -> alpha-equivalent. PVar (Φ7a LHS pattern var) is
+    # bound exactly as the term-level Var is -- two clauses matching the same shape share pattern nodes.
+    BOUND = {"Var", "PVar"}
 
     def go(nid: int) -> int:
         if nid in interned:
@@ -208,7 +214,7 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
         kids = tuple(go(c) for c in rec.get("children", []))
         ctor = rec.get("constructor", "")
         qname = rec.get("qname")
-        if ctor == "Var":
+        if ctor in BOUND:
             # BOUND (de Bruijn): identity = index (position), in `role` -> alpha-equivalent.
             role = f"db{rec.get('index', '?')}"
             op = ""
@@ -230,10 +236,11 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
 
     roots = [go(nid) for nid in raw]
     # map each definition's unit-marker (shim-local root) to its INTERNED root id -> per-def units (Φ4b)
-    units = [(name, interned[r]) for name, r, _k in unit_markers if r in interned]
-    kinds = {name: k for name, r, k in unit_markers if r in interned}   # Φ6: per-def Defn kind
-    return {"core_nodes": len(raw), "interned": intern.size(),
-            "roots": roots, "units": units, "kinds": kinds, "edges_present": True}
+    units = [(name, interned[r]) for name, r, _k, _m in unit_markers if r in interned]
+    kinds = {name: k for name, r, k, _m in unit_markers if r in interned}   # Φ6: per-def Defn kind
+    members = {name: list(m) for name, r, k, m in unit_markers if r in interned and m}  # Φ7b: parent->members
+    return {"core_nodes": len(raw), "interned": intern.size(), "roots": roots,
+            "units": units, "kinds": kinds, "members": members, "edges_present": True}
 
 
 def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:

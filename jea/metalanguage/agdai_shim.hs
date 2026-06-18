@@ -22,13 +22,15 @@ import qualified Data.HashMap.Strict as HMap
 
 import Agda.TypeChecking.Serialise (decodeInterface)
 import Agda.TypeChecking.Monad.Base
-  ( runTCMTop, iSignature, _sigDefinitions, defType, theDef, Defn(..), funClauses, Interface )
+  ( runTCMTop, iSignature, _sigDefinitions, defType, theDef, Defn(..), funClauses
+  , dataCons, recConHead, recFields, Interface )
 import Agda.TypeChecking.Monad.Options (setCommandLineOptions)
 import Agda.Interaction.Options (defaultOptions)
 import Agda.Syntax.Common.Pretty (prettyShow)
-import Agda.Syntax.Common (unArg)
+import Agda.Syntax.Common (unArg, namedArg)
 import Agda.Syntax.Internal
-  ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName, Clause, clauseBody )
+  ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName, Clause
+  , clauseBody, namedClausePats, DeBruijnPattern, Pattern'(..), dbPatVarName, dbPatVarIndex )
 
 fresh :: IORef Int -> IO Int
 fresh r = atomicModifyIORef' r (\n -> (n+1, n))
@@ -50,10 +52,44 @@ esc = concatMap (\c -> case c of '"' -> "\\\""; '\\' -> "\\\\"; _ -> [c])
 walkType :: IORef Int -> Type -> IO Int
 walkType r = walkTerm r . unEl
 
--- the clause-body RHS Terms of a definition (Φ4b-deepen: the proof/program content, not just the type).
--- funClauses is partial (Function only); the Function{} generator yields [] for any other Defn.
-clauseBodies :: Defn -> [Term]
-clauseBodies d = [ b | FunctionDefn{} <- [d], c <- funClauses d, Just b <- [clauseBody c] ]
+-- Φ7a: walk a clause's LHS argument patterns (namedClausePats). Agda core is de-Bruijn, so a pattern
+-- VARIABLE carries the bound index (alpha-quotiented, like Var); a constructor/def pattern carries the
+-- FREE referential qname. This is the segmentation the old shim dropped (it walked only the RHS body) --
+-- the LHS is half of every clause and is exactly what tells two same-RHS functions apart by their
+-- match structure. Catch-all covers IApplyP (cubical endpoints) etc. without guessing their arity.
+walkPat :: IORef Int -> DeBruijnPattern -> IO Int
+walkPat r p = case p of
+  VarP _ x     -> emit r "PVar"  (Just (dbPatVarName x))         (Just (dbPatVarIndex x)) []
+  DotP _ t     -> do k  <- walkTerm r t;                          emit r "PDot"  Nothing Nothing [k]
+  ConP ch _ ps -> do ks <- mapM (walkPat r . namedArg) ps;        emit r "PCon"  (Just (prettyShow (conName ch))) Nothing ks
+  LitP _ _     ->                                                 emit r "PLit"  Nothing Nothing []
+  ProjP _ qn   ->                                                 emit r "PProj" (Just (prettyShow qn)) Nothing []
+  DefP _ qn ps -> do ks <- mapM (walkPat r . namedArg) ps;        emit r "PDef"  (Just (prettyShow qn)) Nothing ks
+  _            ->                                                 emit r "PVarOther" Nothing Nothing []
+
+-- a clause node groups its LHS patterns + RHS body (the full clause, not just the body, Φ7a). An absurd
+-- clause (no body) is patterns-only. funClauses is partial (Function only); other Defns yield no clauses.
+walkClause :: IORef Int -> Clause -> IO Int
+walkClause r c = do
+  ps   <- mapM (walkPat r . namedArg) (namedClausePats c)
+  body <- maybe (return []) (fmap (:[]) . walkTerm r) (clauseBody c)
+  emit r "Clause" Nothing Nothing (ps ++ body)
+
+clauseNodes :: IORef Int -> Defn -> IO [Int]
+clauseNodes r d = case d of
+  FunctionDefn{} -> mapM (walkClause r) (funClauses d)
+  _              -> return []
+
+-- Φ7b: the inter-definition member edges Agda's typed AST carries -- a datatype's constructors, and a
+-- record's (constructor + fields). Each member is ALSO its own top-level Definition (walked in its own
+-- right), so this records the PARENT->member link the flat per-def walk drops: a coverage/structure
+-- readout can then connect a datatype to its constructors instead of seeing orphan units. Names only
+-- (the member's own unit carries its core term); the link rides the parent's unit marker.
+defMembers :: Defn -> [String]
+defMembers d = case d of
+  DatatypeDefn{} -> map prettyShow (dataCons d)
+  RecordDefn{}   -> map prettyShow (conName (recConHead d) : map unDom (recFields d))
+  _              -> []
 
 -- Φ6: label each definition's Defn KIND. The non-Function kinds need no extra BODY walk -- their members
 -- (a datatype's constructors, a record's fields) are themselves separate top-level Definitions, walked in
@@ -110,10 +146,12 @@ main = do
       -- {"unit":qname,"root":id} after the def's nodes, so jea_pysim builds per-def units.
       mapM_ (\(qn, d) -> do
                tr  <- walkType r (defType d)
-               brs <- mapM (walkTerm r) (clauseBodies (theDef d))
-               sid <- emit r "Defn" Nothing Nothing (tr : brs)
+               cls <- clauseNodes r (theDef d)                 -- Φ7a: full clauses (LHS patterns + RHS)
+               sid <- emit r "Defn" Nothing Nothing (tr : cls)
+               let mems = defMembers (theDef d)                -- Φ7b: datatype->constructors / record->fields
+                   memJSON = "[" ++ intercalate "," (map (\m -> "\"" ++ esc m ++ "\"") mems) ++ "]"
                putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid
-                        ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\"}"
+                        ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\",\"members\":" ++ memJSON ++ "}"
             ) defs
       n <- readIORef r
       hPutStrLn stderr ("agdai_shim: " ++ show (length defs) ++ " definitions -> " ++ show n ++ " core nodes")
