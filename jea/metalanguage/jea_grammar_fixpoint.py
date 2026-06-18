@@ -6,7 +6,7 @@ This is the CONSOLIDATED result of the BNF/EBNF/ABNF arc, after three correction
 _compose.py), which carried bespoke machinery the arc proved unnecessary. The finding, stated as code:
 
     THERE IS NO SEPARATE PARSER. Earley recognition is the intern-fixpoint of the term decomposition the
-    core already runs. Concretely, on jea_pyalg's Intern + PyDivStr (the wedge primitive):
+    core already runs. Concretely, on jea_pyalg's Intern + PyDivStr:
       * predict / scan / complete  = the three wedge/recon cases (decompose-expecting / consume-atom /
         rebuild-and-reintern) — NOT bespoke operations.
       * the chart                  = the TRACE's descent-grading. Position/span is RESIDUE carried on the
@@ -16,13 +16,14 @@ _compose.py), which carried bespoke machinery the arc proved unnecessary. The fi
         key, so "the table grew this round" IS the progress signal — no `changed` flag.
       * acceptance                 = a structural READOUT (does the start-symbol-over-the-full-input node
         exist in the table?), not a returned flag.
-      * the grammar readout        = a streaming wedge-loop (stream_rhs): "different targets = different
-        reads of the SAME kept trace" (corrected from an eager trace_fold to O(1)-state streaming — see
-        stream_rhs, which deliberately avoids trace_fold so a 50GiB SPPF emits in constant memory).
+      * the grammar readout        = stream_rhs: the BACKWARD read of the retained chain, streamed. (It
+        is the trace_fold direction — "different reads of the SAME kept trace" — but trace_fold/trace()
+        MATERIALIZE eagerly, so the streaming reader drives `wedge` directly in a loop instead; see
+        stream_rhs. This is why trace_fold is NOT imported here.)
 
     This is the Σ-OBLIGATION spine at the parsing scale: predict/scan/complete = forward discharge
-    (register obligations, compose witnesses); the streaming wedge-read (stream_rhs) = the backward read
-    of the same retained structure. ONE structure, two reads. Termination = the table reaches a fixed size (finite for a finite
+    (register obligations, compose witnesses); stream_rhs = the backward read of the same retained
+    structure. ONE fold, two reads. Termination = the table reaches a fixed size (finite for a finite
     input + finitely many (rule,dot,span) consequences) — the per-instance well-foundedness witness the
     spine itself does not supply.
 
