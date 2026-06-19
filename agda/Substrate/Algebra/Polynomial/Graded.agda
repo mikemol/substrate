@@ -26,6 +26,7 @@ open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; su
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
+open import Substrate.Algebra.Medial using (medial)
 
 -- R[y] over the coefficient operations + commutative-ring laws (flat bundle).
 -- Instantiate `open Over (+) (*) 𝟘 𝟙 …laws…` at A = F₂ (re-derives F₂[x]) or
@@ -159,12 +160,9 @@ module Over {A : Set}
   ·-distribʳ x y z = trans (*-comm (x + y) z)
                      (trans (*-distribˡ z x y) (cong₂ _+_ (*-comm z x) (*-comm z y)))
 
+  -- Ⓜ: the 4-term rearrange = the medial law (Algebra.Medial) at A's `+`.
   rearrange : (w x y z : A) → (w + x) + (y + z) ≡ (w + y) + (x + z)
-  rearrange w x y z =
-    trans (+-assoc w x (y + z))
-    (trans (cong (w +_) (sym (+-assoc x y z)))
-    (trans (cong (λ t → w + (t + z)) (+-comm x y))
-    (trans (cong (w +_) (+-assoc y x z)) (sym (+-assoc w y (x + z))))))
+  rearrange = medial _+_ +-assoc +-comm
 
   convCoeff-distrib : (p q : Poly n) (r : Poly m) (k : ℕ)
                     → convCoeff (p +P q) r k ≡ (convCoeff p r k) + (convCoeff q r k)

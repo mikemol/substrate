@@ -15,6 +15,7 @@ open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; +-identity�
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Algebra.Medial using (medial)
 
 m-lo : Vector 8
 m-lo = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []
@@ -27,12 +28,9 @@ xtime (b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ b7 ∷ []) =
 ·-distribʳ : (x y z : F₂) → (x + y) · z ≡ x · z + y · z
 ·-distribʳ x y z = trans (·-comm (x + y) z)
                    (trans (·-distribˡ-+ z x y) (cong₂ _+_ (·-comm z x) (·-comm z y)))
+-- Ⓜ: 4-term rearrange = the medial law (Algebra.Medial) at F₂'s `+`.
 rearrange : (w x y z : F₂) → (w + x) + (y + z) ≡ (w + y) + (x + z)
-rearrange w x y z =
-  trans (+-assoc w x (y + z))
-  (trans (cong (w +_) (sym (+-assoc x y z)))
-  (trans (cong (λ t → w + (t + z)) (+F-comm x y))
-  (trans (cong (w +_) (+-assoc y x z)) (sym (+-assoc w y (x + z))))))
+rearrange = medial _+_ +-assoc +F-comm
 
 -- A1a: xtime preserves +ⱽ. Per-position: distribʳ (split (u7+v7)·b) + 4-term rearrange.
 xtime-+ⱽ : (u v : Vector 8) → xtime (u +ⱽ v) ≡ xtime u +ⱽ xtime v

@@ -19,18 +19,16 @@ open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-+ⱽ)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (convCoeff; nth-*P; nth-ext)
+open import Substrate.Algebra.Medial using (medial)
 
 ·-distribʳ : (x y z : F₂) → (x + y) · z ≡ x · z + y · z
 ·-distribʳ x y z = trans (·-comm (x + y) z)
                    (trans (·-distribˡ-+ z x y) (cong₂ _+_ (·-comm z x) (·-comm z y)))
 
--- 4-term abelian rearrange (F₂ + is comm-assoc): (w+x)+(y+z) ≡ (w+y)+(x+z).
+-- Ⓜ: 4-term abelian rearrange = the commutative-monoid medial law (Algebra.Medial)
+-- at F₂'s `+` (assoc + comm). The local re-proof became this one-line instance.
 rearrange : (w x y z : F₂) → (w + x) + (y + z) ≡ (w + y) + (x + z)
-rearrange w x y z =
-  trans (+-assoc w x (y + z))
-  (trans (cong (w +_) (sym (+-assoc x y z)))
-  (trans (cong (λ t → w + (t + z)) (+F-comm x y))
-  (trans (cong (w +_) (+-assoc y x z)) (sym (+-assoc w y (x + z))))))
+rearrange = medial _+_ +-assoc +F-comm
 
 -- per-coordinate distributivity of the convolution coefficient (linearity in arg 1).
 convCoeff-distrib : ∀ {n m} (p q : Polynomial n) (r : Polynomial m) (k : ℕ)

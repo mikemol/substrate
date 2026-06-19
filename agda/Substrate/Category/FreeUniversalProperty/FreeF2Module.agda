@@ -34,6 +34,7 @@ open import Substrate.Algebra.F2.Vector
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-assoc; +ⱽ-comm; +ⱽ-self-inverse)
 open import Substrate.Category.FreeOverBasis using (AlgebraClass; mkAlgebraClass)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
+open import Substrate.Algebra.Medial using (medial)
 
 ------------------------------------------------------------------------
 -- 1. The F₂-module structure (= F₂-vector space: abelian, self-inverse).
@@ -83,13 +84,9 @@ module _ {M : Set} (Mod : F2Mod M) where
   ext {suc k} f (b ∷ v) = (b ·? f zero) ⊕ ext (λ i → f (suc i)) v
 
   -- abelian rearrangement (a⊕b)⊕(c⊕d) ≡ (a⊕c)⊕(b⊕d).
+  -- Ⓜ: the 4-term rearrange = the medial law (Algebra.Medial) at M's `⊕`.
   rearrange : (a b c d : M) → ((a ⊕ b) ⊕ (c ⊕ d)) ≡ ((a ⊕ c) ⊕ (b ⊕ d))
-  rearrange a b c d =
-    trans (⊕-assoc a b (c ⊕ d))
-    (trans (cong (a ⊕_) (sym (⊕-assoc b c d)))
-    (trans (cong (λ z → a ⊕ (z ⊕ d)) (⊕-comm b c))
-    (trans (cong (a ⊕_) (⊕-assoc c b d))
-           (sym (⊕-assoc a c (b ⊕ d))))))
+  rearrange = medial _⊕_ ⊕-assoc ⊕-comm
 
   -- scalar distributes over F₂ addition — the a=b=𝟙 case USES ⊕-self.
   scalar-dist : (a b : F₂) (m : M) → ((a + b) ·? m) ≡ ((a ·? m) ⊕ (b ·? m))

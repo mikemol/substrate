@@ -32,6 +32,7 @@ open import Substrate.Algebra.F2.Vector.Universal
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-lookup)
+open import Substrate.Algebra.Medial using (medial)
 
 ------------------------------------------------------------------------
 -- sum-F₂ additivity / scaling.
@@ -51,14 +52,9 @@ sum-F₂-+-distrib {suc _} a b =
   cong-trans ((a fz + b fz) +_) (sum-F₂-+-distrib (a ∘ fs) (b ∘ fs))
   (swap-+ (a fz) (b fz) (sum-F₂ (a ∘ fs)) (sum-F₂ (b ∘ fs)))
   where
-    -- (w + x) + (y + z) ≡ (w + y) + (x + z), via F₂ assoc/comm.
+    -- Ⓜ: the 4-term rearrange = the medial law (Algebra.Medial) at F₂'s `+`.
     swap-+ : (w x y z : F₂) → ((w + x) + (y + z)) ≡ ((w + y) + (x + z))
-    swap-+ w x y z =
-      trans (+-assoc w x (y + z))
-      (cong-trans (w +_) (sym (+-assoc x y z))
-      (cong-trans (λ t → w + (t + z)) (+-comm x y)
-      (cong-trans (w +_) (+-assoc y x z)
-      (sym (+-assoc w y (x + z))))))
+    swap-+ = medial _+_ +-assoc +-comm
 
 -- sum-F₂ (λ i → c · a i) ≡ c · sum-F₂ a.
 sum-F₂-·-distrib :
