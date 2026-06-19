@@ -20,8 +20,29 @@ the g-calculus is its conductance model (electronics), confirmed from `el-atlas/
   C(n,2) (rung 2→dim 1, rung 3→dim 3, rung 4→dim 6, rung 5→dim 10).
 - **The orbit cloud.** One generic test vector in cycle space, sent through all (n+1)! frames (vertex
   orderings, acting on cycle space by `Cpinv · P_edge · C`), gives (n+1)! images. The cloud's **cardinality
-  is the combinatorial count** (verified: rung 4 → 120 distinct; rung 3 → 22-not-24 by a generic-vector
-  near-degeneracy; rung 2 → collapses to 2). Generators: `jea_orbit_cloud_gen.py`, `jea_depop_gen.py`.
+  is the combinatorial count** (verified: rung 4 → 120 distinct, FAITHFUL; rung 2 → collapses to 2).
+  **Rung 3 → exactly 22** (not 24, not a float artifact): the cycle-space rep S₄→GL(3,ℚ) is NOT
+  faithful — it identifies two permutation-pairs, each related by the V₂ double-transposition τ=(0 1)(2 3),
+  which acts on cycle space as a REFLECTION T (T²=I, eigenvalues −1,+1,+1: it negates a 1-dim line — the
+  dynamic reflection axis — and fixes a 2-dim plane). So 24 frames → 22 distinct maps → 22 points. The 22 is the
+  experiment's SUCCESS condition: V₂ rerouting 2 points at the rung-3 grade transition, caught in the act.
+  This is a zero-divisor of the **idempotent species** ((T−I)(T+I)=0, T²=I, e=(I+T)/2) — the analysis-grade
+  failure (rep non-faithful) that IS the structural-grade witness (the parity line / retained fiber). It is
+  the SAME clean/orthogonal-idempotent extreme AI-Q mechanized in `CenterIsStarCRT` (Ξ★.cⁿ), as distinct
+  from the NILPOTENT (dⁿ=0) species — the carried degree>1 residue AI-Q deferred (CenterIsStar's HONEST
+  RESIDUAL) and which `jea_parity_species_probe.py` confirms is INVISIBLE to the orbit cloud (it lives only
+  in cross_term; the cloud shows only the idempotent species, only at rung 3 — rungs ≥4 are faithful).
+  Generators: `jea_orbit_cloud_gen.py`, `jea_depop_gen.py`; species probe: `jea/jea_parity_species_probe.py`
+  (Δ-G2-gated, fast rung-3 subset).
+  > **Correction (Ⓟ.3″ / Ⓖ★).** An earlier draft said T "negates the 1-dim **witness** line" — i.e. it
+  > identified the dynamic reflection's −1 axis with the static antisymmetric-form witness kernel as ONE
+  > line. That collapses a wedge. In a consistent cycle basis (CenterWitness's), the static kernel
+  > w=(1,−1,1) and the dynamic −1 axis d=(1,−1,0) are **distinct** lines (w is not even a T-eigenvector:
+  > T·w=(0,0,1)); they are glued by **d = (I−T)·w**. So rung 3 carries TWO parity-distinguished lines
+  > (static kernel ⊕ dynamic axis), not one. Mechanized in `Substrate.Logic.Evidence.ElAtlas.
+  > OrbitCloudRung3Wedge` (Ⓟ.3″) and unified with the nilpotent species under one genus
+  > (`Algebra.Wedge.Species` / `…ElAtlas.GenusSpecies`, Ⓖ★: `Ortho` = vanishing cross, refined by the
+  > diagonal `Stable` vs `Nilpotent`; `species-disjoint` certifies the two facets meet only at 0).
 - **B, the antisymmetric form.** The cycle-space antisymmetric (exterior-algebra / Kirchhoff loop) form.
   In the electrical reading B is the loop-space structure dual to the incidence/Laplacian.
 - **The g-calculus pair (n,d).** A G-value is the *class* of a formal-quotient pair (n,d), with class G = n/d.

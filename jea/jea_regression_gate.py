@@ -22,7 +22,8 @@ SLOW = ["jea_carrier_solve", "jea_resident", "jea_onegraph", "jea_bitkernel", "j
 # MECHANIZE-STAR tower). Pure sympy, NO GPU -- so these run unconditionally, regardless of cupy.
 # They print '[PASS]'/'[FAIL]' per check + a 'TALLY: N/N' line (a different format from the
 # cupy modules), so PASS = exit 0 with no '[FAIL]' line.
-SYMPY = ["jea_strictify_gcalc", "jea_strictify_kirchhoff", "jea_strictify_rotation"]
+SYMPY = ["jea_strictify_gcalc", "jea_strictify_kirchhoff", "jea_strictify_rotation",
+         "jea_parity_species_probe"]   # Ⓟ: rung-3 orbit cloud = 22 (idempotent species), fast (rung 3 only)
 
 
 def run_one(mod, timeout=180, sympy=False):
