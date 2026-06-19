@@ -18,9 +18,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FAST = ["jea_branchless", "jea_graded", "jea_divstr", "jea_carrier", "jea_dag_gen", "jea_mega_eval", "jea_eval", "jea_circuit"]
 # SLOW: timing-heavy / hardware-discovery / Agda-driving -- run under --full (or CI), not every commit.
 SLOW = ["jea_carrier_solve", "jea_resident", "jea_onegraph", "jea_bitkernel", "jea_navigator", "jea_agda_apex"]
+# SYMPY (Ξ★.0b): the exact-check strictification rung BELOW the Agda (the SymPy half of the
+# MECHANIZE-STAR tower). Pure sympy, NO GPU -- so these run unconditionally, regardless of cupy.
+# They print '[PASS]'/'[FAIL]' per check + a 'TALLY: N/N' line (a different format from the
+# cupy modules), so PASS = exit 0 with no '[FAIL]' line.
+SYMPY = ["jea_strictify_gcalc", "jea_strictify_kirchhoff", "jea_strictify_rotation"]
 
 
-def run_one(mod, timeout=180):
+def run_one(mod, timeout=180, sympy=False):
     t0 = time.perf_counter()
     try:
         r = subprocess.run([sys.executable, os.path.join(HERE, mod + ".py")],
@@ -28,27 +33,42 @@ def run_one(mod, timeout=180):
     except subprocess.TimeoutExpired:
         return mod, "TIMEOUT", time.perf_counter() - t0
     out = r.stdout + r.stderr
-    ok = (r.returncode == 0) and ("\n  PASS" in out) and ("\n  FAIL" not in out)
+    if sympy:                                      # strictify format: [PASS]/[FAIL] + TALLY
+        ok = (r.returncode == 0) and ("[FAIL]" not in out) and ("[PASS]" in out)
+    else:                                          # cupy-module format: bare '  PASS' / '  FAIL'
+        ok = (r.returncode == 0) and ("\n  PASS" in out) and ("\n  FAIL" not in out)
     return mod, ("PASS" if ok else "FAIL"), time.perf_counter() - t0
 
 
 def main():
+    fails = []
+    # SymPy exact-check rung (Ξ★.0b) -- no GPU; runs always, skipped only if sympy is absent.
+    try:
+        import sympy  # noqa: F401
+        for m in SYMPY:
+            mod, st, dt = run_one(m, sympy=True)
+            print(f"  jea-gate {m:<22} {st:<8} {dt:5.1f}s")
+            if st != "PASS":
+                fails.append((m, st))
+    except Exception as e:
+        print(f"jea-gate: SymPy subset SKIP (no sympy: {type(e).__name__})")
+    # GPU (cupy) modules -- the cross-path regression catchers; skip if no GPU.
     try:
         import cupy; cupy.cuda.Device(0).compute_capability                 # GPU present?
+        mods = FAST + (SLOW if "--full" in sys.argv else [])
+        for m in mods:
+            mod, st, dt = run_one(m)
+            print(f"  jea-gate {m:<22} {st:<8} {dt:5.1f}s")
+            if st != "PASS":
+                fails.append((m, st))
+        tag = f"{len(mods)} cupy + {len(SYMPY)} sympy modules{' [full]' if '--full' in sys.argv else ' [fast]'}"
     except Exception as e:
-        print(f"jea-gate: SKIP (no GPU/cupy: {type(e).__name__}) -- jea requires it; nothing to check here")
-        return 0
-    mods = FAST + (SLOW if "--full" in sys.argv else [])
-    fails = []
-    for m in mods:
-        mod, st, dt = run_one(m)
-        print(f"  jea-gate {m:<18} {st:<8} {dt:5.1f}s")
-        if st != "PASS":
-            fails.append((m, st))
+        print(f"jea-gate: GPU modules SKIP (no GPU/cupy: {type(e).__name__})")
+        tag = f"{len(SYMPY)} sympy modules (GPU skipped)"
     if fails:
         print(f"jea-gate: FAILED -- {', '.join(f'{m}({s})' for m, s in fails)} (a jea module regressed)")
         return 1
-    print(f"jea-gate: OK ({len(mods)} modules{' [full]' if '--full' in sys.argv else ' [fast]'})")
+    print(f"jea-gate: OK ({tag})")
     return 0
 
 
