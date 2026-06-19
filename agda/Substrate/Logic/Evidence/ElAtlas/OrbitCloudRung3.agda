@@ -22,6 +22,12 @@
 -- reflection's −1 line is (1,−1,−1) ≠ the B₃ witness line — they do NOT coincide.
 -- The reflection / idempotent structure holds; the geometric identification with
 -- the B₃ kernel does not (flagged for the handoff to reconcile).
+--
+-- RESOLVED in OrbitCloudRung3Wedge (Ⓟ.3″): re-expressing the SAME reflection in
+-- CenterWitness's cycle coordinates (this module used the probe's pseudo-inverse
+-- coords — a different basis) shows the two lines are genuinely distinct (not a
+-- basis artifact) and related by d = (I−T)·w. So the doc collapsed a WEDGE of two
+-- parity facets (static B₃ kernel ⊕ dynamic reflection axis), not "one line."
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
