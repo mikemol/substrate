@@ -62,17 +62,27 @@ class Extruder:
     def __init__(self, intern: J.Intern, residue=None):
         self.I = intern
         self.uncovered: set = set()
+        # residue is a TAGGED stream [(tag, value), ...] in extrude-traversal order, the per-occurrence
+        # cofactor (tag ∈ {const, name, defname}). None = projection mode (read the collapsed payload).
         self._res = iter(residue) if residue is not None else None
 
+    def _pop(self, tag: str):
+        """Pop the next residue record, asserting its tag — a tag mismatch means the capture/replay
+        traversals diverged, which would silently corrupt reconstruction; fail LOUD instead."""
+        t, v = next(self._res)
+        if t != tag:
+            raise AssertionError(f"residue misalignment: extrude wants {tag!r}, residue has {t!r}={v!r}")
+        return v
+
     def _const(self, n) -> str:
-        # replay the per-occurrence value from the residue cofactor if present; else the shared
-        # node's payload (the FIRST-occurrence value -- the projection / lossy reading).
         if self._res is not None:
-            try:
-                return next(self._res)
-            except StopIteration:
-                pass
+            return self._pop("const")
         return n.payload[0] if n.payload else "None"
+
+    def _name(self, n) -> str:
+        if self._res is not None:
+            return self._pop("name")
+        return self._nm(n)
 
     def _nm(self, n) -> str:
         return n.payload[0] if n.payload else (n.role or n.op or "_")
@@ -87,7 +97,7 @@ class Extruder:
         n = self.I.nodes[i]
         k = n.kind
         if k == "Name":
-            return self._nm(n)
+            return self._name(n)
         if k == "Constant":
             return self._const(n)
         if k == "Attribute":
@@ -148,7 +158,7 @@ class Extruder:
             # field-flatten heuristic (obstruction B): children = [args-or-Block-of-params, body-stmts...].
             # Covers the common case (no decorators / annotations / explicit returns); those would be
             # mis-split -> reported as the field-structure RESIDUE, not silently emitted wrong.
-            name = n.payload[0] if n.payload else "f"
+            name = self._pop("defname") if self._res is not None else (n.payload[0] if n.payload else "f")
             ch = list(n.children)
             params, body = [], []
             if ch:
@@ -203,6 +213,94 @@ def capture_residue(src: str) -> list:
     return [repr(n.value) for n in _preorder(ast.parse(src)) if isinstance(n, ast.Constant)]
 
 
+def _capture(node, out):
+    """Tagged per-occurrence residue in extrude-traversal order (the FULL cofactor: values + bound-name
+    spellings + def names). Mirrors the Extruder's child-selection EXACTLY so the streams align slot-for-
+    slot (the _pop tag-assertion catches any divergence). Covers the same subset the extruder emits;
+    decorators/returns/annotations + uncovered kinds are the field-residue (B) layer, not handled here."""
+    t = type(node).__name__
+    if t == "Module":
+        for s in node.body:
+            _capture(s, out)
+    elif t in ("FunctionDef", "AsyncFunctionDef"):
+        out.append(("defname", node.name))
+        for a in node.args.args:                       # params -> Names (extrude emits them as names)
+            out.append(("name", a.arg))
+        for s in node.body:
+            _capture(s, out)
+    elif t == "ClassDef":
+        out.append(("defname", node.name))
+        for s in node.body:
+            _capture(s, out)
+    elif t == "Assign":
+        for tg in node.targets:
+            _capture(tg, out)
+        _capture(node.value, out)
+    elif t == "Return":
+        if node.value is not None:
+            _capture(node.value, out)
+    elif t == "Expr":
+        _capture(node.value, out)
+    elif t == "If":
+        _capture(node.test, out)
+        for s in node.body:
+            _capture(s, out)
+    elif t == "Name":
+        out.append(("name", node.id))
+    elif t == "Constant":
+        out.append(("const", repr(node.value)))
+    elif t == "Attribute":
+        _capture(node.value, out)                      # base only; .attr is referential (in the key)
+    elif t == "BinOp":
+        _capture(node.left, out); _capture(node.right, out)
+    elif t == "UnaryOp":
+        _capture(node.operand, out)
+    elif t == "BoolOp":
+        for v in node.values:
+            _capture(v, out)
+    elif t == "Compare":
+        _capture(node.left, out)
+        for c in node.comparators:
+            _capture(c, out)
+    elif t == "Call":
+        _capture(node.func, out)
+        for a in node.args:
+            _capture(a, out)
+    # else: an uncovered kind -- contributes no residue (and the extruder marks it #UNCOVERED).
+
+
+def capture_full(src: str) -> list:
+    out = []
+    for stmt in ast.parse(src).body:
+        _capture(stmt, out)
+    return out
+
+
+def full_retraction(src: str) -> dict:
+    """The complete (AST-faithful) retraction: recon(skeleton, FULL residue) re-parses to the SAME AST as
+    the original -- recovering values (A) AND bound-name spellings / def names (C), even when the skeleton
+    COLLAPSES them (alpha-equivalent defs share one node). Faithfulness is checked at the AST grade
+    (ast.dump equality): trivia/formatting/comments are pure GAUGE -- ast.parse strips them, so two
+    byte-different ast-equal sources are the SAME program; true byte-exactness would need a CST-trivia
+    residue layer (noted, not built). Field structure (B) for decorators/returns is the remaining layer."""
+    I = J.Intern(); roots = J.lower_source(src, I)
+    proj, _ = extrude(I, roots)                              # projection (collapsed payloads)
+    res = capture_full(src)                                  # the full tagged cofactor
+    I2 = J.Intern(); roots2 = J.lower_source(src, I2)
+    faith, unc = extrude(I2, roots2, residue=res)            # retraction
+    try:
+        ast_faithful = ast.dump(ast.parse(faith)) == ast.dump(ast.parse(src))
+    except SyntaxError:
+        ast_faithful = False
+    proj_faithful = False
+    try:
+        proj_faithful = ast.dump(ast.parse(proj)) == ast.dump(ast.parse(src))
+    except SyntaxError:
+        pass
+    return {"projection": proj, "retraction": faith, "ast_faithful": ast_faithful,
+            "proj_faithful": proj_faithful, "uncovered": unc}
+
+
 def retraction(src: str) -> dict:
     """Demonstrate the projection -> RETRACTION lift. Skeleton-only extrude reads the shared (collapsed)
     payload = a lossy PROJECTION; extrude WITH the residue cofactor replays per-occurrence values =
@@ -210,7 +308,7 @@ def retraction(src: str) -> dict:
     whether the residue-reading recovered every literal the projection collapsed."""
     I = J.Intern(); roots = J.lower_source(src, I)
     proj, _ = extrude(I, roots)                       # skeleton-only: lossy projection
-    res = capture_residue(src)                        # the kept cofactor
+    res = capture_full(src)                           # the kept cofactor (tagged stream)
     I2 = J.Intern(); roots2 = J.lower_source(src, I2)
     faith, _ = extrude(I2, roots2, residue=res)       # skeleton + residue: retraction
     # the original literal multiset vs each reading's literal multiset (the value axis of faithfulness)
@@ -332,6 +430,17 @@ if __name__ == "__main__":
     print("  RETRACTION       :", repr(R["retraction"]), " <- recon(skeleton, residue) == original")
     print(f"  proj_lost={R['proj_lost']}  retraction_faithful={R['retraction_faithful']}  "
           f"(split-idempotent: the cofactor recovers what the projection dropped)")
+
+    print("\n── Ⓤ.retract-full: the COMPLETE (AST-faithful) retraction — values (A) + names/defnames (C) ──")
+    asrc = "def f(x):\n    return x\ndef g(y):\n    return y\n"     # alpha-equivalent: share ONE skeleton node
+    F = full_retraction(asrc)
+    print("  IN          :", repr(asrc))
+    print("  projection  :", repr(F["projection"]), " <- g/y collapsed onto f/x (alpha-equivalent)")
+    print("  RETRACTION  :", repr(F["retraction"]))
+    print(f"  proj_faithful(AST)={F['proj_faithful']}  retraction_faithful(AST)={F['ast_faithful']}  "
+          f"(recovers the collapsed defname+param even though the skeleton shares the node)")
+    print("  B-residual (documented): decorators / returns-annotations need field-tags -> #UNCOVERED "
+          "marker (visible, never silent). Trivia/comments = gauge (ast strips it; byte-exact needs CST).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()

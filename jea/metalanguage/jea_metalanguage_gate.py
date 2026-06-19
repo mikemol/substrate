@@ -140,7 +140,14 @@ def chk_extrude_ir():
     R = E.retraction("z = f(1, 2) + 3\n")
     assert R["proj_lost"], "projection must lose (collapse distinct literals) -- else the test is vacuous"
     assert R["retraction_faithful"], "residue replay must recover every literal (recon(skel,residue)==orig)"
-    return "PASS (Ⓤ.byte: orbital identity; seam computed; residue cofactor lifts projection→retraction)"
+    # Ⓤ.retract-full: the COMPLETE (AST-faithful) retraction recovers values (A) AND names/defnames (C)
+    # even under ALPHA-COLLAPSE (two alpha-equivalent defs share one skeleton node). Non-vacuous: the
+    # projection must be AST-UNfaithful on this case, the full retraction AST-faithful.
+    Fc = E.full_retraction("def f(x):\n    return x\ndef g(y):\n    return y\n")
+    assert not Fc["proj_faithful"], "alpha-collapse projection must be AST-unfaithful (else test vacuous)"
+    assert Fc["ast_faithful"], "full retraction must recover the collapsed defname+param (AST-faithful)"
+    return ("PASS (Ⓤ.byte+retract-full: orbital identity; seam computed; cofactor lifts projection→"
+            "retraction; AST-faithful under alpha-collapse)")
 
 
 def chk_pysim():
