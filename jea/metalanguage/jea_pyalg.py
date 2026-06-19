@@ -432,9 +432,15 @@ _TRIVIA = ("Whitespace", "Comma", "Newline", "Semicolon", "EmptyLine", "Colon",
 class CstLowerer:
     """Lower a libcst tree into the SAME IR/Intern as the ast lowerer, canonicalizing cst's
     structural vocabulary to the shared heads and dropping trivia into residue."""
-    def __init__(self, intern: Intern):
+    def __init__(self, intern: Intern, bound: Optional[set] = None):
         self.I = intern
         self.scopes: list[dict] = [{}]
+        # names with a STORE occurrence ANYWHERE (assignment target / param / def-name / for-target /
+        # ...): BOUND ⇒ alpha-quotient (role). Everything else is FREE/referential ⇒ its name is its
+        # identity ⇒ the KEY. Mirrors the ast lowerer's flat `self.bound` + the free-Name fix; computed
+        # once from libcst's ExpressionContextProvider in lower_source_cst. Empty default = all-free
+        # (back-compat for any direct CstLowerer use without the prescan).
+        self.bound: set = bound if bound is not None else set()
 
     def _role(self, name: str) -> str:
         for sc in reversed(self.scopes):
@@ -449,7 +455,15 @@ class CstLowerer:
         """Map a cst node to (canonical_kind, op, lit, role, payload). Returns the shared-vocab head."""
         t = type(node).__name__
         if t == "Name":
-            return "Name", "", "", self._role(node.value), (node.value,)
+            nm = node.value
+            if nm in self.bound:
+                # BOUND: alpha-equivalent -> role-quotient (identity in role, name in payload-residue).
+                return "Name", "", "", self._role(nm), (nm,)
+            # FREE / referential (global/builtin/imported): identity IS the name -> the KEY (`op`), so
+            # two distinct free names do NOT collapse. Mirrors the ast lowerer's free-Name fix; without
+            # it cst role-quotiented ALL names (abs ≡ len, self.foo ≡ other.foo -- the cst-arm false-
+            # duplicate Ⓤ.Σ1 surfaced).
+            return "Name", nm, "", "", (nm,)
         if t == "Integer":
             return "Constant", "", "int", "", (node.value,)
         if t == "Float":
@@ -535,12 +549,30 @@ class CstLowerer:
 
 
 def lower_source_cst(src: str, intern: Intern) -> list[int]:
-    """Lower via libcst into the SAME intern. Returns top-level statement ids."""
+    """Lower via libcst into the SAME intern. Returns top-level statement ids.
+    Prescans the module with libcst's ExpressionContextProvider to find the BOUND names (any STORE
+    occurrence), so the CstLowerer applies the SAME free-vs-bound split as the ast lowerer (free name
+    -> KEY, bound name -> role-quotient). Without it cst role-quotients every name and distinct free
+    globals collapse (the cst-arm false-duplicate). Falls back to all-free if metadata is unavailable."""
     if not _HAS_CST:
         raise RuntimeError("libcst not available")
     mod = cst.parse_module(src)
-    lw = CstLowerer(intern)
-    out = lw.lower(mod)
+    bound: set = set()
+    module_to_lower = mod
+    try:
+        from libcst.metadata import MetadataWrapper, ExpressionContextProvider, ExpressionContext
+        wrapper = MetadataWrapper(mod)
+        ctxs = wrapper.resolve(ExpressionContextProvider)
+        # bound = the names that are ever a STORE target (mirrors ast's "ctx is Store anywhere -> bound",
+        # flat across scopes like the ast lowerer's self.bound). NB import aliases are NOT Name STORE
+        # nodes -> they stay FREE, matching the ast lowerer (which also treats import names as free).
+        bound = {n.value for n, c in ctxs.items()
+                 if type(n).__name__ == "Name" and c == ExpressionContext.STORE}
+        module_to_lower = wrapper.module       # metadata is keyed on the wrapper's module nodes
+    except Exception:
+        pass                                   # metadata unavailable -> all-free fallback (still no crash)
+    lw = CstLowerer(intern, bound=bound)
+    out = lw.lower(module_to_lower)
     return out if isinstance(out, list) else [out]
 
 

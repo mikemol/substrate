@@ -38,13 +38,13 @@ def chk_pyalg_referential():
     (faithful/distinct species); bound ⇒ role-quotient (the alpha-orbit, deliberately merged)."""
     import jea_pyalg as A
 
-    def pair(s1, s2):
+    def pair(lower, s1, s2):
         # lower BOTH into the SAME intern table — id-equality is only meaningful within one table
         # (a fresh Intern per source restarts ids at 0, so same-SHAPED sources coincide by INDEX,
         # not by structure; that would make this gate vacuous). Same table ⇒ a shared structure
         # reuses an id, a referential difference allocates a new one.
         I = A.Intern()
-        return A.lower_source(s1, I)[0], A.lower_source(s2, I)[0]
+        return lower(s1, I)[0], lower(s2, I)[0]
 
     # (1) DISTINCT REFERENTS must not collapse — one minimal pair per dropped-str-field class:
     distinct = [
@@ -56,18 +56,26 @@ def chk_pyalg_referential():
         ("keyword.arg",         "f(k=1)\n",           "f(j=1)\n"),
         ("Global.names",        "global x\n",         "global y\n"),
     ]
-    for label, s1, s2 in distinct:
-        i1, i2 = pair(s1, s2)
-        assert i1 != i2, f"false-DUPLICATE: distinct {label} interned to ONE id ({s1!r}≡{s2!r})"
-
-    # (2) the DUAL — the fix must NOT over-distinguish: a BOUND-name rename must still role-quotient.
-    # Same referential `.foo`, renamed bound receiver/param ⇒ the SAME id (the alpha-orbit holds);
-    # a referential `.attr` difference under that same shape must STILL split.
-    fa, fb = pair("def f(self, x):\n    return self.foo + x\n", "def g(this, y):\n    return this.foo + y\n")
-    assert fa == fb, "alpha-equivalence LOST: renamed bound names must role-quotient to one id"
-    fa2, fc = pair("def f(self, x):\n    return self.foo + x\n", "def h(self, x):\n    return self.bar + x\n")
-    assert fa2 != fc, "referential .attr must split even under an alpha-equivalent body"
-    return "PASS (referential→key: 7 distinct-referent classes split; alpha-quotient preserved)"
+    # BOTH arms must satisfy referential identity (Ⓤ.Σ1-fix gave cst the same free-vs-bound split as
+    # ast). The cst arm runs only when libcst resolves (toolchain-gated, like jea_cuda); ast always.
+    arms = [("ast", A.lower_source)]
+    if getattr(A, "_HAS_CST", False):
+        arms.append(("cst", A.lower_source_cst))
+    for arm, lower in arms:
+        for label, s1, s2 in distinct:
+            i1, i2 = pair(lower, s1, s2)
+            assert i1 != i2, f"[{arm}] false-DUPLICATE: distinct {label} interned to ONE id ({s1!r}≡{s2!r})"
+        # (2) the DUAL — the fix must NOT over-distinguish: a BOUND-name rename must still role-quotient.
+        # Same referential `.foo`, renamed bound receiver/param ⇒ the SAME id (the alpha-orbit holds);
+        # a referential `.attr` difference under that same shape must STILL split.
+        fa, fb = pair(lower, "def f(self, x):\n    return self.foo + x\n",
+                             "def g(this, y):\n    return this.foo + y\n")
+        assert fa == fb, f"[{arm}] alpha-equivalence LOST: renamed bound names must role-quotient to one id"
+        fa2, fc = pair(lower, "def f(self, x):\n    return self.foo + x\n",
+                              "def h(self, x):\n    return self.bar + x\n")
+        assert fa2 != fc, f"[{arm}] referential .attr must split even under an alpha-equivalent body"
+    detail = "ast+cst" if len(arms) == 2 else "ast (cst: libcst absent)"
+    return f"PASS (referential→key on {detail}: 7 distinct-referent classes split; alpha-quotient preserved)"
 
 
 def chk_trace_lazy():
