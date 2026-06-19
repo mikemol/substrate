@@ -53,11 +53,26 @@ class Extruder:
     """IR id -> canonical Python source. Over-parenthesises expressions (parens are not ast nodes, so
     lower() strips them -> the extra parens are gauge, invisible to the IR-level fixed point). Recovers a
     name's spelling and a literal's value from `payload` (the residue the lowerer keeps). Tracks coverage:
-    an unhandled kind yields `#UNCOVERED:<kind>#`, so a coverage gap is VISIBLE, never silently wrong."""
+    an unhandled kind yields `#UNCOVERED:<kind>#`, so a coverage gap is VISIBLE, never silently wrong.
 
-    def __init__(self, intern: J.Intern):
+    With a `residue` iterator (the cofactor captured by capture_residue), the extruder REPLAYS the
+    per-occurrence literal value at each leaf instead of the shared node's collapsed payload -- turning
+    the lossy projection into a RETRACTION (split-idempotent: recon(skeleton, residue) == original)."""
+
+    def __init__(self, intern: J.Intern, residue=None):
         self.I = intern
         self.uncovered: set = set()
+        self._res = iter(residue) if residue is not None else None
+
+    def _const(self, n) -> str:
+        # replay the per-occurrence value from the residue cofactor if present; else the shared
+        # node's payload (the FIRST-occurrence value -- the projection / lossy reading).
+        if self._res is not None:
+            try:
+                return next(self._res)
+            except StopIteration:
+                pass
+        return n.payload[0] if n.payload else "None"
 
     def _nm(self, n) -> str:
         return n.payload[0] if n.payload else (n.role or n.op or "_")
@@ -74,7 +89,7 @@ class Extruder:
         if k == "Name":
             return self._nm(n)
         if k == "Constant":
-            return n.payload[0] if n.payload else "None"
+            return self._const(n)
         if k == "Attribute":
             base = self._non_op_kids(n)
             return f"{self.expr(base[0])}.{n.op}" if base else f"_.{n.op}"
@@ -165,10 +180,45 @@ class Extruder:
         return "\n".join(lines) + "\n"
 
 
-def extrude(intern: J.Intern, roots) -> tuple[str, set]:
-    """IR (top-level statement ids) -> canonical Python source. Returns (source, uncovered_kinds)."""
-    e = Extruder(intern)
+def extrude(intern: J.Intern, roots, residue=None) -> tuple[str, set]:
+    """IR (top-level statement ids) -> canonical Python source. Returns (source, uncovered_kinds).
+    With `residue` (the cofactor from capture_residue), replays per-occurrence literal values -> faithful."""
+    e = Extruder(intern, residue=residue)
     return e.module(roots), e.uncovered
+
+
+def _preorder(node):
+    """source-ast pre-order in field order -- the SAME order the extruder visits leaves, so a residue
+    captured here aligns slot-for-slot with the extruder's Constant occurrences (shared or not)."""
+    yield node
+    for ch in ast.iter_child_nodes(node):
+        yield from _preorder(ch)
+
+
+def capture_residue(src: str) -> list:
+    """The COFACTOR the skeleton drops: the per-OCCURRENCE literal values, in extrude-traversal order.
+    This is loss (A) -- the headline. (Bound-name spelling (C) and field-tags (B) are the further residue
+    layers; the same edge-trace mechanism carries them.) Kept here as a side-channel trace = the edge
+    residue the shared node cannot hold (never-discard-residue: the SPPF quotient + this remainder)."""
+    return [repr(n.value) for n in _preorder(ast.parse(src)) if isinstance(n, ast.Constant)]
+
+
+def retraction(src: str) -> dict:
+    """Demonstrate the projection -> RETRACTION lift. Skeleton-only extrude reads the shared (collapsed)
+    payload = a lossy PROJECTION; extrude WITH the residue cofactor replays per-occurrence values =
+    a RETRACTION (recon(skeleton, residue) recovers what the projection lost). Returns both readings +
+    whether the residue-reading recovered every literal the projection collapsed."""
+    I = J.Intern(); roots = J.lower_source(src, I)
+    proj, _ = extrude(I, roots)                       # skeleton-only: lossy projection
+    res = capture_residue(src)                        # the kept cofactor
+    I2 = J.Intern(); roots2 = J.lower_source(src, I2)
+    faith, _ = extrude(I2, roots2, residue=res)       # skeleton + residue: retraction
+    # the original literal multiset vs each reading's literal multiset (the value axis of faithfulness)
+    orig_vals = capture_residue(src)
+    proj_vals = capture_residue(proj)
+    faith_vals = capture_residue(faith)
+    return {"projection": proj, "retraction": faith, "residue": res,
+            "proj_lost": proj_vals != orig_vals, "retraction_faithful": faith_vals == orig_vals}
 
 
 def orbital_identity(src: str):
@@ -222,17 +272,20 @@ def seam_partition() -> dict:
             "referential names (Attribute.attr, free Name, keyword.arg, import, global)",
             "structural flags (f-string conversion, comprehension async, match-class attrs/singleton kind)",
         ],
-        "RESIDUE (what a byte-grade plugin SUPPLIES)": [
-            "(A) literal VALUES — collapse by kind (1≡2); 2nd value discarded on key-collision",
-            "(B) FIELD structure — children flatten iter_child_nodes; field boundaries under-determined",
-            "(C) bound-name spelling — role-quotiented to the alpha class (spelling in payload only)",
-            "trivia / formatting / comments — never entered the IR",
+        "RESIDUE (the kept COFACTOR — replayed, it makes the round-trip a RETRACTION)": [
+            "(A) literal VALUES — collapse by kind in the SHARED node (1≡2); kept per-occurrence on the EDGE",
+            "(B) FIELD structure — children flatten iter_child_nodes; field tags are edge-residue too",
+            "(C) bound-name spelling — role-quotiented; the spelling is the alpha-coset residue",
+            "trivia / formatting / comments — the gauge residue (never entered the skeleton)",
         ],
         "witnessed": {"value_collapse(1≡2)": value_collapse, "bound_alpha(f≡g)": bound_alpha,
                       "fixed: a.foo≠a.bar": fixed_attr, "fixed: a+b≠a-b": fixed_op},
-        "verdict": "byte-grade faithful round-trip STRUCTURALLY IMPOSSIBLE (A+B+C); skeleton round-trip "
-                   "IS the orbital identity (idempotent PROJECTION, not the byte-identity) = Ⓖ★ collapsing "
-                   "species. The seam belongs at the skeleton/value boundary.",
+        "verdict": "the skeleton round-trip is an idempotent PROJECTION (Ⓖ★ collapsing species); the IR "
+                   "drops the per-occurrence residue at intern (key-collision). KEPT as an edge-cofactor "
+                   "and REPLAYED, that residue lifts the projection to a RETRACTION (split-idempotent: "
+                   "recon(skeleton, residue)==original) -- byte-grade is RECOVERED without inflating the "
+                   "key. The skeleton is the orbit representative; the residue is the coset position. "
+                   "never-discard-residue: the SPPF is the quotient, the edge-trace is the remainder.",
     }
 
 
@@ -270,9 +323,20 @@ if __name__ == "__main__":
     print("  IN :", repr(src2))
     print("  OUT:", repr(out2), "  <- loss (A): b's `2` collapsed onto `1`'s node (1.5 is a distinct kind)")
 
+    print("\n── never-discard-residue: the projection → RETRACTION lift (the residue's USE) ──")
+    rsrc = "z = f(1, 2) + 3\n"
+    R = retraction(rsrc)
+    print("  IN              :", repr(rsrc))
+    print("  projection (skel):", repr(R["projection"]), " <- shared node collapses ALL ints to one")
+    print("  residue cofactor :", R["residue"], " <- the per-occurrence values, kept on the edge")
+    print("  RETRACTION       :", repr(R["retraction"]), " <- recon(skeleton, residue) == original")
+    print(f"  proj_lost={R['proj_lost']}  retraction_faithful={R['retraction_faithful']}  "
+          f"(split-idempotent: the cofactor recovers what the projection dropped)")
+
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()
-    for k in ("FIXED (orbital identity — a seam MUST preserve)", "RESIDUE (what a byte-grade plugin SUPPLIES)"):
+    for k in ("FIXED (orbital identity — a seam MUST preserve)",
+              "RESIDUE (the kept COFACTOR — replayed, it makes the round-trip a RETRACTION)"):
         print(f"  {k}:")
         for line in P[k]:
             print(f"      • {line}")

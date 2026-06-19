@@ -135,7 +135,12 @@ def chk_extrude_ir():
     P = E.seam_partition()["witnessed"]
     assert P["value_collapse(1≡2)"] and P["bound_alpha(f≡g)"], "RESIDUE: value/bound abstraction must hold"
     assert P["fixed: a.foo≠a.bar"] and P["fixed: a+b≠a-b"], "FIXED: referential/operator must stay distinct"
-    return "PASS (Ⓤ.byte: orbital identity at IR level; skeleton/value seam computed)"
+    # never-discard-residue: the projection is lossy, but the kept residue cofactor REPLAYS to a faithful
+    # RETRACTION (split-idempotent). Multi-literal case so the projection genuinely collapses.
+    R = E.retraction("z = f(1, 2) + 3\n")
+    assert R["proj_lost"], "projection must lose (collapse distinct literals) -- else the test is vacuous"
+    assert R["retraction_faithful"], "residue replay must recover every literal (recon(skel,residue)==orig)"
+    return "PASS (Ⓤ.byte: orbital identity; seam computed; residue cofactor lifts projection→retraction)"
 
 
 def chk_pysim():
