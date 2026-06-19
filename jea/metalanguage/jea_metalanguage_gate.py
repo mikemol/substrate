@@ -26,6 +26,50 @@ def chk_pyalg():
     return "PASS"
 
 
+def chk_pyalg_referential():
+    """Ⓤ.gate: REFERENTIAL IDENTITY lives in the KEY — distinct referents must NOT collapse to one
+    id, while the rename-orbit (BOUND names) must STILL quotient. Guards the false-DUPLICATE class:
+    a referential str-field captured in NEITHER the key NOR the payload (it is not an ast NODE child,
+    so the generic `iter_child_nodes` walk drops it) ⇒ two distinct referents intern to ONE node.
+    That bug recurred across 5 ast node classes (Attribute/alias/keyword/ImportFrom/Global) + the
+    original free-Name abs-vs-str collapse. A future lowerer change that re-drops such a field
+    collapses a pair below ⇒ this FAILS, blocking by construction (the G9 escalation from the Ⓤ-fix
+    arc). The TWO directions ARE the Ⓖ★ idempotent-vs-invertible genus line: referential ⇒ KEY
+    (faithful/distinct species); bound ⇒ role-quotient (the alpha-orbit, deliberately merged)."""
+    import jea_pyalg as A
+
+    def pair(s1, s2):
+        # lower BOTH into the SAME intern table — id-equality is only meaningful within one table
+        # (a fresh Intern per source restarts ids at 0, so same-SHAPED sources coincide by INDEX,
+        # not by structure; that would make this gate vacuous). Same table ⇒ a shared structure
+        # reuses an id, a referential difference allocates a new one.
+        I = A.Intern()
+        return A.lower_source(s1, I)[0], A.lower_source(s2, I)[0]
+
+    # (1) DISTINCT REFERENTS must not collapse — one minimal pair per dropped-str-field class:
+    distinct = [
+        ("Attribute.attr",      "a.foo\n",           "a.bar\n"),
+        ("free Name (abs/str)", "abs(z)\n",          "str(z)\n"),
+        ("alias (import)",      "import os\n",        "import sys\n"),
+        ("alias.name (from)",   "from m import n\n",  "from m import q\n"),
+        ("ImportFrom.module",   "from a import x\n",  "from b import x\n"),
+        ("keyword.arg",         "f(k=1)\n",           "f(j=1)\n"),
+        ("Global.names",        "global x\n",         "global y\n"),
+    ]
+    for label, s1, s2 in distinct:
+        i1, i2 = pair(s1, s2)
+        assert i1 != i2, f"false-DUPLICATE: distinct {label} interned to ONE id ({s1!r}≡{s2!r})"
+
+    # (2) the DUAL — the fix must NOT over-distinguish: a BOUND-name rename must still role-quotient.
+    # Same referential `.foo`, renamed bound receiver/param ⇒ the SAME id (the alpha-orbit holds);
+    # a referential `.attr` difference under that same shape must STILL split.
+    fa, fb = pair("def f(self, x):\n    return self.foo + x\n", "def g(this, y):\n    return this.foo + y\n")
+    assert fa == fb, "alpha-equivalence LOST: renamed bound names must role-quotient to one id"
+    fa2, fc = pair("def f(self, x):\n    return self.foo + x\n", "def h(self, x):\n    return self.bar + x\n")
+    assert fa2 != fc, "referential .attr must split even under an alpha-equivalent body"
+    return "PASS (referential→key: 7 distinct-referent classes split; alpha-quotient preserved)"
+
+
 def chk_trace_lazy():
     import jea_pyalg as A
     I = A.Intern(); D = A.PyDivStr(I)
@@ -268,6 +312,7 @@ def chk_seam_provenance():
 
 CHECKS = [
     ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
+    ("jea_pyalg.refr",  chk_pyalg_referential),
     ("jea_pysim",       chk_pysim),
     ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
