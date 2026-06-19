@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := CenterWitness.agda Proofs.agda StarIsGNot.agda
+FILES := CenterIsStar.agda CenterWitness.agda Proofs.agda StarIsGNot.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
