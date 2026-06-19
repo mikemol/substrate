@@ -122,6 +122,22 @@ def chk_trace_lazy():
     return "PASS"
 
 
+def chk_extrude_ir():
+    # Ⓤ.byte: the IR→Python extruder realises the orbital identity AT THE IR LEVEL
+    # (lower∘extrude∘lower == lower) and computes the FIXED/RESIDUE seam-partition. Assert the
+    # orbital identity holds + the partition's witnessed losses/fixities (value-collapse + bound-alpha
+    # on the RESIDUE side; referential/operator distinctness on the FIXED side).
+    import jea_extrude_ir as E
+    r = E.orbital_identity("def f(x, y):\n    z = x + y\n    return z * 2\n")
+    assert r["ir_fixed"], "extrude must round-trip at the IR level (orbital identity)"
+    assert not r["uncovered"], f"covered corpus left uncovered kinds: {r['uncovered']}"
+    assert r["steps"] <= 2, f"canonical byte cycle must reach a fixed point in <=2 steps (got {r['steps']})"
+    P = E.seam_partition()["witnessed"]
+    assert P["value_collapse(1≡2)"] and P["bound_alpha(f≡g)"], "RESIDUE: value/bound abstraction must hold"
+    assert P["fixed: a.foo≠a.bar"] and P["fixed: a+b≠a-b"], "FIXED: referential/operator must stay distinct"
+    return "PASS (Ⓤ.byte: orbital identity at IR level; skeleton/value seam computed)"
+
+
 def chk_pysim():
     import jea_pysim
     src = "def f(x):\n    return x + x\ndef g(y):\n    return y + y\n"   # f,g alpha-equivalent
@@ -339,6 +355,7 @@ def chk_seam_provenance():
 CHECKS = [
     ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
     ("jea_pyalg.refr",  chk_pyalg_referential),
+    ("jea_extrude_ir",  chk_extrude_ir),
     ("jea_pysim",       chk_pysim),
     ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
