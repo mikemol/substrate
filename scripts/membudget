@@ -1,85 +1,105 @@
 #!/usr/bin/env bash
-# membudget — a concurrent-memory-budget SEMAPHORE wrapping `systemd-run --scope`.
+# membudget — a recursion-aware concurrent-memory-budget SEMAPHORE over `systemd-run --scope`.
 #
-# WHY: `systemd-run --user --scope -p MemoryMax=N` caps ONE subprocess tree (the
-# cgroup OOM-killer kills only that scope). But launching several capped scopes
-# can still oversubscribe the box's RAM. This wrapper adds the missing piece: a
-# shared cotype ledger of the global budget. `run` atomically LEASES the requested
-# MB before launching the scope and REFUSES if the remaining budget can't cover it
-# — so a forgotten second launch is blocked, not OOM'd. Leases are released on exit
-# and auto-GC'd if an owner dies (SIGKILL leaves no trap), keeping the ledger honest.
+# WHY: `systemd-run --user --scope -p MemoryMax=N` caps ONE subprocess tree (kernel kills
+# only that scope). This adds a shared cotype ledger so the SUM of concurrent trees stays
+# within a global budget — and is RECURSION-AWARE so a membudget-launched job may itself
+# call membudget without deadlock or double-counting:
+#
+#   * TOP-LEVEL run (no MEMBUDGET_PARENT): leases <MB> from the GLOBAL budget and launches
+#     the command in a fresh `systemd-run --scope` with MemoryMax=<MB> (one cgroup for the
+#     whole subtree).
+#   * NESTED run (MEMBUDGET_PARENT set): SUBALLOCATES <MB> from its PARENT's reservation
+#     (not the global pool the ancestor already consumed) and runs the command IN-SCOPE
+#     (no new cgroup — nested `systemd-run --scope` would make a SIBLING cgroup, escaping
+#     the parent's cap; staying in-scope keeps the top-level MemoryMax bounding the subtree).
+#   * REFUSE (exit 3) if the relevant budget (global or parent) can't cover the request —
+#     so over-subscription is blocked, not OOM'd. A child needed by its parent draws from
+#     the parent's reservation (sized for the subtree), so it never deadlocks on the global
+#     pool. Leases release on exit + cascade-GC when an owner (or its parent) dies.
 #
 # Usage:
-#   membudget init [TOTAL_MB]              # create/reset the ledger (default 70% RAM)
-#   membudget status                       # show TOTAL / leased / free + active leases
-#   membudget run <MB> <label> -- <cmd...> # lease MB, run cmd in a MemoryMax=<MB> scope, release
-#
-# Ledger path: $MEMBUDGET_FILE (default ~/.cache/membudget/budget.cotype).
+#   membudget init [TOTAL_MB]              # create/reset ledger (default 70% RAM)
+#   membudget status                       # TOTAL / top-level-leased / global-free + lease tree
+#   membudget run <MB> <label> -- <cmd...> # lease MB (global or sub), run, release
 set -euo pipefail
 
+SELF="$(realpath "$0")"; SELFDIR="$(dirname "$SELF")"
+case ":$PATH:" in *":$SELFDIR:"*) ;; *) export PATH="$SELFDIR:$PATH";; esac   # children can call `membudget`
 FILE="${MEMBUDGET_FILE:-$HOME/.cache/membudget/budget.cotype}"
 LOCK="$FILE.lock"
 mkdir -p "$(dirname "$FILE")"
 
 default_total() { awk '/MemTotal/{print int($2*7/10/1024)}' /proc/meminfo; }
-
-ensure() {
-  [ -f "$FILE" ] || cat > "$FILE" <<EOF
-# membudget cotype — concurrent memory-budget semaphore (scripts/membudget).
-# Free = TOTAL_MB - Σ active LEASE mb. Leases auto-GC when their owner pid dies.
-# LEASE <id> <mb> <pid> <epoch> <label>
+ensure() { [ -f "$FILE" ] || cat > "$FILE" <<EOF
+# membudget cotype — recursion-aware concurrent memory-budget semaphore (scripts/membudget).
+# Global free = TOTAL_MB - Σ top-level LEASE mb; a nested lease draws from its PARENT's mb.
+# LEASE <id> <mb> <pid> <epoch> <parent|-> <label>
 TOTAL_MB $(default_total)
 EOF
 }
-
 with_lock() { exec {LKFD}>"$LOCK"; flock "$LKFD"; }
 unlock()    { flock -u "$LKFD" 2>/dev/null || true; }
 
-gc() { # drop leases whose owner pid is gone; preserve comments + TOTAL
-  local tmp; tmp=$(mktemp)
-  while IFS= read -r line || [ -n "$line" ]; do
-    case "$line" in
-      LEASE\ *) set -- $line; kill -0 "$4" 2>/dev/null && printf '%s\n' "$line" >> "$tmp" ;;
-      *)        printf '%s\n' "$line" >> "$tmp" ;;
-    esac
-  done < "$FILE"
-  mv "$tmp" "$FILE"
+gc() { # drop leases whose owner pid died, then cascade-drop leases whose parent vanished
+  local tmp chg=1
+  while [ "$chg" = 1 ]; do
+    chg=0; tmp=$(mktemp)
+    while IFS= read -r line; do
+      case "$line" in
+        LEASE\ *) set -- $line   # $2=id $4=pid $6=parent
+          if ! kill -0 "$4" 2>/dev/null; then chg=1; continue; fi
+          if [ "$6" != "-" ] && ! grep -q "^LEASE $6 " "$FILE"; then chg=1; continue; fi
+          printf '%s\n' "$line" >> "$tmp" ;;
+        *) printf '%s\n' "$line" >> "$tmp" ;;
+      esac
+    done < "$FILE"
+    mv "$tmp" "$FILE"
+  done
 }
-read_total()   { awk '$1=="TOTAL_MB"{print $2; exit}' "$FILE"; }
-read_claimed() { awk '$1=="LEASE"{s+=$3} END{print s+0}' "$FILE"; }
+read_total()    { awk '$1=="TOTAL_MB"{print $2; exit}' "$FILE"; }
+budget_of()     { [ "$1" = "-" ] && read_total || awk -v i="$1" '$1=="LEASE"&&$2==i{print $3; exit}' "$FILE"; }
+claimed_under() { awk -v p="$1" '$1=="LEASE"&&$6==p{s+=$3} END{print s+0}' "$FILE"; }
+release()       { with_lock; grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true; unlock; }
 
-release() { # remove our lease id
-  with_lock
-  grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true
-  unlock
-}
-
-cmd_init() { rm -f "$FILE"; MEMBUDGET_FILE="$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOABEMP/;s/TOABEMP/TOTAL_MB ${1}/" "$FILE"; cmd_status; }
+cmd_init() { rm -f "$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOTAL_MB ${1}/" "$FILE"; cmd_status; }
 
 cmd_status() {
   ensure; with_lock; gc
-  local t c; t=$(read_total); c=$(read_claimed); unlock
-  printf 'membudget: TOTAL=%sMB leased=%sMB free=%sMB\n' "$t" "$c" "$((t-c))"
-  grep '^LEASE' "$FILE" 2>/dev/null | sed 's/^/  /' || echo "  (no active leases)"
+  local t c; t=$(read_total); c=$(claimed_under "-"); unlock
+  printf 'membudget: TOTAL=%sMB top-level-leased=%sMB global-free=%sMB\n' "$t" "$c" "$((t-c))"
+  awk '$1=="LEASE"{p=($6=="-")?"top":("under "$6); printf "  [%s] %sMB pid=%s (%s) %s\n",$2,$3,$4,p,$7}' "$FILE" \
+    | grep . || echo "  (no active leases)"
 }
 
 cmd_run() {
   local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
   ensure
+  local parent="${MEMBUDGET_PARENT:--}"
   local id; id=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
   with_lock; gc
-  local t c free; t=$(read_total); c=$(read_claimed); free=$((t-c))
+  local budget; budget=$(budget_of "$parent")
+  if [ -z "$budget" ]; then unlock; echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; fi
+  local used free; used=$(claimed_under "$parent"); free=$((budget-used))
   if [ "$mb" -gt "$free" ]; then
     unlock
-    echo "membudget: REFUSED [$label] — need ${mb}MB, free ${free}MB of ${t}MB. Active:" >&2
-    grep '^LEASE' "$FILE" 2>/dev/null | sed 's/^/  /' >&2 || true
+    local where; [ "$parent" = "-" ] && where="global" || where="parent $parent"
+    echo "membudget: REFUSED [$label] — need ${mb}MB, free ${free}MB of ${budget}MB ($where). Active:" >&2
+    awk '$1=="LEASE"{printf "  [%s] %sMB (%s)\n",$2,$3,($6=="-"?"top":"under "$6)}' "$FILE" >&2 || true
     exit 3
   fi
-  printf 'LEASE %s %s %s %s %s\n' "$id" "$mb" "$$" "$(date +%s)" "$label" >> "$FILE"
+  printf 'LEASE %s %s %s %s %s %s\n' "$id" "$mb" "$$" "$(date +%s)" "$parent" "$label" >> "$FILE"
   unlock
   trap "release $id" EXIT
-  echo "membudget: leased ${mb}MB [$label] (free was ${free}MB) → MemoryMax=${mb}M scope" >&2
-  systemd-run --user --scope --quiet -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@"
+  export MEMBUDGET_PARENT="$id"
+  if [ "$parent" = "-" ]; then
+    echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
+    systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
+      -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@"
+  else
+    echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2
+    "$@"
+  fi
 }
 
 case "${1:-}" in

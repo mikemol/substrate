@@ -24,6 +24,13 @@ Use it for any module expected to take **> ~1 GB or > ~60 s** (round / encrypt K
 call `agda` directly. Also: `pkill -f agda` before a heavy launch; never stack work
 on a measured multi-GB process.
 
+**Recursion-safe:** a job launched under `membudget` may itself call `membudget`
+(e.g. a build script that wraps each module). A nested call SUBALLOCATES from its
+parent's reservation (not the global pool the ancestor already holds) and runs
+in-scope — so it never deadlocks on the global budget and never double-counts. It is
+refused only if the *parent's* reservation can't cover it (size the top-level budget
+for the whole subtree).
+
 Rationale + history: memory `feedback_budget_concurrent_compiles`. The pre-commit
 full build already caps each module at `+RTS -M1024m`; `membudget` is the same
 discipline for the ad-hoc compiles I run by hand.
