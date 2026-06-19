@@ -120,3 +120,14 @@ xor-assoc false false false = refl
 ∧-zeroʳ : (a : Bool) → a ∧ false ≡ false
 ∧-zeroʳ true  = refl
 ∧-zeroʳ false = refl
+
+-- Ⓓ: ∧ reflection eliminators (a ∧ b ≡ true ⟹ each conjunct ≡ true), relocated
+-- here from Realizability.Charter and …Wedge.GUnit (both re-proved them; the
+-- carrier home is Bool's properties).
+∧-elimˡ : {a b : Bool} → (a ∧ b) ≡ true → a ≡ true
+∧-elimˡ {true}  _ = refl
+∧-elimˡ {false} ()
+
+∧-elimʳ : {a b : Bool} → (a ∧ b) ≡ true → b ≡ true
+∧-elimʳ {true}  h = h
+∧-elimʳ {false} ()

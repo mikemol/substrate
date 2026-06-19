@@ -21,6 +21,7 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; subst)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_)
+open import Substrate.Foundation.Bool.Properties using (∧-elimˡ; ∧-elimʳ) public
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly)
@@ -52,12 +53,8 @@ all-vec : {n : ℕ} (P : Vec F2.F₂ n → Bool) → Bool
 all-vec {zero}  P = P []
 all-vec {suc n} P = all-vec (λ v → P (F2.𝟘 ∷ v)) ∧ all-vec (λ v → P (F2.𝟙 ∷ v))
 
-∧-elimˡ : {a b : Bool} → (a ∧ b) ≡ true → a ≡ true
-∧-elimˡ {true}  h = refl
-∧-elimˡ {false} h = h
-∧-elimʳ : {a b : Bool} → (a ∧ b) ≡ true → b ≡ true
-∧-elimʳ {true}  h = h
-∧-elimʳ {false} ()
+-- Ⓓ: ∧-elimˡ/ʳ are Foundation.Bool.Properties' (imported + re-exported above);
+-- they were re-proved here. SBox / SBoxTable consume them via this module.
 
 all-vec-sound : {n : ℕ} (P : Vec F2.F₂ n → Bool) → all-vec P ≡ true
               → (v : Vec F2.F₂ n) → P v ≡ true
