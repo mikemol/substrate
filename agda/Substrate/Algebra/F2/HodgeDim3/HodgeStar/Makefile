@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../..
+AGDA_ROOT := ../../../../..
 
-FILES := HodgeStar.agda MetricGauge.agda
-SUBDIRS := HodgeStar MetricGauge
+FILES := AsGenericHodge.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,21 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-HodgeStar:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-MetricGauge:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C HodgeStar clean 2>/dev/null || true
-	@$(MAKE) -C MetricGauge clean 2>/dev/null || true
 	@true
