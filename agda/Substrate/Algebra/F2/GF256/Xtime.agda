@@ -11,7 +11,7 @@
 module Substrate.Algebra.F2.GF256.Xtime where
 
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; +-identityˡ; +-assoc;
-  ·-comm; ·-assoc; ·-distribˡ-+) renaming (+-comm to +F-comm)
+  ·-comm; ·-assoc; ·-distribˡ-+; ·-distribʳ-+) renaming (+-comm to +F-comm)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
@@ -24,10 +24,10 @@ xtime : Vector 8 → Vector 8
 xtime (b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ b7 ∷ []) =
   (𝟘 ∷ b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ []) +ⱽ (b7 *ₛ m-lo)
 
--- F₂ helpers (re-derived, as in RingLaws)
+-- Ⓓ·: ·-distribʳ is Algebra.F2's ·-distribʳ-+ (reordered args); it was
+-- re-derived here with the identical trans/·-comm/·-distribˡ-+ chain.
 ·-distribʳ : (x y z : F₂) → (x + y) · z ≡ x · z + y · z
-·-distribʳ x y z = trans (·-comm (x + y) z)
-                   (trans (·-distribˡ-+ z x y) (cong₂ _+_ (·-comm z x) (·-comm z y)))
+·-distribʳ x y z = ·-distribʳ-+ z x y
 -- Ⓜ: 4-term rearrange = the medial law (Algebra.Medial) at F₂'s `+`.
 rearrange : (w x y z : F₂) → (w + x) + (y + z) ≡ (w + y) + (x + z)
 rearrange = medial _+_ +-assoc +F-comm

@@ -11,7 +11,7 @@
 module Substrate.Algebra.F2.Polynomial.RingLaws.Distrib where
 
 open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_; _·_; +-identityˡ; +-assoc;
-  ·-comm; ·-distribˡ-+) renaming (+-comm to +F-comm)
+  ·-comm; ·-distribˡ-+; ·-distribʳ-+) renaming (+-comm to +F-comm)
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
@@ -21,9 +21,10 @@ open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-+ⱽ)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (convCoeff; nth-*P; nth-ext)
 open import Substrate.Algebra.Medial using (medial)
 
+-- Ⓓ·: ·-distribʳ is Algebra.F2's ·-distribʳ-+ (reordered args); it was
+-- re-derived here with the identical trans/·-comm/·-distribˡ-+ chain.
 ·-distribʳ : (x y z : F₂) → (x + y) · z ≡ x · z + y · z
-·-distribʳ x y z = trans (·-comm (x + y) z)
-                   (trans (·-distribˡ-+ z x y) (cong₂ _+_ (·-comm z x) (·-comm z y)))
+·-distribʳ x y z = ·-distribʳ-+ z x y
 
 -- Ⓜ: 4-term abelian rearrange = the commutative-monoid medial law (Algebra.Medial)
 -- at F₂'s `+` (assoc + comm). The local re-proof became this one-line instance.
