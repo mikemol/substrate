@@ -15,9 +15,13 @@ To make that impossible by construction:
 1. **cgroup cap (per tree):** launches the compile in a `systemd-run --user --scope`
    with `MemoryMax=<MB>` + `MemorySwapMax=0` — the kernel kills only that scope
    (exit 137) if it exceeds; the machine stays up.
-2. **budget semaphore (sum of trees):** leases `<MB>` from a shared cotype ledger and
-   **REFUSES (exit 3)** if free budget can't cover it — a forgotten second concurrent
-   launch is blocked, not OOM'd. Leases release on exit and auto-GC if an owner dies.
+2. **budget semaphore (sum of trees):** leases `<MB>` from a shared cotype ledger. If the
+   budget can't cover it the call **BLOCKS** (WaitForSingleObject-style: sleeps, wakes on a
+   release, re-attempts, proceeds when it fits) rather than failing — so a forgotten second
+   concurrent launch waits its turn instead of OOM'ing or erroring. It REFUSES (exit 3) only
+   the *impossible* (request > the level's TOTAL budget — would block forever). Escapes:
+   `MEMBUDGET_NOBLOCK=1` fails fast; `MEMBUDGET_TIMEOUT=<s>` gives up after s. Leases release
+   on exit and auto-GC if an owner dies.
 
 Use it for any module expected to take **> ~1 GB or > ~60 s** (round / encrypt KATs,
 256-byte exhaustive reflections, a by-hand full build). Trivial one-off checks may
