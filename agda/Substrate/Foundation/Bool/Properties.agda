@@ -87,3 +87,36 @@ xor-assoc false false false = refl
 ∨-identityʳ : (a : Bool) → a ∨ false ≡ a
 ∨-identityʳ true  = refl
 ∨-identityʳ false = refl
+
+-- Ⓓ: left-identity / distributivity / annihilator Bool laws, relocated here
+-- from Algebra.Semiring.Instances (where they were proven "for lack of a prior
+-- home"). Their carrier home is Bool's properties. The identityˡ pair also
+-- completes the chirality with the identityʳ above.
+∧-identityˡ : (a : Bool) → true ∧ a ≡ a
+∧-identityˡ _ = refl
+
+∨-identityˡ : (a : Bool) → false ∨ a ≡ a
+∨-identityˡ _ = refl
+
+-- ∧ distributes over ∨.
+∧-distribˡ-∨ : (a b c : Bool) → a ∧ (b ∨ c) ≡ (a ∧ b) ∨ (a ∧ c)
+∧-distribˡ-∨ true  _ _ = refl
+∧-distribˡ-∨ false _ _ = refl
+
+∧-distribʳ-∨ : (a b c : Bool) → (a ∨ b) ∧ c ≡ (a ∧ c) ∨ (b ∧ c)
+∧-distribʳ-∨ true  true  true  = refl
+∧-distribʳ-∨ true  true  false = refl
+∧-distribʳ-∨ true  false true  = refl
+∧-distribʳ-∨ true  false false = refl
+∧-distribʳ-∨ false true  true  = refl
+∧-distribʳ-∨ false true  false = refl
+∧-distribʳ-∨ false false true  = refl
+∧-distribʳ-∨ false false false = refl
+
+-- false (the ∨-identity) annihilates ∧.
+∧-zeroˡ : (a : Bool) → false ∧ a ≡ false
+∧-zeroˡ _ = refl
+
+∧-zeroʳ : (a : Bool) → a ∧ false ≡ false
+∧-zeroʳ true  = refl
+∧-zeroʳ false = refl

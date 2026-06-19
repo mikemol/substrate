@@ -30,27 +30,17 @@ open import Substrate.Category.UniversalProperty.Term
 open import Substrate.Algebra.Quotient
   using (Quotient; ker-Quotient; split-Canonical)
   renaming (Canonical to Canonical⟦de760d07⟧)
+open import Substrate.Category.UniversalProperty.Compose
+  using (id-UPMorphism; compose-UPMorphism)
 
 ------------------------------------------------------------------------
 -- Record-level identity and composition of UPMorphisms (UP3).
+--
+-- Ⓓ: id-UPMorphism / compose-UPMorphism are UniversalProperty.Compose's
+-- (imported above); Eval had re-defined them with byte-identical record bodies.
+-- The consumers (FixedPoint, Phase1) already used Compose's; eval below uses
+-- them too.
 ------------------------------------------------------------------------
-
-id-UPMorphism : (U : UPArrow) → UPMorphism U U
-id-UPMorphism U = record
-  { source-map = λ s → s
-  ; target-map = λ i → i
-  ; coherent   = λ s i w → w
-  }
-
--- compose: forward on sources, BACKWARD on targets (the span/arrow-category law);
--- coherent chains the two squares.
-compose-UPMorphism : {U₁ U₂ U₃ : UPArrow}
-                   → UPMorphism U₂ U₃ → UPMorphism U₁ U₂ → UPMorphism U₁ U₃
-compose-UPMorphism g f = record
-  { source-map = λ s → source-map g (source-map f s)
-  ; target-map = λ i → target-map f (target-map g i)
-  ; coherent   = λ s i w → coherent f s (target-map g i) (coherent g (source-map f s) i w)
-  }
 
 ------------------------------------------------------------------------
 -- eval — the term → record bridge. [] ↦ identity; (lift m ∷ t) ↦ compose.

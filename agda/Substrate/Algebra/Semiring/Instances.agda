@@ -93,58 +93,16 @@ open import Substrate.Algebra.F2.AsField using () renaming (F₂-Semiring to F�
 ------------------------------------------------------------------------
 -- 3. Bool — the routing gauge.
 --
--- additive = ∨ (ε = false), multiplicative = ∧ (ε = true).  These
--- routing laws had no prior home, so they are proven here by
--- exhaustive case-split (Bool is finite; every law is a small
--- refl-split).
+-- additive = ∨ (ε = false), multiplicative = ∧ (ε = true).  (Ⓓ: these Bool
+-- laws now live at the Bool carrier home, Foundation.Bool.Properties — they
+-- were proven here "for lack of a prior home", but 4 already lived there and
+-- the other 6 belong there too. Imported below, then packaged into the records.)
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Bool using (Bool; true; false; _∨_; _∧_)
-
-∨-assoc : (a b c : Bool) → (a ∨ b) ∨ c ≡ a ∨ (b ∨ c)
-∨-assoc true  _ _ = refl
-∨-assoc false _ _ = refl
-
-∨-identityˡ : (a : Bool) → false ∨ a ≡ a
-∨-identityˡ _ = refl
-
-∨-identityʳ : (a : Bool) → a ∨ false ≡ a
-∨-identityʳ true  = refl
-∨-identityʳ false = refl
-
-∧-assoc : (a b c : Bool) → (a ∧ b) ∧ c ≡ a ∧ (b ∧ c)
-∧-assoc true  _ _ = refl
-∧-assoc false _ _ = refl
-
-∧-identityˡ : (a : Bool) → true ∧ a ≡ a
-∧-identityˡ _ = refl
-
-∧-identityʳ : (a : Bool) → a ∧ true ≡ a
-∧-identityʳ true  = refl
-∧-identityʳ false = refl
-
--- ∧ distributes over ∨.
-∧-distribˡ-∨ : (a b c : Bool) → a ∧ (b ∨ c) ≡ (a ∧ b) ∨ (a ∧ c)
-∧-distribˡ-∨ true  _ _ = refl
-∧-distribˡ-∨ false _ _ = refl
-
-∧-distribʳ-∨ : (a b c : Bool) → (a ∨ b) ∧ c ≡ (a ∧ c) ∨ (b ∧ c)
-∧-distribʳ-∨ true  true  true  = refl
-∧-distribʳ-∨ true  true  false = refl
-∧-distribʳ-∨ true  false true  = refl
-∧-distribʳ-∨ true  false false = refl
-∧-distribʳ-∨ false true  true  = refl
-∧-distribʳ-∨ false true  false = refl
-∧-distribʳ-∨ false false true  = refl
-∧-distribʳ-∨ false false false = refl
-
--- false (the additive ε) absorbs ∧.
-∧-zeroˡ : (a : Bool) → false ∧ a ≡ false
-∧-zeroˡ _ = refl
-
-∧-zeroʳ : (a : Bool) → a ∧ false ≡ false
-∧-zeroʳ true  = refl
-∧-zeroʳ false = refl
+open import Substrate.Foundation.Bool.Properties
+  using ( ∨-assoc; ∨-identityˡ; ∨-identityʳ; ∧-assoc; ∧-identityˡ; ∧-identityʳ
+        ; ∧-distribˡ-∨; ∧-distribʳ-∨; ∧-zeroˡ; ∧-zeroʳ )
 
 Bool-∨-Monoid : Monoid Bool
 Bool-∨-Monoid = mk-monoid _∨_ false ∨-assoc ∨-identityˡ ∨-identityʳ
