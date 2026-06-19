@@ -368,6 +368,35 @@ class Lowerer(ast.NodeVisitor):
             # `global x` / `nonlocal x`: the names reference OUTER-scope bindings (referential) -> KEY.
             op = ",".join(node.names)
             payload = tuple(node.names)
+        elif isinstance(node, ast.FormattedValue):
+            # f-string `!r`/`!s`/`!a` (or none): the conversion CHANGES the rendered value, so it is
+            # REFERENTIAL. `conversion` is an int (-1 none / 115 's' / 114 'r' / 97 'a') -- a scalar
+            # iter_child_nodes drops, so f"{x!r}" ≡ f"{x!s}" ≡ f"{x}" without this. (format_spec is a
+            # node, already walked.)  (Ⓤ.audit)
+            op = f"conv{node.conversion}"
+            payload = (node.conversion,)
+        elif hasattr(ast, "Interpolation") and isinstance(node, ast.Interpolation):
+            # 3.14 t-string interpolation: same referential conversion as FormattedValue, plus `str`
+            # (the interpolation's source text) as residue. Both scalar -> dropped by the generic walk.
+            op = f"conv{node.conversion}"
+            payload = (node.conversion, getattr(node, "str", ""))
+        elif isinstance(node, ast.comprehension):
+            # `async for` vs `for` is REFERENTIAL (different iteration semantics); is_async is an int
+            # flag iter_child_nodes drops, so [x async for x in y] ≡ [x for x in y] without this.
+            op = "async" if node.is_async else "sync"
+        elif isinstance(node, ast.MatchSingleton):
+            # `case True` / `case False` / `case None`: the singleton VALUE *is* the pattern; dropping
+            # it collapses `case True` ≡ `case False`. Mirror Constant: literal KIND + value residue.
+            lit = type(node.value).__name__
+            payload = (repr(node.value),)
+        elif isinstance(node, ast.MatchClass):
+            # `case C(x=1)`: kwd_attrs are the REFERENTIAL keyword-attribute names (x vs y) -- list[str]
+            # dropped (cls/patterns/kwd_patterns are nodes, walked). Without it case C(x=1) ≡ case C(y=1).
+            op = ",".join(node.kwd_attrs)
+        elif isinstance(node, ast.AnnAssign):
+            # `x: int` (simple=1) vs `(x): int` (simple=0) differ structurally (only simple registers in
+            # __annotations__); `simple` is an int flag -> the KEY. (Minor, but exhaustive per Ⓤ.audit.)
+            op = f"simple{node.simple}"
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             payload = (node.name,)
             self.scopes.append({})                                # new scope for the body

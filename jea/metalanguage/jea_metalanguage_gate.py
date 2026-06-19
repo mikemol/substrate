@@ -74,8 +74,26 @@ def chk_pyalg_referential():
         fa2, fc = pair(lower, "def f(self, x):\n    return self.foo + x\n",
                               "def h(self, x):\n    return self.bar + x\n")
         assert fa2 != fc, f"[{arm}] referential .attr must split even under an alpha-equivalent body"
+
+    # (3) STRUCTURAL scalar fields beyond names (the Ⓤ.audit sweep of ast's 39 scalar fields): a
+    # conversion / async-flag / match-attr / singleton-KIND is referential-or-structural ⇒ the KEY,
+    # NOT a value-residue. (Distinct from VALUE fields -- Constant.value, MatchSingleton.value WITHIN a
+    # kind -- which are intentionally abstracted at skeleton grade: 1≡2, case True≡case False.) ast-arm
+    # specific: the cst arm represents f-strings/t-strings differently and may collapse the conversion
+    # (a documented cst residual; the cross-arm convergence target was the referential NAME class).
+    ast_only = [
+        ("FormattedValue.conversion", 'f"{x!r}"\n',                  'f"{x!s}"\n'),
+        ("comprehension.is_async",    'async def f():\n return [x async for x in y]\n',
+                                      'async def f():\n return [x for x in y]\n'),
+        ("MatchClass.kwd_attrs",      'match v:\n case C(x=1): pass\n', 'match v:\n case C(y=1): pass\n'),
+        ("MatchSingleton kind",       'match v:\n case None: pass\n',   'match v:\n case True: pass\n'),
+    ]
+    for label, s1, s2 in ast_only:
+        i1, i2 = pair(A.lower_source, s1, s2)
+        assert i1 != i2, f"[ast] structural drop: {label} collapsed below key ({s1!r}≡{s2!r})"
     detail = "ast+cst" if len(arms) == 2 else "ast (cst: libcst absent)"
-    return f"PASS (referential→key on {detail}: 7 distinct-referent classes split; alpha-quotient preserved)"
+    return (f"PASS (referential→key on {detail}: 7 name classes split + 4 structural "
+            f"(conversion/async/match) on ast; alpha-quotient + value-abstraction preserved)")
 
 
 def chk_trace_lazy():
