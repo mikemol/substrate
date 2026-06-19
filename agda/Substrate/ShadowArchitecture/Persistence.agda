@@ -35,7 +35,8 @@ module Substrate.ShadowArchitecture.Persistence where
 open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+  using (_≡_; refl; sym; trans)
+open import Substrate.Foundation.Negation using (¬_)
 
 open import Substrate.ShadowArchitecture.FanoLabeling
 
@@ -178,12 +179,18 @@ populate-line-monotone m c =
 --
 -- A claim like "step c₁ to c₂ by removing the population of p" cannot
 -- inhabit `c₁ ⊑ c₂` if the removal makes `populated-point c₁ p ≡ true`
--- while `populated-point c₂ p ≡ false`. The first projection of c₁
--- ⊑ c₂ would deliver `true ≡ true → true ≡ true`, but instantiated
--- at the removed point it would require `true ≡ true → false ≡ true`,
--- an impossibility.
+-- while `populated-point c₂ p ≡ false`: the first projection applied at p
+-- yields `populated-point c₂ p ≡ true`, contradicting the removal.
 --
--- We don't need to prove anything new here; the W5 prohibition is
--- materially the same as ⊑-refl + ⊑-trans living as a preorder
--- rather than a more general relation.
+-- Ⓦ: this is now WITNESSED (was prose claiming "we don't need to prove
+-- anything"). The contradiction `false ≡ true` is the impossibility.
 ------------------------------------------------------------------------
+
+W5-no-removal :
+  (c₁ c₂ : Cotype) (p : Point) →
+  Cotype.populated-point c₁ p ≡ true →
+  Cotype.populated-point c₂ p ≡ false →
+  ¬ (c₁ ⊑ c₂)
+W5-no-removal c₁ c₂ p hp1 hp2 (pmono , _)
+  with trans (sym hp2) (pmono p hp1)
+... | ()

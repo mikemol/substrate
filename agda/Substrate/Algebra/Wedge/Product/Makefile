@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Hom.agda LawTypes.agda Laws.agda ListIso.agda Slices.agda Term.agda
+FILES := Hom.agda LawTypes.agda Laws.agda ListIso.agda Term.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

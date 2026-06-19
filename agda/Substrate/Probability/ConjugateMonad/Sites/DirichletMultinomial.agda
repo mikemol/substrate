@@ -24,7 +24,8 @@
 
 module Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Negation using (yes; no)
 open import Substrate.Foundation.Nat using (ℕ; suc; zero; _+_)
 open import Substrate.Foundation.Level using (Level; 0ℓ)
 
@@ -43,16 +44,14 @@ CountVector n = Fin n → ℕ
 ------------------------------------------------------------------------
 -- Update: increment the count at the observed index.
 --
--- Uses an explicit Fin-equality check via pattern matching.
+-- Ⓦ: implemented (was a `aux _ _ c = c` placeholder that contradicted its own
+-- spec). The Fin-equality check is Foundation.Fin._≟_ (Dec (i ≡ obs)); the count
+-- at the observed index is incremented, all others unchanged.
 
 update-counts : ∀ {n} → CountVector n → Fin n → CountVector n
-update-counts cv obs i = aux i obs (cv i)
-  where
-    aux : ∀ {n} → Fin n → Fin n → ℕ → ℕ
-    aux i obs c = c   -- placeholder: should be c + 1 if i ≡ obs
-                       -- The Fin equality check is supplied at
-                       -- runtime; the structural site demonstrates
-                       -- the update signature.
+update-counts cv obs i with i ≟ obs
+... | yes _ = suc (cv i)
+... | no  _ = cv i
 
 ------------------------------------------------------------------------
 -- Predictive distribution: Laplace-smoothed count / total.
