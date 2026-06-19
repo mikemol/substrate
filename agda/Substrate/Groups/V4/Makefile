@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
 FILES := Axioms.agda Bijection.agda Bundle.agda FourProduct.agda IsHomomorphism.agda Operations.agda
-SUBDIRS := Axioms IsHomomorphism
+SUBDIRS := IsHomomorphism
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,13 +40,6 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Axioms:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 IsHomomorphism:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -55,6 +48,5 @@ IsHomomorphism:
 	@$(MAKE) -C $@
 
 clean:
-	@$(MAKE) -C Axioms clean 2>/dev/null || true
 	@$(MAKE) -C IsHomomorphism clean 2>/dev/null || true
 	@true

@@ -166,8 +166,9 @@ module Substrate.Category.OrphanAudit where
 -- AsChainDecomp, Geometry.{HodgeDim3, ChiralityRotation},
 -- TokiPona.QCapstone, Linguistic.{Bicategorical, Closure, Yoneda,
 -- YonedaRespect}Capstone, Groups.{Coxeter.Lifted, S4-AsOpcodeAlgebra,
--- Stab-S3-Hom, V4.Axioms.Lifted}, plus 20+ Category speculative-
--- arc seeds.
+-- Stab-S3-Hom}, plus 20+ Category speculative-
+-- arc seeds. (V4.Axioms.Lifted was DELETED in Ⓥ -- a never-wired parallel
+-- derivation of the V₄ axioms that V4.Axioms supplies live.)
 --
 -- Result trail:
 --   start     → 123 orphans / 904 modules  (13.6%)
