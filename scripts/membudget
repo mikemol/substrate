@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# membudget — a concurrent-memory-budget SEMAPHORE wrapping `systemd-run --scope`.
+#
+# WHY: `systemd-run --user --scope -p MemoryMax=N` caps ONE subprocess tree (the
+# cgroup OOM-killer kills only that scope). But launching several capped scopes
+# can still oversubscribe the box's RAM. This wrapper adds the missing piece: a
+# shared cotype ledger of the global budget. `run` atomically LEASES the requested
+# MB before launching the scope and REFUSES if the remaining budget can't cover it
+# — so a forgotten second launch is blocked, not OOM'd. Leases are released on exit
+# and auto-GC'd if an owner dies (SIGKILL leaves no trap), keeping the ledger honest.
+#
+# Usage:
+#   membudget init [TOTAL_MB]              # create/reset the ledger (default 70% RAM)
+#   membudget status                       # show TOTAL / leased / free + active leases
+#   membudget run <MB> <label> -- <cmd...> # lease MB, run cmd in a MemoryMax=<MB> scope, release
+#
+# Ledger path: $MEMBUDGET_FILE (default ~/.cache/membudget/budget.cotype).
+set -euo pipefail
+
+FILE="${MEMBUDGET_FILE:-$HOME/.cache/membudget/budget.cotype}"
+LOCK="$FILE.lock"
+mkdir -p "$(dirname "$FILE")"
+
+default_total() { awk '/MemTotal/{print int($2*7/10/1024)}' /proc/meminfo; }
+
+ensure() {
+  [ -f "$FILE" ] || cat > "$FILE" <<EOF
+# membudget cotype — concurrent memory-budget semaphore (scripts/membudget).
+# Free = TOTAL_MB - Σ active LEASE mb. Leases auto-GC when their owner pid dies.
+# LEASE <id> <mb> <pid> <epoch> <label>
+TOTAL_MB $(default_total)
+EOF
+}
+
+with_lock() { exec {LKFD}>"$LOCK"; flock "$LKFD"; }
+unlock()    { flock -u "$LKFD" 2>/dev/null || true; }
+
+gc() { # drop leases whose owner pid is gone; preserve comments + TOTAL
+  local tmp; tmp=$(mktemp)
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      LEASE\ *) set -- $line; kill -0 "$4" 2>/dev/null && printf '%s\n' "$line" >> "$tmp" ;;
+      *)        printf '%s\n' "$line" >> "$tmp" ;;
+    esac
+  done < "$FILE"
+  mv "$tmp" "$FILE"
+}
+read_total()   { awk '$1=="TOTAL_MB"{print $2; exit}' "$FILE"; }
+read_claimed() { awk '$1=="LEASE"{s+=$3} END{print s+0}' "$FILE"; }
+
+release() { # remove our lease id
+  with_lock
+  grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true
+  unlock
+}
+
+cmd_init() { rm -f "$FILE"; MEMBUDGET_FILE="$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOABEMP/;s/TOABEMP/TOTAL_MB ${1}/" "$FILE"; cmd_status; }
+
+cmd_status() {
+  ensure; with_lock; gc
+  local t c; t=$(read_total); c=$(read_claimed); unlock
+  printf 'membudget: TOTAL=%sMB leased=%sMB free=%sMB\n' "$t" "$c" "$((t-c))"
+  grep '^LEASE' "$FILE" 2>/dev/null | sed 's/^/  /' || echo "  (no active leases)"
+}
+
+cmd_run() {
+  local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
+  ensure
+  local id; id=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
+  with_lock; gc
+  local t c free; t=$(read_total); c=$(read_claimed); free=$((t-c))
+  if [ "$mb" -gt "$free" ]; then
+    unlock
+    echo "membudget: REFUSED [$label] — need ${mb}MB, free ${free}MB of ${t}MB. Active:" >&2
+    grep '^LEASE' "$FILE" 2>/dev/null | sed 's/^/  /' >&2 || true
+    exit 3
+  fi
+  printf 'LEASE %s %s %s %s %s\n' "$id" "$mb" "$$" "$(date +%s)" "$label" >> "$FILE"
+  unlock
+  trap "release $id" EXIT
+  echo "membudget: leased ${mb}MB [$label] (free was ${free}MB) → MemoryMax=${mb}M scope" >&2
+  systemd-run --user --scope --quiet -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@"
+}
+
+case "${1:-}" in
+  init)   shift; cmd_init "${1:-}";;
+  status) cmd_status;;
+  run)    shift; cmd_run "$@";;
+  *) echo "usage: membudget {init [MB]|status|run <MB> <label> -- <cmd...>}" >&2; exit 2;;
+esac
