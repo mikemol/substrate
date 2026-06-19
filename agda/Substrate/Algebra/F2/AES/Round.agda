@@ -27,8 +27,12 @@ open import Substrate.Algebra.F2 using (F₂; _+_; +-assoc; +-identityˡ; +-self
 -- B-deep: canonical table S-box + re-derived round-trip (= the GF-inversion
 -- S-box, proven via SBoxTable.sbox≡gf); cheap to force.
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox; inv-sbox; sbox-rt)
-open import Substrate.Algebra.F2.MixColumns.Proof using (mix; mixcolumns-round-trip)
+open import Substrate.Algebra.F2.MixColumns.Proof using (mixcolumns-round-trip)
   renaming (inv to mix-inv)
+-- forward MixColumns FORCES through the proved xtime TABLE (MixColumns.Fast); the
+-- gmul construction is retained as the theorem mix-fast≡mix (so this is cheap to
+-- evaluate, e.g. the full-encrypt KAT, while the round-trip is preserved).
+open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast; mix-fast-round-trip)
 
 -- the AES state: 4 columns of 4 bytes; a byte is a Vec F₂ 8.
 Byte  : Set
@@ -66,11 +70,11 @@ sub-rt = map-rt (map sbox) (map inv-sbox) (map-rt sbox inv-sbox sbox-rt)
 -- MixColumns (reuse AI-9 per-column round-trip).
 ------------------------------------------------------------------------
 MixColumns    : State → State
-MixColumns    = map mix
+MixColumns    = map mix-fast
 InvMixColumns : State → State
 InvMixColumns = map mix-inv
 mix-rt : (s : State) → InvMixColumns (MixColumns s) ≡ s
-mix-rt = map-rt mix mix-inv mixcolumns-round-trip
+mix-rt = map-rt mix-fast mix-inv mix-fast-round-trip
 
 ------------------------------------------------------------------------
 -- AddRoundKey (XOR; self-inverse, bit→byte→col→state).

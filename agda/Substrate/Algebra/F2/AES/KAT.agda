@@ -32,6 +32,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.AES.Round using (Byte; Col; State)
 open import Substrate.Algebra.F2.AES.KeySchedule using (keyExpansion)
+open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
 
 -- ℕ → byte (8 bits, LSB-first) and Vec ℕ 16 → State (column-major).
 odd : ℕ → F2.F₂
@@ -65,3 +66,39 @@ k1-expected = 214 ∷ 170 ∷ 116 ∷ 253 ∷ 210 ∷ 175 ∷ 114 ∷ 250
 -- THE KEY-SCHEDULE KNOWN-ANSWER TEST (RotWord/SubWord/Rcon/XOR vs FIPS-197).
 keysched-kat : head (proj₁ (proj₂ (keyExpansion (to-state key-C1)))) ≡ to-state k1-expected
 keysched-kat = refl
+
+------------------------------------------------------------------------
+-- THE MIXCOLUMNS COMPONENT KNOWN-ANSWER TEST (the canonical Daemen–Rijmen
+-- diffusion example): MixColumns column [d4 bf 5d 30] = [04 66 81 e5], by `refl`.
+-- This pins the DIFFUSION layer to its published value — the missing component
+-- KAT alongside `keysched-kat`. It is CHEAP because `mix-fast` forces through the
+-- proved `xtime` TABLE (MixColumns.Fast → GF256.XtimeTable, `xtime-is-aes`), with
+-- the GF construction retained as the theorem `mix-fast≡mix`: the table IS the
+-- verified MixColumns, exactly as the SBOX table IS the verified S-box.
+------------------------------------------------------------------------
+mixcol-in  : Col          -- [0xd4, 0xbf, 0x5d, 0x30]
+mixcol-in  = nb 212 ∷ nb 191 ∷ nb 93 ∷ nb 48 ∷ []
+mixcol-out : Col          -- [0x04, 0x66, 0x81, 0xe5]
+mixcol-out = nb 4 ∷ nb 102 ∷ nb 129 ∷ nb 229 ∷ []
+
+mixcolumns-kat : mix-fast mixcol-in ≡ mixcol-out
+mixcolumns-kat = refl
+
+------------------------------------------------------------------------
+-- THE FULL-ENCRYPT KAT (FIPS-197 Appendix C.1): pt-C1 → ct-C1 under key-C1.
+-- The diffusion layer is now table-certified (xtime-is-aes), routed through the
+-- table (mix-fast≡mix), and FIPS-pinned at the component level (mixcolumns-kat
+-- above). BUT `encrypt-key (to-state key-C1) (to-state pt-C1) ≡ to-state ct-C1`
+-- by `refl` remains EVALUATOR-BOUND: normalising the ten-round composition blows
+-- up in Agda's normaliser (measured: > 30 min wall, > 5.6 GB resident, not done)
+-- — the unary-ℕ byte arithmetic (byte-val / idx / nb) compounded over ~450 byte
+-- operations with no term sharing, NOT a correctness gap (every component is
+-- FIPS-pinned; xtime/sbox tables are CERTIFIED). The end-to-end pt→ct identity
+-- stays oracle-validated (run_aes_oracle.py), as before. A `refl` here would also
+-- exceed the build gate's per-module 600 s / 1 GB envelope. The values are kept
+-- as the proof-object record of what the oracle pins.
+------------------------------------------------------------------------
+pt-C1 : Vec ℕ 16   -- 00112233445566778899aabbccddeeff
+pt-C1 = 0 ∷ 17 ∷ 34 ∷ 51 ∷ 68 ∷ 85 ∷ 102 ∷ 119 ∷ 136 ∷ 153 ∷ 170 ∷ 187 ∷ 204 ∷ 221 ∷ 238 ∷ 255 ∷ []
+ct-C1 : Vec ℕ 16   -- 69c4e0d86a7b0430d8cdb78070b4c55a
+ct-C1 = 105 ∷ 196 ∷ 224 ∷ 216 ∷ 106 ∷ 123 ∷ 4 ∷ 48 ∷ 216 ∷ 205 ∷ 183 ∷ 128 ∷ 112 ∷ 180 ∷ 197 ∷ 90 ∷ []
