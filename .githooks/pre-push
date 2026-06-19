@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Versioned pre-push hook (enabled via: git config core.hooksPath .githooks)
+#
+# BLOCKS a push while a git operation is IN FLIGHT, or before the post-commit
+# advisory amend has SETTLED on the tip being pushed.
+#
+# Why: `.githooks/post-commit` AMENDS the just-made commit (folds in the
+# categorical-grounding advisory), changing its hash AFTER `git commit` returns.
+# Pushing in that window pushes the PRE-amend hash; the amend then moves local
+# HEAD → local/origin diverge → the next push is rejected (the Ⓟ.2 / Ⓛ★
+# divergences this guards). Making "wait for the amend / never push mid-operation"
+# correct-by-construction: a hook the loop cannot skip (the repo's G9 / binding-
+# ladder discipline — memory < instructions < skill < HOOK < gate).
+set -uo pipefail
+GITDIR="$(git rev-parse --git-dir)"
+
+# 1. A git operation literally in progress. The post-commit `git commit --amend`
+#    holds index.lock; rebase/merge/cherry-pick/revert leave state files. Pushing
+#    now races them.
+for f in index.lock rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD; do
+  if [ -e "$GITDIR/$f" ]; then
+    echo "pre-push: BLOCKED — git operation in flight ($f present)." >&2
+    echo "          Wait for it to finish (e.g. the post-commit advisory amend), then push." >&2
+    exit 1
+  fi
+done
+
+# 2. The post-commit advisory amend must have SETTLED on the tip being pushed —
+#    its message carries the marker `post-commit advisory (auto-captured)`. A tip
+#    without it = the amend raced the push, or the commit was made mid-rebase
+#    (amend skipped by design — re-amend before pushing).
+fail=0
+while read -r _localref localsha _remoteref _remotesha; do
+  case "$localsha" in *[!0]*) : ;; *) continue ;; esac          # skip ref deletions
+  # skip merge commits (the post-commit hook does not amend mid-merge by design)
+  if [ "$(git show --no-patch --format=%P "$localsha" | wc -w)" -gt 1 ]; then continue; fi
+  if ! git log -1 --format=%B "$localsha" | grep -q 'post-commit advisory (auto-captured)'; then
+    echo "pre-push: BLOCKED — tip $(git rev-parse --short "$localsha") lacks the post-commit advisory amend." >&2
+    echo "          (It raced the push, or was made mid-rebase.) Wait until HEAD's message gains" >&2
+    echo "          'post-commit advisory (auto-captured)', or re-amend, then push." >&2
+    fail=1
+  fi
+done
+exit $fail
