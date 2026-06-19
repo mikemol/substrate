@@ -48,6 +48,23 @@ Rationale + history: memory `feedback_budget_concurrent_compiles`. The pre-commi
 full build already caps each module at `+RTS -M1024m`; `membudget` is the same
 discipline for the ad-hoc compiles I run by hand.
 
+## Building the tree: `make -j` self-throttles by RAM
+
+The build is recursive make (`agda/Makefile` → per-dir, `AGDA ?= agda`, one process per file).
+With the shim active, **`make -j` with NO number is the right invocation** — it spawns the
+whole dependency frontier and each `agda` blocks on the budget semaphore, so effective
+parallelism self-tunes to memory availability, in dependency order (no `-jN` guess, no OOM):
+
+    cd agda
+    source ../scripts/membudget-shrc        # puts the agda shim on PATH
+    ../scripts/membudget init 9000           # RAM to devote (MB)
+    AGDA_MB=2048 make -j                      # unbounded; throttles to ~budget/AGDA_MB concurrent
+
+`make`'s recipes resolve `agda` via PATH → the shim → `membudget run` → blocks/leases. The
+per-file `+RTS -M1024m` heap cap keeps each job under `AGDA_MB`. Tune `AGDA_MB` to the heap
+cap + overhead (~1.5–2 GB). (Demonstrated: `make -j` over a 2-subdir node under a 1-job budget
+serialized cleanly via BLOCKED/lease hand-off; exit 0.)
+
 ## Commit policy
 
 Work and commit directly on `main`; the pre-commit hook (CI gates) is the promotion

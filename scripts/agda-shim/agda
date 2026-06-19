@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# agda shim — routes `agda` through membudget so recursive `make -j` (unbounded) THROTTLES
+# itself dynamically by RAM, in dependency order: each per-file agda blocks on the budget
+# semaphore and proceeds as memory frees. Active only when this dir is on PATH (membudget-shrc
+# prepends it); make recipes resolve `agda` via PATH, so they hit this shim automatically.
+set -euo pipefail
+_self="$(realpath "${BASH_SOURCE[0]:-$0}")"; _dir="$(dirname "$_self")"
+# locate the REAL agda: first on PATH whose dir != this shim's dir (avoid self-recursion).
+_real=""
+IFS=: read -ra _ds <<< "$PATH"
+for _d in "${_ds[@]}"; do
+  [ -n "$_d" ] || continue
+  [ "$(realpath "$_d" 2>/dev/null || echo "$_d")" = "$_dir" ] && continue
+  [ -x "$_d/agda" ] && { _real="$_d/agda"; break; }
+done
+[ -n "$_real" ] || { echo "agda-shim: real agda not found on PATH (excluding $_dir)" >&2; exit 127; }
+exec membudget run "${AGDA_MB:-2048}" agda -- "$_real" "$@"

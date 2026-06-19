@@ -18,13 +18,13 @@
 # The build gate is unaffected — it invokes agda via python (execvp), not this function.
 
 _membudget_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)"
+# membudget on PATH (for the shim + direct use):
 case ":$PATH:" in *":${_membudget_dir}:"*) ;; *) export PATH="${_membudget_dir}:$PATH";; esac
+# agda SHIM ahead of the real agda — a PATH executable (NOT a shell function) so that
+# `make -j` recipes (which run in non-interactive /bin/sh and never see bash functions)
+# also route agda through membudget and thus self-throttle by RAM. Works for interactive
+# `agda` too (PATH resolution). Cap/lease per agda = AGDA_MB (default 2048).
+case ":$PATH:" in *":${_membudget_dir}/agda-shim:"*) ;; *) export PATH="${_membudget_dir}/agda-shim:$PATH";; esac
 
-# auto-budget agda (recursion-aware via membudget's MEMBUDGET_PARENT).
-# Resolve the real binary with `type -P` (the top-level path execs via systemd-run,
-# which cannot exec the `command` builtin).
-agda() { local _a; _a="$(type -P agda)" || { echo "agda not on PATH" >&2; return 127; }
-         membudget run "${AGDA_MB:-4096}" "agda" -- "$_a" "$@"; }
-
-# wrap any heavy command: mbwrap <MB> -- cmd args...
+# wrap any other heavy command: mbwrap <MB> -- cmd args...
 mbwrap() { local mb="$1"; shift; [ "${1:-}" = "--" ] && shift; membudget run "$mb" "${1##*/}" -- "$@"; }
