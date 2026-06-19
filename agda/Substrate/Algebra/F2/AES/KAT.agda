@@ -15,12 +15,11 @@
 --   — EXACTLY, by `refl`.  This validates RotWord / SubWord / Rcon / the XOR
 --   chain against the FIPS worked example.
 --
--- NOTE on the full encrypt KAT (`encrypt-key key-C1 pt-C1 ≡ ct-C1`): deferred.
--- Normalising the verified MixColumns `gmul` over a 10-round encrypt (~250 GF
--- products) is far too memory-heavy to evaluate here.  The end-to-end
--- composition is instead validated by the Octave oracle (`run_aes_oracle.py`),
--- which runs the FIPS-KAT-identical MATLAB/Python ports; every Agda component is
--- independently FIPS-pinned (above).  --safe --without-K, 0 postulates.
+-- The full encrypt KAT (`encrypt-key key-C1 pt-C1 ≡ ct-C1`) is DISCHARGED in
+-- `KAT.Full.encrypt-kat-C1` (was deferred — the monolithic refl blew up; see the
+-- per-round/per-key decomposition + parameterized-module assembly there). The Octave
+-- oracle (`run_aes_oracle.py`) remains as an independent cross-check.
+-- --safe --without-K, 0 postulates.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.F2.AES.KAT where
@@ -86,17 +85,17 @@ mixcolumns-kat = refl
 
 ------------------------------------------------------------------------
 -- THE FULL-ENCRYPT KAT (FIPS-197 Appendix C.1): pt-C1 → ct-C1 under key-C1.
--- The diffusion layer is now table-certified (xtime-is-aes), routed through the
--- table (mix-fast≡mix), and FIPS-pinned at the component level (mixcolumns-kat
--- above). BUT `encrypt-key (to-state key-C1) (to-state pt-C1) ≡ to-state ct-C1`
--- by `refl` remains EVALUATOR-BOUND: normalising the ten-round composition blows
--- up in Agda's normaliser (measured: > 30 min wall, > 5.6 GB resident, not done)
--- — the unary-ℕ byte arithmetic (byte-val / idx / nb) compounded over ~450 byte
--- operations with no term sharing, NOT a correctness gap (every component is
--- FIPS-pinned; xtime/sbox tables are CERTIFIED). The end-to-end pt→ct identity
--- stays oracle-validated (run_aes_oracle.py), as before. A `refl` here would also
--- exceed the build gate's per-module 600 s / 1 GB envelope. The values are kept
--- as the proof-object record of what the oracle pins.
+-- NO LONGER DEFERRED — discharged in `KAT.Full.encrypt-kat-C1`:
+--   encrypt-key (to-state key-C1) (to-state pt-C1) ≡ to-state ct-C1
+-- The monolithic `refl` DID blow up (measured > 30 min, > 5.6 GB) — two deep chains
+-- (the ten-round composition AND the exponential key-schedule word recursion)
+-- normalise at once with no term sharing. `KAT.Full` dissolves both with the
+-- parameterized-module pattern: assemble ABSTRACT over keys/states (round / fold /
+-- nextRoundKey neutral ⇒ nothing forced), supply the concrete one-step pins
+-- (KAT.KeyPins per key step, KAT.RoundN per round, KAT.Pre, KAT.Full.fin), and
+-- instantiate by `open` (no conversion ⇒ no re-normalisation across the boundary).
+-- Whole chain builds in ~27 s, each module ≤ 3 s — within the 600 s / 1 GB gate.
+-- pt-C1 / ct-C1 live here (used by KAT.Trace); the proof is in KAT.Full.
 ------------------------------------------------------------------------
 pt-C1 : Vec ℕ 16   -- 00112233445566778899aabbccddeeff
 pt-C1 = 0 ∷ 17 ∷ 34 ∷ 51 ∷ 68 ∷ 85 ∷ 102 ∷ 119 ∷ 136 ∷ 153 ∷ 170 ∷ 187 ∷ 204 ∷ 221 ∷ 238 ∷ 255 ∷ []

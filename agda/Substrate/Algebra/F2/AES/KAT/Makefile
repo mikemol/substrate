@@ -8,10 +8,10 @@
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../../..
+AGDA_ROOT := ../../../../..
 
-FILES := AES.agda Cipher.agda KAT.agda KeySchedule.agda Round.agda
-SUBDIRS := KAT
+FILES := Full.agda KeyPins.agda Pre.agda Round1.agda Round2.agda Round3.agda Round4.agda Round5.agda Round6.agda Round7.agda Round8.agda Round9.agda Trace.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -40,13 +40,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-KAT:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C KAT clean 2>/dev/null || true
 	@true
