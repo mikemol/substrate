@@ -21,7 +21,7 @@ open import Substrate.Foundation.Nat.Properties.Sub using (∸-+-id)
 open import Substrate.Foundation.Nat.Properties.Order using (<→≤)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Algebra.Nat.Mod
-  using (_mod-suc_; mod-suc-bound; mod-suc-periodic)
+  using (_mod-suc_; mod-suc-bound; suc-mod-suc-self)
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-+-right)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 
@@ -32,9 +32,8 @@ open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 negmod : ℕ → ℕ → ℕ
 negmod x m = (suc m ∸ (x mod-suc m)) mod-suc m
 
--- (suc m) mod (suc m) ≡ 0.
-suc-mod-self : (m : ℕ) → (suc m) mod-suc m ≡ 0
-suc-mod-self m = mod-suc-periodic 0 m
+-- (Ⓓ: the local suc-mod-self re-proved Nat.Mod's suc-mod-suc-self (in scope
+-- via the open import above); use it directly.)
 
 -- negmod is the additive inverse mod (suc m): (x + negmod x) ≡ 0.
 negmod-inverse : (x m : ℕ) → ((x mod-suc m) + negmod x m) mod-suc m ≡ 0
@@ -43,7 +42,7 @@ negmod-inverse x m =
         (trans (cong (_mod-suc m)
                      (trans (+-comm (x mod-suc m) (suc m ∸ (x mod-suc m)))
                             (∸-+-id (suc m) (x mod-suc m) (<→≤ (mod-suc-bound x m)))))
-               (suc-mod-self m))
+               (suc-mod-suc-self m))
 
 ------------------------------------------------------------------------
 -- 2. The residue modℤ : ℤ → ℕ → ℕ.

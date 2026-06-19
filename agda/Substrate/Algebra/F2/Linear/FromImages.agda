@@ -32,6 +32,7 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
+open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+)
 
 ------------------------------------------------------------------------
 -- Small F₂-Vector helpers (factored for clarity; promoted to
@@ -55,14 +56,8 @@ open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
   (sym-trans (cong (c ·_) (lookup-*ₛ d v i))
              (sym (lookup-*ₛ c (d *ₛ v) i)))))
 
--- Scalar distributes from the right: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v.
-*ₛ-distribʳ-+ : ∀ {n} (a b : F₂) (v : Vector n) →
-                ((a + b) *ₛ v) ≡ ((a *ₛ v) +ⱽ (b *ₛ v))
-*ₛ-distribʳ-+ a b v = ≡-from-lookup _ _ (λ i →
-  trans (lookup-*ₛ (a + b) v i)
-  (trans (·-distribʳ-+ (lookup v i) a b)
-         (sym (trans (lookup-+ⱽ (a *ₛ v) (b *ₛ v) i)
-                     (cong₂ _+_ (lookup-*ₛ a v i) (lookup-*ₛ b v i))))))
+-- Ⓓ: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
+-- module structure's home), imported above; it was re-proved here identically.
 
 ------------------------------------------------------------------------
 -- Sum distributes over componentwise +ⱽ on the family.

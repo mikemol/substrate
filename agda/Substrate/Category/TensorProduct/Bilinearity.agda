@@ -42,6 +42,7 @@ open import Substrate.Foundation.Eq
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+)
 open import Substrate.Category.TensorProduct using (TensorProduct; pair)
 
 ------------------------------------------------------------------------
@@ -74,15 +75,8 @@ infixl 6 _+T_
 -- in substrate. Let me derive it inline if not directly available.
 ------------------------------------------------------------------------
 
--- Distributivity of *ₛ over scalar addition (a + b) *ₛ v.
--- Proved pointwise via ·-distribʳ-+.
-*ₛ-distribʳ-+ : ∀ {n} (a b : F₂) (v : Vector n) →
-                ((a + b) *ₛ v) ≡ (a *ₛ v) +ⱽ (b *ₛ v)
-*ₛ-distribʳ-+ a b v = ≡-from-lookup _ _ (λ i →
-  trans (lookup-*ₛ (a + b) v i)
-  (trans (·-distribʳ-+ (lookup v i) a b)
-         (sym (trans (lookup-+ⱽ (a *ₛ v) (b *ₛ v) i)
-              (cong₂ _+_ (lookup-*ₛ a v i) (lookup-*ₛ b v i))))))
+-- Ⓓ: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
+-- module structure's home), imported above; it was re-proved here identically.
 
 ------------------------------------------------------------------------
 -- N-3: pair-+ⱽ-left — pair is additive in its left argument.
