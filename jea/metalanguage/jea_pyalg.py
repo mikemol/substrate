@@ -338,6 +338,36 @@ class Lowerer(ast.NodeVisitor):
             op = type(o).__name__ if o is not None else ""
         elif isinstance(node, ast.Compare):
             op = "|".join(type(o).__name__ for o in node.ops)
+        elif isinstance(node, ast.Attribute):
+            # `.attr` is a REFERENTIAL member name -- `a.foo` and `a.bar` are DISTINCT -- so its
+            # identity lives in the KEY (`op`), exactly like a free Name. (Was: `attr` is a str
+            # field, which `iter_child_nodes` does NOT yield, so it was captured NOWHERE -- a.foo
+            # and a.bar interned to ONE node = the same false-DUPLICATE bug the free-Name case
+            # fixed for abs-vs-str. attr is referential, not alpha-renameable.)  node.value is the
+            # object, recursed as the lone child below (node.ctx is filtered).
+            op = node.attr
+            payload = (node.attr,)
+        elif isinstance(node, ast.alias):
+            # an imported name is REFERENTIAL -- `import os` and `import sys` are DISTINCT -- so the
+            # name goes in the KEY. `asname` (the local binding) is residue. (Was: alias has no child
+            # NODES -- name/asname are str fields -- so every alias interned to ONE node = the
+            # import-os ≡ import-sys false-duplicate.)
+            op = node.name
+            payload = (node.name,) if node.asname is None else (node.name, node.asname)
+        elif isinstance(node, ast.keyword):
+            # `f(x=1)`: `arg` is the REFERENTIAL keyword name (`x=` vs `y=` distinct) -> KEY. value is
+            # the child. arg is None for `**kwargs` (keyword(arg=None,...)) -> no op, just the child.
+            if node.arg is not None:
+                op = node.arg
+                payload = (node.arg,)
+        elif isinstance(node, ast.ImportFrom):
+            # `from MODULE import ...`: the module is referential -> KEY; level (relative dots) = residue.
+            op = node.module or ""
+            payload = (node.module, node.level)
+        elif isinstance(node, (ast.Global, ast.Nonlocal)):
+            # `global x` / `nonlocal x`: the names reference OUTER-scope bindings (referential) -> KEY.
+            op = ",".join(node.names)
+            payload = tuple(node.names)
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             payload = (node.name,)
             self.scopes.append({})                                # new scope for the body
@@ -439,8 +469,9 @@ class CstLowerer:
             return "Assign", "", "", "", ()
         if t == "FunctionDef":
             return "FunctionDef", "", "", "", (node.name.value,)
-        if t == "Attribute":
-            return "Attribute", "", "", "attr", ()
+        # NB: Attribute is handled directly in `lower` (attr -> op, the referential key), BEFORE this
+        # head-map is consulted -- so there is no Attribute case here (a role="attr" head would drop
+        # the member name and re-introduce the a.foo≡a.bar false-duplicate on the cst side).
         # default: keep the cst kind verbatim (structural but unmapped -- shows up as a divergence)
         return t, "", "", "", ()
 
@@ -463,6 +494,16 @@ class CstLowerer:
             kids = [self.lower(c) for c in self._cst_children(node)]
             kids = [k for k in kids if k is not None]
             return kids[0] if len(kids) == 1 else self.I.intern(IR(kind=t, children=tuple(kids)))
+        if t == "Attribute":
+            # mirror the ast lowerer: `.attr` is REFERENTIAL -> the KEY (`op`), NOT a role-quotiented
+            # child Name. cst represents `.attr` as a Name CSTNode; lowering it as a child would (a)
+            # alpha-quotient a referential member name (wrong) and (b) give cst an extra child ast
+            # lacks (divergence). So lift attr into op and lower ONLY the value child -- then the
+            # Attribute HEAD converges with ast's (kind="Attribute", op=<attr>, children=(value,)).
+            val = self.lower(node.value)
+            kids = [val] if val is not None else []
+            return self.I.intern(IR(kind="Attribute", op=node.attr.value,
+                                    children=tuple(kids), payload=(node.attr.value,)))
 
         kind, op, lit, role, payload = self._kind_and_head(node)
         if kind == "FunctionDef":
