@@ -29,6 +29,11 @@ open import Substrate.Foundation.Nat.Properties.Order using (≤-trans; m≤m+n;
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id; suc-mod-suc-self)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
 open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Algebra.Wedge using (DivStr)
+open import Substrate.Algebra.Wedge.Mul using (MulDivStr)
+open import Substrate.Algebra.Wedge.Bridge using (id-bridge)
+open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
 
 ------------------------------------------------------------------------
 -- The apex, parametric in (p′, e′): p = suc (suc p′) ≥ 2 (prime base), and
@@ -87,6 +92,35 @@ module Local (p′ e′ : ℕ) where
   degree-not-yet : pe-1 mod-suc (pe ∸ 1) ≡ 0 → ⊥
   degree-not-yet h with subst (0 <_) (trans (sym pe-1-fixed) h) (^-pos e′)
   ... | ()
+
+  ------------------------------------------------------------------------
+  -- M-α: the ℤ/pᵉ multiplicative carrier + the CrossMix cospan — lifting
+  -- CenterIsStarNumeral's structure to the apex. The CLEAN side of the 4
+  -- shared coherence names lifts UNIFORMLY (every e): cross p pᵉ⁻¹ = p·pᵉ⁻¹
+  -- = pᵉ ≡ 0 — which is exactly `degree-reached`. So clean coherence IS T2.
+  --
+  -- The OBSTRUCTION side (cross p p = p² ) does NOT lift uniformly: p² is the
+  -- graded obstruction only for e ≥ 3 (ℤ/8: 2²=4≠0); at e = 2 (ℤ/9) p²≡0, so
+  -- it is CLEAN, not graded. Hence the 4 names are NOT uniformly liftable —
+  -- the clean pair is generic, the obstruction pair is e-specific (kept in the
+  -- per-instance Numeral/Graded, "same proposition two grades, NOT collapsed").
+  ------------------------------------------------------------------------
+
+  ℤpe-div : DivStr
+  ℤpe-div = record { C = ℕ ; z = 0 ; recon = λ _ _ r → r }
+
+  ℤpe-mul : MulDivStr
+  ℤpe-mul = record { base = ℤpe-div ; mul = λ a b → (a * b) mod-suc (pe ∸ 1) }
+
+  local-mix : CrossMix ℤpe-div ℤpe-div ℤpe-mul
+  local-mix = record { embA = id-bridge ℤpe-div ; embB = id-bridge ℤpe-div }
+
+  -- CLEAN cross (uniform over all e): p · pᵉ⁻¹ = pᵉ ≡ 0  (= degree-reached).
+  clean-cross : cross local-mix p pe-1 ≡ 0
+  clean-cross = degree-reached
+
+  clean-pair : Coherent local-mix p pe-1            -- cross already z : degree 0
+  clean-pair = 0 , degree-reached
 
 ------------------------------------------------------------------------
 -- Instances: the degree facts are the parametric T2 INSTANTIATED (no per-
