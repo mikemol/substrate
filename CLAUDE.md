@@ -31,6 +31,15 @@ in-scope — so it never deadlocks on the global budget and never double-counts.
 refused only if the *parent's* reservation can't cover it (size the top-level budget
 for the whole subtree).
 
+**Automatic (no explicit prefix):** `source scripts/membudget-shrc` makes bare `agda`
+auto-route through `membudget run` (cap/lease `AGDA_MB`, default 4096; `AGDA_MB=8000 agda …`
+for heavy modules). The ledger is a shared file, so this budgets agda across separate
+shells too (concurrent background compiles can't OOM the box — a second is refused).
+For a whole contained session, `scripts/membudget shell [MB]` opens a shell inside one
+top-level scope (the cgroup auto-contains the entire process hierarchy) with the rc
+loaded. To make it permanent for every shell:
+`echo 'source ~/github/substrate/scripts/membudget-shrc' >> ~/.bashrc`.
+
 Rationale + history: memory `feedback_budget_concurrent_compiles`. The pre-commit
 full build already caps each module at `+RTS -M1024m`; `membudget` is the same
 discipline for the ad-hoc compiles I run by hand.

@@ -102,9 +102,21 @@ cmd_run() {
   fi
 }
 
+cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-contains the
+              # whole hierarchy); the membudget-shrc auto-wrap is loaded for per-command sub-budgeting.
+  local mb="${1:-$(ensure; read_total)}"; shift 2>/dev/null || true; [ "${1:-}" = "--" ] && shift
+  ensure
+  local rc; rc="$(mktemp "${TMPDIR:-/tmp}/membudget-rc.XXXXXX")"
+  { echo '[ -f ~/.bashrc ] && source ~/.bashrc'; printf "source %q\n" "$SELFDIR/membudget-shrc"; } > "$rc"
+  if [ "$#" -gt 0 ]; then cmd_run "$mb" "shell" -- bash --rcfile "$rc" -ic "$*"
+  else                    cmd_run "$mb" "shell" -- bash --rcfile "$rc" -i; fi
+  rm -f "$rc"
+}
+
 case "${1:-}" in
   init)   shift; cmd_init "${1:-}";;
   status) cmd_status;;
   run)    shift; cmd_run "$@";;
-  *) echo "usage: membudget {init [MB]|status|run <MB> <label> -- <cmd...>}" >&2; exit 2;;
+  shell)  shift; cmd_shell "$@";;
+  *) echo "usage: membudget {init [MB]|status|run <MB> <label> -- <cmd...>|shell [MB] [-- cmd]}" >&2; exit 2;;
 esac

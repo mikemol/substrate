@@ -1,0 +1,30 @@
+# membudget-shrc — source to AUTO-budget heavy compiles in this shell.
+#
+#   source /path/to/scripts/membudget-shrc        # one-off, this shell
+#   echo 'source ~/github/substrate/scripts/membudget-shrc' >> ~/.bashrc   # permanent
+#
+# Effect: `agda` (and `mbwrap <MB> -- cmd`) auto-route through `scripts/membudget run`,
+# so a bare command is capped + budgeted WITHOUT the explicit prefix. Recursion-aware:
+# inside a membudget scope (MEMBUDGET_PARENT set) the call SUBALLOCATES from its parent;
+# otherwise it's a top-level lease against the global budget. Because the ledger is a
+# file (~/.cache/membudget/budget.cotype), this also budgets agda calls across SEPARATE
+# shells (e.g. concurrent background compiles) against one shared budget.
+#
+# Knobs:  AGDA_MB (cap/lease for `agda`, default 4096; raise for heavy modules:
+#         `AGDA_MB=8000 agda ...`).  Bypass once with `command agda ...`.
+#
+# NOTE: a compile needing more than its cap is OOM-killed by the scope (a signal to
+# raise AGDA_MB), and a call may be REFUSED if the budget is full (serialize / retry).
+# The build gate is unaffected — it invokes agda via python (execvp), not this function.
+
+_membudget_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)"
+case ":$PATH:" in *":${_membudget_dir}:"*) ;; *) export PATH="${_membudget_dir}:$PATH";; esac
+
+# auto-budget agda (recursion-aware via membudget's MEMBUDGET_PARENT).
+# Resolve the real binary with `type -P` (the top-level path execs via systemd-run,
+# which cannot exec the `command` builtin).
+agda() { local _a; _a="$(type -P agda)" || { echo "agda not on PATH" >&2; return 127; }
+         membudget run "${AGDA_MB:-4096}" "agda" -- "$_a" "$@"; }
+
+# wrap any heavy command: mbwrap <MB> -- cmd args...
+mbwrap() { local mb="$1"; shift; [ "${1:-}" = "--" ] && shift; membudget run "$mb" "${1##*/}" -- "$@"; }
