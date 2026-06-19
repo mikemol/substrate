@@ -30,7 +30,8 @@ FILE="${MEMBUDGET_FILE:-$HOME/.cache/membudget/budget.cotype}"
 LOCK="$FILE.lock"
 mkdir -p "$(dirname "$FILE")"
 
-default_total() { awk '/MemTotal/{print int($2*7/10/1024)}' /proc/meminfo; }
+# Target top-level budget: 8 GiB, but never exceed 70% of RAM (safe on smaller boxes).
+default_total() { awk '/MemTotal/{p=int($2*7/10/1024); print (p<8192)?p:8192}' /proc/meminfo; }
 ensure() { [ -f "$FILE" ] || cat > "$FILE" <<EOF
 # membudget cotype — recursion-aware concurrent memory-budget semaphore (scripts/membudget).
 # Global free = TOTAL_MB - Σ top-level LEASE mb; a nested lease draws from its PARENT's mb.

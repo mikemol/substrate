@@ -7,7 +7,7 @@ the IDE's background typecheck) it can OOM the whole machine — this happened
 2026-06-19 (a 5.6 GB monolithic KAT `refl` stacked with other compiles took the box).
 To make that impossible by construction:
 
-    scripts/membudget init 9000                                  # once per boot: global RAM budget (MB)
+    scripts/membudget init 8192                                  # once per boot: global RAM budget (MB)
     scripts/membudget run <MB> <label> -- agda --safe -i. <Module>.agda
     scripts/membudget status                                     # TOTAL / leased / free + active leases
 
@@ -35,9 +35,9 @@ in-scope — so it never deadlocks on the global budget and never double-counts.
 refused only if the *parent's* reservation can't cover it (size the top-level budget
 for the whole subtree).
 
-**Automatic (no explicit prefix):** `source scripts/membudget-shrc` makes bare `agda`
-auto-route through `membudget run` (cap/lease `AGDA_MB`, default 4096; `AGDA_MB=8000 agda …`
-for heavy modules). The ledger is a shared file, so this budgets agda across separate
+**Automatic (no explicit prefix):** `source scripts/membudget-shrc` puts a PATH shim ahead
+of the real `agda`, so bare `agda` (interactive AND inside `make` recipes) auto-routes through
+`membudget run` (cap/lease `AGDA_MB`, default 2048; `AGDA_MB=8000 agda …` for heavy modules). The ledger is a shared file, so this budgets agda across separate
 shells too (concurrent background compiles can't OOM the box — a second is refused).
 For a whole contained session, `scripts/membudget shell [MB]` opens a shell inside one
 top-level scope (the cgroup auto-contains the entire process hierarchy) with the rc
@@ -57,7 +57,7 @@ parallelism self-tunes to memory availability, in dependency order (no `-jN` gue
 
     cd agda
     source ../scripts/membudget-shrc        # puts the agda shim on PATH
-    ../scripts/membudget init 9000           # RAM to devote (MB)
+    ../scripts/membudget init 8192           # RAM to devote (MB)
     AGDA_MB=2048 make -j                      # unbounded; throttles to ~budget/AGDA_MB concurrent
 
 `make`'s recipes resolve `agda` via PATH → the shim → `membudget run` → blocks/leases. The
