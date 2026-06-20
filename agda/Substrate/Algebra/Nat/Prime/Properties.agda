@@ -36,6 +36,10 @@ open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
 open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
 open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
+open import Substrate.Algebra.Nat.GCD.GcdPos using (gcd-pos)
+open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
+open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
+open import Substrate.Algebra.Z.Euclid using (euclid)
 open import Substrate.Algebra.Nat.Prime using (IsPrime; product; AllPrime; []ᴾ; _∷ᴾ_; Factored)
 
 ------------------------------------------------------------------------
@@ -182,3 +186,32 @@ factorize (suc (suc n'')) (acc rec) _
 -- the wrapper: well-foundedness supplied.
 factorize! : (n : ℕ) → 1 ≤ n → Factored n
 factorize! n = factorize n (<-wellFounded n)
+
+------------------------------------------------------------------------
+-- 7. UNIQUENESS kernel (Ⓝ.u): Euclid's lemma for PRIMES. The coprime-form
+--    `euclid` rides on `bezout-ℤ` (the EEA trace's residue, never-discarded);
+--    a prime is coprime to anything it does not divide (its only divisors are 1
+--    and itself), so it LIFTS to: p ∣ a·b ⟹ p∣a or p∣b — the heart of FTA
+--    uniqueness (the multiset of primes is forced).
+------------------------------------------------------------------------
+
+prime-divides-product : ∀ {p} → IsPrime p → (a b : ℕ) → p ∣ (a * b) → (p ∣ a) ⊎ (p ∣ b)
+prime-divides-product {zero}    pp _ _ _    with proj₁ pp
+... | ()
+prime-divides-product {suc zero} pp _ _ _   with proj₁ pp
+... | (s≤s ())
+prime-divides-product {suc (suc m'')} pp a b p∣ab with gcd-pos a (suc m'')
+... | (zero    , gcd≡1) = inj₂ (euclid a (suc m'') b gcd≡1 p∣ab)
+... | (suc g'' , gcd≡g) = inj₁ (subst (λ x → x ∣ a) g≡p g∣a)
+  where
+    g∣a : suc (suc g'') ∣ a
+    g∣a = subst (λ x → x ∣ a) gcd≡g (gcd-divides-left a (suc (suc m'')))
+    g∣p : suc (suc g'') ∣ suc (suc m'')
+    g∣p = subst (λ x → x ∣ suc (suc m'')) gcd≡g (gcd-divides-right a (suc (suc m'')))
+    g≡p : suc (suc g'') ≡ suc (suc m'')
+    g≡p = proj₂ pp (suc (suc g'')) g∣p (s≤s (s≤s z≤n))
+
+-- a prime dividing a prime forces equality (immediate from IsPrime: the divisor
+-- is ≥ 2, so it IS the prime). The atom uniqueness rests on.
+prime∣prime→≡ : ∀ {p q} → IsPrime p → IsPrime q → p ∣ q → p ≡ q
+prime∣prime→≡ pp qq p∣q = proj₂ qq _ p∣q (proj₁ pp)
