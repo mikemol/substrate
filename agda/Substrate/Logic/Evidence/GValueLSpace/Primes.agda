@@ -31,6 +31,8 @@
 module Substrate.Logic.Evidence.GValueLSpace.Primes where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Q using (ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
@@ -86,3 +88,54 @@ gvalue-power-antipode : (na' db k : ℕ) →
   (powℚ (gvalue na' db) k *ℚ powℚ (antipode-of na' db) k) ≈ℚ 1ℚ
 gvalue-power-antipode na' db k =
   pow-cancel-balanced (gvalue na' db) (antipode-of na' db) (gvalue-antipode na' db) k
+
+------------------------------------------------------------------------
+-- RANK-n: the free abelian group on n generators. An element of the free
+-- abelian group on G-value generators g₁…gₙ is a product ∏ᵢ gᵢ^kᵢ; its
+-- inverse is ∏ᵢ hᵢ^kᵢ (hᵢ = recip gᵢ), and they cancel — the rank-n
+-- invertible pole, NO unique factorisation. (rank-1 = `pow-cancel-balanced`
+-- with the constant list; the per-generator cancellation rides in the pair.)
+--
+-- A `CancelPair` is a pair (g, h) bundled with its OWN cancellation g·h≈1, so
+-- the rank-n statement carries no separate hypothesis vector.
+------------------------------------------------------------------------
+
+CancelPair : Set
+CancelPair = Σ ℚ (λ g → Σ ℚ (λ h → (g *ℚ h) ≈ℚ 1ℚ))
+
+prodG : List CancelPair → ℚ                 -- ∏ first components
+prodG []       = 1ℚ
+prodG (p ∷ ps) = proj₁ p *ℚ prodG ps
+
+prodH : List CancelPair → ℚ                 -- ∏ inverse components
+prodH []       = 1ℚ
+prodH (p ∷ ps) = proj₁ (proj₂ p) *ℚ prodH ps
+
+-- The rank-n cancellation: (∏ gᵢ)·(∏ hᵢ) ≈ 1.  Same shape as the rank-1
+-- balanced cancellation (swap4 + cancel head + recurse), now over an
+-- ARBITRARY family of independent canceling pairs.
+prod-cancel : (ps : List CancelPair) → (prodG ps *ℚ prodH ps) ≈ℚ 1ℚ
+prod-cancel []       = *ℚ-identityˡ 1ℚ
+prod-cancel (p ∷ ps) =
+  ≈ℚ-trans {(proj₁ p *ℚ prodG ps) *ℚ (proj₁ (proj₂ p) *ℚ prodH ps)}
+           {(proj₁ p *ℚ proj₁ (proj₂ p)) *ℚ (prodG ps *ℚ prodH ps)}
+           {1ℚ}
+    (swap4 (proj₁ p) (prodG ps) (proj₁ (proj₂ p)) (prodH ps))
+  (≈ℚ-trans {(proj₁ p *ℚ proj₁ (proj₂ p)) *ℚ (prodG ps *ℚ prodH ps)} {1ℚ *ℚ 1ℚ} {1ℚ}
+    (*ℚ-cong {proj₁ p *ℚ proj₁ (proj₂ p)} {1ℚ} {prodG ps *ℚ prodH ps} {1ℚ}
+       (proj₂ (proj₂ p)) (prod-cancel ps))
+    (*ℚ-identityˡ 1ℚ))
+
+-- el-atlas G-values POPULATE CancelPair: each generator G(P)ᵏ pairs with its
+-- antipode-power G(¬P)ᵏ, canceling by `gvalue-power-antipode`. So `prod-cancel`
+-- over any list of these is the rank-n G-value antipode: a product of G-value
+-- powers has the product of antipode powers as its inverse.
+gvalue-pow-pair : (na' db k : ℕ) → CancelPair
+gvalue-pow-pair na' db k =
+  powℚ (gvalue na' db) k , powℚ (antipode-of na' db) k , gvalue-power-antipode na' db k
+
+-- Non-vacuous concrete firing (rank-2): ⟨G(2/1), G(3/2)⟩ with exponents 3,2.
+gvalue-rank2-antipode :
+  (prodG (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])
+   *ℚ prodH (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])) ≈ℚ 1ℚ
+gvalue-rank2-antipode = prod-cancel (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])

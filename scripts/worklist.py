@@ -73,7 +73,10 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.pole1", "desc": "Ⓖ★ invertible-pole cross-coherence, rank-1: gᵏ·(recip g)ᵏ≈1 "
             "(gvalue-power-antipode) — the el-atlas antipode extended to the cyclic subgroup, NO FTA",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-power-antipode")},
-    {"sym": "Ω3-L-primes", "desc": "rank-1 invertible pole DONE (Ω3-L-primes.pole1); remaining: rank-n free-abelian codec (Vec of bases, mixed-sign exp-⊕) + FTA surjectivity/LogSumExp tail", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.rankN", "desc": "Ⓖ★ invertible-pole, rank-n: ∏gᵢ·∏hᵢ≈1 (prod-cancel) — the "
+            "free abelian group on n G-value generators inverted termwise, NO FTA",
+     "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "prod-cancel")},
+    {"sym": "Ω3-L-primes", "desc": "rank-1 + rank-n invertible poles DONE (.pole1/.rankN, GValueLSpace.Primes, NO FTA); remaining: full ℤ-power ExpLogCodec (L=ℤ via _+ℤ_, mixed-sign exp-⊕ — moderate) + FTA surjectivity/LogSumExp (heavy from-scratch, FTA absent)", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},

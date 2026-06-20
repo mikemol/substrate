@@ -124,9 +124,20 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --       (2) SURJECTIVITY — "image = EXACTLY the positive gvalues" + the "log"
 --           inverse (⇒ G_OR = +ℚ becomes L_OR = LogSumExp, expL⁻¹∘+ℚ∘expL) is
 --           the only part that genuinely needs the free abelian group on primes
---           ℚ₊ ≅ ⊕ℤ + UNIQUE FACTORISATION (FTA) — heavy, deferred.
---     So Ω3-L-primes = (1) the Ⓖ★ invertible-pole cross-coherence (a clean
---     wedge sideways-copy + the ℚ₊ group instance, NO FTA) + (2) the FTA
---     surjectivity/LogSumExp tail. The rank-1 ℕ base-power codec above is exact
---     and complete at its scope, not an approximation of either.
+--           ℚ₊ ≅ ⊕ℤ + UNIQUE FACTORISATION (FTA). GROUNDED 2026-06-20: NO
+--           factorisation-into-primes existence/uniqueness proof is present in
+--           the tree (GCD/Bezout/Coprime exist; FTA does not) — it is a heavy
+--           FROM-SCRATCH number-theory arc (prime enumeration + factor-by-strong-
+--           induction + uniqueness), genuinely deferred (an EFFORT wall, not an
+--           impossibility — Ω4 class (c)).
+--     STATUS — layer (1) BUILT in `GValueLSpace.Primes`, NO FTA:
+--       * rank-1 invertible pole: `gvalue-power-antipode` (gᵏ·(recip g)ᵏ≈1, the
+--         el-atlas antipode on the cyclic subgroup ⟨g⟩);
+--       * rank-n invertible pole: `prod-cancel` (∏gᵢ·∏hᵢ≈1, the free abelian
+--         group on n G-value generators — each element ∏gᵢ^kᵢ inverted by ∏hᵢ^kᵢ).
+--     REMAINING: the full ℤ-power ExpLogCodec (L=ℤ via `_+ℤ_`, exp-⊕ over the
+--     mixed-sign `_⊖_` cancellation — feasible, MODERATE) wires these into the
+--     codec INTERFACE; and (2) the FTA surjectivity/LogSumExp tail (HEAVY,
+--     from-scratch). The rank-1 ℕ base-power codec above is exact and complete
+--     at its scope, not an approximation of either.
 ------------------------------------------------------------------------
