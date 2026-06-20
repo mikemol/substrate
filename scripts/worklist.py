@@ -70,7 +70,10 @@ WORKLIST = [
     {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs (verdict: reflex purged, 3 genuine deferrals)",
      "done": ("exists", "scratch/omega4_reflex_sweep.md")},
     {"sym": "Ε(b)", "desc": "widen the reuse-search trigger (G9 prevention)", "done": ("manual",)},
-    {"sym": "Ω3-L-primes", "desc": "Ⓖ★ invertible-pole cross-coherence (the crossmix-DUAL: cross→1 vs CrossMul cross→z) + ℚ₊ group instance [antipode core, NO FTA]; FTA only for the surjectivity/LogSumExp tail", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.pole1", "desc": "Ⓖ★ invertible-pole cross-coherence, rank-1: gᵏ·(recip g)ᵏ≈1 "
+            "(gvalue-power-antipode) — the el-atlas antipode extended to the cyclic subgroup, NO FTA",
+     "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-power-antipode")},
+    {"sym": "Ω3-L-primes", "desc": "rank-1 invertible pole DONE (Ω3-L-primes.pole1); remaining: rank-n free-abelian codec (Vec of bases, mixed-sign exp-⊕) + FTA surjectivity/LogSumExp tail", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},
