@@ -191,8 +191,19 @@ def chk_extrude_ir():
     g = E.grades(csrc); bg = E.byte_grade(csrc)
     assert g["skeleton"] and g["ast"] and g["byte"], f"grade ladder must hold all three: {g}"
     assert bg["byte_exact"] and bg["pure_gauge"] and bg["comments"] >= 2, f"byte-exact + pure-gauge: {bg}"
-    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful full language incl. Match — "
-            "133/133 real modules; GRADE LADDER closed: byte-exact via CST, trivia = pure gauge)")
+    # Ⓤ.template: the residue's USE -- same-skeleton/different-residue clusters into a template, the
+    # varying residue positions are the holes (Free⊣Forgetful substitution). Non-vacuous: a const-varying
+    # pair clusters with the const as a hole; an exact-dup pair clusters with ZERO holes; a unique stays out.
+    tr = E.templatize([("s2", "def s2(v):\n    return v * 2\n"), ("s3", "def s3(v):\n    return v * 3\n"),
+                       ("d1", "def k():\n    return 0\n"), ("d2", "def k():\n    return 0\n"),
+                       ("u", "def u(p):\n    return p - 1\n")])
+    assert tr["n_skeletons"] == 3, f"5 units, 2 dup-pairs + 1 unique -> 3 skeletons (got {tr['n_skeletons']})"
+    bylab = {tuple(sorted(c["labels"])): c for c in tr["clusters"]}
+    assert bylab[("s2", "s3")]["holes"] == 2, "scale pair: name + multiplier-const are the 2 holes"
+    assert dict(bylab[("s2", "s3")]["fillings"][0])["p1"] in ("2", "3"), "the multiplier const is a hole value"
+    assert bylab[("d1", "d2")]["holes"] == 0, "exact duplicates must cluster with ZERO holes"
+    return ("PASS (Ⓤ.byte+retract+template: orbital identity; seam; AST-faithful full language incl. Match "
+            "— 133/133 real modules; ladder closed (byte-exact, trivia=gauge); residue→template extraction)")
 
 
 def chk_pysim():

@@ -843,6 +843,52 @@ def grades(src: str) -> dict:
             "byte": byte_grade(src).get("byte_exact")}
 
 
+def templatize(units: list) -> dict:
+    """The residue's USE (Ⓤ.template). units = [(label, source), ...]. Group by SKELETON (the structure+
+    op+role canonical form, full_skeleton -- so referential names/operators ARE part of the template;
+    only the residue cofactor varies). A cluster of >=2 units with one skeleton is a TEMPLATE with
+    multiple instances; the residue positions that VARY across instances are the HOLES (the parameters),
+    those constant across all instances are baked in. Free⊣Forgetful: the skeleton is the free term with
+    holes, each instance's residue is a substitution. The template is rendered by the SAME extruder fed a
+    residue whose varying slots are hole-markers (__pN__, valid Python so the template re-parses) -- the
+    compression/refactoring payoff of keeping the complete cofactor. Returns clusters + the compression
+    (M skeletons for N units) + each template source + the per-instance hole fillings."""
+    groups = {}
+    for label, src in units:
+        I = J.Intern(); roots = J.lower_source(src, I)
+        if not roots:
+            continue
+        key = J.full_skeleton(I, roots[0])
+        groups.setdefault(key, []).append((label, roots[0], I, capture_full(src)))
+    clusters = []
+    for members in groups.values():
+        if len(members) < 2:
+            continue
+        streams = [m[3] for m in members]
+        # same skeleton => identical tag sequence + length; bail defensively if not (a hash collision).
+        tags0 = tuple(t for t, _ in streams[0])
+        if any(len(s) != len(streams[0]) or tuple(t for t, _ in s) != tags0 for s in streams):
+            continue
+        hres, fillings, hi = [], [[] for _ in members], 0
+        for i in range(len(streams[0])):
+            tag = streams[0][i][0]
+            vals = [s[i][1] for s in streams]
+            if all(v == vals[0] for v in vals):
+                hres.append((tag, vals[0]))                       # constant -> baked into the template
+            else:
+                marker = f"__p{hi}__"
+                hres.append((tag, marker))                        # varying -> a hole (parameter)
+                for j in range(len(members)):
+                    fillings[j].append((f"p{hi}", vals[j]))
+                hi += 1
+        tmpl, _ = extrude(members[0][2], [members[0][1]], residue=hres)
+        clusters.append({"labels": [m[0] for m in members], "holes": hi,
+                         "template": tmpl, "fillings": [dict(f) for f in fillings]})
+    n_units = len(units); n_skel = len(groups)
+    return {"clusters": clusters, "n_units": n_units, "n_skeletons": n_skel,
+            "compression": f"{n_units} units -> {n_skel} skeletons + residues"}
+
+
 def seam_partition() -> dict:
     """The deliverable: the FIXED (orbital-identity / a seam must preserve) vs RESIDUE (what a byte-grade
     plugin supplies) partition over the IR's content, with LIVE demonstrations of the three skeleton losses."""
@@ -967,6 +1013,18 @@ if __name__ == "__main__":
     print(f"  trivia gauge: {bg.get('comments')} comments + {bg.get('gauge_bytes')} format bytes; "
           f"pure_gauge (ast-equal delta)={bg.get('pure_gauge')}")
     print("  => byte-grade is RECOVERED: skeleton ⊕ structural-residue -> AST; ⊕ trivia-gauge (CST) -> bytes.")
+
+    print("\n── Ⓤ.template: the residue's USE — same-skeleton/different-residue = a template ──")
+    tunits = [("scale2", "def scale2(v):\n    return v * 2\n"),
+              ("scale3", "def scale3(v):\n    return v * 3\n"),
+              ("h", "def h(p):\n    return p - 1\n")]
+    tr = templatize(tunits)
+    print(f"  {tr['compression']}")
+    for c in tr["clusters"]:
+        print(f"  cluster {c['labels']} ({c['holes']} holes): {c['template']!r}")
+        print(f"    fillings: {c['fillings']}")
+    print("  => the skeleton is the free term with holes; each residue is a substitution (Free⊣Forgetful).")
+    print("     At scale this is duplicate-code / compression detection (a 0-hole cluster = exact dupes).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()
