@@ -37,7 +37,7 @@ for the whole subtree).
 
 **Automatic (no explicit prefix):** `source scripts/membudget-shrc` puts a PATH shim ahead
 of the real `agda`, so bare `agda` (interactive AND inside `make` recipes) auto-routes through
-`membudget run` (cap/lease `AGDA_MB`, default 2048; `AGDA_MB=8000 agda …` for heavy modules). The ledger is a shared file, so this budgets agda across separate
+`membudget run` (lease `AGDA_MB`, default `auto`; `AGDA_MB=1536 agda …` to pin the ceiling for a one-off). The ledger is a shared file, so this budgets agda across separate
 shells too (concurrent background compiles can't OOM the box — a second is refused).
 For a whole contained session, `scripts/membudget shell [MB]` opens a shell inside one
 top-level scope (the cgroup auto-contains the entire process hierarchy) with the rc
@@ -58,11 +58,13 @@ parallelism self-tunes to memory availability, in dependency order (no `-jN` gue
     cd agda
     source ../scripts/membudget-shrc        # puts the agda shim on PATH
     ../scripts/membudget init 8192           # RAM to devote (MB)
-    AGDA_MB=2048 make -j                      # unbounded; throttles to ~budget/AGDA_MB concurrent
+    make -j                                   # AGDA_MB=auto (shim default): each job leases its
+                                              # autobudget size (≤1.5GiB ceiling); throttles to fit
 
 `make`'s recipes resolve `agda` via PATH → the shim → `membudget run` → blocks/leases. The
-per-file `+RTS -M1024m` heap cap keeps each job under `AGDA_MB`. Tune `AGDA_MB` to the heap
-cap + overhead (~1.5–2 GB). (Demonstrated: `make -j` over a 2-subdir node under a 1-job budget
+per-file `+RTS -M1024m` heap cap keeps each job under the 1.5GiB lease ceiling. `AGDA_MB=auto`
+(the shim default) right-sizes each lease from peak-mem history (192MB cold); pin `AGDA_MB=<N>` only
+to override. (Demonstrated: `make -j` over a 2-subdir node under a 1-job budget
 serialized cleanly via BLOCKED/lease hand-off; exit 0.)
 
 ## Build-time estimation (genlop-style): `scripts/buildtime.py`
@@ -85,11 +87,17 @@ is not representative).
 
 **Autobudget (`AGDA_MB=auto`, the shim default).** `membudget` also captures each compile's peak-mem
 (`/usr/bin/time -v` maxRSS → the `peak_mb` 3rd ledger column) and, when the lease is `auto`, SIZES it by
-rounding `max(peak)` **UP to the next power of two** (floor 64, cap `AGDA_MB_MAX=8192`), fallback
-`AGDA_MB_DEFAULT=2048` with no history. The pow2 step IS the safety margin — it sits `2ⁿ ± 2ⁿ⁻¹` around
-the need (a `2ⁿ⁻¹` headroom band), so no extra fudge and no over-rounding (peak 900 → 1024, not 1536;
-peak 65 → 128). maxRSS over-counts the OOM-relevant (anonymous) footprint, so this is conservatively
-safe; a lease is a hard kill cap, so rounding UP keeps cap ≥ peak. Light modules lease small → far more
+rounding `max(peak)` **UP to the next power of two** (floor 64, cap `AGDA_MB_MAX=1536` = 1.5GiB ceiling),
+fallback `AGDA_MB_DEFAULT=192` with no history. The pow2 step IS the safety margin — it sits `2ⁿ ± 2ⁿ⁻¹`
+around the need (a `2ⁿ⁻¹` headroom band), so no extra fudge and no over-rounding (peak 900 → 1024, not
+1536; peak 65 → 128). The **1.5GiB ceiling** is justified by the full-build invariant: every module
+typechecks under `+RTS -M1024m` (1 GB heap) and passes, so worst-case maxRSS ≈ 1 GB heap + ~0.1 GB RTS
+≈ 1.1 GB < 1536 — and post-decomposition the heaviest AES/KAT/SBox modules measure only ~110 MB maxRSS
+(`scripts/buildtime.py --mem`). A peak that would round to 2048 is clamped to 1536 (still ≥ the real
+peak). The **192 MB default** covers a typical cold module (measured maxRSS tops ~120 MB) at high
+concurrency, and the retry ladder `192→384→768→1536` lands exactly on the ceiling so a heavy unseen
+module still self-heals. maxRSS over-counts the OOM-relevant (anonymous) footprint, so this is
+conservatively safe; a lease is a hard kill cap, so rounding UP keeps cap ≥ peak. Light modules lease small → far more
 `make -j` modules fit the global budget concurrently.
 
 **Retry-on-OOM (self-correcting).** A too-tight first guess is absorbed: a cgroup `MemoryMax` kill exits

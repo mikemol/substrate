@@ -120,11 +120,16 @@ def predict(hist: dict, modules) -> dict:
             "n": len(modules), "fallback": fb}
 
 
-def autobudget(peak_mb: float, default: int = 2048, cap: int = 8192) -> int:
+def autobudget(peak_mb: float, default: int = 192, cap: int = 1536) -> int:
     """The membudget _auto_mb rule: round peak UP to the next POWER OF TWO (floor 64, cap). The pow2
     step IS the safety margin — it sits 2^n ± 2^(n-1) around the need (up to a 2^(n-1) headroom band),
     so no extra fudge and no over-rounding (900→1024, not 1536). A lease is a hard kill cap, so rounding
-    UP keeps cap ≥ peak; a too-tight first guess self-corrects via membudget's retry-on-OOM."""
+    UP keeps cap ≥ peak; a too-tight first guess self-corrects via membudget's retry-on-OOM.
+
+    Ceiling = 1.5GiB (cap=1536): the full build runs every module at `+RTS -M1024m` (1GB heap) and
+    passes, so worst-case maxRSS ≈ 1GB heap + ~0.1GB RTS overhead ≈ 1.1GB < 1536 — measured AES/KAT/SBox
+    hogs peak ~110MB after decomposition, so the cap has wide margin. cap is NOT a power of two: a peak
+    that rounds to 2048 is clamped down to 1536 (still ≥ any real peak by the -M1024m invariant)."""
     if peak_mb <= 0:
         return default
     v = 64
