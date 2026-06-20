@@ -37,6 +37,8 @@ open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
 open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
 open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
+open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
+  renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialise: `Canonical` collides across nodes
 open import Substrate.Algebra.Nat.GCD.GcdPos using (gcd-pos)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
@@ -230,3 +232,37 @@ prime-∈-product {p} {q ∷ rest} pp (qp ∷ᴾ restp) p∣qr
   with prime-divides-product pp q (product rest) p∣qr
 ... | inj₁ p∣q    = here (prime∣prime→≡ pp qp p∣q)
 ... | inj₂ p∣rest = there (prime-∈-product pp restp p∣rest)
+
+------------------------------------------------------------------------
+-- 8. Ⓝ.iso: the prime factorisation as a SPLIT-CANONICAL retraction.
+--    `factorize!` gives product ∘ factorize ≡ id (the existence round-trip), a
+--    retraction — so by the split-idempotent apex (`split-Canonical`) the
+--    positive naturals ARE a section-based quotient: ℕ⁺ ≅ {canonical prime
+--    factorisations} (the image of `factorize`), NO quotient type. (A positive
+--    n is `suc m`; the carrier value is `pred (product ps)`, so the retraction
+--    is total: pred (product (factorize (suc m))) = pred (suc m) = m.)
+--    The same apex as eval/reify, ℚ reduce, the wedge recon (project_split_idempotent_apex).
+------------------------------------------------------------------------
+
+private
+  pred : ℕ → ℕ
+  pred zero    = zero
+  pred (suc n) = n
+
+-- F : the carrier value (positive n ↦ n−1, so the retraction is total on ℕ).
+factor-value : List ℕ → ℕ
+factor-value ps = pred (product ps)
+
+-- s : the section — the prime factorisation of the positive number suc m.
+factor-section : ℕ → List ℕ
+factor-section m = proj₁ (factorize! (suc m) (s≤s z≤n))
+
+-- F ∘ s ≡ id: pred (product (factorize (suc m))) ≡ pred (suc m) ≡ m.
+factor-retract : (m : ℕ) → factor-value (factor-section m) ≡ m
+factor-retract m = cong pred (proj₂ (proj₂ (factorize! (suc m) (s≤s z≤n))))
+
+-- THE ISO: the split idempotent factor-section ∘ factor-value is a Canonical
+-- for ker factor-value — ℕ⁺ ≅ canonical prime factorisations, from the
+-- retraction alone (uniqueness/.u2 then characterises the image as THE multiset).
+factor-Canonical : Canonical⟦de760d07⟧ (ker-Quotient factor-value)
+factor-Canonical = split-Canonical factor-value factor-section factor-retract
