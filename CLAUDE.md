@@ -80,8 +80,15 @@ ETA. Read it back:
     scripts/buildtime.py --module <relpath> # one module's history    --stats / --compact
 
 Estimate = MEDIAN of a module's last K=5 runs (robust to the cold/warm-`.agdai` bimodality); unseen
-modules fall back to the global median. (Future: `membudget` can also record cgroup peak-mem and
-SIZE the lease per-module from history — auto-`AGDA_MB`.)
+modules fall back to the global median. Only SUCCESSFUL compiles are recorded (a failed/OOM-killed run
+is not representative).
+
+**Autobudget (`AGDA_MB=auto`, the shim default).** `membudget` also captures each compile's peak-mem
+(`/usr/bin/time -v` maxRSS → the `peak_mb` 3rd ledger column) and, when the lease is `auto`, SIZES it
+from that history: `max(peak)·1.3 + 256`, clamped to `[512, AGDA_MB_MAX=8000]`, falling back to
+`AGDA_MB_DEFAULT=2048` with no history. So a light module (e.g. 65 MB peak) leases ~512 MB instead of
+2048 → more `make -j` modules fit the global budget concurrently; a heavy module leases big → still
+safe. `AGDA_MB=<N>` pins a fixed lease; `scripts/buildtime.py --mem` shows the per-module peaks/leases.
 
 ## Commit policy
 

@@ -81,8 +81,22 @@ _wait_change() { # block until the ledger changes (a release) or a short timeout
   fi
 }
 
+_auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", from its peak-mem history.
+  # max recorded peak × 1.3 + 256 headroom, clamped to [512, AGDA_MB_MAX]; default if no history yet.
+  local a mod="" def="${AGDA_MB_DEFAULT:-2048}" cap="${AGDA_MB_MAX:-8000}"
+  for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done
+  [ -n "$mod" ] || { echo "$def"; return; }
+  local led; led="$(dirname "$mod")/.agda-times.tsv"
+  [ -f "$led" ] || { echo "$def"; return; }
+  awk -F'\t' -v m="$(basename "$mod")" -v def="$def" -v cap="$cap" '
+    $1==m && $3 ~ /^[0-9]+$/ { if ($3+0>pk) pk=$3+0 }
+    END { if (pk<=0) { print def; exit }
+          v=int(pk*1.3)+256; if (v<512) v=512; if (v>cap) v=cap; print v }' "$led" 2>/dev/null || echo "$def"
+}
+
 cmd_run() {
   local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
+  [ "$mb" = auto ] && mb=$(_auto_mb "$@")          # Ⓡ.autobudget: lease from peak-mem history
   ensure
   local parent="${MEMBUDGET_PARENT:--}"
   local id; id=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
@@ -121,28 +135,38 @@ cmd_run() {
   # genlop-style timing: measure ONLY the post-lease run (not the semaphore wait above), record it to
   # the module's per-dir ledger, and PROPAGATE the real exit code (cgroup-kill 137 included). The
   # recording is best-effort and never alters rc.
-  local rc=0 rstart rend
+  local rc=0 rstart rend tf=""
+  [ -x /usr/bin/time ] && tf=$(mktemp 2>/dev/null || echo "")   # capture peak-mem (maxRSS) if available
   rstart=$(date +%s.%N)
   if [ "$parent" = "-" ]; then
     echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
-    systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
-      -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@" || rc=$?
+    if [ -n "$tf" ]; then
+      systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
+        -p MemoryMax="${mb}M" -p MemorySwapMax=0 /usr/bin/time -v -o "$tf" "$@" || rc=$?
+    else
+      systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
+        -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@" || rc=$?
+    fi
   else
     echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2
-    "$@" || rc=$?
+    if [ -n "$tf" ]; then /usr/bin/time -v -o "$tf" "$@" || rc=$?; else "$@" || rc=$?; fi
   fi
   rend=$(date +%s.%N)
-  _record_time "$rstart" "$rend" "$@"
+  if [ "$rc" = 0 ]; then _record_time "$rstart" "$rend" "$tf" "$@"; fi   # only learn from SUCCESSFUL runs
+  [ -n "$tf" ] && rm -f "$tf"
   exit "$rc"
 }
 
-_record_time() { # genlop: append <module-basename>\t<seconds> to the module's per-dir .agda-times.tsv
-  local rstart="$1" rend="$2"; shift 2
+_record_time() { # genlop: append <module>\t<seconds>\t<peak_mb> to the module's per-dir .agda-times.tsv
+  local rstart="$1" rend="$2" tf="$3"; shift 3
   local a mod=""
   for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done   # the compiled module (last .agda arg)
   [ -n "$mod" ] || return 0
   local dur; dur=$(awk "BEGIN{d=$rend-$rstart; printf \"%.2f\", (d<0?0:d)}" 2>/dev/null) || return 0
-  printf '%s\t%s\n' "$(basename "$mod")" "$dur" >> "$(dirname "$mod")/.agda-times.tsv" 2>/dev/null || true
+  local peak="" kb=""
+  [ -n "$tf" ] && [ -f "$tf" ] && kb=$(awk '/Maximum resident set size/{print $NF}' "$tf" 2>/dev/null)
+  case "$kb" in ''|*[!0-9]*) ;; *) peak=$(( kb / 1024 )) ;; esac      # KB → MB (the lease unit)
+  printf '%s\t%s\t%s\n' "$(basename "$mod")" "$dur" "$peak" >> "$(dirname "$mod")/.agda-times.tsv" 2>/dev/null || true
 }
 
 cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-contains the

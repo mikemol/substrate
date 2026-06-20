@@ -14,4 +14,6 @@ for _d in "${_ds[@]}"; do
   [ -x "$_d/agda" ] && { _real="$_d/agda"; break; }
 done
 [ -n "$_real" ] || { echo "agda-shim: real agda not found on PATH (excluding $_dir)" >&2; exit 127; }
-exec membudget run "${AGDA_MB:-2048}" agda -- "$_real" "$@"
+# AGDA_MB=auto (default): membudget sizes the lease from this module's peak-mem history
+# (Ⓡ.autobudget), falling back to AGDA_MB_DEFAULT (2048) with no history. Set AGDA_MB=<N> to pin.
+exec membudget run "${AGDA_MB:-auto}" agda -- "$_real" "$@"

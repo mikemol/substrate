@@ -44,9 +44,10 @@ def append(module_rel: str, seconds: float, peak_mb=None) -> None:
         pass
 
 
-def read_all() -> dict:
-    """Walk agda/ for per-dir ledgers; return {module_rel: [seconds, …]} (last-K per module)."""
-    hist: dict = {}
+def _read(col: int) -> dict:
+    """Walk agda/ for per-dir ledgers; return {module_rel: [value, …]} (last-K) from column `col`
+    (1 = seconds, 2 = peak_mb). Rows missing/blank in that column are skipped."""
+    out: dict = {}
     for dp, _, fns in os.walk(AGDA):
         if LEDGER not in fns:
             continue
@@ -55,16 +56,26 @@ def read_all() -> dict:
             with open(os.path.join(dp, LEDGER)) as f:
                 for ln in f:
                     parts = ln.rstrip("\n").split("\t")
-                    if len(parts) < 2:
+                    if len(parts) <= col or parts[col] == "":
                         continue
                     try:
-                        sec = float(parts[1])
+                        v = float(parts[col])
                     except ValueError:
                         continue
-                    hist.setdefault(os.path.join(reldir, parts[0]), []).append(sec)
+                    out.setdefault(os.path.join(reldir, parts[0]), []).append(v)
         except OSError:
             continue
-    return {m: ts[-KEEP:] for m, ts in hist.items()}
+    return {m: vs[-KEEP:] for m, vs in out.items()}
+
+
+def read_all() -> dict:
+    """{module_rel: [seconds, …]} (last-K per module)."""
+    return _read(1)
+
+
+def read_mem() -> dict:
+    """{module_rel: [peak_mb, …]} (last-K per module) — the membudget peak-mem capture."""
+    return _read(2)
 
 
 def compact() -> int:
@@ -151,6 +162,15 @@ def main(argv) -> int:
         ts = hist.get(argv[1])
         print(f"{argv[1]}: last {len(ts)} runs {ts}  median {fmt(statistics.median(ts))}" if ts
               else f"no history for {argv[1]}")
+    elif cmd in ("--mem", "-M"):
+        mem = read_mem(); n = int(argv[1]) if len(argv) > 1 else 20
+        ranked = sorted(((max(v), m) for m, v in mem.items() if v), reverse=True)
+        if not ranked:
+            print("no peak-mem history yet (needs /usr/bin/time + a shimmed build)."); return 0
+        print(f"heaviest {min(n, len(ranked))} modules (max peak-mem) — drives the autobudget lease:")
+        for mb, m in ranked[:n]:
+            lease = min(8000, max(512, int(mb * 1.3) + 256))   # = membudget _auto_mb clamp
+            print(f"  {lease:>6}MB lease  (peak {int(mb)}MB)  {m}")
     elif cmd == "--stats":
         mods = _all_modules(); known = sum(1 for m in mods if hist.get(m))
         print(f"ledger: {len(hist)} modules timed; {known}/{len(mods)} current modules have history; "
