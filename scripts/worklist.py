@@ -82,7 +82,10 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.factor", "desc": "layer-2 foundation: factorization = the div-mod WEDGE iterated "
             "(Algebra.Nat.Prime: mod0→∣ wedge-with-r=0, IsPrime, Factored structure). Next: existence theorem",
      "done": ("defines", "Substrate/Algebra/Nat/Prime.agda", "Factored")},
-    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); layer (2) in progress: foundation DONE (.factor — Algebra.Nat.Prime: wedge-divisibility mod0→∣, IsPrime, Factored). NEXT: factor-EXISTENCE theorem (build ∣→≤ + mult-mono lemmas [absent] → bounded least-prime search → well-founded factorize); THEN uniqueness(euclid)→ℚ₊≅⊕ℤ→LogSumExp", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.factor-exists", "desc": "factorization EXISTENCE: factorize! (every positive ℕ "
+            "= a product of primes) — div-mod wedge iterated by least prime divisor, well-founded. = codec surjectivity onto ℚ₊",
+     "done": ("defines", "Substrate/Algebra/Nat/Prime/Properties.agda", "factorize!")},
+    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); layer (2): EXISTENCE done (.factor/.factor-exists — Algebra.Nat.Prime.factorize!, every positive ℕ = ∏ primes, the div-mod wedge iterated = codec surjectivity onto ℚ₊). REMAINING: uniqueness (lift euclid) → ℚ₊≅⊕primesℤ iso (the log) → L_OR=LogSumExp", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},

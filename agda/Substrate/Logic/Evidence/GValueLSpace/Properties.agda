@@ -151,11 +151,16 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --       * `_∣_` (Algebra.Nat.Divides), gcd-ℕ / bezout-ℤ / Coprime;
 --       * well-founded recursion `Algebra.Nat.WellFounded.<-wellFounded`
 --         (Acc _<_ n) — for factorization EXISTENCE by strong induction.
---     ONLY `IsPrime` is absent. So layer (2) is a MODERATE assemble-from-kernels
---     arc, NOT a from-scratch wall: define IsPrime → factorisation existence
---     (strong induction; = the codec's SURJECTIVITY onto ℚ₊, primes as bases) →
---     uniqueness (lift `euclid`) → ℚ₊≅⊕primesℤ iso → L_OR=LogSumExp. Deferred to
---     its own focused arc (a real multi-module build), now de-risked. The rank-1
+--     ONLY `IsPrime` was absent. layer (2) is a MODERATE assemble-from-kernels
+--     arc, NOT a from-scratch wall. PROGRESS 2026-06-20:
+--       * `Algebra.Nat.Prime` (+ `.Properties`) BUILT — IsPrime/Factored, the
+--         decidable divisibility (`∣→mod0` via `divmod-unique`), the bounded
+--         least-divisor search, and the EXISTENCE theorem `factorize!` (every
+--         positive ℕ = a product of primes), the
+--         div-mod wedge iterated by least prime divisor, well-founded on the
+--         quotient. THIS IS the codec's SURJECTIVITY onto ℚ₊ (primes as bases).
+--     REMAINING: factorisation UNIQUENESS (lift `Algebra.Z.Euclid.euclid`) →
+--     ℚ₊≅⊕primesℤ iso (the "log" / codec inverse) → L_OR=LogSumExp. The rank-1
 --     ℕ base-power codec above is exact and complete at its scope, not an
 --     approximation of any of these.
 ------------------------------------------------------------------------

@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
 FILES := Bezout.agda DivMod.agda Divides.agda GCD.agda Mod.agda ModEquiv.agda Prime.agda Units.agda WellFounded.agda
-SUBDIRS := Bezout DivMod Divides GCD Mod
+SUBDIRS := Bezout DivMod Divides GCD Mod Prime
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -75,10 +75,18 @@ Mod:
 	fi
 	@$(MAKE) -C $@
 
+Prime:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 clean:
 	@$(MAKE) -C Bezout clean 2>/dev/null || true
 	@$(MAKE) -C DivMod clean 2>/dev/null || true
 	@$(MAKE) -C Divides clean 2>/dev/null || true
 	@$(MAKE) -C GCD clean 2>/dev/null || true
 	@$(MAKE) -C Mod clean 2>/dev/null || true
+	@$(MAKE) -C Prime clean 2>/dev/null || true
 	@true
