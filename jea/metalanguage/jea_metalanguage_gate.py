@@ -184,8 +184,15 @@ def chk_extrude_ir():
               "    case _:\n        a = 5\n",
               "out = a[:, l]\nx = m[i, j]\n"):
         assert E.full_retraction(s)["ast_faithful"], f"match/extended-slice must reconstruct: {s!r}"
-    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful — full language incl. Match; "
-            "SCALE: 133/133 whole real jea+scripts modules round-trip to the identical AST)")
+    # Ⓤ.byte-exact: the grade ladder closes. A commented source -> skeleton(projection) ∧ ast(structure)
+    # ∧ byte(CST, code==src) all hold, and the trivia is PURE GAUGE (ast-equal delta). Non-vacuous: the
+    # source has comments ast strips and byte recovers.
+    csrc = "# top\ndef f(x):\n    return x + 1  # inline\n"
+    g = E.grades(csrc); bg = E.byte_grade(csrc)
+    assert g["skeleton"] and g["ast"] and g["byte"], f"grade ladder must hold all three: {g}"
+    assert bg["byte_exact"] and bg["pure_gauge"] and bg["comments"] >= 2, f"byte-exact + pure-gauge: {bg}"
+    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful full language incl. Match — "
+            "133/133 real modules; GRADE LADDER closed: byte-exact via CST, trivia = pure gauge)")
 
 
 def chk_pysim():
