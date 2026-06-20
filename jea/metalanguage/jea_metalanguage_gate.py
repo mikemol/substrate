@@ -206,6 +206,25 @@ def chk_extrude_ir():
             "— 133/133 real modules; ladder closed (byte-exact, trivia=gauge); residue→template extraction)")
 
 
+def chk_haskell_trace():
+    # Ⓣ: trace-intern a Haskell/Core mutate-in-place machine (the COBOL/Brainfuck move on Haskell). The
+    # verdict is DECIDED iff the trace-fixpoint closes: a forever-looping modular counter CLOSES to a
+    # finite cycle (the strong intern-to-already-seen witness), a bounded counter CLOSES by halting (final
+    # value), an unbounded counter SUSPENDS (grows). Assert all three non-vacuously + the content-
+    # addressing (the constant store cell is shared by every state). (The ghc -O Core grounding of the
+    # primops readMutVar#/writeMutVar#/+# is in __main__/core_primops; the gate stays toolchain-free.)
+    import jea_haskell_trace as T
+    s0 = ("loop", {"r": 0, "c": 7})
+    rm = T.trace_intern(T.step_mod(4), s0)
+    assert rm["verdict"] == "CLOSED:cycle" and rm["cycle_len"] == 4, "forever mod-4 loop must close to a 4-cycle"
+    assert T.shared_fanin(rm, "c") == rm["n_states"], "constant cell must be shared by every state (content-addressed)"
+    rt = T.trace_intern(T.step_to(5), s0)
+    assert rt["verdict"] == "CLOSED:halt" and rt["final"][1]["r"] == 5, "bounded loop must halt with final r=5"
+    ru = T.trace_intern(T.step_unbounded, s0, max_steps=200)
+    assert ru["verdict"] == "SUSPENDED:grows", "unbounded loop must suspend (fixpoint grows)"
+    return "PASS (Ⓣ: trace-intern Haskell step — cycle closes, bounded halts, unbounded suspends; say which)"
+
+
 def chk_pysim():
     import jea_pysim
     src = "def f(x):\n    return x + x\ndef g(y):\n    return y + y\n"   # f,g alpha-equivalent
@@ -424,6 +443,7 @@ CHECKS = [
     ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
     ("jea_pyalg.refr",  chk_pyalg_referential),
     ("jea_extrude_ir",  chk_extrude_ir),
+    ("jea_haskell_trace", chk_haskell_trace),
     ("jea_pysim",       chk_pysim),
     ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
     ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
