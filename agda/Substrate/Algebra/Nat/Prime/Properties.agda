@@ -21,6 +21,7 @@ open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.List using (List; []; _∷_; foldr)
+open import Substrate.Foundation.List.Any using (Any; here; there; _∈_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-identityʳ)
 open import Substrate.Foundation.Nat.Properties.Mul
@@ -215,3 +216,17 @@ prime-divides-product {suc (suc m'')} pp a b p∣ab with gcd-pos a (suc m'')
 -- is ≥ 2, so it IS the prime). The atom uniqueness rests on.
 prime∣prime→≡ : ∀ {p q} → IsPrime p → IsPrime q → p ∣ q → p ≡ q
 prime∣prime→≡ pp qq p∣q = proj₂ qq _ p∣q (proj₁ pp)
+
+-- THE CAPSTONE: a prime dividing a product of primes IS one of them. By
+-- induction on the prime list using `prime-divides-product` at each step; the
+-- empty case is impossible (a prime ≥2 cannot divide the empty product 1).
+-- Combined with existence (factorize!), this forces the prime multiset — FTA
+-- uniqueness in the form the codec needs (the "log" is well-defined).
+prime-∈-product : ∀ {p qs} → IsPrime p → AllPrime qs → p ∣ product qs → p ∈ qs
+prime-∈-product {p} {[]}       pp []ᴾ          p∣1
+  with ≤-trans (proj₁ pp) (∣→≤ p zero p∣1)
+... | (s≤s ())
+prime-∈-product {p} {q ∷ rest} pp (qp ∷ᴾ restp) p∣qr
+  with prime-divides-product pp q (product rest) p∣qr
+... | inj₁ p∣q    = here (prime∣prime→≡ pp qp p∣q)
+... | inj₂ p∣rest = there (prime-∈-product pp restp p∣rest)

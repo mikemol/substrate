@@ -88,7 +88,10 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.uniq", "desc": "uniqueness KERNEL: prime-divides-product (Euclid for primes, "
             "lifting the bezout-ℤ/EEA-trace `euclid` via gcd-pos+gcd-divides) + prime∣prime→≡ — the heart of FTA uniqueness",
      "done": ("defines", "Substrate/Algebra/Nat/Prime/Properties.agda", "prime-divides-product")},
-    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); layer (2): EXISTENCE done (.factor/.factor-exists — Algebra.Nat.Prime.factorize!, every positive ℕ = ∏ primes, the div-mod wedge iterated = codec surjectivity onto ℚ₊). uniqueness KERNEL done (.uniq — prime-divides-product/prime∣prime→≡ via euclid). REMAINING: the permutation capstone (needs Foundation.List membership) → ℚ₊≅⊕primesℤ iso as split-Canonical (existence round-trip already gives product∘factorize≡id) → L_OR=LogSumExp", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.u2", "desc": "uniqueness capstone: prime-∈-product (a prime dividing a product "
+            "of primes IS one of them) + Foundation.List.Any/_∈_ homed; with existence this forces the prime multiset",
+     "done": ("defines", "Substrate/Algebra/Nat/Prime/Properties.agda", "prime-∈-product")},
+    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); layer (2): EXISTENCE done (.factor/.factor-exists — Algebra.Nat.Prime.factorize!, every positive ℕ = ∏ primes, the div-mod wedge iterated = codec surjectivity onto ℚ₊). uniqueness KERNEL+capstone done (.uniq/.u2 — prime-divides-product + prime-∈-product, every prime factor ∈ any factorisation, via euclid; Foundation.List.Any homed). REMAINING: ℚ₊≅⊕primesℤ iso as split-Canonical (existence round-trip already gives product∘factorize≡id; compose with .u2) → L_OR=LogSumExp", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},
