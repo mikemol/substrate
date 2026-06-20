@@ -130,14 +130,21 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --           FROM-SCRATCH number-theory arc (prime enumeration + factor-by-strong-
 --           induction + uniqueness), genuinely deferred (an EFFORT wall, not an
 --           impossibility — Ω4 class (c)).
---     STATUS — layer (1) BUILT in `GValueLSpace.Primes`, NO FTA:
+--     STATUS — layer (1) FULLY BUILT in `GValueLSpace.Primes`, NO FTA:
 --       * rank-1 invertible pole: `gvalue-power-antipode` (gᵏ·(recip g)ᵏ≈1, the
 --         el-atlas antipode on the cyclic subgroup ⟨g⟩);
 --       * rank-n invertible pole: `prod-cancel` (∏gᵢ·∏hᵢ≈1, the free abelian
---         group on n G-value generators — each element ∏gᵢ^kᵢ inverted by ∏hᵢ^kᵢ).
---     REMAINING: the full ℤ-power ExpLogCodec (L=ℤ via `_+ℤ_`, exp-⊕ over the
---     mixed-sign `_⊖_` cancellation — feasible, MODERATE) wires these into the
---     codec INTERFACE; and (2) the FTA surjectivity/LogSumExp tail (HEAVY,
---     from-scratch). The rank-1 ℕ base-power codec above is exact and complete
---     at its scope, not an approximation of either.
+--         group on n G-value generators — each ∏gᵢ^kᵢ inverted by ∏hᵢ^kᵢ);
+--       * the codec INTERFACE: `ZPow.ℤ-power-codec` — L=ℤ a GROUP via `_+ℤ_`,
+--         expL z = gᶻ (negatives ↦ hⁿ), exp-⊕ over the mixed-sign `_⊖_`
+--         cancellation (`mix`), so `codec-antipode` fires NON-trivially through
+--         the ExpLogCodec interface (g¹·h¹≈1, `ZPow.ℤpow-antipode-fires`); and
+--         `gvalue-ℤ-codec` is the el-atlas instance. (This is the GROUP twin of
+--         the `ℕ-power-codec` MONOID above — the rank-1 group, vs the cyclic
+--         monoid that fires only at 0.)
+--     REMAINING — ONLY layer (2): the FTA surjectivity/LogSumExp tail (image =
+--     EXACTLY ℚ₊ + the "log" inverse). GROUNDED 2026-06-20: FTA is ABSENT from
+--     the tree, a HEAVY from-scratch number-theory arc (Ω4 class (c), effort wall
+--     not impossibility). The rank-1 ℕ base-power codec above is exact and
+--     complete at its scope, not an approximation of any of these.
 ------------------------------------------------------------------------

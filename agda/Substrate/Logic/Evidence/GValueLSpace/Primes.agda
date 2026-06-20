@@ -30,15 +30,20 @@
 
 module Substrate.Logic.Evidence.GValueLSpace.Primes where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Properties.Add using (+-suc)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Q using (ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
-open import Substrate.Algebra.Q.Properties.Field using (*ℚ-assoc; *ℚ-comm; *ℚ-identityˡ)
+open import Substrate.Algebra.Q.Properties.Field using (*ℚ-assoc; *ℚ-comm; *ℚ-identityˡ; *ℚ-identityʳ)
 open import Substrate.Algebra.Q.Properties.Congruence using (*ℚ-cong)
-open import Substrate.Logic.Evidence.GValueLSpace using (powℚ)
+open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Add using (_+ℤ_; _⊖_)
+open import Substrate.Logic.Evidence.GValueLSpace using (powℚ; ExpLogCodec)
+open import Substrate.Logic.Evidence.GValueLSpace.Properties using (pow-+; codec-antipode; ≡→≈ℚ)
 open import Substrate.Logic.Evidence.GValueAsQ using (gvalue; antipode-of; gvalue-antipode)
 
 ------------------------------------------------------------------------
@@ -139,3 +144,85 @@ gvalue-rank2-antipode :
   (prodG (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])
    *ℚ prodH (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])) ≈ℚ 1ℚ
 gvalue-rank2-antipode = prod-cancel (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2 1 2 ∷ [])
+
+------------------------------------------------------------------------
+-- THE ℤ-POWER CODEC: wiring the invertible pole into the codec INTERFACE.
+-- For a base g with an inverse h (g·h≈1), L=ℤ is a GROUP and z ↦ gᶻ is a
+-- monoid hom (ℤ,+ℤ,0) → (ℚ,*ℚ,1) — the rank-1 GROUP codec, vs the rank-1
+-- MONOID `ℕ-power-codec`. `codec-antipode` then fires NON-trivially through
+-- the interface (a genuine inverse↦recip, not just 0+0↦1·1). NO factorisation.
+--
+-- Negative exponents land on h: expℤ(+n)=gⁿ, expℤ(-suc n)=hⁿ⁺¹. exp-⊕ over the
+-- ℤ-addition (routed through `_⊖_`) is 4 cases; the two MIXED-sign cases are the
+-- `_⊖_`-recursive cancellation `mix` (the conditional ∸ cancellation the rank-1
+-- balanced pole did not need), itself a clean 3-case induction reusing `swap4`.
+------------------------------------------------------------------------
+
+module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
+
+  expℤ : ℤ → ℚ
+  expℤ (+ n)    = powℚ g n
+  expℤ (-suc n) = powℚ h (suc n)
+
+  -- one cancellation step: (g·gᵐ)·(h·hⁿ) ≈ gᵐ·hⁿ  (peel a matched g·h≈1 pair).
+  cancel-step : (m n : ℕ) →
+    ((g *ℚ powℚ g m) *ℚ (h *ℚ powℚ h n)) ≈ℚ (powℚ g m *ℚ powℚ h n)
+  cancel-step m n =
+    ≈ℚ-trans {(g *ℚ powℚ g m) *ℚ (h *ℚ powℚ h n)}
+             {(g *ℚ h) *ℚ (powℚ g m *ℚ powℚ h n)}
+             {powℚ g m *ℚ powℚ h n}
+      (swap4 g (powℚ g m) h (powℚ h n))
+    (≈ℚ-trans {(g *ℚ h) *ℚ (powℚ g m *ℚ powℚ h n)}
+              {1ℚ *ℚ (powℚ g m *ℚ powℚ h n)} {powℚ g m *ℚ powℚ h n}
+      (*ℚ-cong {g *ℚ h} {1ℚ} {powℚ g m *ℚ powℚ h n} {powℚ g m *ℚ powℚ h n}
+         gh (≈ℚ-refl (powℚ g m *ℚ powℚ h n)))
+      (*ℚ-identityˡ (powℚ g m *ℚ powℚ h n)))
+
+  -- the mixed-sign cancellation: expℤ(a ⊖ b) ≈ gᵃ·hᵇ, by induction on `_⊖_`.
+  mix : (a b : ℕ) → expℤ (a ⊖ b) ≈ℚ (powℚ g a *ℚ powℚ h b)
+  mix a       zero    = ≈ℚ-sym {powℚ g a *ℚ 1ℚ} {powℚ g a} (*ℚ-identityʳ (powℚ g a))
+  mix zero    (suc n) = ≈ℚ-sym {1ℚ *ℚ powℚ h (suc n)} {powℚ h (suc n)}
+                          (*ℚ-identityˡ (powℚ h (suc n)))
+  mix (suc m) (suc n) =
+    ≈ℚ-trans {expℤ (m ⊖ n)} {powℚ g m *ℚ powℚ h n}
+             {(g *ℚ powℚ g m) *ℚ (h *ℚ powℚ h n)}
+      (mix m n)
+      (≈ℚ-sym {(g *ℚ powℚ g m) *ℚ (h *ℚ powℚ h n)} {powℚ g m *ℚ powℚ h n}
+        (cancel-step m n))
+
+  exp-⊕ℤ : (x y : ℤ) → expℤ (x +ℤ y) ≈ℚ (expℤ x *ℚ expℤ y)
+  exp-⊕ℤ (+ m)    (+ n)    = pow-+ g m n
+  exp-⊕ℤ (+ m)    (-suc n) = mix m (suc n)
+  exp-⊕ℤ (-suc m) (+ n)    =
+    ≈ℚ-trans {expℤ (n ⊖ suc m)} {powℚ g n *ℚ powℚ h (suc m)}
+             {powℚ h (suc m) *ℚ powℚ g n}
+      (mix n (suc m)) (*ℚ-comm (powℚ g n) (powℚ h (suc m)))
+  exp-⊕ℤ (-suc m) (-suc n) =
+    -- (-suc m)+ℤ(-suc n) = -suc suc (m+n); pow-+'s index suc m + suc n
+    -- = suc (m + suc n) needs +-suc to meet suc (suc (m + n)).
+    ≈ℚ-trans {powℚ h (suc (suc (m + n)))} {powℚ h (suc m + suc n)}
+             {powℚ h (suc m) *ℚ powℚ h (suc n)}
+      (≡→≈ℚ {powℚ h (suc (suc (m + n)))} {powℚ h (suc m + suc n)}
+         (cong (powℚ h) (cong suc (sym (+-suc m n)))))
+      (pow-+ h (suc m) (suc n))
+
+  ℤ-power-codec : ExpLogCodec
+  ℤ-power-codec = record
+    { L     = ℤ
+    ; _⊕_   = _+ℤ_
+    ; 𝟘     = + zero
+    ; expL  = expℤ
+    ; exp-⊕ = exp-⊕ℤ
+    ; exp-𝟘 = ≈ℚ-refl 1ℚ
+    }
+
+  -- The codec fires NON-trivially: (+1) +ℤ (-suc 0) = 1⊖1 = 0⊖0 = +0 = 𝟘, so
+  -- codec-antipode gives g¹·h¹ ≈ 1 — a genuine inverse↦recip through the
+  -- ExpLogCodec interface (vs ℕ-power-codec's degenerate 0+0).
+  ℤpow-antipode-fires : (expℤ (+ 1) *ℚ expℤ (-suc 0)) ≈ℚ 1ℚ
+  ℤpow-antipode-fires = codec-antipode ℤ-power-codec (+ 1) (-suc 0) refl
+
+-- The el-atlas instance: every G-value g and its antipode form a ℤ-power codec.
+gvalue-ℤ-codec : (na' db : ℕ) → ExpLogCodec
+gvalue-ℤ-codec na' db =
+  ZPow.ℤ-power-codec (gvalue na' db) (antipode-of na' db) (gvalue-antipode na' db)

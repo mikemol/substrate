@@ -76,7 +76,10 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.rankN", "desc": "Ⓖ★ invertible-pole, rank-n: ∏gᵢ·∏hᵢ≈1 (prod-cancel) — the "
             "free abelian group on n G-value generators inverted termwise, NO FTA",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "prod-cancel")},
-    {"sym": "Ω3-L-primes", "desc": "rank-1 + rank-n invertible poles DONE (.pole1/.rankN, GValueLSpace.Primes, NO FTA); remaining: full ℤ-power ExpLogCodec (L=ℤ via _+ℤ_, mixed-sign exp-⊕ — moderate) + FTA surjectivity/LogSumExp (heavy from-scratch, FTA absent)", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.zcodec", "desc": "full ℤ-power ExpLogCodec (ZPow.ℤ-power-codec): L=ℤ group via "
+            "_+ℤ_, expL z=gᶻ, mixed-sign exp-⊕ — codec-antipode fires non-trivially through the interface, NO FTA",
+     "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-ℤ-codec")},
+    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); ONLY layer (2) remains: FTA surjectivity/LogSumExp (heavy from-scratch, FTA absent from tree)", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},
