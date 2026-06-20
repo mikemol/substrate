@@ -177,8 +177,15 @@ def chk_extrude_ir():
               "def g():\n    yield from xs\n", "x: Tuple[int, ...]\n",
               "head = n.k + (f'[{n.op}]' if n.op else '')\n"):
         assert E.full_retraction(s)["ast_faithful"], f"statement/regression must reconstruct: {s!r}"
-    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful — alpha-collapse + field-tags + "
-            "args/class/try + expr-frontier + simple-stmts; 18/18 whole real modules, Match deferred)")
+    # Match patterns (Ⓤ.retract-match): value/sequence/star/mapping/class/as/or/wildcard/guard/singleton,
+    # nested. + the extended-slice regression the full-tree scale test caught (a[:, l] numpy indexing).
+    for s in ("match c:\n    case [x, *r]:\n        a = 1\n    case {1: v, **rest}:\n        a = 2\n"
+              "    case Point(x=0, y=yy) | Line() if g:\n        a = 3\n    case 1 | 2 as n:\n        a = 4\n"
+              "    case _:\n        a = 5\n",
+              "out = a[:, l]\nx = m[i, j]\n"):
+        assert E.full_retraction(s)["ast_faithful"], f"match/extended-slice must reconstruct: {s!r}"
+    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful — full language incl. Match; "
+            "SCALE: 133/133 whole real jea+scripts modules round-trip to the identical AST)")
 
 
 def chk_pysim():

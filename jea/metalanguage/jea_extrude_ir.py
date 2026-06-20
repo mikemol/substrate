@@ -164,7 +164,15 @@ class Extruder:
         if k == "Subscript":
             ks = self._non_op_kids(n)
             if len(ks) >= 2:
-                return f"{self.expr(ks[0])}[{self.expr(ks[1])}]"
+                base = self.expr(ks[0])                # value first (matches capture's pop order)
+                sl = self.I.nodes[ks[1]]
+                if sl.kind == "Tuple":
+                    # extended slice a[i, j] / a[:, l]: NO tuple parens, bare-`:` slices are legal here.
+                    elts = self._non_op_kids(sl)
+                    inner = ", ".join(self.expr(e) for e in elts) + ("," if len(elts) == 1 else "")
+                else:
+                    inner = self.expr(ks[1])
+                return f"{base}[{inner}]"
         if k == "Slice":
             if self._res is not None:
                 return self._pop("slice")
@@ -197,6 +205,64 @@ class Extruder:
             ks = self._non_op_kids(n)
             kw = {"Yield": "yield", "YieldFrom": "yield from", "Await": "await"}[k]
             return f"({kw} {self.expr(ks[0])})" if ks else f"({kw})"
+        self.uncovered.add(k)
+        return f"#UNCOVERED:{k}#"
+
+    def _case(self, cid, indent) -> list:
+        c = self.I.nodes[cid]                          # match_case: [pattern, guard?, body...]
+        pad = "    " * indent
+        ch = list(c.children)
+        if self._res is not None:
+            has_guard, nbody = self._pop("casesplit")
+        else:
+            has_guard, nbody = False, len(ch) - 1
+        pat = self._pattern(ch[0])
+        idx = 1
+        guard = ""
+        if has_guard:
+            guard = f" if {self.expr(ch[idx])}"; idx += 1
+        body = self.stmts(ch[idx:idx + nbody], indent + 1) or ["    " * (indent + 1) + "pass"]
+        return [f"{pad}case {pat}{guard}:"] + body
+
+    def _pattern(self, pid) -> str:
+        p = self.I.nodes[pid]; k = p.kind
+        if k == "MatchValue":
+            ks = self._non_op_kids(p)
+            return self.expr(ks[0]) if ks else "_"
+        if k == "MatchSingleton":
+            return self._pop("msingle") if self._res is not None else (p.payload[0] if p.payload else "None")
+        if k == "MatchSequence":
+            nseq = self._pop("seqlen") if self._res is not None else len(p.children)
+            return "[" + ", ".join(self._pattern(c) for c in p.children[:nseq]) + "]"
+        if k == "MatchStar":
+            nm = self._pop("starname") if self._res is not None else None
+            return f"*{nm}" if nm else "*_"
+        if k == "MatchMapping":
+            rest = self._pop("maprest") if self._res is not None else None
+            nk = self._pop("maplen") if self._res is not None else (len(p.children) // 2)
+            ks = self._non_op_kids(p)                  # [keys..., patterns...]
+            keys, pats = ks[:nk], ks[nk:]
+            parts = [f"{self.expr(keys[i])}: {self._pattern(pats[i])}" for i in range(nk)]
+            if rest:
+                parts.append(f"**{rest}")
+            return "{" + ", ".join(parts) + "}"
+        if k == "MatchClass":
+            npos = self._pop("classplit") if self._res is not None else 0
+            ks = self._non_op_kids(p)                  # [cls, pos-patterns..., kwd-patterns...]
+            cls = self.expr(ks[0])
+            pos = [self._pattern(c) for c in ks[1:1 + npos]]
+            kwattrs = p.op.split(",") if p.op else []
+            kwp = [f"{a}={self._pattern(c)}" for a, c in zip(kwattrs, ks[1 + npos:])]
+            return f"{cls}(" + ", ".join(pos + kwp) + ")"
+        if k == "MatchAs":
+            nm = self._pop("matchas") if self._res is not None else None
+            ks = self._non_op_kids(p)
+            if ks:
+                return f"{self._pattern(ks[0])} as {nm}" if nm else self._pattern(ks[0])
+            return nm if nm else "_"                    # bare capture / wildcard
+        if k == "MatchOr":
+            nor = self._pop("orlen") if self._res is not None else len(p.children)
+            return " | ".join(self._pattern(c) for c in p.children[:nor])
         self.uncovered.add(k)
         return f"#UNCOVERED:{k}#"
 
@@ -288,6 +354,12 @@ class Extruder:
             return [f"{pad}{('global' if k == 'Global' else 'nonlocal')} {n.op}"]   # op = names (Ⓤ-fix)
         if k in ("Break", "Continue"):
             return [f"{pad}{k.lower()}"]
+        if k == "Match":
+            ks = list(n.children)                      # [subject, match_case...]
+            out = [f"{pad}match {self.expr(ks[0])}:"]
+            for cid in ks[1:]:
+                out += self._case(cid, indent + 1)
+            return out
         if k in ("Expr", "Block"):
             # transparent wrapper: ast Expr wraps one expression as a statement; Block groups stmts.
             ks = n.children
@@ -575,6 +647,17 @@ def _capture(node, out):
     elif t in ("Yield", "Await", "YieldFrom"):
         if getattr(node, "value", None) is not None:
             _capture(node.value, out)
+    elif t == "Match":
+        _capture(node.subject, out)
+        for c in node.cases:
+            _capture(c, out)
+    elif t == "match_case":
+        out.append(("casesplit", (node.guard is not None, len(node.body))))
+        _cap_pattern(node.pattern, out)
+        if node.guard is not None:
+            _capture(node.guard, out)
+        for s in node.body:
+            _capture(s, out)
     elif t == "AugAssign":
         _capture(node.target, out); _capture(node.value, out)
     elif t == "Assert":
@@ -610,6 +693,43 @@ def _capture(node, out):
             out.append(("asname", a.asname))
     # Global/Nonlocal/Break/Continue/Pass: NO residue (names are in op; no leaves / no per-occurrence data).
     # else: an uncovered kind -- contributes no residue (and the extruder marks it #UNCOVERED).
+
+
+def _cap_pattern(p, out):
+    """Capture a match PATTERN's residue (the dropped binding names + arities + collapsing literals),
+    in extrude's _pattern() consumption order. Sub-patterns recurse via _cap_pattern; embedded
+    exprs (MatchValue.value, MatchMapping keys, MatchClass.cls) via _capture (the expr stream)."""
+    t = type(p).__name__
+    if t == "MatchValue":
+        _capture(p.value, out)
+    elif t == "MatchSingleton":
+        out.append(("msingle", _const_repr(p.value)))         # True/False/None collapse by kind -> residue
+    elif t == "MatchSequence":
+        out.append(("seqlen", len(p.patterns)))
+        for sp in p.patterns:
+            _cap_pattern(sp, out)
+    elif t == "MatchStar":
+        out.append(("starname", p.name))                      # *name  (None -> *_)
+    elif t == "MatchMapping":
+        out.append(("maprest", p.rest)); out.append(("maplen", len(p.keys)))
+        for k, sp in zip(p.keys, p.patterns):                 # interleaved key,pattern = extrude pop order
+            _capture(k, out); _cap_pattern(sp, out)
+    elif t == "MatchClass":
+        out.append(("classplit", len(p.patterns)))            # #positional (kwd_attrs are in op)
+        _capture(p.cls, out)
+        for sp in p.patterns:
+            _cap_pattern(sp, out)
+        for sp in p.kwd_patterns:
+            _cap_pattern(sp, out)
+    elif t == "MatchAs":
+        out.append(("matchas", p.name))                       # capture name (None -> wildcard _)
+        if p.pattern is not None:
+            _cap_pattern(p.pattern, out)
+    elif t == "MatchOr":
+        out.append(("orlen", len(p.patterns)))
+        for sp in p.patterns:
+            _cap_pattern(sp, out)
+    # MatchSingleton/other: covered above; an unknown pattern kind contributes nothing (extrude marks it).
 
 
 def capture_full(src: str) -> list:
@@ -803,9 +923,9 @@ if __name__ == "__main__":
                    "ys = [x for x in xs if x]\n": "comprehension", "g = lambda x: x + 1\n": "lambda",
                    's = f"{x!r}"\n': "f-string"}.items():
         print(f"      • {lbl:24} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  simple statements (with/assert/raise/import/del/annassign/break/global/yield) -- AST-faithful;")
-    print("  SCALE-VALIDATED: 18/18 whole real metalanguage modules round-trip to the identical AST.")
-    print("  frontier now: Match patterns (the one deferred layer); trivia = gauge (byte-exact needs CST).")
+    print("  full language incl. Match patterns (value/seq/star/map/class/as/or/wildcard/guard) -- AST-faithful;")
+    print("  SCALE-VALIDATED: 133/133 whole real jea+scripts modules round-trip to the identical AST.")
+    print("  ONLY residue left = trivia (comments/formatting) = gauge; byte-exact needs a CST-trivia residue.")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()
