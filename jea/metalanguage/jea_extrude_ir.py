@@ -136,8 +136,74 @@ class Extruder:
         if k == "Call":
             ks = self._non_op_kids(n)
             return f"{self.expr(ks[0])}({', '.join(self.expr(c) for c in ks[1:])})" if ks else "_()"
+        if k == "keyword":
+            ks = self._non_op_kids(n)
+            v = self.expr(ks[0]) if ks else "_"
+            return f"{n.op}={v}" if n.op else f"**{v}"      # arg=None -> **kwargs
+        if k in ("List", "Set"):
+            ks = self._non_op_kids(n)
+            o, c = ("[", "]") if k == "List" else ("{", "}")
+            return o + ", ".join(self.expr(x) for x in ks) + c
+        if k == "Tuple":
+            ks = self._non_op_kids(n)
+            if len(ks) == 1:
+                return f"({self.expr(ks[0])},)"
+            return "(" + ", ".join(self.expr(x) for x in ks) + ")"
+        if k == "Dict":
+            ks = self._non_op_kids(n)
+            haskey = self._pop("dict") if self._res is not None else tuple([True] * (len(ks) // 2))
+            nk = sum(1 for h in haskey if h)
+            keys, vals = ks[:nk], ks[nk:]
+            parts, ki = [], 0
+            for i, h in enumerate(haskey):
+                if h:
+                    parts.append(f"{self.expr(keys[ki])}: {self.expr(vals[i])}"); ki += 1
+                else:
+                    parts.append(f"**{self.expr(vals[i])}")
+            return "{" + ", ".join(parts) + "}"
+        if k == "Subscript":
+            ks = self._non_op_kids(n)
+            if len(ks) >= 2:
+                return f"{self.expr(ks[0])}[{self.expr(ks[1])}]"
+        if k == "Slice":
+            if self._res is not None:
+                return self._pop("slice")
+            return ":".join(self.expr(c) for c in n.children)
+        if k == "Starred":
+            ks = self._non_op_kids(n)
+            if ks:
+                return f"*{self.expr(ks[0])}"
+        if k == "IfExp":
+            ks = self._non_op_kids(n)
+            if len(ks) == 3:
+                return f"({self.expr(ks[0])} if {self.expr(ks[1])} else {self.expr(ks[2])})"
+        if k == "Lambda":
+            ch = list(n.children)
+            argsig = self._pop("argsig") if self._res is not None else ", ".join(self._params(ch[0]) if ch else [])
+            body = self.expr(ch[-1])
+            return f"(lambda {argsig}: {body})" if argsig else f"(lambda: {body})"
+        if k in ("ListComp", "SetComp", "GeneratorExp"):
+            ks = list(n.children)
+            elt = self.expr(ks[0]); gens = " ".join(self._comp(g) for g in ks[1:])
+            o, c = {"ListComp": ("[", "]"), "SetComp": ("{", "}"), "GeneratorExp": ("(", ")")}[k]
+            return f"{o}{elt} {gens}{c}"
+        if k == "DictComp":
+            ks = list(n.children)
+            return "{" + f"{self.expr(ks[0])}: {self.expr(ks[1])} " + " ".join(self._comp(g) for g in ks[2:]) + "}"
+        if k == "JoinedStr":
+            return self._pop("fstr") if self._res is not None else "f''"
         self.uncovered.add(k)
         return f"#UNCOVERED:{k}#"
+
+    def _comp(self, gid) -> str:
+        # a `comprehension`: children = [target, iter, ifs...]; op = 'async'/'sync' (Ⓤ.audit).
+        g = self.I.nodes[gid]
+        ks = self._non_op_kids(g)
+        asy = "async " if g.op == "async" else ""
+        s = f"{asy}for {self.expr(ks[0])} in {self.expr(ks[1])}"
+        for cond in ks[2:]:
+            s += f" if {self.expr(cond)}"
+        return s
 
     def stmts(self, ids, indent: int) -> list[str]:
         out = []
@@ -159,6 +225,10 @@ class Extruder:
             return [f"{pad}return {self.expr(ks[0])}" if ks else f"{pad}return"]
         if k == "Pass":
             return [f"{pad}pass"]
+        if k == "AugAssign":
+            ks = self._non_op_kids(n)
+            if len(ks) >= 2:
+                return [f"{pad}{self.expr(ks[0])} {_BIN.get(n.op, '?')}= {self.expr(ks[1])}"]
         if k in ("Expr", "Block"):
             # transparent wrapper: ast Expr wraps one expression as a statement; Block groups stmts.
             ks = n.children
@@ -397,6 +467,46 @@ def _capture(node, out):
         _capture(node.func, out)
         for a in node.args:
             _capture(a, out)
+        for kw in node.keywords:
+            _capture(kw, out)
+    elif t == "keyword":
+        _capture(node.value, out)                       # the arg name is referential (in the key)
+    elif t in ("List", "Set", "Tuple"):
+        for e in node.elts:
+            _capture(e, out)
+    elif t == "Dict":
+        out.append(("dict", tuple(k is not None for k in node.keys)))   # which items have a key (vs **)
+        for k, v in zip(node.keys, node.values):        # INTERLEAVED key,value = extrude's pop order
+            if k is not None:
+                _capture(k, out)
+            _capture(v, out)
+    elif t == "Subscript":
+        _capture(node.value, out); _capture(node.slice, out)
+    elif t == "Slice":
+        out.append(("slice", ast.unparse(node)))        # whole slice text (lower:upper:step)
+    elif t == "Starred":
+        _capture(node.value, out)
+    elif t == "IfExp":
+        _capture(node.body, out); _capture(node.test, out); _capture(node.orelse, out)
+    elif t == "Lambda":
+        out.append(("argsig", ast.unparse(node.args)))
+        _capture(node.body, out)
+    elif t in ("ListComp", "SetComp", "GeneratorExp"):
+        _capture(node.elt, out)
+        for g in node.generators:
+            _capture(g, out)
+    elif t == "DictComp":
+        _capture(node.key, out); _capture(node.value, out)
+        for g in node.generators:
+            _capture(g, out)
+    elif t == "comprehension":
+        _capture(node.target, out); _capture(node.iter, out)
+        for c in node.ifs:
+            _capture(c, out)
+    elif t == "JoinedStr":
+        out.append(("fstr", ast.unparse(node)))         # whole f-string verbatim (embedded exprs included)
+    elif t == "AugAssign":
+        _capture(node.target, out); _capture(node.value, out)
     # else: an uncovered kind -- contributes no residue (and the extruder marks it #UNCOVERED).
 
 
@@ -586,8 +696,13 @@ if __name__ == "__main__":
                    "class C(B, metaclass=M):\n    pass\n": "class bases + metaclass",
                    "try:\n    a\nexcept E as e:\n    b\nfinally:\n    c\n": "try/except as/finally"}.items():
         print(f"      • {lbl:32} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  frontier (reported, not crashed): container literals/subscript/lambda/comprehensions/starred")
-    print("  (expr) + With/Match/AugAssign (stmt); trivia = gauge (byte-exact needs a CST-trivia residue).")
+    print("  expression frontier -- now AST-faithful (decomposed, sub-structure shares the skeleton):")
+    for s, lbl in {"d = {'a': 1, **e}\n": "dict + ** spread", "v = a[1:2:3]\n": "subscript + slice",
+                   "ys = [x for x in xs if x]\n": "comprehension", "g = lambda x: x + 1\n": "lambda",
+                   's = f"{x!r}"\n': "f-string"}.items():
+        print(f"      • {lbl:24} ast_faithful={full_retraction(s)['ast_faithful']}")
+    print("  frontier now (reported, not crashed): With / Match / Assert / Raise / Import / Delete /")
+    print("  AnnAssign / Break-Continue (simple statements); trivia = gauge (byte-exact needs a CST residue).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()

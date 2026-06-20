@@ -163,8 +163,14 @@ def chk_extrude_ir():
               "@reg\nclass C(B):\n    pass\n",
               "try:\n    a = 1\nexcept E as e:\n    a = 2\nelse:\n    a = 3\nfinally:\n    a = 4\n"):
         assert E.full_retraction(s)["ast_faithful"], f"args/class/try field-split must reconstruct: {s!r}"
+    # expression frontier: containers / dict-spread / subscript / slice / starred / kw-call / ifexp /
+    # lambda / comprehensions / f-string / augassign -- all decomposed (sub-structure shares the skeleton).
+    for s in ("l = [1, 2, 3]\n", "d = {'a': 1, **e}\n", "v = a[1:2:3]\n", "f(*xs, **kw)\n",
+              "z = a if c else b\n", "g = lambda x: x + 1\n", "ys = [x * 2 for x in xs if x > 0]\n",
+              "d = {k: v for k, v in items}\n", 's = f"{x!r} and {y}"\n', "x += 1\n"):
+        assert E.full_retraction(s)["ast_faithful"], f"expression-frontier must reconstruct: {s!r}"
     return ("PASS (Ⓤ.byte+retract: orbital identity; seam computed; AST-faithful under alpha-collapse + "
-            "field-tags decorators/returns/else + args-internals/class-bases/try-except)")
+            "field-tags + args/class/try + expr-frontier containers/comprehensions/lambda/fstring)")
 
 
 def chk_pysim():
