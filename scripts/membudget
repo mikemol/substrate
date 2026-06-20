@@ -82,11 +82,11 @@ _wait_change() { # block until the ledger changes (a release) or a short timeout
 }
 
 _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", from its peak-mem history.
-  # SIZE ON A POWER-OF-2 BUCKET GRID {2^n, 2^n+2^(n-1)} (= …512,768,1024,1536,2048,3072,4096,6144,8192):
-  # round the max recorded peak (×1.2 run-to-run margin) UP to the next grid point — a lease is a HARD
-  # kill cap, so we never round below peak; the grid's 2^(n-1) step is the tolerance band that stops a
-  # module churning buckets on noise. Clamped [512, AGDA_MB_MAX]; default if no history yet.
-  local a mod="" def="${AGDA_MB_DEFAULT:-2048}" cap="${AGDA_MB_MAX:-8000}"
+  # Round the max recorded peak UP to the next POWER OF TWO (floor 64, cap AGDA_MB_MAX). The power-of-2
+  # step IS the safety margin — it sits 2^n ± 2^(n-1) around the need, so peak ∈ (2^(n-1), 2^n] leases
+  # 2^n with up to a 2^(n-1) headroom band; no extra fudge factor, and no over-rounding (900→1024, not
+  # 1536). A lease is a hard kill cap, so rounding UP keeps cap ≥ peak. Default if no history yet.
+  local a mod="" def="${AGDA_MB_DEFAULT:-2048}" cap="${AGDA_MB_MAX:-8192}"
   for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done
   [ -n "$mod" ] || { echo "$def"; return; }
   local led; led="$(dirname "$mod")/.agda-times.tsv"
@@ -94,14 +94,8 @@ _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", 
   awk -F'\t' -v m="$(basename "$mod")" -v def="$def" -v cap="$cap" '
     $1==m && $3 ~ /^[0-9]+$/ { if ($3+0>pk) pk=$3+0 }
     END { if (pk<=0) { print def; exit }
-          req = pk*1.2; lease = 0; n = 512
-          while (n <= 8192 && lease == 0) {            # grid points in order: 2^n then 2^n+2^(n-1)
-            if (n >= req) lease = n; else if (n + n/2 >= req) lease = n + n/2
-            n = n*2 }
-          if (lease == 0) lease = cap
-          if (lease < 512) lease = 512
-          if (lease > cap) lease = cap
-          print lease }' "$led" 2>/dev/null || echo "$def"
+          v = 64; while (v < pk) v = v*2          # smallest power of two >= peak (floor 64)
+          if (v > cap) v = cap; print v }' "$led" 2>/dev/null || echo "$def"
 }
 
 cmd_run() {
@@ -164,6 +158,18 @@ cmd_run() {
   rend=$(date +%s.%N)
   if [ "$rc" = 0 ]; then _record_time "$rstart" "$rend" "$tf" "$@"; fi   # only learn from SUCCESSFUL runs
   [ -n "$tf" ] && rm -f "$tf"
+  # RETRY-ON-OOM: a cgroup MemoryMax kill exits 137 (only TOP leases have their own hard cap). If the
+  # action is idempotent (MEMBUDGET_RETRY_OOM — the agda shim sets it; an agda compile re-runs cleanly)
+  # and there's room to grow, RELEASE the too-small lease and re-enter at the next power-of-2 bucket.
+  # Self-corrects a too-tight autobudget guess (then the success records the real peak → history fixes it).
+  if [ "$rc" = 137 ] && [ "$parent" = "-" ] && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
+     && [ "$mb" -lt "${AGDA_MB_MAX:-8192}" ]; then
+    release "$id"
+    local nb=$((mb*2)); [ "$nb" -gt "${AGDA_MB_MAX:-8192}" ] && nb="${AGDA_MB_MAX:-8192}"
+    echo "membudget: OOM-killed at ${mb}MB [$label] — retrying at ${nb}MB (idempotent)…" >&2
+    export MEMBUDGET_PARENT="$parent"                   # re-enter at the original level (TOP), bigger bucket
+    exec "$0" run "$nb" "$label" -- "$@"
+  fi
   exit "$rc"
 }
 

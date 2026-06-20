@@ -16,4 +16,6 @@ done
 [ -n "$_real" ] || { echo "agda-shim: real agda not found on PATH (excluding $_dir)" >&2; exit 127; }
 # AGDA_MB=auto (default): membudget sizes the lease from this module's peak-mem history
 # (Ⓡ.autobudget), falling back to AGDA_MB_DEFAULT (2048) with no history. Set AGDA_MB=<N> to pin.
-exec membudget run "${AGDA_MB:-auto}" agda -- "$_real" "$@"
+# MEMBUDGET_RETRY_OOM=1: an agda compile is idempotent, so if a too-tight auto-bucket OOM-kills it
+# (exit 137), membudget retries at the next power-of-2 bucket up (self-correcting).
+exec env MEMBUDGET_RETRY_OOM=1 membudget run "${AGDA_MB:-auto}" agda -- "$_real" "$@"

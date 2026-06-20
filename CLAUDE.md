@@ -84,14 +84,21 @@ modules fall back to the global median. Only SUCCESSFUL compiles are recorded (a
 is not representative).
 
 **Autobudget (`AGDA_MB=auto`, the shim default).** `membudget` also captures each compile's peak-mem
-(`/usr/bin/time -v` maxRSS → the `peak_mb` 3rd ledger column) and, when the lease is `auto`, SIZES it
-from that history on a **power-of-2 bucket grid** `{2ⁿ, 2ⁿ+2ⁿ⁻¹}` = 512, 768, 1024, 1536, 2048, 3072,
-4096, 6144, 8000: round `max(peak)` (×1.2 run-to-run margin) UP to the next grid point, clamped to
-`[512, AGDA_MB_MAX=8000]`, fallback `AGDA_MB_DEFAULT=2048` with no history. A lease is a HARD kill cap,
-so it never rounds below peak; the `2ⁿ⁻¹` step is the tolerance band that stops a module churning
-buckets on noise. So a 65 MB module leases 512 MB not 2048 → more `make -j` modules fit the global
-budget concurrently; a heavy module leases a big bucket → still safe. `AGDA_MB=<N>` pins a fixed lease;
-`scripts/buildtime.py --mem` shows the per-module peaks → bucketed leases.
+(`/usr/bin/time -v` maxRSS → the `peak_mb` 3rd ledger column) and, when the lease is `auto`, SIZES it by
+rounding `max(peak)` **UP to the next power of two** (floor 64, cap `AGDA_MB_MAX=8192`), fallback
+`AGDA_MB_DEFAULT=2048` with no history. The pow2 step IS the safety margin — it sits `2ⁿ ± 2ⁿ⁻¹` around
+the need (a `2ⁿ⁻¹` headroom band), so no extra fudge and no over-rounding (peak 900 → 1024, not 1536;
+peak 65 → 128). maxRSS over-counts the OOM-relevant (anonymous) footprint, so this is conservatively
+safe; a lease is a hard kill cap, so rounding UP keeps cap ≥ peak. Light modules lease small → far more
+`make -j` modules fit the global budget concurrently.
+
+**Retry-on-OOM (self-correcting).** A too-tight first guess is absorbed: a cgroup `MemoryMax` kill exits
+137, and because an agda compile is idempotent (the shim sets `MEMBUDGET_RETRY_OOM=1`), membudget
+releases the lease and re-enters at the next power-of-2 bucket, doubling until it fits or hits the cap
+(then it gives up with 137 — no infinite loop). The successful run records the real peak, so the history
+converges. Only TOP leases retry (only they have a hard cgroup cap; a SUB's mb is a budget reservation).
+`AGDA_MB=<N>` pins a fixed lease; `scripts/buildtime.py --mem` shows the per-module peaks → bucketed
+leases.
 
 ## Commit policy
 

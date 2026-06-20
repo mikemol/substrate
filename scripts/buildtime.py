@@ -120,21 +120,17 @@ def predict(hist: dict, modules) -> dict:
             "n": len(modules), "fallback": fb}
 
 
-def autobudget(peak_mb: float, default: int = 2048, cap: int = 8000) -> int:
-    """The membudget _auto_mb bucket rule: round peak (×1.2 margin) UP to the power-of-2 grid
-    {2^n, 2^n+2^(n-1)} = …512,768,1024,1536,2048,3072,4096,6144,8192, clamped to [512, cap]. A lease is
-    a hard kill cap, so this never rounds below peak; the 2^(n-1) step is the no-churn tolerance band."""
+def autobudget(peak_mb: float, default: int = 2048, cap: int = 8192) -> int:
+    """The membudget _auto_mb rule: round peak UP to the next POWER OF TWO (floor 64, cap). The pow2
+    step IS the safety margin — it sits 2^n ± 2^(n-1) around the need (up to a 2^(n-1) headroom band),
+    so no extra fudge and no over-rounding (900→1024, not 1536). A lease is a hard kill cap, so rounding
+    UP keeps cap ≥ peak; a too-tight first guess self-corrects via membudget's retry-on-OOM."""
     if peak_mb <= 0:
         return default
-    req = peak_mb * 1.2
-    lease, n = 0, 512
-    while n <= 8192 and lease == 0:
-        if n >= req:
-            lease = n
-        elif n + n // 2 >= req:
-            lease = n + n // 2
-        n *= 2
-    return min(cap, max(512, lease or cap))
+    v = 64
+    while v < peak_mb:
+        v *= 2
+    return min(cap, v)
 
 
 def fmt(sec: float) -> str:
