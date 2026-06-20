@@ -120,6 +120,23 @@ def predict(hist: dict, modules) -> dict:
             "n": len(modules), "fallback": fb}
 
 
+def autobudget(peak_mb: float, default: int = 2048, cap: int = 8000) -> int:
+    """The membudget _auto_mb bucket rule: round peak (×1.2 margin) UP to the power-of-2 grid
+    {2^n, 2^n+2^(n-1)} = …512,768,1024,1536,2048,3072,4096,6144,8192, clamped to [512, cap]. A lease is
+    a hard kill cap, so this never rounds below peak; the 2^(n-1) step is the no-churn tolerance band."""
+    if peak_mb <= 0:
+        return default
+    req = peak_mb * 1.2
+    lease, n = 0, 512
+    while n <= 8192 and lease == 0:
+        if n >= req:
+            lease = n
+        elif n + n // 2 >= req:
+            lease = n + n // 2
+        n *= 2
+    return min(cap, max(512, lease or cap))
+
+
 def fmt(sec: float) -> str:
     sec = int(round(sec)); h, m, s = sec // 3600, (sec % 3600) // 60, sec % 60
     return f"{h}h{m:02d}m{s:02d}s" if h else (f"{m}m{s:02d}s" if m else f"{s}s")
@@ -169,8 +186,7 @@ def main(argv) -> int:
             print("no peak-mem history yet (needs /usr/bin/time + a shimmed build)."); return 0
         print(f"heaviest {min(n, len(ranked))} modules (max peak-mem) — drives the autobudget lease:")
         for mb, m in ranked[:n]:
-            lease = min(8000, max(512, int(mb * 1.3) + 256))   # = membudget _auto_mb clamp
-            print(f"  {lease:>6}MB lease  (peak {int(mb)}MB)  {m}")
+            print(f"  {autobudget(mb):>6}MB lease  (peak {int(mb)}MB)  {m}")
     elif cmd == "--stats":
         mods = _all_modules(); known = sum(1 for m in mods if hist.get(m))
         print(f"ledger: {len(hist)} modules timed; {known}/{len(mods)} current modules have history; "

@@ -85,10 +85,13 @@ is not representative).
 
 **Autobudget (`AGDA_MB=auto`, the shim default).** `membudget` also captures each compile's peak-mem
 (`/usr/bin/time -v` maxRSS → the `peak_mb` 3rd ledger column) and, when the lease is `auto`, SIZES it
-from that history: `max(peak)·1.3 + 256`, clamped to `[512, AGDA_MB_MAX=8000]`, falling back to
-`AGDA_MB_DEFAULT=2048` with no history. So a light module (e.g. 65 MB peak) leases ~512 MB instead of
-2048 → more `make -j` modules fit the global budget concurrently; a heavy module leases big → still
-safe. `AGDA_MB=<N>` pins a fixed lease; `scripts/buildtime.py --mem` shows the per-module peaks/leases.
+from that history on a **power-of-2 bucket grid** `{2ⁿ, 2ⁿ+2ⁿ⁻¹}` = 512, 768, 1024, 1536, 2048, 3072,
+4096, 6144, 8000: round `max(peak)` (×1.2 run-to-run margin) UP to the next grid point, clamped to
+`[512, AGDA_MB_MAX=8000]`, fallback `AGDA_MB_DEFAULT=2048` with no history. A lease is a HARD kill cap,
+so it never rounds below peak; the `2ⁿ⁻¹` step is the tolerance band that stops a module churning
+buckets on noise. So a 65 MB module leases 512 MB not 2048 → more `make -j` modules fit the global
+budget concurrently; a heavy module leases a big bucket → still safe. `AGDA_MB=<N>` pins a fixed lease;
+`scripts/buildtime.py --mem` shows the per-module peaks → bucketed leases.
 
 ## Commit policy
 
