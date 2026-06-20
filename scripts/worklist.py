@@ -71,6 +71,9 @@ WORKLIST = [
      "done": ("exists", "scratch/omega4_reflex_sweep.md")},
     {"sym": "Ε(b)", "desc": "widen the reuse-search trigger (G9 prevention)", "done": ("manual",)},
     {"sym": "Ω3-L-primes", "desc": "free-abelian-on-primes fold (ℚ₊ ≅ ⊕ℤ); unblocks L_OR=LogSumExp", "done": ("manual",)},
+    {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
+            "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
+     "done": ("manual",)},
 ]
 
 
