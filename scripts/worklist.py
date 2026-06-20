@@ -70,7 +70,7 @@ WORKLIST = [
     {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs (verdict: reflex purged, 3 genuine deferrals)",
      "done": ("exists", "scratch/omega4_reflex_sweep.md")},
     {"sym": "Ε(b)", "desc": "widen the reuse-search trigger (G9 prevention)", "done": ("manual",)},
-    {"sym": "Ω3-L-primes", "desc": "free-abelian-on-primes fold (ℚ₊ ≅ ⊕ℤ); unblocks L_OR=LogSumExp", "done": ("manual",)},
+    {"sym": "Ω3-L-primes", "desc": "Ⓖ★ invertible-pole cross-coherence (the crossmix-DUAL: cross→1 vs CrossMul cross→z) + ℚ₊ group instance [antipode core, NO FTA]; FTA only for the surjectivity/LogSumExp tail", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},

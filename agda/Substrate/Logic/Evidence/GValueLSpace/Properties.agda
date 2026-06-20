@@ -103,16 +103,30 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --     (recip↔neg, derived for ANY codec); and a concrete inhabiting witness
 --     (base powers), exp-⊕ by induction.
 --   * `codec-antipode` has the SAME shape as `GValueAsQ.gvalue-antipode`
---     (x *ℚ x⁻¹ ≈ 1ℚ). For codec-antipode to SPECIALIZE to gvalue-antipode
---     — a codec whose image is exactly the positive gvalues, so that the
---     additive inverse maps to `GValueAsQ.recip` — the L-space must be the
---     free abelian group on primes (ℚ₊ ≅ ⊕ℤ, "log" = prime-exponent vector,
---     unique factorization). That is the labeled rank-n fold (Ω3-L-primes);
---     the base-power codec here is the rank-1 case (one generator g), exact
---     and complete at its scope, not an approximation of it.
---   * G_OR = +ℚ (parallel) is NOT in the image of the homomorphism: under
---     the codec it becomes L_OR a b = expL⁻¹(expL a +ℚ expL b) = LogSumExp.
---     Stating this as a theorem needs the codec's inverse (the "log"
---     direction), available once the rank-n codec gives surjectivity onto
---     the gvalues; the rank-1 witness here has no general inverse map.
+--     (x *ℚ x⁻¹ ≈ 1ℚ). Ω3-L-primes GROUNDING (2026-06-20, test-the-wall +
+--     crossmix-dual): the "needs unique factorisation, heavy" framing was wrong
+--     twice over. The build splits into TWO layers, and the antipode core is
+--     NOT raw ℚ-arithmetic — it is the Ⓖ★-DUAL of the cross-mixer:
+--       (1) ANTIPODE CORE = the INVERTIBLE pole of `Wedge.CrossMul`. CrossMix
+--           coherence is the cross term → z (the multiplicative ZERO), i.e.
+--           NILPOTENT/orthogonal (CRT's e₁·e₂=0). The codec antipode is the
+--           cross term → 1 (the multiplicative UNIT), i.e. INVERTIBLE — these
+--           are the TWO species of the Ⓖ★ genus (`Algebra.Wedge.Species`:
+--           idempotent/nilpotent ∪ invertible). So `expL a *ℚ expL aⁱ ≈ 1`
+--           (a⊕aⁱ=𝟘) is the invertible-pole cross-coherence, the dual of
+--           `CrossMul.Coherent` (= Nilpotent). The clean structure is therefore
+--           a `MulDivStr` enriched with a UNIT+inverse (the group pole) — the
+--           sideways twin of the nilpotent `MulDivStr` — with ℚ₊ as the
+--           instance; recip-multiplicative + a·a⁻¹=1 are then its group laws,
+--           NOT hand-proved over the den-1 ℚ rep, and NO factorisation. (L must
+--           be a GROUP: the ℕ base-power codec above is a monoid, fires only at
+--           0+0; the ℤ-power codec L=ℤ, expL n = gⁿ is the rank-1 group case.)
+--       (2) SURJECTIVITY — "image = EXACTLY the positive gvalues" + the "log"
+--           inverse (⇒ G_OR = +ℚ becomes L_OR = LogSumExp, expL⁻¹∘+ℚ∘expL) is
+--           the only part that genuinely needs the free abelian group on primes
+--           ℚ₊ ≅ ⊕ℤ + UNIQUE FACTORISATION (FTA) — heavy, deferred.
+--     So Ω3-L-primes = (1) the Ⓖ★ invertible-pole cross-coherence (a clean
+--     wedge sideways-copy + the ℚ₊ group instance, NO FTA) + (2) the FTA
+--     surjectivity/LogSumExp tail. The rank-1 ℕ base-power codec above is exact
+--     and complete at its scope, not an approximation of either.
 ------------------------------------------------------------------------
