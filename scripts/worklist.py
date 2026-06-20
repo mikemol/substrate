@@ -79,7 +79,7 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.zcodec", "desc": "full ℤ-power ExpLogCodec (ZPow.ℤ-power-codec): L=ℤ group via "
             "_+ℤ_, expL z=gᶻ, mixed-sign exp-⊕ — codec-antipode fires non-trivially through the interface, NO FTA",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-ℤ-codec")},
-    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); ONLY layer (2) remains: FTA surjectivity/LogSumExp (heavy from-scratch, FTA absent from tree)", "done": ("manual",)},
+    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); ONLY layer (2): FTA surjectivity/LogSumExp — MODERATE assemble-arc (test-the-wall: kernels euclid/Bezout/gcd/<-wellFounded ALL present; only IsPrime absent), def IsPrime→factor-existence→uniqueness(euclid)→ℚ₊≅⊕ℤ→LogSumExp", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},

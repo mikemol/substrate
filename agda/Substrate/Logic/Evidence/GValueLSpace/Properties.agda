@@ -143,8 +143,19 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --         the `ℕ-power-codec` MONOID above — the rank-1 group, vs the cyclic
 --         monoid that fires only at 0.)
 --     REMAINING — ONLY layer (2): the FTA surjectivity/LogSumExp tail (image =
---     EXACTLY ℚ₊ + the "log" inverse). GROUNDED 2026-06-20: FTA is ABSENT from
---     the tree, a HEAVY from-scratch number-theory arc (Ω4 class (c), effort wall
---     not impossibility). The rank-1 ℕ base-power codec above is exact and
---     complete at its scope, not an approximation of any of these.
+--     EXACTLY ℚ₊ + the "log" inverse). GROUNDED 2026-06-20 (test-the-wall — and
+--     the earlier "heavy from-scratch" was an OVERCLAIM): the hard FTA KERNELS
+--     are ALREADY in the tree —
+--       * Euclid's lemma `Algebra.Z.Euclid.euclid` (p coprime → p∣x·y → p∣y) —
+--         the UNIQUENESS kernel, already proved via Bezout;
+--       * `_∣_` (Algebra.Nat.Divides), gcd-ℕ / bezout-ℤ / Coprime;
+--       * well-founded recursion `Algebra.Nat.WellFounded.<-wellFounded`
+--         (Acc _<_ n) — for factorization EXISTENCE by strong induction.
+--     ONLY `IsPrime` is absent. So layer (2) is a MODERATE assemble-from-kernels
+--     arc, NOT a from-scratch wall: define IsPrime → factorisation existence
+--     (strong induction; = the codec's SURJECTIVITY onto ℚ₊, primes as bases) →
+--     uniqueness (lift `euclid`) → ℚ₊≅⊕primesℤ iso → L_OR=LogSumExp. Deferred to
+--     its own focused arc (a real multi-module build), now de-risked. The rank-1
+--     ℕ base-power codec above is exact and complete at its scope, not an
+--     approximation of any of these.
 ------------------------------------------------------------------------
