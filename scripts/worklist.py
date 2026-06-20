@@ -67,7 +67,8 @@ WORKLIST = [
     {"sym": "Ⓖ★→jea", "desc": "seam-partition synthesis relayed to AI-Π0",
      "done": ("exists", "jea/metalanguage/SEAM_PARTITION.md")},
     # ── genuinely open: audits/sweeps with no machine artifact yet (give them one and they go mechanical) ──
-    {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs that are actually formal", "done": ("manual",)},
+    {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs (verdict: reflex purged, 3 genuine deferrals)",
+     "done": ("exists", "scratch/omega4_reflex_sweep.md")},
     {"sym": "Ε(b)", "desc": "widen the reuse-search trigger (G9 prevention)", "done": ("manual",)},
     {"sym": "Ω3-L-primes", "desc": "free-abelian-on-primes fold (ℚ₊ ≅ ⊕ℤ); unblocks L_OR=LogSumExp", "done": ("manual",)},
 ]
