@@ -166,32 +166,73 @@ class Extruder:
                 return [f"{pad}{self.expr(ks[0])}"]
             return self.stmts(ks, indent)
         pad4 = "    " * (indent + 1)
-        if k == "FunctionDef":
-            # field-flatten (obstruction B), CLOSED via the field-split residue ('fdef' = (n_decorators,
-            # has_returns)). The skeleton children order is iter_child_nodes order: [args, body..,
-            # decorators.., returns?]; the residue counts let us slice them back into fields and render
-            # in source order (decorators, then `def name(params) -> returns:`, then body).
+        if k in ("FunctionDef", "AsyncFunctionDef"):
+            # field-flatten (B) CLOSED: 'fdef'=(n_decorators, has_returns); the FULL arg signature is the
+            # 'argsig' residue (ast.unparse covers defaults/annotations/*args/**kwargs/kw-only/posonly), so
+            # ch[0] (the args subtree) is SKIPPED here. Slice rest=[body, decorators, returns?] by counts.
+            kw = "async def" if k == "AsyncFunctionDef" else "def"
             ch = list(n.children)
-            args_child = ch[0] if ch else None
             rest = ch[1:]
             if self._res is not None:
                 ndec, has_ret = self._pop("fdef")
+                argsig = self._pop("argsig")
                 name = self._pop("defname")
                 nret = 1 if has_ret else 0
                 nbody = len(rest) - ndec - nret
                 body_ids = rest[:nbody]
                 dec_ids = rest[nbody:nbody + ndec]
                 ret_id = rest[nbody + ndec] if has_ret else None
-                params = self._params(args_child)                 # pops param names (capture order)
                 ret_s = self.expr(ret_id) if ret_id is not None else None
                 decs = [self.expr(d) for d in dec_ids]
             else:
                 name = n.payload[0] if n.payload else "f"
-                params = self._params(args_child)
+                argsig = ", ".join(self._params(ch[0] if ch else None))
                 body_ids, ret_s, decs = rest, None, []
-            head = f"{pad}def {name}({', '.join(params)})" + (f" -> {ret_s}" if ret_s else "") + ":"
+            head = f"{pad}{kw} {name}({argsig})" + (f" -> {ret_s}" if ret_s else "") + ":"
             blk = self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
             return [f"{pad}@{d}" for d in decs] + [head] + blk
+        if k == "ClassDef":
+            ch = list(n.children)
+            if self._res is not None:
+                nbk, ndec, spec = self._pop("cdef")           # nbk = #(bases+keywords), covered by spec
+                name = self._pop("defname")
+                rest = ch[nbk:]                                # skip bases/keywords (in spec)
+                nbody = len(rest) - ndec
+                body_ids = rest[:nbody]; dec_ids = rest[nbody:nbody + ndec]
+                decs = [self.expr(d) for d in dec_ids]
+                head = f"{pad}class {name}" + (f"({spec})" if spec else "") + ":"
+            else:
+                name = n.payload[0] if n.payload else "C"
+                body_ids, decs, head = ch, [], f"{pad}class {name}:"
+            blk = self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
+            return [f"{pad}@{d}" for d in decs] + [head] + blk
+        if k == "Try":
+            ch = list(n.children)                             # [body, handlers, orelse, finalbody]
+            if self._res is not None:
+                nb, nh, no, nf = self._pop("trysplit")
+            else:
+                nb, nh, no, nf = len(ch), 0, 0, 0
+            body_ids = ch[:nb]; hnd = ch[nb:nb + nh]
+            else_ids = ch[nb + nh:nb + nh + no]; fin_ids = ch[nb + nh + no:nb + nh + no + nf]
+            out = [f"{pad}try:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+            for h in hnd:
+                out += self.stmt(h, indent)                   # ExceptHandler renders its own `except:` line
+            if else_ids:
+                out += [f"{pad}else:"] + (self.stmts(else_ids, indent + 1) or [pad4 + "pass"])
+            if fin_ids:
+                out += [f"{pad}finally:"] + (self.stmts(fin_ids, indent + 1) or [pad4 + "pass"])
+            return out
+        if k == "ExceptHandler":
+            ch = list(n.children)                             # [type?, body...]
+            if self._res is not None:
+                has_type, name = self._pop("exc")
+            else:
+                has_type, name = False, None
+            typ = None; idx = 0
+            if has_type and ch:
+                typ = self.expr(ch[0]); idx = 1
+            hdr = f"{pad}except" + (f" {typ}" if typ is not None else "") + (f" as {name}" if name else "") + ":"
+            return [hdr] + (self.stmts(ch[idx:], indent + 1) or [pad4 + "pass"])
         if k in ("If", "For", "While"):
             ks = list(n.children)
             if k == "If":
@@ -264,12 +305,12 @@ def _capture(node, out):
         for s in node.body:
             _capture(s, out)
     elif t in ("FunctionDef", "AsyncFunctionDef"):
-        # field-split (B): (#decorators, has_returns). Push residue in extrude's CONSUMPTION order:
-        # counts, defname, params, returns, decorators, body (the _pop tag-assert guards alignment).
+        # field-split (B): (#decorators, has_returns) + the FULL argument signature via ast.unparse
+        # (defaults/annotations/*args/**kwargs/kw-only/posonly all in one). Consumption order:
+        # counts, argsig, defname, returns, decorators, body (the _pop tag-assert guards alignment).
         out.append(("fdef", (len(node.decorator_list), node.returns is not None)))
+        out.append(("argsig", ast.unparse(node.args)))
         out.append(("defname", node.name))
-        for a in node.args.args:
-            out.append(("name", a.arg))
         if node.returns is not None:
             _capture(node.returns, out)
         for d in node.decorator_list:
@@ -277,7 +318,31 @@ def _capture(node, out):
         for s in node.body:
             _capture(s, out)
     elif t == "ClassDef":
+        # bases + keywords (metaclass=…/**kw) rendered as a spec string; decorators via field-split.
+        spec = [ast.unparse(b) for b in node.bases]
+        spec += [(f"{k.arg}={ast.unparse(k.value)}" if k.arg else f"**{ast.unparse(k.value)}")
+                 for k in node.keywords]
+        out.append(("cdef", (len(node.bases) + len(node.keywords), len(node.decorator_list), ", ".join(spec))))
         out.append(("defname", node.name))
+        for d in node.decorator_list:
+            _capture(d, out)
+        for s in node.body:
+            _capture(s, out)
+    elif t == "Try":
+        out.append(("trysplit", (len(node.body), len(node.handlers), len(node.orelse), len(node.finalbody))))
+        for s in node.body:
+            _capture(s, out)
+        for h in node.handlers:
+            _capture(h, out)
+        for s in node.orelse:
+            _capture(s, out)
+        for s in node.finalbody:
+            _capture(s, out)
+    elif t == "ExceptHandler":
+        # `except [type] [as name]:` -- name is the `as e` binding (closes the deferred binding residue).
+        out.append(("exc", (node.type is not None, node.name)))
+        if node.type is not None:
+            _capture(node.type, out)
         for s in node.body:
             _capture(s, out)
     elif t == "Assign":
@@ -516,8 +581,13 @@ if __name__ == "__main__":
     print("  field-tags (B) — heterogeneous-field statements now reconstruct via field-split residue:")
     for s, lbl in bcases.items():
         print(f"      • {lbl:28} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  next sub-layers (reported, not crashed): ast.arguments internals (defaults/annotations/")
-    print("  *args/**kwargs/kw-only), class bases, try/with; trivia = gauge (byte-exact needs a CST residue).")
+    print("  arguments-internals / class-bases / try -- now AST-faithful too:")
+    for s, lbl in {"def f(a, b=1, *xs, c, **kw):\n    return a\n": "full arg signature (ast.unparse)",
+                   "class C(B, metaclass=M):\n    pass\n": "class bases + metaclass",
+                   "try:\n    a\nexcept E as e:\n    b\nfinally:\n    c\n": "try/except as/finally"}.items():
+        print(f"      • {lbl:32} ast_faithful={full_retraction(s)['ast_faithful']}")
+    print("  frontier (reported, not crashed): container literals/subscript/lambda/comprehensions/starred")
+    print("  (expr) + With/Match/AugAssign (stmt); trivia = gauge (byte-exact needs a CST-trivia residue).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()

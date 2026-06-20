@@ -155,8 +155,16 @@ def chk_extrude_ir():
     for s in ("if p < 3:\n    return p\nelse:\n    return 0\n", "for i in xs:\n    s = s + i\nelse:\n    s = 0\n",
               "while n > 0:\n    n = n - 1\n"):
         assert E.full_retraction(s)["ast_faithful"], f"field-split (B) must reconstruct control-flow else: {s!r}"
-    return ("PASS (Ⓤ.byte+retract-full+B: orbital identity; seam computed; cofactor lifts projection→"
-            "retraction; AST-faithful under alpha-collapse AND field-tags decorators/returns/else)")
+    # deeper field-split sub-layers: ast.arguments internals (defaults/annotations/*args/**kwargs/kw-only/
+    # posonly via ast.unparse), class bases/metaclass/decorators, try/except/as/else/finally.
+    for s in ("def f(a, b=1, *args, c, d=2, **kw):\n    return a\n",
+              "def f(p, /, q, *, r):\n    return p\n",
+              "class C(B, metaclass=M):\n    x = 1\n",
+              "@reg\nclass C(B):\n    pass\n",
+              "try:\n    a = 1\nexcept E as e:\n    a = 2\nelse:\n    a = 3\nfinally:\n    a = 4\n"):
+        assert E.full_retraction(s)["ast_faithful"], f"args/class/try field-split must reconstruct: {s!r}"
+    return ("PASS (Ⓤ.byte+retract: orbital identity; seam computed; AST-faithful under alpha-collapse + "
+            "field-tags decorators/returns/else + args-internals/class-bases/try-except)")
 
 
 def chk_pysim():
