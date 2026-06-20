@@ -146,8 +146,17 @@ def chk_extrude_ir():
     Fc = E.full_retraction("def f(x):\n    return x\ndef g(y):\n    return y\n")
     assert not Fc["proj_faithful"], "alpha-collapse projection must be AST-unfaithful (else test vacuous)"
     assert Fc["ast_faithful"], "full retraction must recover the collapsed defname+param (AST-faithful)"
-    return ("PASS (Ⓤ.byte+retract-full: orbital identity; seam computed; cofactor lifts projection→"
-            "retraction; AST-faithful under alpha-collapse)")
+    # field-tags (B): heterogeneous-field statements (decorators+returns, if/for/while-else) that used to
+    # hit #UNCOVERED now reconstruct AST-faithfully via the field-split residue. Non-vacuous: projection
+    # (no field-split) is AST-unfaithful on the decorated/annotated def.
+    Fb = E.full_retraction("@dec\ndef f() -> int:\n    return 1\n")
+    assert not Fb["proj_faithful"], "decorated/returns def projection must be AST-unfaithful (else vacuous)"
+    assert Fb["ast_faithful"], "field-split residue (B) must reconstruct decorators+returns (AST-faithful)"
+    for s in ("if p < 3:\n    return p\nelse:\n    return 0\n", "for i in xs:\n    s = s + i\nelse:\n    s = 0\n",
+              "while n > 0:\n    n = n - 1\n"):
+        assert E.full_retraction(s)["ast_faithful"], f"field-split (B) must reconstruct control-flow else: {s!r}"
+    return ("PASS (Ⓤ.byte+retract-full+B: orbital identity; seam computed; cofactor lifts projection→"
+            "retraction; AST-faithful under alpha-collapse AND field-tags decorators/returns/else)")
 
 
 def chk_pysim():

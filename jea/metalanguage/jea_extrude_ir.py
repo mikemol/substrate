@@ -93,6 +93,17 @@ class Extruder:
     def _non_op_kids(self, n):
         return [c for c in n.children if self.I.nodes[c].kind not in _OP_CHILD]
 
+    def _params(self, args_child) -> list:
+        # the lowerer maps ast.arguments to a single Name (1 param), a Block (>1), or an empty Block (0).
+        if args_child is None:
+            return []
+        a = self.I.nodes[args_child]
+        if a.kind == "Block":
+            return [self.expr(c) for c in a.children]
+        if a.kind == "Name":
+            return [self.expr(args_child)]
+        return []
+
     def expr(self, i: int) -> str:
         n = self.I.nodes[i]
         k = n.kind
@@ -154,32 +165,62 @@ class Extruder:
             if k == "Expr" and len(ks) == 1:
                 return [f"{pad}{self.expr(ks[0])}"]
             return self.stmts(ks, indent)
+        pad4 = "    " * (indent + 1)
         if k == "FunctionDef":
-            # field-flatten heuristic (obstruction B): children = [args-or-Block-of-params, body-stmts...].
-            # Covers the common case (no decorators / annotations / explicit returns); those would be
-            # mis-split -> reported as the field-structure RESIDUE, not silently emitted wrong.
-            name = self._pop("defname") if self._res is not None else (n.payload[0] if n.payload else "f")
+            # field-flatten (obstruction B), CLOSED via the field-split residue ('fdef' = (n_decorators,
+            # has_returns)). The skeleton children order is iter_child_nodes order: [args, body..,
+            # decorators.., returns?]; the residue counts let us slice them back into fields and render
+            # in source order (decorators, then `def name(params) -> returns:`, then body).
             ch = list(n.children)
-            params, body = [], []
-            if ch:
-                first = self.I.nodes[ch[0]]
-                if first.kind == "Block":
-                    params = [self.expr(c) for c in first.children]
-                    body = ch[1:]
-                elif first.kind == "Name":
-                    params = [self.expr(ch[0])]
-                    body = ch[1:]
+            args_child = ch[0] if ch else None
+            rest = ch[1:]
+            if self._res is not None:
+                ndec, has_ret = self._pop("fdef")
+                name = self._pop("defname")
+                nret = 1 if has_ret else 0
+                nbody = len(rest) - ndec - nret
+                body_ids = rest[:nbody]
+                dec_ids = rest[nbody:nbody + ndec]
+                ret_id = rest[nbody + ndec] if has_ret else None
+                params = self._params(args_child)                 # pops param names (capture order)
+                ret_s = self.expr(ret_id) if ret_id is not None else None
+                decs = [self.expr(d) for d in dec_ids]
+            else:
+                name = n.payload[0] if n.payload else "f"
+                params = self._params(args_child)
+                body_ids, ret_s, decs = rest, None, []
+            head = f"{pad}def {name}({', '.join(params)})" + (f" -> {ret_s}" if ret_s else "") + ":"
+            blk = self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
+            return [f"{pad}@{d}" for d in decs] + [head] + blk
+        if k in ("If", "For", "While"):
+            ks = list(n.children)
+            if k == "If":
+                if self._res is not None:
+                    nbody, norelse = self._pop("ifsplit")
                 else:
-                    body = ch
-            head = f"{pad}def {name}({', '.join(params)}):"
-            blk = self.stmts(body, indent + 1) or [f"{'    '*(indent+1)}pass"]
-            return [head] + blk
-        if k == "If":
-            ks = self._non_op_kids(n)
-            if ks:
+                    nbody, norelse = len(ks) - 1, 0
                 test = self.expr(ks[0])
-                body = self.stmts(ks[1:], indent + 1) or [f"{'    '*(indent+1)}pass"]
-                return [f"{pad}if {test}:"] + body
+                body_ids = ks[1:1 + nbody]; else_ids = ks[1 + nbody:1 + nbody + norelse]
+                out = [f"{pad}if {test}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+            elif k == "For":
+                if self._res is not None:
+                    nbody, norelse = self._pop("forsplit")
+                else:
+                    nbody, norelse = len(ks) - 2, 0
+                tgt = self.expr(ks[0]); it = self.expr(ks[1])
+                body_ids = ks[2:2 + nbody]; else_ids = ks[2 + nbody:2 + nbody + norelse]
+                out = [f"{pad}for {tgt} in {it}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+            else:  # While
+                if self._res is not None:
+                    nbody, norelse = self._pop("whilesplit")
+                else:
+                    nbody, norelse = len(ks) - 1, 0
+                test = self.expr(ks[0])
+                body_ids = ks[1:1 + nbody]; else_ids = ks[1 + nbody:1 + nbody + norelse]
+                out = [f"{pad}while {test}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+            if else_ids:
+                out += [f"{pad}else:"] + (self.stmts(else_ids, indent + 1) or [pad4 + "pass"])
+            return out
         self.uncovered.add(k)
         return [f"{pad}#UNCOVERED:{k}#"]
 
@@ -223,9 +264,16 @@ def _capture(node, out):
         for s in node.body:
             _capture(s, out)
     elif t in ("FunctionDef", "AsyncFunctionDef"):
+        # field-split (B): (#decorators, has_returns). Push residue in extrude's CONSUMPTION order:
+        # counts, defname, params, returns, decorators, body (the _pop tag-assert guards alignment).
+        out.append(("fdef", (len(node.decorator_list), node.returns is not None)))
         out.append(("defname", node.name))
-        for a in node.args.args:                       # params -> Names (extrude emits them as names)
+        for a in node.args.args:
             out.append(("name", a.arg))
+        if node.returns is not None:
+            _capture(node.returns, out)
+        for d in node.decorator_list:
+            _capture(d, out)
         for s in node.body:
             _capture(s, out)
     elif t == "ClassDef":
@@ -242,8 +290,26 @@ def _capture(node, out):
     elif t == "Expr":
         _capture(node.value, out)
     elif t == "If":
+        out.append(("ifsplit", (len(node.body), len(node.orelse))))
         _capture(node.test, out)
         for s in node.body:
+            _capture(s, out)
+        for s in node.orelse:
+            _capture(s, out)
+    elif t == "For":
+        out.append(("forsplit", (len(node.body), len(node.orelse))))
+        _capture(node.target, out)
+        _capture(node.iter, out)
+        for s in node.body:
+            _capture(s, out)
+        for s in node.orelse:
+            _capture(s, out)
+    elif t == "While":
+        out.append(("whilesplit", (len(node.body), len(node.orelse))))
+        _capture(node.test, out)
+        for s in node.body:
+            _capture(s, out)
+        for s in node.orelse:
             _capture(s, out)
     elif t == "Name":
         out.append(("name", node.id))
@@ -287,11 +353,14 @@ def full_retraction(src: str) -> dict:
     proj, _ = extrude(I, roots)                              # projection (collapsed payloads)
     res = capture_full(src)                                  # the full tagged cofactor
     I2 = J.Intern(); roots2 = J.lower_source(src, I2)
-    faith, unc = extrude(I2, roots2, residue=res)            # retraction
+    # residue misalignment (the _pop tag-assert) = a NODE whose field-structure capture_full does not yet
+    # carry (e.g. ast.arguments internals: defaults/annotations/*args/**kwargs/kw-only -- the next residue
+    # sub-layer). Caught, not crashed: report it as a coverage boundary (ast_faithful=False), never silent.
     try:
+        faith, unc = extrude(I2, roots2, residue=res)        # retraction
         ast_faithful = ast.dump(ast.parse(faith)) == ast.dump(ast.parse(src))
-    except SyntaxError:
-        ast_faithful = False
+    except (AssertionError, SyntaxError, StopIteration):
+        faith, unc, ast_faithful = "", {"<residue-misalignment>"}, False
     proj_faithful = False
     try:
         proj_faithful = ast.dump(ast.parse(proj)) == ast.dump(ast.parse(src))
@@ -431,16 +500,24 @@ if __name__ == "__main__":
     print(f"  proj_lost={R['proj_lost']}  retraction_faithful={R['retraction_faithful']}  "
           f"(split-idempotent: the cofactor recovers what the projection dropped)")
 
-    print("\n── Ⓤ.retract-full: the COMPLETE (AST-faithful) retraction — values (A) + names/defnames (C) ──")
+    print("\n── Ⓤ.retract-full + field-tags (B): the COMPLETE (AST-faithful) retraction ──")
     asrc = "def f(x):\n    return x\ndef g(y):\n    return y\n"     # alpha-equivalent: share ONE skeleton node
     F = full_retraction(asrc)
     print("  IN          :", repr(asrc))
     print("  projection  :", repr(F["projection"]), " <- g/y collapsed onto f/x (alpha-equivalent)")
     print("  RETRACTION  :", repr(F["retraction"]))
     print(f"  proj_faithful(AST)={F['proj_faithful']}  retraction_faithful(AST)={F['ast_faithful']}  "
-          f"(recovers the collapsed defname+param even though the skeleton shares the node)")
-    print("  B-residual (documented): decorators / returns-annotations need field-tags -> #UNCOVERED "
-          "marker (visible, never silent). Trivia/comments = gauge (ast strips it; byte-exact needs CST).")
+          f"(recovers values (A) + names/defnames (C) even though the skeleton shares the node)")
+    # (B) field-tags now CLOSED for the heterogeneous-field statements that used to hit #UNCOVERED:
+    bcases = {"@dec\ndef f() -> int:\n    return 1\n": "decorator + returns-annotation",
+              "if p < 3:\n    return p\nelse:\n    return 0\n": "if/else",
+              "for i in xs:\n    s = s + i\nelse:\n    s = 0\n": "for/else",
+              "while n > 0:\n    n = n - 1\n": "while"}
+    print("  field-tags (B) — heterogeneous-field statements now reconstruct via field-split residue:")
+    for s, lbl in bcases.items():
+        print(f"      • {lbl:28} ast_faithful={full_retraction(s)['ast_faithful']}")
+    print("  next sub-layers (reported, not crashed): ast.arguments internals (defaults/annotations/")
+    print("  *args/**kwargs/kw-only), class bases, try/with; trivia = gauge (byte-exact needs a CST residue).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()
