@@ -65,6 +65,24 @@ per-file `+RTS -M1024m` heap cap keeps each job under `AGDA_MB`. Tune `AGDA_MB` 
 cap + overhead (~1.5–2 GB). (Demonstrated: `make -j` over a 2-subdir node under a 1-job budget
 serialized cleanly via BLOCKED/lease hand-off; exit 0.)
 
+## Build-time estimation (genlop-style): `scripts/buildtime.py`
+
+Per-module typecheck times are recorded PARALLEL TO THE RECURSIVE-MAKE STRUCTURE: each source dir
+gets a `.agda-times.tsv` alongside its `Makefile` (gitignored — timing is hardware/cache-specific).
+The **`membudget` wrapper is the universal capture point**: the agda shim routes every compile
+through `membudget run`, which times ONLY the post-lease run (not the semaphore wait) and appends
+`module<TAB>seconds` to the module's per-dir ledger (best-effort; never alters the compile's exit
+code). `full_build_check.py` also records its run and prints a genlop-style up-front estimate + live
+ETA. Read it back:
+
+    scripts/buildtime.py --predict          # genlop -p: estimated full build (Σ medians; wall ≈ /J)
+    scripts/buildtime.py --top [N]          # the slowest modules (build hot-spots)
+    scripts/buildtime.py --module <relpath> # one module's history    --stats / --compact
+
+Estimate = MEDIAN of a module's last K=5 runs (robust to the cold/warm-`.agdai` bimodality); unseen
+modules fall back to the global median. (Future: `membudget` can also record cgroup peak-mem and
+SIZE the lease per-module from history — auto-`AGDA_MB`.)
+
 ## Commit policy
 
 Work and commit directly on `main`; the pre-commit hook (CI gates) is the promotion

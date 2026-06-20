@@ -118,14 +118,31 @@ cmd_run() {
   done
   exec {LKFD}>&-                                 # close the lock fd
   export MEMBUDGET_PARENT="$id"
+  # genlop-style timing: measure ONLY the post-lease run (not the semaphore wait above), record it to
+  # the module's per-dir ledger, and PROPAGATE the real exit code (cgroup-kill 137 included). The
+  # recording is best-effort and never alters rc.
+  local rc=0 rstart rend
+  rstart=$(date +%s.%N)
   if [ "$parent" = "-" ]; then
     echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
     systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
-      -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@"
+      -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@" || rc=$?
   else
     echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2
-    "$@"
+    "$@" || rc=$?
   fi
+  rend=$(date +%s.%N)
+  _record_time "$rstart" "$rend" "$@"
+  exit "$rc"
+}
+
+_record_time() { # genlop: append <module-basename>\t<seconds> to the module's per-dir .agda-times.tsv
+  local rstart="$1" rend="$2"; shift 2
+  local a mod=""
+  for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done   # the compiled module (last .agda arg)
+  [ -n "$mod" ] || return 0
+  local dur; dur=$(awk "BEGIN{d=$rend-$rstart; printf \"%.2f\", (d<0?0:d)}" 2>/dev/null) || return 0
+  printf '%s\t%s\n' "$(basename "$mod")" "$dur" >> "$(dirname "$mod")/.agda-times.tsv" 2>/dev/null || true
 }
 
 cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-contains the

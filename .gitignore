@@ -40,3 +40,8 @@ dmi.data
 jea/metalanguage/agdai_shim
 jea/metalanguage/*.hi
 jea/metalanguage/*.o
+
+# genlop-style per-dir build-time ledgers (machine-specific timing, parallel to the makefiles)
+.agda-times.tsv
+**/.agda-times.tsv
+.build-times.json
