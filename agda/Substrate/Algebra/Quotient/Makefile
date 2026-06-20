@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := CRT.agda Coxeter.agda F2Parity.agda ModN.agda PhaseA.agda PhaseB.agda Projection.agda Surreal.agda V4Cosets.agda
+FILES := CRT.agda Coxeter.agda F2Parity.agda IRRetraction.agda ModN.agda PhaseA.agda PhaseB.agda Projection.agda Surreal.agda V4Cosets.agda
 SUBDIRS := CRT
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
