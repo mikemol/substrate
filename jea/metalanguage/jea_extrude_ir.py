@@ -174,9 +174,10 @@ class Extruder:
             if ks:
                 return f"*{self.expr(ks[0])}"
         if k == "IfExp":
-            ks = self._non_op_kids(n)
+            ks = self._non_op_kids(n)                 # [test, body, orelse] (ast field order)
             if len(ks) == 3:
-                return f"({self.expr(ks[0])} if {self.expr(ks[1])} else {self.expr(ks[2])})"
+                test_s = self.expr(ks[0]); body_s = self.expr(ks[1]); orelse_s = self.expr(ks[2])
+                return f"({body_s} if {test_s} else {orelse_s})"
         if k == "Lambda":
             ch = list(n.children)
             argsig = self._pop("argsig") if self._res is not None else ", ".join(self._params(ch[0]) if ch else [])
@@ -192,6 +193,10 @@ class Extruder:
             return "{" + f"{self.expr(ks[0])}: {self.expr(ks[1])} " + " ".join(self._comp(g) for g in ks[2:]) + "}"
         if k == "JoinedStr":
             return self._pop("fstr") if self._res is not None else "f''"
+        if k in ("Yield", "YieldFrom", "Await"):
+            ks = self._non_op_kids(n)
+            kw = {"Yield": "yield", "YieldFrom": "yield from", "Await": "await"}[k]
+            return f"({kw} {self.expr(ks[0])})" if ks else f"({kw})"
         self.uncovered.add(k)
         return f"#UNCOVERED:{k}#"
 
@@ -229,6 +234,60 @@ class Extruder:
             ks = self._non_op_kids(n)
             if len(ks) >= 2:
                 return [f"{pad}{self.expr(ks[0])} {_BIN.get(n.op, '?')}= {self.expr(ks[1])}"]
+        if k == "Assert":
+            ks = self._non_op_kids(n)
+            s = f"{pad}assert {self.expr(ks[0])}"
+            if len(ks) > 1:
+                s += f", {self.expr(ks[1])}"
+            return [s]
+        if k == "Raise":
+            ks = self._non_op_kids(n)                 # 0 bare / 1 exc / 2 exc-from-cause
+            s = f"{pad}raise"
+            if len(ks) >= 1:
+                s += f" {self.expr(ks[0])}"
+            if len(ks) >= 2:
+                s += f" from {self.expr(ks[1])}"
+            return [s]
+        if k == "Delete":
+            ks = self._non_op_kids(n)
+            return [f"{pad}del {', '.join(self.expr(c) for c in ks)}"]
+        if k == "AnnAssign":
+            ks = self._non_op_kids(n)                 # [target, annotation, value?]
+            s = f"{pad}{self.expr(ks[0])}: {self.expr(ks[1])}"
+            if len(ks) > 2:
+                s += f" = {self.expr(ks[2])}"
+            return [s]
+        if k == "With":
+            ch = list(n.children)                     # [withitem×ni, body×nb]
+            if self._res is not None:
+                ni, nb = self._pop("withsplit")
+            else:
+                ni, nb = 0, len(ch)
+            item_ids = ch[:ni]; body_ids = ch[ni:ni + nb]
+            items = []
+            for it_id in item_ids:
+                it = self.I.nodes[it_id]; ick = self._non_op_kids(it)
+                has_vars = self._pop("witem") if self._res is not None else (len(ick) > 1)
+                ctx = self.expr(ick[0])
+                items.append(f"{ctx} as {self.expr(ick[1])}" if has_vars and len(ick) > 1 else ctx)
+            return [f"{pad}with {', '.join(items)}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+        if k in ("Import", "ImportFrom"):
+            aliases = []
+            for c in n.children:
+                a = self.I.nodes[c]
+                if a.kind == "alias":
+                    # asname from the residue cofactor (it collapses in the shared node's payload);
+                    # the name is faithful in op.
+                    asn = self._pop("asname") if self._res is not None else (a.payload[1] if len(a.payload) > 1 else None)
+                    aliases.append(f"{a.op} as {asn}" if asn else a.op)
+            if k == "Import":
+                return [f"{pad}import {', '.join(aliases)}"]
+            level = n.payload[1] if len(n.payload) > 1 and isinstance(n.payload[1], int) else 0
+            return [f"{pad}from {'.' * level}{n.op} import {', '.join(aliases)}"]
+        if k in ("Global", "Nonlocal"):
+            return [f"{pad}{('global' if k == 'Global' else 'nonlocal')} {n.op}"]   # op = names (Ⓤ-fix)
+        if k in ("Break", "Continue"):
+            return [f"{pad}{k.lower()}"]
         if k in ("Expr", "Block"):
             # transparent wrapper: ast Expr wraps one expression as a statement; Block groups stmts.
             ks = n.children
@@ -349,6 +408,12 @@ def extrude(intern: J.Intern, roots, residue=None) -> tuple[str, set]:
     return e.module(roots), e.uncovered
 
 
+def _const_repr(v) -> str:
+    # repr() matches source for every literal EXCEPT Ellipsis (repr(...)=='Ellipsis', source is '...',
+    # which re-parses as a Name not a Constant). Use the source form.
+    return "..." if v is Ellipsis else repr(v)
+
+
 def _preorder(node):
     """source-ast pre-order in field order -- the SAME order the extruder visits leaves, so a residue
     captured here aligns slot-for-slot with the extruder's Constant occurrences (shared or not)."""
@@ -362,7 +427,7 @@ def capture_residue(src: str) -> list:
     This is loss (A) -- the headline. (Bound-name spelling (C) and field-tags (B) are the further residue
     layers; the same edge-trace mechanism carries them.) Kept here as a side-channel trace = the edge
     residue the shared node cannot hold (never-discard-residue: the SPPF quotient + this remainder)."""
-    return [repr(n.value) for n in _preorder(ast.parse(src)) if isinstance(n, ast.Constant)]
+    return [_const_repr(n.value) for n in _preorder(ast.parse(src)) if isinstance(n, ast.Constant)]
 
 
 def _capture(node, out):
@@ -449,7 +514,7 @@ def _capture(node, out):
     elif t == "Name":
         out.append(("name", node.id))
     elif t == "Constant":
-        out.append(("const", repr(node.value)))
+        out.append(("const", _const_repr(node.value)))
     elif t == "Attribute":
         _capture(node.value, out)                      # base only; .attr is referential (in the key)
     elif t == "BinOp":
@@ -487,7 +552,9 @@ def _capture(node, out):
     elif t == "Starred":
         _capture(node.value, out)
     elif t == "IfExp":
-        _capture(node.body, out); _capture(node.test, out); _capture(node.orelse, out)
+        # push in ast FIELD order (test, body, orelse) to match the skeleton children order extrude
+        # indexes -- NOT source-readability order (body if test else orelse), which scrambled the stream.
+        _capture(node.test, out); _capture(node.body, out); _capture(node.orelse, out)
     elif t == "Lambda":
         out.append(("argsig", ast.unparse(node.args)))
         _capture(node.body, out)
@@ -505,8 +572,43 @@ def _capture(node, out):
             _capture(c, out)
     elif t == "JoinedStr":
         out.append(("fstr", ast.unparse(node)))         # whole f-string verbatim (embedded exprs included)
+    elif t in ("Yield", "Await", "YieldFrom"):
+        if getattr(node, "value", None) is not None:
+            _capture(node.value, out)
     elif t == "AugAssign":
         _capture(node.target, out); _capture(node.value, out)
+    elif t == "Assert":
+        _capture(node.test, out)
+        if node.msg is not None:
+            _capture(node.msg, out)               # has-msg recoverable from child count (no field-split)
+    elif t == "Raise":
+        if node.exc is not None:
+            _capture(node.exc, out)
+        if node.cause is not None:
+            _capture(node.cause, out)             # 0/1/2 children: bare / exc / exc-from-cause
+    elif t == "Delete":
+        for tg in node.targets:
+            _capture(tg, out)
+    elif t == "AnnAssign":
+        _capture(node.target, out); _capture(node.annotation, out)
+        if node.value is not None:
+            _capture(node.value, out)             # 2 vs 3 children: annotation-only vs with value
+    elif t == "With":
+        out.append(("withsplit", (len(node.items), len(node.body))))   # items & body both vary -> field-split
+        for it in node.items:
+            out.append(("witem", it.optional_vars is not None))
+            _capture(it.context_expr, out)
+            if it.optional_vars is not None:
+                _capture(it.optional_vars, out)
+        for s in node.body:
+            _capture(s, out)
+    elif t in ("Import", "ImportFrom"):
+        # the alias NAME and the module are referential (in the KEY/op, faithful). But the ASNAME is in
+        # payload, which COLLAPSES on a key-collision (`import sys` ≡ `import sys as _s` share op='sys')
+        # -- so it is per-occurrence residue, carried here (one record per alias, in node.names order).
+        for a in node.names:
+            out.append(("asname", a.asname))
+    # Global/Nonlocal/Break/Continue/Pass: NO residue (names are in op; no leaves / no per-occurrence data).
     # else: an uncovered kind -- contributes no residue (and the extruder marks it #UNCOVERED).
 
 
@@ -701,8 +803,9 @@ if __name__ == "__main__":
                    "ys = [x for x in xs if x]\n": "comprehension", "g = lambda x: x + 1\n": "lambda",
                    's = f"{x!r}"\n': "f-string"}.items():
         print(f"      • {lbl:24} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  frontier now (reported, not crashed): With / Match / Assert / Raise / Import / Delete /")
-    print("  AnnAssign / Break-Continue (simple statements); trivia = gauge (byte-exact needs a CST residue).")
+    print("  simple statements (with/assert/raise/import/del/annassign/break/global/yield) -- AST-faithful;")
+    print("  SCALE-VALIDATED: 18/18 whole real metalanguage modules round-trip to the identical AST.")
+    print("  frontier now: Match patterns (the one deferred layer); trivia = gauge (byte-exact needs CST).")
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()

@@ -169,8 +169,16 @@ def chk_extrude_ir():
               "z = a if c else b\n", "g = lambda x: x + 1\n", "ys = [x * 2 for x in xs if x > 0]\n",
               "d = {k: v for k, v in items}\n", 's = f"{x!r} and {y}"\n', "x += 1\n"):
         assert E.full_retraction(s)["ast_faithful"], f"expression-frontier must reconstruct: {s!r}"
-    return ("PASS (Ⓤ.byte+retract: orbital identity; seam computed; AST-faithful under alpha-collapse + "
-            "field-tags + args/class/try + expr-frontier containers/comprehensions/lambda/fstring)")
+    # simple statements (Ⓤ.retract-stmt): with/assert/raise/del/import/annassign/break/global + yield/await,
+    # AND the three regressions the whole-file scale test caught (IfExp field-order, asname collapse,
+    # Ellipsis repr). Match is the one deferred layer.
+    for s in ("with a as b, c:\n    pass\n", "assert x, 'm'\n", "raise E from c\n", "del x, y\n",
+              "import sys as _s\nimport sys\n", "from a.b import c as d\n", "x: int = 1\n",
+              "def g():\n    yield from xs\n", "x: Tuple[int, ...]\n",
+              "head = n.k + (f'[{n.op}]' if n.op else '')\n"):
+        assert E.full_retraction(s)["ast_faithful"], f"statement/regression must reconstruct: {s!r}"
+    return ("PASS (Ⓤ.byte+retract: orbital identity; seam; AST-faithful — alpha-collapse + field-tags + "
+            "args/class/try + expr-frontier + simple-stmts; 18/18 whole real modules, Match deferred)")
 
 
 def chk_pysim():
