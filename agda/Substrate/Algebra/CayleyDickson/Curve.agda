@@ -21,11 +21,12 @@
 module Substrate.Algebra.CayleyDickson.Curve where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Vec using (Vec; []; _∷_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
+open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Bool.Properties using (xor-assoc; xor-same; xor-identityˡ)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Algebra.Semiring.NatInf using (ℕ∞; fin; ∞; _⊓_)
-open import Substrate.Algebra.CayleyDickson.Grade using (bit)
+open import Substrate.Algebra.CayleyDickson.Grade using (bit; popcount)
 
 ------------------------------------------------------------------------
 -- 1. The Morton / Z-order linearization: the F₂ⁿ index → its rank (LSB-first
@@ -62,3 +63,57 @@ crossover-high = refl
 -- ∞ (unreachable) is the cost identity: a curve with no cost never wins a crossover.
 crossover-∞ʳ : crossover (fin 3) ∞ ≡ fin 3
 crossover-∞ʳ = refl
+
+------------------------------------------------------------------------
+-- 3. THE HILBERT (reflected-binary / Gray) curve — the recursive-reflection
+--    construction the crossover compares against Morton. The binary-reflected
+--    Gray code IS the 1D Hilbert curve (each step a single quadrant reflection);
+--    the full 2D Hilbert (quadrant ROTATION) is a refinement. `gray` keeps the top
+--    bit and XORs each bit with the one above (b_i ↦ b_i ⊕ b_{i+1}); it is a
+--    bijection (gray-roundtrip), so a faithful linearization like `morton`.
+------------------------------------------------------------------------
+
+gray′ : {n : ℕ} → Bool → Vec Bool n → Vec Bool n     -- thread the bit above
+gray′ prev []       = []
+gray′ prev (b ∷ bs) = (prev xor b) ∷ gray′ b bs
+
+gray : {n : ℕ} → Vec Bool n → Vec Bool n
+gray = gray′ false                                   -- nothing above the top bit
+
+gray-decode′ : {n : ℕ} → Bool → Vec Bool n → Vec Bool n   -- thread the running parity
+gray-decode′ acc []       = []
+gray-decode′ acc (g ∷ gs) = (acc xor g) ∷ gray-decode′ (acc xor g) gs
+
+gray-decode : {n : ℕ} → Vec Bool n → Vec Bool n
+gray-decode = gray-decode′ false
+
+xor-cancelˡ : (a b : Bool) → a xor (a xor b) ≡ b
+xor-cancelˡ a b = trans (sym (xor-assoc a a b)) (trans (cong (_xor b) (xor-same a)) (xor-identityˡ b))
+
+-- gray is invertible — a faithful (bijective) linearization of the F₂ⁿ index.
+gray-decode′-gray′ : {n : ℕ} (p : Bool) (bs : Vec Bool n) → gray-decode′ p (gray′ p bs) ≡ bs
+gray-decode′-gray′ p []       = refl
+gray-decode′-gray′ p (b ∷ bs) rewrite xor-cancelˡ p b = cong (b ∷_) (gray-decode′-gray′ b bs)
+
+gray-roundtrip : {n : ℕ} (b : Vec Bool n) → gray-decode (gray b) ≡ b
+gray-roundtrip b = gray-decode′-gray′ false b
+
+------------------------------------------------------------------------
+-- 4. LOCALITY: the crossover's REAL costs. On the hard Morton step (binary 1→2,
+--    i.e. 01→10) Morton flips 2 bits; the Gray-encoded step flips 1. The reflected
+--    curve preserves locality — and these popcount jumps are the crossover's costs,
+--    no longer hand-picked.
+------------------------------------------------------------------------
+
+morton-jump : popcount (zipWith _xor_ (false ∷ true ∷ []) (true ∷ false ∷ [])) ≡ 2
+morton-jump = refl
+
+gray-jump : popcount (zipWith _xor_ (gray (false ∷ true ∷ [])) (gray (true ∷ false ∷ []))) ≡ 1
+gray-jump = refl
+
+-- the crossover, fed the REAL curve costs, picks Gray (locality) on this step.
+crossover-gray-wins :
+  crossover (fin (popcount (zipWith _xor_ (false ∷ true ∷ []) (true ∷ false ∷ []))))
+            (fin (popcount (zipWith _xor_ (gray (false ∷ true ∷ [])) (gray (true ∷ false ∷ [])))))
+  ≡ fin 1
+crossover-gray-wins = refl

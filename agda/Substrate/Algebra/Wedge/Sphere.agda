@@ -84,7 +84,12 @@
 --    in `CayleyDickson.Curve`: `morton` is the Z-order linearization (index→rank),
 --    and `crossover` IS the tropical min ⊓ (the cost gauge of ⊙.c6's Contraction)
 --    — the chosen curve is the argmin, the boundary is where it flips (concrete
---    Morton-low / Hilbert-high examples). Full Hilbert construction is separate.
+--    Morton-low / Hilbert-high examples). The Hilbert curve is now BUILT too:
+--    `gray` = the binary-reflected (Gray) code = the 1D Hilbert/reflected-binary
+--    curve (recursive reflection), a bijection (`gray-roundtrip`); locality is real
+--    (`morton-jump` ≡ 2 vs `gray-jump` ≡ 1 on the 01→10 step) and `crossover-gray-wins`
+--    feeds those popcount jumps to the tropical min (Gray wins) — costs no longer
+--    hand-picked. The full 2D Hilbert (quadrant ROTATION) is the remaining refinement.
 --
 -- NEXT BUILD (gated on this ledger): prove #1, then make Semiring a real
 -- parameter of the wedge/tensor engine (#6 — unifies Bool/GF(2)/tropical).
@@ -129,6 +134,8 @@ cell-grade     = Grade.∨-anf                 -- C4/C2: OR=XOR⊕AND (two index
 cell-incl-excl = Grade.popcount-or-and       -- C2: degree defect = the AND overlap
 cell-morton    = Curve.morton                -- C8: the Z-order linearization
 cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
+cell-gray      = Curve.gray-roundtrip        -- C8: the Gray (1D Hilbert) curve, bijective
+cell-locality  = Curve.crossover-gray-wins   -- C8: real popcount costs, Gray wins locality
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
 cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
