@@ -69,7 +69,7 @@ WORKLIST = [
     # ── genuinely open: audits/sweeps with no machine artifact yet (give them one and they go mechanical) ──
     {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs (verdict: reflex purged, 3 genuine deferrals)",
      "done": ("exists", "scratch/omega4_reflex_sweep.md")},
-    {"sym": "Ε(b)", "desc": "widen the reuse-search trigger (G9 prevention)", "done": ("manual",)},
+    {"sym": "Ε(b)", "desc": "reuse-search trigger WIDENED + escalated (G9): fires on \"plan proposes new machinery\" (before building), not just post-hoc — lifted off recalled-memory onto CLAUDE.md (always-loaded) §Reuse-search-BEFORE-building + the similarity-not-grep memory + the construct-dont-classify reinvent-vs-reuse reflex. Ε(d) stale agda_similarity .pyc removed", "done": ("grep", "Reuse-search BEFORE building new machinery", "CLAUDE.md")},
     {"sym": "Ω3-L-primes.pole1", "desc": "Ⓖ★ invertible-pole cross-coherence, rank-1: gᵏ·(recip g)ᵏ≈1 "
             "(gvalue-power-antipode) — the el-atlas antipode extended to the cyclic subgroup, NO FTA",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-power-antipode")},

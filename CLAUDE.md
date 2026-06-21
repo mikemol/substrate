@@ -115,3 +115,25 @@ gate. After `git commit`, the `post-commit` hook AMENDS the commit (advisory) �
 **wait for the marker `post-commit advisory (auto-captured)` in HEAD before pushing**,
 then `git fetch` + fast-forward. See memory `feedback_commit_on_main_ci_gated` and
 `feedback_wait_for_postcommit_amend_before_push`.
+
+## Reuse-search BEFORE building new machinery (the trigger fires on the PLAN)
+
+When a plan proposes building a NEW def / lemma / module / bridge, that proposal **is the trigger**:
+first search for the structure it would reinvent. The substrate is dense — most "build X" is really
+"instantiate the X that already exists." Repeatedly (one arc ran 5 near-reinventions, each caught only by
+a user pointer or late grounding): hand-built recip-homomorphism lemmas before the Ⓖ★ **cross-mixer**
+dual; bespoke factorisation before the div-mod **wedge** (`a = recon q b r`); a Bézout reproof before
+`Algebra.Z.Euclid.euclid` (the EEA trace already held Bézout); a Monoid→Category bridge before
+`Category.Delooping.deloop`; a round-trip Canonical before `Algebra.Quotient.split-Canonical`.
+
+The search is **structural, not grep** (grep misses inline lambdas / differently-named helpers):
+
+    python jea/metalanguage/jea_pysim.py <files-or-.agdai globs> --clusters --extract --skeleton
+
+over `.py` AND Agda `.agdai` core (point at `agda/_build/.../Substrate/...`). It reads the interned SPPF
+(shared canonical nodes = corroborated shape). Also scan `Substrate.Generators` / the `*.Registry`
+bridge-indexes and the apex memories (`project_split_idempotent_apex`, `project_witness_tower_*`) for the
+generator the plan should instantiate. Rule of thumb: before writing a `record`/new operator/new bridge,
+name the existing generator it specialises — or confirm (briefly) there isn't one. This is the standing
+prevention layer (Ε / G9); memory `similarity-not-grep` + the `construct-dont-classify` skill's
+"reinvent-vs-reuse" reflex are the recalled forms, this is the always-loaded one.
