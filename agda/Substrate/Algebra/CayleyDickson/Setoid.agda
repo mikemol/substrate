@@ -17,7 +17,10 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
-open import Substrate.Algebra.CayleyDickson using (Carrier; ≈#; neg; conj; zero#)
+open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong; *ℚ-cong)
+open import Substrate.Algebra.CayleyDickson.CommuteEdge using (-ℚ-cong)
+open import Substrate.Algebra.CayleyDickson
+  using (Carrier; ≈#; add; sub; mul; neg; conj; zero#)
 
 ------------------------------------------------------------------------
 -- 1. ≈# is an equivalence (componentwise lift of ℚ's setoid).
@@ -48,3 +51,36 @@ neg-zero# (suc n) = neg-zero# n , neg-zero# n
 conj-zero# : (n : ℕ) → ≈# n (conj n (zero# n)) (zero# n)
 conj-zero# zero    = refl
 conj-zero# (suc n) = conj-zero# n , neg-zero# n
+
+------------------------------------------------------------------------
+-- 3. ≈# is a CONGRUENCE for every CD operation (add / neg / conj / sub / mul).
+-- Each is structural induction on n: the base is ℚ's congruence (+ℚ-cong /
+-- -ℚ-cong / *ℚ-cong), the step is componentwise. `mul-cong` is the substantive
+-- one (the doubling formula's congruence) and is the gating prerequisite for the
+-- recursive product law eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j}, since that induction must rewrite
+-- under mul. Reuses CommuteEdge.-ℚ-cong (negation respects ≈ℚ).
+------------------------------------------------------------------------
+
+add-cong : (n : ℕ) {x x′ y y′ : Carrier n} →
+           ≈# n x x′ → ≈# n y y′ → ≈# n (add n x y) (add n x′ y′)
+add-cong zero    {x} {x′} {y} {y′} px py = +ℚ-cong {x} {x′} {y} {y′} px py
+add-cong (suc n) (pa , pb) (pc , pd)     = add-cong n pa pc , add-cong n pb pd
+
+neg-cong : (n : ℕ) {x y : Carrier n} → ≈# n x y → ≈# n (neg n x) (neg n y)
+neg-cong zero    {x} {y} p = -ℚ-cong {x} {y} p
+neg-cong (suc n) (pa , pb) = neg-cong n pa , neg-cong n pb
+
+conj-cong : (n : ℕ) {x y : Carrier n} → ≈# n x y → ≈# n (conj n x) (conj n y)
+conj-cong zero    p        = p                       -- conj at level 0 is the identity
+conj-cong (suc n) (pa , pb) = conj-cong n pa , neg-cong n pb
+
+sub-cong : (n : ℕ) {x x′ y y′ : Carrier n} →
+           ≈# n x x′ → ≈# n y y′ → ≈# n (sub n x y) (sub n x′ y′)
+sub-cong n px py = add-cong n px (neg-cong n py)
+
+mul-cong : (n : ℕ) {x x′ y y′ : Carrier n} →
+           ≈# n x x′ → ≈# n y y′ → ≈# n (mul n x y) (mul n x′ y′)
+mul-cong zero    {x} {x′} {y} {y′} px py = *ℚ-cong {x} {x′} {y} {y′} px py
+mul-cong (suc n) (pa , pb) (pc , pd) =
+    sub-cong n (mul-cong n pa pc) (mul-cong n (conj-cong n pd) pb)
+  , add-cong n (mul-cong n pd pa) (mul-cong n pb (conj-cong n pc))
