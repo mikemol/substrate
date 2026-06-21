@@ -58,6 +58,15 @@ pow M x (suc n) = mul M x (pow M x n)
 Nilpotent : (M : MulDivStr) → C (base M) → Set
 Nilpotent M x = Σ ℕ (λ n → pow M x n ≡ z (base M))
 
+-- x ANNIHILATES: it kills EVERY product (x·y = z for all y) — a dead-end, the
+-- structure collapses. Distinct from Nilpotent (x kills only its OWN powers).
+-- ⊙ conjecture #5: a nonzero nilpotent residue is a GRADED obstruction, NOT an
+-- annihilator — "kill can't happen", the structure deforms but never dead-ends
+-- (ties #1: the wedge correction is always handed back). Separation witnessed in
+-- `Wedge.Wedderburn` (e₁₂ nilpotent yet e₁₂·e₂₁ = e₁₁ ≠ z).
+Annihilator : (M : MulDivStr) → C (base M) → Set
+Annihilator M x = (y : C (base M)) → mul M x y ≡ z (base M)
+
 -- x² = z : the differential element, d² = 0 (the degree-2 nilpotent).
 square-zero : (M : MulDivStr) → C (base M) → Set
 square-zero M x = pow M x 1 ≡ z (base M)         -- pow x 1 = x * x

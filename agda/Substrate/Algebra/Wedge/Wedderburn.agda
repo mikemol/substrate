@@ -32,7 +32,7 @@ open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; 𝟙≢𝟘)
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; pow; Nilpotent)
+open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; pow; Nilpotent; Annihilator)
 open import Substrate.Algebra.Wedge.Species
   using (Stable; IdempotentSpecies; NilpotentSpecies; species-disjoint)
 
@@ -121,3 +121,15 @@ m2-nilpotent-species = (0 , refl) , (1 , refl)
 e₁₁-not-nilpotent : Nilpotent M2-mul-str e₁₁ → ⊥
 e₁₁-not-nilpotent nil with cong head (species-disjoint M2-mul-str e₁₁ e₁₁-idem nil)
 ... | h = 𝟙≢𝟘 h
+
+------------------------------------------------------------------------
+-- ⊙ conjecture #5: NILPOTENT-NOT-ANNIHILATING ⟹ NO DEAD-END. e₁₂ is a nonzero
+-- nilpotent (e₁₂-nilpotent: e₁₂² = 𝟎, a graded degree-2 obstruction), yet it does
+-- NOT annihilate: e₁₂·e₂₁ = e₁₁ ≠ 𝟎 (corners-glue-11) — the corner multiplies back
+-- to a LIVE idempotent. So the nilpotent residue deforms the product (graded), it
+-- never KILLS the structure. "Kill can't happen" — the obstruction is tracked by
+-- degree, not a collapse (intuitionistic; ties #1, the wedge correction survives).
+------------------------------------------------------------------------
+
+e₁₂-not-annihilating : Annihilator M2-mul-str e₁₂ → ⊥
+e₁₂-not-annihilating ann = 𝟙≢𝟘 (cong head (ann e₂₁))

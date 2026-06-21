@@ -54,8 +54,12 @@
 --    (OR=XOR⊕AND) and at the degree by `popcount-or-and` (inclusion-exclusion).
 -- 5. nilpotent-not-annihilating ⟹ NO DEAD-END — residues nilpotent (graded
 --    correction), never annihilating; "kill" can't happen (intuitionistic;
---    deformation tracked). ties #1. · partly built (CrossMul coherence =
---    cross-term nilpotency degree).
+--    deformation tracked). ties #1. · ✅ PROVED in `Wedge.Wedderburn`:
+--    `Annihilator` (kills EVERY product) is separated from `Nilpotent` (kills only
+--    own powers) — e₁₂ is a nonzero nilpotent (e₁₂² = 𝟎) yet `e₁₂-not-annihilating`
+--    (e₁₂·e₂₁ = e₁₁ ≠ 𝟎, the corner glues back to a live idempotent). The
+--    obstruction is graded by degree, never a collapse. (CrossMul coherence =
+--    the cross-term nilpotency degree is the graded-cost half of the same fact.)
 -- 6. the semiring VM PLACES ITSELF via the gauge — one tensor over a chosen
 --    semiring = the job gauge (Bool route / GF(2) compute / ℕ count / tropical
 --    cost). · ✅ PROVED — Semiring.Contraction.contract (the tensor ⊕ᵢ aᵢ⊗bᵢ,
@@ -97,6 +101,7 @@ import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
+import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this
@@ -117,3 +122,4 @@ cell-grade     = Grade.∨-anf                 -- C4/C2: OR=XOR⊕AND (two index
 cell-incl-excl = Grade.popcount-or-and       -- C2: degree defect = the AND overlap
 cell-morton    = Curve.morton                -- C8: the Z-order linearization
 cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
+cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
