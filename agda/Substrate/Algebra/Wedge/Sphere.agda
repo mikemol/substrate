@@ -31,10 +31,11 @@
 -- 3. Morton ≅ Cayley-Dickson via the COCYCLE — Morton(untwisted)/Hilbert(twisted)
 --    = trivial/nontrivial 2-cocycle on F₂ⁿ = CD level; ladder graded loss
 --    (ℂ comm→ℍ noncomm→𝕆 nonassoc) = the commute-edge grade. · PARTLY PROVED —
---    the ladder ENDPOINTS: ℂ commutes (`CayleyDickson.CommuteEdge.mul-comm-ℂ`,
---    the bottom rung) and 𝕊 has zero divisors (`CayleyDickson.zd-value-0`, the
---    top). OPEN: the middle rungs (ℍ noncomm, 𝕆 nonassoc) and THE COCYCLE/Morton
---    bridge (the F₂ⁿ-indexed sign-cocycle; Morton/Hilbert modules not built). ·
+--    the COMMUTE-EDGE is PINPOINTED at level 1→2: ℂ commutes
+--    (`CayleyDickson.CommuteEdge.mul-comm-ℂ`) but ℍ does NOT (`mul-noncomm-ℍ`,
+--    i·j = k ≠ −k = j·i); and 𝕊 has zero divisors (`CayleyDickson.zd-value-0`).
+--    OPEN: the 𝕆 nonassoc rung, and THE COCYCLE/Morton bridge (the F₂ⁿ-indexed
+--    sign-cocycle; Morton/Hilbert modules not built — the deep cell). ·
 --    home: the CD doubling generator IS NOW BUILT — Algebra.CayleyDickson (the
 --    ℕ-indexed tower over ℚ, i²=−1, the 𝕊 zero divisor; same step as the nedge
 --    Evidence carrier-doubling). The COCYCLE/Morton bridge remains the open cell.
