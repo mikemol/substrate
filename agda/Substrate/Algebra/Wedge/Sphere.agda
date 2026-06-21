@@ -26,8 +26,11 @@
 --    iso corner), `divide` total ⟹ no dead-end. Non-vacuous at ℕ div-mod.
 -- 2. graded-GF(2) is NON-CANCELLING — with the F₂ⁿ-graded topology distinct
 --    derivations don't XOR-cancel (cancellation is ungraded-projection-only;
---    "GF(2) cancels derivations" was the ungraded mistake). · conjecture ·
---    home: new graded-GF(2) carrier; relates Category.GradedMonoid.
+--    "GF(2) cancels derivations" was the ungraded mistake). · ✅ PROVED in
+--    `CayleyDickson.Grade.popcount-or-and`: popcount(i∨j)+popcount(i∧j) =
+--    popcount i+popcount j, so the cancellation defect is EXACTLY the overlap
+--    popcount(i∧j) — zero iff disjoint supports. The full F₂ⁿ index retains the
+--    overlap (∨-anf: OR=XOR⊕AND); only the popcount (ungraded) projection loses it.
 -- 3. Morton ≅ Cayley-Dickson via the COCYCLE — Morton(untwisted)/Hilbert(twisted)
 --    = trivial/nontrivial 2-cocycle on F₂ⁿ = CD level; ladder graded loss
 --    (ℂ comm→ℍ noncomm→𝕆 nonassoc) = the commute-edge grade. · LADDER COMPLETE,
@@ -43,7 +46,12 @@
 --    the 𝕆 associator (`mul-nonassoc-𝕆`). The CD doubling generator is
 --    Algebra.CayleyDickson (same step as the nedge Evidence carrier-doubling).
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
---    (Morton/CD). · conjecture · home: new.
+--    (Morton/CD). · ✅ PROVED in `CayleyDickson.Grade`: they DON'T coincide, they
+--    are BRIDGED. The F₂ⁿ index is `Wedge.VecGraded.vec-graded Bool` (grade =
+--    LENGTH = the ambient F₂ⁿ dimension); `popcount` is the orthogonal ANF-DEGREE
+--    grading (Hamming weight) on the same carrier. The two index-PRODUCTS (CD/Morton
+--    XOR vs ANF/Reed-Muller OR-union) are bridged at the index by `∨-anf`
+--    (OR=XOR⊕AND) and at the degree by `popcount-or-and` (inclusion-exclusion).
 -- 5. nilpotent-not-annihilating ⟹ NO DEAD-END — residues nilpotent (graded
 --    correction), never annihilating; "kill" can't happen (intuitionistic;
 --    deformation tracked). ties #1. · partly built (CrossMul coherence =
@@ -83,6 +91,7 @@ import Substrate.Algebra.Wedge.Monoidal as Mon
 import Substrate.Algebra.Wedge.Registry as Registry
 import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
+import Substrate.Algebra.CayleyDickson.Grade as Grade
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this
@@ -99,3 +108,5 @@ cell-hexagon   = Mon.hexagon                 -- symmetric-monoidal coherence
 cell-roots     = Registry.objects            -- the founded roots
 cell-gf2       = Bilin.bilinear-from-images  -- the GF(2) carrier (free bilinear)
 cell-cocycle   = Cocycle.prod                -- C3: eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} ∀n
+cell-grade     = Grade.∨-anf                 -- C4/C2: OR=XOR⊕AND (two index-products)
+cell-incl-excl = Grade.popcount-or-and       -- C2: degree defect = the AND overlap
