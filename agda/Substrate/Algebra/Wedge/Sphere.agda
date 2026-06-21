@@ -70,7 +70,11 @@
 -- 8. Curry-Howard VM — bivalent SPPF (3 DOF: composition/grouping/growth) =
 --    proof = program = trace = layout; Morton=tree-walk-while-commutes,
 --    Hilbert=ordered packing, crossover AT the grade boundary chosen by the
---    tropical/cost instance (recursive fixpoint). · framing.
+--    tropical/cost instance (recursive fixpoint). · framing — crossover GROUNDED
+--    in `CayleyDickson.Curve`: `morton` is the Z-order linearization (index→rank),
+--    and `crossover` IS the tropical min ⊓ (the cost gauge of ⊙.c6's Contraction)
+--    — the chosen curve is the argmin, the boundary is where it flips (concrete
+--    Morton-low / Hilbert-high examples). Full Hilbert construction is separate.
 --
 -- NEXT BUILD (gated on this ledger): prove #1, then make Semiring a real
 -- parameter of the wedge/tensor engine (#6 — unifies Bool/GF(2)/tropical).
@@ -92,6 +96,7 @@ import Substrate.Algebra.Wedge.Registry as Registry
 import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 import Substrate.Algebra.CayleyDickson.Grade as Grade
+import Substrate.Algebra.CayleyDickson.Curve as Curve
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this
@@ -110,3 +115,5 @@ cell-gf2       = Bilin.bilinear-from-images  -- the GF(2) carrier (free bilinear
 cell-cocycle   = Cocycle.prod                -- C3: eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} ∀n
 cell-grade     = Grade.∨-anf                 -- C4/C2: OR=XOR⊕AND (two index-products)
 cell-incl-excl = Grade.popcount-or-and       -- C2: degree defect = the AND overlap
+cell-morton    = Curve.morton                -- C8: the Z-order linearization
+cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
