@@ -22,13 +22,14 @@
 module Substrate.Algebra.CayleyDickson.Cocycle where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.CayleyDickson
   using (Carrier; mul; neg; conj; ≈#; zero#; one#; i; i²≈−1)
 open import Substrate.Algebra.CayleyDickson.Setoid
-  using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#)
+  using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#; mul-oneˡ; mul-oneʳ)
 
 -- F₂ⁿ index → CD basis unit: 1ℚ at the leaf addressed by the n bits.
 e : (n : ℕ) → Vec Bool n → Carrier n
@@ -72,3 +73,28 @@ conj-on-basis (suc n) (true  ∷ is) =
 conj-on-basis (suc n) (false ∷ is) with imag? is | conj-on-basis n is
 ... | false | ih = ih , neg-zero# n
 ... | true  | ih = ih , ≈#-refl n (neg n (zero# n))
+
+------------------------------------------------------------------------
+-- COCYCLE NORMALIZATION: e₀·eᵢ ≈# eᵢ ≈# eᵢ·e₀ — the scalar unit e₀ (the
+-- all-false index) is the identity, so ε(0,i) = ε(i,0) = +1. The first FULL case
+-- of the recursive product law eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j}: when one index is 0,
+-- i⊕0 = i and the sign is trivial. (Rests on CD's two-sided identity mul-one,
+-- since e₀ = the all-false index = the unit 1.)
+------------------------------------------------------------------------
+
+-- e₀ : the all-false index, and the fact it IS the unit 1.
+falses : (n : ℕ) → Vec Bool n
+falses zero    = []
+falses (suc n) = false ∷ falses n
+
+e-falses : (n : ℕ) → e n (falses n) ≡ one# n
+e-falses zero    = refl
+e-falses (suc n) = cong (_, zero# n) (e-falses n)
+
+-- ε(i, 0) = +1 : right-multiplying by the scalar e₀ fixes eᵢ.
+prod-unitʳ : (n : ℕ) (i : Vec Bool n) → ≈# n (mul n (e n i) (e n (falses n))) (e n i)
+prod-unitʳ n i rewrite e-falses n = mul-oneʳ n (e n i)
+
+-- ε(0, i) = +1 : left-multiplying by the scalar e₀ fixes eᵢ.
+prod-unitˡ : (n : ℕ) (i : Vec Bool n) → ≈# n (mul n (e n (falses n)) (e n i)) (e n i)
+prod-unitˡ n i rewrite e-falses n = mul-oneˡ n (e n i)

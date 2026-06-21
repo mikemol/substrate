@@ -18,9 +18,11 @@ open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong; *ℚ-cong)
+open import Substrate.Algebra.Q.Properties.Field
+  using (zero-absorbˡ; zero-absorbʳ; +ℚ-identityˡ; +ℚ-identityʳ; *ℚ-identityˡ; *ℚ-identityʳ)
 open import Substrate.Algebra.CayleyDickson.CommuteEdge using (-ℚ-cong)
 open import Substrate.Algebra.CayleyDickson
-  using (Carrier; ≈#; add; sub; mul; neg; conj; zero#)
+  using (Carrier; ≈#; add; sub; mul; neg; conj; zero#; one#)
 
 ------------------------------------------------------------------------
 -- 1. ≈# is an equivalence (componentwise lift of ℚ's setoid).
@@ -84,3 +86,60 @@ mul-cong zero    {x} {x′} {y} {y′} px py = *ℚ-cong {x} {x′} {y} {y′} p
 mul-cong (suc n) (pa , pb) (pc , pd) =
     sub-cong n (mul-cong n pa pc) (mul-cong n (conj-cong n pd) pb)
   , add-cong n (mul-cong n pd pa) (mul-cong n pb (conj-cong n pc))
+
+------------------------------------------------------------------------
+-- 4. ZERO and ONE laws. The doubling product's off-diagonal halves vanish
+-- (mul-zero), so the empty residue is killed (add/sub-zero); together these give
+-- 1 as a two-sided multiplicative identity (mul-one). All clean — NO negation
+-- distribution (the cocycle's deeper layer). These are the laws the recursive
+-- product law's 4-case induction needs to discharge its zero/identity corners.
+------------------------------------------------------------------------
+
+add-zeroˡ : (n : ℕ) (x : Carrier n) → ≈# n (add n (zero# n) x) x
+add-zeroˡ zero    x       = +ℚ-identityˡ x
+add-zeroˡ (suc n) (a , b) = add-zeroˡ n a , add-zeroˡ n b
+
+add-zeroʳ : (n : ℕ) (x : Carrier n) → ≈# n (add n x (zero# n)) x
+add-zeroʳ zero    x       = +ℚ-identityʳ x
+add-zeroʳ (suc n) (a , b) = add-zeroʳ n a , add-zeroʳ n b
+
+-- sub x 0 ≈# x   (sub x y = add x (neg y); neg 0 ≈# 0)
+sub-zeroʳ : (n : ℕ) (x : Carrier n) → ≈# n (sub n x (zero# n)) x
+sub-zeroʳ n x = ≈#-trans n (add-cong n (≈#-refl n x) (neg-zero# n)) (add-zeroʳ n x)
+
+-- mul absorbs zero on both sides (mutually: the doubling formula crosses them).
+mul-zeroˡ : (n : ℕ) (x : Carrier n) → ≈# n (mul n (zero# n) x) (zero# n)
+mul-zeroʳ : (n : ℕ) (x : Carrier n) → ≈# n (mul n x (zero# n)) (zero# n)
+mul-zeroˡ zero    x       = zero-absorbˡ x
+mul-zeroˡ (suc n) (c , d) =
+    ≈#-trans n (sub-cong n (mul-zeroˡ n c) (mul-zeroʳ n (conj n d))) (sub-zeroʳ n (zero# n))
+  , ≈#-trans n (add-cong n (mul-zeroʳ n d) (mul-zeroˡ n (conj n c))) (add-zeroʳ n (zero# n))
+mul-zeroʳ zero    x       = zero-absorbʳ x
+mul-zeroʳ (suc n) (a , b) =
+    ≈#-trans n (sub-cong n (mul-zeroʳ n a)
+                           (≈#-trans n (mul-cong n (conj-zero# n) (≈#-refl n b)) (mul-zeroˡ n b)))
+               (sub-zeroʳ n (zero# n))
+  , ≈#-trans n (add-cong n (mul-zeroˡ n a)
+                           (≈#-trans n (mul-cong n (≈#-refl n b) (conj-zero# n)) (mul-zeroʳ n b)))
+               (add-zeroʳ n (zero# n))
+
+-- conj fixes the unit 1 (its imaginary half is 0).
+conj-one# : (n : ℕ) → ≈# n (conj n (one# n)) (one# n)
+conj-one# zero    = ≈#-refl 0 (one# 0)
+conj-one# (suc n) = conj-one# n , neg-zero# n
+
+-- 1 is a two-sided multiplicative identity (mutually: the doubling crosses sides).
+mul-oneˡ : (n : ℕ) (x : Carrier n) → ≈# n (mul n (one# n) x) x
+mul-oneʳ : (n : ℕ) (x : Carrier n) → ≈# n (mul n x (one# n)) x
+mul-oneˡ zero    x       = *ℚ-identityˡ x
+mul-oneˡ (suc n) (c , d) =
+    ≈#-trans n (sub-cong n (mul-oneˡ n c) (mul-zeroʳ n (conj n d))) (sub-zeroʳ n c)
+  , ≈#-trans n (add-cong n (mul-oneʳ n d) (mul-zeroˡ n (conj n c))) (add-zeroʳ n d)
+mul-oneʳ zero    x       = *ℚ-identityʳ x
+mul-oneʳ (suc n) (a , b) =
+    ≈#-trans n (sub-cong n (mul-oneʳ n a)
+                           (≈#-trans n (mul-cong n (conj-zero# n) (≈#-refl n b)) (mul-zeroˡ n b)))
+               (sub-zeroʳ n a)
+  , ≈#-trans n (add-cong n (mul-zeroˡ n a)
+                           (≈#-trans n (mul-cong n (≈#-refl n b) (conj-one# n)) (mul-oneʳ n b)))
+               (add-zeroˡ n b)
