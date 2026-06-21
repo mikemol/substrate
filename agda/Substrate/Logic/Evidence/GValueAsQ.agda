@@ -146,3 +146,20 @@ demorgan na'₁ db₁ na'₂ db₂ = cong +_ demorgan-ℕ
 --     buildable bridge — the multiplicative G-space (ℚ₊,·,1) ↔ the additive
 --     L-space, the substrate's own exp⊣log codec (Algebra.R) — a genuine
 --     follow-on (Ω3-L), not out-of-reach.
+------------------------------------------------------------------------
+-- ONTO THE CATEGORICAL SPINE (Ⓐ↔Ⓒ.q): gor = +ℚ, whose commutative monoid on
+-- the QUOTIENT ℚ/≈ℚ (the reduce-Canonical reps, where the setoid ≈ℚ collapses
+-- to propositional ≡) deloops to 𝐁(ℚ,+ℚ) — G_OR on the categorical spine. This
+-- is the setoid→spine grounding the categorical-grounding advisory wanted: a
+-- typechecked deloop bridge, not a note. (The ≡-monoid is built abstractly over
+-- the canonicaliser in Algebra.Q.Properties.AddMonoid — `reduce` runs gcd and
+-- does not normalise symbolically, so it is kept abstract; the ℕ⁺-side prime
+-- factorisation iso is Ω3-L-primes.)
+------------------------------------------------------------------------
+
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping using (deloop)
+open import Substrate.Algebra.Q.Properties.AddMonoid using (+ℚ-reduced-Monoid)
+
+gor-Category : CategoryOf
+gor-Category = deloop +ℚ-reduced-Monoid
