@@ -19,9 +19,11 @@
 --
 -- 1. KEYSTONE — r<b-residue = the precise Free⊣Forgetful ADJOINT correction;
 --    a refutation (r≠0) hands back exactly what to adjoin ⟹ the metaphor→proof
---    engine is PROVE-OR-CORRECT, never dead-ends. · conjecture · `a = recon q b r`
---    is the adjunction triangle; show the certified (sharp) residue = the
---    adjoint comparison. · home: Wedge + Category.FreeUniversalProperty. FIRST.
+--    engine is PROVE-OR-CORRECT, never dead-ends. · ✅ PROVED in `Wedge.Adjunction`:
+--    the hom-iso Wedge≅Term + triangle-as-witness (a = recon q b r), and the
+--    `FreeForgetful` module makes keep/forget the Free⊣Forgetful SPLIT IDEMPOTENT
+--    (`split-Canonical`, the apex), the residue = the adjoint comparison (z = the
+--    iso corner), `divide` total ⟹ no dead-end. Non-vacuous at ℕ div-mod.
 -- 2. graded-GF(2) is NON-CANCELLING — with the F₂ⁿ-graded topology distinct
 --    derivations don't XOR-cancel (cancellation is ungraded-projection-only;
 --    "GF(2) cancels derivations" was the ungraded mistake). · conjecture ·

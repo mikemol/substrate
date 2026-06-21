@@ -31,10 +31,15 @@
 
 module Substrate.Algebra.Wedge.Adjunction where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.Wedge
-  using (DivStr; C; recon; Wedge; quot; rem; wedge-eq; forget; forget-correct)
+  using (DivStr; C; z; recon; Wedge; quot; rem; wedge-eq; forget; forget-correct)
+open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
+  renaming (Canonical to Canonical⟦de760d07⟧)
+open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge)
+open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 
 ------------------------------------------------------------------------
 -- 0. The witness read twice cancels.
@@ -97,3 +102,50 @@ triangle = forget-correct
 reorient : {D : DivStr} {a b : C D} (w : Wedge D a b) →
            sym (eval-eq w) ≡ wedge-eq w
 reorient w = sym-sym (wedge-eq w)
+
+------------------------------------------------------------------------
+-- 4. ⊙ C1 KEYSTONE: keep/forget is the Free⊣Forgetful SPLIT IDEMPOTENT, and the
+--    certified residue IS the adjoint comparison. Given the instance's division
+--    `divide` (the Free section — ℕ div-mod / F₂[x] division / the EEA trace),
+--    `forget ∘ divide ≡ id` (§3 triangle) is a retraction, so the apex
+--    `split-Canonical` makes keep/forget a `Canonical` for ker(Forgetful) — the
+--    SAME split-idempotent apex as eval/reify, ℚ reduce, the factorisation iso.
+--    The engine is then PROVE-OR-CORRECT, never dead-ends: `divide` is TOTAL, the
+--    round-trip recovers the value, so there is no failure branch — only a
+--    residue branch, and the residue is the correction (z ⟺ the iso corner).
+------------------------------------------------------------------------
+
+module FreeForgetful (D : DivStr) (b : C D) (divide : (a : C D) → Wedge D a b) where
+
+  Repr : Set
+  Repr = C D × C D                              -- (quotient, remainder) against b
+
+  U : Repr → C D                                -- FORGETFUL: eval the term, q·b + r
+  U (q , r) = eval D q b r
+
+  F : C D → Repr                                -- FREE: divide, keep quotient + remainder
+  F a = quot (divide a) , rem (divide a)
+
+  -- the triangle U ∘ F ≡ id (= the witness a = recon q b r).
+  forget∘free : (a : C D) → U (F a) ≡ a
+  forget∘free a = forget-correct (divide a)
+
+  -- the split idempotent: a Canonical for ker(Forgetful) — the adjoint engine.
+  wedge-Canonical : Canonical⟦de760d07⟧ (ker-Quotient U)
+  wedge-Canonical = split-Canonical U F forget∘free
+
+  -- the adjoint comparison IS the residue (total ⟹ prove-or-correct, no dead-end).
+  comparison : C D → C D
+  comparison a = rem (divide a)
+
+  -- the iso corner: residue z ⟺ the value is the EXACT reconstruction q·b.
+  exact-at-z : (a : C D) → comparison a ≡ z D →
+               a ≡ recon D (quot (divide a)) b (z D)
+  exact-at-z a r≡z =
+    trans (sym (forget∘free a)) (cong (λ r → recon D (quot (divide a)) b r) r≡z)
+
+-- Non-vacuity: ℕ div-mod IS such a division (recon q b r = q·b + r). The keystone
+-- fires at ℕ-div via the existing `construct-wedge` (div-mod) + `fromℕ-Wedge` — the
+-- division theorem as the Free⊣Forgetful hom-set, residue = the remainder.
+module ℕ-Wedge-Adjunction (b : ℕ) =
+  FreeForgetful ℕ-div (suc b) (λ a → fromℕ-Wedge (construct-wedge a b))
