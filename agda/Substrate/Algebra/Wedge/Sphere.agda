@@ -34,8 +34,11 @@
 --    every rung machine-checked in `CayleyDickson.CommuteEdge` + `.CayleyDickson`:
 --    ℂ commutes (`mul-comm-ℂ`) → ℍ does NOT (`mul-noncomm-ℍ`, i·j=k≠−k=j·i) → 𝕆
 --    NOT assoc (`mul-nonassoc-𝕆`, (ij)l≠i(jl)) → 𝕊 zero divisors (`zd-value-0`).
---    OPEN: only THE COCYCLE/Morton bridge (the F₂ⁿ-indexed sign-cocycle making the
---    ladder a GRADE; Morton/Hilbert modules not built — the deep cell). ·
+--    The COCYCLE/Morton bridge FOUNDATION is built (`CayleyDickson.Cocycle`): the
+--    F₂ⁿ index→basis map `e` + the index XOR (`zipWith _xor_`) + the sign-cocycle at ℂ
+--    (`ℂ-sign-cocycle`, ε(1,1)=−1); nontriviality = `mul-noncomm-ℍ`. OPEN (deep):
+--    the GENERIC product law eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} ∀n, the explicit ε + its
+--    2-cocycle identity, and Morton (trivial ε) vs CD (nontrivial). ·
 --    home: the CD doubling generator IS NOW BUILT — Algebra.CayleyDickson (the
 --    ℕ-indexed tower over ℚ, i²=−1, the 𝕊 zero divisor; same step as the nedge
 --    Evidence carrier-doubling). The COCYCLE/Morton bridge remains the open cell.
