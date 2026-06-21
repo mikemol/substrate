@@ -46,7 +46,11 @@
 --    the 𝕆 associator (`mul-nonassoc-𝕆`) — NOW MEASURED: `Cocycle.dε` is ε's
 --    coboundary 3-cochain, `associator` proves (eᵢ·eⱼ)·eₖ ≈# dε·(eᵢ·(eⱼ·eₖ)), and
 --    `dε-𝕆 ≡ true` recovers the 𝕆 nonassociativity from the cochain (ties #5: dε
---    is ε's graded obstruction). The CD doubling generator is
+--    is ε's graded obstruction). PENTAGON: dε is a CLOSED 3-cochain — exhibited as
+--    the coboundary δ²ε (`dε-is-coboundary`), so closed by d²=0; the pentagon
+--    `δ³(dε) ≡ false` is verified at the octonion witnesses (`pentagon-𝕆₁₂₃`) where
+--    dε itself is nonzero. (Fully-generic d²=0 ∀φ — the 20-term xor cancellation —
+--    is the remaining cohomological refinement.) The CD doubling generator is
 --    Algebra.CayleyDickson (same step as the nedge Evidence carrier-doubling).
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
 --    (Morton/CD). · ✅ PROVED in `CayleyDickson.Grade`: they DON'T coincide, they
@@ -144,5 +148,7 @@ cell-hilbert2d = Hilbert2D.hilbert-2-continuous   -- C8: the 2D Hilbert, continu
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
 cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
+cell-coboundary = Cocycle.dε-is-coboundary   -- dε = δ²ε (a coboundary, hence closed)
+cell-pentagon  = Cocycle.pentagon-𝕆₁         -- δ³(dε) ≡ false (pentagon at the 𝕆 witness)
 cell-graded    = CrossMulGraded.coherent-graded   -- C5b: varying nilpotency degree
 cell-graded-ob = CrossMulGraded.cross-εε-not-clean -- the (ε,ε) term is a real obstruction

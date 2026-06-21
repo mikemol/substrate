@@ -287,3 +287,47 @@ associative-at n i j k p =
 -- ℍ-subalgebra) is precisely dε ≡ true — the cochain detects the known failure.
 dε-𝕆 : dε 3 (false ∷ false ∷ true ∷ []) (false ∷ true ∷ false ∷ []) (true ∷ false ∷ false ∷ []) ≡ true
 dε-𝕆 = refl
+
+------------------------------------------------------------------------
+-- ⊙.pentagon — `dε` is a CLOSED 3-cochain (the Mac Lane pentagon coherence).
+-- The group-cohomology coboundary on the F₂ⁿ index group (XOR): δ² takes a
+-- 2-cochain to a 3-cochain, δ³ a 3-cochain to a 4-cochain. `dε` is EXACTLY δ²ε
+-- (the coboundary of the sign-cochain ε), so it is closed because coboundaries are
+-- closed (d² = 0). We exhibit the coboundary structure (dε-is-coboundary) and
+-- verify the pentagon δ³(dε) ≡ false at the octonion witnesses — where the
+-- associator is nonzero (dε-𝕆) yet its higher coherence still closes.
+------------------------------------------------------------------------
+
+-- the coboundary δ² of a 2-cochain (the 4 faces of a 3-simplex over the XOR group).
+δ² : {n : ℕ} (φ : Vec Bool n → Vec Bool n → Bool) →
+     Vec Bool n → Vec Bool n → Vec Bool n → Bool
+δ² φ i j k = (φ i j xor φ (zipWith _xor_ i j) k) xor (φ j k xor φ i (zipWith _xor_ j k))
+
+-- dε IS the coboundary of ε — hence a coboundary, hence (by d²=0) closed.
+dε-is-coboundary : (n : ℕ) (i j k : Vec Bool n) → dε n i j k ≡ δ² (ε n) i j k
+dε-is-coboundary n i j k = refl
+
+-- the coboundary δ³ of a 3-cochain (the 5 faces of a 4-simplex = the pentagon).
+δ³ : {n : ℕ} (ψ : Vec Bool n → Vec Bool n → Vec Bool n → Bool) →
+     Vec Bool n → Vec Bool n → Vec Bool n → Vec Bool n → Bool
+δ³ ψ a b c d =
+  ((ψ b c d xor ψ (zipWith _xor_ a b) c d) xor
+   (ψ a (zipWith _xor_ b c) d xor ψ a b (zipWith _xor_ c d))) xor ψ a b c
+
+-- THE PENTAGON, at the octonion witnesses: δ³(dε) ≡ false even though dε itself is
+-- nonzero there (dε-𝕆) — the associator obstruction is COHERENT (its coboundary
+-- vanishes), the higher cell closes. (Three n=3 quadruples spanning i,j,l + scalar.)
+pentagon-𝕆₁ :
+  δ³ (dε 3) (false ∷ false ∷ true ∷ []) (false ∷ true ∷ false ∷ [])
+            (true ∷ false ∷ false ∷ []) (true ∷ true ∷ false ∷ []) ≡ false
+pentagon-𝕆₁ = refl
+
+pentagon-𝕆₂ :
+  δ³ (dε 3) (true ∷ false ∷ false ∷ []) (false ∷ true ∷ false ∷ [])
+            (false ∷ false ∷ true ∷ []) (true ∷ true ∷ true ∷ []) ≡ false
+pentagon-𝕆₂ = refl
+
+pentagon-𝕆₃ :
+  δ³ (dε 3) (true ∷ true ∷ false ∷ []) (false ∷ true ∷ true ∷ [])
+            (true ∷ false ∷ true ∷ []) (true ∷ false ∷ false ∷ []) ≡ false
+pentagon-𝕆₃ = refl
