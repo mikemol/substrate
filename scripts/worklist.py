@@ -100,7 +100,10 @@ WORKLIST = [
     {"sym": "Ω3-L-primes.iso3", "desc": "ℚ₊-signed exponent-difference: q-factored-roundtrip "
             "(every positive G-value reconstructs EXACTLY from (factorise num, factorise den) — num=+exp, den=−exp). The ℚ₊≅⊕primesℤ retraction, Evidence-layer home",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/PrimeFactor.agda", "q-factored-roundtrip")},
-    {"sym": "Ω3-L-primes", "desc": "layer (1) FULLY DONE (.pole1/.rankN/.zcodec — rank-1+rank-n invertible poles + the ℤ-power codec interface, GValueLSpace.Primes, NO FTA); layer (2): EXISTENCE done (.factor/.factor-exists — Algebra.Nat.Prime.factorize!, every positive ℕ = ∏ primes, the div-mod wedge iterated = codec surjectivity onto ℚ₊). uniqueness KERNEL+capstone done (.uniq/.u2 — prime-divides-product + prime-∈-product, every prime factor ∈ any factorisation, via euclid; Foundation.List.Any homed). ℕ⁺ iso + ⊕-structure done (.iso/.iso2 — factor-Canonical bijection + product-++ monoid hom). ℚ₊-signed exponent-difference done (.iso3 — q-factored-roundtrip, faithful num=+exp/den=−exp representation, Evidence layer). REMAINING: L_OR=LogSumExp (the payoff — transport +ℚ through the codec inverse, uses product-++ hom)", "done": ("manual",)},
+    {"sym": "Ω3-L-primes.lse", "desc": "THE PAYOFF: L_OR-is-logsumexp (the el-atlas L-space OR-operator "
+            "IS log-sum-exp — L_OR a b = logL(expL a +ℚ expL b), its exp = the +ℚ/G_OR of the exps; inverse via .iso3) — closes the Ω3-L-primes arc",
+     "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/LogSumExp.agda", "L_OR-is-logsumexp")},
+    {"sym": "Ω3-L-primes", "desc": "✅ FULLY DISCHARGED (2026-06-20). layer (1) Ⓖ★ invertible pole + ℤ-power codec (.pole1/.rankN/.zcodec); layer (2) existence (.factor/.factor-exists) + uniqueness (.uniq/.u2 via euclid) + ℕ⁺ iso (.iso) + ⊕ hom (.iso2) + ℚ₊-signed (.iso3) + PAYOFF L_OR=LogSumExp (.lse). The el-atlas OR-operator IS log-sum-exp, machine-checked, NO FTA postulate", "done": ("manual",)},
     {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
             "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
      "done": ("manual",)},

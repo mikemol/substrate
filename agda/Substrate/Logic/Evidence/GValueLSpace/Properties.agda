@@ -159,8 +159,13 @@ balance-self-antipode g = codec-antipode (ℕ-power-codec g) zero zero refl
 --         positive ℕ = a product of primes), the
 --         div-mod wedge iterated by least prime divisor, well-founded on the
 --         quotient. THIS IS the codec's SURJECTIVITY onto ℚ₊ (primes as bases).
---     REMAINING: factorisation UNIQUENESS (lift `Algebra.Z.Euclid.euclid`) →
---     ℚ₊≅⊕primesℤ iso (the "log" / codec inverse) → L_OR=LogSumExp. The rank-1
---     ℕ base-power codec above is exact and complete at its scope, not an
+--     COMPLETE 2026-06-20: uniqueness (`Prime.Properties.prime-divides-product`
+--     /`prime-∈-product`, lifting `euclid`) → the ℕ⁺ iso (`factor-Canonical`,
+--     split-Canonical) + the ⊕ hom (`product-++`) → the ℚ₊-signed faithful
+--     representation (`GValueLSpace.PrimeFactor.q-factored-roundtrip`) → and the
+--     PAYOFF `GValueLSpace.LogSumExp.L_OR-is-logsumexp`: the el-atlas L-space
+--     OR-operator IS log-sum-exp (L_OR a b = logL (expL a +ℚ expL b), its exp
+--     the +ℚ/G_OR of the exps). The whole Ω3-L-primes arc is discharged; the
+--     rank-1 ℕ base-power codec above is exact and complete at its scope, not an
 --     approximation of any of these.
 ------------------------------------------------------------------------
