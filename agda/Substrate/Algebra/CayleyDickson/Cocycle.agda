@@ -25,9 +25,9 @@
 module Substrate.Algebra.CayleyDickson.Cocycle where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; subst)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; subst; trans; sym)
 open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
-open import Substrate.Foundation.Bool.Properties using (xor-comm)
+open import Substrate.Foundation.Bool.Properties using (xor-comm; xor-assoc; xor-same; xor-identityʳ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.CayleyDickson
@@ -213,3 +213,77 @@ prod (suc n) (true ∷ is) (true ∷ js) =
                             (≈#-trans n (mul-cong n (≈#-refl n (e n is)) (conj-zero# n)) (mul-zeroʳ n (e n is))))
                  (≈#-trans n (add-zeroʳ n (zero# n)) (≈#-sym n (sgn-zero# (not (imag? js) xor ε n js is) n))) )
     (≈#-sym (suc n) (sgn-cons (not (imag? js) xor ε n js is) n (e n (zipWith _xor_ is js)) (zero# n)))
+
+------------------------------------------------------------------------
+-- ⊙.assoc — THE ASSOCIATOR AS A MEASURED 3-COCHAIN. Both (eᵢ·eⱼ)·eₖ and
+-- eᵢ·(eⱼ·eₖ) land at e_{i⊕j⊕k} (XOR is associative); their sign difference is
+-- `dε`, the coboundary of ε. dε ≡ false ⟹ associative; the 𝕆 nonassociativity
+-- (mul-nonassoc-𝕆) is precisely dε ≡ true. This MEASURES the obstruction the
+-- product law left unclaimed: the nonassociativity is the cocycle's non-closure,
+-- graded (ties ⊙.c5 — the associator IS the graded cost of ε).
+------------------------------------------------------------------------
+
+-- XOR is associative on the index (lifting Bool xor-assoc), and self-cancels.
+⊕-assoc : (n : ℕ) (i j k : Vec Bool n) →
+          zipWith _xor_ (zipWith _xor_ i j) k ≡ zipWith _xor_ i (zipWith _xor_ j k)
+⊕-assoc zero    []       []       []       = refl
+⊕-assoc (suc n) (a ∷ is) (b ∷ js) (c ∷ ks) = cong₂ _∷_ (xor-assoc a b c) (⊕-assoc n is js ks)
+
+xor-cancelʳ : (a b : Bool) → (a xor b) xor b ≡ a
+xor-cancelʳ a b = trans (xor-assoc a b b) (trans (cong (a xor_) (xor-same b)) (xor-identityʳ a))
+
+-- left- and right-association each land on the signed XOR-triple basis unit.
+prod-l : (n : ℕ) (i j k : Vec Bool n) →
+         ≈# n (mul n (mul n (e n i) (e n j)) (e n k))
+              (sgn (ε n i j xor ε n (zipWith _xor_ i j) k) n
+                   (e n (zipWith _xor_ (zipWith _xor_ i j) k)))
+prod-l n i j k =
+  ≈#-trans n (mul-cong n (prod n i j) (≈#-refl n (e n k)))
+  (≈#-trans n (mul-sgn-l (ε n i j) n (e n (zipWith _xor_ i j)) (e n k))
+  (≈#-trans n (sgn-cong (ε n i j) n (prod n (zipWith _xor_ i j) k))
+              (≈#-sym n (sgn-xor (ε n i j) (ε n (zipWith _xor_ i j) k) n
+                                 (e n (zipWith _xor_ (zipWith _xor_ i j) k))))))
+
+prod-r : (n : ℕ) (i j k : Vec Bool n) →
+         ≈# n (mul n (e n i) (mul n (e n j) (e n k)))
+              (sgn (ε n j k xor ε n i (zipWith _xor_ j k)) n
+                   (e n (zipWith _xor_ i (zipWith _xor_ j k))))
+prod-r n i j k =
+  ≈#-trans n (mul-cong n (≈#-refl n (e n i)) (prod n j k))
+  (≈#-trans n (mul-sgn-r (ε n j k) n (e n i) (e n (zipWith _xor_ j k)))
+  (≈#-trans n (sgn-cong (ε n j k) n (prod n i (zipWith _xor_ j k)))
+              (≈#-sym n (sgn-xor (ε n j k) (ε n i (zipWith _xor_ j k)) n
+                                 (e n (zipWith _xor_ i (zipWith _xor_ j k)))))))
+
+-- the associator 3-cochain = the coboundary dε of the 2-cochain ε.
+dε : (n : ℕ) (i j k : Vec Bool n) → Bool
+dε n i j k = (ε n i j xor ε n (zipWith _xor_ i j) k) xor (ε n j k xor ε n i (zipWith _xor_ j k))
+
+-- THE MEASURED ASSOCIATOR: (eᵢ·eⱼ)·eₖ ≈# dε(i,j,k) · (eᵢ·(eⱼ·eₖ)).
+associator : (n : ℕ) (i j k : Vec Bool n) →
+             ≈# n (mul n (mul n (e n i) (e n j)) (e n k))
+                  (sgn (dε n i j k) n (mul n (e n i) (mul n (e n j) (e n k))))
+associator n i j k =
+  ≈#-trans n (prod-l n i j k)
+  (≈#-trans n (≈#-from-≡ n (cong (λ b → sgn b n (e n (zipWith _xor_ (zipWith _xor_ i j) k)))
+                                 (sym (xor-cancelʳ (ε n i j xor ε n (zipWith _xor_ i j) k)
+                                                   (ε n j k xor ε n i (zipWith _xor_ j k))))))
+  (≈#-trans n (sgn-xor (dε n i j k) (ε n j k xor ε n i (zipWith _xor_ j k)) n
+                       (e n (zipWith _xor_ (zipWith _xor_ i j) k)))
+  (sgn-cong (dε n i j k) n
+    (≈#-trans n (sgn-cong (ε n j k xor ε n i (zipWith _xor_ j k)) n
+                          (≈#-from-≡ n (cong (e n) (⊕-assoc n i j k))))
+                (≈#-sym n (prod-r n i j k))))))
+
+-- COROLLARY: where the cochain vanishes, the basis product associates.
+associative-at : (n : ℕ) (i j k : Vec Bool n) → dε n i j k ≡ false →
+                 ≈# n (mul n (mul n (e n i) (e n j)) (e n k))
+                      (mul n (e n i) (mul n (e n j) (e n k)))
+associative-at n i j k p =
+  ≈#-trans n (associator n i j k)
+             (≈#-from-≡ n (cong (λ b → sgn b n (mul n (e n i) (mul n (e n j) (e n k)))) p))
+
+-- GROUNDING: the 𝕆 nonassociator (CommuteEdge.mul-nonassoc-𝕆, i,j,l outside one
+-- ℍ-subalgebra) is precisely dε ≡ true — the cochain detects the known failure.
+dε-𝕆 : dε 3 (false ∷ false ∷ true ∷ []) (false ∷ true ∷ false ∷ []) (true ∷ false ∷ false ∷ []) ≡ true
+dε-𝕆 = refl

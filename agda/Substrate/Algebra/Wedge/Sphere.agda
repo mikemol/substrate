@@ -43,7 +43,10 @@
 --    product lands on the XOR'd index (the Morton/Z-order grading) carrying the
 --    sign-cocycle ε. Morton = the TRIVIAL cochain (ε ≡ false, pure XOR); CD = this
 --    NONTRIVIAL ε, noncommutativity = `mul-noncomm-ℍ`, strict-2-cocycle failure =
---    the 𝕆 associator (`mul-nonassoc-𝕆`). The CD doubling generator is
+--    the 𝕆 associator (`mul-nonassoc-𝕆`) — NOW MEASURED: `Cocycle.dε` is ε's
+--    coboundary 3-cochain, `associator` proves (eᵢ·eⱼ)·eₖ ≈# dε·(eᵢ·(eⱼ·eₖ)), and
+--    `dε-𝕆 ≡ true` recovers the 𝕆 nonassociativity from the cochain (ties #5: dε
+--    is ε's graded obstruction). The CD doubling generator is
 --    Algebra.CayleyDickson (same step as the nedge Evidence carrier-doubling).
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
 --    (Morton/CD). · ✅ PROVED in `CayleyDickson.Grade`: they DON'T coincide, they
@@ -123,3 +126,5 @@ cell-incl-excl = Grade.popcount-or-and       -- C2: degree defect = the AND over
 cell-morton    = Curve.morton                -- C8: the Z-order linearization
 cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
+cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
+cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
