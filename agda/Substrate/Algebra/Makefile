@@ -11,7 +11,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
 FILES := AbelianGroup.agda Bijection.agda CayleyDickson.agda CommutativeRing.agda F2-CommutativeMonoid.agda F2.agda Field.agda GL3F2.agda Group.agda GroupAction.agda Involution.agda IsomorphicCocycle.agda Magma.agda Medial.agda Module.agda Monoid.agda N-to-F2-Parity.agda PointedSet.agda PontryaginDual.agda PrimeFactor-168-FieldFanOut.agda Q.agda Quotient.agda Ring.agda SemidirectProduct.agda Semigroup.agda Semiring.agda Setoid.agda SetoidGroup.agda TopologicalGroup.agda Torsor.agda Wedge.agda Z.agda Z6-FieldBond.agda Z6-FieldTower.agda
-SUBDIRS := Abelian F1 F2 Fin GL3F2 Group Lie List Module Monoid Nat PointedSet Polynomial PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
+SUBDIRS := Abelian CayleyDickson F1 F2 Fin GL3F2 Group Lie List Module Monoid Nat PointedSet Polynomial PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -41,6 +41,13 @@ files:
 subdirs: $(SUBDIRS)
 
 Abelian:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+CayleyDickson:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
@@ -217,6 +224,7 @@ Z:
 
 clean:
 	@$(MAKE) -C Abelian clean 2>/dev/null || true
+	@$(MAKE) -C CayleyDickson clean 2>/dev/null || true
 	@$(MAKE) -C F1 clean 2>/dev/null || true
 	@$(MAKE) -C F2 clean 2>/dev/null || true
 	@$(MAKE) -C Fin clean 2>/dev/null || true
