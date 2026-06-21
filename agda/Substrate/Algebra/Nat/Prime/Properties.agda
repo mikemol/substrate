@@ -20,12 +20,12 @@ open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.List using (List; []; _∷_; foldr)
+open import Substrate.Foundation.List using (List; []; _∷_; _++_; foldr)
 open import Substrate.Foundation.List.Any using (Any; here; there; _∈_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-identityʳ)
 open import Substrate.Foundation.Nat.Properties.Mul
-  using (*-comm; *-identityʳ; *-identityˡ; *-suc)
+  using (*-comm; *-assoc; *-identityʳ; *-identityˡ; *-suc)
 open import Substrate.Foundation.Nat.Properties.Order
   using (m≤m+n; n≤m+n; ≤-refl; ≤-suc-r; <-suc-r; <-suc-self; <→≤; <-irrefl;
          ≤-trans; ≤-<-trans; ≤-tight; *-monoʳ-≤)
@@ -266,3 +266,23 @@ factor-retract m = cong pred (proj₂ (proj₂ (factorize! (suc m) (s≤s z≤n)
 -- retraction alone (uniqueness/.u2 then characterises the image as THE multiset).
 factor-Canonical : Canonical⟦de760d07⟧ (ker-Quotient factor-value)
 factor-Canonical = split-Canonical factor-value factor-section factor-retract
+
+------------------------------------------------------------------------
+-- 9. Ⓝ.iso2: the ⊕ STRUCTURE — the iso is a MONOID HOMOMORPHISM, not just a
+--    bijection. `product` carries (List ℕ, ++, []) → (ℕ, ·, 1): concatenating
+--    factor lists MULTIPLIES the values, i.e. ADDING exponents (++ = multiset
+--    union) ↦ multiplying — the additive ⊕ of ℚ₊ ≅ ⊕primesℤ, at the ℕ⁺ level.
+--    (This is the hom that turns · into +, the engine of L_OR = LogSumExp.)
+------------------------------------------------------------------------
+
+-- product is a monoid hom: product (xs ++ ys) ≡ product xs · product ys.
+product-++ : (xs ys : List ℕ) → product (xs ++ ys) ≡ product xs * product ys
+product-++ []       ys = sym (*-identityˡ (product ys))
+product-++ (x ∷ xs) ys =
+  trans (cong (x *_) (product-++ xs ys))
+        (sym (*-assoc x (product xs) (product ys)))
+
+-- the unit: product [] ≡ 1 (the empty factorisation is the multiplicative
+-- identity = the zero exponent vector). Definitional, named for the hom.
+product-[] : product [] ≡ 1
+product-[] = refl
