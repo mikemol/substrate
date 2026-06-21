@@ -9,12 +9,15 @@
 -- `e n idx` is the unit with 1ℚ at that leaf. The index group op is XOR (F₂ⁿ
 -- addition), and the basis product carries a SIGN-COCYCLE: eᵢ·eⱼ = ε(i,j)·e_{i⊕j}.
 --
--- Built here: the index→basis map `e`, the index XOR, and the cocycle at the ℂ
--- corner (ε(1,1) = −1, i.e. i² = −1 recast in the F₂ⁿ frame). The cocycle's
--- NONTRIVIALITY is already `CommuteEdge.mul-noncomm-ℍ` (ε(i,j) ≠ ε(j,i) at
--- level 2). OPEN (the deep cell): the GENERIC product law eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j}
--- for all n, the explicit ε, its 2-cocycle identity, and Morton (trivial ε) vs
--- CD (nontrivial ε).
+-- Built here: the index→basis map `e`, the index XOR, the cocycle at the ℂ
+-- corner (ε(1,1) = −1, i.e. i² = −1 recast in the F₂ⁿ frame), and — the deep
+-- result — the GENERIC PRODUCT LAW `prod`: eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} for ALL n,
+-- with the explicit recursive 2-cochain `ε`. The basis product lands on the
+-- XOR'd index (the F₂ⁿ grading = Morton/Z-order) carrying the sign-cocycle ε.
+-- Morton order = the TRIVIAL cochain (ε ≡ false, pure XOR, no signs); CD = this
+-- NONTRIVIAL ε, whose noncommutativity ε(i,j) ≠ ε(j,i) is `CommuteEdge.mul-noncomm-ℍ`
+-- (and whose strict 2-cocycle identity fails exactly at the 𝕆 associator — the
+-- nonassociativity, NOT claimed here).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -22,14 +25,17 @@
 module Substrate.Algebra.CayleyDickson.Cocycle where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; subst)
+open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
+open import Substrate.Foundation.Bool.Properties using (xor-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.CayleyDickson
   using (Carrier; mul; neg; conj; ≈#; zero#; one#; i; i²≈−1)
 open import Substrate.Algebra.CayleyDickson.Setoid
-  using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#; mul-oneˡ; mul-oneʳ)
+  using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#; mul-oneˡ; mul-oneʳ;
+         add-cong; sub-cong; mul-cong; neg-cong; add-zeroˡ; add-zeroʳ; sub-zeroʳ;
+         mul-zeroˡ; mul-zeroʳ; neg-invol; mul-negˡ; mul-negʳ)
 
 -- F₂ⁿ index → CD basis unit: 1ℚ at the leaf addressed by the n bits.
 e : (n : ℕ) → Vec Bool n → Carrier n
@@ -98,3 +104,112 @@ prod-unitʳ n i rewrite e-falses n = mul-oneʳ n (e n i)
 -- ε(0, i) = +1 : left-multiplying by the scalar e₀ fixes eᵢ.
 prod-unitˡ : (n : ℕ) (i : Vec Bool n) → ≈# n (mul n (e n (falses n)) (e n i)) (e n i)
 prod-unitˡ n i rewrite e-falses n = mul-oneˡ n (e n i)
+
+------------------------------------------------------------------------
+-- THE GENERIC PRODUCT LAW: eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} for all n.  The basis
+-- product lands on the XOR'd index (the F₂ⁿ grading = Morton/Z-order) carrying a
+-- SIGN-COCYCLE ε. This is the structure conjecture C3 (Morton ≅ Cayley-Dickson):
+-- ε is the nontrivial 2-cocycle whose graded loss is the commute-edge ladder.
+--
+-- `sgn` helpers: how the ± sign threads through pairs / zero / mul / neg / xor.
+------------------------------------------------------------------------
+
+≈#-from-≡ : (n : ℕ) {x y : Carrier n} → x ≡ y → ≈# n x y
+≈#-from-≡ n {x} e = subst (≈# n x) e (≈#-refl n x)
+
+sgn-cons : (b : Bool) (n : ℕ) (p q : Carrier n) →
+           ≈# (suc n) (sgn b (suc n) (p , q)) (sgn b n p , sgn b n q)
+sgn-cons true  n p q = ≈#-refl n (neg n p) , ≈#-refl n (neg n q)
+sgn-cons false n p q = ≈#-refl n p , ≈#-refl n q
+
+sgn-zero# : (b : Bool) (n : ℕ) → ≈# n (sgn b n (zero# n)) (zero# n)
+sgn-zero# true  n = neg-zero# n
+sgn-zero# false n = ≈#-refl n (zero# n)
+
+sgn-cong : (b : Bool) (n : ℕ) {x y : Carrier n} → ≈# n x y → ≈# n (sgn b n x) (sgn b n y)
+sgn-cong true  n p = neg-cong n p
+sgn-cong false n p = p
+
+mul-sgn-r : (b : Bool) (n : ℕ) (x y : Carrier n) →
+            ≈# n (mul n x (sgn b n y)) (sgn b n (mul n x y))
+mul-sgn-r true  n x y = mul-negʳ n x y
+mul-sgn-r false n x y = ≈#-refl n (mul n x y)
+
+mul-sgn-l : (b : Bool) (n : ℕ) (x y : Carrier n) →
+            ≈# n (mul n (sgn b n x) y) (sgn b n (mul n x y))
+mul-sgn-l true  n x y = mul-negˡ n x y
+mul-sgn-l false n x y = ≈#-refl n (mul n x y)
+
+neg-sgn : (b : Bool) (n : ℕ) (x : Carrier n) → ≈# n (neg n (sgn b n x)) (sgn (not b) n x)
+neg-sgn true  n x = neg-invol n x
+neg-sgn false n x = ≈#-refl n (neg n x)
+
+sgn-xor : (a b : Bool) (n : ℕ) (x : Carrier n) →
+          ≈# n (sgn (a xor b) n x) (sgn a n (sgn b n x))
+sgn-xor true  true  n x = ≈#-sym n (neg-invol n x)
+sgn-xor true  false n x = ≈#-refl n (neg n x)
+sgn-xor false b     n x = ≈#-refl n (sgn b n x)
+
+-- The index group operation is F₂ⁿ XOR, and it is commutative (xor is).
+⊕-comm : (n : ℕ) (i j : Vec Bool n) → zipWith _xor_ i j ≡ zipWith _xor_ j i
+⊕-comm zero    []       []       = refl
+⊕-comm (suc n) (b ∷ is) (c ∷ js) = cong₂ _∷_ (xor-comm b c) (⊕-comm n is js)
+
+-- THE COCYCLE SIGN ε : Vec Bool n → Vec Bool n → Bool (true = −1). Read off the
+-- doubling recursion: FF recurses; FT swaps order; TF picks up imag? js (conj on
+-- the right factor); TT swaps, conjugates AND negates.
+ε : (n : ℕ) → Vec Bool n → Vec Bool n → Bool
+ε zero    []           []           = false
+ε (suc n) (false ∷ is) (false ∷ js) = ε n is js
+ε (suc n) (false ∷ is) (true  ∷ js) = ε n js is
+ε (suc n) (true  ∷ is) (false ∷ js) = imag? js xor ε n is js
+ε (suc n) (true  ∷ is) (true  ∷ js) = not (imag? js) xor ε n js is
+
+-- eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j}.  Induction on n; the 4 doubling cases each reduce —
+-- via mul-zero (off-diagonal halves vanish), conj-on-basis (the conjugated
+-- factor), mul-neg (push its sign out) and the IH — to the signed XOR basis unit.
+prod : (n : ℕ) (i j : Vec Bool n) →
+       ≈# n (mul n (e n i) (e n j)) (sgn (ε n i j) n (e n (zipWith _xor_ i j)))
+prod zero    []           []           = mul-oneˡ 0 (one# 0)
+prod (suc n) (false ∷ is) (false ∷ js) =
+  ≈#-trans (suc n)
+    ( ≈#-trans n (sub-cong n (≈#-refl n (mul n (e n is) (e n js))) (mul-zeroʳ n (conj n (zero# n))))
+                 (≈#-trans n (sub-zeroʳ n (mul n (e n is) (e n js))) (prod n is js))
+    , ≈#-trans n (add-cong n (mul-zeroˡ n (e n is)) (mul-zeroˡ n (conj n (e n js))))
+                 (≈#-trans n (add-zeroʳ n (zero# n)) (≈#-sym n (sgn-zero# (ε n is js) n))) )
+    (≈#-sym (suc n) (sgn-cons (ε n is js) n (e n (zipWith _xor_ is js)) (zero# n)))
+prod (suc n) (false ∷ is) (true ∷ js) =
+  ≈#-trans (suc n)
+    ( ≈#-trans n (sub-cong n (mul-zeroʳ n (e n is)) (mul-zeroʳ n (conj n (e n js))))
+                 (≈#-trans n (sub-zeroʳ n (zero# n)) (≈#-sym n (sgn-zero# (ε n js is) n)))
+    , ≈#-trans n (add-cong n (≈#-refl n (mul n (e n js) (e n is))) (mul-zeroˡ n (conj n (zero# n))))
+                 (≈#-trans n (add-zeroʳ n (mul n (e n js) (e n is)))
+                            (≈#-trans n (prod n js is)
+                                       (sgn-cong (ε n js is) n (≈#-from-≡ n (cong (e n) (⊕-comm n js is)))))) )
+    (≈#-sym (suc n) (sgn-cons (ε n js is) n (zero# n) (e n (zipWith _xor_ is js))))
+prod (suc n) (true ∷ is) (false ∷ js) =
+  ≈#-trans (suc n)
+    ( ≈#-trans n (sub-cong n (mul-zeroˡ n (e n js))
+                            (≈#-trans n (mul-cong n (conj-zero# n) (≈#-refl n (e n is))) (mul-zeroˡ n (e n is))))
+                 (≈#-trans n (sub-zeroʳ n (zero# n)) (≈#-sym n (sgn-zero# (imag? js xor ε n is js) n)))
+    , ≈#-trans n (add-cong n (mul-zeroˡ n (zero# n))
+                            (≈#-trans n (mul-cong n (≈#-refl n (e n is)) (conj-on-basis n js))
+                                       (≈#-trans n (mul-sgn-r (imag? js) n (e n is) (e n js))
+                                                  (≈#-trans n (sgn-cong (imag? js) n (prod n is js))
+                                                             (≈#-sym n (sgn-xor (imag? js) (ε n is js) n (e n (zipWith _xor_ is js))))))))
+                 (add-zeroˡ n (sgn (imag? js xor ε n is js) n (e n (zipWith _xor_ is js)))) )
+    (≈#-sym (suc n) (sgn-cons (imag? js xor ε n is js) n (zero# n) (e n (zipWith _xor_ is js))))
+prod (suc n) (true ∷ is) (true ∷ js) =
+  ≈#-trans (suc n)
+    ( ≈#-trans n (sub-cong n (mul-zeroˡ n (zero# n))
+                            (≈#-trans n (mul-cong n (conj-on-basis n js) (≈#-refl n (e n is)))
+                                       (≈#-trans n (mul-sgn-l (imag? js) n (e n js) (e n is))
+                                                  (sgn-cong (imag? js) n (prod n js is)))))
+                 (≈#-trans n (add-zeroˡ n (neg n (sgn (imag? js) n (sgn (ε n js is) n (e n (zipWith _xor_ js is))))))
+                            (≈#-trans n (neg-sgn (imag? js) n (sgn (ε n js is) n (e n (zipWith _xor_ js is))))
+                                       (≈#-trans n (≈#-sym n (sgn-xor (not (imag? js)) (ε n js is) n (e n (zipWith _xor_ js is))))
+                                                  (sgn-cong (not (imag? js) xor ε n js is) n (≈#-from-≡ n (cong (e n) (⊕-comm n js is)))))))
+    , ≈#-trans n (add-cong n (mul-zeroʳ n (e n js))
+                            (≈#-trans n (mul-cong n (≈#-refl n (e n is)) (conj-zero# n)) (mul-zeroʳ n (e n is))))
+                 (≈#-trans n (add-zeroʳ n (zero# n)) (≈#-sym n (sgn-zero# (not (imag? js) xor ε n js is) n))) )
+    (≈#-sym (suc n) (sgn-cons (not (imag? js) xor ε n js is) n (e n (zipWith _xor_ is js)) (zero# n)))

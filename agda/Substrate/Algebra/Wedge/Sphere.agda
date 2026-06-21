@@ -34,14 +34,14 @@
 --    every rung machine-checked in `CayleyDickson.CommuteEdge` + `.CayleyDickson`:
 --    ℂ commutes (`mul-comm-ℂ`) → ℍ does NOT (`mul-noncomm-ℍ`, i·j=k≠−k=j·i) → 𝕆
 --    NOT assoc (`mul-nonassoc-𝕆`, (ij)l≠i(jl)) → 𝕊 zero divisors (`zd-value-0`).
---    The COCYCLE/Morton bridge FOUNDATION is built (`CayleyDickson.Cocycle`): the
---    F₂ⁿ index→basis map `e` + the index XOR (`zipWith _xor_`) + the sign-cocycle at ℂ
---    (`ℂ-sign-cocycle`, ε(1,1)=−1); nontriviality = `mul-noncomm-ℍ`. OPEN (deep):
---    the GENERIC product law eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} ∀n, the explicit ε + its
---    2-cocycle identity, and Morton (trivial ε) vs CD (nontrivial). ·
---    home: the CD doubling generator IS NOW BUILT — Algebra.CayleyDickson (the
---    ℕ-indexed tower over ℚ, i²=−1, the 𝕊 zero divisor; same step as the nedge
---    Evidence carrier-doubling). The COCYCLE/Morton bridge remains the open cell.
+--    ✅ PROVED in `CayleyDickson.Cocycle`: the GENERIC PRODUCT LAW `prod` —
+--    eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} for ALL n (the F₂ⁿ index→basis map `e`, the index
+--    XOR `zipWith _xor_`, and the explicit recursive 2-cochain `ε`). The basis
+--    product lands on the XOR'd index (the Morton/Z-order grading) carrying the
+--    sign-cocycle ε. Morton = the TRIVIAL cochain (ε ≡ false, pure XOR); CD = this
+--    NONTRIVIAL ε, noncommutativity = `mul-noncomm-ℍ`, strict-2-cocycle failure =
+--    the 𝕆 associator (`mul-nonassoc-𝕆`). The CD doubling generator is
+--    Algebra.CayleyDickson (same step as the nedge Evidence carrier-doubling).
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
 --    (Morton/CD). · conjecture · home: new.
 -- 5. nilpotent-not-annihilating ⟹ NO DEAD-END — residues nilpotent (graded
@@ -82,6 +82,7 @@ import Substrate.Algebra.Wedge.Shape.Register.FromTrace as FromTrace
 import Substrate.Algebra.Wedge.Monoidal as Mon
 import Substrate.Algebra.Wedge.Registry as Registry
 import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
+import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this
@@ -97,3 +98,4 @@ cell-intern    = FromTrace.intern-trace      -- suffix-shared SPPF via the trace
 cell-hexagon   = Mon.hexagon                 -- symmetric-monoidal coherence
 cell-roots     = Registry.objects            -- the founded roots
 cell-gf2       = Bilin.bilinear-from-images  -- the GF(2) carrier (free bilinear)
+cell-cocycle   = Cocycle.prod                -- C3: eᵢ·eⱼ ≈# ε(i,j)·e_{i⊕j} ∀n
