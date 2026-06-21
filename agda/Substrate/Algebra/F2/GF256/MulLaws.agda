@@ -1,50 +1,46 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.GF256.MulLaws  (was GF256 §AI-6e, part 2)
 --
--- The remaining `gmul` ring laws: unit (left/right), zero-absorb (left/right),
--- and associativity. Associativity needs `reduce-*-homˡ` (reduce in the LEFT
--- multiplicative slot, got by commuting into §Idempotent's right-slot hom);
--- everything is again `_*P_`'s law pulled through `reduce`, substs vanishing at 8.
+-- The remaining `gmul` ring laws — unit (left/right), zero-absorb (left/right),
+-- associativity — TRANSPORTED from the graded field's `_*Q_` laws across the seam
+-- `*Q ≡ gmul` (GF256.HornerSeam).  Since `gmul` IS the field multiply, its laws
+-- ARE the field's, conjugated by `*Q-is-gmul` (with `one₈ ≡ oneC`, `𝟎ⱽ ≡ 𝟎C` by
+-- refl).  This replaces the earlier hand-proofs, each "`_*P_`'s law pulled through
+-- `reduce`" — the seam does that pulling once, for every law at once; the bespoke
+-- `reduce-*-homˡ` associativity helper is no longer needed.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.GF256.MulLaws where
 
-open import Substrate.Foundation.Nat.Properties renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ)
-open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
-open import Substrate.Algebra.F2.Polynomial.RingLaws using (*P-comm; *P-assoc)
-open import Substrate.Algebra.F2.GF256.Reduce using (reduce-mod-m)
-open import Substrate.Algebra.F2.GF256.Expand using (hsum; reduce-subst; reduce-𝟎ⱽ; reduce-*P-expand)
-open import Substrate.Algebra.F2.GF256.Idempotent using (one₈; reduce-idempotent; reduce-*-hom)
-open import Substrate.Algebra.F2.GF256.Mul using (gmul; gmul-comm; hsum-one-id; hsum-zero; hsum-zeroʳ)
+open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
+open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo)
+open import Substrate.Algebra.F2.GF256.Idempotent using (one₈)
+open import Substrate.Algebra.F2.GF256.Mul using (gmul)
+open import Substrate.Algebra.F2.GF256.HornerSeam using (*Q-is-gmul)
+import Substrate.Algebra.Polynomial.Graded.Quotient as Quot
+open Quot.Over F₂-CommRing 7 m-lo
+  using (_*Q_; *Q-identityˡ; *Q-identityʳ; *Q-zeroˡ; *Q-zeroʳ; *Q-assoc)
 
 gmul-identityˡ : (b : Vector 8) → gmul one₈ b ≡ b
-gmul-identityˡ b =
-  trans (reduce-*P-expand one₈ b) (trans (hsum-one-id (reduce-mod-m b)) (reduce-idempotent b))
+gmul-identityˡ b = trans (sym (*Q-is-gmul one₈ b)) (*Q-identityˡ b)
 
 gmul-identityʳ : (b : Vector 8) → gmul b one₈ ≡ b
-gmul-identityʳ b = trans (gmul-comm b one₈) (gmul-identityˡ b)
+gmul-identityʳ b = trans (sym (*Q-is-gmul b one₈)) (*Q-identityʳ b)
 
 gmul-zeroˡ : (b : Vector 8) → gmul 𝟎ⱽ b ≡ 𝟎ⱽ
-gmul-zeroˡ b = trans (reduce-*P-expand (𝟎ⱽ {8}) b) (hsum-zero {8} (reduce-mod-m b))
+gmul-zeroˡ b = trans (sym (*Q-is-gmul 𝟎ⱽ b)) (*Q-zeroˡ b)
 
 gmul-zeroʳ : (b : Vector 8) → gmul b 𝟎ⱽ ≡ 𝟎ⱽ
-gmul-zeroʳ b = trans (reduce-*P-expand b (𝟎ⱽ {8}))
-                     (trans (cong (hsum b) (reduce-𝟎ⱽ {8})) (hsum-zeroʳ b))
-
-reduce-*-homˡ : ∀ {n m} (p : Polynomial n) (q : Polynomial m)
-              → reduce-mod-m (reduce-mod-m p *P q) ≡ reduce-mod-m (p *P q)
-reduce-*-homˡ {n} {m} p q =
-  trans (cong reduce-mod-m (*P-comm (reduce-mod-m p) q))
-  (trans (reduce-subst (+ℕ-comm m 8) (q *P reduce-mod-m p))
-  (trans (sym (reduce-*-hom q p))
-  (trans (cong reduce-mod-m (*P-comm q p)) (reduce-subst (+ℕ-comm n m) (p *P q)))))
+gmul-zeroʳ b = trans (sym (*Q-is-gmul b 𝟎ⱽ)) (*Q-zeroʳ b)
 
 gmul-assoc : (a b c : Vector 8) → gmul (gmul a b) c ≡ gmul a (gmul b c)
 gmul-assoc a b c =
-  trans (reduce-*-homˡ (a *P b) c)
-  (trans (sym (reduce-subst (+ℕ-assoc 8 8 8) ((a *P b) *P c)))
-  (trans (cong reduce-mod-m (*P-assoc a b c)) (reduce-*-hom a (b *P c))))
+  trans (cong (λ z → gmul z c) (sym (*Q-is-gmul a b)))
+  (trans (sym (*Q-is-gmul (a *Q b) c))
+  (trans (*Q-assoc a b c)
+  (trans (*Q-is-gmul a (b *Q c))
+         (cong (gmul a) (*Q-is-gmul b c)))))
