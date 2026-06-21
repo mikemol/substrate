@@ -104,9 +104,8 @@ WORKLIST = [
             "IS log-sum-exp — L_OR a b = logL(expL a +ℚ expL b), its exp = the +ℚ/G_OR of the exps; inverse via .iso3) — closes the Ω3-L-primes arc",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/LogSumExp.agda", "L_OR-is-logsumexp")},
     {"sym": "Ω3-L-primes", "desc": "✅ FULLY DISCHARGED (2026-06-20). layer (1) Ⓖ★ invertible pole + ℤ-power codec (.pole1/.rankN/.zcodec); layer (2) existence (.factor/.factor-exists) + uniqueness (.uniq/.u2 via euclid) + ℕ⁺ iso (.iso) + ⊕ hom (.iso2) + ℚ₊-signed (.iso3) + PAYOFF L_OR=LogSumExp (.lse). The el-atlas OR-operator IS log-sum-exp, machine-checked, NO FTA postulate", "done": ("manual",)},
-    {"sym": "Algebra↔Category", "desc": "ground the FLOATING modules on the Category spine (the recurring "
-            "categorical-grounding advisory: GValueAsQ / M40Closure / M40Group) — or confirm proxy-noise",
-     "done": ("manual",)},
+    {"sym": "Algebra↔Category.deloop", "desc": "the Algebra→Category bridge ESTABLISHED + applied: M40Group.A4Z2-Category = deloop A4Z2-Monoid (𝐁(A₄×ℤ₂)) and M40Closure.Chir-Category = deloop Chir-Monoid (𝐁(ℤ₂)) — the ≡-based domain structures onto the spine via the existing one-object delooping", "done": ("defines", "Substrate/WitnessTower/M40Group.agda", "A4Z2-Category")},
+    {"sym": "Algebra↔Category", "desc": "2/3 GROUNDED via deloop (the Algebra→Category bridge): M40Group A4Z2-Category=𝐁(A₄×ℤ₂) + M40Closure Chir-Category=𝐁(ℤ₂). REMAINING: GValueAsQ — a ≈ℚ SETOID (the ≡-based spine can't take it directly); needs the ℚ-quotient (Q.Reduce reduce-Canonical) deloop of the +ℚ monoid. NOT proxy-noise — a real setoid→spine gap with a named fix", "done": ("cmd0", "test $(bash scripts/check_categorical_grounding.sh --count) -eq 0")},
 ]
 
 

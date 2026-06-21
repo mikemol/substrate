@@ -191,6 +191,20 @@ A4Z2-Group : Group A4Z2
 A4Z2-Group = record { monoid = A4Z2-Monoid ; inv = invA ; inv-left = inv-leftA ; inv-right = inv-rightA }
 
 ------------------------------------------------------------------------
+-- (1½) ONTO THE CATEGORICAL SPINE — the Algebra→Category bridge (deloop).
+-- A4Z2-Monoid is a Monoid, so its ONE-OBJECT delooping `𝐁(A₄×ℤ₂)` is a
+-- CategoryOf: the closure reaches the categorical spine (not merely the
+-- PARALLEL Algebra hierarchy), discharging the categorical-grounding advisory's
+-- GROUNDS-IN-ALGEBRA flag the "right" way — a typechecked bridge, not a note.
+------------------------------------------------------------------------
+
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping using (deloop)
+
+A4Z2-Category : CategoryOf
+A4Z2-Category = deloop A4Z2-Monoid
+
+------------------------------------------------------------------------
 -- (2) "SPECIFICALLY A₄": the Z₃ action (σ z1 = rotate) is the A₄ action.
 ------------------------------------------------------------------------
 

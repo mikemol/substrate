@@ -53,6 +53,36 @@ odd  *c odd  = even
 *c-comm odd  even = refl
 *c-comm odd  odd  = refl
 
+-- associativity + units make (Chir, *c, even) a Monoid (even = +1 = identity).
+*c-assoc : (x y z : Chir) → (x *c y) *c z ≡ x *c (y *c z)
+*c-assoc even y    z    = refl
+*c-assoc odd  even z    = refl
+*c-assoc odd  odd  even = refl
+*c-assoc odd  odd  odd  = refl
+
+*c-identityʳ : (a : Chir) → a *c even ≡ a
+*c-identityʳ even = refl
+*c-identityʳ odd  = refl
+
+------------------------------------------------------------------------
+-- ONTO THE CATEGORICAL SPINE — the chirality factor ℤ₂ deloops to 𝐁(ℤ₂), a
+-- CategoryOf (a typechecked Algebra→Category bridge, not a note). The full
+-- A₄×ℤ₂ closure reaches the spine via WitnessTower.M40Group; this is the ℤ₂
+-- sign-factor on its own.
+------------------------------------------------------------------------
+
+open import Substrate.Algebra.Monoid using (Monoid)
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping using (deloop)
+
+Chir-Monoid : Monoid Chir
+Chir-Monoid = record
+  { semigroup = record { magma = record { _·_ = _*c_ } ; ·-assoc = *c-assoc }
+  ; ε = even ; ε-left = λ a → refl ; ε-right = *c-identityʳ }
+
+Chir-Category : CategoryOf
+Chir-Category = deloop Chir-Monoid
+
 ------------------------------------------------------------------------
 -- ℤ₃ (the cycle position) and σ^j = rotate iterated.  z0 is the identity
 -- (definitional left-identity); right-identity proved by 3 cases.
