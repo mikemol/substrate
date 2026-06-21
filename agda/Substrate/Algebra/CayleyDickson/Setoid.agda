@@ -14,8 +14,14 @@
 module Substrate.Algebra.CayleyDickson.Setoid where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (refl)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym; subst)
 open import Substrate.Foundation.Product using (_,_; _×_)
+open import Substrate.Algebra.Q using (ℚ; num; mkℚ)
+open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; -ℤ-involutive)
+open import Substrate.Algebra.Z.Add using (_+ℤ_)
+open import Substrate.Algebra.Z.Mul using (_*ℤ_)
+open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
+open import Substrate.Algebra.Z.Properties.MulFull using (neg-*-right; neg-+ℤ)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong; *ℚ-cong)
 open import Substrate.Algebra.Q.Properties.Field
@@ -143,3 +149,55 @@ mul-oneʳ (suc n) (a , b) =
   , ≈#-trans n (add-cong n (mul-zeroˡ n a)
                            (≈#-trans n (mul-cong n (≈#-refl n b) (conj-one# n)) (mul-oneʳ n b)))
                (add-zeroˡ n b)
+
+------------------------------------------------------------------------
+-- 5. NEGATION DISTRIBUTION — the deeper layer the cocycle's imaginary×imaginary
+-- cases need (to push conj-on-basis's ± sign through the doubling product).
+-- neg-invol / conj-neg / neg-add are clean; mul-negˡ/ʳ (mutual) compose them
+-- through the (ac−d̄b, da+bc̄) formula. Bases bottom out in ℤ (−(−z)=z,
+-- −(a+b)=−a+−b, (−x)·y=−(x·y), x·(−y)=−(x·y)).
+------------------------------------------------------------------------
+
+-- ℚ values that are propositionally equal are ≈ℚ (lets the ℤ bases below stay ≡).
+≈ℚ-from-≡ : {a b : ℚ} → a ≡ b → a ≈ℚ b
+≈ℚ-from-≡ {a} e = subst (a ≈ℚ_) e (≈ℚ-refl a)
+
+neg-invol : (n : ℕ) (x : Carrier n) → ≈# n (neg n (neg n x)) x
+neg-invol zero    (mkℚ nx dx) = ≈ℚ-from-≡ (cong₂ mkℚ (-ℤ-involutive nx) refl)
+neg-invol (suc n) (a , b)      = neg-invol n a , neg-invol n b
+
+conj-neg : (n : ℕ) {x y : Carrier n} → ≈# n x y → ≈# n (conj n (neg n x)) (neg n (conj n y))
+conj-neg zero    {x} {y} p = -ℚ-cong {x} {y} p
+conj-neg (suc n) (pa , pb) = conj-neg n pa , neg-cong n (neg-cong n pb)
+
+-- −(x + y) ≈# (−x) + (−y).  Base: ℚ via neg-+ℤ then neg-*-left on each summand.
+neg-add : (n : ℕ) (x y : Carrier n) → ≈# n (neg n (add n x y)) (add n (neg n x) (neg n y))
+neg-add zero    (mkℚ nx dx) (mkℚ ny dy) =
+  ≈ℚ-from-≡ (cong₂ mkℚ
+    (trans (neg-+ℤ (nx *ℤ (+ suc dy)) (ny *ℤ (+ suc dx)))
+           (cong₂ _+ℤ_ (sym (neg-*-left nx (+ suc dy))) (sym (neg-*-left ny (+ suc dx))))) refl)
+neg-add (suc n) (a , b) (c , d) = neg-add n a c , neg-add n b d
+
+-- sub(−x)(−y) ≈# −(sub x y)   [sub a b = add a (−b); via neg-add and neg-invol]
+sub-neg : (n : ℕ) (x y : Carrier n) → ≈# n (sub n (neg n x) (neg n y)) (neg n (sub n x y))
+sub-neg n x y = ≈#-sym n (neg-add n x (neg n y))
+
+-- mul distributes negation through either factor (mutually, via the doubling formula).
+mul-negˡ : (n : ℕ) (x y : Carrier n) → ≈# n (mul n (neg n x) y) (neg n (mul n x y))
+mul-negʳ : (n : ℕ) (x y : Carrier n) → ≈# n (mul n x (neg n y)) (neg n (mul n x y))
+mul-negˡ zero    (mkℚ nx dx) (mkℚ ny dy) = ≈ℚ-from-≡ (cong₂ mkℚ (neg-*-left nx ny) refl)
+mul-negˡ (suc n) (a , b) (c , d) =
+    ≈#-trans n (sub-cong n (mul-negˡ n a c) (mul-negʳ n (conj n d) b))
+               (sub-neg n (mul n a c) (mul n (conj n d) b))
+  , ≈#-trans n (add-cong n (mul-negʳ n d a) (mul-negˡ n b (conj n c)))
+               (≈#-sym n (neg-add n (mul n d a) (mul n b (conj n c))))
+mul-negʳ zero    (mkℚ nx dx) (mkℚ ny dy) = ≈ℚ-from-≡ (cong₂ mkℚ (neg-*-right nx ny) refl)
+mul-negʳ (suc n) (a , b) (c , d) =
+    ≈#-trans n (sub-cong n (mul-negʳ n a c)
+                           (≈#-trans n (mul-cong n (conj-neg n (≈#-refl n d)) (≈#-refl n b))
+                                       (mul-negˡ n (conj n d) b)))
+               (sub-neg n (mul n a c) (mul n (conj n d) b))
+  , ≈#-trans n (add-cong n (mul-negˡ n d a)
+                           (≈#-trans n (mul-cong n (≈#-refl n b) (conj-neg n (≈#-refl n c)))
+                                       (mul-negʳ n b (conj n c))))
+               (≈#-sym n (neg-add n (mul n d a) (mul n b (conj n c))))
