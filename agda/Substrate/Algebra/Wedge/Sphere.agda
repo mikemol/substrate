@@ -40,11 +40,13 @@
 --    correction), never annihilating; "kill" can't happen (intuitionistic;
 --    deformation tracked). ties #1. · partly built (CrossMul coherence =
 --    cross-term nilpotency degree).
--- 6. the semiring VM PLACES ITSELF via TROPICAL — one tensor over a chosen
+-- 6. the semiring VM PLACES ITSELF via the gauge — one tensor over a chosen
 --    semiring = the job gauge (Bool route / GF(2) compute / ℕ count / tropical
---    cost); same double category over (min,+) = VERIFIED fabric placement;
---    square = legal-fusion. · conjecture · home: Algebra.Semiring EXISTS BUT
---    NEVER INSTANTIATED (the consumer that measures it); tropical NOT built.
+--    cost). · ✅ PROVED — Semiring.Contraction.contract (the tensor ⊕ᵢ aᵢ⊗bᵢ,
+--    Semiring a REAL parameter) reads ALL FOUR gauges by refl: ℕ→11, Bool→true,
+--    tropical→fin 4, F₂→𝟘. (Stale: the 4 gauges ARE in Semiring.Instances —
+--    incl. ℕ∞ tropical — and Semiring.SPPF.inside is a prior consumer; the
+--    "never instantiated / tropical not built" reading was outdated.)
 -- 7. wedge = CONSTRUCTIVE BOUNDARY OPERATOR — partial COMMUTativity = structural
 --    partition (commutes/doesn't) in one domain; wedge traces its edge (sharp
 --    r<b, graded by nilpotency, recursive via orbit; shape = edge-record). ·
