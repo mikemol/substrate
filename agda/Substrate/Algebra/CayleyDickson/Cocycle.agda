@@ -26,7 +26,9 @@ open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.CayleyDickson
-  using (Carrier; mul; neg; ≈#; zero#; one#; i; i²≈−1)
+  using (Carrier; mul; neg; conj; ≈#; zero#; one#; i; i²≈−1)
+open import Substrate.Algebra.CayleyDickson.Setoid
+  using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#)
 
 -- F₂ⁿ index → CD basis unit: 1ℚ at the leaf addressed by the n bits.
 e : (n : ℕ) → Vec Bool n → Carrier n
@@ -44,3 +46,29 @@ e (suc n) (true  ∷ bs) = zero# n , e n bs        -- imaginary half
   ≈# 1 (mul 1 (e 1 (true ∷ [])) (e 1 (true ∷ [])))
        (neg 1 (e 1 (zipWith _xor_ (true ∷ []) (true ∷ []))))
 ℂ-sign-cocycle = i²≈−1
+
+------------------------------------------------------------------------
+-- CONJUGATION ON A BASIS UNIT: conj eᵢ = ±eᵢ — the scalar is fixed, every
+-- imaginary unit is negated. (The first prerequisite of the recursive product
+-- law: the CD doubling product conjugates one factor.) `imag?` = "index has a
+-- true bit" (= an imaginary unit); `sgn` applies the resulting ± sign.
+------------------------------------------------------------------------
+
+imag? : {n : ℕ} → Vec Bool n → Bool
+imag? []           = false
+imag? (true  ∷ _)  = true
+imag? (false ∷ bs) = imag? bs
+
+sgn : Bool → (n : ℕ) → Carrier n → Carrier n
+sgn true  n x = neg n x
+sgn false n x = x
+
+conj-on-basis : (n : ℕ) (idx : Vec Bool n) →
+                ≈# n (conj n (e n idx)) (sgn (imag? idx) n (e n idx))
+conj-on-basis zero    []           = ≈#-refl 0 (e 0 [])
+conj-on-basis (suc n) (true  ∷ is) =
+    ≈#-trans n (conj-zero# n) (≈#-sym n (neg-zero# n))
+  , ≈#-refl n (neg n (e n is))
+conj-on-basis (suc n) (false ∷ is) with imag? is | conj-on-basis n is
+... | false | ih = ih , neg-zero# n
+... | true  | ih = ih , ≈#-refl n (neg n (zero# n))

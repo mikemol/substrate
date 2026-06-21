@@ -164,11 +164,14 @@ cmd_run() {
   rend=$(date +%s.%N)
   if [ "$rc" = 0 ]; then _record_time "$rstart" "$rend" "$tf" "$@"; fi   # only learn from SUCCESSFUL runs
   [ -n "$tf" ] && rm -f "$tf"
-  # RETRY-ON-OOM: a cgroup MemoryMax kill exits 137 (only TOP leases have their own hard cap). If the
-  # action is idempotent (MEMBUDGET_RETRY_OOM — the agda shim sets it; an agda compile re-runs cleanly)
-  # and there's room to grow, RELEASE the too-small lease and re-enter at the next power-of-2 bucket.
+  # RETRY-ON-OOM: a cgroup MemoryMax breach terminates the scope by signal — SIGKILL (rc 137) from the
+  # kernel cgroup OOM-killer, OR SIGTERM (rc 143) from systemd's scope-OOM handling; which one fires
+  # depends on the systemd version (measured: 143 on systemd-run --user --scope here).  Both are the
+  # too-small-lease kill, so retry on either.  (Only TOP leases have their own hard cap.)  If the action
+  # is idempotent (MEMBUDGET_RETRY_OOM — the agda shim sets it; an agda compile re-runs cleanly) and
+  # there's room to grow, RELEASE the too-small lease and re-enter at the next power-of-2 bucket.
   # Self-corrects a too-tight autobudget guess (then the success records the real peak → history fixes it).
-  if [ "$rc" = 137 ] && [ "$parent" = "-" ] && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
+  if { [ "$rc" = 137 ] || [ "$rc" = 143 ]; } && [ "$parent" = "-" ] && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
      && [ "$mb" -lt "${AGDA_MB_MAX:-1536}" ]; then
     release "$id"
     local nb=$((mb*2)); [ "$nb" -gt "${AGDA_MB_MAX:-1536}" ] && nb="${AGDA_MB_MAX:-1536}"
