@@ -29,7 +29,7 @@ open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Properties.Field using (*ℚ-comm; +ℚ-comm)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong)
-open import Substrate.Algebra.CayleyDickson using (Carrier; ℂ#; ℍ#; mul; ≈#)
+open import Substrate.Algebra.CayleyDickson using (Carrier; ℂ#; ℍ#; 𝕆#; mul; ≈#; zero#; one#)
 
 ------------------------------------------------------------------------
 -- ℚ negation respects ≈ℚ (a general Congruence lemma; the `sub`-component of
@@ -70,3 +70,19 @@ jₕ = ((0ℚ , 0ℚ) , (1ℚ , 0ℚ))   -- the new (level-2) imaginary
 
 mul-noncomm-ℍ : ≈# 2 (mul 2 iₕ jₕ) (mul 2 jₕ iₕ) → ⊥
 mul-noncomm-ℍ z = 1ℚ≉-1ℚ (proj₂ (proj₂ z))
+
+------------------------------------------------------------------------
+-- THE NEXT RUNG: 𝕆 multiplication is NOT ASSOCIATIVE. i, j live in the ℍ
+-- subalgebra (first half); l is the new level-3 imaginary (second half),
+-- OUTSIDE ⟨i,j⟩ — so the associator (i,j,l) is nonzero: (i·j)·l ≠ i·(j·l).
+-- Completes the ladder ℂ-comm / ℍ-noncomm / 𝕆-nonassoc / 𝕊-zero-divisor.
+------------------------------------------------------------------------
+
+iₒ jₒ lₒ : 𝕆#
+iₒ = (iₕ , zero# 2)        -- i, in the ℍ subalgebra
+jₒ = (jₕ , zero# 2)        -- j, in the ℍ subalgebra
+lₒ = (zero# 2 , one# 2)    -- l, the new level-3 imaginary (outside ⟨i,j⟩)
+
+mul-nonassoc-𝕆 :
+  ≈# 3 (mul 3 (mul 3 iₒ jₒ) lₒ) (mul 3 iₒ (mul 3 jₒ lₒ)) → ⊥
+mul-nonassoc-𝕆 z = 1ℚ≉-1ℚ (proj₂ (proj₂ (proj₂ z)))

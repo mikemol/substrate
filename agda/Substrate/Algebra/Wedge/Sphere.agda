@@ -30,12 +30,12 @@
 --    home: new graded-GF(2) carrier; relates Category.GradedMonoid.
 -- 3. Morton ≅ Cayley-Dickson via the COCYCLE — Morton(untwisted)/Hilbert(twisted)
 --    = trivial/nontrivial 2-cocycle on F₂ⁿ = CD level; ladder graded loss
---    (ℂ comm→ℍ noncomm→𝕆 nonassoc) = the commute-edge grade. · PARTLY PROVED —
---    the COMMUTE-EDGE is PINPOINTED at level 1→2: ℂ commutes
---    (`CayleyDickson.CommuteEdge.mul-comm-ℂ`) but ℍ does NOT (`mul-noncomm-ℍ`,
---    i·j = k ≠ −k = j·i); and 𝕊 has zero divisors (`CayleyDickson.zd-value-0`).
---    OPEN: the 𝕆 nonassoc rung, and THE COCYCLE/Morton bridge (the F₂ⁿ-indexed
---    sign-cocycle; Morton/Hilbert modules not built — the deep cell). ·
+--    (ℂ comm→ℍ noncomm→𝕆 nonassoc) = the commute-edge grade. · LADDER COMPLETE,
+--    every rung machine-checked in `CayleyDickson.CommuteEdge` + `.CayleyDickson`:
+--    ℂ commutes (`mul-comm-ℂ`) → ℍ does NOT (`mul-noncomm-ℍ`, i·j=k≠−k=j·i) → 𝕆
+--    NOT assoc (`mul-nonassoc-𝕆`, (ij)l≠i(jl)) → 𝕊 zero divisors (`zd-value-0`).
+--    OPEN: only THE COCYCLE/Morton bridge (the F₂ⁿ-indexed sign-cocycle making the
+--    ladder a GRADE; Morton/Hilbert modules not built — the deep cell). ·
 --    home: the CD doubling generator IS NOW BUILT — Algebra.CayleyDickson (the
 --    ℕ-indexed tower over ℚ, i²=−1, the 𝕊 zero divisor; same step as the nedge
 --    Evidence carrier-doubling). The COCYCLE/Morton bridge remains the open cell.
