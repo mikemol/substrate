@@ -61,8 +61,11 @@
 --    `Annihilator` (kills EVERY product) is separated from `Nilpotent` (kills only
 --    own powers) — e₁₂ is a nonzero nilpotent (e₁₂² = 𝟎) yet `e₁₂-not-annihilating`
 --    (e₁₂·e₂₁ = e₁₁ ≠ 𝟎, the corner glues back to a live idempotent). The
---    obstruction is graded by degree, never a collapse. (CrossMul coherence =
---    the cross-term nilpotency degree is the graded-cost half of the same fact.)
+--    obstruction is graded by degree, never a collapse. The GRADED-COST half is
+--    `Wedge.CrossMulGraded`: a CrossMix Two→M₂ whose cross-term nilpotency degree
+--    genuinely VARIES (coherent-graded: (ε,ε) ↦ e₁₂ degree-2, others ↦ 𝟎 degree-0;
+--    cross-εε-not-clean: the (ε,ε) term is a NONZERO obstruction) — the richer
+--    carrier the all-clean coherent-everywhere could not exhibit.
 -- 6. the semiring VM PLACES ITSELF via the gauge — one tensor over a chosen
 --    semiring = the job gauge (Bool route / GF(2) compute / ℕ count / tropical
 --    cost). · ✅ PROVED — Semiring.Contraction.contract (the tensor ⊕ᵢ aᵢ⊗bᵢ,
@@ -105,6 +108,7 @@ import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
 import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
+import Substrate.Algebra.Wedge.CrossMulGraded as CrossMulGraded
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this
@@ -128,3 +132,5 @@ cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
 cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
+cell-graded    = CrossMulGraded.coherent-graded   -- C5b: varying nilpotency degree
+cell-graded-ob = CrossMulGraded.cross-εε-not-clean -- the (ε,ε) term is a real obstruction
