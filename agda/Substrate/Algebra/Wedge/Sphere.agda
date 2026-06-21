@@ -89,7 +89,10 @@
 --    curve (recursive reflection), a bijection (`gray-roundtrip`); locality is real
 --    (`morton-jump` ≡ 2 vs `gray-jump` ≡ 1 on the 01→10 step) and `crossover-gray-wins`
 --    feeds those popcount jumps to the tropical min (Gray wins) — costs no longer
---    hand-picked. The full 2D Hilbert (quadrant ROTATION) is the remaining refinement.
+--    hand-picked. The full 2D Hilbert (quadrant ROTATION) is now BUILT too —
+--    `CayleyDickson.Hilbert2D.hilbert`: 4 transformed copies per level (transpose +
+--    anti-diagonal reflection = the rotations 1D Gray lacks), with `hilbert-2-continuous`
+--    (maxjump ≡ 1 across all quadrant seams) validating it. ∀n continuity is a refinement.
 --
 -- NEXT BUILD (gated on this ledger): prove #1, then make Semiring a real
 -- parameter of the wedge/tensor engine (#6 — unifies Bool/GF(2)/tropical).
@@ -112,6 +115,7 @@ import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
+import Substrate.Algebra.CayleyDickson.Hilbert2D as Hilbert2D
 import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
 import Substrate.Algebra.Wedge.CrossMulGraded as CrossMulGraded
 
@@ -136,6 +140,7 @@ cell-morton    = Curve.morton                -- C8: the Z-order linearization
 cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
 cell-gray      = Curve.gray-roundtrip        -- C8: the Gray (1D Hilbert) curve, bijective
 cell-locality  = Curve.crossover-gray-wins   -- C8: real popcount costs, Gray wins locality
+cell-hilbert2d = Hilbert2D.hilbert-2-continuous   -- C8: the 2D Hilbert, continuous (rotation works)
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
 cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
