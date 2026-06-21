@@ -107,6 +107,15 @@ WORKLIST = [
     {"sym": "Algebra↔Category.deloop", "desc": "the Algebra→Category bridge ESTABLISHED + applied: M40Group.A4Z2-Category = deloop A4Z2-Monoid (𝐁(A₄×ℤ₂)) and M40Closure.Chir-Category = deloop Chir-Monoid (𝐁(ℤ₂)) — the ≡-based domain structures onto the spine via the existing one-object delooping", "done": ("defines", "Substrate/WitnessTower/M40Group.agda", "A4Z2-Category")},
     {"sym": "Algebra↔Category.q", "desc": "GValueAsQ GROUNDED: gor=+ℚ deloops via the ℚ/≈ℚ quotient (Q.Properties.AddMonoid.+ℚ-reduced-Monoid — reduce-Canonical reps so ≈ℚ→≡, reduce kept ABSTRACT to dodge the symbolic-gcd typecheck blowup) → 𝐁(ℚ,+ℚ). Advisory → 0", "done": ("defines", "Substrate/Logic/Evidence/GValueAsQ.agda", "gor-Category")},
     {"sym": "Algebra↔Category", "desc": "✅ ADVISORY 0 — all 3 flagged leaves grounded on the categorical spine via deloop: M40Group 𝐁(A₄×ℤ₂), M40Closure 𝐁(ℤ₂) [.deloop], GValueAsQ 𝐁(ℚ,+ℚ) via the ℚ/≈ℚ quotient [.q]. The Algebra→Category gap closed at every leaf", "done": ("cmd0", "test $(bash scripts/check_categorical_grounding.sh --count) -eq 0")},
+    # ── consolidated long-arc ledgers (were scattered in memory; now tracked centrally here) ──
+    {"sym": "ℝ-arc", "desc": "substrate-ℝ: ℝ as a productive Wedge-process carrying EEATrace provenance (a computer reasons about ℝ, never holds it). STRUCTURALLY COMPLETE — B1 carrier → B2 convergence → B3 fuel-free field ops → B4 exp/log → B5 bisim → B6 ℝ→S¹ → B7 transcendental-digits → B8 terminal coalgebra → B9 ℚ⊣R → B10–B12 UP/det-parity, across 18 Algebra.R.* modules. (The MEMORY.md 'B2–B5 pending' line was stale.) Optional polish only: RationalAdjunction reconStep/qStep literal facades. Ledger: project_substrate_real_arc",
+     "done": ("exists", "agda/Substrate/Algebra/R/Trace/Final.agda")},
+    {"sym": "⊙", "desc": "commuting-sphere: the 8 prove-or-correct GF(2)-VM conjectures — C1 KEYSTONE r<b-residue = the Free⊣Forgetful adjoint correction (⟹ metaphor→proof is prove-or-correct); C2 graded-GF(2) (ungraded was the mistake); C3 Morton≅Cayley-Dickson via the cocycle; C4 F₂ⁿ-index grading; C5 tropical-VM cost; C6 Kirchhoff/conductance; C7 edge=grade=cocycle; C8 Morton/Hilbert curve-crossover at the grade boundary. Each MANUAL until its proof/build lands (swap to a defines/commit predicate then). Ledger: scratch/commuting_sphere.md; in-code index Algebra.Wedge.Sphere",
+     "done": ("manual",)},
+    {"sym": "⊙.cd", "desc": "commuting-sphere C3 prerequisite: Cayley-Dickson IN the substrate (the doubling-with-involution generator) — the ledger's 'CD absent, MUST-BUILD' is STALE; built at Algebra.CayleyDickson (ℂ/ℍ/𝕆/𝕊 tower over ℚ)",
+     "done": ("exists", "agda/Substrate/Algebra/CayleyDickson.agda")},
+    {"sym": "⊙.tropical", "desc": "commuting-sphere C5 prerequisite: the tropical (min-plus) cost gauge — present in the Sphere index's gauge bundle (ℕ/F₂/Bool/tropical)",
+     "done": ("grep", "tropical", "agda/Substrate/Algebra/Wedge/Sphere.agda")},
 ]
 
 
