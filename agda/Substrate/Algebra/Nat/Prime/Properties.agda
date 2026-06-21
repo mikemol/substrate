@@ -261,6 +261,11 @@ factor-section m = proj₁ (factorize! (suc m) (s≤s z≤n))
 factor-retract : (m : ℕ) → factor-value (factor-section m) ≡ m
 factor-retract m = cong pred (proj₂ (proj₂ (factorize! (suc m) (s≤s z≤n))))
 
+-- the section's product is the original positive: product (factorize (suc m)) ≡ suc m.
+-- (The existence round-trip, exposed directly for the ℚ₊ lift.)
+factor-section-product : (m : ℕ) → product (factor-section m) ≡ suc m
+factor-section-product m = proj₂ (proj₂ (factorize! (suc m) (s≤s z≤n)))
+
 -- THE ISO: the split idempotent factor-section ∘ factor-value is a Canonical
 -- for ker factor-value — ℕ⁺ ≅ canonical prime factorisations, from the
 -- retraction alone (uniqueness/.u2 then characterises the image as THE multiset).
