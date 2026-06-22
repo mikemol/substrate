@@ -70,6 +70,7 @@ WORKLIST = [
     {"sym": "Ω4", "desc": "reflex-sweep: analytic/transcendental scope-outs (verdict: reflex purged, 3 genuine deferrals)",
      "done": ("exists", "scratch/omega4_reflex_sweep.md")},
     {"sym": "Ε(b)", "desc": "reuse-search trigger WIDENED + escalated (G9): fires on \"plan proposes new machinery\" (before building), not just post-hoc — lifted off recalled-memory onto CLAUDE.md (always-loaded) §Reuse-search-BEFORE-building + the similarity-not-grep memory + the construct-dont-classify reinvent-vs-reuse reflex. Ε(d) stale agda_similarity .pyc removed", "done": ("grep", "Reuse-search BEFORE building new machinery", "CLAUDE.md")},
+    {"sym": "Ⓥ", "desc": "verify-the-verifier (G9 of Ⓩ): the worklist tracker is now GATED — pre-commit runs `worklist.py --check`, so the derived-status tracker must PARSE + RUN end-to-end (every entry well-formed, every predicate evaluating) or the commit is blocked. Closes the instrument↔execution residue: a dropped comma had made worklist.py unparseable for ~10 commits, invisible because no gate ran it. Correct-by-construction (a gate, not memory)", "done": ("grep", "worklist tracker integrity", ".githooks/pre-commit")},
     {"sym": "Ω3-L-primes.pole1", "desc": "Ⓖ★ invertible-pole cross-coherence, rank-1: gᵏ·(recip g)ᵏ≈1 "
             "(gvalue-power-antipode) — the el-atlas antipode extended to the cyclic subgroup, NO FTA",
      "done": ("defines", "Substrate/Logic/Evidence/GValueLSpace/Primes.agda", "gvalue-power-antipode")},

@@ -58,6 +58,13 @@ run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 # .agda files or directories require regenerating the per-dir makefiles).
 run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --check
 
+# Worklist tracker integrity (Ⓥ): the derived-status tracker must PARSE and RUN
+# end-to-end — every entry well-formed, every predicate evaluating without crashing.
+# A tracker that can't execute is not tracking: a dropped comma once made worklist.py
+# unparseable for ~10 commits, invisible because NO gate ran it (and ad-hoc runs piped
+# stderr to /dev/null). This closes that instrument↔execution residue.
+run "worklist tracker integrity" python3 "$ROOT/scripts/worklist.py" --check
+
 # Shape-node collision index must stay current (names are vacuous; the visible
 # name→shape map disambiguates for the reader). Regenerate: sppf_node_index.py
 run "shape-node index current" python3 "$ROOT/scripts/sppf_node_index.py" --check

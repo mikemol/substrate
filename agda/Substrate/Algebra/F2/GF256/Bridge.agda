@@ -26,10 +26,11 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo)
 open import Substrate.Algebra.F2.Polynomial using (_*P_; outer; anti-diag-sum) renaming (pad-end to pad-c)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 open import Substrate.Algebra.F2.GF256.Reduce using (reduce-mod-m)
+open import Substrate.Algebra.F2.GF256.Expand using (hsum)
 import Substrate.Algebra.Polynomial.Graded.Mod as Mod
 open Mod.Over F₂-CommRing 7 m-lo
   using (ytime; reduce-mod-f; _+P_; _·c_; x-shift; shift-to-suc-on-left; pad-end)
-  renaming (_+_ to _+r_; _*_ to _·r_; outer to outer-g; anti-diag-sum to adg-g; _*P_ to _*Pg_)
+  renaming (_+_ to _+r_; _*_ to _·r_; outer to outer-g; anti-diag-sum to adg-g; _*P_ to _*Pg_; hsum to hsum-g)
 
 ------------------------------------------------------------------------
 -- The element bridge: the field's CommutativeRing-projected ops are F₂'s.
@@ -120,3 +121,41 @@ adg-eq (row ∷ rows) =
 -- ★ the two multiplies are one.
 *P-eq : ∀ {n m} (p : Vec F₂ n) (q : Vec F₂ m) → p *Pg q ≡ p *P q
 *P-eq p q = trans (cong adg-g (outer-eq p q)) (adg-eq (outer p q))
+
+------------------------------------------------------------------------
+-- The SECOND fold scheme.  `hsum` is a Horner fold that THREADS its argument
+-- through the kernel — `hsum (a∷p) r = add (scale a r) (hsum p (adv r))` —
+-- where `reduce`'s `fold` put the kernel on the RESULT.  `thread-cong` is the
+-- sibling of `fold-cong`: same lifting principle (parameter-equality ⟹
+-- fold-equality), different recursion shape.  The graded↔GF256 `hsum` bridge
+-- then lifts from it for free, exactly as `reduce-eq` did from `fold-cong`.
+
+thread : {C : Set} (z : C) (scale : F₂ → C → C) (add : C → C → C) (adv : C → C)
+       → ∀ {n} → Vec F₂ n → C → C
+thread z scale add adv []      r = z
+thread z scale add adv (a ∷ q) r = add (scale a r) (thread z scale add adv q (adv r))
+
+thread-cong : {C : Set} {z₁ z₂ : C} {s₁ s₂ : F₂ → C → C} {p₁ p₂ : C → C → C} {a₁ a₂ : C → C}
+            → z₁ ≡ z₂ → (∀ x r → s₁ x r ≡ s₂ x r) → (∀ u v → p₁ u v ≡ p₂ u v) → (∀ r → a₁ r ≡ a₂ r)
+            → ∀ {n} (v : Vec F₂ n) (r : C) → thread z₁ s₁ p₁ a₁ v r ≡ thread z₂ s₂ p₂ a₂ v r
+thread-cong ez es ep ea []      r = ez
+thread-cong {z₂ = z₂} {s₂ = s₂} {p₁ = p₁} {p₂ = p₂} {a₁ = a₁} {a₂ = a₂} ez es ep ea (x ∷ q) r =
+  trans (cong₂ p₁ (es x r) (thread-cong ez es ep ea q (a₁ r)))
+        (trans (cong (p₁ (s₂ x r)) (cong (thread z₂ s₂ p₂ a₂ q) (ea r)))
+               (ep (s₂ x r) (thread z₂ s₂ p₂ a₂ q (a₂ r))))
+
+-- the two hsums ARE this thread (refl-inductions over their own clauses).
+hsum-g-thread : ∀ {n} (p : Vec F₂ n) (r : Vector 8) → hsum-g p r ≡ thread (replicate 8 𝟘) _·c_ _+P_ ytime p r
+hsum-g-thread []      r = refl
+hsum-g-thread (a ∷ p) r = cong ((a ·c r) +P_) (hsum-g-thread p (ytime r))
+
+hsum-m-thread : ∀ {n} (p : Vec F₂ n) (r : Vector 8) → hsum p r ≡ thread 𝟎ⱽ _*ₛ_ _+ⱽ_ xtime p r
+hsum-m-thread []      r = refl
+hsum-m-thread (a ∷ p) r = cong ((a *ₛ r) +ⱽ_) (hsum-m-thread p (xtime r))
+
+-- ★ the two hsums are one — lifted from thread-cong, no new content.
+hsum-bridge : ∀ {n} (p : Vec F₂ n) (r : Vector 8) → hsum-g p r ≡ hsum p r
+hsum-bridge p r =
+  trans (hsum-g-thread p r)
+  (trans (thread-cong refl ·c≡*ₛ +P≡+ⱽ ytime-is-xtime p r)
+         (sym (hsum-m-thread p r)))
