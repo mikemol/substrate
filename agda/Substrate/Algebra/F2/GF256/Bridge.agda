@@ -65,20 +65,34 @@ ytime-is-xtime (b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ b7 ∷ []) =
         (cong (_+ⱽ_ (𝟘 ∷ b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ [])) (·c≡*ₛ b7 m-lo))
 
 ------------------------------------------------------------------------
--- The shared shape and its congruence (the induction, proved once).
+-- ⋈-CONG.  The generic Vec F₂ fold and its congruence — proved once, for an
+-- ARBITRARY result type R and an ARBITRARY relation _≈_ on it.  `fold` (reduce)
+-- and `thread` (hsum) below are the SAME `gfold`, into C and into C→C; their
+-- congruences are this ONE `gfold-cong`, instantiated at _≡_ and at pointwise-≡.
+-- This is the schema ⋈-STRUCT generalizes: a graded↔F₂ transport IS a `gfold-cong`
+-- fed the element bridge.  (The Fin-indexed `sum-cong` in Idempotent is the same
+-- idea over a different functor — a container-fold would absorb it too; → STRUCT.)
 
+gfold : {R : Set} (e : R) (c : F₂ → R → R) → ∀ {n} → Vec F₂ n → R
+gfold e c []      = e
+gfold e c (a ∷ q) = c a (gfold e c q)
+
+gfold-cong : {R : Set} (_≈_ : R → R → Set) {e₁ e₂ : R} {c₁ c₂ : F₂ → R → R}
+           → e₁ ≈ e₂ → (∀ a {r₁ r₂} → r₁ ≈ r₂ → c₁ a r₁ ≈ c₂ a r₂)
+           → ∀ {n} (v : Vec F₂ n) → gfold e₁ c₁ v ≈ gfold e₂ c₂ v
+gfold-cong _≈_ ee ec []      = ee
+gfold-cong _≈_ ee ec (a ∷ q) = ec a (gfold-cong _≈_ ee ec q)
+
+-- reduce's fold: the kernel `kx` lands on the RESULT.  fold = gfold into C.
 fold : {C : Set} (z : C) (inj : F₂ → C) (add : C → C → C) (kx : C → C)
      → ∀ {n} → Vec F₂ n → C
-fold z inj add kx []      = z
-fold z inj add kx (a ∷ q) = add (inj a) (kx (fold z inj add kx q))
+fold z inj add kx = gfold z (λ a r → add (inj a) (kx r))
 
 fold-cong : {C : Set} {z₁ z₂ : C} {i₁ i₂ : F₂ → C} {p₁ p₂ : C → C → C} {k₁ k₂ : C → C}
           → z₁ ≡ z₂ → (∀ a → i₁ a ≡ i₂ a) → (∀ u v → p₁ u v ≡ p₂ u v) → (∀ c → k₁ c ≡ k₂ c)
           → ∀ {n} (v : Vec F₂ n) → fold z₁ i₁ p₁ k₁ v ≡ fold z₂ i₂ p₂ k₂ v
-fold-cong ez ei ep ek []      = ez
-fold-cong {i₂ = i₂} {p₁ = p₁} {k₁ = k₁} ez ei ep ek (a ∷ q) =
-  trans (cong₂ p₁ (ei a) (cong k₁ (fold-cong ez ei ep ek q)))
-        (trans (cong (p₁ (i₂ a)) (ek _)) (ep (i₂ a) _))
+fold-cong {i₂ = i₂} {p₁ = p₁} {k₁ = k₁} ez ei ep ek =
+  gfold-cong _≡_ ez (λ a er → trans (cong₂ p₁ (ei a) (trans (cong k₁ er) (ek _))) (ep (i₂ a) _))
 
 -- the two reductions ARE this fold (refl-inductions over their own clauses).
 reduce-mod-f-fold : ∀ {n} (v : Vec F₂ n)
@@ -123,26 +137,24 @@ adg-eq (row ∷ rows) =
 *P-eq p q = trans (cong adg-g (outer-eq p q)) (adg-eq (outer p q))
 
 ------------------------------------------------------------------------
--- The SECOND fold scheme.  `hsum` is a Horner fold that THREADS its argument
--- through the kernel — `hsum (a∷p) r = add (scale a r) (hsum p (adv r))` —
--- where `reduce`'s `fold` put the kernel on the RESULT.  `thread-cong` is the
--- sibling of `fold-cong`: same lifting principle (parameter-equality ⟹
--- fold-equality), different recursion shape.  The graded↔GF256 `hsum` bridge
--- then lifts from it for free, exactly as `reduce-eq` did from `fold-cong`.
+-- hsum's fold: the kernel `adv` lands on the THREADED ARGUMENT.  `hsum (a∷p) r =
+-- add (scale a r) (hsum p (adv r))` is the SAME `gfold` — but into C→C, the result
+-- being a function of the threaded `r`.  So `thread`'s congruence is `gfold-cong`
+-- at POINTWISE-≡ (no funext needed: the relation is pointwise by construction).
+-- `reduce` and `hsum` differ only in whether the result type is C or C→C — that is
+-- the entire content of "the second fold scheme", named by ⋈-CONG.
 
 thread : {C : Set} (z : C) (scale : F₂ → C → C) (add : C → C → C) (adv : C → C)
        → ∀ {n} → Vec F₂ n → C → C
-thread z scale add adv []      r = z
-thread z scale add adv (a ∷ q) r = add (scale a r) (thread z scale add adv q (adv r))
+thread z scale add adv = gfold (λ _ → z) (λ a rec r → add (scale a r) (rec (adv r)))
 
 thread-cong : {C : Set} {z₁ z₂ : C} {s₁ s₂ : F₂ → C → C} {p₁ p₂ : C → C → C} {a₁ a₂ : C → C}
             → z₁ ≡ z₂ → (∀ x r → s₁ x r ≡ s₂ x r) → (∀ u v → p₁ u v ≡ p₂ u v) → (∀ r → a₁ r ≡ a₂ r)
             → ∀ {n} (v : Vec F₂ n) (r : C) → thread z₁ s₁ p₁ a₁ v r ≡ thread z₂ s₂ p₂ a₂ v r
-thread-cong ez es ep ea []      r = ez
-thread-cong {z₂ = z₂} {s₂ = s₂} {p₁ = p₁} {p₂ = p₂} {a₁ = a₁} {a₂ = a₂} ez es ep ea (x ∷ q) r =
-  trans (cong₂ p₁ (es x r) (thread-cong ez es ep ea q (a₁ r)))
-        (trans (cong (p₁ (s₂ x r)) (cong (thread z₂ s₂ p₂ a₂ q) (ea r)))
-               (ep (s₂ x r) (thread z₂ s₂ p₂ a₂ q (a₂ r))))
+thread-cong {s₂ = s₂} {p₁ = p₁} {a₁ = a₁} ez es ep ea =
+  gfold-cong (λ f g → ∀ r → f r ≡ g r) (λ _ → ez)
+    (λ x {_} {rec₂} erec r →
+       trans (cong₂ p₁ (es x r) (trans (erec (a₁ r)) (cong rec₂ (ea r)))) (ep (s₂ x r) _))
 
 -- the two hsums ARE this thread (refl-inductions over their own clauses).
 hsum-g-thread : ∀ {n} (p : Vec F₂ n) (r : Vector 8) → hsum-g p r ≡ thread (replicate 8 𝟘) _·c_ _+P_ ytime p r
