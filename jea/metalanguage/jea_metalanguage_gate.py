@@ -313,6 +313,15 @@ def chk_oneforest():
     ss = F.shared_structure("spec", "foreign")
     assert ss["generic_pair_shared"] and ss["leaf_shared"], \
         "the generic pair (2,(leaf,leaf)) must correspond across the vocabulary gap at the label-free shape rung"
+    # Apply CrossMul AGAIN at the shape rung: re-intern by shape, and the cross-term that was VACUOUS across
+    # the vocabulary gap (label-level shared_fraction 0) becomes a real graded correspondence.
+    lab = max(F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"])
+    G = F.quotient_to_shape()
+    shp = max(G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"])
+    assert lab == 0.0 < shp, \
+        "CrossMul re-applied at the shape rung must turn the vacuous label-level 0 into a real correspondence"
+    assert G.correspondence("spec", "foreign", floor=0.0)["comparable"], \
+        "the shape-quotiented forest must be comparable (a shared shape vocabulary)"
     return "PASS"
 
 

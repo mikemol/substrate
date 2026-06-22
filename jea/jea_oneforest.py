@@ -37,7 +37,7 @@ from __future__ import annotations
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "metalanguage"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from jea_pyalg import Intern, CrossMix, lower_source
+from jea_pyalg import Intern, CrossMix, lower_source, IR
 
 
 class OneForest:
@@ -278,6 +278,35 @@ class OneForest:
                 "leaf_shared": LEAF in shared, "generic_pair_shared": PAIR in shared,
                 "shared_shapes": sorted(shared, key=lambda s: len(str(s)))[:12]}
 
+    # ── apply CrossMul AGAIN: quotient to shape, then the cross-term re-applies cross-language ──
+    def quotient_to_shape(self) -> "OneForest":
+        """Re-intern the whole forest by LABEL-FREE shape and return a NEW OneForest over it, then the
+        SAME readouts (gate/correspondence/coverage = CrossMul) re-apply AT THE SHAPE RUNG. This is the
+        recursion the project runs everywhere (homology→cohomology, level-1→level-2): CrossMul at level 1
+        is over labels (within-language, cross-language ≡ 0 — disjoint vocab); quotient away the labels so
+        a generic pair (Python tuple, Agda Σ/binary-ctor, Cayley-Dickson doubling, BinOp) is ONE shared
+        node, then CrossMul at level 2 is over shapes — now NON-vacuous across languages, the shared
+        shape-support is the orthogonal (corresponding) part and the shape residue is the graded
+        obstruction. Proper cross-language correspondences fall out of the same machine, one rung up.
+
+        The shape node interns kind=arity, no op/lit/role, children = the (sorted, unordered) shape-ids of
+        the children — so structurally-identical subtrees across arms hash-cons to the SAME id."""
+        G = OneForest()
+        memo: dict[int, int] = {}
+
+        def reintern(i: int) -> int:
+            if i in memo:
+                return memo[i]
+            kids = self.I.nodes[i].children
+            sid = G.I.intern(IR(kind=str(len(kids)),
+                                children=tuple(sorted(reintern(c) for c in kids))))
+            memo[i] = sid
+            return sid
+
+        for arm, units in self.arms.items():
+            G.arms[arm] = [(q, reintern(r)) for q, r in units]
+        return G
+
 
 if __name__ == "__main__":
     print("=== Σ-FOREST: the cross-arm verification gate (CrossMix over one forest) ===\n")
@@ -338,6 +367,13 @@ if __name__ == "__main__":
     print(f"  shape rung:  generic_pair_shared={ss['generic_pair_shared']}  leaf_shared={ss['leaf_shared']}  "
           f"n_shared={ss['n_shared']}")
     print("  => quotient far enough and the GENERIC PAIR (2,(leaf,leaf)) corresponds across the vocabulary gap.")
+    print()
+    print("--- apply CrossMul AGAIN: re-intern by shape, the cross-term re-applies (now non-vacuous) ---")
+    lab = max(F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"])
+    G = F.quotient_to_shape()
+    shp = max(G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"])
+    print(f"  spec~foreign cross-term: label rung shared_fraction={lab:.3f} (vacuous) -> shape rung {shp:.3f} (real)")
+    print("  CrossMul level-1 = labels (within-language); level-2 = shapes (cross-language). Same machine, one rung up.")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND
