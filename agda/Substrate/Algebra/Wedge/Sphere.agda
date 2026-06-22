@@ -97,7 +97,10 @@
 --    hand-picked. The full 2D Hilbert (quadrant ROTATION) is now BUILT too —
 --    `CayleyDickson.Hilbert2D.hilbert`: 4 transformed copies per level (transpose +
 --    anti-diagonal reflection = the rotations 1D Gray lacks), with `hilbert-2-continuous`
---    (maxjump ≡ 1 across all quadrant seams) validating it. ∀n continuity is a refinement.
+--    (maxjump ≡ 1 across all quadrant seams) validating it. ∀n CONTINUITY is now
+--    PROVEN too — `CayleyDickson.Hilbert2DContinuous.hilbert-continuous`: Cont (hilbert n)
+--    (consecutive points Manhattan-adjacent) for EVERY order, via the entry/exit recursion +
+--    the 4 transforms-as-Manhattan-isometries + the coordinate-bound invariant + Cont-app seams.
 --
 -- NEXT BUILD (gated on this ledger): prove #1, then make Semiring a real
 -- parameter of the wedge/tensor engine (#6 — unifies Bool/GF(2)/tropical).
@@ -122,6 +125,7 @@ import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
 import Substrate.Algebra.CayleyDickson.Coboundary as Coboundary
 import Substrate.Algebra.CayleyDickson.Hilbert2D as Hilbert2D
+import Substrate.Algebra.CayleyDickson.Hilbert2DContinuous as Hilbert2DContinuous
 import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
 import Substrate.Algebra.Wedge.CrossMulGraded as CrossMulGraded
 
@@ -147,6 +151,7 @@ cell-crossover = Curve.crossover             -- C8: crossover = tropical min ⊓
 cell-gray      = Curve.gray-roundtrip        -- C8: the Gray (1D Hilbert) curve, bijective
 cell-locality  = Curve.crossover-gray-wins   -- C8: real popcount costs, Gray wins locality
 cell-hilbert2d = Hilbert2D.hilbert-2-continuous   -- C8: the 2D Hilbert, continuous (rotation works)
+cell-hilbert∀n = Hilbert2DContinuous.hilbert-continuous  -- C8: 2D Hilbert continuous ∀ order
 cell-no-deadend = Wedderburn.e₁₂-not-annihilating  -- C5: nilpotent ≠ annihilator
 cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochain dε
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
