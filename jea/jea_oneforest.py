@@ -74,6 +74,19 @@ class OneForest:
         roots MUST be ids in THIS forest's Intern."""
         self.arms.setdefault(arm, []).extend(units)
 
+    def _vocab(self, arm: str) -> set:
+        """The set of node-KINDS an arm's units intern to — its canonical vocabulary. Two arms can only
+        share interned ids (hence have a non-vacuous correspondence) where their vocabularies OVERLAP."""
+        ks = set()
+        for _, r in self.arms.get(arm, []):
+            stack, seen = [r], set()
+            while stack:
+                j = stack.pop()
+                if j in seen:
+                    continue
+                seen.add(j); n = self.I.nodes[j]; ks.add(n.kind); stack.extend(n.children)
+        return ks
+
     # ── the readout: the cross-arm verification gate ─────────────────────────
     def gate(self, arm_a: str, arm_b: str) -> list[dict]:
         """The VERIFICATION GATE: for each (unit_a, unit_b) pairing across two arms (matched by qname
@@ -141,12 +154,14 @@ class OneForest:
             else:
                 b_orphans.append({"unit": q, "best": partner, "shared_fraction": round(frac, 3)})
 
+        shared_vocab = sorted(self._vocab(arm_a) & self._vocab(arm_b))
         result = {
             "arm_a": arm_a, "arm_b": arm_b, "floor": floor,
             "n_a": len(au), "n_b": len(bu),
             "coverage_a": round(a_ok / len(au), 3) if au else 1.0,
             "coverage_b": round(b_ok / len(bu), 3) if bu else 1.0,
             "a_orphans": a_orphans, "b_orphans": b_orphans,
+            "shared_vocab": shared_vocab, "comparable": bool(shared_vocab),
         }
         if manifest is not None:
             ad, bd, misses = dict(au), dict(bu), []
@@ -200,11 +215,20 @@ class OneForest:
                 a_matched.add(i); b_matched.add(j)
         a_orphans = [qa for i, (qa, _) in enumerate(au) if i not in a_matched]
         b_orphans = [qb for j, (qb, _) in enumerate(bu) if j not in b_matched]
+        # COMPARABILITY guard: two arms can only correspond where their canonical vocabularies overlap.
+        # Disjoint vocabularies (e.g. Python AST kinds vs the single Agda 'AgdaCore' kind) ⇒ no interned id
+        # can coincide ⇒ shared_fraction ≡ 0 by construction: the numbers are vacuous ("quotiented of
+        # meaning"), and a real cross-vocabulary correspondence needs an ALIGNMENT FUNCTOR (a map of one
+        # vocabulary's heads onto the other's — what jea_seam_provenance supplies by hand for one law),
+        # ideally DISCOVERED by behaviour, not declared. `comparable` says whether the verdict means anything.
+        va, vb = self._vocab(arm_a), self._vocab(arm_b)
+        shared_vocab = sorted(va & vb)
         return {"arm_a": arm_a, "arm_b": arm_b, "floor": floor,
                 "n_a": len(au), "n_b": len(bu), "pairs": pairs,
                 "a_orphans": a_orphans, "b_orphans": b_orphans,
                 "n_pairs": len(pairs), "exact_pairs": sum(p["exact"] for p in pairs),
-                "symmetric": not a_orphans and not b_orphans}
+                "symmetric": not a_orphans and not b_orphans,
+                "shared_vocab": shared_vocab, "comparable": bool(shared_vocab)}
 
 
 if __name__ == "__main__":
@@ -249,7 +273,10 @@ if __name__ == "__main__":
         verdict = "EXACT (degree 0)" if p["exact"] else f"graded (degree {p['degree']})"
         print(f"  {p['a']} ↔ {p['b']}   shared {p['shared_fraction']}  {verdict}")
     print(f"  orphans: spec={corr['a_orphans']}  impl={corr['b_orphans']}   symmetric={corr['symmetric']}")
-    print("  (axpy is each other's mutual-best; dot/scale have no reciprocal partner -> unpaired by the symmetry)")
+    print(f"  comparable={corr['comparable']} (shared vocab: {corr['shared_vocab'][:6]}...) -- both arms are Python, so")
+    print("  the correspondence MEANS something. Across disjoint vocabularies (Python AST kinds vs the single")
+    print("  Agda 'AgdaCore' kind) comparable=False: shared_fraction≡0 by construction -- numbers quotiented of")
+    print("  meaning, needing an ALIGNMENT FUNCTOR (cf. jea_seam_provenance) before a cross-language verdict.")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND

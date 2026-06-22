@@ -294,6 +294,18 @@ def chk_oneforest():
         "axpy↔axpy must be the mutual-best EXACT (degree 0) correspondent"
     assert "dot" in corr["a_orphans"] and "scale" in corr["b_orphans"], \
         "dot/scale (no reciprocal partner) must be orphans of the symmetry"
+    # COMPARABILITY guard: a correspondence is only meaningful where the arms' canonical vocabularies
+    # overlap. Two Python arms share vocab (comparable); a vocabulary-DISJOINT arm (here a minted foreign
+    # kind — the Python-AST-kinds vs single-'AgdaCore'-kind situation in miniature) must be flagged NOT
+    # comparable, so the tool refuses to emit vacuous "numbers quotiented of meaning" as a verdict.
+    import jea_pyalg
+    assert corr["comparable"] and "FunctionDef" in corr["shared_vocab"], \
+        "two Python arms must be comparable (overlapping vocabulary)"
+    foreign = F.I.intern(jea_pyalg.IR(kind="Foreign"))
+    F.add_units("foreign", [("x", foreign)])
+    inc = F.correspondence("spec", "foreign", floor=0.6)
+    assert not inc["comparable"] and not inc["shared_vocab"], \
+        "disjoint-vocabulary arms (cf. Python vs Agda-core) must be flagged NOT comparable"
     return "PASS"
 
 
