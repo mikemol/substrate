@@ -49,8 +49,9 @@
 --    is ε's graded obstruction). PENTAGON: dε is a CLOSED 3-cochain — exhibited as
 --    the coboundary δ²ε (`dε-is-coboundary`), so closed by d²=0; the pentagon
 --    `δ³(dε) ≡ false` is verified at the octonion witnesses (`pentagon-𝕆₁₂₃`) where
---    dε itself is nonzero. (Fully-generic d²=0 ∀φ — the 20-term xor cancellation —
---    is the remaining cohomological refinement.) The CD doubling generator is
+--    dε itself is nonzero — and now UNCONDITIONALLY: `Coboundary.d²-zero` proves
+--    δ³(δ²φ) ≡ false for EVERY 2-cochain φ (the 20-term/10-pair xor cancellation via
+--    a foldrB parity framework), so dε = δ²ε is closed for all cochains. The CD doubling generator is
 --    Algebra.CayleyDickson (same step as the nedge Evidence carrier-doubling).
 -- 4. the TWO GRADINGS coincide(or not) — ANF degree (OR=XOR⊕AND) vs F₂ⁿ-index
 --    (Morton/CD). · ✅ PROVED in `CayleyDickson.Grade`: they DON'T coincide, they
@@ -119,6 +120,7 @@ import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
 import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
+import Substrate.Algebra.CayleyDickson.Coboundary as Coboundary
 import Substrate.Algebra.CayleyDickson.Hilbert2D as Hilbert2D
 import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
 import Substrate.Algebra.Wedge.CrossMulGraded as CrossMulGraded
@@ -150,5 +152,6 @@ cell-assoc     = Cocycle.associator          -- C3/C5: associator = the 3-cochai
 cell-assoc-𝕆   = Cocycle.dε-𝕆                -- the 𝕆 nonassociator IS dε ≡ true
 cell-coboundary = Cocycle.dε-is-coboundary   -- dε = δ²ε (a coboundary, hence closed)
 cell-pentagon  = Cocycle.pentagon-𝕆₁         -- δ³(dε) ≡ false (pentagon at the 𝕆 witness)
+cell-d²zero    = Coboundary.d²-zero          -- δ³(δ²φ) ≡ false ∀φ (pentagon UNCONDITIONAL)
 cell-graded    = CrossMulGraded.coherent-graded   -- C5b: varying nilpotency degree
 cell-graded-ob = CrossMulGraded.cross-εε-not-clean -- the (ε,ε) term is a real obstruction
