@@ -322,6 +322,15 @@ def chk_oneforest():
         "CrossMul re-applied at the shape rung must turn the vacuous label-level 0 into a real correspondence"
     assert G.correspondence("spec", "foreign", floor=0.0)["comparable"], \
         "the shape-quotiented forest must be comparable (a shared shape vocabulary)"
+    # The correspondence is a TRUNCATABLE graded profile S(g) by shape-size, NEVER a scalar. Identical
+    # shape => flat 1.0 at every grade; genuinely different => starts at the universal floor and DECAYS
+    # (shares the small universal vocabulary, sheds the distinctive content) — the curve the scalar hid.
+    raxpy = dict(G.arms["spec"])["axpy"]
+    self_p = G.profile(raxpy, raxpy, gmax=6)
+    assert all(f == 1.0 for _, f in self_p), "self-profile must be FLAT 1.0 (identical at every grade)"
+    cross_p = G.profile(raxpy, dict(G.arms["spec"])["dot"], gmax=6)
+    assert cross_p[-1][1] < 1.0 and jea_oneforest.OneForest.cliff(cross_p, 0.9) < jea_oneforest.OneForest.cliff(self_p, 0.9), \
+        "a genuinely-different pair's profile must DECAY (cliff earlier than the flat self-profile), not collapse to one number"
     return "PASS"
 
 

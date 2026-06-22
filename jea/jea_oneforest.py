@@ -307,6 +307,44 @@ class OneForest:
             G.arms[arm] = [(q, reintern(r)) for q, r in units]
         return G
 
+    # ── the TRUNCATABLE graded correspondence: S(g), never a scalar ──────────
+    def _size(self, sid: int) -> int:
+        """Number of nodes in an interned subtree (its shape SIZE) — the grade axis for the profile."""
+        return 1 + sum(self._size(c) for c in self.I.nodes[sid].children)
+
+    def profile(self, root_a: int, root_b: int, gmax: int = 10) -> list:
+        """The TRUNCATABLE graded correspondence S(g) between two (shape-forest) roots — NOT a scalar.
+        Grade g = shape SIZE: at g the shared structure is restricted to sub-shapes of size <= g. Small g
+        = the universal vocabulary (a leaf, the generic pair) that ~everything shares; large g = the
+        distinctive structure. Read it at any g (truncate); the SHAPE of the curve classifies and the
+        CLIFF — the g where sharing falls to the universal floor — localizes the correspondence DEPTH.
+        A flat-high curve = real correspondence (shares distinctive structure too); an early cliff =
+        'shares only the universals' (the trim~valStr non-correspondence collapsing a scalar hid as 0.25).
+        This is jea_pysim's S(g) (truncation, not collapse) carried one forgetting-rung further: down to
+        the label-free arity shape, so it reads ACROSS languages. Never collapse it to one number."""
+        sa = self.cross._subnodes(root_a)
+        sb = self.cross._subnodes(root_b)
+        out = []
+        for g in range(1, gmax + 1):
+            ag = {i for i in sa if self._size(i) <= g}
+            bg = {i for i in sb if self._size(i) <= g}
+            u = ag | bg
+            out.append((g, round(len(ag & bg) / len(u), 3) if u else 1.0))
+        return out
+
+    @staticmethod
+    def cliff(profile: list, floor: float = 0.5) -> int:
+        """The correspondence DEPTH: the largest shape-size grade g for which the profile is still >= floor
+        (sharing distinctive structure up to size g). A GRADE, not a magnitude — itself a truncation level,
+        so it stays truncatable. Universals-only pairs cliff at a tiny g; real correspondences cliff deep."""
+        last = 0
+        for g, frac in profile:
+            if frac >= floor:
+                last = g
+            else:
+                break
+        return last
+
 
 if __name__ == "__main__":
     print("=== Σ-FOREST: the cross-arm verification gate (CrossMix over one forest) ===\n")
@@ -374,6 +412,14 @@ if __name__ == "__main__":
     shp = max(G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"])
     print(f"  spec~foreign cross-term: label rung shared_fraction={lab:.3f} (vacuous) -> shape rung {shp:.3f} (real)")
     print("  CrossMul level-1 = labels (within-language); level-2 = shapes (cross-language). Same machine, one rung up.")
+    print()
+    print("--- but a scalar is crud: the TRUNCATABLE profile S(g) by shape-size (read the CURVE, not a number) ---")
+    raxpy = dict(G.arms["spec"])["axpy"]
+    for label, rb in (("axpy ~ axpy (identical)", dict(G.arms["spec"])["axpy"]),
+                      ("axpy ~ dot   (different)", dict(G.arms["spec"])["dot"])):
+        p = G.profile(raxpy, rb, gmax=7)
+        print(f"  {label:26} S(g)=[{' '.join(f'{f:.2f}' for _, f in p)}]  cliff@{G.cliff(p, 0.9)}")
+    print("  flat 1.0 = correspondence at every grade; a decay = shares the universal vocabulary, sheds content.")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND
