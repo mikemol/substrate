@@ -27,15 +27,8 @@ Relations verified:
 """
 import random
 rng = random.Random(5)
-def conj(w): return (w[0],)+tuple(-t for t in w[1:])
-def cdm(x,y):
-    n=len(x)
-    if n==1: return (x[0]*y[0],)
-    k=n//2; a,b,c,d=x[:k],x[k:],y[:k],y[k:]
-    return tuple(i-j for i,j in zip(cdm(a,c),cdm(conj(d),b)))+tuple(i+j for i,j in zip(cdm(d,a),cdm(b,conj(c))))
-N=lambda v: sum(t*t for t in v)
+from cd_arith import conj, cdmul as cdm, vadd as add, vsub as sub, norm as N   # Π9: shared CD doubling generator
 e=lambda i:tuple(1.0 if t==i else 0.0 for t in range(16))
-add=lambda u,v:tuple(p+q for p,q in zip(u,v)); sub=lambda u,v:tuple(p-q for p,q in zip(u,v))
 
 zx, zy = add(e(1),e(10)), sub(e(4),e(15))           # the ZD exhibit
 in_NF=lambda x,y: abs(N(cdm(x,y))-N(x)*N(y))>1e-6*max(N(x)*N(y),1e-9)

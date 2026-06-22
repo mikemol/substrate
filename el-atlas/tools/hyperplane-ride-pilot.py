@@ -48,13 +48,7 @@ for X, Y in [('NVE','NVL'), ('GCX','CDC'), ('GCX','SWP'), ('LOC','L26'), ('PUR',
     print(f"  {{{X},{Y}}}: full {st_f} truth/{sk_f} kind == projected {st_p}x{mult}/{sk_p}x{mult}: {ok}   work: {cells} cells vs {len(h.SPACE)} models ({len(h.SPACE)//cells}x less)")
 
 print("\nB. determinant-variety ride (sedenions):")
-def conj(w): return (w[0],)+tuple(-t for t in w[1:])
-def cdmul(x,y):
-    n=len(x)
-    if n==1: return (x[0]*y[0],)
-    k=n//2; a,b,c,d=x[:k],x[k:],y[:k],y[k:]
-    sub=lambda p,q:tuple(i-j for i,j in zip(p,q)); add=lambda p,q:tuple(i+j for i,j in zip(p,q))
-    return sub(cdmul(a,c),cdmul(conj(d),b))+add(cdmul(d,a),cdmul(b,conj(c)))
+from cd_arith import conj, cdmul   # Π9: shared CD doubling generator
 def L(x):
     return np.array([cdmul(x, tuple(1.0 if t==j else 0.0 for t in range(16))) for j in range(16)]).T
 x_ex = tuple((1.0 if i==1 else 0.0)+(1.0 if i==10 else 0.0) for i in range(16))

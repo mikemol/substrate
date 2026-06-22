@@ -72,15 +72,7 @@ for x in rng.sample(range(1, M), 30):
     ok3b &= len(ann_brute) == gcd(x,4)*gcd(x,3)*gcd(x,5)*gcd(x,7)
 print(f"3. chart classifies ZDs exhaustively ({len(zd_brute)} of them): {ok3}; annihilators read off coordinates (30 samples): {ok3b}")
 
-def conj(w): return (w[0],) + tuple(-t for t in w[1:])
-def vadd(u_, v_): return tuple(p+q for p, q in zip(u_, v_))
-def vneg(u_): return tuple(-p for p in u_)
-def cdmul(x, y):
-    n = len(x)
-    if n == 1: return (x[0]*y[0],)
-    h = n//2; a_, b_, c_, d_ = x[:h], x[h:], y[:h], y[h:]
-    sub = lambda p, q: tuple(i-j for i, j in zip(p, q))
-    return sub(cdmul(a_, c_), cdmul(conj(d_), b_)) + vadd(cdmul(d_, a_), cdmul(b_, conj(c_)))
+from cd_arith import conj, vadd, vneg, cdmul   # Π9: shared CD doubling generator
 def e8(i):
     w = [0]*8; w[i] = 1; return tuple(w)
 a_, b_ = e8(1), e8(2)            # x = e1 + e10 = (e1, e2)

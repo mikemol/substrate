@@ -20,15 +20,7 @@ witness-aliases.
 import random
 rng = random.Random(5)
 
-def conj(v): return (v[0],) + tuple(-t for t in v[1:])
-def vadd(u,v): return tuple(p+q for p,q in zip(u,v))
-def vsub(u,v): return tuple(p-q for p,q in zip(u,v))
-def cdmul(x,y):
-    n=len(x)
-    if n==1: return (x[0]*y[0],)
-    h=n//2; a,b,c,d = x[:h],x[h:],y[:h],y[h:]
-    return vsub(cdmul(a,c), cdmul(conj(d),b)) + vadd(cdmul(d,a), cdmul(b,conj(c)))
-def N(v): return sum(t*t for t in v)
+from cd_arith import conj, vadd, vsub, cdmul, norm as N   # Π9: shared CD doubling generator
 def e(i,n=16):
     v=[0.0]*n; v[i]=1.0; return tuple(v)
 
