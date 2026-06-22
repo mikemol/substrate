@@ -90,13 +90,8 @@ def nilpotent_index(M, cap=8):
     return None
 
 
-results = []
-
-
-def check(name, cond):
-    ok = bool(cond); results.append((name, ok))
-    print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
-    return ok
+from jea_check import Checks
+_checks = Checks(); check = _checks.check; results = _checks.results
 
 
 def probe_rung(n):
@@ -169,9 +164,7 @@ def main():
           "(the nilpotent species lives only in cross_term, invisible to orbit geometry)",
           not saw_nilpotent)
 
-    npass = sum(ok for _, ok in results)
-    print(f"\n=== TALLY: {npass}/{len(results)} exact checks pass ===")
-    return 0 if npass == len(results) else 1
+    return 0 if _checks.tally("exact checks") else 1
 
 
 if __name__ == "__main__":

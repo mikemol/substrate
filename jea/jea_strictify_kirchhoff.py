@@ -15,9 +15,8 @@ Strictified exactly (sympy), each a falsifiable assertion:
 """
 import sympy as sp
 from itertools import combinations
-results=[]
-def check(name,cond):
-    ok=bool(cond); results.append((name,ok)); print(f"  [{'PASS' if ok else 'FAIL'}] {name}"); return ok
+from jea_check import Checks
+_checks = Checks(); check = _checks.check; results = _checks.results
 
 g1,g2 = sp.symbols('g1 g2', positive=True)
 
@@ -101,6 +100,4 @@ bal_cond = sp.simplify(num.subs({g4: g2*g3/g1}))
 check("Wheatstone bridge-null at balance g1*g4=g2*g3 => coupling carries no current (kernel condition)",
       sp.simplify(bal_cond)==0)
 
-print(f"\n=== TALLY: {sum(ok for _,ok in results)}/{len(results)} exact Kirchhoff-grounded checks pass ===")
-fails=[nm for nm,ok in results if not ok]
-if fails: print("FAILURES:", fails)
+_checks.tally("exact Kirchhoff-grounded checks")

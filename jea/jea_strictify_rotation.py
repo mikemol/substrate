@@ -17,9 +17,8 @@ Exact (sympy) structural checks, then the ONE quantitative test:
 """
 import sympy as sp
 from itertools import combinations
-results=[]
-def check(name,cond):
-    ok=bool(cond); results.append((name,ok)); print(f"  [{'PASS' if ok else 'FAIL'}] {name}"); return ok
+from jea_check import Checks
+_checks = Checks(); check = _checks.check; results = _checks.results
 
 def cycle_form_exact(nv):
     edges=list(combinations(range(nv),2)); eidx={e:i for i,e in enumerate(edges)}
@@ -99,7 +98,5 @@ for rk in (2,6,10):
     check(f"  rank {rk}: rotation-out gives (1-c^2)^{rk//2}  (matches measured logspace slope {rk/2:g})",
           sp.powsimp(sp.simplify(inplane_per_dir**rk - (1-c**2)**sp.Rational(rk,2)), force=True)==0)
 
-print(f"\n=== TALLY: {sum(ok for _,ok in results)}/{len(results)} exact checks pass ===")
-fails=[nm for nm,ok in results if not ok]
-if fails: print("FAILURES:", fails)
-else: print("self-annihilation = rotation-out-of-plane, and it reproduces the depopulation law exactly.")
+if _checks.tally("exact checks"):
+    print("self-annihilation = rotation-out-of-plane, and it reproduces the depopulation law exactly.")

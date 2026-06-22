@@ -17,11 +17,8 @@ import sympy as sp
 from itertools import combinations
 
 R = sp.Rational
-results = []
-def check(name, cond):
-    ok = bool(cond); results.append((name, ok))
-    print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
-    return ok
+from jea_check import Checks
+_checks = Checks(); check = _checks.check; results = _checks.results
 
 print("=== (1) G-Value Calculus on formal-quotient pairs (n,d), EXACT ===")
 n1,d1,n2,d2 = sp.symbols('n1 d1 n2 d2', positive=True)
@@ -120,7 +117,4 @@ print(f"    center locus (rep-projection=0) solution: {sol}")
 # the solution space should be exactly the witness line (1-dimensional, spanned by w)
 check("CENTER = witness line: rep-projection=0 <=> multiple of the kernel", len(sol)>0)
 
-print(f"\n=== TALLY: {sum(ok for _,ok in results)}/{len(results)} exact checks pass ===")
-fails=[nm for nm,ok in results if not ok]
-if fails:
-    print("FAILURES:", fails)
+_checks.tally("exact checks")
