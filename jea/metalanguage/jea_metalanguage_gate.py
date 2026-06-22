@@ -285,7 +285,15 @@ def chk_oneforest():
     assert "scale" in {o["unit"] for o in cov["b_orphans"]}, "impl:scale (no spec) must be flagged an orphan"
     mani = F.coverage("spec", "impl", floor=0.6, manifest={"axpy": "axpy", "dot": "dot"})
     assert not mani["manifest_complete"] and mani["manifest_misses"], \
-        "an intended mirror (dot→dot) absent on impl must be a manifest miss"
+        "a pinned structural symmetry (dot→dot) absent on impl must be a regression miss"
+    # The correspondence is DISCOVERED + SYMMETRIC (mutual-best), not declared. axpy↔axpy is each side's
+    # reciprocal best (EXACT, degree 0); dot/scale have no reciprocal partner ⇒ the symmetry unpairs them.
+    corr = F.correspondence("spec", "impl", floor=0.6)
+    assert not corr["symmetric"], "an unpaired unit must break the symmetric (total) correspondence"
+    assert any(p["a"] == "axpy" and p["b"] == "axpy" and p["exact"] for p in corr["pairs"]), \
+        "axpy↔axpy must be the mutual-best EXACT (degree 0) correspondent"
+    assert "dot" in corr["a_orphans"] and "scale" in corr["b_orphans"], \
+        "dot/scale (no reciprocal partner) must be orphans of the symmetry"
     return "PASS"
 
 

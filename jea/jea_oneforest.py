@@ -9,10 +9,14 @@ a new mechanism (the recursive law: tiling and the cross-term are two FOLDS of o
     obstruction + residue say BY HOW MUCH and WHERE -- exactly the "does this artifact faithfully
     realize the proven algorithm" question, answered structurally, not asserted. This is FIDELITY
     (precision): is each matched pair faithful.
-  * the COMPLETENESS companion (`coverage`) closes the recall side the bare gate can't see: it walks
-    BOTH arms and flags units with NO mirror above a shared-support floor (ORPHANS) on either side --
-    a Python algorithm with no proof-core, or an Agda def no arm realizes. With an intended-correspondence
-    `manifest` it checks each expected mirror is present AND faithful. Together: complete ∧ faithful.
+  * the COMPLETENESS companion closes the recall side the bare gate can't see. The correspondence is
+    DISCOVERED, never declared -- nothing is *supposed* to mirror anything; two units correspond because
+    they share canonical structure under the symmetry the interner already quotients by (α/role, the
+    gauge). `correspondence` is the SYMMETRIC (mutual-best/reciprocal) matching -- a↔b iff each is the
+    other's most-shared partner; ORPHANS = the units the symmetry leaves unpaired; `symmetric` = a total
+    structural bijection of the unit-sets up to the gauge. EXACT = cross-term degree 0. (`coverage` is the
+    weaker per-side floored existence view; its optional `manifest` is NOT a table of intentions but a
+    regression PIN -- assert a once-discovered structural symmetry still holds.) Together: complete ∧ faithful.
   * tiling / metalanguage = the cohomology fold on a single arm (jea_pysim) -- a separate readout of
     the same forest (not built here; this module is the cross-arm gate).
 
@@ -111,9 +115,11 @@ class OneForest:
         side has an orphan. Coverage is the EXISTENCE question (≥ floor), kept distinct from the gate's
         FIDELITY question (degree 0) — together: complete ∧ faithful.
 
-        With a `manifest` of INTENDED correspondences {arm_a_qname: arm_b_qname}, it also reports each
-        intended pair that is missing on either side or present-but-unfaithful (degree > 0) — turning
-        best-effort pairing into a checkable spec (`manifest_complete`)."""
+        For the SYMMETRIC structural correspondence (a↔b mutual-best, the gauge-free matching), use
+        `correspondence` — that, not this per-side view, is the discovered mirroring. The optional
+        `manifest` here is NOT a table of intentions (nothing is *supposed* to mirror anything); it is a
+        regression PIN — assert a once-discovered structural symmetry {a_qname: b_qname} still holds
+        (present on both sides AND faithful, degree 0), so a later edit can't silently break it."""
         au = self.arms.get(arm_a, [])
         bu = self.arms.get(arm_b, [])
 
@@ -162,6 +168,44 @@ class OneForest:
                               and (manifest is None or result["manifest_complete"]))
         return result
 
+    # ── the SYMMETRIC structural correspondence: discovered, not declared ─────
+    def correspondence(self, arm_a: str, arm_b: str, floor: float = 0.5) -> dict:
+        """The structural correspondence between two arms — DISCOVERED by the shared forest, never
+        declared. Nothing is *supposed* to mirror anything: two units correspond because they share
+        canonical structure under the symmetry the interner already quotients by (α/role-equivalence,
+        the gauge). The correspondence is therefore the SYMMETRIC (mutual-best) matching — a ↔ b iff
+        each is the other's most-shared partner (reciprocity = the symmetry; it removes `coverage`'s
+        asymmetry, where a's best-b need not have a as its best). EXACT correspondence = cross-term
+        degree 0 (same canonical structure up to the gauge); graded below. Orphans = the units the
+        symmetry leaves unpaired. `symmetric` = a TOTAL mutual correspondence (a structural bijection
+        of the unit-sets up to the gauge) — completeness as symmetry, with no manifest of intentions."""
+        au, bu = self.arms.get(arm_a, []), self.arms.get(arm_b, [])
+
+        def argbest(r, others):  # (best shared_fraction, index) of r's most-shared partner in others
+            cand = [(self.cross.shared_fraction(r, ro), j) for j, (_, ro) in enumerate(others)]
+            return max(cand) if cand else (0.0, None)
+
+        a_best = [argbest(r, bu) for _, r in au]
+        b_best = [argbest(r, au) for _, r in bu]
+        pairs, a_matched, b_matched = [], set(), set()
+        for i, (qa, ra) in enumerate(au):
+            fa, j = a_best[i]
+            if j is None or fa < floor:
+                continue
+            fb, i2 = b_best[j]
+            if i2 == i:                      # reciprocal mutual-best ⇒ the symmetric correspondent
+                ct = self.cross.cross_term(ra, bu[j][1])
+                pairs.append({"a": qa, "b": bu[j][0], "shared_fraction": round(fa, 3),
+                              "degree": ct.degree, "exact": ct.degree == 0})
+                a_matched.add(i); b_matched.add(j)
+        a_orphans = [qa for i, (qa, _) in enumerate(au) if i not in a_matched]
+        b_orphans = [qb for j, (qb, _) in enumerate(bu) if j not in b_matched]
+        return {"arm_a": arm_a, "arm_b": arm_b, "floor": floor,
+                "n_a": len(au), "n_b": len(bu), "pairs": pairs,
+                "a_orphans": a_orphans, "b_orphans": b_orphans,
+                "n_pairs": len(pairs), "exact_pairs": sum(p["exact"] for p in pairs),
+                "symmetric": not a_orphans and not b_orphans}
+
 
 if __name__ == "__main__":
     print("=== Σ-FOREST: the cross-arm verification gate (CrossMix over one forest) ===\n")
@@ -198,9 +242,14 @@ if __name__ == "__main__":
           f"complete={cov['complete']}")
     print(f"  spec orphans (no impl mirror): {[o['unit'] for o in cov['a_orphans']]}")
     print(f"  impl orphans (no spec mirror): {[o['unit'] for o in cov['b_orphans']]}")
-    mani = F.coverage("spec", "impl", floor=0.6, manifest={"axpy": "axpy", "dot": "dot"})
-    print(f"  manifest {{axpy→axpy, dot→dot}}: complete={mani['manifest_complete']}  "
-          f"misses={[m['reason'] for m in mani['manifest_misses']]}  (dot→dot expected but impl:dot absent)")
+    print()
+    print("--- correspondence(spec, impl): the SYMMETRIC structural matching (discovered, not declared) ---")
+    corr = F.correspondence("spec", "impl", floor=0.6)
+    for p in corr["pairs"]:
+        verdict = "EXACT (degree 0)" if p["exact"] else f"graded (degree {p['degree']})"
+        print(f"  {p['a']} ↔ {p['b']}   shared {p['shared_fraction']}  {verdict}")
+    print(f"  orphans: spec={corr['a_orphans']}  impl={corr['b_orphans']}   symmetric={corr['symmetric']}")
+    print("  (axpy is each other's mutual-best; dot/scale have no reciprocal partner -> unpaired by the symmetry)")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND
