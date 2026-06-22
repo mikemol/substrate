@@ -85,14 +85,9 @@ if __name__ == "__main__":
         print(f"  {name:<16} predicted W={W:>3} bits  ->  carrier {carrier:<10}  exact={ok}")
 
     # MEMOIZATION (the WIRED SPPF intern, Δ-Σ-trace): a sharing-heavy tree evaluates THROUGH carrier_solve, interned.
-    def build_Eq(n):
-        L=1<<n; vN=[1]*L; vD=[1]*L; op=[-1]*L; lch=[-1]*L; rch=[-1]*L; level=list(range(L))
-        while len(level)>1:
-            nxt=[]
-            for i in range(0,len(level),2):
-                k=len(vN); vN.append(0); vD.append(1); op.append(0); lch.append(level[i]); rch.append(level[i+1]); nxt.append(k)
-            level=nxt
-        return dict(vN=vN,vD=vD,op=op,lch=lch,rch=rch,L=L,N=len(vN),root=level[0],truth=Fraction(1<<n,1))
+    import jea_zsppf as _Z                          # Π11: the canonical balanced-add-tree builder lives in jea_zsppf
+    def build_Eq(n):                                 # = _Z.build_Eq + the truth/L annotation (the only real difference)
+        eq = _Z.build_Eq(n); eq["L"] = 1 << n; eq["truth"] = Fraction(1 << n, 1); return eq
     eq=build_Eq(12); _gc,distinct=SPPF.intern(eq); mval,mc,_=carrier_solve(eq)   # carrier_solve INTERNS then evaluates
     memo_ok = (mval==eq["truth"]) and (distinct < eq["N"])
     print(f"\n  MEMOIZATION wired into carrier_solve: E_q(12) {eq['N']} nodes -> interned {distinct} "

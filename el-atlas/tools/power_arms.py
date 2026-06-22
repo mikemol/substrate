@@ -19,6 +19,7 @@ for v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
     os.environ.setdefault(v, "1")
 import time, subprocess, threading
 import numpy as np
+from cpu_load import matmul_spin   # Π11: shared CPU matmul-throughput workload
 from host_probe import _read
 
 PCORES = range(6)
@@ -61,10 +62,7 @@ def compute_rate(threads=4, m=256, iters=6):
     mats = [(np.random.rand(m, m).astype(np.float32), np.random.rand(m, m).astype(np.float32))
             for _ in range(threads)]
     for x, y in mats: np.dot(x, y)
-    def work(xy):
-        x, y = xy
-        for _ in range(iters): z = np.dot(x, y)
-        return float(z[0, 0])
+    def work(xy): return matmul_spin(xy, iters)
     best = 1e9
     with ThreadPoolExecutor(max_workers=threads) as ex:
         for _ in range(2):

@@ -34,6 +34,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 import time
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
+from cpu_load import matmul_spin   # Π11: shared CPU matmul-throughput workload
 
 CORES = os.cpu_count()
 G_AND = lambda a, b: 0.0 if a + b == 0 else a * b / (a + b)
@@ -62,11 +63,7 @@ def agg_compute_gflops(k, m=256, iters=16):
             for _ in range(k)]
     for x, y in mats:
         np.dot(x, y)                                     # warm
-    def work(xy):
-        x, y = xy
-        for _ in range(iters):
-            z = np.dot(x, y)
-        return float(z[0, 0])
+    def work(xy): return matmul_spin(xy, iters)
     best = 1e9
     with ThreadPoolExecutor(max_workers=k) as ex:
         for _ in range(2):

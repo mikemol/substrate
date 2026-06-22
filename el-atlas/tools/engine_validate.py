@@ -26,6 +26,7 @@ os.environ.setdefault("CUDA_PATH", "/usr")
 import time
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
+from cpu_load import matmul_spin   # Π11: shared CPU matmul-throughput workload
 from host_probe import probe_host, _measure_sysram_bw
 from jea_perf_engine import view_ridge, view_spectrum, perf_graph
 from topology_breakers import discover
@@ -38,11 +39,7 @@ def sgemm_rate(threads, m=256, iters=12, reps=3):
             for _ in range(threads)]
     for x, y in mats:
         np.dot(x, y)
-    def work(xy):
-        x, y = xy
-        for _ in range(iters):
-            z = np.dot(x, y)
-        return float(z[0, 0])
+    def work(xy): return matmul_spin(xy, iters)
     best = 1e9
     with ThreadPoolExecutor(max_workers=threads) as ex:
         for _ in range(reps):
