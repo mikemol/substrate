@@ -46,6 +46,7 @@ class OneForest:
         self.I = Intern()
         self.arms: dict[str, list[tuple[str, int]]] = {}    # arm -> [(qname, interned_root), ...]
         self.cross = CrossMix(self.I)
+        self._shape_memo: dict[int, tuple] = {}
 
     # ── front-end arms (each writes into the ONE shared Intern) ──────────────
     def add_python(self, arm: str, src: str, qname: str):
@@ -215,12 +216,14 @@ class OneForest:
                 a_matched.add(i); b_matched.add(j)
         a_orphans = [qa for i, (qa, _) in enumerate(au) if i not in a_matched]
         b_orphans = [qb for j, (qb, _) in enumerate(bu) if j not in b_matched]
-        # COMPARABILITY guard: two arms can only correspond where their canonical vocabularies overlap.
-        # Disjoint vocabularies (e.g. Python AST kinds vs the single Agda 'AgdaCore' kind) ⇒ no interned id
-        # can coincide ⇒ shared_fraction ≡ 0 by construction: the numbers are vacuous ("quotiented of
-        # meaning"), and a real cross-vocabulary correspondence needs an ALIGNMENT FUNCTOR (a map of one
-        # vocabulary's heads onto the other's — what jea_seam_provenance supplies by hand for one law),
-        # ideally DISCOVERED by behaviour, not declared. `comparable` says whether the verdict means anything.
+        # COMPARABILITY is QUOTIENT-RELATIVE. This `comparable` is at the FINEST (label-full) rung: two
+        # arms share interned ids only where their `kind` vocabularies overlap, so Python AST vs Agda
+        # 'AgdaCore' is comparable=False HERE. That does NOT mean "nothing corresponds" — it means the
+        # label rung is the wrong one for this pair. Quotient further (drop the labels) and `shared_structure`
+        # finds the generic concepts that DO correspond (the leaf, the generic pair, …). The label rung is
+        # for within-language operator identity; cross-language structure lives at the coarse shape rung;
+        # cross-language *semantic* unit-identity is the finer frontier (a behaviour-discovered alignment,
+        # generalizing jea_seam_provenance). `comparable` flags the rung, it is not a verdict of non-mirroring.
         va, vb = self._vocab(arm_a), self._vocab(arm_b)
         shared_vocab = sorted(va & vb)
         return {"arm_a": arm_a, "arm_b": arm_b, "floor": floor,
@@ -229,6 +232,51 @@ class OneForest:
                 "n_pairs": len(pairs), "exact_pairs": sum(p["exact"] for p in pairs),
                 "symmetric": not a_orphans and not b_orphans,
                 "shared_vocab": shared_vocab, "comparable": bool(shared_vocab)}
+
+    # ── the COARSE rung: label-free structural shape (where generic concepts live) ──
+    def shape(self, i: int) -> tuple:
+        """The LABEL-FREE structural shape of a subtree: its arity + the (unordered) shapes of its
+        children, recursively. Quotients away kind/role/op/lit/value AND child order — the bare recursion
+        structure, language-AGNOSTIC. This is the COARSE rung of the quotient ladder, where GENERIC
+        structural concepts live and correspond ACROSS languages even when the label vocabularies are
+        disjoint: (0,()) = a leaf/atom; (2,((0,()),(0,()))) = the generic PAIR — a binary combinator of two
+        atoms, which a Python tuple, an Agda Σ/binary-constructor, a Cayley-Dickson doubling, and a BinOp
+        ALL are at once. `full_skeleton` (jea_pyalg) is the label-FULL dual — the finest rung (keeps the
+        operator, so it distinguishes within a language but goes disjoint across)."""
+        memo = self._shape_memo
+        if i in memo:
+            return memo[i]
+        kids = self.I.nodes[i].children
+        s = (len(kids), tuple(sorted(self.shape(c) for c in kids)))
+        memo[i] = s
+        return s
+
+    def _shapes(self, arm: str) -> set:
+        out, seen = set(), set()
+        for _, r in self.arms.get(arm, []):
+            stack = [r]
+            while stack:
+                j = stack.pop()
+                if j in seen:
+                    continue
+                seen.add(j); out.add(self.shape(j)); stack.extend(self.I.nodes[j].children)
+        return out
+
+    def shared_structure(self, arm_a: str, arm_b: str) -> dict:
+        """Cross-language structural correspondence at the COARSE (label-free shape) quotient — the rung
+        where structure corresponds even when the label vocabularies are disjoint (so `correspondence`'s
+        label-level `comparable=False` is NOT 'nothing corresponds'; quotient further). Returns the shared
+        structural vocabulary, its coverage of each arm, and named landmarks (leaf, generic pair). The
+        generic pair coming up across Python and Agda is the proof the coarse rung is non-vacuous."""
+        sa, sb = self._shapes(arm_a), self._shapes(arm_b)
+        shared = sa & sb
+        LEAF = (0, ()); PAIR = (2, (LEAF, LEAF))
+        return {"arm_a": arm_a, "arm_b": arm_b,
+                "n_shapes_a": len(sa), "n_shapes_b": len(sb), "n_shared": len(shared),
+                "shared_fraction_a": round(len(shared) / len(sa), 3) if sa else 1.0,
+                "shared_fraction_b": round(len(shared) / len(sb), 3) if sb else 1.0,
+                "leaf_shared": LEAF in shared, "generic_pair_shared": PAIR in shared,
+                "shared_shapes": sorted(shared, key=lambda s: len(str(s)))[:12]}
 
 
 if __name__ == "__main__":
@@ -273,10 +321,23 @@ if __name__ == "__main__":
         verdict = "EXACT (degree 0)" if p["exact"] else f"graded (degree {p['degree']})"
         print(f"  {p['a']} ↔ {p['b']}   shared {p['shared_fraction']}  {verdict}")
     print(f"  orphans: spec={corr['a_orphans']}  impl={corr['b_orphans']}   symmetric={corr['symmetric']}")
-    print(f"  comparable={corr['comparable']} (shared vocab: {corr['shared_vocab'][:6]}...) -- both arms are Python, so")
-    print("  the correspondence MEANS something. Across disjoint vocabularies (Python AST kinds vs the single")
-    print("  Agda 'AgdaCore' kind) comparable=False: shared_fraction≡0 by construction -- numbers quotiented of")
-    print("  meaning, needing an ALIGNMENT FUNCTOR (cf. jea_seam_provenance) before a cross-language verdict.")
+    print(f"  comparable={corr['comparable']} at the LABEL rung (shared vocab: {corr['shared_vocab'][:5]}...)")
+    print()
+
+    # ── the QUOTIENT LADDER: a foreign arm with a DIFFERENT label vocabulary still shares STRUCTURE.
+    #    Mint a binary node of two atoms under foreign kinds (the Python-vs-Agda situation in miniature):
+    #    label-incomparable, yet the GENERIC PAIR corresponds at the coarse shape rung.
+    import jea_pyalg
+    leaf1 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="a"))
+    leaf2 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="b"))
+    F.add_units("foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))])
+    print("--- the data the right way: shared_structure(spec, foreign) at the LABEL-FREE shape rung ---")
+    lab = F.correspondence("spec", "foreign", floor=0.6)
+    ss = F.shared_structure("spec", "foreign")
+    print(f"  label rung:  comparable={lab['comparable']}  (disjoint kinds -> 'nothing' at this rung)")
+    print(f"  shape rung:  generic_pair_shared={ss['generic_pair_shared']}  leaf_shared={ss['leaf_shared']}  "
+          f"n_shared={ss['n_shared']}")
+    print("  => quotient far enough and the GENERIC PAIR (2,(leaf,leaf)) corresponds across the vocabulary gap.")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND

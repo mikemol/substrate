@@ -301,11 +301,18 @@ def chk_oneforest():
     import jea_pyalg
     assert corr["comparable"] and "FunctionDef" in corr["shared_vocab"], \
         "two Python arms must be comparable (overlapping vocabulary)"
-    foreign = F.I.intern(jea_pyalg.IR(kind="Foreign"))
-    F.add_units("foreign", [("x", foreign)])
+    # A foreign arm: a binary node of two atoms under DISJOINT kinds (the Python-vs-Agda-core situation in
+    # miniature). At the LABEL rung it's incomparable; QUOTIENT FURTHER and the GENERIC PAIR still
+    # corresponds — comparability is rung-relative, "incomparable at labels" is NOT "nothing corresponds".
+    leaf1 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="a"))
+    leaf2 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="b"))
+    F.add_units("foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))])
     inc = F.correspondence("spec", "foreign", floor=0.6)
     assert not inc["comparable"] and not inc["shared_vocab"], \
-        "disjoint-vocabulary arms (cf. Python vs Agda-core) must be flagged NOT comparable"
+        "disjoint-vocabulary arms (cf. Python vs Agda-core) must be NOT comparable at the LABEL rung"
+    ss = F.shared_structure("spec", "foreign")
+    assert ss["generic_pair_shared"] and ss["leaf_shared"], \
+        "the generic pair (2,(leaf,leaf)) must correspond across the vocabulary gap at the label-free shape rung"
     return "PASS"
 
 
