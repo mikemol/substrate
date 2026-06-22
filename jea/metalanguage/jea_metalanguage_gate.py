@@ -271,6 +271,21 @@ def chk_oneforest():
     F.add_python("impl", "def axpy(x, y):\n    return x + y\n", "axpy")
     rows = F.gate("spec", "impl")
     assert rows and rows[0]["realizes"], "identical impl must REALIZE spec (degree 0)"
+    # FIDELITY (gate) ∧ COMPLETENESS (coverage). With a full mirror, coverage is complete + no orphans.
+    cov0 = F.coverage("spec", "impl", floor=0.6)
+    assert cov0["complete"] and not cov0["a_orphans"] and not cov0["b_orphans"], \
+        "full mirror must be coverage-complete (no orphans either side)"
+    # Recall the bare gate can't see: a unit with NO mirror is an ORPHAN, and a missing manifest pair
+    # is caught — the precision-not-recall blind spot, now gated.
+    F.add_python("spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot")  # no impl
+    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")                           # no spec
+    cov = F.coverage("spec", "impl", floor=0.6)
+    assert not cov["complete"], "an unmirrored unit must make coverage INCOMPLETE"
+    assert "dot" in {o["unit"] for o in cov["a_orphans"]}, "spec:dot (no impl) must be flagged an orphan"
+    assert "scale" in {o["unit"] for o in cov["b_orphans"]}, "impl:scale (no spec) must be flagged an orphan"
+    mani = F.coverage("spec", "impl", floor=0.6, manifest={"axpy": "axpy", "dot": "dot"})
+    assert not mani["manifest_complete"] and mani["manifest_misses"], \
+        "an intended mirror (dot→dot) absent on impl must be a manifest miss"
     return "PASS"
 
 

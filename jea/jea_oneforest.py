@@ -4,10 +4,15 @@
 Intern source + core + kernel into ONE forest, then the project's REASON falls out as a readout, not
 a new mechanism (the recursive law: tiling and the cross-term are two FOLDS of one forest):
   * source↔core↔kernel CROSS-TERM = `CrossMix.cross_term` across the three arms' units = the
-    VERIFICATION GATE. Where a kernel/source unit and the proof-core unit are ORTHOGONAL (degree 0,
-    same canonical node) the kernel REALIZES the proof; where they diverge, the graded obstruction +
-    residue say BY HOW MUCH and WHERE -- exactly the "does this artifact faithfully realize the proven
-    algorithm" question, answered structurally, not asserted.
+    VERIFICATION GATE (`gate`). Where a kernel/source unit and the proof-core unit are ORTHOGONAL
+    (degree 0, same canonical node) the kernel REALIZES the proof; where they diverge, the graded
+    obstruction + residue say BY HOW MUCH and WHERE -- exactly the "does this artifact faithfully
+    realize the proven algorithm" question, answered structurally, not asserted. This is FIDELITY
+    (precision): is each matched pair faithful.
+  * the COMPLETENESS companion (`coverage`) closes the recall side the bare gate can't see: it walks
+    BOTH arms and flags units with NO mirror above a shared-support floor (ORPHANS) on either side --
+    a Python algorithm with no proof-core, or an Agda def no arm realizes. With an intended-correspondence
+    `manifest` it checks each expected mirror is present AND faithful. Together: complete ∧ faithful.
   * tiling / metalanguage = the cohomology fold on a single arm (jea_pysim) -- a separate readout of
     the same forest (not built here; this module is the cross-arm gate).
 
@@ -91,6 +96,72 @@ class OneForest:
                         "a_residue": ct.a_residue, "b_residue": ct.b_residue})
         return out
 
+    # ── the COMPLETENESS readout: does every unit have a mirror at all? ───────
+    def coverage(self, arm_a: str, arm_b: str, floor: float = 0.5,
+                 manifest: dict[str, str] | None = None) -> dict:
+        """The completeness/recall companion to `gate`. `gate` answers PRECISION ("is each *matched*
+        pair faithful?"); `coverage` answers RECALL ("does every unit have a mirror at all?"). The bare
+        gate cannot see recall — it iterates arm_a only and, for an arm_a unit with no real partner,
+        still takes arm_b's *best* match, so a MISSING mirror is silently reported as a (low-coherence)
+        match and an arm_b unit absent from arm_a is never visited.
+
+        coverage walks BOTH sides: for each unit it finds its best partner across the other arm by
+        `shared_fraction`; a unit whose best < `floor` is an ORPHAN (no structural mirror). It returns
+        the orphan lists for both arms + per-side coverage fractions. `complete` is True iff neither
+        side has an orphan. Coverage is the EXISTENCE question (≥ floor), kept distinct from the gate's
+        FIDELITY question (degree 0) — together: complete ∧ faithful.
+
+        With a `manifest` of INTENDED correspondences {arm_a_qname: arm_b_qname}, it also reports each
+        intended pair that is missing on either side or present-but-unfaithful (degree > 0) — turning
+        best-effort pairing into a checkable spec (`manifest_complete`)."""
+        au = self.arms.get(arm_a, [])
+        bu = self.arms.get(arm_b, [])
+
+        def best(r, others):
+            cand = [(self.cross.shared_fraction(r, ro), qo) for qo, ro in others]
+            return max(cand) if cand else (0.0, None)
+
+        a_orphans, b_orphans, a_ok, b_ok = [], [], 0, 0
+        for q, r in au:
+            frac, partner = best(r, bu)
+            if frac >= floor:
+                a_ok += 1
+            else:
+                a_orphans.append({"unit": q, "best": partner, "shared_fraction": round(frac, 3)})
+        for q, r in bu:
+            frac, partner = best(r, au)
+            if frac >= floor:
+                b_ok += 1
+            else:
+                b_orphans.append({"unit": q, "best": partner, "shared_fraction": round(frac, 3)})
+
+        result = {
+            "arm_a": arm_a, "arm_b": arm_b, "floor": floor,
+            "n_a": len(au), "n_b": len(bu),
+            "coverage_a": round(a_ok / len(au), 3) if au else 1.0,
+            "coverage_b": round(b_ok / len(bu), 3) if bu else 1.0,
+            "a_orphans": a_orphans, "b_orphans": b_orphans,
+        }
+        if manifest is not None:
+            ad, bd, misses = dict(au), dict(bu), []
+            for qa, qb in manifest.items():
+                if qa not in ad:
+                    misses.append({"expected": f"{qa}→{qb}", "reason": f"{arm_a}:{qa} absent"})
+                elif qb not in bd:
+                    misses.append({"expected": f"{qa}→{qb}", "reason": f"{arm_b}:{qb} absent"})
+                else:
+                    ct = self.cross.cross_term(ad[qa], bd[qb])
+                    if ct.degree != 0:
+                        misses.append({"expected": f"{qa}→{qb}",
+                                       "reason": f"present but unfaithful (degree {ct.degree})",
+                                       "shared_fraction": round(self.cross.shared_fraction(ad[qa], bd[qb]), 3)})
+            result["manifest_misses"] = misses
+            result["manifest_complete"] = not misses
+
+        result["complete"] = (not a_orphans and not b_orphans
+                              and (manifest is None or result["manifest_complete"]))
+        return result
+
 
 if __name__ == "__main__":
     print("=== Σ-FOREST: the cross-arm verification gate (CrossMix over one forest) ===\n")
@@ -115,6 +186,21 @@ if __name__ == "__main__":
     show("spec", "impl")            # REALIZES (orthogonal)
     print()
     show("spec", "broken")          # DIVERGES -- the gate localizes the obstruction (the residues)
+    print()
+
+    # ── COMPLETENESS readout: the gate above is blind to a MISSING mirror. Give 'spec' a 2nd algorithm
+    #    with no realization, and 'impl' an extra unit with no spec -> coverage flags both as orphans.
+    print("--- coverage(spec, impl): does EVERY unit have a mirror? (recall, not just precision) ---")
+    F.add_python("spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot")   # no impl
+    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")                            # no spec
+    cov = F.coverage("spec", "impl", floor=0.6)
+    print(f"  coverage_a(spec→impl)={cov['coverage_a']}  coverage_b(impl→spec)={cov['coverage_b']}  "
+          f"complete={cov['complete']}")
+    print(f"  spec orphans (no impl mirror): {[o['unit'] for o in cov['a_orphans']]}")
+    print(f"  impl orphans (no spec mirror): {[o['unit'] for o in cov['b_orphans']]}")
+    mani = F.coverage("spec", "impl", floor=0.6, manifest={"axpy": "axpy", "dot": "dot"})
+    print(f"  manifest {{axpy→axpy, dot→dot}}: complete={mani['manifest_complete']}  "
+          f"misses={[m['reason'] for m in mani['manifest_misses']]}  (dot→dot expected but impl:dot absent)")
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND
