@@ -61,6 +61,8 @@ def intern_radix(g, mode="z"):
 
 
 def partition(canon):
+    # canonical home (Π7): canon → set of index-classes (group positions by canon value).
+    # jea_mega._part and jea_mega_eval.part fold to this (both already import jea_zsppf as Z).
     from collections import defaultdict
     d=defaultdict(list)
     for i,c in enumerate(canon): d[int(c)].append(i)

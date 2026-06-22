@@ -180,10 +180,7 @@ if __name__ == "__main__":
 
     # W4 the fused INTERN half == rung-1's standalone hash-cons intern (jea_mega): same dedup PARTITION (the fused
     # kernel's intern is the rung-1 hash-cons + a value compute -- the dedup is unchanged). Keeps rung-1 consumed.
-    def part(canon):
-        from collections import defaultdict; d=defaultdict(list)
-        for i,c in enumerate(canon): d[int(c)].append(i)
-        return set(frozenset(v) for v in d.values())
+    part = Z.partition   # Π7: → jea_zsppf.partition (already imported as Z)
     samepart=True
     for _,g in terms:
         fcanon,fd=Fused().intern_eval(g); hcanon,hd=MEGA.DeviceInterner().intern(g)

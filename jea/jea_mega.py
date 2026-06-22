@@ -92,11 +92,7 @@ class DeviceInterner:
         return [int(x) for x in canon.get()], int(self.nextid.get()[0])
 
 
-def _part(canon):
-    from collections import defaultdict
-    d=defaultdict(list)
-    for i,c in enumerate(canon): d[int(c)].append(i)
-    return set(frozenset(v) for v in d.values())
+_part = Z.partition   # Π7: canon→index-partition lives once in jea_zsppf (already imported as Z)
 
 
 if __name__ == "__main__":
