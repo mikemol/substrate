@@ -7,6 +7,10 @@ specific depths — i.e. a candidate for one carrier-/parameter-parametric defin
 every high-similarity pair should be folded (intentional parallels, by-design families, versioned
 rewrites). **This goes stale as code changes — regenerate, don't trust the line numbers.**
 
+## Sweep status (2026-06-21, Π6–Π8)
+
+Full regen across all three scans. **jea/ core:** two NEW byte-identical clusters folded — `check` ×4 → `jea_check.Checks` (Π6 ✅) and the canon→partition helper ×3 → `jea_zsppf.partition` (Π7 ✅); see §①. **el-atlas/tools + cross (Π8):** re-run found NO new actionable fold — every RFS ≥3 cluster triages to an existing category: `conj` ×4 is the trivial CD-conjugation 1-liner inside the **exploratory zero-divisor pilots** (the pedagogical curriculum — each `*-pilot.py` self-contains its own Cayley-Dickson arithmetic by design, same family as the left `vadd`/`vsub`); `work` ×3 is the inline `np.dot` measurement-spinner (the "a probe should show its load" intentional-workload judgment, §⑤-adjacent); the `el-atlas-depsort-v3` self-clusters (`t_*`, `trees`, `bridge`, `io_pass`) are §③ within-file/versioned; the cross scan surfaces only `jea_onegraph.{operating_point_qgraph,operating_point_shunt}` (the §② coordinate pair, 2×, below RFS 3). The jea⨯el-atlas self-hosting parallel stays at 0.62–0.67 (below the cluster threshold) — the intentional validation oracle, kept.
+
 ## Regenerate
 
 ```bash
