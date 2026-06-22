@@ -88,9 +88,8 @@ def _ccode(op, l, r):                                                    # struc
 
 
 _U128 = 1<<128
-def _trim(arr):                                                          # trailing-zero-trim little-endian uint8 limbs (>=1)
-    nz=cp.nonzero(arr)[0]
-    return arr[:1] if nz.size==0 else arr[:int(nz[-1])+1]
+import jea_core                                                          # Π10: leaf home for shared limb helpers
+_trim = jea_core.trim                                                    # trailing-zero-trim little-endian uint8 limbs (>=1)
 
 
 def deliver_crown(F, prev, distinct, sE):

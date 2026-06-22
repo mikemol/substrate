@@ -18,6 +18,7 @@ import os, sys, time
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import jea_core   # Π10: the leaf home for the shared limb helpers (pad/trim/lh)
 
 _SRC = r'''
 extern "C" __global__ void bs_add_k(const unsigned long long* A, const unsigned long long* B,
@@ -61,7 +62,7 @@ assert _SRC.isascii(), "kernel source must be ASCII"
 _kadd = cp.RawKernel(_SRC, "bs_add_k"); _ksub = cp.RawKernel(_SRC, "bs_sub_k"); _kmul = cp.RawKernel(_SRC, "bs_mul_k")
 _THR = 128
 def _grid(W): return ((W + _THR - 1)//_THR,)
-def _pad(A, G): return A if A.shape[0] >= G else cp.concatenate([A, cp.zeros((G-A.shape[0], A.shape[1]), cp.uint64)])
+_pad = jea_core.pad   # Π10: shared limb-pad lives in jea_core (the leaf both bitkernel & graded reach without a cycle)
 
 
 def bs_add(A, B):

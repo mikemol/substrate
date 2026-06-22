@@ -52,6 +52,21 @@ def lh(vals):
     return cp.asarray([v & M for v in vals], cp.uint64), cp.asarray([(v >> 64) & M for v in vals], cp.uint64)
 
 
+def pad(A, G):
+    """Zero-pad a (rows, W) uint64 limb matrix up to G rows (no-op if already ≥ G). The shared leaf
+    helper promoted here from the byte-identical jea_bitkernel._pad / jea_graded._pad (Π10); it could
+    not fold bitkernel→graded (jea_graded imports jea_bitkernel, so that import is local to break the
+    cycle) — jea_core is the leaf both reach without a cycle."""
+    return A if A.shape[0] >= G else cp.concatenate([A, cp.zeros((G - A.shape[0], A.shape[1]), cp.uint64)])
+
+
+def trim(arr):
+    """Trailing-zero-trim a little-endian uint8 limb array, keeping ≥ 1 element. Promoted here from the
+    same-semantics jea_carrier_base._trim / jea_resident._trim (Π10)."""
+    nz = cp.nonzero(arr)[0]
+    return arr[:int(nz[-1]) + 1] if nz.size else arr[:1]
+
+
 def build_kernel(src, name, int128=False):
     """Compile a RawKernel through the ASCII GATE. CUDA source MUST be ASCII — em-dash, the
     rational symbol, middot, double-arrow etc. in NVRTC comments fail with a cryptic

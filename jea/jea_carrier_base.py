@@ -56,9 +56,7 @@ def from_limbs(arr, w):
     for d in reversed(arr.get().tolist()): v = (v << w) | d    # Horner
     return v
 
-def _trim(u8):
-    nz = cp.nonzero(u8)[0]
-    return u8[:int(nz[-1])+1] if nz.size else u8[:1]
+_trim = jea_core.trim   # Π10: shared trailing-zero-trim in jea_core (already imported)
 
 
 def resolve(col, w, carryless):

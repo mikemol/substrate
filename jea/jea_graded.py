@@ -68,8 +68,8 @@ def from_bitsliced(planes, N):
     return [int(x) for x in out[:N].get()]
 
 
-def _pad(A, G):
-    return A if A.shape[0]>=G else cp.concatenate([A, cp.zeros((G-A.shape[0], A.shape[1]), cp.uint64)])
+import jea_core   # Π10: the leaf home for the shared limb helpers (pad/trim/lh)
+_pad = jea_core.pad
 
 
 _F64 = cp.uint64(0xFFFFFFFFFFFFFFFF)
