@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Graded.agda
+FILES := Cyclotomic.agda Graded.agda
 SUBDIRS := Graded
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
