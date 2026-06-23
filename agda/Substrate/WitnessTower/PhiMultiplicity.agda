@@ -23,14 +23,15 @@
 -- machine-checked simplex edge count. `gross2-faces` proves the doubled gross
 -- term over the real FaceCount base:  2·p·faces n 1 ≡ p·(n·(n+1)).
 --
--- NAMED GAPS (borrowed-name discipline — NOT overclaimed):
---  (1) the full fibered≡closed identity  mult2 p n ≡ 2·p·faces n 1 ∸ (p+1)·n
---      ∀n needs ℕ monus-mul distributivity (a·(b∸c)=a·b∸a·c), absent from
---      Foundation; proven here only at the corners. (→ a Foundation lemma.)
---  (2) the SPECTRAL grounding — that mult2/2 IS the multiplicity of Φ_p in the
---      cycle-space operator's char poly — is the cotype's PROBE-verified input
---      (linear algebra over a field absent); this module formalizes the COUNTING
---      structure + the FaceCount base, not the spectral derivation.
+-- The full fibered≡closed identity ∀n (`mult2-fibered`, Ⓕ.mult-gen) is now PROVEN
+-- — both sides reduce to p·(n·n) ∸ n — having closed the monus-mul distributivity
+-- gap as the reusable Foundation lemma `Nat.Properties.SubMul.*-distribˡ-∸`.
+--
+-- ONE NAMED GAP remains (borrowed-name discipline — NOT overclaimed): the SPECTRAL
+-- grounding — that mult2/2 IS the multiplicity of Φ_p in the cycle-space operator's
+-- char poly — is the cotype's PROBE-verified input (linear algebra over a field
+-- absent); this module formalizes the COUNTING structure + the FaceCount base + the
+-- closed-form/fibered/nullity renderings, not the spectral derivation.
 -- The fiber weight (p−1) is the degree of Φ_p (Algebra.Polynomial.Cyclotomic,
 -- Ⓕ.cyclotomic); the /2 is the reality involution ζ ↔ ζ⁻¹ on its roots.
 ------------------------------------------------------------------------
@@ -43,7 +44,9 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Nat.Properties.Mul
-  using (*-identityˡ; *-comm; *-assoc; *-distribˡ-+)
+  using (*-identityˡ; *-identityʳ; *-comm; *-assoc; *-distribˡ-+)
+open import Substrate.Foundation.Nat.Properties.SubMul
+  using (*-distribˡ-∸; +-∸-cancelˡ; *-sucʳ)
 open import Substrate.WitnessTower.FaceCount using (faces; cone-step)
 
 ------------------------------------------------------------------------
@@ -92,3 +95,50 @@ gross2-faces p n =
   trans (cong (_* faces n 1) (*-comm 2 p))     -- (2·p)·faces = (p·2)·faces
   (trans (*-assoc p 2 (faces n 1))             -- = p·(2·faces n 1)
          (cong (p *_) (faces-edges n)))         -- = p·(n·suc n)
+
+------------------------------------------------------------------------
+-- 4. The FULL fibered ≡ closed identity (∀ n, no longer corners-only). Both
+--    sides reduce to p·(n·n) ∸ n. Uses the Foundation monus-mul lemma
+--    *-distribˡ-∸ (Ⓕ.mult's named gap, now closed in Nat.Properties.SubMul).
+------------------------------------------------------------------------
+
+-- the closed form, expanded past the inner monus:  mult2 p n ≡ p·(n·n) ∸ n.
+mult2-expand : (p n : ℕ) → mult2 p n ≡ p * (n * n) ∸ n
+mult2-expand p n =
+  trans (*-distribˡ-∸ n (n * p) 1)                       -- n·(n·p ∸ 1) = n·(n·p) ∸ n·1
+  (trans (cong (n * (n * p) ∸_) (*-identityʳ n))         -- = n·(n·p) ∸ n
+         (cong (_∸ n) (trans (sym (*-assoc n n p)) (*-comm (n * n) p))))  -- = p·(n·n) ∸ n
+
+-- the join-correction term:  (p+1)·n ≡ p·n + n.
+pp1*n : (p n : ℕ) → (p + 1) * n ≡ p * n + n
+pp1*n p n =
+  trans (*-comm (p + 1) n)
+  (trans (*-distribˡ-+ n p 1)
+  (trans (cong (n * p +_) (*-identityʳ n))
+         (cong (_+ n) (*-comm n p))))
+
+-- the fibered count over FaceCount, expanded:  2p·faces n 1 ∸ (p+1)·n ≡ p·(n·n) ∸ n.
+gross-expand : (p n : ℕ) → 2 * p * faces n 1 ∸ (p + 1) * n ≡ p * (n * n) ∸ n
+gross-expand p n =
+  trans (cong (_∸ (p + 1) * n) (gross2-faces p n))                       -- p·(n·suc n) ∸ (p+1)·n
+  (trans (cong (λ z → p * z ∸ (p + 1) * n) (*-sucʳ n n))                  -- p·(n + n·n) ∸ (p+1)·n
+  (trans (cong (_∸ (p + 1) * n) (*-distribˡ-+ p n (n * n)))               -- (p·n + p·(n·n)) ∸ (p+1)·n
+  (trans (cong ((p * n + p * (n * n)) ∸_) (pp1*n p n))                    -- ∸ (p·n + n)
+         (+-∸-cancelˡ (p * n) (p * (n * n)) n))))                         -- cancel p·n → p·(n·n) ∸ n
+
+-- THE f090_2_tower claim, ∀n: the closed-form multiplicity IS the FaceCount-fibered count.
+mult2-fibered : (p n : ℕ) → mult2 p n ≡ 2 * p * faces n 1 ∸ (p + 1) * n
+mult2-fibered p n = trans (mult2-expand p n) (sym (gross-expand p n))
+
+------------------------------------------------------------------------
+-- 5. The nullity (f090_2_generalized): nullity = mult · deg(Φ_p), deg Φ_p = p−1.
+--    Doubled (×2 again): nullity2 = mult2 · (p−1). The eigenspace is `mult`
+--    copies of the degree-(p−1) cyclotomic factor (Ⓕ.cyclotomic).
+------------------------------------------------------------------------
+
+nullity2 : ℕ → ℕ → ℕ
+nullity2 p n = mult2 p n * (p ∸ 1)
+
+-- c = 2: nullity = (p−1)²/2, so 2·nullity (doubled again) = (p−1)·(p−1) (f090_2_pinned: 2,8,18 = (p−1)²).
+nullity2-c2 : (p : ℕ) → nullity2 p 1 ≡ (p ∸ 1) * (p ∸ 1)
+nullity2-c2 p = cong (_* (p ∸ 1)) (mult2-c2 p)
