@@ -38,9 +38,10 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Nat.Mod
   using (_mod-suc_; mod-suc-bound; mod-suc-id; mod-suc-periodic; mod-suc-suc)
 
+open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (HasOrderPerm; basis-permutation-Linear; HasOrder-from-perm)
+  using (HasOrderPerm; basis-permutation-Linear; HasOrder-from-perm; apply-basis-permutation-Linear)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
   using (σ-iterate)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
@@ -127,3 +128,11 @@ opaque
   cyclic-HasOrder : ∀ {n} → HasOrder (apply (cyclic-Linear {n})) (suc n)
   cyclic-HasOrder {n} =
     HasOrder-from-perm (cyclic-suc {n}) (suc n) (cyclic-suc-HasOrderPerm {n})
+
+  -- The exposed basis-action (the "hand consumers the lemma, not the unfolded
+  -- construction" pattern): cyclic-Linear stays sealed, but its effect on a
+  -- basis vector is available — eₖ ↦ e_{cyclic-suc k}. Proved inside the opaque
+  -- block where cyclic-Linear unfolds to basis-permutation-Linear cyclic-suc.
+  cyclic-Linear-basis : ∀ {n} (k : Fin (suc n)) →
+                        apply (cyclic-Linear {n}) (basis k) ≡ basis (cyclic-suc {n} k)
+  cyclic-Linear-basis {n} k = apply-basis-permutation-Linear (cyclic-suc {n}) k

@@ -23,8 +23,8 @@ module Substrate.Algebra.F2.Linear.SpectralCycleDim where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Foundation.Vec using (_∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Vec using (_∷_; []; lookup)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
@@ -32,6 +32,11 @@ open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.Kernel using (inKer)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 open import Substrate.Algebra.F2.Linear.Augmentation using (A; total; ones)
+open import Substrate.Algebra.F2.Linear.Cyclotomic using (powL; geomSumL)
+open import Substrate.Algebra.F2.Linear.SpectralCycle using (σ)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate using (σ-iterate)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
+  using (cyclic-suc; cyclic-Linear-basis)
 
 ------------------------------------------------------------------------
 -- Transport: pointwise-equal operators share their KernelDim. (Generic;
@@ -65,16 +70,40 @@ total-basis {suc n} (suc k) = total-basis k
 A-on-basis : ∀ {n} (k : Fin (suc n)) → apply (A {suc n}) (basis k) ≡ ones
 A-on-basis k = trans (cong (_*ₛ ones) (total-basis k)) (*ₛ-identityˡ ones)
 
--- REMAINING (the orbit-sum, Φσ-side): apply Φ_p(σ_p) (basis k) ≡ ones, then
--- Φ_p(σ_p) = A by linear-extensionality (with A-on-basis), then `dim` =
--- KernelDim-cong (sym of that) (Augmentation.aug-dim). Path, now opacity-aware:
---   1. EXPOSE `cyclic-Linear-basis : apply cyclic-Linear (basis k) ≡ basis (cyclic-suc k)`
---      from Cyclic's `opaque` block (1 line = apply-basis-permutation-Linear; the
---      module's own "hand consumers the lemma" pattern — cyclic-Linear stays sealed).
---   2. apply-powL-basis i k : apply (powL i σ_p)(basis k) ≡ basis(σ-iterate i cyc k)
---      (induction on i, reusing (1)).
---   3. count: lookup (apply (geomSumL σ_p m)(basis k)) j ≡ Σ_{i<m} [σ-iterate i cyc k ≟ j]
---      (induction on m, reusing (2) + lookup-+ⱽ + basis-lookup).
---   4. orbit-hits-once: at m=p, that F₂-count ≡ 𝟙 (cyclic orbit covers each j once,
---      via cyclic-suc's σ-iterate-toℕ = (k+i) mod-suc n + mod-injectivity) — THE one
---      genuinely new lemma; everything else is reuse.
+------------------------------------------------------------------------
+-- conn2: σ_p^i sends basis k to the orbit position basis(σ-iterate i cyc k).
+-- Induction on i, reusing the exposed cyclic-Linear-basis (conn1).
+------------------------------------------------------------------------
+
+apply-powL-basis :
+  ∀ {n} (i : ℕ) (k : Fin (suc n)) →
+  apply (powL i (σ {n})) (basis k) ≡ basis (σ-iterate i (cyclic-suc {n}) k)
+apply-powL-basis zero    k = refl
+apply-powL-basis (suc i) k =
+  trans (cong (apply (σ)) (apply-powL-basis i k))
+        (cyclic-Linear-basis (σ-iterate i (cyclic-suc) k))
+
+------------------------------------------------------------------------
+-- conn3: the per-coordinate orbit count. lookup j of Σ_{i<m} σ_p^i(eₖ) is the
+-- F₂-tally of orbit visits to j. Induction on m, reusing conn2 + lookup-+ⱽ.
+------------------------------------------------------------------------
+
+occ : ∀ {n} → ℕ → Fin (suc n) → Fin (suc n) → F₂
+occ zero    k j = 𝟘
+occ (suc m) k j = occ m k j + lookup (basis (σ-iterate m (cyclic-suc) k)) j
+
+orbit-count :
+  ∀ {n} (m : ℕ) (k j : Fin (suc n)) →
+  lookup (apply (geomSumL (σ {n}) m) (basis k)) j ≡ occ m k j
+orbit-count zero    k j = lookup-𝟎 j
+orbit-count (suc m) k j =
+  trans (lookup-+ⱽ (apply (geomSumL (σ) m) (basis k)) (apply (powL m (σ)) (basis k)) j)
+        (cong₂ _+_ (orbit-count m k j)
+                   (cong (λ w → lookup w j) (apply-powL-basis m k)))
+
+-- REMAINING — conn4 (the one new lemma) then conn5 (close):
+--   conn4 orbit-hits-once : occ (suc n) k j ≡ 𝟙 (cyclic orbit visits each j once;
+--         σ-iterate-toℕ = (toℕ k + i) mod-suc n + mod-injectivity).
+--   conn5 : apply Φ_p(σ_p)(basis k) ≡ ones (≡-from-lookup ∘ orbit-count(suc n) ∘ conn4),
+--         then Φ_p(σ_p)=A by linear-extensionality (+A-on-basis), then dim =
+--         KernelDim-cong of Augmentation.aug-dim.
