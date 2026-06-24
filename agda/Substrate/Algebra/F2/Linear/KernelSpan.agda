@@ -30,11 +30,12 @@
 
 module Substrate.Algebra.F2.Linear.KernelSpan where
 
+open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply; _∘L_)
+open import Substrate.Algebra.F2.Linear using (Linear; apply; _∘L_; id-L)
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (𝟘L)
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
@@ -55,3 +56,47 @@ kernel-comb-in-ker :
 kernel-comb-in-ker L b b∈ker =
   linear-extensionality (L ∘L linear-from-images b) 𝟘L
     (λ i → trans (cong (apply L) (apply-linear-from-images-basis b i)) (b∈ker i))
+
+------------------------------------------------------------------------
+-- Dimension of ker L, as an INCOMPLETE type completed by a SUPPLIED basis.
+--
+-- `KernelDim L d` is the split iso F₂ᵈ ⇄ ker L: `into` lands d basis
+-- vectors in ker L, `retract` splits it (indep ⟹ they are independent),
+-- and the two are mutually inverse ON ker L (spans ⟹ they span ALL of it).
+-- d IS the dimension — SUPPLIED (the typehole's filler), never extracted.
+-- "subspace is an incomplete type, and that's fine": d is a parameter, the
+-- basis a witness; nothing is solved for, no Gaussian elimination.
+------------------------------------------------------------------------
+
+record KernelDim {n m : ℕ} (L : Linear n m) (d : ℕ) : Set where
+  field
+    into     : Linear d n
+    retract  : Linear n d
+    into-ker : (x : Vector d) → inKer L (apply into x)
+    indep    : (x : Vector d) → apply retract (apply into x) ≡ x
+    spans    : (v : Vector n) → inKer L v → apply into (apply retract v) ≡ v
+
+-- Smart constructor: a SUPPLIED family `b` of d kernel vectors, made
+-- independent by a `retract` and shown to span ker L, IS a KernelDim — its
+-- `into-ker` is automatic (kernel-comb-in-ker). This is the shape the orbit
+-- basis of a cycle operator takes to witness dim (ker Φ_p(T)) = mult·degΦ_p:
+-- supply the basis (the action gives it) + the retract (its CrossMul inverse).
+fromFamily :
+  ∀ {d n m} (L : Linear n m) (b : Fin d → Vector n) →
+  (∀ i → inKer L (b i)) →
+  (r : Linear n d) →
+  ((x : Vector d) → apply r (apply (linear-from-images b) x) ≡ x) →
+  ((v : Vector n) → inKer L v → apply (linear-from-images b) (apply r v) ≡ v) →
+  KernelDim L d
+fromFamily L b b∈ker r indep spans = record
+  { into = linear-from-images b ; retract = r
+  ; into-ker = kernel-comb-in-ker L b b∈ker
+  ; indep = indep ; spans = spans }
+
+-- Non-vacuity: the kernel of the zero map is the WHOLE space (dim n), with
+-- the identity as the supplied iso. (So the typehole IS inhabitable at the
+-- top — n, not a vacuous 0.)
+KernelDim-𝟘L : ∀ {n} → KernelDim (𝟘L {n} {n}) n
+KernelDim-𝟘L = record
+  { into = id-L ; retract = id-L
+  ; into-ker = λ _ → refl ; indep = λ _ → refl ; spans = λ _ _ → refl }
