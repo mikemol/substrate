@@ -35,49 +35,22 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem; div-quot; PolyEEATrace; base; step)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEAFold
   using (gcd-fold-poly; gcd-fold-poly-correct)
+import Substrate.Algebra.Polynomial.Graded.PolyDivWedge as PDW
 
 -- the F₂ coefficient machinery — the SAME instantiation Graded.Div uses.
 open F.Over F₂-CommRing using (Poly; nth; convCoeff; _+_)
 
 ------------------------------------------------------------------------
--- 1. A length-n poly with prescribed coefficients (the inverse of nth).
+-- 1-3. SINGLE SOURCE (Ⓢ.single-source): F₂[x] division-as-wedge IS the F₂
+--      instance of the CR-generic poly-wedge (Graded.PolyDivWedge). buildPoly /
+--      recon-poly / Poly-div / step-wedge are DERIVED from it, not duplicated —
+--      so they are ONE symbol and the F₂ ≡ generic identity is `refl` by
+--      construction. This resolves the cross-module non-defeq + funext-block that
+--      blocked Ⓐ.gfinv-generic (memory feedback_derive_dont_duplicate_single_source).
 ------------------------------------------------------------------------
 
-buildPoly : (n : ℕ) → (ℕ → F₂) → Poly n
-buildPoly zero    g = []
-buildPoly (suc n) g = g zero ∷ buildPoly n (λ k → g (suc k))
-
--- if v's coefficients are g everywhere, v IS buildPoly n g (the gap-closer).
-buildPoly-correct : {n : ℕ} (v : Poly n) (g : ℕ → F₂) →
-                    ((k : ℕ) → nth v k ≡ g k) → v ≡ buildPoly n g
-buildPoly-correct []      g hyp = refl
-buildPoly-correct (x ∷ v) g hyp =
-  cong₂ _∷_ (hyp zero) (buildPoly-correct v (λ k → g (suc k)) (λ k → hyp (suc k)))
-
-------------------------------------------------------------------------
--- 2. F₂[x] as a DivStr: recon q b r = "q·b + r", coefficient-wise at length |q|.
---    The quotient q is a carrier element (a polynomial), not a count.
-------------------------------------------------------------------------
-
-recon-poly : QPoly → QPoly → QPoly → QPoly
-recon-poly (n , qv) (_ , bv) (_ , rv) =
-  n , buildPoly n (λ k → convCoeff qv bv k + nth rv k)
-
-Poly-div : DivStr
-Poly-div = record { C = QPoly ; z = zero-q ; recon = recon-poly }
-
-------------------------------------------------------------------------
--- 3. Each division step is a generic wedge; the witness is recon-nth.
-------------------------------------------------------------------------
-
-step-wedge : (d : ℕ) (f-lo : Vec F₂ (suc d)) (n : ℕ) (av : Vec F₂ n) →
-             Wedge⟦478f66a6⟧ Poly-div (n , av) (divisor-q d f-lo)
-step-wedge d f-lo n av = record
-  { quot     = div-quot d f-lo (n , av)
-  ; rem      = div-rem d f-lo (n , av)
-  ; wedge-eq = cong (n ,_)
-      (buildPoly-correct av _ (λ k → Div.Over.recon-nth F₂-CommRing d f-lo av k))
-  }
+open PDW.Over F₂-CommRing
+  using (buildPoly; buildPoly-correct; recon-poly; Poly-div; step-wedge)
 
 ------------------------------------------------------------------------
 -- 4. THE COLLAPSE: the polynomial Euclidean trace IS a generic trace.

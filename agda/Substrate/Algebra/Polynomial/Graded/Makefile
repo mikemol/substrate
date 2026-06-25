@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Div.agda FromCommRing.agda Mod.agda ModZero.agda Quotient.agda
+FILES := Div.agda FromCommRing.agda Mod.agda ModZero.agda PolyDivWedge.agda Quotient.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
