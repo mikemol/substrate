@@ -148,3 +148,14 @@ fold-table) — reasoning to a correct-but-unnamed answer is the recurring miss.
 **witness tower** specifically for any spectral / multiplicity / cycle / conjugacy / combinatorial
 claim (the silo most often skipped). Memory `feedback_reuse_search_before_feasibility_conclusions`
 is the recalled form; this is the always-loaded one.
+
+**Opacity / OOM at a concrete instance → the FreeUP β-interface is the route-around.** When a concrete
+cyclic/linear instantiation OOMs (dense materialization — the Cycle7 pattern) or an `opaque` def won't
+reduce, don't grind the dense form or reinvent a seal: prove via the universal-property β-interface —
+the exposed basis-action lemma (`extend-on-basis`, e.g. `cyclic-Linear-basis`) + prove-on-generators-
+then-lift (`HasOrder-from-perm` / `extend-unique` / `package-comm`). The operator is determined by its
+basis-action up to unique iso, so the dense form is never needed; the `opaque` seal exists to *channel*
+you into this interface (it is BOTH the obstruction and the enforcement). Applies to any free-extension
+(linear maps, permutations, GF(2ⁿ)/bilinear — the AES linear layer included); NOT to point-evaluations
+(a concrete KAT) or exhaustive tables (the S-box), where reflection + `membudget` decomposition remain
+the tools. Memory `feedback_opacity_blowup_routearound_freeup`.
