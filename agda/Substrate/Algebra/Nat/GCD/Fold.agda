@@ -16,7 +16,7 @@
 module Substrate.Algebra.Nat.GCD.Fold where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge; remainder)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
@@ -38,3 +38,34 @@ gcd-fold t = eea-fold {T = λ _ _ _ → ℕ} (λ a → a) (λ _ _ rec → rec) t
 gcd-fold-correct : {a b g : ℕ} (t : EEATrace a b g) → gcd-fold t ≡ g
 gcd-fold-correct (base a)       = refl
 gcd-fold-correct (step b w sub) = gcd-fold-correct sub
+
+------------------------------------------------------------------------
+-- THE UNIVERSAL PROPERTY (making the header's "universal eval" a theorem,
+-- Ⓤ.eea-fold-freeup). EEATrace is the INITIAL ALGEBRA of the (base/step)
+-- functor; `eea-fold bi si` is the UNIQUE algebra morphism out — any `h` that
+-- agrees with `bi` on `base` and with `si` on `step` IS `eea-fold bi si`.
+--
+-- This is the ∃! that grounds the groupoid-distance claim: the interconnect's
+-- HUB (the fold-table) is a universal arrow. It is the INDEXED-initial-algebra
+-- sibling of the Set-basis `Category.FreeUniversalProperty.FreeUP` (free monoid
+-- etc.) and the exact DUAL of the terminal-coalgebra `R.Trace.Final.ana-unique`
+-- (RealTrace) — induction here, corecursion there. (eea-fold is NOT a FreeUP
+-- instance: FreeUP is free-over-a-Set-basis; eea-fold recurses an indexed
+-- family. Same universality, different shape.)
+------------------------------------------------------------------------
+
+eea-fold-unique :
+  {T : ℕ → ℕ → ℕ → Set}
+  (base-interp : (a : ℕ) → T a 0 a)
+  (step-interp : {a g : ℕ} (b : ℕ) (w : Wedge a (suc b)) →
+                 T (suc b) (remainder w) g → T a (suc b) g)
+  (h : {a b g : ℕ} → EEATrace a b g → T a b g)
+  (h-base : (a : ℕ) → h (base a) ≡ base-interp a)
+  (h-step : {a g : ℕ} (b : ℕ) (w : Wedge a (suc b))
+            (sub : EEATrace (suc b) (remainder w) g) →
+            h (step b w sub) ≡ step-interp b w (h sub)) →
+  {a b g : ℕ} (t : EEATrace a b g) → h t ≡ eea-fold {T} base-interp step-interp t
+eea-fold-unique bi si h h-base h-step (base a)       = h-base a
+eea-fold-unique {T} bi si h h-base h-step {a = a} {g = g} (step b w sub) =
+  trans (h-step b w sub)
+        (cong (si {a} {g} b w) (eea-fold-unique {T} bi si h h-base h-step sub))
