@@ -1,0 +1,65 @@
+------------------------------------------------------------------------
+-- Substrate.WitnessTower.CofreeDual
+--
+-- Ⓤ.cofree-dual — wiring the terminal-coalgebra (cofree) side of the
+-- uniqueness family, the exact dual of the initial-algebra (cata) side.
+-- Nothing here is re-derived: the duality is ALREADY established (R.Trace.Final
+-- frames RealTrace as the terminal coalgebra, "the exact codual of the Free/
+-- initial centre, one adjoint hinged by Lawvere", with `ana-unique` proven).
+-- This module NAMES the dual pair in one place and makes the EEATrace-`≡`
+-- refinement concrete.
+--
+--   INITIAL (data, induction, `≡`):  eea-fold-unique  (Nat.GCD.Fold)
+--   TERMINAL (codata, corecursion, `~`):  ana-unique  (R.Trace.Final)
+--   same functor S(X) = ℕ × X; the ℚ ⊣ ℝ adjunction (RationalAdjunction) bridges.
+--
+-- The `≡`-via-generator point (the cofree `~`-side is NOT the only equality):
+-- a finitely-generated real's equality is DECIDED on its finite inductive CF
+-- generator by `≡`, never on the stream by `~`. `generator-recovers` (the unit,
+-- new here = `eea-unit ∘ gcd-trace`) shows ℚ→ℝ→ℚ recovers the seed by `≡`;
+-- `μ↔ν-prefix` (digit-agreement) bridges the finite digits to the stream prefix;
+-- `generator-faithful` (cf-injective) shows the CF shape DETERMINES the value by
+-- `≡`. So the `~`-cofree obstruction shrinks to the non-finitely-generated tail.
+--
+-- Zero postulates, --safe --without-K --guardedness (infective via R.Trace).
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K --guardedness #-}
+
+module Substrate.WitnessTower.CofreeDual where
+
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold-unique)
+open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
+open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
+open import Substrate.Algebra.R.Trace.Final using (ana-unique)
+open import Substrate.Algebra.R.Trace.RationalAdjunction using (reconstruct; eea-unit)
+open import Substrate.WitnessTower.EEATower using (digit-agreement)
+
+------------------------------------------------------------------------
+-- 1. The dual pair, named in one place.
+------------------------------------------------------------------------
+
+-- the INITIAL-algebra ∃! (cata, up to `≡`).
+cata-uniqueness = eea-fold-unique
+
+-- the TERMINAL-coalgebra ∃! (ana, up to `~`) — the cofree dual.
+cofree-uniqueness = ana-unique
+
+------------------------------------------------------------------------
+-- 2. The `≡`-via-generator handles (the cofree `~` is not the only equality).
+------------------------------------------------------------------------
+
+-- THE UNIT (new): the ℚ → ℝ → ℚ round-trip recovers the seed by `≡` (not `~`) —
+-- equality of a finitely-generated real is decided on its finite CF generator.
+generator-recovers : (a b : ℕ) → reconstruct (gcd-trace a b) ≡ (a , b)
+generator-recovers a b = eea-unit (gcd-trace a b)
+
+-- the finite μ-digits ARE the first cf-length digits of the coinductive stream.
+μ↔ν-prefix = digit-agreement
+
+-- the CF shape DETERMINES the (coprime) value by `≡` — the generator is faithful,
+-- so the cofree `~`-side reduces to `≡` wherever the generator is finite.
+generator-faithful = cf-injective
