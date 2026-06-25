@@ -65,10 +65,8 @@ data _≈t_ : Tm → Tm → Set where
 --     ℚ        =  viaBridges id (λ d → ⋯ ℕ↪ℤ ⋯) _*ℤ_   -- num ℤ, den ℕ, meet in ℤ
 --     radix    =  viaBridges (decode 2) (decode 3) _*ℕ_  -- base-2 & base-3, meet in ℕ
 --     symbolic =  viaBridges id id _∙_                   -- one language into itself
+-- (`viaBridges` lives in HetBasis, next to CrossEq; imported above.)
 ------------------------------------------------------------------------
-
-viaBridges : {A B R : Set} → (A → R) → (B → R) → (R → R → R) → (A → B → R)
-viaBridges codecA codecB _·R_ a b = codecA a ·R codecB b
 
 -- The symbolic product ∙ is itself the bridged cross with IDENTITY codecs
 -- (same language on both sides, no translation needed): definitional.

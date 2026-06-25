@@ -76,6 +76,19 @@ module CrossEq {A B R : Set}
   ≈H-sym e = ≈R-sym e
 
 ------------------------------------------------------------------------
+-- 2b. Codecs and bridges. A cross-multiply ⊗ : A → B → R is ALWAYS two codecs
+-- into a common semantics R, combined by R's product: ⊗ a b = codecA a ·R
+-- codecB b. That factorization IS the CrossMul cospan A →codecA R ←codecB B
+-- (Wedge.CrossMul.cross = mul R (embA a)(embB b)) — which is why different
+-- symbolic languages transport and interact: each side is bridged into the
+-- shared semantics R, and they meet there. (See Algebra.Q.HetCrossMix for ℚ
+-- exhibited as an actual `CrossMix ℤ-div ℕ-div ℤ-mul` with Bridge codec legs.)
+------------------------------------------------------------------------
+
+viaBridges : {A B R : Set} → (A → R) → (B → R) → (R → R → R) → (A → B → R)
+viaBridges codecA codecB _·R_ a b = codecA a ·R codecB b
+
+------------------------------------------------------------------------
 -- 3. ℚ IS HetQ ℤ ℕ — the existing ℚ is already heterogeneous-basised.
 ------------------------------------------------------------------------
 
