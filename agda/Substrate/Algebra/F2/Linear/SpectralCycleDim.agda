@@ -21,21 +21,26 @@
 
 module Substrate.Algebra.F2.Linear.SpectralCycleDim where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _≤_; _≤?_; s≤s-injective)
+open import Substrate.Foundation.Nat.Properties.Order
+  using (<→≤; ≤-<-trans; <-irrefl; ≤-tight; ≤-suc-r; ≤-refl)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
 open import Substrate.Foundation.Fin.Properties using (toℕ-injective; toℕ-bound)
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
+open import Substrate.Foundation.Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; subst)
+open import Substrate.Foundation.Negation using (yes; no)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Algebra.F2.Vector.Universal using (basis-lookup-other)
 open import Substrate.Algebra.Nat.Mod using (mod-suc-id)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.Kernel using (inKer)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
-open import Substrate.Algebra.F2.Linear.Augmentation using (A; total; ones)
+open import Substrate.Algebra.F2.Linear.Augmentation using (A; total; ones; aug-dim)
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (powL; geomSumL)
-open import Substrate.Algebra.F2.Linear.SpectralCycle using (σ)
+open import Substrate.Algebra.F2.Linear.SpectralCycle using (σ; Φσ)
+open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate using (σ-iterate)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
   using (cyclic-suc; cyclic-Linear-basis; σ-iterate-toℕ; cyclic-suc-HasOrderPerm)
@@ -167,6 +172,75 @@ occ-k-to-0 : ∀ {n} (k j : Fin (suc n)) → occ (suc n) k j ≡ occ (suc n) (ze
 occ-k-to-0 {n} k j =
   trans (cong (λ z → occ (suc n) z j) (sym (σ-iter-k0 k))) (occ-shift-iter (toℕ k) j)
 
--- REMAINING: occ-0 (j) : occ (suc n) (zero) j ≡ 𝟙 (Kronecker base — orbit at k=0
--- is the identity enumeration, visits j exactly at step toℕ j), then
--- conn4 = trans (occ-k-to-0 k j) (occ-0 j); conn5 closes via linear-extensionality.
+------------------------------------------------------------------------
+-- The Kronecker base: at k=0 the orbit is the identity enumeration (step i
+-- lands on toℕ⁻¹ i), so j is visited exactly at step toℕ j ⟹ occ(p) 0 j ≡ 𝟙.
+------------------------------------------------------------------------
+
+-- step i (i < p) of the orbit from 0 has toℕ = i.
+σ-iter0-toℕ : ∀ {n} (i : ℕ) → i < suc n →
+              toℕ (σ-iterate i (cyclic-suc {n}) (zero {n})) ≡ i
+σ-iter0-toℕ {n} i i<sn = trans (σ-iterate-toℕ i (zero {n})) (mod-suc-id i n i<sn)
+
+private
+  term0-hit : ∀ {n} (i : ℕ) (j : Fin (suc n)) → i < suc n → toℕ j ≡ i →
+              lookup (basis (σ-iterate i (cyclic-suc) (zero {n}))) j ≡ 𝟙
+  term0-hit i j i<sn eq =
+    trans (cong (λ a → lookup (basis a) j)
+                (toℕ-injective (trans (σ-iter0-toℕ i i<sn) (sym eq))))
+          (basis-lookup-same j)
+
+  term0-miss : ∀ {n} (i : ℕ) (j : Fin (suc n)) → i < suc n → toℕ j ≢ i →
+               lookup (basis (σ-iterate i (cyclic-suc) (zero {n}))) j ≡ 𝟘
+  term0-miss i j i<sn neq =
+    basis-lookup-other (σ-iterate i (cyclic-suc) zero) j
+      (λ e → neq (sym (trans (sym (σ-iter0-toℕ i i<sn)) (cong toℕ e))))
+
+-- j not yet visited in the first m steps (m ≤ toℕ j).
+occ-0-miss : ∀ {n} (m : ℕ) (j : Fin (suc n)) → suc m ≤ suc (toℕ j) → occ m (zero {n}) j ≡ 𝟘
+occ-0-miss zero       j _      = refl
+occ-0-miss {n} (suc m) j sm≤tj =
+  cong₂ _+_ (occ-0-miss m j (≤-suc-r (s≤s-injective sm≤tj)))
+            (term0-miss m j (≤-<-trans (<→≤ (s≤s-injective sm≤tj)) (toℕ-bound j))
+              (λ tj≡m → <-irrefl m (subst (suc m ≤_) tj≡m (s≤s-injective sm≤tj))))
+
+-- j visited (exactly once) by step m (toℕ j < m ≤ p).
+occ-0-hit : ∀ {n} (m : ℕ) (j : Fin (suc n)) → toℕ j < m → m ≤ suc n → occ m (zero {n}) j ≡ 𝟙
+occ-0-hit (suc m) j tj<sm sm≤sn with suc (toℕ j) ≤? m
+... | yes tj<m =
+  trans (cong₂ _+_ (occ-0-hit m j tj<m (≤-suc-r (s≤s-injective sm≤sn)))
+                   (term0-miss m j sm≤sn
+                     (λ tj≡m → <-irrefl m (subst (λ x → suc x ≤ m) tj≡m tj<m))))
+        (+-identityʳ 𝟙)
+... | no ¬tj<m =
+  cong₂ _+_ (occ-0-miss m j (subst (λ x → suc m ≤ suc x) (sym (≤-tight (toℕ j) m tj<sm ¬tj<m)) (≤-refl (suc m))))
+            (term0-hit m j sm≤sn (≤-tight (toℕ j) m tj<sm ¬tj<m))
+
+occ-0 : ∀ {n} (j : Fin (suc n)) → occ (suc n) (zero {n}) j ≡ 𝟙
+occ-0 {n} j = occ-0-hit (suc n) j (toℕ-bound j) (≤-refl (suc n))
+
+------------------------------------------------------------------------
+-- conn4 (orbit-hits-once) and conn5 (close): Φ_p(σ_p) = A ⟹ dim ker = p−1.
+------------------------------------------------------------------------
+
+conn4 : ∀ {n} (k j : Fin (suc n)) → occ (suc n) k j ≡ 𝟙
+conn4 k j = trans (occ-k-to-0 k j) (occ-0 j)
+
+-- ones is all-𝟙.
+ones-lookup : ∀ {n} (j : Fin n) → lookup (ones {n}) j ≡ 𝟙
+ones-lookup {suc n} zero    = refl
+ones-lookup {suc n} (suc j) = ones-lookup j
+
+-- Φ_p(σ_p)(basis k) ≡ ones (each coordinate is the orbit tally = 𝟙).
+Φσ-on-basis : ∀ {n} (k : Fin (suc n)) → apply (Φσ {n}) (basis k) ≡ ones
+Φσ-on-basis {n} k =
+  ≡-from-lookup _ _ (λ j → trans (trans (orbit-count (suc n) k j) (conn4 k j))
+                                 (sym (ones-lookup j)))
+
+-- Φ_p(σ_p) = A as operators (agree on basis ⟹ everywhere).
+Φσ≡A : ∀ {n} (v : Vector (suc n)) → apply (Φσ {n}) v ≡ apply (A {suc n}) v
+Φσ≡A {n} = linear-extensionality (Φσ {n}) (A {suc n}) (λ k → trans (Φσ-on-basis k) (sym (A-on-basis k)))
+
+-- THE GOAL: dim ker Φ_p(σ_p) = p − 1 (= n), the literal-shift presentation.
+dim-ker-Φσ : ∀ {n} → KernelDim (Φσ {n}) n
+dim-ker-Φσ {n} = KernelDim-cong Φσ≡A (aug-dim n)
