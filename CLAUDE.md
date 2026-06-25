@@ -137,3 +137,14 @@ generator the plan should instantiate. Rule of thumb: before writing a `record`/
 name the existing generator it specialises — or confirm (briefly) there isn't one. This is the standing
 prevention layer (Ε / G9); memory `similarity-not-grep` + the `construct-dont-classify` skill's
 "reinvent-vs-reuse" reflex are the recalled forms, this is the always-loaded one.
+
+**The trigger also fires on CONCLUSIONS and STRUCTURAL QUESTIONS, not just build-plans.**
+Before writing that something is *gated / deferred / awkward / impossible / new reach*, or
+answering *what is this / how does it relate* — run the same structural search FIRST. A
+deferral/TODO comment is a **hypothesis to verify** (find the actual provider), not a fact; it
+may be stale or point at a different deferral sharing a tag. The substrate almost always already
+**names its centers** (`FreeUP`, the Registry monoidal groupoid, the terminal coalgebra, the EEA
+fold-table) — reasoning to a correct-but-unnamed answer is the recurring miss. Search the
+**witness tower** specifically for any spectral / multiplicity / cycle / conjugacy / combinatorial
+claim (the silo most often skipped). Memory `feedback_reuse_search_before_feasibility_conclusions`
+is the recalled form; this is the always-loaded one.
