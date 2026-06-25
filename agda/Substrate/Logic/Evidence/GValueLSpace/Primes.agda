@@ -42,7 +42,7 @@ open import Substrate.Algebra.Q.Properties.Field using (*ℚ-assoc; *ℚ-comm; *
 open import Substrate.Algebra.Q.Properties.Congruence using (*ℚ-cong)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 open import Substrate.Algebra.Z.Add using (_+ℤ_; _⊖_)
-open import Substrate.Logic.Evidence.GValueLSpace using (powℚ; ExpLogCodec)
+open import Substrate.Logic.Evidence.GValueLSpace using (powℚ; ExpLogCodec; ExpLogCodecℚ)
 open import Substrate.Logic.Evidence.GValueLSpace.Properties using (pow-+; codec-antipode; ≡→≈ℚ)
 open import Substrate.Logic.Evidence.GValueAsQ using (gvalue; antipode-of; gvalue-antipode)
 
@@ -206,7 +206,7 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
          (cong (powℚ h) (cong suc (sym (+-suc m n)))))
       (pow-+ h (suc m) (suc n))
 
-  ℤ-power-codec : ExpLogCodec
+  ℤ-power-codec : ExpLogCodecℚ
   ℤ-power-codec = record
     { L     = ℤ
     ; _⊕_   = _+ℤ_
@@ -223,6 +223,6 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
   ℤpow-antipode-fires = codec-antipode ℤ-power-codec (+ 1) (-suc 0) refl
 
 -- The el-atlas instance: every G-value g and its antipode form a ℤ-power codec.
-gvalue-ℤ-codec : (na' db : ℕ) → ExpLogCodec
+gvalue-ℤ-codec : (na' db : ℕ) → ExpLogCodecℚ
 gvalue-ℤ-codec na' db =
   ZPow.ℤ-power-codec (gvalue na' db) (antipode-of na' db) (gvalue-antipode na' db)

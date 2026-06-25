@@ -34,24 +34,19 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Algebra.Q using (ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Algebra.ExpLogCodec public using (ExpLogCodec)
 
 ------------------------------------------------------------------------
--- THE CODEC INTERFACE.  An exp⊣log codec is a monoid homomorphism from an
--- additive L-space (L, ⊕, 𝟘) into the multiplicative G-space (ℚ, *ℚ, 1ℚ).
--- `expL` is the "exp" direction (L → G); the homomorphism laws ARE the
--- codec's structural content — no analytic value is referenced.
+-- THE CODEC INTERFACE is now the carrier-generic `Algebra.ExpLogCodec`
+-- (the additive→multiplicative monoid homomorphism, lifted off ℚ). The
+-- el-atlas conductance codec is its ℚ INSTANCE — single source, one record:
+--   `expL` is the "exp" direction (L → ℚ); the homomorphism laws (·↔+, 1↔0)
+--   ARE the structural content — no analytic value is referenced.
 ------------------------------------------------------------------------
 
-record ExpLogCodec : Set₁ where
-  field
-    L     : Set
-    _⊕_   : L → L → L            -- L-space addition (the "log" side is additive)
-    𝟘     : L                    -- L-space origin (ln 1 = 0)
-    expL  : L → ℚ                -- exp : L-space → G-space
-    -- ·↔+  : multiplication in G is addition in L
-    exp-⊕ : (a b : L) → expL (a ⊕ b) ≈ℚ (expL a *ℚ expL b)
-    -- 1↔0  : balance G = 1 is the L-space origin
-    exp-𝟘 : expL 𝟘 ≈ℚ 1ℚ
+-- the el-atlas G-space codec: exp⊣log into the multiplicative (ℚ, *ℚ, 1ℚ).
+ExpLogCodecℚ : Set₁
+ExpLogCodecℚ = ExpLogCodec _*ℚ_ 1ℚ _≈ℚ_
 
 ------------------------------------------------------------------------
 -- The base-power exponential gⁿ : the carrier of the concrete witness

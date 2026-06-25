@@ -26,7 +26,7 @@ open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; 
 open import Substrate.Algebra.Q.Properties.Field using (*ℚ-assoc; *ℚ-identityˡ)
 open import Substrate.Algebra.Q.Properties.Congruence using (*ℚ-cong)
 open import Substrate.Logic.Evidence.GValueLSpace
-  using (ExpLogCodec; powℚ)
+  using (ExpLogCodec; ExpLogCodecℚ; powℚ)
 
 ------------------------------------------------------------------------
 -- ≡ coerces into ≈ℚ (the codec law transports propositional equality of
@@ -47,7 +47,7 @@ open import Substrate.Logic.Evidence.GValueLSpace
 -- a reciprocal. (recip↔neg.)
 ------------------------------------------------------------------------
 
-module _ (C : ExpLogCodec) where
+module _ (C : ExpLogCodecℚ) where
   open ExpLogCodec C
 
   codec-antipode : (a aⁱ : L) → (a ⊕ aⁱ) ≡ 𝟘 →
@@ -80,7 +80,7 @@ pow-+ g (suc m) n =
             {g *ℚ (powℚ g m *ℚ powℚ g n)}
             (*ℚ-assoc g (powℚ g m) (powℚ g n)))
 
-ℕ-power-codec : ℚ → ExpLogCodec
+ℕ-power-codec : ℚ → ExpLogCodecℚ
 ℕ-power-codec g = record
   { L     = ℕ
   ; _⊕_   = _+_

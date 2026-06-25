@@ -25,9 +25,9 @@ open import Substrate.Algebra.Q using (ℚ; 1ℚ)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl)
-open import Substrate.Logic.Evidence.GValueLSpace using (ExpLogCodec)
+open import Substrate.Logic.Evidence.GValueLSpace using (ExpLogCodec; ExpLogCodecℚ)
 
-module _ (C : ExpLogCodec)
+module _ (C : ExpLogCodecℚ)
          (logL    : ℚ → ExpLogCodec.L C)
          (exp-log : (x : ℚ) → ExpLogCodec.expL C (logL x) ≈ℚ x) where
   open ExpLogCodec C
@@ -49,7 +49,7 @@ module _ (C : ExpLogCodec)
 -- inhabits and computes.
 ------------------------------------------------------------------------
 
-id-codec : ExpLogCodec
+id-codec : ExpLogCodecℚ
 id-codec = record
   { L = ℚ ; _⊕_ = _*ℚ_ ; 𝟘 = 1ℚ ; expL = λ x → x
   ; exp-⊕ = λ a b → ≈ℚ-refl (a *ℚ b) ; exp-𝟘 = ≈ℚ-refl 1ℚ }
