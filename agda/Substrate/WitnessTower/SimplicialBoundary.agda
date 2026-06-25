@@ -39,6 +39,9 @@ module Substrate.WitnessTower.SimplicialBoundary where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
+open import Substrate.Foundation.Bool.Properties using (xor-comm)
+open import Substrate.Foundation.Product using (_×_; _,_)
 
 private
   variable
@@ -96,3 +99,38 @@ boundary-length : (xs : List A) → len (boundary xs) ≡ len xs
 boundary-length []       = refl
 boundary-length (x ∷ xs) =
   cong suc (trans (consAll-len x (boundary xs)) (boundary-length xs))
+
+------------------------------------------------------------------------
+-- 4. THE ∂∘∂ CANCELLATION KERNEL. In the signed boundary ∂ = Σᵢ (−1)ⁱ delAt i,
+--    the two routes to each codim-2 face are (drop suc j, then i) and (drop i,
+--    then j) for i ≤ j. This is the per-generator fact the free-module UNIQUENESS
+--    (the ∃!-extension: cata `eea-fold-unique` finite, `ana-unique` cofree — the
+--    constructive coinduction that frees the basis from `Fin`) lifts to ∂∘∂ ≡ 0
+--    on all chains: the two routes land on the SAME face (`simplicial`) with
+--    OPPOSITE sign — so they cancel.
+------------------------------------------------------------------------
+
+-- the orientation sign (−1)ⁿ as a parity bit (false = +, true = −).
+osign : ℕ → Bool
+osign zero    = false
+osign (suc n) = not (osign n)
+
+-- sign of a composed pair of drops = parity of the position-sum = the xor.
+private
+  not-xorˡ : (a b : Bool) → (not a) xor b ≡ not (a xor b)
+  not-xorˡ false b     = refl
+  not-xorˡ true  false = refl
+  not-xorˡ true  true  = refl
+
+-- the two routes carry opposite signs (the suc on the first-dropped position
+-- flips the parity; xor-commutativity aligns the two orders).
+∂∂-opp-sign : (i j : ℕ) → (osign (suc j)) xor (osign i) ≡ not ((osign i) xor (osign j))
+∂∂-opp-sign i j =
+  trans (not-xorˡ (osign j) (osign i)) (cong not (xor-comm (osign j) (osign i)))
+
+-- THE KERNEL: for i ≤ j the (suc j, i) and (i, j) routes of ∂∘∂ land on the SAME
+-- codim-2 face with OPPOSITE sign — the canceling pair. (`simplicial` + signs.)
+∂∂-pair : (i j : ℕ) → i ≤ j → (xs : List A) →
+          (delAt i (delAt (suc j) xs) ≡ delAt j (delAt i xs))
+        × ((osign (suc j)) xor (osign i) ≡ not ((osign i) xor (osign j)))
+∂∂-pair i j i≤j xs = simplicial i j i≤j xs , ∂∂-opp-sign i j
