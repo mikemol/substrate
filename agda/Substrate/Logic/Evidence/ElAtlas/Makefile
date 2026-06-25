@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := CenterIsStar.agda CenterIsStarAntisym.agda CenterIsStarCRT.agda CenterIsStarGraded.agda CenterIsStarLocal.agda CenterIsStarNumeral.agda CenterIsStarProjective.agda CenterWitness.agda GenusSpecies.agda OrbitCloud.agda OrbitCloudRung2.agda OrbitCloudRung3.agda OrbitCloudRung3Wedge.agda Proofs.agda StarIsGNot.agda TowerResidueNumeral.agda
+FILES := CenterIsStar.agda CenterIsStarAntisym.agda CenterIsStarCRT.agda CenterIsStarGraded.agda CenterIsStarLocal.agda CenterIsStarNumeral.agda CenterIsStarProjective.agda CenterWitness.agda GenusSpecies.agda OrbitCloud.agda OrbitCloudRung2.agda OrbitCloudRung3.agda OrbitCloudRung3Wedge.agda Proofs.agda ResidueIsBezoutGCD.agda StarIsGNot.agda TowerResidueNumeral.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
