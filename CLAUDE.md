@@ -159,3 +159,10 @@ you into this interface (it is BOTH the obstruction and the enforcement). Applie
 (linear maps, permutations, GF(2ⁿ)/bilinear — the AES linear layer included); NOT to point-evaluations
 (a concrete KAT) or exhaustive tables (the S-box), where reflection + `membudget` decomposition remain
 the tools. Memory `feedback_opacity_blowup_routearound_freeup`.
+
+**The absence-words ARE the trigger.** Before asserting in prose that something is *no / none / can't /
+impossible / irreducible / doesn't-need / the-only* — about the substrate or a construction — run the
+structural search FIRST. These absence-claims (not just build-plans) are the recurring miss; the word is
+the signal to verify, not assert. (Repeatedly caught only by the user: "AES exhaustion is irreducible"
+[false — affine is linear], "opacity isn't an obstruction" [it is, and the interface], "permutations have
+no CF trace" [gcd IS the Euclidean algorithm], "templatize fuel-bezout" [already generic over deg/modulus].)
