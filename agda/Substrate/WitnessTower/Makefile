@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := AlgebraLadder.agda B3Split.agda Codeword.agda Complete.agda Core.agda CycleType.agda Decompose.agda Diagonal.agda DuplicateFree.agda EEAFoldTable.agda EEATower.agda Enumerate.agda FaceCount.agda FaceSet.agda FamilyWitness.agda FirstAppearance.agda Hodge.agda IsPermutation.agda KleinCensus.agda LehmerPath.agda Link.agda M40Action.agda M40Closure.agda M40Contrast.agda M40Gauge.agda M40Group.agda M40Groupoid.agda M40Iso.agda M40NoIso.agda PhiMultiplicity.agda Puncture.agda SharedMiddle.agda Sn.agda SnGroup.agda SupportGrading.agda Surjective.agda SymBridge.agda WedgeStep.agda WholeTower.agda WhyThreeV2.agda
+FILES := AlgebraLadder.agda B3Split.agda Codeword.agda Complete.agda Core.agda CycleType.agda Decompose.agda Diagonal.agda DuplicateFree.agda EEAFoldTable.agda EEATower.agda EEAUnitBezout.agda Enumerate.agda FaceCount.agda FaceSet.agda FamilyWitness.agda FirstAppearance.agda Hodge.agda HodgeGradeInvolution.agda IsPermutation.agda KleinCensus.agda LehmerPath.agda Link.agda M40Action.agda M40Closure.agda M40Contrast.agda M40Gauge.agda M40Group.agda M40Groupoid.agda M40Iso.agda M40NoIso.agda PhiMultiplicity.agda Puncture.agda SharedMiddle.agda Sn.agda SnGroup.agda SupportGrading.agda Surjective.agda SymBridge.agda WedgeStep.agda WholeTower.agda WhyThreeV2.agda
 SUBDIRS := Wedge
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
