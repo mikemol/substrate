@@ -42,7 +42,7 @@
 module Substrate.Algebra.Wedge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 import Substrate.Algebra.Nat.GCD.Wedge as N
 import Substrate.Algebra.Nat.GCD.EEATrace as NT
 
@@ -119,6 +119,32 @@ collapse-fold≡collapse : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
                          collapse-fold t ≡ collapse t
 collapse-fold≡collapse (done a)      = refl
 collapse-fold≡collapse (more b w tr) = collapse-fold≡collapse tr
+
+------------------------------------------------------------------------
+-- THE UNIVERSAL PROPERTY of the generic wedge-trace fold (Ⓤ.trace-fold-unique):
+-- `Trace D` is the INITIAL ALGEBRA of the (done/more) functor; `trace-fold bi
+-- si` is the UNIQUE algebra morphism out — any `h` agreeing with `bi` on `done`
+-- and `si` on `more` IS it. The generic PARENT the per-trace uniqueness lemmas
+-- instantiate: `Algebra.Nat.GCD.Fold.eea-fold-unique` (and the polynomial
+-- variant) are this at a specific `D`. Same idiom as the family
+-- (Category.UniversalProperty.Eval.foldUPTerm-unique, FreeMonoid.extend-unique);
+-- the DUAL of the terminal-coalgebra `R.Trace.Final.ana-unique`.
+------------------------------------------------------------------------
+
+trace-fold-unique :
+  {D : DivStr} {T : C D → C D → C D → Set}
+  (base-interp : (a : C D) → T a (z D) a)
+  (step-interp : {a g : C D} (b : C D) (w : Wedge D a b) → T b (rem w) g → T a b g)
+  (h : {a b g : C D} → Trace D a b g → T a b g)
+  (h-done : (a : C D) → h (done a) ≡ base-interp a)
+  (h-more : {a g : C D} (b : C D) (w : Wedge D a b) (tr : Trace D b (rem w) g) →
+            h (more b w tr) ≡ step-interp b w (h tr)) →
+  {a b g : C D} (t : Trace D a b g) →
+  h t ≡ trace-fold {D} {T} base-interp step-interp t
+trace-fold-unique bi si h h-done h-more (done a)       = h-done a
+trace-fold-unique {D} {T} bi si h h-done h-more {a = a} {g = g} (more b w tr) =
+  trans (h-more b w tr)
+        (cong (si {a} {g} b w) (trace-fold-unique {D} {T} bi si h h-done h-more tr))
 
 ------------------------------------------------------------------------
 -- 4. THE INTERFACE TEST: ℕ instance, and the existing wedge + trace fall out.
