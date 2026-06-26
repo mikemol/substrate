@@ -45,3 +45,5 @@ jea/metalanguage/*.o
 .agda-times.tsv
 **/.agda-times.tsv
 .build-times.json
+.agda-profile.tsv
+**/.agda-profile.tsv
