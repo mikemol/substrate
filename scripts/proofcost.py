@@ -14,10 +14,23 @@ trial-and-OOM guess. This wraps that into SRE-style SLIs, parallel to `buildtime
   peak_mb         max residency (the OOM risk)
   gc_pct          GC time / total (churn overhead)
 
+THE REGIME ORACLE (Ⓟ.proof-regime-oracle — the jea_cost analog for proofs). jea_cost makes a GPU
+schedule's cost STRUCTURAL — `T_s = Σ count × rate`, oracle = `argmin_s T_s`, one calibrated constant,
+validated by predicting unseen winners with dominance-as-output. The proof analog:
+
+    CheckRHS_ms  =  cmp_reduce × r          (count × rate — exact: r is the MEAN per-compare reduction cost)
+
+`r` (ms per `compare by reduction`) is the **regime rate** — the calibrated machine+regime constant. It
+CLUSTERS by regime: reflection/deep-normalization ⇒ few compares but high r; structural/shallow ⇒ many
+compares but low r (measured ~15×: GF16DLog r≈7.4 vs DLogHom r≈0.48). So the cheaper regime is
+`argmin (cmp_reduce × r)`, and because r dominates the count, the oracle PREFERS the low-r (structural)
+regime even at higher cmp_reduce — predicting the regime to pick BEFORE trial-and-OOM.
+
 Usage:
   proofcost.py <module-relpath> [...]   # profile module(s) (relpaths from agda/), report + append ledger
   proofcost.py --top [N]                # the N costliest modules in the ledger (by CheckRHS_ms; default 15)
   proofcost.py --module <relpath>       # one module's recorded profile history
+  proofcost.py --oracle [N]             # the regime oracle: per-module rate r (regime fingerprint) + cost-form
 
 The per-dir ledger is `.agda-profile.tsv` alongside each Makefile (gitignored — hardware-specific),
 rows `module<TAB>total_ms<TAB>checkrhs_ms<TAB>cmp_reduce<TAB>alloc_mb<TAB>peak_mb<TAB>gc_pct`.
@@ -156,9 +169,46 @@ def parse_file(outfile: str, agda_args) -> None:
         pass
 
 
+def oracle(candidates):
+    """argmin over candidate regimes — each (label, est_cmp_reduce, regime_rate_r) → predicted CheckRHS_ms
+    = est_cmp_reduce × r. The cheaper regime is the min. (The jea_cost `argmin_s T_s`, in the proof chart.)"""
+    return min(candidates, key=lambda c: c[1] * c[2])
+
+
+def _oracle(n: int) -> None:
+    """The regime oracle over the ledger: r = CheckRHS_ms / cmp_reduce per module (the REGIME RATE = the
+    fingerprint). High r = reflection/deep-normalization-bound (a structural-refactor candidate); low r =
+    structural/shallow. Dominance (which regime) is an OUTPUT of r, not assumed."""
+    by = {}
+    for r in _read_ledgers():
+        mod, crhs, cmpr = r[0], r[2], r[3]
+        if cmpr > 0 and crhs > 0:
+            by.setdefault(mod, []).append((crhs, cmpr))
+    recs = []
+    for mod, xs in by.items():
+        crhs = statistics.median(c for c, _ in xs)
+        cmpr = statistics.median(m for _, m in xs)
+        recs.append((mod, crhs / cmpr, crhs, cmpr))
+    if not recs:
+        raise SystemExit("no profile samples yet — run `proofcost.py <module>` or build with the shim first")
+    recs.sort(key=lambda t: t[1], reverse=True)
+    rs = sorted(t[1] for t in recs)
+    med = statistics.median(rs)
+    print("proof-regime oracle  —  CheckRHS_ms = cmp_reduce × r   (r = ms/reduction-compare = the REGIME RATE)\n")
+    print(f"  rate band over {len(recs)} module(s): r ∈ [{rs[0]:.2f}, {rs[-1]:.2f}] ms/cmp  (×{rs[-1]/rs[0]:.0f} spread = the regime gap; median {med:.2f})\n")
+    print(f"  {'module':40} {'r (ms/cmp)':>11} {'CheckRHS':>9} {'cmp_reduce':>10}  regime (r-derived)")
+    for mod, r, crhs, cmpr in recs[:n]:
+        regime = "deep — reflection-bound (refactor?)" if r > med else "shallow — structural"
+        print(f"  {mod:40} {r:>11.2f} {int(crhs):>7}ms {int(cmpr):>10}  {regime}")
+    print("\n  oracle: cheaper regime = argmin(cmp_reduce × r). Since r dominates the count (the ~15× gap),")
+    print("  it PREFERS the low-r/structural regime even at higher cmp_reduce — predicting the pick pre-build.")
+
+
 def main(argv):
     if not argv:
         print(__doc__); return
+    if argv[0] == "--oracle":
+        _oracle(int(argv[1]) if len(argv) > 1 else 15); return
     if argv[0] == "--parse":
         parse_file(argv[1], argv[2:]); return
     if argv[0] == "--top":
