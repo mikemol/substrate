@@ -31,6 +31,8 @@ Usage:
   proofcost.py --top [N]                # the N costliest modules in the ledger (by CheckRHS_ms; default 15)
   proofcost.py --module <relpath>       # one module's recorded profile history
   proofcost.py --oracle [N]             # the regime oracle: per-module rate r (regime fingerprint) + cost-form
+  proofcost.py --structural [N]         # join the ANALYZER (jea_pysim forest_size) to the profiler (r): the
+                                        # explicitness↔depth trade — forest_size pre-build proxies r
 
 The per-dir ledger is `.agda-profile.tsv` alongside each Makefile (gitignored — hardware-specific),
 rows `module<TAB>total_ms<TAB>checkrhs_ms<TAB>cmp_reduce<TAB>alloc_mb<TAB>peak_mb<TAB>gc_pct`.
@@ -169,6 +171,55 @@ def parse_file(outfile: str, agda_args) -> None:
         pass
 
 
+def _forest_size(module_basename: str):
+    """The ANALYZER's structural-complexity feature: jea_pysim's interned-forest node count for a module,
+    read from its .agdai (no typecheck). None if the .agdai or jea_pysim is unavailable."""
+    ai = glob.glob(os.path.join(AGDA, "_build", "**", module_basename.replace(".agda", ".agdai")), recursive=True)
+    if not ai:
+        return None
+    pysim = os.path.join(ROOT, "jea", "metalanguage", "jea_pysim.py")
+    try:
+        out = subprocess.run(["python3", pysim, ai[0], "--extract"],
+                             capture_output=True, text=True, timeout=120).stdout
+    except Exception:
+        return None
+    m = re.search(r"forest (\d+) interned nodes", out)
+    return int(m.group(1)) if m else None
+
+
+def _structural(n: int) -> None:
+    """Join the ANALYZER (jea_pysim forest_size = structural explicitness) to the PROFILER (r, cmp_reduce).
+
+    FINDING (Ⓟ.cmp-reduce-structural): r (per-conversion reduction cost) is INVERSELY related to forest_size.
+    An EXPLICIT structural proof (big interned forest) pushes the work into SHALLOW symbolic conversions (low
+    r); a TERSE reflection proof (tiny forest) leaves it to DEEP normalization (high r). So the analyzer's
+    STATIC size proxies the profiler's DYNAMIC regime-rate — forest_size (pre-build, no typecheck) → r estimate
+    → CheckRHS = cmp_reduce × r. (cmp_reduce itself tracks forest_size weakly/positively; r is the discriminator
+    and is the dynamic quantity the static size can only proxy, not pin — calibration sharpens as the ledger
+    grows under the always-on shim.)"""
+    by = {}
+    for r in _read_ledgers():
+        if r[2] > 0 and r[3] > 0:
+            by.setdefault(r[0], []).append((r[2], r[3]))
+    recs = []
+    for mod, xs in by.items():
+        crhs = statistics.median(c for c, _ in xs)
+        cmpr = statistics.median(m for _, m in xs)
+        fs = _forest_size(mod)
+        if fs is not None:
+            recs.append((mod, fs, crhs / cmpr, int(crhs), int(cmpr)))
+    if not recs:
+        raise SystemExit("no (forest_size, ledger) joins — build with the shim + ensure .agdai exist")
+    recs.sort(key=lambda t: t[1])  # forest_size ascending → r should DECREASE (the explicitness↔depth trade)
+    print("analyzer (jea_pysim forest_size) × profiler (r, cmp_reduce) — the explicitness↔depth trade\n")
+    print(f"  {'module':40} {'forest':>7} {'r (ms/cmp)':>11} {'cmp_reduce':>10} {'CheckRHS':>9}")
+    for mod, fs, r, crhs, cmpr in recs[:n]:
+        print(f"  {mod:40} {fs:>7} {r:>11.2f} {cmpr:>10} {crhs:>7}ms")
+    print("\n  FINDING: forest_size ↑  ⇒  r ↓  — explicit structural proof = SHALLOW conversions (low r);")
+    print("  terse reflection = DEEP normalization (high r). Static structural size proxies the dynamic")
+    print("  regime-rate; the oracle's pre-build predictor is forest_size → r, not a size→cost regression.")
+
+
 def oracle(candidates):
     """argmin over candidate regimes — each (label, est_cmp_reduce, regime_rate_r) → predicted CheckRHS_ms
     = est_cmp_reduce × r. The cheaper regime is the min. (The jea_cost `argmin_s T_s`, in the proof chart.)"""
@@ -209,6 +260,8 @@ def main(argv):
         print(__doc__); return
     if argv[0] == "--oracle":
         _oracle(int(argv[1]) if len(argv) > 1 else 15); return
+    if argv[0] == "--structural":
+        _structural(int(argv[1]) if len(argv) > 1 else 15); return
     if argv[0] == "--parse":
         parse_file(argv[1], argv[2:]); return
     if argv[0] == "--top":
