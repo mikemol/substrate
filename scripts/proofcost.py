@@ -132,9 +132,35 @@ def _hist(module_rel: str) -> None:
         print(f"  Total {r[1]:>6}ms  CheckRHS {r[2]:>6}ms  cmp_reduce {r[3]:>5}  alloc {r[4]:>7}MB  peak {r[5]:>6}MB  GC {r[6]}%")
 
 
+def parse_file(outfile: str, agda_args) -> None:
+    """ALWAYS-ON capture: parse a saved `agda --profile=all` output file and append the SLIs to the
+    module's per-dir ledger, CWD-relative (the shim runs in the build's per-dir cwd). Best-effort:
+    silently no-op on any problem so it never perturbs a build. (alloc/peak are 0 unless the caller
+    also passed `+RTS -s`; CheckRHS_ms + cmp_reduce — the regime signal — come from --profile alone.)"""
+    try:
+        out = open(outfile).read()
+    except OSError:
+        return
+    mod = next((a for a in agda_args if a.endswith(".agda")), None)
+    if not mod:
+        return
+    s = _parse(out)
+    if s["total_ms"] == 0 and s["checkrhs_ms"] == 0:
+        return  # nothing profiled (cached load / no-op) — not a real sample
+    led = os.path.join(os.path.dirname(mod) or ".", LEDGER)
+    row = "\t".join(str(x) for x in (os.path.basename(mod), s["total_ms"], s["checkrhs_ms"],
+                                     s["cmp_reduce"], s["alloc_mb"], s["peak_mb"], s["gc_pct"]))
+    try:
+        with open(led, "a") as f: f.write(row + "\n")
+    except OSError:
+        pass
+
+
 def main(argv):
     if not argv:
         print(__doc__); return
+    if argv[0] == "--parse":
+        parse_file(argv[1], argv[2:]); return
     if argv[0] == "--top":
         _top(int(argv[1]) if len(argv) > 1 else 15); return
     if argv[0] == "--module":

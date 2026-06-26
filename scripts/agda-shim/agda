@@ -18,4 +18,20 @@ done
 # (Ⓡ.autobudget), falling back to AGDA_MB_DEFAULT (2048) with no history. Set AGDA_MB=<N> to pin.
 # MEMBUDGET_RETRY_OOM=1: an agda compile is idempotent, so if a too-tight auto-bucket OOM-kills it
 # (exit 137), membudget retries at the next power-of-2 bucket up (self-correcting).
+# Ⓟ.proof-cost-ledger: ALWAYS-ON proof-resolution profiling (opt-OUT, not opt-in — dense samples beat
+# occasional ones; ~2× compile is the accepted price). Add `--profile=all`, capture stdout (the profile
+# report) to a temp, append the SLIs to the per-dir `.agda-profile.tsv` via proofcost.py, and re-emit
+# agda's real stdout MINUS the profile block so build output stays clean. Best-effort: never alters the
+# exit code. Disable with MEMBUDGET_NOPROFILE=1.
+if [ -z "${MEMBUDGET_NOPROFILE:-}" ]; then
+  _pf="$(mktemp 2>/dev/null || true)"
+  if [ -n "$_pf" ]; then
+    _rc=0
+    env MEMBUDGET_RETRY_OOM=1 membudget run "${AGDA_MB:-auto}" agda -- "$_real" --profile=all "$@" >"$_pf" || _rc=$?
+    "$_dir/../proofcost.py" --parse "$_pf" "$@" >/dev/null 2>&1 || true
+    sed '/^Statistics for /,$d' "$_pf" 2>/dev/null || cat "$_pf" 2>/dev/null || true
+    rm -f "$_pf"
+    exit "$_rc"
+  fi
+fi
 exec env MEMBUDGET_RETRY_OOM=1 membudget run "${AGDA_MB:-auto}" agda -- "$_real" "$@"
