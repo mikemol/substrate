@@ -38,11 +38,25 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) where
   open D.Over F₂-CommRing d m-lo using
     ( Poly ; _*Q_ ; oneC ; xpow ; ytime
     ; reduce-*P-expand ; reduce-idempotent ; hsum ; hsum-ytime ; xpow-ytime
-    ; *Q-comm ; *Q-identityˡ )
+    ; *Q-comm ; *Q-assoc ; *Q-identityˡ )
 
   -- the antilog in the bounded-magnitude (division) regime.
   gpow : ℕ → Poly (suc d)
   gpow n = xpow n oneC
+
+  -- g-GENERIC antilog: gᵍ^n for ANY generator g (not just x). The homomorphism
+  -- holds for every g by the monoid power law — the foundation for a PRIMITIVE
+  -- generator (e.g. GF(2⁸)'s (x+1), where x itself is not primitive).
+  gpowg : Poly (suc d) → ℕ → Poly (suc d)
+  gpowg g zero    = oneC
+  gpowg g (suc n) = g *Q gpowg g n
+
+  gpowg-hom : (g : Poly (suc d)) (a b : ℕ) →
+              gpowg g (a + b) ≡ (gpowg g a *Q gpowg g b)
+  gpowg-hom g zero    b = sym (*Q-identityˡ (gpowg g b))
+  gpowg-hom g (suc a) b =
+    trans (cong (g *Q_) (gpowg-hom g a b))
+          (sym (*Q-assoc g (gpowg g a) (gpowg g b)))
 
   -- ytime commutes through *Q on the right (both sides ≡ hsum p (ytime r)).
   ytime-*Q : (p r : Poly (suc d)) → (p *Q ytime r) ≡ ytime (p *Q r)
