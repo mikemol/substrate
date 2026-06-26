@@ -10,7 +10,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../..
 
-FILES := AsField.agda BezoutFold.agda ComputeTrace.agda DegreeBound.agda DegreeLt.agda EEAFold.agda EEATrace.agda FuelEEA.agda GF16Inverse.agda GF4DLog.agda GUnit.agda Inverse.agda PolyDiv.agda SBox.agda SBoxTable.agda TraceDescent.agda Trim.agda TrivialWedgePoly.agda WedgePoly.agda XPower.agda
+FILES := AsField.agda BezoutFold.agda ComputeTrace.agda DegreeBound.agda DegreeLt.agda EEAFold.agda EEATrace.agda FuelEEA.agda GF16Inverse.agda GF4DLog.agda GF4TwoFaces.agda GUnit.agda Inverse.agda PolyDiv.agda SBox.agda SBoxTable.agda TraceDescent.agda Trim.agda TrivialWedgePoly.agda WedgePoly.agda XPower.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
