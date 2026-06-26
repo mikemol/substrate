@@ -27,11 +27,11 @@ if [ -z "${MEMBUDGET_NOPROFILE:-}" ]; then
   _pf="$(mktemp 2>/dev/null || true)"
   if [ -n "$_pf" ]; then
     _rc=0
-    env MEMBUDGET_RETRY_OOM=1 membudget run "${AGDA_MB:-auto}" agda -- "$_real" --profile=all "$@" >"$_pf" || _rc=$?
+    env MEMBUDGET_RETRY_OOM=1 "$_dir/../membudget" run "${AGDA_MB:-auto}" agda -- "$_real" --profile=all "$@" >"$_pf" || _rc=$?
     "$_dir/../proofcost.py" --parse "$_pf" "$@" >/dev/null 2>&1 || true
     sed '/^Statistics for /,$d' "$_pf" 2>/dev/null || cat "$_pf" 2>/dev/null || true
     rm -f "$_pf"
     exit "$_rc"
   fi
 fi
-exec env MEMBUDGET_RETRY_OOM=1 membudget run "${AGDA_MB:-auto}" agda -- "$_real" "$@"
+exec env MEMBUDGET_RETRY_OOM=1 "$_dir/../membudget" run "${AGDA_MB:-auto}" agda -- "$_real" "$@"

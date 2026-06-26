@@ -5,6 +5,14 @@
 # bounds RAM and provides parallelism (-jN). See
 # scripts/gen_build_makefiles.py.
 
+# membudget agda-shim → make is the controlled+instrumented build path (RAM-budgeted + proof-cost
+# profiled). Idempotent (findstring); exported to recipes + sub-makes. MEMBUDGET_NOPROFILE=1 to skip
+# profiling; `make AGDA=…` to pin a different agda.
+SHIM_DIR := /home/mikemol/github/substrate/scripts/agda-shim
+ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
+export PATH := $(SHIM_DIR):$(PATH)
+endif
+
 .PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise
 all:
 	@$(MAKE) -C Substrate

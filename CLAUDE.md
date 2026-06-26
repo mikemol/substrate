@@ -56,10 +56,18 @@ whole dependency frontier and each `agda` blocks on the budget semaphore, so eff
 parallelism self-tunes to memory availability, in dependency order (no `-jN` guess, no OOM):
 
     cd agda
-    source ../scripts/membudget-shrc        # puts the agda shim on PATH
-    ../scripts/membudget init 8192           # RAM to devote (MB)
-    make -j                                   # AGDA_MB=auto (shim default): each job leases its
-                                              # autobudget size (≤1.5GiB ceiling); throttles to fit
+    make -j                                   # that's it — the generated makefiles self-inject the shim
+                                              # onto PATH (+ membudget auto-inits its budget on first use)
+
+The makefiles (`scripts/gen_build_makefiles.py`) now put the agda-shim on `make`'s PATH by construction
+(idempotent `export PATH`, exported to recipes + sub-makes), so **`make` IS the controlled+instrumented
+build path — no manual `source membudget-shrc`, no `membudget init`** (it auto-inits to 70%-RAM/8GiB). The
+shim calls `membudget` by absolute path, so it's self-contained. `make -j` self-throttles by RAM and ALSO
+records a proof-cost profile per re-typechecked module (Ⓟ.proof-cost-ledger, always-on opt-out;
+`MEMBUDGET_NOPROFILE=1 make` to skip the ~2× profiling cost; `make AGDA=/path/to/agda` to pin a different
+agda). Sourcing `membudget-shrc` is still useful for *interactive* bare `agda`; it is no longer needed for
+`make`. NOTE: the pre-commit gate (`full_build_check.py`) invokes agda directly (not via make), so it is
+NOT shim-routed — to grow the ledger, build via `make`.
 
 `make`'s recipes resolve `agda` via PATH → the shim → `membudget run` → blocks/leases. The
 per-file `+RTS -M1024m` heap cap keeps each job under the 1.5GiB lease ceiling. `AGDA_MB=auto`

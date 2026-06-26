@@ -160,8 +160,9 @@ def parse_file(outfile: str, agda_args) -> None:
     if not mod:
         return
     s = _parse(out)
-    if s["total_ms"] == 0 and s["checkrhs_ms"] == 0:
-        return  # nothing profiled (cached load / no-op) — not a real sample
+    if s["checkrhs_ms"] == 0:
+        return  # no RHS-checking ⇒ a cached .agdai load (deserialization only), not a proof sample —
+                # `make` runs agda on every file (cached ones too); only re-typechecks are real samples
     led = os.path.join(os.path.dirname(mod) or ".", LEDGER)
     row = "\t".join(str(x) for x in (os.path.basename(mod), s["total_ms"], s["checkrhs_ms"],
                                      s["cmp_reduce"], s["alloc_mb"], s["peak_mb"], s["gc_pct"]))

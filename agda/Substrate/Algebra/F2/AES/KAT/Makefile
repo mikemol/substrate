@@ -5,6 +5,14 @@
 # SUBDIRS are listed explicitly — a tree/makefile mismatch fails
 # loudly (re-run scripts/gen_build_makefiles.py).
 
+# membudget agda-shim → make is the controlled+instrumented build path (RAM-budgeted + proof-cost
+# profiled). Idempotent (findstring); exported to recipes + sub-makes. MEMBUDGET_NOPROFILE=1 to skip
+# profiling; `make AGDA=…` to pin a different agda.
+SHIM_DIR := /home/mikemol/github/substrate/scripts/agda-shim
+ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
+export PATH := $(SHIM_DIR):$(PATH)
+endif
+
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
