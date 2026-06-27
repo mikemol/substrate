@@ -29,29 +29,51 @@ case ":$PATH:" in *":$SELFDIR:"*) ;; *) export PATH="$SELFDIR:$PATH";; esac   # 
 FILE="${MEMBUDGET_FILE:-$HOME/.cache/membudget/budget.cotype}"
 LOCK="$FILE.lock"
 mkdir -p "$(dirname "$FILE")"
-# ONE lock fd for this process's whole lifetime. POSIX flock() is per open-file-description, and
-# re-locking an fd this process ALREADY holds returns immediately — so a single shared fd makes the
-# mutex RE-ENTRANT within the process (the EXIT-trap release cannot self-deadlock against the acquire
-# loop) while still serialising ACROSS processes. (The bug: the old `with_lock` opened a FRESH fd each
-# call → a second open-file-description to the same file → the trap's flock blocked on the lock the
-# loop held → permanent deadlock once any holder was signalled mid-section. This is the recursive
-# WaitForSingleObject semantics: the owner re-enters freely; others wait.)
-exec {LKFD}>"$LOCK"
+LOCK_TIMEOUT="${MEMBUDGET_LOCK_TIMEOUT:-10}"
+
+# ───────────────────────── LOCK KERNEL — disruption-proof BY CONSTRUCTION ─────────────────────────
+# The mutex must survive ANY way a holder can vanish (SIGKILL, the cgroup OOM-killer, session teardown,
+# a crash) AND must never let one waiter block forever. Two invariants, enforced here so no other code
+# can violate them:
+#
+#  1. THE LOCK FD NEVER CROSSES A FORK. with_lock OPENS the fd and unlock CLOSES it, so the descriptor
+#     exists only inside a critical section — which never forks (pure file-IO). No child (agda, the
+#     systemd scope, anything) can inherit it, so the KERNEL releases the lock the instant the holder's
+#     last fd closes, i.e. the moment it dies, by any signal. There is no userspace cleanup to be skipped
+#     because there is none — death-release is the kernel's job and we never defeat it by leaking the fd.
+#     (The starvation bug was exactly this: a persistent fd was inherited by the long-lived child, so a
+#     killed holder's lock stayed held by the child's copy → cross-repo deadlock.)
+#  2. ACQUIRE IS BOUNDED. flock -w "$LOCK_TIMEOUT" never blocks forever. Because (1) makes a DEAD holder
+#     auto-release, a timeout can only mean a LIVE, wedged holder (e.g. SIGSTOP) — with_lock returns
+#     non-zero and the caller retries/aborts; it never hangs the machine.
+#
+# Critical sections must stay pure file-IO (never fork/sleep/wait while holding the lock) so the hold is
+# microseconds and (2) effectively never fires in normal operation.
+with_lock() {  # → 0 holding the lock (fd in $LKFD); → 1 on timeout, with no fd left open
+  exec {LKFD}>"$LOCK"
+  flock -w "$LOCK_TIMEOUT" "$LKFD" && return 0
+  exec {LKFD}>&-; return 1
+}
+unlock() { flock -u "$LKFD" 2>/dev/null; exec {LKFD}>&- 2>/dev/null; return 0; }
+
+# Liveness, PID-REUSE-PROOF: a lease owner is "pid:starttime" (field 22 of /proc/pid/stat). A recycled
+# PID has a different starttime, so a dead owner's lease can never be kept alive by an unrelated process.
+_starttime() { awk '{print $22}' "/proc/$1/stat" 2>/dev/null; }
+_alive() { local pid=${1%%:*} st=${1#*:}; kill -0 "$pid" 2>/dev/null && [ "$(_starttime "$pid")" = "$st" ]; }
+_self_owner() { printf '%s:%s' "$$" "$(_starttime "$$")"; }
 
 # Target top-level budget: 8 GiB, but never exceed 70% of RAM (safe on smaller boxes).
 default_total() { awk '/MemTotal/{p=int($2*7/10/1024); print (p<8192)?p:8192}' /proc/meminfo; }
 # ensure(): create the ledger if absent. MUST run UNDER the lock (every caller acquires it first) — the
 # create is then serialised, so a cold `make -j` first wave cannot race concurrent `cat >` into a
-# truncated/corrupt ledger (the other deadlock root: a half-written TOTAL_MB read as an empty budget).
+# truncated/corrupt ledger (a half-written TOTAL_MB read as an empty budget).
 ensure() { [ -f "$FILE" ] || cat > "$FILE" <<EOF
 # membudget cotype — recursion-aware concurrent memory-budget semaphore (scripts/membudget).
 # Global free = TOTAL_MB - Σ top-level LEASE mb; a nested lease draws from its PARENT's mb.
-# LEASE <id> <mb> <pid> <epoch> <parent|-> <label>
+# LEASE <id> <mb> <pid:starttime> <epoch> <parent|-> <label>
 TOTAL_MB $(default_total)
 EOF
 }
-with_lock() { flock "$LKFD"; }                 # acquire the single per-process lock fd (re-entrant on same fd)
-unlock()    { flock -u "$LKFD" 2>/dev/null || true; }
 
 gc() { # drop leases whose owner pid died, then cascade-drop leases whose parent vanished
   local tmp chg=1
@@ -60,36 +82,63 @@ gc() { # drop leases whose owner pid died, then cascade-drop leases whose parent
                                              # copy that can partially fail under /tmp pressure and strand gc)
     while IFS= read -r line; do
       case "$line" in
-        LEASE\ *) set -- $line   # $2=id $4=pid $6=parent
-          if ! kill -0 "$4" 2>/dev/null; then chg=1; continue; fi
-          if [ "$6" != "-" ] && ! grep -q "^LEASE $6 " "$FILE"; then chg=1; continue; fi
+        LEASE\ *) set -- $line   # $2=id $4=pid:starttime $6=parent
+          if ! _alive "$4"; then chg=1; continue; fi                                  # dead owner (or reused PID)
+          if [ "$6" != "-" ] && ! grep -q "^LEASE $6 " "$FILE"; then chg=1; continue; fi  # cascade: parent vanished
           printf '%s\n' "$line" >> "$tmp" ;;
         *) printf '%s\n' "$line" >> "$tmp" ;;
       esac
     done < "$FILE"
-    mv "$tmp" "$FILE"
+    # rewrite ONLY when this pass actually dropped a lease. Rewriting unconditionally turned every gc
+    # into a ledger-change event → woke every blocked waiter → each ran gc → rewrote again: a self-
+    # feeding churn storm that saturated the GLOBAL lock and starved other repos. No drop → no rewrite.
+    if [ "$chg" = 1 ]; then mv "$tmp" "$FILE"; else rm -f "$tmp"; fi
   done
 }
 read_total()    { awk '$1=="TOTAL_MB"{print $2; exit}' "$FILE"; }
 budget_of()     { [ "$1" = "-" ] && read_total || awk -v i="$1" '$1=="LEASE"&&$2==i{print $3; exit}' "$FILE"; }
 claimed_under() { awk -v p="$1" '$1=="LEASE"&&$6==p{s+=$3} END{print s+0}' "$FILE"; }
-release()       { with_lock; grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true; unlock; }
+_snapshot() {   # ONE awk pass → "<budget> <used>" for $parent (budget empty if the parent vanished). Halves
+                # the fork count in the hot poll loop AND shortens the under-lock critical section.
+  awk -v p="$1" '
+    $1=="TOTAL_MB"            {tot=$2; haveTot=1}
+    $1=="LEASE" && $2==p      {pmb=$3; havePmb=1}
+    $1=="LEASE" && $6==p      {used+=$3}
+    END { if (p=="-") {b=tot; haveB=haveTot} else {b=pmb; haveB=havePmb}
+          if (haveB) printf "%s %s\n", b, used+0; else printf " %s\n", used+0 }' "$FILE"
+}
+_any_dead() {   # lock-free liveness probe: succeed (0) if ANY lease's owner pid is dead. The expensive
+                # kill-0 scan must stay OFF the global lock — a blocked waiter only takes the lock for gc
+                # when there is actually something to reap, else the herd's scans re-saturate the lock.
+  local o
+  for o in $(awk '$1=="LEASE"{print $4}' "$FILE" 2>/dev/null); do
+    _alive "$o" || return 0
+  done
+  return 1
+}
+# release a lease. Best-effort: if the lock is wedged we just return — the lease is reaped later by gc
+# (dead owner), so a failed release never leaks budget permanently. NEVER blocks unboundedly.
+release()       { with_lock || return 0; grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true; unlock; }
 
-cmd_init() { with_lock; rm -f "$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOTAL_MB ${1}/" "$FILE"; unlock; cmd_status; }
+cmd_init() { with_lock || { echo "membudget: lock busy (init)" >&2; exit 1; }; rm -f "$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOTAL_MB ${1}/" "$FILE"; unlock; cmd_status; }
 
 cmd_status() {
-  with_lock; ensure; gc                          # ensure UNDER the lock (serialised create — no init race)
+  with_lock || { echo "membudget: lock busy (status)" >&2; exit 1; }
+  ensure; gc                                     # ensure UNDER the lock (serialised create — no init race)
   local t c; t=$(read_total); c=$(claimed_under "-"); unlock
   printf 'membudget: TOTAL=%sMB top-level-leased=%sMB global-free=%sMB\n' "$t" "$c" "$((t-c))"
   awk '$1=="LEASE"{p=($6=="-")?"top":("under "$6); printf "  [%s] %sMB pid=%s (%s) %s\n",$2,$3,$4,p,$7}' "$FILE" \
     | grep . || echo "  (no active leases)"
 }
 
-_wait_change() { # block until the ledger changes (a release) or a short timeout, then re-check
+_wait_change() { # block up to $1 seconds for a ledger change (a release), then return to re-check. With
+                 # inotify this wakes on the real event (the $1 is just a safety re-poll); without it, $1
+                 # IS the poll period — the caller backs $1 off so a long-blocked herd doesn't busy-spin.
+  local t="${1:-${MEMBUDGET_POLL:-0.5}}"
   if command -v inotifywait >/dev/null 2>&1; then
-    inotifywait -qq -t 5 -e modify,create,moved_to,delete,attrib "$(dirname "$FILE")" 2>/dev/null || true
+    inotifywait -qq -t "$t" -e modify,create,moved_to,delete,attrib "$(dirname "$FILE")" 2>/dev/null || true
   else
-    sleep "${MEMBUDGET_POLL:-0.5}"
+    sleep "$t"
   fi
 }
 
@@ -122,26 +171,46 @@ cmd_run() {
   local parent="${MEMBUDGET_PARENT:--}"
   local id; id=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
   local where; [ "$parent" = "-" ] && where="global" || where="parent $parent"
-  trap "release $id" EXIT                       # set early: idempotent; covers the wait-window if killed.
-                                                # release re-takes the SAME lock fd → re-entrant, never self-deadlocks.
+  trap "release $id" EXIT                       # prompt cleanup; if it can't take the lock the lease is still
+                                                # reaped by gc (dead owner) — and on hard kill the KERNEL frees
+                                                # the lock anyway, so cleanup is guaranteed regardless of the trap.
   # BLOCKING acquire (WaitForSingleObject-style): block while transiently short, wake on a
   # release, re-attempt; REFUSE only the impossible (mb > the level's TOTAL — would block forever).
-  local start announced=0; start=$(date +%s)
+  with_lock && { ensure; unlock; }              # serialized create, once before the loop (no init race)
+  local start announced=0 lastgc=0 backoff; start=$(date +%s); backoff="${MEMBUDGET_POLL:-0.5}"
   while true; do
-    with_lock; ensure; gc                       # single per-process lock fd (opened once at top); ensure UNDER it → no init race
-    local budget; budget=$(budget_of "$parent")
-    if [ -z "$budget" ]; then unlock; echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; fi
+    # OPTIMISTIC, LOCK-FREE probe. A genuinely-blocked waiter must NOT touch the global lock every poll —
+    # that is what starved other repos. Ledger writes are atomic (append a line; gc/release rename-in-
+    # place), so a lock-free read sees a consistent-enough snapshot; a stale read only ever UNDER-counts
+    # free budget (conservative). The lock is taken ONLY to actually CLAIM (with an authoritative re-check)
+    # or for a rate-limited gc — never just to look.
+    local budget used free; read budget used < <(_snapshot "$parent")
+    if [ -z "$budget" ]; then echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; fi
     if [ "$mb" -gt "$budget" ]; then            # impossible at this level → refuse, never block
-      unlock
       echo "membudget: REFUSED [$label] — IMPOSSIBLE: need ${mb}MB > ${budget}MB ($where total). Raise the $([ "$parent" = "-" ] && echo 'global budget (membudget init)' || echo 'parent reservation')." >&2
       exit 3
     fi
-    local used free; used=$(claimed_under "$parent"); free=$((budget-used))
-    if [ "$mb" -le "$free" ]; then              # fits → claim and proceed
-      printf 'LEASE %s %s %s %s %s %s\n' "$id" "$mb" "$$" "$(date +%s)" "$parent" "$label" >> "$FILE"
-      unlock; break
+    free=$((budget-used))
+    if [ "$mb" -gt "$free" ]; then              # doesn't fit on the cheap read → before blocking, try to reclaim
+      local now; now=$(date +%s)                # DEAD-owner leases (rate-limited; this is the ONLY blocked-path lock,
+      if [ $(( now - lastgc )) -ge "${MEMBUDGET_GC_INTERVAL:-2}" ]; then  # at most 1/GC_INTERVAL
+        lastgc=$now
+        if _any_dead && with_lock; then          # liveness scan is LOCK-FREE; take the lock ONLY to reap
+          gc; unlock
+          read budget used < <(_snapshot "$parent"); free=$((budget-used))
+          [ -z "$budget" ] && { echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; }
+        fi
+      fi
     fi
-    unlock                                       # transiently short → block (or fail-fast / time out)
+    if [ "$mb" -le "$free" ] && with_lock; then  # looks like it fits → LOCK, re-check authoritatively, then claim
+      read budget used < <(_snapshot "$parent"); free=$((budget-used))
+      if [ -n "$budget" ] && [ "$mb" -le "$free" ]; then
+        printf 'LEASE %s %s %s %s %s %s\n' "$id" "$mb" "$(_self_owner)" "$(date +%s)" "$parent" "$label" >> "$FILE"
+        unlock; break
+      fi
+      unlock                                     # raced — another waiter took it; fall through to block
+    fi
+                                                 # transiently short → block (or fail-fast / time out)
     if [ -n "${MEMBUDGET_NOBLOCK:-}" ]; then
       echo "membudget: REFUSED [$label] (noblock) — need ${mb}MB, free ${free}MB of ${budget}MB ($where)." >&2; exit 3
     fi
@@ -149,8 +218,9 @@ cmd_run() {
       echo "membudget: GAVE UP [$label] after ${MEMBUDGET_TIMEOUT}s — need ${mb}MB, free ${free}MB ($where)." >&2; exit 3
     fi
     [ "$announced" = 0 ] && { echo "membudget: BLOCKED [$label] — need ${mb}MB, free ${free}MB of ${budget}MB ($where); waiting for a release…" >&2; announced=1; }
-    _wait_change
-  done
+    _wait_change "$backoff"                       # exponential backoff (cap MEMBUDGET_POLL_MAX): a long-blocked
+    backoff=$(awk "BEGIN{b=$backoff*1.6; c=${MEMBUDGET_POLL_MAX:-3}; print (b>c)?c:b}")  # herd polls progressively
+  done                                            # less often → fewer racy reads/spurious lock-takes, less CPU
   export MEMBUDGET_PARENT="$id"
   # genlop-style timing: measure ONLY the post-lease run (not the semaphore wait above), record it to
   # the module's per-dir ledger, and PROPAGATE the real exit code (cgroup-kill 137 included). The
@@ -206,7 +276,7 @@ _record_time() { # genlop: append <module>\t<seconds>\t<peak_mb> to the module's
 
 cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-contains the
               # whole hierarchy); the membudget-shrc auto-wrap is loaded for per-command sub-budgeting.
-  with_lock; ensure; local total; total=$(read_total); unlock   # ensure UNDER the lock
+  local total; with_lock && { ensure; total=$(read_total); unlock; }   # ensure UNDER the lock
   local mb="${1:-$total}"; shift 2>/dev/null || true; [ "${1:-}" = "--" ] && shift
   local rc; rc="$(mktemp "${TMPDIR:-/tmp}/membudget-rc.XXXXXX")"
   { echo '[ -f ~/.bashrc ] && source ~/.bashrc'; printf "source %q\n" "$SELFDIR/membudget-shrc"; } > "$rc"
