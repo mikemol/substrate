@@ -89,3 +89,59 @@ chirality-recip-even = refl
 -- and the projection is a homomorphism onto the Chirality ℤ/2 (morph factor).
 chirality-hom : (g h : V4Full) → chirality-of (g · h) ≡ chirality-of (v4 (morph g ⊕ morph h) 𝟘)
 chirality-hom g h = refl
+
+------------------------------------------------------------------------
+-- UNIFICATION (Ⓜ.v4-unify): V4Full is NOT a rival V₄ — it is the F₂-COORDINATE
+-- presentation of the substrate's canonical Klein four-group Substrate.Groups.V4
+-- (the enumerated {e,α,β,γ}, itself V4-Coxeter via a bijection; cf.
+-- Groups.V4-as-Z2xZ2, the ℤ/2×ℤ/2 word presentation). Witnessed here by a group
+-- ISO, so the "two V₄ structures" dissolve into ONE group in two charts — the
+-- bit-coordinate chart being the one where chirality-of reads the morph bit.
+--   e ↔ e    rowSwap-gen ↔ α    recip-gen ↔ β    klein ↔ γ
+------------------------------------------------------------------------
+open import Substrate.Groups.V4 using (V₄)
+  renaming (e to e₄; α to α₄; β to β₄; γ to γ₄; _·_ to _·₄_)
+
+to₄ : V4Full → V₄
+to₄ (v4 𝟘 𝟘) = e₄
+to₄ (v4 𝟙 𝟘) = α₄
+to₄ (v4 𝟘 𝟙) = β₄
+to₄ (v4 𝟙 𝟙) = γ₄
+
+from₄ : V₄ → V4Full
+from₄ e₄ = e
+from₄ α₄ = rowSwap-gen
+from₄ β₄ = recip-gen
+from₄ γ₄ = klein
+
+from-to₄ : (x : V4Full) → from₄ (to₄ x) ≡ x
+from-to₄ (v4 𝟘 𝟘) = refl
+from-to₄ (v4 𝟙 𝟘) = refl
+from-to₄ (v4 𝟘 𝟙) = refl
+from-to₄ (v4 𝟙 𝟙) = refl
+
+to-from₄ : (y : V₄) → to₄ (from₄ y) ≡ y
+to-from₄ e₄ = refl
+to-from₄ α₄ = refl
+to-from₄ β₄ = refl
+to-from₄ γ₄ = refl
+
+-- the bijection is a GROUP homomorphism (V4Full's ⊕-pair op ↔ V₄'s ·): same group.
+to₄-hom : (g h : V4Full) → to₄ (g · h) ≡ (to₄ g ·₄ to₄ h)
+to₄-hom (v4 𝟘 𝟘) (v4 𝟘 𝟘) = refl
+to₄-hom (v4 𝟘 𝟘) (v4 𝟘 𝟙) = refl
+to₄-hom (v4 𝟘 𝟘) (v4 𝟙 𝟘) = refl
+to₄-hom (v4 𝟘 𝟘) (v4 𝟙 𝟙) = refl
+to₄-hom (v4 𝟘 𝟙) (v4 𝟘 𝟘) = refl
+to₄-hom (v4 𝟘 𝟙) (v4 𝟘 𝟙) = refl
+to₄-hom (v4 𝟘 𝟙) (v4 𝟙 𝟘) = refl
+to₄-hom (v4 𝟘 𝟙) (v4 𝟙 𝟙) = refl
+to₄-hom (v4 𝟙 𝟘) (v4 𝟘 𝟘) = refl
+to₄-hom (v4 𝟙 𝟘) (v4 𝟘 𝟙) = refl
+to₄-hom (v4 𝟙 𝟘) (v4 𝟙 𝟘) = refl
+to₄-hom (v4 𝟙 𝟘) (v4 𝟙 𝟙) = refl
+to₄-hom (v4 𝟙 𝟙) (v4 𝟘 𝟘) = refl
+to₄-hom (v4 𝟙 𝟙) (v4 𝟘 𝟙) = refl
+to₄-hom (v4 𝟙 𝟙) (v4 𝟙 𝟘) = refl
+to₄-hom (v4 𝟙 𝟙) (v4 𝟙 𝟙) = refl
+
