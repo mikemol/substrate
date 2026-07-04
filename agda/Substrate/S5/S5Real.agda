@@ -55,9 +55,7 @@ cycle x₀ xs = cycle-go x₀ xs (x₀ ∷ xs)
 -- value's representation. (Stated for a concrete small period; the general
 -- length lemma is take-cycle below.)
 ------------------------------------------------------------------------
-length : {A : Set} → List A → ℕ
-length []       = zero
-length (_ ∷ xs) = suc (length xs)
+open import Substrate.Foundation.List.Length using (length)   -- ⟡dedup: was a local re-derivation
 
 -- taking the period-length prefix of the cycled remainder reproduces that
 -- remainder, then loops — the key productivity/faithfulness observation.

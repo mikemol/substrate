@@ -146,3 +146,56 @@ cdsw-gtorsor = record
   ; g-trans  = trans-t
   ; g-free   = two-sided-free
   }
+
+------------------------------------------------------------------------
+-- ⟡dedup-V4: this local KleinV4 IS the canonical Klein four-group Groups.V4.V₄,
+-- in the SAME chart (e/α/β/γ). But the local `_·_` is a DIRECT Cayley table
+-- (refl-reducible — every torsor proof above rests on that), whereas Groups.V4._·_
+-- routes through the V4-Coxeter bijection `from-c (to-c x · to-c y)`. So the direct
+-- table is a LOAD-BEARING chart (the V4FullCocycle pattern): we do NOT replace it,
+-- we WITNESS the iso — KleinV4 ≅ V₄ as groups (bijection + both round-trips + the
+-- homomorphism), grounding the torsor in the canonical V₄ without destabilising the
+-- definitional proofs. Reuse recorded, alternate-path preserved.
+------------------------------------------------------------------------
+open import Substrate.Groups.V4 using (V₄; ε-left)
+  renaming (e to e₄; α to α₄; β to β₄; γ to γ₄; _·_ to _·₄_)
+
+to₄ : KleinV4 → V₄
+to₄ e = e₄
+to₄ α = α₄
+to₄ β = β₄
+to₄ γ = γ₄
+
+from₄ : V₄ → KleinV4
+from₄ e₄ = e
+from₄ α₄ = α
+from₄ β₄ = β
+from₄ γ₄ = γ
+
+from-to₄ : (g : KleinV4) → from₄ (to₄ g) ≡ g
+from-to₄ e = refl
+from-to₄ α = refl
+from-to₄ β = refl
+from-to₄ γ = refl
+
+to-from₄ : (v : V₄) → to₄ (from₄ v) ≡ v
+to-from₄ e₄ = refl
+to-from₄ α₄ = refl
+to-from₄ β₄ = refl
+to-from₄ γ₄ = refl
+
+-- the group homomorphism: the two Cayley tables agree (the iso is a group iso).
+to₄-hom : (x y : KleinV4) → to₄ (x · y) ≡ (to₄ x) ·₄ (to₄ y)
+to₄-hom e y = sym (ε-left (to₄ y))     -- e·y=y (direct); e₄·₄· via Coxeter needs ε-left
+to₄-hom α e = refl
+to₄-hom α α = refl
+to₄-hom α β = refl
+to₄-hom α γ = refl
+to₄-hom β e = refl
+to₄-hom β α = refl
+to₄-hom β β = refl
+to₄-hom β γ = refl
+to₄-hom γ e = refl
+to₄-hom γ α = refl
+to₄-hom γ β = refl
+to₄-hom γ γ = refl

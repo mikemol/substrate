@@ -22,9 +22,7 @@ open import Substrate.Foundation.Product using (_×_; _,_) renaming (proj₁ to 
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Nat     using (_+_; _≤_; z≤n; s≤s)
 
-length : {A : Set} → List A → ℕ
-length []       = zero
-length (_ ∷ xs) = suc (length xs)
+open import Substrate.Foundation.List.Length using (length)   -- ⟡dedup: was a local re-derivation
 
 ≤-up : {m n : ℕ} → m ≤ n → m ≤ suc n
 ≤-up z≤n     = z≤n
