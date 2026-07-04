@@ -18,8 +18,8 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Bisim.agda CFBezoutCross.agda CFBezoutPrev.agda CFDigitHet.agda Cancel.agda ChiralityBridge.agda CycleWire.agda DetSign.agda DetValSign.agda Exp.agda ExtruderBraidRealigned.agda ExtruderFix.agda ExtruderLambekRealigned.agda ExtruderMiscRealigned.agda ExtruderNfCrossDlog.agda ExtruderNfCrossDlogCospan.agda ExtruderNfCrossRealigned.agda ExtruderNfGradedRealigned.agda ExtruderObsCoalg.agda ExtruderQSideRealigned.agda ExtruderRSideRealigned.agda Final.agda Log.agda Ops.agda OrbitAudit.agda OrbitBoundary.agda OrbitComplete.agda OrbitFaithful.agda OrbitUniversality.agda Properties.agda RationalAdjunction.agda SKIAllegoryFixpoints.agda SKIFaithfulOnGraded.agda SKIFaithfulRb.agda SKIGradedFlatAllegory.agda SKIOnCombinatorDivStr.agda SKIReduceResidueFP.agda SKIReductionToList.agda SKIShedDuality.agda SKITermToShedding.agda SeriesCancel.agda Transcendental.agda Unfold.agda WedgeBridge.agda Window.agda Windowed.agda
-SUBDIRS := 
+FILES := Bisim.agda CFBezoutBridge.agda CFBezoutCross.agda CFBezoutPrev.agda CFDigitHet.agda CFMatrixBridge.agda Cancel.agda ChiralityBridge.agda CycleWire.agda DetSign.agda DetValSign.agda Exp.agda ExtruderBraidRealigned.agda ExtruderFix.agda ExtruderLambekRealigned.agda ExtruderMiscRealigned.agda ExtruderNfCrossDlog.agda ExtruderNfCrossDlogCospan.agda ExtruderNfCrossRealigned.agda ExtruderNfGradedRealigned.agda ExtruderObsCoalg.agda ExtruderQSideRealigned.agda ExtruderRSideRealigned.agda Final.agda Log.agda NewmanKI.agda NewmanSKI.agda Ops.agda OrbitAudit.agda OrbitBoundary.agda OrbitComplete.agda OrbitFaithful.agda OrbitUniversality.agda Properties.agda RationalAdjunction.agda SKIAllegoryFixpoints.agda SKIFaithfulOnGraded.agda SKIFaithfulRb.agda SKIGradedFlatAllegory.agda SKIGradedTraceChain.agda SKIOnCombinatorDivStr.agda SKIReduceResidueFP.agda SKIReductionToList.agda SKIShedDuality.agda SKITermToShedding.agda SeriesCancel.agda Transcendental.agda Unfold.agda V4FullCocycle.agda WedgeBridge.agda Window.agda Windowed.agda
+SUBDIRS := CFBezoutBridge CFMatrixBridge NewmanKI NewmanSKI
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -48,5 +48,37 @@ files:
 
 subdirs: $(SUBDIRS)
 
+CFBezoutBridge:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+CFMatrixBridge:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+NewmanKI:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+NewmanSKI:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 clean:
+	@$(MAKE) -C CFBezoutBridge clean 2>/dev/null || true
+	@$(MAKE) -C CFMatrixBridge clean 2>/dev/null || true
+	@$(MAKE) -C NewmanKI clean 2>/dev/null || true
+	@$(MAKE) -C NewmanSKI clean 2>/dev/null || true
 	@true

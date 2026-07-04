@@ -28,7 +28,7 @@ open import Substrate.Category.Comonoid
 -- importing the existing V4 from Substrate.Algebra to keep this
 -- site self-contained.
 
-data V4 : Set where
+data V4 : Set where      -- ⟦shape:ceb5c2db e α β γ⟧
   e α β γ : V4
 
 ------------------------------------------------------------------------

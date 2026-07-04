@@ -25,7 +25,7 @@ open import Substrate.Algebra.TopologicalGroup
 ------------------------------------------------------------------------
 -- A self-contained V₄.
 
-data V4 : Set where
+data V4 : Set where      -- ⟦shape:ceb5c2db e α β γ⟧
   e α β γ : V4
 
 ------------------------------------------------------------------------
