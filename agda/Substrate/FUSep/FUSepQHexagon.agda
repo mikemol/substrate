@@ -41,6 +41,14 @@ RIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧      -- reduce edges (parent, reduct
 PIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧      -- peel edges (arg, function)
 QIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧      -- a third index (for the hexagon's three-fold reorder)
 
+-- ⟡def-eq: the three index ROLES are ONE carrier (Tm × Tm) DEFINITIONALLY —
+-- witnessed by refl, not merely asserted. The names carry intent; the equalities
+-- carry the interchangeability the hexagon's three-fold reindexing rests on.
+RIdx≡PIdx : RIdx ≡ PIdx
+RIdx≡PIdx = refl
+PIdx≡QIdx : PIdx ≡ QIdx
+PIdx≡QIdx = refl
+
 ------------------------------------------------------------------------
 -- THE BRAIDING braid : (X ⊗ Y) → (Y ⊗ X) — the swap (Wedge/Monoidal.braid→).
 ------------------------------------------------------------------------

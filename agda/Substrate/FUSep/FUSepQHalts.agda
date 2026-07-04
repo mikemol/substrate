@@ -23,7 +23,7 @@ open import Substrate.FUSep.FUSepQBridge using (FinTrace; base; step; reconstruc
 
 -- a state either IS a value (base) or STEPS (with a decrease + reconstruction).
 -- This ⊎ is the `Obs × (1 + −)` termination the substrate names — the `1` is base.
-data Progress {S H : Set} (recon : H → S → S) (next : S → S) (μ< : S → Set) (s : S) : Set where
+data Progress {S H : Set} (recon : H → S → S) (next : S → S) (μ< : S → Set) (s : S) : Set where      -- ⟦shape:530f8b0a isVal,stepsD⟧
   isVal  : FinTrace {H} {S} recon s → Progress recon next μ< s   -- base reached
   stepsD : (h : H) → s ≡ recon h (next s) → μ< s → Progress recon next μ< s
 

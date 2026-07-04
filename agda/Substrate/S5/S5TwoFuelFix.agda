@@ -24,37 +24,8 @@ open import Substrate.Foundation.Nat     using (_+_; _≤_; z≤n; s≤s)
 
 open import Substrate.Foundation.List.Length using (length)   -- ⟡dedup: was a local re-derivation
 
-≤-up : {m n : ℕ} → m ≤ n → m ≤ suc n
-≤-up z≤n     = z≤n
-≤-up (s≤s p) = s≤s (≤-up p)
-
-------------------------------------------------------------------------
--- dedupe over an arbitrary eqb (ported verbatim from S5TwoFuel — abstract A).
-------------------------------------------------------------------------
-module Dedupe {A : Set} (eqb : A → A → Bool) where
-  member : A → List A → Bool
-  member a []       = false
-  member a (x ∷ xs) = memb (eqb a x)
-    where memb : Bool → Bool
-          memb true  = true
-          memb false = member a xs
-  go     : List A → List A → List A
-  branch : List A → A → List A → Bool → List A
-  go seen []       = []
-  go seen (x ∷ xs) = branch seen x xs (member x seen)
-  branch seen x xs true  = go seen xs
-  branch seen x xs false = x ∷ go (x ∷ seen) xs
-  dedupe : List A → List A
-  dedupe = go []
-  go-≤     : (seen xs : List A) → length (go seen xs) ≤ length xs
-  branch-≤ : (seen : List A) (x : A) (xs : List A) (b : Bool)
-           → length (branch seen x xs b) ≤ suc (length xs)
-  go-≤ seen []       = z≤n
-  go-≤ seen (x ∷ xs) = branch-≤ seen x xs (member x seen)
-  branch-≤ seen x xs true  = ≤-up (go-≤ seen xs)
-  branch-≤ seen x xs false = s≤s (go-≤ (x ∷ seen) xs)
-  dedupe-≤ : (xs : List A) → length (dedupe xs) ≤ length xs
-  dedupe-≤ = go-≤ []
+-- the dedupe machinery + its L3 length-bound: LIFTED to the shared parent.
+open import Substrate.S5.Dedupe using (module Dedupe)
 
 ------------------------------------------------------------------------
 -- the trace-keeping runner over S5Fixpoint's kernel: next : S → S, stop at a

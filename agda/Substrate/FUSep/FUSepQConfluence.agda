@@ -58,6 +58,11 @@ RIdx PIdx : Set
 RIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧    -- (parent, reduct)
 PIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧    -- (arg, function)
 
+-- ⟡def-eq: the reduce-index and peel-index share ONE carrier (Tm × Tm)
+-- definitionally — witnessed, so the diamond's two edge-types are provably one.
+RIdx≡PIdx : RIdx ≡ PIdx
+RIdx≡PIdx = refl
+
 -- THE BRAIDED PAIR: a node carrying BOTH a reduce-index and a peel-index. The
 -- tensor RIdx ⊗ PIdx over the product carrier (Wedge/Monoidal: product carrier,
 -- componentwise). The two hierarchical indexes, on one bucket.
