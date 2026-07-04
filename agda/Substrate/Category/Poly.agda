@@ -73,7 +73,7 @@ open Poly public
 -- it goes BACKWARDS. This is the lens shape: the forward map is
 -- positions; the backward map carries directions back.
 
-record _⇒_ (P Q : Poly {ℓ}) : Set ℓ where
+record _⇒_ (P Q : Poly {ℓ}) : Set ℓ where      -- ⟦shape:b692b98b on-positions,on-directions⟧
   field
     on-positions  : Positions P → Positions Q
     on-directions : (p : Positions P) →

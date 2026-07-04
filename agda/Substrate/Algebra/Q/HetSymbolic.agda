@@ -34,7 +34,7 @@ open import Substrate.Algebra.Q.HetBasis
 -- A free term algebra: atoms (labels, NOT numbers) and one binary product.
 ------------------------------------------------------------------------
 
-data Tm : Set where
+data Tm : Set where      -- ⟦shape:27e68fcc atom,_∙_⟧
   atom : ℕ → Tm
   _∙_  : Tm → Tm → Tm
 

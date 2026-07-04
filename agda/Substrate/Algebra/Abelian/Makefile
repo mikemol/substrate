@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Z30-as-PFG.agda Z30JointGenViaProduct.agda Z6-AsChainDecomp.agda Z6-as-PFG.agda Z6JointGenViaProduct.agda
+FILES := V4-as-PFG.agda Z30-as-PFG.agda Z30JointGenViaProduct.agda Z6-AsChainDecomp.agda Z6-as-PFG.agda Z6JointGenViaProduct.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

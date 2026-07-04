@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Adjunction.agda AxisWord.agda BoundedIso.agda Bridge.agda Certified.agda Coalgebra.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda CrossMulGraded.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda IsoGroupoid.agda Monoidal.agda Mul.agda NComplex.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda ShapeParity.agda Species.agda Sphere.agda StarV4.agda VecGraded.agda Wedderburn.agda
+FILES := Adjunction.agda AxisWord.agda BoundedIso.agda Bridge.agda CertGenericProjection.agda Certified.agda CertifiedPhiStep.agda Coalgebra.agda CombinatorDivStr.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda CrossMulGraded.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda IsoGroupoid.agda Monoidal.agda Mul.agda NComplex.agda NilpotentDegreeK.agda NilpotentDegreeKGeneral.agda NilpotentFaithfulLogChart.agda NilpotentLogExpBridge.agda NilpotentLogMAssoc.agda NilpotentLogMFin.agda NilpotentLogMFinLaws.agda NilpotentLogMMonoid.agda NuAbstractLimitInstance.agda NuShapeIso.agda ParityBridge.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda ShapeParity.agda Species.agda Sphere.agda StarV4.agda TraceKleeneColimit.agda TraceMuStep.agda TraceNuAbstractLimit.agda TraceNuColimit.agda TraceNuConstructive.agda TraceNuStep.agda VecGraded.agda Wedderburn.agda
 SUBDIRS := AxisWord Compose Contextuality Graded Product ResidueAtom Shape Trace
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

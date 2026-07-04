@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := Bisim.agda Cancel.agda DetSign.agda Exp.agda Final.agda Log.agda Ops.agda Properties.agda RationalAdjunction.agda SeriesCancel.agda Transcendental.agda Unfold.agda WedgeBridge.agda Window.agda Windowed.agda
+FILES := Bisim.agda CFBezoutCross.agda CFBezoutPrev.agda CFDigitHet.agda Cancel.agda ChiralityBridge.agda CycleWire.agda DetSign.agda DetValSign.agda Exp.agda ExtruderBraidRealigned.agda ExtruderFix.agda ExtruderLambekRealigned.agda ExtruderMiscRealigned.agda ExtruderNfCrossDlog.agda ExtruderNfCrossDlogCospan.agda ExtruderNfCrossRealigned.agda ExtruderNfGradedRealigned.agda ExtruderObsCoalg.agda ExtruderQSideRealigned.agda ExtruderRSideRealigned.agda Final.agda Log.agda Ops.agda OrbitAudit.agda OrbitBoundary.agda OrbitComplete.agda OrbitFaithful.agda OrbitUniversality.agda Properties.agda RationalAdjunction.agda SKIAllegoryFixpoints.agda SKIFaithfulOnGraded.agda SKIFaithfulRb.agda SKIGradedFlatAllegory.agda SKIOnCombinatorDivStr.agda SKIReduceResidueFP.agda SKIReductionToList.agda SKIShedDuality.agda SKITermToShedding.agda SeriesCancel.agda Transcendental.agda Unfold.agda WedgeBridge.agda Window.agda Windowed.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
