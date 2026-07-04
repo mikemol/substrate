@@ -37,8 +37,7 @@ module Substrate.Algebra.Wedge.Shape where
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Wedge
-  using (DivStr; C; Wedge; quot; Trace; done; more; ℕ-div; fromEEATrace)
+open import Substrate.Algebra.Wedge using (DivStr; C; quot; Trace; done; more; ℕ-div; fromEEATrace)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 
 ------------------------------------------------------------------------

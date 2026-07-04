@@ -17,10 +17,9 @@
 module Substrate.Algebra.Nat.GCD.EEATrace where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge; remainder)
-
+open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge to Wedge⟦b7e6a995⟧)
 data EEATrace : ℕ → ℕ → ℕ → Set where
   base : ∀ a → EEATrace a 0 a
-  step : ∀ {a g} (b : ℕ) (w : Wedge a (suc b)) →
+  step : ∀ {a g} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
          EEATrace (suc b) (remainder w) g →
          EEATrace a (suc b) g

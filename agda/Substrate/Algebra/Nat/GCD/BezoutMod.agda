@@ -23,7 +23,7 @@ open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id; mod-suc-bound)
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-add-hom; mod-mult-hom; mod-+-left)
 open import Substrate.Algebra.Z.Residue using (negmod; negmod-inverse)
-open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge; quotient; remainder; wedge-eq)
+open import Substrate.Algebra.Nat.GCD.Wedge using (quotient; remainder; wedge-eq) renaming (Wedge to Wedge⟦b7e6a995⟧)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
 module _ (mm : ℕ) where
@@ -53,7 +53,7 @@ module _ (mm : ℕ) where
   base-bm : (a : ℕ) → BezoutMod a 0 a
   base-bm a = 1 , 0 , cong (_mod-suc mm) (trans (+-identityʳ (a + 0)) (+-identityʳ a))
 
-  step-bm : {a g : ℕ} (b : ℕ) (w : Wedge a (suc b)) →
+  step-bm : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
             BezoutMod (suc b) (remainder w) g → BezoutMod a (suc b) g
   step-bm {a} {g} b w (s' , t' , eq') =
     t' , (s' + negmod (t' * q) mm) , proof

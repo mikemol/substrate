@@ -29,9 +29,7 @@ module Substrate.Algebra.Wedge.Cross where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge
-  using (DivStr; C; z; recon; Wedge; quot; rem; wedge-eq)
-
+open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; quot; rem; wedge-eq) renaming (Wedge to Wedge⟦478f66a6⟧)
 ------------------------------------------------------------------------
 -- 1. The product DivStr: cross-carrier, shared quotient.
 ------------------------------------------------------------------------
@@ -50,12 +48,12 @@ A ⊗ᴰ B = record
 ------------------------------------------------------------------------
 
 wedge-fst : (A B : DivStr) {a a′ : C A} {b b′ : C B} →
-            Wedge (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge A a a′
+            Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge⟦478f66a6⟧ A a a′
 wedge-fst A B w = record
   { quot = proj₁ (quot w) ; rem = proj₁ (rem w) ; wedge-eq = cong proj₁ (wedge-eq w) }
 
 wedge-snd : (A B : DivStr) {a a′ : C A} {b b′ : C B} →
-            Wedge (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge B b b′
+            Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge⟦478f66a6⟧ B b b′
 wedge-snd A B w = record
   { quot = proj₂ (quot w) ; rem = proj₂ (rem w) ; wedge-eq = cong proj₂ (wedge-eq w) }
 
@@ -65,6 +63,6 @@ wedge-snd A B w = record
 -- pair — no longer automatic; the unconditional shared quotient lives in
 -- CrossMul's common carrier R (the cospan A → R ← B).
 quot-is-pair : (A B : DivStr) {a a′ : C A} {b b′ : C B}
-               (w : Wedge (A ⊗ᴰ B) (a , b) (a′ , b′)) →
+               (w : Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′)) →
                (quot (wedge-fst A B w) , quot (wedge-snd A B w)) ≡ quot w
 quot-is-pair A B w = refl

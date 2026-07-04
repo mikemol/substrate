@@ -53,7 +53,9 @@ for p,t in texts.items():
 # RATCHET: a large codebase can't retrofit 90 sites at once. Gate on NO NEW
 # bare colliding imports (count may only go down). Lower BASELINE as they're
 # fixed; the policy is enforced for new code today.
-BASELINE = 11
+# 2026-06-26: baseline RETIRED — all grandfathered bare colliding imports specialized
+# (Bool deduped; every Wedge import shape-pinned, migrated + baseline). Now ZERO by construction.
+BASELINE = 0
 n=sum(len(v) for v in viol.values())
 over = n > BASELINE
 if "--quiet" not in sys.argv or over:

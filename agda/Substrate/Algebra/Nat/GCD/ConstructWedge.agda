@@ -15,9 +15,8 @@ open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Eq using (trans)
 open import Substrate.Algebra.Nat.DivMod
   using (_mod-suc_; _div-suc_; mod-suc-bound; div-mod-eq)
-open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge)
-
-construct-wedge : (a b : ℕ) → Wedge a (suc b)
+open import Substrate.Algebra.Nat.GCD.Wedge using () renaming (Wedge to Wedge⟦b7e6a995⟧)
+construct-wedge : (a b : ℕ) → Wedge⟦b7e6a995⟧ a (suc b)
 construct-wedge a b = record
   { quotient  = a div-suc b
   ; remainder = a mod-suc b

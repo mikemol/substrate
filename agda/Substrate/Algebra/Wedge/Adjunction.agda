@@ -33,12 +33,11 @@ module Substrate.Algebra.Wedge.Adjunction where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.Wedge
-  using (DivStr; C; z; recon; Wedge; quot; rem; wedge-eq; forget; forget-correct)
+open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
   renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge)
+open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 
 ------------------------------------------------------------------------
@@ -65,15 +64,15 @@ Term D a b = Σ (C D) (λ q → Σ (C D) (λ r → a ≡ recon D q b r))
 -- 2. The hom-set bijection Wedge ≅ Term, uniform in D — DEFINITIONAL.
 ------------------------------------------------------------------------
 
-to : {D : DivStr} {a b : C D} → Wedge D a b → Term D a b
+to : {D : DivStr} {a b : C D} → Wedge⟦478f66a6⟧ D a b → Term D a b
 to w = quot w , rem w , wedge-eq w
 
-from : {D : DivStr} {a b : C D} → Term D a b → Wedge D a b
+from : {D : DivStr} {a b : C D} → Term D a b → Wedge⟦478f66a6⟧ D a b
 from (q , r , e) = record { quot = q ; rem = r ; wedge-eq = e }
 
 -- One round-trip is definitional: re-packaging a wedge as a term and back
 -- is the identity (Σ/record eta), b flowing straight from w's type.
-from∘to : {D : DivStr} {a b : C D} (w : Wedge D a b) → from (to w) ≡ w
+from∘to : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) → from (to w) ≡ w
 from∘to _ = refl
 
 -- The other direction (`to (from t) ≡ t`) is ALSO definitional, but cannot
@@ -90,16 +89,16 @@ from∘to _ = refl
 --    This is the Free orientation read backward; reading it twice is id.
 ------------------------------------------------------------------------
 
-eval-eq : {D : DivStr} {a b : C D} (w : Wedge D a b) →
+eval-eq : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) →
           eval D (quot w) b (rem w) ≡ a
 eval-eq w = sym (wedge-eq w)
 
-triangle : {D : DivStr} {a b : C D} (w : Wedge D a b) → forget w ≡ a
+triangle : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) → forget w ≡ a
 triangle = forget-correct
 
 -- re-orienting the witness twice is the identity (the adjunction is the
 -- witness read twice — here, literally).
-reorient : {D : DivStr} {a b : C D} (w : Wedge D a b) →
+reorient : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) →
            sym (eval-eq w) ≡ wedge-eq w
 reorient w = sym-sym (wedge-eq w)
 
@@ -115,7 +114,7 @@ reorient w = sym-sym (wedge-eq w)
 --    residue branch, and the residue is the correction (z ⟺ the iso corner).
 ------------------------------------------------------------------------
 
-module FreeForgetful (D : DivStr) (b : C D) (divide : (a : C D) → Wedge D a b) where
+module FreeForgetful (D : DivStr) (b : C D) (divide : (a : C D) → Wedge⟦478f66a6⟧ D a b) where
 
   Repr : Set
   Repr = C D × C D                              -- (quotient, remainder) against b

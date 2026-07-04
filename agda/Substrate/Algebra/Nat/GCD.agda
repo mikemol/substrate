@@ -26,7 +26,7 @@
 
 module Substrate.Algebra.Nat.GCD where
 
-open import Substrate.Algebra.Nat.GCD.Wedge             public
+open import Substrate.Algebra.Nat.GCD.Wedge public
 open import Substrate.Algebra.Nat.GCD.ConstructWedge    public
 open import Substrate.Algebra.Nat.GCD.EEATrace          public
 open import Substrate.Algebra.Nat.GCD.ComputeTrace      public

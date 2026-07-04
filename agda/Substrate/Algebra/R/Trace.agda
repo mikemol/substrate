@@ -29,7 +29,7 @@ open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq      using (_≡_; refl)
 
-open import Substrate.Algebra.Nat.GCD.Wedge    using (Wedge; quotient)
+open import Substrate.Algebra.Nat.GCD.Wedge using (quotient)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
 ------------------------------------------------------------------------

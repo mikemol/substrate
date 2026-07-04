@@ -22,7 +22,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
 open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
-open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge; remainder; r<b)
+open import Substrate.Algebra.Nat.GCD.Wedge using (remainder; r<b)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 

@@ -28,7 +28,7 @@ open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-assoc; +ℤ-comm; +ℤ-identityˡ; +ℤ-inverseʳ)
 open import Substrate.Algebra.Z.Properties.Mul
   using (distribˡ-pos; distribʳ-pos; neg-*-left; *ℤ-assoc-pos-pos)
-open import Substrate.Algebra.Nat.GCD.Wedge using (Wedge; quotient; remainder; wedge-eq)
+open import Substrate.Algebra.Nat.GCD.Wedge using (quotient; remainder; wedge-eq) renaming (Wedge to Wedge⟦b7e6a995⟧)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold)
 
@@ -53,7 +53,7 @@ base-bezout a =
 -- bridge s'·(suc b) + t'·r = g, the new bridge for (a, suc b) has
 -- s = t', t = s' − t'·q  (clean over ℤ).
 step-bezout :
-  {a g : ℕ} (b : ℕ) (w : Wedge a (suc b)) →
+  {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
   BezoutℤWitness (suc b) (remainder w) g → BezoutℤWitness a (suc b) g
 step-bezout {a} {g} b w (s' , t' , eq') =
   t' , (s' -ℤ (t' *ℤ (+ q))) , proof

@@ -40,7 +40,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Algebra.Wedge using (Wedge)
+open import Substrate.Algebra.Wedge using () renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.WitnessTower.Wedge.Factoradic
   using (tower-wedge; tower-quotient)
 open import Substrate.WitnessTower.KleinCensus
@@ -57,11 +57,11 @@ seam-quotient-is-4 : tower-quotient 3 ≡ 4
 seam-quotient-is-4 = refl
 
 -- read directly off the wedge record (same value, via Wedge.quot).
-seam-wedge-quot-is-4 : Wedge.quot (tower-wedge 3) ≡ 4
+seam-wedge-quot-is-4 : Wedge⟦478f66a6⟧.quot (tower-wedge 3) ≡ 4
 seam-wedge-quot-is-4 = refl
 
 -- the seam wedge is EXACT: V₄'s 4 cosets tile S₄ over S₃ with no remainder.
-seam-wedge-exact : Wedge.rem (tower-wedge 3) ≡ 0
+seam-wedge-exact : Wedge⟦478f66a6⟧.rem (tower-wedge 3) ≡ 0
 seam-wedge-exact = refl
 
 ------------------------------------------------------------------------

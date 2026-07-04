@@ -26,8 +26,7 @@ module Substrate.Algebra.Wedge.Reads where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Algebra.Wedge
-  using (ℕ-div; collapse; cell; forget; fromEEATrace; fromℕ-Wedge)
+open import Substrate.Algebra.Wedge using (ℕ-div; collapse; cell; forget; fromEEATrace; fromℕ-Wedge)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.Fold using (gcd-fold; gcd-fold-correct)
 import Substrate.Algebra.Nat.GCD.Wedge as N
