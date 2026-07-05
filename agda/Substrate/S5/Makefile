@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := Dedupe.agda S5Carrier.agda S5EEA.agda S5Fixpoint.agda S5Matrix.agda S5Nerve.agda S5Real.agda S5RealConv.agda S5Regress.agda S5RegressFix.agda S5Section.agda S5TorsorBridge.agda S5TorsorWireV4.agda S5TwoFuel.agda S5TwoFuelFix.agda S5Verdict.agda
+FILES := Dedupe.agda S5Carrier.agda S5EEA.agda S5Fixpoint.agda S5Matrix.agda S5MatrixBridge.agda S5Nerve.agda S5Real.agda S5RealConv.agda S5Regress.agda S5RegressFix.agda S5Section.agda S5TorsorBridge.agda S5TorsorWireV4.agda S5TwoFuel.agda S5TwoFuelFix.agda S5Verdict.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
