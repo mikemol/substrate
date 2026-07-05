@@ -15,6 +15,17 @@
 -- of bijections, used by N-5 to derive OrbitKey ↔ V4-Nonzero × F₂).
 -- Identity and inverse are trivial and added when a consumer needs
 -- them.
+--
+-- ⟡Ⓒ.bijection (which bijection do I use?): this is the universe-
+-- POLYMORPHIC form (use it when A/B live above Set₀). Its Set₀,
+-- stdlib-compatible sibling with the richer combinator suite (mk↔ₛ′,
+-- ↔-sym, ↔-trans, _×-↔_) is Substrate.Algebra.Bijection._↔_, where
+-- `_↔_ A B` is exactly `Bijection {lzero} {lzero} A B`. The two are the
+-- same concept at different universe levels and are NOT merged (each
+-- has its own combinators + dependent set). Round-trips are `≡` on both
+-- sides; for a bijection up to a SETOID/extensional equality, see the
+-- bespoke Stab≃S₃ / TotalSpace≃S₄ / Live≃Permutation and memory
+-- feedback_bijection_parallel_false_positive.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}

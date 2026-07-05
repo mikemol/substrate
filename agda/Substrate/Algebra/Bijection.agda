@@ -10,6 +10,18 @@
 -- The field names (`to`, `from`, `to-from`, `from-to`) and the
 -- constructor argument order of `mk↔ₛ′` match the stdlib calling
 -- convention so that existing call sites migrate by import-swap only.
+--
+-- ⟡Ⓒ.bijection (which bijection do I use?): this is the Set₀, stdlib-
+-- compatible form with the richer combinator suite (mk↔ₛ′, ↔-sym,
+-- ↔-trans, _×-↔_). Its universe-POLYMORPHIC sibling is
+-- Substrate.Foundations.Bijection.Bijection (same four fields; use it
+-- when A/B live above Set₀ — the M-12 bridge shape). `_↔_ A B` is
+-- exactly `Bijection {lzero} {lzero} A B`; the two are NOT merged (each
+-- has its own combinators + dependent set — a low-value/moderate-risk
+-- migration). For a bijection whose round-trips are up to a SETOID or
+-- extensional equality (NOT `≡` on both sides), neither fits: see the
+-- deliberately-bespoke Stab≃S₃ / TotalSpace≃S₄ / Live≃Permutation, and
+-- memory feedback_bijection_parallel_false_positive.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
