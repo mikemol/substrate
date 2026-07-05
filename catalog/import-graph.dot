@@ -10996,7 +10996,12 @@ digraph imports {
   "Substrate.Pipeline.Examples.PredictorUpdate" -> "Substrate.Pipeline.Brick.Type";
   "Substrate.Pipeline.Examples.PredictorUpdate" -> "Substrate.Pipeline.Brick.Unit";
   "Substrate.Pipeline.Examples.PredictorUpdate" -> "Substrate.Pipeline.Brick.Witnessing";
+  "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Algebra.GroupAction";
+  "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Foundation.Eq";
   "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Foundation.Product";
+  "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Groups.V4.Bijection";
+  "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Groups.V4.Bundle";
+  "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Groups.V4.Operations";
   "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Pipeline.Brick.Record";
   "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Pipeline.Brick.Type";
   "Substrate.Pipeline.Examples.RotateCrumb" -> "Substrate.Pipeline.Brick.Unit";

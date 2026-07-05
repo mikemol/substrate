@@ -647,8 +647,6 @@ digraph reuse {
   "Substrate.Pipeline.Examples.PredictorSurprise.Preserves-Shannon" [label="Preserves-Shannon\nSubstrate.Pipeline.Examples.PredictorSurprise"];
   "Substrate.Pipeline.Examples.PredictorUpdate.Preserves-CountMonoid" [label="Preserves-CountMonoid\nSubstrate.Pipeline.Examples.PredictorUpdate"];
   "Substrate.Pipeline.Examples.RotateCrumb.Crumb" [label="Crumb\nSubstrate.Pipeline.Examples.RotateCrumb", style=rounded];
-  "Substrate.Pipeline.Examples.RotateCrumb.Preserves-V4" [label="Preserves-V4\nSubstrate.Pipeline.Examples.RotateCrumb"];
-  "Substrate.Pipeline.Examples.RotateCrumb.V4Label" [label="V4Label\nSubstrate.Pipeline.Examples.RotateCrumb", style=rounded];
   "Substrate.Pipeline.Examples._.Preserves-CountMonoid" [label="Preserves-CountMonoid\nSubstrate.Pipeline.Examples._"];
   "Substrate.Pipeline.Examples._.Preserves-Ranking" [label="Preserves-Ranking\nSubstrate.Pipeline.Examples._"];
   "Substrate.Pipeline.Examples._.Preserves-Shannon" [label="Preserves-Shannon\nSubstrate.Pipeline.Examples._"];

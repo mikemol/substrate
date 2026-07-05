@@ -649,8 +649,6 @@
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/PredictorSurprise#Preserves-Shannon</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/PredictorUpdate#Preserves-CountMonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/RotateCrumb#Crumb</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Examples/RotateCrumb#Preserves-V4</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Examples/RotateCrumb#V4Label</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-CountMonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-Ranking</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-Shannon</loc><priority>0.0</priority></url>
