@@ -84,3 +84,22 @@ violation but tolerates these (each documented in the script's `ALLOW`):
 - `python3 scripts/check_carrier_locality.py` — exit 0 clean / 1 offenders.
 - Regression: reintroducing `_+ℤ_` (or any `T → T → T`) under `Algebra/Q/`, or
   aggregating ≥2 foreign-carrier operators in one file, exits 1.
+
+## Ⓒ.v4 additions (2026-07-05)
+
+Unifying the scattered local `data V₄` copies (RuleAction / ComposedReference / ResidueCompensation)
+onto the canonical `Groups.V4.Bijection.V₄` made `V₄` a *globally-unique* carrier, which activated
+the gate for every V₄-operator (it was dormant while V₄ was multiply-declared). Two pre-existing,
+non-fork operators surfaced and are grandfathered:
+
+- `Groups/V4/Operations.agda::_·_` — the canonical Klein-four operation. The substrate splits V₄
+  across `Groups/V4/{Bijection (carrier), Operations (op), Axioms (laws), Bundle}`; the op sits in
+  the sibling `Operations.agda`, not under `Bijection/`. Identical to the grandfathered Coxeter `_·_`
+  (canonical op historically in `Core/Operations` rather than under `Word/`). Not a fork.
+- `Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/V4.agda::_+V₄_` — over a LOCAL
+  `V₄ = Bool × Bool` type-synonym (F₂² additive form of the affine V₄ subgroup), name-conflated with
+  the canonical `data V₄`. The type-synonym-carrier exemption; a different carrier, not its op.
+
+`RuleAction.V4Compose._∘V_` was NOT grandfathered — it was a real V₄-op outside Groups.V4 (a
+hand-written Cayley table); it is now a renaming re-export of `_·_` (no new operator), so the gate
+passes it by construction.

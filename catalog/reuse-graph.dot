@@ -228,7 +228,6 @@ digraph reuse {
   "Substrate.Category.ComposedReference.BasisLabel.BasisLabel" [label="BasisLabel\nSubstrate.Category.ComposedReference.BasisLabel", style=rounded];
   "Substrate.Category.ComposedReference.EmissionSource.EmissionSource" [label="EmissionSource\nSubstrate.Category.ComposedReference.EmissionSource", style=rounded];
   "Substrate.Category.ComposedReference.Record.ComposedReference" [label="ComposedReference\nSubstrate.Category.ComposedReference.Record"];
-  "Substrate.Category.ComposedReference.V4.V₄" [label="V₄\nSubstrate.Category.ComposedReference.V4", style=rounded];
   "Substrate.Category.CompressionAtlas.AtlasCell" [label="AtlasCell\nSubstrate.Category.CompressionAtlas"];
   "Substrate.Category.CompressionAtlas.AtlasDomain" [label="AtlasDomain\nSubstrate.Category.CompressionAtlas"];
   "Substrate.Category.CompressionAtlas.CompressionAtlas" [label="CompressionAtlas\nSubstrate.Category.CompressionAtlas"];
@@ -374,12 +373,10 @@ digraph reuse {
   "Substrate.Category.ReferenceOrbit.SourceClass.SourceClass" [label="SourceClass\nSubstrate.Category.ReferenceOrbit.SourceClass", style=rounded];
   "Substrate.Category.ResidueCompensation.FullResidueCompensation" [label="FullResidueCompensation\nSubstrate.Category.ResidueCompensation"];
   "Substrate.Category.ResidueCompensation.ResidueCompensation" [label="ResidueCompensation\nSubstrate.Category.ResidueCompensation"];
-  "Substrate.Category.ResidueCompensation.V₄" [label="V₄\nSubstrate.Category.ResidueCompensation", style=rounded];
   "Substrate.Category.RootSystem.RootSystem" [label="RootSystem\nSubstrate.Category.RootSystem"];
   "Substrate.Category.RuleAction.AffineProjection.AffineProjection" [label="AffineProjection\nSubstrate.Category.RuleAction.AffineProjection"];
   "Substrate.Category.RuleAction.Record.RuleAction" [label="RuleAction\nSubstrate.Category.RuleAction.Record"];
   "Substrate.Category.RuleAction.SpanCoupling.SpanCoupling" [label="SpanCoupling\nSubstrate.Category.RuleAction.SpanCoupling"];
-  "Substrate.Category.RuleAction.V4.V₄" [label="V₄\nSubstrate.Category.RuleAction.V4", style=rounded];
   "Substrate.Category.S1-Lift.S1-Lift" [label="S1-Lift\nSubstrate.Category.S1-Lift"];
   "Substrate.Category.S2-Lift.S2-Lift" [label="S2-Lift\nSubstrate.Category.S2-Lift"];
   "Substrate.Category.Sheaf.Sheaf" [label="Sheaf\nSubstrate.Category.Sheaf"];

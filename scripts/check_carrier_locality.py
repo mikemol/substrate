@@ -53,6 +53,16 @@ ALLOW = {
     "agda/Substrate/Algebra/GL3F2/Characters.agda::_ℤ",
     # `_⊗ᴰ_` over DivStr — cross-construction wedge product, sited with the cross.
     "agda/Substrate/Algebra/Wedge/Cross.agda::_⊗ᴰ_",
+    # The canonical Klein-four `_·_` over V₄: `data V₄` lives in Groups/V4/Bijection.agda
+    # and its operation historically in the sibling Groups/V4/Operations.agda (the
+    # substrate's carrier/op/axioms/bundle split for V₄) — NOT under Bijection/. Exactly
+    # the grandfathered Coxeter `_·_` pattern above. Surfaced once Ⓒ.v4 unified the
+    # scattered local `data V₄` copies onto this one, making V₄ a globally-unique carrier.
+    "agda/Substrate/Groups/V4/Operations.agda::_·_",
+    # `_+V₄_` over a LOCAL `V₄ = Bool × Bool` type-synonym (the F₂² additive form of the
+    # affine V₄ subgroup) — name-conflated with the canonical `data V₄`, not the same
+    # carrier and not a fork of its op (the type-synonym-carrier exemption).
+    "agda/Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/V4.agda::_+V₄_",
 }
 
 

@@ -28,10 +28,11 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
--- The four V₄ elements (mirrors Substrate.Category.RuleAction).
-
-data V₄ : Set where
-  e α β γ : V₄
+-- The four V₄ elements. Ⓒ.v4: the compensating residue σ is the substrate's
+-- CANONICAL Klein four-group V₄ (Groups.V4), not a local carrier — so a residue
+-- produced by the group's operation (Groups.V4.Operations) flows in as the same
+-- type. (The v4-act action parameter below acts by this same V₄.)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 
 ------------------------------------------------------------------------
 -- ResidueCompensation as a record parameterised over the chain-symbol

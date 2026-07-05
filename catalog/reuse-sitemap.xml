@@ -230,7 +230,6 @@
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/BasisLabel#BasisLabel</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/EmissionSource#EmissionSource</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/Record#ComposedReference</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/ComposedReference/V4#V₄</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#AtlasCell</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#AtlasDomain</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#CompressionAtlas</loc><priority>0.0</priority></url>
@@ -376,12 +375,10 @@
   <url><loc>https://substrate.local/Substrate/Category/ReferenceOrbit/SourceClass#SourceClass</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ResidueCompensation#FullResidueCompensation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ResidueCompensation#ResidueCompensation</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/ResidueCompensation#V₄</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RootSystem#RootSystem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RuleAction/AffineProjection#AffineProjection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RuleAction/Record#RuleAction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RuleAction/SpanCoupling#SpanCoupling</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/RuleAction/V4#V₄</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/S1-Lift#S1-Lift</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/S2-Lift#S2-Lift</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Sheaf#Sheaf</loc><priority>0.0</priority></url>
