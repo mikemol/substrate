@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Bezout.agda DivMod.agda Divides.agda GCD.agda Mod.agda ModEquiv.agda Prime.agda Units.agda WellFounded.agda
+FILES := Bezout.agda CyclicSuc.agda DivMod.agda Divides.agda GCD.agda Mod.agda ModEquiv.agda Prime.agda Units.agda WellFounded.agda
 SUBDIRS := Bezout DivMod Divides GCD Mod Prime
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
