@@ -181,16 +181,18 @@ if [ "$fail" -eq 0 ]; then
     if python3 "$ROOT/scripts/full_build_check.py" -j6; then
       touch "$STAMP"
       echo "pre-commit: full build OK — stamp refreshed."
-      # Ⓓ.gate(-graph): the .agdai cores are now fresh — regenerate BOTH discoverability
-      # catalogs from a SINGLE shim decode pass and stage them, so neither can rot behind a
-      # structural change. gen_catalog.py runs the shared walk ONCE (scripts/reuse_catalog.py)
-      # and drives both reducers: the reuse-INDEX (name->home + cross-name parallel detector)
-      # AND the reuse-GRAPH (structure refinement edges + primitive-degree census). Halves the
-      # cost of the old index-only-then-graph-separately path. Advisory: a regen failure NEVER
-      # blocks the commit.
+      # Ⓓ.gate(-graph/-render-from-db): the .agdai cores are now fresh — rebuild the relational
+      # store catalog.db from a SINGLE shim decode pass and RENDER every discoverability catalog
+      # off it, staging the committed renders so none can rot behind a structural change.
+      # gen_catalog.py runs the shared walk ONCE (scripts/reuse_catalog.py) then renders: the
+      # reuse-INDEX (name->home + parallels), reuse-GRAPH (refinement edges + degree census),
+      # reuse-SITEMAP (flat discovery manifest), and USAGE-STATS (reuse distribution). catalog.db
+      # itself is a gitignored derived cache — only the renders are staged. Advisory: a regen
+      # failure NEVER blocks the commit.
       if msg=$(python3 "$ROOT/scripts/gen_catalog.py" 2>&1); then
         git add "$ROOT/catalog/reuse-index.md" "$ROOT/catalog/reuse-graph.dot" \
-                "$ROOT/catalog/reuse-graph.md" 2>/dev/null || true
+                "$ROOT/catalog/reuse-graph.md" "$ROOT/catalog/reuse-sitemap.xml" \
+                "$ROOT/catalog/usage-stats.md" 2>/dev/null || true
         echo "pre-commit: ${msg//$'\n'/; } (+ staged)"
       else
         echo "pre-commit: catalog regen skipped (advisory; gen_catalog.py failed)." >&2

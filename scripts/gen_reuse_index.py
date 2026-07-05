@@ -18,5 +18,5 @@ from reuse_catalog import generate          # noqa: E402
 
 if __name__ == "__main__":
     filt = sys.argv[1] if len(sys.argv) > 1 else ""
-    for m in generate(filt, do_index=True, do_graph=False):
+    for m in generate(filt, targets=("index",)):
         print(m)

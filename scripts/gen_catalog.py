@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
-# gen_catalog.py — regenerate BOTH discoverability catalogs from a SINGLE `.agdai` decode pass.
+# gen_catalog.py — regenerate ALL discoverability catalogs from a SINGLE `.agdai` decode pass.
 #
-# The two catalogs — catalog/reuse-index.md (name -> canonical-home + cross-name shape-parallels)
-# and catalog/reuse-graph.{dot,md} (structure -> structure refinement edges + reuse-primitive
-# degree census) — are derived from the SAME shim-walk over the typechecked cores; they diverge
-# only in the reducer (scripts/reuse_catalog.py). Running the two standalone generators
-# back-to-back decodes the whole tree TWICE (~1751 files × 2). This entry point runs the shared
-# walk ONCE and drives both reducers off it — halving the combined cost. It is the GATE path: the
-# pre-commit hook calls this after the forced full build so both catalogs regenerate together and
-# neither rots behind a structural change.
-#
-# It ALSO regenerates catalog/catalog.db (Ⓓ.catalog-db) — the relational store the two markdown
-# files render — from the same walk, so `scripts/catalog_query.py` has a fresh DB to SELECT over.
-# The .db is a derived local cache (gitignored, non-deterministic binary); the gate stages only the
-# markdown/dot renders, never the .db.
+# ONE expensive walk builds catalog/catalog.db (the canonical relational store); every artifact is
+# then a fast RENDER over it (scripts/reuse_catalog.py). This entry point builds the DB once and
+# renders all of:
+#   catalog/reuse-index.md        — name -> canonical-home + cross-name shape-parallels
+#   catalog/reuse-graph.{dot,md}  — structure refinement edges + reuse-primitive degree census
+#   catalog/reuse-sitemap.xml     — flat discovery manifest (priority = in-degree); the LLM-fluent format
+#   catalog/usage-stats.md        — reuse distribution: real primitives vs structurally-isolated
+# It is the GATE path: the pre-commit hook calls this after the forced full build so every catalog
+# regenerates together and none rots behind a structural change. catalog.db itself is a derived
+# local cache (gitignored, non-deterministic binary); the gate stages only the committed renders.
 #
 # Regenerate by hand: scripts/gen_catalog.py [path-substring-filter]  (~2-3min full).
+# Fast re-render from an existing DB (no walk): scripts/gen_catalog.py --render-only
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reuse_catalog import generate          # noqa: E402
 
 if __name__ == "__main__":
-    filt = sys.argv[1] if len(sys.argv) > 1 else ""
-    for m in generate(filt, do_index=True, do_graph=True, do_db=True):
+    argv = sys.argv[1:]
+    reuse_db = "--render-only" in argv
+    rest = [a for a in argv if a != "--render-only"]
+    filt = rest[0] if rest else ""
+    for m in generate(filt, reuse_db=reuse_db):
         print(m)
