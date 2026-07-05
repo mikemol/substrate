@@ -36,7 +36,8 @@ import Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid
 import Substrate.Groups.Z5-Coxeter-Fin
 import Substrate.Groups.Z5-x-FreeCyclic
 import Substrate.Groups.Z5-x-FreeCyclic-PhaseProjection
-import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle5
+-- (Ⓖ.cyclen-collapse: the dead `import …Permutation.Cycle5` removed — the Z₅ structure comes
+--  via Z5-x-FreeCyclic; the Cycleₙ orbit-module is gone, cyclic-suc is the generator.)
 
 ------------------------------------------------------------------------
 -- After Arc 1:
