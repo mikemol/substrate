@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
 FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda CrossMixBezout.agda DecidableEq.agda Embeddings.agda Equiv.agda HetBasis.agda HetBasisNest.agda HetCrossMix.agda HetReciprocal.agda HetReduce.agda HetReduceBezout.agda HetSymbolic.agda HetV4.agda Linear.agda Mul.agda Neg.agda Order.agda QToRCrossMix.agda Reduce.agda Reduction.agda RegistryHetQBridges.agda Sub.agda Vector.agda
-SUBDIRS := Properties
+SUBDIRS := Linear Properties
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -48,6 +48,13 @@ files:
 
 subdirs: $(SUBDIRS)
 
+Linear:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 Properties:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -56,5 +63,6 @@ Properties:
 	@$(MAKE) -C $@
 
 clean:
+	@$(MAKE) -C Linear clean 2>/dev/null || true
 	@$(MAKE) -C Properties clean 2>/dev/null || true
 	@true

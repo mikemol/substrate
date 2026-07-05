@@ -94,7 +94,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `_×_` | record | `Substrate.FUSep.FUSepConvObsBisimWire` | ⟡FU-sep-conv-obsbisim-wire: wire the Stream-level |
 | `_×_` | record | `Substrate.FUSep.FUSepConvSharpen` | ⟡FU-sep-conv-sharpen: the bare-nf vs extensional sig IS the |
 | `_×_` | record | `Substrate.FUSep.FUSepQLambek` | ⟡X8b-Lambek: THE CAPSTONE. Lambek's lemma identifies the |
-| `_↔_` | record | `Substrate.Algebra.Bijection` | In-tree replacement for `Function.Bundles._↔_` over propositional |
+| `_↔_` | record | `Substrate.Algebra.Bijection` | the M-12 bridge shape). `_↔_ A B` is |
 | `_↦_` | data | `Substrate.FUSep.FUSepQReduce` | ⟡FU-sep-Q-reduce: full SKI reduction, where SN FAILS globally |
 | `_⇒*_` | data | `Substrate.Algebra.R.Trace.NewmanKI.Properties` | SN, WCR, and (via Newman's |
 | `_⇒*_` | data | `Substrate.Algebra.R.Trace.NewmanSKI.Properties` | SN, WCR, and (via the substrate's |

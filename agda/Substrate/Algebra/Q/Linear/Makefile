@@ -18,8 +18,8 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 
-FILES := AsAbelianCategory.agda AsCompactClosed.agda AsDaggerCategory.agda AsExactCategory.agda AsModuleHom.agda AsRigidCategory.agda AsSymmetricMonoidal.agda Augmentation.agda Bijection.agda BilinearFromImages.agda BilinearUniversal.agda CategoryStructures.agda Cycle3.agda Cycle3x2.agda Cyclotomic.agda FromImages.agda ImagesProps.agda Kernel.agda KernelPredBridge.agda KernelSpan.agda MultilinearFromImages.agda MultilinearUniversal.agda SpectralCRT.agda SpectralCrossCoherent.agda SpectralCycle.agda SpectralCycleDim.agda SpectralTower.agda Universal.agda
-SUBDIRS := Bijection FromImages
+FILES := AsModuleHom.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -48,21 +48,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Bijection:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-FromImages:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C Bijection clean 2>/dev/null || true
-	@$(MAKE) -C FromImages clean 2>/dev/null || true
 	@true

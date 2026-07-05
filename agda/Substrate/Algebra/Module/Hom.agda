@@ -9,6 +9,11 @@
 --
 -- ModuleHom is the universal "Linear map" — F₂.Linear and ℚ.Linear
 -- both retrofit as ModuleHom instances at Mod6 / Mod7.
+--
+-- ⟡Ⓒ.linear (2026-07-05): that retrofit is now REALIZED (and faithful,
+-- both directions) — see Substrate.Algebra.F2.Linear.AsModuleHom and
+-- Substrate.Algebra.Q.Linear.AsModuleHom, which witness each `Linear`
+-- as a ModuleHom over the corresponding vector free module.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
