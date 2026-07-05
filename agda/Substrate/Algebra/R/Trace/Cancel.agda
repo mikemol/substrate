@@ -36,18 +36,19 @@ open import Substrate.Foundation.Eq  using (_≡_; refl)
 
 open import Substrate.Algebra.R.Trace       using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Algebra.R.Trace.StreamMap using (mapT)
 
 ------------------------------------------------------------------------
 -- Two reversible INFINITE generators: add / subtract k at every digit.
+-- ⟡dedup.tree: both are instances of the lifted stream map `mapT` — the same
+-- head-function family Ops.addℕ shares, here with the RECURSE (map-all) tail.
 ------------------------------------------------------------------------
 
 bump : ℕ → RealTrace → RealTrace
-head (bump k x) = k + head x
-tail (bump k x) = bump k (tail x)
+bump k = mapT (k +_)
 
 unbump : ℕ → RealTrace → RealTrace
-head (unbump k x) = head x ∸ k
-tail (unbump k x) = unbump k (tail x)
+unbump k = mapT (_∸ k)
 
 ------------------------------------------------------------------------
 -- The per-step inverse: (k + n) ∸ k = n.

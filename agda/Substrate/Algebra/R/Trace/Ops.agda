@@ -30,14 +30,15 @@ open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq   using (_≡_; refl)
 
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take; sqrt2; twos)
+open import Substrate.Algebra.R.Trace.StreamMap using (onHead)
 
 ------------------------------------------------------------------------
 -- Translation by a natural: x + k changes only the leading CF digit.
+-- ⟡dedup.tree: an instance of the lifted `onHead` (modify the head digit only).
 ------------------------------------------------------------------------
 
 addℕ : ℕ → RealTrace → RealTrace
-head (addℕ k x) = k + head x
-tail (addℕ k x) = tail x
+addℕ k = onHead (k +_)
 
 ------------------------------------------------------------------------
 -- Reciprocation 1/x — the CF "shift". `cons0` prepends a 0 digit.

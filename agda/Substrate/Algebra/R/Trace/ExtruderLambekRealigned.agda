@@ -37,7 +37,7 @@ lambek-iso-bwd = lambek-into-out
 
 -- the tower's LambekFix record, as an instance: the terminal coalgebra IS a fixed
 -- point (structure map out is iso up to ~). Packaged over the REAL carrier.
-record LambekFix : Set where
+record LambekFix : Set where      -- ⟦shape:86f03cb9 struct,inv,out-into⟧
   field
     struct   : RealTrace → (ℕ × RealTrace)
     inv      : (ℕ × RealTrace) → RealTrace

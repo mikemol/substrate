@@ -40,7 +40,7 @@ open import Substrate.Algebra.R.Trace.Transcendental using (exp-real; log-real)
 -- Bisimilarity: observational equality of suspended generators.
 ------------------------------------------------------------------------
 
-record _~_ (x y : RealTrace) : Set where
+record _~_ (x y : RealTrace) : Set where      -- ⟦shape:f7f76433 field head~,tail~⟧
   coinductive
   field head~ : head x ≡ head y
         tail~ : tail x ~ tail y
