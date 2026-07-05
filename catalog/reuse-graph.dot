@@ -115,7 +115,6 @@ digraph reuse {
   "Substrate.Algebra.Setoid.Setoid" [label="Setoid\nSubstrate.Algebra.Setoid"];
   "Substrate.Algebra.SetoidGroup.Action.Action" [label="Action\nSubstrate.Algebra.SetoidGroup.Action"];
   "Substrate.Algebra.SetoidGroup.SetoidGroup" [label="SetoidGroup\nSubstrate.Algebra.SetoidGroup"];
-  "Substrate.Algebra.TopologicalGroup.Sites.V4.V4" [label="V4\nSubstrate.Algebra.TopologicalGroup.Sites.V4", style=rounded];
   "Substrate.Algebra.TopologicalGroup.TopologicalGroup" [label="TopologicalGroup\nSubstrate.Algebra.TopologicalGroup"];
   "Substrate.Algebra.Torsor.IsTorsorᴳ" [label="IsTorsorᴳ\nSubstrate.Algebra.Torsor"];
   "Substrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._._∈ᵀ_" [label="_∈ᵀ_\nSubstrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._", style=rounded];

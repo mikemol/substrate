@@ -1637,6 +1637,7 @@ digraph imports {
   "Substrate.WitnessTower.SupportGrading" [label="WitnessTower.SupportGrading"];
   "Substrate.WitnessTower.Surjective" [label="WitnessTower.Surjective"];
   "Substrate.WitnessTower.SymBridge" [label="WitnessTower.SymBridge"];
+  "Substrate.WitnessTower.V4Grounding" [label="WitnessTower.V4Grounding"];
   "Substrate.WitnessTower.Wedge.Action" [label="Wedge.Action"];
   "Substrate.WitnessTower.Wedge.Factoradic" [label="Wedge.Factoradic"];
   "Substrate.WitnessTower.Wedge.Graded" [label="Wedge.Graded"];
@@ -5469,7 +5470,9 @@ digraph imports {
   "Substrate.Algebra.Sporadic.MonsterLieAlgebra" -> "Substrate.Foundation.Level";
   "Substrate.Algebra.Sporadic.MonsterVOA" -> "Substrate.Category.VertexOperatorAlgebra";
   "Substrate.Algebra.TopologicalGroup" -> "Substrate.Algebra.Group";
-  "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Algebra.Magma";
+  "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Algebra.TopologicalGroup";
+  "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Groups.V4.Bijection";
+  "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Groups.V4.Bundle";
   "Substrate.Algebra.Torsor" -> "Substrate.Algebra.Group";
   "Substrate.Algebra.Torsor" -> "Substrate.Algebra.GroupAction";
   "Substrate.Algebra.Torsor" -> "Substrate.Algebra.Monoid";
@@ -12008,6 +12011,16 @@ digraph imports {
   "Substrate.WitnessTower.SymBridge" -> "Substrate.WitnessTower.IsPermutation";
   "Substrate.WitnessTower.SymBridge" -> "Substrate.WitnessTower.SnGroup";
   "Substrate.WitnessTower.SymBridge" -> "Substrate.WitnessTower.Surjective";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Algebra.TopologicalGroup";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Groups.V4.Bijection";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Groups.V4.Bundle";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.Groups.V4.Operations";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.V4Grounding" -> "Substrate.WitnessTower.FirstAppearance";
   "Substrate.WitnessTower.Wedge.Action" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.Action" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.Wedge.Action" -> "Substrate.Foundation.Nat";

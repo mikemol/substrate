@@ -117,7 +117,6 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Setoid#Setoid</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup/Action#Action</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup#SetoidGroup</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/TopologicalGroup/Sites/V4#V4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/TopologicalGroup#TopologicalGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Torsor#IsTorsorᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedBulk#_∈ᵀ_</loc><priority>0.0</priority></url>
