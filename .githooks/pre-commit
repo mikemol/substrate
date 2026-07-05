@@ -181,6 +181,16 @@ if [ "$fail" -eq 0 ]; then
     if python3 "$ROOT/scripts/full_build_check.py" -j6; then
       touch "$STAMP"
       echo "pre-commit: full build OK — stamp refreshed."
+      # Ⓓ.gate: the .agdai cores are now fresh — regenerate the reuse-index /
+      # parallel-structure catalog from them and stage it, so the discoverability
+      # index (and its cross-name reinvention detector) can't rot behind a structural
+      # change. Advisory: a regen failure NEVER blocks the commit.
+      if msg=$(python3 "$ROOT/scripts/gen_reuse_index.py" 2>&1); then
+        git add "$ROOT/catalog/reuse-index.md" 2>/dev/null || true
+        echo "pre-commit: ${msg} (+ staged)"
+      else
+        echo "pre-commit: reuse-index regen skipped (advisory; gen_reuse_index.py failed)." >&2
+      fi
     else
       echo "pre-commit: FAILED — full build (a module does not typecheck)" >&2
       fail=1
