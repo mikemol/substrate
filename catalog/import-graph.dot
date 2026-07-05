@@ -1603,6 +1603,7 @@ digraph imports {
   "Substrate.WitnessTower.Complete" [label="WitnessTower.Complete"];
   "Substrate.WitnessTower.Core" [label="WitnessTower.Core"];
   "Substrate.WitnessTower.CycleType" [label="WitnessTower.CycleType"];
+  "Substrate.WitnessTower.CyclicGrounding" [label="WitnessTower.CyclicGrounding"];
   "Substrate.WitnessTower.Decompose" [label="WitnessTower.Decompose"];
   "Substrate.WitnessTower.Diagonal" [label="WitnessTower.Diagonal"];
   "Substrate.WitnessTower.DuplicateFree" [label="WitnessTower.DuplicateFree"];
@@ -11710,6 +11711,13 @@ digraph imports {
   "Substrate.WitnessTower.CycleType" -> "Substrate.Foundation.Vec.Properties";
   "Substrate.WitnessTower.CycleType" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.CycleType" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.CyclicGrounding" -> "Substrate.WitnessTower.SnGroup";
   "Substrate.WitnessTower.Decompose" -> "Substrate.Foundation.Empty";
   "Substrate.WitnessTower.Decompose" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Decompose" -> "Substrate.Foundation.Fin";
