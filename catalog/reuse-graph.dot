@@ -465,7 +465,7 @@ digraph reuse {
   "Substrate.FUSep.FUSepConv._.Reaches" [label="Reaches\nSubstrate.FUSep.FUSepConv._"];
   "Substrate.FUSep.FUSepConvEtaWitness.Head" [label="Head\nSubstrate.FUSep.FUSepConvEtaWitness", style=rounded];
   "Substrate.FUSep.FUSepConvEtaWitness.Tm" [label="Tm\nSubstrate.FUSep.FUSepConvEtaWitness", style=rounded];
-  "Substrate.FUSep.FUSepConvEtaWitness._⟶*_" [label="_⟶*_\nSubstrate.FUSep.FUSepConvEtaWitness", style=rounded];
+  "Substrate.FUSep.FUSepConvEtaWitness._._⇒*_" [label="_⇒*_\nSubstrate.FUSep.FUSepConvEtaWitness._", style=rounded];
   "Substrate.FUSep.FUSepConvEtaWitness._⟶_" [label="_⟶_\nSubstrate.FUSep.FUSepConvEtaWitness", style=rounded];
   "Substrate.FUSep.FUSepConvObsBisimWire._×_" [label="_×_\nSubstrate.FUSep.FUSepConvObsBisimWire"];
   "Substrate.FUSep.FUSepConvSharpen.Bit2" [label="Bit2\nSubstrate.FUSep.FUSepConvSharpen", style=rounded];
@@ -474,7 +474,7 @@ digraph reuse {
   "Substrate.FUSep.FUSepQ._._≈BT_" [label="_≈BT_\nSubstrate.FUSep.FUSepQ._", style=rounded];
   "Substrate.FUSep.FUSepQ._._≈L_" [label="_≈L_\nSubstrate.FUSep.FUSepQ._", style=rounded];
   "Substrate.FUSep.FUSepQBridge._.FinTrace" [label="FinTrace\nSubstrate.FUSep.FUSepQBridge._", style=rounded];
-  "Substrate.FUSep.FUSepQCR.Newman._⇒*_" [label="_⇒*_\nSubstrate.FUSep.FUSepQCR.Newman", style=rounded];
+  "Substrate.FUSep.FUSepQCR.Newman._._⇒*_" [label="_⇒*_\nSubstrate.FUSep.FUSepQCR.Newman._", style=rounded];
   "Substrate.FUSep.FUSepQConfluence.Iso" [label="Iso\nSubstrate.FUSep.FUSepQConfluence"];
   "Substrate.FUSep.FUSepQConfluence.Span" [label="Span\nSubstrate.FUSep.FUSepQConfluence"];
   "Substrate.FUSep.FUSepQCyc.AllHeads" [label="AllHeads\nSubstrate.FUSep.FUSepQCyc"];
@@ -1046,7 +1046,7 @@ digraph reuse {
   "Substrate.Discipline.CocycleSection" -> "Substrate.Cocycle.WeakCocycleStructure";
   "Substrate.FUSep.ConversionCongruence._._≈_" -> "Substrate.FUSep.ConversionCongruence.ARS";
   "Substrate.FUSep.FUSepConv._.Reaches" -> "Substrate.FUSep.FUSepConv.Adjunction";
-  "Substrate.FUSep.FUSepConvEtaWitness._⟶*_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";
+  "Substrate.FUSep.FUSepConvEtaWitness._._⇒*_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";
   "Substrate.FUSep.FUSepConvEtaWitness._⟶_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";
   "Substrate.FUSep.FUSepQ._._≈BT_" -> "Substrate.FUSep.FUSepQ._.BT";
   "Substrate.FUSep.FUSepQ._._≈L_" -> "Substrate.FUSep.FUSepQ._.BT";

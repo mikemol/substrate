@@ -32,9 +32,11 @@ data _⟶_ : Tm → Tm → Set where
   appL : ∀ {f g a}  → f ⟶ g → (f · a) ⟶ (g · a)
   appR : ∀ {f a a'} → a ⟶ a' → (f · a) ⟶ (f · a')
 
-data _⟶*_ : Tm → Tm → Set where
-  done : ∀ {a} → a ⟶* a
-  _◅_  : ∀ {a b c} → a ⟶ b → b ⟶* c → a ⟶* c
+-- reflexive-transitive closure ⟶* : the multi-step reduction. Ⓒ.closure — this was a
+-- local re-derivation (done / _◅_) of the generic RT-closure; instantiate the center
+-- (Foundation.RewriteConfluence at _⟶_) instead, so `_⟶*_` here IS the Foundation Star.
+open import Substrate.Foundation.RewriteConfluence _⟶_
+  using (done; _◅_) renaming (_⇒*_ to _⟶*_)
 
 -- THE ARITY GAP, concrete: (B·M·I)·p ⟶* M·p. The stuck 2-arg B-value RESOLVES on
 -- the 3rd argument (redB), then the residual I cancels (redI). Two real steps.

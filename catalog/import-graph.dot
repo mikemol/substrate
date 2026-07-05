@@ -8112,6 +8112,7 @@ digraph imports {
   "Substrate.FUSep.FUSepConvEtaWitness" -> "Substrate.FUSep.FUSepQCyc";
   "Substrate.FUSep.FUSepConvEtaWitness" -> "Substrate.Foundation.Empty";
   "Substrate.FUSep.FUSepConvEtaWitness" -> "Substrate.Foundation.Eq";
+  "Substrate.FUSep.FUSepConvEtaWitness" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.FUSep.FUSepConvObsBisimWire" -> "Substrate.FUSep.ConversionCongruence";
   "Substrate.FUSep.FUSepConvObsBisimWire" -> "Substrate.FUSep.ObsBisim";
   "Substrate.FUSep.FUSepConvObsBisimWire" -> "Substrate.Foundation.Eq";
@@ -8123,8 +8124,7 @@ digraph imports {
   "Substrate.FUSep.FUSepQ" -> "Substrate.Foundation.List";
   "Substrate.FUSep.FUSepQ" -> "Substrate.Foundation.Product";
   "Substrate.FUSep.FUSepQBridge" -> "Substrate.Foundation.Eq";
-  "Substrate.FUSep.FUSepQCR" -> "Substrate.Foundation.Product";
-  "Substrate.FUSep.FUSepQCR" -> "Substrate.Foundation.WellFounded";
+  "Substrate.FUSep.FUSepQCR" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.FUSep.FUSepQSKI";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.Foundation.Eq";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.Foundation.Product";
@@ -8145,6 +8145,7 @@ digraph imports {
   "Substrate.FUSep.FUSepQNf" -> "Substrate.Foundation.Eq";
   "Substrate.FUSep.FUSepQReduce" -> "Substrate.FUSep.FUSepQCR";
   "Substrate.FUSep.FUSepQReduce" -> "Substrate.Foundation.Eq";
+  "Substrate.FUSep.FUSepQReduce" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.FUSep.FUSepQReduce" -> "Substrate.Foundation.WellFounded";
   "Substrate.FUSep.FUSepQSKI" -> "Substrate.FUSep.FUSepQBridge";
   "Substrate.FUSep.FUSepQSKI" -> "Substrate.FUSep.FUSepQHalts";

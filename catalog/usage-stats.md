@@ -243,7 +243,7 @@ _753 structures · 654 never-refined (in-degree 0) · 424 refine-nothing (out-de
 | `Bit2` | data | `Substrate.FUSep.FUSepConvSharpen` |
 | `_×_` | record | `Substrate.FUSep.FUSepConvSharpen` |
 | `FinTrace` | data | `Substrate.FUSep.FUSepQBridge._` |
-| `_⇒*_` | data | `Substrate.FUSep.FUSepQCR.Newman` |
+| `_⇒*_` | data | `Substrate.FUSep.FUSepQCR.Newman._` |
 | `Iso` | record | `Substrate.FUSep.FUSepQConfluence` |
 | `ℕ₀` | data | `Substrate.FUSep.FUSepQCyc` |
 | `HaltSystem` | record | `Substrate.FUSep.FUSepQHalts` |

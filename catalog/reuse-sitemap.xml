@@ -467,7 +467,7 @@
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConv#Reaches</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#Head</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#Tm</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#_⟶*_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#_⟶_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvObsBisimWire#_×_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvSharpen#Bit2</loc><priority>0.0</priority></url>
