@@ -23,7 +23,7 @@ open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+open import Substrate.Foundation.Fin.Iterate
   using (σ-iterate)
 
 module Substrate.Groups.Coxeter.Cyclic.Core (n : ℕ) where

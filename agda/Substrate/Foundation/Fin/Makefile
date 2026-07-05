@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Combine.agda Cover.agda Exists.agda Inject.agda Literals.agda Properties.agda Punctured.agda Raise.agda RemQuot.agda SplitAt.agda
+FILES := Combine.agda Cover.agda Exists.agda Inject.agda Iterate.agda Literals.agda Properties.agda Punctured.agda Raise.agda RemQuot.agda SplitAt.agda
 SUBDIRS := Combine Punctured SplitAt
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

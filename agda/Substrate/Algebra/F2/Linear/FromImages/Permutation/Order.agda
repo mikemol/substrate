@@ -20,7 +20,7 @@ open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Category.Coalgebra.FiniteOrder
   using (iterate; HasOrder; HasOrder-multiple)
 
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+open import Substrate.Foundation.Fin.Iterate
   using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear
   using (basis-permutation-Linear)

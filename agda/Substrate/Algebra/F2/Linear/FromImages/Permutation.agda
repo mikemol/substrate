@@ -6,8 +6,9 @@
 -- submodules in Permutation/.
 --
 -- Submodule decomposition:
---   Permutation.Iterate      — σ-iterate, HasOrderPerm, additivity,
---                              HasOrderPerm-multiple.
+--   Foundation.Fin.Iterate   — σ-iterate, HasOrderPerm, additivity,
+--                              HasOrderPerm-multiple (re-exported; the F₂-free
+--                              Fin-iterate stack, relocated by Ⓖ.tower-basis).
 --   Permutation.Compose      — HasOrderPerm-compose-commute-order-2
 --                              (V₄-shape).
 --   Permutation.Linear       — basis-permutation-Linear,
@@ -32,7 +33,7 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation where
 
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate     public
+open import Substrate.Foundation.Fin.Iterate     public
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose     public
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear      public
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution  public

@@ -41,7 +41,7 @@ open import Substrate.Algebra.F2.Linear.Augmentation using (A; total; ones; aug-
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (powL; geomSumL)
 open import Substrate.Algebra.F2.Linear.SpectralCycle using (σ; Φσ)
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate using (σ-iterate)
+open import Substrate.Foundation.Fin.Iterate using (σ-iterate)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
   using (cyclic-suc; cyclic-Linear-basis; σ-iterate-toℕ; cyclic-suc-HasOrderPerm)
 

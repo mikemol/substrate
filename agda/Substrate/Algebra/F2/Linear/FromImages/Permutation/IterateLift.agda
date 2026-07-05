@@ -18,7 +18,7 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
 
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+open import Substrate.Foundation.Fin.Iterate
   using (σ-iterate; HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear
   using (basis-permutation-Linear; apply-basis-permutation-Linear)

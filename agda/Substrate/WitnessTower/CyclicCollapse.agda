@@ -2,11 +2,12 @@
 
 ------------------------------------------------------------------------
 -- Substrate.WitnessTower.CyclicCollapse — ⟡cyclic-collapse (Ⓖ.cyclic-collapse, step 1 of Ⓖ.tower-basis):
--- WITNESS that Algebra.F2.Linear.FromImages.Permutation.Iterate IS the tower's cyclic-power machinery
--- (CyclicGrounding) — i.e. that the F2.Linear iteration/order stack is a structural DUPLICATE of what the
--- tower builds, hence collapsible. (It is not even F2-specific: `Iterate` is `σ-iterate`/`HasOrderPerm`/
--- `σ-iterate-add` over RAW `Fin n → Fin n` functions, importing only Foundation.Fin — a pure combinatorial
--- module misfiled under F2.Linear. Its natural home is the tower.)
+-- WITNESS that the Fin iteration/order stack (σ-iterate/HasOrderPerm, now Foundation.Fin.Iterate) IS the
+-- tower's cyclic-power machinery (CyclicGrounding) — i.e. that it is a structural DUPLICATE of what the
+-- tower builds, hence collapsible. (It is not even F2-specific: `σ-iterate`/`HasOrderPerm`/`σ-iterate-add`
+-- are over RAW `Fin n → Fin n` functions, importing only Foundation — a pure combinatorial module that WAS
+-- misfiled under F2.Linear. Its true home is Foundation, NOT the tower: the tower is itself F₂-heavy — see
+-- Ⓖ.tower-basis, which relocated it below both.)
 --
 -- The witness is the ACTION: the tower's `pow g k` (k-fold `compose` on Perm) acts as `σ-iterate k (apply g)`
 -- (k-fold function iteration), via SnGroup's `apply` (= lookup). So:
@@ -15,11 +16,11 @@
 -- Consequently `Iterate`'s `σ-iterate-add` (additivity) and `CyclicGrounding`'s `pow-hom` are the SAME law
 -- under this bridge. The duplicate is real and collapsible.
 --
--- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = pow-is-σ-iterate + order-collapse (F2.Linear's iteration &
--- order ARE the tower's, via the action — the WITNESS that the stack is a build-trace). SCOPED = the actual
--- COLLAPSE (reverse the dependency so Permutation.Iterate imports the tower / is deleted, migrate its 46
--- dependents, and untangle the tower→F2.Linear edges Codeword / HodgeGradeInvolution) — steps 2–3 of
--- Ⓖ.tower-basis, gated by this witness, NOT performed here.
+-- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = pow-is-σ-iterate + order-collapse (the Fin iteration &
+-- order ARE the tower's, via the action — the WITNESS that the stack is a build-trace). The COLLAPSE this
+-- witness gated has since LANDED (Ⓖ.tower-basis, 2026-07-05): the F₂-free generator (cyclic-suc) and the
+-- Fin-iterate stack were relocated BELOW F2.Linear (Algebra.Nat.CyclicSuc, Foundation.Fin.Iterate) — NOT
+-- "onto the tower" (the tower is F₂-heavy), but to the F₂-free base both share.
 ------------------------------------------------------------------------
 
 module Substrate.WitnessTower.CyclicCollapse where
@@ -31,7 +32,7 @@ open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-compose; apply-id; apply-injective)
 open import Substrate.WitnessTower.CyclicGrounding using (pow)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate using (σ-iterate; HasOrderPerm)
+open import Substrate.Foundation.Fin.Iterate using (σ-iterate; HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- ① The bridge: the tower's `pow` ACTS AS F2.Linear's `σ-iterate`. A k-fold composition of a permutation

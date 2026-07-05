@@ -18,7 +18,7 @@ open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation using (HasOrderPerm)
+open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- The capability record. Fields correspond 1:1 to the parameters of

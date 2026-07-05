@@ -14,7 +14,7 @@ open import Substrate.Foundation.Negation using (Dec; yes; no)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
+open import Substrate.Foundation.Fin.Iterate
   using (HasOrderPerm)
 open import Substrate.Algebra.Nat.CyclicSuc
   using (cyclic-suc; cyclic-suc-HasOrderPerm)

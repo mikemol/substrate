@@ -1,22 +1,27 @@
 ------------------------------------------------------------------------
--- Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+-- Substrate.Foundation.Fin.Iterate
 --
 -- σ-iterate, HasOrderPerm, σ-iterate-add, HasOrderPerm-multiple — the Fin
--- specialization of the generic nth-iterate combinator, for order-k basis-
--- permutation work.
+-- specialization of the generic nth-iterate combinator (Foundation.Function.
+-- Iterate), for order-k basis-permutation work.
 --
--- Ⓖ.iterate-to-foundation (2026-07-05): these WERE defined here, but nothing is
--- Fin- (or F2-) specific — σ-iterate is the nth-iterate of ANY endofunction.
--- The generic combinator now lives at its true home, Substrate.Foundation.
--- Function.Iterate; this module is its Fin-specialized RE-EXPORT (signatures
--- preserved verbatim, so the 37 dependents are untouched). Collapses the
--- misfiling under F2.Linear (the tower-as-combinatorial-basis principle). The
--- tower's Perm-power bridges to it via WitnessTower.CyclicCollapse.
+-- Ⓖ.tower-basis-phase3 (2026-07-05): this WAS
+-- Algebra.F2.Linear.FromImages.Permutation.Iterate — but nothing here is Fin-
+-- (or F2-) specific beyond the Fin instantiation, and NOTHING it imports is
+-- F₂: it is purely the generic iterate restricted to `Fin n → Fin n`. It was
+-- the residue of Ⓖ.iterate-to-foundation (which moved the generic combinator
+-- to Foundation.Function.Iterate but left this Fin-shim misfiled under the
+-- F2.Linear path, so F₂-free consumers — Coxeter, CoxeterFin, the witness-tower
+-- cyclic bridge — that imported HasOrderPerm still transitively dragged the
+-- F2.Linear.Permutation barrel). Relocated to its true F₂-free home. The
+-- Linear-lift layer (Permutation.Compose/Order/IterateLift) and the genuinely-
+-- F2 consumers now import it from here too; the tower's Perm-power bridges to
+-- it via WitnessTower.CyclicCollapse.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
-module Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate where
+module Substrate.Foundation.Fin.Iterate where
 
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)

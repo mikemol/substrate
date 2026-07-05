@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../../..
 
-FILES := Compose.agda Cycle3-FreeLinearization.agda Cyclic.agda Involution.agda Iterate.agda IterateLift.agda Linear.agda Order.agda
+FILES := Compose.agda Cycle3-FreeLinearization.agda Cyclic.agda Involution.agda IterateLift.agda Linear.agda Order.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

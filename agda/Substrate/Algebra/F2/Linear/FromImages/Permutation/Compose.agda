@@ -12,7 +12,7 @@ module Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose where
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
+open import Substrate.Foundation.Fin.Iterate
   using (HasOrderPerm)
 
 HasOrderPerm-compose-commute-order-2 :
