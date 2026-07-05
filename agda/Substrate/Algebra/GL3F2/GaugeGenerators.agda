@@ -43,8 +43,8 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (basis-permutation-Linear; HasOrderPerm; HasOrder-from-perm)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
-  using (cycle3-Linear; HasOrder-cycle3) public
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
+  using (cyclic-suc; cyclic-Linear; cyclic-HasOrder)
 open import Substrate.Algebra.F2.FanoPlane
   using (singer-Linear) public
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
@@ -75,19 +75,29 @@ HasOrder-swap01 : HasOrder (apply swap01-Linear) 2
 HasOrder-swap01 = HasOrder-from-perm σ₂ 2 σ₂-HasOrderPerm
 
 ------------------------------------------------------------------------
--- 2. Sylow-3 generator: cycle3-Linear (re-exported from
--- Cycle3.agda).
+-- 2. Sylow-3 generator: cycle3-Linear.
 --
 -- σ₃ : Fin 3 → Fin 3 cycles basis vectors as 0 → 1 → 2 → 0.
--- cycle3-Linear = basis-permutation-Linear σ₃ has order 3.
--- The cycle3-Linear is a known element of the Sylow-3 subgroup of
--- GL(3, F₂).
+-- cycle3-Linear = the basis-permutation Linear of σ₃, order 3 — a known
+-- element of the Sylow-3 subgroup of GL(3, F₂).
 --
--- Re-exported above for one-import access; HasOrder-cycle3 is the
--- existing witness.
+-- Ⓖ.cyclen-collapse-registry (2026-07-05): these WERE re-exported from the
+-- standalone per-n module ...Permutation.Cycle3 (a thin σ₃ = cyclic-suc {2}
+-- renaming). That obsolete orbit-module is now dissolved; the Sylow-3
+-- generator lives HERE, in its canonical registry home alongside the Sylow-2
+-- (σ₂/swap01-Linear) and Sylow-7 (singer-Linear) generators, each derived
+-- directly from the parametric Cyclic.{cyclic-suc, cyclic-Linear,
+-- cyclic-HasOrder} at n = 2 (the [[expose-generator-not-orbit]] collapse).
 ------------------------------------------------------------------------
 
--- (no new declarations — see imports for cycle3-Linear, HasOrder-cycle3)
+σ₃ : Fin 3 → Fin 3
+σ₃ = cyclic-suc {2}
+
+cycle3-Linear : Linear 3 3
+cycle3-Linear = cyclic-Linear {2}
+
+HasOrder-cycle3 : HasOrder (apply cycle3-Linear) 3
+HasOrder-cycle3 = cyclic-HasOrder {2}
 
 ------------------------------------------------------------------------
 -- 3. Sylow-7 generator: singer-Linear (re-exported from FanoPlane).

@@ -4,8 +4,8 @@
 -- The "phase advance" operation on the 2-D word algebra Zₙ × ℕ: apply
 -- `insert a` to the phase component, leave cycle unchanged.
 --
--- Demonstrated at Z₃ and Z₄. Bridges to the existing cyclic-shift
--- σ₃ / σ₄ (from Cycle3 / Cycle4) via the Z₃-Coxeter-Fin /
+-- Demonstrated at Z₃ and Z₄. Bridges to the generic cyclic-shift
+-- cyclic-suc {2} / cyclic-suc {3} via the Z₃-Coxeter-Fin /
 -- Z₄-Coxeter-Fin bijections.
 --
 -- The structural statement: phase-advance on the 2-D structure,
@@ -36,10 +36,10 @@ import Substrate.Groups.Z3-x-FreeCyclic as Z₃×F
 import Substrate.Groups.Z4-x-FreeCyclic as Z₄×F
 import Substrate.Groups.Z3-Coxeter-Fin as Z₃-Fin
 import Substrate.Groups.Z4-Coxeter-Fin as Z₄-Fin
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
-  using (σ₃)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle4
-  using (σ₄)
+-- Ⓖ.cyclen-collapse-registry: σ₃ / σ₄ were the Cycle3 / Cycle4 orbit-modules'
+-- thin aliases for cyclic-suc {2} / cyclic-suc {3}; those modules are dissolved,
+-- so the cyclic shift is the generic generator directly (n = 2, 3).
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
 
 ------------------------------------------------------------------------
 -- N-1: Z₃ phase advance — apply insert a to the phase component.
@@ -68,7 +68,7 @@ phase-advance-Z₃-as-σ₃ :
   {w-c : Word F.Gen}
   (c : Z₃.Canonical w-p) →
   Z₃-Fin.canonical-to-Fin (Z₃.insert-canonical Z₃.a c)
-    ≡ σ₃ (Z₃-Fin.canonical-to-Fin c)
+    ≡ cyclic-suc {2} (Z₃-Fin.canonical-to-Fin c)
 phase-advance-Z₃-as-σ₃ (Z₃.c-pos zero)  = refl
 phase-advance-Z₃-as-σ₃ (Z₃.c-pos ₁)  = refl
 phase-advance-Z₃-as-σ₃ (Z₃.c-pos ₂) = refl
@@ -85,7 +85,7 @@ phase-advance-Z₄-as-σ₄ :
   {w-c : Word F.Gen}
   (c : Z₄.Canonical w-p) →
   Z₄-Fin.canonical-to-Fin (Z₄.insert-canonical Z₄.a c)
-    ≡ σ₄ (Z₄-Fin.canonical-to-Fin c)
+    ≡ cyclic-suc {3} (Z₄-Fin.canonical-to-Fin c)
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos zero)   = refl
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos ₁)   = refl
 phase-advance-Z₄-as-σ₄ (Z₄.c-pos ₂)  = refl

@@ -19,16 +19,18 @@ module Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3-FreeLinearizati
 open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3 using (σ₃)
+-- Ⓖ.cyclen-collapse-registry: σ₃ was the Cycle3 orbit-module's thin alias for
+-- cyclic-suc {2}; that module is dissolved, so use the generator directly.
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
 open import Substrate.Category.FreeLinearization using (FreeLinearization)
 open import Substrate.Category.FreeLinearization.FromImages using (free-linearize)
 
 ------------------------------------------------------------------------
--- The images function for cycle3-Linear: basis ∘ σ₃.
+-- The images function for cycle3-Linear: basis ∘ (the 3-cycle σ₃ = cyclic-suc {2}).
 ------------------------------------------------------------------------
 
 cycle3-images : Fin 3 → Vector 3
-cycle3-images i = basis (σ₃ i)
+cycle3-images i = basis (cyclic-suc {2} i)
 
 ------------------------------------------------------------------------
 -- cycle3-Linear IS the FreeLinearization at cycle3-images.

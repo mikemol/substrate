@@ -52,9 +52,7 @@ open import Substrate.Algebra.F2.Linear.FromImages.Permutation
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.GL3F2
   using (GL3F2; mkGL3F2; id-GL; _·G_)
-open import Substrate.Algebra.GL3F2.GaugeGenerators using (cycle3-Linear)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3
-  using (HasOrder-cycle3)
+open import Substrate.Algebra.GL3F2.GaugeGenerators using (cycle3-Linear; HasOrder-cycle3)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor

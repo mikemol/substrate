@@ -147,14 +147,14 @@ open import Substrate.Groups.Actions.S3-on-V4.Generators public
 -- Sylow-7 (singer / singer-Linear, order 7) of GL(3,F₂).
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3 public
-  using ( σ₃
-        ; cycle3-Linear
-        )
-
+-- Ⓖ.cyclen-collapse-registry: σ₃ / cycle3-Linear now come from their canonical
+-- Sylow-3 home (GaugeGenerators, below) — the standalone ...Permutation.Cycle3
+-- orbit-module is dissolved. All three Sylow generators re-export from one place.
 open import Substrate.Algebra.GL3F2.GaugeGenerators public
   using ( σ₂
         ; swap01-Linear
+        ; σ₃
+        ; cycle3-Linear
         )
 
 open import Substrate.Algebra.F2.FanoPlane public
