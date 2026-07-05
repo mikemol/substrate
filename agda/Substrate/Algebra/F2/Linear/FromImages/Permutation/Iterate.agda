@@ -1,8 +1,17 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate
 --
--- σ-iterate, HasOrderPerm, σ-iterate-add, HasOrderPerm-multiple.
--- Foundational data for order-k basis-permutation work.
+-- σ-iterate, HasOrderPerm, σ-iterate-add, HasOrderPerm-multiple — the Fin
+-- specialization of the generic nth-iterate combinator, for order-k basis-
+-- permutation work.
+--
+-- Ⓖ.iterate-to-foundation (2026-07-05): these WERE defined here, but nothing is
+-- Fin- (or F2-) specific — σ-iterate is the nth-iterate of ANY endofunction.
+-- The generic combinator now lives at its true home, Substrate.Foundation.
+-- Function.Iterate; this module is its Fin-specialized RE-EXPORT (signatures
+-- preserved verbatim, so the 37 dependents are untouched). Collapses the
+-- misfiling under F2.Linear (the tower-as-combinatorial-basis principle). The
+-- tower's Perm-power bridges to it via WitnessTower.CyclicCollapse.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -10,41 +19,22 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate where
 
 open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
-
-------------------------------------------------------------------------
--- σ-iterate k σ = σ ∘ σ ∘ ⋯ ∘ σ  (k times).
+open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)
+open import Substrate.Foundation.Eq using (_≡_)
+import Substrate.Foundation.Function.Iterate as F
 
 σ-iterate : ∀ {n} → ℕ → (Fin n → Fin n) → (Fin n → Fin n)
-σ-iterate zero    σ = λ i → i
-σ-iterate (suc k) σ = λ i → σ (σ-iterate k σ i)
-
-------------------------------------------------------------------------
--- HasOrderPerm σ k = ∀ i → σ-iterate k σ i ≡ i  (pointwise σ^k = id).
+σ-iterate {n} = F.iterate {Fin n}
 
 HasOrderPerm : ∀ {n} → (Fin n → Fin n) → ℕ → Set
-HasOrderPerm σ k = ∀ i → σ-iterate k σ i ≡ i
-
-------------------------------------------------------------------------
--- σ-iterate-add — additivity of iteration in the count.
---   σ-iterate (a + b) σ i ≡ σ-iterate a σ (σ-iterate b σ i)
+HasOrderPerm {n} = F.HasFixedOrder {Fin n}
 
 σ-iterate-add :
   ∀ {n} (σ : Fin n → Fin n) (a b : ℕ) (i : Fin n) →
   σ-iterate (a ℕ+ b) σ i ≡ σ-iterate a σ (σ-iterate b σ i)
-σ-iterate-add σ zero    b i = refl
-σ-iterate-add σ (suc a) b i = cong σ (σ-iterate-add σ a b i)
-
-------------------------------------------------------------------------
--- HasOrderPerm-multiple — order at any positive multiple.
+σ-iterate-add {n} = F.iterate-add {Fin n}
 
 HasOrderPerm-multiple :
   ∀ {n} (σ : Fin n → Fin n) (k m : ℕ) →
   HasOrderPerm σ k → HasOrderPerm σ (m ℕ* k)
-HasOrderPerm-multiple σ k zero    σ-ord i = refl
-HasOrderPerm-multiple σ k (suc m) σ-ord i =
-  trans (σ-iterate-add σ k (m ℕ* k) i)
-  (trans (cong (σ-iterate k σ)
-               (HasOrderPerm-multiple σ k m σ-ord i))
-         (σ-ord i))
+HasOrderPerm-multiple {n} = F.HasFixedOrder-multiple {Fin n}

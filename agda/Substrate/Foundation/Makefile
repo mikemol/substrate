@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
 FILES := Bool.agda Empty.agda Eq.agda Fin.agda Function.agda Hedberg.agda Level.agda List.agda Maybe.agda Nat.agda Negation.agda Product.agda RewriteConfluence.agda Sum.agda Unit.agda Vec.agda WellFounded.agda
-SUBDIRS := Bool Empty Fin List Nat Unit Vec
+SUBDIRS := Bool Empty Fin Function List Nat Unit Vec
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -69,6 +69,13 @@ Fin:
 	fi
 	@$(MAKE) -C $@
 
+Function:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 List:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -101,6 +108,7 @@ clean:
 	@$(MAKE) -C Bool clean 2>/dev/null || true
 	@$(MAKE) -C Empty clean 2>/dev/null || true
 	@$(MAKE) -C Fin clean 2>/dev/null || true
+	@$(MAKE) -C Function clean 2>/dev/null || true
 	@$(MAKE) -C List clean 2>/dev/null || true
 	@$(MAKE) -C Nat clean 2>/dev/null || true
 	@$(MAKE) -C Unit clean 2>/dev/null || true

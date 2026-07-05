@@ -1131,6 +1131,7 @@ digraph imports {
   "Substrate.Foundation.Fin.SplitAt.RaiseIdentity" [label="SplitAt.RaiseIdentity"];
   "Substrate.Foundation.Fin.SplitAt.View" [label="SplitAt.View"];
   "Substrate.Foundation.Function" [label="Foundation.Function"];
+  "Substrate.Foundation.Function.Iterate" [label="Function.Iterate"];
   "Substrate.Foundation.Hedberg" [label="Foundation.Hedberg"];
   "Substrate.Foundation.Level" [label="Foundation.Level"];
   "Substrate.Foundation.List" [label="Foundation.List"];
@@ -2912,6 +2913,7 @@ digraph imports {
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose" -> "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose" -> "Substrate.Foundation.Fin";
+  "Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle2" -> "Substrate.Algebra.F2.Linear";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle2" -> "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic";
@@ -2959,6 +2961,7 @@ digraph imports {
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Fin";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Fin.Properties";
+  "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic" -> "Substrate.Foundation.Vec";
@@ -2972,6 +2975,7 @@ digraph imports {
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate" -> "Substrate.Foundation.Fin";
+  "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift" -> "Substrate.Algebra.F2.Linear";
@@ -3107,6 +3111,7 @@ digraph imports {
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Fin";
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Fin.Properties";
+  "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Nat.Properties.Order";
   "Substrate.Algebra.F2.Linear.SpectralCycleDim" -> "Substrate.Foundation.Negation";
@@ -8287,6 +8292,8 @@ digraph imports {
   "Substrate.Foundation.Fin.SplitAt.View" -> "Substrate.Foundation.Fin.Inject";
   "Substrate.Foundation.Fin.SplitAt.View" -> "Substrate.Foundation.Fin.Raise";
   "Substrate.Foundation.Fin.SplitAt.View" -> "Substrate.Foundation.Nat";
+  "Substrate.Foundation.Function.Iterate" -> "Substrate.Foundation.Eq";
+  "Substrate.Foundation.Function.Iterate" -> "Substrate.Foundation.Nat";
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Empty";
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Eq";
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Negation";
@@ -9042,6 +9049,7 @@ digraph imports {
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Fin";
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Fin.Properties";
+  "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Nat.Properties.Order";
   "Substrate.Groups.Coxeter.Cyclic.Core" -> "Substrate.Foundation.Negation";
@@ -11715,6 +11723,7 @@ digraph imports {
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate";
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Foundation.Function.Iterate";
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.Foundation.Vec";
   "Substrate.WitnessTower.CyclicCollapse" -> "Substrate.WitnessTower.CyclicGrounding";
