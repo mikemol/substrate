@@ -12,8 +12,10 @@
 #
 #   scripts/catalog_query.py                      # summary: counts + top reuse-primitives
 #   scripts/catalog_query.py find V4              # structures whose NAME contains a substring
-#   scripts/catalog_query.py refiners DivStr      # what is built on X (edges INTO X) — by name or qname
-#   scripts/catalog_query.py builds-on Wedge      # what X is built on (edges OUT of X)
+#   scripts/catalog_query.py refiners DivStr      # what is built on X (STRUCT edges INTO X) — by name or qname
+#   scripts/catalog_query.py builds-on Wedge      # what X is built on (STRUCT edges OUT of X)
+#   scripts/catalog_query.py imported-by Substrate.Foundation.Nat  # MODULES depending on a module
+#   scripts/catalog_query.py imports Substrate.Algebra.Wedge       # a module's semantic dependencies
 #   scripts/catalog_query.py homes Canonical      # a name's several homes (the ambiguity picker)
 #   scripts/catalog_query.py parallels [N]        # same-shape / different-name candidates (top N by breadth)
 #   scripts/catalog_query.py primitives [N]       # most-reused structures (in-degree ranking)
@@ -92,6 +94,26 @@ def cmd_builds_on(con, args):
             print(f"    {r['dst']}")
 
 
+def cmd_imports(con, args):
+    if not args:
+        sys.exit("usage: catalog_query.py imports <module>")
+    m = args[0]
+    rs = _rows(con, "SELECT dst FROM module_edges WHERE src = ? ORDER BY dst", (m,))
+    print(f"{m}  → semantically depends on {len(rs)}:")
+    for r in rs:
+        print(f"    {r['dst']}")
+
+
+def cmd_imported_by(con, args):
+    if not args:
+        sys.exit("usage: catalog_query.py imported-by <module>")
+    m = args[0]
+    rs = _rows(con, "SELECT src FROM module_edges WHERE dst = ? ORDER BY src", (m,))
+    print(f"{m}  ← depended on by {len(rs)}:")
+    for r in rs:
+        print(f"    {r['src']}")
+
+
 def cmd_homes(con, args):
     if not args:
         sys.exit("usage: catalog_query.py homes <name>")
@@ -134,7 +156,8 @@ def cmd_sql(con, args):
 
 
 CMDS = {"summary": cmd_summary, "find": cmd_find, "refiners": cmd_refiners,
-        "builds-on": cmd_builds_on, "homes": cmd_homes, "parallels": cmd_parallels,
+        "builds-on": cmd_builds_on, "imports": cmd_imports, "imported-by": cmd_imported_by,
+        "homes": cmd_homes, "parallels": cmd_parallels,
         "primitives": cmd_primitives, "sql": cmd_sql}
 
 if __name__ == "__main__":

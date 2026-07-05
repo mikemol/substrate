@@ -6,9 +6,10 @@
 # relational store, catalog/catalog.db (DbBuilder). EVERY catalog artifact is then a fast RENDER
 # over that DB — no re-walking:
 #   * render_index   -> catalog/reuse-index.md      (name -> home + cross-name shape-parallels)
-#   * render_graph   -> catalog/reuse-graph.{dot,md}(structure refinement edges + degree census)
+#   * render_graph   -> catalog/reuse-graph.{dot,md}(STRUCT refinement edges + degree census)
 #   * render_sitemap -> catalog/reuse-sitemap.xml   (flat discovery manifest; priority = in-degree)
 #   * render_usage   -> catalog/usage-stats.md      (reuse distribution: primitives vs isolated)
+#   * render_import  -> catalog/import-graph.{dot,md}(MODULE semantic-dependency edges + degree census)
 #
 # History: gen_reuse_index and gen_reuse_graph each used to shim the whole tree independently (the
 # tree decoded TWICE — core_intern_agdai, which the index used, ALSO shells out to agdai_shim under
@@ -31,6 +32,8 @@ GRAPH_DOT  = os.path.join(ROOT, "catalog", "reuse-graph.dot")
 GRAPH_MD   = os.path.join(ROOT, "catalog", "reuse-graph.md")
 SITEMAP    = os.path.join(ROOT, "catalog", "reuse-sitemap.xml")
 USAGE_MD   = os.path.join(ROOT, "catalog", "usage-stats.md")
+IMPORT_DOT = os.path.join(ROOT, "catalog", "import-graph.dot")
+IMPORT_MD  = os.path.join(ROOT, "catalog", "import-graph.md")
 CATALOG_DB = os.path.join(ROOT, "catalog", "catalog.db")
 
 # The relational store (Ⓓ.catalog-db): the canonical facts every markdown/xml catalog renders. The
@@ -42,15 +45,20 @@ CREATE TABLE structs (qname TEXT PRIMARY KEY, name TEXT, kind TEXT, module TEXT,
 CREATE TABLE members (struct_qname TEXT, name TEXT, ord INTEGER);
 CREATE TABLE refs    (struct_qname TEXT, ref_qname TEXT);
 CREATE TABLE edges   (src TEXT, dst TEXT);
+CREATE TABLE module_edges (src TEXT, dst TEXT);   -- module -> module semantic dependency (import-graph)
 CREATE TABLE modules (module TEXT PRIMARY KEY, purpose TEXT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
 CREATE INDEX ix_structs_name ON structs(name);
 CREATE INDEX ix_members_sq   ON members(struct_qname);
 CREATE INDEX ix_edges_src    ON edges(src);
 CREATE INDEX ix_edges_dst    ON edges(dst);
+CREATE INDEX ix_medges_src   ON module_edges(src);
+CREATE INDEX ix_medges_dst   ON module_edges(dst);
 -- The catalogs' key queries, as views (the "new question = a SELECT" payoff):
 CREATE VIEW in_degree  AS SELECT dst AS qname, COUNT(*) AS deg FROM edges GROUP BY dst;
 CREATE VIEW out_degree AS SELECT src AS qname, COUNT(*) AS deg FROM edges GROUP BY src;
+CREATE VIEW module_in_degree  AS SELECT dst AS module, COUNT(*) AS deg FROM module_edges GROUP BY dst;
+CREATE VIEW module_out_degree AS SELECT src AS module, COUNT(*) AS deg FROM module_edges GROUP BY src;
 CREATE VIEW multiply_homed AS
   SELECT name, COUNT(DISTINCT module) AS homes, GROUP_CONCAT(DISTINCT module) AS modules
   FROM structs GROUP BY name HAVING homes > 1;
@@ -127,11 +135,18 @@ class DbBuilder:
     def __init__(self):
         self.structs, self.members, self.refrows, self.modrows = [], [], [], []
         self.kinds, self.refs = {}, {}
+        self.allmods, self.modrefs = set(), {}         # for the module import graph (all modules)
 
     def add(self, core):
         mod, nodes = core["mod"], core["nodes"]
+        # Module import graph (Ⓓ.import-graph): EVERY module (struct-bearing or not — a law/function
+        # module still imports), and every qname its elaborated core references (all node qnames, not
+        # just struct-subtree refs). Collected BEFORE the struct early-return below so struct-less
+        # modules are still graph nodes. Resolved to module->module edges in write() (needs all modules).
+        self.allmods.add(mod)
+        self.modrefs[mod] = {qn for qn, _ch in nodes.values() if qn}
         cs = [(u, r, k, m) for u, r, k, m in core["defmarks"] if k in ("Datatype", "Record")]
-        if not cs:                                     # a module with no data/record contributes nothing
+        if not cs:                                     # a module with no data/record contributes no STRUCTS
             return
         # descriptions + purpose + is-index from the .agda source (best-effort; not in the core)
         src = agda_source(mod)
@@ -181,6 +196,28 @@ class DbBuilder:
 
         edges = sorted({(x, y) for x, rs in self.refs.items()
                         for y in (owner(r) for r in rs) if y and y != x})
+
+        # module import edges: M -> N iff M references a qname whose DEFINING module (longest
+        # module-prefix in the full module set) is N ≠ M. Cache prefix→module resolution (many
+        # qnames share a module prefix).
+        allmods = self.allmods
+        _mcache = {}
+
+        def owner_mod(qn):
+            if qn in _mcache:
+                return _mcache[qn]
+            parts, res = qn.split("."), None
+            for j in range(len(parts) - 1, 0, -1):     # a def-qname is module + ≥1 local component
+                p = ".".join(parts[:j])
+                if p in allmods:
+                    res = p
+                    break
+            _mcache[qn] = res
+            return res
+
+        module_edges = sorted({(m, n) for m, rs in self.modrefs.items()
+                               for n in (owner_mod(r) for r in rs) if n and n != m})
+
         if os.path.exists(CATALOG_DB):
             os.remove(CATALOG_DB)
         os.makedirs(os.path.dirname(CATALOG_DB), exist_ok=True)
@@ -190,12 +227,13 @@ class DbBuilder:
         con.executemany("INSERT INTO members VALUES (?,?,?)",       self.members)
         con.executemany("INSERT INTO refs    VALUES (?,?)",         self.refrows)
         con.executemany("INSERT INTO edges   VALUES (?,?)",         edges)
+        con.executemany("INSERT INTO module_edges VALUES (?,?)",    module_edges)
         con.executemany("INSERT INTO modules VALUES (?,?,?)",       sorted(self.modrows))
         con.execute("INSERT INTO meta VALUES ('failed', ?)", (str(failed),))
         con.commit()
         con.close()
-        return (f"catalog-db: {len(self.structs)} structs, {len(edges)} edges, "
-                f"{len(self.refrows)} refs -> catalog/catalog.db")
+        return (f"catalog-db: {len(self.structs)} structs, {len(edges)} refinement edges, "
+                f"{len(self.allmods)} modules, {len(module_edges)} import edges -> catalog/catalog.db")
 
 
 def _failed(con):
@@ -391,11 +429,74 @@ def render_usage(con):
             f"-> catalog/usage-stats.md")
 
 
-# ─────────────────────────── driver: build the store ONCE, render targets ───────────────────────────
-_RENDERERS = {"index": render_index, "graph": render_graph,
-              "sitemap": render_sitemap, "usage": render_usage}
+# ─────────────────────────── render 5: IMPORT-GRAPH (module semantic dependency) ───────────────────────────
+def render_import(con):
+    """The module dependency graph, SEMANTIC (over the elaborated .agdai cores, NOT source `import`
+    lines): module X -> Y iff X's core references a name DEFINED in Y. This captures what is
+    actually USED post-elaboration — it excludes unused source imports and includes transitively-
+    used names. The module-level twin of reuse-graph (which is struct-level)."""
+    failed = _failed(con)
+    edges = {(x, y) for x, y in con.execute("SELECT src, dst FROM module_edges")}
+    mods = sorted({m for e in edges for m in e})
+    indeg  = collections.Counter(y for _, y in edges)
+    outdeg = collections.Counter(x for x, _ in edges)
+    rank = lambda ctr, n: sorted(ctr.items(), key=lambda kv: (-kv[1], kv[0]))[:n]
+    tail = lambda m: ".".join(m.split(".")[-2:])       # last 2 components — a readable node label
 
-def generate(filt="", targets=("index", "graph", "sitemap", "usage"), reuse_db=False):
+    # --- DOT: every module edge ---
+    dl = ['digraph imports {', '  rankdir=LR; node [shape=box, fontsize=9];',
+          '  // module X -> Y : X semantically depends on Y (X\'s elaborated core references a',
+          '  // Y-defined name). Over the .agdai cores, NOT source import lines. Auto: gen_catalog.py']
+    for m in mods:
+        dl.append(f'  "{m}" [label="{tail(m)}"];')
+    for x, y in sorted(edges):
+        dl.append(f'  "{x}" -> "{y}";')
+    dl.append("}")
+    os.makedirs(os.path.dirname(IMPORT_DOT), exist_ok=True)
+    open(IMPORT_DOT, "w", encoding="utf-8").write("\n".join(dl) + "\n")
+
+    # --- MD: most-depended-on modules + degree ranking + a Mermaid slice ---
+    TOPN = 12
+    prims = [q for q, _ in rank(indeg, TOPN)]
+    prims_set = set(prims)
+    ml = ["# Import graph — module semantic dependency (who depends on whom)\n",
+          "_Auto-generated by `scripts/gen_catalog.py` from the RAW `.agdai` cores — do not edit; regenerate._\n",
+          f"_{len(mods)} modules, {len(edges)} dependency edges"
+          + (f"; {failed} cores unreadable" if failed else "") + "._\n",
+          "**Reading:** `X --> Y` means X's ELABORATED core references a name defined in Y — a "
+          "*semantic* dependency (what X actually uses), NOT a source `import` line (which may be "
+          "unused or re-exported). Most-depended-on = the load-bearing modules. Full graph: "
+          "`catalog/import-graph.dot`.\n",
+          "## Most-depended-on modules (in-degree) — the load-bearing centers\n",
+          "| module | ← depended on by |", "|---|---:|"]
+    for q, d in rank(indeg, 30):
+        ml.append(f"| `{q}` | {d} |")
+    ml += ["", "## Widest-reaching modules (out-degree) — depend on the most others\n",
+           "| module | → depends on |", "|---|---:|"]
+    for q, d in rank(outdeg, 20):
+        ml.append(f"| `{q}` | {d} |")
+    ml += ["", f"## Mermaid — top {TOPN} depended-on modules + their dependents\n", "```mermaid", "graph LR"]
+
+    def nid(q):
+        return "n" + hashlib.md5(q.encode()).hexdigest()[:10]
+    emitted = set()
+    for x, y in sorted(edges):
+        if y in prims_set:
+            for q in (x, y):
+                if q not in emitted:
+                    ml.append(f'  {nid(q)}["{tail(q)}"]')
+                    emitted.add(q)
+            ml.append(f"  {nid(x)} --> {nid(y)}")
+    ml += ["```", ""]
+    open(IMPORT_MD, "w", encoding="utf-8").write("\n".join(ml) + "\n")
+    return f"import-graph: {len(mods)} modules, {len(edges)} dependency edges -> catalog/import-graph.dot + .md"
+
+
+# ─────────────────────────── driver: build the store ONCE, render targets ───────────────────────────
+_RENDERERS = {"index": render_index, "graph": render_graph, "sitemap": render_sitemap,
+              "usage": render_usage, "import": render_import}
+
+def generate(filt="", targets=("index", "graph", "sitemap", "usage", "import"), reuse_db=False):
     """Build catalog.db from the ONE shim-walk (unless reuse_db and it already exists), then render
     each requested target from the DB. Returns the list of per-step summary strings."""
     msgs = []

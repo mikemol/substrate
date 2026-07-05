@@ -5,9 +5,10 @@
 # then a fast RENDER over it (scripts/reuse_catalog.py). This entry point builds the DB once and
 # renders all of:
 #   catalog/reuse-index.md        — name -> canonical-home + cross-name shape-parallels
-#   catalog/reuse-graph.{dot,md}  — structure refinement edges + reuse-primitive degree census
+#   catalog/reuse-graph.{dot,md}  — STRUCT refinement edges + reuse-primitive degree census
 #   catalog/reuse-sitemap.xml     — flat discovery manifest (priority = in-degree); the LLM-fluent format
 #   catalog/usage-stats.md        — reuse distribution: real primitives vs structurally-isolated
+#   catalog/import-graph.{dot,md} — MODULE semantic-dependency edges (over the cores, not source imports)
 # It is the GATE path: the pre-commit hook calls this after the forced full build so every catalog
 # regenerates together and none rots behind a structural change. catalog.db itself is a derived
 # local cache (gitignored, non-deterministic binary); the gate stages only the committed renders.

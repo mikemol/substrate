@@ -192,7 +192,8 @@ if [ "$fail" -eq 0 ]; then
       if msg=$(python3 "$ROOT/scripts/gen_catalog.py" 2>&1); then
         git add "$ROOT/catalog/reuse-index.md" "$ROOT/catalog/reuse-graph.dot" \
                 "$ROOT/catalog/reuse-graph.md" "$ROOT/catalog/reuse-sitemap.xml" \
-                "$ROOT/catalog/usage-stats.md" 2>/dev/null || true
+                "$ROOT/catalog/usage-stats.md" "$ROOT/catalog/import-graph.dot" \
+                "$ROOT/catalog/import-graph.md" 2>/dev/null || true
         echo "pre-commit: ${msg//$'\n'/; } (+ staged)"
       else
         echo "pre-commit: catalog regen skipped (advisory; gen_catalog.py failed)." >&2
