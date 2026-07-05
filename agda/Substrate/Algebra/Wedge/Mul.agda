@@ -88,7 +88,7 @@ square-zero→nilpotent M x sq = 1 , sq
 --    abstractly (the infinitesimal / tangent direction), no numerals.
 ------------------------------------------------------------------------
 
-data Two : Set where
+data Two : Set where      -- ⟦shape:5970a80b 𝟘 ε⟧
   𝟘 ε : Two
 
 two-div : DivStr

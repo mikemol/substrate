@@ -42,7 +42,7 @@ record Evidence : Set where
 
 open Evidence public
 
-data Verdict : Set where
+data Verdict : Set where      -- ⟦shape:0ff56923 P F U V⟧
   P F U V : Verdict   -- pass / fail / undetermined(both) / vacuous(neither)
 
 verdict : Evidence → Verdict

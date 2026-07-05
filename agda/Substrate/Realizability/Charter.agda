@@ -353,7 +353,7 @@ WitnessCategory = record
 -- 8.  Lemma 4.3 (determinism ⇒ replayability).
 ------------------------------------------------------------------------
 
-data Verdict : Set where
+data Verdict : Set where      -- ⟦shape:0ff56923 accept reject′⟧
   accept reject′ : Verdict
 
 module Replay

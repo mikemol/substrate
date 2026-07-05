@@ -30,7 +30,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 -- Three witnesses package the equivalence laws.
 ------------------------------------------------------------------------
 
-record Setoid (A : Set) : Set₁ where
+record Setoid (A : Set) : Set₁ where      -- ⟦shape:883de482 _≈_,≈-refl,≈-sym⟧
   field
     _≈_ : A → A → Set
     ≈-refl  : (a : A) → a ≈ a

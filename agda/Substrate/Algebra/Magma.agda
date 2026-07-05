@@ -20,7 +20,7 @@ module Substrate.Algebra.Magma where
 -- 1. The Magma record.
 ------------------------------------------------------------------------
 
-record Magma (A : Set) : Set where
+record Magma (A : Set) : Set where      -- ⟦shape:ec84712a _·_⟧
   field
     _·_ : A → A → A
 

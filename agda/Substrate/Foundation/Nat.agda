@@ -53,7 +53,7 @@ suc m ∸ suc n = m ∸ n
 
 infix 4 _≤_ _<_
 
-data _≤_ : ℕ → ℕ → Set where
+data _≤_ : ℕ → ℕ → Set where      -- ⟦shape:7ac77a03 z≤n,s≤s⟧
   z≤n : {n : ℕ}              → zero  ≤ n
   s≤s : {m n : ℕ} → m ≤ n → suc m ≤ suc n
 

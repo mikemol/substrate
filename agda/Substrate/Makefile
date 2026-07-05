@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ..
 
 FILES := Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
-SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Logic Lojban Pedagogy Pipeline Probability Realizability ShadowArchitecture Solresol TokiPona WitnessTower
+SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway FUSep Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Logic Lojban Pedagogy Pipeline Probability Realizability S5 ShadowArchitecture Solresol TokiPona WitnessTower
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -91,6 +91,13 @@ Codes:
 	@$(MAKE) -C $@
 
 Conway:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+FUSep:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
@@ -195,6 +202,13 @@ Realizability:
 	fi
 	@$(MAKE) -C $@
 
+S5:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 ShadowArchitecture:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -231,6 +245,7 @@ clean:
 	@$(MAKE) -C Cocycles clean 2>/dev/null || true
 	@$(MAKE) -C Codes clean 2>/dev/null || true
 	@$(MAKE) -C Conway clean 2>/dev/null || true
+	@$(MAKE) -C FUSep clean 2>/dev/null || true
 	@$(MAKE) -C Foundation clean 2>/dev/null || true
 	@$(MAKE) -C Foundations clean 2>/dev/null || true
 	@$(MAKE) -C Geometry clean 2>/dev/null || true
@@ -245,6 +260,7 @@ clean:
 	@$(MAKE) -C Pipeline clean 2>/dev/null || true
 	@$(MAKE) -C Probability clean 2>/dev/null || true
 	@$(MAKE) -C Realizability clean 2>/dev/null || true
+	@$(MAKE) -C S5 clean 2>/dev/null || true
 	@$(MAKE) -C ShadowArchitecture clean 2>/dev/null || true
 	@$(MAKE) -C Solresol clean 2>/dev/null || true
 	@$(MAKE) -C TokiPona clean 2>/dev/null || true
