@@ -199,3 +199,19 @@ to₄-hom γ e = refl
 to₄-hom γ α = refl
 to₄-hom γ β = refl
 to₄-hom γ γ = refl
+
+------------------------------------------------------------------------
+-- CATEGORICAL GROUNDING (⟡dedup.registry): KleinV4 ≅ V₄ is a GROUP, hence a
+-- one-object groupoid — its DELOOPING BV₄ (⋆ with hom(⋆,⋆) = the group). Via
+-- Groups.V4.Bundle's canonical Algebra.Monoid, `deloop` lands the Klein four-
+-- group on the CATEGORY spine (the torsor's ambient category) — grounding this
+-- module categorically. It was FLOATING (·-assoc proven, off-spine); the KleinV4≅V₄
+-- witness now does WORK: it carries the torsor's group onto the categorical spine.
+------------------------------------------------------------------------
+open import Substrate.Category.Delooping using (deloop)
+open import Substrate.Category.CategoryOf using (CategoryOf)
+import Substrate.Groups.V4.Bundle as V4B
+
+-- BV₄ : the Klein four-group as its one-object groupoid (KleinV4's category, via the iso).
+klein-deloop : CategoryOf
+klein-deloop = deloop V4B.V₄-Monoid
