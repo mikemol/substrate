@@ -18,602 +18,595 @@ _753 structures, 492 refinement edges._
 | `Gen` | 20 | `Substrate.Groups.Coxeter.Cyclic.Base` |
 | `CategoryOf` | 15 | `Substrate.Category.CategoryOf` |
 | `MarkovCategory` | 14 | `Substrate.Probability.MarkovCategory` |
-| `List` | 9 | `Substrate.Foundation.List` |
 | `DivStr` | 9 | `Substrate.Algebra.Wedge` |
+| `List` | 9 | `Substrate.Foundation.List` |
 | `LanguageWitness` | 8 | `Substrate.Category.FreeOverBasis` |
-| `EntropyFunctor` | 7 | `Substrate.Probability.Entropy` |
 | `Functor` | 7 | `Substrate.Category.Functor` |
-| `UPArrow` | 6 | `Substrate.Category.UniversalProperty` |
-| `Poly` | 6 | `Substrate.Category.Poly` |
+| `EntropyFunctor` | 7 | `Substrate.Probability.Entropy` |
 | `LocallyCompactAbelian` | 6 | `Substrate.Algebra.PontryaginDual` |
-| `Tm` | 5 | `Substrate.FUSep.FUSepQReduce` |
+| `Poly` | 6 | `Substrate.Category.Poly` |
+| `UPArrow` | 6 | `Substrate.Category.UniversalProperty` |
 | `Ring` | 5 | `Substrate.Algebra.Ring` |
+| `Tm` | 5 | `Substrate.FUSep.FUSepQReduce` |
 | `CommutativeRing` | 4 | `Substrate.Algebra.CommutativeRing` |
-| `LinearAlgebra` | 3 | `Substrate.Category.LinearAlgebra` |
-| `UPCover` | 3 | `Substrate.Category.UniversalProperty.Coverage` |
+| `Group` | 3 | `Substrate.Algebra.Group` |
+| `Module` | 3 | `Substrate.Algebra.Module` |
+| `Quotient` | 3 | `Substrate.Algebra.Quotient` |
+| `Node` | 3 | `Substrate.Algebra.Wedge.AxisWord.PackedRecall.PackedRecall._` |
 | `ProbeAtlas` | 3 | `Substrate.Category.AtlasOfProbes` |
 | `ConjugationCoalgebra` | 3 | `Substrate.Category.ConjugationCoalgebra` |
-| `Vec` | 3 | `Substrate.Foundation.Vec` |
-| `Module` | 3 | `Substrate.Algebra.Module` |
 
 ## Most-composite structures (out-degree) — built on the most others
 
 | structure | → builds on | home |
 |---|---:|---|
 | `⊥` | 5 | `Substrate.S5.S5Carrier.Machine._` |
-| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.NthPower._` |
-| `Canonical` | 4 | `Substrate.Groups.Z3-Coxeter-Fin._` |
-| `Canonical` | 4 | `Substrate.Groups.Z5-Coxeter-Fin._` |
+| `FreeBasisUniversalAt` | 4 | `Substrate.Algebra.Module.Free.UniqueExtension` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Base` |
 | `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Bridge._` |
-| `Canonical` | 4 | `Substrate.Groups.Coxeter.Fin-from-Cyclic._` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Core._` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Existential._` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Inverse._` |
 | `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.NthPower.Concat._` |
 | `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.NthPower.Flat._` |
-| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Core._` |
-| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.Base` |
-| `Canonical` | 4 | `Substrate.Groups.Z7-Coxeter._` |
-| `Canonical` | 4 | `Substrate.Groups.Z4-Coxeter-Fin._` |
-| `FreeBasisUniversalAt` | 4 | `Substrate.Algebra.Module.Free.UniqueExtension` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic.NthPower._` |
 | `Canonical` | 4 | `Substrate.Groups.Coxeter.Cyclic._` |
-| `Canonical` | 4 | `Substrate.Groups.Z7-Coxeter-Fin._` |
+| `Canonical` | 4 | `Substrate.Groups.Coxeter.Fin-from-Cyclic._` |
+| `Canonical` | 4 | `Substrate.Groups.Z2-Coxeter-Fin._` |
+| `Canonical` | 4 | `Substrate.Groups.Z2-Coxeter._` |
+| `Canonical` | 4 | `Substrate.Groups.Z3-Coxeter-Fin._` |
 
 ## Mermaid — top 12 primitives + their refiners
 
 ```mermaid
 graph LR
-  n415069407["⊤"]
-  n90225907["_≡_"]
-  n415069407 --> n90225907
-  n970861249["Prod"]
-  n680502007["ℕ"]
-  n970861249 --> n680502007
-  n698463593["GL-F₁"]
-  n698463593 --> n680502007
-  n997666568["ImageCode"]
-  n997666568 --> n680502007
-  n156885359["KernelCode"]
-  n156885359 --> n680502007
-  n551421064["Image-Equivalent"]
-  n551421064 --> n680502007
-  n814600298["Linear"]
-  n814600298 --> n680502007
-  n995268951["LinearBijection"]
-  n995268951 --> n680502007
-  n329386905["Bilinear"]
-  n329386905 --> n680502007
-  n495332459["KernelDim"]
-  n495332459 --> n680502007
-  n59064235["Linear"]
-  n59064235 --> n680502007
-  n900005950["Linear"]
-  n900005950 --> n680502007
-  n623518152["Linear"]
-  n623518152 --> n680502007
-  n407457607["Trim"]
-  n407457607 --> n680502007
-  n873308214["Wedge-Poly"]
-  n873308214 --> n680502007
-  n923876380["SplitSection"]
-  n923876380 --> n680502007
-  n233532657["FreeBasisUniversal"]
-  n233532657 --> n680502007
-  n539747568["FreeBasisUniversalAt"]
-  n27412940["Fin"]
-  n539747568 --> n27412940
-  n539747568 --> n680502007
-  n928692703["BezoutWitness"]
-  n928692703 --> n680502007
-  n397448592["_∣_"]
-  n397448592 --> n680502007
-  n698645798["EEATrace"]
-  n698645798 --> n680502007
-  n137088754["Wedge"]
-  n137088754 --> n680502007
-  n373116113["AllPrime"]
-  n988701627["List"]
-  n373116113 --> n988701627
-  n373116113 --> n680502007
-  n523202128["Linear"]
-  n523202128 --> n680502007
-  n967691757["Linear"]
-  n967691757 --> n680502007
-  n485115859["Linear"]
-  n485115859 --> n680502007
-  n921180320["Linear"]
-  n921180320 --> n90225907
-  n921180320 --> n680502007
-  n183149447["Linear"]
-  n183149447 --> n680502007
-  n459942182["F2nSelfDual"]
-  n459942182 --> n680502007
-  n605593980["CharGen"]
-  n605593980 --> n680502007
-  n453839555["CharTerm"]
-  n453839555 --> n680502007
-  n931924348["Linearℚ"]
-  n931924348 --> n680502007
-  n61269162["CRT-Witness"]
-  n61269162 --> n680502007
-  n128097408["CRTIdempotents"]
-  n128097408 --> n680502007
-  n691422154["ModInverses"]
-  n691422154 --> n680502007
-  n861694342["Unit"]
-  n861694342 --> n680502007
-  n343643831["Shed"]
-  n343643831 --> n680502007
-  n867285251["Shed"]
-  n867285251 --> n680502007
-  n976686900["_∈ᵀ_"]
-  n976686900 --> n90225907
-  n453541479["Dec"]
-  n976686900 --> n453541479
-  n882907903["_∈ˡ_"]
-  n882907903 --> n90225907
-  n882907903 --> n988701627
-  n882907903 --> n453541479
-  n709896213["NonEmpty"]
-  n709896213 --> n90225907
-  n709896213 --> n453541479
-  n632287830["Node"]
-  n632287830 --> n90225907
-  n632287830 --> n453541479
-  n364164772["PackOutcome"]
-  n364164772 --> n90225907
-  n364164772 --> n453541479
-  n199292517["Node"]
-  n199292517 --> n90225907
-  n199292517 --> n453541479
-  n474486763["_∈ᴺ_"]
-  n474486763 --> n90225907
-  n474486763 --> n453541479
-  n926194004["_∈ᵀ_"]
-  n926194004 --> n90225907
-  n926194004 --> n453541479
-  n187229108["Node"]
-  n187229108 --> n680502007
-  n806446969["PackOutcome"]
-  n806446969 --> n680502007
-  n228631972["Node"]
-  n228631972 --> n90225907
-  n228631972 --> n453541479
-  n803531986["PackOutcome"]
-  n803531986 --> n90225907
-  n803531986 --> n453541479
-  n597967955["Node"]
-  n597967955 --> n90225907
-  n597967955 --> n453541479
-  n33382295["_∈ˡ_"]
-  n33382295 --> n90225907
-  n33382295 --> n988701627
-  n33382295 --> n453541479
-  n529523027["_∈ᴺ_"]
-  n529523027 --> n90225907
-  n529523027 --> n453541479
-  n611587042["_∈ᵀ_"]
-  n611587042 --> n90225907
-  n611587042 --> n453541479
-  n443972612["_∈ˡ_"]
-  n443972612 --> n90225907
-  n443972612 --> n988701627
-  n443972612 --> n453541479
-  n808009661["Node"]
-  n808009661 --> n90225907
-  n808009661 --> n453541479
-  n645495956["PackOutcome"]
-  n645495956 --> n90225907
-  n645495956 --> n453541479
-  n381464569["_∈ᴺ_"]
-  n381464569 --> n90225907
-  n381464569 --> n453541479
-  n323077209["_∈ᵀ_"]
-  n323077209 --> n90225907
-  n323077209 --> n453541479
-  n990471361["Node"]
-  n990471361 --> n90225907
-  n990471361 --> n453541479
-  n882737352["Node"]
-  n882737352 --> n90225907
-  n882737352 --> n453541479
-  n285056870["Bridge"]
-  n677807929["DivStr"]
-  n285056870 --> n677807929
-  n797578692["LaxBridge"]
-  n797578692 --> n677807929
-  n720399061["CertifiedWedge"]
-  n720399061 --> n677807929
-  n720399061 --> n680502007
-  n964991737["WedgeCoalg"]
-  n964991737 --> n677807929
-  n499587153["Constraint"]
-  n499587153 --> n680502007
-  n395950445["CrossMix"]
-  n395950445 --> n677807929
-  n158149149["GradedWedge"]
-  n158149149 --> n680502007
-  n879260992["WedgeIso"]
-  n879260992 --> n677807929
-  n307828353["WedgeTerm"]
-  n307828353 --> n680502007
-  n782486148["Trace"]
-  n782486148 --> n677807929
-  n355959511["Wedge"]
-  n355959511 --> n677807929
-  n136006939["AbelianPFG"]
-  n136006939 --> n680502007
-  n926896732["IsLinearAdjunction"]
-  n926896732 --> n680502007
-  n610774192["AlgebraOfMonad"]
-  n617589810["CategoryOf"]
-  n610774192 --> n617589810
-  n912381751["EmergentConcentration"]
-  n912381751 --> n27412940
-  n912381751 --> n680502007
-  n788077378["RotationCommitMap"]
-  n788077378 --> n680502007
-  n908595578["TraceConsistency"]
-  n908595578 --> n988701627
-  n771816034["CartanRoot-Equivalence"]
-  n771816034 --> n617589810
-  n487235194["ChainDecomposition"]
-  n487235194 --> n680502007
-  n884262206["BasisBlade"]
-  n884262206 --> n680502007
-  n58670755["CliffordAlgebra"]
-  n58670755 --> n680502007
-  n251674050["CliffordRecovery"]
-  n251674050 --> n680502007
-  n286898296["GeneratorOrbitReading"]
-  n286898296 --> n680502007
-  n606329803["Grade"]
-  n606329803 --> n680502007
-  n227260772["GradedAction"]
-  n227260772 --> n680502007
-  n538156145["HammingSyndromeReading"]
-  n538156145 --> n680502007
-  n670392844["Cone"]
-  n670392844 --> n27412940
-  n670392844 --> n680502007
-  n212055646["EdgeApexCone"]
-  n212055646 --> n27412940
-  n212055646 --> n680502007
-  n734343141["FieldFilling"]
-  n734343141 --> n27412940
-  n734343141 --> n680502007
-  n789408770["ConeWithMorphisms"]
-  n789408770 --> n27412940
-  n789408770 --> n680502007
-  n914050653["AdjacentTransposition"]
-  n914050653 --> n680502007
-  n463529319["CoxeterAction"]
-  n463529319 --> n680502007
-  n554797283["CRTDecomposition"]
-  n554797283 --> n680502007
-  n189957600["MultiSylowDFTDecomposition"]
-  n189957600 --> n680502007
-  n445315849["WalshHadamardDFT"]
-  n445315849 --> n680502007
-  n185406854["FieldContinuum"]
-  n185406854 --> n680502007
-  n73280497["FieldFanOut"]
-  n73280497 --> n680502007
-  n446358852["FreeLinearization"]
-  n446358852 --> n680502007
-  n727240131["FreeLinearizationR"]
-  n727240131 --> n680502007
-  n647732261["Functor"]
-  n647732261 --> n617589810
-  n488020187["GaloisAdjunction-AsAdjunction"]
-  n488020187 --> n617589810
-  n300797461["GroupoidCardinality"]
-  n300797461 --> n617589810
-  n764356718["IsIso"]
-  n764356718 --> n617589810
-  n226380998["LeftKanExtension"]
-  n226380998 --> n617589810
-  n101563261["Limit"]
-  n101563261 --> n617589810
-  n391933337["LimitUP"]
-  n391933337 --> n27412940
-  n391933337 --> n680502007
-  n20962116["Modification"]
-  n20962116 --> n617589810
-  n193230031["Monad"]
-  n193230031 --> n617589810
-  n861345268["FieldTower"]
-  n861345268 --> n680502007
-  n428393381["Rotation"]
-  n428393381 --> n680502007
-  n414749381["RotationAction"]
-  n414749381 --> n680502007
-  n896637981["NaturalIsomorphism"]
-  n896637981 --> n617589810
-  n220427791["NaturalTransformation"]
-  n220427791 --> n617589810
-  n456450829["PrimeFactoredGauge"]
-  n456450829 --> n680502007
-  n432416871["InclusionLattice"]
-  n432416871 --> n680502007
-  n540439157["Sheaf"]
-  n540439157 --> n617589810
-  n813318325["Filter"]
-  n216717876["MarkovCategory"]
-  n813318325 --> n216717876
-  n97854321["IdentityLens"]
-  n97854321 --> n216717876
-  n888530803["LensComposition"]
-  n888530803 --> n216717876
-  n630608257["LensFunctoriality"]
-  n630608257 --> n216717876
-  n821810539["ParticleFilter"]
-  n821810539 --> n216717876
-  n564937651["StochasticLens"]
-  n564937651 --> n216717876
-  n960895817["StochasticLensCategory"]
-  n960895817 --> n216717876
-  n429934941["SubobjectClassifier"]
-  n429934941 --> n617589810
-  n497229541["SylowDecomposition"]
-  n497229541 --> n680502007
-  n759390294["AntisymmetricTensor"]
-  n759390294 --> n680502007
-  n131447123["Topos"]
-  n131447123 --> n617589810
-  n250986744["TwoFraming"]
-  n250986744 --> n677807929
-  n401415868["DistPattern"]
-  n401415868 --> n680502007
-  n206274735["SurrealFinite"]
-  n206274735 --> n680502007
-  n851011119["_≈L_"]
-  n851011119 --> n988701627
-  n361518583["_≋_"]
-  n361518583 --> n90225907
-  n361388927["Lift⊥"]
-  n361388927 --> n27412940
-  n361388927 --> n680502007
-  n27412940 --> n680502007
-  n174930528["SplitAtView"]
-  n174930528 --> n27412940
-  n174930528 --> n680502007
-  n814286641["Any"]
-  n814286641 --> n988701627
-  n501614044["NonZero"]
-  n501614044 --> n680502007
-  n533048488["_≤_"]
-  n533048488 --> n680502007
-  n739966325["Vec"]
-  n739966325 --> n680502007
-  n392958763["CoxeterFinCapability"]
-  n392958763 --> n680502007
-  n61559810["Canonical"]
-  n61559810 --> n27412940
-  n61559810 --> n680502007
-  n121199896["Gen"]
-  n61559810 --> n121199896
-  n804923621["Word"]
-  n61559810 --> n804923621
-  n121199896 --> n680502007
-  n323368123["Canonical"]
-  n323368123 --> n27412940
-  n323368123 --> n680502007
-  n323368123 --> n121199896
-  n323368123 --> n804923621
-  n921029629["Gen"]
-  n921029629 --> n680502007
-  n654478385["Canonical"]
-  n654478385 --> n27412940
-  n654478385 --> n680502007
-  n654478385 --> n121199896
-  n654478385 --> n804923621
-  n983187402["Gen"]
-  n983187402 --> n680502007
-  n48481229["Canonical"]
-  n48481229 --> n27412940
-  n48481229 --> n680502007
-  n48481229 --> n121199896
-  n48481229 --> n804923621
-  n571357326["Gen"]
-  n571357326 --> n680502007
-  n712637150["Canonical"]
-  n712637150 --> n27412940
-  n712637150 --> n680502007
-  n712637150 --> n121199896
-  n712637150 --> n804923621
-  n37673875["Gen"]
-  n37673875 --> n680502007
-  n327394022["Canonical"]
-  n327394022 --> n27412940
-  n327394022 --> n680502007
-  n327394022 --> n121199896
-  n327394022 --> n804923621
-  n606573803["Gen"]
-  n606573803 --> n680502007
-  n152996097["Canonical"]
-  n152996097 --> n27412940
-  n152996097 --> n680502007
-  n152996097 --> n121199896
-  n152996097 --> n804923621
-  n514845921["Gen"]
-  n514845921 --> n680502007
-  n867377572["Canonical"]
-  n867377572 --> n27412940
-  n867377572 --> n680502007
-  n867377572 --> n121199896
-  n867377572 --> n804923621
-  n955311048["Gen"]
-  n955311048 --> n680502007
-  n33827519["Canonical"]
-  n33827519 --> n27412940
-  n33827519 --> n680502007
-  n33827519 --> n121199896
-  n33827519 --> n804923621
-  n401733083["Gen"]
-  n401733083 --> n680502007
-  n566914921["Canonical"]
-  n566914921 --> n27412940
-  n566914921 --> n680502007
-  n566914921 --> n121199896
-  n566914921 --> n804923621
-  n707189363["Gen"]
-  n707189363 --> n680502007
-  n154503523["Canonical"]
-  n154503523 --> n804923621
-  n653112587["Canonical"]
-  n653112587 --> n804923621
-  n46643383["Canonical"]
-  n46643383 --> n27412940
-  n46643383 --> n680502007
-  n46643383 --> n121199896
-  n46643383 --> n804923621
-  n233739211["Canonical"]
-  n233739211 --> n27412940
-  n233739211 --> n680502007
-  n233739211 --> n121199896
-  n233739211 --> n804923621
-  n510814800["Canonical"]
-  n510814800 --> n27412940
-  n510814800 --> n680502007
-  n510814800 --> n121199896
-  n510814800 --> n804923621
-  n574682597["Canonical"]
-  n574682597 --> n27412940
-  n574682597 --> n680502007
-  n574682597 --> n121199896
-  n574682597 --> n804923621
-  n948227863["Canonical"]
-  n948227863 --> n27412940
-  n948227863 --> n680502007
-  n948227863 --> n121199896
-  n948227863 --> n804923621
-  n147231199["Canonical"]
-  n147231199 --> n27412940
-  n147231199 --> n680502007
-  n147231199 --> n121199896
-  n147231199 --> n804923621
-  n445907344["Canonical"]
-  n445907344 --> n27412940
-  n445907344 --> n680502007
-  n445907344 --> n121199896
-  n445907344 --> n804923621
-  n795117358["Canonical"]
-  n795117358 --> n27412940
-  n795117358 --> n680502007
-  n795117358 --> n121199896
-  n795117358 --> n804923621
-  n350256399["Canonical"]
-  n350256399 --> n27412940
-  n350256399 --> n680502007
-  n350256399 --> n121199896
-  n350256399 --> n804923621
-  n693607501["Canonical"]
-  n693607501 --> n27412940
-  n693607501 --> n680502007
-  n693607501 --> n121199896
-  n693607501 --> n804923621
-  n44536791["_≈M_"]
-  n464397105["LanguageWitness"]
-  n44536791 --> n464397105
-  n698913713["Language2Morphism"]
-  n698913713 --> n464397105
-  n425189834["LanguageMorphism"]
-  n425189834 --> n464397105
-  n402572768["NaturalPresheafMorphism"]
-  n402572768 --> n464397105
-  n416608323["WitnessAlignment"]
-  n416608323 --> n464397105
-  n586217775["PresheafMorphism"]
-  n586217775 --> n464397105
-  n382769907["YonedaLemmaFull"]
-  n382769907 --> n464397105
-  n825854071["NaturalPresheafMorphismR"]
-  n825854071 --> n464397105
-  n772650374["IsFrame"]
-  n772650374 --> n680502007
-  n444035975["Bridi"]
-  n444035975 --> n680502007
-  n225881720["Selbri"]
-  n225881720 --> n680502007
-  n238036474["Preserves-Shannon"]
-  n238036474 --> n680502007
-  n100054394["Preserves-CountMonoid"]
-  n100054394 --> n680502007
-  n318070974["Preserves-Ranking"]
-  n318070974 --> n680502007
-  n439956839["Preserves-Shannon"]
-  n439956839 --> n680502007
-  n743498793["SufficientStatisticInfoTheory"]
-  n609936344["EntropyFunctor"]
-  n743498793 --> n609936344
-  n743498793 --> n216717876
-  n573951907["ConditionalEntropy"]
-  n573951907 --> n609936344
-  n502754568["JointEntropy"]
-  n502754568 --> n609936344
-  n651849825["MutualInformation"]
-  n651849825 --> n609936344
-  n363846369["CrossEntropy"]
-  n363846369 --> n609936344
-  n380763802["FisherInformation"]
-  n380763802 --> n609936344
-  n930414639["KLDivergence"]
-  n930414639 --> n609936344
-  n689206499["AlmostSurelyEqual"]
-  n689206499 --> n216717876
-  n766342948["BayesianInversion"]
-  n766342948 --> n216717876
-  n557099775["ConditionalStructure"]
-  n557099775 --> n216717876
-  n283789327["IsDeterministic"]
-  n283789327 --> n216717876
-  n669910353["Marginalisation"]
-  n669910353 --> n216717876
-  n734534762["FinStochHom"]
-  n734534762 --> n680502007
-  n259678179["SufficientStatistic"]
-  n259678179 --> n216717876
-  n46835974["GateReflection"]
-  n46835974 --> n680502007
-  n709307424["Pipe"]
-  n709307424 --> n680502007
-  n34306129["Step"]
-  n34306129 --> n680502007
-  n206352564["⊥"]
-  n206352564 --> n90225907
-  n206352564 --> n680502007
-  n745701761["Stop"]
-  n745701761 --> n90225907
-  n745701761 --> n453541479
-  n409297382["NimiFreeLinearization"]
-  n409297382 --> n680502007
-  n113762424["TokiLinearity"]
-  n113762424 --> n680502007
-  n946912448["MarkedSentence"]
-  n946912448 --> n680502007
-  n715332964["QNimiFreeLinearization"]
-  n715332964 --> n680502007
-  n624619895["QLinearity"]
-  n624619895 --> n680502007
-  n60441822["QMarkedSentence"]
-  n60441822 --> n680502007
-  n237138244["QTokiSentence"]
-  n237138244 --> n680502007
-  n958073965["TokiSentence"]
-  n958073965 --> n680502007
-  n262749399["_∈_"]
-  n262749399 --> n988701627
-  n77803219["Path"]
-  n77803219 --> n680502007
-  n773701640["WSimplex"]
-  n773701640 --> n680502007
-  n349277920["NoDup"]
-  n349277920 --> n988701627
-  n707632777["FSimplex"]
-  n707632777 --> n680502007
-  n34606430["LehmerPath"]
-  n34606430 --> n680502007
-  n664670790["Permutation"]
-  n664670790 --> n680502007
-  n250657546["StepWedge"]
-  n250657546 --> n680502007
+  n0be7743bc5["⊤"]
+  n834b68f2da["_≡_"]
+  n0be7743bc5 --> n834b68f2da
+  n8a1f4dec9b["Prod"]
+  ndc3f5fc5a4["ℕ"]
+  n8a1f4dec9b --> ndc3f5fc5a4
+  n6e8742bd7f["GL-F₁"]
+  n6e8742bd7f --> ndc3f5fc5a4
+  ne4d458a12b["ImageCode"]
+  ne4d458a12b --> ndc3f5fc5a4
+  nb1769c5b13["KernelCode"]
+  nb1769c5b13 --> ndc3f5fc5a4
+  n41cb744452["Image-Equivalent"]
+  n41cb744452 --> ndc3f5fc5a4
+  n784b9f4dc5["Linear"]
+  n784b9f4dc5 --> ndc3f5fc5a4
+  n3e02406cc3["LinearBijection"]
+  n3e02406cc3 --> ndc3f5fc5a4
+  na0f8046945["Bilinear"]
+  na0f8046945 --> ndc3f5fc5a4
+  n483f1ad5aa["KernelDim"]
+  n483f1ad5aa --> ndc3f5fc5a4
+  n08a6db5195["Linear"]
+  n08a6db5195 --> ndc3f5fc5a4
+  n437799bd65["Linear"]
+  n437799bd65 --> ndc3f5fc5a4
+  naf04709c8b["Linear"]
+  naf04709c8b --> ndc3f5fc5a4
+  nb8d63965a4["Trim"]
+  nb8d63965a4 --> ndc3f5fc5a4
+  n1798294756["Wedge-Poly"]
+  n1798294756 --> ndc3f5fc5a4
+  n2a08358268["SplitSection"]
+  n2a08358268 --> ndc3f5fc5a4
+  nb668dafd9a["FreeBasisUniversal"]
+  nb668dafd9a --> ndc3f5fc5a4
+  n668d63f72e["FreeBasisUniversalAt"]
+  n1efa6ad190["Fin"]
+  n668d63f72e --> n1efa6ad190
+  n668d63f72e --> ndc3f5fc5a4
+  nd28b1a4a08["BezoutWitness"]
+  nd28b1a4a08 --> ndc3f5fc5a4
+  nee1c4a195b["_∣_"]
+  nee1c4a195b --> ndc3f5fc5a4
+  n627d8f39fb["EEATrace"]
+  n627d8f39fb --> ndc3f5fc5a4
+  n12d0f36c06["Wedge"]
+  n12d0f36c06 --> ndc3f5fc5a4
+  n8006cc1185["AllPrime"]
+  na3d7978177["List"]
+  n8006cc1185 --> na3d7978177
+  n8006cc1185 --> ndc3f5fc5a4
+  n1c06cecbcc["Linear"]
+  n1c06cecbcc --> ndc3f5fc5a4
+  n5479461104["Linear"]
+  n5479461104 --> ndc3f5fc5a4
+  na96edfba7d["Linear"]
+  na96edfba7d --> ndc3f5fc5a4
+  n4dfaa98f7b["Linear"]
+  n4dfaa98f7b --> n834b68f2da
+  n4dfaa98f7b --> ndc3f5fc5a4
+  n086f3e657f["Linear"]
+  n086f3e657f --> ndc3f5fc5a4
+  n42a9735ccf["F2nSelfDual"]
+  n42a9735ccf --> ndc3f5fc5a4
+  nf6c3b2927b["CharGen"]
+  nf6c3b2927b --> ndc3f5fc5a4
+  n3aad78a208["CharTerm"]
+  n3aad78a208 --> ndc3f5fc5a4
+  nb13f4f3215["Linearℚ"]
+  nb13f4f3215 --> ndc3f5fc5a4
+  nece7814ea9["CRT-Witness"]
+  nece7814ea9 --> ndc3f5fc5a4
+  na4f7ca8dfd["CRTIdempotents"]
+  na4f7ca8dfd --> ndc3f5fc5a4
+  nb14ec19749["ModInverses"]
+  nb14ec19749 --> ndc3f5fc5a4
+  nf2d3021c3e["Unit"]
+  nf2d3021c3e --> ndc3f5fc5a4
+  na582fe48cd["Shed"]
+  na582fe48cd --> ndc3f5fc5a4
+  n4c2c5b7c71["Shed"]
+  n4c2c5b7c71 --> ndc3f5fc5a4
+  n874b8f5d79["_∈ᵀ_"]
+  n874b8f5d79 --> n834b68f2da
+  n02f3cd6dcd["Dec"]
+  n874b8f5d79 --> n02f3cd6dcd
+  n7de981547c["_∈ˡ_"]
+  n7de981547c --> n834b68f2da
+  n7de981547c --> na3d7978177
+  n7de981547c --> n02f3cd6dcd
+  n072841d3f1["NonEmpty"]
+  n072841d3f1 --> n834b68f2da
+  n072841d3f1 --> n02f3cd6dcd
+  neaa58da0fb["Node"]
+  neaa58da0fb --> n834b68f2da
+  neaa58da0fb --> n02f3cd6dcd
+  nbd9b5b2158["PackOutcome"]
+  nbd9b5b2158 --> n834b68f2da
+  nbd9b5b2158 --> n02f3cd6dcd
+  ne2e4ee1b58["Node"]
+  ne2e4ee1b58 --> n834b68f2da
+  ne2e4ee1b58 --> n02f3cd6dcd
+  n87e36dcade["_∈ᴺ_"]
+  n87e36dcade --> n834b68f2da
+  n87e36dcade --> n02f3cd6dcd
+  nc73cd418f3["_∈ᵀ_"]
+  nc73cd418f3 --> n834b68f2da
+  nc73cd418f3 --> n02f3cd6dcd
+  nb19f9bfd40["Node"]
+  nb19f9bfd40 --> ndc3f5fc5a4
+  n8014d42a62["PackOutcome"]
+  n8014d42a62 --> ndc3f5fc5a4
+  nf376948134["Node"]
+  nf376948134 --> n834b68f2da
+  nf376948134 --> n02f3cd6dcd
+  nb0ac12f31b["PackOutcome"]
+  nb0ac12f31b --> n834b68f2da
+  nb0ac12f31b --> n02f3cd6dcd
+  n0861b20bc0["Node"]
+  n0861b20bc0 --> n834b68f2da
+  n0861b20bc0 --> n02f3cd6dcd
+  nb34d7fe58c["_∈ˡ_"]
+  nb34d7fe58c --> n834b68f2da
+  nb34d7fe58c --> na3d7978177
+  nb34d7fe58c --> n02f3cd6dcd
+  n06eff4ddff["_∈ᴺ_"]
+  n06eff4ddff --> n834b68f2da
+  n06eff4ddff --> n02f3cd6dcd
+  n1593cc26c7["_∈ᵀ_"]
+  n1593cc26c7 --> n834b68f2da
+  n1593cc26c7 --> n02f3cd6dcd
+  n2d8cc79a91["_∈ˡ_"]
+  n2d8cc79a91 --> n834b68f2da
+  n2d8cc79a91 --> na3d7978177
+  n2d8cc79a91 --> n02f3cd6dcd
+  nc0af7d9d53["Node"]
+  nc0af7d9d53 --> n834b68f2da
+  nc0af7d9d53 --> n02f3cd6dcd
+  n1f9499f436["PackOutcome"]
+  n1f9499f436 --> n834b68f2da
+  n1f9499f436 --> n02f3cd6dcd
+  n8387c8dde4["_∈ᴺ_"]
+  n8387c8dde4 --> n834b68f2da
+  n8387c8dde4 --> n02f3cd6dcd
+  nc9e86c6eee["_∈ᵀ_"]
+  nc9e86c6eee --> n834b68f2da
+  nc9e86c6eee --> n02f3cd6dcd
+  n8709aa191d["Node"]
+  n8709aa191d --> n834b68f2da
+  n8709aa191d --> n02f3cd6dcd
+  n4075445459["Node"]
+  n4075445459 --> n834b68f2da
+  n4075445459 --> n02f3cd6dcd
+  nbcd88c2137["Bridge"]
+  n442029d851["DivStr"]
+  nbcd88c2137 --> n442029d851
+  ncce10942d9["LaxBridge"]
+  ncce10942d9 --> n442029d851
+  nedc6a62e43["CertifiedWedge"]
+  nedc6a62e43 --> n442029d851
+  nedc6a62e43 --> ndc3f5fc5a4
+  na5e1a94ec6["WedgeCoalg"]
+  na5e1a94ec6 --> n442029d851
+  n9901c7305b["Constraint"]
+  n9901c7305b --> ndc3f5fc5a4
+  nb00140c910["CrossMix"]
+  nb00140c910 --> n442029d851
+  nd64d45ac33["GradedWedge"]
+  nd64d45ac33 --> ndc3f5fc5a4
+  n4ef16210d2["WedgeIso"]
+  n4ef16210d2 --> n442029d851
+  n387a5dc224["WedgeTerm"]
+  n387a5dc224 --> ndc3f5fc5a4
+  nc743209328["Trace"]
+  nc743209328 --> n442029d851
+  nb7e478f38f["Wedge"]
+  nb7e478f38f --> n442029d851
+  n2b57fbdb2a["AbelianPFG"]
+  n2b57fbdb2a --> ndc3f5fc5a4
+  n27383549f3["IsLinearAdjunction"]
+  n27383549f3 --> ndc3f5fc5a4
+  ndef1649779["AlgebraOfMonad"]
+  n4c18af7c84["CategoryOf"]
+  ndef1649779 --> n4c18af7c84
+  ne4145ede9a["EmergentConcentration"]
+  ne4145ede9a --> n1efa6ad190
+  ne4145ede9a --> ndc3f5fc5a4
+  n623506bbfe["RotationCommitMap"]
+  n623506bbfe --> ndc3f5fc5a4
+  n5a590c6d53["TraceConsistency"]
+  n5a590c6d53 --> na3d7978177
+  nd135a7f008["CartanRoot-Equivalence"]
+  nd135a7f008 --> n4c18af7c84
+  n3214240145["Functor"]
+  nd135a7f008 --> n3214240145
+  n1ff6ba079d["ChainDecomposition"]
+  n1ff6ba079d --> ndc3f5fc5a4
+  n5a3185acfc["BasisBlade"]
+  n5a3185acfc --> ndc3f5fc5a4
+  nc6e1220f0f["CliffordAlgebra"]
+  nc6e1220f0f --> ndc3f5fc5a4
+  n9fe3c7a0ac["CliffordRecovery"]
+  n9fe3c7a0ac --> ndc3f5fc5a4
+  n3f91f533fe["GeneratorOrbitReading"]
+  n3f91f533fe --> ndc3f5fc5a4
+  nc745828a12["Grade"]
+  nc745828a12 --> ndc3f5fc5a4
+  nb750d0e761["GradedAction"]
+  nb750d0e761 --> ndc3f5fc5a4
+  n188ca2289d["HammingSyndromeReading"]
+  n188ca2289d --> ndc3f5fc5a4
+  nd5046a4085["Cone"]
+  nd5046a4085 --> n1efa6ad190
+  nd5046a4085 --> ndc3f5fc5a4
+  nd842b9c03b["EdgeApexCone"]
+  nd842b9c03b --> n1efa6ad190
+  nd842b9c03b --> ndc3f5fc5a4
+  n4b38bdea0e["FieldFilling"]
+  n4b38bdea0e --> n1efa6ad190
+  n4b38bdea0e --> ndc3f5fc5a4
+  n366cfe0624["ConeWithMorphisms"]
+  n366cfe0624 --> n1efa6ad190
+  n366cfe0624 --> ndc3f5fc5a4
+  ncb5ceeb3b8["AdjacentTransposition"]
+  ncb5ceeb3b8 --> ndc3f5fc5a4
+  n31ac7292bf["CoxeterAction"]
+  n31ac7292bf --> ndc3f5fc5a4
+  n39afe2d7d1["CRTDecomposition"]
+  n39afe2d7d1 --> ndc3f5fc5a4
+  n680f6468ad["MultiSylowDFTDecomposition"]
+  n680f6468ad --> ndc3f5fc5a4
+  na999f3d730["WalshHadamardDFT"]
+  na999f3d730 --> ndc3f5fc5a4
+  n7b8b1feb4b["FieldContinuum"]
+  n7b8b1feb4b --> ndc3f5fc5a4
+  nece6df378a["FieldFanOut"]
+  nece6df378a --> ndc3f5fc5a4
+  n82256b0221["FreeLinearization"]
+  n82256b0221 --> ndc3f5fc5a4
+  n4d0881aa6f["FreeLinearizationR"]
+  n4d0881aa6f --> ndc3f5fc5a4
+  n3214240145 --> n4c18af7c84
+  n9abf350595["GaloisAdjunction-AsAdjunction"]
+  n9abf350595 --> n4c18af7c84
+  n9abf350595 --> n3214240145
+  nb9e4f091d8["GroupoidCardinality"]
+  nb9e4f091d8 --> n4c18af7c84
+  nfb6585e5ea["IsIso"]
+  nfb6585e5ea --> n4c18af7c84
+  n438403174e["LeftKanExtension"]
+  n438403174e --> n4c18af7c84
+  n438403174e --> n3214240145
+  nc47a7f3e21["Limit"]
+  nc47a7f3e21 --> n4c18af7c84
+  nc47a7f3e21 --> n3214240145
+  n2780eda15a["LimitUP"]
+  n2780eda15a --> n1efa6ad190
+  n2780eda15a --> ndc3f5fc5a4
+  n3c2e4a4270["Modification"]
+  n3c2e4a4270 --> n4c18af7c84
+  n3c2e4a4270 --> n3214240145
+  ne36706fcec["Monad"]
+  ne36706fcec --> n4c18af7c84
+  nc597eab9d3["FieldTower"]
+  nc597eab9d3 --> ndc3f5fc5a4
+  nfb7d9852eb["Rotation"]
+  nfb7d9852eb --> ndc3f5fc5a4
+  n6938318efb["RotationAction"]
+  n6938318efb --> ndc3f5fc5a4
+  nd0970ad2f8["NaturalIsomorphism"]
+  nd0970ad2f8 --> n4c18af7c84
+  nd0970ad2f8 --> n3214240145
+  n01fa7fb6d9["NaturalTransformation"]
+  n01fa7fb6d9 --> n4c18af7c84
+  n01fa7fb6d9 --> n3214240145
+  n3fd17717f5["PrimeFactoredGauge"]
+  n3fd17717f5 --> ndc3f5fc5a4
+  n88ca46f9f8["InclusionLattice"]
+  n88ca46f9f8 --> ndc3f5fc5a4
+  n2c1e201359["Sheaf"]
+  n2c1e201359 --> n4c18af7c84
+  n81e6b7e311["Filter"]
+  n73eb65d39e["MarkovCategory"]
+  n81e6b7e311 --> n73eb65d39e
+  n500724c106["IdentityLens"]
+  n500724c106 --> n73eb65d39e
+  n01309de940["LensComposition"]
+  n01309de940 --> n73eb65d39e
+  nd8beecbe17["LensFunctoriality"]
+  nd8beecbe17 --> n73eb65d39e
+  n6740baebb8["ParticleFilter"]
+  n6740baebb8 --> n73eb65d39e
+  n70f9c47598["StochasticLens"]
+  n70f9c47598 --> n73eb65d39e
+  n9f20820f03["StochasticLensCategory"]
+  n9f20820f03 --> n73eb65d39e
+  nb2b23705a6["SubobjectClassifier"]
+  nb2b23705a6 --> n4c18af7c84
+  na68ca01b2b["SylowDecomposition"]
+  na68ca01b2b --> ndc3f5fc5a4
+  n5dbbfa85ef["AntisymmetricTensor"]
+  n5dbbfa85ef --> ndc3f5fc5a4
+  n238283a3b8["Topos"]
+  n238283a3b8 --> n4c18af7c84
+  nf2c254bba1["TwoFraming"]
+  nf2c254bba1 --> n442029d851
+  n89ac8039fa["DistPattern"]
+  n89ac8039fa --> ndc3f5fc5a4
+  nc624607f38["SurrealFinite"]
+  nc624607f38 --> ndc3f5fc5a4
+  nf7180eec1e["_≈L_"]
+  nf7180eec1e --> na3d7978177
+  ne47850542e["_≋_"]
+  ne47850542e --> n834b68f2da
+  n2bcce18950["Lift⊥"]
+  n2bcce18950 --> n1efa6ad190
+  n2bcce18950 --> ndc3f5fc5a4
+  n1efa6ad190 --> ndc3f5fc5a4
+  n764ed8bc83["SplitAtView"]
+  n764ed8bc83 --> n1efa6ad190
+  n764ed8bc83 --> ndc3f5fc5a4
+  n5ad3b3a491["Any"]
+  n5ad3b3a491 --> na3d7978177
+  n504ed8f2bb["NonZero"]
+  n504ed8f2bb --> ndc3f5fc5a4
+  nab935bebbc["_≤_"]
+  nab935bebbc --> ndc3f5fc5a4
+  n2b61abeb22["Vec"]
+  n2b61abeb22 --> ndc3f5fc5a4
+  nfaa2743163["CoxeterFinCapability"]
+  nfaa2743163 --> ndc3f5fc5a4
+  n38df49593d["Canonical"]
+  n38df49593d --> n1efa6ad190
+  n38df49593d --> ndc3f5fc5a4
+  n01097a21bc["Gen"]
+  n38df49593d --> n01097a21bc
+  nbaa045e928["Word"]
+  n38df49593d --> nbaa045e928
+  n01097a21bc --> ndc3f5fc5a4
+  nfba0dbc64e["Canonical"]
+  nfba0dbc64e --> n1efa6ad190
+  nfba0dbc64e --> ndc3f5fc5a4
+  nfba0dbc64e --> n01097a21bc
+  nfba0dbc64e --> nbaa045e928
+  na6dbb0463b["Gen"]
+  na6dbb0463b --> ndc3f5fc5a4
+  n03847f828d["Canonical"]
+  n03847f828d --> n1efa6ad190
+  n03847f828d --> ndc3f5fc5a4
+  n03847f828d --> n01097a21bc
+  n03847f828d --> nbaa045e928
+  n2ef2b5dc31["Gen"]
+  n2ef2b5dc31 --> ndc3f5fc5a4
+  n320ca7dd7a["Canonical"]
+  n320ca7dd7a --> n1efa6ad190
+  n320ca7dd7a --> ndc3f5fc5a4
+  n320ca7dd7a --> n01097a21bc
+  n320ca7dd7a --> nbaa045e928
+  n4b756cb0da["Gen"]
+  n4b756cb0da --> ndc3f5fc5a4
+  n34f2beedea["Canonical"]
+  n34f2beedea --> n1efa6ad190
+  n34f2beedea --> ndc3f5fc5a4
+  n34f2beedea --> n01097a21bc
+  n34f2beedea --> nbaa045e928
+  n8e46b2ba08["Gen"]
+  n8e46b2ba08 --> ndc3f5fc5a4
+  ndaa251a2db["Canonical"]
+  ndaa251a2db --> n1efa6ad190
+  ndaa251a2db --> ndc3f5fc5a4
+  ndaa251a2db --> n01097a21bc
+  ndaa251a2db --> nbaa045e928
+  n34471de4d8["Gen"]
+  n34471de4d8 --> ndc3f5fc5a4
+  nc7d7779dbf["Canonical"]
+  nc7d7779dbf --> n1efa6ad190
+  nc7d7779dbf --> ndc3f5fc5a4
+  nc7d7779dbf --> n01097a21bc
+  nc7d7779dbf --> nbaa045e928
+  n5cbb79fd91["Gen"]
+  n5cbb79fd91 --> ndc3f5fc5a4
+  n2c01f6b4fc["Canonical"]
+  n2c01f6b4fc --> n1efa6ad190
+  n2c01f6b4fc --> ndc3f5fc5a4
+  n2c01f6b4fc --> n01097a21bc
+  n2c01f6b4fc --> nbaa045e928
+  n4bc060c4ba["Gen"]
+  n4bc060c4ba --> ndc3f5fc5a4
+  ne9a55ecfde["Canonical"]
+  ne9a55ecfde --> n1efa6ad190
+  ne9a55ecfde --> ndc3f5fc5a4
+  ne9a55ecfde --> n01097a21bc
+  ne9a55ecfde --> nbaa045e928
+  n075cf30dd2["Gen"]
+  n075cf30dd2 --> ndc3f5fc5a4
+  n548b424f65["Canonical"]
+  n548b424f65 --> n1efa6ad190
+  n548b424f65 --> ndc3f5fc5a4
+  n548b424f65 --> n01097a21bc
+  n548b424f65 --> nbaa045e928
+  ne9ecac701e["Gen"]
+  ne9ecac701e --> ndc3f5fc5a4
+  n66bba7c5c6["Canonical"]
+  n66bba7c5c6 --> nbaa045e928
+  n5fba2010b4["Canonical"]
+  n5fba2010b4 --> nbaa045e928
+  n557d3329db["Canonical"]
+  n557d3329db --> n1efa6ad190
+  n557d3329db --> ndc3f5fc5a4
+  n557d3329db --> n01097a21bc
+  n557d3329db --> nbaa045e928
+  n4760d2527c["Canonical"]
+  n4760d2527c --> n1efa6ad190
+  n4760d2527c --> ndc3f5fc5a4
+  n4760d2527c --> n01097a21bc
+  n4760d2527c --> nbaa045e928
+  nd7d0d7e586["Canonical"]
+  nd7d0d7e586 --> n1efa6ad190
+  nd7d0d7e586 --> ndc3f5fc5a4
+  nd7d0d7e586 --> n01097a21bc
+  nd7d0d7e586 --> nbaa045e928
+  n79e741d11c["Canonical"]
+  n79e741d11c --> n1efa6ad190
+  n79e741d11c --> ndc3f5fc5a4
+  n79e741d11c --> n01097a21bc
+  n79e741d11c --> nbaa045e928
+  n81d78e8149["Canonical"]
+  n81d78e8149 --> n1efa6ad190
+  n81d78e8149 --> ndc3f5fc5a4
+  n81d78e8149 --> n01097a21bc
+  n81d78e8149 --> nbaa045e928
+  ndb6bbafb2c["Canonical"]
+  ndb6bbafb2c --> n1efa6ad190
+  ndb6bbafb2c --> ndc3f5fc5a4
+  ndb6bbafb2c --> n01097a21bc
+  ndb6bbafb2c --> nbaa045e928
+  n4e7ae4b80e["Canonical"]
+  n4e7ae4b80e --> n1efa6ad190
+  n4e7ae4b80e --> ndc3f5fc5a4
+  n4e7ae4b80e --> n01097a21bc
+  n4e7ae4b80e --> nbaa045e928
+  n5b0dfca1d2["Canonical"]
+  n5b0dfca1d2 --> n1efa6ad190
+  n5b0dfca1d2 --> ndc3f5fc5a4
+  n5b0dfca1d2 --> n01097a21bc
+  n5b0dfca1d2 --> nbaa045e928
+  ne524a01d7f["Canonical"]
+  ne524a01d7f --> n1efa6ad190
+  ne524a01d7f --> ndc3f5fc5a4
+  ne524a01d7f --> n01097a21bc
+  ne524a01d7f --> nbaa045e928
+  n739617f38c["Canonical"]
+  n739617f38c --> n1efa6ad190
+  n739617f38c --> ndc3f5fc5a4
+  n739617f38c --> n01097a21bc
+  n739617f38c --> nbaa045e928
+  nc2d5eaa1ce["_≈M_"]
+  n429c754f2a["LanguageWitness"]
+  nc2d5eaa1ce --> n429c754f2a
+  ncec831013e["Language2Morphism"]
+  ncec831013e --> n429c754f2a
+  nc92f58cc51["LanguageMorphism"]
+  nc92f58cc51 --> n429c754f2a
+  ncb601f327d["NaturalPresheafMorphism"]
+  ncb601f327d --> n429c754f2a
+  n905b52e3e4["WitnessAlignment"]
+  n905b52e3e4 --> n429c754f2a
+  nd1ec81315d["PresheafMorphism"]
+  nd1ec81315d --> n429c754f2a
+  n840af6389a["YonedaLemmaFull"]
+  n840af6389a --> n429c754f2a
+  n3f104ba491["NaturalPresheafMorphismR"]
+  n3f104ba491 --> n429c754f2a
+  n85132cb4de["IsFrame"]
+  n85132cb4de --> ndc3f5fc5a4
+  n976fe5cb87["Bridi"]
+  n976fe5cb87 --> ndc3f5fc5a4
+  n28d1855eae["Selbri"]
+  n28d1855eae --> ndc3f5fc5a4
+  n89f1bc5c2f["Preserves-Shannon"]
+  n89f1bc5c2f --> ndc3f5fc5a4
+  nf7fa454791["Preserves-CountMonoid"]
+  nf7fa454791 --> ndc3f5fc5a4
+  ne64ae1d669["Preserves-Ranking"]
+  ne64ae1d669 --> ndc3f5fc5a4
+  n350b16cecb["Preserves-Shannon"]
+  n350b16cecb --> ndc3f5fc5a4
+  n90da8b4a8b["SufficientStatisticInfoTheory"]
+  n90da8b4a8b --> n73eb65d39e
+  n1b3682c461["AlmostSurelyEqual"]
+  n1b3682c461 --> n73eb65d39e
+  nab5cb487d1["BayesianInversion"]
+  nab5cb487d1 --> n73eb65d39e
+  n1db725bdf2["ConditionalStructure"]
+  n1db725bdf2 --> n73eb65d39e
+  n70eee74d90["IsDeterministic"]
+  n70eee74d90 --> n73eb65d39e
+  nff2a76069b["Marginalisation"]
+  nff2a76069b --> n73eb65d39e
+  n40d401b308["FinStochHom"]
+  n40d401b308 --> ndc3f5fc5a4
+  n440fe82fa8["SufficientStatistic"]
+  n440fe82fa8 --> n73eb65d39e
+  n72168f12bb["GateReflection"]
+  n72168f12bb --> ndc3f5fc5a4
+  nf69bba1b4e["Pipe"]
+  nf69bba1b4e --> ndc3f5fc5a4
+  n2854ff2c22["Step"]
+  n2854ff2c22 --> ndc3f5fc5a4
+  n01ee2d2e74["⊥"]
+  n01ee2d2e74 --> n834b68f2da
+  n01ee2d2e74 --> ndc3f5fc5a4
+  nda14c5db4f["Stop"]
+  nda14c5db4f --> n834b68f2da
+  nda14c5db4f --> n02f3cd6dcd
+  n1f49283c03["NimiFreeLinearization"]
+  n1f49283c03 --> ndc3f5fc5a4
+  n4e7eb3ab6a["TokiLinearity"]
+  n4e7eb3ab6a --> ndc3f5fc5a4
+  nf0e6faba32["MarkedSentence"]
+  nf0e6faba32 --> ndc3f5fc5a4
+  n5653b9011f["QNimiFreeLinearization"]
+  n5653b9011f --> ndc3f5fc5a4
+  nf1f7e85b0c["QLinearity"]
+  nf1f7e85b0c --> ndc3f5fc5a4
+  n4f80dc2a62["QMarkedSentence"]
+  n4f80dc2a62 --> ndc3f5fc5a4
+  nbf9db91edd["QTokiSentence"]
+  nbf9db91edd --> ndc3f5fc5a4
+  n1aac9913ae["TokiSentence"]
+  n1aac9913ae --> ndc3f5fc5a4
+  n729dad6f1d["_∈_"]
+  n729dad6f1d --> na3d7978177
+  nff66e5ac56["Path"]
+  nff66e5ac56 --> ndc3f5fc5a4
+  n7890b2d32b["WSimplex"]
+  n7890b2d32b --> ndc3f5fc5a4
+  n8e6c3b291b["NoDup"]
+  n8e6c3b291b --> na3d7978177
+  n5371504d98["FSimplex"]
+  n5371504d98 --> ndc3f5fc5a4
+  n272cf23fcc["LehmerPath"]
+  n272cf23fcc --> ndc3f5fc5a4
+  n9cfb4a6af9["Permutation"]
+  n9cfb4a6af9 --> ndc3f5fc5a4
+  ncc8dfd096b["StepWedge"]
+  ncc8dfd096b --> ndc3f5fc5a4
 ```
 

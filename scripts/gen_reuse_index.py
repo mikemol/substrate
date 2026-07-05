@@ -1,140 +1,22 @@
 #!/usr/bin/env python3
-# gen_reuse_index.py — mechanically generate catalog/reuse-index.md, the substrate's
-# REUSE GUARD: a name -> canonical-home index of every data/record STRUCTURE, so a
-# re-implementer (LLM or human) can look up "does X already exist, and where" BEFORE
-# re-deriving it. The discoverability fix for the class of re-implementations the z47 arc
-# surfaced (a Klein four-group already in Groups.V4, a continued-fraction real already in
-# Algebra.R.Trace, a wedge already in Algebra.Wedge, a stream map now in
-# Algebra.R.Trace.StreamMap, ...).
+# gen_reuse_index.py — regenerate catalog/reuse-index.md, the substrate's REUSE GUARD: a name ->
+# canonical-home index of every data/record STRUCTURE, so a re-implementer (LLM or human) can look
+# up "does X already exist, and where" BEFORE re-deriving it. The discoverability fix for the class
+# of re-implementations the z47 arc surfaced (a Klein four-group already in Groups.V4, a
+# continued-fraction real already in Algebra.R.Trace, a wedge already in Algebra.Wedge, …).
 #
-# The structure list is read from the TYPECHECKED .agdai cores via
-# jea_agdai.core_intern_agdai (the same elaborated-core reader jea_pysim uses) — NOT by
-# string-matching .agda source: the core gives the real Datatype/Record classification and
-# full qnames, catching nested structures a col-0 regex misses. .agda is read only for the
-# one-line human description (comments are not in the core). Markdown, not an Agda module:
-# an index module would transitively import the whole repo and explode build time.
+# The reducer + the .agdai decode phase now live in scripts/reuse_catalog.py (SHARED with
+# gen_reuse_graph.py — one shim-walk, two reducers; see that module's header). This is the thin
+# single-catalog entry point: it drives ONLY the index reducer. To regenerate BOTH catalogs from a
+# single decode pass (the gate path), use scripts/gen_catalog.py.
 #
-# Consume: grep catalog/reuse-index.md for your concept (V4 / Real / Wedge / Monoid /
-# Stream / Trace / DivStr / ...). Regenerate: scripts/gen_reuse_index.py (idempotent, ~2min).
-import os, re, sys, glob
+# Consume: grep catalog/reuse-index.md for your concept (V4 / Real / Wedge / Monoid / Stream /
+# Trace / DivStr / …). Regenerate: scripts/gen_reuse_index.py (idempotent, ~2min).
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from reuse_catalog import generate          # noqa: E402
 
-ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BUILD_AG  = os.path.join(ROOT, "agda", "_build", "2.8.0", "agda")
-SUB_AGDAI = os.path.join(BUILD_AG, "Substrate")
-DOC       = os.path.join(ROOT, "catalog", "reuse-index.md")
-sys.path.insert(0, os.path.join(ROOT, "jea", "metalanguage"))
-from jea_pyalg import Intern          # noqa: E402
-import jea_agdai                      # noqa: E402
-
-shapetag = re.compile(r"⟦shape:[^⟧]*⟧")
-decl_c   = re.compile(r"^\s*(?:data|record)\s+([^\s({:]+).*?--(.*)$")
-idxkind  = re.compile(r"Registry|Generators|Index|Catalogue|Catalog|Bridge")
-
-def agdai_module(p):
-    rel = os.path.relpath(p, BUILD_AG)                 # Substrate/X/Y.agdai
-    return rel[:-len(".agdai")].replace(os.sep, ".")
-
-def agda_source(mod):
-    return os.path.join(ROOT, "agda", mod.replace(".", os.sep) + ".agda")
-
-def mod_purpose(text):
-    for ln in text.splitlines()[:45]:
-        s = ln.strip()
-        if s.startswith("--") and "—" in s:            # "-- Substrate.X.Y — purpose"
-            return s.lstrip("-").strip().split("—", 1)[1].strip()
-    for ln in text.splitlines()[:45]:
-        s = ln.strip().lstrip("-").strip()
-        if len(s) > 12 and re.search(r"[a-z]", s) and not s.startswith("Substrate.") \
-           and not set(s) <= set("- "):
-            return s
-    return ""
-
-structs, idxmods, namehomes, fingerprints, failed = [], [], {}, {}, 0
-for dp, _, fns in os.walk(SUB_AGDAI):
-    for fn in sorted(fns):
-        if not fn.endswith(".agdai"):
-            continue
-        p   = os.path.join(dp, fn)
-        mod = agdai_module(p)
-        # --- structures from the typechecked core ---
-        try:
-            rep   = jea_agdai.core_intern_agdai(p, Intern())
-            kinds = rep.get("kinds", {})
-            mems  = rep.get("members", {})
-        except Exception:
-            failed += 1
-            continue
-        core = [(q, k) for q, k in kinds.items() if k in ("Datatype", "Record")]
-        if not core:
-            continue
-        # --- descriptions + purpose from the .agda source (best-effort) ---
-        src = agda_source(mod)
-        purpose, comments = "", {}
-        if os.path.exists(src):
-            text = open(src, encoding="utf-8").read()
-            purpose = mod_purpose(text)
-            for ln in text.splitlines():
-                m = decl_c.match(ln)
-                if m:
-                    comments[m.group(1)] = shapetag.sub("", m.group(2)).strip()
-        if idxkind.search(mod.rsplit(".", 1)[-1]):
-            idxmods.append((mod, purpose))
-        for q, k in core:
-            name = q.rsplit(".", 1)[-1]
-            desc = comments.get(name, "") or purpose
-            kd   = "data" if k == "Datatype" else "record"
-            structs.append((name, kd, mod, desc))
-            namehomes.setdefault(name, set()).add(mod)
-            # elaborated-members fingerprint (kind + sorted local ctor/field names),
-            # for CROSS-NAME parallel detection. Coarser than jea_pysim's type-aware
-            # skeleton (names, not types) — a screening flag, not a proof.
-            heads = sorted(m.rsplit(".", 1)[-1] for m in mems.get(q, []))
-            fp = kd + "|" + ",".join(heads)
-            fingerprints.setdefault(fp, []).append((name, mod))
-
-structs.sort(key=lambda x: (x[0].lower(), x[2]))
-nmods = len(set(s[2] for s in structs))
-amb   = {n: h for n, h in namehomes.items() if len(h) > 1}
-# CROSS-NAME parallels: one shape-fingerprint (kind + member names) reached by ≥2
-# DIFFERENT structure names — candidate reinventions to relate by iso/bridge.
-parallels = {fp: es for fp, es in fingerprints.items()
-             if len({n for n, _ in es}) >= 2}
-
-out = ["# Reuse index — the substrate's structures, by name\n",
-       "_Auto-generated by `scripts/gen_reuse_index.py` from the typechecked `.agdai` cores "
-       "(jea_agdai) — do not edit; regenerate._\n",
-       "**Consult BEFORE building a new `data`/`record`.** Grep this file for the concept you're "
-       "about to reinvent — `V4`, `Real`, `Wedge`, `Monoid`, `Stream`, `Trace`, `DivStr`, `Setoid`, "
-       "`Newman`, … — to find its canonical home, then instantiate / relate-by-iso the existing "
-       "structure instead of re-deriving it (the CLAUDE.md reuse-search discipline; structural "
-       "search is `python jea/metalanguage/jea_pysim.py … --clusters`). A name with several homes → "
-       "see *Multiply-homed* and pick by shape.\n",
-       f"_{len(structs)} structures across {nmods} modules; {len(amb)} names multiply-homed; "
-       f"{len(parallels)} cross-name shape-parallels"
-       + (f"; {failed} cores unreadable" if failed else "") + "._\n",
-       "## Start here — index / registry / bridge modules\n"]
-for mod, purpose in sorted(set(idxmods)):
-    out.append(f"- `{mod}`" + (f" — {purpose}" if purpose else ""))
-# --- cross-name parallels (candidate reinventions) ---
-out += ["", f"## Parallel structures ({len(parallels)}) — same shape, DIFFERENT names → relate by iso/bridge\n",
-        "One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 distinct names: a "
-        "candidate reinvention (a KleinV4≅V₄-style witnessed bridge, not a silent collapse — "
-        "[[feedback_dedup_preserve_crossdomain_bridges]]). Name-based screening; confirm the type-level "
-        "match / cross-domain-vs-within with `jea_pysim … --clusters` before acting.\n"]
-for fp in sorted(parallels, key=lambda f: (-len({n for n, _ in parallels[f]}), f)):
-    es = sorted(set(parallels[fp]))
-    kind, heads = fp.split("|", 1)
-    out.append(f"- `{kind} {{{heads}}}` — " + ", ".join(f"`{n}`@`{m}`" for n, m in es))
-out += ["", f"## Multiply-homed names ({len(amb)}) — one name, several structures; pick by shape\n"]
-for n in sorted(amb, key=str.lower):
-    out.append(f"- `{n}` — " + ", ".join(f"`{m}`" for m in sorted(amb[n])))
-out += ["", "## Structures (data / record), alphabetical by name\n",
-        "| name | kind | home | what |", "|---|---|---|---|"]
-for name, kind, mod, desc in structs:
-    d = re.sub(r"\s+", " ", desc).replace("|", r"\|")[:100]
-    out.append(f"| `{name}` | {kind} | `{mod}` | {d} |")
-
-os.makedirs(os.path.dirname(DOC), exist_ok=True)
-open(DOC, "w", encoding="utf-8").write("\n".join(out) + "\n")
-print(f"reuse-index: {len(structs)} structures, {nmods} modules, {len(amb)} multiply-homed, "
-      f"{len(set(idxmods))} index modules, {failed} unreadable -> catalog/reuse-index.md")
+if __name__ == "__main__":
+    filt = sys.argv[1] if len(sys.argv) > 1 else ""
+    for m in generate(filt, do_index=True, do_graph=False):
+        print(m)
