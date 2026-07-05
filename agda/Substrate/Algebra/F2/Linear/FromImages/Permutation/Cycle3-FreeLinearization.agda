@@ -21,7 +21,7 @@ open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 -- Ⓖ.cyclen-collapse-registry: σ₃ was the Cycle3 orbit-module's thin alias for
 -- cyclic-suc {2}; that module is dissolved, so use the generator directly.
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 open import Substrate.Category.FreeLinearization using (FreeLinearization)
 open import Substrate.Category.FreeLinearization.FromImages using (free-linearize)
 

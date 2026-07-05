@@ -39,7 +39,7 @@ import Substrate.Groups.Z4-Coxeter-Fin as Z₄-Fin
 -- Ⓖ.cyclen-collapse-registry: σ₃ / σ₄ were the Cycle3 / Cycle4 orbit-modules'
 -- thin aliases for cyclic-suc {2} / cyclic-suc {3}; those modules are dissolved,
 -- so the cyclic shift is the generic generator directly (n = 2, 3).
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 
 ------------------------------------------------------------------------
 -- N-1: Z₃ phase advance — apply insert a to the phase component.

@@ -20,7 +20,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Algebra.Nat.Mod
   using (_mod-suc_; mod-suc-bound; mod-suc-suc)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
+open import Substrate.Algebra.Nat.CyclicSuc
   using (cyclic-suc-toℕ)
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower.Concat (n : ℕ) where

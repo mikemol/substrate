@@ -33,7 +33,7 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.Vec.Properties
   using (lookup∘tabulate; tabulate∘lookup; tabulate-cong)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Iterate using (σ-iterate)
 open import Substrate.Algebra.F2.AES.Round using (State; ShiftRows)
 

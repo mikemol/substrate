@@ -16,7 +16,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation
   using (HasOrderPerm)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
+open import Substrate.Algebra.Nat.CyclicSuc
   using (cyclic-suc; cyclic-suc-HasOrderPerm)
 
 module Substrate.Groups.Coxeter.Cyclic.Base (n : ℕ) where

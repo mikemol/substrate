@@ -80,7 +80,7 @@ from-coxeter-fin-data Gen a Can insert insert-can c-to-Fin Fin-to-c σ act ord =
 -- Ⓖ.cyclen-collapse: the per-n Cycleₙ orbit-modules (thin renamings σₙ = cyclic-suc {n-1})
 -- are obsolete — the cyclic permutation is the generic GENERATOR `cyclic-suc` directly, with n
 -- inferred from each capability's index (the [[expose-generator-not-orbit]] collapse, finished).
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-suc)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 
 import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z2-Coxeter-Fin as Z₂-Fin
