@@ -10,6 +10,11 @@
 # pre-commit hook calls this after the forced full build so both catalogs regenerate together and
 # neither rots behind a structural change.
 #
+# It ALSO regenerates catalog/catalog.db (Ⓓ.catalog-db) — the relational store the two markdown
+# files render — from the same walk, so `scripts/catalog_query.py` has a fresh DB to SELECT over.
+# The .db is a derived local cache (gitignored, non-deterministic binary); the gate stages only the
+# markdown/dot renders, never the .db.
+#
 # Regenerate by hand: scripts/gen_catalog.py [path-substring-filter]  (~2-3min full).
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -17,5 +22,5 @@ from reuse_catalog import generate          # noqa: E402
 
 if __name__ == "__main__":
     filt = sys.argv[1] if len(sys.argv) > 1 else ""
-    for m in generate(filt, do_index=True, do_graph=True):
+    for m in generate(filt, do_index=True, do_graph=True, do_db=True):
         print(m)
