@@ -15,6 +15,7 @@ module Substrate.S5.S5RealConv where
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; ℕ; zero; suc)
 open import Substrate.S5.S5Real using (CoTrace; head; tail; take; cycle; List; []; _∷_)
+import Substrate.S5.S5Real as S5R   -- for the ⟡def-eq constant witnesses below
 open import Substrate.Foundation.Nat     using (_+_; _*_)
 open import Substrate.Foundation.Product using (_×_; _,_) renaming (proj₁ to fst; proj₂ to snd)
 
@@ -72,6 +73,13 @@ n12 = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (zero))))))))))
 
 four : ℕ
 four = suc (suc (suc (suc zero)))
+
+-- ⟡def-eq: S5RealConv's ground-truth constants ARE S5Real's — the two modules
+-- name the SAME √2 digits, witnessed (not merely re-typed by coincidence).
+two≡  : two  ≡ S5R.two
+two≡  = refl
+four≡ : four ≡ S5R.four
+four≡ = refl
 
 -- the 4th convergent of √2 computes to 17/12 — BY REFL. The regress value's
 -- convergents CONVERGE (a real), the reframe (ADD 45) realized numerically.

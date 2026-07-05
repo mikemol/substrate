@@ -20,7 +20,7 @@
 
 module Substrate.FUSep.FUSepQCyc where
 
-open import Substrate.Foundation.Eq   using (_≡_; refl)
+open import Substrate.Foundation.Eq   using (_≡_; refl; sym)
 open import Substrate.Foundation.List using (List; []; _∷_)
 
 -- the observation stream (RealTrace analog): head + coinductive tail.
@@ -55,6 +55,9 @@ open _~ₛ_ public
 private
   symEq : {X : Set}{a b : X} → a ≡ b → b ≡ a
   symEq refl = refl
+  -- ⟡def-eq: this private helper IS Foundation.Eq.sym (pointwise, definitionally).
+  symEq≡sym : {X : Set}{a b : X} (p : a ≡ b) → symEq p ≡ sym p
+  symEq≡sym refl = refl
   trEq : {X : Set}{a b c : X} → a ≡ b → b ≡ c → a ≡ c
   trEq refl r = r
 

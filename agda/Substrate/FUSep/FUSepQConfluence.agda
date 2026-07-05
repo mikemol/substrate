@@ -23,6 +23,7 @@ module Substrate.FUSep.FUSepQConfluence where
 
 open import Substrate.Foundation.Eq      using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
+import Substrate.Foundation.Product as FP   -- for the ⟡def-eq projection witnesses
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
 open import Substrate.FUSep.FUSepQSKI    using (atom; app) renaming (Tm to Tm⟦27e68fcc⟧)
 
@@ -31,6 +32,11 @@ private
   proj₁ (a , _) = a
   proj₂ : {A B : Set} → A × B → B
   proj₂ (_ , b) = b
+  -- ⟡def-eq: these local projections ARE Foundation.Product.proj₁/proj₂.
+  proj₁≡ : {A B : Set} (p : A × B) → proj₁ p ≡ FP.proj₁ p
+  proj₁≡ (a , b) = refl
+  proj₂≡ : {A B : Set} (p : A × B) → proj₂ p ≡ FP.proj₂ p
+  proj₂≡ (a , b) = refl
   cong₂ : {A B C : Set} (f : A → B → C) {x x' : A} {y y' : B}
         → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
   cong₂ f refl refl = refl
