@@ -139,7 +139,13 @@ The search is **structural, not grep** (grep misses inline lambdas / differently
     python jea/metalanguage/jea_pysim.py <files-or-.agdai globs> --clusters --extract --skeleton
 
 over `.py` AND Agda `.agdai` core (point at `agda/_build/.../Substrate/...`). It reads the interned SPPF
-(shared canonical nodes = corroborated shape). Also scan `Substrate.Generators` / the `*.Registry`
+(shared canonical nodes = corroborated shape).
+
+**FASTEST first check before a new `data`/`record`: grep `catalog/reuse-index.md`** for the concept name
+(`V4`, `Real`, `Wedge`, `Monoid`, `Stream`, `DivStr`, …). It is the mechanically-generated (from the
+typechecked `.agdai` cores — `scripts/gen_reuse_index.py`) name→canonical-home index of every structure in
+the tree, with a *Multiply-homed* section to pick the right one when a name has several homes. Regenerate it
+(~2min) after adding structures. Then, for deeper cases, scan `Substrate.Generators` / the `*.Registry`
 bridge-indexes and the apex memories (`project_split_idempotent_apex`, `project_witness_tower_*`) for the
 generator the plan should instantiate. Rule of thumb: before writing a `record`/new operator/new bridge,
 name the existing generator it specialises — or confirm (briefly) there isn't one. This is the standing
