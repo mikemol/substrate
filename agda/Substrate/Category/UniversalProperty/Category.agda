@@ -76,10 +76,12 @@ compose-UPTerm g f = f ++ᵤ g
 --   * identity + associativity laws
 ------------------------------------------------------------------------
 
-record UPCategory : Set₂ where
+-- ⟡set1-paydown: parameterize the object collection Obj : Set₁ and the hom-family
+-- Hom : Obj → Obj → Set₁ out of the record (substrate stance: carriers/families are
+-- params, never fields). They were the only Set₂ source, so the record drops from
+-- Set₂ to Set₁; consumers write `UPCategory Obj Hom`.
+record UPCategory (Obj : Set₁) (Hom : Obj → Obj → Set₁) : Set₁ where
   field
-    Obj : Set₁
-    Hom : Obj → Obj → Set₁
     id-hom : (X : Obj) → Hom X X
     compose-hom : {X Y Z : Obj} → Hom Y Z → Hom X Y → Hom X Z
     id-leftˡ :
@@ -100,11 +102,10 @@ open UPCategory public
 -- 4. The substrate's canonical UPCategory instance.
 ------------------------------------------------------------------------
 
-UPCategory-canonical : UPCategory
+-- ⟡set1-paydown: UPCategory now parameterizes Obj and Hom (`UPCategory UPArrow UPTerm`).
+UPCategory-canonical : UPCategory UPArrow UPTerm
 UPCategory-canonical = record
-  { Obj         = UPArrow
-  ; Hom         = UPTerm
-  ; id-hom      = id-UPTerm
+  { id-hom      = id-UPTerm
   ; compose-hom = compose-UPTerm
   ; id-leftˡ    = λ f → ++ᵤ-identityʳ f
   ; id-rightʳ   = λ f → ++ᵤ-identityˡ f

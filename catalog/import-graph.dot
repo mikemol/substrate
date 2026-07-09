@@ -5532,6 +5532,7 @@ digraph imports {
   "Substrate.Algebra.Sporadic.MonsterLieAlgebra" -> "Substrate.Category.LieAlgebra";
   "Substrate.Algebra.Sporadic.MonsterLieAlgebra" -> "Substrate.Foundation.Level";
   "Substrate.Algebra.Sporadic.MonsterVOA" -> "Substrate.Category.VertexOperatorAlgebra";
+  "Substrate.Algebra.Sporadic.MonsterVOA" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.TopologicalGroup" -> "Substrate.Algebra.Group";
   "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Algebra.TopologicalGroup";
   "Substrate.Algebra.TopologicalGroup.Sites.V4" -> "Substrate.Groups.V4.Bijection";
@@ -6908,6 +6909,7 @@ digraph imports {
   "Substrate.Category.PhaseLockedLoop.AcquisitionTimeline" -> "Substrate.Foundation.Eq";
   "Substrate.Category.PhaseLockedLoop.AcquisitionTimeline" -> "Substrate.Foundation.Nat";
   "Substrate.Category.PhaseLockedLoop.Bank.BankIndependence" -> "Substrate.Category.PhaseLockedLoop.Bank.PLLBank";
+  "Substrate.Category.PhaseLockedLoop.Bank.BankIndependence" -> "Substrate.Foundation.Nat";
   "Substrate.Category.PhaseLockedLoop.Bank.PLLBank" -> "Substrate.Category.PhaseLockedLoop.LockState";
   "Substrate.Category.PhaseLockedLoop.Bank.PLLBank" -> "Substrate.Category.PhaseLockedLoop.PLL";
   "Substrate.Category.PhaseLockedLoop.Bank.PLLBank" -> "Substrate.Foundation.Nat";

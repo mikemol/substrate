@@ -43,25 +43,33 @@ open import Substrate.Groups.V4-Normality using (V₄-normal)
 -- Subgroup of S_4 (specialised).
 ------------------------------------------------------------------------
 
-record S₄-Subgroup : Set₁ where
-  field
-    member        : Permutation → Set
-    member-resp-≈ : {σ τ : Permutation} → σ ≈ τ → member σ → member τ
-    member-ε      : member ε
-    member-∙      : {σ τ : Permutation} → member σ → member τ → member (σ · τ)
-    member-⁻¹     : {σ : Permutation} → member σ → member (σ ⁻¹)
+-- ⟡set1-paydown: parameterize the membership predicate `member : Permutation → Set`
+-- (the sole Set-valued field, the Set₁ source) out of the record; it becomes a
+-- module parameter and the record lands in Set. Consumers write `S₄-Subgroup member`.
+module _ (member : Permutation → Set) where
+  record S₄-Subgroup : Set where
+    field
+      member-resp-≈ : {σ τ : Permutation} → σ ≈ τ → member σ → member τ
+      member-ε      : member ε
+      member-∙      : {σ τ : Permutation} → member σ → member τ → member (σ · τ)
+      member-⁻¹     : {σ : Permutation} → member σ → member (σ ⁻¹)
 
 ------------------------------------------------------------------------
 -- NormalSubgroup of S_4 (specialised).
+--
+-- ⟡set1-paydown: `member` threads through as a module parameter here too, so
+-- the `subgroup : S₄-Subgroup member` field type is Set (not Set₁) and this
+-- record also lands in Set.
 ------------------------------------------------------------------------
 
-record S₄-NormalSubgroup : Set₁ where
-  field
-    subgroup : S₄-Subgroup
-  open S₄-Subgroup subgroup public
-  field
-    member-normal :
-      {g n : Permutation} → member n → member ((g · n) · (g ⁻¹))
+module _ (member : Permutation → Set) where
+  record S₄-NormalSubgroup : Set where
+    field
+      subgroup : S₄-Subgroup member
+    open S₄-Subgroup subgroup public
+    field
+      member-normal :
+        {g n : Permutation} → member n → member ((g · n) · (g ⁻¹))
 
 ------------------------------------------------------------------------
 -- V_4-image instances.
@@ -90,10 +98,9 @@ V₄-image-⁻¹ :
 V₄-image-⁻¹ {σ} (v , σ≈ev) =
   v , (λ x → trans (⁻¹-cong {σ} {embed v} σ≈ev x) (embed-self-inv v x))
 
-V₄-image-Subgroup : S₄-Subgroup
+V₄-image-Subgroup : S₄-Subgroup V₄-image
 V₄-image-Subgroup = record
-  { member        = V₄-image
-  ; member-resp-≈ = λ {σ} {τ} → V₄-image-resp-≈ {σ} {τ}
+  { member-resp-≈ = λ {σ} {τ} → V₄-image-resp-≈ {σ} {τ}
   ; member-ε      = V₄-image-ε
   ; member-∙      = λ {σ} {τ} → V₄-image-∙ {σ} {τ}
   ; member-⁻¹     = λ {σ} → V₄-image-⁻¹ {σ}
@@ -114,7 +121,7 @@ V₄-image-Normal-prop {g} {n} (v , n≈ev) =
     conj-≈ = ·-cong {g · embed v} {g · n} {g ⁻¹} {g ⁻¹}
                     inner (≈-refl (g ⁻¹))
 
-V₄-image-NormalSubgroup : S₄-NormalSubgroup
+V₄-image-NormalSubgroup : S₄-NormalSubgroup V₄-image
 V₄-image-NormalSubgroup = record
   { subgroup      = V₄-image-Subgroup
   ; member-normal = λ {g} {n} → V₄-image-Normal-prop {g} {n}
@@ -148,10 +155,9 @@ Stab-⁻¹ :
 Stab-⁻¹ {X} {σ} σ-stab =
   sym-trans (cong (invₐₛ σ) σ-stab) (inv-l σ X)
 
-Stab-Subgroup : Axis → S₄-Subgroup
+Stab-Subgroup : (X : Axis) → S₄-Subgroup (Stab X)
 Stab-Subgroup X = record
-  { member        = Stab X
-  ; member-resp-≈ = λ {σ} {τ} → Stab-resp-≈ {X} {σ} {τ}
+  { member-resp-≈ = λ {σ} {τ} → Stab-resp-≈ {X} {σ} {τ}
   ; member-ε      = Stab-ε X
   ; member-∙      = λ {σ} {τ} → Stab-∙ {X} {σ} {τ}
   ; member-⁻¹     = λ {σ} → Stab-⁻¹ {X} {σ}

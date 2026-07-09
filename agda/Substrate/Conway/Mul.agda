@@ -42,15 +42,15 @@ ConwayMulType =
 -- 2. The ConwayMul signature record.
 ------------------------------------------------------------------------
 
-record ConwayMulSignature : Set₁ where
-  field
-    mul : ConwayMulType
-    -- Per-axiom obligations are stated as `Set` placeholders;
-    -- a downstream slice that supplies `mul` discharges them.
-    one-identity-stated   : Set
-    commutativity-stated  : Set
-    associativity-stated  : Set
-    distributivity-stated : Set
+-- ⟡set1-paydown: parameterize the four per-axiom `Set` obligation
+-- placeholders out of the record (they were `field : Set`, the Set₁ source);
+-- the record now bundles only `mul` and lands in Set. A downstream slice
+-- instantiates the obligations by choosing the four Set parameters.
+module _ (one-identity-stated commutativity-stated
+          associativity-stated distributivity-stated : Set) where
+  record ConwayMulSignature : Set where
+    field
+      mul : ConwayMulType
 
 ------------------------------------------------------------------------
 -- 3. Capstone for G7.

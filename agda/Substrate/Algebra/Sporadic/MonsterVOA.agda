@@ -12,13 +12,17 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.VertexOperatorAlgebra
   using (VertexOperatorAlgebra)
 
+-- ⟡set1-paydown: VertexOperatorAlgebra now parameterizes its graded carrier family
+-- V : ℕ → Set, so this module threads V as a param too.
 module Substrate.Algebra.Sporadic.MonsterVOA
-  (V♮ : VertexOperatorAlgebra)
+  (V : ℕ → Set)
+  (V♮ : VertexOperatorAlgebra V)
   where
 
-MonsterVOA-V♮ : VertexOperatorAlgebra
+MonsterVOA-V♮ : VertexOperatorAlgebra V
 MonsterVOA-V♮ = V♮

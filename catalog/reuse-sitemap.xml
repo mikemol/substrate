@@ -38,7 +38,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Field#Field</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2/AsChainDecomp#GL3F2ChainShape</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2#GL3F2</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GroupAction#Actionᴳ</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/IsomorphicCocycle#IsomorphicCocycleStructureᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Magma#Magma</loc><priority>0.01</priority></url>
@@ -576,9 +576,9 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.2</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.19</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.06</priority></url>
@@ -605,7 +605,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#⊤₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.14</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.13</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Canonical</loc><priority>0.0</priority></url>
@@ -628,7 +628,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Gen</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/S4-AsOpcodeAlgebra#S4AlphabetLayout</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/S4#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4#Permutation</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Iso#Stab≃S₃</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Subgroup#S₄-NormalSubgroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Subgroup#S₄-Subgroup</loc><priority>0.0</priority></url>
@@ -752,7 +752,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#ConditionalStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#IsDeterministic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#Marginalisation</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.1</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.09</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Sites/FinStoch#FinStochHom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>

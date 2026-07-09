@@ -29,53 +29,53 @@ open import Substrate.Algebra.R.Trace.ExtruderFix using (CombinatorAlgebra)
 -- obs : C → ℕ (the "head digit" of a term) and a NEXT map (apply a fixed probe,
 -- the Gauss-map step). Together they ARE a Coalg C — the observation coalgebra.
 ------------------------------------------------------------------------
--- ⟡set1-paydown (CombinatorAlgebra now parameterizes its carrier): C is kept as an
--- explicit field so ObservedAlgebra's external interface stays UNPARAMETERIZED (its
--- uneditable consumer ExtruderRSideRealigned annotates `O : ObservedAlgebra`). It
--- fields `C : Set`, so it stays in Set₁ — but the target CombinatorAlgebra is now in Set.
-record ObservedAlgebra : Set₁ where
-  field
-    C     : Set
-    A     : CombinatorAlgebra C
-  open CombinatorAlgebra A public
-  field
-    obs   : C → ℕ                 -- the bare head observation (the CF digit)
-    probe : C                     -- the fixed probe (the applied step)
+-- ⟡set1-paydown: parameterize the carrier C : Set out of the record (substrate
+-- stance: carriers are module params, never fields). With CombinatorAlgebra now
+-- carrier-parameterized (in Set), C was the only Set₁ source, so the record drops
+-- from Set₁ to Set; consumers write `ObservedAlgebra C`.
+module _ (C : Set) where
+  record ObservedAlgebra : Set where
+    field
+      A     : CombinatorAlgebra C
+    open CombinatorAlgebra A public
+    field
+      obs   : C → ℕ                 -- the bare head observation (the CF digit)
+      probe : C                     -- the fixed probe (the applied step)
 
-  -- the observation coalgebra: state c ↦ (obs c , c · probe). EXACTLY Final.Coalg.
-  obsCoalg : Coalg C
-  obsCoalg c = obs c , (c · probe)
+    -- the observation coalgebra: state c ↦ (obs c , c · probe). EXACTLY Final.Coalg.
+    obsCoalg : Coalg C
+    obsCoalg c = obs c , (c · probe)
 
-  -- the OBSERVATION STREAM = ana (the unfold) — NOT a hand-rolled stream. Every
-  -- combinator's behaviour is the ana of its observation coalgebra.
-  obsStream : C → RealTrace
-  obsStream = ana obsCoalg
+    -- the OBSERVATION STREAM = ana (the unfold) — NOT a hand-rolled stream. Every
+    -- combinator's behaviour is the ana of its observation coalgebra.
+    obsStream : C → RealTrace
+    obsStream = ana obsCoalg
 
-  -- the coalgebra laws come FREE from Final: head = obs, tail = obsStream ∘ (·probe).
-  obs-head : (c : C) → head (obsStream c) ≡ obs c
-  obs-head = ana-head obsCoalg
+    -- the coalgebra laws come FREE from Final: head = obs, tail = obsStream ∘ (·probe).
+    obs-head : (c : C) → head (obsStream c) ≡ obs c
+    obs-head = ana-head obsCoalg
 
-  obs-tail : (c : C) → tail (obsStream c) ≡ obsStream (c · probe)
-  obs-tail = ana-tail obsCoalg
+    obs-tail : (c : C) → tail (obsStream c) ≡ obsStream (c · probe)
+    obs-tail = ana-tail obsCoalg
 
-  ----------------------------------------------------------------------
-  -- REDUCTION-INVARIANCE, for free from ana-unique: if two terms have the SAME
-  -- observation coalgebra behaviour (same obs, and their ·probe successors relate),
-  -- their obsStreams are ~. Concretely: applied-equal terms (a·probe ≡ b·probe for
-  -- all further probes) have bisimilar tails — the η tail-agreement, generically.
-  --
-  -- The cleanest instance: if a · probe ≡ b (a REDUCES to b under the probe), then
-  -- the tail of a's stream IS b's stream (obs-tail), so a and b agree from depth 1.
-  ----------------------------------------------------------------------
-  tail-after-step : (a : C) → tail (obsStream a) ≡ obsStream (a · probe)
-  tail-after-step = obs-tail
+    ----------------------------------------------------------------------
+    -- REDUCTION-INVARIANCE, for free from ana-unique: if two terms have the SAME
+    -- observation coalgebra behaviour (same obs, and their ·probe successors relate),
+    -- their obsStreams are ~. Concretely: applied-equal terms (a·probe ≡ b·probe for
+    -- all further probes) have bisimilar tails — the η tail-agreement, generically.
+    --
+    -- The cleanest instance: if a · probe ≡ b (a REDUCES to b under the probe), then
+    -- the tail of a's stream IS b's stream (obs-tail), so a and b agree from depth 1.
+    ----------------------------------------------------------------------
+    tail-after-step : (a : C) → tail (obsStream a) ≡ obsStream (a · probe)
+    tail-after-step = obs-tail
 
-  -- so if a·probe and b agree observationally (b ≡ a·probe), their streams' TAILS
-  -- coincide — the applied/ext side. This is the reduction-invariance the ad-hoc
-  -- witness proved by hand (bmi-reduces): here it is ana's computation law.
-  step-tail-agree : (a b : C) → b ≡ (a · probe)
-                  → tail (obsStream a) ≡ obsStream b
-  step-tail-agree a b refl = obs-tail a
+    -- so if a·probe and b agree observationally (b ≡ a·probe), their streams' TAILS
+    -- coincide — the applied/ext side. This is the reduction-invariance the ad-hoc
+    -- witness proved by hand (bmi-reduces): here it is ana's computation law.
+    step-tail-agree : (a b : C) → b ≡ (a · probe)
+                    → tail (obsStream a) ≡ obsStream b
+    step-tail-agree a b refl = obs-tail a
 
 ------------------------------------------------------------------------
 -- ⟡FU-sep-conv-eta-witness, REALIGNED as an INSTANCE (was the hand-rolled
@@ -85,7 +85,9 @@ record ObservedAlgebra : Set₁ where
 -- their obsStreams have DIFFERENT heads but ~ tails — η's boundary, expressed
 -- against ana / RealTrace / Bisim, not a bespoke stream.
 ------------------------------------------------------------------------
-module EtaBoundary (O : ObservedAlgebra) where
+-- ⟡set1-paydown: ObservedAlgebra now parameterizes its carrier, so this module
+-- threads C as a param (`ObservedAlgebra C`).
+module EtaBoundary (C : Set) (O : ObservedAlgebra C) where
   open ObservedAlgebra O
 
   data ⊥ : Set where

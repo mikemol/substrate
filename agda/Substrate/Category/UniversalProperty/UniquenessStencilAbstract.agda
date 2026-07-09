@@ -62,23 +62,31 @@ MapLevel {S} {T} Rel canon Agree =
 -- relation, carriers never unified). μ-fold + ν-step are PER-SOURCE (≡ frame); ν-whole is
 -- MAP-LEVEL (~ frame). The ≡/~ asymmetry is STRUCTURAL: two PerSource + one MapLevel.
 ------------------------------------------------------------------------
-record UniquenessStencil : Set₁ where
-  field
-    -- the μ carriers/relation (≡ frame, inductive)
-    Sμ Tμ    : Set
-    Relμ     : Tμ → Tμ → Set
-    -- the ν-whole carriers/relation (~ frame, coinductive) — DIFFERENT carriers, NOT unified
-    Sν Tν    : Set
-    Relν     : Tν → Tν → Set
-    -- LAYER 1 — μ-fold: per-source, UNCONDITIONAL (Adm = ⊤-like, folded into the field).
-    μ-fold   : {solve : Sμ → Tμ} {Adm : Sμ → Tμ → Set} {Wit : Sμ → Tμ → Set}
-               → PerSource Relμ solve Adm Wit
-    -- LAYER 2 — ν-step: per-source, BOUNDED (Adm = the smallness bound).
-    ν-step   : {solve : Sμ → Tμ} {Adm : Sμ → Tμ → Set} {Wit : Sμ → Tμ → Set}
-               → PerSource Relμ solve Adm Wit
-    -- LAYER 3 — ν-whole: MAP-LEVEL, up-to Relν (~). The carrier is Sν/Tν (coinductive form).
-    ν-whole  : {canon : Sν → Tν} {Agree : (Sν → Tν) → Set}
-               → MapLevel Relν canon Agree
+-- ⟡set1-paydown: parameterize the carriers (Sμ Tμ Sν Tν), the frame relations (Relμ Relν), AND the
+-- per-layer predicate slots (solve/Adm/Wit for each PerSource layer, canon/Agree for the MapLevel
+-- layer). The carriers/relations are Set-valued CARRIER+relation fields; the predicate slots were
+-- ∀-over-Set implicits ({Adm Wit : Sμ → Tμ → Set}, {Agree : (Sν → Tν) → Set}) — each an implicit
+-- quantification over a Set-valued family, itself Set₁-typed. Moving them ALL to module parameters
+-- leaves each field valued in `PerSource …`/`MapLevel …` (both Set), so the record lives in Set.
+-- Consumers write `UniquenessStencil Sμ Tμ Sν Tν Relμ Relν solveμ Admμ Witμ solveνs Admνs Witνs canon Agree`.
+module _ (Sμ Tμ Sν Tν : Set)                       -- the μ / ν-whole carriers (POLYMORPHIC, NOT unified)
+         (Relμ : Tμ → Tμ → Set)                    -- the ≡ frame relation
+         (Relν : Tν → Tν → Set)                    -- the ~ frame relation
+         -- μ-fold layer predicate slots (per-source, UNCONDITIONAL — Adm ⊤-like)
+         (solveμ : Sμ → Tμ) (Admμ : Sμ → Tμ → Set) (Witμ : Sμ → Tμ → Set)
+         -- ν-step layer predicate slots (per-source, BOUNDED — Adm the smallness bound)
+         (solveνs : Sμ → Tμ) (Admνs : Sμ → Tμ → Set) (Witνs : Sμ → Tμ → Set)
+         -- ν-whole layer predicate slots (map-level, up-to Relν)
+         (canon : Sν → Tν) (Agree : (Sν → Tν) → Set)
+         where
+  record UniquenessStencil : Set where
+    field
+      -- LAYER 1 — μ-fold: per-source (≡ frame), UNCONDITIONAL.
+      μ-fold   : PerSource Relμ solveμ Admμ Witμ
+      -- LAYER 2 — ν-step: per-source (≡ frame), BOUNDED.
+      ν-step   : PerSource Relμ solveνs Admνs Witνs
+      -- LAYER 3 — ν-whole: MAP-LEVEL, up-to Relν (~). Carrier is Sν/Tν (coinductive form).
+      ν-whole  : MapLevel Relν canon Agree
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the cross-form wall dissolved by CrossMul-style

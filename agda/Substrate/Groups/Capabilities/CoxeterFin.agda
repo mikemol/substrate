@@ -25,53 +25,55 @@ open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
 -- Substrate.Groups.Coxeter-Fin-Generic.
 ------------------------------------------------------------------------
 
-record CoxeterFinCapability (n : ℕ) : Set₁ where
-  field
-    Gen               : Set
-    a                 : Gen
-    Canonical         : Word Gen → Set
-    insert            : Gen → Word Gen → Word Gen
-    insert-canonical  : (g : Gen) {w : Word Gen} →
-                        Canonical w → Canonical (insert g w)
-    canonical-to-Fin  : ∀ {w} → Canonical w → Fin n
-    Fin-to-canonical  : Fin n → Σ (Word Gen) Canonical
-    σ                 : Fin n → Fin n
-    action-of-a-is-σ  : ∀ {w} (c : Canonical w) →
-                        canonical-to-Fin (insert-canonical a c)
-                        ≡ σ (canonical-to-Fin c)
-    σ-aⁿ=ε            : HasOrderPerm σ n
+-- ⟡set1-paydown: parameterize Gen (the generator carrier) AND the
+-- Canonical : Word Gen → Set family out of the record; both were `field`s
+-- valued in Set, forcing the record to Set₁. With them as module parameters
+-- the record lands in Set. Consumers write `CoxeterFinCapability Gen Canonical n`.
+module _ (Gen : Set) (Canonical : Word Gen → Set) where
 
-------------------------------------------------------------------------
--- from-coxeter-fin-data: take a Zₙ-Coxeter's data + a Zₙ-Coxeter-Fin's
--- bijection + action + σₙ-from-Cycleₙ, produce the capability record.
-------------------------------------------------------------------------
+  record CoxeterFinCapability (n : ℕ) : Set where
+    field
+      a                 : Gen
+      insert            : Gen → Word Gen → Word Gen
+      insert-canonical  : (g : Gen) {w : Word Gen} →
+                          Canonical w → Canonical (insert g w)
+      canonical-to-Fin  : ∀ {w} → Canonical w → Fin n
+      Fin-to-canonical  : Fin n → Σ (Word Gen) Canonical
+      σ                 : Fin n → Fin n
+      action-of-a-is-σ  : ∀ {w} (c : Canonical w) →
+                          canonical-to-Fin (insert-canonical a c)
+                          ≡ σ (canonical-to-Fin c)
+      σ-aⁿ=ε            : HasOrderPerm σ n
 
-from-coxeter-fin-data :
-  ∀ {n}
-  (Gen : Set) (a : Gen) (Canonical : Word Gen → Set)
-  (insert : Gen → Word Gen → Word Gen)
-  (insert-canonical : (g : Gen) {w : Word Gen} →
-                      Canonical w → Canonical (insert g w))
-  (canonical-to-Fin : ∀ {w} → Canonical w → Fin n)
-  (Fin-to-canonical : Fin n → Σ (Word Gen) Canonical)
-  (σ : Fin n → Fin n)
-  (action-of-a-is-σ : ∀ {w} (c : Canonical w) →
-                      canonical-to-Fin (insert-canonical a c) ≡ σ (canonical-to-Fin c))
-  (σ-aⁿ=ε : HasOrderPerm σ n) →
-  CoxeterFinCapability n
-from-coxeter-fin-data Gen a Can insert insert-can c-to-Fin Fin-to-c σ act ord =
-  record
-    { Gen              = Gen
-    ; a                = a
-    ; Canonical        = Can
-    ; insert           = insert
-    ; insert-canonical = insert-can
-    ; canonical-to-Fin = c-to-Fin
-    ; Fin-to-canonical = Fin-to-c
-    ; σ                = σ
-    ; action-of-a-is-σ = act
-    ; σ-aⁿ=ε           = ord
-    }
+  ------------------------------------------------------------------------
+  -- from-coxeter-fin-data: take a Zₙ-Coxeter's data + a Zₙ-Coxeter-Fin's
+  -- bijection + action + σₙ-from-Cycleₙ, produce the capability record.
+  ------------------------------------------------------------------------
+
+  from-coxeter-fin-data :
+    ∀ {n}
+    (a : Gen)
+    (insert : Gen → Word Gen → Word Gen)
+    (insert-canonical : (g : Gen) {w : Word Gen} →
+                        Canonical w → Canonical (insert g w))
+    (canonical-to-Fin : ∀ {w} → Canonical w → Fin n)
+    (Fin-to-canonical : Fin n → Σ (Word Gen) Canonical)
+    (σ : Fin n → Fin n)
+    (action-of-a-is-σ : ∀ {w} (c : Canonical w) →
+                        canonical-to-Fin (insert-canonical a c) ≡ σ (canonical-to-Fin c))
+    (σ-aⁿ=ε : HasOrderPerm σ n) →
+    CoxeterFinCapability n
+  from-coxeter-fin-data a insert insert-can c-to-Fin Fin-to-c σ act ord =
+    record
+      { a                = a
+      ; insert           = insert
+      ; insert-canonical = insert-can
+      ; canonical-to-Fin = c-to-Fin
+      ; Fin-to-canonical = Fin-to-c
+      ; σ                = σ
+      ; action-of-a-is-σ = act
+      ; σ-aⁿ=ε           = ord
+      }
 
 ------------------------------------------------------------------------
 -- Per-Zₙ witnesses, one application each.
@@ -85,9 +87,9 @@ open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 import Substrate.Groups.Z2-Coxeter as Z₂
 import Substrate.Groups.Z2-Coxeter-Fin as Z₂-Fin
 
-cap-Z₂ : CoxeterFinCapability 2
-cap-Z₂ = from-coxeter-fin-data
-  Z₂.Gen Z₂.a Z₂.Canonical Z₂.insert Z₂.insert-canonical
+cap-Z₂ : CoxeterFinCapability Z₂.Gen Z₂.Canonical 2
+cap-Z₂ = from-coxeter-fin-data Z₂.Gen Z₂.Canonical
+  Z₂.a Z₂.insert Z₂.insert-canonical
   Z₂-Fin.canonical-to-Fin Z₂-Fin.Fin-to-canonical
   cyclic-suc Z₂-Fin.action-of-a-is-σ₂
   Z₂-Fin.σ₂-HasOrderPerm-from-Z2-Coxeter
@@ -95,9 +97,9 @@ cap-Z₂ = from-coxeter-fin-data
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z3-Coxeter-Fin as Z₃-Fin
 
-cap-Z₃ : CoxeterFinCapability 3
-cap-Z₃ = from-coxeter-fin-data
-  Z₃.Gen Z₃.a Z₃.Canonical Z₃.insert Z₃.insert-canonical
+cap-Z₃ : CoxeterFinCapability Z₃.Gen Z₃.Canonical 3
+cap-Z₃ = from-coxeter-fin-data Z₃.Gen Z₃.Canonical
+  Z₃.a Z₃.insert Z₃.insert-canonical
   Z₃-Fin.canonical-to-Fin Z₃-Fin.Fin-to-canonical
   cyclic-suc Z₃-Fin.action-of-a-is-σ₃
   Z₃-Fin.σ₃-HasOrderPerm-from-Z3-Coxeter
@@ -105,9 +107,9 @@ cap-Z₃ = from-coxeter-fin-data
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Z4-Coxeter-Fin as Z₄-Fin
 
-cap-Z₄ : CoxeterFinCapability 4
-cap-Z₄ = from-coxeter-fin-data
-  Z₄.Gen Z₄.a Z₄.Canonical Z₄.insert Z₄.insert-canonical
+cap-Z₄ : CoxeterFinCapability Z₄.Gen Z₄.Canonical 4
+cap-Z₄ = from-coxeter-fin-data Z₄.Gen Z₄.Canonical
+  Z₄.a Z₄.insert Z₄.insert-canonical
   Z₄-Fin.canonical-to-Fin Z₄-Fin.Fin-to-canonical
   cyclic-suc Z₄-Fin.action-of-a-is-σ₄
   Z₄-Fin.σ₄-HasOrderPerm-from-Z4-Coxeter
@@ -115,9 +117,9 @@ cap-Z₄ = from-coxeter-fin-data
 import Substrate.Groups.Z5-Coxeter as Z₅
 import Substrate.Groups.Z5-Coxeter-Fin as Z₅-Fin
 
-cap-Z₅ : CoxeterFinCapability 5
-cap-Z₅ = from-coxeter-fin-data
-  Z₅.Gen Z₅.a Z₅.Canonical Z₅.insert Z₅.insert-canonical
+cap-Z₅ : CoxeterFinCapability Z₅.Gen Z₅.Canonical 5
+cap-Z₅ = from-coxeter-fin-data Z₅.Gen Z₅.Canonical
+  Z₅.a Z₅.insert Z₅.insert-canonical
   Z₅-Fin.canonical-to-Fin Z₅-Fin.Fin-to-canonical
   cyclic-suc Z₅-Fin.action-of-a-is-σ₅
   Z₅-Fin.σ₅-HasOrderPerm-from-Z5-Coxeter
@@ -125,9 +127,9 @@ cap-Z₅ = from-coxeter-fin-data
 import Substrate.Groups.Z7-Coxeter as Z₇
 import Substrate.Groups.Z7-Coxeter-Fin as Z₇-Fin
 
-cap-Z₇ : CoxeterFinCapability 7
-cap-Z₇ = from-coxeter-fin-data
-  Z₇.Gen Z₇.a Z₇.Canonical Z₇.insert Z₇.insert-canonical
+cap-Z₇ : CoxeterFinCapability Z₇.Gen Z₇.Canonical 7
+cap-Z₇ = from-coxeter-fin-data Z₇.Gen Z₇.Canonical
+  Z₇.a Z₇.insert Z₇.insert-canonical
   Z₇-Fin.canonical-to-Fin Z₇-Fin.Fin-to-canonical
   cyclic-suc Z₇-Fin.action-of-a-is-σ₇
   Z₇-Fin.σ₇-HasOrderPerm-from-Z7-Coxeter

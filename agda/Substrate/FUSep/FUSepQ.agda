@@ -89,18 +89,22 @@ module _ (H : Set) where
   -- fin-obs = id; value-reflect = id (trivial once obs = id — the real content
   -- is bt-reflect in coin-obs). Then unit-id-on-finite: ≡ = ≈BT on finite BTs.
   ------------------------------------------------------------------
-  finSetoid : FUSepConv.EqSetoid BT
-  finSetoid = record { _≈_ = _≡_ ; refl≈ = refl ; sym≈ = ≡sym ; trans≈ = ≡trans }
+  -- ⟡set1-paydown: EqSetoid now parameterizes its relation (`EqSetoid C _≈_`), and
+  -- Adjunction carries the two relations as _≈ᶠ_/_≈ᶜ_ fields.
+  finSetoid : FUSepConv.EqSetoid BT _≡_
+  finSetoid = record { refl≈ = refl ; sym≈ = ≡sym ; trans≈ = ≡trans }
 
-  coinSetoid : FUSepConv.EqSetoid BT
-  coinSetoid = record { _≈_ = _≈BT_ ; refl≈ = ≈BT-refl ; sym≈ = ≈BT-sym ; trans≈ = ≈BT-trans }
+  coinSetoid : FUSepConv.EqSetoid BT _≈BT_
+  coinSetoid = record { refl≈ = ≈BT-refl ; sym≈ = ≈BT-sym ; trans≈ = ≈BT-trans }
 
   ≡⟹≈BT : ∀ {u v} → u ≡ v → u ≈BT v
   ≡⟹≈BT refl = ≈BT-refl
 
   adjBT : FUSepConv.Adjunction BT BT
   adjBT = record
-    { Fin      = finSetoid
+    { _≈ᶠ_     = _≡_
+    ; _≈ᶜ_     = _≈BT_
+    ; Fin      = finSetoid
     ; Coin     = coinSetoid
     ; obs      = λ x → x
     ; fwd      = ≡⟹≈BT

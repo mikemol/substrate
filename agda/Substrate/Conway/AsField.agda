@@ -41,18 +41,23 @@ open import Substrate.Conway.Distrib using (ConwayLeftDistributivity)
 -- record via mechanical glue.
 ------------------------------------------------------------------------
 
-record SurrealFieldObligation : Set₁ where
-  field
-    -- Addition operation + its obligations.
-    add            : ConwayAddType
-    add-comm       : ConwayAddCommutativity add
-    add-assoc      : ConwayAddAssociativity add
-    -- Order obligations.
-    order-trans    : ConwayOrderTransitivity
-    order-antisym  : ConwayOrderAntisymmetry
-    -- Multiplication operation + its distributivity.
-    mul            : ConwayMulType
-    distrib-left   : ConwayLeftDistributivity add mul
+-- ⟡set1-paydown: parameterize add, mul, and distrib-left. `distrib-left : ConwayLeftDistributivity
+-- add mul` is the sole Set₁ offender — ConwayLeftDistributivity is a `… → Set` obligation FAMILY
+-- (valued in Set). It depends on the `add`/`mul` operations, so those two operation fields must move
+-- to parameters alongside it. The remaining fields (the comm/assoc/order obligations) are all
+-- Set-valued, so the record lives in Set. Consumers write
+-- `SurrealFieldObligation add mul distrib-left`.
+module _ (add : ConwayAddType)
+         (mul : ConwayMulType)
+         (distrib-left : ConwayLeftDistributivity add mul) where
+  record SurrealFieldObligation : Set where
+    field
+      -- Addition obligations (over the parameterized `add`).
+      add-comm       : ConwayAddCommutativity add
+      add-assoc      : ConwayAddAssociativity add
+      -- Order obligations.
+      order-trans    : ConwayOrderTransitivity
+      order-antisym  : ConwayOrderAntisymmetry
 
 ------------------------------------------------------------------------
 -- 2. The Surreal-Field lift signature (deferred).

@@ -79,7 +79,9 @@ settled-ext = ~-refl (tail twos)
 ------------------------------------------------------------------------
 open import Substrate.Algebra.R.Trace.ExtruderObsCoalg using (ObservedAlgebra)
 
-module ObsIsBisim (O : ObservedAlgebra) where
+-- ⟡set1-paydown: ObservedAlgebra now parameterizes its carrier C, so this module
+-- threads C as a param (`ObservedAlgebra C`).
+module ObsIsBisim (C : Set) (O : ObservedAlgebra C) where
   open ObservedAlgebra O
 
   -- the ad-hoc ObsBisim.≋ on carrier C = Bisim._~_ on the ana (obsStream) images.

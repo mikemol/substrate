@@ -38,14 +38,15 @@ open import Substrate.Logic.Evidence.Verdict.NedgeShadow
 -- adjoint equivalence between them.
 ------------------------------------------------------------------------
 
-record Atlas : Set₁ where
-  field
-    Chart₊  : Set                          -- the additive / signed chart 𝔸
-    Chart×  : Set                          -- the multiplicative / semiring chart 𝕄
-    exp     : Chart₊ → Chart×
-    log     : Chart× → Chart₊
-    exp-log : (m : Chart×) → exp (log m) ≡ m   -- counit: lossless on 𝕄
-    log-exp : (a : Chart₊) → log (exp a) ≡ a   -- unit:   lossless on 𝔸
+-- ⟡set1-paydown: parameterize Chart₊, Chart× (the two chart carriers) out
+-- of the record so it lands in Set (was Set₁ because both were `field : Set`).
+module _ (Chart₊ Chart× : Set) where   -- Chart₊: additive/signed 𝔸; Chart×: multiplicative/semiring 𝕄
+  record Atlas : Set where
+    field
+      exp     : Chart₊ → Chart×
+      log     : Chart× → Chart₊
+      exp-log : (m : Chart×) → exp (log m) ≡ m   -- counit: lossless on 𝕄
+      log-exp : (a : Chart₊) → log (exp a) ≡ a   -- unit:   lossless on 𝔸
 
 open Atlas public
 
@@ -54,11 +55,9 @@ open Atlas public
 -- recode. A real, machine-checked instance — the discrete shadow of exp ⊣ log.
 ------------------------------------------------------------------------
 
-nedge-atlas : Atlas
+nedge-atlas : Atlas Evidence (Bool × Bool)
 nedge-atlas = record
-  { Chart₊  = Evidence
-  ; Chart×  = Bool × Bool
-  ; exp     = recode
+  { exp     = recode
   ; log     = unrecode
   ; exp-log = unrecode-recode
   ; log-exp = recode-unrecode

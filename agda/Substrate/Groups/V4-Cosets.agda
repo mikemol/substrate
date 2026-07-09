@@ -194,27 +194,28 @@ coset-stab-rep-unique X σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ�
 -- explicitly constructing the quotient group.
 ------------------------------------------------------------------------
 
-record S₄/V₄-↔-Stab (X : Axis) : Set₁ where
-  field
-    -- The equivalence relation on S_4 (anchor-independent).
-    _∼_ : Permutation → Permutation → Set
+-- ⟡set1-paydown: parameterize the equivalence relation
+-- `_∼_ : Permutation → Permutation → Set` (the Set-valued field, the Set₁
+-- source) out of the record; it becomes a module parameter alongside the
+-- anchor X and the record lands in Set. Consumers write `S₄/V₄-↔-Stab X _∼_`.
+module _ (X : Axis) (_∼_ : Permutation → Permutation → Set) where
+  record S₄/V₄-↔-Stab : Set where
+    field
+      -- Every σ has a Stab(X) representative in its coset.
+      rep : (σ : Permutation) →
+            Σ Permutation (λ τ → Stab X τ × σ ∼ τ)
 
-    -- Every σ has a Stab(X) representative in its coset.
-    rep : (σ : Permutation) →
-          Σ Permutation (λ τ → Stab X τ × σ ∼ τ)
+      -- The Stab(X) representative is unique up to pointwise
+      -- equivalence.
+      rep-unique :
+        (σ τ₁ τ₂ : Permutation) →
+        Stab X τ₁ → Stab X τ₂ →
+        σ ∼ τ₁ → σ ∼ τ₂ →
+        τ₁ ≈ τ₂
 
-    -- The Stab(X) representative is unique up to pointwise
-    -- equivalence.
-    rep-unique :
-      (σ τ₁ τ₂ : Permutation) →
-      Stab X τ₁ → Stab X τ₂ →
-      σ ∼ τ₁ → σ ∼ τ₂ →
-      τ₁ ≈ τ₂
-
-S₄/V₄-↔-Stab-bijection : (X : Axis) → S₄/V₄-↔-Stab X
+S₄/V₄-↔-Stab-bijection : (X : Axis) → S₄/V₄-↔-Stab X _∼V₄_
 S₄/V₄-↔-Stab-bijection X = record
-  { _∼_        = _∼V₄_
-  ; rep        = coset-has-stab-rep X
+  { rep        = coset-has-stab-rep X
   ; rep-unique = coset-stab-rep-unique X
   }
 

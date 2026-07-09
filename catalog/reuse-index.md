@@ -507,7 +507,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `IsLinearAdjunction` | record | `Substrate.Category.Adjunction` | characterised cyclic / composite torsion. |
 | `Iso` | record | `Substrate.FUSep.FUSepQConfluence` | ⟡FU-sep-Q-confluence: the SAME node bucket with TWO |
 | `IsomorphicCocycleStructure` | record | `Substrate.Cocycle` | substrate-native. |
-| `IsomorphicCocycleStructureᴳ` | record | `Substrate.Algebra.IsomorphicCocycle` | Substrate-native IsomorphicCocycleStructureᴳ: the primary cocycle |
+| `IsomorphicCocycleStructureᴳ` | record | `Substrate.Algebra.IsomorphicCocycle` | all three force Set₁. Moving them (and Gauge, which depends on GaugeCarrier) |
 | `IsPushoutCocone` | record | `Substrate.Category.Pushout` | a pair of maps |
 | `IsSetoidCategory` | record | `Substrate.Category.UniversalProperty.ExtrudeSetoidCategory` | a SMALL setoid-enriched category: the objects, |
 | `IsSetoidMonad` | record | `Substrate.Category.UniversalProperty.ExtrudeIOMonadRecord` | IO as a SMALL setoid-enriched MONAD record, on |
@@ -651,7 +651,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `Pipe` | data | `Substrate.Realizability.Charter` | a typed cons-list of flag-gates (`Chain`, the same |
 | `PlancherelTheorem` | record | `Substrate.Category.DiscreteFourierTransform` | PD8-PD20: discrete Fourier transform formalised at the categorical |
 | `PLL` | record | `Substrate.Category.PhaseLockedLoop.PLL` | was : Set₁ |
-| `PLLBank` | record | `Substrate.Category.PhaseLockedLoop.Bank.PLLBank` | was : Set₂ |
+| `PLLBank` | record | `Substrate.Category.PhaseLockedLoop.Bank.PLLBank` | was : Set₁ |
 | `Point` | data | `Substrate.Algebra.F2.FanoPlane` | the Fano plane: the projectivization of F₂³. Carries 7 |
 | `PointedSet` | record | `Substrate.Algebra.PointedSet` | F1m1 of the F₁-modules-as-pointed-sets arc per |
 | `PointedSetMap` | record | `Substrate.Algebra.PointedSet.Map` | this only threads the carrier index. |
@@ -786,7 +786,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `SufficientStatistic` | record | `Substrate.Probability.MarkovCategory` | MK3-MK10: the substrate's first-class Markov category primitive. |
 | `SufficientStatisticInfoTheory` | record | `Substrate.Probability.BaezFritzLeinster` | IG13-IG20: Baez-Fritz-Leinster characterization of entropy + |
 | `Sumti` | data | `Substrate.Lojban.Fragment.Carriers` | names + descriptors. Real Lojban has richer sumti |
-| `SurrealFieldObligation` | record | `Substrate.Conway.AsField` | G9 of the Conway game-induction tower per |
+| `SurrealFieldObligation` | record | `Substrate.Conway.AsField` | ConwayLeftDistributivity is a `… → Set` obligation FAMILY |
 | `SurrealFinite` | data | `Substrate.Conway.SurrealFinite` | S1 of the Surreal-numbers arc per [scratch/surreal_arc_plan.md]. |
 | `Susp` | record | `Substrate.S5.S5Carrier` | ⟡N1b-Type. The kernel's verdict RETYPED so the value\|suspended |
 | `SylowClass` | data | `Substrate.Category.AtlasOfProbes` | Sylow-theoretic prediction confirmed. |

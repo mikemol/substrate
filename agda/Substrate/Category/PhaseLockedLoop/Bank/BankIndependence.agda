@@ -10,7 +10,11 @@
 
 module Substrate.Category.PhaseLockedLoop.Bank.BankIndependence where
 
+open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Category.PhaseLockedLoop.Bank.PLLBank using (PLLBank)
 
-record BankIndependence (bank : PLLBank) : Set where
-  no-eta-equality
+-- ⟡set1-paydown: PLLBank now parameterizes its Reference/VCOState carrier families,
+-- so this module threads them as params (`PLLBank Reference VCOState`).
+module _ (Reference VCOState : ℕ → Set) where
+  record BankIndependence (bank : PLLBank Reference VCOState) : Set where
+    no-eta-equality

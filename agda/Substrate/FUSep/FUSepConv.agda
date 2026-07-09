@@ -39,9 +39,12 @@ private
 -- threading; the coincidence below takes TWO setoids over one carrier (the
 -- finite ≈ side and the coinductive ≋ side) plus an observation.
 ------------------------------------------------------------------------
-record EqSetoid (C : Set) : Set₁ where      -- cluster-local bundled setoid (refl≈/sym≈/trans≈); distinct-shape from Algebra.Setoid, pinned
+-- ⟡set1-paydown: parameterize the relation _≈_ : C → C → Set out of the record
+-- (substrate stance: the carrier AND its relation are params, never fields). C was
+-- already a record param; _≈_ joins it, so the record drops from Set₁ to Set.
+-- Consumers write `EqSetoid C _≈_`; projection calls (`trans≈ Fin`) are unchanged.
+record EqSetoid (C : Set) (_≈_ : C → C → Set) : Set where  -- cluster-local bundled setoid (refl≈/sym≈/trans≈); distinct-shape from Algebra.Setoid, pinned
   field
-    _≈_   : C → C → Set
     refl≈ : ∀ {a} → a ≈ a
     sym≈  : ∀ {a b} → a ≈ b → b ≈ a
     trans≈ : ∀ {a b c} → a ≈ b → b ≈ c → a ≈ c
@@ -55,21 +58,23 @@ open EqSetoid public
 --   fwd  : the UNIT's forward leg — Fin ⟹ Coin (= ObsBisim.≈⟹≋ = ana, ADD 100).
 --   coin-obs : Coin's head projection (= ObsBisim.obs-eq — same value ⟹ same head).
 ------------------------------------------------------------------------
+-- ⟡set1-paydown (consumer of EqSetoid): EqSetoid now parameterizes its relation,
+-- so the two per-side relations _≈ᶠ_/_≈ᶜ_ move into Adjunction as explicit fields
+-- (they were previously read back via `_≈_ Fin` / `_≈_ Coin` projections).
 record Adjunction (C : Set) (Obs : Set) : Set₁ where
   field
-    Fin      : EqSetoid C
-    Coin     : EqSetoid C
+    _≈ᶠ_     : C → C → Set     -- finite (conversion) relation — Fin's carrier-relation
+    _≈ᶜ_     : C → C → Set     -- coinductive (bisimilarity) relation — Coin's
+    Fin      : EqSetoid C _≈ᶠ_
+    Coin     : EqSetoid C _≈ᶜ_
     obs      : C → Obs
-    fwd      : ∀ {a b} → _≈_ Fin a b → _≈_ Coin a b
-    coin-obs : ∀ {a b} → _≈_ Coin a b → obs a ≡ obs b
+    fwd      : ∀ {a b} → a ≈ᶠ b → a ≈ᶜ b
+    coin-obs : ∀ {a b} → a ≈ᶜ b → obs a ≡ obs b
     -- obs respects the finite equality (the head-invariant on the ℚ side).
-    fin-obs  : ∀ {a b} → _≈_ Fin a b → obs a ≡ obs b
+    fin-obs  : ∀ {a b} → a ≈ᶠ b → obs a ≡ obs b
 
 module _ {C Obs : Set} (A : Adjunction C Obs) where
-  open Adjunction A
-  private
-    _≈ᶠ_ = _≈_ Fin      -- finite (conversion)
-    _≈ᶜ_ = _≈_ Coin     -- coinductive (bisimilarity)
+  open Adjunction A       -- brings _≈ᶠ_ / _≈ᶜ_ (now Adjunction fields) into scope
 
   --------------------------------------------------------------------
   -- THE FINITE IMAGE (the ℚ side): a term REACHES A VALUE = converts (finitely)

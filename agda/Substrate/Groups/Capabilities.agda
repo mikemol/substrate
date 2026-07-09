@@ -67,6 +67,10 @@ open import Substrate.Groups.Capabilities.Strict2Monoid    public
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
+-- ⟡set1-paydown: CoxeterFinCapability now takes (Gen : Set)(Canonical : Word Gen → Set)
+-- as parameters; the `Provides` cell existentializes BOTH (Σ Set / Σ (Word Gen → Set)),
+-- exactly as the strict2Monoid cell already existentializes its Set carrier.
+open import Substrate.Groups.Coxeter.Word using (Word)
 
 ------------------------------------------------------------------------
 -- Lifted ⊤ at Set₁ for gap cells (capability records live at Set₁).
@@ -98,31 +102,31 @@ data CapabilityTag : Set where
 Provides : ZnInstance → CapabilityTag → Set₁
 
 -- Z₂: all four genericized capabilities filled (Slice 6).
-Provides Z₂ coxeterFin    = CoxeterFinCapability 2
+Provides Z₂ coxeterFin    = Σ Set (λ Gen → Σ (Word Gen → Set) (λ Canonical → CoxeterFinCapability Gen Canonical 2))
 Provides Z₂ xFreeCyclic   = xFreeCyclicCapability
 Provides Z₂ phaseProj     = PhaseProjectionCapability
 Provides Z₂ strict2Monoid = Σ Set Strict2MonoidCapability
 
 -- Z₃: all four genericized capabilities filled.
-Provides Z₃ coxeterFin    = CoxeterFinCapability 3
+Provides Z₃ coxeterFin    = Σ Set (λ Gen → Σ (Word Gen → Set) (λ Canonical → CoxeterFinCapability Gen Canonical 3))
 Provides Z₃ xFreeCyclic   = xFreeCyclicCapability
 Provides Z₃ phaseProj     = PhaseProjectionCapability
 Provides Z₃ strict2Monoid = Σ Set Strict2MonoidCapability
 
 -- Z₄: all four genericized capabilities filled.
-Provides Z₄ coxeterFin    = CoxeterFinCapability 4
+Provides Z₄ coxeterFin    = Σ Set (λ Gen → Σ (Word Gen → Set) (λ Canonical → CoxeterFinCapability Gen Canonical 4))
 Provides Z₄ xFreeCyclic   = xFreeCyclicCapability
 Provides Z₄ phaseProj     = PhaseProjectionCapability
 Provides Z₄ strict2Monoid = Σ Set Strict2MonoidCapability
 
 -- Z₅: all four genericized capabilities filled.
-Provides Z₅ coxeterFin    = CoxeterFinCapability 5
+Provides Z₅ coxeterFin    = Σ Set (λ Gen → Σ (Word Gen → Set) (λ Canonical → CoxeterFinCapability Gen Canonical 5))
 Provides Z₅ xFreeCyclic   = xFreeCyclicCapability
 Provides Z₅ phaseProj     = PhaseProjectionCapability
 Provides Z₅ strict2Monoid = Σ Set Strict2MonoidCapability
 
 -- Z₇: all four genericized capabilities filled (Slice 5).
-Provides Z₇ coxeterFin    = CoxeterFinCapability 7
+Provides Z₇ coxeterFin    = Σ Set (λ Gen → Σ (Word Gen → Set) (λ Canonical → CoxeterFinCapability Gen Canonical 7))
 Provides Z₇ xFreeCyclic   = xFreeCyclicCapability
 Provides Z₇ phaseProj     = PhaseProjectionCapability
 Provides Z₇ strict2Monoid = Σ Set Strict2MonoidCapability
@@ -140,27 +144,27 @@ Provides Z₇ strict2Monoid = Σ Set Strict2MonoidCapability
 
 complete : (n : ZnInstance) (c : CapabilityTag) → Provides n c
 -- Z₂ row (filled)
-complete Z₂ coxeterFin    = coxeterFin-Z₂
+complete Z₂ coxeterFin    = (_ , _ , coxeterFin-Z₂)
 complete Z₂ xFreeCyclic   = xFreeCyclic-Z₂
 complete Z₂ phaseProj     = phaseProj-Z₂
 complete Z₂ strict2Monoid = (_ , strict2Monoid-Z₂)
 -- Z₃ row (filled)
-complete Z₃ coxeterFin    = coxeterFin-Z₃
+complete Z₃ coxeterFin    = (_ , _ , coxeterFin-Z₃)
 complete Z₃ xFreeCyclic   = xFreeCyclic-Z₃
 complete Z₃ phaseProj     = phaseProj-Z₃
 complete Z₃ strict2Monoid = (_ , strict2Monoid-Z₃)
 -- Z₄ row (filled)
-complete Z₄ coxeterFin    = coxeterFin-Z₄
+complete Z₄ coxeterFin    = (_ , _ , coxeterFin-Z₄)
 complete Z₄ xFreeCyclic   = xFreeCyclic-Z₄
 complete Z₄ phaseProj     = phaseProj-Z₄
 complete Z₄ strict2Monoid = (_ , strict2Monoid-Z₄)
 -- Z₅ row (filled)
-complete Z₅ coxeterFin    = coxeterFin-Z₅
+complete Z₅ coxeterFin    = (_ , _ , coxeterFin-Z₅)
 complete Z₅ xFreeCyclic   = xFreeCyclic-Z₅
 complete Z₅ phaseProj     = phaseProj-Z₅
 complete Z₅ strict2Monoid = (_ , strict2Monoid-Z₅)
 -- Z₇ row (filled)
-complete Z₇ coxeterFin    = coxeterFin-Z₇
+complete Z₇ coxeterFin    = (_ , _ , coxeterFin-Z₇)
 complete Z₇ xFreeCyclic   = xFreeCyclic-Z₇
 complete Z₇ phaseProj     = phaseProj-Z₇
 complete Z₇ strict2Monoid = (_ , strict2Monoid-Z₇)
