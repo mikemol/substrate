@@ -27,10 +27,11 @@ open import Substrate.Algebra.SetoidGroup.Action public
 -- IsTorsor — SetoidGroup-parametric.
 ------------------------------------------------------------------------
 
-record IsTorsor (G : SetoidGroup) (T : Set) : Set where      -- ⟦shape:8ffbc99a action,(g,(t₁ t₂⟧
+record IsTorsor (Carrier : Set) (_≈_ : Carrier → Carrier → Set)
+                (G : SetoidGroup Carrier _≈_) (T : Set) : Set where      -- ⟦shape:8ffbc99a action,(g,(t₁ t₂⟧
   open SetoidGroup G
   field
-    action     : Action G T
+    action     : Action Carrier _≈_ G T
     free       :
       (g : Carrier) (t : T) →
       act action g t ≡ t →
@@ -48,11 +49,11 @@ open IsTorsor public
 record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:ffdd236e Invariant,Gauge,Fiber⟧
   field
     Invariant    : Set
-    Gauge        : SetoidGroup
+    GaugeCarrier : Set
+    GaugeRel     : GaugeCarrier → GaugeCarrier → Set
+    Gauge        : SetoidGroup GaugeCarrier GaugeRel
     Fiber        : Invariant → Set
-    fiber-torsor : (i : Invariant) → IsTorsor Gauge (Fiber i)
-
-  open SetoidGroup Gauge using () renaming (Carrier to GaugeCarrier)
+    fiber-torsor : (i : Invariant) → IsTorsor GaugeCarrier GaugeRel Gauge (Fiber i)
 
   TotalSpace : Set
   TotalSpace = Σ Invariant Fiber
@@ -66,13 +67,15 @@ record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:ffdd236e Invar
 
 record WeakCocycleStructure : Set₁ where
   field
-    Base      : Set
-    Gauge     : SetoidGroup
-    action-w  : Action Gauge Base
-    Invariant : Set
-    project   : Base → Invariant
+    Base         : Set
+    GaugeCarrier : Set
+    GaugeRel     : GaugeCarrier → GaugeCarrier → Set
+    Gauge        : SetoidGroup GaugeCarrier GaugeRel
+    action-w     : Action GaugeCarrier GaugeRel Gauge Base
+    Invariant    : Set
+    project      : Base → Invariant
     project-gauge-invariant :
-      (g : SetoidGroup.Carrier Gauge) (b : Base) →
+      (g : GaugeCarrier) (b : Base) →
       project (act action-w g b) ≡ project b
 
 ------------------------------------------------------------------------
@@ -81,7 +84,10 @@ record WeakCocycleStructure : Set₁ where
 
 module Downcast (𝒞 : IsomorphicCocycleStructure) where
   open IsomorphicCocycleStructure 𝒞
-  open SetoidGroup Gauge using () renaming (Carrier to ∣G∣; ε to εG; _∙_ to _·G_)
+  open SetoidGroup Gauge using () renaming (ε to εG; _∙_ to _·G_)
+
+  ∣G∣ : Set
+  ∣G∣ = GaugeCarrier
 
   total-act : ∣G∣ → TotalSpace → TotalSpace
   total-act g (i , t) = i , act (action (fiber-torsor i)) g t
@@ -96,7 +102,7 @@ module Downcast (𝒞 : IsomorphicCocycleStructure) where
   total-act-∙ g h (i , t) =
     cong (i ,_) (act-∙ (action (fiber-torsor i)) g h t)
 
-  total-action : Action Gauge TotalSpace
+  total-action : Action GaugeCarrier GaugeRel Gauge TotalSpace
   total-action = record
     { act    = total-act
     ; act-id = total-act-id
@@ -111,6 +117,8 @@ module Downcast (𝒞 : IsomorphicCocycleStructure) where
   weak : WeakCocycleStructure
   weak = record
     { Base                    = TotalSpace
+    ; GaugeCarrier            = GaugeCarrier
+    ; GaugeRel                = GaugeRel
     ; Gauge                   = Gauge
     ; action-w                = total-action
     ; Invariant               = Invariant

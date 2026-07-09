@@ -53,20 +53,21 @@ open import Substrate.WitnessTower.WhyThreeV2 using (rotate-on-α; rotate-on-β;
 --    below it. Recorded as the identity of the whole-tower object.
 ------------------------------------------------------------------------
 
-whole-tower : SetoidGroup
+-- (carrier + relation now live in the SetoidGroup type; let them be
+-- inferred from S₄-Group rather than named here.)
 whole-tower = S₄-Group
 
 whole-tower-is-S₄ : whole-tower ≡ S₄-Group
 whole-tower-is-S₄ = refl
 
 -- the rungs as the factors (each presupposed by the one above):
-apex-V₄    : SetoidGroup
+apex-V₄    : SetoidGroup V4.V₄ _≡_        -- carrier is the V₄ the three V₂ links live on
 apex-V₄    = to-setoid V4.V₄-Group       -- rung-3 contribution (the links)
-triangle-edge-S₃ : SetoidGroup
 triangle-edge-S₃ = S₃.S₃-Group           -- = Z₃ ⋊ Z₂, rungs 2 and 1
 
--- the apex factor's carrier is the V₄ the three V₂ links live on:
-apex-carrier-is-V₄ : SetoidGroup.Carrier apex-V₄ ≡ V4.V₄
+-- the apex factor's carrier is the V₄ the three V₂ links live on —
+-- now manifest in apex-V₄'s type (SetoidGroup V4.V₄ _≡_):
+apex-carrier-is-V₄ : V4.V₄ ≡ V4.V₄
 apex-carrier-is-V₄ = refl
 
 ------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 -- (instead of stdlib Algebra.Bundles.Group). All stdlib imports
 -- removed.
 --
--- Carrier:    N.Carrier × H.Carrier
+-- Carrier:    N-Carrier × H-Carrier
 -- _≈_:        Pointwise N._≈_ H._≈_
 -- _∙_:        (n₁, h₁) · (n₂, h₂) = (n₁ ∙ₙ act h₁ n₂, h₁ ∙ₕ h₂)
 -- ε:          (ε_N, ε_H)
@@ -22,8 +22,10 @@ open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
 module Substrate.Groups.Coxeter.SemidirectProductGroup
-  (G-N : SetoidGroup)
-  (G-H : SetoidGroup)
+  (N-Carrier : Set) (_≈N_ : N-Carrier → N-Carrier → Set)
+  (G-N : SetoidGroup N-Carrier _≈N_)
+  (H-Carrier : Set) (_≈H_ : H-Carrier → H-Carrier → Set)
+  (G-H : SetoidGroup H-Carrier _≈H_)
   where
 
 private
@@ -35,15 +37,15 @@ private
 ------------------------------------------------------------------------
 
 module WithAction
-  (act : H.Carrier → N.Carrier → N.Carrier)
+  (act : H-Carrier → N-Carrier → N-Carrier)
   (act-cong :
     ∀ {h₁ h₂ n₁ n₂} →
-    (h₁ H.≈ h₂) → (n₁ N.≈ n₂) → act h₁ n₁ N.≈ act h₂ n₂)
-  (act-ε   : ∀ n → act H.ε n N.≈ n)
-  (act-∙   : ∀ h₁ h₂ n → act (h₁ H.∙ h₂) n N.≈ act h₁ (act h₂ n))
+    (h₁ ≈H h₂) → (n₁ ≈N n₂) → act h₁ n₁ ≈N act h₂ n₂)
+  (act-ε   : ∀ n → act H.ε n ≈N n)
+  (act-∙   : ∀ h₁ h₂ n → act (h₁ H.∙ h₂) n ≈N act h₁ (act h₂ n))
   (act-hom : ∀ h n₁ n₂ →
-    (act h (n₁ N.∙ n₂)) N.≈ ((act h n₁) N.∙ (act h n₂)))
-  (act-ε-N : ∀ h → act h N.ε N.≈ N.ε)
+    (act h (n₁ N.∙ n₂)) ≈N ((act h n₁) N.∙ (act h n₂)))
+  (act-ε-N : ∀ h → act h N.ε ≈N N.ε)
   where
 
   ------------------------------------------------------------------
@@ -51,10 +53,10 @@ module WithAction
   ------------------------------------------------------------------
 
   Carrier : Set
-  Carrier = N.Carrier × H.Carrier
+  Carrier = N-Carrier × H-Carrier
 
   _≈_ : Carrier → Carrier → Set
-  (n₁ , h₁) ≈ (n₂ , h₂) = (n₁ N.≈ n₂) × (h₁ H.≈ h₂)
+  (n₁ , h₁) ≈ (n₂ , h₂) = (n₁ ≈N n₂) × (h₁ ≈H h₂)
 
   infixl 7 _∙_
   _∙_ : Carrier → Carrier → Carrier
@@ -150,11 +152,9 @@ module WithAction
   -- 7. Assemble the SetoidGroup.
   ------------------------------------------------------------------
 
-  SetoidGroup-bundle : SetoidGroup
+  SetoidGroup-bundle : SetoidGroup Carrier _≈_
   SetoidGroup-bundle = record
-    { Carrier   = Carrier
-    ; _≈_       = _≈_
-    ; _∙_       = _∙_
+    { _∙_       = _∙_
     ; ε         = ε
     ; _⁻¹       = _⁻¹
     ; ≈-refl    = ≈-refl
@@ -170,7 +170,7 @@ module WithAction
     }
 
   -- Backward-compat alias.
-  Group-bundle : SetoidGroup
+  Group-bundle : SetoidGroup Carrier _≈_
   Group-bundle = SetoidGroup-bundle
 
   ------------------------------------------------------------------
@@ -178,17 +178,17 @@ module WithAction
   ------------------------------------------------------------------
 
   N-normal-in-SP :
-    (g : Carrier) (n : N.Carrier) →
-    Σ N.Carrier (λ n' → ((g ∙ (n , H.ε)) ∙ (g ⁻¹)) ≈ (n' , H.ε))
+    (g : Carrier) (n : N-Carrier) →
+    Σ N-Carrier (λ n' → ((g ∙ (n , H.ε)) ∙ (g ⁻¹)) ≈ (n' , H.ε))
   N-normal-in-SP (n₀ , h₀) n =
     (n₀ N.∙ act h₀ n) N.∙ (n₀ N.⁻¹) , (n-eq , h-eq)
     where
-      h-eq : ((h₀ H.∙ H.ε) H.∙ (h₀ H.⁻¹)) H.≈ H.ε
+      h-eq : ((h₀ H.∙ H.ε) H.∙ (h₀ H.⁻¹)) ≈H H.ε
       h-eq = H.≈-trans (H.∙-cong (H.ε-right h₀) (H.≈-refl (h₀ H.⁻¹)))
                        (H.inv-right h₀)
 
       collapse :
-        act (h₀ H.∙ H.ε) (act (h₀ H.⁻¹) (n₀ N.⁻¹)) N.≈ (n₀ N.⁻¹)
+        act (h₀ H.∙ H.ε) (act (h₀ H.⁻¹) (n₀ N.⁻¹)) ≈N (n₀ N.⁻¹)
       collapse =
         N.≈-trans (N.≈-sym (act-∙ (h₀ H.∙ H.ε) (h₀ H.⁻¹) (n₀ N.⁻¹)))
         (N.≈-trans (act-cong h-eq (N.≈-refl (n₀ N.⁻¹)))
@@ -197,5 +197,5 @@ module WithAction
       n-eq :
         ((n₀ N.∙ act h₀ n) N.∙
           act (h₀ H.∙ H.ε) (act (h₀ H.⁻¹) (n₀ N.⁻¹)))
-        N.≈ ((n₀ N.∙ act h₀ n) N.∙ (n₀ N.⁻¹))
+        ≈N ((n₀ N.∙ act h₀ n) N.∙ (n₀ N.⁻¹))
       n-eq = N.∙-cong (N.≈-refl (n₀ N.∙ act h₀ n)) collapse

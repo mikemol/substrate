@@ -17,7 +17,8 @@ module Substrate.Algebra.SetoidGroup.Action where
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
-record Action (G : SetoidGroup) (B : Set) : Set where      -- ⟦shape:2f58ed86 act,act-id,(g h⟧
+record Action (Carrier : Set) (_≈_ : Carrier → Carrier → Set)
+              (G : SetoidGroup Carrier _≈_) (B : Set) : Set where  -- ⟦shape:2f58ed86 act,act-id,(g h⟧
   open SetoidGroup G
   field
     act     : Carrier → B → B

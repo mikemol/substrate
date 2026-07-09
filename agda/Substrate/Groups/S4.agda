@@ -23,5 +23,5 @@ open import Substrate.Groups.Symmetric Axis public
 
 -- Alias the bundled SetoidGroup as S₄-Group for backwards
 -- compatibility with downstream importers.
-S₄-Group : SetoidGroup
+S₄-Group : SetoidGroup Permutation _≈_
 S₄-Group = Symmetric-Group

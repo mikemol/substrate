@@ -21,6 +21,8 @@
 module Substrate.Cocycles.V4Signature.CY5 where
 
 open import Substrate.Cocycle using (IsomorphicCocycleStructure)
+open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type  using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid  using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.Fiber          using (Fiber; fiber-torsor)
@@ -28,6 +30,8 @@ open import Substrate.Cocycles.V4Signature.Fiber          using (Fiber; fiber-to
 CY5-V4Signature : IsomorphicCocycleStructure
 CY5-V4Signature = record
   { Invariant    = OrbitKey
+  ; GaugeCarrier = V₄
+  ; GaugeRel     = _≡_
   ; Gauge        = V₄-Group-Setoid
   ; Fiber        = Fiber
   ; fiber-torsor = fiber-torsor

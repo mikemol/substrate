@@ -30,5 +30,5 @@ module _ {n : ℕ} where
 
   open Sym (Fin n) public hiding (Permutation)
 
-  S-Group : SetoidGroup
+  S-Group : SetoidGroup (Permutation n) _≈_
   S-Group = Symmetric-Group

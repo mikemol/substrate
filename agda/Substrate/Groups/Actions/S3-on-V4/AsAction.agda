@@ -33,7 +33,7 @@ open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon using (act-ε)
 open import Substrate.Groups.Actions.S3-on-V4.Composition.ActDot using (act-∙)
 
 -- S₃ acts on V₄: the bundled action. Fields are exactly the arc's lemmas.
-S₃-acts-on-V₄ : Action S₃.S₃-Group V₄
+S₃-acts-on-V₄ : Action S₃.Carrier S₃._≈_ S₃.S₃-Group V₄
 S₃-acts-on-V₄ = record
   { act    = act
   ; act-id = act-ε

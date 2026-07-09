@@ -741,7 +741,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `SequentType` | record | `Substrate.Pipeline.Sequent.SequentType` | SequentType: the signature of a sequent (A → B as a record). |
 | `Setoid` | record | `Substrate.Algebra.Setoid` | Set1 of the Setoid sibling tower per [scratch/m_mod_arc_plan.md] |
 | `SetoidFunctor` | record | `Substrate.Category.UniversalProperty.ExtrudeSetoidFunctor` | SMALL functors and natural transformations |
-| `SetoidGroup` | record | `Substrate.Algebra.SetoidGroup` | A group structure carried by a Setoid (i.e., the underlying type has |
+| `SetoidGroup` | record | `Substrate.Algebra.SetoidGroup` | both are Set-valued |
 | `SetoidMap` | record | `Substrate.Algebra.Setoid.Map` | Set2 of the Setoid sibling tower per [scratch/m_mod_arc_plan.md]. |
 | `SetoidNaturalTransformation` | record | `Substrate.Category.UniversalProperty.ExtrudeSetoidFunctor` | SMALL functors and natural transformations |
 | `Sheaf` | record | `Substrate.Category.Sheaf` | S1 of the S-arc. Sheaf primitive: presheaf on a site satisfying the |

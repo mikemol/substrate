@@ -29,11 +29,9 @@ open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 -- The coercion.
 ------------------------------------------------------------------------
 
-to-setoid : {A : Set} → Group A → SetoidGroup
+to-setoid : {A : Set} → Group A → SetoidGroup A _≡_
 to-setoid {A} G = record
-  { Carrier   = A
-  ; _≈_       = _≡_
-  ; _∙_       = Magma._·_ (magma (semigroup (monoid G)))
+  { _∙_       = Magma._·_ (magma (semigroup (monoid G)))
   ; ε         = ε (monoid G)
   ; _⁻¹       = inv G
   ; ≈-refl    = λ _ → refl

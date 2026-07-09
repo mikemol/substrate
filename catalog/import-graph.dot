@@ -8057,6 +8057,8 @@ digraph imports {
   "Substrate.Cocycles.V4Signature.CY5" -> "Substrate.Cocycles.V4Signature.Fiber";
   "Substrate.Cocycles.V4Signature.CY5" -> "Substrate.Cocycles.V4Signature.OrbitKey.Type";
   "Substrate.Cocycles.V4Signature.CY5" -> "Substrate.Cocycles.V4Signature.V4GroupSetoid";
+  "Substrate.Cocycles.V4Signature.CY5" -> "Substrate.Foundation.Eq";
+  "Substrate.Cocycles.V4Signature.CY5" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Cocycles.V4Signature.Chirality.Structural" -> "Substrate.Algebra.F2";
   "Substrate.Cocycles.V4Signature.Chirality.Structural" -> "Substrate.Cocycles.V4Signature.Chirality.Type";
   "Substrate.Cocycles.V4Signature.Chirality.Structural" -> "Substrate.Foundation.Eq";
@@ -8317,6 +8319,7 @@ digraph imports {
   "Substrate.Cocycles.V4Signature.Fiber" -> "Substrate.Cocycles.V4Signature.OrbitKey.Type";
   "Substrate.Cocycles.V4Signature.Fiber" -> "Substrate.Cocycles.V4Signature.V4GroupSetoid";
   "Substrate.Cocycles.V4Signature.Fiber" -> "Substrate.Cocycles.V4Signature.V4IsTorsor";
+  "Substrate.Cocycles.V4Signature.Fiber" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.Fiber" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Cocycles.V4Signature.OrbitKey-S3.Cycle3" -> "Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition";
   "Substrate.Cocycles.V4Signature.OrbitKey-S3.Cycle3" -> "Substrate.Foundation.Fin";
@@ -8506,11 +8509,13 @@ digraph imports {
   "Substrate.Cocycles.V4Signature.S4Iso.StabElements" -> "Substrate.Groups.Symmetric";
   "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Algebra.SetoidGroup.Action";
   "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Cocycles.V4Signature.V4GroupSetoid";
+  "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Groups.V4.Axioms";
   "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Cocycles.V4Signature.V4ActsOnItself" -> "Substrate.Groups.V4.Operations";
   "Substrate.Cocycles.V4Signature.V4GroupSetoid" -> "Substrate.Algebra.Group.ToSetoid";
   "Substrate.Cocycles.V4Signature.V4GroupSetoid" -> "Substrate.Algebra.SetoidGroup";
+  "Substrate.Cocycles.V4Signature.V4GroupSetoid" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.V4GroupSetoid" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Cocycles.V4Signature.V4GroupSetoid" -> "Substrate.Groups.V4.Bundle";
   "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Cocycle";
@@ -8518,6 +8523,7 @@ digraph imports {
   "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Cocycles.V4Signature.V4GroupSetoid";
   "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Cocycles.V4Signature.V4LeftCancel";
   "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Cocycles.V4Signature.V4Transitive";
+  "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.V4IsTorsor" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Cocycles.V4Signature.V4LeftCancel" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.V4LeftCancel" -> "Substrate.Groups.V4.Bijection";
@@ -8638,7 +8644,6 @@ digraph imports {
   "Substrate.Conway.OrderTrans" -> "Substrate.Foundation.Nat";
   "Substrate.Conway.SurrealFinite" -> "Substrate.Foundation.Nat";
   "Substrate.Conway.SurrealFinite" -> "Substrate.Groups.Coxeter.Word";
-  "Substrate.Discipline" -> "Substrate.Algebra.SetoidGroup";
   "Substrate.Discipline" -> "Substrate.Algebra.SetoidGroup.Action";
   "Substrate.Discipline" -> "Substrate.Cocycle";
   "Substrate.Discipline" -> "Substrate.Cocycles.F2CubedPuncturing";
@@ -9886,6 +9891,7 @@ digraph imports {
   "Substrate.Groups.S4-AsOpcodeAlgebra" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.S4-Composed" -> "Substrate.Algebra.Group.ToSetoid";
   "Substrate.Groups.S4-Composed" -> "Substrate.Algebra.SetoidGroup";
+  "Substrate.Groups.S4-Composed" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.S4-Composed" -> "Substrate.Foundation.Product";
   "Substrate.Groups.S4-Composed" -> "Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong";
   "Substrate.Groups.S4-Composed" -> "Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon";
@@ -9957,7 +9963,6 @@ digraph imports {
   "Substrate.Groups.S4-Iso.ExtractCorrect" -> "Substrate.Groups.S4-Iso.Extract";
   "Substrate.Groups.S4-Iso.ExtractCorrect" -> "Substrate.Groups.Symmetric";
   "Substrate.Groups.S4-Iso.ExtractCorrect" -> "Substrate.Groups.V4.Bijection";
-  "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Algebra.Group.ToSetoid";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Algebra.SetoidGroup";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Axes";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Foundation.Eq";
@@ -9988,7 +9993,6 @@ digraph imports {
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Groups.V4-Embedding";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Groups.V4.Axioms";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Groups.V4.Bijection";
-  "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Groups.V4.Bundle";
   "Substrate.Groups.S4-Iso.ForwardHom" -> "Substrate.Groups.V4.Operations";
   "Substrate.Groups.S4-Iso.Foundation" -> "Substrate.Algebra.SetoidGroup";
   "Substrate.Groups.S4-Iso.Foundation" -> "Substrate.Axes";
@@ -10063,6 +10067,7 @@ digraph imports {
   "Substrate.Groups.S4-Iso.Roundtrip" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Algebra.Group.ToSetoid";
   "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Axes";
+  "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Foundation.Product";
   "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong";
   "Substrate.Groups.S4-Iso.V4Normal" -> "Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon";

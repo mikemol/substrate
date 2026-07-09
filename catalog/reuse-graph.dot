@@ -115,7 +115,7 @@ digraph reuse {
   "Substrate.Algebra.Setoid.Map.SetoidMap" [label="SetoidMap\nSubstrate.Algebra.Setoid.Map"];
   "Substrate.Algebra.Setoid.Setoid" [label="Setoid\nSubstrate.Algebra.Setoid"];
   "Substrate.Algebra.SetoidGroup.Action.Action" [label="Action\nSubstrate.Algebra.SetoidGroup.Action"];
-  "Substrate.Algebra.SetoidGroup.SetoidGroup" [label="SetoidGroup\nSubstrate.Algebra.SetoidGroup"];
+  "Substrate.Algebra.SetoidGroup._.SetoidGroup" [label="SetoidGroup\nSubstrate.Algebra.SetoidGroup._"];
   "Substrate.Algebra.TopologicalGroup.TopologicalGroup" [label="TopologicalGroup\nSubstrate.Algebra.TopologicalGroup"];
   "Substrate.Algebra.Torsor.IsTorsorᴳ" [label="IsTorsorᴳ\nSubstrate.Algebra.Torsor"];
   "Substrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._._∈ᵀ_" [label="_∈ᵀ_\nSubstrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._", style=rounded];
@@ -900,7 +900,7 @@ digraph reuse {
   "Substrate.Algebra.SemidirectProduct.SemidirectGroupObligation" -> "Substrate.Algebra.Group.Group";
   "Substrate.Algebra.SemidirectProduct.SemidirectGroupObligation" -> "Substrate.Algebra.GroupAction.Actionᴳ";
   "Substrate.Algebra.Setoid.Map.SetoidMap" -> "Substrate.Algebra.Setoid.Setoid";
-  "Substrate.Algebra.SetoidGroup.Action.Action" -> "Substrate.Algebra.SetoidGroup.SetoidGroup";
+  "Substrate.Algebra.SetoidGroup.Action.Action" -> "Substrate.Algebra.SetoidGroup._.SetoidGroup";
   "Substrate.Algebra.Torsor.IsTorsorᴳ" -> "Substrate.Algebra.Group.Group";
   "Substrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._._∈ᵀ_" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._._∈ᵀ_" -> "Substrate.Foundation.Negation.Dec";
@@ -1159,7 +1159,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.X8aSkiInstance.SkiCR._._⇒*_" -> "Substrate.FUSep.FUSepQReduce.Tm";
   "Substrate.Category.UniversalProperty.X8aSkiInstance.SkiNfUnique._._⇒*_" -> "Substrate.FUSep.FUSepQReduce.Tm";
   "Substrate.Category.UniversalProperty.X8aSkiInstance.SkiNfUnique._._⇒*_" -> "Substrate.FUSep.FUSepQReduce._._↦_";
-  "Substrate.Cocycle.IsTorsor" -> "Substrate.Algebra.SetoidGroup.SetoidGroup";
+  "Substrate.Cocycle.IsTorsor" -> "Substrate.Algebra.SetoidGroup._.SetoidGroup";
   "Substrate.Cocycles.KRule._.DistPattern" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Conway.SurrealFinite.SurrealFinite" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Discipline.CocycleSection" -> "Substrate.Cocycle.WeakCocycleStructure";

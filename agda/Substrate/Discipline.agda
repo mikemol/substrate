@@ -81,7 +81,7 @@ module Rule1 (𝒞 : IsomorphicCocycleStructure) where
 
   -- The named claim. Reduces to refl by construction.
   project-gauge-equivariant :
-    (g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
+    (g : GaugeCarrier) (x : TotalSpace) →
     project (total-act g x) ≡ project x
   project-gauge-equivariant = proj-gauge-inv
 
@@ -95,7 +95,7 @@ module Rule1 (𝒞 : IsomorphicCocycleStructure) where
 
   lift-is-gauge-invariant :
     ∀ {ℓa} {A : Set ℓa} (f : Invariant → A)
-    (g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
+    (g : GaugeCarrier) (x : TotalSpace) →
     lift-from-invariant f (total-act g x) ≡ lift-from-invariant f x
   lift-is-gauge-invariant f g x = cong f (project-gauge-equivariant g x)
 
@@ -125,7 +125,7 @@ module Rule5 (𝒞 : IsomorphicCocycleStructure) where
   content-by-invariant :
     ∀ {ℓa} {A : Set ℓa}
     (f : TotalSpace → A) →
-    ((g : SetoidGroup.Carrier Gauge) (x : TotalSpace) →
+    ((g : GaugeCarrier) (x : TotalSpace) →
      f (total-act g x) ≡ f x) →
     (i : Invariant) (t₁ t₂ : Fiber i) →
     f (i , t₁) ≡ f (i , t₂)

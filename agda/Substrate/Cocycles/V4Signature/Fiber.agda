@@ -17,6 +17,7 @@ module Substrate.Cocycles.V4Signature.Fiber where
 
 open import Substrate.Cocycle using (IsTorsor)
 open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.V4IsTorsor    using (V4-is-torsor)
@@ -24,5 +25,5 @@ open import Substrate.Cocycles.V4Signature.V4IsTorsor    using (V4-is-torsor)
 Fiber : OrbitKey → Set
 Fiber _ = V₄
 
-fiber-torsor : (i : OrbitKey) → IsTorsor V₄-Group-Setoid (Fiber i)
+fiber-torsor : (i : OrbitKey) → IsTorsor V₄ _≡_ V₄-Group-Setoid (Fiber i)
 fiber-torsor _ = V4-is-torsor

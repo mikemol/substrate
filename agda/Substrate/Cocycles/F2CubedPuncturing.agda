@@ -93,7 +93,7 @@ puncturing-act-∙ :
   puncturing-act (g + h) p ≡ puncturing-act g (puncturing-act h p)
 puncturing-act-∙ = +-assoc
 
-puncturing-action : Action F₂³-Group-Setoid PunctureIndex
+puncturing-action : Action F₂³ _≡_ F₂³-Group-Setoid PunctureIndex
 puncturing-action = record
   { act    = puncturing-act
   ; act-id = puncturing-act-id
@@ -131,7 +131,7 @@ puncturing-transitive t₁ t₂ = (t₂ + t₁) , proof
             (cong-trans (t₂ +_) (+-self t₁)
                    (+-identityʳ t₂))
 
-fiber-is-torsor : (i : WHTCore) → IsTorsor F₂³-Group-Setoid (Fiber i)
+fiber-is-torsor : (i : WHTCore) → IsTorsor F₂³ _≡_ F₂³-Group-Setoid (Fiber i)
 fiber-is-torsor wht-core = record
   { action     = puncturing-action
   ; free       = puncturing-free
@@ -145,6 +145,8 @@ fiber-is-torsor wht-core = record
 F2³-Puncturing-Cocycle : IsomorphicCocycleStructure
 F2³-Puncturing-Cocycle = record
   { Invariant    = WHTCore
+  ; GaugeCarrier = F₂³
+  ; GaugeRel     = _≡_
   ; Gauge        = F₂³-Group-Setoid
   ; Fiber        = Fiber
   ; fiber-torsor = fiber-is-torsor

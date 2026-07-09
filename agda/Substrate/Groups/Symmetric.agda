@@ -125,11 +125,9 @@ inv-right σ x = inv-r σ x
 -- Bundle as a substrate-native SetoidGroup.
 ------------------------------------------------------------------------
 
-Symmetric-Group : SetoidGroup
+Symmetric-Group : SetoidGroup Permutation _≈_
 Symmetric-Group = record
-  { Carrier   = Permutation
-  ; _≈_       = _≈_
-  ; _∙_       = _·_
+  { _∙_       = _·_
   ; ε         = ε
   ; _⁻¹       = _⁻¹
   ; ≈-refl    = ≈-refl

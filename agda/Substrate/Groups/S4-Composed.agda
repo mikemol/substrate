@@ -23,7 +23,9 @@ open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter.SemidirectProductGroup
+  _ _
   (to-setoid V4.V₄-Group)  -- N (normal subgroup)
+  _ _
   S₃.S₃-Group              -- H (acting group)
 
 ------------------------------------------------------------------------
@@ -43,5 +45,5 @@ open WithAction
 -- 3. Top-level alias for the SetoidGroup bundle.
 ------------------------------------------------------------------------
 
-S₄-Group : SetoidGroup
+S₄-Group : SetoidGroup Carrier _≈_
 S₄-Group = Group-bundle

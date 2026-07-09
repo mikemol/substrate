@@ -108,7 +108,7 @@ module _ (n : ℕ) where
              sn-act (σ · τ) a ≡ sn-act σ (sn-act τ a)
   sn-act-∙ σ τ (v , w) = refl
 
-  action : Action S-Group Assignment
+  action : Action (Permutation n) _≈_ S-Group Assignment
   action = record
     { act    = sn-act
     ; act-id = sn-act-id
@@ -144,6 +144,8 @@ module _ (n : ℕ) where
   KRule-Cocycle : WeakCocycleStructure
   KRule-Cocycle = record
     { Base                    = Assignment
+    ; GaugeCarrier            = Permutation n
+    ; GaugeRel                = _≈_
     ; Gauge                   = S-Group
     ; action-w                = action
     ; Invariant               = DistPattern

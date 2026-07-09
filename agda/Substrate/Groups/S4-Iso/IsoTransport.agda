@@ -72,7 +72,7 @@ compositional-to-perm-cong {v₁ , sa} {v₂ , sb} (v-eq , s-eq) =
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.SetoidGroup.Properties using (module Props)
-open Props S4.Symmetric-Group using (inverseˡ-unique)
+open Props Permutation _≈_ S4.Symmetric-Group using (inverseˡ-unique)
 
 forward-inv : ∀ (s : S4C.Carrier) →
               compositional-to-perm (s S4C.⁻¹) ≈ (compositional-to-perm s) ⁻¹

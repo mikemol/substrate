@@ -146,11 +146,9 @@ inv-word-cong {w₁} {w₂} eq =
 -- 10. Substrate-native SetoidGroup bundle.
 ------------------------------------------------------------------------
 
-SetoidGroup-bundle : SetoidGroup
+SetoidGroup-bundle : SetoidGroup Word _≈_
 SetoidGroup-bundle = record
-  { Carrier   = Word
-  ; _≈_       = _≈_
-  ; _∙_       = _·_
+  { _∙_       = _·_
   ; ε         = ε
   ; _⁻¹       = inv-word
   ; ≈-refl    = λ _ → ≈-refl
@@ -166,5 +164,5 @@ SetoidGroup-bundle = record
   }
 
 -- Backward-compat alias.
-Group-bundle : SetoidGroup
+Group-bundle : SetoidGroup Word _≈_
 Group-bundle = SetoidGroup-bundle

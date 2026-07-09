@@ -12,7 +12,8 @@ module Substrate.Algebra.SetoidGroup.Properties where
 
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
-module Props (G : SetoidGroup) where
+module Props (Carrier : Set) (_≈_ : Carrier → Carrier → Set)
+             (G : SetoidGroup Carrier _≈_) where
   open SetoidGroup G
 
   ------------------------------------------------------------------
