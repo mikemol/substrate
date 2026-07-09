@@ -265,18 +265,18 @@ graph LR
   n1ff6ba079d --> ndc3f5fc5a4
   n5a3185acfc["BasisBlade"]
   n5a3185acfc --> ndc3f5fc5a4
-  nc6e1220f0f["CliffordAlgebra"]
-  nc6e1220f0f --> ndc3f5fc5a4
-  n9fe3c7a0ac["CliffordRecovery"]
-  n9fe3c7a0ac --> ndc3f5fc5a4
-  n3f91f533fe["GeneratorOrbitReading"]
-  n3f91f533fe --> ndc3f5fc5a4
   nc745828a12["Grade"]
   nc745828a12 --> ndc3f5fc5a4
-  nb750d0e761["GradedAction"]
-  nb750d0e761 --> ndc3f5fc5a4
-  n188ca2289d["HammingSyndromeReading"]
-  n188ca2289d --> ndc3f5fc5a4
+  n842602a709["CliffordAlgebra"]
+  n842602a709 --> ndc3f5fc5a4
+  nb6638c0221["CliffordRecovery"]
+  nb6638c0221 --> ndc3f5fc5a4
+  n5747ba087a["GeneratorOrbitReading"]
+  n5747ba087a --> ndc3f5fc5a4
+  nbafa1539b7["GradedAction"]
+  nbafa1539b7 --> ndc3f5fc5a4
+  n0c69612c16["HammingSyndromeReading"]
+  n0c69612c16 --> ndc3f5fc5a4
   nd5046a4085["Cone"]
   nd5046a4085 --> n1efa6ad190
   nd5046a4085 --> ndc3f5fc5a4
@@ -291,8 +291,8 @@ graph LR
   n366cfe0624 --> ndc3f5fc5a4
   ncb5ceeb3b8["AdjacentTransposition"]
   ncb5ceeb3b8 --> ndc3f5fc5a4
-  n31ac7292bf["CoxeterAction"]
-  n31ac7292bf --> ndc3f5fc5a4
+  nfba8efbd16["CoxeterAction"]
+  nfba8efbd16 --> ndc3f5fc5a4
   n39afe2d7d1["CRTDecomposition"]
   n39afe2d7d1 --> ndc3f5fc5a4
   n680f6468ad["MultiSylowDFTDecomposition"]
@@ -338,8 +338,8 @@ graph LR
   n01fa7fb6d9 --> n4c18af7c84
   n3fd17717f5["PrimeFactoredGauge"]
   n3fd17717f5 --> ndc3f5fc5a4
-  n88ca46f9f8["InclusionLattice"]
-  n88ca46f9f8 --> ndc3f5fc5a4
+  ne2679af7c3["InclusionLattice"]
+  ne2679af7c3 --> ndc3f5fc5a4
   n2c1e201359["Sheaf"]
   n2c1e201359 --> n4c18af7c84
   n81e6b7e311["Filter"]

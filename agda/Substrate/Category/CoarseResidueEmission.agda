@@ -34,115 +34,120 @@ open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-------------------------------------------------------------------------
--- A "coarse residue alphabet" is a smaller alphabet (e.g., 16
--- elements) injecting into the full S₄ residue alphabet (24
--- elements). The injection is the bijection between NIBBLE_TO_PERM
--- indices and the chambers they reach as single-step transitions.
+-- ⟡set1-paydown: parameterize Chamber, Nibble. `Chamber : Set` and `Nibble : Set` were
+-- FIELDS of CoarseResidueBijection, forcing it (and the records fielding it) to Set₁. Take
+-- them as the module parameters and the tower lives in Set; consumers write
+-- `CoarseResidueBijection Chamber Nibble`, etc. (EncoderDispatch / LosslessCoarseRoundTrip
+-- stay Set₁ honestly — they field a `Chamber → Set` predicate / a Set-level equality.)
+module _ (Chamber Nibble : Set) where
 
-record CoarseResidueBijection : Set₁ where
-  field
-    Chamber     : Set
-    Nibble      : Set
-    -- The encoding: σ ↪ nibble for σ in the image.
-    encode      : Chamber → Nibble
-    -- The decoding: nibble → σ.
-    decode      : Nibble → Chamber
-    -- Round-trip: encode then decode is identity on the image.
-    encode-decode :
-      (n : Nibble) → encode (decode n) ≡ n
+  ------------------------------------------------------------------------
+  -- A "coarse residue alphabet" is a smaller alphabet (e.g., 16
+  -- elements) injecting into the full S₄ residue alphabet (24
+  -- elements). The injection is the bijection between NIBBLE_TO_PERM
+  -- indices and the chambers they reach as single-step transitions.
 
-open CoarseResidueBijection public
+  record CoarseResidueBijection : Set where
+    field
+      -- The encoding: σ ↪ nibble for σ in the image.
+      encode      : Chamber → Nibble
+      -- The decoding: nibble → σ.
+      decode      : Nibble → Chamber
+      -- Round-trip: encode then decode is identity on the image.
+      encode-decode :
+        (n : Nibble) → encode (decode n) ≡ n
 
-------------------------------------------------------------------------
--- A coarse-residue emission opcode in the codec's joint alphabet.
--- Distinct from the full-residue emission opcode; the decoder
--- dispatches on the control symbol to choose decode path.
+  open CoarseResidueBijection public
 
-record CoarseEmissionOpcode : Set₁ where
-  field
-    -- Full opcode emits σ ∈ Chamber (5 bits in the codec's actual
-    -- alphabet).
-    full-emit-alphabet-size   : ℕ
-    -- Coarse opcode emits σ ∈ Nibble (4 bits).
-    coarse-emit-alphabet-size : ℕ
-    -- The bijection used for recovery.
-    bijection                 : CoarseResidueBijection
-    -- Coarse alphabet is strictly smaller (the "savings" axis).
-    coarse-smaller            : coarse-emit-alphabet-size ≤ full-emit-alphabet-size
+  ------------------------------------------------------------------------
+  -- A coarse-residue emission opcode in the codec's joint alphabet.
+  -- Distinct from the full-residue emission opcode; the decoder
+  -- dispatches on the control symbol to choose decode path.
 
-open CoarseEmissionOpcode public
+  record CoarseEmissionOpcode : Set where
+    field
+      -- Full opcode emits σ ∈ Chamber (5 bits in the codec's actual
+      -- alphabet).
+      full-emit-alphabet-size   : ℕ
+      -- Coarse opcode emits σ ∈ Nibble (4 bits).
+      coarse-emit-alphabet-size : ℕ
+      -- The bijection used for recovery.
+      bijection                 : CoarseResidueBijection
+      -- Coarse alphabet is strictly smaller (the "savings" axis).
+      coarse-smaller            : coarse-emit-alphabet-size ≤ full-emit-alphabet-size
 
-------------------------------------------------------------------------
--- Encoder dispatch.
---
--- Given a σ value, the encoder checks if σ is in the bijection's
--- image (= reachable as single-step chain-walk transition); if so,
--- emits via the coarse opcode; else falls back to the full opcode.
+  open CoarseEmissionOpcode public
 
-record EncoderDispatch : Set₁ where
-  field
-    opcode      : CoarseEmissionOpcode
-    -- Membership predicate: σ in image of decode.
-    in-image    : Chamber (bijection opcode) → Set
-    -- Decision: emit coarse iff σ in image.
-    decide      : Chamber (bijection opcode) → Set
+  ------------------------------------------------------------------------
+  -- Encoder dispatch.
+  --
+  -- Given a σ value, the encoder checks if σ is in the bijection's
+  -- image (= reachable as single-step chain-walk transition); if so,
+  -- emits via the coarse opcode; else falls back to the full opcode.
 
-open EncoderDispatch public
+  record EncoderDispatch : Set₁ where
+    field
+      opcode      : CoarseEmissionOpcode
+      -- Membership predicate: σ in image of decode.
+      in-image    : Chamber → Set
+      -- Decision: emit coarse iff σ in image.
+      decide      : Chamber → Set
 
-------------------------------------------------------------------------
--- Decoder dispatch.
---
--- On receiving the coarse opcode, decoder reads a Nibble symbol
--- and applies decode to recover the Chamber index. On receiving
--- the full opcode, decoder reads a Chamber symbol directly.
+  open EncoderDispatch public
 
-record DecoderDispatch : Set₁ where
-  field
-    opcode      : CoarseEmissionOpcode
-    -- Recovery: nibble → chamber via bijection.decode.
+  ------------------------------------------------------------------------
+  -- Decoder dispatch.
+  --
+  -- On receiving the coarse opcode, decoder reads a Nibble symbol
+  -- and applies decode to recover the Chamber index. On receiving
+  -- the full opcode, decoder reads a Chamber symbol directly.
 
-open DecoderDispatch public
+  record DecoderDispatch : Set where
+    field
+      opcode      : CoarseEmissionOpcode
+      -- Recovery: nibble → chamber via bijection.decode.
 
-------------------------------------------------------------------------
--- Lossless round-trip law.
---
--- For any encoder dispatch + decoder dispatch sharing the same
--- bijection, encode-then-decode preserves the Chamber value.
---
--- This holds at the structural level: encoder coarse path emits
--- bijection.encode σ; decoder coarse path applies bijection.decode
--- on the same nibble.
+  open DecoderDispatch public
 
-record LosslessCoarseRoundTrip : Set₁ where
-  field
-    enc-dispatch : EncoderDispatch
-    dec-dispatch : DecoderDispatch
-    same-bijection :
-      bijection (opcode enc-dispatch) ≡ bijection (opcode dec-dispatch)
+  ------------------------------------------------------------------------
+  -- Lossless round-trip law.
+  --
+  -- For any encoder dispatch + decoder dispatch sharing the same
+  -- bijection, encode-then-decode preserves the Chamber value.
+  --
+  -- This holds at the structural level: encoder coarse path emits
+  -- bijection.encode σ; decoder coarse path applies bijection.decode
+  -- on the same nibble.
 
-open LosslessCoarseRoundTrip public
+  record LosslessCoarseRoundTrip : Set₁ where
+    field
+      enc-dispatch : EncoderDispatch
+      dec-dispatch : DecoderDispatch
+      same-bijection :
+        bijection (opcode enc-dispatch) ≡ bijection (opcode dec-dispatch)
 
-------------------------------------------------------------------------
--- Connection to AA-arc residue and chain-walk image.
---
--- Per [[chain-walk-blocks-rotation-factor]]: the substrate's chain
--- walk is c_{k+1} = c_k ∘ NIBBLE_TO_PERM[n_{k+1}]. The σ values
--- reachable as one-step transitions from any chamber c_k are
--- exactly:
---   image = { NIBBLE_TO_PERM[n] | n ∈ [0, 16) }
--- This is a 16-element subset of S₄.
---
--- FF-arc's coarse opcode emits σ as the nibble n; the decoder
--- recovers σ = NIBBLE_TO_PERM[n].
+  open LosslessCoarseRoundTrip public
 
-record ChainWalkImageProperty : Set₁ where
-  field
-    bijection : CoarseResidueBijection
-    -- The image is exactly the single-step transitions.
-    -- Stated abstractly here; concrete instances enumerate.
+  ------------------------------------------------------------------------
+  -- Connection to AA-arc residue and chain-walk image.
+  --
+  -- Per [[chain-walk-blocks-rotation-factor]]: the substrate's chain
+  -- walk is c_{k+1} = c_k ∘ NIBBLE_TO_PERM[n_{k+1}]. The σ values
+  -- reachable as one-step transitions from any chamber c_k are
+  -- exactly:
+  --   image = { NIBBLE_TO_PERM[n] | n ∈ [0, 16) }
+  -- This is a 16-element subset of S₄.
+  --
+  -- FF-arc's coarse opcode emits σ as the nibble n; the decoder
+  -- recovers σ = NIBBLE_TO_PERM[n].
 
-open ChainWalkImageProperty public
+  record ChainWalkImageProperty : Set where
+    field
+      bijection : CoarseResidueBijection
+      -- The image is exactly the single-step transitions.
+      -- Stated abstractly here; concrete instances enumerate.
+
+  open ChainWalkImageProperty public
 
 ------------------------------------------------------------------------
 -- Empirical observation (FF7, not theorem).

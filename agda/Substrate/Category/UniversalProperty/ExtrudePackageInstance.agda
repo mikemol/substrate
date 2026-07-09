@@ -30,26 +30,26 @@ open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of
 --    (β-reduction — the honest SKI level; CombinatorAlgebra is this quotiented to ≡), and a fixed-point
 --    extruder (every f has a fixed point reachable by ⇒* — Lawvere-positive). This is the arc's center.
 ------------------------------------------------------------------------
-record ReductionExtruder : Set₁ where
-  field
-    Ċ    : Set
-    _⊙_  : Ċ → Ċ → Ċ
-    Ṡ Ḱ İ : Ċ
-    _↠_  : Ċ → Ċ → Set                                   -- the reduction relation (⇒*)
-    K-law : (x y : Ċ)   → ((Ḱ ⊙ x) ⊙ y) ↠ x
-    S-law : (x y z : Ċ) → ((((Ṡ ⊙ x) ⊙ y) ⊙ z)) ↠ (((x ⊙ z) ⊙ (y ⊙ z)))
-    I-law : (x : Ċ)     → (İ ⊙ x) ↠ x
-    extrude   : Ċ → Ċ                                     -- the fixed-point extruder (Y-of)
-    extrude-fix : (f : Ċ) → (extrude f) ↠ (f ⊙ (extrude f))  -- the extruded fixed point (Lawvere-positive)
+-- ⟡set1-paydown: parameterize Ċ (carrier) and _↠_ (reduction relation)
+module _ (Ċ : Set) (_↠_ : Ċ → Ċ → Set) where
+  record ReductionExtruder : Set where
+    field
+      _⊙_  : Ċ → Ċ → Ċ
+      Ṡ Ḱ İ : Ċ
+      K-law : (x y : Ċ)   → ((Ḱ ⊙ x) ⊙ y) ↠ x
+      S-law : (x y z : Ċ) → ((((Ṡ ⊙ x) ⊙ y) ⊙ z)) ↠ (((x ⊙ z) ⊙ (y ⊙ z)))
+      I-law : (x : Ċ)     → (İ ⊙ x) ↠ x
+      extrude   : Ċ → Ċ                                     -- the fixed-point extruder (Y-of)
+      extrude-fix : (f : Ċ) → (extrude f) ↠ (f ⊙ (extrude f))  -- the extruded fixed point (Lawvere-positive)
 
 ------------------------------------------------------------------------
 -- ② THE SKI INSTANCE: Tm⟦533ef80d⟧ satisfies the reduction-extruder — the laws are the β-rules (at ⇒*), the extruder
 --    is Y-of (265), its fixed point Y-fix. So the whole arc (μ/265, self-interp/266, reversal/268, nerve/269-
 --    275) lives on THIS instance, and cites ExtruderFix/CombinatorAlgebra as the ≡-quotient.
 ------------------------------------------------------------------------
-ski-extruder : ReductionExtruder
+ski-extruder : ReductionExtruder Tm⟦533ef80d⟧ _⇒*_
 ski-extruder = record
-  { Ċ = Tm⟦533ef80d⟧ ; _⊙_ = _∙_ ; Ṡ = S ; Ḱ = K ; İ = I ; _↠_ = _⇒*_
+  { _⊙_ = _∙_ ; Ṡ = S ; Ḱ = K ; İ = I
   ; K-law = λ x y → β-K x y ◅ done
   ; S-law = λ x y z → β-S x y z ◅ done
   ; I-law = λ x → β-I x ◅ done

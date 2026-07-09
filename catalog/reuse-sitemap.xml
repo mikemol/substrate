@@ -177,12 +177,12 @@
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Refinement#Refinement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AntiCommutativeAlgebra#AntiCommutativeAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasCatalog</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasContext</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#JointContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#Probe</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#ProbeAtlas</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#SylowClass</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#SynergyMeasurement</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasContext</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#JointContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AutomorphismGroup#AutomorphismGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BWTEmergence#EmergentConcentration</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BWTEmergence#RotationCommitMap</loc><priority>0.01</priority></url>
@@ -200,12 +200,12 @@
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent#CentralizerDescent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent/Tree#DescentTree</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ChainDecomposition#ChainDecomposition</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#AAArcEmbedding</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#BasisBlade</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#Grade</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#AAArcEmbedding</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#CliffordAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#CliffordRecovery</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#GeneratorOrbitReading</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#Grade</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#GradedAction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CliffordEmissionAlgebra#HammingSyndromeReading</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Coalgebra#FixedPoint</loc><priority>0.0</priority></url>
@@ -353,20 +353,20 @@
   <url><loc>https://substrate.local/Substrate/Category/PresentedUniversalProperty#PresentedUP</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeFactoredGauge#PrimeFactoredGauge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#Crumb</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#PrimePair</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#ThreeCrumbContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#HammingMispredictRecovery</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#PrimeContextPredictor</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#PrimePair</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#SymmetricContextProperty</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#ThreeCrumbContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#V4PartExtraction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PseudoFunctor#PseudoFunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Pullback#IsInPullback</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Pushout#IsPushoutCocone</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RGradedMonoid#RGradedMonoid</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#RMParams</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#CliffordGradeConnection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#GLAction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#InclusionLattice</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#RMParams</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#ReedMullerCode</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReferenceOrbit/BindingClass#BindingClass</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReferenceOrbit/OrbitName#OrbitName</loc><priority>0.0</priority></url>
@@ -726,8 +726,8 @@
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-Shannon</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#BinaryMerger</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#Either</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Merger#HomogeneousMergerType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#MergeStrategy</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Pipeline/Merger#HomogeneousMergerType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/CanonicalSpec#CanonicalSpec</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentFixed#SequentFixed</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentRule#SequentRule</loc><priority>0.0</priority></url>

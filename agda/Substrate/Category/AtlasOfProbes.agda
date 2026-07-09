@@ -53,7 +53,9 @@ data SylowClass : Set where
 ------------------------------------------------------------------------
 -- A probe is a (chamber-position-offset, V₄-part-extractor) pair.
 
-record Probe : Set₁ where
+-- ⟡set1-paydown: fields only `offset : ℕ` (Set-valued), so it inhabits Set — the Set₁
+-- annotation was gratuitous.
+record Probe : Set where
   field
     offset : ℕ
     -- Stated structurally; the extractor is the V₄-coset position
@@ -68,7 +70,9 @@ open Probe public
 -- — an atlas's structural identity is the SET of offsets
 -- (up to a permutation).
 
-record ProbeAtlas : Set₁ where
+-- ⟡set1-paydown: with Probe now : Set, `probes : List Probe` is Set-valued, so this record
+-- inhabits Set — the Set₁ annotation was gratuitous.
+record ProbeAtlas : Set where
   field
     name    : List ℕ            -- identifier; concrete instances enumerate
     sylow   : SylowClass
@@ -87,7 +91,9 @@ open ProbeAtlas public
 -- This is stated abstractly; the concrete eliza.probe_atlas
 -- runtime resolves specs to numeric offsets.
 
-record AtlasCatalog : Set₂ where
+-- ⟡set1-paydown: fields only ℕ data and an equality proof (all Set-valued), so it inhabits
+-- Set — the Set₂ annotation was gratuitous.
+record AtlasCatalog : Set where
   field
     -- Total number of catalog members.
     catalog-size : ℕ
@@ -118,26 +124,29 @@ substrate-catalog = record
 -- 2-bit V₄-part crumb, the context value is a 2k-bit integer
 -- in [0, 4ᵏ).
 
-record AtlasContext (A : ProbeAtlas) : Set₁ where
-  field
-    Carrier : Set
+-- ⟡set1-paydown: parameterize Carrier. `Carrier : Set` was a FIELD, forcing AtlasContext :
+-- Set₁ and JointContext (which fields it) : Set₂. Take Carrier as the module parameter and
+-- both records live in Set; consumers write `AtlasContext Carrier A`, `JointContext Carrier A B`.
+module _ (Carrier : Set) where
+
+  record AtlasContext (A : ProbeAtlas) : Set where
     -- value-at : chain history index → carrier
     -- Stated abstractly; concrete instances enumerate.
 
-open AtlasContext public
+  open AtlasContext public
 
-------------------------------------------------------------------------
--- Combinatorial joint context: concatenation of two atlas
--- contexts as a single integer. The "combinatorial dot product"
--- per the user — the Cartesian product of two charts.
+  ------------------------------------------------------------------------
+  -- Combinatorial joint context: concatenation of two atlas
+  -- contexts as a single integer. The "combinatorial dot product"
+  -- per the user — the Cartesian product of two charts.
 
-record JointContext (A B : ProbeAtlas) : Set₂ where
-  field
-    ctx-A : AtlasContext A
-    ctx-B : AtlasContext B
-    -- joint = (ctx-A.value, ctx-B.value) packed bit-wise
+  record JointContext (A B : ProbeAtlas) : Set where
+    field
+      ctx-A : AtlasContext A
+      ctx-B : AtlasContext B
+      -- joint = (ctx-A.value, ctx-B.value) packed bit-wise
 
-open JointContext public
+  open JointContext public
 
 ------------------------------------------------------------------------
 -- Multi-route equivariance claim.
@@ -156,7 +165,9 @@ open JointContext public
 -- alphabet doesn't add information). Cross-Sylow pairs probe
 -- distinct subspaces and combine multiplicatively.
 
-record SynergyMeasurement (A B : ProbeAtlas) : Set₂ where
+-- ⟡set1-paydown: fields only ℕ data (Set-valued), so it inhabits Set — the Set₂ annotation
+-- was gratuitous.
+record SynergyMeasurement (A B : ProbeAtlas) : Set where
   field
     -- MI of A alone, B alone, joint.
     mi-A     : ℕ

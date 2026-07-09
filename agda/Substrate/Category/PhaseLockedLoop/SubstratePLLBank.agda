@@ -16,7 +16,10 @@ open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Category.PhaseLockedLoop.AcquisitionStrategies
   using (ThreeCycleStrategy; mkThreeCycle)
 
-record SubstratePLLBank : Set₂ where
+-- ⟡set1-paydown: this record fields only `primes : List ℕ` and `strategy : List
+-- ThreeCycleStrategy` (both Set-valued; ThreeCycleStrategy : Set), so it inhabits Set —
+-- the Set₂ annotation was gratuitous.
+record SubstratePLLBank : Set where
   field
     primes   : List ℕ
     strategy : List ThreeCycleStrategy

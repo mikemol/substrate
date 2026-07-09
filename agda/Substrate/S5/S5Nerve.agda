@@ -29,16 +29,18 @@ open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
 
 -- the window monoid (the structure T-compose checks for the runner). PINNED as
 -- MonoidR: bundled M/_∙_/ε/laws — a distinct shape from Semigroup-based Algebra.Monoid.
-record MonoidR : Set₁ where
-  field
-    M      : Set
-    _∙_    : M → M → M
-    ε      : M
-    assoc  : (x y z : M) → ((x ∙ y) ∙ z) ≡ (x ∙ (y ∙ z))
-    unitˡ  : (x : M) → (ε ∙ x) ≡ x
-    unitʳ  : (x : M) → (x ∙ ε) ≡ x
+-- ⟡set1-paydown: parameterize M (the carrier `M : Set` was a FIELD, forcing MonoidR : Set₁;
+-- as a module parameter every field is Set-valued, so MonoidR : Set. Consumers write `MonoidR M`.)
+module _ (M : Set) where
+  record MonoidR : Set where
+    field
+      _∙_    : M → M → M
+      ε      : M
+      assoc  : (x y z : M) → ((x ∙ y) ∙ z) ≡ (x ∙ (y ∙ z))
+      unitˡ  : (x : M) → (ε ∙ x) ≡ x
+      unitʳ  : (x : M) → (x ∙ ε) ≡ x
 
-module NerveComposeFace (Mon : MonoidR) where
+module NerveComposeFace {M : Set} (Mon : MonoidR M) where
   open MonoidR Mon
 
   -- The nerve's INNER (compose) face at an adjacent pair. `delAt` handles the

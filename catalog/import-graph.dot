@@ -6943,6 +6943,7 @@ digraph imports {
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.List";
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.List.Length";
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Product";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Category.FreeOverBasis";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Foundation.Empty";

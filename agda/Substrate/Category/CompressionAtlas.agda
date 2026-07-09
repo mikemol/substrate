@@ -38,70 +38,73 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 -- Corpus identifier and predictor identifier are kept abstract; a
 -- concrete instance imports specific corpus/predictor types.
 
-record AtlasDomain : Set₁ where
-  field
-    Corpus           : Set
-    PredictorBinding : Set
+-- ⟡set1-paydown: parameterize Corpus, PredictorBinding. They were `Set`-valued FIELDS of
+-- AtlasDomain, forcing it to Set₁. Take them as module parameters and AtlasDomain lives in
+-- Set (the AtlasCell projections `AtlasDomain.Corpus D` become the parameter `Corpus`); the
+-- D-index is kept so the downstream API shape (AtlasCell D, CompressionAtlas D) is unchanged.
+module _ (Corpus PredictorBinding : Set) where
 
-------------------------------------------------------------------------
--- A cell of the atlas: (corpus, binding, b/byte, ok flag).
---
--- The (E3) verdict reduces to comparing two cells with the same
--- corpus but different bindings.
+  record AtlasDomain : Set where
 
-record AtlasCell (D : AtlasDomain) : Set where
-  field
-    corpus    : AtlasDomain.Corpus D
-    binding   : AtlasDomain.PredictorBinding D
-    bpb-num   : ℕ        -- numerator (e.g., 7047 for 7.047)
-    bpb-den   : ℕ        -- denominator (e.g., 1000)
-    ok        : Bool     -- round-trip lossless
+  ------------------------------------------------------------------------
+  -- A cell of the atlas: (corpus, binding, b/byte, ok flag).
+  --
+  -- The (E3) verdict reduces to comparing two cells with the same
+  -- corpus but different bindings.
 
-open AtlasCell public
+  record AtlasCell (D : AtlasDomain) : Set where
+    field
+      corpus    : Corpus
+      binding   : PredictorBinding
+      bpb-num   : ℕ        -- numerator (e.g., 7047 for 7.047)
+      bpb-den   : ℕ        -- denominator (e.g., 1000)
+      ok        : Bool     -- round-trip lossless
 
-------------------------------------------------------------------------
--- The CompressionAtlas: a list of cells.
---
--- Mathematically the atlas IS a functor from the discrete category
--- (Corpus × PredictorBinding) into (ℚ, ≤) where ℚ is rational
--- bits-per-byte. Here represented as a flat list with no functoriality
--- proofs (deferred); the functorial structure would prove that the
--- atlas's measurements are consistent under corpus/predictor
--- composition.
+  open AtlasCell public
 
-record CompressionAtlas (D : AtlasDomain) : Set where
-  field
-    cells : List (AtlasCell D)
+  ------------------------------------------------------------------------
+  -- The CompressionAtlas: a list of cells.
+  --
+  -- Mathematically the atlas IS a functor from the discrete category
+  -- (Corpus × PredictorBinding) into (ℚ, ≤) where ℚ is rational
+  -- bits-per-byte. Here represented as a flat list with no functoriality
+  -- proofs (deferred); the functorial structure would prove that the
+  -- atlas's measurements are consistent under corpus/predictor
+  -- composition.
 
-open CompressionAtlas public
+  record CompressionAtlas (D : AtlasDomain) : Set where
+    field
+      cells : List (AtlasCell D)
 
-empty-atlas : (D : AtlasDomain) → CompressionAtlas D
-empty-atlas D = record { cells = [] }
+  open CompressionAtlas public
 
-------------------------------------------------------------------------
--- (E3) BENEFITS / REGRESSES verdict.
---
--- For two cells with the same corpus and different bindings, the
--- one with smaller bpb BENEFITS over the other. Concrete decision
--- procedure (comparing bpb-num/bpb-den fractions) deferred to
--- follow-up; the type-signature here establishes the slot.
+  empty-atlas : (D : AtlasDomain) → CompressionAtlas D
+  empty-atlas D = record { cells = [] }
 
-bpb-le-type : (D : AtlasDomain) → Set₁
-bpb-le-type D = AtlasCell D → AtlasCell D → Set
+  ------------------------------------------------------------------------
+  -- (E3) BENEFITS / REGRESSES verdict.
+  --
+  -- For two cells with the same corpus and different bindings, the
+  -- one with smaller bpb BENEFITS over the other. Concrete decision
+  -- procedure (comparing bpb-num/bpb-den fractions) deferred to
+  -- follow-up; the type-signature here establishes the slot.
 
-------------------------------------------------------------------------
--- Functorial soundness law (proof obligation, deferred).
---
--- A well-formed atlas's cells are consistent under any decomposition
--- of (Corpus × PredictorBinding) into subcategories. Stated as a
--- type; inhabited by trivial witness (placeholder) below.
+  bpb-le-type : (D : AtlasDomain) → Set₁
+  bpb-le-type D = AtlasCell D → AtlasCell D → Set
 
-FunctorialConsistency : (D : AtlasDomain) → Set
-FunctorialConsistency D =
-  (a : CompressionAtlas D) → length (cells a) ≡ length (cells a)
+  ------------------------------------------------------------------------
+  -- Functorial soundness law (proof obligation, deferred).
+  --
+  -- A well-formed atlas's cells are consistent under any decomposition
+  -- of (Corpus × PredictorBinding) into subcategories. Stated as a
+  -- type; inhabited by trivial witness (placeholder) below.
 
-functorial-trivial : (D : AtlasDomain) → FunctorialConsistency D
-functorial-trivial D a = refl
+  FunctorialConsistency : (D : AtlasDomain) → Set
+  FunctorialConsistency D =
+    (a : CompressionAtlas D) → length (cells a) ≡ length (cells a)
+
+  functorial-trivial : (D : AtlasDomain) → FunctorialConsistency D
+  functorial-trivial D a = refl
 
 ------------------------------------------------------------------------
 -- Categorical reading.

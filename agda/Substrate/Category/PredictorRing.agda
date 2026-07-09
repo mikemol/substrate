@@ -29,7 +29,7 @@ module Substrate.Category.PredictorRing where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 ------------------------------------------------------------------------
@@ -44,9 +44,12 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 -- the context type and the alphabet size; concrete instances would
 -- supply additional fields and laws.
 
-record PredictorSignature : Set₁ where
+-- ⟡set1-paydown: parameterize Context. `Context : Set` was the CARRIER field, forcing
+-- PredictorSignature : Set₁. Take Context as a record parameter and the signature lives in
+-- Set; consumers write `PredictorSignature Context`. (The heterogeneous ring below then
+-- keeps a member's context type via a Σ over Set — see PredictorRing.)
+record PredictorSignature (Context : Set) : Set where
   field
-    Context        : Set
     alphabet-size  : ℕ
 
 open PredictorSignature public
@@ -73,9 +76,13 @@ open PredictorSignature public
 -- cumfreqs to use. The picking is the operad's reduce_winner (per
 -- [[v-arc-generator-operad]]).
 
+-- Each member carries its own context type, so the ring is a list of context-tagged
+-- signatures (Σ over Set). PredictorRing stays honestly Set₁ — it genuinely quantifies over
+-- Set — but no longer via a bundled Set-carrier FIELD (that debt moved into PredictorSignature
+-- and was paid). Members: Unigram (⊤), Bigram (Fin n), Trigram (Fin n × Fin n), ….
 record PredictorRing : Set₁ where
   field
-    members : List PredictorSignature
+    members : List (Σ[ C ∈ Set ] PredictorSignature C)
 
 open PredictorRing public
 

@@ -118,7 +118,9 @@ open MultiSylowAtlas public
 -- MULTIPLICATIVE on natural-text corpora — each Sylow adds an
 -- independent orbit-axis contribution.
 
-record SaturationCurve : Set₁ where
+-- ⟡set1-paydown: this record fields only `best-mi-at-size : ℕ → ℕ` (Set-valued), so it
+-- inhabits Set — the Set₁ annotation was gratuitous.
+record SaturationCurve : Set where
   field
     -- For each subset size k, the best joint MI achievable.
     best-mi-at-size : ℕ → ℕ        -- in millibits, abstracted

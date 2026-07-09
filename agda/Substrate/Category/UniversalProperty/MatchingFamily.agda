@@ -27,18 +27,18 @@ open import Substrate.Category.UniversalProperty.Presheaf
 -- 1. MatchingFamily record.
 ------------------------------------------------------------------------
 
-record MatchingFamily
-  {U : UPArrow}
-  (c : UPCover U)
-  (P : UPPresheaf)
-  : Set₁ where
-  field
-    section  : (i : Idx c) → F P (source-UP c i)
-    -- The matching condition (overlap-agreement) is named as a
-    -- Set-level obligation.
-    matches-stated : Set
+-- ⟡set1-paydown: parameterize matches-stated (the overlap-agreement obligation Set)
+module _ (matches-stated : Set) where
 
-open MatchingFamily public
+  record MatchingFamily
+    {U : UPArrow}
+    (c : UPCover U)
+    (P : UPPresheaf)
+    : Set where
+    field
+      section  : (i : Idx c) → F P (source-UP c i)
+
+  open MatchingFamily public
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP24.

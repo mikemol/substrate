@@ -65,20 +65,24 @@ compose-word (x ∷ xs) ys = x ∷ compose-word xs ys
 -- Each Coxeter generator s_i swaps bit positions (i, i+1) in a
 -- 2ⁿ-bit value. Word application is left-to-right composition.
 
-record CoxeterAction (n : ℕ) : Set₁ where
-  field
-    BitVector : Set
-    -- Apply a single adjacent transposition.
-    swap     : AdjacentTransposition n → BitVector → BitVector
-    -- Apply a Coxeter word as a sequence of swaps.
-    apply    : CoxeterWord n → BitVector → BitVector
-    -- Identity: empty word acts as identity.
-    apply-empty : (v : BitVector) → apply (empty-word n) v ≡ v
-    -- Each swap is an involution.
-    swap-involution : (t : AdjacentTransposition n) → (v : BitVector) →
-                        swap t (swap t v) ≡ v
+-- ⟡set1-paydown: parameterize BitVector. `BitVector : Set` was a FIELD, forcing
+-- CoxeterAction : Set₁. Take BitVector as the module parameter and the record lives in Set;
+-- consumers write `CoxeterAction BitVector n`.
+module _ (BitVector : Set) where
 
-open CoxeterAction public
+  record CoxeterAction (n : ℕ) : Set where
+    field
+      -- Apply a single adjacent transposition.
+      swap     : AdjacentTransposition n → BitVector → BitVector
+      -- Apply a Coxeter word as a sequence of swaps.
+      apply    : CoxeterWord n → BitVector → BitVector
+      -- Identity: empty word acts as identity.
+      apply-empty : (v : BitVector) → apply (empty-word n) v ≡ v
+      -- Each swap is an involution.
+      swap-involution : (t : AdjacentTransposition n) → (v : BitVector) →
+                          swap t (swap t v) ≡ v
+
+  open CoxeterAction public
 
 ------------------------------------------------------------------------
 -- Coxeter relations (proof obligations at the abstract layer).
@@ -88,15 +92,18 @@ open CoxeterAction public
 --
 -- Stated as types; concrete CoxeterAction instances inhabit them.
 
+-- BitVector is now a module parameter of CoxeterAction, so it is quantified explicitly here
+-- (was the projection `BitVector act`). BraidLawType stays Set₁: it returns a Set-equality.
 BraidLawType : (n : ℕ) → Set₁
 BraidLawType n =
-  (act : CoxeterAction n) →
+  (BitVector : Set) →
+  (act : CoxeterAction BitVector n) →
   (i : ℕ) →
   -- sᵢ ∘ sᵢ₊₁ ∘ sᵢ applied to v equals sᵢ₊₁ ∘ sᵢ ∘ sᵢ₊₁ applied to v
-  (v : BitVector act) → BitVector act ≡ BitVector act
+  (v : BitVector) → BitVector ≡ BitVector
 
 braid-law-trivial : (n : ℕ) → BraidLawType n
-braid-law-trivial n act i v = refl
+braid-law-trivial n BitVector act i v = refl
 
 ------------------------------------------------------------------------
 -- BitShift — the stream-level Z/8 rotation (CC6).
@@ -119,14 +126,19 @@ data BitShift : Set where
 -- shift-add (k, l) = shift-(k+l mod 8). Total enumeration deferred;
 -- record the existence of the structure.
 
-record BitShiftAction : Set₁ where
-  field
-    Stream      : Set
-    shift-by    : BitShift → Stream → Stream
-    -- shift-0 acts as identity.
-    shift-0-id  : (s : Stream) → shift-by shift-0 s ≡ s
+-- ⟡set1-paydown: parameterize Stream. `Stream : Set` was a FIELD, forcing BitShiftAction :
+-- Set₁ (and MultiLayerRotation, which fields it, : Set₁). Take Stream as the module
+-- parameter and both records live in Set; consumers write `BitShiftAction Stream`,
+-- `MultiLayerRotation Stream`.
+module _ (Stream : Set) where
 
-open BitShiftAction public
+  record BitShiftAction : Set where
+    field
+      shift-by    : BitShift → Stream → Stream
+      -- shift-0 acts as identity.
+      shift-0-id  : (s : Stream) → shift-by shift-0 s ≡ s
+
+  open BitShiftAction public
 
 ------------------------------------------------------------------------
 -- The full multi-layer rotation hierarchy.
@@ -146,12 +158,14 @@ open BitShiftAction public
 -- The codec's BB+CC-arc machinery operates simultaneously at all
 -- three layers; the operad ring's reduce_winner picks per emission.
 
-record MultiLayerRotation : Set₁ where
-  field
-    stream-layer  : BitShiftAction
-    -- byte-layer parameterised over which group (F₂ⁿ × F₂ for BB,
-    -- Coxeter S_{2ⁿ} for CC). Left abstract here.
-    -- chain-layer abstracted in Substrate.Category.RuleAction.
+  -- ⟡set1-paydown: fields `stream-layer : BitShiftAction Stream` (now Set-valued), so it
+  -- lives in Set under the same Stream module parameter as BitShiftAction.
+  record MultiLayerRotation : Set where
+    field
+      stream-layer  : BitShiftAction
+      -- byte-layer parameterised over which group (F₂ⁿ × F₂ for BB,
+      -- Coxeter S_{2ⁿ} for CC). Left abstract here.
+      -- chain-layer abstracted in Substrate.Category.RuleAction.
 
 ------------------------------------------------------------------------
 -- Categorical reading.

@@ -16,27 +16,32 @@ open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Witnessing using (D⇒S)
 
-record PureBrick (A B : Set) : Set₁ where
-  field
-    f : A → B
-    homomorphism-tag : Set
+-- ⟡set1-paydown: parameterize homomorphism-tag (the `homomorphism-tag : Set` FIELD forced
+-- PureBrick : Set₁; as a module parameter every field is Set-valued, so PureBrick : Set.
+-- Consumers write `PureBrick homomorphism-tag A B`.)
+module _ (homomorphism-tag : Set) where
+  record PureBrick (A B : Set) : Set where
+    field
+      f : A → B
 
-pure→Brick : ∀ {A B : Set} → PureBrick A B → BrickType
-pure→Brick {A} {B} P = record
+  open PureBrick public
+
+pure→Brick : ∀ {tag A B : Set} → PureBrick tag A B → BrickType
+pure→Brick {tag} {A} {B} P = record
   { D-in  = A
   ; D-out = B
   ; S-in  = ⊤
   ; S-out = ⊤
   }
 
-pure→Brick-step : ∀ {A B : Set} → (P : PureBrick A B)
+pure→Brick-step : ∀ {tag A B : Set} → (P : PureBrick tag A B)
                 → (A × ⊤) → (B × ⊤)
-pure→Brick-step P (a , _) = PureBrick.f P a , tt
+pure→Brick-step P (a , _) = f P a , tt
 
-pure-as-brick : ∀ {A B : Set} → (P : PureBrick A B)
+pure-as-brick : ∀ {tag A B : Set} → (P : PureBrick tag A B)
               → Brick (pure→Brick P)
-pure-as-brick P = record
+pure-as-brick {tag} P = record
   { witnesses        = D⇒S
-  ; step             = λ x → PureBrick.f P (proj₁ x) , tt
-  ; homomorphism-tag = PureBrick.homomorphism-tag P
+  ; step             = λ x → f P (proj₁ x) , tt
+  ; homomorphism-tag = tag
   }

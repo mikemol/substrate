@@ -17,14 +17,10 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- 1. AdjointPair signature.
 ------------------------------------------------------------------------
 
-record SheafAdjointPair : Set₁ where
-  field
-    direct-image-stated  : Set
-    inverse-image-stated : Set
-    unit-stated          : Set
-    counit-stated        : Set
-    triangle-1-stated    : Set
-    triangle-2-stated    : Set
+-- ⟡set1-paydown: parameterize direct-image/inverse-image/unit/counit/triangle Sets
+module _ (direct-image-stated inverse-image-stated unit-stated
+          counit-stated triangle-1-stated triangle-2-stated : Set) where
+  record SheafAdjointPair : Set where
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP37.

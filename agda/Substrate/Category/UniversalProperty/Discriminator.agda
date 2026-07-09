@@ -34,15 +34,15 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 -- element. `faithful` is the obligation each instance must discharge.
 ------------------------------------------------------------------------
 
-record Discriminated (A : Set) : Set₁ where
-  field
-    Sh  : Set
-    sh  : A → Sh
-    Dt  : Set
-    dt  : A → Dt
-    faithful : (x y : A) → sh x ≡ sh y → dt x ≡ dt y → x ≡ y
+-- ⟡set1-paydown: parameterize Sh, Dt (the invariant + cochain carriers)
+module _ (A Sh Dt : Set) where
+  record Discriminated : Set where
+    field
+      sh  : A → Sh
+      dt  : A → Dt
+      faithful : (x y : A) → sh x ≡ sh y → dt x ≡ dt y → x ≡ y
 
-open Discriminated public
+  open Discriminated public
 
 ------------------------------------------------------------------------
 -- THE ENTAILMENT (unconditional): two parallel maps into a discriminated target
@@ -51,7 +51,7 @@ open Discriminated public
 -- Filling a diagram = providing the `Discriminated` targets + these agreements.
 ------------------------------------------------------------------------
 
-module _ {A C : Set} (DC : Discriminated C) where
+module _ {A C Sh Dt : Set} (DC : Discriminated C Sh Dt) where
 
   AgreeDisc : (g h : A → C) → Set
   AgreeDisc g h =

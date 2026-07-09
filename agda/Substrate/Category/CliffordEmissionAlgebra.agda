@@ -69,49 +69,53 @@ open BasisBlade public
 -- Geometric product: a * b mixes grades; wedge a ∧ b raises grade;
 -- contraction a ⌟ b lowers grade.
 
-record CliffordAlgebra (n : ℕ) : Set₁ where
-  field
-    -- Carrier.
-    Multivector : Set
+-- ⟡set1-paydown: parameterize Multivector. `Multivector : Set` was the CARRIER field of
+-- CliffordAlgebra, forcing it and every record fielding it to Set₁. Take Multivector as the
+-- module parameter and the whole algebra tower lives in Set; the `Multivector algebra`
+-- projections become the parameter `Multivector`. Records with a SECOND Set carrier
+-- (GradedAction's Carrier, AAArcEmbedding's S4-element, HammingSyndromeReading's Word) take
+-- it as their own record parameter. Consumers write `CliffordAlgebra Multivector n`, etc.
+module _ (Multivector : Set) where
 
-    -- Constants.
-    zero-mv  : Multivector
-    one-mv   : Multivector            -- scalar 1 (Λ⁰)
-    pseudo   : Multivector            -- top blade I (Λⁿ)
+  record CliffordAlgebra (n : ℕ) : Set where
+    field
+      -- Constants.
+      zero-mv  : Multivector
+      one-mv   : Multivector            -- scalar 1 (Λ⁰)
+      pseudo   : Multivector            -- top blade I (Λⁿ)
 
-    -- Operations.
-    add      : Multivector → Multivector → Multivector
-    neg      : Multivector → Multivector
-    gp       : Multivector → Multivector → Multivector   -- geometric
-    wedge    : Multivector → Multivector → Multivector   -- outer
-    contract : Multivector → Multivector → Multivector   -- left ⌟
-    reverse  : Multivector → Multivector                  -- anti-aut
+      -- Operations.
+      add      : Multivector → Multivector → Multivector
+      neg      : Multivector → Multivector
+      gp       : Multivector → Multivector → Multivector   -- geometric
+      wedge    : Multivector → Multivector → Multivector   -- outer
+      contract : Multivector → Multivector → Multivector   -- left ⌟
+      reverse  : Multivector → Multivector                  -- anti-aut
 
-    -- Grade projection ⟨·⟩_k : Λᵏ-component.
-    project  : Grade n → Multivector → Multivector
+      -- Grade projection ⟨·⟩_k : Λᵏ-component.
+      project  : Grade n → Multivector → Multivector
 
-    -- Laws.
-    add-id-l   : (a : Multivector) → add zero-mv a ≡ a
-    gp-id-l    : (a : Multivector) → gp one-mv a ≡ a
-    gp-id-r    : (a : Multivector) → gp a one-mv ≡ a
-    reverse-involution : (a : Multivector) → reverse (reverse a) ≡ a
+      -- Laws.
+      add-id-l   : (a : Multivector) → add zero-mv a ≡ a
+      gp-id-l    : (a : Multivector) → gp one-mv a ≡ a
+      gp-id-r    : (a : Multivector) → gp a one-mv ≡ a
+      reverse-involution : (a : Multivector) → reverse (reverse a) ≡ a
 
-open CliffordAlgebra public
+  open CliffordAlgebra public
 
 ------------------------------------------------------------------------
 -- A graded action: an algebra paired with an action on a carrier
 -- (the codec's BYTE-STREAM is the action's carrier; F₂-restricted
 -- coefficients give the XOR-action).
 
-record GradedAction (n : ℕ) : Set₁ where
-  field
-    algebra : CliffordAlgebra n
-    Carrier : Set
-    act     : Multivector algebra → Carrier → Carrier
-    -- Action laws.
-    act-id      : (c : Carrier) → act (one-mv algebra) c ≡ c
+  record GradedAction (Carrier : Set) (n : ℕ) : Set where
+    field
+      algebra : CliffordAlgebra n
+      act     : Multivector → Carrier → Carrier
+      -- Action laws.
+      act-id      : (c : Carrier) → act (one-mv algebra) c ≡ c
 
-open GradedAction public
+  open GradedAction public
 
 ------------------------------------------------------------------------
 -- AA-arc embedding: S₄ residue ↪ Λ² subspace.
@@ -123,17 +127,16 @@ open GradedAction public
 -- This embedding is structural; concrete bijection deferred to the
 -- codec runtime side (eliza.clifford_tracer.aa_arc_s4_residue).
 
-record AAArcEmbedding : Set₁ where
-  field
-    algebra : CliffordAlgebra 4
-    S4-element : Set
-    embed    : S4-element → Multivector algebra
-    -- The image lies in Λ² (bivector grade).
-    image-grade-2 :
-      (σ : S4-element) →
-      (project algebra record { k = 2 } (embed σ)) ≡ embed σ
+  record AAArcEmbedding (S4-element : Set) : Set where
+    field
+      algebra : CliffordAlgebra 4
+      embed    : S4-element → Multivector
+      -- The image lies in Λ² (bivector grade).
+      image-grade-2 :
+        (σ : S4-element) →
+        (project algebra record { k = 2 } (embed σ)) ≡ embed σ
 
-open AAArcEmbedding public
+  open AAArcEmbedding public
 
 ------------------------------------------------------------------------
 -- Hamming-syndrome correspondence (DD-arc, per user 2026-05-20).
@@ -145,20 +148,19 @@ open AAArcEmbedding public
 -- Recovery from a perturbation: extract the minimum-grade component
 -- (the "best correction" Hamming-coset).
 
-record HammingSyndromeReading (n : ℕ) : Set₁ where
-  field
-    algebra      : CliffordAlgebra n
-    Word         : Set                            -- n-bit codeword
-    perturbation : Word → Word → Multivector algebra
-    -- Grade-k component of perturbation w → w' has Hamming weight k.
-    hamming-grade :
-      (w w' : Word) →
-      Grade n
-    -- Identity-perturbation (w = w') is the zero multivector.
-    identity-zero :
-      (w : Word) → perturbation w w ≡ zero-mv algebra
+  record HammingSyndromeReading (Word : Set) (n : ℕ) : Set where
+    field
+      algebra      : CliffordAlgebra n
+      perturbation : Word → Word → Multivector
+      -- Grade-k component of perturbation w → w' has Hamming weight k.
+      hamming-grade :
+        (w w' : Word) →
+        Grade n
+      -- Identity-perturbation (w = w') is the zero multivector.
+      identity-zero :
+        (w : Word) → perturbation w w ≡ zero-mv algebra
 
-open HammingSyndromeReading public
+  open HammingSyndromeReading public
 
 ------------------------------------------------------------------------
 -- Recovery operator: given a perturbed word and the perturbation
@@ -168,19 +170,19 @@ open HammingSyndromeReading public
 -- reference point" framing: reverse-anti-automorphism IS the
 -- unwinding operator.
 
-record CliffordRecovery (n : ℕ) : Set₁ where
-  field
-    syndrome : HammingSyndromeReading n
-    recover  : Word syndrome →
-               Multivector (algebra syndrome) →
-               Word syndrome
-    -- Round-trip: perturbing then recovering returns the original.
-    recovery-law :
-      (w : Word syndrome) →
-      (w' : Word syndrome) →
-      recover w' (perturbation syndrome w w') ≡ w
+  record CliffordRecovery (Word : Set) (n : ℕ) : Set where
+    field
+      syndrome : HammingSyndromeReading Word n
+      recover  : Word →
+                 Multivector →
+                 Word
+      -- Round-trip: perturbing then recovering returns the original.
+      recovery-law :
+        (w : Word) →
+        (w' : Word) →
+        recover w' (perturbation syndrome w w') ≡ w
 
-open CliffordRecovery public
+  open CliffordRecovery public
 
 ------------------------------------------------------------------------
 -- Generator-orbit reading.
@@ -197,13 +199,13 @@ open CliffordRecovery public
 -- runtime emission of an arbitrary blade — covering ALL grades, not
 -- just the ones any single prior arc captured.
 
-record GeneratorOrbitReading (n : ℕ) : Set₁ where
-  field
-    full-algebra : CliffordAlgebra n
-    -- Each prior-arc structure is a subspace projection of the
-    -- full Clifford ambient.
+  record GeneratorOrbitReading (n : ℕ) : Set where
+    field
+      full-algebra : CliffordAlgebra n
+      -- Each prior-arc structure is a subspace projection of the
+      -- full Clifford ambient.
 
-open GeneratorOrbitReading public
+  open GeneratorOrbitReading public
 
 ------------------------------------------------------------------------
 -- 3+1 parity at every grade.

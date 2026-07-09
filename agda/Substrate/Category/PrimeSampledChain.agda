@@ -96,25 +96,34 @@ open ThreeCrumbContext public
 -- The V₄ part is a Crumb-valued projection π : S₄ → V₄ (modulo
 -- the coset's structural V₄ action).
 
-record V4PartExtraction : Set₁ where
-  field
-    Chamber  : Set
-    v4-part  : Chamber → Crumb
+-- ⟡set1-paydown: parameterize Chamber. `Chamber : Set` was a FIELD, forcing V4PartExtraction
+-- : Set₁. Take Chamber as the module parameter and the record lives in Set; consumers write
+-- `V4PartExtraction Chamber`.
+module _ (Chamber : Set) where
 
-open V4PartExtraction public
+  record V4PartExtraction : Set where
+    field
+      v4-part  : Chamber → Crumb
+
+  open V4PartExtraction public
 
 ------------------------------------------------------------------------
 -- Predictor context family indexed by PrimePair.
 
-record PrimeContextPredictor : Set₂ where
-  field
-    extract     : V4PartExtraction
-    pair        : PrimePair
-    -- The 64 (= 4³) count tables, one per context value.
-    Distribution : Set
-    table-at    : ThreeCrumbContext → Distribution
+-- ⟡set1-paydown: parameterize Chamber (via extract) and Distribution. `Distribution : Set`
+-- was a FIELD (and extract fields the Chamber-carrier V4PartExtraction), forcing Set₂. Take
+-- both as module parameters and the predictor tower lives in Set; consumers write
+-- `PrimeContextPredictor Chamber Distribution`.
+module _ (Chamber Distribution : Set) where
 
-open PrimeContextPredictor public
+  record PrimeContextPredictor : Set where
+    field
+      extract     : V4PartExtraction Chamber
+      pair        : PrimePair
+      -- The 64 (= 4³) count tables, one per context value.
+      table-at    : ThreeCrumbContext → Distribution
+
+  open PrimeContextPredictor public
 
 ------------------------------------------------------------------------
 -- Symmetric encoder/decoder property.
@@ -126,11 +135,11 @@ open PrimeContextPredictor public
 --   encoder.context(k) ≡ decoder.context(k)
 -- This is the lossless symmetry property.
 
-record SymmetricContextProperty : Set₂ where
-  field
-    predictor : PrimeContextPredictor
+  record SymmetricContextProperty : Set where
+    field
+      predictor : PrimeContextPredictor
 
-open SymmetricContextProperty public
+  open SymmetricContextProperty public
 
 ------------------------------------------------------------------------
 -- Hamming(7, 4) recovery layer.
@@ -148,13 +157,13 @@ open SymmetricContextProperty public
 --   substrate_opcodes:  6.7%
 --   t1t2_handcrafted:  18.2%
 
-record HammingMispredictRecovery : Set₂ where
-  field
-    predictor      : PrimeContextPredictor
-    -- Distance threshold for "recoverable" mispredict.
-    distance-threshold : ℕ
+  record HammingMispredictRecovery : Set where
+    field
+      predictor      : PrimeContextPredictor
+      -- Distance threshold for "recoverable" mispredict.
+      distance-threshold : ℕ
 
-open HammingMispredictRecovery public
+  open HammingMispredictRecovery public
 
 ------------------------------------------------------------------------
 -- Categorical reading.

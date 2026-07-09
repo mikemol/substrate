@@ -55,17 +55,22 @@ data MergeStrategy : Set where
 -- State carries the strategy-specific memory.
 ------------------------------------------------------------------------
 
-record HomogeneousMergerType (A : Set) : Set₁ where
-  field
-    n-inputs       : ℕ           -- number of input streams
-    strategy-state : Set         -- e.g., ℕ for round-robin counter
+-- ⟡set1-paydown: parameterize strategy-state (the `strategy-state : Set` FIELD forced
+-- HomogeneousMergerType : Set₁; as a module parameter every field is Set-valued, so it lives
+-- in Set. Consumers write `HomogeneousMergerType strategy-state A`.)
+module _ (strategy-state : Set) where       -- e.g., ℕ for round-robin counter
+  record HomogeneousMergerType (A : Set) : Set where
+    field
+      n-inputs : ℕ           -- number of input streams
 
-homogeneous-merger-type : ∀ {A} → HomogeneousMergerType A → BrickType
-homogeneous-merger-type {A} M = record
+  open HomogeneousMergerType public
+
+homogeneous-merger-type : ∀ {strategy-state A : Set} → HomogeneousMergerType strategy-state A → BrickType
+homogeneous-merger-type {strategy-state} {A} M = record
   { D-in  = List A
   ; D-out = A
-  ; S-in  = HomogeneousMergerType.strategy-state M
-  ; S-out = HomogeneousMergerType.strategy-state M
+  ; S-in  = strategy-state
+  ; S-out = strategy-state
   }
 
 ------------------------------------------------------------------------
