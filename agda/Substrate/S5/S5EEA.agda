@@ -31,33 +31,38 @@ module Substrate.S5.S5EEA where
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
 
 -- the DivStr interface, reproduced field-for-field from Algebra.Wedge.DivStr
-record DivStr : Set₁ where
-  field
-    C     : Set
-    z     : C
-    recon : C → C → C → C     -- recon q b r = "q·b, then remainder r"
-open DivStr public
+-- ⟡set1-paydown: parameterize Carrier. `C : Set` was the carrier FIELD, forcing
+-- DivStr : Set₁ (and dragging Wedge/Trace/QSeq/shape along via `C D`); take it as the
+-- module parameter and every field is Carrier-valued, so DivStr : Set. `C D` becomes
+-- the supplied `Carrier` directly. Consumers write `DivStr Carrier`, `Trace Carrier D …`.
+module _ (Carrier : Set) where
 
-record Wedge (D : DivStr) (a b : C D) : Set where      -- ⟦shape:478f66a6 quot,rem,wedge-eq⟧
-  field
-    quot     : C D
-    rem      : C D
-    wedge-eq : a ≡ recon D quot b rem
-open Wedge public
+  record DivStr : Set where     -- was : Set₁
+    field
+      z     : Carrier
+      recon : Carrier → Carrier → Carrier → Carrier   -- recon q b r = "q·b, then remainder r"
+  open DivStr public
 
-data Trace (D : DivStr) : C D → C D → C D → Set where
-  done : (a : C D) → Trace D a (z D) a
-  more : {a g : C D} (b : C D) (w : Wedge D a b) →
-         Trace D b (rem w) g → Trace D a b g
+  record Wedge (D : DivStr) (a b : Carrier) : Set where      -- ⟦shape:478f66a6 quot,rem,wedge-eq⟧
+    field
+      quot     : Carrier
+      rem      : Carrier
+      wedge-eq : a ≡ recon D quot b rem
+  open Wedge public
 
--- the generic quotient-sequence shape (Wedge/Shape.shape), reproduced.
-data QSeq (D : DivStr) : Set where
-  []  : QSeq D
-  _∷_ : C D → QSeq D → QSeq D
+  data Trace (D : DivStr) : Carrier → Carrier → Carrier → Set where
+    done : (a : Carrier) → Trace D a (z D) a
+    more : {a g : Carrier} (b : Carrier) (w : Wedge D a b) →
+           Trace D b (rem w) g → Trace D a b g
 
-shape : {D : DivStr} {a b g : C D} → Trace D a b g → QSeq D
-shape (done _)     = []
-shape (more b w t) = quot w ∷ shape t
+  -- the generic quotient-sequence shape (Wedge/Shape.shape), reproduced.
+  data QSeq (D : DivStr) : Set where
+    []  : QSeq D
+    _∷_ : Carrier → QSeq D → QSeq D
+
+  shape : {D : DivStr} {a b g : Carrier} → Trace D a b g → QSeq D
+  shape (done _)     = []
+  shape (more b w t) = quot w ∷ shape t
 
 ------------------------------------------------------------------------
 -- THE COMBINATOR INSTANCE. Reduction states S with a step `next : S → S`
@@ -72,19 +77,19 @@ shape (more b w t) = quot w ∷ shape t
 -- Agda-abstract form). The instance is parametric in (S, nf, rb).
 ------------------------------------------------------------------------
 module Reduction (S : Set) (nf : S) (rb : S → S → S → S) where
-  combinator-DivStr : DivStr
-  combinator-DivStr = record { C = S ; z = nf ; recon = rb }
+  combinator-DivStr : DivStr S
+  combinator-DivStr = record { z = nf ; recon = rb }
 
   -- a reduction that has reached nf is `done` — the terminal (GCD). A step
   -- that produces a wedge (generator q, remainder r) is `more`. So a finite
   -- reduction IS a Trace ending in done (value = GCD reached), and its shape
   -- is the generator sequence — the continued fraction of the reduction.
   ReductionTrace : S → S → S → Set
-  ReductionTrace = Trace combinator-DivStr
+  ReductionTrace = Trace S combinator-DivStr
 
   -- the CF of a reduction = the generator sequence read off its trace.
-  reduction-CF : {a b g : S} → ReductionTrace a b g → QSeq combinator-DivStr
-  reduction-CF = shape
+  reduction-CF : {a b g : S} → ReductionTrace a b g → QSeq S combinator-DivStr
+  reduction-CF t = shape S t
 
   -- fixed point / value = the trace is `done` at the terminal: its CF is [].
   value-is-empty-CF : (a : S) → reduction-CF (done a) ≡ []
@@ -105,7 +110,7 @@ module Reduction (S : Set) (nf : S) (rb : S → S → S → S) where
   PeriodWitness :
     {a₁ b₁ g₁ a₂ b₂ g₂ : S} →
     ReductionTrace a₁ b₁ g₁ → ReductionTrace a₂ b₂ g₂ → Set
-  PeriodWitness t₁ t₂ = shape t₁ ≡ shape t₂
+  PeriodWitness t₁ t₂ = shape S t₁ ≡ shape S t₂
 
   -- and it is exactly the equality online-Sequitur detects. The SOUNDNESS
   -- (period ⟹ infinite ⟹ no value) is shape-value-invariance's job, which is

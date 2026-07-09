@@ -43,11 +43,11 @@ open import Substrate.Category.DiscreteFourierTransform
 -- responsibility downstream).
 ------------------------------------------------------------------------
 
-F2n-self-dual : (n : ℕ) → F2nSelfDual n
+-- F2nVec / F2nChars are now module parameters of F2nSelfDual (⟡set1-paydown); the
+-- carrier Vector n is supplied positionally for both (self-duality).
+F2n-self-dual : (n : ℕ) → F2nSelfDual (Vector n) (Vector n) n
 F2n-self-dual n = record
-  { F2nVec   = Vector n
-  ; F2nChars = Vector n
-  ; to       = λ v → v
+  { to       = λ v → v
   ; from     = λ c → c
   ; to-from  = λ _ → refl
   ; from-to  = λ _ → refl
@@ -64,7 +64,7 @@ F2n-self-dual n = record
 ℤ-signs : Set
 ℤ-signs = ℕ  -- placeholder for {+1, -1}; concrete instances use ℤ
 
-ℤ-WHT-Site : (n : ℕ) → WalshHadamardDFT n
+ℤ-WHT-Site : (n : ℕ) → WalshHadamardDFT (Vector n) (Vector n) n
 ℤ-WHT-Site n = record
   { self-dual-witness = F2n-self-dual n
   }

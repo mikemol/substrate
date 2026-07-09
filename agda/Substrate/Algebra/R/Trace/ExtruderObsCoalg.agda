@@ -29,9 +29,14 @@ open import Substrate.Algebra.R.Trace.ExtruderFix using (CombinatorAlgebra)
 -- obs : C → ℕ (the "head digit" of a term) and a NEXT map (apply a fixed probe,
 -- the Gauss-map step). Together they ARE a Coalg C — the observation coalgebra.
 ------------------------------------------------------------------------
+-- ⟡set1-paydown (CombinatorAlgebra now parameterizes its carrier): C is kept as an
+-- explicit field so ObservedAlgebra's external interface stays UNPARAMETERIZED (its
+-- uneditable consumer ExtruderRSideRealigned annotates `O : ObservedAlgebra`). It
+-- fields `C : Set`, so it stays in Set₁ — but the target CombinatorAlgebra is now in Set.
 record ObservedAlgebra : Set₁ where
   field
-    A     : CombinatorAlgebra
+    C     : Set
+    A     : CombinatorAlgebra C
   open CombinatorAlgebra A public
   field
     obs   : C → ℕ                 -- the bare head observation (the CF digit)

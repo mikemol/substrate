@@ -45,19 +45,26 @@ private
 -- The DFT is a linear map (G → Coeffs) → (G^ → Coeffs) defined by
 -- character integration.
 
-record DiscreteFourierTransform
-       (A : Set)
-       (RootsType : Set)
-       (G : LocallyCompactAbelian A)
-       (Coeffs : Set) : Set₁ where
-  field
-    G-dual : PontryaginDual A RootsType
-    DFT    : (A → Coeffs) → (Chars G-dual → Coeffs)
-    DFT-1  : (Chars G-dual → Coeffs) → (A → Coeffs)   -- inverse DFT
-    -- Plancherel / invertibility laws stated abstractly; concrete
-    -- instances supply.
+-- ⟡set1-paydown: parameterize Chars. The character carrier lived in the `G-dual`
+-- field as `PontryaginDual A RootsType`'s `Chars`, forcing this record to Set₁. Now that
+-- PontryaginDual takes Chars as a parameter, lift Chars here too: the `Chars G-dual`
+-- projections become the supplied `Chars`, and the record lands in Set. Consumers write
+-- `DiscreteFourierTransform Chars A RootsType G Coeffs`.
+module _ (Chars : Set) where
 
-open DiscreteFourierTransform public
+  record DiscreteFourierTransform
+         (A : Set)
+         (RootsType : Set)
+         (G : LocallyCompactAbelian A)
+         (Coeffs : Set) : Set where
+    field
+      G-dual : PontryaginDual Chars A RootsType
+      DFT    : (A → Coeffs) → (Chars → Coeffs)
+      DFT-1  : (Chars → Coeffs) → (A → Coeffs)   -- inverse DFT
+      -- Plancherel / invertibility laws stated abstractly; concrete
+      -- instances supply.
+
+  open DiscreteFourierTransform public
 
 ------------------------------------------------------------------------
 -- PD10: Walsh-Hadamard as F₂ⁿ DFT.
@@ -69,13 +76,19 @@ open DiscreteFourierTransform public
 -- The substrate's GG-arc empirical work used this exact construction
 -- (eliza/walsh_hadamard.py); PD10 makes it categorically first-class.
 
-record WalshHadamardDFT
-       (n : ℕ) : Set₁ where
-  field
-    self-dual-witness : F2nSelfDual n
-    -- Plus the concrete DFT data; abstracted here.
+-- ⟡set1-paydown: parameterize F2nVec, F2nChars. The Set₁ debt came entirely through the
+-- `self-dual-witness : F2nSelfDual n` field (F2nSelfDual was Set₁). Now that F2nSelfDual takes
+-- its two carriers as parameters, lift them here so the field is Set-valued. Consumers write
+-- `WalshHadamardDFT F2nVec F2nChars n`.
+module _ (F2nVec : Set) (F2nChars : Set) where
 
-open WalshHadamardDFT public
+  record WalshHadamardDFT
+         (n : ℕ) : Set where
+    field
+      self-dual-witness : F2nSelfDual F2nVec F2nChars n
+      -- Plus the concrete DFT data; abstracted here.
+
+  open WalshHadamardDFT public
 
 ------------------------------------------------------------------------
 -- PD9, PD11, PD12, PD13: DFT for finite abelian groups via CRT,
@@ -92,56 +105,64 @@ open WalshHadamardDFT public
 -- decomposes correspondingly: F_{Z/n} = ⊗_i F_{Z/(p_i^k_i)}.
 -- Consumer supplies the per-factor DFT bundling.
 
-record CRTDecomposition
-       (n : ℕ) : Set₁ where
-  field
-    -- The list of prime-power factors (carrier supplied by consumer).
-    PrimeFactors    : Set
-    -- The per-factor DFT carrier-type (consumer-supplied).
-    PerFactorDFT    : Set
-    -- The CRT tensor-product witness: a map from factor-list to
-    -- the composite per-factor DFT bundle.
-    tensor-witness  : PrimeFactors → PerFactorDFT
+-- ⟡set1-paydown: parameterize PrimeFactors, PerFactorDFT. Both were `: Set` carrier FIELDS
+-- (Set₁ debt); take them as module parameters. Consumers write
+-- `CRTDecomposition PrimeFactors PerFactorDFT n`.
+module _ (PrimeFactors : Set) (PerFactorDFT : Set) where
 
-open CRTDecomposition public
+  record CRTDecomposition
+         (n : ℕ) : Set where
+    field
+      -- The CRT tensor-product witness: a map from factor-list to
+      -- the composite per-factor DFT bundle.
+      tensor-witness  : PrimeFactors → PerFactorDFT
+
+  open CRTDecomposition public
 
 -- Plancherel: ∑ |f|² ≡ ∑ |F(f)|² (up to scaling). Carried as a
 -- per-function equation against consumer-supplied norms.
 
-record PlancherelTheorem
-       (A : Set)
-       (RootsType : Set)
-       (G : LocallyCompactAbelian A)
-       (Coeffs : Set)
-       (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  field
-    -- Consumer-supplied norms on the two sides of the DFT.
-    norm     : (A → Coeffs) → Coeffs
-    norm-hat : (Chars (G-dual D) → Coeffs) → Coeffs
-    -- The Plancherel identity: total energy is preserved by DFT.
-    plancherel : (f : A → Coeffs) → norm f ≡ norm-hat (DFT D f)
+-- Chars lifted to a module parameter so the `D : DiscreteFourierTransform Chars …` param
+-- typechecks and `Chars (G-dual D)` becomes the supplied `Chars` (already Set — no debt paid).
+module _ (Chars : Set) where
 
-open PlancherelTheorem public
+  record PlancherelTheorem
+         (A : Set)
+         (RootsType : Set)
+         (G : LocallyCompactAbelian A)
+         (Coeffs : Set)
+         (D : DiscreteFourierTransform Chars A RootsType G Coeffs) : Set where
+    field
+      -- Consumer-supplied norms on the two sides of the DFT.
+      norm     : (A → Coeffs) → Coeffs
+      norm-hat : (Chars → Coeffs) → Coeffs
+      -- The Plancherel identity: total energy is preserved by DFT.
+      plancherel : (f : A → Coeffs) → norm f ≡ norm-hat (DFT D f)
+
+  open PlancherelTheorem public
 
 -- Convolution theorem: DFT of convolution = pointwise product of
 -- DFTs. Consumer supplies group-algebra convolution + Hadamard
 -- product.
 
-record ConvolutionTheorem
-       (A : Set)
-       (RootsType : Set)
-       (G : LocallyCompactAbelian A)
-       (Coeffs : Set)
-       (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  field
-    _*A_      : (A → Coeffs) → (A → Coeffs) → (A → Coeffs)
-    _·dual_   : (Chars (G-dual D) → Coeffs) →
-                (Chars (G-dual D) → Coeffs) →
-                (Chars (G-dual D) → Coeffs)
-    convolves : (f g : A → Coeffs) →
-                DFT D (f *A g) ≡ (DFT D f) ·dual (DFT D g)
+-- Chars lifted to a module parameter (as PlancherelTheorem); `Chars (G-dual D)` → `Chars`.
+module _ (Chars : Set) where
 
-open ConvolutionTheorem public
+  record ConvolutionTheorem
+         (A : Set)
+         (RootsType : Set)
+         (G : LocallyCompactAbelian A)
+         (Coeffs : Set)
+         (D : DiscreteFourierTransform Chars A RootsType G Coeffs) : Set where
+    field
+      _*A_      : (A → Coeffs) → (A → Coeffs) → (A → Coeffs)
+      _·dual_   : (Chars → Coeffs) →
+                  (Chars → Coeffs) →
+                  (Chars → Coeffs)
+      convolves : (f g : A → Coeffs) →
+                  DFT D (f *A g) ≡ (DFT D f) ·dual (DFT D g)
+
+  open ConvolutionTheorem public
 
 ------------------------------------------------------------------------
 -- PD14-PD16: Frobenius algebra structure + string diagrams +
@@ -217,33 +238,39 @@ open CategoricalFourierTransform public
 -- into a tensor product of per-Sylow-prime DFTs. Consumer supplies
 -- the prime-list and the per-prime DFT bundle.
 
-record MultiSylowDFTDecomposition
-       (n : ℕ) : Set₁ where
-  field
-    SylowPrimes  : Set
-    PerSylowDFT  : Set
-    sylow-bundle : SylowPrimes → PerSylowDFT
+-- ⟡set1-paydown: parameterize SylowPrimes, PerSylowDFT. Both were `: Set` carrier FIELDS
+-- (Set₁ debt); take them as module parameters. Consumers write
+-- `MultiSylowDFTDecomposition SylowPrimes PerSylowDFT n`.
+module _ (SylowPrimes : Set) (PerSylowDFT : Set) where
 
-open MultiSylowDFTDecomposition public
+  record MultiSylowDFTDecomposition
+         (n : ℕ) : Set where
+    field
+      sylow-bundle : SylowPrimes → PerSylowDFT
+
+  open MultiSylowDFTDecomposition public
 
 -- The DFT can be viewed as a deterministic morphism in a Markov
 -- category (basis change). Connects PD arc to MK arc. The
 -- consumer site supplies the deterministic-kernel witness — i.e.,
 -- the DFT-image is delta-supported.
 
-record DFTasMarkovMorphism
-       (A : Set)
-       (RootsType : Set)
-       (G : LocallyCompactAbelian A)
-       (Coeffs : Set)
-       (D : DiscreteFourierTransform A RootsType G Coeffs) : Set where
-  field
-    -- The DFT viewed as a Markov-category morphism: deterministic
-    -- = "input-to-output is a function, not a stochastic relation".
-    deterministic : (a : A) (c : Chars (G-dual D)) →
-                    Coeffs
+-- Chars lifted to a module parameter (as PlancherelTheorem); `Chars (G-dual D)` → `Chars`.
+module _ (Chars : Set) where
 
-open DFTasMarkovMorphism public
+  record DFTasMarkovMorphism
+         (A : Set)
+         (RootsType : Set)
+         (G : LocallyCompactAbelian A)
+         (Coeffs : Set)
+         (D : DiscreteFourierTransform Chars A RootsType G Coeffs) : Set where
+    field
+      -- The DFT viewed as a Markov-category morphism: deterministic
+      -- = "input-to-output is a function, not a stochastic relation".
+      deterministic : (a : A) (c : Chars) →
+                      Coeffs
+
+  open DFTasMarkovMorphism public
 
 ------------------------------------------------------------------------
 -- PD20: PD arc capstone.

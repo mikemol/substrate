@@ -1863,6 +1863,7 @@ digraph imports {
   "Substrate.Algebra.ExpLogCodec" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F1.AsModule" -> "Substrate.Algebra.PointedSet";
   "Substrate.Algebra.F1.AsModule" -> "Substrate.Algebra.PointedSet.Map";
+  "Substrate.Algebra.F1.AsModule" -> "Substrate.Foundation.Unit";
   "Substrate.Algebra.F1.GL" -> "Substrate.Algebra.PointedSet";
   "Substrate.Algebra.F1.GL" -> "Substrate.Algebra.PointedSet.Map";
   "Substrate.Algebra.F1.GL" -> "Substrate.Foundation.Eq";

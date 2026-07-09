@@ -33,11 +33,11 @@ open import Substrate.Category.DiscreteFourierTransform
 --                     the substrate-native prime-factorisation arc)
 ------------------------------------------------------------------------
 
-ℤ/n-CRT-Site : (n : ℕ) → CRTDecomposition n
+-- PrimeFactors / PerFactorDFT are now module parameters (⟡set1-paydown); supplied
+-- positionally (ℕ stand-in for the prime list, ℕ → ℕ for the composite DFT bundle).
+ℤ/n-CRT-Site : (n : ℕ) → CRTDecomposition ℕ (ℕ → ℕ) n
 ℤ/n-CRT-Site n = record
-  { PrimeFactors   = ℕ
-  ; PerFactorDFT   = ℕ → ℕ
-  ; tensor-witness = λ _ k → k
+  { tensor-witness = λ _ k → k
   }
 
 ------------------------------------------------------------------------
@@ -49,9 +49,8 @@ open import Substrate.Category.DiscreteFourierTransform
 -- the JJ-arc empirical work.
 ------------------------------------------------------------------------
 
-ℤ/n-MultiSylow-Site : (n : ℕ) → MultiSylowDFTDecomposition n
+-- SylowPrimes / PerSylowDFT are now module parameters (⟡set1-paydown); supplied positionally.
+ℤ/n-MultiSylow-Site : (n : ℕ) → MultiSylowDFTDecomposition ℕ (ℕ → ℕ) n
 ℤ/n-MultiSylow-Site n = record
-  { SylowPrimes  = ℕ
-  ; PerSylowDFT  = ℕ → ℕ
-  ; sylow-bundle = λ _ k → k
+  { sylow-bundle = λ _ k → k
   }

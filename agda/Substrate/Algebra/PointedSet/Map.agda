@@ -24,25 +24,29 @@ open import Substrate.Algebra.PointedSet using (PointedSet; Carrier; base)
 -- 1. The PointedSetMap record.
 ------------------------------------------------------------------------
 
-record PointedSetMap (P Q : PointedSet) : Set where
-  field
-    apply        : Carrier P → Carrier Q
-    base-preserv : apply (base P) ≡ base Q
+-- ⟡set1-paydown (PointedSet now parameterizes its carrier): the record takes the
+-- two carriers as module parameters; `Carrier P`/`Carrier Q` resolve via the compat
+-- accessor. PointedSetMap already lived in Set — this only threads the carrier index.
+module _ {A B : Set} where
+  record PointedSetMap (P : PointedSet A) (Q : PointedSet B) : Set where
+    field
+      apply        : Carrier P → Carrier Q
+      base-preserv : apply (base P) ≡ base Q
 
-open PointedSetMap public
+  open PointedSetMap public
 
 ------------------------------------------------------------------------
 -- 2. Identity + composition.
 ------------------------------------------------------------------------
 
-id-PointedSetMap : (P : PointedSet) → PointedSetMap P P
+id-PointedSetMap : {A : Set} (P : PointedSet A) → PointedSetMap P P
 id-PointedSetMap P = record
   { apply        = λ x → x
   ; base-preserv = refl
   }
 
 compose-PointedSetMap :
-  {P Q R : PointedSet} →
+  {A B D : Set} {P : PointedSet A} {Q : PointedSet B} {R : PointedSet D} →
   PointedSetMap Q R →
   PointedSetMap P Q →
   PointedSetMap P R

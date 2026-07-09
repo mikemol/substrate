@@ -60,12 +60,12 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Quotient#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#Character</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#F2nSelfDual</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.04</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDual</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDualityTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharTerm</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#F2nSelfDual</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDual</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDualityTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/AsField#ℚ-Field-Obligation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetBasis#HetQ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#Tm</loc><priority>0.01</priority></url>
@@ -249,16 +249,16 @@
   <url><loc>https://substrate.local/Substrate/Category/CoxeterPermutationGroup#CoxeterAction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CoxeterPermutationGroup#MultiLayerRotation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DaggerCategory#DaggerCategory</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CRTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CategoricalFourierTransform</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#FrobeniusBasisStructure</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTGen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTTerm</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CRTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#ConvolutionTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DFTasMarkovMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DiscreteFourierTransform</loc><priority>0.02</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#FrobeniusBasisStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#MultiSylowDFTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#PlancherelTheorem</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#WalshHadamardDFT</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Equalizer#IsEqualised</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ExteriorAlgebra#ExteriorAlgebra</loc><priority>0.0</priority></url>
@@ -555,8 +555,8 @@
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQCyc#Stream</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQCyc#_~ₛ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQCyc#ℕ₀</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQHalts#HaltSystem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQHalts#Progress</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQHalts#HaltSystem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQLambek#LambekFix</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQLambek#_×_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQNf#Wit</loc><priority>0.0</priority></url>

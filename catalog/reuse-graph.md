@@ -123,12 +123,12 @@ graph LR
   n4dfaa98f7b --> ndc3f5fc5a4
   n086f3e657f["Linear"]
   n086f3e657f --> ndc3f5fc5a4
-  n42a9735ccf["F2nSelfDual"]
-  n42a9735ccf --> ndc3f5fc5a4
   nf6c3b2927b["CharGen"]
   nf6c3b2927b --> ndc3f5fc5a4
   n3aad78a208["CharTerm"]
   n3aad78a208 --> ndc3f5fc5a4
+  n3669465e5a["F2nSelfDual"]
+  n3669465e5a --> ndc3f5fc5a4
   nb13f4f3215["Linearℚ"]
   nb13f4f3215 --> ndc3f5fc5a4
   nece7814ea9["CRT-Witness"]
@@ -293,12 +293,12 @@ graph LR
   ncb5ceeb3b8 --> ndc3f5fc5a4
   nfba8efbd16["CoxeterAction"]
   nfba8efbd16 --> ndc3f5fc5a4
-  n39afe2d7d1["CRTDecomposition"]
-  n39afe2d7d1 --> ndc3f5fc5a4
-  n680f6468ad["MultiSylowDFTDecomposition"]
-  n680f6468ad --> ndc3f5fc5a4
-  na999f3d730["WalshHadamardDFT"]
-  na999f3d730 --> ndc3f5fc5a4
+  n1d2106f8d9["CRTDecomposition"]
+  n1d2106f8d9 --> ndc3f5fc5a4
+  ncf97f41b4b["MultiSylowDFTDecomposition"]
+  ncf97f41b4b --> ndc3f5fc5a4
+  n4c8f1dce62["WalshHadamardDFT"]
+  n4c8f1dce62 --> ndc3f5fc5a4
   n7b8b1feb4b["FieldContinuum"]
   n7b8b1feb4b --> ndc3f5fc5a4
   nece6df378a["FieldFanOut"]

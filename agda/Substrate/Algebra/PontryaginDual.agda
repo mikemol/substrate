@@ -78,17 +78,20 @@ open Character public
 -- For finite G: G^ is finite and |G^| = |G|. The substrate's discrete
 -- LCA dual is the set of all characters.
 
-record PontryaginDual (A : Set) (RootsType : Set) : Set₁ where
-  field
-    -- The set of characters carrying the dual group structure.
-    -- Concrete instances enumerate the characters and supply the
-    -- pointwise group operations.
-    Chars      : Set
-    dual-mult  : Chars → Chars → Chars
-    dual-id    : Chars
-    dual-inv   : Chars → Chars
+-- ⟡set1-paydown: parameterize Chars. The characters carrier was a `Chars : Set` FIELD,
+-- forcing PontryaginDual : Set₁. Take it as the module parameter; the CONSUMER names it
+-- (`PontryaginDual Chars A RootsType`). Every field is then Set-valued, so the record is Set.
+module _ (Chars : Set) where
 
-open PontryaginDual public
+  record PontryaginDual (A : Set) (RootsType : Set) : Set where
+    field
+      -- Concrete instances enumerate the characters and supply the
+      -- pointwise group operations over the supplied Chars carrier.
+      dual-mult  : Chars → Chars → Chars
+      dual-id    : Chars
+      dual-inv   : Chars → Chars
+
+  open PontryaginDual public
 
 ------------------------------------------------------------------------
 -- PD5: Pontryagin duality theorem (statement).
@@ -106,22 +109,25 @@ open PontryaginDual public
 -- via the evaluation pairing a ↦ (χ ↦ χ a); the consumer supplies
 -- this carrier + the iso bridges.
 
-record PontryaginDualityTheorem
-       (A : Set)
-       (RootsType : Set)
-       (G : LocallyCompactAbelian A)
-       (G-dual : PontryaginDual A RootsType) : Set₁ where
-  field
-    -- The double-dual carrier (consumer-supplied; usually A itself
-    -- via the evaluation pairing).
-    DoubleDual : Set
-    -- The canonical iso A ≅ DoubleDual.
-    to         : A → DoubleDual
-    from       : DoubleDual → A
-    to-from    : (d : DoubleDual) → to (from d) ≡ d
-    from-to    : (a : A) → from (to a) ≡ a
+-- ⟡set1-paydown: parameterize DoubleDual (and Chars, for the G-dual param). The double-dual
+-- carrier was a `DoubleDual : Set` FIELD (Set₁ debt); take it as a module parameter. Chars is
+-- also lifted so the `G-dual : PontryaginDual Chars A RootsType` param typechecks. Consumers write
+-- `PontryaginDualityTheorem Chars DoubleDual A RootsType G G-dual`.
+module _ (Chars : Set) (DoubleDual : Set) where
 
-open PontryaginDualityTheorem public
+  record PontryaginDualityTheorem
+         (A : Set)
+         (RootsType : Set)
+         (G : LocallyCompactAbelian A)
+         (G-dual : PontryaginDual Chars A RootsType) : Set where
+    field
+      -- The canonical iso A ≅ DoubleDual.
+      to         : A → DoubleDual
+      from       : DoubleDual → A
+      to-from    : (d : DoubleDual) → to (from d) ≡ d
+      from-to    : (a : A) → from (to a) ≡ a
+
+  open PontryaginDualityTheorem public
 
 ------------------------------------------------------------------------
 -- PD6: F₂ⁿ as self-dual.
@@ -143,16 +149,16 @@ open PontryaginDualityTheorem public
 -- F₂ⁿ-vector type is parametric in the carrier (Vector n, or
 -- similar substrate-native form).
 
-record F2nSelfDual (n : ℕ) : Set₁ where
-  field
-    -- The consumer's F₂ⁿ-vector carrier (e.g., Substrate.Algebra.F2.Vector.Vector n).
-    F2nVec     : Set
-    -- The characters carrier (= F2nVec for self-duality, but the
-    -- record allows the consumer to supply a re-named alias).
-    F2nChars   : Set
-    to         : F2nVec → F2nChars
-    from       : F2nChars → F2nVec
-    to-from    : (c : F2nChars) → to (from c) ≡ c
-    from-to    : (v : F2nVec) → from (to v) ≡ v
+-- ⟡set1-paydown: parameterize F2nVec and F2nChars. Both carriers were `: Set` FIELDS
+-- (Set₁ debt); take them as module parameters. Consumers write `F2nSelfDual F2nVec F2nChars n`
+-- (self-duality supplies the same carrier for both).
+module _ (F2nVec : Set) (F2nChars : Set) where
 
-open F2nSelfDual public
+  record F2nSelfDual (n : ℕ) : Set where
+    field
+      to         : F2nVec → F2nChars
+      from       : F2nChars → F2nVec
+      to-from    : (c : F2nChars) → to (from c) ≡ c
+      from-to    : (v : F2nVec) → from (to v) ≡ v
+
+  open F2nSelfDual public

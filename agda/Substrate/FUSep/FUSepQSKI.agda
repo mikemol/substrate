@@ -62,9 +62,9 @@ prog : (s : Tm) → Progress rcn nxt (λ s' → (nxt s') ◁ s') s
 prog (atom n)  = isVal (base (atom n))
 prog (app f a) = stepsD a refl ◁-fun
 
-ski-halts : HaltSystem
+ski-halts : HaltSystem Tm Tm Tm _◁_
 ski-halts = record
-  { St = Tm ; Hd = Tm ; M = Tm ; R = _◁_ ; mu = λ x → x
+  { mu = λ x → x
   ; nxt = nxt ; rcn = rcn ; prog = prog }
 
 ------------------------------------------------------------------------

@@ -54,10 +54,11 @@ add-mod n a b = fromℕ< (mod-suc-bound (toℕ a + toℕ b) n)
 neg-mod : (n : ℕ) → Fin (suc n) → Fin (suc n)
 neg-mod n a = fromℕ< (mod-suc-bound (suc n ∸ toℕ a) n)
 
-ℤ/n-as-Self-Dual : (n : ℕ) → PontryaginDual (Fin (suc n)) (Fin (suc n))
+-- Chars is now a module parameter of PontryaginDual (⟡set1-paydown); the carrier
+-- Fin (suc n) is supplied positionally as the first argument.
+ℤ/n-as-Self-Dual : (n : ℕ) → PontryaginDual (Fin (suc n)) (Fin (suc n)) (Fin (suc n))
 ℤ/n-as-Self-Dual n = record
-  { Chars     = Fin (suc n)
-  ; dual-mult = add-mod n               -- cyclic addition mod (suc n)
+  { dual-mult = add-mod n               -- cyclic addition mod (suc n)
   ; dual-id   = zero {n}                -- identity character χ_0
   ; dual-inv  = neg-mod n               -- (suc n) ∸ a, mod (suc n)
   }

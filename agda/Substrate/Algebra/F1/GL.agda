@@ -41,10 +41,10 @@ open import Substrate.Algebra.PointedSet.Map
 -- 1. The F₁-vector space of dimension n: (Fin (suc n), zero).
 ------------------------------------------------------------------------
 
-F₁ⁿ : ℕ → PointedSet
+-- ⟡set1-paydown: PointedSet is now carrier-indexed; the carrier is Fin (suc n).
+F₁ⁿ : (n : ℕ) → PointedSet (Fin (suc n))
 F₁ⁿ n = record
-  { Carrier = Fin (suc n)
-  ; base    = zero
+  { base = zero
   }
 
 ------------------------------------------------------------------------

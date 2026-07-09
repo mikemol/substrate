@@ -24,12 +24,19 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 -- 1. The PointedSet record.
 ------------------------------------------------------------------------
 
-record PointedSet : Set₁ where
-  field
-    Carrier : Set
-    base    : Carrier
+-- ⟡set1-paydown: parameterize Carrier
+module _ (Carrier : Set) where
+  record PointedSet : Set where
+    field
+      base : Carrier
 
-open PointedSet public
+  open PointedSet public
+
+-- Compat accessor: the carrier as a function, so downstream `Carrier P`
+-- projections and Substrate.Algebra.F1.Capstone's `using (Carrier)` re-export
+-- keep resolving after Carrier moved from field to module parameter.
+Carrier : {A : Set} → PointedSet A → Set
+Carrier {A} _ = A
 
 ------------------------------------------------------------------------
 -- 2. The trivial PointedSet: ⊤ with its unique element.
@@ -38,8 +45,8 @@ open PointedSet public
 -- elements beyond the basepoint).
 ------------------------------------------------------------------------
 
-⊤-Pointed : PointedSet
-⊤-Pointed = record { Carrier = ⊤ ; base = tt }
+⊤-Pointed : PointedSet ⊤
+⊤-Pointed = record { base = tt }
 
 ------------------------------------------------------------------------
 -- 3. Capstone for F1m1.

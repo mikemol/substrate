@@ -61,7 +61,7 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `ℚ` | record | `Substrate.Algebra.Q` |
 | `Matℤ` | record | `Substrate.Algebra.R.Trace.CFBezoutBridge` |
 | `Mat` | record | `Substrate.Algebra.R.Trace.CFMatrixBridge` |
-| `CombinatorAlgebra` | record | `Substrate.Algebra.R.Trace.ExtruderFix` |
+| `CombinatorAlgebra` | record | `Substrate.Algebra.R.Trace.ExtruderFix._` |
 | `LambekFix` | record | `Substrate.Algebra.R.Trace.ExtruderLambekRealigned` |
 | `⊥` | data | `Substrate.Algebra.R.Trace.OrbitAudit` |
 | `Bool` | data | `Substrate.Algebra.R.Trace.OrbitComplete.BoolInstance` |
@@ -169,7 +169,7 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `AcquisitionTimeline` | record | `Substrate.Category.PhaseLockedLoop.AcquisitionTimeline` |
 | `LockTimeBound` | record | `Substrate.Category.PhaseLockedLoop.LockTimeBound` |
 | `LoopParameters` | record | `Substrate.Category.PhaseLockedLoop.LoopParameters` |
-| `PLL` | record | `Substrate.Category.PhaseLockedLoop.PLL` |
+| `PLL` | record | `Substrate.Category.PhaseLockedLoop.PLL._` |
 | `SubstratePLLBank` | record | `Substrate.Category.PhaseLockedLoop.SubstratePLLBank` |
 | `PredictorRing` | record | `Substrate.Category.PredictorRing` |
 | `PredictorSignature` | record | `Substrate.Category.PredictorRing` |
@@ -273,8 +273,8 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `_⇒*_` | data | `Substrate.FUSep.FUSepQCR.Newman._` |
 | `Iso` | record | `Substrate.FUSep.FUSepQConfluence` |
 | `ℕ₀` | data | `Substrate.FUSep.FUSepQCyc` |
-| `HaltSystem` | record | `Substrate.FUSep.FUSepQHalts` |
 | `Progress` | data | `Substrate.FUSep.FUSepQHalts` |
+| `HaltSystem` | record | `Substrate.FUSep.FUSepQHalts._` |
 | `LambekFix` | record | `Substrate.FUSep.FUSepQLambek` |
 | `_×_` | record | `Substrate.FUSep.FUSepQLambek` |
 | `Wit` | data | `Substrate.FUSep.FUSepQNf` |

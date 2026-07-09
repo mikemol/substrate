@@ -23,8 +23,8 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 
 - `record {constructor}` — `AtlasContext`@`Substrate.Category.AtlasOfProbes`, `AtlasDomain`@`Substrate.Category.CompressionAtlas`, `BankIndependence`@`Substrate.Category.PhaseLockedLoop.Bank.BankIndependence`, `Fibration`@`Substrate.Category.GrothendieckConstruction`, `GeometricMorphism`@`Substrate.Category.UniversalProperty.GeometricMorphism`, `GrothendieckConstruction`@`Substrate.Category.GrothendieckConstruction`, `LaxFunctor`@`Substrate.Category.LaxFunctor`, `LensFunctoriality`@`Substrate.Category.StochasticLens`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples.PredictorUpdate`, `Preserves-Ranking`@`Substrate.Pipeline.Examples`, `Preserves-Ranking`@`Substrate.Pipeline.Examples.ChooseRotation`, `Preserves-Shannon`@`Substrate.Pipeline.Examples`, `Preserves-Shannon`@`Substrate.Pipeline.Examples.PredictorSurprise`, `PseudoFunctor`@`Substrate.Category.PseudoFunctor`, `SheafAdjointPair`@`Substrate.Category.UniversalProperty.AdjointPair`, `SufficientStatisticInfoTheory`@`Substrate.Probability.BaezFritzLeinster`, `TwoEquivalence`@`Substrate.Category.TwoEquivalence`, `TwoNaturalTransformation`@`Substrate.Category.TwoNaturalTransformation`
 - `data {[],_∷_}` — `CascadeTerm`@`Substrate.Category.CascadedCoalgebra.Term`, `CharTerm`@`Substrate.Algebra.PontryaginDual.Term`, `ComonoidTerm`@`Substrate.Category.Comonoid.Term`, `ConjTerm`@`Substrate.Probability.ConjugateMonad.Term`, `DFTTerm`@`Substrate.Category.DiscreteFourierTransform.Term`, `LensTerm`@`Substrate.Category.StochasticLens.Term`, `List`@`Substrate.Foundation.List`, `MarkovTerm`@`Substrate.Probability.MarkovCategory.Term`, `NoDup`@`Substrate.WitnessTower.DuplicateFree`, `Pipe`@`Substrate.Realizability.Charter`, `PolyTerm`@`Substrate.Category.Poly.Term`, `QSeq`@`Substrate.S5.S5EEA`, `UPTerm`@`Substrate.Category.UniversalProperty.Term`, `Vec`@`Substrate.Foundation.Vec`, `Word`@`Substrate.Groups.Coxeter.Word`
+- `record {constructor,from,from-to,to,to-from}` — `Bijection`@`Substrate.Foundations.Bijection`, `F2nSelfDual`@`Substrate.Algebra.PontryaginDual`, `Live≃Permutation`@`Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection`, `PontryaginDualityTheorem`@`Substrate.Algebra.PontryaginDual`, `Stab≃S₃`@`Substrate.Groups.Stab-S3-Iso`, `TotalSpace≃S₄`@`Substrate.Cocycles.V4Signature.S4Iso`, `_↔_`@`Substrate.Algebra.Bijection`
 - `data {here,there}` — `Any`@`Substrate.Foundation.List.Any`, `Rejected`@`Substrate.Realizability.Charter`, `_∈_`@`Substrate.WitnessTower.Complete`, `_∈ᴿ_`@`Substrate.Algebra.Wedge.Shape.Register`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedBulk`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedMembership`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedReadout`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedRecall`, `_⊎-OR_`@`Substrate.Linguistic.Classification`
-- `record {constructor,from,from-to,to,to-from}` — `Bijection`@`Substrate.Foundations.Bijection`, `Live≃Permutation`@`Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection`, `Stab≃S₃`@`Substrate.Groups.Stab-S3-Iso`, `TotalSpace≃S₄`@`Substrate.Cocycles.V4Signature.S4Iso`, `_↔_`@`Substrate.Algebra.Bijection`
 - `data {}` — `Frontier`@`Substrate.Logic.Evidence.ElAtlas`, `Lift⊥`@`Substrate.Foundation.Fin.Cover`, `⊥`@`Substrate.Algebra.R.Trace.ExtruderObsCoalg`, `⊥`@`Substrate.Algebra.R.Trace.OrbitAudit`, `⊥`@`Substrate.FUSep.FUSepQReduce`, `⊥`@`Substrate.Foundation.Empty`, `⊥`@`Substrate.Foundation.Empty.Polymorphic`, `⊥`@`Substrate.S5.S5Carrier`
 - `data {base,step}` — `EEATrace`@`Substrate.Algebra.Nat.GCD.EEATrace`, `FinTrace`@`Substrate.FUSep.FUSepQBridge`, `PolyEEATrace`@`Substrate.Algebra.F2.Polynomial.Wedge.EEATrace`
 - `data {e,α,β,γ}` — `KleinV4`@`Substrate.S5.S5TorsorWireV4`, `V4`@`Substrate.Category.Comonoid.Sites.V4`, `V₄`@`Substrate.Groups.V4.Bijection`
@@ -365,7 +365,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `Diverges` | record | `Substrate.FUSep.FUSepQReduce` | ⟡FU-sep-Q-reduce: full SKI reduction, where SN FAILS globally |
 | `DivisionAllegory` | record | `Substrate.Category.Allegory.Division` | where root and log unify. |
 | `DivStr` | record | `Substrate.Algebra.Wedge` | the keystone operator. A wedge of `a` against `b` |
-| `DivStr` | record | `Substrate.S5.S5EEA` | ⟡N1b-EEA. Combinator reduction as a DivStr wedge-zip, so the |
+| `DivStr` | record | `Substrate.S5.S5EEA` | was : Set₁ |
 | `Driver` | record | `Substrate.Category.UniversalProperty.ExtrudeBisimDriver` | ⟡extrude-bisim-driver: the run driver returns a |
 | `EdgeApexCone` | record | `Substrate.Category.Cone.EdgeApex` | it can be a morphism between two |
 | `EEATrace` | data | `Substrate.Algebra.Nat.GCD.EEATrace` | EEATrace a b g : the structural recursion of the Euclidean algorithm. |
@@ -474,7 +474,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `GroupoidCardinality` | record | `Substrate.Category.GroupoidCardinality` | S9 of the S-arc. Groupoid cardinality: \|G\| = Σ_x 1/\|Aut(x)\| summed |
 | `GTorsor` | record | `Substrate.Category.GTorsor` | the data-side analogue of a coset space where the |
 | `GTorsorShape` | record | `Substrate.S5.S5TorsorWireV4` | ⟡S4-wire. Connects the CDSW torsor to the named GTorsor |
-| `HaltSystem` | record | `Substrate.FUSep.FUSepQHalts` | ⟡FU-sep-Q-halts, instantiating the substrate's Acc-driven trace |
+| `HaltSystem` | record | `Substrate.FUSep.FUSepQHalts` | was : Set₁ |
 | `HammingMispredictRecovery` | record | `Substrate.Category.PrimeSampledChain` | HH-arc: three-crumb prime-sampled chain context for substrate |
 | `HammingSpectrumBridge` | record | `Substrate.Category.MultiPrimeSpectralProfile` | structured corpora's |
 | `HammingSyndromeReading` | record | `Substrate.Category.CliffordEmissionAlgebra` | the Multivector record IS that wedge-product algebra; |
@@ -650,11 +650,11 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `PhaseProjectionCapability` | record | `Substrate.Groups.Capabilities.PhaseProjection` | Tier 2 capability record for the Zₙ × FreeCyclic phase projection |
 | `Pipe` | data | `Substrate.Realizability.Charter` | a typed cons-list of flag-gates (`Chain`, the same |
 | `PlancherelTheorem` | record | `Substrate.Category.DiscreteFourierTransform` | PD8-PD20: discrete Fourier transform formalised at the categorical |
-| `PLL` | record | `Substrate.Category.PhaseLockedLoop.PLL` | The PLL primitive record. Parameterised over reference signal and |
-| `PLLBank` | record | `Substrate.Category.PhaseLockedLoop.Bank.PLLBank` | Polyphonic PLL bank: a (substrate-Word) list of primes plus |
+| `PLL` | record | `Substrate.Category.PhaseLockedLoop.PLL` | was : Set₁ |
+| `PLLBank` | record | `Substrate.Category.PhaseLockedLoop.Bank.PLLBank` | was : Set₂ |
 | `Point` | data | `Substrate.Algebra.F2.FanoPlane` | the Fano plane: the projectivization of F₂³. Carries 7 |
 | `PointedSet` | record | `Substrate.Algebra.PointedSet` | F1m1 of the F₁-modules-as-pointed-sets arc per |
-| `PointedSetMap` | record | `Substrate.Algebra.PointedSet.Map` | F1m2 of the F₁-modules arc per [scratch/m_mod_arc_plan.md]. |
+| `PointedSetMap` | record | `Substrate.Algebra.PointedSet.Map` | this only threads the carrier index. |
 | `Poly` | record | `Substrate.Category.Poly` | PF1-PF10: the substrate's polynomial-functor primitive. |
 | `PolyCoalgebra` | record | `Substrate.Category.PolyLens` | input/output flow models |
 | `PolyEEATrace` | data | `Substrate.Algebra.F2.Polynomial.Wedge.EEATrace` | a faithful mirror of the ℕ |

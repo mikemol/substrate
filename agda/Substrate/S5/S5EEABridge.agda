@@ -37,13 +37,15 @@ import Substrate.Algebra.Wedge.Shape  as WS
 ------------------------------------------------------------------------
 -- 1. the DivStr transport (field-for-field) + the indexed Wedge/Trace transports.
 ------------------------------------------------------------------------
-toDivStr : E.DivStr → W.DivStr
-toDivStr D = record { C = E.C D ; z = E.z D ; recon = E.recon D }
+-- ⟡set1-paydown (consumer of S5EEA): E.DivStr is now carrier-parameterized, so the
+-- carrier is named directly (`{Carrier}`) instead of via the removed `E.C D` projection.
+toDivStr : {Carrier : Set} → E.DivStr Carrier → W.DivStr
+toDivStr {Carrier} D = record { C = Carrier ; z = E.z D ; recon = E.recon D }
 
-toWedge : (D : E.DivStr) {a b : E.C D} → E.Wedge D a b → W.Wedge (toDivStr D) a b
+toWedge : {Carrier : Set} (D : E.DivStr Carrier) {a b : Carrier} → E.Wedge Carrier D a b → W.Wedge (toDivStr D) a b
 toWedge D w = record { quot = E.quot w ; rem = E.rem w ; wedge-eq = E.wedge-eq w }
 
-toTrace : (D : E.DivStr) {a b g : E.C D} → E.Trace D a b g → W.Trace (toDivStr D) a b g
+toTrace : {Carrier : Set} (D : E.DivStr Carrier) {a b g : Carrier} → E.Trace Carrier D a b g → W.Trace (toDivStr D) a b g
 toTrace D (E.done a)      = W.done a
 toTrace D (E.more b w tr) = W.more b (toWedge D w) (toTrace D tr)
 
@@ -51,12 +53,12 @@ toTrace D (E.more b w tr) = W.more b (toWedge D w) (toTrace D tr)
 -- 2. shape preservation: S5EEA's QSeq ↦ WedgeShape (= List), and the two
 -- `shape` projections agree through the transport.
 ------------------------------------------------------------------------
-toShape : (D : E.DivStr) → E.QSeq D → WS.WedgeShape (toDivStr D)
+toShape : {Carrier : Set} (D : E.DivStr Carrier) → E.QSeq Carrier D → WS.WedgeShape (toDivStr D)
 toShape D E.[]       = []
 toShape D (q E.∷ qs) = q ∷ toShape D qs
 
-shape-agree : (D : E.DivStr) {a b g : E.C D} (t : E.Trace D a b g)
-            → WS.shape (toTrace D t) ≡ toShape D (E.shape t)
+shape-agree : {Carrier : Set} (D : E.DivStr Carrier) {a b g : Carrier} (t : E.Trace Carrier D a b g)
+            → WS.shape (toTrace D t) ≡ toShape D (E.shape Carrier t)
 shape-agree D (E.done a)      = refl
 shape-agree D (E.more b w tr) = cong (E.quot w ∷_) (shape-agree D tr)
 

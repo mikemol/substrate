@@ -28,26 +28,27 @@ data Progress {S H : Set} (recon : H → S → S) (next : S → S) (μ< : S → 
   stepsD : (h : H) → s ≡ recon h (next s) → μ< s → Progress recon next μ< s
 
 -- the halting system, parameterized EXACTLY as ComputeTrace parameterizes GCD.
-record HaltSystem : Set₁ where
-  field
-    St     : Set
-    Hd     : Set
-    M      : Set
-    R      : M → M → Set
-    mu     : St → M
-    nxt    : St → St
-    rcn    : Hd → St → St
-    -- at each state: either a value (⟹ base FinTrace) or a step carrying the
-    -- reconstruction equation AND a strict measure-decrease (the Acc feeder).
-    prog   : (s : St) → Progress rcn nxt (λ s' → R (mu (nxt s')) (mu s')) s
-open HaltSystem public
+-- ⟡set1-paydown: parameterize St, Hd, M and the relation R. `St/Hd/M : Set` were
+-- carrier FIELDS and `R : M → M → Set` a relation FIELD, forcing HaltSystem : Set₁;
+-- take them as module parameters and every field is Set-valued, so HaltSystem : Set.
+-- Consumers write `HaltSystem St Hd M R`.
+module _ (St Hd M : Set) (R : M → M → Set) where
+  record HaltSystem : Set where     -- was : Set₁
+    field
+      mu     : St → M
+      nxt    : St → St
+      rcn    : Hd → St → St
+      -- at each state: either a value (⟹ base FinTrace) or a step carrying the
+      -- reconstruction equation AND a strict measure-decrease (the Acc feeder).
+      prog   : (s : St) → Progress rcn nxt (λ s' → R (mu (nxt s')) (mu s')) s
+  open HaltSystem public
 
-module _ (Hs : HaltSystem) where
+module _ {St Hd M : Set} {R : M → M → Set} (Hs : HaltSystem St Hd M R) where
   private
-    S₀ = St Hs
-    H₀ = Hd Hs
-    M₀ = M Hs
-    R₀ = R Hs
+    S₀ = St
+    H₀ = Hd
+    M₀ = M
+    R₀ = R
     μ₀ = mu Hs
     n₀ = nxt Hs
     r₀ = rcn Hs

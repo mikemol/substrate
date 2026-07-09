@@ -84,7 +84,7 @@ sn-residues t = trace-residues (fromEEATrace t)
 ------------------------------------------------------------------------
 open import Substrate.Algebra.R.Trace.ExtruderFix using (CombinatorAlgebra)
 
-module SKIPeel (A : CombinatorAlgebra) where
+module SKIPeel {C : Set} (A : CombinatorAlgebra C) where   -- ⟡set1-paydown: C now a parameter
   open CombinatorAlgebra A
 
   -- structure-peel: an application f · a deconstructs to (f , a); rebuilding is
