@@ -53,7 +53,11 @@ CATALOG_DB = os.path.join(ROOT, "catalog", "catalog.db")
 # sort matches the reuse-index fingerprint exactly without a recent SQLite's ordered GROUP_CONCAT;
 # desc because it comes from the .agda source comment, not the core.
 _DB_SCHEMA = """
-CREATE TABLE structs (qname TEXT PRIMARY KEY, name TEXT, kind TEXT, module TEXT, fp TEXT, desc TEXT);
+-- qname is NOT unique: an anonymous `module _` collapses several declarations to one qname
+-- (e.g. two `data _⇒*_` in two `module _` blocks → one qname, two nodes). That collision is the
+-- dedup FAN-IN signal (name-granularity), not a bug to drop — so the key is composite (qname, root)
+-- and every colliding node is kept, rather than one clobbering the rest. (Ⓓ.catalog-fanin-key)
+CREATE TABLE structs (qname TEXT, name TEXT, kind TEXT, module TEXT, fp TEXT, desc TEXT, root INTEGER, PRIMARY KEY (qname, root));
 CREATE TABLE members (struct_qname TEXT, name TEXT, ord INTEGER);
 CREATE TABLE refs    (struct_qname TEXT, ref_qname TEXT);
 CREATE TABLE edges   (src TEXT, dst TEXT);
@@ -181,7 +185,7 @@ class DbBuilder:
             heads = [m.rsplit(".", 1)[-1] for m in members]
             fp   = kd + "|" + ",".join(sorted(heads))    # == the reuse-index fingerprint
             desc = comments.get(name, "") or purpose
-            self.structs.append((unit, name, kd, mod, fp, desc))
+            self.structs.append((unit, name, kd, mod, fp, desc, root))
             for i, h in enumerate(heads):
                 self.members.append((unit, h, i))
             self.kinds[unit] = kd
@@ -239,7 +243,7 @@ class DbBuilder:
         os.makedirs(os.path.dirname(CATALOG_DB), exist_ok=True)
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
-        con.executemany("INSERT INTO structs VALUES (?,?,?,?,?,?)", sorted(self.structs))
+        con.executemany("INSERT INTO structs VALUES (?,?,?,?,?,?,?)", sorted(self.structs))
         con.executemany("INSERT INTO members VALUES (?,?,?)",       self.members)
         con.executemany("INSERT INTO refs    VALUES (?,?)",         self.refrows)
         con.executemany("INSERT INTO edges   VALUES (?,?)",         edges)

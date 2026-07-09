@@ -75,18 +75,24 @@ compose-rotation r₁ r₂ = record
 -- postulate; we expose the laws as record fields a concrete instance
 -- must inhabit.
 
-record RotationAction (n : ℕ) : Set₁ where
-  field
-    BitVector : Set
-    act       : Rotation n → BitVector → BitVector
-    -- Identity law: identity rotation acts trivially.
-    act-identity   : (v : BitVector) →
-                       act (identity-rotation n) v ≡ v
-    -- Involution: applying any rotation twice gives identity.
-    act-involution : (r : Rotation n) → (v : BitVector) →
-                       act r (act r v) ≡ v
+-- ⟡set1-paydown (M1: fields-a-Set-valued-carrier). `BitVector : Set` was a FIELD, forcing
+-- RotationAction : Set₁. Set₁ is policy debt (a record must not FIELD a Set-valued carrier);
+-- PARAMETERIZE it, as Substrate.Category.Lawvere's carrier-generic atoms do. With BitVector a
+-- module parameter every field is Set-valued, so RotationAction : Set. Consumers write
+-- `RotationAction BitVec n`.
+module _ (BitVector : Set) where
 
-open RotationAction public
+  record RotationAction (n : ℕ) : Set where
+    field
+      act       : Rotation n → BitVector → BitVector
+      -- Identity law: identity rotation acts trivially.
+      act-identity   : (v : BitVector) →
+                         act (identity-rotation n) v ≡ v
+      -- Involution: applying any rotation twice gives identity.
+      act-involution : (r : Rotation n) → (v : BitVector) →
+                         act r (act r v) ≡ v
+
+  open RotationAction public
 
 ------------------------------------------------------------------------
 -- The 3+1 parity reading.
@@ -110,7 +116,9 @@ permutation-of r = k r
 -- structure collects the per-scale groups and exposes scale as a
 -- first-class index.
 
-record MultiscaleOctonionLoop : Set₁ where
+-- ⟡set1-paydown: this record fields only `max-scale : ℕ` (a Set-valued datum), so it inhabits
+-- Set, not Set₁ — the Set₁ annotation was gratuitous.
+record MultiscaleOctonionLoop : Set where
   field
     max-scale  : ℕ
     -- Per-scale group (Rotation n) is implicit; this record just
