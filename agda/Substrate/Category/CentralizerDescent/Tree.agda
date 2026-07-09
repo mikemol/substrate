@@ -38,7 +38,6 @@
 module Substrate.Category.CentralizerDescent.Tree where
 
 open import Substrate.Foundation.Level using (Level; 0ℓ; _⊔_) renaming (suc to lsuc)
-import Level
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.ConjugationCoalgebra

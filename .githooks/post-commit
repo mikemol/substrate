@@ -29,6 +29,11 @@ GITDIR="$(git rev-parse --git-dir)"
 advisory="$(
   echo "── post-commit advisory (non-blocking; gates ran pre-commit) ──"
   bash "$ROOT/scripts/check_categorical_grounding.sh" 2>/dev/null || true
+
+  # Tautology advisory: signatures whose conclusion is `X ≡ X` (LHS syntactically
+  # identical to RHS) prove nothing — the sibling shape to check_up_nonvacuity.sh's
+  # ⊤-collapse. 3 findings (Category/{Coequalizer,Pushout}) predate the check.
+  python3 "$ROOT/scripts/tautology_advisory.py" 2>/dev/null || true
 )"
 printf '%s\n' "$advisory"
 

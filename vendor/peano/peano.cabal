@@ -1,0 +1,15 @@
+cabal-version:      1.12
+name:               peano
+version:            0.1.0.1
+synopsis:           Lazy unary naturals (reimplementation; see Data/Peano.hs header)
+description:        Reimplementation of the Hackage  API surface that Agda
+                    consumes. NOT a vendored copy. Contract tests in test/Spec.hs.
+license:            BSD3
+author:             substrate
+maintainer:         substrate
+build-type:         Simple
+category:           Data
+library
+  exposed-modules:  Data.Peano
+  build-depends:    base >=4 && <5
+  default-language: Haskell2010

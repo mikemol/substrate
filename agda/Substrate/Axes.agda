@@ -116,3 +116,13 @@ v-of-axis-axis-of-v = v4-cover _ (refl , refl , refl , refl)
 
 act-axis : V₄ → Axis → Axis
 act-axis v x = axis-of-v (v V4.· v-of-axis x)
+
+------------------------------------------------------------------------
+-- The induced binary product on Axis — Axis's V₄-torsor multiplication transported
+-- along the v-of-axis/axis-of-v bijection. It is exactly act-axis precomposed with
+-- v-of-axis on the left argument (x ∙ᴬ y = act-axis (v-of-axis x) y), so it reuses the
+-- action above rather than re-deriving the V₄ product. Its home is HERE, with the Axis
+-- carrier (⟡carrier-locality), not a downstream consumer.
+------------------------------------------------------------------------
+_∙ᴬ_ : Axis → Axis → Axis
+x ∙ᴬ y = act-axis (v-of-axis x) y

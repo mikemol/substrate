@@ -3,8 +3,21 @@
 -- Decodes an interface with Agda's OWN version-matched deserialiser (no hand-decoded tag table), walks
 -- each definition's elaborated TYPE (Agda's types ARE the segmentation), emits one node per core term:
 --   {"id":int,"constructor":str,"qname":str|null,"index":int|null,"children":[int,...]}
+-- and one DEFMARK per definition, now carrying its ELABORATED SORT:
+--   {"unit":qname,"root":int,"kind":str,"members":[str],"sort":"Type"|…,"level":int|null}
+-- `level` is the universe the definition INHABITS (Πs peeled; if the codomain is itself
+-- `Sort s`, that s — a record former's type is `… → Set₁`, whose own sort is Set₂, so
+-- taking getSort (defType d) directly is off by one). Set₁ debt is a SORT, not a token:
+-- grepping `Set₁` in source counts declarations (1 token ↦ ~4 core definitions: record,
+-- constructor, transp-, hcomp-) and misses Set₁-TYPED FUNCTIONS entirely.
 -- Trees here; cross-term sharing is recovered by jea_pyalg's hash-cons in intern_signature.
 --
+-- VERIFIED against Agda-2.8.0 (2026-07-09). Two 2.6.3-era facts had rotted here:
+--   * Agda.Utils.Pretty was removed in 2.6.4 -> Agda.Syntax.Common.Pretty.
+--   * Agda 2.7 unified Type/Prop/SSet into `Univ :: Univ -> Level -> Sort'`,
+--     so a closed sort matches `Univ _ (Max n [])`, not `Type (Max n [])`.
+-- The previous header claimed 2.8.0 while the source only compiled against 2.6.3.
+-- A header states intent at writing time, not the artifact's truth (D-header-is-not-a-fact).
 -- BUILD (needs the Agda-2.8.0 library in the GHC package db -- `ghc-pkg list Agda`):
 --   ghc -package Agda -O0 -o agdai_shim agdai_shim.hs
 -- RUN:  ./agdai_shim Foo.agdai > foo_core.jsonl     (then jea_agdai.intern_signature / core_intern_agdai)
@@ -30,7 +43,38 @@ import Agda.Syntax.Common.Pretty (prettyShow)
 import Agda.Syntax.Common (unArg, namedArg)
 import Agda.Syntax.Internal
   ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName, Clause
-  , clauseBody, namedClausePats, DeBruijnPattern, Pattern'(..), dbPatVarName, dbPatVarIndex )
+  , clauseBody, namedClausePats, DeBruijnPattern, Pattern'(..), dbPatVarName, dbPatVarIndex
+  , Sort, Sort'(..), Level'(..), getSort )
+
+-- | The universe level of a closed sort, if it has one. `Type (Max 0 []) -> Just 0`,
+--   `Type (Max 1 []) -> Just 1`. Level-polymorphic / Prop / Inf -> Nothing.
+-- | The universe level of a closed sort, if it has one.
+--   Agda 2.7 unified Type/Prop/SSet into `Univ :: Univ -> Level -> Sort'`.
+--   Verified against Agda-2.8.0 by asking GHC to enumerate Sort's constructors.
+levelOf :: Sort -> Maybe Integer
+levelOf (Univ _ (Max n [])) = Just n
+levelOf _                   = Nothing
+
+sortKind :: Sort -> String
+sortKind s = case s of
+  Univ u _ -> show u
+  Inf _ _  -> "Inf"
+  SizeUniv -> "SizeUniv"
+  _        -> "other"
+
+-- | Peel the type telescope's Pis and return the CODOMAIN's sort. When the codomain
+--   is itself a universe (`Sort s`) the definition INHABITS s, so return s -- not
+--   getSort s, which is one universe up. This off-by-one bites every parameterized
+--   definition (a record former's type is `... -> Set1`, whose own sort is Set2).
+codomainSort :: Type -> Sort
+codomainSort t = case unEl t of
+  Pi _ b -> codomainSort (unAbs b)
+  Sort s -> s
+  _      -> getSort t
+
+sortJSON :: Type -> String
+sortJSON t = let s = codomainSort t
+             in ",\"sort\":\"" ++ sortKind s ++ "\",\"level\":" ++ maybe "null" show (levelOf s)
 
 fresh :: IORef Int -> IO Int
 fresh r = atomicModifyIORef' r (\n -> (n+1, n))
@@ -151,7 +195,8 @@ main = do
                let mems = defMembers (theDef d)                -- Φ7b: datatype->constructors / record->fields
                    memJSON = "[" ++ intercalate "," (map (\m -> "\"" ++ esc m ++ "\"") mems) ++ "]"
                putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid
-                        ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\",\"members\":" ++ memJSON ++ "}"
+                        ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\",\"members\":" ++ memJSON
+                          ++ sortJSON (defType d) ++ "}"
             ) defs
       n <- readIORef r
       hPutStrLn stderr ("agdai_shim: " ++ show (length defs) ++ " definitions -> " ++ show n ++ " core nodes")

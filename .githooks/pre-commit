@@ -124,7 +124,17 @@ if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
   # dynamic import) the AST scan can't see. ~3s (import-only; the heavy GPU/agda DEMO surface is NOT
   # the coupling surface). Self-skips without cupy. Full in-function sweep: check_scratch_runtime.py --full.
   run "scratch-runtime (Λ8b)" python3 "$ROOT/scripts/check_scratch_runtime.py" --quiet
+
 fi
+
+# Set₁ ratchet (ELABORATED): Set₁ is POLICY DEBT — a record must not FIELD a Set-valued
+# carrier or relation; PARAMETERIZE it (module _ (V : Set) (_≈_ : V → V → Set) where …),
+# as Substrate.Category.Lawvere's carrier-generic atoms do. The measure is a SORT, which
+# only exists after elaboration: an earlier version grepped source tokens, a DIFFERENT
+# quantity (one `record R : Set₁` token = ~4 Set₁ core definitions; Set₁-typed functions
+# carry none). So it reads the .agdai cores. RATCHET: count may only drop. If the cores
+# are absent or undecodable it FAILS — cannot measure is not no-debt.
+run "Set₁ ratchet (elaborated)" python3 "$ROOT/scripts/set1_ratchet_cores.py" --quiet
 
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
 # process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at

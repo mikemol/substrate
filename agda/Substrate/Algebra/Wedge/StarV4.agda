@@ -39,90 +39,96 @@ open import Substrate.Algebra.Wedge using (DivStr; C; recon)
 --    compatible with reconstruction). The structure the twist requires.
 ------------------------------------------------------------------------
 
-record StarDivStr : Set₁ where
-  field
-    base       : DivStr
-    conj       : C base → C base
-    conj-conj  : (x : C base) → conj (conj x) ≡ x
-    conj-recon : (q b r : C base) →
-                 conj (recon base q b r) ≡ recon base (conj q) (conj b) (conj r)
+-- ⟡set1-paydown: `base : DivStr` was a FIELD, and DivStr : Set₁ (it fields C : Set), so
+-- fielding it forced StarDivStr : Set₁. Set₁ is policy debt (records must not FIELD a
+-- Set-valued carrier). House style = Substrate.Category.Lawvere's carrier-generic atoms:
+-- PARAMETERIZE the carrier. With `base` a module parameter every field is Set-valued, so
+-- StarDivStr : Set. Consumers write `StarDivStr D` and drop the `base S` projection.
+module _ (base : DivStr) where
 
-open StarDivStr public
+  record StarDivStr : Set where
+    field
+      conj       : C base → C base
+      conj-conj  : (x : C base) → conj (conj x) ≡ x
+      conj-recon : (q b r : C base) →
+                   conj (recon base q b r) ≡ recon base (conj q) (conj b) (conj r)
 
-module _ (S : StarDivStr) where
-  private
-    X  = C (base S)
-    cj = conj S
+  open StarDivStr public
 
-  ------------------------------------------------------------------------
-  -- 2. THE V₄ AT THE CENTRE: two commuting involutions on a fraction (a,b).
-  --    recip = the dagger † (= the iso-sym inverse, fraction-level); bar = the
-  --    conjugation twist. ⟨recip, bar⟩ ≅ ℤ/2 × ℤ/2.
-  ------------------------------------------------------------------------
+  module _ (S : StarDivStr) where
+    private
+      X  = C base
+      cj = conj S
 
-  Frac : Set
-  Frac = X × X
+    ------------------------------------------------------------------------
+    -- 2. THE V₄ AT THE CENTRE: two commuting involutions on a fraction (a,b).
+    --    recip = the dagger † (= the iso-sym inverse, fraction-level); bar = the
+    --    conjugation twist. ⟨recip, bar⟩ ≅ ℤ/2 × ℤ/2.
+    ------------------------------------------------------------------------
 
-  recip : Frac → Frac                       -- the dagger / inverse (V₂ #1)
-  recip (a , b) = (b , a)
+    Frac : Set
+    Frac = X × X
 
-  bar : Frac → Frac                         -- the conjugation twist (V₂ #2)
-  bar (a , b) = (cj a , cj b)
+    recip : Frac → Frac                       -- the dagger / inverse (V₂ #1)
+    recip (a , b) = (b , a)
 
-  recip-recip : (f : Frac) → recip (recip f) ≡ f
-  recip-recip (a , b) = refl
+    bar : Frac → Frac                         -- the conjugation twist (V₂ #2)
+    bar (a , b) = (cj a , cj b)
 
-  bar-bar : (f : Frac) → bar (bar f) ≡ f
-  bar-bar (a , b) = cong₂ _,_ (conj-conj S a) (conj-conj S b)
+    recip-recip : (f : Frac) → recip (recip f) ≡ f
+    recip-recip (a , b) = refl
 
-  -- THE V₄ CONDITION: the dagger and the twist COMMUTE (so ⟨†,bar⟩ is abelian
-  -- V₂×V₂, not dihedral). The fourth element recip∘bar is the transpose/adjoint.
-  recip-bar : (f : Frac) → recip (bar f) ≡ bar (recip f)
-  recip-bar (a , b) = refl
+    bar-bar : (f : Frac) → bar (bar f) ≡ f
+    bar-bar (a , b) = cong₂ _,_ (conj-conj S a) (conj-conj S b)
 
-  ------------------------------------------------------------------------
-  -- 3. CROSSMUL = A KLEIN ROTATION. The 2×2 arrangement ((a,b),(c,d)); the V₄
-  --    ⟨rowSwap, colSwap⟩; the 180° rotation permutes the diagonals (a,d),(b,c)
-  --    that cross-multiplication compares.
-  ------------------------------------------------------------------------
+    -- THE V₄ CONDITION: the dagger and the twist COMMUTE (so ⟨†,bar⟩ is abelian
+    -- V₂×V₂, not dihedral). The fourth element recip∘bar is the transpose/adjoint.
+    recip-bar : (f : Frac) → recip (bar f) ≡ bar (recip f)
+    recip-bar (a , b) = refl
 
-  Mat : Set
-  Mat = Frac × Frac                          -- ((a,b),(c,d))
+    ------------------------------------------------------------------------
+    -- 3. CROSSMUL = A KLEIN ROTATION. The 2×2 arrangement ((a,b),(c,d)); the V₄
+    --    ⟨rowSwap, colSwap⟩; the 180° rotation permutes the diagonals (a,d),(b,c)
+    --    that cross-multiplication compares.
+    ------------------------------------------------------------------------
 
-  rowSwap : Mat → Mat
-  rowSwap (r₁ , r₂) = (r₂ , r₁)
+    Mat : Set
+    Mat = Frac × Frac                          -- ((a,b),(c,d))
 
-  colSwap : Mat → Mat
-  colSwap ((a , b) , (c , d)) = ((b , a) , (d , c))
+    rowSwap : Mat → Mat
+    rowSwap (r₁ , r₂) = (r₂ , r₁)
 
-  rowSwap-rowSwap : (m : Mat) → rowSwap (rowSwap m) ≡ m
-  rowSwap-rowSwap (r₁ , r₂) = refl
+    colSwap : Mat → Mat
+    colSwap ((a , b) , (c , d)) = ((b , a) , (d , c))
 
-  colSwap-colSwap : (m : Mat) → colSwap (colSwap m) ≡ m
-  colSwap-colSwap ((a , b) , (c , d)) = refl
+    rowSwap-rowSwap : (m : Mat) → rowSwap (rowSwap m) ≡ m
+    rowSwap-rowSwap (r₁ , r₂) = refl
 
-  -- the two generators commute ⟹ ⟨rowSwap, colSwap⟩ ≅ V₄.
-  row-col : (m : Mat) → rowSwap (colSwap m) ≡ colSwap (rowSwap m)
-  row-col ((a , b) , (c , d)) = refl
+    colSwap-colSwap : (m : Mat) → colSwap (colSwap m) ≡ m
+    colSwap-colSwap ((a , b) , (c , d)) = refl
 
-  -- the Klein rotation = the 180° turn (the nontrivial central V₄ element).
-  klein-rot : Mat → Mat
-  klein-rot m = rowSwap (colSwap m)
+    -- the two generators commute ⟹ ⟨rowSwap, colSwap⟩ ≅ V₄.
+    row-col : (m : Mat) → rowSwap (colSwap m) ≡ colSwap (rowSwap m)
+    row-col ((a , b) , (c , d)) = refl
 
-  -- the diagonals cross-multiplication compares.
-  diag  : Mat → X × X
-  diag  ((a , _) , (_ , d)) = (a , d)        -- main diagonal a·d
-  adiag : Mat → X × X
-  adiag ((_ , b) , (c , _)) = (b , c)        -- anti-diagonal b·c
+    -- the Klein rotation = the 180° turn (the nontrivial central V₄ element).
+    klein-rot : Mat → Mat
+    klein-rot m = rowSwap (colSwap m)
 
-  swapP : X × X → X × X
-  swapP (x , y) = (y , x)
+    -- the diagonals cross-multiplication compares.
+    diag  : Mat → X × X
+    diag  ((a , _) , (_ , d)) = (a , d)        -- main diagonal a·d
+    adiag : Mat → X × X
+    adiag ((_ , b) , (c , _)) = (b , c)        -- anti-diagonal b·c
 
-  -- CROSSMUL IS A KLEIN ROTATION: the 180° turn swaps each diagonal's entries
-  -- (a↔d, b↔c) — it fixes the two diagonals AS the unordered pairs that
-  -- cross-multiplication compares. So the cross-comparison is V₄-equivariant.
-  klein-diag : (m : Mat) → diag (klein-rot m) ≡ swapP (diag m)
-  klein-diag ((a , b) , (c , d)) = refl
+    swapP : X × X → X × X
+    swapP (x , y) = (y , x)
 
-  klein-adiag : (m : Mat) → adiag (klein-rot m) ≡ swapP (adiag m)
-  klein-adiag ((a , b) , (c , d)) = refl
+    -- CROSSMUL IS A KLEIN ROTATION: the 180° turn swaps each diagonal's entries
+    -- (a↔d, b↔c) — it fixes the two diagonals AS the unordered pairs that
+    -- cross-multiplication compares. So the cross-comparison is V₄-equivariant.
+    klein-diag : (m : Mat) → diag (klein-rot m) ≡ swapP (diag m)
+    klein-diag ((a , b) , (c , d)) = refl
+
+    klein-adiag : (m : Mat) → adiag (klein-rot m) ≡ swapP (adiag m)
+    klein-adiag ((a , b) , (c , d)) = refl

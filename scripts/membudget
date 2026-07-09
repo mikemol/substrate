@@ -165,6 +165,44 @@ _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", 
           if (v > cap) v = cap; print v }' "$led" 2>/dev/null || echo "$def"
 }
 
+# --- scope backend (D2-prime) -------------------------------------------------
+# `systemd-run --user --scope` needs a systemd USER SESSION (a DBus bus). In a
+# container whose PID 1 is not systemd it exits 1 with "Failed to connect to bus",
+# and that propagates SILENTLY through membudget -> agda-shim -> make.
+#
+# systemd-run is only a CLIENT of the kernel memory controller. Where that
+# controller is directly usable, the same cap is one mkdir and two writes, so we
+# create the scope ourselves via scripts/cgroup-scope. Probed on this host:
+#   cgroup2 /sys/fs/cgroup/unified -> controllers "cpuset hugetlb" (NO memory)
+#   cgroup v1 /sys/fs/cgroup/memory (rw) -> usable; 64MiB cap SIGKILLs a 256MiB hog
+#
+# _scope_backend picks: systemd (unchanged when a bus exists) | cgroup | none.
+# `none` REFUSES rather than running uncapped -- an uncapped agda is the OOM this
+# whole mechanism exists to prevent. Override with MEMBUDGET_BACKEND=.
+_scope_backend() {
+  if [ -n "${MEMBUDGET_BACKEND:-}" ]; then printf '%s' "$MEMBUDGET_BACKEND"; return; fi
+  if systemd-run --user --scope --quiet /bin/true >/dev/null 2>&1; then printf 'systemd'; return; fi
+  if [ -x "$SELFDIR/cgroup-scope" ] && "$SELFDIR/cgroup-scope" 64 -- /bin/true >/dev/null 2>&1; then
+    printf 'cgroup'; return
+  fi
+  printf 'none'
+}
+
+# _launch_scope <mb> <id> -- <cmd...>
+# Runs <cmd> under MemoryMax=<mb>M with swap off, exporting MEMBUDGET_PARENT=<id>,
+# and propagates the child's exit code VERBATIM (cgroup-kill 137 included -- the
+# retry-on-OOM contract keys on 137).
+_launch_scope() {
+  local mb="$1" id="$2"; shift 2; [ "${1:-}" = "--" ] && shift
+  case "$(_scope_backend)" in
+    systemd) systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
+               -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@" ;;
+    cgroup)  "$SELFDIR/cgroup-scope" "$mb" --setenv "MEMBUDGET_PARENT=$id" -- "$@" ;;
+    *)       echo "membudget: REFUSED -- no memory-cap backend (no systemd bus; no writable cgroup memory controller)." >&2
+             return 3 ;;
+  esac
+}
+
 cmd_run() {
   local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
   [ "$mb" = auto ] && mb=$(_auto_mb "$@")          # Ⓡ.autobudget: lease from peak-mem history
@@ -231,11 +269,9 @@ cmd_run() {
   if [ "$parent" = "-" ]; then
     echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
     if [ -n "$tf" ]; then
-      systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
-        -p MemoryMax="${mb}M" -p MemorySwapMax=0 /usr/bin/time -v -o "$tf" "$@" || rc=$?
+        _launch_scope "$mb" "$id" -- /usr/bin/time -v -o "$tf" "$@" || rc=$?
     else
-      systemd-run --user --scope --quiet --setenv=MEMBUDGET_PARENT="$id" \
-        -p MemoryMax="${mb}M" -p MemorySwapMax=0 "$@" || rc=$?
+        _launch_scope "$mb" "$id" -- "$@" || rc=$?
     fi
   else
     echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2

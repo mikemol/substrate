@@ -24,7 +24,19 @@
 import os, re, json, subprocess, collections, hashlib, sqlite3
 
 ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BUILD_AG  = os.path.join(ROOT, "agda", "_build", "2.8.0", "agda")
+# ⟡walk-cores-empty-is-not-success: the build dir is VERSION-STAMPED by agda
+# (_build/<ver>/agda). Hardcoding one version makes walk_cores yield NOTHING on any
+# other toolchain — 0 cores AND 0 failures, i.e. SILENT SUCCESS. Discover the version
+# instead, and make an empty walk a hard error (below).
+def _discover_build_ag(root):
+    base = os.path.join(root, "agda", "_build")
+    if os.path.isdir(base):
+        vers = sorted(d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d, "agda")))
+        if vers:
+            return os.path.join(base, vers[-1], "agda")
+    return os.path.join(base, "2.8.0", "agda")   # legacy default
+
+BUILD_AG  = _discover_build_ag(ROOT)
 SUB_AGDAI = os.path.join(BUILD_AG, "Substrate")
 SHIM      = os.path.join(ROOT, "jea", "metalanguage", "agdai_shim")
 IDX_DOC    = os.path.join(ROOT, "catalog", "reuse-index.md")
@@ -93,6 +105,10 @@ def walk_cores(filt=""):
     yield its parsed core (or None on a shim failure, so callers can count it). A core is
     {mod, path, nodes, defmarks} where nodes = {id: (qname, [child-ids])} (qname references
     INTACT — the interned form drops them) and defmarks = [(unit, root, kind, members)]."""
+    if not os.path.isdir(SUB_AGDAI):
+        raise RuntimeError(
+            f"walk_cores: no core tree at {SUB_AGDAI} — nothing to walk. "
+            "An empty walk is NOT success. Build the tree first (agda/Makefile).")
     for dp, _, fns in os.walk(SUB_AGDAI):
         for fn in sorted(fns):
             if not fn.endswith(".agdai") or (filt and filt not in os.path.join(dp, fn)):

@@ -30,7 +30,7 @@
 module Substrate.Algebra.R.Trace.Bisim where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq  using (_≡_; refl)
+open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans-sym)
 
 open import Substrate.Algebra.R.Trace            using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Ops        using (recip)
@@ -49,6 +49,16 @@ open _~_ public
 ~-refl : (x : RealTrace) → x ~ x
 head~ (~-refl x) = refl
 tail~ (~-refl x) = ~-refl (tail x)
+
+-- symmetry + transitivity: completing the equivalence of _~_ AT ITS CANONICAL HOME, so every structure that
+-- factors through the terminal RealTrace inherits the WHOLE equivalence (not just reflexivity).
+~-sym : {x y : RealTrace} → x ~ y → y ~ x
+head~ (~-sym p) = sym (head~ p)
+tail~ (~-sym p) = ~-sym (tail~ p)
+
+~-trans : {x y z : RealTrace} → x ~ y → y ~ z → x ~ z
+head~ (~-trans p q) = trans-sym (head~ p) (sym (head~ q))
+tail~ (~-trans p q) = ~-trans (tail~ p) (tail~ q)
 
 ------------------------------------------------------------------------
 -- A general CF cons (head k, tail t) — to name a real > 1.

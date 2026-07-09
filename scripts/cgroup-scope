@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# cgroup-scope — run a command under a hard memory cap WITHOUT systemd.
+#
+# WHY THIS EXISTS
+#   scripts/membudget launches top-level leases with
+#       systemd-run --user --scope -p MemoryMax=<MB>M -p MemorySwapMax=0 -- <cmd>
+#   which needs a systemd USER SESSION (a DBus bus). In a container whose PID 1 is
+#   not systemd, `systemd-run` fails with "Failed to connect to bus: No medium found"
+#   and exits 1 — silently, from membudget's point of view.
+#
+#   But systemd-run is only a CLIENT of the kernel's memory controller. Where the
+#   controller is mounted and writable, the same cap is one mkdir and two writes.
+#   Probed on this host (2026-07-09):
+#       cgroup2 at /sys/fs/cgroup/unified  -> controllers: cpuset hugetlb   (NO memory)
+#       cgroup v1 memory at /sys/fs/cgroup/memory (rw)                      -> usable
+#   Verified by experiment, not by reading: a 256 MiB allocation under a 64 MiB cap
+#   is SIGKILLed (exit 137, `Killed`); the same allocation outside the cgroup succeeds.
+#
+# CONTRACT (exactly what membudget's call site depends on)
+#   * hard cap on the whole subprocess tree
+#   * swap disabled, so the cap is on RSS
+#   * the cgroup OOM-killer's SIGKILL surfaces as exit 137, propagated verbatim
+#     (membudget's MEMBUDGET_RETRY_OOM logic keys on 137)
+#   * env vars pass through (membudget uses --setenv=MEMBUDGET_PARENT)
+#
+# USAGE
+#   cgroup-scope <MB> [--setenv K=V]... -- <cmd> [args...]
+#
+# PREFERS cgroup2 when the memory controller is delegated there; falls back to v1.
+# Exits 3 if neither is usable, so the caller can degrade rather than hang.
+set -euo pipefail
+
+MB=""; ENVS=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --setenv) ENVS+=("$2"); shift 2;;
+    --)       shift; break;;
+    *)        [ -z "$MB" ] && { MB="$1"; shift; } || break;;
+  esac
+done
+[ -n "$MB" ] && [ $# -gt 0 ] || { echo "usage: cgroup-scope <MB> [--setenv K=V]... -- <cmd...>" >&2; exit 2; }
+
+BYTES=$(( MB * 1024 * 1024 ))
+NAME="mb-$$-$RANDOM"
+
+# --- choose a backend, by probing, not by assuming -----------------------------
+V2_ROOT=""
+for r in /sys/fs/cgroup /sys/fs/cgroup/unified; do
+  if [ -f "$r/cgroup.controllers" ] && grep -qw memory "$r/cgroup.controllers" 2>/dev/null; then
+    V2_ROOT="$r"; break
+  fi
+done
+
+cleanup() { [ -n "${CG:-}" ] && [ -d "$CG" ] && rmdir "$CG" 2>/dev/null || true; }
+trap cleanup EXIT
+
+if [ -n "$V2_ROOT" ]; then
+  # cgroup v2 path
+  grep -qw memory "$V2_ROOT/cgroup.subtree_control" 2>/dev/null || \
+    echo "+memory" > "$V2_ROOT/cgroup.subtree_control" 2>/dev/null || true
+  CG="$V2_ROOT/$NAME"; mkdir -p "$CG"
+  echo "$BYTES" > "$CG/memory.max"
+  echo 0        > "$CG/memory.swap.max" 2>/dev/null || true
+  PROCS="$CG/cgroup.procs"
+elif [ -d /sys/fs/cgroup/memory ] && [ -w /sys/fs/cgroup/memory ]; then
+  # cgroup v1 memory controller
+  CG="/sys/fs/cgroup/memory/$NAME"; mkdir -p "$CG"
+  echo "$BYTES" > "$CG/memory.limit_in_bytes"
+  echo "$BYTES" > "$CG/memory.memsw.limit_in_bytes" 2>/dev/null || true   # swap off => cap is RSS
+  PROCS="$CG/cgroup.procs"
+else
+  echo "cgroup-scope: no usable memory controller (no cgroup2 'memory', no writable v1)" >&2
+  exit 3
+fi
+
+# --- run the command inside it -------------------------------------------------
+# The subshell joins the cgroup, then execs; every descendant inherits membership.
+rc=0
+( echo "$BASHPID" > "$PROCS"; exec env "${ENVS[@]+"${ENVS[@]}"}" "$@" ) || rc=$?
+exit "$rc"

@@ -1,3 +1,7 @@
 name: substrate
 include: .
-depend: standard-library-2.3
+-- ⟡agda-lib-stdlib: `depend: standard-library-2.3` removed. The substrate imports ZERO
+-- stdlib modules (verified: 0 of ~1600 modules open Data./Relation./Function./Level./…;
+-- the few `Agda.*` imports are the COMPILER's builtins, not the library). It reimplements
+-- everything it needs. The declared dep only made `agda -i .` fail on any machine without
+-- standard-library-2.3 installed — a dependency on something unused.

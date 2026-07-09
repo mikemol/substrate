@@ -90,10 +90,11 @@ module _ (R : ARS) where
   -- CONVERSION with ZERO added hypotheses — the fold is provably safe under
   -- the ideal ~, so a missing term is ALWAYS an unfold-completeness issue
   -- (never fold-aggression), exactly as ADD 96 diagnosed.
-  ars-congruence : Congruence ars-magma
+  -- ⟡set1-by-motif: Congruence now takes its relation as a PARAMETER (was a field),
+  -- so the instance applies it: `Congruence ars-magma _≈_`, and `_~_` leaves the record.
+  ars-congruence : Congruence ars-magma _≈_
   ars-congruence = record
-    { _~_     = _≈_
-    ; ~-refl  = ≈refl
+    { ~-refl  = ≈refl
     ; ~-sym   = ≈sym
     ; ~-trans = ≈trans
     ; ~-cong  = ≈-cong

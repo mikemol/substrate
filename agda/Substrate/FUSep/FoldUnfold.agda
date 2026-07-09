@@ -49,13 +49,18 @@ module _ {Carrier : Set} (M : Magma Carrier) where
   -- THE AGGRESSIVE FOLD is sound (as an equality) exactly when the
   -- behavioral ~ RESPECTS application — i.e. is a CONGRUENCE.
   --------------------------------------------------------------------
-  record Congruence : Set₁ where
-    field
-      _~_     : Carrier → Carrier → Set
-      ~-refl  : ∀ {a}         → a ~ a
-      ~-sym   : ∀ {a b}       → a ~ b → b ~ a
-      ~-trans : ∀ {a b c}     → a ~ b → b ~ c → a ~ c
-      ~-cong  : ∀ {a a' b b'} → a ~ a' → b ~ b' → (a · b) ~ (a' · b')
+  -- ⟡set1-by-motif (M4: fields-a-Set-valued-relation). `_~_ : Carrier → Carrier → Set`
+  -- was a FIELD, forcing Congruence : Set₁. Set₁ is policy debt. House style
+  -- (Substrate.Category.Lawvere's carrier-generic atoms): PARAMETERIZE the relation.
+  -- With `_~_` a module parameter every field is Set-valued, so Congruence : Set.
+  module _ (_~_ : Carrier → Carrier → Set) where
+
+    record Congruence : Set where
+      field
+        ~-refl  : ∀ {a}         → a ~ a
+        ~-sym   : ∀ {a b}       → a ~ b → b ~ a
+        ~-trans : ∀ {a b c}     → a ~ b → b ~ c → a ~ c
+        ~-cong  : ∀ {a a' b b'} → a ~ a' → b ~ b' → (a · b) ~ (a' · b')
 
   --------------------------------------------------------------------
   -- THE FILTER (coalgebra by constraint, ADD 93): a law P proven true in the
@@ -72,7 +77,7 @@ module _ {Carrier : Set} (M : Magma Carrier) where
   filter-sound pc x⊆P (app ga gb) = pc (filter-sound pc x⊆P ga)
                                         (filter-sound pc x⊆P gb)
 
-  module _ (Cg : Congruence) where
+  module _ (_~_ : Carrier → Carrier → Set) (Cg : Congruence _~_) where
     open Congruence Cg
 
     -- a REP MAP: each generator has a ~-equivalent representative in X'
