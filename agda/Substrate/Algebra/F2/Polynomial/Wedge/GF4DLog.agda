@@ -85,9 +85,9 @@ exp-⊕₃ z2 z0 = refl
 exp-⊕₃ z2 z1 = refl   -- (x+1)·x = 1
 exp-⊕₃ z2 z2 = refl   -- (x+1)·(x+1) = x
 
-gf4-codec : ExpLogCodec _*Q_ oneC _≡_
+gf4-codec : ExpLogCodec Exp3 _*Q_ oneC _≡_
 gf4-codec = record
-  { L = Exp3 ; _⊕_ = _⊕₃_ ; 𝟘 = z0 ; expL = expL₃
+  { _⊕_ = _⊕₃_ ; 𝟘 = z0 ; expL = expL₃
   ; exp-⊕ = exp-⊕₃ ; exp-𝟘 = refl }
 
 -- the L-space inverse law: a ⊕ neg a ≡ 0 (ℤ/3 is a group) — finite refls.

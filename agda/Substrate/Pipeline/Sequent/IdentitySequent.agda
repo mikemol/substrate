@@ -10,10 +10,9 @@
 module Substrate.Pipeline.Sequent.IdentitySequent where
 
 open import Substrate.Pipeline.Sequent.SequentRule using (identity)
-open import Substrate.Pipeline.Sequent.SequentType using (SequentType)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
-identity-sequent : (A : Set) → Sequent (record { A = A ; B = A })
+identity-sequent : (A : Set) → Sequent {A} {A} (record {})
 identity-sequent A = record
   { rule       = identity
   ; derivation = λ a → a

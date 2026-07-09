@@ -13,7 +13,7 @@ module Substrate.Pipeline.Sequent.CoerceSequent where
 open import Substrate.Pipeline.Sequent.SequentRule using (coerce)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
-coerce-sequent : (A B : Set) → (A → B) → Sequent (record { A = A ; B = B })
+coerce-sequent : (A B : Set) → (A → B) → Sequent {A} {B} (record {})
 coerce-sequent A B f = record
   { rule       = coerce
   ; derivation = f

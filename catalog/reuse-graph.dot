@@ -10,7 +10,7 @@ digraph reuse {
   "Substrate.Algebra.Bijection._↔_" [label="_↔_\nSubstrate.Algebra.Bijection"];
   "Substrate.Algebra.CayleyDickson.Prod" [label="Prod\nSubstrate.Algebra.CayleyDickson"];
   "Substrate.Algebra.CommutativeRing.CommutativeRing" [label="CommutativeRing\nSubstrate.Algebra.CommutativeRing"];
-  "Substrate.Algebra.ExpLogCodec.ExpLogCodec" [label="ExpLogCodec\nSubstrate.Algebra.ExpLogCodec"];
+  "Substrate.Algebra.ExpLogCodec._.ExpLogCodec" [label="ExpLogCodec\nSubstrate.Algebra.ExpLogCodec._"];
   "Substrate.Algebra.F1.GL.GL-F₁" [label="GL-F₁\nSubstrate.Algebra.F1.GL"];
   "Substrate.Algebra.F2.Code.ImageCode" [label="ImageCode\nSubstrate.Algebra.F2.Code"];
   "Substrate.Algebra.F2.Code.KernelCode" [label="KernelCode\nSubstrate.Algebra.F2.Code"];
@@ -528,7 +528,7 @@ digraph reuse {
   "Substrate.Conway.SurrealFinite.SurrealFinite" [label="SurrealFinite\nSubstrate.Conway.SurrealFinite", style=rounded];
   "Substrate.Discipline.CocycleSection" [label="CocycleSection\nSubstrate.Discipline"];
   "Substrate.Discipline.Rule11.RigidifiedWCS" [label="RigidifiedWCS\nSubstrate.Discipline.Rule11"];
-  "Substrate.FUSep.ConversionCongruence.ARS" [label="ARS\nSubstrate.FUSep.ConversionCongruence"];
+  "Substrate.FUSep.ConversionCongruence._.ARS" [label="ARS\nSubstrate.FUSep.ConversionCongruence._"];
   "Substrate.FUSep.ConversionCongruence._._≈_" [label="_≈_\nSubstrate.FUSep.ConversionCongruence._", style=rounded];
   "Substrate.FUSep.FUEtaObsCoalg.St" [label="St\nSubstrate.FUSep.FUEtaObsCoalg", style=rounded];
   "Substrate.FUSep.FUSepConv.Adjunction" [label="Adjunction\nSubstrate.FUSep.FUSepConv"];
@@ -597,7 +597,7 @@ digraph reuse {
   "Substrate.Groups.Capabilities.CoxeterFin.CoxeterFinCapability" [label="CoxeterFinCapability\nSubstrate.Groups.Capabilities.CoxeterFin"];
   "Substrate.Groups.Capabilities.CoxeterGroup.CoxeterGroupCapability" [label="CoxeterGroupCapability\nSubstrate.Groups.Capabilities.CoxeterGroup"];
   "Substrate.Groups.Capabilities.PhaseProjection.PhaseProjectionCapability" [label="PhaseProjectionCapability\nSubstrate.Groups.Capabilities.PhaseProjection"];
-  "Substrate.Groups.Capabilities.Strict2Monoid.Strict2MonoidCapability" [label="Strict2MonoidCapability\nSubstrate.Groups.Capabilities.Strict2Monoid"];
+  "Substrate.Groups.Capabilities.Strict2Monoid._.Strict2MonoidCapability" [label="Strict2MonoidCapability\nSubstrate.Groups.Capabilities.Strict2Monoid._"];
   "Substrate.Groups.Capabilities.ZnInstance" [label="ZnInstance\nSubstrate.Groups.Capabilities", style=rounded];
   "Substrate.Groups.Capabilities.xFreeCyclic.xFreeCyclicCapability" [label="xFreeCyclicCapability\nSubstrate.Groups.Capabilities.xFreeCyclic"];
   "Substrate.Groups.Capabilities.⊤₁" [label="⊤₁\nSubstrate.Groups.Capabilities"];
@@ -1163,7 +1163,7 @@ digraph reuse {
   "Substrate.Cocycles.KRule._.DistPattern" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Conway.SurrealFinite.SurrealFinite" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Discipline.CocycleSection" -> "Substrate.Cocycle.WeakCocycleStructure";
-  "Substrate.FUSep.ConversionCongruence._._≈_" -> "Substrate.FUSep.ConversionCongruence.ARS";
+  "Substrate.FUSep.ConversionCongruence._._≈_" -> "Substrate.FUSep.ConversionCongruence._.ARS";
   "Substrate.FUSep.FUSepConv._.Reaches" -> "Substrate.FUSep.FUSepConv.Adjunction";
   "Substrate.FUSep.FUSepConvEtaWitness._._⇒*_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";
   "Substrate.FUSep.FUSepConvEtaWitness._⟶_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";
@@ -1181,7 +1181,7 @@ digraph reuse {
   "Substrate.FUSep.FUSepQSKI._◁_" -> "Substrate.FUSep.FUSepQSKI.Tm";
   "Substrate.FUSep.FoldUnfold._.Gen" -> "Substrate.Algebra.Magma.Magma";
   "Substrate.FUSep.FoldUnfold._._.Congruence" -> "Substrate.Algebra.Magma.Magma";
-  "Substrate.FUSep.ObsBisim._._≋_" -> "Substrate.FUSep.ConversionCongruence.ARS";
+  "Substrate.FUSep.ObsBisim._._≋_" -> "Substrate.FUSep.ConversionCongruence._.ARS";
   "Substrate.FUSep.ObsBisim._._≋_" -> "Substrate.FUSep.ConversionCongruence._._≈_";
   "Substrate.FUSep.ObsBisim._._≋_" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Foundation.Fin.Cover._.Lift⊥" -> "Substrate.Foundation.Fin.Fin";

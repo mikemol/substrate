@@ -47,7 +47,7 @@ open import Substrate.Logic.Evidence.GValueLSpace
 -- a reciprocal. (recip↔neg.)
 ------------------------------------------------------------------------
 
-module _ (C : ExpLogCodecℚ) where
+module _ {L : Set} (C : ExpLogCodecℚ L) where
   open ExpLogCodec C
 
   codec-antipode : (a aⁱ : L) → (a ⊕ aⁱ) ≡ 𝟘 →
@@ -80,10 +80,9 @@ pow-+ g (suc m) n =
             {g *ℚ (powℚ g m *ℚ powℚ g n)}
             (*ℚ-assoc g (powℚ g m) (powℚ g n)))
 
-ℕ-power-codec : ℚ → ExpLogCodecℚ
+ℕ-power-codec : ℚ → ExpLogCodecℚ ℕ
 ℕ-power-codec g = record
-  { L     = ℕ
-  ; _⊕_   = _+_
+  { _⊕_   = _+_
   ; 𝟘     = zero
   ; expL  = powℚ g
   ; exp-⊕ = pow-+ g

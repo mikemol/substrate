@@ -12,15 +12,13 @@ module Substrate.Pipeline.Sequent.SequentType where
 
 open import Substrate.Pipeline.Brick
 
-record SequentType : Set₁ where
-  field
-    A : Set
-    B : Set
+-- ⟡set1-paydown: parameterize A B
+record SequentType (A B : Set) : Set where
 
-sequent→BrickType : SequentType → BrickType
-sequent→BrickType S = record
-  { D-in  = SequentType.A S
-  ; D-out = SequentType.B S
+sequent→BrickType : {A B : Set} → SequentType A B → BrickType
+sequent→BrickType {A} {B} _ = record
+  { D-in  = A
+  ; D-out = B
   ; S-in  = ⊤
   ; S-out = ⊤
   }

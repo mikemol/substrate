@@ -19,20 +19,26 @@ open import Substrate.Foundation.Eq using (_≡_)
 ------------------------------------------------------------------------
 -- The capability record. (Defined before opening Coxeter.Word to
 -- avoid the `Word` field-vs-type-name clash.)
+--
+-- ⟡set1-paydown: parameterize Word — the carrier `Word : Set` was a
+-- record FIELD, forcing the whole record to Set₁. Taking it as the
+-- module parameter drops the record to Set; the consumer names it
+-- (`Strict2MonoidCapability W`).
 ------------------------------------------------------------------------
 
-record Strict2MonoidCapability : Set₁ where
-  field
-    Word              : Set
-    _++_              : Word → Word → Word
-    ε                 : Word
-    ++-assoc          : (a b c : Word) → (a ++ b) ++ c ≡ a ++ (b ++ c)
-    ++-identityˡ      : (a : Word) → ε ++ a ≡ a
-    ++-identityʳ      : (a : Word) → a ++ ε ≡ a
-    normalize         : Word → Word
-    normalize-distrib : (a b : Word) →
-                        normalize (a ++ b) ≡
-                        normalize (normalize a ++ normalize b)
+module _ (Word : Set) where
+
+  record Strict2MonoidCapability : Set where
+    field
+      _++_              : Word → Word → Word
+      ε                 : Word
+      ++-assoc          : (a b c : Word) → (a ++ b) ++ c ≡ a ++ (b ++ c)
+      ++-identityˡ      : (a : Word) → ε ++ a ≡ a
+      ++-identityʳ      : (a : Word) → a ++ ε ≡ a
+      normalize         : Word → Word
+      normalize-distrib : (a b : Word) →
+                          normalize (a ++ b) ≡
+                          normalize (normalize a ++ normalize b)
 
 ------------------------------------------------------------------------
 -- from-coxeter-data: build a Strict2MonoidCapability from a Coxeter
@@ -49,10 +55,9 @@ from-coxeter-data :
   (normalize-distrib : (a b : CW.Word Gen) →
                        normalize (a ++ b) ≡
                        normalize (normalize a ++ normalize b)) →
-  Strict2MonoidCapability
+  Strict2MonoidCapability (CW.Word Gen)
 from-coxeter-data Gen assoc norm distrib = record
-  { Word              = CW.Word Gen
-  ; _++_              = _++_
+  { _++_              = _++_
   ; ε                 = CW.[]
   ; ++-assoc          = assoc
   ; ++-identityˡ      = ++-identity-left

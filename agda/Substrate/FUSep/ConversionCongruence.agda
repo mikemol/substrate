@@ -32,15 +32,19 @@ open import Substrate.FUSep.FoldUnfold using (Congruence)
 
 -- an APPLICATIVE REDUCTION SYSTEM: a magma with a COMPATIBLE reduction — closed
 -- under application contexts (the ONLY property the congruence proof needs).
-record ARS : Set₁ where
-  field
-    Carrier : Set
-    _·_     : Carrier → Carrier → Carrier
-    _⟶_     : Carrier → Carrier → Set
-    ·-congˡ : ∀ {a a' b} → a ⟶ a' → (a · b) ⟶ (a' · b)
-    ·-congʳ : ∀ {a b b'} → b ⟶ b' → (a · b) ⟶ (a · b')
+-- ⟡set1-paydown: parameterize Carrier and the reduction relation _⟶_ (both were
+-- fields — `Carrier : Set` and the Set-valued `_⟶_ : Carrier → Carrier → Set` —
+-- each forcing Set₁; taken as module parameters ARS lands in Set, per the
+-- carrier + relation-field rule; only the application `_·_` and the two
+-- compatibilities remain fields).
+module _ (Carrier : Set) (_⟶_ : Carrier → Carrier → Set) where
+  record ARS : Set where
+    field
+      _·_     : Carrier → Carrier → Carrier
+      ·-congˡ : ∀ {a a' b} → a ⟶ a' → (a · b) ⟶ (a' · b)
+      ·-congʳ : ∀ {a b b'} → b ⟶ b' → (a · b) ⟶ (a · b')
 
-module _ (R : ARS) where
+module _ {Carrier : Set} {_⟶_ : Carrier → Carrier → Set} (R : ARS Carrier _⟶_) where
   open ARS R
 
   -- CONVERSION: the equivalence closure of ⟶ (an equivalence BY CONSTRUCTION).

@@ -12,8 +12,8 @@ module Substrate.Pipeline.Sequent.Type where
 open import Substrate.Pipeline.Sequent.SequentRule using (SequentRule)
 open import Substrate.Pipeline.Sequent.SequentType using (SequentType)
 
-record Sequent (S : SequentType) : Set₁ where
-  open SequentType S
+-- ⟡set1-paydown: parameterize A B (was Set₁ via the SequentType carrier)
+record Sequent {A B : Set} (S : SequentType A B) : Set where
   field
     rule       : SequentRule
     derivation : A → B

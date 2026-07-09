@@ -30,7 +30,8 @@ open _×_ public
 
 -- work over an arbitrary observation coalgebra (an ARS + observation), exactly
 -- ObsBisim's parameters.
-module _ (R : ARS) (Obs : Set) (obs : ARS.Carrier R → Obs)
+module _ {Carrier : Set} {_⟶_ : Carrier → Carrier → Set}
+         (R : ARS Carrier _⟶_) (Obs : Set) (obs : Carrier → Obs)
          (obs-resp : ∀ {a b} → ConversionCongruence._≈_ R a b → obs a ≡ obs b) where
   open ARS R
   -- ObsBisim's ≋ lives in an anonymous module; access via the qualified name with

@@ -16,12 +16,16 @@
 open import Substrate.Groups.Capabilities.Strict2Monoid
   using (Strict2MonoidCapability)
 
+-- ⟡set1-paydown: parameterize Word — Strict2MonoidCapability now takes its
+-- carrier as a parameter; `W` is implicit here so per-Zₙ instances still
+-- open this adapter with a bare `cap-Zₙ` (W inferred from the record's type).
 module Substrate.Groups.Coxeter.Strict2MonoidFromCapability
-  (cap : Strict2MonoidCapability)
+  {W : Set}
+  (cap : Strict2MonoidCapability W)
   where
 
 open Strict2MonoidCapability cap
 
 open import Substrate.Groups.Zn-Coxeter-Strict2Monoid
-  Word _++_ ε ++-assoc ++-identityˡ ++-identityʳ normalize normalize-distrib
+  W _++_ ε ++-assoc ++-identityˡ ++-identityʳ normalize normalize-distrib
   public

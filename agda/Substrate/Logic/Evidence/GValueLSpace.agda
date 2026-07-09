@@ -45,8 +45,11 @@ open import Substrate.Algebra.ExpLogCodec public using (ExpLogCodec)
 ------------------------------------------------------------------------
 
 -- the el-atlas G-space codec: exp⊣log into the multiplicative (ℚ, *ℚ, 1ℚ).
-ExpLogCodecℚ : Set₁
-ExpLogCodecℚ = ExpLogCodec _*ℚ_ 1ℚ _≈ℚ_
+-- ⟡set1-paydown (downstream of ExpLogCodec): the L-space carrier is now the
+-- record's module parameter, so this ℚ-target alias is carrier-indexed too
+-- (the CONSUMER supplies L, as `ExpLogCodecℚ ℕ`, `ExpLogCodecℚ ℤ`, …).
+ExpLogCodecℚ : Set → Set
+ExpLogCodecℚ L = ExpLogCodec L _*ℚ_ 1ℚ _≈ℚ_
 
 ------------------------------------------------------------------------
 -- The base-power exponential gⁿ : the carrier of the concrete witness

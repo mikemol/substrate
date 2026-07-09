@@ -15,7 +15,7 @@ open import Substrate.Pipeline.Sequent.SequentRule using (contraction)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
 contraction-sequent : (A : Set)
-                    → Sequent (record { A = A × A ; B = A })
+                    → Sequent {A × A} {A} (record {})
 contraction-sequent A = record
   { rule       = contraction
   ; derivation = proj₁

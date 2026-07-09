@@ -42,7 +42,8 @@ open ConversionCongruence using (ARS)
 ∷-cong : {A : Set} {x y : A} {xs ys : List A} → x ≡ y → xs ≡ ys → (x ∷ xs) ≡ (y ∷ ys)
 ∷-cong refl refl = refl
 
-module _ (R : ARS) (Obs : Set) (obs : ARS.Carrier R → Obs) where
+module _ {Carrier : Set} {_⟶_ : Carrier → Carrier → Set}
+         (R : ARS Carrier _⟶_) (Obs : Set) (obs : Carrier → Obs) where
   open ARS R
 
   -- conversion of this ARS, and its left-compatibility (from ⟡FU-cong).

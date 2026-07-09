@@ -13,7 +13,7 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Pipeline.Sequent.SequentRule using (weakening)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
-weakening-sequent : (A B : Set) → B → Sequent (record { A = A ; B = A × B })
+weakening-sequent : (A B : Set) → B → Sequent {A} {A × B} (record {})
 weakening-sequent A B b = record
   { rule       = weakening
   ; derivation = λ a → a , b

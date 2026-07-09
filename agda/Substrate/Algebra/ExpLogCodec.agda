@@ -28,17 +28,20 @@ open import Substrate.Foundation.Eq using (_≡_; cong)
 
 -- An exp⊣log codec into the multiplicative target (G, _·_, 𝟙) measured by _≈_.
 -- `expL` is the "exp" direction (L → G); the homomorphism laws are the content.
-record ExpLogCodec {G : Set} (_·_ : G → G → G) (𝟙 : G)
-                   (_≈_ : G → G → Set) : Set₁ where
-  field
-    L     : Set
-    _⊕_   : L → L → L            -- L-space addition (the "log" side is additive)
-    𝟘     : L                    -- L-space origin (log 𝟙 = 𝟘)
-    expL  : L → G                -- exp : L-space → G-space
-    -- ·↔+  : multiplication in G is addition in L
-    exp-⊕ : (a b : L) → expL (a ⊕ b) ≈ (expL a · expL b)
-    -- 𝟙↔𝟘  : the multiplicative unit is the L-space origin
-    exp-𝟘 : expL 𝟘 ≈ 𝟙
+-- ⟡set1-paydown: parameterize L (the additive L-space carrier was a `L : Set`
+-- field, forcing Set₁; taking it as the module parameter keeps the record in Set,
+-- and the CONSUMER names it: `ExpLogCodec L _·_ 𝟙 _≈_`).
+module _ (L : Set) where
+  record ExpLogCodec {G : Set} (_·_ : G → G → G) (𝟙 : G)
+                     (_≈_ : G → G → Set) : Set where
+    field
+      _⊕_   : L → L → L            -- L-space addition (the "log" side is additive)
+      𝟘     : L                    -- L-space origin (log 𝟙 = 𝟘)
+      expL  : L → G                -- exp : L-space → G-space
+      -- ·↔+  : multiplication in G is addition in L
+      exp-⊕ : (a b : L) → expL (a ⊕ b) ≈ (expL a · expL b)
+      -- 𝟙↔𝟘  : the multiplicative unit is the L-space origin
+      exp-𝟘 : expL 𝟘 ≈ 𝟙
 
 ------------------------------------------------------------------------
 -- recip↔neg : the additive→multiplicative INVERSE grounding (el-atlas
@@ -52,13 +55,14 @@ record ExpLogCodec {G : Set} (_·_ : G → G → G) (𝟙 : G)
 ------------------------------------------------------------------------
 
 module Inverse
+  {L : Set}
   {G : Set} {_·_ : G → G → G} {𝟙 : G} {_≈_ : G → G → Set}
   (≈-sym       : {a b : G} → a ≈ b → b ≈ a)
   (≈-trans     : {a b c : G} → a ≈ b → b ≈ c → a ≈ c)
   (≈-reflexive : {a b : G} → a ≡ b → a ≈ b)
-  (C : ExpLogCodec _·_ 𝟙 _≈_)
-  (neg  : ExpLogCodec.L C → ExpLogCodec.L C)
-  (invˡ : (x : ExpLogCodec.L C) →
+  (C : ExpLogCodec L _·_ 𝟙 _≈_)
+  (neg  : L → L)
+  (invˡ : (x : L) →
           (ExpLogCodec._⊕_ C) x (neg x) ≡ ExpLogCodec.𝟘 C)
   where
   open ExpLogCodec C

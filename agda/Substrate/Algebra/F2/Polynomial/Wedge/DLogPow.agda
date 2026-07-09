@@ -58,9 +58,9 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : D.Over.Poly F₂-CommRi
           (sym (*Q-assoc gx (gpow a) (gpow b)))
 
   -- the generic codec at this field, over L = ℕ: GF(2ⁿ) mult IS exp of ℕ-add.
-  gpow-codec : ExpLogCodec _*Q_ oneC _≡_
+  gpow-codec : ExpLogCodec ℕ _*Q_ oneC _≡_
   gpow-codec = record
-    { L = ℕ ; _⊕_ = _+_ ; 𝟘 = zero ; expL = gpow
+    { _⊕_ = _+_ ; 𝟘 = zero ; expL = gpow
     ; exp-⊕ = gpow-hom ; exp-𝟘 = refl }
 
   -- THE DISCRETE-LOG INVERSE: gᵏ · gʲ ≡ 1 whenever k+j = order. The inverse of gᵏ
@@ -85,7 +85,7 @@ open D.Over F₂-CommRing 3 m-lo₄ using (_*Q_; oneC)
 
 -- THE AES NIBBLE-FIELD CODEC: GF(2⁴) multiplication IS exp of ℕ-addition — the
 -- first AES-field instance of the generic `ExpLogCodec` (structural, no reflection).
-gf16-codec : ExpLogCodec _*Q_ oneC _≡_
+gf16-codec : ExpLogCodec ℕ _*Q_ oneC _≡_
 gf16-codec = GF16.gpow-codec
 
 -- The GF(2⁴) discrete-log inverse law is `GF16.dlog-inv-law 15 g15`, awaiting

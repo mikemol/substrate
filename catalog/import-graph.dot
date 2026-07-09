@@ -7561,6 +7561,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ExtrudeSKI" -> "Substrate.Category.UniversalProperty.DiagonalYCombinator";
   "Substrate.Category.UniversalProperty.ExtrudeSKI" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.ExtrudeSKI" -> "Substrate.Foundation.RewriteConfluence";
+  "Substrate.Category.UniversalProperty.ExtrudeSKICatOf" -> "Substrate.Algebra.R.Trace.SKIReductionToList";
   "Substrate.Category.UniversalProperty.ExtrudeSKICatOf" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
   "Substrate.Category.UniversalProperty.ExtrudeSKICatOf" -> "Substrate.Category.UniversalProperty.DiagonalYCombinator";
   "Substrate.Category.UniversalProperty.ExtrudeSKICatOf" -> "Substrate.Category.UniversalProperty.ExtrudeSKISetoid";
@@ -9371,10 +9372,17 @@ digraph imports {
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Z2-Coxeter";
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Z3-Coxeter";
+  "Substrate.Groups.Capabilities" -> "Substrate.Foundation.Product";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.CoxeterFin";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.PhaseProjection";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.xFreeCyclic";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Z2-Coxeter";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Z3-Coxeter";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Z4-Coxeter";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Z5-Coxeter";
+  "Substrate.Groups.Capabilities" -> "Substrate.Groups.Z7-Coxeter";
   "Substrate.Groups.Capabilities.CoxeterFin" -> "Substrate.Algebra.Nat.CyclicSuc";
   "Substrate.Groups.Capabilities.CoxeterFin" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Capabilities.CoxeterFin" -> "Substrate.Foundation.Fin";
@@ -10427,6 +10435,8 @@ digraph imports {
   "Substrate.Groups.Z2-Coxeter-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
   "Substrate.Groups.Z2-Coxeter-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z2-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Strict2MonoidFromCapability";
+  "Substrate.Groups.Z2-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Z2-Coxeter-Strict2Monoid" -> "Substrate.Groups.Z2-Coxeter";
   "Substrate.Groups.Z2-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z2-x-FreeCyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Z2-x-FreeCyclic" -> "Substrate.Foundation.Product";
@@ -10515,6 +10525,8 @@ digraph imports {
   "Substrate.Groups.Z3-Coxeter-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
   "Substrate.Groups.Z3-Coxeter-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z3-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Strict2MonoidFromCapability";
+  "Substrate.Groups.Z3-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Z3-Coxeter-Strict2Monoid" -> "Substrate.Groups.Z3-Coxeter";
   "Substrate.Groups.Z3-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z3-x-FreeCyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Z3-x-FreeCyclic" -> "Substrate.Foundation.Product";
@@ -10549,6 +10561,7 @@ digraph imports {
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Coxeter.ListPresentation";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.FreeCyclic-Coxeter";
+  "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Z3-Coxeter";
   "Substrate.Groups.Z3-x-Z4-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z3-x-Z4-x-FreeCyclic" -> "Substrate.Foundation.Product";
   "Substrate.Groups.Z3-x-Z4-x-FreeCyclic" -> "Substrate.Groups.Coxeter.Word";
@@ -10625,6 +10638,8 @@ digraph imports {
   "Substrate.Groups.Z4-Coxeter-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
   "Substrate.Groups.Z4-Coxeter-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z4-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Strict2MonoidFromCapability";
+  "Substrate.Groups.Z4-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Z4-Coxeter-Strict2Monoid" -> "Substrate.Groups.Z4-Coxeter";
   "Substrate.Groups.Z4-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z4-x-FreeCyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Z4-x-FreeCyclic" -> "Substrate.Foundation.Product";
@@ -10713,6 +10728,8 @@ digraph imports {
   "Substrate.Groups.Z5-Coxeter-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
   "Substrate.Groups.Z5-Coxeter-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z5-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Strict2MonoidFromCapability";
+  "Substrate.Groups.Z5-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Z5-Coxeter-Strict2Monoid" -> "Substrate.Groups.Z5-Coxeter";
   "Substrate.Groups.Z5-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z5-x-FreeCyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Z5-x-FreeCyclic" -> "Substrate.Foundation.Product";
@@ -10801,6 +10818,8 @@ digraph imports {
   "Substrate.Groups.Z7-Coxeter-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
   "Substrate.Groups.Z7-Coxeter-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z7-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Strict2MonoidFromCapability";
+  "Substrate.Groups.Z7-Coxeter-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.Z7-Coxeter-Strict2Monoid" -> "Substrate.Groups.Z7-Coxeter";
   "Substrate.Groups.Z7-x-FreeCyclic" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.Z7-x-FreeCyclic" -> "Substrate.Foundation.Nat";
   "Substrate.Groups.Z7-x-FreeCyclic" -> "Substrate.Foundation.Product";

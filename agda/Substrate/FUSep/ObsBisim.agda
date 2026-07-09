@@ -33,7 +33,8 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 import Substrate.FUSep.ConversionCongruence as ConversionCongruence
 open ConversionCongruence using (ARS)
 
-module _ (R : ARS) (Obs : Set) (obs : ARS.Carrier R → Obs)
+module _ {Carrier : Set} {_⟶_ : Carrier → Carrier → Set}
+         (R : ARS Carrier _⟶_) (Obs : Set) (obs : Carrier → Obs)
          (obs-resp : ∀ {a b} → ConversionCongruence._≈_ R a b → obs a ≡ obs b) where
   open ARS R
 

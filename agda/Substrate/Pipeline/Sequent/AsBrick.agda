@@ -17,8 +17,8 @@ open import Substrate.Pipeline.Sequent.SequentRule using (SequentRule)
 open import Substrate.Pipeline.Sequent.SequentType using (SequentType; sequent→BrickType)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
-sequent-as-brick : ∀ {S} → Sequent S → Brick (sequent→BrickType S)
-sequent-as-brick {S} seq = record
+sequent-as-brick : ∀ {A B} {S : SequentType A B} → Sequent S → Brick (sequent→BrickType S)
+sequent-as-brick seq = record
   { witnesses = D⇒S
   ; step      = λ (a , _) → Sequent.derivation seq a , tt
   ; homomorphism-tag = SequentRule

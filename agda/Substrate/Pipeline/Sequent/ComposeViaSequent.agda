@@ -18,13 +18,13 @@ open import Substrate.Pipeline.Sequent.SequentType using (SequentType)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
 compose-via-sequent
-  : ∀ {T₁ T₂ : BrickType}
+  : ∀ {T₁ T₂ : BrickType} {A B : Set}
   → (b₁ : Brick T₁)
-  → (S : SequentType)
+  → (S : SequentType A B)
   → (seq : Sequent S)
   → (b₂ : Brick T₂)
-  → BrickType.D-out T₁ ≡ SequentType.A S
-  → SequentType.B S    ≡ BrickType.D-in  T₂
+  → BrickType.D-out T₁ ≡ A
+  → B                  ≡ BrickType.D-in  T₂
   → BrickType.S-out T₁ ≡ BrickType.S-in  T₂
   → Brick (record
       { D-in  = BrickType.D-in  T₁

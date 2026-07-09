@@ -32,9 +32,9 @@ open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of
 --    the application-context compatibilities = the repo's cong-l/cong-r. So ConversionCongruence gives us
 --    ≈ = the equivalence closure of ⇒⟦66d2c034⟧ (convertibility), REUSED (≈ is _≈_ applied to ski-ARS).
 ------------------------------------------------------------------------
-ski-ARS : ARS
+ski-ARS : ARS Tm⟦533ef80d⟧ _⇒⟦66d2c034⟧_
 ski-ARS = record
-  { Carrier = Tm⟦533ef80d⟧ ; _·_ = _∙_ ; _⟶_ = _⇒⟦66d2c034⟧_
+  { _·_ = _∙_
   ; ·-congˡ = λ {a}{a'}{b} r → cong-l b r
   ; ·-congʳ = λ {a}{b}{b'} r → cong-r a r }
 

@@ -13,7 +13,7 @@ open import Substrate.Pipeline.Sequent.SequentRule using (exchange)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
 exchange-sequent : (A B : Set)
-                 → Sequent (record { A = A × B ; B = B × A })
+                 → Sequent {A × B} {B × A} (record {})
 exchange-sequent A B = record
   { rule       = exchange
   ; derivation = swap

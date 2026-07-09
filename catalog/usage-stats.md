@@ -41,7 +41,7 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `Z6ChainData` | record | `Substrate.Algebra.Abelian.Z6-AsChainDecomp` |
 | `AbelianGroup` | record | `Substrate.Algebra.AbelianGroup` |
 | `_↔_` | record | `Substrate.Algebra.Bijection` |
-| `ExpLogCodec` | record | `Substrate.Algebra.ExpLogCodec` |
+| `ExpLogCodec` | record | `Substrate.Algebra.ExpLogCodec._` |
 | `FanoLine` | data | `Substrate.Algebra.F2.FanoPlane` |
 | `Point` | data | `Substrate.Algebra.F2.FanoPlane` |
 | `F₂` | data | `Substrate.Algebra.F2` |
@@ -294,7 +294,7 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `CapabilityTag` | data | `Substrate.Groups.Capabilities` |
 | `CoxeterGroupCapability` | record | `Substrate.Groups.Capabilities.CoxeterGroup` |
 | `PhaseProjectionCapability` | record | `Substrate.Groups.Capabilities.PhaseProjection` |
-| `Strict2MonoidCapability` | record | `Substrate.Groups.Capabilities.Strict2Monoid` |
+| `Strict2MonoidCapability` | record | `Substrate.Groups.Capabilities.Strict2Monoid._` |
 | `ZnInstance` | data | `Substrate.Groups.Capabilities` |
 | `xFreeCyclicCapability` | record | `Substrate.Groups.Capabilities.xFreeCyclic` |
 | `⊤₁` | record | `Substrate.Groups.Capabilities` |

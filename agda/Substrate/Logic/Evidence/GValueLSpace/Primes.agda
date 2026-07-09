@@ -206,10 +206,9 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
          (cong (powℚ h) (cong suc (sym (+-suc m n)))))
       (pow-+ h (suc m) (suc n))
 
-  ℤ-power-codec : ExpLogCodecℚ
+  ℤ-power-codec : ExpLogCodecℚ ℤ
   ℤ-power-codec = record
-    { L     = ℤ
-    ; _⊕_   = _+ℤ_
+    { _⊕_   = _+ℤ_
     ; 𝟘     = + zero
     ; expL  = expℤ
     ; exp-⊕ = exp-⊕ℤ
@@ -223,6 +222,6 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
   ℤpow-antipode-fires = codec-antipode ℤ-power-codec (+ 1) (-suc 0) refl
 
 -- The el-atlas instance: every G-value g and its antipode form a ℤ-power codec.
-gvalue-ℤ-codec : (na' db : ℕ) → ExpLogCodecℚ
+gvalue-ℤ-codec : (na' db : ℕ) → ExpLogCodecℚ ℤ
 gvalue-ℤ-codec na' db =
   ZPow.ℤ-power-codec (gvalue na' db) (antipode-of na' db) (gvalue-antipode na' db)
