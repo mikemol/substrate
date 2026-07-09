@@ -23,7 +23,11 @@ module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Algebra.Wedge.Graded using (GradedDivStr; C)
+-- ⟡set1-paydown: GradedDivStr AND GradedProduct now carry their graded carrier as a
+-- module param (no `C` projection). GradedMonoidalAdjunction is thus parameterized
+-- over that carrier family C : ℕ → Set (its `prod` is a `GradedProduct C`); it drops
+-- Set₁ → Set. Consumers write `GradedMonoidalAdjunction C`.
+open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; graded-of-product; flatten)
 open import Substrate.Algebra.Wedge.Product.LawTypes
@@ -34,30 +38,33 @@ open import Substrate.Algebra.Wedge.Graded.Adjunction using (gTerm)
 -- 1. The uniting record: a GradedProduct + its graded laws.
 ------------------------------------------------------------------------
 
-record GradedMonoidalAdjunction : Set₁ where
-  field
-    prod  : GradedProduct
-    assoc : GradedAssoc prod
-    unitˡ : GradedUnitˡ prod
-    unitʳ : GradedUnitʳ prod
+module _ (C : ℕ → Set) where
 
-open GradedMonoidalAdjunction public
+  record GradedMonoidalAdjunction : Set where
+    field
+      prod  : GradedProduct C
+      assoc : GradedAssoc prod
+      unitˡ : GradedUnitˡ prod
+      unitʳ : GradedUnitʳ prod
+
+  open GradedMonoidalAdjunction public
 
 ------------------------------------------------------------------------
 -- 2. The carriers (proof-free faces), all from the one structure. The DEGREE
 --    (which uses the flatten construction) and the Vec instance — being
 --    proof-dependent (Product.Laws) — live in
 --    Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties, per the
---    def/proof separation policy.
+--    def/proof separation policy.  (C inferred from the gma argument.)
 ------------------------------------------------------------------------
 
-graded-carrier : GradedMonoidalAdjunction → GradedDivStr
+graded-carrier : {C : ℕ → Set} (gma : GradedMonoidalAdjunction C) →
+                 GradedDivStr C (λ _ → C 1)
 graded-carrier gma = graded-of-product (prod gma)
 
-flat-carrier : GradedMonoidalAdjunction → DivStr
+flat-carrier : {C : ℕ → Set} → GradedMonoidalAdjunction C → DivStr
 flat-carrier gma = flatten (prod gma)
 
 -- the graded Free⊣Forgetful hom-set (Graded.Adjunction) over this carrier.
-gma-term : (gma : GradedMonoidalAdjunction) (n : ℕ) →
-           C (graded-carrier gma) (suc n) → C (graded-carrier gma) n → Set
+gma-term : {C : ℕ → Set} (gma : GradedMonoidalAdjunction C) (n : ℕ) →
+           C (suc n) → C n → Set
 gma-term gma = gTerm (graded-carrier gma)

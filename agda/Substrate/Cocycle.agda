@@ -46,43 +46,61 @@ open IsTorsor public
 -- IsomorphicCocycleStructure — primary abstraction.
 ------------------------------------------------------------------------
 
-record IsomorphicCocycleStructure : Set₁ where      -- ⟦shape:ffdd236e Invariant,Gauge,Fiber⟧
-  field
-    Invariant    : Set
-    GaugeCarrier : Set
-    GaugeRel     : GaugeCarrier → GaugeCarrier → Set
-    Gauge        : SetoidGroup GaugeCarrier GaugeRel
-    Fiber        : Invariant → Set
-    fiber-torsor : (i : Invariant) → IsTorsor GaugeCarrier GaugeRel Gauge (Fiber i)
+-- ⟡set1-paydown: parameterize BOTH carriers (Invariant, GaugeCarrier), the GaugeRel relation, the
+-- gauge SetoidGroup, AND the Fiber family into module params. Invariant/GaugeCarrier are Set-valued
+-- CARRIER fields, GaugeRel : GaugeCarrier → GaugeCarrier → Set is a relation, and Fiber : Invariant →
+-- Set is an indexed FAMILY — every one forces Set₁. Moving them (and Gauge, which depends on the
+-- carrier/relation) to module parameters leaves only fiber-torsor as a Set-valued field, so the
+-- record lives in Set. Consumers write `IsomorphicCocycleStructure Invariant GaugeCarrier GaugeRel
+-- Gauge Fiber`; projections (.TotalSpace / .project) keep the params implicit, so call sites of the
+-- projections are unchanged.
+module _ (Invariant    : Set)
+         (GaugeCarrier : Set)
+         (GaugeRel     : GaugeCarrier → GaugeCarrier → Set)
+         (Gauge        : SetoidGroup GaugeCarrier GaugeRel)
+         (Fiber        : Invariant → Set) where
+  record IsomorphicCocycleStructure : Set where      -- ⟦shape:ffdd236e Invariant,Gauge,Fiber⟧
+    field
+      fiber-torsor : (i : Invariant) → IsTorsor GaugeCarrier GaugeRel Gauge (Fiber i)
 
-  TotalSpace : Set
-  TotalSpace = Σ Invariant Fiber
+    TotalSpace : Set
+    TotalSpace = Σ Invariant Fiber
 
-  project : TotalSpace → Invariant
-  project = proj₁
+    project : TotalSpace → Invariant
+    project = proj₁
 
 ------------------------------------------------------------------------
 -- WeakCocycleStructure — compatibility shape.
 ------------------------------------------------------------------------
 
-record WeakCocycleStructure : Set₁ where
-  field
-    Base         : Set
-    GaugeCarrier : Set
-    GaugeRel     : GaugeCarrier → GaugeCarrier → Set
-    Gauge        : SetoidGroup GaugeCarrier GaugeRel
-    action-w     : Action GaugeCarrier GaugeRel Gauge Base
-    Invariant    : Set
-    project      : Base → Invariant
-    project-gauge-invariant :
-      (g : GaugeCarrier) (b : Base) →
-      project (act action-w g b) ≡ project b
+-- ⟡set1-paydown: parameterize Base, GaugeCarrier, GaugeRel (relation), the gauge SetoidGroup, and
+-- Invariant — all Set-valued (carriers / relation) — into module params; only action-w, project and
+-- project-gauge-invariant remain as fields, so the record lives in Set. Consumers write
+-- `WeakCocycleStructure Base GaugeCarrier GaugeRel Gauge Invariant`.
+module _ (Base         : Set)
+         (GaugeCarrier : Set)
+         (GaugeRel     : GaugeCarrier → GaugeCarrier → Set)
+         (Gauge        : SetoidGroup GaugeCarrier GaugeRel)
+         (Invariant    : Set) where
+  record WeakCocycleStructure : Set where
+    field
+      action-w     : Action GaugeCarrier GaugeRel Gauge Base
+      project      : Base → Invariant
+      project-gauge-invariant :
+        (g : GaugeCarrier) (b : Base) →
+        project (act action-w g b) ≡ project b
 
 ------------------------------------------------------------------------
 -- Downcast.
 ------------------------------------------------------------------------
 
-module Downcast (𝒞 : IsomorphicCocycleStructure) where
+-- ⟡set1-paydown: Downcast gains the ICS carrier/family params (implicit — inferred from 𝒞) so its
+-- callers still write `Downcast 𝒞` / `Downcast.weak 𝒞` unchanged.
+module Downcast {Invariant GaugeCarrier : Set}
+                {GaugeRel : GaugeCarrier → GaugeCarrier → Set}
+                {Gauge : SetoidGroup GaugeCarrier GaugeRel}
+                {Fiber : Invariant → Set}
+                (𝒞 : IsomorphicCocycleStructure Invariant GaugeCarrier GaugeRel Gauge Fiber) where
   open IsomorphicCocycleStructure 𝒞
   open SetoidGroup Gauge using () renaming (ε to εG; _∙_ to _·G_)
 
@@ -114,14 +132,9 @@ module Downcast (𝒞 : IsomorphicCocycleStructure) where
     project (total-act g x) ≡ project x
   proj-gauge-inv _ _ = refl
 
-  weak : WeakCocycleStructure
+  weak : WeakCocycleStructure TotalSpace GaugeCarrier GaugeRel Gauge Invariant
   weak = record
-    { Base                    = TotalSpace
-    ; GaugeCarrier            = GaugeCarrier
-    ; GaugeRel                = GaugeRel
-    ; Gauge                   = Gauge
-    ; action-w                = total-action
-    ; Invariant               = Invariant
+    { action-w                = total-action
     ; project                 = project
     ; project-gauge-invariant = proj-gauge-inv
     }

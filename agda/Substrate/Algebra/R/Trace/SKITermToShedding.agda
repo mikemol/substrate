@@ -52,11 +52,10 @@ cost _                   = 0
 -- We keep C and R as plain Tm at every grade (the grade tracks the cost separately),
 -- so recon is the structure-peel's inverse — app-rebuild — exactly FUSepQSKI's rcn.
 ------------------------------------------------------------------------
-ski-graded : GradedDivStr
+-- ⟡set1-paydown: the graded families (const Tm carrier, const Tm digit) are now params.
+ski-graded : GradedDivStr (λ _ → Tm) (λ _ → Tm)
 ski-graded = record
-  { C     = λ _ → Tm                       -- carrier at every grade: a term
-  ; R     = λ _ → Tm                       -- digit at every grade: the peeled subterm
-  ; recon = λ _ f a → f ∙ a                -- grade-raising = app-rebuild (rcn, invertible)
+  { recon = λ _ f a → f ∙ a                -- grade-raising = app-rebuild (rcn, invertible)
   }
 
 ------------------------------------------------------------------------

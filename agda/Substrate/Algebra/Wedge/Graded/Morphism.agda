@@ -24,11 +24,15 @@ module Substrate.Algebra.Wedge.Graded.Morphism where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Wedge.Graded using (GradedDivStr; C; R; recon)
+-- ⟡set1-paydown: GradedDivStr's carrier/remainder families are now its params, so
+-- the old projections `C G` / `R G` become the module params C… / R… threaded here.
+open import Substrate.Algebra.Wedge.Graded using (GradedDivStr; recon)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge)
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param (no `C` projection),
+-- so the old `Cᵖ P` becomes the module params Cᴾ / Cᴽ threaded on the connectors.
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; graded-of-product; flatten; flatten-recon; gpower)
-  renaming (C to Cᵖ; u to uᵖ; _∧_ to _∧ᵖ_)
+  renaming (u to uᵖ; _∧_ to _∧ᵖ_)
 open import Substrate.Algebra.Wedge.Product.Hom
   using (GradedHom; map₀; map-u; map-∧; flatten-map)
 
@@ -36,24 +40,28 @@ open import Substrate.Algebra.Wedge.Product.Hom
 -- 1. The graded-divstr morphism (parallel to Bridge / GradedHom).
 ------------------------------------------------------------------------
 
-record GradedDivStrMorphism (G₁ G₂ : GradedDivStr) : Set where
-  field
-    map-C : {n : ℕ} → C G₁ n → C G₂ n
-    map-R : {n : ℕ} → R G₁ n → R G₂ n
-    respects-recon : (n : ℕ) (b : C G₁ n) (r : R G₁ n) →
-                     map-C (recon G₁ n b r) ≡ recon G₂ n (map-C b) (map-R r)
+module _ {C₁ R₁ C₂ R₂ : ℕ → Set} where
+  record GradedDivStrMorphism (G₁ : GradedDivStr C₁ R₁)
+                              (G₂ : GradedDivStr C₂ R₂) : Set where
+    field
+      map-C : {n : ℕ} → C₁ n → C₂ n
+      map-R : {n : ℕ} → R₁ n → R₂ n
+      respects-recon : (n : ℕ) (b : C₁ n) (r : R₁ n) →
+                       map-C (recon G₁ n b r) ≡ recon G₂ n (map-C b) (map-R r)
 
-open GradedDivStrMorphism public
+  open GradedDivStrMorphism public
 
 ------------------------------------------------------------------------
 -- 2. Category structure: identity and composition.
 ------------------------------------------------------------------------
 
-id-gdsm : (G : GradedDivStr) → GradedDivStrMorphism G G
+id-gdsm : {C R : ℕ → Set} (G : GradedDivStr C R) → GradedDivStrMorphism G G
 id-gdsm G = record
   { map-C = λ x → x ; map-R = λ x → x ; respects-recon = λ n b r → refl }
 
-comp-gdsm : {G₁ G₂ G₃ : GradedDivStr} →
+comp-gdsm : {C₁ R₁ C₂ R₂ C₃ R₃ : ℕ → Set}
+            {G₁ : GradedDivStr C₁ R₁} {G₂ : GradedDivStr C₂ R₂}
+            {G₃ : GradedDivStr C₃ R₃} →
             GradedDivStrMorphism G₂ G₃ → GradedDivStrMorphism G₁ G₂ →
             GradedDivStrMorphism G₁ G₃
 comp-gdsm g f = record
@@ -69,7 +77,8 @@ comp-gdsm g f = record
 --    +1-step slices (graded-of-product). recon = ∧ with the digit on the left.
 ------------------------------------------------------------------------
 
-gradedHom→gdsMorphism : {P Q : GradedProduct} → GradedHom P Q →
+gradedHom→gdsMorphism : {Cᴾ Cᴽ : ℕ → Set}
+  {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ} → GradedHom P Q →
   GradedDivStrMorphism (graded-of-product P) (graded-of-product Q)
 gradedHom→gdsMorphism h = record
   { map-C = map₀ h
@@ -82,17 +91,19 @@ gradedHom→gdsMorphism h = record
 --    Needs that the hom respects the q-fold ∧ (gpower).
 ------------------------------------------------------------------------
 
-map-gpower : {P Q : GradedProduct} (h : GradedHom P Q) {i : ℕ}
-             (b : Cᵖ P i) (q : ℕ) →
+map-gpower : {Cᴾ Cᴽ : ℕ → Set} {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ}
+             (h : GradedHom P Q) {i : ℕ}
+             (b : Cᴾ i) (q : ℕ) →
              map₀ h (gpower P b q) ≡ gpower Q (map₀ h b) q
 map-gpower h b zero    = map-u h
-map-gpower {P} {Q} h b (suc q) =
+map-gpower {P = P} {Q = Q} h b (suc q) =
   trans (map-∧ h b (gpower P b q))
         (cong (_∧ᵖ_ Q (map₀ h b)) (map-gpower h b q))
 
-gradedHom→bridge : {P Q : GradedProduct} (h : GradedHom P Q) →
+gradedHom→bridge : {Cᴾ Cᴽ : ℕ → Set} {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ}
+  (h : GradedHom P Q) →
   Bridge (flatten P) (flatten Q)
-gradedHom→bridge {P} {Q} h = record
+gradedHom→bridge {P = P} {Q = Q} h = record
   { translate = flatten-map h
   ; respects  = λ where
       (qn , _) (i , bb) (j , rr) →

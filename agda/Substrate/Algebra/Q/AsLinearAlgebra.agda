@@ -28,12 +28,10 @@ open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 -- 1. ℚ LinearAlgebra instance.
 ------------------------------------------------------------------------
 
-ℚ-LinearAlgebra : LinearAlgebra
+-- ⟡set1-paydown: R / Vector / Linear are now LinearAlgebra's params (ℚ, Vector, Linearℚ).
+ℚ-LinearAlgebra : LinearAlgebra ℚ Vector Linearℚ
 ℚ-LinearAlgebra = record
-  { R      = ℚ
-  ; Vector = Vector
-  ; Linear = Linearℚ
-  ; zeroR  = 0ℚ
+  { zeroR  = 0ℚ
   ; oneR   = 1ℚ
   ; zeroV  = 𝟎ℚⱽ
   ; _+V_   = _+ℚⱽ_

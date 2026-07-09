@@ -92,9 +92,10 @@ lift-tri-global = (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []) , (refl , refl , refl
 --           recon = extend. The carry lives in the graded-wedge architecture.
 ------------------------------------------------------------------------
 
-constraint-graded : GradedDivStr
+-- ⟡set1-paydown: the graded families (Constraint, const F₂) are now GradedDivStr's params.
+constraint-graded : GradedDivStr Constraint (λ _ → F₂)
 constraint-graded = record
-  { C = Constraint ; R = λ _ → F₂ ; recon = λ n c b → extend b c }
+  { recon = λ n c b → extend b c }
 
 extend-step : ∀ {n} (c : Constraint n) (b : F₂) →
               GradedWedge constraint-graded n (extend b c) c

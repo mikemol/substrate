@@ -48,10 +48,10 @@ open Shed public
 -- cost 0, peeled = a fixed nf marker); _∧_ = chain two sheds, grades ADDING (the
 -- total cost accumulates). This IS the two-index braiding chained: grade = Σ cost.
 ------------------------------------------------------------------------
-ski-product : GradedProduct
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param (Shed).
+ski-product : GradedProduct Shed
 ski-product = record
-  { C   = Shed
-  ; u   = shed⟨ I ⟩                                   -- grade-0 unit: the trivial nf shed
+  { u   = shed⟨ I ⟩                                   -- grade-0 unit: the trivial nf shed
   ; _∧_ = λ {i}{j} s t → shed⟨ peeled s ∙ peeled t ⟩  -- chain: grade i+j, rebuild structure
   }
 
@@ -87,13 +87,13 @@ total-cost-is-3 = three-sheds
 -- the accumulated cost, tracked in the type, recoverable by construction.
 ------------------------------------------------------------------------
 q-fold-chain : (b : Shed 1) (q : ℕ) → Chain (q * 1)
-q-fold-chain b q = pow-term {ski-product} b q
+q-fold-chain b q = pow-term {P = ski-product} b q
 
 -- eval of a q-fold chain is the q-fold ∧ (the accumulated structure) — the reskin
 -- of Product.gpower: the total cost q is carried, the structure rebuilt.
 q-fold-eval : (b : Shed 1) (q : ℕ)
             → eval (q-fold-chain b q) ≡ gpower ski-product b q
-q-fold-eval b q = eval-pow {ski-product} b q
+q-fold-eval b q = eval-pow {P = ski-product} b q
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the accumulating-grade chain, reskinned): the

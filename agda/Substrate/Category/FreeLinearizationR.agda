@@ -29,21 +29,26 @@ open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 -- reference LA's Vector and Linear families.
 ------------------------------------------------------------------------
 
-record FreeLinearizationR (LA : LinearAlgebra) (n m : ℕ) : Set where
-  open LinearAlgebra LA
-  field
-    images :
-      Fin n → Vector m
-    extension :
-      Linear n m
-    extension-on-basis :
-      (i : Fin n) → apply extension (basis i) ≡ images i
-    uniqueness :
-      (other : Linear n m) →
-      ((i : Fin n) → apply other (basis i) ≡ images i) →
-      (v : Vector n) → apply extension v ≡ apply other v
+-- ⟡set1-paydown: LinearAlgebra's R / Vector / Linear are now its params, so this
+-- consumer takes them as module params; `open LinearAlgebra LA` still supplies the
+-- operations (apply, basis, …), while Vector / Linear are the params directly.
+module _ (R : Set) (Vector : ℕ → Set) (Linear : ℕ → ℕ → Set) where
 
-open FreeLinearizationR public
+  record FreeLinearizationR (LA : LinearAlgebra R Vector Linear) (n m : ℕ) : Set where
+    open LinearAlgebra LA
+    field
+      images :
+        Fin n → Vector m
+      extension :
+        Linear n m
+      extension-on-basis :
+        (i : Fin n) → apply extension (basis i) ≡ images i
+      uniqueness :
+        (other : Linear n m) →
+        ((i : Fin n) → apply other (basis i) ≡ images i) →
+        (v : Vector n) → apply extension v ≡ apply other v
+
+  open FreeLinearizationR public
 
 ------------------------------------------------------------------------
 -- 2. Capstone for FLQ2.

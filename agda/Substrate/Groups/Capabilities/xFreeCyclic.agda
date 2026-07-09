@@ -20,20 +20,24 @@ open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 -- The capability record.
 ------------------------------------------------------------------------
 
-record xFreeCyclicCapability : Set₁ where
-  field
-    Zn-Word              : Set
-    _Zn-++_              : Zn-Word → Zn-Word → Zn-Word
-    Zn-ε                 : Zn-Word
-    Zn-++-assoc          : (a b c : Zn-Word) →
-                           (a Zn-++ b) Zn-++ c ≡ a Zn-++ (b Zn-++ c)
-    Zn-Canonical         : Zn-Word → Set
-    Zn-normalize         : Zn-Word → Zn-Word
-    Zn-normalize-canonical : (w : Zn-Word) → Zn-Canonical (Zn-normalize w)
-    Zn-canonical-is-fixed  : {w : Zn-Word} → Zn-Canonical w → Zn-normalize w ≡ w
-    Zn-normalize-distrib   : (a b : Zn-Word) →
-                             Zn-normalize (a Zn-++ b) ≡
-                             Zn-normalize (Zn-normalize a Zn-++ Zn-normalize b)
+-- ⟡set1-paydown: parameterize the Set carrier (Zn-Word) AND the family
+-- (Zn-Canonical : Zn-Word → Set) out of the record — both were `field`s
+-- valued in Set, forcing the record to Set₁. As module parameters the record
+-- lands in Set; consumers write `xFreeCyclicCapability Zn-Word Zn-Canonical`.
+module _ (Zn-Word : Set) (Zn-Canonical : Zn-Word → Set) where
+
+  record xFreeCyclicCapability : Set where
+    field
+      _Zn-++_              : Zn-Word → Zn-Word → Zn-Word
+      Zn-ε                 : Zn-Word
+      Zn-++-assoc          : (a b c : Zn-Word) →
+                             (a Zn-++ b) Zn-++ c ≡ a Zn-++ (b Zn-++ c)
+      Zn-normalize         : Zn-Word → Zn-Word
+      Zn-normalize-canonical : (w : Zn-Word) → Zn-Canonical (Zn-normalize w)
+      Zn-canonical-is-fixed  : {w : Zn-Word} → Zn-Canonical w → Zn-normalize w ≡ w
+      Zn-normalize-distrib   : (a b : Zn-Word) →
+                               Zn-normalize (a Zn-++ b) ≡
+                               Zn-normalize (Zn-normalize a Zn-++ Zn-normalize b)
 
 ------------------------------------------------------------------------
 -- from-coxeter-data: build the capability from a Coxeter instance.
@@ -51,13 +55,11 @@ from-coxeter-data :
   (normalize-distrib : (a b : Word Gen) →
                        normalize (a ++ b) ≡
                        normalize (normalize a ++ normalize b)) →
-  xFreeCyclicCapability
+  xFreeCyclicCapability (Word Gen) Canonical
 from-coxeter-data Gen assoc Can norm norm-can can-fix distrib = record
-  { Zn-Word                = Word Gen
-  ; _Zn-++_                = _++_
+  { _Zn-++_                = _++_
   ; Zn-ε                   = []
   ; Zn-++-assoc            = assoc
-  ; Zn-Canonical           = Can
   ; Zn-normalize           = norm
   ; Zn-normalize-canonical = norm-can
   ; Zn-canonical-is-fixed  = can-fix

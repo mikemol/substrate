@@ -12,14 +12,16 @@ module Substrate.Pipeline.Brick.EdgeAccessors where
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Pipeline.Brick.Record using (Brick)
 
-D-in-of : ∀ {T : BrickType} → Brick T → Set
-D-in-of {T} _ = BrickType.D-in T
+-- ⟡set1-paydown: BrickType's edges are now type indices, not projections — read them off the
+-- implicit params (inferred from the brick's type) instead of `BrickType.D-in T`.
+D-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+D-in-of {D-in = d} _ = d
 
-D-out-of : ∀ {T : BrickType} → Brick T → Set
-D-out-of {T} _ = BrickType.D-out T
+D-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+D-out-of {D-out = d} _ = d
 
-S-in-of : ∀ {T : BrickType} → Brick T → Set
-S-in-of {T} _ = BrickType.S-in T
+S-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+S-in-of {S-in = s} _ = s
 
-S-out-of : ∀ {T : BrickType} → Brick T → Set
-S-out-of {T} _ = BrickType.S-out T
+S-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+S-out-of {S-out = s} _ = s

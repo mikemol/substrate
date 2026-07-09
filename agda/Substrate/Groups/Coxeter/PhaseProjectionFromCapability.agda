@@ -16,8 +16,12 @@
 open import Substrate.Groups.Capabilities.PhaseProjection
   using (PhaseProjectionCapability)
 
+-- ⟡set1-paydown: PhaseProjectionCapability now takes (Zn-Word F-Word : Set)
+-- as parameters; take them as implicit module params (inferred from `cap`'s
+-- type) so the per-Zₙ adapters still write `PhaseProjectionFromCapability cap-Zₙ`.
 module Substrate.Groups.Coxeter.PhaseProjectionFromCapability
-  (cap : PhaseProjectionCapability)
+  {Zn-Word F-Word : Set}
+  (cap : PhaseProjectionCapability Zn-Word F-Word)
   where
 
 open PhaseProjectionCapability cap

@@ -37,11 +37,10 @@ open import Substrate.Algebra.Wedge.Graded
 --    recon = the inductive insertion action.
 ------------------------------------------------------------------------
 
-tower-graded : GradedDivStr
+-- ⟡set1-paydown: the graded families (Perm, Fin ∘ suc) are now GradedDivStr's params.
+tower-graded : GradedDivStr Perm (λ n → Fin (suc n))
 tower-graded = record
-  { C     = Perm
-  ; R     = λ n → Fin (suc n)
-  ; recon = λ n σ p → insert-at p σ
+  { recon = λ n σ p → insert-at p σ
   }
 
 -- recon IS the inductive action, definitionally (the Action.agda identity,

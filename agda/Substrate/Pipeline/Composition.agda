@@ -30,29 +30,27 @@ open import Substrate.Pipeline.Brick
 -- iff D-out T₁ ≡ D-in T₂ and S-out T₁ ≡ S-in T₂.
 ------------------------------------------------------------------------
 
--- The composite brick's type.
-compose-type : (T₁ T₂ : BrickType)
-             → BrickType.D-out T₁ ≡ BrickType.D-in T₂
-             → BrickType.S-out T₁ ≡ BrickType.S-in T₂
-             → BrickType
-compose-type T₁ T₂ _ _ = record
-  { D-in  = BrickType.D-in  T₁
-  ; D-out = BrickType.D-out T₂
-  ; S-in  = BrickType.S-in  T₁
-  ; S-out = BrickType.S-out T₂
-  }
+-- ⟡set1-paydown: BrickType is now indexed by its four edges; thread them as implicit params and
+-- read them directly (no more `BrickType.D-out T₁` projections). Result tag is `record {}`.
+compose-type : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+             → (T₁ : BrickType Di₁ Do₁ Si₁ So₁) (T₂ : BrickType Di₂ Do₂ Si₂ So₂)
+             → Do₁ ≡ Di₂
+             → So₁ ≡ Si₂
+             → BrickType Di₁ Do₂ Si₁ So₂
+compose-type _ _ _ _ = record {}
 
 -- Sequential composition of two bricks.
 --
 -- The composite step is: apply b₁ to (d, s); rewrite via the edge
 -- equalities; apply b₂.
-compose : ∀ {T₁ T₂}
+compose : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+        → {T₁ : BrickType Di₁ Do₁ Si₁ So₁} {T₂ : BrickType Di₂ Do₂ Si₂ So₂}
         → (b₁ : Brick T₁)
         → (b₂ : Brick T₂)
-        → (d-eq : BrickType.D-out T₁ ≡ BrickType.D-in T₂)
-        → (s-eq : BrickType.S-out T₁ ≡ BrickType.S-in T₂)
+        → (d-eq : Do₁ ≡ Di₂)
+        → (s-eq : So₁ ≡ Si₂)
         → Brick (compose-type T₁ T₂ d-eq s-eq)
-compose {T₁} {T₂} b₁ b₂ refl refl = record
+compose b₁ b₂ refl refl = record
   { witnesses = Brick.witnesses b₁  -- the composite's witnessing is
                                      -- the leftmost (entry) brick's
                                      -- — refined further per-composite
@@ -76,21 +74,16 @@ compose {T₁} {T₂} b₁ b₂ refl refl = record
 -- the Read role.
 ------------------------------------------------------------------------
 
-record Observer (T : BrickType) (O : Set) : Set where
-  open BrickType T
+-- ⟡set1-paydown: BrickType edges are now type indices — thread them and read directly.
+record Observer {Di Do Si So : Set} (T : BrickType Di Do Si So) (O : Set) : Set where
   field
-    observe : D-out × S-out → O
+    observe : Do × So → O
 
 -- Tee adds an observer's output to the state (S-out becomes S-out × O).
-tee-type : (T : BrickType) → (O : Set) → BrickType
-tee-type T O = record
-  { D-in  = BrickType.D-in T
-  ; D-out = BrickType.D-out T
-  ; S-in  = BrickType.S-in T
-  ; S-out = BrickType.S-out T × O
-  }
+tee-type : ∀ {Di Do Si So : Set} → BrickType Di Do Si So → (O : Set) → BrickType Di Do Si (So × O)
+tee-type _ O = record {}
 
-tee : ∀ {T O} → (b : Brick T) → (obs : Observer T O)
+tee : ∀ {Di Do Si So O : Set} {T : BrickType Di Do Si So} → (b : Brick T) → (obs : Observer T O)
     → Brick (tee-type T O)
 tee b obs = record
   { witnesses = Brick.witnesses b
@@ -113,36 +106,34 @@ tee b obs = record
 -- DirectProduct) at the brick layer.
 ------------------------------------------------------------------------
 
-record Chooser (T₁ T₂ : BrickType) : Set where
-  open BrickType T₁ renaming (D-out to D-out₁; S-out to S-out₁)
-  open BrickType T₂ renaming (D-out to D-out₂; S-out to S-out₂)
+-- ⟡set1-paydown: BrickType edges are now type indices — thread them and read directly.
+record Chooser {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+               (T₁ : BrickType Di₁ Do₁ Si₁ So₁) (T₂ : BrickType Di₂ Do₂ Si₂ So₂) : Set where
   field
-    select : D-out₁ × D-out₂ × S-out₁ × S-out₂ → D-out₁
+    select : Do₁ × Do₂ × So₁ × So₂ → Do₁
     -- The chooser picks one of the two output streams. (For more
     -- complex selections, generalise this signature; see
     -- DATAFLOW_REMODEL.md's Chooser decomposition into
     -- score / selection / coupling.)
 
 -- The product brick requires shared D-in but allows independent S.
-product-type : (T₁ T₂ : BrickType)
-             → BrickType.D-in T₁ ≡ BrickType.D-in T₂
-             → BrickType.D-out T₁ ≡ BrickType.D-out T₂
-             → BrickType
-product-type T₁ T₂ _ _ = record
-  { D-in  = BrickType.D-in T₁
-  ; D-out = BrickType.D-out T₁
-  ; S-in  = BrickType.S-in T₁ × BrickType.S-in T₂
-  ; S-out = BrickType.S-out T₁ × BrickType.S-out T₂
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — thread them and read directly.
+product-type : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+             → (T₁ : BrickType Di₁ Do₁ Si₁ So₁) (T₂ : BrickType Di₂ Do₂ Si₂ So₂)
+             → Di₁ ≡ Di₂
+             → Do₁ ≡ Do₂
+             → BrickType Di₁ Do₁ (Si₁ × Si₂) (So₁ × So₂)
+product-type _ _ _ _ = record {}
 
-product : ∀ {T₁ T₂}
+product : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+        → {T₁ : BrickType Di₁ Do₁ Si₁ So₁} {T₂ : BrickType Di₂ Do₂ Si₂ So₂}
         → (b₁ : Brick T₁)
         → (b₂ : Brick T₂)
-        → (din-eq : BrickType.D-in T₁ ≡ BrickType.D-in T₂)
-        → (dout-eq : BrickType.D-out T₁ ≡ BrickType.D-out T₂)
+        → (din-eq : Di₁ ≡ Di₂)
+        → (dout-eq : Do₁ ≡ Do₂)
         → (c : Chooser T₁ T₂)
         → Brick (product-type T₁ T₂ din-eq dout-eq)
-product {T₁} {T₂} b₁ b₂ refl refl c = record
+product b₁ b₂ refl refl c = record
   { witnesses = D⇒C   -- The product is fundamentally a D⇒C
                        -- (data selects between two computes)
                        -- witnessed by S (each layer's state)

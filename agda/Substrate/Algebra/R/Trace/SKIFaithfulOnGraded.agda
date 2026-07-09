@@ -33,7 +33,8 @@ open import Substrate.Algebra.R.Trace.SKIFaithfulRb
 -- a graded Vec Tm, its LENGTH is the arity, recon conses one argument (grade-raise).
 -- This is VecGraded instantiated at the SKI argument type: grade = arity BY THE TYPE.
 ------------------------------------------------------------------------
-arg-graded : GradedDivStr
+-- ⟡set1-paydown: the graded families (Vec Tm, const Tm) are now GradedDivStr's params.
+arg-graded : GradedDivStr (Vec Tm) (λ _ → Tm)
 arg-graded = vec-graded Tm
 
 -- a grade-raising step = applying (consing) one argument. recon IS cons (VecGraded).

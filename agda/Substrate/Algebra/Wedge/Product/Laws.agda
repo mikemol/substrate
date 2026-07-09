@@ -36,8 +36,10 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; subst; cong; trans)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; Σ-≡,≡→≡)
 open import Substrate.Foundation.Level using (0ℓ)
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
+-- `C P` projection becomes the (implicit) module param C threaded here.
 open import Substrate.Algebra.Wedge.Product
-  using (GradedProduct; C; u; _∧_; vec-product)
+  using (GradedProduct; u; _∧_; vec-product)
 open import Substrate.Category.GradedMonoid using (GradedMonoid)
 -- The law PREDICATES live in (proof-free) Product.LawTypes so law-bundling
 -- records can import the field types without a proof dependency; re-exported.
@@ -100,10 +102,10 @@ vec-unitʳ A = ++-identityʳ
 --    the fibered (transported) ∧-assoc into the flat (ordinary) ·-assoc.
 ------------------------------------------------------------------------
 
-flatten-monoid : (P : GradedProduct) →
+flatten-monoid : {C : ℕ → Set} (P : GradedProduct C) →
                  GradedAssoc P → GradedUnitˡ P → GradedUnitʳ P → GradedMonoid 0ℓ
-flatten-monoid P assoc unitˡ unitʳ = record
-  { M           = Σ ℕ (C P)
+flatten-monoid {C} P assoc unitˡ unitʳ = record
+  { M           = Σ ℕ C
   ; _·_         = λ { (i , a) (j , b) → i + j , _∧_ P a b }
   ; ε           = 0 , u P
   ; ·-assoc     = λ { (i , a) (j , b) (k , c) → Σ-≡,≡→≡ (+-assoc i j k , assoc a b c) }

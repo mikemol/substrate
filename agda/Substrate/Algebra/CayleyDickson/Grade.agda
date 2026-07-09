@@ -106,10 +106,14 @@ popcount-or-and (suc n) (a ∷ is) (b ∷ js) =
 ------------------------------------------------------------------------
 
 -- The length-grading: the generic length-graded vector carrier, at Bool.
-F₂-length-grading : GradedDivStr
+-- ⟡set1-paydown: the graded carrier/remainder families (Vec Bool, const Bool) are
+-- now GradedDivStr's params, carried in the type of vec-graded Bool.
+F₂-length-grading : GradedDivStr (Vec Bool) (λ _ → Bool)
 F₂-length-grading = vec-graded Bool
 
 -- The length-graded carrier at grade n IS exactly popcount's domain Vec Bool n —
 -- so `popcount` is a second ℕ-grading layered on the VecGraded length-grade.
-index-carrier : (n : ℕ) → GradedDivStr.C F₂-length-grading n ≡ Vec Bool n
+-- ⟡set1-paydown: the carrier is now the GradedDivStr parameter itself (Vec Bool),
+-- so the identity is manifest in F₂-length-grading's type rather than a `.C` projection.
+index-carrier : (n : ℕ) → Vec Bool n ≡ Vec Bool n
 index-carrier n = refl

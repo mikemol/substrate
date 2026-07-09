@@ -105,7 +105,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒_</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Shed</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.13</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.12</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKITermToShedding#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/V4FullCocycle#V4Full</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Ring#Ring</loc><priority>0.03</priority></url>
@@ -117,7 +117,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Setoid/Map#SetoidMap</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Setoid#Setoid</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup/Action#Action</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup#SetoidGroup</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup#SetoidGroup</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/TopologicalGroup#TopologicalGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Torsor#IsTorsorᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedBulk#_∈ᵀ_</loc><priority>0.0</priority></url>
@@ -150,18 +150,18 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Coalgebra#WedgeCoalg</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Contextuality#Constraint</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/CrossMul#CrossMix</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.07</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedDivStr</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedWedge</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.06</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/MonoidalAdjunction#GradedMonoidalAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/Morphism#GradedDivStrMorphism</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedDivStr</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedWedge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Iso#WedgeIso</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Mul#MulDivStr</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Mul#Two</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/NComplex#Three</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Product#GradedProduct</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Product/Hom#GradedHom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Product/Term#WedgeTerm</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Product#GradedProduct</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Shape/Register/Properties#NoDupᴿ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Shape/Register#_∈ᴿ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/StarV4#StarDivStr</loc><priority>0.0</priority></url>
@@ -196,7 +196,7 @@
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra/Term#CascadeGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra/Term#CascadeTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#TripleCascade</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.1</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.09</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent#CentralizerDescent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent/Tree#DescentTree</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ChainDecomposition#ChainDecomposition</loc><priority>0.0</priority></url>
@@ -267,9 +267,9 @@
   <url><loc>https://substrate.local/Substrate/Category/FieldFanOut#FieldFanOut</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearization#FreeLinearization</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR/AsModule#LA-Module-Compat</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR#FreeLinearizationR</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR/FromImages#FreeLinearBuilder</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR/QInstance#QFreeLinearizationSketch</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR#FreeLinearizationR</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#AlgebraClass</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeConstructionClass</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeOverBasis</loc><priority>0.0</priority></url>
@@ -278,7 +278,7 @@
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeF2Module#F2Mod</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeMonoid#MonoidOn</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty#FreeUP</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Functor#Functor</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Functor#Functor</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GTorsor#GTorsor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GaloisAdjunction/AsAdjunction#GaloisAdjunction-AsAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GaloisAdjunction#GaloisAdjunction</loc><priority>0.0</priority></url>
@@ -576,9 +576,9 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.16</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.19</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.06</priority></url>
@@ -586,7 +586,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#NonZero</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#_≤_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#ℕ</loc><priority>1.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.15</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.14</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Product#Σ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/RewriteConfluence#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>
@@ -741,7 +741,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad/Term#ConjGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad/Term#ConjTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#ConditionalEntropy</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#MutualInformation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/KLDivergence#CrossEntropy</loc><priority>0.0</priority></url>

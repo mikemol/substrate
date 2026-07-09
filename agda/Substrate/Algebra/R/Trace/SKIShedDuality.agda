@@ -60,10 +60,10 @@ open Shed public
 -- ② THE SN / LEAST-FP SIDE: the inductive cost chain (WedgeTerm reskin), with the
 -- leaf grades WIRED from cost automatically — ⟡ski-cost-autochain.
 ------------------------------------------------------------------------
-ski-product : GradedProduct
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param (Shed).
+ski-product : GradedProduct Shed
 ski-product = record
-  { C   = Shed
-  ; u   = shed⟨ I ⟩
+  { u   = shed⟨ I ⟩
   ; _∧_ = λ {i}{j} s t → shed⟨ peeled s ∙ peeled t ⟩
   }
 

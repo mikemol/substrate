@@ -15,10 +15,6 @@ open import Substrate.Pipeline.Brick
 -- ⟡set1-paydown: parameterize A B
 record SequentType (A B : Set) : Set where
 
-sequent→BrickType : {A B : Set} → SequentType A B → BrickType
-sequent→BrickType {A} {B} _ = record
-  { D-in  = A
-  ; D-out = B
-  ; S-in  = ⊤
-  ; S-out = ⊤
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+sequent→BrickType : {A B : Set} → SequentType A B → BrickType A B ⊤ ⊤
+sequent→BrickType _ = record {}

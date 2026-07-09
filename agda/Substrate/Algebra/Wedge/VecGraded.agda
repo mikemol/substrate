@@ -31,8 +31,9 @@ open import Substrate.Algebra.Wedge.Graded
 -- 1. Vec A as a graded wedge-carrier: C = Vec A, R = const A, recon = cons.
 ------------------------------------------------------------------------
 
-vec-graded : (A : Set) → GradedDivStr
-vec-graded A = record { C = Vec A ; R = λ _ → A ; recon = λ n v a → a ∷ v }
+-- ⟡set1-paydown: the graded families are now GradedDivStr's params (Vec A, const A).
+vec-graded : (A : Set) → GradedDivStr (Vec A) (λ _ → A)
+vec-graded A = record { recon = λ n v a → a ∷ v }
 
 -- recon IS cons, definitionally.
 recon-is-cons : (A : Set) (n : ℕ) (v : Vec A n) (a : A) →

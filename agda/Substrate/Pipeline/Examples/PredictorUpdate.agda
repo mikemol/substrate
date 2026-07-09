@@ -24,13 +24,9 @@ module Substrate.Pipeline.Examples.PredictorUpdate
 
 open import Substrate.Foundation.Product using (_,_)
 
-PredictorUpdate-Type : BrickType
-PredictorUpdate-Type = record
-  { D-in  = Char
-  ; D-out = ⊤
-  ; S-in  = Counts
-  ; S-out = Counts
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+PredictorUpdate-Type : BrickType Char ⊤ Counts Counts
+PredictorUpdate-Type = record {}
 
 record Preserves-CountMonoid : Set where
 

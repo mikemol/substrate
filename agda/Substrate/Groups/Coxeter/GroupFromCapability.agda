@@ -16,14 +16,19 @@
 
 open import Substrate.Groups.Capabilities.CoxeterGroup
   using (CoxeterGroupCapability)
+open import Substrate.Groups.Coxeter.Word
+  using (Word; _++_; []; ++-identity-left; ++-identity-right)
 
+-- ⟡set1-paydown: CoxeterGroupCapability now takes (Gen : Set) and the family
+-- (Canonical : Word Gen → Set) as parameters; take them as implicit module
+-- params (inferred from `cap`'s type) so the per-Zₙ adapters still write
+-- `GroupFromCapability cap-Zₙ`.
 module Substrate.Groups.Coxeter.GroupFromCapability
-  (cap : CoxeterGroupCapability)
+  {Gen : Set} {Canonical : Word Gen → Set}
+  (cap : CoxeterGroupCapability Gen Canonical)
   where
 
 open CoxeterGroupCapability cap
-open import Substrate.Groups.Coxeter.Word
-  using (Word; _++_; []; ++-identity-left; ++-identity-right)
 
 open import Substrate.Groups.Coxeter.GroupAdapter
   (Word Gen)

@@ -30,7 +30,8 @@ open import Substrate.Algebra.Q.AsLinearAlgebra
 -- test.
 ------------------------------------------------------------------------
 
-F₂-test-LA : LinearAlgebra
+-- ⟡set1-paydown: R / Vector / Linear are now LinearAlgebra's params (inferred here).
+F₂-test-LA : LinearAlgebra _ _ _
 F₂-test-LA = F₂-LinearAlgebra
 
 ------------------------------------------------------------------------
@@ -39,7 +40,7 @@ F₂-test-LA = F₂-LinearAlgebra
 -- The ℚ LinearAlgebra exists.
 ------------------------------------------------------------------------
 
-ℚ-test-LA : LinearAlgebra
+ℚ-test-LA : LinearAlgebra _ _ _
 ℚ-test-LA = ℚ-LinearAlgebra
 
 ------------------------------------------------------------------------

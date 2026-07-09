@@ -25,30 +25,35 @@ open import Substrate.Foundation.Nat using (ℕ; _+_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_; map)
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
+-- `C P` / `C Q` projections become the module params Cᴾ / Cᴽ threaded here.
 open import Substrate.Algebra.Wedge.Product
-  using (GradedProduct; C; u; _∧_; vec-product)
+  using (GradedProduct; u; _∧_; vec-product)
 
 ------------------------------------------------------------------------
 -- 1. The graded homomorphism: grade-preserving, unit- and ∧-respecting.
 ------------------------------------------------------------------------
 
-record GradedHom (P Q : GradedProduct) : Set where
-  field
-    map₀  : {n : ℕ} → C P n → C Q n
-    map-u : map₀ (u P) ≡ u Q
-    map-∧ : {i j : ℕ} (a : C P i) (b : C P j) →
-            map₀ (_∧_ P a b) ≡ _∧_ Q (map₀ a) (map₀ b)
+module _ {Cᴾ Cᴽ : ℕ → Set} where
+  record GradedHom (P : GradedProduct Cᴾ) (Q : GradedProduct Cᴽ) : Set where
+    field
+      map₀  : {n : ℕ} → Cᴾ n → Cᴽ n
+      map-u : map₀ (u P) ≡ u Q
+      map-∧ : {i j : ℕ} (a : Cᴾ i) (b : Cᴾ j) →
+              map₀ (_∧_ P a b) ≡ _∧_ Q (map₀ a) (map₀ b)
 
-open GradedHom public
+  open GradedHom public
 
 ------------------------------------------------------------------------
 -- 2. The category structure: identity and composition.
 ------------------------------------------------------------------------
 
-id-hom : (P : GradedProduct) → GradedHom P P
+id-hom : {C : ℕ → Set} (P : GradedProduct C) → GradedHom P P
 id-hom P = record { map₀ = λ x → x ; map-u = refl ; map-∧ = λ a b → refl }
 
-comp-hom : {P Q R : GradedProduct} → GradedHom Q R → GradedHom P Q → GradedHom P R
+comp-hom : {Cᴾ Cᴽ Cᴿ : ℕ → Set}
+           {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ} {R : GradedProduct Cᴿ} →
+           GradedHom Q R → GradedHom P Q → GradedHom P R
 comp-hom g f = record
   { map₀  = λ x → map₀ g (map₀ f x)
   ; map-u = trans (cong (map₀ g) (map-u f)) (map-u g)
@@ -77,11 +82,13 @@ vec-map-hom f = record
 --    carriers respecting the flat product. The grade is carried, never dropped.
 ------------------------------------------------------------------------
 
-flatten-map : {P Q : GradedProduct} → GradedHom P Q → Σ ℕ (C P) → Σ ℕ (C Q)
+flatten-map : {Cᴾ Cᴽ : ℕ → Set} {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ} →
+              GradedHom P Q → Σ ℕ Cᴾ → Σ ℕ Cᴽ
 flatten-map h (n , x) = n , map₀ h x
 
-flatten-map-· : {P Q : GradedProduct} (h : GradedHom P Q)
-                {i j : ℕ} (a : C P i) (b : C P j) →
+flatten-map-· : {Cᴾ Cᴽ : ℕ → Set} {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ}
+                (h : GradedHom P Q)
+                {i j : ℕ} (a : Cᴾ i) (b : Cᴾ j) →
                 flatten-map h (i + j , _∧_ P a b)
                   ≡ (i + j , _∧_ Q (map₀ h a) (map₀ h b))
 flatten-map-· h a b = cong (_ ,_) (map-∧ h a b)

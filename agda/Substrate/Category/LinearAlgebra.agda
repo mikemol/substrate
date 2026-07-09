@@ -34,26 +34,29 @@ open import Substrate.Foundation.Fin using (Fin)
 -- just supplies the OPERATIONS.
 ------------------------------------------------------------------------
 
-record LinearAlgebra : Set₁ where
-  field
-    -- Scalar carrier
-    R : Set
-    -- Dimension-indexed vector + linear types
-    Vector : ℕ → Set
-    Linear : ℕ → ℕ → Set
-    -- Field elements
-    zeroR : R
-    oneR  : R
-    -- Vector operations
-    zeroV : {n : ℕ} → Vector n
-    _+V_  : {n : ℕ} → Vector n → Vector n → Vector n
-    _*S_  : {n : ℕ} → R → Vector n → Vector n
-    -- Basis vectors
-    basis : {n : ℕ} → Fin n → Vector n
-    -- Linear-map application
-    apply : {n m : ℕ} → Linear n m → Vector n → Vector m
+-- ⟡set1-paydown: the scalar carrier R : Set, the dimension-indexed vector family
+-- Vector : ℕ → Set, and the linear-map family Linear : ℕ → ℕ → Set are all
+-- Set-VALUED, so — per the substrate stance (carriers/families are module params,
+-- never fields) — all three become module parameters; only the operations stay
+-- fields. LinearAlgebra drops Set₁ → Set; consumers write `LinearAlgebra R Vector
+-- Linear`, and the old `R L` / `Vector L` / `Linear L` projections become the params.
+module _ (R : Set) (Vector : ℕ → Set) (Linear : ℕ → ℕ → Set) where
 
-open LinearAlgebra public
+  record LinearAlgebra : Set where
+    field
+      -- Field elements
+      zeroR : R
+      oneR  : R
+      -- Vector operations
+      zeroV : {n : ℕ} → Vector n
+      _+V_  : {n : ℕ} → Vector n → Vector n → Vector n
+      _*S_  : {n : ℕ} → R → Vector n → Vector n
+      -- Basis vectors
+      basis : {n : ℕ} → Fin n → Vector n
+      -- Linear-map application
+      apply : {n m : ℕ} → Linear n m → Vector n → Vector m
+
+  open LinearAlgebra public
 
 ------------------------------------------------------------------------
 -- 2. Capstone for FLQ1.

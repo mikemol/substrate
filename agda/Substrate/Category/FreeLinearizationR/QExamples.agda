@@ -48,10 +48,11 @@ example-rational-vector = half ∷ third ∷ 1ℚ ∷ []
 ------------------------------------------------------------------------
 
 -- Pull the abstract fields out via the record.
-abstract-zeroR : LinearAlgebra.R ℚ-LinearAlgebra
+-- ⟡set1-paydown: R is now LinearAlgebra's param (= ℚ here), not an `.R` projection.
+abstract-zeroR : ℚ
 abstract-zeroR = LinearAlgebra.zeroR ℚ-LinearAlgebra
 
-abstract-oneR : LinearAlgebra.R ℚ-LinearAlgebra
+abstract-oneR : ℚ
 abstract-oneR = LinearAlgebra.oneR ℚ-LinearAlgebra
 
 -- Confirm: abstract-zeroR ≡ 0ℚ via reduction.

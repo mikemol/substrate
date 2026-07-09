@@ -9,9 +9,9 @@
 
 module Substrate.Pipeline.Brick.Type where
 
-record BrickType : Set₁ where
-  field
-    D-in  : Set
-    D-out : Set
-    S-in  : Set
-    S-out : Set
+-- ⟡set1-paydown: all four typed edges are Set-valued, forcing BrickType : Set₁. Parameterize each
+-- into a module param; the record becomes the (empty) type-level tag over the four edges and lives
+-- in Set. Consumers write `BrickType D-in D-out S-in S-out`; a brick type is constructed as
+-- `record {}` under that annotation, and its edges are read off the type indices (not projections).
+module _ (D-in D-out S-in S-out : Set) where
+  record BrickType : Set where

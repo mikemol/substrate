@@ -27,13 +27,9 @@ module Substrate.Pipeline.Examples.ChooseRotation
 
 open import Substrate.Foundation.Product using (_,_)
 
-Chooser-Type : BrickType
-Chooser-Type = record
-  { D-in  = Window
-  ; D-out = RotIdx
-  ; S-in  = Predictor × Cache
-  ; S-out = Predictor × Cache
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+Chooser-Type : BrickType Window RotIdx (Predictor × Cache) (Predictor × Cache)
+Chooser-Type = record {}
 
 record Preserves-Ranking : Set where
 

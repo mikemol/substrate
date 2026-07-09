@@ -74,7 +74,13 @@ open import Substrate.Cocycle as Cocycle
 -- second component.
 ------------------------------------------------------------------------
 
-module Rule1 (𝒞 : IsomorphicCocycleStructure) where
+-- ⟡set1-paydown: ICS is now parameterized over its carriers/family; the rule modules add the
+-- params (implicit — inferred from 𝒞) and keep `open …` / `Downcast 𝒞` unchanged.
+module Rule1 {Invariant GaugeCarrier : Set}
+             {GaugeRel : GaugeCarrier → GaugeCarrier → Set}
+             {Gauge : SetoidGroup GaugeCarrier GaugeRel}
+             {Fiber : Invariant → Set}
+             (𝒞 : IsomorphicCocycleStructure Invariant GaugeCarrier GaugeRel Gauge Fiber) where
 
   open IsomorphicCocycleStructure 𝒞
   open Cocycle.Downcast 𝒞
@@ -116,7 +122,11 @@ module Rule1 (𝒞 : IsomorphicCocycleStructure) where
 -- move between any two fiber elements over the same invariant).
 ------------------------------------------------------------------------
 
-module Rule5 (𝒞 : IsomorphicCocycleStructure) where
+module Rule5 {Invariant GaugeCarrier : Set}
+             {GaugeRel : GaugeCarrier → GaugeCarrier → Set}
+             {Gauge : SetoidGroup GaugeCarrier GaugeRel}
+             {Fiber : Invariant → Set}
+             (𝒞 : IsomorphicCocycleStructure Invariant GaugeCarrier GaugeRel Gauge Fiber) where
 
   open IsomorphicCocycleStructure 𝒞
   open Cocycle.Downcast 𝒞
@@ -169,7 +179,13 @@ module Rule5 (𝒞 : IsomorphicCocycleStructure) where
 
 -- A CocycleSection of a weak cocycle structure: a choice of canonical
 -- representative per invariant. The Type-D rigidification move.
-record CocycleSection (𝒲 : WeakCocycleStructure) : Set where      -- ⟦shape:1650cc88 representative,projects-to⟧
+-- ⟡set1-paydown: WCS is now parameterized; CocycleSection adds the params (implicit — inferred from
+-- 𝒲) so `CocycleSection base` (below) stays unchanged.
+record CocycleSection {Base GaugeCarrier : Set}
+                      {GaugeRel : GaugeCarrier → GaugeCarrier → Set}
+                      {Gauge : SetoidGroup GaugeCarrier GaugeRel}
+                      {Invariant : Set}
+                      (𝒲 : WeakCocycleStructure Base GaugeCarrier GaugeRel Gauge Invariant) : Set where      -- ⟦shape:1650cc88 representative,projects-to⟧
   open WeakCocycleStructure 𝒲
   field
     -- The chosen canonical for each invariant.
@@ -187,17 +203,33 @@ module Rule11 where
 
   -- ICS → WCS is functorial (no choices). Re-export Downcast.weak
   -- here under the rule's name.
+  -- ⟡set1-paydown: both ICS and WCS are now parameterized; strong-to-weak is polymorphic over the
+  -- ICS carriers/family (implicit ∀ — it is applied to cocycles over DIFFERENT carriers in Demo,
+  -- so it cannot itself be carrier-fixed). The result WCS is over Base = TotalSpace = Σ Invariant
+  -- Fiber and the same gauge, matching Downcast.weak.
   strong-to-weak :
-    IsomorphicCocycleStructure → WeakCocycleStructure
+    ∀ {Invariant GaugeCarrier : Set}
+      {GaugeRel : GaugeCarrier → GaugeCarrier → Set}
+      {Gauge : SetoidGroup GaugeCarrier GaugeRel}
+      {Fiber : Invariant → Set}
+      (𝒞 : IsomorphicCocycleStructure Invariant GaugeCarrier GaugeRel Gauge Fiber) →
+    WeakCocycleStructure (Σ Invariant Fiber) GaugeCarrier GaugeRel Gauge Invariant
   strong-to-weak 𝒞 = Cocycle.Downcast.weak 𝒞
 
   -- A "rigidified" weak cocycle: a WCS bundled with a CocycleSection.
   -- This is what the strong discipline forbids by structural absence:
   -- there is no slot in ICS where a CocycleSection would go.
+  -- ⟡set1-paydown: WCS is now parameterized, so RigidifiedWCS existentially FIELDS the WCS carriers
+  -- (it stays Set₁ — heterogeneous bundle, not a paydown target).
   record RigidifiedWCS : Set₁ where
     field
-      base       : WeakCocycleStructure
-      section    : CocycleSection base
+      Base         : Set
+      GaugeCarrier : Set
+      GaugeRel     : GaugeCarrier → GaugeCarrier → Set
+      Gauge        : SetoidGroup GaugeCarrier GaugeRel
+      Invariant    : Set
+      base         : WeakCocycleStructure Base GaugeCarrier GaugeRel Gauge Invariant
+      section      : CocycleSection base
 
 ------------------------------------------------------------------------
 -- Demonstration: applying the rules to our three cocycle instances.
@@ -220,14 +252,13 @@ module Demo where
   module CY5 where
     open Rule1 CY5-V4Signature public
     open Rule5 CY5-V4Signature public
-    weak : WeakCocycleStructure
+    -- ⟡set1-paydown: WCS is parameterized; let its carriers be inferred from strong-to-weak.
     weak = Rule11.strong-to-weak CY5-V4Signature
 
   -- CY-4: strong cocycle, all three rules apply at the ICS level.
   module CY4 where
     open Rule1 F2³-Puncturing-Cocycle public
     open Rule5 F2³-Puncturing-Cocycle public
-    weak : WeakCocycleStructure
     weak = Rule11.strong-to-weak F2³-Puncturing-Cocycle
 
   -- CY-2: weak cocycle. Rule 1's "project is gauge-invariant" is

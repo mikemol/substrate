@@ -14,8 +14,13 @@
 open import Substrate.Groups.Capabilities.xFreeCyclic
   using (xFreeCyclicCapability)
 
+-- ⟡set1-paydown: xFreeCyclicCapability now takes (Zn-Word : Set) and the
+-- family (Zn-Canonical : Zn-Word → Set) as parameters; take them as implicit
+-- module params (inferred from `cap`'s type) so the per-Zₙ adapters still
+-- write `xFreeCyclicFromCapability cap-Zₙ`.
 module Substrate.Groups.Coxeter.xFreeCyclicFromCapability
-  (cap : xFreeCyclicCapability)
+  {Zn-Word : Set} {Zn-Canonical : Zn-Word → Set}
+  (cap : xFreeCyclicCapability Zn-Word Zn-Canonical)
   where
 
 open xFreeCyclicCapability cap

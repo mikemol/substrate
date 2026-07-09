@@ -25,22 +25,26 @@ open import Substrate.Groups.Coxeter.Word using (Word; _++_; [])
 -- The capability record.
 ------------------------------------------------------------------------
 
-record CoxeterGroupCapability : Set₁ where
-  field
-    Gen                : Set
-    Canonical          : Word Gen → Set
-    c-ε                : Canonical []
-    ++-assoc           : (a b c : Word Gen) → (a ++ b) ++ c ≡ a ++ (b ++ c)
-    normalize          : Word Gen → Word Gen
-    normalize-canonical : (w : Word Gen) → Canonical (normalize w)
-    canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
-    normalize-distrib  : (a b : Word Gen) →
-                         normalize (a ++ b) ≡
-                         normalize (normalize a ++ normalize b)
-    inv                : Word Gen → Word Gen
-    inv-canonical      : {w : Word Gen} → Canonical w → Canonical (inv w)
-    inv-left-canonical : {w : Word Gen} → Canonical w → normalize (inv w ++ w) ≡ []
-    inv-right-canonical : {w : Word Gen} → Canonical w → normalize (w ++ inv w) ≡ []
+-- ⟡set1-paydown: parameterize the Set carrier (Gen) AND the family
+-- (Canonical : Word Gen → Set) out of the record — both were `field`s valued
+-- in Set, forcing the record to Set₁. As module parameters the record lands
+-- in Set; consumers write `CoxeterGroupCapability Gen Canonical`.
+module _ (Gen : Set) (Canonical : Word Gen → Set) where
+
+  record CoxeterGroupCapability : Set where
+    field
+      c-ε                : Canonical []
+      ++-assoc           : (a b c : Word Gen) → (a ++ b) ++ c ≡ a ++ (b ++ c)
+      normalize          : Word Gen → Word Gen
+      normalize-canonical : (w : Word Gen) → Canonical (normalize w)
+      canonical-is-fixed : {w : Word Gen} → Canonical w → normalize w ≡ w
+      normalize-distrib  : (a b : Word Gen) →
+                           normalize (a ++ b) ≡
+                           normalize (normalize a ++ normalize b)
+      inv                : Word Gen → Word Gen
+      inv-canonical      : {w : Word Gen} → Canonical w → Canonical (inv w)
+      inv-left-canonical : {w : Word Gen} → Canonical w → normalize (inv w ++ w) ≡ []
+      inv-right-canonical : {w : Word Gen} → Canonical w → normalize (w ++ inv w) ≡ []
 
 ------------------------------------------------------------------------
 -- Per-Zₙ witnesses.
@@ -52,11 +56,9 @@ import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Z5-Coxeter as Z₅
 import Substrate.Groups.Z7-Coxeter as Z₇
 
-cap-Z₂ : CoxeterGroupCapability
+cap-Z₂ : CoxeterGroupCapability Z₂.Gen Z₂.Canonical
 cap-Z₂ = record
-  { Gen                = Z₂.Gen
-  ; Canonical          = Z₂.Canonical
-  ; c-ε                = Z₂.c-pos zero
+  { c-ε                = Z₂.c-pos zero
   ; ++-assoc           = Z₂.++-assoc
   ; normalize          = Z₂.normalize
   ; normalize-canonical = Z₂.normalize-canonical
@@ -68,11 +70,9 @@ cap-Z₂ = record
   ; inv-right-canonical = Z₂.inv-right-canonical
   }
 
-cap-Z₃ : CoxeterGroupCapability
+cap-Z₃ : CoxeterGroupCapability Z₃.Gen Z₃.Canonical
 cap-Z₃ = record
-  { Gen                = Z₃.Gen
-  ; Canonical          = Z₃.Canonical
-  ; c-ε                = Z₃.c-pos zero
+  { c-ε                = Z₃.c-pos zero
   ; ++-assoc           = Z₃.++-assoc
   ; normalize          = Z₃.normalize
   ; normalize-canonical = Z₃.normalize-canonical
@@ -84,11 +84,9 @@ cap-Z₃ = record
   ; inv-right-canonical = Z₃.inv-right-canonical
   }
 
-cap-Z₄ : CoxeterGroupCapability
+cap-Z₄ : CoxeterGroupCapability Z₄.Gen Z₄.Canonical
 cap-Z₄ = record
-  { Gen                = Z₄.Gen
-  ; Canonical          = Z₄.Canonical
-  ; c-ε                = Z₄.c-pos zero
+  { c-ε                = Z₄.c-pos zero
   ; ++-assoc           = Z₄.++-assoc
   ; normalize          = Z₄.normalize
   ; normalize-canonical = Z₄.normalize-canonical
@@ -100,11 +98,9 @@ cap-Z₄ = record
   ; inv-right-canonical = Z₄.inv-right-canonical
   }
 
-cap-Z₅ : CoxeterGroupCapability
+cap-Z₅ : CoxeterGroupCapability Z₅.Gen Z₅.Canonical
 cap-Z₅ = record
-  { Gen                = Z₅.Gen
-  ; Canonical          = Z₅.Canonical
-  ; c-ε                = Z₅.c-pos zero
+  { c-ε                = Z₅.c-pos zero
   ; ++-assoc           = Z₅.++-assoc
   ; normalize          = Z₅.normalize
   ; normalize-canonical = Z₅.normalize-canonical
@@ -116,11 +112,9 @@ cap-Z₅ = record
   ; inv-right-canonical = Z₅.inv-right-canonical
   }
 
-cap-Z₇ : CoxeterGroupCapability
+cap-Z₇ : CoxeterGroupCapability Z₇.Gen Z₇.Canonical
 cap-Z₇ = record
-  { Gen                = Z₇.Gen
-  ; Canonical          = Z₇.Canonical
-  ; c-ε                = Z₇.c-pos zero
+  { c-ε                = Z₇.c-pos zero
   ; ++-assoc           = Z₇.++-assoc
   ; normalize          = Z₇.normalize
   ; normalize-canonical = Z₇.normalize-canonical

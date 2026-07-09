@@ -26,7 +26,8 @@ fixed-point-sequent→Brick
   → (s : SequentFixed A)
   → (decide : (a : A) → Maybe (CanonicalSpec.Canonical (SequentFixed.spec s) a))
   → ℕ
-  → Brick (record { D-in = A ; D-out = Maybe A ; S-in = ⊤ ; S-out = ⊤ })
+  -- ⟡set1-paydown: edges are Brick's implicit indices; supply them explicitly, tag is `record {}`.
+  → Brick {A} {Maybe A} {⊤} {⊤} (record {})
 fixed-point-sequent→Brick s decide n = record
   { witnesses = D⇒S
   ; step      = λ (a , _) → iterate-to-canonical (SequentFixed.spec s) decide

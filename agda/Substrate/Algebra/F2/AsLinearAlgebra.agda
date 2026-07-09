@@ -28,12 +28,10 @@ open import Substrate.Category.FreeLinearizationR.FromImages
 -- 1. F₂ LinearAlgebra instance.
 ------------------------------------------------------------------------
 
-F₂-LinearAlgebra : LinearAlgebra
+-- ⟡set1-paydown: R / Vector / Linear are now LinearAlgebra's params (F₂, Vector, Linear).
+F₂-LinearAlgebra : LinearAlgebra F₂ Vector Linear
 F₂-LinearAlgebra = record
-  { R      = F₂
-  ; Vector = Vector
-  ; Linear = Linear
-  ; zeroR  = 𝟘
+  { zeroR  = 𝟘
   ; oneR   = 𝟙
   ; zeroV  = 𝟎ⱽ
   ; _+V_   = _+ⱽ_
@@ -49,7 +47,8 @@ F₂-LinearAlgebra = record
 -- apply-linear-from-images-basis + linear-extensionality lemmas.
 ------------------------------------------------------------------------
 
-F₂-FreeLinearBuilder : FreeLinearBuilder F₂-LinearAlgebra
+-- ⟡set1-paydown: FreeLinearBuilder now takes LinearAlgebra's R/Vector/Linear params.
+F₂-FreeLinearBuilder : FreeLinearBuilder F₂ Vector Linear F₂-LinearAlgebra
 F₂-FreeLinearBuilder = record
   { linear-from-images-LA    = linear-from-images
   ; apply-on-basis-LA        = apply-linear-from-images-basis

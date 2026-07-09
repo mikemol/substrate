@@ -58,23 +58,28 @@ open import Substrate.Category.FreeLinearizationR using (FreeLinearizationR)
 -- basis are LITERALLY FreeCarrier / ModuleHom / free-basis.
 ------------------------------------------------------------------------
 
-record LA-Module-Compat
-  (LA : LinearAlgebra)
-  {A : Set}
-  (R-Ring : Ring A)
-  : Set₁ where
-  open LinearAlgebra LA
-  field
-    -- The carrier identification.
-    R-≡ : R ≡ A
-    -- For each dimension n, LA's Vector n IS FreeCarrier A n.
-    Vector-≡ : (n : ℕ) → Vector n ≡ FreeCarrier A n
-    -- For each (n, m), LA's Linear n m IS ModuleHom-shape; the
-    -- precise typing depends on the per-R Module instance for
-    -- FreeCarrier A n and FreeCarrier A m. Stated as a pair of
-    -- per-instance projections at FLQ4 / FLQ6.
+-- ⟡set1-paydown: LinearAlgebra's R / Vector / Linear are now its params, so this
+-- consumer takes them as module params and references them directly (R-≡, Vector-≡).
+-- LA-Module-Compat stays Set₁ — its fields are equalities OF Sets (Vector n ≡
+-- FreeCarrier A n), which is an intrinsic Set₁, independent of LinearAlgebra's level.
+module _ (R : Set) (Vector : ℕ → Set) (Linear : ℕ → ℕ → Set) where
 
-open LA-Module-Compat public
+  record LA-Module-Compat
+    (LA : LinearAlgebra R Vector Linear)
+    {A : Set}
+    (R-Ring : Ring A)
+    : Set₁ where
+    field
+      -- The carrier identification.
+      R-≡ : R ≡ A
+      -- For each dimension n, LA's Vector n IS FreeCarrier A n.
+      Vector-≡ : (n : ℕ) → Vector n ≡ FreeCarrier A n
+      -- For each (n, m), LA's Linear n m IS ModuleHom-shape; the
+      -- precise typing depends on the per-R Module instance for
+      -- FreeCarrier A n and FreeCarrier A m. Stated as a pair of
+      -- per-instance projections at FLQ4 / FLQ6.
+
+  open LA-Module-Compat public
 
 ------------------------------------------------------------------------
 -- 2. The bridge signature: FreeLinearizationR → FreeBasisUniversal.

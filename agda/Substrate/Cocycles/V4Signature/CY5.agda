@@ -27,12 +27,9 @@ open import Substrate.Cocycles.V4Signature.OrbitKey.Type  using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid  using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.Fiber          using (Fiber; fiber-torsor)
 
-CY5-V4Signature : IsomorphicCocycleStructure
+-- ⟡set1-paydown: ICS carrier/family fields are now module params — they move into the type
+-- annotation and leave the record literal.
+CY5-V4Signature : IsomorphicCocycleStructure OrbitKey V₄ _≡_ V₄-Group-Setoid Fiber
 CY5-V4Signature = record
-  { Invariant    = OrbitKey
-  ; GaugeCarrier = V₄
-  ; GaugeRel     = _≡_
-  ; Gauge        = V₄-Group-Setoid
-  ; Fiber        = Fiber
-  ; fiber-torsor = fiber-torsor
+  { fiber-torsor = fiber-torsor
   }

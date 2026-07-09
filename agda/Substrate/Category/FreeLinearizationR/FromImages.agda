@@ -35,25 +35,30 @@ open import Substrate.Category.FreeLinearizationR
 -- LinearAlgebra instance provides its own FreeLinearBuilder.
 ------------------------------------------------------------------------
 
-record FreeLinearBuilder (LA : LinearAlgebra) : Set where
-  open LinearAlgebra LA
-  field
-    -- Construction: lift a basis-image map to a linear map.
-    linear-from-images-LA :
-      {n m : ℕ} → (Fin n → Vector m) → Linear n m
-    -- Universal property: the lift agrees with the image map on
-    -- basis vectors.
-    apply-on-basis-LA :
-      {n m : ℕ} (f : Fin n → Vector m) (i : Fin n) →
-      apply (linear-from-images-LA f) (basis i) ≡ f i
-    -- Linear-extensionality: two linear maps agreeing on basis
-    -- are pointwise equal.
-    linear-extensionality-LA :
-      {n m : ℕ} (L₁ L₂ : Linear n m) →
-      ((i : Fin n) → apply L₁ (basis i) ≡ apply L₂ (basis i)) →
-      (v : Vector n) → apply L₁ v ≡ apply L₂ v
+-- ⟡set1-paydown: LinearAlgebra's R / Vector / Linear are now its params, so this
+-- consumer takes them as module params; `open LinearAlgebra LA` supplies the
+-- operations (apply, basis), while Vector / Linear are the params directly.
+module _ (R : Set) (Vector : ℕ → Set) (Linear : ℕ → ℕ → Set) where
 
-open FreeLinearBuilder public
+  record FreeLinearBuilder (LA : LinearAlgebra R Vector Linear) : Set where
+    open LinearAlgebra LA
+    field
+      -- Construction: lift a basis-image map to a linear map.
+      linear-from-images-LA :
+        {n m : ℕ} → (Fin n → Vector m) → Linear n m
+      -- Universal property: the lift agrees with the image map on
+      -- basis vectors.
+      apply-on-basis-LA :
+        {n m : ℕ} (f : Fin n → Vector m) (i : Fin n) →
+        apply (linear-from-images-LA f) (basis i) ≡ f i
+      -- Linear-extensionality: two linear maps agreeing on basis
+      -- are pointwise equal.
+      linear-extensionality-LA :
+        {n m : ℕ} (L₁ L₂ : Linear n m) →
+        ((i : Fin n) → apply L₁ (basis i) ≡ apply L₂ (basis i)) →
+        (v : Vector n) → apply L₁ v ≡ apply L₂ v
+
+  open FreeLinearBuilder public
 
 ------------------------------------------------------------------------
 -- 2. The parametric free-linearize-R constructor.
@@ -64,10 +69,10 @@ open FreeLinearBuilder public
 ------------------------------------------------------------------------
 
 free-linearize-R :
-  (LA : LinearAlgebra) (B : FreeLinearBuilder LA) →
-  let open LinearAlgebra LA in
+  {R : Set} {Vector : ℕ → Set} {Linear : ℕ → ℕ → Set}
+  (LA : LinearAlgebra R Vector Linear) (B : FreeLinearBuilder R Vector Linear LA) →
   {n m : ℕ} (f : Fin n → Vector m) →
-  FreeLinearizationR LA n m
+  FreeLinearizationR R Vector Linear LA n m
 free-linearize-R LA B f = record
   { images             = f
   ; extension          = linear-from-images-LA B f

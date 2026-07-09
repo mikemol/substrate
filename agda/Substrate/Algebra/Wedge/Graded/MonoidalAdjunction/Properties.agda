@@ -18,6 +18,8 @@
 module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Vec using (Vec)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Wedge.Product using (vec-product)
 open import Substrate.Algebra.Wedge.Product.Laws
@@ -30,14 +32,16 @@ open import Substrate.Category.GradedMonoid using (GradedMonoid)
 -- The degree as a flat GradedMonoid (the Grothendieck flatten).
 ------------------------------------------------------------------------
 
-degree : GradedMonoidalAdjunction → GradedMonoid 0ℓ
+-- ⟡set1-paydown: GradedMonoidalAdjunction is now parameterized over its carrier
+-- family C (its `prod` is a `GradedProduct C`); C is inferred from the gma argument.
+degree : {C : ℕ → Set} → GradedMonoidalAdjunction C → GradedMonoid 0ℓ
 degree gma = flatten-monoid (prod gma) (assoc gma) (unitˡ gma) (unitʳ gma)
 
 ------------------------------------------------------------------------
 -- The canonical instance: Vec. Its degree is exactly vec-flat-monoid.
 ------------------------------------------------------------------------
 
-vec-gma : (A : Set) → GradedMonoidalAdjunction
+vec-gma : (A : Set) → GradedMonoidalAdjunction (Vec A)
 vec-gma A = record
   { prod = vec-product A ; assoc = vec-assoc A
   ; unitˡ = vec-unitˡ A ; unitʳ = vec-unitʳ A }

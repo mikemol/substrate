@@ -141,14 +141,10 @@ module _ (n : ℕ) where
   -- WeakCocycleStructure packaging.
   ----------------------------------------------------------------------
 
-  KRule-Cocycle : WeakCocycleStructure
+  -- ⟡set1-paydown: WCS carrier fields are now module params — moved into the type annotation.
+  KRule-Cocycle : WeakCocycleStructure Assignment (Permutation n) _≈_ S-Group DistPattern
   KRule-Cocycle = record
-    { Base                    = Assignment
-    ; GaugeCarrier            = Permutation n
-    ; GaugeRel                = _≈_
-    ; Gauge                   = S-Group
-    ; action-w                = action
-    ; Invariant               = DistPattern
+    { action-w                = action
     ; project                 = dist
     ; project-gauge-invariant = dist-gauge-inv
     }

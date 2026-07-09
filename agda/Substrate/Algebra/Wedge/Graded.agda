@@ -37,41 +37,51 @@ open import Substrate.Foundation.Eq using (_≡_; sym)
 --    reconstruction from a base (grade n) and a digit (the remainder R n).
 ------------------------------------------------------------------------
 
-record GradedDivStr : Set₁ where
-  field
-    C     : ℕ → Set                            -- the ℕ-graded carrier
-    R     : ℕ → Set                            -- the remainder/digit at grade n
-    recon : (n : ℕ) → C n → R n → C (suc n)    -- the grade-raising reconstruction
+-- ⟡set1-paydown: the ℕ-graded carrier family C : ℕ → Set and the remainder
+-- family R : ℕ → Set are Set-VALUED families, so — per the substrate stance
+-- (families are module params, never fields, [[set1-carrier-always-parameterize]])
+-- — they become module parameters, not record fields. GradedDivStr then drops
+-- Set₁ → Set; consumers write `GradedDivStr C R`, and the old `C G` / `R G`
+-- projections are replaced by the parameters C / R directly (`recon G` stays a
+-- field projection).
+module _ (C : ℕ → Set) (R : ℕ → Set) where
 
-open GradedDivStr public
+  record GradedDivStr : Set where
+    field
+      recon : (n : ℕ) → C n → R n → C (suc n)    -- the grade-raising reconstruction
+
+  open GradedDivStr public
 
 ------------------------------------------------------------------------
 -- 2. The graded wedge: a grade-(n+1) element a, decomposed against a base
 --    b at grade n by a remainder rem, with witness a ≡ recon n b rem.
+--    (C R inferred implicitly from the GradedDivStr argument.)
 ------------------------------------------------------------------------
 
-record GradedWedge (G : GradedDivStr) (n : ℕ)
-                   (a : C G (suc n)) (b : C G n) : Set where
-  field
-    rem      : R G n
-    wedge-eq : a ≡ recon G n b rem
+module _ {C : ℕ → Set} {R : ℕ → Set} where
 
-open GradedWedge public
+  record GradedWedge (G : GradedDivStr C R) (n : ℕ)
+                     (a : C (suc n)) (b : C n) : Set where
+    field
+      rem      : R n
+      wedge-eq : a ≡ recon G n b rem
 
-------------------------------------------------------------------------
--- 3. The reads — the graded projections, matching the plain wedge's.
-------------------------------------------------------------------------
+  open GradedWedge public
 
--- FORGETFUL: evaluate the witness back to the grade-(n+1) element.
-gforget : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n} →
-          GradedWedge G n a b → C G (suc n)
-gforget {G} {n} {b = b} w = recon G n b (rem w)
+  ----------------------------------------------------------------------
+  -- 3. The reads — the graded projections, matching the plain wedge's.
+  ----------------------------------------------------------------------
 
-gforget-correct : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n}
-                  (w : GradedWedge G n a b) → gforget w ≡ a
-gforget-correct w = sym (wedge-eq w)
+  -- FORGETFUL: evaluate the witness back to the grade-(n+1) element.
+  gforget : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n} →
+            GradedWedge G n a b → C (suc n)
+  gforget {G} {n} {b = b} w = recon G n b (rem w)
 
--- PRESENTED: keep the remainder = the cell = the grade-n digit.
-gcell : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n} →
-        GradedWedge G n a b → R G n
-gcell w = rem w
+  gforget-correct : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n}
+                    (w : GradedWedge G n a b) → gforget w ≡ a
+  gforget-correct w = sym (wedge-eq w)
+
+  -- PRESENTED: keep the remainder = the cell = the grade-n digit.
+  gcell : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n} →
+          GradedWedge G n a b → R n
+  gcell w = rem w

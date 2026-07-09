@@ -35,12 +35,14 @@ open import Substrate.Algebra.F2.AsLinearAlgebra
 --
 -- The two records have the same field types because
 -- F₂-LinearAlgebra populates Vector / Linear identically.
+-- ⟡set1-paydown: FreeLinearizationR now carries LinearAlgebra's R/Vector/Linear as
+-- explicit params (inferred here via `_ _ _` from F₂-LinearAlgebra's type).
 ------------------------------------------------------------------------
 
 F₂-to-R :
   {n m : ℕ} →
   FreeLinearization n m →
-  FreeLinearizationR F₂-LinearAlgebra n m
+  FreeLinearizationR _ _ _ F₂-LinearAlgebra n m
 F₂-to-R fl = record
   { images             = F₂-images fl
   ; extension          = F₂-extension fl
@@ -56,7 +58,7 @@ F₂-to-R fl = record
 
 R-to-F₂ :
   {n m : ℕ} →
-  FreeLinearizationR F₂-LinearAlgebra n m →
+  FreeLinearizationR _ _ _ F₂-LinearAlgebra n m →
   FreeLinearization n m
 R-to-F₂ flr = record
   { images             = FreeLinearizationR.images flr
@@ -81,7 +83,7 @@ R-to-F₂∘F₂-to-R :
 R-to-F₂∘F₂-to-R fl = refl
 
 F₂-to-R∘R-to-F₂ :
-  {n m : ℕ} (flr : FreeLinearizationR F₂-LinearAlgebra n m) →
+  {n m : ℕ} (flr : FreeLinearizationR _ _ _ F₂-LinearAlgebra n m) →
   F₂-to-R (R-to-F₂ flr) ≡ flr
 F₂-to-R∘R-to-F₂ flr = refl
 

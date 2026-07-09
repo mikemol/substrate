@@ -23,15 +23,17 @@ module Substrate.Algebra.Wedge.Product.Term where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Algebra.Wedge.Product using (GradedProduct; C; u; _∧_; gpower)
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
+-- `C P` projection becomes the (implicit) module param C threaded here.
+open import Substrate.Algebra.Wedge.Product using (GradedProduct; u; _∧_; gpower)
 
 ------------------------------------------------------------------------
 -- 1. The free graded monoid term: leaves (kept factors), the empty term,
 --    and ∧-nodes. The grade is the sum of the leaf grades.
 ------------------------------------------------------------------------
 
-data WedgeTerm (P : GradedProduct) : ℕ → Set where
-  leaf : {i : ℕ} → C P i → WedgeTerm P i
+data WedgeTerm {C : ℕ → Set} (P : GradedProduct C) : ℕ → Set where
+  leaf : {i : ℕ} → C i → WedgeTerm P i
   nil  : WedgeTerm P 0
   _⊗_  : {i j : ℕ} → WedgeTerm P i → WedgeTerm P j → WedgeTerm P (i + j)
 
@@ -40,21 +42,22 @@ data WedgeTerm (P : GradedProduct) : ℕ → Set where
 --    (Every value is kept; only the bracket structure is forgotten.)
 ------------------------------------------------------------------------
 
-eval : {P : GradedProduct} {n : ℕ} → WedgeTerm P n → C P n
-eval {P} (leaf x) = x
-eval {P} nil      = u P
-eval {P} (s ⊗ t)  = _∧_ P (eval s) (eval t)
+eval : {C : ℕ → Set} {P : GradedProduct C} {n : ℕ} → WedgeTerm P n → C n
+eval (leaf x)     = x
+eval {P = P} nil      = u P
+eval {P = P} (s ⊗ t)  = _∧_ P (eval s) (eval t)
 
 ------------------------------------------------------------------------
 -- 3. power factors through the term: the q-deep ∧-term of b evaluates to
 --    gpower b q. "q copies" (quotient) = a q-deep quote (term) = grade q.
 ------------------------------------------------------------------------
 
-pow-term : {P : GradedProduct} {i : ℕ} (b : C P i) (q : ℕ) → WedgeTerm P (q * i)
+pow-term : {C : ℕ → Set} {P : GradedProduct C} {i : ℕ} (b : C i) (q : ℕ) →
+           WedgeTerm P (q * i)
 pow-term b zero    = nil
 pow-term b (suc n) = leaf b ⊗ pow-term b n
 
-eval-pow : {P : GradedProduct} {i : ℕ} (b : C P i) (q : ℕ) →
-           eval (pow-term {P} b q) ≡ gpower P b q
+eval-pow : {C : ℕ → Set} {P : GradedProduct C} {i : ℕ} (b : C i) (q : ℕ) →
+           eval (pow-term {P = P} b q) ≡ gpower P b q
 eval-pow b zero    = refl
-eval-pow {P} b (suc n) = cong (_∧_ P b) (eval-pow b n)
+eval-pow {P = P} b (suc n) = cong (_∧_ P b) (eval-pow b n)

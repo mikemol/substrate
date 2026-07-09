@@ -16,11 +16,11 @@ open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 
 -- THE INSTANCE: coemit-trace's grading is the finite-prefix chain (canonical GradedDivStr).
-coemit-graded : GradedDivStr
+-- ⟡set1-paydown: the graded families (Vec ℕ = the prefix, const ℕ = the head digit)
+-- are now GradedDivStr's params.
+coemit-graded : GradedDivStr (Vec ℕ) (λ _ → ℕ)
 coemit-graded = record
-  { C     = Vec ℕ                       -- graded carrier: the first-n digits (the prefix at grade n)
-  ; R     = λ _ → ℕ                     -- the digit at each grade (the head)
-  ; recon = λ _ v d → d ∷ v             -- grade-raising: extend the prefix by one digit
+  { recon = λ _ v d → d ∷ v             -- grade-raising: extend the prefix by one digit
   }
 
 -- THE FLAT SHADOW: the grade collapses to the flat trace-prefix (take n = gforget the whole prefix at grade n).

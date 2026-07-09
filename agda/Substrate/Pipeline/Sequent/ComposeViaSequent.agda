@@ -17,22 +17,20 @@ open import Substrate.Pipeline.Brick
 open import Substrate.Pipeline.Sequent.SequentType using (SequentType)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
 
+-- ⟡set1-paydown: BrickType edges are now type indices — thread them and read directly; the
+-- composite's edges are supplied explicitly to Brick, its tag is `record {}`.
 compose-via-sequent
-  : ∀ {T₁ T₂ : BrickType} {A B : Set}
+  : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
+    {T₁ : BrickType Di₁ Do₁ Si₁ So₁} {T₂ : BrickType Di₂ Do₂ Si₂ So₂} {A B : Set}
   → (b₁ : Brick T₁)
   → (S : SequentType A B)
   → (seq : Sequent S)
   → (b₂ : Brick T₂)
-  → BrickType.D-out T₁ ≡ A
-  → B                  ≡ BrickType.D-in  T₂
-  → BrickType.S-out T₁ ≡ BrickType.S-in  T₂
-  → Brick (record
-      { D-in  = BrickType.D-in  T₁
-      ; D-out = BrickType.D-out T₂
-      ; S-in  = BrickType.S-in  T₁
-      ; S-out = BrickType.S-out T₂
-      })
-compose-via-sequent {T₁} {T₂} b₁ S seq b₂ refl refl refl = record
+  → Do₁ ≡ A
+  → B   ≡ Di₂
+  → So₁ ≡ Si₂
+  → Brick {Di₁} {Do₂} {Si₁} {So₂} (record {})
+compose-via-sequent b₁ S seq b₂ refl refl refl = record
   { witnesses = Brick.witnesses b₁
   ; step      = λ (d , s) →
                   let (d₁ , s₁) = Brick.step b₁ (d , s)

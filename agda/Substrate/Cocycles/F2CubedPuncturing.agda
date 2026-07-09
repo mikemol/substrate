@@ -142,14 +142,10 @@ fiber-is-torsor wht-core = record
 -- IsomorphicCocycleStructure packaging.
 ------------------------------------------------------------------------
 
-F2³-Puncturing-Cocycle : IsomorphicCocycleStructure
+-- ⟡set1-paydown: ICS carrier/family fields are now module params — moved into the type annotation.
+F2³-Puncturing-Cocycle : IsomorphicCocycleStructure WHTCore F₂³ _≡_ F₂³-Group-Setoid Fiber
 F2³-Puncturing-Cocycle = record
-  { Invariant    = WHTCore
-  ; GaugeCarrier = F₂³
-  ; GaugeRel     = _≡_
-  ; Gauge        = F₂³-Group-Setoid
-  ; Fiber        = Fiber
-  ; fiber-torsor = fiber-is-torsor
+  { fiber-torsor = fiber-is-torsor
   }
 
 ------------------------------------------------------------------------

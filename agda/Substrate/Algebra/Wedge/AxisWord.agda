@@ -66,7 +66,8 @@ open import Substrate.Algebra.Wedge.Product
 --    This is exactly `vec-product (Fin k)` — reused, not re-founded.
 ------------------------------------------------------------------------
 
-axis-word : (k : ℕ) → GradedProduct
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param (Vec (Fin k)).
+axis-word : (k : ℕ) → GradedProduct (Vec (Fin k))
 axis-word k = vec-product (Fin k)
 
 ------------------------------------------------------------------------

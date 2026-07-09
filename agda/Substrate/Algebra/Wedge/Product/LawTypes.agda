@@ -21,18 +21,20 @@ module Substrate.Algebra.Wedge.Product.LawTypes where
 open import Substrate.Foundation.Nat using (ℕ; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-identityʳ)
 open import Substrate.Foundation.Eq using (_≡_; subst)
-open import Substrate.Algebra.Wedge.Product using (GradedProduct; C; u; _∧_)
+-- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
+-- `C P` projection becomes the (implicit) module param C threaded here.
+open import Substrate.Algebra.Wedge.Product using (GradedProduct; u; _∧_)
 
 -- A GradedProduct P satisfies the graded monoid laws iff it provides these
 -- three. The left unit is definitional (u ∧ a : C (0 + i) = C i).
 
-GradedAssoc : GradedProduct → Set
-GradedAssoc P = {i j k : ℕ} (a : C P i) (b : C P j) (c : C P k) →
-                subst (C P) (+-assoc i j k) (_∧_ P (_∧_ P a b) c) ≡ _∧_ P a (_∧_ P b c)
+GradedAssoc : {C : ℕ → Set} → GradedProduct C → Set
+GradedAssoc {C} P = {i j k : ℕ} (a : C i) (b : C j) (c : C k) →
+                subst C (+-assoc i j k) (_∧_ P (_∧_ P a b) c) ≡ _∧_ P a (_∧_ P b c)
 
-GradedUnitˡ : GradedProduct → Set
-GradedUnitˡ P = {i : ℕ} (a : C P i) → _∧_ P (u P) a ≡ a
+GradedUnitˡ : {C : ℕ → Set} → GradedProduct C → Set
+GradedUnitˡ {C} P = {i : ℕ} (a : C i) → _∧_ P (u P) a ≡ a
 
-GradedUnitʳ : GradedProduct → Set
-GradedUnitʳ P = {i : ℕ} (a : C P i) →
-                subst (C P) (+-identityʳ i) (_∧_ P a (u P)) ≡ a
+GradedUnitʳ : {C : ℕ → Set} → GradedProduct C → Set
+GradedUnitʳ {C} P = {i : ℕ} (a : C i) →
+                subst C (+-identityʳ i) (_∧_ P a (u P)) ≡ a

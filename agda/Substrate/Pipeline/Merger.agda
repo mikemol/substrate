@@ -65,13 +65,9 @@ module _ (strategy-state : Set) where       -- e.g., ℕ for round-robin counter
 
   open HomogeneousMergerType public
 
-homogeneous-merger-type : ∀ {strategy-state A : Set} → HomogeneousMergerType strategy-state A → BrickType
-homogeneous-merger-type {strategy-state} {A} M = record
-  { D-in  = List A
-  ; D-out = A
-  ; S-in  = strategy-state
-  ; S-out = strategy-state
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+homogeneous-merger-type : ∀ {strategy-state A : Set} → HomogeneousMergerType strategy-state A → BrickType (List A) A strategy-state strategy-state
+homogeneous-merger-type _ = record {}
 
 ------------------------------------------------------------------------
 -- 3. Concrete merger: round-robin.
@@ -91,12 +87,8 @@ round-robin-merger
   : ∀ {A : Set}
   → A                  -- default value (for empty input)
   → ℕ                  -- n-inputs (a runtime parameter)
-  → Brick (record
-      { D-in  = List A
-      ; D-out = A
-      ; S-in  = ℕ
-      ; S-out = ℕ
-      })
+  -- ⟡set1-paydown: edges are Brick's implicit indices; supply them explicitly, tag is `record {}`.
+  → Brick {List A} {A} {ℕ} {ℕ} (record {})
 round-robin-merger {A} def n = record
   { witnesses = C⇒D  -- the compute (strategy) selects which data wins
   ; step      = λ (inputs , counter) →
@@ -131,13 +123,9 @@ record BinaryMerger (A B : Set) : Set where
     -- minimal case; stateful variants extend this with S-in/S-out.
     select     : A × B → Either A B
 
-binary-merger-type : (A B : Set) → BrickType
-binary-merger-type A B = record
-  { D-in  = A × B
-  ; D-out = Either A B
-  ; S-in  = ⊤
-  ; S-out = ⊤
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+binary-merger-type : (A B : Set) → BrickType (A × B) (Either A B) ⊤ ⊤
+binary-merger-type A B = record {}
 
 binary-merger : ∀ {A B} → BinaryMerger A B → Brick (binary-merger-type A B)
 binary-merger {A} {B} m = record

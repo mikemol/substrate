@@ -25,13 +25,9 @@ module Substrate.Pipeline.Examples.PredictorSurprise
 
 open import Substrate.Foundation.Product using (_,_)
 
-PredictorSurprise-Type : BrickType
-PredictorSurprise-Type = record
-  { D-in  = Char
-  ; D-out = ℕ
-  ; S-in  = Counts
-  ; S-out = Counts
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+PredictorSurprise-Type : BrickType Char ℕ Counts Counts
+PredictorSurprise-Type = record {}
 
 record Preserves-Shannon : Set where
 

@@ -29,50 +29,54 @@ module Substrate.Algebra.Wedge.Graded.Adjunction where
 open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Foundation.Product using (Σ; _,_)
+-- ⟡set1-paydown: GradedDivStr's carrier/remainder families are now its params, so
+-- the old `C G` / `R G` projections become the (implicit) module params C / R here.
 open import Substrate.Algebra.Wedge.Graded
-  using (GradedDivStr; C; R; recon; GradedWedge; rem; wedge-eq;
+  using (GradedDivStr; recon; GradedWedge; rem; wedge-eq;
          gforget; gforget-correct)
 open import Substrate.Algebra.Wedge.Adjunction using (sym-sym)
 
-------------------------------------------------------------------------
--- 1. Forgetful (geval) and the graded term it evaluates.
-------------------------------------------------------------------------
+module _ {C : ℕ → Set} {R : ℕ → Set} where
 
-geval : (G : GradedDivStr) (n : ℕ) → C G n → R G n → C G (suc n)
-geval = recon
+  ----------------------------------------------------------------------
+  -- 1. Forgetful (geval) and the graded term it evaluates.
+  ----------------------------------------------------------------------
 
-gTerm : (G : GradedDivStr) (n : ℕ) → C G (suc n) → C G n → Set
-gTerm G n a b = Σ (R G n) (λ r → a ≡ recon G n b r)
+  geval : (G : GradedDivStr C R) (n : ℕ) → C n → R n → C (suc n)
+  geval = recon
 
-------------------------------------------------------------------------
--- 2. The hom-set bijection GradedWedge ≅ gTerm, uniform in G — DEFINITIONAL.
-------------------------------------------------------------------------
+  gTerm : (G : GradedDivStr C R) (n : ℕ) → C (suc n) → C n → Set
+  gTerm G n a b = Σ (R n) (λ r → a ≡ recon G n b r)
 
-to : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n} →
-     GradedWedge G n a b → gTerm G n a b
-to w = rem w , wedge-eq w
+  --------------------------------------------------------------------
+  -- 2. The hom-set bijection GradedWedge ≅ gTerm, uniform in G — DEFINITIONAL.
+  --------------------------------------------------------------------
 
-from : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n} →
-       gTerm G n a b → GradedWedge G n a b
-from (r , e) = record { rem = r ; wedge-eq = e }
+  to : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n} →
+       GradedWedge G n a b → gTerm G n a b
+  to w = rem w , wedge-eq w
 
-from∘to : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n}
-          (w : GradedWedge G n a b) → from (to w) ≡ w
-from∘to _ = refl
+  from : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n} →
+         gTerm G n a b → GradedWedge G n a b
+  from (r , e) = record { rem = r ; wedge-eq = e }
 
-------------------------------------------------------------------------
--- 3. The triangle law = the witness. geval after packaging returns the
---    grade-(n+1) element: `geval n b (rem) ≡ a`, i.e. `gforget w ≡ a`.
-------------------------------------------------------------------------
+  from∘to : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n}
+            (w : GradedWedge G n a b) → from (to w) ≡ w
+  from∘to _ = refl
 
-geval-eq : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n}
-           (w : GradedWedge G n a b) → geval G n b (rem w) ≡ a
-geval-eq w = sym (wedge-eq w)
+  --------------------------------------------------------------------
+  -- 3. The triangle law = the witness. geval after packaging returns the
+  --    grade-(n+1) element: `geval n b (rem) ≡ a`, i.e. `gforget w ≡ a`.
+  --------------------------------------------------------------------
 
-gtriangle : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n}
-            (w : GradedWedge G n a b) → gforget w ≡ a
-gtriangle = gforget-correct
+  geval-eq : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n}
+             (w : GradedWedge G n a b) → geval G n b (rem w) ≡ a
+  geval-eq w = sym (wedge-eq w)
 
-reorient : {G : GradedDivStr} {n : ℕ} {a : C G (suc n)} {b : C G n}
-           (w : GradedWedge G n a b) → sym (geval-eq w) ≡ wedge-eq w
-reorient w = sym-sym (wedge-eq w)
+  gtriangle : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n}
+              (w : GradedWedge G n a b) → gforget w ≡ a
+  gtriangle = gforget-correct
+
+  reorient : {G : GradedDivStr C R} {n : ℕ} {a : C (suc n)} {b : C n}
+             (w : GradedWedge G n a b) → sym (geval-eq w) ≡ wedge-eq w
+  reorient w = sym-sym (wedge-eq w)

@@ -46,25 +46,31 @@ open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 --    2-in/1-out product (a graded monoid).
 ------------------------------------------------------------------------
 
-record GradedProduct : Set₁ where
-  field
-    C   : ℕ → Set
-    u   : C 0                              -- the grade-0 unit (the empty wedge)
-    _∧_ : {i j : ℕ} → C i → C j → C (i + j)
+-- ⟡set1-paydown: the ℕ-graded carrier family C : ℕ → Set is a Set-VALUED family,
+-- so — per the substrate stance (families are module params, never fields) — it
+-- becomes a module parameter; u and _∧_ stay fields. GradedProduct drops Set₁ → Set;
+-- consumers write `GradedProduct C`, and the old `C P` projection becomes the param C.
+module _ (C : ℕ → Set) where
 
-open GradedProduct public
+  record GradedProduct : Set where
+    field
+      u   : C 0                              -- the grade-0 unit (the empty wedge)
+      _∧_ : {i j : ℕ} → C i → C j → C (i + j)
+
+  open GradedProduct public
 
 ------------------------------------------------------------------------
 -- 2. quot q = lift by q grades: the q-fold wedge of a grade-1 generator.
 --    "q copies of b" of the plain wedge, with the quotient as the grade.
+--    (C inferred implicitly from the GradedProduct argument.)
 ------------------------------------------------------------------------
 
-power : (P : GradedProduct) (b : C P 1) (q : ℕ) → C P q
+power : {C : ℕ → Set} (P : GradedProduct C) (b : C 1) (q : ℕ) → C q
 power P b zero    = u P
 power P b (suc n) = _∧_ P b (power P b n)
 
 -- the general q-deep term of a grade-i element: C (q * i). (power is i = 1.)
-gpower : (P : GradedProduct) {i : ℕ} (b : C P i) (q : ℕ) → C P (q * i)
+gpower : {C : ℕ → Set} (P : GradedProduct C) {i : ℕ} (b : C i) (q : ℕ) → C (q * i)
 gpower P b zero    = u P
 gpower P b (suc n) = _∧_ P b (gpower P b n)
 
@@ -74,9 +80,11 @@ gpower P b (suc n) = _∧_ P b (gpower P b n)
 --    type is the grade-1 part — the increment.
 ------------------------------------------------------------------------
 
-graded-of-product : GradedProduct → GradedDivStr
+-- ⟡set1-paydown: both carrier families (GradedProduct's C and GradedDivStr's C/R)
+-- are now params — carried in graded-of-product's return type (C, const (C 1)).
+graded-of-product : {C : ℕ → Set} (P : GradedProduct C) → GradedDivStr C (λ _ → C 1)
 graded-of-product P = record
-  { C = C P ; R = λ _ → C P 1 ; recon = λ n b r → _∧_ P r b }
+  { recon = λ n b r → _∧_ P r b }
 
 ------------------------------------------------------------------------
 -- 4. Vec is the wedge product on append: _∧_ = _++_, unit = []. Then the
@@ -84,8 +92,8 @@ graded-of-product P = record
 --    recon recovers cons.
 ------------------------------------------------------------------------
 
-vec-product : (A : Set) → GradedProduct
-vec-product A = record { C = Vec A ; u = [] ; _∧_ = _++_ }
+vec-product : (A : Set) → GradedProduct (Vec A)
+vec-product A = record { u = [] ; _∧_ = _++_ }
 
 -- QUOTIENT = QUOTE, witnessed: the division "q copies of a" equals the q-deep
 -- ∧-term [a]^∧q equals replicate q a. The wedge's count and the term-algebra's
@@ -111,8 +119,8 @@ vec-recon-cons A n v a = refl
 -- the quotient is now a CARRIER REPRESENTATIVE (a graded element Σ ℕ (C P)); its
 -- GRADE component `qn` is the count (the flattened carrier carries its own grade,
 -- so the count-as-grade reading is intrinsic — no bare ℕ quotient).
-flatten-recon : (P : GradedProduct) → Σ ℕ (C P) → Σ ℕ (C P) → Σ ℕ (C P) → Σ ℕ (C P)
+flatten-recon : {C : ℕ → Set} (P : GradedProduct C) → Σ ℕ C → Σ ℕ C → Σ ℕ C → Σ ℕ C
 flatten-recon P (qn , _) (i , b) (j , r) = (qn * i) + j , _∧_ P (gpower P b qn) r
 
-flatten : GradedProduct → DivStr
-flatten P = record { C = Σ ℕ (C P) ; z = 0 , u P ; recon = flatten-recon P }
+flatten : {C : ℕ → Set} → GradedProduct C → DivStr
+flatten {C} P = record { C = Σ ℕ C ; z = 0 , u P ; recon = flatten-recon P }

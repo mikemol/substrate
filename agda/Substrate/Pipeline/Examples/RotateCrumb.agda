@@ -70,13 +70,9 @@ crumb-action = record
   ; act-∙  = act-∙ᶜ
   }
 
-RotateCrumb-Type : BrickType
-RotateCrumb-Type = record
-  { D-in  = Crumb × V₄
-  ; D-out = Crumb
-  ; S-in  = ⊤
-  ; S-out = ⊤
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+RotateCrumb-Type : BrickType (Crumb × V₄) Crumb ⊤ ⊤
+RotateCrumb-Type = record {}
 
 rotate-crumb : Brick RotateCrumb-Type
 rotate-crumb = record

@@ -26,13 +26,9 @@ module _ (homomorphism-tag : Set) where
 
   open PureBrick public
 
-pure→Brick : ∀ {tag A B : Set} → PureBrick tag A B → BrickType
-pure→Brick {tag} {A} {B} P = record
-  { D-in  = A
-  ; D-out = B
-  ; S-in  = ⊤
-  ; S-out = ⊤
-  }
+-- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
+pure→Brick : ∀ {tag A B : Set} → PureBrick tag A B → BrickType A B ⊤ ⊤
+pure→Brick _ = record {}
 
 pure→Brick-step : ∀ {tag A B : Set} → (P : PureBrick tag A B)
                 → (A × ⊤) → (B × ⊤)

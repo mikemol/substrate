@@ -20,16 +20,20 @@ import Substrate.Groups.FreeCyclic-Coxeter as F
 -- The capability record.
 ------------------------------------------------------------------------
 
-record PhaseProjectionCapability : Set₁ where
-  field
-    Zn-Word      : Set
-    Zn-ε         : Zn-Word
-    _Zn-++_      : Zn-Word → Zn-Word → Zn-Word
-    Zn-normalize : Zn-Word → Zn-Word
-    F-Word       : Set
-    F-ε          : F-Word
-    _F-++_       : F-Word → F-Word → F-Word
-    F-normalize  : F-Word → F-Word
+-- ⟡set1-paydown: parameterize BOTH Set carriers (Zn-Word, F-Word) out of
+-- the record — they were `field`s valued in Set, forcing the record to Set₁.
+-- As module parameters the record lands in Set; consumers write
+-- `PhaseProjectionCapability Zn-Word F-Word`.
+module _ (Zn-Word F-Word : Set) where
+
+  record PhaseProjectionCapability : Set where
+    field
+      Zn-ε         : Zn-Word
+      _Zn-++_      : Zn-Word → Zn-Word → Zn-Word
+      Zn-normalize : Zn-Word → Zn-Word
+      F-ε          : F-Word
+      _F-++_       : F-Word → F-Word → F-Word
+      F-normalize  : F-Word → F-Word
 
 ------------------------------------------------------------------------
 -- from-coxeter-data: build the capability from a Coxeter Word instance.
@@ -42,13 +46,11 @@ open import Substrate.Groups.Coxeter.Word using ([])
 from-coxeter-data :
   (Gen : Set)
   (normalize : Word Gen → Word Gen) →
-  PhaseProjectionCapability
+  PhaseProjectionCapability (Word Gen) (F.Word F.Gen)
 from-coxeter-data Gen norm = record
-  { Zn-Word      = Word Gen
-  ; Zn-ε         = []
+  { Zn-ε         = []
   ; _Zn-++_      = _++_
   ; Zn-normalize = norm
-  ; F-Word       = F.Word F.Gen
   ; F-ε          = F.ε
   ; _F-++_       = F._++_
   ; F-normalize  = F.normalize
