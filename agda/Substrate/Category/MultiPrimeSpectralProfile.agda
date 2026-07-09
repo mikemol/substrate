@@ -46,130 +46,137 @@ record BitWidth : Set where
 open BitWidth public
 
 ------------------------------------------------------------------------
--- A p-bit symbol distribution over a bit stream.
---
--- Sliding window: at every bit position, read p bits as a symbol;
--- count occurrences across the full stream. Result is a vector
--- in ℕ^(2ᵖ).
+-- ⟡set1-paydown (parameterize-carrier, [[set1-carrier-always-parameterize]]): the whole
+-- SymbolDistribution→…→Atlas tower fielded `Distribution : Set` as a CARRIER, which forced
+-- SymbolDistribution/WHT/PrimeSpectrum : Set₁ and then MultiPrimeAtlas/Compressibility : Set₂.
+-- A record must not field a Set-valued carrier — take it as the module parameter and let the
+-- CONSUMER name it (`SymbolDistribution D w`, `MultiPrimeAtlas D`, …). The tower then lives in Set.
+module _ (Distribution : Set) where
 
-record SymbolDistribution (w : BitWidth) : Set₁ where
-  field
-    Distribution : Set       -- typically a numeric vector
-    -- Total occurrence count.
-    total       : Distribution → ℕ
-    -- Count at a specific symbol value v ∈ [0, 2ᵖ).
-    count-at    : Distribution → ℕ → ℕ
+  ------------------------------------------------------------------------
+  -- A p-bit symbol distribution over a bit stream.
+  --
+  -- Sliding window: at every bit position, read p bits as a symbol;
+  -- count occurrences across the full stream. Result is a vector
+  -- in ℕ^(2ᵖ).
 
-open SymbolDistribution public
+  record SymbolDistribution (w : BitWidth) : Set where
+    field
+      -- Total occurrence count.
+      total       : Distribution → ℕ
+      -- Count at a specific symbol value v ∈ [0, 2ᵖ).
+      count-at    : Distribution → ℕ → ℕ
 
-------------------------------------------------------------------------
--- The Walsh-Hadamard Transform: an F₂-Fourier on F₂ᵖ-indexed
--- distributions. Self-inverse up to scaling: WHT² = 2ᵖ · id.
+  open SymbolDistribution public
 
-record WalshHadamardTransform (w : BitWidth) : Set₁ where
-  field
-    symdist : SymbolDistribution w
-    -- The transformed coefficients (same carrier).
-    wht     : Distribution symdist → Distribution symdist
-    -- WHT is self-inverse up to scaling factor 2ᵖ.
-    -- Stated structurally; concrete instances enumerate.
+  ------------------------------------------------------------------------
+  -- The Walsh-Hadamard Transform: an F₂-Fourier on F₂ᵖ-indexed
+  -- distributions. Self-inverse up to scaling: WHT² = 2ᵖ · id.
 
-open WalshHadamardTransform public
+  record WalshHadamardTransform (w : BitWidth) : Set where
+    field
+      symdist : SymbolDistribution w
+      -- The transformed coefficients (same carrier).
+      wht     : Distribution → Distribution
+      -- WHT is self-inverse up to scaling factor 2ᵖ.
+      -- Stated structurally; concrete instances enumerate.
 
-------------------------------------------------------------------------
--- A p-prime spectrum: the distribution at width p PLUS its WHT.
--- This is one "axis" of the multi-prime atlas.
+  open WalshHadamardTransform public
 
-record PrimeSpectrum (w : BitWidth) : Set₁ where
-  field
-    transform : WalshHadamardTransform w
-    counts    : Distribution (symdist transform)
-    coeffs    : Distribution (symdist transform)
-    -- Coefficients are the WHT of counts.
-    coeffs-from-counts :
-      coeffs ≡ wht transform counts
+  ------------------------------------------------------------------------
+  -- A p-prime spectrum: the distribution at width p PLUS its WHT.
+  -- This is one "axis" of the multi-prime atlas.
 
-open PrimeSpectrum public
+  record PrimeSpectrum (w : BitWidth) : Set where
+    field
+      transform : WalshHadamardTransform w
+      counts    : Distribution
+      coeffs    : Distribution
+      -- Coefficients are the WHT of counts.
+      coeffs-from-counts :
+        coeffs ≡ wht transform counts
 
-------------------------------------------------------------------------
--- The multi-prime spectral atlas: a family of PrimeSpectrum
--- indexed by the substrate's gauge-aligned primes {2, 3, 5, 7}.
---
--- Per [[expose-generator-not-orbit]]: each prime is one gauge axis;
--- the atlas exposes all axes simultaneously rather than collapsing
--- to a single byte-aligned reading.
+  open PrimeSpectrum public
 
-record MultiPrimeAtlas : Set₂ where
-  field
-    -- Spectra at p = 2, 3, 5, 7.
-    spec2 : PrimeSpectrum (record { p = 2 })
-    spec3 : PrimeSpectrum (record { p = 3 })
-    spec5 : PrimeSpectrum (record { p = 5 })
-    spec7 : PrimeSpectrum (record { p = 7 })
+  ------------------------------------------------------------------------
+  -- The multi-prime spectral atlas: a family of PrimeSpectrum
+  -- indexed by the substrate's gauge-aligned primes {2, 3, 5, 7}.
+  --
+  -- Per [[expose-generator-not-orbit]]: each prime is one gauge axis;
+  -- the atlas exposes all axes simultaneously rather than collapsing
+  -- to a single byte-aligned reading.
 
-open MultiPrimeAtlas public
+  record MultiPrimeAtlas : Set where
+    field
+      -- Spectra at p = 2, 3, 5, 7.
+      spec2 : PrimeSpectrum (record { p = 2 })
+      spec3 : PrimeSpectrum (record { p = 3 })
+      spec5 : PrimeSpectrum (record { p = 5 })
+      spec7 : PrimeSpectrum (record { p = 7 })
 
-------------------------------------------------------------------------
--- Cross-prime correlation matrix.
---
--- M[i, j] = correlation between the normalised sparsity profiles
--- of the i-th and j-th primes. Symmetric; diagonal = 1.
--- 4 × 4 over the substrate's prime tuple (2, 3, 5, 7).
---
--- Per GG4 empirical: substrate_memory exhibits M[2, 7] ≈ 0.97 —
--- byte-level and septet-level linear-pattern alignment. Other
--- corpora show varied cross-prime structure characteristic of
--- their content.
+  open MultiPrimeAtlas public
 
-record CrossPrimeCorrelation : Set where
-  field
-    M22 : ℕ            -- diagonal: always 1 (represented abstractly)
-    M27 : ℕ            -- p2 vs p7 correlation entry
-    M37 : ℕ            -- p3 vs p7 correlation entry
-    M57 : ℕ            -- p5 vs p7 correlation entry
+  ------------------------------------------------------------------------
+  -- Cross-prime correlation matrix.
+  --
+  -- M[i, j] = correlation between the normalised sparsity profiles
+  -- of the i-th and j-th primes. Symmetric; diagonal = 1.
+  -- 4 × 4 over the substrate's prime tuple (2, 3, 5, 7).
+  --
+  -- Per GG4 empirical: substrate_memory exhibits M[2, 7] ≈ 0.97 —
+  -- byte-level and septet-level linear-pattern alignment. Other
+  -- corpora show varied cross-prime structure characteristic of
+  -- their content.
 
-open CrossPrimeCorrelation public
+  record CrossPrimeCorrelation : Set where
+    field
+      M22 : ℕ            -- diagonal: always 1 (represented abstractly)
+      M27 : ℕ            -- p2 vs p7 correlation entry
+      M37 : ℕ            -- p3 vs p7 correlation entry
+      M57 : ℕ            -- p5 vs p7 correlation entry
 
-------------------------------------------------------------------------
--- Hamming(7, 4) bridge — GG8 structural connection.
---
--- The 16 Hamming(7, 4) codewords sit at specific positions in the
--- 7-bit WHT spectrum. A corpus's dominant 7-bit WHT coefficients
--- can be classified as either {codeword, syndrome-k} for k ∈ [1, 7].
---
--- Substrate-aligned corpora (per GG8): substrate_opcodes' top WHT
--- coefficient lands exactly on Hamming codeword 0b1010101 (= 85),
--- the checkerboard codeword. Less-structured corpora's top
--- coefficients land at syndromes ∈ {3, 5, 7} (odd-syndrome
--- single-bit errors).
+  open CrossPrimeCorrelation public
 
-record HammingSpectrumBridge : Set₁ where
-  field
-    spectrum-7 : PrimeSpectrum (record { p = 7 })
-    -- A coefficient index in [0, 128) classified as either:
-    --   isCodeword(i) : i is a Hamming(7, 4) codeword (16 cases)
-    --   syndrome(i)   : i's syndrome ∈ [1, 7]
-    -- Abstracted; concrete classifier in eliza.hamming.
+  ------------------------------------------------------------------------
+  -- Hamming(7, 4) bridge — GG8 structural connection.
+  --
+  -- The 16 Hamming(7, 4) codewords sit at specific positions in the
+  -- 7-bit WHT spectrum. A corpus's dominant 7-bit WHT coefficients
+  -- can be classified as either {codeword, syndrome-k} for k ∈ [1, 7].
+  --
+  -- Substrate-aligned corpora (per GG8): substrate_opcodes' top WHT
+  -- coefficient lands exactly on Hamming codeword 0b1010101 (= 85),
+  -- the checkerboard codeword. Less-structured corpora's top
+  -- coefficients land at syndromes ∈ {3, 5, 7} (odd-syndrome
+  -- single-bit errors).
 
-open HammingSpectrumBridge public
+  record HammingSpectrumBridge : Set where
+    field
+      spectrum-7 : PrimeSpectrum (record { p = 7 })
+      -- A coefficient index in [0, 128) classified as either:
+      --   isCodeword(i) : i is a Hamming(7, 4) codeword (16 cases)
+      --   syndrome(i)   : i's syndrome ∈ [1, 7]
+      -- Abstracted; concrete classifier in eliza.hamming.
 
-------------------------------------------------------------------------
--- GG7 empirical statement: H_p7 ↔ codec bpb correlation.
---
--- Stated as a record-level observation; not a theorem (no upstream
--- formal codec model to derive it from in Agda).
---
--- Per [[multi-reading-ambient-discipline]]: the atlas IS the
--- substrate-honest reading; per-corpus single-prime measurements
--- collapse the ambient.
+  open HammingSpectrumBridge public
 
-record SpectralCompressibilityObservation : Set₂ where
-  field
-    atlas              : MultiPrimeAtlas
-    -- The observed correlation: high H_p7 entropy → low codec bpb
-    -- (byte-uniform but chain-structured inputs compress well).
+  ------------------------------------------------------------------------
+  -- GG7 empirical statement: H_p7 ↔ codec bpb correlation.
+  --
+  -- Stated as a record-level observation; not a theorem (no upstream
+  -- formal codec model to derive it from in Agda).
+  --
+  -- Per [[multi-reading-ambient-discipline]]: the atlas IS the
+  -- substrate-honest reading; per-corpus single-prime measurements
+  -- collapse the ambient.
 
-open SpectralCompressibilityObservation public
+  record SpectralCompressibilityObservation : Set where
+    field
+      atlas              : MultiPrimeAtlas
+      -- The observed correlation: high H_p7 entropy → low codec bpb
+      -- (byte-uniform but chain-structured inputs compress well).
+
+  open SpectralCompressibilityObservation public
 
 ------------------------------------------------------------------------
 -- Categorical reading.

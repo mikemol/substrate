@@ -151,10 +151,10 @@ _823 structures · 712 never-refined (in-degree 0) · 457 refine-nothing (out-de
 | `InvolutiveResidue` | record | `Substrate.Category.Lawvere` |
 | `TorsorAtom` | record | `Substrate.Category.Lawvere` |
 | `Morphism` | record | `Substrate.Category.Morphism` |
-| `CrossPrimeCorrelation` | record | `Substrate.Category.MultiPrimeSpectralProfile` |
-| `HammingSpectrumBridge` | record | `Substrate.Category.MultiPrimeSpectralProfile` |
-| `MultiPrimeAtlas` | record | `Substrate.Category.MultiPrimeSpectralProfile` |
-| `SpectralCompressibilityObservation` | record | `Substrate.Category.MultiPrimeSpectralProfile` |
+| `CrossPrimeCorrelation` | record | `Substrate.Category.MultiPrimeSpectralProfile._` |
+| `HammingSpectrumBridge` | record | `Substrate.Category.MultiPrimeSpectralProfile._` |
+| `MultiPrimeAtlas` | record | `Substrate.Category.MultiPrimeSpectralProfile._` |
+| `SpectralCompressibilityObservation` | record | `Substrate.Category.MultiPrimeSpectralProfile._` |
 | `CompositionalBounds` | record | `Substrate.Category.MultiSylowComposition` |
 | `MultiSylowAtlas` | record | `Substrate.Category.MultiSylowComposition` |
 | `SaturationCurve` | record | `Substrate.Category.MultiSylowComposition` |
