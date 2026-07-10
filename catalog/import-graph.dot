@@ -12751,6 +12751,8 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" -> "Substrate.Algebra.Wedge.Product";
+  "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" -> "Substrate.Foundation.Nat.Properties.Mul";

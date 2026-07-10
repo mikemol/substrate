@@ -25,9 +25,11 @@
 
 module Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties where
 
-open import Substrate.Foundation.Nat using (_+_; _*_)
+open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Algebra.Wedge.Product using (GradedProduct)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
@@ -48,3 +50,22 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 
 ⊗-assoc-over : GradedAssocOver *-assoc ⊗-over
 ⊗-assoc-over = ⊗-assoc
+
+------------------------------------------------------------------------
+-- REUSE UNIFICATION (dedup: GradedProductOver and Algebra.Wedge.Product.GradedProduct
+-- share the record fingerprint {u, _∧_}). GradedProductOver _+_ 0 IS GradedProduct — the
+-- existing fixed-`+` product is the (ℕ,+,0) instance of the general grading-op product.
+-- A field-copy bijection (round-trips refl by record η), formalizing the rig-11 equation.
+------------------------------------------------------------------------
+
+GP→over : {C : ℕ → Set} → GradedProduct C → GradedProductOver _+_ 0 C
+GP→over P = record { u = GradedProduct.u P ; _∧_ = GradedProduct._∧_ P }
+
+over→GP : {C : ℕ → Set} → GradedProductOver _+_ 0 C → GradedProduct C
+over→GP P = record { u = GradedProductOver.u P ; _∧_ = GradedProductOver._∧_ P }
+
+GP→over→GP : {C : ℕ → Set} (P : GradedProduct C) → over→GP (GP→over P) ≡ P
+GP→over→GP P = refl
+
+over→GP→over : {C : ℕ → Set} (P : GradedProductOver _+_ 0 C) → GP→over (over→GP P) ≡ P
+over→GP→over P = refl
