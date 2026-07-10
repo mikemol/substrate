@@ -23,13 +23,15 @@ module Substrate.WitnessTower.Wedge.OrientationDistributorAssoc where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc; *-distribʳ-+)
 open import Substrate.Foundation.Fin using (Fin; toℕ)
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Combine using (combine)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise)
+open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise; toℕ-combine)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Wedge.OrientationHexagon using (_⊕map_; ⊕map-inject; ⊕map-raise)
+open import Substrate.WitnessTower.Wedge.OrientationDistributorCoherence using (_⊗map_; ⊗map-combine)
 open import Substrate.WitnessTower.Wedge.OrientationDistributor using (δ; δ-inject; δ-raise)
 
 -- the two distribution paths, on a·((b+c)+d) [p1] and a·(b+(c+d)) [p2]:
@@ -87,3 +89,73 @@ p2 a b c d x = ((λ y → y) ⊕map δ a c d) (δ a b (c + d) x)
                                             (cong (raise (a * b)) (δ-raise a c d i m)))))
                     (trans (toℕ-raise (a * b) (raise (a * c) (combine i m)))
                            (cong (a * b +_) (toℕ-raise (a * c) (combine i m)))))))
+
+------------------------------------------------------------------------
+-- δ vs ⊗-ASSOCIATIVITY (numpy-verified Laplaza-δ-⊗assoc), per-block. Distributing
+-- (A⊗A')⊗(B⊕C) two ways: p1x = δ at the product grade a·a₂; p2x = (id_A ⊗ δ_{A',B,C})
+-- then δ_{A, A'·B, A'·C}. Same per-block trick — the index in each association form
+-- (combine (combine i i2) x  vs  combine i (combine i2 x)); both paths reduce via toℕ to
+-- ℕ arithmetic (bridged by *-distribʳ / *-assoc / +-assoc). Completes 5/5.
+------------------------------------------------------------------------
+
+p1x : ∀ a a2 b c → Fin ((a * a2) * (b + c)) → Fin ((a * a2) * b + (a * a2) * c)
+p1x a a2 b c x = δ (a * a2) b c x
+
+p2x : ∀ a a2 b c → Fin (a * (a2 * (b + c))) → Fin (a * (a2 * b) + a * (a2 * c))
+p2x a a2 b c x =
+  δ a (a2 * b) (a2 * c) ((_⊗map_ {a} {a2 * (b + c)} {a} {a2 * b + a2 * c} (λ y → y) (δ a2 b c)) x)
+
+-- arithmetic bridges (pure ℕ):
+private
+  arith-B : ∀ i a2 i2 b j → (i * a2 + i2) * b + j ≡ i * (a2 * b) + (i2 * b + j)
+  arith-B i a2 i2 b j =
+    trans (cong (_+ j) (*-distribʳ-+ b (i * a2) i2))
+          (trans (+-assoc ((i * a2) * b) (i2 * b) j)
+                 (cong (_+ (i2 * b + j)) (*-assoc i a2 b)))
+
+  arith-C : ∀ a a2 b i i2 c l →
+            (a * a2) * b + ((i * a2 + i2) * c + l) ≡ a * (a2 * b) + (i * (a2 * c) + (i2 * c + l))
+  arith-C a a2 b i i2 c l =
+    trans (cong (_+ ((i * a2 + i2) * c + l)) (*-assoc a a2 b))
+          (cong (a * (a2 * b) +_)
+                (trans (cong (_+ l) (*-distribʳ-+ c (i * a2) i2))
+                       (trans (cong (λ z → (z + i2 * c) + l) (*-assoc i a2 c))
+                              (+-assoc (i * (a2 * c)) (i2 * c) l))))
+
+-- B-block:
+δ-⊗assoc-B : ∀ a a2 b c (i : Fin a) (i2 : Fin a2) (j : Fin b) →
+             toℕ (p1x a a2 b c (combine (combine i i2) (inject+ c j)))
+               ≡ toℕ (p2x a a2 b c (combine i (combine i2 (inject+ c j))))
+δ-⊗assoc-B a a2 b c i i2 j =
+  trans (trans (cong toℕ (δ-inject (a * a2) b c (combine i i2) j))
+               (trans (toℕ-inject+ ((a * a2) * c) (combine (combine i i2) j))
+                      (trans (toℕ-combine (combine i i2) j)
+                             (cong (λ z → z * b + toℕ j) (toℕ-combine i i2)))))
+        (trans (arith-B (toℕ i) a2 (toℕ i2) b (toℕ j))
+        (sym (trans (cong toℕ (trans (cong (δ a (a2 * b) (a2 * c))
+                                           (trans (⊗map-combine {a} {a2 * (b + c)} {a} {a2 * b + a2 * c} (λ y → y) (δ a2 b c) i (combine i2 (inject+ c j)))
+                                                  (cong (combine i) (δ-inject a2 b c i2 j))))
+                                     (δ-inject a (a2 * b) (a2 * c) i (combine i2 j))))
+                    (trans (toℕ-inject+ (a * (a2 * c)) (combine i (combine i2 j)))
+                           (trans (toℕ-combine i (combine i2 j))
+                                  (cong (toℕ i * (a2 * b) +_) (toℕ-combine i2 j)))))))
+
+-- C-block:
+δ-⊗assoc-C : ∀ a a2 b c (i : Fin a) (i2 : Fin a2) (l : Fin c) →
+             toℕ (p1x a a2 b c (combine (combine i i2) (raise b l)))
+               ≡ toℕ (p2x a a2 b c (combine i (combine i2 (raise b l))))
+δ-⊗assoc-C a a2 b c i i2 l =
+  trans (trans (cong toℕ (δ-raise (a * a2) b c (combine i i2) l))
+               (trans (toℕ-raise ((a * a2) * b) (combine (combine i i2) l))
+                      (cong ((a * a2) * b +_)
+                            (trans (toℕ-combine (combine i i2) l)
+                                   (cong (λ z → z * c + toℕ l) (toℕ-combine i i2))))))
+        (trans (arith-C a a2 b (toℕ i) (toℕ i2) c (toℕ l))
+        (sym (trans (cong toℕ (trans (cong (δ a (a2 * b) (a2 * c))
+                                           (trans (⊗map-combine {a} {a2 * (b + c)} {a} {a2 * b + a2 * c} (λ y → y) (δ a2 b c) i (combine i2 (raise b l)))
+                                                  (cong (combine i) (δ-raise a2 b c i2 l))))
+                                     (δ-raise a (a2 * b) (a2 * c) i (combine i2 l))))
+                    (trans (toℕ-raise (a * (a2 * b)) (combine i (combine i2 l)))
+                           (cong (a * (a2 * b) +_)
+                                 (trans (toℕ-combine i (combine i2 l))
+                                        (cong (toℕ i * (a2 * c) +_) (toℕ-combine i2 l))))))))

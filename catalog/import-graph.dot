@@ -12807,9 +12807,11 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Fin.SplitAt";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Nat.Properties.Add";
+  "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Nat.Properties.Mul";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Product";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.Foundation.Sum";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.WitnessTower.Wedge.OrientationDistributor";
+  "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.WitnessTower.Wedge.OrientationDistributorCoherence";
   "Substrate.WitnessTower.Wedge.OrientationDistributorAssoc" -> "Substrate.WitnessTower.Wedge.OrientationHexagon";
   "Substrate.WitnessTower.Wedge.OrientationDistributorCoherence" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationDistributorCoherence" -> "Substrate.Foundation.Fin";
