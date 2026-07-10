@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda OrientationFixedPoint.agda OrientationProduct.agda OrientationSum.agda PackedBridge.agda Simplicial.agda V4Seam.agda
+FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda OrientationFixedPoint.agda OrientationProduct.agda OrientationProductPerm.agda OrientationRig.agda OrientationSum.agda PackedBridge.agda Simplicial.agda V4Seam.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
