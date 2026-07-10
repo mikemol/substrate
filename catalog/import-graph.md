@@ -34,7 +34,7 @@ _1718 modules, 10980 dependency edges._
 | `Substrate.Algebra.Nat.Mod` | 60 |
 | `Substrate.Groups.Coxeter.Cyclic.Base` | 60 |
 | `Substrate.Algebra.Q` | 58 |
-| `Substrate.Foundation.Unit` | 57 |
+| `Substrate.Foundation.Unit` | 58 |
 | `Substrate.Algebra.R.Trace` | 53 |
 | `Substrate.Algebra.Monoid` | 47 |
 | `Substrate.Category.FreeOverBasis` | 47 |

@@ -83,10 +83,11 @@ mem-α-· (inj₁ a≡e) (inj₂ b≡α) = inj₂ (cong₂ _·_ a≡e b≡α)
 mem-α-· (inj₂ a≡α) (inj₁ b≡e) = inj₂ (cong₂ _·_ a≡α b≡e)
 mem-α-· (inj₂ a≡α) (inj₂ b≡α) = inj₁ (cong₂ _·_ a≡α b≡α)
 
-⟨α⟩ : NormalSubgroup
+-- ⟡set1-paydown: `member` is now a parameter of NormalSubgroup, so the type
+-- is `NormalSubgroup mem-α` and the record literal drops the `member` field.
+⟨α⟩ : NormalSubgroup mem-α
 ⟨α⟩ = record
-  { member      = mem-α
-  ; member-resp = λ a≡b m → subst mem-α a≡b m
+  { member-resp = λ a≡b m → subst mem-α a≡b m
   ; member-ε    = inj₁ refl
   ; member-·    = mem-α-·
   ; member-⁻¹   = λ m → m                       -- inv a = a definitionally
@@ -98,7 +99,7 @@ mem-α-· (inj₂ a≡α) (inj₂ b≡α) = inj₁ (cong₂ _·_ a≡α b≡α)
 -- is a NonSimplicityWitness — hence V₄ is not simple.  PROVEN.
 ------------------------------------------------------------------------
 
-V4-witness : NonSimplicityWitness
+V4-witness : NonSimplicityWitness mem-α
 V4-witness = record
   { N         = ⟨α⟩
   ; wit-ntriv = α

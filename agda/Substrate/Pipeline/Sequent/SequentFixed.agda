@@ -12,9 +12,15 @@ module Substrate.Pipeline.Sequent.SequentFixed where
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
 
-record SequentFixed (A : Set) : Set₁ where
-  field
-    derivation : A → A
-    spec       : CanonicalSpec A
-    obligation : (a : A) → CanonicalSpec.Canonical spec a
-                          → derivation a ≡ a
+-- ⟡set1-paydown: cascades from CanonicalSpec — the predicate `Canonical` is now a
+-- module param (was `CanonicalSpec.Canonical spec`). Take (A, Canonical) as params so
+-- `spec : CanonicalSpec A Canonical` and the obligation refer to the in-scope Canonical;
+-- SequentFixed drops from Set₁ to Set. Consumers write `SequentFixed A Canonical`.
+module _ (A : Set) (Canonical : A → Set) where
+
+  record SequentFixed : Set where
+    field
+      derivation : A → A
+      spec       : CanonicalSpec A Canonical
+      obligation : (a : A) → Canonical a
+                            → derivation a ≡ a

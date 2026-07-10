@@ -85,15 +85,17 @@ module _ (Chamber Nibble : Set) where
   -- image (= reachable as single-step chain-walk transition); if so,
   -- emits via the coarse opcode; else falls back to the full opcode.
 
-  record EncoderDispatch : Set₁ where
-    field
-      opcode      : CoarseEmissionOpcode
-      -- Membership predicate: σ in image of decode.
-      in-image    : Chamber → Set
-      -- Decision: emit coarse iff σ in image.
-      decide      : Chamber → Set
+  -- ⟡set1-paydown: the membership/decision predicate families `in-image, decide :
+  -- Chamber → Set` were FIELDS, forcing EncoderDispatch to Set₁. Lift them to nested
+  -- module params → the record lives in Set. `EncoderDispatch in-image decide` names the
+  -- dispatch over those two predicates; the opcode is the only remaining content.
+  module _ (in-image decide : Chamber → Set) where
 
-  open EncoderDispatch public
+    record EncoderDispatch : Set where
+      field
+        opcode      : CoarseEmissionOpcode
+
+    open EncoderDispatch public
 
   ------------------------------------------------------------------------
   -- Decoder dispatch.
@@ -119,14 +121,19 @@ module _ (Chamber Nibble : Set) where
   -- bijection.encode σ; decoder coarse path applies bijection.decode
   -- on the same nibble.
 
-  record LosslessCoarseRoundTrip : Set₁ where
-    field
-      enc-dispatch : EncoderDispatch
-      dec-dispatch : DecoderDispatch
-      same-bijection :
-        bijection (opcode enc-dispatch) ≡ bijection (opcode dec-dispatch)
+  -- ⟡set1-paydown: cascades from EncoderDispatch — its predicates are now params, so
+  -- thread (in-image, decide) through here too; `enc-dispatch : EncoderDispatch in-image
+  -- decide`. All fields are now Set-level, so LosslessCoarseRoundTrip drops to Set.
+  module _ (in-image decide : Chamber → Set) where
 
-  open LosslessCoarseRoundTrip public
+    record LosslessCoarseRoundTrip : Set where
+      field
+        enc-dispatch : EncoderDispatch in-image decide
+        dec-dispatch : DecoderDispatch
+        same-bijection :
+          bijection (opcode enc-dispatch) ≡ bijection (opcode dec-dispatch)
+
+    open LosslessCoarseRoundTrip public
 
   ------------------------------------------------------------------------
   -- Connection to AA-arc residue and chain-walk image.

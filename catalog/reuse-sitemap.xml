@@ -414,7 +414,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²-Morphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Backed#BackedUP</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Category#UPCategory</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Covers</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Obs</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalLawvereCarrier#Reflexive</loc><priority>0.0</priority></url>
@@ -576,7 +576,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.16</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
@@ -636,7 +636,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/V4-Cosets#S₄/V₄-↔-Stab</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Gen</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/V4/Bijection#V₄</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4/Bijection#V₄</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter#Canonical</loc><priority>0.0</priority></url>

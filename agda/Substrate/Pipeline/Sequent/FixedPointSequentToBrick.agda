@@ -21,10 +21,13 @@ open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
 open import Substrate.Pipeline.Sequent.SequentFixed using (SequentFixed)
 open import Substrate.Pipeline.Sequent.IterateToCanonical using (iterate-to-canonical)
 
+-- ⟡set1-paydown: cascades from CanonicalSpec/SequentFixed — thread the canonical
+-- predicate `Canonical` as an implicit param; `s : SequentFixed A Canonical` and
+-- `decide` returns `Maybe (Canonical a)` (was `CanonicalSpec.Canonical (…spec s) a`).
 fixed-point-sequent→Brick
-  : ∀ {A : Set}
-  → (s : SequentFixed A)
-  → (decide : (a : A) → Maybe (CanonicalSpec.Canonical (SequentFixed.spec s) a))
+  : ∀ {A : Set} {Canonical : A → Set}
+  → (s : SequentFixed A Canonical)
+  → (decide : (a : A) → Maybe (Canonical a))
   → ℕ
   -- ⟡set1-paydown: edges are Brick's implicit indices; supply them explicitly, tag is `record {}`.
   → Brick {A} {Maybe A} {⊤} {⊤} (record {})

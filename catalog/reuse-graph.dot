@@ -213,8 +213,8 @@ digraph reuse {
   "Substrate.Category.CoarseResidueEmission._.CoarseEmissionOpcode" [label="CoarseEmissionOpcode\nSubstrate.Category.CoarseResidueEmission._"];
   "Substrate.Category.CoarseResidueEmission._.CoarseResidueBijection" [label="CoarseResidueBijection\nSubstrate.Category.CoarseResidueEmission._"];
   "Substrate.Category.CoarseResidueEmission._.DecoderDispatch" [label="DecoderDispatch\nSubstrate.Category.CoarseResidueEmission._"];
-  "Substrate.Category.CoarseResidueEmission._.EncoderDispatch" [label="EncoderDispatch\nSubstrate.Category.CoarseResidueEmission._"];
-  "Substrate.Category.CoarseResidueEmission._.LosslessCoarseRoundTrip" [label="LosslessCoarseRoundTrip\nSubstrate.Category.CoarseResidueEmission._"];
+  "Substrate.Category.CoarseResidueEmission._._.EncoderDispatch" [label="EncoderDispatch\nSubstrate.Category.CoarseResidueEmission._._"];
+  "Substrate.Category.CoarseResidueEmission._._.LosslessCoarseRoundTrip" [label="LosslessCoarseRoundTrip\nSubstrate.Category.CoarseResidueEmission._._"];
   "Substrate.Category.Coequalizer.IsCoequalising" [label="IsCoequalising\nSubstrate.Category.Coequalizer"];
   "Substrate.Category.Coherence.CoherenceDiagram" [label="CoherenceDiagram\nSubstrate.Category.Coherence"];
   "Substrate.Category.CommutativeComonoid.CommutativeComonoid" [label="CommutativeComonoid\nSubstrate.Category.CommutativeComonoid"];
@@ -238,8 +238,8 @@ digraph reuse {
   "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra" [label="ConjugationCoalgebra\nSubstrate.Category.ConjugationCoalgebra"];
   "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NonSimplicityWitness" [label="NonSimplicityWitness\nSubstrate.Category.ConjugationCoalgebra.Examples.V4._"];
   "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NormalSubgroup" [label="NormalSubgroup\nSubstrate.Category.ConjugationCoalgebra.Examples.V4._"];
-  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer.NonSimplicityWitness" [label="NonSimplicityWitness\nSubstrate.Category.ConjugationCoalgebra.Simplicity.Recognizer"];
-  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer.NormalSubgroup" [label="NormalSubgroup\nSubstrate.Category.ConjugationCoalgebra.Simplicity.Recognizer"];
+  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NonSimplicityWitness" [label="NonSimplicityWitness\nSubstrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._"];
+  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NormalSubgroup" [label="NormalSubgroup\nSubstrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._"];
   "Substrate.Category.ConjugationCoalgebra.WithCharacters.WithCharacters" [label="WithCharacters\nSubstrate.Category.ConjugationCoalgebra.WithCharacters"];
   "Substrate.Category.CoxeterPermutationGroup.AdjacentTransposition" [label="AdjacentTransposition\nSubstrate.Category.CoxeterPermutationGroup"];
   "Substrate.Category.CoxeterPermutationGroup.BitShift" [label="BitShift\nSubstrate.Category.CoxeterPermutationGroup", style=rounded];
@@ -488,7 +488,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.MatchingFamily._.MatchingFamily" [label="MatchingFamily\nSubstrate.Category.UniversalProperty.MatchingFamily._"];
   "Substrate.Category.UniversalProperty.Morphism.UPMorphism" [label="UPMorphism\nSubstrate.Category.UniversalProperty.Morphism"];
   "Substrate.Category.UniversalProperty.Presheaf.UPPresheaf" [label="UPPresheaf\nSubstrate.Category.UniversalProperty.Presheaf"];
-  "Substrate.Category.UniversalProperty.Pretopology.UPPretopology" [label="UPPretopology\nSubstrate.Category.UniversalProperty.Pretopology"];
+  "Substrate.Category.UniversalProperty.Pretopology._.UPPretopology" [label="UPPretopology\nSubstrate.Category.UniversalProperty.Pretopology._"];
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" [label="QuotientUP\nSubstrate.Category.UniversalProperty.Quotient"];
   "Substrate.Category.UniversalProperty.QuotientProduct.QuotientProduct" [label="QuotientProduct\nSubstrate.Category.UniversalProperty.QuotientProduct"];
   "Substrate.Category.UniversalProperty.Recognized.RecognizedUP" [label="RecognizedUP\nSubstrate.Category.UniversalProperty.Recognized"];
@@ -725,8 +725,8 @@ digraph reuse {
   "Substrate.Pipeline.Merger.Either" [label="Either\nSubstrate.Pipeline.Merger", style=rounded];
   "Substrate.Pipeline.Merger.MergeStrategy" [label="MergeStrategy\nSubstrate.Pipeline.Merger", style=rounded];
   "Substrate.Pipeline.Merger._.HomogeneousMergerType" [label="HomogeneousMergerType\nSubstrate.Pipeline.Merger._"];
-  "Substrate.Pipeline.Sequent.CanonicalSpec.CanonicalSpec" [label="CanonicalSpec\nSubstrate.Pipeline.Sequent.CanonicalSpec"];
-  "Substrate.Pipeline.Sequent.SequentFixed.SequentFixed" [label="SequentFixed\nSubstrate.Pipeline.Sequent.SequentFixed"];
+  "Substrate.Pipeline.Sequent.CanonicalSpec._.CanonicalSpec" [label="CanonicalSpec\nSubstrate.Pipeline.Sequent.CanonicalSpec._"];
+  "Substrate.Pipeline.Sequent.SequentFixed._.SequentFixed" [label="SequentFixed\nSubstrate.Pipeline.Sequent.SequentFixed._"];
   "Substrate.Pipeline.Sequent.SequentRule.SequentRule" [label="SequentRule\nSubstrate.Pipeline.Sequent.SequentRule", style=rounded];
   "Substrate.Pipeline.Sequent.SequentType.SequentType" [label="SequentType\nSubstrate.Pipeline.Sequent.SequentType"];
   "Substrate.Pipeline.Sequent.Type.Sequent" [label="Sequent\nSubstrate.Pipeline.Sequent.Type"];
@@ -1014,8 +1014,12 @@ digraph reuse {
   "Substrate.Category.Cone.FieldFilling.FieldFilling" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Cone.WithMorphisms.ConeWithMorphisms" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.Cone.WithMorphisms.ConeWithMorphisms" -> "Substrate.Foundation.Nat.ℕ";
-  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer.NonSimplicityWitness" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
-  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer.NormalSubgroup" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
+  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NonSimplicityWitness" -> "Substrate.Foundation.Eq._≡_";
+  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NonSimplicityWitness" -> "Substrate.Groups.V4.Bijection.V₄";
+  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NormalSubgroup" -> "Substrate.Foundation.Eq._≡_";
+  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NormalSubgroup" -> "Substrate.Groups.V4.Bijection.V₄";
+  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NonSimplicityWitness" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
+  "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NormalSubgroup" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
   "Substrate.Category.ConjugationCoalgebra.WithCharacters.WithCharacters" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
   "Substrate.Category.CoxeterPermutationGroup.AdjacentTransposition" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.CoxeterPermutationGroup._.CoxeterAction" -> "Substrate.Foundation.Nat.ℕ";
@@ -1158,6 +1162,8 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.MatchingFamily._.MatchingFamily" -> "Substrate.Category.UniversalProperty.Presheaf.UPPresheaf";
   "Substrate.Category.UniversalProperty.MatchingFamily._.MatchingFamily" -> "Substrate.Category.UniversalProperty.UPArrow";
   "Substrate.Category.UniversalProperty.Morphism.UPMorphism" -> "Substrate.Category.UniversalProperty.UPArrow";
+  "Substrate.Category.UniversalProperty.Pretopology._.UPPretopology" -> "Substrate.Category.UniversalProperty.Coverage.UPCover";
+  "Substrate.Category.UniversalProperty.Pretopology._.UPPretopology" -> "Substrate.Category.UniversalProperty.UPArrow";
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.QuotientProduct.QuotientProduct" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.Sieve.Sieve" -> "Substrate.Category.UniversalProperty.UPArrow";

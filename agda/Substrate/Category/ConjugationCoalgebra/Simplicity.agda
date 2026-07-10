@@ -99,14 +99,20 @@ module Recognizer
   -- subgroup.  Mirrors S₄-NormalSubgroup, but generic over K.
   ----------------------------------------------------------------------
 
-  record NormalSubgroup : Set₁ where
-    field
-      member      : G → Set
-      member-resp : {a b : G} → a ≈ b → member a → member b
-      member-ε    : member ε
-      member-·    : {a b : G} → member a → member b → member (a · b)
-      member-⁻¹   : {a : G} → member a → member (a ⁻¹)
-      member-conj : (g : G) {h : G} → member h → member ((g · h) · (g ⁻¹))
+  -- ⟡set1-paydown: `member : G → Set` is the sole Set-valued field (the Set₁
+  -- source); lift it to a module parameter (the S₄-Subgroup pattern) so
+  -- NormalSubgroup lands in Set.  Use sites write `NormalSubgroup member`; the
+  -- other fields still project (member-resp / member-conj / …).  The remaining
+  -- ∀-over-member lives only in `IsSimple`, the (irreducibly Set₁) universal
+  -- property — its content, not a record.
+  module _ (member : G → Set) where
+    record NormalSubgroup : Set where
+      field
+        member-resp : {a b : G} → a ≈ b → member a → member b
+        member-ε    : member ε
+        member-·    : {a b : G} → member a → member b → member (a · b)
+        member-⁻¹   : {a : G} → member a → member (a ⁻¹)
+        member-conj : (g : G) {h : G} → member h → member ((g · h) · (g ⁻¹))
 
   ----------------------------------------------------------------------
   -- Shadow 2.  The two endpoints of the normal-subgroup lattice and
@@ -114,22 +120,24 @@ module Recognizer
   -- the endpoints.
   ----------------------------------------------------------------------
 
-  IsTrivial : NormalSubgroup → Set
-  IsTrivial N = (a : G) → NormalSubgroup.member N a → a ≈ ε
+  -- ⟡set1-paydown: `member` threads as an implicit param (inferred from N).
+  IsTrivial : {member : G → Set} → NormalSubgroup member → Set
+  IsTrivial {member} N = (a : G) → member a → a ≈ ε
 
-  IsWhole : NormalSubgroup → Set
-  IsWhole N = (a : G) → NormalSubgroup.member N a
+  IsWhole : {member : G → Set} → NormalSubgroup member → Set
+  IsWhole {member} N = (a : G) → member a
 
+  -- IsSimple is the universal property — a ∀ over the member-family, so it is
+  -- irreducibly Set₁ (that ∀ is its content; it is a def, not a target record).
   IsSimple : Set₁
-  IsSimple = (N : NormalSubgroup) → IsTrivial N ⊎ IsWhole N
+  IsSimple = {member : G → Set} (N : NormalSubgroup member) → IsTrivial N ⊎ IsWhole N
 
   -- The whole group is always a normal subgroup (top of the lattice).
   -- (The bottom, {e}, needs the group identity/cong laws the coalgebra
   -- record does not expose, so it is supplied per instance.)
-  whole-NS : NormalSubgroup
+  whole-NS : NormalSubgroup (λ _ → ⊤)
   whole-NS = record
-    { member      = λ _ → ⊤
-    ; member-resp = λ _ _ → tt
+    { member-resp = λ _ _ → tt
     ; member-ε    = tt
     ; member-·    = λ _ _ → tt
     ; member-⁻¹   = λ _ → tt
@@ -145,9 +153,9 @@ module Recognizer
   ----------------------------------------------------------------------
 
   refute-simple :
-    (N  : NormalSubgroup) →
-    (a₀ : G) → NormalSubgroup.member N a₀ → (a₀ ≈ ε → ⊥) →  -- nontrivial
-    (b₀ : G) → (NormalSubgroup.member N b₀ → ⊥) →            -- proper
+    {member : G → Set} (N : NormalSubgroup member) →
+    (a₀ : G) → member a₀ → (a₀ ≈ ε → ⊥) →  -- nontrivial
+    (b₀ : G) → (member b₀ → ⊥) →            -- proper
     IsSimple → ⊥
   refute-simple N a₀ a₀∈ a₀≉ε b₀ b₀∉ simple with simple N
   ... | inj₁ triv  = a₀≉ε (triv a₀ a₀∈)
@@ -172,17 +180,21 @@ module Recognizer
   --   ¬ NonSimplicityWitness → IsSimple     needs decidability.
   ----------------------------------------------------------------------
 
-  record NonSimplicityWitness : Set₁ where
-    field
-      N         : NormalSubgroup
-      wit-ntriv : G
-      ntriv-∈   : NormalSubgroup.member N wit-ntriv
-      ntriv-≉ε  : wit-ntriv ≈ ε → ⊥
-      wit-prop  : G
-      prop-∉    : NormalSubgroup.member N wit-prop → ⊥
+  -- ⟡set1-paydown: the witness's `member` predicate becomes a module parameter
+  -- too — the record lands in Set; the existential over member is carried by
+  -- the caller's implicit argument (`NonSimplicityWitness member`).
+  module _ (member : G → Set) where
+    record NonSimplicityWitness : Set where
+      field
+        N         : NormalSubgroup member
+        wit-ntriv : G
+        ntriv-∈   : member wit-ntriv
+        ntriv-≉ε  : wit-ntriv ≈ ε → ⊥
+        wit-prop  : G
+        prop-∉    : member wit-prop → ⊥
 
   -- A witness refutes simplicity (refute-simple, repackaged).  PROVEN.
-  witness→¬simple : NonSimplicityWitness → IsSimple → ⊥
+  witness→¬simple : {member : G → Set} → NonSimplicityWitness member → IsSimple → ⊥
   witness→¬simple
     record { N = N ; wit-ntriv = a₀ ; ntriv-∈ = a₀∈ ; ntriv-≉ε = a₀≉ε
            ; wit-prop = b₀ ; prop-∉ = b₀∉ }
@@ -192,7 +204,7 @@ module Recognizer
   -- half of "uninhabited iff simple".  PROVEN.  (The OTHER half,
   -- ¬NonSimplicityWitness → IsSimple, is the decidable-trace bridge and
   -- is deliberately NOT claimed here.)
-  simple→¬witness : IsSimple → NonSimplicityWitness → ⊥
+  simple→¬witness : {member : G → Set} → IsSimple → NonSimplicityWitness member → ⊥
   simple→¬witness s w = witness→¬simple w s
 
   ----------------------------------------------------------------------
@@ -216,21 +228,21 @@ module Recognizer
   -- next shadow — `Finite`, not yet built).
   ----------------------------------------------------------------------
 
-  proper : NormalSubgroup → Set
-  proper N = ∃[ b ] (NormalSubgroup.member N b → ⊥)
+  proper : {member : G → Set} → NormalSubgroup member → Set
+  proper {member} N = ∃[ b ] (member b → ⊥)
 
   module Decidable
-    (dec-proper : (N : NormalSubgroup) → Dec (proper N))
+    (dec-proper : {member : G → Set} (N : NormalSubgroup member) → Dec (proper N))
     (≈ε-stable  : (a : G) → ((a ≈ ε → ⊥) → ⊥) → a ≈ ε)
-    (mem-stable : (N : NormalSubgroup) (b : G)
-                → ((NormalSubgroup.member N b → ⊥) → ⊥)
-                → NormalSubgroup.member N b)
+    (mem-stable : {member : G → Set} (N : NormalSubgroup member) (b : G)
+                → ((member b → ⊥) → ⊥)
+                → member b)
     where
 
     -- The blocked converse, now PROVEN under the scoped hypotheses.
     -- Together with `simple→¬witness` this gives, in scope, the full
     -- equivalence  IsSimple ⟺ (NonSimplicityWitness → ⊥).
-    ¬witness→simple : (NonSimplicityWitness → ⊥) → IsSimple
+    ¬witness→simple : ({member : G → Set} → NonSimplicityWitness member → ⊥) → IsSimple
     ¬witness→simple no-wit N with dec-proper N
     ... | yes (b , b∉) =
           inj₁ (λ a a∈ → ≈ε-stable a (λ a≉ε →
@@ -246,9 +258,9 @@ module Recognizer
   -- bridge — the classical knob, with the over-assumption made explicit.
   module Classical (lem : (P : Set) → Dec P) where
     open Decidable
-      (λ N   → lem (proper N))
-      (λ a   → from-¬¬ (lem (a ≈ ε)))
-      (λ N b → from-¬¬ (lem (NormalSubgroup.member N b)))
+      (λ N           → lem (proper N))
+      (λ a           → from-¬¬ (lem (a ≈ ε)))
+      (λ {member} N b → from-¬¬ (lem (member b)))
       public
 
   ----------------------------------------------------------------------
@@ -271,9 +283,9 @@ module Recognizer
     where
 
     saturated :
-      (N : NormalSubgroup) (c : Class) →
-      NormalSubgroup.member N (rep c) →
-      (h : G) → in-class c h → NormalSubgroup.member N h
+      {member : G → Set} (N : NormalSubgroup member) (c : Class) →
+      member (rep c) →
+      (h : G) → in-class c h → member h
     saturated N c rep∈ h h∈c with orbit c h h∈c
     ... | (g , conj≈h) =
       NormalSubgroup.member-resp N conj≈h
@@ -304,15 +316,15 @@ module Recognizer
       (Class↔Fin  : Class ↔ Fin k)
       (cover      : (b : G) → ∃[ c ] in-class c b)
       (dec-≈ε     : (a : G) → Dec (a ≈ ε))
-      (dec-member : (N : NormalSubgroup) (b : G)
-                  → Dec (NormalSubgroup.member N b))
+      (dec-member : {member : G → Set} (N : NormalSubgroup member) (b : G)
+                  → Dec (member b))
       where
 
       open _↔_ Class↔Fin using (to; from; from-to)
 
-      dec-proper : (N : NormalSubgroup) → Dec (proper N)
-      dec-proper N
-        with Fin-∃? (λ i → NormalSubgroup.member N (rep (from i)) → ⊥)
+      dec-proper : {member : G → Set} (N : NormalSubgroup member) → Dec (proper N)
+      dec-proper {member} N
+        with Fin-∃? (λ i → member (rep (from i)) → ⊥)
                     (λ i → dec-¬ (dec-member N (rep (from i))))
       ... | yes (i , ¬m) = yes (rep (from i) , ¬m)
       ... | no  h        = no prf
@@ -322,15 +334,15 @@ module Recognizer
           ... | (c , b∈c) with dec-member N (rep c)
           ...   | yes m = b∉ (saturated N c m b b∈c)
           ...   | no ¬m =
-                  h (to c , subst (λ x → NormalSubgroup.member N (rep x) → ⊥)
+                  h (to c , subst (λ x → member (rep x) → ⊥)
                                   (sym (from-to c)) ¬m)
 
       ≈ε-stable : (a : G) → ((a ≈ ε → ⊥) → ⊥) → a ≈ ε
       ≈ε-stable a = from-¬¬ (dec-≈ε a)
 
-      mem-stable : (N : NormalSubgroup) (b : G)
-                 → ((NormalSubgroup.member N b → ⊥) → ⊥)
-                 → NormalSubgroup.member N b
+      mem-stable : {member : G → Set} (N : NormalSubgroup member) (b : G)
+                 → ((member b → ⊥) → ⊥)
+                 → member b
       mem-stable N b = from-¬¬ (dec-member N b)
 
       -- The converse, now fully CONSTRUCTIVE (no LEM, no postulate).

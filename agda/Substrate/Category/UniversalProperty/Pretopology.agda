@@ -19,13 +19,19 @@ open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 -- 1. Pretopology record.
 ------------------------------------------------------------------------
 
-record UPPretopology : Set₃ where
-  field
-    designated : (U : UPArrow) → UPCover U → Set
-    -- The three Grothendieck axioms, signature-bearing.
-    identity-axiom-stated     : Set
-    stability-axiom-stated    : Set
-    transitivity-axiom-stated : Set
+-- ⟡set1-paydown: every field is Set-valued — the `designated : … → Set`
+-- family AND the three bare `_-axiom-stated : Set` placeholders (each a
+-- carrier-shaped `: Set` field).  Lifting all four to module parameters lands
+-- UPPretopology in Set (was Set₃); the record names the shape via its
+-- parameters (nothing constructs or quantifies over it — the sole consumer,
+-- Phase2, only re-exports the name).
+module _
+  (designated : (U : UPArrow) → UPCover U → Set)
+  (identity-axiom-stated     : Set)
+  (stability-axiom-stated    : Set)
+  (transitivity-axiom-stated : Set)
+  where
+  record UPPretopology : Set where
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP15.

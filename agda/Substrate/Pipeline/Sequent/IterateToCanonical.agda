@@ -15,10 +15,13 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
 
+-- ⟡set1-paydown: cascades from CanonicalSpec — the canonical predicate is now the
+-- explicit family `Canonical` (was `CanonicalSpec.Canonical spec`), so `spec` reads
+-- `CanonicalSpec A Canonical` and `decide` returns `Maybe (Canonical a)`.
 iterate-to-canonical
-  : ∀ {A : Set}
-  → (spec : CanonicalSpec A)
-  → (decide : (a : A) → Maybe (CanonicalSpec.Canonical spec a))
+  : ∀ {A : Set} {Canonical : A → Set}
+  → (spec : CanonicalSpec A Canonical)
+  → (decide : (a : A) → Maybe (Canonical a))
   → (derivation : A → A)
   → ℕ
   → A → Maybe A

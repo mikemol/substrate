@@ -6581,6 +6581,7 @@ digraph imports {
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Negation";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Product";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Sum";
+  "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Unit";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Groups.V4.Operations";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Algebra.Bijection";
@@ -11654,7 +11655,6 @@ digraph imports {
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Brick.Type";
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Brick.Unit";
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Brick.Witnessing";
-  "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Sequent.CanonicalSpec";
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Sequent.IterateToCanonical";
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Sequent.SequentFixed";
   "Substrate.Pipeline.Sequent.FixedPointSequentToBrick" -> "Substrate.Pipeline.Sequent.SequentRule";
