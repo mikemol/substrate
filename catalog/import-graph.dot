@@ -1721,6 +1721,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.Factoradic" [label="Wedge.Factoradic"];
   "Substrate.WitnessTower.Wedge.Graded" [label="Wedge.Graded"];
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" [label="Wedge.OrientationFixedPoint"];
+  "Substrate.WitnessTower.Wedge.OrientationProduct" [label="Wedge.OrientationProduct"];
   "Substrate.WitnessTower.Wedge.OrientationSum" [label="Wedge.OrientationSum"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
   "Substrate.WitnessTower.Wedge.Simplicial" [label="Wedge.Simplicial"];
@@ -12726,6 +12727,13 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.WitnessTower.IsPermutation";
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.WitnessTower.Wedge.Graded";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Fin.Combine";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Fin.RemQuot";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.Wedge.OrientationProduct" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Wedge.OrientationSum" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationSum" -> "Substrate.Foundation.Fin.Inject";
   "Substrate.WitnessTower.Wedge.OrientationSum" -> "Substrate.Foundation.Nat";
