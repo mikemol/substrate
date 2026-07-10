@@ -11,7 +11,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/AbelianGroup#AbelianGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Bijection#_↔_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/CayleyDickson#Prod</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/ExpLogCodec#ExpLogCodec</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F1/GL#GL-F₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Code#ImageCode</loc><priority>0.01</priority></url>
@@ -38,7 +38,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Field#Field</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2/AsChainDecomp#GL3F2ChainShape</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2#GL3F2</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GroupAction#Actionᴳ</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/IsomorphicCocycle#IsomorphicCocycleStructureᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Magma#Magma</loc><priority>0.01</priority></url>
@@ -414,7 +414,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²-Morphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Backed#BackedUP</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Category#UPCategory</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Covers</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Obs</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalLawvereCarrier#Reflexive</loc><priority>0.0</priority></url>
@@ -826,4 +826,5 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40NoIso#A4Z2≅SymV4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/SymBridge#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/Action#StepWedge</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.0</priority></url>
 </urlset>
