@@ -33,7 +33,7 @@ module Substrate.Algebra.Wedge.Iso where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Algebra.Wedge using (DivStr; C)
+open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.Correspondence using (_⊚_; Correspondence)
 
@@ -41,13 +41,13 @@ open import Substrate.Algebra.Wedge.Correspondence using (_⊚_; Correspondence)
 -- 1. A correspondence is an iso: codomain inverse to domain.
 ------------------------------------------------------------------------
 
-record WedgeIso (A B : DivStr) : Set where
+record WedgeIso {CA CB : Set} (A : DivStr CA) (B : DivStr CB) : Set where
   field
     fwd     : Bridge A B
     bwd     : Bridge B A
     -- the round-trips = the wedge's identity corner (1, z), both ways:
-    bwd∘fwd : (x : C A) → translate bwd (translate fwd x) ≡ x
-    fwd∘bwd : (y : C B) → translate fwd (translate bwd y) ≡ y
+    bwd∘fwd : (x : CA) → translate bwd (translate fwd x) ≡ x
+    fwd∘bwd : (y : CB) → translate fwd (translate bwd y) ≡ y
 
 open WedgeIso public
 
@@ -55,17 +55,17 @@ open WedgeIso public
 -- 2. The groupoid: identity, inverse (the braiding), composition.
 ------------------------------------------------------------------------
 
-iso-id : (D : DivStr) → WedgeIso D D
+iso-id : {C : Set} (D : DivStr C) → WedgeIso D D
 iso-id D = record
   { fwd = id-bridge D ; bwd = id-bridge D
   ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
 
-iso-sym : {A B : DivStr} → WedgeIso A B → WedgeIso B A
+iso-sym : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → WedgeIso B A
 iso-sym c = record
   { fwd = bwd c ; bwd = fwd c
   ; bwd∘fwd = fwd∘bwd c ; fwd∘bwd = bwd∘fwd c }
 
-iso-∘ : {A B C : DivStr} → WedgeIso B C → WedgeIso A B → WedgeIso A C
+iso-∘ : {CA CB CC : Set} {A : DivStr CA} {B : DivStr CB} {C : DivStr CC} → WedgeIso B C → WedgeIso A B → WedgeIso A C
 iso-∘ g f = record
   { fwd = fwd g ⊚ fwd f
   ; bwd = bwd f ⊚ bwd g
@@ -81,5 +81,5 @@ iso-∘ g f = record
 -- 3. Forget the inverse laws to the bare correspondence.
 ------------------------------------------------------------------------
 
-toCorrespondence : {A B : DivStr} → WedgeIso A B → Correspondence A B
+toCorrespondence : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → Correspondence A B
 toCorrespondence c = fwd c , bwd c

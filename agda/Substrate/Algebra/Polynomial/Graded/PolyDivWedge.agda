@@ -57,8 +57,8 @@ module Over {A : Set} (CR : CommutativeRing A) where
   recon-poly (n , qv) (_ , bv) (_ , rv) =
     n , buildPoly n (λ k → convCoeff qv bv k + nth rv k)
 
-  Poly-div : DivStr
-  Poly-div = record { C = QPolyR ; z = zero-qR ; recon = recon-poly }
+  Poly-div : DivStr QPolyR
+  Poly-div = record { z = zero-qR ; recon = recon-poly }
 
   divisor-q : (d : ℕ) (f-lo : Vec A (suc d)) → QPolyR
   divisor-q d f-lo = suc (suc d) , Div.Over.b-poly CR d f-lo

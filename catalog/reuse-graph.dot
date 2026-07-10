@@ -974,6 +974,7 @@ digraph reuse {
   "Substrate.Algebra.Wedge.Product.Term.WedgeTerm" -> "Substrate.Algebra.Wedge.Product._.GradedProduct";
   "Substrate.Algebra.Wedge.Product.Term.WedgeTerm" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Wedge.Product._.GradedProduct" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Wedge.Shape.Register._∈ᴿ_" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Wedge.StarV4._.StarDivStr" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Trace" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Wedge" -> "Substrate.Algebra.Wedge.DivStr";

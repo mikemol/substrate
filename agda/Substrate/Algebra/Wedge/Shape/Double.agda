@@ -30,7 +30,7 @@
 module Substrate.Algebra.Wedge.Shape.Double where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
+open import Substrate.Algebra.Wedge using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Shape using (Corresponds)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; transport-trace)
 open import Substrate.Algebra.Wedge.Shape.Transport using (shape-transport; mapL)
@@ -39,20 +39,20 @@ open import Substrate.Algebra.Wedge.Shape.Transport using (shape-transport; mapL
 -- 1. Vertical: the correspondence groupoid (shape-equality, same carrier).
 ------------------------------------------------------------------------
 
-Corr : {D : DivStr} {a₁ b₁ g₁ a₂ b₂ g₂ : C D} →
+Corr : {C : Set} {D : DivStr C} {a₁ b₁ g₁ a₂ b₂ g₂ : C} →
        Trace D a₁ b₁ g₁ → Trace D a₂ b₂ g₂ → Set
 Corr = Corresponds
 
-corr-id : {D : DivStr} {a b g : C D} (t : Trace D a b g) → Corr t t
+corr-id : {C : Set} {D : DivStr C} {a b g : C} (t : Trace D a b g) → Corr t t
 corr-id _ = refl
 
-corr-sym : {D : DivStr} {a₁ b₁ g₁ a₂ b₂ g₂ : C D}
+corr-sym : {C : Set} {D : DivStr C} {a₁ b₁ g₁ a₂ b₂ g₂ : C}
            {t₁ : Trace D a₁ b₁ g₁} {t₂ : Trace D a₂ b₂ g₂} →
            Corr t₁ t₂ → Corr t₂ t₁
 corr-sym = sym
 
-corr-∘ : {D : DivStr}
-         {a₁ b₁ g₁ a₂ b₂ g₂ a₃ b₃ g₃ : C D}
+corr-∘ : {C : Set} {D : DivStr C}
+         {a₁ b₁ g₁ a₂ b₂ g₂ a₃ b₃ g₃ : C}
          {t₁ : Trace D a₁ b₁ g₁} {t₂ : Trace D a₂ b₂ g₂} {t₃ : Trace D a₃ b₃ g₃} →
          Corr t₂ t₃ → Corr t₁ t₂ → Corr t₁ t₃
 corr-∘ q p = trans p q
@@ -68,8 +68,8 @@ corr-∘ q p = trans p q
 --   br·t₁ ──corr──── br·t₂
 ------------------------------------------------------------------------
 
-square : {D D′ : DivStr} (br : Bridge D D′)
-         {a₁ b₁ g₁ a₂ b₂ g₂ : C D}
+square : {C C′ : Set} {D : DivStr C} {D′ : DivStr C′} (br : Bridge D D′)
+         {a₁ b₁ g₁ a₂ b₂ g₂ : C}
          (t₁ : Trace D a₁ b₁ g₁) (t₂ : Trace D a₂ b₂ g₂) →
          Corr t₁ t₂ → Corr (transport-trace br t₁) (transport-trace br t₂)
 square br t₁ t₂ c =

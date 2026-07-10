@@ -29,7 +29,10 @@ import Substrate.Algebra.Wedge.TraceNuColimit as Kν
 -- is an EXACT iso (both directions); the ν-frame is the greatest-fixed-point UP (up-to).
 -- The asymmetry is in the field types: μ has fwd+bwd, ν has only the UP.
 ------------------------------------------------------------------------
-record TwoFraming (D : DivStr) : Set₁ where
+-- Set₁ RETAINED (not the DivStr carrier): the fields μ-A, μ-B, ν-carrier are `Fam (Idx D)`
+-- and `Fam : Set → Set₁`, so the record fields live in Set₁ for the Fam reason, independent
+-- of the carrier paydown. Parameterizing the carrier does not demote it.
+record TwoFraming {C : Set} (D : DivStr C) : Set₁ where
   field
     -- the μ level (finite/halting, ≡-frame): two framings, iso ON THE NOSE.
     μ-A μ-B      : Fam (Idx D)
@@ -47,7 +50,7 @@ open TwoFraming public
 -- the Kleene Limit's greatest-fixed-point UP (162). This IS the third stencil instance,
 -- now a datum.
 ------------------------------------------------------------------------
-fixpoint-framing : (D : DivStr) → TwoFraming D
+fixpoint-framing : {C : Set} (D : DivStr C) → TwoFraming D
 fixpoint-framing D = record
   { μ-A          = TraceF D           -- algebraic μ (initial Φ-algebra)
   ; μ-B          = Kμ.Colim D         -- Kleene μ (⋃ₙ Φⁿ⊥)

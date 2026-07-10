@@ -21,7 +21,7 @@
 module Substrate.Algebra.R.Trace.SKIAllegoryFixpoints where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; Trace; done; more; trace-fold; trace-fold-unique)
+open import Substrate.Algebra.Wedge using (DivStr; z; Trace; done; more; trace-fold; trace-fold-unique)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Bisim using (_~_; ~-refl)
 open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)

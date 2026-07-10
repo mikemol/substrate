@@ -106,10 +106,10 @@ module Local (p′ e′ : ℕ) where
   -- per-instance Numeral/Graded, "same proposition two grades, NOT collapsed").
   ------------------------------------------------------------------------
 
-  ℤpe-div : DivStr
-  ℤpe-div = record { C = ℕ ; z = 0 ; recon = λ _ _ r → r }
+  ℤpe-div : DivStr ℕ
+  ℤpe-div = record { z = 0 ; recon = λ _ _ r → r }
 
-  ℤpe-mul : MulDivStr
+  ℤpe-mul : MulDivStr ℕ
   ℤpe-mul = record { base = ℤpe-div ; mul = λ a b → (a * b) mod-suc (pe ∸ 1) }
 
   local-mix : CrossMix ℤpe-div ℤpe-div ℤpe-mul

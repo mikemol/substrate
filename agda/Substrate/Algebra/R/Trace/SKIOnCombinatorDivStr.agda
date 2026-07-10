@@ -18,7 +18,7 @@ module Substrate.Algebra.R.Trace.SKIOnCombinatorDivStr where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; Trace; done; more; quot)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more; quot)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 import Substrate.Algebra.Wedge.CombinatorDivStr as CDS
 

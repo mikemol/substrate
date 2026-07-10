@@ -26,7 +26,7 @@ module Substrate.Category.UniversalProperty.NuBacked where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Nat using (_<_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; quot; rem; wedge-eq; recon; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; quot; rem; wedge-eq; recon; ℕ-div)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)

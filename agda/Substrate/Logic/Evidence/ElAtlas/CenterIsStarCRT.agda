@@ -34,10 +34,10 @@ open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
 -- R = ℤ/6 = ℤ/2 × ℤ/3 as a MulDivStr (carrier ℕ, product mod 6); CRT idempotents.
 ------------------------------------------------------------------------
 
-ℤ6-div : DivStr
-ℤ6-div = record { C = ℕ ; z = 0 ; recon = λ _ _ r → r }
+ℤ6-div : DivStr ℕ
+ℤ6-div = record { z = 0 ; recon = λ _ _ r → r }
 
-ℤ6-mul : MulDivStr
+ℤ6-mul : MulDivStr ℕ
 ℤ6-mul = record { base = ℤ6-div ; mul = λ a b → (a * b) mod-suc 5 }
 
 e₁ e₂ : ℕ

@@ -28,7 +28,7 @@ open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
 open import Substrate.Foundation.Eq   using (_≡_; refl; cong; trans)
 
-open import Substrate.Algebra.Wedge       using (DivStr; C; Trace)
+open import Substrate.Algebra.Wedge       using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 
 ------------------------------------------------------------------------
@@ -60,5 +60,5 @@ list-parity-++ (x ∷ xs) ys =
 -- `list-parity` of the trace word that `shape` produces.
 ------------------------------------------------------------------------
 
-cf-shape-parity : {D : DivStr} {a b g : C D} → Trace D a b g → Bool
+cf-shape-parity : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → Bool
 cf-shape-parity t = list-parity (shape t)

@@ -33,5 +33,5 @@ lrepeat (suc n) b = b ++ lrepeat n b
 -- coordinate ([[feedback_coordinate_to_geometry]]); here it is the GRADE (length)
 -- of the quotient word — the count-as-grade reading, in plain-DivStr form. (The
 -- genuinely graded home of the free monoid is `vec-graded`/the GradedProduct.)
-List-div : Set → DivStr
-List-div A = record { C = List A ; z = [] ; recon = λ q b r → lrepeat (length q) b ++ r }
+List-div : (A : Set) → DivStr (List A)
+List-div A = record { z = [] ; recon = λ q b r → lrepeat (length q) b ++ r }

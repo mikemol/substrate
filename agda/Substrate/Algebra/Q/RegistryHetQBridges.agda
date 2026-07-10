@@ -72,11 +72,11 @@ hetq-bridges-in-registry = hetq-embA-is-id , hetq-embB-is-include
 
 -- the HetQ denominator leg as a standalone Registry BridgeEntry.
 hetq-denom-entry : BridgeEntry
-hetq-denom-entry = ℕ-div , ℤ-div , embB ℚ-crossmix
+hetq-denom-entry = _ , ℕ-div , _ , ℤ-div , embB ℚ-crossmix
 
 -- the Registry's own ℕ↪ℤ entry (the inclusion bridge it registers).
 registry-ℕℤ-entry : BridgeEntry
-registry-ℕℤ-entry = ℕ-div , ℤ-div , include-ℕℤ
+registry-ℕℤ-entry = _ , ℕ-div , _ , ℤ-div , include-ℕℤ
 
 -- they are the SAME BridgeEntry — the cospan leg is a Registry entry, not new.
 hetq-cospan-is-registry-entry : hetq-denom-entry ≡ registry-ℕℤ-entry

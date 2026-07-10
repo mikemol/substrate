@@ -37,7 +37,7 @@ module Substrate.Algebra.Wedge.Shape where
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Wedge using (DivStr; C; quot; Trace; done; more; ℕ-div; fromEEATrace)
+open import Substrate.Algebra.Wedge using (DivStr; quot; Trace; done; more; ℕ-div; fromEEATrace)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 
 ------------------------------------------------------------------------
@@ -47,14 +47,14 @@ open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 -- the sequence of quotient representatives = the continued fraction. The
 -- positional fill (b, the witnesses) is gone; the quotients are retained as
 -- carrier elements `C D`.
-WedgeShape : DivStr → Set
-WedgeShape D = List (C D)
+WedgeShape : {C : Set} → DivStr C → Set
+WedgeShape {C} D = List C
 
 ------------------------------------------------------------------------
 -- 2. The projection: any trace over a carrier D ↦ its quotient sequence.
 ------------------------------------------------------------------------
 
-shape : {D : DivStr} {a b g : C D} → Trace D a b g → WedgeShape D
+shape : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → WedgeShape D
 shape (done _)      = []
 shape (more _ w tr) = quot w ∷ shape tr
 
@@ -63,12 +63,12 @@ shape (more _ w tr) = quot w ∷ shape tr
 --    carrier D, two runs correspond when their quotient sequences agree.
 ------------------------------------------------------------------------
 
-Corresponds : {D : DivStr} {a₁ b₁ g₁ : C D} {a₂ b₂ g₂ : C D} →
+Corresponds : {C : Set} {D : DivStr C} {a₁ b₁ g₁ : C} {a₂ b₂ g₂ : C} →
               Trace D a₁ b₁ g₁ → Trace D a₂ b₂ g₂ → Set
 Corresponds t₁ t₂ = shape t₁ ≡ shape t₂
 
 -- a trace corresponds to itself: reflexivity of the carrier-free reading.
-self-corresponds : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
+self-corresponds : {C : Set} {D : DivStr C} {a b g : C} (t : Trace D a b g) →
                    Corresponds t t
 self-corresponds _ = refl
 

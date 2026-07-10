@@ -44,10 +44,10 @@ mul3 sq 𝟘  = 𝟘
 mul3 sq η  = 𝟘
 mul3 sq sq = 𝟘
 
-three-div : DivStr
-three-div = record { C = Three ; z = 𝟘 ; recon = λ _ _ r → r }
+three-div : DivStr Three
+three-div = record { z = 𝟘 ; recon = λ _ _ r → r }
 
-three-mul : MulDivStr
+three-mul : MulDivStr Three
 three-mul = record { base = three-div ; mul = mul3 }
 
 ------------------------------------------------------------------------

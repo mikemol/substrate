@@ -32,7 +32,7 @@ addCap k x y with (x + y) <? suc k
 ... | no  _ = 0              -- reached/passed the cap: collapse (the nilpotent)
 
 -- the truncated carrier Rₖ as a MulDivStr (base ℕ-div, z = 0).
-Rk : ℕ → MulDivStr
+Rk : ℕ → MulDivStr ℕ
 Rk k = record { base = ℕ-div ; mul = addCap k }
 
 -- the generator: one unit of shift.

@@ -19,7 +19,7 @@ module Substrate.Algebra.Wedge.NuAbstractLimitInstance where
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _*_; _+_)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; quot; rem; wedge-eq; recon; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; wedge-eq; recon; ℕ-div)
 open import Substrate.Algebra.Wedge.Certified using (CertifiedWedge; wedge; small; idℕ)
 open import Substrate.Algebra.Wedge.BoundedIso using (recon-bounded-unique)
 

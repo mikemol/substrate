@@ -36,7 +36,7 @@ open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν
 
-module _ (D : DivStr) where
+module _ {C : Set} (D : DivStr C) where
 
   ------------------------------------------------------------------------
   -- ① THE ≡-FRAME HINGE (the μ level, EXACT): the ALGEBRAIC framing's μ (Trace = initial

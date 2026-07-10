@@ -32,15 +32,15 @@ module Substrate.Algebra.Wedge.Bridge where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; quot; rem; wedge-eq; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
 ------------------------------------------------------------------------
 -- 1. The bridge: a structure-respecting translation between silos.
 ------------------------------------------------------------------------
 
-record Bridge (D₁ D₂ : DivStr) : Set where
+record Bridge {C₁ C₂ : Set} (D₁ : DivStr C₁) (D₂ : DivStr C₂) : Set where
   field
-    translate : C D₁ → C D₂
-    respects  : (q b r : C D₁) →        -- the quotient q is a carrier element, so translate maps it too
+    translate : C₁ → C₂
+    respects  : (q b r : C₁) →        -- the quotient q is a carrier element, so translate maps it too
                 translate (recon D₁ q b r)
                   ≡ recon D₂ (translate q) (translate b) (translate r)
     z-pres    : translate (z D₁) ≡ z D₂
@@ -52,7 +52,7 @@ open Bridge public
 ------------------------------------------------------------------------
 
 -- a wedge in D₁ becomes a wedge in D₂ (quotient and remainder both translated).
-transport-wedge : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b : C D₁} →
+transport-wedge : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b : C₁} →
                   Wedge⟦478f66a6⟧ D₁ a b → Wedge⟦478f66a6⟧ D₂ (translate br a) (translate br b)
 transport-wedge br {a} {b} w = record
   { quot     = translate br (quot w)
@@ -64,7 +64,7 @@ transport-wedge br {a} {b} w = record
 -- a whole Euclidean trace becomes a trace in D₂ — so gcd / Bézout / mod
 -- (the trace-reads) all transport: a positive correspondence carries the
 -- number theory of one silo onto the other.
-transport-trace : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b g : C D₁} →
+transport-trace : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b g : C₁} →
                   Trace D₁ a b g →
                   Trace D₂ (translate br a) (translate br b) (translate br g)
 transport-trace br (done a) =
@@ -77,7 +77,7 @@ transport-trace br (more b w rec) =
 -- 3. Witness: the identity bridge (every silo corresponds to itself).
 ------------------------------------------------------------------------
 
-id-bridge : (D : DivStr) → Bridge D D
+id-bridge : {C : Set} (D : DivStr C) → Bridge D D
 id-bridge D = record
   { translate = λ x → x ; respects = λ q b r → refl ; z-pres = refl }
 
@@ -87,10 +87,10 @@ id-bridge D = record
 --    negative = some gap's remainder is provably ≠ z.
 ------------------------------------------------------------------------
 
-record LaxBridge (D₁ D₂ : DivStr) : Set where
+record LaxBridge {C₁ C₂ : Set} (D₁ : DivStr C₁) (D₂ : DivStr C₂) : Set where
   field
-    translate : C D₁ → C D₂
-    gap : (q b r : C D₁) →
+    translate : C₁ → C₂
+    gap : (q b r : C₁) →
           Wedge⟦478f66a6⟧ D₂ (translate (recon D₁ q b r))
                    (recon D₂ (translate q) (translate b) (translate r))
 

@@ -32,20 +32,20 @@
 module Substrate.Algebra.Wedge.Shape.Twist where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
+open import Substrate.Algebra.Wedge using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; transport-trace)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Transport using (shape-transport; mapL)
 
 -- companion: the bridge read FORWARD (the trace direction). The image's shape
 -- is the trace's shape relabelled through the bridge.
-companion : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b g : C D₁}
+companion : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b g : C₁}
             (t : Trace D₁ a b g) →
             mapL (translate br) (shape t) ≡ shape (transport-trace br t)
 companion br t = sym (shape-transport br t)
 
 -- conjoint: the bridge read BACKWARD (the twist; the Bézout direction).
-conjoint : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b g : C D₁}
+conjoint : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b g : C₁}
            (t : Trace D₁ a b g) →
            shape (transport-trace br t) ≡ mapL (translate br) (shape t)
 conjoint br t = shape-transport br t
@@ -56,6 +56,6 @@ sym-sym refl = refl
 
 -- THE TWIST: conjoint = the inversion of companion. One bridge, two readings,
 -- swapped by `sym` — companion (trace) ⟷ conjoint (Bézout).
-twist : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b g : C D₁}
+twist : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b g : C₁}
         (t : Trace D₁ a b g) → sym (companion br t) ≡ conjoint br t
 twist br t = sym-sym (shape-transport br t)

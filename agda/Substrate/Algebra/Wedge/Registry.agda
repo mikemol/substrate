@@ -51,14 +51,20 @@ open import Substrate.Algebra.Fin.Wedge.ModBridge using (modn-bridge)
 -- 1. Objects: the wedge-founded roots (vertices of the sphere).
 ------------------------------------------------------------------------
 
-objects : List DivStr
-objects = ℕ-div            -- the Euclidean carrier (continued fractions)
-        ∷ F₂-div           -- the field F₂ (parity = mod 2)
-        ∷ Cyc-div 2        -- the cyclic quotient Z/3 (general-n parity, mod n)
-        ∷ ℤ-div            -- the integers (signed Bézout's operand)
-        ∷ List-div ⊤       -- the free monoid (wedge's native carrier)
-        ∷ two-div          -- the square-zero / infinitesimal carrier
-        ∷ ⊤-div            -- the monoidal unit
+-- ⟡set1-paydown: an object now PACKAGES its carrier with its DivStr (Σ Set DivStr),
+-- since DivStr : Set → Set is a family, not a Set. The collection legitimately stays
+-- Set₁ (it enumerates carriers); the generic-not-materialized treatment is future work.
+Obj : Set₁
+Obj = Σ Set DivStr
+
+objects : List Obj
+objects = (_ , ℕ-div)      -- the Euclidean carrier (continued fractions)
+        ∷ (_ , F₂-div)     -- the field F₂ (parity = mod 2)
+        ∷ (_ , Cyc-div 2)  -- the cyclic quotient Z/3 (general-n parity, mod n)
+        ∷ (_ , ℤ-div)      -- the integers (signed Bézout's operand)
+        ∷ (_ , List-div ⊤) -- the free monoid (wedge's native carrier)
+        ∷ (_ , two-div)    -- the square-zero / infinitesimal carrier
+        ∷ (_ , ⊤-div)      -- the monoidal unit
         ∷ []
 
 ------------------------------------------------------------------------
@@ -67,17 +73,17 @@ objects = ℕ-div            -- the Euclidean carrier (continued fractions)
 ------------------------------------------------------------------------
 
 Morphism : Set₁
-Morphism = Σ DivStr (λ A → Σ DivStr (λ B → WedgeIso A B))
+Morphism = Σ Set (λ CA → Σ (DivStr CA) (λ A → Σ Set (λ CB → Σ (DivStr CB) (λ B → WedgeIso A B))))
 
 morphisms : List Morphism
-morphisms = (ℕ-div , ℕ-div , iso-id ℕ-div)
-          ∷ (F₂-div , F₂-div , iso-id F₂-div)
+morphisms = (_ , ℕ-div , _ , ℕ-div , iso-id ℕ-div)
+          ∷ (_ , F₂-div , _ , F₂-div , iso-id F₂-div)
           -- the left unitor: ⊤ ⊗ ℕ ≃ ℕ  (a structure map, non-identity)
-          ∷ (⊤-div ⊗ᴰ ℕ-div , ℕ-div , unitᴸ ℕ-div)
+          ∷ (_ , ⊤-div ⊗ᴰ ℕ-div , _ , ℕ-div , unitᴸ ℕ-div)
           -- the right unitor: F₂ ⊗ ⊤ ≃ F₂
-          ∷ (F₂-div ⊗ᴰ ⊤-div , F₂-div , unitᴿ F₂-div)
+          ∷ (_ , F₂-div ⊗ᴰ ⊤-div , _ , F₂-div , unitᴿ F₂-div)
           -- the associator: (ℕ⊗F₂)⊗ℤ ≃ ℕ⊗(F₂⊗ℤ)
-          ∷ ((ℕ-div ⊗ᴰ F₂-div) ⊗ᴰ ℤ-div , ℕ-div ⊗ᴰ (F₂-div ⊗ᴰ ℤ-div)
+          ∷ (_ , (ℕ-div ⊗ᴰ F₂-div) ⊗ᴰ ℤ-div , _ , ℕ-div ⊗ᴰ (F₂-div ⊗ᴰ ℤ-div)
              , assocᴰ ℕ-div F₂-div ℤ-div)
           ∷ []
 
@@ -88,12 +94,12 @@ morphisms = (ℕ-div , ℕ-div , iso-id ℕ-div)
 ------------------------------------------------------------------------
 
 BridgeEntry : Set₁
-BridgeEntry = Σ DivStr (λ A → Σ DivStr (λ B → Bridge A B))
+BridgeEntry = Σ Set (λ CA → Σ (DivStr CA) (λ A → Σ Set (λ CB → Σ (DivStr CB) (λ B → Bridge A B))))
 
 bridges : List BridgeEntry
-bridges = (ℕ-div , F₂-div , parity-bridge)        -- parity (mod 2): ℕ ↠ F₂
-        ∷ (ℕ-div , Cyc-div 2 , modn-bridge 2)     -- mod 3: ℕ ↠ Z/3 (general-n)
-        ∷ (ℕ-div , ℤ-div , include-ℕℤ)            -- inclusion: ℕ ↪ ℤ
+bridges = (_ , ℕ-div , _ , F₂-div , parity-bridge)        -- parity (mod 2): ℕ ↠ F₂
+        ∷ (_ , ℕ-div , _ , Cyc-div 2 , modn-bridge 2)     -- mod 3: ℕ ↠ Z/3 (general-n)
+        ∷ (_ , ℕ-div , _ , ℤ-div , include-ℕℤ)            -- inclusion: ℕ ↪ ℤ
         ∷ []
 
 ------------------------------------------------------------------------
@@ -101,13 +107,13 @@ bridges = (ℕ-div , F₂-div , parity-bridge)        -- parity (mod 2): ℕ ↠
 ------------------------------------------------------------------------
 
 -- every object has its identity correspondence (reflexivity).
-id-of : (D : DivStr) → Morphism
-id-of D = D , D , iso-id D
+id-of : {C : Set} (D : DivStr C) → Morphism
+id-of D = _ , D , _ , D , iso-id D
 
 -- the groupoid is closed under inversion: every iso's inverse is an iso.
 inverse-of : Morphism → Morphism
-inverse-of (A , B , c) = B , A , iso-sym c
+inverse-of (_ , A , _ , B , c) = _ , B , _ , A , iso-sym c
 
 -- every iso is, in particular, a bridge — the groupoid embeds in the category.
 forget-iso : Morphism → BridgeEntry
-forget-iso (A , B , c) = A , B , WedgeIso.fwd c
+forget-iso (_ , A , _ , B , c) = _ , A , _ , B , WedgeIso.fwd c

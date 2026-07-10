@@ -24,7 +24,7 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
 import Substrate.Algebra.Polynomial.Graded.Div as Div
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; Nilpotent; pow)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; embA; embB; cross; Coherent)
@@ -46,14 +46,13 @@ open Over d f-lo₀ using (gpow; gpow-hom)
 -- by the wedge machinery, and id-bridge's `respects` is refl, so any recon that
 -- typechecks serves — take the honest recon q b r = q *Q b +P r (q·b then +r).
 ------------------------------------------------------------------------
-Poly-DivStr : DivStr
+Poly-DivStr : DivStr (Poly (suc d))
 Poly-DivStr = record
-  { C = Poly (suc d)
-  ; z = 𝟎C
+  { z = 𝟎C
   ; recon = λ q b r → (q *Q b) +P r
   }
 
-Poly-Mul : MulDivStr
+Poly-Mul : MulDivStr (Poly (suc d))
 Poly-Mul = record { base = Poly-DivStr ; mul = _*Q_ }
 
 ------------------------------------------------------------------------

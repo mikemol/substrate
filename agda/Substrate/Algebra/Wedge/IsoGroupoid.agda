@@ -25,7 +25,7 @@
 module Substrate.Algebra.Wedge.IsoGroupoid where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Algebra.Wedge using (DivStr; C)
+open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (translate)
 open import Substrate.Algebra.Wedge.Iso
   using (WedgeIso; fwd; bwd; bwd∘fwd; fwd∘bwd; iso-id; iso-sym; iso-∘)
@@ -35,16 +35,16 @@ open import Substrate.Algebra.Wedge.Iso
 --    free — it IS the pointwise statement, never collapsed to a function ≡.)
 ------------------------------------------------------------------------
 
-_≈ʷ_ : {A B : DivStr} → WedgeIso A B → WedgeIso A B → Set
-_≈ʷ_ {A} c d = (x : C A) → translate (fwd c) x ≡ translate (fwd d) x
+_≈ʷ_ : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → WedgeIso A B → Set
+_≈ʷ_ {CA = CA} c d = (x : CA) → translate (fwd c) x ≡ translate (fwd d) x
 
-≈ʷ-refl : {A B : DivStr} (c : WedgeIso A B) → c ≈ʷ c
+≈ʷ-refl : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} (c : WedgeIso A B) → c ≈ʷ c
 ≈ʷ-refl c x = refl
 
-≈ʷ-sym : {A B : DivStr} {c d : WedgeIso A B} → c ≈ʷ d → d ≈ʷ c
+≈ʷ-sym : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} {c d : WedgeIso A B} → c ≈ʷ d → d ≈ʷ c
 ≈ʷ-sym e x = sym (e x)
 
-≈ʷ-trans : {A B : DivStr} {c d e : WedgeIso A B} → c ≈ʷ d → d ≈ʷ e → c ≈ʷ e
+≈ʷ-trans : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} {c d e : WedgeIso A B} → c ≈ʷ d → d ≈ʷ e → c ≈ʷ e
 ≈ʷ-trans p q x = trans (p x) (q x)
 
 ------------------------------------------------------------------------
@@ -52,13 +52,13 @@ _≈ʷ_ {A} c d = (x : C A) → translate (fwd c) x ≡ translate (fwd d) x
 --    id-bridge translate = id), so NO funext is needed.
 ------------------------------------------------------------------------
 
-≈ʷ-idˡ : {A B : DivStr} (f : WedgeIso A B) → iso-∘ (iso-id B) f ≈ʷ f
+≈ʷ-idˡ : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} (f : WedgeIso A B) → iso-∘ (iso-id B) f ≈ʷ f
 ≈ʷ-idˡ f x = refl
 
-≈ʷ-idʳ : {A B : DivStr} (f : WedgeIso A B) → iso-∘ f (iso-id A) ≈ʷ f
+≈ʷ-idʳ : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} (f : WedgeIso A B) → iso-∘ f (iso-id A) ≈ʷ f
 ≈ʷ-idʳ f x = refl
 
-≈ʷ-assoc : {A B M N : DivStr}
+≈ʷ-assoc : {CA CB CM CN : Set} {A : DivStr CA} {B : DivStr CB} {M : DivStr CM} {N : DivStr CN}
            (h : WedgeIso M N) (g : WedgeIso B M) (f : WedgeIso A B) →
            iso-∘ (iso-∘ h g) f ≈ʷ iso-∘ h (iso-∘ g f)
 ≈ʷ-assoc h g f x = refl
@@ -68,8 +68,8 @@ _≈ʷ_ {A} c d = (x : C A) → translate (fwd c) x ≡ translate (fwd d) x
 --    invertible up to ≈ʷ — inverse `iso-sym`, the round-trips ARE the witness.
 ------------------------------------------------------------------------
 
-≈ʷ-invˡ : {A B : DivStr} (c : WedgeIso A B) → iso-∘ (iso-sym c) c ≈ʷ iso-id A
+≈ʷ-invˡ : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} (c : WedgeIso A B) → iso-∘ (iso-sym c) c ≈ʷ iso-id A
 ≈ʷ-invˡ c x = bwd∘fwd c x
 
-≈ʷ-invʳ : {A B : DivStr} (c : WedgeIso A B) → iso-∘ c (iso-sym c) ≈ʷ iso-id B
+≈ʷ-invʳ : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} (c : WedgeIso A B) → iso-∘ c (iso-sym c) ≈ʷ iso-id B
 ≈ʷ-invʳ c y = fwd∘bwd c y

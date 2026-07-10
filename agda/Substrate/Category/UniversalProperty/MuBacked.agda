@@ -20,12 +20,12 @@ module Substrate.Category.UniversalProperty.MuBacked where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; rem; Trace; done; more; collapse; collapse-fold; collapse-fold≡collapse; trace-fold-unique) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more; collapse; collapse-fold; collapse-fold≡collapse; trace-fold-unique) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; solve; solves; content; backed-non-vacuous)
 
-module _ (D : DivStr) where
+module _ {C : Set} (D : DivStr C) where
 
   ------------------------------------------------------------------------
   -- ① THE μ FOLD-UP: the initial-algebra span. Source = a trace (a packaged
@@ -35,15 +35,15 @@ module _ (D : DivStr) where
   ------------------------------------------------------------------------
   -- a trace with its endpoints packaged (so Source is a plain Set).
   SomeTrace : Set
-  SomeTrace = Σ (C D) (λ a → Σ (C D) (λ b → Σ (C D) (λ g → Trace D a b g)))
+  SomeTrace = Σ C (λ a → Σ C (λ b → Σ C (λ g → Trace D a b g)))
 
-  the-trace : SomeTrace → Σ (C D) (λ a → Σ (C D) (λ b → C D))
+  the-trace : SomeTrace → Σ C (λ a → Σ C (λ b → C))
   the-trace (a , b , g , _) = a , b , g
 
   fold-UP : UPArrow
   fold-UP = record
     { Source  = SomeTrace
-    ; Target  = C D
+    ; Target  = C
     -- the value is the collapse-fold read of the trace (the gcd index g).
     ; Witness = λ st v → v ≡ collapse-fold (proj₂ (proj₂ (proj₂ st)))
     }
@@ -68,11 +68,11 @@ module _ (D : DivStr) where
   -- agreeing with the collapse algebra on done/more IS collapse-fold. This is ≡
   -- (NOT bisim) — the dual's nicer half, fitting the UP frame directly.
   mu-fold-unique :
-    (h : {a b g : C D} → Trace D a b g → C D)
-    (h-done : (a : C D) → h (done a) ≡ a)
-    (h-more : {a g : C D} (b : C D) (w : Wedge⟦478f66a6⟧ D a b) (tr : Trace D b (rem w) g) →
+    (h : {a b g : C} → Trace D a b g → C)
+    (h-done : (a : C) → h (done a) ≡ a)
+    (h-more : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) (tr : Trace D b (rem w) g) →
               h (more b w tr) ≡ h tr) →
-    {a b g : C D} (t : Trace D a b g) → h t ≡ collapse-fold t
+    {a b g : C} (t : Trace D a b g) → h t ≡ collapse-fold t
   mu-fold-unique h h-done h-more t =
     trace-fold-unique (λ a → a) (λ _ _ rec → rec) h h-done h-more t
 

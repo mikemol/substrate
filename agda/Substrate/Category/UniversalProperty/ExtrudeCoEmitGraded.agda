@@ -374,10 +374,9 @@ head zero-trace = 0
 tail zero-trace = zero-trace
 
 -- RealTrace as a DivStr (the common carrier of the CrossMix diagonal): z = the constant-0 trace, recon = cons the head.
-RealTrace-DivStr : DivStr
+RealTrace-DivStr : DivStr RealTrace
 RealTrace-DivStr = record
-  { C     = RealTrace
-  ; z     = zero-trace                       -- the terminal divisor: the period-1 zero trace (the collapse pole)
+  { z     = zero-trace                       -- the terminal divisor: the period-1 zero trace (the collapse pole)
   ; recon = λ q b r → cons (head b) r        -- recon: keep b's head digit, remainder r (the grade-raising shape)
   }
 
@@ -420,7 +419,7 @@ trace-mul : RealTrace → RealTrace → RealTrace
 head (trace-mul r s) = 0                          -- square-zero: the product's head collapses (the differential d)
 tail (trace-mul r s) = trace-mul (tail r) (tail s)  -- thread both tails through the subsequent constructor
 
-RealTrace-MulDivStr : MulDivStr
+RealTrace-MulDivStr : MulDivStr RealTrace
 RealTrace-MulDivStr = record { base = RealTrace-DivStr ; mul = trace-mul }
 
 -- the threading collapses to z (the zero-trace) — trace-mul r s ~ zero-trace (square-zero: every product is 0).
@@ -1765,7 +1764,7 @@ coemit-v4-square = coemit-v4-square-head
 open import Substrate.Algebra.Wedge.Iso using (WedgeIso; iso-sym)
 
 -- the dagger, canonically: IsoGroupoid's iso-sym on WedgeIso. (StarV4: "the groupoid's inverse iso-sym IS the †".)
-coemit-dagger-canonical : {A B : DivStr} → WedgeIso A B → WedgeIso B A
+coemit-dagger-canonical : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → WedgeIso B A
 coemit-dagger-canonical = iso-sym
 
 -- coemit's ~-groupoid inverse is the SAME dagger, at the trace carrier (the step-indexed totality, not pointwise).

@@ -32,7 +32,7 @@ module Substrate.Algebra.Wedge.StarV4 where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Wedge using (DivStr; C; recon)
+open import Substrate.Algebra.Wedge using (DivStr; recon)
 
 ------------------------------------------------------------------------
 -- 1. *-DivStr: a wedge carrier equipped with a conjugation (a *-involution
@@ -44,20 +44,20 @@ open import Substrate.Algebra.Wedge using (DivStr; C; recon)
 -- Set-valued carrier). House style = Substrate.Category.Lawvere's carrier-generic atoms:
 -- PARAMETERIZE the carrier. With `base` a module parameter every field is Set-valued, so
 -- StarDivStr : Set. Consumers write `StarDivStr D` and drop the `base S` projection.
-module _ (base : DivStr) where
+module _ {C : Set} (base : DivStr C) where
 
   record StarDivStr : Set where
     field
-      conj       : C base → C base
-      conj-conj  : (x : C base) → conj (conj x) ≡ x
-      conj-recon : (q b r : C base) →
+      conj       : C → C
+      conj-conj  : (x : C) → conj (conj x) ≡ x
+      conj-recon : (q b r : C) →
                    conj (recon base q b r) ≡ recon base (conj q) (conj b) (conj r)
 
   open StarDivStr public
 
   module _ (S : StarDivStr) where
     private
-      X  = C base
+      X  = C
       cj = conj S
 
     ------------------------------------------------------------------------

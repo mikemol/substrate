@@ -19,7 +19,7 @@ module Substrate.Algebra.Wedge.NuShapeIso where
 open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; quot; rem; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; ℕ-div)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-head; ana-tail; ana-unique)
@@ -32,7 +32,7 @@ open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
 -- the ℕ-stream functor coalgebra whose ana IS the shape stream.
 ------------------------------------------------------------------------
 QState : Set
-QState = C ℕ-div × C ℕ-div            -- the (a, b) unfold state (both ℕ for ℕ-div)
+QState = ℕ × ℕ            -- the (a, b) unfold state (both ℕ for ℕ-div)
 
 quotient-coalg : WedgeCoalg ℕ-div → Coalg QState
 quotient-coalg co (a , b) =
@@ -54,13 +54,13 @@ shape-stream co = ana (quotient-coalg co)
 -- observations are exactly the quotient stream.
 ------------------------------------------------------------------------
 -- the first CF digit IS the first wedge quotient (the shape's head = quot):
-head-is-quot : (co : WedgeCoalg ℕ-div) (a b : C ℕ-div) →
+head-is-quot : (co : WedgeCoalg ℕ-div) (a b : ℕ) →
                head (shape-stream co (a , b)) ≡ quot (divide co a b)
 head-is-quot co a b = ana-head (quotient-coalg co) (a , b)
 
 -- the tail IS the shape stream of the residual state (b, rem) — the coinductive
 -- unfold of the shape (the quotient stream continues on the residual):
-tail-is-residual-shape : (co : WedgeCoalg ℕ-div) (a b : C ℕ-div) →
+tail-is-residual-shape : (co : WedgeCoalg ℕ-div) (a b : ℕ) →
     tail (shape-stream co (a , b)) ≡ shape-stream co (b , rem (divide co a b))
 tail-is-residual-shape co a b = ana-tail (quotient-coalg co) (a , b)
 

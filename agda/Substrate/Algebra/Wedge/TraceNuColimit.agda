@@ -27,7 +27,7 @@ open import Substrate.Category.Allegory.Refinement
   using (Fam; _⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; Φ-step-mono; step-refinement)
 
-module _ (D : DivStr) where
+module _ {C : Set} (D : DivStr C) where
 
   ------------------------------------------------------------------------
   -- ① THE TOP family ⊤ and the DESCENDING chain. ⊤-fam is present everywhere;

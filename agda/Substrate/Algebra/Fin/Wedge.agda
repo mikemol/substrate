@@ -54,5 +54,5 @@ recon-cyc n q b r = fromℕ< (mod-suc-bound (toℕ q * toℕ b + toℕ r) n)
 --    z = zero (the identity residue χ_0 / the zero class).
 ------------------------------------------------------------------------
 
-Cyc-div : (n : ℕ) → DivStr
-Cyc-div n = record { C = Fin (suc n) ; z = zero {n} ; recon = recon-cyc n }
+Cyc-div : (n : ℕ) → DivStr (Fin (suc n))
+Cyc-div n = record { z = zero {n} ; recon = recon-cyc n }

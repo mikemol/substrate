@@ -58,10 +58,10 @@ e₁₂ = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 e₂₁ = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []
 e₂₂ = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []
 
-M2-div : DivStr
-M2-div = record { C = M2 ; z = 𝟎 ; recon = λ _ _ r → r }
+M2-div : DivStr M2
+M2-div = record { z = 𝟎 ; recon = λ _ _ r → r }
 
-M2-mul-str : MulDivStr
+M2-mul-str : MulDivStr M2
 M2-mul-str = record { base = M2-div ; mul = M2-mul }
 
 ------------------------------------------------------------------------

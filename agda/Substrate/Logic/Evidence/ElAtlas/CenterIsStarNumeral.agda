@@ -39,10 +39,10 @@ open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
 -- R = ℤ/8 as a MulDivStr: carrier ℕ, zero 0, product reduced mod 8.
 ------------------------------------------------------------------------
 
-ℤ8-div : DivStr
-ℤ8-div = record { C = ℕ ; z = 0 ; recon = λ _ _ r → r }
+ℤ8-div : DivStr ℕ
+ℤ8-div = record { z = 0 ; recon = λ _ _ r → r }
 
-ℤ8-mul : MulDivStr
+ℤ8-mul : MulDivStr ℕ
 ℤ8-mul = record { base = ℤ8-div ; mul = λ a b → (a * b) mod-suc 7 }
 
 ------------------------------------------------------------------------

@@ -41,7 +41,7 @@ open import Substrate.Algebra.Wedge.Bridge
 -- 1. Bridge composition — so correspondences compose.
 ------------------------------------------------------------------------
 
-_⊚_ : {A B C : DivStr} → Bridge B C → Bridge A B → Bridge A C
+_⊚_ : {CA CB CC : Set} {A : DivStr CA} {B : DivStr CB} {C : DivStr CC} → Bridge B C → Bridge A B → Bridge A C
 g ⊚ f = record
   { translate = λ x → translate g (translate f x)
   ; respects  = λ q b r →
@@ -54,27 +54,27 @@ g ⊚ f = record
 -- 2. The bidirectional bridge: forward (the result) + backward (the projection).
 ------------------------------------------------------------------------
 
-Correspondence : DivStr → DivStr → Set
+Correspondence : {CA CB : Set} → DivStr CA → DivStr CB → Set
 Correspondence A B = Bridge A B × Bridge B A
 
-fwd : {A B : DivStr} → Correspondence A B → Bridge A B
+fwd : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → Correspondence A B → Bridge A B
 fwd = proj₁
 
-bwd : {A B : DivStr} → Correspondence A B → Bridge B A
+bwd : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → Correspondence A B → Bridge B A
 bwd = proj₂
 
 ------------------------------------------------------------------------
 -- 3. The category of areas and correspondences (groupoid-flavoured).
 ------------------------------------------------------------------------
 
-corr-id : (D : DivStr) → Correspondence D D
+corr-id : {C : Set} (D : DivStr C) → Correspondence D D
 corr-id D = id-bridge D , id-bridge D
 
 -- the wedge's braiding: swapping numerator/denominator swaps the directions.
-corr-sym : {A B : DivStr} → Correspondence A B → Correspondence B A
+corr-sym : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → Correspondence A B → Correspondence B A
 corr-sym c = bwd c , fwd c
 
 -- compose: forwards compose forward, backwards compose in reverse.
-corr-∘ : {A B C : DivStr} →
+corr-∘ : {CA CB CC : Set} {A : DivStr CA} {B : DivStr CB} {C : DivStr CC} →
          Correspondence B C → Correspondence A B → Correspondence A C
 corr-∘ g f = (fwd g ⊚ fwd f) , (bwd f ⊚ bwd g)

@@ -22,6 +22,7 @@
 module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Algebra.Wedge using (DivStr)
 -- ⟡set1-paydown: GradedDivStr AND GradedProduct now carry their graded carrier as a
 -- module param (no `C` projection). GradedMonoidalAdjunction is thus parameterized
@@ -61,7 +62,7 @@ graded-carrier : {C : ℕ → Set} (gma : GradedMonoidalAdjunction C) →
                  GradedDivStr C (λ _ → C 1)
 graded-carrier gma = graded-of-product (prod gma)
 
-flat-carrier : {C : ℕ → Set} → GradedMonoidalAdjunction C → DivStr
+flat-carrier : {C : ℕ → Set} → GradedMonoidalAdjunction C → DivStr (Σ ℕ C)
 flat-carrier gma = flatten (prod gma)
 
 -- the graded Free⊣Forgetful hom-set (Graded.Adjunction) over this carrier.

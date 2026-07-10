@@ -26,7 +26,7 @@ module Substrate.Algebra.Wedge.Shape.Transport where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong; subst)
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace; done; more; quot)
+open import Substrate.Algebra.Wedge using (DivStr; Trace; done; more; quot)
 
 -- list map (Foundation.List is minimal — no map); used to carry the quotient
 -- sequence pointwise through a bridge's `translate`.
@@ -39,13 +39,13 @@ open import Substrate.Algebra.Wedge.Bridge
 
 -- `shape` is invariant under subst on the divisor (b) index: the spine does
 -- not depend on the middle index, so re-indexing it changes nothing.
-shape-subst : {D : DivStr} {a g x y : C D} (eq : x ≡ y) (tr : Trace D a x g) →
+shape-subst : {C : Set} {D : DivStr C} {a g x y : C} (eq : x ≡ y) (tr : Trace D a x g) →
               shape (subst (λ d → Trace D a d g) eq tr) ≡ shape tr
 shape-subst refl tr = refl
 
 -- bridges preserve shape: transport keeps every quotient, so the spine is
 -- carried unchanged.
-shape-transport : {D₁ D₂ : DivStr} (br : Bridge D₁ D₂) {a b g : C D₁}
+shape-transport : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b g : C₁}
                   (t : Trace D₁ a b g) →
                   shape (transport-trace br t) ≡ mapL (translate br) (shape t)
 shape-transport br (done a)       = shape-subst (sym (z-pres br)) (done (translate br a))

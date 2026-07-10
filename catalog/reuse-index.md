@@ -366,7 +366,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `DistPattern` | data | `Substrate.Cocycles.KRule` | diagonal {(v, v)} and off-diagonal |
 | `Diverges` | record | `Substrate.FUSep.FUSepQReduce` | ⟡FU-sep-Q-reduce: full SKI reduction, where SN FAILS globally |
 | `DivisionAllegory` | record | `Substrate.Category.Allegory.Division` | where root and log unify. |
-| `DivStr` | record | `Substrate.Algebra.Wedge` | the keystone operator. A wedge of `a` against `b` |
+| `DivStr` | record | `Substrate.Algebra.Wedge` | ⟡set1-paydown: carrier-generic record parameter (the Lawvere TorsorAtom form) |
 | `DivStr` | record | `Substrate.S5.S5EEA` | was : Set₁ |
 | `Driver` | record | `Substrate.Category.UniversalProperty.ExtrudeBisimDriver` | ⟡extrude-bisim-driver: the run driver returns a |
 | `EdgeApexCone` | record | `Substrate.Category.Cone.EdgeApex` | it can be a morphism between two |

@@ -122,5 +122,5 @@ vec-recon-cons A n v a = refl
 flatten-recon : {C : ℕ → Set} (P : GradedProduct C) → Σ ℕ C → Σ ℕ C → Σ ℕ C → Σ ℕ C
 flatten-recon P (qn , _) (i , b) (j , r) = (qn * i) + j , _∧_ P (gpower P b qn) r
 
-flatten : {C : ℕ → Set} → GradedProduct C → DivStr
-flatten {C} P = record { C = Σ ℕ C ; z = 0 , u P ; recon = flatten-recon P }
+flatten : {C : ℕ → Set} → GradedProduct C → DivStr (Σ ℕ C)
+flatten {C} P = record { z = 0 , u P ; recon = flatten-recon P }

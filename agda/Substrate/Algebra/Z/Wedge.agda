@@ -22,5 +22,5 @@ open import Substrate.Algebra.Z using (ℤ; 0ℤ)
 open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
 open import Substrate.Algebra.Wedge using (DivStr)
 
-ℤ-div : DivStr
-ℤ-div = record { C = ℤ ; z = 0ℤ ; recon = λ q b r → (q *ℤ b) +ℤ r }
+ℤ-div : DivStr ℤ
+ℤ-div = record { z = 0ℤ ; recon = λ q b r → (q *ℤ b) +ℤ r }

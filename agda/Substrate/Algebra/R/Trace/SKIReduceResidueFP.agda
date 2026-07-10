@@ -29,7 +29,7 @@ open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; Trace; done; more)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more)
 open import Substrate.Algebra.Wedge.Trace.Residues using (trace-residues; trace-classify)
 open import Substrate.Algebra.Wedge.ResidueAtom using (ℕ-torsor; ℕ-zero?)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
@@ -43,8 +43,8 @@ open import Substrate.Category.Lawvere using (FixedPointFree; TorsorAtom; e)
 -- This is the DivStr the shedding runs over: C = ℕ, recon the additive rebuild,
 -- z = 0 — the same ℕ-div the wedge/EEA already use (residue = remainder).
 ------------------------------------------------------------------------
-ℕ-shed : DivStr
-ℕ-shed = record { C = ℕ ; z = zero ; recon = λ q b r → r }
+ℕ-shed : DivStr ℕ
+ℕ-shed = record { z = zero ; recon = λ q b r → r }
   -- recon keeps the residue r (the shed cost); q, b are the process bookkeeping.
 
 ------------------------------------------------------------------------

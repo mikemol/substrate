@@ -35,14 +35,14 @@ module Substrate.Algebra.Wedge.Species where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z)
+open import Substrate.Algebra.Wedge using (DivStr; z)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; pow; Nilpotent)
 
 ------------------------------------------------------------------------
 -- The genus: the cross of the pair vanishes under powers (Coherent's spine).
 ------------------------------------------------------------------------
 
-Ortho : (M : MulDivStr) → C (base M) → C (base M) → Set
+Ortho : {Cr : Set} (M : MulDivStr Cr) → Cr → Cr → Set
 Ortho M a b = Nilpotent M (mul M a b)
 
 ------------------------------------------------------------------------
@@ -50,21 +50,21 @@ Ortho M a b = Nilpotent M (mul M a b)
 ------------------------------------------------------------------------
 
 -- STABLE: a is idempotent (a² = a) — the idempotent / unit / disconnection facet.
-Stable : (M : MulDivStr) → C (base M) → Set
+Stable : {Cr : Set} (M : MulDivStr Cr) → Cr → Set
 Stable M a = mul M a a ≡ a
 
 -- the two species = the genus Ortho refined by each diagonal.
-IdempotentSpecies : (M : MulDivStr) → C (base M) → C (base M) → Set
+IdempotentSpecies : {Cr : Set} (M : MulDivStr Cr) → Cr → Cr → Set
 IdempotentSpecies M a b = Ortho M a b × Stable M a
 
-NilpotentSpecies : (M : MulDivStr) → C (base M) → C (base M) → Set
+NilpotentSpecies : {Cr : Set} (M : MulDivStr Cr) → Cr → Cr → Set
 NilpotentSpecies M a b = Ortho M a b × Nilpotent M a
 
 ------------------------------------------------------------------------
 -- A stable (idempotent) element is fixed by every power: aⁿ ≡ a.
 ------------------------------------------------------------------------
 
-stable-pow : (M : MulDivStr) (a : C (base M)) → Stable M a → (n : ℕ) → pow M a n ≡ a
+stable-pow : {Cr : Set} (M : MulDivStr Cr) (a : Cr) → Stable M a → (n : ℕ) → pow M a n ≡ a
 stable-pow M a st zero    = refl                                   -- pow a 0 = a
 stable-pow M a st (suc n) = trans (cong (mul M a) (stable-pow M a st n)) st
   --  pow a (suc n) = a · pow a n ≡ a · a (cong, IH) ≡ a (st)
@@ -74,7 +74,7 @@ stable-pow M a st (suc n) = trans (cong (mul M a) (stable-pow M a st n)) st
 -- distinct facets — they coincide only at the terminal z.
 ------------------------------------------------------------------------
 
-species-disjoint : (M : MulDivStr) (a : C (base M)) →
+species-disjoint : {Cr : Set} (M : MulDivStr Cr) (a : Cr) →
                    Stable M a → Nilpotent M a → a ≡ z (base M)
 species-disjoint M a st (d , nil) = trans (sym (stable-pow M a st d)) nil
   --  a ≡ pow a d (sym stable-pow) ≡ z (nil)

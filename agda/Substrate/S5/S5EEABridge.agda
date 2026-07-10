@@ -39,8 +39,8 @@ import Substrate.Algebra.Wedge.Shape  as WS
 ------------------------------------------------------------------------
 -- ⟡set1-paydown (consumer of S5EEA): E.DivStr is now carrier-parameterized, so the
 -- carrier is named directly (`{Carrier}`) instead of via the removed `E.C D` projection.
-toDivStr : {Carrier : Set} → E.DivStr Carrier → W.DivStr
-toDivStr {Carrier} D = record { C = Carrier ; z = E.z D ; recon = E.recon D }
+toDivStr : {Carrier : Set} → E.DivStr Carrier → W.DivStr Carrier
+toDivStr {Carrier} D = record { z = E.z D ; recon = E.recon D }
 
 toWedge : {Carrier : Set} (D : E.DivStr Carrier) {a b : Carrier} → E.Wedge Carrier D a b → W.Wedge (toDivStr D) a b
 toWedge D w = record { quot = E.quot w ; rem = E.rem w ; wedge-eq = E.wedge-eq w }

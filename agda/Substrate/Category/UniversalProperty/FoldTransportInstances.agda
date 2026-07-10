@@ -16,7 +16,7 @@ module Substrate.Category.UniversalProperty.FoldTransportInstances where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; quot; rem; Trace; done; more; trace-fold; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; Trace; done; more; trace-fold; ℕ-div)
 open import Substrate.Category.UniversalProperty.FoldTransport using (trace-fold-transport)
 
 ------------------------------------------------------------------------
@@ -36,11 +36,11 @@ sum (x ∷ xs) = x + sum xs
 -- algebra to the count algebra: length [] = 0, length (quot w ∷ rec) = suc (length rec).
 -- trace-fold-transport ⟹ length ∘ shape-fold ≡ count-fold on every trace.
 ------------------------------------------------------------------------
-shape→count : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
-  length (trace-fold {D} {T = λ _ _ _ → List (C D)} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
-  ≡ trace-fold {D} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ _ rec → suc rec) t
-shape→count {D} =
-  trace-fold-transport {D}
+shape→count : {C : Set} {D : DivStr C} {a b g : C} (t : Trace D a b g) →
+  length (trace-fold {D = D} {T = λ _ _ _ → List C} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
+  ≡ trace-fold {D = D} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ _ rec → suc rec) t
+shape→count {C = C} {D = D} =
+  trace-fold-transport {D = D}
     (λ _ → []) (λ _ w rec → quot w ∷ rec)          -- the shape algebra (T₁ = List)
     (λ _ → 0)  (λ _ _ rec → suc rec)                -- the count algebra (T₂ = ℕ)
     length (λ _ → refl) (λ _ _ _ → refl)            -- φ = length, base + step commute (refl)
@@ -51,10 +51,10 @@ shape→count {D} =
 -- = quot w + sum rec. trace-fold-transport ⟹ sum ∘ shape-fold ≡ sum-fold.
 ------------------------------------------------------------------------
 shape→sum : {a b g : ℕ} (t : Trace ℕ-div a b g) →
-  sum (trace-fold {ℕ-div} {T = λ _ _ _ → List ℕ} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
-  ≡ trace-fold {ℕ-div} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ w rec → quot w + rec) t
+  sum (trace-fold {D = ℕ-div} {T = λ _ _ _ → List ℕ} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
+  ≡ trace-fold {D = ℕ-div} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ w rec → quot w + rec) t
 shape→sum =
-  trace-fold-transport {ℕ-div}
+  trace-fold-transport {D = ℕ-div}
     (λ _ → []) (λ _ w rec → quot w ∷ rec)          -- the shape algebra
     (λ _ → 0)  (λ _ w rec → quot w + rec)           -- the sum algebra
     sum (λ _ → refl) (λ _ _ _ → refl)               -- φ = sum, base + step commute (refl)

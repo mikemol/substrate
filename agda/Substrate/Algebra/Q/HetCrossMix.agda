@@ -44,7 +44,7 @@ open import Substrate.Algebra.Q.HetBasis
 -- 1. ℤ as the common multiplicative carrier R of the cospan.
 ------------------------------------------------------------------------
 
-ℤ-mul : MulDivStr
+ℤ-mul : MulDivStr ℤ
 ℤ-mul = record { base = ℤ-div ; mul = _*ℤ_ }
 
 ------------------------------------------------------------------------

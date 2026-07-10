@@ -22,14 +22,14 @@ module Substrate.Algebra.Wedge.TraceMuStep where
 open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; rem; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; Refinement)
 
-module _ (D : DivStr) where
+module _ {C : Set} (D : DivStr C) where
 
   -- the index of a trace: the triple (a, b, g) — start, current divisor, gcd.
   Idx : Set
-  Idx = C D × C D × C D
+  Idx = C × C × C
 
   ------------------------------------------------------------------------
   -- ① THE WEDGE-STEP PATTERN FUNCTOR Φ. At index (a, b, g), a family element is

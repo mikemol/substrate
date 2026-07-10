@@ -26,7 +26,7 @@ open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; iterate)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement)
 open import Substrate.Algebra.Wedge.TraceNuColimit using (⊤-fam; Limit; coalg-below-limit)
@@ -37,9 +37,9 @@ dec-× (yes a) (yes b) = yes (a , b)
 dec-× (yes a) (no ¬b) = no (λ ab → ¬b (proj₂ ab))
 dec-× (no ¬a) _       = no (λ ab → ¬a (proj₁ ab))
 
-module _ (D : DivStr)
-         (deq : (x y : C D) → Dec (x ≡ y))
-         (wrem-uniq : {a b : C D} (w w' : Wedge⟦478f66a6⟧ D a b) → rem w ≡ rem w') where
+module _ {C : Set} (D : DivStr C)
+         (deq : (x y : C) → Dec (x ≡ y))
+         (wrem-uniq : {a b : C} (w w' : Wedge⟦478f66a6⟧ D a b) → rem w ≡ rem w') where
 
   -- decide the done case at an index (b ≡ z × g ≡ a) from decidable equality.
   done? : (i : Idx D) → Dec ((proj₁ (proj₂ i) ≡ z D) × (proj₂ (proj₂ i) ≡ proj₁ i))

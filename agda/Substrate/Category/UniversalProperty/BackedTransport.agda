@@ -20,7 +20,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Algebra.Wedge using (C; Trace; done; quot; rem; trace-fold; ℕ-div)
+open import Substrate.Algebra.Wedge using (Trace; done; quot; rem; trace-fold; ℕ-div)
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; solve; solves; content; backed-non-vacuous)
@@ -43,7 +43,7 @@ BackedMorphism b₁ b₂ =
 -- the SAME Source as shape-backed; Target = ℕ; solve = count-fold).
 ------------------------------------------------------------------------
 count-fold : {a b g : ℕ} → Trace ℕ-div a b g → ℕ
-count-fold = trace-fold {ℕ-div} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ _ rec → suc rec)
+count-fold = trace-fold {D = ℕ-div} {T = λ _ _ _ → ℕ} (λ _ → 0) (λ _ _ rec → suc rec)
 
 count-UP : UPArrow
 count-UP = record

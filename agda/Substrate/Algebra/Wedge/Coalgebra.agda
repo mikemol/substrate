@@ -41,16 +41,16 @@ open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; quot; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
 ------------------------------------------------------------------------
 -- 1. The wedge as a coalgebra: `divide` (the unfold) + decidable residue
 --    equality (the SPPF cycle-test).
 ------------------------------------------------------------------------
 
-record WedgeCoalg (D : DivStr) : Set where
+record WedgeCoalg {C : Set} (D : DivStr C) : Set where
   field
-    divide : (a b : C D) → Wedge⟦478f66a6⟧ D a b      -- the unfold step (dual to recon)
-    eq?    : (x y : C D) → Dec (x ≡ y)       -- "already a path?" — the dedup test
+    divide : (a b : C) → Wedge⟦478f66a6⟧ D a b      -- the unfold step (dual to recon)
+    eq?    : (x y : C) → Dec (x ≡ y)       -- "already a path?" — the dedup test
 
 open WedgeCoalg public
 
@@ -58,7 +58,7 @@ open WedgeCoalg public
 -- 2. The SPPF (linear specialization): membership in the residues seen.
 ------------------------------------------------------------------------
 
-seen? : {D : DivStr} (co : WedgeCoalg D) → C D → List (C D) → Bool
+seen? : {C : Set} {D : DivStr C} (co : WedgeCoalg D) → C → List C → Bool
 seen? co x []       = false
 seen? co x (y ∷ ys) with eq? co x y
 ... | yes _ = true
@@ -79,14 +79,14 @@ data Unfold : Set where
 --    Returns the partial quotients emitted (the CF prefix) + why it stopped.
 ------------------------------------------------------------------------
 
-run : {D : DivStr} (co : WedgeCoalg D) → ℕ → List (C D) → (a b : C D) →
-      List (C D) × Unfold
-run     co zero    seen a b = [] , stop
-run {D} co (suc f) seen a b with eq? co b (z D)
+run : {C : Set} {D : DivStr C} (co : WedgeCoalg D) → ℕ → List C → (a b : C) →
+      List C × Unfold
+run           co zero    seen a b = [] , stop
+run {C = C} {D = D} co (suc f) seen a b with eq? co b (z D)
 ... | yes _ = [] , halt
 ... | no  _ = cont (divide co a b)
   where
-    cont : Wedge⟦478f66a6⟧ D a b → List (C D) × Unfold
+    cont : Wedge⟦478f66a6⟧ D a b → List C × Unfold
     cont w with seen? co (rem w) seen
     ... | true  = quot w ∷ [] , loop                 -- residue already a path: close the cycle
     ... | false = let r = run co f (rem w ∷ seen) b (rem w)

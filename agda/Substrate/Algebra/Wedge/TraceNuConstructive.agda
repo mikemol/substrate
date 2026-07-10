@@ -20,14 +20,14 @@
 
 module Substrate.Algebra.Wedge.TraceNuConstructive where
 
-open import Substrate.Algebra.Wedge using (DivStr; C)
+open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
 open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step)
 open import Substrate.Algebra.Wedge.TraceNuStep using (ν-Coalg; StepAt; coalg-unroll)
 open import Substrate.Algebra.Wedge.TraceNuColimit using (Limit; coalg-below-limit)
 
-module _ (D : DivStr) (co : WedgeCoalg D) where
+module _ {C : Set} (D : DivStr C) (co : WedgeCoalg D) where
 
   ------------------------------------------------------------------------
   -- ① THE CONSTRUCTIVE ν CARRIER = the divide-coalgebra StepAt. NOT a coinductive

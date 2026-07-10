@@ -4262,7 +4262,6 @@ digraph imports {
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Algebra.Nat.GCD.Wedge";
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Algebra.Nat.Mod";
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Algebra.Nat.WellFounded";
-  "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Algebra.Wedge.Shape";
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Nat.GCD.ComputeTraceStep" -> "Substrate.Foundation.List";
@@ -4353,7 +4352,6 @@ digraph imports {
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Algebra.Nat.GCD.GcdN";
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Algebra.Nat.GCD.GcdPos";
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Algebra.Nat.GCD.GcdTrace";
-  "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Algebra.Wedge.Shape";
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Nat.GCD.ShapeBridge" -> "Substrate.Foundation.List";
@@ -4863,7 +4861,6 @@ digraph imports {
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Nat.GCD.GcdTrace";
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Q";
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Q.Reduction";
-  "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Wedge.Shape";
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Q.Properties.EEAReduce" -> "Substrate.Foundation.Eq";
@@ -4947,8 +4944,10 @@ digraph imports {
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Algebra.Wedge.InclusionBridge";
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Algebra.Wedge.Mul";
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Algebra.Wedge.Registry";
+  "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Algebra.Z.Wedge";
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Q.RegistryHetQBridges" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Q.Sub" -> "Substrate.Algebra.Q";
   "Substrate.Algebra.Q.Sub" -> "Substrate.Algebra.Q.Add";
@@ -5190,12 +5189,10 @@ digraph imports {
   "Substrate.Algebra.R.Trace.ExtruderNfCrossDlogCospan" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.R.Trace.ExtruderNfCrossDlogCospan" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.R.Trace.ExtruderNfCrossDlogCospan" -> "Substrate.Foundation.Vec";
-  "Substrate.Algebra.R.Trace.ExtruderNfCrossRealigned" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.R.Trace.ExtruderNfCrossRealigned" -> "Substrate.Algebra.Wedge.CrossMul";
   "Substrate.Algebra.R.Trace.ExtruderNfCrossRealigned" -> "Substrate.Algebra.Wedge.Mul";
   "Substrate.Algebra.R.Trace.ExtruderNfCrossRealigned" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned" -> "Substrate.Algebra.F2";
-  "Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned" -> "Substrate.Algebra.Wedge.CrossMul";
   "Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned" -> "Substrate.Algebra.Wedge.CrossMulGraded";
   "Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned" -> "Substrate.Algebra.Wedge.Mul";
@@ -5657,6 +5654,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.CertGenericProjection" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.CertGenericProjection" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.CertGenericProjection" -> "Substrate.Foundation.Sum";
+  "Substrate.Algebra.Wedge.CertGenericProjection" -> "Substrate.Foundation.Unit";
   "Substrate.Algebra.Wedge.Certified" -> "Substrate.Algebra.Nat.GCD.Wedge";
   "Substrate.Algebra.Wedge.Certified" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Wedge.Certified" -> "Substrate.Foundation.Nat";
@@ -5785,6 +5783,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction" -> "Substrate.Algebra.Wedge.Product";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction" -> "Substrate.Algebra.Wedge.Product.LawTypes";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Algebra.Wedge.Product";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Algebra.Wedge.Product.Laws";
@@ -5806,6 +5805,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.InclusionBridge" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Wedge.InclusionBridge" -> "Substrate.Algebra.Z.Wedge";
   "Substrate.Algebra.Wedge.InclusionBridge" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Wedge.InclusionBridge" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.IntParityBridge" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.Wedge.IntParityBridge" -> "Substrate.Algebra.F2.Wedge";
   "Substrate.Algebra.Wedge.IntParityBridge" -> "Substrate.Algebra.Wedge";
@@ -5833,8 +5833,10 @@ digraph imports {
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Algebra.Wedge.Correspondence";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Algebra.Wedge.Cross";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Algebra.Wedge.Iso";
+  "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Algebra.Z.Wedge";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.Monoidal" -> "Substrate.Foundation.Unit";
   "Substrate.Algebra.Wedge.Mul" -> "Substrate.Algebra.Wedge";
@@ -5982,6 +5984,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.Reads" -> "Substrate.Algebra.Z.Bezout";
   "Substrate.Algebra.Wedge.Reads" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Wedge.Reads" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.F2.Wedge";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Fin.Wedge";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Fin.Wedge.ModBridge";
@@ -5994,8 +5997,11 @@ digraph imports {
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Wedge.Monoidal";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Wedge.Mul";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Wedge.ParityBridge";
+  "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Algebra.Z.Wedge";
+  "Substrate.Algebra.Wedge.Registry" -> "Substrate.Foundation.Fin";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Foundation.List";
+  "Substrate.Algebra.Wedge.Registry" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.Registry" -> "Substrate.Foundation.Unit";
   "Substrate.Algebra.Wedge.ResidueAtom" -> "Substrate.Algebra.F2";
@@ -7791,6 +7797,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Category.UniversalProperty.Vacuity";
   "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Foundation.Empty";
   "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Foundation.Negation";
   "Substrate.Category.UniversalProperty.MuBacked" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.MuRegistryEntry" -> "Substrate.Category.UniversalProperty.Backed";
@@ -12288,7 +12295,6 @@ digraph imports {
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Algebra.R.Trace.Bisim";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Algebra.R.Trace.Final";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Algebra.R.Trace.RationalAdjunction";
-  "Substrate.WitnessTower.CofreeDual" -> "Substrate.Algebra.Wedge";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Algebra.Wedge.Shape";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Foundation.List";

@@ -15,7 +15,7 @@ module Substrate.Algebra.Wedge.CombinatorDivStr where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; Trace; done; more)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 
 ------------------------------------------------------------------------
@@ -26,8 +26,8 @@ open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 ------------------------------------------------------------------------
 module Reduction (S : Set) (nf : S) (rb : S → S → S → S) where
 
-  combinator-DivStr : DivStr
-  combinator-DivStr = record { C = S ; z = nf ; recon = rb }
+  combinator-DivStr : DivStr S
+  combinator-DivStr = record { z = nf ; recon = rb }
 
   -- the reduction orbit IS a substrate Trace over this DivStr.
   ReductionTrace : S → S → S → Set

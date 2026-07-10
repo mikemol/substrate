@@ -29,15 +29,14 @@ module Substrate.Algebra.Wedge.Cross where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; quot; rem; wedge-eq) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq) renaming (Wedge to Wedge⟦478f66a6⟧)
 ------------------------------------------------------------------------
 -- 1. The product DivStr: cross-carrier, shared quotient.
 ------------------------------------------------------------------------
 
-_⊗ᴰ_ : DivStr → DivStr → DivStr
+_⊗ᴰ_ : {C₁ C₂ : Set} → DivStr C₁ → DivStr C₂ → DivStr (C₁ × C₂)
 A ⊗ᴰ B = record
-  { C     = C A × C B
-  ; z     = z A , z B
+  { z     = z A , z B
   ; recon = λ q p p′ → recon A (proj₁ q) (proj₁ p) (proj₁ p′)
                      , recon B (proj₂ q) (proj₂ p) (proj₂ p′)
   }
@@ -47,12 +46,12 @@ A ⊗ᴰ B = record
 --    sharing one quotient — the lockstep that IS the correspondence.
 ------------------------------------------------------------------------
 
-wedge-fst : (A B : DivStr) {a a′ : C A} {b b′ : C B} →
+wedge-fst : {C₁ C₂ : Set} (A : DivStr C₁) (B : DivStr C₂) {a a′ : C₁} {b b′ : C₂} →
             Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge⟦478f66a6⟧ A a a′
 wedge-fst A B w = record
   { quot = proj₁ (quot w) ; rem = proj₁ (rem w) ; wedge-eq = cong proj₁ (wedge-eq w) }
 
-wedge-snd : (A B : DivStr) {a a′ : C A} {b b′ : C B} →
+wedge-snd : {C₁ C₂ : Set} (A : DivStr C₁) (B : DivStr C₂) {a a′ : C₁} {b b′ : C₂} →
             Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′) → Wedge⟦478f66a6⟧ B b b′
 wedge-snd A B w = record
   { quot = proj₂ (quot w) ; rem = proj₂ (rem w) ; wedge-eq = cong proj₂ (wedge-eq w) }
@@ -62,7 +61,7 @@ wedge-snd A B w = record
 -- Lockstep (one shared quotient driving both strands) is the DIAGONAL of this
 -- pair — no longer automatic; the unconditional shared quotient lives in
 -- CrossMul's common carrier R (the cospan A → R ← B).
-quot-is-pair : (A B : DivStr) {a a′ : C A} {b b′ : C B}
+quot-is-pair : {C₁ C₂ : Set} (A : DivStr C₁) (B : DivStr C₂) {a a′ : C₁} {b b′ : C₂}
                (w : Wedge⟦478f66a6⟧ (A ⊗ᴰ B) (a , b) (a′ , b′)) →
                (quot (wedge-fst A B w) , quot (wedge-snd A B w)) ≡ quot w
 quot-is-pair A B w = refl

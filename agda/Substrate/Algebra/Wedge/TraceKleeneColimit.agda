@@ -21,11 +21,11 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; rem; Trace; done; more)
+open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more)
 open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; iterate)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement; TraceF)
 
-module _ (D : DivStr) where
+module _ {C : Set} (D : DivStr C) where
 
   ------------------------------------------------------------------------
   -- ① THE BOTTOM family ⊥ and the KLEENE COLIMIT ⋃ₙ Φⁿ⊥. Colim i = "i is present

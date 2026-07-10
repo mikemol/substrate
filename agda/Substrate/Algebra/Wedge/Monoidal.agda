@@ -45,14 +45,17 @@ module Substrate.Algebra.Wedge.Monoidal where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; cong₂)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; ℕ-div) renaming (C to Carrier)
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
 open import Substrate.Algebra.Wedge.Bridge
   using (Bridge; translate; respects; z-pres; id-bridge)
 open import Substrate.Algebra.Wedge.Correspondence using (_⊚_)
 open import Substrate.Algebra.Wedge.Iso
   using (WedgeIso; fwd; bwd; bwd∘fwd; fwd∘bwd)
+open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.Z using (ℤ)
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 
@@ -60,7 +63,8 @@ open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 -- 1. The tensor on morphisms — the bifunctor on bridges (and on the groupoid).
 ------------------------------------------------------------------------
 
-_⊗ᵇ_ : {A A′ B B′ : DivStr} → Bridge A A′ → Bridge B B′ →
+_⊗ᵇ_ : {CA CA′ CB CB′ : Set} {A : DivStr CA} {A′ : DivStr CA′} {B : DivStr CB} {B′ : DivStr CB′} →
+       Bridge A A′ → Bridge B B′ →
        Bridge (A ⊗ᴰ B) (A′ ⊗ᴰ B′)
 f ⊗ᵇ g = record
   { translate = λ p → translate f (proj₁ p) , translate g (proj₂ p)
@@ -74,14 +78,14 @@ f ⊗ᵇ g = record
 -- 2. The associator — product reassociation, both directions (all refl).
 ------------------------------------------------------------------------
 
-assoc→ : (A B C : DivStr) → Bridge ((A ⊗ᴰ B) ⊗ᴰ C) (A ⊗ᴰ (B ⊗ᴰ C))
+assoc→ : {CA CB CC : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) → Bridge ((A ⊗ᴰ B) ⊗ᴰ C) (A ⊗ᴰ (B ⊗ᴰ C))
 assoc→ A B C = record
   { translate = λ p → proj₁ (proj₁ p) , (proj₂ (proj₁ p) , proj₂ p)
   ; respects  = λ _ _ _ → refl
   ; z-pres    = refl
   }
 
-assoc← : (A B C : DivStr) → Bridge (A ⊗ᴰ (B ⊗ᴰ C)) ((A ⊗ᴰ B) ⊗ᴰ C)
+assoc← : {CA CB CC : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) → Bridge (A ⊗ᴰ (B ⊗ᴰ C)) ((A ⊗ᴰ B) ⊗ᴰ C)
 assoc← A B C = record
   { translate = λ p → (proj₁ p , proj₁ (proj₂ p)) , proj₂ (proj₂ p)
   ; respects  = λ _ _ _ → refl
@@ -89,7 +93,7 @@ assoc← A B C = record
   }
 
 -- the associator is a wedge-iso: the round-trips are refl (Σ has η).
-assocᴰ : (A B C : DivStr) → WedgeIso ((A ⊗ᴰ B) ⊗ᴰ C) (A ⊗ᴰ (B ⊗ᴰ C))
+assocᴰ : {CA CB CC : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) → WedgeIso ((A ⊗ᴰ B) ⊗ᴰ C) (A ⊗ᴰ (B ⊗ᴰ C))
 assocᴰ A B C = record
   { fwd = assoc→ A B C ; bwd = assoc← A B C
   ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
@@ -98,7 +102,8 @@ assocᴰ A B C = record
 -- 3. The tensor on isos (the monoidal bifunctor on the groupoid of roots).
 ------------------------------------------------------------------------
 
-_⊗ᵢ_ : {A A′ B B′ : DivStr} → WedgeIso A A′ → WedgeIso B B′ →
+_⊗ᵢ_ : {CA CA′ CB CB′ : Set} {A : DivStr CA} {A′ : DivStr CA′} {B : DivStr CB} {B′ : DivStr CB′} →
+       WedgeIso A A′ → WedgeIso B B′ →
        WedgeIso (A ⊗ᴰ B) (A′ ⊗ᴰ B′)
 f ⊗ᵢ g = record
   { fwd = fwd f ⊗ᵇ fwd g
@@ -120,7 +125,8 @@ f ⊗ᵢ g = record
 -- diagram commutes by refl.
 ------------------------------------------------------------------------
 
-pentagon : (A B C D : DivStr) (x : Carrier (((A ⊗ᴰ B) ⊗ᴰ C) ⊗ᴰ D)) →
+pentagon : {CA CB CC CD : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) (D : DivStr CD)
+           (x : ((CA × CB) × CC) × CD) →
   translate (assoc→ A B (C ⊗ᴰ D) ⊚ assoc→ (A ⊗ᴰ B) C D) x
     ≡ translate ((id-bridge A ⊗ᵇ assoc→ B C D)
                  ⊚ (assoc→ A (B ⊗ᴰ C) D
@@ -134,7 +140,7 @@ pentagon A B C D x = refl
 ------------------------------------------------------------------------
 
 roots-pentagon :
-  (x : Carrier (((F₂-div ⊗ᴰ ℕ-div) ⊗ᴰ ℤ-div) ⊗ᴰ F₂-div)) →
+  (x : ((F₂ × ℕ) × ℤ) × F₂) →
   translate (assoc→ F₂-div ℕ-div (ℤ-div ⊗ᴰ F₂-div)
              ⊚ assoc→ (F₂-div ⊗ᴰ ℕ-div) ℤ-div F₂-div) x
     ≡ translate ((id-bridge F₂-div ⊗ᵇ assoc→ ℕ-div ℤ-div F₂-div)
@@ -148,28 +154,28 @@ roots-pentagon = pentagon F₂-div ℕ-div ℤ-div F₂-div
 --    the associator and the unitors agree. All refl (⊤ has η).
 ------------------------------------------------------------------------
 
-⊤-div : DivStr
-⊤-div = record { C = ⊤ ; z = tt ; recon = λ _ _ _ → tt }
+⊤-div : DivStr ⊤
+⊤-div = record { z = tt ; recon = λ _ _ _ → tt }
 
 -- left unitor: ⊤-div ⊗ᴰ A ≃ A  (drop the unit on the left).
-unitˡ→ : (A : DivStr) → Bridge (⊤-div ⊗ᴰ A) A
+unitˡ→ : {CA : Set} (A : DivStr CA) → Bridge (⊤-div ⊗ᴰ A) A
 unitˡ→ A = record { translate = λ p → proj₂ p ; respects = λ _ _ _ → refl ; z-pres = refl }
 
-unitˡ← : (A : DivStr) → Bridge A (⊤-div ⊗ᴰ A)
+unitˡ← : {CA : Set} (A : DivStr CA) → Bridge A (⊤-div ⊗ᴰ A)
 unitˡ← A = record { translate = λ a → tt , a ; respects = λ _ _ _ → refl ; z-pres = refl }
 
-unitᴸ : (A : DivStr) → WedgeIso (⊤-div ⊗ᴰ A) A
+unitᴸ : {CA : Set} (A : DivStr CA) → WedgeIso (⊤-div ⊗ᴰ A) A
 unitᴸ A = record
   { fwd = unitˡ→ A ; bwd = unitˡ← A ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
 
 -- right unitor: A ⊗ᴰ ⊤-div ≃ A  (drop the unit on the right).
-unitʳ→ : (A : DivStr) → Bridge (A ⊗ᴰ ⊤-div) A
+unitʳ→ : {CA : Set} (A : DivStr CA) → Bridge (A ⊗ᴰ ⊤-div) A
 unitʳ→ A = record { translate = λ p → proj₁ p ; respects = λ _ _ _ → refl ; z-pres = refl }
 
-unitʳ← : (A : DivStr) → Bridge A (A ⊗ᴰ ⊤-div)
+unitʳ← : {CA : Set} (A : DivStr CA) → Bridge A (A ⊗ᴰ ⊤-div)
 unitʳ← A = record { translate = λ a → a , tt ; respects = λ _ _ _ → refl ; z-pres = refl }
 
-unitᴿ : (A : DivStr) → WedgeIso (A ⊗ᴰ ⊤-div) A
+unitᴿ : {CA : Set} (A : DivStr CA) → WedgeIso (A ⊗ᴰ ⊤-div) A
 unitᴿ A = record
   { fwd = unitʳ→ A ; bwd = unitʳ← A ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
 
@@ -180,7 +186,7 @@ unitᴿ A = record
 --      ρ ⊗ id                      id ⊗ λ
 --        ▼                           ▼
 --        A ⊗ B ════════════════════ A ⊗ B
-triangle : (A B : DivStr) (x : Carrier ((A ⊗ᴰ ⊤-div) ⊗ᴰ B)) →
+triangle : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) (x : (CA × ⊤) × CB) →
   translate ((id-bridge A ⊗ᵇ unitˡ→ B) ⊚ assoc→ A ⊤-div B) x
     ≡ translate (unitʳ→ A ⊗ᵇ id-bridge B) x
 triangle A B x = refl
@@ -194,19 +200,20 @@ triangle A B x = refl
 --    monoidal structure (natural isos + coherence), not just a pile of isos.
 ------------------------------------------------------------------------
 
-assoc-nat : {A A′ B B′ C C′ : DivStr}
+assoc-nat : {CA CA′ CB CB′ CC CC′ : Set}
+            {A : DivStr CA} {A′ : DivStr CA′} {B : DivStr CB} {B′ : DivStr CB′} {C : DivStr CC} {C′ : DivStr CC′}
             (f : Bridge A A′) (g : Bridge B B′) (h : Bridge C C′)
-            (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C)) →
+            (x : (CA × CB) × CC) →
   translate (assoc→ A′ B′ C′ ⊚ ((f ⊗ᵇ g) ⊗ᵇ h)) x
     ≡ translate ((f ⊗ᵇ (g ⊗ᵇ h)) ⊚ assoc→ A B C) x
 assoc-nat f g h x = refl
 
-unitˡ-nat : {A A′ : DivStr} (f : Bridge A A′) (x : Carrier (⊤-div ⊗ᴰ A)) →
+unitˡ-nat : {CA CA′ : Set} {A : DivStr CA} {A′ : DivStr CA′} (f : Bridge A A′) (x : ⊤ × CA) →
   translate (unitˡ→ A′ ⊚ (id-bridge ⊤-div ⊗ᵇ f)) x
     ≡ translate (f ⊚ unitˡ→ A) x
 unitˡ-nat f x = refl
 
-unitʳ-nat : {A A′ : DivStr} (f : Bridge A A′) (x : Carrier (A ⊗ᴰ ⊤-div)) →
+unitʳ-nat : {CA CA′ : Set} {A : DivStr CA} {A′ : DivStr CA′} (f : Bridge A A′) (x : CA × ⊤) →
   translate (unitʳ→ A′ ⊚ (f ⊗ᵇ id-bridge ⊤-div)) x
     ≡ translate (f ⊚ unitʳ→ A) x
 unitʳ-nat f x = refl
@@ -219,28 +226,28 @@ unitʳ-nat f x = refl
 --    hexagon below, this is a SYMMETRIC monoidal structure. All refl (Σ-η).
 ------------------------------------------------------------------------
 
-braid→ : (A B : DivStr) → Bridge (A ⊗ᴰ B) (B ⊗ᴰ A)
+braid→ : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) → Bridge (A ⊗ᴰ B) (B ⊗ᴰ A)
 braid→ A B = record
   { translate = λ p → proj₂ p , proj₁ p
   ; respects  = λ _ _ _ → refl
   ; z-pres    = refl
   }
 
-braidᴰ : (A B : DivStr) → WedgeIso (A ⊗ᴰ B) (B ⊗ᴰ A)
+braidᴰ : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) → WedgeIso (A ⊗ᴰ B) (B ⊗ᴰ A)
 braidᴰ A B = record
   { fwd = braid→ A B ; bwd = braid→ B A
   ; bwd∘fwd = λ _ → refl ; fwd∘bwd = λ _ → refl }
 
 -- the braiding is involutive (its own inverse): the twist's two directions
 -- compose to the identity — so "divisor-contra" and "residue-contra" are one.
-braid-involutive : (A B : DivStr) (x : Carrier (A ⊗ᴰ B)) →
+braid-involutive : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) (x : CA × CB) →
   translate (braid→ B A ⊚ braid→ A B) x ≡ x
 braid-involutive A B x = refl
 
 -- the HEXAGON: the braiding coheres with the associator (the symmetric-
 -- monoidal coherence beyond pentagon/triangle). Both paths reshuffle
 -- ((a,b),c) to (b,(c,a)).
-hexagon : (A B C : DivStr) (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C)) →
+hexagon : {CA CB CC : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) (x : (CA × CB) × CC) →
   translate (assoc→ B C A ⊚ (braid→ A (B ⊗ᴰ C) ⊚ assoc→ A B C)) x
     ≡ translate ((id-bridge B ⊗ᵇ braid→ A C)
                  ⊚ (assoc→ B A C ⊚ (braid→ A B ⊗ᵇ id-bridge C))) x

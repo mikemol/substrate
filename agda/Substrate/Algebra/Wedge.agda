@@ -50,9 +50,8 @@ import Substrate.Algebra.Nat.GCD.EEATrace as NT
 -- 1. The carrier interface: what a type needs to host a wedge.
 ------------------------------------------------------------------------
 
-record DivStr : Set₁ where
+record DivStr (C : Set) : Set where       -- ⟡set1-paydown: carrier-generic record parameter (the Lawvere TorsorAtom form)
   field
-    C     : Set
     z     : C                 -- the terminal divisor (the recursion stops here)
     recon : C → C → C → C     -- recon q b r = "q·b, then the remainder r"; the quotient q
                               -- is a CARRIER REPRESENTATIVE (an element of C), not a count.
@@ -63,10 +62,10 @@ open DivStr public
 -- 2. The generic wedge: the triple (quotient, remainder, witness).
 ------------------------------------------------------------------------
 
-record Wedge (D : DivStr) (a b : C D) : Set where      -- ⟦shape:478f66a6 quot,rem,wedge-eq⟧
+record Wedge {C : Set} (D : DivStr C) (a b : C) : Set where      -- ⟦shape:9e8d371e quot,rem,wedge-eq⟧
   field
-    quot     : C D
-    rem      : C D
+    quot     : C
+    rem      : C
     wedge-eq : a ≡ recon D quot b rem
 
 open Wedge public
@@ -76,27 +75,27 @@ open Wedge public
 ------------------------------------------------------------------------
 
 -- FORGETFUL: read the witness, evaluate the term back to the element.
-forget : {D : DivStr} {a b : C D} → Wedge D a b → C D
-forget {D} {b = b} w = recon D (quot w) b (rem w)
+forget : {C : Set} {D : DivStr C} {a b : C} → Wedge D a b → C
+forget {D = D} {b = b} w = recon D (quot w) b (rem w)
 
-forget-correct : {D : DivStr} {a b : C D} (w : Wedge D a b) → forget w ≡ a
+forget-correct : {C : Set} {D : DivStr C} {a b : C} (w : Wedge D a b) → forget w ≡ a
 forget-correct w = sym (wedge-eq w)
 
 -- PRESENTED: keep the remainder = the cell (its kernel is "≡ mod b").
-cell : {D : DivStr} {a b : C D} → Wedge D a b → C D
+cell : {C : Set} {D : DivStr C} {a b : C} → Wedge D a b → C
 cell w = rem w
 
 -- FREE: keep everything and recurse on the remainder = the term (the trace).
-data Trace (D : DivStr) : C D → C D → C D → Set where
-  done : (a : C D) → Trace D a (z D) a
-  more : {a g : C D} (b : C D) (w : Wedge D a b) →
+data Trace {C : Set} (D : DivStr C) : C → C → C → Set where
+  done : (a : C) → Trace D a (z D) a
+  more : {a g : C} (b : C) (w : Wedge D a b) →
          Trace D b (rem w) g → Trace D a b g
 
 -- the forgetful (annihilating) read of the WHOLE term: collapse to g (the
 -- divisor at the end of the chain — the gcd index). The free read is the
 -- Trace itself, kept; a richer keeping-fold into a coefficient target is the
 -- Bézout read (Algebra.Nat.GCD.Fold: gcd-fold vs bezout-ℤ are these two).
-collapse : {D : DivStr} {a b g : C D} → Trace D a b g → C D
+collapse : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → C
 collapse {g = g} _ = g
 
 -- THE GENERIC FOLD = the Trace recursor, named so targets are swappable (the
@@ -104,18 +103,18 @@ collapse {g = g} _ = g
 -- trace is computed structurally). gcd / Bézout / mod are its instances; the ℕ
 -- EEATrace and the F₂[x] PolyEEATrace both fold through it once they are traces.
 trace-fold :
-  {D : DivStr} {T : C D → C D → C D → Set}
-  (base-interp : (a : C D) → T a (z D) a)
-  (step-interp : {a g : C D} (b : C D) (w : Wedge D a b) → T b (rem w) g → T a b g) →
-  {a b g : C D} → Trace D a b g → T a b g
+  {C : Set} {D : DivStr C} {T : C → C → C → Set}
+  (base-interp : (a : C) → T a (z D) a)
+  (step-interp : {a g : C} (b : C) (w : Wedge D a b) → T b (rem w) g → T a b g) →
+  {a b g : C} → Trace D a b g → T a b g
 trace-fold bi si (done a)      = bi a
 trace-fold bi si (more b w tr) = si b w (trace-fold bi si tr)
 
 -- the forgetful fold IS collapse: returning the gcd index g.
-collapse-fold : {D : DivStr} {a b g : C D} → Trace D a b g → C D
-collapse-fold {D} = trace-fold {D} {T = λ _ _ _ → C D} (λ a → a) (λ _ _ rec → rec)
+collapse-fold : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → C
+collapse-fold {C = C} {D = D} = trace-fold {D = D} {T = λ _ _ _ → C} (λ a → a) (λ _ _ rec → rec)
 
-collapse-fold≡collapse : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
+collapse-fold≡collapse : {C : Set} {D : DivStr C} {a b g : C} (t : Trace D a b g) →
                          collapse-fold t ≡ collapse t
 collapse-fold≡collapse (done a)      = refl
 collapse-fold≡collapse (more b w tr) = collapse-fold≡collapse tr
@@ -132,26 +131,26 @@ collapse-fold≡collapse (more b w tr) = collapse-fold≡collapse tr
 ------------------------------------------------------------------------
 
 trace-fold-unique :
-  {D : DivStr} {T : C D → C D → C D → Set}
-  (base-interp : (a : C D) → T a (z D) a)
-  (step-interp : {a g : C D} (b : C D) (w : Wedge D a b) → T b (rem w) g → T a b g)
-  (h : {a b g : C D} → Trace D a b g → T a b g)
-  (h-done : (a : C D) → h (done a) ≡ base-interp a)
-  (h-more : {a g : C D} (b : C D) (w : Wedge D a b) (tr : Trace D b (rem w) g) →
+  {C : Set} {D : DivStr C} {T : C → C → C → Set}
+  (base-interp : (a : C) → T a (z D) a)
+  (step-interp : {a g : C} (b : C) (w : Wedge D a b) → T b (rem w) g → T a b g)
+  (h : {a b g : C} → Trace D a b g → T a b g)
+  (h-done : (a : C) → h (done a) ≡ base-interp a)
+  (h-more : {a g : C} (b : C) (w : Wedge D a b) (tr : Trace D b (rem w) g) →
             h (more b w tr) ≡ step-interp b w (h tr)) →
-  {a b g : C D} (t : Trace D a b g) →
-  h t ≡ trace-fold {D} {T} base-interp step-interp t
+  {a b g : C} (t : Trace D a b g) →
+  h t ≡ trace-fold {D = D} {T = T} base-interp step-interp t
 trace-fold-unique bi si h h-done h-more (done a)       = h-done a
-trace-fold-unique {D} {T} bi si h h-done h-more {a = a} {g = g} (more b w tr) =
+trace-fold-unique {D = D} {T = T} bi si h h-done h-more {a = a} {g = g} (more b w tr) =
   trans (h-more b w tr)
-        (cong (si {a} {g} b w) (trace-fold-unique {D} {T} bi si h h-done h-more tr))
+        (cong (si {a} {g} b w) (trace-fold-unique {D = D} {T = T} bi si h h-done h-more tr))
 
 ------------------------------------------------------------------------
 -- 4. THE INTERFACE TEST: ℕ instance, and the existing wedge + trace fall out.
 ------------------------------------------------------------------------
 
-ℕ-div : DivStr
-ℕ-div = record { C = ℕ ; z = zero ; recon = λ q b r → q * b + r }
+ℕ-div : DivStr ℕ
+ℕ-div = record { z = zero ; recon = λ q b r → q * b + r }
 
 -- the existing ℕ wedge is a generic wedge (forgetting only `rem < b`).
 fromℕ-Wedge : {a b : ℕ} → N.Wedge a b → Wedge ℕ-div a b

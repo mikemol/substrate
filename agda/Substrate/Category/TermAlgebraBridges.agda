@@ -51,7 +51,7 @@ open import Substrate.Category.CascadedCoalgebra.Term
   renaming ([] to []ᶜᶜ; _∷_ to _∷ᶜᶜ_)
 open import Substrate.Algebra.PontryaginDual.Term
   using (CharTerm; CharGen)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace)
+open import Substrate.Algebra.Wedge using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 
 ------------------------------------------------------------------------
@@ -126,7 +126,7 @@ bridge-polylens-poly t = t
 -- removed — convergence over isolation, use the apex.) Same shape as T28
 -- (a term ↦ a word); fully realized, not deferred.
 
-bridge-wedge-shape : {D : DivStr} {a b g : C D} → Trace D a b g → WedgeShape D
+bridge-wedge-shape : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → WedgeShape D
 bridge-wedge-shape = shape
 
 ------------------------------------------------------------------------

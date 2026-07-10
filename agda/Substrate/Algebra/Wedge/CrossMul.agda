@@ -33,7 +33,7 @@ module Substrate.Algebra.Wedge.CrossMul where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Wedge using (DivStr; C)
+open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.Mul
   using (MulDivStr; base; mul; Nilpotent; pow; two-div; two-mul; Two)
@@ -42,7 +42,7 @@ open import Substrate.Algebra.Wedge.Mul
 -- 1. The cospan: two carriers meeting in a common multiplicative carrier.
 ------------------------------------------------------------------------
 
-record CrossMix (A B : DivStr) (R : MulDivStr) : Set where
+record CrossMix {CA CB Cr : Set} (A : DivStr CA) (B : DivStr CB) (R : MulDivStr Cr) : Set where
   field
     embA : Bridge A (base R)
     embB : Bridge B (base R)
@@ -53,8 +53,8 @@ open CrossMix public
 -- 2. The cross term: a : A times b : B, mixed in R.
 ------------------------------------------------------------------------
 
-cross : {A B : DivStr} {R : MulDivStr} →
-        CrossMix A B R → C A → C B → C (base R)
+cross : {CA CB Cr : Set} {A : DivStr CA} {B : DivStr CB} {R : MulDivStr Cr} →
+        CrossMix A B R → CA → CB → Cr
 cross {R = R} cm a b = mul R (translate (embA cm) a) (translate (embB cm) b)
 
 ------------------------------------------------------------------------
@@ -62,8 +62,8 @@ cross {R = R} cm a b = mul R (translate (embA cm) a) (translate (embB cm) b)
 --    (Degree ≤ 1: orthogonal/clean. Degree n > 1: graded obstruction, dⁿ=0.)
 ------------------------------------------------------------------------
 
-Coherent : {A B : DivStr} {R : MulDivStr} →
-           CrossMix A B R → C A → C B → Set
+Coherent : {CA CB Cr : Set} {A : DivStr CA} {B : DivStr CB} {R : MulDivStr Cr} →
+           CrossMix A B R → CA → CB → Set
 Coherent {R = R} cm a b = Nilpotent R (cross cm a b)
 
 ------------------------------------------------------------------------

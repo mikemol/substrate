@@ -16,7 +16,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₂)
 open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; quot; rem; Trace; done; more; trace-fold; collapse-fold; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; Trace; done; more; trace-fold; collapse-fold; ℕ-div)
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; backed-non-vacuous)
@@ -25,8 +25,8 @@ open import Substrate.Category.UniversalProperty.FoldTransport using (trace-fold
 ------------------------------------------------------------------------
 -- ① shape as a trace-fold (done ↦ [] ; more w ↦ quot w ∷ …). The CF/cost read.
 ------------------------------------------------------------------------
-shape-fold : {D : DivStr} {a b g : C D} → Trace D a b g → List (C D)
-shape-fold {D} = trace-fold {D} {T = λ _ _ _ → List (C D)} (λ _ → []) (λ _ w rec → quot w ∷ rec)
+shape-fold : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → List C
+shape-fold {C = C} {D = D} = trace-fold {D = D} {T = λ _ _ _ → List C} (λ _ → []) (λ _ w rec → quot w ∷ rec)
 
 ------------------------------------------------------------------------
 -- ② THE shape FOLD-UP over ℕ-div (Source = a trace ; Target = List ℕ ; Witness = the
@@ -72,11 +72,11 @@ shape-non-vacuous = backed-non-vacuous shape-backed
 -- substantive cross-fold transports (shape↔Bézout) need their φ; the ENGINE is proved
 -- generic (FoldTransport). Here: φ = id gives shape ≡ shape (a sanity firing).
 ------------------------------------------------------------------------
-shape-id-transport : {D : DivStr} {a b g : C D} (t : Trace D a b g) →
-  (λ x → x) (trace-fold {D} {T = λ _ _ _ → List (C D)} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
-  ≡ trace-fold {D} {T = λ _ _ _ → List (C D)} (λ _ → []) (λ _ w rec → quot w ∷ rec) t
-shape-id-transport {D} =
-  trace-fold-transport {D}
+shape-id-transport : {C : Set} {D : DivStr C} {a b g : C} (t : Trace D a b g) →
+  (λ x → x) (trace-fold {D = D} {T = λ _ _ _ → List C} (λ _ → []) (λ _ w rec → quot w ∷ rec) t)
+  ≡ trace-fold {D = D} {T = λ _ _ _ → List C} (λ _ → []) (λ _ w rec → quot w ∷ rec) t
+shape-id-transport {C = C} {D = D} =
+  trace-fold-transport {D = D}
     (λ _ → []) (λ _ w rec → quot w ∷ rec)
     (λ _ → []) (λ _ w rec → quot w ∷ rec)
     (λ x → x) (λ _ → refl) (λ _ _ _ → refl)

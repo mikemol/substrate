@@ -33,16 +33,18 @@ module Substrate.Algebra.Wedge.Mul where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; ℕ-div)
 
 ------------------------------------------------------------------------
 -- 1. The enrichment: a carrier that multiplies.
 ------------------------------------------------------------------------
 
-record MulDivStr : Set₁ where
+-- ⟡set1-paydown: carrier-generic record parameter (the Lawvere TorsorAtom form).
+-- `base : DivStr` FIELDED a Set-carrier (via C base), forcing Set₁; parameterize Cr.
+record MulDivStr (Cr : Set) : Set where
   field
-    base : DivStr
-    mul  : C base → C base → C base
+    base : DivStr Cr
+    mul  : Cr → Cr → Cr
 
 open MulDivStr public
 
@@ -50,12 +52,12 @@ open MulDivStr public
 -- 2. Powers and nilpotency = the differential degree.
 ------------------------------------------------------------------------
 
-pow : (M : MulDivStr) → C (base M) → ℕ → C (base M)
+pow : {Cr : Set} (M : MulDivStr Cr) → Cr → ℕ → Cr
 pow M x zero    = x                       -- pow x 0 = x ; pow x n = x^(n+1)
 pow M x (suc n) = mul M x (pow M x n)
 
 -- x reduces to the zero z under powers: the nilpotent graded residue.
-Nilpotent : (M : MulDivStr) → C (base M) → Set
+Nilpotent : {Cr : Set} (M : MulDivStr Cr) → Cr → Set
 Nilpotent M x = Σ ℕ (λ n → pow M x n ≡ z (base M))
 
 -- x ANNIHILATES: it kills EVERY product (x·y = z for all y) — a dead-end, the
@@ -64,14 +66,14 @@ Nilpotent M x = Σ ℕ (λ n → pow M x n ≡ z (base M))
 -- annihilator — "kill can't happen", the structure deforms but never dead-ends
 -- (ties #1: the wedge correction is always handed back). Separation witnessed in
 -- `Wedge.Wedderburn` (e₁₂ nilpotent yet e₁₂·e₂₁ = e₁₁ ≠ z).
-Annihilator : (M : MulDivStr) → C (base M) → Set
-Annihilator M x = (y : C (base M)) → mul M x y ≡ z (base M)
+Annihilator : {Cr : Set} (M : MulDivStr Cr) → Cr → Set
+Annihilator {Cr} M x = (y : Cr) → mul M x y ≡ z (base M)
 
 -- x² = z : the differential element, d² = 0 (the degree-2 nilpotent).
-square-zero : (M : MulDivStr) → C (base M) → Set
+square-zero : {Cr : Set} (M : MulDivStr Cr) → Cr → Set
 square-zero M x = pow M x 1 ≡ z (base M)         -- pow x 1 = x * x
 
-square-zero→nilpotent : (M : MulDivStr) (x : C (base M)) →
+square-zero→nilpotent : {Cr : Set} (M : MulDivStr Cr) (x : Cr) →
                         square-zero M x → Nilpotent M x
 square-zero→nilpotent M x sq = 1 , sq
 
@@ -80,7 +82,7 @@ square-zero→nilpotent M x sq = 1 , sq
 --    a domain; nilpotents arise only in non-reduced carriers, next).
 ------------------------------------------------------------------------
 
-ℕ-mul : MulDivStr
+ℕ-mul : MulDivStr ℕ
 ℕ-mul = record { base = ℕ-div ; mul = _*_ }
 
 ------------------------------------------------------------------------
@@ -91,10 +93,10 @@ square-zero→nilpotent M x sq = 1 , sq
 data Two : Set where      -- ⟦shape:5970a80b 𝟘 ε⟧
   𝟘 ε : Two
 
-two-div : DivStr
-two-div = record { C = Two ; z = 𝟘 ; recon = λ _ _ r → r }
+two-div : DivStr Two
+two-div = record { z = 𝟘 ; recon = λ _ _ r → r }
 
-two-mul : MulDivStr
+two-mul : MulDivStr Two
 two-mul = record { base = two-div ; mul = λ _ _ → 𝟘 }    -- square-zero: x·y = 0
 
 ε-square-zero : square-zero two-mul ε                    -- ε² = z (d² = 0)

@@ -30,7 +30,7 @@
 module Substrate.Algebra.Wedge.Certified where
 
 open import Substrate.Foundation.Nat using (ℕ; _<_)
-open import Substrate.Algebra.Wedge using (DivStr; C; rem; fromℕ-Wedge; ℕ-div)
+open import Substrate.Algebra.Wedge using (DivStr; rem; fromℕ-Wedge; ℕ-div)
   renaming (Wedge to Wedge⟦478f66a6⟧)
 import Substrate.Algebra.Nat.GCD.Wedge as N
 
@@ -38,7 +38,7 @@ import Substrate.Algebra.Nat.GCD.Wedge as N
 -- 1. The certified wedge: a loose wedge whose residue's measure is smaller.
 ------------------------------------------------------------------------
 
-record CertifiedWedge (D : DivStr) (measure : C D → ℕ) (a b : C D) : Set where
+record CertifiedWedge {C : Set} (D : DivStr C) (measure : C → ℕ) (a b : C) : Set where
   field
     wedge : Wedge⟦478f66a6⟧ D a b
     small : measure (rem wedge) < measure b
@@ -46,7 +46,7 @@ record CertifiedWedge (D : DivStr) (measure : C D → ℕ) (a b : C D) : Set whe
 open CertifiedWedge public
 
 -- the certified residue's measure strictly decreases — the termination measure.
-residue-decreases : {D : DivStr} {measure : C D → ℕ} {a b : C D} →
+residue-decreases : {C : Set} {D : DivStr C} {measure : C → ℕ} {a b : C} →
                     (w : CertifiedWedge D measure a b) → measure (rem (wedge w)) < measure b
 residue-decreases w = small w
 

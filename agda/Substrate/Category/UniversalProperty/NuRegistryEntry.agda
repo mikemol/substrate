@@ -19,7 +19,7 @@ module Substrate.Category.UniversalProperty.NuRegistryEntry where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_)
 open import Substrate.Foundation.List using (List; _∷_)
-open import Substrate.Algebra.Wedge using (DivStr; C; ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP)

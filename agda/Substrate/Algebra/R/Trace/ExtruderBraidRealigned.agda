@@ -18,7 +18,8 @@
 module Substrate.Algebra.R.Trace.ExtruderBraidRealigned where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Wedge using (DivStr) renaming (C to Carrier)
+open import Substrate.Foundation.Product using (_×_)
+open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.Correspondence using (_⊚_)
@@ -32,10 +33,10 @@ open import Substrate.Algebra.Wedge.Monoidal
 -- is σ : A⊗B ≅ B⊗A = braidᴰ; my "σ∘σ ≡ id" (self-inverse, the twist's two
 -- directions cancel) is braid-involutive. One-line corollaries:
 ------------------------------------------------------------------------
-σ : (A B : DivStr) → WedgeIso (A ⊗ᴰ B) (B ⊗ᴰ A)
+σ : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) → WedgeIso (A ⊗ᴰ B) (B ⊗ᴰ A)
 σ = braidᴰ                          -- the braided diamond IS the monoidal braiding
 
-σ-self-inverse : (A B : DivStr) (x : Carrier (A ⊗ᴰ B))
+σ-self-inverse : {CA CB : Set} (A : DivStr CA) (B : DivStr CB) (x : CA × CB)
                → translate (braid→ B A ⊚ braid→ A B) x ≡ x
 σ-self-inverse = braid-involutive   -- my σ∘σ≡id IS braid-involutive
 
@@ -45,15 +46,16 @@ open import Substrate.Algebra.Wedge.Monoidal
 -- "functorial-diamond (naturality: the diamond commutes with further rewriting)"
 -- is assoc-nat. One-line corollaries:
 ------------------------------------------------------------------------
-hex : (A B C : DivStr) (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C))
+hex : {CA CB CC : Set} (A : DivStr CA) (B : DivStr CB) (C : DivStr CC) (x : (CA × CB) × CC)
     → translate (assoc→ B C A ⊚ (braid→ A (B ⊗ᴰ C) ⊚ assoc→ A B C)) x
     ≡ translate ((id-bridge B ⊗ᵇ braid→ A C)
                  ⊚ (assoc→ B A C ⊚ (braid→ A B ⊗ᵇ id-bridge C))) x
 hex = hexagon                        -- my 3-way Yang-Baxter IS the hexagon
 
-functorial-diamond : {A A′ B B′ C C′ : DivStr}
+functorial-diamond : {CA CA′ CB CB′ CC CC′ : Set}
+    {A : DivStr CA} {A′ : DivStr CA′} {B : DivStr CB} {B′ : DivStr CB′} {C : DivStr CC} {C′ : DivStr CC′}
     (f : Bridge A A′) (g : Bridge B B′) (h : Bridge C C′)
-    (x : Carrier ((A ⊗ᴰ B) ⊗ᴰ C))
+    (x : (CA × CB) × CC)
     → translate (assoc→ A′ B′ C′ ⊚ ((f ⊗ᵇ g) ⊗ᵇ h)) x
     ≡ translate ((f ⊗ᵇ (g ⊗ᵇ h)) ⊚ assoc→ A B C) x
 functorial-diamond = assoc-nat       -- my naturality IS assoc-nat (associator square)

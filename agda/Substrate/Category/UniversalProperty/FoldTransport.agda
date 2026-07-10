@@ -18,8 +18,8 @@
 module Substrate.Category.UniversalProperty.FoldTransport where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; rem; Trace; done; more; trace-fold; trace-fold-unique; collapse-fold) renaming (Wedge to Wedge⟦478f66a6⟧)
-module _ {D : DivStr} where
+open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more; trace-fold; trace-fold-unique; collapse-fold) renaming (Wedge to Wedge⟦478f66a6⟧)
+module _ {C : Set} {D : DivStr C} where
 
   -- an algebra over the (done/more) signature into a target family T.
   -- (base : the done-interpretation ; step : the more-interpretation.)
@@ -30,16 +30,16 @@ module _ {D : DivStr} where
   -- the first algebra to the second — then φ ∘ fold₁ ≡ fold₂ on every trace.
   ------------------------------------------------------------------------
   trace-fold-transport :
-    {T₁ T₂ : C D → C D → C D → Set}
-    (bi₁ : (a : C D) → T₁ a (z D) a)
-    (si₁ : {a g : C D} (b : C D) (w : Wedge⟦478f66a6⟧ D a b) → T₁ b (rem w) g → T₁ a b g)
-    (bi₂ : (a : C D) → T₂ a (z D) a)
-    (si₂ : {a g : C D} (b : C D) (w : Wedge⟦478f66a6⟧ D a b) → T₂ b (rem w) g → T₂ a b g)
-    (φ  : {a b g : C D} → T₁ a b g → T₂ a b g)
-    (φ-base : (a : C D) → φ (bi₁ a) ≡ bi₂ a)
-    (φ-step : {a g : C D} (b : C D) (w : Wedge⟦478f66a6⟧ D a b) (x : T₁ b (rem w) g) →
+    {T₁ T₂ : C → C → C → Set}
+    (bi₁ : (a : C) → T₁ a (z D) a)
+    (si₁ : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) → T₁ b (rem w) g → T₁ a b g)
+    (bi₂ : (a : C) → T₂ a (z D) a)
+    (si₂ : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) → T₂ b (rem w) g → T₂ a b g)
+    (φ  : {a b g : C} → T₁ a b g → T₂ a b g)
+    (φ-base : (a : C) → φ (bi₁ a) ≡ bi₂ a)
+    (φ-step : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) (x : T₁ b (rem w) g) →
               φ (si₁ b w x) ≡ si₂ b w (φ x)) →
-    {a b g : C D} (t : Trace D a b g) →
+    {a b g : C} (t : Trace D a b g) →
     φ (trace-fold bi₁ si₁ t) ≡ trace-fold bi₂ si₂ t
   trace-fold-transport bi₁ si₁ bi₂ si₂ φ φ-base φ-step =
     trace-fold-unique bi₂ si₂

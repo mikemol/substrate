@@ -576,7 +576,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
@@ -605,7 +605,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#⊤₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.13</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.12</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Canonical</loc><priority>0.0</priority></url>

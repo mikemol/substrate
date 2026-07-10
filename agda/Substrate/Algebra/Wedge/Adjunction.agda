@@ -33,7 +33,7 @@ module Substrate.Algebra.Wedge.Adjunction where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.Wedge using (DivStr; C; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
   renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Foundation.Nat using (ℕ; suc)
@@ -51,28 +51,28 @@ sym-sym refl = refl
 -- 1. Forgetful (eval) and the term type it evaluates.
 ------------------------------------------------------------------------
 
-eval : (D : DivStr) → C D → C D → C D → C D
+eval : {C : Set} (D : DivStr C) → C → C → C → C
 eval = recon
 
 -- the FREE term for a against b: a (q, r) decomposing a, where the quotient q
 -- is a CARRIER REPRESENTATIVE (an element of C D), not a bare ℕ count. (Same
 -- orientation as the wedge — so the hom-iso below is definitional.)
-Term : (D : DivStr) → C D → C D → Set
-Term D a b = Σ (C D) (λ q → Σ (C D) (λ r → a ≡ recon D q b r))
+Term : {C : Set} (D : DivStr C) → C → C → Set
+Term {C} D a b = Σ C (λ q → Σ C (λ r → a ≡ recon D q b r))
 
 ------------------------------------------------------------------------
 -- 2. The hom-set bijection Wedge ≅ Term, uniform in D — DEFINITIONAL.
 ------------------------------------------------------------------------
 
-to : {D : DivStr} {a b : C D} → Wedge⟦478f66a6⟧ D a b → Term D a b
+to : {C : Set} {D : DivStr C} {a b : C} → Wedge⟦478f66a6⟧ D a b → Term D a b
 to w = quot w , rem w , wedge-eq w
 
-from : {D : DivStr} {a b : C D} → Term D a b → Wedge⟦478f66a6⟧ D a b
+from : {C : Set} {D : DivStr C} {a b : C} → Term D a b → Wedge⟦478f66a6⟧ D a b
 from (q , r , e) = record { quot = q ; rem = r ; wedge-eq = e }
 
 -- One round-trip is definitional: re-packaging a wedge as a term and back
 -- is the identity (Σ/record eta), b flowing straight from w's type.
-from∘to : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) → from (to w) ≡ w
+from∘to : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) → from (to w) ≡ w
 from∘to _ = refl
 
 -- The other direction (`to (from t) ≡ t`) is ALSO definitional, but cannot
@@ -89,16 +89,16 @@ from∘to _ = refl
 --    This is the Free orientation read backward; reading it twice is id.
 ------------------------------------------------------------------------
 
-eval-eq : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) →
+eval-eq : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) →
           eval D (quot w) b (rem w) ≡ a
 eval-eq w = sym (wedge-eq w)
 
-triangle : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) → forget w ≡ a
+triangle : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) → forget w ≡ a
 triangle = forget-correct
 
 -- re-orienting the witness twice is the identity (the adjunction is the
 -- witness read twice — here, literally).
-reorient : {D : DivStr} {a b : C D} (w : Wedge⟦478f66a6⟧ D a b) →
+reorient : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) →
            sym (eval-eq w) ≡ wedge-eq w
 reorient w = sym-sym (wedge-eq w)
 
@@ -114,19 +114,19 @@ reorient w = sym-sym (wedge-eq w)
 --    residue branch, and the residue is the correction (z ⟺ the iso corner).
 ------------------------------------------------------------------------
 
-module FreeForgetful (D : DivStr) (b : C D) (divide : (a : C D) → Wedge⟦478f66a6⟧ D a b) where
+module FreeForgetful {C : Set} (D : DivStr C) (b : C) (divide : (a : C) → Wedge⟦478f66a6⟧ D a b) where
 
   Repr : Set
-  Repr = C D × C D                              -- (quotient, remainder) against b
+  Repr = C × C                                  -- (quotient, remainder) against b
 
-  U : Repr → C D                                -- FORGETFUL: eval the term, q·b + r
+  U : Repr → C                                  -- FORGETFUL: eval the term, q·b + r
   U (q , r) = eval D q b r
 
-  F : C D → Repr                                -- FREE: divide, keep quotient + remainder
+  F : C → Repr                                  -- FREE: divide, keep quotient + remainder
   F a = quot (divide a) , rem (divide a)
 
   -- the triangle U ∘ F ≡ id (= the witness a = recon q b r).
-  forget∘free : (a : C D) → U (F a) ≡ a
+  forget∘free : (a : C) → U (F a) ≡ a
   forget∘free a = forget-correct (divide a)
 
   -- the split idempotent: a Canonical for ker(Forgetful) — the adjoint engine.
@@ -134,11 +134,11 @@ module FreeForgetful (D : DivStr) (b : C D) (divide : (a : C D) → Wedge⟦478f
   wedge-Canonical = split-Canonical U F forget∘free
 
   -- the adjoint comparison IS the residue (total ⟹ prove-or-correct, no dead-end).
-  comparison : C D → C D
+  comparison : C → C
   comparison a = rem (divide a)
 
   -- the iso corner: residue z ⟺ the value is the EXACT reconstruction q·b.
-  exact-at-z : (a : C D) → comparison a ≡ z D →
+  exact-at-z : (a : C) → comparison a ≡ z D →
                a ≡ recon D (quot (divide a)) b (z D)
   exact-at-z a r≡z =
     trans (sym (forget∘free a)) (cong (λ r → recon D (quot (divide a)) b r) r≡z)

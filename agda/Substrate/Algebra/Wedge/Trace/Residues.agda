@@ -28,7 +28,7 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Sum using (_⊎_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Wedge using (DivStr; C; Trace; done; more; rem)
+open import Substrate.Algebra.Wedge using (DivStr; Trace; done; more; rem)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; TorsorAtom; prove-or-correct; e)
 
@@ -36,7 +36,7 @@ open import Substrate.Category.Lawvere
 -- 1. The residues a trace sheds — the remainder at each step, any carrier.
 ------------------------------------------------------------------------
 
-trace-residues : {D : DivStr} {a b g : C D} → Trace D a b g → List (C D)
+trace-residues : {C : Set} {D : DivStr C} {a b g : C} → Trace D a b g → List C
 trace-residues (done _)       = []
 trace-residues (more _ w rec) = rem w ∷ trace-residues rec
 
@@ -46,10 +46,10 @@ trace-residues (more _ w rec) = rem w ∷ trace-residues rec
 ------------------------------------------------------------------------
 
 trace-classify :
-  {D : DivStr} (T : TorsorAtom (C D))
-  (dec : (g : C D) → (g ≡ e T) ⊎ (g ≡ e T → ⊥))
-  {a b g : C D} → Trace D a b g →
-  List (Σ (C D) (λ r → (r ≡ e T) ⊎ FixedPointFree (C D)))
+  {C : Set} {D : DivStr C} (T : TorsorAtom C)
+  (dec : (g : C) → (g ≡ e T) ⊎ (g ≡ e T → ⊥))
+  {a b g : C} → Trace D a b g →
+  List (Σ C (λ r → (r ≡ e T) ⊎ FixedPointFree C))
 trace-classify T dec (done _)       = []
 trace-classify T dec (more _ w rec) =
   (rem w , prove-or-correct T dec (rem w)) ∷ trace-classify T dec rec

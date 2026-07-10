@@ -46,5 +46,5 @@ scale (suc n) b = b + scale n b
 --    reconstruction is F₂'s ring multiplication, not the ℕ-count `scale`.
 ------------------------------------------------------------------------
 
-F₂-div : DivStr
-F₂-div = record { C = F₂ ; z = 𝟘 ; recon = λ q b r → q · b + r }
+F₂-div : DivStr F₂
+F₂-div = record { z = 𝟘 ; recon = λ q b r → q · b + r }
