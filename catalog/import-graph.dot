@@ -11124,6 +11124,7 @@ digraph imports {
   "Substrate.Linguistic.YonedaNatural" -> "Substrate.Linguistic.YonedaEmbedding";
   "Substrate.Linguistic.YonedaRespect" -> "Substrate.Algebra.Setoid.Map";
   "Substrate.Linguistic.YonedaRespect" -> "Substrate.Category.FreeOverBasis";
+  "Substrate.Linguistic.YonedaRespect" -> "Substrate.Linguistic.CategoryLaws";
   "Substrate.Linguistic.YonedaRespect" -> "Substrate.Linguistic.Morphism";
   "Substrate.Linguistic.YonedaRespect" -> "Substrate.Linguistic.MorphismSetoid";
   "Substrate.Linguistic.YonedaRespect" -> "Substrate.Linguistic.NaturalPresheafMorphism";

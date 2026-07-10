@@ -30,14 +30,18 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 -- Three witnesses package the equivalence laws.
 ------------------------------------------------------------------------
 
-record Setoid (A : Set) : Set₁ where      -- ⟦shape:883de482 _≈_,≈-refl,≈-sym⟧
-  field
-    _≈_ : A → A → Set
-    ≈-refl  : (a : A) → a ≈ a
-    ≈-sym   : {a b : A} → a ≈ b → b ≈ a
-    ≈-trans : {a b c : A} → a ≈ b → b ≈ c → a ≈ c
+-- ⟡set1-paydown: parameterize the relation _≈_ (A was already a param) — a relation
+-- Carrier→Carrier→Set is itself Set₁-typed, so it must be a module parameter. Setoid is
+-- then the equivalence-witness bundle OVER a given (A, _≈_); consumers write `Setoid A _≈_`.
+module _ (A : Set) (_≈_ : A → A → Set) where
 
-open Setoid public
+  record Setoid : Set where
+    field
+      ≈-refl  : (a : A) → a ≈ a
+      ≈-sym   : {a b : A} → a ≈ b → b ≈ a
+      ≈-trans : {a b c : A} → a ≈ b → b ≈ c → a ≈ c
+
+  open Setoid public
 
 ------------------------------------------------------------------------
 -- 2. The propositional Setoid: _≡_ is the finest equivalence.
@@ -45,10 +49,9 @@ open Setoid public
 -- The canonical Setoid on any A with the equivalence being _≡_.
 ------------------------------------------------------------------------
 
-≡-Setoid : (A : Set) → Setoid A
+≡-Setoid : (A : Set) → Setoid A _≡_
 ≡-Setoid A = record
-  { _≈_     = _≡_
-  ; ≈-refl  = λ _ → refl
+  { ≈-refl  = λ _ → refl
   ; ≈-sym   = sym
   ; ≈-trans = trans
   }

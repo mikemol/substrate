@@ -1695,8 +1695,8 @@ dagger-bar p = bar-cong (~-sym p)           -- bar ∘ † (transpose p = † �
 --     conjugation IS involutive and recon-compatible. This is StarDivStr's data with ≈ := ~ — the honest home
 --     (352: the record's intensional ≡ is a CARRIER requirement; the setoid supplies the totality as ≈).
 ------------------------------------------------------------------------
-RealTrace-Setoid : Setoid RealTrace
-RealTrace-Setoid = record { _≈_ = _~_ ; ≈-refl = ~-refl ; ≈-sym = ~-sym ; ≈-trans = ~-trans }
+RealTrace-Setoid : Setoid RealTrace _~_
+RealTrace-Setoid = record { ≈-refl = ~-refl ; ≈-sym = ~-sym ; ≈-trans = ~-trans }
 
 -- the setoid-StarDivStr components: conj respects ≈ (bar-cong), and conj∘conj ≈ id (coemit-conj-conj).
 coemit-setoid-conj-respects : {r s : RealTrace} → r ~ s → bar r ~ bar s

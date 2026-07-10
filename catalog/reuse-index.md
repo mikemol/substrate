@@ -29,6 +29,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 - `data {base,step}` — `EEATrace`@`Substrate.Algebra.Nat.GCD.EEATrace`, `FinTrace`@`Substrate.FUSep.FUSepQBridge`, `PolyEEATrace`@`Substrate.Algebra.F2.Polynomial.Wedge.EEATrace`
 - `data {e,α,β,γ}` — `KleinV4`@`Substrate.S5.S5TorsorWireV4`, `V4`@`Substrate.Category.Comonoid.Sites.V4`, `V₄`@`Substrate.Groups.V4.Bijection`
 - `record {constructor,extension,extension-on-basis,images,uniqueness}` — `FreeBasisUniversal`@`Substrate.Algebra.Module.Free.Basis`, `FreeLinearization`@`Substrate.Category.FreeLinearization`, `FreeLinearizationR`@`Substrate.Category.FreeLinearizationR`
+- `record {constructor,≈-refl,≈-sym,≈-trans}` — `IsEquivalence`@`Substrate.Category.UniversalProperty.ExtrudeSetoidCategory`, `Quotient`@`Substrate.Algebra.Quotient`, `Setoid`@`Substrate.Algebra.Setoid`
 - `data {_▷_,ε}` — `Chain`@`Substrate.Realizability.Charter`, `NervePath`@`Substrate.Category.UniversalProperty.ExtrudeNerveGeneral`
 - `data {even,odd}` — `Chir`@`Substrate.WitnessTower.M40Closure`, `Chirality`@`Substrate.Cocycles.V4Signature.Chirality.Type`
 - `data {lift}` — `MarkovGen`@`Substrate.Probability.MarkovCategory.Term`, `UPGen`@`Substrate.Category.UniversalProperty.Term`
@@ -49,7 +50,6 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 - `record {constructor,head,tail}` — `CoTrace`@`Substrate.S5.S5Real`, `RealTrace`@`Substrate.Algebra.R.Trace`
 - `record {constructor,opcode}` — `DecoderDispatch`@`Substrate.Category.CoarseResidueEmission`, `EncoderDispatch`@`Substrate.Category.CoarseResidueEmission`
 - `record {constructor,quot,rem,wedge-eq}` — `StepWedge`@`Substrate.WitnessTower.Wedge.Action`, `Wedge`@`Substrate.Algebra.Wedge`, `Wedge`@`Substrate.S5.S5EEA`
-- `record {constructor,≈-refl,≈-sym,≈-trans}` — `IsEquivalence`@`Substrate.Category.UniversalProperty.ExtrudeSetoidCategory`, `Quotient`@`Substrate.Algebra.Quotient`
 
 ## Multiply-homed names (41) — one name, several structures; pick by shape
 
@@ -741,7 +741,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `SequentFixed` | record | `Substrate.Pipeline.Sequent.SequentFixed` | endofunction A → A plus |
 | `SequentRule` | data | `Substrate.Pipeline.Sequent.SequentRule` | The 6 structural rules of sequent calculus as a data tag: |
 | `SequentType` | record | `Substrate.Pipeline.Sequent.SequentType` | moved into the annotation; body is the tag. |
-| `Setoid` | record | `Substrate.Algebra.Setoid` | Set1 of the Setoid sibling tower per [scratch/m_mod_arc_plan.md] |
+| `Setoid` | record | `Substrate.Algebra.Setoid` | a relation |
 | `SetoidFunctor` | record | `Substrate.Category.UniversalProperty.ExtrudeSetoidFunctor` | SMALL functors and natural transformations |
 | `SetoidGroup` | record | `Substrate.Algebra.SetoidGroup` | both are Set-valued |
 | `SetoidMap` | record | `Substrate.Algebra.Setoid.Map` | Set2 of the Setoid sibling tower per [scratch/m_mod_arc_plan.md]. |

@@ -61,10 +61,9 @@ open import Substrate.Algebra.Setoid using (Setoid)
 ------------------------------------------------------------------------
 
 LangMor-Setoid :
-  (L₁ L₂ : LanguageWitness) → Setoid (LanguageMorphism L₁ L₂)
+  (L₁ L₂ : LanguageWitness) → Setoid (LanguageMorphism L₁ L₂) _≈M_
 LangMor-Setoid L₁ L₂ = record
-  { _≈_     = _≈M_
-  ; ≈-refl  = λ _ → ≈M-refl
+  { ≈-refl  = λ _ → ≈M-refl
   ; ≈-sym   = ≈M-sym
   ; ≈-trans = ≈M-trans
   }

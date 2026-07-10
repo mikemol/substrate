@@ -112,8 +112,8 @@ digraph reuse {
   "Substrate.Algebra.Semiring.NatInf.ℕ∞" [label="ℕ∞\nSubstrate.Algebra.Semiring.NatInf", style=rounded];
   "Substrate.Algebra.Semiring.SPPF.SPPF" [label="SPPF\nSubstrate.Algebra.Semiring.SPPF", style=rounded];
   "Substrate.Algebra.Semiring.Semiring" [label="Semiring\nSubstrate.Algebra.Semiring"];
-  "Substrate.Algebra.Setoid.Map.SetoidMap" [label="SetoidMap\nSubstrate.Algebra.Setoid.Map"];
-  "Substrate.Algebra.Setoid.Setoid" [label="Setoid\nSubstrate.Algebra.Setoid"];
+  "Substrate.Algebra.Setoid.Map._.SetoidMap" [label="SetoidMap\nSubstrate.Algebra.Setoid.Map._"];
+  "Substrate.Algebra.Setoid._.Setoid" [label="Setoid\nSubstrate.Algebra.Setoid._"];
   "Substrate.Algebra.SetoidGroup.Action.Action" [label="Action\nSubstrate.Algebra.SetoidGroup.Action"];
   "Substrate.Algebra.SetoidGroup._.SetoidGroup" [label="SetoidGroup\nSubstrate.Algebra.SetoidGroup._"];
   "Substrate.Algebra.TopologicalGroup.TopologicalGroup" [label="TopologicalGroup\nSubstrate.Algebra.TopologicalGroup"];
@@ -900,7 +900,7 @@ digraph reuse {
   "Substrate.Algebra.R.Trace.SKIShedDuality.Shed" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.SemidirectProduct.SemidirectGroupObligation" -> "Substrate.Algebra.Group.Group";
   "Substrate.Algebra.SemidirectProduct.SemidirectGroupObligation" -> "Substrate.Algebra.GroupAction.Actionᴳ";
-  "Substrate.Algebra.Setoid.Map.SetoidMap" -> "Substrate.Algebra.Setoid.Setoid";
+  "Substrate.Algebra.Setoid.Map._.SetoidMap" -> "Substrate.Algebra.Setoid._.Setoid";
   "Substrate.Algebra.SetoidGroup.Action.Action" -> "Substrate.Algebra.SetoidGroup._.SetoidGroup";
   "Substrate.Algebra.Torsor.IsTorsorᴳ" -> "Substrate.Algebra.Group.Group";
   "Substrate.Algebra.Wedge.AxisWord.PackedBulk.PackedBulk._._∈ᵀ_" -> "Substrate.Foundation.Eq._≡_";

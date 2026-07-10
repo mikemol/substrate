@@ -16,7 +16,7 @@
 
 module Substrate.Algebra.Setoid.Map where
 
-open import Substrate.Algebra.Setoid using (Setoid; _≈_)
+open import Substrate.Algebra.Setoid using (Setoid)
 
 ------------------------------------------------------------------------
 -- 1. The SetoidMap record.
@@ -25,23 +25,23 @@ open import Substrate.Algebra.Setoid using (Setoid; _≈_)
 -- equivalence relations on A and B.
 ------------------------------------------------------------------------
 
-record SetoidMap
-  {A B : Set}
-  (S-A : Setoid A) (S-B : Setoid B)
-  : Set where
-  field
-    apply : A → B
-    respect-≈ :
-      {a b : A} → _≈_ S-A a b → _≈_ S-B (apply a) (apply b)
+-- ⟡set1-paydown: Setoid now takes its relation as a parameter, so thread the two relations
+-- (implicit, inferred from S-A/S-B) and use them directly instead of the removed `_≈_ S` projection.
+module _ {A B : Set} {_≈A_ : A → A → Set} {_≈B_ : B → B → Set} where
 
-open SetoidMap public
+  record SetoidMap (S-A : Setoid A _≈A_) (S-B : Setoid B _≈B_) : Set where
+    field
+      apply : A → B
+      respect-≈ : {a b : A} → _≈A_ a b → _≈B_ (apply a) (apply b)
+
+  open SetoidMap public
 
 ------------------------------------------------------------------------
 -- 2. Identity SetoidMap and composition.
 ------------------------------------------------------------------------
 
 id-SetoidMap :
-  {A : Set} (S-A : Setoid A) → SetoidMap S-A S-A
+  {A : Set} {_≈A_ : A → A → Set} (S-A : Setoid A _≈A_) → SetoidMap S-A S-A
 id-SetoidMap S-A = record
   { apply     = λ a → a
   ; respect-≈ = λ p → p
@@ -49,7 +49,8 @@ id-SetoidMap S-A = record
 
 compose-SetoidMap :
   {A B C : Set}
-  {S-A : Setoid A} {S-B : Setoid B} {S-C : Setoid C} →
+  {_≈A_ : A → A → Set} {_≈B_ : B → B → Set} {_≈C_ : C → C → Set}
+  {S-A : Setoid A _≈A_} {S-B : Setoid B _≈B_} {S-C : Setoid C _≈C_} →
   SetoidMap S-B S-C →
   SetoidMap S-A S-B →
   SetoidMap S-A S-C
