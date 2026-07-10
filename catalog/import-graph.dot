@@ -1720,6 +1720,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.Adjunction" [label="Wedge.Adjunction"];
   "Substrate.WitnessTower.Wedge.Factoradic" [label="Wedge.Factoradic"];
   "Substrate.WitnessTower.Wedge.Graded" [label="Wedge.Graded"];
+  "Substrate.WitnessTower.Wedge.GradedStarV4" [label="Wedge.GradedStarV4"];
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" [label="Wedge.OrientationFixedPoint"];
   "Substrate.WitnessTower.Wedge.OrientationProduct" [label="Wedge.OrientationProduct"];
   "Substrate.WitnessTower.Wedge.OrientationSum" [label="Wedge.OrientationSum"];
@@ -12715,6 +12716,12 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.Graded" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.Graded" -> "Substrate.Foundation.Vec";
   "Substrate.WitnessTower.Wedge.Graded" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Algebra.Wedge.FourPointV4";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Category.Lawvere";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.Algebra.Wedge.Graded";
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationFixedPoint" -> "Substrate.Foundation.Fin";
