@@ -27,10 +27,12 @@
 
 module Substrate.WitnessTower.Wedge.OrientationUniversal where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Fin.Inject using (inject+)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 
 ------------------------------------------------------------------------
 -- 1. A LehmerAlgebra: a graded target (C : ℕ → Set, each grade Set₀) carrying the tower
@@ -65,3 +67,23 @@ fold-unique : ∀ {C} (alg : LehmerAlgebra C) (g : ∀ {n} → LehmerPath n → 
 fold-unique alg g g-base g-step start    = g-base
 fold-unique alg g g-base g-step (l ◂ p)  =
   trans (g-step l p) (cong (λ z → step alg z p) (fold-unique alg g g-base g-step l))
+
+------------------------------------------------------------------------
+-- 4. THE FOLD IS A ⊕-HOMOMORPHISM (the additive half of the rig-functor UP). If the target
+--    carries a ⊕ᶜ that mirrors ⊕'s recursion on the (base, step) structure — `⊕ᶜ base y = y`
+--    (start ⊕ l = l) and `⊕ᶜ (step x p) y = step (⊕ᶜ x y) (inject+ p)` ((l◂p) ⊕ l₂) — then
+--    fold preserves ⊕, by LehmerPath induction. So the unique catamorphism is an additive
+--    homomorphism: the free structure maps to any ⊕-compatible target respecting ⊕.
+------------------------------------------------------------------------
+
+fold-⊕ : ∀ {C} (alg : LehmerAlgebra C)
+         (_⊕ᶜ_ : ∀ {i j} → C i → C j → C (i + j))
+         (⊕ᶜ-base : ∀ {n} (y : C n) → (base alg ⊕ᶜ y) ≡ y)
+         (⊕ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (y : C n) →
+                    (step alg x p ⊕ᶜ y) ≡ step alg (x ⊕ᶜ y) (inject+ n p)) →
+         ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) →
+         fold alg (l₁ ⊕ l₂) ≡ (fold alg l₁ ⊕ᶜ fold alg l₂)
+fold-⊕ alg _⊕ᶜ_ cb cs start    l₂ = sym (cb (fold alg l₂))
+fold-⊕ alg _⊕ᶜ_ cb cs (l₁ ◂ p) l₂ =
+  trans (cong (λ z → step alg z (inject+ _ p)) (fold-⊕ alg _⊕ᶜ_ cb cs l₁ l₂))
+        (sym (cs (fold alg l₁) p (fold alg l₂)))

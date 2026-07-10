@@ -12992,8 +12992,10 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.Wedge.OrientationSumComm";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Fin.Inject";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.WitnessTower.Wedge.OrientationSum";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.F2";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.Wedge.Graded.Morphism";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.Wedge.VecGraded";
