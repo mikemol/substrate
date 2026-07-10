@@ -824,6 +824,7 @@ digraph reuse {
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" [label="Permutation\nSubstrate.WitnessTower.SymBridge._.SymN"];
   "Substrate.WitnessTower.Wedge.Action.StepWedge" [label="StepWedge\nSubstrate.WitnessTower.Wedge.Action"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver" [label="GradedProductOver\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
+  "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" [label="LehmerAlgebra\nSubstrate.WitnessTower.Wedge.OrientationUniversal"];
   "Substrate.Algebra.Abelian.V4-as-PFG.⊤" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Algebra.CayleyDickson.Prod" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.F1.GL.GL-F₁" -> "Substrate.Foundation.Nat.ℕ";
@@ -1395,4 +1396,5 @@ digraph reuse {
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.Action.StepWedge" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" -> "Substrate.Foundation.Nat.ℕ";
 }

@@ -1742,6 +1742,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationSumLaws" [label="Wedge.OrientationSumLaws"];
   "Substrate.WitnessTower.Wedge.OrientationSumMonoidal" [label="Wedge.OrientationSumMonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" [label="Wedge.OrientationSumNaturality"];
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" [label="Wedge.OrientationUniversal"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
   "Substrate.WitnessTower.Wedge.Simplicial" [label="Wedge.Simplicial"];
   "Substrate.WitnessTower.Wedge.V4Seam" [label="Wedge.V4Seam"];
@@ -12989,6 +12990,10 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.Wedge.OrientationSum";
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.Wedge.OrientationSumComm";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.F2";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.Wedge.Graded.Morphism";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Algebra.Wedge.VecGraded";
