@@ -160,6 +160,7 @@ digraph reuse {
   "Substrate.Algebra.Wedge.Product.Hom._.GradedHom" [label="GradedHom\nSubstrate.Algebra.Wedge.Product.Hom._"];
   "Substrate.Algebra.Wedge.Product.Term.WedgeTerm" [label="WedgeTerm\nSubstrate.Algebra.Wedge.Product.Term", style=rounded];
   "Substrate.Algebra.Wedge.Product._.GradedProduct" [label="GradedProduct\nSubstrate.Algebra.Wedge.Product._"];
+  "Substrate.Algebra.Wedge.Registry.ObjCode" [label="ObjCode\nSubstrate.Algebra.Wedge.Registry", style=rounded];
   "Substrate.Algebra.Wedge.Shape.Register.Properties.NoDupᴿ" [label="NoDupᴿ\nSubstrate.Algebra.Wedge.Shape.Register.Properties", style=rounded];
   "Substrate.Algebra.Wedge.Shape.Register._∈ᴿ_" [label="_∈ᴿ_\nSubstrate.Algebra.Wedge.Shape.Register", style=rounded];
   "Substrate.Algebra.Wedge.StarV4._.StarDivStr" [label="StarDivStr\nSubstrate.Algebra.Wedge.StarV4._"];

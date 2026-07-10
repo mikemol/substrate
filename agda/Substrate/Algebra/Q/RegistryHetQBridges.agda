@@ -36,7 +36,7 @@ open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; id-bridge)
 open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; embA; embB)
-open import Substrate.Algebra.Wedge.Registry using (BridgeEntry; bridges)
+open import Substrate.Algebra.Wedge.Registry using (BridgeEntry; bridges; ObjCode; ℕ'; ℤ')
 open import Substrate.Algebra.Q.HetCrossMix using (ℚ-crossmix; ℤ-mul)
 
 ------------------------------------------------------------------------
@@ -63,20 +63,20 @@ hetq-bridges-in-registry = hetq-embA-is-id , hetq-embB-is-include
 
 ------------------------------------------------------------------------
 -- 2. The HetQ denominator leg, packaged as a Registry BridgeEntry, IS the
---    Registry's ℕ↪ℤ entry. A BridgeEntry is Σ DivStr (λ A → Σ DivStr (λ B →
---    Bridge A B)); the entry built from the cospan's domains/leg coincides
---    (refl) with `Registry.bridges`' inclusion entry `(ℕ-div , ℤ-div ,
---    include-ℕℤ)`. So the cospan's structure does not extend the Registry —
---    it instantiates one of its entries.
+--    Registry's ℕ↪ℤ entry. A BridgeEntry is now Σ ObjCode (λ a → Σ ObjCode
+--    (λ b → Bridge (objDivStr a) (objDivStr b))) — coded endpoints; the entry
+--    built from the cospan's leg coincides (refl) with `Registry.bridges`'
+--    inclusion entry `(ℕ' , ℤ' , include-ℕℤ)`. So the cospan's structure does
+--    not extend the Registry — it instantiates one of its entries.
 ------------------------------------------------------------------------
 
--- the HetQ denominator leg as a standalone Registry BridgeEntry.
+-- the HetQ denominator leg as a standalone Registry BridgeEntry (coded endpoints).
 hetq-denom-entry : BridgeEntry
-hetq-denom-entry = _ , ℕ-div , _ , ℤ-div , embB ℚ-crossmix
+hetq-denom-entry = ℕ' , ℤ' , embB ℚ-crossmix
 
 -- the Registry's own ℕ↪ℤ entry (the inclusion bridge it registers).
 registry-ℕℤ-entry : BridgeEntry
-registry-ℕℤ-entry = _ , ℕ-div , _ , ℤ-div , include-ℕℤ
+registry-ℕℤ-entry = ℕ' , ℤ' , include-ℕℤ
 
 -- they are the SAME BridgeEntry — the cospan leg is a Registry entry, not new.
 hetq-cospan-is-registry-entry : hetq-denom-entry ≡ registry-ℕℤ-entry
