@@ -752,7 +752,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#ConditionalStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#IsDeterministic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#Marginalisation</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.09</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.08</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Sites/FinStoch#FinStochHom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>
@@ -826,6 +826,7 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40NoIso#A4Z2≅SymV4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/SymBridge#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/Action#StepWedge</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBifunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBraid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedHomOver</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.01</priority></url>

@@ -1722,6 +1722,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.Factoradic" [label="Wedge.Factoradic"];
   "Substrate.WitnessTower.Wedge.Graded" [label="Wedge.Graded"];
   "Substrate.WitnessTower.Wedge.GradedStarV4" [label="Wedge.GradedStarV4"];
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" [label="Wedge.OrientationBifunctor"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" [label="Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties" [label="OrientationBimonoidal.Properties"];
   "Substrate.WitnessTower.Wedge.OrientationCoherence" [label="Wedge.OrientationCoherence"];
@@ -12751,6 +12752,20 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.Foundation.Product";
   "Substrate.WitnessTower.Wedge.GradedStarV4" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.Combine.CombineRemQuotInverse";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.Inject";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.Raise";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.RemQuot";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.SplitAt";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Fin.SplitAt.View";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.Foundation.Sum";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.WitnessTower.Wedge.OrientationDistributorCoherence";
+  "Substrate.WitnessTower.Wedge.OrientationBifunctor" -> "Substrate.WitnessTower.Wedge.OrientationHexagon";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal" -> "Substrate.Foundation.Nat";

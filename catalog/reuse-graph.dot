@@ -823,6 +823,7 @@ digraph reuse {
   "Substrate.WitnessTower.M40NoIso.A4Z2≅SymV4" [label="A4Z2≅SymV4\nSubstrate.WitnessTower.M40NoIso"];
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" [label="Permutation\nSubstrate.WitnessTower.SymBridge._.SymN"];
   "Substrate.WitnessTower.Wedge.Action.StepWedge" [label="StepWedge\nSubstrate.WitnessTower.Wedge.Action"];
+  "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBifunctor" [label="GradedBifunctor\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBraid" [label="GradedBraid\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedHomOver" [label="GradedHomOver\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver" [label="GradedProductOver\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
@@ -1397,6 +1398,7 @@ digraph reuse {
   "Substrate.WitnessTower.LehmerPath.LehmerPath" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.Action.StepWedge" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBifunctor" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBraid" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedHomOver" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedHomOver" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver";

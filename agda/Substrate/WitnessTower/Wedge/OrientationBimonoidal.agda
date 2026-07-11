@@ -118,3 +118,27 @@ GradedBraidNatural : {op : ℕ → ℕ → ℕ} {ε : ℕ} {C : ℕ → Set}
 GradedBraidNatural {op = op} {C = C} B P ρ =
   ∀ {m n} (x : C m) (y : C n) (k : Fin (op m n)) →
   ρ (_∧_ P y x) (braid B m n k) ≡ braid B m n (ρ (_∧_ P x y) k)
+
+------------------------------------------------------------------------
+-- ⟡rig-UP-map — THE GRADED BIFUNCTOR: the product's action ON MORPHISMS. ⊕map (over +,
+-- the ⊎-split) and ⊗map (over *, the ×-split) are ONE structure — a map lifting a pair of
+-- index-functions (Fin m→Fin m', Fin n→Fin n') to Fin(op m n)→Fin(op m' n'), FUNCTORIALLY
+-- (identity + composition). Crucially the functoriality LAWS are DECOMPOSITION-FREE (they
+-- mention only gmap, id, ∘ — never inject+/combine), so this lifts to a Set₀ invariant just
+-- like the braid; only the fibres' PROOFS touch the ⊎/× split. (This is the level that a
+-- too-hasty earlier reading called "decomposition-bound, does not lift" — the char lemmas
+-- are decomposition-bound, but the functoriality laws that make a bifunctor are not.)
+------------------------------------------------------------------------
+
+record GradedBifunctor (op : ℕ → ℕ → ℕ) : Set where
+  field
+    gmap    : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
+              Fin (op m n) → Fin (op m' n')
+    gmap-id : ∀ {m n} (k : Fin (op m n)) →
+              gmap {m} {n} {m} {n} (λ i → i) (λ j → j) k ≡ k
+    gmap-∘  : ∀ {m n m' n' m'' n''}
+              (f : Fin m' → Fin m'') (f' : Fin m → Fin m')
+              (g : Fin n' → Fin n'') (g' : Fin n → Fin n') (k : Fin (op m n)) →
+              gmap (λ i → f (f' i)) (λ j → g (g' j)) k ≡ gmap f g (gmap f' g' k)
+
+open GradedBifunctor public
