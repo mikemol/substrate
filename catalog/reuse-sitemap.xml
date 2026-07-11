@@ -60,7 +60,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Quotient#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#Character</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#F2nSelfDual</loc><priority>0.0</priority></url>
@@ -95,7 +95,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanSKI#_⇒_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/OrbitAudit#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/OrbitComplete#Bool</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#RealTrace</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#RealTrace</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIGradedFlatAllegory#Present</loc><priority>0.0</priority></url>
@@ -340,7 +340,7 @@
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/LoopParameters#LoopParameters</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/PLL#PLL</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/SubstratePLLBank#SubstratePLLBank</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Poly#Poly</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Poly#Poly</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Poly/Term#PolyGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Poly/Term#PolyTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Poly#_⇒_</loc><priority>0.0</priority></url>
@@ -831,8 +831,10 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedHomOver</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedSymMonoidal</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#GradedRigCat</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#GradedRigCat</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#Objₛ</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor≈</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigFreeUP#FreeRigAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigInitial#RigAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationUniversal#LehmerAlgebra</loc><priority>0.0</priority></url>

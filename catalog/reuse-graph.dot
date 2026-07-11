@@ -830,6 +830,8 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" [label="GradedSymMonoidal\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat" [label="GradedRigCat\nSubstrate.WitnessTower.Wedge.OrientationRigCat"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" [label="Objₛ\nSubstrate.WitnessTower.Wedge.OrientationRigCat", style=rounded];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" [label="RigFunctor\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" [label="RigFunctor≈\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigFreeUP.FreeRigAlgebra" [label="FreeRigAlgebra\nSubstrate.WitnessTower.Wedge.OrientationRigFreeUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigInitial.RigAlgebra" [label="RigAlgebra\nSubstrate.WitnessTower.Wedge.OrientationRigInitial"];
   "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" [label="LehmerAlgebra\nSubstrate.WitnessTower.Wedge.OrientationUniversal"];
@@ -1412,6 +1414,11 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" -> "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" -> "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" -> "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor";
   "Substrate.WitnessTower.Wedge.OrientationRigFreeUP.FreeRigAlgebra" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigInitial.RigAlgebra" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" -> "Substrate.Foundation.Nat.ℕ";

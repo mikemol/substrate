@@ -30,9 +30,9 @@
 
 module Substrate.Algebra.Wedge.Registry where
 
-open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Foundation.Product using (Σ; _,_; _×_)
+open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Algebra.F2 using (F₂)
@@ -40,7 +40,7 @@ open import Substrate.Algebra.Z using (ℤ)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Wedge.Mul using (Two; two-div)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
-open import Substrate.Algebra.Wedge.Bridge using (Bridge; id-bridge)
+open import Substrate.Algebra.Wedge.Bridge using (Bridge)
 open import Substrate.Algebra.Wedge.Iso using (WedgeIso; iso-id; iso-sym)
 open import Substrate.Algebra.Wedge.Monoidal using (⊤-div; assocᴰ; unitᴸ; unitᴿ)
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
@@ -52,106 +52,81 @@ open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 open import Substrate.Algebra.Fin.Wedge.ModBridge using (modn-bridge)
 
 ------------------------------------------------------------------------
--- 1. Objects: the wedge-founded roots (vertices of the sphere).
+-- ⟡set1-paydown (the carrier is QUOTIENTED, not bundled — no Code/El, no Set₁).
+--
+-- A DivStr over C is a "torsor+C": the wedge torsor PLUS its carrier. Bundling
+-- that carrier as data — `Σ Set DivStr`, or a code universe with a decoder
+-- `El : Code → Set` — is the ONLY thing that was forcing Set₁, and it is
+-- unnecessary: the carrier is a coordinate to QUOTIENT away, and the quotient
+-- torsor+C ⇒ torsor is already realized as the Bridge / CrossMix cospan
+-- (`embA : Bridge A (base R)` gives `translate embA : CA → Cr`, the carrier map
+-- into a common target; `cross` computes at that quotient level). So:
+--   * a `List` demands a HOMOGENEOUS element type ⇒ it must pack the carrier ⇒ Set₁;
+--   * a heterogeneous PRODUCT of KNOWN-typed facts is Set₀ (`_×_ : Set→Set→Set`),
+--     packs nothing, and — since these collections are never folded, only
+--     certified by compilation — is exactly the right shape.
+--   * the category/groupoid LAWS are stated at the TORSOR level (carrier-generic,
+--     `{C : Set}`), which IS "derive the torsor from torsor+C" — the quotient.
 ------------------------------------------------------------------------
 
--- ⟡set1-paydown (generic-not-materialized, the Lawvere follow-up to the DivStr
--- TorsorAtom form). Packing a carrier `Set` as data (`Σ Set DivStr`) is what forced
--- Set₁; a MATERIALIZED heterogeneous-carrier list has nowhere else to put the carrier.
--- The Tarski route-around: a CODE universe `ObjCode : Set` naming the objects, with ONE
--- decoder `El : ObjCode → Set` — the whole heterogeneity concentrates into that single
--- level-1 function (a `Fam : Set → Set₁`-shaped decoder, the honest floor), and every
--- collection below becomes a Set₀ `List` of codes. `ObjCode` is the FREE MONOID on the
--- founded roots (generators) with unit `⊤'` and tensor `_⊗'_` — the object monoid of the
--- monoidal sphere; `El` / `objDivStr` are its unique monoid-hom extensions into (Set,×,⊤)
--- / the DivStr tensor. Morphism endpoints (unitors/associator) are tensors, so the code
--- must be ⊗-closed; that closure IS why a bare root-enumeration doesn't suffice.
-data ObjCode : Set where
-  ℕ' F₂' Z3' ℤ' List⊤' two' ⊤' : ObjCode   -- the founded roots + the monoidal unit
-  _⊗'_ : ObjCode → ObjCode → ObjCode        -- tensor closure (free-monoid multiplication)
-
-El : ObjCode → Set                          -- the ONE decoder (concentrates the Set₁)
-El ℕ'       = ℕ
-El F₂'      = F₂
-El Z3'      = Fin 3
-El ℤ'       = ℤ
-El List⊤'   = List ⊤
-El two'     = Two
-El ⊤'       = ⊤
-El (a ⊗' b) = El a × El b
-
-objDivStr : (c : ObjCode) → DivStr (El c)   -- the coded object's DivStr (hom extension)
-objDivStr ℕ'       = ℕ-div
-objDivStr F₂'      = F₂-div
-objDivStr Z3'      = Cyc-div 2
-objDivStr ℤ'       = ℤ-div
-objDivStr List⊤'   = List-div ⊤
-objDivStr two'     = two-div
-objDivStr ⊤'       = ⊤-div
-objDivStr (a ⊗' b) = objDivStr a ⊗ᴰ objDivStr b
-
--- An object of the sphere IS its code (Set₀, no carrier packed).
-Obj : Set
-Obj = ObjCode
-
-objects : List ObjCode
-objects = ℕ'      -- the Euclidean carrier (continued fractions)
-        ∷ F₂'     -- the field F₂ (parity = mod 2)
-        ∷ Z3'     -- the cyclic quotient Z/3 (general-n parity, mod n)
-        ∷ ℤ'      -- the integers (signed Bézout's operand)
-        ∷ List⊤'  -- the free monoid (wedge's native carrier)
-        ∷ two'    -- the square-zero / infinitesimal carrier
-        ∷ ⊤'      -- the monoidal unit
-        ∷ []
-
 ------------------------------------------------------------------------
--- 2. Morphisms: the GROUPOID of WedgeIsos (round-trips forced). The
---    associator/unitors register as genuine non-identity isos.
+-- 1. Objects: the wedge-founded roots (vertices), each at its own carrier —
+--    a Set₀ heterogeneous product (no carrier packed as data).
 ------------------------------------------------------------------------
 
--- Set₀ now: both endpoints are CODES; the iso is over their decoded DivStrs.
-Morphism : Set
-Morphism = Σ ObjCode (λ a → Σ ObjCode (λ b → WedgeIso (objDivStr a) (objDivStr b)))
-
-morphisms : List Morphism
-morphisms = (ℕ' , ℕ' , iso-id ℕ-div)
-          ∷ (F₂' , F₂' , iso-id F₂-div)
-          -- the left unitor: ⊤ ⊗ ℕ ≃ ℕ  (a structure map, non-identity)
-          ∷ (⊤' ⊗' ℕ' , ℕ' , unitᴸ ℕ-div)
-          -- the right unitor: F₂ ⊗ ⊤ ≃ F₂
-          ∷ (F₂' ⊗' ⊤' , F₂' , unitᴿ F₂-div)
-          -- the associator: (ℕ⊗F₂)⊗ℤ ≃ ℕ⊗(F₂⊗ℤ)
-          ∷ ((ℕ' ⊗' F₂') ⊗' ℤ' , ℕ' ⊗' (F₂' ⊗' ℤ') , assocᴰ ℕ-div F₂-div ℤ-div)
-          ∷ []
+objects :  DivStr ℕ × DivStr F₂ × DivStr (Fin 3) × DivStr ℤ
+         × DivStr (List ⊤) × DivStr Two × DivStr ⊤
+objects = ℕ-div        -- the Euclidean carrier (continued fractions)
+        , F₂-div       -- the field F₂ (parity = mod 2)
+        , Cyc-div 2    -- the cyclic quotient Z/3 (general-n parity, mod n)
+        , ℤ-div        -- the integers (signed Bézout's operand)
+        , List-div ⊤   -- the free monoid (wedge's native carrier)
+        , two-div      -- the square-zero / infinitesimal carrier
+        , ⊤-div        -- the monoidal unit
 
 ------------------------------------------------------------------------
--- 3. Bridges: the CATEGORY of (not-necessarily-invertible) homs — the
---    wedge-constructed cross-root edges. Non-invertible, so they live here
---    and NOT in `morphisms`; the type enforces the distinction.
+-- 2. Morphisms: the groupoid of WedgeIsos; the unitors/associator register
+--    as genuine non-identity isos (their endpoints ARE tensors, stated
+--    directly — no code needed to name a tensor object).
 ------------------------------------------------------------------------
 
--- Set₀ now: coded endpoints, bridge over their decoded DivStrs.
-BridgeEntry : Set
-BridgeEntry = Σ ObjCode (λ a → Σ ObjCode (λ b → Bridge (objDivStr a) (objDivStr b)))
-
-bridges : List BridgeEntry
-bridges = (ℕ' , F₂' , parity-bridge)        -- parity (mod 2): ℕ ↠ F₂
-        ∷ (ℕ' , Z3' , modn-bridge 2)        -- mod 3: ℕ ↠ Z/3 (general-n)
-        ∷ (ℕ' , ℤ' , include-ℕℤ)            -- inclusion: ℕ ↪ ℤ
-        ∷ []
+morphisms :  WedgeIso ℕ-div ℕ-div
+           × WedgeIso F₂-div F₂-div
+           × WedgeIso (⊤-div ⊗ᴰ ℕ-div) ℕ-div                                    -- left unitor
+           × WedgeIso (F₂-div ⊗ᴰ ⊤-div) F₂-div                                   -- right unitor
+           × WedgeIso ((ℕ-div ⊗ᴰ F₂-div) ⊗ᴰ ℤ-div) (ℕ-div ⊗ᴰ (F₂-div ⊗ᴰ ℤ-div)) -- associator
+morphisms = iso-id ℕ-div
+          , iso-id F₂-div
+          , unitᴸ ℕ-div
+          , unitᴿ F₂-div
+          , assocᴰ ℕ-div F₂-div ℤ-div
 
 ------------------------------------------------------------------------
--- 4. The category/groupoid laws, as registry facts (forced by typing).
+-- 3. Bridges: the (not-nec-invertible) cross-root homs — each a carrier-
+--    QUOTIENT map (a Bridge A B is `translate : CA → CB`, the torsor+C ⇒
+--    torsor+C' coordinate change; the CrossMix cospan is two of these into a
+--    common target). Non-invertible, so distinct from `morphisms` by type.
 ------------------------------------------------------------------------
 
--- every object has its identity correspondence (reflexivity).
-id-of : (c : ObjCode) → Morphism
-id-of c = c , c , iso-id (objDivStr c)
+bridges :  Bridge ℕ-div F₂-div          -- parity (mod 2): ℕ ↠ F₂
+         × Bridge ℕ-div (Cyc-div 2)     -- mod 3: ℕ ↠ Z/3 (general-n)
+         × Bridge ℕ-div ℤ-div           -- inclusion: ℕ ↪ ℤ
+bridges = parity-bridge , modn-bridge 2 , include-ℕℤ
+
+------------------------------------------------------------------------
+-- 4. The category/groupoid laws, stated GENERICALLY at the torsor level
+--    (carrier-quotiented — they range over every object, so no enumeration
+--    or code to quantify over is needed).
+------------------------------------------------------------------------
+
+-- every object has its identity iso.
+id-iso : {C : Set} (D : DivStr C) → WedgeIso D D
+id-iso = iso-id
 
 -- the groupoid is closed under inversion: every iso's inverse is an iso.
-inverse-of : Morphism → Morphism
-inverse-of (a , b , c) = b , a , iso-sym c
+inv-iso : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → WedgeIso B A
+inv-iso = iso-sym
 
 -- every iso is, in particular, a bridge — the groupoid embeds in the category.
-forget-iso : Morphism → BridgeEntry
-forget-iso (a , b , c) = a , b , WedgeIso.fwd c
+iso→bridge : {CA CB : Set} {A : DivStr CA} {B : DivStr CB} → WedgeIso A B → Bridge A B
+iso→bridge = WedgeIso.fwd
