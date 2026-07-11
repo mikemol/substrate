@@ -1753,6 +1753,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties" [label="OrientationRigCatPermCoxeterGeneral.Properties"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" [label="Wedge.OrientationRigCatPermGap"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign" [label="Wedge.OrientationRigCatPermSign"];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" [label="Wedge.OrientationRigCatPermSignChirality"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" [label="Wedge.OrientationRigCatPermUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatSym" [label="Wedge.OrientationRigCatSym"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" [label="Wedge.OrientationRigCatSymUP"];
@@ -13171,6 +13172,19 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign" -> "Substrate.WitnessTower.Wedge.OrientationDistributor";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Algebra.F2";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Algebra.F2.FromBool";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Algebra.N-to-F2-Parity";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Algebra.R.Trace.ChiralityBridge";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.WitnessTower.IsPermutation";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";

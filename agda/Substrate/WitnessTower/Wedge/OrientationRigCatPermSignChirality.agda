@@ -1,0 +1,143 @@
+------------------------------------------------------------------------
+-- Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality
+--
+-- ⟡sign-det-bridge — the permutation sign `sign : Perm n → Bool`
+-- (OrientationRigCatPermSign) is the FIFTH GUISE of the one ℤ/2 that
+-- Substrate.Algebra.R.Trace.ChiralityBridge already unifies.
+--
+-- HONEST FRAMING — this is NOT a permutation determinant. The classical
+-- `det(P_σ) = sign(σ)` is a NAME-COINCIDENCE here: the substrate has NO
+-- permutation matrix and NO Leibniz determinant. ChiralityBridge's
+-- `det-sign` is the CONTINUED-FRACTION convergent determinant sign
+-- ((−1)ⁿ per Euclidean step), a DIFFERENT "det". We do NOT build a fake
+-- permutation determinant.
+--
+-- The GENUINE bridge is by the SHARED CARRIER (a cross-domain bridge, NOT
+-- a collapse): the permutation `sign σ` is the PARITY OF THE INVERSION
+-- COUNT of σ's image vector, and `parity : ℕ → F₂` is exactly the ℤ/2 that
+-- ChiralityBridge unifies. Via `Bool ↔ F₂` (`bool→F₂`), sign-in-F₂ IS the
+-- CF-determinant chirality of the inversion count. So the FIVE GUISES of
+-- the one ℤ/2 are:
+--
+--     1. V4-chirality           (V4Signature.Chirality, even/odd)
+--     2. ε-parity / boundary-degree mod 2   (N-to-F2-Parity.parity)
+--     3. CF-det-sign            (ChiralityBridge.det-sign, (−1)ⁿ per step)
+--     4. parity : ℕ → F₂        (the arithmetic backbone all share)
+--     5. permutation sign       (this module: bool→F₂ ∘ sign = parity ∘ invCount)
+--
+-- The chain of identities (all zero-postulate, GREEN, --safe --without-K):
+--   parityLess-count : bool→F₂ (parityLess x xs) ≡ parity (countLess x xs)
+--   sign-as-parity   : bool→F₂ (sign v)          ≡ parity (invCount v)
+--   sign-is-chirality: bool→F₂ (sign σ)          ≡ det-sign (invCount σ)   [FIFTH GUISE]
+--
+-- This module declares NO data/record (pure proof side): it freely imports
+-- the proof-carrying sign homomorphism and the ChiralityBridge. It carries
+-- --guardedness only because ChiralityBridge (transitively) is compiled with
+-- it (infective option); it still adds ZERO postulates and ZERO holes.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K --guardedness #-}
+
+module Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality where
+
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Vec using (Vec; []; _∷_)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+
+open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)
+open import Substrate.Algebra.F2.FromBool using (bool→F₂)
+open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
+open import Substrate.Algebra.R.Trace.ChiralityBridge using (det-sign; det-sign-is-parity)
+
+open import Substrate.WitnessTower.Enumerate using (Perm)
+open import Substrate.WitnessTower.FirstAppearance using (compose)
+open import Substrate.WitnessTower.IsPermutation using (IsPerm)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
+  using (sign; parityLess; finLt; sign-hom)
+
+------------------------------------------------------------------------
+-- 0. Bool → F₂ is a homomorphism xor → +F, and factors through parity.
+------------------------------------------------------------------------
+
+-- the ℕ contribution of a single Bool (1 for true, 0 for false).
+boolToℕ : Bool → ℕ
+boolToℕ true  = 1
+boolToℕ false = 0
+
+-- bool→F₂ sends xor to the F₂ sum (short 4-case; both sides reduce).
+bool→F₂-xor : (a b : Bool) → bool→F₂ (a xor b) ≡ bool→F₂ a +F bool→F₂ b
+bool→F₂-xor true  true  = refl
+bool→F₂-xor true  false = refl
+bool→F₂-xor false true  = refl
+bool→F₂-xor false false = refl
+
+-- a Bool in F₂ is the parity of its ℕ contribution.
+bool→F₂-parity : (b : Bool) → bool→F₂ b ≡ parity (boolToℕ b)
+bool→F₂-parity true  = refl
+bool→F₂-parity false = refl
+
+------------------------------------------------------------------------
+-- 1. countLess / invCount — the ℕ inversion count matching parityLess/sign.
+--    `countLess x xs` = number of tail entries strictly below x; it is the
+--    ℕ count whose Bool-parity is exactly `parityLess x xs`. `invCount`
+--    sums these along the vector, matching `sign`'s xor-fold.
+------------------------------------------------------------------------
+
+countLess : {m n : ℕ} → Fin m → Vec (Fin m) n → ℕ
+countLess x []       = 0
+countLess x (y ∷ ys) = boolToℕ (finLt y x) + countLess x ys
+
+invCount : {m n : ℕ} → Vec (Fin m) n → ℕ
+invCount []       = 0
+invCount (x ∷ xs) = countLess x xs + invCount xs
+
+------------------------------------------------------------------------
+-- 2. The per-element bridge: parityLess IS the Bool-parity of countLess.
+------------------------------------------------------------------------
+
+parityLess-count : {m n : ℕ} (x : Fin m) (xs : Vec (Fin m) n) →
+                   bool→F₂ (parityLess x xs) ≡ parity (countLess x xs)
+parityLess-count x []       = refl
+parityLess-count x (y ∷ ys) =
+  trans (bool→F₂-xor (finLt y x) (parityLess x ys))
+    (trans (cong₂ _+F_ (bool→F₂-parity (finLt y x)) (parityLess-count x ys))
+           (sym (parity-+ (boolToℕ (finLt y x)) (countLess x ys))))
+
+------------------------------------------------------------------------
+-- 3. THE KEY LEMMA: the permutation sign, in F₂, IS the parity of the
+--    inversion count.  bool→F₂ ∘ sign = parity ∘ invCount.
+------------------------------------------------------------------------
+
+sign-as-parity : {m n : ℕ} (v : Vec (Fin m) n) →
+                 bool→F₂ (sign v) ≡ parity (invCount v)
+sign-as-parity []       = refl
+sign-as-parity (x ∷ xs) =
+  trans (bool→F₂-xor (parityLess x xs) (sign xs))
+    (trans (cong₂ _+F_ (parityLess-count x xs) (sign-as-parity xs))
+           (sym (parity-+ (countLess x xs) (invCount xs))))
+
+------------------------------------------------------------------------
+-- 4. THE FIFTH-GUISE STATEMENT: the permutation sign in F₂ IS the
+--    CF-determinant chirality (ChiralityBridge.det-sign) of its inversion
+--    count — the same ℤ/2 as V4-chirality / ε-parity / boundary-degree.
+--    Route: sign-as-parity, then ChiralityBridge BRIDGE-1 det-sign ≡ parity.
+------------------------------------------------------------------------
+
+sign-is-chirality : {n : ℕ} (σ : Perm n) →
+                    bool→F₂ (sign σ) ≡ det-sign (invCount σ)
+sign-is-chirality σ =
+  trans (sign-as-parity σ) (sym (det-sign-is-parity (invCount σ)))
+
+------------------------------------------------------------------------
+-- 5. BONUS: the fifth guise is a ℤ/2-homomorphism on Sₙ — the proven
+--    Bool multiplicativity `sign-hom` transported through bool→F₂ (its
+--    xor becomes the F₂ sum), for genuine permutations σ, τ.
+------------------------------------------------------------------------
+
+sign-hom-F₂ : {n : ℕ} (σ τ : Perm n) → IsPerm σ → IsPerm τ →
+              bool→F₂ (sign (compose σ τ)) ≡ bool→F₂ (sign σ) +F bool→F₂ (sign τ)
+sign-hom-F₂ σ τ pfσ pfτ =
+  trans (cong bool→F₂ (sign-hom σ τ pfσ pfτ))
+        (bool→F₂-xor (sign σ) (sign τ))
