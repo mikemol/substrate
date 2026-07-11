@@ -783,6 +783,7 @@ digraph reuse {
   "Substrate.S5.S5TwoFuelFix.TwoFuel.Stop" [label="Stop\nSubstrate.S5.S5TwoFuelFix.TwoFuel", style=rounded];
   "Substrate.S5.S5Verdict.Progress" [label="Progress\nSubstrate.S5.S5Verdict", style=rounded];
   "Substrate.S5.S5Verdict.Verdict" [label="Verdict\nSubstrate.S5.S5Verdict", style=rounded];
+  "Substrate.ShadowArchitecture.CellReconstruct._.Cellₚ" [label="Cellₚ\nSubstrate.ShadowArchitecture.CellReconstruct._"];
   "Substrate.ShadowArchitecture.Charter.Cell" [label="Cell\nSubstrate.ShadowArchitecture.Charter"];
   "Substrate.ShadowArchitecture.Charter.Realizability" [label="Realizability\nSubstrate.ShadowArchitecture.Charter"];
   "Substrate.ShadowArchitecture.Distinction.Distinction-Name" [label="Distinction-Name\nSubstrate.ShadowArchitecture.Distinction", style=rounded];

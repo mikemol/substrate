@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := AxisDualLine.agda Charter.agda Distinction.agda Duality.agda FanoLabeling.agda Loop.agda Mode.agda Persistence.agda Raven.agda SelfReference.agda Symmetry.agda Weight.agda
+FILES := AxisDualLine.agda CellReconstruct.agda Charter.agda Distinction.agda Duality.agda FanoLabeling.agda Loop.agda Mode.agda Persistence.agda Raven.agda SelfReference.agda Symmetry.agda Weight.agda
 SUBDIRS := Raven
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

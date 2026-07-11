@@ -786,6 +786,7 @@
   <url><loc>https://substrate.local/Substrate/S5/S5TwoFuelFix#Stop</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5Verdict#Progress</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5Verdict#Verdict</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/ShadowArchitecture/CellReconstruct#Cellₚ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/ShadowArchitecture/Charter#Cell</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/ShadowArchitecture/Charter#Realizability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/ShadowArchitecture/Distinction#Distinction-Name</loc><priority>0.0</priority></url>

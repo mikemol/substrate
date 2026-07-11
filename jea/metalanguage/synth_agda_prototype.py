@@ -35,11 +35,14 @@ is a pluggable prototype CLASS — the tool ships five, all over the same numpy 
     when `|orbit| = n!` this IS Coxeter-completeness at grade n.
   · cayley — the complete finite group as its multiplication (Cayley) TABLE (`mul-table`'s clauses
     ARE the table: `eᵢ·eⱼ = e_{f(i,j)}`) + the inverse map (`eᵢ·e_{inv i} ≡ id`), all refl.
-  · reconstruct — the Set₀ reconstruction of a Set₁ target as a TRUNCATION of its graded (grade-
-    exposed) form: the rich Set₀ record (carrier `C : ℕ→Set` a MODULE PARAM ⇒ lands at `: Set`) +
-    the reification, with the RESIDUE = the grade. Shape LOCATED mechanically (numpy verifies the
-    correspondence; jea_pysim locates the carrier-hole), NOT typechecker search. First target:
-    `refinement` (Category.Allegory.Refinement). This is the ⟡pipeline-driver-reconstruct class.
+  · reconstruct — the Set₀ reconstruction of a Set₁ target (⟡pipeline-driver-reconstruct). Two modes:
+      · --recon-target <builtin> (e.g. `refinement`) — a located rich reconstruction (graded, grade-
+        exposed); e.g. Refinement Set₁ → GRefinement : Set + reify, residue = the grade. Shape LOCATED
+        mechanically (numpy verifies the correspondence; jea_pysim locates the carrier-hole).
+      · --recon-source <file> --recon-record <R> — GENERAL M1 carrier-parameterization: PARSE `record R
+        : Set₁`, hoist its bare-`Set` carrier field to a module PARAM ⇒ Rₚ : Set (the paydown, e.g.
+        ShadowArchitecture.Cell). If a non-carrier field is itself Set₁-typed (M1+M2), the driver REPORTS
+        that TRANSITIVE RESIDUE (reconstruct those types first, recursively) — the negative space, honest.
 
 Usage (caller chooses --out; e.g. a temp dir, kept out of the promoted tree):
   # non-membership witness:
@@ -718,6 +721,98 @@ def emit_reconstruct(module, target):
     L.append("")
     return "\n".join(L)
 
+def _parse_set1_record(source_path, record_name):
+    """Read an Agda source, locate `record <record_name> ... : Set₁ where`, and return
+    (imports, constructor, fields) — fields as (name, type) pairs, comment-stripped. The
+    carrier fields (type == 'Set') are the Set₁ cause; the rest are carried verbatim."""
+    import re
+    lines = open(source_path, encoding="utf-8").read().splitlines()
+    imports = [l for l in lines if l.startswith("open import") or l.startswith("import ")]
+    # find the record header
+    ri = next((i for i, l in enumerate(lines)
+               if re.match(rf"\s*record\s+{re.escape(record_name)}\b", l) and "Set₁" in l), None)
+    if ri is None:
+        raise SystemExit(f"[abort] no `record {record_name} : Set₁` in {source_path}")
+    ctor = None
+    fields = []
+    in_field = False
+    for l in lines[ri+1:]:
+        s = re.sub(r"--.*$", "", l).rstrip()          # strip line comments
+        if not s.strip():
+            continue
+        indent = len(l) - len(l.lstrip())
+        if indent == 0:                                # dedent to col 0 → record block ended
+            break
+        m = re.match(r"\s*constructor\s+(\S+)", s)
+        if m:
+            ctor = m.group(1); continue
+        if re.match(r"\s*field\b", s):
+            in_field = True; continue
+        if in_field:
+            fm = re.match(r"\s*([^\s:]+)\s*:\s*(.+)$", s)
+            if fm:
+                fields.append((fm.group(1), fm.group(2).strip()))
+    return imports, ctor, fields
+
+def emit_reconstruct_m1(module_out, source_path, record_name):
+    """GENERAL M1 reconstruction: parse a `record R : Set₁` whose Set₁ cause is a bare-`Set`
+    carrier FIELD, and emit the Set₀ reconstruction with that carrier HOISTED to a module
+    PARAMETER (set1-carrier-always-parameterize). The record then lands at `: Set` — the
+    paydown. The original = this at a re-fielded carrier (Σ Set Rₚ); the RESIDUE is the
+    held carrier. Mechanical: parses the target; no typechecker search."""
+    imports, ctor, fields = _parse_set1_record(source_path, record_name)
+    carriers = [nm for nm, ty in fields if ty.strip() == "Set"]
+    if not carriers:
+        raise SystemExit(f"[abort] {record_name} fields no bare-`Set` carrier (not an M1 target); "
+                         f"fields: {[(n,t) for n,t in fields]}")
+    rest = [(nm, ty) for nm, ty in fields if ty.strip() != "Set"]
+    rn = record_name + "ₚ"
+    # RESIDUE detection: a non-carrier field whose type references a CAPITALISED name that is
+    # not the carrier / not Foundation is a potential TRANSITIVE Set₁ (M2) — parameterising the
+    # carrier alone won't reach Set₀; those types must be reconstructed first (recursively).
+    import re as _re
+    # not-residue: the carriers, the record's OWN field names (values, not Set₁ types), + Foundation.
+    _found = set(carriers) | {nm for nm, _ in fields} | {"Set", "ℕ", "Fin", "Bool", "List", "Vec", "Maybe", "Σ"}
+    residue = set()
+    for _nm, ty in rest:
+        for tok in _re.findall(r"[A-Z][A-Za-z0-9]*", ty):
+            if tok not in _found:
+                residue.add(tok)
+    L = []
+    L.append("------------------------------------------------------------------------")
+    L.append(f"-- {module_out}")
+    L.append("--")
+    L.append(f"-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+    L.append(f"-- `reconstruct` class, M1 carrier-parameterization) — the Set₀ reconstruction of")
+    L.append(f"-- `{record_name}` (Set₁). Located mechanically: the Set₁ cause is the bare-`Set`")
+    L.append(f"--   carrier field(s) {carriers} — a HELD carrier. Hoisting it to a MODULE PARAMETER")
+    L.append(f"--   (set1-carrier-always-parameterize) lands the record at `: Set`. That green `: Set`")
+    L.append(f"--   compile IS the Set₁ paydown. The original `{record_name}` = this at a re-fielded")
+    L.append(f"--   carrier (Σ Set {rn}); the RESIDUE is exactly the held carrier {carriers}.")
+    if residue:
+        L.append(f"-- ⚠ TRANSITIVE RESIDUE (M1+M2): non-carrier fields reference {sorted(residue)}, which")
+        L.append(f"--   are themselves Set₁ — parameterising the carrier alone will NOT reach Set₀; those")
+        L.append(f"--   types must be reconstructed FIRST (recursively). This module is then the scaffold.")
+    L.append("-- Substrate-only imports (carried from the target). Zero postulates, --safe --without-K.")
+    L.append("------------------------------------------------------------------------")
+    L.append("")
+    L.append("{-# OPTIONS --safe --without-K #-}")
+    L.append("")
+    L.append(f"module {module_out} where")
+    L.append("")
+    L.extend(imports)
+    L.append("")
+    L.append(f"-- carrier(s) {carriers} hoisted to a module PARAMETER ⇒ the record lands at `: Set`.")
+    L.append(f"module _ ({' '.join(carriers)} : Set) where")
+    L.append(f"  record {rn} : Set where")
+    if ctor:
+        L.append(f"    constructor {ctor}ₚ")
+    L.append("    field")
+    for nm, ty in rest:
+        L.append(f"      {nm} : {ty}")
+    L.append("")
+    return "\n".join(L), carriers, rn, sorted(residue)
+
 # ── driver ───────────────────────────────────────────────────────────────────
 
 def parse_perm(s):
@@ -735,7 +830,11 @@ def main():
                          "reconstruct (the Set₀ reconstruction of a Set₁ target as a truncation of its graded form)")
     ap.add_argument("--gname", default="Gen", help="[orbit] the generated-subgroup data type name")
     ap.add_argument("--recon-target", dest="recon_target",
-                    help="[reconstruct] the located Set₁ target to reconstruct (e.g. 'refinement')")
+                    help="[reconstruct] a builtin located Set₁ target (e.g. 'refinement')")
+    ap.add_argument("--recon-source", dest="recon_source",
+                    help="[reconstruct, general M1] path to the target Agda source (carrier-parameterization)")
+    ap.add_argument("--recon-record", dest="recon_record",
+                    help="[reconstruct, general M1] the Set₁ record name to reconstruct")
     ap.add_argument("--grade", type=int, help="[perm classes] n (perms of Fin n)")
     ap.add_argument("--gens", help="[perm classes] generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
     ap.add_argument("--target", help="[nonmembership] element to prove non-member, e.g. '1,0,2'")
@@ -751,11 +850,21 @@ def main():
 
     # reconstruct — a non-perm class: emit the Set₀ reconstruction of a located Set₁ target.
     if args.cls == "reconstruct":
-        if not args.recon_target:
-            sys.exit("[abort] --recon-target required for --class reconstruct (e.g. 'refinement')")
-        src = emit_reconstruct(args.module, args.recon_target)
-        print(f"[reconstruct] target '{args.recon_target}': Set₀ graded reconstruction "
-              f"(GRefinement : Set) + reify; residue = the grade (mechanically located: numpy + jea_pysim)")
+        if args.recon_source and args.recon_record:      # general M1 carrier-parameterization
+            src, carriers, rn, residue = emit_reconstruct_m1(args.module, args.recon_source, args.recon_record)
+            if residue:
+                print(f"[reconstruct] M1+M2 {args.recon_record}: carrier(s) {carriers} hoisted, but "
+                      f"TRANSITIVE RESIDUE {residue} (Set₁ field-types) ⇒ {rn} stays Set₁ until those are "
+                      f"reconstructed FIRST (recursive). Scaffold emitted; NOT a Set₀ paydown yet.")
+            else:
+                print(f"[reconstruct] PURE-M1 {args.recon_record}: carrier(s) {carriers} hoisted to module "
+                      f"param ⇒ {rn} : Set (Set₀ paydown); residue = the held carrier only")
+        elif args.recon_target:                          # builtin located target (e.g. refinement)
+            src = emit_reconstruct(args.module, args.recon_target)
+            print(f"[reconstruct] builtin '{args.recon_target}': Set₀ graded reconstruction "
+                  f"+ reify; residue = the grade (located: numpy + jea_pysim)")
+        else:
+            sys.exit("[abort] reconstruct needs --recon-target (builtin) OR --recon-source + --recon-record (general M1)")
         out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
         os.makedirs(os.path.dirname(out), exist_ok=True)
         with open(out, "w", encoding="utf-8") as fh:
