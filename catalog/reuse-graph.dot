@@ -831,6 +831,7 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat" [label="GradedRigCat\nSubstrate.WitnessTower.Wedge.OrientationRigCat"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" [label="Objₛ\nSubstrate.WitnessTower.Wedge.OrientationRigCat", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure.AdjGen" [label="AdjGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure", style=rounded];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.AdjGen4" [label="AdjGen4\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap.BraidGen" [label="BraidGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermGap", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" [label="RigFunctor\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" [label="RigFunctor≈\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
