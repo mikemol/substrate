@@ -196,7 +196,9 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
                 rec = json.loads(line)
                 if "unit" in rec:                             # a per-definition unit marker (Φ4b)
                     unit_markers.append((rec["unit"], rec["root"], rec.get("kind", "?"),
-                                         tuple(rec.get("members", []))))   # Φ7b: parent->member links
+                                         tuple(rec.get("members", [])),     # Φ7b: parent->member links
+                                         rec.get("level"), rec.get("sort")))  # Φ7c: inhabited universe
+
                 else:
                     raw[rec["id"]] = rec
     interned: dict[int, int] = {}
@@ -236,11 +238,14 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
 
     roots = [go(nid) for nid in raw]
     # map each definition's unit-marker (shim-local root) to its INTERNED root id -> per-def units (Φ4b)
-    units = [(name, interned[r]) for name, r, _k, _m in unit_markers if r in interned]
-    kinds = {name: k for name, r, k, _m in unit_markers if r in interned}   # Φ6: per-def Defn kind
-    members = {name: list(m) for name, r, k, m in unit_markers if r in interned and m}  # Φ7b: parent->members
+    units = [(name, interned[r]) for name, r, _k, _m, _lv, _st in unit_markers if r in interned]
+    kinds = {name: k for name, r, k, _m, _lv, _st in unit_markers if r in interned}   # Φ6: per-def Defn kind
+    members = {name: list(m) for name, r, k, m, _lv, _st in unit_markers if r in interned and m}  # Φ7b: parent->members
+    levels = {name: lv for name, r, k, m, lv, _st in unit_markers if r in interned}   # Φ7c: inhabited-universe level
+    sorts = {name: st for name, r, k, m, _lv, st in unit_markers if r in interned}    # Φ7c: codomain sort
     return {"core_nodes": len(raw), "interned": intern.size(), "roots": roots,
-            "units": units, "kinds": kinds, "members": members, "edges_present": True}
+            "units": units, "kinds": kinds, "members": members,
+            "levels": levels, "sorts": sorts, "edges_present": True}
 
 
 def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:
