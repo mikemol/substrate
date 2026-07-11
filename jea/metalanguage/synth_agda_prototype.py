@@ -306,11 +306,26 @@ def _paren_disj(names):
         return f"(σ ≡ {names[0]})"
     return f"(σ ≡ {names[0]}) ⊎ ({_paren_disj(names[1:])})"
 
+def _eq_imports(homes, need):
+    by_home = {}
+    for nm in need:
+        by_home.setdefault(homes.get(nm), []).append(nm)
+    lines = []
+    for h in ["Substrate.Foundation.Fin", "Substrate.Foundation.Vec",
+              "Substrate.Foundation.Eq", "Substrate.Foundation.Sum",
+              "Substrate.Foundation.Negation", "Substrate.WitnessTower.Enumerate",
+              "Substrate.WitnessTower.FirstAppearance"]:
+        if h in by_home:
+            lines.append(f"open import {h} using ({'; '.join(by_home[h])})")
+    return lines
+
 def emit_equation(module, n, gens, ordered, homes, lhs, rhs, lawname):
-    """Emit `lawname : {v… : Perm n} → S v… → LHS ≡ RHS`, one refl clause per
-    assignment of the vars to the domain (numpy-verified before emit)."""
+    """Emit the identity at WHATEVER POLARITY numpy finds it — never nothing:
+      · holds on every assignment  → the positive lemma  {v…} → S v… → LHS ≡ RHS  (refl table);
+      · fails somewhere            → the NEGATIVE-SPACE witness  ¬ (LHS ≡ RHS) at a concrete
+                                     counterexample (a covered constraint, not a deleted finding).
+    Returns (src, polarity, n_holds, n_fails)."""
     k = len(ordered)
-    names = _elem_names(n, ordered, gens)
     lvs, rvs = [], []
     free_vars(lhs, lvs); free_vars(rhs, rvs)
     vs = []
@@ -319,61 +334,80 @@ def emit_equation(module, n, gens, ordered, homes, lhs, rhs, lawname):
             vs.append(v)
     arity = len(vs)
 
-    # numpy verification over all assignments
-    fails = []
+    holds, fail_envs = 0, []
     for combo in product(range(k), repeat=arity):
         env = {v: ordered[combo[m]] for m, v in enumerate(vs)}
-        if eval_expr(lhs, env, n) != eval_expr(rhs, env, n):
-            fails.append(tuple(list(ordered[c]) for c in combo))
-    if fails:
-        return None, fails
+        if eval_expr(lhs, env, n) == eval_expr(rhs, env, n):
+            holds += 1
+        else:
+            fail_envs.append(combo)
+    total = k ** arity
 
-    need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
-            "_⊎_", "inj₁", "inj₂", "Perm", "id-perm", "compose"]
-    by_home = {}
-    for nm in need:
-        by_home.setdefault(homes.get(nm), []).append(nm)
-    import_lines = []
-    for h in ["Substrate.Foundation.Fin", "Substrate.Foundation.Vec",
-              "Substrate.Foundation.Eq", "Substrate.Foundation.Sum",
-              "Substrate.WitnessTower.Enumerate", "Substrate.WitnessTower.FirstAppearance"]:
-        if h in by_home:
-            import_lines.append(f"open import {h} using ({'; '.join(by_home[h])})")
+    if not fail_envs:
+        # ── positive: the refl-table lemma over the ⊎-membership domain ──
+        names = _elem_names(n, ordered, gens)
+        need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
+                "_⊎_", "inj₁", "inj₂", "Perm", "id-perm", "compose"]
+        L = []
+        L.append("------------------------------------------------------------------------")
+        L.append(f"-- {module}")
+        L.append("--")
+        L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+        L.append("-- `equation` class, POSITIVE polarity): numpy verified the identity")
+        L.append(f"--     {render_expr(lhs,n)}  ≡  {render_expr(rhs,n)}")
+        L.append(f"--   over the grade-{n} domain ⟨{', '.join(str(list(g)) for g in gens)}⟩ = C{k}")
+        L.append(f"--   — all {total} assignments hold. Each is a `refl` clause. Imports from")
+        L.append("--   catalog/reuse-index.md. Zero postulates/holes, --safe --without-K.")
+        L.append("------------------------------------------------------------------------")
+        L.append(""); L.append("{-# OPTIONS --safe --without-K #-}"); L.append("")
+        L.append(f"module {module} where"); L.append("")
+        L.extend(_eq_imports(homes, need)); L.append("")
+        L.append(f"{' '.join(names)} : Perm {n}")
+        for nm, e in zip(names, ordered):
+            L.append(f"{nm} = {perm_lit(e)}")
+        L.append("")
+        L.append(f"S : Perm {n} → Set")
+        L.append(f"S σ = {_paren_disj(names)}"); L.append("")
+        hyps = " → ".join(f"S {v}" for v in vs)
+        L.append(f"{lawname} : {{{' '.join(vs)} : Perm {n}}} → {hyps} → "
+                 f"{render_expr(lhs,n)} ≡ {render_expr(rhs,n)}")
+        for combo in product(range(k), repeat=arity):
+            pats = " ".join(f"({nest(combo[m], k, 'refl')})" for m in range(arity))
+            L.append(f"{lawname} {pats} = refl")
+        L.append("")
+        return "\n".join(L), "holds", holds, 0
 
+    # ── negative space: a concrete counterexample refutation (¬), the covered constraint ──
+    combo = fail_envs[0]
+    ce = {v: ordered[combo[m]] for m, v in enumerate(vs)}
+    need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "¬_", "Perm", "id-perm", "compose"]
     L = []
     L.append("------------------------------------------------------------------------")
     L.append(f"-- {module}")
     L.append("--")
     L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
-    L.append("-- `equation` class): numpy verified the identity")
+    L.append("-- `equation` class, NEGATIVE polarity — the finding is NOT deleted, it is the")
+    L.append("-- covered constraint). numpy found the identity")
     L.append(f"--     {render_expr(lhs,n)}  ≡  {render_expr(rhs,n)}")
-    L.append(f"--   over the grade-{n} domain ⟨{', '.join(str(list(g)) for g in gens)}⟩ = C{k}")
-    L.append(f"--   (all {k**arity} assignments hold); imports resolved from catalog/reuse-index.md.")
-    L.append("--   Each assignment is a `refl` clause. Zero postulates/holes, --safe --without-K.")
+    L.append(f"--   FAILS on {len(fail_envs)}/{total} assignments over the grade-{n} domain")
+    L.append(f"--   ⟨{', '.join(str(list(g)) for g in gens)}⟩. Witnessed by the concrete")
+    L.append(f"--   counterexample below (the negative space, as a ¬-refutation — reuse it as a")
+    L.append("--   constraint to cover). Imports from catalog/reuse-index.md. --safe --without-K.")
     L.append("------------------------------------------------------------------------")
+    L.append(""); L.append("{-# OPTIONS --safe --without-K #-}"); L.append("")
+    L.append(f"module {module} where"); L.append("")
+    L.extend(_eq_imports(homes, need)); L.append("")
+    L.append(f"-- the counterexample assignment ({', '.join(f'{v}={list(ce[v])}' for v in vs)}):")
+    L.append(f"-- LHS ↦ {list(eval_expr(lhs, ce, n))}   ≠   RHS ↦ {list(eval_expr(rhs, ce, n))}")
+    L.append(f"{' '.join(vs)} : Perm {n}")
+    for v in vs:
+        L.append(f"{v} = {perm_lit(ce[v])}")
     L.append("")
-    L.append("{-# OPTIONS --safe --without-K #-}")
+    L.append(f"-- the law does NOT hold here: the two sides are constructor-distinct vectors.")
+    L.append(f"{lawname}-counterexample : ¬ ({render_expr(lhs,n)} ≡ {render_expr(rhs,n)})")
+    L.append(f"{lawname}-counterexample ()")
     L.append("")
-    L.append(f"module {module} where")
-    L.append("")
-    L.extend(import_lines)
-    L.append("")
-    sig = " ".join(names)
-    L.append(f"{sig} : Perm {n}")
-    for nm, e in zip(names, ordered):
-        L.append(f"{nm} = {perm_lit(e)}")
-    L.append("")
-    L.append(f"S : Perm {n} → Set")
-    L.append(f"S σ = {_paren_disj(names)}")
-    L.append("")
-    binder = " ".join(vs)
-    hyps = " → ".join(f"S {v}" for v in vs)
-    L.append(f"{lawname} : {{{binder} : Perm {n}}} → {hyps} → {render_expr(lhs,n)} ≡ {render_expr(rhs,n)}")
-    for combo in product(range(k), repeat=arity):
-        pats = " ".join(f"({nest(combo[m], k, 'refl')})" for m in range(arity))
-        L.append(f"{lawname} {pats} = refl")
-    L.append("")
-    return "\n".join(L), None
+    return "\n".join(L), "fails", holds, len(fail_envs)
 
 # ── driver ───────────────────────────────────────────────────────────────────
 
@@ -425,16 +459,17 @@ def main():
         if in_closure:
             sys.exit("[abort] target IS in the closure — no non-membership witness to synthesize.")
         src = emit_nonmembership(args.module, n, gens, target, ordered, table, homes)
-    else:  # equation
+    else:  # equation — emit at whichever polarity holds; a false law is negative space, not nothing
         if not args.law or "=" not in args.law:
             sys.exit("[abort] --law 'LHS = RHS' required for --class equation")
         lhs_s, rhs_s = args.law.split("=", 1)
         lhs = parse_expr(tokenize_expr(lhs_s)); rhs = parse_expr(tokenize_expr(rhs_s))
-        src, fails = emit_equation(args.module, n, gens, ordered, homes, lhs, rhs, args.lawname)
-        if src is None:
-            print(f"[numpy] law FAILS on {len(fails)} assignment(s), e.g. {fails[0]}")
-            sys.exit("[abort] the identity does not hold over the domain — nothing to synthesize.")
-        print(f"[numpy] identity verified over all {len(ordered)**(len(set([v for e in (lhs,rhs) for v in _fv(e)])) )} assignments")
+        src, polarity, n_holds, n_fails = emit_equation(args.module, n, gens, ordered, homes, lhs, rhs, args.lawname)
+        if polarity == "holds":
+            print(f"[numpy] identity HOLDS on all {n_holds} assignments → positive lemma")
+        else:
+            print(f"[numpy] identity FAILS on {n_fails}/{n_holds + n_fails} assignments "
+                  f"→ NEGATIVE-SPACE witness (counterexample refutation, a constraint to cover)")
 
     out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -442,9 +477,6 @@ def main():
         fh.write(src)
     print(f"[emit] wrote {out}  ({src.count(chr(10))+1} lines)")
     print(f"[typecheck] agda --safe -i {os.path.dirname(args.out)} -i agda {args.out}")
-
-def _fv(e):
-    acc = []; free_vars(e, acc); return acc
 
 if __name__ == "__main__":
     main()
