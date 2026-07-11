@@ -16,10 +16,10 @@ endif
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
+AGDA_ROOT := ../../../..
 
-FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda OrientationBifunctor.agda OrientationBimonoidal.agda OrientationCoherence.agda OrientationDistributor.agda OrientationDistributorAssoc.agda OrientationDistributorCoherence.agda OrientationFixedPoint.agda OrientationHexagon.agda OrientationProduct.agda OrientationProductComm.agda OrientationProductCons.agda OrientationProductInsert.agda OrientationProductLaws.agda OrientationProductNaturality.agda OrientationProductPerm.agda OrientationProductStructural.agda OrientationProductStructuralDecode.agda OrientationProductUnit.agda OrientationRig.agda OrientationRigCat.agda OrientationRigFree.agda OrientationRigFreeUP.agda OrientationRigInitial.agda OrientationRigInstance.agda OrientationRigResidue.agda OrientationRigUniversal.agda OrientationSum.agda OrientationSumComm.agda OrientationSumLaws.agda OrientationSumMonoidal.agda OrientationSumNaturality.agda OrientationSymMonoidal.agda OrientationTowerDiv.agda OrientationUniversal.agda OrientationUniversalOver.agda PackedBridge.agda Simplicial.agda V4Seam.agda
-SUBDIRS := OrientationBimonoidal OrientationRigCat
+FILES := Properties.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -48,21 +48,5 @@ files:
 
 subdirs: $(SUBDIRS)
 
-OrientationBimonoidal:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-OrientationRigCat:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 clean:
-	@$(MAKE) -C OrientationBimonoidal clean 2>/dev/null || true
-	@$(MAKE) -C OrientationRigCat clean 2>/dev/null || true
 	@true
