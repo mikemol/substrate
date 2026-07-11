@@ -811,7 +811,37 @@ def emit_reconstruct_m1(module_out, source_path, record_name):
     for nm, ty in rest:
         L.append(f"      {nm} : {ty}")
     L.append("")
-    return "\n".join(L), carriers, rn, sorted(residue)
+    return "\n".join(L), carriers, rn, sorted(residue), imports
+
+def _recursive_residue(repo_root, target_imports, residue_types):
+    """DEFER the recursive-residue descent to the dedup code's own analysis: run
+    `jea_pysim --recursive` over the residue types' cores (their modules = the target's
+    non-Foundation imports). It returns the SHARED INTERIOR structure (the recursive
+    template) = the dependency-ordered reconstruction targets — no hand-rolled recursion."""
+    import subprocess, glob as _glob
+    mods = []
+    for imp in target_imports:
+        m = _re_i.search(r"open import (\S+)", imp)
+        if m and "Foundation" not in m.group(1) and m.group(1) != "Substrate.Foundation":
+            mods.append(m.group(1))
+    cores = []
+    for mod in mods:
+        rel = mod.replace(".", "/") + ".agdai"
+        cores += _glob.glob(os.path.join(repo_root, "agda", "_build", "*", "agda", rel))
+    if not cores:
+        return None, mods
+    pysim = os.path.join(repo_root, "jea", "metalanguage", "jea_pysim.py")
+    try:
+        r = subprocess.run(["python3", pysim] + cores + ["--recursive"],
+                           capture_output=True, text=True, timeout=240, cwd=repo_root)
+    except Exception as e:
+        return f"[jea_pysim --recursive failed: {e}]", mods
+    # keep the named interior heads (the reconstruction targets), drop the anonymous nodes.
+    heads = [ln.strip() for ln in r.stdout.splitlines()
+             if "head ('AgdaCore', 'Substrate." in ln or "Agda.Primitive.Level" in ln]
+    return "\n".join(heads[:12]), mods
+
+import re as _re_i
 
 # ── driver ───────────────────────────────────────────────────────────────────
 
@@ -851,11 +881,20 @@ def main():
     # reconstruct — a non-perm class: emit the Set₀ reconstruction of a located Set₁ target.
     if args.cls == "reconstruct":
         if args.recon_source and args.recon_record:      # general M1 carrier-parameterization
-            src, carriers, rn, residue = emit_reconstruct_m1(args.module, args.recon_source, args.recon_record)
+            src, carriers, rn, residue, imps = emit_reconstruct_m1(args.module, args.recon_source, args.recon_record)
             if residue:
                 print(f"[reconstruct] M1+M2 {args.recon_record}: carrier(s) {carriers} hoisted, but "
                       f"TRANSITIVE RESIDUE {residue} (Set₁ field-types) ⇒ {rn} stays Set₁ until those are "
-                      f"reconstructed FIRST (recursive). Scaffold emitted; NOT a Set₀ paydown yet.")
+                      f"reconstructed FIRST (recursive).")
+                # DEFER the recursive descent to the dedup code's own --recursive (no hand-rolled recursion).
+                tmpl, resmods = _recursive_residue(args.repo_root, imps, residue)
+                if tmpl:
+                    print(f"[reconstruct] recursive residue via `jea_pysim --recursive` over {resmods}")
+                    print(f"  → the recursive template (shared interior structure = dependency-ordered targets):")
+                    for ln in tmpl.splitlines():
+                        print(f"    {ln}")
+                else:
+                    print(f"  (residue modules {resmods}; cores not found for --recursive — build them first)")
             else:
                 print(f"[reconstruct] PURE-M1 {args.recon_record}: carrier(s) {carriers} hoisted to module "
                       f"param ⇒ {rn} : Set (Set₀ paydown); residue = the held carrier only")
