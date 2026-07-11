@@ -17,15 +17,26 @@ a compiling Agda module.
      closure lemma S-closed (numpy's k×k table, each case `refl`), Gen⊆S, ¬S-target, and the
      witness `¬ …Gen target`.
 
-The synthesized module is a PROTOTYPE in the exact shape of the hand-checked
-`Substrate.WitnessTower.Wedge.OrientationRigCatPermGap` (grade-3 witness) — parameterised on
-the generators / target / grade, so it re-derives that theorem AND any sibling
-(subgroup-non-membership at any grade) mechanically.
+The core is a FACT-FAMILY → CLAUSE engine (numpy enumerates a finite family of decidable
+ground facts; each becomes a `refl`/`()` Agda clause under a structured wrapper). The wrapper
+is a pluggable prototype CLASS — the tool ships two, both over the same numpy closure:
+
+  · nonmembership — `¬ (target ∈ ⟨gens⟩)`: the ⊎-membership S, the inductive `data …Gen`, the
+    finite-closure table, and the witness. (Re-derives the hand-checked grade-3 theorem
+    `Substrate.WitnessTower.Wedge.OrientationRigCatPermGap` mechanically, at any grade.)
+  · equation — a numpy-verified `compose`/`id` identity over the domain, e.g. commutativity
+    `compose a b = compose b a`, emitted as `law : {…} → S … → LHS ≡ RHS` with one refl clause
+    per assignment. Aborts (emits nothing) if the identity fails on any assignment.
 
 Usage (caller chooses --out; e.g. a temp dir, kept out of the promoted tree):
-  synth_agda_prototype.py --grade 3 --gens '2,0,1;1,2,0' --target '1,0,2' \
-      --module PermGapPrototype --out /tmp/gen/PermGapPrototype.agda
-  # then typecheck:  agda --safe -i /tmp/gen -i agda /tmp/gen/PermGapPrototype.agda
+  # non-membership witness:
+  synth_agda_prototype.py --class nonmembership --grade 3 --gens '2,0,1;1,2,0' \
+      --target '1,0,2' --module PermGapPrototype --out /tmp/gen/PermGapPrototype.agda
+  # equational law (C₃ is abelian):
+  synth_agda_prototype.py --class equation --grade 3 --gens '2,0,1;1,2,0' \
+      --law 'compose a b = compose b a' --lawname C₃-abelian \
+      --module C3AbelianProto --out /tmp/gen/C3AbelianProto.agda
+  # then typecheck:  agda --safe -i /tmp/gen -i agda /tmp/gen/<Module>.agda
 """
 from __future__ import annotations
 import sys, os, argparse, re
@@ -138,7 +149,7 @@ def nest(m, k, inner):
             s = "inj₂ (" + s + ")"
         return s
 
-def emit(module, n, gens, target, ordered, table, homes):
+def emit_nonmembership(module, n, gens, target, ordered, table, homes):
     k = len(ordered)
     ident = tuple(range(n))
     # element names: e0 = id, generators keep g-names, rest h-names
@@ -237,6 +248,133 @@ def emit(module, n, gens, target, ordered, table, homes):
     L.append("")
     return "\n".join(L)
 
+# ── the `equation` class: a general pointwise `compose`/`id` identity ────────
+# A second prototype SHAPE sharing the enumerate→resolve→emit core: numpy verifies
+# a permutation identity over a finite domain (the closure), and each assignment
+# becomes a `refl` clause under a ∀-over-S wrapper. Demonstrates that the core is a
+# fact-family→clause engine, not a non-membership-specific one.
+
+def tokenize_expr(s):
+    return s.replace("(", " ( ").replace(")", " ) ").split()
+
+def parse_expr(toks):
+    t = toks.pop(0)
+    if t == "(":
+        e = parse_expr(toks)
+        assert toks and toks.pop(0) == ")", "unbalanced ()"
+        return e
+    if t == "compose":
+        a = parse_expr(toks); b = parse_expr(toks); return ("compose", a, b)
+    if t == "id":
+        return ("id",)
+    return ("var", t)
+
+def eval_expr(e, env, n):
+    if e[0] == "compose":
+        return compose(eval_expr(e[1], env, n), eval_expr(e[2], env, n))
+    if e[0] == "id":
+        return tuple(range(n))
+    return env[e[1]]
+
+def render_expr(e, n, top=True):
+    if e[0] == "compose":
+        s = f"compose {render_expr(e[1], n, False)} {render_expr(e[2], n, False)}"
+        return s if top else f"({s})"
+    if e[0] == "id":
+        return f"id-perm {n}" if top else f"(id-perm {n})"
+    return e[1]
+
+def free_vars(e, acc):
+    if e[0] == "compose":
+        free_vars(e[1], acc); free_vars(e[2], acc)
+    elif e[0] == "var" and e[1] not in acc:
+        acc.append(e[1])
+
+def _elem_names(n, ordered, gens):
+    ident = tuple(range(n)); names = []
+    for i, e in enumerate(ordered):
+        if e == ident:
+            names.append("p-id")
+        elif e in gens:
+            names.append(f"p-g{gens.index(e)+1}")
+        else:
+            names.append(f"p-h{i}")
+    return names
+
+def _paren_disj(names):
+    if len(names) == 1:
+        return f"(σ ≡ {names[0]})"
+    return f"(σ ≡ {names[0]}) ⊎ ({_paren_disj(names[1:])})"
+
+def emit_equation(module, n, gens, ordered, homes, lhs, rhs, lawname):
+    """Emit `lawname : {v… : Perm n} → S v… → LHS ≡ RHS`, one refl clause per
+    assignment of the vars to the domain (numpy-verified before emit)."""
+    k = len(ordered)
+    names = _elem_names(n, ordered, gens)
+    lvs, rvs = [], []
+    free_vars(lhs, lvs); free_vars(rhs, rvs)
+    vs = []
+    for v in lvs + rvs:
+        if v not in vs:
+            vs.append(v)
+    arity = len(vs)
+
+    # numpy verification over all assignments
+    fails = []
+    for combo in product(range(k), repeat=arity):
+        env = {v: ordered[combo[m]] for m, v in enumerate(vs)}
+        if eval_expr(lhs, env, n) != eval_expr(rhs, env, n):
+            fails.append(tuple(list(ordered[c]) for c in combo))
+    if fails:
+        return None, fails
+
+    need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
+            "_⊎_", "inj₁", "inj₂", "Perm", "id-perm", "compose"]
+    by_home = {}
+    for nm in need:
+        by_home.setdefault(homes.get(nm), []).append(nm)
+    import_lines = []
+    for h in ["Substrate.Foundation.Fin", "Substrate.Foundation.Vec",
+              "Substrate.Foundation.Eq", "Substrate.Foundation.Sum",
+              "Substrate.WitnessTower.Enumerate", "Substrate.WitnessTower.FirstAppearance"]:
+        if h in by_home:
+            import_lines.append(f"open import {h} using ({'; '.join(by_home[h])})")
+
+    L = []
+    L.append("------------------------------------------------------------------------")
+    L.append(f"-- {module}")
+    L.append("--")
+    L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+    L.append("-- `equation` class): numpy verified the identity")
+    L.append(f"--     {render_expr(lhs,n)}  ≡  {render_expr(rhs,n)}")
+    L.append(f"--   over the grade-{n} domain ⟨{', '.join(str(list(g)) for g in gens)}⟩ = C{k}")
+    L.append(f"--   (all {k**arity} assignments hold); imports resolved from catalog/reuse-index.md.")
+    L.append("--   Each assignment is a `refl` clause. Zero postulates/holes, --safe --without-K.")
+    L.append("------------------------------------------------------------------------")
+    L.append("")
+    L.append("{-# OPTIONS --safe --without-K #-}")
+    L.append("")
+    L.append(f"module {module} where")
+    L.append("")
+    L.extend(import_lines)
+    L.append("")
+    sig = " ".join(names)
+    L.append(f"{sig} : Perm {n}")
+    for nm, e in zip(names, ordered):
+        L.append(f"{nm} = {perm_lit(e)}")
+    L.append("")
+    L.append(f"S : Perm {n} → Set")
+    L.append(f"S σ = {_paren_disj(names)}")
+    L.append("")
+    binder = " ".join(vs)
+    hyps = " → ".join(f"S {v}" for v in vs)
+    L.append(f"{lawname} : {{{binder} : Perm {n}}} → {hyps} → {render_expr(lhs,n)} ≡ {render_expr(rhs,n)}")
+    for combo in product(range(k), repeat=arity):
+        pats = " ".join(f"({nest(combo[m], k, 'refl')})" for m in range(arity))
+        L.append(f"{lawname} {pats} = refl")
+    L.append("")
+    return "\n".join(L), None
+
 # ── driver ───────────────────────────────────────────────────────────────────
 
 def parse_perm(s):
@@ -244,9 +382,15 @@ def parse_perm(s):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--class", dest="cls", default="nonmembership",
+                    choices=["nonmembership", "equation"],
+                    help="prototype SHAPE to synthesize (both share the enumerate→resolve→emit core)")
     ap.add_argument("--grade", type=int, required=True, help="n (perms of Fin n)")
     ap.add_argument("--gens", required=True, help="generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
-    ap.add_argument("--target", required=True, help="the element to prove non-member, e.g. '1,0,2'")
+    ap.add_argument("--target", help="[nonmembership] element to prove non-member, e.g. '1,0,2'")
+    ap.add_argument("--law", help="[equation] a `compose`/`id`/var identity, LHS '=' RHS, "
+                                  "e.g. 'compose a b = compose b a' (commutativity of the domain)")
+    ap.add_argument("--lawname", default="law", help="[equation] the emitted lemma's name")
     ap.add_argument("--module", default="PermGapPrototype", help="Agda module name")
     ap.add_argument("--out", required=True,
                     help="output path for the synthesized .agda (caller chooses; e.g. a temp or "
@@ -256,19 +400,14 @@ def main():
 
     n = args.grade
     gens = [parse_perm(g) for g in args.gens.split(";")]
-    target = parse_perm(args.target)
 
-    # 1. numpy search
+    # 1. numpy search (shared): the domain is the generated closure.
     ordered, idx, table = closure_of(gens, n)
-    in_closure = target in idx
     print(f"[numpy] grade-{n} closure ⟨{', '.join(str(list(g)) for g in gens)}⟩ = "
           f"{[list(e) for e in ordered]}  (order {len(ordered)})")
     print(f"[numpy] cycle-types: " + ", ".join(f"{list(e)}↦{cycle_type(e)}" for e in ordered))
-    print(f"[numpy] target {list(target)} cycle-type {cycle_type(target)}; in closure? {in_closure}")
-    if in_closure:
-        sys.exit("[abort] target IS in the closure — no non-membership witness to synthesize.")
 
-    # 2. catalog/dedup resolution
+    # 2. catalog/dedup resolution (shared).
     need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
             "_⊎_", "inj₁", "inj₂", "¬_", "Perm", "id-perm", "compose"]
     homes = resolve_homes(need, args.repo_root)
@@ -276,14 +415,36 @@ def main():
     print(f"[catalog] resolved {len(need)-len(unresolved)}/{len(need)} names from reuse-index.md + foundation map"
           + (f"; UNRESOLVED {unresolved}" if unresolved else ""))
 
-    # 3. emit
-    src = emit(args.module, n, gens, target, ordered, table, homes)
+    # 3. emit (class-dispatched).
+    if args.cls == "nonmembership":
+        if not args.target:
+            sys.exit("[abort] --target required for --class nonmembership")
+        target = parse_perm(args.target)
+        in_closure = target in idx
+        print(f"[numpy] target {list(target)} cycle-type {cycle_type(target)}; in closure? {in_closure}")
+        if in_closure:
+            sys.exit("[abort] target IS in the closure — no non-membership witness to synthesize.")
+        src = emit_nonmembership(args.module, n, gens, target, ordered, table, homes)
+    else:  # equation
+        if not args.law or "=" not in args.law:
+            sys.exit("[abort] --law 'LHS = RHS' required for --class equation")
+        lhs_s, rhs_s = args.law.split("=", 1)
+        lhs = parse_expr(tokenize_expr(lhs_s)); rhs = parse_expr(tokenize_expr(rhs_s))
+        src, fails = emit_equation(args.module, n, gens, ordered, homes, lhs, rhs, args.lawname)
+        if src is None:
+            print(f"[numpy] law FAILS on {len(fails)} assignment(s), e.g. {fails[0]}")
+            sys.exit("[abort] the identity does not hold over the domain — nothing to synthesize.")
+        print(f"[numpy] identity verified over all {len(ordered)**(len(set([v for e in (lhs,rhs) for v in _fv(e)])) )} assignments")
+
     out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8") as fh:
         fh.write(src)
     print(f"[emit] wrote {out}  ({src.count(chr(10))+1} lines)")
     print(f"[typecheck] agda --safe -i {os.path.dirname(args.out)} -i agda {args.out}")
+
+def _fv(e):
+    acc = []; free_vars(e, acc); return acc
 
 if __name__ == "__main__":
     main()
