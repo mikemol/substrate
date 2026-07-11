@@ -4,7 +4,11 @@ Each defmark carries {"unit","kind","sort","level"}; `level` is the universe the
 definition INHABITS (codomain sort, Πs peeled). A Set₁ definition has level >= 1."""
 import subprocess, json, glob, sys, os, collections, re
 
-SHIM = "/tmp/agdai263s"
+# The Agda-2.8.0 .agdai decoder (emits per-definition defmarks with sort/level). The old
+# `/tmp/agdai263s` was a stopgap for a pre-2.8.0 environment; the real tool is the committed
+# `jea/metalanguage/agdai_shim` (same one set1_ratchet_cores.py uses via AGDAI_SHIM).
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SHIM = os.environ.get("AGDAI_SHIM", os.path.join(_ROOT, "jea", "metalanguage", "agdai_shim"))
 # The shim's decodeInterface resolves the interface's recorded include paths against
 # CWD. Cores built with `-i .` from the agda root only decode when CWD is that root.
 # Two invariants, both learned the hard way:
@@ -31,7 +35,16 @@ def defmarks(core):
             except json.JSONDecodeError: pass
     return out
 
-root = sys.argv[1] if len(sys.argv) > 1 else "agda/Substrate/Algebra"
+def _default_core_root():
+    # Agda-2.8.0 puts cores under _build/<ver>/agda/Substrate (was alongside source pre-2.8.0).
+    base = os.path.join(AGDA_ROOT, "_build")
+    if os.path.isdir(base):
+        vers = sorted(d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d, "agda")))
+        if vers:
+            return os.path.join(base, vers[-1], "agda", "Substrate")
+    return os.path.join(AGDA_ROOT, "Substrate")
+
+root = sys.argv[1] if len(sys.argv) > 1 else _default_core_root()
 cs = cores(root)
 ok = undec = 0
 by_level = collections.Counter(); by_kind = collections.Counter()
