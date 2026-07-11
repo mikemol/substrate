@@ -832,6 +832,7 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" [label="Objₛ\nSubstrate.WitnessTower.Wedge.OrientationRigCat", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure.AdjGen" [label="AdjGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.AdjGen4" [label="AdjGen4\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4", style=rounded];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.CoxGen" [label="CoxGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap.BraidGen" [label="BraidGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermGap", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" [label="RigFunctor\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" [label="RigFunctor≈\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
@@ -1417,6 +1418,7 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.CoxGen" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" -> "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" -> "Substrate.Foundation.Nat.ℕ";

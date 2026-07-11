@@ -18,8 +18,8 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 
-FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda OrientationBifunctor.agda OrientationBimonoidal.agda OrientationCoherence.agda OrientationDistributor.agda OrientationDistributorAssoc.agda OrientationDistributorCoherence.agda OrientationFixedPoint.agda OrientationFlatGradedBridge.agda OrientationHexagon.agda OrientationProduct.agda OrientationProductComm.agda OrientationProductCons.agda OrientationProductInsert.agda OrientationProductLaws.agda OrientationProductNaturality.agda OrientationProductPerm.agda OrientationProductStructural.agda OrientationProductStructuralDecode.agda OrientationProductUnit.agda OrientationRig.agda OrientationRigCat.agda OrientationRigCatPerm.agda OrientationRigCatPermAdjClosure.agda OrientationRigCatPermBifunctor.agda OrientationRigCatPermCoxeter4.agda OrientationRigCatPermGap.agda OrientationRigCatPermUP.agda OrientationRigCatUP.agda OrientationRigFree.agda OrientationRigFreeUP.agda OrientationRigInitial.agda OrientationRigInstance.agda OrientationRigResidue.agda OrientationRigUniversal.agda OrientationSum.agda OrientationSumComm.agda OrientationSumLaws.agda OrientationSumMonoidal.agda OrientationSumNaturality.agda OrientationSymMonoidal.agda OrientationTowerDiv.agda OrientationUniversal.agda OrientationUniversalOver.agda PackedBridge.agda Simplicial.agda V4Seam.agda
-SUBDIRS := OrientationBimonoidal OrientationRigCat OrientationRigCatUP
+FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda OrientationBifunctor.agda OrientationBimonoidal.agda OrientationCoherence.agda OrientationDistributor.agda OrientationDistributorAssoc.agda OrientationDistributorCoherence.agda OrientationFixedPoint.agda OrientationFlatGradedBridge.agda OrientationHexagon.agda OrientationProduct.agda OrientationProductComm.agda OrientationProductCons.agda OrientationProductInsert.agda OrientationProductLaws.agda OrientationProductNaturality.agda OrientationProductPerm.agda OrientationProductStructural.agda OrientationProductStructuralDecode.agda OrientationProductUnit.agda OrientationRig.agda OrientationRigCat.agda OrientationRigCatPerm.agda OrientationRigCatPermAdjClosure.agda OrientationRigCatPermBifunctor.agda OrientationRigCatPermCoxeter4.agda OrientationRigCatPermCoxeterGeneral.agda OrientationRigCatPermGap.agda OrientationRigCatPermUP.agda OrientationRigCatUP.agda OrientationRigFree.agda OrientationRigFreeUP.agda OrientationRigInitial.agda OrientationRigInstance.agda OrientationRigResidue.agda OrientationRigUniversal.agda OrientationSum.agda OrientationSumComm.agda OrientationSumLaws.agda OrientationSumMonoidal.agda OrientationSumNaturality.agda OrientationSymMonoidal.agda OrientationTowerDiv.agda OrientationUniversal.agda OrientationUniversalOver.agda PackedBridge.agda Simplicial.agda V4Seam.agda
+SUBDIRS := OrientationBimonoidal OrientationRigCat OrientationRigCatPermCoxeterGeneral OrientationRigCatUP
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
 
@@ -62,6 +62,13 @@ OrientationRigCat:
 	fi
 	@$(MAKE) -C $@
 
+OrientationRigCatPermCoxeterGeneral:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 OrientationRigCatUP:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -72,5 +79,6 @@ OrientationRigCatUP:
 clean:
 	@$(MAKE) -C OrientationBimonoidal clean 2>/dev/null || true
 	@$(MAKE) -C OrientationRigCat clean 2>/dev/null || true
+	@$(MAKE) -C OrientationRigCatPermCoxeterGeneral clean 2>/dev/null || true
 	@$(MAKE) -C OrientationRigCatUP clean 2>/dev/null || true
 	@true
