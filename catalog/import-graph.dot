@@ -1743,6 +1743,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationSumLaws" [label="Wedge.OrientationSumLaws"];
   "Substrate.WitnessTower.Wedge.OrientationSumMonoidal" [label="Wedge.OrientationSumMonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" [label="Wedge.OrientationSumNaturality"];
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" [label="Wedge.OrientationSymMonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationUniversal" [label="Wedge.OrientationUniversal"];
   "Substrate.WitnessTower.Wedge.OrientationUniversalOver" [label="Wedge.OrientationUniversalOver"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
@@ -13013,6 +13014,16 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.Wedge.OrientationSum";
   "Substrate.WitnessTower.Wedge.OrientationSumNaturality" -> "Substrate.WitnessTower.Wedge.OrientationSumComm";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.Foundation.Nat.Properties.Add";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.Foundation.Nat.Properties.Mul";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.WitnessTower.Wedge.OrientationBifunctor";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";
+  "Substrate.WitnessTower.Wedge.OrientationSymMonoidal" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.Wedge.OrientationUniversal" -> "Substrate.Foundation.Fin.Inject";

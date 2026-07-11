@@ -142,3 +142,30 @@ record GradedBifunctor (op : ℕ → ℕ → ℕ) : Set where
               gmap (λ i → f (f' i)) (λ j → g (g' j)) k ≡ gmap f g (gmap f' g' k)
 
 open GradedBifunctor public
+
+------------------------------------------------------------------------
+-- ⟡rig-UP-cat (Set₀ capstone) — A GRADED SYMMETRIC MONOIDAL STRUCTURE: the bundle of the
+-- whole arc's decomposition-free invariants for ONE grading (op, ε). ⊕ and ⊗ are each an
+-- INSTANCE — the "recursively, ONE structure" endpoint: the two monoidal halves of the rig
+-- differ only in the grading (ℕ,+,0) vs (ℕ,·,1). Carrier C and readout ρ are PARAMETERS,
+-- never fields, so this stays Set₀ — the whole point of the mission.
+--
+-- This is a bundled WITNESS that the orientation rig satisfies the symmetric-monoidal
+-- axioms. It is NOT the categorical universal property (initiality among symmetric rig
+-- CATEGORIES): that quantifies over category-targets and is irreducibly Set₁ (a
+-- grade-collapse), deliberately not built here. The full RIG adds the distributor + Laplaza
+-- coherences (OrientationDistributor*), a further pure-assembly step over two of these.
+------------------------------------------------------------------------
+
+record GradedSymMonoidal
+  (op : ℕ → ℕ → ℕ) (ε : ℕ) (C : ℕ → Set)
+  (assoc : (x y z : ℕ) → op (op x y) z ≡ op x (op y z))
+  (ρ : {n : ℕ} → C n → Endo n) : Set where
+  field
+    product   : GradedProductOver op ε C
+    prodAssoc : GradedAssocOver assoc product
+    braiding  : GradedBraid op
+    braidNat  : GradedBraidNatural braiding product ρ
+    bifunctor : GradedBifunctor op
+
+open GradedSymMonoidal public

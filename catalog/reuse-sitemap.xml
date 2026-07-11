@@ -105,7 +105,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒_</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Shed</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.12</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.11</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKITermToShedding#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/V4FullCocycle#V4Full</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Ring#Ring</loc><priority>0.03</priority></url>
@@ -578,7 +578,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.18</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -624,7 +624,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Fin-from-Cyclic#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Fin-from-Cyclic#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Word#Word</loc><priority>0.15</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Word#Word</loc><priority>0.14</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Gen</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/S4-AsOpcodeAlgebra#S4AlphabetLayout</loc><priority>0.0</priority></url>
@@ -830,5 +830,6 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBraid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedHomOver</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedSymMonoidal</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationUniversal#LehmerAlgebra</loc><priority>0.0</priority></url>
 </urlset>
