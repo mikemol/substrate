@@ -173,6 +173,7 @@ digraph reuse {
   "Substrate.Category.Allegory.Allegory" [label="Allegory\nSubstrate.Category.Allegory"];
   "Substrate.Category.Allegory.Division.DivisionAllegory" [label="DivisionAllegory\nSubstrate.Category.Allegory.Division"];
   "Substrate.Category.Allegory.Refinement.Refinement" [label="Refinement\nSubstrate.Category.Allegory.Refinement"];
+  "Substrate.Category.Allegory.RefinementReconstruct._.GRefinement" [label="GRefinement\nSubstrate.Category.Allegory.RefinementReconstruct._"];
   "Substrate.Category.AntiCommutativeAlgebra.AntiCommutativeAlgebra" [label="AntiCommutativeAlgebra\nSubstrate.Category.AntiCommutativeAlgebra"];
   "Substrate.Category.AtlasOfProbes.AtlasCatalog" [label="AtlasCatalog\nSubstrate.Category.AtlasOfProbes"];
   "Substrate.Category.AtlasOfProbes.Probe" [label="Probe\nSubstrate.Category.AtlasOfProbes"];
@@ -999,6 +1000,7 @@ digraph reuse {
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" -> "Substrate.Category.CategoryOf.CategoryOf";
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" -> "Substrate.Category.Monad.Monad";
   "Substrate.Category.Allegory.Division.DivisionAllegory" -> "Substrate.Category.Allegory.Allegory";
+  "Substrate.Category.Allegory.RefinementReconstruct._.GRefinement" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.AtlasOfProbes.SynergyMeasurement" -> "Substrate.Category.AtlasOfProbes.ProbeAtlas";
   "Substrate.Category.AtlasOfProbes._.AtlasContext" -> "Substrate.Category.AtlasOfProbes.ProbeAtlas";
   "Substrate.Category.AtlasOfProbes._.JointContext" -> "Substrate.Category.AtlasOfProbes.ProbeAtlas";

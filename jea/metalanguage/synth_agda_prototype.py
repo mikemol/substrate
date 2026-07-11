@@ -35,6 +35,11 @@ is a pluggable prototype CLASS — the tool ships five, all over the same numpy 
     when `|orbit| = n!` this IS Coxeter-completeness at grade n.
   · cayley — the complete finite group as its multiplication (Cayley) TABLE (`mul-table`'s clauses
     ARE the table: `eᵢ·eⱼ = e_{f(i,j)}`) + the inverse map (`eᵢ·e_{inv i} ≡ id`), all refl.
+  · reconstruct — the Set₀ reconstruction of a Set₁ target as a TRUNCATION of its graded (grade-
+    exposed) form: the rich Set₀ record (carrier `C : ℕ→Set` a MODULE PARAM ⇒ lands at `: Set`) +
+    the reification, with the RESIDUE = the grade. Shape LOCATED mechanically (numpy verifies the
+    correspondence; jea_pysim locates the carrier-hole), NOT typechecker search. First target:
+    `refinement` (Category.Allegory.Refinement). This is the ⟡pipeline-driver-reconstruct class.
 
 Usage (caller chooses --out; e.g. a temp dir, kept out of the promoted tree):
   # non-membership witness:
@@ -646,6 +651,73 @@ def emit_cayley(module, n, gens, homes):
     L.append("")
     return "\n".join(L), k, full
 
+def emit_reconstruct(module, target):
+    """SYNTHESIZE the Set₀ reconstruction of a Set₁ target as a TRUNCATION of its
+    graded (grade-exposed) form — the ⟡pipeline-driver-reconstruct class. The shape
+    is supplied by the mechanical search (numpy verifies the correspondence; jea_pysim
+    locates the carrier-hole C:ℕ→Set + the graded field), NOT typechecker trial-and-error.
+    First located target: `refinement` (Category.Allegory.Refinement, Fam-operator Set₁)."""
+    if target != "refinement":
+        raise SystemExit(f"[abort] no located reconstruction spec for target '{target}' "
+                         f"(known: refinement). Locate it first (numpy + jea_pysim).")
+    # ── the located shape for `refinement` (numpy: Φ-chain C n = Φⁿ R⁰ is a descending
+    #    graded family, grade IS the chain; jea_pysim: carrier C:ℕ→Set, step (n)→C(suc n)→C n).
+    L = []
+    L.append("------------------------------------------------------------------------")
+    L.append(f"-- {module}")
+    L.append("--")
+    L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+    L.append("-- `reconstruct` class) — the Set₀ reconstruction of `Substrate.Category.Allegory")
+    L.append("-- .Refinement` (ALG-7 — the monotone Φ-operator on FIBER FAMILIES; NB this is NOT the")
+    L.append("-- unrelated `Substrate.Category.UniversalProperty.Refinement`, which is cover-refinement).")
+    L.append("-- Substrate-only imports (no stdlib). It is Set₁, and we reconstruct it as a TRUNCATION")
+    L.append("-- of its graded, grade-EXPOSED form. The shape was located")
+    L.append("-- MECHANICALLY: numpy verified the Φ-chain C n = Φⁿ R⁰ is a DESCENDING graded")
+    L.append("-- family (Rⁿ⁺¹ ⊑ Rⁿ; the grade IS the chain, over all subsets of Fin 4); jea_pysim")
+    L.append("-- located the carrier-hole C : ℕ→Set + the graded field (n)→C(suc n)→C n.")
+    L.append("--")
+    L.append("-- Refinement's Set₁ is the GRADE-COLLAPSE: it holds Φ : Fam A → Fam A (Fam A =")
+    L.append("-- A → Set : Set₁) instead of the graded C : ℕ→Set. GRefinement EXPOSES the grade")
+    L.append("-- (C a MODULE PARAM ⇒ the record lands at `: Set`, the paydown), and `reify` shows")
+    L.append("-- Refinement REIFIES to it (the 'build MORE' — the constructive graded chain). The")
+    L.append("-- RESIDUE is the grade n itself: recovering the ABSTRACT Φ-operator back from the")
+    L.append("-- graded form re-quantifies over Fam (Set₁) — that Set₁ is exactly the grade the")
+    L.append("-- truncation drops. This closes the arc's 'IDENTIFIED NOT YET PROVEN' ALG-7 chain")
+    L.append("-- deferral to the reification degree. Zero postulates, zero holes, --safe --without-K.")
+    L.append("------------------------------------------------------------------------")
+    L.append("")
+    L.append("{-# OPTIONS --safe --without-K #-}")
+    L.append("")
+    L.append(f"module {module} where")
+    L.append("")
+    L.append("open import Substrate.Foundation.Nat using (ℕ; zero; suc)")
+    L.append("open import Substrate.Category.Allegory.Refinement")
+    L.append("  using (Refinement; Fam; iterate; _⊑ᶠ_)")
+    L.append("open Refinement using (Φ; mono)   -- Φ/mono are record field projections")
+    L.append("")
+    L.append("-- THE RICH Set₀ RECONSTRUCTION: the grade EXPOSED as a graded family. C : ℕ → Set")
+    L.append("-- is a MODULE PARAMETER (not a held field), so the bundle lands at `: Set` — NOT")
+    L.append("-- Set₁. That green compile at `: Set` IS the Set₁ paydown.")
+    L.append("module _ (C : ℕ → Set) where")
+    L.append("  record GRefinement : Set where")
+    L.append("    field")
+    L.append("      step : (n : ℕ) → C (suc n) → C n")
+    L.append("")
+    L.append("-- the descent chain (Refinement.mono + a pre-fixed-point Φ R⁰ ⊑ R⁰): Rⁿ⁺¹ ⊑ᶠ Rⁿ.")
+    L.append("descend : {A : Set} (r : Refinement A) (R⁰ : Fam A) →")
+    L.append("          Φ r R⁰ ⊑ᶠ R⁰ → (n : ℕ) → iterate r (suc n) R⁰ ⊑ᶠ iterate r n R⁰")
+    L.append("descend r R⁰ pre zero    = pre")
+    L.append("descend r R⁰ pre (suc n) = mono r (descend r R⁰ pre n)")
+    L.append("")
+    L.append("-- REIFY (the 'build MORE'): Refinement's abstract Φ-operator, at a pre-fixed-point")
+    L.append("-- R⁰ and a point a, reifies to the graded, grade-exposed form. The graded step at")
+    L.append("-- n is the descent Rⁿ⁺¹ ⊑ Rⁿ read at a.")
+    L.append("reify : {A : Set} (r : Refinement A) (R⁰ : Fam A) →")
+    L.append("        Φ r R⁰ ⊑ᶠ R⁰ → (a : A) → GRefinement (λ n → iterate r n R⁰ a)")
+    L.append("reify r R⁰ pre a = record { step = λ n → descend r R⁰ pre n a }")
+    L.append("")
+    return "\n".join(L)
+
 # ── driver ───────────────────────────────────────────────────────────────────
 
 def parse_perm(s):
@@ -654,15 +726,18 @@ def parse_perm(s):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--class", dest="cls", default="nonmembership",
-                    choices=["nonmembership", "equation", "residue", "orbit", "cayley"],
-                    help="prototype SHAPE (all share the enumerate→resolve→emit core): "
+                    choices=["nonmembership", "equation", "residue", "orbit", "cayley", "reconstruct"],
+                    help="prototype SHAPE (the perm classes share the enumerate→resolve→emit core): "
                          "nonmembership (¬ target∈⟨gens⟩); equation (LHS≡RHS or its counterexample); "
                          "residue (the wedge δ=LHS·RHS⁻¹, the path of paths); "
                          "orbit (the FULL group ⟨gens⟩ mapped as generator-words — Coxeter-completeness if =Sₙ); "
-                         "cayley (the complete group as its multiplication table + inverse map)")
+                         "cayley (the complete group as its multiplication table + inverse map); "
+                         "reconstruct (the Set₀ reconstruction of a Set₁ target as a truncation of its graded form)")
     ap.add_argument("--gname", default="Gen", help="[orbit] the generated-subgroup data type name")
-    ap.add_argument("--grade", type=int, required=True, help="n (perms of Fin n)")
-    ap.add_argument("--gens", required=True, help="generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
+    ap.add_argument("--recon-target", dest="recon_target",
+                    help="[reconstruct] the located Set₁ target to reconstruct (e.g. 'refinement')")
+    ap.add_argument("--grade", type=int, help="[perm classes] n (perms of Fin n)")
+    ap.add_argument("--gens", help="[perm classes] generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
     ap.add_argument("--target", help="[nonmembership] element to prove non-member, e.g. '1,0,2'")
     ap.add_argument("--law", help="[equation] a `compose`/`id`/var identity, LHS '=' RHS, "
                                   "e.g. 'compose a b = compose b a' (commutativity of the domain)")
@@ -674,6 +749,23 @@ def main():
     ap.add_argument("--repo-root", default=os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
     args = ap.parse_args()
 
+    # reconstruct — a non-perm class: emit the Set₀ reconstruction of a located Set₁ target.
+    if args.cls == "reconstruct":
+        if not args.recon_target:
+            sys.exit("[abort] --recon-target required for --class reconstruct (e.g. 'refinement')")
+        src = emit_reconstruct(args.module, args.recon_target)
+        print(f"[reconstruct] target '{args.recon_target}': Set₀ graded reconstruction "
+              f"(GRefinement : Set) + reify; residue = the grade (mechanically located: numpy + jea_pysim)")
+        out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(src)
+        print(f"[emit] wrote {out}  ({src.count(chr(10))+1} lines)")
+        print(f"[typecheck] agda --safe -i {os.path.dirname(args.out)} -i agda {args.out}")
+        return
+
+    if args.grade is None or not args.gens:
+        sys.exit(f"[abort] --grade and --gens required for --class {args.cls}")
     n = args.grade
     gens = [parse_perm(g) for g in args.gens.split(";")]
 

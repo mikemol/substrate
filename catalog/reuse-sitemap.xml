@@ -175,6 +175,7 @@
   <url><loc>https://substrate.local/Substrate/Category/Allegory#Allegory</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Division#DivisionAllegory</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Refinement#Refinement</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Allegory/RefinementReconstruct#GRefinement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AntiCommutativeAlgebra#AntiCommutativeAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasCatalog</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#Probe</loc><priority>0.0</priority></url>
@@ -605,7 +606,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#⊤₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.12</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.11</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Canonical</loc><priority>0.0</priority></url>

@@ -641,6 +641,7 @@ digraph imports {
   "Substrate.Category.Allegory.Mono" [label="Allegory.Mono"];
   "Substrate.Category.Allegory.Power" [label="Allegory.Power"];
   "Substrate.Category.Allegory.Refinement" [label="Allegory.Refinement"];
+  "Substrate.Category.Allegory.RefinementReconstruct" [label="Allegory.RefinementReconstruct"];
   "Substrate.Category.Allegory.Trace" [label="Allegory.Trace"];
   "Substrate.Category.AntiCommutativeAlgebra" [label="Category.AntiCommutativeAlgebra"];
   "Substrate.Category.AntiCommutativeAlgebra.Morphism" [label="AntiCommutativeAlgebra.Morphism"];
@@ -6461,6 +6462,8 @@ digraph imports {
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Foundation.Eq";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Foundation.Nat";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Foundation.Product";
+  "Substrate.Category.Allegory.RefinementReconstruct" -> "Substrate.Category.Allegory.Refinement";
+  "Substrate.Category.Allegory.RefinementReconstruct" -> "Substrate.Foundation.Nat";
   "Substrate.Category.Allegory.Trace" -> "Substrate.Algebra.Nat.GCD.ComputeTrace";
   "Substrate.Category.Allegory.Trace" -> "Substrate.Algebra.R.Trace";
   "Substrate.Category.Allegory.Trace" -> "Substrate.Category.Allegory.Maps";
