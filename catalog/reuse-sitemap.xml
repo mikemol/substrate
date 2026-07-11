@@ -581,12 +581,12 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.06</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Maybe#Maybe</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#NonZero</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#_≤_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#ℕ</loc><priority>1.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.14</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.13</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Product#Σ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/RewriteConfluence#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>
@@ -826,6 +826,8 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40NoIso#A4Z2≅SymV4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/SymBridge#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/Action#StepWedge</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBraid</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedHomOver</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationUniversal#LehmerAlgebra</loc><priority>0.0</priority></url>
 </urlset>

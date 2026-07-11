@@ -36,8 +36,10 @@ open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationSumLaws using (⊕-assoc)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-assoc)
+open import Substrate.WitnessTower.Wedge.OrientationSumComm using (blockSwap; blockSwap-invol)
+open import Substrate.WitnessTower.Wedge.OrientationProductComm using (factorSwap; factorSwap-invol)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
-  using (GradedProductOver; GradedAssocOver)
+  using (GradedProductOver; GradedAssocOver; GradedBraid)
 
 ⊕-over : GradedProductOver _+_ 0 LehmerPath
 ⊕-over = record { u = 0# ; _∧_ = _⊕_ }
@@ -50,6 +52,19 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 
 ⊗-assoc-over : GradedAssocOver *-assoc ⊗-over
 ⊗-assoc-over = ⊗-assoc
+
+------------------------------------------------------------------------
+-- The comm-iso fibres as instances of the ONE GradedBraid: blockSwap (⟡rig-6, over +)
+-- and factorSwap (⟡rig-8, over *) are both involutive graded index-braidings. The
+-- involution laws (blockSwap-invol / factorSwap-invol) instantiate braid-invol — the
+-- symmetric groupoid's r ∘ r = id, uniform over the grading op.
+------------------------------------------------------------------------
+
+⊕-braid : GradedBraid _+_
+⊕-braid = record { braid = blockSwap ; braid-invol = blockSwap-invol }
+
+⊗-braid : GradedBraid _*_
+⊗-braid = record { braid = factorSwap ; braid-invol = factorSwap-invol }
 
 ------------------------------------------------------------------------
 -- REUSE UNIFICATION (dedup: GradedProductOver and Algebra.Wedge.Product.GradedProduct
