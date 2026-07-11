@@ -276,6 +276,12 @@ def eval_expr(e, env, n):
         return tuple(range(n))
     return env[e[1]]
 
+def inverse(p):
+    inv = [0] * len(p)
+    for i, pi in enumerate(p):
+        inv[pi] = i
+    return tuple(inv)
+
 def render_expr(e, n, top=True):
     if e[0] == "compose":
         s = f"compose {render_expr(e[1], n, False)} {render_expr(e[2], n, False)}"
@@ -409,6 +415,85 @@ def emit_equation(module, n, gens, ordered, homes, lhs, rhs, lawname):
     L.append("")
     return "\n".join(L), "fails", holds, len(fail_envs)
 
+def emit_residue(module, n, gens, ordered, homes, lhs, rhs, resname):
+    """The PATH OF PATHS between (LHS ≡ RHS) and ¬(LHS ≡ RHS): the wedge residue
+    δ(a…) = LHS · RHS⁻¹ (the counit-defect). It is `id` EXACTLY on the equation
+    locus and the measured obstruction elsewhere; the reconstruction is the wedge
+    `LHS ≡ compose δ RHS`, which holds IDENTICALLY (every assignment, refl). Emits
+    the δ-field (a function over the ⊎-domain), the recon lemma, and the spectrum
+    (im δ) — for commutativity, δ is the commutator [a,b] and im δ its image."""
+    k = len(ordered)
+    lvs, rvs = [], []
+    free_vars(lhs, lvs); free_vars(rhs, rvs)
+    vs = []
+    for v in lvs + rvs:
+        if v not in vs:
+            vs.append(v)
+    arity = len(vs)
+    names = _elem_names(n, ordered, gens)
+    ident = tuple(range(n))
+
+    dtab, spectrum, holds = {}, [], 0
+    for combo in product(range(k), repeat=arity):
+        env = {v: ordered[combo[m]] for m, v in enumerate(vs)}
+        Lv, Rv = eval_expr(lhs, env, n), eval_expr(rhs, env, n)
+        d = compose(Lv, inverse(Rv))                     # δ = L·R⁻¹  ⇒  δ·R = L
+        dtab[combo] = d
+        if d == ident:
+            holds += 1
+        if d not in spectrum:
+            spectrum.append(d)
+
+    need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
+            "_⊎_", "inj₁", "inj₂", "Perm", "id-perm", "compose"]
+    L = []
+    L.append("------------------------------------------------------------------------")
+    L.append(f"-- {module}")
+    L.append("--")
+    L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+    L.append("-- `residue` class — THE PATH OF PATHS between (LHS ≡ RHS) and ¬(LHS ≡ RHS)).")
+    L.append("-- The two polarities are the poles; the object BETWEEN them is the wedge")
+    L.append("-- residue / counit-defect")
+    L.append(f"--     δ(…) = {render_expr(lhs,n)} · ({render_expr(rhs,n)})⁻¹")
+    L.append("-- which is `id` EXACTLY where the law holds and the measured obstruction")
+    L.append("-- elsewhere. The reconstruction is the wedge  LHS ≡ compose δ RHS  — it holds")
+    L.append(f"--   IDENTICALLY over the grade-{n} domain ⟨{', '.join(str(list(g)) for g in gens)}⟩")
+    L.append(f"--   (all {k**arity} assignments refl). δ=id on {holds}/{k**arity} (the equation")
+    L.append(f"--   locus); |im δ| = {len(spectrum)} (the defect spectrum = the path of paths;")
+    L.append("--   for commutativity δ is the commutator [a,b]). --safe --without-K, no holes.")
+    L.append("------------------------------------------------------------------------")
+    L.append(""); L.append("{-# OPTIONS --safe --without-K #-}"); L.append("")
+    L.append(f"module {module} where"); L.append("")
+    L.extend(_eq_imports(homes, need)); L.append("")
+    L.append(f"{' '.join(names)} : Perm {n}")
+    for nm, e in zip(names, ordered):
+        L.append(f"{nm} = {perm_lit(e)}")
+    L.append("")
+    L.append(f"S : Perm {n} → Set")
+    L.append(f"S σ = {_paren_disj(names)}"); L.append("")
+    # spectrum listing (the path-of-paths, im δ)
+    L.append(f"-- the defect spectrum  im δ  ({len(spectrum)} element(s); {'ABELIAN — δ≡id' if spectrum == [ident] else 'the non-trivial path of paths'}):")
+    for d in spectrum:
+        L.append(f"--   {list(d)}" + ("   (= id, the equation locus)" if d == ident else ""))
+    # δ : the residue field over the domain
+    hyps_ty = " → ".join(f"S {v}" for v in vs)
+    L.append(f"δ : {{{' '.join(vs)} : Perm {n}}} → {hyps_ty} → Perm {n}")
+    for combo in product(range(k), repeat=arity):
+        pats = " ".join(f"({nest(combo[m], k, 'refl')})" for m in range(arity))
+        L.append(f"δ {pats} = {perm_lit(dtab[combo])}")
+    L.append("")
+    # the wedge/recon lemma: LHS ≡ compose δ RHS, identically (every assignment refl)
+    sh = [f"s{m}" for m in range(arity)]
+    binders = "".join(f"({sh[m]} : S {vs[m]}) " for m in range(arity)).rstrip()
+    L.append(f"-- the wedge: LHS reconstructs from the residue δ over RHS (holds for ALL assignments).")
+    L.append(f"{resname} : {{{' '.join(vs)} : Perm {n}}} {binders} → "
+             f"{render_expr(lhs,n)} ≡ compose (δ {' '.join(sh)}) {render_expr(rhs,n,top=False)}")
+    for combo in product(range(k), repeat=arity):
+        pats = " ".join(f"({nest(combo[m], k, 'refl')})" for m in range(arity))
+        L.append(f"{resname} {pats} = refl")
+    L.append("")
+    return "\n".join(L), holds, len(spectrum)
+
 # ── driver ───────────────────────────────────────────────────────────────────
 
 def parse_perm(s):
@@ -417,8 +502,10 @@ def parse_perm(s):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--class", dest="cls", default="nonmembership",
-                    choices=["nonmembership", "equation"],
-                    help="prototype SHAPE to synthesize (both share the enumerate→resolve→emit core)")
+                    choices=["nonmembership", "equation", "residue"],
+                    help="prototype SHAPE (all share the enumerate→resolve→emit core): "
+                         "nonmembership (¬ target∈⟨gens⟩); equation (LHS≡RHS or its counterexample); "
+                         "residue (the wedge δ=LHS·RHS⁻¹, the path of paths between the two)")
     ap.add_argument("--grade", type=int, required=True, help="n (perms of Fin n)")
     ap.add_argument("--gens", required=True, help="generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
     ap.add_argument("--target", help="[nonmembership] element to prove non-member, e.g. '1,0,2'")
@@ -459,7 +546,7 @@ def main():
         if in_closure:
             sys.exit("[abort] target IS in the closure — no non-membership witness to synthesize.")
         src = emit_nonmembership(args.module, n, gens, target, ordered, table, homes)
-    else:  # equation — emit at whichever polarity holds; a false law is negative space, not nothing
+    elif args.cls == "equation":  # emit at whichever polarity holds; a false law is negative space
         if not args.law or "=" not in args.law:
             sys.exit("[abort] --law 'LHS = RHS' required for --class equation")
         lhs_s, rhs_s = args.law.split("=", 1)
@@ -470,6 +557,16 @@ def main():
         else:
             print(f"[numpy] identity FAILS on {n_fails}/{n_holds + n_fails} assignments "
                   f"→ NEGATIVE-SPACE witness (counterexample refutation, a constraint to cover)")
+    else:  # residue — the path of paths: the wedge defect δ = LHS·RHS⁻¹ over the whole domain
+        if not args.law or "=" not in args.law:
+            sys.exit("[abort] --law 'LHS = RHS' required for --class residue")
+        lhs_s, rhs_s = args.law.split("=", 1)
+        lhs = parse_expr(tokenize_expr(lhs_s)); rhs = parse_expr(tokenize_expr(rhs_s))
+        src, holds, spec = emit_residue(args.module, n, gens, ordered, homes, lhs, rhs, args.lawname)
+        print(f"[numpy] wedge residue δ=LHS·RHS⁻¹: δ=id on {holds} assignment(s) (the equation locus); "
+              f"|im δ|={spec} (the path of paths — "
+              f"{'δ≡id, holds everywhere' if spec == 1 else 'non-trivial defect spectrum'}); "
+              f"recon LHS≡compose δ RHS holds identically")
 
     out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
     os.makedirs(os.path.dirname(out), exist_ok=True)
