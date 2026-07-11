@@ -1,12 +1,15 @@
 ------------------------------------------------------------------------
 -- Substrate.WitnessTower.Wedge.OrientationRigCatPermUP
 --
--- ⟡rig-UP-cat-perm-UP — THE HONEST FUNCTOR UNIVERSAL PROPERTY of the FULL
--- symmetric rig category orientationRigCatPerm (the Sₙ-morphism categori-
--- fication, OrientationRigCatPerm). Companion to ⟡rig-UP-cat-UP
+-- ⟡rig-UP-cat-perm-UP — THE HONEST FUNCTOR UNIVERSAL PROPERTY of
+-- orientationRigCatPerm, the TRANSFORMATION-MONOID (Tₙ) rig category
+-- (OrientationRigCatPerm — its morphisms are unrestricted vectors, NOT Sₙ; see
+-- that header's CORRECTION). Companion to ⟡rig-UP-cat-UP
 -- (OrientationRigCatUP.Properties), which settled the SKELETAL (thin) source;
--- this one settles the GENUINE (permutation) source and — crucially — exposes
--- exactly WHERE its universal property STOPS, without faking the missing part.
+-- this one settles the Tₙ source and — crucially — exposes exactly WHERE its
+-- universal property STOPS, without faking the missing part. (The genuine
+-- SYMMETRIC Sₙ source, where the UP is actually FREE, is OrientationRigCatSym
+-- .UP: sym-hom-unique — F determined by F(s₁) on every permutation morphism.)
 --
 -- WHAT IT SETTLES (both solid, ∀ target, NO Σ / ∃):
 --

@@ -1,21 +1,31 @@
 ------------------------------------------------------------------------
 -- Substrate.WitnessTower.Wedge.OrientationRigCatPerm
 --
--- ⟡rig-UP-cat-perm — THE GENUINE (NON-THIN) SYMMETRIC RIG CATEGORY. The real
+-- ⟡rig-UP-cat-perm — THE NON-THIN TRANSFORMATION-MONOID RIG CATEGORY. The real
 -- categorification that the skeletal orientationRigCatₛ (OrientationRigCat
 -- .Properties) is the decategorified shadow of.
+--
+-- CORRECTION (see also OrientationRigCatSym): the morphisms here are `Perm j =
+-- Vec (Fin j) j` UNRESTRICTED — that is the full TRANSFORMATION MONOID Tₙ (all jʲ
+-- functions Fin j → Fin j), NOT the symmetric group Sₙ. Only the INVERTIBLE ones
+-- are permutations, and the braidings are exactly those units. The genuine
+-- SYMMETRIC (Sₙ) rig category — Hom restricted to invertible morphisms, where
+-- coxeter-complete makes the functors actually FREE — is `orientationRigCatSym`
+-- (OrientationRigCatSym / .UP). This module is its Tₙ ambient; keep the two
+-- distinct (an earlier version of this header wrongly called Tₙ "the full Sₙ").
 --
 -- The skeletal instance has THIN morphisms Homₛ i j = (i ≡ j): between any two
 -- objects there is at most ONE arrow, so its "braidings" carry no information —
 -- a symmetry that is trivially its own inverse because there is nothing to
--- invert. THIS instance replaces that hom-set by the FULL symmetric group Sₙ:
+-- invert. THIS instance replaces that hom-set by the transformation monoid Tₙ:
 --
 --   Homₚ {i}{j} _ _ = Σ (i ≡ j) (λ _ → Perm j)
 --
--- a grade-equality PLUS a genuine permutation of the grade-j ordered set (n! of
--- them, not one). The Σ is HONEST DATA — the perm together with the grade witness
--- that makes the arrow grade-respecting (i ≢ j ⇒ no morphism) — NOT an ∃-collapse.
--- The braidings are then GENUINE non-trivial permutations: braid⊕ carries the
+-- a grade-equality PLUS a grade-j vector-endofunction (jʲ of them, not one; the
+-- invertible ones are the n! permutations). The Σ is HONEST DATA — the vector
+-- together with the grade witness that makes the arrow grade-respecting (i ≢ j ⇒
+-- no morphism) — NOT an ∃-collapse. The braidings are GENUINE non-trivial
+-- permutations (the invertible morphisms): braid⊕ carries the
 -- block-swap transposition (OrientationSumComm), braid⊗ the factor-swap
 -- (OrientationProductComm), and braid⊕/⊗-invol are their honest order-2 laws
 -- (blockSwap-invol / factorSwap-invol), lifted from the Fin-level swap to a
