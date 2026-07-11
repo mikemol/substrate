@@ -13086,6 +13086,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigInstance" -> "Substrate.WitnessTower.Wedge.OrientationProductStructural";
   "Substrate.WitnessTower.Wedge.OrientationRigInstance" -> "Substrate.WitnessTower.Wedge.OrientationRigInitial";
   "Substrate.WitnessTower.Wedge.OrientationRigInstance" -> "Substrate.WitnessTower.Wedge.OrientationRigUniversal";
+  "Substrate.WitnessTower.Wedge.OrientationRigInstance" -> "Substrate.WitnessTower.Wedge.OrientationSum";
   "Substrate.WitnessTower.Wedge.OrientationRigInstance" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" -> "Substrate.Foundation.Fin";

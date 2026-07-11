@@ -111,8 +111,8 @@ record FreeRigAlgebra (C : ℕ → Set) : Set where
     -- ⊗ coherence: absorbing base + the rotation-compat multiplicative block-step
     -- law (fold-⊗'s ⊗ᶜ-absorb / ⊗ᶜ-step with step = stepᶜ, through replayᶜ).
     ⊗ᶜ-absorb : ∀ {n} (y : C n) → (zeroᶜ ⊗ᶜ y) ≡ zeroᶜ
-    ⊗ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) (y : C n) →
-                replayᶜ algᶜ p n l₂ (x ⊗ᶜ y) ≡ (stepᶜ x p ⊗ᶜ y)
+    ⊗ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) →
+                replayᶜ algᶜ p n l₂ (x ⊗ᶜ fold algᶜ l₂) ≡ (stepᶜ x p ⊗ᶜ fold algᶜ l₂)
 
 open FreeRigAlgebra public
 

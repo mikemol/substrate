@@ -67,12 +67,15 @@ fold-replay alg p n (l ◂ q) b =
 fold-⊗ : ∀ {C} (alg : LehmerAlgebra C)
          (_⊗ᶜ_ : ∀ {i j} → C i → C j → C (i * j))
          (⊗ᶜ-absorb : ∀ {n} (y : C n) → (base alg ⊗ᶜ y) ≡ base alg)
-         (⊗ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) (y : C n) →
-                    replayᶜ alg p n l₂ (x ⊗ᶜ y) ≡ (step alg x p ⊗ᶜ y)) →
+         -- ⊗ᶜ-step COUPLED: the multiplicand is `fold alg l₂` (the block's own image), not a free
+         -- `y`. fold-⊗ only ever needs y = fold alg l₂, and coupling lets the canonical LehmerPath
+         -- model (fold idAlg = id) satisfy it (⟡rig-UP-couple / OrientationRigInstance.LehmerRig).
+         (⊗ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) →
+                    replayᶜ alg p n l₂ (x ⊗ᶜ fold alg l₂) ≡ (step alg x p ⊗ᶜ fold alg l₂)) →
          ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) →
          fold alg (l₁ ⊗ˢ l₂) ≡ (fold alg l₁ ⊗ᶜ fold alg l₂)
 fold-⊗ alg _⊗ᶜ_ ab st start    l₂ = sym (ab (fold alg l₂))
 fold-⊗ alg _⊗ᶜ_ ab st (l₁ ◂ p) l₂ =
   trans (fold-replay alg p _ l₂ (l₁ ⊗ˢ l₂))
         (trans (cong (replayᶜ alg p _ l₂) (fold-⊗ alg _⊗ᶜ_ ab st l₁ l₂))
-               (st (fold alg l₁) p l₂ (fold alg l₂)))
+               (st (fold alg l₁) p l₂))

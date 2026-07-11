@@ -55,8 +55,8 @@ record RigAlgebra (C : ℕ → Set) : Set where
                 (step alg x p ⊕ᶜ y) ≡ step alg (x ⊕ᶜ y) (inject+ n p)
     _⊗ᶜ_      : ∀ {i j} → C i → C j → C (i * j)
     ⊗ᶜ-absorb : ∀ {n} (y : C n) → (base alg ⊗ᶜ y) ≡ base alg
-    ⊗ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) (y : C n) →
-                replayᶜ alg p n l₂ (x ⊗ᶜ y) ≡ (step alg x p ⊗ᶜ y)
+    ⊗ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) →
+                replayᶜ alg p n l₂ (x ⊗ᶜ fold alg l₂) ≡ (step alg x p ⊗ᶜ fold alg l₂)
 
 open RigAlgebra public
 
