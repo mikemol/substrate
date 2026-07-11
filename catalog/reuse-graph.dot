@@ -828,6 +828,7 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedHomOver" [label="GradedHomOver\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver" [label="GradedProductOver\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" [label="GradedSymMonoidal\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial.RigAlgebra" [label="RigAlgebra\nSubstrate.WitnessTower.Wedge.OrientationRigInitial"];
   "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" [label="LehmerAlgebra\nSubstrate.WitnessTower.Wedge.OrientationUniversal"];
   "Substrate.Algebra.Abelian.V4-as-PFG.⊤" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Algebra.CayleyDickson.Prod" -> "Substrate.Foundation.Nat.ℕ";
@@ -1406,5 +1407,6 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedProductOver" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial.RigAlgebra" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Wedge.OrientationUniversal.LehmerAlgebra" -> "Substrate.Foundation.Nat.ℕ";
 }

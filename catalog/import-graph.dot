@@ -1742,6 +1742,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode" [label="Wedge.OrientationProductStructuralDecode"];
   "Substrate.WitnessTower.Wedge.OrientationProductUnit" [label="Wedge.OrientationProductUnit"];
   "Substrate.WitnessTower.Wedge.OrientationRig" [label="Wedge.OrientationRig"];
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" [label="Wedge.OrientationRigInitial"];
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" [label="Wedge.OrientationRigUniversal"];
   "Substrate.WitnessTower.Wedge.OrientationSum" [label="Wedge.OrientationSum"];
   "Substrate.WitnessTower.Wedge.OrientationSumComm" [label="Wedge.OrientationSumComm"];
@@ -13039,6 +13040,15 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRig" -> "Substrate.WitnessTower.Wedge.OrientationProduct";
   "Substrate.WitnessTower.Wedge.OrientationRig" -> "Substrate.WitnessTower.Wedge.OrientationProductPerm";
   "Substrate.WitnessTower.Wedge.OrientationRig" -> "Substrate.WitnessTower.Wedge.OrientationSum";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.Foundation.Fin.Inject";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.WitnessTower.Wedge.OrientationProductStructural";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.WitnessTower.Wedge.OrientationRigUniversal";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.WitnessTower.Wedge.OrientationSum";
+  "Substrate.WitnessTower.Wedge.OrientationRigInitial" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.Wedge.OrientationRigUniversal" -> "Substrate.Foundation.Nat";
