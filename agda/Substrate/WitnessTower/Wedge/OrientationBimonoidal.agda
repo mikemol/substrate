@@ -91,3 +91,30 @@ record GradedBraid (op : ℕ → ℕ → ℕ) : Set where
     braid-invol : ∀ m n (k : Fin (op m n)) → braid n m (braid m n k) ≡ k
 
 open GradedBraid public
+
+------------------------------------------------------------------------
+-- Endo: finite endofunctions Fin n → Fin n — the READOUT carrier, shared by the graded
+-- hom's multiplicative target and the naturality layer below. (A permutation, a fold's
+-- decoded action: everything reads out to an endofunction; pointwise equality on Endo is
+-- the funext-free target equality — Perm = Vec, lookup-extensional.)
+------------------------------------------------------------------------
+
+Endo : ℕ → Set
+Endo n = Fin n → Fin n
+
+------------------------------------------------------------------------
+-- ⟡rig-UP-nat — THE BRAIDING IS NATURAL w.r.t. a readout ρ : C n → Endo n. The two
+-- naturality squares of the arc — ⊕-comm-nat (blockSwap over +) and ⊗-comm-nat (factorSwap
+-- over *) — are ONE coherence: reading out the op-SWAPPED product at a BRAIDED index equals
+-- braiding the readout of the original product. This couples GradedBraid (the index-swap)
+-- with the hom's readout — the symmetric-monoidal σ made natural, uniform over the grading
+-- op. Set₀, pointwise (no funext). A predicate; the fibres CONSTRUCT it from the already-
+-- proven comm-nat lemmas (the hard content stays in the fibres, the shape lifts here).
+------------------------------------------------------------------------
+
+GradedBraidNatural : {op : ℕ → ℕ → ℕ} {ε : ℕ} {C : ℕ → Set}
+                     (B : GradedBraid op) (P : GradedProductOver op ε C)
+                     (ρ : {n : ℕ} → C n → Endo n) → Set
+GradedBraidNatural {op = op} {C = C} B P ρ =
+  ∀ {m n} (x : C m) (y : C n) (k : Fin (op m n)) →
+  ρ (_∧_ P y x) (braid B m n k) ≡ braid B m n (ρ (_∧_ P x y) k)

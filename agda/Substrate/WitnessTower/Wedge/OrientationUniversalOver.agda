@@ -43,7 +43,7 @@ open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold; fold-⊕)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
-  using (GradedProductOver; GradedHomOver; u; _∧_; map₀; map-u; map-∧)
+  using (GradedProductOver; GradedHomOver; Endo; u; _∧_; map₀; map-u; map-∧)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties
   using (⊕-over; ⊗-over)
 
@@ -72,10 +72,6 @@ fold-hom alg Q u≡base cb cs = record
 -- 2. THE MULTIPLICATIVE INSTANCE (⟡rig-UP-mul) — lookup/decode is a graded homomorphism
 --    from ⊗-over onto the combine-product of finite endofunctions, POINTWISE (_≐_).
 ------------------------------------------------------------------------
-
--- the target carrier: finite endofunctions, with the combine-product and identity unit.
-Endo : ℕ → Set
-Endo n = Fin n → Fin n
 
 -- pointwise equality (the funext-free target equality; Fin-endofunctions are compared
 -- index-by-index, exactly as Perm tables are via lookup-ext).

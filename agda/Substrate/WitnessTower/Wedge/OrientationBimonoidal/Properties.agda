@@ -36,10 +36,14 @@ open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationSumLaws using (⊕-assoc)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-assoc)
+open import Substrate.Foundation.Vec using (lookup)
+open import Substrate.WitnessTower.LehmerPath using (decode)
 open import Substrate.WitnessTower.Wedge.OrientationSumComm using (blockSwap; blockSwap-invol)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm using (factorSwap; factorSwap-invol)
+open import Substrate.WitnessTower.Wedge.OrientationSumNaturality using (⊕-comm-nat)
+open import Substrate.WitnessTower.Wedge.OrientationProductNaturality using (⊗-comm-nat)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
-  using (GradedProductOver; GradedAssocOver; GradedBraid)
+  using (GradedProductOver; GradedAssocOver; GradedBraid; GradedBraidNatural)
 
 ⊕-over : GradedProductOver _+_ 0 LehmerPath
 ⊕-over = record { u = 0# ; _∧_ = _⊕_ }
@@ -65,6 +69,19 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 
 ⊗-braid : GradedBraid _*_
 ⊗-braid = record { braid = factorSwap ; braid-invol = factorSwap-invol }
+
+------------------------------------------------------------------------
+-- ⟡rig-UP-nat — the two naturality squares as instances of the ONE GradedBraidNatural.
+-- The readout ρ: for ⊗ it is lookup (a Perm IS its own action); for ⊕ it is lookup∘decode
+-- (the LehmerPath decoded to its block-sum permutation). Both are one-line witnesses — the
+-- hard induction/case content lives in ⊕-comm-nat / ⊗-comm-nat (already proven).
+------------------------------------------------------------------------
+
+⊗-braid-nat : GradedBraidNatural ⊗-braid ⊗-over lookup
+⊗-braid-nat σ τ k = ⊗-comm-nat σ τ k
+
+⊕-braid-nat : GradedBraidNatural ⊕-braid ⊕-over (λ l → lookup (decode l))
+⊕-braid-nat l₁ l₂ k = ⊕-comm-nat l₁ l₂ k
 
 ------------------------------------------------------------------------
 -- REUSE UNIFICATION (dedup: GradedProductOver and Algebra.Wedge.Product.GradedProduct
