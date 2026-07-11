@@ -67,15 +67,20 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermBifunctor
   using (blockSum-id; blockSum-compose)
 
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
+  using (_∧_)
 open import Substrate.WitnessTower.Wedge.OrientationRigCat
-  using (GradedRigCat; Objₛ; ⋆; idHom; _∘_)
+  using (GradedRigCat; Objₛ; ⋆; idHom; _∘_; ⊕obj)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm
   using (Homᵣ; homEq; uipℕ)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatSym
   using ( orientationRigCatSym; Homˢ; homEqˢ
-        ; Iso; IsPerm→Iso; iso-id; idˢ; _∘ˢ_ )
+        ; Iso; IsPerm→Iso; Iso→IsPerm; iso-id; idˢ; _∘ˢ_ )
 open import Substrate.WitnessTower.Wedge.OrientationRigCatUP
-  using ( RigFunctor; F-obj; F-hom; F-idHom; F-∘; trⱽ )
+  using ( RigFunctor; F-obj; F-hom; F-idHom; F-∘; trⱽ
+        ; F-⊕obj-u; F-⊕obj-∧; F-⊗obj-u; RigFunctor≈ )
+open import Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties
+  using (freeObj)
 
 ------------------------------------------------------------------------
 -- The canonical Sym endomorphism carried by a permutation σ (grade-endo, its
@@ -288,3 +293,83 @@ module _
                    Agree (morph σ (IsPerm→Iso σ pf))
   sym-hom-unique bA a₁ σ pf =
     sym-hom-unique-on-gens (gens-from-s₁ bA a₁) σ pf
+
+  --------------------------------------------------------------------
+  -- LIFT to an ARBITRARY Sym morphism. Every h : Homˢ i j is
+  -- ((eq , σ) , iso) with eq : i ≡ j; J-eliminating eq to refl unifies
+  -- j := i and identifies h with the DIAGONAL arrow morph σ iso, on which
+  -- sym-hom-unique already decides Agree. The Iso witness sym-hom-unique
+  -- rebuilds (IsPerm→Iso σ (Iso→IsPerm σ iso)) differs from the given iso
+  -- only in a mere-prop component, so homEqˢ refl bridges them (agree-cong).
+  --------------------------------------------------------------------
+  homAgreeArb : BimapAgree → Agree s₁ˢ →
+                {i j : ℕ} (h : Homˢ i j) → Agree h
+  homAgreeArb bA a₁ ((refl , σ) , iso) =
+    agree-cong (homEqˢ refl) (sym-hom-unique bA a₁ σ (Iso→IsPerm σ iso))
+
+------------------------------------------------------------------------
+-- STAGE 5 — THE OBJECT-AGREEMENT, PROVEN (no longer a hypothesis). The
+-- object map of ANY RigFunctor orientationRigCatSym → T is FORCED to the
+-- grade-fold freeObj (Objₛ singleton + trivial ⊕/⊗ products — identical to
+-- the skeletal/perm sources, so freeFunctorₚ-obj-unique's induction runs
+-- verbatim). Two functors therefore agree on objects: both factor through
+-- freeObj T n. This DISCHARGES the objag hypothesis of the Reduction module.
+------------------------------------------------------------------------
+
+-- object map forced to the grade-fold (freeFunctorₚ-obj-unique, source swapped).
+freeFunctorₛᵧ-obj-unique :
+  {Obj : ℕ → Set} {Hom : {i j : ℕ} → Obj i → Obj j → Set}
+  (T : GradedRigCat Obj Hom)
+  (F : RigFunctor orientationRigCatSym T) →
+  (n : ℕ) → F-obj F (⋆ {n}) ≡ freeObj T n
+freeFunctorₛᵧ-obj-unique T F zero    = F-⊕obj-u F
+freeFunctorₛᵧ-obj-unique T F (suc n) =
+  trans (F-⊕obj-∧ F (⋆ {1}) (⋆ {n}))
+        (cong₂ (_∧_ (⊕obj T)) (F-⊗obj-u F) (freeFunctorₛᵧ-obj-unique T F n))
+
+-- every object of grade n is ⋆ (Objₛ is the grade-indexed singleton).
+objₛ-canon : {n : ℕ} (a : Objₛ n) → a ≡ ⋆
+objₛ-canon ⋆ = refl
+
+-- PIECE 1 — the object-agreement between F and G: both object maps are
+-- freeObj T n (after reducing a to ⋆), so they coincide.
+symObjUnique :
+  {Obj : ℕ → Set} {Hom : {i j : ℕ} → Obj i → Obj j → Set}
+  (T : GradedRigCat Obj Hom)
+  (F G : RigFunctor orientationRigCatSym T)
+  {n : ℕ} (a : Objₛ n) → F-obj F a ≡ F-obj G a
+symObjUnique T F G {n} a =
+  trans (cong (F-obj F) (objₛ-canon a))
+  (trans (freeFunctorₛᵧ-obj-unique T F n)
+  (trans (sym (freeFunctorₛᵧ-obj-unique T G n))
+         (cong (F-obj G) (sym (objₛ-canon a)))))
+
+-- the object-agreement specialised to ⋆ — the objag the Reduction module
+-- takes as a parameter, now PROVEN.
+symObjag :
+  {Obj : ℕ → Set} {Hom : {i j : ℕ} → Obj i → Obj j → Set}
+  (T : GradedRigCat Obj Hom)
+  (F G : RigFunctor orientationRigCatSym T) →
+  {n : ℕ} → F-obj F (⋆ {n}) ≡ F-obj G (⋆ {n})
+symObjag T F G {n} = symObjUnique T F G (⋆ {n})
+
+------------------------------------------------------------------------
+-- PIECE 3 — THE RECORD-LEVEL FREE UNIVERSAL PROPERTY. Any two RigFunctors
+-- out of orientationRigCatSym that agree on the single generator s₁ (and
+-- preserve the ⊕-bifunctor, BimapAgree) are RigFunctor≈-equal: obj≈ is the
+-- forced object-agreement symObjUnique, hom≈ is homAgreeArb (Agree on every
+-- morphism), whose objag is symObjag definitionally (obj≈ ⋆ = symObjag). This
+-- IS the free UP of the symmetric rig category, packaged in RigFunctor≈.
+------------------------------------------------------------------------
+
+sym-hom-unique-record :
+  {Obj : ℕ → Set} {Hom : {i j : ℕ} → Obj i → Obj j → Set}
+  (T : GradedRigCat Obj Hom)
+  (F G : RigFunctor orientationRigCatSym T) →
+  BimapAgree T F G (symObjag T F G) →
+  Agree T F G (symObjag T F G) s₁ˢ →
+  RigFunctor≈ F G
+sym-hom-unique-record T F G bA a₁ = record
+  { obj≈ = λ a → symObjUnique T F G a
+  ; hom≈ = λ { {a = ⋆} {b = ⋆} h → homAgreeArb T F G (symObjag T F G) bA a₁ h }
+  }

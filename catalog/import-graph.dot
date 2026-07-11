@@ -13203,6 +13203,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.FirstAppearance";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.IsPermutation";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationDistributor";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPerm";
@@ -13212,6 +13213,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCatSym";
   "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCatUP";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatSymUP" -> "Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";
