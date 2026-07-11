@@ -1746,6 +1746,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCat" [label="Wedge.OrientationRigCat"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Properties" [label="OrientationRigCat.Properties"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPerm" [label="Wedge.OrientationRigCatPerm"];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" [label="Wedge.OrientationRigCatPermGap"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" [label="Wedge.OrientationRigCatPermUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP" [label="Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties" [label="OrientationRigCatUP.Properties"];
@@ -13089,6 +13090,13 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationRigCatPerm" -> "Substrate.WitnessTower.Wedge.OrientationProductComm";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPerm" -> "Substrate.WitnessTower.Wedge.OrientationRigCat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPerm" -> "Substrate.WitnessTower.Wedge.OrientationSumComm";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.Foundation.Negation";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.Foundation.Sum";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap" -> "Substrate.WitnessTower.FirstAppearance";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.Wedge.OrientationRigCatPermUP" -> "Substrate.WitnessTower.Wedge.OrientationBimonoidal";

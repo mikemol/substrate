@@ -51,12 +51,20 @@
 -- make the adjacent transpositions sᵢ = id ⊕ s₁ ⊕ id reachable — and adjacent
 -- transpositions DO generate Sₙ (Coxeter; Substrate.Category.CoxeterPermutation
 -- Group). Full freeness would need that bifunctor; the current GradedRigCat does
--- not field it. Ⓐ FOLLOW-ON: a concrete Agda non-membership witness at grade 3
--- (the transposition (0 1) ∈ Perm 3 is not any ∘-composite of the three grade-3
--- braidings = C₃) is scoped OUT here — it needs either a verified sign map
--- Perm n → ℤ/2 or a finite subgroup-closure argument over reduced swPerm terms,
--- a separate theorem; the gap is stated above as the numpy-verified fact, NOT
--- postulated and NOT faked.
+-- not field it. Ⓐ NOW CLOSED — the concrete Agda non-membership witness at grade
+-- 3 (the transposition (0 1) ∈ Perm 3 is not any ∘-composite of the three grade-3
+-- braidings = C₃) is PROVEN in `OrientationRigCatPermGap` (`transposition-∉-
+-- braidings : ¬ BraidGen t01`), by the FINITE CLOSURE of the two rotation
+-- generators (C₃ = { id, [2,0,1], [1,2,0] }, closed under compose — each of the 9
+-- products `refl`) plus the constructor-distinct disequality of the transposition
+-- vector — no general sign theorem was needed after all. (The earlier note that
+-- this "needed a sign map that doesn't exist" was an ABSENCE claim I had not
+-- searched: the alternating sign DOES already walk the tower —
+-- `WitnessTower.CycleType.cycle-type : {n} → Perm n → Vec ℕ n` is general and
+-- separates them [transposition ↦ [1,1,0] vs id/3-cycle ↦ [3,0,0]/[0,0,1]], and
+-- the sign-as-xor-hom PATTERN is proven for the position sign
+-- [`SimplicialBoundary.osign`+`∂∂-opp-sign`] and chirality [`M40Action.sgn-hom`];
+-- the finite-closure route sidesteps needing a Perm-n sign homomorphism at all.)
 --
 -- This module declares NO data/record (proof-side): all content is lemmas over
 -- the existing RigFunctor / GradedRigCat types, so it may import the proof-

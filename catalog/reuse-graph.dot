@@ -830,6 +830,7 @@ digraph reuse {
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedSymMonoidal" [label="GradedSymMonoidal\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.GradedRigCat" [label="GradedRigCat\nSubstrate.WitnessTower.Wedge.OrientationRigCat"];
   "Substrate.WitnessTower.Wedge.OrientationRigCat.Objₛ" [label="Objₛ\nSubstrate.WitnessTower.Wedge.OrientationRigCat", style=rounded];
+  "Substrate.WitnessTower.Wedge.OrientationRigCatPermGap.BraidGen" [label="BraidGen\nSubstrate.WitnessTower.Wedge.OrientationRigCatPermGap", style=rounded];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor" [label="RigFunctor\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigCatUP.RigFunctor≈" [label="RigFunctor≈\nSubstrate.WitnessTower.Wedge.OrientationRigCatUP"];
   "Substrate.WitnessTower.Wedge.OrientationRigFreeUP.FreeRigAlgebra" [label="FreeRigAlgebra\nSubstrate.WitnessTower.Wedge.OrientationRigFreeUP"];
