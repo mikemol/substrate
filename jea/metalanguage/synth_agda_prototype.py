@@ -19,14 +19,22 @@ a compiling Agda module.
 
 The core is a FACT-FAMILY → CLAUSE engine (numpy enumerates a finite family of decidable
 ground facts; each becomes a `refl`/`()` Agda clause under a structured wrapper). The wrapper
-is a pluggable prototype CLASS — the tool ships two, both over the same numpy closure:
+is a pluggable prototype CLASS — the tool ships five, all over the same numpy closure:
 
   · nonmembership — `¬ (target ∈ ⟨gens⟩)`: the ⊎-membership S, the inductive `data …Gen`, the
     finite-closure table, and the witness. (Re-derives the hand-checked grade-3 theorem
     `Substrate.WitnessTower.Wedge.OrientationRigCatPermGap` mechanically, at any grade.)
   · equation — a numpy-verified `compose`/`id` identity over the domain, e.g. commutativity
     `compose a b = compose b a`, emitted as `law : {…} → S … → LHS ≡ RHS` with one refl clause
-    per assignment. Aborts (emits nothing) if the identity fails on any assignment.
+    per assignment; on failure emits the NEGATIVE-SPACE witness (a concrete `¬`-counterexample),
+    never nothing.
+  · residue — the wedge defect `δ = LHS·RHS⁻¹` (the path of paths BETWEEN `≡` and `¬`): the δ-field
+    over the domain + the reconstruction `LHS ≡ compose δ RHS` (all refl) + the spectrum `im δ`
+    (for commutativity, the commutator subgroup).
+  · orbit — the FULL group `⟨gens⟩` mapped as generator-words + `complete : AllGen σ → …Gen σ`;
+    when `|orbit| = n!` this IS Coxeter-completeness at grade n.
+  · cayley — the complete finite group as its multiplication (Cayley) TABLE (`mul-table`'s clauses
+    ARE the table: `eᵢ·eⱼ = e_{f(i,j)}`) + the inverse map (`eᵢ·e_{inv i} ≡ id`), all refl.
 
 Usage (caller chooses --out; e.g. a temp dir, kept out of the promoted tree):
   # non-membership witness:
@@ -582,6 +590,62 @@ def emit_orbit(module, n, gens, homes, gname):
     L.append("")
     return "\n".join(L), k, full
 
+def emit_cayley(module, n, gens, homes):
+    """The complete finite group ⟨gens⟩ as its CAYLEY (multiplication) TABLE: the
+    k×k product table exposed as a closure witness whose CLAUSES ARE THE TABLE
+    (`mul-table (inj_i refl)(inj_j refl) = inj_{f(i,j)} refl` literally says
+    eᵢ·eⱼ = e_{f(i,j)}), plus the inverse map (eᵢ · e_{inv i} ≡ id). Reuses
+    closure_of, which already computes the product table. Every fact is `refl`."""
+    import math
+    ordered, idx, table = closure_of(gens, n)
+    k = len(ordered)
+    ident = tuple(range(n))
+    id_idx = idx[ident]
+    names = _elem_names(n, ordered, gens)
+    inv = {}
+    for i in range(k):
+        for j in range(k):
+            if table[(i, j)] == id_idx:
+                inv[i] = j
+                break
+    full = (k == math.factorial(n))
+    need = ["Fin", "zero", "suc", "Vec", "[]", "_∷_", "_≡_", "refl",
+            "_⊎_", "inj₁", "inj₂", "Perm", "id-perm", "compose"]
+    L = []
+    L.append("------------------------------------------------------------------------")
+    L.append(f"-- {module}")
+    L.append("--")
+    L.append("-- SYNTHESIZED by jea/metalanguage/synth_agda_prototype.py (⟡pipeline-driver,")
+    L.append("-- `cayley` class — the complete finite group ⟨gens⟩ as its multiplication table).")
+    L.append(f"--   grade {n}; generators {[list(g) for g in gens]}; |⟨gens⟩| = {k}"
+             + (f" = {n}! (= S{n})." if full else f" (a subgroup of S{n}, order {math.factorial(n)})."))
+    L.append("--   `mul-table` IS the Cayley table (each clause eᵢ·eⱼ = e_{f(i,j)}); `inv-*` the")
+    L.append("--   inverse map (eᵢ·e_{inv i} ≡ e0 = id). All refl. Imports from catalog/reuse-index.md.")
+    L.append("------------------------------------------------------------------------")
+    L.append(""); L.append("{-# OPTIONS --safe --without-K #-}"); L.append("")
+    L.append(f"module {module} where"); L.append("")
+    L.extend(_eq_imports(homes, need)); L.append("")
+    L.append(f"-- the {k} group elements (e0 = id):")
+    L.append(f"{' '.join(names)} : Perm {n}")
+    for nm, e in zip(names, ordered):
+        L.append(f"{nm} = {perm_lit(e)}")
+    L.append("")
+    L.append(f"S : Perm {n} → Set")
+    L.append(f"S σ = {_paren_disj(names)}"); L.append("")
+    L.append(f"-- THE CAYLEY TABLE: every product of two elements is a specific element")
+    L.append(f"-- (the {k}×{k} clauses below ARE the multiplication table; also proves closure).")
+    L.append(f"mul-table : {{a b : Perm {n}}} → S a → S b → S (compose a b)")
+    for i in range(k):
+        for j in range(k):
+            L.append(f"mul-table ({nest(i, k, 'refl')}) ({nest(j, k, 'refl')}) = {nest(table[(i, j)], k, 'refl')}")
+    L.append("")
+    L.append(f"-- the inverse map: eᵢ · e_{{inv i}} ≡ e0 (= id-perm {n} = id).")
+    for i in range(k):
+        L.append(f"inv-{i} : compose {names[i]} {names[inv[i]]} ≡ {names[id_idx]}")
+        L.append(f"inv-{i} = refl")
+    L.append("")
+    return "\n".join(L), k, full
+
 # ── driver ───────────────────────────────────────────────────────────────────
 
 def parse_perm(s):
@@ -590,11 +654,12 @@ def parse_perm(s):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--class", dest="cls", default="nonmembership",
-                    choices=["nonmembership", "equation", "residue", "orbit"],
+                    choices=["nonmembership", "equation", "residue", "orbit", "cayley"],
                     help="prototype SHAPE (all share the enumerate→resolve→emit core): "
                          "nonmembership (¬ target∈⟨gens⟩); equation (LHS≡RHS or its counterexample); "
                          "residue (the wedge δ=LHS·RHS⁻¹, the path of paths); "
-                         "orbit (the FULL group ⟨gens⟩ mapped as generator-words — Coxeter-completeness if =Sₙ)")
+                         "orbit (the FULL group ⟨gens⟩ mapped as generator-words — Coxeter-completeness if =Sₙ); "
+                         "cayley (the complete group as its multiplication table + inverse map)")
     ap.add_argument("--gname", default="Gen", help="[orbit] the generated-subgroup data type name")
     ap.add_argument("--grade", type=int, required=True, help="n (perms of Fin n)")
     ap.add_argument("--gens", required=True, help="generators, ';'-separated perm tuples e.g. '2,0,1;1,2,0'")
@@ -657,13 +722,19 @@ def main():
               f"|im δ|={spec} (the path of paths — "
               f"{'δ≡id, holds everywhere' if spec == 1 else 'non-trivial defect spectrum'}); "
               f"recon LHS≡compose δ RHS holds identically")
-    else:  # orbit — fully map ⟨gens⟩ as generator-words (Coxeter-completeness if the orbit = Sₙ)
+    elif args.cls == "orbit":  # fully map ⟨gens⟩ as generator-words (Coxeter-completeness if orbit = Sₙ)
         import math
         src, korb, full = emit_orbit(args.module, n, gens, homes, args.gname)
         print(f"[numpy] orbit ⟨gens⟩ mapped: |orbit|={korb}"
               + (f" = {n}! → ⟨gens⟩ = ALL of S{n} (COXETER-COMPLETENESS at grade {n})"
                  if full else f" (proper subgroup; |S{n}|={math.factorial(n)})")
               + "; every element carries an explicit generator-word")
+    else:  # cayley — the complete finite group ⟨gens⟩ as its multiplication table + inverse map
+        import math
+        src, kc, full = emit_cayley(args.module, n, gens, homes)
+        print(f"[numpy] Cayley table of ⟨gens⟩: order {kc}"
+              + (f" = {n}! (= S{n})" if full else f" (subgroup; |S{n}|={math.factorial(n)})")
+              + f"; {kc}×{kc} products + {kc} inverses, all refl")
 
     out = os.path.join(args.repo_root, args.out) if not os.path.isabs(args.out) else args.out
     os.makedirs(os.path.dirname(out), exist_ok=True)
