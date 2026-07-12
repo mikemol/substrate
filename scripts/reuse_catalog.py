@@ -21,7 +21,12 @@
 # rebuilt by the gate / on demand). Byte-identity of the renders is HELD across the refactor and
 # checked by the two-run + vs-committed harness; the renders sort in PYTHON (not SQL ORDER BY),
 # because SQLite's lower()/collation differs from Python's on the Unicode struct names (ℕ, ℚ, α, …).
-import os, re, json, subprocess, collections, hashlib, sqlite3
+import os, re, json, subprocess, collections, hashlib, sqlite3, base64
+
+def _b64(s):   # ⟡content-addressed-interner: the id of an interned string IS base64(string) — a
+    return base64.b64encode(("" if s is None else s).encode("utf-8")).decode("ascii")  # BIJECTIVE
+# content-address (reversible, collision-free — NOT a hash). Bounded because every interned string is
+# atomic (latent structure already decomposed out into path_seg/members): max ~92 chars → ~123 base64.
 
 ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ⟡walk-cores-empty-is-not-success: the build dir is VERSION-STAMPED by agda
@@ -62,7 +67,10 @@ _DB_SCHEMA = """
 -- the renders (which sort in PYTHON, not SQL) are untouched and the output stays byte-identical.
 -- `terms` is ALSO the diagnostic: `flattened_terms` (a term holding . | , — an encoded module-path,
 -- a members-list crammed into an fp) shows where STRUCTURAL info was flattened into a string.
-CREATE TABLE terms (term_id INTEGER PRIMARY KEY, text TEXT);
+-- ⟡content-addressed-interner: term_id IS base64(text) — a bijective content-address (reversible,
+-- collision-free), so interning is idempotent and shared by construction (base64('Substrate') is the
+-- same id everywhere, no autonumber coordination). All *_id/_pid columns are these base64 ids (TEXT).
+CREATE TABLE terms (term_id TEXT PRIMARY KEY, text TEXT);
 CREATE UNIQUE INDEX ix_terms_text ON terms(text);
 -- qname is NOT unique: an anonymous `module _` collapses several declarations to one qname
 -- (e.g. two `data _⇒*_` in two `module _` blocks → one qname, two nodes). That collision is the
@@ -79,14 +87,14 @@ CREATE UNIQUE INDEX ix_terms_text ON terms(text);
 -- strings (segments, names, kinds, descs); the *_pid columns are path_ids. path_text reconstructs
 -- (losslessly — proven). This removes every dotted path from the term table; the reference graph joins
 -- on path_id. (Unlike fp — redundant with members, removed — a qname is the graph's IDENTITY.)
-CREATE TABLE path_seg (path_id INT, ord INT, seg_term_id INT);
-CREATE TABLE _structs (qname_pid INT, name_id INT, kind_id INT, module_pid INT, desc_id INT, root INTEGER, PRIMARY KEY (qname_pid, root));
-CREATE TABLE _members      (struct_qname_pid INT, struct_root INTEGER, name_id INT, ord INTEGER);
-CREATE TABLE _member_heads (struct_qname_pid INT, struct_root INTEGER, head_id INT, ord INTEGER);
-CREATE TABLE _refs    (struct_qname_pid INT, ref_qname_pid INT);
-CREATE TABLE _edges   (src_pid INT, dst_pid INT);
-CREATE TABLE _module_edges (src_pid INT, dst_pid INT);   -- module -> module semantic dependency (import-graph)
-CREATE TABLE _modules (module_pid INT, purpose_id INT, is_index INTEGER);
+CREATE TABLE path_seg (path_id TEXT, ord INT, seg_term_id TEXT);
+CREATE TABLE _structs (qname_pid TEXT, name_id TEXT, kind_id TEXT, module_pid TEXT, desc_id TEXT, root INTEGER, PRIMARY KEY (qname_pid, root));
+CREATE TABLE _members      (struct_qname_pid TEXT, struct_root INTEGER, name_id TEXT, ord INTEGER);
+CREATE TABLE _member_heads (struct_qname_pid TEXT, struct_root INTEGER, head_id TEXT, ord INTEGER);
+CREATE TABLE _refs    (struct_qname_pid TEXT, ref_qname_pid TEXT);
+CREATE TABLE _edges   (src_pid TEXT, dst_pid TEXT);
+CREATE TABLE _module_edges (src_pid TEXT, dst_pid TEXT);   -- module -> module semantic dependency (import-graph)
+CREATE TABLE _modules (module_pid TEXT, purpose_id TEXT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
 CREATE INDEX ix_pathseg_path ON path_seg(path_id);
 CREATE INDEX ix_pathseg_seg  ON path_seg(seg_term_id);
@@ -365,19 +373,19 @@ class DbBuilder:
         # (qname/module/ref/edge — NOT a free-text desc) → a surrogate path id (pid) whose SEGMENTS are
         # interned as terms. The flat path string is NEVER stored — it is derived from path_seg
         # (the path_text view). `terms` holds only atomic strings + path segments.
-        _terms, _paths = {}, {}
+        # ⟡content-addressed-interner: an id IS base64(its string) — bijective, deterministic, shared
+        # by construction (no autonumber). Atomic strings → tid; a qname is a PATH → pid = base64 of the
+        # qname; its segments (themselves terms) live in path_seg.
+        terms_seen, paths_seen = set(), set()
         def tid(s):
             s = "" if s is None else s
-            i = _terms.get(s)
-            if i is None:
-                i = len(_terms); _terms[s] = i
-            return i
+            terms_seen.add(s)
+            return _b64(s)
         def pid(s):
-            segs = tuple(tid(seg) for seg in s.split("."))
-            p = _paths.get(segs)
-            if p is None:
-                p = len(_paths); _paths[segs] = p
-            return p
+            paths_seen.add(s)
+            for seg in s.split("."):
+                terms_seen.add(seg)
+            return _b64(s)
         struct_rows = [(pid(u), tid(n), tid(kd), pid(md), tid(ds), rt)
                        for (u, n, kd, md, ds, rt) in sorted(self.structs)]
         member_rows = [(pid(sq), rt, tid(nm), o) for (sq, rt, nm, o) in self.members]
@@ -388,8 +396,9 @@ class DbBuilder:
         edge_rows   = [(pid(a), pid(b)) for (a, b) in edges]
         medge_rows  = [(pid(a), pid(b)) for (a, b) in module_edges]
         mod_rows    = [(pid(m), tid(p), ix) for (m, p, ix) in sorted(self.modrows)]
-        pathseg_rows = [(p, o, seg) for segs, p in _paths.items() for o, seg in enumerate(segs)]
-        term_rows   = sorted((i, s) for s, i in _terms.items())
+        pathseg_rows = sorted({(_b64(p), o, _b64(seg))
+                               for p in paths_seen for o, seg in enumerate(p.split("."))})
+        term_rows   = sorted((_b64(t), t) for t in terms_seen)
 
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
