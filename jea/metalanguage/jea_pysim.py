@@ -126,16 +126,37 @@ class Corpus:
                 for nid in sup:                       # record unit-membership (multiplicity fan-in)
                     self.node_units.setdefault(nid, set()).add(uidx)
 
-    def add_agdai(self, path: str, shim_bin: str = None):
+    def carrier_qnames_of(self, paths, shim_bin: str = None) -> set:
+        """⟡dedup-unhold-normalizer pre-pass: the set of Record/Datatype qnames across `paths`
+        — the structured CARRIERS the un-hold normalization abstracts to ⟨CARRIER⟩. Cheap: one
+        decode per core (a throwaway interner), keep only the `kinds` map."""
+        import jea_agdai
+        carriers = set()
+        for p in paths:
+            if not p.endswith(".agdai"):
+                continue
+            try:
+                rep = jea_agdai.core_intern_agdai(p, Intern(), shim_bin=shim_bin)
+            except (FileNotFoundError, RuntimeError):
+                continue
+            for name, k in rep.get("kinds", {}).items():
+                if k in ("Record", "Datatype"):
+                    carriers.add(name)
+        return carriers
+
+    def add_agdai(self, path: str, shim_bin: str = None, carrier_qnames=None):
         """Φ4b: ingest an Agda .agdai interface as units = its DEFINITIONS' elaborated core terms.
         Drives jea_agdai.core_intern_agdai (agdai_shim -> the full child-edge core DAG) into THIS same
         interner, then makes one Unit per definition. The readouts below are front-end-agnostic -- they
         read (kind, role, op, lit) + children, and Agda core nodes carry kind='AgdaCore', op=constructor
         /qname, role=de-Bruijn -- so the typeholer/S(g)/clusters run on Agda exactly as on Python. This
-        is what lets jea_pysim+jea_agdai SUBSUME the textual agda_similarity (structural, cross-file)."""
+        is what lets jea_pysim+jea_agdai SUBSUME the textual agda_similarity (structural, cross-file).
+        `carrier_qnames` (⟡dedup-unhold-normalizer): if given, carrier references are abstracted to
+        ⟨CARRIER⟩ so redundancy-under-inversion (grade-collapse vs grade-index) clusters."""
         import jea_agdai
         try:
-            rep = jea_agdai.core_intern_agdai(path, self.I, shim_bin=shim_bin)
+            rep = jea_agdai.core_intern_agdai(path, self.I, shim_bin=shim_bin,
+                                              carrier_qnames=carrier_qnames)
         except (FileNotFoundError, RuntimeError) as e:
             print(f"  [agda-skip] {path}: {e}", file=sys.stderr)
             return
@@ -831,6 +852,11 @@ def main(argv=None):
                          "carrier ops distinct, these no longer share canonical support but DO share skeleton)")
     ap.add_argument("--json", action="store_true",
                     help="machine-readable output (the LLM accelerator: run once, parse, don't re-derive)")
+    ap.add_argument("--unhold", action="store_true",
+                    help="⟡dedup-unhold-normalizer: abstract carrier references (Records/Datatypes/Sorts) "
+                         "to ⟨CARRIER⟩ BEFORE clustering, so redundancy-under-INVERSION (a record that HOLDS "
+                         "a carrier as a field vs one that INDEXES it as a grade-parameter) clusters. Catches "
+                         "the UPArrow²↔rig-cat class of duplicate that raw structural matching is blind to.")
     args = ap.parse_args(argv)
 
     files = expand(args.files)
@@ -838,9 +864,12 @@ def main(argv=None):
         ap.error("no input files")
 
     C = Corpus()
+    carriers = C.carrier_qnames_of(files) if args.unhold else None
+    if args.unhold:
+        print(f"[unhold] abstracting {len(carriers)} carrier qname(s) (Records/Datatypes + Sorts) → ⟨CARRIER⟩")
     for f in files:
         if f.endswith(".agdai"):                  # Φ4b: Agda interface -> per-definition core-term units
-            C.add_agdai(f)
+            C.add_agdai(f, carrier_qnames=carriers)
         else:
             C.add_file(f)
 

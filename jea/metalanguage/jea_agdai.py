@@ -153,7 +153,7 @@ def intern_agdai(path: str, intern: Intern) -> dict:
             "arena_to_id": arena_to_id, "fanin": fanin}
 
 
-def intern_signature(json_path: str, intern: Intern) -> dict:
+def intern_signature(json_path: str, intern: Intern, carrier_qnames=None) -> dict:
     """Upgrade path (Δ-Π-agdai full): intern the FULL child-edge DAG from the Agda-2.8.0 shim's
     output. The shim (see module docstring "HOW TO RECOVER IT") emits JSON-lines, one per core node.
 
@@ -202,6 +202,7 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
                 else:
                     raw[rec["id"]] = rec
     interned: dict[int, int] = {}
+    unhold_path: dict[int, str] = {}    # ⟡dedup-unhold: raw nid -> the carrier it packed into ⟨CARRIER⟩ (residue)
     # referential: qname is identity -> KEY. Pattern constructors (Φ7a) join the term-level ones:
     # PCon/PDef/PProj are free referential exactly as Con/Def/Proj are.
     FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}
@@ -213,9 +214,26 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
         if nid in interned:
             return interned[nid]
         rec = raw[nid]
-        kids = tuple(go(c) for c in rec.get("children", []))
         ctor = rec.get("constructor", "")
         qname = rec.get("qname")
+        # ⟡dedup-unhold-normalizer — the UN-HOLD normalization, as a PACKED node (not a
+        # rewrite). When `carrier_qnames` is supplied, a CARRIER REFERENCE (a `Sort`, or a
+        # Def/Con to a structured carrier in the set) INTERNS to the shared canonical
+        # `⟨CARRIER⟩` node — so a record that HOLDS a carrier as a field and one that INDEXES
+        # it as a grade-parameter converge to the SAME shape, and shared-subtree dedup catches
+        # redundancy-under-INVERSION (grade-collapse vs grade-index) that raw matching misses.
+        # But we STORE THE PATH: `unhold_path[nid] = the original carrier` (the residue = HOW it
+        # converged), so the convergence is a packed node (converged key + recoverable original),
+        # never a lossy erase — the wedge `⟨CARRIER⟩ = recon q b r` at the interner. The carrier's
+        # ARGS are not recursed into (the abstraction is the whole reference).
+        if carrier_qnames is not None and (ctor == "Sort" or
+                                           (qname is not None and qname in carrier_qnames)):
+            i = intern.intern(IR(kind="AgdaCore", role="", op="⟨CARRIER⟩", lit="",
+                                 children=(), payload=()))
+            unhold_path[nid] = qname if qname is not None else "Sort"   # residue: the path back
+            interned[nid] = i
+            return i
+        kids = tuple(go(c) for c in rec.get("children", []))
         if ctor in BOUND:
             # BOUND (de Bruijn): identity = index (position), in `role` -> alpha-equivalent.
             role = f"db{rec.get('index', '?')}"
@@ -245,10 +263,11 @@ def intern_signature(json_path: str, intern: Intern) -> dict:
     sorts = {name: st for name, r, k, m, _lv, st in unit_markers if r in interned}    # Φ7c: codomain sort
     return {"core_nodes": len(raw), "interned": intern.size(), "roots": roots,
             "units": units, "kinds": kinds, "members": members,
-            "levels": levels, "sorts": sorts, "edges_present": True}
+            "levels": levels, "sorts": sorts, "unhold_path": unhold_path, "edges_present": True}
 
 
-def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> dict:
+def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None,
+                      carrier_qnames=None) -> dict:
     """FULL-edge path (Φ4 ✅): drive agdai_shim (the Agda-2.8.0 decoder, agdai_shim.hs) on a .agdai and
     intern its core-node JSON via intern_signature -> the full parent->child DAG (what the typeholer needs;
     strictly more than intern_agdai's fan-in signature). shim_bin defaults to ./agdai_shim beside this
@@ -271,7 +290,7 @@ def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None) -> 
     with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as fh:
         fh.write(r.stdout); jpath = fh.name
     try:
-        rep = intern_signature(jpath, intern)
+        rep = intern_signature(jpath, intern, carrier_qnames=carrier_qnames)
     finally:
         os.unlink(jpath)
     rep["agdai"] = agdai_path
