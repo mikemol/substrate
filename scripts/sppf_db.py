@@ -50,7 +50,7 @@ CREATE VIEW IF NOT EXISTS path_text AS
 SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
-CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT);
+CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT);
 CREATE TABLE IF NOT EXISTS unit_node  (unit_id TEXT, node_id TEXT);
 CREATE INDEX IF NOT EXISTS ix_node_sym ON _node(sym);
 CREATE INDEX IF NOT EXISTS ix_nc_node  ON node_child(node_id);
@@ -64,8 +64,10 @@ CREATE VIEW IF NOT EXISTS node AS SELECT n.node_id, n.sym, k.text AS kind, r.tex
   FROM _node n JOIN terms k ON k.term_id=n.kind_id JOIN terms r ON r.term_id=n.role_id
     JOIN terms l ON l.term_id=n.lit_id
     LEFT JOIN terms o ON o.term_id=n.op_term_id LEFT JOIN path_text pt ON pt.path_id=n.op_path_id;
-CREATE VIEW IF NOT EXISTS unit AS SELECT u.unit_id, pt.text AS name, u.root_id AS root_id, f.text AS path
-  FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid JOIN terms f ON f.term_id=u.file_id;
+CREATE VIEW IF NOT EXISTS unit AS SELECT u.unit_id, pt.text AS name, u.root_id AS root_id, f.text AS path,
+    k.text AS kind
+  FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid JOIN terms f ON f.term_id=u.file_id
+    LEFT JOIN terms k ON k.term_id=u.kind_id;
 CREATE VIEW IF NOT EXISTS node_fanin AS SELECT child_id AS node_id, COUNT(*) AS fanin FROM node_child GROUP BY child_id;
 CREATE VIEW IF NOT EXISTS shared_subtree AS SELECT node_id, fanin FROM node_fanin WHERE fanin >= 2;
 CREATE VIEW IF NOT EXISTS node_atom AS SELECT n.node_id, n.op FROM node n
@@ -191,7 +193,7 @@ def project_sppf(con):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
         uid = unit_pid
-        urows.append((uid, unit_pid, rootpk, c))
+        urows.append((uid, unit_pid, rootpk, c, kind_id))
         seen, stack, members = set(), [root_lid], set()
         while stack:
             lid = stack.pop()
@@ -201,7 +203,7 @@ def project_sppf(con):
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(uid, pk) for pk in members]
-    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
     return (len(seen_n), len(urows),
