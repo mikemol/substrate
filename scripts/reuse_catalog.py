@@ -60,7 +60,7 @@ _DB_SCHEMA = """
 -- (e.g. two `data _⇒*_` in two `module _` blocks → one qname, two nodes). That collision is the
 -- dedup FAN-IN signal (name-granularity), not a bug to drop — so the key is composite (qname, root)
 -- and every colliding node is kept, rather than one clobbering the rest. (Ⓓ.catalog-fanin-key)
-CREATE TABLE structs (qname TEXT, name TEXT, kind TEXT, module TEXT, fp TEXT, desc TEXT, root INTEGER, PRIMARY KEY (qname, root));
+CREATE TABLE structs (qname TEXT, name TEXT, kind TEXT, module TEXT, fp TEXT, desc TEXT, root INTEGER, unhold_fp TEXT, PRIMARY KEY (qname, root));
 CREATE TABLE members (struct_qname TEXT, name TEXT, ord INTEGER);
 CREATE TABLE refs    (struct_qname TEXT, ref_qname TEXT);
 CREATE TABLE edges   (src TEXT, dst TEXT);
@@ -84,6 +84,16 @@ CREATE VIEW multiply_homed AS
 CREATE VIEW shape_parallel AS
   SELECT fp, COUNT(DISTINCT name) AS names, GROUP_CONCAT(qname) AS structs
   FROM structs GROUP BY fp HAVING names >= 2;
+-- ⟡catalog-unhold-fp — REDUNDANCY-UNDER-INVERSION as a standing query. `fp` groups by member
+-- NAMES (so a HELD-carrier record and a grade-INDEXED one, with different field names, never
+-- match); `unhold_fp` groups by member CODOMAIN-HEADS with every carrier (a Record/Datatype ref
+-- or a Sort) abstracted to ⟨CARRIER⟩ — so UPArrow² (3 ⟨CARRIER⟩ fields) and the rig cat's carrier-
+-- holding records land on the same shape. This is the persistent form of the by-hand UPArrow²↔rig-cat
+-- recognition: `SELECT * FROM shape_parallel_unhold` surfaces the inversion candidates the raw
+-- structural dedup is blind to (feedback_dedup_misses_inversions_normalize_via_unhold).
+CREATE VIEW shape_parallel_unhold AS
+  SELECT unhold_fp, COUNT(DISTINCT name) AS names, GROUP_CONCAT(qname) AS structs
+  FROM structs WHERE unhold_fp IS NOT NULL GROUP BY unhold_fp HAVING names >= 2;
 """
 
 shapetag = re.compile(r"⟦shape:[^⟧]*⟧")
@@ -120,9 +130,29 @@ def walk_cores(filt=""):
             if d is None:
                 yield None
                 continue
-            nodes    = {i: (r.get("qname"), r.get("children", [])) for i, r in d["nodes"].items()}
+            nodes    = {i: (r.get("constructor"), r.get("qname"), r.get("children", []))
+                        for i, r in d["nodes"].items()}      # keep ctor: ⟡catalog-unhold-fp peels Π / detects Sort
             defmarks = [(r["unit"], r["root"], r.get("kind"), r.get("members", [])) for r in d["defmarks"]]
             yield {"mod": agdai_module(path), "path": path, "nodes": nodes, "defmarks": defmarks}
+
+
+def raw_final_head(nodes, root):
+    """⟡catalog-unhold-fp — over the raw core nodes {id: (ctor, qname, children)}: unwrap the `Defn`
+    wrapper (child[0] = the defType), peel the Π-telescope (codomain = last child), return the
+    codomain head as (ctor, qname). Mirrors set1_locate_census.final_head, over raw (not interned)
+    nodes — the same shape at a different node representation (the final_head dup is itself an
+    ⟡lift candidate, noted)."""
+    n = nodes.get(root)
+    if n is None:
+        return (None, None)
+    ctor, qn, ch = n
+    if ctor == "Defn" and ch:
+        ctor, qn, ch = nodes.get(ch[0], (None, None, []))
+    seen = 0
+    while ctor == "Pi" and ch and seen < 4096:
+        ctor, qn, ch = nodes.get(ch[-1], (None, None, []))
+        seen += 1
+    return (ctor, qn)
 
 
 def mod_purpose(text):
@@ -145,6 +175,8 @@ class DbBuilder:
         self.structs, self.members, self.refrows, self.modrows = [], [], [], []
         self.kinds, self.refs = {}, {}
         self.allmods, self.modrefs = set(), {}         # for the module import graph (all modules)
+        self.fieldheads = {}                           # ⟡catalog-unhold-fp: unit -> [(ctor,qname) codomain head per member]
+        self.carriers = set()                          # ⟡catalog-unhold-fp: every Record/Datatype qname (the carriers)
 
     def add(self, core):
         mod, nodes = core["mod"], core["nodes"]
@@ -153,8 +185,12 @@ class DbBuilder:
         # just struct-subtree refs). Collected BEFORE the struct early-return below so struct-less
         # modules are still graph nodes. Resolved to module->module edges in write() (needs all modules).
         self.allmods.add(mod)
-        self.modrefs[mod] = {qn for qn, _ch in nodes.values() if qn}
+        self.modrefs[mod] = {qn for _c, qn, _ch in nodes.values() if qn}   # nodes now (ctor,qname,children)
         cs = [(u, r, k, m) for u, r, k, m in core["defmarks"] if k in ("Datatype", "Record")]
+        # ⟡catalog-unhold-fp: every record/datatype IS a carrier; a member's root is its own defmark's root.
+        for u, _r, k, _m in cs:
+            self.carriers.add(u)
+        root_of = {u: r for u, r, _k, _m in core["defmarks"]}
         if not cs:                                     # a module with no data/record contributes no STRUCTS
             return
         # descriptions + purpose + is-index from the .agda source (best-effort; not in the core)
@@ -178,13 +214,16 @@ class DbBuilder:
             for i, h in enumerate(heads):
                 self.members.append((unit, h, i))
             self.kinds[unit] = kd
+            # ⟡catalog-unhold-fp: each member's codomain head (from its own defmark's root), raw —
+            # carrier-abstraction is DEFERRED to write() (needs the GLOBAL carrier set).
+            self.fieldheads[unit] = [raw_final_head(nodes, root_of.get(m)) for m in members]
             seen, refd, stack = set(), set(), [root]
             while stack:
                 i = stack.pop()
                 if i in seen or i not in nodes:
                     continue
                 seen.add(i)
-                qn, ch = nodes[i]
+                _c, qn, ch = nodes[i]                   # nodes now (ctor, qname, children)
                 if qn:
                     refd.add(qn)
                 stack.extend(ch)
@@ -230,9 +269,22 @@ class DbBuilder:
         if os.path.exists(CATALOG_DB):
             os.remove(CATALOG_DB)
         os.makedirs(os.path.dirname(CATALOG_DB), exist_ok=True)
+        # ⟡catalog-unhold-fp: with the GLOBAL carrier set known, abstract each struct's member
+        # codomain-heads (Sort or a Record/Datatype ref → ⟨CARRIER⟩) into the un-hold fingerprint.
+        def _unhold_fp(unit, kd):
+            ab = []
+            for ctor, qn in self.fieldheads.get(unit, []):
+                if ctor == "Sort" or (qn in self.carriers):
+                    ab.append("⟨CARRIER⟩")
+                else:
+                    ab.append(qn.rsplit(".", 1)[-1] if qn else (ctor or "?"))
+            return kd + "|" + ",".join(sorted(ab))
+        structs8 = [(u, n, kd, md, fp, ds, rt, _unhold_fp(u, kd))
+                    for (u, n, kd, md, fp, ds, rt) in self.structs]
+
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
-        con.executemany("INSERT INTO structs VALUES (?,?,?,?,?,?,?)", sorted(self.structs))
+        con.executemany("INSERT INTO structs VALUES (?,?,?,?,?,?,?,?)", sorted(structs8))
         con.executemany("INSERT INTO members VALUES (?,?,?)",       self.members)
         con.executemany("INSERT INTO refs    VALUES (?,?)",         self.refrows)
         con.executemany("INSERT INTO edges   VALUES (?,?)",         edges)
