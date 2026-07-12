@@ -15,7 +15,7 @@ same test the catalog uses.)
 """
 import sqlite3, sys, os
 
-DB = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "catalog", "sppf.db")
+DB = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "catalog", "catalog.db")
 
 def _con():
     if not os.path.exists(DB):
@@ -41,7 +41,7 @@ def cmd_fanin(c, a):
     for r in c.execute("""SELECT nf.node_id, COALESCE(NULLIF(nd.op,''),nd.role,nd.kind) head, nf.fanin
                           FROM node_fanin nf JOIN node nd ON nd.node_id=nf.node_id
                           ORDER BY nf.fanin DESC LIMIT ?""", (k,)):
-        print(f"  fan-in {r['fanin']:5d}  node {r['node_id']:6d}  {r['head'][:55]}")
+        print(f"  fan-in {r['fanin']:5d}  node {str(r['node_id'])[:10]:>10}  {r['head'][:55]}")
 
 def cmd_extract(c, a):
     # the parametric-helper apex: a subtree shared across ≥ minunits DISTINCT units — a GROUP BY.
@@ -51,7 +51,7 @@ def cmd_extract(c, a):
                           FROM unit_node un JOIN node nd ON nd.node_id=un.node_id
                           WHERE nd.node_id IN (SELECT node_id FROM node_child)   -- composite (has children)
                           GROUP BY un.node_id HAVING units >= ? ORDER BY units DESC LIMIT 20""", (m,)):
-        print(f"  in {r['units']:4d} units  node {r['node_id']:6d}  {r['head'][:50]}")
+        print(f"  in {r['units']:4d} units  node {str(r['node_id'])[:10]:>10}  {r['head'][:50]}")
 
 def cmd_clusters(c, a):
     uid = _uid(c, a[0])

@@ -269,8 +269,27 @@ def intern_signature(core, intern: Intern, carrier_qnames=None) -> dict:
     members = {name: list(m) for name, r, k, m, _lv, _st in unit_markers if r in interned and m}  # Φ7b: parent->members
     levels = {name: lv for name, r, k, m, lv, _st in unit_markers if r in interned}   # Φ7c: inhabited-universe level
     sorts = {name: st for name, r, k, m, _lv, st in unit_markers if r in interned}    # Φ7c: codomain sort
+    # Φ4c per-unit SUPPORT (membership): the interned nodes of a def's term, reachable from its root in
+    # the ORIGINAL (acyclic) core `raw` — NOT via the interned bridge (which shares/reenters and would
+    # cross-product across defs, or cycle). This is the correct source for a support/cluster analysis
+    # once ids are content-addressed (shared): membership is captured pre-sharing, at intern time.
+    def _reach(shim_root):
+        seen, out, stack = set(), set(), [shim_root]
+        while stack:
+            k = stack.pop()
+            if k in seen:
+                continue
+            seen.add(k)
+            if k in interned:
+                out.add(interned[k])
+            rec = raw.get(k)
+            if rec:
+                stack.extend(rec.get("children", []))
+        return out
+    unit_members = {name: sorted(_reach(r))
+                    for name, r, _k, _m, _lv, _st in unit_markers if r in interned}
     return {"core_nodes": len(raw), "interned": intern.size(), "roots": roots,
-            "units": units, "kinds": kinds, "members": members,
+            "units": units, "kinds": kinds, "members": members, "unit_members": unit_members,
             "levels": levels, "sorts": sorts, "unhold_path": unhold_path, "edges_present": True}
 
 

@@ -883,9 +883,10 @@ def main(argv=None):
         sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
             _os.path.abspath(__file__)))), "scripts"))
         import sppf_db
-        n, u, sh, cl = sppf_db.persist_corpus(C, args.persist)
-        print(f"persisted SPPF: {n} nodes, {u} units, {sh} shared subtrees, {cl} support pairs "
-              f"-> {args.persist}")
+        cores = [f for f in files if f.endswith(".agdai")]   # sppf_db STREAMS the cores (one interner)
+        n, u, sh, mx = sppf_db.build(cores, args.persist)
+        print(f"persisted SPPF -> {args.persist}: {n} packing nodes, {u} units, {sh} shared subtrees "
+              f"(base64 content-addressed; max node_id {mx})")
         print(f"  analyse (query, don't code): python3 scripts/sppf_query.py "
               f"<support|fanin|extract|clusters|sql> …")
         return 0
