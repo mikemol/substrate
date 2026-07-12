@@ -295,6 +295,56 @@ def deserialize_core(core):
     return ParsedCore(mod, purpose, is_index, modrefs, carriers, structs)
 
 
+def deserialize_from_projection(con):
+    """⟡es-p3-wire — build ParsedCore per module from the SPPF PROJECTION (not a core-walk). The
+    structural data (structs, members, field-heads, refs, modrefs, carriers) is QUERIED from the
+    projection (proven identical to deserialize_core's walk); only the module purpose + per-decl desc
+    come from the .agda source (they are not term structure). Yields in module order."""
+    pt = {p: t for p, t in con.execute("SELECT path_id, text FROM path_text")}
+    tt = {i: t for i, t in con.execute("SELECT term_id, text FROM terms")}
+    units = {u: (pt.get(np), tt.get(k), pt.get(mp), rl)                 # unit_id -> (qname,kind,module,root_lid)
+             for u, np, k, mp, rl in con.execute(
+                 "SELECT unit_id, name_pid, kind_id, module_pid, root_lid FROM _unit")}
+    cod = {u: (tt.get(cc) if cc else None, pt.get(cq) if cq else None)  # unit_id -> codomain (ctor,qname)
+           for u, cc, cq in con.execute("SELECT unit_id, cod_ctor_id, cod_qname_pid FROM _unit_cod")}
+    members = collections.defaultdict(list)
+    for su, o, mnp, muid in con.execute(
+            "SELECT unit_id, ord, member_name_pid, member_unit_id FROM unit_member ORDER BY unit_id, ord"):
+        members[su].append((pt.get(mnp), muid))
+    refs = collections.defaultdict(set)
+    for u, rq in con.execute(
+            "SELECT un.unit_id, p2.text FROM unit_node un JOIN _node n ON n.node_id=un.node_id "
+            "JOIN path_text p2 ON p2.path_id=n.op_path_id WHERE n.op_path_id IS NOT NULL"):
+        refs[u].add(rq)
+    mod_structs, mod_refs, all_modules = collections.defaultdict(list), collections.defaultdict(set), set()
+    for u, (qn, kd, md, rl) in units.items():
+        all_modules.add(md)
+        if kd in ("Datatype", "Record"):
+            mod_structs[md].append(u)
+        mod_refs[md] |= refs.get(u, set())
+    for md in sorted(all_modules):
+        src = agda_source(md)
+        purpose, comments = "", {}
+        if os.path.exists(src):
+            text = open(src, encoding="utf-8").read()
+            purpose = mod_purpose(text)
+            for ln in text.splitlines():
+                m = decl_c.match(ln)
+                if m:
+                    comments[m.group(1)] = shapetag.sub("", m.group(2)).strip()
+        is_index = 1 if idxkind.search(md.rsplit(".", 1)[-1]) else 0
+        structs = []
+        for u in sorted(mod_structs.get(md, []), key=lambda x: (units[x][0], units[x][3])):
+            qn, kd, _md, rl = units[u]
+            structs.append(ParsedStruct(
+                qn, qn.rsplit(".", 1)[-1], ("data" if kd == "Datatype" else "record"), md,
+                [nm.rsplit(".", 1)[-1] for nm, _ in members.get(u, [])],
+                [cod.get(muid, (None, None)) for _, muid in members.get(u, [])],
+                refs.get(u, set()), rl, comments.get(qn.rsplit(".", 1)[-1], "") or purpose))
+        yield ParsedCore(md, purpose, is_index, mod_refs.get(md, set()),
+                         {units[u][0] for u in mod_structs.get(md, [])}, structs)
+
+
 # ─────────────────────────── the store builder (walk -> catalog.db) ───────────────────────────
 class DbBuilder:
     """The ONLY accumulator: loads the walk into catalog.db. Every catalog is then a render over it."""
@@ -306,10 +356,12 @@ class DbBuilder:
         self.carriers = set()                          # ⟡catalog-unhold-fp: every Record/Datatype qname (the carriers)
 
     def add(self, core):
-        # STRUCTURAL PROCESSING — consumes the DESERIALIZED ParsedCore; no tokenizing here (no split
-        # adjacent to a use-site). The module import graph records EVERY module (struct-bearing or not),
-        # so allmods/modrefs are set before the struct early-return; edges are resolved in write().
-        pc = deserialize_core(core)
+        self.add_pc(deserialize_core(core))
+
+    def add_pc(self, pc):
+        # STRUCTURAL PROCESSING — consumes the DESERIALIZED ParsedCore (from a core-walk OR from the SPPF
+        # projection — ⟡es-p3-wire); no tokenizing here. The module import graph records EVERY module
+        # (struct-bearing or not), so allmods/modrefs are set before the struct early-return.
         self.allmods.add(pc.module)
         self.modrefs[pc.module] = pc.modrefs
         self.carriers |= pc.carriers                   # ⟡catalog-unhold-fp: the global carrier set
@@ -363,8 +415,8 @@ class DbBuilder:
         module_edges = sorted({(m, n) for m, rs in self.modrefs.items()
                                for n in (owner_mod(r) for r in rs) if n and n != m})
 
-        if os.path.exists(CATALOG_DB):
-            os.remove(CATALOG_DB)
+        # ⟡es-p3-wire: do NOT os.remove — the db already holds the events + SPPF projection this catalog
+        # is DERIVED from. Append the catalog tables to it (terms/path_seg are shared, base64).
         os.makedirs(os.path.dirname(CATALOG_DB), exist_ok=True)
         # ⟡catalog-decompose-fp: abstract each member's codomain head (Sort or a Record/Datatype ref
         # → ⟨CARRIER⟩) into a RELATIONAL _member_heads row (keyed by (qname,root)); unhold_fp is then a
@@ -406,9 +458,15 @@ class DbBuilder:
         term_rows   = sorted((_b64(t), t) for t in terms_seen)
 
         con = sqlite3.connect(CATALOG_DB)
-        con.executescript(_DB_SCHEMA)
-        con.executemany("INSERT INTO terms   VALUES (?,?)",             term_rows)
-        con.executemany("INSERT INTO path_seg VALUES (?,?,?)",          pathseg_rows)
+        # IF-NOT-EXISTS so it composes with the projection's schema (terms/path_seg/path_text already there).
+        con.executescript(_DB_SCHEMA.replace("CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ")
+                          .replace("CREATE UNIQUE INDEX ", "CREATE UNIQUE INDEX IF NOT EXISTS ")
+                          .replace("CREATE INDEX ", "CREATE INDEX IF NOT EXISTS ")
+                          .replace("CREATE VIEW ", "CREATE VIEW IF NOT EXISTS "))
+        for t in ("_structs", "_members", "_member_heads", "_refs", "_edges", "_module_edges", "_modules", "meta"):
+            con.execute(f"DELETE FROM {t}")                # clean rebuild of the catalog tables (idempotent re-run)
+        con.executemany("INSERT OR IGNORE INTO terms   VALUES (?,?)",   term_rows)     # shared with projection
+        con.executemany("INSERT OR IGNORE INTO path_seg VALUES (?,?,?)",pathseg_rows)  # shared with projection
         con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?)",    struct_rows)
         con.executemany("INSERT INTO _members VALUES (?,?,?,?)",        member_rows)
         con.executemany("INSERT INTO _member_heads VALUES (?,?,?,?)",   mhead_rows)
@@ -688,13 +746,21 @@ def generate(filt="", targets=("index", "graph", "sitemap", "usage", "import"), 
     each requested target from the DB. Returns the list of per-step summary strings."""
     msgs = []
     if not (reuse_db and os.path.exists(CATALOG_DB)):
-        db, failed = DbBuilder(), 0
-        for core in walk_cores(filt):
-            if core is None:
-                failed += 1
-                continue
-            db.add(core)
-        msgs.append(db.write(failed))
+        # ⟡es-p3-wire: BUILD the events + SPPF projection first (sppf_db), then DERIVE the catalog from it
+        # (deserialize_from_projection → the UNCHANGED DbBuilder.add_pc/write). One content-addressed store.
+        import glob as _glob
+        _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))       # scripts/ (for sppf_db)
+        import sppf_db
+        base = sppf_db.substrate_core_root(os.path.join(ROOT, "agda"))
+        cores = [c for c in sorted(_glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
+        n, u, _sh, _mx = sppf_db.build(cores)
+        msgs.append(f"projection (events → SPPF): {n} packings, {u} units -> catalog.db")
+        pcon = sqlite3.connect(CATALOG_DB)
+        db = DbBuilder()
+        for pc in deserialize_from_projection(pcon):
+            db.add_pc(pc)
+        pcon.close()
+        msgs.append(db.write(0))
     con = sqlite3.connect(f"file:{CATALOG_DB}?mode=ro", uri=True)
     try:
         for t in targets:
