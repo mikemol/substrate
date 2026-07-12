@@ -21,39 +21,49 @@ sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
 from jea_pysim import Corpus   # its Corpus.add_agdai drives jea_agdai.core_intern_agdai into ONE Intern
 
 SCHEMA = """
--- ⟡db-contains-sppf, normalized like the catalog: node heads are TERM IDS (kind/role/op/lit interned
--- once — 'AgdaCore' is stored once, not per node), a dotted op/name (a qname = a PATH) is decomposed
--- into interned segments (path_seg), and compat VIEWS re-present the TEXT so the readouts are unchanged.
+-- ⟡db-contains-sppf + ⟡sppf-op-path-ids: node heads are interned. kind/role/lit are TERM ids ('AgdaCore'
+-- once, not per node). `op` is POLYMORPHIC — a constructor (atomic) OR a qname (a PATH) — so it is SPLIT:
+-- op_term_id for atomic ops, op_path_id for qname paths (a surrogate path id; segments in path_seg;
+-- string DERIVED via path_text, never stored flat, like the catalog). unit.name is a qname → a path id
+-- too; unit.path is a FILE path → an atomic term (slashes, not a namespace path). Compat VIEWS re-present
+-- TEXT so the readouts are unchanged.
 CREATE TABLE terms      (term_id INTEGER PRIMARY KEY, text TEXT);
 CREATE UNIQUE INDEX ix_terms_text ON terms(text);
-CREATE TABLE path_seg   (path_term_id INT, ord INT, seg_term_id INT);
-CREATE TABLE _node      (node_id INTEGER PRIMARY KEY, kind_id INT, role_id INT, op_id INT, lit_id INT);
+CREATE TABLE path_seg   (path_id INT, ord INT, seg_term_id INT);
+CREATE TABLE _node      (node_id INTEGER PRIMARY KEY, kind_id INT, role_id INT, op_term_id INT, op_path_id INT, lit_id INT);
 CREATE TABLE node_child (node_id INT, ord INT, child_id INT);
-CREATE TABLE _unit      (unit_id INTEGER PRIMARY KEY, name_id INT, root_id INT, path_id INT);
--- unit_node: each unit's SUPPORT closure (the reachable subterm set), materialized ONCE via a
--- recursive WITH at build. With it the cross-unit readouts jea_pysim did in Python — extract
--- candidates, clusters, shared-fraction — are direct JOIN/GROUP BY, no per-query graph-walk.
+CREATE TABLE _unit      (unit_id INTEGER PRIMARY KEY, name_pid INT, root_id INT, file_id INT);
+-- unit_node: each unit's SUPPORT closure, materialized ONCE via a recursive WITH at build — so the
+-- cross-unit readouts (extract/clusters/shared-fraction) are direct JOIN/GROUP BY, no per-query walk.
 CREATE TABLE unit_node  (unit_id INT, node_id INT);
 CREATE INDEX ix_nc_node   ON node_child(node_id);
 CREATE INDEX ix_nc_child  ON node_child(child_id);
-CREATE INDEX ix_node_op   ON _node(op_id);
+CREATE INDEX ix_node_op   ON _node(op_term_id);
+CREATE INDEX ix_node_oppath ON _node(op_path_id);
 CREATE INDEX ix_unit_root ON _unit(root_id);
 CREATE INDEX ix_un_unit   ON unit_node(unit_id);
 CREATE INDEX ix_un_node   ON unit_node(node_id);
-CREATE INDEX ix_pathseg   ON path_seg(path_term_id);
--- compat views: the pre-interning TEXT schema (the readouts query THESE).
-CREATE VIEW node AS SELECT n.node_id, k.text AS kind, r.text AS role, o.text AS op, l.text AS lit
+CREATE INDEX ix_pathseg   ON path_seg(path_id);
+CREATE VIEW path_text AS
+  SELECT path_id, GROUP_CONCAT(seg, '.') AS text FROM (
+    SELECT ps.path_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
+    ORDER BY ps.path_id, ps.ord) GROUP BY path_id;
+-- compat views: the pre-interning TEXT schema (the readouts query THESE). op = the path (if a qname)
+-- else the atomic term.
+CREATE VIEW node AS SELECT n.node_id, k.text AS kind, r.text AS role,
+    COALESCE(pt.text, o.text) AS op, l.text AS lit
   FROM _node n JOIN terms k ON k.term_id=n.kind_id JOIN terms r ON r.term_id=n.role_id
-    JOIN terms o ON o.term_id=n.op_id JOIN terms l ON l.term_id=n.lit_id;
-CREATE VIEW unit AS SELECT u.unit_id, nm.text AS name, u.root_id AS root_id, p.text AS path
-  FROM _unit u JOIN terms nm ON nm.term_id=u.name_id JOIN terms p ON p.term_id=u.path_id;
--- fan-in: how many parent EDGES reference a node = the sharing (hash-cons corroboration) signal.
+    JOIN terms l ON l.term_id=n.lit_id
+    LEFT JOIN terms o ON o.term_id=n.op_term_id
+    LEFT JOIN path_text pt ON pt.path_id=n.op_path_id;
+CREATE VIEW unit AS SELECT u.unit_id, pt.text AS name, u.root_id AS root_id, f.text AS path
+  FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid JOIN terms f ON f.term_id=u.file_id;
 CREATE VIEW node_fanin AS SELECT child_id AS node_id, COUNT(*) AS fanin FROM node_child GROUP BY child_id;
--- a SHARED SUBTREE = a node reachable from ≥2 parents (the dedup, as a SELECT not a Python walk).
 CREATE VIEW shared_subtree AS SELECT node_id, fanin FROM node_fanin WHERE fanin >= 2;
 CREATE VIEW node_atom AS SELECT n.node_id, n.op FROM node n
   WHERE NOT EXISTS (SELECT 1 FROM node_child c WHERE c.node_id=n.node_id);
--- flattening watch: op/name terms that still hold a dotted PATH (should be a path_seg, not a flat term).
+-- flattening watch: any dotted term still held FLAT (the op/name qnames are now path ids, so what
+-- remains is FILE paths — a different, non-namespace path kind — the honest residue).
 CREATE VIEW flattened_terms AS SELECT text FROM terms WHERE text LIKE '%.%';
 """
 
@@ -74,22 +84,32 @@ def persist_corpus(C, dbpath):
         os.remove(dbpath)
     con = sqlite3.connect(dbpath)
     con.executescript(SCHEMA)
-    _terms = {}
+    _terms, _paths = {}, {}
     def tid(s):
         s = "" if s is None else s
         i = _terms.get(s)
         if i is None:
             i = len(_terms); _terms[s] = i
         return i
-    node_rows = [(i, tid(n.kind), tid(n.role), tid(n.op), tid(n.lit)) for i, n in enumerate(I.nodes)]
-    unit_rows = [(k, tid(u.name), u.root, tid(u.path)) for k, u in enumerate(C.units)]
-    # ⟡ flattening watch: decompose dotted op/name terms (a qname IS a path) into interned segments.
-    dotted = {s for s in _terms if "." in s and "/" not in s}      # qnames, not filesystem paths
-    pathseg_rows = [(_terms[s], o, tid(seg)) for s in dotted for o, seg in enumerate(s.split("."))]
+    def pid(s):                                   # a qname is a PATH: surrogate id over interned segments
+        segs = tuple(tid(seg) for seg in s.split("."))
+        p = _paths.get(segs)
+        if p is None:
+            p = len(_paths); _paths[segs] = p
+        return p
+    def op_ids(op):                               # op is polymorphic: a qname (path) OR an atomic ctor
+        op = "" if op is None else op
+        return (None, pid(op)) if "." in op else (tid(op), None)
+    node_rows = []
+    for i, n in enumerate(I.nodes):
+        ot, opp = op_ids(n.op)
+        node_rows.append((i, tid(n.kind), tid(n.role), ot, opp, tid(n.lit)))
+    unit_rows = [(k, pid(u.name), u.root, tid(u.path)) for k, u in enumerate(C.units)]  # name=path, path=file term
+    pathseg_rows = [(p, o, seg) for segs, p in _paths.items() for o, seg in enumerate(segs)]
     term_rows = sorted((i, s) for s, i in _terms.items())
     con.executemany("INSERT INTO terms VALUES (?,?)", term_rows)
     con.executemany("INSERT INTO path_seg VALUES (?,?,?)", pathseg_rows)
-    con.executemany("INSERT INTO _node VALUES (?,?,?,?,?)", node_rows)
+    con.executemany("INSERT INTO _node VALUES (?,?,?,?,?,?)", node_rows)
     con.executemany("INSERT INTO node_child VALUES (?,?,?)",
                     [(i, o, ch) for i, n in enumerate(I.nodes) for o, ch in enumerate(n.children)])
     con.executemany("INSERT INTO _unit VALUES (?,?,?,?)", unit_rows)
@@ -99,7 +119,7 @@ def persist_corpus(C, dbpath):
     con.execute("""
         INSERT INTO unit_node
         WITH RECURSIVE r(unit_id, node_id) AS (
-          SELECT unit_id, root_id FROM unit
+          SELECT unit_id, root_id FROM _unit
           UNION
           SELECT r.unit_id, ch.child_id FROM node_child ch JOIN r ON ch.node_id = r.node_id)
         SELECT unit_id, node_id FROM r;""")
