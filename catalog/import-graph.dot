@@ -1778,6 +1778,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationUniversal" [label="Wedge.OrientationUniversal"];
   "Substrate.WitnessTower.Wedge.OrientationUniversalOver" [label="Wedge.OrientationUniversalOver"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
+  "Substrate.WitnessTower.Wedge.PyAstRig" [label="Wedge.PyAstRig"];
   "Substrate.WitnessTower.Wedge.Simplicial" [label="Wedge.Simplicial"];
   "Substrate.WitnessTower.Wedge.V4Seam" [label="Wedge.V4Seam"];
   "Substrate.WitnessTower.WedgeStep" [label="WitnessTower.WedgeStep"];
@@ -13403,6 +13404,17 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Foundation.Vec";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.WitnessTower.Wedge.Graded";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Algebra.Semiring";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Algebra.Semiring.SPPF";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.Wedge.OrientationFixedPoint";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Algebra.Wedge.Graded";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Foundation.Fin";
