@@ -34,13 +34,17 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_pathseg_uniq ON path_seg(path_id, ord);
 CREATE TABLE IF NOT EXISTS event    (ekey TEXT PRIMARY KEY, ctor_id TEXT, qname_pid TEXT, idx INT);
 CREATE TABLE IF NOT EXISTS obs      (core_id TEXT, local_id INT, ekey TEXT);      -- decoded node → its event
 CREATE TABLE IF NOT EXISTS edge     (core_id TEXT, plid INT, ord INT, clid INT);  -- raw local parent→child
-CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT);
-CREATE TABLE IF NOT EXISTS unit_member (core_id TEXT, unit_pid TEXT, ord INT, member_pid TEXT);  -- defmark Φ7b members
+-- unit_id = base64(qname ‖ root) — UNIQUE PER DEFMARK (two anonymous-module defs can share a full qname;
+-- reuse_catalog keys structs by (qname,root), so the unit tier must too). name_pid = base64(qname) for display.
+CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_id TEXT, name_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT);
+-- member links RESOLVED at write time (qname → its defmark unit, last-wins per core, matching reuse_catalog's
+-- root_of): member_unit_id is the member's unit (NULL if the member is not itself a defmark).
+CREATE TABLE IF NOT EXISTS unit_member (core_id TEXT, unit_id TEXT, ord INT, member_name_pid TEXT, member_unit_id TEXT);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_obs_pk    ON obs(core_id, local_id);
 CREATE INDEX        IF NOT EXISTS ix_obs_ekey  ON obs(ekey);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_edge_pk   ON edge(core_id, plid, ord);
 CREATE INDEX        IF NOT EXISTS ix_edge_child ON edge(core_id, clid);
-CREATE UNIQUE INDEX IF NOT EXISTS ix_unitobs_pk ON unit_obs(core_id, unit_pid);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_unitobs_pk ON unit_obs(unit_id);
 CREATE VIEW IF NOT EXISTS path_text AS
   SELECT path_id, GROUP_CONCAT(seg, '.') AS text FROM (
     SELECT ps.path_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
@@ -87,9 +91,10 @@ def _dedup_pathseg(con):
 
 def write_events(cores, con, base):
     """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution."""
-    con.executescript(EVENT_SCHEMA)
+    # DROP (not DELETE) the event tables so column changes take effect (terms/path_seg are shared — keep).
     for t in ("event", "obs", "edge", "unit_obs", "unit_member"):
-        con.execute(f"DELETE FROM {t}")
+        con.execute(f"DROP TABLE IF EXISTS {t}")
+    con.executescript(EVENT_SCHEMA)
     con.commit()
     seen_t = set()
     def tid(s):
@@ -122,14 +127,25 @@ def write_events(cores, con, base):
             erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
             orows.append((cid, lid, ekey))
             edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
-        urows = [(cid, pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid) for d in dec["defmarks"]]
-        mrows = [(cid, pid(d["unit"]), o, pid(m))
-                 for d in dec["defmarks"] for o, m in enumerate(d.get("members", []))]
+        dms = dec["defmarks"]
+        root_of = {}                              # qname → root, LAST-WINS per core (matches reuse_catalog)
+        for d in dms:
+            root_of[d["unit"]] = d["root"]
+        def uid(qn, r):
+            return _b64(qn + "\x00" + str(r))
+        urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid)
+                 for d in dms]
+        mrows = []
+        for d in dms:
+            su = uid(d["unit"], d["root"])
+            for o, m in enumerate(d.get("members", [])):
+                mr = root_of.get(m)
+                mrows.append((cid, su, o, pid(m), (uid(m, mr) if mr is not None else None)))
         con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
         con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
         con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
-        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?)", urows)
-        con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?)", mrows)
+        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?)", urows)
+        con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
         con.commit()                               # transaction per file (append-only)
     _dedup_pathseg(con); con.commit()
 
@@ -217,14 +233,13 @@ def project_sppf(con):
     # + the codomain HEAD of each unit's type (structural, computed on the unambiguous per-core tree).
     urows, un_rows, codrows = [], [], []
     childmap = ch
-    for c, unit_pid, root_lid, kind_id, module_pid in con.execute(
-            "SELECT core_id, unit_pid, root_lid, kind_id, module_pid FROM unit_obs"):
+    for c, unit_id, name_pid, root_lid, kind_id, module_pid in con.execute(
+            "SELECT core_id, unit_id, name_pid, root_lid, kind_id, module_pid FROM unit_obs"):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
-        uid = unit_pid
-        urows.append((uid, unit_pid, rootpk, c, kind_id, module_pid, root_lid))
+        urows.append((unit_id, name_pid, rootpk, c, kind_id, module_pid, root_lid))
         cct, cqn = cod(c, root_lid)
-        codrows.append((uid, (tid(cct) if cct is not None else None),
+        codrows.append((unit_id, (tid(cct) if cct is not None else None),
                         (pid(cqn) if cqn is not None else None)))
         seen, stack, members = set(), [root_lid], set()
         while stack:
@@ -234,7 +249,7 @@ def project_sppf(con):
             pk = pack(c, lid)
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
-        un_rows += [(uid, pk) for pk in members]
+        un_rows += [(unit_id, pk) for pk in members]
     con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO _unit_cod VALUES (?,?,?)", codrows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
