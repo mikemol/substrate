@@ -48,9 +48,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_un_edge ON unit_node(unit_id, node_id);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_nc_edge ON node_child(node_id, ord, child_id);
 -- path_seg idempotency: a (path_id, ord) has exactly ONE segment (base64 path_id ⟹ fixed qname ⟹
 -- fixed segment sequence). WITHOUT this, streaming INSERT OR IGNORE can't dedup and re-encounters of a
--- qname duplicate its segments (path_text then GROUP_CONCATs the dups → tripled names). The shared
--- table's content-addressing REQUIRES it. (Owner reuse_catalog dedups via a Python set in one build;
--- the streaming writer needs the constraint. ⟡catalog-pathseg-unique: hoist this to reuse_catalog.)
+-- qname duplicate its segments (path_text then GROUP_CONCATs the dups → tripled names). The invariant
+-- now lives in its owner reuse_catalog (⟡catalog-pathseg-unique, done); this IF-NOT-EXISTS copy is kept
+-- so sppf_db stays self-sufficient when building into a FRESH db (no catalog present).
 CREATE UNIQUE INDEX IF NOT EXISTS ix_pathseg_uniq ON path_seg(path_id, ord);
 -- path_text may already exist (catalog builds it); create only if absent.
 CREATE VIEW IF NOT EXISTS path_text AS

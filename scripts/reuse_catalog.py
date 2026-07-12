@@ -96,8 +96,13 @@ CREATE TABLE _edges   (src_pid TEXT, dst_pid TEXT);
 CREATE TABLE _module_edges (src_pid TEXT, dst_pid TEXT);   -- module -> module semantic dependency (import-graph)
 CREATE TABLE _modules (module_pid TEXT, purpose_id TEXT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
-CREATE INDEX ix_pathseg_path ON path_seg(path_id);
 CREATE INDEX ix_pathseg_seg  ON path_seg(seg_term_id);
+-- a (path_id, ord) has exactly ONE segment (base64 path_id ⟹ fixed qname ⟹ fixed segment sequence).
+-- This UNIQUE invariant makes INSERT-OR-IGNORE into the SHARED path_seg idempotent — the catalog dedups
+-- via a Python set in one build, but streaming writers (sppf_db) rely on the constraint. It also serves
+-- path_id-prefix lookups, so it subsumes the old ix_pathseg_path. (⟡catalog-pathseg-unique: hoisted here
+-- from sppf_db, which kept a defensive IF-NOT-EXISTS copy for fresh-db self-sufficiency.)
+CREATE UNIQUE INDEX ix_pathseg_uniq ON path_seg(path_id, ord);
 CREATE INDEX ix_structs_name ON _structs(name_id);
 CREATE INDEX ix_members_sq   ON _members(struct_qname_pid, struct_root);
 CREATE INDEX ix_mheads_sq    ON _member_heads(struct_qname_pid, struct_root);
