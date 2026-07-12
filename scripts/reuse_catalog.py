@@ -56,23 +56,49 @@ CATALOG_DB = os.path.join(ROOT, "catalog", "catalog.db")
 # sort matches the reuse-index fingerprint exactly without a recent SQLite's ordered GROUP_CONCAT;
 # desc because it comes from the .agda source comment, not the core.
 _DB_SCHEMA = """
+-- ⟡catalog-term-ids — the DB-level INTERNER: every string lives ONCE in `terms`; the base tables
+-- reference terms by INTEGER id (the hash-cons the SPPF uses, applied to catalog strings — no TEXT
+-- repeated across qname/ref/src/dst). The compat VIEWS re-present the pre-interning TEXT schema, so
+-- the renders (which sort in PYTHON, not SQL) are untouched and the output stays byte-identical.
+-- `terms` is ALSO the diagnostic: `flattened_terms` (a term holding . | , — an encoded module-path,
+-- a members-list crammed into an fp) shows where STRUCTURAL info was flattened into a string.
+CREATE TABLE terms (term_id INTEGER PRIMARY KEY, text TEXT);
+CREATE UNIQUE INDEX ix_terms_text ON terms(text);
 -- qname is NOT unique: an anonymous `module _` collapses several declarations to one qname
 -- (e.g. two `data _⇒*_` in two `module _` blocks → one qname, two nodes). That collision is the
 -- dedup FAN-IN signal (name-granularity), not a bug to drop — so the key is composite (qname, root)
 -- and every colliding node is kept, rather than one clobbering the rest. (Ⓓ.catalog-fanin-key)
-CREATE TABLE structs (qname TEXT, name TEXT, kind TEXT, module TEXT, fp TEXT, desc TEXT, root INTEGER, unhold_fp TEXT, PRIMARY KEY (qname, root));
-CREATE TABLE members (struct_qname TEXT, name TEXT, ord INTEGER);
-CREATE TABLE refs    (struct_qname TEXT, ref_qname TEXT);
-CREATE TABLE edges   (src TEXT, dst TEXT);
-CREATE TABLE module_edges (src TEXT, dst TEXT);   -- module -> module semantic dependency (import-graph)
-CREATE TABLE modules (module TEXT PRIMARY KEY, purpose TEXT, is_index INTEGER);
+CREATE TABLE _structs (qname_id INT, name_id INT, kind_id INT, module_id INT, fp_id INT, desc_id INT, root INTEGER, unhold_fp_id INT, PRIMARY KEY (qname_id, root));
+CREATE TABLE _members (struct_qname_id INT, name_id INT, ord INTEGER);
+CREATE TABLE _refs    (struct_qname_id INT, ref_qname_id INT);
+CREATE TABLE _edges   (src_id INT, dst_id INT);
+CREATE TABLE _module_edges (src_id INT, dst_id INT);   -- module -> module semantic dependency (import-graph)
+CREATE TABLE _modules (module_id INT, purpose_id INT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
-CREATE INDEX ix_structs_name ON structs(name);
-CREATE INDEX ix_members_sq   ON members(struct_qname);
-CREATE INDEX ix_edges_src    ON edges(src);
-CREATE INDEX ix_edges_dst    ON edges(dst);
-CREATE INDEX ix_medges_src   ON module_edges(src);
-CREATE INDEX ix_medges_dst   ON module_edges(dst);
+CREATE INDEX ix_structs_name ON _structs(name_id);
+CREATE INDEX ix_members_sq   ON _members(struct_qname_id);
+CREATE INDEX ix_edges_src    ON _edges(src_id);
+CREATE INDEX ix_edges_dst    ON _edges(dst_id);
+CREATE INDEX ix_medges_src   ON _module_edges(src_id);
+CREATE INDEX ix_medges_dst   ON _module_edges(dst_id);
+-- compat views: the pre-interning TEXT schema. Renders + the analytic views below query THESE.
+CREATE VIEW structs AS
+  SELECT q.text AS qname, n.text AS name, k.text AS kind, m.text AS module,
+         f.text AS fp, d.text AS desc, s.root AS root, u.text AS unhold_fp
+  FROM _structs s JOIN terms q ON q.term_id=s.qname_id JOIN terms n ON n.term_id=s.name_id
+    JOIN terms k ON k.term_id=s.kind_id JOIN terms m ON m.term_id=s.module_id
+    JOIN terms f ON f.term_id=s.fp_id   JOIN terms d ON d.term_id=s.desc_id
+    JOIN terms u ON u.term_id=s.unhold_fp_id;
+CREATE VIEW members AS SELECT sq.text AS struct_qname, n.text AS name, x.ord AS ord
+  FROM _members x JOIN terms sq ON sq.term_id=x.struct_qname_id JOIN terms n ON n.term_id=x.name_id;
+CREATE VIEW refs AS SELECT sq.text AS struct_qname, r.text AS ref_qname
+  FROM _refs x JOIN terms sq ON sq.term_id=x.struct_qname_id JOIN terms r ON r.term_id=x.ref_qname_id;
+CREATE VIEW edges AS SELECT s.text AS src, d.text AS dst
+  FROM _edges x JOIN terms s ON s.term_id=x.src_id JOIN terms d ON d.term_id=x.dst_id;
+CREATE VIEW module_edges AS SELECT s.text AS src, d.text AS dst
+  FROM _module_edges x JOIN terms s ON s.term_id=x.src_id JOIN terms d ON d.term_id=x.dst_id;
+CREATE VIEW modules AS SELECT m.text AS module, p.text AS purpose, x.is_index AS is_index
+  FROM _modules x JOIN terms m ON m.term_id=x.module_id JOIN terms p ON p.term_id=x.purpose_id;
 -- The catalogs' key queries, as views (the "new question = a SELECT" payoff):
 CREATE VIEW in_degree  AS SELECT dst AS qname, COUNT(*) AS deg FROM edges GROUP BY dst;
 CREATE VIEW out_degree AS SELECT src AS qname, COUNT(*) AS deg FROM edges GROUP BY src;
@@ -84,6 +110,14 @@ CREATE VIEW multiply_homed AS
 CREATE VIEW shape_parallel AS
   SELECT fp, COUNT(DISTINCT name) AS names, GROUP_CONCAT(qname) AS structs
   FROM structs GROUP BY fp HAVING names >= 2;
+-- ⟡catalog-term-ids diagnostic: terms that FLATTEN structure into a string (glare here for the
+-- decomposition worklist — a dotted qname flattens a module-path, an fp flattens the members table).
+CREATE VIEW flattened_terms AS
+  SELECT text,
+         LENGTH(text)-LENGTH(REPLACE(text,'.','')) AS dots,
+         LENGTH(text)-LENGTH(REPLACE(text,'|','')) AS pipes,
+         LENGTH(text)-LENGTH(REPLACE(text,',','')) AS commas
+  FROM terms WHERE text LIKE '%.%' OR text LIKE '%|%' OR text LIKE '%,%';
 -- ⟡catalog-unhold-fp — REDUNDANCY-UNDER-INVERSION as a standing query. `fp` groups by member
 -- NAMES (so a HELD-carrier record and a grade-INDEXED one, with different field names, never
 -- match); `unhold_fp` groups by member CODOMAIN-HEADS with every carrier (a Record/Datatype ref
@@ -301,14 +335,32 @@ class DbBuilder:
         structs8 = [(u, n, kd, md, fp, ds, rt, _unhold_fp(u, kd))
                     for (u, n, kd, md, fp, ds, rt) in self.structs]
 
+        # ⟡catalog-term-ids: intern every string ONCE (the DB-level hash-cons); base tables store ids.
+        _terms = {}
+        def tid(s):
+            s = "" if s is None else s
+            i = _terms.get(s)
+            if i is None:
+                i = len(_terms); _terms[s] = i
+            return i
+        struct_rows = [(tid(u), tid(n), tid(kd), tid(md), tid(fp), tid(ds), rt, tid(uf))
+                       for (u, n, kd, md, fp, ds, rt, uf) in sorted(structs8)]
+        member_rows = [(tid(sq), tid(nm), o) for (sq, nm, o) in self.members]
+        ref_rows    = [(tid(sq), tid(r)) for (sq, r) in self.refrows]
+        edge_rows   = [(tid(a), tid(b)) for (a, b) in edges]
+        medge_rows  = [(tid(a), tid(b)) for (a, b) in module_edges]
+        mod_rows    = [(tid(m), tid(p), ix) for (m, p, ix) in sorted(self.modrows)]
+        term_rows   = sorted((i, s) for s, i in _terms.items())
+
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
-        con.executemany("INSERT INTO structs VALUES (?,?,?,?,?,?,?,?)", sorted(structs8))
-        con.executemany("INSERT INTO members VALUES (?,?,?)",       self.members)
-        con.executemany("INSERT INTO refs    VALUES (?,?)",         self.refrows)
-        con.executemany("INSERT INTO edges   VALUES (?,?)",         edges)
-        con.executemany("INSERT INTO module_edges VALUES (?,?)",    module_edges)
-        con.executemany("INSERT INTO modules VALUES (?,?,?)",       sorted(self.modrows))
+        con.executemany("INSERT INTO terms   VALUES (?,?)",         term_rows)
+        con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?,?,?)", struct_rows)
+        con.executemany("INSERT INTO _members VALUES (?,?,?)",      member_rows)
+        con.executemany("INSERT INTO _refs    VALUES (?,?)",        ref_rows)
+        con.executemany("INSERT INTO _edges   VALUES (?,?)",        edge_rows)
+        con.executemany("INSERT INTO _module_edges VALUES (?,?)",   medge_rows)
+        con.executemany("INSERT INTO _modules VALUES (?,?,?)",      mod_rows)
         con.execute("INSERT INTO meta VALUES ('failed', ?)", (str(failed),))
         con.commit()
         con.close()
