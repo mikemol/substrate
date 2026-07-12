@@ -21,26 +21,40 @@ sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
 from jea_pysim import Corpus   # its Corpus.add_agdai drives jea_agdai.core_intern_agdai into ONE Intern
 
 SCHEMA = """
-CREATE TABLE node       (node_id INTEGER PRIMARY KEY, kind TEXT, role TEXT, op TEXT, lit TEXT);
+-- ⟡db-contains-sppf, normalized like the catalog: node heads are TERM IDS (kind/role/op/lit interned
+-- once — 'AgdaCore' is stored once, not per node), a dotted op/name (a qname = a PATH) is decomposed
+-- into interned segments (path_seg), and compat VIEWS re-present the TEXT so the readouts are unchanged.
+CREATE TABLE terms      (term_id INTEGER PRIMARY KEY, text TEXT);
+CREATE UNIQUE INDEX ix_terms_text ON terms(text);
+CREATE TABLE path_seg   (path_term_id INT, ord INT, seg_term_id INT);
+CREATE TABLE _node      (node_id INTEGER PRIMARY KEY, kind_id INT, role_id INT, op_id INT, lit_id INT);
 CREATE TABLE node_child (node_id INT, ord INT, child_id INT);
-CREATE TABLE unit       (unit_id INTEGER PRIMARY KEY, name TEXT, root_id INT, path TEXT);
+CREATE TABLE _unit      (unit_id INTEGER PRIMARY KEY, name_id INT, root_id INT, path_id INT);
 -- unit_node: each unit's SUPPORT closure (the reachable subterm set), materialized ONCE via a
--- recursive WITH at build. With it, the cross-unit readouts jea_pysim did in Python — extract
+-- recursive WITH at build. With it the cross-unit readouts jea_pysim did in Python — extract
 -- candidates, clusters, shared-fraction — are direct JOIN/GROUP BY, no per-query graph-walk.
 CREATE TABLE unit_node  (unit_id INT, node_id INT);
-CREATE INDEX ix_nc_node  ON node_child(node_id);
-CREATE INDEX ix_nc_child ON node_child(child_id);
-CREATE INDEX ix_node_op  ON node(op);
-CREATE INDEX ix_unit_root ON unit(root_id);
-CREATE INDEX ix_un_unit  ON unit_node(unit_id);
-CREATE INDEX ix_un_node  ON unit_node(node_id);
+CREATE INDEX ix_nc_node   ON node_child(node_id);
+CREATE INDEX ix_nc_child  ON node_child(child_id);
+CREATE INDEX ix_node_op   ON _node(op_id);
+CREATE INDEX ix_unit_root ON _unit(root_id);
+CREATE INDEX ix_un_unit   ON unit_node(unit_id);
+CREATE INDEX ix_un_node   ON unit_node(node_id);
+CREATE INDEX ix_pathseg   ON path_seg(path_term_id);
+-- compat views: the pre-interning TEXT schema (the readouts query THESE).
+CREATE VIEW node AS SELECT n.node_id, k.text AS kind, r.text AS role, o.text AS op, l.text AS lit
+  FROM _node n JOIN terms k ON k.term_id=n.kind_id JOIN terms r ON r.term_id=n.role_id
+    JOIN terms o ON o.term_id=n.op_id JOIN terms l ON l.term_id=n.lit_id;
+CREATE VIEW unit AS SELECT u.unit_id, nm.text AS name, u.root_id AS root_id, p.text AS path
+  FROM _unit u JOIN terms nm ON nm.term_id=u.name_id JOIN terms p ON p.term_id=u.path_id;
 -- fan-in: how many parent EDGES reference a node = the sharing (hash-cons corroboration) signal.
 CREATE VIEW node_fanin AS SELECT child_id AS node_id, COUNT(*) AS fanin FROM node_child GROUP BY child_id;
 -- a SHARED SUBTREE = a node reachable from ≥2 parents (the dedup, as a SELECT not a Python walk).
 CREATE VIEW shared_subtree AS SELECT node_id, fanin FROM node_fanin WHERE fanin >= 2;
--- the atoms (childless nodes) and the composites, for the metalanguage split.
 CREATE VIEW node_atom AS SELECT n.node_id, n.op FROM node n
   WHERE NOT EXISTS (SELECT 1 FROM node_child c WHERE c.node_id=n.node_id);
+-- flattening watch: op/name terms that still hold a dotted PATH (should be a path_seg, not a flat term).
+CREATE VIEW flattened_terms AS SELECT text FROM terms WHERE text LIKE '%.%';
 """
 
 def build(cores, dbpath):
@@ -52,12 +66,25 @@ def build(cores, dbpath):
         os.remove(dbpath)
     con = sqlite3.connect(dbpath)
     con.executescript(SCHEMA)
-    con.executemany("INSERT INTO node VALUES (?,?,?,?,?)",
-                    [(i, n.kind, n.role, n.op, n.lit) for i, n in enumerate(I.nodes)])
+    _terms = {}
+    def tid(s):
+        s = "" if s is None else s
+        i = _terms.get(s)
+        if i is None:
+            i = len(_terms); _terms[s] = i
+        return i
+    node_rows = [(i, tid(n.kind), tid(n.role), tid(n.op), tid(n.lit)) for i, n in enumerate(I.nodes)]
+    unit_rows = [(k, tid(u.name), u.root, tid(u.path)) for k, u in enumerate(C.units)]
+    # ⟡ flattening watch: decompose dotted op/name terms (a qname IS a path) into interned segments.
+    dotted = {s for s in _terms if "." in s and "/" not in s}      # qnames, not filesystem paths
+    pathseg_rows = [(_terms[s], o, tid(seg)) for s in dotted for o, seg in enumerate(s.split("."))]
+    term_rows = sorted((i, s) for s, i in _terms.items())
+    con.executemany("INSERT INTO terms VALUES (?,?)", term_rows)
+    con.executemany("INSERT INTO path_seg VALUES (?,?,?)", pathseg_rows)
+    con.executemany("INSERT INTO _node VALUES (?,?,?,?,?)", node_rows)
     con.executemany("INSERT INTO node_child VALUES (?,?,?)",
                     [(i, o, ch) for i, n in enumerate(I.nodes) for o, ch in enumerate(n.children)])
-    con.executemany("INSERT INTO unit VALUES (?,?,?,?)",
-                    [(k, u.name, u.root, u.path) for k, u in enumerate(C.units)])
+    con.executemany("INSERT INTO _unit VALUES (?,?,?,?)", unit_rows)
     con.commit()
     # materialize each unit's support closure ONCE (the recursive WITH the readouts would otherwise
     # re-walk per query, in Python) — the "query, don't code" enabler.
