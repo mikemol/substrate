@@ -34,7 +34,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_pathseg_uniq ON path_seg(path_id, ord);
 CREATE TABLE IF NOT EXISTS event    (ekey TEXT PRIMARY KEY, ctor_id TEXT, qname_pid TEXT, idx INT);
 CREATE TABLE IF NOT EXISTS obs      (core_id TEXT, local_id INT, ekey TEXT);      -- decoded node → its event
 CREATE TABLE IF NOT EXISTS edge     (core_id TEXT, plid INT, ord INT, clid INT);  -- raw local parent→child
-CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_pid TEXT, root_lid INT, kind_id TEXT);
+CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_obs_pk    ON obs(core_id, local_id);
 CREATE INDEX        IF NOT EXISTS ix_obs_ekey  ON obs(ekey);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_edge_pk   ON edge(core_id, plid, ord);
@@ -50,7 +50,7 @@ CREATE VIEW IF NOT EXISTS path_text AS
 SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
-CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT);
+CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT);
 CREATE TABLE IF NOT EXISTS unit_node  (unit_id TEXT, node_id TEXT);
 CREATE INDEX IF NOT EXISTS ix_node_sym ON _node(sym);
 CREATE INDEX IF NOT EXISTS ix_nc_node  ON node_child(node_id);
@@ -103,7 +103,10 @@ def write_events(cores, con, base):
             dec = decode_core(path)
         except Exception:
             continue
-        cid = tid(os.path.relpath(path, base))   # intern the core path so _unit.file_id resolves in `terms`
+        relpath = os.path.relpath(path, base)
+        cid = tid(relpath)                       # intern the core path so _unit.file_id resolves in `terms`
+        module = "Substrate." + relpath[:-len(".agdai")].replace(os.sep, ".")  # agdai_module (file metadata)
+        mpid = pid(module)
         erows, orows, edgerows = [], [], []
         for lid, rec in dec["nodes"].items():
             ctor, qname, idx = rec.get("constructor"), rec.get("qname"), rec.get("index")
@@ -114,13 +117,13 @@ def write_events(cores, con, base):
             erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
             orows.append((cid, lid, ekey))
             edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
-        urows = [(cid, pid(name), root, tid(kind))
+        urows = [(cid, pid(name), root, tid(kind), mpid)
                  for (name, root, kind) in ((d["unit"], d["root"], d.get("kind", "?"))
                                             for d in dec["defmarks"]) ]
         con.executemany("INSERT OR IGNORE INTO event    VALUES (?,?,?,?)", erows)
         con.executemany("INSERT OR IGNORE INTO obs      VALUES (?,?,?)",   orows)
         con.executemany("INSERT OR IGNORE INTO edge     VALUES (?,?,?,?)", edgerows)
-        con.executemany("INSERT OR IGNORE INTO unit_obs VALUES (?,?,?,?)", urows)
+        con.executemany("INSERT OR IGNORE INTO unit_obs VALUES (?,?,?,?,?)", urows)
         con.commit()                               # transaction per file (append-only)
     _dedup_pathseg(con); con.commit()
 
@@ -188,12 +191,12 @@ def project_sppf(con):
     # units + per-unit membership (reach from root over the acyclic raw edges — pre-sharing, no closure)
     urows, un_rows = [], []
     childmap = ch
-    for c, unit_pid, root_lid, kind_id in con.execute(
-            "SELECT core_id, unit_pid, root_lid, kind_id FROM unit_obs"):
+    for c, unit_pid, root_lid, kind_id, module_pid in con.execute(
+            "SELECT core_id, unit_pid, root_lid, kind_id, module_pid FROM unit_obs"):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
         uid = unit_pid
-        urows.append((uid, unit_pid, rootpk, c, kind_id))
+        urows.append((uid, unit_pid, rootpk, c, kind_id, module_pid))
         seen, stack, members = set(), [root_lid], set()
         while stack:
             lid = stack.pop()
@@ -203,7 +206,7 @@ def project_sppf(con):
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(uid, pk) for pk in members]
-    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
     return (len(seen_n), len(urows),
