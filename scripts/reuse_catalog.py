@@ -132,6 +132,22 @@ CREATE VIEW flattened_terms AS
          LENGTH(text)-LENGTH(REPLACE(text,'|','')) AS pipes,
          LENGTH(text)-LENGTH(REPLACE(text,',','')) AS commas
   FROM terms WHERE text LIKE '%.%' OR text LIKE '%|%' OR text LIKE '%,%';
+-- ⟡catalog-decompose-qname: a dotted path (qname/module/ref) is a PATH of interned SEGMENTS. Unlike
+-- fp (removed — it was redundant with `members`), a qname is the reference-graph IDENTIFIER, so the
+-- flat term stays as the join key; path_seg exposes its hierarchy relationally (segments shared across
+-- paths — Substrate/Category interned once). `path_text` reconstructs; `segment_sharing` is the module-
+-- hierarchy the paths share. (Removing the flat path via surrogate path-ids is the larger ⟡catalog-path-ids.)
+CREATE TABLE path_seg (path_term_id INT, ord INT, seg_term_id INT);
+CREATE INDEX ix_pathseg_path ON path_seg(path_term_id);
+CREATE INDEX ix_pathseg_seg  ON path_seg(seg_term_id);
+CREATE VIEW path_text AS
+  SELECT path_term_id, GROUP_CONCAT(seg, '.') AS text FROM (
+    SELECT ps.path_term_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
+    ORDER BY ps.path_term_id, ps.ord) GROUP BY path_term_id;
+CREATE VIEW segment_sharing AS
+  SELECT t.text AS segment, COUNT(DISTINCT ps.path_term_id) AS paths
+  FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
+  GROUP BY ps.seg_term_id HAVING paths >= 2;
 -- ⟡catalog-unhold-fp — REDUNDANCY-UNDER-INVERSION as a standing query. `fp` groups by member
 -- NAMES (so a HELD-carrier record and a grade-INDEXED one, with different field names, never
 -- match); `unhold_fp` groups by member CODOMAIN-HEADS with every carrier (a Record/Datatype ref
@@ -363,11 +379,30 @@ class DbBuilder:
         edge_rows   = [(tid(a), tid(b)) for (a, b) in edges]
         medge_rows  = [(tid(a), tid(b)) for (a, b) in module_edges]
         mod_rows    = [(tid(m), tid(p), ix) for (m, p, ix) in sorted(self.modrows)]
+
+        # ⟡catalog-decompose-qname: decompose each dotted PATH term (qname/module/ref/edge — NOT a
+        # free-text desc) into interned segments. BEFORE finalizing term_rows (a new segment may be a
+        # new term). Only path-bearing columns contribute, so descriptions with periods are not split.
+        paths = set()
+        paths.update(u for (u, *_) in self.structs)
+        paths.update(md for (_u, _n, _k, md, _d, _r) in self.structs)
+        paths.update(sq for (sq, *_) in self.members)
+        for sq, r in self.refrows:
+            paths.add(sq); paths.add(r)
+        for a, b in edges:
+            paths.add(a); paths.add(b)
+        for a, b in module_edges:
+            paths.add(a); paths.add(b)
+        paths.update(m for (m, _p, _i) in self.modrows)
+        path_seg_rows = [(_terms[s], o, tid(seg))
+                         for s in paths if "." in s and s in _terms
+                         for o, seg in enumerate(s.split("."))]
         term_rows   = sorted((i, s) for s, i in _terms.items())
 
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
         con.executemany("INSERT INTO terms   VALUES (?,?)",             term_rows)
+        con.executemany("INSERT INTO path_seg VALUES (?,?,?)",          path_seg_rows)
         con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?)",    struct_rows)
         con.executemany("INSERT INTO _members VALUES (?,?,?,?)",        member_rows)
         con.executemany("INSERT INTO _member_heads VALUES (?,?,?,?)",   mhead_rows)
