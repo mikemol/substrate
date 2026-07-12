@@ -918,6 +918,7 @@ digraph imports {
   "Substrate.Category.TermAlgebraBridges" [label="Category.TermAlgebraBridges"];
   "Substrate.Category.Topos" [label="Category.Topos"];
   "Substrate.Category.TwoCategory" [label="Category.TwoCategory"];
+  "Substrate.Category.UPArrow2Collapse" [label="Category.UPArrow2Collapse"];
   "Substrate.Category.UPArrowGraded" [label="Category.UPArrowGraded"];
   "Substrate.Category.UniversalEnvelopingAlgebra" [label="Category.UniversalEnvelopingAlgebra"];
   "Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor" [label="UniversalEnvelopingAlgebra.AsFunctor"];
@@ -7290,6 +7291,8 @@ digraph imports {
   "Substrate.Category.TermAlgebraBridges" -> "Substrate.Category.PolyLens.Term";
   "Substrate.Category.Topos" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Topos" -> "Substrate.Category.SubobjectClassifier";
+  "Substrate.Category.UPArrow2Collapse" -> "Substrate.Category.UPArrowGraded";
+  "Substrate.Category.UPArrow2Collapse" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UPArrowGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UPArrowGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalEnvelopingAlgebra" -> "Substrate.Category.LieAlgebra";
