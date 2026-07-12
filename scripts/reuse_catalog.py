@@ -39,6 +39,9 @@ def _discover_build_ag(root):
 BUILD_AG  = _discover_build_ag(ROOT)
 SUB_AGDAI = os.path.join(BUILD_AG, "Substrate")
 SHIM      = os.path.join(ROOT, "jea", "metalanguage", "agdai_shim")
+import sys as _sys                     # ⟡lift-shared-core-machinery: the ONE shim-decode (typehole-
+_sys.path.insert(0, os.path.join(ROOT, "jea", "metalanguage"))  # confirmed shared with core_intern_agdai
+from jea_agdai import decode_core      # + the census; the CWD/locale/decode-Nothing invariants live there
 IDX_DOC    = os.path.join(ROOT, "catalog", "reuse-index.md")
 GRAPH_DOT  = os.path.join(ROOT, "catalog", "reuse-graph.dot")
 GRAPH_MD   = os.path.join(ROOT, "catalog", "reuse-graph.md")
@@ -99,14 +102,9 @@ def agdai_module(p):
 def agda_source(mod):
     return os.path.join(ROOT, "agda", mod.replace(".", os.sep) + ".agda")
 
-def _shim_raw(agdai):
-    r = subprocess.run([SHIM, os.path.abspath(agdai)], capture_output=True, text=True,
-                       cwd=os.path.dirname(agdai))
-    return r.stdout if r.returncode == 0 else None
-
 def walk_cores(filt=""):
-    """Streaming generator: decode each `.agdai` under Substrate/ with the raw shim ONCE and
-    yield its parsed core (or None on a shim failure, so callers can count it). A core is
+    """Streaming generator: decode each `.agdai` under Substrate/ via the shared `decode_core` ONCE
+    and yield its parsed core (or None on a shim failure, so callers can count it). A core is
     {mod, path, nodes, defmarks} where nodes = {id: (qname, [child-ids])} (qname references
     INTACT — the interned form drops them) and defmarks = [(unit, root, kind, members)]."""
     if not os.path.isdir(SUB_AGDAI):
@@ -118,21 +116,12 @@ def walk_cores(filt=""):
             if not fn.endswith(".agdai") or (filt and filt not in os.path.join(dp, fn)):
                 continue
             path = os.path.join(dp, fn)
-            out  = _shim_raw(path)
-            if out is None:
+            d = decode_core(path, shim_bin=SHIM)          # the one shim-decode (cwd/locale/decode-Nothing)
+            if d is None:
                 yield None
                 continue
-            nodes, defmarks = {}, []
-            for line in out.splitlines():
-                try:
-                    rec = json.loads(line)
-                except Exception:
-                    continue
-                if "unit" in rec:
-                    defmarks.append((rec["unit"], rec["root"], rec.get("kind"),
-                                     rec.get("members", [])))
-                elif "id" in rec:
-                    nodes[rec["id"]] = (rec.get("qname"), rec.get("children", []))
+            nodes    = {i: (r.get("qname"), r.get("children", [])) for i, r in d["nodes"].items()}
+            defmarks = [(r["unit"], r["root"], r.get("kind"), r.get("members", [])) for r in d["defmarks"]]
             yield {"mod": agdai_module(path), "path": path, "nodes": nodes, "defmarks": defmarks}
 
 

@@ -153,7 +153,7 @@ def intern_agdai(path: str, intern: Intern) -> dict:
             "arena_to_id": arena_to_id, "fanin": fanin}
 
 
-def intern_signature(json_path: str, intern: Intern, carrier_qnames=None) -> dict:
+def intern_signature(core, intern: Intern, carrier_qnames=None) -> dict:
     """Upgrade path (Δ-Π-agdai full): intern the FULL child-edge DAG from the Agda-2.8.0 shim's
     output. The shim (see module docstring "HOW TO RECOVER IT") emits JSON-lines, one per core node.
 
@@ -186,21 +186,29 @@ def intern_signature(json_path: str, intern: Intern, carrier_qnames=None) -> dic
 
     STATUS: LIVE (Φ4 ✅). The producer is agdai_shim.hs; drive end-to-end via core_intern_agdai (below).
     VALIDATED on Emit.agdai (62 core nodes -> interned 20, 3.1x, full child edges)."""
-    import json
-    raw = {}
-    unit_markers = []                                         # (qname, shim-local root id, kind, members) per def
-    with open(json_path) as fh:
-        for line in fh:
-            line = line.strip()
-            if line:
-                rec = json.loads(line)
-                if "unit" in rec:                             # a per-definition unit marker (Φ4b)
-                    unit_markers.append((rec["unit"], rec["root"], rec.get("kind", "?"),
-                                         tuple(rec.get("members", [])),     # Φ7b: parent->member links
-                                         rec.get("level"), rec.get("sort")))  # Φ7c: inhabited universe
-
+    # ⟡lift-shared-core-machinery — take the DECODED core `{"defmarks","nodes"}` from `decode_core`
+    # (the one shim-decode). Back-compat: a path str is decoded here; a raw JSON-lines file is read.
+    if isinstance(core, str):
+        if os.path.isfile(core):
+            import json as _json
+            defmarks, nodes = [], {}
+            for line in open(core):
+                line = line.strip()
+                if not line:
+                    continue
+                rec = _json.loads(line)
+                if "unit" in rec:
+                    defmarks.append(rec)
                 else:
-                    raw[rec["id"]] = rec
+                    nodes[rec["id"]] = rec
+            core = {"defmarks": defmarks, "nodes": nodes}
+        else:
+            core = decode_core(core)
+    raw = core["nodes"]                                       # {shim-local id: rec}
+    unit_markers = [(r["unit"], r["root"], r.get("kind", "?"),  # (qname, root, kind, members, level, sort)
+                     tuple(r.get("members", [])),             # Φ7b: parent->member links
+                     r.get("level"), r.get("sort"))           # Φ7c: inhabited universe
+                    for r in core["defmarks"]]
     interned: dict[int, int] = {}
     unhold_path: dict[int, str] = {}    # ⟡dedup-unhold: raw nid -> the carrier it packed into ⟨CARRIER⟩ (residue)
     # referential: qname is identity -> KEY. Pattern constructors (Φ7a) join the term-level ones:
@@ -266,6 +274,51 @@ def intern_signature(json_path: str, intern: Intern, carrier_qnames=None) -> dic
             "levels": levels, "sorts": sorts, "unhold_path": unhold_path, "edges_present": True}
 
 
+def substrate_core_root(agda_root: str) -> str:
+    """⟡lift-shared-core-machinery — the ONE home for the core-tree path logic. Agda-2.8.0 puts
+    cores under <agda_root>/_build/<latest-ver>/agda/Substrate; pre-2.8.0 they sat alongside the
+    source. set1_census_cores._default_core_root and set1_locate_census._core_root each re-rolled
+    this (the dogfood's structural dup); they import it now."""
+    import os
+    base = os.path.join(agda_root, "_build")
+    if os.path.isdir(base):
+        vers = sorted(d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d, "agda")))
+        if vers:
+            return os.path.join(base, vers[-1], "agda", "Substrate")
+    return os.path.join(agda_root, "Substrate")
+
+
+def decode_core(agdai_path: str, shim_bin: str = None):
+    """⟡lift-shared-core-machinery — the ONE shim-decode, with the invocation invariants each
+    consumer (set1_census_cores, reuse_catalog, core_intern_agdai) re-learned the hard way, now in
+    a single place: cwd = the core's own directory (Agda resolves the interface's recorded include
+    paths against CWD), LC_ALL/LANG = C.UTF-8 (the shim prints qnames like `_≈_`; a C locale dies
+    with "commitBuffer: cannot encode character" AFTER a good decode — a locale bug, not a stale
+    core). Returns the RAW parsed core `{"defmarks": [rec,…], "nodes": {id: rec}}` (rec = the shim's
+    JSON-lines record, qname refs intact), or None if the shim fails / reports `decode Nothing`
+    (explicitly undecodable — NOT empty). Consumers pick fields; core_intern_agdai adds interning."""
+    import os, subprocess, json
+    if shim_bin is None:
+        shim_bin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agdai_shim")
+    ap = os.path.abspath(agdai_path)
+    env = dict(os.environ, LC_ALL="C.UTF-8", LANG="C.UTF-8")
+    r = subprocess.run([shim_bin, ap], capture_output=True, text=True,
+                       cwd=os.path.dirname(ap), env=env)
+    if r.returncode != 0 or "decode Nothing" in r.stderr:
+        return None
+    defmarks, nodes = [], {}
+    for line in r.stdout.splitlines():
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue
+        if "unit" in rec:
+            defmarks.append(rec)
+        elif "id" in rec:
+            nodes[rec["id"]] = rec
+    return {"defmarks": defmarks, "nodes": nodes}
+
+
 def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None,
                       carrier_qnames=None) -> dict:
     """FULL-edge path (Φ4 ✅): drive agdai_shim (the Agda-2.8.0 decoder, agdai_shim.hs) on a .agdai and
@@ -273,26 +326,19 @@ def core_intern_agdai(agdai_path: str, intern: Intern, shim_bin: str = None,
     strictly more than intern_agdai's fan-in signature). shim_bin defaults to ./agdai_shim beside this
     module (build it per agdai_shim.hs's header). The shim links Agda's OWN version-matched EmbPrj
     instances, so no tag table is guessed -- Agda's types ARE the segmentation."""
-    import subprocess, tempfile
     if shim_bin is None:
         shim_bin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agdai_shim")
     if not os.path.exists(shim_bin):
         raise FileNotFoundError(f"agdai_shim not built at {shim_bin} -- build it: "
                                 f"`ghc -package Agda -O0 -o agdai_shim agdai_shim.hs` (needs the Agda "
                                 f"library in the GHC package db; see agdai_shim.hs header)")
-    # run with CWD = the interface's own directory: Agda's option/decode context is project-relative,
-    # and decode only succeeds reliably from within the project tree (measured; from /tmp it -> Nothing).
-    ap = os.path.abspath(agdai_path)
-    r = subprocess.run([shim_bin, ap], capture_output=True, text=True, cwd=os.path.dirname(ap))
-    if r.returncode != 0:
-        raise RuntimeError(f"agdai_shim failed on {agdai_path}: {r.stderr.strip()} -- a stale / "
+    # ⟡lift-shared-core-machinery — one shim-decode (decode_core: cwd=core-dir, LC_ALL UTF-8, the
+    # invariants), then intern. No tempfile; the decode is shared with the census + reuse_catalog.
+    core = decode_core(agdai_path, shim_bin=shim_bin)
+    if core is None:
+        raise RuntimeError(f"agdai_shim failed / decode Nothing on {agdai_path} -- a stale / "
                            f"older-version interface decodes to Nothing; rebuild it (`agda --safe ...`).")
-    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as fh:
-        fh.write(r.stdout); jpath = fh.name
-    try:
-        rep = intern_signature(jpath, intern, carrier_qnames=carrier_qnames)
-    finally:
-        os.unlink(jpath)
+    rep = intern_signature(core, intern, carrier_qnames=carrier_qnames)
     rep["agdai"] = agdai_path
     return rep
 

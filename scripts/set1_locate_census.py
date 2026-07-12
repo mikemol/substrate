@@ -42,17 +42,12 @@ locate predicates (structural, over the interned core term):
 import sys, os, glob, collections
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
-from jea.metalanguage.jea_agdai import core_intern_agdai, Intern
+from jea.metalanguage.jea_agdai import core_intern_agdai, Intern, substrate_core_root
 
 AGDA_ROOT = os.environ.get("AGDA_ROOT") or os.path.join(_ROOT, "agda")
 
-def _core_root():
-    base = os.path.join(AGDA_ROOT, "_build")
-    vers = sorted(d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d, "agda")))
-    return os.path.join(base, vers[-1], "agda", "Substrate")
-
-def cores():
-    return sorted(glob.glob(os.path.join(_core_root(), "**", "*.agdai"), recursive=True))
+def cores():   # ⟡lift-shared-core-machinery: core-root path logic lifted to jea_agdai
+    return sorted(glob.glob(os.path.join(substrate_core_root(AGDA_ROOT), "**", "*.agdai"), recursive=True))
 
 SIGMA = ("Σ", "Sigma")
 def _is_sigma(q):  return isinstance(q, str) and any(s in q for s in SIGMA)

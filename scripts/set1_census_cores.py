@@ -2,49 +2,26 @@
 """set1_census_cores.py — census Set₁ from ELABORATED cores, not source text.
 Each defmark carries {"unit","kind","sort","level"}; `level` is the universe the
 definition INHABITS (codomain sort, Πs peeled). A Set₁ definition has level >= 1."""
-import subprocess, json, glob, sys, os, collections, re
+import glob, sys, os, collections, re
 
-# The Agda-2.8.0 .agdai decoder (emits per-definition defmarks with sort/level). The old
-# `/tmp/agdai263s` was a stopgap for a pre-2.8.0 environment; the real tool is the committed
-# `jea/metalanguage/agdai_shim` (same one set1_ratchet_cores.py uses via AGDAI_SHIM).
+# ⟡lift-shared-core-machinery — the shim-decode + core-root path logic (which this file and
+# set1_locate_census + reuse_catalog each re-rolled, the dogfood's structural dup and the typehole-
+# confirmed shim-decode shell) now live ONCE in jea_agdai; imported here. The shim-invocation
+# invariants (cwd = core dir, LC_ALL UTF-8, decode-Nothing = undecodable) live in `decode_core`.
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SHIM = os.environ.get("AGDAI_SHIM", os.path.join(_ROOT, "jea", "metalanguage", "agdai_shim"))
-# The shim's decodeInterface resolves the interface's recorded include paths against
-# CWD. Cores built with `-i .` from the agda root only decode when CWD is that root.
-# Two invariants, both learned the hard way:
-#  (a) CWD must be the agda include root — decodeInterface resolves the interface's
-#      recorded include paths against CWD; elsewhere it reports "decode Nothing".
-#  (b) LC_ALL must be UTF-8 — the shim prints qnames like `_≈_`; under C locale it
-#      dies with "commitBuffer: cannot encode character", AFTER a successful decode.
-# Neither failure means a stale core. The error text lies in both cases.
+sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
+from jea_agdai import decode_core, substrate_core_root
+SHIM = os.environ.get("AGDAI_SHIM")   # None ⇒ decode_core's default (the committed agdai_shim)
 AGDA_ROOT = os.environ.get("AGDA_ROOT") or os.getcwd()
 
 def cores(root):
     return sorted(glob.glob(os.path.join(root, "**", "*.agdai"), recursive=True))
 
 def defmarks(core):
-    env = dict(os.environ, LC_ALL="C.UTF-8", LANG="C.UTF-8")
-    p = subprocess.run([SHIM, os.path.relpath(core, AGDA_ROOT)],
-                       cwd=AGDA_ROOT, env=env, capture_output=True, text=True, timeout=120)
-    if "decode Nothing" in p.stderr:
-        return None                       # explicit: undecodable, NOT empty
-    out = []
-    for l in p.stdout.splitlines():
-        if l.startswith('{"unit"'):
-            try: out.append(json.loads(l))
-            except json.JSONDecodeError: pass
-    return out
+    d = decode_core(core, shim_bin=SHIM)
+    return None if d is None else d["defmarks"]   # explicit None = undecodable, NOT empty
 
-def _default_core_root():
-    # Agda-2.8.0 puts cores under _build/<ver>/agda/Substrate (was alongside source pre-2.8.0).
-    base = os.path.join(AGDA_ROOT, "_build")
-    if os.path.isdir(base):
-        vers = sorted(d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d, "agda")))
-        if vers:
-            return os.path.join(base, vers[-1], "agda", "Substrate")
-    return os.path.join(AGDA_ROOT, "Substrate")
-
-root = sys.argv[1] if len(sys.argv) > 1 else _default_core_root()
+root = sys.argv[1] if len(sys.argv) > 1 else substrate_core_root(AGDA_ROOT)
 cs = cores(root)
 ok = undec = 0
 by_level = collections.Counter(); by_kind = collections.Counter()
