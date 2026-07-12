@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS event    (ekey TEXT PRIMARY KEY, ctor_id TEXT, qname_
 CREATE TABLE IF NOT EXISTS obs      (core_id TEXT, local_id INT, ekey TEXT);      -- decoded node → its event
 CREATE TABLE IF NOT EXISTS edge     (core_id TEXT, plid INT, ord INT, clid INT);  -- raw local parent→child
 CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT);
+CREATE TABLE IF NOT EXISTS unit_member (core_id TEXT, unit_pid TEXT, ord INT, member_pid TEXT);  -- defmark Φ7b members
 CREATE UNIQUE INDEX IF NOT EXISTS ix_obs_pk    ON obs(core_id, local_id);
 CREATE INDEX        IF NOT EXISTS ix_obs_ekey  ON obs(ekey);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_edge_pk   ON edge(core_id, plid, ord);
@@ -51,6 +52,10 @@ SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
 CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT);
+-- the codomain HEAD of each unit's type (raw_final_head: unwrap Defn, peel the Pi-telescope), computed
+-- structurally at PROJECTION time over the unambiguous per-core tree (the reentrant packing bridge would
+-- conflate contexts). The catalog reads THIS (a structural attribute of the projection), not raw events.
+CREATE TABLE IF NOT EXISTS _unit_cod  (unit_id TEXT PRIMARY KEY, cod_ctor_id TEXT, cod_qname_pid TEXT);
 CREATE TABLE IF NOT EXISTS unit_node  (unit_id TEXT, node_id TEXT);
 CREATE INDEX IF NOT EXISTS ix_node_sym ON _node(sym);
 CREATE INDEX IF NOT EXISTS ix_nc_node  ON node_child(node_id);
@@ -83,7 +88,7 @@ def _dedup_pathseg(con):
 def write_events(cores, con, base):
     """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution."""
     con.executescript(EVENT_SCHEMA)
-    for t in ("event", "obs", "edge", "unit_obs"):
+    for t in ("event", "obs", "edge", "unit_obs", "unit_member"):
         con.execute(f"DELETE FROM {t}")
     con.commit()
     seen_t = set()
@@ -117,13 +122,14 @@ def write_events(cores, con, base):
             erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
             orows.append((cid, lid, ekey))
             edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
-        urows = [(cid, pid(name), root, tid(kind), mpid)
-                 for (name, root, kind) in ((d["unit"], d["root"], d.get("kind", "?"))
-                                            for d in dec["defmarks"]) ]
-        con.executemany("INSERT OR IGNORE INTO event    VALUES (?,?,?,?)", erows)
-        con.executemany("INSERT OR IGNORE INTO obs      VALUES (?,?,?)",   orows)
-        con.executemany("INSERT OR IGNORE INTO edge     VALUES (?,?,?,?)", edgerows)
-        con.executemany("INSERT OR IGNORE INTO unit_obs VALUES (?,?,?,?,?)", urows)
+        urows = [(cid, pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid) for d in dec["defmarks"]]
+        mrows = [(cid, pid(d["unit"]), o, pid(m))
+                 for d in dec["defmarks"] for o, m in enumerate(d.get("members", []))]
+        con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
+        con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
+        con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
+        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?)", urows)
+        con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?)", mrows)
         con.commit()                               # transaction per file (append-only)
     _dedup_pathseg(con); con.commit()
 
@@ -136,7 +142,7 @@ def project_sppf(con):
         row = con.execute("SELECT type FROM sqlite_master WHERE name=?", (name,)).fetchone()
         if row: con.execute(f"DROP {row[0].upper()} IF EXISTS {name}")
     con.executescript(SPPF_SCHEMA)
-    for t in ("unit_node", "node_child", "_node", "_unit"):
+    for t in ("unit_node", "node_child", "_node", "_unit", "_unit_cod"):
         con.execute(f"DELETE FROM {t}")
     con.commit()
 
@@ -154,6 +160,23 @@ def project_sppf(con):
     ch = defaultdict(list)
     for c, p, o, cl in con.execute("SELECT core_id, plid, ord, clid FROM edge"):
         ch[(c, p)].append((o, cl))
+
+    def cod(c, root_lid):        # raw_final_head over the UNAMBIGUOUS per-core tree → (ctor, qname)
+        cur = root_lid
+        def opof(lid):
+            e = obs.get((c, lid)); return head[e][2] if e else None
+        if opof(cur) == "Defn":
+            kd = sorted(ch.get((c, cur), []))
+            if kd: cur = kd[0][1]                       # unwrap Defn: child[0] = the defType
+        s = 0
+        while opof(cur) == "Pi" and ch.get((c, cur)) and s < 4096:
+            cur = sorted(ch.get((c, cur)))[-1][1]; s += 1   # peel the Pi-telescope: codomain = last child
+        e = obs.get((c, cur))
+        if e is None: return (None, None)
+        _k, r, o, _l = head[e]
+        if o and "." in o: return (None, o)             # op is a qname
+        if r.startswith("db"): return ("Var", None)     # bound var (ctor lives in role dbN)
+        return ((o or None), None)                      # structural ctor (Sort, …)
 
     packing = {}
     def pack(c, lid):                              # base64(head ‖ ordered child symbols) for (core, local)
@@ -189,7 +212,8 @@ def project_sppf(con):
     con.executemany("INSERT OR IGNORE INTO node_child VALUES (?,?,?)", sorted(ncrows))
 
     # units + per-unit membership (reach from root over the acyclic raw edges — pre-sharing, no closure)
-    urows, un_rows = [], []
+    # + the codomain HEAD of each unit's type (structural, computed on the unambiguous per-core tree).
+    urows, un_rows, codrows = [], [], []
     childmap = ch
     for c, unit_pid, root_lid, kind_id, module_pid in con.execute(
             "SELECT core_id, unit_pid, root_lid, kind_id, module_pid FROM unit_obs"):
@@ -197,6 +221,9 @@ def project_sppf(con):
         if rootpk is None: continue
         uid = unit_pid
         urows.append((uid, unit_pid, rootpk, c, kind_id, module_pid))
+        cct, cqn = cod(c, root_lid)
+        codrows.append((uid, (tid(cct) if cct is not None else None),
+                        (pid(cqn) if cqn is not None else None)))
         seen, stack, members = set(), [root_lid], set()
         while stack:
             lid = stack.pop()
@@ -207,6 +234,7 @@ def project_sppf(con):
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(uid, pk) for pk in members]
     con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit_cod VALUES (?,?,?)", codrows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
     return (len(seen_n), len(urows),
