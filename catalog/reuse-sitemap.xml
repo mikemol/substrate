@@ -408,6 +408,7 @@
   <url><loc>https://substrate.local/Substrate/Category/TwoCategory#TwoCategory</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/TwoEquivalence#TwoEquivalence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/TwoNaturalTransformation#TwoNaturalTransformation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UPArrowGraded#UPArrowᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalEnvelopingAlgebra#UniversalEnvelopingAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/AdjointPair#SheafAdjointPair</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/AgdaExtrude#Tm</loc><priority>0.0</priority></url>

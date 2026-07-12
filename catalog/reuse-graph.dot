@@ -406,6 +406,7 @@ digraph reuse {
   "Substrate.Category.TwoCategory.TwoCategory" [label="TwoCategory\nSubstrate.Category.TwoCategory"];
   "Substrate.Category.TwoEquivalence.TwoEquivalence" [label="TwoEquivalence\nSubstrate.Category.TwoEquivalence"];
   "Substrate.Category.TwoNaturalTransformation.TwoNaturalTransformation" [label="TwoNaturalTransformation\nSubstrate.Category.TwoNaturalTransformation"];
+  "Substrate.Category.UPArrowGraded.UPArrowᴳ" [label="UPArrowᴳ\nSubstrate.Category.UPArrowGraded"];
   "Substrate.Category.UniversalEnvelopingAlgebra.UniversalEnvelopingAlgebra" [label="UniversalEnvelopingAlgebra\nSubstrate.Category.UniversalEnvelopingAlgebra"];
   "Substrate.Category.UniversalProperty.AdjointPair._.SheafAdjointPair" [label="SheafAdjointPair\nSubstrate.Category.UniversalProperty.AdjointPair._"];
   "Substrate.Category.UniversalProperty.AgdaExtrude.Tm" [label="Tm\nSubstrate.Category.UniversalProperty.AgdaExtrude", style=rounded];
@@ -1128,6 +1129,7 @@ digraph reuse {
   "Substrate.Category.SylowDecomposition.SylowDecomposition" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.TensorProduct.AntisymmetricTensor.AntisymmetricTensor" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Topos.Topos" -> "Substrate.Category.CategoryOf.CategoryOf";
+  "Substrate.Category.UPArrowGraded.UPArrowᴳ" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.UniversalEnvelopingAlgebra.UniversalEnvelopingAlgebra" -> "Substrate.Category.LieAlgebra.LieAlgebra";
   "Substrate.Category.UniversalProperty.ArrowOfArrow.UPArrow²-Morphism" -> "Substrate.Category.UniversalProperty.ArrowOfArrow.UPArrow²";
   "Substrate.Category.UniversalProperty.Coverage.UPCover" -> "Substrate.Category.UniversalProperty.UPArrow";
