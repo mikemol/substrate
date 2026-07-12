@@ -68,15 +68,23 @@ CREATE UNIQUE INDEX ix_terms_text ON terms(text);
 -- (e.g. two `data _⇒*_` in two `module _` blocks → one qname, two nodes). That collision is the
 -- dedup FAN-IN signal (name-granularity), not a bug to drop — so the key is composite (qname, root)
 -- and every colliding node is kept, rather than one clobbering the rest. (Ⓓ.catalog-fanin-key)
-CREATE TABLE _structs (qname_id INT, name_id INT, kind_id INT, module_id INT, fp_id INT, desc_id INT, root INTEGER, unhold_fp_id INT, PRIMARY KEY (qname_id, root));
-CREATE TABLE _members (struct_qname_id INT, name_id INT, ord INTEGER);
+-- ⟡catalog-decompose-fp: fp/unhold_fp are NO LONGER stored — they were `kind|member,member,…` and
+-- `kind|⟨CARRIER⟩,…`, i.e. the members / field-heads relations FLATTENED into a string (what
+-- `flattened_terms` surfaced). They are now VIEWS over _members / _member_heads. Both member relations
+-- are keyed by (struct_qname_id, struct_root), NOT qname alone — a non-unique qname (the module-`_`
+-- fan-in) has several structs, and keying by qname conflated their members (the stored fp was per-root
+-- and correct; the flat members table was the latent bug the decomposition fixes).
+CREATE TABLE _structs (qname_id INT, name_id INT, kind_id INT, module_id INT, desc_id INT, root INTEGER, PRIMARY KEY (qname_id, root));
+CREATE TABLE _members      (struct_qname_id INT, struct_root INTEGER, name_id INT, ord INTEGER);
+CREATE TABLE _member_heads (struct_qname_id INT, struct_root INTEGER, head_id INT, ord INTEGER);
 CREATE TABLE _refs    (struct_qname_id INT, ref_qname_id INT);
 CREATE TABLE _edges   (src_id INT, dst_id INT);
 CREATE TABLE _module_edges (src_id INT, dst_id INT);   -- module -> module semantic dependency (import-graph)
 CREATE TABLE _modules (module_id INT, purpose_id INT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
 CREATE INDEX ix_structs_name ON _structs(name_id);
-CREATE INDEX ix_members_sq   ON _members(struct_qname_id);
+CREATE INDEX ix_members_sq   ON _members(struct_qname_id, struct_root);
+CREATE INDEX ix_mheads_sq    ON _member_heads(struct_qname_id, struct_root);
 CREATE INDEX ix_edges_src    ON _edges(src_id);
 CREATE INDEX ix_edges_dst    ON _edges(dst_id);
 CREATE INDEX ix_medges_src   ON _module_edges(src_id);
@@ -84,11 +92,17 @@ CREATE INDEX ix_medges_dst   ON _module_edges(dst_id);
 -- compat views: the pre-interning TEXT schema. Renders + the analytic views below query THESE.
 CREATE VIEW structs AS
   SELECT q.text AS qname, n.text AS name, k.text AS kind, m.text AS module,
-         f.text AS fp, d.text AS desc, s.root AS root, u.text AS unhold_fp
+         -- fp / unhold_fp COMPUTED from the relational member tables (per (qname,root)), not stored:
+         k.text || '|' || COALESCE((SELECT GROUP_CONCAT(t) FROM (
+             SELECT nm.text AS t FROM _members mm JOIN terms nm ON nm.term_id=mm.name_id
+             WHERE mm.struct_qname_id=s.qname_id AND mm.struct_root=s.root ORDER BY nm.text)), '') AS fp,
+         d.text AS desc, s.root AS root,
+         k.text || '|' || COALESCE((SELECT GROUP_CONCAT(t) FROM (
+             SELECT h.text AS t FROM _member_heads mh JOIN terms h ON h.term_id=mh.head_id
+             WHERE mh.struct_qname_id=s.qname_id AND mh.struct_root=s.root ORDER BY h.text)), '') AS unhold_fp
   FROM _structs s JOIN terms q ON q.term_id=s.qname_id JOIN terms n ON n.term_id=s.name_id
     JOIN terms k ON k.term_id=s.kind_id JOIN terms m ON m.term_id=s.module_id
-    JOIN terms f ON f.term_id=s.fp_id   JOIN terms d ON d.term_id=s.desc_id
-    JOIN terms u ON u.term_id=s.unhold_fp_id;
+    JOIN terms d ON d.term_id=s.desc_id;
 CREATE VIEW members AS SELECT sq.text AS struct_qname, n.text AS name, x.ord AS ord
   FROM _members x JOIN terms sq ON sq.term_id=x.struct_qname_id JOIN terms n ON n.term_id=x.name_id;
 CREATE VIEW refs AS SELECT sq.text AS struct_qname, r.text AS ref_qname
@@ -274,13 +288,14 @@ class DbBuilder:
             return
         self.modrows.append((pc.module, pc.purpose, pc.is_index))
         for s in pc.structs:
-            fp = s.kind + "|" + ",".join(sorted(s.member_names))   # the reuse-index fingerprint (a join, not a split)
-            self.structs.append((s.qname, s.name, s.kind, s.module, fp, s.desc, s.root))
+            # fp/unhold_fp are no longer stored — they are VIEWS over these member relations (keyed by
+            # (qname,root), so a non-unique qname's structs don't conflate). ⟡catalog-decompose-fp.
+            self.structs.append((s.qname, s.name, s.kind, s.module, s.desc, s.root))
             for i, h in enumerate(s.member_names):
-                self.members.append((s.qname, h, i))
-            self.kinds[s.qname]      = s.kind
-            self.fieldheads[s.qname] = s.field_heads   # carrier-abstraction into unhold_fp deferred to write()
-            self.refs[s.qname]       = s.refs
+                self.members.append((s.qname, s.root, h, i))
+            self.kinds[s.qname] = s.kind
+            self.fieldheads[(s.qname, s.root)] = s.field_heads
+            self.refs[s.qname] = s.refs
             for r in sorted(s.refs):
                 self.refrows.append((s.qname, r))
 
@@ -322,18 +337,13 @@ class DbBuilder:
         if os.path.exists(CATALOG_DB):
             os.remove(CATALOG_DB)
         os.makedirs(os.path.dirname(CATALOG_DB), exist_ok=True)
-        # ⟡catalog-unhold-fp: with the GLOBAL carrier set known, abstract each struct's member
-        # codomain-heads (Sort or a Record/Datatype ref → ⟨CARRIER⟩) into the un-hold fingerprint.
-        def _unhold_fp(unit, kd):
-            ab = []
-            for ctor, qn in self.fieldheads.get(unit, []):
-                if ctor == "Sort" or (qn in self.carriers):
-                    ab.append("⟨CARRIER⟩")
-                else:
-                    ab.append(qn.rsplit(".", 1)[-1] if qn else (ctor or "?"))
-            return kd + "|" + ",".join(sorted(ab))
-        structs8 = [(u, n, kd, md, fp, ds, rt, _unhold_fp(u, kd))
-                    for (u, n, kd, md, fp, ds, rt) in self.structs]
+        # ⟡catalog-decompose-fp: abstract each member's codomain head (Sort or a Record/Datatype ref
+        # → ⟨CARRIER⟩) into a RELATIONAL _member_heads row (keyed by (qname,root)); unhold_fp is then a
+        # view GROUP_CONCAT over these, not a stored flattened string.
+        def _head(ctor, qn):
+            if ctor == "Sort" or (qn in self.carriers):
+                return "⟨CARRIER⟩"
+            return qn.rsplit(".", 1)[-1] if qn else (ctor or "?")
 
         # ⟡catalog-term-ids: intern every string ONCE (the DB-level hash-cons); base tables store ids.
         _terms = {}
@@ -343,9 +353,12 @@ class DbBuilder:
             if i is None:
                 i = len(_terms); _terms[s] = i
             return i
-        struct_rows = [(tid(u), tid(n), tid(kd), tid(md), tid(fp), tid(ds), rt, tid(uf))
-                       for (u, n, kd, md, fp, ds, rt, uf) in sorted(structs8)]
-        member_rows = [(tid(sq), tid(nm), o) for (sq, nm, o) in self.members]
+        struct_rows = [(tid(u), tid(n), tid(kd), tid(md), tid(ds), rt)
+                       for (u, n, kd, md, ds, rt) in sorted(self.structs)]
+        member_rows = [(tid(sq), rt, tid(nm), o) for (sq, rt, nm, o) in self.members]
+        mhead_rows  = [(tid(qr[0]), qr[1], tid(_head(ct, qn)), i)
+                       for qr, heads in self.fieldheads.items()
+                       for i, (ct, qn) in enumerate(heads)]
         ref_rows    = [(tid(sq), tid(r)) for (sq, r) in self.refrows]
         edge_rows   = [(tid(a), tid(b)) for (a, b) in edges]
         medge_rows  = [(tid(a), tid(b)) for (a, b) in module_edges]
@@ -354,13 +367,14 @@ class DbBuilder:
 
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
-        con.executemany("INSERT INTO terms   VALUES (?,?)",         term_rows)
-        con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?,?,?)", struct_rows)
-        con.executemany("INSERT INTO _members VALUES (?,?,?)",      member_rows)
-        con.executemany("INSERT INTO _refs    VALUES (?,?)",        ref_rows)
-        con.executemany("INSERT INTO _edges   VALUES (?,?)",        edge_rows)
-        con.executemany("INSERT INTO _module_edges VALUES (?,?)",   medge_rows)
-        con.executemany("INSERT INTO _modules VALUES (?,?,?)",      mod_rows)
+        con.executemany("INSERT INTO terms   VALUES (?,?)",             term_rows)
+        con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?)",    struct_rows)
+        con.executemany("INSERT INTO _members VALUES (?,?,?,?)",        member_rows)
+        con.executemany("INSERT INTO _member_heads VALUES (?,?,?,?)",   mhead_rows)
+        con.executemany("INSERT INTO _refs    VALUES (?,?)",            ref_rows)
+        con.executemany("INSERT INTO _edges   VALUES (?,?)",            edge_rows)
+        con.executemany("INSERT INTO _module_edges VALUES (?,?)",       medge_rows)
+        con.executemany("INSERT INTO _modules VALUES (?,?,?)",          mod_rows)
         con.execute("INSERT INTO meta VALUES ('failed', ?)", (str(failed),))
         con.commit()
         con.close()
