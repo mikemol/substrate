@@ -857,6 +857,11 @@ def main(argv=None):
                          "to ⟨CARRIER⟩ BEFORE clustering, so redundancy-under-INVERSION (a record that HOLDS "
                          "a carrier as a field vs one that INDEXES it as a grade-parameter) clusters. Catches "
                          "the UPArrow²↔rig-cat class of duplicate that raw structural matching is blind to.")
+    ap.add_argument("--persist", metavar="DB",
+                    help="⟡jea-pysim-thin: intern the inputs and PERSIST the SPPF into a sqlite db (the "
+                         "sppf_db schema — node/node_child/unit/unit_node, heads interned to terms). "
+                         "jea_pysim is then the BUILDER; the readouts (support/extract/clusters) are SQL via "
+                         "scripts/sppf_query.py — 'query, don't code'.")
     args = ap.parse_args(argv)
 
     files = expand(args.files)
@@ -872,6 +877,18 @@ def main(argv=None):
             C.add_agdai(f, carrier_qnames=carriers)
         else:
             C.add_file(f)
+
+    if args.persist:                              # ⟡jea-pysim-thin: BUILD → persist; analysis is SQL.
+        import os as _os
+        sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
+            _os.path.abspath(__file__)))), "scripts"))
+        import sppf_db
+        n, u, sh, cl = sppf_db.persist_corpus(C, args.persist)
+        print(f"persisted SPPF: {n} nodes, {u} units, {sh} shared subtrees, {cl} support pairs "
+              f"-> {args.persist}")
+        print(f"  analyse (query, don't code): python3 scripts/sppf_query.py "
+              f"<support|fanin|extract|clusters|sql> …")
+        return 0
 
     cls = C.clusters(args.min_shared, args.min_size, args.min_cohesion)
     scores = C.genericization()

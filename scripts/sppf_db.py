@@ -58,9 +58,17 @@ CREATE VIEW flattened_terms AS SELECT text FROM terms WHERE text LIKE '%.%';
 """
 
 def build(cores, dbpath):
+    """Intern `cores` into a fresh Corpus, then persist. (jea_pysim --persist calls persist_corpus
+    directly on the Corpus it already built — lift, don't re-intern.)"""
     C = Corpus()
     for c in cores:
         C.add_agdai(c)
+    return persist_corpus(C, dbpath)
+
+
+def persist_corpus(C, dbpath):
+    """Persist an already-interned Corpus's SPPF into the db — the shared writer. jea_pysim is then a
+    thin BUILDER (front-end: shim → intern → persist) and sppf_query is the analysis."""
     I = C.I
     if os.path.exists(dbpath):
         os.remove(dbpath)
