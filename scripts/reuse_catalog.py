@@ -168,6 +168,56 @@ def mod_purpose(text):
     return ""
 
 
+# ─────────────────────────── DESERIALIZE (tokenize → structure), decoupled ───────────────────────────
+# The "parameterize the deserialization" move: a raw walk-core becomes a fully-STRUCTURED object here —
+# every qname-split, member-head peel, and ref-graph traversal DONE in this phase — so the structural-
+# processing phase (DbBuilder) consumes the structure and NEVER re-splits a string next to using it.
+ParsedStruct = collections.namedtuple(
+    "ParsedStruct", "qname name kind module member_names field_heads refs root desc")
+ParsedCore = collections.namedtuple(
+    "ParsedCore", "module purpose is_index modrefs carriers structs")
+
+def deserialize_core(core):
+    """Raw walk-core {mod, nodes, defmarks} → ParsedCore. All tokenizing (rsplit qnames), field-head
+    peeling (raw_final_head), source-comment parsing, and ref-graph traversal happen HERE and nowhere
+    else. Downstream works on ParsedStruct fields, never on raw strings it re-parses."""
+    mod, nodes = core["mod"], core["nodes"]
+    modrefs  = {qn for _c, qn, _ch in nodes.values() if qn}
+    defmarks = core["defmarks"]
+    root_of  = {u: r for u, r, _k, _m in defmarks}
+    cs       = [(u, r, k, m) for u, r, k, m in defmarks if k in ("Datatype", "Record")]
+    carriers = {u for u, _r, _k, _m in cs}                 # every record/datatype IS a carrier
+    # source-side deserialization: module purpose + per-declaration comments (best-effort; not in the core)
+    src, purpose, comments = agda_source(mod), "", {}
+    if os.path.exists(src):
+        text = open(src, encoding="utf-8").read()
+        purpose = mod_purpose(text)
+        for ln in text.splitlines():
+            m = decl_c.match(ln)
+            if m:
+                comments[m.group(1)] = shapetag.sub("", m.group(2)).strip()
+    structs = []
+    for unit, root, kind, members in cs:
+        name = unit.rsplit(".", 1)[-1]
+        kd   = "data" if kind == "Datatype" else "record"
+        member_names = [m.rsplit(".", 1)[-1] for m in members]
+        field_heads  = [raw_final_head(nodes, root_of.get(m)) for m in members]
+        seen, refd, stack = set(), set(), [root]           # ref-graph traversal (structure, not a use-site)
+        while stack:
+            i = stack.pop()
+            if i in seen or i not in nodes:
+                continue
+            seen.add(i)
+            _c, qn, ch = nodes[i]
+            if qn:
+                refd.add(qn)
+            stack.extend(ch)
+        structs.append(ParsedStruct(unit, name, kd, mod, member_names, field_heads,
+                                    refd, root, comments.get(name, "") or purpose))
+    is_index = 1 if idxkind.search(mod.rsplit(".", 1)[-1]) else 0
+    return ParsedCore(mod, purpose, is_index, modrefs, carriers, structs)
+
+
 # ─────────────────────────── the store builder (walk -> catalog.db) ───────────────────────────
 class DbBuilder:
     """The ONLY accumulator: loads the walk into catalog.db. Every catalog is then a render over it."""
@@ -179,57 +229,26 @@ class DbBuilder:
         self.carriers = set()                          # ⟡catalog-unhold-fp: every Record/Datatype qname (the carriers)
 
     def add(self, core):
-        mod, nodes = core["mod"], core["nodes"]
-        # Module import graph (Ⓓ.import-graph): EVERY module (struct-bearing or not — a law/function
-        # module still imports), and every qname its elaborated core references (all node qnames, not
-        # just struct-subtree refs). Collected BEFORE the struct early-return below so struct-less
-        # modules are still graph nodes. Resolved to module->module edges in write() (needs all modules).
-        self.allmods.add(mod)
-        self.modrefs[mod] = {qn for _c, qn, _ch in nodes.values() if qn}   # nodes now (ctor,qname,children)
-        cs = [(u, r, k, m) for u, r, k, m in core["defmarks"] if k in ("Datatype", "Record")]
-        # ⟡catalog-unhold-fp: every record/datatype IS a carrier; a member's root is its own defmark's root.
-        for u, _r, k, _m in cs:
-            self.carriers.add(u)
-        root_of = {u: r for u, r, _k, _m in core["defmarks"]}
-        if not cs:                                     # a module with no data/record contributes no STRUCTS
+        # STRUCTURAL PROCESSING — consumes the DESERIALIZED ParsedCore; no tokenizing here (no split
+        # adjacent to a use-site). The module import graph records EVERY module (struct-bearing or not),
+        # so allmods/modrefs are set before the struct early-return; edges are resolved in write().
+        pc = deserialize_core(core)
+        self.allmods.add(pc.module)
+        self.modrefs[pc.module] = pc.modrefs
+        self.carriers |= pc.carriers                   # ⟡catalog-unhold-fp: the global carrier set
+        if not pc.structs:                             # a module with no data/record contributes no STRUCTS
             return
-        # descriptions + purpose + is-index from the .agda source (best-effort; not in the core)
-        src = agda_source(mod)
-        purpose, comments = "", {}
-        if os.path.exists(src):
-            text = open(src, encoding="utf-8").read()
-            purpose = mod_purpose(text)
-            for ln in text.splitlines():
-                m = decl_c.match(ln)
-                if m:
-                    comments[m.group(1)] = shapetag.sub("", m.group(2)).strip()
-        self.modrows.append((mod, purpose, 1 if idxkind.search(mod.rsplit(".", 1)[-1]) else 0))
-        for unit, root, kind, members in cs:
-            name = unit.rsplit(".", 1)[-1]
-            kd   = "data" if kind == "Datatype" else "record"
-            heads = [m.rsplit(".", 1)[-1] for m in members]
-            fp   = kd + "|" + ",".join(sorted(heads))    # == the reuse-index fingerprint
-            desc = comments.get(name, "") or purpose
-            self.structs.append((unit, name, kd, mod, fp, desc, root))
-            for i, h in enumerate(heads):
-                self.members.append((unit, h, i))
-            self.kinds[unit] = kd
-            # ⟡catalog-unhold-fp: each member's codomain head (from its own defmark's root), raw —
-            # carrier-abstraction is DEFERRED to write() (needs the GLOBAL carrier set).
-            self.fieldheads[unit] = [raw_final_head(nodes, root_of.get(m)) for m in members]
-            seen, refd, stack = set(), set(), [root]
-            while stack:
-                i = stack.pop()
-                if i in seen or i not in nodes:
-                    continue
-                seen.add(i)
-                _c, qn, ch = nodes[i]                   # nodes now (ctor, qname, children)
-                if qn:
-                    refd.add(qn)
-                stack.extend(ch)
-            self.refs[unit] = refd
-            for r in sorted(refd):
-                self.refrows.append((unit, r))
+        self.modrows.append((pc.module, pc.purpose, pc.is_index))
+        for s in pc.structs:
+            fp = s.kind + "|" + ",".join(sorted(s.member_names))   # the reuse-index fingerprint (a join, not a split)
+            self.structs.append((s.qname, s.name, s.kind, s.module, fp, s.desc, s.root))
+            for i, h in enumerate(s.member_names):
+                self.members.append((s.qname, h, i))
+            self.kinds[s.qname]      = s.kind
+            self.fieldheads[s.qname] = s.field_heads   # carrier-abstraction into unhold_fp deferred to write()
+            self.refs[s.qname]       = s.refs
+            for r in sorted(s.refs):
+                self.refrows.append((s.qname, r))
 
     def write(self, failed=0):
         structs = set(self.kinds)
