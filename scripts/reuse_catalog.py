@@ -74,45 +74,61 @@ CREATE UNIQUE INDEX ix_terms_text ON terms(text);
 -- are keyed by (struct_qname_id, struct_root), NOT qname alone — a non-unique qname (the module-`_`
 -- fan-in) has several structs, and keying by qname conflated their members (the stored fp was per-root
 -- and correct; the flat members table was the latent bug the decomposition fixes).
-CREATE TABLE _structs (qname_id INT, name_id INT, kind_id INT, module_id INT, desc_id INT, root INTEGER, PRIMARY KEY (qname_id, root));
-CREATE TABLE _members      (struct_qname_id INT, struct_root INTEGER, name_id INT, ord INTEGER);
-CREATE TABLE _member_heads (struct_qname_id INT, struct_root INTEGER, head_id INT, ord INTEGER);
-CREATE TABLE _refs    (struct_qname_id INT, ref_qname_id INT);
-CREATE TABLE _edges   (src_id INT, dst_id INT);
-CREATE TABLE _module_edges (src_id INT, dst_id INT);   -- module -> module semantic dependency (import-graph)
-CREATE TABLE _modules (module_id INT, purpose_id INT, is_index INTEGER);
+-- ⟡catalog-path-ids: a qname/module/ref IS a PATH — carried as a surrogate path_id whose STRING is
+-- DERIVED from its interned segments (path_seg), never stored flat. `terms` now holds only ATOMIC
+-- strings (segments, names, kinds, descs); the *_pid columns are path_ids. path_text reconstructs
+-- (losslessly — proven). This removes every dotted path from the term table; the reference graph joins
+-- on path_id. (Unlike fp — redundant with members, removed — a qname is the graph's IDENTITY.)
+CREATE TABLE path_seg (path_id INT, ord INT, seg_term_id INT);
+CREATE TABLE _structs (qname_pid INT, name_id INT, kind_id INT, module_pid INT, desc_id INT, root INTEGER, PRIMARY KEY (qname_pid, root));
+CREATE TABLE _members      (struct_qname_pid INT, struct_root INTEGER, name_id INT, ord INTEGER);
+CREATE TABLE _member_heads (struct_qname_pid INT, struct_root INTEGER, head_id INT, ord INTEGER);
+CREATE TABLE _refs    (struct_qname_pid INT, ref_qname_pid INT);
+CREATE TABLE _edges   (src_pid INT, dst_pid INT);
+CREATE TABLE _module_edges (src_pid INT, dst_pid INT);   -- module -> module semantic dependency (import-graph)
+CREATE TABLE _modules (module_pid INT, purpose_id INT, is_index INTEGER);
 CREATE TABLE meta    (key TEXT PRIMARY KEY, value TEXT);
+CREATE INDEX ix_pathseg_path ON path_seg(path_id);
+CREATE INDEX ix_pathseg_seg  ON path_seg(seg_term_id);
 CREATE INDEX ix_structs_name ON _structs(name_id);
-CREATE INDEX ix_members_sq   ON _members(struct_qname_id, struct_root);
-CREATE INDEX ix_mheads_sq    ON _member_heads(struct_qname_id, struct_root);
-CREATE INDEX ix_edges_src    ON _edges(src_id);
-CREATE INDEX ix_edges_dst    ON _edges(dst_id);
-CREATE INDEX ix_medges_src   ON _module_edges(src_id);
-CREATE INDEX ix_medges_dst   ON _module_edges(dst_id);
--- compat views: the pre-interning TEXT schema. Renders + the analytic views below query THESE.
+CREATE INDEX ix_members_sq   ON _members(struct_qname_pid, struct_root);
+CREATE INDEX ix_mheads_sq    ON _member_heads(struct_qname_pid, struct_root);
+CREATE INDEX ix_edges_src    ON _edges(src_pid);
+CREATE INDEX ix_edges_dst    ON _edges(dst_pid);
+CREATE INDEX ix_medges_src   ON _module_edges(src_pid);
+CREATE INDEX ix_medges_dst   ON _module_edges(dst_pid);
+-- path reconstruction (the dotted string derived from segments) + the module-hierarchy sharing.
+CREATE VIEW path_text AS
+  SELECT path_id, GROUP_CONCAT(seg, '.') AS text FROM (
+    SELECT ps.path_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
+    ORDER BY ps.path_id, ps.ord) GROUP BY path_id;
+CREATE VIEW segment_sharing AS
+  SELECT t.text AS segment, COUNT(DISTINCT ps.path_id) AS paths
+  FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id GROUP BY ps.seg_term_id HAVING paths >= 2;
+-- compat views: the pre-interning TEXT schema (paths reconstructed via path_text). Renders query THESE.
 CREATE VIEW structs AS
-  SELECT q.text AS qname, n.text AS name, k.text AS kind, m.text AS module,
+  SELECT pq.text AS qname, n.text AS name, k.text AS kind, pm.text AS module,
          -- fp / unhold_fp COMPUTED from the relational member tables (per (qname,root)), not stored:
          k.text || '|' || COALESCE((SELECT GROUP_CONCAT(t) FROM (
              SELECT nm.text AS t FROM _members mm JOIN terms nm ON nm.term_id=mm.name_id
-             WHERE mm.struct_qname_id=s.qname_id AND mm.struct_root=s.root ORDER BY nm.text)), '') AS fp,
+             WHERE mm.struct_qname_pid=s.qname_pid AND mm.struct_root=s.root ORDER BY nm.text)), '') AS fp,
          d.text AS desc, s.root AS root,
          k.text || '|' || COALESCE((SELECT GROUP_CONCAT(t) FROM (
              SELECT h.text AS t FROM _member_heads mh JOIN terms h ON h.term_id=mh.head_id
-             WHERE mh.struct_qname_id=s.qname_id AND mh.struct_root=s.root ORDER BY h.text)), '') AS unhold_fp
-  FROM _structs s JOIN terms q ON q.term_id=s.qname_id JOIN terms n ON n.term_id=s.name_id
-    JOIN terms k ON k.term_id=s.kind_id JOIN terms m ON m.term_id=s.module_id
+             WHERE mh.struct_qname_pid=s.qname_pid AND mh.struct_root=s.root ORDER BY h.text)), '') AS unhold_fp
+  FROM _structs s JOIN path_text pq ON pq.path_id=s.qname_pid JOIN terms n ON n.term_id=s.name_id
+    JOIN terms k ON k.term_id=s.kind_id JOIN path_text pm ON pm.path_id=s.module_pid
     JOIN terms d ON d.term_id=s.desc_id;
-CREATE VIEW members AS SELECT sq.text AS struct_qname, n.text AS name, x.ord AS ord
-  FROM _members x JOIN terms sq ON sq.term_id=x.struct_qname_id JOIN terms n ON n.term_id=x.name_id;
-CREATE VIEW refs AS SELECT sq.text AS struct_qname, r.text AS ref_qname
-  FROM _refs x JOIN terms sq ON sq.term_id=x.struct_qname_id JOIN terms r ON r.term_id=x.ref_qname_id;
-CREATE VIEW edges AS SELECT s.text AS src, d.text AS dst
-  FROM _edges x JOIN terms s ON s.term_id=x.src_id JOIN terms d ON d.term_id=x.dst_id;
-CREATE VIEW module_edges AS SELECT s.text AS src, d.text AS dst
-  FROM _module_edges x JOIN terms s ON s.term_id=x.src_id JOIN terms d ON d.term_id=x.dst_id;
-CREATE VIEW modules AS SELECT m.text AS module, p.text AS purpose, x.is_index AS is_index
-  FROM _modules x JOIN terms m ON m.term_id=x.module_id JOIN terms p ON p.term_id=x.purpose_id;
+CREATE VIEW members AS SELECT psq.text AS struct_qname, n.text AS name, x.ord AS ord
+  FROM _members x JOIN path_text psq ON psq.path_id=x.struct_qname_pid JOIN terms n ON n.term_id=x.name_id;
+CREATE VIEW refs AS SELECT psq.text AS struct_qname, pr.text AS ref_qname
+  FROM _refs x JOIN path_text psq ON psq.path_id=x.struct_qname_pid JOIN path_text pr ON pr.path_id=x.ref_qname_pid;
+CREATE VIEW edges AS SELECT ps.text AS src, pd.text AS dst
+  FROM _edges x JOIN path_text ps ON ps.path_id=x.src_pid JOIN path_text pd ON pd.path_id=x.dst_pid;
+CREATE VIEW module_edges AS SELECT ps.text AS src, pd.text AS dst
+  FROM _module_edges x JOIN path_text ps ON ps.path_id=x.src_pid JOIN path_text pd ON pd.path_id=x.dst_pid;
+CREATE VIEW modules AS SELECT pm.text AS module, p.text AS purpose, x.is_index AS is_index
+  FROM _modules x JOIN path_text pm ON pm.path_id=x.module_pid JOIN terms p ON p.term_id=x.purpose_id;
 -- The catalogs' key queries, as views (the "new question = a SELECT" payoff):
 CREATE VIEW in_degree  AS SELECT dst AS qname, COUNT(*) AS deg FROM edges GROUP BY dst;
 CREATE VIEW out_degree AS SELECT src AS qname, COUNT(*) AS deg FROM edges GROUP BY src;
@@ -132,22 +148,6 @@ CREATE VIEW flattened_terms AS
          LENGTH(text)-LENGTH(REPLACE(text,'|','')) AS pipes,
          LENGTH(text)-LENGTH(REPLACE(text,',','')) AS commas
   FROM terms WHERE text LIKE '%.%' OR text LIKE '%|%' OR text LIKE '%,%';
--- ⟡catalog-decompose-qname: a dotted path (qname/module/ref) is a PATH of interned SEGMENTS. Unlike
--- fp (removed — it was redundant with `members`), a qname is the reference-graph IDENTIFIER, so the
--- flat term stays as the join key; path_seg exposes its hierarchy relationally (segments shared across
--- paths — Substrate/Category interned once). `path_text` reconstructs; `segment_sharing` is the module-
--- hierarchy the paths share. (Removing the flat path via surrogate path-ids is the larger ⟡catalog-path-ids.)
-CREATE TABLE path_seg (path_term_id INT, ord INT, seg_term_id INT);
-CREATE INDEX ix_pathseg_path ON path_seg(path_term_id);
-CREATE INDEX ix_pathseg_seg  ON path_seg(seg_term_id);
-CREATE VIEW path_text AS
-  SELECT path_term_id, GROUP_CONCAT(seg, '.') AS text FROM (
-    SELECT ps.path_term_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
-    ORDER BY ps.path_term_id, ps.ord) GROUP BY path_term_id;
-CREATE VIEW segment_sharing AS
-  SELECT t.text AS segment, COUNT(DISTINCT ps.path_term_id) AS paths
-  FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
-  GROUP BY ps.seg_term_id HAVING paths >= 2;
 -- ⟡catalog-unhold-fp — REDUNDANCY-UNDER-INVERSION as a standing query. `fp` groups by member
 -- NAMES (so a HELD-carrier record and a grade-INDEXED one, with different field names, never
 -- match); `unhold_fp` groups by member CODOMAIN-HEADS with every carrier (a Record/Datatype ref
@@ -361,48 +361,40 @@ class DbBuilder:
                 return "⟨CARRIER⟩"
             return qn.rsplit(".", 1)[-1] if qn else (ctor or "?")
 
-        # ⟡catalog-term-ids: intern every string ONCE (the DB-level hash-cons); base tables store ids.
-        _terms = {}
+        # ⟡catalog-term-ids + ⟡catalog-path-ids: atomic strings → term ids (tid); a dotted PATH
+        # (qname/module/ref/edge — NOT a free-text desc) → a surrogate path id (pid) whose SEGMENTS are
+        # interned as terms. The flat path string is NEVER stored — it is derived from path_seg
+        # (the path_text view). `terms` holds only atomic strings + path segments.
+        _terms, _paths = {}, {}
         def tid(s):
             s = "" if s is None else s
             i = _terms.get(s)
             if i is None:
                 i = len(_terms); _terms[s] = i
             return i
-        struct_rows = [(tid(u), tid(n), tid(kd), tid(md), tid(ds), rt)
+        def pid(s):
+            segs = tuple(tid(seg) for seg in s.split("."))
+            p = _paths.get(segs)
+            if p is None:
+                p = len(_paths); _paths[segs] = p
+            return p
+        struct_rows = [(pid(u), tid(n), tid(kd), pid(md), tid(ds), rt)
                        for (u, n, kd, md, ds, rt) in sorted(self.structs)]
-        member_rows = [(tid(sq), rt, tid(nm), o) for (sq, rt, nm, o) in self.members]
-        mhead_rows  = [(tid(qr[0]), qr[1], tid(_head(ct, qn)), i)
+        member_rows = [(pid(sq), rt, tid(nm), o) for (sq, rt, nm, o) in self.members]
+        mhead_rows  = [(pid(qr[0]), qr[1], tid(_head(ct, qn)), i)
                        for qr, heads in self.fieldheads.items()
                        for i, (ct, qn) in enumerate(heads)]
-        ref_rows    = [(tid(sq), tid(r)) for (sq, r) in self.refrows]
-        edge_rows   = [(tid(a), tid(b)) for (a, b) in edges]
-        medge_rows  = [(tid(a), tid(b)) for (a, b) in module_edges]
-        mod_rows    = [(tid(m), tid(p), ix) for (m, p, ix) in sorted(self.modrows)]
-
-        # ⟡catalog-decompose-qname: decompose each dotted PATH term (qname/module/ref/edge — NOT a
-        # free-text desc) into interned segments. BEFORE finalizing term_rows (a new segment may be a
-        # new term). Only path-bearing columns contribute, so descriptions with periods are not split.
-        paths = set()
-        paths.update(u for (u, *_) in self.structs)
-        paths.update(md for (_u, _n, _k, md, _d, _r) in self.structs)
-        paths.update(sq for (sq, *_) in self.members)
-        for sq, r in self.refrows:
-            paths.add(sq); paths.add(r)
-        for a, b in edges:
-            paths.add(a); paths.add(b)
-        for a, b in module_edges:
-            paths.add(a); paths.add(b)
-        paths.update(m for (m, _p, _i) in self.modrows)
-        path_seg_rows = [(_terms[s], o, tid(seg))
-                         for s in paths if "." in s and s in _terms
-                         for o, seg in enumerate(s.split("."))]
+        ref_rows    = [(pid(sq), pid(r)) for (sq, r) in self.refrows]
+        edge_rows   = [(pid(a), pid(b)) for (a, b) in edges]
+        medge_rows  = [(pid(a), pid(b)) for (a, b) in module_edges]
+        mod_rows    = [(pid(m), tid(p), ix) for (m, p, ix) in sorted(self.modrows)]
+        pathseg_rows = [(p, o, seg) for segs, p in _paths.items() for o, seg in enumerate(segs)]
         term_rows   = sorted((i, s) for s, i in _terms.items())
 
         con = sqlite3.connect(CATALOG_DB)
         con.executescript(_DB_SCHEMA)
         con.executemany("INSERT INTO terms   VALUES (?,?)",             term_rows)
-        con.executemany("INSERT INTO path_seg VALUES (?,?,?)",          path_seg_rows)
+        con.executemany("INSERT INTO path_seg VALUES (?,?,?)",          pathseg_rows)
         con.executemany("INSERT INTO _structs VALUES (?,?,?,?,?,?)",    struct_rows)
         con.executemany("INSERT INTO _members VALUES (?,?,?,?)",        member_rows)
         con.executemany("INSERT INTO _member_heads VALUES (?,?,?,?)",   mhead_rows)
