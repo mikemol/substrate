@@ -23,11 +23,17 @@ from jea_pysim import Corpus   # its Corpus.add_agdai drives jea_agdai.core_inte
 SCHEMA = """
 CREATE TABLE node       (node_id INTEGER PRIMARY KEY, kind TEXT, role TEXT, op TEXT, lit TEXT);
 CREATE TABLE node_child (node_id INT, ord INT, child_id INT);
-CREATE TABLE unit       (name TEXT, root_id INT, path TEXT);
+CREATE TABLE unit       (unit_id INTEGER PRIMARY KEY, name TEXT, root_id INT, path TEXT);
+-- unit_node: each unit's SUPPORT closure (the reachable subterm set), materialized ONCE via a
+-- recursive WITH at build. With it, the cross-unit readouts jea_pysim did in Python — extract
+-- candidates, clusters, shared-fraction — are direct JOIN/GROUP BY, no per-query graph-walk.
+CREATE TABLE unit_node  (unit_id INT, node_id INT);
 CREATE INDEX ix_nc_node  ON node_child(node_id);
 CREATE INDEX ix_nc_child ON node_child(child_id);
 CREATE INDEX ix_node_op  ON node(op);
 CREATE INDEX ix_unit_root ON unit(root_id);
+CREATE INDEX ix_un_unit  ON unit_node(unit_id);
+CREATE INDEX ix_un_node  ON unit_node(node_id);
 -- fan-in: how many parent EDGES reference a node = the sharing (hash-cons corroboration) signal.
 CREATE VIEW node_fanin AS SELECT child_id AS node_id, COUNT(*) AS fanin FROM node_child GROUP BY child_id;
 -- a SHARED SUBTREE = a node reachable from ≥2 parents (the dedup, as a SELECT not a Python walk).
@@ -50,11 +56,22 @@ def build(cores, dbpath):
                     [(i, n.kind, n.role, n.op, n.lit) for i, n in enumerate(I.nodes)])
     con.executemany("INSERT INTO node_child VALUES (?,?,?)",
                     [(i, o, ch) for i, n in enumerate(I.nodes) for o, ch in enumerate(n.children)])
-    con.executemany("INSERT INTO unit VALUES (?,?,?)",
-                    [(u.name, u.root, u.path) for u in C.units])
+    con.executemany("INSERT INTO unit VALUES (?,?,?,?)",
+                    [(k, u.name, u.root, u.path) for k, u in enumerate(C.units)])
+    con.commit()
+    # materialize each unit's support closure ONCE (the recursive WITH the readouts would otherwise
+    # re-walk per query, in Python) — the "query, don't code" enabler.
+    con.execute("""
+        INSERT INTO unit_node
+        WITH RECURSIVE r(unit_id, node_id) AS (
+          SELECT unit_id, root_id FROM unit
+          UNION
+          SELECT r.unit_id, ch.child_id FROM node_child ch JOIN r ON ch.node_id = r.node_id)
+        SELECT unit_id, node_id FROM r;""")
     con.commit()
     stats = (I.size(), len(C.units),
-             con.execute("SELECT COUNT(*) FROM shared_subtree").fetchone()[0])
+             con.execute("SELECT COUNT(*) FROM shared_subtree").fetchone()[0],
+             con.execute("SELECT COUNT(*) FROM unit_node").fetchone()[0])
     con.close()
     return stats
 
@@ -78,5 +95,6 @@ if __name__ == "__main__":
     base = os.path.join(root, vers[-1], "agda", "Substrate")
     cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
     print(f"interning {len(cores)} cores (filter={filt!r}) INTO the db …")
-    nodes, units, shared = build(cores, db)
-    print(f"  db contains: {nodes} SPPF nodes, {units} units, {shared} shared subtrees -> {db}")
+    nodes, units, shared, closure = build(cores, db)
+    print(f"  db contains: {nodes} SPPF nodes, {units} units, {shared} shared subtrees, "
+          f"{closure} unit-node support pairs -> {db}")
