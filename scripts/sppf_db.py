@@ -51,7 +51,7 @@ CREATE VIEW IF NOT EXISTS path_text AS
 SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
-CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT);
+CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT, root_lid INT);
 -- the codomain HEAD of each unit's type (raw_final_head: unwrap Defn, peel the Pi-telescope), computed
 -- structurally at PROJECTION time over the unambiguous per-core tree (the reentrant packing bridge would
 -- conflate contexts). The catalog reads THIS (a structural attribute of the projection), not raw events.
@@ -138,12 +138,13 @@ def project_sppf(con):
     """P2: DERIVE the packing SPPF from the events. head = per-event (matches jea_agdai.go); symbol =
     base64(head); packing = base64(head ‖ ordered child symbols) — a 1-JOIN, not recursive; node_child =
     (parent packing, ord, child packing); unit_node = per-unit membership over the acyclic raw edges."""
-    for name in ("node", "unit", "node_fanin", "shared_subtree", "node_atom"):
+    # DROP (not DELETE) the projection views+tables so a column change is picked up (IF NOT EXISTS would
+    # keep a stale-shaped table). NEVER touch the event tier (terms/path_seg/event/obs/edge/unit_*).
+    for name in ("node", "unit", "node_fanin", "shared_subtree", "node_atom",
+                 "unit_node", "node_child", "_node", "_unit", "_unit_cod"):
         row = con.execute("SELECT type FROM sqlite_master WHERE name=?", (name,)).fetchone()
         if row: con.execute(f"DROP {row[0].upper()} IF EXISTS {name}")
     con.executescript(SPPF_SCHEMA)
-    for t in ("unit_node", "node_child", "_node", "_unit", "_unit_cod"):
-        con.execute(f"DELETE FROM {t}")
     con.commit()
 
     # head + symbol per event (symbol is head-only ⟹ global, no recursion)
@@ -156,6 +157,8 @@ def project_sppf(con):
         else:                              role, op = "", (ctor or "")
         head[ekey] = ("AgdaCore", role, op, "")
         sym[ekey]  = _b64("\x00".join(head[ekey]))
+    raw_ctor = {e: ct for e, ct in con.execute(   # the true constructor (Def/Con/Var/Sort/…) for cod()
+        "SELECT e.ekey, tc.text FROM event e JOIN terms tc ON tc.term_id=e.ctor_id")}
     obs = {(c, l): e for c, l, e in con.execute("SELECT core_id, local_id, ekey FROM obs")}
     ch = defaultdict(list)
     for c, p, o, cl in con.execute("SELECT core_id, plid, ord, clid FROM edge"):
@@ -173,10 +176,9 @@ def project_sppf(con):
             cur = sorted(ch.get((c, cur)))[-1][1]; s += 1   # peel the Pi-telescope: codomain = last child
         e = obs.get((c, cur))
         if e is None: return (None, None)
-        _k, r, o, _l = head[e]
-        if o and "." in o: return (None, o)             # op is a qname
-        if r.startswith("db"): return ("Var", None)     # bound var (ctor lives in role dbN)
-        return ((o or None), None)                      # structural ctor (Sort, …)
+        _k, _r, o, _l = head[e]
+        qn = o if (o and "." in o) else None            # op is a qname ⟹ that's the codomain qname
+        return (raw_ctor.get(e), qn)                    # (true ctor, qname) — matches raw_final_head
 
     packing = {}
     def pack(c, lid):                              # base64(head ‖ ordered child symbols) for (core, local)
@@ -220,7 +222,7 @@ def project_sppf(con):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
         uid = unit_pid
-        urows.append((uid, unit_pid, rootpk, c, kind_id, module_pid))
+        urows.append((uid, unit_pid, rootpk, c, kind_id, module_pid, root_lid))
         cct, cqn = cod(c, root_lid)
         codrows.append((uid, (tid(cct) if cct is not None else None),
                         (pid(cqn) if cqn is not None else None)))
@@ -233,7 +235,7 @@ def project_sppf(con):
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(uid, pk) for pk in members]
-    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO _unit_cod VALUES (?,?,?)", codrows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
