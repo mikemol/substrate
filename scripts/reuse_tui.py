@@ -60,12 +60,35 @@ def build(cache_path, min_size, min_fanin, cap):
     import jea_pysim as J, typeholer_path as tp
     cores = sorted(glob.glob(os.path.join(AGDA, "_build", "**", "agda", "Substrate", "**", "*.agdai"),
                              recursive=True))
+    if not cores:
+        sys.exit(f"reuse_tui --build: ABORT — no .agdai cores under {AGDA}/_build. Build the tree first "
+                 f"(cd agda && make -j).")
     print(f"interning {len(cores)} cores …", flush=True)
     C = J.Corpus()
+    ok = fail = 0
+    failures = []
     for c in cores:
-        try: C.add_agdai(c)
-        except Exception: pass
-    print(f"{len(C.units)} units; extracting shared subtrees (size≥{min_size}, fanin≥{min_fanin}) …", flush=True)
+        before = len(C.units)
+        try:
+            C.add_agdai(c)
+            if len(C.units) > before: ok += 1                       # decoded and contributed units
+            else: fail += 1; failures.append((c, "decoded 0 units"))
+        except Exception as e:                                       # do NOT swallow — record it
+            fail += 1; failures.append((c, str(e).splitlines()[0][:120]))
+    # FAIL LOUD, not silently: a wave of unreadable cores means the shim/.agdai versions have drifted.
+    if fail:
+        print(f"⚠ {fail}/{len(cores)} cores FAILED to intern:", file=sys.stderr, flush=True)
+        for c, why in failures[:8]:
+            print(f"    {os.path.relpath(c, AGDA)} — {why}", file=sys.stderr)
+        if fail > 8: print(f"    … +{fail - 8} more", file=sys.stderr)
+    if ok == 0 or fail > 0.10 * len(cores):
+        sys.exit(f"reuse_tui --build: ABORT — {fail}/{len(cores)} cores unreadable (interned {ok}). The .agdai "
+                 f"have drifted from the shim's linked Agda. Clean-rebuild the cores\n"
+                 f"    cd agda && make clean && make -j\n"
+                 f"and rebuild the shim for that Agda (make -C jea/metalanguage shim AGDA_PKG=Agda-<ver>), "
+                 f"then re-run --build. Refusing to cache a silently-truncated forest.")
+    print(f"interned {ok}/{len(cores)} cores → {len(C.units)} units; extracting shared subtrees "
+          f"(size≥{min_size}, fanin≥{min_fanin}) …", flush=True)
     cands = tp.extract_cands(C, min_fanin=min_fanin, min_size=min_size)
     cands.sort(key=lambda c: -(c.units * c.size))
     keep = cands[:cap]
@@ -83,6 +106,10 @@ def build(cache_path, min_size, min_fanin, cap):
     json.dump({"rows": rows, "units": len(C.units), "cores": len(cores), "n_candidates": len(cands),
                "copy_units": copy_units}, open(cache_path, "w"))
     print(f"✓ cached {len(rows)} shared subtrees ({len(copy_units)} defCopy instances) → {cache_path}")
+    if not copy_units:                                              # loud, not quiet: verdicts degrade to heuristic
+        print("⚠ NO defCopy provenance in this cache (shim emitted 0 copies) — orbit verdicts will fall back to "
+              "the DEF-SITE HEURISTIC, which is weaker. Rebuild the shim with the defCopy patch and re-run to get "
+              "the exact consolidated-vs-dup signal.", file=sys.stderr, flush=True)
 
 # --------------------------------------------------------------------------- orbit grouping
 from collections import defaultdict
@@ -129,13 +156,14 @@ def resolve_orbit(units, defidx, copy_units=None):
     """verdict: is this orbit already CONSOLIDATED (instances of shared defs) or a DUP (each redefines)?
     PRECISE via Agda's defCopy when available (copy_units = the set of defCopy=True qnames); else the
     def-site heuristic (is each leaf defined in a module OTHER than the instances)."""
-    if copy_units:                                   # provenance present → the exact signal
+    if copy_units:                                   # provenance present → the EXACT signal (defCopy)
         cop = sum(1 for u in units if u in copy_units)
         if cop >= 0.8 * len(units):                  # (nearly) all instances are module-instantiation copies
-            return "CONSOLIDATED", [f"defCopy: {cop}/{len(units)} are module-instantiation copies"], cop, len(units) - cop
+            return "CONSOLIDATED", [f"defCopy: {cop}/{len(units)} are module-instantiation copies"], cop, len(units) - cop, "defCopy"
         if cop == 0:                                 # all originals sharing structure → genuine dup
-            return "DUP", ["defCopy: 0 copies — independent definitions"], 0, len(units)
-        # mixed → fall through to the def-site heuristic for the homes
+            return "DUP", ["defCopy: 0 copies — independent definitions"], 0, len(units), "defCopy"
+        return "MIXED", [f"defCopy: {cop}/{len(units)} copies"], cop, len(units) - cop, "defCopy"
+    # NO provenance in the cache — the def-site HEURISTIC (weaker; announce it, do not pass silently).
     from collections import defaultdict as _dd
     inst_files = {qname_to_file(u) for u in units}
     ext_homes, ext, local = _dd(int), 0, 0
@@ -149,16 +177,15 @@ def resolve_orbit(units, defidx, copy_units=None):
             local += 1
     homes = sorted(ext_homes, key=lambda h: -ext_homes[h])[:5]
     verdict = "CONSOLIDATED" if ext > local else ("DUP" if local else "mixed")
-    return verdict, homes, ext, local
+    return verdict, homes, ext, local, "heuristic"
 
 def observation_orbit(units, subs, defidx=None, copy_units=None):
     """an LLM work-order for a whole ORBIT: these units co-share this structure — consolidate the pair/set."""
     us = sorted(units, key=lambda n: (n.count("."), n))
     big = max(subs, key=_impact)
-    verdict, homes, ext, local = resolve_orbit(units, defidx if defidx is not None else load_def_index(), copy_units)
+    verdict, homes, ext, local, method = resolve_orbit(units, defidx if defidx is not None else load_def_index(), copy_units)
     L = [f"# Consolidation observation — ORBIT of {len(units)} co-sharing units @ `{orbit_pref(units)}`", "",
-         f"**Verdict: {verdict}** ({ext} of {ext+local} distinct leaves defined in a SHARED module vs each "
-         f"instance's own).", ""]
+         f"**Verdict: {verdict}** — via {'defCopy (exact)' if method=='defCopy' else 'DEF-SITE HEURISTIC (no defCopy provenance in the cache — rebuild the .agdai for the exact signal)'}.", ""]
     if verdict == "CONSOLIDATED":
         L += [f"→ ALREADY CONSOLIDATED: these are INSTANCES of shared definitions homed at "
               f"{', '.join('`'+h+'`' for h in homes)}. **No action** — the sharing is the fingerprint of "
@@ -269,9 +296,10 @@ class SPPF(App):
 
     def show_orbit(self, units, subs):
         tree = self.query_one("#detail", Tree)
-        verdict, homes, ext, local = resolve_orbit(units, self.defidx, self.copy_units)
+        verdict, homes, ext, local, method = resolve_orbit(units, self.defidx, self.copy_units)
         mark = {"CONSOLIDATED": "✓", "DUP": "✗"}.get(verdict, "·")
-        tree.reset(f"{mark} {verdict} — {len(units)} units · {len(subs)} shared subtrees @ {orbit_pref(units)}")
+        via = "defCopy" if method == "defCopy" else "⚠HEURISTIC (no defCopy — rebuild cores)"
+        tree.reset(f"{mark} {verdict} [{via}] — {len(units)} units · {len(subs)} subtrees @ {orbit_pref(units)}")
         if verdict == "CONSOLIDATED":
             h = tree.root.add(f"already consolidated onto ({ext}/{ext+local} leaves shared) — SKIP", expand=True)
             for m in homes: h.add_leaf(m)
@@ -345,6 +373,9 @@ def main():
         build(args.cache, args.min_size, args.min_fanin, args.cap); return
     if not os.path.exists(args.cache):
         print(f"no cache at {args.cache} — run:  scripts/reuse_tui.py --build"); return
+    if not json.load(open(args.cache)).get("copy_units"):          # announce degraded provenance up front
+        print("⚠ cache has NO defCopy provenance — orbit verdicts use the DEF-SITE HEURISTIC (weaker). "
+              "Rebuild cores + shim and re-run --build for the exact signal.", file=sys.stderr, flush=True)
 
     if args.observe or args.between:
         rows = json.load(open(args.cache))["rows"]
