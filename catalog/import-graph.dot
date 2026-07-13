@@ -1779,6 +1779,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationUniversal" [label="Wedge.OrientationUniversal"];
   "Substrate.WitnessTower.Wedge.OrientationUniversalOver" [label="Wedge.OrientationUniversalOver"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" [label="Wedge.PyAstRewrite"];
   "Substrate.WitnessTower.Wedge.PyAstRig" [label="Wedge.PyAstRig"];
   "Substrate.WitnessTower.Wedge.PyAstRigCospan" [label="Wedge.PyAstRigCospan"];
   "Substrate.WitnessTower.Wedge.PyAstRigGround" [label="Wedge.PyAstRigGround"];
@@ -13414,6 +13415,13 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.Foundation.Vec";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Wedge.PackedBridge" -> "Substrate.WitnessTower.Wedge.Graded";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.WitnessTower.Wedge.OrientationRigInitial";
+  "Substrate.WitnessTower.Wedge.PyAstRewrite" -> "Substrate.WitnessTower.Wedge.OrientationRigInstance";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Algebra.Semiring";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Algebra.Semiring.SPPF";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.Foundation.Eq";
