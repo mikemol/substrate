@@ -253,6 +253,20 @@ def resolve_orbit(units, defidx, copy_units=None):
     verdict = "CONSOLIDATED" if ext > local else ("DUP" if local else "mixed")
     return verdict, homes, ext, local, "heuristic"
 
+def _orbit_cosets(qnames):
+    """{qname → coset dict} from _orbit_def (⟡graded-orbit). Best-effort: returns {} if graded_orbit or the
+    _orbit_def table is unavailable (the annotation is additive — never blocks the observation)."""
+    try:
+        import sqlite3
+        sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
+        import graded_orbit
+        con = sqlite3.connect(CATALOG_DB)
+        cos = graded_orbit.orbit_cosets(con, qnames=list(qnames)); con.close()
+        return {v["qname"]: v for v in cos.values()}
+    except Exception:
+        return {}
+
+
 def observation_orbit(units, subs, defidx=None, copy_units=None):
     """an LLM work-order for a whole ORBIT: these units co-share this structure — consolidate the pair/set."""
     us = sorted(units, key=lambda n: (n.count("."), n))
@@ -269,7 +283,17 @@ def observation_orbit(units, subs, defidx=None, copy_units=None):
     L += [f"These {len(units)} units share {len(subs)} subtree(s) (one SPPF orbit); largest: `{big['head']}` "
           f"size {big['size']}. Their distinctive leaves are defined INDEPENDENTLY (not from a shared "
           f"module) — a genuine duplication.", "", "## Units (canonical = shallowest)", ""]
-    L += [f"- `{u}`  →  `{qname_to_file(u)}`" for u in us[:40]]
+    # ⟡cosets-into-autocorr: annotate each unit with its graded-orbit coset (if _orbit_def is populated) —
+    # the residue as a PROVEN adjacent-transposition (sadj) word (coxeter-complete, 9dcdbb7) + |Stab|. Units
+    # sharing an orbit-key differ ONLY by this coset (the wedge residue), sharpening "same orbit, diff coset".
+    cos = _orbit_cosets(us)
+    L += [f"- `{u}`  →  `{qname_to_file(u)}`"
+          + (f"  ⊘ `{cos[u]['coxeter']}` |Stab|={cos[u]['stab']}" if u in cos else "")
+          for u in us[:40]]
+    if cos:
+        keys = {c["graded_key"] for c in cos.values()}
+        L += ["", f"(graded-orbit: {len(cos)}/{len(us[:40])} shown units carry cosets over {len(keys)} "
+              f"orbit-key(s); a single key = one abstraction, its members = the residue braiding words.)"]
     L += ["", "## Shared subtrees (this orbit)", ""]
     L += [f"- `{s['head']}` — size {s['size']}, rung {s['rung']}" for s in sorted(subs, key=lambda s: -_impact(s))[:20]]
     L += ["", "## Instruction (for an LLM)", "",

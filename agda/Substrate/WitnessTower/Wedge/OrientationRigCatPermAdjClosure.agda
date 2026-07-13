@@ -46,9 +46,10 @@
 -- positive dual of the grade-3 gap). The GENERAL positive UP
 -- (orientationRigCatPerm-with-⊕-bifunctor is free/initial ∀ grade) additionally
 -- needs Coxeter completeness — "every Perm n is a word in adjacent
--- transpositions" — which is NOT yet in the tree (see the header of
--- OrientationRigCatPermBifunctor: the remaining Ⓐ ⟡coxeter-completeness). It is
--- NOT postulated and NOT faked here; only the concrete n=3 instance is proven.
+-- transpositions" — which is NOW PROVEN ∀n (commit 9dcdbb7):
+-- OrientationRigCatPermCoxeterGeneral.Properties.coxeter-complete. This module
+-- retains the standalone concrete n=3 instance; the general theorem subsumes it.
+-- (The earlier "NOT yet in the tree" was stale — committed just before the close.)
 --
 -- This module DECLARES `data AdjGen` → it is a DEFINITION-PROVIDER (def-side):
 -- it imports ONLY Perm (Enumerate) and compose/id-perm (FirstAppearance) plus

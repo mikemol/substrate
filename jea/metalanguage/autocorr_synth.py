@@ -33,6 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 import jea_extrude_ir as E
+import graded_orbit                                   # ⟡cosets-into-autocorr: the coset/residue reader
 
 
 def functions(paths):
@@ -255,11 +256,25 @@ def main():
             print(f"# cluster #{args.emit}: {c['n']} near-identical units (~{c['size']}-node bodies).")
             print(f"## ABSTRACTION = the shared core: {core_n} nodes common to ALL {c['n']} units (extract this,")
             print(f"   with a hole per differing position). Each unit's HOLES (its substitution):")
+            # ⟡cosets-into-autocorr: if the cluster's units carry graded-orbit cosets (_orbit_def), render
+            # the holes as the WEDGE FORM `orbit-rep ∘ residue` — the residue a PROVEN adjacent-transposition
+            # (sadj) word (coxeter-complete, 9dcdbb7) — instead of opaque token diffs.
+            import sqlite3 as _sql
+            _gc = _sql.connect(CATALOG_DB)
+            cos = graded_orbit.orbit_cosets(_gc, unit_ids=c["uids"]); _gc.close()
+            by_qn = {v["qname"]: v for v in cos.values()}
+            if cos:
+                keys = {v["graded_key"] for v in cos.values()}
+                print(f"## GRADED-ORBIT: these units span {len(keys)} orbit-key(s); a permutation-cluster is "
+                      f"ONE key whose members differ only by the residue coset (braiding word). Holes shown "
+                      f"as `orbit-rep ∘ sadj-word` (|Stab| = symmetric-binder count).")
             for name in sorted(holes)[:20]:
                 hs = holes[name]
                 from collections import Counter
                 top = ", ".join(f"{h}×{k}" if k > 1 else h for h, k in Counter(hs).most_common(6))
-                print(f"  - {name.split('.')[-1]:28s} {len(hs):>2} hole-nodes: {top}")
+                cz = by_qn.get(name)
+                coset = f"   ⊘ residue={cz['coxeter']} |Stab|={cz['stab']}" if cz else ""
+                print(f"  - {name.split('.')[-1]:28s} {len(hs):>2} hole-nodes: {top}{coset}")
             if len(holes) > 20: print(f"  … (+{len(holes)-20})")
             return
         for i, c in enumerate(rows[:args.top]):

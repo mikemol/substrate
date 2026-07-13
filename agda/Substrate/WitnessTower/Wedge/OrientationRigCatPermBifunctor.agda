@@ -42,15 +42,19 @@
 -- HONEST SCOPE — do NOT overclaim full freeness. This delivers (i) the
 -- bifunctor STRUCTURE (blockSum-id/compose = gmap-id/∘), (ii) the REACHABILITY
 -- sᵢ = id ⊕ s₁ ⊕ id, and (iii) the CONCRETE grade-3 closure ⟨adjacent transp.⟩
--- = S₃. It does NOT prove the GENERAL positive UP (orientationRigCatPerm-with-
--- bifunctor is free/initial ∀ grade). That needs COXETER COMPLETENESS — "every
--- Perm n is a word in adjacent transpositions" — which is NOT yet in the tree:
--- the tower proves Perm n ≅ LehmerPath n (decode-encode/encode-decode) but via
--- insert-at, NOT adjacent transpositions. Bridging is the remaining
---   Ⓐ ⟡coxeter-completeness :
---       insert-at p = a bubble-run of adjacent transpositions
---     ⇒ every perm is an adj-word ⇒ an F-hom is determined by F(s₁) ⇒ free.
--- This is a standard but NEW lemma; it is NOT postulated and NOT faked here.
+-- = S₃. The GENERAL positive UP (orientationRigCatPerm-with-bifunctor is
+-- free/initial ∀ grade) needs COXETER COMPLETENESS — "every Perm n is a word in
+-- adjacent transpositions". THAT IS NOW PROVEN (commit 9dcdbb7), ∀n, --safe
+-- --without-K, zero holes:
+--   Ⓐ ⟡coxeter-completeness (CLOSED) :
+--       OrientationRigCatPermCoxeterGeneral.Properties.coxeter-complete :
+--         {n} (σ : Perm n) → IsPerm σ → CoxGen σ           (Properties.agda:220)
+--     via decode-CoxGen — insert-at p IS a bubble-run of adjacent transpositions
+--     (idInsert-step), so decode of the Lehmer path is a CoxGen derivation.
+-- ⇒ every perm is an adj-word ⇒ an F-hom is determined by F(s₁) ⇒ free.
+-- Consumed downstream by OrientationRigCatSymUP / …PermSign / PyAstRewrite.
+-- (This header's earlier "NOT yet in the tree" was committed one commit before
+-- the close; it was stale — corrected here.)
 --
 -- This module declares NO data/record — it is a PURE-LEMMA (proof-side) module,
 -- so it may import proof-carrying modules (Vec.Properties via SnGroup /

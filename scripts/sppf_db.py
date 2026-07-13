@@ -46,10 +46,14 @@ CREATE INDEX        IF NOT EXISTS ix_obs_ekey  ON obs(ekey);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_edge_pk   ON edge(core_id, plid, ord);
 CREATE INDEX        IF NOT EXISTS ix_edge_child ON edge(core_id, clid);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_unitobs_pk ON unit_obs(unit_id);
-CREATE VIEW IF NOT EXISTS path_text AS
-  SELECT path_id, GROUP_CONCAT(seg, '.') AS text FROM (
-    SELECT ps.path_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id
-    ORDER BY ps.path_id, ps.ord) GROUP BY path_id;
+-- path_text: a MATERIALIZED table with a PK index on path_id (was a GROUP_CONCAT VIEW). PROPER INDEXING,
+-- not view-vs-table taste: EXPLAIN shows the view forces SQLite to MATERIALIZE the whole aggregation +
+-- build a TEMP B-TREE for the GROUP BY on EVERY join — even a single-row keyed join (WHERE …=?) — because
+-- the view's join key path_id has no index; predicate propagation cannot push through the GROUP BY. Each
+-- interactive query on the node/unit views (which join path_text) paid a full-view materialization. As a
+-- PK-indexed table the same join is one `SEARCH … USING INDEX (path_id=?)`. Refreshed by refresh_path_text
+-- at the write_events boundary; path_seg stays the append-only source of truth, this is its interned index.
+CREATE TABLE IF NOT EXISTS path_text (path_id TEXT PRIMARY KEY, text TEXT);
 """
 
 # The SPPF projection tables (materialized) + the compat views sppf_query reads.
@@ -95,6 +99,7 @@ def write_events(cores, con, base):
     # DROP (not DELETE) the event tables so column changes take effect (terms/path_seg are shared — keep).
     for t in ("event", "obs", "edge", "unit_obs", "unit_member"):
         con.execute(f"DROP TABLE IF EXISTS {t}")
+    con.execute("DROP VIEW IF EXISTS path_text")     # migrate a legacy GROUP_CONCAT view → the indexed table
     con.executescript(EVENT_SCHEMA)
     con.commit()
     seen_t = set()
@@ -150,6 +155,21 @@ def write_events(cores, con, base):
         con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
         con.commit()                               # transaction per file (append-only)
     _dedup_pathseg(con); con.commit()
+    refresh_path_text(con)                          # materialize the indexed path_text from finalized path_seg
+
+
+def refresh_path_text(con):
+    """Materialize path_text (path_id → dotted qname, PK-indexed) from the finalized path_seg — the interned
+    projection of the append-only path segments. Refreshed at the write_events boundary so every downstream
+    join is one index seek, not a full GROUP_CONCAT view materialization per query (see EVENT_SCHEMA note).
+    Idempotent (DELETE+INSERT); tolerant of a legacy path_text VIEW."""
+    con.execute("DROP VIEW IF EXISTS path_text")
+    con.execute("CREATE TABLE IF NOT EXISTS path_text (path_id TEXT PRIMARY KEY, text TEXT)")
+    con.execute("DELETE FROM path_text")
+    con.execute("INSERT INTO path_text SELECT path_id, GROUP_CONCAT(seg, '.') FROM ("
+                "SELECT ps.path_id, t.text AS seg FROM path_seg ps JOIN terms t ON t.term_id=ps.seg_term_id "
+                "ORDER BY ps.path_id, ps.ord) GROUP BY path_id")
+    con.commit()
 
 
 def project_sppf(con):
