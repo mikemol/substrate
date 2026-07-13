@@ -179,9 +179,84 @@ def already_proven(fn, sn):
                        capture_output=True, text=True)
     return name if r.stdout.strip() else None
 
+# ------------------------------------------------------------------ ⟡nat-enum-higher: the DISTRIBUTOR (J₃)
+# left = a ⊗ˢ (b ⊕ c) ; right = (a ⊗ˢ b) ⊕ (a ⊗ˢ c) — the two forms differ by the distributor δ.
+def dist_left(la, lb, lc):  return lp_otimes(la, lp_oplus(lb, lc))
+def dist_right(la, lb, lc): return lp_oplus(lp_otimes(la, lb), lp_otimes(la, lc))
+GW3 = [(0,0,0),(1,0,0),(0,1,0),(0,0,1),(2,0,0),(0,2,0),(0,0,2),(1,1,0),(1,0,1),(0,1,1)]  # m,p,q deg≤2
+KH = 4                                                            # smaller range for the TRIPLE product (|paths|³)
+def fit_dist_nat(F):
+    """fit the residue F(left) - F(right) over {a,b,c} × grade-monomials(m,p,q, deg≤2)."""
+    data = {}
+    for m, p, q in product(range(KH), range(KH), range(KH)):
+        for la, lb, lc in product(all_paths(m), all_paths(p), all_paths(q)):
+            key = (F(la), F(lb), F(lc), m, p, q)
+            data[key] = F(dist_left(la, lb, lc)) - F(dist_right(la, lb, lc))
+    keys = sorted(data); Y = np.array([data[k] for k in keys], float)
+    def mono(a, b, c, m, p, q):
+        return [(a if v == 0 else b if v == 1 else c) * m**gm * p**gp * q**gq
+                for (gm, gp, gq) in GW3 for v in (0, 1, 2)]
+    X = np.array([mono(*k) for k in keys], float)
+    cr = np.round(np.linalg.lstsq(X, Y, rcond=None)[0]).astype(int)
+    if not np.array_equal(X @ cr, Y.astype(int)): return None
+    names = [(v, gm, gp, gq) for (gm, gp, gq) in GW3 for v in ("a", "b", "c")]
+    return [(names[i], int(c)) for i, c in enumerate(cr) if c]
+
+def respects_dist(F):
+    return all(F(dist_left(la, lb, lc)) == F(dist_right(la, lb, lc))
+               for m, p, q in product(range(KH), range(KH), range(KH))
+               for la, lb, lc in product(all_paths(m), all_paths(p), all_paths(q)))
+
+def render_dist_nat(form, fa):
+    parts = []
+    for (v, gm, gp, gq), c in sorted(form):
+        base = f"({fa('l₁' if v == 'a' else 'l₂' if v == 'b' else 'l₃')})"
+        parts.append(" * ".join(([str(c)] if c != 1 else []) + ["m"]*gm + ["p"]*gp + ["q"]*gq + [base]))
+    return " + ".join(parts) if parts else "?"
+
+def run_higher(emit_path):
+    print("⟡nat-enum-higher: the DISTRIBUTOR coherence  F(a ⊗ˢ (b ⊕ c)) vs F((a⊗ˢb) ⊕ (a⊗ˢc))\n")
+    laws = []   # (name, lhs-map-apply, kind, rhs)
+    for fn, (F, cod, fa, _) in MAPS.items():
+        L = lambda x: fa(x)
+        lhs = L("(_⊗ˢ_ l₁ (_⊕_ l₂ l₃))")
+        rhs_right = L("(_⊕_ (_⊗ˢ_ l₁ l₂) (_⊗ˢ_ l₁ l₃))")
+        if cod == "perm":
+            print(f"  decode: respects δ = {respects_dist(F)}  → residue = δ (reuse OrientationDistributor); not re-emitted")
+            continue
+        if respects_dist(F):
+            print(f"  {fn}: RESPECTS δ (coherent; δ is even for sign)")
+            laws.append((fn, lhs, "eq", rhs_right))
+        else:
+            form = fit_dist_nat(F)
+            res = render_dist_nat(form, fa)
+            print(f"  {fn}: RESIDUE  {fn}(left) - {fn}(right) = {res}")
+            laws.append((fn, lhs, "res", f"{rhs_right} + {res}"))
+    if emit_path:
+        write_higher(emit_path, laws); print(f"\n[emit] {len(laws)} higher law(s) → {emit_path}")
+
+def write_higher(path, laws):
+    mod = os.path.splitext(os.path.basename(path))[0]
+    homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath", "Substrate.Foundation.Nat",
+             "Substrate.Foundation.Bool", "Substrate.Algebra.F2.FromBool", "Substrate.Algebra.N-to-F2-Parity",
+             "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign", "Substrate.WitnessTower.Wedge.PyAstRewriteSemantics",
+             "Substrate.WitnessTower.Wedge.OrientationSum", "Substrate.WitnessTower.Wedge.OrientationProductStructural"}
+    L = ["-- ⟡nat-enum-higher — the DISTRIBUTOR (J₃) coherence for maps, as a --safe PARAMETERIZED module.",
+         "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
+    L += [f"open import {h}" for h in sorted(homes)]
+    if any(MAPS[fn][1] == "f2" for (fn, *_) in laws):
+        L.append("open import Substrate.Algebra.F2 using (F₂) renaming (_+_ to _+₂_; _·_ to _·₂_)")
+    L += ["", "module Laws"]
+    for (fn, lhs, kind, rhs) in laws:
+        L.append(f"  ({fn}-δ : ∀ {{m p q}} (l₁ : LehmerPath m) (l₂ : LehmerPath p) (l₃ : LehmerPath q) → {lhs} ≡ {rhs})")
+    L += ["  where", ""]
+    open(path, "w").write("\n".join(L))
+
 # ------------------------------------------------------------------ driver
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--emit"); args = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--emit"); ap.add_argument("--higher")
+    args = ap.parse_args()
+    if args.higher: run_higher(args.higher); return
     print(f"⟡nat-enum: synthesizing naturality laws (+ residues) over MAPS={list(MAPS)} "
           f"× {list(SOURCE_OPS)}  (grades < {K})\n")
     emit = []
