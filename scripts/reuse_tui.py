@@ -78,10 +78,11 @@ def build(cache_path, min_size, min_fanin, cap):
         contains = sorted({tp._head_str(by_nid[b].head) for b in direct.get(c.nid, []) if b in by_nid})
         rows.append({"fanin": c.units, "size": c.size, "head": tp._head_str(c.head),
                      "rung": rung.get(c.nid, 0), "contains": contains, "instances": insts})
+    copy_units = sorted(u.name for u in C.units if getattr(u, "copy", False))
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    json.dump({"rows": rows, "units": len(C.units), "cores": len(cores), "n_candidates": len(cands)},
-              open(cache_path, "w"))
-    print(f"✓ cached {len(rows)} shared subtrees → {cache_path}")
+    json.dump({"rows": rows, "units": len(C.units), "cores": len(cores), "n_candidates": len(cands),
+               "copy_units": copy_units}, open(cache_path, "w"))
+    print(f"✓ cached {len(rows)} shared subtrees ({len(copy_units)} defCopy instances) → {cache_path}")
 
 # --------------------------------------------------------------------------- orbit grouping
 from collections import defaultdict
@@ -124,8 +125,17 @@ def load_def_index():
     json.dump(idx, open(DEF_INDEX_PATH, "w"))
     return idx
 
-def resolve_orbit(units, defidx):
-    """verdict: is this orbit already CONSOLIDATED (instances of shared defs) or a DUP (each redefines)?"""
+def resolve_orbit(units, defidx, copy_units=None):
+    """verdict: is this orbit already CONSOLIDATED (instances of shared defs) or a DUP (each redefines)?
+    PRECISE via Agda's defCopy when available (copy_units = the set of defCopy=True qnames); else the
+    def-site heuristic (is each leaf defined in a module OTHER than the instances)."""
+    if copy_units:                                   # provenance present → the exact signal
+        cop = sum(1 for u in units if u in copy_units)
+        if cop >= 0.8 * len(units):                  # (nearly) all instances are module-instantiation copies
+            return "CONSOLIDATED", [f"defCopy: {cop}/{len(units)} are module-instantiation copies"], cop, len(units) - cop
+        if cop == 0:                                 # all originals sharing structure → genuine dup
+            return "DUP", ["defCopy: 0 copies — independent definitions"], 0, len(units)
+        # mixed → fall through to the def-site heuristic for the homes
     from collections import defaultdict as _dd
     inst_files = {qname_to_file(u) for u in units}
     ext_homes, ext, local = _dd(int), 0, 0
@@ -141,11 +151,11 @@ def resolve_orbit(units, defidx):
     verdict = "CONSOLIDATED" if ext > local else ("DUP" if local else "mixed")
     return verdict, homes, ext, local
 
-def observation_orbit(units, subs, defidx=None):
+def observation_orbit(units, subs, defidx=None, copy_units=None):
     """an LLM work-order for a whole ORBIT: these units co-share this structure — consolidate the pair/set."""
     us = sorted(units, key=lambda n: (n.count("."), n))
     big = max(subs, key=_impact)
-    verdict, homes, ext, local = resolve_orbit(units, defidx if defidx is not None else load_def_index())
+    verdict, homes, ext, local = resolve_orbit(units, defidx if defidx is not None else load_def_index(), copy_units)
     L = [f"# Consolidation observation — ORBIT of {len(units)} co-sharing units @ `{orbit_pref(units)}`", "",
          f"**Verdict: {verdict}** ({ext} of {ext+local} distinct leaves defined in a SHARED module vs each "
          f"instance's own).", ""]
@@ -200,6 +210,7 @@ class SPPF(App):
         self.sort_key = "impact"
         self.filt = ""
         self.defidx = load_def_index()
+        self.copy_units = set(meta.get('copy_units', []))
         orbits = defaultdict(list)
         for r in rows:
             orbits[frozenset(r["instances"])].append(r)
@@ -258,7 +269,7 @@ class SPPF(App):
 
     def show_orbit(self, units, subs):
         tree = self.query_one("#detail", Tree)
-        verdict, homes, ext, local = resolve_orbit(units, self.defidx)
+        verdict, homes, ext, local = resolve_orbit(units, self.defidx, self.copy_units)
         mark = {"CONSOLIDATED": "✓", "DUP": "✗"}.get(verdict, "·")
         tree.reset(f"{mark} {verdict} — {len(units)} units · {len(subs)} shared subtrees @ {orbit_pref(units)}")
         if verdict == "CONSOLIDATED":
@@ -307,7 +318,7 @@ class SPPF(App):
         if d[0] == "orbit":
             units, subs = d[1], d[2]
             path = os.path.join(OBS_DIR, f"orbit_{re.sub(r'[^\w.+-]', '_', orbit_pref(units))[:40]}__x{len(units)}.md")
-            open(path, "w").write(observation_orbit(units, subs, self.defidx))
+            open(path, "w").write(observation_orbit(units, subs, self.defidx, self.copy_units))
         else:
             r = d[1]
             path = os.path.join(OBS_DIR, f"{re.sub(r'[^\w.+-]', '_', r['head'])[:48]}__x{r['fanin']}.md")

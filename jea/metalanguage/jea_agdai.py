@@ -288,9 +288,12 @@ def intern_signature(core, intern: Intern, carrier_qnames=None) -> dict:
         return out
     unit_members = {name: sorted(_reach(r))
                     for name, r, _k, _m, _lv, _st in unit_markers if r in interned}
+    # Φ-provenance: Agda's defCopy per definition (True ⟺ created by a MODULE INSTANTIATION) — the exact
+    # "came from parameterizing that module" signal (vs an independently-written def).
+    copies = {r["unit"]: bool(r.get("copy", False)) for r in core["defmarks"]}
     return {"core_nodes": len(raw), "interned": intern.size(), "roots": roots,
             "units": units, "kinds": kinds, "members": members, "unit_members": unit_members,
-            "levels": levels, "sorts": sorts, "unhold_path": unhold_path, "edges_present": True}
+            "levels": levels, "sorts": sorts, "copies": copies, "unhold_path": unhold_path, "edges_present": True}
 
 
 def substrate_core_root(agda_root: str) -> str:

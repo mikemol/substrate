@@ -57,6 +57,7 @@ class Unit:
     root: int                      # interned id of the unit's IR root
     support: frozenset             # all interned ids reachable from root (its subterm support)
     depth: dict = None             # node id -> min trace-depth from this unit's root (the SCALE axis)
+    copy: bool = False             # Agda defCopy: True ⟺ created by a MODULE INSTANTIATION (provenance)
 
 
 class Corpus:
@@ -160,10 +161,11 @@ class Corpus:
         except (FileNotFoundError, RuntimeError) as e:
             print(f"  [agda-skip] {path}: {e}", file=sys.stderr)
             return
+        copies = rep.get("copies", {})
         for name, root in rep.get("units", []):
             sup = self._support(root)
             u = Unit(name=name, path=path, lineno=-1, root=root,
-                     support=sup, depth=self._depth_map(root))
+                     support=sup, depth=self._depth_map(root), copy=copies.get(name, False))
             uidx = len(self.units)
             self.units.append(u)
             for nid in sup:
