@@ -2,9 +2,12 @@
 """reuse_tui.py — a Textual TUI over the interned SPPF (the whole agglomerated structural space).
 
 Every canonical node with fanin ≥ 2 is duplicated structure = a consolidation opportunity (N instances
-of one pattern → parameterize; fanin = instances = the win). Left: a DataTable of shared subtrees ranked
-by impact (fanin × size). Right: the selected subtree's instances as a MODULE TREE (navigate to the
-canonical home) + what it ⊃ contains. Filter by head; sort by impact/size/fanin/rung.
+of one pattern → parameterize; fanin = instances = the win). Left: a TREE of ORBITS — shared subtrees
+grouped by their instance-set (the set of units that co-share them), so a big structure and all its
+sub-slices (which share the same units) collapse to ONE orbit; expand an orbit to its shared subtrees.
+Right: the selected orbit/subtree's instances as a MODULE TREE (navigate to the canonical home) + what
+it ⊃ contains. Filter by head; sort orbits by impact/size/fanin/n_subtrees. `x` exports an LLM
+consolidation work-order (orbit or subtree). CLI --observe Q / --between A B do the same non-interactively.
 
   scripts/reuse_tui.py --build     # intern the forest (~90s) → cache (do once)
   scripts/reuse_tui.py             # load cache, launch the browser
@@ -80,21 +83,47 @@ def build(cache_path, min_size, min_fanin, cap):
               open(cache_path, "w"))
     print(f"✓ cached {len(rows)} shared subtrees → {cache_path}")
 
+# --------------------------------------------------------------------------- orbit grouping
+from collections import defaultdict
+
+def _impact(r): return r["fanin"] * r["size"]
+
+def orbit_pref(units):
+    """the shared neighbourhood: common module prefix of an orbit's units."""
+    cp = os.path.commonprefix(list(units))
+    return cp.rsplit(".", 1)[0] if "." in cp else cp or "(mixed)"
+
+def observation_orbit(units, subs):
+    """an LLM work-order for a whole ORBIT: these units co-share this structure — consolidate the pair/set."""
+    us = sorted(units, key=lambda n: (n.count("."), n))
+    big = max(subs, key=_impact)
+    L = [f"# Consolidation observation — ORBIT of {len(units)} co-sharing units @ `{orbit_pref(units)}`", "",
+         f"These {len(units)} units share {len(subs)} subtree(s) (they are one SPPF orbit). Largest shared "
+         f"shape: `{big['head']}` size {big['size']}.", "", "## Units (canonical = shallowest)", ""]
+    L += [f"- `{u}`  →  `{qname_to_file(u)}`" for u in us]
+    L += ["", "## Shared subtrees (this orbit)", ""]
+    L += [f"- `{s['head']}` — size {s['size']}, rung {s['rung']}" for s in sorted(subs, key=lambda s: -_impact(s))[:20]]
+    L += ["", "## Instruction (for an LLM)", "",
+          f"These {len(units)} units are ONE orbit — they co-share the structure above. Consolidate:",
+          f"1. Extract ONE parameterized abstraction (record / def / parameterized module) capturing the",
+          f"   shared shape, homed at the canonical module of `{us[0]}` (or a shallower shared parent).",
+          f"2. Rewrite each unit to INSTANTIATE it (X is an instance of Y — the goal).",
+          f"3. Verify --safe --without-K; re-run scripts/reuse_sweep.py on the touched files; the orbit's",
+          f"   shared subtrees should collapse onto the single abstraction.", ""]
+    return "\n".join(L)
+
 # --------------------------------------------------------------------------- Textual app
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal
-from textual.widgets import DataTable, Tree, Input, Header, Footer
+from textual.widgets import Tree, Input, Header, Footer
 from textual.binding import Binding
 
-SORTS = ["impact", "size", "fanin", "rung"]
-def _keyfn(k):
-    if k == "impact": return lambda r: -(r["fanin"] * r["size"])
-    return lambda r: -r[k]
+ORBIT_SORTS = ["impact", "size", "fanin", "n_subtrees"]
 
 class SPPF(App):
     CSS = """
-    #table { width: 58%; }
-    #detail { width: 42%; border-left: solid $accent; }
+    #orbits { width: 55%; }
+    #detail { width: 45%; border-left: solid $accent; }
     Input { dock: top; }
     """
     BINDINGS = [
@@ -111,48 +140,53 @@ class SPPF(App):
         self.meta = meta
         self.sort_key = "impact"
         self.filt = ""
-        self.view = []
+        orbits = defaultdict(list)
+        for r in rows:
+            orbits[frozenset(r["instances"])].append(r)
+        self.orbits = list(orbits.items())            # [(frozenset units, [rows])]
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=False)
-        yield Input(placeholder="filter by head substring …  (/ to focus, Esc to leave)", id="filter")
+        yield Input(placeholder="filter by head substring …  (/ focus, Esc leave)", id="filter")
         with Horizontal():
-            yield DataTable(id="table", cursor_type="row", zebra_stripes=True)
-            yield Tree("select a subtree", id="detail")
+            yield Tree("orbits", id="orbits")
+            yield Tree("detail", id="detail")
         yield Footer()
 
     def on_mount(self):
-        t = self.query_one("#table", DataTable)
-        t.add_column("impact", width=7)
-        t.add_column("×", width=6)
-        t.add_column("size", width=5)
-        t.add_column("rung", width=4)
-        t.add_column("head")
-        self.refresh_table()
-        t.focus()
+        self.refresh_orbits()
+        self.query_one("#orbits", Tree).focus()
 
-    def refresh_table(self):
-        t = self.query_one("#table", DataTable)
-        t.clear()
-        rows = [r for r in self.allrows if not self.filt or self.filt.lower() in r["head"].lower()]
-        rows.sort(key=_keyfn(self.sort_key))
-        self.view = rows
-        for i, r in enumerate(rows):
-            t.add_row(str(r["fanin"] * r["size"]), f"{r['fanin']}×", str(r["size"]),
-                      str(r["rung"]), r["head"], key=str(i))
-        self.sub_title = (f"{len(rows)}/{len(self.allrows)} subtrees · {self.meta['units']} units · "
+    def _orbit_key(self, item):
+        units, subs = item
+        if self.sort_key == "n_subtrees": return -len(subs)
+        if self.sort_key == "fanin": return -len(units)
+        if self.sort_key == "size": return -max(s["size"] for s in subs)
+        return -max(_impact(s) for s in subs)
+
+    def refresh_orbits(self):
+        tree = self.query_one("#orbits", Tree)
+        tree.reset("orbits")
+        items = []
+        for units, subs in self.orbits:
+            fs = [s for s in subs if not self.filt or self.filt.lower() in s["head"].lower()]
+            if fs: items.append((units, fs))
+        items.sort(key=self._orbit_key)
+        shown = items[:1500]
+        for units, subs in shown:
+            mx = max(_impact(s) for s in subs)
+            node = tree.root.add(f"[{len(subs):>3} sub · ×{len(units)} · ≤{mx}]  {orbit_pref(units)}",
+                                 data=("orbit", units, subs))
+            for s in sorted(subs, key=lambda s: -_impact(s)):
+                node.add_leaf(f"{s['head']}  · size {s['size']} rung {s['rung']}", data=("sub", s))
+        tree.root.expand()
+        self.sub_title = (f"{len(items)} orbits ({len(self.allrows)} subtrees, {self.meta['units']} units) · "
                           f"sort:{self.sort_key} · filter:'{self.filt}'")
-        if rows: self.show_detail(rows[0])
+        if shown: self.show_orbit(shown[0][0], shown[0][1])
 
-    def show_detail(self, r):
-        tree = self.query_one("#detail", Tree)
-        tree.reset(f"{r['head']}   [{r['fanin']} instances × size {r['size']} · rung {r['rung']}]")
-        if r["contains"]:
-            c = tree.root.add(f"⊃ contains ({len(r['contains'])})")
-            for h in r["contains"]:
-                c.add_leaf(h)
-        ins = tree.root.add(f"instances ({r['fanin']}) — canonical = shallowest", expand=True)
-        for name in sorted(r["instances"]):
+    def _detail_instances(self, tree, units):
+        ins = tree.root.add(f"instances ({len(units)}) — canonical = shallowest", expand=True)
+        for name in sorted(units):
             node = ins
             parts = name.split(".")
             for j, p in enumerate(parts):
@@ -161,34 +195,56 @@ class SPPF(App):
                 else:
                     child = next((c for c in node.children if str(c.label) == p), None)
                     node = child if child is not None else node.add(p)
+
+    def show_orbit(self, units, subs):
+        tree = self.query_one("#detail", Tree)
+        tree.reset(f"ORBIT — {len(units)} units · {len(subs)} shared subtrees @ {orbit_pref(units)}")
+        self._detail_instances(tree, units)
         tree.root.expand()
 
-    def on_data_table_row_highlighted(self, event):
-        if event.row_key is not None and event.row_key.value is not None:
-            self.show_detail(self.view[int(event.row_key.value)])
+    def show_sub(self, r):
+        tree = self.query_one("#detail", Tree)
+        tree.reset(f"{r['head']}  [{r['fanin']} instances × size {r['size']} · rung {r['rung']}]")
+        if r["contains"]:
+            c = tree.root.add(f"⊃ contains ({len(r['contains'])})")
+            for h in r["contains"]:
+                c.add_leaf(h)
+        self._detail_instances(tree, r["instances"])
+        tree.root.expand()
+
+    def on_tree_node_highlighted(self, event):
+        d = getattr(event.node, "data", None)
+        if not d: return
+        if d[0] == "orbit": self.show_orbit(d[1], d[2])
+        elif d[0] == "sub": self.show_sub(d[1])
 
     def on_input_changed(self, event):
         self.filt = event.value
-        self.refresh_table()
+        self.refresh_orbits()
 
     def action_sort(self):
-        self.sort_key = SORTS[(SORTS.index(self.sort_key) + 1) % len(SORTS)]
-        self.refresh_table()
+        self.sort_key = ORBIT_SORTS[(ORBIT_SORTS.index(self.sort_key) + 1) % len(ORBIT_SORTS)]
+        self.refresh_orbits()
 
     def action_focus_filter(self):
         self.query_one("#filter", Input).focus()
 
     def action_unfocus_filter(self):
-        self.query_one("#table", DataTable).focus()
+        self.query_one("#orbits", Tree).focus()
 
     def action_extract(self):
-        if not self.view:
-            return
-        row = self.view[self.query_one("#table", DataTable).cursor_row]
-        safe = re.sub(r"[^\w.+-]", "_", row["head"])[:48]
+        node = self.query_one("#orbits", Tree).cursor_node
+        d = getattr(node, "data", None) if node else None
+        if not d: return
         os.makedirs(OBS_DIR, exist_ok=True)
-        path = os.path.join(OBS_DIR, f"{safe}__x{row['fanin']}.md")
-        open(path, "w").write(observation_md(row))
+        if d[0] == "orbit":
+            units, subs = d[1], d[2]
+            path = os.path.join(OBS_DIR, f"orbit_{re.sub(r'[^\w.+-]', '_', orbit_pref(units))[:40]}__x{len(units)}.md")
+            open(path, "w").write(observation_orbit(units, subs))
+        else:
+            r = d[1]
+            path = os.path.join(OBS_DIR, f"{re.sub(r'[^\w.+-]', '_', r['head'])[:48]}__x{r['fanin']}.md")
+            open(path, "w").write(observation_md(r))
         self.notify(f"observation → {os.path.relpath(path, REPO)}", timeout=6)
 
 def run_tui(cache_path):
