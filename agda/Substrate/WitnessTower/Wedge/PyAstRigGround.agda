@@ -41,8 +41,12 @@ module Substrate.WitnessTower.Wedge.PyAstRigGround where
 open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.WitnessTower.Enumerate using (insert-at)
+open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; _◂_; decode)
+open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
+open import Substrate.WitnessTower.SnGroup using (compose-id-left; compose-id-right)
+open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
+open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.Wedge.Graded using (recon)
 open import Substrate.WitnessTower.Wedge.OrientationTowerDiv using (towerDiv)
 open import Substrate.WitnessTower.Wedge.PyAstRig using (Objpy; act; pyRecon)
@@ -53,3 +57,35 @@ pyRecon-is-towerDiv-residue :
   {n : ℕ} (rep : Objpy (suc n)) (l : LehmerPath n) (d : Fin (suc n)) →
   pyRecon rep (recon towerDiv n l d) ≡ act (insert-at d (decode l)) rep
 pyRecon-is-towerDiv-residue rep l d = refl
+
+------------------------------------------------------------------------
+-- ⟡pyrig-ground-action (VERIFIED SPLIT, not a clean instance).
+--
+-- CONSTRUCTIVE POSITIVE: raw `Perm n` IS the witness tower's compose-MONOID
+-- (the tower proves compose-assoc / compose-id but keeps them LOOSE — never
+-- bundles them). Assembled here from the tower's own lemmas. `act` is its action
+-- on the SPPF carrier `Objpy`, and act's laws are ALREADY grounded in the tower:
+-- `act-id`/`act-∘` (PyAstRig) are built directly from `SnGroup.apply-id` /
+-- `apply-compose` — so `act` is the free-functor lift of the tower's `apply`
+-- action. Nothing new to prove for the laws.
+--
+-- VERIFIED NEGATIVE (reuse-search): `act` does NOT instantiate the tree's only
+-- action record `Algebra.GroupAction.Actionᴳ` — which requires a *strict* `Group
+-- A`. Raw `Perm n` is the transformation MONOID Tₙ (no inverse on the bare Vec:
+-- only the IsPerm subset is invertible), and the genuine Sₙ is
+-- `Groups.Symmetric` = a *SetoidGroup* (`≈`, over a record carrier, reached via
+-- `SymBridge`), not a strict `Group`. There is no `MonoidAction` record. So the
+-- action face is grounded at the LEMMA level (SnGroup) but is genuinely-new at
+-- the RECORD level — the monoid-action of Tₙ on a carrier, which the tree has no
+-- generic home for. (A clean `Actionᴳ`/`Torsor` instance would need: restrict to
+-- Sₙ = Σ Perm IsPerm, a strict-Group repackage of `Groups.Symmetric`, and
+-- transport `act` across `SymBridge` — a real bridge, filed as ⟡pyrig-ground-action-bridge.)
+------------------------------------------------------------------------
+
+permMonoid : (n : ℕ) → Monoid (Perm n)
+permMonoid n = record
+  { semigroup = record { magma = record { _·_ = compose } ; ·-assoc = compose-assoc }
+  ; ε        = id-perm n
+  ; ε-left   = compose-id-left
+  ; ε-right  = compose-id-right
+  }

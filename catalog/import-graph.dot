@@ -496,6 +496,7 @@ digraph imports {
   "Substrate.Algebra.Semiring.NatInf" [label="Semiring.NatInf"];
   "Substrate.Algebra.Semiring.NatInf.Properties" [label="NatInf.Properties"];
   "Substrate.Algebra.Semiring.SPPF" [label="Semiring.SPPF"];
+  "Substrate.Algebra.Semiring.SPPFUP" [label="Semiring.SPPFUP"];
   "Substrate.Algebra.Setoid" [label="Algebra.Setoid"];
   "Substrate.Algebra.Setoid.Map" [label="Setoid.Map"];
   "Substrate.Algebra.SetoidGroup" [label="Algebra.SetoidGroup"];
@@ -5541,6 +5542,12 @@ digraph imports {
   "Substrate.Algebra.Semiring.SPPF" -> "Substrate.Algebra.Monoid";
   "Substrate.Algebra.Semiring.SPPF" -> "Substrate.Algebra.Semigroup";
   "Substrate.Algebra.Semiring.SPPF" -> "Substrate.Algebra.Semiring";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Algebra.Magma";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Algebra.Monoid";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Algebra.Semigroup";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Algebra.Semiring";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Algebra.Semiring.SPPF";
+  "Substrate.Algebra.Semiring.SPPFUP" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Setoid" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Setoid.Map" -> "Substrate.Algebra.Setoid";
   "Substrate.Algebra.SetoidGroup.Action" -> "Substrate.Algebra.SetoidGroup";
