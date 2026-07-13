@@ -90,7 +90,7 @@ def sweep_recursive(files, min_size, min_fanin):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("files", nargs="*")
-    ap.add_argument("--min-size", type=int, default=6, help="min shared-subtree size to report")
+    ap.add_argument("--min-size", type=int, default=2, help="min shared-subtree size (default 2 = ENUMERATE all)")
     ap.add_argument("--min-fanin", type=int, default=2, help="min units sharing the subtree (2 = any dup)")
     ap.add_argument("--top", type=int, default=20, help="how many consolidation opportunities to show")
     ap.add_argument("--recursive", action="store_true", help="the Sequitur fixpoint: the containment tower (rungs)")
