@@ -29,18 +29,16 @@ module Substrate.WitnessTower.Wedge.PyAstRewriteSnRig where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Fin.Inject using (inject+)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; subst)
+open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; Σ-≡,≡→≡)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; start; _◂_; decode; encode; decode-encode)
+open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; IsPerm-[]; insert-at-preserves)
-open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
-open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
-open import Substrate.WitnessTower.Wedge.OrientationSumNaturality using (decode-⊕-inject; decode-⊕-raise)
-open import Substrate.WitnessTower.Wedge.OrientationDistributor using (blockSum; blockSum-inject; blockSum-raise)
+open import Substrate.WitnessTower.Wedge.OrientationDistributor using (blockSum; blockSum-raise)
+open import Substrate.WitnessTower.Wedge.OrientationSumDecode using (decode-⊕)
+open import Substrate.WitnessTower.Wedge.IsoDecodeLift using (on-iso; on-iso₂)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductPerm using (⊗-is-perm)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural using (offsetDigit)
@@ -63,19 +61,9 @@ snEq : ∀ {n} {a b : Sₙ n} → proj₁ a ≡ proj₁ b → a ≡ b
 snEq {a = a} {b = b} e = Σ-≡,≡→≡ (e , Iso-prop {σ = proj₁ b} _ _)
 
 ------------------------------------------------------------------------
--- 1. decode-⊕ — the ⊕ naturality, packaged (mirror of decode-⊗ˢ). decode is a ⊕-hom.
-------------------------------------------------------------------------
-decode-⊕ : ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) →
-           decode (l₁ ⊕ l₂) ≡ blockSum (decode l₁) (decode l₂)
-decode-⊕ {m} {n} l₁ l₂ = lookup-ext _ _ pw
-  where
-  pw : (k : Fin (m + n)) → _
-  pw k with splitAt-view m {n} k
-  ... | fromₗ i = trans (decode-⊕-inject l₁ l₂ i) (sym (blockSum-inject (decode l₁) (decode l₂) i))
-  ... | fromᵣ j = trans (decode-⊕-raise l₁ l₂ j) (sym (blockSum-raise (decode l₁) (decode l₂) j))
-
-------------------------------------------------------------------------
--- 2. THE THREE PERM-LEVEL LAWS (⊗ᶜ-step is the imported heart).
+-- 1. THE PERM-LEVEL LAWS. decode-⊕ (decode is a ⊕-hom) is reused from the tower
+--    (OrientationSumDecode); the decode-input lemmas lift to any Iso element via
+--    IsoDecodeLift's on-iso / on-iso₂ (decode-density). ⊗ᶜ-step is the imported heart.
 ------------------------------------------------------------------------
 -- ⊕ᶜ-base: 0-block is a left unit for blockSum.
 blockSum-idˡ : ∀ {n} (τ : Perm n) → blockSum (id-perm 0) τ ≡ τ
@@ -92,20 +80,19 @@ blockSum-insert-decode : ∀ {m n} (lσ : LehmerPath m) (p : Fin (suc m)) (lτ :
 blockSum-insert-decode lσ p lτ =
   trans (sym (decode-⊕ (lσ ◂ p) lτ)) (cong (insert-at (inject+ _ p)) (decode-⊕ lσ lτ))
 
--- lift to any Sₙ element (σ = decode (encode σ)).
+-- lift to any Sₙ element via on-iso₂ (decode-density: σ = decode (encode σ)).
 blockSum-insertˡ : ∀ {m n} (σ : Perm m) (iσ : Iso σ) (p : Fin (suc m)) (τ : Perm n) (iτ : Iso τ) →
   blockSum (insert-at p σ) τ ≡ insert-at (inject+ n p) (blockSum σ τ)
-blockSum-insertˡ σ iσ p τ iτ
-  rewrite sym (decode-encode σ (Iso→IsPerm σ iσ))
-        | sym (decode-encode τ (Iso→IsPerm τ iτ))
-  = blockSum-insert-decode (encode σ (Iso→IsPerm σ iσ)) p (encode τ (Iso→IsPerm τ iτ))
+blockSum-insertˡ {m} {n} σ iσ p τ iτ =
+  on-iso₂ {P = λ σ' τ' → blockSum (insert-at p σ') τ' ≡ insert-at (inject+ n p) (blockSum σ' τ')}
+          (λ lσ lτ → blockSum-insert-decode lσ p lτ) σ iσ τ iτ
 
--- ⊗ᶜ-step, lifted to any Sₙ element.
+-- ⊗ᶜ-step, lifted to any Sₙ element via on-iso.
 perm-⊗ᶜ-step-iso : ∀ {m n} (σ : Perm m) (iσ : Iso σ) (p : Fin (suc m)) (l₂ : LehmerPath n) →
   replayᶜ permAlg p n l₂ (σ ⊗ decode l₂) ≡ (insert-at p σ ⊗ decode l₂)
-perm-⊗ᶜ-step-iso σ iσ p l₂
-  rewrite sym (decode-encode σ (Iso→IsPerm σ iσ))
-  = perm-⊗ᶜ-step-decode (encode σ (Iso→IsPerm σ iσ)) p l₂
+perm-⊗ᶜ-step-iso {m} {n} σ iσ p l₂ =
+  on-iso {P = λ σ' → replayᶜ permAlg p n l₂ (σ' ⊗ decode l₂) ≡ (insert-at p σ' ⊗ decode l₂)}
+         (λ lx → perm-⊗ᶜ-step-decode lx p l₂) σ iσ
 
 ------------------------------------------------------------------------
 -- 3. THE Sₙ LehmerAlgebra + Σ-naturality of fold / replayᶜ.
