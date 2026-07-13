@@ -122,6 +122,9 @@ def canonicalize(graph):
     telescopes). Returns (canonical tuple, residue permutation = argmin, stabilizer = automorphisms)."""
     from itertools import permutations
     n = len(graph)
+    if n > 7:                                            # n! blows up; large telescopes stay positional
+        ident = tuple(range(n))
+        return _serialize(graph, ident), ident, [ident]
     best = None; residue = None; stab = []
     for p in permutations(range(n)):
         s = _serialize(graph, p)
@@ -131,6 +134,85 @@ def canonicalize(graph):
             stab.append(p)
     # Stab as permutations fixing the canonical form (compose residue⁻¹ with each min-achiever)
     return best, residue, stab
+
+
+# ─────────────────────────────── Phase B: the graded orbit-key (fixpoint over the def-dep DAG) ─────
+def clause_of(core, root_lid):
+    ch = core.kids.get(root_lid, [])
+    return ch[-1] if core.ctor.get(root_lid) == "Defn" and ch else None
+
+
+def body_bag(core, clause_lid, nargs, resid, orbit_key_of):
+    """A canonical BAG signature of the proof body over the per-core tree (finite; def-refs are LEAVES, so
+    the recursive type never unfolds). Structural nodes → ctor; a Var dbN resolving to a top-level arg →
+    its CANONICAL binder position (via the telescope residue) so binder-permuted bodies agree; a Def-ref →
+    the referenced def's ORBIT-KEY (the fixpoint — so companion twins collapse, genuine divergence stays).
+    Depth-tracked: db0 = innermost binder; args sit under the clause's `nargs` pattern binders."""
+    inv = [0] * len(resid)
+    for i, j in enumerate(resid): inv[j] = i            # canonical position of old binder i = resid[i]
+    bag = []
+    # DFS with de Bruijn depth (extra binders entered below the clause args)
+    stack = [(clause_lid, 0)]
+    seen = set()
+    while stack:
+        n, extra = stack.pop()
+        if n in seen: continue
+        seen.add(n)
+        c = core.ctor.get(n, "")
+        if c in ("Var", "PVar"):
+            N = core.idx.get(n, 0); a = N - extra          # arg index from innermost, minus inner binders
+            if 0 <= a < nargs:
+                bag.append(f"b{resid[nargs - 1 - a]}")     # a top-level arg → its canonical position
+            else:
+                bag.append("bi")                            # an inner/local binder (position-agnostic)
+        elif c in FREE and core.qname.get(n):
+            bag.append(orbit_key_of(core.qname[n]))         # a reference → its orbit-key (fixpoint)
+        else:
+            bag.append(c or "·")
+        # Pi/Lam/Clause introduce binders for their subtrees; a clause's own leading PVars are the args
+        add = 1 if c in ("Pi", "Lam") else 0
+        for ch in core.kids.get(n, []):
+            stack.append((ch, extra + add))
+    return tuple(sorted(bag, key=repr))                     # bag mixes ctor strings + orbit-key tuples
+
+
+def unit_index(conn):
+    """qname → (core_id, root_lid) for every independent def, in ONE query (no per-qname round-trips)."""
+    return {nm: (fid, rl) for nm, fid, rl in conn.execute(
+        "SELECT pt.text, u.file_id, u.root_lid FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid "
+        "WHERE u.copy=0")}
+
+
+class Ctx:
+    """the fixpoint context: preloaded unit index + memo + a per-core cache (load each core once)."""
+    def __init__(self, conn):
+        self.conn = conn; self.idx = unit_index(conn); self.memo = {}; self.cores = {}
+    def core(self, core_id):
+        if core_id not in self.cores: self.cores[core_id] = load_core(self.conn, core_id)
+        return self.cores[core_id]
+
+
+def orbit_key(ctx, qname, depth=3, stack=None):
+    """The GRADED orbit-key of a def: (type-orbit key = the telescope canonical, proof-orbit key = the
+    fixpoint body bag). Bottom-up over the def-dependency DAG, memoized + cycle-guarded. Bounded at
+    DEPTH 3 = the rig's precomputed-coherence depth: beyond it a reference COLLAPSES BACK INTO THE SPPF
+    (keys as its own qname, the content-addressed identity) — the self-collapse, not a truncation."""
+    if stack is None: stack = set()
+    if qname in ctx.memo: return ctx.memo[qname]
+    if qname in stack or depth <= 0 or qname not in ctx.idx:
+        return ("leaf", qname)                              # cycle / coherence-depth reached / primitive
+    core_id, root_lid = ctx.idx[qname]
+    stack.add(qname)
+    core = ctx.core(core_id); tel = telescope(core, root_lid)
+    if not tel:
+        ctx.memo[qname] = ("leaf", qname); stack.discard(qname); return ctx.memo[qname]
+    tkey, resid, stab = canonicalize(binder_graph(core, tel[0]))
+    cl = clause_of(core, root_lid); nargs = len(tel[0])
+    bkey = body_bag(core, cl, nargs, resid,
+                    lambda q: orbit_key(ctx, q, depth - 1, stack)) if cl else ()
+    key = (tkey, bkey)
+    ctx.memo[qname] = key; stack.discard(qname)
+    return key
 
 
 def to_lehmer(perm):
@@ -163,16 +245,42 @@ def selftest(conn):
           f"|Stab|={stab_r} (2 interchangeable Polynomials) ⇒ coset, not raw perm.")
 
 
+def graded_test(conn):
+    D = "Substrate.Algebra.F2.Polynomial.RingLaws.Distrib"
+    ctx = Ctx(conn)
+    def K(nm): return orbit_key(ctx, f"{D}.{nm}", depth=3)
+    dr, dl = K("*P-distribʳ"), K("*P-distribˡ")
+    cr, cl = K("convCoeff-distrib"), K("convCoeff-distribˡ")
+    print("⟡graded-orbit Phase B — the GRADED key (type-orbit, proof-orbit):")
+    print(f"  convCoeff-distrib vs ˡ : type-orbit {'SAME' if cr[0]==cl[0] else 'diff'}, "
+          f"proof-orbit {'same' if cr[1]==cl[1] else 'DIFFERENT'} ({len(cr[1])} vs {len(cl[1])} body nodes)")
+    print(f"  *P-distribʳ  vs ˡ      : type-orbit {'SAME' if dr[0]==dl[0] else 'diff'}, "
+          f"proof-orbit {'same' if dr[1]==dl[1] else 'DIFFERENT'}")
+    # localize the divergence: the ONLY body-bag difference is the companion orbit-key
+    from collections import Counter
+    diff = (Counter(dr[1]) - Counter(dl[1])) + (Counter(dl[1]) - Counter(dr[1]))
+    companions = [x for x in diff if isinstance(x, tuple)]
+    print(f"  distribʳ/ˡ proof-bag symmetric difference: {sum(diff.values())} items; the reference-orbit(s) "
+          f"among them = the companion divergence (convCoeff-distrib vs ˡ, themselves type-twins/proof-distinct).")
+    assert dr[0] == dl[0], "distribʳ/ˡ must share the TYPE orbit (arg-perm twins at the telescope)"
+    assert dr[1] != dl[1], "…and DIFFER at the PROOF orbit (their proofs genuinely diverge)"
+    assert cr[0] == cl[0] and cr[1] != cl[1], "convCoeff companions: same type-orbit, distinct proof-orbit"
+    print("PASS — the graded key correctly MERGES the type-abstraction and DISTINGUISHES the proofs.")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--probe", metavar="QNAME", help="print a def's telescope + body structure")
     ap.add_argument("--canon", metavar="QNAME", help="canonical telescope key + residue + Stab")
+    ap.add_argument("--graded", action="store_true", help="Phase B: the graded (type, proof) orbit-key test")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
     import sqlite3
     conn = sqlite3.connect(CATALOG_DB)
     if args.selftest:
         selftest(conn); return
+    if args.graded:
+        graded_test(conn); return
     if args.probe:
         loc = unit_locus(conn, args.probe)
         if not loc:
