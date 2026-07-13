@@ -64,12 +64,36 @@ def sweep(files, min_size, min_fanin):
     findings.sort(reverse=True)
     return findings
 
+def sweep_recursive(files, min_size, min_fanin):
+    """the Sequitur FIXPOINT: build the containment TOWER (rung = consolidation depth) over the whole
+    forest via typeholer_path; report the rungs the CHANGED code participates in, each showing what it
+    CONTAINS (the recursive stack: a rung-k abstraction is built from rung-(k-1) ones)."""
+    sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
+    import typeholer_path as tp
+    changed_mods = {module_of(f) for f in files}
+    cores = glob.glob(os.path.join(AGDA, "_build", "**", "agda", "Substrate", "**", "*.agdai"), recursive=True)
+    print(f"interning + building the containment tower: {len(cores)} cores …", flush=True)
+    C = tp.build_corpus(sorted(cores))
+    cands = tp.extract_cands(C, min_fanin=min_fanin, min_size=min_size)
+    direct, rung, _ = tp.containment_dag(cands)
+    by_nid = {c.nid: c for c in cands}
+    def mod(ui): return getattr(C.units[ui], "name", "").rsplit(".", 1)[0]
+    touching = []
+    for c in cands:
+        chg = sorted({C.units[i].name for i in c.unit_ids if mod(i) in changed_mods})
+        if chg:
+            contains = sorted({tp._head_str(by_nid[b].head) for b in direct.get(c.nid, [])})
+            touching.append((rung[c.nid], c.units, c.size, tp._head_str(c.head), chg, contains))
+    touching.sort(key=lambda t: (-t[0], -(t[1] * t[2])))
+    return touching, max((rung[c.nid] for c in cands), default=0), len(cands)
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("files", nargs="*")
     ap.add_argument("--min-size", type=int, default=6, help="min shared-subtree size to report")
     ap.add_argument("--min-fanin", type=int, default=2, help="min units sharing the subtree (2 = any dup)")
     ap.add_argument("--top", type=int, default=20, help="how many consolidation opportunities to show")
+    ap.add_argument("--recursive", action="store_true", help="the Sequitur fixpoint: the containment tower (rungs)")
     ap.add_argument("--gate", action="store_true")
     args = ap.parse_args()
 
@@ -78,6 +102,22 @@ def main():
     if not files:
         print("reuse-sweep: no changed .agda files."); return
     print(f"reuse-sweep: {len(files)} changed .agda file(s); shared subtree size ≥ {args.min_size}\n")
+
+    if args.recursive:
+        tower, max_rung, ncands = sweep_recursive(files, args.min_size, args.min_fanin)
+        print(f"  containment tower height = {max_rung}; {ncands} shared-subtree candidates in the forest\n")
+        if not tower:
+            print("✓ changed code participates in no shared-subtree tower."); return
+        rungs = sorted({r for r, *_ in tower})
+        print(f"◆ changed code participates in {len(tower)} shared subtree(s), spanning rungs {rungs}")
+        print(f"  (rung k = a composite built from rung-(k−1) shared subtrees; ⊃ = what it contains):\n")
+        for r, units, size, head, chg, contains in tower[:args.top]:
+            low = ("  ⊃ " + ", ".join(contains[:5])) if contains else ""
+            print(f"    rung {r}  [{units} instances × size {size}]  {head}{low}")
+            print(f"        changed: " + ", ".join(chg))
+        if args.gate and tower:
+            sys.exit(1)
+        return
 
     findings = sweep(files, args.min_size, args.min_fanin)
     if not findings:
