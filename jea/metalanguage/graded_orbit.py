@@ -184,9 +184,10 @@ def unit_index(conn):
 
 
 class Ctx:
-    """the fixpoint context: preloaded unit index + memo + a per-core cache (load each core once)."""
+    """the fixpoint context: preloaded unit index + memo + a per-core cache (load each core once).
+    `resid[qname]` = the def's telescope residue Lehmer code (the coset element = the wedge r)."""
     def __init__(self, conn):
-        self.conn = conn; self.idx = unit_index(conn); self.memo = {}; self.cores = {}
+        self.conn = conn; self.idx = unit_index(conn); self.memo = {}; self.cores = {}; self.resid = {}
     def core(self, core_id):
         if core_id not in self.cores: self.cores[core_id] = load_core(self.conn, core_id)
         return self.cores[core_id]
@@ -207,6 +208,7 @@ def orbit_key(ctx, qname, depth=3, stack=None):
     if not tel:
         ctx.memo[qname] = ("leaf", qname); stack.discard(qname); return ctx.memo[qname]
     tkey, resid, stab = canonicalize(binder_graph(core, tel[0]))
+    ctx.resid[qname] = (to_lehmer(resid), len(stab))         # the coset element (Lehmer) + |Stab|
     cl = clause_of(core, root_lid); nargs = len(tel[0])
     bkey = body_bag(core, cl, nargs, resid,
                     lambda q: orbit_key(ctx, q, depth - 1, stack)) if cl else ()
@@ -268,11 +270,39 @@ def graded_test(conn):
     print("PASS — the graded key correctly MERGES the type-abstraction and DISTINGUISHES the proofs.")
 
 
+def cosets_view(conn, filt=None, min_members=2):
+    """Read _orbit_def as the mechanical consolidation: each TYPE-orbit (defs sharing a telescope
+    abstraction) → its members + their coset residues + the graded split. g graded-orbits among n members:
+    g<n ⇒ some are FULL arg-perm twins (mergeable); g=n ⇒ each proof is distinct (the diagonalization —
+    parameterize the shared type/skeleton, keep the proofs). The residue is the wedge r: instance = rep∘r."""
+    from collections import defaultdict
+    rows = conn.execute(
+        "SELECT pt.text, od.type_key, od.graded_key, od.residue, od.stab FROM _orbit_def od "
+        "JOIN _unit u ON u.unit_id=od.unit_id JOIN path_text pt ON pt.path_id=u.name_pid").fetchall()
+    if not rows:
+        print("_orbit_def is empty — run: python3 scripts/sppf_db.py \"<filter>\" --argperm"); return
+    by_t = defaultdict(list)
+    for name, tk, gk, res, stab in rows:
+        if not filt or filt in name: by_t[tk].append((name, gk, res, stab))
+    orbits = sorted((m for m in by_t.values() if len(m) >= min_members), key=lambda m: -len(m))
+    print(f"⟡graded-orbit cosets: {len(orbits)} type-orbits with ≥{min_members} members "
+          f"({sum(len(m) for m in orbits)} defs share a telescope-abstraction)\n")
+    for m in orbits[:30]:
+        ng = len({g for _, g, _, _ in m})
+        rep = min(m, key=lambda x: x[2])                     # orbit rep = lex-min residue
+        kind = "FULL twins → MERGE" if ng < len(m) else "type-twins, distinct proofs (diagonalization)"
+        print(f"  ×{len(m)}  {ng} graded-orbit(s)  [{kind}]  rep={rep[0].split('.')[-1]}")
+        for name, g, res, stab in sorted(m, key=lambda x: x[2]):
+            print(f"      {name.split('.')[-1]:26s} residue(coset)={res}  |Stab|={stab}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--probe", metavar="QNAME", help="print a def's telescope + body structure")
     ap.add_argument("--canon", metavar="QNAME", help="canonical telescope key + residue + Stab")
     ap.add_argument("--graded", action="store_true", help="Phase B: the graded (type, proof) orbit-key test")
+    ap.add_argument("--cosets", nargs="?", const="", metavar="FILTER",
+                    help="Phase D: read _orbit_def as type-orbit → (rep, coset residues); optional qname filter")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
     import sqlite3
@@ -281,6 +311,8 @@ def main():
         selftest(conn); return
     if args.graded:
         graded_test(conn); return
+    if args.cosets is not None:
+        cosets_view(conn, args.cosets or None); return
     if args.probe:
         loc = unit_locus(conn, args.probe)
         if not loc:

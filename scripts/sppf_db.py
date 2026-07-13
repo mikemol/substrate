@@ -372,14 +372,16 @@ def project_orbit_sppf(con, distribute=False):
 # the def orbit lives here, not in orbit_node. Genuine arg-perm twins share graded_key; type-twins share
 # type_key. Depth-3 (rig precomputed-coherence) fixpoint over the def-dependency DAG; deeper → SPPF collapse.
 ARGPERM_SCHEMA = """
-CREATE TABLE IF NOT EXISTS _orbit_def (unit_id TEXT PRIMARY KEY, type_key TEXT, graded_key TEXT);
+CREATE TABLE IF NOT EXISTS _orbit_def (unit_id TEXT PRIMARY KEY, type_key TEXT, graded_key TEXT,
+                                       residue TEXT, stab INT);
 CREATE INDEX IF NOT EXISTS ix_odef_type   ON _orbit_def(type_key);
 CREATE INDEX IF NOT EXISTS ix_odef_graded ON _orbit_def(graded_key);
 """
 
 def project_argperm(con, filt=None):
-    """Per-def GRADED orbit-key (⟡graded-orbit-interner Phase C) → _orbit_def. Additive; touches no other
-    table. Returns (n_defs, n_type_orbits, n_graded_orbits)."""
+    """Per-def GRADED orbit-key + coset residue (⟡graded-orbit-interner Phase C/D) → _orbit_def. Additive;
+    touches no other table. residue = the telescope-permutation Lehmer code (the coset element = the wedge
+    r); two defs in one type-orbit differ by their residues. Returns (n_defs, n_type_orbits, n_graded)."""
     import graded_orbit as G
     con.execute("DROP TABLE IF EXISTS _orbit_def")
     con.executescript(ARGPERM_SCHEMA)
@@ -391,12 +393,12 @@ def project_argperm(con, filt=None):
         if filt and filt not in name:
             continue
         k = G.orbit_key(ctx, name)                                   # (type-orbit, proof-orbit)
+        leh, stab = ctx.resid.get(name, ((), 1))                     # the coset element (Lehmer) + |Stab|
         if name in uid:
-            rows.append((uid[name], _b64(repr(k[0])), _b64(repr(k))))
-    con.executemany("INSERT OR IGNORE INTO _orbit_def VALUES (?,?,?)", rows)
+            rows.append((uid[name], _b64(repr(k[0])), _b64(repr(k)), repr(leh), stab))
+    con.executemany("INSERT OR IGNORE INTO _orbit_def VALUES (?,?,?,?,?)", rows)
     con.commit()
-    tset = {r[1] for r in rows}; gset = {r[2] for r in rows}
-    return len(rows), len(tset), len(gset)
+    return len(rows), len({r[1] for r in rows}), len({r[2] for r in rows})
 
 
 def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False):
