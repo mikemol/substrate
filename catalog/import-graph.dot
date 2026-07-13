@@ -1779,6 +1779,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationUniversalOver" [label="Wedge.OrientationUniversalOver"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
   "Substrate.WitnessTower.Wedge.PyAstRig" [label="Wedge.PyAstRig"];
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" [label="Wedge.PyAstRigNormalize"];
   "Substrate.WitnessTower.Wedge.Simplicial" [label="Wedge.Simplicial"];
   "Substrate.WitnessTower.Wedge.V4Seam" [label="Wedge.V4Seam"];
   "Substrate.WitnessTower.WedgeStep" [label="WitnessTower.WedgeStep"];
@@ -13415,6 +13416,17 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.SnGroup";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.Wedge.OrientationFixedPoint";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Algebra.Semiring.SPPF";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Empty";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.List";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Negation";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.WitnessTower.IsPermutation";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.WitnessTower.Wedge.PyAstRig";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Algebra.Wedge.Graded";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Wedge.Simplicial" -> "Substrate.Foundation.Fin";
