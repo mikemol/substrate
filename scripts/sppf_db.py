@@ -211,8 +211,13 @@ def project_sppf(con):
         packing[key] = pk
         return pk
 
-    def tid(s):                                    # heads already in `terms`; base64 is deterministic
-        return _b64("" if s is None else s)
+    _seen_pt = set()
+    def tid(s):                                    # intern-if-missing: node kinds ("AgdaCore") / lits are
+        s = "" if s is None else s                 # NOT pre-interned by write_events, so the `node` view's
+        cid = _b64(s)                              # inner join on kind_id would drop every row (⟡node-view-kindid).
+        if cid not in _seen_pt:
+            _seen_pt.add(cid); con.execute("INSERT OR IGNORE INTO terms VALUES (?,?)", (cid, s))
+        return cid
     def pid(s):
         return _b64(s)
 
