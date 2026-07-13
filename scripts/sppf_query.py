@@ -11,6 +11,7 @@ same test the catalog uses.)
   fanin [k]           the most-shared nodes (fan-in = hash-cons corroboration)     (was I.fanin scan)
   extract [minunits]  subtrees shared by ≥ minunits distinct units (the apex)      (was the extract pass)
   clusters <unit> [t] units whose support overlaps <unit> by ≥ t fraction          (was the cluster pass)
+  reuse [minunits]    consolidation candidates + the defCopy verdict (CONSOLIDATED/DUP/MIXED)
   sql "<query>"       arbitrary READ-ONLY SQL over the SPPF db
 """
 import sqlite3, sys, os
@@ -68,12 +69,56 @@ def cmd_clusters(c, a):
                        (sz, uid, uid, sz, thr)):
         print(f"   {r['shared']*1.0/sz:.2f}  ({r['shared']}/{sz})  {r['name'].split('.')[-1]}")
 
+def has_copy(c):
+    """is the defCopy provenance column present? (a catalog.db built with the current sppf_db)."""
+    return any(r["name"] == "copy" for r in c.execute("PRAGMA table_info(_unit)"))
+
+def reuse_rows(c, min_units=3, limit=None):
+    """Consolidation candidates AS ONE query (no re-intern): composite subtrees shared by ≥min_units
+    DISTINCT units, each with the defCopy verdict — all instances are module-instantiation copies ⇒
+    CONSOLIDATED; none are ⇒ genuine DUP (independent originals sharing structure = the target); else
+    MIXED. copies is NULL and verdict '?' if the db predates the copy column."""
+    cp = has_copy(c)
+    copysel = "SUM(COALESCE(u.copy,0))" if cp else "NULL"
+    lim = f"LIMIT {int(limit)}" if limit else ""
+    # head from _node with LEFT JOINs (op ▸ role): the `node` view inner-joins kind_id, which does not
+    # resolve in `terms` (a pre-existing projection bug that leaves the view empty).
+    q = f"""SELECT un.node_id AS node_id,
+                   COALESCE(NULLIF(pt.text,''), o.text, r.text, '?') AS head,
+                   COUNT(DISTINCT un.unit_id) AS units, {copysel} AS copies
+            FROM unit_node un
+            JOIN _node nd ON nd.node_id=un.node_id
+            JOIN unit u ON u.unit_id=un.unit_id
+            LEFT JOIN path_text pt ON pt.path_id=nd.op_path_id
+            LEFT JOIN terms o ON o.term_id=nd.op_term_id
+            LEFT JOIN terms r ON r.term_id=nd.role_id
+            WHERE nd.node_id IN (SELECT node_id FROM node_child)     -- composite (has children)
+            GROUP BY un.node_id HAVING units >= ? ORDER BY units DESC {lim}"""
+    out = []
+    for r in c.execute(q, (min_units,)):
+        cc = r["copies"]
+        verdict = ("?" if cc is None else "CONSOLIDATED" if cc == r["units"]
+                   else "DUP" if cc == 0 else "MIXED")
+        out.append({"node_id": r["node_id"], "head": r["head"] or "?",
+                    "units": r["units"], "copies": cc, "verdict": verdict})
+    return out
+
+def cmd_reuse(c, a):
+    m = int(a[0]) if a else 3
+    if not has_copy(c):
+        print("  ⚠ this catalog.db has no defCopy provenance — rebuild it (python3 scripts/sppf_db.py \"\") "
+              "for the consolidated-vs-dup verdict; showing counts only.\n")
+    for r in reuse_rows(c, m, limit=25):
+        mark = {"CONSOLIDATED": "✓", "DUP": "✗", "MIXED": "·"}.get(r["verdict"], "?")
+        cp = "" if r["copies"] is None else f" ({r['copies']}/{r['units']} copies)"
+        print(f"  {mark} {r['verdict']:12s} {r['units']:4d} units{cp}  {r['head'][:44]}")
+
 def cmd_sql(c, a):
     for row in c.execute(a[0]):
         print("  " + " | ".join(str(x) for x in row))
 
 CMDS = {"support": cmd_support, "fanin": cmd_fanin, "extract": cmd_extract,
-        "clusters": cmd_clusters, "sql": cmd_sql}
+        "clusters": cmd_clusters, "reuse": cmd_reuse, "sql": cmd_sql}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in CMDS:

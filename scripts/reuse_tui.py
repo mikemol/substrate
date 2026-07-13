@@ -54,62 +54,109 @@ def observation_md(r):
           f"   the single abstraction.", ""]
     return "\n".join(L)
 
-# --------------------------------------------------------------------------- build (interner)
-def build(cache_path, min_size, min_fanin, cap):
-    sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
-    import jea_pysim as J, typeholer_path as tp
-    cores = sorted(glob.glob(os.path.join(AGDA, "_build", "**", "agda", "Substrate", "**", "*.agdai"),
-                             recursive=True))
-    if not cores:
-        sys.exit(f"reuse_tui --build: ABORT — no .agdai cores under {AGDA}/_build. Build the tree first "
-                 f"(cd agda && make -j).")
-    print(f"interning {len(cores)} cores …", flush=True)
-    C = J.Corpus()
-    ok = fail = 0
-    failures = []
-    for c in cores:
-        before = len(C.units)
-        try:
-            C.add_agdai(c)
-            if len(C.units) > before: ok += 1                       # decoded and contributed units
-            else: fail += 1; failures.append((c, "decoded 0 units"))
-        except Exception as e:                                       # do NOT swallow — record it
-            fail += 1; failures.append((c, str(e).splitlines()[0][:120]))
-    # FAIL LOUD, not silently: a wave of unreadable cores means the shim/.agdai versions have drifted.
-    if fail:
-        print(f"⚠ {fail}/{len(cores)} cores FAILED to intern:", file=sys.stderr, flush=True)
-        for c, why in failures[:8]:
-            print(f"    {os.path.relpath(c, AGDA)} — {why}", file=sys.stderr)
-        if fail > 8: print(f"    … +{fail - 8} more", file=sys.stderr)
-    if ok == 0 or fail > 0.10 * len(cores):
-        sys.exit(f"reuse_tui --build: ABORT — {fail}/{len(cores)} cores unreadable (interned {ok}). The .agdai "
-                 f"have drifted from the shim's linked Agda. Clean-rebuild the cores\n"
-                 f"    cd agda && make clean && make -j\n"
-                 f"and rebuild the shim for that Agda (make -C jea/metalanguage shim AGDA_PKG=Agda-<ver>), "
-                 f"then re-run --build. Refusing to cache a silently-truncated forest.")
-    print(f"interned {ok}/{len(cores)} cores → {len(C.units)} units; extracting shared subtrees "
-          f"(size≥{min_size}, fanin≥{min_fanin}) …", flush=True)
-    cands = tp.extract_cands(C, min_fanin=min_fanin, min_size=min_size)
-    cands.sort(key=lambda c: -(c.units * c.size))
-    keep = cands[:cap]
-    print(f"{len(cands)} candidates; containment tower on the top {len(keep)} …", flush=True)
-    direct, rung, _ = tp.containment_dag(keep)
-    by_nid = {c.nid: c for c in keep}
+# --------------------------------------------------------------------------- build (query the DB)
+CATALOG_DB = os.path.join(REPO, "catalog", "catalog.db")
+
+def db_rows(min_size, min_fanin, cap=None):
+    """The consolidation rows DERIVED from the event-sourced projection (catalog.db) — NOT a re-intern.
+    The SPPF (_node/node_child/shared_subtree/unit_node) and defCopy provenance (unit.copy) are already
+    materialized there; head/size/instances/contains/rung all derive from node_child + unit_node.
+    Returns (rows, copy_units, ncores, n_candidates). Shared by --build (caches) and reuse_sweep."""
+    import sqlite3
+    from collections import defaultdict as _dd
+    if not os.path.exists(CATALOG_DB):
+        sys.exit(f"reuse: ABORT — no catalog.db at {CATALOG_DB}. Regenerate the projection:\n"
+                 f"    python3 scripts/sppf_db.py \"\"        # event-source all cores → SPPF projection")
+    con = sqlite3.connect(CATALOG_DB)
+    have_copy = any(r[1] == "copy" for r in con.execute("PRAGMA table_info(_unit)"))
+    if not have_copy:                                              # loud, not silent — verdicts degrade
+        print("⚠ catalog.db has NO defCopy provenance (copy column absent) — orbit verdicts degrade to the "
+              "def-site HEURISTIC. Rebuild with the current sppf_db:  python3 scripts/sppf_db.py \"\"",
+              file=sys.stderr, flush=True)
+    sys.setrecursionlimit(1 << 20)
+    print("loading SPPF from catalog.db …", flush=True)
+    child = _dd(list)
+    for nid, cid in con.execute("SELECT node_id, child_id FROM node_child ORDER BY node_id, ord"):
+        child[nid].append(cid)
+    # head from _node with LEFT JOINs (the `node` view inner-joins kind_id, which doesn't resolve — a
+    # pre-existing projection bug; role_id does resolve, so op ▸ role ▸ '?').
+    head = {}
+    for nid, op_p, op_t, role in con.execute(
+            "SELECT n.node_id, pt.text, o.text, r.text FROM _node n "
+            "LEFT JOIN path_text pt ON pt.path_id=n.op_path_id "
+            "LEFT JOIN terms o ON o.term_id=n.op_term_id "
+            "LEFT JOIN terms r ON r.term_id=n.role_id"):
+        head[nid] = op_p or op_t or role or "?"
+    shared = {nid: f for nid, f in
+              con.execute("SELECT node_id, fanin FROM shared_subtree WHERE fanin>=?", (min_fanin,))}
+    # subtree weight: unfolded node count, CAPPED (a DAG's true unfolding explodes exponentially under
+    # sharing, and the exact distinct-descendant count costs ~4.5GB/32s — too heavy for a browse tool).
+    # Capping keeps it O(V+E) and bounded; top nodes saturate at SIZE_CAP, where fanin is the real ranker.
+    SIZE_CAP = 99999
+    size = {}
+    def sz(n):
+        v = size.get(n)
+        if v is not None: return v
+        size[n] = 1                                               # cycle guard
+        s = 1
+        for c in child.get(n, ()):
+            s += sz(c)
+            if s >= SIZE_CAP: s = SIZE_CAP; break
+        size[n] = s; return s
+    for n in shared: sz(n)
+    # topmost shared descendants (→ `contains`) + containment height (→ `rung`), memoized
+    dsc = {}
+    def descsh(n):
+        v = dsc.get(n)
+        if v is not None: return v
+        dsc[n] = frozenset()
+        acc = set()
+        for c in child.get(n, ()):
+            acc.add(c) if c in shared else acc.update(descsh(c))
+        r = frozenset(acc); dsc[n] = r; return r
+    rung = {}
+    def hei(n):
+        v = rung.get(n)
+        if v is not None: return v
+        rung[n] = 0
+        kids = descsh(n)
+        h = 1 + max((hei(k) for k in kids), default=-1) if kids else 0
+        rung[n] = h; return h
+    # instances (unit names) sharing each shared node, + the defCopy set
+    uname, copy_units = {}, []
+    for uid, name in con.execute("SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid"):
+        uname[uid] = name
+    if have_copy:
+        copy_units = sorted(name for uid, name in
+            ((uid, uname[uid]) for uid, in con.execute("SELECT unit_id FROM _unit WHERE copy=1")) if uid in uname)
+    units_of = _dd(set)
+    for uid, nid in con.execute("SELECT unit_id, node_id FROM unit_node"):
+        if nid in shared and uid in uname: units_of[nid].add(uid)
+    print(f"{len(uname)} units, {len(shared)} shared subtrees; assembling rows …", flush=True)
     rows = []
-    for c in keep:
-        insts = sorted({C.units[i].name for i in c.unit_ids})
-        contains = sorted({tp._head_str(by_nid[b].head) for b in direct.get(c.nid, []) if b in by_nid})
-        rows.append({"fanin": c.units, "size": c.size, "head": tp._head_str(c.head),
-                     "rung": rung.get(c.nid, 0), "contains": contains, "instances": insts})
-    copy_units = sorted(u.name for u in C.units if getattr(u, "copy", False))
+    for nid in shared:
+        if size.get(nid, 0) < min_size: continue
+        insts = sorted(uname[u] for u in units_of.get(nid, ()))
+        if len(insts) < min_fanin: continue                       # instance-fanin: shared across ≥min_fanin units
+        contains = sorted({head.get(k, "?") for k in descsh(nid)})
+        rows.append({"fanin": len(insts), "size": size[nid], "head": head.get(nid, "?"),
+                     "rung": hei(nid), "contains": contains, "instances": insts})
+    rows.sort(key=lambda r: -(r["fanin"] * r["size"]))
+    if cap: rows = rows[:cap]
+    ncores = con.execute("SELECT COUNT(DISTINCT file_id) FROM _unit").fetchone()[0]
+    return rows, copy_units, ncores, len(shared)
+
+def build(cache_path, min_size, min_fanin, cap):
+    """Cache the DB-derived consolidation rows for the TUI. Sourced from catalog.db (db_rows), no re-intern."""
+    rows, copy_units, ncores, ncand = db_rows(min_size, min_fanin, cap)
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    json.dump({"rows": rows, "units": len(C.units), "cores": len(cores), "n_candidates": len(cands),
-               "copy_units": copy_units}, open(cache_path, "w"))
-    print(f"✓ cached {len(rows)} shared subtrees ({len(copy_units)} defCopy instances) → {cache_path}")
-    if not copy_units:                                              # loud, not quiet: verdicts degrade to heuristic
-        print("⚠ NO defCopy provenance in this cache (shim emitted 0 copies) — orbit verdicts will fall back to "
-              "the DEF-SITE HEURISTIC, which is weaker. Rebuild the shim with the defCopy patch and re-run to get "
-              "the exact consolidated-vs-dup signal.", file=sys.stderr, flush=True)
+    json.dump({"rows": rows, "units": None, "cores": ncores, "n_candidates": ncand,
+               "copy_units": copy_units, "source": "catalog.db"}, open(cache_path, "w"))
+    print(f"✓ cached {len(rows)} shared subtrees ({len(copy_units)} defCopy instances) from catalog.db "
+          f"→ {cache_path}")
+    if not copy_units:
+        print("⚠ 0 defCopy instances — the projection may predate a fresh ingest (python3 scripts/sppf_db.py \"\").",
+              file=sys.stderr, flush=True)
 
 # --------------------------------------------------------------------------- orbit grouping
 from collections import defaultdict

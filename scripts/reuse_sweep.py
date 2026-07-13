@@ -35,57 +35,48 @@ def git_changed():
             return fs
     return []
 
+def _mod(qname): return qname.rsplit(".", 1)[0]
+
+def _db_rows_and_verdict(min_size, min_fanin):
+    """DB-derived consolidation rows + the defCopy resolver — the SAME projection reuse_tui reads (no
+    re-intern). Returns (rows, verdict_of) where verdict_of(instances) → 'CONSOLIDATED'|'DUP'|'MIXED'."""
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    import reuse_tui as T
+    rows, copy_units, _, ncand = T.db_rows(min_size, min_fanin)
+    defidx = T.load_def_index()
+    cu = set(copy_units)
+    def verdict_of(insts):
+        return T.resolve_orbit(list(insts), defidx, cu)[0]
+    return rows, verdict_of, ncand
+
 def sweep(files, min_size, min_fanin):
-    sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
-    import jea_pysim as J
     changed_mods = {module_of(f) for f in files}
-    cores = glob.glob(os.path.join(AGDA, "_build", "**", "agda", "Substrate", "**", "*.agdai"), recursive=True)
-    print(f"interning the full forest: {len(cores)} cores …", flush=True)
-    C = J.Corpus()
-    for c in sorted(cores):
-        try: C.add_agdai(c)
-        except Exception: pass
-    print(f"  {len(C.units)} units interned.\n")
-
-    def mod(u): return getattr(u, "name", "").rsplit(".", 1)[0]
-    node_units = defaultdict(set)                                  # canonical node -> owning units (= its fanin)
-    for ui, u in enumerate(C.units):
-        for nid in getattr(u, "support", ()): node_units[nid].add(ui)
-
-    # a canonical node with fanin ≥ 2 IS shared structure = a consolidation opportunity. Report every
-    # shared subtree that touches CHANGED code, ranked by IMPACT (fanin × size) — Sequitur digram value.
+    rows, verdict_of, _ = _db_rows_and_verdict(min_size, min_fanin)
+    # a shared subtree touching CHANGED code is a consolidation opportunity; rank by impact (fanin×size)
+    # — Sequitur digram value — and carry the defCopy verdict (DUP = genuine target; CONSOLIDATED = already
+    # instances of one abstraction).
     findings = []
-    for nid, fanin, size, head in C.extract_candidates(min_fanin=min_fanin, min_size=min_size):
-        owners = node_units.get(nid, ())
-        chg = sorted({C.units[i].name for i in owners if mod(C.units[i]) in changed_mods})
-        exi = sorted({C.units[i].name for i in owners if mod(C.units[i]) not in changed_mods})
+    for r in rows:
+        chg = sorted(n for n in r["instances"] if _mod(n) in changed_mods)
+        exi = sorted(n for n in r["instances"] if _mod(n) not in changed_mods)
         if chg and exi:
-            findings.append((fanin * size, fanin, size, head, chg, exi))
-    findings.sort(reverse=True)
+            findings.append((r["fanin"] * r["size"], r["fanin"], r["size"],
+                             (r["head"], verdict_of(r["instances"])), chg, exi))
+    findings.sort(reverse=True, key=lambda t: t[0])
     return findings
 
 def sweep_recursive(files, min_size, min_fanin):
-    """the Sequitur FIXPOINT: build the containment TOWER (rung = consolidation depth) over the whole
-    forest via typeholer_path; report the rungs the CHANGED code participates in, each showing what it
-    CONTAINS (the recursive stack: a rung-k abstraction is built from rung-(k-1) ones)."""
-    sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
-    import typeholer_path as tp
+    """the Sequitur FIXPOINT: the containment TOWER (rung = consolidation depth), DERIVED from the
+    projection (db_rows carries rung + contains); report the rungs the CHANGED code participates in."""
     changed_mods = {module_of(f) for f in files}
-    cores = glob.glob(os.path.join(AGDA, "_build", "**", "agda", "Substrate", "**", "*.agdai"), recursive=True)
-    print(f"interning + building the containment tower: {len(cores)} cores …", flush=True)
-    C = tp.build_corpus(sorted(cores))
-    cands = tp.extract_cands(C, min_fanin=min_fanin, min_size=min_size)
-    direct, rung, _ = tp.containment_dag(cands)
-    by_nid = {c.nid: c for c in cands}
-    def mod(ui): return getattr(C.units[ui], "name", "").rsplit(".", 1)[0]
+    rows, _, ncand = _db_rows_and_verdict(min_size, min_fanin)
     touching = []
-    for c in cands:
-        chg = sorted({C.units[i].name for i in c.unit_ids if mod(i) in changed_mods})
+    for r in rows:
+        chg = sorted(n for n in r["instances"] if _mod(n) in changed_mods)
         if chg:
-            contains = sorted({tp._head_str(by_nid[b].head) for b in direct.get(c.nid, [])})
-            touching.append((rung[c.nid], c.units, c.size, tp._head_str(c.head), chg, contains))
+            touching.append((r["rung"], r["fanin"], r["size"], r["head"], chg, r["contains"]))
     touching.sort(key=lambda t: (-t[0], -(t[1] * t[2])))
-    return touching, max((rung[c.nid] for c in cands), default=0), len(cands)
+    return touching, max((r["rung"] for r in rows), default=0), ncand
 
 def main():
     ap = argparse.ArgumentParser()
@@ -123,10 +114,12 @@ def main():
     if not findings:
         print("✓ changed code shares no consolidatable subtree with the tree."); return
     print(f"◆ {len(findings)} CONSOLIDATION opportunit(ies) — changed code instantiates shared structure.")
-    print(f"  (parameterize the pattern; the instances — old and new — consolidate onto it. Ranked by fanin×size.)\n")
+    print(f"  (parameterize the pattern; the instances — old and new — consolidate onto it. Ranked by fanin×size.")
+    print(f"   verdict via defCopy: ✗DUP = genuine target (independent originals); ✓CONSOLIDATED = already instances.)\n")
     for impact, fanin, size, head, chg, exi in findings[:args.top]:
-        h = head[1] if isinstance(head, (list, tuple)) and len(head) > 1 else head
-        print(f"    [{fanin} instances × size {size}]  {h or '(anonymous pattern → parameterize)'}")
+        h, verdict = head if isinstance(head, (list, tuple)) else (head, "?")
+        mark = {"CONSOLIDATED": "✓", "DUP": "✗", "MIXED": "·"}.get(verdict, "?")
+        print(f"    {mark} {verdict:12s} [{fanin} instances × size {size}]  {h or '(anonymous pattern → parameterize)'}")
         print(f"        changed:  " + ", ".join(chg))
         print(f"        also in:  " + ", ".join(exi[:4]) + (f"  … (+{len(exi)-4})" if len(exi) > 4 else ""))
     if args.gate:
