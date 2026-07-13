@@ -367,11 +367,45 @@ def project_orbit_sppf(con, distribute=False):
             con.execute("SELECT MAX(LENGTH(orbit_id)) FROM orbit_node").fetchone()[0])
 
 
-def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False):
+# ⟡argperm — the GRADED orbit-key per def (type-orbit + proof-orbit), from graded_orbit. ADDITIVE: a new
+# _orbit_def table; the depth-1 canon_syms/opk can't carry the deep key (all Defn→[Pi,Clause] collide), so
+# the def orbit lives here, not in orbit_node. Genuine arg-perm twins share graded_key; type-twins share
+# type_key. Depth-3 (rig precomputed-coherence) fixpoint over the def-dependency DAG; deeper → SPPF collapse.
+ARGPERM_SCHEMA = """
+CREATE TABLE IF NOT EXISTS _orbit_def (unit_id TEXT PRIMARY KEY, type_key TEXT, graded_key TEXT);
+CREATE INDEX IF NOT EXISTS ix_odef_type   ON _orbit_def(type_key);
+CREATE INDEX IF NOT EXISTS ix_odef_graded ON _orbit_def(graded_key);
+"""
+
+def project_argperm(con, filt=None):
+    """Per-def GRADED orbit-key (⟡graded-orbit-interner Phase C) → _orbit_def. Additive; touches no other
+    table. Returns (n_defs, n_type_orbits, n_graded_orbits)."""
+    import graded_orbit as G
+    con.execute("DROP TABLE IF EXISTS _orbit_def")
+    con.executescript(ARGPERM_SCHEMA)
+    ctx = G.Ctx(con)
+    uid = {nm: u for u, nm in con.execute(
+        "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid WHERE u.copy=0")}
+    rows = []
+    for name in ctx.idx:
+        if filt and filt not in name:
+            continue
+        k = G.orbit_key(ctx, name)                                   # (type-orbit, proof-orbit)
+        if name in uid:
+            rows.append((uid[name], _b64(repr(k[0])), _b64(repr(k))))
+    con.executemany("INSERT OR IGNORE INTO _orbit_def VALUES (?,?,?)", rows)
+    con.commit()
+    tset = {r[1] for r in rows}; gset = {r[2] for r in rows}
+    return len(rows), len(tset), len(gset)
+
+
+def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False):
     base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
     con = sqlite3.connect(catalog_db)
     write_events(cores, con, base)                 # P1: append-only events (source of truth)
     stats = project_sppf(con)                      # P2: the positional SPPF, DERIVED from events
+    if argperm:
+        project_argperm(con)                       # ⟡argperm: the per-def GRADED orbit-key (additive)
     if orbit:
         project_orbit_sppf(con, distribute=distribute)   # ⟡rig: the ORBIT projection (additive)
     con.close()
@@ -382,13 +416,21 @@ if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     orbit = "--orbit" in sys.argv
     distribute = "--distribute" in sys.argv
+    argperm = "--argperm" in sys.argv
     filt = args[0] if args else "Category"
     base = substrate_core_root(os.path.join(_ROOT, "agda"))
     cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
     print(f"event-sourcing {len(cores)} cores (filter={filt!r}) → catalog.db (events, then project SPPF"
           f"{', + ORBIT' if orbit else ''}) …")
-    n, u, sh, mx = build(cores, orbit=orbit, distribute=distribute)
+    n, u, sh, mx = build(cores, orbit=orbit, distribute=distribute, argperm=argperm)
     print(f"  events → SPPF projection: {n} packings, {u} units, {sh} shared subtrees, max node_id {mx}")
+    if argperm:
+        con = sqlite3.connect(CATALOG_DB)
+        d, t, g = con.execute("SELECT COUNT(*), COUNT(DISTINCT type_key), COUNT(DISTINCT graded_key) "
+                              "FROM _orbit_def").fetchone()
+        print(f"  ⟡argperm GRADED orbit: {d} defs → {t} type-orbits, {g} graded-orbits "
+              f"({d-g} defs collapsed by full arg-perm equivalence; {d-t} by type/telescope alone)")
+        con.close()
     if orbit:
         con = sqlite3.connect(CATALOG_DB)
         orbits = con.execute("SELECT COUNT(*) FROM orbit_node").fetchone()[0]
