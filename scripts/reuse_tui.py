@@ -261,7 +261,9 @@ from textual.containers import Horizontal
 from textual.widgets import Tree, Input, Header, Footer
 from textual.binding import Binding
 
-ORBIT_SORTS = ["impact", "size", "fanin", "n_subtrees"]
+ORBIT_SORTS = ["dup", "impact", "size", "fanin", "n_subtrees"]   # dup-first is the default (targets lead)
+VERDICT_RANK = {"DUP": 0, "MIXED": 1, "CONSOLIDATED": 2, "mixed": 1}   # DUP = genuine target → sorts first
+VERDICT_MARK = {"DUP": "✗", "CONSOLIDATED": "✓"}
 
 class SPPF(App):
     CSS = """
@@ -272,6 +274,7 @@ class SPPF(App):
     BINDINGS = [
         Binding("q", "quit", "quit"),
         Binding("s", "sort", "sort"),
+        Binding("d", "dup_only", "DUP-only"),
         Binding("x", "extract", "extract obs"),
         Binding("slash", "focus_filter", "filter"),
         Binding("escape", "unfocus_filter", "unfilter"),
@@ -281,13 +284,17 @@ class SPPF(App):
         super().__init__()
         self.allrows = rows
         self.meta = meta
-        self.sort_key = "impact"
+        self.sort_key = "dup"                          # targets (✗DUP) lead by default
         self.filt = ""
+        self.dup_only = False
         self.defidx = load_def_index()
         self.copy_units = set(meta.get('copy_units', []))
         orbits = defaultdict(list)
         for r in rows:
             orbits[frozenset(r["instances"])].append(r)
+        # precompute the defCopy verdict per orbit ONCE → sort/filter/label by it (the whole point:
+        # bring genuine ✗DUP parameterization targets to the front, not interleaved by raw impact).
+        self.verdict = {u: resolve_orbit(list(u), self.defidx, self.copy_units)[0] for u in orbits}
         self.orbits = list(orbits.items())            # [(frozenset units, [rows])]
 
     def compose(self) -> ComposeResult:
@@ -304,29 +311,36 @@ class SPPF(App):
 
     def _orbit_key(self, item):
         units, subs = item
+        impact = max(_impact(s) for s in subs)
+        if self.sort_key == "dup":                    # DUP first, then by impact within each verdict class
+            return (VERDICT_RANK.get(self.verdict.get(units), 1), -impact)
         if self.sort_key == "n_subtrees": return -len(subs)
         if self.sort_key == "fanin": return -len(units)
         if self.sort_key == "size": return -max(s["size"] for s in subs)
-        return -max(_impact(s) for s in subs)
+        return -impact
 
     def refresh_orbits(self):
         tree = self.query_one("#orbits", Tree)
         tree.reset("orbits")
         items = []
         for units, subs in self.orbits:
+            if self.dup_only and self.verdict.get(units) != "DUP":
+                continue                              # hide already-consolidated / mixed orbits
             fs = [s for s in subs if not self.filt or self.filt.lower() in s["head"].lower()]
             if fs: items.append((units, fs))
         items.sort(key=self._orbit_key)
         shown = items[:1500]
         for units, subs in shown:
             mx = max(_impact(s) for s in subs)
-            node = tree.root.add(f"[{len(subs):>3} sub · ×{len(units)} · ≤{mx}]  {orbit_pref(units)}",
+            mark = VERDICT_MARK.get(self.verdict.get(units), "·")
+            node = tree.root.add(f"{mark} [{len(subs):>3} sub · ×{len(units)} · ≤{mx}]  {orbit_pref(units)}",
                                  data=("orbit", units, subs))
             for s in sorted(subs, key=lambda s: -_impact(s)):
                 node.add_leaf(f"{s['head']}  · size {s['size']} rung {s['rung']}", data=("sub", s))
         tree.root.expand()
-        self.sub_title = (f"{len(items)} orbits ({len(self.allrows)} subtrees, {self.meta['units']} units) · "
-                          f"sort:{self.sort_key} · filter:'{self.filt}'")
+        ndup = sum(1 for u, _ in self.orbits if self.verdict.get(u) == "DUP")
+        self.sub_title = (f"{len(items)} orbits shown ({ndup} ✗DUP total) · "
+                          f"sort:{self.sort_key} · dup-only:{self.dup_only} · filter:'{self.filt}'")
         if shown: self.show_orbit(shown[0][0], shown[0][1])
 
     def _detail_instances(self, tree, units):
@@ -377,6 +391,10 @@ class SPPF(App):
 
     def action_sort(self):
         self.sort_key = ORBIT_SORTS[(ORBIT_SORTS.index(self.sort_key) + 1) % len(ORBIT_SORTS)]
+        self.refresh_orbits()
+
+    def action_dup_only(self):
+        self.dup_only = not self.dup_only             # show only genuine ✗DUP parameterization targets
         self.refresh_orbits()
 
     def action_focus_filter(self):
