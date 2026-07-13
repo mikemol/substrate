@@ -93,18 +93,77 @@ def orbit_pref(units):
     cp = os.path.commonprefix(list(units))
     return cp.rsplit(".", 1)[0] if "." in cp else cp or "(mixed)"
 
-def observation_orbit(units, subs):
+# --- consolidated vs dup, mechanically: does the orbit resolve to ONE shared definition, or is each
+#     instance's leaf defined INSIDE its own module?  (WithLemmas.normalize-idem → one Core file = ✓;
+#     each group redefining it → def-site == instance file = ✗.)
+DEF_INDEX_PATH = os.path.join(REPO, "scratch", "generated", "def_index.json")
+def scan_def_index():
+    idx = defaultdict(set)
+    sub = os.path.join(AGDA, "Substrate")
+    for root, _, files in os.walk(sub):
+        if "_build" in root:
+            continue
+        for f in files:
+            if not f.endswith(".agda"):
+                continue
+            rel = os.path.relpath(os.path.join(root, f), REPO)
+            try:
+                for line in open(os.path.join(root, f), errors="replace"):
+                    m = re.match(r"^\s*([^\s:{}()]+)\s+:\s", line)
+                    if m:
+                        idx[m.group(1)].add(rel)
+            except OSError:
+                pass
+    return {k: sorted(v) for k, v in idx.items()}
+
+def load_def_index():
+    if os.path.exists(DEF_INDEX_PATH):
+        return json.load(open(DEF_INDEX_PATH))
+    idx = scan_def_index()
+    os.makedirs(os.path.dirname(DEF_INDEX_PATH), exist_ok=True)
+    json.dump(idx, open(DEF_INDEX_PATH, "w"))
+    return idx
+
+def resolve_orbit(units, defidx):
+    """verdict: is this orbit already CONSOLIDATED (instances of shared defs) or a DUP (each redefines)?"""
+    from collections import defaultdict as _dd
+    inst_files = {qname_to_file(u) for u in units}
+    ext_homes, ext, local = _dd(int), 0, 0
+    for leaf in {u.split(".")[-1] for u in units}:
+        sites = set(defidx.get(leaf, []))
+        outside = sites - inst_files
+        if outside:                                  # defined in a shared module (not an instance) → consolidated
+            ext += 1
+            for h in outside: ext_homes[h] += 1
+        elif sites:                                  # defined only inside the instances → duplicated
+            local += 1
+    homes = sorted(ext_homes, key=lambda h: -ext_homes[h])[:5]
+    verdict = "CONSOLIDATED" if ext > local else ("DUP" if local else "mixed")
+    return verdict, homes, ext, local
+
+def observation_orbit(units, subs, defidx=None):
     """an LLM work-order for a whole ORBIT: these units co-share this structure — consolidate the pair/set."""
     us = sorted(units, key=lambda n: (n.count("."), n))
     big = max(subs, key=_impact)
+    verdict, homes, ext, local = resolve_orbit(units, defidx if defidx is not None else load_def_index())
     L = [f"# Consolidation observation — ORBIT of {len(units)} co-sharing units @ `{orbit_pref(units)}`", "",
-         f"These {len(units)} units share {len(subs)} subtree(s) (they are one SPPF orbit). Largest shared "
-         f"shape: `{big['head']}` size {big['size']}.", "", "## Units (canonical = shallowest)", ""]
-    L += [f"- `{u}`  →  `{qname_to_file(u)}`" for u in us]
+         f"**Verdict: {verdict}** ({ext} of {ext+local} distinct leaves defined in a SHARED module vs each "
+         f"instance's own).", ""]
+    if verdict == "CONSOLIDATED":
+        L += [f"→ ALREADY CONSOLIDATED: these are INSTANCES of shared definitions homed at "
+              f"{', '.join('`'+h+'`' for h in homes)}. **No action** — the sharing is the fingerprint of "
+              f"an existing parameterization (e.g. a parameterized module instantiated per unit). Skip.", ""]
+        L += [f"(Largest shared shape: `{big['head']}` size {big['size']}. Units: {len(units)}.)", ""]
+        return "\n".join(L)
+    L += [f"These {len(units)} units share {len(subs)} subtree(s) (one SPPF orbit); largest: `{big['head']}` "
+          f"size {big['size']}. Their distinctive leaves are defined INDEPENDENTLY (not from a shared "
+          f"module) — a genuine duplication.", "", "## Units (canonical = shallowest)", ""]
+    L += [f"- `{u}`  →  `{qname_to_file(u)}`" for u in us[:40]]
     L += ["", "## Shared subtrees (this orbit)", ""]
     L += [f"- `{s['head']}` — size {s['size']}, rung {s['rung']}" for s in sorted(subs, key=lambda s: -_impact(s))[:20]]
     L += ["", "## Instruction (for an LLM)", "",
-          f"These {len(units)} units are ONE orbit — they co-share the structure above. Consolidate:",
+          f"These {len(units)} units are ONE orbit sharing the structure above, with INDEPENDENT definitions.",
+          f"Consolidate:",
           f"1. Extract ONE parameterized abstraction (record / def / parameterized module) capturing the",
           f"   shared shape, homed at the canonical module of `{us[0]}` (or a shallower shared parent).",
           f"2. Rewrite each unit to INSTANTIATE it (X is an instance of Y — the goal).",
@@ -140,6 +199,7 @@ class SPPF(App):
         self.meta = meta
         self.sort_key = "impact"
         self.filt = ""
+        self.defidx = load_def_index()
         orbits = defaultdict(list)
         for r in rows:
             orbits[frozenset(r["instances"])].append(r)
@@ -198,7 +258,14 @@ class SPPF(App):
 
     def show_orbit(self, units, subs):
         tree = self.query_one("#detail", Tree)
-        tree.reset(f"ORBIT — {len(units)} units · {len(subs)} shared subtrees @ {orbit_pref(units)}")
+        verdict, homes, ext, local = resolve_orbit(units, self.defidx)
+        mark = {"CONSOLIDATED": "✓", "DUP": "✗"}.get(verdict, "·")
+        tree.reset(f"{mark} {verdict} — {len(units)} units · {len(subs)} shared subtrees @ {orbit_pref(units)}")
+        if verdict == "CONSOLIDATED":
+            h = tree.root.add(f"already consolidated onto ({ext}/{ext+local} leaves shared) — SKIP", expand=True)
+            for m in homes: h.add_leaf(m)
+        else:
+            tree.root.add(f"⚠ {local}/{ext+local} distinct leaves defined INDEPENDENTLY — genuine dup", expand=True)
         self._detail_instances(tree, units)
         tree.root.expand()
 
@@ -240,7 +307,7 @@ class SPPF(App):
         if d[0] == "orbit":
             units, subs = d[1], d[2]
             path = os.path.join(OBS_DIR, f"orbit_{re.sub(r'[^\w.+-]', '_', orbit_pref(units))[:40]}__x{len(units)}.md")
-            open(path, "w").write(observation_orbit(units, subs))
+            open(path, "w").write(observation_orbit(units, subs, self.defidx))
         else:
             r = d[1]
             path = os.path.join(OBS_DIR, f"{re.sub(r'[^\w.+-]', '_', r['head'])[:48]}__x{r['fanin']}.md")

@@ -35,7 +35,7 @@ import qualified Data.HashMap.Strict as HMap
 
 import Agda.TypeChecking.Serialise (decodeInterface)
 import Agda.TypeChecking.Monad.Base
-  ( runTCMTop, iSignature, _sigDefinitions, defType, theDef, Defn(..), funClauses
+  ( runTCMTop, iSignature, _sigDefinitions, defType, theDef, defCopy, Defn(..), funClauses
   , dataCons, recConHead, recFields, Interface )
 import Agda.TypeChecking.Monad.Options (setCommandLineOptions)
 import Agda.Interaction.Options (defaultOptions)
@@ -196,6 +196,7 @@ main = do
                    memJSON = "[" ++ intercalate "," (map (\m -> "\"" ++ esc m ++ "\"") mems) ++ "]"
                putStrLn $ "{\"unit\":\"" ++ esc (prettyShow qn) ++ "\",\"root\":" ++ show sid
                         ++ ",\"kind\":\"" ++ defnKind (theDef d) ++ "\",\"members\":" ++ memJSON
+                          ++ ",\"copy\":" ++ (if defCopy d then "true" else "false")   -- provenance: module-instantiation copy?
                           ++ sortJSON (defType d) ++ "}"
             ) defs
       n <- readIORef r
