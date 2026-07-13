@@ -20,7 +20,7 @@ so equal slider steps trade equal counts — the sliders are commensurable perce
   scripts/reuse_tui.py --build     # derive the orbit rows from catalog.db → cache (do once)
   scripts/reuse_tui.py             # load cache, launch the browser
 """
-import sys, os, re, json, argparse, glob
+import sys, os, re, json, argparse, glob, math
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 AGDA = os.path.join(REPO, "agda")
@@ -97,9 +97,10 @@ def db_rows(min_size, min_fanin, cap=None):
         head[nid] = op_p or op_t or role or "?"
     shared = {nid: f for nid, f in
               con.execute("SELECT node_id, fanin FROM shared_subtree WHERE fanin>=?", (min_fanin,))}
+    import math
     # subtree weight: unfolded node count, CAPPED (a DAG's true unfolding explodes exponentially under
     # sharing, and the exact distinct-descendant count costs ~4.5GB/32s — too heavy for a browse tool).
-    # Capping keeps it O(V+E) and bounded; top nodes saturate at SIZE_CAP, where fanin is the real ranker.
+    # Capping keeps it O(V+E) and bounded — used for the min_size floor + display continuity.
     size = {}
     def sz(n):
         v = size.get(n)
@@ -111,6 +112,20 @@ def db_rows(min_size, min_fanin, cap=None):
             if s >= SIZE_CAP: s = SIZE_CAP; break
         size[n] = s; return s
     for n in shared: sz(n)
+    # ⟡size-per-instance: LOG-unfolded weight via log-sum-exp — the same unfolding WITHOUT the cap
+    # (log-space tames the explosion), so it NEVER saturates (the capped size piled 38% at SIZE_CAP, a
+    # V₂ atom that poisons the σ axis). lsize = log(1 + Σ exp(lsize(child))); the natural {n,s} contrast
+    # σ = lsize − log n lives in log-space where a ratio is a difference. O(V+E), one float per node.
+    lsize = {}
+    def lsz(n):
+        v = lsize.get(n)
+        if v is not None: return v
+        lsize[n] = 0.0                                            # cycle guard (log 1 = the node alone)
+        kids = [lsz(c) for c in child.get(n, ())]
+        mx = max([0.0] + kids)
+        tot = math.exp(0.0 - mx) + sum(math.exp(k - mx) for k in kids)
+        v = mx + math.log(tot); lsize[n] = v; return v
+    for n in shared: lsz(n)
     # topmost shared descendants (→ `contains`) + containment height (→ `rung`), memoized
     dsc = {}
     def descsh(n):
@@ -148,7 +163,7 @@ def db_rows(min_size, min_fanin, cap=None):
         if len(insts) < min_fanin: continue                       # instance-fanin: shared across ≥min_fanin units
         h = head.get(nid, "?")
         contains = sorted({head.get(k, "?") for k in descsh(nid)})
-        rows.append({"fanin": len(insts), "size": size[nid], "head": h,
+        rows.append({"fanin": len(insts), "size": size[nid], "lsize": round(lsz(nid), 3), "head": h,
                      # head_is_def: the shared subtree's head IS a real definition → the instances
                      # REFERENCE it (already consolidated at its home), NOT a redefinition to extract.
                      "head_is_def": h in unit_names,
@@ -322,16 +337,17 @@ class SPPF(App):
         for u, subs in orbits.items():
             n = len(u); m = self.nmod[u]; c = sum(1 for x in u if x in self.copy_units)
             s = max(x["size"] for x in subs)
-            self.cnt[u] = dict(n=n, m=m, c=c, s=s, kappa=n/m, sigma=s/n,
-                               sat=(s >= SIZE_CAP),                       # V₂ #2 (size-saturation atom)
+            ls = max(x.get("lsize", 0.0) for x in subs)   # ⟡size-per-instance: log-unfolded (non-saturating)
+            self.cnt[u] = dict(n=n, m=m, c=c, s=s, kappa=n/m,
+                               sigma=ls - math.log(n),                    # {n,s} contrast in log-space
+                               sat=(s >= SIZE_CAP),                       # V₂ #2 diagnostic (no longer piles σ)
                                copyfam=(self.verdict[u] == "CONSOLIDATED"))  # V₂ #1 (copy-family atom)
         allu = list(orbits)
         def _pctile(keyfn, subset):                    # tie-aware percentile rank (the isotropic coord)
             it = sorted(subset, key=keyfn); d = max(1, len(it) - 1)
             return {u: i / d for i, u in enumerate(it)}
         self.krank = _pctile(lambda u: self.cnt[u]["kappa"], allu)
-        srk = _pctile(lambda u: self.cnt[u]["sigma"], [u for u in allu if not self.cnt[u]["sat"]])
-        self.srank = {u: srk.get(u, 1.0) for u in allu}   # saturated → top (handled by the sat V₂)
+        self.srank = _pctile(lambda u: self.cnt[u]["sigma"], allu)   # σ non-saturating → rank over ALL
         # live control state
         self.pk = 0.0; self.ps = 0.0; self.active = 0     # κ / σ percentile floors; active slider
         self.hide_ref = True                              # references off by default (they're consolidated)
