@@ -104,6 +104,113 @@ def synth_agda(filt, min_instances):
         return [{"n": len(ns), "size": sz.get(s), "labels": ns} for s, ns in clusters]
 
 
+def synth_agda_holes(filt, min_instances, sim=0.6, bucket_cap=60):
+    """Near-dup (WITH-holes) targets, declaratively. A parameterization target is N units sharing a large
+    common subtree (the abstraction) and differing at a few nodes (the holes = the per-instance
+    substitution). Candidate pairs are bounded to the same (root_id, size) BUCKET first (near-dups have
+    equal size — a hole swaps a subtree, it doesn't add nodes to only one side of the bucket), skipping
+    giant buckets LOUDLY (no silent truncation); within-bucket the overlap is a unit_node SELF-JOIN and the
+    holes are the set-difference (NOT EXISTS) — JOINs + constraints, no walk."""
+    from sqlalchemy import MetaData, Table, select, func, and_
+    from collections import defaultdict
+    eng = _engine(); md = MetaData()
+    unit = Table("_unit", md, autoload_with=eng)
+    un = Table("unit_node", md, autoload_with=eng)
+    with eng.connect() as conn:
+        sz = select(un.c.unit_id, func.count().label("n")).group_by(un.c.unit_id).subquery()
+        # buckets = (root_id, size) among independent units; keep 2..bucket_cap (skip the giant ones LOUD)
+        bexpr = (select(unit.c.root_id, sz.c.n, func.count().label("k"))
+                 .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id)).where(unit.c.copy == 0)
+                 .group_by(unit.c.root_id, sz.c.n))
+        buckets = conn.execute(bexpr.having(func.count() >= min_instances)).all()
+        keep = [(r, n) for r, n, k in buckets if k <= bucket_cap]
+        skipped = [(r, n, k) for r, n, k in buckets if k > bucket_cap]
+        if skipped:
+            tot = sum(k for _, _, k in skipped)
+            print(f"  \u26a0 skipped {len(skipped)} bucket(s) with > {bucket_cap} units ({tot} units) — "
+                  f"too big to pairwise self-join; raise --bucket-cap to include (biggest {max(k for *_ ,k in skipped)}).",
+                  file=sys.stderr)
+        if not keep: return []
+        # eligible units = those in a kept bucket
+        elig = (select(unit.c.unit_id, unit.c.root_id, sz.c.n)
+                .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id)).where(unit.c.copy == 0)).subquery()
+        keepset = set(keep)
+        rows = [r for r in conn.execute(select(elig.c.unit_id, elig.c.root_id, elig.c.n))
+                if (r[1], r[2]) in keepset]
+        by_bucket = defaultdict(list)
+        for uid, root, n in rows:
+            by_bucket[(root, n)].append(uid)
+        # within each small bucket, cluster by pairwise overlap ≥ sim·n (connected components)
+        out = []
+        uid2name = {}
+        for (root, n), uids in by_bucket.items():
+            if len(uids) < min_instances: continue
+            a = un.alias("a"); b = un.alias("b")
+            pair = (select(a.c.unit_id, b.c.unit_id, func.count().label("sh"))
+                    .select_from(a.join(b, and_(a.c.node_id == b.c.node_id, a.c.unit_id < b.c.unit_id)))
+                    .where(and_(a.c.unit_id.in_(uids), b.c.unit_id.in_(uids)))
+                    .group_by(a.c.unit_id, b.c.unit_id)
+                    .having(and_(func.count() >= sim * n, func.count() < n)))
+            adj = defaultdict(set)
+            for x, y, sh in conn.execute(pair):
+                adj[x].add(y); adj[y].add(x)
+            seen = set()
+            for u0 in list(adj):
+                if u0 in seen: continue
+                comp, stack = set(), [u0]
+                while stack:
+                    v = stack.pop()
+                    if v in seen: continue
+                    seen.add(v); comp.add(v); stack.extend(adj[v] - seen)
+                if len(comp) >= min_instances:
+                    out.append({"units": comp, "n": len(comp), "size": n, "root": root})
+        # names + rank
+        allu = set().union(*[c["units"] for c in out]) if out else set()
+        if allu:
+            ptv = Table("path_text", md, autoload_with=eng)
+            nq = (select(unit.c.unit_id, ptv.c.text).select_from(
+                    unit.join(ptv, ptv.c.path_id == unit.c.name_pid)).where(unit.c.unit_id.in_(allu)))
+            uid2name = {u: nm for u, nm in conn.execute(nq)}
+        res = []
+        for c in out:
+            names = sorted(uid2name.get(u, u) for u in c["units"])
+            if filt and not any(filt in nm for nm in names): continue
+            res.append({"n": c["n"], "size": c["size"], "labels": names, "uids": sorted(c["units"])})
+        res.sort(key=lambda c: -(c["n"] * c["size"]))
+        return res
+
+
+def agda_holes_detail(uids):
+    """The set-difference that IS the synthesis: the shared CORE (nodes in ALL units = the abstraction) vs
+    each unit's HOLES (its nodes not in the core = its substitution), with the hole node HEADS. Declarative:
+    core = GROUP BY node_id HAVING COUNT(DISTINCT unit)=|cluster|; holes = the complement per unit."""
+    from sqlalchemy import MetaData, Table, select, func, and_, literal_column
+    from collections import defaultdict
+    eng = _engine(); md = MetaData()
+    un = Table("unit_node", md, autoload_with=eng); node = Table("_node", md, autoload_with=eng)
+    trm = Table("terms", md, autoload_with=eng); ptv = Table("path_text", md, autoload_with=eng)
+    unit = Table("_unit", md, autoload_with=eng)
+    with eng.connect() as conn:
+        core = (select(un.c.node_id).where(un.c.unit_id.in_(uids))
+                .group_by(un.c.node_id).having(func.count(func.distinct(un.c.unit_id)) == len(uids))).subquery()
+        core_n = conn.execute(select(func.count()).select_from(core)).scalar()
+        # per-unit hole node heads (nodes NOT in the shared core)
+        t_op = trm.alias("o"); t_role = trm.alias("r"); pt2 = ptv.alias("pt"); ptn = ptv.alias("ptn")
+        head = func.coalesce(func.nullif(pt2.c.text, ""), t_op.c.text, t_role.c.text, literal_column("'·'"))
+        q = (select(ptn.c.text, head.label("h"))
+             .select_from(un.join(node, node.c.node_id == un.c.node_id)
+                          .join(unit, unit.c.unit_id == un.c.unit_id)
+                          .join(ptn, ptn.c.path_id == unit.c.name_pid)
+                          .outerjoin(pt2, pt2.c.path_id == node.c.op_path_id)
+                          .outerjoin(t_op, t_op.c.term_id == node.c.op_term_id)
+                          .outerjoin(t_role, t_role.c.term_id == node.c.role_id))
+             .where(and_(un.c.unit_id.in_(uids), un.c.node_id.notin_(select(core.c.node_id)))))
+        holes = defaultdict(list)
+        for name, h in conn.execute(q):
+            holes[name].append(h)
+    return core_n, holes
+
+
 def _density(cluster):
     """hole_density = holes / (holes + baked residue slots). Needs the template's baked count; approximate
     baked by the template body size in tokens minus holes (a proxy that ranks stably)."""
@@ -135,7 +242,30 @@ def main():
     ap.add_argument("--emit", type=int, metavar="RANK", help="print the full template + fillings for a rank")
     ap.add_argument("--agda", nargs="?", const="", metavar="FILTER",
                     help="synth over the AGDA SPPF (catalog.db) instead of Python; optional qname filter")
+    ap.add_argument("--holes", action="store_true", help="(with --agda) near-dup WITH-holes targets, not exact CSE")
+    ap.add_argument("--bucket-cap", type=int, default=60, help="(--holes) max units per (root,size) bucket to self-join")
     args = ap.parse_args()
+    if args.agda is not None and args.holes:
+        rows = synth_agda_holes(args.agda, args.min_instances, bucket_cap=args.bucket_cap)
+        print(f"⟡autocorr-synth-agda-holes: {len(rows)} near-dup (WITH-holes) parameterization targets"
+              f"{f' (filter {args.agda!r})' if args.agda else ''} (≥{args.min_instances} units)\n")
+        if args.emit is not None:
+            c = rows[args.emit]
+            core_n, holes = agda_holes_detail(c["uids"])
+            print(f"# cluster #{args.emit}: {c['n']} near-identical units (~{c['size']}-node bodies).")
+            print(f"## ABSTRACTION = the shared core: {core_n} nodes common to ALL {c['n']} units (extract this,")
+            print(f"   with a hole per differing position). Each unit's HOLES (its substitution):")
+            for name in sorted(holes)[:20]:
+                hs = holes[name]
+                from collections import Counter
+                top = ", ".join(f"{h}×{k}" if k > 1 else h for h, k in Counter(hs).most_common(6))
+                print(f"  - {name.split('.')[-1]:28s} {len(hs):>2} hole-nodes: {top}")
+            if len(holes) > 20: print(f"  … (+{len(holes)-20})")
+            return
+        for i, c in enumerate(rows[:args.top]):
+            print(f"  #{i:<2} ×{c['n']:<4} ~{c['size']:>4}-node bodies  eg {c['labels'][0]}")
+        print(f"\n  → autocorr_synth.py --agda --holes --emit <#> for the cluster.")
+        return
     if args.agda is not None:
         rows = synth_agda(args.agda, args.min_instances)
         print(f"⟡autocorr-synth-agda (SQL-native): {len(rows)} exact-body (0-hole/CSE) clusters over the SPPF"
