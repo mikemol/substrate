@@ -108,6 +108,30 @@ def fit_bool(F, op_s):
             return [(b2[i], 1) for i in sel]
     return None
 
+# ------------------------------------------------------------------ mechanical primitive synthesis
+# A ℕ → (finite type) primitive-recursive def is synthesized from its numpy model: base = model 0,
+# step detected from the finite step-table. NO hand-derivation — the def is mechanically extracted.
+BOOL_STEPS = {"not": lambda b: 1 - b, "id": lambda b: b, "false": lambda b: 0, "true": lambda b: 1}
+BOOL_STEP_BODY = {"not": "not (parity n)", "id": "parity n", "false": "false", "true": "true"}
+def synth_prim_rec(model):
+    base = model(0)
+    step = next((s for s, f in BOOL_STEPS.items() if all(model(k + 1) == f(model(k)) for k in range(64))), None)
+    return None if step is None else ("false" if base == 0 else "true", step)
+
+def write_parity(path):
+    """Mechanically emit parity : ℕ → Bool (base+step detected from `n & 1`). No hand-derivation."""
+    r = synth_prim_rec(lambda n: n & 1)
+    if r is None: return False
+    base, step = r
+    L = ["-- MECHANICALLY SYNTHESIZED (nat_enum.synth_prim_rec): base = model 0, step detected from the",
+         "-- finite Bool→Bool table against the numpy model `n & 1`. Not hand-derived.",
+         "{-# OPTIONS --safe --without-K #-}", "",
+         "module Substrate.Foundation.Nat.Parity where", "",
+         "open import Substrate.Foundation.Nat using (ℕ; zero; suc)",
+         "open import Substrate.Foundation.Bool using (Bool; true; false; not)", "",
+         "parity : ℕ → Bool", f"parity zero    = {base}", f"parity (suc n) = {BOOL_STEP_BODY[step]}", ""]
+    open(path, "w").write("\n".join(L)); return True
+
 # ------------------------------------------------------------------ classify + render
 def as_hom(form, cod):
     """is the closed form a single clean target op of (F x, F y)?  return op-name or None."""
@@ -120,9 +144,13 @@ def as_hom(form, cod):
 def render(form, fa, cod):
     parts = []
     for (v, gm, gn), c in sorted(form):
-        fac = ([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [f"({fa('l₁' if v == 'a' else 'l₂')})"]
-        parts.append(" * ".join(fac))
-    return " + ".join(parts) if cod != "bool" else " xor ".join(parts)
+        base = f"({fa('l₁' if v == 'a' else 'l₂')})"
+        if cod == "bool":                                         # grade weights are PARITY guards, ∧-combined
+            guards = (["parity m"] if gm else []) + (["parity n"] if gn else [])
+            parts.append(base if not guards else "(" + " ∧ ".join(guards + [base]) + ")")
+        else:
+            parts.append(" * ".join(([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [base]))
+    return (" xor " if cod == "bool" else " + ").join(parts)
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 def already_proven(fn, sn):
@@ -149,7 +177,7 @@ def main():
             if hit:
                 prov = already_proven(fn, sn)
                 print(f"  ✓ HOM     {fn}({sn}) = {hit[0]}    [{'PROVEN '+prov if prov else 'NEW'}]")
-                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit))
+                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit, False))
             else:
                 print(f"  ~ RESIDUE {fn}({sn}) : perm-valued δ = recon(op_t, ·) — synth_agda_prototype residue class")
             continue
@@ -158,15 +186,15 @@ def main():
             print(f"  · {fn}({sn}) : no closed form in the bounded basis"); continue
         hom = as_hom(form, cod)
         rhs = render(form, fa, cod)
-        graded = any(gm or gn for (_, gm, gn), _ in form)
-        if cod == "bool" and not hom and graded:                  # GF(2) grade weight ⇒ needs a parity primitive
-            print(f"  ~ RESIDUE {fn}({sn}) = {rhs}  — needs `parity : ℕ → Bool` (absent); not emitted")
-            continue
+        need_parity = cod == "bool" and any(gm or gn for (_, gm, gn), _ in form)  # GF(2) grade weight
         kind = "HOM    " if hom else "RESIDUE"
-        print(f"  ✓ {kind} {fn}({sn}) = {rhs}")
-        emit.append(("law", fn, sn, fa, s_qn, rhs))
+        print(f"  ✓ {kind} {fn}({sn}) = {rhs}" + ("   [cascade → synth parity]" if need_parity else ""))
+        emit.append(("law", fn, sn, fa, s_qn, rhs, need_parity))
 
     if args.emit and emit:
+        if any(e[6] for e in emit):                               # Minesweeper cascade: clear the parity obstruction
+            pp = os.path.join(REPO, "agda", "Substrate", "Foundation", "Nat", "Parity.agda")
+            if write_parity(pp): print(f"[cascade] auto-synthesized `parity : ℕ → Bool` → {pp}")
         write_agda(args.emit, emit); print(f"\n[emit] {len(emit)} law(s) → {args.emit}")
 
 def write_agda(path, emit):
@@ -175,7 +203,8 @@ def write_agda(path, emit):
     mod = os.path.splitext(os.path.basename(path))[0]
     homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath",
              "Substrate.Foundation.Nat", "Substrate.Foundation.Bool"}
-    for (k, fn, sn, fa, s_qn, extra) in emit:
+    if any(e[6] for e in emit): homes.add("Substrate.Foundation.Nat.Parity")  # cascade-synthesized primitive
+    for (k, fn, sn, fa, s_qn, extra, np) in emit:
         homes |= set(MAPS[fn][3]); homes.add(s_qn.rsplit(".", 1)[0])
         if k == "hom": homes.add(extra[1].rsplit(".", 1)[0])
     L = ["-- ⟡nat-enum — numpy-synthesized naturality laws (holding + residue) as a PARAMETERIZED module.",
@@ -185,7 +214,7 @@ def write_agda(path, emit):
          "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
     L += [f"open import {h}" for h in sorted(homes)] + ["",
           "module Laws"]
-    for (k, fn, sn, fa, s_qn, extra) in emit:
+    for (k, fn, sn, fa, s_qn, extra, np) in emit:
         sop = s_qn.rsplit(".", 1)[1]
         lhs = fa(f"({sop} l₁ l₂)")
         rhs = f"{extra[0]} ({fa('l₁')}) ({fa('l₂')})" if k == "hom" else extra
