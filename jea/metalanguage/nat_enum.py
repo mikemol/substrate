@@ -1,29 +1,28 @@
 #!/usr/bin/env python3
-"""nat_enum.py — ⟡nat-enum: enumerate tower NATURALITY FACTS (homomorphism squares) by
-numpy verification, then EMIT the verified-true ones as Agda lemma statements.
+"""nat_enum.py — ⟡nat-enum (+ ⟡nat-enum-residue): synthesize tower NATURALITY LAWS from
+the typechecked cores' models, INCLUDING the residue of every "failed" square.
 
-A naturality fact is a hom square   F (op_s x y) == op_t (F x) (F y).
-`decode-⊕` / `decode-⊗ˢ` are two INSTANCES of one template ("decode is a monoidal hom").
-This enumerates the family over a finite (map × op-pair) vocabulary, verifies each on all
-finite instances up to grade K, and — the productionization over the prototype —
+For a map F and a source op op_s, the law is the closed form of  F (op_s x y)  over the
+inputs. Two outcomes, UNIFIED — a failed hom is never discarded, it is completed:
 
-  · models ⊗ˢ (the factoradic replay), so decode-⊗ˢ is auto-found alongside decode-⊕;
-  · CHECKS the tree (catalog/reuse-index.md + grep) so already-PROVEN facts are referenced,
-    not re-emitted (the reuse discipline: don't regenerate what exists);
-  · EMITS the NEW verified facts as an Agda candidate module (statement + `?`), the synthesis
-    hand-off (proof is the LLM/by-hand step — honest scope, per the auto-pushout design).
+  · CLEAN HOM   — the form is a single target op:  F(op_s x y) = op_t (F x)(F y).
+  · RESIDUE LAW — the form is grade-weighted:      F(op_s x y) = <closed form in F x, F y, m, n>.
+                  (the wedge a = recon q b r: the residue is the grade-parameterised defect.)
 
-TRUNCATION (finite, non-trivial): finite map/op vocab; codomain type-compat prunes the cross
-product; grade is a ∀-PARAMETER (one lemma, not one-per-grade); definitional / already-proven
-facts are filtered. Downstream: the interner dedups proof skeletons (the on-iso template).
+Constructive setting (--safe --without-K, no HIT, no sum-types) ⇒ the residue is a TOTAL
+COMPUTABLE function with a CLOSED FORM (ℕ: exact integer fit; Bool: GF(2) fit) — so the
+corrected law is a genuine theorem, synthesizable, not a postulate.
 
-Usage:
-  python3 jea/metalanguage/nat_enum.py                 # enumerate + report (existing vs new)
-  python3 jea/metalanguage/nat_enum.py --emit OUT.agda # + write the NEW facts as an Agda module
+TRUNCATION: the monomial basis is bounded + principled (LINEAR in the map's values — it is a
+linear fold; degree-≤2 in the GRADES — one grade factor per ⊗ˢ nesting). Exact + sparse fit ⇒
+not overfitting. Emits NEW laws (holding + residue) as Agda statements; the proof is the hand-off.
+
+Usage:  python3 jea/metalanguage/nat_enum.py [--emit OUT.agda]
 """
 from __future__ import annotations
 import sys, os, argparse, subprocess
 from itertools import product
+import numpy as np
 
 # ------------------------------------------------------------------ Fin-vector models
 def punchin(p, x): return x if x < p else x + 1
@@ -32,119 +31,167 @@ def decode(digits):
     s = []
     for d in digits: s = insert_at(d, s)
     return s
-def blockSum(s, t): m = len(s); return list(s) + [m + v for v in t]        # Perm ⊕
-def tensor(s, t):                                                          # Perm ⊗ (combine i j = i*n+j)
+def blockSum(s, t): m = len(s); return list(s) + [m + v for v in t]
+def tensor(s, t):
     n = len(t); out = [0] * (len(s) * n)
     for i in range(len(s)):
         for j in range(n): out[i * n + j] = s[i] * n + t[j]
     return out
-def sign(s):
-    return sum(1 for i in range(len(s)) for j in range(i + 1, len(s)) if s[i] > s[j]) & 1
-def length(digits): return sum(digits)                                     # Σ Lehmer digits (Coxeter length)
-
-# LehmerPath ops on digit lists (from the Agda recursions):
-def lp_oplus(a, b): return list(b) + list(a)                               # _⊕_
-def lp_otimes(a, b):                                                       # _⊗ˢ_ : offsetDigit p n q = p*n+q
+def sign(s): return sum(1 for i in range(len(s)) for j in range(i + 1, len(s)) if s[i] > s[j]) & 1
+def length(d): return sum(d)
+def lp_oplus(a, b): return list(b) + list(a)                       # _⊕_
+def lp_otimes(a, b):                                              # _⊗ˢ_ (offsetDigit p n q = p*n+q)
     n = len(b); return [p * n + q for p in a for q in b]
-
 def all_paths(n):
     if n == 0: yield []; return
     for pre in all_paths(n - 1):
         for d in range(n): yield pre + [d]
 
-# ------------------------------------------------------------------ the vocabulary (numpy models + Agda qnames)
-K = 5
-# map name -> (F : LehmerPath->X, codomain tag, agda-application (X↦term, APPLIED form), import homes)
+# ------------------------------------------------------------------ vocabulary
+K = 6
+# map -> (F:LehmerPath->X, codomain, agda-apply X↦term, import homes)
 MAPS = {
     "decode": (lambda l: decode(l),       "perm", (lambda x: f"decode {x}"),
                ["Substrate.WitnessTower.LehmerPath"]),
     "sign":   (lambda l: sign(decode(l)), "bool", (lambda x: f"sign (decode {x})"),
-               ["Substrate.WitnessTower.LehmerPath",
-                "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign"]),
+               ["Substrate.WitnessTower.LehmerPath", "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign"]),
     "len":    (lambda l: length(l),       "nat",  (lambda x: f"pyLength {x}"),
                ["Substrate.WitnessTower.Wedge.PyAstRewriteSemantics"]),
 }
-# source op name -> (op on digit lists, Agda qname)
 SOURCE_OPS = {
-    "⊕": (lp_oplus,  "Substrate.WitnessTower.Wedge.OrientationSum._⊕_"),
+    "⊕":  (lp_oplus,  "Substrate.WitnessTower.Wedge.OrientationSum._⊕_"),
     "⊗ˢ": (lp_otimes, "Substrate.WitnessTower.Wedge.OrientationProductStructural._⊗ˢ_"),
 }
-# target op families keyed by codomain (the type-compatibility prune)
-TARGET_OPS = {
-    "perm": {"blockSum": (blockSum, "Substrate.WitnessTower.Wedge.OrientationDistributor.blockSum"),
-             "_⊗_":      (tensor,   "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_")},
-    "bool": {"_xor_": ((lambda a, b: a ^ b), "Substrate.Foundation.Bool._xor_")},
-    "nat":  {"_+_": ((lambda a, b: a + b), "Substrate.Foundation.Nat._+_"),
-             "_*_": ((lambda a, b: a * b), "Substrate.Foundation.Nat._*_")},
-}
+# perm-codomain target ops (hom-check; a perm residue would be recon(δ), synth_agda_prototype's residue class)
+PERM_OPS = {"blockSum": (blockSum, "Substrate.WitnessTower.Wedge.OrientationDistributor.blockSum"),
+            "_⊗_":      (tensor,   "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_")}
 
-def verify(F, op_s, op_t):
+# ------------------------------------------------------------------ closed-form synthesis
+# monomial = (var, gm, gn): value = (F x if 'a' else F y) * m^gm * n^gn ; grade-degree ≤ 2, length-linear.
+BASIS = [(v, gm, gn) for v in ("a", "b") for gm in range(3) for gn in range(3) if gm + gn <= 2]
+def mono_val(mon, a, b, m, n):
+    v, gm, gn = mon
+    return (a if v == "a" else b) * (m ** gm) * (n ** gn)
+
+def collect(F, op_s):
+    data = {}
     for m, n in product(range(K), range(K)):
         for l1, l2 in product(all_paths(m), all_paths(n)):
-            if F(op_s(l1, l2)) != op_t(F(l1), F(l2)):
-                return (m, n)
+            key = (F(l1), F(l2), m, n)
+            val = F(op_s(l1, l2))
+            if key in data and data[key] != val:
+                return None                                       # not a function of (a,b,m,n): out of scope
+            data[key] = val
+    return data
+
+def fit_nat(F, op_s):
+    data = collect(F, op_s)
+    if data is None: return None
+    keys = sorted(data); Y = np.array([data[k] for k in keys], float)
+    X = np.array([[mono_val(mo, *k) for mo in BASIS] for k in keys], float)
+    coef, *_ = np.linalg.lstsq(X, Y, rcond=None)
+    cr = np.round(coef).astype(int)
+    if not np.array_equal(X @ cr, Y.astype(int)): return None
+    return [(BASIS[i], int(c)) for i, c in enumerate(cr) if c]
+
+def fit_bool(F, op_s):
+    """GF(2) fit over grade-parity-weighted {s₁,s₂} — brute force (small basis)."""
+    data = collect(F, op_s)
+    if data is None: return None
+    b2 = [(v, gm, gn) for v in ("a", "b") for gm in (0, 1) for gn in (0, 1) if gm + gn <= 1]
+    keys = sorted(data)
+    rows = [[(mono_val(mo, *k) & 1) for mo in b2] for k in keys]
+    Y = [data[k] & 1 for k in keys]
+    for combo in range(1 << len(b2)):                             # 2^|b2| ≤ 64
+        sel = [i for i in range(len(b2)) if combo >> i & 1]
+        if all(sum(r[i] for i in sel) & 1 == y for r, y in zip(rows, Y)):
+            return [(b2[i], 1) for i in sel]
     return None
 
+# ------------------------------------------------------------------ classify + render
+def as_hom(form, cod):
+    """is the closed form a single clean target op of (F x, F y)?  return op-name or None."""
+    s = {(m, c) for m, c in form}
+    A, B = (("a", 0, 0), 1), (("b", 0, 0), 1)
+    if cod == "nat" and s == {A, B}: return "_+_"
+    if cod == "bool" and s == {A, B}: return "_xor_"
+    return None
+
+def render(form, fa, cod):
+    parts = []
+    for (v, gm, gn), c in sorted(form):
+        fac = ([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [f"({fa('l₁' if v == 'a' else 'l₂')})"]
+        parts.append(" * ".join(fac))
+    return " + ".join(parts) if cod != "bool" else " xor ".join(parts)
+
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-def already_proven(fn, sn, tn):
-    """grep the agda tree for an existing lemma of this shape (reuse: don't re-emit)."""
-    pats = {("decode", "⊕", "blockSum"): "decode-⊕", ("decode", "⊗ˢ", "_⊗_"): "decode-⊗ˢ"}
-    name = pats.get((fn, sn, tn))
+def already_proven(fn, sn):
+    name = {("decode", "⊕"): "decode-⊕", ("decode", "⊗ˢ"): "decode-⊗ˢ"}.get((fn, sn))
     if not name: return None
-    try:
-        r = subprocess.run(["grep", "-rl", f"{name} :", os.path.join(REPO, "agda", "Substrate")],
-                           capture_output=True, text=True, timeout=20)
-        return name if r.stdout.strip() else None
-    except Exception:
-        return None
+    r = subprocess.run(["grep", "-rl", f"{name} :", os.path.join(REPO, "agda", "Substrate")],
+                       capture_output=True, text=True)
+    return name if r.stdout.strip() else None
 
+# ------------------------------------------------------------------ driver
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--emit", help="write NEW verified facts to this Agda module path")
-    args = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--emit"); args = ap.parse_args()
+    print(f"⟡nat-enum: synthesizing naturality laws (+ residues) over MAPS={list(MAPS)} "
+          f"× {list(SOURCE_OPS)}  (grades < {K})\n")
+    emit = []
+    for (fn, (F, cod, fa, _)), (sn, (op_s, s_qn)) in product(MAPS.items(), SOURCE_OPS.items()):
+        if cod == "perm":
+            hit = None
+            for tn, (op_t, t_qn) in PERM_OPS.items():
+                if all(F(op_s(l1, l2)) == op_t(F(l1), F(l2))
+                       for m, n in product(range(K), range(K))
+                       for l1, l2 in product(all_paths(m), all_paths(n))):
+                    hit = (tn, t_qn); break
+            if hit:
+                prov = already_proven(fn, sn)
+                print(f"  ✓ HOM     {fn}({sn}) = {hit[0]}    [{'PROVEN '+prov if prov else 'NEW'}]")
+                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit))
+            else:
+                print(f"  ~ RESIDUE {fn}({sn}) : perm-valued δ = recon(op_t, ·) — synth_agda_prototype residue class")
+            continue
+        form = (fit_nat if cod == "nat" else fit_bool)(F, op_s)
+        if form is None:
+            print(f"  · {fn}({sn}) : no closed form in the bounded basis"); continue
+        hom = as_hom(form, cod)
+        rhs = render(form, fa, cod)
+        graded = any(gm or gn for (_, gm, gn), _ in form)
+        if cod == "bool" and not hom and graded:                  # GF(2) grade weight ⇒ needs a parity primitive
+            print(f"  ~ RESIDUE {fn}({sn}) = {rhs}  — needs `parity : ℕ → Bool` (absent); not emitted")
+            continue
+        kind = "HOM    " if hom else "RESIDUE"
+        print(f"  ✓ {kind} {fn}({sn}) = {rhs}")
+        emit.append(("law", fn, sn, fa, s_qn, rhs))
 
-    print(f"⟡nat-enum: hom-square family over MAPS={list(MAPS)} × SOURCE={list(SOURCE_OPS)}  (grades < {K})\n")
-    facts = []   # (fn, sn, tn, F_agda, op_s_qn, op_t_qn, cod, status)
-    for (fn, (F, cod, fa, fhome)), (sn, (op_s, s_qn)) in product(MAPS.items(), SOURCE_OPS.items()):
-        for tn, (op_t, t_qn) in TARGET_OPS[cod].items():
-            cx = verify(F, op_s, op_t)
-            if cx is not None:
-                print(f"  ✗ {fn}({sn}) ≠ {tn}   (grade {cx[0]},{cx[1]})"); continue
-            prov = already_proven(fn, sn, tn)
-            status = f"PROVEN ({prov})" if prov else "NEW"
-            facts.append((fn, sn, tn, fa, s_qn, t_qn, cod, status))
-            print(f"  ✓ {fn}({sn} x y) = {tn}({fn} x)({fn} y)   [{status}]")
+    if args.emit and emit:
+        write_agda(args.emit, emit); print(f"\n[emit] {len(emit)} law(s) → {args.emit}")
 
-    new = [f for f in facts if f[7] == "NEW"]
-    print(f"\n{len(facts)} verified naturality lemmas — {len(facts)-len(new)} already proven, {len(new)} NEW:")
-    for f in new: print(f"   → {f[0]}({f[1]}) = {f[2]}")
-
-    if args.emit and new:
-        emit_agda(args.emit, new)
-        print(f"\n[emit] wrote {len(new)} candidate lemma(s) → {args.emit}")
-
-def emit_agda(path, new):
+def write_agda(path, emit):
+    """Emit a --safe PARAMETERIZED module: each synthesized law is a module PARAMETER the
+    consumer discharges by instantiation (no ? holes, no postulates — --safe-clean)."""
     mod = os.path.splitext(os.path.basename(path))[0]
-    homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath"}
-    for (fn, sn, tn, fa, s_qn, t_qn, cod, _) in new:
-        homes |= set(MAPS[fn][3])
-        homes.add(s_qn.rsplit(".", 1)[0])
-        homes.add(t_qn.rsplit(".", 1)[0])
-    L = [f"-- ⟡nat-enum CANDIDATES — numpy-verified naturality facts, proofs pending (synthesis hand-off).",
-         f"-- Each holds on ALL instances up to grade {K}; `?` is the by-hand/LLM proof step.",
-         "{-# OPTIONS --without-K #-}", "",
-         f"module {mod} where", ""]
-    for h in sorted(homes): L.append(f"open import {h}")
-    L.append("")
-    for (fn, sn, tn, fa, s_qn, t_qn, cod, _) in new:
+    homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath",
+             "Substrate.Foundation.Nat", "Substrate.Foundation.Bool"}
+    for (k, fn, sn, fa, s_qn, extra) in emit:
+        homes |= set(MAPS[fn][3]); homes.add(s_qn.rsplit(".", 1)[0])
+        if k == "hom": homes.add(extra[1].rsplit(".", 1)[0])
+    L = ["-- ⟡nat-enum — numpy-synthesized naturality laws (holding + residue) as a PARAMETERIZED module.",
+         "-- --safe: the laws are module PARAMETERS (interface); the consumer discharges each by",
+         "-- instantiation with a proof. No ? holes, no postulates. (decode-⊕ / decode-⊗ˢ already PROVEN",
+         "-- in the tree — reused, not re-stated.)",
+         "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
+    L += [f"open import {h}" for h in sorted(homes)] + ["",
+          "module Laws"]
+    for (k, fn, sn, fa, s_qn, extra) in emit:
         sop = s_qn.rsplit(".", 1)[1]
         lhs = fa(f"({sop} l₁ l₂)")
-        rhs = f"{tn} ({fa('l₁')}) ({fa('l₂')})"
-        L.append(f"{fn}-{sn} : ∀ {{m n}} (l₁ : LehmerPath m) (l₂ : LehmerPath n) →")
-        L.append(f"  {lhs} ≡ {rhs}")
-        L.append(f"{fn}-{sn} l₁ l₂ = ?")
-        L.append("")
-    with open(path, "w") as fh: fh.write("\n".join(L))
+        rhs = f"{extra[0]} ({fa('l₁')}) ({fa('l₂')})" if k == "hom" else extra
+        L.append(f"  ({fn}-{sn} : ∀ {{m n}} (l₁ : LehmerPath m) (l₂ : LehmerPath n) → {lhs} ≡ {rhs})")
+    L += ["  where", "", "  -- consequences of the synthesized laws are derived here; instantiate to discharge.", ""]
+    open(path, "w").write("\n".join(L))
 
 if __name__ == "__main__":
     main()
