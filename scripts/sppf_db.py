@@ -20,6 +20,7 @@ from collections import defaultdict
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
 from jea_agdai import decode_core, substrate_core_root
+from jea_rigcat import RIG_OPS                       # ⟡rig orbit-interning (the proven ⊕/⊗ op-set)
 CATALOG_DB = os.path.join(_ROOT, "catalog", "catalog.db")
 FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}   # jea_agdai.go referential set
 
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS obs      (core_id TEXT, local_id INT, ekey TEXT);    
 CREATE TABLE IF NOT EXISTS edge     (core_id TEXT, plid INT, ord INT, clid INT);  -- raw local parent→child
 -- unit_id = base64(qname ‖ root) — UNIQUE PER DEFMARK (two anonymous-module defs can share a full qname;
 -- reuse_catalog keys structs by (qname,root), so the unit tier must too). name_pid = base64(qname) for display.
-CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_id TEXT, name_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT);
+CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_id TEXT, name_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT, copy INT);
 -- member links RESOLVED at write time (qname → its defmark unit, last-wins per core, matching reuse_catalog's
 -- root_of): member_unit_id is the member's unit (NULL if the member is not itself a defmark).
 CREATE TABLE IF NOT EXISTS unit_member (core_id TEXT, unit_id TEXT, ord INT, member_name_pid TEXT, member_unit_id TEXT);
@@ -55,7 +56,7 @@ CREATE VIEW IF NOT EXISTS path_text AS
 SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
-CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT, root_lid INT);
+CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT, root_lid INT, copy INT);
 -- the codomain HEAD of each unit's type (raw_final_head: unwrap Defn, peel the Pi-telescope), computed
 -- structurally at PROJECTION time over the unambiguous per-core tree (the reentrant packing bridge would
 -- conflate contexts). The catalog reads THIS (a structural attribute of the projection), not raw events.
@@ -74,7 +75,7 @@ CREATE VIEW IF NOT EXISTS node AS SELECT n.node_id, n.sym, k.text AS kind, r.tex
     JOIN terms l ON l.term_id=n.lit_id
     LEFT JOIN terms o ON o.term_id=n.op_term_id LEFT JOIN path_text pt ON pt.path_id=n.op_path_id;
 CREATE VIEW IF NOT EXISTS unit AS SELECT u.unit_id, pt.text AS name, u.root_id AS root_id, f.text AS path,
-    k.text AS kind
+    k.text AS kind, u.copy AS copy
   FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid JOIN terms f ON f.term_id=u.file_id
     LEFT JOIN terms k ON k.term_id=u.kind_id;
 CREATE VIEW IF NOT EXISTS node_fanin AS SELECT child_id AS node_id, COUNT(*) AS fanin FROM node_child GROUP BY child_id;
@@ -133,7 +134,8 @@ def write_events(cores, con, base):
             root_of[d["unit"]] = d["root"]
         def uid(qn, r):
             return _b64(qn + "\x00" + str(r))
-        urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid)
+        urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid,
+                  1 if d.get("copy") else 0)                 # defCopy provenance: instantiation-copy vs original
                  for d in dms]
         mrows = []
         for d in dms:
@@ -144,7 +146,7 @@ def write_events(cores, con, base):
         con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
         con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
         con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
-        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?)", urows)
+        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?)", urows)
         con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
         con.commit()                               # transaction per file (append-only)
     _dedup_pathseg(con); con.commit()
@@ -233,11 +235,11 @@ def project_sppf(con):
     # + the codomain HEAD of each unit's type (structural, computed on the unambiguous per-core tree).
     urows, un_rows, codrows = [], [], []
     childmap = ch
-    for c, unit_id, name_pid, root_lid, kind_id, module_pid in con.execute(
-            "SELECT core_id, unit_id, name_pid, root_lid, kind_id, module_pid FROM unit_obs"):
+    for c, unit_id, name_pid, root_lid, kind_id, module_pid, copy in con.execute(
+            "SELECT core_id, unit_id, name_pid, root_lid, kind_id, module_pid, copy FROM unit_obs"):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
-        urows.append((unit_id, name_pid, rootpk, c, kind_id, module_pid, root_lid))
+        urows.append((unit_id, name_pid, rootpk, c, kind_id, module_pid, root_lid, copy))
         cct, cqn = cod(c, root_lid)
         codrows.append((unit_id, (tid(cct) if cct is not None else None),
                         (pid(cqn) if cqn is not None else None)))
@@ -250,7 +252,7 @@ def project_sppf(con):
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(unit_id, pk) for pk in members]
-    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO _unit_cod VALUES (?,?,?)", codrows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
@@ -259,19 +261,134 @@ def project_sppf(con):
             con.execute("SELECT MAX(LENGTH(node_id)) FROM _node").fetchone()[0])
 
 
-def build(cores, catalog_db=CATALOG_DB, base=None):
+ORBIT_SCHEMA = """
+CREATE TABLE IF NOT EXISTS orbit_node   (orbit_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
+CREATE TABLE IF NOT EXISTS orbit_child  (orbit_id TEXT, ord INT, child_id TEXT);
+CREATE TABLE IF NOT EXISTS orbit_member (orbit_id TEXT, node_id TEXT);   -- positional packings this orbit merged
+CREATE UNIQUE INDEX IF NOT EXISTS ix_orbit_mem   ON orbit_member(orbit_id, node_id);
+CREATE INDEX        IF NOT EXISTS ix_orbit_child ON orbit_child(orbit_id);
+CREATE VIEW IF NOT EXISTS orbit AS SELECT n.orbit_id, n.sym, k.text AS kind, r.text AS role,
+    COALESCE(pt.text, o.text) AS op, l.text AS lit
+  FROM orbit_node n JOIN terms k ON k.term_id=n.kind_id JOIN terms r ON r.term_id=n.role_id
+    JOIN terms l ON l.term_id=n.lit_id
+    LEFT JOIN terms o ON o.term_id=n.op_term_id LEFT JOIN path_text pt ON pt.path_id=n.op_path_id;
+"""
+
+
+def project_orbit_sppf(con, distribute=False):
+    """⟡rig ORBIT interning — a projection over the SAME events that keys nodes by their ORBIT under the
+    rig group (jea_rigcat.canonical: commutativity=sort, associativity=flatten of the rig ⊕/⊗ ops). ADDITIVE:
+    orbit_node/orbit_child/orbit_member sit ALONGSIDE the positional _node (untouched). orbit_member
+    back-references the positional packings each orbit merged — nothing is lost (a projection, not a rewrite).
+    Same orbit ⟺ same node, provably (RIG_OPS is the substrate's proven ⊕/⊗ set)."""
+    row = con.execute("SELECT type FROM sqlite_master WHERE name='orbit'").fetchone()
+    if row: con.execute(f"DROP {row[0].upper()} IF EXISTS orbit")
+    for t in ("orbit_node", "orbit_child", "orbit_member"):
+        con.execute(f"DROP TABLE IF EXISTS {t}")
+    con.executescript(ORBIT_SCHEMA)
+
+    head = {}                                       # reload the forest (self-contained; mirrors project_sppf)
+    for ekey, ctor, qname, idx in con.execute(
+            "SELECT e.ekey, tc.text, pq.text, e.idx FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
+            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid"):
+        if ctor in ("Var", "PVar"):    role, op = f"db{idx}", ""
+        elif ctor in FREE and qname:   role, op = "", qname
+        else:                          role, op = "", (ctor or "")
+        head[ekey] = ("AgdaCore", role, op, "")
+    sym = {e: _b64("\x00".join(h)) for e, h in head.items()}
+    obs = {(c, l): e for c, l, e in con.execute("SELECT core_id, local_id, ekey FROM obs")}
+    ch = defaultdict(list)
+    for c, p, o, cl in con.execute("SELECT core_id, plid, ord, clid FROM edge"):
+        ch[(c, p)].append((o, cl))
+    def tid(s): return _b64("" if s is None else s)
+    def pid(s): return _b64(s)
+
+    # BOTH keys at the PACKING granularity (children = head-symbols, the reentrant scheme) so orbit ⊆
+    # packing: `pack` = positional (child symbols in source order, == project_sppf's _node key); `opk` =
+    # ORBIT (the rig ⊕/⊗ ops flatten nested same-op + sort their child symbols). Same orbit ⟺ same opk,
+    # and opk merges the reorderings/reassociations the packing keeps distinct ⟹ strictly fewer nodes.
+    packing, csyms = {}, {}
+    def pack(c, lid):                               # positional packing key (identical to project_sppf)
+        key = (c, lid)
+        if key in packing: return packing[key]
+        ekey = obs.get(key)
+        if ekey is None: return None
+        child_syms = [sym[obs[(c, cl)]] for _, cl in sorted(ch.get(key, [])) if (c, cl) in obs]
+        k, r, o, l = head[ekey]
+        packing[key] = _b64("\x00".join([k, r, o, l, ",".join(child_syms)]))
+        return packing[key]
+    def canon_syms(c, lid):                         # canonical child head-symbol LIST under the rig group
+        key = (c, lid)
+        if key in csyms: return csyms[key]
+        ekey = obs.get(key)
+        kids = [(o_, cl) for o_, cl in sorted(ch.get(key, [])) if (c, cl) in obs]
+        law = RIG_OPS.get(head[ekey][2]) if ekey else None
+        if law is None:
+            res = [sym[obs[(c, cl)]] for _, cl in kids]                   # non-rig: positional child symbols
+        else:
+            op = head[ekey][2]
+            out = []
+            for _, cl in kids:
+                ce = obs.get((c, cl))
+                if law.associative and ce is not None and head[ce][2] == op:
+                    out.extend(canon_syms(c, cl))                        # flatten nested same rig op
+                elif ce is not None:
+                    out.append(sym[ce])
+            res = sorted(out) if law.commutative else out               # sort = the Sₙ-orbit representative
+        csyms[key] = res
+        return res
+    def opk(c, lid):                                # ORBIT key = base64(head ‖ canonical child symbols)
+        ekey = obs.get((c, lid))
+        if ekey is None: return None
+        k, r, o, l = head[ekey]
+        return _b64("\x00".join([k, r, o, l, ",".join(canon_syms(c, lid))]))
+
+    seen_o, nrows, crows, mrows = set(), [], set(), set()
+    for (c, lid), ekey in obs.items():
+        okey = opk(c, lid); pk = pack(c, lid)
+        k, r, o, l = head[ekey]
+        if okey not in seen_o:
+            seen_o.add(okey)
+            ot, opp = (None, pid(o)) if "." in o else (tid(o), None)
+            nrows.append((okey, sym[ekey], tid(k), tid(r), ot, opp, tid(l)))
+            crows.update((okey, i, cs) for i, cs in enumerate(canon_syms(c, lid)))   # canonical child symbols
+        if pk is not None: mrows.add((okey, pk))     # orbit → the positional PACKINGS it merged
+    con.executemany("INSERT OR IGNORE INTO orbit_node   VALUES (?,?,?,?,?,?,?)", nrows)
+    con.executemany("INSERT OR IGNORE INTO orbit_child  VALUES (?,?,?)", sorted(crows))
+    con.executemany("INSERT OR IGNORE INTO orbit_member VALUES (?,?)", sorted(mrows))
+    con.commit()
+    return (len(seen_o),                                          # orbit-node count (the quotient)
+            len(set(packing.values())),                          # positional PACKING count (the baseline)
+            con.execute("SELECT MAX(LENGTH(orbit_id)) FROM orbit_node").fetchone()[0])
+
+
+def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False):
     base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
     con = sqlite3.connect(catalog_db)
     write_events(cores, con, base)                 # P1: append-only events (source of truth)
-    stats = project_sppf(con)                      # P2: the SPPF, DERIVED from events
+    stats = project_sppf(con)                      # P2: the positional SPPF, DERIVED from events
+    if orbit:
+        project_orbit_sppf(con, distribute=distribute)   # ⟡rig: the ORBIT projection (additive)
     con.close()
     return stats
 
 
 if __name__ == "__main__":
-    filt = sys.argv[1] if len(sys.argv) > 1 else "Category"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    orbit = "--orbit" in sys.argv
+    distribute = "--distribute" in sys.argv
+    filt = args[0] if args else "Category"
     base = substrate_core_root(os.path.join(_ROOT, "agda"))
     cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
-    print(f"event-sourcing {len(cores)} cores (filter={filt!r}) → catalog.db (events, then project SPPF) …")
-    n, u, sh, mx = build(cores)
+    print(f"event-sourcing {len(cores)} cores (filter={filt!r}) → catalog.db (events, then project SPPF"
+          f"{', + ORBIT' if orbit else ''}) …")
+    n, u, sh, mx = build(cores, orbit=orbit, distribute=distribute)
     print(f"  events → SPPF projection: {n} packings, {u} units, {sh} shared subtrees, max node_id {mx}")
+    if orbit:
+        con = sqlite3.connect(CATALOG_DB)
+        orbits = con.execute("SELECT COUNT(*) FROM orbit_node").fetchone()[0]
+        packings = con.execute("SELECT COUNT(DISTINCT node_id) FROM orbit_member").fetchone()[0]
+        merged = con.execute("SELECT COUNT(*) FROM (SELECT orbit_id FROM orbit_member GROUP BY orbit_id HAVING COUNT(*)>1)").fetchone()[0]
+        print(f"  ⟡rig ORBIT projection: {orbits} orbit-nodes vs {packings} packings "
+              f"({packings-orbits} collapsed by rig ⊕/⊗ reorder/reassoc); {merged} orbits merged ≥2 packings")
+        con.close()
