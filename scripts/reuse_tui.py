@@ -58,6 +58,10 @@ def browser(stdscr, allrows, meta):
     for i in range(1, 6):
         try: curses.init_pair(i, i, -1)
         except curses.error: pass
+
+    def sa(y, x, s, n, a=0):                                       # safe add: curses raises at the corner cell
+        try: stdscr.addnstr(y, x, s, max(0, n), a)
+        except curses.error: pass
     filt, sort_i, min_fanin, expand = "", 0, 2, False
     idx = off = 0
 
@@ -74,7 +78,7 @@ def browser(stdscr, allrows, meta):
         title = (f" SPPF reuse browser — {len(rows)}/{len(allrows)} shared subtrees "
                  f"| {meta['units']} units, {meta['cores']} cores "
                  f"| sort:{SORTS[sort_i][0]} fanin≥{min_fanin} filt:'{filt}' ")
-        stdscr.addnstr(0, 0, title.ljust(w), w, curses.A_REVERSE)
+        sa(0, 0, title.ljust(w), w - 1, curses.A_REVERSE)
         rows = view()
         if idx >= len(rows): idx = max(0, len(rows) - 1)
         if idx < off: off = idx
@@ -84,15 +88,16 @@ def browser(stdscr, allrows, meta):
             r = rows[i]; y = i - off + 1
             line = f"{r['fanin']:>4}× s{r['size']:<3} r{r['rung']:<2} {r['head']}"
             attr = curses.A_REVERSE if i == idx else curses.color_pair((r['size'] % 5) + 1)
-            stdscr.addnstr(y, 0, line.ljust(listw - 1)[:listw - 1], listw - 1, attr)
+            sa(y, 0, line.ljust(listw - 1)[:listw - 1], listw - 1, attr)
         for y in range(1, h - 2):
-            stdscr.addch(y, listw, curses.ACS_VLINE)
+            try: stdscr.addch(y, listw, curses.ACS_VLINE)
+            except curses.error: pass
         # detail pane
         if rows:
             r = rows[idx]; dx = listw + 2; dw = w - dx - 1; dy = 1
             def put(s, a=0):
                 nonlocal dy
-                if dy < h - 2: stdscr.addnstr(dy, dx, s[:dw], dw, a); dy += 1
+                if dy < h - 2: sa(dy, dx, s[:dw], dw, a); dy += 1
             put(r["head"], curses.A_BOLD)
             put(f"{r['fanin']} instances · size {r['size']} · rung {r['rung']} · impact {r['fanin']*r['size']}")
             if r["contains"]:
@@ -105,7 +110,7 @@ def browser(stdscr, allrows, meta):
                 put("  " + n)
             if not expand and len(insts) > len(shown):
                 put(f"  … (+{len(insts)-len(shown)}; Enter to expand)")
-        stdscr.addnstr(h - 1, 0, " ↑↓/jk move  PgUp/Dn page  / filter  s sort  f fanin  Enter expand  q quit ".ljust(w), w, curses.A_REVERSE)
+        sa(h - 1, 0, " ↑↓/jk move  PgUp/Dn page  / filter  s sort  f fanin  Enter expand  q quit ".ljust(w), w - 1, curses.A_REVERSE)
         stdscr.refresh()
 
         c = stdscr.getch()
