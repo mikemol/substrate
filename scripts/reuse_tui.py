@@ -6,10 +6,18 @@ of one pattern → parameterize; fanin = instances = the win). Left: a TREE of O
 grouped by their instance-set (the set of units that co-share them), so a big structure and all its
 sub-slices (which share the same units) collapse to ONE orbit; expand an orbit to its shared subtrees.
 Right: the selected orbit/subtree's instances as a MODULE TREE (navigate to the canonical home) + what
-it ⊃ contains. Filter by head; sort orbits by impact/size/fanin/n_subtrees. `x` exports an LLM
-consolidation work-order (orbit or subtree). CLI --observe Q / --between A B do the same non-interactively.
+it ⊃ contains. `x` exports an LLM consolidation work-order. CLI --observe Q / --between A B do the same.
 
-  scripts/reuse_tui.py --build     # intern the forest (~90s) → cache (do once)
+The TUNING is the S₄-adapted frame (⟡s4-sliders): each orbit carries four counts {n,m,c,s}, and the
+control surface is their V₄⋊S₃ structure — TWO isotropic percentile sliders + TWO V₂ toggles:
+  [k] pick active slider κ↔σ ; [ / ] adjust it     κ = n/m concentration · σ = s/n size-per-instance
+  [c] copy-family V₂ (all/hide/only)               the copy=0 vs copy stratum (= the ✗/✓ verdict)
+  [z] saturated V₂  (all/hide/only)                the size-cap stratum (an artifact atom)
+  [r] references (hide/show)   [d] ◆target preset   [s] sort
+Verified (⟡tie-aware-normalize): factoring the two V₂ atoms out leaves κ⊕σ isotropic (cos(∇N,pin)→1),
+so equal slider steps trade equal counts — the sliders are commensurable percentile floors, not raw units.
+
+  scripts/reuse_tui.py --build     # derive the orbit rows from catalog.db → cache (do once)
   scripts/reuse_tui.py             # load cache, launch the browser
 """
 import sys, os, re, json, argparse, glob
@@ -92,7 +100,6 @@ def db_rows(min_size, min_fanin, cap=None):
     # subtree weight: unfolded node count, CAPPED (a DAG's true unfolding explodes exponentially under
     # sharing, and the exact distinct-descendant count costs ~4.5GB/32s — too heavy for a browse tool).
     # Capping keeps it O(V+E) and bounded; top nodes saturate at SIZE_CAP, where fanin is the real ranker.
-    SIZE_CAP = 99999
     size = {}
     def sz(n):
         v = size.get(n)
@@ -269,7 +276,7 @@ from textual.binding import Binding
 ORBIT_SORTS = ["target", "dup", "impact", "size", "fanin", "n_subtrees"]   # target-first is the default
 VERDICT_RANK = {"DUP": 0, "MIXED": 1, "CONSOLIDATED": 2, "mixed": 1}   # DUP = genuine target → sorts first
 VERDICT_MARK = {"DUP": "✗", "CONSOLIDATED": "✓"}
-SCATTER_MAX = 12                                  # > this many modules = scattered glue/primitive, not a target
+SIZE_CAP = 99999                                  # subtree-size saturation cap (= the V₂ #2 atom threshold)
 
 class SPPF(App):
     CSS = """
@@ -280,9 +287,13 @@ class SPPF(App):
     BINDINGS = [
         Binding("q", "quit", "quit"),
         Binding("s", "sort", "sort"),
-        Binding("d", "tgt_only", "◆tgt-only"),
-        Binding("left_square_bracket", "scatter_dec", "scatter−"),
-        Binding("right_square_bracket", "scatter_inc", "scatter+"),
+        Binding("d", "tgt_preset", "◆tgt-preset"),
+        Binding("k", "knob_cycle", "knob κ/σ"),
+        Binding("left_square_bracket", "knob_dec", "knob−"),
+        Binding("right_square_bracket", "knob_inc", "knob+"),
+        Binding("c", "copy_cycle", "copy V₂"),
+        Binding("z", "sat_cycle", "sat V₂"),
+        Binding("r", "ref_toggle", "ref"),
         Binding("x", "extract", "extract obs"),
         Binding("slash", "focus_filter", "filter"),
         Binding("escape", "unfocus_filter", "unfilter"),
@@ -294,25 +305,38 @@ class SPPF(App):
         self.meta = meta
         self.sort_key = "target"                       # genuine parameterization targets lead by default
         self.filt = ""
-        self.tgt_only = False
-        self.scatter_max = SCATTER_MAX                 # live-adjustable ([ / ]): the glue-vs-target knob
         self.defidx = load_def_index()
         self.copy_units = set(meta.get('copy_units', []))
         orbits = defaultdict(list)
         for r in rows:
             orbits[frozenset(r["instances"])].append(r)
-        # precompute the defCopy verdict per orbit ONCE → sort/filter/label by it (the whole point:
-        # bring genuine ✗DUP parameterization targets to the front, not interleaved by raw impact).
         self.verdict = {u: resolve_orbit(list(u), self.defidx, self.copy_units)[0] for u in orbits}
-        # module SPREAD: a real target CONCENTRATES in a few sibling modules; a primitive (Fin.zero,
-        # ℕ.suc) is REFERENCED across scores of unrelated modules (high scatter, NOT a target).
         self.nmod = {u: len({n.rsplit(".", 1)[0] for n in u}) for u in orbits}
-        # REF axis: is the orbit's dominant shared subtree headed by a REAL DEFINITION? If so the
-        # instances merely REFERENCE it (already consolidated at its home) — the copy=0 verdict can't
-        # see this. head_is_def + module-spread together isolate genuine redefine-targets.
         self.ref = {u: max(subs, key=lambda s: s["fanin"]).get("head_is_def", False)
                     for u, subs in orbits.items()}
-        self.orbits = list(orbits.items())            # [(frozenset units, [rows])]
+        # ── the S₄-adapted coordinate frame: the four counts {n,m,c,s} → the two isotropic sliders
+        #    (κ=n/m concentration, σ=s/n size-per-instance) + the two V₂ toggles (copy-family, saturated).
+        #    Verified (⟡tie-aware-normalize): once the V₂ atoms are factored out, κ⊕σ are isotropic
+        #    (cos(∇N,pin)→1), so the sliders are PERCENTILE floors — equal steps trade equal counts.
+        self.cnt = {}
+        for u, subs in orbits.items():
+            n = len(u); m = self.nmod[u]; c = sum(1 for x in u if x in self.copy_units)
+            s = max(x["size"] for x in subs)
+            self.cnt[u] = dict(n=n, m=m, c=c, s=s, kappa=n/m, sigma=s/n,
+                               sat=(s >= SIZE_CAP),                       # V₂ #2 (size-saturation atom)
+                               copyfam=(self.verdict[u] == "CONSOLIDATED"))  # V₂ #1 (copy-family atom)
+        allu = list(orbits)
+        def _pctile(keyfn, subset):                    # tie-aware percentile rank (the isotropic coord)
+            it = sorted(subset, key=keyfn); d = max(1, len(it) - 1)
+            return {u: i / d for i, u in enumerate(it)}
+        self.krank = _pctile(lambda u: self.cnt[u]["kappa"], allu)
+        srk = _pctile(lambda u: self.cnt[u]["sigma"], [u for u in allu if not self.cnt[u]["sat"]])
+        self.srank = {u: srk.get(u, 1.0) for u in allu}   # saturated → top (handled by the sat V₂)
+        # live control state
+        self.pk = 0.0; self.ps = 0.0; self.active = 0     # κ / σ percentile floors; active slider
+        self.hide_ref = True                              # references off by default (they're consolidated)
+        self.copy_mode = 1; self.sat_mode = 0             # 0=all 1=hide 2=only  (copy-family hidden by default)
+        self.orbits = list(orbits.items())
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=False)
@@ -326,21 +350,25 @@ class SPPF(App):
         self.refresh_orbits()
         self.query_one("#orbits", Tree).focus()
 
-    def _is_target(self, units):
-        """a genuine parameterization target: NOT already-consolidated, NOT a named-def reference,
-        NOT scattered glue (≤ the live scatter knob)."""
-        return (self.verdict.get(units) != "CONSOLIDATED"
-                and not self.ref.get(units, False)
-                and self.nmod.get(units, 999) <= self.scatter_max)
+    def _pass(self, u):
+        """the live operating point: the two V₂ toggles + the two percentile sliders + ref."""
+        c = self.cnt[u]
+        if self.hide_ref and self.ref.get(u): return False
+        if self.krank[u] < self.pk: return False                  # κ (concentration) percentile floor
+        if self.srank[u] < self.ps: return False                  # σ (size/instance) percentile floor
+        if self.copy_mode == 1 and c["copyfam"]: return False      # V₂ #1
+        if self.copy_mode == 2 and not c["copyfam"]: return False
+        if self.sat_mode == 1 and c["sat"]: return False           # V₂ #2
+        if self.sat_mode == 2 and not c["sat"]: return False
+        return True
 
     def _orbit_key(self, item):
         units, subs = item
         impact = max(_impact(s) for s in subs)
-        if self.sort_key == "target":                 # genuine target = NOT already-consolidated, NOT a
-            #  named-def reference, NOT scattered glue — then biggest (most instances). All three sink.
-            return (self.verdict.get(units) == "CONSOLIDATED",
-                    self.ref.get(units, False),
-                    self.nmod.get(units, 999) > self.scatter_max, -len(units))
+        if self.sort_key == "target":                 # the four bad strata sink; then high concentration,
+            c = self.cnt[units]                        #  then size, then most instances. (κ,σ isotropic.)
+            return (c["copyfam"], self.ref.get(units, False), c["sat"],
+                    -self.krank[units], -self.srank[units], -len(units))
         if self.sort_key == "dup":                    # DUP first, then by impact within each verdict class
             return (VERDICT_RANK.get(self.verdict.get(units), 1), -impact)
         if self.sort_key == "n_subtrees": return -len(subs)
@@ -353,27 +381,28 @@ class SPPF(App):
         tree.reset("orbits")
         items = []
         for units, subs in self.orbits:
-            if self.tgt_only and not self._is_target(units):
-                continue                              # hide references / glue / already-consolidated
+            if not self._pass(units):
+                continue
             fs = [s for s in subs if not self.filt or self.filt.lower() in s["head"].lower()]
             if fs: items.append((units, fs))
         items.sort(key=self._orbit_key)
         shown = items[:1500]
         for units, subs in shown:
             mark = VERDICT_MARK.get(self.verdict.get(units), "·")
-            nm = self.nmod.get(units, 0)
-            ref = ("→ref" if self.ref.get(units)              # references an existing def (skip)
-                   else "·glue" if nm > self.scatter_max      # anonymous but scattered = AST glue (skip)
-                   else "◆tgt")                               # anonymous + concentrated = extract+name it
+            c = self.cnt[units]
+            tag = ("→ref" if self.ref.get(units) else "◆tgt")
+            sat = "⊕sat" if c["sat"] else ""
             node = tree.root.add(
-                f"{mark}{ref} [×{len(units)} · {nm}mod · {len(subs)}sub]  {orbit_pref(units)}",
+                f"{mark}{tag}{sat} [×{c['n']} · κ{c['kappa']:.1f}/{c['m']}mod · σ{c['sigma']:.0f}]  {orbit_pref(units)}",
                 data=("orbit", units, subs))
             for s in sorted(subs, key=lambda s: -_impact(s)):
                 node.add_leaf(f"{s['head']}  · size {s['size']} rung {s['rung']}", data=("sub", s))
         tree.root.expand()
-        ntgt = sum(1 for u, _ in self.orbits if self._is_target(u))
-        self.sub_title = (f"{len(items)} orbits · {ntgt} ◆targets (not-consolidated, not-a-ref, ≤{self.scatter_max} mod) · "
-                          f"sort:{self.sort_key} · tgt-only:{self.tgt_only} · scatter≤{self.scatter_max} ([ ]) · filter:'{self.filt}'")
+        knob = ["κ", "σ"][self.active]
+        cm = ["all", "hide", "only"][self.copy_mode]; sm = ["all", "hide", "only"][self.sat_mode]
+        self.sub_title = (
+            f"{len(items)} orbits · sliders[k]: »κ≥{self.pk:.0%}« σ≥{self.ps:.0%} (active:{knob}, [ ]) · "
+            f"V₂ copy-fam[c]:{cm} sat[z]:{sm} · ref[r]:{'hide' if self.hide_ref else 'show'} · sort[s]:{self.sort_key}")
         if shown: self.show_orbit(shown[0][0], shown[0][1])
 
     def _detail_instances(self, tree, units):
@@ -426,16 +455,31 @@ class SPPF(App):
         self.sort_key = ORBIT_SORTS[(ORBIT_SORTS.index(self.sort_key) + 1) % len(ORBIT_SORTS)]
         self.refresh_orbits()
 
-    def action_tgt_only(self):
-        self.tgt_only = not self.tgt_only             # show only genuine ◆parameterization targets
+    def action_tgt_preset(self):                      # the honest ◆target operating point (one keypress)
+        self.hide_ref = True; self.copy_mode = 1; self.sat_mode = 1; self.pk = 0.5; self.ps = 0.0
         self.refresh_orbits()
 
-    def action_scatter_dec(self):
-        self.scatter_max = max(1, self.scatter_max - 1)   # tighten: fewer modules count as concentrated
+    def action_knob_cycle(self):
+        self.active = (self.active + 1) % 2           # switch the active slider (κ ↔ σ)
         self.refresh_orbits()
 
-    def action_scatter_inc(self):
-        self.scatter_max = min(200, self.scatter_max + 1) # loosen: allow more module-spread as a target
+    def _adj(self, d):
+        if self.active == 0: self.pk = min(1.0, max(0.0, round(self.pk + d, 3)))
+        else:                self.ps = min(1.0, max(0.0, round(self.ps + d, 3)))
+        self.refresh_orbits()
+    def action_knob_dec(self): self._adj(-0.05)       # loosen the active percentile floor
+    def action_knob_inc(self): self._adj(+0.05)       # tighten (equal steps ≈ equal count — isotropic)
+
+    def action_copy_cycle(self):
+        self.copy_mode = (self.copy_mode + 1) % 3     # V₂ #1: all / hide copy-families / only
+        self.refresh_orbits()
+
+    def action_sat_cycle(self):
+        self.sat_mode = (self.sat_mode + 1) % 3       # V₂ #2: all / hide saturated / only
+        self.refresh_orbits()
+
+    def action_ref_toggle(self):
+        self.hide_ref = not self.hide_ref
         self.refresh_orbits()
 
     def action_focus_filter(self):
