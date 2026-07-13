@@ -53,8 +53,9 @@ K = 6
 MAPS = {
     "decode": (lambda l: decode(l),       "perm", (lambda x: f"decode {x}"),
                ["Substrate.WitnessTower.LehmerPath"]),
-    "sign":   (lambda l: sign(decode(l)), "bool", (lambda x: f"sign (decode {x})"),
-               ["Substrate.WitnessTower.LehmerPath", "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign"]),
+    "sign":   (lambda l: sign(decode(l)), "f2", (lambda x: f"bool→F₂ (sign (decode {x}))"),
+               ["Substrate.WitnessTower.LehmerPath", "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign",
+                "Substrate.Algebra.F2.FromBool"]),
     "len":    (lambda l: length(l),       "nat",  (lambda x: f"pyLength {x}"),
                ["Substrate.WitnessTower.Wedge.PyAstRewriteSemantics"]),
 }
@@ -110,27 +111,42 @@ def fit_bool(F, op_s):
 
 # ------------------------------------------------------------------ mechanical primitive synthesis
 # A ℕ → (finite type) primitive-recursive def is synthesized from its numpy model: base = model 0,
-# step detected from the finite step-table. NO hand-derivation — the def is mechanically extracted.
+# step detected from the finite step-table. NO hand-derivation. GENERAL — not parity-specific.
 BOOL_STEPS = {"not": lambda b: 1 - b, "id": lambda b: b, "false": lambda b: 0, "true": lambda b: 1}
-BOOL_STEP_BODY = {"not": "not (parity n)", "id": "parity n", "false": "false", "true": "true"}
 def synth_prim_rec(model):
     base = model(0)
     step = next((s for s, f in BOOL_STEPS.items() if all(model(k + 1) == f(model(k)) for k in range(64))), None)
     return None if step is None else ("false" if base == 0 else "true", step)
 
-def write_parity(path):
-    """Mechanically emit parity : ℕ → Bool (base+step detected from `n & 1`). No hand-derivation."""
-    r = synth_prim_rec(lambda n: n & 1)
+def write_prim(home, name, model):
+    """Mechanically emit `name : ℕ → Bool` at module `home`, base+step detected from `model`."""
+    r = synth_prim_rec(model)
     if r is None: return False
     base, step = r
-    L = ["-- MECHANICALLY SYNTHESIZED (nat_enum.synth_prim_rec): base = model 0, step detected from the",
-         "-- finite Bool→Bool table against the numpy model `n & 1`. Not hand-derived.",
-         "{-# OPTIONS --safe --without-K #-}", "",
-         "module Substrate.Foundation.Nat.Parity where", "",
+    body = {"not": f"not ({name} n)", "id": f"{name} n", "false": "false", "true": "true"}[step]
+    path = os.path.join(REPO, "agda", *home.split(".")) + ".agda"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    L = [f"-- MECHANICALLY SYNTHESIZED (nat_enum.synth_prim_rec): base = model 0, step detected from the",
+         f"-- finite Bool→Bool table against a numpy model. Not hand-derived.",
+         "{-# OPTIONS --safe --without-K #-}", "", f"module {home} where", "",
          "open import Substrate.Foundation.Nat using (ℕ; zero; suc)",
          "open import Substrate.Foundation.Bool using (Bool; true; false; not)", "",
-         "parity : ℕ → Bool", f"parity zero    = {base}", f"parity (suc n) = {BOOL_STEP_BODY[step]}", ""]
+         f"{name} : ℕ → Bool", f"{name} zero    = {base}", f"{name} (suc n) = {body}", ""]
     open(path, "w").write("\n".join(L)); return True
+
+# the primitive registry: dep-name -> (fallback synth home, numpy model). REUSE-FIRST: a dep is
+# resolved to its EXISTING tree home if present (grep), and only MECHANICALLY SYNTHESIZED if absent.
+SYNTH_REGISTRY = {"parity": ("Substrate.Algebra.N-to-F2-Parity", lambda n: n & 1)}
+def resolve_dep(dep):
+    """reuse-first: grep the SOURCE tree; return the ACTUAL found home; synthesize only if absent."""
+    fallback, model = SYNTH_REGISTRY[dep]
+    r = subprocess.run(["grep", "-rlE", "--include=*.agda", f"^{dep} :",
+                        os.path.join(REPO, "agda", "Substrate")], capture_output=True, text=True)
+    if r.stdout.strip():                                          # REUSE — derive the real home from the path
+        path = sorted(r.stdout.strip().split("\n"))[0]
+        home = os.path.relpath(path, os.path.join(REPO, "agda"))[:-5].replace("/", ".")
+        return home, False
+    write_prim(fallback, dep, model); return fallback, True
 
 # ------------------------------------------------------------------ classify + render
 def as_hom(form, cod):
@@ -138,19 +154,22 @@ def as_hom(form, cod):
     s = {(m, c) for m, c in form}
     A, B = (("a", 0, 0), 1), (("b", 0, 0), 1)
     if cod == "nat" and s == {A, B}: return "_+_"
-    if cod == "bool" and s == {A, B}: return "_xor_"
+    if cod == "f2" and s == {A, B}: return "_+₂_"       # F₂ addition (= xor); reused, renamed on import
     return None
 
 def render(form, fa, cod):
-    parts = []
+    """render the closed form; return (agda-rhs, deps) — deps = primitives it references that may
+    need resolution/synthesis (the target algebra's ℕ-scalar-action on a grade weight)."""
+    parts, deps = [], set()
     for (v, gm, gn), c in sorted(form):
         base = f"({fa('l₁' if v == 'a' else 'l₂')})"
-        if cod == "bool":                                         # grade weights are PARITY guards, ∧-combined
+        if cod == "f2":                                           # scalar-mult-by-grade in F₂ = parity · (reuse)
             guards = (["parity m"] if gm else []) + (["parity n"] if gn else [])
-            parts.append(base if not guards else "(" + " ∧ ".join(guards + [base]) + ")")
-        else:
+            if guards: deps.add("parity")
+            parts.append(base if not guards else "(" + " ·₂ ".join(guards + [base]) + ")")
+        else:                                                     # scalar-mult-by-grade in ℕ = *  (exists, no dep)
             parts.append(" * ".join(([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [base]))
-    return (" xor " if cod == "bool" else " + ").join(parts)
+    return (" +₂ " if cod == "f2" else " + ").join(parts), deps
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 def already_proven(fn, sn):
@@ -177,7 +196,7 @@ def main():
             if hit:
                 prov = already_proven(fn, sn)
                 print(f"  ✓ HOM     {fn}({sn}) = {hit[0]}    [{'PROVEN '+prov if prov else 'NEW'}]")
-                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit, False))
+                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit, set()))
             else:
                 print(f"  ~ RESIDUE {fn}({sn}) : perm-valued δ = recon(op_t, ·) — synth_agda_prototype residue class")
             continue
@@ -185,16 +204,16 @@ def main():
         if form is None:
             print(f"  · {fn}({sn}) : no closed form in the bounded basis"); continue
         hom = as_hom(form, cod)
-        rhs = render(form, fa, cod)
-        need_parity = cod == "bool" and any(gm or gn for (_, gm, gn), _ in form)  # GF(2) grade weight
+        rhs, deps = render(form, fa, cod)
         kind = "HOM    " if hom else "RESIDUE"
-        print(f"  ✓ {kind} {fn}({sn}) = {rhs}" + ("   [cascade → synth parity]" if need_parity else ""))
-        emit.append(("law", fn, sn, fa, s_qn, rhs, need_parity))
+        print(f"  ✓ {kind} {fn}({sn}) = {rhs}" + (f"   [deps: {', '.join(sorted(deps))}]" if deps else ""))
+        emit.append(("law", fn, sn, fa, s_qn, rhs, deps))
 
     if args.emit and emit:
-        if any(e[6] for e in emit):                               # Minesweeper cascade: clear the parity obstruction
-            pp = os.path.join(REPO, "agda", "Substrate", "Foundation", "Nat", "Parity.agda")
-            if write_parity(pp): print(f"[cascade] auto-synthesized `parity : ℕ → Bool` → {pp}")
+        all_deps = set().union(*(e[6] for e in emit))             # Minesweeper cascade — GENERAL, not per-codomain
+        for dep in sorted(all_deps):
+            home, synthed = resolve_dep(dep)
+            print(f"[cascade] {'synthesized' if synthed else 'resolved'} dependency `{dep}` → {home}")
         write_agda(args.emit, emit); print(f"\n[emit] {len(emit)} law(s) → {args.emit}")
 
 def write_agda(path, emit):
@@ -203,18 +222,20 @@ def write_agda(path, emit):
     mod = os.path.splitext(os.path.basename(path))[0]
     homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath",
              "Substrate.Foundation.Nat", "Substrate.Foundation.Bool"}
-    if any(e[6] for e in emit): homes.add("Substrate.Foundation.Nat.Parity")  # cascade-synthesized primitive
-    for (k, fn, sn, fa, s_qn, extra, np) in emit:
+    for (k, fn, sn, fa, s_qn, extra, deps) in emit:
         homes |= set(MAPS[fn][3]); homes.add(s_qn.rsplit(".", 1)[0])
+        homes |= {SYNTH_REGISTRY[d][0] for d in deps}             # resolved/synthesized dependency homes
         if k == "hom": homes.add(extra[1].rsplit(".", 1)[0])
     L = ["-- ⟡nat-enum — numpy-synthesized naturality laws (holding + residue) as a PARAMETERIZED module.",
          "-- --safe: the laws are module PARAMETERS (interface); the consumer discharges each by",
          "-- instantiation with a proof. No ? holes, no postulates. (decode-⊕ / decode-⊗ˢ already PROVEN",
          "-- in the tree — reused, not re-stated.)",
          "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
-    L += [f"open import {h}" for h in sorted(homes)] + ["",
-          "module Laws"]
-    for (k, fn, sn, fa, s_qn, extra, np) in emit:
+    L += [f"open import {h}" for h in sorted(homes)]
+    if any(MAPS[fn][1] == "f2" for (k, fn, *_) in emit):          # F₂ ops, renamed to avoid the ℕ _+_ clash
+        L.append("open import Substrate.Algebra.F2 using (F₂) renaming (_+_ to _+₂_; _·_ to _·₂_)")
+    L += ["", "module Laws"]
+    for (k, fn, sn, fa, s_qn, extra, _deps) in emit:
         sop = s_qn.rsplit(".", 1)[1]
         lhs = fa(f"({sop} l₁ l₂)")
         rhs = f"{extra[0]} ({fa('l₁')}) ({fa('l₂')})" if k == "hom" else extra
