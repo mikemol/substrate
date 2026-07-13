@@ -126,6 +126,7 @@ def db_rows(min_size, min_fanin, cap=None):
     uname, copy_units = {}, []
     for uid, name in con.execute("SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid"):
         uname[uid] = name
+    unit_names = set(uname.values())                              # every real definition's qname
     if have_copy:
         copy_units = sorted(name for uid, name in
             ((uid, uname[uid]) for uid, in con.execute("SELECT unit_id FROM _unit WHERE copy=1")) if uid in uname)
@@ -138,8 +139,12 @@ def db_rows(min_size, min_fanin, cap=None):
         if size.get(nid, 0) < min_size: continue
         insts = sorted(uname[u] for u in units_of.get(nid, ()))
         if len(insts) < min_fanin: continue                       # instance-fanin: shared across ≥min_fanin units
+        h = head.get(nid, "?")
         contains = sorted({head.get(k, "?") for k in descsh(nid)})
-        rows.append({"fanin": len(insts), "size": size[nid], "head": head.get(nid, "?"),
+        rows.append({"fanin": len(insts), "size": size[nid], "head": h,
+                     # head_is_def: the shared subtree's head IS a real definition → the instances
+                     # REFERENCE it (already consolidated at its home), NOT a redefinition to extract.
+                     "head_is_def": h in unit_names,
                      "rung": hei(nid), "contains": contains, "instances": insts})
     rows.sort(key=lambda r: -(r["fanin"] * r["size"]))
     if cap: rows = rows[:cap]
@@ -261,9 +266,10 @@ from textual.containers import Horizontal
 from textual.widgets import Tree, Input, Header, Footer
 from textual.binding import Binding
 
-ORBIT_SORTS = ["dup", "impact", "size", "fanin", "n_subtrees"]   # dup-first is the default (targets lead)
+ORBIT_SORTS = ["target", "dup", "impact", "size", "fanin", "n_subtrees"]   # target-first is the default
 VERDICT_RANK = {"DUP": 0, "MIXED": 1, "CONSOLIDATED": 2, "mixed": 1}   # DUP = genuine target → sorts first
 VERDICT_MARK = {"DUP": "✗", "CONSOLIDATED": "✓"}
+SCATTER_MAX = 12                                  # > this many modules = scattered glue/primitive, not a target
 
 class SPPF(App):
     CSS = """
@@ -274,7 +280,9 @@ class SPPF(App):
     BINDINGS = [
         Binding("q", "quit", "quit"),
         Binding("s", "sort", "sort"),
-        Binding("d", "dup_only", "DUP-only"),
+        Binding("d", "tgt_only", "◆tgt-only"),
+        Binding("left_square_bracket", "scatter_dec", "scatter−"),
+        Binding("right_square_bracket", "scatter_inc", "scatter+"),
         Binding("x", "extract", "extract obs"),
         Binding("slash", "focus_filter", "filter"),
         Binding("escape", "unfocus_filter", "unfilter"),
@@ -284,9 +292,10 @@ class SPPF(App):
         super().__init__()
         self.allrows = rows
         self.meta = meta
-        self.sort_key = "dup"                          # targets (✗DUP) lead by default
+        self.sort_key = "target"                       # genuine parameterization targets lead by default
         self.filt = ""
-        self.dup_only = False
+        self.tgt_only = False
+        self.scatter_max = SCATTER_MAX                 # live-adjustable ([ / ]): the glue-vs-target knob
         self.defidx = load_def_index()
         self.copy_units = set(meta.get('copy_units', []))
         orbits = defaultdict(list)
@@ -295,6 +304,14 @@ class SPPF(App):
         # precompute the defCopy verdict per orbit ONCE → sort/filter/label by it (the whole point:
         # bring genuine ✗DUP parameterization targets to the front, not interleaved by raw impact).
         self.verdict = {u: resolve_orbit(list(u), self.defidx, self.copy_units)[0] for u in orbits}
+        # module SPREAD: a real target CONCENTRATES in a few sibling modules; a primitive (Fin.zero,
+        # ℕ.suc) is REFERENCED across scores of unrelated modules (high scatter, NOT a target).
+        self.nmod = {u: len({n.rsplit(".", 1)[0] for n in u}) for u in orbits}
+        # REF axis: is the orbit's dominant shared subtree headed by a REAL DEFINITION? If so the
+        # instances merely REFERENCE it (already consolidated at its home) — the copy=0 verdict can't
+        # see this. head_is_def + module-spread together isolate genuine redefine-targets.
+        self.ref = {u: max(subs, key=lambda s: s["fanin"]).get("head_is_def", False)
+                    for u, subs in orbits.items()}
         self.orbits = list(orbits.items())            # [(frozenset units, [rows])]
 
     def compose(self) -> ComposeResult:
@@ -309,9 +326,21 @@ class SPPF(App):
         self.refresh_orbits()
         self.query_one("#orbits", Tree).focus()
 
+    def _is_target(self, units):
+        """a genuine parameterization target: NOT already-consolidated, NOT a named-def reference,
+        NOT scattered glue (≤ the live scatter knob)."""
+        return (self.verdict.get(units) != "CONSOLIDATED"
+                and not self.ref.get(units, False)
+                and self.nmod.get(units, 999) <= self.scatter_max)
+
     def _orbit_key(self, item):
         units, subs = item
         impact = max(_impact(s) for s in subs)
+        if self.sort_key == "target":                 # genuine target = NOT already-consolidated, NOT a
+            #  named-def reference, NOT scattered glue — then biggest (most instances). All three sink.
+            return (self.verdict.get(units) == "CONSOLIDATED",
+                    self.ref.get(units, False),
+                    self.nmod.get(units, 999) > self.scatter_max, -len(units))
         if self.sort_key == "dup":                    # DUP first, then by impact within each verdict class
             return (VERDICT_RANK.get(self.verdict.get(units), 1), -impact)
         if self.sort_key == "n_subtrees": return -len(subs)
@@ -324,23 +353,27 @@ class SPPF(App):
         tree.reset("orbits")
         items = []
         for units, subs in self.orbits:
-            if self.dup_only and self.verdict.get(units) != "DUP":
-                continue                              # hide already-consolidated / mixed orbits
+            if self.tgt_only and not self._is_target(units):
+                continue                              # hide references / glue / already-consolidated
             fs = [s for s in subs if not self.filt or self.filt.lower() in s["head"].lower()]
             if fs: items.append((units, fs))
         items.sort(key=self._orbit_key)
         shown = items[:1500]
         for units, subs in shown:
-            mx = max(_impact(s) for s in subs)
             mark = VERDICT_MARK.get(self.verdict.get(units), "·")
-            node = tree.root.add(f"{mark} [{len(subs):>3} sub · ×{len(units)} · ≤{mx}]  {orbit_pref(units)}",
-                                 data=("orbit", units, subs))
+            nm = self.nmod.get(units, 0)
+            ref = ("→ref" if self.ref.get(units)              # references an existing def (skip)
+                   else "·glue" if nm > self.scatter_max      # anonymous but scattered = AST glue (skip)
+                   else "◆tgt")                               # anonymous + concentrated = extract+name it
+            node = tree.root.add(
+                f"{mark}{ref} [×{len(units)} · {nm}mod · {len(subs)}sub]  {orbit_pref(units)}",
+                data=("orbit", units, subs))
             for s in sorted(subs, key=lambda s: -_impact(s)):
                 node.add_leaf(f"{s['head']}  · size {s['size']} rung {s['rung']}", data=("sub", s))
         tree.root.expand()
-        ndup = sum(1 for u, _ in self.orbits if self.verdict.get(u) == "DUP")
-        self.sub_title = (f"{len(items)} orbits shown ({ndup} ✗DUP total) · "
-                          f"sort:{self.sort_key} · dup-only:{self.dup_only} · filter:'{self.filt}'")
+        ntgt = sum(1 for u, _ in self.orbits if self._is_target(u))
+        self.sub_title = (f"{len(items)} orbits · {ntgt} ◆targets (not-consolidated, not-a-ref, ≤{self.scatter_max} mod) · "
+                          f"sort:{self.sort_key} · tgt-only:{self.tgt_only} · scatter≤{self.scatter_max} ([ ]) · filter:'{self.filt}'")
         if shown: self.show_orbit(shown[0][0], shown[0][1])
 
     def _detail_instances(self, tree, units):
@@ -393,8 +426,16 @@ class SPPF(App):
         self.sort_key = ORBIT_SORTS[(ORBIT_SORTS.index(self.sort_key) + 1) % len(ORBIT_SORTS)]
         self.refresh_orbits()
 
-    def action_dup_only(self):
-        self.dup_only = not self.dup_only             # show only genuine ✗DUP parameterization targets
+    def action_tgt_only(self):
+        self.tgt_only = not self.tgt_only             # show only genuine ◆parameterization targets
+        self.refresh_orbits()
+
+    def action_scatter_dec(self):
+        self.scatter_max = max(1, self.scatter_max - 1)   # tighten: fewer modules count as concentrated
+        self.refresh_orbits()
+
+    def action_scatter_inc(self):
+        self.scatter_max = min(200, self.scatter_max + 1) # loosen: allow more module-spread as a target
         self.refresh_orbits()
 
     def action_focus_filter(self):
