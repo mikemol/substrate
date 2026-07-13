@@ -1779,6 +1779,7 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.OrientationUniversalOver" [label="Wedge.OrientationUniversalOver"];
   "Substrate.WitnessTower.Wedge.PackedBridge" [label="Wedge.PackedBridge"];
   "Substrate.WitnessTower.Wedge.PyAstRig" [label="Wedge.PyAstRig"];
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" [label="Wedge.PyAstRigCospan"];
   "Substrate.WitnessTower.Wedge.PyAstRigNormalize" [label="Wedge.PyAstRigNormalize"];
   "Substrate.WitnessTower.Wedge.Simplicial" [label="Wedge.Simplicial"];
   "Substrate.WitnessTower.Wedge.V4Seam" [label="Wedge.V4Seam"];
@@ -13416,6 +13417,18 @@ digraph imports {
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.SnGroup";
   "Substrate.WitnessTower.Wedge.PyAstRig" -> "Substrate.WitnessTower.Wedge.OrientationFixedPoint";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Empty";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.List";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.Foundation.Negation";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.WitnessTower.IsPermutation";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.WitnessTower.Wedge.PyAstRig";
+  "Substrate.WitnessTower.Wedge.PyAstRigCospan" -> "Substrate.WitnessTower.Wedge.PyAstRigNormalize";
   "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Algebra.Semiring.SPPF";
   "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Empty";
   "Substrate.WitnessTower.Wedge.PyAstRigNormalize" -> "Substrate.Foundation.Eq";
