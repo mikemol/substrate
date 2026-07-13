@@ -9,11 +9,47 @@ canonical home) + what it ⊃ contains. Filter by head; sort by impact/size/fani
   scripts/reuse_tui.py --build     # intern the forest (~90s) → cache (do once)
   scripts/reuse_tui.py             # load cache, launch the browser
 """
-import sys, os, json, argparse, glob
+import sys, os, re, json, argparse, glob
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 AGDA = os.path.join(REPO, "agda")
 CACHE = os.path.join(REPO, "scratch", "generated", "sppf_index.json")
+OBS_DIR = os.path.join(REPO, "scratch", "generated", "observations")
+
+# --------------------------------------------------------------------------- observation export
+def qname_to_file(qname):
+    """map a def qname to its source .agda file (deepest existing module prefix)."""
+    parts = qname.split(".")
+    for k in range(len(parts), 0, -1):
+        p = os.path.join(AGDA, *parts[:k]) + ".agda"
+        if os.path.exists(p):
+            return os.path.relpath(p, REPO)
+    return "?"
+
+def observation_md(r):
+    """an LLM-ready consolidation work-order for one shared subtree."""
+    insts = sorted(r["instances"], key=lambda n: (n.count("."), n))
+    canonical = insts[0]
+    files = sorted({qname_to_file(n) for n in insts})
+    L = [f"# Consolidation observation — `{r['head']}`", "",
+         f"Shared subtree `{r['head']}` — size {r['size']}, **{r['fanin']} instances**, rung {r['rung']}, "
+         f"impact {r['fanin'] * r['size']}."]
+    if r["contains"]:
+        L.append(f"⊃ contains: {', '.join(r['contains'])}.")
+    L += ["", "## Instances (canonical candidate first = shallowest module)", ""]
+    for n in insts:
+        L.append(f"- `{n}`  →  `{qname_to_file(n)}`")
+    L += ["", "## Files touched", ""] + [f"- `{f}`" for f in files]
+    L += ["", "## Instruction (for an LLM)", "",
+          f"These {r['fanin']} units share the structure rooted at `{r['head']}`. Consolidate it:",
+          f"1. Extract ONE parameterized abstraction (a record / def / parameterized module) capturing the",
+          f"   shared shape, homed at the canonical module of `{canonical}` (or a shallower shared parent).",
+          f"2. Rewrite each instance above to INSTANTIATE that abstraction — X is an instance of Y, and that",
+          f"   is the goal (consolidation), not a workaround.",
+          f"3. Verify: every touched file typechecks `--safe --without-K`; then re-run",
+          f"   `scripts/reuse_sweep.py <changed files>` and confirm this subtree's fanin has collapsed onto",
+          f"   the single abstraction.", ""]
+    return "\n".join(L)
 
 # --------------------------------------------------------------------------- build (interner)
 def build(cache_path, min_size, min_fanin, cap):
@@ -64,6 +100,7 @@ class SPPF(App):
     BINDINGS = [
         Binding("q", "quit", "quit"),
         Binding("s", "sort", "sort"),
+        Binding("x", "extract", "extract obs"),
         Binding("slash", "focus_filter", "filter"),
         Binding("escape", "unfocus_filter", "unfilter"),
     ]
@@ -144,6 +181,16 @@ class SPPF(App):
     def action_unfocus_filter(self):
         self.query_one("#table", DataTable).focus()
 
+    def action_extract(self):
+        if not self.view:
+            return
+        row = self.view[self.query_one("#table", DataTable).cursor_row]
+        safe = re.sub(r"[^\w.+-]", "_", row["head"])[:48]
+        os.makedirs(OBS_DIR, exist_ok=True)
+        path = os.path.join(OBS_DIR, f"{safe}__x{row['fanin']}.md")
+        open(path, "w").write(observation_md(row))
+        self.notify(f"observation → {os.path.relpath(path, REPO)}", timeout=6)
+
 def run_tui(cache_path):
     data = json.load(open(cache_path))
     SPPF(data["rows"], data).run()
@@ -155,11 +202,40 @@ def main():
     ap.add_argument("--min-size", type=int, default=3)
     ap.add_argument("--min-fanin", type=int, default=2)
     ap.add_argument("--cap", type=int, default=8000)
+    ap.add_argument("--observe", metavar="Q", help="print observations for subtrees whose head/instances match Q")
+    ap.add_argument("--between", nargs=2, metavar=("A", "B"),
+                    help="observations for subtrees with an instance matching A AND one matching B")
+    ap.add_argument("--top", type=int, default=8, help="max observations to print (--observe/--between)")
     args = ap.parse_args()
     if args.build:
         build(args.cache, args.min_size, args.min_fanin, args.cap); return
     if not os.path.exists(args.cache):
         print(f"no cache at {args.cache} — run:  scripts/reuse_tui.py --build"); return
+
+    if args.observe or args.between:
+        rows = json.load(open(args.cache))["rows"]
+        if args.between:
+            a, b = args.between[0].lower(), args.between[1].lower()
+            def rank(r):
+                insts = [n.lower() for n in r["instances"]]
+                if not (any(a in n for n in insts) and any(b in n for n in insts)):
+                    return None
+                # CONCENTRATION: fraction of instances actually in A∪B (specific dup vs tree-wide generic)
+                inab = sum(1 for n in insts if a in n or b in n)
+                return (inab / r["fanin"], r["size"])          # concentrated + big first
+            scored = [(rank(r), r) for r in rows]
+            matches = [r for k, r in sorted((kr for kr in scored if kr[0]), key=lambda kr: kr[0], reverse=True)]
+        else:
+            q = args.observe.lower()
+            matches = sorted([r for r in rows if q in r["head"].lower() or any(q in n.lower() for n in r["instances"])],
+                             key=lambda r: -(r["fanin"] * r["size"]))
+        if not matches:
+            print("no matching shared subtree."); return
+        print(f"# {len(matches)} matching shared subtree(s); showing top {min(args.top, len(matches))}\n")
+        for r in matches[:args.top]:
+            print(observation_md(r)); print("\n" + "-" * 78 + "\n")
+        return
+
     run_tui(args.cache)
 
 if __name__ == "__main__":
