@@ -31,6 +31,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-comm)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; boolToℕ)  -- ⟡A4: single source
+open import Substrate.Foundation.Bool.Properties using (or-xor-and)  -- ⟡A5: single source
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Algebra.Wedge.VecGraded using (vec-graded)
@@ -39,12 +40,7 @@ open import Substrate.Algebra.Wedge.VecGraded using (vec-graded)
 -- C4 — the index-product bridge: OR = XOR ⊕ AND.
 ------------------------------------------------------------------------
 
--- The ANF of OR, per bit.
-or-xor-and : (a b : Bool) → (a ∨ b) ≡ (a xor b) xor (a ∧ b)
-or-xor-and true  true  = refl
-or-xor-and true  false = refl
-or-xor-and false true  = refl
-or-xor-and false false = refl
+-- The ANF of OR, per bit — or-xor-and imported from Foundation.Bool.Properties (single source, ⟡A5).
 
 -- Lifted to the F₂ⁿ index: the ANF/Reed-Muller monomial product (union) equals the
 -- CD/Morton product (XOR) corrected by the AND overlap. The two index-group ops

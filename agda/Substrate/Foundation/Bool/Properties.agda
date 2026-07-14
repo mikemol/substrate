@@ -12,6 +12,14 @@ module Substrate.Foundation.Bool.Properties where
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; not)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
+-- ⟡A5: the ANF-of-OR (OR = XOR ⊕ AND at the Bool level) — the canonical foundational home for the
+-- identity, read by CayleyDickson/Grade (∨-anf) and Algebra.F2.FromBool (∨-as-xor-recon derives from it).
+or-xor-and : (a b : Bool) → (a ∨ b) ≡ (a xor b) xor (a ∧ b)
+or-xor-and true  true  = refl
+or-xor-and true  false = refl
+or-xor-and false true  = refl
+or-xor-and false false = refl
+
 ------------------------------------------------------------------------
 -- xor lemmas (case-analytical proofs).
 ------------------------------------------------------------------------

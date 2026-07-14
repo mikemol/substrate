@@ -20,8 +20,9 @@
 module Substrate.Algebra.F2.FromBool where
 
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_; _xor_)
+open import Substrate.Foundation.Bool.Properties using (or-xor-and)   -- ⟡A5: read the Bool ANF-of-OR
 open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+  using (_≡_; refl; trans; cong; cong₂)
 
 open import Substrate.Algebra.F2
 
@@ -81,12 +82,15 @@ bool→F₂-xor true  false = refl
 bool→F₂-xor false true  = refl
 bool→F₂-xor false false = refl
 
--- THE APEX:  OR = recon(XOR, AND) = a ⊕ b ⊕ (a ∧ b). Bool ∨ IS the F₂ field XOR reconstructed
--- by the ∧ cross-term (the oriented residue r in  recon q b r = q·b + r) — the wedge, not a new
--- primitive. (_+_ is infixl 6, _·_ infixl 7, so the RHS is ((a+b) + (a·b)).)
+-- THE APEX:  OR = recon(XOR, AND) = a ⊕ b ⊕ (a ∧ b). Bool ∨ IS the F₂ field XOR reconstructed by the
+-- ∧ cross-term (the oriented residue r in  recon q b r = q·b + r) — the wedge, not a new primitive.
+-- (_+_ is infixl 6, _·_ infixl 7, so the RHS is ((a+b) + (a·b)).) ⟡A5: DERIVED by reading the Bool-level
+-- ANF-of-OR (or-xor-and, Foundation.Bool.Properties) and transporting it through the two op-homomorphisms
+-- (bool→F₂-xor on the outer/inner XOR, bool→F₂-and on the ∧) — the F₂ image of the ONE Bool identity, not
+-- a re-case-split.
 ∨-as-xor-recon : (a b : Bool)
                → bool→F₂ (a ∨ b) ≡ (bool→F₂ a + bool→F₂ b) + (bool→F₂ a · bool→F₂ b)
-∨-as-xor-recon true  true  = refl
-∨-as-xor-recon true  false = refl
-∨-as-xor-recon false true  = refl
-∨-as-xor-recon false false = refl
+∨-as-xor-recon a b =
+  trans (cong bool→F₂ (or-xor-and a b))
+        (trans (bool→F₂-xor (a xor b) (a ∧ b))
+               (cong₂ _+_ (bool→F₂-xor a b) (bool→F₂-and a b)))
