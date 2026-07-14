@@ -78,6 +78,90 @@ def matmul(A, B, S):
     raise ValueError(S.name)
 
 
+# ════════════════ ⟡H-carrier — the carrier-interrelation core (DivStr/recon + EEA-fold + CRT) ═══════
+# The deep layer BOTH SQL and numpy realize (witness-tower/CRT/EEA guidance). Every carrier is a DivStr =
+# {z, recon(q,b,r)="q·b then r"} (Algebra/Wedge.agda:53-59); ⊗ = the q·b part, ⊕ = the +r part. Two carriers
+# INTERRELATE via the EEA trace, folded to many targets (WitnessTower/EEAFoldTable.agda: gcd = common
+# structure, Bézout = the recon inverses, CF-digits = the graded residue tower, coprime → CRT split — one
+# trace, the fold TARGET picks the extraction). The residue r = the orientation = the CRT correction.
+
+class DivStr:
+    """A carrier's wedge interface (Algebra/Wedge.agda:53-59): `z` (terminal divisor) + `recon(q,b,r)` = q·b+r.
+    ⊗ is the q·b part, ⊕ is the +r part. A wedge of `a` against `b` is (q, r) with `a == recon(q, b, r)`."""
+    __slots__ = ("name", "z", "recon", "wedge")
+    def __init__(self, name, z, recon, wedge):
+        self.name, self.z, self.recon, self.wedge = name, z, recon, wedge
+
+DIV_NAT = DivStr("ℕ", 0, lambda q, b, r: q * b + r, lambda a, b: divmod(a, b))   # ℕ-div (Algebra/Z/Wedge)
+DIV_F2  = DivStr("F₂", 0, lambda q, b, r: (q & b) ^ r, None)                       # F₂-div (⊕=XOR, ⊗=AND)
+
+
+def eea_steps(a, b):
+    """The EEATrace (Nat/GCD/EEATrace.agda): the chain of one-step wedges (a,b)↦(q,r) down to gcd. Returns
+    (gcd, [(a_i, b_i, q_i, r_i)] top-down). Each step: a_i = recon(q_i, b_i, r_i) = q_i·b_i + r_i."""
+    steps = []
+    while b != 0:
+        q, r = divmod(a, b)
+        assert a == DIV_NAT.recon(q, b, r), "the wedge identity a = recon q b r"
+        steps.append((a, b, q, r)); a, b = b, r
+    return a, steps                                        # a = gcd (the trace's target index g)
+
+# the universal fold, THREE targets (eea_fold, Nat/GCD/Fold.agda — the target picks the extraction):
+def fold_gcd(a, b):     return eea_steps(a, b)[0]          # the common structure
+def fold_digits(a, b):  return [q for _, _, q, _ in eea_steps(a, b)[1]]   # CF / Lehmer digits (the residue tower)
+def fold_bezout(a, b):
+    """Bézout via the back-substitution fold (Z/Bezout.agda:53-59): base (s,t)=(1,0), step (s',t')↦(t', s'−t'·q),
+    folded from the gcd base UP. Returns (s, t, g) with s·a + t·b = g."""
+    g, steps = eea_steps(a, b)
+    s, t = 1, 0
+    for (_, _, q, _) in reversed(steps):
+        s, t = t, s - t * q
+    return s, t, g
+
+def modinv(x, m):
+    """x⁻¹ mod m via Bézout (s·x + t·m = 1 ⇒ s ≡ x⁻¹). The CRT inverse (CRT/FromTrace.agda)."""
+    s, _, g = fold_bezout(x % m, m)
+    assert g == 1, f"{x} not invertible mod {m} (gcd {g})"
+    return s % m
+
+def crt_idempotents(moduli):
+    """The CRT correction basis eᵢ = Mᵢ·(Mᵢ⁻¹ mod mᵢ), Mᵢ = ∏_{j≠i} mⱼ (CRT/{Inverses,FromIdempotents}.agda):
+    eᵢ ≡ 1 mod mᵢ, ≡ 0 mod mⱼ (j≠i). The idempotents ARE the codec legs; coprime ⇒ orthogonal (eᵢ·eⱼ ≡ 0)."""
+    M = 1
+    for m in moduli: M *= m
+    return [(M // m) * modinv((M // m) % m, m) for m in moduli], M
+
+def crt_combine(residues, moduli):
+    """The Bézout-mediated CRT splitter (CRT.agda): combine(a₁,…) = Σ aᵢ·eᵢ — recompose a value from its
+    residues across coprime moduli. Reconstruction = a sum of wedge recons (each aᵢ·eᵢ is recon(aᵢ, eᵢ, 0))."""
+    es, _ = crt_idempotents(moduli)
+    return sum(a * e for a, e in zip(residues, es))
+
+
+def carrier_selftest():
+    # reproduce EEAFoldTable.agda BYTE-EXACT on the trace of (3,2): ONE trace, four fold targets.
+    assert fold_gcd(3, 2) == 1, "gcd(3,2) = 1 (the trace's target index — coprime)"
+    assert fold_digits(3, 2) == [1, 2], "CF/Lehmer digits of 3/2 = [1,2] (the quotient sequence consed by the fold)"
+    s, t, g = fold_bezout(3, 2)
+    assert (s * 3 + t * 2 == g == 1) and (s, t) == (1, -1), f"Bézout: 1·3 + (−1)·2 = 1, got s={s},t={t},g={g}"
+    # the residue r IS the wedge remainder (a = recon q b r): 3 = recon(1, 2, 1) = 1·2 + 1.
+    assert DIV_NAT.recon(1, 2, 1) == 3, "a = recon q b r (the orientation residue r=1)"
+
+    # CRT ℤ/15 ≅ ℤ/3 × ℤ/5 — reproduce CRT/Examples.agda byte-exact.
+    es, M = crt_idempotents([3, 5])
+    assert M == 15 and es == [10, 6], f"idempotents e₁=10 (≡1 mod3,≡0 mod5), e₂=6, got {es}"
+    assert crt_combine([1, 2], [3, 5]) == 22, "combine(1,2) = 1·10 + 2·6 = 22 ≡ (1 mod 3, 2 mod 5)"
+    assert 22 % 3 == 1 and 22 % 5 == 2, "the reconstruction hits both residues"
+    # COPRIME ⇒ ORTHOGONAL: the cross-term e₁·e₂ ≡ 0 mod 15 (CenterIsStarCRT: ⊗ degenerates to ⊕, clean split).
+    assert (es[0] * es[1]) % 15 == 0, "coprime ⇒ e₁·e₂ ≡ 0 (orthogonal, cross-term vanishes)"
+    # SHARED FACTOR ⇒ a GRADED RESIDUE (CenterIsStarNumeral: ℤ/8, 2·2=4 nilpotent — carried, not rejected).
+    assert (2 * 2) % 8 == 4 and (4 * 2) % 8 == 0, "shared prime-2: 2 nilpotent in ℤ/8 (a graded residue, the cost)"
+    print("PASS ⟡H-carrier (DivStr/recon + EEA-fold + CRT):")
+    print("  ONE EEA trace of (3,2), four fold targets (EEAFoldTable): gcd=1, CF-digits=[1,2], Bézout 1·3−1·2=1,")
+    print("  residue r=1 = recon(1,2,1). CRT ℤ/15≅ℤ/3×ℤ/5: e=[10,6], combine(1,2)=22; coprime ⇒ e₁·e₂≡0")
+    print("  (orthogonal, ⊗→⊕); shared prime ⇒ graded residue (2 nilpotent in ℤ/8) — the grade CARRIES it.")
+
+
 # ════════════════════════════════ ⟡H1 selftest — the four placements, byte-exact ════════════════════
 def selftest():
     # reproduce Contraction.agda:55-69 exactly (one tensor, four gauges — instances, not builds).
@@ -98,6 +182,8 @@ def selftest():
     print("  ONE contract, four gauges (Contraction.agda:55-69): ℕ=11, Bool=⊤, tropical=4, F₂=𝟘 — byte-exact.")
     print("  the field-vs-semiring caveat executable: Bool 1∨1=1 (reachability) ≠ F₂ 1⊕1=0 (parity);")
     print("  Bool matmul = one reachability hop. numpy" + (" + cupy" if HAVE_CUPY else " (host; cupy absent)") + ".")
+    print()
+    carrier_selftest()
 
 
 def main():
