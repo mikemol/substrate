@@ -27,7 +27,6 @@ open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target;
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; backed-non-vacuous)
 open import Substrate.Category.UniversalProperty.Instances using (ConeLimit-UP; ConeLimit-contentful)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
 
 -- the concrete product limit: the substrate's product-LimitUP 1 (λ _ → ℕ), apex ⊤.
 -- (a single-factor product of ℕ over ⊤ — the same instance ConeLimit-UP wraps.)
@@ -56,10 +55,6 @@ limit-backed = record
 
 limit-non-vacuous : ¬ _
 limit-non-vacuous = backed-non-vacuous limit-backed
-
--- REGISTERED: consed onto the seed registry (compiling = the registration).
-limit-registry : List BackedUP
-limit-registry = limit-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the LAST deferral finished, the map-IN dual): the

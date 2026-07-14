@@ -58,8 +58,6 @@ open import Substrate.Category.UniversalProperty
   using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed  using (BackedUP)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
-
 ------------------------------------------------------------------------
 -- 1. The two headline facts: bias COEQUALISES the (eU, eV) pair; verdict
 -- does NOT. The second is the non-refl content — a genuine apartness.
@@ -145,6 +143,3 @@ bias-coeq-backed = record
 -- the central `registry` stays domain-agnostic; the verdict tier conses its
 -- backing on top. This List typechecking IS the registration.
 ------------------------------------------------------------------------
-
-verdict-registry : List BackedUP
-verdict-registry = bias-coeq-backed ∷ registry

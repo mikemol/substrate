@@ -26,8 +26,6 @@ open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (MonoidOn;
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; backed-non-vacuous)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
-
 -- the concrete target: the free monoid on ℕ (Word ℕ under ++), basis map = singleton.
 Mℕ : MonoidOn (Word ℕ)
 Mℕ = word-monoid ℕ
@@ -69,10 +67,6 @@ freeMonoid-backed = record
 
 freeMonoid-non-vacuous : ¬ _
 freeMonoid-non-vacuous = backed-non-vacuous freeMonoid-backed
-
--- REGISTERED: consed onto the seed registry (compiling = the registration).
-freeMonoid-registry : List BackedUP
-freeMonoid-registry = freeMonoid-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the deferral finished): the FREE MONOID was flagged

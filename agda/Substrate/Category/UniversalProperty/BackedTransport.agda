@@ -24,7 +24,6 @@ open import Substrate.Algebra.Wedge using (Trace; done; quot; rem; trace-fold; �
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; solve; solves; content; backed-non-vacuous)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
 open import Substrate.Category.UniversalProperty.FoldRegistry using (SomeTraceℕ; shape-fold; shape-backed)
 open import Substrate.Category.UniversalProperty.FoldTransportInstances using (length; shape→count)
 
@@ -68,9 +67,6 @@ count-backed = record
 
 count-non-vacuous : ¬ _
 count-non-vacuous = backed-non-vacuous count-backed
-
-count-registry : List BackedUP
-count-registry = count-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- ③ THE TRANSPORT MORPHISM shape-backed ⇒ count-backed. σ = id (shared Source), φ =

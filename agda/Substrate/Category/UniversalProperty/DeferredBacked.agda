@@ -31,8 +31,6 @@ open import Substrate.Category.PresentedUniversalProperty.CyclicZ2 using (quotie
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; backed-non-vacuous)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
-
 ------------------------------------------------------------------------
 -- ① THE Z₂ PRESENTATION as a BackedUP. quotient : Word ⊤ → F₂ (parity = the free
 -- extension foldW into (F₂,𝟘,+) sending a ↦ 𝟙) is the solve; Witness w v = v ≡
@@ -99,12 +97,6 @@ units-backed = record
 
 units-non-vacuous : ¬ _
 units-non-vacuous = backed-non-vacuous units-backed
-
-------------------------------------------------------------------------
--- ③ REGISTERED: both consed onto the seed registry (compiling = the registration).
-------------------------------------------------------------------------
-deferred-registry : List BackedUP
-deferred-registry = z2-backed ∷ units-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — two more deferrals finished): the Z₂ PRESENTATION

@@ -31,7 +31,6 @@ open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target;
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed
   using (BackedUP; arrow; solve; solves; content; backed-non-vacuous)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
 open import Substrate.FUSep.FUSepQReduce using (atom; app; stop; shed; Reduce) renaming (Step to Step⟦c0e06c56⟧; Tm to Tm⟦533ef80d⟧)
 open import Substrate.Category.UniversalProperty.X8aSkiExistence using (module SkiExistence)
 
@@ -80,10 +79,6 @@ x8a-ski-backed = SkiBacked.ski-backed ⇒₀ fpf₀
 x8a-ski-non-vacuous : ¬ ((s : Source (arrow x8a-ski-backed)) (t : Target (arrow x8a-ski-backed))
                         → Witness (arrow x8a-ski-backed) s t)
 x8a-ski-non-vacuous = backed-non-vacuous x8a-ski-backed
-
--- registered — the canonical cons idiom (205): the SKI extruder solver on the base seed.
-x8a-ski-registry : List BackedUP
-x8a-ski-registry = x8a-ski-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the SKI extruder is a full BackedUP, registered): the SKI

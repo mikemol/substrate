@@ -23,7 +23,6 @@ open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; fromℕ-Wedge) renam
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
 import Substrate.Category.UniversalProperty.NuBacked as Nu
 
 ------------------------------------------------------------------------
@@ -51,9 +50,6 @@ wedge-zero a = record { quot = 0 ; rem = a ; wedge-eq = refl }
 ------------------------------------------------------------------------
 nu-backed-ℕ : BackedUP
 nu-backed-ℕ = Nu.nu-backed ℕ-coalg
-
-nu-registry : List BackedUP
-nu-registry = nu-backed-ℕ ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the ν solver registered, its coalgebra grounded): the

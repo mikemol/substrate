@@ -28,8 +28,6 @@ open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (F2Mod; 
 open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Backed using (BackedUP; arrow; backed-non-vacuous)
-open import Substrate.Category.UniversalProperty.Registry using (registry)
-
 -- the free module on Fin 1 is Vector 1; target module = Vector 1 itself; basis map.
 -- ext (vector-F2Mod 1) basis : Vector 1 → Vector 1 is the linear extension.
 linExt : Vector 1 → Vector 1
@@ -63,10 +61,6 @@ f2mod-backed = record
 
 f2mod-non-vacuous : ¬ _
 f2mod-non-vacuous = backed-non-vacuous f2mod-backed
-
--- REGISTERED: consed onto the seed registry.
-f2mod-registry : List BackedUP
-f2mod-registry = f2mod-backed ∷ registry
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the free F₂-module deferral finished, the map-out
