@@ -291,7 +291,7 @@ def licensed_lifts(I, py, sql):
         matches = [srt for sseq, srt in sql_seqs if _contig(pseq, tuple(h for h in sseq if h != "Scan"))]
         if matches:
             out.append((rt, matches))
-    out.sort(key=lambda r: (-len(r[0].sites), -r[0].grade))
+    out.sort(key=lambda r: -roofline(r[0])["score"])   # ⟡L4: steer by intensity-gain × breadth
     return out
 
 def _contig(short, long):
@@ -304,21 +304,47 @@ def _contig(short, long):
     return False
 
 
+# ════════════════════════════════ ⟡L4 — roofline steering: which lifts pay off ══════════════════════
+# The eager→fused readout (el-atlas/tools/kernel_cost_model.py:12-25). A python pipeline runs EAGER: a
+# materialized temporary per op (list/set/dict/Counter) → ~20k B/elem over k ops → intensity I = 2k/(20k) =
+# 0.1 FLOP/byte, CONSTANT in size → MEMORY-BOUND. Lifting it into SQL runs FUSED: one declarative streaming
+# pass, no python intermediates → 8 B/elem → I = 2k/8 = k/4, which SCALES with pipeline depth k → toward
+# COMPUTE-BOUND. "Fusing IS the lever that raises intensity" (kernel_cost_model.py:24). So a lift's payoff is
+# the intensity-GAIN (=I_fused/I_eager = 2.5·k) × its breadth (corpus-wide temporaries eliminated) — the same
+# breadth×cost steering as query_registry's index recommender. HONEST: intensity is a READOUT ρ of the graded
+# object, NOT a grade (finding B, the weakest thread); this is a cost HEURISTIC, workload-relative, not a
+# measured speedup — measuring the wall-time win is ⟡L5 (apply + benchmark). Size (result cardinality) would
+# scale the ABSOLUTE win but not the regime; left as a per-lift annotation, not in the score.
+_I_EAGER = 0.1
+def roofline(rt):
+    k = len([h for h in rt.heads if h != "Scan"])   # relational ops = eager intermediates materialized
+    i_fused = k / 4.0
+    gain = i_fused / _I_EAGER                         # = 2.5·k (per-element intensity gain, size-independent)
+    return {"k": k, "i_eager": _I_EAGER, "i_fused": i_fused, "gain": gain, "score": gain * len(rt.sites)}
+
+
 def report(files=None):
     I, py, sql = build(files)
     lifts = licensed_lifts(I, py, sql)
     print(f"⟡graded-relational-carrier — {len(py)} distinct python Rel-pipelines, {len(sql)} SQL builder "
           f"pipelines, interned into ONE carrier ({I.size()} nodes)\n")
-    print(f"LICENSED LIFTS (python relational pipeline is a sub-pipeline of an SQL builder — degree-0 "
-          f"coherent up to source; grade = pipeline depth; breadth = # python sites):\n")
+    print(f"LICENSED LIFTS — STEER by roofline priority (intensity-gain × breadth; eager I≈0.1 memory-bound "
+          f"→ fused I=k/4 compute-bound; a lift eliminates k materialized python temporaries per site):\n")
     for rt, matches in lifts:
         seq = " → ".join(h for h in rt.canon_seq() if h != "Scan")
         sset = ", ".join(sorted({s[1] for srt in matches for s in srt.sites})[:4])
-        print(f"  breadth {len(rt.sites):>2}  grade {rt.grade}  [{seq}]  ⟵ SQL: {sset}")
+        rf = roofline(rt)
+        print(f"  score {rf['score']:5.1f}  ×{rf['gain']:.1f} intensity  (I {rf['i_eager']:.2f}→{rf['i_fused']:.2f}, "
+              f"{rf['k']} temporaries × {len(rt.sites)} sites)  [{seq}]  ⟵ SQL: {sset}")
         for site in rt.sites[:4]:
             print(f"        {site[0]}:{site[1]}  {site[2]}()")
     if not lifts:
         print("  (none)")
+    elif lifts:
+        top = lifts[0][0]
+        print(f"\n  → STEER: lift `[{' → '.join(h for h in top.canon_seq() if h!='Scan')}]` first "
+              f"(score {roofline(top)['score']:.1f}: the highest intensity-gain × breadth — most eager "
+              f"temporaries eliminated corpus-wide, workload-relative).")
     # the orbit-dedup headline: COMPOSED (grade≥2) python pipelines shared across ≥2 sites (fan-in clusters)
     shared = [rt for rt in py.values() if len(rt.sites) >= 2 and len([h for h in rt.heads if h != "Scan"]) >= 2]
     print(f"\nORBIT-DEDUP: {len(shared)} composed (grade≥2) python Rel-pipeline(s) recur across ≥2 sites "
@@ -373,6 +399,17 @@ def selftest():
     walk_fns = {s[2] for rt in py3.values() for s in rt.sites if len(_relseq(rt)) >= 2}
     assert not ({"sz", "lsz", "descsh", "hei"} & walk_fns), \
         "the recursive-unfold helpers must yield NO composed Rel pipeline (unbounded grade = not liftable)"
+
+    # ⟡L4 — roofline readout: eager I is CONSTANT (size-independent), fused I SCALES with pipeline depth k;
+    # gain = 2.5·k; the lift ranking steers by intensity-gain × breadth.
+    r2 = roofline(RelTerm(("OrderBy", "Limit", "Scan"))); r3 = roofline(RelTerm(("Filter", "OrderBy", "Limit", "Scan")))
+    assert r2["i_eager"] == r3["i_eager"] == _I_EAGER, "eager intensity is constant (memory-bound)"
+    assert r3["i_fused"] > r2["i_fused"], "fused intensity SCALES with pipeline depth (compute-bound)"
+    assert abs(r2["gain"] - 5.0) < 1e-9 and abs(r3["gain"] - 7.5) < 1e-9, "gain = 2.5·k"
+    scores = [roofline(rt)["score"] for rt, _ in lifts2]
+    assert scores == sorted(scores, reverse=True), "licensed lifts must be steered (sorted) by roofline score"
+    assert abs(roofline(ob_lim[0])["score"] - 10.0) < 1e-9, \
+        "the render_graph/render_import [OrderBy→Limit] lift: gain 5 × breadth 2 = score 10"
 
     print("PASS ⟡graded-relational-carrier selftest:")
     print("  Rel = GradedProductOver(+,0); grade = pipeline depth; python sorted(...) and SQL .order_by(...)")
