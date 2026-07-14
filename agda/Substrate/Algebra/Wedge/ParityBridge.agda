@@ -32,14 +32,14 @@ open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; +-assoc; ·-distribʳ-
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
+open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+) public  -- ⟡A2: single source, re-exported (IntParityBridge/Registry consume parity via this bridge)
 
 ------------------------------------------------------------------------
 -- 1. Parity: the mod-2 reduction ℕ → F₂.
 ------------------------------------------------------------------------
 
-parity : ℕ → F₂
-parity zero    = 𝟘
-parity (suc n) = 𝟙 +₂ parity n
+-- parity / parity-+ are imported from N-to-F2-Parity (single source, ⟡A2) — the mod-2 map lives
+-- ONCE there; this module keeps only the bridge-specific parity-* / parity-bridge / transport.
 
 ------------------------------------------------------------------------
 -- 2. Parity is a ring hom: additive (parity-+) AND multiplicative (parity-*).
@@ -47,11 +47,7 @@ parity (suc n) = 𝟙 +₂ parity n
 --    own multiplication (q·b), not the Peano count `scale q b`.
 ------------------------------------------------------------------------
 
-parity-+ : (x y : ℕ) → parity (x + y) ≡ parity x +₂ parity y
-parity-+ zero    y = refl
-parity-+ (suc n) y =
-  trans (cong (𝟙 +₂_) (parity-+ n y))
-        (sym (+-assoc 𝟙 (parity n) (parity y)))
+-- (parity-+ : the additive ring-hom leg is imported from N-to-F2-Parity — ⟡A2)
 
 -- parity is multiplicative: parity (x·y) = parity x ·₂ parity y (the ℕ→F₂ ring
 -- hom's multiplicative leg). suc-case = distribute, then 𝟙·=id.

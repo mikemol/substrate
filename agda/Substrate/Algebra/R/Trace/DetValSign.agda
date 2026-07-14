@@ -24,6 +24,7 @@ open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
 open import Substrate.Algebra.Z.Properties.MulFull using (neg-*-right; *ℤ-identityˡ)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Properties using (det4; det-after; det-flip)
+open import Substrate.Algebra.R.Trace.ChiralityBridge using (det-sign; det-sign-is-parity)  -- ⟡A1: single source
 
 -- (−1)ⁿ as a ℤ tracker.
 pow-neg : ℕ → ℤ
@@ -64,10 +65,8 @@ sign : ℤ → F₂
 sign (+ _)    = 𝟘
 sign (-suc _) = 𝟙
 
--- det-sign, the abstract tracker (ChiralityBridge): seed 𝟘, flip per step.
-det-sign : ℕ → F₂
-det-sign zero    = 𝟘
-det-sign (suc n) = 𝟙 +F det-sign n
+-- det-sign / det-sign-is-parity are imported from ChiralityBridge (single source, ⟡A1) — the ℤ/2
+-- chirality tracker lives ONCE in ChiralityBridge; this module adds the REAL ℤ-valued det context.
 
 -- sign of (−1)ⁿ IS det-sign n (= parity n). Induction: sign(-ℤ(pow-neg n))
 -- flips. pow-neg n is ±1 (never 0), so the flip is exact.
@@ -97,7 +96,4 @@ det-after-sign-is-chirality :
 det-after-sign-is-chirality n r =
   trans (cong sign (det-after-seed n r)) (sign-pow-neg n)
 
--- and det-sign IS parity (ChiralityBridge's identity, reproved here for closure)
-det-sign-is-parity : (n : ℕ) → det-sign n ≡ parity n
-det-sign-is-parity zero    = refl
-det-sign-is-parity (suc n) = cong (𝟙 +F_) (det-sign-is-parity n)
+-- (det-sign-is-parity : det-sign n ≡ parity n is imported from ChiralityBridge — ⟡A1)

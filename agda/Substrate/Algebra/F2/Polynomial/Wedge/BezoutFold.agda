@@ -65,10 +65,10 @@ base-bezout-poly a =
 -- the step's reusable convCoeff infrastructure.
 ------------------------------------------------------------------------
 
--- char-2 self-cancellation.
+-- char-2 self-cancellation — the proof lives ONCE in Algebra.F2 (⟡A3: single source); this is a
+-- thin re-export alias so the local call sites are unchanged.
 +-self : (x : F2.F₂) → x + x ≡ 𝟘
-+-self F2.𝟘 = refl
-+-self F2.𝟙 = refl
++-self = F2.+-self-inverse
 
 -- convCoeff is congruent in its 2nd argument under pointwise nth-equality.
 convCoeff-cong-r : (p : Poly n) {q : Poly m} {q' : Poly l}
