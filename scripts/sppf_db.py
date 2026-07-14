@@ -396,6 +396,16 @@ CREATE TABLE IF NOT EXISTS _orbit_def (unit_id TEXT PRIMARY KEY, type_key TEXT, 
                                        residue TEXT, stab INT);
 CREATE INDEX IF NOT EXISTS ix_odef_type   ON _orbit_def(type_key);
 CREATE INDEX IF NOT EXISTS ix_odef_graded ON _orbit_def(graded_key);
+-- ⟡orbit-def-by-reference: the graded orbit as a content-addressed DAG (BY REFERENCE, not the old
+-- _b64(repr(k)) inlined blob). graded_id = a stable Merkle content-address (graded_orbit.dump_graded);
+-- graded_orbit_child edges reference child graded_ids; graded_orbit_member maps a graded_id → the units in
+-- that orbit; graded_orbit_node.fanin = sharing BREADTH (the ⟡query-sppf-intern signal), a lookup not a scan.
+CREATE TABLE IF NOT EXISTS graded_orbit_node   (graded_id TEXT PRIMARY KEY, kind TEXT, op TEXT, qname TEXT, fanin INT);
+CREATE TABLE IF NOT EXISTS graded_orbit_child  (graded_id TEXT, ord INT, child_id TEXT);
+CREATE TABLE IF NOT EXISTS graded_orbit_member (graded_id TEXT, unit_id TEXT);
+CREATE INDEX        IF NOT EXISTS ix_gorbit_child ON graded_orbit_child(graded_id);
+CREATE INDEX        IF NOT EXISTS ix_gorbit_nqn   ON graded_orbit_node(qname);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_gorbit_mem   ON graded_orbit_member(graded_id, unit_id);
 """
 
 def project_argperm(con, filt=None):
@@ -403,22 +413,32 @@ def project_argperm(con, filt=None):
     touches no other table. residue = the telescope-permutation Lehmer code (the coset element = the wedge
     r); two defs in one type-orbit differ by their residues. Returns (n_defs, n_type_orbits, n_graded)."""
     import graded_orbit as G
-    con.execute("DROP TABLE IF EXISTS _orbit_def")
+    for t in ("_orbit_def", "graded_orbit_node", "graded_orbit_child", "graded_orbit_member"):
+        con.execute(f"DROP TABLE IF EXISTS {t}")
     con.executescript(ARGPERM_SCHEMA)
     ctx = G.Ctx(con)
     uid = {nm: u for u, nm in con.execute(
         "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid WHERE u.copy=0")}
-    rows = []
+    defs = []                                                        # (name, k=(tkey,gid), residue_repr, stab)
     for name in ctx.idx:
         if filt and filt not in name:
             continue
-        k = G.orbit_key(ctx, name)                                   # (type-orbit, proof-orbit)
+        k = G.orbit_key(ctx, name)                                   # (type-orbit key, graded HANDLE gid)
         leh, stab = ctx.resid.get(name, ((), 1))                     # the coset element (Lehmer) + |Stab|
         if name in uid:
-            rows.append((uid[name], _b64(repr(k[0])), _b64(repr(k)), repr(leh), stab))
-    con.executemany("INSERT OR IGNORE INTO _orbit_def VALUES (?,?,?,?,?)", rows)
+            defs.append((name, k, repr(leh), stab))
+    # ⟡orbit-def-by-reference: persist the graded-orbit DAG by REFERENCE; graded_key = the interner's int
+    # handle str(root gid) — a BOUNDED, within-build-consistent content-address (consumers only compare
+    # graded_key for equality within one build). node/child rows carry the DAG + fanin (breadth).
+    node_rows, child_rows = G.dump_graded(ctx)
+    orbit_rows  = [(uid[name], _b64(repr(k[0])), str(k[1]), leh, stab) for (name, k, leh, stab) in defs]
+    member_rows = [(str(k[1]), uid[name]) for (name, k, _, _) in defs]
+    con.executemany("INSERT OR IGNORE INTO _orbit_def VALUES (?,?,?,?,?)", orbit_rows)
+    con.executemany("INSERT OR IGNORE INTO graded_orbit_node   VALUES (?,?,?,?,?)", node_rows)
+    con.executemany("INSERT OR IGNORE INTO graded_orbit_child  VALUES (?,?,?)", child_rows)
+    con.executemany("INSERT OR IGNORE INTO graded_orbit_member VALUES (?,?)", member_rows)
     con.commit()
-    return len(rows), len({r[1] for r in rows}), len({r[2] for r in rows})
+    return len(orbit_rows), len({r[1] for r in orbit_rows}), len({r[2] for r in orbit_rows})
 
 
 def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False):

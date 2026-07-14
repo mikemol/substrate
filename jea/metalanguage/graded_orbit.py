@@ -347,6 +347,27 @@ def orbit_key(ctx, qname, depth=3, stack=None):
     return key
 
 
+def dump_graded(ctx):
+    """⟡orbit-def-by-reference: turn the in-memory graded-orbit DAG (`ctx.I`, an Intern populated bottom-up
+    by `orbit_key`) into a PERSISTABLE by-reference projection. The graded_id is the interner's OWN int
+    handle (as a string) — a BOUNDED (fixed-size), within-build-consistent content-address: same structure →
+    same interned handle (SPPF property), and consumers group `graded_key` within one build, so cross-run
+    stability is not needed. (A recursive `_b64(head ‖ child-ids)` Merkle id was tried and REVERTED: base64
+    is not fixed-size, so ids grew up the DAG and reproduced the fanout³ blowup — the 2GiB cgroup cap caught
+    it. The int handle is the correct bounded id — the substrate's own hash-cons handle, reused.) Walk once
+    (id order is topological); node_rows carry `fanin` = sharing BREADTH. Returns `(node_rows, child_rows)`;
+    a def's graded_id is `str(gid)` of its root handle."""
+    I = ctx.I
+    node_rows, child_rows = [], []
+    for i, n in enumerate(I.nodes):
+        gid = str(i)
+        qn = n.payload[0] if n.payload else None
+        node_rows.append((gid, n.kind, n.op, qn, I.fanin[i]))
+        for ordi, c in enumerate(n.children):
+            child_rows.append((gid, ordi, str(c)))
+    return node_rows, child_rows
+
+
 def to_lehmer(perm):
     """the Lehmer code (factoradic digits) of a permutation — the proven Sₙ-canonical residue: digit[i] =
     #{j > i : perm[j] < perm[i]}. This is the per-level residue the LehmerPath datatype carries."""

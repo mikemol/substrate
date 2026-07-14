@@ -54,7 +54,10 @@ with_lock() {  # → 0 holding the lock (fd in $LKFD); → 1 on timeout, with no
   flock -w "$LOCK_TIMEOUT" "$LKFD" && return 0
   exec {LKFD}>&-; return 1
 }
-unlock() { flock -u "$LKFD" 2>/dev/null; exec {LKFD}>&- 2>/dev/null; return 0; }
+unlock() { flock -u "$LKFD" 2>/dev/null; { exec {LKFD}>&-; } 2>/dev/null; return 0; }   # brace-group the exec:
+# a bare `exec {LKFD}>&- 2>/dev/null` makes the 2>/dev/null PERMANENT (exec+redirect, no command) → it
+# silently swallowed the whole script's stderr (own messages, child stderr, tracebacks) for the rest of the
+# run. The brace group keeps the fd-close but scopes the 2>/dev/null to the group (stderr preserved).
 
 # Liveness, PID-REUSE-PROOF: a lease owner is "pid:starttime" (field 22 of /proc/pid/stat). A recycled
 # PID has a different starttime, so a dead owner's lease can never be kept alive by an unrelated process.
