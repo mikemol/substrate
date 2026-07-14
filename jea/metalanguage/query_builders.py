@@ -152,12 +152,27 @@ def v_orbit():                           # sppf_db `orbit` — path_text ×1 (op
                           .outerjoin(pt, pt.c.path_id == n.c.op_path_id)))
 
 
+# ════════════════════════════════════ R1 — reuse_tui remaining read SELECTs ═══════════════════════
+def q_node_child_edges():                # reuse_tui L87 — ORDER-SENSITIVE (builds ordered child lists)
+    return select(node_child.c.node_id, node_child.c.child_id).order_by(node_child.c.node_id, node_child.c.ord)
+def q_shared_subtree():                  # reuse_tui L98-99 — value binds via run(..., min_fanin=…)
+    return select(shared_subtree.c.node_id, shared_subtree.c.fanin).where(shared_subtree.c.fanin >= bindparam("min_fanin"))
+def q_defcopy_units():                   # reuse_tui L153-154
+    return select(_unit.c.unit_id).where(_unit.c.copy == "1")
+def q_unit_node_all():                   # reuse_tui L156
+    return select(unit_node.c.unit_id, unit_node.c.node_id)
+def q_core_count():                      # reuse_tui L173
+    return select(func.count(func.distinct(_unit.c.file_id)))
+
+
 # builders as nullary thunks for INTERNING by query_registry (parameterized ones bound with a
 # representative shape; the bound value is a bindparam node, structure-only — breadth is unaffected).
 INTERN_BUILDERS = {
     "node_head": q_node_head, "unit_names": q_unit_names, "event_head": q_event_head,
     "argperm_uid": q_argperm_uid, "deserialize_oppath": q_deserialize_oppath,
     "reuse_rows": lambda: q_reuse_rows(True),
+    "node_child_edges": q_node_child_edges, "shared_subtree": q_shared_subtree,
+    "defcopy_units": q_defcopy_units, "unit_node_all": q_unit_node_all, "core_count": q_core_count,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
 }
@@ -188,15 +203,29 @@ def _reg():
             "LEFT JOIN path_text pt ON pt.path_id=nd.op_path_id LEFT JOIN terms o ON o.term_id=nd.op_term_id "
             "LEFT JOIN terms r ON r.term_id=nd.role_id WHERE nd.node_id IN (SELECT node_id FROM node_child) "
             "GROUP BY un.node_id HAVING units>=? ORDER BY units DESC", (3,)),
+        # R1 reuse_tui:
+        "node_child_edges": (lambda: q_node_child_edges(), {},
+            "SELECT node_id, child_id FROM node_child ORDER BY node_id, ord", (), True),   # ORDER-SENSITIVE
+        "shared_subtree":  (q_shared_subtree, {"min_fanin": 2},
+            "SELECT node_id, fanin FROM shared_subtree WHERE fanin>=?", (2,)),
+        "defcopy_units":   (lambda: q_defcopy_units(), {},
+            "SELECT unit_id FROM _unit WHERE copy=1", ()),
+        "unit_node_all":   (lambda: q_unit_node_all(), {},
+            "SELECT unit_id, node_id FROM unit_node", ()),
+        "core_count":      (lambda: q_core_count(), {},
+            "SELECT COUNT(DISTINCT file_id) FROM _unit", ()),
     }
 
 
 def verify(con, only=None):
     reg = _reg(); ok = 0; fail = []
-    for name, (build, bkw, raw, rp) in reg.items():
+    for name, entry in reg.items():
+        build, bkw, raw, rp = entry[:4]; ordered = entry[4] if len(entry) > 4 else False
         if only and name not in only: continue
-        new = sorted(map(tuple, run(con, build(), **bkw).fetchall()))
-        old = sorted(map(tuple, con.execute(raw, rp).fetchall()))
+        nr = list(map(tuple, run(con, build(), **bkw).fetchall()))
+        orr = list(map(tuple, con.execute(raw, rp).fetchall()))
+        new = nr if ordered else sorted(nr)          # ORDER-SENSITIVE consumers: compare in order
+        old = orr if ordered else sorted(orr)
         if new == old:
             ok += 1; print(f"  ✓ {name:22s} {len(new)} rows — Core == raw")
         else:

@@ -72,6 +72,8 @@ def db_rows(min_size, min_fanin, cap=None):
     Returns (rows, copy_units, ncores, n_candidates). Shared by --build (caches) and reuse_sweep."""
     import sqlite3
     from collections import defaultdict as _dd
+    sys.path.insert(0, os.path.join(REPO, "jea", "metalanguage"))
+    import query_builders as QB           # ⟡query-rawtocore: single-source Core builders (run = execute)
     if not os.path.exists(CATALOG_DB):
         sys.exit(f"reuse: ABORT — no catalog.db at {CATALOG_DB}. Regenerate the projection:\n"
                  f"    python3 scripts/sppf_db.py \"\"        # event-source all cores → SPPF projection")
@@ -84,19 +86,14 @@ def db_rows(min_size, min_fanin, cap=None):
     sys.setrecursionlimit(1 << 20)
     print("loading SPPF from catalog.db …", flush=True)
     child = _dd(list)
-    for nid, cid in con.execute("SELECT node_id, child_id FROM node_child ORDER BY node_id, ord"):
+    for nid, cid in QB.run(con, QB.q_node_child_edges()):
         child[nid].append(cid)
     # head from _node with LEFT JOINs (the `node` view inner-joins kind_id, which doesn't resolve — a
     # pre-existing projection bug; role_id does resolve, so op ▸ role ▸ '?').
     head = {}
-    for nid, op_p, op_t, role in con.execute(
-            "SELECT n.node_id, pt.text, o.text, r.text FROM _node n "
-            "LEFT JOIN path_text pt ON pt.path_id=n.op_path_id "
-            "LEFT JOIN terms o ON o.term_id=n.op_term_id "
-            "LEFT JOIN terms r ON r.term_id=n.role_id"):
+    for nid, op_p, op_t, role in QB.run(con, QB.q_node_head()):
         head[nid] = op_p or op_t or role or "?"
-    shared = {nid: f for nid, f in
-              con.execute("SELECT node_id, fanin FROM shared_subtree WHERE fanin>=?", (min_fanin,))}
+    shared = {nid: f for nid, f in QB.run(con, QB.q_shared_subtree(), min_fanin=min_fanin)}
     import math
     # subtree weight: unfolded node count, CAPPED (a DAG's true unfolding explodes exponentially under
     # sharing, and the exact distinct-descendant count costs ~4.5GB/32s — too heavy for a browse tool).
@@ -146,14 +143,14 @@ def db_rows(min_size, min_fanin, cap=None):
         rung[n] = h; return h
     # instances (unit names) sharing each shared node, + the defCopy set
     uname, copy_units = {}, []
-    for uid, name in con.execute("SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid"):
+    for uid, name in QB.run(con, QB.q_unit_names()):
         uname[uid] = name
     unit_names = set(uname.values())                              # every real definition's qname
     if have_copy:
         copy_units = sorted(name for uid, name in
-            ((uid, uname[uid]) for uid, in con.execute("SELECT unit_id FROM _unit WHERE copy=1")) if uid in uname)
+            ((uid, uname[uid]) for uid, in QB.run(con, QB.q_defcopy_units())) if uid in uname)
     units_of = _dd(set)
-    for uid, nid in con.execute("SELECT unit_id, node_id FROM unit_node"):
+    for uid, nid in QB.run(con, QB.q_unit_node_all()):
         if nid in shared and uid in uname: units_of[nid].add(uid)
     print(f"{len(uname)} units, {len(shared)} shared subtrees; assembling rows …", flush=True)
     rows = []
@@ -170,7 +167,7 @@ def db_rows(min_size, min_fanin, cap=None):
                      "rung": hei(nid), "contains": contains, "instances": insts})
     rows.sort(key=lambda r: -(r["fanin"] * r["size"]))
     if cap: rows = rows[:cap]
-    ncores = con.execute("SELECT COUNT(DISTINCT file_id) FROM _unit").fetchone()[0]
+    ncores = QB.run(con, QB.q_core_count()).fetchone()[0]
     return rows, copy_units, ncores, len(shared)
 
 def build(cache_path, min_size, min_fanin, cap):
