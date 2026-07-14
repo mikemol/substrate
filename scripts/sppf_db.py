@@ -16,6 +16,8 @@ structural sharing, the SPPF packings — is the PROJECTION.
 """
 import sqlite3, sys, os, glob, base64, json
 from collections import defaultdict
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "jea", "metalanguage"))
+import query_builders as QB               # ⟡query-rawtocore: single-source Core builders (run = execute)
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
@@ -187,19 +189,16 @@ def project_sppf(con):
 
     # head + symbol per event (symbol is head-only ⟹ global, no recursion)
     head, sym = {}, {}
-    for ekey, ctor, qname, idx in con.execute(
-            "SELECT e.ekey, tc.text, pq.text, e.idx FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
-            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid"):
+    for ekey, ctor, qname, idx in QB.run(con, QB.q_event_head()):
         if ctor in ("Var", "PVar"):        role, op = f"db{idx}", ""
         elif ctor in FREE and qname:       role, op = "", qname
         else:                              role, op = "", (ctor or "")
         head[ekey] = ("AgdaCore", role, op, "")
         sym[ekey]  = _b64("\x00".join(head[ekey]))
-    raw_ctor = {e: ct for e, ct in con.execute(   # the true constructor (Def/Con/Var/Sort/…) for cod()
-        "SELECT e.ekey, tc.text FROM event e JOIN terms tc ON tc.term_id=e.ctor_id")}
-    obs = {(c, l): e for c, l, e in con.execute("SELECT core_id, local_id, ekey FROM obs")}
+    raw_ctor = {e: ct for e, ct in QB.run(con, QB.q_event_ctor())}   # true constructor (Def/Con/Var/…) for cod()
+    obs = {(c, l): e for c, l, e in QB.run(con, QB.q_obs_all())}
     ch = defaultdict(list)
-    for c, p, o, cl in con.execute("SELECT core_id, plid, ord, clid FROM edge"):
+    for c, p, o, cl in QB.run(con, QB.q_edge_all()):
         ch[(c, p)].append((o, cl))
 
     def cod(c, root_lid):        # raw_final_head over the UNAMBIGUOUS per-core tree → (ctor, qname)
@@ -282,8 +281,8 @@ def project_sppf(con):
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
     return (len(seen_n), len(urows),
-            con.execute("SELECT COUNT(*) FROM shared_subtree").fetchone()[0],
-            con.execute("SELECT MAX(LENGTH(node_id)) FROM _node").fetchone()[0])
+            QB.run(con, QB.q_count_shared()).fetchone()[0],
+            QB.run(con, QB.q_max_node_len()).fetchone()[0])
 
 
 ORBIT_SCHEMA = """
@@ -313,17 +312,15 @@ def project_orbit_sppf(con, distribute=False):
     con.executescript(ORBIT_SCHEMA)
 
     head = {}                                       # reload the forest (self-contained; mirrors project_sppf)
-    for ekey, ctor, qname, idx in con.execute(
-            "SELECT e.ekey, tc.text, pq.text, e.idx FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
-            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid"):
+    for ekey, ctor, qname, idx in QB.run(con, QB.q_event_head()):
         if ctor in ("Var", "PVar"):    role, op = f"db{idx}", ""
         elif ctor in FREE and qname:   role, op = "", qname
         else:                          role, op = "", (ctor or "")
         head[ekey] = ("AgdaCore", role, op, "")
     sym = {e: _b64("\x00".join(h)) for e, h in head.items()}
-    obs = {(c, l): e for c, l, e in con.execute("SELECT core_id, local_id, ekey FROM obs")}
+    obs = {(c, l): e for c, l, e in QB.run(con, QB.q_obs_all())}
     ch = defaultdict(list)
-    for c, p, o, cl in con.execute("SELECT core_id, plid, ord, clid FROM edge"):
+    for c, p, o, cl in QB.run(con, QB.q_edge_all()):
         ch[(c, p)].append((o, cl))
     def tid(s): return _b64("" if s is None else s)
     def pid(s): return _b64(s)
@@ -417,8 +414,7 @@ def project_argperm(con, filt=None):
         con.execute(f"DROP TABLE IF EXISTS {t}")
     con.executescript(ARGPERM_SCHEMA)
     ctx = G.Ctx(con)
-    uid = {nm: u for u, nm in con.execute(
-        "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid WHERE u.copy=0")}
+    uid = {nm: u for u, nm in QB.run(con, QB.q_argperm_uid())}
     defs = []                                                        # (name, k=(tkey,gid), residue_repr, stab)
     for name in ctx.idx:
         if filt and filt not in name:

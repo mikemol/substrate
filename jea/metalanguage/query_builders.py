@@ -152,6 +152,14 @@ def v_orbit():                           # sppf_db `orbit` — path_text ×1 (op
                           .outerjoin(pt, pt.c.path_id == n.c.op_path_id)))
 
 
+# ════════════════════════════════════ R2 — sppf_db projection reads (LOAD-BEARING) ════════════════
+def q_event_ctor():   return select(event.c.ekey, terms.c.text).select_from(event.join(terms, terms.c.term_id == event.c.ctor_id))  # L198-199
+def q_obs_all():      return select(obs.c.core_id, obs.c.local_id, obs.c.ekey)          # L200 / L324
+def q_edge_all():     return select(edge.c.core_id, edge.c.plid, edge.c.ord, edge.c.clid)  # L202 / L326
+def q_count_shared(): return select(func.count()).select_from(shared_subtree)          # project_sppf return
+def q_max_node_len(): return select(func.max(func.length(_node.c.node_id)))            # project_sppf return
+
+
 # ════════════════════════════════════ R1 — reuse_catalog deserialize base reads (positional) ══════
 def q_pathtext_all():  return select(path_text.c.path_id, path_text.c.text)            # L303
 def q_terms_all():     return select(terms.c.term_id, terms.c.text)                    # L304
@@ -216,6 +224,8 @@ INTERN_BUILDERS = {
     "extract": q_extract, "clusters_overlap": q_clusters_overlap,
     "pathtext_all": q_pathtext_all, "terms_all": q_terms_all, "unit_fields": q_unit_fields,
     "unit_cod": q_unit_cod, "unit_member": q_unit_member, "meta_failed": q_meta_failed,
+    "event_ctor": q_event_ctor, "obs_all": q_obs_all, "edge_all": q_edge_all,
+    "count_shared": q_count_shared, "max_node_len": q_max_node_len,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
 }
@@ -285,6 +295,12 @@ def _reg():
         "unit_fields":   (q_unit_fields, {}, "SELECT unit_id, name_pid, kind_id, module_pid, root_lid FROM _unit", ()),
         "unit_cod":      (q_unit_cod, {}, "SELECT unit_id, cod_ctor_id, cod_qname_pid FROM _unit_cod", ()),
         "unit_member":   (q_unit_member, {}, "SELECT unit_id, ord, member_name_pid, member_unit_id FROM unit_member ORDER BY unit_id, ord", (), True),
+        # R2 sppf_db projection reads:
+        "event_ctor":    (q_event_ctor, {}, "SELECT e.ekey, tc.text FROM event e JOIN terms tc ON tc.term_id=e.ctor_id", ()),
+        "obs_all":       (q_obs_all, {}, "SELECT core_id, local_id, ekey FROM obs", ()),
+        "edge_all":      (q_edge_all, {}, "SELECT core_id, plid, ord, clid FROM edge", ()),
+        "count_shared":  (q_count_shared, {}, "SELECT COUNT(*) FROM shared_subtree", ()),
+        "max_node_len":  (q_max_node_len, {}, "SELECT MAX(LENGTH(node_id)) FROM _node", ()),
         # meta_failed + the render_* view reads target the reuse-catalog output db (structs/edges/meta,
         # populated by reuse_catalog's build) — verified there, not against the SPPF catalog.db (⟡rewire-catalog-render).
     }
