@@ -43,6 +43,14 @@ node_v     = _T("node", "node_id", "sym", "kind", "role", "op", "lit")
 unit_v     = _T("unit", "unit_id", "name", "root_id", "path", "kind", "copy")
 node_fanin = _T("node_fanin", "node_id", "fanin")
 shared_subtree = _T("shared_subtree", "node_id", "fanin")
+# reuse_catalog base tables (backing the compat VIEWS — where the path_text.path_id breadth lives)
+_structs   = _T("_structs", "qname_pid", "name_id", "kind_id", "module_pid", "desc_id", "root")
+_members   = _T("_members", "struct_qname_pid", "struct_root", "name_id", "ord")
+_member_heads = _T("_member_heads", "struct_qname_pid", "struct_root", "head_id")
+_refs      = _T("_refs", "struct_qname_pid", "ref_qname_pid")
+_edges     = _T("_edges", "src_pid", "dst_pid")
+_module_edges = _T("_module_edges", "src_pid", "dst_pid")
+_modules   = _T("_modules", "module_pid", "purpose_id", "is_index")
 
 
 def run(con, stmt, **params):
@@ -103,12 +111,55 @@ def q_reuse_rows(has_copy, limit=None):  # sppf_query reuse_rows L86-96 (DYNAMIC
     return stmt
 
 
+# ════════════════════════════════════ M2 — VIEW models (interned for breadth, NOT executed) ═══════
+# The compat VIEWS carry most of the path_text.path_id breadth (each joins it, often ×2). Modelled by their
+# FROM/JOIN structure — the join predicates ARE the breadth signal; the GROUP_CONCAT fp/unhold_fp projections
+# (structs) are correlated subqueries over _members/_member_heads (NO path_text), so they are simplified to a
+# projected literal here — faithful for the index-breadth purpose (they add no path_text.path_id join).
+def _a(t, n): return t.alias(n)
+def v_structs():                         # reuse_catalog `structs` — path_text ×2 (qname_pid, module_pid)
+    s = _structs; pq = _a(path_text, "pq"); pm = _a(path_text, "pm")
+    n = _a(terms, "n"); k = _a(terms, "k"); d = _a(terms, "d")
+    return (select(pq.c.text, n.c.text, k.c.text, pm.c.text, d.c.text, literal("fp"))
+            .select_from(s.join(pq, pq.c.path_id == s.c.qname_pid).join(n, n.c.term_id == s.c.name_id)
+                          .join(k, k.c.term_id == s.c.kind_id).join(pm, pm.c.path_id == s.c.module_pid)
+                          .join(d, d.c.term_id == s.c.desc_id)))
+def v_members():                         # `members` — path_text ×1
+    x = _members; psq = _a(path_text, "psq"); n = _a(terms, "n")
+    return (select(psq.c.text, n.c.text, x.c.ord)
+            .select_from(x.join(psq, psq.c.path_id == x.c.struct_qname_pid).join(n, n.c.term_id == x.c.name_id)))
+def v_refs():                            # `refs` — path_text ×2
+    x = _refs; psq = _a(path_text, "psq"); pr = _a(path_text, "pr")
+    return (select(psq.c.text, pr.c.text)
+            .select_from(x.join(psq, psq.c.path_id == x.c.struct_qname_pid).join(pr, pr.c.path_id == x.c.ref_qname_pid)))
+def v_edges():                           # `edges` — path_text ×2
+    x = _edges; ps = _a(path_text, "ps"); pd = _a(path_text, "pd")
+    return (select(ps.c.text, pd.c.text)
+            .select_from(x.join(ps, ps.c.path_id == x.c.src_pid).join(pd, pd.c.path_id == x.c.dst_pid)))
+def v_module_edges():                    # `module_edges` — path_text ×2
+    x = _module_edges; ps = _a(path_text, "ps"); pd = _a(path_text, "pd")
+    return (select(ps.c.text, pd.c.text)
+            .select_from(x.join(ps, ps.c.path_id == x.c.src_pid).join(pd, pd.c.path_id == x.c.dst_pid)))
+def v_modules():                         # `modules` — path_text ×1
+    x = _modules; pm = _a(path_text, "pm"); p = _a(terms, "p")
+    return (select(pm.c.text, p.c.text, x.c.is_index)
+            .select_from(x.join(pm, pm.c.path_id == x.c.module_pid).join(p, p.c.term_id == x.c.purpose_id)))
+def v_orbit():                           # sppf_db `orbit` — path_text ×1 (op_path_id)
+    n = orbit_node; k = _a(terms, "k"); r = _a(terms, "r"); l = _a(terms, "l"); o = _a(terms, "o"); pt = _a(path_text, "pt")
+    return (select(n.c.orbit_id, n.c.sym, k.c.text, r.c.text, o.c.text, l.c.text)
+            .select_from(n.join(k, k.c.term_id == n.c.kind_id).join(r, r.c.term_id == n.c.role_id)
+                          .join(l, l.c.term_id == n.c.lit_id).outerjoin(o, o.c.term_id == n.c.op_term_id)
+                          .outerjoin(pt, pt.c.path_id == n.c.op_path_id)))
+
+
 # builders as nullary thunks for INTERNING by query_registry (parameterized ones bound with a
 # representative shape; the bound value is a bindparam node, structure-only — breadth is unaffected).
 INTERN_BUILDERS = {
     "node_head": q_node_head, "unit_names": q_unit_names, "event_head": q_event_head,
     "argperm_uid": q_argperm_uid, "deserialize_oppath": q_deserialize_oppath,
     "reuse_rows": lambda: q_reuse_rows(True),
+    "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
+    "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
 }
 
 
