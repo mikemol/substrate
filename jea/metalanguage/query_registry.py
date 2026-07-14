@@ -76,6 +76,10 @@ BUILDERS = {
     "preload_nodes": q_preload_nodes, "argperm_uid": q_argperm_uid, "orbit_def_join": q_orbit_def_join,
     "reuse_unit_name": q_reuse_unit_name, "autocorr_dupsig": q_autocorr_dupsig, "reuse_nodechild": q_reuse_nodechild,
 }
+# ⟡query-rawtocore-migration: the migrated ad-hoc queries (single source in query_builders) are interned
+# here too — one builder is BOTH executed (via query_builders.run at the call site) AND interned for breadth.
+from query_builders import INTERN_BUILDERS as _QB_BUILDERS
+BUILDERS.update({f"qb.{k}": v for k, v in _QB_BUILDERS.items()})
 
 # ── ClauseLowerer: SQLAlchemy Select/ClauseElement → IR, bottom-up, interned into Corpus.I ─────────
 class ClauseLowerer:

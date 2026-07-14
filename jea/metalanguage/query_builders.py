@@ -1,0 +1,173 @@
+#!/usr/bin/env python3
+"""query_builders.py — ⟡query-rawtocore-migration: the SINGLE SOURCE for the project's SQL read-queries as
+named SQLAlchemy-Core `select()` builders. One builder is BOTH executed at the call site (via `run()`, which
+compiles it to SQLite and runs it on the existing sqlite3 connection — no engine churn, result column order
+preserved so Row-by-name AND positional access stay drop-in) AND interned by `query_registry.py` for
+breadth = index-priority analysis. No drift-prone duplication.
+
+`--verify` is the migration GATE: every builder is paired with its ORIGINAL raw SQL; the harness runs BOTH
+against catalog.db and asserts identical row sets. Nothing migrates without passing it.
+
+Reflection-free lightweight Tables: a SELECT compiles correctly from `Column(String)` regardless of declared
+type (we never write, only read/intern). Views are modelled as Tables of their OUTPUT columns.
+"""
+import os, sys, argparse, sqlite3
+from sqlalchemy import (MetaData, Table, Column, String, select, bindparam, func, literal, and_, or_,
+                        literal_column)
+from sqlalchemy.dialects import sqlite
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CATALOG_DB = os.path.join(os.path.dirname(os.path.dirname(HERE)), "catalog", "catalog.db")
+_MD = MetaData()
+def _T(name, *cols): return Table(name, _MD, *[Column(c, String) for c in cols])
+
+# ── base tables ─────────────────────────────────────────────────────────────────────────────────
+path_text  = _T("path_text", "path_id", "text")
+terms      = _T("terms", "term_id", "text")
+path_seg   = _T("path_seg", "path_id", "ord", "seg_term_id")
+_unit      = _T("_unit", "unit_id", "name_pid", "root_id", "file_id", "kind_id", "module_pid", "root_lid", "copy")
+_unit_cod  = _T("_unit_cod", "unit_id", "cod_ctor_id", "cod_qname_pid")
+_node      = _T("_node", "node_id", "sym", "kind_id", "role_id", "op_term_id", "op_path_id", "lit_id")
+node_child = _T("node_child", "node_id", "ord", "child_id")
+unit_node  = _T("unit_node", "unit_id", "node_id")
+unit_member= _T("unit_member", "unit_id", "ord", "member_name_pid", "member_unit_id")
+obs        = _T("obs", "core_id", "local_id", "ekey")
+event      = _T("event", "ekey", "ctor_id", "qname_pid", "idx")
+edge       = _T("edge", "core_id", "plid", "ord", "clid")
+meta       = _T("meta", "key", "value")
+_orbit_def = _T("_orbit_def", "unit_id", "type_key", "graded_key", "residue", "stab")
+orbit_node = _T("orbit_node", "orbit_id", "sym", "kind_id", "role_id", "op_term_id", "op_path_id", "lit_id")
+orbit_member = _T("orbit_member", "orbit_id", "node_id")
+# projection VIEWS as Tables (output columns) — the compat views the ad-hoc queries read
+node_v     = _T("node", "node_id", "sym", "kind", "role", "op", "lit")
+unit_v     = _T("unit", "unit_id", "name", "root_id", "path", "kind", "copy")
+node_fanin = _T("node_fanin", "node_id", "fanin")
+shared_subtree = _T("shared_subtree", "node_id", "fanin")
+
+
+def run(con, stmt, **params):
+    """Compile a Core `stmt` to SQLite SQL and execute on the EXISTING sqlite3 connection. Named paramstyle
+    (`:x`) so runtime binds pass as a dict; column order is preserved (drop-in for Row/positional reads)."""
+    compiled = stmt.compile(dialect=sqlite.dialect(paramstyle="named"))
+    p = dict(compiled.params); p.update(params)
+    return con.execute(str(compiled), p)
+
+
+# ════════════════════════════════════ M1 — path_text.path_id carriers ════════════════════════════
+def q_node_head():                       # reuse_tui db_rows L92-96
+    o = terms.alias("o"); r = terms.alias("r")
+    return (select(_node.c.node_id, path_text.c.text, o.c.text, r.c.text)
+            .select_from(_node.outerjoin(path_text, path_text.c.path_id == _node.c.op_path_id)
+                              .outerjoin(o, o.c.term_id == _node.c.op_term_id)
+                              .outerjoin(r, r.c.term_id == _node.c.role_id)))
+
+def q_unit_names():                      # reuse_tui db_rows L149
+    return (select(_unit.c.unit_id, path_text.c.text)
+            .select_from(_unit.join(path_text, path_text.c.path_id == _unit.c.name_pid)))
+
+def q_event_head():                      # sppf_db project_sppf L190-192 / project_orbit_sppf L316-318
+    tc = terms.alias("tc"); pq = path_text.alias("pq")
+    return (select(event.c.ekey, tc.c.text, pq.c.text, event.c.idx)
+            .select_from(event.join(tc, tc.c.term_id == event.c.ctor_id)
+                              .outerjoin(pq, pq.c.path_id == event.c.qname_pid)))
+
+def q_argperm_uid():                     # sppf_db project_argperm preload L420-421
+    return (select(_unit.c.unit_id, path_text.c.text)
+            .select_from(_unit.join(path_text, path_text.c.path_id == _unit.c.name_pid))
+            .where(_unit.c.copy == "0"))
+
+def q_deserialize_oppath():              # reuse_catalog deserialize_from_projection L315-317
+    p2 = path_text.alias("p2")
+    return (select(unit_node.c.unit_id, p2.c.text)
+            .select_from(unit_node.join(_node, _node.c.node_id == unit_node.c.node_id)
+                                  .join(p2, p2.c.path_id == _node.c.op_path_id))
+            .where(_node.c.op_path_id.isnot(None)))
+
+def q_reuse_rows(has_copy, limit=None):  # sppf_query reuse_rows L86-96 (DYNAMIC → conditional builder)
+    pt = path_text.alias("pt"); o = terms.alias("o"); r = terms.alias("r"); u = _unit.alias("u")
+    nd = _node.alias("nd"); un = unit_node.alias("un")
+    head = func.coalesce(func.nullif(pt.c.text, ""), o.c.text, r.c.text, "?").label("head")
+    units = func.count(func.distinct(un.c.unit_id)).label("units")
+    copies = (func.sum(func.coalesce(u.c.copy, 0)) if has_copy else literal_column("NULL")).label("copies")
+    stmt = (select(un.c.node_id.label("node_id"), head, units, copies)
+            .select_from(un.join(nd, nd.c.node_id == un.c.node_id)
+                           .join(u, u.c.unit_id == un.c.unit_id)
+                           .outerjoin(pt, pt.c.path_id == nd.c.op_path_id)
+                           .outerjoin(o, o.c.term_id == nd.c.op_term_id)
+                           .outerjoin(r, r.c.term_id == nd.c.role_id))
+            .where(nd.c.node_id.in_(select(node_child.c.node_id)))
+            .group_by(un.c.node_id).having(units >= bindparam("min_units"))
+            .order_by(units.desc()))
+    if limit is not None:
+        stmt = stmt.limit(int(limit))
+    return stmt
+
+
+# builders as nullary thunks for INTERNING by query_registry (parameterized ones bound with a
+# representative shape; the bound value is a bindparam node, structure-only — breadth is unaffected).
+INTERN_BUILDERS = {
+    "node_head": q_node_head, "unit_names": q_unit_names, "event_head": q_event_head,
+    "argperm_uid": q_argperm_uid, "deserialize_oppath": q_deserialize_oppath,
+    "reuse_rows": lambda: q_reuse_rows(True),
+}
+
+
+# ── the verify REGISTRY: name → (builder callable, verify-kwargs, original raw SQL, raw params) ──
+# `run(builder(**bkw))` rows MUST equal `con.execute(raw, rp)` rows (as a multiset).
+def _reg():
+    return {
+        "node_head":       (lambda: q_node_head(), {},
+            "SELECT n.node_id, pt.text, o.text, r.text FROM _node n "
+            "LEFT JOIN path_text pt ON pt.path_id=n.op_path_id "
+            "LEFT JOIN terms o ON o.term_id=n.op_term_id LEFT JOIN terms r ON r.term_id=n.role_id", ()),
+        "unit_names":      (lambda: q_unit_names(), {},
+            "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid", ()),
+        "event_head":      (lambda: q_event_head(), {},
+            "SELECT e.ekey, tc.text, pq.text, e.idx FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
+            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid", ()),
+        "argperm_uid":     (lambda: q_argperm_uid(), {},
+            "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid WHERE u.copy=0", ()),
+        "deserialize_oppath": (lambda: q_deserialize_oppath(), {},
+            "SELECT un.unit_id, p2.text FROM unit_node un JOIN _node n ON n.node_id=un.node_id "
+            "JOIN path_text p2 ON p2.path_id=n.op_path_id WHERE n.op_path_id IS NOT NULL", ()),
+        "reuse_rows_copy": (lambda: q_reuse_rows(True), {"min_units": 3},
+            "SELECT un.node_id, COALESCE(NULLIF(pt.text,''), o.text, r.text, '?') head, "
+            "COUNT(DISTINCT un.unit_id) units, SUM(COALESCE(u.copy,0)) copies FROM unit_node un "
+            "JOIN _node nd ON nd.node_id=un.node_id JOIN _unit u ON u.unit_id=un.unit_id "
+            "LEFT JOIN path_text pt ON pt.path_id=nd.op_path_id LEFT JOIN terms o ON o.term_id=nd.op_term_id "
+            "LEFT JOIN terms r ON r.term_id=nd.role_id WHERE nd.node_id IN (SELECT node_id FROM node_child) "
+            "GROUP BY un.node_id HAVING units>=? ORDER BY units DESC", (3,)),
+    }
+
+
+def verify(con, only=None):
+    reg = _reg(); ok = 0; fail = []
+    for name, (build, bkw, raw, rp) in reg.items():
+        if only and name not in only: continue
+        new = sorted(map(tuple, run(con, build(), **bkw).fetchall()))
+        old = sorted(map(tuple, con.execute(raw, rp).fetchall()))
+        if new == old:
+            ok += 1; print(f"  ✓ {name:22s} {len(new)} rows — Core == raw")
+        else:
+            fail.append(name)
+            print(f"  ✗ {name:22s} MISMATCH: Core {len(new)} rows vs raw {len(old)} rows")
+            for a, b in zip(new[:3], old[:3]):
+                if a != b: print(f"      Core {a}\n      raw  {b}")
+    print(f"\n{'PASS' if not fail else 'FAIL'} — {ok}/{len([n for n in reg if not only or n in only])} builders result-equivalent"
+          + (f"; failures: {fail}" if fail else ""))
+    return not fail
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--verify", action="store_true", help="assert each builder's rows == its original raw SQL")
+    ap.add_argument("--only", nargs="*", help="verify only these builder names")
+    a = ap.parse_args()
+    con = sqlite3.connect(CATALOG_DB)
+    if a.verify:
+        sys.exit(0 if verify(con, set(a.only) if a.only else None) else 1)
+    ap.print_help()
+
+
+if __name__ == "__main__":
+    main()
