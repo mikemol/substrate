@@ -51,6 +51,13 @@ _refs      = _T("_refs", "struct_qname_pid", "ref_qname_pid")
 _edges     = _T("_edges", "src_pid", "dst_pid")
 _module_edges = _T("_module_edges", "src_pid", "dst_pid")
 _modules   = _T("_modules", "module_pid", "purpose_id", "is_index")
+# reuse_catalog compat VIEWS as OUTPUT-column Tables (physical views in catalog.db; SELECT straight from them
+# to REPRODUCE render rows — distinct from the simplified v_* interning models above) ── ⟡rewire-catalog-render
+structs_v  = _T("structs", "qname", "name", "kind", "module", "fp", "desc", "root", "unhold_fp")
+edges_v    = _T("edges", "src", "dst")
+modedges_v = _T("module_edges", "src", "dst")
+modules_v  = _T("modules", "module", "purpose", "is_index")
+indegree_v = _T("in_degree", "qname", "deg")
 
 
 def run(con, stmt, **params):
@@ -160,6 +167,38 @@ def q_count_shared(): return select(func.count()).select_from(shared_subtree)   
 def q_max_node_len(): return select(func.max(func.length(_node.c.node_id)))            # project_sppf return
 
 
+# ════════════════════════════════════ S1 — sppf_db ORBIT/argperm stat reads (⟡rewire-orbit-stats) ═
+def q_max_orbit_len():    return select(func.max(func.length(orbit_node.c.orbit_id)))                    # project_orbit_sppf return L384
+def q_orbit_def_stats():  return (select(func.count(), func.count(func.distinct(_orbit_def.c.type_key)),
+                                         func.count(func.distinct(_orbit_def.c.graded_key)))
+                                  .select_from(_orbit_def))                                              # __main__ argperm L467-468
+def q_orbit_node_count(): return select(func.count()).select_from(orbit_node)                            # __main__ orbit L474
+def q_orbit_packings():   return select(func.count(func.distinct(orbit_member.c.node_id))).select_from(orbit_member)  # L475
+def q_orbit_merged():                                                                                    # __main__ orbit L476
+    sub = select(orbit_member.c.orbit_id).group_by(orbit_member.c.orbit_id).having(func.count() > 1).subquery()
+    return select(func.count()).select_from(sub)
+
+
+# ════════════════════════════════════ S2 — reuse_catalog render_* view reads (⟡rewire-catalog-render) ═
+# positional reads (reuse_catalog has no row_factory); SELECT straight from the physical compat views.
+def q_structs_index():     return select(structs_v.c.name, structs_v.c.kind, structs_v.c.module, structs_v.c["desc"])  # render_index L491
+def q_structs_namemod():   return select(structs_v.c.name, structs_v.c.module)                          # render_index L494
+def q_structs_fpnamemod(): return select(structs_v.c.fp, structs_v.c.name, structs_v.c.module)          # render_index L497
+def q_modules_index():     return select(modules_v.c.module, modules_v.c.purpose).where(modules_v.c.is_index == 1)  # render_index L500
+def q_structs_qnamekind(): return select(structs_v.c.qname, structs_v.c.kind)                           # render_graph L547 / render_usage L666
+def q_edges_all():         return select(edges_v.c.src, edges_v.c.dst)                                  # render_graph L548
+def q_sitemap():                                                                                        # render_sitemap L617-618
+    return (select(structs_v.c.qname, structs_v.c.module, structs_v.c.name,
+                   func.coalesce(indegree_v.c.deg, 0).label("indeg"))
+            .select_from(structs_v.outerjoin(indegree_v, indegree_v.c.qname == structs_v.c.qname)))
+def q_structs_count():     return select(func.count()).select_from(structs_v)                           # render_usage L640
+def q_edges_dst_distinct():return select(edges_v.c.dst).distinct()                                      # render_usage L641
+def q_edges_src_distinct():return select(edges_v.c.src).distinct()                                      # render_usage L642
+def q_structs_qname():     return select(structs_v.c.qname)                                             # render_usage L643
+def q_indegree_top():      return select(indegree_v.c.qname, indegree_v.c.deg).order_by(indegree_v.c.deg.desc(), indegree_v.c.qname).limit(20)  # render_usage L647 ORDERED
+def q_modedges_all():      return select(modedges_v.c.src, modedges_v.c.dst)                            # render_import L682
+
+
 # ════════════════════════════════════ R1 — reuse_catalog deserialize base reads (positional) ══════
 def q_pathtext_all():  return select(path_text.c.path_id, path_text.c.text)            # L303
 def q_terms_all():     return select(terms.c.term_id, terms.c.text)                    # L304
@@ -228,6 +267,16 @@ INTERN_BUILDERS = {
     "count_shared": q_count_shared, "max_node_len": q_max_node_len,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
+    # S1 orbit-stats:
+    "max_orbit_len": q_max_orbit_len, "orbit_def_stats": q_orbit_def_stats,
+    "orbit_node_count": q_orbit_node_count, "orbit_packings": q_orbit_packings, "orbit_merged": q_orbit_merged,
+    # S2 render:
+    "structs_index": q_structs_index, "structs_namemod": q_structs_namemod,
+    "structs_fpnamemod": q_structs_fpnamemod, "modules_index": q_modules_index,
+    "structs_qnamekind": q_structs_qnamekind, "edges_all": q_edges_all, "sitemap": q_sitemap,
+    "structs_count": q_structs_count, "edges_dst_distinct": q_edges_dst_distinct,
+    "edges_src_distinct": q_edges_src_distinct, "structs_qname": q_structs_qname,
+    "indegree_top": q_indegree_top, "modedges_all": q_modedges_all,
 }
 
 
@@ -301,9 +350,45 @@ def _reg():
         "edge_all":      (q_edge_all, {}, "SELECT core_id, plid, ord, clid FROM edge", ()),
         "count_shared":  (q_count_shared, {}, "SELECT COUNT(*) FROM shared_subtree", ()),
         "max_node_len":  (q_max_node_len, {}, "SELECT MAX(LENGTH(node_id)) FROM _node", ()),
-        # meta_failed + the render_* view reads target the reuse-catalog output db (structs/edges/meta,
-        # populated by reuse_catalog's build) — verified there, not against the SPPF catalog.db (⟡rewire-catalog-render).
+        # S1 — sppf_db ORBIT/argperm stats (group "orbit": _orbit_def now; orbit_node/orbit_member after populate):
+        "max_orbit_len":   (q_max_orbit_len, {}, "SELECT MAX(LENGTH(orbit_id)) FROM orbit_node", ()),
+        "orbit_def_stats": (q_orbit_def_stats, {},
+            "SELECT COUNT(*), COUNT(DISTINCT type_key), COUNT(DISTINCT graded_key) FROM _orbit_def", ()),
+        "orbit_node_count":(q_orbit_node_count, {}, "SELECT COUNT(*) FROM orbit_node", ()),
+        "orbit_packings":  (q_orbit_packings, {}, "SELECT COUNT(DISTINCT node_id) FROM orbit_member", ()),
+        "orbit_merged":    (q_orbit_merged, {},
+            "SELECT COUNT(*) FROM (SELECT orbit_id FROM orbit_member GROUP BY orbit_id HAVING COUNT(*)>1)", ()),
+        # S2 — reuse_catalog render_* view reads (group "render": target the reuse-catalog output db —
+        # structs/edges/module_edges/modules/in_degree/meta, populated by reuse_catalog's build):
+        "meta_failed":       (q_meta_failed, {}, "SELECT value FROM meta WHERE key='failed'", ()),
+        "structs_index":     (q_structs_index, {}, "SELECT name, kind, module, desc FROM structs", ()),
+        "structs_namemod":   (q_structs_namemod, {}, "SELECT name, module FROM structs", ()),
+        "structs_fpnamemod": (q_structs_fpnamemod, {}, "SELECT fp, name, module FROM structs", ()),
+        "modules_index":     (q_modules_index, {}, "SELECT module, purpose FROM modules WHERE is_index = 1", ()),
+        "structs_qnamekind": (q_structs_qnamekind, {}, "SELECT qname, kind FROM structs", ()),
+        "edges_all":         (q_edges_all, {}, "SELECT src, dst FROM edges", ()),
+        "sitemap":           (q_sitemap, {},
+            "SELECT s.qname, s.module, s.name, COALESCE(d.deg, 0) AS indeg "
+            "FROM structs s LEFT JOIN in_degree d ON d.qname = s.qname", ()),
+        "structs_count":     (q_structs_count, {}, "SELECT COUNT(*) FROM structs", ()),
+        "edges_dst_distinct":(q_edges_dst_distinct, {}, "SELECT DISTINCT dst FROM edges", ()),
+        "edges_src_distinct":(q_edges_src_distinct, {}, "SELECT DISTINCT src FROM edges", ()),
+        "structs_qname":     (q_structs_qname, {}, "SELECT qname FROM structs", ()),
+        "indegree_top":      (q_indegree_top, {},
+            "SELECT qname, deg FROM in_degree ORDER BY deg DESC, qname LIMIT 20", (), True),   # ORDER-SENSITIVE
+        "modedges_all":      (q_modedges_all, {}, "SELECT src, dst FROM module_edges", ()),
     }
+
+
+# builder groups: the default `--verify` covers only "catalog" (the SPPF catalog.db); render/orbit builders
+# target SECONDARY projections (need their db populated) and are opt-in via `--group render|orbit` (`--group all`
+# runs every group). ⟡rewire-secondary-projections.
+_GROUP = {n: "render" for n in ("meta_failed", "structs_index", "structs_namemod", "structs_fpnamemod",
+          "modules_index", "structs_qnamekind", "edges_all", "sitemap", "structs_count",
+          "edges_dst_distinct", "edges_src_distinct", "structs_qname", "indegree_top", "modedges_all")}
+_GROUP.update({n: "orbit" for n in ("max_orbit_len", "orbit_def_stats", "orbit_node_count",
+                                    "orbit_packings", "orbit_merged")})
+def _group_of(name): return _GROUP.get(name, "catalog")
 
 
 _SAMP = None
@@ -318,11 +403,13 @@ def _samp(con):
     return _SAMP
 
 
-def verify(con, only=None):
-    reg = _reg(); ok = 0; fail = []
+def verify(con, only=None, group="catalog"):
+    reg = _reg(); ok = 0; fail = []; sel = []
     for name, entry in reg.items():
-        build, bkw, raw, rp = entry[:4]; ordered = entry[4] if len(entry) > 4 else False
+        if group is not None and _group_of(name) != group: continue   # None = all groups
         if only and name not in only: continue
+        sel.append(name)
+        build, bkw, raw, rp = entry[:4]; ordered = entry[4] if len(entry) > 4 else False
         bkw = bkw(con) if callable(bkw) else bkw     # dynamic params (e.g. a sample uid resolved at run)
         rp = rp(con) if callable(rp) else rp
         nr = list(map(tuple, run(con, build(), **bkw).fetchall()))
@@ -336,7 +423,7 @@ def verify(con, only=None):
             print(f"  ✗ {name:22s} MISMATCH: Core {len(new)} rows vs raw {len(old)} rows")
             for a, b in zip(new[:3], old[:3]):
                 if a != b: print(f"      Core {a}\n      raw  {b}")
-    print(f"\n{'PASS' if not fail else 'FAIL'} — {ok}/{len([n for n in reg if not only or n in only])} builders result-equivalent"
+    print(f"\n{'PASS' if not fail else 'FAIL'} — {ok}/{len(sel)} builders result-equivalent"
           + (f"; failures: {fail}" if fail else ""))
     return not fail
 
@@ -345,10 +432,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--verify", action="store_true", help="assert each builder's rows == its original raw SQL")
     ap.add_argument("--only", nargs="*", help="verify only these builder names")
+    ap.add_argument("--db", default=CATALOG_DB, help="db to verify against (default catalog.db; a COPY for render/orbit)")
+    ap.add_argument("--group", default="catalog",
+                    help="builder group to verify: catalog (default, the SPPF db) | render | orbit | all")
     a = ap.parse_args()
-    con = sqlite3.connect(CATALOG_DB)
+    con = sqlite3.connect(a.db)
     if a.verify:
-        sys.exit(0 if verify(con, set(a.only) if a.only else None) else 1)
+        grp = None if a.group == "all" else a.group
+        sys.exit(0 if verify(con, set(a.only) if a.only else None, grp) else 1)
     ap.print_help()
 
 

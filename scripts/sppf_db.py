@@ -381,7 +381,7 @@ def project_orbit_sppf(con, distribute=False):
     con.commit()
     return (len(seen_o),                                          # orbit-node count (the quotient)
             len(set(packing.values())),                          # positional PACKING count (the baseline)
-            con.execute("SELECT MAX(LENGTH(orbit_id)) FROM orbit_node").fetchone()[0])
+            QB.run(con, QB.q_max_orbit_len()).fetchone()[0])
 
 
 # ⟡argperm — the GRADED orbit-key per def (type-orbit + proof-orbit), from graded_orbit. ADDITIVE: a new
@@ -464,16 +464,15 @@ if __name__ == "__main__":
     print(f"  events → SPPF projection: {n} packings, {u} units, {sh} shared subtrees, max node_id {mx}")
     if argperm:
         con = sqlite3.connect(CATALOG_DB)
-        d, t, g = con.execute("SELECT COUNT(*), COUNT(DISTINCT type_key), COUNT(DISTINCT graded_key) "
-                              "FROM _orbit_def").fetchone()
+        d, t, g = QB.run(con, QB.q_orbit_def_stats()).fetchone()
         print(f"  ⟡argperm GRADED orbit: {d} defs → {t} type-orbits, {g} graded-orbits "
               f"({d-g} defs collapsed by full arg-perm equivalence; {d-t} by type/telescope alone)")
         con.close()
     if orbit:
         con = sqlite3.connect(CATALOG_DB)
-        orbits = con.execute("SELECT COUNT(*) FROM orbit_node").fetchone()[0]
-        packings = con.execute("SELECT COUNT(DISTINCT node_id) FROM orbit_member").fetchone()[0]
-        merged = con.execute("SELECT COUNT(*) FROM (SELECT orbit_id FROM orbit_member GROUP BY orbit_id HAVING COUNT(*)>1)").fetchone()[0]
+        orbits = QB.run(con, QB.q_orbit_node_count()).fetchone()[0]
+        packings = QB.run(con, QB.q_orbit_packings()).fetchone()[0]
+        merged = QB.run(con, QB.q_orbit_merged()).fetchone()[0]
         print(f"  ⟡rig ORBIT projection: {orbits} orbit-nodes vs {packings} packings "
               f"({packings-orbits} collapsed by rig ⊕/⊗ reorder/reassoc); {merged} orbits merged ≥2 packings")
         con.close()
