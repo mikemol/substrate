@@ -29,6 +29,8 @@ def _b64(s):   # ⟡content-addressed-interner: the id of an interned string IS 
 # atomic (latent structure already decomposed out into path_seg/members): max ~92 chars → ~123 base64.
 
 ROOT      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import sys as _sys; _sys.path.insert(0, os.path.join(ROOT, "jea", "metalanguage"))
+import query_builders as QB               # ⟡query-rawtocore: single-source Core builders (run = execute)
 # ⟡walk-cores-empty-is-not-success: the build dir is VERSION-STAMPED by agda
 # (_build/<ver>/agda). Hardcoding one version makes walk_cores yield NOTHING on any
 # other toolchain — 0 cores AND 0 failures, i.e. SILENT SUCCESS. Discover the version
@@ -300,21 +302,17 @@ def deserialize_from_projection(con):
     structural data (structs, members, field-heads, refs, modrefs, carriers) is QUERIED from the
     projection (proven identical to deserialize_core's walk); only the module purpose + per-decl desc
     come from the .agda source (they are not term structure). Yields in module order."""
-    pt = {p: t for p, t in con.execute("SELECT path_id, text FROM path_text")}
-    tt = {i: t for i, t in con.execute("SELECT term_id, text FROM terms")}
+    pt = {p: t for p, t in QB.run(con, QB.q_pathtext_all())}
+    tt = {i: t for i, t in QB.run(con, QB.q_terms_all())}
     units = {u: (pt.get(np), tt.get(k), pt.get(mp), rl)                 # unit_id -> (qname,kind,module,root_lid)
-             for u, np, k, mp, rl in con.execute(
-                 "SELECT unit_id, name_pid, kind_id, module_pid, root_lid FROM _unit")}
+             for u, np, k, mp, rl in QB.run(con, QB.q_unit_fields())}
     cod = {u: (tt.get(cc) if cc else None, pt.get(cq) if cq else None)  # unit_id -> codomain (ctor,qname)
-           for u, cc, cq in con.execute("SELECT unit_id, cod_ctor_id, cod_qname_pid FROM _unit_cod")}
+           for u, cc, cq in QB.run(con, QB.q_unit_cod())}
     members = collections.defaultdict(list)
-    for su, o, mnp, muid in con.execute(
-            "SELECT unit_id, ord, member_name_pid, member_unit_id FROM unit_member ORDER BY unit_id, ord"):
+    for su, o, mnp, muid in QB.run(con, QB.q_unit_member()):
         members[su].append((pt.get(mnp), muid))
     refs = collections.defaultdict(set)
-    for u, rq in con.execute(
-            "SELECT un.unit_id, p2.text FROM unit_node un JOIN _node n ON n.node_id=un.node_id "
-            "JOIN path_text p2 ON p2.path_id=n.op_path_id WHERE n.op_path_id IS NOT NULL"):
+    for u, rq in QB.run(con, QB.q_deserialize_oppath()):
         refs[u].add(rq)
     mod_structs, mod_refs, all_modules = collections.defaultdict(list), collections.defaultdict(set), set()
     for u, (qn, kd, md, rl) in units.items():

@@ -152,6 +152,16 @@ def v_orbit():                           # sppf_db `orbit` — path_text ×1 (op
                           .outerjoin(pt, pt.c.path_id == n.c.op_path_id)))
 
 
+# ════════════════════════════════════ R1 — reuse_catalog deserialize base reads (positional) ══════
+def q_pathtext_all():  return select(path_text.c.path_id, path_text.c.text)            # L303
+def q_terms_all():     return select(terms.c.term_id, terms.c.text)                    # L304
+def q_unit_fields():   return select(_unit.c.unit_id, _unit.c.name_pid, _unit.c.kind_id, _unit.c.module_pid, _unit.c.root_lid)  # L305-307
+def q_unit_cod():      return select(_unit_cod.c.unit_id, _unit_cod.c.cod_ctor_id, _unit_cod.c.cod_qname_pid)  # L308-309
+def q_unit_member():   return select(unit_member.c.unit_id, unit_member.c.ord, unit_member.c.member_name_pid,  # L311-312 ORDERED
+                                     unit_member.c.member_unit_id).order_by(unit_member.c.unit_id, unit_member.c.ord)
+def q_meta_failed():   return select(meta.c.value).where(meta.c.key == "failed")       # L485
+
+
 # ════════════════════════════════════ R1 — sppf_query read SELECTs (labels matter: sqlite3.Row) ═══
 def _head(nd): return func.coalesce(func.nullif(nd.c.op, ""), nd.c.role, nd.c.kind).label("head")
 def q_uid():                             # sppf_query _uid L27 (view `unit`)
@@ -204,6 +214,8 @@ INTERN_BUILDERS = {
     "defcopy_units": q_defcopy_units, "unit_node_all": q_unit_node_all, "core_count": q_core_count,
     "uid": q_uid, "support_count": q_support_count, "support_hist": q_support_hist, "fanin": q_fanin,
     "extract": q_extract, "clusters_overlap": q_clusters_overlap,
+    "pathtext_all": q_pathtext_all, "terms_all": q_terms_all, "unit_fields": q_unit_fields,
+    "unit_cod": q_unit_cod, "unit_member": q_unit_member, "meta_failed": q_meta_failed,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
 }
@@ -267,6 +279,14 @@ def _reg():
             "JOIN unit v ON v.unit_id=b.unit_id WHERE a.unit_id=? AND b.unit_id!=? GROUP BY b.unit_id "
             "HAVING (1.0*shared/?) >= ? ORDER BY shared DESC LIMIT 15",
             lambda c: (_samp(c)[2], _samp(c)[0], _samp(c)[0], _samp(c)[2], 0.0), True),              # ORDER BY shared DESC
+        # R1 reuse_catalog deserialize base reads:
+        "pathtext_all":  (q_pathtext_all, {}, "SELECT path_id, text FROM path_text", ()),
+        "terms_all":     (q_terms_all, {}, "SELECT term_id, text FROM terms", ()),
+        "unit_fields":   (q_unit_fields, {}, "SELECT unit_id, name_pid, kind_id, module_pid, root_lid FROM _unit", ()),
+        "unit_cod":      (q_unit_cod, {}, "SELECT unit_id, cod_ctor_id, cod_qname_pid FROM _unit_cod", ()),
+        "unit_member":   (q_unit_member, {}, "SELECT unit_id, ord, member_name_pid, member_unit_id FROM unit_member ORDER BY unit_id, ord", (), True),
+        # meta_failed + the render_* view reads target the reuse-catalog output db (structs/edges/meta,
+        # populated by reuse_catalog's build) — verified there, not against the SPPF catalog.db (⟡rewire-catalog-render).
     }
 
 
