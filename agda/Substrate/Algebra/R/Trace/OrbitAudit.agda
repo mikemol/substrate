@@ -20,7 +20,7 @@ open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
 open import Substrate.Algebra.R.Trace.OrbitFaithful using (module Faithful)
 
-open import Substrate.Foundation.Bool using (Bool) renaming (true to tt; false to ff)   -- dedup
+open import Substrate.Foundation.Bool using (Bool; not; boolToℕ) renaming (true to tt; false to ff)   -- dedup ⟡A4
 data ⊥ : Set where
 ¬_ : Set → Set
 ¬ A = A → ⊥
@@ -28,11 +28,9 @@ data ⊥ : Set where
 -- a concrete orbit: S = Bool, next = flip, obs distinguishes (tt↦0, ff↦1). obs
 -- GENUINELY VARIES — this is what makes the discrimination controls meaningful.
 flip : Bool → Bool
-flip tt = ff
-flip ff = tt
+flip = not                                    -- ⟡A4: flip IS Foundation.Bool.not
 bobs : Bool → ℕ
-bobs tt = 0
-bobs ff = 1
+bobs b = boolToℕ (not b)                       -- ⟡A4: the ff-indicator = boolToℕ ∘ not (single source)
 
 open OrbitCover Bool flip bobs using (orbit-coalg; cover; Admissible; universality)
 open Faithful   Bool flip bobs using (obs-stream; obs-stream-admissible;

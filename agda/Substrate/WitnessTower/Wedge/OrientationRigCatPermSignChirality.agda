@@ -44,7 +44,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; boolToℕ)  -- ⟡A4: single source
 
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
@@ -61,10 +61,7 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
 -- 0. Bool → F₂ is a homomorphism xor → +F, and factors through parity.
 ------------------------------------------------------------------------
 
--- the ℕ contribution of a single Bool (1 for true, 0 for false).
-boolToℕ : Bool → ℕ
-boolToℕ true  = 1
-boolToℕ false = 0
+-- boolToℕ (1 for true, 0 for false) is imported from Foundation.Bool.Properties (single source, ⟡A4).
 
 -- bool→F₂-xor (xor → +F) is the FOUNDATIONAL op-homomorphism, imported from Algebra.F2.FromBool
 -- (single source — it sits beside bool→F₂-and and the ∨-as-xor-recon apex there). This module ADDS

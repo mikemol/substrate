@@ -30,7 +30,7 @@ module Substrate.Algebra.CayleyDickson.Grade where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-comm)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_)
+open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; boolToℕ)  -- ⟡A4: single source
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Algebra.Wedge.VecGraded using (vec-graded)
@@ -60,8 +60,7 @@ or-xor-and false false = refl
 ------------------------------------------------------------------------
 
 bit : Bool → ℕ
-bit true  = suc zero
-bit false = zero
+bit = boolToℕ                                  -- ⟡A4: single source (Foundation.Bool.Properties.boolToℕ)
 
 popcount : {n : ℕ} → Vec Bool n → ℕ
 popcount []       = zero

@@ -26,7 +26,7 @@
 module Substrate.WitnessTower.B3Split where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; not; if_then_else_)
+open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; not; if_then_else_; boolToℕ)  -- ⟡A4: single source
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.WitnessTower.Enumerate using (Perm; perms; mapL; concatMapL; lengthL)
@@ -46,8 +46,7 @@ is-transp : Perm 4 → Bool
 is-transp σ = ⌊ cycle-type σ ≟ᵛ ty-transp ⌋
 
 bToℕ : Bool → ℕ
-bToℕ true  = 1
-bToℕ false = zero
+bToℕ = boolToℕ                                 -- ⟡A4: single source (Foundation.Bool.Properties.boolToℕ)
 
 -- iterate a Bool-predicate count over all ordered pairs of perms 4.
 count-pairs : (Perm 4 → Perm 4 → Bool) → ℕ

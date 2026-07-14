@@ -87,13 +87,11 @@ module ClosedControls
 -- EVERY state. This witnesses the theorem is not vacuous.
 ------------------------------------------------------------------------
 module BoolInstance where
-  data Bool : Set where tt ff : Bool
+  open import Substrate.Foundation.Bool using (Bool; not; boolToℕ) renaming (true to tt; false to ff)  -- ⟡A4: route through Foundation.Bool (no distinct local Bool)
   flip : Bool → Bool
-  flip tt = ff
-  flip ff = tt
+  flip = not
   bobs : Bool → ℕ
-  bobs tt = 0
-  bobs ff = 1
+  bobs b = boolToℕ (not b)
 
   -- P = ⊤: the whole (finite) state space is the closed control set.
   open ClosedControls Bool flip bobs (λ _ → ⊤) (λ _ _ → _)

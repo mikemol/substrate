@@ -38,3 +38,12 @@ false xor b = b
 if_then_else_ : {A : Set} → Bool → A → A → A
 if true  then x else _ = x
 if false then _ else y = y
+
+open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+
+-- ⟡A4: the canonical Bool→ℕ indicator (true↦1, false↦0). A DEFINITION, so it lives in the def
+-- module (not Bool.Properties) — definition-provider consumers may use it without breaking
+-- def/proof separation. Single source for the sites that re-defined it (boolToℕ / bToℕ / bit).
+boolToℕ : Bool → ℕ
+boolToℕ true  = suc zero
+boolToℕ false = zero
