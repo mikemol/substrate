@@ -92,7 +92,7 @@ def q_deserialize_oppath():              # reuse_catalog deserialize_from_projec
             .where(_node.c.op_path_id.isnot(None)))
 
 def q_reuse_rows(has_copy, limit=None):  # sppf_query reuse_rows L86-96 (DYNAMIC → conditional builder)
-    pt = path_text.alias("pt"); o = terms.alias("o"); r = terms.alias("r"); u = _unit.alias("u")
+    pt = path_text.alias("pt"); o = terms.alias("o"); r = terms.alias("r"); u = unit_v.alias("u")   # the `unit` VIEW
     nd = _node.alias("nd"); un = unit_node.alias("un")
     head = func.coalesce(func.nullif(pt.c.text, ""), o.c.text, r.c.text, "?").label("head")
     units = func.count(func.distinct(un.c.unit_id)).label("units")
@@ -152,6 +152,35 @@ def v_orbit():                           # sppf_db `orbit` — path_text ×1 (op
                           .outerjoin(pt, pt.c.path_id == n.c.op_path_id)))
 
 
+# ════════════════════════════════════ R1 — sppf_query read SELECTs (labels matter: sqlite3.Row) ═══
+def _head(nd): return func.coalesce(func.nullif(nd.c.op, ""), nd.c.role, nd.c.kind).label("head")
+def q_uid():                             # sppf_query _uid L27 (view `unit`)
+    return select(unit_v.c.unit_id).where(or_(unit_v.c.name == bindparam("name"),
+                                              unit_v.c.name.like(bindparam("likep"))))
+def q_support_count():                   # sppf_query L33 / L61
+    return select(func.count().label("k")).select_from(unit_node).where(unit_node.c.unit_id == bindparam("uid"))
+def q_support_hist():                    # sppf_query L35-37
+    un = unit_node.alias("un"); nd = node_v.alias("nd"); h = _head(nd); k = func.count().label("k")
+    return (select(h, k).select_from(un.join(nd, nd.c.node_id == un.c.node_id))
+            .where(un.c.unit_id == bindparam("uid")).group_by(h).order_by(k.desc()).limit(12))
+def q_fanin():                           # sppf_query L42-44
+    nf = node_fanin.alias("nf"); nd = node_v.alias("nd")
+    return (select(nf.c.node_id, _head(nd), nf.c.fanin)
+            .select_from(nf.join(nd, nd.c.node_id == nf.c.node_id)).order_by(nf.c.fanin.desc()).limit(bindparam("lim")))
+def q_extract():                         # sppf_query L50-54
+    un = unit_node.alias("un"); nd = node_v.alias("nd"); units = func.count(func.distinct(un.c.unit_id)).label("units")
+    return (select(un.c.node_id, _head(nd), units).select_from(un.join(nd, nd.c.node_id == un.c.node_id))
+            .where(un.c.node_id.in_(select(node_child.c.node_id)))
+            .group_by(un.c.node_id).having(units >= bindparam("m")).order_by(units.desc()).limit(20))
+def q_clusters_overlap():                # sppf_query L63-68
+    a = unit_node.alias("a"); b = unit_node.alias("b"); v = unit_v.alias("v"); shared = func.count().label("shared")
+    return (select(v.c.name, shared, bindparam("sz").label("sz"))
+            .select_from(a.join(b, a.c.node_id == b.c.node_id).join(v, v.c.unit_id == b.c.unit_id))
+            .where(and_(a.c.unit_id == bindparam("uid"), b.c.unit_id != bindparam("uid")))
+            .group_by(b.c.unit_id).having((1.0 * func.count() / bindparam("sz")) >= bindparam("thr"))
+            .order_by(shared.desc()).limit(15))
+
+
 # ════════════════════════════════════ R1 — reuse_tui remaining read SELECTs ═══════════════════════
 def q_node_child_edges():                # reuse_tui L87 — ORDER-SENSITIVE (builds ordered child lists)
     return select(node_child.c.node_id, node_child.c.child_id).order_by(node_child.c.node_id, node_child.c.ord)
@@ -173,6 +202,8 @@ INTERN_BUILDERS = {
     "reuse_rows": lambda: q_reuse_rows(True),
     "node_child_edges": q_node_child_edges, "shared_subtree": q_shared_subtree,
     "defcopy_units": q_defcopy_units, "unit_node_all": q_unit_node_all, "core_count": q_core_count,
+    "uid": q_uid, "support_count": q_support_count, "support_hist": q_support_hist, "fanin": q_fanin,
+    "extract": q_extract, "clusters_overlap": q_clusters_overlap,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
 }
@@ -199,7 +230,7 @@ def _reg():
         "reuse_rows_copy": (lambda: q_reuse_rows(True), {"min_units": 3},
             "SELECT un.node_id, COALESCE(NULLIF(pt.text,''), o.text, r.text, '?') head, "
             "COUNT(DISTINCT un.unit_id) units, SUM(COALESCE(u.copy,0)) copies FROM unit_node un "
-            "JOIN _node nd ON nd.node_id=un.node_id JOIN _unit u ON u.unit_id=un.unit_id "
+            "JOIN _node nd ON nd.node_id=un.node_id JOIN unit u ON u.unit_id=un.unit_id "
             "LEFT JOIN path_text pt ON pt.path_id=nd.op_path_id LEFT JOIN terms o ON o.term_id=nd.op_term_id "
             "LEFT JOIN terms r ON r.term_id=nd.role_id WHERE nd.node_id IN (SELECT node_id FROM node_child) "
             "GROUP BY un.node_id HAVING units>=? ORDER BY units DESC", (3,)),
@@ -214,7 +245,41 @@ def _reg():
             "SELECT unit_id, node_id FROM unit_node", ()),
         "core_count":      (lambda: q_core_count(), {},
             "SELECT COUNT(DISTINCT file_id) FROM _unit", ()),
+        # R1 sppf_query (dynamic params: resolve a sample uid/name/size at run time):
+        "uid":             (q_uid, lambda c: {"name": _samp(c)[1], "likep": "%." + _samp(c)[1]},
+            "SELECT unit_id FROM unit WHERE name=? OR name LIKE ?",
+            lambda c: (_samp(c)[1], "%." + _samp(c)[1])),
+        "support_count":   (q_support_count, lambda c: {"uid": _samp(c)[0]},
+            "SELECT COUNT(*) k FROM unit_node WHERE unit_id=?", lambda c: (_samp(c)[0],)),
+        "support_hist":    (q_support_hist, lambda c: {"uid": _samp(c)[0]},
+            "SELECT COALESCE(NULLIF(nd.op,''), nd.role, nd.kind) head, COUNT(*) k FROM unit_node un "
+            "JOIN node nd ON nd.node_id=un.node_id WHERE un.unit_id=? GROUP BY head ORDER BY k DESC LIMIT 12",
+            lambda c: (_samp(c)[0],), True),                          # ORDER BY k DESC
+        "fanin":           (q_fanin, {"lim": 20},
+            "SELECT nf.node_id, COALESCE(NULLIF(nd.op,''),nd.role,nd.kind) head, nf.fanin FROM node_fanin nf "
+            "JOIN node nd ON nd.node_id=nf.node_id ORDER BY nf.fanin DESC LIMIT ?", (20,), True),   # ORDER BY fanin DESC
+        "extract":         (q_extract, {"m": 3},
+            "SELECT un.node_id, COALESCE(NULLIF(nd.op,''),nd.role,nd.kind) head, COUNT(DISTINCT un.unit_id) units "
+            "FROM unit_node un JOIN node nd ON nd.node_id=un.node_id WHERE nd.node_id IN (SELECT node_id FROM node_child) "
+            "GROUP BY un.node_id HAVING units>=? ORDER BY units DESC LIMIT 20", (3,), True),         # ORDER BY units DESC
+        "clusters_overlap": (q_clusters_overlap, lambda c: {"sz": _samp(c)[2], "uid": _samp(c)[0], "thr": 0.0},
+            "SELECT v.name, COUNT(*) shared, ? sz FROM unit_node a JOIN unit_node b ON a.node_id=b.node_id "
+            "JOIN unit v ON v.unit_id=b.unit_id WHERE a.unit_id=? AND b.unit_id!=? GROUP BY b.unit_id "
+            "HAVING (1.0*shared/?) >= ? ORDER BY shared DESC LIMIT 15",
+            lambda c: (_samp(c)[2], _samp(c)[0], _samp(c)[0], _samp(c)[2], 0.0), True),              # ORDER BY shared DESC
     }
+
+
+_SAMP = None
+def _samp(con):
+    """a stable sample (uid, name, size) for verifying uid-parameterized builders — a unit with many nodes."""
+    global _SAMP
+    if _SAMP is None:
+        uid, sz = con.execute("SELECT unit_id, COUNT(*) k FROM unit_node GROUP BY unit_id "
+                              "ORDER BY k DESC LIMIT 1").fetchone()
+        name = con.execute("SELECT name FROM unit WHERE unit_id=?", (uid,)).fetchone()[0]
+        _SAMP = (uid, name, sz)
+    return _SAMP
 
 
 def verify(con, only=None):
@@ -222,6 +287,8 @@ def verify(con, only=None):
     for name, entry in reg.items():
         build, bkw, raw, rp = entry[:4]; ordered = entry[4] if len(entry) > 4 else False
         if only and name not in only: continue
+        bkw = bkw(con) if callable(bkw) else bkw     # dynamic params (e.g. a sample uid resolved at run)
+        rp = rp(con) if callable(rp) else rp
         nr = list(map(tuple, run(con, build(), **bkw).fetchall()))
         orr = list(map(tuple, con.execute(raw, rp).fetchall()))
         new = nr if ordered else sorted(nr)          # ORDER-SENSITIVE consumers: compare in order

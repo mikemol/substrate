@@ -15,6 +15,8 @@ same test the catalog uses.)
   sql "<query>"       arbitrary READ-ONLY SQL over the SPPF db
 """
 import sqlite3, sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "jea", "metalanguage"))
+import query_builders as QB               # ⟡query-rawtocore: single-source Core builders (run = execute)
 
 DB = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "catalog", "catalog.db")
 
@@ -24,49 +26,35 @@ def _con():
     c = sqlite3.connect(DB); c.row_factory = sqlite3.Row; return c
 
 def _uid(c, name):
-    r = c.execute("SELECT unit_id FROM unit WHERE name=? OR name LIKE ?", (name, "%."+name)).fetchone()
+    r = QB.run(c, QB.q_uid(), name=name, likep="%."+name).fetchone()
     return r["unit_id"] if r else None
 
 def cmd_support(c, a):
     uid = _uid(c, a[0])
     if uid is None: sys.exit(f"no unit matching {a[0]!r}")
-    n = c.execute("SELECT COUNT(*) k FROM unit_node WHERE unit_id=?", (uid,)).fetchone()["k"]
+    n = QB.run(c, QB.q_support_count(), uid=uid).fetchone()["k"]
     print(f"support: {n} interned subterm nodes")
-    for r in c.execute("""SELECT COALESCE(NULLIF(nd.op,''), nd.role, nd.kind) head, COUNT(*) k
-                          FROM unit_node un JOIN node nd ON nd.node_id=un.node_id
-                          WHERE un.unit_id=? GROUP BY head ORDER BY k DESC LIMIT 12""", (uid,)):
+    for r in QB.run(c, QB.q_support_hist(), uid=uid):
         print(f"   {r['k']:4d}  {r['head'][:60]}")
 
 def cmd_fanin(c, a):
     k = int(a[0]) if a else 15
-    for r in c.execute("""SELECT nf.node_id, COALESCE(NULLIF(nd.op,''),nd.role,nd.kind) head, nf.fanin
-                          FROM node_fanin nf JOIN node nd ON nd.node_id=nf.node_id
-                          ORDER BY nf.fanin DESC LIMIT ?""", (k,)):
+    for r in QB.run(c, QB.q_fanin(), lim=k):
         print(f"  fan-in {r['fanin']:5d}  node {str(r['node_id'])[:10]:>10}  {r['head'][:55]}")
 
 def cmd_extract(c, a):
     # the parametric-helper apex: a subtree shared across ≥ minunits DISTINCT units — a GROUP BY.
     m = int(a[0]) if a else 3
-    for r in c.execute("""SELECT un.node_id, COALESCE(NULLIF(nd.op,''),nd.role,nd.kind) head,
-                                 COUNT(DISTINCT un.unit_id) units
-                          FROM unit_node un JOIN node nd ON nd.node_id=un.node_id
-                          WHERE nd.node_id IN (SELECT node_id FROM node_child)   -- composite (has children)
-                          GROUP BY un.node_id HAVING units >= ? ORDER BY units DESC LIMIT 20""", (m,)):
+    for r in QB.run(c, QB.q_extract(), m=m):
         print(f"  in {r['units']:4d} units  node {str(r['node_id'])[:10]:>10}  {r['head'][:50]}")
 
 def cmd_clusters(c, a):
     uid = _uid(c, a[0])
     if uid is None: sys.exit(f"no unit matching {a[0]!r}")
     thr = float(a[1]) if len(a) > 1 else 0.6
-    sz = c.execute("SELECT COUNT(*) k FROM unit_node WHERE unit_id=?", (uid,)).fetchone()["k"]
+    sz = QB.run(c, QB.q_support_count(), uid=uid).fetchone()["k"]
     # coherent fraction = |shared| / |support(u)| — a JOIN + GROUP BY, not a pairwise Python pass.
-    for r in c.execute("""SELECT v.name, COUNT(*) shared, ? sz
-                          FROM unit_node a JOIN unit_node b ON a.node_id=b.node_id
-                          JOIN unit v ON v.unit_id=b.unit_id
-                          WHERE a.unit_id=? AND b.unit_id!=?
-                          GROUP BY b.unit_id HAVING (1.0*shared/?) >= ?
-                          ORDER BY shared DESC LIMIT 15""",
-                       (sz, uid, uid, sz, thr)):
+    for r in QB.run(c, QB.q_clusters_overlap(), sz=sz, uid=uid, thr=thr):
         print(f"   {r['shared']*1.0/sz:.2f}  ({r['shared']}/{sz})  {r['name'].split('.')[-1]}")
 
 def has_copy(c):
@@ -78,24 +66,9 @@ def reuse_rows(c, min_units=3, limit=None):
     DISTINCT units, each with the defCopy verdict — all instances are module-instantiation copies ⇒
     CONSOLIDATED; none are ⇒ genuine DUP (independent originals sharing structure = the target); else
     MIXED. copies is NULL and verdict '?' if the db predates the copy column."""
-    cp = has_copy(c)
-    copysel = "SUM(COALESCE(u.copy,0))" if cp else "NULL"
-    lim = f"LIMIT {int(limit)}" if limit else ""
-    # head from _node with LEFT JOINs (op ▸ role): the `node` view inner-joins kind_id, which does not
-    # resolve in `terms` (a pre-existing projection bug that leaves the view empty).
-    q = f"""SELECT un.node_id AS node_id,
-                   COALESCE(NULLIF(pt.text,''), o.text, r.text, '?') AS head,
-                   COUNT(DISTINCT un.unit_id) AS units, {copysel} AS copies
-            FROM unit_node un
-            JOIN _node nd ON nd.node_id=un.node_id
-            JOIN unit u ON u.unit_id=un.unit_id
-            LEFT JOIN path_text pt ON pt.path_id=nd.op_path_id
-            LEFT JOIN terms o ON o.term_id=nd.op_term_id
-            LEFT JOIN terms r ON r.term_id=nd.role_id
-            WHERE nd.node_id IN (SELECT node_id FROM node_child)     -- composite (has children)
-            GROUP BY un.node_id HAVING units >= ? ORDER BY units DESC {lim}"""
+    # single-source: the conditional builder (has_copy branch + optional limit) in query_builders.
     out = []
-    for r in c.execute(q, (min_units,)):
+    for r in QB.run(c, QB.q_reuse_rows(has_copy(c), limit), min_units=min_units):
         cc = r["copies"]
         verdict = ("?" if cc is None else "CONSOLIDATED" if cc == r["units"]
                    else "DUP" if cc == 0 else "MIXED")
