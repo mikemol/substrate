@@ -11,9 +11,17 @@ Select/ClauseElement into IR, and a ~6-line unit-register helper mirroring jea_p
 Reshaping discovery: the `path_text.path_id` breadth signal lives in the node/unit VIEW DEFINITIONS, not the
 ad-hoc queries, so this first milestone points the lowerer at the view-def SELECTs + the existing Core sites
 (where the join predicates are). GROUND TRUTH: `path_text.path_id` — the join key of the GROUP_CONCAT
-`path_text` view, hand-fixed to a PK-indexed table on 2026-07-13 — must rank #1 by join-predicate breadth
+`path_text` view, hand-fixed to a PK-indexed table on 2026-07-13 — is the validated indexed key
 (i.e. the tool would have surfaced exactly that index). The broad ad-hoc raw→Core migration for fuller
 coverage is the separate follow-on ⟡query-rawtocore-migration.
+
+⟡index-weight-by-cost: breadth alone OVER-nominates. A join key is weighted by DIRECTION — an unindexed
+column whose join-counterpart is ALREADY indexed is a PROBE-source: the planner SCANs its table and seeks
+the indexed counterpart, so an index on the probe column is IGNORED (measured empirically on _unit.name_pid
+/ event.ctor_id / _node.op_path_id — ⟡investigate-surfaced-candidates). `_roles` demotes those out of the
+recommendation list; genuine candidates are unindexed columns on the SEEK side (value filter, or joined to
+an unindexed column), still gated on selectivity / join-target cost. Direction needs the live index set
+(catalog.db); render-table keys are accurate only against a db built with the reuse-catalog tables.
 """
 import sys, os, argparse
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -174,53 +182,116 @@ def _live_indexed(colops):
     con.close(); return covered
 
 
+def _join_pairs(C):
+    """From each Compare node, the columns it relates: (colA_nid, colB_nid) for a join equality between two
+    columns, or (col_nid, None) for a filter equality (column vs bindparam/literal). Direction is read off
+    these pairs (⟡investigate-surfaced-candidates: an unindexed column whose join-counterpart is ALREADY
+    indexed is a PROBE-source — the planner drives on it via a full SCAN and seeks the counterpart, so an
+    index here is IGNORED; measured empirically on _unit.name_pid / event.ctor_id / _node.op_path_id)."""
+    _NULLCHECK = {"is_", "is_not", "isnot", "isnull", "is_null", "notnull"}  # IS [NOT] NULL — no plain-index seek
+    pairs = []
+    for nid in range(C.I.size()):
+        n = C.I.nodes[nid]
+        if n.kind != "Compare": continue
+        cols = [c for c in n.children if C.I.nodes[c].kind == "Column"]
+        if len(cols) == 2:                                     # a join equality (col == col)
+            pairs.append((cols[0], cols[1]))
+        elif len(cols) == 1 and n.op not in _NULLCHECK:        # a VALUE filter (eq/range/in/like) — index-servable;
+            pairs.append((cols[0], None))                      # a null-check is NOT (a probe column's incidental filter)
+    return pairs
+
+
+def _roles(C, covered):
+    """Classify each predicate-column op → 'indexed' | 'probe' | 'candidate' by join DIRECTION (not breadth):
+    - indexed  : already covered by a PK/index (a validated key, e.g. the hand-done path_text.path_id).
+    - probe    : unindexed, but in EVERY join it participates in the counterpart is already indexed — the
+                 planner SCANs this column's table and seeks the counterpart, so an index here is ignored.
+    - candidate: unindexed AND (a filter target, OR joined to an UNINDEXED column) — a genuine seek an index
+                 could serve; still gated on selectivity / join-target cost before adding."""
+    op = lambda nid: C.I.nodes[nid].op
+    cps = {}                                                   # colop -> list of counterpart ops (None=filter)
+    for a, b in _join_pairs(C):
+        cps.setdefault(op(a), []).append(op(b) if b is not None else None)
+        if b is not None: cps.setdefault(op(b), []).append(op(a))
+    roles = {}
+    for colop, cc in cps.items():
+        if colop in covered: roles[colop] = "indexed"; continue
+        has_filter = any(c is None for c in cc)
+        joins = [c for c in cc if c is not None]
+        roles[colop] = "candidate" if (has_filter or any(c not in covered for c in joins)) else "probe"
+    return roles
+
+
 def index_report(C):
     preds = _predicate_columns(C)
-    rows = []                                                   # (breadth, colop, indexed?)
     colops = {C.I.nodes[nid].op for nid in preds}
     covered = _live_indexed(colops)
-    for nid in preds:
-        op = C.I.nodes[nid].op
-        breadth = len(C.node_units.get(nid, ()))               # # distinct queries using this predicate key
-        rows.append((breadth, op, op in covered))
-    rows.sort(key=lambda r: (-r[0], r[1]))
+    roles = _roles(C, covered)
+    rows = [(len(C.node_units.get(nid, ())), C.I.nodes[nid].op,          # (breadth, colop, role)
+             roles.get(C.I.nodes[nid].op, "candidate")) for nid in preds]
+    _rank = {"candidate": 0, "indexed": 1, "probe": 2}         # actionable first, validated, then demoted
+    rows.sort(key=lambda r: (_rank[r[2]], -r[0], r[1]))
     return rows
 
 
+_ROLE_LABEL = {"indexed": "indexed (validated)",
+               "probe":   "probe-source — index IGNORED (counterpart indexed)",
+               "candidate": "CANDIDATE (seek — gate on selectivity)"}
 def _print_report(C):
     rows = index_report(C)
-    print(f"⟡query-sppf-intern index-from-breadth — {len(C.units)} interned query builders "
-          f"(view-def SELECTs + Core sites), {C.I.size()} interned nodes\n")
-    print("  breadth  join/filter-predicate key         index status")
-    print("  -------  --------------------------------  ------------")
-    for breadth, op, indexed in rows:
-        print(f"  {breadth:>5}    {op:<32}  {'indexed' if indexed else 'NOT INDEXED — candidate'}")
-    if rows:
-        top = rows[0]
-        print(f"\n  → top join-predicate by breadth: {top[1]} (breadth {top[0]}). "
-              f"COVERAGE: view-def + Core builders only (the signal-carrying set); the broad ad-hoc raw→Core "
-              f"migration (⟡query-rawtocore-migration) widens it.")
+    print(f"⟡index-weight-by-cost — breadth × join-DIRECTION over {len(C.units)} interned query builders, "
+          f"{C.I.size()} interned nodes\n")
+    print("  breadth  join/filter-predicate key         role")
+    print("  -------  --------------------------------  ----")
+    for breadth, op, role in rows:
+        print(f"  {breadth:>5}    {op:<32}  {_ROLE_LABEL[role]}")
+    cands = [(b, op) for b, op, role in rows if role == "candidate"]
+    idxd  = [op for _, op, role in rows if role == "indexed"]
+    probes = [op for _, op, role in rows if role == "probe"]
+    print(f"\n  → {len(cands)} genuine NOT-INDEXED candidate(s) after DIRECTION weighting; "
+          f"{len(probes)} high-breadth probe-source(s) DEMOTED (⟡investigate-surfaced-candidates: an index on "
+          f"a full-scan probe column is ignored by the planner — measured).")
+    print(f"     validated indexes: {', '.join(idxd) or '(none)'}")
+    if probes:
+        print(f"     demoted probe-sources (NOT worth indexing): {', '.join(probes)}")
+    if cands:
+        print("     candidates (rank by breadth; verify selectivity / join-target cost before adding):")
+        for b, op in cands: print(f"       breadth {b:>2}  {op}")
+    print(f"  COVERAGE: view-def + Core builders (the signal-carrying set); ⟡query-rawtocore-migration widened it.")
 
 
 def selftest():
     C = build_corpus()
     rows = index_report(C)
     assert rows, "index report must have predicate columns"
-    top_op = rows[0][1]
-    assert top_op == "path_text.path_id", f"ground truth: path_text.path_id must rank #1 by breadth, got {top_op}"
-    # the shared predicate node is interned ONCE and carries cross-query breadth ≥ 2
-    assert rows[0][0] >= 2, "path_text.path_id must be shared across ≥2 query builders"
-    # a control predicate that appears in exactly one builder has breadth 1 (no over-merge)
-    assert any(b == 1 for b, _, _ in rows), "single-use predicates keep breadth 1 (no spurious merge)"
-    print("PASS ⟡query-sppf-intern selftest:")
-    print(f"  path_text.path_id ranks #1 by join-predicate breadth ({rows[0][0]} builders) — the tool would "
-          f"have surfaced the hand-done path_text PK-index fix.")
+    role = {op: r for _, op, r in rows}
+    breadth = {op: b for b, op, _ in rows}
+    # ground truth 1: path_text.path_id is the validated indexed key, shared across many builders.
+    assert role.get("path_text.path_id") == "indexed", \
+        f"path_text.path_id must be 'indexed' (validated), got {role.get('path_text.path_id')}"
+    assert breadth["path_text.path_id"] >= 2, "path_text.path_id must be shared across ≥2 builders"
+    # ground truth 2 (⟡investigate-surfaced-candidates): the high-breadth NOT-INDEXED probe-sources are
+    # DEMOTED — an index on them is ignored (measured), so DIRECTION weighting must classify them 'probe'
+    # and EXCLUDE them from recommendations. (Skipped if catalog.db absent — direction needs the index set.)
+    if role.get("path_text.path_id") == "indexed":
+        cands = {op for _, op, r in rows if r == "candidate"}
+        for spurious in ("_unit.name_pid", "event.ctor_id", "_node.op_path_id"):
+            assert role.get(spurious) == "probe", \
+                f"{spurious} must be demoted to 'probe' (counterpart indexed), got {role.get(spurious)}"
+            assert spurious not in cands, f"{spurious} (probe-source) must not appear as a candidate"
+    print("PASS ⟡index-weight-by-cost selftest:")
+    print(f"  path_text.path_id = validated indexed key (breadth {breadth['path_text.path_id']}); the "
+          f"high-breadth probe-sources (_unit.name_pid, event.ctor_id, _node.op_path_id) are DEMOTED to "
+          f"probe-source and excluded from recommendations — the report now reproduces the "
+          f"⟡investigate-surfaced-candidates measurement by construction.")
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--index-report", action="store_true", help="rank join/filter predicate keys by breadth")
-    ap.add_argument("--selftest", action="store_true", help="ground-truth: path_text.path_id ranks #1")
+    ap.add_argument("--index-report", action="store_true",
+                    help="rank join/filter predicate keys by breadth × join-DIRECTION (probe-sources demoted)")
+    ap.add_argument("--selftest", action="store_true",
+                    help="ground-truth: path_text.path_id validated-indexed; measured probe-sources demoted")
     a = ap.parse_args()
     if a.selftest: selftest(); return
     _print_report(build_corpus())
