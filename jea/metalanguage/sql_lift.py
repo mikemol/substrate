@@ -351,23 +351,134 @@ def _contig(short, long):
     return False
 
 
-# ════════════════════════════════ ⟡L4 — roofline steering: which lifts pay off ══════════════════════
-# The eager→fused readout (el-atlas/tools/kernel_cost_model.py:12-25). A python pipeline runs EAGER: a
-# materialized temporary per op (list/set/dict/Counter) → ~20k B/elem over k ops → intensity I = 2k/(20k) =
-# 0.1 FLOP/byte, CONSTANT in size → MEMORY-BOUND. Lifting it into SQL runs FUSED: one declarative streaming
-# pass, no python intermediates → 8 B/elem → I = 2k/8 = k/4, which SCALES with pipeline depth k → toward
-# COMPUTE-BOUND. "Fusing IS the lever that raises intensity" (kernel_cost_model.py:24). So a lift's payoff is
-# the intensity-GAIN (=I_fused/I_eager = 2.5·k) × its breadth (corpus-wide temporaries eliminated) — the same
-# breadth×cost steering as query_registry's index recommender. HONEST: intensity is a READOUT ρ of the graded
-# object, NOT a grade (finding B, the weakest thread); this is a cost HEURISTIC, workload-relative, not a
-# measured speedup — measuring the wall-time win is ⟡L5 (apply + benchmark). Size (result cardinality) would
-# scale the ABSOLUTE win but not the regime; left as a per-lift annotation, not in the score.
-_I_EAGER = 0.1
-def roofline(rt):
-    k = len([h for h in rt.heads if h != "Scan"])   # relational ops = eager intermediates materialized
-    i_fused = k / 4.0
-    gain = i_fused / _I_EAGER                         # = 2.5·k (per-element intensity gain, size-independent)
-    return {"k": k, "i_eager": _I_EAGER, "i_fused": i_fused, "gain": gain, "score": gain * len(rt.sites)}
+# ════════════════════ ⟡H4 — recursive conductance-circuit roofline (replaces the flat gain=2.5·k) ═══════
+# ⟡L7 MEASURED the flat heuristic WRONG: the SAME WITH RECURSIVE reachability lift is 275× on a small/on-demand
+# closure but 0.7× (a LOSS) on the full-graph closure — a verdict that FLIPS with the workload N, which a
+# size-independent 2.5·k can never express. JEA never returns a flat scalar: a cost is a SUM of a launch term +
+# a work/parallelism term and WHICH DOMINATES falls out of the sum (jea_cost.py:50-56); conductance G = 1/cost;
+# a lift is steered by a Wheatstone bridge — a signed comparison of two conductances (jea_nedge_model.py:52-54);
+# and a pipeline's conductance is the series/parallel FOLD of its per-stage conductances (jea_circuit.parallel =
+# KCL add; jea_circuit.series_schur = a·b/(a+b), the associative Kron fold). ⟡H4 makes the 275×/0.7× crossover
+# a bridge-null OUTPUT of that fold at the estimated workload N — NOT a constant. HONEST BOUNDARY (jea_cost.py:
+# 14-18): the FORM is structural (launch + work/parallelism); the residual is the two ⟡L7 anchors CALIBRATED
+# ONCE — a MODEL fit to the measurement, not a proof; a mis-specified term self-reveals as a mispredicted
+# crossover. jea_circuit is SAFE (fractions+itertools only); jea_cost is NOT imported (it pulls cupy).
+sys.path.insert(0, os.path.dirname(HERE))                     # jea/ — for jea_circuit
+from jea_circuit import Carrier, parallel, series_schur
+
+class FloatCarrier(Carrier):
+    zero = 0.0
+    def add(self, a, b): return a + b
+    def mul(self, a, b): return a * b
+    def div(self, a, b): return a / b if b != 0 else 0.0
+FLOAT = FloatCarrier()
+
+def _series_fold(C, gs):
+    """SERIES pipeline of per-stage conductances → one conductance. series_schur is associative (a chain folds
+    by the same combine); series conductances combine harmonically ⇔ per-stage COSTS ADD (1/G = Σ 1/gᵢ — a
+    k-op pipeline costs the sum of its k materialized stages: the eager 'temporary per op')."""
+    it = iter(gs); acc = next(it)
+    for g in it:
+        acc = series_schur(C, acc, g)
+    return acc
+
+def _parallel_fold(C, gs):
+    """PARALLEL branches → one conductance. Parallel conductances ADD (KCL = G_OR). The recursion→parallel
+    closure explores `branches` frontiers set-at-a-time; their conductances add."""
+    acc = C.zero
+    for g in gs:
+        acc = parallel(C, acc, g)
+    return acc
+
+# operating points: cost(N) = launch + work·N / parallelism (jea_cost.py:54-56 form; BOTH terms, regime an OUTPUT).
+#   eager (python, materialize-a-temporary-per-op): BIG fixed launch (loads the WHOLE graph, INDEPENDENT of N),
+#         SMALL per-element slope (in-memory BFS, P=1).  cte (WITH RECURSIVE): SMALL launch (indexed seek), a
+#         LARGER slope (work-table churn / UNION-dedup grows with the closure).  swar (N-wide set-at-a-time): the
+#         cte churn but parallelism P=W. Calibrated ONCE to the two ⟡L7 anchors; the crossover is DERIVED.
+_MEAS = dict(spd_small=275.0, spd_full=0.7, N_small=1.0, N_full=1000.0)   # the ⟡L7 measurement (byte-exact 59794)
+
+def _calibrate_eager(m=_MEAS, Lc=1.0, sc=1.0):
+    """Fit eager's (launch Le, slope se) so cost_eager(N)/cost_cte(N) [cost_cte = Lc + sc·N] hits BOTH anchors.
+    Nothing about the REGIME is typed in — only the two measured speedups; the crossover N* is DERIVED."""
+    ns, nf, cs, cf = m["N_small"], m["N_full"], m["spd_small"], m["spd_full"]
+    b_s, b_f = cs * (Lc + sc * ns), cf * (Lc + sc * nf)      # = Le + se·ns  and  Le + se·nf
+    se = (b_f - b_s) / (nf - ns); Le = b_s - se * ns
+    return Le, se
+_LE, _SE = _calibrate_eager()                               # ≈ (549.849, 0.150851)
+_OPS = {                       # (launch, work, parallelism) → slope = work/parallelism
+    "eager": (_LE, _SE, 1.0),  # big launch, small slope   (materialize whole graph; serial interpreter)
+    "cte":   (1.0, 1.0, 1.0),  # small launch, unit slope  (indexed seek; work-table churn, one-wide)
+    "swar":  (1.0, 1.0, 64.0), # small launch, tiny slope  (same churn, W=64-wide set-at-a-time)
+}
+_N_EST = float(os.environ.get("SQL_LIFT_N", "100"))         # estimated closure/result cardinality (⟡L5 measures it)
+
+def _op_cost(op, N):
+    launch, work, P = _OPS[op]
+    return launch + (work * N) / P                          # jea_cost.py:54-56 : launch + W/P, BOTH terms
+
+def _op_G(op, N):  return FLOAT.div(1.0, _op_cost(op, N))   # conductance = 1/cost (jea_nedge_model.py:52-54)
+
+def _pipeline_G(rt, op, N, branches=1):
+    """Effective conductance of pipeline `rt` at operating point `op`, workload N. SERIES-fold the per-head
+    conductances (data flows head→head); a Closure head fans out into `branches` PARALLEL recursion branches
+    whose conductances ADD (recursion→parallel). Scan leaf is not a materialized stage."""
+    gs = []
+    for h in rt.heads:
+        if h == "Scan":
+            continue
+        gs.append(_parallel_fold(FLOAT, [_op_G(op, N)] * max(1, branches)) if h == "Closure" else _op_G(op, N))
+    if not gs:
+        gs = [_op_G(op, N)]
+    return _series_fold(FLOAT, gs)
+
+def bridge(rt, N, lifted="cte", eager="eager", branches=1):
+    """The Wheatstone bridge: signed comparison of two pipeline conductances at N. >0 ⇒ the LIFT wins; <0 ⇒
+    eager wins; ==0 ⇒ the crossover (a bridge NULL). The closure fan-out is parallel only on the lifted side."""
+    return _pipeline_G(rt, lifted, N, branches=branches) - _pipeline_G(rt, eager, N, branches=1)
+
+def roofline(rt, N=None, branches=1):
+    """⟡H4 recursive conductance-circuit cost — REPLACES the flat gain=2.5·k. score = (G_cte − G_eager)·breadth,
+    a SIGNED conductance advantage at the estimated workload N: a lift that is a LOSS at N (the ⟡L7 0.7× full-
+    graph closure) scores NEGATIVE and sinks in licensed_lifts' argmin sort — which the old always-positive,
+    size-independent 2.5·k could never do. Keys `k`/`gain`/`i_eager`/`i_fused`/`score` preserved for report()."""
+    if N is None:
+        N = _N_EST
+    k = len([h for h in rt.heads if h != "Scan"])
+    G_e = _pipeline_G(rt, "eager", N, branches=1)
+    G_c = _pipeline_G(rt, "cte",   N, branches=branches)
+    G_s = _pipeline_G(rt, "swar",  N, branches=branches)
+    br = G_c - G_e
+    spd = (G_c / G_e) if G_e > 0 else float("inf")          # workload-relative speedup (275×.. / ..0.7×)
+    return {"k": k, "N": N, "G_eager": G_e, "G_cte": G_c, "G_swar": G_s,
+            "bridge": br, "speedup": spd, "gain": spd,       # `gain` = the workload-relative speedup
+            "regime": "lift" if br > 0 else "eager",
+            "i_eager": G_e, "i_fused": G_c,                  # report() readouts: now conductances
+            "score": br * max(1, len(rt.sites))}
+
+def _selftest_h4():
+    """⟡H4: the circuit cost REPRODUCES the ⟡L7 crossover — the 275×/0.7× flip is a bridge-null OUTPUT of
+    launch+work/P at the workload N, NOT a hard-coded constant; and the lifts re-rank by the conductance bridge."""
+    reach = RelTerm(("Closure",), "edges")                  # the ⟡L7 WITH RECURSIVE reachability lift
+    Ns, Nf = _MEAS["N_small"], _MEAS["N_full"]
+    rs, rf = roofline(reach, N=Ns), roofline(reach, N=Nf)
+    assert rs["bridge"] > 0 and rs["regime"] == "lift", f"small-N lift must win, got {rs}"
+    assert abs(rs["speedup"] - _MEAS["spd_small"]) < 1.0, f"small-N speedup must be ~275×, got {rs['speedup']}"
+    assert rf["bridge"] < 0 and rf["regime"] == "eager", f"full-N eager must win, got {rf}"
+    assert abs(rf["speedup"] - _MEAS["spd_full"]) < 0.05, f"full-N speedup must be ~0.7×, got {rf['speedup']}"
+    lo, hi = Ns, Nf                                         # the crossover = a bridge NULL, found by bisection
+    for _ in range(60):
+        mid = 0.5 * (lo + hi)
+        lo, hi = (mid, hi) if bridge(reach, mid) > 0 else (lo, mid)
+    Nstar = 0.5 * (lo + hi)
+    assert Ns < Nstar < Nf and abs(bridge(reach, Nstar)) < 1e-6, f"bridge null must lie in-between, N*={Nstar}"
+    assert bridge(reach, Nstar * 0.5) > 0 > bridge(reach, Nstar * 2.0), "sign must FLIP across the null"
+    assert (rs["bridge"] > 0) != (rf["bridge"] > 0), "verdict must be workload-relative (the flat 2.5·k cannot)"
+    reach.sites = [("a", 1, "f"), ("b", 2, "g")]            # breadth 2: the losing lift must SINK at full N
+    assert roofline(reach, N=Nf)["score"] < 0 < roofline(reach, N=Ns)["score"], "losing lift must sink (signed score)"
+    assert _pipeline_G(reach, "swar", Nf) > _pipeline_G(reach, "eager", Nf), "N-wide SWAR (P=64) beats eager at full N"
+    print(f"  ⟡H4 circuit-roofline: cost(N)=launch+work/P per point; G=1/cost; series_schur/parallel folds;")
+    print(f"      the bridge sign(G_cte−G_eager) reproduces the ⟡L7 crossover as a NULL at N*≈{Nstar:.0f} "
+          f"(275× @N={Ns:.0f} → 0.7× @N={Nf:.0f}) — a workload-relative OUTPUT, not the flat 2.5·k.")
 
 
 # ════════════════════════ ⟡L6 — the recursion↔loop↔parallel triangle (pole classifier) ══════════════
@@ -461,23 +572,23 @@ def report(files=None):
     lifts = licensed_lifts(I, py, sql)
     print(f"⟡graded-relational-carrier — {len(py)} distinct python Rel-pipelines, {len(sql)} SQL builder "
           f"pipelines, interned into ONE carrier ({I.size()} nodes)\n")
-    print(f"LICENSED LIFTS — STEER by roofline priority (intensity-gain × breadth; eager I≈0.1 memory-bound "
-          f"→ fused I=k/4 compute-bound; a lift eliminates k materialized python temporaries per site):\n")
+    print(f"LICENSED LIFTS — STEER by the conductance bridge sign(G_cte − G_eager)·breadth at N≈{int(_N_EST)} "
+          f"(⟡H4: the 275×/0.7× regime is a bridge-null OUTPUT of launch+work/P, NOT a flat 2.5·k):\n")
     for rt, matches in lifts:
         seq = " → ".join(h for h in rt.canon_seq() if h != "Scan")
         sset = ", ".join(sorted({s[1] for srt in matches for s in srt.sites})[:4])
         rf = roofline(rt)
-        print(f"  score {rf['score']:5.1f}  ×{rf['gain']:.1f} intensity  (I {rf['i_eager']:.2f}→{rf['i_fused']:.2f}, "
-              f"{rf['k']} temporaries × {len(rt.sites)} sites)  [{seq}]  ⟵ SQL: {sset}")
+        print(f"  score {rf['score']:+.4f}  {rf['regime']:5s} ×{rf['speedup']:.2f} @N={rf['N']:.0f}  "
+              f"({rf['k']} heads × {len(rt.sites)} sites)  [{seq}]  ⟵ SQL: {sset}")
         for site in rt.sites[:4]:
             print(f"        {site[0]}:{site[1]}  {site[2]}()")
     if not lifts:
         print("  (none)")
     elif lifts:
-        top = lifts[0][0]
+        top = lifts[0][0]; rf0 = roofline(top)
         print(f"\n  → STEER: lift `[{' → '.join(h for h in top.canon_seq() if h!='Scan')}]` first "
-              f"(score {roofline(top)['score']:.1f}: the highest intensity-gain × breadth — most eager "
-              f"temporaries eliminated corpus-wide, workload-relative).")
+              f"(score {rf0['score']:+.4f}, regime {rf0['regime']}: the highest conductance advantage × breadth "
+              f"at the estimated workload — the crossover N* is an OUTPUT, workload-relative).")
     # the orbit-dedup headline: COMPOSED (grade≥2) python pipelines shared across ≥2 sites (fan-in clusters)
     shared = [rt for rt in py.values() if len(rt.sites) >= 2 and len([h for h in rt.heads if h != "Scan"]) >= 2]
     print(f"\nORBIT-DEDUP: {len(shared)} composed (grade≥2) python Rel-pipeline(s) recur across ≥2 sites "
@@ -576,16 +687,14 @@ def selftest():
     assert any("Closure" in rt.heads for rt in sql4.values()), \
         "the SQL corpus must now contain a Closure builder (q_reach) — reachability closures have a real target"
 
-    # ⟡L4 — roofline readout: eager I is CONSTANT (size-independent), fused I SCALES with pipeline depth k;
-    # gain = 2.5·k; the lift ranking steers by intensity-gain × breadth.
+    # ⟡L4 (⟡H4) — the roofline is a recursive CONDUCTANCE circuit, not a flat 2.5·k. Conductances are
+    # workload-relative; licensed lifts still sort by score (unchanged), now the SIGNED bridge×breadth.
     r2 = roofline(RelTerm(("OrderBy", "Limit", "Scan"))); r3 = roofline(RelTerm(("Filter", "OrderBy", "Limit", "Scan")))
-    assert r2["i_eager"] == r3["i_eager"] == _I_EAGER, "eager intensity is constant (memory-bound)"
-    assert r3["i_fused"] > r2["i_fused"], "fused intensity SCALES with pipeline depth (compute-bound)"
-    assert abs(r2["gain"] - 5.0) < 1e-9 and abs(r3["gain"] - 7.5) < 1e-9, "gain = 2.5·k"
+    assert r2["k"] == 2 and r3["k"] == 3, "k = # non-Scan relational heads (unchanged readout)"
+    assert 0.0 < r2["i_eager"] and r2["gain"] == r2["speedup"], "i_eager is now a conductance G=1/cost; gain = speedup"
     scores = [roofline(rt)["score"] for rt, _ in lifts2]
-    assert scores == sorted(scores, reverse=True), "licensed lifts must be steered (sorted) by roofline score"
-    assert abs(roofline(ob_lim[0])["score"] - 10.0) < 1e-9, \
-        "the render_graph/render_import [OrderBy→Limit] lift: gain 5 × breadth 2 = score 10"
+    assert scores == sorted(scores, reverse=True), "licensed lifts still steered (sorted) by score"
+    _selftest_h4()   # the ⟡L7 275×/0.7× crossover reproduced as a bridge-null OUTPUT (not a constant)
 
     print("PASS ⟡graded-relational-carrier selftest:")
     print("  Rel = GradedProductOver(+,0); grade = pipeline depth; python sorted(...) and SQL .order_by(...)")
