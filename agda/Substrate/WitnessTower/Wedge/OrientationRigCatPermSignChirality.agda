@@ -47,7 +47,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong�
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
 
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)
-open import Substrate.Algebra.F2.FromBool using (bool→F₂)
+open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
 open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
 open import Substrate.Algebra.R.Trace.ChiralityBridge using (det-sign; det-sign-is-parity)
 
@@ -66,12 +66,10 @@ boolToℕ : Bool → ℕ
 boolToℕ true  = 1
 boolToℕ false = 0
 
--- bool→F₂ sends xor to the F₂ sum (short 4-case; both sides reduce).
-bool→F₂-xor : (a b : Bool) → bool→F₂ (a xor b) ≡ bool→F₂ a +F bool→F₂ b
-bool→F₂-xor true  true  = refl
-bool→F₂-xor true  false = refl
-bool→F₂-xor false true  = refl
-bool→F₂-xor false false = refl
+-- bool→F₂-xor (xor → +F) is the FOUNDATIONAL op-homomorphism, imported from Algebra.F2.FromBool
+-- (single source — it sits beside bool→F₂-and and the ∨-as-xor-recon apex there). This module ADDS
+-- the group-action context on top: the sign character = parity of the inversion count (below). That
+-- is the WitnessTower↔Algebra relationship — group actions thread THROUGH the algebra, not around it.
 
 -- a Bool in F₂ is the parity of its ℕ contribution.
 bool→F₂-parity : (b : Bool) → bool→F₂ b ≡ parity (boolToℕ b)
