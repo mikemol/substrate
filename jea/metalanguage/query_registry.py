@@ -222,41 +222,89 @@ def _roles(C, covered):
     return roles
 
 
+def _filter_cols(C):
+    """predicate-column ops that appear as a VALUE filter (col op value) — the selectivity-relevant ones
+    (a join column's index utility is about direction, not cardinality)."""
+    op = lambda nid: C.I.nodes[nid].op
+    return {op(a) for a, b in _join_pairs(C) if b is None}
+
+
+def _selectivity(cols, cap=2_000_000):
+    """⟡index-selectivity-weight: for each BASE-table 'table.col', (n_distinct, n_rows) via a guarded
+    COUNT(DISTINCT)/COUNT(*). Skips VIEWs (can't be indexed; probing one may materialize it — that's the
+    separate ⟡resolve-view-columns) and tables above `cap` rows (n_distinct=None = 'too big to probe cheaply,
+    left as a candidate'). Absent DB → {}. Only the columns already role='candidate' & filter-driven are passed
+    in, so this runs a handful of cheap COUNTs, never a scan of event/obs/edge."""
+    import sqlite3
+    db = os.path.join(os.path.dirname(os.path.dirname(HERE)), "catalog", "catalog.db")
+    out = {}
+    if not os.path.exists(db): return out
+    con = sqlite3.connect(db)
+    kinds = {r[0]: r[1] for r in con.execute("SELECT name, type FROM sqlite_master WHERE type IN ('table','view')")}
+    for colop in cols:
+        tbl, _, col = colop.partition(".")
+        if kinds.get(tbl) != "table": continue                 # view / absent → not a base-table index target
+        try:
+            nrows = con.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
+            if nrows > cap: out[colop] = (None, nrows); continue
+            out[colop] = (con.execute(f"SELECT COUNT(DISTINCT {col}) FROM {tbl}").fetchone()[0], nrows)
+        except sqlite3.OperationalError:
+            pass
+    con.close(); return out
+
+
+_MIN_ROWS     = 1000    # a table below this is scanned instantly — an index is moot
+_MIN_DISTINCT = 25      # a typical equality match ≈ 1/n_distinct of rows (uniform est.); <25 → >4%/value, a
+                        # b-tree seek isn't worth it (⟡investigate-surfaced-candidates: _unit.copy = 2 distinct)
 def index_report(C):
     preds = _predicate_columns(C)
     colops = {C.I.nodes[nid].op for nid in preds}
     covered = _live_indexed(colops)
     roles = _roles(C, covered)
-    rows = [(len(C.node_units.get(nid, ())), C.I.nodes[nid].op,          # (breadth, colop, role)
-             roles.get(C.I.nodes[nid].op, "candidate")) for nid in preds]
-    _rank = {"candidate": 0, "indexed": 1, "probe": 2}         # actionable first, validated, then demoted
+    fcols = _filter_cols(C)
+    sel = _selectivity({op for op in colops if roles.get(op) == "candidate" and op in fcols})
+    rows = []
+    for nid in preds:
+        op = C.I.nodes[nid].op; role = roles.get(op, "candidate"); note = ""
+        if role == "candidate" and op in sel:                  # base-table VALUE filter → weigh cardinality
+            nd, nr = sel[op]
+            if nd is None:           note = f"{nr} rows — too big to probe"
+            elif nr < _MIN_ROWS:     role, note = "low-selectivity", f"{nr}-row table (index moot)"
+            elif nd < _MIN_DISTINCT: role, note = "low-selectivity", f"{nd} distinct / {nr} rows (~{nr // max(nd, 1)}/value)"
+            else:                    note = f"{nd} distinct / {nr} rows (selective)"
+        rows.append((len(C.node_units.get(nid, ())), op, role, note))   # (breadth, colop, role, note)
+    _rank = {"candidate": 0, "indexed": 1, "low-selectivity": 2, "probe": 3}   # actionable → validated → demoted
     rows.sort(key=lambda r: (_rank[r[2]], -r[0], r[1]))
     return rows
 
 
 _ROLE_LABEL = {"indexed": "indexed (validated)",
                "probe":   "probe-source — index IGNORED (counterpart indexed)",
-               "candidate": "CANDIDATE (seek — gate on selectivity)"}
+               "low-selectivity": "low-selectivity — index won't help (demoted)",
+               "candidate": "CANDIDATE (seek)"}
 def _print_report(C):
     rows = index_report(C)
-    print(f"⟡index-weight-by-cost — breadth × join-DIRECTION over {len(C.units)} interned query builders, "
-          f"{C.I.size()} interned nodes\n")
-    print("  breadth  join/filter-predicate key         role")
-    print("  -------  --------------------------------  ----")
-    for breadth, op, role in rows:
-        print(f"  {breadth:>5}    {op:<32}  {_ROLE_LABEL[role]}")
-    cands = [(b, op) for b, op, role in rows if role == "candidate"]
-    idxd  = [op for _, op, role in rows if role == "indexed"]
-    probes = [op for _, op, role in rows if role == "probe"]
-    print(f"\n  → {len(cands)} genuine NOT-INDEXED candidate(s) after DIRECTION weighting; "
-          f"{len(probes)} high-breadth probe-source(s) DEMOTED (⟡investigate-surfaced-candidates: an index on "
-          f"a full-scan probe column is ignored by the planner — measured).")
+    print(f"⟡index-weight-by-cost — breadth × join-DIRECTION × selectivity over {len(C.units)} interned "
+          f"query builders, {C.I.size()} interned nodes\n")
+    print("  breadth  join/filter-predicate key         role / note")
+    print("  -------  --------------------------------  -----------")
+    for breadth, op, role, note in rows:
+        lab = _ROLE_LABEL[role] + (f"  [{note}]" if note else "")
+        print(f"  {breadth:>5}    {op:<32}  {lab}")
+    cands  = [(b, op, note) for b, op, role, note in rows if role == "candidate"]
+    idxd   = [op for _, op, role, _ in rows if role == "indexed"]
+    probes = [op for _, op, role, _ in rows if role == "probe"]
+    lowsel = [op for _, op, role, _ in rows if role == "low-selectivity"]
+    print(f"\n  → {len(cands)} genuine NOT-INDEXED candidate(s) after DIRECTION × SELECTIVITY weighting; "
+          f"{len(probes)} probe-source(s) + {len(lowsel)} low-selectivity DEMOTED "
+          f"(⟡investigate-surfaced-candidates: neither a full-scan probe column nor a low-cardinality filter "
+          f"gets used by the planner — measured).")
     print(f"     validated indexes: {', '.join(idxd) or '(none)'}")
-    if probes:
-        print(f"     demoted probe-sources (NOT worth indexing): {', '.join(probes)}")
+    if probes: print(f"     demoted probe-sources: {', '.join(probes)}")
+    if lowsel: print(f"     demoted low-selectivity filters: {', '.join(lowsel)}")
     if cands:
-        print("     candidates (rank by breadth; verify selectivity / join-target cost before adding):")
-        for b, op in cands: print(f"       breadth {b:>2}  {op}")
+        print("     candidates (rank by breadth; base-table filters carry measured selectivity):")
+        for b, op, note in cands: print(f"       breadth {b:>2}  {op:<28}{('  '+note) if note else '  (view / absent-in-this-db — resolve to base: ⟡resolve-view-columns)'}")
     print(f"  COVERAGE: view-def + Core builders (the signal-carrying set); ⟡query-rawtocore-migration widened it.")
 
 
@@ -264,26 +312,30 @@ def selftest():
     C = build_corpus()
     rows = index_report(C)
     assert rows, "index report must have predicate columns"
-    role = {op: r for _, op, r in rows}
-    breadth = {op: b for b, op, _ in rows}
+    role = {op: r for _, op, r, _ in rows}
+    breadth = {op: b for b, op, _, _ in rows}
     # ground truth 1: path_text.path_id is the validated indexed key, shared across many builders.
     assert role.get("path_text.path_id") == "indexed", \
         f"path_text.path_id must be 'indexed' (validated), got {role.get('path_text.path_id')}"
     assert breadth["path_text.path_id"] >= 2, "path_text.path_id must be shared across ≥2 builders"
-    # ground truth 2 (⟡investigate-surfaced-candidates): the high-breadth NOT-INDEXED probe-sources are
-    # DEMOTED — an index on them is ignored (measured), so DIRECTION weighting must classify them 'probe'
-    # and EXCLUDE them from recommendations. (Skipped if catalog.db absent — direction needs the index set.)
+    # ground truth 2 (⟡investigate-surfaced-candidates): the high-breadth NOT-INDEXED probe-sources and the
+    # low-cardinality filter are DEMOTED — an index on them is ignored (measured). DIRECTION classifies the
+    # probe-sources 'probe'; SELECTIVITY classifies _unit.copy (2 distinct / 18269) 'low-selectivity'. Both
+    # must be EXCLUDED from recommendations. (Skipped if catalog.db absent — needs the live index set + rows.)
     if role.get("path_text.path_id") == "indexed":
-        cands = {op for _, op, r in rows if r == "candidate"}
+        cands = {op for _, op, r, _ in rows if r == "candidate"}
         for spurious in ("_unit.name_pid", "event.ctor_id", "_node.op_path_id"):
             assert role.get(spurious) == "probe", \
                 f"{spurious} must be demoted to 'probe' (counterpart indexed), got {role.get(spurious)}"
             assert spurious not in cands, f"{spurious} (probe-source) must not appear as a candidate"
+        assert role.get("_unit.copy") == "low-selectivity", \
+            f"_unit.copy (2 distinct / 18269 rows) must be demoted to 'low-selectivity', got {role.get('_unit.copy')}"
+        assert "_unit.copy" not in cands, "_unit.copy (low-selectivity) must not appear as a candidate"
     print("PASS ⟡index-weight-by-cost selftest:")
     print(f"  path_text.path_id = validated indexed key (breadth {breadth['path_text.path_id']}); the "
-          f"high-breadth probe-sources (_unit.name_pid, event.ctor_id, _node.op_path_id) are DEMOTED to "
-          f"probe-source and excluded from recommendations — the report now reproduces the "
-          f"⟡investigate-surfaced-candidates measurement by construction.")
+          f"high-breadth probe-sources (_unit.name_pid, event.ctor_id, _node.op_path_id) are DEMOTED by "
+          f"DIRECTION and _unit.copy by SELECTIVITY (2 distinct) — all excluded from recommendations, "
+          f"reproducing the ⟡investigate-surfaced-candidates measurement by construction.")
 
 
 def main():
