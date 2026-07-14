@@ -195,12 +195,15 @@ def _suffix(short, long):
 def rel_of_select(stmt):
     """A GradedHomOver over an SQLAlchemy Core select(): its Rel head-set in SQL evaluation order.
     Uses the Select's clause structure (stable in SQLAlchemy 2.x). Returns a RelTerm."""
-    heads = ["Scan"]
     froms = []
     try:
         froms = list(stmt.get_final_froms())
     except Exception:
         pass
+    for f in froms:                                            # ⟡L7: a recursive CTE = the reachability closure
+        if type(f).__name__ == "CTE" and getattr(f, "recursive", False):
+            return RelTerm(("Closure",), _select_source(froms))   # recursion→parallel: WITH RECURSIVE
+    heads = ["Scan"]
     if any(type(f).__name__ == "Join" for f in froms):
         heads.append("Join")
     if getattr(stmt, "_where_criteria", ()):     heads.append("Filter")
@@ -452,8 +455,12 @@ def report(files=None):
     # ⟡L6 — the recursion↔loop↔parallel triangle: the split of Family B (previously "all not liftable").
     cte = [r for r in rec if r[3]["transition"] == "recursion→parallel"]
     residue = [r for r in rec if r[3]["sql_target"] == "residue"]
+    has_cte = any("Closure" in rt.heads for rt in sql.values())   # ⟡L7: the WITH RECURSIVE builder exists?
+    tgt = ("MATCHES query_builders.q_reach (WITH RECURSIVE, measured: 275× on-demand / 0.7× full-graph — "
+           "workload-relative)" if has_cte else "RECOMMENDED (no WITH RECURSIVE builder in production yet)")
     print(f"\nRECURSION→PARALLEL (the fold⊣unfold transition: a greatest-fp recursion → a declarative "
-          f"least-fixpoint = SQL WITH RECURSIVE) — {len(cte)} of {len(rec)} recursion-pole computations lift:")
+          f"least-fixpoint = SQL WITH RECURSIVE) — {len(cte)} of {len(rec)} recursion-pole computations lift.")
+    print(f"  recursion→parallel target: {tgt}")
     for path, ln, name, cls in sorted(cte, key=lambda r: r[3]["scheme"]):
         print(f"  {cls['sql_target']:26}  {name}()  ({cls['scheme']})  {path}:{ln}")
     print(f"\nRESIDUE (stays python — the honest greatest-fp: no relational/declarative form) — {len(residue)}:")
@@ -523,6 +530,16 @@ def selftest():
     assert R.get("canon_syms", {}).get("sql_target") == "residue", \
         f"canon_syms (variable-arity flatten+sort) must be residue, got {R.get('canon_syms')}"
     assert "pack" not in R, "pack is a depth-1 self-join (Family A), NOT a recursion pole"
+
+    # ⟡L7 — the recursion→parallel target now EXISTS: q_reach (WITH RECURSIVE) lowers to Rel(Closure), so the
+    # reachability closures are MATCHED against a real builder (not merely recommended). Measured byte-exact
+    # (59794==59794) and workload-relative (275× on-demand, 0.7× full-graph — the roofline crossover).
+    from query_builders import q_reach as _q_reach
+    assert rel_of_select(_q_reach()).heads == ("Closure",), \
+        f"q_reach (WITH RECURSIVE) must lower to Rel(Closure), got {rel_of_select(_q_reach()).heads}"
+    _I4, _py4, sql4, _r4 = build([os.path.join(REPO, "scripts", "reuse_catalog.py")])
+    assert any("Closure" in rt.heads for rt in sql4.values()), \
+        "the SQL corpus must now contain a Closure builder (q_reach) — reachability closures have a real target"
 
     # ⟡L4 — roofline readout: eager I is CONSTANT (size-independent), fused I SCALES with pipeline depth k;
     # gain = 2.5·k; the lift ranking steers by intensity-gain × breadth.

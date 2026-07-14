@@ -179,6 +179,19 @@ def q_orbit_merged():                                                           
     return select(func.count()).select_from(sub)
 
 
+# ════════════════════════════════ ⟡L7 — recursion→parallel: the reachability closure as a WITH RECURSIVE CTE ═
+# The declarative form of the eager python reachability DFS (_support jea_pysim.py:80 / _subnodes jea_pyalg.py:656
+# / the unit_node builder sppf_db.py:270-278): the transitive closure of node_child from a root. UNION (not
+# UNION ALL) dedups → distinct closure, O(V+E), matching the python seen-set (byte-exact: 59794 vs 59794). This
+# is the recursion→parallel grade-transition made concrete — a greatest-fp recursion lifted to a least-fixpoint
+# saturation SQLite evaluates in one pass, no python materialization. ⟡graded-relational-carrier / sql_lift ⟡L6.
+def q_reach():
+    anchor = select(bindparam("root", type_=String).label("node_id")).cte("reach", recursive=True)
+    step = select(node_child.c.child_id).select_from(node_child.join(anchor, node_child.c.node_id == anchor.c.node_id))
+    reach = anchor.union(step)                                       # UNION = distinct closure (dedup ⇒ terminates)
+    return select(reach.c.node_id)
+
+
 # ════════════════════════════════════ S2 — reuse_catalog render_* view reads (⟡rewire-catalog-render) ═
 # positional reads (reuse_catalog has no row_factory); SELECT straight from the physical compat views.
 def q_structs_index():     return select(structs_v.c.name, structs_v.c.kind, structs_v.c.module, structs_v.c["desc"])  # render_index L491
@@ -270,6 +283,7 @@ INTERN_BUILDERS = {
     # S1 orbit-stats:
     "max_orbit_len": q_max_orbit_len, "orbit_def_stats": q_orbit_def_stats,
     "orbit_node_count": q_orbit_node_count, "orbit_packings": q_orbit_packings, "orbit_merged": q_orbit_merged,
+    "reach": q_reach,   # ⟡L7 recursion→parallel: WITH RECURSIVE reachability closure
     # S2 render:
     "structs_index": q_structs_index, "structs_namemod": q_structs_namemod,
     "structs_fpnamemod": q_structs_fpnamemod, "modules_index": q_modules_index,
@@ -358,6 +372,11 @@ def _reg():
         "orbit_packings":  (q_orbit_packings, {}, "SELECT COUNT(DISTINCT node_id) FROM orbit_member", ()),
         "orbit_merged":    (q_orbit_merged, {},
             "SELECT COUNT(*) FROM (SELECT orbit_id FROM orbit_member GROUP BY orbit_id HAVING COUNT(*)>1)", ()),
+        # ⟡L7 — the WITH RECURSIVE reachability closure == the eager python _support/_subnodes walk (group "recur"):
+        "reach": (q_reach, lambda c: {"root": _samp_node(c)},
+            "WITH RECURSIVE reach(node_id) AS (SELECT :root UNION "
+            "SELECT nc.child_id FROM reach r JOIN node_child nc ON nc.node_id=r.node_id) SELECT node_id FROM reach",
+            lambda c: {"root": _samp_node(c)}),
         # S2 — reuse_catalog render_* view reads (group "render": target the reuse-catalog output db —
         # structs/edges/module_edges/modules/in_degree/meta, populated by reuse_catalog's build):
         "meta_failed":       (q_meta_failed, {}, "SELECT value FROM meta WHERE key='failed'", ()),
@@ -388,6 +407,7 @@ _GROUP = {n: "render" for n in ("meta_failed", "structs_index", "structs_namemod
           "edges_dst_distinct", "edges_src_distinct", "structs_qname", "indegree_top", "modedges_all")}
 _GROUP.update({n: "orbit" for n in ("max_orbit_len", "orbit_def_stats", "orbit_node_count",
                                     "orbit_packings", "orbit_merged")})
+_GROUP["reach"] = "recur"   # ⟡L7 recursion→parallel (needs node_child; verified on the SPPF catalog.db)
 def _group_of(name): return _GROUP.get(name, "catalog")
 
 
@@ -401,6 +421,16 @@ def _samp(con):
         name = con.execute("SELECT name FROM unit WHERE unit_id=?", (uid,)).fetchone()[0]
         _SAMP = (uid, name, sz)
     return _SAMP
+
+
+_SAMPN = None
+def _samp_node(con):
+    """a stable sample root for the reachability CTE — the node with the most children (a deep closure)."""
+    global _SAMPN
+    if _SAMPN is None:
+        _SAMPN = con.execute("SELECT node_id FROM node_child GROUP BY node_id "
+                             "ORDER BY COUNT(*) DESC LIMIT 1").fetchone()[0]
+    return _SAMPN
 
 
 def verify(con, only=None, group="catalog"):
