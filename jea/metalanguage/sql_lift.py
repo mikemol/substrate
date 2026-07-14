@@ -250,6 +250,7 @@ def build(files=None):
     files = files or _py_files()
     I = Intern()
     py = {}     # rel_id -> RelTerm (with sites)
+    rec = []    # ⟡L6: (relpath, lineno, name, classification) — the recursion-pole computations
     for path in files:
         try:
             tree = ast.parse(open(path, encoding="utf-8").read())
@@ -261,6 +262,14 @@ def build(files=None):
                     rid = rt.intern_into(I)
                     t = py.setdefault(rid, rt)
                     t.sites.append((os.path.relpath(path, REPO), getattr(node, "lineno", -1), node.name))
+                cls = classify_recursion(node)     # ⟡L6: place it on the recursion↔loop↔parallel triangle
+                if cls is not None:
+                    # a reachability closure lowers to Rel(Closure); a fold-over-closure to Rel(Agg)∧Rel(Closure)
+                    # — the recursion pole made grade structure (via the recursion→parallel morphism).
+                    heads = (("Agg",) if cls["scheme"].startswith("fold") else ()) + ("Closure",)
+                    if cls["sql_target"] != "residue":
+                        RelTerm(heads, "*").intern_into(I)
+                    rec.append((os.path.relpath(path, REPO), getattr(node, "lineno", -1), node.name, cls))
     sql = {}    # rel_id -> RelTerm
     try:
         from query_builders import INTERN_BUILDERS
@@ -274,7 +283,7 @@ def build(files=None):
             t.sites.append(("query_builders", name))
     except Exception as e:
         print(f"  [sql-skip] {e}", file=sys.stderr)
-    return I, py, sql
+    return I, py, sql, rec
 
 
 def licensed_lifts(I, py, sql):
@@ -323,8 +332,94 @@ def roofline(rt):
     return {"k": k, "i_eager": _I_EAGER, "i_fused": i_fused, "gain": gain, "score": gain * len(rt.sites)}
 
 
+# ════════════════════════ ⟡L6 — the recursion↔loop↔parallel triangle (pole classifier) ══════════════
+# sql_lift's grade was scalar pipeline-DEPTH — the LOOP→PARALLEL edge only (a python set-op → an SQL set-op).
+# The full grade is a position in the recursion↔loop↔parallel triangle = the substrate's PROVEN fold⊣unfold
+# axis (least-fp ⊣ greatest-fp; SKIReduceResidueFP.agda:7-14). Family A (bounded/flattens/loop) vs Family B
+# (unbounded/never-collapses/recursion) IS that boundary. A recursion is NOT a dead end: the recursion→parallel
+# transition (least-fixpoint saturation = SQL WITH RECURSIVE; the grammar_fixpoint archetype) lifts a
+# transitive-closure recursion to a declarative CTE. This classifier splits Family B into what that transition
+# reaches. The trace_intern CLOSED/SUSPENDED verdict (jea_haskell_trace) is the substrate's decision procedure
+# for which pole a computation sits at; here we read the pole structurally from the AST.
+_ADJ_NAMES = {"child", "children", "kids", "edges", "node_child", "adj", "succ", "neighbors", "childmap", "cl"}
+_NONSQL = {"log", "exp", "log2", "log10", "hexdigest", "sha1", "sha256", "md5", "sha", "digest"}
+
+def _shallow_nodes(fn):
+    """all AST nodes in fn's own body, NOT descending into nested def/lambda scopes (so a nested helper is
+    classified as its OWN function, not attributed to its parent)."""
+    out, stack = [], list(ast.iter_child_nodes(fn))
+    while stack:
+        n = stack.pop(); out.append(n)
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+            continue
+        stack.extend(ast.iter_child_nodes(n))
+    return out
+
+def _features(fn):
+    ns = _shallow_nodes(fn); name = getattr(fn, "name", "")
+    self_rec = any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == name for n in ns)
+    has_worklist = (any(isinstance(n, ast.While) for n in ns) and
+                    any(isinstance(n, ast.Attribute) and n.attr == "pop" for n in ns) and
+                    any(isinstance(n, ast.Attribute) and n.attr in ("extend", "append") for n in ns))
+    def _named(nn): return (nn.func.id if isinstance(nn, ast.Call) and isinstance(nn.func, ast.Name) else
+                            (nn.func.attr if isinstance(nn, ast.Call) and isinstance(nn.func, ast.Attribute) else None))
+    calls = {_named(n) for n in ns if isinstance(n, ast.Call)}
+    attrs = {n.attr for n in ns if isinstance(n, ast.Attribute)}
+    names = {n.id for n in ns if isinstance(n, ast.Name)}
+    adjacency = bool((_ADJ_NAMES & names) or (_ADJ_NAMES & attrs))
+    set_accum = bool({"set", "frozenset"} & calls) or bool({"add", "update"} & attrs)
+    nonsql = bool(_NONSQL & calls) or bool(_NONSQL & attrs)
+    perm = bool({"permutations", "product", "factorial"} & calls)
+    sorted_flatten = ("sorted" in calls and self_rec and bool({"extend", "append"} & attrs))
+    # a term-rewrite / render / parse hylomorphism BUILDS text or new terms per node (f-string, str .join) —
+    # NOT a reachability closure (which accumulates the reachable NODE SET); it is residue, not a CTE.
+    builds_text = any(isinstance(n, ast.JoinedStr) for n in ns) or ("join" in attrs)
+    reducers = set()
+    if "sum" in calls or any(isinstance(n, ast.AugAssign) and isinstance(n.op, ast.Add) for n in ns): reducers.add("SUM")
+    if "max" in calls: reducers.add("MAX")
+    if "min" in calls: reducers.add("MIN")
+    if "len" in calls or "count" in calls or "Counter" in calls: reducers.add("COUNT")
+    # a DAG/collection WALK (not linear recursion like factorial(n-1)): a worklist, or self-recursion that
+    # happens inside a loop/comprehension (recursing OVER a collection of children — even indirectly, e.g.
+    # hei recurses over `descsh(n)`, which is why an ADJ-name guard is too narrow).
+    has_loop_or_comp = any(isinstance(n, (ast.For, ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.DictComp)) for n in ns)
+    walks = has_worklist or (self_rec and has_loop_or_comp)
+    return dict(name=name, self_rec=self_rec, has_worklist=has_worklist, adjacency=adjacency,
+                set_accum=set_accum, nonsql=nonsql, perm=perm, sorted_flatten=sorted_flatten,
+                builds_text=builds_text, reducers=reducers, walks=walks)
+
+def classify_recursion(fn):
+    """Place a python function on the recursion↔loop↔parallel triangle and name its available transition.
+    Returns None if it is not a recursion/worklist walk (flat → handled by the Rel-pipeline path). Otherwise
+    {pole, scheme, transition, sql_target, reason}. The split of Family B (grounded on the corpus):
+      reachability-closure   → recursion→parallel: WITH RECURSIVE (UNION = distinct closure, O(V+E))
+      fold-over-closure      → recursion→parallel: WITH RECURSIVE + aggregate (SUM/MAX/MIN/COUNT)
+      residue                → stays python (non-SQL numeric / graph-iso / variable-arity rewrite)."""
+    f = _features(fn)
+    if not f["walks"]:
+        return None                                              # not a recursion — flat (Family A / Rel path)
+    if f["nonsql"]:
+        return dict(pole="recursion", scheme="non-SQL numeric fold", transition="—", sql_target="residue",
+                    reason="log/exp/hash reducer has no SQL aggregate (e.g. log-sum-exp / Merkle)")
+    if f["perm"]:
+        return dict(pole="recursion", scheme="permutation search / graph-iso", transition="—",
+                    sql_target="residue", reason="canonical-labeling / permutation search is not relational")
+    if f["sorted_flatten"]:
+        return dict(pole="recursion", scheme="variable-arity term rewrite", transition="—", sql_target="residue",
+                    reason="flatten-nested + sort (normal-form rewrite) is not a relational closure")
+    if f["builds_text"] and not f["reducers"]:
+        return dict(pole="recursion", scheme="term-rewrite / render hylomorphism", transition="—",
+                    sql_target="residue", reason="builds text/new terms per node (render/parse), not a reachable set")
+    if f["reducers"] and not (f["set_accum"] and not f["reducers"]):
+        agg = "/".join(sorted(f["reducers"]))
+        return dict(pole="recursion", scheme=f"fold-over-closure ({agg})", transition="recursion→parallel",
+                    sql_target=f"WITH RECURSIVE + {agg}", reason="associative reducer over a DAG closure")
+    return dict(pole="recursion", scheme="reachability / transitive-closure", transition="recursion→parallel",
+                sql_target="WITH RECURSIVE (UNION)", reason="a set-accumulating walk over a child/edge adjacency")
+
+
 def report(files=None):
-    I, py, sql = build(files)
+    I, py, sql, rec = build(files)
     lifts = licensed_lifts(I, py, sql)
     print(f"⟡graded-relational-carrier — {len(py)} distinct python Rel-pipelines, {len(sql)} SQL builder "
           f"pipelines, interned into ONE carrier ({I.size()} nodes)\n")
@@ -353,7 +448,18 @@ def report(files=None):
         seq = " → ".join(h for h in rt.canon_seq() if h != "Scan")
         print(f"  fan-in {len(rt.sites)}  grade {rt.grade}  [{seq}]  sites: " +
               "; ".join(f"{s[0]}:{s[1]}({s[2]})" for s in rt.sites[:4]))
-    return I, py, sql, lifts
+
+    # ⟡L6 — the recursion↔loop↔parallel triangle: the split of Family B (previously "all not liftable").
+    cte = [r for r in rec if r[3]["transition"] == "recursion→parallel"]
+    residue = [r for r in rec if r[3]["sql_target"] == "residue"]
+    print(f"\nRECURSION→PARALLEL (the fold⊣unfold transition: a greatest-fp recursion → a declarative "
+          f"least-fixpoint = SQL WITH RECURSIVE) — {len(cte)} of {len(rec)} recursion-pole computations lift:")
+    for path, ln, name, cls in sorted(cte, key=lambda r: r[3]["scheme"]):
+        print(f"  {cls['sql_target']:26}  {name}()  ({cls['scheme']})  {path}:{ln}")
+    print(f"\nRESIDUE (stays python — the honest greatest-fp: no relational/declarative form) — {len(residue)}:")
+    for path, ln, name, cls in residue[:12]:
+        print(f"  {name}()  {cls['scheme']} — {cls['reason']}  {path}:{ln}")
+    return I, py, sql, lifts, rec
 
 
 # ════════════════════════════════ selftests ═══════════════════════════════════════════════════════
@@ -384,7 +490,7 @@ def selftest():
 
     # ⟡L3 ACCEPTANCE (the headline): the render_graph≈render_import Counter+rank near-clone lowers to ONE
     # carrier node (breadth 2) and is a licensed lift into SQL — CrossMix orbit-dedup + coherence, end to end.
-    I2, pyt, sqlt = build([os.path.join(REPO, "scripts", "reuse_catalog.py")])
+    I2, pyt, sqlt, _rec2 = build([os.path.join(REPO, "scripts", "reuse_catalog.py")])
     lifts2 = licensed_lifts(I2, pyt, sqlt)
     _fns = lambda rt: {s[2] for s in rt.sites}
     _relseq = lambda rt: tuple(h for h in rt.canon_seq() if h != "Scan")
@@ -392,13 +498,31 @@ def selftest():
     assert ob_lim, "render_graph/render_import [OrderBy→Limit] must be ONE licensed lift at breadth ≥2"
     grp = [rt for rt in pyt.values() if _relseq(rt) == ("GroupBy", "Agg") and {"render_graph", "render_import"} <= _fns(rt)]
     assert grp, "Counter (GroupBy→Agg) must be ONE shared carrier node across render_graph + render_import"
-    # NEGATIVE control: reuse_tui.db_rows' recursive unfold (sz/lsz/descsh) yields NO Rel pipeline — an
-    # unbounded-grade term (Family B) never collapses to a relational normal form. Assert no composed
-    # pipeline is sourced from the memoized-recursion helpers (they are absent from the Rel corpus).
-    I3, py3, _ = build([os.path.join(REPO, "scripts", "reuse_tui.py")])
+    # The recursive helpers yield NO bounded Rel PIPELINE (they are the recursion pole, not the loop pole).
+    I3, py3, _s3, _r3 = build([os.path.join(REPO, "scripts", "reuse_tui.py")])
     walk_fns = {s[2] for rt in py3.values() for s in rt.sites if len(_relseq(rt)) >= 2}
     assert not ({"sz", "lsz", "descsh", "hei"} & walk_fns), \
-        "the recursive-unfold helpers must yield NO composed Rel pipeline (unbounded grade = not liftable)"
+        "the recursive-unfold helpers must yield NO composed Rel PIPELINE (they are recursion-pole, not loop-pole)"
+
+    # ⟡L6 — the recursion↔loop↔parallel classification: the recursion pole is NOT uniformly unliftable. The
+    # recursion→parallel transition (least-fixpoint saturation = SQL WITH RECURSIVE) splits Family B correctly.
+    R = {}
+    for f in (os.path.join(REPO, "scripts", "reuse_tui.py"), os.path.join(HERE, "jea_pysim.py"),
+              os.path.join(HERE, "jea_pyalg.py"), os.path.join(REPO, "scripts", "sppf_db.py")):
+        for path, ln, nm, cls in build([f])[3]:
+            R[nm] = cls
+    for fn in ("_support", "_subnodes", "descsh"):                       # reachability closures → WITH RECURSIVE
+        assert R.get(fn, {}).get("transition") == "recursion→parallel" and "RECURSIVE" in R[fn]["sql_target"], \
+            f"{fn} must be a reachability closure lift (recursion→parallel, WITH RECURSIVE), got {R.get(fn)}"
+    assert "reachability" in R["_subnodes"]["scheme"], "_subnodes is a transitive-closure reachability"
+    assert R.get("sz", {}).get("transition") == "recursion→parallel" and ("SUM" in R["sz"]["sql_target"] or "COUNT" in R["sz"]["sql_target"]), \
+        f"sz must be a fold-over-closure (WITH RECURSIVE + SUM/COUNT), got {R.get('sz')}"
+    assert R.get("hei", {}).get("transition") == "recursion→parallel" and "MAX" in R["hei"]["sql_target"], \
+        f"hei must be a max-fold over the closure (WITH RECURSIVE + MAX), got {R.get('hei')}"
+    assert R.get("lsz", {}).get("sql_target") == "residue", f"lsz (log-sum-exp) must be residue, got {R.get('lsz')}"
+    assert R.get("canon_syms", {}).get("sql_target") == "residue", \
+        f"canon_syms (variable-arity flatten+sort) must be residue, got {R.get('canon_syms')}"
+    assert "pack" not in R, "pack is a depth-1 self-join (Family A), NOT a recursion pole"
 
     # ⟡L4 — roofline readout: eager I is CONSTANT (size-independent), fused I SCALES with pipeline depth k;
     # gain = 2.5·k; the lift ranking steers by intensity-gain × breadth.
@@ -415,7 +539,9 @@ def selftest():
     print("  Rel = GradedProductOver(+,0); grade = pipeline depth; python sorted(...) and SQL .order_by(...)")
     print("  lower to ONE carrier point (CrossMix cross_term degree 0) — licensed by same-interned-id.")
     print(f"  ACCEPT: render_graph≈render_import → ONE [OrderBy→Limit] lift (breadth {len(ob_lim[0].sites)}) +")
-    print("  ONE shared [GroupBy→Agg] carrier node ⟵ SQL indegree_top; db_rows' recursive unfold = no pipeline.")
+    print("  ONE shared [GroupBy→Agg] carrier node ⟵ SQL indegree_top.")
+    print("  ⟡L6 recursion↔loop↔parallel (fold⊣unfold): _support/_subnodes/descsh = reachability closures →")
+    print("  WITH RECURSIVE; sz→+SUM, hei→+MAX (fold-over-closure); lsz/canon_syms = residue; pack = not recursion.")
 
 
 def main():
