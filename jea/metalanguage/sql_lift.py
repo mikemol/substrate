@@ -242,6 +242,41 @@ def _select_source(froms):
     return "*"
 
 
+# ════════════════════════════════ Bridge_np: numpy relational op → Rel heads ════════════════════════
+# The THIRD GradedHomOver (beside Bridge_py and Bridge_sql, rel_of_select). A numpy builder in
+# numpy_builders.py is TAGGED with the Rel head it realizes; rel_of_np lowers a tag-chain to the SAME
+# RelTerm heads Bridge_sql produces, so co-interning them reaches ONE carrier point (CrossMix.coherent =
+# degree 0 = the same canonical node). This is the CROSSMIX leg of the SQL↔numpy hexagon: the numpy op and
+# its SQL twin lower to one interned Rel node — the VALUE identity is proven separately (byte-exact, in
+# numpy_builders.verify_hexagon). Head vocabulary + SQL-eval order reconciled via RelTerm.canon_seq, so the
+# match is braiding-robust (any WHERE/head order lands on one orbit rep).
+_NP_HEAD = {                       # numpy_builders fn name → Rel head
+    "np_scan": "Scan", "np_filter": "Filter", "np_distinct": "Distinct",
+    "np_group_count": "GroupBy", "np_order": "OrderBy", "np_limit": "Limit",
+    "np_join": "Join", "np_closure": "Closure",
+}
+def rel_of_np(np_heads, source="*"):
+    """np_heads: the sequence of numpy-builder names applied → RelTerm (same carrier as Bridge_sql). A
+    group-count emits GroupBy∧Agg (matching Bridge_sql's _has_aggregate over COUNT(*))."""
+    heads = []
+    for h in np_heads:
+        rh = _NP_HEAD[h]
+        heads.append(rh)
+        if rh == "GroupBy":
+            heads.append("Agg")
+    return RelTerm(tuple(heads), source)
+
+def np_sql_coherent(I, np_heads, sql_stmt):
+    """True iff the numpy op-chain and the SQL builder lower to the SAME interned Rel carrier node (degree 0).
+    Both compared in SQL-eval order (canon_seq), Scan-leaf abstracted, source abstracted — so the coherence
+    is the braiding-invariant orbit identity, not a positional match. (CrossMix.coherent, jea_pyalg.py:695.)"""
+    p_heads = tuple(h for h in rel_of_np(np_heads).canon_seq() if h != "Scan")
+    s_heads = tuple(h for h in rel_of_select(sql_stmt).canon_seq() if h != "Scan")
+    p = RelTerm(p_heads, "*").intern_into(I)
+    s = RelTerm(s_heads, "*").intern_into(I)
+    return CrossMix(I).coherent(p, s)
+
+
 # ════════════════════════════════ the corpus + the lift report ═════════════════════════════════════
 def _py_files():
     return sorted(set(glob.glob(os.path.join(HERE, "*.py")) +

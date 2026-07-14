@@ -230,6 +230,152 @@ def selftest_h2(db=CATALOG_DB):
     con.close()
 
 
+# ════════════════ ⟡H3 — relational builders vs SQL + the SQL↔numpy hexagon ══════════════════════════
+# Each relational op is a gauge-placed contraction (⟡H1) whose VALUE is byte-exact with its SQL builder over
+# the SAME db (the query_builders.verify pattern). The HEXAGON has four legs: VALUE (numpy == SQL multiset),
+# GAUGE (Bool ∨ = reachability ≠ F₂ ⊕ = parity — the four-gauge split), BRAIDING (a WHERE/join reorder = the
+# PROVEN blockSwap/factorSwap braiding, rig_coherence — so any conjunct order is ONE orbit rep), and CROSSMIX
+# (a numpy op and its SQL twin lower to ONE sql_lift Rel carrier point, via Bridge_np). Predicate masks are
+# the GF(2)→Bool→predicate bridge: AND=⊗, XOR=⊕, NOT=xor-ones, and OR = a⊕b⊕(a∧b) = recon(XOR, AND) — the
+# apex wedge (a=recon q b r), NOT a separate primitive: the ∧ cross-term is the oriented residue the Bool
+# gauge adds to the F₂ field (grounded PROVEN in the substrate: bool→F₂-xor + ResidueIsBezoutGCD; the closed
+# form is the ~4-line refl of ⟡H-lemmas). The hexagon's braiding is backed by PROVEN Agda (GradedSymMonoidal
+# + LehmerPath initiality + ∀-n Coxeter-completeness + the block-action OrientationHexagon); rig_coherence
+# CORROBORATES it (it is not the sole certificate). See the plan's ORIENTED-RESIDUE RE-REVIEW.
+
+def _rows(con, sql, params=()):  return list(map(tuple, con.execute(sql, params).fetchall()))
+def _cols(rows):                 return [np.array(c, dtype=object) for c in zip(*rows)] if rows else []
+
+# ── predicate masks: the GF(2) field ops (F2/Vector.agda) + the derived Bool OR ─────────────────────
+def pred_and(a, b):  return np.asarray(a, np.uint8) & np.asarray(b, np.uint8)   # ⊗ = zipWith AND = WHERE p AND q
+def pred_xor(a, b):  return np.asarray(a, np.uint8) ^ np.asarray(b, np.uint8)   # ⊕ = zipWith XOR = symmetric diff
+def pred_not(a):     return np.asarray(a, np.uint8) ^ np.uint8(1)               # NOT = xor-ones (F₂ complement)
+def pred_or(a, b):                                                             # OR = a⊕b⊕(a∧b) = recon(XOR, AND)
+    a = np.asarray(a, np.uint8); b = np.asarray(b, np.uint8)
+    return a ^ b ^ (a & b)          # the Bool ∨ built from the F₂ field — the ∧ cross-term is the residue
+
+# ── the relational builders (gauge-placed contractions), each mirroring a query_builders SQL builder ──
+def np_scan(con, sql):                     return _rows(con, sql)               # Scan = the identity leaf
+def np_distinct(con, sql, proj_idx=0):
+    rows = _rows(con, sql); cols = _cols(rows)                                  # DISTINCT = np.unique (jea_zsppf:58)
+    if not rows: return []
+    uniq, _ = np.unique(cols[proj_idx], return_inverse=True)
+    return [(u,) for u in uniq.tolist()]
+def np_group_count(con, sql, key_idx=0):                                        # GROUP BY + COUNT(*) = unique+add.at
+    rows = _rows(con, sql); cols = _cols(rows)
+    if not rows: return []
+    uniq, inv = np.unique(cols[key_idx], return_inverse=True)
+    deg = np.zeros(uniq.shape[0], np.int64); np.add.at(deg, inv, 1)             # ℕ gauge (count)
+    return list(zip(uniq.tolist(), deg.tolist()))
+def np_filter(con, sql, mask_fn):                                              # WHERE = a Bool mask ⊗ (routing gauge)
+    rows = _rows(con, sql); cols = _cols(rows)
+    if not rows: return []
+    m = np.asarray(mask_fn(cols)).astype(bool)
+    return [r for r, keep in zip(rows, m) if keep]
+def np_order(rows, keys, descs):                                              # ORDER BY = np.lexsort (jea_zsppf:123)
+    if not rows: return []
+    seq = []
+    for k, d in zip(keys, descs):
+        a = np.asarray(k)
+        seq.append(-a if (d and np.issubdtype(a.dtype, np.number)) else a)
+    o = np.lexsort(tuple(reversed(seq)))                                        # keys[0] = primary
+    return [rows[i] for i in o.tolist()]
+def np_limit(rows, n):                     return rows[:n]                      # LIMIT = a slice
+def np_join(lrows, rrows, lkey_idx, rkey_idx):                                 # JOIN = searchsorted equijoin
+    rk = np.array([r[rkey_idx] for r in rrows], dtype=object)
+    order = np.argsort(rk, kind="stable"); rk_s = rk[order]
+    out = []
+    for lr in lrows:
+        k = lr[lkey_idx]
+        lo = int(np.searchsorted(rk_s, k, side="left")); hi = int(np.searchsorted(rk_s, k, side="right"))
+        for j in range(lo, hi):
+            out.append(tuple(lr) + tuple(rrows[int(order[j])]))
+    return out
+def np_closure(con, root):                                                    # CLOSURE = the ⟡H2 N-wide reachability
+    V, ix2id, rows, cols = densify(con)
+    root_ix = int(np.nonzero(ix2id == root)[0][0])
+    return {ix2id[i] for i in reach_nwide(V, rows, cols, root_ix)}
+
+
+def verify_hexagon(db=CATALOG_DB):
+    """The SQL↔numpy hexagon over node_child (the SPPF adjacency present on catalog.db). VALUE: each numpy
+    builder == its SQL builder byte-exact (multiset, or in-order for ORDER BY). GAUGE / BRAIDING / CROSSMIX
+    as above. Mirrors query_builders.verify (byte-exact multiset compare)."""
+    sys.path.insert(0, HERE)
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "scripts"))   # rig_coherence lives here
+    import rig_coherence as rc
+    from jea_pyalg import Intern
+    import sql_lift, query_builders as QB
+    con = sqlite3.connect(db)
+    ok, fail = 0, []
+    def _cmp(name, got, raw, ordered=False):
+        nonlocal ok
+        want = list(map(tuple, con.execute(raw).fetchall()))
+        g = got if ordered else sorted(got); w = want if ordered else sorted(want)
+        if g == w: ok += 1; print(f"  ✓ VALUE {name:16s} {len(g):>6} rows — numpy == SQL")
+        else:      fail.append(name); print(f"  ✗ VALUE {name}: numpy {len(g)} vs SQL {len(w)}")
+
+    # ── (VALUE) each numpy builder == its SQL over the SAME db, byte-exact (query_builders.verify pattern) ──
+    _cmp("distinct_child", np_distinct(con, "SELECT child_id FROM node_child"),
+         "SELECT DISTINCT child_id FROM node_child")
+    _cmp("group_count",    np_group_count(con, "SELECT child_id FROM node_child"),
+         "SELECT child_id, COUNT(*) FROM node_child GROUP BY child_id")
+    grp = np_group_count(con, "SELECT child_id FROM node_child")                # GROUP+COUNT then ORDER+LIMIT
+    top = np_limit(np_order(grp, [np.array([g[1] for g in grp]), np.array([g[0] for g in grp], object)],
+                            [True, False]), 20)                                 # ORDER BY c DESC, child_id ASC
+    _cmp("indegree_top", top,
+         "SELECT child_id, COUNT(*) c FROM node_child GROUP BY child_id ORDER BY c DESC, child_id LIMIT 20",
+         ordered=True)
+    _cmp("filter_ord0", np_filter(con, "SELECT node_id, ord, child_id FROM node_child", lambda c: c[1] == 0),
+         "SELECT node_id, ord, child_id FROM node_child WHERE ord=0")
+    # closure = q_reach (the ⟡H2 oracle, byte-exact 59794)
+    root = con.execute("SELECT node_id FROM node_child GROUP BY node_id ORDER BY COUNT(*) DESC LIMIT 1").fetchone()[0]
+    oracle = {r[0] for r in con.execute(
+        "WITH RECURSIVE reach(node_id) AS (SELECT ? UNION SELECT nc.child_id FROM reach r "
+        "JOIN node_child nc ON nc.node_id=r.node_id) SELECT node_id FROM reach", (root,)).fetchall()}
+    reached = np_closure(con, root)
+    if reached == oracle: ok += 1; print(f"  ✓ VALUE {'closure':16s} {len(reached):>6} nodes — np_closure == q_reach")
+    else:                 fail.append("closure"); print(f"  ✗ VALUE closure: {len(reached)} vs {len(oracle)}")
+    # join = a synthetic equijoin vs sqlite's own JOIN (the Join head, no node_child self-join needed)
+    mem = sqlite3.connect(":memory:")
+    mem.execute("CREATE TABLE L(a,k)"); mem.execute("CREATE TABLE R(k,b)")
+    L = [(1, "x"), (2, "y"), (3, "x")]; R = [("x", "p"), ("x", "q"), ("z", "r")]
+    mem.executemany("INSERT INTO L VALUES(?,?)", L); mem.executemany("INSERT INTO R VALUES(?,?)", R)
+    sj = sorted(map(tuple, mem.execute("SELECT L.a,L.k,R.k,R.b FROM L JOIN R ON L.k=R.k").fetchall()))
+    if sorted(np_join(L, R, 1, 0)) == sj: ok += 1; print(f"  ✓ VALUE {'join':16s} {len(sj):>6} rows — np_join == SQL JOIN")
+    else:                                 fail.append("join"); print("  ✗ VALUE join")
+
+    # ── (GAUGE) Bool ∨ (reachability) ≠ F₂ ⊕ (parity) — the four-gauge split, made executable ──
+    assert bool(contract([1, 1], [1, 1], SR_BOOL)) is True, "Bool: two live channels ⇒ ⊤ (reachability)"
+    assert contract([1, 1], [1, 1], SR_F2) == 0, "F₂: 1⊕1 = 0 (parity) — NOT the Bool answer"
+    assert pred_xor([1, 1], [1, 1]).tolist() == [0, 0] and pred_or([1, 1], [1, 1]).tolist() == [1, 1], \
+        "predicate ⊕ (XOR) ≠ derived OR — the field-vs-semiring split; OR = recon(XOR, AND)"
+    print("  ✓ GAUGE  Bool ∨ (reachability) ≠ F₂ ⊕ (parity); OR = a⊕b⊕ab = recon(XOR,AND) [oriented residue]")
+
+    # ── (BRAIDING) a conjunct/factor reorder = the PROVEN blockSwap/factorSwap involution (rig_coherence) ──
+    import itertools
+    p = np.array([1, 0, 1, 1, 0], np.uint8); q = np.array([1, 1, 0, 1, 0], np.uint8); r = np.array([0, 1, 1, 1, 1], np.uint8)
+    reps = {tuple(pred_and(pred_and(a, b), c).tolist()) for a, b, c in itertools.permutations([p, q, r])}
+    assert len(reps) == 1, "WHERE p AND q AND r is order-invariant (∧ commutative) ⇒ ONE orbit rep"
+    assert rc.perm_eq(rc.compose(rc.blockSwap(1, 1), rc.blockSwap(1, 1)), rc.ident(2)), \
+        "adjacent conjunct swap = blockSwap(1,1), a PROVEN involution (rig_coherence)"
+    assert all(rc.perm_eq(rc.compose(rc.factorSwap(n, m), rc.factorSwap(m, n)), rc.ident(m * n))
+               for m in range(1, 4) for n in range(1, 4)), "GROUP/JOIN factor reorder = factorSwap (proven involution)"
+    print("  ✓ BRAID  conjunct reorder = blockSwap(1,1); factor reorder = factorSwap — PROVEN involutions")
+
+    # ── (CROSSMIX) numpy op + its SQL twin → ONE sql_lift Rel carrier point (Bridge_np, degree 0) ──
+    I = Intern()
+    assert sql_lift.np_sql_coherent(I, ("np_closure",), QB.q_reach()), "np_closure ↔ WITH RECURSIVE: one carrier point"
+    assert sql_lift.np_sql_coherent(I, ("np_distinct",), QB.q_edges_dst_distinct()), "np_distinct ↔ DISTINCT: one point"
+    assert sql_lift.np_sql_coherent(I, ("np_order", "np_limit"), QB.q_indegree_top()), "order+limit ↔ ORDER BY..LIMIT"
+    print("  ✓ CROSS  numpy-op & SQL-twin co-intern to ONE Rel carrier node (CrossMix degree 0, Bridge_np)")
+
+    con.close()
+    print(f"\n{'PASS' if not fail else 'FAIL'} ⟡H3-relational-hexagon — {ok} VALUE + GAUGE/BRAID/CROSS"
+          + (f"; failures: {fail}" if fail else "  (SQL↔numpy = two braided-coherent realizations of one rig)"))
+    return not fail
+
+
 # ════════════════ ⟡H-carrier — the carrier-interrelation core (DivStr/recon + EEA-fold + CRT) ═══════
 # The deep layer BOTH SQL and numpy realize (witness-tower/CRT/EEA guidance). Every carrier is a DivStr =
 # {z, recon(q,b,r)="q·b then r"} (Algebra/Wedge.agda:53-59); ⊗ = the q·b part, ⊕ = the +r part. Two carriers
@@ -342,10 +488,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--selftest-h2", action="store_true")
+    ap.add_argument("--verify-hexagon", action="store_true")
     ap.add_argument("--db", default=CATALOG_DB)
     a = ap.parse_args()
     if a.selftest: selftest()
     if a.selftest_h2: selftest_h2(a.db)
+    if a.verify_hexagon: sys.exit(0 if verify_hexagon(a.db) else 1)
     if a.selftest or a.selftest_h2: return
     ap.print_help()
 
