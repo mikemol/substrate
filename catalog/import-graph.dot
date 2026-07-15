@@ -11798,12 +11798,13 @@ digraph imports {
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Probability.Entropy.Sites.QFin";
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Probability.KLDivergence";
   "Substrate.Probability.MarkovCategory" -> "Substrate.Foundation.Eq";
-  "Substrate.Probability.MarkovCategory.Category" -> "Substrate.Category.CategoryOf";
   "Substrate.Probability.MarkovCategory.Category" -> "Substrate.Foundation.Eq";
   "Substrate.Probability.MarkovCategory.Category" -> "Substrate.Probability.MarkovCategory.Term";
+  "Substrate.Probability.MarkovCategory.Eval" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Probability.MarkovCategory.Eval" -> "Substrate.Probability.MarkovCategory.Term";
   "Substrate.Probability.MarkovCategory.Sites.FinStoch" -> "Substrate.Foundation.Fin";
   "Substrate.Probability.MarkovCategory.Sites.FinStoch" -> "Substrate.Foundation.Nat";
+  "Substrate.Probability.MarkovCategory.Term" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Probability.Simplex" -> "Substrate.Foundation.Fin";
   "Substrate.Probability.Simplex" -> "Substrate.Foundation.Level";
   "Substrate.Probability.Simplex" -> "Substrate.Foundation.Nat";

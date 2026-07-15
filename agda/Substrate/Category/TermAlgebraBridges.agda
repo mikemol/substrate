@@ -31,8 +31,7 @@ module Substrate.Category.TermAlgebraBridges where
 open import Substrate.Foundation.Product using (_,_; _×_)
 
 open import Substrate.Probability.MarkovCategory.Term
-  using (MarkovTerm; MarkovGen)
-  renaming ([] to []ₘ; _∷_ to _∷ₘ_)
+  using (MarkovTerm)
 open import Substrate.Category.StochasticLens.Term
   using (LensTerm)
 open import Substrate.Category.Poly.Term

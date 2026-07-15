@@ -579,8 +579,8 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `MarkedSentence` | record | `Substrate.TokiPona.Particles` | the deliberate contrast with Lojban's L6 |
 | `MarkerSet` | record | `Substrate.TokiPona.Particles` | the deliberate contrast with Lojban's L6 |
 | `MarkovCategory` | record | `Substrate.Probability.MarkovCategory` | MK3-MK10: the substrate's first-class Markov category primitive. |
-| `MarkovGen` | data | `Substrate.Probability.MarkovCategory.Term` | T1: term-algebra encoding of Markov-category morphisms. |
-| `MarkovTerm` | data | `Substrate.Probability.MarkovCategory.Term` | T1: term-algebra encoding of Markov-category morphisms. |
+| `MarkovGen` | data | `Substrate.Probability.MarkovCategory.Term` | dissolved to Set₀ |
+| `MarkovTerm` | data | `Substrate.Probability.MarkovCategory.Term` | dissolved to Set₀ |
 | `Mat` | record | `Substrate.Algebra.R.Trace.CFMatrixBridge` | ⟡N1b-Matrix-wire (DEFINITIONS): the |
 | `Mat` | record | `Substrate.S5.S5Matrix` | ⟡N1b-Matrix. "The convergent's two columns ARE the CF/EEA |
 | `MatchingFamily` | record | `Substrate.Category.UniversalProperty.MatchingFamily` | i.e., for every pair (i, j) and every span (W, p₁ : W → Vᵢ, |
