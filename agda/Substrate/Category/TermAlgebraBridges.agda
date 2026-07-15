@@ -41,8 +41,7 @@ open import Substrate.Category.Poly.Term
   renaming ([] to []ₚ; _∷_ to _∷ₚ_)
 open import Substrate.Category.PolyLens.Term using (PolyLensTerm)
 open import Substrate.Probability.ConjugateMonad.Term
-  using (ConjTerm; ConjGen; ConjState)
-  renaming ([] to []ᶜ; _∷_ to _∷ᶜ_)
+  using (ConjTerm)
 open import Substrate.Category.DiscreteFourierTransform.Term
   using (DFTTerm; DFTGen; DFTContext)
   renaming ([] to []ᶠ; _∷_ to _∷ᶠ_)

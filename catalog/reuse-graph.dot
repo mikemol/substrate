@@ -735,8 +735,6 @@ digraph reuse {
   "Substrate.Probability.BaezFritzLeinster.SufficientStatisticInfoTheory" [label="SufficientStatisticInfoTheory\nSubstrate.Probability.BaezFritzLeinster"];
   "Substrate.Probability.ConjugateMonad.CommutativeConjugateMonad" [label="CommutativeConjugateMonad\nSubstrate.Probability.ConjugateMonad"];
   "Substrate.Probability.ConjugateMonad.ConjugateMonad" [label="ConjugateMonad\nSubstrate.Probability.ConjugateMonad"];
-  "Substrate.Probability.ConjugateMonad.Term.ConjGen" [label="ConjGen\nSubstrate.Probability.ConjugateMonad.Term", style=rounded];
-  "Substrate.Probability.ConjugateMonad.Term.ConjTerm" [label="ConjTerm\nSubstrate.Probability.ConjugateMonad.Term", style=rounded];
   "Substrate.Probability.Entropy.ConditionalEntropy" [label="ConditionalEntropy\nSubstrate.Probability.Entropy"];
   "Substrate.Probability.Entropy.EntropyFunctor" [label="EntropyFunctor\nSubstrate.Probability.Entropy"];
   "Substrate.Probability.Entropy.JointEntropy" [label="JointEntropy\nSubstrate.Probability.Entropy"];

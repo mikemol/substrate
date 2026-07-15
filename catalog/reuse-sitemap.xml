@@ -738,8 +738,6 @@
   <url><loc>https://substrate.local/Substrate/Probability/BaezFritzLeinster#SufficientStatisticInfoTheory</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#CommutativeConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#ConjugateMonad</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad/Term#ConjGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad/Term#ConjTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#ConditionalEntropy</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.01</priority></url>
