@@ -16,15 +16,22 @@
 
 module Substrate.Category.UniversalProperty.Compose where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
+
+-- ⟡UPArrow-dissolve C: telescope over UPArrowP (carriers as params).
+private variable
+  S₁ T₁ S₂ T₂ S₃ T₃ : Set
+  W₁ : S₁ → T₁ → Set
+  W₂ : S₂ → T₂ → Set
+  W₃ : S₃ → T₃ → Set
 
 ------------------------------------------------------------------------
 -- 1. Identity square.
 ------------------------------------------------------------------------
 
-id-UPMorphism : (U : UPArrow) → UPMorphism U U
+id-UPMorphism : (U : UPArrowP S₁ T₁ W₁) → UPMorphism U U
 id-UPMorphism U = record
   { source-map = λ s → s
   ; target-map = λ i → i
@@ -36,7 +43,7 @@ id-UPMorphism U = record
 ------------------------------------------------------------------------
 
 compose-UPMorphism :
-  {U₁ U₂ U₃ : UPArrow} →
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} →
   UPMorphism U₂ U₃ →
   UPMorphism U₁ U₂ →
   UPMorphism U₁ U₃

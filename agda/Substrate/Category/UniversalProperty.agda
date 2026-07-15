@@ -38,13 +38,10 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 -- in Arr(Span).
 ------------------------------------------------------------------------
 
-record UPArrow : Set₁ where
-  field
-    Source  : Set
-    Target  : Set
-    Witness : Source → Target → Set
-
-open UPArrow public
+-- ⟡UPArrow-dissolve C COMPLETE: the flat `record UPArrow : Set₁` (which fielded
+-- Source/Target/Witness as Sets) is DELETED. Its whole consumer component migrated
+-- to the carrier-parameterized UPArrowP below (telescope for quantifiers; field→index
+-- for the object-of-arrows UPArrow²; carrier-families for object-storing records).
 
 ------------------------------------------------------------------------
 -- 1a. UPArrowP — the CARRIER-PARAMETERIZED presentation (⟡UPArrow-dissolve).
@@ -76,41 +73,12 @@ WitnessP : {S T : Set} {W : S → T → Set}
            (U : UPArrowP S T W) → SourceP U → TargetP U → Set
 WitnessP {W = W} _ = W
 
-------------------------------------------------------------------------
--- 2. The canonical alias: UniversalProperty = UPArrow.
---
--- Downstream callers continue to use the older name for narrative
--- continuity with the substrate's catalogue of UPs. Spec / Inst /
--- solves are exported as projection synonyms.
-------------------------------------------------------------------------
-
-UniversalProperty : Set₁
-UniversalProperty = UPArrow
-
-Spec : UPArrow → Set
-Spec = Source
-
-Inst : UPArrow → Set
-Inst = Target
-
-solves : (U : UPArrow) → Source U → Target U → Set
-solves = Witness
 
 ------------------------------------------------------------------------
--- 3. The trivial UPArrow.
---
--- Source = Target = ⊤, Witness ≡ ⊤; the canonical terminal in
--- UPCategory (UP9).
+-- 2. The trivial object.
 ------------------------------------------------------------------------
 
-trivial-UP : UPArrow
-trivial-UP = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
-
--- ⟡UPArrow-dissolve: the Set₀ twin of trivial-UP (used by the re-indexed
+-- ⟡UPArrow-dissolve: the trivial Set₀ object (used by the re-indexed
 -- Vacuity/Recognized leaf-cluster). Coexists with trivial-UP (which still
 -- bridges the topos stack via Terminal) until the record is retired.
 trivial-UPP : UPArrowP ⊤ ⊤ (λ _ _ → ⊤)

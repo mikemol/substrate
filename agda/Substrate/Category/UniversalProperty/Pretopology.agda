@@ -12,8 +12,13 @@
 
 module Substrate.Category.UniversalProperty.Pretopology where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. Pretopology record.
@@ -26,7 +31,7 @@ open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 -- parameters (nothing constructs or quantifies over it — the sole consumer,
 -- Phase2, only re-exports the name).
 module _
-  (designated : (U : UPArrow) → UPCover U → Set)
+  (designated : (U : UPArrowP SU TU WU) → UPCover U → Set)
   (identity-axiom-stated     : Set)
   (stability-axiom-stated    : Set)
   (transitivity-axiom-stated : Set)

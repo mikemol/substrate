@@ -312,7 +312,7 @@ open import Substrate.Category.GaloisAdjunction public
 ------------------------------------------------------------------------
 
 open import Substrate.Category.UniversalProperty public
-  using ( UPArrow
+  using ( UPArrowP
         )
 
 open import Substrate.Category.UniversalProperty.Morphism public

@@ -22,9 +22,9 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- 1. The UP-Topos record (signature).
 ------------------------------------------------------------------------
 
-record UPTopos : Set₃ where
+record UPTopos : Set₂ where
   field
-    Sh-Obj  : Set₂           -- UPSheaf is in Set₂
+    Sh-Obj  : Set₁           -- ⟡UPArrow-dissolve C: UPSheaf lowered to Set₁
     -- Cartesian-closed structure on Sh-Obj:
     has-product-stated     : Set
     has-exponential-stated : Set

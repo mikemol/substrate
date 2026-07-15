@@ -11,7 +11,7 @@
 
 module Substrate.Category.UniversalProperty.CoverageAxioms where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; [])
 open import Substrate.Category.UniversalProperty.Coverage
@@ -25,7 +25,12 @@ open import Substrate.Category.UniversalProperty.Coverage
 
 open import Substrate.Foundation.Unit using (⊤; tt)
 
-singleton-id-Cover : (U : UPArrow) → UPCover U
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
+
+singleton-id-Cover : (U : UPArrowP SU TU WU) → UPCover U
 singleton-id-Cover U = record
   { Idx       = ⊤
   ; source-UP = λ _ → U
@@ -40,7 +45,7 @@ singleton-id-Cover U = record
 -- the obligation surface is named.
 ------------------------------------------------------------------------
 
-StabilityAxiom : (U : UPArrow) (c : UPCover U) → Set₂
+StabilityAxiom : (U : UPArrowP SU TU WU) (c : UPCover U) → Set₂
 StabilityAxiom _ _ = Set₁  -- obligation placeholder
 
 ------------------------------------------------------------------------
@@ -50,7 +55,7 @@ StabilityAxiom _ _ = Set₁  -- obligation placeholder
 -- then the composite family { Wᵢⱼ → U } is a cover.
 ------------------------------------------------------------------------
 
-TransitivityAxiom : (U : UPArrow) (c : UPCover U) → Set₂
+TransitivityAxiom : (U : UPArrowP SU TU WU) (c : UPCover U) → Set₂
 TransitivityAxiom _ _ = Set₁  -- obligation placeholder
 
 ------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 
 module Substrate.Category.UniversalProperty.SheafPullback where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Presheaf
   using (UPPresheaf; F; action; pres-id; pres-∘)
@@ -26,7 +26,7 @@ open import Substrate.Category.UniversalProperty.Presheaf
 -- realisation needs the slice category structure (later sub-arc).
 ------------------------------------------------------------------------
 
-PullbackToSlice : UPPresheaf → UPArrow → Set₂
+PullbackToSlice : UPPresheaf → {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set₂
 PullbackToSlice _ _ = Set₁  -- obligation surface
 
 ------------------------------------------------------------------------

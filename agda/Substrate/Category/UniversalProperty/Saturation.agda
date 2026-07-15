@@ -13,21 +13,26 @@
 module Substrate.Category.UniversalProperty.Saturation where
 
 open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 open import Substrate.Category.UniversalProperty.Refinement using (Refines)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. Saturation of a pretopology.
 --
--- Given a pretopology designated : (U : UPArrow) → UPCover U → Set,
+-- Given a pretopology designated : (U : UPArrowP SU TU WU) → UPCover U → Set,
 -- its saturation is "cover c is saturated iff there exists c'
 -- designated and c refines c'."
 ------------------------------------------------------------------------
 
 Saturated :
-  ((U : UPArrow) → UPCover U → Set) →
-  (U : UPArrow) → UPCover U → Set₂
+  ((U : UPArrowP SU TU WU) → UPCover U → Set) →
+  (U : UPArrowP SU TU WU) → UPCover U → Set₁
 Saturated designated U c =
   Σ (UPCover U) (λ c' →
   Σ (designated U c') (λ _ → Refines c c'))

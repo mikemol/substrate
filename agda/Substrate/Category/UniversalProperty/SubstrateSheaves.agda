@@ -24,7 +24,7 @@ module Substrate.Category.UniversalProperty.SubstrateSheaves where
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
+  using (UPArrowP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
@@ -42,8 +42,8 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- the obligation via record discipline.
 ------------------------------------------------------------------------
 
-InstancesAt : UPArrow → Set
-InstancesAt U = Σ (Source U) (λ s → Σ (Target U) (Witness U s))
+InstancesAt : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+InstancesAt U = Σ (SourceP U) (λ s → Σ (TargetP U) (WitnessP U s))
 
 -- Note: a full presheaf requires `action` and `pres-*` proofs that
 -- depend on the UPMorphism evaluator. The signature lands here;

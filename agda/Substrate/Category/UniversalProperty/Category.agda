@@ -24,7 +24,15 @@ module Substrate.Category.UniversalProperty.Category where
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
+
+-- ⟡UPArrow-dissolve C: telescope over UPArrowP.
+private variable
+  S₁ T₁ S₂ T₂ S₃ T₃ S₄ T₄ : Set
+  W₁ : S₁ → T₁ → Set
+  W₂ : S₂ → T₂ → Set
+  W₃ : S₃ → T₃ → Set
+  W₄ : S₄ → T₄ → Set
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; []; _∷_; _++ᵤ_)
 
@@ -32,11 +40,11 @@ open import Substrate.Category.UniversalProperty.Term
 -- 1. Identity and composition (at the term level).
 ------------------------------------------------------------------------
 
-id-UPTerm : (U : UPArrow) → UPTerm U U
+id-UPTerm : (U : UPArrowP S₁ T₁ W₁) → UPTerm U U
 id-UPTerm _ = []
 
 compose-UPTerm :
-  {U₁ U₂ U₃ : UPArrow} →
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} →
   UPTerm U₂ U₃ → UPTerm U₁ U₂ → UPTerm U₁ U₃
 compose-UPTerm g f = f ++ᵤ g
 
@@ -51,16 +59,16 @@ compose-UPTerm g f = f ++ᵤ g
 ------------------------------------------------------------------------
 
 ++ᵤ-identityˡ :
-  {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂) → ([] ++ᵤ t) ≡ t
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂) → ([] ++ᵤ t) ≡ t
 ++ᵤ-identityˡ _ = refl
 
 ++ᵤ-identityʳ :
-  {U₁ U₂ : UPArrow} (t : UPTerm U₁ U₂) → (t ++ᵤ []) ≡ t
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂) → (t ++ᵤ []) ≡ t
 ++ᵤ-identityʳ []       = refl
 ++ᵤ-identityʳ (x ∷ xs) = cong (x ∷_) (++ᵤ-identityʳ xs)
 
 ++ᵤ-assoc :
-  {U₁ U₂ U₃ U₄ : UPArrow}
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} {U₄ : UPArrowP S₄ T₄ W₄}
   (t : UPTerm U₁ U₂) (u : UPTerm U₂ U₃) (v : UPTerm U₃ U₄) →
   ((t ++ᵤ u) ++ᵤ v) ≡ (t ++ᵤ (u ++ᵤ v))
 ++ᵤ-assoc []       u v = refl
@@ -102,15 +110,12 @@ open UPCategory public
 -- 4. The substrate's canonical UPCategory instance.
 ------------------------------------------------------------------------
 
--- ⟡set1-paydown: UPCategory now parameterizes Obj and Hom (`UPCategory UPArrow UPTerm`).
-UPCategory-canonical : UPCategory UPArrow UPTerm
-UPCategory-canonical = record
-  { id-hom      = id-UPTerm
-  ; compose-hom = compose-UPTerm
-  ; id-leftˡ    = λ f → ++ᵤ-identityʳ f
-  ; id-rightʳ   = λ f → ++ᵤ-identityˡ f
-  ; assoc       = λ h g f → sym (++ᵤ-assoc f g h)
-  }
+-- ⟡UPArrow-dissolve C: UPCategory-canonical RETIRED — the UPArrowP telescope has
+-- no single Set₀/Set₁ object TYPE to pass as `Obj`, and the mission rejects a
+-- Σ-bundle object type. The generic UPCategory record (parameterized over any
+-- Obj/Hom) stays; the term-level id-UPTerm/compose-UPTerm/++ᵤ-laws above ARE the
+-- category structure, now telescope-indexed. (⟡UPGen-ℕ-index would supply a Set₀
+-- Obj to re-instantiate this, deferred.)
 
 ------------------------------------------------------------------------
 -- 5. Capstone for UP7.

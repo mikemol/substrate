@@ -20,7 +20,7 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- 1. Sheafification signature.
 ------------------------------------------------------------------------
 
-SheafifyType : Set₂
+SheafifyType : Set₁
 SheafifyType = UPPresheaf → UPSheaf
 
 -- Concrete construction deferred. The standard "plus-construction"

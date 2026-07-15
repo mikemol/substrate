@@ -28,7 +28,7 @@
 module Substrate.Category.UniversalProperty.HigherCatAsInternal where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 
 ------------------------------------------------------------------------
 -- 1. The "higher-categorical-structure" UP shape.
@@ -37,8 +37,10 @@ open import Substrate.Category.UniversalProperty using (UPArrow)
 -- inhabits this shape. HC-arc supplies them.
 ------------------------------------------------------------------------
 
-HC-Structure-Shape : Set₁
-HC-Structure-Shape = UPArrow
+-- ⟡UPArrow-dissolve C: the HC concept-UPs are all the trivial placeholder
+-- (UPArrowP ⊤ ⊤ ⊤); the shape is that Set₀ object type.
+HC-Structure-Shape : Set
+HC-Structure-Shape = UPArrowP ⊤ ⊤ (λ _ _ → ⊤)
 
 -- Concrete instances (HC1-HC40):
 --   Coherence-UP, Pentagon-UP, Braided-UP, Symmetric-UP,

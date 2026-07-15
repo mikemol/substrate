@@ -32,11 +32,17 @@
 module Substrate.Category.UniversalProperty.FixedPoint where
 
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
+  using (UPArrowP; mkUP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
 open import Substrate.Category.UniversalProperty.ArrowOfArrow
   using (UPArrow²; L0-Source; L0-Target; L1-Witness)
+
+-- ⟡UPArrow-dissolve C: telescope carriers.
+private variable
+  S₁ T₁ S₂ T₂ : Set
+  W₁ : S₁ → T₁ → Set
+  W₂ : S₂ → T₂ → Set
 
 ------------------------------------------------------------------------
 -- 1. The fixed-point embedding ι : UPArrow² → UPArrow.
@@ -59,16 +65,19 @@ open import Substrate.Category.UniversalProperty.ArrowOfArrow
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 
-ι : UPArrow² → UPArrow
-ι α = record
-  { Source  = Source (L0-Source α)
-  ; Target  = Target (L0-Target α)
-  ; Witness = λ s i →
-      Σ (Target (L0-Source α)) (λ t-src →
-      Σ (Source (L0-Target α)) (λ s-tgt →
-        Witness (L0-Source α) s t-src ×
-        Witness (L0-Target α) s-tgt i))
-  }
+-- the composite-witness relation, over the L0 objects' carriers.
+ι-W : (A : UPArrowP S₁ T₁ W₁) (B : UPArrowP S₂ T₂ W₂) → SourceP A → TargetP B → Set
+ι-W A B s i =
+  Σ (TargetP A) (λ t-src →
+  Σ (SourceP B) (λ s-tgt →
+    WitnessP A s t-src ×
+    WitnessP B s-tgt i))
+
+-- ⟡UPArrow-dissolve C: ι packages the meta-arrow as the (trivial) object whose
+-- carriers are (SourceP A, TargetP B) and whose witness is the composite ι-W.
+ι : {A : UPArrowP S₁ T₁ W₁} {B : UPArrowP S₂ T₂ W₂}
+  → UPArrow² A B → UPArrowP (SourceP A) (TargetP B) (ι-W A B)
+ι _ = mkUP
 
 ------------------------------------------------------------------------
 -- 2. The structural reading.
@@ -104,11 +113,9 @@ open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Category.UniversalProperty.Compose
   using (id-UPMorphism)
 
-promote : UPArrow → UPArrow²
+promote : (U : UPArrowP S₁ T₁ W₁) → UPArrow² U U
 promote U = record
-  { L0-Source  = U
-  ; L0-Target  = U
-  ; L1-Witness = id-UPMorphism U
+  { L1-Witness = id-UPMorphism U
   }
 
 ------------------------------------------------------------------------

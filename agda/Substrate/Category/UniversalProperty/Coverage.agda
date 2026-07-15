@@ -18,9 +18,14 @@
 module Substrate.Category.UniversalProperty.Coverage where
 
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target)
+  using (UPArrowP; mkUP; SourceP; TargetP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. UPCover: an indexed family of UPTerms into U.
@@ -29,13 +34,22 @@ open import Substrate.Category.UniversalProperty.Term
 -- Vᵢ → U is a UPTerm.
 ------------------------------------------------------------------------
 
-record UPCover (U : UPArrow) : Set₂ where
+-- ⟡UPArrow-dissolve C: the source objects are a family with per-index carriers,
+-- so the object-assignment is CARRIER-FAMILIES (Sc/Tc/Wc : Idx → Set), NOT a stored
+-- Σ-bundle — the source at i is the trivial `mkUP {Sc i}{Tc i}{Wc i}`. `source-UP` is
+-- the shim reading it back. UPCover : Set₁ (from the UPTerm field), no bundle def.
+record UPCover (U : UPArrowP SU TU WU) : Set₁ where
   field
-    Idx        : Set
-    source-UP  : Idx → UPArrow
-    arrow      : (i : Idx) → UPTerm (source-UP i) U
+    Idx   : Set
+    Sc Tc : Idx → Set
+    Wc    : (i : Idx) → Sc i → Tc i → Set
+    arrow : (i : Idx) → UPTerm (mkUP {Sc i} {Tc i} {Wc i}) U
 
 open UPCover public
+
+source-UP : {U : UPArrowP SU TU WU} (c : UPCover U) (i : Idx c)
+          → UPArrowP (Sc c i) (Tc c i) (Wc c i)
+source-UP _ _ = mkUP
 
 ------------------------------------------------------------------------
 -- 2. The covering condition (signature).
@@ -46,7 +60,7 @@ open UPCover public
 -- concrete covers (UP17) discharge it.
 ------------------------------------------------------------------------
 
-Covering : {U : UPArrow} → UPCover U → Set₁
+Covering : {U : UPArrowP SU TU WU} → UPCover U → Set₁
 Covering _ = Set  -- obligation placeholder
 
 ------------------------------------------------------------------------

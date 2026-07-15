@@ -13,7 +13,7 @@
 module Substrate.Category.UniversalProperty.ConstantSheaf where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 

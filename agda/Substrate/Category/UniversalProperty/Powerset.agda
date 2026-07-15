@@ -21,7 +21,7 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- = exponential Ω^P.
 ------------------------------------------------------------------------
 
-PowersetType : Set₂
+PowersetType : Set₁
 PowersetType = UPPresheaf → UPPresheaf
 
 ------------------------------------------------------------------------

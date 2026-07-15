@@ -16,7 +16,7 @@
 
 module Substrate.Category.UniversalProperty.Omega where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
 
 ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
 -- as a presheaf at the bumped level.
 ------------------------------------------------------------------------
 
-Ω : UPArrow → Set₂
+Ω : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set₂
 Ω U = Sieve U
 
 ------------------------------------------------------------------------

@@ -35,9 +35,18 @@
 module Substrate.Category.UniversalProperty.ArrowOfArrow where
 
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
+  using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism)
+
+-- ⟡UPArrow-dissolve C: field→index. The two L0 objects become carrier PARAMS
+-- (the UPMorphism-transform), so UPArrow² fields only L1-Witness ⇒ Set₀ (was Set₂).
+private variable
+  S₁ T₁ S₂ T₂ S₃ T₃ S₄ T₄ : Set
+  W₁ : S₁ → T₁ → Set
+  W₂ : S₂ → T₂ → Set
+  W₃ : S₃ → T₃ → Set
+  W₄ : S₄ → T₄ → Set
 
 ------------------------------------------------------------------------
 -- 1. The meta-level UPArrow²: the arrow-of-arrows.
@@ -56,13 +65,21 @@ open import Substrate.Category.UniversalProperty.Morphism
 -- UPArrow²-Source / Target / Witness are CHOICE FUNCTIONS — packaged
 -- as a record bundling the meta-data.
 
-record UPArrow² : Set₂ where
+record UPArrow² (L0-Source : UPArrowP S₁ T₁ W₁)
+                (L0-Target : UPArrowP S₂ T₂ W₂) : Set where
   field
-    L0-Source : UPArrow
-    L0-Target : UPArrow
     L1-Witness : UPMorphism L0-Source L0-Target
 
 open UPArrow² public
+
+-- shim accessors: the L0 objects are params, read back off the type.
+L0-Source : {A : UPArrowP S₁ T₁ W₁} {B : UPArrowP S₂ T₂ W₂}
+          → UPArrow² A B → UPArrowP S₁ T₁ W₁
+L0-Source {A = A} _ = A
+
+L0-Target : {A : UPArrowP S₁ T₁ W₁} {B : UPArrowP S₂ T₂ W₂}
+          → UPArrow² A B → UPArrowP S₂ T₂ W₂
+L0-Target {B = B} _ = B
 
 ------------------------------------------------------------------------
 -- 2. The category-of-arrows construction.
@@ -76,8 +93,9 @@ open UPArrow² public
 -- Source UPArrow, one for the Target UPArrow) commuting with the
 -- L1-Witness.
 
-record UPArrow²-Morphism (α β : UPArrow²) : Set₁ where
-  open UPArrow²
+record UPArrow²-Morphism {A₁ : UPArrowP S₁ T₁ W₁} {B₁ : UPArrowP S₂ T₂ W₂}
+                         {A₂ : UPArrowP S₃ T₃ W₃} {B₂ : UPArrowP S₄ T₄ W₄}
+                         (α : UPArrow² A₁ B₁) (β : UPArrow² A₂ B₂) : Set₁ where
   field
     on-source : UPMorphism (L0-Source α) (L0-Source β)
     on-target : UPMorphism (L0-Target α) (L0-Target β)

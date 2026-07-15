@@ -17,9 +17,14 @@
 module Substrate.Category.UniversalProperty.TruthValues where
 
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
+  using (UPArrowP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. The "is-instance" truth value (substrate-honest signature).
@@ -30,8 +35,8 @@ open import Substrate.Category.UniversalProperty.Sieve
 ------------------------------------------------------------------------
 
 is-instance-truth :
-  (U : UPArrow) (s : Source U) (i : Target U) →
-  Witness U s i →
+  (U : UPArrowP SU TU WU) (s : SourceP U) (i : TargetP U) →
+  WitnessP U s i →
   Sieve U
 is-instance-truth U _ _ _ = max-Sieve U
   -- Substrate-honest: when the witness exists, the truth-sieve is

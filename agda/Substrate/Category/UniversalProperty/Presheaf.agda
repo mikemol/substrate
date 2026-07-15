@@ -17,9 +17,16 @@ module Substrate.Category.UniversalProperty.Presheaf where
 
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; []; _++ᵤ_)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU SV TV SW TW : Set
+  WU : SU → TU → Set
+  WV : SV → TV → Set
+  WW : SW → TW → Set
 
 ------------------------------------------------------------------------
 -- 1. The Presheaf record.
@@ -37,14 +44,21 @@ open import Substrate.Category.UniversalProperty.Term
 -- — re-materializing the existential across ~12 modules.  Eliminating the Set₂
 -- here needs dematerializing the object-assignment (element-category / discrete-
 -- fibration presentation), a design change out of scope for the paydown.
-record UPPresheaf : Set₂ where
+-- ⟡UPArrow-dissolve C: the object-assignment F is now a family over the UPArrowP
+-- telescope; fields quantify the carriers EXPLICITLY (module `variable`s in a record
+-- field would generalize as record PARAMETERS). UPPresheaf drops Set₂ → Set₁.
+record UPPresheaf : Set₁ where
   field
-    F        : UPArrow → Set
-    action   : {U V : UPArrow} →
+    F        : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+    action   : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
+               {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set} {V : UPArrowP S₂ T₂ W₂} →
                UPTerm V U → F U → F V
-    pres-id  : {U : UPArrow} (x : F U) → action {U} {U} [] x ≡ x
-    pres-∘   : {U V W : UPArrow}
-               (t : UPTerm V U) (u : UPTerm W V) (x : F U) →
+    pres-id  : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
+               (x : F U) → action {U = U} {V = U} [] x ≡ x
+    pres-∘   : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
+               {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set} {V : UPArrowP S₂ T₂ W₂}
+               {S₃ T₃ : Set} {W₃ : S₃ → T₃ → Set} {O : UPArrowP S₃ T₃ W₃}
+               (t : UPTerm V U) (u : UPTerm O V) (x : F U) →
                action (u ++ᵤ t) x ≡ action u (action t x)
 
 open UPPresheaf public

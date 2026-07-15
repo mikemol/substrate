@@ -25,14 +25,20 @@ module Substrate.Category.UniversalProperty.TermParity where
 open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
 open import Substrate.Foundation.Eq   using (_≡_; refl; cong; trans)
 
-open import Substrate.Category.UniversalProperty      using (UniversalProperty)
+open import Substrate.Category.UniversalProperty      using (UPArrowP)
+
+private variable
+  S₁ T₁ S₂ T₂ S₃ T₃ : Set
+  W₁ : S₁ → T₁ → Set
+  W₂ : S₂ → T₂ → Set
+  W₃ : S₃ → T₃ → Set
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; []; _∷_; _++ᵤ_)
 
 ------------------------------------------------------------------------
 -- The ℤ/2 cochain: word-length parity. `[]` is even; each `_∷_` flips.
 ------------------------------------------------------------------------
 
-upterm-parity : {U₁ U₂ : UniversalProperty} → UPTerm U₁ U₂ → Bool
+upterm-parity : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPTerm U₁ U₂ → Bool
 upterm-parity []      = false
 upterm-parity (_ ∷ t) = not (upterm-parity t)
 
@@ -48,7 +54,7 @@ not-xorˡ false true  = refl
 not-xorˡ false false = refl
 
 upterm-parity-++ :
-  {U₁ U₂ U₃ : UniversalProperty} (s : UPTerm U₁ U₂) (t : UPTerm U₂ U₃) →
+  {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} (s : UPTerm U₁ U₂) (t : UPTerm U₂ U₃) →
   upterm-parity (s ++ᵤ t) ≡ (upterm-parity s xor upterm-parity t)
 upterm-parity-++ []      t = refl
 upterm-parity-++ (g ∷ s) t =

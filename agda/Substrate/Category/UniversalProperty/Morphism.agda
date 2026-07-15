@@ -26,22 +26,26 @@
 module Substrate.Category.UniversalProperty.Morphism where
 
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
+  using (UPArrowP; SourceP; TargetP; WitnessP)
 
 ------------------------------------------------------------------------
 -- 1. The UPMorphism record (= commuting square in Arr(Span)).
+--    ⟡UPArrow-dissolve C: indexed by the UPArrowP telescope (carriers as
+--    params); the projections are the SourceP/TargetP/WitnessP shims.
 ------------------------------------------------------------------------
 
-record UPMorphism (U₁ U₂ : UPArrow) : Set where
+record UPMorphism {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set}
+                  {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set}
+                  (U₁ : UPArrowP S₁ T₁ W₁) (U₂ : UPArrowP S₂ T₂ W₂) : Set where
   field
     source-map :
-      Source U₁ → Source U₂
+      SourceP U₁ → SourceP U₂
     target-map :
-      Target U₂ → Target U₁
+      TargetP U₂ → TargetP U₁
     coherent :
-      (s : Source U₁) (i : Target U₂) →
-      Witness U₂ (source-map s) i →
-      Witness U₁ s (target-map i)
+      (s : SourceP U₁) (i : TargetP U₂) →
+      WitnessP U₂ (source-map s) i →
+      WitnessP U₁ s (target-map i)
 
 open UPMorphism public
 

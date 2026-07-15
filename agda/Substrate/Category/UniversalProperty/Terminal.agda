@@ -27,9 +27,14 @@ module Substrate.Category.UniversalProperty.Terminal where
 
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness; trivial-UP)
+  using (UPArrowP; SourceP; TargetP; WitnessP; trivial-UPP)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. Conditional terminal morphism.
@@ -39,10 +44,10 @@ open import Substrate.Category.UniversalProperty.Morphism
 ------------------------------------------------------------------------
 
 to-trivial-cond :
-  (U : UPArrow) →
-  (target-base : Target U) →
-  (universal-witness : (s : Source U) → Witness U s target-base) →
-  UPMorphism U trivial-UP
+  (U : UPArrowP SU TU WU) →
+  (target-base : TargetP U) →
+  (universal-witness : (s : SourceP U) → WitnessP U s target-base) →
+  UPMorphism U trivial-UPP
 to-trivial-cond U target-base universal-witness = record
   { source-map = λ _ → tt
   ; target-map = λ _ → target-base

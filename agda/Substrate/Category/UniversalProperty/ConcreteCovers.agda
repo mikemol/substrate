@@ -19,15 +19,20 @@
 module Substrate.Category.UniversalProperty.ConcreteCovers where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; [])
 open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. Trivial cover (identity-singleton).
 ------------------------------------------------------------------------
 
-trivial-cover : (U : UPArrow) → UPCover U
+trivial-cover : (U : UPArrowP SU TU WU) → UPCover U
 trivial-cover U = record
   { Idx       = ⊤
   ; source-UP = λ _ → U

@@ -27,12 +27,13 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- has a unique amalgamation.
 ------------------------------------------------------------------------
 
-record UPSheaf : Set₂ where
+record UPSheaf : Set₁ where
   field
     presheaf  : UPPresheaf
     -- Descent obligation: every cover-indexed matching family has
-    -- a unique amalgamation. Stated as a Set₁-level obligation.
-    descent-stated : Set₁
+    -- a unique amalgamation. ⟡UPArrow-dissolve C: the Set-carrier
+    -- placeholder lowers Set₁ → Set (like commute-stated), so UPSheaf : Set₁.
+    descent-stated : Set
 
 open UPSheaf public
 

@@ -21,7 +21,7 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- 1. Internal-hom signature.
 ------------------------------------------------------------------------
 
-InternalHomType : Set₂
+InternalHomType : Set₁
 InternalHomType = UPPresheaf → UPPresheaf → UPPresheaf
 
 -- Standard construction: [P, Q](U) = naturality-respecting maps

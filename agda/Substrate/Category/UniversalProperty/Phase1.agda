@@ -59,8 +59,7 @@
 module Substrate.Category.UniversalProperty.Phase1 where
 
 open import Substrate.Category.UniversalProperty            public
-  using (UPArrow; Source; Target; Witness; trivial-UP;
-         UniversalProperty; Spec; Inst; solves)
+  using (UPArrowP; mkUP; SourceP; TargetP; WitnessP; trivial-UPP)
 open import Substrate.Category.UniversalProperty.Morphism   public
   using (UPMorphism; source-map; target-map; coherent)
 open import Substrate.Category.UniversalProperty.Compose    public
@@ -68,7 +67,7 @@ open import Substrate.Category.UniversalProperty.Compose    public
 open import Substrate.Category.UniversalProperty.Term       public
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.ArrowOfArrow public
-  using (UPArrow²; L0-Source; L0-Target; L1-Witness; UPArrow²-Morphism)
+  using (UPArrow²; L0-SourceP; L0-TargetP; L1-WitnessP; UPArrow²-Morphism)
 open import Substrate.Category.UniversalProperty.FixedPoint public
   using (ι; promote)
 open import Substrate.Category.UniversalProperty.Category   public

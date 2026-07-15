@@ -17,11 +17,16 @@
 
 module Substrate.Category.UniversalProperty.MatchingFamily where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Coverage
   using (UPCover; Idx; source-UP)
 open import Substrate.Category.UniversalProperty.Presheaf
   using (UPPresheaf; F)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. MatchingFamily record.
@@ -31,7 +36,7 @@ open import Substrate.Category.UniversalProperty.Presheaf
 module _ (matches-stated : Set) where
 
   record MatchingFamily
-    {U : UPArrow}
+    {U : UPArrowP SU TU WU}
     (c : UPCover U)
     (P : UPPresheaf)
     : Set where

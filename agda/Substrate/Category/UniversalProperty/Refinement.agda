@@ -12,7 +12,7 @@
 
 module Substrate.Category.UniversalProperty.Refinement where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Coverage
@@ -28,10 +28,15 @@ open import Substrate.Category.UniversalProperty.Coverage
 
 open import Substrate.Foundation.Product using (Σ)
 
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
+
 record ⊤₁ : Set₁ where
   constructor tt₁
 
-Refines : {U : UPArrow} → UPCover U → UPCover U → Set₁
+Refines : {U : UPArrowP SU TU WU} → UPCover U → UPCover U → Set₁
 Refines {U} c' c =
   (i' : Idx c') →
   Σ (Idx c) (λ i →

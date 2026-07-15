@@ -8,7 +8,7 @@
 -- precomposition.
 --
 -- Substrate-native: encoded as a predicate
---   S : {V : UPArrow} → UPTerm V U → Set
+--   S : {V : UPArrowP SV TV WV} → UPTerm V U → Set
 -- with the downward-closure axiom (S contains t implies S contains
 -- t ∘ u for any precomposed u).
 ------------------------------------------------------------------------
@@ -17,9 +17,16 @@
 
 module Substrate.Category.UniversalProperty.Sieve where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; _++ᵤ_)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SV TV SU TU SW TW : Set
+  WV : SV → TV → Set
+  WU : SU → TU → Set
+  WW : SW → TW → Set
 
 ------------------------------------------------------------------------
 -- 1. The Sieve record.
@@ -28,12 +35,12 @@ open import Substrate.Category.UniversalProperty.Term
 -- UPArrow, closed under precomposition.
 ------------------------------------------------------------------------
 
-record Sieve (U : UPArrow) : Set₂ where
+record Sieve (U : UPArrowP SU TU WU) : Set₂ where
   field
     member :
-      {V : UPArrow} → UPTerm V U → Set₁
+      {V : UPArrowP SV TV WV} → UPTerm V U → Set₁
     closure :
-      {V W : UPArrow}
+      {V : UPArrowP SV TV WV} {W : UPArrowP SW TW WW}
       (t : UPTerm V U) (u : UPTerm W V) →
       member t →
       member (u ++ᵤ t)
@@ -47,7 +54,7 @@ open Sieve public
 record ⊤₁ : Set₁ where
   constructor tt₁
 
-max-Sieve : (U : UPArrow) → Sieve U
+max-Sieve : (U : UPArrowP SU TU WU) → Sieve U
 max-Sieve U = record
   { member  = λ _ → ⊤₁
   ; closure = λ _ _ _ → tt₁

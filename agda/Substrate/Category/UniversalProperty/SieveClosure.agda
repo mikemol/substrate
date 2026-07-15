@@ -12,20 +12,27 @@
 module Substrate.Category.UniversalProperty.SieveClosure where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Coverage
   using (UPCover; Idx; source-UP; arrow)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
 
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU SV TV SW TW : Set
+  WU : SU → TU → Set
+  WV : SV → TV → Set
+  WW : SW → TW → Set
+
 ------------------------------------------------------------------------
 -- 1. A "factors-through-cover" record bundle.
 ------------------------------------------------------------------------
 
 record FactorsThroughCover
-  {U : UPArrow} (c : UPCover U)
-  {V : UPArrow} (_ : UPTerm V U) : Set₂ where
+  {U : UPArrowP SU TU WU} (c : UPCover U)
+  {V : UPArrowP SV TV WV} (_ : UPTerm V U) : Set₂ where
   field
     cover-idx : Idx c
     prefix    : UPTerm V (source-UP c cover-idx)
@@ -40,7 +47,7 @@ open FactorsThroughCover public
 ------------------------------------------------------------------------
 
 factor-precompose :
-  {U V W : UPArrow}
+  {U : UPArrowP SU TU WU} {V : UPArrowP SV TV WV} {W : UPArrowP SW TW WW}
   (c : UPCover U) (t : UPTerm V U) →
   FactorsThroughCover c t →
   (u : UPTerm W V) →
@@ -50,7 +57,7 @@ factor-precompose c t f u = record
   ; prefix    = u ++ᵤ prefix f
   }
 
-generated-Sieve : {U : UPArrow} → UPCover U → Sieve U
+generated-Sieve : {U : UPArrowP SU TU WU} → UPCover U → Sieve U
 generated-Sieve c = record
   { member  = λ t → ⊤₁
   ; closure = λ _ _ _ → tt₁

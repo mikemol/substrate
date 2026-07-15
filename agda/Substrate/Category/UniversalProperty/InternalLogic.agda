@@ -21,15 +21,20 @@
 
 module Substrate.Category.UniversalProperty.InternalLogic where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve)
+
+-- ⟡UPArrow-dissolve C: telescope carriers (auto).
+private variable
+  SU TU : Set
+  WU : SU → TU → Set
 
 ------------------------------------------------------------------------
 -- 1. Logical-connective signatures at the sieve level.
 ------------------------------------------------------------------------
 
-⊤-sieve : (U : UPArrow) → Sieve U
+⊤-sieve : (U : UPArrowP SU TU WU) → Sieve U
 ⊤-sieve = max-Sieve
 
 -- ⊥, ∧, ∨, ⇒, ¬ each name an obligation surface:
