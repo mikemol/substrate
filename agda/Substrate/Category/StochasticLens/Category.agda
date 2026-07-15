@@ -1,33 +1,24 @@
 ------------------------------------------------------------------------
--- Substrate.Category.StochasticLens.Category
+-- Substrate.Category.StochasticLens.Category (T5)
 --
--- T5: stochastic-lens category as term-algebra.
+-- The graded-monoid structure of the stochastic-lens term-algebra. With the
+-- term carrier routed through the witness tower (LensTerm = LehmerPath; _++ₗ_ =
+-- _⊕_), the "category" is the graded monoid (LensTerm, _++ₗ_, []ₗ) — a
+-- `GradedProductOver` whose laws are the tower's OWN proofs (⊕-unit-left /
+-- ⊕-unit-right / ⊕-assoc-over), not a bespoke `CategoryOf` re-proof.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.StochasticLens.Category where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
-open import Substrate.Category.StochasticLens.Term
+open import Substrate.Category.StochasticLens.Term using (lens-product)
 
-id-LensTerm : (t : LensTriple) → LensTerm t t
-id-LensTerm _ = []
-
-++ₗ-identityˡ :
-  {t₁ t₂ : LensTriple} (s : LensTerm t₁ t₂) → ([] ++ₗ s) ≡ s
-++ₗ-identityˡ _ = refl
-
-++ₗ-identityʳ :
-  {t₁ t₂ : LensTriple} (s : LensTerm t₁ t₂) → (s ++ₗ []) ≡ s
-++ₗ-identityʳ []       = refl
-++ₗ-identityʳ (x ∷ xs) = cong (x ∷_) (++ₗ-identityʳ xs)
-
-++ₗ-assoc :
-  {t₁ t₂ t₃ t₄ : LensTriple}
-  (s : LensTerm t₁ t₂) (u : LensTerm t₂ t₃) (v : LensTerm t₃ t₄) →
-  ((s ++ₗ u) ++ₗ v) ≡ (s ++ₗ (u ++ₗ v))
-++ₗ-assoc []       u v = refl
-++ₗ-assoc (x ∷ xs) u v = cong (x ∷_) (++ₗ-assoc xs u v)
+-- Associativity of composition = the tower's GradedAssocOver on the graded
+-- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
+lens-assoc : GradedAssocOver +-assoc lens-product
+lens-assoc = ⊕-assoc-over

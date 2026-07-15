@@ -333,8 +333,6 @@ digraph reuse {
   "Substrate.Category.PhaseLockedLoop.PLL._.PLL" [label="PLL\nSubstrate.Category.PhaseLockedLoop.PLL._"];
   "Substrate.Category.PhaseLockedLoop.SubstratePLLBank.SubstratePLLBank" [label="SubstratePLLBank\nSubstrate.Category.PhaseLockedLoop.SubstratePLLBank"];
   "Substrate.Category.Poly.Poly" [label="Poly\nSubstrate.Category.Poly"];
-  "Substrate.Category.Poly.Term.PolyGen" [label="PolyGen\nSubstrate.Category.Poly.Term", style=rounded];
-  "Substrate.Category.Poly.Term.PolyTerm" [label="PolyTerm\nSubstrate.Category.Poly.Term", style=rounded];
   "Substrate.Category.Poly._⇒_" [label="_⇒_\nSubstrate.Category.Poly"];
   "Substrate.Category.PolyLens.OpenDynamicalSystem" [label="OpenDynamicalSystem\nSubstrate.Category.PolyLens"];
   "Substrate.Category.PolyLens.PolyCoalgebra" [label="PolyCoalgebra\nSubstrate.Category.PolyLens"];
@@ -384,8 +382,6 @@ digraph reuse {
   "Substrate.Category.StochasticLens.Sites.ChainWalk.ChainWalkLens" [label="ChainWalkLens\nSubstrate.Category.StochasticLens.Sites.ChainWalk"];
   "Substrate.Category.StochasticLens.StochasticLens" [label="StochasticLens\nSubstrate.Category.StochasticLens"];
   "Substrate.Category.StochasticLens.StochasticLensCategory" [label="StochasticLensCategory\nSubstrate.Category.StochasticLens"];
-  "Substrate.Category.StochasticLens.Term.LensGen" [label="LensGen\nSubstrate.Category.StochasticLens.Term", style=rounded];
-  "Substrate.Category.StochasticLens.Term.LensTerm" [label="LensTerm\nSubstrate.Category.StochasticLens.Term", style=rounded];
   "Substrate.Category.StratifiedBundle.StratifiedBundle" [label="StratifiedBundle\nSubstrate.Category.StratifiedBundle"];
   "Substrate.Category.StratifiedBundle.WithinStratumStationary" [label="WithinStratumStationary\nSubstrate.Category.StratifiedBundle"];
   "Substrate.Category.StratifiedSequence.StratifiedSequence" [label="StratifiedSequence\nSubstrate.Category.StratifiedSequence"];
@@ -1089,8 +1085,6 @@ digraph reuse {
   "Substrate.Category.PhaseLockedLoop.Bank.PLLBank._.PLLBank" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.PhaseLockedLoop.LockState.ForwardOnly" -> "Substrate.Category.PhaseLockedLoop.LockState.LockState";
   "Substrate.Category.PhaseLockedLoop.LockState.LockTransition" -> "Substrate.Category.PhaseLockedLoop.LockState.LockState";
-  "Substrate.Category.Poly.Term.PolyGen" -> "Substrate.Category.Poly.Poly";
-  "Substrate.Category.Poly.Term.PolyTerm" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.Poly._⇒_" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PolyLens.OpenDynamicalSystem" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PolyLens.PolyCoalgebra" -> "Substrate.Category.Poly.Poly";

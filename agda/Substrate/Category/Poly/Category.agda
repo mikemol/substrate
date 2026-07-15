@@ -1,30 +1,24 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.Poly.Category (T8)
--- Poly as a term-algebra category. Laws hold structurally.
+--
+-- The graded-monoid structure of the poly term-algebra. With the term carrier
+-- routed through the witness tower (PolyTerm = LehmerPath; _++ₚ_ = _⊕_), the
+-- "category" is the graded monoid (PolyTerm, _++ₚ_, []ₚ) — a `GradedProductOver`
+-- whose laws are the tower's OWN proofs (⊕-unit-left / ⊕-unit-right /
+-- ⊕-assoc-over), not a bespoke `CategoryOf` re-proof.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.Poly.Category where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
-open import Substrate.Category.Poly using (Poly)
-open import Substrate.Category.Poly.Term
+open import Substrate.Category.Poly.Term using (poly-product)
 
-id-PolyTerm : (P : Poly) → PolyTerm P P
-id-PolyTerm _ = []
-
-++ₚ-identityˡ : {P Q : Poly} (t : PolyTerm P Q) → ([] ++ₚ t) ≡ t
-++ₚ-identityˡ _ = refl
-
-++ₚ-identityʳ : {P Q : Poly} (t : PolyTerm P Q) → (t ++ₚ []) ≡ t
-++ₚ-identityʳ []       = refl
-++ₚ-identityʳ (x ∷ xs) = cong (x ∷_) (++ₚ-identityʳ xs)
-
-++ₚ-assoc :
-  {P Q R S : Poly}
-  (t : PolyTerm P Q) (u : PolyTerm Q R) (v : PolyTerm R S) →
-  ((t ++ₚ u) ++ₚ v) ≡ (t ++ₚ (u ++ₚ v))
-++ₚ-assoc []       u v = refl
-++ₚ-assoc (x ∷ xs) u v = cong (x ∷_) (++ₚ-assoc xs u v)
+-- Associativity of composition = the tower's GradedAssocOver on the graded
+-- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
+poly-assoc : GradedAssocOver +-assoc poly-product
+poly-assoc = ⊕-assoc-over

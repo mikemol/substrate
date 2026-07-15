@@ -1,50 +1,47 @@
 ------------------------------------------------------------------------
--- Substrate.Category.StochasticLens.Term
+-- Substrate.Category.StochasticLens.Term (T4)
 --
--- T4: term-algebra encoding of stochastic lenses.
+-- Term-algebra encoding of stochastic lenses — routed THROUGH the witness
+-- tower's FREE graded tower of combined generators.
 --
--- A LensTerm (S₁, A₁, B₁) (S₂, A₂, B₂) is a sequence of lens
--- generators stacking from one (state, view, obs) triple to another.
--- Each generator is a named elementary lens move: identity, compose,
--- or lift-of-an-abstract-lens.
+-- The flat form was `data LensGen/LensTerm : LensTriple → LensTriple → Set₁`
+-- over `LensTriple = Set × Set × Set` (Set₁), a hand-rolled free category over
+-- a Set₁ object type. A lens term is a COMBINATION OF GENERATORS (content-free
+-- lens moves), and the tower's free such structure is `LehmerPath n ≅ Perm n`;
+-- the (state, view, obs) object indices were syntactic scaffolding and dissolve.
+-- So (⟡term-algebra-via-witness-tower):
+--
+--   LensTerm n   = LehmerPath n          -- the free tower of combined generators
+--   []ₗ / _++ₗ_  = start / _⊕_           -- combine; grade adds
+--   lens-product = ⊕-over                -- the GradedProductOver (graded stencil)
+--
+-- Semantics (eval) is in .Eval; the monoid laws are in .Category. Set₀
+-- throughout; the Set₁ data families are gone.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.StochasticLens.Term where
 
-------------------------------------------------------------------------
--- Lens triple: (state, view, observation).
+open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start)
+open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
 
-LensTriple : Set₁
-LensTriple = Set × Set × Set
-  where
-    open import Substrate.Foundation.Product using (_×_)
-open import Substrate.Foundation.Product using (_,_; _×_)
+-- The lens term carrier: the free graded tower of combined generators.
+LensTerm : ℕ → Set
+LensTerm = LehmerPath
 
-------------------------------------------------------------------------
--- T4a: LensGen — generators.
+-- The empty term and composition (combine two generator-towers; the grade adds).
+[]ₗ : LensTerm 0
+[]ₗ = start
 
-data LensGen : LensTriple → LensTriple → Set₁ where
-  -- Lift an opaque lens between two triples.
-  lift-lens : (t₁ t₂ : LensTriple) → LensGen t₁ t₂
-
-------------------------------------------------------------------------
--- T4b: LensTerm — typed cons-list.
-
-data LensTerm : LensTriple → LensTriple → Set₁ where
-  []  : {t : LensTriple} → LensTerm t t
-  _∷_ : {t₁ t₂ t₃ : LensTriple} →
-        LensGen t₁ t₂ → LensTerm t₂ t₃ → LensTerm t₁ t₃
-
-infixr 5 _∷_
-
-------------------------------------------------------------------------
--- T4c: Term concatenation.
-
-_++ₗ_ : {t₁ t₂ t₃ : LensTriple} →
-        LensTerm t₁ t₂ → LensTerm t₂ t₃ → LensTerm t₁ t₃
-[]       ++ₗ ys = ys
-(x ∷ xs) ++ₗ ys = x ∷ (xs ++ₗ ys)
+_++ₗ_ : {m n : ℕ} → LensTerm m → LensTerm n → LensTerm (m + n)
+_++ₗ_ = _⊕_
 
 infixr 4 _++ₗ_
+
+-- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
+lens-product : GradedProductOver _+_ 0 LensTerm
+lens-product = ⊕-over

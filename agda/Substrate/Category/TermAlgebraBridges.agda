@@ -34,11 +34,9 @@ open import Substrate.Probability.MarkovCategory.Term
   using (MarkovTerm; MarkovGen)
   renaming ([] to []ₘ; _∷_ to _∷ₘ_)
 open import Substrate.Category.StochasticLens.Term
-  using (LensTerm; LensGen; LensTriple)
-  renaming ([] to []ₗ; _∷_ to _∷ₗ_)
+  using (LensTerm)
 open import Substrate.Category.Poly.Term
-  using (PolyTerm; PolyGen)
-  renaming ([] to []ₚ; _∷_ to _∷ₚ_)
+  using (PolyTerm)
 open import Substrate.Category.PolyLens.Term using (PolyLensTerm)
 open import Substrate.Probability.ConjugateMonad.Term
   using (ConjTerm)
@@ -67,7 +65,7 @@ open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 -- PolyLens IS Poly (per Substrate.Category.PolyLens), so PolyLensTerm
 -- IS PolyTerm. No translation needed.
 
-bridge-polylens-poly : ∀ {P Q} → PolyLensTerm P Q → PolyTerm P Q
+bridge-polylens-poly : ∀ {n} → PolyLensTerm n → PolyTerm n
 bridge-polylens-poly t = t
 
 ------------------------------------------------------------------------
