@@ -54,10 +54,6 @@ open import Substrate.Logic.Evidence.Verdict.NedgeShadow
   using (Bias; net+; net0; net-; bias; eV; bias-conflates-U-V)
 
 open import Substrate.Category.Coequalizer using (Coequalises)
-open import Substrate.Category.UniversalProperty
-  using (UPArrow; Source; Target; Witness)
-open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
-open import Substrate.Category.UniversalProperty.Backed  using (BackedUP)
 ------------------------------------------------------------------------
 -- 1. The two headline facts: bias COEQUALISES the (eU, eV) pair; verdict
 -- does NOT. The second is the non-refl content — a genuine apartness.
@@ -108,38 +104,17 @@ bias-coeq-unique d₁ d₂ agree b with bias-surjective b
 ... | e , be≡b = trans (sym (cong d₁ be≡b)) (trans (agree e) (cong d₂ be≡b))
 
 ------------------------------------------------------------------------
--- 3. The backed universal property, registry-grade.
---
--- The UPArrow's Witness IS the Coequalizer predicate: a candidate map
--- h : Evidence → Verdict "solves" iff it coequalises (eU, eV). The bridge
--- `solve` returns the canonical coequalising map — bias post-composed with
--- the decode Bias → Verdict. `content` is verdict-not-coequalises: the one
--- problem the relation genuinely excludes (U ≢ V). Non-vacuity is therefore
--- typechecked, not asserted.
+-- 3. The canonical coequalising map: bias post-composed with the decode
+-- Bias → Verdict. ⟡C2g-retire-p2: the flat `bias-coeq-UP : UPArrow` /
+-- `bias-coeq-backed : BackedUP` registration wrappers are DROPPED (the
+-- registry itself retired in ⟡C2g-registry, so the registration was moot);
+-- the coequalizer THEOREMS above (bias-coequalises, verdict-not-coequalises,
+-- bias-factors, bias-coeq-unique) are the real content and are tier-
+-- independent — they carry the full coequalizer universal property via
+-- Category.Coequalizer.Coequalises, with no BackedUP/UPArrow debt.
 ------------------------------------------------------------------------
 
 decode : Bias → Verdict
 decode net+ = P
 decode net- = F
 decode net0 = U
-
-bias-coeq-UP : UPArrow
-bias-coeq-UP = record
-  { Source  = ⊤
-  ; Target  = Evidence → Verdict
-  ; Witness = λ _ h → Coequalises {A = ⊤} (λ _ → eU) (λ _ → eV) h
-  }
-
-bias-coeq-backed : BackedUP
-bias-coeq-backed = record
-  { arrow   = bias-coeq-UP
-  ; solve   = λ _ e → decode (bias e)
-  ; solves  = λ _ _ → refl
-  ; content = tt , verdict , λ ce → U≢V (ce tt)
-  }
-
-------------------------------------------------------------------------
--- 4. The downstream registry extension. Category never imports Logic, so
--- the central `registry` stays domain-agnostic; the verdict tier conses its
--- backing on top. This List typechecking IS the registration.
-------------------------------------------------------------------------
