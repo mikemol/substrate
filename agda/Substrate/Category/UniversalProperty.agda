@@ -110,6 +110,12 @@ trivial-UP = record
   ; Witness = λ _ _ → ⊤
   }
 
+-- ⟡UPArrow-dissolve: the Set₀ twin of trivial-UP (used by the re-indexed
+-- Vacuity/Recognized leaf-cluster). Coexists with trivial-UP (which still
+-- bridges the topos stack via Terminal) until the record is retired.
+trivial-UPP : UPArrowP ⊤ ⊤ (λ _ _ → ⊤)
+trivial-UPP = mkUP
+
 ------------------------------------------------------------------------
 -- 4. Capstone for UP1.
 --

@@ -24,22 +24,26 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness; trivial-UP)
+open import Substrate.Category.UniversalProperty
+  using (UPArrowP; mkUP; SourceP; TargetP; WitnessP; trivial-UPP)
 
 ------------------------------------------------------------------------
--- 1. The recognizer.
+-- 1. The recognizer. ⟡UPArrow-dissolve: re-indexed over the Set₀
+--    UPArrowP (carriers as params); the projections are the SourceP/
+--    TargetP/WitnessP shims, which reduce to the params definitionally.
 ------------------------------------------------------------------------
 
 -- vacuous: the Witness imposes no constraint (the ⊤-collapse).
-Vacuous : UPArrow → Set
-Vacuous U = (s : Source U) (t : Target U) → Witness U s t
+Vacuous : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+Vacuous U = (s : SourceP U) (t : TargetP U) → WitnessP U s t
 
 -- contentful: some problem genuinely excludes some candidate.
-Contentful : UPArrow → Set
-Contentful U = Σ (Source U) (λ s → Σ (Target U) (λ t → ¬ (Witness U s t)))
+Contentful : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+Contentful U = Σ (SourceP U) (λ s → Σ (TargetP U) (λ t → ¬ (WitnessP U s t)))
 
 -- content cannot collapse: a contentful UP is not vacuous.
-contentful→¬vacuous : (U : UPArrow) → Contentful U → ¬ Vacuous U
+contentful→¬vacuous : {S T : Set} {W : S → T → Set}
+                      (U : UPArrowP S T W) → Contentful U → ¬ Vacuous U
 contentful→¬vacuous U (s , t , ¬w) vac = ¬w (vac s t)
 
 ------------------------------------------------------------------------
@@ -48,15 +52,15 @@ contentful→¬vacuous U (s , t , ¬w) vac = ¬w (vac s t)
 
 -- the catalogue's trivial UP (Source = Target = ⊤, Witness = ⊤) — the
 -- false-positive shape: it is provably vacuous.
-trivial-vacuous : Vacuous trivial-UP
+trivial-vacuous : Vacuous trivial-UPP
 trivial-vacuous _ _ = tt
 
 -- a content-bearing UP: Witness = equality on ℕ. It discriminates (0 ≢ 1),
 -- so it is Contentful, hence not vacuous. This is the shape every REAL
 -- witness in the arc has (bezout: s·a+t·b ≡ g; crt: combine ≡ ...; the
 -- Witnesses are equalities, which discriminate).
-eq-UP : UPArrow
-eq-UP = record { Source = ℕ ; Target = ℕ ; Witness = _≡_ }
+eq-UP : UPArrowP ℕ ℕ _≡_
+eq-UP = mkUP
 
 eq-contentful : Contentful eq-UP
 eq-contentful = 0 , 1 , (λ ())

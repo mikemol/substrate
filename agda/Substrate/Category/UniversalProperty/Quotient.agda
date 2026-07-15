@@ -46,7 +46,7 @@ open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
 open import Substrate.Algebra.Quotient using (Quotient; ≈-refl; ≈-sym; ≈-trans)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 
 ------------------------------------------------------------------------
@@ -131,12 +131,11 @@ trivial-QuotientUP {A} {_≈_} Q = record
 -- "solved" by any representative identified with it (≡ mod 3). The structural
 -- QuotientUP record above is the general statement; this is its UPArrow-level
 -- catalogue entry, now content-bearing (1 is not identified with 0).
-Quotient-UPArrow : UPArrow
-Quotient-UPArrow = record
-  { Source  = ℕ   -- "an element to be classified"
-  ; Target  = ℕ   -- "a representative of its class"
-  ; Witness = λ a x → x mod-suc 2 ≡ a mod-suc 2   -- "x and a are identified by ℕ ↠ ℤ/3"
-  }
+Quotient-W : ℕ → ℕ → Set
+Quotient-W a x = x mod-suc 2 ≡ a mod-suc 2   -- "x and a are identified by ℕ ↠ ℤ/3"
+
+Quotient-UPArrow : UPArrowP ℕ ℕ Quotient-W
+Quotient-UPArrow = mkUP
 
 Quotient-contentful : Contentful Quotient-UPArrow
 Quotient-contentful = 1 , 0 , λ ()

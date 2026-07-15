@@ -34,7 +34,7 @@ open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves; trivial-AlgebraClass)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 
 ------------------------------------------------------------------------
 -- 1. THE QUOTIENT CENTER. Coequalizer of lhs, rhs : R ⇉ F in A-algebras.
@@ -113,15 +113,18 @@ presented-Set F = Free-as-Presented {trivial-AlgebraClass} {F} tt tt
 --      Witness = the solution factors the problem through the quotient.
 ------------------------------------------------------------------------
 
+PresentedUP-W :
+  {A : AlgebraClass} {F : Set} {F-has : Has-structure A F}
+  {R : Set} {lhs rhs : R → F} {P : Set} →
+  PresentedUP A F F-has R lhs rhs P → (M : Set) → (F → M) → (P → M) → Set
+PresentedUP-W {F = F} pr M h k = (x : F) → k (quotient pr x) ≡ h x
+
 PresentedUP-UPArrow :
   {A : AlgebraClass} {F : Set} {F-has : Has-structure A F}
   {R : Set} {lhs rhs : R → F} {P : Set} →
-  PresentedUP A F F-has R lhs rhs P → (M : Set) → UPArrow
-PresentedUP-UPArrow {F = F} {P = P} pr M = record
-  { Source  = F → M
-  ; Target  = P → M
-  ; Witness = λ h k → (x : F) → k (quotient pr x) ≡ h x
-  }
+  (pr : PresentedUP A F F-has R lhs rhs P) → (M : Set) →
+  UPArrowP (F → M) (P → M) (PresentedUP-W pr M)
+PresentedUP-UPArrow pr M = mkUP
 
 ------------------------------------------------------------------------
 -- INSTANCES TO WIRE (visible as "free-then-quotient" siblings):

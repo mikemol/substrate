@@ -22,7 +22,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Category.UniversalProperty using (UPArrow; Source; Target; Witness)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.S5.S5Fixpoint using (module Machine)
 open import Substrate.FUSep.FUSepQReduce using (stop; shed; Reduce) renaming (Step to Step⟦c0e06c56⟧; Tm to Tm⟦533ef80d⟧)
@@ -67,19 +67,18 @@ module SkiExistence
   SkiFuelled : Set
   SkiFuelled = Σ ℕ (λ _ → Tm⟦533ef80d⟧)      -- (fuel , term)
 
-  x8a-ski-UP : UPArrow
-  x8a-ski-UP = record
-    { Source  = SkiFuelled
-    ; Target  = Tm⟦533ef80d⟧
-    ; Witness = λ fs v → v ≡ run (proj₁ fs) (proj₂ fs)
-    }
+  x8a-ski-W : SkiFuelled → Tm⟦533ef80d⟧ → Set
+  x8a-ski-W fs v = v ≡ run (proj₁ fs) (proj₂ fs)
+
+  x8a-ski-UP : UPArrowP SkiFuelled Tm⟦533ef80d⟧ x8a-ski-W
+  x8a-ski-UP = mkUP
 
   -- solve: run the SKI shedding to its nf (stop) — the extruder proper, at real SKI terms.
-  x8a-ski-solve : Source x8a-ski-UP → Target x8a-ski-UP
+  x8a-ski-solve : SourceP x8a-ski-UP → TargetP x8a-ski-UP
   x8a-ski-solve (fuel , t) = run fuel t
 
   -- solves: the run IS the value — refl (solve computes exactly run fuel t).
-  x8a-ski-solves : (s : Source x8a-ski-UP) → Witness x8a-ski-UP s (x8a-ski-solve s)
+  x8a-ski-solves : (s : SourceP x8a-ski-UP) → WitnessP x8a-ski-UP s (x8a-ski-solve s)
   x8a-ski-solves (fuel , t) = refl
 
 ------------------------------------------------------------------------

@@ -22,7 +22,6 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (_,_)
 import Substrate.Foundation.Fin as F
-open import Substrate.Category.UniversalProperty using (UPArrow)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow; free-Set)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (free-monoid)
@@ -37,7 +36,6 @@ private
 -- 1. FreeMonoid — Coxeter.Word ⊤ is the free monoid (extend = fold).
 ------------------------------------------------------------------------
 
-FreeMonoid-UP : UPArrow
 FreeMonoid-UP = FreeUP-UPArrow (free-monoid ⊤) ℕ
 
 FreeMonoid-contentful : Contentful FreeMonoid-UP
@@ -47,7 +45,6 @@ FreeMonoid-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w tt)
 -- 2. FreeModule — Vector k is the free F₂-module on Fin k.
 ------------------------------------------------------------------------
 
-FreeModule-UP : UPArrow
 FreeModule-UP = FreeUP-UPArrow (free-F2Module 1) ℕ
 
 FreeModule-contentful : Contentful FreeModule-UP
@@ -57,7 +54,6 @@ FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
 -- 3. Cone / Limit — the product is the limit of a discrete diagram.
 ------------------------------------------------------------------------
 
-ConeLimit-UP : UPArrow
 ConeLimit-UP = LimitUP-UPArrow (product-LimitUP 1 (λ _ → ℕ)) ⊤
 
 ConeLimit-contentful : Contentful ConeLimit-UP
@@ -67,7 +63,6 @@ ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w F.zer
 -- 4. Adjunction — the trivial Free ⊣ Forgetful (free-Set: F = B, η = id).
 ------------------------------------------------------------------------
 
-Adjunction-UP : UPArrow
 Adjunction-UP = FreeUP-UPArrow (free-Set ℕ) ℕ
 
 Adjunction-contentful : Contentful Adjunction-UP
@@ -78,7 +73,6 @@ Adjunction-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w 0)
 --    (here dim 2; the dedicated FreeLinearization module is the same UP).
 ------------------------------------------------------------------------
 
-FreeLinearization-UP : UPArrow
 FreeLinearization-UP = FreeUP-UPArrow (free-F2Module 2) ℕ
 
 FreeLinearization-contentful : Contentful FreeLinearization-UP

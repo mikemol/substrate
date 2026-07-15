@@ -19,19 +19,21 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
-open import Substrate.Category.UniversalProperty using (UPArrow; trivial-UP)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP; trivial-UPP)
 open import Substrate.Category.UniversalProperty.Vacuity
   using (Vacuous; Contentful; contentful→¬vacuous; trivial-vacuous;
          eq-UP; eq-contentful)
 
 ------------------------------------------------------------------------
 -- 1. The gate: a recognized UP carries its non-vacuity certificate.
+--    ⟡UPArrow-dissolve: FIELD→INDEX. The stored `arrow : UPArrow` (the
+--    Set₁ cause) becomes the carrier PARAMS (S T W); the record fields
+--    only the Set₀ content certificate, so RecognizedUP S T W : Set₀.
 ------------------------------------------------------------------------
 
-record RecognizedUP : Set₁ where
+record RecognizedUP (S T : Set) (W : S → T → Set) : Set where
   field
-    arrow   : UPArrow
-    content : Contentful arrow
+    content : Contentful (mkUP {S} {T} {W})
 
 open RecognizedUP public
 
@@ -40,30 +42,27 @@ open RecognizedUP public
 --    out): it is vacuous, so it cannot carry a content certificate.
 ------------------------------------------------------------------------
 
-trivial-not-recognizable : ¬ Contentful trivial-UP
-trivial-not-recognizable c = contentful→¬vacuous trivial-UP c trivial-vacuous
+trivial-not-recognizable : ¬ Contentful trivial-UPP
+trivial-not-recognizable c = contentful→¬vacuous trivial-UPP c trivial-vacuous
 
 ------------------------------------------------------------------------
 -- 3. Real, equality-witnessed UPs ARE recognizable.
 ------------------------------------------------------------------------
 
 -- the bare equality UP (Witness = _≡_ on ℕ).
-eq-recognized : RecognizedUP
-eq-recognized = record { arrow = eq-UP ; content = eq-contentful }
+eq-recognized : RecognizedUP ℕ ℕ _≡_
+eq-recognized = record { content = eq-contentful }
 
 -- a CRT-shaped UP for moduli (3,5): a residue pair (a₁,a₂) is "solved" by
 -- any x congruent to a₁ mod 3 and a₂ mod 5. Contentful because (1,2) is NOT
 -- solved by 0 (0 ≢ 1 mod 3).
-crt-UP : UPArrow
-crt-UP = record
-  { Source  = ℕ × ℕ
-  ; Target  = ℕ
-  ; Witness = λ p x → (x mod-suc 2 ≡ proj₁ p mod-suc 2)
-                    × (x mod-suc 4 ≡ proj₂ p mod-suc 4)
-  }
+crt-W : (ℕ × ℕ) → ℕ → Set
+crt-W p x = (x mod-suc 2 ≡ proj₁ p mod-suc 2)
+          × (x mod-suc 4 ≡ proj₂ p mod-suc 4)
 
-crt-recognized : RecognizedUP
+crt-UP : UPArrowP (ℕ × ℕ) ℕ crt-W
+crt-UP = mkUP
+
+crt-recognized : RecognizedUP (ℕ × ℕ) ℕ crt-W
 crt-recognized = record
-  { arrow   = crt-UP
-  ; content = (1 , 2) , 0 , λ { (() , _) }
-  }
+  { content = (1 , 2) , 0 , λ { (() , _) } }

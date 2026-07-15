@@ -34,7 +34,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.Cone using (Cone)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 
 ------------------------------------------------------------------------
 -- 1. THE LIMIT CENTER. Dual of FreeUP. (Discrete base ⇒ product.)
@@ -95,14 +95,17 @@ product-LimitUP n Base = record
 --      Witness = the candidate IS a cone-map for the problem.
 ------------------------------------------------------------------------
 
+LimitUP-W :
+  {n : ℕ} {Base : Fin n → Set} {L : Set} →
+  LimitUP n Base L → (A : Set) →
+  ((i : Fin n) → A → Base i) → (A → L) → Set
+LimitUP-W {n} lim A f g = (i : Fin n) (a : A) → leg lim i (g a) ≡ f i a
+
 LimitUP-UPArrow :
   {n : ℕ} {Base : Fin n → Set} {L : Set} →
-  LimitUP n Base L → (A : Set) → UPArrow
-LimitUP-UPArrow {n} {Base} {L} lim A = record
-  { Source  = (i : Fin n) → A → Base i
-  ; Target  = A → L
-  ; Witness = λ f g → (i : Fin n) (a : A) → leg lim i (g a) ≡ f i a
-  }
+  (lim : LimitUP n Base L) → (A : Set) →
+  UPArrowP ((i : Fin n) → A → Base i) (A → L) (LimitUP-W lim A)
+LimitUP-UPArrow lim A = mkUP
 
 ------------------------------------------------------------------------
 -- The center is now symmetric, both sides content-bearing:

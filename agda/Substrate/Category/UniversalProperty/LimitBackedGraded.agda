@@ -22,7 +22,7 @@ open import Substrate.Foundation.Negation using (¬_)
 import Substrate.Foundation.Fin as F
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Category.LimitUniversalProperty using (product-LimitUP; mediate)
-open import Substrate.Category.UniversalProperty using (Source; Target)
+open import Substrate.Category.UniversalProperty using (SourceP; TargetP)
 open import Substrate.Category.UniversalProperty.Instances using (ConeLimit-UP)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)
@@ -30,10 +30,10 @@ open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ
 -- solve = mediate into the concrete product limit (product-LimitUP 1 (λ _ → ℕ), apex ⊤ — the same
 -- instance ConeLimit-UP wraps). Inlined (NOT a top-level `theLimit : LimitUP` def) so no Set₁-inhabiting
 -- term is added — the flat LimitBacked already contributes that one to the ratchet baseline.
-limit-solve : Source ConeLimit-UP → Target ConeLimit-UP
+limit-solve : SourceP ConeLimit-UP → TargetP ConeLimit-UP
 limit-solve f = mediate (product-LimitUP 1 (λ _ → ℕ)) f
 
-limit-arrowᴳ : UPArrowᴳ (λ _ → Source ConeLimit-UP) (λ _ → Target ConeLimit-UP)
+limit-arrowᴳ : UPArrowᴳ (λ _ → SourceP ConeLimit-UP) (λ _ → TargetP ConeLimit-UP)
 limit-arrowᴳ = mkUP limit-solve
 
 -- refute 1 ≡ 0.
@@ -41,7 +41,7 @@ limit-arrowᴳ = mkUP limit-solve
 1≢0ᴸ ()
 
 -- content: the all-0 cone mediates to the all-0 map; candidate (λ _ _ → 1) differs at (tt, F.zero).
-limit-backedᴳ : BackedUPᴳ (λ _ → Source ConeLimit-UP) (λ _ → Target ConeLimit-UP)
+limit-backedᴳ : BackedUPᴳ (λ _ → SourceP ConeLimit-UP) (λ _ → TargetP ConeLimit-UP)
 limit-backedᴳ = record
   { arrowᴳ  = limit-arrowᴳ
   ; content = 0 , (λ _ _ → 0) , (λ _ _ → 1) , λ eq → 1≢0ᴸ (cong (λ h → h tt F.zero) eq)

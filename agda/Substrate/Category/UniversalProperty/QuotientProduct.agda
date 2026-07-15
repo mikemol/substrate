@@ -37,7 +37,7 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
 open import Substrate.Algebra.Quotient using (Quotient)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.UniversalProperty.Quotient
   using (QuotientUP; Respects)
@@ -151,13 +151,12 @@ open QuotientProduct public
 -- the real Contentful quotient-PRODUCT — CRT: a residue pair (mod 3, mod 5)
 -- is jointly solved by any x agreeing with both. This IS the joint quotient
 -- ℕ ↠ ℤ/3 × ℤ/5 ≅ ℤ/15. Content-bearing: (1,2) is not solved by 0.
-QuotientProduct-UPArrow : UPArrow
-QuotientProduct-UPArrow = record
-  { Source  = ℕ × ℕ   -- "two residues (mod 3, mod 5)"
-  ; Target  = ℕ       -- "a joint representative (mod 15)"
-  ; Witness = λ p x → (x mod-suc 2 ≡ proj₁ p mod-suc 2)
-                    × (x mod-suc 4 ≡ proj₂ p mod-suc 4)
-  }
+QuotientProduct-W : (ℕ × ℕ) → ℕ → Set   -- "two residues (mod 3, mod 5)" ↦ "a joint representative (mod 15)"
+QuotientProduct-W p x = (x mod-suc 2 ≡ proj₁ p mod-suc 2)
+                      × (x mod-suc 4 ≡ proj₂ p mod-suc 4)
+
+QuotientProduct-UPArrow : UPArrowP (ℕ × ℕ) ℕ QuotientProduct-W
+QuotientProduct-UPArrow = mkUP
 
 QuotientProduct-contentful : Contentful QuotientProduct-UPArrow
 QuotientProduct-contentful = (1 , 2) , 0 , λ { (() , _) }

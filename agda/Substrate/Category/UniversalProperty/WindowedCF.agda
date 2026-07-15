@@ -42,7 +42,7 @@ open import Substrate.Algebra.R.Trace.Exp      using (exp-cf; horner)
 open import Substrate.Algebra.R.Trace.Log      using (log-cf; ath)
 open import Substrate.Algebra.R.Trace.Window   using (homographic-cf)
 
-open import Substrate.Category.UniversalProperty            using (UPArrow; Witness)
+open import Substrate.Category.UniversalProperty            using (UPArrowP; mkUP; WitnessP)
 open import Substrate.Category.UniversalProperty.Vacuity    using (Contentful)
 open import Substrate.Category.UniversalProperty.Recognized using (RecognizedUP)
 
@@ -51,21 +51,20 @@ open import Substrate.Category.UniversalProperty.Recognized using (RecognizedUP)
 -- its continued fraction.
 ------------------------------------------------------------------------
 
-windowedCF-UP : UPArrow
-windowedCF-UP = record
-  { Source  = ℕ → RealTrace → List ℕ
-  ; Target  = ℕ → ℕ → ℕ × ℕ
-  ; Witness = λ op K → op ≡ windowed-cf K
-  }
+windowedCF-W : (ℕ → RealTrace → List ℕ) → (ℕ → ℕ → ℕ × ℕ) → Set
+windowedCF-W op K = op ≡ windowed-cf K
+
+windowedCF-UP : UPArrowP (ℕ → RealTrace → List ℕ) (ℕ → ℕ → ℕ × ℕ) windowedCF-W
+windowedCF-UP = mkUP
 
 ------------------------------------------------------------------------
 -- The three operations are instances — each witnessed by its kernel, by refl.
 ------------------------------------------------------------------------
 
-exp-cf-inst : (terms : ℕ) → Witness windowedCF-UP (exp-cf terms) (λ p q → horner terms p q 1 1)
+exp-cf-inst : (terms : ℕ) → WitnessP windowedCF-UP (exp-cf terms) (λ p q → horner terms p q 1 1)
 exp-cf-inst terms = refl
 
-log-cf-inst : (terms : ℕ) → Witness windowedCF-UP (log-cf terms)
+log-cf-inst : (terms : ℕ) → WitnessP windowedCF-UP (log-cf terms)
               (λ p q → let sn = p ∸ q
                            sd = p + q
                            U  = ath terms (2 * terms ∸ 1) (sn * sn) (sd * sd) 0 1
@@ -73,7 +72,7 @@ log-cf-inst : (terms : ℕ) → Witness windowedCF-UP (log-cf terms)
 log-cf-inst terms = refl
 
 homographic-inst : (a b c d : ℕ)
-                 → Witness windowedCF-UP (homographic-cf a b c d) (λ p q → a * p + b * q , c * p + d * q)
+                 → WitnessP windowedCF-UP (homographic-cf a b c d) (λ p q → a * p + b * q , c * p + d * q)
 homographic-inst a b c d = refl
 
 ------------------------------------------------------------------------
@@ -88,8 +87,8 @@ windowedCF-contentful = (λ _ _ → []) , (λ _ _ → 2 , 1) , ne
     ne eq with cong (λ f → f 0 sqrt2) eq
     ... | ()
 
-windowedCF-recognized : RecognizedUP
-windowedCF-recognized = record { arrow = windowedCF-UP ; content = windowedCF-contentful }
+windowedCF-recognized : RecognizedUP (ℕ → RealTrace → List ℕ) (ℕ → ℕ → ℕ × ℕ) windowedCF-W
+windowedCF-recognized = record { content = windowedCF-contentful }
 
 ------------------------------------------------------------------------
 -- UNIVERSALITY (honest form): the kernel is the whole variation boundary.

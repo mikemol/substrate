@@ -39,7 +39,7 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves; trivial-AlgebraClass;
          FreeOverBasis; mkFreeOverBasis)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 
 ------------------------------------------------------------------------
 -- 1. THE CENTER. Free ⊣ Forgetful, universal-arrow form, with content.
@@ -92,13 +92,14 @@ FreeUP→FreeOverBasis fr = mkFreeOverBasis (unit fr)
 --      Witness = the candidate extends the problem along η.
 ------------------------------------------------------------------------
 
+FreeUP-W : {A : AlgebraClass} {B F : Set} →
+           FreeUP A B F → (M : Set) → (B → M) → (F → M) → Set
+FreeUP-W {B = B} fr M f g = (b : B) → g (unit fr b) ≡ f b
+
 FreeUP-UPArrow : {A : AlgebraClass} {B F : Set} →
-                 FreeUP A B F → (M : Set) → UPArrow
-FreeUP-UPArrow {B = B} {F} fr M = record
-  { Source  = B → M
-  ; Target  = F → M
-  ; Witness = λ f g → (b : B) → g (unit fr b) ≡ f b
-  }
+                 (fr : FreeUP A B F) → (M : Set) →
+                 UPArrowP (B → M) (F → M) (FreeUP-W fr M)
+FreeUP-UPArrow fr M = mkUP
 
 ------------------------------------------------------------------------
 -- 4. NON-VACUITY: the free Set on a set (the identity adjunction, Free ⊣
