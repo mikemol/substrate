@@ -94,7 +94,6 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanSKI#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanSKI#_⇒_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/OrbitAudit#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/OrbitComplete#Bool</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#RealTrace</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Tm</loc><priority>0.0</priority></url>
@@ -414,7 +413,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/AgdaExtrude#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²-Morphism</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Backed#BackedUP</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/BackedGraded#BackedUPᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Category#UPCategory</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Covers</loc><priority>0.0</priority></url>
@@ -489,7 +488,6 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeStepDecidable#HeadShape</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/FixpointStencilRecord#TwoFraming</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/GeometricMorphism#GeometricMorphism</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Interop#Interop</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/MatchingFamily#MatchingFamily</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Morphism#UPMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Presheaf#UPPresheaf</loc><priority>0.01</priority></url>
@@ -507,7 +505,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPTerm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Topos#UPTopos</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrow</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrowP</loc><priority>0.06</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/UniquenessStencilAbstract#UniquenessStencil</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#ConfluentClassifier</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#_⇒*_</loc><priority>0.0</priority></url>
@@ -578,9 +576,9 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.16</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.17</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.16</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -588,7 +586,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#NonZero</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#_≤_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#ℕ</loc><priority>1.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.13</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.12</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Product#Σ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/RewriteConfluence#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>

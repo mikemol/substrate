@@ -96,12 +96,23 @@ def _dedup_pathseg(con):
                    (SELECT MIN(rowid) FROM path_seg GROUP BY path_id, ord)""")
 
 
+def _drop_legacy_view(con, name):
+    """Drop a legacy GROUP_CONCAT VIEW so the PK-indexed TABLE can take its place. A NO-OP once `name`
+    is already the table: `DROP VIEW IF EXISTS <table>` raises OperationalError ("use DROP TABLE …") —
+    the one-time view→table migration is done, so there is nothing to drop. (⟡catalog-regen-fix: this
+    stale assumption crashed gen_catalog.py's SPPF walk once path_text became a table.)"""
+    try:
+        con.execute(f"DROP VIEW IF EXISTS {name}")
+    except sqlite3.OperationalError:
+        pass
+
+
 def write_events(cores, con, base):
     """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution."""
     # DROP (not DELETE) the event tables so column changes take effect (terms/path_seg are shared — keep).
     for t in ("event", "obs", "edge", "unit_obs", "unit_member"):
         con.execute(f"DROP TABLE IF EXISTS {t}")
-    con.execute("DROP VIEW IF EXISTS path_text")     # migrate a legacy GROUP_CONCAT view → the indexed table
+    _drop_legacy_view(con, "path_text")             # migrate a legacy GROUP_CONCAT view → the indexed table
     con.executescript(EVENT_SCHEMA)
     con.commit()
     seen_t = set()
@@ -165,7 +176,7 @@ def refresh_path_text(con):
     projection of the append-only path segments. Refreshed at the write_events boundary so every downstream
     join is one index seek, not a full GROUP_CONCAT view materialization per query (see EVENT_SCHEMA note).
     Idempotent (DELETE+INSERT); tolerant of a legacy path_text VIEW."""
-    con.execute("DROP VIEW IF EXISTS path_text")
+    _drop_legacy_view(con, "path_text")
     con.execute("CREATE TABLE IF NOT EXISTS path_text (path_id TEXT PRIMARY KEY, text TEXT)")
     con.execute("DELETE FROM path_text")
     con.execute("INSERT INTO path_text SELECT path_id, GROUP_CONCAT(seg, '.') FROM ("
