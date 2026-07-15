@@ -5,7 +5,6 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.EckmannHilton where
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
-EckmannHilton-UP : UPArrow
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
+EckmannHilton-UP : PlaceholderUPArrow
 EckmannHilton-UP = placeholder

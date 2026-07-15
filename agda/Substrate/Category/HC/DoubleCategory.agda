@@ -5,7 +5,6 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.DoubleCategory where
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
-DoubleCategory-UP : UPArrow
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
+DoubleCategory-UP : PlaceholderUPArrow
 DoubleCategory-UP = placeholder

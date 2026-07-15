@@ -4,7 +4,6 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.BraidedFunctor where
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
-BraidedFunctor-UP : UPArrow
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
+BraidedFunctor-UP : PlaceholderUPArrow
 BraidedFunctor-UP = placeholder

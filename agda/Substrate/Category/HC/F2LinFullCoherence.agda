@@ -5,7 +5,6 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.F2LinFullCoherence where
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
-F2LinFullCoherence-UP : UPArrow
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
+F2LinFullCoherence-UP : PlaceholderUPArrow
 F2LinFullCoherence-UP = placeholder

@@ -12,8 +12,7 @@
 
 module Substrate.Category.HC.AdjTriangle where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-AdjTriangle-UP : UPArrow
+AdjTriangle-UP : PlaceholderUPArrow
 AdjTriangle-UP = placeholder

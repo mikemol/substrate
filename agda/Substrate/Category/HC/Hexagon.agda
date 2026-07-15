@@ -12,8 +12,7 @@
 
 module Substrate.Category.HC.Hexagon where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-Hexagon-UP : UPArrow
+Hexagon-UP : PlaceholderUPArrow
 Hexagon-UP = placeholder

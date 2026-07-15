@@ -15,8 +15,7 @@
 
 module Substrate.Category.HC.Interchange where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-Interchange-UP : UPArrow
+Interchange-UP : PlaceholderUPArrow
 Interchange-UP = placeholder

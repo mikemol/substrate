@@ -4,7 +4,6 @@
 ------------------------------------------------------------------------
 {-# OPTIONS --safe --without-K #-}
 module Substrate.Category.HC.CartesianMonoidal where
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
-CartesianMonoidal-UP : UPArrow
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
+CartesianMonoidal-UP : PlaceholderUPArrow
 CartesianMonoidal-UP = placeholder

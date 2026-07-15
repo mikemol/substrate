@@ -12,8 +12,7 @@
 
 module Substrate.Category.HC.F2LinSymMon where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-F2LinSymMon-UP : UPArrow
+F2LinSymMon-UP : PlaceholderUPArrow
 F2LinSymMon-UP = placeholder

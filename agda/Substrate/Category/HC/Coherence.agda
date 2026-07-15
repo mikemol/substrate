@@ -19,8 +19,7 @@
 
 module Substrate.Category.HC.Coherence where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
 ------------------------------------------------------------------------
 -- 1. The Coherence-UP.
@@ -30,7 +29,7 @@ open import Substrate.Category.HC.PlaceholderUP using (placeholder)
 -- supply specific instances (pentagon, triangle, hexagon, ...).
 ------------------------------------------------------------------------
 
-Coherence-UP : UPArrow
+Coherence-UP : PlaceholderUPArrow
 Coherence-UP = placeholder
 
 ------------------------------------------------------------------------

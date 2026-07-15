@@ -12,8 +12,7 @@
 
 module Substrate.Category.HC.Pentagon where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-Pentagon-UP : UPArrow
+Pentagon-UP : PlaceholderUPArrow
 Pentagon-UP = placeholder

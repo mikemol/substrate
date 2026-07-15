@@ -25,8 +25,7 @@
 
 module Substrate.Category.HC.MacLane where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-MacLane-UP : UPArrow
+MacLane-UP : PlaceholderUPArrow
 MacLane-UP = placeholder

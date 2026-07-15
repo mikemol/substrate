@@ -11,8 +11,7 @@
 
 module Substrate.Category.HC.Triangle where
 
-open import Substrate.Category.UniversalProperty using (UPArrow)
-open import Substrate.Category.HC.PlaceholderUP using (placeholder)
+open import Substrate.Category.HC.PlaceholderUP using (placeholder; PlaceholderUPArrow)
 
-Triangle-UP : UPArrow
+Triangle-UP : PlaceholderUPArrow
 Triangle-UP = placeholder

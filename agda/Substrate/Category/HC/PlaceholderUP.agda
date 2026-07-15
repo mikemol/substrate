@@ -17,11 +17,14 @@
 module Substrate.Category.HC.PlaceholderUP where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.UniversalProperty using (UPArrow)
+open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 
-placeholder : UPArrow
-placeholder = record
-  { Source  = ⊤
-  ; Target  = ⊤
-  ; Witness = λ _ _ → ⊤
-  }
+-- ⟡UPArrow-dissolve: the Set₀ placeholder carrier. Source = Target = ⊤,
+-- Witness ≡ ⊤ are now TYPE PARAMS (not fields), so `placeholder` is a
+-- Set₀ term (uncounted), replacing the old `placeholder : UPArrow` (Set₁).
+-- The pre-typed alias is exported so the 36 HC aliases need not re-import ⊤.
+PlaceholderUPArrow : Set
+PlaceholderUPArrow = UPArrowP ⊤ ⊤ (λ _ _ → ⊤)
+
+placeholder : PlaceholderUPArrow
+placeholder = mkUP

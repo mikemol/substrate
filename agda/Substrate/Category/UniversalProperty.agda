@@ -47,6 +47,36 @@ record UPArrow : Set₁ where
 open UPArrow public
 
 ------------------------------------------------------------------------
+-- 1a. UPArrowP — the CARRIER-PARAMETERIZED presentation (⟡UPArrow-dissolve).
+--
+-- The carriers are TYPE PARAMETERS, not fields, so the record lands in
+-- Set₀ (it has no Set-valued field). A UPArrowP value carries no data —
+-- all its content is in the params — so `mkUP` is the sole inhabitant and
+-- the accessors read the params back. This is the Set₀ twin of UPArrow:
+-- a term `x : UPArrowP S T W` is NOT Set₁-counted, whereas `x : UPArrow`
+-- is. The object type moves out of a stored-value position (a field) into
+-- an index/family position (the params) — the UPMorphism transform
+-- (Morphism.agda already lands in Set₀ despite indexing by Set₁ UPArrow).
+------------------------------------------------------------------------
+
+record UPArrowP (Source : Set) (Target : Set)
+                (Witness : Source → Target → Set) : Set where
+  constructor mkUP
+
+-- Accessor SHIMS: read the carriers off the type params, so migrated
+-- consumers keep projection-style access `SourceP U` / `TargetP U` /
+-- `WitnessP U` over a bound `{U : UPArrowP S T W}`.
+SourceP : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+SourceP {S = S} _ = S
+
+TargetP : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
+TargetP {T = T} _ = T
+
+WitnessP : {S T : Set} {W : S → T → Set}
+           (U : UPArrowP S T W) → SourceP U → TargetP U → Set
+WitnessP {W = W} _ = W
+
+------------------------------------------------------------------------
 -- 2. The canonical alias: UniversalProperty = UPArrow.
 --
 -- Downstream callers continue to use the older name for narrative
