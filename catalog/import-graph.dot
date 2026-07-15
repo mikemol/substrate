@@ -1042,6 +1042,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Sheafify" [label="UniversalProperty.Sheafify"];
   "Substrate.Category.UniversalProperty.Sieve" [label="UniversalProperty.Sieve"];
   "Substrate.Category.UniversalProperty.SieveClosure" [label="UniversalProperty.SieveClosure"];
+  "Substrate.Category.UniversalProperty.Site" [label="UniversalProperty.Site"];
   "Substrate.Category.UniversalProperty.StencilAbstract" [label="UniversalProperty.StencilAbstract"];
   "Substrate.Category.UniversalProperty.StencilAllegory" [label="UniversalProperty.StencilAllegory"];
   "Substrate.Category.UniversalProperty.StencilDedekind" [label="UniversalProperty.StencilDedekind"];
@@ -7992,6 +7993,8 @@ digraph imports {
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.Site" -> "Substrate.Category.UniversalProperty.Category";
+  "Substrate.Category.UniversalProperty.Site" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.StencilAllegory" -> "Substrate.Category.Allegory";
   "Substrate.Category.UniversalProperty.StencilAllegory" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.StencilDedekind" -> "Substrate.Category.Allegory";
