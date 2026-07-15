@@ -1,19 +1,22 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.UniversalProperty.Eval
 --
--- THE TERM ↔ RECORD BRIDGE (user, 2026-06-13: "you want BOTH, because otherwise
--- right now we can't translate between terms and records, and that's a barrier we
--- need to bridge"). The capstone flagged `eval : UPTerm → UPMorphism` as planned
--- (UP5) but it was never built — so the syntactic free-category term and the
--- semantic commuting-square record were unbridged. This builds both directions:
+-- THE TERM ↔ CATEGORY BRIDGE, ⟡ta-upterm form. UPTermO (the Set₀ free
+-- category over the object-alphabet O with Hom-payload generators) folds
+-- uniquely into any target category C : UPCategory O Hom.
 --
---   eval  : UPTerm U₁ U₂ → UPMorphism U₁ U₂   (term → record; realise the stack)
---   reify : UPMorphism U₁ U₂ → UPTerm U₁ U₂   (record → term; a one-generator word)
+--   eval  : UPTermO O Hom X Y → Hom X Y   (term → morphism; realise the stack)
+--   reify : Hom X Y → UPTermO O Hom X Y   (morphism → term; a one-generator word)
 --
--- and the round-trip `eval ∘ reify ≡ id`. This is the Free⊣Forgetful realisation:
--- UPTerm is free, UPMorphism the structure, eval the unique structure-map, reify
--- the unit. Record-level identity + composition (needed by eval) are built here too
--- (the UP3 "identity + composition" the capstone deferred).
+-- and the round-trip eval ∘ reify ≡ id. This is the Free⊣Forgetful realisation:
+-- UPTermO is free, C the structure, eval the unique structure-map, reify the unit.
+--
+-- ⚠ FLAG (i): over the ABSTRACT interface C, the round-trip / identity / assoc
+-- laws are NOT refl — they ARE C's law-fields (id-leftˡ / id-rightʳ / assoc). They
+-- become refl only at the concrete UPMorphism η-instance (a UPCategory whose laws
+-- are λ _ → refl). K=Hom: the generator payload IS a Hom morphism (κ = id), so
+-- interp = the payload itself; that keeps eval/reify/normalize/UPTermO-Canonical
+-- structurally intact.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -22,240 +25,137 @@ module Substrate.Category.UniversalProperty.Eval where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
-open import Substrate.Category.UniversalProperty.Morphism
-  using (UPMorphism; source-map; target-map; coherent)
-open import Substrate.Category.UniversalProperty.Term
-  using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_; ObjRel)
 open import Substrate.Algebra.Quotient
   using (Quotient; ker-Quotient; split-Canonical)
   renaming (Canonical to Canonical⟦de760d07⟧)
-open import Substrate.Category.UniversalProperty.Compose
-  using (id-UPMorphism; compose-UPMorphism)
+open import Substrate.Category.UniversalProperty.Term
+  using (UPGenO; liftO; UPTermO; []O; _∷O_; _++ᵤO_)
+open import Substrate.Category.UniversalProperty.Category
+  using (UPCategory)
 
--- ⟡UPArrow-dissolve C: telescope over UPArrowP. Object binders {U : …} are
--- explicit per-signature (eta-record ⇒ not `variable`-generalizable); the
--- carrier Sets S/T/W ARE variables (auto-generalized before each U).
-private variable
-  S₁ T₁ S₂ T₂ S₃ T₃ S₄ T₄ : Set
-  W₁ : S₁ → T₁ → Set
-  W₂ : S₂ → T₂ → Set
-  W₃ : S₃ → T₃ → Set
-  W₄ : S₄ → T₄ → Set
+-- The whole bridge lives over an object-alphabet O, a Hom family, and a target
+-- category C. `open UPCategory C` names id-hom / compose-hom / the three laws.
+module _ (O : Set) (Hom : O → O → Set) (C : UPCategory O Hom) where
 
-------------------------------------------------------------------------
--- Record-level identity and composition of UPMorphisms (UP3).
---
--- Ⓓ: id-UPMorphism / compose-UPMorphism are UniversalProperty.Compose's
--- (imported above); Eval had re-defined them with byte-identical record bodies.
--- The consumers (FixedPoint, Phase1) already used Compose's; eval below uses
--- them too.
-------------------------------------------------------------------------
+  open UPCategory C
 
-------------------------------------------------------------------------
--- eval — the term → record bridge. [] ↦ identity; (lift m ∷ t) ↦ compose.
-------------------------------------------------------------------------
+  ----------------------------------------------------------------------
+  -- eval — the term → morphism bridge. []O ↦ identity; (liftO m ∷O t) ↦ compose.
+  ----------------------------------------------------------------------
 
-eval : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPTerm U₁ U₂ → UPMorphism U₁ U₂
-eval []           = id-UPMorphism _
-eval (lift m ∷ t) = compose-UPMorphism (eval t) m
+  eval : {X Y : O} → UPTermO O Hom X Y → Hom X Y
+  eval []O            = id-hom _
+  eval (liftO m ∷O t) = compose-hom (eval t) m
 
-------------------------------------------------------------------------
--- reify — the record → term bridge: a single-generator word.
-------------------------------------------------------------------------
+  ----------------------------------------------------------------------
+  -- reify — the morphism → term bridge: a single-generator word.
+  ----------------------------------------------------------------------
 
-reify : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPMorphism U₁ U₂ → UPTerm U₁ U₂
-reify m = lift m ∷ []
+  reify : {X Y : O} → Hom X Y → UPTermO O Hom X Y
+  reify m = liftO m ∷O []O
 
-------------------------------------------------------------------------
--- The round-trip: realising a reified morphism returns it (compose-with-identity,
--- by η). So record → term → record = id — the Forgetful side of the bridge.
-------------------------------------------------------------------------
+  -- The round-trip: eval (reify m) = compose-hom (id-hom _) m ≡ m by C's LEFT
+  -- identity law (FLAG i — NOT refl over abstract C).
+  eval-reify : {X Y : O} (m : Hom X Y) → eval (reify m) ≡ m
+  eval-reify m = id-leftˡ m
 
-eval-reify : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (m : UPMorphism U₁ U₂) → eval (reify m) ≡ m
-eval-reify m = refl
+  ----------------------------------------------------------------------
+  -- eval IS A FUNCTOR: it carries term concatenation to morphism composition.
+  -- eval (s ++ᵤO t) ≡ compose-hom (eval t) (eval s). Uses C's RIGHT identity
+  -- (base) and assoc (step) — the FLAG (i) laws again.
+  ----------------------------------------------------------------------
 
-------------------------------------------------------------------------
--- UPMorphism IS a category (the category laws the capstone deferred): identity
--- and associativity, all by η (refl) — function-composition assoc on source/target
--- and identical `coherent` chaining either way.
-------------------------------------------------------------------------
+  eval-++ : {X Y Z : O} (s : UPTermO O Hom X Y) (t : UPTermO O Hom Y Z)
+          → eval (s ++ᵤO t) ≡ compose-hom (eval t) (eval s)
+  eval-++ []O            t = sym (id-rightʳ (eval t))
+  eval-++ (liftO m ∷O s) t =
+    trans (cong (λ X → compose-hom X m) (eval-++ s t))
+          (assoc (eval t) (eval s) m)
 
-compose-idʳ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (m : UPMorphism U₁ U₂)
-            → compose-UPMorphism m (id-UPMorphism U₁) ≡ m
-compose-idʳ m = refl
+  eval-cong : {X Y : O} {s t : UPTermO O Hom X Y} → s ≡ t → eval s ≡ eval t
+  eval-cong = cong eval
 
-compose-idˡ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (m : UPMorphism U₁ U₂)
-            → compose-UPMorphism (id-UPMorphism U₂) m ≡ m
-compose-idˡ m = refl
+  ----------------------------------------------------------------------
+  -- THE COMMON STRUCTURE: eval = foldUPTermO into C (interp = unlift). The free
+  -- catamorphism — the unique functor out of the free category UPTermO. (Same
+  -- centre as FreeUP.extend / eea-fold: a word folds uniquely into any target.)
+  ----------------------------------------------------------------------
 
-compose-assoc : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} {U₄ : UPArrowP S₄ T₄ W₄}
-                (h : UPMorphism U₃ U₄) (g : UPMorphism U₂ U₃) (f : UPMorphism U₁ U₂)
-              → compose-UPMorphism (compose-UPMorphism h g) f
-              ≡ compose-UPMorphism h (compose-UPMorphism g f)
-compose-assoc h g f = refl
+  foldUPTermO : {T : O → O → Set}
+              → ({X : O} → T X X)
+              → ({X Y Z : O} → T Y Z → T X Y → T X Z)
+              → ({X Y : O} → UPGenO O Hom X Y → T X Y)
+              → {X Y : O} → UPTermO O Hom X Y → T X Y
+  foldUPTermO idT cmpT interp []O            = idT
+  foldUPTermO idT cmpT interp (g ∷O t)       = cmpT (foldUPTermO idT cmpT interp t) (interp g)
 
-------------------------------------------------------------------------
--- eval IS A FUNCTOR (the analysis's real keystone, VERIFIED): it carries term
--- concatenation to record composition. So semantic composition reduces to
--- syntactic append — the free/forgetful homomorphism.
-------------------------------------------------------------------------
+  unlift : {X Y : O} → UPGenO O Hom X Y → Hom X Y
+  unlift (liftO m) = m
 
-eval-++ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} (s : UPTerm U₁ U₂) (t : UPTerm U₂ U₃)
-        → eval (s ++ᵤ t) ≡ compose-UPMorphism (eval t) (eval s)
-eval-++ []           t = sym (compose-idʳ (eval t))
-eval-++ (lift m ∷ s) t =
-  trans (cong (λ X → compose-UPMorphism X m) (eval-++ s t))
-        (compose-assoc (eval t) (eval s) m)
+  eval-is-fold : {X Y : O} (t : UPTermO O Hom X Y)
+               → eval t ≡ foldUPTermO (λ {Z} → id-hom Z) compose-hom unlift t
+  eval-is-fold []O            = refl
+  eval-is-fold (liftO m ∷O t) = cong (λ w → compose-hom w m) (eval-is-fold t)
 
-------------------------------------------------------------------------
--- The EASY half of "make everything commute": equal terms have equal records
--- (cong eval). The HARD half — getting parallel paths to NORMALISE to the same
--- term — is the UP4 equational theory, NOT done here. So commutativity reduces to
--- word equality, but the word equality itself is the remaining work.
-------------------------------------------------------------------------
+  -- The universal property: ANY functor G (sends []O to idT, g∷t to cmp) IS the
+  -- fold. (FreeUP.extend-unique at UPTermO.)
+  foldUPTermO-unique :
+    {T : O → O → Set}
+    (idT : {X : O} → T X X)
+    (cmpT : {X Y Z : O} → T Y Z → T X Y → T X Z)
+    (interp : {X Y : O} → UPGenO O Hom X Y → T X Y)
+    (G : {X Y : O} → UPTermO O Hom X Y → T X Y)
+    → ({X : O} → G ([]O {X = X}) ≡ idT {X})
+    → ({X Y Z : O} (g : UPGenO O Hom X Y) (t : UPTermO O Hom Y Z)
+       → G (g ∷O t) ≡ cmpT (G t) (interp g))
+    → {X Y : O} (t : UPTermO O Hom X Y) → G t ≡ foldUPTermO idT cmpT interp t
+  foldUPTermO-unique idT cmpT interp G Gnil Gcons []O            = Gnil
+  foldUPTermO-unique idT cmpT interp G Gnil Gcons (g ∷O t) =
+    trans (Gcons g t)
+          (cong (λ X → cmpT X (interp g))
+                (foldUPTermO-unique idT cmpT interp G Gnil Gcons t))
 
-eval-cong : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {s t : UPTerm U₁ U₂} → s ≡ t → eval s ≡ eval t
-eval-cong = cong eval
+  ----------------------------------------------------------------------
+  -- UP4: the congruence induced by eval's kernel pair. s ≈ᵤ t iff eval s ≡ eval t;
+  -- it respects composition (the kernel of a functor is a congruence), so the
+  -- quotient UPTermO / ≈ᵤ is a category.
+  ----------------------------------------------------------------------
 
-------------------------------------------------------------------------
--- THE COMMON STRUCTURE (user: "when faced with an either/or, look for the common
--- structure, recursively"). The three open threads — det=(−1)ⁿ, UP4 (reify∘eval),
--- routing a .Term through eval — are NOT separate: they are all the FREE-CATEGORY
--- FOLD. `foldUPTerm` is the unique functor out of the free category UPTerm,
--- determined by a target (id + compose) and a generator interpretation. This IS the
--- centre (Free⊣Forgetful / FreeUP.extend): a word folds uniquely into any target.
---   • eval            = foldUPTerm into UPMorphism (interp = unlift)   [proved below]
---   • upterm-parity   = foldUPTerm into ℤ/2 = (Bool, false, xor, const-flip)
---   • cf-det / list-parity = the same fold on the CF/EEA-trace word
---   • UP4             = the KERNEL of this fold (terms with equal fold-image)
--- So the threads collapse to ONE object; each is `foldUPTerm` at a chosen target.
-------------------------------------------------------------------------
+  _≈ᵤ_ : {X Y : O} → UPTermO O Hom X Y → UPTermO O Hom X Y → Set
+  s ≈ᵤ t = eval s ≡ eval t
 
-foldUPTerm : {T : ObjRel}
-           → ({A B : Set} {V : A → B → Set} {U : UPArrowP A B V} → T U U)
-           → ({A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-              {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-              {A₃ B₃ : Set} {V₃ : A₃ → B₃ → Set} {U₃ : UPArrowP A₃ B₃ V₃}
-              → T U₂ U₃ → T U₁ U₂ → T U₁ U₃)
-           → ({A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-              {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-              → UPGen U₁ U₂ → T U₁ U₂)
-           → {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPTerm U₁ U₂ → T U₁ U₂
-foldUPTerm idT cmpT interp []      = idT
-foldUPTerm idT cmpT interp (g ∷ t) = cmpT (foldUPTerm idT cmpT interp t) (interp g)
+  ≈ᵤ-cong-++ : {X Y Z : O} {s s' : UPTermO O Hom X Y} {t t' : UPTermO O Hom Y Z}
+             → s ≈ᵤ s' → t ≈ᵤ t' → (s ++ᵤO t) ≈ᵤ (s' ++ᵤO t')
+  ≈ᵤ-cong-++ {s = s} {s'} {t} {t'} ss tt =
+    trans (eval-++ s t)
+          (trans (cong₂ compose-hom tt ss)
+                 (sym (eval-++ s' t')))
 
--- eval IS this fold, at the UPMorphism target with `unlift` the interpretation.
-unlift : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPGen U₁ U₂ → UPMorphism U₁ U₂
-unlift (lift m) = m
+  ----------------------------------------------------------------------
+  -- THE QUOTIENT — the substrate way: a section-based Quotient (the ℚ pattern).
+  -- normalize = reify ∘ eval is the canonical form (idempotent); ≈ᵤ is decided by
+  -- normal-form equality. UPTermO/≈ᵤ IS split-Canonical eval reify eval-reify.
+  ----------------------------------------------------------------------
 
-eval-is-fold : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂)
-             → eval t ≡ foldUPTerm (λ {U = U} → id-UPMorphism U) compose-UPMorphism unlift t
-eval-is-fold []           = refl
-eval-is-fold (lift m ∷ t) = cong (λ X → compose-UPMorphism X m) (eval-is-fold t)
+  normalize : {X Y : O} → UPTermO O Hom X Y → UPTermO O Hom X Y
+  normalize t = reify (eval t)
 
-------------------------------------------------------------------------
--- RECURSE AGAIN (user: "again, the common structure recursively — point back at
--- EEA, Bézout, CRT, the wedge operator, the bidi Lawvere work"). `foldUPTerm` is
--- itself an instance: it is the UNIVERSAL fold of a free trace into a target
--- algebra. `foldUPTerm-unique` proves the universal property — ANY G that is a
--- functor (sends [] to id, g∷t to cmp) IS foldUPTerm. This is `FreeUP.extend`'s
--- `extend-unique` at UPTerm; the SAME property `Algebra.Nat.GCD.Fold.eea-fold` has
--- (EEATrace → gcd/Bézout/CRT, one trace folded into many targets), and the wedge
--- `Trace` reads (forget/cell/keep). So all of them — foldUPTerm, eea-fold, the
--- wedge reads, CRT-combine — are ONE object: the catamorphism of a free trace =
--- the centre, Free⊣Forgetful. The recursion bottoms at the centre.
-------------------------------------------------------------------------
+  normalize-eval : {X Y : O} (t : UPTermO O Hom X Y) → eval (normalize t) ≡ eval t
+  normalize-eval t = eval-reify (eval t)
 
-foldUPTerm-unique :
-  {T : ObjRel}
-  (idT : {A B : Set} {V : A → B → Set} {U : UPArrowP A B V} → T U U)
-  (cmpT : {A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-          {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-          {A₃ B₃ : Set} {V₃ : A₃ → B₃ → Set} {U₃ : UPArrowP A₃ B₃ V₃}
-          → T U₂ U₃ → T U₁ U₂ → T U₁ U₃)
-  (interp : {A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-            {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-            → UPGen U₁ U₂ → T U₁ U₂)
-  (G : {A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-       {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-       → UPTerm U₁ U₂ → T U₁ U₂)
-  → ({A B : Set} {V : A → B → Set} {U : UPArrowP A B V} → G {U₁ = U} {U₂ = U} [] ≡ idT {U = U})
-  → ({A₁ B₁ : Set} {V₁ : A₁ → B₁ → Set} {U₁ : UPArrowP A₁ B₁ V₁}
-     {A₂ B₂ : Set} {V₂ : A₂ → B₂ → Set} {U₂ : UPArrowP A₂ B₂ V₂}
-     {A₃ B₃ : Set} {V₃ : A₃ → B₃ → Set} {U₃ : UPArrowP A₃ B₃ V₃}
-     (g : UPGen U₁ U₂) (t : UPTerm U₂ U₃) → G (g ∷ t) ≡ cmpT (G t) (interp g))
-  → {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂) → G t ≡ foldUPTerm idT cmpT interp t
-foldUPTerm-unique idT cmpT interp G Gnil Gcons []      = Gnil
-foldUPTerm-unique idT cmpT interp G Gnil Gcons (g ∷ t) =
-  trans (Gcons g t)
-        (cong (λ X → cmpT X (interp g))
-              (foldUPTerm-unique idT cmpT interp G Gnil Gcons t))
+  normalize-idem : {X Y : O} (t : UPTermO O Hom X Y)
+                 → normalize (normalize t) ≡ normalize t
+  normalize-idem t = cong reify (normalize-eval t)
 
-------------------------------------------------------------------------
--- UP4, MADE PRECISE. Not "kernel" loosely — the CONGRUENCE induced by eval's
--- kernel pair: `s ≈ᵤ t  iff  eval s ≡ eval t`. It RESPECTS composition (`≈ᵤ-cong-++`),
--- and that is exactly what makes the quotient `UPTerm / ≈ᵤ` a CATEGORY — the
--- presented category the threads were heading toward. The respect-law follows from
--- `eval-++` (eval is a functor): the kernel of a functor is automatically a
--- congruence. So UP4 is no longer "word-equality work" — it is this proven
--- congruence; the quotient itself is the section-based PresentedUP/normalise step
--- (no quotient types under --without-K).
-------------------------------------------------------------------------
+  ≈ᵤ→normal : {X Y : O} {s t : UPTermO O Hom X Y} → s ≈ᵤ t → normalize s ≡ normalize t
+  ≈ᵤ→normal e = cong reify e
 
-_≈ᵤ_ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPTerm U₁ U₂ → UPTerm U₁ U₂ → Set
-s ≈ᵤ t = eval s ≡ eval t
+  normal→≈ᵤ : {X Y : O} {s t : UPTermO O Hom X Y} → normalize s ≡ normalize t → s ≈ᵤ t
+  normal→≈ᵤ {s = s} {t} p =
+    trans (sym (normalize-eval s)) (trans (cong eval p) (normalize-eval t))
 
-≈ᵤ-cong-++ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {U₃ : UPArrowP S₃ T₃ W₃} {s s' : UPTerm U₁ U₂} {t t' : UPTerm U₂ U₃}
-           → s ≈ᵤ s' → t ≈ᵤ t' → (s ++ᵤ t) ≈ᵤ (s' ++ᵤ t')
-≈ᵤ-cong-++ {s = s} {s'} {t} {t'} ss tt =
-  trans (eval-++ s t)
-        (trans (cong₂ compose-UPMorphism tt ss)
-               (sym (eval-++ s' t')))
+  UPTermO-Quotient : (X Y : O) → Quotient (UPTermO O Hom X Y) _≈ᵤ_
+  UPTermO-Quotient X Y = ker-Quotient (eval {X} {Y})
 
-------------------------------------------------------------------------
--- THE QUOTIENT — the substrate way (user: "you're talking lack of quotient types
--- when we already have Q, wedge, and lossless Q↔R"). No HITs needed: the substrate
--- realizes a quotient by a CANONICAL FORM (a section) — ℚ = (ℤ×ℕ)/≈ via
--- reduce/Canonical, the wedge via rem<b, CRT via QuotientProduct. UPTerm/≈ᵤ is the
--- SAME: `normalize = reify ∘ eval` is the canonical form (the one-generator word),
--- idempotent, and ≈ᵤ is DECIDED by normal-form equality. So UPTerm/≈ᵤ is a
--- section-based Quotient (the ℚ pattern), realized losslessly through eval/reify —
--- not a barrier.
-------------------------------------------------------------------------
-
-normalize : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} → UPTerm U₁ U₂ → UPTerm U₁ U₂
-normalize t = reify (eval t)
-
-normalize-eval : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂) → eval (normalize t) ≡ eval t
-normalize-eval t = eval-reify (eval t)
-
-normalize-idem : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} (t : UPTerm U₁ U₂)
-               → normalize (normalize t) ≡ normalize t
-normalize-idem t = cong reify (normalize-eval t)
-
--- ≈ᵤ ⟺ equal canonical form: the section decides the congruence (exactly ℚ's
--- `a ≈ℚ b ⟺ reduce a ≡ reduce b`).
-≈ᵤ→normal : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {s t : UPTerm U₁ U₂} → s ≈ᵤ t → normalize s ≡ normalize t
-≈ᵤ→normal e = cong reify e
-
-normal→≈ᵤ : {U₁ : UPArrowP S₁ T₁ W₁} {U₂ : UPArrowP S₂ T₂ W₂} {s t : UPTerm U₁ U₂} → normalize s ≡ normalize t → s ≈ᵤ t
-normal→≈ᵤ {s = s} {t} p =
-  trans (sym (normalize-eval s)) (trans (cong eval p) (normalize-eval t))
-
-------------------------------------------------------------------------
--- UPTerm/≈ᵤ IS a substrate Quotient — and now visibly an INSTANCE of the
--- split-idempotent apex (Algebra.Quotient.split-Canonical): eval is the fold,
--- reify the section, eval-reify the retraction (eval ∘ reify ≡ id), and the
--- split idempotent reify ∘ eval = `normalize` is the canonical form. So the
--- whole quotient is `split-Canonical eval reify eval-reify` — the same lemma
--- that realizes ℚ `reduce`, the wedge `recon`, EEA CF-shape, CRT `combine`.
--- (≈ᵤ = KerRel eval definitionally; normalize etc. above are the unfolded
--- names this instance produces.)
-------------------------------------------------------------------------
-
-UPTerm-Quotient : (U₁ : UPArrowP S₁ T₁ W₁) (U₂ : UPArrowP S₂ T₂ W₂) → Quotient (UPTerm U₁ U₂) _≈ᵤ_
-UPTerm-Quotient U₁ U₂ = ker-Quotient (eval {U₁ = U₁} {U₂ = U₂})
-
-UPTerm-Canonical : (U₁ : UPArrowP S₁ T₁ W₁) (U₂ : UPArrowP S₂ T₂ W₂) → Canonical⟦de760d07⟧ (UPTerm-Quotient U₁ U₂)
-UPTerm-Canonical U₁ U₂ = split-Canonical (eval {U₁ = U₁} {U₂ = U₂}) reify eval-reify
+  UPTermO-Canonical : (X Y : O) → Canonical⟦de760d07⟧ (UPTermO-Quotient X Y)
+  UPTermO-Canonical X Y = split-Canonical (eval {X} {Y}) reify eval-reify
