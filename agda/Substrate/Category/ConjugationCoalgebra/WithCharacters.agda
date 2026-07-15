@@ -65,10 +65,11 @@ private
 ------------------------------------------------------------------------
 
 record WithCharacters
-  (base : ConjugationCoalgebra {ℓ})
+  {G : Set ℓ} {_·_ : G → G → G} {ε : G} {_⁻¹ : G → G}
+  {Class : Set ℓ} {rep : Class → G} {in-class : Class → G → Set ℓ}
+  (base : ConjugationCoalgebra G _·_ ε _⁻¹ Class rep in-class)
   (V : Set ℓV) : Set (ℓ ⊔ ℓV) where
   constructor mkWithCharacters
-  open ConjugationCoalgebra base using (Class)
   field
     Char : Class → Class → V
 

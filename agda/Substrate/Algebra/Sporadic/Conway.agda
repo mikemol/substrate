@@ -57,10 +57,8 @@ module Co1
     in-class c ((g · h) · (g ⁻¹)))
   where
 
-  Co1-ConjugationCoalgebra : ConjugationCoalgebra
-  Co1-ConjugationCoalgebra = mkConjugationCoalgebra
-    Co1-G _·_ ε _⁻¹
-    (Fin 101) rep in-class in-class-rep conj-resp-class
+  Co1-ConjugationCoalgebra : ConjugationCoalgebra Co1-G _·_ ε _⁻¹ (Fin 101) rep in-class
+  Co1-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp-class
 
   Co1-class-count : ℕ
   Co1-class-count = 101
@@ -83,10 +81,8 @@ module Co2
     in-class c ((g · h) · (g ⁻¹)))
   where
 
-  Co2-ConjugationCoalgebra : ConjugationCoalgebra
-  Co2-ConjugationCoalgebra = mkConjugationCoalgebra
-    Co2-G _·_ ε _⁻¹
-    (Fin 60) rep in-class in-class-rep conj-resp-class
+  Co2-ConjugationCoalgebra : ConjugationCoalgebra Co2-G _·_ ε _⁻¹ (Fin 60) rep in-class
+  Co2-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp-class
 
   Co2-class-count : ℕ
   Co2-class-count = 60
@@ -109,10 +105,8 @@ module Co3
     in-class c ((g · h) · (g ⁻¹)))
   where
 
-  Co3-ConjugationCoalgebra : ConjugationCoalgebra
-  Co3-ConjugationCoalgebra = mkConjugationCoalgebra
-    Co3-G _·_ ε _⁻¹
-    (Fin 42) rep in-class in-class-rep conj-resp-class
+  Co3-ConjugationCoalgebra : ConjugationCoalgebra Co3-G _·_ ε _⁻¹ (Fin 42) rep in-class
+  Co3-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp-class
 
   Co3-class-count : ℕ
   Co3-class-count = 42

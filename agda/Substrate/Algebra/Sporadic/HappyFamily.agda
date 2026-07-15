@@ -56,9 +56,8 @@ module HN
   (conj-resp : (g : G) (c : Fin 54) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  HN-ConjugationCoalgebra : ConjugationCoalgebra
-  HN-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 54) rep in-class in-class-rep conj-resp
+  HN-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 54) rep in-class
+  HN-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 3. Thompson group Th.
@@ -73,9 +72,8 @@ module Th
   (conj-resp : (g : G) (c : Fin 48) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  Th-ConjugationCoalgebra : ConjugationCoalgebra
-  Th-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 48) rep in-class in-class-rep conj-resp
+  Th-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 48) rep in-class
+  Th-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 4. Held group He.
@@ -90,9 +88,8 @@ module He
   (conj-resp : (g : G) (c : Fin 33) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  He-ConjugationCoalgebra : ConjugationCoalgebra
-  He-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 33) rep in-class in-class-rep conj-resp
+  He-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 33) rep in-class
+  He-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 5. Janko group J₂.
@@ -107,9 +104,8 @@ module J2
   (conj-resp : (g : G) (c : Fin 21) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  J2-ConjugationCoalgebra : ConjugationCoalgebra
-  J2-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 21) rep in-class in-class-rep conj-resp
+  J2-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 21) rep in-class
+  J2-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 6. Higman-Sims group HS.
@@ -124,9 +120,8 @@ module HS
   (conj-resp : (g : G) (c : Fin 24) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  HS-ConjugationCoalgebra : ConjugationCoalgebra
-  HS-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 24) rep in-class in-class-rep conj-resp
+  HS-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 24) rep in-class
+  HS-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 7. McLaughlin group McL.
@@ -141,9 +136,8 @@ module McL
   (conj-resp : (g : G) (c : Fin 24) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  McL-ConjugationCoalgebra : ConjugationCoalgebra
-  McL-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 24) rep in-class in-class-rep conj-resp
+  McL-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 24) rep in-class
+  McL-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 8. Suzuki group Suz.
@@ -158,9 +152,8 @@ module Suz
   (conj-resp : (g : G) (c : Fin 43) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  Suz-ConjugationCoalgebra : ConjugationCoalgebra
-  Suz-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 43) rep in-class in-class-rep conj-resp
+  Suz-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 43) rep in-class
+  Suz-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- 9. Capstone — entire Happy Family in substrate.

@@ -52,16 +52,9 @@ conj-trivial = v4×v4-cover _
 -- rep = id, in-class c h = c ≡ h).
 ------------------------------------------------------------------------
 
-V4-coalg : ConjugationCoalgebra {0ℓ}
+V4-coalg : ConjugationCoalgebra V₄ _·_ ε inv V₄ (λ c → c) (λ c h → c ≡ h)
 V4-coalg = record
-  { G        = V₄
-  ; _·_      = _·_
-  ; ε        = ε
-  ; _⁻¹      = inv
-  ; Class    = V₄
-  ; rep      = λ c → c
-  ; in-class = λ c h → c ≡ h
-  ; in-class-rep = λ c → refl
+  { in-class-rep = λ c → refl
   ; conjugation-respects-class =
       λ g c h c≡h → trans c≡h (sym (conj-trivial g h))
   }

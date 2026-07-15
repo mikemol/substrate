@@ -85,8 +85,10 @@ open import Substrate.Category.ConjugationCoalgebra using (ConjugationCoalgebra)
 ------------------------------------------------------------------------
 
 module Recognizer
-  (K   : ConjugationCoalgebra {0ℓ})
-  (_≈_ : ConjugationCoalgebra.G K → ConjugationCoalgebra.G K → Set)
+  {G : Set} {_·_ : G → G → G} {ε : G} {_⁻¹ : G → G}
+  {Class : Set} {rep : Class → G} {in-class : Class → G → Set}
+  (K   : ConjugationCoalgebra G _·_ ε _⁻¹ Class rep in-class)
+  (_≈_ : G → G → Set)
   where
 
   open ConjugationCoalgebra K

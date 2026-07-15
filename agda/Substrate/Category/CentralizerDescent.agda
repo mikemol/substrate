@@ -53,16 +53,16 @@ private
 -- constructive existence supplied per-instance.
 ------------------------------------------------------------------------
 
-record CentralizerDescent : Set (lsuc ℓ) where
+record CentralizerDescent
+  (G-base : Set ℓ) (_·b_ : G-base → G-base → G-base) (εb : G-base) (_⁻¹b : G-base → G-base)
+  (Class-base : Set ℓ) (rep-base : Class-base → G-base) (in-class-base : Class-base → G-base → Set ℓ)
+  (G-descent : Set ℓ) (_·d_ : G-descent → G-descent → G-descent) (εd : G-descent) (_⁻¹d : G-descent → G-descent)
+  (Class-descent : Set ℓ) (rep-descent : Class-descent → G-descent) (in-class-descent : Class-descent → G-descent → Set ℓ)
+  : Set (lsuc ℓ) where
   constructor mkCentralizerDescent
   field
-    base         : ConjugationCoalgebra {ℓ}
-    descent      : ConjugationCoalgebra {ℓ}
-
-  open ConjugationCoalgebra base
-    renaming (G to G-base; _·_ to _·b_; _⁻¹ to _⁻¹b; Class to Class-base; rep to rep-base)
-  open ConjugationCoalgebra descent
-    renaming (G to G-descent)
+    base         : ConjugationCoalgebra G-base _·b_ εb _⁻¹b Class-base rep-base in-class-base
+    descent      : ConjugationCoalgebra G-descent _·d_ εd _⁻¹d Class-descent rep-descent in-class-descent
 
   field
     target-class : Class-base

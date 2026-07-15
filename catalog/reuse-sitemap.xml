@@ -576,7 +576,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.16</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.15</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.16</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>

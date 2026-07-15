@@ -11,8 +11,8 @@ _840 structures · 725 never-refined (in-degree 0) · 439 refine-nothing (out-de
 | structure | ← refined by | home |
 |---|---:|---|
 | `ℕ` | 176 | `Substrate.Foundation.Nat` |
-| `_≡_` | 29 | `Substrate.Foundation.Eq` |
 | `Fin` | 29 | `Substrate.Foundation.Fin` |
+| `_≡_` | 27 | `Substrate.Foundation.Eq` |
 | `Word` | 24 | `Substrate.Groups.Coxeter.Word` |
 | `Dec` | 22 | `Substrate.Foundation.Negation` |
 | `Gen` | 20 | `Substrate.Groups.Coxeter.Cyclic.Base` |

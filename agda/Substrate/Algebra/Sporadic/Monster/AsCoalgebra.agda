@@ -75,17 +75,8 @@ module Substrate.Algebra.Sporadic.Monster.AsCoalgebra
 -- 194 conjugacy classes + axioms ARE the substrate-side Monster.
 ------------------------------------------------------------------------
 
-Monster-ConjugationCoalgebra : ConjugationCoalgebra
-Monster-ConjugationCoalgebra = mkConjugationCoalgebra
-  M
-  _·M_
-  εM
-  _⁻¹M
-  (Fin 194)
-  rep-M
-  in-class-M
-  in-class-rep-M
-  conjugation-respects-class-M
+Monster-ConjugationCoalgebra : ConjugationCoalgebra M _·M_ εM _⁻¹M (Fin 194) rep-M in-class-M
+Monster-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep-M conjugation-respects-class-M
 
 ------------------------------------------------------------------------
 -- 2. Number of conjugacy classes (= 194; ATLAS-cited).

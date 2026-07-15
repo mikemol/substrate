@@ -70,24 +70,35 @@ private
 -- compatible with the group action.
 ------------------------------------------------------------------------
 
-record ConjugationCoalgebra : Set (lsuc ℓ) where
+-- ⟡held-family-sweep (set1-carrier-always-parameterize): the group/class CARRIERS
+-- (G, Class : Set ℓ) and the Set-valued membership RELATION (in-class : … → Set ℓ)
+-- are PARAMETERS, not fields — a record fielding a Set-carrier/relation is never an
+-- honest Set₁. The record then fields only the AXIOMS ⇒ Set ℓ (was Set (lsuc ℓ)).
+-- Accessors below read the carriers back off the type (the SourceP/L0-Source shim).
+record ConjugationCoalgebra
+    (G : Set ℓ) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
+    (Class : Set ℓ) (rep : Class → G) (in-class : Class → G → Set ℓ) : Set ℓ where
   constructor mkConjugationCoalgebra
   field
-    G        : Set ℓ
-    _·_      : G → G → G
-    ε        : G
-    _⁻¹      : G → G
-
-    Class    : Set ℓ
-    rep      : Class → G
-    in-class : Class → G → Set ℓ
-
     -- Class structure axioms.
     in-class-rep : (c : Class) → in-class c (rep c)
     conjugation-respects-class :
       (g : G) (c : Class) (h : G) →
       in-class c h →
       in-class c ((g · h) · (g ⁻¹))
+
+-- carrier accessors (the params, read off the type — so `open`/projection consumers
+-- switch to these): G-of / Class-of / rep-of / in-class-of / op-of / ε-of / inv-of.
+module _ {G : Set ℓ} {_·_ : G → G → G} {ε : G} {_⁻¹ : G → G}
+         {Class : Set ℓ} {rep : Class → G} {in-class : Class → G → Set ℓ} where
+  private CC = ConjugationCoalgebra G _·_ ε _⁻¹ Class rep in-class
+  G-of        : CC → Set ℓ                       ; G-of _        = G
+  Class-of    : CC → Set ℓ                       ; Class-of _    = Class
+  rep-of      : CC → (Class → G)                 ; rep-of _      = rep
+  in-class-of : CC → (Class → G → Set ℓ)         ; in-class-of _ = in-class
+  op-of       : CC → (G → G → G)                 ; op-of _       = _·_
+  ε-of        : CC → G                            ; ε-of _        = ε
+  inv-of      : CC → (G → G)                      ; inv-of _      = _⁻¹
 
 ------------------------------------------------------------------------
 -- Capstone — primitive in place.

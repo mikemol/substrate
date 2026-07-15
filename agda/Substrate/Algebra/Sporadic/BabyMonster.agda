@@ -61,17 +61,8 @@ module Substrate.Algebra.Sporadic.BabyMonster
 -- 1. The BabyMonster as a ConjugationCoalgebra.
 ------------------------------------------------------------------------
 
-BabyMonster-ConjugationCoalgebra : ConjugationCoalgebra
-BabyMonster-ConjugationCoalgebra = mkConjugationCoalgebra
-  B
-  _·B_
-  εB
-  _⁻¹B
-  (Fin 184)
-  rep-B
-  in-class-B
-  in-class-rep-B
-  conjugation-respects-class-B
+BabyMonster-ConjugationCoalgebra : ConjugationCoalgebra B _·B_ εB _⁻¹B (Fin 184) rep-B in-class-B
+BabyMonster-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep-B conjugation-respects-class-B
 
 ------------------------------------------------------------------------
 -- 2. Number of conjugacy classes (= 184; ATLAS-cited).

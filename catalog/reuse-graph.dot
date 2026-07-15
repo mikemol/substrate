@@ -1033,9 +1033,7 @@ digraph reuse {
   "Substrate.Category.Cone.FieldFilling.FieldFilling" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Cone.WithMorphisms.ConeWithMorphisms" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.Cone.WithMorphisms.ConeWithMorphisms" -> "Substrate.Foundation.Nat.ℕ";
-  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NonSimplicityWitness" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NonSimplicityWitness" -> "Substrate.Groups.V4.Bijection.V₄";
-  "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NormalSubgroup" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4._.NormalSubgroup" -> "Substrate.Groups.V4.Bijection.V₄";
   "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NonSimplicityWitness" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";
   "Substrate.Category.ConjugationCoalgebra.Simplicity.Recognizer._.NormalSubgroup" -> "Substrate.Category.ConjugationCoalgebra.ConjugationCoalgebra";

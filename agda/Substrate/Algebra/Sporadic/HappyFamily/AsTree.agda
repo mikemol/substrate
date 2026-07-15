@@ -71,9 +71,23 @@ module Substrate.Algebra.Sporadic.HappyFamily.AsTree
   --   17 = Mathieu M₂₂
   --   18 = Mathieu M₁₂
   --   19 = Mathieu M₁₁
-  (HF-CCA : Fin 20 → ConjugationCoalgebra {0ℓ})
-  -- Per-node centralizer-descent witness (from V1).
-  (HF-descent : Fin 20 → CentralizerDescent {0ℓ})
+  -- ⟡held-family-sweep: per-node CARRIER-FAMILIES (the CCA/descent carriers vary per member).
+  (HF-G : Fin 20 → Set) (HF-· : (i : Fin 20) → HF-G i → HF-G i → HF-G i)
+  (HF-ε : (i : Fin 20) → HF-G i) (HF-inv : (i : Fin 20) → HF-G i → HF-G i)
+  (HF-Class : Fin 20 → Set) (HF-rep : (i : Fin 20) → HF-Class i → HF-G i)
+  (HF-in-class : (i : Fin 20) → HF-Class i → HF-G i → Set)
+  (HF-CCA : (i : Fin 20) →
+            ConjugationCoalgebra (HF-G i) (HF-· i) (HF-ε i) (HF-inv i) (HF-Class i) (HF-rep i) (HF-in-class i))
+  -- Per-node centralizer-descent witness (from V1) + its 14 carrier-families.
+  (dGb : Fin 20 → Set) (d·b : (i : Fin 20) → dGb i → dGb i → dGb i)
+  (dεb : (i : Fin 20) → dGb i) (dib : (i : Fin 20) → dGb i → dGb i)
+  (dCb : Fin 20 → Set) (drb : (i : Fin 20) → dCb i → dGb i) (dicb : (i : Fin 20) → dCb i → dGb i → Set)
+  (dGd : Fin 20 → Set) (d·d : (i : Fin 20) → dGd i → dGd i → dGd i)
+  (dεd : (i : Fin 20) → dGd i) (did : (i : Fin 20) → dGd i → dGd i)
+  (dCd : Fin 20 → Set) (drd : (i : Fin 20) → dCd i → dGd i) (dicd : (i : Fin 20) → dCd i → dGd i → Set)
+  (HF-descent : (i : Fin 20) →
+                CentralizerDescent (dGb i) (d·b i) (dεb i) (dib i) (dCb i) (drb i) (dicb i)
+                                   (dGd i) (d·d i) (dεd i) (did i) (dCd i) (drd i) (dicd i))
   where
 
 ------------------------------------------------------------------------
@@ -139,6 +153,9 @@ HF-parent-of-root = refl
 HappyFamily-DescentTree : DescentTree
 HappyFamily-DescentTree = mkDescentTree
   (Fin 20)
+  HF-G HF-· HF-ε HF-inv HF-Class HF-rep HF-in-class
+  dGb d·b dεb dib dCb drb dicb
+  dGd d·d dεd did dCd drd dicd
   i0                    -- Root = Monster
   HF-CCA
   HF-parent

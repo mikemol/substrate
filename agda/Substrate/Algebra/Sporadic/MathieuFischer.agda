@@ -52,9 +52,8 @@ module M11
   (conj-resp : (g : G) (c : Fin 10) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  M11-ConjugationCoalgebra : ConjugationCoalgebra
-  M11-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 10) rep in-class in-class-rep conj-resp
+  M11-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 10) rep in-class
+  M11-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module M12
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -63,9 +62,8 @@ module M12
   (conj-resp : (g : G) (c : Fin 15) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  M12-ConjugationCoalgebra : ConjugationCoalgebra
-  M12-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 15) rep in-class in-class-rep conj-resp
+  M12-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 15) rep in-class
+  M12-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module M22
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -74,9 +72,8 @@ module M22
   (conj-resp : (g : G) (c : Fin 12) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  M22-ConjugationCoalgebra : ConjugationCoalgebra
-  M22-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 12) rep in-class in-class-rep conj-resp
+  M22-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 12) rep in-class
+  M22-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module M23
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -85,9 +82,8 @@ module M23
   (conj-resp : (g : G) (c : Fin 17) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  M23-ConjugationCoalgebra : ConjugationCoalgebra
-  M23-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 17) rep in-class in-class-rep conj-resp
+  M23-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 17) rep in-class
+  M23-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module M24
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -96,9 +92,8 @@ module M24
   (conj-resp : (g : G) (c : Fin 26) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  M24-ConjugationCoalgebra : ConjugationCoalgebra
-  M24-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 26) rep in-class in-class-rep conj-resp
+  M24-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 26) rep in-class
+  M24-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- Fischer groups.
@@ -111,9 +106,8 @@ module Fi22
   (conj-resp : (g : G) (c : Fin 65) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  Fi22-ConjugationCoalgebra : ConjugationCoalgebra
-  Fi22-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 65) rep in-class in-class-rep conj-resp
+  Fi22-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 65) rep in-class
+  Fi22-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module Fi23
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -122,9 +116,8 @@ module Fi23
   (conj-resp : (g : G) (c : Fin 98) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  Fi23-ConjugationCoalgebra : ConjugationCoalgebra
-  Fi23-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 98) rep in-class in-class-rep conj-resp
+  Fi23-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 98) rep in-class
+  Fi23-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 module Fi24'
   (G : Set) (_·_ : G → G → G) (ε : G) (_⁻¹ : G → G)
@@ -133,9 +126,8 @@ module Fi24'
   (conj-resp : (g : G) (c : Fin 108) (h : G) →
                in-class c h → in-class c ((g · h) · (g ⁻¹)))
   where
-  Fi24'-ConjugationCoalgebra : ConjugationCoalgebra
-  Fi24'-ConjugationCoalgebra = mkConjugationCoalgebra
-    G _·_ ε _⁻¹ (Fin 108) rep in-class in-class-rep conj-resp
+  Fi24'-ConjugationCoalgebra : ConjugationCoalgebra G _·_ ε _⁻¹ (Fin 108) rep in-class
+  Fi24'-ConjugationCoalgebra = mkConjugationCoalgebra in-class-rep conj-resp
 
 ------------------------------------------------------------------------
 -- Capstone — 8 sporadic groups added.

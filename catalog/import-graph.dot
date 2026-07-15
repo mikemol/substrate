@@ -5580,7 +5580,6 @@ digraph imports {
   "Substrate.Algebra.Sporadic.HappyFamily.AsTree" -> "Substrate.Category.ConjugationCoalgebra";
   "Substrate.Algebra.Sporadic.HappyFamily.AsTree" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Sporadic.HappyFamily.AsTree" -> "Substrate.Foundation.Fin";
-  "Substrate.Algebra.Sporadic.HappyFamily.AsTree" -> "Substrate.Foundation.Level";
   "Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent" -> "Substrate.Category.PrimeFactoredGauge.JointGenWrapper";
   "Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent" -> "Substrate.Category.SylowDecomposition";
   "Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent" -> "Substrate.Category.SylowDecomposition.FromWord";
@@ -6541,7 +6540,6 @@ digraph imports {
   "Substrate.Category.CentralizerDescent.Tree" -> "Substrate.Category.CentralizerDescent";
   "Substrate.Category.CentralizerDescent.Tree" -> "Substrate.Category.ConjugationCoalgebra";
   "Substrate.Category.CentralizerDescent.Tree" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.CentralizerDescent.Tree" -> "Substrate.Foundation.Level";
   "Substrate.Category.ChainDecomposition" -> "Substrate.Category.SylowDecomposition";
   "Substrate.Category.ChainDecomposition" -> "Substrate.Foundation.Fin";
   "Substrate.Category.ChainDecomposition" -> "Substrate.Foundation.Nat";
@@ -6697,7 +6695,6 @@ digraph imports {
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Empty";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Eq";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Fin";
-  "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Level";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Nat";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Negation";
   "Substrate.Category.ConjugationCoalgebra.Examples.V4" -> "Substrate.Foundation.Product";
@@ -6711,7 +6708,6 @@ digraph imports {
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Eq";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Fin";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Fin.Exists";
-  "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Level";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Nat";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Negation";
   "Substrate.Category.ConjugationCoalgebra.Simplicity" -> "Substrate.Foundation.Product";

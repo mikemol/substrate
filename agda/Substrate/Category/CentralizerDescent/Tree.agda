@@ -71,14 +71,41 @@ record DescentTree : Set₁ where
   constructor mkDescentTree
   field
     Nodes : Set
+    -- ⟡held-family-sweep: the per-node ConjugationCoalgebra/CentralizerDescent CARRIERS
+    -- vary per node, so they are Nodes-indexed FAMILIES (not a stored Σ-bundle). 7 for
+    -- CCA-at + 14 for descent-at's CentralizerDescent (base ×7, descent ×7).
+    Gᶜ        : Nodes → Set
+    _·ᶜ_      : (n : Nodes) → Gᶜ n → Gᶜ n → Gᶜ n
+    εᶜ        : (n : Nodes) → Gᶜ n
+    invᶜ      : (n : Nodes) → Gᶜ n → Gᶜ n
+    Classᶜ    : Nodes → Set
+    repᶜ      : (n : Nodes) → Classᶜ n → Gᶜ n
+    in-classᶜ : (n : Nodes) → Classᶜ n → Gᶜ n → Set
+    dGb  : Nodes → Set
+    d·b  : (n : Nodes) → dGb n → dGb n → dGb n
+    dεb  : (n : Nodes) → dGb n
+    dib  : (n : Nodes) → dGb n → dGb n
+    dCb  : Nodes → Set
+    drb  : (n : Nodes) → dCb n → dGb n
+    dicb : (n : Nodes) → dCb n → dGb n → Set
+    dGd  : Nodes → Set
+    d·d  : (n : Nodes) → dGd n → dGd n → dGd n
+    dεd  : (n : Nodes) → dGd n
+    did  : (n : Nodes) → dGd n → dGd n
+    dCd  : Nodes → Set
+    drd  : (n : Nodes) → dCd n → dGd n
+    dicd : (n : Nodes) → dCd n → dGd n → Set
     Root  : Nodes
-    CCA-at : Nodes → ConjugationCoalgebra {0ℓ}
+    CCA-at : (n : Nodes) →
+             ConjugationCoalgebra (Gᶜ n) (_·ᶜ_ n) (εᶜ n) (invᶜ n) (Classᶜ n) (repᶜ n) (in-classᶜ n)
     parent : Nodes → Nodes
     parent-of-root : parent Root ≡ Root
     -- Per-edge descent witness: for any node n, there's a
     -- CentralizerDescent relating parent's CCA to this node's CCA
     -- (or, for Root, trivially related to itself).
-    descent-at : Nodes → CentralizerDescent {0ℓ}
+    descent-at : (n : Nodes) →
+                 CentralizerDescent (dGb n) (d·b n) (dεb n) (dib n) (dCb n) (drb n) (dicb n)
+                                    (dGd n) (d·d n) (dεd n) (did n) (dCd n) (drd n) (dicd n)
 
 open DescentTree public
 

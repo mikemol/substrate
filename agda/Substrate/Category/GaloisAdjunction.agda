@@ -72,16 +72,17 @@ private
 -- internalizes only the structure-preserving bridge.
 ------------------------------------------------------------------------
 
-record GaloisAdjunction : Set (lsuc ℓ) where
+record GaloisAdjunction
+  (Cₘ : Set ℓ) (_·ₘ_ : Cₘ → Cₘ → Cₘ) (εₘ : Cₘ) (_⁻¹ₘ : Cₘ → Cₘ)
+  (Classₘ : Set ℓ) (repₘ : Classₘ → Cₘ) (in-classₘ : Classₘ → Cₘ → Set ℓ)
+  : Set (lsuc ℓ) where
   constructor mkGaloisAdjunction
   field
     presentation : PresentedGroup {ℓ}
-    coalgebra    : ConjugationCoalgebra {ℓ}
+    coalgebra    : ConjugationCoalgebra Cₘ _·ₘ_ εₘ _⁻¹ₘ Classₘ repₘ in-classₘ
 
   open PresentedGroup presentation
     renaming (Carrier to Cₚ; _·_ to _·ₚ_; ε to εₚ; _⁻¹ to _⁻¹ₚ; _∼_ to _∼ₚ_)
-  open ConjugationCoalgebra coalgebra
-    renaming (G to Cₘ; _·_ to _·ₘ_; ε to εₘ; _⁻¹ to _⁻¹ₘ)
 
   field
     bridge      : Cₚ → Cₘ
