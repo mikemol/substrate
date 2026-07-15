@@ -220,8 +220,6 @@ digraph reuse {
   "Substrate.Category.CommutativeNonAssociativeAlgebra.CommutativeNonAssociativeAlgebra" [label="CommutativeNonAssociativeAlgebra\nSubstrate.Category.CommutativeNonAssociativeAlgebra"];
   "Substrate.Category.Comonoid.Comonoid" [label="Comonoid\nSubstrate.Category.Comonoid"];
   "Substrate.Category.Comonoid.Sites.V4.V4" [label="V4\nSubstrate.Category.Comonoid.Sites.V4", style=rounded];
-  "Substrate.Category.Comonoid.Term.ComonoidGen" [label="ComonoidGen\nSubstrate.Category.Comonoid.Term", style=rounded];
-  "Substrate.Category.Comonoid.Term.ComonoidTerm" [label="ComonoidTerm\nSubstrate.Category.Comonoid.Term", style=rounded];
   "Substrate.Category.ComposedReference.ActionAlgebra.ActionAlgebra" [label="ActionAlgebra\nSubstrate.Category.ComposedReference.ActionAlgebra"];
   "Substrate.Category.ComposedReference.BasisLabel.BasisLabel" [label="BasisLabel\nSubstrate.Category.ComposedReference.BasisLabel", style=rounded];
   "Substrate.Category.ComposedReference.EmissionSource.EmissionSource" [label="EmissionSource\nSubstrate.Category.ComposedReference.EmissionSource", style=rounded];

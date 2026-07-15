@@ -222,8 +222,6 @@
   <url><loc>https://substrate.local/Substrate/Category/CommutativeNonAssociativeAlgebra#CommutativeNonAssociativeAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Comonoid#Comonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Comonoid/Sites/V4#V4</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Comonoid/Term#ComonoidGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Comonoid/Term#ComonoidTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/ActionAlgebra#ActionAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/BasisLabel#BasisLabel</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ComposedReference/EmissionSource#EmissionSource</loc><priority>0.0</priority></url>
