@@ -20,7 +20,7 @@ module Substrate.Category.UniversalProperty.X8aSkiInstance where
 
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Category.UniversalProperty.X8aUnique using (module CRUnique)
+open import Substrate.Category.UniversalProperty.ConfluenceUnique using (module CRUnique)
 open import Substrate.FUSep.FUSepQReduce
   using (Reduce; _↦_; SN; sn-confluent) renaming (Tm to Tm⟦533ef80d⟧)  -- the SKI shedding system (⇒ is an explicit arg)
 open import Substrate.FUSep.FUSepQCR using (module Newman)
