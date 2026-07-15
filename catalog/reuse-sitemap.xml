@@ -193,8 +193,6 @@
   <url><loc>https://substrate.local/Substrate/Category/CartanRootEquivalence#CartanRoot-Equivalence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CartanType#CartanType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#CascadedCoalgebra</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra/Term#CascadeGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra/Term#CascadeTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#TripleCascade</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.09</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent#CentralizerDescent</loc><priority>0.0</priority></url>
@@ -251,8 +249,6 @@
   <url><loc>https://substrate.local/Substrate/Category/DaggerCategory#DaggerCategory</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CategoricalFourierTransform</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#FrobeniusBasisStructure</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform/Term#DFTTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CRTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#ConvolutionTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DFTasMarkovMorphism</loc><priority>0.0</priority></url>

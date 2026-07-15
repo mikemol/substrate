@@ -191,8 +191,6 @@ digraph reuse {
   "Substrate.Category.CartanRootEquivalence.CartanRoot-Equivalence" [label="CartanRoot-Equivalence\nSubstrate.Category.CartanRootEquivalence"];
   "Substrate.Category.CartanType.CartanType" [label="CartanType\nSubstrate.Category.CartanType"];
   "Substrate.Category.CascadedCoalgebra.CascadedCoalgebra" [label="CascadedCoalgebra\nSubstrate.Category.CascadedCoalgebra"];
-  "Substrate.Category.CascadedCoalgebra.Term.CascadeGen" [label="CascadeGen\nSubstrate.Category.CascadedCoalgebra.Term", style=rounded];
-  "Substrate.Category.CascadedCoalgebra.Term.CascadeTerm" [label="CascadeTerm\nSubstrate.Category.CascadedCoalgebra.Term", style=rounded];
   "Substrate.Category.CascadedCoalgebra.TripleCascade" [label="TripleCascade\nSubstrate.Category.CascadedCoalgebra"];
   "Substrate.Category.CategoryOf.CategoryOf" [label="CategoryOf\nSubstrate.Category.CategoryOf"];
   "Substrate.Category.CentralizerDescent.CentralizerDescent" [label="CentralizerDescent\nSubstrate.Category.CentralizerDescent"];
@@ -249,8 +247,6 @@ digraph reuse {
   "Substrate.Category.DaggerCategory.DaggerCategory" [label="DaggerCategory\nSubstrate.Category.DaggerCategory"];
   "Substrate.Category.DiscreteFourierTransform.CategoricalFourierTransform" [label="CategoricalFourierTransform\nSubstrate.Category.DiscreteFourierTransform"];
   "Substrate.Category.DiscreteFourierTransform.FrobeniusBasisStructure" [label="FrobeniusBasisStructure\nSubstrate.Category.DiscreteFourierTransform"];
-  "Substrate.Category.DiscreteFourierTransform.Term.DFTGen" [label="DFTGen\nSubstrate.Category.DiscreteFourierTransform.Term", style=rounded];
-  "Substrate.Category.DiscreteFourierTransform.Term.DFTTerm" [label="DFTTerm\nSubstrate.Category.DiscreteFourierTransform.Term", style=rounded];
   "Substrate.Category.DiscreteFourierTransform._.CRTDecomposition" [label="CRTDecomposition\nSubstrate.Category.DiscreteFourierTransform._"];
   "Substrate.Category.DiscreteFourierTransform._.ConvolutionTheorem" [label="ConvolutionTheorem\nSubstrate.Category.DiscreteFourierTransform._"];
   "Substrate.Category.DiscreteFourierTransform._.DFTasMarkovMorphism" [label="DFTasMarkovMorphism\nSubstrate.Category.DiscreteFourierTransform._"];

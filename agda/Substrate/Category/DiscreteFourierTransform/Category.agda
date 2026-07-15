@@ -1,26 +1,24 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.DiscreteFourierTransform.Category (T20)
--- DFT term-algebra category.
+--
+-- The graded-monoid structure of the DFT term-algebra. With the term carrier
+-- routed through the witness tower (DFTTerm = LehmerPath; _++ᶠ_ = _⊕_), the
+-- "category" is the graded monoid (DFTTerm, _++ᶠ_, []ᶠ) — a `GradedProductOver`
+-- whose laws are the tower's OWN proofs (⊕-unit-left / ⊕-unit-right / ⊕-assoc-over),
+-- not a bespoke `CategoryOf` re-proof.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.DiscreteFourierTransform.Category where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
-open import Substrate.Category.DiscreteFourierTransform.Term
+open import Substrate.Category.DiscreteFourierTransform.Term using (dft-product)
 
-++ᶠ-identityˡ : {s₁ s₂ : DFTContext} (t : DFTTerm s₁ s₂) → ([] ++ᶠ t) ≡ t
-++ᶠ-identityˡ _ = refl
-
-++ᶠ-identityʳ : {s₁ s₂ : DFTContext} (t : DFTTerm s₁ s₂) → (t ++ᶠ []) ≡ t
-++ᶠ-identityʳ []       = refl
-++ᶠ-identityʳ (x ∷ xs) = cong (x ∷_) (++ᶠ-identityʳ xs)
-
-++ᶠ-assoc :
-  {s₁ s₂ s₃ s₄ : DFTContext}
-  (t : DFTTerm s₁ s₂) (u : DFTTerm s₂ s₃) (v : DFTTerm s₃ s₄) →
-  ((t ++ᶠ u) ++ᶠ v) ≡ (t ++ᶠ (u ++ᶠ v))
-++ᶠ-assoc []       u v = refl
-++ᶠ-assoc (x ∷ xs) u v = cong (x ∷_) (++ᶠ-assoc xs u v)
+-- Associativity of composition = the tower's GradedAssocOver on the graded
+-- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
+dft-assoc : GradedAssocOver +-assoc dft-product
+dft-assoc = ⊕-assoc-over

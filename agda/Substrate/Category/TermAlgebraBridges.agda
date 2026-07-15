@@ -43,11 +43,9 @@ open import Substrate.Category.PolyLens.Term using (PolyLensTerm)
 open import Substrate.Probability.ConjugateMonad.Term
   using (ConjTerm)
 open import Substrate.Category.DiscreteFourierTransform.Term
-  using (DFTTerm; DFTGen; DFTContext)
-  renaming ([] to []ᶠ; _∷_ to _∷ᶠ_)
+  using (DFTTerm)
 open import Substrate.Category.CascadedCoalgebra.Term
-  using (CascadeTerm; CascadeGen; CascadeState)
-  renaming ([] to []ᶜᶜ; _∷_ to _∷ᶜᶜ_)
+  using (CascadeTerm)
 open import Substrate.Algebra.PontryaginDual.Term
   using (CharTerm; CharGen)
 open import Substrate.Algebra.Wedge using (DivStr; Trace)
