@@ -490,7 +490,9 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.SieveClosure._.⊤₁" [label="⊤₁\nSubstrate.Category.UniversalProperty.SieveClosure._"];
   "Substrate.Category.UniversalProperty.StencilAbstract.StencilAgreement.Framed" [label="Framed\nSubstrate.Category.UniversalProperty.StencilAbstract.StencilAgreement"];
   "Substrate.Category.UniversalProperty.Term.UPGen" [label="UPGen\nSubstrate.Category.UniversalProperty.Term", style=rounded];
+  "Substrate.Category.UniversalProperty.Term.UPGenO" [label="UPGenO\nSubstrate.Category.UniversalProperty.Term", style=rounded];
   "Substrate.Category.UniversalProperty.Term.UPTerm" [label="UPTerm\nSubstrate.Category.UniversalProperty.Term", style=rounded];
+  "Substrate.Category.UniversalProperty.Term.UPTermO" [label="UPTermO\nSubstrate.Category.UniversalProperty.Term", style=rounded];
   "Substrate.Category.UniversalProperty.Topos.UPTopos" [label="UPTopos\nSubstrate.Category.UniversalProperty.Topos"];
   "Substrate.Category.UniversalProperty.UPArrowP" [label="UPArrowP\nSubstrate.Category.UniversalProperty"];
   "Substrate.Category.UniversalProperty.UniquenessStencilAbstract._.UniquenessStencil" [label="UniquenessStencil\nSubstrate.Category.UniversalProperty.UniquenessStencilAbstract._"];

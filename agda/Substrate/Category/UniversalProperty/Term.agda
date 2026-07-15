@@ -107,6 +107,36 @@ ObjRel = {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} → UPArrowP S₁ T₁
        → {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set} → UPArrowP S₂ T₂ W₂ → Set
 
 ------------------------------------------------------------------------
+-- ⟡ta-upterm COEXISTENCE — the O-parameterized generic forms (Set₀).
+--
+-- The telescope UPGen/UPTerm above are Set₁ because their constructors
+-- re-quantify the objects' {S T : Set}. The dissolution (the same two-leg
+-- parameterized-generator move that dissolved MarkovCategory.Term): the objects
+-- become a Set₀ object-alphabet PARAMETER O (LEG 2), and the UPMorphism payload
+-- becomes a CHOICE from the morphism set Hom (K:=Hom, recovered by the eval
+-- valuation, LEG 1). O/Hom are DATA parameters, so constructors + infix compose
+-- infer them; both datatypes land at Set₀. These coexist with the telescope
+-- forms until the ~12 sheaf consumers migrate, then the telescope forms are
+-- deleted and UPGenO/UPTermO renamed. (Eventual home: `module Site (O)(Hom)`.)
+------------------------------------------------------------------------
+
+data UPGenO (O : Set) (Hom : O → O → Set) : O → O → Set where
+  liftO : {X Y : O} → Hom X Y → UPGenO O Hom X Y
+
+data UPTermO (O : Set) (Hom : O → O → Set) : O → O → Set where
+  []O  : {X : O} → UPTermO O Hom X X
+  _∷O_ : {X Y Z : O} → UPGenO O Hom X Y → UPTermO O Hom Y Z → UPTermO O Hom X Z
+
+infixr 5 _∷O_
+
+_++ᵤO_ : {O : Set} {Hom : O → O → Set} {X Y Z : O}
+       → UPTermO O Hom X Y → UPTermO O Hom Y Z → UPTermO O Hom X Z
+[]O       ++ᵤO ys = ys
+(x ∷O xs) ++ᵤO ys = x ∷O (xs ++ᵤO ys)
+
+infixr 4 _++ᵤO_
+
+------------------------------------------------------------------------
 -- 4. Capstone for UP3.
 --
 -- The term-algebra is named. UP4 supplies the equational theory

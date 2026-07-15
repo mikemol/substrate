@@ -23,6 +23,7 @@ module Substrate.Category.UniversalProperty.Category where
 
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.UniversalProperty using (UPArrowP)
 
@@ -34,7 +35,7 @@ private variable
   W₃ : S₃ → T₃ → Set
   W₄ : S₄ → T₄ → Set
 open import Substrate.Category.UniversalProperty.Term
-  using (UPTerm; []; _∷_; _++ᵤ_)
+  using (UPTerm; []; _∷_; _++ᵤ_; UPTermO; []O; _∷O_; _++ᵤO_)
 
 ------------------------------------------------------------------------
 -- 1. Identity and composition (at the term level).
@@ -84,11 +85,13 @@ compose-UPTerm g f = f ++ᵤ g
 --   * identity + associativity laws
 ------------------------------------------------------------------------
 
--- ⟡set1-paydown: parameterize the object collection Obj : Set₁ and the hom-family
--- Hom : Obj → Obj → Set₁ out of the record (substrate stance: carriers/families are
--- params, never fields). They were the only Set₂ source, so the record drops from
--- Set₂ to Set₁; consumers write `UPCategory Obj Hom`.
-record UPCategory (Obj : Set₁) (Hom : Obj → Obj → Set₁) : Set₁ where
+-- ⟡set1-paydown: parameterize the object collection Obj and the hom-family
+-- Hom : Obj → Obj → … out of the record (substrate stance: carriers/families are
+-- params, never fields). ⟡ta-upterm FLAG (ii): the record is LEVEL-POLYMORPHIC —
+-- Obj : Set ℓ₀, Hom : Obj → Obj → Set ℓ₁, record : Set (ℓ₀ ⊔ ℓ₁) — so it accepts
+-- BOTH a Set₀ object alphabet O (the canonical UPTermO instance below, ℓ₀ = ℓ₁ = 0)
+-- AND the old Set₁ families (ℓ₀ = ℓ₁ = 1). Consumers write `UPCategory Obj Hom`.
+record UPCategory {ℓ₀ ℓ₁ : Level} (Obj : Set ℓ₀) (Hom : Obj → Obj → Set ℓ₁) : Set (ℓ₀ ⊔ ℓ₁) where
   field
     id-hom : (X : Obj) → Hom X X
     compose-hom : {X Y Z : Obj} → Hom Y Z → Hom X Y → Hom X Z
@@ -110,12 +113,48 @@ open UPCategory public
 -- 4. The substrate's canonical UPCategory instance.
 ------------------------------------------------------------------------
 
--- ⟡UPArrow-dissolve C: UPCategory-canonical RETIRED — the UPArrowP telescope has
--- no single Set₀/Set₁ object TYPE to pass as `Obj`, and the mission rejects a
--- Σ-bundle object type. The generic UPCategory record (parameterized over any
--- Obj/Hom) stays; the term-level id-UPTerm/compose-UPTerm/++ᵤ-laws above ARE the
--- category structure, now telescope-indexed. (⟡UPGen-ℕ-index would supply a Set₀
--- Obj to re-instantiate this, deferred.)
+-- ⟡ta-upterm: UPCategory-canonical REINSTATED over the O-parameterized Set₀ forms
+-- (Term.agda's UPTermO). The term-level id/compose/laws collapse to the object index
+-- {X : O}; UPCategory is now level-polymorphic (FLAG ii), so its Obj = O : Set₀ fits.
+-- These O-forms COEXIST with the telescope forms above until the ~12 sheaf consumers
+-- migrate to the module Site (O)(Hom) telescope, then the telescope forms are deleted
+-- and the O-forms renamed. (Retires the ⟡UPGen-ℕ-index deferral: no ℕ-index needed —
+-- O IS the Set₀ object alphabet.)
+
+id-UPTermO : {O : Set} {Hom : O → O → Set} (X : O) → UPTermO O Hom X X
+id-UPTermO _ = []O
+
+compose-UPTermO :
+  {O : Set} {Hom : O → O → Set} {X Y Z : O} →
+  UPTermO O Hom Y Z → UPTermO O Hom X Y → UPTermO O Hom X Z
+compose-UPTermO g f = f ++ᵤO g
+
+++ᵤO-identityˡ :
+  {O : Set} {Hom : O → O → Set} {X Y : O} (t : UPTermO O Hom X Y) → ([]O ++ᵤO t) ≡ t
+++ᵤO-identityˡ _ = refl
+
+++ᵤO-identityʳ :
+  {O : Set} {Hom : O → O → Set} {X Y : O} (t : UPTermO O Hom X Y) → (t ++ᵤO []O) ≡ t
+++ᵤO-identityʳ []O       = refl
+++ᵤO-identityʳ (x ∷O xs) = cong (x ∷O_) (++ᵤO-identityʳ xs)
+
+++ᵤO-assoc :
+  {O : Set} {Hom : O → O → Set} {X Y Z W : O}
+  (t : UPTermO O Hom X Y) (u : UPTermO O Hom Y Z) (v : UPTermO O Hom Z W) →
+  ((t ++ᵤO u) ++ᵤO v) ≡ (t ++ᵤO (u ++ᵤO v))
+++ᵤO-assoc []O       u v = refl
+++ᵤO-assoc (x ∷O xs) u v = cong (x ∷O_) (++ᵤO-assoc xs u v)
+
+-- The canonical instance: objects = O, homs = UPTermO O Hom, identity = []O,
+-- composition = ++ᵤO. The ˡ/ʳ swap is real (compose g f = f ++ᵤO g).
+UPCategory-canonical : (O : Set) (Hom : O → O → Set) → UPCategory O (UPTermO O Hom)
+UPCategory-canonical O Hom = record
+  { id-hom      = id-UPTermO
+  ; compose-hom = compose-UPTermO
+  ; id-leftˡ    = λ f → ++ᵤO-identityʳ f
+  ; id-rightʳ   = λ f → ++ᵤO-identityˡ f
+  ; assoc       = λ h g f → sym (++ᵤO-assoc f g h)
+  }
 
 ------------------------------------------------------------------------
 -- 5. Capstone for UP7.

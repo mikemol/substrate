@@ -7483,9 +7483,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.EqBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.EqBackedGraded" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Algebra.Quotient";
-  "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Category.UniversalProperty";
-  "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Category.UniversalProperty.Compose";
-  "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Category.UniversalProperty.Morphism";
+  "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Category.UniversalProperty.Category";
   "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Eval" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.ExtrudeBisimDetect" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
