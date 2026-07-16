@@ -7907,7 +7907,13 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Category.UniversalProperty.InternalHom" -> "Substrate.Category.UniversalProperty.Presheaf";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Category";
   "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Sieve";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Foundation.Empty";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Foundation.Sum";
   "Substrate.Category.UniversalProperty.InteropGraded" -> "Substrate.Foundation.Fin";
   "Substrate.Category.UniversalProperty.InteropGraded" -> "Substrate.Foundation.Fin.Combine";
   "Substrate.Category.UniversalProperty.InteropGraded" -> "Substrate.Foundation.Fin.Combine.Assoc";
