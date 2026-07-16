@@ -6,7 +6,7 @@
 -- The three Grothendieck pretopology axioms, stated explicitly at
 -- the UPCategory level.
 --
--- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTerm O Hom.
 -- (O, Hom) enter via the enclosing section.
 ------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@
 module Substrate.Category.UniversalProperty.CoverageAxioms where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.UniversalProperty.Term using (UPTermO; []O)
+open import Substrate.Category.UniversalProperty.Term using (UPTerm; [])
 open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 
 module _ (O : Set) (Hom : O → O → Set) where
@@ -30,7 +30,7 @@ module _ (O : Set) (Hom : O → O → Set) where
   singleton-id-Cover U = record
     { Idx   = ⊤
     ; src   = λ _ → U
-    ; arrow = λ _ → []O
+    ; arrow = λ _ → []
     }
 
   ------------------------------------------------------------------------

@@ -487,9 +487,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" [label="FactorsThroughCover\nSubstrate.Category.UniversalProperty.SieveClosure._"];
   "Substrate.Category.UniversalProperty.StencilAbstract.StencilAgreement.Framed" [label="Framed\nSubstrate.Category.UniversalProperty.StencilAbstract.StencilAgreement"];
   "Substrate.Category.UniversalProperty.Term.UPGen" [label="UPGen\nSubstrate.Category.UniversalProperty.Term", style=rounded];
-  "Substrate.Category.UniversalProperty.Term.UPGenO" [label="UPGenO\nSubstrate.Category.UniversalProperty.Term", style=rounded];
   "Substrate.Category.UniversalProperty.Term.UPTerm" [label="UPTerm\nSubstrate.Category.UniversalProperty.Term", style=rounded];
-  "Substrate.Category.UniversalProperty.Term.UPTermO" [label="UPTermO\nSubstrate.Category.UniversalProperty.Term", style=rounded];
   "Substrate.Category.UniversalProperty.Topos.UPTopos" [label="UPTopos\nSubstrate.Category.UniversalProperty.Topos"];
   "Substrate.Category.UniversalProperty.UPArrowP" [label="UPArrowP\nSubstrate.Category.UniversalProperty"];
   "Substrate.Category.UniversalProperty.UniquenessStencilAbstract._.UniquenessStencil" [label="UniquenessStencil\nSubstrate.Category.UniversalProperty.UniquenessStencilAbstract._"];
@@ -1168,9 +1166,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.QuotientProduct.QuotientProduct" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Coverage._.UPCover";
-  "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Term.UPTermO";
-  "Substrate.Category.UniversalProperty.Term.UPGen" -> "Substrate.Category.UniversalProperty.UPArrowP";
-  "Substrate.Category.UniversalProperty.Term.UPTerm" -> "Substrate.Category.UniversalProperty.UPArrowP";
+  "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Term.UPTerm";
   "Substrate.Category.UniversalProperty.X8aConfluentClassifier._._._⇒*_" -> "Substrate.Category.UniversalProperty.X8aConfluentClassifier.ConfluentClassifier";
   "Substrate.Category.UniversalProperty.X8aConfluentClassifier._._._⇒*_" -> "Substrate.FUSep.FUSepQReduce.Tm";
   "Substrate.Category.UniversalProperty.X8aSkiInstance.SkiCR._._⇒*_" -> "Substrate.FUSep.FUSepQReduce.Tm";

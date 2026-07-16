@@ -7,7 +7,7 @@
 -- object U : O of a set of UPCovers (the "designated covers") closed
 -- under stability + transitivity + identity.
 --
--- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTerm O Hom.
 -- (O, Hom) enter via the enclosing section.
 ------------------------------------------------------------------------
 

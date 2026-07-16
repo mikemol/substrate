@@ -490,11 +490,9 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/SieveClosure#FactorsThroughCover</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/StencilAbstract#Framed</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPGenO</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPTerm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPTermO</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPTerm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Topos#UPTopos</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrowP</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrowP</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/UniquenessStencilAbstract#UniquenessStencil</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#ConfluentClassifier</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#_⇒*_</loc><priority>0.0</priority></url>

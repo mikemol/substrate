@@ -13,7 +13,7 @@ module Substrate.Category.UniversalProperty.SieveClosure where
 
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.UniversalProperty.Term
-  using (UPTermO; _++ᵤO_)
+  using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Coverage
   using (UPCover; Idx; source-UP; arrow)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
@@ -28,10 +28,10 @@ module _ (O : Set) (Hom : O → O → Set) where
 
   record FactorsThroughCover
     {U : O} (c : UPCover O Hom U)
-    {V : O} (_ : UPTermO O Hom V U) : Set where
+    {V : O} (_ : UPTerm O Hom V U) : Set where
     field
       cover-idx : Idx c
-      prefix    : UPTermO O Hom V (source-UP O Hom c cover-idx)
+      prefix    : UPTerm O Hom V (source-UP O Hom c cover-idx)
 
   open FactorsThroughCover public
 
@@ -44,13 +44,13 @@ module _ (O : Set) (Hom : O → O → Set) where
 
   factor-precompose :
     {U V W : O}
-    (c : UPCover O Hom U) (t : UPTermO O Hom V U) →
+    (c : UPCover O Hom U) (t : UPTerm O Hom V U) →
     FactorsThroughCover c t →
-    (u : UPTermO O Hom W V) →
-    FactorsThroughCover c (u ++ᵤO t)
+    (u : UPTerm O Hom W V) →
+    FactorsThroughCover c (u ++ᵤ t)
   factor-precompose c t f u = record
     { cover-idx = cover-idx f
-    ; prefix    = u ++ᵤO prefix f
+    ; prefix    = u ++ᵤ prefix f
     }
 
   generated-Sieve : {U : O} → UPCover O Hom U → Sieve O Hom U

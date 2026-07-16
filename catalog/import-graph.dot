@@ -7388,7 +7388,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.BezoutGcdTransport" -> "Substrate.Algebra.Nat.GCD.Wedge";
   "Substrate.Category.UniversalProperty.BezoutGcdTransport" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.BezoutGcdTransport" -> "Substrate.Foundation.Nat";
-  "Substrate.Category.UniversalProperty.Category" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Category" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Category" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.Compose" -> "Substrate.Category.UniversalProperty";
@@ -8020,8 +8019,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.SubstrateTopos" -> "Substrate.Category.UniversalProperty.Sheaf";
   "Substrate.Category.UniversalProperty.SubstrateTopos" -> "Substrate.Category.UniversalProperty.Topos";
   "Substrate.Category.UniversalProperty.SubstrateTopos" -> "Substrate.Foundation.Unit";
-  "Substrate.Category.UniversalProperty.Term" -> "Substrate.Category.UniversalProperty";
-  "Substrate.Category.UniversalProperty.Term" -> "Substrate.Category.UniversalProperty.Morphism";
   "Substrate.Category.UniversalProperty.TermParity" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.TermParity" -> "Substrate.Foundation.Bool";
   "Substrate.Category.UniversalProperty.TermParity" -> "Substrate.Foundation.Eq";

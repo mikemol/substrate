@@ -12,7 +12,7 @@
 -- Substrate-honest scope: the matching condition is named at type
 -- level + signature-bearing.
 --
--- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTerm O Hom.
 -- (O, Hom) via the enclosing section.
 ------------------------------------------------------------------------
 

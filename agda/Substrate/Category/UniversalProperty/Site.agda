@@ -4,8 +4,8 @@
 -- ⟡ta-upterm-site: the (O, Hom) scope-anchor for the UP-topos stack.
 --
 -- The UP topos ranges over a Set₀ object-alphabet O whose homs are the FREE
--- CATEGORY on the Hom generators — UPTermO O Hom (identity = []O, composition
--- = ++ᵤO). This module fixes the telescope `module Site (O)(Hom)` and names the
+-- CATEGORY on the Hom generators — UPTerm O Hom (identity = [], composition
+-- = ++ᵤ). This module fixes the telescope `module Site (O)(Hom)` and names the
 -- site's hom-family + category (the reinstated UPCategory-canonical), re-exporting
 -- the Set₀ term-forms so each downstream presheaf/sheaf/coverage module opens ONE
 -- thing (`open Site O Hom`) instead of threading Term/Category imports separately.
@@ -22,7 +22,7 @@
 module Substrate.Category.UniversalProperty.Site where
 
 open import Substrate.Category.UniversalProperty.Term
-  using (UPGenO; liftO; UPTermO; []O; _∷O_; _++ᵤO_) public
+  using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_) public
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical) public
 
@@ -33,11 +33,11 @@ open import Substrate.Category.UniversalProperty.Category
 module Site (O : Set) (Hom : O → O → Set) where
 
   -- The site's hom-family: the free category on the Hom generators. A downstream
-  -- presheaf/cover writes its fields over `site-hom U V` (= UPTermO O Hom U V).
+  -- presheaf/cover writes its fields over `site-hom U V` (= UPTerm O Hom U V).
   site-hom : O → O → Set
-  site-hom = UPTermO O Hom
+  site-hom = UPTerm O Hom
 
-  -- The site category: objects = O, homs = site-hom, id = []O, ∘ = ++ᵤO — the
+  -- The site category: objects = O, homs = site-hom, id = [], ∘ = ++ᵤ — the
   -- reinstated canonical instance (UPCategory is level-polymorphic, so O : Set₀ fits).
   site-category : UPCategory O site-hom
   site-category = UPCategory-canonical O Hom
