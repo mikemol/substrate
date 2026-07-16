@@ -411,6 +411,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalLawvereCarrier#Reflexive</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalOrdinal#Ord</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalOrdinal#_&lt;_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalYClosed#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalYCombinator#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Discriminator#Discriminated</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimDriver#Driver</loc><priority>0.0</priority></url>

@@ -409,6 +409,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.DiagonalLawvereCarrier.Reflexive" [label="Reflexive\nSubstrate.Category.UniversalProperty.DiagonalLawvereCarrier"];
   "Substrate.Category.UniversalProperty.DiagonalOrdinal.Ord" [label="Ord\nSubstrate.Category.UniversalProperty.DiagonalOrdinal", style=rounded];
   "Substrate.Category.UniversalProperty.DiagonalOrdinal._<_" [label="_<_\nSubstrate.Category.UniversalProperty.DiagonalOrdinal", style=rounded];
+  "Substrate.Category.UniversalProperty.DiagonalYClosed._._⇒*_" [label="_⇒*_\nSubstrate.Category.UniversalProperty.DiagonalYClosed._", style=rounded];
   "Substrate.Category.UniversalProperty.DiagonalYCombinator._._⇒*_" [label="_⇒*_\nSubstrate.Category.UniversalProperty.DiagonalYCombinator._", style=rounded];
   "Substrate.Category.UniversalProperty.Discriminator._.Discriminated" [label="Discriminated\nSubstrate.Category.UniversalProperty.Discriminator._"];
   "Substrate.Category.UniversalProperty.ExtrudeBisimDriver.Driver" [label="Driver\nSubstrate.Category.UniversalProperty.ExtrudeBisimDriver"];
@@ -1117,6 +1118,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.DiagonalDoFComputable.Covers" -> "Substrate.Algebra.R.Trace.RealTrace";
   "Substrate.Category.UniversalProperty.DiagonalDoFComputable.Covers" -> "Substrate.Category.UniversalProperty.DiagonalDoFComputable.Obs";
   "Substrate.Category.UniversalProperty.DiagonalOrdinal._<_" -> "Substrate.Category.UniversalProperty.DiagonalOrdinal.Ord";
+  "Substrate.Category.UniversalProperty.DiagonalYClosed._._⇒*_" -> "Substrate.Algebra.R.Trace.SKIShedDuality.Tm";
   "Substrate.Category.UniversalProperty.DiagonalYCombinator._._⇒*_" -> "Substrate.Algebra.R.Trace.SKIShedDuality.Tm";
   "Substrate.Category.UniversalProperty.ExtrudeBisimRun._≈_" -> "Substrate.Category.UniversalProperty.ExtrudeBisimRun.RedTrace";
   "Substrate.Category.UniversalProperty.ExtrudeBisimUnfold.BisimOutcome" -> "Substrate.Algebra.R.Trace.SKIShedDuality.Tm";

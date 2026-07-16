@@ -581,6 +581,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.NuAbstractLimitInstance" [label="Wedge.NuAbstractLimitInstance"];
   "Substrate.Algebra.Wedge.NuShapeIso" [label="Wedge.NuShapeIso"];
   "Substrate.Algebra.Wedge.ParityBridge" [label="Wedge.ParityBridge"];
+  "Substrate.Algebra.Wedge.PrimePowerGraded" [label="Wedge.PrimePowerGraded"];
   "Substrate.Algebra.Wedge.Product" [label="Wedge.Product"];
   "Substrate.Algebra.Wedge.Product.Hom" [label="Product.Hom"];
   "Substrate.Algebra.Wedge.Product.LawTypes" [label="Product.LawTypes"];
@@ -954,6 +955,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.DiagonalOrdinal" [label="UniversalProperty.DiagonalOrdinal"];
   "Substrate.Category.UniversalProperty.DiagonalPolishDerivative" [label="UniversalProperty.DiagonalPolishDerivative"];
   "Substrate.Category.UniversalProperty.DiagonalRank" [label="UniversalProperty.DiagonalRank"];
+  "Substrate.Category.UniversalProperty.DiagonalYClosed" [label="UniversalProperty.DiagonalYClosed"];
   "Substrate.Category.UniversalProperty.DiagonalYCombinator" [label="UniversalProperty.DiagonalYCombinator"];
   "Substrate.Category.UniversalProperty.Discriminator" [label="UniversalProperty.Discriminator"];
   "Substrate.Category.UniversalProperty.EqBackedGraded" [label="UniversalProperty.EqBackedGraded"];
@@ -6057,6 +6059,13 @@ digraph imports {
   "Substrate.Algebra.Wedge.ParityBridge" -> "Substrate.Algebra.Wedge.Bridge";
   "Substrate.Algebra.Wedge.ParityBridge" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Wedge.ParityBridge" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Algebra.Nat.Prime";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Algebra.Wedge.Graded";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Foundation.List";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Foundation.List.Length";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.PrimePowerGraded" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.Product" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Wedge.Product" -> "Substrate.Algebra.Wedge.Graded";
   "Substrate.Algebra.Wedge.Product" -> "Substrate.Foundation.Eq";
@@ -7492,6 +7501,10 @@ digraph imports {
   "Substrate.Category.UniversalProperty.DiagonalRank" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.DiagonalRank" -> "Substrate.Foundation.Negation";
   "Substrate.Category.UniversalProperty.DiagonalRank" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.DiagonalYClosed" -> "Substrate.Algebra.R.Trace.SKIReductionToList";
+  "Substrate.Category.UniversalProperty.DiagonalYClosed" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
+  "Substrate.Category.UniversalProperty.DiagonalYClosed" -> "Substrate.Category.UniversalProperty.DiagonalLawvereSKI";
+  "Substrate.Category.UniversalProperty.DiagonalYClosed" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.Category.UniversalProperty.DiagonalYCombinator" -> "Substrate.Algebra.R.Trace.SKIReductionToList";
   "Substrate.Category.UniversalProperty.DiagonalYCombinator" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
   "Substrate.Category.UniversalProperty.DiagonalYCombinator" -> "Substrate.Category.UniversalProperty.DiagonalLawvereSKI";
