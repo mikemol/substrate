@@ -40,6 +40,7 @@ argperm
 argset
 argsig
 arities
+arounds
 arrs
 artefacts
 artin
@@ -71,6 +72,7 @@ baire
 barbosa
 barda
 basepoint
+basings
 basised
 bblk
 bcases
@@ -115,6 +117,7 @@ bisim
 bisimilar
 bisimilarity
 bisimilarly
+bisimulates
 bisimulation
 bitk
 bitkernel
@@ -361,6 +364,7 @@ cshape
 cstate
 csyms
 cubin
+cuda
 cumfreqs
 cuobjdump
 cupti
@@ -391,6 +395,7 @@ decomp
 dedrift
 dedup
 dedupe
+deduplicative
 deduplicator
 dedups
 defcopy
@@ -454,6 +459,7 @@ dmax
 dmemo
 dnarg
 docstrings
+doesnt
 dolan
 domi
 doneesc
@@ -553,6 +559,7 @@ fips
 fixpoint
 fixpoints
 flatbytes
+flattenings
 fmap
 fmatch
 fmoves
@@ -628,6 +635,7 @@ gfinv
 gfok
 gfold
 gforget
+gids
 giry
 gismu
 globalises
@@ -682,7 +690,6 @@ hcomp
 hden
 hedberg
 hetq
-het's
 hexdigest
 heyting
 hgpu
@@ -693,11 +700,11 @@ hnum
 hochschild
 holomorph
 holonomy
+homings
 homoiconic
 homoiconicity
 homomorphy
 homotopy
-hom's
 homset
 homsets
 hotrs
@@ -708,13 +715,16 @@ htags
 htkey
 htval
 hurwitz
+hylomorphisms
 hyps
+iagda
 idempotents
 idhg
 idperm
 idxd
 idxkind
 idxmods
+iface
 ifeq
 ifexp
 ifsplit
@@ -740,6 +750,7 @@ initiality
 injective
 injectively
 injectivity
+inlines
 inplane
 inspectable
 insts
@@ -773,6 +784,7 @@ ithkuil
 jaccard
 janko
 jmin
+journalctl
 joyal
 judgements
 kadd
@@ -789,6 +801,7 @@ kepeken
 keysched
 kface
 kfaces
+kfin
 kfinal
 kili
 klama
@@ -923,6 +936,7 @@ micropattern
 minimisation
 minunits
 minv
+mischaracterization
 mispredict
 mispredicted
 mispredicts
@@ -1083,7 +1097,6 @@ nfdf
 nffa
 nffb
 nfffda
-nf's
 ngcd
 nidx
 nilpotency
@@ -1102,6 +1115,7 @@ nodevec
 nodup
 noether
 noff
+nohup
 nonall
 nonanchor
 nonassoc
@@ -1169,6 +1183,7 @@ nzero
 obdd
 objag
 objpy
+objs
 obsbisim
 obscoalg
 obsmax
@@ -1340,11 +1355,11 @@ qeval
 qfold
 qgraph
 qhead
+qname
 qnamekind
 qnames
 qreduce
 qski
-qski's
 qtail
 quadradic
 quadtree
@@ -1404,6 +1419,7 @@ regen
 regenerable
 regrounded
 regrounding
+regroundings
 regs
 reimplementation
 reindexing
@@ -1437,6 +1453,7 @@ retargets
 retcon
 retconned
 retr
+rewirings
 rfold
 rigcat
 rightinv
@@ -1478,6 +1495,7 @@ saxpy
 sbox
 scen
 schreier
+schur
 sedenion
 sedenions
 segs
@@ -1542,6 +1560,7 @@ squarefree
 srank
 sseq
 sset
+ssot
 stabilisation
 stabilisations
 stabilise
@@ -1611,6 +1630,7 @@ symmetrisation
 symmetrised
 symmon
 sympify
+syms
 syncthreads
 synthed
 synthesizable
@@ -1685,6 +1705,7 @@ typeholer
 uids
 uidx
 unabstracted
+unbanked
 unbuilt
 unbump
 uncomputable
@@ -1718,6 +1739,8 @@ unmirrored
 unpairs
 unparseable
 unparser
+unpayable
+unpushed
 unquotiented
 unrank
 unranks
@@ -1741,6 +1764,7 @@ uvwx
 vadd
 valcmp
 vcodes
+vdata
 vecs
 vect
 vectorised
@@ -1792,4 +1816,5 @@ zcodec
 zcycle
 zdani
 zpow
+zram
 zsppf
