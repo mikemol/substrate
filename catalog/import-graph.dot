@@ -939,6 +939,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Coverage" [label="UniversalProperty.Coverage"];
   "Substrate.Category.UniversalProperty.CoverageAxioms" [label="UniversalProperty.CoverageAxioms"];
   "Substrate.Category.UniversalProperty.CrtBackedGraded" [label="UniversalProperty.CrtBackedGraded"];
+  "Substrate.Category.UniversalProperty.Decode6" [label="UniversalProperty.Decode6"];
   "Substrate.Category.UniversalProperty.DiagonalCBRank" [label="UniversalProperty.DiagonalCBRank"];
   "Substrate.Category.UniversalProperty.DiagonalDoF" [label="UniversalProperty.DiagonalDoF"];
   "Substrate.Category.UniversalProperty.DiagonalDoFComputable" [label="UniversalProperty.DiagonalDoFComputable"];
@@ -7416,6 +7417,18 @@ digraph imports {
   "Substrate.Category.UniversalProperty.CrtBackedGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.CrtBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.CrtBackedGraded" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Algebra.Quotient.CRT";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Algebra.Quotient.CRT.FromTrace";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.ObjectUniverse";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.Quotient";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.QuotientProduct";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.Recognized";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.TmDBGodel";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Category.UniversalProperty.Vacuity";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.UniversalProperty.Decode6" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.DiagonalCBRank" -> "Substrate.Category.UniversalProperty.DiagonalOrdinal";
   "Substrate.Category.UniversalProperty.DiagonalCBRank" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.DiagonalCBRank" -> "Substrate.Foundation.Product";
