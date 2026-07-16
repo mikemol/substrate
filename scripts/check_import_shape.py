@@ -10,11 +10,9 @@ it. Excludes level-polymorphic foundation dups (⊤/⊥ — same object, lifted)
 Usage: check_import_shape.py [--quiet]   (exit 1 on violations.)
 """
 import os, re, sys, collections, hashlib
+from _agdatext import strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 ALLOW = {"⊤","⊥","⊤₁"}   # level-poly foundation dups: the level is the spec, visible
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 # genuine-ambiguity names: declared in >1 module with >1 distinct shape-hash
 decls=collections.defaultdict(list)
 declre=re.compile(r"^(data|record)\s+(\S+)(.*)$")

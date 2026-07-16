@@ -11,10 +11,9 @@ Reveals which summit objects compose from which, and the lower-rank residues
 that bridge them.
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
+sa = split_arrows
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 text={}; kind={}; home={}; modof={}; fileof={}; body=collections.defaultdict(list)
 modre=re.compile(r"^module\s+(\S+)\s+where",re.M)
 declre=re.compile(r"^(data|record)\s+(\S+)(.*)$")
@@ -36,14 +35,6 @@ for dp,_,fns in os.walk(ROOT):
                 i=j; continue
             i+=1
 known=set(kind)
-def sa(s):
-    o=[];d=0;c=""
-    for ch in s:
-        if ch in "([{":d+=1
-        elif ch in ")]}":d-=1
-        if ch=="→" and d==0:o.append(c);c=""
-        else:c+=ch
-    o.append(c);return o
 def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
 
 produced=set(); consumed=set()

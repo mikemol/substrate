@@ -10,9 +10,8 @@ missing within-node ≃ pairs are the bridge TODO. Shape-iso is deliberately NOT
 used for membership (different objects can share a shape).
 """
 import os, re, collections
+from _agdatext import strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
 SUB=str.maketrans("₀₁₂₃₄₅₆₇₈₉ₐ","0123456789a")
 def norm(n): return n.translate(SUB).lower().replace("-","").replace("_","")
 

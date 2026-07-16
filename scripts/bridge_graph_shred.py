@@ -27,13 +27,11 @@ Heuristic, like the other shred tools (regex over stripped source); rank is a
 lower bound. Run from anywhere.
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
+sa = split_arrows
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 
-
-def strip(s):
-    s = re.sub(r"\{-.*?-\}", " ", s, flags=re.S)
-    return re.sub(r"--[^\n]*", " ", s)
 
 
 # ---- 1. the top-down shred graph (reuse rank4_shred's ranking) -------------
@@ -75,23 +73,6 @@ for dp, _, fns in os.walk(ROOT):
             i += 1
 known = set(kind)
 
-
-def sa(s):
-    o = []
-    d = 0
-    c = ""
-    for ch in s:
-        if ch in "([{":
-            d += 1
-        elif ch in ")]}":
-            d -= 1
-        if ch == "→" and d == 0:
-            o.append(c)
-            c = ""
-        else:
-            c += ch
-    o.append(c)
-    return o
 
 
 def toks(s):

@@ -6,12 +6,10 @@ shared structure, is an unconstructed cross-silo correspondence — found
 structurally. Trivial shapes (enums, ⊤) are kept but flagged by low weight.
 """
 import os, re, collections, hashlib
+from _agdatext import strip
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 STRUCT = {"→","×","Σ","⊎","≡","⊤","⊥","Set","Set₁","Set₂","∀","List","Vec","Fin","ℕ"}
-def strip(s):
-    s = re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 blocks, home = {}, {}            # name -> (kind,[exprs]) ; name -> file
 modof, fileof = {}, {}           # file -> module ; module -> file
 imports = collections.defaultdict(set)

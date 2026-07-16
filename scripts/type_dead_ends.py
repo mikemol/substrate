@@ -12,10 +12,8 @@ position), so flagged records need a projection check; DATA types are reliable
 (eliminated only by being passed to case/fold = an arg position).
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 kind={}; home={}; text={}
 for dp,_,fns in os.walk(ROOT):
     for fn in fns:
@@ -25,14 +23,6 @@ for dp,_,fns in os.walk(ROOT):
                 kind.setdefault(m.group(2),m.group(1)); home.setdefault(m.group(2),p)
 known=set(kind)
 
-def split_arrows(s):
-    out=[]; d=0; cur=""
-    for ch in s:
-        if ch in "([{": d+=1
-        elif ch in ")]}": d-=1
-        if ch=="→" and d==0: out.append(cur); cur=""
-        else: cur+=ch
-    out.append(cur); return out
 def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
 
 consumed=set(); produced=set()

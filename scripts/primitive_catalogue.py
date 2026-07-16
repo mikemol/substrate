@@ -32,13 +32,10 @@ Usage:
   scripts/primitive_catalogue.py --diff  Substrate.Category.PrimitiveInstances
 """
 import os, re, sys, collections
+from _agdatext import strip
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 AGDA = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda"))
-
-def strip(s):
-    s = re.sub(r"\{-.*?-\}", " ", s, flags=re.S)
-    return re.sub(r"--[^\n]*", "", s)
 
 modre  = re.compile(r"^module\s+(\S+)", re.M)   # name = first token; `where` may be on next line
 declre = re.compile(r"^(record|data)\s+([A-Za-z0-9_'⟦⟧]+)", re.M)

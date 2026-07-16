@@ -11,11 +11,9 @@ without inference. This appends a visible tag comment to that line:
 --fix appends missing tags. Tags match scripts/sppf_node_index.py's hashes.
 """
 import os, re, sys, collections, hashlib
+from _agdatext import strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 ALLOW = {"⊤","⊥","⊤₁"}
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 # collect decls with shape-hash + a short head-list; find genuinely-ambiguous names
 info=collections.defaultdict(list)   # name -> [(path, kind, hash, heads)]
 declre=re.compile(r"^(data|record)\s+(\S+)(.*)$")

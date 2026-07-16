@@ -18,10 +18,8 @@ like writes (so a field only ever destructured-by-pattern may be over-flagged
 reads (conservative — won't false-flag).
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 text={};
 for dp,_,fns in os.walk(ROOT):
     for fn in fns:
@@ -70,14 +68,6 @@ for f in allnames:
 
 # producers: a record name appearing as the RESULT type of some signature =
 # the record is constructed somewhere (a law-field is then discharged at build).
-def split_arrows(s):
-    out=[];d=0;cur=""
-    for ch in s:
-        if ch in "([{":d+=1
-        elif ch in ")]}":d-=1
-        if ch=="→" and d==0: out.append(cur);cur=""
-        else: cur+=ch
-    out.append(cur);return out
 recnames={R for (R,_) in rec_fields}
 produced=set()
 sig=re.compile(r"^\s*[^\s:]+\s*:\s*(.+)$")

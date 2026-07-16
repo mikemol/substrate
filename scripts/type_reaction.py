@@ -10,10 +10,8 @@ should DIFFER by reaction (different reactors = different meaning), and types
 that look different by introduction may SHARE a reaction profile.
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 # known types
 known=set(); text={}
 for dp,_,fns in os.walk(ROOT):
@@ -21,16 +19,6 @@ for dp,_,fns in os.walk(ROOT):
         if fn.endswith(".agda"):
             p=os.path.join(dp,fn); t=strip(open(p,encoding="utf-8").read()); text[p]=t
             for m in re.finditer(r"^(?:data|record)\s+(\S+)",t,re.M): known.add(m.group(1))
-
-def split_arrows(s):
-    # split on → at paren depth 0
-    out=[]; d=0; cur=""
-    for ch in s:
-        if ch in "([{": d+=1
-        elif ch in ")]}": d-=1
-        if ch=="→" and d==0: out.append(cur); cur=""
-        else: cur+=ch
-    out.append(cur); return out
 
 def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
 

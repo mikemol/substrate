@@ -11,10 +11,8 @@ Writes Markdown to stdout (intended: scratch/sppf_collision_index.md), the
 visible map the entity manipulating the code consults.
 """
 import os, re, collections, hashlib
+from _agdatext import strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 decls=collections.defaultdict(list)   # name -> [(module, kind, descriptor, shapehash)]
 modre=re.compile(r"^module\s+(\S+)\s+where",re.M)
 declre=re.compile(r"^(data|record)\s+(\S+)(.*)$")

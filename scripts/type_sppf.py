@@ -13,13 +13,10 @@ Reports: isomorphism classes (≥2 types sharing a skeleton-hash) and the top
 recurring field-shape motifs.
 """
 import os, re, sys, collections, hashlib
+from _agdatext import strip
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 STRUCT = {"→", "×", "Σ", "⊎", "≡", "⊤", "⊥", "Set", "Set₁", "Set₂", "∀", "List", "Vec", "Fin", "ℕ"}
-
-def strip(s):
-    s = re.sub(r"\{-.*?-\}", " ", s, flags=re.S)
-    return re.sub(r"--[^\n]*", " ", s)
 
 # 1. extract type blocks: decl line + following indented lines.
 blocks = {}   # name -> (kind, [type-expr strings])

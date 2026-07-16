@@ -15,6 +15,7 @@ structural sharing, the SPPF packings — is the PROJECTION.
   build(cores)         = write_events + project_sppf
 """
 import sqlite3, sys, os, glob, base64, json
+from _content_addr import _b64
 from collections import defaultdict
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "jea", "metalanguage"))
 import query_builders as QB               # ⟡query-rawtocore: single-source Core builders (run = execute)
@@ -25,8 +26,6 @@ from jea_agdai import decode_core, substrate_core_root
 from jea_rigcat import RIG_OPS                       # ⟡rig orbit-interning (the proven ⊕/⊗ op-set)
 CATALOG_DB = os.path.join(_ROOT, "catalog", "catalog.db")
 FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}   # jea_agdai.go referential set
-
-def _b64(s): return base64.b64encode(("" if s is None else s).encode("utf-8")).decode("ascii")
 
 EVENT_SCHEMA = """
 CREATE TABLE IF NOT EXISTS terms    (term_id TEXT PRIMARY KEY, text TEXT);

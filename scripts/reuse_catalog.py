@@ -22,9 +22,8 @@
 # checked by the two-run + vs-committed harness; the renders sort in PYTHON (not SQL ORDER BY),
 # because SQLite's lower()/collation differs from Python's on the Unicode struct names (ℕ, ℚ, α, …).
 import os, re, json, subprocess, collections, hashlib, sqlite3, base64
+from _content_addr import _b64
 
-def _b64(s):   # ⟡content-addressed-interner: the id of an interned string IS base64(string) — a
-    return base64.b64encode(("" if s is None else s).encode("utf-8")).decode("ascii")  # BIJECTIVE
 # content-address (reversible, collision-free — NOT a hash). Bounded because every interned string is
 # atomic (latent structure already decomposed out into path_seg/members): max ~92 chars → ~123 base64.
 

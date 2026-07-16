@@ -28,6 +28,7 @@ Approximate (a focused paren-aware parser, not full Agda; misses infix/where-bou
 laws) — a documented lower bound. Usage: law_motif_apex.py [--min N] [--show K]
 """
 import os, re, sys, collections
+from _agdatext import strip
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 MIN  = int(sys.argv[sys.argv.index("--min") + 1])  if "--min"  in sys.argv else 3
@@ -35,10 +36,6 @@ SHOW = int(sys.argv[sys.argv.index("--show") + 1]) if "--show" in sys.argv else 
 
 OPEN, CLOSE = "({⦃", ")}⦄"
 IDENT = re.compile(r"^[^\s()\[\]{}⦃⦄:;,]+$")
-
-def strip(s):
-    s = re.sub(r"\{-.*?-\}", " ", s, flags=re.S)
-    return re.sub(r"--[^\n]*", "", s)
 
 def depth_split(s, seps):
     """Split s on any separator in `seps` at bracket-depth 0. seps: list of strings."""

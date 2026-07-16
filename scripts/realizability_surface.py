@@ -16,10 +16,9 @@ Caveat: arg-position consume-scan misses infix/projection, so rank is a LOWER
 bound; the rank-1 set (neither produced nor consumed) is the reliable floor.
 """
 import os, re, collections
+from _agdatext import split_arrows, strip
+sa = split_arrows
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-def strip(s):
-    s=re.sub(r"\{-.*?-\}"," ",s,flags=re.S); return re.sub(r"--[^\n]*"," ",s)
-
 text={}; kind={}; home={}; modof={}; fileof={}
 modre=re.compile(r"^module\s+(\S+)\s+where",re.M)
 for dp,_,fns in os.walk(ROOT):
@@ -31,14 +30,6 @@ for dp,_,fns in os.walk(ROOT):
             mm=modre.search(t)
             if mm: modof[p]=mm.group(1); fileof[mm.group(1)]=p
 known=set(kind)
-def sa(s):
-    out=[];d=0;cur=""
-    for ch in s:
-        if ch in "([{":d+=1
-        elif ch in ")]}":d-=1
-        if ch=="→" and d==0: out.append(cur);cur=""
-        else: cur+=ch
-    out.append(cur);return out
 def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
 
 produced=set(); consumed=set()

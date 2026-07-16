@@ -11,12 +11,9 @@ direct users out through the reverse-import graph).
 Usage: audit_import_reach.py [NAME ...]   (default: a built-in spine list)
 """
 import os, re, sys, collections
+from _agdatext import strip
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-
-def strip(s):
-    s = re.sub(r"\{-.*?-\}", " ", s, flags=re.S)
-    return re.sub(r"--[^\n]*", " ", s)
 
 mod_of, file_of, text_of, toks_of = {}, {}, {}, {}
 modre  = re.compile(r"^module\s+(\S+)\s+where", re.M)
