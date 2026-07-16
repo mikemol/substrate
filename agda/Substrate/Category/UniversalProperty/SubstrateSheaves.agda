@@ -21,39 +21,36 @@
 
 module Substrate.Category.UniversalProperty.SubstrateSheaves where
 
-open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Category.UniversalProperty
-  using (UPArrowP; SourceP; TargetP; WitnessP)
+open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Category.UniversalProperty.Term using (UPTerm; _++ᵤ_)
+open import Substrate.Category.UniversalProperty.Category using (++ᵤ-assoc)
+open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
--- ⟡TODO(ta-upterm): InstancesAt below is NOT migrated to the Set₀ O-form. It
--- reads per-object SourceP/TargetP/WitnessP projections, which the opaque O-form
--- object (a plain element of O) does not carry — the Source/Target/Witness data
--- moved into Hom. A faithful O-form InstancesAt needs the semantic evaluator
--- (UP3) to reconstruct each object's instance-set from (O, Hom); that is not
--- available here. So this definition stays on the (still-exported) carrier-
--- parameterized UPArrowP presentation. Vestigial UPTerm/UPPresheaf imports
--- (comment-only references) were dropped.
+-- ⟡odecode-residues: InstancesAt is now MIGRATED to the Set₀ O-form as a FULL
+-- UPPresheaf (was a bare `UPArrowP → Set` signature-stub reading per-object
+-- SourceP/TargetP/WitnessP, which the O-form object does not carry). The faithful
+-- O-form does NOT need the semantic evaluator: the FREE-category word-structure
+-- (++ᵤ + its laws) supplies the contravariant action and the presheaf laws.
 
-------------------------------------------------------------------------
--- 1. The "instances" presheaf.
---
--- F(U) = Σ (s : Source U) (i : Target U). Witness U s i
---
--- The action is contravariant: given t : V → U, restrict an
--- instance at U to an instance at V via the substrate's UPMorphism
--- source-map (forward on spec) + target-map (back on instance).
---
--- Substrate-honest: the action's full implementation needs the
--- semantic evaluator (UP3); we package the SHAPE here and signal
--- the obligation via record discipline.
-------------------------------------------------------------------------
+module _ (O : Set) (Hom : O → O → Set) where
 
-InstancesAt : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
-InstancesAt U = Σ (SourceP U) (λ s → Σ (TargetP U) (WitnessP U s))
+  ------------------------------------------------------------------------
+  -- 1. The "instances" presheaf (O-form, faithful): the CONTRAVARIANT
+  --    morphisms-out-of-U presheaf. An "instance of U" = a morphism U → W of
+  --    the site (the ways U participates as a source — the O-form of the old
+  --    Source/Target/Witness span, now carried by Hom). The action restricts
+  --    along t : V → U by PRECOMPOSITION (t ++ᵤ g), contravariant. pres-id is
+  --    refl ([] ++ᵤ g = g); pres-∘ is ++ᵤ-assoc. A genuine UPPresheaf, no stub.
+  ------------------------------------------------------------------------
 
--- Note: a full presheaf requires `action` and `pres-*` proofs that
--- depend on the UPMorphism evaluator. The signature lands here;
--- concrete instances connect at the post-Phase-4 specialisation.
+  InstancesAt : UPPresheaf O Hom
+  InstancesAt = record
+    { F       = λ U → Σ O (λ W → UPTerm O Hom U W)
+    ; action  = λ t (W , g) → W , (t ++ᵤ g)
+    ; pres-id = λ (W , g) → refl
+    ; pres-∘  = λ t u (W , g) → cong (W ,_) (++ᵤ-assoc u t g)
+    }
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP29.

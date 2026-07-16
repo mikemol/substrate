@@ -8041,7 +8041,10 @@ digraph imports {
   "Substrate.Category.UniversalProperty.StencilModularMap" -> "Substrate.Category.Allegory.Maps";
   "Substrate.Category.UniversalProperty.StencilModularMap" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.StencilModularMap" -> "Substrate.Foundation.Product";
-  "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Category.UniversalProperty";
+  "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Category.UniversalProperty.Category";
+  "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Category.UniversalProperty.Presheaf";
+  "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.SubstrateSheaves" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.SubstrateTopos" -> "Substrate.Category.UniversalProperty.Sheaf";
   "Substrate.Category.UniversalProperty.SubstrateTopos" -> "Substrate.Category.UniversalProperty.Topos";
@@ -8064,7 +8067,11 @@ digraph imports {
   "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Nat.Properties.Order";
   "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty.Category";
   "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty.Sieve";
+  "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Algebra.Nat.Units";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
