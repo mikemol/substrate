@@ -7084,11 +7084,13 @@ digraph imports {
   "Substrate.Category.PolyLens" -> "Substrate.Category.Poly";
   "Substrate.Category.PolyLens.Term" -> "Substrate.Category.Poly.Term";
   "Substrate.Category.PolyLens.Term" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.PredictorRing" -> "Substrate.Algebra.Semiring.NatInf";
+  "Substrate.Category.PredictorRing" -> "Substrate.Category.FreeUniversalProperty.FreeMonoid";
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.PredictorRing" -> "Substrate.Foundation.List";
-  "Substrate.Category.PredictorRing" -> "Substrate.Foundation.List.Length";
+  "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Fin";
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Nat";
   "Substrate.Category.PredictorRing" -> "Substrate.Foundation.Product";
+  "Substrate.Category.PredictorRing" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Category.FreeOverBasis";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Foundation.Empty";
