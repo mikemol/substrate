@@ -6623,7 +6623,6 @@ digraph imports {
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.CommutativeMonoid";
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.Delooping";
-  "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Foundation.Level";
   "Substrate.Category.CommutativeNonAssociativeAlgebra" -> "Substrate.Foundation.Eq";
   "Substrate.Category.Comonad" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Comonad" -> "Substrate.Category.Monad";
@@ -7157,7 +7156,6 @@ digraph imports {
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Algebra.F2";
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Algebra.N-to-F2-Parity";
-  "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Category.CommutativeMonoid";
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Foundation.Eq";
   "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism" -> "Substrate.Foundation.Nat";
@@ -10429,12 +10427,14 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter" -> "Substrate.Groups.Coxeter.ListPresentation";
   "Substrate.Groups.V4-Coxeter" -> "Substrate.Groups.Coxeter.SameCanonical";
   "Substrate.Groups.V4-Coxeter" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Algebra.F2";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.Coxeter.Word.Length";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";
+  "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Algebra.F2";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Foundation.Eq";
@@ -10442,6 +10442,7 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.Coxeter.Word.Count";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";
+  "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Algebra.F2";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Foundation.Eq";
@@ -10449,6 +10450,7 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.Coxeter.Word.Count";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";
+  "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism" -> "Substrate.Algebra.F2";
   "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism" -> "Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism";

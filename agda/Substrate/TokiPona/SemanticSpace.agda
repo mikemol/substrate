@@ -110,12 +110,9 @@ _⊕_ = _+ⱽ_
 -- ⊕-self-inverse; CommutativeMonoid is the named primitive the advisory tracks).
 ------------------------------------------------------------------------
 
-⊕-CommutativeMonoid : (m : ℕ) → CommutativeMonoid _
+⊕-CommutativeMonoid : (m : ℕ) → CommutativeMonoid (SemVec m) _⊕_ ∅
 ⊕-CommutativeMonoid m = record
-  { R            = SemVec m
-  ; _+R_         = _⊕_
-  ; 0R           = ∅
-  ; +R-assoc     = ⊕-assoc
+  { +R-assoc     = ⊕-assoc
   ; +R-identityˡ = ⊕-identityˡ
   ; +R-identityʳ = ⊕-identityʳ
   ; +R-comm      = ⊕-comm

@@ -137,31 +137,27 @@ notE-⊗ ⟨ pa , na ⟩ ⟨ pb , nb ⟩ = refl
 -- bare laws above witness the named primitives; identityˡ = comm ∘ identityʳ.
 ------------------------------------------------------------------------
 
-∧E-CommutativeMonoid : CommutativeMonoid _
+∧E-CommutativeMonoid : CommutativeMonoid Evidence _∧E_ ⊤t
 ∧E-CommutativeMonoid = record
-  { R = Evidence ; _+R_ = _∧E_ ; 0R = ⊤t
-  ; +R-assoc = ∧E-assoc
+  { +R-assoc = ∧E-assoc
   ; +R-identityˡ = λ a → trans (∧E-comm ⊤t a) (∧E-identityʳ a)
   ; +R-identityʳ = ∧E-identityʳ ; +R-comm = ∧E-comm }
 
-∨E-CommutativeMonoid : CommutativeMonoid _
+∨E-CommutativeMonoid : CommutativeMonoid Evidence _∨E_ ⊥t
 ∨E-CommutativeMonoid = record
-  { R = Evidence ; _+R_ = _∨E_ ; 0R = ⊥t
-  ; +R-assoc = ∨E-assoc
+  { +R-assoc = ∨E-assoc
   ; +R-identityˡ = λ a → trans (∨E-comm ⊥t a) (∨E-identityʳ a)
   ; +R-identityʳ = ∨E-identityʳ ; +R-comm = ∨E-comm }
 
-⊕E-CommutativeMonoid : CommutativeMonoid _
+⊕E-CommutativeMonoid : CommutativeMonoid Evidence _⊕E_ ⊥k
 ⊕E-CommutativeMonoid = record
-  { R = Evidence ; _+R_ = _⊕E_ ; 0R = ⊥k
-  ; +R-assoc = ⊕E-assoc
+  { +R-assoc = ⊕E-assoc
   ; +R-identityˡ = λ a → trans (⊕E-comm ⊥k a) (⊕E-identityʳ a)
   ; +R-identityʳ = ⊕E-identityʳ ; +R-comm = ⊕E-comm }
 
-⊗E-CommutativeMonoid : CommutativeMonoid _
+⊗E-CommutativeMonoid : CommutativeMonoid Evidence _⊗E_ ⊤k
 ⊗E-CommutativeMonoid = record
-  { R = Evidence ; _+R_ = _⊗E_ ; 0R = ⊤k
-  ; +R-assoc = ⊗E-assoc
+  { +R-assoc = ⊗E-assoc
   ; +R-identityˡ = λ a → trans (⊗E-comm ⊤k a) (⊗E-identityʳ a)
   ; +R-identityʳ = ⊗E-identityʳ ; +R-comm = ⊗E-comm }
 

@@ -311,7 +311,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `CombinatorAlgebra` | record | `Substrate.Algebra.R.Trace.ExtruderFix` | the proof that PROVES the SKI extruder, |
 | `CommutativeComonoid` | record | `Substrate.Category.CommutativeComonoid` | MK2: a commutative comonoid additionally satisfies cocommutativity: |
 | `CommutativeConjugateMonad` | record | `Substrate.Probability.ConjugateMonad` | the starting parameter (without this, no |
-| `CommutativeMonoid` | record | `Substrate.Category.CommutativeMonoid` | The commutative monoid record. Foundational for the R-graded |
+| `CommutativeMonoid` | record | `Substrate.Category.CommutativeMonoid` | so the record lands at `Set ℓ`, not `Set (lsuc ℓ)`, |
 | `CommutativeNonAssociativeAlgebra` | record | `Substrate.Category.CommutativeNonAssociativeAlgebra` | The categorical primitive for commutative non-associative algebras |
 | `CommutativeRing` | record | `Substrate.Algebra.CommutativeRing` | so `R[y]` and its |
 | `Commute` | record | `Substrate.Category.Coalgebra.StructuralGCD` | DEFINITION |

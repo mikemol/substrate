@@ -48,16 +48,14 @@ open import Substrate.Logic.Evidence.Graded
 -- Evidence × Warrant). identityˡ = comm ∘ identityʳ.
 ------------------------------------------------------------------------
 
-∧G-CommutativeMonoid : CommutativeMonoid _
+∧G-CommutativeMonoid : CommutativeMonoid GradedEvidence _∧G_ (⊤t at ⊤w)
 ∧G-CommutativeMonoid = record
-  { R = GradedEvidence ; _+R_ = _∧G_ ; 0R = ⊤t at ⊤w
-  ; +R-assoc = ∧G-assoc
+  { +R-assoc = ∧G-assoc
   ; +R-identityˡ = λ x → trans (∧G-comm (⊤t at ⊤w) x) (∧G-identityʳ x)
   ; +R-identityʳ = ∧G-identityʳ ; +R-comm = ∧G-comm }
 
-∨G-CommutativeMonoid : CommutativeMonoid _
+∨G-CommutativeMonoid : CommutativeMonoid GradedEvidence _∨G_ (⊥t at ⊤w)
 ∨G-CommutativeMonoid = record
-  { R = GradedEvidence ; _+R_ = _∨G_ ; 0R = ⊥t at ⊤w
-  ; +R-assoc = ∨G-assoc
+  { +R-assoc = ∨G-assoc
   ; +R-identityˡ = λ x → trans (∨G-comm (⊥t at ⊤w) x) (∨G-identityʳ x)
   ; +R-identityʳ = ∨G-identityʳ ; +R-comm = ∨G-comm }

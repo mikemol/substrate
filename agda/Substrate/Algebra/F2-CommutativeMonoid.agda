@@ -19,12 +19,9 @@ open import Substrate.Category.CommutativeMonoid
 -- F₂'s additive CommutativeMonoid.
 ------------------------------------------------------------------------
 
-F₂-CommMonoid : CommutativeMonoid _
+F₂-CommMonoid : CommutativeMonoid F₂ _+_ 𝟘
 F₂-CommMonoid = record
-  { R            = F₂
-  ; _+R_         = _+_
-  ; 0R           = 𝟘
-  ; +R-assoc     = +-assoc
+  { +R-assoc     = +-assoc
   ; +R-identityˡ = +-identityˡ
   ; +R-identityʳ = +-identityʳ
   ; +R-comm      = +-comm

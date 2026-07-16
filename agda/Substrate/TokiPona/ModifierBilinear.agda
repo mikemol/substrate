@@ -101,12 +101,9 @@ modify-self-inverse = ⊕-self-inverse
 -- simplest instance, as the design note at the top records.)
 ------------------------------------------------------------------------
 
-modify-CommutativeMonoid : (m : ℕ) → CommutativeMonoid _
+modify-CommutativeMonoid : (m : ℕ) → CommutativeMonoid (SemVec m) modify ∅
 modify-CommutativeMonoid m = record
-  { R            = SemVec m
-  ; _+R_         = modify
-  ; 0R           = ∅
-  ; +R-assoc     = modify-assoc
+  { +R-assoc     = modify-assoc
   ; +R-identityˡ = modify-identityˡ
   ; +R-identityʳ = modify-identityʳ
   ; +R-comm      = modify-comm

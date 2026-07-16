@@ -116,12 +116,9 @@ negBoth-central-negPos ⟨ p , n ⟩ = refl
 -- residue D₄ carries on top of this abelian V₄.
 ------------------------------------------------------------------------
 
-V₄-CommutativeMonoid : CommutativeMonoid _
+V₄-CommutativeMonoid : CommutativeMonoid V₄ _·_ ε
 V₄-CommutativeMonoid = record
-  { R            = V₄
-  ; _+R_         = _·_
-  ; 0R           = ε
-  ; +R-assoc     = ·-assoc
+  { +R-assoc     = ·-assoc
   ; +R-identityˡ = ε-left
   ; +R-identityʳ = ε-right
   ; +R-comm      = ·-comm

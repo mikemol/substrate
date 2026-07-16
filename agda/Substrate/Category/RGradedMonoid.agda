@@ -35,7 +35,11 @@ private
 -- monoid homomorphism into R.
 ------------------------------------------------------------------------
 
-record RGradedMonoid (𝓡 : CommutativeMonoid ℓR) (ℓ : Level) : Set (ℓR ⊔ lsuc ℓ) where
+-- ⟡set1-rp-commmonoid: CommutativeMonoid now takes its carrier R / op _+R_ / unit 0R as
+-- PARAMETERS. They thread through here as IMPLICITS (inferred from 𝓡's type) so RGradedMonoid's
+-- own instances `RGradedMonoid 𝓡 ℓ` are UNCHANGED.
+record RGradedMonoid {R : Set ℓR} {_+R_ : R → R → R} {0R : R}
+                     (𝓡 : CommutativeMonoid R _+R_ 0R) (ℓ : Level) : Set (ℓR ⊔ lsuc ℓ) where
   open CommutativeMonoid 𝓡
   field
     -- Underlying monoid.

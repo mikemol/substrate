@@ -28,20 +28,23 @@ open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
 
-open CommutativeMonoid
+open CommutativeMonoid   -- opens the law projections (+R-assoc/+R-identityˡ/ʳ/comm); R/_+R_/0R are now params
 
--- the forgetful bridge: a commutative monoid is a monoid.
-commMonoid→Monoid : (C : CommutativeMonoid 0ℓ) → Monoid (R C)
-commMonoid→Monoid C = record
+-- the forgetful bridge: a commutative monoid is a monoid. ⟡set1-rp-commmonoid: the carrier
+-- R / op _+R_ / unit 0R are now the record's PARAMETERS (inferred from C's type), not projections.
+commMonoid→Monoid : {R : Set 0ℓ} {_+R_ : R → R → R} {0R : R}
+                  → CommutativeMonoid R _+R_ 0R → Monoid R
+commMonoid→Monoid {_} {_+R_} {0R} C = record
   { semigroup = record
-      { magma   = record { _·_ = _+R_ C }
+      { magma   = record { _·_ = _+R_ }
       ; ·-assoc = +R-assoc C
       }
-  ; ε       = 0R C
+  ; ε       = 0R
   ; ε-left  = +R-identityˡ C
   ; ε-right = +R-identityʳ C
   }
 
 -- ... hence on the categorical spine, via the Monoid delooping.
-commMonoid→CategoryOf : CommutativeMonoid 0ℓ → CategoryOf
+commMonoid→CategoryOf : {R : Set 0ℓ} {_+R_ : R → R → R} {0R : R}
+                      → CommutativeMonoid R _+R_ 0R → CategoryOf
 commMonoid→CategoryOf C = deloop (commMonoid→Monoid C)

@@ -27,11 +27,11 @@ private
 -- The CommutativeMonoid record.
 ------------------------------------------------------------------------
 
-record CommutativeMonoid (ℓ : Level) : Set (lsuc ℓ) where
+-- ⟡set1-rp-commmonoid: the carrier R / op _+R_ / unit 0R are PARAMETERS, not fields
+-- (set1-carrier-always-parameterize) — so the record lands at `Set ℓ`, not `Set (lsuc ℓ)`,
+-- and every instance `X : CommutativeMonoid R _+R_ 0R` is Set₀. The fields are only the laws.
+record CommutativeMonoid {ℓ : Level} (R : Set ℓ) (_+R_ : R → R → R) (0R : R) : Set ℓ where
   field
-    R           : Set ℓ
-    _+R_        : R → R → R
-    0R          : R
     +R-assoc        : (a b c : R) → (a +R b) +R c ≡ a +R (b +R c)
     +R-identityˡ    : (a : R) → 0R +R a ≡ a
     +R-identityʳ    : (a : R) → a +R 0R ≡ a

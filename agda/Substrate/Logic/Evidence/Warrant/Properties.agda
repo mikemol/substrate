@@ -86,12 +86,9 @@ open import Substrate.Logic.Evidence.Warrant
 -- identityˡ is derived (comm ∘ identityʳ).
 ------------------------------------------------------------------------
 
-⊓w-CommutativeMonoid : CommutativeMonoid _
+⊓w-CommutativeMonoid : CommutativeMonoid Warrant _⊓w_ ⊤w
 ⊓w-CommutativeMonoid = record
-  { R            = Warrant
-  ; _+R_         = _⊓w_
-  ; 0R           = ⊤w
-  ; +R-assoc     = ⊓w-assoc
+  { +R-assoc     = ⊓w-assoc
   ; +R-identityˡ = λ a → trans (⊓w-comm ⊤w a) (⊓w-identityʳ a)
   ; +R-identityʳ = ⊓w-identityʳ
   ; +R-comm      = ⊓w-comm
