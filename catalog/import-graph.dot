@@ -1025,6 +1025,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Morphism" [label="UniversalProperty.Morphism"];
   "Substrate.Category.UniversalProperty.MuBackedGraded" [label="UniversalProperty.MuBackedGraded"];
   "Substrate.Category.UniversalProperty.NuBackedGraded" [label="UniversalProperty.NuBackedGraded"];
+  "Substrate.Category.UniversalProperty.ObjectUniverse" [label="UniversalProperty.ObjectUniverse"];
   "Substrate.Category.UniversalProperty.Omega" [label="UniversalProperty.Omega"];
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" [label="UniversalProperty.OrientationRigBackedGraded"];
   "Substrate.Category.UniversalProperty.Powerset" [label="UniversalProperty.Powerset"];
@@ -7911,6 +7912,15 @@ digraph imports {
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Category.UniversalProperty.Category";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Foundation.Fin";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.Foundation.Unit";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
   "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
