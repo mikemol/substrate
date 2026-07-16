@@ -28,7 +28,7 @@ _1794 modules, 11785 dependency edges._
 | `Substrate.Foundation.Nat.Properties.Add` | 85 |
 | `Substrate.Groups.Coxeter.ListPresentation` | 80 |
 | `Substrate.Algebra.Z` | 75 |
-| `Substrate.Foundation.Unit` | 66 |
+| `Substrate.Foundation.Unit` | 65 |
 | `Substrate.Category.CategoryOf` | 64 |
 | `Substrate.Groups.Coxeter.Cyclic.Existential` | 62 |
 | `Substrate.WitnessTower.Enumerate` | 62 |

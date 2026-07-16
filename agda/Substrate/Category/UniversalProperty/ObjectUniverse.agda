@@ -15,16 +15,17 @@
 --   * O := Σ ℕ C                          (the flat total-space, Set₀; grade = proj₁)
 --   * O-category = UPCategory-canonical O Hom   (O inhabits the topos object slot)
 --
--- PHASE A stubs the graded object-code family C to ⊤ at every rung — this
--- proves the tower-rung O inhabits the UP-topos (the skeleton compiles + the
--- fold/uniqueness/category all instantiate). PHASE B (⟡odecode-B-godel) swaps
--- the ⊤ stubs for the real codes:
---     grade 1 ↦ SourceCode ·  grade 2 ↦ TargetCode ·  grade 3 ↦ WitnessCode ·
---     grade 4+ ↦ OCode (the de-Bruijn/Gödel object codes).
--- NOTE: the LehmerAlgebra.step field is ∀{n}→ C n → Fin(suc n) → C(suc n), a
--- GENERIC-n map, so C(suc n) must reduce for variable n — Phase B realizes the
--- per-grade codes through a uniform code carrier, not a finite case-split (which
--- would leave C(suc n) stuck). Here C _ = ⊤ (uniform) is the honest stub.
+-- ⟡odecode-B INTEGRATED: the graded object-code family C now carries the REAL
+-- codes — every rung's object-code is a `TmDB` (the object syntax, PROVEN
+-- Gödel-codeable in TmDBGodel.Properties). So O = Σ ℕ TmDB is a NON-TRIVIAL
+-- self-constructed universe of de-Bruijn/SKI codes, and `decode` builds a genuine
+-- code from a LehmerPath (each rung applies the accumulated code to a `var`
+-- witness). The tower CONVENTION places Source at grade 1, Target at 2, Witness
+-- at 3, the object at 4 (grade = the Σ index; the object at that grade is a TmDB).
+-- NOTE (the C-must-be-uniform finding): the LehmerAlgebra.step field is
+-- ∀{n}→ C n → Fin(suc n) → C(suc n), a GENERIC-n map, so C(suc n) must reduce for
+-- variable n — hence C is realized through the UNIFORM code carrier TmDB, not a
+-- finite per-grade case-split (which would leave C(suc n) stuck).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -32,32 +33,38 @@
 module Substrate.Category.UniversalProperty.ObjectUniverse where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Unit using (⊤; tt)
+open import Substrate.Foundation.Fin using (Fin; toℕ)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique; base; step)
+open import Substrate.Category.UniversalProperty.TmDBGodel using (TmDB; var; I; app)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical)
 
 ------------------------------------------------------------------------
--- 1. The graded object-code family C : ℕ → Set (Phase A: uniform ⊤ stub).
---    See the header for the intended per-grade code structure (Phase B).
+-- 1. The graded object-code family C : ℕ → Set — now the REAL codes (⟡odecode-B
+--    integrated): every rung's object-code is a TmDB (the object syntax, PROVEN
+--    Gödel-codeable, TmDBGodel.Properties.TmDB-Canonical). C is uniform (C(suc n)
+--    must reduce for the generic-n step field — see the header finding), so the
+--    grade lives in the Σ index, not in C's type; the tower CONVENTION places
+--    Source at grade 1, Target at grade 2, Witness at grade 3, the object at 4.
 ------------------------------------------------------------------------
 
 C : ℕ → Set
-C _ = ⊤
+C _ = TmDB
 
 ------------------------------------------------------------------------
--- 2. The LehmerAlgebra: the tower structure-map. base = the grade-0 object,
---    step = "rung n+1 from rung n + a witnessing choice". (Phase A: ⊤/tt.)
+-- 2. The LehmerAlgebra: the tower structure-map. base = the grade-0 object (I);
+--    step = "rung n+1 = rung n APPLIED TO a de-Bruijn witness `var i`" — the
+--    witnessing choice i : Fin (suc n) becomes the de-Bruijn index of the new
+--    rung's back-reference (the `witnessing` IS de-Bruijn referencing).
 ------------------------------------------------------------------------
 
 O-alg : LehmerAlgebra C
-O-alg = record { base = tt ; step = λ _ _ → tt }
+O-alg = record { base = I ; step = λ {n} c i → app c (var (toℕ i)) }
 
 ------------------------------------------------------------------------
 -- 3. decode = the fold; decode-unique = the fold's universal property.
