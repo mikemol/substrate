@@ -5,58 +5,54 @@
 --
 -- The three Grothendieck pretopology axioms, stated explicitly at
 -- the UPCategory level.
+--
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- (O, Hom) enter via the enclosing section.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.UniversalProperty.CoverageAxioms where
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
-open import Substrate.Category.UniversalProperty.Term
-  using (UPTerm; [])
-open import Substrate.Category.UniversalProperty.Coverage
-  using (UPCover; Idx; source-UP; arrow)
+open import Substrate.Foundation.Unit using (⊤)
+open import Substrate.Category.UniversalProperty.Term using (UPTermO; []O)
+open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 
-------------------------------------------------------------------------
--- 1. Identity axiom: the singleton {id_U : U → U} is a cover.
---
--- Substrate-honest: stated as a function producing such a cover.
-------------------------------------------------------------------------
+module _ (O : Set) (Hom : O → O → Set) where
 
-open import Substrate.Foundation.Unit using (⊤; tt)
+  ------------------------------------------------------------------------
+  -- 1. Identity axiom: the singleton {id_U : U → U} is a cover.
+  --
+  -- Substrate-honest: stated as a function producing such a cover.
+  ------------------------------------------------------------------------
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU : Set
-  WU : SU → TU → Set
+  singleton-id-Cover : (U : O) → UPCover O Hom U
+  singleton-id-Cover U = record
+    { Idx   = ⊤
+    ; src   = λ _ → U
+    ; arrow = λ _ → []O
+    }
 
-singleton-id-Cover : (U : UPArrowP SU TU WU) → UPCover U
-singleton-id-Cover U = record
-  { Idx       = ⊤
-  ; source-UP = λ _ → U
-  ; arrow     = λ _ → []
-  }
+  ------------------------------------------------------------------------
+  -- 2. Stability axiom (signature).
+  --
+  -- If { Vᵢ → U } is a cover and W → U is any morphism, then the
+  -- pullback family { Vᵢ ×_U W → W } is a cover of W. Substrate-honest:
+  -- the obligation surface is named.
+  ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
--- 2. Stability axiom (signature).
---
--- If { Vᵢ → U } is a cover and W → U is any morphism, then the
--- pullback family { Vᵢ ×_U W → W } is a cover of W. Substrate-honest:
--- the obligation surface is named.
-------------------------------------------------------------------------
+  StabilityAxiom : (U : O) (c : UPCover O Hom U) → Set₂
+  StabilityAxiom _ _ = Set₁  -- obligation placeholder
 
-StabilityAxiom : (U : UPArrowP SU TU WU) (c : UPCover U) → Set₂
-StabilityAxiom _ _ = Set₁  -- obligation placeholder
+  ------------------------------------------------------------------------
+  -- 3. Transitivity axiom (signature).
+  --
+  -- If { Vᵢ → U } is a cover and for each i, { Wᵢⱼ → Vᵢ } is a cover,
+  -- then the composite family { Wᵢⱼ → U } is a cover.
+  ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
--- 3. Transitivity axiom (signature).
---
--- If { Vᵢ → U } is a cover and for each i, { Wᵢⱼ → Vᵢ } is a cover,
--- then the composite family { Wᵢⱼ → U } is a cover.
-------------------------------------------------------------------------
-
-TransitivityAxiom : (U : UPArrowP SU TU WU) (c : UPCover U) → Set₂
-TransitivityAxiom _ _ = Set₁  -- obligation placeholder
+  TransitivityAxiom : (U : O) (c : UPCover O Hom U) → Set₂
+  TransitivityAxiom _ _ = Set₁  -- obligation placeholder
 
 ------------------------------------------------------------------------
 -- 4. Capstone for UP16.

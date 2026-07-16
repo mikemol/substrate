@@ -12,6 +12,9 @@
 --
 -- Substrate-honest: the concrete bridge to actual substrate UPs is
 -- routed via UPGen.lift; this slice supplies the cover SHAPES.
+--
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- (O, Hom) enter via the enclosing section.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -19,25 +22,21 @@
 module Substrate.Category.UniversalProperty.ConcreteCovers where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.UniversalProperty using (UPArrowP)
-open import Substrate.Category.UniversalProperty.Term using (UPTerm; [])
+open import Substrate.Category.UniversalProperty.Term using (UPTermO; []O)
 open import Substrate.Category.UniversalProperty.Coverage using (UPCover)
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU : Set
-  WU : SU → TU → Set
+module _ (O : Set) (Hom : O → O → Set) where
 
-------------------------------------------------------------------------
--- 1. Trivial cover (identity-singleton).
-------------------------------------------------------------------------
+  ------------------------------------------------------------------------
+  -- 1. Trivial cover (identity-singleton).
+  ------------------------------------------------------------------------
 
-trivial-cover : (U : UPArrowP SU TU WU) → UPCover U
-trivial-cover U = record
-  { Idx       = ⊤
-  ; source-UP = λ _ → U
-  ; arrow     = λ _ → []
-  }
+  trivial-cover : (U : O) → UPCover O Hom U
+  trivial-cover U = record
+    { Idx   = ⊤
+    ; src   = λ _ → U
+    ; arrow = λ _ → []O
+    }
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP17.

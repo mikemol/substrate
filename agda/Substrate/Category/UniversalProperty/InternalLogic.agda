@@ -21,37 +21,34 @@
 
 module Substrate.Category.UniversalProperty.InternalLogic where
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve)
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU : Set
-  WU : SU → TU → Set
+module _ (O : Set) (Hom : O → O → Set) where
 
-------------------------------------------------------------------------
--- 1. Logical-connective signatures at the sieve level.
-------------------------------------------------------------------------
+  ------------------------------------------------------------------------
+  -- 1. Logical-connective signatures at the sieve level.
+  -- ⟡ta-upterm: objects are the Set₀ alphabet O; (O, Hom) via the section.
+  ------------------------------------------------------------------------
 
-⊤-sieve : (U : UPArrowP SU TU WU) → Sieve U
-⊤-sieve = max-Sieve
+  ⊤-sieve : (U : O) → Sieve O Hom U
+  ⊤-sieve U = max-Sieve O Hom U
 
--- ⊥, ∧, ∨, ⇒, ¬ each name an obligation surface:
-⊥-stated : Set₁
-⊥-stated = Set
+  -- ⊥, ∧, ∨, ⇒, ¬ each name an obligation surface:
+  ⊥-stated : Set₁
+  ⊥-stated = Set
 
-∧-stated : Set₁
-∧-stated = Set
+  ∧-stated : Set₁
+  ∧-stated = Set
 
-∨-stated : Set₁
-∨-stated = Set
+  ∨-stated : Set₁
+  ∨-stated = Set
 
-⇒-stated : Set₁
-⇒-stated = Set
+  ⇒-stated : Set₁
+  ⇒-stated = Set
 
-¬-stated : Set₁
-¬-stated = Set
+  ¬-stated : Set₁
+  ¬-stated = Set
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP34.

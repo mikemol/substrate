@@ -3,12 +3,16 @@
 --
 -- UP21 of the UP-topos arc per [scratch/up_topos_arc_plan.md].
 --
--- A presheaf on UPCategory is a contravariant functor
---   F : UPCategory^op → Set
--- Concretely (at the term-algebra level): an assignment of a Set
--- F(U) to each UPArrow U + an action F(t) : F(U) → F(V) for each
--- UPTerm t : V → U, contravariantly, preserving identity and
--- composition.
+-- A presheaf on the UP-site is a contravariant functor
+--   F : (UPTermO-category)^op → Set
+-- Concretely: an assignment of a Set F(U) to each object U : O + an action
+-- F(t) : F(U) → F(V) for each UPTermO t : V → U, contravariantly, preserving
+-- identity and composition.
+--
+-- ⟡ta-upterm: the object index is the Set₀ alphabet O (was UPArrowP over
+-- arbitrary Sets); the homs are UPTermO O Hom. UPPresheaf STAYS Set₁ (driver C:
+-- the `F : O → Set` field), but references the Set₀ term-forms so the telescope
+-- UPTerm can retire. (O, Hom) enter via the enclosing section.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -17,55 +21,22 @@ module Substrate.Category.UniversalProperty.Presheaf where
 
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Term
-  using (UPTerm; []; _++ᵤ_)
+  using (UPTermO; []O; _++ᵤO_)
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU SV TV SW TW : Set
-  WU : SU → TU → Set
-  WV : SV → TV → Set
-  WW : SW → TW → Set
+module _ (O : Set) (Hom : O → O → Set) where
 
-------------------------------------------------------------------------
--- 1. The Presheaf record.
-------------------------------------------------------------------------
+  ------------------------------------------------------------------------
+  -- The Presheaf record. F assigns a Set to each object; action is the
+  -- contravariant term-action; pres-id / pres-∘ are the functor laws.
+  ------------------------------------------------------------------------
 
--- ⟡set1-paydown: NEEDS-DEMATERIALIZE (report, not forced).  The Set₂ source is
--- `F : UPArrow → Set` — the presheaf's object-assignment, a heterogeneous
--- Set-family over the (infinite) index UPArrow, not a flat carrier.  It cannot
--- be a plain module parameter because the whole downstream sheaf arc treats
--- `UPPresheaf` as the type of ALL presheaves and quantifies over it: the
--- PSh→PSh functors (InternalHomType, PowersetType, SheafifyType), constant-
--- Presheaf : Set → UPPresheaf, the Sheaf.presheaf field, MatchingFamily/Sheaf-
--- Pullback (which import the `F`/`action` projections by name).  Parameterizing
--- F out would replace every bare `UPPresheaf` with `Σ (UPArrow → Set) UPPresheaf`
--- — re-materializing the existential across ~12 modules.  Eliminating the Set₂
--- here needs dematerializing the object-assignment (element-category / discrete-
--- fibration presentation), a design change out of scope for the paydown.
--- ⟡UPArrow-dissolve C: the object-assignment F is now a family over the UPArrowP
--- telescope; fields quantify the carriers EXPLICITLY (module `variable`s in a record
--- field would generalize as record PARAMETERS). UPPresheaf drops Set₂ → Set₁.
-record UPPresheaf : Set₁ where
-  field
-    F        : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set
-    action   : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
-               {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set} {V : UPArrowP S₂ T₂ W₂} →
-               UPTerm V U → F U → F V
-    pres-id  : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
-               (x : F U) → action {U = U} {V = U} [] x ≡ x
-    pres-∘   : {S₁ T₁ : Set} {W₁ : S₁ → T₁ → Set} {U : UPArrowP S₁ T₁ W₁}
-               {S₂ T₂ : Set} {W₂ : S₂ → T₂ → Set} {V : UPArrowP S₂ T₂ W₂}
-               {S₃ T₃ : Set} {W₃ : S₃ → T₃ → Set} {O : UPArrowP S₃ T₃ W₃}
-               (t : UPTerm V U) (u : UPTerm O V) (x : F U) →
-               action (u ++ᵤ t) x ≡ action u (action t x)
+  record UPPresheaf : Set₁ where
+    field
+      F        : O → Set
+      action   : {U V : O} → UPTermO O Hom V U → F U → F V
+      pres-id  : {U : O} (x : F U) → action ([]O {X = U}) x ≡ x
+      pres-∘   : {U V X : O} (t : UPTermO O Hom V U) (u : UPTermO O Hom X V) (x : F U) →
+                 action (u ++ᵤO t) x ≡ action u (action t x)
 
-open UPPresheaf public
-
-------------------------------------------------------------------------
--- 2. Capstone for UP21.
---
--- Presheaf record lands. UP22 supplies the Yoneda embedding
--- よ : UPCategory → PSh(UPCategory); UP23 the sheaf condition.
-------------------------------------------------------------------------
+  open UPPresheaf public

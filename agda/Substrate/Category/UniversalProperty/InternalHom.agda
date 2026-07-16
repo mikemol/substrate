@@ -21,8 +21,10 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- 1. Internal-hom signature.
 ------------------------------------------------------------------------
 
-InternalHomType : Set₁
-InternalHomType = UPPresheaf → UPPresheaf → UPPresheaf
+module _ (O : Set) (Hom : O → O → Set) where
+
+  InternalHomType : Set₁
+  InternalHomType = UPPresheaf O Hom → UPPresheaf O Hom → UPPresheaf O Hom
 
 -- Standard construction: [P, Q](U) = naturality-respecting maps
 -- (V → U) × P(V) → Q(V) parametric in V. The Yoneda lemma gives

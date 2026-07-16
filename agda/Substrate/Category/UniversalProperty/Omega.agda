@@ -16,19 +16,20 @@
 
 module Substrate.Category.UniversalProperty.Omega where
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
 
-------------------------------------------------------------------------
--- 1. Ω as a presheaf-like function on UPArrows.
---
--- Substrate-honest: Sieve U lives at Set₂ (because UPTerm-indexed
--- predicates land at Set₁ to support set-quantification). Ω lands
--- as a presheaf at the bumped level.
-------------------------------------------------------------------------
+module _ (O : Set) (Hom : O → O → Set) where
 
-Ω : {S T : Set} {W : S → T → Set} → UPArrowP S T W → Set₂
-Ω U = Sieve U
+  ------------------------------------------------------------------------
+  -- 1. Ω as a presheaf-like function on objects.
+  --
+  -- ⟡ta-upterm-L5-reflow: objects are the Set₀ alphabet O; Sieve now lives
+  -- at Set₁ (its `member` predicate lowered Set₁ → Set), so Ω lowers
+  -- Set₂ → Set₁. (O, Hom) via the enclosing section.
+  ------------------------------------------------------------------------
+
+  Ω : O → Set₁
+  Ω U = Sieve O Hom U
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP32.

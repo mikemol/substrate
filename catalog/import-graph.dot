@@ -7393,7 +7393,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Category" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.Compose" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Compose" -> "Substrate.Category.UniversalProperty.Morphism";
-  "Substrate.Category.UniversalProperty.ConcreteCovers" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.ConcreteCovers" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.ConcreteCovers" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.ConcreteCovers" -> "Substrate.Foundation.Unit";
@@ -7401,9 +7400,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ConfluenceUnique" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.ConstantSheaf" -> "Substrate.Category.UniversalProperty.Presheaf";
   "Substrate.Category.UniversalProperty.ConstantSheaf" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.UniversalProperty.Coverage" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Coverage" -> "Substrate.Category.UniversalProperty.Term";
-  "Substrate.Category.UniversalProperty.CoverageAxioms" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.CoverageAxioms" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.CoverageAxioms" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.CoverageAxioms" -> "Substrate.Foundation.Unit";
@@ -7873,7 +7870,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Category.UniversalProperty.InternalHom" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.InteropGraded" -> "Substrate.Foundation.Fin";
   "Substrate.Category.UniversalProperty.InteropGraded" -> "Substrate.Foundation.Fin.Combine";
@@ -7897,7 +7893,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.LimitBackedGraded" -> "Substrate.Foundation.Negation";
   "Substrate.Category.UniversalProperty.LimitBackedGraded" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.LimitBackedGraded" -> "Substrate.Foundation.Unit";
-  "Substrate.Category.UniversalProperty.MatchingFamily" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.MatchingFamily" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.MatchingFamily" -> "Substrate.Category.UniversalProperty.Presheaf";
   "Substrate.Category.UniversalProperty.Morphism" -> "Substrate.Category.UniversalProperty";
@@ -7917,7 +7912,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.NuBackedGraded" -> "Substrate.Foundation.Product";
-  "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
@@ -7929,10 +7923,8 @@ digraph imports {
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.WitnessTower.Wedge.OrientationRigInitial";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.WitnessTower.Wedge.OrientationRigInstance";
   "Substrate.Category.UniversalProperty.Powerset" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.Presheaf" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Presheaf" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Presheaf" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.UniversalProperty.Pretopology" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Pretopology" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.Quotient" -> "Substrate.Algebra.Nat.Mod";
   "Substrate.Category.UniversalProperty.Quotient" -> "Substrate.Algebra.Quotient";
@@ -7959,10 +7951,10 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Recognized" -> "Substrate.Foundation.Negation";
   "Substrate.Category.UniversalProperty.Recognized" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Recognized" -> "Substrate.Foundation.Unit";
-  "Substrate.Category.UniversalProperty.Refinement" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Refinement" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.Refinement" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Refinement" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.Refinement" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Algebra.Nat.Mod";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
@@ -7970,7 +7962,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Product";
-  "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Category.UniversalProperty.Refinement";
   "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Foundation.Product";
@@ -7983,16 +7974,15 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Sheaf" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.SheafPullback" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.SheafPullback" -> "Substrate.Category.UniversalProperty.Presheaf";
   "Substrate.Category.UniversalProperty.Sheafify" -> "Substrate.Category.UniversalProperty.Presheaf";
   "Substrate.Category.UniversalProperty.Sheafify" -> "Substrate.Category.UniversalProperty.Sheaf";
-  "Substrate.Category.UniversalProperty.Sieve" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Sieve" -> "Substrate.Category.UniversalProperty.Term";
-  "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty";
+  "Substrate.Category.UniversalProperty.Sieve" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Coverage";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Term";
+  "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.Site" -> "Substrate.Category.UniversalProperty.Category";
   "Substrate.Category.UniversalProperty.Site" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.StencilAllegory" -> "Substrate.Category.Allegory";
@@ -8038,7 +8028,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Category.UniversalProperty.Morphism";
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Foundation.Unit";
-  "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Algebra.Nat.Units";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Category.UPArrowGraded";
@@ -8103,8 +8092,8 @@ digraph imports {
   "Substrate.Category.UniversalProperty.X8aSkiInstance" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.X8aSkiInstance" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.X8aSkiInstance" -> "Substrate.Foundation.RewriteConfluence";
-  "Substrate.Category.UniversalProperty.Yoneda" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Yoneda" -> "Substrate.Category.UniversalProperty.Category";
+  "Substrate.Category.UniversalProperty.Yoneda" -> "Substrate.Category.UniversalProperty.Presheaf";
   "Substrate.Category.UniversalProperty.Yoneda" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Yoneda" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.Z2BackedGraded" -> "Substrate.Algebra.F2";

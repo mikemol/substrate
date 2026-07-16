@@ -30,7 +30,7 @@ module Substrate.Category.UniversalProperty.Phase3 where
 open import Substrate.Category.UniversalProperty.Presheaf          public
   using (UPPresheaf)
 open import Substrate.Category.UniversalProperty.Yoneda            public
-  using (UPPresheaf₁; よ)
+  using (よ)
 open import Substrate.Category.UniversalProperty.Sheaf             public
   using (UPSheaf)
 open import Substrate.Category.UniversalProperty.MatchingFamily    public

@@ -16,32 +16,27 @@
 
 module Substrate.Category.UniversalProperty.TruthValues where
 
-open import Substrate.Category.UniversalProperty
-  using (UPArrowP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve)
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU : Set
-  WU : SU → TU → Set
+module _ (O : Set) (Hom : O → O → Set) where
 
-------------------------------------------------------------------------
--- 1. The "is-instance" truth value (substrate-honest signature).
---
--- Stated parametric in (s : Source U) (i : Target U). The full
--- definition needs the substrate's UPMorphism evaluator on the
--- factor-through-cover witness; we land the signature here.
-------------------------------------------------------------------------
+  ------------------------------------------------------------------------
+  -- 1. The "is-instance" truth value (substrate-honest signature).
+  --
+  -- ⟡ta-upterm: objects are the Set₀ alphabet O; (O, Hom) via the section.
+  -- ⟡TODO(ta-upterm): the old (s : SourceP U)(i : TargetP U) candidate +
+  -- WitnessP U s i gate were object-INTERNAL plumbing over the old carrier-
+  -- Set arrow; the O-form dissolves an object's Source/Target/Witness
+  -- decomposition, so the parametric-candidate signature collapses to the
+  -- bare object U. The truth-sieve is still the maximal sieve; a witness-
+  -- gated / partial-instantiation refinement is a future-arc reintroduction
+  -- (would re-thread a Hom-witness once the O-site names its candidate shape).
+  ------------------------------------------------------------------------
 
-is-instance-truth :
-  (U : UPArrowP SU TU WU) (s : SourceP U) (i : TargetP U) →
-  WitnessP U s i →
-  Sieve U
-is-instance-truth U _ _ _ = max-Sieve U
-  -- Substrate-honest: when the witness exists, the truth-sieve is
-  -- the maximal sieve (= "true"). A finer truth-value distinction
-  -- captures partial instantiation, which is a future-arc refinement.
+  is-instance-truth : (U : O) → Sieve O Hom U
+  is-instance-truth U = max-Sieve O Hom U
+    -- Substrate-honest: the truth-sieve is the maximal sieve (= "true").
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP33.

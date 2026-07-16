@@ -3,10 +3,11 @@
 --
 -- UP25 of the UP-topos arc per [scratch/up_topos_arc_plan.md].
 --
--- Sheafification: a functor sheafify : PSh(UPCategory) → Sh(UPSite)
--- left adjoint to the forgetful inclusion. The signature is named;
--- concrete construction (the plus-construction, double-plus, etc.)
--- is deferred to a follow-up arc.
+-- Sheafification: a functor sheafify : PSh → Sh left adjoint to the
+-- forgetful inclusion. The signature is named; the concrete construction
+-- (plus-construction) is deferred to a follow-up arc.
+--
+-- ⟡ta-upterm: over the Set₀ object-alphabet O (Presheaf/Sheaf now O-form).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,18 +17,9 @@ module Substrate.Category.UniversalProperty.Sheafify where
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 
-------------------------------------------------------------------------
--- 1. Sheafification signature.
-------------------------------------------------------------------------
+module _ (O : Set) (Hom : O → O → Set) where
 
-SheafifyType : Set₁
-SheafifyType = UPPresheaf → UPSheaf
+  SheafifyType : Set₁
+  SheafifyType = UPPresheaf O Hom → UPSheaf O Hom
 
--- Concrete construction deferred. The standard "plus-construction"
--- discharges this via two iterations of pointwise sieve-quotients.
-
-------------------------------------------------------------------------
--- 2. Capstone for UP25.
---
--- Sheafification signature lands. UP26-UP30 close Phase 3.
-------------------------------------------------------------------------
+  -- Concrete construction deferred (the plus-construction).

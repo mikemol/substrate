@@ -21,8 +21,10 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- = exponential Ω^P.
 ------------------------------------------------------------------------
 
-PowersetType : Set₁
-PowersetType = UPPresheaf → UPPresheaf
+module _ (O : Set) (Hom : O → O → Set) where
+
+  PowersetType : Set₁
+  PowersetType = UPPresheaf O Hom → UPPresheaf O Hom
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP35.

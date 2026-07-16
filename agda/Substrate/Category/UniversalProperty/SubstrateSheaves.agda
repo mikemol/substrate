@@ -22,11 +22,17 @@
 module Substrate.Category.UniversalProperty.SubstrateSheaves where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty
   using (UPArrowP; SourceP; TargetP; WitnessP)
-open import Substrate.Category.UniversalProperty.Term using (UPTerm)
-open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
+
+-- ⟡TODO(ta-upterm): InstancesAt below is NOT migrated to the Set₀ O-form. It
+-- reads per-object SourceP/TargetP/WitnessP projections, which the opaque O-form
+-- object (a plain element of O) does not carry — the Source/Target/Witness data
+-- moved into Hom. A faithful O-form InstancesAt needs the semantic evaluator
+-- (UP3) to reconstruct each object's instance-set from (O, Hom); that is not
+-- available here. So this definition stays on the (still-exported) carrier-
+-- parameterized UPArrowP presentation. Vestigial UPTerm/UPPresheaf imports
+-- (comment-only references) were dropped.
 
 ------------------------------------------------------------------------
 -- 1. The "instances" presheaf.

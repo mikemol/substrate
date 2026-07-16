@@ -13,21 +13,21 @@
 module Substrate.Category.UniversalProperty.ConstantSheaf where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Category.UniversalProperty using (UPArrowP)
-open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
-------------------------------------------------------------------------
--- 1. The constant presheaf at A.
-------------------------------------------------------------------------
+module _ (O : Set) (Hom : O → O → Set) where
 
-constant-Presheaf : Set → UPPresheaf
-constant-Presheaf A = record
-  { F       = λ _ → A
-  ; action  = λ _ x → x
-  ; pres-id = λ _ → refl
-  ; pres-∘  = λ _ _ _ → refl
-  }
+  ------------------------------------------------------------------------
+  -- 1. The constant presheaf at A.
+  ------------------------------------------------------------------------
+
+  constant-Presheaf : Set → UPPresheaf O Hom
+  constant-Presheaf A = record
+    { F       = λ _ → A
+    ; action  = λ _ x → x
+    ; pres-id = λ _ → refl
+    ; pres-∘  = λ _ _ _ → refl
+    }
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP26.

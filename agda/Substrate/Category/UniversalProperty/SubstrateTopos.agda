@@ -29,15 +29,18 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- per-field discharge connects via UP32-UP37's obligation surface.
 ------------------------------------------------------------------------
 
-Substrate-UPTopos : UPTopos
-Substrate-UPTopos = record
-  { Sh-Obj                 = UPSheaf
-  ; has-product-stated     = ⊤
-  ; has-exponential-stated = ⊤
-  ; finite-limits-stated   = ⊤
-  ; Ω-sheaf-stated         = ⊤
-  ; internal-logic-stated  = ⊤
-  }
+-- ⟡ta-upterm: over the Set₀ object-alphabet O (UPSheaf is now O-parameterized).
+module _ (O : Set) (Hom : O → O → Set) where
+
+  Substrate-UPTopos : UPTopos
+  Substrate-UPTopos = record
+    { Sh-Obj                 = UPSheaf O Hom
+    ; has-product-stated     = ⊤
+    ; has-exponential-stated = ⊤
+    ; finite-limits-stated   = ⊤
+    ; Ω-sheaf-stated         = ⊤
+    ; internal-logic-stated  = ⊤
+    }
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP38.

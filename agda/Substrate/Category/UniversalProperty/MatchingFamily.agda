@@ -11,39 +11,38 @@
 --
 -- Substrate-honest scope: the matching condition is named at type
 -- level + signature-bearing.
+--
+-- ⟡ta-upterm: objects are the Set₀ alphabet O; homs are UPTermO O Hom.
+-- (O, Hom) via the enclosing section.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.UniversalProperty.MatchingFamily where
 
-open import Substrate.Category.UniversalProperty using (UPArrowP)
 open import Substrate.Category.UniversalProperty.Coverage
   using (UPCover; Idx; source-UP)
 open import Substrate.Category.UniversalProperty.Presheaf
   using (UPPresheaf; F)
 
--- ⟡UPArrow-dissolve C: telescope carriers (auto).
-private variable
-  SU TU : Set
-  WU : SU → TU → Set
+module _ (O : Set) (Hom : O → O → Set) where
 
-------------------------------------------------------------------------
--- 1. MatchingFamily record.
-------------------------------------------------------------------------
+  ------------------------------------------------------------------------
+  -- 1. MatchingFamily record.
+  ------------------------------------------------------------------------
 
--- ⟡set1-paydown: parameterize matches-stated (the overlap-agreement obligation Set)
-module _ (matches-stated : Set) where
+  -- ⟡set1-paydown: parameterize matches-stated (the overlap-agreement obligation Set)
+  module _ (matches-stated : Set) where
 
-  record MatchingFamily
-    {U : UPArrowP SU TU WU}
-    (c : UPCover U)
-    (P : UPPresheaf)
-    : Set where
-    field
-      section  : (i : Idx c) → F P (source-UP c i)
+    record MatchingFamily
+      {U : O}
+      (c : UPCover O Hom U)
+      (P : UPPresheaf O Hom)
+      : Set where
+      field
+        section  : (i : Idx c) → F P (source-UP O Hom c i)
 
-  open MatchingFamily public
+    open MatchingFamily public
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP24.
