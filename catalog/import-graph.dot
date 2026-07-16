@@ -949,6 +949,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.DiagonalLawvereCarrier" [label="UniversalProperty.DiagonalLawvereCarrier"];
   "Substrate.Category.UniversalProperty.DiagonalLawvereSKI" [label="UniversalProperty.DiagonalLawvereSKI"];
   "Substrate.Category.UniversalProperty.DiagonalObsCode" [label="UniversalProperty.DiagonalObsCode"];
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" [label="UniversalProperty.DiagonalObsCodeCRT"];
   "Substrate.Category.UniversalProperty.DiagonalOrdinal" [label="UniversalProperty.DiagonalOrdinal"];
   "Substrate.Category.UniversalProperty.DiagonalPolishDerivative" [label="UniversalProperty.DiagonalPolishDerivative"];
   "Substrate.Category.UniversalProperty.DiagonalRank" [label="UniversalProperty.DiagonalRank"];
@@ -7456,6 +7457,11 @@ digraph imports {
   "Substrate.Category.UniversalProperty.DiagonalObsCode" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.DiagonalObsCode" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.DiagonalObsCode" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" -> "Substrate.Algebra.Nat.Mod";
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" -> "Substrate.Algebra.Quotient.CRT";
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.UniversalProperty.DiagonalObsCodeCRT" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.DiagonalOrdinal" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.DiagonalOrdinal" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.DiagonalPolishDerivative" -> "Substrate.Foundation.Eq";

@@ -22,7 +22,8 @@ module Substrate.Category.UniversalProperty.DiagonalObsCode where
 -- COMMENT HYGIENE (agda_comment_hygiene): the MACHINE-CHECKED content of this module is
 -- EXACTLY: Coded, coded, observe-coded, slice-recovered, Singleton, codePair. Everything else in these comments — 'closes 233→234', 'the code for the plural slice' — is (prose:
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
--- Promoting the framing to a theorem would require the CRT full round-trip under coprime bounds (⟡diagonal-obs-code-crt-roundtrip).
+-- The CRT full round-trip under coprime bounds — ⟡diagonal-obs-code-crt-roundtrip — is now PROVEN in
+-- the sibling DiagonalObsCodeCRT (crt-roundtrip); this module's PAIR framing is backed by that theorem.
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl)
@@ -65,8 +66,8 @@ module Singleton = Coded ℕ (λ n → n) (λ n → n) (λ _ → refl)
 
 --    (b) a PAIR slice codes via CRT.combine (the repo's coprime pairing), given a witness. The
 --        recovery is modular (combine-mod-m/n); here we expose the pairing as the encode — the
---        faithful (full) round-trip needs coprime bounds (⟡diagonal-obs-code-crt-roundtrip), so
---        we scope decode/rt to the caller and provide the ENCODE wiring, which is the reuse point.
+--        faithful (full) round-trip needs coprime bounds — PROVEN in DiagonalObsCodeCRT
+--        (crt-roundtrip); here we provide the ENCODE wiring, the reuse point that theorem consumes.
 codePair : {m n : ℕ} → CRT-Witness m n → (ℕ × ℕ) → ℕ
 codePair w = combine w
 
@@ -84,8 +85,9 @@ codePair w = combine w
 -- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = the coding PARAMETER (Coded) + observe-coded = ana ∘
 -- coded + slice-recovered (the round-trip), with the SINGLETON instance concrete (id, refl,
 -- reusing that the CF digit IS the code) and the PAIR encode = CRT.combine (the repo's pairing).
--- SCOPED: (a) the CRT-pairing FULL round-trip (decode via combine-mod-m/n needs coprime bounds on
--- the slice components) — ⟡diagonal-obs-code-crt-roundtrip; (b) a coding of the GENERAL ℕ→Bool
+-- DISCHARGED: (a) the CRT-pairing FULL round-trip (decode via combine-mod-m/n under coprime bounds
+-- on the slice components) — PROVEN in DiagonalObsCodeCRT (⟡odecode-crt-roundtrip). STILL SCOPED:
+-- (b) a coding of the GENERAL ℕ→Bool
 -- slice (infinite) is impossible as a single ℕ — only FINITE slices code, which is exactly what
 -- 233's observer produces per step (singleton/finite), so the restriction is honest, not a gap.
 -- What's grounded: the coding is the repo's DivStr digit + CRT pairing, parametric, no reinvention.
