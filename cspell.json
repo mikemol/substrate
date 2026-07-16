@@ -1,0 +1,26 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "allowCompoundWords": true,
+  "dictionaryDefinitions": [
+    { "name": "substrate-words", "path": ".cspell/project-words.txt", "addWords": true }
+  ],
+  "dictionaries": ["substrate-words"],
+  "ignoreRegExpList": [
+    "⟦[^⟧]*⟧",
+    "[^\\s]*[^\\x00-\\x7F][^\\s]*",
+    "\\b[0-9a-fA-F]{4,}\\b",
+    "\\bn[0-9a-f]{6,}\\b"
+  ],
+  "ignorePaths": [
+    "**/_build/**",
+    "**/node_modules/**",
+    ".git/**",
+    "**/*.agdai",
+    "catalog/*.db",
+    "catalog/*.db-journal",
+    "catalog/*.md",
+    "scratch/generated/**",
+    ".cspell/project-words.txt"
+  ]
+}
