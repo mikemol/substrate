@@ -750,7 +750,7 @@ def generate(filt="", targets=("index", "graph", "sitemap", "usage", "import"), 
         import sppf_db
         base = sppf_db.substrate_core_root(os.path.join(ROOT, "agda"))
         cores = [c for c in sorted(_glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
-        n, u, _sh, _mx = sppf_db.build(cores)
+        n, u, _sh, _mx = sppf_db.build(cores, argperm=True)   # ⟡orbit-projections-on: populate _orbit_def (graded coset residues) so orbit_cosets/graded_orbit --cosets light up; bounded (⟡deinline-graded-key: int handles, not inlined keys), paid only in the post-full-build catalog regen
         msgs.append(f"projection (events → SPPF): {n} packings, {u} units -> catalog.db")
         pcon = sqlite3.connect(CATALOG_DB)
         db = DbBuilder()
