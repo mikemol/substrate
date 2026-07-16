@@ -1061,6 +1061,8 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Term" [label="UniversalProperty.Term"];
   "Substrate.Category.UniversalProperty.TermParity" [label="UniversalProperty.TermParity"];
   "Substrate.Category.UniversalProperty.Terminal" [label="UniversalProperty.Terminal"];
+  "Substrate.Category.UniversalProperty.TmDBGodel" [label="UniversalProperty.TmDBGodel"];
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" [label="TmDBGodel.Properties"];
   "Substrate.Category.UniversalProperty.Topos" [label="UniversalProperty.Topos"];
   "Substrate.Category.UniversalProperty.TruthValues" [label="UniversalProperty.TruthValues"];
   "Substrate.Category.UniversalProperty.UniquenessStencilAbstract" [label="UniversalProperty.UniquenessStencilAbstract"];
@@ -8041,6 +8043,18 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Category.UniversalProperty.Morphism";
   "Substrate.Category.UniversalProperty.Terminal" -> "Substrate.Foundation.Unit";
+  "Substrate.Category.UniversalProperty.TmDBGodel" -> "Substrate.Foundation.List";
+  "Substrate.Category.UniversalProperty.TmDBGodel" -> "Substrate.Foundation.List.Length";
+  "Substrate.Category.UniversalProperty.TmDBGodel" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.UniversalProperty.TmDBGodel" -> "Substrate.Foundation.Product";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Algebra.Quotient";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Category.UniversalProperty.TmDBGodel";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.List";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.List.Length";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Nat.Properties.Order";
+  "Substrate.Category.UniversalProperty.TmDBGodel.Properties" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.TruthValues" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Algebra.Nat.Units";
   "Substrate.Category.UniversalProperty.UnitsBackedGraded" -> "Substrate.Category.UPArrowGraded";
