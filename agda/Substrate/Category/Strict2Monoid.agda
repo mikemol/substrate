@@ -45,10 +45,12 @@ private
 -- The Strict2Monoid record.
 ------------------------------------------------------------------------
 
-record Strict2Monoid (ℓ ℓ′ : Level) : Set (suc (ℓ ⊔ ℓ′)) where
+-- ⟡set1-rp-strict2monoid: the 1-cell carrier M and the 2-cell relation _≈_ are PARAMETERS now —
+-- a record fielding a Set carrier is never honest Set₁ (set1-carrier-always-parameterize); the
+-- record drops Set (suc (ℓ ⊔ ℓ′)) → Set (ℓ ⊔ ℓ′), fielding only the ops and laws. Mechanically
+-- migrated (scratch/record_def_edit.py + reparameterize_record.py).
+record Strict2Monoid (ℓ ℓ′ : Level) (M : Set ℓ) (_≈_ : M → M → Set ℓ′) : Set (ℓ ⊔ ℓ′) where
   field
-    -- 1-cell type (the underlying monoid carrier).
-    M       : Set ℓ
     -- Horizontal composition (1-cell composition).
     _·_     : M → M → M
     -- Identity 1-cell.
@@ -57,8 +59,6 @@ record Strict2Monoid (ℓ ℓ′ : Level) : Set (suc (ℓ ⊔ ℓ′)) where
     ·-assoc      : (a b c : M) → (a · b) · c ≡ a · (b · c)
     ·-identityˡ  : (a : M) → ε · a ≡ a
     ·-identityʳ  : (a : M) → a · ε ≡ a
-    -- 2-cell relation.
-    _≈_     : M → M → Set ℓ′
     -- Vertical composition (2-cell composition).
     ≈-refl  : ∀ {a} → a ≈ a
     ≈-sym   : ∀ {a b} → a ≈ b → b ≈ a

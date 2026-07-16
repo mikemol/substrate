@@ -34,13 +34,18 @@ private
 -- N-1: DirectProduct of two Strict2Monoids.
 ------------------------------------------------------------------------
 
+-- ⟡set1-rp-strict2monoid: the carriers/relations are record PARAMS now — bind them as implicit
+-- indices (A₁/_≈₁_/A₂/_≈₂_) and carry the product carrier + componentwise relation IN THE TYPE
+-- (the ex-fields `M`/`_≈_` of the result). The ex-projections `M₁.M`/`M₁._≈_` ARE those indices.
 direct-product :
-  Strict2Monoid ℓ₁ ℓ₁′ →
-  Strict2Monoid ℓ₂ ℓ₂′ →
-  Strict2Monoid (ℓ₁ ⊔ ℓ₂) (ℓ₁′ ⊔ ℓ₂′)
+  {A₁ : Set ℓ₁} {_≈₁_ : A₁ → A₁ → Set ℓ₁′}
+  {A₂ : Set ℓ₂} {_≈₂_ : A₂ → A₂ → Set ℓ₂′} →
+  Strict2Monoid ℓ₁ ℓ₁′ A₁ _≈₁_ →
+  Strict2Monoid ℓ₂ ℓ₂′ A₂ _≈₂_ →
+  Strict2Monoid (ℓ₁ ⊔ ℓ₂) (ℓ₁′ ⊔ ℓ₂′) (A₁ × A₂)
+                (λ (a₁ , a₂) (b₁ , b₂) → (a₁ ≈₁ b₁) × (a₂ ≈₂ b₂))
 direct-product M₁ M₂ = record
-  { M           = M₁.M × M₂.M
-  ; _·_         = λ (a₁ , a₂) (b₁ , b₂) → (a₁ M₁.· b₁ , a₂ M₂.· b₂)
+  { _·_         = λ (a₁ , a₂) (b₁ , b₂) → (a₁ M₁.· b₁ , a₂ M₂.· b₂)
   ; ε           = (M₁.ε , M₂.ε)
   ; ·-assoc     = λ (a₁ , a₂) (b₁ , b₂) (c₁ , c₂) →
                     cong₂ _,_ (M₁.·-assoc a₁ b₁ c₁) (M₂.·-assoc a₂ b₂ c₂)
@@ -48,7 +53,6 @@ direct-product M₁ M₂ = record
                     cong₂ _,_ (M₁.·-identityˡ a₁) (M₂.·-identityˡ a₂)
   ; ·-identityʳ = λ (a₁ , a₂) →
                     cong₂ _,_ (M₁.·-identityʳ a₁) (M₂.·-identityʳ a₂)
-  ; _≈_         = λ (a₁ , a₂) (b₁ , b₂) → (a₁ M₁.≈ b₁) × (a₂ M₂.≈ b₂)
   ; ≈-refl      = (M₁.≈-refl , M₂.≈-refl)
   ; ≈-sym       = λ (p₁ , p₂) → (M₁.≈-sym p₁ , M₂.≈-sym p₂)
   ; ≈-trans     = λ (p₁ , p₂) (q₁ , q₂) →

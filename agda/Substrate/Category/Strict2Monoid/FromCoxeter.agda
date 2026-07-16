@@ -75,15 +75,13 @@ a ≈ b = normalize a ≡ normalize b
 -- N-3: The Strict2Monoid instance.
 ------------------------------------------------------------------------
 
-Coxeter-Strict2Monoid : Strict2Monoid _ _
+Coxeter-Strict2Monoid : Strict2Monoid _ _ Word _≈_
 Coxeter-Strict2Monoid = record
-  { M           = Word
-  ; _·_         = _++_
+  { _·_         = _++_
   ; ε           = ε
   ; ·-assoc     = ++-assoc
   ; ·-identityˡ = ++-identity-left
   ; ·-identityʳ = ++-identity-right
-  ; _≈_         = _≈_
   ; ≈-refl      = refl
   ; ≈-sym       = sym
   ; ≈-trans     = trans

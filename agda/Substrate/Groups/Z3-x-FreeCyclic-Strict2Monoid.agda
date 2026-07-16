@@ -30,6 +30,6 @@ import Substrate.Groups.FreeCyclic-Coxeter-Strict2Monoid as F-S2M
 -- the 2-D Strict2Monoid for Z₃ × ℕ.
 ------------------------------------------------------------------------
 
-Z3-x-F-Strict2Monoid : Strict2Monoid _ _
+Z3-x-F-Strict2Monoid : Strict2Monoid _ _ _ _
 Z3-x-F-Strict2Monoid =
   direct-product Z₃-S2M.Coxeter-Strict2Monoid F-S2M.Coxeter-Strict2Monoid

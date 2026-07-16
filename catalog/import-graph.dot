@@ -10761,6 +10761,7 @@ digraph imports {
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Category.Strict2Monoid";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.DirectProduct";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Category.Strict2Monoid.FromCoxeter";
+  "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Foundation.Product";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Capabilities.Strict2Monoid";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Coxeter.ListPresentation";
   "Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid" -> "Substrate.Groups.Coxeter.Word";
