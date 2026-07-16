@@ -30,10 +30,9 @@ fixed-point-sequent→Brick
   → (decide : (a : A) → Maybe (Canonical a))
   → ℕ
   -- ⟡set1-paydown: edges are Brick's implicit indices; supply them explicitly, tag is `record {}`.
-  → Brick {A} {Maybe A} {⊤} {⊤} (record {})
+  → Brick {A} {Maybe A} {⊤} {⊤} (record {}) SequentRule
 fixed-point-sequent→Brick s decide n = record
   { witnesses = D⇒S
   ; step      = λ (a , _) → iterate-to-canonical (SequentFixed.spec s) decide
                               (SequentFixed.derivation s) n a , tt
-  ; homomorphism-tag = SequentRule
   }

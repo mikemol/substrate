@@ -14,14 +14,14 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 
 -- ⟡set1-paydown: BrickType's edges are now type indices, not projections — read them off the
 -- implicit params (inferred from the brick's type) instead of `BrickType.D-in T`.
-D-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+D-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} {Tag : Set} → Brick T Tag → Set
 D-in-of {D-in = d} _ = d
 
-D-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+D-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} {Tag : Set} → Brick T Tag → Set
 D-out-of {D-out = d} _ = d
 
-S-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+S-in-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} {Tag : Set} → Brick T Tag → Set
 S-in-of {S-in = s} _ = s
 
-S-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} → Brick T → Set
+S-out-of : ∀ {D-in D-out S-in S-out : Set} {T : BrickType D-in D-out S-in S-out} {Tag : Set} → Brick T Tag → Set
 S-out-of {S-out = s} _ = s

@@ -31,9 +31,8 @@ PredictorSurprise-Type = record {}
 
 record Preserves-Shannon : Set where
 
-predictor-surprise : Brick PredictorSurprise-Type
+predictor-surprise : Brick PredictorSurprise-Type Preserves-Shannon
 predictor-surprise = record
   { witnesses = S⇒D
   ; step      = λ (ch , s) → surprise-bits s ch , s  -- s unchanged
-  ; homomorphism-tag = Preserves-Shannon
   }

@@ -74,9 +74,8 @@ crumb-action = record
 RotateCrumb-Type : BrickType (Crumb × V₄) Crumb ⊤ ⊤
 RotateCrumb-Type = record {}
 
-rotate-crumb : Brick RotateCrumb-Type
+rotate-crumb : Brick RotateCrumb-Type (Actionᴳ V₄-Group Crumb)
 rotate-crumb = record
   { witnesses = D⇒S
   ; step      = λ ((c , g) , _) → v4-xor c g , tt
-  ; homomorphism-tag = Actionᴳ V₄-Group Crumb   -- names the genuine action (witnessed by crumb-action)
   }

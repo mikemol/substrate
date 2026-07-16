@@ -23,6 +23,10 @@ open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong; sym)
 open import Substrate.Pipeline.Brick
 
+-- ⟡set1-rp: telescope carriers for Brick (auto).
+private variable
+  Tagb₁ Tagb₂ Tagb : Set
+
 ------------------------------------------------------------------------
 -- 1. Sequential composition.
 --
@@ -45,11 +49,11 @@ compose-type _ _ _ _ = record {}
 -- equalities; apply b₂.
 compose : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
         → {T₁ : BrickType Di₁ Do₁ Si₁ So₁} {T₂ : BrickType Di₂ Do₂ Si₂ So₂}
-        → (b₁ : Brick T₁)
-        → (b₂ : Brick T₂)
+        → (b₁ : Brick T₁ Tagb₁)
+        → (b₂ : Brick T₂ Tagb₂)
         → (d-eq : Do₁ ≡ Di₂)
         → (s-eq : So₁ ≡ Si₂)
-        → Brick (compose-type T₁ T₂ d-eq s-eq)
+        → Brick (compose-type T₁ T₂ d-eq s-eq) ⊤
 compose b₁ b₂ refl refl = record
   { witnesses = Brick.witnesses b₁  -- the composite's witnessing is
                                      -- the leftmost (entry) brick's
@@ -58,8 +62,6 @@ compose b₁ b₂ refl refl = record
   ; step      = λ (d , s) →
                   let mid = Brick.step b₁ (d , s)
                   in Brick.step b₂ mid
-  ; homomorphism-tag = ⊤  -- composite preserves what BOTH preserve;
-                          -- specific tags belong to per-instance lemmas
   }
 
 ------------------------------------------------------------------------
@@ -83,15 +85,14 @@ record Observer {Di Do Si So : Set} (T : BrickType Di Do Si So) (O : Set) : Set 
 tee-type : ∀ {Di Do Si So : Set} → BrickType Di Do Si So → (O : Set) → BrickType Di Do Si (So × O)
 tee-type _ O = record {}
 
-tee : ∀ {Di Do Si So O : Set} {T : BrickType Di Do Si So} → (b : Brick T) → (obs : Observer T O)
-    → Brick (tee-type T O)
+tee : ∀ {Di Do Si So O : Set} {T : BrickType Di Do Si So} → (b : Brick T Tagb) → (obs : Observer T O)
+    → Brick (tee-type T O) Tagb
 tee b obs = record
   { witnesses = Brick.witnesses b
   ; step      = λ (d , s) →
                   let (d' , s') = Brick.step b (d , s)
                       o         = Observer.observe obs (d' , s')
                   in d' , (s' , o)
-  ; homomorphism-tag = Brick.homomorphism-tag b
   }
 
 ------------------------------------------------------------------------
@@ -127,12 +128,12 @@ product-type _ _ _ _ = record {}
 
 product : ∀ {Di₁ Do₁ Si₁ So₁ Di₂ Do₂ Si₂ So₂ : Set}
         → {T₁ : BrickType Di₁ Do₁ Si₁ So₁} {T₂ : BrickType Di₂ Do₂ Si₂ So₂}
-        → (b₁ : Brick T₁)
-        → (b₂ : Brick T₂)
+        → (b₁ : Brick T₁ Tagb₁)
+        → (b₂ : Brick T₂ Tagb₂)
         → (din-eq : Di₁ ≡ Di₂)
         → (dout-eq : Do₁ ≡ Do₂)
         → (c : Chooser T₁ T₂)
-        → Brick (product-type T₁ T₂ din-eq dout-eq)
+        → Brick (product-type T₁ T₂ din-eq dout-eq) ⊤
 product b₁ b₂ refl refl c = record
   { witnesses = D⇒C   -- The product is fundamentally a D⇒C
                        -- (data selects between two computes)
@@ -142,7 +143,6 @@ product b₁ b₂ refl refl c = record
                       (d₂ , s₂') = Brick.step b₂ (d , s₂)
                       chosen = Chooser.select c (d₁ , d₂ , s₁' , s₂')
                   in chosen , (s₁' , s₂')
-  ; homomorphism-tag = ⊤
   }
 
 ------------------------------------------------------------------------

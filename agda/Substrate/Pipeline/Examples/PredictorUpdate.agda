@@ -30,9 +30,8 @@ PredictorUpdate-Type = record {}
 
 record Preserves-CountMonoid : Set where
 
-predictor-update : Brick PredictorUpdate-Type
+predictor-update : Brick PredictorUpdate-Type Preserves-CountMonoid
 predictor-update = record
   { witnesses = D⇒S
   ; step      = λ (ch , s) → tt , update-counts s ch
-  ; homomorphism-tag = Preserves-CountMonoid
   }

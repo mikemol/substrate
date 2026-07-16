@@ -88,13 +88,12 @@ round-robin-merger
   → A                  -- default value (for empty input)
   → ℕ                  -- n-inputs (a runtime parameter)
   -- ⟡set1-paydown: edges are Brick's implicit indices; supply them explicitly, tag is `record {}`.
-  → Brick {List A} {A} {ℕ} {ℕ} (record {})
+  → Brick {List A} {A} {ℕ} {ℕ} (record {}) MergeStrategy
 round-robin-merger {A} def n = record
   { witnesses = C⇒D  -- the compute (strategy) selects which data wins
   ; step      = λ (inputs , counter) →
                   nth def inputs counter , (suc counter)
                   -- (no modulo here for simplicity; real impl wraps)
-  ; homomorphism-tag = MergeStrategy
   }
 
 ------------------------------------------------------------------------
@@ -127,11 +126,10 @@ record BinaryMerger (A B : Set) : Set where
 binary-merger-type : (A B : Set) → BrickType (A × B) (Either A B) ⊤ ⊤
 binary-merger-type A B = record {}
 
-binary-merger : ∀ {A B} → BinaryMerger A B → Brick (binary-merger-type A B)
+binary-merger : ∀ {A B} → BinaryMerger A B → Brick (binary-merger-type A B) MergeStrategy
 binary-merger {A} {B} m = record
   { witnesses = C⇒D  -- strategy (C) selects which D admits
   ; step      = λ ((a , b) , _) → BinaryMerger.select m (a , b) , tt
-  ; homomorphism-tag = MergeStrategy
   }
 
 ------------------------------------------------------------------------

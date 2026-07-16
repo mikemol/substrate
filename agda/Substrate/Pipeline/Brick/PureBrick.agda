@@ -35,9 +35,8 @@ pure→Brick-step : ∀ {tag A B : Set} → (P : PureBrick tag A B)
 pure→Brick-step P (a , _) = f P a , tt
 
 pure-as-brick : ∀ {tag A B : Set} → (P : PureBrick tag A B)
-              → Brick (pure→Brick P)
+              → Brick (pure→Brick P) tag
 pure-as-brick {tag} P = record
   { witnesses        = D⇒S
   ; step             = λ x → f P (proj₁ x) , tt
-  ; homomorphism-tag = tag
   }

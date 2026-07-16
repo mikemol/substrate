@@ -33,9 +33,8 @@ Chooser-Type = record {}
 
 record Preserves-Ranking : Set where
 
-choose-rotation : Brick Chooser-Type
+choose-rotation : Brick Chooser-Type Preserves-Ranking
 choose-rotation = record
   { witnesses = D⇒C
   ; step      = λ (w , s) → choose-rotation-impl w s
-  ; homomorphism-tag = Preserves-Ranking
   }
