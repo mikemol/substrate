@@ -14,16 +14,9 @@ position), so flagged records need a projection check; DATA types are reliable
 import os, re, collections
 from _agdatext import split_arrows, strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-kind={}; home={}; text={}
-for dp,_,fns in os.walk(ROOT):
-    for fn in fns:
-        if fn.endswith(".agda"):
-            p=os.path.join(dp,fn); t=strip(open(p,encoding="utf-8").read()); text[p]=t
-            for m in re.finditer(r"^(data|record)\s+(\S+)",t,re.M):
-                kind.setdefault(m.group(2),m.group(1)); home.setdefault(m.group(2),p)
-known=set(kind)
-
-def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
+from _shred_graph import ShredGraph
+_G = ShredGraph(ROOT)                       # rung-1: the shared Agda decl graph (kind/home/known + toks)
+kind, home, text, known, toks = _G.kind, _G.home, _G.text, _G.known, _G.toks
 
 consumed=set(); produced=set()
 sigre=re.compile(r"^([^\s:{}()]+)\s*:\s*(.+)$")

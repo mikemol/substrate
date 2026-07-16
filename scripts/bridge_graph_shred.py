@@ -35,110 +35,13 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Su
 
 
 # ---- 1. the top-down shred graph (reuse rank4_shred's ranking) -------------
-text = {}
-kind = {}
-home = {}
-modof = {}
-fileof = {}
-body = collections.defaultdict(list)
-modre = re.compile(r"^module\s+(\S+)\s+where", re.M)
-declre = re.compile(r"^(data|record)\s+(\S+)(.*)$")
-for dp, _, fns in os.walk(ROOT):
-    for fn in fns:
-        if not fn.endswith(".agda"):
-            continue
-        p = os.path.join(dp, fn)
-        t = strip(open(p, encoding="utf-8").read())
-        text[p] = t
-        mm = modre.search(t)
-        if mm:
-            modof[p] = mm.group(1)
-            fileof[mm.group(1)] = p
-        lines = t.splitlines()
-        i = 0
-        while i < len(lines):
-            m = declre.match(lines[i])
-            if m:
-                name, rest = m.group(2), m.group(3)
-                body[name].append(rest)
-                kind.setdefault(name, m.group(1))
-                home.setdefault(name, p)
-                j = i + 1
-                while j < len(lines) and (lines[j].strip() == "" or lines[j][:1] in " \t"):
-                    if " : " in lines[j]:
-                        body[name].append(lines[j].split(" : ", 1)[1])
-                    j += 1
-                i = j
-                continue
-            i += 1
-known = set(kind)
-
-
-
-def toks(s):
-    return [t for t in re.split(r"[\s()\[\]{};,.]+", s) if t in known]
-
-
-produced = set()
-consumed = set()
-sig = re.compile(r"^\s*[^\s:]+\s*:\s*(.+)$")
-for t in text.values():
-    for line in t.splitlines():
-        m = sig.match(line)
-        if not m:
-            continue
-        if "→" in m.group(1):
-            parts = sa(m.group(1))
-            for a in parts[:-1]:
-                consumed |= set(toks(a))
-            produced |= set(toks(parts[-1]))
-        else:
-            produced |= set(toks(m.group(1)))
-imports = collections.defaultdict(set)
-impre = re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)", re.M)
-for p, t in text.items():
-    if p not in modof:
-        continue
-    for m in impre.finditer(t):
-        if m.group(1) in fileof:
-            imports[modof[p]].add(m.group(1))
-importers = collections.defaultdict(set)
-for m, ds in imports.items():
-    for d in ds:
-        importers[d].add(m)
-
-
-def reach(mod):
-    seen = {mod}
-    q = collections.deque([mod])
-    while q:
-        u = q.popleft()
-        for v in importers[u]:
-            if v not in seen:
-                seen.add(v)
-                q.append(v)
-    return len(seen) - 1
-
-
-def rank(T):
-    mod = modof.get(home[T], "")
-    if T in consumed:
-        return 4 if reach(mod) >= 40 else 3
-    if T in produced:
-        return 2
-    return 1
-
-
+from _shred_graph import ShredGraph
+_G = ShredGraph(ROOT)                       # rung-1: the shared Agda decl graph + reach/rank/refs/toks
+text, kind, home, modof, fileof, body, known, produced, consumed, importers = (
+    _G.text, _G.kind, _G.home, _G.modof, _G.fileof, _G.body, _G.known, _G.produced, _G.consumed, _G.importers)
+toks, reach, rank, refs = _G.toks, _G.reach, _G.rank, _G.refs
 ranks = {T: rank(T) for T in known}
 peak = [T for T in known if ranks[T] == 4]
-
-
-def refs(T):
-    r = set()
-    for b in body[T]:
-        r |= set(toks(b))
-    r.discard(T)
-    return r
 
 
 # structural edges (undirected) among rank-4 types, plus all refs of peak types

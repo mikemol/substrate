@@ -19,45 +19,12 @@ import os, re, collections
 from _agdatext import split_arrows, strip
 sa = split_arrows
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-text={}; kind={}; home={}; modof={}; fileof={}
-modre=re.compile(r"^module\s+(\S+)\s+where",re.M)
-for dp,_,fns in os.walk(ROOT):
-    for fn in fns:
-        if fn.endswith(".agda"):
-            p=os.path.join(dp,fn); t=strip(open(p,encoding="utf-8").read()); text[p]=t
-            for m in re.finditer(r"^(data|record)\s+(\S+)",t,re.M):
-                kind.setdefault(m.group(2),m.group(1)); home.setdefault(m.group(2),p)
-            mm=modre.search(t)
-            if mm: modof[p]=mm.group(1); fileof[mm.group(1)]=p
-known=set(kind)
-def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
-
-produced=set(); consumed=set()
-sig=re.compile(r"^\s*[^\s:]+\s*:\s*(.+)$")
-for t in text.values():
-    for line in t.splitlines():
-        m=sig.match(line)
-        if not m or "→" not in m.group(1):
-            if m: produced|=set(toks(m.group(1)))
-            continue
-        parts=sa(m.group(1))
-        for a in parts[:-1]: consumed|=set(toks(a))
-        produced|=set(toks(parts[-1]))
-
-# transitive reach (for the bounded proxy)
+from _shred_graph import ShredGraph
+_G = ShredGraph(ROOT)                       # rung-1: the shared Agda decl graph + reach/rank/toks
+text, kind, home, modof, fileof, known, produced, consumed, importers = (
+    _G.text, _G.kind, _G.home, _G.modof, _G.fileof, _G.known, _G.produced, _G.consumed, _G.importers)
+toks, reach, rank = _G.toks, _G.reach, _G.rank
 impre=re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)",re.M)
-importers=collections.defaultdict(set)
-for p,t in text.items():
-    if p not in modof: continue
-    for m in impre.finditer(t):
-        if m.group(1) in fileof: importers[m.group(1)].add(modof[p])
-def reach(mod):
-    seen={mod}; q=collections.deque([mod])
-    while q:
-        u=q.popleft()
-        for v in importers[u]:
-            if v not in seen: seen.add(v); q.append(v)
-    return len(seen)-1
 depth={}
 def md(m,st=()):
     if m in depth: return depth[m]
@@ -77,13 +44,7 @@ def dep(m,st=()):
     depth[m]=1+max([dep(d,st+(m,)) for d in imports[m]] or [-1]); return depth[m]
 for m in fileof: dep(m)
 
-def rank(T):
-    mod=modof.get(home[T],"")
-    if T in consumed:
-        return 4 if reach(mod)>=40 else 3
-    if T in produced: return 2
-    return 1
-ranks={T:rank(T) for T in known}
+ranks={T:rank(T) for T in known}           # rank = _G.rank (routed above)
 dist=collections.Counter(ranks.values())
 NAMES={1:"recipe-only (HOLE)",2:"manifest, unmeasured",3:"measured (observed)",4:"bounded (covered)"}
 print(f"== realizability surface: {len(known)} types by Charter gate-rank ==")

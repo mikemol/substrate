@@ -12,15 +12,9 @@ that look different by introduction may SHARE a reaction profile.
 import os, re, collections
 from _agdatext import split_arrows, strip
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-# known types
-known=set(); text={}
-for dp,_,fns in os.walk(ROOT):
-    for fn in fns:
-        if fn.endswith(".agda"):
-            p=os.path.join(dp,fn); t=strip(open(p,encoding="utf-8").read()); text[p]=t
-            for m in re.finditer(r"^(?:data|record)\s+(\S+)",t,re.M): known.add(m.group(1))
-
-def toks(s): return [t for t in re.split(r"[\s()\[\]{};,.]+",s) if t in known]
+from _shred_graph import ShredGraph
+_G = ShredGraph(ROOT)                       # rung-1: the shared Agda decl graph (known + toks)
+known, text, toks = _G.known, _G.text, _G.toks
 
 reaction=collections.defaultdict(collections.Counter)   # T -> Counter(result-type)
 consumers=collections.defaultdict(set)                   # T -> set(consuming def names)
