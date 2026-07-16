@@ -67,34 +67,36 @@ private
 -- primitive.
 ------------------------------------------------------------------------
 
-record DescentTree : Set₁ where
+-- ⟡set1-rp-descenttree: the 10 Set-valued fields (Nodes + the per-node carrier/class/membership
+-- FAMILIES) are PARAMETERS now — a record fielding a Set carrier is never honest Set₁
+-- (set1-carrier-always-parameterize); the record drops Set₁→Set, fielding only the element-ops,
+-- structural maps, and witnesses. Param order = the original field order (dependency-safe; the
+-- positional-instance codemod lifts instance args by these positions). Mechanically synthesized
+-- (scratch/record_def_edit.py).
+record DescentTree (Nodes : Set)
+                   (Gᶜ : Nodes → Set)
+                   (Classᶜ : Nodes → Set)
+                   (in-classᶜ : (n : Nodes) → Classᶜ n → Gᶜ n → Set)
+                   (dGb : Nodes → Set)
+                   (dCb : Nodes → Set)
+                   (dicb : (n : Nodes) → dCb n → dGb n → Set)
+                   (dGd : Nodes → Set)
+                   (dCd : Nodes → Set)
+                   (dicd : (n : Nodes) → dCd n → dGd n → Set) : Set where
   constructor mkDescentTree
   field
-    Nodes : Set
-    -- ⟡held-family-sweep: the per-node ConjugationCoalgebra/CentralizerDescent CARRIERS
-    -- vary per node, so they are Nodes-indexed FAMILIES (not a stored Σ-bundle). 7 for
-    -- CCA-at + 14 for descent-at's CentralizerDescent (base ×7, descent ×7).
-    Gᶜ        : Nodes → Set
     _·ᶜ_      : (n : Nodes) → Gᶜ n → Gᶜ n → Gᶜ n
     εᶜ        : (n : Nodes) → Gᶜ n
     invᶜ      : (n : Nodes) → Gᶜ n → Gᶜ n
-    Classᶜ    : Nodes → Set
     repᶜ      : (n : Nodes) → Classᶜ n → Gᶜ n
-    in-classᶜ : (n : Nodes) → Classᶜ n → Gᶜ n → Set
-    dGb  : Nodes → Set
     d·b  : (n : Nodes) → dGb n → dGb n → dGb n
     dεb  : (n : Nodes) → dGb n
     dib  : (n : Nodes) → dGb n → dGb n
-    dCb  : Nodes → Set
     drb  : (n : Nodes) → dCb n → dGb n
-    dicb : (n : Nodes) → dCb n → dGb n → Set
-    dGd  : Nodes → Set
     d·d  : (n : Nodes) → dGd n → dGd n → dGd n
     dεd  : (n : Nodes) → dGd n
     did  : (n : Nodes) → dGd n → dGd n
-    dCd  : Nodes → Set
     drd  : (n : Nodes) → dCd n → dGd n
-    dicd : (n : Nodes) → dCd n → dGd n → Set
     Root  : Nodes
     CCA-at : (n : Nodes) →
              ConjugationCoalgebra (Gᶜ n) (_·ᶜ_ n) (εᶜ n) (invᶜ n) (Classᶜ n) (repᶜ n) (in-classᶜ n)

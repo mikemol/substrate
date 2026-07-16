@@ -58,7 +58,9 @@ record CentralizerDescent
   (Class-base : Set ℓ) (rep-base : Class-base → G-base) (in-class-base : Class-base → G-base → Set ℓ)
   (G-descent : Set ℓ) (_·d_ : G-descent → G-descent → G-descent) (εd : G-descent) (_⁻¹d : G-descent → G-descent)
   (Class-descent : Set ℓ) (rep-descent : Class-descent → G-descent) (in-class-descent : Class-descent → G-descent → Set ℓ)
-  : Set (lsuc ℓ) where
+  -- ⟡set1-rp-descenttree: Set (lsuc ℓ) → Set ℓ — the lsuc was STALE (a leftover from before
+  -- ConjugationCoalgebra was parameterized): every field now lands at level ℓ, so the record does too.
+  : Set ℓ where
   constructor mkCentralizerDescent
   field
     base         : ConjugationCoalgebra G-base _·b_ εb _⁻¹b Class-base rep-base in-class-base

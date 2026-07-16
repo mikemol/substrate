@@ -150,17 +150,8 @@ HF-parent-of-root = refl
 -- 2. The Happy Family as a DescentTree.
 ------------------------------------------------------------------------
 
-HappyFamily-DescentTree : DescentTree
-HappyFamily-DescentTree = mkDescentTree
-  (Fin 20)
-  HF-G HF-· HF-ε HF-inv HF-Class HF-rep HF-in-class
-  dGb d·b dεb dib dCb drb dicb
-  dGd d·d dεd did dCd drd dicd
-  i0                    -- Root = Monster
-  HF-CCA
-  HF-parent
-  HF-parent-of-root
-  HF-descent
+HappyFamily-DescentTree : DescentTree (Fin 20) HF-G HF-Class HF-in-class dGb dCb dicb dGd dCd dicd
+HappyFamily-DescentTree = mkDescentTree HF-· HF-ε HF-inv HF-rep d·b dεb dib drb d·d dεd did drd i0 HF-CCA HF-parent HF-parent-of-root HF-descent
 
 ------------------------------------------------------------------------
 -- 3. Capstone — Happy Family as a single substrate object.
