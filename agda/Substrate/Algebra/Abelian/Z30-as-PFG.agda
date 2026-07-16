@@ -82,25 +82,21 @@ Z30-multiplicities zero             = 1
 Z30-multiplicities ₁       = 1
 Z30-multiplicities ₂ = 1
 
-Z30-SylowDecomposition : SylowDecomposition Z30 _+Z30_ 0Z30 3
-Z30-SylowDecomposition = mkSylowDecomposition
-  Z30-primes
-  Z30-multiplicities
-  Sylow-pred-Z30
-  joint-gen-Z30
+Z30-SylowDecomposition : SylowDecomposition Z30 _+Z30_ 0Z30 3 Sylow-pred-Z30
+Z30-SylowDecomposition = mkSylowDecomposition Z30-primes Z30-multiplicities joint-gen-Z30
 
 ------------------------------------------------------------------------
 -- 2. The PrimeFactoredGauge for Z/30.
 ------------------------------------------------------------------------
 
-Z30-PFG : PrimeFactoredGauge Z30 Z30 _+Z30_ 0Z30 _≈Z30_ _≈Z30_ 3
+Z30-PFG : PrimeFactoredGauge Z30 Z30 _+Z30_ 0Z30 _≈Z30_ _≈Z30_ 3 Sylow-pred-Z30
 Z30-PFG = mkPFG Z30-SylowDecomposition Z30-torsor
 
 ------------------------------------------------------------------------
 -- 3. The AbelianPFG instance.
 ------------------------------------------------------------------------
 
-Z30-AbelianPFG : AbelianPFG Z30 Z30 _+Z30_ 0Z30 _≈Z30_ _≈Z30_ 3
+Z30-AbelianPFG : AbelianPFG Z30 Z30 _+Z30_ 0Z30 _≈Z30_ _≈Z30_ 3 Sylow-pred-Z30
 Z30-AbelianPFG = mkAbelianPFG Z30-PFG Z30-abelian-comm
 
 ------------------------------------------------------------------------

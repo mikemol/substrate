@@ -90,16 +90,21 @@ data InGenerated {ℓ : Level} {G : Set ℓ}
 -- G-equivariance from per-Sylow chart-equivariance.
 ------------------------------------------------------------------------
 
+-- ⟡set1-rp-pfg: the Set-valued `Sylow` membership-predicate field is a PARAMETER now (LAST, so
+-- positional instances lift their 3rd ctor arg into the sig) — a record fielding a Set-valued
+-- family is never honest Set₁ (set1-carrier-always-parameterize); the record drops
+-- Set (lsuc ℓ) → Set ℓ. Consumers that projected `Sylow decomp i g` bind the predicate as their
+-- own param/index instead. Mechanically migrated (record_def_edit + reparameterize_record).
 record SylowDecomposition
   (G : Set ℓ)
   (_·G_ : G → G → G)
   (εG : G)
-  (n : ℕ) : Set (lsuc ℓ) where
+  (n : ℕ)
+  (Sylow : Fin n → (G → Set ℓ)) : Set ℓ where
   constructor mkSylowDecomposition
   field
     primes          : Fin n → ℕ
     multiplicity    : Fin n → ℕ
-    Sylow           : Fin n → (G → Set ℓ)
     joint-generated : (g : G) →
                       InGenerated (λ x → Σ (Fin n) (λ i → Sylow i x))
                                   _·G_ εG g

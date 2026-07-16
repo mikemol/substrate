@@ -38,7 +38,7 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.SylowDecomposition
-  using (SylowDecomposition; Sylow)
+  using (SylowDecomposition)
 
 ------------------------------------------------------------------------
 -- 1. ChainDecomposition — the costructure.
@@ -69,14 +69,17 @@ record ChainDecomposition
   {G : Set ℓG}
   (_·G_ : G → G → G) (εG : G)
   {n : ℕ}
-  (factorization : SylowDecomposition G _·G_ εG n)
+  -- ⟡set1-rp-pfg: SylowDecomposition's `Sylow` is a param now — bind the predicate here and
+  -- apply it directly (the ex-projection `Sylow factorization i …` IS `Sylow i …`).
+  {Sylow : Fin n → (G → Set ℓG)}
+  (factorization : SylowDecomposition G _·G_ εG n Sylow)
   (_≈G_ : G → G → Set ℓEG)
   (g : G) : Set (ℓG ⊔ ℓEG) where
   constructor mkChain
   field
     components : Vec G n
     -- Each component lies in its respective Sylow.
-    in-sylows  : (i : Fin n) → Sylow factorization i (lookup components i)
+    in-sylows  : (i : Fin n) → Sylow i (lookup components i)
     -- The product (left-to-right) equals g.
     reconstruct-witness : reconstruct-chain _·G_ εG components ≈G g
 

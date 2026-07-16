@@ -981,6 +981,7 @@ digraph reuse {
   "Substrate.Algebra.Wedge.StarV4._.StarDivStr" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Trace" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Wedge" -> "Substrate.Algebra.Wedge.DivStr";
+  "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Adjunction.IsLinearAdjunction" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" -> "Substrate.Category.CategoryOf.CategoryOf";
@@ -1000,6 +1001,7 @@ digraph reuse {
   "Substrate.Category.CartanRootEquivalence.CartanRoot-Equivalence" -> "Substrate.Category.Functor.Functor";
   "Substrate.Category.CartanRootEquivalence.CartanRoot-Equivalence" -> "Substrate.Category.NaturalIsomorphism.NaturalIsomorphism";
   "Substrate.Category.ChainDecomposition.ChainDecomposition" -> "Substrate.Category.SylowDecomposition.SylowDecomposition";
+  "Substrate.Category.ChainDecomposition.ChainDecomposition" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.ChainDecomposition.ChainDecomposition" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.CliffordEmissionAlgebra.BasisBlade" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.CliffordEmissionAlgebra.Grade" -> "Substrate.Foundation.Nat.ℕ";
@@ -1088,6 +1090,7 @@ digraph reuse {
   "Substrate.Category.PolyLens.PolyCoalgebra" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PolyLens.WiringDiagram" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PresentedUniversalProperty.PresentedUP" -> "Substrate.Category.FreeOverBasis.AlgebraClass";
+  "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.PseudoFunctor.PseudoFunctor" -> "Substrate.Category.TwoCategory.TwoCategory";
   "Substrate.Category.RGradedMonoid.RGradedMonoid" -> "Substrate.Category.CommutativeMonoid.CommutativeMonoid";
@@ -1106,6 +1109,7 @@ digraph reuse {
   "Substrate.Category.StochasticLens.StochasticLensCategory" -> "Substrate.Probability.MarkovCategory.MarkovCategory";
   "Substrate.Category.StratifiedBundle.WithinStratumStationary" -> "Substrate.Category.StratifiedBundle.StratifiedBundle";
   "Substrate.Category.SubobjectClassifier.SubobjectClassifier" -> "Substrate.Category.CategoryOf.CategoryOf";
+  "Substrate.Category.SylowDecomposition.SylowDecomposition" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.SylowDecomposition.SylowDecomposition" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.TensorProduct.AntisymmetricTensor.AntisymmetricTensor" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Topos.Topos" -> "Substrate.Category.CategoryOf.CategoryOf";

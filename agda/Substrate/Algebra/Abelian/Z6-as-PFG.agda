@@ -83,25 +83,21 @@ Z6-multiplicities : Fin 2 → ℕ
 Z6-multiplicities zero       = 1   -- Sylow-2 = Z/2
 Z6-multiplicities ₁ = 1   -- Sylow-3 = Z/3
 
-Z6-SylowDecomposition : SylowDecomposition Z6 _+Z6_ 0Z6 2
-Z6-SylowDecomposition = mkSylowDecomposition
-  Z6-primes
-  Z6-multiplicities
-  Sylow-pred-Z6
-  joint-gen-Z6
+Z6-SylowDecomposition : SylowDecomposition Z6 _+Z6_ 0Z6 2 Sylow-pred-Z6
+Z6-SylowDecomposition = mkSylowDecomposition Z6-primes Z6-multiplicities joint-gen-Z6
 
 ------------------------------------------------------------------------
 -- 2. The PrimeFactoredGauge for Z/6.
 ------------------------------------------------------------------------
 
-Z6-PFG : PrimeFactoredGauge Z6 Z6 _+Z6_ 0Z6 _≈Z6_ _≈Z6_ 2
+Z6-PFG : PrimeFactoredGauge Z6 Z6 _+Z6_ 0Z6 _≈Z6_ _≈Z6_ 2 Sylow-pred-Z6
 Z6-PFG = mkPFG Z6-SylowDecomposition Z6-torsor
 
 ------------------------------------------------------------------------
 -- 3. The AbelianPFG instance.
 ------------------------------------------------------------------------
 
-Z6-AbelianPFG : AbelianPFG Z6 Z6 _+Z6_ 0Z6 _≈Z6_ _≈Z6_ 2
+Z6-AbelianPFG : AbelianPFG Z6 Z6 _+Z6_ 0Z6 _≈Z6_ _≈Z6_ 2 Sylow-pred-Z6
 Z6-AbelianPFG = mkAbelianPFG Z6-PFG Z6-abelian-comm
 
 ------------------------------------------------------------------------

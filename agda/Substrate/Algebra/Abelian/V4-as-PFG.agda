@@ -91,18 +91,14 @@ module Substrate.Algebra.Abelian.V4-as-PFG
               InGenerated (λ x → Σ (Fin 1) (λ i → Sylow2 x)) _·_ εV g
   joint-gen g = InGenerated.base g (zero , tt)
 
-  v4-Sylow : SylowDecomposition V4 _·_ εV 1
-  v4-Sylow = mkSylowDecomposition
-    (λ _ → 2)                             -- the single prime: 2
-    (λ _ → 2)                             -- |V₄| = 2² ⇒ multiplicity 2
-    (λ _ → Sylow2)
-    joint-gen
+  v4-Sylow : SylowDecomposition V4 _·_ εV 1 (λ _ → Sylow2)
+  v4-Sylow = mkSylowDecomposition (λ _ → 2) (λ _ → 2) joint-gen
 
   ----------------------------------------------------------------------
   -- Assemble: V₄ as a PrimeFactoredGauge, then as an AbelianPFG.
   ----------------------------------------------------------------------
-  v4-PFG : PrimeFactoredGauge V4 V4 _·_ εV _≡_ _≡_ 1
+  v4-PFG : PrimeFactoredGauge V4 V4 _·_ εV _≡_ _≡_ 1 (λ _ → Sylow2)
   v4-PFG = mkPFG v4-Sylow v4-GTorsor
 
-  v4-AbelianPFG : AbelianPFG V4 V4 _·_ εV _≡_ _≡_ 1
+  v4-AbelianPFG : AbelianPFG V4 V4 _·_ εV _≡_ _≡_ 1 (λ _ → Sylow2)
   v4-AbelianPFG = mkAbelianPFG v4-PFG ·-comm

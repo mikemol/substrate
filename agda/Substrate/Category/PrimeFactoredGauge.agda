@@ -40,7 +40,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.Category.GTorsor using (GTorsor; act; transitive; free)
 open import Substrate.Category.SylowDecomposition
-  using (SylowDecomposition; primes; multiplicity; Sylow;
+  using (SylowDecomposition; primes; multiplicity;
          joint-generated; InGenerated)
 
 ------------------------------------------------------------------------
@@ -63,16 +63,20 @@ open import Substrate.Category.SylowDecomposition
 -- on any PrimeFactoredGauge instance.
 ------------------------------------------------------------------------
 
+-- ⟡set1-rp-pfg: the record's lsuc was inherited SOLELY from its `factorization` field's type
+-- (SylowDecomposition, whose Set-valued `Sylow` field is a param now) — thread the predicate as
+-- a param here too and the level drops to the plain ⊔ (GTorsor never carried an lsuc).
 record PrimeFactoredGauge
   {ℓG ℓX ℓEG ℓEX : Level}
   (G : Set ℓG) (X : Set ℓX)
   (_·G_ : G → G → G) (εG : G)
   (_≈G_ : G → G → Set ℓEG)
   (_≈X_ : X → X → Set ℓEX)
-  (n : ℕ) : Set (lsuc (ℓG ⊔ ℓX ⊔ ℓEG ⊔ ℓEX)) where
+  (n : ℕ)
+  (Sylow : Fin n → (G → Set ℓG)) : Set (ℓG ⊔ ℓX ⊔ ℓEG ⊔ ℓEX) where
   constructor mkPFG
   field
-    factorization : SylowDecomposition G _·G_ εG n
+    factorization : SylowDecomposition G _·G_ εG n Sylow
     torsor        : GTorsor G X _·G_ εG _≈G_ _≈X_
 
 open PrimeFactoredGauge public
@@ -92,10 +96,10 @@ chart-of-Sylow :
   {G : Set ℓG} {X : Set ℓX}
   {_·G_ : G → G → G} {εG : G}
   {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
-  {n : ℕ}
-  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n) →
+  {n : ℕ} {Sylow : Fin n → (G → Set ℓG)}
+  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow) →
   (i : Fin n) →
-  (g : G) → Sylow (factorization τ) i g → X → X
+  (g : G) → Sylow i g → X → X
 chart-of-Sylow τ i g _ = act (torsor τ) g
 
 ------------------------------------------------------------------------
@@ -118,12 +122,12 @@ atlas-decomposition :
   {G : Set ℓG} {X : Set ℓX}
   {_·G_ : G → G → G} {εG : G}
   {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
-  {n : ℕ}
-  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n) →
+  {n : ℕ} {Sylow : Fin n → (G → Set ℓG)}
+  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow) →
   (x y : X) →
   Σ G (λ g →
     Σ (_≈X_ (act (torsor τ) g x) y) (λ _ →
-      InGenerated (λ z → Σ (Fin n) (λ i → Sylow (factorization τ) i z))
+      InGenerated (λ z → Σ (Fin n) (λ i → Sylow i z))
                   _·G_ εG g))
 atlas-decomposition τ x y =
   let (g , eq) = transitive (torsor τ) x y

@@ -130,12 +130,8 @@ GL3F2-SylowDecomposition-from-joint :
     (g : GL3F2) →
     InGenerated (λ z → Σ (Fin 3) (λ i → Sylow-predicates i z))
                 _·G_ id-GL g) →
-  SylowDecomposition GL3F2 _·G_ id-GL 3
-GL3F2-SylowDecomposition-from-joint joint-gen = mkSylowDecomposition
-  Sylow-primes
-  Sylow-multiplicities
-  Sylow-predicates
-  joint-gen
+  SylowDecomposition GL3F2 _·G_ id-GL 3 Sylow-predicates
+GL3F2-SylowDecomposition-from-joint joint-gen = mkSylowDecomposition Sylow-primes Sylow-multiplicities joint-gen
 
 ------------------------------------------------------------------------
 -- 6. Capstone — Sylow-decomposition framework in place for GL3F2.

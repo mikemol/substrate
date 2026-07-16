@@ -45,7 +45,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.Category.GTorsor using (act; transitive)
 open import Substrate.Category.SylowDecomposition
-  using (SylowDecomposition; Sylow; joint-generated; InGenerated)
+  using (SylowDecomposition; joint-generated; InGenerated)
 open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge; factorization; torsor; atlas-decomposition)
 
@@ -66,12 +66,12 @@ multi-route-equivariance :
   {G : Set ℓG} {X : Set ℓX}
   {_·G_ : G → G → G} {εG : G}
   {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
-  {n : ℕ}
-  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n) →
+  {n : ℕ} {Sylow : Fin n → (G → Set ℓG)}
+  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow) →
   (x y : X) →
   Σ G (λ g →
     Σ (_≈X_ (act (torsor τ) g x) y) (λ _ →
-      InGenerated (λ z → Σ (Fin n) (λ i → Sylow (factorization τ) i z))
+      InGenerated (λ z → Σ (Fin n) (λ i → Sylow i z))
                   _·G_ εG g))
 multi-route-equivariance τ x y = atlas-decomposition τ x y
 
@@ -87,8 +87,8 @@ gauge-element :
   {G : Set ℓG} {X : Set ℓX}
   {_·G_ : G → G → G} {εG : G}
   {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
-  {n : ℕ}
-  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n) →
+  {n : ℕ} {Sylow : Fin n → (G → Set ℓG)}
+  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow) →
   X → X → G
 gauge-element τ x y = proj₁ (multi-route-equivariance τ x y)
 
@@ -99,10 +99,10 @@ sylow-chain :
   {G : Set ℓG} {X : Set ℓX}
   {_·G_ : G → G → G} {εG : G}
   {_≈G_ : G → G → Set ℓEG} {_≈X_ : X → X → Set ℓEX}
-  {n : ℕ}
-  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n) →
+  {n : ℕ} {Sylow : Fin n → (G → Set ℓG)}
+  (τ : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow) →
   (x y : X) →
-  InGenerated (λ z → Σ (Fin n) (λ i → Sylow (factorization τ) i z))
+  InGenerated (λ z → Σ (Fin n) (λ i → Sylow i z))
               _·G_ εG (gauge-element τ x y)
 sylow-chain τ x y = proj₂ (proj₂ (multi-route-equivariance τ x y))
 

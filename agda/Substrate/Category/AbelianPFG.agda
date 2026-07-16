@@ -40,6 +40,7 @@ module Substrate.Category.AbelianPFG where
 
 open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
 open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge)
@@ -62,15 +63,18 @@ private
 -- fields — per-instance modules supply derivations as needed.
 ------------------------------------------------------------------------
 
+-- ⟡set1-rp-pfg: the Sylow predicate threads through from PrimeFactoredGauge (whose Set-valued
+-- Sylow field is a param now); the lsuc drops with it.
 record AbelianPFG
   (G : Set ℓG) (X : Set ℓX)
   (_·G_ : G → G → G) (εG : G)
   (_≈G_ : G → G → Set ℓEG)
   (_≈X_ : X → X → Set ℓEX)
-  (n : ℕ) : Set (lsuc (ℓG ⊔ ℓX ⊔ ℓEG ⊔ ℓEX)) where
+  (n : ℕ)
+  (Sylow : Fin n → (G → Set ℓG)) : Set (ℓG ⊔ ℓX ⊔ ℓEG ⊔ ℓEX) where
   constructor mkAbelianPFG
   field
-    pfg         : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n
+    pfg         : PrimeFactoredGauge G X _·G_ εG _≈G_ _≈X_ n Sylow
     abelian-comm : (g h : G) → _≈G_ (g ·G h) (h ·G g)
 
 open AbelianPFG public

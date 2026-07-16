@@ -6448,6 +6448,7 @@ digraph imports {
   "Substrate.Cardinality.Product" -> "Substrate.Foundation.Product";
   "Substrate.Cardinality.Product" -> "Substrate.Groups.V4.Bijection";
   "Substrate.Category.AbelianPFG" -> "Substrate.Category.PrimeFactoredGauge";
+  "Substrate.Category.AbelianPFG" -> "Substrate.Foundation.Fin";
   "Substrate.Category.AbelianPFG" -> "Substrate.Foundation.Nat";
   "Substrate.Category.Adjunction" -> "Substrate.Algebra.F2";
   "Substrate.Category.Adjunction" -> "Substrate.Algebra.F2.Linear";

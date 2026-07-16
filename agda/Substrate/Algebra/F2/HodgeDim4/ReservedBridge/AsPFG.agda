@@ -65,7 +65,7 @@ HodgeDim4-Bridge-as-PFG :
     (g : GL3F2) →
     InGenerated (λ z → Σ (Fin 3) (λ i → Sylow-predicates i z))
                 _·G_ id-GL g) →
-  PrimeFactoredGauge GL3F2 GL3F2 _·G_ id-GL _≈G_ _≈G_ 3
+  PrimeFactoredGauge GL3F2 GL3F2 _·G_ id-GL _≈G_ _≈G_ 3 Sylow-predicates
 HodgeDim4-Bridge-as-PFG joint-gen = mkPFG
   (GL3F2-SylowDecomposition-from-joint joint-gen)
   GaugeTorsor
