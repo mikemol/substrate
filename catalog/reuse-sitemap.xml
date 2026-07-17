@@ -171,8 +171,6 @@
   <url><loc>https://substrate.local/Substrate/Category/AbelianPFG#AbelianPFG</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Adjunction#IsLinearAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Algebra-of-Monad#AlgebraOfMonad</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Allegory#Allegory</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Allegory/Division#DivisionAllegory</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Maps#Map</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Refinement#Refinement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/RefinementReconstruct#GRefinement</loc><priority>0.0</priority></url>

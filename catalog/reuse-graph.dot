@@ -169,8 +169,6 @@ digraph reuse {
   "Substrate.Category.AbelianPFG.AbelianPFG" [label="AbelianPFG\nSubstrate.Category.AbelianPFG"];
   "Substrate.Category.Adjunction.IsLinearAdjunction" [label="IsLinearAdjunction\nSubstrate.Category.Adjunction"];
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" [label="AlgebraOfMonad\nSubstrate.Category.Algebra-of-Monad"];
-  "Substrate.Category.Allegory.Allegory" [label="Allegory\nSubstrate.Category.Allegory"];
-  "Substrate.Category.Allegory.Division.DivisionAllegory" [label="DivisionAllegory\nSubstrate.Category.Allegory.Division"];
   "Substrate.Category.Allegory.Maps.Map" [label="Map\nSubstrate.Category.Allegory.Maps"];
   "Substrate.Category.Allegory.Refinement.Refinement" [label="Refinement\nSubstrate.Category.Allegory.Refinement"];
   "Substrate.Category.Allegory.RefinementReconstruct._.GRefinement" [label="GRefinement\nSubstrate.Category.Allegory.RefinementReconstruct._"];
@@ -989,7 +987,6 @@ digraph reuse {
   "Substrate.Category.Adjunction.IsLinearAdjunction" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" -> "Substrate.Category.CategoryOf.CategoryOf";
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" -> "Substrate.Category.Monad.Monad";
-  "Substrate.Category.Allegory.Division.DivisionAllegory" -> "Substrate.Category.Allegory.Allegory";
   "Substrate.Category.Allegory.RefinementReconstruct._.GRefinement" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.AtlasOfProbes.SynergyMeasurement" -> "Substrate.Category.AtlasOfProbes.ProbeAtlas";
   "Substrate.Category.AtlasOfProbes._.AtlasContext" -> "Substrate.Category.AtlasOfProbes.ProbeAtlas";

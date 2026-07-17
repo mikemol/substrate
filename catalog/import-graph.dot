@@ -638,7 +638,6 @@ digraph imports {
   "Substrate.Category.Adjunction.Demos" [label="Adjunction.Demos"];
   "Substrate.Category.Algebra-of-Monad" [label="Category.Algebra-of-Monad"];
   "Substrate.Category.Allegory" [label="Category.Allegory"];
-  "Substrate.Category.Allegory.Division" [label="Allegory.Division"];
   "Substrate.Category.Allegory.Maps" [label="Allegory.Maps"];
   "Substrate.Category.Allegory.Mono" [label="Allegory.Mono"];
   "Substrate.Category.Allegory.Power" [label="Allegory.Power"];
@@ -6475,13 +6474,8 @@ digraph imports {
   "Substrate.Category.Algebra-of-Monad" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Algebra-of-Monad" -> "Substrate.Category.Functor";
   "Substrate.Category.Algebra-of-Monad" -> "Substrate.Category.Monad";
-  "Substrate.Category.Allegory" -> "Substrate.Category.TwoCategory";
   "Substrate.Category.Allegory" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.Allegory" -> "Substrate.Foundation.Level";
   "Substrate.Category.Allegory" -> "Substrate.Foundation.Product";
-  "Substrate.Category.Allegory.Division" -> "Substrate.Category.Allegory";
-  "Substrate.Category.Allegory.Division" -> "Substrate.Foundation.Level";
-  "Substrate.Category.Allegory.Division" -> "Substrate.Foundation.Product";
   "Substrate.Category.Allegory.Maps" -> "Substrate.Category.Allegory";
   "Substrate.Category.Allegory.Maps" -> "Substrate.Foundation.Eq";
   "Substrate.Category.Allegory.Maps" -> "Substrate.Foundation.Product";
