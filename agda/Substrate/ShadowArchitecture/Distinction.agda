@@ -27,6 +27,7 @@
 
 module Substrate.ShadowArchitecture.Distinction where
 
+open import Substrate.Foundation.Bool using (true)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
@@ -41,7 +42,7 @@ open import Substrate.ShadowArchitecture.Weight
   using (point-orbit; line-orbit; Orbit)
 open import Substrate.ShadowArchitecture.Mode
   using (Mode; in-mode; decomp; snap; regroup; guard;
-         guard-territory-is-star-001;
+         star-of-001; guard-territory-is-star-001;
          L₄-decomp; L₄-snap; L₅-snap; L₅-regroup)
 open import Substrate.ShadowArchitecture.Charter
   using (Cell; cell; op-cell; Realizability; realizable;
@@ -70,12 +71,12 @@ data Distinction-Name : Set where
 -- persists-via:  axis-tags in cotype                  (operational)
 ------------------------------------------------------------------------
 
-charter-axis-sigs : Realizability
+charter-axis-sigs : Realizability Point (Point → Orbit) ⊤ (Point → Vector 3) ⊤
 charter-axis-sigs = realizable
-    (cell Point p₁₀₀)                            -- a Point witness
-    (cell (Point → Orbit) point-orbit)            -- the orbit classifier
+    (cell p₁₀₀)                                   -- a Point witness
+    (cell point-orbit)                            -- the orbit classifier
     op-cell                                       -- operational
-    (cell (Point → Vector 3) point-to-vec)        -- the embedding
+    (cell point-to-vec)                           -- the embedding
     op-cell                                       -- operational
 
 ------------------------------------------------------------------------
@@ -88,12 +89,13 @@ charter-axis-sigs = realizable
 -- persists-via:  probe-state section                 (operational)
 ------------------------------------------------------------------------
 
-charter-fano-lines : Realizability
+charter-fano-lines :
+  Realizability FanoLine (FanoLine → Point × Point × Point) ⊤ (FanoLine → Orbit) ⊤
 charter-fano-lines = realizable
-    (cell FanoLine L₁)                                -- a FanoLine witness
-    (cell (FanoLine → _) line-points)                  -- triple-lookup
+    (cell L₁)                                          -- a FanoLine witness
+    (cell line-points)                                 -- triple-lookup
     op-cell
-    (cell (FanoLine → Orbit) line-orbit)               -- orbit classifier
+    (cell line-orbit)                                  -- orbit classifier
     op-cell
 
 ------------------------------------------------------------------------
@@ -106,12 +108,13 @@ charter-fano-lines = realizable
 -- persists-via:  drift events section               (operational)
 ------------------------------------------------------------------------
 
-charter-guard-response : Realizability
+charter-guard-response :
+  Realizability (∀ (ℓ : FanoLine) → in-mode guard ℓ ≡ star-of-001 ℓ) ⊤ ⊤ Point ⊤
 charter-guard-response = realizable
-    (cell (∀ (ℓ : FanoLine) → in-mode guard ℓ ≡ _) guard-territory-is-star-001)
+    (cell guard-territory-is-star-001)
     op-cell
     op-cell
-    (cell Point p₀₀₁)
+    (cell p₀₀₁)
     op-cell
 
 ------------------------------------------------------------------------
@@ -122,11 +125,11 @@ charter-guard-response = realizable
 -- from `Mode` provide the structural anchor.
 ------------------------------------------------------------------------
 
-charter-e1-adjunction : Realizability
+charter-e1-adjunction : Realizability ⊤ ⊤ (in-mode decomp L₄ ≡ true) ⊤ ⊤
 charter-e1-adjunction = realizable
     op-cell                                            -- "lift / contract" labels
     op-cell                                            -- "both instantiated"
-    (cell (in-mode decomp L₄ ≡ _) L₄-decomp)          -- L₄ unit-of-adj.
+    (cell L₄-decomp)                                   -- L₄ unit-of-adj.
     op-cell                                            -- round-trip
     op-cell                                            -- shadow-list completeness
 
@@ -137,11 +140,11 @@ charter-e1-adjunction = realizable
 -- writes. Same shape as Row 4.
 ------------------------------------------------------------------------
 
-charter-e2-symmetric-lens : Realizability
+charter-e2-symmetric-lens : Realizability ⊤ ⊤ (in-mode snap L₅ ≡ true) ⊤ ⊤
 charter-e2-symmetric-lens = realizable
     op-cell                                            -- "extract / rebuild"
     op-cell                                            -- "on refactor/dup"
-    (cell (in-mode snap L₅ ≡ _) L₅-snap)              -- L₅ behaviour-pres.
+    (cell L₅-snap)                                     -- L₅ behaviour-pres.
     op-cell                                            -- tests re-run
     op-cell                                            -- original test resources
 
@@ -157,9 +160,10 @@ L₆-composition-fact :
   point-to-vec p₀₀₁ +ⱽ point-to-vec p₁₁₀ ≡ point-to-vec p₁₁₁
 L₆-composition-fact = refl
 
-charter-L6-reconstitution : Realizability
+charter-L6-reconstitution :
+  Realizability (point-to-vec p₀₀₁ +ⱽ point-to-vec p₁₁₀ ≡ point-to-vec p₁₁₁) ⊤ ⊤ ⊤ ⊤
 charter-L6-reconstitution = realizable
-    (cell _ L₆-composition-fact)                       -- 001 + 110 → 111
+    (cell L₆-composition-fact)                         -- 001 + 110 → 111
     op-cell                                            -- both populated
     op-cell                                            -- log distinguish
     op-cell                                            -- cotype synthesis
@@ -167,9 +171,53 @@ charter-L6-reconstitution = realizable
 
 ------------------------------------------------------------------------
 -- The full audit table.
+--
+-- ⟡set1-rp-charter: `Realizability` is indexed by its five evidence
+-- types, so the table's return type varies per row. Five computed
+-- index families (one per gate column) carry that variation; each
+-- clause reduces definitionally to the row's instance type above.
 ------------------------------------------------------------------------
 
-charter-of : Distinction-Name → Realizability
+con-ev rea-ev obs-ev cov-ev per-ev : Distinction-Name → Set
+
+con-ev D-axis-sigs         = Point
+con-ev D-fano-lines        = FanoLine
+con-ev D-guard-response    = ∀ (ℓ : FanoLine) → in-mode guard ℓ ≡ star-of-001 ℓ
+con-ev D-e1-adjunction     = ⊤
+con-ev D-e2-symmetric-lens = ⊤
+con-ev D-L6-reconstitution =
+  point-to-vec p₀₀₁ +ⱽ point-to-vec p₁₁₀ ≡ point-to-vec p₁₁₁
+
+rea-ev D-axis-sigs         = Point → Orbit
+rea-ev D-fano-lines        = FanoLine → Point × Point × Point
+rea-ev D-guard-response    = ⊤
+rea-ev D-e1-adjunction     = ⊤
+rea-ev D-e2-symmetric-lens = ⊤
+rea-ev D-L6-reconstitution = ⊤
+
+obs-ev D-axis-sigs         = ⊤
+obs-ev D-fano-lines        = ⊤
+obs-ev D-guard-response    = ⊤
+obs-ev D-e1-adjunction     = in-mode decomp L₄ ≡ true
+obs-ev D-e2-symmetric-lens = in-mode snap L₅ ≡ true
+obs-ev D-L6-reconstitution = ⊤
+
+cov-ev D-axis-sigs         = Point → Vector 3
+cov-ev D-fano-lines        = FanoLine → Orbit
+cov-ev D-guard-response    = Point
+cov-ev D-e1-adjunction     = ⊤
+cov-ev D-e2-symmetric-lens = ⊤
+cov-ev D-L6-reconstitution = ⊤
+
+per-ev D-axis-sigs         = ⊤
+per-ev D-fano-lines        = ⊤
+per-ev D-guard-response    = ⊤
+per-ev D-e1-adjunction     = ⊤
+per-ev D-e2-symmetric-lens = ⊤
+per-ev D-L6-reconstitution = ⊤
+
+charter-of : (D : Distinction-Name)
+           → Realizability (con-ev D) (rea-ev D) (obs-ev D) (cov-ev D) (per-ev D)
 charter-of D-axis-sigs         = charter-axis-sigs
 charter-of D-fano-lines        = charter-fano-lines
 charter-of D-guard-response    = charter-guard-response

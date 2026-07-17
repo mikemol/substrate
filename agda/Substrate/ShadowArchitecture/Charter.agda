@@ -15,12 +15,14 @@
 -- time-extension; without it, the architecture's distinctions would
 -- be only momentarily charter-valid.
 --
--- A `Realizability` value is a record-of-five-cells. Each cell pairs
--- an evidence type (the formal Set whose inhabitation witnesses the
--- gate's pass) with a witness (a concrete element of that type).
--- This is the substrate's standard "Set + witness" pattern (per
--- existing `LanguageWitness`, `Cell`-style records in
--- `Substrate.Linguistic.*`).
+-- A `Realizability` value is a record-of-five-cells. Each cell is
+-- INDEXED by an evidence type (the formal Set whose inhabitation
+-- witnesses the gate's pass) and fields the witness (a concrete
+-- element of that type). ⟡set1-rp-charter: the evidence types are
+-- record PARAMETERS, not fields — a Set-valued field pins the record
+-- at Set₁, while a Set parameter never raises the record's sort
+-- (set1-carrier-always-parameterize), so both `Cell` and
+-- `Realizability` live at Set with the evidence visible in the type.
 --
 -- For operational gates whose claim doesn't reduce to an Agda-checkable
 -- proposition (e.g., "tagged at Step B" is a process step, not a
@@ -42,30 +44,29 @@ open import Substrate.Foundation.Product using (_,_; _×_)
 -- A charter cell: evidence type + witness.
 ------------------------------------------------------------------------
 
-record Cell : Set₁ where
+record Cell (evidence : Set) : Set where
   constructor cell
   field
-    evidence : Set
     witness  : evidence
 
 -- Operational cell: evidence is ⊤, used when the gate's content is
 -- a process / convention / external dependency rather than an Agda
 -- proposition.
-op-cell : Cell
-op-cell = cell ⊤ tt
+op-cell : Cell ⊤
+op-cell = cell tt
 
 ------------------------------------------------------------------------
 -- The realizability record.
 ------------------------------------------------------------------------
 
-record Realizability : Set₁ where
+record Realizability (Ec Er Eo Ecov Ep : Set) : Set where
   constructor realizable
   field
-    constructible : Cell
-    reachable     : Cell
-    observable    : Cell
-    coverable     : Cell
-    persists-via  : Cell
+    constructible : Cell Ec
+    reachable     : Cell Er
+    observable    : Cell Eo
+    coverable     : Cell Ecov
+    persists-via  : Cell Ep
 
 ------------------------------------------------------------------------
 -- The four-gate check is the conjunction of the first four cells'
@@ -76,36 +77,29 @@ record Realizability : Set₁ where
 ------------------------------------------------------------------------
 
 -- A distinction passes the four gates: the conjunction of evidence
--- types.
-PassesFourGates : Realizability → Set
-PassesFourGates r =
-  Cell.evidence (Realizability.constructible r) ×
-  Cell.evidence (Realizability.reachable r) ×
-  Cell.evidence (Realizability.observable r) ×
-  Cell.evidence (Realizability.coverable r)
+-- types (the record's own parameters — evidence is in the TYPE now).
+PassesFourGates : {Ec Er Eo Ecov Ep : Set} → Realizability Ec Er Eo Ecov Ep → Set
+PassesFourGates {Ec} {Er} {Eo} {Ecov} _ = Ec × Er × Eo × Ecov
 
 -- The same with the time-extension column.
-PassesFourPlusOne : Realizability → Set
-PassesFourPlusOne r =
-  Cell.evidence (Realizability.constructible r) ×
-  Cell.evidence (Realizability.reachable r) ×
-  Cell.evidence (Realizability.observable r) ×
-  Cell.evidence (Realizability.coverable r) ×
-  Cell.evidence (Realizability.persists-via r)
+PassesFourPlusOne : {Ec Er Eo Ecov Ep : Set} → Realizability Ec Er Eo Ecov Ep → Set
+PassesFourPlusOne {Ec} {Er} {Eo} {Ecov} {Ep} _ = Ec × Er × Eo × Ecov × Ep
 
 ------------------------------------------------------------------------
 -- The witnesses-bundled-from-cells form the canonical proof of the
 -- conjunction. Each Realizability instance gives one for free.
 ------------------------------------------------------------------------
 
-four-gate-proof : (r : Realizability) → PassesFourGates r
+four-gate-proof : {Ec Er Eo Ecov Ep : Set}
+                  (r : Realizability Ec Er Eo Ecov Ep) → PassesFourGates r
 four-gate-proof r =
     Cell.witness (Realizability.constructible r)
   , Cell.witness (Realizability.reachable r)
   , Cell.witness (Realizability.observable r)
   , Cell.witness (Realizability.coverable r)
 
-four-plus-one-proof : (r : Realizability) → PassesFourPlusOne r
+four-plus-one-proof : {Ec Er Eo Ecov Ep : Set}
+                      (r : Realizability Ec Er Eo Ecov Ep) → PassesFourPlusOne r
 four-plus-one-proof r =
     Cell.witness (Realizability.constructible r)
   , Cell.witness (Realizability.reachable r)

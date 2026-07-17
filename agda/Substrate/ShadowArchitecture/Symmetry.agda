@@ -74,7 +74,7 @@ S₃-index-in-Aut-Fano = refl
 -- contribution is the charter-level VERDICT, not the proof.
 ------------------------------------------------------------------------
 
-charter-S3-as-reachable : Realizability
+charter-S3-as-reachable : Realizability ⊤ ⊤ ⊤ ⊤ ⊤
 charter-S3-as-reachable = realizable
     op-cell    -- constructible: S₃ defined via Coxeter (S3Stabiliser)
     op-cell    -- reachable: three axis-handles in user vocabulary
@@ -98,12 +98,12 @@ charter-S3-as-reachable = realizable
 -- using `Data.Empty` — this distinguishes "no Agda-side witness"
 -- (operational op-cell) from "Agda-side impossibility" (⊥-cell).
 --
--- The verdict-shape is recorded but no `Realizability` instance is
--- constructed for the non-reachable cosets, because by definition
--- such an instance would require a witness of `reachable.evidence`
--- which is ⊥. This is the exact charter behaviour the document
--- specifies: the non-reachable elements never become valid runtime
--- distinctions; they CANNOT be made into Realizability instances.
+-- ⟡set1-rp-charter makes this MORE direct: evidence types are now
+-- Realizability's own parameters, so the non-reachable verdict is
+-- visible in the TYPE — any `Realizability C ⊥ O V P` demands a
+-- `Cell ⊥`, i.e. a `witness : ⊥`, so the type is uninhabited. The
+-- non-reachable cosets never become valid runtime distinctions; they
+-- CANNOT be made into Realizability instances.
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Empty using (⊥)

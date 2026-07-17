@@ -12001,6 +12001,7 @@ digraph imports {
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.Foundation.Bool";
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.Foundation.Eq";
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.Foundation.Product";
+  "Substrate.ShadowArchitecture.Distinction" -> "Substrate.Foundation.Unit";
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.Foundation.Vec";
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.ShadowArchitecture.Charter";
   "Substrate.ShadowArchitecture.Distinction" -> "Substrate.ShadowArchitecture.Mode";
@@ -12214,6 +12215,7 @@ digraph imports {
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.Foundation.Eq";
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.Foundation.Fin";
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.Foundation.Nat";
+  "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.Foundation.Unit";
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.ShadowArchitecture.Charter";
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.ShadowArchitecture.SelfReference";
   "Substrate.ShadowArchitecture.Symmetry" -> "Substrate.ShadowArchitecture.Weight";
