@@ -3,6 +3,8 @@
 -- Decodes an interface with Agda's OWN version-matched deserialiser (no hand-decoded tag table), walks
 -- each definition's elaborated TYPE (Agda's types ARE the segmentation), emits one node per core term:
 --   {"id":int,"constructor":str,"qname":str|null,"index":int|null,"children":[int,...]}
+-- Lit/PLit nodes additionally carry the literal VALUE:
+--   {"id":int,"constructor":"Lit"|"PLit","qname":null,"index":null,"lit":str,"children":[]}
 -- and one DEFMARK per definition, now carrying its ELABORATED SORT:
 --   {"unit":qname,"root":int,"kind":str,"members":[str],"sort":"Type"|…,"level":int|null}
 -- `level` is the universe the definition INHABITS (Πs peeled; if the codomain is itself
@@ -93,6 +95,17 @@ emit r ctor mq mi kids = do
 esc :: String -> String
 esc = concatMap (\c -> case c of '"' -> "\\\""; '\\' -> "\\\\"; _ -> [c])
 
+-- emit one LITERAL node record carrying its VALUE (the "lit" field). Same shape as `emit`
+-- (qname/index null, no children) plus  "lit":"<prettyShow value>"  — additive, so a consumer
+-- that does not read "lit" is unaffected. A Lit/PLit node without this drops exactly the numeral
+-- (num 61, num 78, …) a body carries; interners key it into `lit` (jea_agdai.intern_signature).
+emitL :: IORef Int -> String -> String -> IO Int
+emitL r ctor litval = do
+  i <- fresh r
+  putStrLn $ "{\"id\":" ++ show i ++ ",\"constructor\":\"" ++ ctor
+           ++ "\",\"qname\":null,\"index\":null,\"lit\":\"" ++ esc litval ++ "\",\"children\":[]}"
+  return i
+
 walkType :: IORef Int -> Type -> IO Int
 walkType r = walkTerm r . unEl
 
@@ -106,7 +119,7 @@ walkPat r p = case p of
   VarP _ x     -> emit r "PVar"  (Just (dbPatVarName x))         (Just (dbPatVarIndex x)) []
   DotP _ t     -> do k  <- walkTerm r t;                          emit r "PDot"  Nothing Nothing [k]
   ConP ch _ ps -> do ks <- mapM (walkPat r . namedArg) ps;        emit r "PCon"  (Just (prettyShow (conName ch))) Nothing ks
-  LitP _ _     ->                                                 emit r "PLit"  Nothing Nothing []
+  LitP _ l     ->                                                 emitL r "PLit" (prettyShow l)
   ProjP _ qn   ->                                                 emit r "PProj" (Just (prettyShow qn)) Nothing []
   DefP _ qn ps -> do ks <- mapM (walkPat r . namedArg) ps;        emit r "PDef"  (Just (prettyShow qn)) Nothing ks
   _            ->                                                 emit r "PVarOther" Nothing Nothing []
@@ -162,7 +175,7 @@ walkTerm :: IORef Int -> Term -> IO Int
 walkTerm r t = case t of
   Var i es     -> do ks <- concat <$> mapM (walkElim r) es; emit r "Var" Nothing (Just i) ks
   Lam _ b      -> do k <- walkTerm r (unAbs b); emit r "Lam" Nothing Nothing [k]
-  Lit _        -> emit r "Lit" Nothing Nothing []
+  Lit l        -> emitL r "Lit" (prettyShow l)
   Def qn es    -> do ks <- concat <$> mapM (walkElim r) es; emit r "Def" (Just (prettyShow qn)) Nothing ks
   Con ch _ es  -> do ks <- concat <$> mapM (walkElim r) es; emit r "Con" (Just (prettyShow (conName ch))) Nothing ks
   Pi d b       -> do kd <- walkType r (unDom d); kc <- walkType r (unAbs b); emit r "Pi" Nothing Nothing [kd,kc]

@@ -162,6 +162,7 @@ def intern_signature(core, intern: Intern, carrier_qnames=None) -> dict:
          "constructor": str,          # the Term/Defn constructor: "Var","Def","Con","Lam","Pi",...
          "qname": str|null,           # for Def/Con/Prim: the FREE qualified name (referential identity)
          "index": int|null,           # for Var: the de Bruijn INDEX (bound, position identity)
+         "lit": str,                   # for Lit/PLit: the literal VALUE (prettyShow); absent elsewhere
          "children": [int,...]}
 
     THE = vs ≅ LESSON, in Agda-core terms (carried over from the jea_pyalg free/bound fix):
@@ -257,7 +258,11 @@ def intern_signature(core, intern: Intern, carrier_qnames=None) -> dict:
             role = ""
             op = ctor
             payload = ()
-        node = IR(kind="AgdaCore", role=role, op=op, lit="", children=kids, payload=payload)
+        # Lit/PLit carry a VALUE (the shim's "lit" field); it is IDENTITY for a literal (num 61 ≠
+        # num 78 are distinct terms), so it keys into `lit`. Absent on every other constructor -> ""
+        # -> those nodes intern exactly as before (additive; the earlier shim dropped the value).
+        litval = rec.get("lit", "")
+        node = IR(kind="AgdaCore", role=role, op=op, lit=litval, children=kids, payload=payload)
         i = intern.intern(node)
         interned[nid] = i
         return i
