@@ -27,18 +27,28 @@ from jea_rigcat import RIG_OPS                       # ⟡rig orbit-interning (t
 CATALOG_DB = os.environ.get("SPPF_CATALOG_DB", os.path.join(_ROOT, "catalog", "catalog.db"))
 FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}   # jea_agdai.go referential set
 
+# ⟡gqs-S0.2/⟡gqs-lit-propagate: bump on ANY EVENT_SCHEMA/SPPF_SCHEMA column change. A catalog.db built at a
+# lower `PRAGMA user_version` is auto-migrated by a clean --full rebuild (init_db drops the event tier; the
+# batched write_events forces full) — so a column add never breaks the incremental path on a stale DB.
+SCHEMA_VERSION = 1
+
 EVENT_SCHEMA = """
 CREATE TABLE IF NOT EXISTS terms    (term_id TEXT PRIMARY KEY, text TEXT);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_terms_text ON terms(text);
 CREATE TABLE IF NOT EXISTS path_seg (path_id TEXT, ord INT, seg_term_id TEXT);
 CREATE UNIQUE INDEX IF NOT EXISTS ix_pathseg_uniq ON path_seg(path_id, ord);
 -- EVENT LOG (append-only source of truth). ekey = base64(the raw observation). ctor/qname interned.
-CREATE TABLE IF NOT EXISTS event    (ekey TEXT PRIMARY KEY, ctor_id TEXT, qname_pid TEXT, idx INT);
+-- lit_id (⟡gqs-lit-propagate): the interned literal VALUE for a Lit/PLit node ("" for non-literals). A
+-- literal's value IS its identity (num 61 ≠ num 78 are distinct terms); carrying it stops distinct literals
+-- collapsing in the projection (the packing key + _node.lit_id).
+CREATE TABLE IF NOT EXISTS event    (ekey TEXT PRIMARY KEY, ctor_id TEXT, qname_pid TEXT, idx INT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS obs      (core_id TEXT, local_id INT, ekey TEXT);      -- decoded node → its event
 CREATE TABLE IF NOT EXISTS edge     (core_id TEXT, plid INT, ord INT, clid INT);  -- raw local parent→child
 -- unit_id = base64(qname ‖ root) — UNIQUE PER DEFMARK (two anonymous-module defs can share a full qname;
 -- reuse_catalog keys structs by (qname,root), so the unit tier must too). name_pid = base64(qname) for display.
-CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_id TEXT, name_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT, copy INT);
+-- level (⟡gqs-S0.2): the shim's elaborated universe level the def INHABITS (Πs peeled). level>=1 ⟺ Set₁ debt,
+-- so the Set₁ census becomes a COLUMN READ (q_set1_count) instead of set1_ratchet's own 94s decode.
+CREATE TABLE IF NOT EXISTS unit_obs (core_id TEXT, unit_id TEXT, name_pid TEXT, root_lid INT, kind_id TEXT, module_pid TEXT, copy INT, level INTEGER);
 -- member links RESOLVED at write time (qname → its defmark unit, last-wins per core, matching reuse_catalog's
 -- root_of): member_unit_id is the member's unit (NULL if the member is not itself a defmark).
 CREATE TABLE IF NOT EXISTS unit_member (core_id TEXT, unit_id TEXT, ord INT, member_name_pid TEXT, member_unit_id TEXT);
@@ -65,7 +75,7 @@ CREATE TABLE IF NOT EXISTS core_fp (core_id TEXT PRIMARY KEY, mtime INTEGER);
 SPPF_SCHEMA = """
 CREATE TABLE IF NOT EXISTS _node      (node_id TEXT PRIMARY KEY, sym TEXT, kind_id TEXT, role_id TEXT, op_term_id TEXT, op_path_id TEXT, lit_id TEXT);
 CREATE TABLE IF NOT EXISTS node_child (node_id TEXT, ord INT, child_id TEXT);
-CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT, root_lid INT, copy INT);
+CREATE TABLE IF NOT EXISTS _unit      (unit_id TEXT PRIMARY KEY, name_pid TEXT, root_id TEXT, file_id TEXT, kind_id TEXT, module_pid TEXT, root_lid INT, copy INT, level INTEGER);
 -- the codomain HEAD of each unit's type (raw_final_head: unwrap Defn, peel the Pi-telescope), computed
 -- structurally at PROJECTION time over the unambiguous per-core tree (the reentrant packing bridge would
 -- conflate contexts). The catalog reads THIS (a structural attribute of the projection), not raw events.
@@ -117,6 +127,15 @@ def _core_ver(path):
     return os.stat(path).st_mtime_ns
 
 
+def _schema_current(con):
+    """True iff catalog.db was built at the current SCHEMA_VERSION (else a column add needs a --full migration)."""
+    return con.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION
+
+
+def _set_schema_version(con):
+    con.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+
+
 def _mk_interners(con):
     """The terms/path_seg interners (INSERT OR IGNORE, content-addressed). Shared by the batched write_events
     and the per-core ingest_core so the decode→rows logic is single-sourced."""
@@ -152,10 +171,15 @@ def _decode_insert_core(con, path, relpath, mtime, tid, pid):
     for lid, rec in dec["nodes"].items():
         ctor, qname, idx = rec.get("constructor"), rec.get("qname"), rec.get("index")
         kids = rec.get("children", [])
-        # THE OBSERVATION — raw record content, children = LOCAL ids, NO resolution.
-        content = json.dumps({"c": ctor, "q": qname, "i": idx, "ch": kids}, sort_keys=True, ensure_ascii=False)
+        litval = rec.get("lit", "")             # ⟡gqs-lit-propagate: a Lit/PLit node's VALUE (its identity)
+        # THE OBSERVATION — raw record content, children = LOCAL ids, NO resolution. The lit key is added
+        # ONLY when present, so non-literal ekeys stay stable (a surgical migration — only Lit/PLit ekeys change).
+        obs_rec = {"c": ctor, "q": qname, "i": idx, "ch": kids}
+        if litval:
+            obs_rec["l"] = litval
+        content = json.dumps(obs_rec, sort_keys=True, ensure_ascii=False)
         ekey = _b64(content)
-        erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
+        erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx, tid(litval)))
         orows.append((cid, lid, ekey))
         edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
     dms = dec["defmarks"]
@@ -165,7 +189,8 @@ def _decode_insert_core(con, path, relpath, mtime, tid, pid):
     def uid(qn, r):
         return _b64(qn + "\x00" + str(r))
     urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid,
-              1 if d.get("copy") else 0)                 # defCopy provenance: instantiation-copy vs original
+              1 if d.get("copy") else 0,                 # defCopy provenance: instantiation-copy vs original
+              d.get("level"))                            # ⟡gqs-S0.2: elaborated universe level (level>=1 ⟺ Set₁)
              for d in dms]
     mrows = []
     for d in dms:
@@ -173,10 +198,10 @@ def _decode_insert_core(con, path, relpath, mtime, tid, pid):
         for o, m in enumerate(d.get("members", [])):
             mr = root_of.get(m)
             mrows.append((cid, su, o, pid(m), (uid(m, mr) if mr is not None else None)))
-    con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
+    con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?,?)", erows)
     con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
     con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
-    con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
     con.execute("INSERT OR REPLACE INTO core_fp VALUES (?,?)", (cid, mtime))
     return True
@@ -205,11 +230,14 @@ def write_events(cores, con, base, full=False, prune=True, finalize=True):
       finalize=True — run the once-after-sweep tail (event GC + path_seg dedup + refresh_path_text). The
                      per-core make ingest (ingest_core) passes finalize via a separate finalize_db step.
     """
+    if not _schema_current(con):                    # ⟡gqs: schema bump / fresh DB → clean rebuild (auto-migration)
+        full = True
     if full:
         for t in ("event", "obs", "edge", "unit_obs", "unit_member", "core_fp"):
             con.execute(f"DROP TABLE IF EXISTS {t}")
     _drop_legacy_view(con, "path_text")             # migrate a legacy GROUP_CONCAT view → the indexed table
     con.executescript(EVENT_SCHEMA)
+    _set_schema_version(con)
     con.commit()
 
     # Freshness: current cores + their record-versions (mtime), vs the stored per-core versions.
@@ -271,11 +299,11 @@ def project_sppf(con):
 
     # head + symbol per event (symbol is head-only ⟹ global, no recursion)
     head, sym = {}, {}
-    for ekey, ctor, qname, idx in QB.run(con, QB.q_event_head()):
+    for ekey, ctor, qname, idx, litval in QB.run(con, QB.q_event_head()):
         if ctor in ("Var", "PVar"):        role, op = f"db{idx}", ""
         elif ctor in FREE and qname:       role, op = "", qname
         else:                              role, op = "", (ctor or "")
-        head[ekey] = ("AgdaCore", role, op, "")
+        head[ekey] = ("AgdaCore", role, op, litval or "")   # ⟡gqs-lit-propagate: distinct literals → distinct packings
         sym[ekey]  = _b64("\x00".join(head[ekey]))
     raw_ctor = {e: ct for e, ct in QB.run(con, QB.q_event_ctor())}   # true constructor (Def/Con/Var/…) for cod()
     obs = {(c, l): e for c, l, e in QB.run(con, QB.q_obs_all())}
@@ -341,11 +369,11 @@ def project_sppf(con):
     # + the codomain HEAD of each unit's type (structural, computed on the unambiguous per-core tree).
     urows, un_rows, codrows = [], [], []
     childmap = ch
-    for c, unit_id, name_pid, root_lid, kind_id, module_pid, copy in con.execute(
-            "SELECT core_id, unit_id, name_pid, root_lid, kind_id, module_pid, copy FROM unit_obs"):
+    for c, unit_id, name_pid, root_lid, kind_id, module_pid, copy, level in con.execute(
+            "SELECT core_id, unit_id, name_pid, root_lid, kind_id, module_pid, copy, level FROM unit_obs"):
         rootpk = pack(c, root_lid)
         if rootpk is None: continue
-        urows.append((unit_id, name_pid, rootpk, c, kind_id, module_pid, root_lid, copy))
+        urows.append((unit_id, name_pid, rootpk, c, kind_id, module_pid, root_lid, copy, level))
         cct, cqn = cod(c, root_lid)
         codrows.append((unit_id, (tid(cct) if cct is not None else None),
                         (pid(cqn) if cqn is not None else None)))
@@ -358,7 +386,7 @@ def project_sppf(con):
             if pk is not None: members.add(pk)
             stack.extend(cl for _, cl in childmap.get((c, lid), []))
         un_rows += [(unit_id, pk) for pk in members]
-    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO _unit VALUES (?,?,?,?,?,?,?,?,?)", urows)
     con.executemany("INSERT OR IGNORE INTO _unit_cod VALUES (?,?,?)", codrows)
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
@@ -543,7 +571,14 @@ def ingest_core(path, catalog_db=CATALOG_DB, base=None):
     con = sqlite3.connect(catalog_db, timeout=120)
     con.execute("PRAGMA journal_mode=WAL")
     con.execute("PRAGMA busy_timeout=120000")
-    con.executescript(EVENT_SCHEMA); con.commit()
+    had = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='unit_obs'").fetchone()
+    if had and not _schema_current(con):            # a pre-existing STALE-schema DB → --init/--full must migrate
+        con.close()
+        sys.exit("sppf_db --ingest-core: catalog.db schema is stale — run `sppf_db.py --init` (or --full) first")
+    con.executescript(EVENT_SCHEMA)
+    if not _schema_current(con):                    # fresh DB → stamp the current version (idempotent under -j)
+        _set_schema_version(con)
+    con.commit()
     relpath = os.path.relpath(core, base); core_id = _b64(relpath)
     try:
         mtime = _core_ver(core)
@@ -560,10 +595,15 @@ def ingest_core(path, catalog_db=CATALOG_DB, base=None):
 
 def init_db(catalog_db=CATALOG_DB):
     """⟡gqs-make-targets: create the event schema + set WAL ONCE, before the parallel `make ingest` sweep
-    (so no ingest job races the initial CREATE). Idempotent."""
+    (so no ingest job races the initial CREATE). Idempotent. ⟡gqs schema-version: a STALE-schema DB (built
+    at an earlier SCHEMA_VERSION) is MIGRATED here — drop the event tier so the ingest sweep re-decodes into
+    the current schema (the one-time --full-equivalent, automatic)."""
     con = sqlite3.connect(catalog_db)
     con.execute("PRAGMA journal_mode=WAL")
-    con.executescript(EVENT_SCHEMA); con.commit(); con.close()
+    if not _schema_current(con):
+        for t in ("event", "obs", "edge", "unit_obs", "unit_member", "core_fp"):
+            con.execute(f"DROP TABLE IF EXISTS {t}")
+    con.executescript(EVENT_SCHEMA); _set_schema_version(con); con.commit(); con.close()
 
 
 def finalize_db(catalog_db=CATALOG_DB, base=None, argperm=True, prune=True):

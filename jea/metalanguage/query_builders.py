@@ -25,14 +25,15 @@ def _T(name, *cols): return Table(name, _MD, *[Column(c, String) for c in cols])
 path_text  = _T("path_text", "path_id", "text")
 terms      = _T("terms", "term_id", "text")
 path_seg   = _T("path_seg", "path_id", "ord", "seg_term_id")
-_unit      = _T("_unit", "unit_id", "name_pid", "root_id", "file_id", "kind_id", "module_pid", "root_lid", "copy")
+_unit      = _T("_unit", "unit_id", "name_pid", "root_id", "file_id", "kind_id", "module_pid", "root_lid", "copy", "level")
 _unit_cod  = _T("_unit_cod", "unit_id", "cod_ctor_id", "cod_qname_pid")
 _node      = _T("_node", "node_id", "sym", "kind_id", "role_id", "op_term_id", "op_path_id", "lit_id")
 node_child = _T("node_child", "node_id", "ord", "child_id")
 unit_node  = _T("unit_node", "unit_id", "node_id")
 unit_member= _T("unit_member", "unit_id", "ord", "member_name_pid", "member_unit_id")
 obs        = _T("obs", "core_id", "local_id", "ekey")
-event      = _T("event", "ekey", "ctor_id", "qname_pid", "idx")
+event      = _T("event", "ekey", "ctor_id", "qname_pid", "idx", "lit_id")
+unit_obs   = _T("unit_obs", "core_id", "unit_id", "name_pid", "root_lid", "kind_id", "module_pid", "copy", "level")
 edge       = _T("edge", "core_id", "plid", "ord", "clid")
 meta       = _T("meta", "key", "value")
 _orbit_def = _T("_orbit_def", "unit_id", "type_key", "graded_key", "residue", "stab")
@@ -80,11 +81,16 @@ def q_unit_names():                      # reuse_tui db_rows L149
     return (select(_unit.c.unit_id, path_text.c.text)
             .select_from(_unit.join(path_text, path_text.c.path_id == _unit.c.name_pid)))
 
-def q_event_head():                      # sppf_db project_sppf L190-192 / project_orbit_sppf L316-318
-    tc = terms.alias("tc"); pq = path_text.alias("pq")
-    return (select(event.c.ekey, tc.c.text, pq.c.text, event.c.idx)
+def q_event_head():                      # sppf_db project_sppf / project_orbit_sppf (head + ⟡gqs-lit-propagate lit)
+    tc = terms.alias("tc"); pq = path_text.alias("pq"); lt = terms.alias("lt")
+    return (select(event.c.ekey, tc.c.text, pq.c.text, event.c.idx, lt.c.text)
             .select_from(event.join(tc, tc.c.term_id == event.c.ctor_id)
-                              .outerjoin(pq, pq.c.path_id == event.c.qname_pid)))
+                              .outerjoin(pq, pq.c.path_id == event.c.qname_pid)
+                              .outerjoin(lt, lt.c.term_id == event.c.lit_id)))
+
+
+def q_set1_count():                      # ⟡gqs-S0.2: the Set₁ census as a COLUMN READ (was set1_ratchet's 94s decode)
+    return select(func.count()).select_from(unit_obs).where(unit_obs.c.level >= 1)
 
 def q_argperm_uid():                     # sppf_db project_argperm preload L420-421
     return (select(_unit.c.unit_id, path_text.c.text)
@@ -277,7 +283,7 @@ INTERN_BUILDERS = {
     "pathtext_all": q_pathtext_all, "terms_all": q_terms_all, "unit_fields": q_unit_fields,
     "unit_cod": q_unit_cod, "unit_member": q_unit_member, "meta_failed": q_meta_failed,
     "event_ctor": q_event_ctor, "obs_all": q_obs_all, "edge_all": q_edge_all,
-    "count_shared": q_count_shared, "max_node_len": q_max_node_len,
+    "count_shared": q_count_shared, "max_node_len": q_max_node_len, "set1_count": q_set1_count,
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
     # S1 orbit-stats:
@@ -305,8 +311,10 @@ def _reg():
         "unit_names":      (lambda: q_unit_names(), {},
             "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid", ()),
         "event_head":      (lambda: q_event_head(), {},
-            "SELECT e.ekey, tc.text, pq.text, e.idx FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
-            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid", ()),
+            "SELECT e.ekey, tc.text, pq.text, e.idx, lt.text FROM event e JOIN terms tc ON tc.term_id=e.ctor_id "
+            "LEFT JOIN path_text pq ON pq.path_id=e.qname_pid LEFT JOIN terms lt ON lt.term_id=e.lit_id", ()),
+        "set1_count":      (lambda: q_set1_count(), {},
+            "SELECT COUNT(*) FROM unit_obs WHERE level >= 1", ()),
         "argperm_uid":     (lambda: q_argperm_uid(), {},
             "SELECT u.unit_id, pt.text FROM _unit u JOIN path_text pt ON pt.path_id=u.name_pid WHERE u.copy=0", ()),
         "deserialize_oppath": (lambda: q_deserialize_oppath(), {},
