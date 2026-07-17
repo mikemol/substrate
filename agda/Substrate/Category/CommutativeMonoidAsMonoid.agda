@@ -21,6 +21,7 @@
 module Substrate.Category.CommutativeMonoidAsMonoid where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup)
 open import Substrate.Algebra.Monoid using (Monoid)
@@ -46,5 +47,5 @@ commMonoid→Monoid {_} {_+R_} {0R} C = record
 
 -- ... hence on the categorical spine, via the Monoid delooping.
 commMonoid→CategoryOf : {R : Set 0ℓ} {_+R_ : R → R → R} {0R : R}
-                      → CommutativeMonoid R _+R_ 0R → CategoryOf
+                      → CommutativeMonoid R _+R_ 0R → CategoryOf ⊤ (λ _ _ → R)
 commMonoid→CategoryOf C = deloop (commMonoid→Monoid C)

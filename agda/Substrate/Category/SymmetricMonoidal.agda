@@ -62,20 +62,21 @@ private
 -- carries the structural carrier + immediate σ-involution only.
 ------------------------------------------------------------------------
 
-record SymmetricMonoidal : Set (lsuc (ℓO ⊔ ℓM)) where
+record SymmetricMonoidal
+  (Obj : Set ℓO) (Mor : Obj → Obj → Set ℓM) : Set (ℓO ⊔ ℓM) where
   constructor mkSymmetricMonoidal
 
   field
-    base : CategoryOf {ℓO} {ℓM}
+    base : CategoryOf Obj Mor
 
   private
     module C = CategoryOf base
 
   field
-    _⊗o_           : C.Obj → C.Obj → C.Obj
-    I              : C.Obj
-    σ              : (a b : C.Obj) → C.Mor (a ⊗o b) (b ⊗o a)
-    σ-involution   : (a b : C.Obj) →
+    _⊗o_           : Obj → Obj → Obj
+    I              : Obj
+    σ              : (a b : Obj) → Mor (a ⊗o b) (b ⊗o a)
+    σ-involution   : (a b : Obj) →
                      C.compose (σ b a) (σ a b) ≡ C.id (a ⊗o b)
 
 ------------------------------------------------------------------------

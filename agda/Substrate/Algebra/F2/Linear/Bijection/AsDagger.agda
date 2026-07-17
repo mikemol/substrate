@@ -18,7 +18,8 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Algebra.F2.Linear.Bijection.AsDagger
   {ℓO ℓM : Level}
-  (Bij-Dag : DaggerCategory {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (Bij-Dag : DaggerCategory Obj Mor)
   where
 
 open import Substrate.Category.DaggerCategory.AsNamed Bij-Dag public

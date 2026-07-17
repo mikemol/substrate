@@ -19,9 +19,12 @@ open import Substrate.Category.Functor
 
 module Substrate.Category.GrothendieckOfAut
   {ℓOS ℓMS ℓOG ℓMG ℓOC ℓMC : Level}
-  (CarrierCat : CategoryOf {ℓOS} {ℓMS})
-  (GroupCat : CategoryOf {ℓOG} {ℓMG})
-  (TotalCat : CategoryOf {ℓOC} {ℓMC})
+  {ObjCarrierCat : Set ℓOS} {MorCarrierCat : ObjCarrierCat → ObjCarrierCat → Set ℓMS}
+  {ObjGroupCat : Set ℓOG} {MorGroupCat : ObjGroupCat → ObjGroupCat → Set ℓMG}
+  {ObjTotalCat : Set ℓOC} {MorTotalCat : ObjTotalCat → ObjTotalCat → Set ℓMC}
+  (CarrierCat : CategoryOf ObjCarrierCat MorCarrierCat)
+  (GroupCat : CategoryOf ObjGroupCat MorGroupCat)
+  (TotalCat : CategoryOf ObjTotalCat MorTotalCat)
   (Aut : Functor CarrierCat GroupCat)
   (∫ : Functor GroupCat TotalCat)
   where

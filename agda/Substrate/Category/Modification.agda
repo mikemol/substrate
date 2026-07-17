@@ -30,10 +30,12 @@ private
 ------------------------------------------------------------------------
 
 record Modification
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
   {F G : Functor C D}
   (α β : NaturalTransformation F G)
   (Component : Set ℓMD) : Set (ℓOC ⊔ ℓMD) where
   field
-    components : CategoryOf.Obj C → Component
+    components : ObjC → Component

@@ -15,7 +15,8 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 record SubobjectClassifier
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM}) : Set ℓO where
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (C : CategoryOf Obj Mor) : Set ℓO where
   field
-    Ω    : CategoryOf.Obj C
+    Ω    : Obj
     -- True : 1 → Ω + pullback-characterisation: user obligations.

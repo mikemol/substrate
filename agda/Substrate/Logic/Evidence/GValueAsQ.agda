@@ -157,9 +157,10 @@ demorgan na'₁ db₁ na'₂ db₂ = cong +_ demorgan-ℕ
 -- factorisation iso is Ω3-L-primes.)
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
-open import Substrate.Algebra.Q.Properties.AddMonoid using (+ℚ-reduced-Monoid)
+open import Substrate.Algebra.Q.Properties.AddMonoid using (+ℚ-reduced-Monoid; ℚ/≈)
 
-gor-Category : CategoryOf
+gor-Category : CategoryOf ⊤ (λ _ _ → ℚ/≈)
 gor-Category = deloop +ℚ-reduced-Monoid

@@ -208,10 +208,11 @@ to₄-hom γ γ = refl
 -- module categorically. It was FLOATING (·-assoc proven, off-spine); the KleinV4≅V₄
 -- witness now does WORK: it carries the torsor's group onto the categorical spine.
 ------------------------------------------------------------------------
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.Delooping using (deloop)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 import Substrate.Groups.V4.Bundle as V4B
 
 -- BV₄ : the Klein four-group as its one-object groupoid (KleinV4's category, via the iso).
-klein-deloop : CategoryOf
+klein-deloop : CategoryOf ⊤ (λ _ _ → V4B.V₄)
 klein-deloop = deloop V4B.V₄-Monoid

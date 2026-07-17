@@ -14,8 +14,9 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 module Substrate.Algebra.F2.HodgeDim4.AsGroupoid
   {ℓO ℓM : Level}
-  (HodgeGroupoid : CategoryOf {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (HodgeGroupoid : CategoryOf Obj Mor)
   where
 
-HodgeDim4-AsGroupoid : CategoryOf
+HodgeDim4-AsGroupoid : CategoryOf Obj Mor
 HodgeDim4-AsGroupoid = HodgeGroupoid

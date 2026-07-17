@@ -59,24 +59,25 @@ private
 --   * involution : ∀ {a b} (f : Mor a b) → f†† ≡ f
 ------------------------------------------------------------------------
 
-record DaggerCategory : Set (lsuc (ℓO ⊔ ℓM)) where
+record DaggerCategory
+  (Obj : Set ℓO) (Mor : Obj → Obj → Set ℓM) : Set (ℓO ⊔ ℓM) where
   constructor mkDaggerCategory
 
   field
-    base : CategoryOf {ℓO} {ℓM}
+    base : CategoryOf Obj Mor
 
   private
     module C = CategoryOf base
 
   field
-    _† : {a b : C.Obj} → C.Mor a b → C.Mor b a
+    _† : {a b : Obj} → Mor a b → Mor b a
     id-†
-      : (a : C.Obj) → (C.id a) † ≡ C.id a
+      : (a : Obj) → (C.id a) † ≡ C.id a
     compose-†
-      : {a b c : C.Obj} (f : C.Mor a b) (g : C.Mor b c) →
+      : {a b c : Obj} (f : Mor a b) (g : Mor b c) →
         (C.compose g f) † ≡ C.compose (f †) (g †)
     involution
-      : {a b : C.Obj} (f : C.Mor a b) → ((f †) †) ≡ f
+      : {a b : Obj} (f : Mor a b) → ((f †) †) ≡ f
 
 ------------------------------------------------------------------------
 -- Capstone — dagger category primitive in place.

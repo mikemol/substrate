@@ -17,8 +17,10 @@ open import Substrate.Category.Functor using (Functor)
 
 record Sheaf
   {ℓOC ℓMC ℓOD ℓMD : Level}
-  (Site : CategoryOf {ℓOC} {ℓMC})
-  (Target : CategoryOf {ℓOD} {ℓMD}) : Set (lsuc (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD)) where
+  {ObjSite : Set ℓOC} {MorSite : ObjSite → ObjSite → Set ℓMC}
+  {ObjTarget : Set ℓOD} {MorTarget : ObjTarget → ObjTarget → Set ℓMD}
+  (Site : CategoryOf ObjSite MorSite)
+  (Target : CategoryOf ObjTarget MorTarget) : Set (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD) where
   field
     presheaf : Functor Site Target
     -- Gluing axiom: user obligation per substrate-pragmatic minimum.

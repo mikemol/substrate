@@ -18,8 +18,9 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsSelfDualMorphism
   {ℓO ℓM : Level}
-  (F2L-SM : SymmetricMonoidal {ℓO} {ℓM})
-  (F2L-Dag : DaggerCategory {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (F2L-SM : SymmetricMonoidal Obj Mor)
+  (F2L-Dag : DaggerCategory Obj Mor)
   where
 
 open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM public

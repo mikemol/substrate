@@ -44,10 +44,11 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 ------------------------------------------------------------------------
 
 record F2LinearCategoryStructures {ℓO ℓM : Level}
-  : Set (suc (ℓO ⊔ ℓM)) where
+  (Obj : Set ℓO) (Mor : Obj → Obj → Set ℓM)
+  : Set (ℓO ⊔ ℓM) where
   field
-    asAbelianCategory   : CategoryOf {ℓO} {ℓM}
-    asExactCategory     : CategoryOf {ℓO} {ℓM}
-    asRigidCategory     : SymmetricMonoidal {ℓO} {ℓM}
-    asSymmetricMonoidal : SymmetricMonoidal {ℓO} {ℓM}
-    asDaggerCategory    : DaggerCategory {ℓO} {ℓM}
+    asAbelianCategory   : CategoryOf Obj Mor
+    asExactCategory     : CategoryOf Obj Mor
+    asRigidCategory     : SymmetricMonoidal Obj Mor
+    asSymmetricMonoidal : SymmetricMonoidal Obj Mor
+    asDaggerCategory    : DaggerCategory Obj Mor

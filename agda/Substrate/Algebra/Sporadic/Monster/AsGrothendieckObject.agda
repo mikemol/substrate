@@ -22,10 +22,11 @@ module Substrate.Algebra.Sporadic.Monster.AsGrothendieckObject
   -- The total category of Monster views (= Z3 ∫ over index category
   -- whose objects are AsCoalgebra/AsPresented/AsAutGriess/LieAlgebra
   -- with bridges as morphisms; user-supplied).
-  (Monster-Total : CategoryOf {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (Monster-Total : CategoryOf Obj Mor)
   where
 
-Monster-AsGrothendieckObject : CategoryOf
+Monster-AsGrothendieckObject : CategoryOf Obj Mor
 Monster-AsGrothendieckObject = Monster-Total
 
 ------------------------------------------------------------------------

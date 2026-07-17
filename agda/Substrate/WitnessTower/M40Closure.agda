@@ -71,6 +71,7 @@ odd  *c odd  = even
 -- sign-factor on its own.
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
@@ -80,7 +81,7 @@ Chir-Monoid = record
   { semigroup = record { magma = record { _·_ = _*c_ } ; ·-assoc = *c-assoc }
   ; ε = even ; ε-left = λ a → refl ; ε-right = *c-identityʳ }
 
-Chir-Category : CategoryOf
+Chir-Category : CategoryOf ⊤ (λ _ _ → Chir)
 Chir-Category = deloop Chir-Monoid
 
 ------------------------------------------------------------------------

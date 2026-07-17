@@ -38,8 +38,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.Coxeter.AsCartanType.Functor
   {ℓOC ℓMC ℓOT ℓMT : Level}
-  (CoxeterCat : CategoryOf {ℓOC} {ℓMC})
-  (CartanCat : CategoryOf {ℓOT} {ℓMT})
+  {ObjCoxeterCat : Set ℓOC} {MorCoxeterCat : ObjCoxeterCat → ObjCoxeterCat → Set ℓMC}
+  {ObjCartanCat : Set ℓOT} {MorCartanCat : ObjCartanCat → ObjCartanCat → Set ℓMT}
+  (CoxeterCat : CategoryOf ObjCoxeterCat MorCoxeterCat)
+  (CartanCat : CategoryOf ObjCartanCat MorCartanCat)
   (Coxeter→Cartan : Functor CoxeterCat CartanCat)
   where
 

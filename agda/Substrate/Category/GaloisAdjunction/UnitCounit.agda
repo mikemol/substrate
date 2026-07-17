@@ -36,9 +36,11 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Category.GaloisAdjunction.UnitCounit
   {ℓOC ℓMC ℓOD ℓMD : Level}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
   -- The two categories joined by the adjunction.
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (D : CategoryOf {ℓOD} {ℓMD})
+  (C : CategoryOf ObjC MorC)
+  (D : CategoryOf ObjD MorD)
   -- The forward + backward functors (F ⊣ G).
   (F : Functor C D)
   (G : Functor D C)

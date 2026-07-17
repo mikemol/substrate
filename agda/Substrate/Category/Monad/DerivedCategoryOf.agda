@@ -38,10 +38,12 @@ open import Substrate.Category.Monad using (Monad)
 
 module Substrate.Category.Monad.DerivedCategoryOf
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
+  {ObjC : Set ℓO} {MorC : ObjC → ObjC → Set ℓM}
+  (C : CategoryOf ObjC MorC)
   (M : Monad C)
-  (Derived : CategoryOf {ℓO} {ℓM})
+  {ObjDerived : Set ℓO} {MorDerived : ObjDerived → ObjDerived → Set ℓM}
+  (Derived : CategoryOf ObjDerived MorDerived)
   where
 
-monad-derived-Category : CategoryOf
+monad-derived-Category : CategoryOf ObjDerived MorDerived
 monad-derived-Category = Derived

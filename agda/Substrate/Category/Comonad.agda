@@ -36,5 +36,6 @@ open import Substrate.Category.Monad using (Monad)
 open import Substrate.Category.Opposite using (Opposite)
 
 Comonad :
-  {ℓO ℓM : Level} → CategoryOf {ℓO} {ℓM} → Set (lsuc (ℓO ⊔ ℓM))
+  {ℓO ℓM : Level} {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  → CategoryOf Obj Mor → Set (ℓO ⊔ ℓM)
 Comonad C = Monad (Opposite C)

@@ -23,15 +23,17 @@ open import Substrate.Category.NaturalIsomorphism
 
 module Substrate.Category.CartanRootEquivalence
   {ℓOC ℓMC ℓOR ℓMR : Level}
-  (CartanCat : CategoryOf {ℓOC} {ℓMC})
-  (RootCat : CategoryOf {ℓOR} {ℓMR})
+  {ObjCartanCat : Set ℓOC} {MorCartanCat : ObjCartanCat → ObjCartanCat → Set ℓMC}
+  {ObjRootCat : Set ℓOR} {MorRootCat : ObjRootCat → ObjRootCat → Set ℓMR}
+  (CartanCat : CategoryOf ObjCartanCat MorCartanCat)
+  (RootCat : CategoryOf ObjRootCat MorRootCat)
   (F : Functor CartanCat RootCat)
   (G : Functor RootCat CartanCat)
   (FG≅Id : NaturalIsomorphism (compose-Functor F G) (id-Functor RootCat))
   (GF≅Id : NaturalIsomorphism (compose-Functor G F) (id-Functor CartanCat))
   where
 
-record CartanRoot-Equivalence : Set (lsuc (ℓOC ⊔ ℓMC ⊔ ℓOR ⊔ ℓMR)) where
+record CartanRoot-Equivalence : Set (ℓOC ⊔ ℓMC ⊔ ℓOR ⊔ ℓMR) where
   field
     forward       : Functor CartanCat RootCat
     backward      : Functor RootCat CartanCat

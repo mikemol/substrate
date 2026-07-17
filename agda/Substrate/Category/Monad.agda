@@ -19,7 +19,8 @@ open import Substrate.Category.NaturalTransformation
 
 record Monad
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM}) : Set (lsuc (ℓO ⊔ ℓM)) where
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (C : CategoryOf Obj Mor) : Set (ℓO ⊔ ℓM) where
   field
     T  : Functor C C
     η  : NaturalTransformation (id-Functor C) T

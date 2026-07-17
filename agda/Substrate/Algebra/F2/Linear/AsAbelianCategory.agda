@@ -18,9 +18,10 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 module Substrate.Algebra.F2.Linear.AsAbelianCategory
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
-F2Linear-AsAbelianCategory : CategoryOf
+F2Linear-AsAbelianCategory : CategoryOf Obj Mor
 F2Linear-AsAbelianCategory =
   F2LinearCategoryStructures.asAbelianCategory structures

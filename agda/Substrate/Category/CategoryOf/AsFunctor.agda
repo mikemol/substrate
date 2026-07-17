@@ -33,12 +33,14 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.CategoryOf.AsFunctor
   {ℓOP ℓMP ℓOC ℓMC : Level}
+  {ObjPrimitiveMeta : Set ℓOP} {MorPrimitiveMeta : ObjPrimitiveMeta → ObjPrimitiveMeta → Set ℓMP}
+  {ObjCatMeta : Set ℓOC} {MorCatMeta : ObjCatMeta → ObjCatMeta → Set ℓMC}
   -- The meta-category of substrate primitives + primitive-respecting
   -- transformations (user-supplied; conceptually a sub-category of
   -- Set).
-  (PrimitiveMeta : CategoryOf {ℓOP} {ℓMP})
+  (PrimitiveMeta : CategoryOf ObjPrimitiveMeta MorPrimitiveMeta)
   -- The meta-category of CategoryOf instances + functors between them.
-  (CatMeta : CategoryOf {ℓOC} {ℓMC})
+  (CatMeta : CategoryOf ObjCatMeta MorCatMeta)
   -- The CategoryOf assignment functor.
   (CategoryOf-assignment : Functor PrimitiveMeta CatMeta)
   where

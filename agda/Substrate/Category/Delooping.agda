@@ -48,11 +48,9 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 --   assoc    = ·-assoc      ((f · g) · h ≡ f · (g · h))
 ------------------------------------------------------------------------
 
-deloop : {A : Set} → Monoid A → CategoryOf
+deloop : {A : Set} → Monoid A → CategoryOf ⊤ (λ _ _ → A)
 deloop {A} mon = record
-  { Obj      = ⊤
-  ; Mor      = λ _ _ → A
-  ; id       = λ _ → ε mon
+  { id       = λ _ → ε mon
   ; compose  = λ g f → f ∙ g
   ; left-id  = ε-right mon
   ; right-id = ε-left mon

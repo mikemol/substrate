@@ -34,8 +34,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.LieAlgebra.AsFunctor
   {ℓOA ℓMA ℓOL ℓML : Level}
-  (Assoc : CategoryOf {ℓOA} {ℓMA})
-  (Lie : CategoryOf {ℓOL} {ℓML})
+  {ObjAssoc : Set ℓOA} {MorAssoc : ObjAssoc → ObjAssoc → Set ℓMA}
+  {ObjLie : Set ℓOL} {MorLie : ObjLie → ObjLie → Set ℓML}
+  (Assoc : CategoryOf ObjAssoc MorAssoc)
+  (Lie : CategoryOf ObjLie MorLie)
   (U-Lie : Functor Assoc Lie)
   where
 

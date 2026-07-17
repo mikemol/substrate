@@ -42,8 +42,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.Functor.AsNamed
   {ℓOS ℓMS ℓOT ℓMT : Level}
-  (Source : CategoryOf {ℓOS} {ℓMS})
-  (Target : CategoryOf {ℓOT} {ℓMT})
+  {ObjSource : Set ℓOS} {MorSource : ObjSource → ObjSource → Set ℓMS}
+  {ObjTarget : Set ℓOT} {MorTarget : ObjTarget → ObjTarget → Set ℓMT}
+  (Source : CategoryOf ObjSource MorSource)
+  (Target : CategoryOf ObjTarget MorTarget)
   (F : Functor Source Target)
   where
 

@@ -36,8 +36,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.ExteriorAlgebra.AsFunctor
   {ℓOV ℓMV ℓOE ℓME : Level}
-  (Vect : CategoryOf {ℓOV} {ℓMV})
-  (ExtAlg : CategoryOf {ℓOE} {ℓME})
+  {ObjVect : Set ℓOV} {MorVect : ObjVect → ObjVect → Set ℓMV}
+  {ObjExtAlg : Set ℓOE} {MorExtAlg : ObjExtAlg → ObjExtAlg → Set ℓME}
+  (Vect : CategoryOf ObjVect MorVect)
+  (ExtAlg : CategoryOf ObjExtAlg MorExtAlg)
   (Λ : Functor Vect ExtAlg)
   where
 

@@ -30,11 +30,13 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.S1-Lift.AsFunctor
   {ℓOC ℓMC ℓOD ℓMD : Level}
+  {ObjCyclicCat : Set ℓOC} {MorCyclicCat : ObjCyclicCat → ObjCyclicCat → Set ℓMC}
+  {ObjContinuousCat : Set ℓOD} {MorContinuousCat : ObjContinuousCat → ObjContinuousCat → Set ℓMD}
   -- The category of cyclic / cyclic-limit discrete data + their
   -- morphisms.
-  (CyclicCat : CategoryOf {ℓOC} {ℓMC})
+  (CyclicCat : CategoryOf ObjCyclicCat MorCyclicCat)
   -- The category of continuous S¹-targets + continuous morphisms.
-  (ContinuousCat : CategoryOf {ℓOD} {ℓMD})
+  (ContinuousCat : CategoryOf ObjContinuousCat MorContinuousCat)
   -- The S¹-Lift functor.
   (S1-Lift : Functor CyclicCat ContinuousCat)
   where

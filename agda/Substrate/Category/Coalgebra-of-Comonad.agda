@@ -31,6 +31,7 @@ open import Substrate.Category.Opposite using (Opposite)
 
 CoalgebraOfComonad :
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (C : CategoryOf Obj Mor)
   (W : Comonad C) → Set (ℓO ⊔ ℓM)
 CoalgebraOfComonad C W = AlgebraOfMonad (Opposite C) W

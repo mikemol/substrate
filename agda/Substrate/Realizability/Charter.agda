@@ -338,11 +338,9 @@ infixr 5 _++ᵖ_
 -- category; the gate chain is the one-object specialisation" prose
 -- load-bearing: the thin-category laws (idˡ/idʳ/assoc) witness the named
 -- primitive. (compose g f = f ++ᵖ g, so left-id/right-id pair with idʳ/idˡ.)
-WitnessCategory : CategoryOf
+WitnessCategory : CategoryOf ℕ Pipe
 WitnessCategory = record
-  { Obj      = ℕ
-  ; Mor      = Pipe
-  ; id       = λ _ → []
+  { id       = λ _ → []
   ; compose  = λ g f → f ++ᵖ g
   ; left-id  = ++ᵖ-idʳ
   ; right-id = ++ᵖ-idˡ

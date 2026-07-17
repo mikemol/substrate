@@ -6622,6 +6622,7 @@ digraph imports {
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.CommutativeMonoid";
   "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Category.Delooping";
+  "Substrate.Category.CommutativeMonoidAsMonoid" -> "Substrate.Foundation.Unit";
   "Substrate.Category.CommutativeNonAssociativeAlgebra" -> "Substrate.Foundation.Eq";
   "Substrate.Category.Comonad" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Comonad" -> "Substrate.Category.Monad";
@@ -6771,6 +6772,7 @@ digraph imports {
   "Substrate.Category.DeloopingGroup" -> "Substrate.Algebra.Group";
   "Substrate.Category.DeloopingGroup" -> "Substrate.Category.Delooping";
   "Substrate.Category.DeloopingGroup" -> "Substrate.Category.Iso";
+  "Substrate.Category.DeloopingGroup" -> "Substrate.Foundation.Unit";
   "Substrate.Category.DiscreteFourierTransform" -> "Substrate.Algebra.PontryaginDual";
   "Substrate.Category.DiscreteFourierTransform" -> "Substrate.Foundation.Eq";
   "Substrate.Category.DiscreteFourierTransform" -> "Substrate.Foundation.Nat";
@@ -8556,6 +8558,7 @@ digraph imports {
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Cocycles.V4Signature.S4Iso.Roundtrips";
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Foundation.Eq";
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Foundation.Product";
+  "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Foundation.Unit";
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Groups.Coxeter.ListPresentation";
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Cocycles.V4Signature.S4GroupIso" -> "Substrate.Groups.S4";
@@ -11465,6 +11468,7 @@ digraph imports {
   "Substrate.Logic.Evidence.GValueAsQ" -> "Substrate.Foundation.Nat";
   "Substrate.Logic.Evidence.GValueAsQ" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Logic.Evidence.GValueAsQ" -> "Substrate.Foundation.Nat.Properties.Mul";
+  "Substrate.Logic.Evidence.GValueAsQ" -> "Substrate.Foundation.Unit";
   "Substrate.Logic.Evidence.GValueLSpace" -> "Substrate.Algebra.ExpLogCodec";
   "Substrate.Logic.Evidence.GValueLSpace" -> "Substrate.Algebra.Q";
   "Substrate.Logic.Evidence.GValueLSpace" -> "Substrate.Algebra.Q.Equiv";
@@ -11961,6 +11965,7 @@ digraph imports {
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Category.Delooping";
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Foundation.Eq";
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Foundation.Product";
+  "Substrate.S5.S5TorsorWireV4" -> "Substrate.Foundation.Unit";
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Groups.V4.Axioms";
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Groups.V4.Bijection";
   "Substrate.S5.S5TorsorWireV4" -> "Substrate.Groups.V4.Bundle";
@@ -12654,6 +12659,7 @@ digraph imports {
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Category.Delooping";
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.M40Closure" -> "Substrate.Foundation.Unit";
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Groups.Actions.S3-on-V4.Generators.Rotate";
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Groups.Coxeter.ListPresentation";
   "Substrate.WitnessTower.M40Closure" -> "Substrate.Groups.Coxeter.Word";
@@ -12683,6 +12689,7 @@ digraph imports {
   "Substrate.WitnessTower.M40Group" -> "Substrate.Category.Delooping";
   "Substrate.WitnessTower.M40Group" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.M40Group" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.M40Group" -> "Substrate.Foundation.Unit";
   "Substrate.WitnessTower.M40Group" -> "Substrate.Groups.Actions.S3-on-V4.Generators.Rotate";
   "Substrate.WitnessTower.M40Group" -> "Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId";
   "Substrate.WitnessTower.M40Group" -> "Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom";

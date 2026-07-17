@@ -15,11 +15,13 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 module _
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
-  (Psh : CategoryOf {ℓO} {ℓM})
+  {ObjC : Set ℓO} {MorC : ObjC → ObjC → Set ℓM}
+  (C : CategoryOf ObjC MorC)
+  {ObjPsh : Set ℓO} {MorPsh : ObjPsh → ObjPsh → Set ℓM}
+  (Psh : CategoryOf ObjPsh MorPsh)
   -- User supplies the presheaf-category instance directly per
   -- substrate-pragmatic parametric pattern.
   where
 
-  PresheafCategory : CategoryOf
+  PresheafCategory : CategoryOf ObjPsh MorPsh
   PresheafCategory = Psh

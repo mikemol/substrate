@@ -17,9 +17,10 @@ open import Substrate.Category.Monad using (Monad)
 
 record AlgebraOfMonad
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (C : CategoryOf Obj Mor)
   (M : Monad C) : Set (ℓO ⊔ ℓM) where
   field
-    A : CategoryOf.Obj C
-    α : CategoryOf.Mor C (Functor.F-obj (Monad.T M) A) A
+    A : Obj
+    α : Mor (Functor.F-obj (Monad.T M) A) A
   -- Unit + multiplication compatibility: user obligations.

@@ -34,18 +34,17 @@ private
 ------------------------------------------------------------------------
 
 record NaturalIsomorphism
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
   (F G : Functor C D) : Set (ℓOC ⊔ ℓMC ⊔ ℓMD) where
-
-  private
-    module C = CategoryOf C
 
   field
     transformation : NaturalTransformation F G
     -- every component is invertible in D (the "≅", not merely a "⇒").
     component-iso  :
-      (a : C.Obj) → IsIso D (NaturalTransformation.components transformation a)
+      (a : ObjC) → IsIso D (NaturalTransformation.components transformation a)
 
 open NaturalIsomorphism public
 
@@ -55,8 +54,10 @@ open NaturalIsomorphism public
 ------------------------------------------------------------------------
 
 id-NaturalIsomorphism :
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
   (F : Functor C D) → NaturalIsomorphism F F
 id-NaturalIsomorphism {D = D} F = record
   { transformation = id-NaturalTransformation F

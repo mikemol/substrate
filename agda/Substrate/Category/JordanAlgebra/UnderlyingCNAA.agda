@@ -15,8 +15,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.JordanAlgebra.UnderlyingCNAA
   {ℓOJ ℓMJ ℓOC ℓMC : Level}
-  (JordanCat : CategoryOf {ℓOJ} {ℓMJ})
-  (CNAA-Cat : CategoryOf {ℓOC} {ℓMC})
+  {ObjJordanCat : Set ℓOJ} {MorJordanCat : ObjJordanCat → ObjJordanCat → Set ℓMJ}
+  {ObjCNAA-Cat : Set ℓOC} {MorCNAA-Cat : ObjCNAA-Cat → ObjCNAA-Cat → Set ℓMC}
+  (JordanCat : CategoryOf ObjJordanCat MorJordanCat)
+  (CNAA-Cat : CategoryOf ObjCNAA-Cat MorCNAA-Cat)
   (Jordan→CNAA : Functor JordanCat CNAA-Cat)
   where
 

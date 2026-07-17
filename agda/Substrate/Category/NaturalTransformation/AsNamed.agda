@@ -33,8 +33,10 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Category.NaturalTransformation.AsNamed
   {ℓOS ℓMS ℓOT ℓMT : Level}
-  (Source : CategoryOf {ℓOS} {ℓMS})
-  (Target : CategoryOf {ℓOT} {ℓMT})
+  {ObjSource : Set ℓOS} {MorSource : ObjSource → ObjSource → Set ℓMS}
+  {ObjTarget : Set ℓOT} {MorTarget : ObjTarget → ObjTarget → Set ℓMT}
+  (Source : CategoryOf ObjSource MorSource)
+  (Target : CategoryOf ObjTarget MorTarget)
   (F G : Functor Source Target)
   (α : NaturalTransformation F G)
   where

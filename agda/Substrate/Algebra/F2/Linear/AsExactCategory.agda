@@ -18,9 +18,10 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 module Substrate.Algebra.F2.Linear.AsExactCategory
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
-F2Linear-AsExactCategory : CategoryOf
+F2Linear-AsExactCategory : CategoryOf Obj Mor
 F2Linear-AsExactCategory =
   F2LinearCategoryStructures.asExactCategory structures

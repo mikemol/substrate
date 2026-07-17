@@ -16,8 +16,10 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor.AsNaturalTransformation
   {ℓOC ℓMC ℓOD ℓMD : Level}
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (D : CategoryOf {ℓOD} {ℓMD})
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  (C : CategoryOf ObjC MorC)
+  (D : CategoryOf ObjD MorD)
   (F G : Functor C D)
   (GaugeAction : NaturalTransformation F G)
   where

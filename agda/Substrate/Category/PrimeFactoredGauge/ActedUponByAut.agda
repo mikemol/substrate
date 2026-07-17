@@ -21,8 +21,10 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Category.PrimeFactoredGauge.ActedUponByAut
   {ℓOG ℓMG ℓOP ℓMP : Level}
-  (GroupCat : CategoryOf {ℓOG} {ℓMG})
-  (PFGCat : CategoryOf {ℓOP} {ℓMP})
+  {ObjGroupCat : Set ℓOG} {MorGroupCat : ObjGroupCat → ObjGroupCat → Set ℓMG}
+  {ObjPFGCat : Set ℓOP} {MorPFGCat : ObjPFGCat → ObjPFGCat → Set ℓMP}
+  (GroupCat : CategoryOf ObjGroupCat MorGroupCat)
+  (PFGCat : CategoryOf ObjPFGCat MorPFGCat)
   (PFG-Functor : Functor GroupCat PFGCat)
   (Aut-Functor : Functor GroupCat PFGCat)
   (Aut-action : NaturalTransformation PFG-Functor Aut-Functor)

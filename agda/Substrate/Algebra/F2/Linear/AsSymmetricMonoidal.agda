@@ -36,14 +36,15 @@ open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 
 module Substrate.Algebra.F2.Linear.AsSymmetricMonoidal
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
 ------------------------------------------------------------------------
 -- 1. F₂-Linear as the substrate's named SymmetricMonoidal instance.
 ------------------------------------------------------------------------
 
-F2Linear-AsSymmetricMonoidal : SymmetricMonoidal
+F2Linear-AsSymmetricMonoidal : SymmetricMonoidal Obj Mor
 F2Linear-AsSymmetricMonoidal =
   F2LinearCategoryStructures.asSymmetricMonoidal structures
 

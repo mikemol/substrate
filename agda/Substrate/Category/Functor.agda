@@ -62,8 +62,10 @@ private
 ------------------------------------------------------------------------
 
 record Functor
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (D : CategoryOf {ℓOD} {ℓMD}) : Set (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD) where
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  (C : CategoryOf ObjC MorC)
+  (D : CategoryOf ObjD MorD) : Set (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD) where
   constructor mkFunctor
 
   private
@@ -71,10 +73,10 @@ record Functor
     module D = CategoryOf D
 
   field
-    F-obj      : C.Obj → D.Obj
-    F-mor      : {a b : C.Obj} → C.Mor a b → D.Mor (F-obj a) (F-obj b)
-    F-id       : (a : C.Obj) → F-mor (C.id a) ≡ D.id (F-obj a)
-    F-compose  : {a b c : C.Obj} (f : C.Mor a b) (g : C.Mor b c) →
+    F-obj      : ObjC → ObjD
+    F-mor      : {a b : ObjC} → MorC a b → MorD (F-obj a) (F-obj b)
+    F-id       : (a : ObjC) → F-mor (C.id a) ≡ D.id (F-obj a)
+    F-compose  : {a b c : ObjC} (f : MorC a b) (g : MorC b c) →
                  F-mor (C.compose g f) ≡ D.compose (F-mor g) (F-mor f)
 
 ------------------------------------------------------------------------
@@ -86,7 +88,8 @@ record Functor
 
 open import Substrate.Foundation.Eq using (refl)
 
-id-Functor : (C : CategoryOf {ℓOC} {ℓMC}) → Functor C C
+id-Functor : {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+             (C : CategoryOf ObjC MorC) → Functor C C
 id-Functor C = mkFunctor
   (λ a → a)
   (λ f → f)
@@ -102,11 +105,14 @@ id-Functor C = mkFunctor
 
 compose-Functor :
   {ℓOE ℓME : Level}
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
-  {E : CategoryOf {ℓOE} {ℓME}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {ObjE : Set ℓOE} {MorE : ObjE → ObjE → Set ℓME}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
+  {E : CategoryOf ObjE MorE}
   (G : Functor D E) (F : Functor C D) → Functor C E
-compose-Functor {C = C} {D = D} {E = E} G F = mkFunctor
+compose-Functor {ObjC = ObjC} {MorC = MorC} {C = C} {D = D} {E = E} G F = mkFunctor
   (λ a → Functor.F-obj G (Functor.F-obj F a))
   (λ f → Functor.F-mor G (Functor.F-mor F f))
   id-pres
@@ -121,11 +127,11 @@ compose-Functor {C = C} {D = D} {E = E} G F = mkFunctor
     open import Substrate.Foundation.Eq
       using (trans; cong)
 
-    id-pres : (a : C.Obj) →
+    id-pres : (a : ObjC) →
               G.F-mor (F.F-mor (C.id a)) ≡ E.id (G.F-obj (F.F-obj a))
     id-pres a = trans (cong G.F-mor (F.F-id a)) (G.F-id (F.F-obj a))
 
-    comp-pres : {a b c : C.Obj} (f : C.Mor a b) (g : C.Mor b c) →
+    comp-pres : {a b c : ObjC} (f : MorC a b) (g : MorC b c) →
                 G.F-mor (F.F-mor (C.compose g f))
                 ≡ E.compose (G.F-mor (F.F-mor g)) (G.F-mor (F.F-mor f))
     comp-pres f g =

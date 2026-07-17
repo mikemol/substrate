@@ -24,8 +24,10 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Category.GaloisAdjunction.AsAdjunction
   {ℓOC ℓMC ℓOD ℓMD : Level}
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (D : CategoryOf {ℓOD} {ℓMD})
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  (C : CategoryOf ObjC MorC)
+  (D : CategoryOf ObjD MorD)
   (F : Functor C D)
   (G : Functor D C)
   (η : NaturalTransformation (id-Functor C) (compose-Functor G F))
@@ -39,7 +41,7 @@ module Substrate.Category.GaloisAdjunction.AsAdjunction
 -- user-supplied separately as downstream witnesses.
 ------------------------------------------------------------------------
 
-record GaloisAdjunction-AsAdjunction : Set (lsuc (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD)) where
+record GaloisAdjunction-AsAdjunction : Set (ℓOC ⊔ ℓMC ⊔ ℓOD ⊔ ℓMD) where
   field
     forward  : Functor C D
     backward : Functor D C

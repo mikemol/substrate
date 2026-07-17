@@ -41,6 +41,7 @@ import Substrate.Algebra.Semigroup as SS
 import Substrate.Algebra.Monoid    as SMo
 import Substrate.Algebra.Group     as SG
 
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping  using (deloop)
 
@@ -230,7 +231,7 @@ TotalSpace-Group = record
 -- Algebra.Monoid is now a substrate-named Category.CategoryOf, ON the spine.
 ------------------------------------------------------------------------
 
-TotalSpace-Category : CategoryOf
+TotalSpace-Category : CategoryOf ⊤ (λ _ _ → TotalSpace)
 TotalSpace-Category = deloop TotalSpace-Monoid
 
 ------------------------------------------------------------------------

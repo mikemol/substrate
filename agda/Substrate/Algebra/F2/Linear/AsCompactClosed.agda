@@ -26,13 +26,14 @@ open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 
 module Substrate.Algebra.F2.Linear.AsCompactClosed
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
-F2Linear-AsCompactClosed-SM : SymmetricMonoidal
+F2Linear-AsCompactClosed-SM : SymmetricMonoidal Obj Mor
 F2Linear-AsCompactClosed-SM =
   F2LinearCategoryStructures.asSymmetricMonoidal structures
 
-F2Linear-AsCompactClosed-Dagger : DaggerCategory
+F2Linear-AsCompactClosed-Dagger : DaggerCategory Obj Mor
 F2Linear-AsCompactClosed-Dagger =
   F2LinearCategoryStructures.asDaggerCategory structures

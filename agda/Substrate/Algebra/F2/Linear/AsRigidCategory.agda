@@ -18,9 +18,10 @@ open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 
 module Substrate.Algebra.F2.Linear.AsRigidCategory
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
-F2Linear-AsRigid-SM : SymmetricMonoidal
+F2Linear-AsRigid-SM : SymmetricMonoidal Obj Mor
 F2Linear-AsRigid-SM =
   F2LinearCategoryStructures.asRigidCategory structures

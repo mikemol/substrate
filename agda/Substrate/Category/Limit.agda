@@ -16,9 +16,11 @@ open import Substrate.Category.Functor using (Functor)
 
 record Limit
   {ℓOC ℓMC ℓOJ ℓMJ : Level}
-  (J : CategoryOf {ℓOJ} {ℓMJ})
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (D : Functor J C) : Set (lsuc (ℓOC ⊔ ℓMC ⊔ ℓOJ ⊔ ℓMJ)) where
+  {ObjJ : Set ℓOJ} {MorJ : ObjJ → ObjJ → Set ℓMJ}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  (J : CategoryOf ObjJ MorJ)
+  (C : CategoryOf ObjC MorC)
+  (D : Functor J C) : Set (ℓOC ⊔ ℓMC ⊔ ℓOJ ⊔ ℓMJ) where
   field
-    limit-obj : CategoryOf.Obj C
+    limit-obj : ObjC
     -- Universal cone data + universal property: user obligations.

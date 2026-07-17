@@ -31,10 +31,12 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.S2-Lift.AsFunctor
   {ℓOC ℓMC ℓOD ℓMD : Level}
+  {ObjProjectiveCat : Set ℓOC} {MorProjectiveCat : ObjProjectiveCat → ObjProjectiveCat → Set ℓMC}
+  {ObjContinuousCat : Set ℓOD} {MorContinuousCat : ObjContinuousCat → ObjContinuousCat → Set ℓMD}
   -- The category of projective-limit discrete data + morphisms.
-  (ProjectiveCat : CategoryOf {ℓOC} {ℓMC})
+  (ProjectiveCat : CategoryOf ObjProjectiveCat MorProjectiveCat)
   -- The category of continuous S²-targets + continuous morphisms.
-  (ContinuousCat : CategoryOf {ℓOD} {ℓMD})
+  (ContinuousCat : CategoryOf ObjContinuousCat MorContinuousCat)
   -- The S²-Lift functor.
   (S2-Lift : Functor ProjectiveCat ContinuousCat)
   where

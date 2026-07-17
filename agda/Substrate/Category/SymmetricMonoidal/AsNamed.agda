@@ -29,8 +29,9 @@ open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 
 module Substrate.Category.SymmetricMonoidal.AsNamed
   {ℓO ℓM : Level}
-  (SM : SymmetricMonoidal {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (SM : SymmetricMonoidal Obj Mor)
   where
 
-named-SymmetricMonoidal : SymmetricMonoidal
+named-SymmetricMonoidal : SymmetricMonoidal Obj Mor
 named-SymmetricMonoidal = SM

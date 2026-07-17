@@ -44,8 +44,10 @@ open import Substrate.Category.NaturalTransformation
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsNaturalTransformation
   {ℓOV ℓMV ℓOE ℓME : Level}
-  (Vect : CategoryOf {ℓOV} {ℓMV})
-  (Vect' : CategoryOf {ℓOE} {ℓME})
+  {ObjVect : Set ℓOV} {MorVect : ObjVect → ObjVect → Set ℓMV}
+  {ObjVect' : Set ℓOE} {MorVect' : ObjVect' → ObjVect' → Set ℓME}
+  (Vect : CategoryOf ObjVect MorVect)
+  (Vect' : CategoryOf ObjVect' MorVect')
   -- The two graded-piece functors:
   --   Λᵏ , Λⁿ⁻ᵏ : Vect → Vect'   (typically Vect' = Vect at HodgeDim4)
   -- At HodgeDim4 with n=4, k=2: both are the "second exterior power"

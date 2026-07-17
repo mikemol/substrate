@@ -34,7 +34,9 @@ open import Substrate.Category.Opposite using (Opposite)
 
 Colimit :
   {ℓOC ℓMC ℓOJ ℓMJ : Level}
-  (J : CategoryOf {ℓOJ} {ℓMJ})
-  (C : CategoryOf {ℓOC} {ℓMC})
+  {ObjJ : Set ℓOJ} {MorJ : ObjJ → ObjJ → Set ℓMJ}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  (J : CategoryOf ObjJ MorJ)
+  (C : CategoryOf ObjC MorC)
   (D : Functor J C) → Set _
 Colimit J C D = Limit (Opposite J) (Opposite C) (opposite-Functor D)

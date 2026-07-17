@@ -32,10 +32,12 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.PrimeFactoredGauge.AsFunctor
   {ℓOG ℓMG ℓOP ℓMP : Level}
+  {ObjSylowGroupCat : Set ℓOG} {MorSylowGroupCat : ObjSylowGroupCat → ObjSylowGroupCat → Set ℓMG}
+  {ObjPFGCat : Set ℓOP} {MorPFGCat : ObjPFGCat → ObjPFGCat → Set ℓMP}
   -- The category of groups + Sylow-respecting group homomorphisms.
-  (SylowGroupCat : CategoryOf {ℓOG} {ℓMG})
+  (SylowGroupCat : CategoryOf ObjSylowGroupCat MorSylowGroupCat)
   -- The category of PFG instances + PFG morphisms.
-  (PFGCat : CategoryOf {ℓOP} {ℓMP})
+  (PFGCat : CategoryOf ObjPFGCat MorPFGCat)
   -- The PFG assignment functor.
   (PFG-assign : Functor SylowGroupCat PFGCat)
   where

@@ -17,7 +17,8 @@ open import Substrate.Category.SubobjectClassifier
 
 record Topos
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM}) : Set ℓO where
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (C : CategoryOf Obj Mor) : Set ℓO where
   field
     Ω-data : SubobjectClassifier C
     -- Finite limits + cartesian-closed structure: user obligations.

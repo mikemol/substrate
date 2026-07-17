@@ -48,8 +48,10 @@ private
 ------------------------------------------------------------------------
 
 opposite-Functor :
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}} →
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD} →
   Functor C D → Functor (Opposite C) (Opposite D)
 opposite-Functor F = mkFunctor
   F.F-obj
@@ -67,8 +69,10 @@ opposite-Functor F = mkFunctor
 ------------------------------------------------------------------------
 
 from-opposite-Functor :
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}} →
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD} →
   Functor (Opposite C) (Opposite D) → Functor C D
 from-opposite-Functor F = mkFunctor
   F.F-obj

@@ -38,8 +38,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor
   {ℓOL ℓML ℓOA ℓMA : Level}
-  (Lie : CategoryOf {ℓOL} {ℓML})
-  (Assoc : CategoryOf {ℓOA} {ℓMA})
+  {ObjLie : Set ℓOL} {MorLie : ObjLie → ObjLie → Set ℓML}
+  {ObjAssoc : Set ℓOA} {MorAssoc : ObjAssoc → ObjAssoc → Set ℓMA}
+  (Lie : CategoryOf ObjLie MorLie)
+  (Assoc : CategoryOf ObjAssoc MorAssoc)
   (U : Functor Lie Assoc)
   where
 

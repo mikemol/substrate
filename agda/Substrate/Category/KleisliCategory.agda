@@ -24,11 +24,13 @@ open import Substrate.Category.Monad using (Monad)
 
 module Substrate.Category.KleisliCategory
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
+  {ObjC : Set ℓO} {MorC : ObjC → ObjC → Set ℓM}
+  (C : CategoryOf ObjC MorC)
   (M : Monad C)
   -- User supplies the Kleisli CategoryOf instance directly per the
   -- substrate-pragmatic parametric pattern.
-  (Kleisli : CategoryOf {ℓO} {ℓM})
+  {ObjKleisli : Set ℓO} {MorKleisli : ObjKleisli → ObjKleisli → Set ℓM}
+  (Kleisli : CategoryOf ObjKleisli MorKleisli)
   where
 
 open import Substrate.Category.Monad.DerivedCategoryOf C M Kleisli public

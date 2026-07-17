@@ -34,11 +34,13 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.GrothendieckConstruction.AsFunctor
   {ℓOF ℓMF ℓOC ℓMC : Level}
+  {ObjFunctorCat : Set ℓOF} {MorFunctorCat : ObjFunctorCat → ObjFunctorCat → Set ℓMF}
+  {ObjCatOverBase : Set ℓOC} {MorCatOverBase : ObjCatOverBase → ObjCatOverBase → Set ℓMC}
   -- The functor category [Base, Cat] (= Cat-valued functors over a
   -- fixed Base).
-  (FunctorCat : CategoryOf {ℓOF} {ℓMF})
+  (FunctorCat : CategoryOf ObjFunctorCat MorFunctorCat)
   -- The slice Cat/Base — total categories with projections to Base.
-  (CatOverBase : CategoryOf {ℓOC} {ℓMC})
+  (CatOverBase : CategoryOf ObjCatOverBase MorCatOverBase)
   -- The Grothendieck assignment functor.
   (∫ : Functor FunctorCat CatOverBase)
   where

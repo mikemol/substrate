@@ -198,10 +198,11 @@ A4Z2-Group = record { monoid = A4Z2-Monoid ; inv = invA ; inv-left = inv-leftA ;
 -- GROUNDS-IN-ALGEBRA flag the "right" way — a typechecked bridge, not a note.
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
 
-A4Z2-Category : CategoryOf
+A4Z2-Category : CategoryOf ⊤ (λ _ _ → A4Z2)
 A4Z2-Category = deloop A4Z2-Monoid
 
 ------------------------------------------------------------------------

@@ -33,8 +33,9 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Category.DaggerCategory.AsNamed
   {ℓO ℓM : Level}
-  (Dag : DaggerCategory {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (Dag : DaggerCategory Obj Mor)
   where
 
-named-DaggerCategory : DaggerCategory
+named-DaggerCategory : DaggerCategory Obj Mor
 named-DaggerCategory = Dag

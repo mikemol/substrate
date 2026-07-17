@@ -16,7 +16,8 @@ open import Substrate.Category.CategoryOf using (CategoryOf)
 
 record GroupoidCardinality
   {ℓO ℓM : Level}
-  (G : CategoryOf {ℓO} {ℓM})
+  {ObjG : Set ℓO} {MorG : ObjG → ObjG → Set ℓM}
+  (G : CategoryOf ObjG MorG)
   (Card : Set) : Set where
   field
     cardinality : Card

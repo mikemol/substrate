@@ -36,14 +36,15 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Algebra.F2.Linear.AsDaggerCategory
   {ℓO ℓM : Level}
-  (structures : F2LinearCategoryStructures {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (structures : F2LinearCategoryStructures Obj Mor)
   where
 
 ------------------------------------------------------------------------
 -- 1. F₂-Linear as the substrate's named DaggerCategory instance.
 ------------------------------------------------------------------------
 
-F2Linear-AsDaggerCategory : DaggerCategory
+F2Linear-AsDaggerCategory : DaggerCategory Obj Mor
 F2Linear-AsDaggerCategory =
   F2LinearCategoryStructures.asDaggerCategory structures
 

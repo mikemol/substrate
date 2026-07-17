@@ -37,10 +37,12 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.AutomorphismGroup.AsFunctor
   {ℓOS ℓMS ℓOG ℓMG : Level}
+  {ObjCarrierCat : Set ℓOS} {MorCarrierCat : ObjCarrierCat → ObjCarrierCat → Set ℓMS}
+  {ObjGroupCat : Set ℓOG} {MorGroupCat : ObjGroupCat → ObjGroupCat → Set ℓMG}
   -- The category of carriers + preservation-respecting morphisms.
-  (CarrierCat : CategoryOf {ℓOS} {ℓMS})
+  (CarrierCat : CategoryOf ObjCarrierCat MorCarrierCat)
   -- The category of groups + group homomorphisms.
-  (GroupCat : CategoryOf {ℓOG} {ℓMG})
+  (GroupCat : CategoryOf ObjGroupCat MorGroupCat)
   -- The Aut functor.
   (Aut : Functor CarrierCat GroupCat)
   where

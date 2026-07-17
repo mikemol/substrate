@@ -50,8 +50,10 @@ private
 ------------------------------------------------------------------------
 
 record NaturalTransformation
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
   (F G : Functor C D) : Set (ℓOC ⊔ ℓMC ⊔ ℓMD) where
   constructor mkNaturalTransformation
 
@@ -63,9 +65,9 @@ record NaturalTransformation
 
   field
     components :
-      (a : C.Obj) → D.Mor (F.F-obj a) (G.F-obj a)
+      (a : ObjC) → MorD (F.F-obj a) (G.F-obj a)
     naturality :
-      {a b : C.Obj} (f : C.Mor a b) →
+      {a b : ObjC} (f : MorC a b) →
       D.compose (G.F-mor f) (components a)
       ≡ D.compose (components b) (F.F-mor f)
 
@@ -79,8 +81,10 @@ record NaturalTransformation
 ------------------------------------------------------------------------
 
 id-NaturalTransformation :
-  {C : CategoryOf {ℓOC} {ℓMC}}
-  {D : CategoryOf {ℓOD} {ℓMD}}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  {ObjD : Set ℓOD} {MorD : ObjD → ObjD → Set ℓMD}
+  {C : CategoryOf ObjC MorC}
+  {D : CategoryOf ObjD MorD}
   (F : Functor C D) → NaturalTransformation F F
 id-NaturalTransformation {D = D} F = mkNaturalTransformation
   (λ a → CategoryOf.id D (Functor.F-obj F a))

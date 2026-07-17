@@ -17,8 +17,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.CartanType.AsRootSystem
   {ℓOC ℓMC ℓOR ℓMR : Level}
-  (CartanCat : CategoryOf {ℓOC} {ℓMC})
-  (RootCat : CategoryOf {ℓOR} {ℓMR})
+  {ObjCartanCat : Set ℓOC} {MorCartanCat : ObjCartanCat → ObjCartanCat → Set ℓMC}
+  {ObjRootCat : Set ℓOR} {MorRootCat : ObjRootCat → ObjRootCat → Set ℓMR}
+  (CartanCat : CategoryOf ObjCartanCat MorCartanCat)
+  (RootCat : CategoryOf ObjRootCat MorRootCat)
   (Cartan→Root : Functor CartanCat RootCat)
   where
 

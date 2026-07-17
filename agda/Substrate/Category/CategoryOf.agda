@@ -51,10 +51,11 @@ private
 ------------------------------------------------------------------------
 -- The CategoryOf record.
 --
--- Bundles:
+-- Parameterized by (⟡set1-rp-categoryof — carriers are params, not fields):
 --   * Obj : Set ℓO — the objects (= instances of some substrate
 --     primitive)
 --   * Mor : Obj → Obj → Set ℓM — morphisms between objects
+-- Bundles:
 --   * id : (o : Obj) → Mor o o — identity morphism
 --   * compose : ∀ {a b c} → Mor b c → Mor a b → Mor a c — composition
 --   * left-id : ∀ {a b} (f : Mor a b) → compose (id b) f ≡ f
@@ -67,11 +68,12 @@ private
 -- the laws.
 ------------------------------------------------------------------------
 
-record CategoryOf : Set (lsuc (ℓO ⊔ ℓM)) where
+-- ⟡set1-rp-categoryof: Obj and Mor are PARAMETERS now — a Set-valued
+-- field pins the record at Set (lsuc _), while carriers as params never
+-- raise the sort (set1-carrier-always-parameterize; Site.agda precedent).
+record CategoryOf (Obj : Set ℓO) (Mor : Obj → Obj → Set ℓM) : Set (ℓO ⊔ ℓM) where
   constructor mkCategoryOf
   field
-    Obj      : Set ℓO
-    Mor      : Obj → Obj → Set ℓM
     id       : (o : Obj) → Mor o o
     compose  : {a b c : Obj} → Mor b c → Mor a b → Mor a c
     left-id  : {a b : Obj} (f : Mor a b) → compose (id b) f ≡ f

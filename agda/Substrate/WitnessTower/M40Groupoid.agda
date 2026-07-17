@@ -13,14 +13,16 @@
 
 module Substrate.WitnessTower.M40Groupoid where
 
+open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Group using (monoid)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping using (deloop)
 open import Substrate.Category.DeloopingGroup using (IsGroupoid; deloop-group-isGroupoid)
+open import Substrate.WitnessTower.M40Closure using (A4Z2)
 open import Substrate.WitnessTower.M40Group using (A4Z2-Group)
 
 -- A₄×ℤ₂ as a one-object category (the delooping of its group) — on the spine.
-A4Z2-CategoryOf : CategoryOf
+A4Z2-CategoryOf : CategoryOf ⊤ (λ _ _ → A4Z2)
 A4Z2-CategoryOf = deloop (monoid A4Z2-Group)
 
 -- ... and it is a GROUPOID: every morphism (every group element) is invertible.

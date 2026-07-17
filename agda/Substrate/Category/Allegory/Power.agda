@@ -41,11 +41,9 @@ open import Substrate.Category.Allegory using (Rel)
 
 -- the category of types & functions = the MAPS of the allegory (ALG-5), which
 -- form a STRICT category: η makes every law refl.
-Set-Category : CategoryOf {lsuc 0ℓ} {0ℓ}
+Set-Category : CategoryOf {lsuc 0ℓ} {0ℓ} Set (λ A B → (A → B))
 Set-Category = record
-  { Obj      = Set
-  ; Mor      = λ A B → (A → B)
-  ; id       = λ A x → x
+  { id       = λ A x → x
   ; compose  = λ g f x → g (f x)
   ; left-id  = λ f → refl
   ; right-id = λ f → refl

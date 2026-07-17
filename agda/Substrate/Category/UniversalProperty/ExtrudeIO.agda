@@ -123,11 +123,9 @@ emit-list-∷ o os = refl
 ------------------------------------------------------------------------
 open import Substrate.Foundation.Unit using () renaming (⊤ to Unit; tt to unit)
 
-𝔼mit : CategoryOf
+𝔼mit : CategoryOf Unit (λ _ _ → IO Unit)
 𝔼mit = record
-  { Obj      = Unit
-  ; Mor      = λ _ _ → IO Unit
-  ; id       = λ _ → ret unit
+  { id       = λ _ → ret unit
   ; compose  = λ g f → f >>= (λ _ → g)
   ; left-id  = >>=-right-id
   ; right-id = λ f → refl

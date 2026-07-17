@@ -24,9 +24,11 @@ open import Substrate.Category.Monad using (Monad)
 
 module Substrate.Category.EilenbergMooreCategory
   {ℓO ℓM : Level}
-  (C : CategoryOf {ℓO} {ℓM})
+  {ObjC : Set ℓO} {MorC : ObjC → ObjC → Set ℓM}
+  (C : CategoryOf ObjC MorC)
   (M : Monad C)
-  (EM-Cat : CategoryOf {ℓO} {ℓM})
+  {ObjEM : Set ℓO} {MorEM : ObjEM → ObjEM → Set ℓM}
+  (EM-Cat : CategoryOf ObjEM MorEM)
   where
 
 open import Substrate.Category.Monad.DerivedCategoryOf C M EM-Cat public

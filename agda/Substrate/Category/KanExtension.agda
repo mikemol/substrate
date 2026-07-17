@@ -30,19 +30,25 @@ open import Substrate.Category.Opposite using (Opposite)
 
 record LeftKanExtension
   {ℓOA ℓMA ℓOB ℓMB ℓOC ℓMC : Level}
-  (A : CategoryOf {ℓOA} {ℓMA})
-  (B : CategoryOf {ℓOB} {ℓMB})
-  (C : CategoryOf {ℓOC} {ℓMC})
+  {ObjA : Set ℓOA} {MorA : ObjA → ObjA → Set ℓMA}
+  {ObjB : Set ℓOB} {MorB : ObjB → ObjB → Set ℓMB}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  (A : CategoryOf ObjA MorA)
+  (B : CategoryOf ObjB MorB)
+  (C : CategoryOf ObjC MorC)
   (K : Functor A B)
-  (F : Functor A C) : Set (lsuc (ℓOB ⊔ ℓMB ⊔ ℓOC ⊔ ℓMC)) where
+  (F : Functor A C) : Set (ℓOB ⊔ ℓMB ⊔ ℓOC ⊔ ℓMC) where
   field
     Lan : Functor B C
 
 RightKanExtension :
   {ℓOA ℓMA ℓOB ℓMB ℓOC ℓMC : Level}
-  (A : CategoryOf {ℓOA} {ℓMA})
-  (B : CategoryOf {ℓOB} {ℓMB})
-  (C : CategoryOf {ℓOC} {ℓMC})
+  {ObjA : Set ℓOA} {MorA : ObjA → ObjA → Set ℓMA}
+  {ObjB : Set ℓOB} {MorB : ObjB → ObjB → Set ℓMB}
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  (A : CategoryOf ObjA MorA)
+  (B : CategoryOf ObjB MorB)
+  (C : CategoryOf ObjC MorC)
   (K : Functor A B)
   (F : Functor A C) → Set _
 RightKanExtension A B C K F =

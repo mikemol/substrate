@@ -18,7 +18,8 @@ open import Substrate.Category.DaggerCategory using (DaggerCategory)
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap
   {ℓO ℓM : Level}
-  (F2L-Dag : DaggerCategory {ℓO} {ℓM})
+  {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+  (F2L-Dag : DaggerCategory Obj Mor)
   -- The Hodge ★ at HodgeDim4 lives as a morphism in F2L-Dag's base
   -- category. User supplies the specific obj + the (★ † ≡ ★) witness
   -- expressing that ★ is self-adjoint (= self-dagger).

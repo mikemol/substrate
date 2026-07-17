@@ -33,10 +33,9 @@ open import Substrate.Category.CategoryOf using (CategoryOf; mkCategoryOf)
 -- uses sym on the original assoc).
 ------------------------------------------------------------------------
 
-Opposite : {ℓO ℓM : Level} → CategoryOf {ℓO} {ℓM} → CategoryOf {ℓO} {ℓM}
+Opposite : {ℓO ℓM : Level} {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+         → CategoryOf Obj Mor → CategoryOf Obj (λ a b → Mor b a)
 Opposite C = mkCategoryOf
-  Obj
-  (λ a b → Mor b a)
   id
   (λ g f → compose f g)
   (λ f → right-id f)

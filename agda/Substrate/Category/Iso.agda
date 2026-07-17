@@ -27,12 +27,14 @@ open CategoryOf
 
 ------------------------------------------------------------------------
 -- IsIso C f — f has a two-sided inverse (the iso laws are compose-with-
--- inverse = identity, in C).
+-- inverse = identity, in C). ⟡set1-rp-categoryof: the carriers Obj/Mor
+-- are CategoryOf's params now, threaded here as generalizable variables.
 ------------------------------------------------------------------------
 
-record IsIso (C : CategoryOf {ℓO} {ℓM}) {a b : Obj C} (f : Mor C a b) : Set ℓM where
+record IsIso {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+             (C : CategoryOf Obj Mor) {a b : Obj} (f : Mor a b) : Set ℓM where
   field
-    inv⁻  : Mor C b a
+    inv⁻  : Mor b a
     iso-l : compose C f inv⁻ ≡ id C b
     iso-r : compose C inv⁻ f ≡ id C a
 
@@ -40,14 +42,16 @@ record IsIso (C : CategoryOf {ℓO} {ℓM}) {a b : Obj C} (f : Mor C a b) : Set 
 -- IsGroupoid C — every morphism is an isomorphism.
 ------------------------------------------------------------------------
 
-IsGroupoid : CategoryOf {ℓO} {ℓM} → Set (ℓO ⊔ ℓM)
-IsGroupoid C = {a b : Obj C} (f : Mor C a b) → IsIso C f
+IsGroupoid : {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+           → CategoryOf Obj Mor → Set (ℓO ⊔ ℓM)
+IsGroupoid {Obj = Obj} {Mor = Mor} C = {a b : Obj} (f : Mor a b) → IsIso C f
 
 ------------------------------------------------------------------------
 -- The identity morphism is an isomorphism (it is its own inverse).
 ------------------------------------------------------------------------
 
-id-IsIso : (C : CategoryOf {ℓO} {ℓM}) (o : Obj C) → IsIso C (id C o)
+id-IsIso : {Obj : Set ℓO} {Mor : Obj → Obj → Set ℓM}
+           (C : CategoryOf Obj Mor) (o : Obj) → IsIso C (id C o)
 id-IsIso C o = record
   { inv⁻  = id C o
   ; iso-l = left-id C (id C o)

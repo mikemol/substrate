@@ -19,8 +19,10 @@ open import Substrate.Category.Functor using (Functor)
 
 module _
   {ℓOC ℓMC ℓOP ℓMP : Level}
-  (C : CategoryOf {ℓOC} {ℓMC})
-  (PresheafCat : CategoryOf {ℓOP} {ℓMP})
+  {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
+  (C : CategoryOf ObjC MorC)
+  {ObjPresheafCat : Set ℓOP} {MorPresheafCat : ObjPresheafCat → ObjPresheafCat → Set ℓMP}
+  (PresheafCat : CategoryOf ObjPresheafCat MorPresheafCat)
   (y : Functor C PresheafCat)
   where
 
