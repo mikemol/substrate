@@ -12,7 +12,7 @@ _1796 modules, 11834 dependency edges._
 |---|---:|
 | `Substrate.Foundation.Eq` | 1189 |
 | `Substrate.Foundation.Nat` | 912 |
-| `Substrate.Foundation.Product` | 544 |
+| `Substrate.Foundation.Product` | 543 |
 | `Substrate.Foundation.Vec` | 417 |
 | `Substrate.Foundation.Fin` | 414 |
 | `Substrate.Algebra.F2` | 277 |
@@ -3589,8 +3589,6 @@ graph LR
   n3a23a66df5 --> n0eeec9a962
   n3a23a66df5 --> n92317a7ae7
   n3a23a66df5 --> ncf180ab3f9
-  n0b0a431f59["UniversalProperty.Omega"]
-  n0b0a431f59 --> ncf180ab3f9
   n8cdd42dca0["UniversalProperty.OrientationRigBackedGraded"]
   n8cdd42dca0 --> n1b3acbf73a
   n8cdd42dca0 --> n0d6ab961fe

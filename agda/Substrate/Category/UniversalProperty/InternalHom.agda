@@ -15,21 +15,16 @@
 
 module Substrate.Category.UniversalProperty.InternalHom where
 
-open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 ------------------------------------------------------------------------
 -- 1. Internal-hom signature.
 ------------------------------------------------------------------------
 
-module _ (O : Set) (Hom : O → O → Set) where
-
-  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER — the
-  -- internal-hom's resulting fiber family is genuinely quantified over, so
-  -- this stays a documented Set₁ Σ-holder.
-  InternalHomType : Set₁
-  InternalHomType = (F G : O → Set) → UPPresheaf O Hom F → UPPresheaf O Hom G →
-                     Σ (O → Set) (UPPresheaf O Hom)
+-- ⟡rc-deletes (⟡rerank2-floor-dissolve): the `InternalHomType` signature-stub
+-- (an uninhabited, unconsumed Set₁ obligation surface — "concrete bridge
+-- deferred") is DELETED. It was never a fiber-family HOLDER, just dead
+-- scaffolding; when the internal-hom presheaf is actually built it will be a
+-- real def (a UPPresheaf-valued construction), not a Set₁ type-alias.
 
 -- Standard construction: [P, Q](U) = naturality-respecting maps
 -- (V → U) × P(V) → Q(V) parametric in V. The Yoneda lemma gives

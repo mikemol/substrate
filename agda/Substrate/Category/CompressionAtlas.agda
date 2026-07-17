@@ -89,8 +89,9 @@ module _ (Corpus PredictorBinding : Set) where
   -- procedure (comparing bpb-num/bpb-den fractions) deferred to
   -- follow-up; the type-signature here establishes the slot.
 
-  bpb-le-type : (D : AtlasDomain) → Set₁
-  bpb-le-type D = AtlasCell D → AtlasCell D → Set
+  -- ⟡rc-deletes (⟡rerank2-floor-dissolve): the `bpb-le-type` signature-stub
+  -- (0 uses tree-wide) is DELETED — dead scaffolding for a deferred decision
+  -- procedure.
 
   ------------------------------------------------------------------------
   -- Functorial soundness law (proof obligation, deferred).

@@ -11,8 +11,6 @@
 
 module Substrate.Category.UniversalProperty.Powerset where
 
-open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 ------------------------------------------------------------------------
 -- 1. Powerset signature.
@@ -22,13 +20,9 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 -- = exponential Ω^P.
 ------------------------------------------------------------------------
 
-module _ (O : Set) (Hom : O → O → Set) where
-
-  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER — the
-  -- powerset's resulting fiber family is genuinely quantified over, so
-  -- this stays a documented Set₁ Σ-holder.
-  PowersetType : Set₁
-  PowersetType = (F : O → Set) → UPPresheaf O Hom F → Σ (O → Set) (UPPresheaf O Hom)
+-- ⟡rc-deletes (⟡rerank2-floor-dissolve): the `PowersetType` signature-stub
+-- (uninhabited, unconsumed Set₁ obligation surface) is DELETED — dead
+-- scaffolding for a deferred exponential Ω^P, not a fiber-family holder.
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP35.

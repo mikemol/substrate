@@ -6762,6 +6762,7 @@ digraph imports {
   "Substrate.Category.Coxeter.AsCartanType.Functor" -> "Substrate.Category.Functor";
   "Substrate.Category.Coxeter.AsCartanType.Functor" -> "Substrate.Category.Functor.AsNamed";
   "Substrate.Category.CoxeterPermutationGroup" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.CoxeterPermutationGroup" -> "Substrate.Foundation.Iff";
   "Substrate.Category.CoxeterPermutationGroup" -> "Substrate.Foundation.List";
   "Substrate.Category.CoxeterPermutationGroup" -> "Substrate.Foundation.Nat";
   "Substrate.Category.DaggerCategory" -> "Substrate.Category.CategoryOf";
@@ -7975,7 +7976,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ObjectUniverse" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
   "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Category.UniversalProperty.Term";
-  "Substrate.Category.UniversalProperty.Omega" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.Foundation.Empty";

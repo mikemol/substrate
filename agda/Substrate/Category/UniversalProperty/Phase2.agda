@@ -44,5 +44,3 @@ open import Substrate.Category.UniversalProperty.ConcreteCovers    public
   using (trivial-cover)
 open import Substrate.Category.UniversalProperty.Refinement        public
   using (Refines)
-open import Substrate.Category.UniversalProperty.Saturation        public
-  using (Saturated)

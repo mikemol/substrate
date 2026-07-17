@@ -85,8 +85,6 @@ open import Substrate.Category.UniversalProperty.TruthValues        public
   using (is-instance-truth)
 open import Substrate.Category.UniversalProperty.InternalLogic      public
   using (⊤-sieve)
-open import Substrate.Category.UniversalProperty.Powerset           public
-  using (PowersetType)
 open import Substrate.Category.UniversalProperty.GeometricMorphism  public
   using (GeometricMorphism)
 open import Substrate.Category.UniversalProperty.AdjointPair        public

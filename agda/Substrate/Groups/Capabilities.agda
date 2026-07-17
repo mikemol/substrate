@@ -72,12 +72,8 @@ open import Substrate.Foundation.Product using (Σ; _,_)
 -- exactly as the strict2Monoid cell already existentializes its Set carrier.
 open import Substrate.Groups.Coxeter.Word using (Word)
 
-------------------------------------------------------------------------
--- Lifted ⊤ at Set₁ for gap cells (capability records live at Set₁).
-------------------------------------------------------------------------
-
-record ⊤₁ : Set₁ where
-  constructor tt₁
+-- ⟡rc-deletes (⟡rerank2-floor-dissolve): the bespoke `⊤₁ : Set₁` gap-cell
+-- placeholder is DELETED — every Provides cell is now filled (no gap cells).
 
 data ZnInstance : Set where
   Z₂ Z₃ Z₄ Z₅ Z₇ : ZnInstance

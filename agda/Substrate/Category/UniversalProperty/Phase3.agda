@@ -35,11 +35,7 @@ open import Substrate.Category.UniversalProperty.Sheaf             public
   using (UPSheaf)
 open import Substrate.Category.UniversalProperty.MatchingFamily    public
   using (MatchingFamily)
-open import Substrate.Category.UniversalProperty.Sheafify          public
-  using (SheafifyType)
 open import Substrate.Category.UniversalProperty.ConstantSheaf     public
   using (constant-Presheaf)
-open import Substrate.Category.UniversalProperty.InternalHom       public
-  using (InternalHomType)
 open import Substrate.Category.UniversalProperty.SubstrateSheaves  public
   using (InstancesAt)

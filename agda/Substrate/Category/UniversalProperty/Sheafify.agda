@@ -14,19 +14,11 @@
 
 module Substrate.Category.UniversalProperty.Sheafify where
 
-open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
-open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
-  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` and UPSheaf's `F`/
-  -- `descent-stated` are now PARAMETERS — sheafify's codomain genuinely
-  -- quantifies over the resulting fiber family + descent obligation, so
-  -- this stays a documented Set₁ Σ-holder (same shape as the other
-  -- signature-only defs in this file/family).
-  SheafifyType : Set₁
-  SheafifyType = (F : O → Set) → UPPresheaf O Hom F →
-                 Σ (O → Set) (λ G → Σ Set (λ d → UPSheaf O Hom G d))
+  -- ⟡rc-deletes (⟡rerank2-floor-dissolve): the `SheafifyType` signature-stub
+  -- (uninhabited, unconsumed Set₁ obligation surface) is DELETED — dead
+  -- scaffolding for the deferred plus-construction.
 
   -- Concrete construction deferred (the plus-construction).
