@@ -45,14 +45,12 @@ Converges s x = (n : ℕ) → Σ ℕ (λ m → s m =[ n ] x)
 -- ② ACCUMULATION (the sequential limit-point notion — valid for Polish/first-countable — at Set,
 --    NO opens): x accumulates in S iff some sequence of S-points, each DISTINCT from x, converges.
 ------------------------------------------------------------------------
-Sub : Set₁
-Sub = Point → Set
-
+-- ⟡rc-local-respell: the `Sub = Point → Set` alias (Set₁) is inlined + deleted.
 -- observably distinct: differ at SOME finite index (witnessed finitely, Set).
 Distinct : Point → Point → Set
 Distinct x y = Σ ℕ (λ k → ¬ (x k ≡ y k))
 
-Accumulates : Sub → Point → Set
+Accumulates : (Point → Set) → Point → Set
 Accumulates S x = Σ (ℕ → Point) (λ s →
     ((k : ℕ) → S (s k))                 -- the sequence lands in S
   × ((k : ℕ) → Distinct (s k) x)        -- each member observably distinct from x
@@ -62,10 +60,10 @@ Accumulates S x = Σ (ℕ → Point) (λ s →
 -- ③ THE CB-DERIVATIVE: D S = {x ∈ S : x accumulates in S} — remove the isolated points.
 --    DECREASING (D S ⊆ S) by the first projection. The concrete D for the CB-rank schema (227).
 ------------------------------------------------------------------------
-D : Sub → Point → Set
+D : (Point → Set) → Point → Set
 D S x = S x × Accumulates S x
 
-D-dec : (S : Sub) (x : Point) → D S x → S x
+D-dec : (S : Point → Set) (x : Point) → D S x → S x
 D-dec S x (x∈S , _) = x∈S
 
 ------------------------------------------------------------------------

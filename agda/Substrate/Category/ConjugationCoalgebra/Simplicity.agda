@@ -129,10 +129,13 @@ module Recognizer
   IsWhole : {member : G → Set} → NormalSubgroup member → Set
   IsWhole {member} N = (a : G) → member a
 
-  -- IsSimple is the universal property — a ∀ over the member-family, so it is
-  -- irreducibly Set₁ (that ∀ is its content; it is a def, not a target record).
-  IsSimple : Set₁
-  IsSimple = {member : G → Set} (N : NormalSubgroup member) → IsTrivial N ⊎ IsWhole N
+  -- ⟡rc-parameterize (⟡rerank2-floor-dissolve): `member` is an LHS PARAMETER
+  -- now, so IsSimple's own type-codomain is Set (not Set₁) and each
+  -- `IsSimple member` is Set₀ (the ∀ is over NormalSubgroup member, a Set).
+  -- The ∀-over-member universal was only ever INSTANTIATED at one member per
+  -- proof (never held as a value) — parameterizing is faithful to that use.
+  IsSimple : (member : G → Set) → Set
+  IsSimple member = (N : NormalSubgroup member) → IsTrivial N ⊎ IsWhole N
 
   -- The whole group is always a normal subgroup (top of the lattice).
   -- (The bottom, {e}, needs the group identity/cong laws the coalgebra
@@ -158,8 +161,8 @@ module Recognizer
     {member : G → Set} (N : NormalSubgroup member) →
     (a₀ : G) → member a₀ → (a₀ ≈ ε → ⊥) →  -- nontrivial
     (b₀ : G) → (member b₀ → ⊥) →            -- proper
-    IsSimple → ⊥
-  refute-simple N a₀ a₀∈ a₀≉ε b₀ b₀∉ simple with simple N
+    IsSimple member → ⊥
+  refute-simple {member} N a₀ a₀∈ a₀≉ε b₀ b₀∉ simple with simple N
   ... | inj₁ triv  = a₀≉ε (triv a₀ a₀∈)
   ... | inj₂ whole = b₀∉ (whole b₀)
 
@@ -196,7 +199,7 @@ module Recognizer
         prop-∉    : member wit-prop → ⊥
 
   -- A witness refutes simplicity (refute-simple, repackaged).  PROVEN.
-  witness→¬simple : {member : G → Set} → NonSimplicityWitness member → IsSimple → ⊥
+  witness→¬simple : {member : G → Set} → NonSimplicityWitness member → IsSimple member → ⊥
   witness→¬simple
     record { N = N ; wit-ntriv = a₀ ; ntriv-∈ = a₀∈ ; ntriv-≉ε = a₀≉ε
            ; wit-prop = b₀ ; prop-∉ = b₀∉ }
@@ -206,7 +209,7 @@ module Recognizer
   -- half of "uninhabited iff simple".  PROVEN.  (The OTHER half,
   -- ¬NonSimplicityWitness → IsSimple, is the decidable-trace bridge and
   -- is deliberately NOT claimed here.)
-  simple→¬witness : {member : G → Set} → IsSimple → NonSimplicityWitness member → ⊥
+  simple→¬witness : {member : G → Set} → IsSimple member → NonSimplicityWitness member → ⊥
   simple→¬witness s w = witness→¬simple w s
 
   ----------------------------------------------------------------------
@@ -244,7 +247,8 @@ module Recognizer
     -- The blocked converse, now PROVEN under the scoped hypotheses.
     -- Together with `simple→¬witness` this gives, in scope, the full
     -- equivalence  IsSimple ⟺ (NonSimplicityWitness → ⊥).
-    ¬witness→simple : ({member : G → Set} → NonSimplicityWitness member → ⊥) → IsSimple
+    ¬witness→simple : ({member : G → Set} → NonSimplicityWitness member → ⊥)
+                    → {member : G → Set} → IsSimple member
     ¬witness→simple no-wit N with dec-proper N
     ... | yes (b , b∉) =
           inj₁ (λ a a∈ → ≈ε-stable a (λ a≉ε →

@@ -102,7 +102,7 @@ V4-witness = record
   ; prop-∉    = λ { (inj₁ ()) ; (inj₂ ()) }
   }
 
-V4-not-simple : IsSimple → ⊥
+V4-not-simple : IsSimple _ → ⊥
 V4-not-simple = witness→¬simple V4-witness
 
 ------------------------------------------------------------------------

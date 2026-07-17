@@ -26,9 +26,8 @@ open import Substrate.Algebra.Magma using (Magma)   -- the canonical magma (carr
 
 -- a magma: a carrier with application (the SKI applicative structure). The carrier
 -- is the module parameter below; the canonical Algebra.Magma provides _·_.
-Pred : Set → Set₁
-Pred A = A → Set
-
+-- ⟡rc-local-respell: the `Pred A = A → Set` alias (Set₁) is inlined + deleted
+-- (used only in this file, as `Carrier → Set`).
 module _ {Carrier : Set} (M : Magma Carrier) where
   open Magma M
 
@@ -36,7 +35,7 @@ module _ {Carrier : Set} (M : Magma Carrier) where
   -- THE FREE UNFOLD: closure of X under application, INCLUDING self-
   -- application. Each Gen node IS a partial completion, kept combinable.
   --------------------------------------------------------------------
-  data Gen (X : Pred Carrier) : Carrier → Set where
+  data Gen (X : Carrier → Set) : Carrier → Set where
     gen : ∀ {x}   → X x → Gen X x
     app : ∀ {a b} → Gen X a → Gen X b → Gen X (a · b)
 
@@ -69,7 +68,7 @@ module _ {Carrier : Set} (M : Magma Carrier) where
   -- ONLY P. Generation-under-the-filter is SOUND.
   --------------------------------------------------------------------
   filter-sound :
-    ∀ {P : Pred Carrier} →
+    ∀ {P : Carrier → Set} →
     (∀ {a b} → P a → P b → P (a · b)) →
     ∀ {X} → (∀ {x} → X x → P x) →
     ∀ {t} → Gen X t → P t
@@ -82,7 +81,7 @@ module _ {Carrier : Set} (M : Magma Carrier) where
 
     -- a REP MAP: each generator has a ~-equivalent representative in X'
     -- (the fold picking one term per behavior class — the SPPF chart).
-    RepMap : Pred Carrier → Pred Carrier → Set
+    RepMap : (Carrier → Set) → (Carrier → Set) → Set
     RepMap X X' = ∀ {x} → X x → Σ Carrier (λ x' → (X' x') × (x ~ x'))
 
     ------------------------------------------------------------------

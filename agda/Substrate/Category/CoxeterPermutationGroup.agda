@@ -26,6 +26,7 @@ open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 
 ------------------------------------------------------------------------
 -- A Coxeter generator at scale n is an adjacent transposition s_i
@@ -94,16 +95,16 @@ module _ (BitVector : Set) where
 
 -- BitVector is now a module parameter of CoxeterAction, so it is quantified explicitly here
 -- (was the projection `BitVector act`). BraidLawType stays Set₁: it returns a Set-equality.
-BraidLawType : (n : ℕ) → Set₁
-BraidLawType n =
-  (BitVector : Set) →
-  (act : CoxeterAction BitVector n) →
-  (i : ℕ) →
-  -- sᵢ ∘ sᵢ₊₁ ∘ sᵢ applied to v equals sᵢ₊₁ ∘ sᵢ ∘ sᵢ₊₁ applied to v
-  (v : BitVector) → BitVector ≡ BitVector
+-- ⟡rc-parameterize: BitVector is a PARAMETER now (was ∀-quantified → Set₁); the
+-- inner ≡ between the two type-images becomes a ⇔ (logical equivalence, Set₀).
+-- The ∀-over-Set "universal" dissolves — the family is supplied by the consumer.
+BraidLawType : (n : ℕ) (BitVector : Set) (act : CoxeterAction BitVector n)
+             → (i : ℕ) (v : BitVector) → Set
+BraidLawType n BitVector act i v = BitVector ⇔ BitVector
 
-braid-law-trivial : (n : ℕ) → BraidLawType n
-braid-law-trivial n BitVector act i v = refl
+braid-law-trivial : (n : ℕ) (BitVector : Set) (act : CoxeterAction BitVector n)
+                  → (i : ℕ) (v : BitVector) → BraidLawType n BitVector act i v
+braid-law-trivial n BitVector act i v = ⇔-refl
 
 ------------------------------------------------------------------------
 -- BitShift — the stream-level Z/8 rotation (CC6).

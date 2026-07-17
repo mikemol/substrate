@@ -29,15 +29,14 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- at Set₁ (its `member` predicate lowered Set₁ → Set), so Ω lowers
   -- Set₂ → Set₁. (O, Hom) via the enclosing section.
   --
-  -- ⟡rc-topos (⟡set1-rerank2): Sieve's `member` predicate is now a PARAMETER,
-  -- not a field — Ω(U) genuinely quantifies over "which member predicate",
-  -- so the honest Set₁ shape is a Σ: the member predicate paired with a
-  -- sieve carrying it. This Σ-holder is the documented Set₁ residue (this
-  -- is the only def in the file that needs it).
+  -- ⟡rc-parameterize (⟡rerank2-floor-dissolve): the member predicate is A
+  -- fiber family, not THE — so it is a PARAMETER of Ω, not an existential.
+  -- Ω at a given member predicate is just the sieve carrying it, at Set₀.
+  -- ("Ω is Set₁" was the wall-reflex; parameterize the family.)
   ------------------------------------------------------------------------
 
-  Ω : O → Set₁
-  Ω U = Σ ({V : O} → UPTerm O Hom V U → Set) (λ m → Sieve O Hom U m)
+  Ω : (U : O) (member : {V : O} → UPTerm O Hom V U → Set) → Set
+  Ω U member = Sieve O Hom U member
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP32.

@@ -63,18 +63,17 @@ Set-SubobjectClassifier = record { Ω = ⌜bool⌝ }
 Set-Topos : Topos Set-Category
 Set-Topos = record { Ω-data = Set-SubobjectClassifier }
 
--- POWER ALLEGORY: power object P A = A → Set (= the fiber family Fam A), and the
--- power transpose Rel A B ≃ (A → P B).  For Set-valued relations this is CURRYING
--- — an IDENTITY: a relation IS a map into its power object, DEFINITIONALLY.
-P : Set → Set₁
-P A = A → Set
-
+-- POWER ALLEGORY: power object A → Set (= the fiber family), and the power
+-- transpose Rel A B ≃ (A → (B → Set)).  For Set-valued relations this is
+-- CURRYING — an IDENTITY: a relation IS a map into its power object,
+-- DEFINITIONALLY. ⟡rc-local-respell: the `P A = A → Set` alias (Set₁) is
+-- inlined + deleted (used only here).
 name : {A B : Set} → Rel A B → A → B → Set
 name R = R
 
-unname : {A B : Set} → (A → P B) → A → B → Set
+unname : {A B : Set} → (A → (B → Set)) → A → B → Set
 unname f = f
 
 -- membership relation a ∈ S.
-_∈_ : {A : Set} → A → P A → Set
+_∈_ : {A : Set} → A → (A → Set) → Set
 a ∈ S = S a
