@@ -52,10 +52,9 @@ length-distrib (x ∷ a) b = cong suc (length-distrib a b)
 -- N-2: FreeCyclic as GradedMonoid.
 ------------------------------------------------------------------------
 
-FreeCyclic-GradedMonoid : GradedMonoid _
+FreeCyclic-GradedMonoid : GradedMonoid (Word F.Gen)
 FreeCyclic-GradedMonoid = record
-  { M           = Word F.Gen
-  ; _·_         = _++_
+  { _·_         = _++_
   ; ε           = []
   ; ·-assoc     = λ a b c → F.++-assoc a b c
   ; ·-identityˡ = ++-identity-left

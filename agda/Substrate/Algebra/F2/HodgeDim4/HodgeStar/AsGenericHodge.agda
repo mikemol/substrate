@@ -47,16 +47,8 @@ open import Substrate.Category.GenericHodgeStar
 -- section + retraction are both witnessed by hodge-involution.
 ------------------------------------------------------------------------
 
-HodgeStar-AsGenericHodge : GenericHodgeStar
-HodgeStar-AsGenericHodge = mkGenericHodgeStar
-  4                                  -- n = 4
-  ₂                   -- k = 2 ∈ Fin 5
-  (Vector 6)                         -- LamK = Λ²(F₂⁴)
-  (Vector 6)                         -- LamNk = Λ²(F₂⁴) (since n-k = 2)
-  (apply hodge-star)                 -- star
-  (apply hodge-star)                 -- star-inv = star (involution)
-  hodge-involution                   -- section
-  hodge-involution                   -- retraction
+HodgeStar-AsGenericHodge : GenericHodgeStar (Vector 6) (Vector 6)
+HodgeStar-AsGenericHodge = mkGenericHodgeStar 4 ₂ (apply hodge-star) (apply hodge-star) hodge-involution hodge-involution
 
 ------------------------------------------------------------------------
 -- Capstone — Hodge ★ as L5 GenericHodgeStar instance.

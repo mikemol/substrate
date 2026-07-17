@@ -5906,8 +5906,8 @@ digraph imports {
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Algebra.Wedge.Product.Laws";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Category.GradedMonoid";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Foundation.Eq";
-  "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Foundation.Level";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.Wedge.Graded.Morphism" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Wedge.Graded.Morphism" -> "Substrate.Algebra.Wedge.Bridge";
@@ -6085,7 +6085,6 @@ digraph imports {
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Algebra.Wedge.Product.LawTypes";
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Category.GradedMonoid";
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Foundation.Eq";
-  "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Foundation.Level";
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Algebra.Wedge.Product.Laws" -> "Substrate.Foundation.Product";
@@ -10431,6 +10430,7 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Algebra.F2-CommutativeMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Foundation.Eq";
+  "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.Coxeter.Word.Length";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";
@@ -10439,6 +10439,7 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Foundation.Nat";
+  "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.Coxeter.Word.Count";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountA" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";
@@ -10447,6 +10448,7 @@ digraph imports {
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Category.RGradedMonoid";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Foundation.Eq";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Foundation.Nat";
+  "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.Coxeter.Word.Count";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.V4-Coxeter";
   "Substrate.Groups.V4-Coxeter-F2Graded-CountB" -> "Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism";

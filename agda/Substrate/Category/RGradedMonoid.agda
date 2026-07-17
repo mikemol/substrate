@@ -36,14 +36,13 @@ private
 ------------------------------------------------------------------------
 
 -- ⟡set1-rp-commmonoid: CommutativeMonoid now takes its carrier R / op _+R_ / unit 0R as
--- PARAMETERS. They thread through here as IMPLICITS (inferred from 𝓡's type) so RGradedMonoid's
--- own instances `RGradedMonoid 𝓡 ℓ` are UNCHANGED.
+-- PARAMETERS. They thread through here as IMPLICITS (inferred from 𝓡's type).
+-- ⟡set1-rp-smalltail: the carrier M is a PARAMETER too now (instances spell it:
+-- `RGradedMonoid 𝓡 M`); lsuc ℓ drops.
 record RGradedMonoid {R : Set ℓR} {_+R_ : R → R → R} {0R : R}
-                     (𝓡 : CommutativeMonoid R _+R_ 0R) (ℓ : Level) : Set (ℓR ⊔ lsuc ℓ) where
+                     (𝓡 : CommutativeMonoid R _+R_ 0R) (M : Set ℓ) : Set (ℓR ⊔ ℓ) where
   open CommutativeMonoid 𝓡
   field
-    -- Underlying monoid.
-    M : Set ℓ
     _·_ : M → M → M
     ε : M
     -- Monoid laws.

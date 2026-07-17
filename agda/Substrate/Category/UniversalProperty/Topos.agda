@@ -22,20 +22,13 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- 1. The UP-Topos record (signature).
 ------------------------------------------------------------------------
 
-record UPTopos : Set₂ where
-  field
-    Sh-Obj  : Set₁           -- ⟡UPArrow-dissolve C: UPSheaf lowered to Set₁
-    -- Cartesian-closed structure on Sh-Obj:
-    has-product-stated     : Set
-    has-exponential-stated : Set
-    -- Finite limits:
-    finite-limits-stated   : Set
-    -- Subobject classifier Ω as a designated UPSheaf:
-    Ω-sheaf-stated         : Set
-    -- Internal logic surface:
-    internal-logic-stated  : Set
-
-open UPTopos public
+-- ⟡set1-rp-uptopos: the VESTIGIAL-record pattern (UPArrowP/mkUP precedent) — all six Set-valued
+-- fields become PARAMS (they never depended on each other), the body is empty, and params don't
+-- raise the sort: Set₂ → Set. Projections had zero external uses (verified), so no shims.
+record UPTopos (Sh-Obj : Set₁)
+               (has-product-stated has-exponential-stated
+                finite-limits-stated Ω-sheaf-stated internal-logic-stated : Set) : Set where
+  constructor mkUPTopos
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP31.

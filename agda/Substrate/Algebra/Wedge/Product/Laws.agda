@@ -103,10 +103,9 @@ vec-unitʳ A = ++-identityʳ
 ------------------------------------------------------------------------
 
 flatten-monoid : {C : ℕ → Set} (P : GradedProduct C) →
-                 GradedAssoc P → GradedUnitˡ P → GradedUnitʳ P → GradedMonoid 0ℓ
+                 GradedAssoc P → GradedUnitˡ P → GradedUnitʳ P → GradedMonoid (Σ ℕ C)
 flatten-monoid {C} P assoc unitˡ unitʳ = record
-  { M           = Σ ℕ C
-  ; _·_         = λ { (i , a) (j , b) → i + j , _∧_ P a b }
+  { _·_         = λ { (i , a) (j , b) → i + j , _∧_ P a b }
   ; ε           = 0 , u P
   ; ·-assoc     = λ { (i , a) (j , b) (k , c) → Σ-≡,≡→≡ (+-assoc i j k , assoc a b c) }
   ; ·-identityˡ = λ { (i , a) → Σ-≡,≡→≡ (refl , unitˡ a) }
@@ -118,6 +117,6 @@ flatten-monoid {C} P assoc unitˡ unitʳ = record
 
 -- Vec's flat graded monoid = the Grothendieck flatten of the append wedge
 -- product (Σ ℕ Vec ≅ List): the fibered ++-laws become the flat monoid laws.
-vec-flat-monoid : (A : Set) → GradedMonoid 0ℓ
+vec-flat-monoid : (A : Set) → GradedMonoid (Σ ℕ (Vec A))
 vec-flat-monoid A =
   flatten-monoid (vec-product A) (vec-assoc A) (vec-unitˡ A) (vec-unitʳ A)

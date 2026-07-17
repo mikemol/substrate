@@ -33,13 +33,5 @@ open import Substrate.Category.GenericHodgeStar
 -- HodgeDim3 ★ as a GenericHodgeStar instance (n=3, k=1).
 ------------------------------------------------------------------------
 
-HodgeStar-Dim3-AsGenericHodge : GenericHodgeStar
-HodgeStar-Dim3-AsGenericHodge = mkGenericHodgeStar
-  3                                  -- n = 3
-  ₁                                  -- k = 1 ∈ Fin 4
-  (Vector 3)                         -- LamK = Λ¹(F₂³)
-  (Vector 3)                         -- LamNk = Λ²(F₂³) (dim C(3,2) = 3)
-  (apply hodge-star-3)               -- star
-  (apply hodge-star-3)               -- star-inv = star (involution)
-  hodge-involution-3                 -- section
-  hodge-involution-3                 -- retraction
+HodgeStar-Dim3-AsGenericHodge : GenericHodgeStar (Vector 3) (Vector 3)
+HodgeStar-Dim3-AsGenericHodge = mkGenericHodgeStar 3 ₁ (apply hodge-star-3) (apply hodge-star-3) hodge-involution-3 hodge-involution-3

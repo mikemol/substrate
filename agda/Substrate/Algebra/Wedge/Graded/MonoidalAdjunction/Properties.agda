@@ -18,6 +18,7 @@
 module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties where
 
 open import Substrate.Foundation.Level using (0ℓ)
+open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec)
 open import Substrate.Foundation.Eq using (_≡_; refl)
@@ -34,7 +35,7 @@ open import Substrate.Category.GradedMonoid using (GradedMonoid)
 
 -- ⟡set1-paydown: GradedMonoidalAdjunction is now parameterized over its carrier
 -- family C (its `prod` is a `GradedProduct C`); C is inferred from the gma argument.
-degree : {C : ℕ → Set} → GradedMonoidalAdjunction C → GradedMonoid 0ℓ
+degree : {C : ℕ → Set} → GradedMonoidalAdjunction C → GradedMonoid (Σ ℕ C)
 degree gma = flatten-monoid (prod gma) (assoc gma) (unitˡ gma) (unitʳ gma)
 
 ------------------------------------------------------------------------

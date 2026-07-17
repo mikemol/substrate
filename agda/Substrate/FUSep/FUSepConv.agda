@@ -61,10 +61,13 @@ open EqSetoid public
 -- ⟡set1-paydown (consumer of EqSetoid): EqSetoid now parameterizes its relation,
 -- so the two per-side relations _≈ᶠ_/_≈ᶜ_ move into Adjunction as explicit fields
 -- (they were previously read back via `_≈_ Fin` / `_≈_ Coin` projections).
-record Adjunction (C : Set) (Obs : Set) : Set₁ where
+-- ⟡set1-rp-smalltail: the two relations are PARAMETERS now (mirrors EqSetoid's own paydown
+-- above); the record drops Set₁→Set.
+record Adjunction (C : Set) (Obs : Set)
+                  (_≈ᶠ_ : C → C → Set)     -- finite (conversion) relation — Fin's carrier-relation
+                  (_≈ᶜ_ : C → C → Set)     -- coinductive (bisimilarity) relation — Coin's
+                  : Set where
   field
-    _≈ᶠ_     : C → C → Set     -- finite (conversion) relation — Fin's carrier-relation
-    _≈ᶜ_     : C → C → Set     -- coinductive (bisimilarity) relation — Coin's
     Fin      : EqSetoid C _≈ᶠ_
     Coin     : EqSetoid C _≈ᶜ_
     obs      : C → Obs
@@ -73,8 +76,8 @@ record Adjunction (C : Set) (Obs : Set) : Set₁ where
     -- obs respects the finite equality (the head-invariant on the ℚ side).
     fin-obs  : ∀ {a b} → a ≈ᶠ b → obs a ≡ obs b
 
-module _ {C Obs : Set} (A : Adjunction C Obs) where
-  open Adjunction A       -- brings _≈ᶠ_ / _≈ᶜ_ (now Adjunction fields) into scope
+module _ {C Obs : Set} {_≈ᶠ_ _≈ᶜ_ : C → C → Set} (A : Adjunction C Obs _≈ᶠ_ _≈ᶜ_) where
+  open Adjunction A       -- (the relations are module params now; Fin/Coin/obs/laws from A)
 
   --------------------------------------------------------------------
   -- THE FINITE IMAGE (the ℚ side): a term REACHES A VALUE = converts (finitely)

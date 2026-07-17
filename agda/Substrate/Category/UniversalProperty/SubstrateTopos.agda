@@ -32,15 +32,8 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- ⟡ta-upterm: over the Set₀ object-alphabet O (UPSheaf is now O-parameterized).
 module _ (O : Set) (Hom : O → O → Set) where
 
-  Substrate-UPTopos : UPTopos
-  Substrate-UPTopos = record
-    { Sh-Obj                 = UPSheaf O Hom
-    ; has-product-stated     = ⊤
-    ; has-exponential-stated = ⊤
-    ; finite-limits-stated   = ⊤
-    ; Ω-sheaf-stated         = ⊤
-    ; internal-logic-stated  = ⊤
-    }
+  Substrate-UPTopos : UPTopos (UPSheaf O Hom) ⊤ ⊤ ⊤ ⊤ ⊤
+  Substrate-UPTopos = record {}
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP38.

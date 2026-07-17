@@ -100,11 +100,9 @@ module _ (H : Set) where
   ≡⟹≈BT : ∀ {u v} → u ≡ v → u ≈BT v
   ≡⟹≈BT refl = ≈BT-refl
 
-  adjBT : FUSepConv.Adjunction BT BT
+  adjBT : FUSepConv.Adjunction BT BT _≡_ _≈BT_
   adjBT = record
-    { _≈ᶠ_     = _≡_
-    ; _≈ᶜ_     = _≈BT_
-    ; Fin      = finSetoid
+    { Fin      = finSetoid
     ; Coin     = coinSetoid
     ; obs      = λ x → x
     ; fwd      = ≡⟹≈BT

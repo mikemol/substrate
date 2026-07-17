@@ -41,10 +41,10 @@ private
 -- The GradedMonoid record.
 ------------------------------------------------------------------------
 
-record GradedMonoid (ℓ : Level) : Set (lsuc ℓ) where
+-- ⟡set1-rp-gradedmonoid: the carrier M is a PARAMETER now (set1-carrier-always-parameterize);
+-- the record drops Set (lsuc ℓ) → Set ℓ.
+record GradedMonoid {ℓ : Level} (M : Set ℓ) : Set ℓ where
   field
-    -- Underlying monoid carrier.
-    M : Set ℓ
     -- Monoid composition.
     _·_ : M → M → M
     -- Monoid identity.

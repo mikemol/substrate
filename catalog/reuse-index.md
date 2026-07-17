@@ -35,7 +35,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 - `data {lift}` — `MarkovGen`@`Substrate.Probability.MarkovCategory.Term`, `UPGen`@`Substrate.Category.UniversalProperty.Term`
 - `data {suc,zero}` — `Fin`@`Substrate.Foundation.Fin`, `ℕ`@`Substrate.Foundation.Nat`
 - `data {z0,z1,z2}` — `Exp3`@`Substrate.Algebra.F2.Polynomial.Wedge.GF4DLog`, `Z3`@`Substrate.WitnessTower.M40Closure`
-- `record {M,_·_,constructor,degree,degree-·,degree-ε,·-assoc,·-identityʳ,·-identityˡ,ε}` — `GradedMonoid`@`Substrate.Category.GradedMonoid`, `RGradedMonoid`@`Substrate.Category.RGradedMonoid`
+- `record {_·_,constructor,degree,degree-·,degree-ε,·-assoc,·-identityʳ,·-identityˡ,ε}` — `GradedMonoid`@`Substrate.Category.GradedMonoid`, `RGradedMonoid`@`Substrate.Category.RGradedMonoid`
 - `record {_∧_,constructor,u}` — `GradedProduct`@`Substrate.Algebra.Wedge.Product`, `GradedProductOver`@`Substrate.WitnessTower.Wedge.OrientationBimonoidal`
 - `record {a,b,c,d,mat}` — `Mat`@`Substrate.Algebra.R.Trace.CFMatrixBridge`, `Mat`@`Substrate.S5.S5Matrix`, `Matℤ`@`Substrate.Algebra.R.Trace.CFBezoutBridge`
 - `record {act,act-id,act-∙,constructor}` — `Action`@`Substrate.Algebra.SetoidGroup.Action`, `Actionᴳ`@`Substrate.Algebra.GroupAction`

@@ -72,13 +72,13 @@ private
 -- on top.
 ------------------------------------------------------------------------
 
-record GenericHodgeStar : Set (lsuc (ℓK ⊔ ℓNK)) where
+-- ⟡set1-rp-smalltail: LamK/LamNk are PARAMETERS now (set1-carrier-always-parameterize);
+-- lsuc drops. n/k stay fields (k's type depends on the field n).
+record GenericHodgeStar (LamK : Set ℓK) (LamNk : Set ℓNK) : Set (ℓK ⊔ ℓNK) where
   constructor mkGenericHodgeStar
   field
     n          : ℕ
     k          : Fin (ℕ.suc n)
-    LamK       : Set ℓK
-    LamNk      : Set ℓNK
     star       : LamK → LamNk
     star-inv   : LamNk → LamK
     section    : (x : LamK) → star-inv (star x) ≡ x

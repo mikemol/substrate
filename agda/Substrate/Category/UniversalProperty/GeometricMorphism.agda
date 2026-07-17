@@ -23,7 +23,9 @@ open import Substrate.Category.UniversalProperty.Topos using (UPTopos)
 -- ⟡set1-paydown: parameterize inverse-image/direct-image/adjunction/inv-image-lex Sets
 module _ (inverse-image-stated direct-image-stated
           adjunction-stated inv-image-lex-stated : Set) where
-  record GeometricMorphism (E F : UPTopos) : Set where
+  record GeometricMorphism {ShE ShF : Set₁} {Ep₁ Ep₂ Ep₃ Ep₄ Ep₅ Fp₁ Fp₂ Fp₃ Fp₄ Fp₅ : Set}
+                            (E : UPTopos ShE Ep₁ Ep₂ Ep₃ Ep₄ Ep₅)
+                            (F : UPTopos ShF Fp₁ Fp₂ Fp₃ Fp₄ Fp₅) : Set where
 
   open GeometricMorphism public
 

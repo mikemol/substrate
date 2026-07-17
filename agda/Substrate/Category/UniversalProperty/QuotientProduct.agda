@@ -109,7 +109,7 @@ record QuotientProduct
   (A : Set)
   (_≈₁_ : A → A → Set) (Q₁ : Quotient A _≈₁_)
   (_≈₂_ : A → A → Set) (Q₂ : Quotient A _≈₂_)
-  : Set₁ where
+  : Set where
   field
     -- The joint quotient (= the equalised quotient).
     joint-Q : Quotient A (_≈₁_ ∩ _≈₂_)

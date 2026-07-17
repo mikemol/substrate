@@ -52,10 +52,9 @@ open import Substrate.Category.RGradedMonoid
 --          ≡ parity (hom a) + parity (hom b)      [parity-+]
 ------------------------------------------------------------------------
 
-F₂Graded-from-Homomorphism : RGradedMonoid F₂-CommMonoid _
+F₂Graded-from-Homomorphism : RGradedMonoid F₂-CommMonoid Word
 F₂Graded-from-Homomorphism = record
-  { M           = Word
-  ; _·_         = _++_
+  { _·_         = _++_
   ; ε           = ε
   ; ·-assoc     = ++-assoc
   ; ·-identityˡ = ++-identityˡ

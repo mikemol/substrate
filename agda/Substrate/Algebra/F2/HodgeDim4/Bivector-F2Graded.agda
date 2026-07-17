@@ -75,10 +75,9 @@ weight-parity-+ⱽ (x ∷ u) (y ∷ v) =
 -- N-3: Bivector as F₂-graded monoid.
 ------------------------------------------------------------------------
 
-Bivector-F2Graded : RGradedMonoid F₂-CommMonoid _
+Bivector-F2Graded : RGradedMonoid F₂-CommMonoid Bivector
 Bivector-F2Graded = record
-  { M           = Bivector
-  ; _·_         = _+ⱽ_
+  { _·_         = _+ⱽ_
   ; ε           = 𝟎ⱽ
   ; ·-assoc     = +ⱽ-assoc
   ; ·-identityˡ = +ⱽ-identityˡ
