@@ -75,27 +75,24 @@ Respects {A} _≈_ f = {a b : A} → a ≈ b → f a ≡ f b
 --         agreement — see NOTE above; not representative-level)
 ------------------------------------------------------------------------
 
+-- ⟡rc-cheap (⟡set1-rerank2): VESTIGIAL record — the ∀-over-Set obligations are PARAMETERS
+-- (params never raise the sort), Set₁→Set with an empty body (Refinement/Cell precedent).
 record QuotientUP
-  (A : Set) (_≈_ : A → A → Set) (Q : Quotient A _≈_) : Set₁ where
-  field
-    factor :
-      (B : Set) (f : A → B) (f-resp : Respects _≈_ f) → A → B
-
-    factor-≡-f :
+  (A : Set) (_≈_ : A → A → Set) (Q : Quotient A _≈_)
+  (factor :
+      (B : Set) (f : A → B) (f-resp : Respects _≈_ f) → A → B)
+  (factor-≡-f :
       (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
-      (a : A) → factor B f f-resp a ≡ f a
-
-    factor-respects :
+      (a : A) → factor B f f-resp a ≡ f a)
+  (factor-respects :
       (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
-      Respects _≈_ (factor B f f-resp)
-
-    factor-unique :
+      Respects _≈_ (factor B f f-resp))
+  (factor-unique :
       (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
       (g : A → B) (g-resp : Respects _≈_ g) →
       ((a : A) → g a ≡ f a) →
-      (a : A) → g a ≡ factor B f f-resp a
-
-open QuotientUP public
+      (a : A) → g a ≡ factor B f f-resp a)
+  : Set where
 
 ------------------------------------------------------------------------
 -- 3. The trivial witness.
@@ -110,12 +107,11 @@ open QuotientUP public
 trivial-QuotientUP :
   {A : Set} {_≈_ : A → A → Set} (Q : Quotient A _≈_) →
   QuotientUP A _≈_ Q
-trivial-QuotientUP {A} {_≈_} Q = record
-  { factor           = λ _ f _ → f
-  ; factor-≡-f       = λ _ _ _ _ → refl
-  ; factor-respects  = λ _ _ f-resp → f-resp
-  ; factor-unique    = λ _ _ _ _ _ g≡f a → g≡f a
-  }
+    (λ _ f _ → f)
+    (λ _ _ _ _ → refl)
+    (λ _ _ f-resp → f-resp)
+    (λ _ _ _ _ _ g≡f a → g≡f a)
+trivial-QuotientUP {A} {_≈_} Q = record {}
 
 ------------------------------------------------------------------------
 -- 4. UPArrow registration.

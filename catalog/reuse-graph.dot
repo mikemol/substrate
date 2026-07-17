@@ -171,6 +171,7 @@ digraph reuse {
   "Substrate.Category.Algebra-of-Monad.AlgebraOfMonad" [label="AlgebraOfMonad\nSubstrate.Category.Algebra-of-Monad"];
   "Substrate.Category.Allegory.Allegory" [label="Allegory\nSubstrate.Category.Allegory"];
   "Substrate.Category.Allegory.Division.DivisionAllegory" [label="DivisionAllegory\nSubstrate.Category.Allegory.Division"];
+  "Substrate.Category.Allegory.Maps.Map" [label="Map\nSubstrate.Category.Allegory.Maps"];
   "Substrate.Category.Allegory.Refinement.Refinement" [label="Refinement\nSubstrate.Category.Allegory.Refinement"];
   "Substrate.Category.Allegory.RefinementReconstruct._.GRefinement" [label="GRefinement\nSubstrate.Category.Allegory.RefinementReconstruct._"];
   "Substrate.Category.AntiCommutativeAlgebra.AntiCommutativeAlgebra" [label="AntiCommutativeAlgebra\nSubstrate.Category.AntiCommutativeAlgebra"];
@@ -1061,6 +1062,7 @@ digraph reuse {
   "Substrate.Category.LaxFunctor.LaxFunctor" -> "Substrate.Category.TwoCategory.TwoCategory";
   "Substrate.Category.Limit.Limit" -> "Substrate.Category.CategoryOf.CategoryOf";
   "Substrate.Category.Limit.Limit" -> "Substrate.Category.Functor.Functor";
+  "Substrate.Category.LimitUniversalProperty.LimitUP" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.LimitUniversalProperty.LimitUP" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.LimitUniversalProperty.LimitUP" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.LinearAlgebra._.LinearAlgebra" -> "Substrate.Foundation.Nat.ℕ";
@@ -1171,6 +1173,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.Morphism.UPMorphism" -> "Substrate.Category.UniversalProperty.UPArrowP";
   "Substrate.Category.UniversalProperty.Pretopology._._.UPPretopology" -> "Substrate.Category.UniversalProperty.Coverage._.UPCover";
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Algebra.Quotient.Quotient";
+  "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.UniversalProperty.QuotientProduct.QuotientProduct" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Coverage._.UPCover";
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Term.UPTerm";
@@ -1187,6 +1190,7 @@ digraph reuse {
   "Substrate.Conway.SurrealFinite.SurrealFinite" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Discipline.CocycleSection" -> "Substrate.Algebra.SetoidGroup._.SetoidGroup";
   "Substrate.Discipline.CocycleSection" -> "Substrate.Cocycle._.WeakCocycleStructure";
+  "Substrate.Discipline.Rule11.RigidifiedWCS" -> "Substrate.Algebra.SetoidGroup._.SetoidGroup";
   "Substrate.FUSep.ConversionCongruence._._≈_" -> "Substrate.FUSep.ConversionCongruence._.ARS";
   "Substrate.FUSep.FUSepConv._.Reaches" -> "Substrate.FUSep.FUSepConv.Adjunction";
   "Substrate.FUSep.FUSepConvEtaWitness._._⇒*_" -> "Substrate.FUSep.FUSepConvEtaWitness.Tm";

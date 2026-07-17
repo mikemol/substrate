@@ -29,20 +29,21 @@ import Substrate.Algebra.Wedge.TraceNuColimit as Kν
 -- is an EXACT iso (both directions); the ν-frame is the greatest-fixed-point UP (up-to).
 -- The asymmetry is in the field types: μ has fwd+bwd, ν has only the UP.
 ------------------------------------------------------------------------
--- Set₁ RETAINED (not the DivStr carrier): the fields μ-A, μ-B, ν-carrier are `Fam (Idx D)`
--- and `Fam : Set → Set₁`, so the record fields live in Set₁ for the Fam reason, independent
--- of the carrier paydown. Parameterizing the carrier does not demote it.
-record TwoFraming {C : Set} (D : DivStr C) : Set₁ where
-  field
+-- ⟡rc-cheap (⟡set1-rerank2): the VESTIGIAL-record move — ALL six obligations are PARAMETERS
+-- now (params never raise the sort), so the record drops Set₁→Set with an empty body. The
+-- stale "Set₁ RETAINED … parameterizing does not demote it" rationale was the wall-reflex:
+-- the Fam-valued fields AND the ∀-over-families ν-hinge both demote as params (the
+-- Refinement/Cell precedent). The ≡/~ asymmetry (exact μ: fwd+bwd; up-to ν: UP only) is
+-- still STRUCTURAL — it lives in the parameter telescope instead of the field list.
+record TwoFraming {C : Set} (D : DivStr C)
     -- the μ level (finite/halting, ≡-frame): two framings, iso ON THE NOSE.
-    μ-A μ-B      : Idx D → Set
-    μ-hinge-fwd  : μ-A ⊑ᶠ μ-B
-    μ-hinge-bwd  : μ-B ⊑ᶠ μ-A        -- fwd + bwd = μ-A ≅ μ-B (EXACT)
+    (μ-A μ-B      : Idx D → Set)
+    (μ-hinge-fwd  : μ-A ⊑ᶠ μ-B)
+    (μ-hinge-bwd  : μ-B ⊑ᶠ μ-A)      -- fwd + bwd = μ-A ≅ μ-B (EXACT)
     -- the ν level (non-halting, ~-frame): the greatest-fixed-point UP (UP-TO).
-    ν-carrier    : Idx D → Set
-    ν-hinge      : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ ν-carrier
-
-open TwoFraming public
+    (ν-carrier    : Idx D → Set)
+    (ν-hinge      : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ ν-carrier)
+    : Set where
 
 ------------------------------------------------------------------------
 -- ② THE FIXPOINT INSTANCE as an inhabitant: the two framings are the ALGEBRAIC (TraceF)
@@ -50,15 +51,15 @@ open TwoFraming public
 -- the Kleene Limit's greatest-fixed-point UP (162). This IS the third stencil instance,
 -- now a datum.
 ------------------------------------------------------------------------
-fixpoint-framing : {C : Set} (D : DivStr C) → TwoFraming D
-fixpoint-framing D = record
-  { μ-A          = TraceF D           -- algebraic μ (initial Φ-algebra)
-  ; μ-B          = Kμ.Colim D         -- Kleene μ (⋃ₙ Φⁿ⊥)
-  ; μ-hinge-fwd  = Kμ.trace→colim D   -- Trace ⊑ Colim
-  ; μ-hinge-bwd  = Kμ.colim→trace D   -- Colim ⊑ Trace  (⟹ Colim ≅ Trace, EXACT)
-  ; ν-carrier    = Kν.Limit D         -- Kleene ν (⋂ₙ Φⁿ⊤)
-  ; ν-hinge      = Kν.coalg-below-limit D   -- greatest-fixed-point UP (UP-TO)
-  }
+fixpoint-framing : {C : Set} (D : DivStr C)
+                 → TwoFraming D
+                     (TraceF D)                -- algebraic μ (initial Φ-algebra)
+                     (Kμ.Colim D)              -- Kleene μ (⋃ₙ Φⁿ⊥)
+                     (Kμ.trace→colim D)        -- Trace ⊑ Colim
+                     (Kμ.colim→trace D)        -- Colim ⊑ Trace  (⟹ Colim ≅ Trace, EXACT)
+                     (Kν.Limit D)              -- Kleene ν (⋂ₙ Φⁿ⊤)
+                     (Kν.coalg-below-limit D)  -- greatest-fixed-point UP (UP-TO)
+fixpoint-framing D = record {}
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the third instance is now a DATUM whose TYPE encodes the

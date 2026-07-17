@@ -48,17 +48,16 @@ ConwayAddType =
 -- this record directly.
 ------------------------------------------------------------------------
 
-record ConwayAddSignature : Set₁ where
+-- ⟡rc-cheap (⟡set1-rerank2): the four obligation STATEMENTS are parameters now
+-- (a Set-valued field pins the record at Set₁; params never raise the sort).
+-- Zero + s = s (up to index re-arrangement; Conway's left identity, parametric in
+-- birthday). The exact statements are parametric in equivalence; the signature
+-- names the obligations.
+record ConwayAddSignature
+  (identity-zero-left-stated identity-zero-right-stated
+   commutativity-stated associativity-stated : Set) : Set where
   field
     add : ConwayAddType
-    -- Zero + s = s (up to index re-arrangement; Conway's left
-    -- identity, parametric in birthday).
-    -- The exact statement is parametric in equivalence; the
-    -- signature names the obligation.
-    identity-zero-left-stated : Set
-    identity-zero-right-stated : Set
-    commutativity-stated : Set
-    associativity-stated : Set
 
 ------------------------------------------------------------------------
 -- 3. Capstone for G2.

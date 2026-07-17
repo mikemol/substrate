@@ -219,15 +219,15 @@ module Rule11 where
   -- A "rigidified" weak cocycle: a WCS bundled with a CocycleSection.
   -- This is what the strong discipline forbids by structural absence:
   -- there is no slot in ICS where a CocycleSection would go.
-  -- ⟡set1-paydown: WCS is now parameterized, so RigidifiedWCS existentially FIELDS the WCS carriers
-  -- (it stays Set₁ — heterogeneous bundle, not a paydown target).
-  record RigidifiedWCS : Set₁ where
+  -- ⟡rc-cheap (⟡set1-rerank2): the carriers are PARAMETERS now — the "stays Set₁,
+  -- heterogeneous bundle" label was the wall-reflex; params never raise the sort.
+  record RigidifiedWCS
+      (Base         : Set)
+      (GaugeCarrier : Set)
+      (GaugeRel     : GaugeCarrier → GaugeCarrier → Set)
+      (Gauge        : SetoidGroup GaugeCarrier GaugeRel)
+      (Invariant    : Set) : Set where
     field
-      Base         : Set
-      GaugeCarrier : Set
-      GaugeRel     : GaugeCarrier → GaugeCarrier → Set
-      Gauge        : SetoidGroup GaugeCarrier GaugeRel
-      Invariant    : Set
       base         : WeakCocycleStructure Base GaugeCarrier GaugeRel Gauge Invariant
       section      : CocycleSection base
 

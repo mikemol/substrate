@@ -101,12 +101,17 @@ map-value-unique (_ , d) a (b , r) (b' , r') = d a b b' r r'
 -- maps as a bundled sub-category.
 ------------------------------------------------------------------------
 
-Map : Set → Set → Set₁
-Map A B = Σ (Rel A B) isMap
+-- ⟡rc-cheap (⟡set1-rerank2): the ex-Σ-holder `Map A B = Σ (Rel A B) isMap : Set₁` held the
+-- relation as DATA; with the relation as a PARAMETER the bundle drops to Set (the family-as-
+-- param move — the "genuine Σ-holder" label was the wall-reflex).
+record Map (A B : Set) (R : Rel A B) : Set where
+  constructor mkMap
+  field
+    is-map : isMap R
 
-idMap : (A : Set) → Map A A
-idMap A = idR A , idR-map A
+idMap : (A : Set) → Map A A (idR A)
+idMap A = mkMap (idR-map A)
 
 infixr 9 _⨾M_
-_⨾M_ : {A B C : Set} → Map A B → Map B C → Map A C
-(R , mR) ⨾M (S , mS) = (R ⨾ S) , ⨾-map mR mS
+_⨾M_ : {A B C : Set} {R : Rel A B} {S : Rel B C} → Map A B R → Map B C S → Map A C (R ⨾ S)
+mkMap mR ⨾M mkMap mS = mkMap (⨾-map mR mS)

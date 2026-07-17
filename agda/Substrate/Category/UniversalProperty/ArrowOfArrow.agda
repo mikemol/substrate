@@ -93,16 +93,17 @@ L0-Target {B = B} _ = B
 -- Source UPArrow, one for the Target UPArrow) commuting with the
 -- L1-Witness.
 
+-- ⟡rc-cheap (⟡set1-rerank2): commute-stated is a PARAMETER now (a Set-valued
+-- field pinned the record at Set₁). The square-commutation at the witness level
+-- is NAMED but packaged at the type level (it's a relation between four
+-- UPMorphisms). Substrate-honest: signature-bearing.
 record UPArrow²-Morphism {A₁ : UPArrowP S₁ T₁ W₁} {B₁ : UPArrowP S₂ T₂ W₂}
                          {A₂ : UPArrowP S₃ T₃ W₃} {B₂ : UPArrowP S₄ T₄ W₄}
-                         (α : UPArrow² A₁ B₁) (β : UPArrow² A₂ B₂) : Set₁ where
+                         (α : UPArrow² A₁ B₁) (β : UPArrow² A₂ B₂)
+                         (commute-stated : Set) : Set where
   field
     on-source : UPMorphism (L0-Source α) (L0-Source β)
     on-target : UPMorphism (L0-Target α) (L0-Target β)
-    -- The square-commutation at the witness level is NAMED but
-    -- packaged at the type level (it's a relation between four
-    -- UPMorphisms). Substrate-honest: signature-bearing.
-    commute-stated : Set
 
 open UPArrow²-Morphism public
 

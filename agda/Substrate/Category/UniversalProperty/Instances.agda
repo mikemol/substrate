@@ -26,7 +26,7 @@ open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow; free-Set)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (free-monoid)
 open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (free-F2Module)
-open import Substrate.Category.LimitUniversalProperty using (LimitUP-UPArrow; product-LimitUP)
+open import Substrate.Category.LimitUniversalProperty using (LimitUP-UPArrow; product-leg)
 
 private
   1≢0 : (1 ≡ 0) → ⊥
@@ -54,7 +54,7 @@ FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
 -- 3. Cone / Limit — the product is the limit of a discrete diagram.
 ------------------------------------------------------------------------
 
-ConeLimit-UP = LimitUP-UPArrow (product-LimitUP 1 (λ _ → ℕ)) ⊤
+ConeLimit-UP = LimitUP-UPArrow (product-leg 1 (λ _ → ℕ)) ⊤
 
 ConeLimit-contentful : Contentful ConeLimit-UP
 ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w F.zero tt)

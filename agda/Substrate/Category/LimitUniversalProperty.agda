@@ -40,52 +40,66 @@ open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 -- 1. THE LIMIT CENTER. Dual of FreeUP. (Discrete base ⇒ product.)
 ------------------------------------------------------------------------
 
-record LimitUP (n : ℕ) (Base : Fin n → Set) (L : Set) : Set₁ where
-  field
-    -- the legs (projections) — dual to FreeUP's unit η.
-    leg : (i : Fin n) → L → Base i
-
-    -- THE universal property: every cone (apex A + maps to the base)
-    -- factors through L by a mediating map — dual to extend …
-    mediate :
-      {A : Set} → ((i : Fin n) → A → Base i) → (A → L)
-    -- … which commutes with the legs (π ∘ mediate ≡ f) — dual to
-    -- extend-extends …
-    mediate-commutes :
+-- ⟡rc-cheap (⟡set1-rerank2): VESTIGIAL record — the obligations are PARAMETERS
+-- (params never raise the sort), Set₁→Set with an empty body.
+record LimitUP (n : ℕ) (Base : Fin n → Set) (L : Set)
+  -- the legs (projections) — dual to FreeUP's unit η.
+  (leg : (i : Fin n) → L → Base i)
+  -- THE universal property: every cone (apex A + maps to the base)
+  -- factors through L by a mediating map — dual to extend …
+  (mediate :
+      {A : Set} → ((i : Fin n) → A → Base i) → (A → L))
+  -- … which commutes with the legs (π ∘ mediate ≡ f) — dual to
+  -- extend-extends …
+  (mediate-commutes :
       {A : Set} (f : (i : Fin n) → A → Base i) (i : Fin n) (a : A) →
-      leg i (mediate f a) ≡ f i a
-    -- … and is the UNIQUE such map, observationally (any commuting g
-    -- agrees with mediate after every projection) — dual to
-    -- extend-unique, funext-free.
-    mediate-unique :
+      leg i (mediate f a) ≡ f i a)
+  -- … and is the UNIQUE such map, observationally (any commuting g
+  -- agrees with mediate after every projection) — dual to
+  -- extend-unique, funext-free.
+  (mediate-unique :
       {A : Set} (f : (i : Fin n) → A → Base i) (g : A → L) →
       ((i : Fin n) (a : A) → leg i (g a) ≡ f i a) →
-      (a : A) (i : Fin n) → leg i (g a) ≡ leg i (mediate f a)
-
-open LimitUP public
+      (a : A) (i : Fin n) → leg i (g a) ≡ leg i (mediate f a))
+  : Set where
 
 ------------------------------------------------------------------------
 -- 2. A LimitUP forgets to the existing Cone shape (so Category.Cone is
 --    exactly the data of a LimitUP minus the universal property).
 ------------------------------------------------------------------------
 
-LimitUP→Cone : {n : ℕ} {Base : Fin n → Set} {L : Set} →
-               LimitUP n Base L → Cone n Base L
-LimitUP→Cone lim = record { leg = leg lim }
+LimitUP→Cone : {n : ℕ} {Base : Fin n → Set} {L : Set}
+               {leg : (i : Fin n) → L → Base i}
+               {mediate : {A : Set} → ((i : Fin n) → A → Base i) → (A → L)}
+               {mc : {A : Set} (f : (i : Fin n) → A → Base i) (i : Fin n) (a : A) →
+                     leg i (mediate f a) ≡ f i a}
+               {mu : {A : Set} (f : (i : Fin n) → A → Base i) (g : A → L) →
+                     ((i : Fin n) (a : A) → leg i (g a) ≡ f i a) →
+                     (a : A) (i : Fin n) → leg i (g a) ≡ leg i (mediate f a)} →
+               LimitUP n Base L leg mediate mc mu → Cone n Base L
+LimitUP→Cone {leg = leg} lim = record { leg = leg }
 
 ------------------------------------------------------------------------
 -- 3. NON-VACUITY: the dependent product IS the limit of a discrete base.
 --    leg = projection, mediate = tupling. (Dual to free-Set.)
 ------------------------------------------------------------------------
 
+-- the product's UP data, NAMED (consumers read these instead of the ex-projections).
+product-leg : (n : ℕ) (Base : Fin n → Set) (i : Fin n) → ((j : Fin n) → Base j) → Base i
+product-leg n Base i g = g i
+
+product-mediate : (n : ℕ) (Base : Fin n → Set) {A : Set}
+                → ((i : Fin n) → A → Base i) → A → (i : Fin n) → Base i
+product-mediate n Base f a i = f i a
+
 product-LimitUP :
-  (n : ℕ) (Base : Fin n → Set) → LimitUP n Base ((i : Fin n) → Base i)
-product-LimitUP n Base = record
-  { leg              = λ i g → g i
-  ; mediate          = λ f a i → f i a
-  ; mediate-commutes = λ f i a → refl
-  ; mediate-unique   = λ f g g-comm a i → g-comm i a
-  }
+  (n : ℕ) (Base : Fin n → Set)
+  → LimitUP n Base ((i : Fin n) → Base i)
+      (product-leg n Base)
+      (product-mediate n Base)
+      (λ f i a → refl)
+      (λ f g g-comm a i → g-comm i a)
+product-LimitUP n Base = record {}
 
 ------------------------------------------------------------------------
 -- 4. A LimitUP IS a (content-bearing) UPArrow, per apex A — DUAL of
@@ -97,15 +111,15 @@ product-LimitUP n Base = record
 
 LimitUP-W :
   {n : ℕ} {Base : Fin n → Set} {L : Set} →
-  LimitUP n Base L → (A : Set) →
+  (leg : (i : Fin n) → L → Base i) → (A : Set) →
   ((i : Fin n) → A → Base i) → (A → L) → Set
-LimitUP-W {n} lim A f g = (i : Fin n) (a : A) → leg lim i (g a) ≡ f i a
+LimitUP-W {n} leg A f g = (i : Fin n) (a : A) → leg i (g a) ≡ f i a
 
 LimitUP-UPArrow :
-  {n : ℕ} {Base : Fin n → Set} {L : Set} →
-  (lim : LimitUP n Base L) → (A : Set) →
-  UPArrowP ((i : Fin n) → A → Base i) (A → L) (LimitUP-W lim A)
-LimitUP-UPArrow lim A = mkUP
+  {n : ℕ} {Base : Fin n → Set} {L : Set}
+  (leg : (i : Fin n) → L → Base i) → (A : Set) →
+  UPArrowP ((i : Fin n) → A → Base i) (A → L) (LimitUP-W leg A)
+LimitUP-UPArrow leg A = mkUP
 
 ------------------------------------------------------------------------
 -- The center is now symmetric, both sides content-bearing:

@@ -21,7 +21,7 @@ open import Substrate.Foundation.Eq using (_≡_; cong)
 open import Substrate.Foundation.Negation using (¬_)
 import Substrate.Foundation.Fin as F
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Category.LimitUniversalProperty using (product-LimitUP; mediate)
+open import Substrate.Category.LimitUniversalProperty using (product-mediate)
 open import Substrate.Category.UniversalProperty using (SourceP; TargetP)
 open import Substrate.Category.UniversalProperty.Instances using (ConeLimit-UP)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
@@ -31,7 +31,7 @@ open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ
 -- instance ConeLimit-UP wraps). Inlined (NOT a top-level `theLimit : LimitUP` def) so no Set₁-inhabiting
 -- term is added — the flat LimitBacked already contributes that one to the ratchet baseline.
 limit-solve : SourceP ConeLimit-UP → TargetP ConeLimit-UP
-limit-solve f = mediate (product-LimitUP 1 (λ _ → ℕ)) f
+limit-solve f = product-mediate 1 (λ _ → ℕ) f
 
 limit-arrowᴳ : UPArrowᴳ (λ _ → SourceP ConeLimit-UP) (λ _ → TargetP ConeLimit-UP)
 limit-arrowᴳ = mkUP limit-solve
