@@ -66,12 +66,14 @@ private
 -- predictive distribution, (d) verify normalization, (e) prove
 -- parametric-family closure.
 
-record ConjugateMonad : Set (lsuc ℓ) where
+-- ⟡set1-rp: carrier→param — Parameter/Observation/Probability were
+-- Set-valued FIELDS (pinning the record at Set (lsuc ℓ)); as
+-- PARAMETERS they never raise the sort.
+record ConjugateMonad
+       (Parameter : Set ℓ) (Observation : Set ℓ)
+       (Probability : Set ℓ)          -- abstract ℚ-style type
+       : Set ℓ where
   field
-    Parameter     : Set ℓ
-    Observation   : Set ℓ
-    Probability   : Set ℓ          -- abstract ℚ-style type
-
     -- Required for constructive completeness:
     prior         : Parameter      -- the prior parameter (starting state)
     update        : Parameter → Observation → Parameter
@@ -90,9 +92,11 @@ open ConjugateMonad public
 -- The constructive whole: given a ConjugateMonad and a list of
 -- observations, fold update from prior to produce the posterior.
 
-posterior : (m : ConjugateMonad {ℓ}) →
-            List (Observation m) →
-            Parameter m
+posterior :
+  {Parameter Observation Probability : Set ℓ}
+  (m : ConjugateMonad Parameter Observation Probability) →
+  List Observation →
+  Parameter
 posterior m obs = foldl (update m) (prior m) obs
 
 ------------------------------------------------------------------------
@@ -101,10 +105,12 @@ posterior m obs = foldl (update m) (prior m) obs
 -- Given a ConjugateMonad and observed data, predict the next
 -- observation's probability.
 
-predict-next : (m : ConjugateMonad {ℓ}) →
-               List (Observation m) →
-               Observation m →
-               Probability m
+predict-next :
+  {Parameter Observation Probability : Set ℓ}
+  (m : ConjugateMonad Parameter Observation Probability) →
+  List Observation →
+  Observation →
+  Probability
 predict-next m obs next = predict m (posterior m obs) next
 
 ------------------------------------------------------------------------
@@ -115,9 +121,10 @@ predict-next m obs next = predict m (posterior m obs) next
 -- Stated structurally; concrete Dirichlet-multinomial instances
 -- prove it via count-vector arithmetic.
 
-record CommutativeConjugateMonad : Set (lsuc ℓ) where
+record CommutativeConjugateMonad
+       {Parameter Observation Probability : Set ℓ} : Set ℓ where
   field
-    monad : ConjugateMonad {ℓ}
+    monad : ConjugateMonad Parameter Observation Probability
     -- The commutativity property:
     -- For any two observation lists os₁, os₂:
     --   posterior (os₁ ++ os₂) ≡ posterior (os₂ ++ os₁)

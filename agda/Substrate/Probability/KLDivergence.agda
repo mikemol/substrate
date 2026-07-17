@@ -33,15 +33,19 @@ private
 ------------------------------------------------------------------------
 -- IG6: KL divergence.
 
+-- ⟡set1-rp: carrier→param — KL (∀-over-Set) was a FIELD (pinning the
+-- record at Set (lsuc ℓ)); as a PARAMETER it never raises the sort —
+-- fully vestigial.
 record KLDivergence
-       (EF : EntropyFunctor {ℓ}) : Set (lsuc ℓ) where
-  field
-    KL : {A : Set ℓ} →
-         DiscreteDistribution (PS EF) A →
-         DiscreteDistribution (PS EF) A →
-         EntropyTy EF
-
-open KLDivergence public
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H)
+       (KL : {A : Set ℓ} →
+             DiscreteDistribution PS A →
+             DiscreteDistribution PS A →
+             EntropyTy)
+       : Set where
 
 ------------------------------------------------------------------------
 -- IG7: KL positivity.
@@ -63,13 +67,20 @@ open KLDivergence public
 -- H(p, q) = -Σ p(a) · log q(a) = H(p) + KL(p || q).
 
 record CrossEntropy
-       (EF : EntropyFunctor {ℓ})
-       (KL-ops : KLDivergence EF) : Set (lsuc ℓ) where
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H)
+       {KL : {A : Set ℓ} →
+             DiscreteDistribution PS A →
+             DiscreteDistribution PS A →
+             EntropyTy}
+       (KL-ops : KLDivergence EF KL) : Set (lsuc ℓ) where
   field
     H-cross : {A : Set ℓ} →
-              DiscreteDistribution (PS EF) A →
-              DiscreteDistribution (PS EF) A →
-              EntropyTy EF
+              DiscreteDistribution PS A →
+              DiscreteDistribution PS A →
+              EntropyTy
 
 open CrossEntropy public
 
@@ -83,11 +94,14 @@ open CrossEntropy public
 -- Stated structurally; concrete instances supply the operator.
 
 record FisherInformation
-       (EF : EntropyFunctor {ℓ}) : Set (lsuc ℓ) where
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H) : Set (lsuc ℓ) where
   field
     Fisher : {Θ A : Set ℓ} →
-             (Θ → DiscreteDistribution (PS EF) A) →
-             Θ → EntropyTy EF
+             (Θ → DiscreteDistribution PS A) →
+             Θ → EntropyTy
 
 open FisherInformation public
 

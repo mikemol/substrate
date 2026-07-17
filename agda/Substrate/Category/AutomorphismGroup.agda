@@ -72,10 +72,10 @@ private
 
 record AutomorphismGroup
   (X : Set ℓX)
-  (Preserves : (X → X) → Set ℓP) : Set (lsuc (ℓX ⊔ ℓP)) where
+  (Preserves : (X → X) → Set ℓP)
+  (Aut-X : Set (ℓX ⊔ ℓP)) : Set (ℓX ⊔ ℓP) where
   constructor mkAut
   field
-    Aut-X         : Set (ℓX ⊔ ℓP)
     apply         : Aut-X → (X → X)
     preserves     : (a : Aut-X) → Preserves (apply a)
     inverse       : Aut-X → Aut-X

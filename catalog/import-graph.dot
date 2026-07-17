@@ -6817,6 +6817,7 @@ digraph imports {
   "Substrate.Category.ExteriorAlgebra.Morphism" -> "Substrate.Category.Morphism";
   "Substrate.Category.ExteriorAlgebra.Morphism" -> "Substrate.Foundation.Eq";
   "Substrate.Category.FieldContinuum" -> "Substrate.Category.FieldFanOut";
+  "Substrate.Category.FieldContinuum" -> "Substrate.Foundation.Fin";
   "Substrate.Category.FieldContinuum" -> "Substrate.Foundation.Nat";
   "Substrate.Category.FieldFanOut" -> "Substrate.Foundation.Fin";
   "Substrate.Category.FieldFanOut" -> "Substrate.Foundation.Nat";
@@ -11108,6 +11109,8 @@ digraph imports {
   "Substrate.Lambda.Fragment" -> "Substrate.Category.FreeOverBasis";
   "Substrate.Lambda.Fragment" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Linguistic.BicategoricalCapstone" -> "Substrate.Linguistic.BicategoryOfLanguages";
+  "Substrate.Linguistic.BicategoricalCapstone" -> "Substrate.Linguistic.Language2Morphism";
+  "Substrate.Linguistic.BicategoricalCapstone" -> "Substrate.Linguistic.Morphism";
   "Substrate.Linguistic.BicategoricalCapstone" -> "Substrate.Linguistic.Roster";
   "Substrate.Linguistic.BicategoricalCapstone" -> "Substrate.Linguistic.YonedaFull";
   "Substrate.Linguistic.BicategoryOfLanguages" -> "Substrate.Linguistic.Compose";
@@ -11827,9 +11830,12 @@ digraph imports {
   "Substrate.Probability.BaezFritzLeinster" -> "Substrate.Probability.Entropy";
   "Substrate.Probability.BaezFritzLeinster" -> "Substrate.Probability.KLDivergence";
   "Substrate.Probability.BaezFritzLeinster" -> "Substrate.Probability.MarkovCategory";
-  "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Foundation.Level";
+  "Substrate.Probability.BaezFritzLeinster" -> "Substrate.Probability.Simplex";
+  "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Algebra.Q";
+  "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Algebra.Z";
   "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Probability.BaezFritzLeinster";
   "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Probability.Entropy.Sites.QFin";
+  "Substrate.Probability.BaezFritzLeinster.Sites.FinStoch" -> "Substrate.Probability.Simplex.Sites.QSimplex";
   "Substrate.Probability.ConjugateMonad" -> "Substrate.Foundation.List";
   "Substrate.Probability.ConjugateMonad.Category" -> "Substrate.Foundation.Nat";
   "Substrate.Probability.ConjugateMonad.Category" -> "Substrate.Foundation.Nat.Properties.Add";
@@ -11840,7 +11846,6 @@ digraph imports {
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Algebra.Z";
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Foundation.Eq";
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Foundation.Fin";
-  "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Foundation.Level";
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Foundation.Nat";
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Foundation.Negation";
   "Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial" -> "Substrate.Probability.ConjugateMonad";
@@ -11855,16 +11860,15 @@ digraph imports {
   "Substrate.Probability.Entropy" -> "Substrate.Probability.Simplex";
   "Substrate.Probability.Entropy.Sites.QFin" -> "Substrate.Algebra.Q";
   "Substrate.Probability.Entropy.Sites.QFin" -> "Substrate.Algebra.Z";
-  "Substrate.Probability.Entropy.Sites.QFin" -> "Substrate.Foundation.Level";
   "Substrate.Probability.Entropy.Sites.QFin" -> "Substrate.Probability.Entropy";
   "Substrate.Probability.Entropy.Sites.QFin" -> "Substrate.Probability.Simplex.Sites.QSimplex";
   "Substrate.Probability.KLDivergence" -> "Substrate.Probability.Entropy";
   "Substrate.Probability.KLDivergence" -> "Substrate.Probability.Simplex";
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Algebra.Q";
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Algebra.Z";
-  "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Foundation.Level";
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Probability.Entropy.Sites.QFin";
   "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Probability.KLDivergence";
+  "Substrate.Probability.KLDivergence.Sites.QFin" -> "Substrate.Probability.Simplex.Sites.QSimplex";
   "Substrate.Probability.MarkovCategory" -> "Substrate.Foundation.Eq";
   "Substrate.Probability.MarkovCategory.Category" -> "Substrate.Foundation.Eq";
   "Substrate.Probability.MarkovCategory.Category" -> "Substrate.Probability.MarkovCategory.Term";
@@ -11874,11 +11878,9 @@ digraph imports {
   "Substrate.Probability.MarkovCategory.Sites.FinStoch" -> "Substrate.Foundation.Nat";
   "Substrate.Probability.MarkovCategory.Term" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Probability.Simplex" -> "Substrate.Foundation.Fin";
-  "Substrate.Probability.Simplex" -> "Substrate.Foundation.Level";
   "Substrate.Probability.Simplex" -> "Substrate.Foundation.Nat";
   "Substrate.Probability.Simplex.Sites.QSimplex" -> "Substrate.Algebra.Q";
   "Substrate.Probability.Simplex.Sites.QSimplex" -> "Substrate.Algebra.Z";
-  "Substrate.Probability.Simplex.Sites.QSimplex" -> "Substrate.Foundation.Level";
   "Substrate.Probability.Simplex.Sites.QSimplex" -> "Substrate.Foundation.Nat";
   "Substrate.Probability.Simplex.Sites.QSimplex" -> "Substrate.Probability.Simplex";
   "Substrate.Realizability.Charter" -> "Substrate.Category.CategoryOf";
@@ -12250,6 +12252,7 @@ digraph imports {
   "Substrate.TokiPona.AsFreeOverBasis" -> "Substrate.TokiPona.SemanticSpace";
   "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Category.OpcodeAlgebra";
   "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Foundation.Eq";
+  "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Foundation.Iff";
   "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Foundation.Nat";
   "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Foundation.Vec";
   "Substrate.TokiPona.AsLinearBridge" -> "Substrate.Groups.Coxeter.Word";

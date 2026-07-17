@@ -43,16 +43,18 @@ private
 -- operator. Concrete instances supply log over their probability
 -- type (e.g., log₂ over ℚ ∩ (0, 1]).
 
-record EntropyFunctor : Set (lsuc ℓ) where
-  field
-    PS         : ProbabilitySemiring {ℓ}
-    EntropyTy  : Set ℓ        -- target type for entropy values
-                              -- (typically ℝ or ℚ-extended)
-    H          : {A : Set ℓ} →
-                 DiscreteDistribution PS A →
-                 EntropyTy
-
-open EntropyFunctor public
+-- ⟡set1-rp: carrier→param — EntropyTy (Set-valued) and H (∀-over-Set)
+-- were FIELDS (pinning the record at Set (lsuc ℓ)); as PARAMETERS
+-- they never raise the sort. PS was already Set ℓ (post Simplex's
+-- own carrier→param), so it too can be a param — fully vestigial.
+record EntropyFunctor
+       {Carrier : Set ℓ} (PS : ProbabilitySemiring Carrier)
+       (EntropyTy : Set ℓ)        -- target type for entropy values
+                                  -- (typically ℝ or ℚ-extended)
+       (H : {A : Set ℓ} →
+            DiscreteDistribution PS A →
+            EntropyTy)
+       : Set where
 
 ------------------------------------------------------------------------
 -- IG3: Conditional entropy H(X | Y) = H(X, Y) - H(Y).
@@ -61,12 +63,15 @@ open EntropyFunctor public
 -- instances supply both.
 
 record ConditionalEntropy
-       (EF : EntropyFunctor {ℓ}) : Set (lsuc ℓ) where
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H) : Set (lsuc ℓ) where
   field
     H-cond : {A B : Set ℓ} →
-             DiscreteDistribution (PS EF) A →
-             DiscreteDistribution (PS EF) B →
-             EntropyTy EF
+             DiscreteDistribution PS A →
+             DiscreteDistribution PS B →
+             EntropyTy
 
 open ConditionalEntropy public
 
@@ -74,12 +79,15 @@ open ConditionalEntropy public
 -- IG4: Joint entropy H(X, Y) = H over the product distribution.
 
 record JointEntropy
-       (EF : EntropyFunctor {ℓ}) : Set (lsuc ℓ) where
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H) : Set (lsuc ℓ) where
   field
     H-joint : {A B : Set ℓ} →
-              DiscreteDistribution (PS EF) A →
-              DiscreteDistribution (PS EF) B →
-              EntropyTy EF
+              DiscreteDistribution PS A →
+              DiscreteDistribution PS B →
+              EntropyTy
 
 open JointEntropy public
 
@@ -90,12 +98,15 @@ open JointEntropy public
 -- JointEntropy.
 
 record MutualInformation
-       (EF : EntropyFunctor {ℓ})
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       {EF : EntropyFunctor PS EntropyTy H}
        (JE : JointEntropy EF) : Set (lsuc ℓ) where
   field
     MI : {A B : Set ℓ} →
-         DiscreteDistribution (PS EF) A →
-         DiscreteDistribution (PS EF) B →
-         EntropyTy EF
+         DiscreteDistribution PS A →
+         DiscreteDistribution PS B →
+         EntropyTy
 
 open MutualInformation public

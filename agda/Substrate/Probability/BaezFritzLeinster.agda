@@ -45,9 +45,13 @@ private
 --
 -- Concrete instances supply both the category and the entropy values.
 
-record BFLEntropyFunctor : Set (lsuc ℓ) where
+record BFLEntropyFunctor
+       {Carrier : Set ℓ} (PS : ProbabilitySemiring Carrier)
+       (EntropyTy : Set ℓ)
+       (H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy)
+       : Set where
   field
-    EF                : EntropyFunctor {ℓ}
+    EF                : EntropyFunctor PS EntropyTy H
     -- Functoriality + convex-combination + chain-rule laws are
     -- stated abstractly; concrete instances prove them.
 
@@ -78,9 +82,16 @@ open BFLEntropyFunctor public
 -- instances supply the conditional MI = 0 proof.
 
 record SufficientStatisticInfoTheory
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
        (M : MarkovCategory {ℓ} {ℓm})
-       (EF : EntropyFunctor {ℓ})
-       (KL-ops : KLDivergence EF) : Set where
+       (EF : EntropyFunctor PS EntropyTy H)
+       {KL : {A : Set ℓ} →
+             DiscreteDistribution PS A →
+             DiscreteDistribution PS A →
+             EntropyTy}
+       (KL-ops : KLDivergence EF KL) : Set where
   no-eta-equality
 
 ------------------------------------------------------------------------
@@ -106,11 +117,14 @@ record SufficientStatisticInfoTheory
 -- Stated structurally; concrete adaptive-arity strategies supply
 -- threshold values.
 
-record EntropyBasedAdaptation : Set (lsuc ℓ) where
+record EntropyBasedAdaptation
+       {Carrier : Set ℓ} {PS : ProbabilitySemiring Carrier}
+       {EntropyTy : Set ℓ}
+       {H : {A : Set ℓ} → DiscreteDistribution PS A → EntropyTy}
+       (EF : EntropyFunctor PS EntropyTy H) : Set ℓ where
   field
-    EF             : EntropyFunctor {ℓ}
-    threshold-up   : EntropyTy EF
-    threshold-down : EntropyTy EF
+    threshold-up   : EntropyTy
+    threshold-down : EntropyTy
     -- adaptation rule: if H > threshold-up, increase arity;
     --                  if H < threshold-down, decrease arity.
 

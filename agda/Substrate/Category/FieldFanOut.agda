@@ -56,11 +56,16 @@ private
 -- Base point.
 ------------------------------------------------------------------------
 
-record FieldFanOut (Base : Set) (arity-fn : Base → ℕ) : Set (lsuc ℓ) where
-  field
-    Source  : Set ℓ
-    Target  : (b : Base) → Fin (arity-fn b) → Set ℓ
-    Bond    : (b : Base) → (i : Fin (arity-fn b)) → Source → Target b i
+-- ⟡set1-rp: carrier→param — Source/Target/Bond were Set-valued (or
+-- ∀-quantified-over-b/i, functorially Set-producing) FIELDS (pinning
+-- the record at Set (lsuc ℓ)); as PARAMETERS they never raise the
+-- sort — fully vestigial.
+record FieldFanOut
+       (Base : Set) (arity-fn : Base → ℕ)
+       (Source : Set ℓ)
+       (Target : (b : Base) → Fin (arity-fn b) → Set ℓ)
+       (Bond : (b : Base) (i : Fin (arity-fn b)) → Source → Target b i)
+       : Set where
 
 ------------------------------------------------------------------------
 -- Backward-compatible FIXED-arity case.
@@ -70,8 +75,11 @@ record FieldFanOut (Base : Set) (arity-fn : Base → ℕ) : Set (lsuc ℓ) where
 -- as a one-Base-point specialization.
 ------------------------------------------------------------------------
 
-FixedFanOut : ℕ → Set (lsuc ℓ)
-FixedFanOut {ℓ} n = FieldFanOut {ℓ} ⊤ (λ _ → n)
+FixedFanOut :
+  (n : ℕ) (Source : Set ℓ) (Target : Fin n → Set ℓ) →
+  ((i : Fin n) → Source → Target i) → Set
+FixedFanOut {ℓ} n Source Target Bond =
+  FieldFanOut {ℓ} ⊤ (λ _ → n) Source (λ _ → Target) (λ _ → Bond)
 
 ------------------------------------------------------------------------
 -- Constructor for the fixed-arity case.
@@ -84,12 +92,8 @@ make-fixed : {ℓ : Level} (n : ℕ)
              (S : Set ℓ)
              (T : Fin n → Set ℓ)
              (B : (i : Fin n) → S → T i) →
-             FixedFanOut {ℓ} n
-make-fixed n S T B = record
-  { Source = S
-  ; Target = λ _ → T
-  ; Bond   = λ _ → B
-  }
+             FixedFanOut n S T B
+make-fixed n S T B = record {}
 
 ------------------------------------------------------------------------
 -- Capstone (updated 2026-05-21).

@@ -106,10 +106,8 @@ alternating-wedge (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
 -- rank-2 wedge.
 ------------------------------------------------------------------------
 
-Bivector-AsExterior : WedgeProduct
+Bivector-AsExterior : WedgeProduct (Vector 4) Bivector
 Bivector-AsExterior = mkWedgeProduct
-  (Vector 4)
-  Bivector
   𝟎ⱽ
   _+ⱽ_
   wedge

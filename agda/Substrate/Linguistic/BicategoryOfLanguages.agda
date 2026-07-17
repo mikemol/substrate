@@ -26,13 +26,11 @@ open import Substrate.Linguistic.Horizontal using (_∘H_)
 -- 1. The BicategoryOfLanguages record.
 ------------------------------------------------------------------------
 
-record BicategoryOfLanguages (Object : Set) : Set₁ where
+record BicategoryOfLanguages
+  (Object : Set) (OneCell : Object → Object → Set)
+  (TwoCell : {L₁ L₂ : Object} → OneCell L₁ L₂ → OneCell L₁ L₂ → Set)
+  : Set where
   field
-    -- 1-morphism layer
-    OneCell : Object → Object → Set
-    -- 2-morphism layer
-    TwoCell :
-      {L₁ L₂ : Object} → OneCell L₁ L₂ → OneCell L₁ L₂ → Set
     -- 1-identity
     Id-1 : (L : Object) → OneCell L L
     -- 1-composition
@@ -58,11 +56,12 @@ record BicategoryOfLanguages (Object : Set) : Set₁ where
 -- 2. The canonical instance.
 ------------------------------------------------------------------------
 
-LanguageBicategory : BicategoryOfLanguages Lang
+LanguageBicategory :
+  BicategoryOfLanguages Lang
+    (λ l m → LanguageMorphism (witness-of l) (witness-of m))
+    Language2Morphism
 LanguageBicategory = record
-  { OneCell   = λ l m → LanguageMorphism (witness-of l) (witness-of m)
-  ; TwoCell   = Language2Morphism
-  ; Id-1      = λ l → id-morphism (witness-of l)
+  { Id-1      = λ l → id-morphism (witness-of l)
   ; Compose-1 = _∘L_
   ; Id-2      = id-2mor
   ; ∘V-2      = _∘V_

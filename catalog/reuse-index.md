@@ -21,7 +21,7 @@ _829 structures across 539 modules; 39 names multiply-homed; 34 cross-name shape
 
 One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 distinct names: a candidate reinvention (a KleinV4≅V₄-style witnessed bridge, not a silent collapse — [[feedback_dedup_preserve_crossdomain_bridges]]). Name-based screening; confirm the type-level match / cross-domain-vs-within with `jea_pysim … --clusters` before acting.
 
-- `record {constructor}` — `AtlasContext`@`Substrate.Category.AtlasOfProbes`, `AtlasDomain`@`Substrate.Category.CompressionAtlas`, `BankIndependence`@`Substrate.Category.PhaseLockedLoop.Bank.BankIndependence`, `BrickType`@`Substrate.Pipeline.Brick.Type`, `Fibration`@`Substrate.Category.GrothendieckConstruction`, `FreeUP`@`Substrate.Category.FreeUniversalProperty`, `GeometricMorphism`@`Substrate.Category.UniversalProperty.GeometricMorphism`, `GrothendieckConstruction`@`Substrate.Category.GrothendieckConstruction`, `LaxFunctor`@`Substrate.Category.LaxFunctor`, `LensFunctoriality`@`Substrate.Category.StochasticLens`, `LimitUP`@`Substrate.Category.LimitUniversalProperty`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples.PredictorUpdate`, `Preserves-Ranking`@`Substrate.Pipeline.Examples`, `Preserves-Ranking`@`Substrate.Pipeline.Examples.ChooseRotation`, `Preserves-Shannon`@`Substrate.Pipeline.Examples`, `Preserves-Shannon`@`Substrate.Pipeline.Examples.PredictorSurprise`, `PresheafMorphism`@`Substrate.Linguistic.YonedaEmbedding`, `PseudoFunctor`@`Substrate.Category.PseudoFunctor`, `QuotientUP`@`Substrate.Category.UniversalProperty.Quotient`, `SequentType`@`Substrate.Pipeline.Sequent.SequentType`, `SheafAdjointPair`@`Substrate.Category.UniversalProperty.AdjointPair`, `SufficientStatisticInfoTheory`@`Substrate.Probability.BaezFritzLeinster`, `TwoEquivalence`@`Substrate.Category.TwoEquivalence`, `TwoFraming`@`Substrate.Category.UniversalProperty.FixpointStencilRecord`, `TwoNaturalTransformation`@`Substrate.Category.TwoNaturalTransformation`, `UPPretopology`@`Substrate.Category.UniversalProperty.Pretopology`
+- `record {constructor}` — `AtlasContext`@`Substrate.Category.AtlasOfProbes`, `AtlasDomain`@`Substrate.Category.CompressionAtlas`, `BankIndependence`@`Substrate.Category.PhaseLockedLoop.Bank.BankIndependence`, `BrickType`@`Substrate.Pipeline.Brick.Type`, `BridgeAlignment`@`Substrate.TokiPona.AsLinearBridge`, `EntropyFunctor`@`Substrate.Probability.Entropy`, `Fibration`@`Substrate.Category.GrothendieckConstruction`, `FieldFanOut`@`Substrate.Category.FieldFanOut`, `FreeUP`@`Substrate.Category.FreeUniversalProperty`, `GeometricMorphism`@`Substrate.Category.UniversalProperty.GeometricMorphism`, `GrothendieckConstruction`@`Substrate.Category.GrothendieckConstruction`, `KLDivergence`@`Substrate.Probability.KLDivergence`, `LaxFunctor`@`Substrate.Category.LaxFunctor`, `LensFunctoriality`@`Substrate.Category.StochasticLens`, `LimitUP`@`Substrate.Category.LimitUniversalProperty`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples`, `Preserves-CountMonoid`@`Substrate.Pipeline.Examples.PredictorUpdate`, `Preserves-Ranking`@`Substrate.Pipeline.Examples`, `Preserves-Ranking`@`Substrate.Pipeline.Examples.ChooseRotation`, `Preserves-Shannon`@`Substrate.Pipeline.Examples`, `Preserves-Shannon`@`Substrate.Pipeline.Examples.PredictorSurprise`, `PresheafMorphism`@`Substrate.Linguistic.YonedaEmbedding`, `PseudoFunctor`@`Substrate.Category.PseudoFunctor`, `QuotientUP`@`Substrate.Category.UniversalProperty.Quotient`, `SequentType`@`Substrate.Pipeline.Sequent.SequentType`, `SheafAdjointPair`@`Substrate.Category.UniversalProperty.AdjointPair`, `SufficientStatisticInfoTheory`@`Substrate.Probability.BaezFritzLeinster`, `TwoEquivalence`@`Substrate.Category.TwoEquivalence`, `TwoFraming`@`Substrate.Category.UniversalProperty.FixpointStencilRecord`, `TwoNaturalTransformation`@`Substrate.Category.TwoNaturalTransformation`, `UPPretopology`@`Substrate.Category.UniversalProperty.Pretopology`
 - `data {[],_∷_}` — `CharTerm`@`Substrate.Algebra.PontryaginDual.Term`, `List`@`Substrate.Foundation.List`, `MarkovTerm`@`Substrate.Probability.MarkovCategory.Term`, `NoDup`@`Substrate.WitnessTower.DuplicateFree`, `Pipe`@`Substrate.Realizability.Charter`, `QSeq`@`Substrate.S5.S5EEA`, `UPTerm`@`Substrate.Category.UniversalProperty.Term`, `Vec`@`Substrate.Foundation.Vec`, `Word`@`Substrate.Groups.Coxeter.Word`
 - `record {constructor,from,from-to,to,to-from}` — `Bijection`@`Substrate.Foundations.Bijection`, `F2nSelfDual`@`Substrate.Algebra.PontryaginDual`, `Live≃Permutation`@`Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection`, `PontryaginDualityTheorem`@`Substrate.Algebra.PontryaginDual`, `Stab≃S₃`@`Substrate.Groups.Stab-S3-Iso`, `TotalSpace≃S₄`@`Substrate.Cocycles.V4Signature.S4Iso`, `_↔_`@`Substrate.Algebra.Bijection`
 - `data {here,there}` — `Any`@`Substrate.Foundation.List.Any`, `Rejected`@`Substrate.Realizability.Charter`, `_∈_`@`Substrate.WitnessTower.Complete`, `_∈ᴿ_`@`Substrate.Algebra.Wedge.Shape.Register`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedBulk`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedMembership`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedReadout`, `_∈ᵀ_`@`Substrate.Algebra.Wedge.AxisWord.PackedRecall`, `_⊎-OR_`@`Substrate.Linguistic.Classification`
@@ -344,7 +344,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `CoxeterFinCapability` | record | `Substrate.Groups.Capabilities.CoxeterFin` | Tier 2 capability record for the Coxeter-Fin chain: packages the |
 | `CoxeterGroupCapability` | record | `Substrate.Groups.Capabilities.CoxeterGroup` | both were `field`s valued |
 | `CoxGen` | data | `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral` | the datatype + the adjacent |
-| `CrossEntropy` | record | `Substrate.Probability.KLDivergence` | IG6-IG12: Kullback-Leibler divergence and its compositional |
+| `CrossEntropy` | record | `Substrate.Probability.KLDivergence` | KL (∀-over-Set) was a FIELD (pinning the |
 | `CrossMix` | record | `Substrate.Algebra.Wedge.CrossMul` | it mixes A-content and B-content — and it sidesteps the |
 | `CrossPrimeCorrelation` | record | `Substrate.Category.MultiPrimeSpectralProfile` | structured corpora's |
 | `CRT-Witness` | record | `Substrate.Algebra.Quotient.CRT` | QU13 of the QU-arc per [scratch/qu_arc_plan.md]. |
@@ -359,7 +359,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `DeferredItem` | data | `Substrate.Linguistic.ClosureLog` | D9 of the Closure-debt arc per [scratch/closure_arc_plan.md]. |
 | `DescentTree` | record | `Substrate.Category.CentralizerDescent.Tree` | The recursive descent tree primitive: V1 CentralizerDescent gives |
 | `DFTasMarkovMorphism` | record | `Substrate.Category.DiscreteFourierTransform` | PD8-PD20: discrete Fourier transform formalised at the categorical |
-| `DiscreteDistribution` | record | `Substrate.Probability.Simplex` | IG1: finite probability simplex. The set of probability |
+| `DiscreteDistribution` | record | `Substrate.Probability.Simplex` | Carrier was a Set-valued FIELD (pins the |
 | `DiscreteFourierTransform` | record | `Substrate.Category.DiscreteFourierTransform` | PD8-PD20: discrete Fourier transform formalised at the categorical |
 | `Discriminated` | record | `Substrate.Category.UniversalProperty.Discriminator` | it is POSTULATING the |
 | `Distinction-Name` | data | `Substrate.ShadowArchitecture.Distinction` | Slice 3b of the shadow-architecture arc. The six rows of Increment |
@@ -398,7 +398,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `Fin` | data | `Substrate.Foundation.Fin` | Substrate-native Fin. Phase 2: native indexed datatype + the |
 | `FinStochHom` | record | `Substrate.Probability.MarkovCategory.Sites.FinStoch` | Markov kernels between finite sets. |
 | `FinTrace` | data | `Substrate.FUSep.FUSepQBridge` | ⟡FU-sep-Q-bridge, instantiating the SUBSTRATE'S generic pattern |
-| `FisherInformation` | record | `Substrate.Probability.KLDivergence` | IG6-IG12: Kullback-Leibler divergence and its compositional |
+| `FisherInformation` | record | `Substrate.Probability.KLDivergence` | KL (∀-over-Set) was a FIELD (pinning the |
 | `FixedPoint` | record | `Substrate.Category.Coalgebra` | the property that γ fixes x. |
 | `FixedPointFree` | record | `Substrate.Category.Lawvere` | the carrier-generic atom behind |
 | `ForwardOnly` | data | `Substrate.Category.PhaseLockedLoop.LockState` | Lock state machine for the PLL bank. |
@@ -531,7 +531,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `KelenRelation` | data | `Substrate.ShadowArchitecture.Raven.Grammar` | `lo nu pimeja-tenpo` (the Raven artifact). |
 | `KernelCode` | record | `Substrate.Algebra.F2.Code` | a linear subspace of |
 | `KernelDim` | record | `Substrate.Algebra.F2.Linear.KernelSpan` | dissolving the "dimension needs Gaussian elimination" wall. |
-| `KLDivergence` | record | `Substrate.Probability.KLDivergence` | IG6-IG12: Kullback-Leibler divergence and its compositional |
+| `KLDivergence` | record | `Substrate.Probability.KLDivergence` | KL (∀-over-Set) was a FIELD (pinning the |
 | `KleinV4` | data | `Substrate.S5.S5TorsorWireV4` | ⟡S4-wire. Connects the CDSW torsor to the named GTorsor |
 | `L7-Body-Reference` | data | `Substrate.ShadowArchitecture.Raven.Grammar` | `lo nu pimeja-tenpo` (the Raven artifact). |
 | `LA-Module-Compat` | record | `Substrate.Category.FreeLinearizationR.AsModule` | Mod9 of the Module-over-Ring tower per [scratch/m_mod_arc_plan.md]. |
@@ -689,7 +689,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `PrimeFactoredGauge` | record | `Substrate.Category.PrimeFactoredGauge` | The unifying costructure: a GTorsor whose underlying group has a |
 | `PrimePair` | record | `Substrate.Category.PrimeSampledChain` | HH-arc: three-crumb prime-sampled chain context for substrate |
 | `PrimeSpectrum` | record | `Substrate.Category.MultiPrimeSpectralProfile` | structured corpora's |
-| `ProbabilitySemiring` | record | `Substrate.Probability.Simplex` | IG1: finite probability simplex. The set of probability |
+| `ProbabilitySemiring` | record | `Substrate.Probability.Simplex` | Carrier was a Set-valued FIELD (pins the |
 | `Probe` | record | `Substrate.Category.AtlasOfProbes` | Sylow-theoretic prediction confirmed. |
 | `ProbeAtlas` | record | `Substrate.Category.AtlasOfProbes` | Sylow-theoretic prediction confirmed. |
 | `Prod` | record | `Substrate.Algebra.CayleyDickson` | and it does NOT "stop at the octonions". |

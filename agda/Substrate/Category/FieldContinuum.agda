@@ -38,8 +38,10 @@
 module Substrate.Category.FieldContinuum where
 
 open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Nat using (ℕ)
 
-open import Substrate.Category.FieldFanOut using (FieldFanOut; FixedFanOut)
+open import Substrate.Category.FieldFanOut using (FixedFanOut)
 
 private
   variable
@@ -68,8 +70,10 @@ private
 -- FixedFanOut. The continuum-limit lift takes a FixedFanOut to its
 -- continuum target.
 
-record FieldContinuum {n : _} (𝒹 : FixedFanOut {ℓ} n) : Set (lsuc ℓ) where
-  open FieldFanOut 𝒹
+record FieldContinuum
+       {n : ℕ} {Source : Set ℓ} {Target : Fin n → Set ℓ}
+       {Bond : (i : Fin n) → Source → Target i}
+       (𝒹 : FixedFanOut n Source Target Bond) : Set (lsuc ℓ) where
   field
     Continuum      : Set ℓ
     continuum-bond : Source → Continuum

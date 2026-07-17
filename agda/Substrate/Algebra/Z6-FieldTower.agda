@@ -50,13 +50,13 @@ to-trivial _ = zero
 -- N-3: The FieldTower 2 instance.
 ------------------------------------------------------------------------
 
-Z6-FieldTower : FieldTower 2
-Z6-FieldTower = record
-  { Field = λ where
+Z6-FieldTower :
+  FieldTower 2 (λ where
       zero             → Fin 6
       ₁       → Fin 3
-      ₂ → Fin 1
-  ; Bond = λ where
+      ₂ → Fin 1)
+Z6-FieldTower = record
+  { Bond = λ where
       zero       → mod3-of-6
       ₁ → to-trivial
   }

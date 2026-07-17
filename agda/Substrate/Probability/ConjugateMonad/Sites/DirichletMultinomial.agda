@@ -68,12 +68,9 @@ predict-dirichlet cv i = mkℚ 0ℤ 0
 ------------------------------------------------------------------------
 -- Dirichlet-Multinomial as a ConjugateMonad.
 
-DirichletMultinomial : (n : ℕ) → ConjugateMonad {0ℓ}
+DirichletMultinomial : (n : ℕ) → ConjugateMonad (CountVector n) (Fin n) ℚ
 DirichletMultinomial n = record
-  { Parameter   = CountVector n
-  ; Observation = Fin n
-  ; Probability = ℚ
-  ; prior       = λ _ → zero    -- uniform prior (zero counts)
+  { prior       = λ _ → zero    -- uniform prior (zero counts)
   ; update      = update-counts
   ; predict     = predict-dirichlet
   }

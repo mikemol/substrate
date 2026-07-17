@@ -168,24 +168,35 @@ module CanonicalBridge =
 
 -- A symbolic record stating the alignment at the type-signature
 -- level (the actual extraction is deferred).
-record BridgeAlignment : Set₁ where
-  field
-    -- The two arcs both produce OpcodeAlgebras with substrate-
-    -- native opcodes — same primitive endpoint.
-    lojban-arc-opcode-algebra-shape :
-      (Opcode : Set) (State : Set) → OpcodeAlgebra Opcode State → Set
-    tokipona-arc-opcode-algebra-shape :
-      (Opcode : Set) (State : Set) → OpcodeAlgebra Opcode State → Set
-    -- The shapes coincide (modulo carrier choice):
-    shapes-coincide :
-      lojban-arc-opcode-algebra-shape ≡ tokipona-arc-opcode-algebra-shape
+--
+-- ⟡set1-rp: carrier→param — the two shape fields (∀-over-Set) and
+-- shapes-coincide were FIELDS (pinning the record at Set₁); as
+-- PARAMETERS they never raise the sort — fully vestigial. Per
+-- [[Substrate.Foundation.Iff]]'s ⟡rc-het-iff discipline: an ex-`≡`
+-- between two Set-producing functions is stated pointwise via `⇔`
+-- (logical equivalence, Set₀) rather than propositional `≡` (which
+-- would force Set₁); the witness is `refl` in both directions since
+-- the two shape functions are the same closed term.
+record BridgeAlignment
+  -- The two arcs both produce OpcodeAlgebras with substrate-
+  -- native opcodes — same primitive endpoint.
+  (lojban-arc-opcode-algebra-shape :
+      (Opcode : Set) (State : Set) → OpcodeAlgebra Opcode State → Set)
+  (tokipona-arc-opcode-algebra-shape :
+      (Opcode : Set) (State : Set) → OpcodeAlgebra Opcode State → Set)
+  -- The shapes coincide (modulo carrier choice), pointwise:
+  (shapes-coincide :
+      (Opcode State : Set) (alg : OpcodeAlgebra Opcode State) →
+      lojban-arc-opcode-algebra-shape Opcode State alg ⇔
+      tokipona-arc-opcode-algebra-shape Opcode State alg)
+  : Set where
 
-bridge-alignment-witness : BridgeAlignment
-bridge-alignment-witness = record
-  { lojban-arc-opcode-algebra-shape   = λ _ _ _ → ℕ → ℕ
-  ; tokipona-arc-opcode-algebra-shape = λ _ _ _ → ℕ → ℕ
-  ; shapes-coincide                   = refl
-  }
+bridge-alignment-witness :
+  BridgeAlignment
+    (λ _ _ _ → ℕ → ℕ)
+    (λ _ _ _ → ℕ → ℕ)
+    (λ _ _ _ → ⇔-refl)
+bridge-alignment-witness = record {}
 
 ------------------------------------------------------------------------
 -- 4. Capstone.

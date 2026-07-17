@@ -11,7 +11,8 @@
 
 module Substrate.Linguistic.BicategoricalCapstone where
 
-open import Substrate.Linguistic.Roster using (Lang)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 
 -- Re-export the B-arc slices publicly.
 open import Substrate.Linguistic.Language2Morphism public
@@ -36,9 +37,12 @@ open import Substrate.Linguistic.YonedaFull public
 --   * Full Yoneda lemma bundle (B9)
 ------------------------------------------------------------------------
 
-record BArcSummary : Set₁ where
+record BArcSummary : Set where
   field
-    bicategory : BicategoryOfLanguages Lang
+    bicategory :
+      BicategoryOfLanguages Lang
+        (λ l m → LanguageMorphism (witness-of l) (witness-of m))
+        Language2Morphism
     yoneda-full :
       (L M : Lang) → YonedaLemmaFull L M
 

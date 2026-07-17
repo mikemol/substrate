@@ -66,11 +66,10 @@ private
 -- primitive states the alternating axiom only).
 ------------------------------------------------------------------------
 
-record WedgeProduct : Set (lsuc (ℓV ⊔ ℓL)) where
+record WedgeProduct (V_base : Set ℓV) (Lambda2 : Set ℓL)
+       : Set (ℓV ⊔ ℓL) where
   constructor mkWedgeProduct
   field
-    V_base       : Set ℓV
-    Lambda2      : Set ℓL
     0L           : Lambda2
     _+L_         : Lambda2 → Lambda2 → Lambda2
     _∧_          : V_base → V_base → Lambda2

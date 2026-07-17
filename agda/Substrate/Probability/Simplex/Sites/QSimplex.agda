@@ -29,10 +29,9 @@ open import Substrate.Probability.Simplex
 -- Carrier = ℚ; zero-p = 0/1; one-p = 1/1; plus-p stubbed for the
 -- structural site (concrete numerical addition supplied at use-site).
 
-ℚ-PS : ProbabilitySemiring {0ℓ}
+ℚ-PS : ProbabilitySemiring ℚ
 ℚ-PS = record
-  { Carrier = ℚ
-  ; zero-p  = mkℚ 0ℤ 0   -- 0/1
+  { zero-p  = mkℚ 0ℤ 0   -- 0/1
   ; one-p   = mkℚ 1ℤ 0   -- 1/1
   ; plus-p  = λ a b → mkℚ 0ℤ 0
                        -- stub for ℚ-addition at the site level;

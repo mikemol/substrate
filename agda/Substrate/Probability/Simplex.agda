@@ -22,7 +22,7 @@ module Substrate.Probability.Simplex where
 
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level; 0ℓ) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_)
 
 private
@@ -34,9 +34,10 @@ private
 -- instances: ℚ ∩ [0, 1] for rational probabilities; ℝ ∩ [0, 1] for
 -- real probabilities (not used in --safe due to non-constructivity).
 
-record ProbabilitySemiring : Set (lsuc ℓ) where
+-- ⟡set1-rp: carrier→param — Carrier was a Set-valued FIELD (pins the
+-- record at Set (lsuc ℓ)); as a PARAMETER it never raises the sort.
+record ProbabilitySemiring (Carrier : Set ℓ) : Set ℓ where
   field
-    Carrier : Set ℓ
     zero-p  : Carrier
     one-p   : Carrier
     plus-p  : Carrier → Carrier → Carrier
@@ -50,10 +51,10 @@ open ProbabilitySemiring public
 -- (∑ p a = one) is a separate structural commitment.
 
 record DiscreteDistribution
-       (PS : ProbabilitySemiring {ℓ})
+       {Carrier : Set ℓ} (PS : ProbabilitySemiring Carrier)
        (A : Set ℓ) : Set ℓ where
   field
-    pmf      : A → Carrier PS
+    pmf      : A → Carrier
     -- sum-to-one is stated abstractly; concrete instances either
     -- compute the sum and prove it equals one-p, or supply the
     -- sum-folding operator explicitly.
@@ -70,5 +71,5 @@ open DiscreteDistribution public
 -- Simplex over Fin n at level 0 — needs a non-polymorphic
 -- ProbabilitySemiring at level 0. Concrete instances supply.
 
-Simplex : ProbabilitySemiring {0ℓ} → ℕ → Set
+Simplex : {Carrier : Set} → ProbabilitySemiring Carrier → ℕ → Set
 Simplex PS n = DiscreteDistribution PS (Fin n)

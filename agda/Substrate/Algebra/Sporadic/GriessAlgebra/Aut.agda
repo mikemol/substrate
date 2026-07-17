@@ -64,6 +64,10 @@ module Substrate.Algebra.Sporadic.GriessAlgebra.Aut
     (CommutativeNonAssociativeAlgebra.V GriessAlg →
      CommutativeNonAssociativeAlgebra.V GriessAlg) →
     Set)
+  -- The carrier of Aut(GriessAlgebra) itself (⟡set1-rp: carrier→param
+  -- — was a Set-valued FIELD of AutomorphismGroup, now a param the
+  -- Monster-Aut instance below must be threaded against).
+  (Aut-X : Set)
   -- The Monster-as-Aut(GriessAlgebra) instance: Aut record for
   -- Griess's V with the preservation predicate. User supplies the
   -- explicit construction (= each Aut element + its inverse + the
@@ -71,7 +75,8 @@ module Substrate.Algebra.Sporadic.GriessAlgebra.Aut
   -- representations).
   (Monster-Aut : AutomorphismGroup
                    (CommutativeNonAssociativeAlgebra.V GriessAlg)
-                   Preserves-Griess)
+                   Preserves-Griess
+                   Aut-X)
   where
 
 ------------------------------------------------------------------------
@@ -85,6 +90,7 @@ Monster-as-AutGriess :
   AutomorphismGroup
     (CommutativeNonAssociativeAlgebra.V GriessAlg)
     Preserves-Griess
+    Aut-X
 Monster-as-AutGriess = Monster-Aut
 
 ------------------------------------------------------------------------

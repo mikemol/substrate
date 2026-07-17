@@ -29,26 +29,22 @@ open import Substrate.Linguistic.CategoryLaws
 -- 1. The CategoryOfLanguages record.
 --
 -- Bundles the category structure: objects, hom, id, composition,
--- and the three laws (up to ≈M). Object is a PARAMETER now
--- (⟡rc-lang, W5-L3: the mission's enumerable-objects doctrine — the
--- object universe is the Set₀ `Lang` enum, not a held Set₁ family);
--- the record's own level drops to Set₁ (the `Hom : Object → Object →
--- Set` FIELD's type is itself a Set₁ citizen — a parameter never
--- raises the sort, but a Set-valued Π-field still does).
+-- and the three laws (up to ≈M). Object, Hom, and _≅_ are all
+-- PARAMETERS now (⟡set1-rp: carrier→param — a Set-valued FIELD
+-- pins the record at Set₁; as params they never raise the sort),
+-- so the record's own level drops to Set.
 ------------------------------------------------------------------------
 
-record CategoryOfLanguages (Object : Set) : Set₁ where
+record CategoryOfLanguages
+  (Object : Set) (Hom : Object → Object → Set)
+  (_≅_ : {L₁ L₂ : Object} → Hom L₁ L₂ → Hom L₁ L₂ → Set) : Set where
   field
-    -- Morphisms
-    Hom : Object → Object → Set
     -- Identity
     Id : (L : Object) → Hom L L
     -- Composition
     Compose :
       {L₁ L₂ L₃ : Object} →
       Hom L₂ L₃ → Hom L₁ L₂ → Hom L₁ L₃
-    -- Morphism equivalence (extensional)
-    _≅_ : {L₁ L₂ : Object} → Hom L₁ L₂ → Hom L₁ L₂ → Set
     -- Category laws
     identityˡ :
       {L₁ L₂ : Object} (f : Hom L₁ L₂) → Compose (Id L₂) f ≅ f
@@ -68,12 +64,12 @@ record CategoryOfLanguages (Object : Set) : Set₁ where
 -- `witness-of`: `Hom l m = LanguageMorphism (witness-of l) (witness-of m)`.
 ------------------------------------------------------------------------
 
-LanguageCategory : CategoryOfLanguages Lang
+LanguageCategory :
+  CategoryOfLanguages Lang
+    (λ l m → LanguageMorphism (witness-of l) (witness-of m)) _≈M_
 LanguageCategory = record
-  { Hom       = λ l m → LanguageMorphism (witness-of l) (witness-of m)
-  ; Id        = λ l → id-morphism (witness-of l)
+  { Id        = λ l → id-morphism (witness-of l)
   ; Compose   = _∘L_
-  ; _≅_       = _≈M_
   ; identityˡ = ∘L-identityˡ
   ; identityʳ = ∘L-identityʳ
   ; assoc     = ∘L-assoc

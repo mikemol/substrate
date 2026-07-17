@@ -45,9 +45,8 @@ open import Substrate.Algebra.F2
 -- two chosen ones).
 ------------------------------------------------------------------------
 
-record F₂-Like {ℓ : Level} : Set (suc ℓ) where
+record F₂-Like {ℓ : Level} (T : Set ℓ) : Set ℓ where
   field
-    T   : Set ℓ
     𝟘ₜ  : T
     𝟙ₜ  : T
 
@@ -62,10 +61,9 @@ record F₂-Like {ℓ : Level} : Set (suc ℓ) where
 -- F₂ itself is the canonical F₂-Like (trivial instance).
 ------------------------------------------------------------------------
 
-F₂-is-F₂-Like : F₂-Like
+F₂-is-F₂-Like : F₂-Like F₂
 F₂-is-F₂-Like = record
-  { T        = F₂
-  ; 𝟘ₜ       = 𝟘
+  { 𝟘ₜ       = 𝟘
   ; 𝟙ₜ       = 𝟙
   ; distinct = 𝟘≢𝟙
   ; complete = F₂-cases
@@ -82,7 +80,7 @@ F₂-is-F₂-Like = record
 -- to our F₂ without enumerating axioms.
 ------------------------------------------------------------------------
 
-module _ {ℓ : Level} (L : F₂-Like {ℓ}) where
+module _ {ℓ : Level} {T : Set ℓ} (L : F₂-Like T) where
   open F₂-Like L
 
   to : T → F₂

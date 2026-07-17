@@ -26,12 +26,10 @@ open import Substrate.Probability.KLDivergence
 ------------------------------------------------------------------------
 -- The Fin-n KL divergence at ℚ probabilities.
 
-ℚ-KLDivergence : KLDivergence ℚ-EntropyFunctor
-ℚ-KLDivergence = record
-  { KL = λ {A} _ _ → mkℚ 0ℤ 0
-                     -- stub: actual KL formula supplied at runtime
-                     -- side with ℚ-arithmetic + rational log
-  }
+ℚ-KLDivergence : KLDivergence ℚ-EntropyFunctor (λ {A} _ _ → mkℚ 0ℤ 0)
+                  -- stub: actual KL formula supplied at runtime side
+                  -- with ℚ-arithmetic + rational log
+ℚ-KLDivergence = record {}
 
 ------------------------------------------------------------------------
 -- Per [[q-over-r-constructive]]: ℚ-valued KL is constructive.

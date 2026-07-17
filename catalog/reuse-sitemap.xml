@@ -568,7 +568,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.19</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.2</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -730,7 +730,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#CommutativeConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#ConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#ConditionalEntropy</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#MutualInformation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/KLDivergence#CrossEntropy</loc><priority>0.0</priority></url>
@@ -746,8 +746,8 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovTerm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Simplex#ProbabilitySemiring</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.06</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Simplex#ProbabilitySemiring</loc><priority>0.06</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#GateReflection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Pipe</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Step</loc><priority>0.0</priority></url>

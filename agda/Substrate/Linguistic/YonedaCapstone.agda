@@ -89,10 +89,12 @@ cross-reconstruction = yoneda-reconstruction
 --   * Yoneda embedding よ + Yoneda lemma (forward direction)
 ------------------------------------------------------------------------
 
-record YArcSummary : Set₁ where
+record YArcSummary : Set where
   field
     -- The category-of-languages object.
-    category : CategoryOfLanguages Lang
+    category :
+      CategoryOfLanguages Lang
+        (λ l m → LanguageMorphism (witness-of l) (witness-of m)) _≈M_
     -- The Yoneda reconstruction for arbitrary morphisms.
     yoneda :
       {L M : Lang} (f : LanguageMorphism (witness-of L) (witness-of M)) →

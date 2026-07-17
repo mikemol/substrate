@@ -29,15 +29,11 @@ open import Substrate.Probability.Entropy
 ------------------------------------------------------------------------
 -- The Fin-n Shannon entropy functor at ℚ probabilities + ℚ entropy.
 
-ℚ-EntropyFunctor : EntropyFunctor {0ℓ}
-ℚ-EntropyFunctor = record
-  { PS        = ℚ-PS
-  ; EntropyTy = ℚ                  -- entropy values in ℚ
-  ; H         = λ {A} _ → mkℚ 0ℤ 0
-                                   -- stub: actual entropy formula
-                                   -- (Σ -p log p) supplied at runtime
-                                   -- side with rational-log routines
-  }
+ℚ-EntropyFunctor : EntropyFunctor ℚ-PS ℚ (λ {A} _ → mkℚ 0ℤ 0)
+                    -- entropy values in ℚ; H is a stub: actual entropy
+                    -- formula (Σ -p log p) supplied at runtime side
+                    -- with rational-log routines
+ℚ-EntropyFunctor = record {}
 
 ------------------------------------------------------------------------
 -- Per [[q-over-r-constructive]]: keep entropy in ℚ; ℝ-valued

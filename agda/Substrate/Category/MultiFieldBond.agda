@@ -46,9 +46,10 @@ inj-suc (suc i) = suc (inj-suc i)
 -- Fin (suc n) for indexing into Field.
 ------------------------------------------------------------------------
 
-record FieldTower (n : ℕ) : Set (lsuc ℓ) where
+-- ⟡set1-rp: carrier→param — Field was a Set-valued FIELD (pinning the
+-- record at Set (lsuc ℓ)); as a PARAMETER it never raises the sort.
+record FieldTower (n : ℕ) (Field : Fin (suc n) → Set ℓ) : Set ℓ where
   field
-    Field   : Fin (suc n) → Set ℓ
     Bond    : (i : Fin n) → Field (inj-suc i) → Field (suc i)
 
 ------------------------------------------------------------------------

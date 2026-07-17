@@ -56,7 +56,7 @@ PSL27-Bond ₂ _ = zero
 -- decomposition is stationary (no compositional drift), so it
 -- inhabits the FixedFanOut (= constant-arity) special case.
 
-PSL27-FieldFanOut : FixedFanOut 3
+PSL27-FieldFanOut : FixedFanOut 3 (Fin 168) PSL27-Target PSL27-Bond
 PSL27-FieldFanOut = make-fixed 3 (Fin 168) PSL27-Target PSL27-Bond
 
 ------------------------------------------------------------------------
