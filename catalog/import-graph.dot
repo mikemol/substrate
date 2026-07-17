@@ -9553,7 +9553,6 @@ digraph imports {
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Z2-Coxeter";
   "Substrate.Groups.Actions.Z2-on-Z3.Canonical" -> "Substrate.Groups.Z3-Coxeter";
-  "Substrate.Groups.Capabilities" -> "Substrate.Foundation.Product";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.CoxeterFin";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.PhaseProjection";
   "Substrate.Groups.Capabilities" -> "Substrate.Groups.Capabilities.Strict2Monoid";
