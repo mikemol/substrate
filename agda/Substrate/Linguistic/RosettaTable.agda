@@ -34,11 +34,12 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; WitnessName; FreeConstructionClass;
-         name; class; Basis; FreeCarrier;
+  using (WitnessName; FreeConstructionClass;
+         name; class;
          Lojban; TokiPona; Solresol; Kelen; Lambda; LieFrag;
          Free-monoid; Free-F2-module; Free-cyclic;
          Free-relation; Free-CCC; Free-Lie; Free-other)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Classification
   using (all-witnesses; witness-by-name; witness-by-class;
          _⊎-OR_; here; there)
@@ -50,14 +51,18 @@ open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 -- Records the pair of names, classes, and the same-class? flag.
 -- The substrate-native ⊎-OR carries the YES / NO flag without
 -- needing Bool: `here` = same class; `there` = different class.
+-- left/right are Lang values now (⟡rc-lang, W5-L3) — the witness
+-- itself is reached via `witness-of` where needed; RosettaEntry
+-- drops to Set₀.
 ------------------------------------------------------------------------
 
-record RosettaEntry : Set₁ where
+record RosettaEntry : Set where
   constructor mkEntry
   field
-    left       : LanguageWitness
-    right      : LanguageWitness
-    same-class : (class left ≡ class right) ⊎-OR (class left ≡ class right → ⊥)
+    left       : Lang
+    right      : Lang
+    same-class : (class (witness-of left) ≡ class (witness-of right))
+                   ⊎-OR (class (witness-of left) ≡ class (witness-of right) → ⊥)
 
 ------------------------------------------------------------------------
 -- 2. Decidable same-class? for pairs of witnesses.
@@ -129,8 +134,8 @@ class-decide Free-other     Free-Lie       = there (λ ())
 -- is decided by class-decide.
 ------------------------------------------------------------------------
 
-pair-entry : (left right : LanguageWitness) → RosettaEntry
-pair-entry l r = mkEntry l r (class-decide (class l) (class r))
+pair-entry : (left right : Lang) → RosettaEntry
+pair-entry l r = mkEntry l r (class-decide (class (witness-of l)) (class (witness-of r)))
 
 ------------------------------------------------------------------------
 -- 4. Worked cross-language pair entries.
@@ -140,37 +145,33 @@ pair-entry l r = mkEntry l r (class-decide (class l) (class r))
 -- the full pairwise catalog.
 ------------------------------------------------------------------------
 
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
+open import Substrate.Linguistic.Roster
+  using (lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
 
 -- Lojban × Toki Pona: different cells (discrete word-algebra vs.
 -- F₂-module). The original linguistic Rosetta pair.
 rosetta-lojban-tokipona : RosettaEntry
-rosetta-lojban-tokipona = pair-entry lojban-witness tokipona-witness
+rosetta-lojban-tokipona = pair-entry lojban tokipona
 
 -- Lojban × Lambda: both CCC-shaped, but Lambda is PURE FCC while
 -- Lojban approximates with n-ary morphism. Different cells in the
 -- arc's lattice (Free-monoid vs Free-CCC) but structurally adjacent.
 rosetta-lojban-lambda : RosettaEntry
-rosetta-lojban-lambda = pair-entry lojban-witness lambda-witness
+rosetta-lojban-lambda = pair-entry lojban lambda-lang
 
 -- Toki Pona × Solresol: both have "cyclic" flavour (F₂ self-inverse
 -- vs. Z/7 cyclic basis) but different cells.
 rosetta-tokipona-solresol : RosettaEntry
-rosetta-tokipona-solresol = pair-entry tokipona-witness solresol-witness
+rosetta-tokipona-solresol = pair-entry tokipona solresol
 
 -- Kelen × Lambda: relations vs. functions — the structural-
 -- contrast pair (free-relation cell vs free-CCC cell).
 rosetta-kelen-lambda : RosettaEntry
-rosetta-kelen-lambda = pair-entry kelen-witness lambda-witness
+rosetta-kelen-lambda = pair-entry kelen lambda-lang
 
 -- Lojban × Lojban: trivial same-class diagonal entry.
 rosetta-lojban-lojban : RosettaEntry
-rosetta-lojban-lojban = pair-entry lojban-witness lojban-witness
+rosetta-lojban-lojban = pair-entry lojban lojban
 
 ------------------------------------------------------------------------
 -- 5. Sample cross-table.

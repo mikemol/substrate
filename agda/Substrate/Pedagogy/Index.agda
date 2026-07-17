@@ -15,12 +15,8 @@ module Substrate.Pedagogy.Index where
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
+open import Substrate.Linguistic.Roster
+  using (Lang; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
 
 open import Substrate.Pedagogy.MarkdownToken
   using (TextSymbol;
@@ -61,12 +57,12 @@ bicategorical-arc = mkArcDescription
 
 index-sections : Word Section
 index-sections =
-  witness→section lojban-witness   ∷
-  witness→section tokipona-witness ∷
-  witness→section solresol-witness ∷
-  witness→section kelen-witness    ∷
-  witness→section lambda-witness   ∷
-  witness→section lie-witness      ∷
+  witness→section lojban      ∷
+  witness→section tokipona    ∷
+  witness→section solresol    ∷
+  witness→section kelen       ∷
+  witness→section lambda-lang ∷
+  witness→section lie-lang    ∷
   arc→section classification-arc   ∷
   arc→section yoneda-arc           ∷
   arc→section bicategorical-arc    ∷

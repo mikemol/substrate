@@ -36,7 +36,8 @@ open import Substrate.Linguistic.Language2Morphism
 infixr 9 _∘H_
 
 _∘H_ :
-  {L₁ L₂ L₃ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ B₃ F₃ : Set}
+  {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂} {L₃ : LanguageWitness B₃ F₃}
   {f g : LanguageMorphism L₁ L₂}
   {h k : LanguageMorphism L₂ L₃} →
   Language2Morphism h k →

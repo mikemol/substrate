@@ -46,7 +46,7 @@ open import Substrate.Invented.LieFragment using (lie-witness)
 -- ⟡set1-paydown: no Set-valued fields (WitnessName, FreeConstructionClass
 -- and the two ≡-witnesses are all Set-level; W is a PARAMETER, which does
 -- not raise the record's sort) — the : Set₁ was over-annotation.
-record WitnessAlignment (W : LanguageWitness) : Set where
+record WitnessAlignment {B F : Set} (W : LanguageWitness B F) : Set where
   field
     expected-name  : WitnessName
     expected-class : FreeConstructionClass
@@ -115,7 +115,7 @@ lie-aligned = record
 -- their correct names + classifications.
 ------------------------------------------------------------------------
 
-record FullRetroactiveAlignment : Set₁ where
+record FullRetroactiveAlignment : Set where
   field
     lojban   : WitnessAlignment lojban-witness
     tokipona : WitnessAlignment tokipona-witness

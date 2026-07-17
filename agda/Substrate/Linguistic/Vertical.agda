@@ -29,7 +29,7 @@ open import Substrate.Linguistic.Language2Morphism
 infixr 9 _∘V_
 
 _∘V_ :
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   {f g h : LanguageMorphism L₁ L₂} →
   Language2Morphism g h →
   Language2Morphism f g →
@@ -48,7 +48,7 @@ _∘V_ β α = mk2Mor
 ------------------------------------------------------------------------
 
 vertical-identityˡ-basis :
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   {f g : LanguageMorphism L₁ L₂}
   (α : Language2Morphism f g)
   (b : _) →
@@ -62,7 +62,7 @@ vertical-identityˡ-basis α b
 ------------------------------------------------------------------------
 
 vertical-identityʳ-basis :
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   {f g : LanguageMorphism L₁ L₂}
   (α : Language2Morphism f g)
   (b : _) →

@@ -31,11 +31,12 @@ open import Substrate.Linguistic.Morphism
 infixr 9 _∘L_
 
 _∘L_ :
-  {L₁ L₂ L₃ : LanguageWitness} →
+  {B₁ F₁ B₂ F₂ B₃ F₃ : Set}
+  {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂} {L₃ : LanguageWitness B₃ F₃} →
   LanguageMorphism L₂ L₃ →
   LanguageMorphism L₁ L₂ →
   LanguageMorphism L₁ L₃
-_∘L_ {L₁} {L₂} {L₃} g f = mkLangMor
+_∘L_ {L₁ = L₁} {L₂ = L₂} {L₃ = L₃} g f = mkLangMor
   (λ b → basis-map g (basis-map f b))
   (λ x → carrier-map g (carrier-map f x))
   coherent

@@ -99,11 +99,9 @@ expr-B-derived = S ∷ K ∷ S ∷ K ∷ []
 lambda-free-structure : FreeOverBasis Combinator SKIWord
 lambda-free-structure = mkFreeOverBasis single
 
-lambda-witness : LanguageWitness
+lambda-witness : LanguageWitness Combinator SKIWord
 lambda-witness = mkWitness
   Lambda
-  Combinator
-  SKIWord
   lambda-free-structure
   Free-CCC
 

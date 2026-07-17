@@ -21,7 +21,7 @@
 
 module Substrate.Linguistic.NaturalRespect where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
 open import Substrate.Linguistic.MorphismSetoid using (LangMor-Setoid)
@@ -42,18 +42,18 @@ open import Substrate.Algebra.Setoid.Map using (SetoidMap)
 ------------------------------------------------------------------------
 
 RespectsM :
-  (L M X : LanguageWitness)
+  (L M X : Lang)
   (α-X : よ L X → よ M X) → Set
 RespectsM L M X α-X =
-  {f g : LanguageMorphism X L} → f ≈M g → α-X f ≈M α-X g
+  {f g : LanguageMorphism (witness-of X) (witness-of L)} → f ≈M g → α-X f ≈M α-X g
 
 -- A function plus a respect-≈M witness IS a SetoidMap between
 -- LangMor-Setoid X L and LangMor-Setoid X M.
 to-SetoidMap :
-  {L M X : LanguageWitness}
+  {L M X : Lang}
   {α-X : よ L X → よ M X}
   (resp : RespectsM L M X α-X) →
-  SetoidMap (LangMor-Setoid X L) (LangMor-Setoid X M)
+  SetoidMap (LangMor-Setoid (witness-of X) (witness-of L)) (LangMor-Setoid (witness-of X) (witness-of M))
 to-SetoidMap {α-X = α-X} resp = record
   { apply     = α-X
   ; respect-≈ = resp

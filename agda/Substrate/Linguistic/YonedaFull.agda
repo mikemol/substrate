@@ -18,12 +18,12 @@
 
 module Substrate.Linguistic.YonedaFull where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
-open import Substrate.Linguistic.YonedaEmbedding using (よ)
+open import Substrate.Linguistic.YonedaEmbedding using (よ; よ-on-morphism)
 open import Substrate.Linguistic.YonedaLemma
   using (yoneda-forward; yoneda-backward; yoneda-reconstruction)
 open import Substrate.Linguistic.NaturalPresheafMorphism
@@ -41,19 +41,19 @@ open import Substrate.Linguistic.YonedaReverse
 ------------------------------------------------------------------------
 
 record YonedaLemmaFull
-  (L M : LanguageWitness) : Set₁ where
+  (L M : Lang) : Set where
   field
     -- Forward: any f is recoverable from yoneda-backward f.
     forward :
-      (f : LanguageMorphism L M) →
-      yoneda-forward (yoneda-backward f) ≈M f
+      (f : LanguageMorphism (witness-of L) (witness-of M)) →
+      yoneda-forward (よ-on-morphism f) (yoneda-backward f) ≈M f
     -- Reverse: for any natural α,
     --   α-X (id-morphism L ∘L h) ≈M (forward-from-natural α) ∘L h.
     reverse :
       (α : NaturalPresheafMorphism L M)
-      {X : LanguageWitness}
+      {X : Lang}
       (h : よ L X) →
-      nat-component α X (id-morphism L ∘L h) ≈M
+      nat-component α X (id-morphism (witness-of L) ∘L h) ≈M
         (forward-from-natural α) ∘L h
 
 ------------------------------------------------------------------------
@@ -64,7 +64,7 @@ record YonedaLemmaFull
 ------------------------------------------------------------------------
 
 yoneda-lemma-full :
-  (L M : LanguageWitness) → YonedaLemmaFull L M
+  (L M : Lang) → YonedaLemmaFull L M
 yoneda-lemma-full L M = record
   { forward = yoneda-reconstruction
   ; reverse = yoneda-reverse-direct

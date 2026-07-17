@@ -23,7 +23,7 @@ open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; Basis; FreeCarrier)
+  using (LanguageWitness)
 open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; basis-map; carrier-map)
 open import Substrate.Linguistic.CategoryLaws
@@ -35,7 +35,7 @@ open import Substrate.Algebra.Setoid using (Setoid)
 ------------------------------------------------------------------------
 
 ≈M-sym :
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   {f g : LanguageMorphism L₁ L₂} →
   f ≈M g → g ≈M f
 ≈M-sym fg = record
@@ -48,7 +48,7 @@ open import Substrate.Algebra.Setoid using (Setoid)
 ------------------------------------------------------------------------
 
 ≈M-trans :
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   {f g h : LanguageMorphism L₁ L₂} →
   f ≈M g → g ≈M h → f ≈M h
 ≈M-trans fg gh = record
@@ -61,7 +61,8 @@ open import Substrate.Algebra.Setoid using (Setoid)
 ------------------------------------------------------------------------
 
 LangMor-Setoid :
-  (L₁ L₂ : LanguageWitness) → Setoid (LanguageMorphism L₁ L₂) _≈M_
+  {B₁ F₁ B₂ F₂ : Set} (L₁ : LanguageWitness B₁ F₁) (L₂ : LanguageWitness B₂ F₂) →
+  Setoid (LanguageMorphism L₁ L₂) _≈M_
 LangMor-Setoid L₁ L₂ = record
   { ≈-refl  = λ _ → ≈M-refl
   ; ≈-sym   = ≈M-sym

@@ -13,7 +13,7 @@
 
 module Substrate.Linguistic.BicategoryOfLanguages where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
@@ -26,10 +26,8 @@ open import Substrate.Linguistic.Horizontal using (_∘H_)
 -- 1. The BicategoryOfLanguages record.
 ------------------------------------------------------------------------
 
-record BicategoryOfLanguages : Set₂ where
+record BicategoryOfLanguages (Object : Set) : Set₁ where
   field
-    -- Object layer
-    Object : Set₁
     -- 1-morphism layer
     OneCell : Object → Object → Set
     -- 2-morphism layer
@@ -60,12 +58,11 @@ record BicategoryOfLanguages : Set₂ where
 -- 2. The canonical instance.
 ------------------------------------------------------------------------
 
-LanguageBicategory : BicategoryOfLanguages
+LanguageBicategory : BicategoryOfLanguages Lang
 LanguageBicategory = record
-  { Object    = LanguageWitness
-  ; OneCell   = LanguageMorphism
+  { OneCell   = λ l m → LanguageMorphism (witness-of l) (witness-of m)
   ; TwoCell   = Language2Morphism
-  ; Id-1      = id-morphism
+  ; Id-1      = λ l → id-morphism (witness-of l)
   ; Compose-1 = _∘L_
   ; Id-2      = id-2mor
   ; ∘V-2      = _∘V_

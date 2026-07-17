@@ -19,10 +19,8 @@ open import Substrate.Solresol.Fragment.Word using (SolresolWord; single)
 solresol-free-structure : FreeOverBasis Note SolresolWord
 solresol-free-structure = mkFreeOverBasis single
 
-solresol-witness : LanguageWitness
+solresol-witness : LanguageWitness Note SolresolWord
 solresol-witness = mkWitness
   Solresol
-  Note
-  SolresolWord
   solresol-free-structure
   Free-cyclic

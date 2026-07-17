@@ -94,7 +94,7 @@ tokipona-still-aligned = refl
 --   * The closure count
 ------------------------------------------------------------------------
 
-record DArcSummary : Set₁ where
+record DArcSummary : Set where
   field
     closures-landed : ℕ
     log-correct     : closures-landed ≡ closure-count

@@ -13,11 +13,12 @@ module Substrate.Pedagogy.WitnessToSection where
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; WitnessName;
+  using (WitnessName;
          FreeConstructionClass; name; class;
          Lojban; TokiPona; Solresol; Kelen; Lambda; LieFrag;
          Free-monoid; Free-F2-module; Free-cyclic;
          Free-relation; Free-CCC; Free-Lie; Free-other)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Pedagogy.MarkdownToken
   using (MarkdownToken; TextSymbol;
          txt-Lojban; txt-TokiPona; txt-Solresol; txt-Kelen;
@@ -65,22 +66,22 @@ class→text Free-other     = txt-Free-other
 --             showing the (name, class) pair
 ------------------------------------------------------------------------
 
-witness→section : LanguageWitness → Section
-witness→section L = mkSection
-  (name→text (name L))
+witness→section : Lang → Section
+witness→section l = mkSection
+  (name→text (name (witness-of l)))
   body
   witness-section
   where
     body : Word MarkdownToken
     body =
-      heading-2 (name→text (name L)) ∷
+      heading-2 (name→text (name (witness-of l))) ∷
       paragraph txt-universal-property ∷
       table-row ∷
         table-cell txt-name ∷
-        table-cell (name→text (name L)) ∷
+        table-cell (name→text (name (witness-of l))) ∷
       table-row ∷
         table-cell txt-class ∷
-        table-cell (class→text (class L)) ∷
+        table-cell (class→text (class (witness-of l))) ∷
       blank-line ∷
       []
 

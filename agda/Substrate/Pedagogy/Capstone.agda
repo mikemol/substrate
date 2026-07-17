@@ -23,8 +23,7 @@ open import Substrate.Pedagogy.RosettaPage public
 open import Substrate.Pedagogy.Index public
 
 -- Bring in the substrate witnesses for the worked example.
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
+open import Substrate.Linguistic.Roster using (lojban; tokipona)
 
 ------------------------------------------------------------------------
 -- 1. Worked example: the Lojban PageBundle.
@@ -33,14 +32,14 @@ open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
 ------------------------------------------------------------------------
 
 lojban-page : PageBundle
-lojban-page = language-page lojban-witness
+lojban-page = language-page lojban
 
 ------------------------------------------------------------------------
 -- 2. Worked example: the Toki Pona PageBundle.
 ------------------------------------------------------------------------
 
 tokipona-page : PageBundle
-tokipona-page = language-page tokipona-witness
+tokipona-page = language-page tokipona
 
 ------------------------------------------------------------------------
 -- 3. Top-level outputs: the three primary PageBundles ready for

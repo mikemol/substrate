@@ -25,7 +25,7 @@ open import Substrate.Linguistic.Morphism using (LanguageMorphism; mkLangMor)
 -- and carrier-map are λ x → x; η-coherence holds by refl.
 ------------------------------------------------------------------------
 
-id-morphism : (L : LanguageWitness) → LanguageMorphism L L
+id-morphism : {B F : Set} (L : LanguageWitness B F) → LanguageMorphism L L
 id-morphism L = mkLangMor
   (λ b → b)
   (λ x → x)

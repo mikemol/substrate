@@ -20,7 +20,7 @@
 
 module Substrate.Linguistic.YonedaRespect where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
 open import Substrate.Linguistic.MorphismSetoid using (LangMor-Setoid)
@@ -38,10 +38,10 @@ open import Substrate.Algebra.Setoid.Map using (SetoidMap)
 ------------------------------------------------------------------------
 
 record NaturalPresheafMorphismR
-  (L M : LanguageWitness) : Set₁ where
+  (L M : Lang) : Set where
   field
     base       : NaturalPresheafMorphism L M
-    respects-M : (X : LanguageWitness) →
+    respects-M : (X : Lang) →
                  RespectsM L M X (nat-component base X)
 
 open NaturalPresheafMorphismR public
@@ -55,10 +55,10 @@ open NaturalPresheafMorphismR public
 ------------------------------------------------------------------------
 
 component-as-SetoidMap :
-  {L M : LanguageWitness}
+  {L M : Lang}
   (α : NaturalPresheafMorphismR L M)
-  (X : LanguageWitness) →
-  SetoidMap (LangMor-Setoid X L) (LangMor-Setoid X M)
+  (X : Lang) →
+  SetoidMap (LangMor-Setoid (witness-of X) (witness-of L)) (LangMor-Setoid (witness-of X) (witness-of M))
 component-as-SetoidMap α X = to-SetoidMap (respects-M α X)
 
 ------------------------------------------------------------------------
@@ -71,7 +71,7 @@ component-as-SetoidMap α X = to-SetoidMap (respects-M α X)
 ------------------------------------------------------------------------
 
 forget-respect :
-  {L M : LanguageWitness} →
+  {L M : Lang} →
   NaturalPresheafMorphismR L M →
   NaturalPresheafMorphism L M
 forget-respect α = base α

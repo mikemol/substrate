@@ -52,10 +52,8 @@ lojban-free-structure = mkFreeOverBasis single
 -- C8 (Classification) consumes this to populate the lattice.
 ------------------------------------------------------------------------
 
-lojban-witness : LanguageWitness
+lojban-witness : LanguageWitness Gismu LojbanWord
 lojban-witness = mkWitness
   Lojban
-  Gismu
-  LojbanWord
   lojban-free-structure
   Free-monoid

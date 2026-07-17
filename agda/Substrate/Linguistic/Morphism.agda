@@ -32,27 +32,31 @@ open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsu
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; FreeOverBasis; η;
-         Basis; FreeCarrier; structure)
+  using (LanguageWitness; FreeOverBasis; η; structure)
 
 ------------------------------------------------------------------------
 -- 1. The LanguageMorphism record.
 --
 -- A morphism from L₁ to L₂ pairs:
---   * basis-map : Basis L₁ → Basis L₂  (translation at the basis layer)
---   * carrier-map : FreeCarrier L₁ → FreeCarrier L₂  (induced at the
---     free-carrier layer)
+--   * basis-map : B₁ → B₂  (translation at the basis layer)
+--   * carrier-map : F₁ → F₂  (induced at the free-carrier layer)
 -- subject to η-coherence:
 --   carrier-map (η (structure L₁) b) ≡ η (structure L₂) (basis-map b)
+--
+-- B₁/F₁/B₂/F₂ are the (Basis, FreeCarrier) pairs L₁/L₂ were
+-- instantiated at (⟡rc-lang, W5-L2) — explicit implicits, never a
+-- `private variable` (a dependent carrier there would generalize
+-- with a fresh level per use).
 ------------------------------------------------------------------------
 
-record LanguageMorphism (L₁ L₂ : LanguageWitness) : Set where
+record LanguageMorphism {B₁ F₁ B₂ F₂ : Set}
+                         (L₁ : LanguageWitness B₁ F₁) (L₂ : LanguageWitness B₂ F₂) : Set where
   constructor mkLangMor
   field
-    basis-map   : Basis L₁ → Basis L₂
-    carrier-map : FreeCarrier L₁ → FreeCarrier L₂
+    basis-map   : B₁ → B₂
+    carrier-map : F₁ → F₂
     η-coherence :
-      (b : Basis L₁) →
+      (b : B₁) →
       carrier-map (η (structure L₁) b) ≡ η (structure L₂) (basis-map b)
 
 open LanguageMorphism public

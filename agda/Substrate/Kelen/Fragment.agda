@@ -119,10 +119,8 @@ example-la-pa = la ∷ pa ∷ []
 kelen-free-structure : FreeOverBasis Relational KelenWord
 kelen-free-structure = mkFreeOverBasis single
 
-kelen-witness : LanguageWitness
+kelen-witness : LanguageWitness Relational KelenWord
 kelen-witness = mkWitness
   Kelen
-  Relational
-  KelenWord
   kelen-free-structure
   Free-relation

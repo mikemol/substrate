@@ -20,7 +20,7 @@
 
 module Substrate.Linguistic.YonedaEmbedding where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.HomFunctor
   using (Hom-contra; Hom-contra-map)
@@ -28,11 +28,11 @@ open import Substrate.Linguistic.HomFunctor
 ------------------------------------------------------------------------
 -- 1. The Yoneda embedding よ.
 --
--- For each L : LanguageWitness, よ L is the presheaf X ↦ Hom(X, L).
--- Concretely: よ L X = LanguageMorphism X L = Hom-contra X L.
+-- For each L : Lang, よ L is the presheaf X ↦ Hom(X, L). Concretely:
+-- よ L X = LanguageMorphism (witness-of X) (witness-of L) = Hom-contra X L.
 ------------------------------------------------------------------------
 
-よ : LanguageWitness → LanguageWitness → Set
+よ : Lang → Lang → Set
 よ L X = Hom-contra X L
 
 ------------------------------------------------------------------------
@@ -52,9 +52,9 @@ open import Substrate.Linguistic.HomFunctor
 open import Substrate.Linguistic.Compose using (_∘L_)
 
 よ-on-morphism :
-  {L M : LanguageWitness} →
-  LanguageMorphism L M →
-  (X : LanguageWitness) → よ L X → よ M X
+  {L M : Lang} →
+  LanguageMorphism (witness-of L) (witness-of M) →
+  (X : Lang) → よ L X → よ M X
 よ-on-morphism f X h = f ∘L h
 
 ------------------------------------------------------------------------
@@ -62,19 +62,21 @@ open import Substrate.Linguistic.Compose using (_∘L_)
 --
 -- A NATURAL TRANSFORMATION α : P ⇒ Q between two presheaves over
 -- LanguageCategory consists of:
---   * For each X : LanguageWitness, a function α-X : P X → Q X.
+--   * For each X : Lang, a function α-X : P X → Q X.
 --   * Naturality: for f : X → Y, the square commutes.
 --
 -- For the Yoneda statement (Y9), the relevant fact is:
 -- α : よ L ⇒ よ M ↔ LanguageMorphism L M (Yoneda lemma bijection).
+--
+-- `component` moves to a PARAMETER (⟡rc-lang, W5-L4): what used to
+-- be a Set-valued FIELD (pinning the record at Set₁) is now data the
+-- caller supplies at the type; the record body is vestigial (empty
+-- — there's nothing left to witness once component is a param), so
+-- PresheafMorphism drops to Set.
 ------------------------------------------------------------------------
 
 record PresheafMorphism
-  (P Q : LanguageWitness → Set) : Set₁ where
-  field
-    component : (X : LanguageWitness) → P X → Q X
-
-open PresheafMorphism public
+  (P Q : Lang → Set) (component : (X : Lang) → P X → Q X) : Set where
 
 ------------------------------------------------------------------------
 -- 4. The Yoneda action lifted to a PresheafMorphism.
@@ -84,10 +86,9 @@ open PresheafMorphism public
 ------------------------------------------------------------------------
 
 よ-presheaf-mor :
-  {L M : LanguageWitness} →
-  LanguageMorphism L M →
-  PresheafMorphism (よ L) (よ M)
-よ-presheaf-mor f = record { component = よ-on-morphism f }
+  {L M : Lang} (f : LanguageMorphism (witness-of L) (witness-of M)) →
+  PresheafMorphism (よ L) (よ M) (よ-on-morphism f)
+よ-presheaf-mor f = record {}
 
 ------------------------------------------------------------------------
 -- 5. Smoke test: よ at concrete witnesses.
@@ -96,12 +97,13 @@ open PresheafMorphism public
 -- PresheafMorphism instance.
 ------------------------------------------------------------------------
 
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
+open import Substrate.Linguistic.Roster using (lojban)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 
 -- The identity Yoneda morphism よ(L) ⇒ よ(L) (induced by id : L → L).
-よ-id-Lojban : PresheafMorphism (よ lojban-witness) (よ lojban-witness)
-よ-id-Lojban = よ-presheaf-mor (id-morphism lojban-witness)
+よ-id-Lojban :
+  PresheafMorphism (よ lojban) (よ lojban) (よ-on-morphism (id-morphism (witness-of lojban)))
+よ-id-Lojban = よ-presheaf-mor (id-morphism (witness-of lojban))
 
 ------------------------------------------------------------------------
 -- 6. Capstone for Y8.

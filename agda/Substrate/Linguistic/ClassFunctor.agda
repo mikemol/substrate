@@ -55,10 +55,10 @@ _∘C_ {a} {_} {c} _ _ = any-class-mor a c
 ------------------------------------------------------------------------
 
 class-on-morphism :
-  {L₁ L₂ : LanguageWitness} →
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂} →
   LanguageMorphism L₁ L₂ →
   ClassMorphism (class L₁) (class L₂)
-class-on-morphism {L₁} {L₂} _ = any-class-mor (class L₁) (class L₂)
+class-on-morphism {L₁ = L₁} {L₂ = L₂} _ = any-class-mor (class L₁) (class L₂)
 
 ------------------------------------------------------------------------
 -- 3. Functoriality witnesses (trivially in the codiscrete codomain).

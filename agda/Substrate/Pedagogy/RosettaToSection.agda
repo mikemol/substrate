@@ -14,7 +14,8 @@ module Substrate.Pedagogy.RosettaToSection where
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; name; class)
+  using (name; class)
+open import Substrate.Linguistic.Roster using (witness-of)
 open import Substrate.Linguistic.RosettaTable
   using (RosettaEntry)
 open RosettaEntry public
@@ -60,13 +61,13 @@ rosetta→section r = mkSection
     body =
       heading-3 txt-rosetta-table ∷
       table-row ∷
-        table-cell (name→text (name L)) ∷
+        table-cell (name→text (name (witness-of L))) ∷
         table-cell txt-vs ∷
-        table-cell (name→text (name R)) ∷
+        table-cell (name→text (name (witness-of R))) ∷
       table-row ∷
-        table-cell (class→text (class L)) ∷
+        table-cell (class→text (class (witness-of L))) ∷
         table-cell (verdict→text (same-class r)) ∷
-        table-cell (class→text (class R)) ∷
+        table-cell (class→text (class (witness-of R))) ∷
       blank-line ∷
       []
 

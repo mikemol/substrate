@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := BicategoricalCapstone.agda BicategoryOfLanguages.agda Capstone.agda CategoryLaws.agda CategoryOfLanguages.agda ClassFunctor.agda Classification.agda ClosureCapstone.agda ClosureLog.agda Compose.agda HomFunctor.agda Horizontal.agda IdMorphism.agda Interchange.agda Language2Morphism.agda Morphism.agda MorphismSetoid.agda NaturalPresheafMorphism.agda NaturalRespect.agda RetroactiveAlignment.agda RosettaTable.agda Vertical.agda YonedaCapstone.agda YonedaEmbedding.agda YonedaFull.agda YonedaLemma.agda YonedaNatural.agda YonedaRespect.agda YonedaReverse.agda
+FILES := BicategoricalCapstone.agda BicategoryOfLanguages.agda Capstone.agda CategoryLaws.agda CategoryOfLanguages.agda ClassFunctor.agda Classification.agda ClosureCapstone.agda ClosureLog.agda Compose.agda HomFunctor.agda Horizontal.agda IdMorphism.agda Interchange.agda Language2Morphism.agda Morphism.agda MorphismSetoid.agda NaturalPresheafMorphism.agda NaturalRespect.agda RetroactiveAlignment.agda RosettaTable.agda Roster.agda Vertical.agda YonedaCapstone.agda YonedaEmbedding.agda YonedaFull.agda YonedaLemma.agda YonedaNatural.agda YonedaRespect.agda YonedaReverse.agda
 SUBDIRS := Capstone
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

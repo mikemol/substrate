@@ -667,6 +667,7 @@ digraph reuse {
   "Substrate.Linguistic.RetroactiveAlignment.FullRetroactiveAlignment" [label="FullRetroactiveAlignment\nSubstrate.Linguistic.RetroactiveAlignment"];
   "Substrate.Linguistic.RetroactiveAlignment.WitnessAlignment" [label="WitnessAlignment\nSubstrate.Linguistic.RetroactiveAlignment"];
   "Substrate.Linguistic.RosettaTable.RosettaEntry" [label="RosettaEntry\nSubstrate.Linguistic.RosettaTable"];
+  "Substrate.Linguistic.Roster.Lang" [label="Lang\nSubstrate.Linguistic.Roster", style=rounded];
   "Substrate.Linguistic.YonedaCapstone.YArcSummary" [label="YArcSummary\nSubstrate.Linguistic.YonedaCapstone"];
   "Substrate.Linguistic.YonedaEmbedding.PresheafMorphism" [label="PresheafMorphism\nSubstrate.Linguistic.YonedaEmbedding"];
   "Substrate.Linguistic.YonedaFull.YonedaLemmaFull" [label="YonedaLemmaFull\nSubstrate.Linguistic.YonedaFull"];
@@ -1335,11 +1336,11 @@ digraph reuse {
   "Substrate.Linguistic.Language2Morphism.Language2Morphism" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
   "Substrate.Linguistic.Language2Morphism.Language2Morphism" -> "Substrate.Linguistic.Morphism.LanguageMorphism";
   "Substrate.Linguistic.Morphism.LanguageMorphism" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
-  "Substrate.Linguistic.NaturalPresheafMorphism.NaturalPresheafMorphism" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
+  "Substrate.Linguistic.NaturalPresheafMorphism.NaturalPresheafMorphism" -> "Substrate.Linguistic.Roster.Lang";
   "Substrate.Linguistic.RetroactiveAlignment.WitnessAlignment" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
-  "Substrate.Linguistic.YonedaEmbedding.PresheafMorphism" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
-  "Substrate.Linguistic.YonedaFull.YonedaLemmaFull" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
-  "Substrate.Linguistic.YonedaRespect.NaturalPresheafMorphismR" -> "Substrate.Category.FreeOverBasis.LanguageWitness";
+  "Substrate.Linguistic.YonedaEmbedding.PresheafMorphism" -> "Substrate.Linguistic.Roster.Lang";
+  "Substrate.Linguistic.YonedaFull.YonedaLemmaFull" -> "Substrate.Linguistic.Roster.Lang";
+  "Substrate.Linguistic.YonedaRespect.NaturalPresheafMorphismR" -> "Substrate.Linguistic.Roster.Lang";
   "Substrate.Logic.Evidence.ElAtlas.OrbitCloud.IsFrame" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Lojban.Bridi.Bridi" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Lojban.PlaceStructure.Selbri" -> "Substrate.Foundation.Nat.ℕ";

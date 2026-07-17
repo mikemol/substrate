@@ -45,10 +45,8 @@ tokipona-free-structure = mkFreeOverBasis nimi-as-vector
 -- 2. The packaged LanguageWitness.
 ------------------------------------------------------------------------
 
-tokipona-witness : LanguageWitness
+tokipona-witness : LanguageWitness Nimi (SemVec nimi-count)
 tokipona-witness = mkWitness
   TokiPona
-  Nimi
-  (SemVec nimi-count)
   tokipona-free-structure
   Free-F2-module

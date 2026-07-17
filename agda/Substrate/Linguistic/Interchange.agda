@@ -45,7 +45,8 @@ open import Substrate.Linguistic.Horizontal using (_∘H_)
 ------------------------------------------------------------------------
 
 interchange-id-basis :
-  {L₁ L₂ L₃ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ B₃ F₃ : Set}
+  {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂} {L₃ : LanguageWitness B₃ F₃}
   (f : LanguageMorphism L₁ L₂) (h : LanguageMorphism L₂ L₃) →
   (b : _) →
   basis-eq
@@ -64,7 +65,8 @@ interchange-id-basis _ _ _ = refl
 ------------------------------------------------------------------------
 
 InterchangeStatement :
-  {L₁ L₂ L₃ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ B₃ F₃ : Set}
+  {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂} {L₃ : LanguageWitness B₃ F₃}
   -- Inner 2-cells at L₁ → L₂
   {f g h : LanguageMorphism L₁ L₂}
   -- Outer 2-cells at L₂ → L₃

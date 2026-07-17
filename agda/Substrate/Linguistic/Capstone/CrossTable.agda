@@ -12,28 +12,23 @@ module Substrate.Linguistic.Capstone.CrossTable where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
+open import Substrate.Linguistic.Roster
+  using (Lang; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
 open import Substrate.Linguistic.RosettaTable using (RosettaEntry; pair-entry)
 
 private
-  l : LanguageWitness
-  l = lojban-witness
-  t : LanguageWitness
-  t = tokipona-witness
-  s : LanguageWitness
-  s = solresol-witness
-  k : LanguageWitness
-  k = kelen-witness
-  λ-w : LanguageWitness
-  λ-w = lambda-witness
-  Λ : LanguageWitness
-  Λ = lie-witness
+  l : Lang
+  l = lojban
+  t : Lang
+  t = tokipona
+  s : Lang
+  s = solresol
+  k : Lang
+  k = kelen
+  λ-w : Lang
+  λ-w = lambda-lang
+  Λ : Lang
+  Λ = lie-lang
 
 full-cross-table : Vec RosettaEntry 36
 full-cross-table =

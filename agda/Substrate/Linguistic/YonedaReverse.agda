@@ -27,7 +27,7 @@
 
 module Substrate.Linguistic.YonedaReverse where
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
@@ -44,9 +44,9 @@ open import Substrate.Linguistic.NaturalPresheafMorphism
 ------------------------------------------------------------------------
 
 forward-from-natural :
-  {L M : LanguageWitness} →
-  NaturalPresheafMorphism L M → LanguageMorphism L M
-forward-from-natural {L} α = nat-component α L (id-morphism L)
+  {L M : Lang} →
+  NaturalPresheafMorphism L M → LanguageMorphism (witness-of L) (witness-of M)
+forward-from-natural {L} α = nat-component α L (id-morphism (witness-of L))
 
 ------------------------------------------------------------------------
 -- 2. The reverse-direction statement (naturality-direct form).
@@ -60,11 +60,11 @@ forward-from-natural {L} α = nat-component α L (id-morphism L)
 ------------------------------------------------------------------------
 
 yoneda-reverse-direct :
-  {L M : LanguageWitness}
+  {L M : Lang}
   (α : NaturalPresheafMorphism L M)
-  {X : LanguageWitness}
+  {X : Lang}
   (h : よ L X) →
-  nat-component α X (id-morphism L ∘L h)
+  nat-component α X (id-morphism (witness-of L) ∘L h)
     ≈M (forward-from-natural α) ∘L h
 yoneda-reverse-direct α h = nat-witness α h (id-morphism _)
 

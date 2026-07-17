@@ -33,7 +33,7 @@ module Substrate.Linguistic.YonedaNatural where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 open import Substrate.Linguistic.CategoryLaws
@@ -47,9 +47,9 @@ open import Substrate.Linguistic.YonedaEmbedding using (よ)
 ------------------------------------------------------------------------
 
 yoneda-component :
-  {L M : LanguageWitness}
-  (f : LanguageMorphism L M)
-  (X : LanguageWitness) →
+  {L M : Lang}
+  (f : LanguageMorphism (witness-of L) (witness-of M))
+  (X : Lang) →
   よ L X → よ M X
 yoneda-component f X h = f ∘L h
 
@@ -65,10 +65,10 @@ yoneda-component f X h = f ∘L h
 open import Substrate.Linguistic.CategoryLaws using (basis-≈; carrier-≈)
 
 yoneda-naturality-≈M :
-  {L M : LanguageWitness}
-  (f : LanguageMorphism L M)
-  {X Y : LanguageWitness}
-  (g : LanguageMorphism X Y)
+  {L M : Lang}
+  (f : LanguageMorphism (witness-of L) (witness-of M))
+  {X Y : Lang}
+  (g : LanguageMorphism (witness-of X) (witness-of Y))
   (h : よ L Y) →
   yoneda-component f X (h ∘L g) ≈M yoneda-component f Y h ∘L g
 yoneda-naturality-≈M f g h = record

@@ -18,7 +18,7 @@ module Substrate.Linguistic.CategoryLaws where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; Basis; FreeCarrier)
+  using (LanguageWitness)
 open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; basis-map; carrier-map)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
@@ -35,13 +35,13 @@ open import Substrate.Linguistic.Compose using (_∘L_)
 
 infix 4 _≈M_
 
-record _≈M_ {L₁ L₂ : LanguageWitness}
+record _≈M_ {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   (f g : LanguageMorphism L₁ L₂) : Set where
   field
     basis-≈ :
-      (b : Basis L₁) → basis-map f b ≡ basis-map g b
+      (b : B₁) → basis-map f b ≡ basis-map g b
     carrier-≈ :
-      (x : FreeCarrier L₁) → carrier-map f x ≡ carrier-map g x
+      (x : F₁) → carrier-map f x ≡ carrier-map g x
 
 open _≈M_ public
 
@@ -52,7 +52,8 @@ open _≈M_ public
 ------------------------------------------------------------------------
 
 ∘L-identityˡ :
-  {L₁ L₂ : LanguageWitness} (f : LanguageMorphism L₁ L₂) →
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
+  (f : LanguageMorphism L₁ L₂) →
   (id-morphism L₂) ∘L f ≈M f
 ∘L-identityˡ f = record
   { basis-≈   = λ _ → refl
@@ -64,7 +65,8 @@ open _≈M_ public
 ------------------------------------------------------------------------
 
 ∘L-identityʳ :
-  {L₁ L₂ : LanguageWitness} (f : LanguageMorphism L₁ L₂) →
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
+  (f : LanguageMorphism L₁ L₂) →
   f ∘L (id-morphism L₁) ≈M f
 ∘L-identityʳ f = record
   { basis-≈   = λ _ → refl
@@ -76,7 +78,9 @@ open _≈M_ public
 ------------------------------------------------------------------------
 
 ∘L-assoc :
-  {L₁ L₂ L₃ L₄ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ B₃ F₃ B₄ F₄ : Set}
+  {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
+  {L₃ : LanguageWitness B₃ F₃} {L₄ : LanguageWitness B₄ F₄}
   (h : LanguageMorphism L₃ L₄)
   (g : LanguageMorphism L₂ L₃)
   (f : LanguageMorphism L₁ L₂) →
@@ -91,7 +95,8 @@ open _≈M_ public
 ------------------------------------------------------------------------
 
 ≈M-refl :
-  {L₁ L₂ : LanguageWitness} {f : LanguageMorphism L₁ L₂} →
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
+  {f : LanguageMorphism L₁ L₂} →
   f ≈M f
 ≈M-refl = record
   { basis-≈   = λ _ → refl

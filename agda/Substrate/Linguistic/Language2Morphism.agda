@@ -24,7 +24,7 @@ module Substrate.Linguistic.Language2Morphism where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; Basis; FreeCarrier)
+  using (LanguageWitness)
 open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; basis-map; carrier-map)
 
@@ -36,14 +36,14 @@ open import Substrate.Linguistic.Morphism
 ------------------------------------------------------------------------
 
 record Language2Morphism
-  {L₁ L₂ : LanguageWitness}
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
   (f g : LanguageMorphism L₁ L₂) : Set where
   constructor mk2Mor
   field
     basis-eq :
-      (b : Basis L₁) → basis-map f b ≡ basis-map g b
+      (b : B₁) → basis-map f b ≡ basis-map g b
     carrier-eq :
-      (x : FreeCarrier L₁) → carrier-map f x ≡ carrier-map g x
+      (x : F₁) → carrier-map f x ≡ carrier-map g x
 
 open Language2Morphism public
 
@@ -55,7 +55,8 @@ open Language2Morphism public
 ------------------------------------------------------------------------
 
 id-2mor :
-  {L₁ L₂ : LanguageWitness} (f : LanguageMorphism L₁ L₂) →
+  {B₁ F₁ B₂ F₂ : Set} {L₁ : LanguageWitness B₁ F₁} {L₂ : LanguageWitness B₂ F₂}
+  (f : LanguageMorphism L₁ L₂) →
   Language2Morphism f f
 id-2mor f = mk2Mor (λ _ → refl) (λ _ → refl)
 

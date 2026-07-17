@@ -26,14 +26,9 @@ open import Substrate.Linguistic.HomFunctor public
 open import Substrate.Linguistic.YonedaEmbedding public
 open import Substrate.Linguistic.YonedaLemma public
 
--- Bring in the witnesses for worked examples.
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
+-- Bring in the Lang enum for worked examples.
+open import Substrate.Linguistic.Roster
+  using (Lang; witness-of; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
 
 ------------------------------------------------------------------------
 -- 1. The headline statement (substrate-internal form).
@@ -44,31 +39,32 @@ open import Substrate.Invented.LieFragment using (lie-witness)
 ------------------------------------------------------------------------
 
 reconstruction :
-  (L : LanguageWitness) →
-  yoneda-forward (yoneda-backward (id-morphism L)) ≈M id-morphism L
-reconstruction L = yoneda-reconstruction (id-morphism L)
+  (L : Lang) →
+  yoneda-forward (よ-on-morphism (id-morphism (witness-of L))) (yoneda-backward (id-morphism (witness-of L)))
+    ≈M id-morphism (witness-of L)
+reconstruction L = yoneda-reconstruction (id-morphism (witness-of L))
 
 ------------------------------------------------------------------------
 -- 2. Worked Yoneda reconstructions for all six witnesses.
 ------------------------------------------------------------------------
 
 reconstruct-lojban : _
-reconstruct-lojban = reconstruction lojban-witness
+reconstruct-lojban = reconstruction lojban
 
 reconstruct-tokipona : _
-reconstruct-tokipona = reconstruction tokipona-witness
+reconstruct-tokipona = reconstruction tokipona
 
 reconstruct-solresol : _
-reconstruct-solresol = reconstruction solresol-witness
+reconstruct-solresol = reconstruction solresol
 
 reconstruct-kelen : _
-reconstruct-kelen = reconstruction kelen-witness
+reconstruct-kelen = reconstruction kelen
 
 reconstruct-lambda : _
-reconstruct-lambda = reconstruction lambda-witness
+reconstruct-lambda = reconstruction lambda-lang
 
 reconstruct-lie : _
-reconstruct-lie = reconstruction lie-witness
+reconstruct-lie = reconstruction lie-lang
 
 ------------------------------------------------------------------------
 -- 3. Cross-language Yoneda reconstruction.
@@ -79,8 +75,8 @@ reconstruct-lie = reconstruction lie-witness
 ------------------------------------------------------------------------
 
 cross-reconstruction :
-  {L M : LanguageWitness} (f : LanguageMorphism L M) →
-  yoneda-forward (yoneda-backward f) ≈M f
+  {L M : Lang} (f : LanguageMorphism (witness-of L) (witness-of M)) →
+  yoneda-forward (よ-on-morphism f) (yoneda-backward f) ≈M f
 cross-reconstruction = yoneda-reconstruction
 
 ------------------------------------------------------------------------
@@ -93,14 +89,14 @@ cross-reconstruction = yoneda-reconstruction
 --   * Yoneda embedding よ + Yoneda lemma (forward direction)
 ------------------------------------------------------------------------
 
-record YArcSummary : Set₂ where
+record YArcSummary : Set₁ where
   field
     -- The category-of-languages object.
-    category : CategoryOfLanguages
+    category : CategoryOfLanguages Lang
     -- The Yoneda reconstruction for arbitrary morphisms.
     yoneda :
-      {L M : LanguageWitness} (f : LanguageMorphism L M) →
-      yoneda-forward (yoneda-backward f) ≈M f
+      {L M : Lang} (f : LanguageMorphism (witness-of L) (witness-of M)) →
+      yoneda-forward (よ-on-morphism f) (yoneda-backward f) ≈M f
 
 y-arc-summary : YArcSummary
 y-arc-summary = record

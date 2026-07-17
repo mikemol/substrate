@@ -96,11 +96,9 @@ expr-jacobi-2 = bracket (gen y) (bracket (gen z) (gen x))
 lie-free-structure : FreeOverBasis LieGen LieExpr
 lie-free-structure = mkFreeOverBasis η-LieGen
 
-lie-witness : LanguageWitness
+lie-witness : LanguageWitness LieGen LieExpr
 lie-witness = mkWitness
   LieFrag
-  LieGen
-  LieExpr
   lie-free-structure
   Free-Lie
 

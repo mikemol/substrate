@@ -268,7 +268,7 @@
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#AlgebraClass</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeConstructionClass</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeOverBasis</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#LanguageWitness</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#LanguageWitness</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#WitnessName</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeF2Module#F2Mod</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeMonoid#MonoidOn</loc><priority>0.0</priority></url>
@@ -670,6 +670,7 @@
   <url><loc>https://substrate.local/Substrate/Linguistic/RetroactiveAlignment#FullRetroactiveAlignment</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/RetroactiveAlignment#WitnessAlignment</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/RosettaTable#RosettaEntry</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Linguistic/Roster#Lang</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaCapstone#YArcSummary</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaEmbedding#PresheafMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaFull#YonedaLemmaFull</loc><priority>0.0</priority></url>

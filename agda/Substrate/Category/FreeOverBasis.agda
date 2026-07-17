@@ -168,17 +168,21 @@ data WitnessName : Set where
 --   * the FreeOverBasis structure (with η)
 --   * the FreeConstructionClass classification
 --
--- Lives at Set₁ because it quantifies over Set-level basis and
--- carrier types. Each of C2-C7 produces one LanguageWitness; C8
--- bundles them into the classification lattice.
+-- Basis/FreeCarrier are PARAMETERS now (⟡rc-lang, W5-L1): a Set-valued
+-- field pins the record at Set₁; params never raise the sort. The
+-- object universe over which LanguageWitness ranges is enumerated
+-- at Set₀ by the 6-constructor `Lang` (Linguistic/Roster.agda),
+-- which decodes each constructor to its own (Basis, FreeCarrier)
+-- pair via `Basis-of`/`FreeCarrier-of` and produces the witness via
+-- `witness-of`. Each of C2-C7 produces one LanguageWitness at its
+-- concrete (Basis, FreeCarrier); C8 bundles them into the
+-- classification lattice via the Lang enum.
 ------------------------------------------------------------------------
 
-record LanguageWitness : Set₁ where
+record LanguageWitness (Basis FreeCarrier : Set) : Set where
   constructor mkWitness
   field
     name          : WitnessName
-    Basis         : Set
-    FreeCarrier   : Set
     structure     : FreeOverBasis Basis FreeCarrier
     class         : FreeConstructionClass
 
@@ -196,7 +200,7 @@ open LanguageWitness public
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 
-same-class? : (w₁ w₂ : LanguageWitness) → Set
+same-class? : {B₁ F₁ B₂ F₂ : Set} (w₁ : LanguageWitness B₁ F₁) (w₂ : LanguageWitness B₂ F₂) → Set
 same-class? w₁ w₂ = class w₁ ≡ class w₂
 
 ------------------------------------------------------------------------

@@ -23,7 +23,7 @@ module Substrate.Linguistic.NaturalPresheafMorphism where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
@@ -45,12 +45,12 @@ open import Substrate.Linguistic.YonedaEmbedding using (よ; PresheafMorphism)
 -- η-coherence witnesses that differ between associated
 -- compositions; _≈M_ is the right equivalence here.
 IsNatural :
-  {L M : LanguageWitness}
-  (α : (X : LanguageWitness) → よ L X → よ M X) →
-  Set₁
+  {L M : Lang}
+  (α : (X : Lang) → よ L X → よ M X) →
+  Set
 IsNatural {L} {M} α =
-  {X Y : LanguageWitness}
-  (f : LanguageMorphism X Y)
+  {X Y : Lang}
+  (f : LanguageMorphism (witness-of X) (witness-of Y))
   (h : よ L Y) →
   α X (h ∘L f) ≈M (α Y h) ∘L f
 
@@ -61,9 +61,9 @@ IsNatural {L} {M} α =
 ------------------------------------------------------------------------
 
 record NaturalPresheafMorphism
-  (L M : LanguageWitness) : Set₁ where
+  (L M : Lang) : Set where
   field
-    nat-component : (X : LanguageWitness) → よ L X → よ M X
+    nat-component : (X : Lang) → よ L X → よ M X
     nat-witness   : IsNatural {L} {M} nat-component
 
 open NaturalPresheafMorphism public
@@ -74,10 +74,9 @@ open NaturalPresheafMorphism public
 ------------------------------------------------------------------------
 
 forget-naturality :
-  {L M : LanguageWitness} →
-  NaturalPresheafMorphism L M →
-  PresheafMorphism (よ L) (よ M)
-forget-naturality α = record { component = nat-component α }
+  {L M : Lang} (α : NaturalPresheafMorphism L M) →
+  PresheafMorphism (よ L) (よ M) (nat-component α)
+forget-naturality α = record {}
 
 ------------------------------------------------------------------------
 -- 4. Capstone for B6.

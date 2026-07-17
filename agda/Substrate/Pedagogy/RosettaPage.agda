@@ -14,14 +14,9 @@ module Substrate.Pedagogy.RosettaPage where
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 
-open import Substrate.Category.FreeOverBasis using (LanguageWitness)
+open import Substrate.Linguistic.Roster
+  using (Lang; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
 open import Substrate.Linguistic.RosettaTable using (pair-entry)
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
 
 open import Substrate.Pedagogy.MarkdownToken using (txt-rosetta-table)
 open import Substrate.Pedagogy.Section using (Section)
@@ -33,14 +28,14 @@ open import Substrate.Pedagogy.RosettaToSection using (rosetta→section)
 -- with all six.
 ------------------------------------------------------------------------
 
-rosetta-row : LanguageWitness → Word Section
+rosetta-row : Lang → Word Section
 rosetta-row L =
-  rosetta→section (pair-entry L lojban-witness)   ∷
-  rosetta→section (pair-entry L tokipona-witness) ∷
-  rosetta→section (pair-entry L solresol-witness) ∷
-  rosetta→section (pair-entry L kelen-witness)    ∷
-  rosetta→section (pair-entry L lambda-witness)   ∷
-  rosetta→section (pair-entry L lie-witness)      ∷
+  rosetta→section (pair-entry L lojban)      ∷
+  rosetta→section (pair-entry L tokipona)    ∷
+  rosetta→section (pair-entry L solresol)    ∷
+  rosetta→section (pair-entry L kelen)       ∷
+  rosetta→section (pair-entry L lambda-lang) ∷
+  rosetta→section (pair-entry L lie-lang)    ∷
   []
 
 ------------------------------------------------------------------------
@@ -51,12 +46,12 @@ rosetta-row L =
 
 rosetta-full-table : Word Section
 rosetta-full-table =
-  rosetta-row lojban-witness   ++
-  rosetta-row tokipona-witness ++
-  rosetta-row solresol-witness ++
-  rosetta-row kelen-witness    ++
-  rosetta-row lambda-witness   ++
-  rosetta-row lie-witness
+  rosetta-row lojban      ++
+  rosetta-row tokipona    ++
+  rosetta-row solresol    ++
+  rosetta-row kelen       ++
+  rosetta-row lambda-lang ++
+  rosetta-row lie-lang
 
 ------------------------------------------------------------------------
 -- 3. The Rosetta PageBundle.
