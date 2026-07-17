@@ -35,7 +35,8 @@ private
 -- Re-export the substrate's _⇒_ from Poly as PolyLens for
 -- application-layer clarity.
 
-PolyLens : Poly {ℓ} → Poly {ℓ} → Set ℓ
+PolyLens : {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+         → Poly PosP DirP → Poly PosQ DirQ → Set ℓ
 PolyLens P Q = P ⇒ Q
 
 ------------------------------------------------------------------------
@@ -43,7 +44,9 @@ PolyLens P Q = P ⇒ Q
 -- the on-positions function and the contravariant direction lifting.
 
 compose-lens :
-  ∀ {P Q R : Poly {ℓ}} →
+  ∀ {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+    {PosR : Set ℓ} {DirR : PosR → Set ℓ}
+    {P : Poly PosP DirP} {Q : Poly PosQ DirQ} {R : Poly PosR DirR} →
   PolyLens P Q →
   PolyLens Q R →
   PolyLens P R
@@ -69,7 +72,8 @@ compose-lens {P = P} {Q = Q} {R = R} f g = record
 -- general coalgebraic form of dynamical systems with state-dependent
 -- arity.
 
-record PolyCoalgebra (P : Poly {ℓ}) : Set (lsuc ℓ) where
+record PolyCoalgebra {Pos : Set ℓ} {Dir : Pos → Set ℓ}
+                     (P : Poly Pos Dir) : Set (lsuc ℓ) where
   field
     Carrier : Set ℓ
     unfold  : Carrier → ⟦ P ⟧ Carrier
@@ -83,7 +87,8 @@ open PolyCoalgebra public
 -- with an indexing of the "interface" — the positions/directions
 -- that are open (i.e., interact with the environment).
 
-record OpenDynamicalSystem (P : Poly {ℓ}) : Set (lsuc ℓ) where
+record OpenDynamicalSystem {Pos : Set ℓ} {Dir : Pos → Set ℓ}
+                           (P : Poly Pos Dir) : Set (lsuc ℓ) where
   field
     coalgebra : PolyCoalgebra P
     -- The system's external interface is the polynomial P itself;
@@ -111,7 +116,8 @@ open OpenDynamicalSystem public
 -- inner state into the outer step's input.
 
 record WiringDiagram
-       (P Q : Poly {ℓ}) : Set ℓ where
+       {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+       (P : Poly PosP DirP) (Q : Poly PosQ DirQ) : Set ℓ where
   field
     wire : PolyLens P Q
 

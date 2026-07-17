@@ -44,12 +44,11 @@ private
 -- Two-component data: a type of positions, and for each position a
 -- type of directions.
 
-record Poly : Set (lsuc ℓ) where
-  field
-    Positions  : Set ℓ
-    Directions : Positions → Set ℓ
-
-open Poly public
+-- ⟡rc-poly (⟡set1-rerank2): Positions/Directions are PARAMETERS now (vestigial
+-- record; a Set-valued field pins the record at Set (lsuc ℓ), params never raise
+-- the sort). Combinators carry their computed carriers in the return TYPE.
+record Poly (Positions : Set ℓ) (Directions : Positions → Set ℓ) : Set ℓ where
+  constructor mkPoly
 
 ------------------------------------------------------------------------
 -- PF2: Position / direction projections.
@@ -59,8 +58,8 @@ open Poly public
 -- i.e., a position together with a function from its directions
 -- into y.
 
-⟦_⟧ : Poly {ℓ} → Set ℓ → Set ℓ
-⟦ P ⟧ y = Σ (Positions P) λ a → (Directions P a → y)
+⟦_⟧ : {Pos : Set ℓ} {Dir : Pos → Set ℓ} → Poly Pos Dir → Set ℓ → Set ℓ
+⟦_⟧ {Pos = Pos} {Dir} P y = Σ Pos λ a → (Dir a → y)
 
 ------------------------------------------------------------------------
 -- PF3: Polynomial functor morphism (lens shape).
@@ -73,19 +72,21 @@ open Poly public
 -- it goes BACKWARDS. This is the lens shape: the forward map is
 -- positions; the backward map carries directions back.
 
-record _⇒_ (P Q : Poly {ℓ}) : Set ℓ where      -- ⟦shape:b692b98b on-positions,on-directions⟧
+record _⇒_ {PosP : Set ℓ} {DirP : PosP → Set ℓ}      -- ⟦shape:7fe1edaf {PosQ,(P,on-positions⟧
+           {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+           (P : Poly PosP DirP) (Q : Poly PosQ DirQ) : Set ℓ where
   field
-    on-positions  : Positions P → Positions Q
-    on-directions : (p : Positions P) →
-                    Directions Q (on-positions p) →
-                    Directions P p
+    on-positions  : PosP → PosQ
+    on-directions : (p : PosP) →
+                    DirQ (on-positions p) →
+                    DirP p
 
 open _⇒_ public
 
 ------------------------------------------------------------------------
 -- PF4: Identity polynomial functor morphism.
 
-id-poly : ∀ {P : Poly {ℓ}} → P ⇒ P
+id-poly : ∀ {Pos : Set ℓ} {Dir : Pos → Set ℓ} {P : Poly Pos Dir} → P ⇒ P
 id-poly = record
   { on-positions  = λ p → p
   ; on-directions = λ _ d → d
@@ -98,13 +99,11 @@ id-poly = record
 -- Positions: Positions P ⊎ Positions Q.
 -- Directions: case-split.
 
-_⊕_ : Poly {ℓ} → Poly {ℓ} → Poly {ℓ}
-P ⊕ Q = record
-  { Positions  = Positions P ⊎ Positions Q
-  ; Directions = λ where
-      (inj₁ p) → Directions P p
-      (inj₂ q) → Directions Q q
-  }
+_⊕_ : {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+    → Poly PosP DirP → Poly PosQ DirQ
+    → Poly (PosP ⊎ PosQ) (λ where (inj₁ p) → DirP p
+                                  (inj₂ q) → DirQ q)
+P ⊕ Q = record {}
 
 ------------------------------------------------------------------------
 -- PF6: Product of polynomials.
@@ -113,11 +112,10 @@ P ⊕ Q = record
 -- Positions: Positions P × Positions Q.
 -- Directions: Directions P p ⊎ Directions Q q.
 
-_⊗-poly_ : Poly {ℓ} → Poly {ℓ} → Poly {ℓ}
-P ⊗-poly Q = record
-  { Positions  = Positions P × Positions Q
-  ; Directions = λ pq → Directions P (proj₁ pq) ⊎ Directions Q (proj₂ pq)
-  }
+_⊗-poly_ : {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+    → Poly PosP DirP → Poly PosQ DirQ
+    → Poly (PosP × PosQ) (λ pq → DirP (proj₁ pq) ⊎ DirQ (proj₂ pq))
+P ⊗-poly Q = record {}
 
 ------------------------------------------------------------------------
 -- PF7: Composition `◁` of polynomials.
@@ -126,13 +124,11 @@ P ⊗-poly Q = record
 -- Positions of P ◁ Q: a position of P together with, for each of P's
 -- directions, a position of Q.
 
-_◁_ : Poly {ℓ} → Poly {ℓ} → Poly {ℓ}
-P ◁ Q = record
-  { Positions  = Σ (Positions P) λ p → (Directions P p → Positions Q)
-  ; Directions = λ pq →
-      Σ (Directions P (proj₁ pq)) λ d →
-        Directions Q (proj₂ pq d)
-  }
+_◁_ : {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+    → Poly PosP DirP → Poly PosQ DirQ
+    → Poly (Σ PosP (λ p → DirP p → PosQ))
+           (λ pq → Σ (DirP (proj₁ pq)) λ d → DirQ (proj₂ pq d))
+P ◁ Q = record {}
 
 ------------------------------------------------------------------------
 -- PF8: Tensor `⊗` of polynomials (Day convolution).
@@ -140,11 +136,10 @@ P ◁ Q = record
 -- (P ⊗ Q)(y) at positions (p, q) has directions (Directions P p) ×
 -- (Directions Q q) — Cartesian product (vs ⊕ for ⊗-poly product).
 
-_⊗ᴾ_ : Poly {ℓ} → Poly {ℓ} → Poly {ℓ}
-P ⊗ᴾ Q = record
-  { Positions  = Positions P × Positions Q
-  ; Directions = λ pq → Directions P (proj₁ pq) × Directions Q (proj₂ pq)
-  }
+_⊗ᴾ_ : {PosP : Set ℓ} {DirP : PosP → Set ℓ} {PosQ : Set ℓ} {DirQ : PosQ → Set ℓ}
+    → Poly PosP DirP → Poly PosQ DirQ
+    → Poly (PosP × PosQ) (λ pq → DirP (proj₁ pq) × DirQ (proj₂ pq))
+P ⊗ᴾ Q = record {}
 
 ------------------------------------------------------------------------
 -- PF9: The constant polynomial y ↦ A.
@@ -152,11 +147,8 @@ P ⊗ᴾ Q = record
 -- Constant A = Σ (a : A) → (⊥ → y) = A.
 -- Positions = A, Directions a = ⊥.
 
-const-poly : (A : Set ℓ) → Poly {ℓ}
-const-poly A = record
-  { Positions  = A
-  ; Directions = λ _ → ⊥
-  }
+const-poly : (A : Set ℓ) → Poly A (λ _ → ⊥)
+const-poly A = record {}
 
 ------------------------------------------------------------------------
 -- PF10: The identity polynomial y ↦ y.
@@ -164,11 +156,8 @@ const-poly A = record
 -- Identity = Σ (a : ⊤) → (⊤ → y) = y.
 -- Positions = ⊤, Directions tt = ⊤.
 
-identity-poly : Poly {ℓ}
-identity-poly {ℓ} = record
-  { Positions  = ⊤
-  ; Directions = λ _ → ⊤
-  }
+identity-poly : Poly {ℓ} ⊤ (λ _ → ⊤)
+identity-poly = record {}
 
 ------------------------------------------------------------------------
 -- Categorical reading (PF arc partial).

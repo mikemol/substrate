@@ -27,11 +27,8 @@ open import Substrate.Category.Poly
 -- (P y) = Σ (i : Fin n) → (Fin k → y)
 -- I.e., for each position, k targets in y.
 
-constant-arity-Fin-Poly : (n k : ℕ) → Poly
-constant-arity-Fin-Poly n k = record
-  { Positions  = Fin n
-  ; Directions = λ _ → Fin k
-  }
+constant-arity-Fin-Poly : (n k : ℕ) → Poly (Fin n) (λ _ → Fin k)
+constant-arity-Fin-Poly n k = record {}
 
 ------------------------------------------------------------------------
 -- A polynomial functor with VARIABLE arity per position.
@@ -39,11 +36,8 @@ constant-arity-Fin-Poly n k = record
 -- The arity is given by an arity function arity-fn : Fin n → ℕ.
 
 variable-arity-Fin-Poly :
-  (n : ℕ) (arity-fn : Fin n → ℕ) → Poly
-variable-arity-Fin-Poly n arity-fn = record
-  { Positions  = Fin n
-  ; Directions = λ i → Fin (arity-fn i)
-  }
+  (n : ℕ) (arity-fn : Fin n → ℕ) → Poly (Fin n) (λ i → Fin (arity-fn i))
+variable-arity-Fin-Poly n arity-fn = record {}
 
 ------------------------------------------------------------------------
 -- Per [[expose-generator-not-orbit]]: the polynomial functor's

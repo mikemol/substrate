@@ -333,6 +333,7 @@ digraph reuse {
   "Substrate.Category.PhaseLockedLoop.LoopParameters.LoopParameters" [label="LoopParameters\nSubstrate.Category.PhaseLockedLoop.LoopParameters"];
   "Substrate.Category.PhaseLockedLoop.PLL._.PLL" [label="PLL\nSubstrate.Category.PhaseLockedLoop.PLL._"];
   "Substrate.Category.PhaseLockedLoop.SubstratePLLBank.SubstratePLLBank" [label="SubstratePLLBank\nSubstrate.Category.PhaseLockedLoop.SubstratePLLBank"];
+  "Substrate.Category.Poly.GeneralizeTel" [label="GeneralizeTel\nSubstrate.Category.Poly"];
   "Substrate.Category.Poly.Poly" [label="Poly\nSubstrate.Category.Poly"];
   "Substrate.Category.Poly._⇒_" [label="_⇒_\nSubstrate.Category.Poly"];
   "Substrate.Category.PolyLens.OpenDynamicalSystem" [label="OpenDynamicalSystem\nSubstrate.Category.PolyLens"];
