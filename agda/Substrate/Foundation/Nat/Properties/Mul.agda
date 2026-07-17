@@ -84,3 +84,11 @@ quad w x y z =
   (trans (cong (λ t → w * (t * z)) (*-comm x y))
   (trans (cong (w *_) (*-assoc y x z))
          (sym (*-assoc w y (x * z))))))
+
+-- Middle-swap of a right-nested triple product: a·(b·c) ≡ b·(a·c). The
+-- three-factor analogue of *-comm — reassociate, swap the outer pair,
+-- reassociate back. (quad is the four-factor interchange; this is three.)
+swap-mul : (a b c : ℕ) → a * (b * c) ≡ b * (a * c)
+swap-mul a b c =
+  trans (sym (*-assoc a b c))
+        (trans (cong₂ _*_ (*-comm a b) refl) (*-assoc b a c))
