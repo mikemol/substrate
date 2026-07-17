@@ -24,7 +24,7 @@
 
 module Substrate.WitnessTower.Enumerate where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
@@ -136,7 +136,33 @@ perms-length (suc n) =
                (*-comm (factorial n) (suc n)))
 
 ------------------------------------------------------------------------
--- The count check: perms 4 has 24 entries (S₄), by computation.
+-- THE PRODUCT RULE: the number of length-k sequences (words) over an
+-- n-symbol alphabet is nᵏ. Same witness-tower fold as perms, but every
+-- rung prepends EVERY symbol to EVERY shorter word (no no-repeat
+-- constraint), so the count multiplies by n each rung rather than by the
+-- shrinking free-position count. `words`/`perms` share the concatMapL /
+-- all-positions machinery above; only the multiplier differs.
+------------------------------------------------------------------------
+
+-- All length-k words over the n-symbol alphabet (Fin n): word₀ = the one
+-- empty word; each rung prepends every symbol to every shorter word.
+words : (n k : ℕ) → List (List (Fin n))
+words n zero    = [] ∷ []
+words n (suc k) = concatMapL (λ w → mapL (λ s → s ∷ w) (all-positions n)) (words n k)
+
+-- |words n k| = nᵏ, by induction on k.
+words-length : (n k : ℕ) → lengthL (words n k) ≡ n ^ k
+words-length n zero    = refl
+words-length n (suc k) =
+  trans (length-concatMapL-const n
+           (λ w → mapL (λ s → s ∷ w) (all-positions n))
+           (words n k)
+           (λ w → trans (len-map (λ s → s ∷ w) (all-positions n)) (length-all-positions n)))
+        (trans (cong (λ z → z * n) (words-length n k))
+               (*-comm (n ^ k) n))
+
+------------------------------------------------------------------------
+-- The count checks: perms 4 has 24 entries (S₄), words 2 3 has 2³ = 8.
 ------------------------------------------------------------------------
 
 perms-1-count : lengthL (perms 1) ≡ 1
@@ -147,3 +173,5 @@ perms-3-count : lengthL (perms 3) ≡ 6
 perms-3-count = refl
 perms-4-count : lengthL (perms 4) ≡ 24
 perms-4-count = refl
+words-2-3-count : lengthL (words 2 3) ≡ 8
+words-2-3-count = refl
