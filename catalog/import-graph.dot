@@ -5180,6 +5180,7 @@ digraph imports {
   "Substrate.Algebra.R.Trace.CFBezoutPrev" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.R.Trace.CFDigitHet" -> "Substrate.Algebra.Q.HetBasis";
   "Substrate.Algebra.R.Trace.CFDigitHet" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.R.Trace.CFDigitHet" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.R.Trace.CFMatrixBridge" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.R.Trace.CFMatrixBridge" -> "Substrate.Algebra.Z.Add";
   "Substrate.Algebra.R.Trace.CFMatrixBridge" -> "Substrate.Foundation.Nat";

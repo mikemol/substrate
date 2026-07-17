@@ -848,7 +848,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `Trim` | data | `Substrate.Algebra.F2.Polynomial.Wedge.Trim` | NOT a `leading-position : Maybe ℕ` read, so no |
 | `TripleCascade` | record | `Substrate.Category.CascadedCoalgebra` | inner-step and outer-step are unfold operations |
 | `Two` | data | `Substrate.Algebra.Wedge.Mul` | and even the |
-| `TwoCategory` | record | `Substrate.Category.TwoCategory` | Q1 of the Q-arc. 2-category primitive: 0-cells (objects), 1-cells |
+| `TwoCategory` | record | `Substrate.Category.TwoCategory` | a Set-valued |
 | `TwoEquivalence` | record | `Substrate.Category.TwoEquivalence` | Q9 of the Q-arc. Equivalence in a 2-category: pair of 1-cells + |
 | `TwoFraming` | record | `Substrate.Category.UniversalProperty.FixpointStencilRecord` | ⟡fixpoint-stencil-record: |
 | `TwoNaturalTransformation` | record | `Substrate.Category.TwoNaturalTransformation` | Q8 of the Q-arc. 2-natural transformation between Q6 PseudoFunctors |

@@ -14,14 +14,18 @@ open import Substrate.Category.TwoCategory using (TwoCategory)
 
 module Substrate.Category.GrothendieckConstruction.AsTwoFunctor
   {ℓ0 ℓ1 ℓ2 ℓ0' ℓ1' ℓ2' : Level}
-  (Source : TwoCategory {ℓ0} {ℓ1} {ℓ2})
-  (Target : TwoCategory {ℓ0'} {ℓ1'} {ℓ2'})
+  {ObjS : Set ℓ0} {MorS : ObjS → ObjS → Set ℓ1}
+  {TwoCellS : {a b : ObjS} → MorS a b → MorS a b → Set ℓ2}
+  {ObjT : Set ℓ0'} {MorT : ObjT → ObjT → Set ℓ1'}
+  {TwoCellT : {a b : ObjT} → MorT a b → MorT a b → Set ℓ2'}
+  (Source : TwoCategory ObjS MorS TwoCellS)
+  (Target : TwoCategory ObjT MorT TwoCellT)
   -- The ∫ 2-functor data (object-map + 1-cell-map + 2-cell-map +
   -- preservation laws); user-supplied.
   where
 
-Grothendieck-AsTwoFunctor-Source : TwoCategory
+Grothendieck-AsTwoFunctor-Source : TwoCategory ObjS MorS TwoCellS
 Grothendieck-AsTwoFunctor-Source = Source
 
-Grothendieck-AsTwoFunctor-Target : TwoCategory
+Grothendieck-AsTwoFunctor-Target : TwoCategory ObjT MorT TwoCellT
 Grothendieck-AsTwoFunctor-Target = Target

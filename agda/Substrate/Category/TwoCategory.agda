@@ -26,11 +26,14 @@ private
 -- The TwoCategory record.
 ------------------------------------------------------------------------
 
-record TwoCategory : Set (lsuc (ℓ0 ⊔ ℓ1 ⊔ ℓ2)) where
+-- ⟡set1-rp-twocategory: Obj/Mor/TwoCell are PARAMETERS now — a Set-valued
+-- field pins the record at Set (lsuc _), while carriers as params never
+-- raise the sort (set1-carrier-always-parameterize; CategoryOf precedent).
+record TwoCategory
+  (Obj : Set ℓ0) (Mor : Obj → Obj → Set ℓ1)
+  (TwoCell : {a b : Obj} → Mor a b → Mor a b → Set ℓ2)
+  : Set (ℓ0 ⊔ ℓ1 ⊔ ℓ2) where
   field
-    Obj   : Set ℓ0
-    Mor   : Obj → Obj → Set ℓ1
-    TwoCell : {a b : Obj} → Mor a b → Mor a b → Set ℓ2
     id-1  : (a : Obj) → Mor a a
     comp-1 : {a b c : Obj} → Mor b c → Mor a b → Mor a c
     id-2  : {a b : Obj} (f : Mor a b) → TwoCell f f

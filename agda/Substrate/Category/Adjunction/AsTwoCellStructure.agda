@@ -14,8 +14,10 @@ open import Substrate.Category.TwoCategory using (TwoCategory)
 
 module Substrate.Category.Adjunction.AsTwoCellStructure
   {ℓ0 ℓ1 ℓ2 : Level}
-  (Ambient2Cat : TwoCategory {ℓ0} {ℓ1} {ℓ2})
+  {Obj : Set ℓ0} {Mor : Obj → Obj → Set ℓ1}
+  {TwoCell : {a b : Obj} → Mor a b → Mor a b → Set ℓ2}
+  (Ambient2Cat : TwoCategory Obj Mor TwoCell)
   where
 
-Adjunction-AsTwoCellStructure-Ambient : TwoCategory
+Adjunction-AsTwoCellStructure-Ambient : TwoCategory Obj Mor TwoCell
 Adjunction-AsTwoCellStructure-Ambient = Ambient2Cat

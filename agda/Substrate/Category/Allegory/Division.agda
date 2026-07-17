@@ -80,8 +80,15 @@ residual-duality R T = ⊆-refl , ⊆-refl
 -- the generic Division Allegory, inhabited by Rel.
 ------------------------------------------------------------------------
 
-record DivisionAllegory {ℓo ℓh ℓc : Level} (Al : Allegory ℓo ℓh ℓc)
-       : Set (lsuc (ℓo ⊔ ℓh ⊔ ℓc)) where
+-- ⟡set1-rp-divisionallegory: Al's carriers thread through as implicit
+-- binders (Obj/Hom/_⊑_ are now Allegory's params, not its fields) —
+-- carriers as params never raise the sort (set1-carrier-always-parameterize).
+record DivisionAllegory
+  {ℓo ℓh ℓc : Level}
+  {Obj : Set ℓo} {Hom : Obj → Obj → Set ℓh}
+  {_⊑_ : {A B : Obj} → Hom A B → Hom A B → Set ℓc}
+  (Al : Allegory Obj Hom _⊑_)
+       : Set (ℓo ⊔ ℓh ⊔ ℓc) where
   open Allegory Al
   field
     _∖∖_   : {X Y Z : Obj} → Hom X Y → Hom X Z → Hom Y Z

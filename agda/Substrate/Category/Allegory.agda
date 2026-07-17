@@ -140,12 +140,9 @@ modular R S T a c ((b , (r , s)) , t) = b , ((r , (c , (t , s))) , s)
 -- Step 1 deliverable (REUSE) — Rel is a TwoCategory with TwoCell = ⊆.
 ------------------------------------------------------------------------
 
-Rel-TwoCategory : TwoCategory {lsuc 0ℓ} {lsuc 0ℓ} {0ℓ}
+Rel-TwoCategory : TwoCategory Set Rel _⊆_
 Rel-TwoCategory = record
-  { Obj             = Set
-  ; Mor             = Rel
-  ; TwoCell         = _⊆_
-  ; id-1            = idR
+  { id-1            = idR
   ; comp-1          = λ S R → R ⨾ S          -- comp-1 g f = f ⨾ g
   ; id-2            = λ f → ⊆-refl
   ; comp-2-vertical = λ gh fg → ⊆-trans fg gh
@@ -155,11 +152,14 @@ Rel-TwoCategory = record
 -- Step 4 deliverable — the generic Allegory record, inhabited by Rel.
 ------------------------------------------------------------------------
 
-record Allegory (ℓo ℓh ℓc : Level) : Set (lsuc (ℓo ⊔ ℓh ⊔ ℓc)) where
+-- ⟡set1-rp-allegory: Obj/Hom/_⊑_ are PARAMETERS now — a Set-valued field
+-- pins the record at Set (lsuc _), while carriers as params never raise
+-- the sort (set1-carrier-always-parameterize; CategoryOf precedent).
+record Allegory {ℓo ℓh ℓc : Level}
+  (Obj : Set ℓo) (Hom : Obj → Obj → Set ℓh)
+  (_⊑_ : {A B : Obj} → Hom A B → Hom A B → Set ℓc)
+  : Set (ℓo ⊔ ℓh ⊔ ℓc) where
   field
-    Obj      : Set ℓo
-    Hom      : Obj → Obj → Set ℓh
-    _⊑_      : {A B : Obj} → Hom A B → Hom A B → Set ℓc
     ⊑-refl′  : {A B : Obj} {f : Hom A B} → f ⊑ f
     ⊑-trans′ : {A B : Obj} {f g h : Hom A B} → f ⊑ g → g ⊑ h → f ⊑ h
     Id       : (A : Obj) → Hom A A
@@ -191,10 +191,9 @@ record Allegory (ℓo ℓh ℓc : Level) : Set (lsuc (ℓo ⊔ ℓh ⊔ ℓc)) w
     modular-law : {A B C : Obj} {R : Hom A B} {S : Hom B C} {T : Hom A C}
                 → ((R ⨟ S) ⊓ T) ⊑ ((R ⊓ (T ⨟ inv S)) ⨟ S)
 
-Rel-Allegory : Allegory (lsuc 0ℓ) (lsuc 0ℓ) 0ℓ
+Rel-Allegory : Allegory {lsuc 0ℓ} {lsuc 0ℓ} {0ℓ} Set Rel _⊆_
 Rel-Allegory = record
-  { Obj = Set ; Hom = Rel ; _⊑_ = _⊆_
-  ; ⊑-refl′ = ⊆-refl ; ⊑-trans′ = ⊆-trans
+  { ⊑-refl′ = ⊆-refl ; ⊑-trans′ = ⊆-trans
   ; Id = idR ; _⨟_ = _⨾_ ; inv = _† ; _⊓_ = _∧_
   ; idˡ  = λ {A}{B}{f} → proj₁ (⨾-identityˡ f)
   ; idˡ⁻ = λ {A}{B}{f} → proj₂ (⨾-identityˡ f)

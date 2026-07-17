@@ -14,8 +14,10 @@ open import Substrate.Category.TwoCategory using (TwoCategory)
 
 module Substrate.Category.Cat.AsTwoCategory
   {ℓ0 ℓ1 ℓ2 : Level}
-  (Cat-2 : TwoCategory {ℓ0} {ℓ1} {ℓ2})
+  {Obj : Set ℓ0} {Mor : Obj → Obj → Set ℓ1}
+  {TwoCell : {a b : Obj} → Mor a b → Mor a b → Set ℓ2}
+  (Cat-2 : TwoCategory Obj Mor TwoCell)
   where
 
-Cat-AsTwoCategory : TwoCategory
+Cat-AsTwoCategory : TwoCategory Obj Mor TwoCell
 Cat-AsTwoCategory = Cat-2
