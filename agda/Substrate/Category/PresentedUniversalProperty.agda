@@ -40,40 +40,46 @@ open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 -- 1. THE QUOTIENT CENTER. Coequalizer of lhs, rhs : R ⇉ F in A-algebras.
 ------------------------------------------------------------------------
 
+-- ⟡rc-algebraclass-chain (⟡set1-rerank2): the ∀-over-Set obligations (factor + its
+-- three laws) forced the record to Set₁; they are PARAMETERS now, and quotient/
+-- pres-has move with them (the laws cite both). The two Set₀ obligations that cite
+-- only params (quotient-hom, quotient-respects) REMAIN fields — the record keeps
+-- real content and drops to Set.
 record PresentedUP
-  (A : AlgebraClass)
+  {Has : Set → Set}
+  {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+  (A : AlgebraClass Has HomP)
   (F : Set) (F-has : Has-structure A F)     -- the free object (an A-algebra)
   (R : Set) (lhs rhs : R → F)               -- the relations
   (P : Set)                                 -- the presented object (canonical reps)
-  : Set₁ where
-  field
-    quotient          : F → P
-    pres-has          : Has-structure A P
-    quotient-hom      : Hom-preserves A F-has pres-has quotient
-    quotient-respects : (r : R) → quotient (lhs r) ≡ quotient (rhs r)
-
-    -- the universal property: a relation-respecting A-hom factors uniquely.
-    factor :
+  (quotient : F → P)
+  (pres-has : Has-structure A P)
+  -- the universal property: a relation-respecting A-hom factors uniquely.
+  (factor :
       {M : Set} (hM : Has-structure A M)
       (h : F → M) → Hom-preserves A F-has hM h →
-      ((r : R) → h (lhs r) ≡ h (rhs r)) → (P → M)
-    factor-preserves :
+      ((r : R) → h (lhs r) ≡ h (rhs r)) → (P → M))
+  (factor-preserves :
       {M : Set} (hM : Has-structure A M)
       (h : F → M) (hh : Hom-preserves A F-has hM h)
       (hr : (r : R) → h (lhs r) ≡ h (rhs r)) →
-      Hom-preserves A pres-has hM (factor hM h hh hr)
-    factor-factors :
+      Hom-preserves A pres-has hM (factor hM h hh hr))
+  (factor-factors :
       {M : Set} (hM : Has-structure A M)
       (h : F → M) (hh : Hom-preserves A F-has hM h)
       (hr : (r : R) → h (lhs r) ≡ h (rhs r)) (x : F) →
-      factor hM h hh hr (quotient x) ≡ h x
-    factor-unique :
+      factor hM h hh hr (quotient x) ≡ h x)
+  (factor-unique :
       {M : Set} (hM : Has-structure A M)
       (h : F → M) (hh : Hom-preserves A F-has hM h)
       (hr : (r : R) → h (lhs r) ≡ h (rhs r))
       (k : P → M) → Hom-preserves A pres-has hM k →
       ((x : F) → k (quotient x) ≡ h x) →
-      (y : P) → k y ≡ factor hM h hh hr y
+      (y : P) → k y ≡ factor hM h hh hr y)
+  : Set where
+  field
+    quotient-hom      : Hom-preserves A F-has pres-has quotient
+    quotient-respects : (r : R) → quotient (lhs r) ≡ quotient (rhs r)
 
 open PresentedUP public
 
@@ -84,18 +90,20 @@ open PresentedUP public
 ------------------------------------------------------------------------
 
 Free-as-Presented :
-  {A : AlgebraClass} {F : Set} (F-has : Has-structure A F) →
+  {Has : Set → Set}
+  {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+  {A : AlgebraClass Has HomP} {F : Set} (F-has : Has-structure A F) →
   Hom-preserves A F-has F-has (λ x → x) →
   PresentedUP A F F-has ⊥ (λ ()) (λ ()) F
-Free-as-Presented {A} {F} F-has id-hom = record
-  { quotient          = λ x → x
-  ; pres-has          = F-has
-  ; quotient-hom      = id-hom
+    (λ x → x)
+    F-has
+    (λ _ h _ _ → h)
+    (λ _ _ hh _ → hh)
+    (λ _ _ _ _ _ → refl)
+    (λ _ _ _ _ k _ k-ext y → k-ext y)
+Free-as-Presented {A = A} {F} F-has id-hom = record
+  { quotient-hom      = id-hom
   ; quotient-respects = λ ()
-  ; factor            = λ _ h _ _ → h
-  ; factor-preserves  = λ _ _ hh _ → hh
-  ; factor-factors    = λ _ _ _ _ _ → refl
-  ; factor-unique     = λ _ _ _ _ k _ k-ext y → k-ext y
   }
 
 ------------------------------------------------------------------------
@@ -104,7 +112,9 @@ Free-as-Presented {A} {F} F-has id-hom = record
 ------------------------------------------------------------------------
 
 presented-Set : (F : Set) → PresentedUP trivial-AlgebraClass F tt ⊥ (λ ()) (λ ()) F
-presented-Set F = Free-as-Presented {trivial-AlgebraClass} {F} tt tt
+    (λ x → x) tt (λ _ h _ _ → h) (λ _ _ hh _ → hh)
+    (λ _ _ _ _ _ → refl) (λ _ _ _ _ k _ k-ext y → k-ext y)
+presented-Set F = Free-as-Presented {A = trivial-AlgebraClass} {F} tt tt
 
 ------------------------------------------------------------------------
 -- 4. A PresentedUP IS a content-bearing UPArrow, per target M.
@@ -114,17 +124,15 @@ presented-Set F = Free-as-Presented {trivial-AlgebraClass} {F} tt tt
 ------------------------------------------------------------------------
 
 PresentedUP-W :
-  {A : AlgebraClass} {F : Set} {F-has : Has-structure A F}
-  {R : Set} {lhs rhs : R → F} {P : Set} →
-  PresentedUP A F F-has R lhs rhs P → (M : Set) → (F → M) → (P → M) → Set
-PresentedUP-W {F = F} pr M h k = (x : F) → k (quotient pr x) ≡ h x
+  {F : Set} {P : Set} →
+  (F → P) → (M : Set) → (F → M) → (P → M) → Set
+PresentedUP-W {F = F} quotient M h k = (x : F) → k (quotient x) ≡ h x
 
 PresentedUP-UPArrow :
-  {A : AlgebraClass} {F : Set} {F-has : Has-structure A F}
-  {R : Set} {lhs rhs : R → F} {P : Set} →
-  (pr : PresentedUP A F F-has R lhs rhs P) → (M : Set) →
-  UPArrowP (F → M) (P → M) (PresentedUP-W pr M)
-PresentedUP-UPArrow pr M = mkUP
+  {F : Set} {P : Set} →
+  (quotient : F → P) → (M : Set) →
+  UPArrowP (F → M) (P → M) (PresentedUP-W quotient M)
+PresentedUP-UPArrow quotient M = mkUP
 
 ------------------------------------------------------------------------
 -- INSTANCES TO WIRE (visible as "free-then-quotient" siblings):

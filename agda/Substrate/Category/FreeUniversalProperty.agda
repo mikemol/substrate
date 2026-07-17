@@ -47,40 +47,41 @@ open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 --    CCC, …), a basis B, and a free carrier F.
 ------------------------------------------------------------------------
 
-record FreeUP (A : AlgebraClass) (B : Set) (F : Set) : Set₁ where
-  field
+-- ⟡rc-algebraclass-chain (⟡set1-rerank2): VESTIGIAL record — all six obligations
+-- are PARAMETERS (the ∀-over-Set fields forced it; unit/free-has are cited by the
+-- laws so they move too). Set₁→Set with an empty body (Refinement/Cell precedent).
+record FreeUP {Has : Set → Set}
+              {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+              (A : AlgebraClass Has HomP) (B : Set) (F : Set)
     -- the unit: generators embed into the free carrier (η).
-    unit     : B → F
+    (unit     : B → F)
     -- the free carrier itself carries the structure.
-    free-has : Has-structure A F
-
+    (free-has : Has-structure A F)
     -- THE universal property: every map from the basis into a structured
     -- target extends to a structure-preserving map out of F …
-    extend   : {M : Set} → Has-structure A M → (B → M) → (F → M)
-    extend-preserves :
+    (extend   : {M : Set} → Has-structure A M → (B → M) → (F → M))
+    (extend-preserves :
       {M : Set} (hM : Has-structure A M) (f : B → M) →
-      Hom-preserves A free-has hM (extend hM f)
+      Hom-preserves A free-has hM (extend hM f))
     -- … the extension agrees with f on generators (extend ∘ η ≡ f) …
-    extend-extends :
+    (extend-extends :
       {M : Set} (hM : Has-structure A M) (f : B → M) (b : B) →
-      extend hM f (unit b) ≡ f b
+      extend hM f (unit b) ≡ f b)
     -- … and it is the UNIQUE such structure-preserving extension.
-    extend-unique :
+    (extend-unique :
       {M : Set} (hM : Has-structure A M) (f : B → M)
       (g : F → M) → Hom-preserves A free-has hM g →
       ((b : B) → g (unit b) ≡ f b) →
-      (x : F) → g x ≡ extend hM f x
-
-open FreeUP public
+      (x : F) → g x ≡ extend hM f x)
+    : Set where
 
 ------------------------------------------------------------------------
 -- 2. A FreeUP forgets to the existing free SHAPE (so the catalogue's
 --    FreeOverBasis is exactly the data of a FreeUP minus the property).
 ------------------------------------------------------------------------
 
-FreeUP→FreeOverBasis : {A : AlgebraClass} {B F : Set} →
-                       FreeUP A B F → FreeOverBasis B F
-FreeUP→FreeOverBasis fr = mkFreeOverBasis (unit fr)
+FreeUP→FreeOverBasis : {B F : Set} → (B → F) → FreeOverBasis B F
+FreeUP→FreeOverBasis unit = mkFreeOverBasis unit
 
 ------------------------------------------------------------------------
 -- 3. A FreeUP IS a (content-bearing) UPArrow, at each structured target.
@@ -92,14 +93,14 @@ FreeUP→FreeOverBasis fr = mkFreeOverBasis (unit fr)
 --      Witness = the candidate extends the problem along η.
 ------------------------------------------------------------------------
 
-FreeUP-W : {A : AlgebraClass} {B F : Set} →
-           FreeUP A B F → (M : Set) → (B → M) → (F → M) → Set
-FreeUP-W {B = B} fr M f g = (b : B) → g (unit fr b) ≡ f b
+FreeUP-W : {B F : Set} →
+           (B → F) → (M : Set) → (B → M) → (F → M) → Set
+FreeUP-W {B = B} unit M f g = (b : B) → g (unit b) ≡ f b
 
-FreeUP-UPArrow : {A : AlgebraClass} {B F : Set} →
-                 (fr : FreeUP A B F) → (M : Set) →
-                 UPArrowP (B → M) (F → M) (FreeUP-W fr M)
-FreeUP-UPArrow fr M = mkUP
+FreeUP-UPArrow : {B F : Set} →
+                 (unit : B → F) → (M : Set) →
+                 UPArrowP (B → M) (F → M) (FreeUP-W unit M)
+FreeUP-UPArrow unit M = mkUP
 
 ------------------------------------------------------------------------
 -- 4. NON-VACUITY: the free Set on a set (the identity adjunction, Free ⊣
@@ -108,14 +109,13 @@ FreeUP-UPArrow fr M = mkUP
 ------------------------------------------------------------------------
 
 free-Set : (B : Set) → FreeUP trivial-AlgebraClass B B
-free-Set B = record
-  { unit             = λ b → b
-  ; free-has         = tt
-  ; extend           = λ _ f → f
-  ; extend-preserves = λ _ _ → tt
-  ; extend-extends   = λ _ f b → refl
-  ; extend-unique    = λ _ f g _ g-ext x → g-ext x
-  }
+  (λ b → b)
+  tt
+  (λ _ f → f)
+  (λ _ _ → tt)
+  (λ _ f b → refl)
+  (λ _ f g _ g-ext x → g-ext x)
+free-Set B = record {}
 
 ------------------------------------------------------------------------
 -- INSTANCES TO WIRE (the naming makes them visible as siblings, each a

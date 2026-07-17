@@ -7106,7 +7106,6 @@ digraph imports {
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Foundation.Eq";
   "Substrate.Category.PresentedUniversalProperty" -> "Substrate.Foundation.Unit";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Algebra.F2";
-  "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Category.FreeUniversalProperty";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Category.FreeUniversalProperty.FreeMonoid";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Category.PresentedUniversalProperty";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Foundation.Eq";
@@ -7891,9 +7890,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.HigherCatAsInternal" -> "Substrate.Category.UniversalProperty";
   "Substrate.Category.UniversalProperty.HigherCatAsInternal" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Algebra.F2.Vector";
-  "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.FreeOverBasis";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.FreeUniversalProperty";
-  "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.FreeUniversalProperty.FreeF2Module";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.FreeUniversalProperty.FreeMonoid";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.LimitUniversalProperty";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Category.UniversalProperty";

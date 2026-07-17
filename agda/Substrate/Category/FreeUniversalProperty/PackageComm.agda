@@ -35,10 +35,11 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
-open FreeUP
 
 module _
-  {A : AlgebraClass} {B : Set}
+  {Has : Set → Set}
+  {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+  {A : AlgebraClass Has HomP} {B : Set}
   -- A's structure-preservation forms a category:
   (id-pres : {M : Set} (hM : Has-structure A M) →
              Hom-preserves A hM hM (λ x → x))
@@ -47,7 +48,30 @@ module _
              (g : N → P) (f : M → N) →
              Hom-preserves A hN hP g → Hom-preserves A hM hN f →
              Hom-preserves A hM hP (λ x → g (f x)))
-  {F F′ : Set} (fr : FreeUP A B F) (fr′ : FreeUP A B F′)
+  {F F′ : Set}
+  {u  : B → F}
+  {fh : Has-structure A F}
+  {ex : {M : Set} → Has-structure A M → (B → M) → (F → M)}
+  {ep : {M : Set} (hM : Has-structure A M) (f : B → M) →
+        Hom-preserves A fh hM (ex hM f)}
+  {ee : {M : Set} (hM : Has-structure A M) (f : B → M) (b : B) →
+        ex hM f (u b) ≡ f b}
+  {eu : {M : Set} (hM : Has-structure A M) (f : B → M)
+        (g : F → M) → Hom-preserves A fh hM g →
+        ((b : B) → g (u b) ≡ f b) →
+        (x : F) → g x ≡ ex hM f x}
+  {u′  : B → F′}
+  {fh′ : Has-structure A F′}
+  {ex′ : {M : Set} → Has-structure A M → (B → M) → (F′ → M)}
+  {ep′ : {M : Set} (hM : Has-structure A M) (f : B → M) →
+         Hom-preserves A fh′ hM (ex′ hM f)}
+  {ee′ : {M : Set} (hM : Has-structure A M) (f : B → M) (b : B) →
+         ex′ hM f (u′ b) ≡ f b}
+  {eu′ : {M : Set} (hM : Has-structure A M) (f : B → M)
+         (g : F′ → M) → Hom-preserves A fh′ hM g →
+         ((b : B) → g (u′ b) ≡ f b) →
+         (x : F′) → g x ≡ ex′ hM f x}
+  (fr : FreeUP A B F u fh ex ep ee eu) (fr′ : FreeUP A B F′ u′ fh′ ex′ ep′ ee′ eu′)
   where
 
   ------------------------------------------------------------------------
@@ -55,18 +79,18 @@ module _
   ------------------------------------------------------------------------
 
   compare : F → F′
-  compare = extend fr (free-has fr′) (unit fr′)
+  compare = ex fh′ u′
 
   compare⁻¹ : F′ → F
-  compare⁻¹ = extend fr′ (free-has fr) (unit fr)
+  compare⁻¹ = ex′ fh u
 
   -- both are structure-preserving (FreeUP.extend-preserves).
   private
-    compare-pres : Hom-preserves A (free-has fr) (free-has fr′) compare
-    compare-pres = extend-preserves fr (free-has fr′) (unit fr′)
+    compare-pres : Hom-preserves A fh fh′ compare
+    compare-pres = ep fh′ u′
 
-    compare⁻¹-pres : Hom-preserves A (free-has fr′) (free-has fr) compare⁻¹
-    compare⁻¹-pres = extend-preserves fr′ (free-has fr) (unit fr)
+    compare⁻¹-pres : Hom-preserves A fh′ fh compare⁻¹
+    compare⁻¹-pres = ep′ fh u
 
   ------------------------------------------------------------------------
   -- The round trips are the identity — by extend-unique (both the round trip
@@ -76,34 +100,34 @@ module _
   compare-invˡ : (x : F) → compare⁻¹ (compare x) ≡ x
   compare-invˡ x = trans (round x) (sym (idy x))
     where
-      on-unit : (b : B) → compare⁻¹ (compare (unit fr b)) ≡ unit fr b
-      on-unit b = trans (cong compare⁻¹ (extend-extends fr (free-has fr′) (unit fr′) b))
-                        (extend-extends fr′ (free-has fr) (unit fr) b)
-      rt-pres : Hom-preserves A (free-has fr) (free-has fr) (λ x → compare⁻¹ (compare x))
-      rt-pres = ∘-pres (free-has fr) (free-has fr′) (free-has fr)
+      on-unit : (b : B) → compare⁻¹ (compare (u b)) ≡ u b
+      on-unit b = trans (cong compare⁻¹ (ee fh′ u′ b))
+                        (ee′ fh u b)
+      rt-pres : Hom-preserves A fh fh (λ x → compare⁻¹ (compare x))
+      rt-pres = ∘-pres fh fh′ fh
                        compare⁻¹ compare compare⁻¹-pres compare-pres
-      round : (x : F) → compare⁻¹ (compare x) ≡ extend fr (free-has fr) (unit fr) x
-      round = extend-unique fr (free-has fr) (unit fr)
+      round : (x : F) → compare⁻¹ (compare x) ≡ ex fh u x
+      round = eu fh u
                 (λ x → compare⁻¹ (compare x)) rt-pres on-unit
-      idy : (x : F) → x ≡ extend fr (free-has fr) (unit fr) x
-      idy = extend-unique fr (free-has fr) (unit fr)
-              (λ x → x) (id-pres (free-has fr)) (λ b → refl)
+      idy : (x : F) → x ≡ ex fh u x
+      idy = eu fh u
+              (λ x → x) (id-pres fh) (λ b → refl)
 
   compare-invʳ : (y : F′) → compare (compare⁻¹ y) ≡ y
   compare-invʳ y = trans (round y) (sym (idy y))
     where
-      on-unit : (b : B) → compare (compare⁻¹ (unit fr′ b)) ≡ unit fr′ b
-      on-unit b = trans (cong compare (extend-extends fr′ (free-has fr) (unit fr) b))
-                        (extend-extends fr (free-has fr′) (unit fr′) b)
-      rt-pres : Hom-preserves A (free-has fr′) (free-has fr′) (λ y → compare (compare⁻¹ y))
-      rt-pres = ∘-pres (free-has fr′) (free-has fr) (free-has fr′)
+      on-unit : (b : B) → compare (compare⁻¹ (u′ b)) ≡ u′ b
+      on-unit b = trans (cong compare (ee′ fh u b))
+                        (ee fh′ u′ b)
+      rt-pres : Hom-preserves A fh′ fh′ (λ y → compare (compare⁻¹ y))
+      rt-pres = ∘-pres fh′ fh fh′
                        compare compare⁻¹ compare-pres compare⁻¹-pres
-      round : (y : F′) → compare (compare⁻¹ y) ≡ extend fr′ (free-has fr′) (unit fr′) y
-      round = extend-unique fr′ (free-has fr′) (unit fr′)
+      round : (y : F′) → compare (compare⁻¹ y) ≡ ex′ fh′ u′ y
+      round = eu′ fh′ u′
                 (λ y → compare (compare⁻¹ y)) rt-pres on-unit
-      idy : (y : F′) → y ≡ extend fr′ (free-has fr′) (unit fr′) y
-      idy = extend-unique fr′ (free-has fr′) (unit fr′)
-              (λ y → y) (id-pres (free-has fr′)) (λ b → refl)
+      idy : (y : F′) → y ≡ ex′ fh′ u′ y
+      idy = eu′ fh′ u′
+              (λ y → y) (id-pres fh′) (λ b → refl)
 
   ------------------------------------------------------------------------
   -- THE ISO IS UNIQUE: any structure-preserving h commuting with the units
@@ -112,8 +136,8 @@ module _
   ------------------------------------------------------------------------
 
   compare-unique :
-    (h : F → F′) → Hom-preserves A (free-has fr) (free-has fr′) h →
-    ((b : B) → h (unit fr b) ≡ unit fr′ b) →
+    (h : F → F′) → Hom-preserves A fh fh′ h →
+    ((b : B) → h (u b) ≡ u′ b) →
     (x : F) → h x ≡ compare x
   compare-unique h h-pres h-unit =
-    extend-unique fr (free-has fr′) (unit fr′) h h-pres h-unit
+    eu fh′ u′ h h-pres h-unit

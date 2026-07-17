@@ -23,9 +23,9 @@ open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (_,_)
 import Substrate.Foundation.Fin as F
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
-open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow; free-Set)
-open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (free-monoid)
-open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (free-F2Module)
+open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow)
+open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (word-unit)
+open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Category.LimitUniversalProperty using (LimitUP-UPArrow; product-leg)
 
 private
@@ -36,7 +36,7 @@ private
 -- 1. FreeMonoid — Coxeter.Word ⊤ is the free monoid (extend = fold).
 ------------------------------------------------------------------------
 
-FreeMonoid-UP = FreeUP-UPArrow (free-monoid ⊤) ℕ
+FreeMonoid-UP = FreeUP-UPArrow (word-unit ⊤) ℕ
 
 FreeMonoid-contentful : Contentful FreeMonoid-UP
 FreeMonoid-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w tt)
@@ -45,7 +45,7 @@ FreeMonoid-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w tt)
 -- 2. FreeModule — Vector k is the free F₂-module on Fin k.
 ------------------------------------------------------------------------
 
-FreeModule-UP = FreeUP-UPArrow (free-F2Module 1) ℕ
+FreeModule-UP = FreeUP-UPArrow (basis {n = 1}) ℕ
 
 FreeModule-contentful : Contentful FreeModule-UP
 FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
@@ -63,7 +63,7 @@ ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w F.zer
 -- 4. Adjunction — the trivial Free ⊣ Forgetful (free-Set: F = B, η = id).
 ------------------------------------------------------------------------
 
-Adjunction-UP = FreeUP-UPArrow (free-Set ℕ) ℕ
+Adjunction-UP = FreeUP-UPArrow (λ (b : ℕ) → b) ℕ
 
 Adjunction-contentful : Contentful Adjunction-UP
 Adjunction-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w 0)
@@ -73,7 +73,7 @@ Adjunction-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w 0)
 --    (here dim 2; the dedicated FreeLinearization module is the same UP).
 ------------------------------------------------------------------------
 
-FreeLinearization-UP = FreeUP-UPArrow (free-F2Module 2) ℕ
+FreeLinearization-UP = FreeUP-UPArrow (basis {n = 2}) ℕ
 
 FreeLinearization-contentful : Contentful FreeLinearization-UP
 FreeLinearization-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)

@@ -27,7 +27,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
-open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-identityʳ)
 open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; basis;
@@ -55,8 +55,8 @@ F2ModHom mM mN g =
   (g (F2Mod.𝟎 mM) ≡ F2Mod.𝟎 mN) ×
   ((a b : _) → g (F2Mod._⊕_ mM a b) ≡ F2Mod._⊕_ mN (g a) (g b))
 
-f2mod-class : AlgebraClass
-f2mod-class = mkAlgebraClass F2Mod F2ModHom
+f2mod-class : AlgebraClass F2Mod F2ModHom
+f2mod-class = mkAlgebraClass
 
 -- Vector k is an F₂-module (the free carrier).
 vector-F2Mod : (k : ℕ) → F2Mod (Vector k)
@@ -140,15 +140,28 @@ module _ {M : Set} (Mod : F2Mod M) where
 -- 3. THE INSTANCE: Vector k is the free F₂-module on Fin k.
 ------------------------------------------------------------------------
 
+f2-extend : {k : ℕ} {M : Set} → F2Mod M → (Fin k → M) → Vector k → M
+f2-extend hM f = ext hM f
+
+f2-extend-preserves :
+  {k : ℕ} {M : Set} (hM : F2Mod M) (f : Fin k → M) →
+  F2ModHom (vector-F2Mod k) hM (f2-extend hM f)
+f2-extend-preserves hM f = ext-zero hM f , ext-+ hM f
+
+f2-extend-extends :
+  {k : ℕ} {M : Set} (hM : F2Mod M) (f : Fin k → M) (i : Fin k) →
+  f2-extend hM f (basis i) ≡ f i
+f2-extend-extends hM f i = ext-basis hM f i
+
+f2-extend-unique :
+  {k : ℕ} {M : Set} (hM : F2Mod M) (f : Fin k → M)
+  (g : Vector k → M) → F2ModHom (vector-F2Mod k) hM g →
+  ((i : Fin k) → g (basis i) ≡ f i) →
+  (x : Vector k) → g x ≡ f2-extend hM f x
+f2-extend-unique hM f g g-hom g-sing x =
+  ext-unique hM f g (proj₁ g-hom) (proj₂ g-hom) g-sing x
+
 free-F2Module : (k : ℕ) → FreeUP f2mod-class (Fin k) (Vector k)
-free-F2Module k = record
-  { unit             = basis
-  ; free-has         = vector-F2Mod k
-  ; extend           = λ hM f → ext hM f
-  ; extend-preserves = λ hM f → ext-zero hM f , ext-+ hM f
-  ; extend-extends   = λ hM f i → ext-basis hM f i
-  ; extend-unique    =
-      λ hM f g g-hom g-sing x →
-        ext-unique hM f g (proj₁ g-hom) (proj₂ g-hom) g-sing x
-  }
-  where open import Substrate.Foundation.Product using (proj₁; proj₂)
+                           basis (vector-F2Mod k) f2-extend
+                           f2-extend-preserves f2-extend-extends f2-extend-unique
+free-F2Module k = record {}

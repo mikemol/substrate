@@ -12,7 +12,7 @@ _827 structures · 712 never-refined (in-degree 0) · 431 refine-nothing (out-de
 |---|---:|---|
 | `ℕ` | 176 | `Substrate.Foundation.Nat` |
 | `Fin` | 33 | `Substrate.Foundation.Fin` |
-| `_≡_` | 29 | `Substrate.Foundation.Eq` |
+| `_≡_` | 31 | `Substrate.Foundation.Eq` |
 | `Word` | 24 | `Substrate.Groups.Coxeter.Word` |
 | `Dec` | 22 | `Substrate.Foundation.Negation` |
 | `Tm` | 20 | `Substrate.Algebra.R.Trace.SKIShedDuality` |

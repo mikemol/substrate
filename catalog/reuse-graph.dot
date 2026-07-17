@@ -1051,6 +1051,7 @@ digraph reuse {
   "Substrate.Category.FreeLinearizationR._.FreeLinearizationR" -> "Substrate.Category.LinearAlgebra._.LinearAlgebra";
   "Substrate.Category.FreeLinearizationR._.FreeLinearizationR" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.FreeUniversalProperty.FreeUP" -> "Substrate.Category.FreeOverBasis.AlgebraClass";
+  "Substrate.Category.FreeUniversalProperty.FreeUP" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.Functor.Functor" -> "Substrate.Category.CategoryOf.CategoryOf";
   "Substrate.Category.GaloisAdjunction.AsAdjunction.GaloisAdjunction-AsAdjunction" -> "Substrate.Category.CategoryOf.CategoryOf";
   "Substrate.Category.GaloisAdjunction.AsAdjunction.GaloisAdjunction-AsAdjunction" -> "Substrate.Category.Functor.Functor";
@@ -1092,6 +1093,7 @@ digraph reuse {
   "Substrate.Category.PolyLens.PolyCoalgebra" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PolyLens.WiringDiagram" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PresentedUniversalProperty.PresentedUP" -> "Substrate.Category.FreeOverBasis.AlgebraClass";
+  "Substrate.Category.PresentedUniversalProperty.PresentedUP" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.PseudoFunctor.PseudoFunctor" -> "Substrate.Category.TwoCategory.TwoCategory";

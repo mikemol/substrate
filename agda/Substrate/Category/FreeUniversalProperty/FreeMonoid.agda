@@ -49,8 +49,8 @@ MonoidHom : {M N : Set} → MonoidOn M → MonoidOn N → (M → N) → Set
 MonoidHom mM mN g =
   (g (ε mM) ≡ ε mN) × ((a b : _) → g (_∙_ mM a b) ≡ _∙_ mN (g a) (g b))
 
-monoid-class : AlgebraClass
-monoid-class = mkAlgebraClass MonoidOn MonoidHom
+monoid-class : AlgebraClass MonoidOn MonoidHom
+monoid-class = mkAlgebraClass
 
 ------------------------------------------------------------------------
 -- 2. Word Gen is a monoid (ε = [], ∙ = ++).
@@ -83,25 +83,33 @@ module _ (Gen : Set) where
     trans (cong (_∙_ mM (f g)) (fold-++ mM f w₁ w₂))
           (sym (∙-assoc mM (f g) (foldW mM f w₁) (foldW mM f w₂)))
 
+  word-unit : Gen → Word Gen
+  word-unit g = g ∷ []
+
+  word-extend-preserves :
+    {M : Set} (mM : MonoidOn M) (f : Gen → M) →
+    MonoidHom (word-monoid Gen) mM (foldW mM f)
+  word-extend-preserves mM f = refl , fold-++ mM f
+
+  word-extend-extends :
+    {M : Set} (mM : MonoidOn M) (f : Gen → M) (g : Gen) →
+    foldW mM f (word-unit g) ≡ f g
+  word-extend-extends mM f g = ε-right mM (f g)
+
+  word-extend-unique :
+    {M : Set} (mM : MonoidOn M) (f : Gen → M)
+    (g : Word Gen → M) → MonoidHom (word-monoid Gen) mM g →
+    ((b : Gen) → g (word-unit b) ≡ f b) →
+    (x : Word Gen) → g x ≡ foldW mM f x
+  word-extend-unique mM f g (g-ε , g-∙) g-sing []      = g-ε
+  word-extend-unique mM f g (g-ε , g-∙) g-sing (a ∷ w) =
+    trans (g-∙ (a ∷ []) w)
+          (cong₂ (_∙_ mM) (g-sing a) (word-extend-unique mM f g (g-ε , g-∙) g-sing w))
+
   free-monoid : FreeUP monoid-class Gen (Word Gen)
-  free-monoid = record
-    { unit             = λ g → g ∷ []
-    ; free-has         = word-monoid Gen
-    ; extend           = foldW
-    ; extend-preserves = λ mM f → refl , fold-++ mM f
-    ; extend-extends   = λ mM f g → ε-right mM (f g)
-    ; extend-unique    = uniq
-    }
-    where
-      uniq :
-        {M : Set} (mM : MonoidOn M) (f : Gen → M)
-        (g : Word Gen → M) → MonoidHom (word-monoid Gen) mM g →
-        ((b : Gen) → g (b ∷ []) ≡ f b) →
-        (x : Word Gen) → g x ≡ foldW mM f x
-      uniq mM f g (g-ε , g-∙) g-sing []      = g-ε
-      uniq mM f g (g-ε , g-∙) g-sing (a ∷ w) =
-        trans (g-∙ (a ∷ []) w)
-              (cong₂ (_∙_ mM) (g-sing a) (uniq mM f g (g-ε , g-∙) g-sing w))
+                       word-unit (word-monoid Gen) foldW
+                       word-extend-preserves word-extend-extends word-extend-unique
+  free-monoid = record {}
 
 ------------------------------------------------------------------------
 -- 4. Coxeter.Word in the QUOTIENT half too: the free monoid is the EMPTY
@@ -113,5 +121,11 @@ module _ (Gen : Set) where
 word-as-presented :
   (Gen : Set) →
   PresentedUP monoid-class (Word Gen) (word-monoid Gen) ⊥ (λ ()) (λ ()) (Word Gen)
+    (λ x → x)
+    (word-monoid Gen)
+    (λ _ h _ _ → h)
+    (λ _ _ hh _ → hh)
+    (λ _ _ _ _ _ → refl)
+    (λ _ _ _ _ k _ k-ext y → k-ext y)
 word-as-presented Gen =
-  Free-as-Presented {monoid-class} {Word Gen} (word-monoid Gen) (refl , λ _ _ → refl)
+  Free-as-Presented {A = monoid-class} {F = Word Gen} (word-monoid Gen) (refl , λ _ _ → refl)

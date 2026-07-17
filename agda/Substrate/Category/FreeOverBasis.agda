@@ -84,15 +84,28 @@ open FreeOverBasis public
 -- (C4-C7) collectively pass the extraction threshold.
 ------------------------------------------------------------------------
 
-record AlgebraClass : Set₁ where
-  constructor mkAlgebraClass
-  field
-    Has-structure : Set → Set
-    Hom-preserves :
+-- ⟡rc-algebraclass-chain (⟡set1-rerank2): both obligations are PARAMETERS now
+-- (a Set-valued field pins the record at Set₁; params never raise the sort).
+-- The ex-projections survive as accessor SHIMS below (UPArrowP precedent), so
+-- every `Has-structure A M` / `Hom-preserves A …` application reads unchanged.
+record AlgebraClass
+  (Has : Set → Set)
+  (HomP :
       {M N : Set} →
-      Has-structure M → Has-structure N → (M → N) → Set
+      Has M → Has N → (M → N) → Set) : Set where
+  constructor mkAlgebraClass
 
-open AlgebraClass public
+-- the accessor shims (same names + application shape as the ex-projections).
+Has-structure : {Has : Set → Set}
+                {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+              → AlgebraClass Has HomP → Set → Set
+Has-structure {Has} _ = Has
+
+Hom-preserves : {Has : Set → Set}
+                {HomP : {M N : Set} → Has M → Has N → (M → N) → Set}
+              → AlgebraClass Has HomP
+              → {M N : Set} → Has M → Has N → (M → N) → Set
+Hom-preserves {HomP = HomP} _ = HomP
 
 ------------------------------------------------------------------------
 -- 1b. Trivial AlgebraClass: any set, any function.
@@ -106,10 +119,8 @@ open AlgebraClass public
 
 open import Substrate.Foundation.Unit using (⊤; tt)
 
-trivial-AlgebraClass : AlgebraClass
+trivial-AlgebraClass : AlgebraClass (λ _ → ⊤) (λ _ _ _ → ⊤)
 trivial-AlgebraClass = mkAlgebraClass
-  (λ _ → ⊤)
-  (λ _ _ _ → ⊤)
 
 ------------------------------------------------------------------------
 -- 2. FreeConstructionClass: lattice index for the classification.

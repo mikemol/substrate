@@ -33,9 +33,9 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-assoc; +-identityˡ; +-identityʳ)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
-open import Substrate.Category.FreeUniversalProperty using (extend-preserves)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid
-  using (MonoidOn; MonoidHom; monoid-class; word-monoid; foldW; free-monoid)
+  using (MonoidOn; MonoidHom; monoid-class; word-monoid; foldW;
+         word-extend-preserves)
 open import Substrate.Category.PresentedUniversalProperty using (PresentedUP)
 
 ------------------------------------------------------------------------
@@ -59,7 +59,7 @@ quotient = foldW ⊤ z2-monoid (λ _ → 𝟙)
 
 -- quotient is a monoid hom — REUSE the free monoid's universal property.
 quotient-hom : MonoidHom (word-monoid ⊤) z2-monoid quotient
-quotient-hom = extend-preserves (free-monoid ⊤) z2-monoid (λ _ → 𝟙)
+quotient-hom = word-extend-preserves ⊤ z2-monoid (λ _ → 𝟙)
 
 ------------------------------------------------------------------------
 -- 2. The factorization, for a relation-respecting monoid hom h.
@@ -107,14 +107,8 @@ module _ {M : Set} (hM : MonoidOn M) (h : Word ⊤ → M)
 
 cyclic-Z2 :
   PresentedUP monoid-class (Word ⊤) (word-monoid ⊤) ⊤ (λ _ → a²) (λ _ → []) F₂
+    quotient z2-monoid fac fac-pres fac-factors fac-unique
 cyclic-Z2 = record
-  { quotient          = quotient
-  ; pres-has          = z2-monoid
-  ; quotient-hom      = quotient-hom
+  { quotient-hom      = quotient-hom
   ; quotient-respects = λ _ → refl
-  ; factor            = λ hM h hh hr → fac hM h hh hr
-  ; factor-preserves  = λ hM h hh hr → fac-pres hM h hh hr
-  ; factor-factors    = λ hM h hh hr x → fac-factors hM h hh hr x
-  ; factor-unique     = λ hM h hh hr k k-hom k-ext y →
-                          fac-unique hM h hh hr k k-hom k-ext y
   }
