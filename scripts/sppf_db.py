@@ -55,6 +55,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_unitobs_pk ON unit_obs(unit_id);
 -- PK-indexed table the same join is one `SEARCH … USING INDEX (path_id=?)`. Refreshed by refresh_path_text
 -- at the write_events boundary; path_seg stays the append-only source of truth, this is its interned index.
 CREATE TABLE IF NOT EXISTS path_text (path_id TEXT PRIMARY KEY, text TEXT);
+-- ⟡gqs-S1 incremental decode: per-core freshness = the .agdai's mtime AS THE RECORD VERSION. decode_core is
+-- ONE shim subprocess per core (~49ms × 1910 ≈ 94s a full pass); write_events re-decodes only cores whose
+-- mtime advanced since the last run and keeps the rest, so a git-commit stops re-deriving the whole SPPF.
+CREATE TABLE IF NOT EXISTS core_fp (core_id TEXT PRIMARY KEY, mtime INTEGER);
 """
 
 # The SPPF projection tables (materialized) + the compat views sppf_query reads.
@@ -106,14 +110,53 @@ def _drop_legacy_view(con, name):
         pass
 
 
-def write_events(cores, con, base):
-    """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution."""
-    # DROP (not DELETE) the event tables so column changes take effect (terms/path_seg are shared — keep).
-    for t in ("event", "obs", "edge", "unit_obs", "unit_member"):
-        con.execute(f"DROP TABLE IF EXISTS {t}")
+def _core_ver(path):
+    """The core's record-version = its .agdai mtime in ns (a `stat`, ~µs vs decode_core's ~49ms subprocess).
+    agda rewrites the interface on every recompile, so an advanced mtime IS 'rebuilt since we last decoded' —
+    exactly the freshness question (⟡freshness-stance). st_mtime_ns is an exact integer (no float-repr drift)."""
+    return os.stat(path).st_mtime_ns
+
+
+def write_events(cores, con, base, full=False, prune=True):
+    """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution.
+
+    INCREMENTAL by default (⟡gqs-S1): re-decode ONLY cores whose .agdai mtime advanced since the last run
+    (per-core record-version in `core_fp`); KEEP unchanged cores' rows verbatim; DROP removed cores' rows.
+    The dominant cost is decode_core — ONE shim subprocess per core (~49ms × 1910 ≈ 94s a full pass) — so
+    skipping unchanged cores is the whole win. project_sppf is a pure JOIN over the event tier, so kept rows
+    + freshly-decoded rows yield a projection IDENTICAL to a full rebuild (gate: `sppf_db.py --verify`).
+      full=True  — clean rebuild (drop the event tier): for an EVENT-schema column change, or a shim/Agda
+                   toolchain change that alters decode WITHOUT changing .agdai bytes+mtime.
+      prune=False — a FILTERED partial core set: suppress removed-core deletion (`sppf_db.py Category` must
+                   not delete the rest of the corpus). The full-corpus path (empty filter / gen_catalog) prunes.
+    """
+    if full:
+        for t in ("event", "obs", "edge", "unit_obs", "unit_member", "core_fp"):
+            con.execute(f"DROP TABLE IF EXISTS {t}")
     _drop_legacy_view(con, "path_text")             # migrate a legacy GROUP_CONCAT view → the indexed table
     con.executescript(EVENT_SCHEMA)
     con.commit()
+
+    # Freshness: current cores + their record-versions (mtime), vs the stored per-core versions.
+    cur = {}                                        # core_id → (path, relpath, mtime)
+    for path in cores:
+        relpath = os.path.relpath(path, base)
+        try:
+            cur[_b64(relpath)] = (path, relpath, _core_ver(path))
+        except OSError:
+            continue                                # unreadable core: treat as absent
+    stored = dict(con.execute("SELECT core_id, mtime FROM core_fp"))
+    changed = [c for c, (_p, _r, m) in cur.items() if stored.get(c) != m]
+    removed = [c for c in stored if c not in cur] if prune else []
+
+    stale = set(changed) | set(removed)             # rows to delete (changed → re-decoded; removed → dropped)
+    if stale:
+        params = [(c,) for c in stale]
+        for t in ("obs", "edge", "unit_obs", "unit_member"):
+            con.executemany(f"DELETE FROM {t} WHERE core_id=?", params)
+        con.executemany("DELETE FROM core_fp WHERE core_id=?", params)
+        con.commit()
+
     seen_t = set()
     def tid(s):
         s = "" if s is None else s
@@ -126,12 +169,14 @@ def write_events(cores, con, base):
         for o, seg in enumerate(s.split(".")):
             con.execute("INSERT OR IGNORE INTO path_seg VALUES (?,?,?)", (cid, o, tid(seg)))
         return cid
-    for path in cores:
+    for core_id in changed:                          # decode + append ONLY the changed/new cores
+        path, relpath, mtime = cur[core_id]
         try:
             dec = decode_core(path)
         except Exception:
-            continue
-        relpath = os.path.relpath(path, base)
+            dec = None
+        if dec is None:
+            continue                                 # undecodable: no rows, no version — re-attempted next run
         cid = tid(relpath)                       # intern the core path so _unit.file_id resolves in `terms`
         module = "Substrate." + relpath[:-len(".agdai")].replace(os.sep, ".")  # agdai_module (file metadata)
         mpid = pid(module)
@@ -165,7 +210,12 @@ def write_events(cores, con, base):
         con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
         con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?)", urows)
         con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
+        con.execute("INSERT OR REPLACE INTO core_fp VALUES (?,?)", (core_id, mtime))
         con.commit()                               # transaction per file (append-only)
+
+    if stale:                                       # GC events no longer observed by any core — bounded-growth
+        con.execute("DELETE FROM event WHERE ekey NOT IN (SELECT ekey FROM obs)")   # guard; inert for the projection
+        con.commit()
     _dedup_pathseg(con); con.commit()
     refresh_path_text(con)                          # materialize the indexed path_text from finalized path_seg
 
@@ -447,10 +497,11 @@ def project_argperm(con, filt=None):
     return len(orbit_rows), len({r[1] for r in orbit_rows}), len({r[2] for r in orbit_rows})
 
 
-def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False):
+def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False,
+          full=False, prune=True):
     base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
     con = sqlite3.connect(catalog_db)
-    write_events(cores, con, base)                 # P1: append-only events (source of truth)
+    write_events(cores, con, base, full=full, prune=prune)   # P1: append-only events (source of truth)
     stats = project_sppf(con)                      # P2: the positional SPPF, DERIVED from events
     if argperm:
         project_argperm(con)                       # ⟡argperm: the per-def GRADED orbit-key (additive)
@@ -460,17 +511,88 @@ def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False
     return stats
 
 
+_PROJ_TABLES = ("_node", "node_child", "_unit", "_unit_cod", "unit_node")
+
+
+def _proj_digest(db):
+    """Content-hash of every PROJECTION table (row-set, order-independent). The projection is what every gate/
+    consumer reads; the shared event tier may carry inert orphans, so equality here is the honest S1 gate."""
+    import hashlib
+    con = sqlite3.connect(db)
+    out = {}
+    for t in _PROJ_TABLES:
+        rows = sorted(con.execute(f"SELECT * FROM {t}").fetchall())
+        out[t] = (len(rows), hashlib.sha1(repr(rows).encode()).hexdigest())
+    con.close()
+    return out
+
+
+def verify_incremental(cores, base):
+    """GATE: an incremental rebuild yields a projection IDENTICAL to a full rebuild — across all four paths
+    (skip / add / remove / re-decode-changed). Returns [(name, ok, detail), …]."""
+    import tempfile, shutil
+    d = tempfile.mkdtemp(prefix="sppf_s1_verify_")
+    checks = []
+    try:
+        full_db = os.path.join(d, "full.db")
+        build(cores, catalog_db=full_db, base=base, full=True)      # reference: one clean full rebuild
+        ref = _proj_digest(full_db)
+
+        # A. SKIP — full(S) then incremental(S) is a no-op; kept rows preserve the projection.
+        a_db = os.path.join(d, "a.db"); shutil.copy(full_db, a_db)
+        build(cores, catalog_db=a_db, base=base)
+        checks.append(("skip (no-op)", _proj_digest(a_db) == ref, ""))
+
+        # B. ADD — full(S[:k]) then incremental(S) decodes the new cores + keeps the old == full(S).
+        k = max(1, len(cores) // 2)
+        b_db = os.path.join(d, "b.db")
+        build(cores[:k], catalog_db=b_db, base=base, full=True)
+        build(cores, catalog_db=b_db, base=base)
+        checks.append((f"add ({len(cores)-k} new)", _proj_digest(b_db) == ref, ""))
+
+        # C. REMOVE — full(S) then incremental(S[:-1]) prunes the dropped core == full(S[:-1]).
+        c_db = os.path.join(d, "c.db"); less_db = os.path.join(d, "less.db")
+        build(cores, catalog_db=c_db, base=base, full=True)
+        build(cores[:-1], catalog_db=c_db, base=base)               # prune the last core
+        build(cores[:-1], catalog_db=less_db, base=base, full=True)
+        checks.append(("remove (prune)", _proj_digest(c_db) == _proj_digest(less_db), ""))
+
+        # D. CHANGED — full(S), poison one core's stored version, incremental(S) re-decodes it == full(S).
+        e_db = os.path.join(d, "e.db")
+        build(cores, catalog_db=e_db, base=base, full=True)
+        con = sqlite3.connect(e_db)
+        one = con.execute("SELECT core_id FROM core_fp LIMIT 1").fetchone()[0]
+        con.execute("UPDATE core_fp SET mtime=-1 WHERE core_id=?", (one,)); con.commit(); con.close()
+        build(cores, catalog_db=e_db, base=base)                    # re-decodes the poisoned core
+        checks.append(("changed (re-decode)", _proj_digest(e_db) == ref, ""))
+        return checks
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     orbit = "--orbit" in sys.argv
     distribute = "--distribute" in sys.argv
     argperm = "--argperm" in sys.argv
-    filt = args[0] if args else "Category"
+    full = "--full" in sys.argv
     base = substrate_core_root(os.path.join(_ROOT, "agda"))
+    if "--verify" in sys.argv:                       # ⟡gqs-S1 gate: incremental projection == full projection
+        filt = args[0] if args else "Category"       # small subtree keeps the 4-build gate fast
+        cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
+        print(f"⟡gqs-S1 verify: incremental vs full over {len(cores)} cores (filter={filt!r}) …")
+        checks = verify_incremental(cores, base)
+        ok = all(o for _, o, _ in checks)
+        for name, o, _det in checks:
+            print(f"  [{'PASS' if o else 'FAIL'}] {name}")
+        print("⟡gqs-S1 verify: " + ("ALL PASS — incremental ≡ full" if ok else "FAILED"))
+        sys.exit(0 if ok else 1)
+    filt = args[0] if args else "Category"
     cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]
     print(f"event-sourcing {len(cores)} cores (filter={filt!r}) → catalog.db (events, then project SPPF"
           f"{', + ORBIT' if orbit else ''}) …")
-    n, u, sh, mx = build(cores, orbit=orbit, distribute=distribute, argperm=argperm)
+    n, u, sh, mx = build(cores, orbit=orbit, distribute=distribute, argperm=argperm,
+                         full=full, prune=(filt == ""))
     print(f"  events → SPPF projection: {n} packings, {u} units, {sh} shared subtrees, max node_id {mx}")
     if argperm:
         con = sqlite3.connect(CATALOG_DB)
