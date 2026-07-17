@@ -797,7 +797,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `SufficientStatistic` | record | `Substrate.Probability.MarkovCategory` | MK3-MK10: the substrate's first-class Markov category primitive. |
 | `SufficientStatisticInfoTheory` | record | `Substrate.Probability.BaezFritzLeinster` | IG13-IG20: Baez-Fritz-Leinster characterization of entropy + |
 | `Sumti` | data | `Substrate.Lojban.Fragment.Carriers` | names + descriptors. Real Lojban has richer sumti |
-| `SurrealFieldObligation` | record | `Substrate.Conway.AsField` | ConwayLeftDistributivity is a `… → Set` obligation FAMILY |
+| `SurrealFieldObligation` | record | `Substrate.Conway.AsField` | its |
 | `SurrealFinite` | data | `Substrate.Conway.SurrealFinite` | S1 of the Surreal-numbers arc per [scratch/surreal_arc_plan.md]. |
 | `Susp` | record | `Substrate.S5.S5Carrier` | ⟡N1b-Type. The kernel's verdict RETYPED so the value\|suspended |
 | `SylowClass` | data | `Substrate.Category.AtlasOfProbes` | Sylow-theoretic prediction confirmed. |

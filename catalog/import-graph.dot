@@ -1152,7 +1152,6 @@ digraph imports {
   "Substrate.Conway.AsField" [label="Conway.AsField"];
   "Substrate.Conway.Birthday" [label="Conway.Birthday"];
   "Substrate.Conway.BirthdayOrdered" [label="Conway.BirthdayOrdered"];
-  "Substrate.Conway.Distrib" [label="Conway.Distrib"];
   "Substrate.Conway.Equivalence" [label="Conway.Equivalence"];
   "Substrate.Conway.Examples" [label="Conway.Examples"];
   "Substrate.Conway.IntegerEmbedding" [label="Conway.IntegerEmbedding"];
@@ -8730,7 +8729,6 @@ digraph imports {
   "Substrate.Conway.AsField" -> "Substrate.Conway.AddAssoc";
   "Substrate.Conway.AsField" -> "Substrate.Conway.AddComm";
   "Substrate.Conway.AsField" -> "Substrate.Conway.AddGeneral";
-  "Substrate.Conway.AsField" -> "Substrate.Conway.Distrib";
   "Substrate.Conway.AsField" -> "Substrate.Conway.Mul";
   "Substrate.Conway.AsField" -> "Substrate.Conway.OrderAntisym";
   "Substrate.Conway.AsField" -> "Substrate.Conway.OrderTrans";
@@ -8740,10 +8738,6 @@ digraph imports {
   "Substrate.Conway.BirthdayOrdered" -> "Substrate.Conway.Birthday";
   "Substrate.Conway.BirthdayOrdered" -> "Substrate.Conway.SurrealFinite";
   "Substrate.Conway.BirthdayOrdered" -> "Substrate.Foundation.Nat";
-  "Substrate.Conway.Distrib" -> "Substrate.Conway.AddGeneral";
-  "Substrate.Conway.Distrib" -> "Substrate.Conway.Mul";
-  "Substrate.Conway.Distrib" -> "Substrate.Conway.SurrealFinite";
-  "Substrate.Conway.Distrib" -> "Substrate.Foundation.Nat";
   "Substrate.Conway.Equivalence" -> "Substrate.Conway.Examples";
   "Substrate.Conway.Equivalence" -> "Substrate.Conway.Order";
   "Substrate.Conway.Equivalence" -> "Substrate.Conway.OrderLaws";

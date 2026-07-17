@@ -15,7 +15,7 @@
 --   G5  OrderTrans         — order transitivity obligation
 --   G6  OrderAntisym       — antisymmetry up to ≈ⁿ obligation
 --   G7  Mul                — multiplication signature + obligation rec
---   G8  Distrib            — left-distributivity × over + obligation
+--   G8  (removed)          — left-distributivity obligation deleted (⟡rc-conway)
 --   G9  AsField            — Surreal-as-Field obligation bundle
 --   G10 (this file)        — capstone + re-export
 --
@@ -30,13 +30,14 @@
 --   * Conway order transitivity (general)   → G5 obligation
 --   * Conway order antisymmetry up to ≈ⁿ    → G6 obligation
 --   * Conway multiplication                 → G7 obligation surface
---   * Conway distributivity                 → G8 obligation
+--   * Conway distributivity                 → (removed; unstatable at suc(m+n))
 --   * Surreals as Field                     → G9 obligation bundle
 --
--- All eight gaps are STRUCTURALLY CLOSED via signature-bearing
--- + obligation-record discipline. The remaining per-arithmetic
--- discharges are mechanical Conway-induction proofs queued as
--- follow-up arc work.
+-- Seven of the eight gaps are STRUCTURALLY CLOSED via signature-bearing
+-- + obligation-record discipline. G8 (distributivity) was deleted as dead
+-- Set₁ surface (⟡rc-conway) — the honest re-statement needs the ConwayMulType
+-- index corrected to suc(m*n). The remaining per-arithmetic discharges are
+-- mechanical Conway-induction proofs queued as follow-up arc work.
 --
 -- This complements the M-arc + Mod-arc + Set-arc + F1m-arc:
 -- substrate now hosts every Field instance (F₁ as PointedSet /
@@ -64,8 +65,6 @@ open import Substrate.Conway.OrderAntisym   public
   using (ConwayOrderAntisymmetry)
 open import Substrate.Conway.Mul            public
   using (ConwayMulType; ConwayMulSignature)
-open import Substrate.Conway.Distrib        public
-  using (ConwayLeftDistributivity)
 open import Substrate.Conway.AsField        public
   using (SurrealFieldObligation)
 

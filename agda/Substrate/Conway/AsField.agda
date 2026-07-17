@@ -31,7 +31,6 @@ open import Substrate.Conway.AddAssoc using (ConwayAddAssociativity)
 open import Substrate.Conway.OrderTrans using (ConwayOrderTransitivity)
 open import Substrate.Conway.OrderAntisym using (ConwayOrderAntisymmetry)
 open import Substrate.Conway.Mul using (ConwayMulType)
-open import Substrate.Conway.Distrib using (ConwayLeftDistributivity)
 
 ------------------------------------------------------------------------
 -- 1. The Surreal-as-Field obligation record.
@@ -41,15 +40,14 @@ open import Substrate.Conway.Distrib using (ConwayLeftDistributivity)
 -- record via mechanical glue.
 ------------------------------------------------------------------------
 
--- ⟡set1-paydown: parameterize add, mul, and distrib-left. `distrib-left : ConwayLeftDistributivity
--- add mul` is the sole Set₁ offender — ConwayLeftDistributivity is a `… → Set` obligation FAMILY
--- (valued in Set). It depends on the `add`/`mul` operations, so those two operation fields must move
--- to parameters alongside it. The remaining fields (the comm/assoc/order obligations) are all
--- Set-valued, so the record lives in Set. Consumers write
--- `SurrealFieldObligation add mul distrib-left`.
+-- ⟡rc-conway (⟡rc-closeout): the left-distributivity obligation was DELETED — its
+-- `ConwayLeftDistributivity` family was unstatable as a Set₀ ≡ at the current
+-- `ConwayMulType` index `suc (m+n)` (the two sides land at unequal ℕ indices; the
+-- inert `*-distribˡ-+` import in Distrib signalled an intended `suc (m*n)` index).
+-- The `distrib-left` param was inert here anyway (the record body never used it).
+-- add/mul stay parameters. Consumers write `SurrealFieldObligation add mul`.
 module _ (add : ConwayAddType)
-         (mul : ConwayMulType)
-         (distrib-left : ConwayLeftDistributivity add mul) where
+         (mul : ConwayMulType) where
   record SurrealFieldObligation : Set where
     field
       -- Addition obligations (over the parameterized `add`).

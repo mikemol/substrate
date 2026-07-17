@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := Add.agda AddAssoc.agda AddComm.agda AddGeneral.agda AsCone.agda AsField.agda Birthday.agda BirthdayOrdered.agda Capstone.agda Distrib.agda Equivalence.agda Examples.agda IntegerEmbedding.agda Manifest.agda Mul.agda Neg.agda Order.agda OrderAntisym.agda OrderLaws.agda OrderTrans.agda SurrealFinite.agda
+FILES := Add.agda AddAssoc.agda AddComm.agda AddGeneral.agda AsCone.agda AsField.agda Birthday.agda BirthdayOrdered.agda Capstone.agda Equivalence.agda Examples.agda IntegerEmbedding.agda Manifest.agda Mul.agda Neg.agda Order.agda OrderAntisym.agda OrderLaws.agda OrderTrans.agda SurrealFinite.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean
