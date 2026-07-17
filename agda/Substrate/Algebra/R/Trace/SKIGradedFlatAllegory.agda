@@ -50,8 +50,8 @@ R⁰ _ = Present
 -- ② THE REFINEMENT (the allegory Φ-floor): Φ-arity + its monotonicity. This is the
 -- ONE monotone operator whose Φ-chain IS the flat/graded bridge.
 ------------------------------------------------------------------------
-arity-refinement : Refinement ℕ
-arity-refinement = record { Φ = Φ-arity ; mono = Φ-arity-mono }
+arity-refinement : Refinement ℕ Φ-arity Φ-arity-mono
+arity-refinement = record {}
 
 ------------------------------------------------------------------------
 -- ③ THE Φ-CHAIN = the graded descent. iterate Φⁿ R⁰ is the stage-n family; from a

@@ -96,8 +96,8 @@ R⁰ _ = Present
 Φ-obs-mono le (suc n) p = le n p
 
 -- THE COEMIT REFINEMENT: the monotone Φ whose Φ-chain IS the flat/graded bridge (the allegory).
-coemit-refinement : Refinement ℕ
-coemit-refinement = record { Φ = Φ-obs ; mono = Φ-obs-mono }
+coemit-refinement : Refinement ℕ Φ-obs Φ-obs-mono
+coemit-refinement = record {}
 
 -- the pre-fixed-point Φ R⁰ ⊑ᶠ R⁰ (both constantly Present) → the DESCENDING chain (grade = observation depth).
 pre-fixed : Φ-obs R⁰ ⊑ᶠ R⁰
@@ -277,8 +277,8 @@ RTPair = RealTrace × RealTrace
 Φ-pair-exact-mono le (r , t) (h≡ , p) = h≡ , le (tail r , tail t) p
 
 -- THE FORMAL REFINEMENT RECORD (contrast the degenerate coemit-refinement/Φ-obs; this one genuinely shrinks).
-coemit-refinement-pair : Refinement RTPair
-coemit-refinement-pair = record { Φ = Φ-pair-exact ; mono = Φ-pair-exact-mono }
+coemit-refinement-pair : Refinement RTPair Φ-pair-exact Φ-pair-exact-mono
+coemit-refinement-pair = record {}
 
 -- its iterate at grade n over the ⊤-base is the n-fold head-agreement (the exact chain = the curried Φ-iter).
 P⁰-pair : RTPair → Set

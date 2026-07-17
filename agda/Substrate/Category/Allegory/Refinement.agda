@@ -60,24 +60,29 @@ _⊑ᶠ_ {A} P Q = (a : A) → P a → Q a
 ⊑ᶠ-trans : {A : Set} {P Q R : Fam A} → P ⊑ᶠ Q → Q ⊑ᶠ R → P ⊑ᶠ R
 ⊑ᶠ-trans p q a x = q a (p a x)
 
-record Refinement (A : Set) : Set₁ where
-  field
-    Φ    : (A → Set) → A → Set
-    mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q
-
-open Refinement
+-- ⟡set1-rp-refinement: Φ AND mono are PARAMETERS now — the VESTIGIAL-record pattern (UPArrowP/
+-- mkUP precedent). Φ is Set-valued (set1-carrier-always-parameterize) and mono's type ∀-quantifies
+-- over families ({P Q : A → Set} → … is Set₁-sorted), so as a FIELD it pins the record at Set₁;
+-- as PARAMS neither raises the record's sort — the record drops Set₁→Set with an empty body.
+record Refinement (A : Set) (Φ : (A → Set) → A → Set)
+                  (mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q) : Set where
+  constructor mkRefinement
 
 -- the stage-n iterate Rⁿ = Φⁿ R⁰.
-iterate : {A : Set} → Refinement A → ℕ → (A → Set) → A → Set
-iterate Φr zero    R⁰ = R⁰
-iterate Φr (suc n) R⁰ = Φ Φr (iterate Φr n R⁰)
+iterate : {A : Set} {Φ : (A → Set) → A → Set}
+          {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+        → Refinement A Φ mono → ℕ → (A → Set) → A → Set
+iterate         Φr zero    R⁰ = R⁰
+iterate {Φ = Φ} Φr (suc n) R⁰ = Φ (iterate Φr n R⁰)
 
 -- from a pre-fixed-point Φ R⁰ ⊑ R⁰, the iterate is a DESCENDING chain
 -- (inhabitants only shrink): Rⁿ⁺¹ ⊑ Rⁿ. The grade n = how far Φ has pruned.
-chain : {A : Set} (Φr : Refinement A) {R⁰ : Fam A}
-      → (Φ Φr R⁰ ⊑ᶠ R⁰) → (n : ℕ) → iterate Φr (suc n) R⁰ ⊑ᶠ iterate Φr n R⁰
-chain Φr pre zero    = pre
-chain Φr pre (suc n) = mono Φr (chain Φr pre n)
+chain : {A : Set} {Φ : (A → Set) → A → Set}
+        {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+        (Φr : Refinement A Φ mono) {R⁰ : Fam A}
+      → (Φ R⁰ ⊑ᶠ R⁰) → (n : ℕ) → iterate Φr (suc n) R⁰ ⊑ᶠ iterate Φr n R⁰
+chain                Φr pre zero    = pre
+chain {mono = mono} Φr pre (suc n) = mono (chain Φr pre n)
 
 -- the singleton READOUT (map ⟷ relation): a fiber family is map-like when each
 -- fiber is a subsingleton.  μΦ a singleton ⟺ the limit is a map (ALG-5).

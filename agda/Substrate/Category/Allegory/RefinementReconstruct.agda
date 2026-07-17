@@ -28,7 +28,7 @@ module Substrate.Category.Allegory.RefinementReconstruct where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Category.Allegory.Refinement
   using (Refinement; Fam; iterate; _⊑ᶠ_)
-open Refinement using (Φ; mono)   -- Φ/mono are record field projections
+-- (Refinement is a vestigial record now — Φ and mono are its params, nothing to open)
 
 -- THE RICH Set₀ RECONSTRUCTION: the grade EXPOSED as a graded family. C : ℕ → Set
 -- is a MODULE PARAMETER (not a held field), so the bundle lands at `: Set` — NOT
@@ -39,14 +39,18 @@ module _ (C : ℕ → Set) where
       step : (n : ℕ) → C (suc n) → C n
 
 -- the descent chain (Refinement.mono + a pre-fixed-point Φ R⁰ ⊑ R⁰): Rⁿ⁺¹ ⊑ᶠ Rⁿ.
-descend : {A : Set} (r : Refinement A) (R⁰ : Fam A) →
-          Φ r R⁰ ⊑ᶠ R⁰ → (n : ℕ) → iterate r (suc n) R⁰ ⊑ᶠ iterate r n R⁰
-descend r R⁰ pre zero    = pre
-descend r R⁰ pre (suc n) = mono r (descend r R⁰ pre n)
+descend : {A : Set} {Φ : (A → Set) → A → Set}
+          {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+          (r : Refinement A Φ mono) (R⁰ : Fam A) →
+          Φ R⁰ ⊑ᶠ R⁰ → (n : ℕ) → iterate r (suc n) R⁰ ⊑ᶠ iterate r n R⁰
+descend                r R⁰ pre zero    = pre
+descend {mono = mono} r R⁰ pre (suc n) = mono (descend r R⁰ pre n)
 
 -- REIFY (the 'build MORE'): Refinement's abstract Φ-operator, at a pre-fixed-point
 -- R⁰ and a point a, reifies to the graded, grade-exposed form. The graded step at
 -- n is the descent Rⁿ⁺¹ ⊑ Rⁿ read at a.
-reify : {A : Set} (r : Refinement A) (R⁰ : Fam A) →
-        Φ r R⁰ ⊑ᶠ R⁰ → (a : A) → GRefinement (λ n → iterate r n R⁰ a)
+reify : {A : Set} {Φ : (A → Set) → A → Set}
+        {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+        (r : Refinement A Φ mono) (R⁰ : Fam A) →
+        Φ R⁰ ⊑ᶠ R⁰ → (a : A) → GRefinement (λ n → iterate r n R⁰ a)
 reify r R⁰ pre a = record { step = λ n → descend r R⁰ pre n a }

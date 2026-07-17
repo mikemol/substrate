@@ -47,8 +47,8 @@ module _ {C : Set} (D : DivStr C) where
   Φ-step-mono P⊑Q (a , b , g) (inj₂ (w , p))  = inj₂ (w , P⊑Q (b , rem w , g) p)
 
   -- the wedge-step Φ IS a Refinement (the monotone Φ-floor, from the STEP).
-  step-refinement : Refinement Idx
-  step-refinement = record { Φ = Φ-step ; mono = Φ-step-mono }
+  step-refinement : Refinement Idx Φ-step Φ-step-mono
+  step-refinement = record {}
 
   ------------------------------------------------------------------------
   -- ② TRACE AS THE FAMILY. Trace at (a,b,g) — the inductive done/more type, read as

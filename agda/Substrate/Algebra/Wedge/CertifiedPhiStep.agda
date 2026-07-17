@@ -50,8 +50,8 @@ CW a b = CertifiedWedge ℕ-div idℕ a b
 Φ-cert-mono P⊑Q (a , b , g) (inj₁ eqs)       = inj₁ eqs
 Φ-cert-mono P⊑Q (a , b , g) (inj₂ (cw , p))  = inj₂ (cw , P⊑Q (b , rem (wedge cw) , g) p)
 
-cert-refinement : Refinement Idxℕ
-cert-refinement = record { Φ = Φ-cert ; mono = Φ-cert-mono }
+cert-refinement : Refinement Idxℕ Φ-cert Φ-cert-mono
+cert-refinement = record {}
 
 ------------------------------------------------------------------------
 -- ② THE DESCENDING CHAIN + LIMIT (re-derived for the certified refinement, generic
