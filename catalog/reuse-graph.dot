@@ -579,6 +579,7 @@ digraph reuse {
   "Substrate.Foundation.Sum._⊎_" [label="_⊎_\nSubstrate.Foundation.Sum", style=rounded];
   "Substrate.Foundation.Unit.Polymorphic.⊤" [label="⊤\nSubstrate.Foundation.Unit.Polymorphic"];
   "Substrate.Foundation.Unit.⊤" [label="⊤\nSubstrate.Foundation.Unit"];
+  "Substrate.Foundation.Universe.U" [label="U\nSubstrate.Foundation.Universe", style=rounded];
   "Substrate.Foundation.Vec.Vec" [label="Vec\nSubstrate.Foundation.Vec", style=rounded];
   "Substrate.Foundation.WellFounded.Acc" [label="Acc\nSubstrate.Foundation.WellFounded", style=rounded];
   "Substrate.Foundations.Bijection.Bijection" [label="Bijection\nSubstrate.Foundations.Bijection"];
@@ -590,7 +591,6 @@ digraph reuse {
   "Substrate.Groups.Capabilities.Strict2Monoid._.Strict2MonoidCapability" [label="Strict2MonoidCapability\nSubstrate.Groups.Capabilities.Strict2Monoid._"];
   "Substrate.Groups.Capabilities.ZnInstance" [label="ZnInstance\nSubstrate.Groups.Capabilities", style=rounded];
   "Substrate.Groups.Capabilities.xFreeCyclic._.xFreeCyclicCapability" [label="xFreeCyclicCapability\nSubstrate.Groups.Capabilities.xFreeCyclic._"];
-  "Substrate.Groups.Capabilities.⊤₁" [label="⊤₁\nSubstrate.Groups.Capabilities"];
   "Substrate.Groups.Coxeter.Cyclic.Base.Canonical" [label="Canonical\nSubstrate.Groups.Coxeter.Cyclic.Base", style=rounded];
   "Substrate.Groups.Coxeter.Cyclic.Base.Gen" [label="Gen\nSubstrate.Groups.Coxeter.Cyclic.Base", style=rounded];
   "Substrate.Groups.Coxeter.Cyclic.Bridge._.Canonical" [label="Canonical\nSubstrate.Groups.Coxeter.Cyclic.Bridge._", style=rounded];

@@ -1020,7 +1020,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.GeometricMorphism" [label="UniversalProperty.GeometricMorphism"];
   "Substrate.Category.UniversalProperty.HigherCatAsInternal" [label="UniversalProperty.HigherCatAsInternal"];
   "Substrate.Category.UniversalProperty.Instances" [label="UniversalProperty.Instances"];
-  "Substrate.Category.UniversalProperty.InternalHom" [label="UniversalProperty.InternalHom"];
   "Substrate.Category.UniversalProperty.InternalLogic" [label="UniversalProperty.InternalLogic"];
   "Substrate.Category.UniversalProperty.InteropGraded" [label="UniversalProperty.InteropGraded"];
   "Substrate.Category.UniversalProperty.KleeneStencil" [label="UniversalProperty.KleeneStencil"];
@@ -1033,7 +1032,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ObjectUniverse" [label="UniversalProperty.ObjectUniverse"];
   "Substrate.Category.UniversalProperty.Omega" [label="UniversalProperty.Omega"];
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" [label="UniversalProperty.OrientationRigBackedGraded"];
-  "Substrate.Category.UniversalProperty.Powerset" [label="UniversalProperty.Powerset"];
   "Substrate.Category.UniversalProperty.Presheaf" [label="UniversalProperty.Presheaf"];
   "Substrate.Category.UniversalProperty.Pretopology" [label="UniversalProperty.Pretopology"];
   "Substrate.Category.UniversalProperty.Quotient" [label="UniversalProperty.Quotient"];
@@ -1041,10 +1039,8 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Recognized" [label="UniversalProperty.Recognized"];
   "Substrate.Category.UniversalProperty.Refinement" [label="UniversalProperty.Refinement"];
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" [label="UniversalProperty.ResidueBackedGraded"];
-  "Substrate.Category.UniversalProperty.Saturation" [label="UniversalProperty.Saturation"];
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" [label="UniversalProperty.ShapeBackedGraded"];
   "Substrate.Category.UniversalProperty.Sheaf" [label="UniversalProperty.Sheaf"];
-  "Substrate.Category.UniversalProperty.Sheafify" [label="UniversalProperty.Sheafify"];
   "Substrate.Category.UniversalProperty.Sieve" [label="UniversalProperty.Sieve"];
   "Substrate.Category.UniversalProperty.SieveClosure" [label="UniversalProperty.SieveClosure"];
   "Substrate.Category.UniversalProperty.Site" [label="UniversalProperty.Site"];
@@ -1235,6 +1231,7 @@ digraph imports {
   "Substrate.Foundation.Sum" [label="Foundation.Sum"];
   "Substrate.Foundation.Unit" [label="Foundation.Unit"];
   "Substrate.Foundation.Unit.Polymorphic" [label="Unit.Polymorphic"];
+  "Substrate.Foundation.Universe" [label="Foundation.Universe"];
   "Substrate.Foundation.Vec" [label="Foundation.Vec"];
   "Substrate.Foundation.Vec.Properties" [label="Vec.Properties"];
   "Substrate.Foundation.WellFounded" [label="Foundation.WellFounded"];
@@ -6495,9 +6492,8 @@ digraph imports {
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.SubobjectClassifier";
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.Topos";
-  "Substrate.Category.Allegory.Power" -> "Substrate.Foundation.Bool";
   "Substrate.Category.Allegory.Power" -> "Substrate.Foundation.Eq";
-  "Substrate.Category.Allegory.Power" -> "Substrate.Foundation.Level";
+  "Substrate.Category.Allegory.Power" -> "Substrate.Foundation.Universe";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Algebra.Wedge";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Algebra.Wedge.BoundedIso";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Category.Allegory.Maps";
@@ -7911,8 +7907,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.Instances" -> "Substrate.Groups.Coxeter.Word";
-  "Substrate.Category.UniversalProperty.InternalHom" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.InternalHom" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Category";
   "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Sieve";
   "Substrate.Category.UniversalProperty.InternalLogic" -> "Substrate.Category.UniversalProperty.Term";
@@ -7991,8 +7985,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.WitnessTower.Wedge.OrientationRigInitial";
   "Substrate.Category.UniversalProperty.OrientationRigBackedGraded" -> "Substrate.WitnessTower.Wedge.OrientationRigInstance";
-  "Substrate.Category.UniversalProperty.Powerset" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.Powerset" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Presheaf" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Presheaf" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.Pretopology" -> "Substrate.Category.UniversalProperty.Coverage";
@@ -8032,9 +8024,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Eq";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.ResidueBackedGraded" -> "Substrate.Foundation.Product";
-  "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Category.UniversalProperty.Coverage";
-  "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Category.UniversalProperty.Refinement";
-  "Substrate.Category.UniversalProperty.Saturation" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Algebra.Wedge";
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Category.UPArrowGraded";
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Category.UniversalProperty.BackedGraded";
@@ -8044,9 +8033,6 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.ShapeBackedGraded" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Sheaf" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.Sheafify" -> "Substrate.Category.UniversalProperty.Presheaf";
-  "Substrate.Category.UniversalProperty.Sheafify" -> "Substrate.Category.UniversalProperty.Sheaf";
-  "Substrate.Category.UniversalProperty.Sheafify" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.Sieve" -> "Substrate.Category.UniversalProperty.Term";
   "Substrate.Category.UniversalProperty.Sieve" -> "Substrate.Foundation.Unit";
   "Substrate.Category.UniversalProperty.SieveClosure" -> "Substrate.Category.UniversalProperty.Coverage";
@@ -9030,6 +9016,9 @@ digraph imports {
   "Substrate.Foundation.Product" -> "Substrate.Foundation.Eq";
   "Substrate.Foundation.RewriteConfluence" -> "Substrate.Foundation.Product";
   "Substrate.Foundation.RewriteConfluence" -> "Substrate.Foundation.WellFounded";
+  "Substrate.Foundation.Universe" -> "Substrate.Foundation.Bool";
+  "Substrate.Foundation.Universe" -> "Substrate.Foundation.Product";
+  "Substrate.Foundation.Universe" -> "Substrate.Foundation.Unit";
   "Substrate.Foundation.Vec" -> "Substrate.Foundation.Fin";
   "Substrate.Foundation.Vec" -> "Substrate.Foundation.Nat";
   "Substrate.Foundation.Vec.Properties" -> "Substrate.Foundation.Eq";

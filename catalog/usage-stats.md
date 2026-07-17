@@ -269,6 +269,7 @@ _829 structures · 712 never-refined (in-degree 0) · 428 refine-nothing (out-de
 | `_⊎_` | data | `Substrate.Foundation.Sum` |
 | `⊤` | record | `Substrate.Foundation.Unit.Polymorphic` |
 | `⊤` | record | `Substrate.Foundation.Unit` |
+| `U` | data | `Substrate.Foundation.Universe` |
 | `Acc` | data | `Substrate.Foundation.WellFounded` |
 | `Bijection` | record | `Substrate.Foundations.Bijection` |
 | `HodgeComplement-Dim3` | record | `Substrate.Geometry.HodgeDim3` |
@@ -277,7 +278,6 @@ _829 structures · 712 never-refined (in-degree 0) · 428 refine-nothing (out-de
 | `Strict2MonoidCapability` | record | `Substrate.Groups.Capabilities.Strict2Monoid._` |
 | `ZnInstance` | data | `Substrate.Groups.Capabilities` |
 | `xFreeCyclicCapability` | record | `Substrate.Groups.Capabilities.xFreeCyclic._` |
-| `⊤₁` | record | `Substrate.Groups.Capabilities` |
 | `S4AlphabetLayout` | record | `Substrate.Groups.S4-AsOpcodeAlgebra` |
 | `Permutation` | record | `Substrate.Groups.Symmetric` |
 | `Gen` | data | `Substrate.Groups.Z2-Coxeter-Fin._` |

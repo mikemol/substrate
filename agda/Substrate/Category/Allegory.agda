@@ -140,6 +140,12 @@ modular R S T a c ((b , (r , s)) , t) = b , ((r , (c , (t , s))) , s)
 -- Step 1 deliverable (REUSE) — Rel is a TwoCategory with TwoCell = ⊆.
 ------------------------------------------------------------------------
 
+-- ⟡rc-tarski-universe NOTE: Rel-TwoCategory / Rel-Allegory stay at Obj := Set
+-- and remain Set₁ — NOT because of the object universe (that IS dissolvable, cf.
+-- Set-Category over U), but because a RELATION `A → B → Set` is a proof-relevant
+-- morphism valued in Set, so `Hom` itself is Set₁-valued. Dissolving these needs
+-- relations valued in a Set₀ code universe closed under the relation-forming ops
+-- (Σ/×/≡) — a genuine re-valuation of the relation algebra, a distinct sub-arc.
 Rel-TwoCategory : TwoCategory Set Rel _⊆_
 Rel-TwoCategory = record
   { id-1            = idR

@@ -33,15 +33,19 @@ module Substrate.Category.Allegory.Power where
 
 open import Substrate.Foundation.Level using (Level; _⊔_; 0ℓ) renaming (suc to lsuc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Universe using (U; ⌜bool⌝; El)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.SubobjectClassifier using (SubobjectClassifier)
 open import Substrate.Category.Topos using (Topos)
 open import Substrate.Category.Allegory using (Rel)
 
--- the category of types & functions = the MAPS of the allegory (ALG-5), which
--- form a STRICT category: η makes every law refl.
-Set-Category : CategoryOf {lsuc 0ℓ} {0ℓ} Set (λ A B → (A → B))
+-- ⟡rc-tarski-universe: the category of "types & functions" ranges over the
+-- Set₀ Tarski universe U (decoded by El), NOT raw `Set` — so it lands in Set₀
+-- (the generative representation; the "category of all Sets is Set₁" claim was
+-- the wall-reflex — you represent the universe, like CF-streams represent
+-- reals). Objects are type-CODES; morphisms El a → El b. η still makes every
+-- law refl.
+Set-Category : CategoryOf U (λ a b → El a → El b)
 Set-Category = record
   { id       = λ A x → x
   ; compose  = λ g f x → g (f x)
@@ -50,10 +54,10 @@ Set-Category = record
   ; assoc    = λ f g h → refl
   }
 
--- the (classical) subobject classifier Ω = Bool (decidable subobjects; the
--- proof-relevant Ω = Set lives one universe up).  True/pullback = obligations.
+-- the (classical) subobject classifier Ω = the ⌜bool⌝ code (El ⌜bool⌝ = Bool);
+-- decidable subobjects. True/pullback = obligations.
 Set-SubobjectClassifier : SubobjectClassifier Set-Category
-Set-SubobjectClassifier = record { Ω = Bool }
+Set-SubobjectClassifier = record { Ω = ⌜bool⌝ }
 
 -- the MAP category carries a Topos skeleton — closes the allegory→topos loop.
 Set-Topos : Topos Set-Category

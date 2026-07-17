@@ -582,6 +582,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit/Polymorphic#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit#⊤</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Universe#U</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/WellFounded#Acc</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundations/Bijection#Bijection</loc><priority>0.0</priority></url>
@@ -593,7 +594,6 @@
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/Strict2Monoid#Strict2MonoidCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#ZnInstance</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Capabilities#⊤₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.11</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
