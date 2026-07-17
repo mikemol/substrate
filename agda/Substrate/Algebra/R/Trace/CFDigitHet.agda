@@ -57,8 +57,8 @@ module GenDigit
   -- equality is representation-INDEPENDENT (the ≥1 regularity never enters).
   faithful-is-crosseq :
     (p q : RegressValue) →
-    p ≈H q ≡ ((hnum p ⊗ hden q) ≈R (hnum q ⊗ hden p))
-  faithful-is-crosseq p q = refl
+    p ≈H q ⇔ ((hnum p ⊗ hden q) ≈R (hnum q ⊗ hden p))
+  faithful-is-crosseq p q = ⇔-refl
 
   -- and the cross-term IS the codec pair (viaBridges), refl: the generator's
   -- fingerprint codecA and the denominator's codecB, multiplied in R. The lens
