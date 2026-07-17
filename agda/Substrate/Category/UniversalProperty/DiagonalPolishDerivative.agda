@@ -62,7 +62,7 @@ Accumulates S x = Σ (ℕ → Point) (λ s →
 -- ③ THE CB-DERIVATIVE: D S = {x ∈ S : x accumulates in S} — remove the isolated points.
 --    DECREASING (D S ⊆ S) by the first projection. The concrete D for the CB-rank schema (227).
 ------------------------------------------------------------------------
-D : Sub → Sub
+D : Sub → Point → Set
 D S x = S x × Accumulates S x
 
 D-dec : (S : Sub) (x : Point) → D S x → S x

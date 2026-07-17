@@ -6494,7 +6494,6 @@ digraph imports {
   "Substrate.Category.Allegory.Power" -> "Substrate.Foundation.Level";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Algebra.Wedge";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Algebra.Wedge.BoundedIso";
-  "Substrate.Category.Allegory.Refinement" -> "Substrate.Category.Allegory";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Category.Allegory.Maps";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Foundation.Eq";
   "Substrate.Category.Allegory.Refinement" -> "Substrate.Foundation.Nat";

@@ -32,13 +32,13 @@ open import Substrate.Algebra.R.Trace.SKIFaithfulRb using (Gen; gI; gK; gS; arit
 -- the base family: at every grade, the combinator is present (⊤-like fiber).
 data Present : Set where present : Present
 
-R⁰ : Fam ℕ
+R⁰ : ℕ → Set
 R⁰ _ = Present
 
 -- Φ prunes: a combinator survives to grade (suc n) only if it survived to grade n
 -- AND still has arity remaining. Here Φ keeps grade 0 and shifts: Φ P (suc n) = P n
 -- (present at suc n iff present at n — one grade of pruning), Φ P 0 = P 0.
-Φ-arity : Fam ℕ → Fam ℕ
+Φ-arity : (ℕ → Set) → ℕ → Set
 Φ-arity P zero    = P zero
 Φ-arity P (suc n) = P n
 

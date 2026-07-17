@@ -34,7 +34,7 @@ module _ {C : Set} (D : DivStr C) (co : WedgeCoalg D) where
   -- record, NOT an ad-hoc hypothesis — the wedge-driven unfold (Wedge.Coalgebra's
   -- constructive coinduction, the cofree-dual of recon's inductive Trace).
   ------------------------------------------------------------------------
-  ν-carrier : Fam (Idx D)
+  ν-carrier : Idx D → Set
   ν-carrier = StepAt D co
 
   ------------------------------------------------------------------------

@@ -61,7 +61,7 @@ module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
 ------------------------------------------------------------------------
 module _ {A B R : Set} (cross : A → B → R) where
   -- the cross as a map (A × B) ⇸ R: graph of the uncurried function.
-  cross-graph : Rel (A × B) R
+  cross-graph : A × B → R → Set
   cross-graph = graph (λ ab → cross (proj₁ ab) (proj₂ ab))
 
   cross-det : deterministic cross-graph

@@ -62,13 +62,13 @@ _⊑ᶠ_ {A} P Q = (a : A) → P a → Q a
 
 record Refinement (A : Set) : Set₁ where
   field
-    Φ    : Fam A → Fam A
+    Φ    : (A → Set) → A → Set
     mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q
 
 open Refinement
 
 -- the stage-n iterate Rⁿ = Φⁿ R⁰.
-iterate : {A : Set} → Refinement A → ℕ → Fam A → Fam A
+iterate : {A : Set} → Refinement A → ℕ → (A → Set) → A → Set
 iterate Φr zero    R⁰ = R⁰
 iterate Φr (suc n) R⁰ = Φ Φr (iterate Φr n R⁰)
 
@@ -89,7 +89,7 @@ isSingleton {A} P = (a : A) (x y : P a) → x ≡ y
 ------------------------------------------------------------------------
 
 -- the bounded decomposition dividend ↦ (quotient, remainder), divisor (suc b).
-BWedge : ℕ → Rel ℕ (ℕ × ℕ)
+BWedge : ℕ → ℕ → ℕ × ℕ → Set
 BWedge b a qr = (proj₂ qr < suc b) × (a ≡ recon ℕ-div (proj₁ qr) (suc b) (proj₂ qr))
 
 -- recon-bounded-unique (the wedge's uniqueness certificate) IS allegory

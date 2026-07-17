@@ -41,7 +41,7 @@ CW a b = CertifiedWedge ℕ-div idℕ a b
 -- ① THE CERTIFIED PATTERN FUNCTOR: same shape as Φ-step (158), but the step uses a
 -- CERTIFIED wedge (smallness bundled). done ⊎ (certified step).
 ------------------------------------------------------------------------
-Φ-cert : Fam Idxℕ → Fam Idxℕ
+Φ-cert : (Idxℕ → Set) → Idxℕ → Set
 Φ-cert P (a , b , g) =
     ((b ≡ zero) × (g ≡ a))
   ⊎ (Σ (CW a b) (λ cw → P (b , rem (wedge cw) , g)))
@@ -57,7 +57,7 @@ cert-refinement = record { Φ = Φ-cert ; mono = Φ-cert-mono }
 -- ② THE DESCENDING CHAIN + LIMIT (re-derived for the certified refinement, generic
 -- over Refinement — 162's construction at cert-refinement).
 ------------------------------------------------------------------------
-⊤-cert : Fam Idxℕ
+⊤-cert : Idxℕ → Set
 ⊤-cert _ = ⊤
 
 ⊤-cert-pre : Φ-cert ⊤-cert ⊑ᶠ ⊤-cert
@@ -66,7 +66,7 @@ cert-refinement = record { Φ = Φ-cert ; mono = Φ-cert-mono }
 descending-cert : (n : ℕ) → iterate cert-refinement (suc n) ⊤-cert ⊑ᶠ iterate cert-refinement n ⊤-cert
 descending-cert = chain cert-refinement ⊤-cert-pre
 
-Limit-cert : Fam Idxℕ
+Limit-cert : Idxℕ → Set
 Limit-cert i = (n : ℕ) → iterate cert-refinement n ⊤-cert i
 
 -- every coalgebra below the limit (162's universal property at cert-refinement).

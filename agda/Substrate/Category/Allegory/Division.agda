@@ -41,11 +41,11 @@ open import Substrate.Category.Allegory
 ------------------------------------------------------------------------
 
 infixr 5 _∖_
-_∖_ : {A B C : Set} → Rel A B → Rel A C → Rel B C
+_∖_ : {A B C : Set} → Rel A B → Rel A C → B → C → Set
 _∖_ {A} R T b c = (a : A) → R a b → T a c
 
 infixr 5 _／_
-_／_ : {A B C : Set} → Rel B C → Rel A C → Rel A B
+_／_ : {A B C : Set} → Rel B C → Rel A C → A → B → Set
 _／_ {A} {B} {C} S T a b = (c : C) → S b c → T a c
 
 ------------------------------------------------------------------------

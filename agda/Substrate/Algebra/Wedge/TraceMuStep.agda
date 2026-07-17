@@ -37,7 +37,7 @@ module _ {C : Set} (D : DivStr C) where
   -- a b, and P at the residual (b, rem w, g). Built from the STEP (done/more), NOT
   -- raw R. Monotone (P appears positively) ⟹ a genuine Refinement.
   ------------------------------------------------------------------------
-  Φ-step : Fam Idx → Fam Idx
+  Φ-step : (Idx → Set) → Idx → Set
   Φ-step P (a , b , g) =
       ((b ≡ z D) × (g ≡ a))                              -- done: terminal
     ⊎ (Σ (Wedge⟦478f66a6⟧ D a b) (λ w → P (b , rem w , g)))        -- more: step to residual
@@ -54,7 +54,7 @@ module _ {C : Set} (D : DivStr C) where
   -- ② TRACE AS THE FAMILY. Trace at (a,b,g) — the inductive done/more type, read as
   -- a family over Idx.
   ------------------------------------------------------------------------
-  TraceF : Fam Idx
+  TraceF : Idx → Set
   TraceF (a , b , g) = Trace D a b g
 
   ------------------------------------------------------------------------

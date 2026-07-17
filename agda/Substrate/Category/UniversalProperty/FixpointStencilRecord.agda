@@ -35,11 +35,11 @@ import Substrate.Algebra.Wedge.TraceNuColimit as Kν
 record TwoFraming {C : Set} (D : DivStr C) : Set₁ where
   field
     -- the μ level (finite/halting, ≡-frame): two framings, iso ON THE NOSE.
-    μ-A μ-B      : Fam (Idx D)
+    μ-A μ-B      : Idx D → Set
     μ-hinge-fwd  : μ-A ⊑ᶠ μ-B
     μ-hinge-bwd  : μ-B ⊑ᶠ μ-A        -- fwd + bwd = μ-A ≅ μ-B (EXACT)
     -- the ν level (non-halting, ~-frame): the greatest-fixed-point UP (UP-TO).
-    ν-carrier    : Fam (Idx D)
+    ν-carrier    : Idx D → Set
     ν-hinge      : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ ν-carrier
 
 open TwoFraming public

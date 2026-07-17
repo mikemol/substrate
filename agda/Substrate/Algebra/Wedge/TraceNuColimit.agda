@@ -33,7 +33,7 @@ module _ {C : Set} (D : DivStr C) where
   -- ① THE TOP family ⊤ and the DESCENDING chain. ⊤-fam is present everywhere;
   -- Φⁿ⊤ is the descending chain (each stage prunes to "has a run of length ≥ n").
   ------------------------------------------------------------------------
-  ⊤-fam : Fam (Idx D)
+  ⊤-fam : Idx D → Set
   ⊤-fam _ = ⊤
 
   -- ⊤ is a pre-fixed-point: Φ ⊤ ⊑ ⊤ (trivially — everything maps to tt).
@@ -50,7 +50,7 @@ module _ {C : Set} (D : DivStr C) where
   -- ② THE LIMIT ⋂ₙ Φⁿ⊤ = "present at EVERY stage n". The greatest-fixed-point
   -- candidate (dual of 159's Colim = "present at SOME stage").
   ------------------------------------------------------------------------
-  Limit : Fam (Idx D)
+  Limit : Idx D → Set
   Limit i = (n : ℕ) → iterate (step-refinement D) n ⊤-fam i
 
   -- the limit projects to every stage (Limit ⊑ Φⁿ⊤ for each n).

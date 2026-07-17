@@ -70,11 +70,11 @@ R ≈ S = (R ⊆ S) × (S ⊆ R)
 -- Step 1 — identity + composition (relational comp = Σ over the middle = Poly ◁).
 ------------------------------------------------------------------------
 
-idR : (A : Set) → Rel A A
+idR : (A : Set) → A → A → Set
 idR A a a' = a ≡ a'
 
 infixr 9 _⨾_
-_⨾_ : {A B C : Set} → Rel A B → Rel B C → Rel A C
+_⨾_ : {A B C : Set} → Rel A B → Rel B C → A → C → Set
 _⨾_ {A} {B} {C} R S a c = Σ B (λ b → (R a b) × (S b c))
 
 ⨾-identityˡ : {A B : Set} (R : Rel A B) → (idR A ⨾ R) ≈ R
@@ -95,7 +95,7 @@ _⨾_ {A} {B} {C} R S a c = Σ B (λ b → (R a b) × (S b c))
 ------------------------------------------------------------------------
 
 infix 8 _†
-_† : {A B : Set} → Rel A B → Rel B A
+_† : {A B : Set} → Rel A B → B → A → Set
 (R †) b a = R a b
 
 †-id : (A : Set) → ((idR A) †) ≈ idR A
@@ -114,7 +114,7 @@ _† : {A B : Set} → Rel A B → Rel B A
 ------------------------------------------------------------------------
 
 infixr 7 _∧_
-_∧_ : {A B : Set} → Rel A B → Rel A B → Rel A B
+_∧_ : {A B : Set} → Rel A B → Rel A B → A → B → Set
 (R ∧ S) a b = (R a b) × (S a b)
 
 ∧-⊆ˡ : {A B : Set} (R S : Rel A B) → (R ∧ S) ⊆ R

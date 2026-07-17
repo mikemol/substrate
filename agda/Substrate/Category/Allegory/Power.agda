@@ -67,10 +67,10 @@ Set-Topos = record { Ω-data = Set-SubobjectClassifier }
 P : Set → Set₁
 P A = A → Set
 
-name : {A B : Set} → Rel A B → (A → P B)
+name : {A B : Set} → Rel A B → A → B → Set
 name R = R
 
-unname : {A B : Set} → (A → P B) → Rel A B
+unname : {A B : Set} → (A → P B) → A → B → Set
 unname f = f
 
 -- membership relation a ∈ S.

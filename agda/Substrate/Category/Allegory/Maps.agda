@@ -76,7 +76,7 @@ idR-map A = idR-entire A , idR-det A
 -- (map ≃ function); subsumes idR = graph id.
 ------------------------------------------------------------------------
 
-graph : {A B : Set} → (A → B) → Rel A B
+graph : {A B : Set} → (A → B) → A → B → Set
 graph f a b = f a ≡ b
 
 graph-entire : {A B : Set} (f : A → B) → entire (graph f)

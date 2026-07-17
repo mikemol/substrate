@@ -31,10 +31,10 @@ module _ {C : Set} (D : DivStr C) where
   -- ① THE BOTTOM family ⊥ and the KLEENE COLIMIT ⋃ₙ Φⁿ⊥. Colim i = "i is present
   -- at SOME stage n" = the ascending-chain union. (Φⁿ⊥ = bounded-depth traces.)
   ------------------------------------------------------------------------
-  ⊥-fam : Fam (Idx D)
+  ⊥-fam : Idx D → Set
   ⊥-fam _ = ⊥
 
-  Colim : Fam (Idx D)
+  Colim : Idx D → Set
   Colim i = Σ ℕ (λ n → iterate (step-refinement D) n ⊥-fam i)
 
   ------------------------------------------------------------------------

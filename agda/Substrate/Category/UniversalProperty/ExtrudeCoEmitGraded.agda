@@ -83,11 +83,11 @@ open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; Refinem
 
 -- the fiber base: at every position the digit is Present (⊤-like, the flat pre-fixed-point).
 data Present : Set where present : Present
-R⁰ : Fam ℕ
+R⁰ : ℕ → Set
 R⁰ _ = Present
 
 -- Φ = one grade of observation: position (suc n) observed iff n is (one prefix-step), position 0 stays.
-Φ-obs : Fam ℕ → Fam ℕ
+Φ-obs : (ℕ → Set) → ℕ → Set
 Φ-obs P zero    = P zero
 Φ-obs P (suc n) = P n
 
@@ -269,7 +269,7 @@ open import Substrate.Category.Allegory.Refinement using (Refinement) renaming (
 RTPair : Set
 RTPair = RealTrace × RealTrace
 
-Φ-pair-exact : RFam RTPair → RFam RTPair
+Φ-pair-exact : (RTPair → Set) → RTPair → Set
 Φ-pair-exact P (r , t) = (head t ≡ head r) × P (tail r , tail t)
 
 Φ-pair-exact-mono : {P Q : RFam RTPair} → ((rt : RTPair) → P rt → Q rt)
@@ -281,7 +281,7 @@ coemit-refinement-pair : Refinement RTPair
 coemit-refinement-pair = record { Φ = Φ-pair-exact ; mono = Φ-pair-exact-mono }
 
 -- its iterate at grade n over the ⊤-base is the n-fold head-agreement (the exact chain = the curried Φ-iter).
-P⁰-pair : RFam RTPair
+P⁰-pair : RTPair → Set
 P⁰-pair _ = ⊤
 
 pair-iter→agree : (n : ℕ) (r t : RealTrace) → Riterate coemit-refinement-pair n P⁰-pair (r , t) → agree-upto n r t
