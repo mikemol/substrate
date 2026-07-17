@@ -21,7 +21,7 @@ module Substrate.Category.UniversalProperty.StencilDedekind where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _†; _⊆_; _≈_; modular)
+  using (_⨾_; _∧_; _†; _⊆_; _≈_; modular)
 
 ------------------------------------------------------------------------
 -- ② THE DEDEKIND FORM (modular-2): (P ⨾ Q) ∧ U ⊆ P ⨾ (Q ∧ (P† ⨾ U)). This is the CHIRAL
@@ -29,7 +29,7 @@ open import Substrate.Category.Allegory
 -- †. Provable directly (the Σ-rearrangement, like modular-1): take the same middle b and
 -- witness a' = a for the P†⨾U term.
 ------------------------------------------------------------------------
-dedekind : {A B C : Set} (P : Rel A B) (Q : Rel B C) (U : Rel A C)
+dedekind : {A B C : Set} (P : A → B → Set) (Q : B → C → Set) (U : A → C → Set)
          → ((P ⨾ Q) ∧ U) ⊆ (P ⨾ (Q ∧ ((P †) ⨾ U)))
 dedekind P Q U a c ((b , (pab , qbc)) , uac) =
   b , (pab , (qbc , (a , (pab , uac))))
@@ -38,18 +38,18 @@ dedekind P Q U a c ((b , (pab , qbc)) , uac) =
 ------------------------------------------------------------------------
 -- ③ THE CHIRALITY-OPPOSED STENCIL: the two framings of meet-preservation.
 ------------------------------------------------------------------------
-module _ {A B C : Set} (f : Rel A B) where
+module _ {A B C : Set} (f : A → B → Set) where
 
   -- FRAMING 1 (free / generic — the "≡-exact" side): MONOTONICITY. ⨾ distributes into ∧
   -- from the left, for ANY f. No structure needed.
-  meet-mono : (S T : Rel B C) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
+  meet-mono : (S T : B → C → Set) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
   meet-mono S T a c (b , (fab , (sbc , tbc))) = (b , (fab , sbc)) , (b , (fab , tbc))
 
   -- FRAMING 2 (structured / the "~-partial" side): the DEDEKIND step. (f⨾S)∧(f⨾T) lands
   -- below f ⨾ (S ∧ (f†⨾f⨾T)) — the Dedekind form (modular-2) instantiated at U = f⨾T. The
   -- map's determinism (f†⨾f ⊆ idR) then collapses it to f⨾(S∧T) (197); here we expose the
   -- Dedekind landing itself, the chiral twin of monotonicity.
-  meet-dedekind : (S T : Rel B C) →
+  meet-dedekind : (S T : B → C → Set) →
     ((f ⨾ S) ∧ (f ⨾ T)) ⊆ (f ⨾ (S ∧ ((f †) ⨾ (f ⨾ T))))
   meet-dedekind S T = dedekind f S (f ⨾ T)
 

@@ -13,7 +13,7 @@ module Substrate.Category.UniversalProperty.StencilDedekindDagger where
 
 open import Substrate.Foundation.Product using (_,_; _×_; proj₁; proj₂)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _†; _⊆_; _≈_; ⊆-refl; ⊆-trans; †-comp; †-invol; modular)
+  using (_⨾_; _∧_; _†; _⊆_; _≈_; ⊆-refl; ⊆-trans; †-comp; †-invol; modular)
 open import Substrate.Category.Allegory.Mono
   using (≈-refl; ≈-sym; ≈-trans; †-mono; ⨾-cong; ∧-cong; †-∧)
 
@@ -21,7 +21,7 @@ open import Substrate.Category.Allegory.Mono
 -- ② THE TRANSPORT: modular-2 = the †-image of modular-1 (at Q†,P†,U†), with the LHS/RHS
 -- aligned by the † laws. This IS the chirality (198) as †-functoriality.
 ------------------------------------------------------------------------
-module _ {A B C : Set} (P : Rel A B) (Q : Rel B C) (U : Rel A C) where
+module _ {A B C : Set} (P : A → B → Set) (Q : B → C → Set) (U : A → C → Set) where
 
   -- LHS alignment: ((Q†⨾P†) ∧ U†)† ≈ (P⨾Q) ∧ U  (†-∧, then †-comp + †-invol under ∧).
   lhs≈ : ((((Q †) ⨾ (P †)) ∧ (U †)) †) ≈ ((P ⨾ Q) ∧ U)

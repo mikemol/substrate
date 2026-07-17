@@ -18,10 +18,10 @@
 module Substrate.Category.UniversalProperty.StencilModular where
 
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _†; _⊆_; _≈_; modular; ⊆-refl)
+  using (_⨾_; _∧_; _†; _⊆_; _≈_; modular; ⊆-refl)
 
 module _ {F : Set}
-         (agree : Rel F F)
+         (agree : F → F → Set)
          (agree-sym : {p q : F} → agree p q → agree q p)
   where
 

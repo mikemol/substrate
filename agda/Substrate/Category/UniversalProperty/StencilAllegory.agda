@@ -21,7 +21,7 @@ module Substrate.Category.UniversalProperty.StencilAllegory where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Category.Allegory using (Rel; _†; _≈_; _⊆_; idR; _⨾_)
+open import Substrate.Category.Allegory using (_†; _≈_; _⊆_; idR; _⨾_)
 
 ------------------------------------------------------------------------
 -- ① THE STENCIL'S CROSS-RELATION AS AN ALLEGORY Rel. Given the cospan data (two framing-
@@ -29,7 +29,7 @@ open import Substrate.Category.Allegory using (Rel; _†; _≈_; _⊆_; idR; _�
 -- relation on the framed objects. We realize it directly as a Rel and show the COMMUTE.
 ------------------------------------------------------------------------
 module _ {F : Set}                              -- the framed-object carrier (Framed, 192)
-         (agree : Rel F F)                       -- the cross-equality `agrees` as a Rel
+         (agree : F → F → Set)                   -- the cross-equality `agrees` as a Rel
          (agree-sym : {p q : F} → agree p q → agree q p)   -- agrees-sym (192)
   where
 

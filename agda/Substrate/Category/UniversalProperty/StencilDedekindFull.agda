@@ -14,22 +14,22 @@ module Substrate.Category.UniversalProperty.StencilDedekindFull where
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _⊆_; _≈_; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
+  using (_⨾_; _∧_; _⊆_; _≈_; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
 open import Substrate.Category.Allegory.Maps using (deterministic)
 open import Substrate.Category.UniversalProperty.StencilDedekindCollapse
   using (map-meet-⊇-pointfree)
 open import Substrate.Category.Allegory.Mono using (⨾-mono-r)
 
-module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
+module _ {A B C : Set} (f : A → B → Set) (det : deterministic f) where
 
   -- ① THE ⊆ DIRECTION, POINT-FREE (monotonicity via the GLB, no witness-split): f⨾(S∧T)
   -- lands below each of f⨾S, f⨾T (⨾-mono-r on the projections), so below their meet.
-  map-meet-⊆-pointfree : (S T : Rel B C) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
+  map-meet-⊆-pointfree : (S T : B → C → Set) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
   map-meet-⊆-pointfree S T =
     ∧-greatest (⨾-mono-r f (∧-⊆ˡ S T)) (⨾-mono-r f (∧-⊆ʳ S T))
 
   -- ② THE FULL POINT-FREE ≈: maps preserve meets, BOTH directions via allegory ops.
-  map-preserves-meet-pointfree : (S T : Rel B C) → (f ⨾ (S ∧ T)) ≈ ((f ⨾ S) ∧ (f ⨾ T))
+  map-preserves-meet-pointfree : (S T : B → C → Set) → (f ⨾ (S ∧ T)) ≈ ((f ⨾ S) ∧ (f ⨾ T))
   map-preserves-meet-pointfree S T =
     map-meet-⊆-pointfree S T , map-meet-⊇-pointfree f det S T
 

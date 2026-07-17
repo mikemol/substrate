@@ -19,7 +19,7 @@ module Substrate.Category.UniversalProperty.StencilDedekindCollapse where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _†; _⊆_; _≈_; idR; ⊆-trans;
+  using (_⨾_; _∧_; _†; _⊆_; _≈_; idR; ⊆-trans;
          ⨾-assoc; ⨾-identityˡ; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
 open import Substrate.Category.Allegory.Maps using (deterministic)
 open import Substrate.Category.Allegory.Mono using (⨾-mono-l; ⨾-mono-r; ∧-mono-r; det→incl)
@@ -28,17 +28,17 @@ open import Substrate.Category.UniversalProperty.StencilDedekind using (meet-ded
 ------------------------------------------------------------------------
 -- ② THE COLLAPSE + THE POINT-FREE ⊇.
 ------------------------------------------------------------------------
-module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
+module _ {A B C : Set} (f : A → B → Set) (det : deterministic f) where
 
   -- the residual term collapses: f† ⨾ (f ⨾ T) ⊆ T, via assoc → determinism → identity.
-  residual-collapse : (T : Rel B C) → ((f †) ⨾ (f ⨾ T)) ⊆ T
+  residual-collapse : (T : B → C → Set) → ((f †) ⨾ (f ⨾ T)) ⊆ T
   residual-collapse T =
     ⊆-trans (proj₂ (⨾-assoc (f †) f T))                    -- f†⨾(f⨾T) ⊆ (f†⨾f)⨾T
       (⊆-trans (⨾-mono-l T (det→incl f det))               -- (f†⨾f)⨾T ⊆ idR⨾T
                (proj₁ (⨾-identityˡ T)))                     -- idR⨾T ⊆ T
 
   -- THE POINT-FREE ⊇: assemble meet-dedekind (198) + the collapse. No witness-casing.
-  map-meet-⊇-pointfree : (S T : Rel B C) → ((f ⨾ S) ∧ (f ⨾ T)) ⊆ (f ⨾ (S ∧ T))
+  map-meet-⊇-pointfree : (S T : B → C → Set) → ((f ⨾ S) ∧ (f ⨾ T)) ⊆ (f ⨾ (S ∧ T))
   map-meet-⊇-pointfree S T =
     ⊆-trans (meet-dedekind f S T)                          -- ⊆ f⨾(S ∧ (f†⨾(f⨾T)))
             (⨾-mono-r f (∧-mono-r S (residual-collapse T)))  -- ⊆ f⨾(S ∧ T)

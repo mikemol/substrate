@@ -19,7 +19,7 @@
 module Substrate.Category.UniversalProperty.FixpointStencilRecord where
 
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν
@@ -42,7 +42,7 @@ record TwoFraming {C : Set} (D : DivStr C)
     (μ-hinge-bwd  : μ-B ⊑ᶠ μ-A)      -- fwd + bwd = μ-A ≅ μ-B (EXACT)
     -- the ν level (non-halting, ~-frame): the greatest-fixed-point UP (UP-TO).
     (ν-carrier    : Idx D → Set)
-    (ν-hinge      : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ ν-carrier)
+    (ν-hinge      : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ ν-carrier)
     : Set where
 
 ------------------------------------------------------------------------

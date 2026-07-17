@@ -27,7 +27,7 @@ open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Algebra.Wedge using (DivStr; z; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; iterate)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; iterate)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement)
 open import Substrate.Algebra.Wedge.TraceNuColimit using (⊤-fam; Limit; coalg-below-limit)
 
@@ -84,7 +84,7 @@ module _ {C : Set} (D : DivStr C)
   limit-coalgebra = abstract-limit-postfp
 
   -- and it is above every coalgebra (162) — so Limit is the greatest fixed point.
-  limit-greatest : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Limit D
+  limit-greatest : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Limit D
   limit-greatest = coalg-below-limit D
 
 ------------------------------------------------------------------------

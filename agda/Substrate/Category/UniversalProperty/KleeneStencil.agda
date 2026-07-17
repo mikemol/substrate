@@ -15,7 +15,7 @@
 module Substrate.Category.UniversalProperty.KleeneStencil where
 
 open import Substrate.Algebra.Wedge using (DivStr; Trace; ℕ-div)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν
@@ -36,7 +36,7 @@ module _ {C : Set} (D : DivStr C) where
   -- the DUAL of μ's (μ below every pre-fixed-point). The stencil's ν-whole layer for
   -- the Kleene fixed-point (the ⊑-frame analogue of ana-unique's ~-frame).
   ------------------------------------------------------------------------
-  kleene-ν-layer : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Kν.Limit D
+  kleene-ν-layer : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Kν.Limit D
   kleene-ν-layer = Kν.coalg-below-limit D
 
 ------------------------------------------------------------------------

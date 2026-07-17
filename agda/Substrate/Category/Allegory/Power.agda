@@ -37,7 +37,6 @@ open import Substrate.Foundation.Universe using (U; ⌜bool⌝; El)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.SubobjectClassifier using (SubobjectClassifier)
 open import Substrate.Category.Topos using (Topos)
-open import Substrate.Category.Allegory using (Rel)
 
 -- ⟡rc-tarski-universe: the category of "types & functions" ranges over the
 -- Set₀ Tarski universe U (decoded by El), NOT raw `Set` — so it lands in Set₀
@@ -68,7 +67,7 @@ Set-Topos = record { Ω-data = Set-SubobjectClassifier }
 -- CURRYING — an IDENTITY: a relation IS a map into its power object,
 -- DEFINITIONALLY. ⟡rc-local-respell: the `P A = A → Set` alias (Set₁) is
 -- inlined + deleted (used only here).
-name : {A B : Set} → Rel A B → A → B → Set
+name : {A B : Set} → (A → B → Set) → A → B → Set
 name R = R
 
 unname : {A B : Set} → (A → (B → Set)) → A → B → Set

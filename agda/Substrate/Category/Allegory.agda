@@ -49,21 +49,18 @@ open import Substrate.Category.TwoCategory using (TwoCategory)
 -- Step 0 — relations as fiber families, with the inclusion order.
 ------------------------------------------------------------------------
 
-Rel : Set → Set → Set₁
-Rel A B = A → B → Set
-
 infix 4 _⊆_
-_⊆_ : {A B : Set} → Rel A B → Rel A B → Set
+_⊆_ : {A B : Set} → (A → B → Set) → (A → B → Set) → Set
 _⊆_ {A} {B} R S = (a : A) (b : B) → R a b → S a b
 
-⊆-refl : {A B : Set} {R : Rel A B} → R ⊆ R
+⊆-refl : {A B : Set} {R : A → B → Set} → R ⊆ R
 ⊆-refl _ _ r = r
 
-⊆-trans : {A B : Set} {R S T : Rel A B} → R ⊆ S → S ⊆ T → R ⊆ T
+⊆-trans : {A B : Set} {R S T : A → B → Set} → R ⊆ S → S ⊆ T → R ⊆ T
 ⊆-trans p q a b r = q a b (p a b r)
 
 -- hom-equivalence = mutual inclusion (the ≈ the laws hold up to).
-_≈_ : {A B : Set} → Rel A B → Rel A B → Set
+_≈_ : {A B : Set} → (A → B → Set) → (A → B → Set) → Set
 R ≈ S = (R ⊆ S) × (S ⊆ R)
 
 ------------------------------------------------------------------------
@@ -74,18 +71,18 @@ idR : (A : Set) → A → A → Set
 idR A a a' = a ≡ a'
 
 infixr 9 _⨾_
-_⨾_ : {A B C : Set} → Rel A B → Rel B C → A → C → Set
+_⨾_ : {A B C : Set} → (A → B → Set) → (B → C → Set) → A → C → Set
 _⨾_ {A} {B} {C} R S a c = Σ B (λ b → (R a b) × (S b c))
 
-⨾-identityˡ : {A B : Set} (R : Rel A B) → (idR A ⨾ R) ≈ R
+⨾-identityˡ : {A B : Set} (R : A → B → Set) → (idR A ⨾ R) ≈ R
 ⨾-identityˡ R = (λ { a b (_ , (refl , r)) → r })
               , (λ a b r → a , (refl , r))
 
-⨾-identityʳ : {A B : Set} (R : Rel A B) → (R ⨾ idR B) ≈ R
+⨾-identityʳ : {A B : Set} (R : A → B → Set) → (R ⨾ idR B) ≈ R
 ⨾-identityʳ R = (λ { a b (_ , (r , refl)) → r })
               , (λ a b r → b , (r , refl))
 
-⨾-assoc : {A B C D : Set} (R : Rel A B) (S : Rel B C) (T : Rel C D)
+⨾-assoc : {A B C D : Set} (R : A → B → Set) (S : B → C → Set) (T : C → D → Set)
         → ((R ⨾ S) ⨾ T) ≈ (R ⨾ (S ⨾ T))
 ⨾-assoc R S T = (λ { a d (c , ((b , (r , s)) , t)) → b , (r , (c , (s , t))) })
               , (λ { a d (b , (r , (c , (s , t)))) → c , ((b , (r , s)) , t) })
@@ -95,18 +92,18 @@ _⨾_ {A} {B} {C} R S a c = Σ B (λ b → (R a b) × (S b c))
 ------------------------------------------------------------------------
 
 infix 8 _†
-_† : {A B : Set} → Rel A B → B → A → Set
+_† : {A B : Set} → (A → B → Set) → B → A → Set
 (R †) b a = R a b
 
 †-id : (A : Set) → ((idR A) †) ≈ idR A
 †-id A = (λ a a' eq → sym eq) , (λ a a' eq → sym eq)
 
-†-comp : {A B C : Set} (R : Rel A B) (S : Rel B C)
+†-comp : {A B C : Set} (R : A → B → Set) (S : B → C → Set)
        → ((R ⨾ S) †) ≈ ((S †) ⨾ (R †))
 †-comp R S = (λ { c a (b , (r , s)) → b , (s , r) })
            , (λ { c a (b , (s , r)) → b , (r , s) })
 
-†-invol : {A B : Set} (R : Rel A B) → ((R †) †) ≈ R
+†-invol : {A B : Set} (R : A → B → Set) → ((R †) †) ≈ R
 †-invol R = ⊆-refl , ⊆-refl   -- (R †) † a b ≡ R a b definitionally
 
 ------------------------------------------------------------------------
@@ -114,16 +111,16 @@ _† : {A B : Set} → Rel A B → B → A → Set
 ------------------------------------------------------------------------
 
 infixr 7 _∧_
-_∧_ : {A B : Set} → Rel A B → Rel A B → A → B → Set
+_∧_ : {A B : Set} → (A → B → Set) → (A → B → Set) → A → B → Set
 (R ∧ S) a b = (R a b) × (S a b)
 
-∧-⊆ˡ : {A B : Set} (R S : Rel A B) → (R ∧ S) ⊆ R
+∧-⊆ˡ : {A B : Set} (R S : A → B → Set) → (R ∧ S) ⊆ R
 ∧-⊆ˡ R S a b (r , s) = r
 
-∧-⊆ʳ : {A B : Set} (R S : Rel A B) → (R ∧ S) ⊆ S
+∧-⊆ʳ : {A B : Set} (R S : A → B → Set) → (R ∧ S) ⊆ S
 ∧-⊆ʳ R S a b (r , s) = s
 
-∧-greatest : {A B : Set} {R S T : Rel A B} → T ⊆ R → T ⊆ S → T ⊆ (R ∧ S)
+∧-greatest : {A B : Set} {R S T : A → B → Set} → T ⊆ R → T ⊆ S → T ⊆ (R ∧ S)
 ∧-greatest p q a b t = (p a b t , q a b t)
 
 ------------------------------------------------------------------------
@@ -132,7 +129,7 @@ _∧_ : {A B : Set} → Rel A B → Rel A B → A → B → Set
 -- Constructive Σ/×-rearrangement: Rel is the tabular allegory.
 ------------------------------------------------------------------------
 
-modular : {A B C : Set} (R : Rel A B) (S : Rel B C) (T : Rel A C)
+modular : {A B C : Set} (R : A → B → Set) (S : B → C → Set) (T : A → C → Set)
         → ((R ⨾ S) ∧ T) ⊆ ((R ∧ (T ⨾ (S †))) ⨾ S)
 modular R S T a c ((b , (r , s)) , t) = b , ((r , (c , (t , s))) , s)
 
@@ -146,7 +143,7 @@ modular R S T a c ((b , (r , s)) , t) = b , ((r , (c , (t , s))) , s)
 -- morphism valued in Set, so `Hom` itself is Set₁-valued. Dissolving these needs
 -- relations valued in a Set₀ code universe closed under the relation-forming ops
 -- (Σ/×/≡) — a genuine re-valuation of the relation algebra, a distinct sub-arc.
-Rel-TwoCategory : TwoCategory Set Rel _⊆_
+Rel-TwoCategory : TwoCategory Set (λ A B → A → B → Set) _⊆_
 Rel-TwoCategory = record
   { id-1            = idR
   ; comp-1          = λ S R → R ⨾ S          -- comp-1 g f = f ⨾ g
@@ -197,7 +194,7 @@ record Allegory {ℓo ℓh ℓc : Level}
     modular-law : {A B C : Obj} {R : Hom A B} {S : Hom B C} {T : Hom A C}
                 → ((R ⨟ S) ⊓ T) ⊑ ((R ⊓ (T ⨟ inv S)) ⨟ S)
 
-Rel-Allegory : Allegory {lsuc 0ℓ} {lsuc 0ℓ} {0ℓ} Set Rel _⊆_
+Rel-Allegory : Allegory {lsuc 0ℓ} {lsuc 0ℓ} {0ℓ} Set (λ A B → A → B → Set) _⊆_
 Rel-Allegory = record
   { ⊑-refl′ = ⊆-refl ; ⊑-trans′ = ⊆-trans
   ; Id = idR ; _⨟_ = _⨾_ ; inv = _† ; _⊓_ = _∧_

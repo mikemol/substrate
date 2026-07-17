@@ -79,7 +79,7 @@ take-coherence (suc n) r = cong (head r ∷_) (take-coherence n (tail r))
 -- the chain DESCENDS (Rⁿ⁺¹ ⊑ᶠ Rⁿ) — grade n = how many positions observed. NOT an embedding: the graded family
 -- IS the Φ-chain of the flat's fixed-point (the allegory realized), matching coemit-graded's C = the prefix.
 ------------------------------------------------------------------------
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; Refinement; iterate; chain)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; Refinement; iterate; chain)
 
 -- the fiber base: at every position the digit is Present (⊤-like, the flat pre-fixed-point).
 data Present : Set where present : Present
@@ -91,7 +91,7 @@ R⁰ _ = Present
 Φ-obs P zero    = P zero
 Φ-obs P (suc n) = P n
 
-Φ-obs-mono : {P Q : Fam ℕ} → P ⊑ᶠ Q → Φ-obs P ⊑ᶠ Φ-obs Q
+Φ-obs-mono : {P Q : ℕ → Set} → P ⊑ᶠ Q → Φ-obs P ⊑ᶠ Φ-obs Q
 Φ-obs-mono le zero    p = le zero p
 Φ-obs-mono le (suc n) p = le n p
 
@@ -264,7 +264,7 @@ open import Substrate.Foundation.Eq using (cong₂)
 -- (RealTrace × RealTrace) = (RealTrace × RealTrace) → Set; uncurry Φ-pair; the record + its iterate is the formal
 -- shrinking refinement whose iterate-chain IS agree-upto (via the curried iter↔agree above) and gfp = the ~-class.
 ------------------------------------------------------------------------
-open import Substrate.Category.Allegory.Refinement using (Refinement) renaming (Fam to RFam; iterate to Riterate)
+open import Substrate.Category.Allegory.Refinement using (Refinement) renaming (iterate to Riterate)
 
 RTPair : Set
 RTPair = RealTrace × RealTrace
@@ -272,7 +272,7 @@ RTPair = RealTrace × RealTrace
 Φ-pair-exact : (RTPair → Set) → RTPair → Set
 Φ-pair-exact P (r , t) = (head t ≡ head r) × P (tail r , tail t)
 
-Φ-pair-exact-mono : {P Q : RFam RTPair} → ((rt : RTPair) → P rt → Q rt)
+Φ-pair-exact-mono : {P Q : RTPair → Set} → ((rt : RTPair) → P rt → Q rt)
                   → (rt : RTPair) → Φ-pair-exact P rt → Φ-pair-exact Q rt
 Φ-pair-exact-mono le (r , t) (h≡ , p) = h≡ , le (tail r , tail t) p
 

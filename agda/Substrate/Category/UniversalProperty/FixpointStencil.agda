@@ -31,7 +31,7 @@
 module Substrate.Category.UniversalProperty.FixpointStencil where
 
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν
@@ -57,7 +57,7 @@ module _ {C : Set} (D : DivStr C) where
   -- agreeing at the non-halting level, DELIVERED as the UP (the full RealTrace ≅ Limit is
   -- scoped, 162 — the SAME ≡-exact / ~-partial asymmetry as the base stencil).
   ------------------------------------------------------------------------
-  algebraic-ν-below-kleene-ν : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Kν.Limit D
+  algebraic-ν-below-kleene-ν : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Kν.Limit D
   algebraic-ν-below-kleene-ν = Kν.coalg-below-limit D
 
 ------------------------------------------------------------------------

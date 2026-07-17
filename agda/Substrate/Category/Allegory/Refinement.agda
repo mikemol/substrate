@@ -40,24 +40,20 @@ open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
 open import Substrate.Algebra.Wedge using (recon; ℕ-div)
 open import Substrate.Algebra.Wedge.BoundedIso using (recon-bounded-unique)
-open import Substrate.Category.Allegory using (Rel)
 open import Substrate.Category.Allegory.Maps using (deterministic)
 
 ------------------------------------------------------------------------
 -- PART A — the Φ floor: a monotone refinement operator on fiber families.
 ------------------------------------------------------------------------
 
-Fam : Set → Set₁
-Fam A = A → Set
-
 infix 4 _⊑ᶠ_
-_⊑ᶠ_ : {A : Set} → Fam A → Fam A → Set
+_⊑ᶠ_ : {A : Set} → (A → Set) → (A → Set) → Set
 _⊑ᶠ_ {A} P Q = (a : A) → P a → Q a
 
-⊑ᶠ-refl : {A : Set} {P : Fam A} → P ⊑ᶠ P
+⊑ᶠ-refl : {A : Set} {P : A → Set} → P ⊑ᶠ P
 ⊑ᶠ-refl _ p = p
 
-⊑ᶠ-trans : {A : Set} {P Q R : Fam A} → P ⊑ᶠ Q → Q ⊑ᶠ R → P ⊑ᶠ R
+⊑ᶠ-trans : {A : Set} {P Q R : A → Set} → P ⊑ᶠ Q → Q ⊑ᶠ R → P ⊑ᶠ R
 ⊑ᶠ-trans p q a x = q a (p a x)
 
 -- ⟡set1-rp-refinement: Φ AND mono are PARAMETERS now — the VESTIGIAL-record pattern (UPArrowP/
@@ -65,12 +61,12 @@ _⊑ᶠ_ {A} P Q = (a : A) → P a → Q a
 -- over families ({P Q : A → Set} → … is Set₁-sorted), so as a FIELD it pins the record at Set₁;
 -- as PARAMS neither raises the record's sort — the record drops Set₁→Set with an empty body.
 record Refinement (A : Set) (Φ : (A → Set) → A → Set)
-                  (mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q) : Set where
+                  (mono : {P Q : A → Set} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q) : Set where
   constructor mkRefinement
 
 -- the stage-n iterate Rⁿ = Φⁿ R⁰.
 iterate : {A : Set} {Φ : (A → Set) → A → Set}
-          {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+          {mono : {P Q : A → Set} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
         → Refinement A Φ mono → ℕ → (A → Set) → A → Set
 iterate         Φr zero    R⁰ = R⁰
 iterate {Φ = Φ} Φr (suc n) R⁰ = Φ (iterate Φr n R⁰)
@@ -78,15 +74,15 @@ iterate {Φ = Φ} Φr (suc n) R⁰ = Φ (iterate Φr n R⁰)
 -- from a pre-fixed-point Φ R⁰ ⊑ R⁰, the iterate is a DESCENDING chain
 -- (inhabitants only shrink): Rⁿ⁺¹ ⊑ Rⁿ. The grade n = how far Φ has pruned.
 chain : {A : Set} {Φ : (A → Set) → A → Set}
-        {mono : {P Q : Fam A} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
-        (Φr : Refinement A Φ mono) {R⁰ : Fam A}
+        {mono : {P Q : A → Set} → P ⊑ᶠ Q → Φ P ⊑ᶠ Φ Q}
+        (Φr : Refinement A Φ mono) {R⁰ : A → Set}
       → (Φ R⁰ ⊑ᶠ R⁰) → (n : ℕ) → iterate Φr (suc n) R⁰ ⊑ᶠ iterate Φr n R⁰
 chain                Φr pre zero    = pre
 chain {mono = mono} Φr pre (suc n) = mono (chain Φr pre n)
 
 -- the singleton READOUT (map ⟷ relation): a fiber family is map-like when each
 -- fiber is a subsingleton.  μΦ a singleton ⟺ the limit is a map (ALG-5).
-isSingleton : {A : Set} → Fam A → Set
+isSingleton : {A : Set} → (A → Set) → Set
 isSingleton {A} P = (a : A) (x y : P a) → x ≡ y
 
 ------------------------------------------------------------------------

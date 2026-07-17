@@ -21,7 +21,7 @@ open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_)
 open import Substrate.Category.Allegory.Refinement
-  using (Fam; _⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
+  using (_⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
 open import Substrate.Algebra.R.Trace.SKIFaithfulRb using (Gen; gI; gK; gS; arity)
 
 ------------------------------------------------------------------------
@@ -43,7 +43,7 @@ R⁰ _ = Present
 Φ-arity P zero    = P zero
 Φ-arity P (suc n) = P n
 
-Φ-arity-mono : {P Q : Fam ℕ} → P ⊑ᶠ Q → Φ-arity P ⊑ᶠ Φ-arity Q
+Φ-arity-mono : {P Q : ℕ → Set} → P ⊑ᶠ Q → Φ-arity P ⊑ᶠ Φ-arity Q
 Φ-arity-mono P⊑Q zero    p = P⊑Q zero p
 Φ-arity-mono P⊑Q (suc n) p = P⊑Q n p
 
@@ -80,7 +80,7 @@ arity-chain = chain arity-refinement pre-fixed
 stage0-flat : (k : ℕ) → iterate arity-refinement zero R⁰ k ⇔ Present
 stage0-flat k = ⇔-refl
 -- one Φ-step at grade (suc n) reads grade n — the pruning shifts by one arity-slot.
-Φ-shifts : (P : Fam ℕ) (n : ℕ) → Φ-arity P (suc n) ⇔ P n
+Φ-shifts : (P : ℕ → Set) (n : ℕ) → Φ-arity P (suc n) ⇔ P n
 Φ-shifts P n = ⇔-refl
 -- the arity of each generator is the Φ-chain depth at which it settles (I:1/K:2/S:3).
 arity-is-chain-depth : (g : Gen) → arity g ≡ arity g

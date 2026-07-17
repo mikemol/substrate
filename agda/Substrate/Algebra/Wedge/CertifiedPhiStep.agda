@@ -25,7 +25,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Algebra.Wedge using (ℕ-div; rem)
 open import Substrate.Category.Allegory.Refinement
-  using (Fam; _⊑ᶠ_; ⊑ᶠ-trans; Refinement; iterate; chain)
+  using (_⊑ᶠ_; ⊑ᶠ-trans; Refinement; iterate; chain)
 open import Substrate.Algebra.Wedge.Certified using (CertifiedWedge; wedge; small; idℕ)
 open import Substrate.Algebra.Wedge.NuAbstractLimitInstance using (cwrem-uniq)
 
@@ -46,7 +46,7 @@ CW a b = CertifiedWedge ℕ-div idℕ a b
     ((b ≡ zero) × (g ≡ a))
   ⊎ (Σ (CW a b) (λ cw → P (b , rem (wedge cw) , g)))
 
-Φ-cert-mono : {P Q : Fam Idxℕ} → P ⊑ᶠ Q → Φ-cert P ⊑ᶠ Φ-cert Q
+Φ-cert-mono : {P Q : Idxℕ → Set} → P ⊑ᶠ Q → Φ-cert P ⊑ᶠ Φ-cert Q
 Φ-cert-mono P⊑Q (a , b , g) (inj₁ eqs)       = inj₁ eqs
 Φ-cert-mono P⊑Q (a , b , g) (inj₂ (cw , p))  = inj₂ (cw , P⊑Q (b , rem (wedge cw) , g) p)
 
@@ -70,11 +70,11 @@ Limit-cert : Idxℕ → Set
 Limit-cert i = (n : ℕ) → iterate cert-refinement n ⊤-cert i
 
 -- every coalgebra below the limit (162's universal property at cert-refinement).
-below-stage : {X : Fam Idxℕ} → (X ⊑ᶠ Φ-cert X) → (n : ℕ) → X ⊑ᶠ iterate cert-refinement n ⊤-cert
+below-stage : {X : Idxℕ → Set} → (X ⊑ᶠ Φ-cert X) → (n : ℕ) → X ⊑ᶠ iterate cert-refinement n ⊤-cert
 below-stage co zero    i x = tt
 below-stage co (suc m) = ⊑ᶠ-trans co (Φ-cert-mono (below-stage co m))
 
-below-limit : {X : Fam Idxℕ} → (X ⊑ᶠ Φ-cert X) → X ⊑ᶠ Limit-cert
+below-limit : {X : Idxℕ → Set} → (X ⊑ᶠ Φ-cert X) → X ⊑ᶠ Limit-cert
 below-limit co i x n = below-stage co n i x
 
 ------------------------------------------------------------------------
@@ -111,7 +111,7 @@ cert-limit-postfp (a , suc b , g) l = inj₂ (cw₁ , residual)
 
 -- HENCE Limit-cert = νΦ-cert: a post-fixed-point (above) + above every coalgebra
 -- (below-limit) = the greatest fixed point — UNCONDITIONALLY.
-cert-limit-greatest : {X : Fam Idxℕ} → (X ⊑ᶠ Φ-cert X) → X ⊑ᶠ Limit-cert
+cert-limit-greatest : {X : Idxℕ → Set} → (X ⊑ᶠ Φ-cert X) → X ⊑ᶠ Limit-cert
 cert-limit-greatest = below-limit
 
 ------------------------------------------------------------------------

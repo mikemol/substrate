@@ -26,7 +26,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; recon) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide; eq?)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement)
 
 module _ {C : Set} (D : DivStr C) where

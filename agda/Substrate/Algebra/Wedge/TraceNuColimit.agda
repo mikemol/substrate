@@ -24,7 +24,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Category.Allegory.Refinement
-  using (Fam; _⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
+  using (_⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; Φ-step-mono; step-refinement)
 
 module _ {C : Set} (D : DivStr C) where
@@ -64,14 +64,14 @@ module _ {C : Set} (D : DivStr C) where
   -- So X ⊑ Φⁿ⊤ for all n, i.e. X ⊑ Limit. This is ν's universal property: the
   -- greatest fixed point is ABOVE every post-fixed-point (coalgebra).
   ------------------------------------------------------------------------
-  coalg-below-stage : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) →
+  coalg-below-stage : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) →
                       (n : ℕ) → X ⊑ᶠ iterate (step-refinement D) n ⊤-fam
   coalg-below-stage co zero    i x = tt
   coalg-below-stage {X} co (suc m) =
     ⊑ᶠ-trans co (Φ-step-mono D (coalg-below-stage co m))
 
   -- THE UNIVERSAL PROPERTY: any ν-coalgebra is below the limit.
-  coalg-below-limit : {X : Fam (Idx D)} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Limit
+  coalg-below-limit : {X : Idx D → Set} → (X ⊑ᶠ Φ-step D X) → X ⊑ᶠ Limit
   coalg-below-limit co i x n = coalg-below-stage co n i x
 
 ------------------------------------------------------------------------

@@ -25,7 +25,7 @@ open import Substrate.Algebra.Wedge using (DivStr; z; Trace; done; more; trace-f
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Bisim using (_~_; ~-refl)
 open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
-open import Substrate.Category.Allegory.Refinement using (Fam; isSingleton)
+open import Substrate.Category.Allegory.Refinement using (isSingleton)
 
 -- the μ/ν universal properties are GENERIC over any DivStr / Coalg — instantiate
 -- at the SKI carrier by supplying its DivStr (the ADD-153 combinator-DivStr is one
@@ -74,7 +74,7 @@ open import Substrate.Category.Allegory.Refinement using (Fam; isSingleton)
 open import Substrate.Foundation.Nat using (ℕ)
 
 -- the map/relation readout is available (a fiber family is map-like iff subsingleton):
-map-readout : Fam ℕ → Set
+map-readout : (ℕ → Set) → Set
 map-readout = isSingleton
 
 ------------------------------------------------------------------------

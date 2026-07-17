@@ -34,37 +34,37 @@ module Substrate.Category.Allegory.Division where
 open import Substrate.Foundation.Level using (Level; _⊔_; 0ℓ) renaming (suc to lsuc)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _†; _⊆_; ⊆-refl; _≈_; Allegory; Rel-Allegory)
+  using (_⨾_; _†; _⊆_; ⊆-refl; _≈_; Allegory; Rel-Allegory)
 
 ------------------------------------------------------------------------
 -- the two residuals of composition.
 ------------------------------------------------------------------------
 
 infixr 5 _∖_
-_∖_ : {A B C : Set} → Rel A B → Rel A C → B → C → Set
+_∖_ : {A B C : Set} → (A → B → Set) → (A → C → Set) → B → C → Set
 _∖_ {A} R T b c = (a : A) → R a b → T a c
 
 infixr 5 _／_
-_／_ : {A B C : Set} → Rel B C → Rel A C → A → B → Set
+_／_ : {A B C : Set} → (B → C → Set) → (A → C → Set) → A → B → Set
 _／_ {A} {B} {C} S T a b = (c : C) → S b c → T a c
 
 ------------------------------------------------------------------------
 -- the two adjunctions (R⨾S ⊆ T ⇔ S ⊆ R∖T ⇔ R ⊆ S／T).
 ------------------------------------------------------------------------
 
-∖-adjˡ : {A B C : Set} {R : Rel A B} {S : Rel B C} {T : Rel A C}
+∖-adjˡ : {A B C : Set} {R : A → B → Set} {S : B → C → Set} {T : A → C → Set}
        → (R ⨾ S) ⊆ T → S ⊆ (R ∖ T)
 ∖-adjˡ h b c s a r = h a c (b , (r , s))
 
-∖-adjˡ⁻ : {A B C : Set} {R : Rel A B} {S : Rel B C} {T : Rel A C}
+∖-adjˡ⁻ : {A B C : Set} {R : A → B → Set} {S : B → C → Set} {T : A → C → Set}
         → S ⊆ (R ∖ T) → (R ⨾ S) ⊆ T
 ∖-adjˡ⁻ k a c (b , (r , s)) = k b c s a r
 
-／-adjʳ : {A B C : Set} {R : Rel A B} {S : Rel B C} {T : Rel A C}
+／-adjʳ : {A B C : Set} {R : A → B → Set} {S : B → C → Set} {T : A → C → Set}
         → (R ⨾ S) ⊆ T → R ⊆ (S ／ T)
 ／-adjʳ h a b r c s = h a c (b , (r , s))
 
-／-adjʳ⁻ : {A B C : Set} {R : Rel A B} {S : Rel B C} {T : Rel A C}
+／-adjʳ⁻ : {A B C : Set} {R : A → B → Set} {S : B → C → Set} {T : A → C → Set}
          → R ⊆ (S ／ T) → (R ⨾ S) ⊆ T
 ／-adjʳ⁻ k a c (b , (r , s)) = k a b r c s
 
@@ -72,7 +72,7 @@ _／_ {A} {B} {C} S T a b = (c : C) → S b c → T a c
 -- THE GEM — left division = right division of the converses.
 ------------------------------------------------------------------------
 
-residual-duality : {A B C : Set} (R : Rel A B) (T : Rel A C)
+residual-duality : {A B C : Set} (R : A → B → Set) (T : A → C → Set)
                  → ((R ∖ T) †) ≈ ((R †) ／ (T †))
 residual-duality R T = ⊆-refl , ⊆-refl
 

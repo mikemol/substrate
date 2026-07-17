@@ -6488,7 +6488,6 @@ digraph imports {
   "Substrate.Category.Allegory.Mono" -> "Substrate.Category.Allegory";
   "Substrate.Category.Allegory.Mono" -> "Substrate.Category.Allegory.Maps";
   "Substrate.Category.Allegory.Mono" -> "Substrate.Foundation.Product";
-  "Substrate.Category.Allegory.Power" -> "Substrate.Category.Allegory";
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.SubobjectClassifier";
   "Substrate.Category.Allegory.Power" -> "Substrate.Category.Topos";

@@ -28,19 +28,19 @@ module Substrate.Category.Allegory.Maps where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Category.Allegory using (Rel; idR; _⨾_)
+open import Substrate.Category.Allegory using (idR; _⨾_)
 
 ------------------------------------------------------------------------
 -- map = entire + deterministic relation = every fiber a singleton.
 ------------------------------------------------------------------------
 
-entire : {A B : Set} → Rel A B → Set
+entire : {A B : Set} → (A → B → Set) → Set
 entire {A} {B} R = (a : A) → Σ B (λ b → R a b)
 
-deterministic : {A B : Set} → Rel A B → Set
+deterministic : {A B : Set} → (A → B → Set) → Set
 deterministic {A} {B} R = (a : A) (b b' : B) → R a b → R a b' → b ≡ b'
 
-isMap : {A B : Set} → Rel A B → Set
+isMap : {A B : Set} → (A → B → Set) → Set
 isMap R = entire R × deterministic R
 
 ------------------------------------------------------------------------
@@ -56,18 +56,18 @@ idR-det A a b b' eq eq' = trans (sym eq) eq'
 idR-map : (A : Set) → isMap (idR A)
 idR-map A = idR-entire A , idR-det A
 
-⨾-entire : {A B C : Set} {R : Rel A B} {S : Rel B C}
+⨾-entire : {A B C : Set} {R : A → B → Set} {S : B → C → Set}
          → entire R → entire S → entire (R ⨾ S)
 ⨾-entire {R = R} {S} eR eS a with eR a
 ... | b , r with eS b
 ... | c , s = c , (b , (r , s))
 
-⨾-det : {A B C : Set} {R : Rel A B} {S : Rel B C}
+⨾-det : {A B C : Set} {R : A → B → Set} {S : B → C → Set}
       → deterministic R → deterministic S → deterministic (R ⨾ S)
 ⨾-det {R = R} {S} dR dS a c c' (b , (r , s)) (b' , (r' , s')) =
   dS b c c' s (subst (λ z → S z c') (sym (dR a b b' r r')) s')
 
-⨾-map : {A B C : Set} {R : Rel A B} {S : Rel B C}
+⨾-map : {A B C : Set} {R : A → B → Set} {S : B → C → Set}
       → isMap R → isMap S → isMap (R ⨾ S)
 ⨾-map (eR , dR) (eS , dS) = ⨾-entire eR eS , ⨾-det dR dS
 
@@ -93,7 +93,7 @@ graph-map f = graph-entire f , graph-det f
 -- unique — deterministic = μΦ landed on a singleton.
 ------------------------------------------------------------------------
 
-map-value-unique : {A B : Set} {R : Rel A B} → isMap R
+map-value-unique : {A B : Set} {R : A → B → Set} → isMap R
                  → (a : A) (p q : Σ B (λ b → R a b)) → proj₁ p ≡ proj₁ q
 map-value-unique (_ , d) a (b , r) (b' , r') = d a b b' r r'
 
@@ -104,7 +104,7 @@ map-value-unique (_ , d) a (b , r) (b' , r') = d a b b' r r'
 -- ⟡rc-cheap (⟡set1-rerank2): the ex-Σ-holder `Map A B = Σ (Rel A B) isMap : Set₁` held the
 -- relation as DATA; with the relation as a PARAMETER the bundle drops to Set (the family-as-
 -- param move — the "genuine Σ-holder" label was the wall-reflex).
-record Map (A B : Set) (R : Rel A B) : Set where
+record Map (A B : Set) (R : A → B → Set) : Set where
   constructor mkMap
   field
     is-map : isMap R
@@ -113,5 +113,5 @@ idMap : (A : Set) → Map A A (idR A)
 idMap A = mkMap (idR-map A)
 
 infixr 9 _⨾M_
-_⨾M_ : {A B C : Set} {R : Rel A B} {S : Rel B C} → Map A B R → Map B C S → Map A C (R ⨾ S)
+_⨾M_ : {A B C : Set} {R : A → B → Set} {S : B → C → Set} → Map A B R → Map B C S → Map A C (R ⨾ S)
 mkMap mR ⨾M mkMap mS = mkMap (⨾-map mR mS)

@@ -22,10 +22,10 @@
 module Substrate.Category.UniversalProperty.StencilModularDifunc where
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Category.Allegory using (Rel; _⨾_; _†; _≈_; _⊆_)
+open import Substrate.Category.Allegory using (_⨾_; _†; _≈_; _⊆_)
 
 module _ {F : Set}
-         (agree : Rel F F)
+         (agree : F → F → Set)
          (agree-refl : (p : F) → agree p p)
          (agree-sym  : {p q : F} → agree p q → agree q p)
          (agree-trans : {p q r : F} → agree p q → agree q r → agree p r)

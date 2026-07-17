@@ -40,7 +40,6 @@ open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Product using (Σ; proj₂)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.R.Trace using (digits-of-EEA)
-open import Substrate.Category.Allegory using (Rel)
 open import Substrate.Category.Allegory.Maps using (isMap; graph; graph-map)
 
 -- the continued-fraction / EEA expansion of a/b: the quotient (digit) sequence.

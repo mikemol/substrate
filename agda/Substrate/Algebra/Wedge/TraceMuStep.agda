@@ -23,7 +23,7 @@ open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; Refinement)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; Refinement)
 
 module _ {C : Set} (D : DivStr C) where
 
@@ -42,7 +42,7 @@ module _ {C : Set} (D : DivStr C) where
       ((b ≡ z D) × (g ≡ a))                              -- done: terminal
     ⊎ (Σ (Wedge⟦478f66a6⟧ D a b) (λ w → P (b , rem w , g)))        -- more: step to residual
 
-  Φ-step-mono : {P Q : Fam Idx} → P ⊑ᶠ Q → Φ-step P ⊑ᶠ Φ-step Q
+  Φ-step-mono : {P Q : Idx → Set} → P ⊑ᶠ Q → Φ-step P ⊑ᶠ Φ-step Q
   Φ-step-mono P⊑Q (a , b , g) (inj₁ eqs)      = inj₁ eqs
   Φ-step-mono P⊑Q (a , b , g) (inj₂ (w , p))  = inj₂ (w , P⊑Q (b , rem w , g) p)
 

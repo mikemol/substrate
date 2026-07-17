@@ -21,16 +21,16 @@ module Substrate.Category.UniversalProperty.StencilModularMap where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Category.Allegory
-  using (Rel; _⨾_; _∧_; _†; _⊆_; _≈_; idR; modular; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
+  using (_⨾_; _∧_; _†; _⊆_; _≈_; idR; modular; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
 open import Substrate.Category.Allegory.Maps using (deterministic; graph; graph-det)
 
-module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
+module _ {A B C : Set} (f : A → B → Set) (det : deterministic f) where
 
   ------------------------------------------------------------------------
   -- ① THE ⊆ DIRECTION (monotonicity — direct, holds for ALL relations): f ⨾ (S ∧ T) ⊆
   -- (f ⨾ S) ∧ (f ⨾ T). Split the meet inside the composite.
   ------------------------------------------------------------------------
-  map-meet-⊆ : (S T : Rel B C) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
+  map-meet-⊆ : (S T : B → C → Set) → (f ⨾ (S ∧ T)) ⊆ ((f ⨾ S) ∧ (f ⨾ T))
   map-meet-⊆ S T a c (b , (fab , (sbc , tbc))) =
     (b , (fab , sbc)) , (b , (fab , tbc))
 
@@ -44,7 +44,7 @@ module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
   -- route to the SAME fact — the genuine allegory statement of "a map's fibers are
   -- singletons, so it distributes over meets".
   ------------------------------------------------------------------------
-  map-meet-⊇ : (S T : Rel B C) → ((f ⨾ S) ∧ (f ⨾ T)) ⊆ (f ⨾ (S ∧ T))
+  map-meet-⊇ : (S T : B → C → Set) → ((f ⨾ S) ∧ (f ⨾ T)) ⊆ (f ⨾ (S ∧ T))
   map-meet-⊇ S T a c ((b , (fab , sbc)) , (b' , (fab' , tb'c))) with det a b b' fab fab'
   ... | refl = b , (fab , (sbc , tb'c))
 
@@ -52,7 +52,7 @@ module _ {A B C : Set} (f : Rel A B) (det : deterministic f) where
   -- ③ MAPS PRESERVE MEETS: f ⨾ (S ∧ T) ≈ (f ⨾ S) ∧ (f ⨾ T). The genuine modular-law
   -- consequence, holding because f is a MAP (deterministic) — NOT an equivalence.
   ------------------------------------------------------------------------
-  map-preserves-meet : (S T : Rel B C) → (f ⨾ (S ∧ T)) ≈ ((f ⨾ S) ∧ (f ⨾ T))
+  map-preserves-meet : (S T : B → C → Set) → (f ⨾ (S ∧ T)) ≈ ((f ⨾ S) ∧ (f ⨾ T))
   map-preserves-meet S T = map-meet-⊆ S T , map-meet-⊇ S T
 
 ------------------------------------------------------------------------
@@ -67,7 +67,7 @@ module _ {A B R : Set} (cross : A → B → R) where
   cross-det : deterministic cross-graph
   cross-det = graph-det (λ ab → cross (proj₁ ab) (proj₂ ab))
 
-  cross-preserves-meet : {C : Set} (S T : Rel R C) →
+  cross-preserves-meet : {C : Set} (S T : R → C → Set) →
     (cross-graph ⨾ (S ∧ T)) ≈ ((cross-graph ⨾ S) ∧ (cross-graph ⨾ T))
   cross-preserves-meet {C} = map-preserves-meet {A × B} {R} {C} cross-graph cross-det
 

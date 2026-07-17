@@ -19,7 +19,7 @@ module Substrate.Algebra.Wedge.CertGenericProjection where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Algebra.Wedge using (ℕ-div; rem)
-open import Substrate.Category.Allegory.Refinement using (Fam; _⊑ᶠ_; ⊑ᶠ-trans; iterate)
+open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; ⊑ᶠ-trans; iterate)
 open import Substrate.Algebra.Wedge.Certified using (wedge)
 open import Substrate.Foundation.Sum using (inj₁; inj₂)
 open import Substrate.Foundation.Product using (_,_)
@@ -35,7 +35,7 @@ open import Substrate.Algebra.Wedge.CertifiedPhiStep
 -- (identical, z ℕ-div = zero); certified step (cw, p) ↦ generic step (wedge cw, p)
 -- — forget smallness, rem (wedge cw) is the same so p fits.
 ------------------------------------------------------------------------
-cert→generic : (P : Fam Idxℕ) → Φ-cert P ⊑ᶠ Φ-step ℕ-div P
+cert→generic : (P : Idxℕ → Set) → Φ-cert P ⊑ᶠ Φ-step ℕ-div P
 cert→generic P (a , b , g) (inj₁ eqs)      = inj₁ eqs
 cert→generic P (a , b , g) (inj₂ (cw , p)) = inj₂ (wedge cw , p)
 
