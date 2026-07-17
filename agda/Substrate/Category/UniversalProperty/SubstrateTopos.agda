@@ -30,10 +30,15 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 ------------------------------------------------------------------------
 
 -- ⟡ta-upterm: over the Set₀ object-alphabet O (UPSheaf is now O-parameterized).
+-- ⟡rc-topos (⟡set1-rerank2): UPSheaf now takes a fiber family F and a
+-- descent-stated Set as explicit params — the sheaf-object CHOICE for
+-- Sh-Obj becomes an explicit input here (Agda is non-cumulative, so
+-- Sh-Obj : Set needs a concrete Set-level UPSheaf instance, not a
+-- quantified-over Σ, which would land at Set₁).
 module _ (O : Set) (Hom : O → O → Set) where
 
-  Substrate-UPTopos : UPTopos (UPSheaf O Hom) ⊤ ⊤ ⊤ ⊤ ⊤
-  Substrate-UPTopos = record {}
+  Substrate-UPTopos : (F : O → Set) (d : Set) → UPTopos (UPSheaf O Hom F d) ⊤ ⊤ ⊤ ⊤ ⊤
+  Substrate-UPTopos F d = record {}
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP38.

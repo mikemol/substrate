@@ -16,6 +16,8 @@
 
 module Substrate.Category.UniversalProperty.Omega where
 
+open import Substrate.Foundation.Product using (Σ)
+open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
 
 module _ (O : Set) (Hom : O → O → Set) where
@@ -26,10 +28,16 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- ⟡ta-upterm-L5-reflow: objects are the Set₀ alphabet O; Sieve now lives
   -- at Set₁ (its `member` predicate lowered Set₁ → Set), so Ω lowers
   -- Set₂ → Set₁. (O, Hom) via the enclosing section.
+  --
+  -- ⟡rc-topos (⟡set1-rerank2): Sieve's `member` predicate is now a PARAMETER,
+  -- not a field — Ω(U) genuinely quantifies over "which member predicate",
+  -- so the honest Set₁ shape is a Σ: the member predicate paired with a
+  -- sieve carrying it. This Σ-holder is the documented Set₁ residue (this
+  -- is the only def in the file that needs it).
   ------------------------------------------------------------------------
 
   Ω : O → Set₁
-  Ω U = Sieve O Hom U
+  Ω U = Σ ({V : O} → UPTerm O Hom V U → Set) (λ m → Sieve O Hom U m)
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP32.

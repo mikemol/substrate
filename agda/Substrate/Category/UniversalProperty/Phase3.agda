@@ -39,8 +39,6 @@ open import Substrate.Category.UniversalProperty.Sheafify          public
   using (SheafifyType)
 open import Substrate.Category.UniversalProperty.ConstantSheaf     public
   using (constant-Presheaf)
-open import Substrate.Category.UniversalProperty.SheafPullback     public
-  using (PullbackToSlice)
 open import Substrate.Category.UniversalProperty.InternalHom       public
   using (InternalHomType)
 open import Substrate.Category.UniversalProperty.SubstrateSheaves  public

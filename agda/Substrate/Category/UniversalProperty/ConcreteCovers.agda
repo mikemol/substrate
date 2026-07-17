@@ -31,10 +31,9 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- 1. Trivial cover (identity-singleton).
   ------------------------------------------------------------------------
 
-  trivial-cover : (U : O) → UPCover O Hom U
+  trivial-cover : (U : O) → UPCover O Hom U ⊤
   trivial-cover U = record
-    { Idx   = ⊤
-    ; src   = λ _ → U
+    { src   = λ _ → U
     ; arrow = λ _ → []
     }
 

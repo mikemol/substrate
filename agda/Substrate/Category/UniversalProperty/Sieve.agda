@@ -26,9 +26,11 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- The Sieve record: a term-predicate closed under precomposition.
   ------------------------------------------------------------------------
 
-  record Sieve (U : O) : Set₁ where
+  -- ⟡rc-topos (⟡set1-rerank2): `member` is a PARAMETER now (a Set-valued field
+  -- pinned the record at Set₁; params never raise the sort) — a sieve's predicate
+  -- is visible in its TYPE, and only the closure proof is data.
+  record Sieve (U : O) (member : {V : O} → UPTerm O Hom V U → Set) : Set where
     field
-      member  : {V : O} → UPTerm O Hom V U → Set
       closure : {V W : O} (t : UPTerm O Hom V U) (u : UPTerm O Hom W V) →
                 member t → member (u ++ᵤ t)
 
@@ -38,8 +40,5 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- The maximal sieve (always-true predicate).
   ------------------------------------------------------------------------
 
-  max-Sieve : (U : O) → Sieve U
-  max-Sieve U = record
-    { member  = λ _ → ⊤
-    ; closure = λ _ _ _ → tt
-    }
+  max-Sieve : (U : O) → Sieve U (λ _ → ⊤)
+  max-Sieve U = record { closure = λ _ _ _ → tt }

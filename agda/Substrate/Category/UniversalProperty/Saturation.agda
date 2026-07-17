@@ -20,9 +20,14 @@ open import Substrate.Category.UniversalProperty.Refinement using (Refines)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
+  -- ⟡rc-topos (⟡set1-rerank2): UPCover's `Idx` is a PARAMETER now, so the
+  -- existential cover c' also existentially quantifies over its index Set —
+  -- this def stays Set₁ (a documented Σ-over-Set holder; the same shape
+  -- Pretopology's `designated` and Refinement's `Refines` already carry).
   Saturated :
-    ((U : O) → UPCover O Hom U → Set) →
-    (U : O) → UPCover O Hom U → Set₁
-  Saturated designated U c =
-    Σ (UPCover O Hom U) (λ c' →
-    Σ (designated U c') (λ _ → Refines O Hom c c'))
+    ((U : O) (I : Set) → UPCover O Hom U I → Set) →
+    (U : O) {I : Set} → UPCover O Hom U I → Set₁
+  Saturated designated U {I} c =
+    Σ Set (λ I' →
+    Σ (UPCover O Hom U I') (λ c' →
+    Σ (designated U I' c') (λ _ → Refines O Hom c c')))

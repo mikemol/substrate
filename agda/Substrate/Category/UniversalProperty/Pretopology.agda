@@ -30,7 +30,7 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- parameters (nothing constructs or quantifies over it — the sole consumer,
   -- Phase2, only re-exports the name).
   module _
-    (designated : (U : O) → UPCover O Hom U → Set)
+    (designated : (U : O) (I : Set) → UPCover O Hom U I → Set)
     (identity-axiom-stated     : Set)
     (stability-axiom-stated    : Set)
     (transitivity-axiom-stated : Set)

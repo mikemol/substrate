@@ -15,6 +15,7 @@
 
 module Substrate.Category.UniversalProperty.InternalHom where
 
+open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 ------------------------------------------------------------------------
@@ -23,8 +24,12 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
+  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER — the
+  -- internal-hom's resulting fiber family is genuinely quantified over, so
+  -- this stays a documented Set₁ Σ-holder.
   InternalHomType : Set₁
-  InternalHomType = UPPresheaf O Hom → UPPresheaf O Hom → UPPresheaf O Hom
+  InternalHomType = (F G : O → Set) → UPPresheaf O Hom F → UPPresheaf O Hom G →
+                     Σ (O → Set) (UPPresheaf O Hom)
 
 -- Standard construction: [P, Q](U) = naturality-respecting maps
 -- (V → U) × P(V) → Q(V) parametric in V. The Yoneda lemma gives

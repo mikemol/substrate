@@ -11,6 +11,7 @@
 
 module Substrate.Category.UniversalProperty.Powerset where
 
+open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 ------------------------------------------------------------------------
@@ -23,8 +24,11 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
+  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER — the
+  -- powerset's resulting fiber family is genuinely quantified over, so
+  -- this stays a documented Set₁ Σ-holder.
   PowersetType : Set₁
-  PowersetType = UPPresheaf O Hom → UPPresheaf O Hom
+  PowersetType = (F : O → Set) → UPPresheaf O Hom F → Σ (O → Set) (UPPresheaf O Hom)
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP35.

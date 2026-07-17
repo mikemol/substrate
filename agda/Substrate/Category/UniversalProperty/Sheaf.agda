@@ -29,13 +29,15 @@ open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
-  record UPSheaf : Set₁ where
+  -- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER — UPSheaf
+  -- takes the fiber family F (and descent-stated, already a param) as its
+  -- own parameters.
+  record UPSheaf (F : O → Set) (descent-stated : Set) : Set where
     field
-      presheaf  : UPPresheaf O Hom
+      presheaf  : UPPresheaf O Hom F
       -- Descent obligation: every cover-indexed matching family has
       -- a unique amalgamation. ⟡UPArrow-dissolve C: the Set-carrier
       -- placeholder lowers Set₁ → Set (like commute-stated), so UPSheaf : Set₁.
-      descent-stated : Set
 
   open UPSheaf public
 

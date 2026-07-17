@@ -31,7 +31,7 @@ module Substrate.Category.UniversalProperty.Phase2 where
 open import Substrate.Category.Site                                public
   using (Site; CoverData)
 open import Substrate.Category.UniversalProperty.Coverage          public
-  using (UPCover; Covering)
+  using (UPCover)
 open import Substrate.Category.UniversalProperty.Sieve             public
   using (Sieve; max-Sieve)
 open import Substrate.Category.UniversalProperty.SieveClosure      public
@@ -39,7 +39,7 @@ open import Substrate.Category.UniversalProperty.SieveClosure      public
 open import Substrate.Category.UniversalProperty.Pretopology       public
   using (UPPretopology)
 open import Substrate.Category.UniversalProperty.CoverageAxioms    public
-  using (singleton-id-Cover; StabilityAxiom; TransitivityAxiom)
+  using (singleton-id-Cover)
 open import Substrate.Category.UniversalProperty.ConcreteCovers    public
   using (trivial-cover)
 open import Substrate.Category.UniversalProperty.Refinement        public

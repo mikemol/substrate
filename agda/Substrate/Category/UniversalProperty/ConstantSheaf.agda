@@ -21,10 +21,9 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- 1. The constant presheaf at A.
   ------------------------------------------------------------------------
 
-  constant-Presheaf : Set → UPPresheaf O Hom
+  constant-Presheaf : (A : Set) → UPPresheaf O Hom (λ _ → A)
   constant-Presheaf A = record
-    { F       = λ _ → A
-    ; action  = λ _ x → x
+    { action  = λ _ x → x
     ; pres-id = λ _ → refl
     ; pres-∘  = λ _ _ _ → refl
     }

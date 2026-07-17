@@ -11,8 +11,6 @@
 
 module Substrate.Category.UniversalProperty.AdjointPair where
 
-open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
-
 ------------------------------------------------------------------------
 -- 1. AdjointPair signature.
 ------------------------------------------------------------------------

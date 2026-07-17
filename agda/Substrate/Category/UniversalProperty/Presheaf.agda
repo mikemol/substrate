@@ -31,9 +31,10 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- contravariant term-action; pres-id / pres-∘ are the functor laws.
   ------------------------------------------------------------------------
 
-  record UPPresheaf : Set₁ where
+  -- ⟡rc-topos (⟡set1-rerank2): the fiber family `F` is a PARAMETER now (a
+  -- Set-valued field pinned the record at Set₁); the functor data/laws remain.
+  record UPPresheaf (F : O → Set) : Set where
     field
-      F        : O → Set
       action   : {U V : O} → UPTerm O Hom V U → F U → F V
       pres-id  : {U : O} (x : F U) → action ([] {X = U}) x ≡ x
       pres-∘   : {U V X : O} (t : UPTerm O Hom V U) (u : UPTerm O Hom X V) (x : F U) →

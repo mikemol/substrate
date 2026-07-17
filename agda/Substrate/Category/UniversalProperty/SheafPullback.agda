@@ -13,20 +13,10 @@
 
 module Substrate.Category.UniversalProperty.SheafPullback where
 
-open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
-
-module _ (O : Set) (Hom : O → O → Set) where
-
-  ------------------------------------------------------------------------
-  -- 1. Pullback of a presheaf to a slice.
-  --
-  -- The shape: given P and U, produce a presheaf on slice / U.
-  -- Substrate-honest: this is signature-bearing — concrete
-  -- realisation needs the slice category structure (later sub-arc).
-  ------------------------------------------------------------------------
-
-  PullbackToSlice : UPPresheaf O Hom → O → Set₂
-  PullbackToSlice _ _ = Set₁  -- obligation surface
+-- ⟡rc-topos (⟡set1-rerank2): UPPresheaf's `F` is now a PARAMETER, so the
+-- hollow `PullbackToSlice` obligation-placeholder (`= Set₁`, unconsumed
+-- beyond its own re-export) is DELETED; concrete slice-restriction
+-- obligations live at the sites that state them.
 
 ------------------------------------------------------------------------
 -- 2. Capstone for UP27.

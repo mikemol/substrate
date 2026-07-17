@@ -39,10 +39,10 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- `f ≡ f ++ᵤ []`), so this GENERALIZES it — the residue is discharged, not lost.
   ------------------------------------------------------------------------
 
-  is-instance-truth : {cand U : O} → UPTerm O Hom cand U → Sieve O Hom U
+  is-instance-truth : {cand U : O} (a : UPTerm O Hom cand U) →
+    Sieve O Hom U (λ {V} f → Σ (UPTerm O Hom V cand) (λ g → f ≡ (g ++ᵤ a)))
   is-instance-truth {cand} {U} a = record
-    { member  = λ {V} f → Σ (UPTerm O Hom V cand) (λ g → f ≡ (g ++ᵤ a))
-    ; closure = λ {V} {W} t u m →
+    { closure = λ {V} {W} t u m →
         (u ++ᵤ proj₁ m)
         , trans (cong (u ++ᵤ_) (proj₂ m)) (sym (++ᵤ-assoc u (proj₁ m) a))
     }

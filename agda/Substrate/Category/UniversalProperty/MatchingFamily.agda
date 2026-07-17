@@ -21,9 +21,9 @@
 module Substrate.Category.UniversalProperty.MatchingFamily where
 
 open import Substrate.Category.UniversalProperty.Coverage
-  using (UPCover; Idx; source-UP)
+  using (UPCover; source-UP)
 open import Substrate.Category.UniversalProperty.Presheaf
-  using (UPPresheaf; F)
+  using (UPPresheaf)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
@@ -35,12 +35,12 @@ module _ (O : Set) (Hom : O → O → Set) where
   module _ (matches-stated : Set) where
 
     record MatchingFamily
-      {U : O}
-      (c : UPCover O Hom U)
-      (P : UPPresheaf O Hom)
+      {U : O} {FP : O → Set} {I : Set}
+      (c : UPCover O Hom U I)
+      (P : UPPresheaf O Hom FP)
       : Set where
       field
-        section  : (i : Idx c) → F P (source-UP O Hom c i)
+        section  : (i : I) → FP (source-UP O Hom c i)
 
     open MatchingFamily public
 

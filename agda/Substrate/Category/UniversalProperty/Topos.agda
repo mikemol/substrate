@@ -25,7 +25,10 @@ open import Substrate.Category.UniversalProperty.Sheaf using (UPSheaf)
 -- ⟡set1-rp-uptopos: the VESTIGIAL-record pattern (UPArrowP/mkUP precedent) — all six Set-valued
 -- fields become PARAMS (they never depended on each other), the body is empty, and params don't
 -- raise the sort: Set₂ → Set. Projections had zero external uses (verified), so no shims.
-record UPTopos (Sh-Obj : Set₁)
+-- ⟡rc-topos: Sh-Obj lowers Set₁ → Set (Agda is non-cumulative; UPSheaf
+-- now genuinely lives at Set — see Sheaf.agda — so Sh-Obj must too, else
+-- no Set-level UPSheaf instantiation could ever inhabit it).
+record UPTopos (Sh-Obj : Set)
                (has-product-stated has-exponential-stated
                 finite-limits-stated Ω-sheaf-stated internal-logic-stated : Set) : Set where
   constructor mkUPTopos

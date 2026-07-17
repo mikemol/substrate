@@ -26,9 +26,10 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- UPCover: an indexed family of UPTerm morphisms into U.
   ------------------------------------------------------------------------
 
-  record UPCover (U : O) : Set₁ where
+  -- ⟡rc-topos (⟡set1-rerank2): the index Set is a PARAMETER now (a Set-valued
+  -- field pinned the record at Set₁); the family data remains.
+  record UPCover (U : O) (Idx : Set) : Set where
     field
-      Idx   : Set
       src   : Idx → O
       arrow : (i : Idx) → UPTerm O Hom (src i) U
 
@@ -36,12 +37,12 @@ module _ (O : Set) (Hom : O → O → Set) where
 
   -- The source object at index i (was the UPArrowP `source-UP` shim; now just the
   -- object `src c i : O`). Kept as an alias so its importers need not rename.
-  source-UP : {U : O} (c : UPCover U) (i : Idx c) → O
+  source-UP : {U : O} {Idx : Set} (c : UPCover U Idx) (i : Idx) → O
   source-UP c i = src c i
 
   ------------------------------------------------------------------------
   -- The covering condition (obligation placeholder; concrete covers discharge it).
   ------------------------------------------------------------------------
 
-  Covering : {U : O} → UPCover U → Set₁
-  Covering _ = Set
+  -- (the hollow `Covering _ = Set` placeholder is DELETED — ⟡rc-topos; concrete
+  -- covering conditions live at the sites that state them.)

@@ -44,10 +44,9 @@ module _ (O : Set) (Hom : O → O → Set) where
   --    refl ([] ++ᵤ g = g); pres-∘ is ++ᵤ-assoc. A genuine UPPresheaf, no stub.
   ------------------------------------------------------------------------
 
-  InstancesAt : UPPresheaf O Hom
+  InstancesAt : UPPresheaf O Hom (λ U → Σ O (λ W → UPTerm O Hom U W))
   InstancesAt = record
-    { F       = λ U → Σ O (λ W → UPTerm O Hom U W)
-    ; action  = λ t (W , g) → W , (t ++ᵤ g)
+    { action  = λ t (W , g) → W , (t ++ᵤ g)
     ; pres-id = λ (W , g) → refl
     ; pres-∘  = λ t u (W , g) → cong (W ,_) (++ᵤ-assoc u t g)
     }

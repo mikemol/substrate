@@ -26,33 +26,16 @@ module _ (O : Set) (Hom : O → O → Set) where
   -- Substrate-honest: stated as a function producing such a cover.
   ------------------------------------------------------------------------
 
-  singleton-id-Cover : (U : O) → UPCover O Hom U
+  singleton-id-Cover : (U : O) → UPCover O Hom U ⊤
   singleton-id-Cover U = record
-    { Idx   = ⊤
-    ; src   = λ _ → U
+    { src   = λ _ → U
     ; arrow = λ _ → []
     }
 
-  ------------------------------------------------------------------------
-  -- 2. Stability axiom (signature).
-  --
-  -- If { Vᵢ → U } is a cover and W → U is any morphism, then the
-  -- pullback family { Vᵢ ×_U W → W } is a cover of W. Substrate-honest:
-  -- the obligation surface is named.
-  ------------------------------------------------------------------------
-
-  StabilityAxiom : (U : O) (c : UPCover O Hom U) → Set₂
-  StabilityAxiom _ _ = Set₁  -- obligation placeholder
-
-  ------------------------------------------------------------------------
-  -- 3. Transitivity axiom (signature).
-  --
-  -- If { Vᵢ → U } is a cover and for each i, { Wᵢⱼ → Vᵢ } is a cover,
-  -- then the composite family { Wᵢⱼ → U } is a cover.
-  ------------------------------------------------------------------------
-
-  TransitivityAxiom : (U : O) (c : UPCover O Hom U) → Set₂
-  TransitivityAxiom _ _ = Set₁  -- obligation placeholder
+  -- ⟡rc-topos (⟡set1-rerank2): UPCover's `Idx` is now a PARAMETER, so the
+  -- hollow `StabilityAxiom` / `TransitivityAxiom` obligation-placeholders
+  -- (`= Set₁`, unconsumed anywhere) are DELETED; concrete pretopology
+  -- obligations live at the sites that state them (Pretopology, Saturation).
 
 ------------------------------------------------------------------------
 -- 4. Capstone for UP16.

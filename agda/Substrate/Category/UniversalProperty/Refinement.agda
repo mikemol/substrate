@@ -21,22 +21,22 @@ open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Coverage
-  using (UPCover; Idx; source-UP)
+  using (UPCover; source-UP)
 
 module _ (O : Set) (Hom : O → O → Set) where
 
   ------------------------------------------------------------------------
   -- 1. Refines: c' refines c.
   --
-  -- For every i' : Idx c', there exist i : Idx c and a factoring
+  -- For every i' : I', there exist i : I and a factoring
   -- UPTerm from source-UP c' i' to source-UP c i making the diagram
   -- commute (= the arrow of c' factors through arrow of c).
   ------------------------------------------------------------------------
 
-  Refines : {U : O} → UPCover O Hom U → UPCover O Hom U → Set
-  Refines {U} c' c =
-    (i' : Idx c') →
-    Σ (Idx c) (λ i →
+  Refines : {U : O} {I' I : Set} → UPCover O Hom U I' → UPCover O Hom U I → Set
+  Refines {U} {I'} {I} c' c =
+    (i' : I') →
+    Σ I (λ i →
     Σ (UPTerm O Hom (source-UP O Hom c' i') (source-UP O Hom c i)) (λ _ → ⊤))
 
 ------------------------------------------------------------------------

@@ -43,10 +43,9 @@ module _ (O : Set) (Hom : O → O → Set) where
   --   pres-∘      = ++ᵤ-assoc          (append associativity)
   ------------------------------------------------------------------------
 
-  よ : O → UPPresheaf O Hom
+  よ : (U : O) → UPPresheaf O Hom (λ V → UPTerm O Hom V U)
   よ U = record
-    { F       = λ V → UPTerm O Hom V U
-    ; action  = λ t s → t ++ᵤ s
+    { action  = λ t s → t ++ᵤ s
     ; pres-id = λ s → refl
     ; pres-∘  = λ t u x → ++ᵤ-assoc u t x
     }

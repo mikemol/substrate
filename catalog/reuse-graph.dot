@@ -1178,6 +1178,7 @@ digraph reuse {
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Algebra.Quotient.Quotient";
   "Substrate.Category.UniversalProperty.Quotient.QuotientUP" -> "Substrate.Foundation.Eq._≡_";
   "Substrate.Category.UniversalProperty.QuotientProduct.QuotientProduct" -> "Substrate.Algebra.Quotient.Quotient";
+  "Substrate.Category.UniversalProperty.Sieve._.Sieve" -> "Substrate.Category.UniversalProperty.Term.UPTerm";
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Coverage._.UPCover";
   "Substrate.Category.UniversalProperty.SieveClosure._.FactorsThroughCover" -> "Substrate.Category.UniversalProperty.Term.UPTerm";
   "Substrate.Category.UniversalProperty.X8aConfluentClassifier._._._⇒*_" -> "Substrate.Category.UniversalProperty.X8aConfluentClassifier.ConfluentClassifier";
