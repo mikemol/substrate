@@ -443,11 +443,11 @@ def lower_source(src: str, intern: Intern) -> list[int]:
 # SAME source lowered via ast and via cst interns to the SAME id -- the
 # cross-representation mapping FALLS OUT as the shared node (fan-in), never computed.
 # ============================================================================
-try:
-    import libcst as cst
-    _HAS_CST = True
-except ImportError:
-    _HAS_CST = False
+# libcst is a HEAVY parser (~0.2s import). Only the CST arm (lower_source_cst / _cst_children) needs it, and
+# only for Python-SOURCE interning — the agda-core / ast paths never touch it. So detect AVAILABILITY cheaply
+# (find_spec does NOT import) and import libcst LAZILY at the two use sites. (⟡infra: fix the eager optional import.)
+from importlib.util import find_spec as _find_spec
+_HAS_CST = _find_spec("libcst") is not None
 
 # cst-kind -> shared canonical (kind, op-extractor).  Maps cst's vocabulary onto ast's heads.
 _CST_BINOP = {"Add": "Add", "Subtract": "Sub", "Multiply": "Mult", "Divide": "Div",
@@ -566,6 +566,7 @@ class CstLowerer:
     @staticmethod
     def _cst_children(node):
         import dataclasses
+        import libcst as cst                          # ⟡infra: lazy — only the CST arm reaches here
         fields = dataclasses.fields(node) if dataclasses.is_dataclass(node) else []
         for f in fields:
             val = getattr(node, f.name, None)
@@ -585,6 +586,7 @@ def lower_source_cst(src: str, intern: Intern) -> list[int]:
     globals collapse (the cst-arm false-duplicate). Falls back to all-free if metadata is unavailable."""
     if not _HAS_CST:
         raise RuntimeError("libcst not available")
+    import libcst as cst                              # ⟡infra: lazy — imported only on the CST lowering path
     mod = cst.parse_module(src)
     bound: set = set()
     module_to_lower = mod

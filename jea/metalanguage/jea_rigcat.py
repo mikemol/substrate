@@ -31,7 +31,9 @@ from typing import Callable, Optional
 
 # reuse the proven Fin-permutation coherence oracle
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts"))
-import rig_coherence as rc
+# rig_coherence pulls numpy (~0.1s). RIG_OPS (the op-set) never needs it — only the coherence-CHECK methods
+# (braid_*/delta/check_laws/check_grade_transport) do. Import it LAZILY at those sites so `from jea_rigcat
+# import RIG_OPS` stays cheap. (⟡infra: fix the eager numpy pull.)
 
 
 # ─────────────────────────── RIG_OPS — the rig category's own ⊕/⊗ (proven, small) ───────────────────────────
@@ -169,10 +171,13 @@ class GradedRigCat:
 
     # braidings AS the coherence permutations (from the proven oracle)
     def braid_oplus(self, m: int, n: int):
+        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
         return rc.blockSwap(m, n)                       # ⊕-symmetry  Fin(m+n)→Fin(n+m)
     def braid_otimes(self, m: int, n: int):
+        import rig_coherence as rc
         return rc.factorSwap(m, n)                      # ⊗-symmetry  Fin(m·n)→Fin(n·m)
     def delta(self, m: int, n: int, p: int):
+        import rig_coherence as rc
         return rc.delta(m, n, p)                        # distributor Fin(m·(n+p))→Fin(m·n+m·p)
 
     # law-checks — the Python analogue of the Agda proof fields, verified against the proven oracle
@@ -181,6 +186,7 @@ class GradedRigCat:
         coherences) — the Python group's coherence IS the already-proven Fin-permutation coherence.
         Also CERTIFIES each graded RIG_OPS entry's commutativity transport against the oracle (so `*P` is a
         proven member, not a hand-set boolean). Raises AssertionError on any failure; returns a summary."""
+        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
         sanity = rc.check_sanity()
         coh = rc.check_coherences()
         bad = [r for r in sanity + coh if r[2] is False]
@@ -202,6 +208,7 @@ class GradedRigCat:
             factorSwap. This is EXACTLY the `subst Poly (+-comm m n)` transport `*P-comm` proves, read back
             as the Fin-permutation coherence. Returns the list of certified op-qnames.
         Raises AssertionError if any declared transport is NOT the proven coherence."""
+        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
         gfold = {"add": lambda a, b: a + b, "mul": lambda a, b: a * b}
         witness = {"add": rc.blockSwap, "mul": rc.factorSwap}
         certified = []
