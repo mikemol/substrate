@@ -20,6 +20,7 @@
 module Substrate.FUSep.FUSepQHexagon where
 
 open import Substrate.Foundation.Eq      using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Nat     using (zero; suc)
 open import Substrate.FUSep.FUSepQSKI    using (atom; app) renaming (Tm to Tm⟦27e68fcc⟧)
@@ -44,11 +45,10 @@ QIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧      -- a third index (for the hexag
 -- ⟡def-eq: the three index ROLES are ONE carrier (Tm × Tm) DEFINITIONALLY —
 -- witnessed by refl, not merely asserted. The names carry intent; the equalities
 -- carry the interchangeability the hexagon's three-fold reindexing rests on.
-RIdx≡PIdx : RIdx ≡ PIdx
-RIdx≡PIdx = refl
-PIdx≡QIdx : PIdx ≡ QIdx
-PIdx≡QIdx = refl
-
+RIdx≡PIdx : RIdx ⇔ PIdx
+RIdx≡PIdx = ⇔-refl
+PIdx≡QIdx : PIdx ⇔ QIdx
+PIdx≡QIdx = ⇔-refl
 ------------------------------------------------------------------------
 -- THE BRAIDING braid : (X ⊗ Y) → (Y ⊗ X) — the swap (Wedge/Monoidal.braid→).
 ------------------------------------------------------------------------

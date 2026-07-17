@@ -34,6 +34,7 @@ import Substrate.Groups.S3 as S₃
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Groups.S4-Composed using (S₄-Group)
@@ -67,9 +68,8 @@ triangle-edge-S₃ = S₃.S₃-Group           -- = Z₃ ⋊ Z₂, rungs 2 and 1
 
 -- the apex factor's carrier is the V₄ the three V₂ links live on —
 -- now manifest in apex-V₄'s type (SetoidGroup V4.V₄ _≡_):
-apex-carrier-is-V₄ : V4.V₄ ≡ V4.V₄
-apex-carrier-is-V₄ = refl
-
+apex-carrier-is-V₄ : V4.V₄ ⇔ V4.V₄
+apex-carrier-is-V₄ = ⇔-refl
 ------------------------------------------------------------------------
 -- 2. The stabilizer-chain grounding (the "presupposes everything below"
 --    direction). Fixing the apex witness drops to rung 2: Stab(anchor) ≅

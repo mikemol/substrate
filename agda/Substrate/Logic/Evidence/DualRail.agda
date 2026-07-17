@@ -44,6 +44,7 @@ open import Substrate.Foundation.Nat     using (ℕ; suc)
 open import Substrate.Foundation.Bool    using (Bool; true; false; not; _∧_; _∨_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq      using (_≡_; refl; cong; cong₂)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 
 open import Substrate.Algebra.CayleyDickson using (Carrier)
 open import Substrate.Algebra.Q     using (ℚ)
@@ -116,9 +117,8 @@ module BoolNedge = DualRail not not-invol
 -- felt). Iterating Nedge from C = ℚ = `Carrier 0` walks the CD tower ℂ/ℍ/𝕆/𝕊/….
 ------------------------------------------------------------------------
 
-cd-doubling-is-dualrail : (n : ℕ) → Carrier (suc n) ≡ EvCarrier (Carrier n)
-cd-doubling-is-dualrail n = refl
-
+cd-doubling-is-dualrail : (n : ℕ) → Carrier (suc n) ⇔ EvCarrier (Carrier n)
+cd-doubling-is-dualrail n = ⇔-refl
 ------------------------------------------------------------------------
 -- The connectives, parametric in the carrier's SEMIRING (add, mul). NO lattice,
 -- NO min/max, NO truncation — these are the carrier's own +,× applied rail-wise.

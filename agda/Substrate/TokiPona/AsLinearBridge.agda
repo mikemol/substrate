@@ -42,6 +42,7 @@ open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (Vec)
   renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
   using (_≡_; refl; cong; sym)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)

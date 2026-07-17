@@ -18,7 +18,7 @@ AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 
-FILES := Bool.agda Empty.agda Eq.agda Fin.agda Function.agda Hedberg.agda Level.agda List.agda Maybe.agda Nat.agda Negation.agda Product.agda RewriteConfluence.agda Sum.agda Unit.agda Vec.agda WellFounded.agda
+FILES := Bool.agda Empty.agda Eq.agda Fin.agda Function.agda Hedberg.agda Iff.agda Level.agda List.agda Maybe.agda Nat.agda Negation.agda Product.agda RewriteConfluence.agda Sum.agda Unit.agda Vec.agda WellFounded.agda
 SUBDIRS := Bool Empty Fin Function List Nat Unit Vec
 
 .PHONY: all files subdirs $(SUBDIRS) check-sync clean

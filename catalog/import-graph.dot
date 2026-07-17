@@ -1216,6 +1216,7 @@ digraph imports {
   "Substrate.Foundation.Function" [label="Foundation.Function"];
   "Substrate.Foundation.Function.Iterate" [label="Function.Iterate"];
   "Substrate.Foundation.Hedberg" [label="Foundation.Hedberg"];
+  "Substrate.Foundation.Iff" [label="Foundation.Iff"];
   "Substrate.Foundation.Level" [label="Foundation.Level"];
   "Substrate.Foundation.List" [label="Foundation.List"];
   "Substrate.Foundation.List.Any" [label="List.Any"];
@@ -1905,6 +1906,7 @@ digraph imports {
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Bool";
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Bool.Properties";
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Algebra.CayleyDickson.Grade" -> "Substrate.Foundation.Vec";
@@ -4729,6 +4731,7 @@ digraph imports {
   "Substrate.Algebra.Q.HetBasis" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Q.HetBasis" -> "Substrate.Algebra.Z.Mul";
   "Substrate.Algebra.Q.HetBasis" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Q.HetBasis" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.Q.HetBasis" -> "Substrate.Foundation.List";
   "Substrate.Algebra.Q.HetBasis" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Q.HetBasisNest" -> "Substrate.Algebra.Q.HetBasis";
@@ -4746,6 +4749,7 @@ digraph imports {
   "Substrate.Algebra.Q.HetCrossMix" -> "Substrate.Algebra.Z.Mul";
   "Substrate.Algebra.Q.HetCrossMix" -> "Substrate.Algebra.Z.Wedge";
   "Substrate.Algebra.Q.HetCrossMix" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Q.HetCrossMix" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.Q.HetCrossMix" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Q.HetReciprocal" -> "Substrate.Algebra.Q.HetBasis";
   "Substrate.Algebra.Q.HetReciprocal" -> "Substrate.Algebra.Z";
@@ -4768,6 +4772,7 @@ digraph imports {
   "Substrate.Algebra.Q.HetReduceBezout" -> "Substrate.Algebra.Q.Reduction";
   "Substrate.Algebra.Q.HetReduceBezout" -> "Substrate.Algebra.Z.Bezout";
   "Substrate.Algebra.Q.HetReduceBezout" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Q.HetReduceBezout" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.Q.HetReduceBezout" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Q.HetSymbolic" -> "Substrate.Algebra.Q.HetBasis";
   "Substrate.Algebra.Q.HetSymbolic" -> "Substrate.Foundation.Eq";
@@ -5419,6 +5424,7 @@ digraph imports {
   "Substrate.Algebra.R.Trace.SKIGradedFlatAllegory" -> "Substrate.Algebra.R.Trace.SKIFaithfulRb";
   "Substrate.Algebra.R.Trace.SKIGradedFlatAllegory" -> "Substrate.Category.Allegory.Refinement";
   "Substrate.Algebra.R.Trace.SKIGradedFlatAllegory" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.R.Trace.SKIGradedFlatAllegory" -> "Substrate.Foundation.Iff";
   "Substrate.Algebra.R.Trace.SKIGradedFlatAllegory" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.R.Trace.SKIGradedTraceChain" -> "Substrate.Algebra.Wedge.Product";
   "Substrate.Algebra.R.Trace.SKIGradedTraceChain" -> "Substrate.Algebra.Wedge.Product.Term";
@@ -6839,7 +6845,7 @@ digraph imports {
   "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Algebra.Module.Free";
   "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Algebra.Ring";
   "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Category.LinearAlgebra";
-  "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Foundation.Iff";
   "Substrate.Category.FreeLinearizationR.AsModule" -> "Substrate.Foundation.Nat";
   "Substrate.Category.FreeLinearizationR.F2Bridge" -> "Substrate.Algebra.F2";
   "Substrate.Category.FreeLinearizationR.F2Bridge" -> "Substrate.Algebra.F2.AsLinearAlgebra";
@@ -7583,6 +7589,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
   "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Category.UniversalProperty.ExtrudeReductionReversal";
   "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Foundation.Iff";
   "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Foundation.Nat";
   "Substrate.Category.UniversalProperty.ExtrudeCiteConvergence" -> "Substrate.Foundation.Product";
   "Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading" -> "Substrate.Algebra.R.Trace";
@@ -7744,7 +7751,7 @@ digraph imports {
   "Substrate.Category.UniversalProperty.ExtrudePackageInstance" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.Category.UniversalProperty.ExtrudeReductionReversal" -> "Substrate.Algebra.R.Trace.SKIReductionToList";
   "Substrate.Category.UniversalProperty.ExtrudeReductionReversal" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
-  "Substrate.Category.UniversalProperty.ExtrudeReductionReversal" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.UniversalProperty.ExtrudeReductionReversal" -> "Substrate.Foundation.Iff";
   "Substrate.Category.UniversalProperty.ExtrudeReductionReversal" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.Category.UniversalProperty.ExtrudeSKI" -> "Substrate.Algebra.R.Trace.SKIReductionToList";
   "Substrate.Category.UniversalProperty.ExtrudeSKI" -> "Substrate.Algebra.R.Trace.SKIShedDuality";
@@ -8846,6 +8853,7 @@ digraph imports {
   "Substrate.FUSep.FUSepQCR" -> "Substrate.Foundation.RewriteConfluence";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.FUSep.FUSepQSKI";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.Foundation.Eq";
+  "Substrate.FUSep.FUSepQConfluence" -> "Substrate.Foundation.Iff";
   "Substrate.FUSep.FUSepQConfluence" -> "Substrate.Foundation.Product";
   "Substrate.FUSep.FUSepQCyc" -> "Substrate.FUSep.FUSepQReduce";
   "Substrate.FUSep.FUSepQCyc" -> "Substrate.Foundation.Eq";
@@ -8855,6 +8863,7 @@ digraph imports {
   "Substrate.FUSep.FUSepQHalts" -> "Substrate.Foundation.WellFounded";
   "Substrate.FUSep.FUSepQHexagon" -> "Substrate.FUSep.FUSepQSKI";
   "Substrate.FUSep.FUSepQHexagon" -> "Substrate.Foundation.Eq";
+  "Substrate.FUSep.FUSepQHexagon" -> "Substrate.Foundation.Iff";
   "Substrate.FUSep.FUSepQHexagon" -> "Substrate.Foundation.Product";
   "Substrate.FUSep.FUSepQLambek" -> "Substrate.FUSep.FUSepQCyc";
   "Substrate.FUSep.FUSepQLambek" -> "Substrate.Foundation.Eq";
@@ -8989,6 +8998,7 @@ digraph imports {
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Empty";
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Eq";
   "Substrate.Foundation.Hedberg" -> "Substrate.Foundation.Negation";
+  "Substrate.Foundation.Iff" -> "Substrate.Foundation.Product";
   "Substrate.Foundation.List.Any" -> "Substrate.Foundation.Eq";
   "Substrate.Foundation.List.Any" -> "Substrate.Foundation.List";
   "Substrate.Foundation.List.Length" -> "Substrate.Foundation.List";
@@ -11307,6 +11317,7 @@ digraph imports {
   "Substrate.Logic.Evidence.DualRail" -> "Substrate.Algebra.Q.Mul";
   "Substrate.Logic.Evidence.DualRail" -> "Substrate.Foundation.Bool";
   "Substrate.Logic.Evidence.DualRail" -> "Substrate.Foundation.Eq";
+  "Substrate.Logic.Evidence.DualRail" -> "Substrate.Foundation.Iff";
   "Substrate.Logic.Evidence.DualRail" -> "Substrate.Foundation.Nat";
   "Substrate.Logic.Evidence.DualRail" -> "Substrate.Foundation.Product";
   "Substrate.Logic.Evidence.ElAtlas" -> "Substrate.Algebra.CayleyDickson";
@@ -13612,6 +13623,7 @@ digraph imports {
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Algebra.SetoidGroup";
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Axes";
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.WholeTower" -> "Substrate.Foundation.Iff";
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Groups.S3";
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Groups.S4-Composed";
   "Substrate.WitnessTower.WholeTower" -> "Substrate.Groups.Stab-S3-Iso";

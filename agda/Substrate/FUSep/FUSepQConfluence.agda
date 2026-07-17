@@ -22,6 +22,7 @@
 module Substrate.FUSep.FUSepQConfluence where
 
 open import Substrate.Foundation.Eq      using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
 import Substrate.Foundation.Product as FP   -- for the ⟡def-eq projection witnesses
 open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
@@ -66,9 +67,8 @@ PIdx = Tm⟦27e68fcc⟧ × Tm⟦27e68fcc⟧    -- (arg, function)
 
 -- ⟡def-eq: the reduce-index and peel-index share ONE carrier (Tm × Tm)
 -- definitionally — witnessed, so the diamond's two edge-types are provably one.
-RIdx≡PIdx : RIdx ≡ PIdx
-RIdx≡PIdx = refl
-
+RIdx≡PIdx : RIdx ⇔ PIdx
+RIdx≡PIdx = ⇔-refl
 -- THE BRAIDED PAIR: a node carrying BOTH a reduce-index and a peel-index. The
 -- tensor RIdx ⊗ PIdx over the product carrier (Wedge/Monoidal: product carrier,
 -- componentwise). The two hierarchical indexes, on one bucket.

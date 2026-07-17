@@ -35,6 +35,7 @@ module Substrate.Algebra.Q.HetBasis where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.Z using (ℤ; +_)
 open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
@@ -114,9 +115,8 @@ open CrossEq _⊗ℚ_ _≡_ refl sym renaming (_≈H_ to _≈Hℚ_)
 
 -- THE point: `_≈ℚ_` (cross-multiplication) IS the heterogeneous cross-equality.
 -- Definitional — both unfold to num p *ℤ (+ suc (den-1 q)) ≡ num q *ℤ (+ suc (den-1 p)).
-≈ℚ-is-cross : (p q : ℚ) → (p ≈ℚ q) ≡ (toHetQ p ≈Hℚ toHetQ q)
-≈ℚ-is-cross p q = refl
-
+≈ℚ-is-cross : (p q : ℚ) → (p ≈ℚ q) ⇔ (toHetQ p ≈Hℚ toHetQ q)
+≈ℚ-is-cross p q = ⇔-refl
 ------------------------------------------------------------------------
 -- 4. A GENUINELY different-radix instance: numerator in base 2, denominator
 --    in base 3 (digit lists, least-significant first). The bases differ in

@@ -33,6 +33,7 @@ module Substrate.Category.FreeLinearizationR.AsModule where
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Iff using (_⇔_)
   using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.Ring using (Ring)
@@ -60,20 +61,21 @@ open import Substrate.Category.FreeLinearizationR using (FreeLinearizationR)
 
 -- ⟡set1-paydown: LinearAlgebra's R / Vector / Linear are now its params, so this
 -- consumer takes them as module params and references them directly (R-≡, Vector-≡).
--- LA-Module-Compat stays Set₁ — its fields are equalities OF Sets (Vector n ≡
--- FreeCarrier A n), which is an intrinsic Set₁, independent of LinearAlgebra's level.
+-- ⟡rc-het-iff (⟡set1-rerank2): the carrier identifications are logical
+-- equivalences (_⇔_ : Set → Set → Set) rather than ≡-of-Sets — the sides are
+-- only ever used up to round-trip, so the record drops from Set₁ to Set.
 module _ (R : Set) (Vector : ℕ → Set) (Linear : ℕ → ℕ → Set) where
 
   record LA-Module-Compat
     (LA : LinearAlgebra R Vector Linear)
     {A : Set}
     (R-Ring : Ring A)
-    : Set₁ where
+    : Set where
     field
       -- The carrier identification.
-      R-≡ : R ≡ A
+      R-≡ : R ⇔ A
       -- For each dimension n, LA's Vector n IS FreeCarrier A n.
-      Vector-≡ : (n : ℕ) → Vector n ≡ FreeCarrier A n
+      Vector-≡ : (n : ℕ) → Vector n ⇔ FreeCarrier A n
       -- For each (n, m), LA's Linear n m IS ModuleHom-shape; the
       -- precise typing depends on the per-R Module instance for
       -- FreeCarrier A n and FreeCarrier A m. Stated as a pair of

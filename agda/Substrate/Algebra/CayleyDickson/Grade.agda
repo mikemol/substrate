@@ -30,6 +30,7 @@ module Substrate.Algebra.CayleyDickson.Grade where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-comm)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; boolToℕ)  -- ⟡A4: single source
 open import Substrate.Foundation.Bool.Properties using (or-xor-and)  -- ⟡A5: single source
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
@@ -110,5 +111,5 @@ F₂-length-grading = vec-graded Bool
 -- so `popcount` is a second ℕ-grading layered on the VecGraded length-grade.
 -- ⟡set1-paydown: the carrier is now the GradedDivStr parameter itself (Vec Bool),
 -- so the identity is manifest in F₂-length-grading's type rather than a `.C` projection.
-index-carrier : (n : ℕ) → Vec Bool n ≡ Vec Bool n
-index-carrier n = refl
+index-carrier : (n : ℕ) → Vec Bool n ⇔ Vec Bool n
+index-carrier n = ⇔-refl

@@ -28,6 +28,7 @@ module Substrate.Algebra.Q.HetCrossMix where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.Z using (ℤ; +_)
 open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
@@ -90,9 +91,9 @@ open CrossEq ⊗-crossmix _≡_ refl sym renaming (_≈H_ to _≈cx_)
 ------------------------------------------------------------------------
 
 ≈ℚ-is-crossmix : (p q : ℚ) →
-  (p ≈ℚ q) ≡ (cross ℚ-crossmix (num p) (denominator q)
+  (p ≈ℚ q) ⇔ (cross ℚ-crossmix (num p) (denominator q)
                 ≡ cross ℚ-crossmix (num q) (denominator p))
-≈ℚ-is-crossmix p q = refl
+≈ℚ-is-crossmix p q = ⇔-refl
 
-≈ℚ-via-HetQ : (p q : ℚ) → (p ≈ℚ q) ≡ (toHetQ-den p ≈cx toHetQ-den q)
-≈ℚ-via-HetQ p q = refl
+≈ℚ-via-HetQ : (p q : ℚ) → (p ≈ℚ q) ⇔ (toHetQ-den p ≈cx toHetQ-den q)
+≈ℚ-via-HetQ p q = ⇔-refl

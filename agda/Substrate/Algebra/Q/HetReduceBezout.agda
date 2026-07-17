@@ -25,6 +25,7 @@ module Substrate.Algebra.Q.HetReduceBezout where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.Z using (ℤ; +_)
 open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
 open import Substrate.Algebra.Q using (ℚ; num; denominator)
@@ -52,8 +53,8 @@ het-den q = denominator q
 -- `is-reduced q` is exactly gcd of these two carriers ≡ 1 (definitional):
 -- gcd-of-ℚ q = gcd-ℕ (abs-ℤ (num q)) (denominator q), and hnum (toHetQ q) = num q.
 reduced-is-coprime-carriers : (q : ℚ) →
-  is-reduced q ≡ (gcd-of-ℚ q ≡ 1)
-reduced-is-coprime-carriers q = refl
+  is-reduced q ⇔ (gcd-of-ℚ q ≡ 1)
+reduced-is-coprime-carriers q = ⇔-refl
 
 ------------------------------------------------------------------------
 -- 2. THE CONNECTION: a reduced HetQ ℤ ℕ has a Bézout witness over ℤ. From the
@@ -77,5 +78,5 @@ reduce-hetq-coprime q red =
 
 bezout-statement : (q : ℚ) →
   BezoutℤWitness (het-num-abs q) (het-den q) 1
-    ≡ (BezoutℤWitness (abs-ℤ (num q)) (denominator q) 1)
-bezout-statement q = refl
+    ⇔ (BezoutℤWitness (abs-ℤ (num q)) (denominator q) 1)
+bezout-statement q = ⇔-refl

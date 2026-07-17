@@ -22,6 +22,7 @@
 module Substrate.Algebra.R.Trace.CFDigitHet where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.Q.HetBasis using (HetQ; _//_; hnum; hden; module CrossEq; viaBridges)
 
 ------------------------------------------------------------------------

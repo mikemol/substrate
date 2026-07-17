@@ -27,6 +27,7 @@
 module Substrate.Category.UniversalProperty.ExtrudeReductionReversal where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_)
@@ -72,9 +73,8 @@ reverse r = rev-onto r cdone
 ------------------------------------------------------------------------
 -- ⇐ of ⇐ is ⇒ (definitional): the double flip returns the forward relation, so the reverse of the reverse
 -- lives in the original closure — the time-reversal is its own inverse (an involution on the process).
-flip-flip : {a b : Tm⟦533ef80d⟧} → (a ⇐ b) ≡ (b ⇒ a)
-flip-flip = refl
-
+flip-flip : {a b : Tm⟦533ef80d⟧} → (a ⇐ b) ⇔ (b ⇒ a)
+flip-flip = ⇔-refl
 ------------------------------------------------------------------------
 -- ④ THE DECODE EMERGES: 267's K-wrap decode (E ∙ ⌜M⌝) ⇒* M is, by ②, a CONSTRUCTION M ⇐* (E ∙ ⌜M⌝) —
 --    the combinatorial ascent that BUILDS E ∙ ⌜M⌝ from the root M through the tower's face-actions. The

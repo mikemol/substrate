@@ -32,6 +32,7 @@
 module Substrate.Category.UniversalProperty.ExtrudeCiteConvergence where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Nat using (ℕ)
 
@@ -42,9 +43,8 @@ open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open import Substrate.Category.UniversalProperty.ExtrudeReductionReversal using (_⇐_; Constructs)
 -- ⇐ IS the flip of R._⇒_ (definitional — the instance, not a fresh relation):
-reversal-is-flip : {a b : Tm⟦533ef80d⟧} → (a ⇐ b) ≡ (b R.⇒ a)
-reversal-is-flip = refl
-
+reversal-is-flip : {a b : Tm⟦533ef80d⟧} → (a ⇐ b) ⇔ (b R.⇒ a)
+reversal-is-flip = ⇔-refl
 -- (c) CITE Final's Lambek iso (the neighbour of my ExtrudeReductionReversal fold/unfold), opened not
 -- re-declared — per ExtruderLambekRealigned:
 open import Substrate.Algebra.R.Trace using (RealTrace)
