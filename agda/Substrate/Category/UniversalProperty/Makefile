@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := AdjointPair.agda AgdaExtrude.agda ArrowOfArrow.agda BackedGraded.agda BackedGradedDiagonal.agda BackedGradedStencil.agda BackedGradedUnique.agda BezoutGcdTransport.agda Capstone.agda Category.agda Compose.agda ConcreteCovers.agda ConfluenceUnique.agda ConstantSheaf.agda Coverage.agda CoverageAxioms.agda CrtBackedGraded.agda Decode6.agda DiagonalCBRank.agda DiagonalDoF.agda DiagonalDoFComputable.agda DiagonalEscape.agda DiagonalEscapeCoalg.agda DiagonalFeedback.agda DiagonalLawvere.agda DiagonalLawvereCarrier.agda DiagonalLawvereSKI.agda DiagonalObsCode.agda DiagonalObsCodeCRT.agda DiagonalOrdinal.agda DiagonalPolishDerivative.agda DiagonalRank.agda DiagonalYClosed.agda DiagonalYCombinator.agda Discriminator.agda EqBackedGraded.agda Eval.agda ExtrudeBisimDetect.agda ExtrudeBisimDriver.agda ExtrudeBisimLassoK.agda ExtrudeBisimRun.agda ExtrudeBisimRunEq.agda ExtrudeBisimUnfold.agda ExtrudeBisimUpTo.agda ExtrudeBisimUptoLimit.agda ExtrudeCiteConvergence.agda ExtrudeCoEmitCyclicGrading.agda ExtrudeCoEmitGraded.agda ExtrudeCoEmitIffIso.agda ExtrudeCoEmitMonad.agda ExtrudeCoEmitTraceEq.agda ExtrudeCoEmitViaTrace.agda ExtrudeCostreamViaTrace.agda ExtrudeDecodeNerve.agda ExtrudeIO.agda ExtrudeIOCostream.agda ExtrudeIOCostreamBisim.agda ExtrudeIOKleisli.agda ExtrudeIOMonadNT.agda ExtrudeIOMonadRecord.agda ExtrudeIORunEmit.agda ExtrudeMinimalCoalgebra.agda ExtrudeMinimalRun.agda ExtrudeNerveBetaS.agda ExtrudeNerveDegeneracy.agda ExtrudeNerveGeneral.agda ExtrudeNerveIdentities.agda ExtrudeNerveIdentitiesHi.agda ExtrudePackageInstance.agda ExtrudeReductionReversal.agda ExtrudeSKI.agda ExtrudeSKICatOf.agda ExtrudeSKIConfluent.agda ExtrudeSKIEncodeInj.agda ExtrudeSKIFVector.agda ExtrudeSKIFaceset.agda ExtrudeSKIFibration.agda ExtrudeSKIGroupoid.agda ExtrudeSKIKFaces.agda ExtrudeSKINVertex.agda ExtrudeSKIObsFine.agda ExtrudeSKISection.agda ExtrudeSKISetoid.agda ExtrudeSKITernaryAtom.agda ExtrudeSelfInterp.agda ExtrudeSelfInterpUniversal.agda ExtrudeSetoidCategory.agda ExtrudeSetoidFunctor.agda ExtrudeStepDecidable.agda FixedPoint.agda FixpointStencil.agda FixpointStencilRecord.agda FoldTransport.agda FreeF2ModuleBackedGraded.agda FreeMonoidBackedGraded.agda GeometricMorphism.agda HigherCatAsInternal.agda Instances.agda InternalHom.agda InternalLogic.agda InteropGraded.agda KleeneStencil.agda LimitBackedGraded.agda MatchingFamily.agda Morphism.agda MuBackedGraded.agda NuBackedGraded.agda ObjectSite.agda ObjectUniverse.agda Omega.agda OrientationRigBackedGraded.agda Phase1.agda Phase2.agda Phase3.agda Powerset.agda Presheaf.agda Pretopology.agda Quotient.agda QuotientProduct.agda Recognized.agda Refinement.agda ResidueBackedGraded.agda Saturation.agda ShapeBackedGraded.agda Sheaf.agda SheafPullback.agda Sheafify.agda Sieve.agda SieveClosure.agda Site.agda StencilAbstract.agda StencilAllegory.agda StencilDedekind.agda StencilDedekindCollapse.agda StencilDedekindDagger.agda StencilDedekindFull.agda StencilGroupoid.agda StencilModular.agda StencilModularApp.agda StencilModularDifunc.agda StencilModularMap.agda SubstrateSheaves.agda SubstrateTopos.agda Term.agda TermParity.agda Terminal.agda TmDBGodel.agda Topos.agda TruthValues.agda UniquenessStencilAbstract.agda UnitsBackedGraded.agda Vacuity.agda WindowedCF.agda X8aBackedGraded.agda X8aConfluentClassifier.agda X8aSkiBackedGraded.agda X8aSkiExistence.agda X8aSkiInstance.agda Yoneda.agda Z2BackedGraded.agda
 SUBDIRS := TmDBGodel
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -54,6 +55,15 @@ TmDBGodel:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: TmDBGodel.ingest
+TmDBGodel.ingest:
+	@$(MAKE) -C TmDBGodel ingest
 
 clean:
 	@$(MAKE) -C TmDBGodel clean 2>/dev/null || true

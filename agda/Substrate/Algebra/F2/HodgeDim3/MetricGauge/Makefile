@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../..
+SCRIPTS := ../../../../../../scripts
 
 FILES := BilinearFormOf.agda BilinearFormSteps.agda CongruenceAct.agda CongruenceBridge.agda CongruenceIdToMixed.agda CoxeterRelations.agda Det.agda ExemplarOrbits.agda GenericBridge.agda HodgeRecast.agda MetricFullyCoupled.agda MetricId.agda MetricMixed.agda MetricOrthogonality.agda NonDegenerate.agda S3Stabiliser.agda Stabiliser.agda StabiliserClosure.agda TIdToMixed.agda Type.agda V4PlaneOrth.agda
 SUBDIRS := CoxeterRelations
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -54,6 +55,15 @@ CoxeterRelations:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: CoxeterRelations.ingest
+CoxeterRelations.ingest:
+	@$(MAKE) -C CoxeterRelations ingest
 
 clean:
 	@$(MAKE) -C CoxeterRelations clean 2>/dev/null || true

@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := AsAction.agda Axioms.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
 SUBDIRS := Axioms Composition Dispatch Generators HomSwaps Twist
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ Twist:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Axioms.ingest Composition.ingest Dispatch.ingest Generators.ingest HomSwaps.ingest Twist.ingest
+Axioms.ingest:
+	@$(MAKE) -C Axioms ingest
+Composition.ingest:
+	@$(MAKE) -C Composition ingest
+Dispatch.ingest:
+	@$(MAKE) -C Dispatch ingest
+Generators.ingest:
+	@$(MAKE) -C Generators ingest
+HomSwaps.ingest:
+	@$(MAKE) -C HomSwaps ingest
+Twist.ingest:
+	@$(MAKE) -C Twist ingest
 
 clean:
 	@$(MAKE) -C Axioms clean 2>/dev/null || true

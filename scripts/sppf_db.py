@@ -24,7 +24,7 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(_ROOT, "jea", "metalanguage"))
 from jea_agdai import decode_core, substrate_core_root
 from jea_rigcat import RIG_OPS                       # ⟡rig orbit-interning (the proven ⊕/⊗ op-set)
-CATALOG_DB = os.path.join(_ROOT, "catalog", "catalog.db")
+CATALOG_DB = os.environ.get("SPPF_CATALOG_DB", os.path.join(_ROOT, "catalog", "catalog.db"))
 FREE = {"Def", "Con", "Prim", "PrimSort", "Proj", "PCon", "PDef", "PProj"}   # jea_agdai.go referential set
 
 EVENT_SCHEMA = """
@@ -117,7 +117,80 @@ def _core_ver(path):
     return os.stat(path).st_mtime_ns
 
 
-def write_events(cores, con, base, full=False, prune=True):
+def _mk_interners(con):
+    """The terms/path_seg interners (INSERT OR IGNORE, content-addressed). Shared by the batched write_events
+    and the per-core ingest_core so the decode→rows logic is single-sourced."""
+    seen_t = set()
+    def tid(s):
+        s = "" if s is None else s
+        cid = _b64(s)
+        if cid not in seen_t:
+            seen_t.add(cid); con.execute("INSERT OR IGNORE INTO terms VALUES (?,?)", (cid, s))
+        return cid
+    def pid(s):
+        cid = _b64(s)
+        for o, seg in enumerate(s.split(".")):
+            con.execute("INSERT OR IGNORE INTO path_seg VALUES (?,?,?)", (cid, o, tid(seg)))
+        return cid
+    return tid, pid
+
+
+def _decode_insert_core(con, path, relpath, mtime, tid, pid):
+    """Decode ONE core and INSERT its rows (the caller has already deleted any stale rows for this core_id).
+    core_id = _b64(relpath). Returns True if ingested, False if undecodable. The SINGLE decode→rows path
+    (both write_events' batched loop and ingest_core call it)."""
+    try:
+        dec = decode_core(path)
+    except Exception:
+        dec = None
+    if dec is None:
+        return False                              # undecodable: no rows, no version — re-attempted next run
+    cid = tid(relpath)                       # intern the core path so _unit.file_id resolves in `terms`
+    module = "Substrate." + relpath[:-len(".agdai")].replace(os.sep, ".")  # agdai_module (file metadata)
+    mpid = pid(module)
+    erows, orows, edgerows = [], [], []
+    for lid, rec in dec["nodes"].items():
+        ctor, qname, idx = rec.get("constructor"), rec.get("qname"), rec.get("index")
+        kids = rec.get("children", [])
+        # THE OBSERVATION — raw record content, children = LOCAL ids, NO resolution.
+        content = json.dumps({"c": ctor, "q": qname, "i": idx, "ch": kids}, sort_keys=True, ensure_ascii=False)
+        ekey = _b64(content)
+        erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
+        orows.append((cid, lid, ekey))
+        edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
+    dms = dec["defmarks"]
+    root_of = {}                              # qname → root, LAST-WINS per core (matches reuse_catalog)
+    for d in dms:
+        root_of[d["unit"]] = d["root"]
+    def uid(qn, r):
+        return _b64(qn + "\x00" + str(r))
+    urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid,
+              1 if d.get("copy") else 0)                 # defCopy provenance: instantiation-copy vs original
+             for d in dms]
+    mrows = []
+    for d in dms:
+        su = uid(d["unit"], d["root"])
+        for o, m in enumerate(d.get("members", [])):
+            mr = root_of.get(m)
+            mrows.append((cid, su, o, pid(m), (uid(m, mr) if mr is not None else None)))
+    con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
+    con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
+    con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
+    con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?)", urows)
+    con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
+    con.execute("INSERT OR REPLACE INTO core_fp VALUES (?,?)", (cid, mtime))
+    return True
+
+
+def _delete_core_rows(con, core_ids):
+    """Drop a set of cores' per-core rows + their core_fp (changed → re-decoded; removed → dropped)."""
+    params = [(c,) for c in core_ids]
+    for t in ("obs", "edge", "unit_obs", "unit_member"):
+        con.executemany(f"DELETE FROM {t} WHERE core_id=?", params)
+    con.executemany("DELETE FROM core_fp WHERE core_id=?", params)
+
+
+def write_events(cores, con, base, full=False, prune=True, finalize=True):
     """P1: decode each core to raw OBSERVATIONS and append them as events. No interning, no resolution.
 
     INCREMENTAL by default (⟡gqs-S1): re-decode ONLY cores whose .agdai mtime advanced since the last run
@@ -125,10 +198,12 @@ def write_events(cores, con, base, full=False, prune=True):
     The dominant cost is decode_core — ONE shim subprocess per core (~49ms × 1910 ≈ 94s a full pass) — so
     skipping unchanged cores is the whole win. project_sppf is a pure JOIN over the event tier, so kept rows
     + freshly-decoded rows yield a projection IDENTICAL to a full rebuild (gate: `sppf_db.py --verify`).
-      full=True  — clean rebuild (drop the event tier): for an EVENT-schema column change, or a shim/Agda
-                   toolchain change that alters decode WITHOUT changing .agdai bytes+mtime.
-      prune=False — a FILTERED partial core set: suppress removed-core deletion (`sppf_db.py Category` must
-                   not delete the rest of the corpus). The full-corpus path (empty filter / gen_catalog) prunes.
+      full=True    — clean rebuild (drop the event tier): for an EVENT-schema column change, or a shim/Agda
+                     toolchain change that alters decode WITHOUT changing .agdai bytes+mtime.
+      prune=False  — a FILTERED partial core set: suppress removed-core deletion (`sppf_db.py Category` must
+                     not delete the rest of the corpus). The full-corpus path (empty filter / gen_catalog) prunes.
+      finalize=True — run the once-after-sweep tail (event GC + path_seg dedup + refresh_path_text). The
+                     per-core make ingest (ingest_core) passes finalize via a separate finalize_db step.
     """
     if full:
         for t in ("event", "obs", "edge", "unit_obs", "unit_member", "core_fp"):
@@ -151,73 +226,20 @@ def write_events(cores, con, base, full=False, prune=True):
 
     stale = set(changed) | set(removed)             # rows to delete (changed → re-decoded; removed → dropped)
     if stale:
-        params = [(c,) for c in stale]
-        for t in ("obs", "edge", "unit_obs", "unit_member"):
-            con.executemany(f"DELETE FROM {t} WHERE core_id=?", params)
-        con.executemany("DELETE FROM core_fp WHERE core_id=?", params)
-        con.commit()
+        _delete_core_rows(con, stale); con.commit()
 
-    seen_t = set()
-    def tid(s):
-        s = "" if s is None else s
-        cid = _b64(s)
-        if cid not in seen_t:
-            seen_t.add(cid); con.execute("INSERT OR IGNORE INTO terms VALUES (?,?)", (cid, s))
-        return cid
-    def pid(s):
-        cid = _b64(s)
-        for o, seg in enumerate(s.split(".")):
-            con.execute("INSERT OR IGNORE INTO path_seg VALUES (?,?,?)", (cid, o, tid(seg)))
-        return cid
+    tid, pid = _mk_interners(con)
     for core_id in changed:                          # decode + append ONLY the changed/new cores
         path, relpath, mtime = cur[core_id]
-        try:
-            dec = decode_core(path)
-        except Exception:
-            dec = None
-        if dec is None:
-            continue                                 # undecodable: no rows, no version — re-attempted next run
-        cid = tid(relpath)                       # intern the core path so _unit.file_id resolves in `terms`
-        module = "Substrate." + relpath[:-len(".agdai")].replace(os.sep, ".")  # agdai_module (file metadata)
-        mpid = pid(module)
-        erows, orows, edgerows = [], [], []
-        for lid, rec in dec["nodes"].items():
-            ctor, qname, idx = rec.get("constructor"), rec.get("qname"), rec.get("index")
-            kids = rec.get("children", [])
-            # THE OBSERVATION — raw record content, children = LOCAL ids, NO resolution.
-            content = json.dumps({"c": ctor, "q": qname, "i": idx, "ch": kids}, sort_keys=True, ensure_ascii=False)
-            ekey = _b64(content)
-            erows.append((ekey, tid(ctor), (pid(qname) if qname else None), idx))
-            orows.append((cid, lid, ekey))
-            edgerows += [(cid, lid, o, ch) for o, ch in enumerate(kids)]
-        dms = dec["defmarks"]
-        root_of = {}                              # qname → root, LAST-WINS per core (matches reuse_catalog)
-        for d in dms:
-            root_of[d["unit"]] = d["root"]
-        def uid(qn, r):
-            return _b64(qn + "\x00" + str(r))
-        urows = [(cid, uid(d["unit"], d["root"]), pid(d["unit"]), d["root"], tid(d.get("kind", "?")), mpid,
-                  1 if d.get("copy") else 0)                 # defCopy provenance: instantiation-copy vs original
-                 for d in dms]
-        mrows = []
-        for d in dms:
-            su = uid(d["unit"], d["root"])
-            for o, m in enumerate(d.get("members", [])):
-                mr = root_of.get(m)
-                mrows.append((cid, su, o, pid(m), (uid(m, mr) if mr is not None else None)))
-        con.executemany("INSERT OR IGNORE INTO event       VALUES (?,?,?,?)", erows)
-        con.executemany("INSERT OR IGNORE INTO obs         VALUES (?,?,?)",   orows)
-        con.executemany("INSERT OR IGNORE INTO edge        VALUES (?,?,?,?)", edgerows)
-        con.executemany("INSERT OR IGNORE INTO unit_obs    VALUES (?,?,?,?,?,?,?)", urows)
-        con.executemany("INSERT OR IGNORE INTO unit_member VALUES (?,?,?,?,?)", mrows)
-        con.execute("INSERT OR REPLACE INTO core_fp VALUES (?,?)", (core_id, mtime))
+        _decode_insert_core(con, path, relpath, mtime, tid, pid)
         con.commit()                               # transaction per file (append-only)
 
-    if stale:                                       # GC events no longer observed by any core — bounded-growth
-        con.execute("DELETE FROM event WHERE ekey NOT IN (SELECT ekey FROM obs)")   # guard; inert for the projection
-        con.commit()
-    _dedup_pathseg(con); con.commit()
-    refresh_path_text(con)                          # materialize the indexed path_text from finalized path_seg
+    if finalize:
+        if stale:                                   # GC events no longer observed by any core — bounded-growth
+            con.execute("DELETE FROM event WHERE ekey NOT IN (SELECT ekey FROM obs)")   # guard; inert for the projection
+            con.commit()
+        _dedup_pathseg(con); con.commit()
+        refresh_path_text(con)                      # materialize the indexed path_text from finalized path_seg
 
 
 def refresh_path_text(con):
@@ -497,6 +519,76 @@ def project_argperm(con, filt=None):
     return len(orbit_rows), len({r[1] for r in orbit_rows}), len({r[2] for r in orbit_rows})
 
 
+def _resolve_core(path, base):
+    """Map a .agda SOURCE path (what the generated per-dir `ingest:` loop passes) to its .agdai core under
+    `base`; pass a .agdai through unchanged."""
+    if path.endswith(".agdai"):
+        return path
+    src_root = os.path.join(_ROOT, "agda", "Substrate")
+    rel = os.path.relpath(os.path.abspath(path), src_root)
+    if rel.endswith(".agda"):
+        rel = rel[:-len(".agda")] + ".agdai"
+    return os.path.join(base, rel)
+
+
+def ingest_core(path, catalog_db=CATALOG_DB, base=None):
+    """⟡gqs-make-targets: ingest ONE core. WAL + busy_timeout so parallel `make ingest` jobs SERIALIZE their
+    cheap writes on the lock (parallel DECODE, serialized INSERT) instead of failing 'database is locked'.
+    Self-skips via core_fp (the agda-self-skip analogue). NO finalize — prune/GC/path_text/project are the
+    once-after-sweep finalize_db step. `path` may be the .agdai core OR its .agda source (resolved to the core)."""
+    base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
+    core = _resolve_core(path, base)
+    if not os.path.exists(core):
+        return                                      # not built yet — nothing to ingest
+    con = sqlite3.connect(catalog_db, timeout=120)
+    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA busy_timeout=120000")
+    con.executescript(EVENT_SCHEMA); con.commit()
+    relpath = os.path.relpath(core, base); core_id = _b64(relpath)
+    try:
+        mtime = _core_ver(core)
+    except OSError:
+        con.close(); return
+    row = con.execute("SELECT mtime FROM core_fp WHERE core_id=?", (core_id,)).fetchone()
+    if row and row[0] == mtime:
+        con.close(); return                         # self-skip: mtime unadvanced (agda-self-skip analogue)
+    _delete_core_rows(con, [core_id]); con.commit()  # re-ingest: drop this core's old rows
+    tid, pid = _mk_interners(con)
+    _decode_insert_core(con, core, relpath, mtime, tid, pid)
+    con.commit(); con.close()
+
+
+def init_db(catalog_db=CATALOG_DB):
+    """⟡gqs-make-targets: create the event schema + set WAL ONCE, before the parallel `make ingest` sweep
+    (so no ingest job races the initial CREATE). Idempotent."""
+    con = sqlite3.connect(catalog_db)
+    con.execute("PRAGMA journal_mode=WAL")
+    con.executescript(EVENT_SCHEMA); con.commit(); con.close()
+
+
+def finalize_db(catalog_db=CATALOG_DB, base=None, argperm=True, prune=True):
+    """⟡gqs-make-targets: the ONCE-after-ingest-sweep tail — prune removed cores, GC orphan events, dedup
+    path_seg, refresh path_text, then PROJECT (project_sppf [+ project_argperm]). Run after `make ingest`."""
+    base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
+    con = sqlite3.connect(catalog_db, timeout=120)
+    con.execute("PRAGMA busy_timeout=120000")
+    con.executescript(EVENT_SCHEMA); con.commit()
+    if prune:                                       # drop cores whose .agdai no longer exists on disk
+        on_disk = {_b64(os.path.relpath(p, base))
+                   for p in glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)}
+        removed = [c for (c,) in con.execute("SELECT core_id FROM core_fp") if c not in on_disk]
+        if removed:
+            _delete_core_rows(con, removed); con.commit()
+    con.execute("DELETE FROM event WHERE ekey NOT IN (SELECT ekey FROM obs)"); con.commit()  # GC orphan events
+    _dedup_pathseg(con); con.commit()
+    refresh_path_text(con)
+    stats = project_sppf(con)
+    if argperm:
+        project_argperm(con)
+    con.close()
+    return stats
+
+
 def build(cores, catalog_db=CATALOG_DB, base=None, orbit=False, distribute=False, argperm=False,
           full=False, prune=True):
     base = base or substrate_core_root(os.path.join(_ROOT, "agda"))
@@ -577,6 +669,14 @@ if __name__ == "__main__":
     argperm = "--argperm" in sys.argv
     full = "--full" in sys.argv
     base = substrate_core_root(os.path.join(_ROOT, "agda"))
+    # ⟡gqs-make-targets: per-core make-driven ingest. `catalog` = --init → (make -j ingest → --ingest-core per
+    # file) → --finalize. Each ingest is WAL-serialized (parallel decode, serialized insert); one project pass.
+    if "--init" in sys.argv:
+        init_db(); sys.exit(0)
+    if "--ingest-core" in sys.argv:
+        ingest_core(sys.argv[sys.argv.index("--ingest-core") + 1], base=base); sys.exit(0)
+    if "--finalize" in sys.argv:
+        finalize_db(base=base, argperm=argperm); sys.exit(0)
     if "--verify" in sys.argv:                       # ⟡gqs-S1 gate: incremental projection == full projection
         filt = args[0] if args else "Category"       # small subtree keeps the 4-build gate fast
         cores = [c for c in sorted(glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)) if filt in c]

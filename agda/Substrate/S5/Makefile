@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := BridgeRegistry.agda Dedupe.agda S5Carrier.agda S5EEA.agda S5EEABridge.agda S5Fixpoint.agda S5Matrix.agda S5MatrixBridge.agda S5Nerve.agda S5Real.agda S5RealBridge.agda S5RealConv.agda S5Regress.agda S5RegressFix.agda S5Section.agda S5TorsorBridge.agda S5TorsorWireV4.agda S5TwoFuel.agda S5TwoFuelFix.agda S5Verdict.agda
 SUBDIRS := 
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -47,6 +48,13 @@ files:
 	done
 
 subdirs: $(SUBDIRS)
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: 
 
 clean:
 	@true

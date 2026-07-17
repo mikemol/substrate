@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := AsField.agda AsLinearAlgebra.agda AsModule.agda Code.agda CommRing.agda Cone-Hamming-7plus1.agda Cone-V4-3plus1.agda FanoPlane.agda FromBool.agda GF256.agda Linear.agda Polynomial.agda SymBilinForm.agda Transfer.agda Universal.agda V4-Nonzero.agda V4LagrangeInstance.agda Vector.agda Wedge.agda
 SUBDIRS := AES Code GF256 HodgeDim3 HodgeDim4 Linear MixColumns Polynomial SymBilinForm Vector
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -117,6 +118,33 @@ Vector:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: AES.ingest Code.ingest GF256.ingest HodgeDim3.ingest HodgeDim4.ingest Linear.ingest MixColumns.ingest Polynomial.ingest SymBilinForm.ingest Vector.ingest
+AES.ingest:
+	@$(MAKE) -C AES ingest
+Code.ingest:
+	@$(MAKE) -C Code ingest
+GF256.ingest:
+	@$(MAKE) -C GF256 ingest
+HodgeDim3.ingest:
+	@$(MAKE) -C HodgeDim3 ingest
+HodgeDim4.ingest:
+	@$(MAKE) -C HodgeDim4 ingest
+Linear.ingest:
+	@$(MAKE) -C Linear ingest
+MixColumns.ingest:
+	@$(MAKE) -C MixColumns ingest
+Polynomial.ingest:
+	@$(MAKE) -C Polynomial ingest
+SymBilinForm.ingest:
+	@$(MAKE) -C SymBilinForm ingest
+Vector.ingest:
+	@$(MAKE) -C Vector ingest
 
 clean:
 	@$(MAKE) -C AES clean 2>/dev/null || true

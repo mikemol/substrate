@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Bezout.agda CyclicSuc.agda DivMod.agda Divides.agda GCD.agda Mod.agda ModEquiv.agda Prime.agda Units.agda WellFounded.agda
 SUBDIRS := Bezout DivMod Divides GCD Mod Prime
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ Prime:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Bezout.ingest DivMod.ingest Divides.ingest GCD.ingest Mod.ingest Prime.ingest
+Bezout.ingest:
+	@$(MAKE) -C Bezout ingest
+DivMod.ingest:
+	@$(MAKE) -C DivMod ingest
+Divides.ingest:
+	@$(MAKE) -C Divides ingest
+GCD.ingest:
+	@$(MAKE) -C GCD ingest
+Mod.ingest:
+	@$(MAKE) -C Mod ingest
+Prime.ingest:
+	@$(MAKE) -C Prime ingest
 
 clean:
 	@$(MAKE) -C Bezout clean 2>/dev/null || true

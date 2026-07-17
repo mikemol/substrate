@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := BilinForm.agda BilinearFormOf.agda Bilinearity.agda CongruenceAct.agda CongruenceCompose.agda HodgeRecast.agda IsSymmetric.agda MetricId.agda MetricIdSym.agda MetricIdSymmetric.agda NonDegenerate.agda PairEqFamily.agda Radical.agda Symmetry.agda TensorProductBridge.agda TensorProductView.agda Type.agda
 SUBDIRS := NonDegenerate
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -54,6 +55,15 @@ NonDegenerate:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: NonDegenerate.ingest
+NonDegenerate.ingest:
+	@$(MAKE) -C NonDegenerate ingest
 
 clean:
 	@$(MAKE) -C NonDegenerate clean 2>/dev/null || true

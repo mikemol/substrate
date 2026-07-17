@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := CanonicalCover.agda Core.agda Cyclic.agda DirectProduct.agda Fin-from-Cyclic.agda GroupAdapter.agda GroupFromCapability.agda Lifted.agda ListPresentation.agda PhaseProjectionFromCapability.agda SameCanonical.agda SemidirectProductGroup.agda Strict2MonoidFromCapability.agda Word.agda xFreeCyclicFromCapability.agda
 SUBDIRS := Core Cyclic Word
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ Word:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Core.ingest Cyclic.ingest Word.ingest
+Core.ingest:
+	@$(MAKE) -C Core ingest
+Cyclic.ingest:
+	@$(MAKE) -C Cyclic ingest
+Word.ingest:
+	@$(MAKE) -C Word ingest
 
 clean:
 	@$(MAKE) -C Core clean 2>/dev/null || true

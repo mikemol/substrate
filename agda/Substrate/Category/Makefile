@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := AbelianPFG.agda Adjunction.agda Algebra-of-Monad.agda Allegory.agda AntiCommutativeAlgebra.agda AtlasOfProbes.agda AutomorphismGroup.agda BWTEmergence.agda BeckChevalley.agda BoundaryEvent.agda CartanRootEquivalence.agda CartanType.agda CascadedCoalgebra.agda CategoryOf.agda CentralizerDescent.agda ChainDecomposition.agda CliffordEmissionAlgebra.agda Coalgebra-of-Comonad.agda Coalgebra.agda CoarseResidueEmission.agda Coequalizer.agda Coherence.agda Colimit.agda CommutativeComonoid.agda CommutativeMonoid.agda CommutativeMonoidAsMonoid.agda CommutativeNonAssociativeAlgebra.agda Comonad.agda Comonoid.agda ComposedReference.agda CompressionAtlas.agda Cone.agda ConeBondArchitecture.agda ConjugationCoalgebra.agda CoxeterPermutationGroup.agda DaggerCategory.agda Delooping.agda DeloopingGroup.agda DiscreteFourierTransform.agda EilenbergMooreCategory.agda Equalizer.agda ExteriorAlgebra.agda F2Graded.agda FieldBond.agda FieldContinuum.agda FieldFanOut.agda FreeLinearization.agda FreeLinearizationR.agda FreeOverBasis.agda FreeUniversalProperty.agda Functor.agda GTorsor.agda GaloisAdjunction.agda GeneratorOperad.agda GenericHodgeStar.agda GradedBicategorical.agda GradedMonoid.agda GrothendieckConstruction.agda GrothendieckOfAut.agda GroupoidCardinality.agda Iso.agda JordanAlgebra.agda KanExtension.agda KleisliCategory.agda Lawvere.agda LaxFunctor.agda LieAlgebra.agda Limit.agda LimitUniversalProperty.agda LinearAlgebra.agda Modification.agda Monad.agda Morphism.agda MultiFieldBond.agda MultiPrimeSpectralProfile.agda MultiSylowComposition.agda MultiscaleOctonionLoop.agda NaturalIsomorphism.agda NaturalTransformation.agda OpcodeAlgebra.agda Operad.agda Opposite.agda OrphanAudit.agda PhaseLockedLoop.agda Poly.agda PolyLens.agda PredictorRing.agda PresentedGroup.agda PresentedUniversalProperty.agda PresheafCategory.agda PrimeFactoredGauge.agda PrimeSampledChain.agda PrimitivesRoadmapV2.agda PseudoFunctor.agda Pullback.agda Pushout.agda RGradedMonoid.agda ReedMullerHierarchy.agda ReferenceOrbit.agda ResidueCompensation.agda RootSystem.agda RuleAction.agda S1-Lift.agda S2-Lift.agda Sheaf.agda Site.agda StochasticLens.agda StratifiedBundle.agda StratifiedSequence.agda Strict2Monoid.agda SubobjectClassifier.agda SylowDecomposition.agda SymmetricMonoidal.agda TensorProduct.agda TermAlgebraBridges.agda TermAlgebraCapstone.agda Topos.agda TwoCategory.agda TwoEquivalence.agda TwoNaturalTransformation.agda UPArrow2Collapse.agda UPArrowGraded.agda UniversalEnvelopingAlgebra.agda UniversalProperty.agda VertexOperatorAlgebra.agda WedgeProduct.agda YonedaEmbedding.agda
 SUBDIRS := Adjunction Allegory AntiCommutativeAlgebra AutomorphismGroup BeckChevalley CartanType CascadedCoalgebra Cat CategoryOf CentralizerDescent Coalgebra CommutativeComonoid Comonoid ComposedReference Cone ConjugationCoalgebra Coxeter DaggerCategory DiscreteFourierTransform ExteriorAlgebra FreeLinearization FreeLinearizationR FreeUniversalProperty Functor GTorsor GaloisAdjunction GrothendieckConstruction HC JordanAlgebra LieAlgebra Monad NaturalTransformation PhaseLockedLoop Poly PolyLens PresentedUniversalProperty PrimeFactoredGauge RGradedMonoid ReferenceOrbit RootSystem RuleAction S1-Lift S2-Lift StochasticLens Strict2Monoid SylowDecomposition SymmetricMonoidal TensorProduct UniversalEnvelopingAlgebra UniversalProperty
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -397,6 +398,113 @@ UniversalProperty:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Adjunction.ingest Allegory.ingest AntiCommutativeAlgebra.ingest AutomorphismGroup.ingest BeckChevalley.ingest CartanType.ingest CascadedCoalgebra.ingest Cat.ingest CategoryOf.ingest CentralizerDescent.ingest Coalgebra.ingest CommutativeComonoid.ingest Comonoid.ingest ComposedReference.ingest Cone.ingest ConjugationCoalgebra.ingest Coxeter.ingest DaggerCategory.ingest DiscreteFourierTransform.ingest ExteriorAlgebra.ingest FreeLinearization.ingest FreeLinearizationR.ingest FreeUniversalProperty.ingest Functor.ingest GTorsor.ingest GaloisAdjunction.ingest GrothendieckConstruction.ingest HC.ingest JordanAlgebra.ingest LieAlgebra.ingest Monad.ingest NaturalTransformation.ingest PhaseLockedLoop.ingest Poly.ingest PolyLens.ingest PresentedUniversalProperty.ingest PrimeFactoredGauge.ingest RGradedMonoid.ingest ReferenceOrbit.ingest RootSystem.ingest RuleAction.ingest S1-Lift.ingest S2-Lift.ingest StochasticLens.ingest Strict2Monoid.ingest SylowDecomposition.ingest SymmetricMonoidal.ingest TensorProduct.ingest UniversalEnvelopingAlgebra.ingest UniversalProperty.ingest
+Adjunction.ingest:
+	@$(MAKE) -C Adjunction ingest
+Allegory.ingest:
+	@$(MAKE) -C Allegory ingest
+AntiCommutativeAlgebra.ingest:
+	@$(MAKE) -C AntiCommutativeAlgebra ingest
+AutomorphismGroup.ingest:
+	@$(MAKE) -C AutomorphismGroup ingest
+BeckChevalley.ingest:
+	@$(MAKE) -C BeckChevalley ingest
+CartanType.ingest:
+	@$(MAKE) -C CartanType ingest
+CascadedCoalgebra.ingest:
+	@$(MAKE) -C CascadedCoalgebra ingest
+Cat.ingest:
+	@$(MAKE) -C Cat ingest
+CategoryOf.ingest:
+	@$(MAKE) -C CategoryOf ingest
+CentralizerDescent.ingest:
+	@$(MAKE) -C CentralizerDescent ingest
+Coalgebra.ingest:
+	@$(MAKE) -C Coalgebra ingest
+CommutativeComonoid.ingest:
+	@$(MAKE) -C CommutativeComonoid ingest
+Comonoid.ingest:
+	@$(MAKE) -C Comonoid ingest
+ComposedReference.ingest:
+	@$(MAKE) -C ComposedReference ingest
+Cone.ingest:
+	@$(MAKE) -C Cone ingest
+ConjugationCoalgebra.ingest:
+	@$(MAKE) -C ConjugationCoalgebra ingest
+Coxeter.ingest:
+	@$(MAKE) -C Coxeter ingest
+DaggerCategory.ingest:
+	@$(MAKE) -C DaggerCategory ingest
+DiscreteFourierTransform.ingest:
+	@$(MAKE) -C DiscreteFourierTransform ingest
+ExteriorAlgebra.ingest:
+	@$(MAKE) -C ExteriorAlgebra ingest
+FreeLinearization.ingest:
+	@$(MAKE) -C FreeLinearization ingest
+FreeLinearizationR.ingest:
+	@$(MAKE) -C FreeLinearizationR ingest
+FreeUniversalProperty.ingest:
+	@$(MAKE) -C FreeUniversalProperty ingest
+Functor.ingest:
+	@$(MAKE) -C Functor ingest
+GTorsor.ingest:
+	@$(MAKE) -C GTorsor ingest
+GaloisAdjunction.ingest:
+	@$(MAKE) -C GaloisAdjunction ingest
+GrothendieckConstruction.ingest:
+	@$(MAKE) -C GrothendieckConstruction ingest
+HC.ingest:
+	@$(MAKE) -C HC ingest
+JordanAlgebra.ingest:
+	@$(MAKE) -C JordanAlgebra ingest
+LieAlgebra.ingest:
+	@$(MAKE) -C LieAlgebra ingest
+Monad.ingest:
+	@$(MAKE) -C Monad ingest
+NaturalTransformation.ingest:
+	@$(MAKE) -C NaturalTransformation ingest
+PhaseLockedLoop.ingest:
+	@$(MAKE) -C PhaseLockedLoop ingest
+Poly.ingest:
+	@$(MAKE) -C Poly ingest
+PolyLens.ingest:
+	@$(MAKE) -C PolyLens ingest
+PresentedUniversalProperty.ingest:
+	@$(MAKE) -C PresentedUniversalProperty ingest
+PrimeFactoredGauge.ingest:
+	@$(MAKE) -C PrimeFactoredGauge ingest
+RGradedMonoid.ingest:
+	@$(MAKE) -C RGradedMonoid ingest
+ReferenceOrbit.ingest:
+	@$(MAKE) -C ReferenceOrbit ingest
+RootSystem.ingest:
+	@$(MAKE) -C RootSystem ingest
+RuleAction.ingest:
+	@$(MAKE) -C RuleAction ingest
+S1-Lift.ingest:
+	@$(MAKE) -C S1-Lift ingest
+S2-Lift.ingest:
+	@$(MAKE) -C S2-Lift ingest
+StochasticLens.ingest:
+	@$(MAKE) -C StochasticLens ingest
+Strict2Monoid.ingest:
+	@$(MAKE) -C Strict2Monoid ingest
+SylowDecomposition.ingest:
+	@$(MAKE) -C SylowDecomposition ingest
+SymmetricMonoidal.ingest:
+	@$(MAKE) -C SymmetricMonoidal ingest
+TensorProduct.ingest:
+	@$(MAKE) -C TensorProduct ingest
+UniversalEnvelopingAlgebra.ingest:
+	@$(MAKE) -C UniversalEnvelopingAlgebra ingest
+UniversalProperty.ingest:
+	@$(MAKE) -C UniversalProperty ingest
 
 clean:
 	@$(MAKE) -C Adjunction clean 2>/dev/null || true

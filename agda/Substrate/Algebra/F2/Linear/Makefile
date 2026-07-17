@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := AsAbelianCategory.agda AsCompactClosed.agda AsDaggerCategory.agda AsExactCategory.agda AsModuleHom.agda AsRigidCategory.agda AsSymmetricMonoidal.agda Augmentation.agda Bijection.agda BilinearFromImages.agda BilinearUniversal.agda CategoryStructures.agda Cycle3.agda Cycle3x2.agda Cyclotomic.agda FromImages.agda ImagesProps.agda Kernel.agda KernelPredBridge.agda KernelSpan.agda MultilinearFromImages.agda MultilinearUniversal.agda SpectralCRT.agda SpectralCrossCoherent.agda SpectralCycle.agda SpectralCycleDim.agda SpectralTower.agda Universal.agda
 SUBDIRS := Bijection FromImages
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -61,6 +62,17 @@ FromImages:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Bijection.ingest FromImages.ingest
+Bijection.ingest:
+	@$(MAKE) -C Bijection ingest
+FromImages.ingest:
+	@$(MAKE) -C FromImages ingest
 
 clean:
 	@$(MAKE) -C Bijection clean 2>/dev/null || true

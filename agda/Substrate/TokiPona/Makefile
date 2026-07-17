@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := AsFreeOverBasis.agda AsLinearBridge.agda F2toQForget.agda Fragment.agda LinearAlgebra.agda Linearity.agda ModifierBilinear.agda Nimi.agda NimiSpace.agda Particles.agda QCapstone.agda QFragment.agda QLinearAlgebra.agda QLinearity.agda QModifierBilinear.agda QNimiSpace.agda QParticles.agda QSemanticSpace.agda QTokiSentence.agda SemanticSpace.agda TokiSentence.agda
 SUBDIRS := AsLinearBridge Fragment ModifierBilinear
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ ModifierBilinear:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: AsLinearBridge.ingest Fragment.ingest ModifierBilinear.ingest
+AsLinearBridge.ingest:
+	@$(MAKE) -C AsLinearBridge ingest
+Fragment.ingest:
+	@$(MAKE) -C Fragment ingest
+ModifierBilinear.ingest:
+	@$(MAKE) -C ModifierBilinear ingest
 
 clean:
 	@$(MAKE) -C AsLinearBridge clean 2>/dev/null || true

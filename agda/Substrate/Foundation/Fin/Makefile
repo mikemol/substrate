@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Combine.agda Cover.agda Exists.agda Inject.agda Iterate.agda Literals.agda Properties.agda Punctured.agda Raise.agda RemQuot.agda SplitAt.agda
 SUBDIRS := Combine Punctured SplitAt
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ SplitAt:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Combine.ingest Punctured.ingest SplitAt.ingest
+Combine.ingest:
+	@$(MAKE) -C Combine ingest
+Punctured.ingest:
+	@$(MAKE) -C Punctured ingest
+SplitAt.ingest:
+	@$(MAKE) -C SplitAt ingest
 
 clean:
 	@$(MAKE) -C Combine clean 2>/dev/null || true

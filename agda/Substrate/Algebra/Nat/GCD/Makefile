@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := ADividesLcm.agda BDividesLcm.agda BezoutMod.agda CFInjective.agda CFInvariance.agda ComputeTrace.agda ComputeTraceStep.agda ConstructWedge.agda EEATrace.agda Fold.agda GcdDividesLeft.agda GcdDividesRight.agda GcdN.agda GcdPos.agda GcdTrace.agda LcmCoprime.agda LcmN.agda ShapeBridge.agda TraceDivides.agda Wedge.agda WedgeCanonical.agda
 SUBDIRS := EEATrace
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -54,6 +55,15 @@ EEATrace:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: EEATrace.ingest
+EEATrace.ingest:
+	@$(MAKE) -C EEATrace ingest
 
 clean:
 	@$(MAKE) -C EEATrace clean 2>/dev/null || true

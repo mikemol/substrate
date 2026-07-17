@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ..
+SCRIPTS := ../../scripts
 
 FILES := Axes.agda Cardinality.agda Cocycle.agda Discipline.agda Foundation.agda Generators.agda ShadowArchitecture.agda
 SUBDIRS := Algebra Axes Cardinality Category Cocycles Codes Conway FUSep Foundation Foundations Geometry Groups Invented Kelen Lambda Linguistic Logic Lojban Pedagogy Pipeline Probability Realizability S5 ShadowArchitecture Solresol TokiPona WitnessTower
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -236,6 +237,67 @@ WitnessTower:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Algebra.ingest Axes.ingest Cardinality.ingest Category.ingest Cocycles.ingest Codes.ingest Conway.ingest FUSep.ingest Foundation.ingest Foundations.ingest Geometry.ingest Groups.ingest Invented.ingest Kelen.ingest Lambda.ingest Linguistic.ingest Logic.ingest Lojban.ingest Pedagogy.ingest Pipeline.ingest Probability.ingest Realizability.ingest S5.ingest ShadowArchitecture.ingest Solresol.ingest TokiPona.ingest WitnessTower.ingest
+Algebra.ingest:
+	@$(MAKE) -C Algebra ingest
+Axes.ingest:
+	@$(MAKE) -C Axes ingest
+Cardinality.ingest:
+	@$(MAKE) -C Cardinality ingest
+Category.ingest:
+	@$(MAKE) -C Category ingest
+Cocycles.ingest:
+	@$(MAKE) -C Cocycles ingest
+Codes.ingest:
+	@$(MAKE) -C Codes ingest
+Conway.ingest:
+	@$(MAKE) -C Conway ingest
+FUSep.ingest:
+	@$(MAKE) -C FUSep ingest
+Foundation.ingest:
+	@$(MAKE) -C Foundation ingest
+Foundations.ingest:
+	@$(MAKE) -C Foundations ingest
+Geometry.ingest:
+	@$(MAKE) -C Geometry ingest
+Groups.ingest:
+	@$(MAKE) -C Groups ingest
+Invented.ingest:
+	@$(MAKE) -C Invented ingest
+Kelen.ingest:
+	@$(MAKE) -C Kelen ingest
+Lambda.ingest:
+	@$(MAKE) -C Lambda ingest
+Linguistic.ingest:
+	@$(MAKE) -C Linguistic ingest
+Logic.ingest:
+	@$(MAKE) -C Logic ingest
+Lojban.ingest:
+	@$(MAKE) -C Lojban ingest
+Pedagogy.ingest:
+	@$(MAKE) -C Pedagogy ingest
+Pipeline.ingest:
+	@$(MAKE) -C Pipeline ingest
+Probability.ingest:
+	@$(MAKE) -C Probability ingest
+Realizability.ingest:
+	@$(MAKE) -C Realizability ingest
+S5.ingest:
+	@$(MAKE) -C S5 ingest
+ShadowArchitecture.ingest:
+	@$(MAKE) -C ShadowArchitecture ingest
+Solresol.ingest:
+	@$(MAKE) -C Solresol ingest
+TokiPona.ingest:
+	@$(MAKE) -C TokiPona ingest
+WitnessTower.ingest:
+	@$(MAKE) -C WitnessTower ingest
 
 clean:
 	@$(MAKE) -C Algebra clean 2>/dev/null || true

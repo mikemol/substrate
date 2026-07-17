@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := BicategoricalCapstone.agda BicategoryOfLanguages.agda Capstone.agda CategoryLaws.agda CategoryOfLanguages.agda ClassFunctor.agda Classification.agda ClosureCapstone.agda ClosureLog.agda Compose.agda HomFunctor.agda Horizontal.agda IdMorphism.agda Interchange.agda Language2Morphism.agda Morphism.agda MorphismSetoid.agda NaturalPresheafMorphism.agda NaturalRespect.agda RetroactiveAlignment.agda RosettaTable.agda Roster.agda Vertical.agda YonedaCapstone.agda YonedaEmbedding.agda YonedaFull.agda YonedaLemma.agda YonedaNatural.agda YonedaRespect.agda YonedaReverse.agda
 SUBDIRS := Capstone
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -54,6 +55,15 @@ Capstone:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Capstone.ingest
+Capstone.ingest:
+	@$(MAKE) -C Capstone ingest
 
 clean:
 	@$(MAKE) -C Capstone clean 2>/dev/null || true

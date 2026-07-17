@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := BabyMonster.agda Conway.agda GriessAlgebra.agda HappyFamily.agda MathieuFischer.agda MonsterLieAlgebra.agda MonsterVOA.agda
 SUBDIRS := GriessAlgebra HappyFamily Monster
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ Monster:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: GriessAlgebra.ingest HappyFamily.ingest Monster.ingest
+GriessAlgebra.ingest:
+	@$(MAKE) -C GriessAlgebra ingest
+HappyFamily.ingest:
+	@$(MAKE) -C HappyFamily ingest
+Monster.ingest:
+	@$(MAKE) -C Monster ingest
 
 clean:
 	@$(MAKE) -C GriessAlgebra clean 2>/dev/null || true

@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := AxisBits.agda IsReserved.agda Iso.agda Live.agda LiveS4.agda LiveS4Bijection.agda LiveS4Iso.agda ReservedSignedMaps.agda ReservedSignedRoundTrip.agda ReservedToBivector.agda ReservedToBivectorAffine.agda ReservedToBivectorCardinality.agda Subtypes.agda Type.agda
 SUBDIRS := LiveS4Bijection ReservedToBivectorAffine
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -61,6 +62,17 @@ ReservedToBivectorAffine:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: LiveS4Bijection.ingest ReservedToBivectorAffine.ingest
+LiveS4Bijection.ingest:
+	@$(MAKE) -C LiveS4Bijection ingest
+ReservedToBivectorAffine.ingest:
+	@$(MAKE) -C ReservedToBivectorAffine ingest
 
 clean:
 	@$(MAKE) -C LiveS4Bijection clean 2>/dev/null || true

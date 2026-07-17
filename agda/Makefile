@@ -13,11 +13,21 @@ ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
 export PATH := $(SHIM_DIR):$(PATH)
 endif
 
-.PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise
+.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise
 all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
+# ⟡gqs-make-targets: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the
+# interned SPPF. `catalog` ingests each core PARALLEL TO the compile (make -j ingest → one
+# --ingest-core per file, WAL-serialized) then ONE projection pass. Ingests whatever cores exist
+# under _build (run after `make`/the agda build); sppf_db self-skips unchanged cores, so it's cheap.
+shim:
+	@$(MAKE) -C ../jea/metalanguage shim
+catalog: shim
+	@python3 ../scripts/sppf_db.py --init
+	@$(MAKE) -C Substrate ingest
+	@python3 ../scripts/sppf_db.py --finalize --argperm
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
 check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-apex

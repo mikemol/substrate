@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := Base.agda Bridge.agda Core.agda Existential.agda InvCanonical.agda Inverse.agda NthPower.agda
 SUBDIRS := InvCanonical NthPower
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -61,6 +62,17 @@ NthPower:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: InvCanonical.ingest NthPower.ingest
+InvCanonical.ingest:
+	@$(MAKE) -C InvCanonical ingest
+NthPower.ingest:
+	@$(MAKE) -C NthPower ingest
 
 clean:
 	@$(MAKE) -C InvCanonical clean 2>/dev/null || true

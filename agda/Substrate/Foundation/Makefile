@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := Bool.agda Empty.agda Eq.agda Fin.agda Function.agda Hedberg.agda Iff.agda Level.agda List.agda Maybe.agda Nat.agda Negation.agda Product.agda RewriteConfluence.agda Sum.agda Unit.agda Universe.agda Vec.agda WellFounded.agda
 SUBDIRS := Bool Empty Fin Function List Nat Unit Vec
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -103,6 +104,29 @@ Vec:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Bool.ingest Empty.ingest Fin.ingest Function.ingest List.ingest Nat.ingest Unit.ingest Vec.ingest
+Bool.ingest:
+	@$(MAKE) -C Bool ingest
+Empty.ingest:
+	@$(MAKE) -C Empty ingest
+Fin.ingest:
+	@$(MAKE) -C Fin ingest
+Function.ingest:
+	@$(MAKE) -C Function ingest
+List.ingest:
+	@$(MAKE) -C List ingest
+Nat.ingest:
+	@$(MAKE) -C Nat ingest
+Unit.ingest:
+	@$(MAKE) -C Unit ingest
+Vec.ingest:
+	@$(MAKE) -C Vec ingest
 
 clean:
 	@$(MAKE) -C Bool clean 2>/dev/null || true

@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Atlas.agda DualRail.agda ElAtlas.agda GValueAsQ.agda GValueLSpace.agda Graded.agda NedgeBridge.agda SWP.agda Verdict.agda Warrant.agda
 SUBDIRS := Atlas ElAtlas GValueLSpace Graded Verdict Warrant
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ Warrant:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Atlas.ingest ElAtlas.ingest GValueLSpace.ingest Graded.ingest Verdict.ingest Warrant.ingest
+Atlas.ingest:
+	@$(MAKE) -C Atlas ingest
+ElAtlas.ingest:
+	@$(MAKE) -C ElAtlas ingest
+GValueLSpace.ingest:
+	@$(MAKE) -C GValueLSpace ingest
+Graded.ingest:
+	@$(MAKE) -C Graded ingest
+Verdict.ingest:
+	@$(MAKE) -C Verdict ingest
+Warrant.ingest:
+	@$(MAKE) -C Warrant ingest
 
 clean:
 	@$(MAKE) -C Atlas clean 2>/dev/null || true

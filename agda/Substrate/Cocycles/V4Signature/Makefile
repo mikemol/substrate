@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := CY5.agda Codeword.agda Fiber.agda OrbitKey-S3.agda S4GroupIso.agda S4Iso-Bridges.agda S4Iso.agda V4ActsOnItself.agda V4GroupSetoid.agda V4IsTorsor.agda V4LeftCancel.agda V4ToPairing.agda V4Transitive.agda
 SUBDIRS := Chirality Codeword OrbitKey OrbitKey-S3 Pairing S4Iso
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ S4Iso:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Chirality.ingest Codeword.ingest OrbitKey.ingest OrbitKey-S3.ingest Pairing.ingest S4Iso.ingest
+Chirality.ingest:
+	@$(MAKE) -C Chirality ingest
+Codeword.ingest:
+	@$(MAKE) -C Codeword ingest
+OrbitKey.ingest:
+	@$(MAKE) -C OrbitKey ingest
+OrbitKey-S3.ingest:
+	@$(MAKE) -C OrbitKey-S3 ingest
+Pairing.ingest:
+	@$(MAKE) -C Pairing ingest
+S4Iso.ingest:
+	@$(MAKE) -C S4Iso ingest
 
 clean:
 	@$(MAKE) -C Chirality clean 2>/dev/null || true

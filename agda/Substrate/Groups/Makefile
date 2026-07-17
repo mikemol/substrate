@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := Capabilities.agda ConsolidatedCyclicCoxeter.agda Coxeter-Fin-Generic.agda CyclicCoxeterStrict2Monoids.agda F2Cubed.agda FreeCyclic-Coxeter-GradedMonoid.agda FreeCyclic-Coxeter-Length.agda FreeCyclic-Coxeter-Strict2Monoid.agda FreeCyclic-Coxeter.agda Manifest.agda S3.agda S4-AsOpcodeAlgebra.agda S4-Composed.agda S4-Iso.agda S4.agda SFin.agda SemidirectProduct.agda Stab-S3-Extend.agda Stab-S3-Hom.agda Stab-S3-Iso.agda Stab-S3-Restrict.agda Stab-S3.agda StabNormalCharacterization.agda StabNotNormal.agda Subgroup.agda Symmetric.agda TwoDimWordAlgebra.agda V4-Cosets.agda V4-Coxeter-F2Graded-CountA.agda V4-Coxeter-F2Graded-CountB.agda V4-Coxeter-F2Graded.agda V4-Coxeter-F2GradedFromHomomorphism.agda V4-Coxeter-Strict2Monoid.agda V4-Coxeter.agda V4-Embedding.agda V4-Normality.agda V4-as-Z2xZ2.agda V4.agda Z-x-FreeCyclic-PhaseAdvance.agda Z-x-FreeCyclic-Recovery.agda Z2-Coxeter-Fin.agda Z2-Coxeter-Group.agda Z2-Coxeter-Strict2Monoid.agda Z2-Coxeter.agda Z2-x-FreeCyclic-PhaseProjection.agda Z2-x-FreeCyclic.agda Z3-Coxeter-Fin.agda Z3-Coxeter-Group.agda Z3-Coxeter-Strict2Monoid.agda Z3-Coxeter.agda Z3-x-FreeCyclic-Degree.agda Z3-x-FreeCyclic-PhaseProjection.agda Z3-x-FreeCyclic-Strict2Monoid.agda Z3-x-FreeCyclic.agda Z3-x-Z4-x-FreeCyclic.agda Z4-Coxeter-Fin.agda Z4-Coxeter-Group.agda Z4-Coxeter-Strict2Monoid.agda Z4-Coxeter.agda Z4-x-FreeCyclic-PhaseProjection.agda Z4-x-FreeCyclic.agda Z5-Coxeter-Fin.agda Z5-Coxeter-Group.agda Z5-Coxeter-Strict2Monoid.agda Z5-Coxeter.agda Z5-x-FreeCyclic-PhaseProjection.agda Z5-x-FreeCyclic.agda Z7-Coxeter-Fin.agda Z7-Coxeter-Group.agda Z7-Coxeter-Strict2Monoid.agda Z7-Coxeter.agda Z7-x-FreeCyclic-PhaseProjection.agda Z7-x-FreeCyclic.agda Zn-Coxeter-Strict2Monoid.agda Zn-x-FreeCyclic-PhaseProjection.agda Zn-x-FreeCyclic.agda
 SUBDIRS := Actions Capabilities Coxeter S4-Iso SemidirectProduct V4
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ V4:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Actions.ingest Capabilities.ingest Coxeter.ingest S4-Iso.ingest SemidirectProduct.ingest V4.ingest
+Actions.ingest:
+	@$(MAKE) -C Actions ingest
+Capabilities.ingest:
+	@$(MAKE) -C Capabilities ingest
+Coxeter.ingest:
+	@$(MAKE) -C Coxeter ingest
+S4-Iso.ingest:
+	@$(MAKE) -C S4-Iso ingest
+SemidirectProduct.ingest:
+	@$(MAKE) -C SemidirectProduct ingest
+V4.ingest:
+	@$(MAKE) -C V4 ingest
 
 clean:
 	@$(MAKE) -C Actions clean 2>/dev/null || true

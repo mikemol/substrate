@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := AssocFour.agda Clash.agda HigherArity.agda IdemInequality.agda NormalizeAppend.agda NormalizeCong.agda NormalizeIdem.agda Operations.agda
 SUBDIRS := HigherArity NormalizeAppend NormalizeCong
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ NormalizeCong:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: HigherArity.ingest NormalizeAppend.ingest NormalizeCong.ingest
+HigherArity.ingest:
+	@$(MAKE) -C HigherArity ingest
+NormalizeAppend.ingest:
+	@$(MAKE) -C NormalizeAppend ingest
+NormalizeCong.ingest:
+	@$(MAKE) -C NormalizeCong ingest
 
 clean:
 	@$(MAKE) -C HigherArity clean 2>/dev/null || true

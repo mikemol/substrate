@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda CrossMixBezout.agda DecidableEq.agda Embeddings.agda Equiv.agda HetBasis.agda HetBasisNest.agda HetCrossMix.agda HetReciprocal.agda HetReduce.agda HetReduceBezout.agda HetSymbolic.agda HetV4.agda Linear.agda Mul.agda Neg.agda Order.agda QToRCrossMix.agda Reduce.agda Reduction.agda RegistryHetQBridges.agda Sub.agda Vector.agda
 SUBDIRS := Linear Properties
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -61,6 +62,17 @@ Properties:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Linear.ingest Properties.ingest
+Linear.ingest:
+	@$(MAKE) -C Linear ingest
+Properties.ingest:
+	@$(MAKE) -C Properties ingest
 
 clean:
 	@$(MAKE) -C Linear clean 2>/dev/null || true

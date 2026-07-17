@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := Bisim.agda CFBezoutBridge.agda CFBezoutCross.agda CFBezoutPrev.agda CFDigitHet.agda CFMatrixBridge.agda Cancel.agda ChiralityBridge.agda CycleWire.agda DetSign.agda DetValSign.agda Exp.agda ExtruderBraidRealigned.agda ExtruderFix.agda ExtruderLambekRealigned.agda ExtruderMiscRealigned.agda ExtruderNfCrossDlog.agda ExtruderNfCrossDlogCospan.agda ExtruderNfCrossRealigned.agda ExtruderNfGradedRealigned.agda ExtruderObsCoalg.agda ExtruderQSideRealigned.agda ExtruderRSideRealigned.agda Final.agda Log.agda NewmanKI.agda NewmanSKI.agda Ops.agda OrbitAudit.agda OrbitBoundary.agda OrbitComplete.agda OrbitFaithful.agda OrbitUniversality.agda Properties.agda RationalAdjunction.agda SKIAllegoryFixpoints.agda SKIFaithfulOnGraded.agda SKIFaithfulRb.agda SKIGradedFlatAllegory.agda SKIGradedTraceChain.agda SKIOnCombinatorDivStr.agda SKIReduceResidueFP.agda SKIReductionToList.agda SKIShedDuality.agda SKITermToShedding.agda SeriesCancel.agda StreamMap.agda Transcendental.agda Unfold.agda V4FullCocycle.agda WedgeBridge.agda Window.agda Windowed.agda
 SUBDIRS := CFBezoutBridge CFMatrixBridge NewmanKI NewmanSKI
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -75,6 +76,21 @@ NewmanSKI:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: CFBezoutBridge.ingest CFMatrixBridge.ingest NewmanKI.ingest NewmanSKI.ingest
+CFBezoutBridge.ingest:
+	@$(MAKE) -C CFBezoutBridge ingest
+CFMatrixBridge.ingest:
+	@$(MAKE) -C CFMatrixBridge ingest
+NewmanKI.ingest:
+	@$(MAKE) -C NewmanKI ingest
+NewmanSKI.ingest:
+	@$(MAKE) -C NewmanSKI ingest
 
 clean:
 	@$(MAKE) -C CFBezoutBridge clean 2>/dev/null || true

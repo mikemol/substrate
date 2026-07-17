@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
 FILES := AsGroupoid.agda Bivector-F2Graded.agda Bivector.agda Cone-HodgeStar-EdgeApex.agda HodgeStar-ConeWithMorphisms.agda HodgeStar-FreeLinearization.agda HodgeStar.agda MetricGauge.agda ReservedBridge.agda ReservedBridgeAlternatives.agda SelfDual.agda
 SUBDIRS := Bivector HodgeStar MetricGauge ReservedBridge ReservedBridgeAlternatives
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -82,6 +83,23 @@ ReservedBridgeAlternatives:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Bivector.ingest HodgeStar.ingest MetricGauge.ingest ReservedBridge.ingest ReservedBridgeAlternatives.ingest
+Bivector.ingest:
+	@$(MAKE) -C Bivector ingest
+HodgeStar.ingest:
+	@$(MAKE) -C HodgeStar ingest
+MetricGauge.ingest:
+	@$(MAKE) -C MetricGauge ingest
+ReservedBridge.ingest:
+	@$(MAKE) -C ReservedBridge ingest
+ReservedBridgeAlternatives.ingest:
+	@$(MAKE) -C ReservedBridgeAlternatives ingest
 
 clean:
 	@$(MAKE) -C Bivector clean 2>/dev/null || true

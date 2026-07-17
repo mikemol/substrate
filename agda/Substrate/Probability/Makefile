@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := BaezFritzLeinster.agda ConjugateMonad.agda Entropy.agda KLDivergence.agda MarkovCategory.agda Simplex.agda
 SUBDIRS := BaezFritzLeinster ConjugateMonad Entropy KLDivergence MarkovCategory Simplex
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -89,6 +90,25 @@ Simplex:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: BaezFritzLeinster.ingest ConjugateMonad.ingest Entropy.ingest KLDivergence.ingest MarkovCategory.ingest Simplex.ingest
+BaezFritzLeinster.ingest:
+	@$(MAKE) -C BaezFritzLeinster ingest
+ConjugateMonad.ingest:
+	@$(MAKE) -C ConjugateMonad ingest
+Entropy.ingest:
+	@$(MAKE) -C Entropy ingest
+KLDivergence.ingest:
+	@$(MAKE) -C KLDivergence ingest
+MarkovCategory.ingest:
+	@$(MAKE) -C MarkovCategory ingest
+Simplex.ingest:
+	@$(MAKE) -C Simplex ingest
 
 clean:
 	@$(MAKE) -C BaezFritzLeinster clean 2>/dev/null || true

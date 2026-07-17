@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Grammar.agda PhaseTransition.agda Poem.agda Semantics.agda
 SUBDIRS := PhaseTransition Poem Semantics
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -68,6 +69,19 @@ Semantics:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: PhaseTransition.ingest Poem.ingest Semantics.ingest
+PhaseTransition.ingest:
+	@$(MAKE) -C PhaseTransition ingest
+Poem.ingest:
+	@$(MAKE) -C Poem ingest
+Semantics.ingest:
+	@$(MAKE) -C Semantics ingest
 
 clean:
 	@$(MAKE) -C PhaseTransition clean 2>/dev/null || true

@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
+SCRIPTS := ../../../scripts
 
 FILES := AbelianGroup.agda Bijection.agda CayleyDickson.agda CommutativeRing.agda ExpLogCodec.agda F2-CommutativeMonoid.agda F2.agda Field.agda GL3F2.agda Group.agda GroupAction.agda Involution.agda IsomorphicCocycle.agda Magma.agda Medial.agda Module.agda Monoid.agda N-to-F2-Parity.agda PointedSet.agda PontryaginDual.agda PrimeFactor-168-FieldFanOut.agda Q.agda Quotient.agda Ring.agda SemidirectProduct.agda Semigroup.agda Semiring.agda Setoid.agda SetoidGroup.agda TopologicalGroup.agda Torsor.agda Wedge.agda Z.agda Z6-FieldBond.agda Z6-FieldTower.agda
 SUBDIRS := Abelian CayleyDickson F1 F2 Fin GL3F2 Group Lie Linear List Module Monoid Nat PointedSet Polynomial PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -236,6 +237,67 @@ Z:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: Abelian.ingest CayleyDickson.ingest F1.ingest F2.ingest Fin.ingest GL3F2.ingest Group.ingest Lie.ingest Linear.ingest List.ingest Module.ingest Monoid.ingest Nat.ingest PointedSet.ingest Polynomial.ingest PontryaginDual.ingest Q.ingest Quotient.ingest R.ingest Semiring.ingest Setoid.ingest SetoidGroup.ingest Sporadic.ingest TopologicalGroup.ingest V-Arc.ingest Wedge.ingest Z.ingest
+Abelian.ingest:
+	@$(MAKE) -C Abelian ingest
+CayleyDickson.ingest:
+	@$(MAKE) -C CayleyDickson ingest
+F1.ingest:
+	@$(MAKE) -C F1 ingest
+F2.ingest:
+	@$(MAKE) -C F2 ingest
+Fin.ingest:
+	@$(MAKE) -C Fin ingest
+GL3F2.ingest:
+	@$(MAKE) -C GL3F2 ingest
+Group.ingest:
+	@$(MAKE) -C Group ingest
+Lie.ingest:
+	@$(MAKE) -C Lie ingest
+Linear.ingest:
+	@$(MAKE) -C Linear ingest
+List.ingest:
+	@$(MAKE) -C List ingest
+Module.ingest:
+	@$(MAKE) -C Module ingest
+Monoid.ingest:
+	@$(MAKE) -C Monoid ingest
+Nat.ingest:
+	@$(MAKE) -C Nat ingest
+PointedSet.ingest:
+	@$(MAKE) -C PointedSet ingest
+Polynomial.ingest:
+	@$(MAKE) -C Polynomial ingest
+PontryaginDual.ingest:
+	@$(MAKE) -C PontryaginDual ingest
+Q.ingest:
+	@$(MAKE) -C Q ingest
+Quotient.ingest:
+	@$(MAKE) -C Quotient ingest
+R.ingest:
+	@$(MAKE) -C R ingest
+Semiring.ingest:
+	@$(MAKE) -C Semiring ingest
+Setoid.ingest:
+	@$(MAKE) -C Setoid ingest
+SetoidGroup.ingest:
+	@$(MAKE) -C SetoidGroup ingest
+Sporadic.ingest:
+	@$(MAKE) -C Sporadic ingest
+TopologicalGroup.ingest:
+	@$(MAKE) -C TopologicalGroup ingest
+V-Arc.ingest:
+	@$(MAKE) -C V-Arc ingest
+Wedge.ingest:
+	@$(MAKE) -C Wedge ingest
+Z.ingest:
+	@$(MAKE) -C Z ingest
 
 clean:
 	@$(MAKE) -C Abelian clean 2>/dev/null || true

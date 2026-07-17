@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Adjunction.agda AxisWord.agda BoundedIso.agda Bridge.agda CertGenericProjection.agda Certified.agda CertifiedPhiStep.agda Coalgebra.agda CombinatorDivStr.agda Compose.agda Contextuality.agda Correspondence.agda Cross.agda CrossMul.agda CrossMulGraded.agda FourPointDescent.agda FourPointGroupoid.agda FourPointReflection.agda FourPointV4.agda Graded.agda InclusionBridge.agda IntParityBridge.agda Iso.agda IsoGroupoid.agda Monoidal.agda Mul.agda NComplex.agda NilpotentDegreeK.agda NilpotentDegreeKGeneral.agda NilpotentFaithfulLogChart.agda NilpotentLogExpBridge.agda NilpotentLogMAssoc.agda NilpotentLogMFin.agda NilpotentLogMFinLaws.agda NilpotentLogMMonoid.agda NuAbstractLimitInstance.agda NuShapeIso.agda ParityBridge.agda PrimePowerGraded.agda Product.agda Reads.agda Registry.agda ResidueAtom.agda Shape.agda ShapeParity.agda Species.agda Sphere.agda StarV4.agda TraceKleeneColimit.agda TraceMuStep.agda TraceNuAbstractLimit.agda TraceNuColimit.agda TraceNuConstructive.agda TraceNuStep.agda VecGraded.agda Wedderburn.agda
 SUBDIRS := AxisWord Compose Contextuality Graded Product ResidueAtom Shape Trace
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -103,6 +104,29 @@ Trace:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: AxisWord.ingest Compose.ingest Contextuality.ingest Graded.ingest Product.ingest ResidueAtom.ingest Shape.ingest Trace.ingest
+AxisWord.ingest:
+	@$(MAKE) -C AxisWord ingest
+Compose.ingest:
+	@$(MAKE) -C Compose ingest
+Contextuality.ingest:
+	@$(MAKE) -C Contextuality ingest
+Graded.ingest:
+	@$(MAKE) -C Graded ingest
+Product.ingest:
+	@$(MAKE) -C Product ingest
+ResidueAtom.ingest:
+	@$(MAKE) -C ResidueAtom ingest
+Shape.ingest:
+	@$(MAKE) -C Shape ingest
+Trace.ingest:
+	@$(MAKE) -C Trace ingest
 
 clean:
 	@$(MAKE) -C AxisWord clean 2>/dev/null || true

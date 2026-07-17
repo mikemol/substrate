@@ -114,11 +114,12 @@ def makefile_text(d, all_dirs):
     L.append("AGDA_FLAGS ?= --safe --without-K")
     L.append(f"MEM_CAP ?= {MEM_CAP}")
     L.append(f"AGDA_ROOT := {up}")
+    L.append(f"SCRIPTS := {up}/../scripts")   # ⟡gqs-make-targets: sppf_db.py (the per-core ingest) home
     L.append("")
     L.append("FILES := " + " ".join(files))
     L.append("SUBDIRS := " + " ".join(subs))
     L.append("")
-    L.append(".PHONY: all files subdirs $(SUBDIRS) check-sync clean")
+    L.append(".PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean")
     L.append("")
     L.append("all: check-sync subdirs files")
     L.append("")
@@ -157,6 +158,20 @@ def makefile_text(d, all_dirs):
         L.append(f"\tfi")
         L.append(f"\t@$(MAKE) -C $@")
         L.append("")
+    # ⟡gqs-make-targets: ingest each core's SPPF events into catalog.db, PARALLEL TO the compile — one
+    # `--ingest-core` per file (WAL + busy_timeout in sppf_db → parallel decode, serialized insert; the tool
+    # self-skips a core whose .agdai mtime is unadvanced, the agda-self-skip analogue). The root `catalog`
+    # target sequences: --init → (make -j ingest) → --finalize (prune + GC + project). No monolithic loop.
+    L.append("ingest: ingest-files ingest-subdirs")
+    L.append("ingest-files:")
+    L.append("\t@for f in $(FILES); do \\")
+    L.append("\t  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \\")
+    L.append("\tdone")
+    L.append("ingest-subdirs: " + " ".join(f"{s}.ingest" for s in subs))
+    for s in subs:
+        L.append(f"{s}.ingest:")
+        L.append(f"\t@$(MAKE) -C {s} ingest")
+    L.append("")
     L.append("clean:")
     for s in subs:
         L.append(f"\t@$(MAKE) -C {s} clean 2>/dev/null || true")
@@ -175,11 +190,21 @@ def root_text(all_dirs):
         "# scripts/gen_build_makefiles.py.",
         "",
         *_shim_block(),
-        ".PHONY: all clean check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise",
+        ".PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise",
         "all:",
         "\t@$(MAKE) -C Substrate",
         "clean:",
         "\t@$(MAKE) -C Substrate clean",
+        "# ⟡gqs-make-targets: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the",
+        "# interned SPPF. `catalog` ingests each core PARALLEL TO the compile (make -j ingest → one",
+        "# --ingest-core per file, WAL-serialized) then ONE projection pass. Ingests whatever cores exist",
+        "# under _build (run after `make`/the agda build); sppf_db self-skips unchanged cores, so it's cheap.",
+        "shim:",
+        "\t@$(MAKE) -C ../jea/metalanguage shim",
+        "catalog: shim",
+        "\t@python3 ../scripts/sppf_db.py --init",
+        "\t@$(MAKE) -C Substrate ingest",
+        "\t@python3 ../scripts/sppf_db.py --finalize --argperm",
         "# Aggregate invariant GATE (same checks the pre-commit hook runs):",
         "# def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.",
         "check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-apex",

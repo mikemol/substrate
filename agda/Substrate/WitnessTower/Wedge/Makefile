@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := Action.agda Adjunction.agda Factoradic.agda Graded.agda GradedStarV4.agda IsoDecodeLift.agda OrientationBifunctor.agda OrientationBimonoidal.agda OrientationCoherence.agda OrientationDistributor.agda OrientationDistributorAssoc.agda OrientationDistributorCoherence.agda OrientationFixedPoint.agda OrientationFlatGradedBridge.agda OrientationHexagon.agda OrientationProduct.agda OrientationProductComm.agda OrientationProductCons.agda OrientationProductInsert.agda OrientationProductLaws.agda OrientationProductNaturality.agda OrientationProductPerm.agda OrientationProductStructural.agda OrientationProductStructuralDecode.agda OrientationProductUnit.agda OrientationRig.agda OrientationRigCat.agda OrientationRigCatPerm.agda OrientationRigCatPermAdjClosure.agda OrientationRigCatPermBifunctor.agda OrientationRigCatPermCoxeter4.agda OrientationRigCatPermCoxeterGeneral.agda OrientationRigCatPermGap.agda OrientationRigCatPermSign.agda OrientationRigCatPermSignChirality.agda OrientationRigCatPermUP.agda OrientationRigCatSym.agda OrientationRigCatSymUP.agda OrientationRigCatUP.agda OrientationRigFree.agda OrientationRigFreeUP.agda OrientationRigInitial.agda OrientationRigInstance.agda OrientationRigResidue.agda OrientationRigUniversal.agda OrientationSum.agda OrientationSumComm.agda OrientationSumDecode.agda OrientationSumLaws.agda OrientationSumMonoidal.agda OrientationSumNaturality.agda OrientationSymMonoidal.agda OrientationTowerDiv.agda OrientationUniversal.agda OrientationUniversalOver.agda PackedBridge.agda PyAstRewrite.agda PyAstRewriteAct.agda PyAstRewriteNormalize.agda PyAstRewritePermRig.agda PyAstRewriteSemantics.agda PyAstRewriteSnRig.agda PyAstRig.agda PyAstRigCospan.agda PyAstRigGround.agda PyAstRigNormalize.agda Simplicial.agda V4Seam.agda
 SUBDIRS := OrientationBimonoidal OrientationRigCat OrientationRigCatPermCoxeterGeneral OrientationRigCatUP
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -75,6 +76,21 @@ OrientationRigCatUP:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: OrientationBimonoidal.ingest OrientationRigCat.ingest OrientationRigCatPermCoxeterGeneral.ingest OrientationRigCatUP.ingest
+OrientationBimonoidal.ingest:
+	@$(MAKE) -C OrientationBimonoidal ingest
+OrientationRigCat.ingest:
+	@$(MAKE) -C OrientationRigCat ingest
+OrientationRigCatPermCoxeterGeneral.ingest:
+	@$(MAKE) -C OrientationRigCatPermCoxeterGeneral ingest
+OrientationRigCatUP.ingest:
+	@$(MAKE) -C OrientationRigCatUP ingest
 
 clean:
 	@$(MAKE) -C OrientationBimonoidal clean 2>/dev/null || true

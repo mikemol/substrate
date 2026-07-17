@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
+SCRIPTS := ../../../../scripts
 
 FILES := AsChainDecomp.agda AsPresented.agda Characters.agda GaugeGenerators.agda JointGenViaPresentation.agda MultiRouteEquivariance.agda SingerOrder.agda SylowDecomposition.agda
 SUBDIRS := MultiRouteEquivariance SingerOrder
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -61,6 +62,17 @@ SingerOrder:
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
 	fi
 	@$(MAKE) -C $@
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: MultiRouteEquivariance.ingest SingerOrder.ingest
+MultiRouteEquivariance.ingest:
+	@$(MAKE) -C MultiRouteEquivariance ingest
+SingerOrder.ingest:
+	@$(MAKE) -C SingerOrder ingest
 
 clean:
 	@$(MAKE) -C MultiRouteEquivariance clean 2>/dev/null || true

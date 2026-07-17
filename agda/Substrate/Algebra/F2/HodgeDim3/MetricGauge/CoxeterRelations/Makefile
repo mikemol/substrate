@@ -17,11 +17,12 @@ AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../../../..
+SCRIPTS := ../../../../../../../scripts
 
 FILES := BraidOnE0.agda BraidOnE1.agda BraidOnE2.agda BraidOnV.agda BraidWalk.agda CubedOrbitWalk.agda HasOrderS1.agda HasOrderS1S2.agda HasOrderS2.agda S1Endo.agda S1S2CubedOnE0.agda S1S2CubedOnE1.agda S1S2CubedOnE2.agda S1S2Endo.agda S1SquaredOnE0.agda S1SquaredOnE1.agda S1SquaredOnE2.agda S1SquaredOnV.agda S2Endo.agda S2SquaredOnE0.agda S2SquaredOnE1.agda S2SquaredOnE2.agda S2SquaredOnV.agda SquaredOrbitWalk.agda
 SUBDIRS := 
 
-.PHONY: all files subdirs $(SUBDIRS) check-sync clean
+.PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
 all: check-sync subdirs files
 
@@ -47,6 +48,13 @@ files:
 	done
 
 subdirs: $(SUBDIRS)
+
+ingest: ingest-files ingest-subdirs
+ingest-files:
+	@for f in $(FILES); do \
+	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
+	done
+ingest-subdirs: 
 
 clean:
 	@true
