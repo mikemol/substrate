@@ -44,6 +44,8 @@ meta       = _T("meta", "key", "value")
 _orbit_def = _T("_orbit_def", "unit_id", "type_key", "graded_key", "residue", "stab")
 orbit_node = _T("orbit_node", "orbit_id", "sym", "kind_id", "role_id", "op_term_id", "op_path_id", "lit_id")
 orbit_member = _T("orbit_member", "orbit_id", "node_id")
+core_fp    = _T("core_fp", "core_id", "mtime")                    # ⟡gqs-S1 incremental-decode fingerprint
+sqlite_master = _T("sqlite_master", "type", "name", "tbl_name")   # the schema catalogue (existence/type probes)
 # projection VIEWS as Tables (output columns) — the compat views the ad-hoc queries read
 node_v     = _T("node", "node_id", "sym", "kind", "role", "op", "lit")
 unit_v     = _T("unit", "unit_id", "name", "root_id", "path", "kind", "copy")
@@ -282,6 +284,17 @@ def q_core_count():                      # reuse_tui L173
     return select(func.count(func.distinct(_unit.c.file_id)))
 
 
+# ════════════════════════════════ ⟡gqs-nolawsql-sppf — sppf_db build/ingest/finalize READS (no raw SQL) ═
+# The core_fp fingerprint + sqlite_master existence/type probes I added in ⟡gqs-S1/make-targets, routed
+# through the runtime. (WRITES — INSERT/DELETE/DROP/PRAGMA — stay raw: query_builders is SELECT-only.)
+def q_core_fp_ids():     return select(core_fp.c.core_id)                              # finalize_db prune / verify D
+def q_core_fp_mtimes():  return select(core_fp.c.core_id, core_fp.c.mtime)             # write_events incremental
+def q_core_fp_mtime():   return select(core_fp.c.mtime).where(core_fp.c.core_id == bindparam("core_id"))  # ingest self-skip
+def q_table_exists():    return (select(literal(1)).select_from(sqlite_master)         # ingest_core: unit_obs present?
+                                 .where(and_(sqlite_master.c.type == "table", sqlite_master.c.name == bindparam("name"))))
+def q_object_type():     return select(sqlite_master.c.type).where(sqlite_master.c.name == bindparam("name"))  # view/table-drop probe
+
+
 # builders as nullary thunks for INTERNING by query_registry (parameterized ones bound with a
 # representative shape; the bound value is a bindparam node, structure-only — breadth is unaffected).
 INTERN_BUILDERS = {
@@ -291,6 +304,9 @@ INTERN_BUILDERS = {
     "reuse_rows_copy": q_reuse_rows_copy, "reuse_rows_nocopy": q_reuse_rows_nocopy,
     "node_child_edges": q_node_child_edges, "shared_subtree": q_shared_subtree,
     "defcopy_units": q_defcopy_units, "unit_node_all": q_unit_node_all, "core_count": q_core_count,
+    # ⟡gqs-nolawsql-sppf — sppf_db build/ingest/finalize reads:
+    "core_fp_ids": q_core_fp_ids, "core_fp_mtimes": q_core_fp_mtimes, "core_fp_mtime": q_core_fp_mtime,
+    "table_exists": q_table_exists, "object_type": q_object_type,
     "uid": q_uid, "support_count": q_support_count, "support_hist": q_support_hist, "fanin": q_fanin,
     "extract": q_extract, "clusters_overlap": q_clusters_overlap,
     "pathtext_all": q_pathtext_all, "terms_all": q_terms_all, "unit_fields": q_unit_fields,
@@ -358,6 +374,16 @@ def _reg():
             "SELECT unit_id, node_id FROM unit_node", ()),
         "core_count":      (lambda: q_core_count(), {},
             "SELECT COUNT(DISTINCT file_id) FROM _unit", ()),
+        # ⟡gqs-nolawsql-sppf — sqlite_master probes verify on catalog.db (group "catalog"); the core_fp
+        # builders need a fresh core_fp-carrying DB (group "ingest": --verify --db <tmp> --group ingest):
+        "table_exists":    (q_table_exists, {"name": "event"},
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", ("event",)),
+        "object_type":     (q_object_type, {"name": "event"},
+            "SELECT type FROM sqlite_master WHERE name=?", ("event",)),
+        "core_fp_ids":     (q_core_fp_ids, {}, "SELECT core_id FROM core_fp", ()),
+        "core_fp_mtimes":  (q_core_fp_mtimes, {}, "SELECT core_id, mtime FROM core_fp", ()),
+        "core_fp_mtime":   (q_core_fp_mtime, lambda c: {"core_id": _samp_core(c)},
+            "SELECT mtime FROM core_fp WHERE core_id=?", lambda c: (_samp_core(c),)),
         # R1 sppf_query (dynamic params: resolve a sample uid/name/size at run time):
         "uid":             (q_uid, lambda c: {"name": _samp(c)[1], "likep": "%." + _samp(c)[1]},
             "SELECT unit_id FROM unit WHERE name=? OR name LIKE ?",
@@ -436,6 +462,7 @@ _GROUP = {n: "render" for n in ("meta_failed", "structs_index", "structs_namemod
 _GROUP.update({n: "orbit" for n in ("max_orbit_len", "orbit_def_stats", "orbit_node_count",
                                     "orbit_packings", "orbit_merged")})
 _GROUP["reach"] = "recur"   # ⟡L7 recursion→parallel (needs node_child; verified on the SPPF catalog.db)
+_GROUP.update({n: "ingest" for n in ("core_fp_ids", "core_fp_mtimes", "core_fp_mtime")})  # ⟡gqs-nolawsql: fresh core_fp DB
 def _group_of(name): return _GROUP.get(name, "catalog")
 
 
@@ -459,6 +486,15 @@ def _samp_node(con):
         _SAMPN = con.execute("SELECT node_id FROM node_child GROUP BY node_id "
                              "ORDER BY COUNT(*) DESC LIMIT 1").fetchone()[0]
     return _SAMPN
+
+
+_SAMPC = None
+def _samp_core(con):
+    """a stable sample core_id for the core_fp mtime-by-id builder (⟡gqs-nolawsql, group 'ingest')."""
+    global _SAMPC
+    if _SAMPC is None:
+        _SAMPC = con.execute("SELECT core_id FROM core_fp LIMIT 1").fetchone()[0]
+    return _SAMPC
 
 
 def verify(con, only=None, group="catalog"):

@@ -27,9 +27,12 @@ except Exception:  # pragma: no cover — absent before the first --compile; nam
     SQL = {}
 
 
-def run(con, name, **params):
+def run(con, name, /, **params):
     """Execute a compiled read-query by NAME on the existing sqlite3 connection (no engine churn, column order
-    preserved for Row/positional reads). A non-str `name` is a Core stmt → lazy-compile via query_defs."""
+    preserved for Row/positional reads). A non-str `name` is a Core stmt → lazy-compile via query_defs.
+
+    `con`/`name` are POSITIONAL-ONLY (the `/`) so a builder bindparam literally named `name` — q_uid,
+    table_exists, object_type — routes to **params instead of colliding with this positional."""
     if isinstance(name, str):
         try:
             sql, defaults = SQL[name]

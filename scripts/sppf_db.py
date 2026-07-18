@@ -248,7 +248,7 @@ def write_events(cores, con, base, full=False, prune=True, finalize=True):
             cur[_b64(relpath)] = (path, relpath, _core_ver(path))
         except OSError:
             continue                                # unreadable core: treat as absent
-    stored = dict(con.execute("SELECT core_id, mtime FROM core_fp"))
+    stored = dict(QB.run(con, "core_fp_mtimes"))
     changed = [c for c, (_p, _r, m) in cur.items() if stored.get(c) != m]
     removed = [c for c in stored if c not in cur] if prune else []
 
@@ -292,7 +292,7 @@ def project_sppf(con):
     # keep a stale-shaped table). NEVER touch the event tier (terms/path_seg/event/obs/edge/unit_*).
     for name in ("node", "unit", "node_fanin", "shared_subtree", "node_atom",
                  "unit_node", "node_child", "_node", "_unit", "_unit_cod"):
-        row = con.execute("SELECT type FROM sqlite_master WHERE name=?", (name,)).fetchone()
+        row = QB.run(con, "object_type", name=name).fetchone()
         if row: con.execute(f"DROP {row[0].upper()} IF EXISTS {name}")
     con.executescript(SPPF_SCHEMA)
     con.commit()
@@ -415,7 +415,7 @@ def project_orbit_sppf(con, distribute=False):
     orbit_node/orbit_child/orbit_member sit ALONGSIDE the positional _node (untouched). orbit_member
     back-references the positional packings each orbit merged — nothing is lost (a projection, not a rewrite).
     Same orbit ⟺ same node, provably (RIG_OPS is the substrate's proven ⊕/⊗ set)."""
-    row = con.execute("SELECT type FROM sqlite_master WHERE name='orbit'").fetchone()
+    row = QB.run(con, "object_type", name="orbit").fetchone()
     if row: con.execute(f"DROP {row[0].upper()} IF EXISTS orbit")
     for t in ("orbit_node", "orbit_child", "orbit_member"):
         con.execute(f"DROP TABLE IF EXISTS {t}")
@@ -571,7 +571,7 @@ def ingest_core(path, catalog_db=CATALOG_DB, base=None):
     con = sqlite3.connect(catalog_db, timeout=120)
     con.execute("PRAGMA journal_mode=WAL")
     con.execute("PRAGMA busy_timeout=120000")
-    had = con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='unit_obs'").fetchone()
+    had = QB.run(con, "table_exists", name="unit_obs").fetchone()
     if had and not _schema_current(con):            # a pre-existing STALE-schema DB → --init/--full must migrate
         con.close()
         sys.exit("sppf_db --ingest-core: catalog.db schema is stale — run `sppf_db.py --init` (or --full) first")
@@ -584,7 +584,7 @@ def ingest_core(path, catalog_db=CATALOG_DB, base=None):
         mtime = _core_ver(core)
     except OSError:
         con.close(); return
-    row = con.execute("SELECT mtime FROM core_fp WHERE core_id=?", (core_id,)).fetchone()
+    row = QB.run(con, "core_fp_mtime", core_id=core_id).fetchone()
     if row and row[0] == mtime:
         con.close(); return                         # self-skip: mtime unadvanced (agda-self-skip analogue)
     _delete_core_rows(con, [core_id]); con.commit()  # re-ingest: drop this core's old rows
@@ -616,7 +616,7 @@ def finalize_db(catalog_db=CATALOG_DB, base=None, argperm=True, prune=True):
     if prune:                                       # drop cores whose .agdai no longer exists on disk
         on_disk = {_b64(os.path.relpath(p, base))
                    for p in glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True)}
-        removed = [c for (c,) in con.execute("SELECT core_id FROM core_fp") if c not in on_disk]
+        removed = [c for (c,) in QB.run(con, "core_fp_ids") if c not in on_disk]
         if removed:
             _delete_core_rows(con, removed); con.commit()
     con.execute("DELETE FROM event WHERE ekey NOT IN (SELECT ekey FROM obs)"); con.commit()  # GC orphan events
@@ -693,7 +693,7 @@ def verify_incremental(cores, base):
         e_db = os.path.join(d, "e.db")
         build(cores, catalog_db=e_db, base=base, full=True)
         con = sqlite3.connect(e_db)
-        one = con.execute("SELECT core_id FROM core_fp LIMIT 1").fetchone()[0]
+        one = QB.run(con, "core_fp_ids").fetchone()[0]
         con.execute("UPDATE core_fp SET mtime=-1 WHERE core_id=?", (one,)); con.commit(); con.close()
         build(cores, catalog_db=e_db, base=base)                    # re-decodes the poisoned core
         checks.append(("changed (re-decode)", _proj_digest(e_db) == ref, ""))
