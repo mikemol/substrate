@@ -44,6 +44,8 @@ jea/metalanguage/*.o
 # genlop-style per-dir build-time ledgers (machine-specific timing, parallel to the makefiles)
 .agda-times.tsv
 **/.agda-times.tsv
+.decode-cost.tsv
+scripts/.decode-cost.tsv
 .build-times.json
 .agda-profile.tsv
 **/.agda-profile.tsv

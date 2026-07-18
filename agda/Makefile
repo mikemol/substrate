@@ -18,16 +18,17 @@ all:
 	@$(MAKE) -C Substrate
 clean:
 	@$(MAKE) -C Substrate clean
-# ⟡gqs-make-targets: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the
-# interned SPPF. `catalog` ingests each core PARALLEL TO the compile (make -j ingest → one
-# --ingest-core per file, WAL-serialized) then ONE projection pass. Ingests whatever cores exist
-# under _build (run after `make`/the agda build); sppf_db self-skips unchanged cores, so it's cheap.
+# ⟡gqs-catalog-engine: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the
+# interned SPPF. `catalog` = the BATCHED controller/actuator build (sppf_db ""): ONE process models the
+# topology once, then rides the decode-parallelism roofline INTERNALLY — per window it co-reads the LIVE
+# contention and decodes via a ThreadPool of shim subprocesses sized to the free CPU (interner+DB insert
+# serial → NO python-spawn tax), self-skipping unchanged cores. Cheaper than per-core `make -j ingest`
+# for the common incremental case (no spawn tax) and it self-parallelizes the full rebuild. The per-core
+# `ingest` targets below remain for parallel-to-compile ingest (run alongside `make -j`).
 shim:
 	@$(MAKE) -C ../jea/metalanguage shim
 catalog: shim
-	@python3 ../scripts/sppf_db.py --init
-	@$(MAKE) -C Substrate ingest
-	@python3 ../scripts/sppf_db.py --finalize --argperm
+	@python3 ../scripts/sppf_db.py "" --argperm
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
 check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-apex

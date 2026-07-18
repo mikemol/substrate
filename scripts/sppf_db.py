@@ -14,7 +14,7 @@ structural sharing, the SPPF packings — is the PROJECTION.
   project_sppf()       → _node / node_child / unit_node      (derived: the packing SPPF, by query)
   build(cores)         = write_events + project_sppf
 """
-import sqlite3, sys, os, glob, base64, json
+import sqlite3, sys, os, glob, base64, json, time
 from _content_addr import _b64
 from collections import defaultdict
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "jea", "metalanguage"))
@@ -154,14 +154,38 @@ def _mk_interners(con):
     return tid, pid
 
 
-def _decode_insert_core(con, path, relpath, mtime, tid, pid):
-    """Decode ONE core and INSERT its rows (the caller has already deleted any stale rows for this core_id).
-    core_id = _b64(relpath). Returns True if ingested, False if undecodable. The SINGLE decode→rows path
-    (both write_events' batched loop and ingest_core call it)."""
+def _decode_raw(path):
+    """Decode ONE core via the shim — the PARALLELIZABLE work (pure; no con/interner/shared state). The
+    ThreadPool worker; each call blocks on its shim subprocess (GIL released) → real N-core parallel decode."""
     try:
-        dec = decode_core(path)
+        return decode_core(path)
     except Exception:
-        dec = None
+        return None
+
+
+def _decode_insert_core(con, path, relpath, mtime, tid, pid):
+    """Decode + insert ONE core (the composed SERIAL path; ingest_core + the serial fallback use it)."""
+    return _insert_decoded(con, _decode_raw(path), relpath, mtime, tid, pid)
+
+
+def _decode_window(paths, p_star):
+    """⟡gce-consume: decode a window's cores — p_star>1 → a ThreadPool of shim subprocesses (real parallel
+    decode; the GIL is released during subprocess.run so P shims run on P cores), else serial. Returns
+    [(dec, wall_seconds), …] IN ORDER, so the INSERT stays serial (shared interners tid/pid + con). Decode is
+    the ONLY parallel part; the parent process interns+writes single-threaded → no python-spawn tax."""
+    def one(p):
+        t0 = time.perf_counter(); dec = _decode_raw(p); return dec, time.perf_counter() - t0
+    if p_star > 1 and len(paths) > 1:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=p_star) as ex:
+            return list(ex.map(one, paths))
+    return [one(p) for p in paths]
+
+
+def _insert_decoded(con, dec, relpath, mtime, tid, pid):
+    """INSERT one already-decoded core's rows (SERIAL — shared interners tid/pid + con). The caller has deleted
+    any stale rows for this core_id. Returns True if ingested, False if `dec` is None (undecodable). The SINGLE
+    decode→rows path (write_events' windowed loop and ingest_core both land here)."""
     if dec is None:
         return False                              # undecodable: no rows, no version — re-attempted next run
     cid = tid(relpath)                       # intern the core path so _unit.file_id resolves in `terms`
@@ -240,27 +264,42 @@ def write_events(cores, con, base, full=False, prune=True, finalize=True):
     _set_schema_version(con)
     con.commit()
 
-    # Freshness: current cores + their record-versions (mtime), vs the stored per-core versions.
-    cur = {}                                        # core_id → (path, relpath, mtime)
+    # Freshness: current cores + their record-versions (mtime) + STRUCTURAL bound (bytes), vs stored versions.
+    cur = {}                                        # core_id → (path, relpath, mtime, bytes)  [⟡gce-surfaces]
     for path in cores:
         relpath = os.path.relpath(path, base)
         try:
-            cur[_b64(relpath)] = (path, relpath, _core_ver(path))
+            cur[_b64(relpath)] = (path, relpath, _core_ver(path), os.path.getsize(path))
         except OSError:
             continue                                # unreadable core: treat as absent
     stored = dict(QB.run(con, "core_fp_mtimes"))
-    changed = [c for c, (_p, _r, m) in cur.items() if stored.get(c) != m]
+    changed = [c for c, (_p, _r, m, _sz) in cur.items() if stored.get(c) != m]
     removed = [c for c in stored if c not in cur] if prune else []
 
     stale = set(changed) | set(removed)             # rows to delete (changed → re-decoded; removed → dropped)
     if stale:
         _delete_core_rows(con, stale); con.commit()
 
+    # ⟡gqs-catalog-engine — the CONTROLLER/ACTUATOR decode. The HOST (this loop) modelled the topology once
+    # (cur = per-core bytes), then per WINDOW composes an EPOCH-COHERENT stat package (co-read live_state ONCE →
+    # P_effective + achieved cost, decode_cost.package) and CONSUMES it: decode serial or via a ThreadPool of P*
+    # (parallel shim decode; interner+DB insert stays serial → NO python-spawn tax), then records each decode's
+    # (bytes, seconds, load) back to the ledger (self-calibrating). The operating point tracks the LIVE
+    # contention per window — poll, don't benchmark. [[feedback_cost_is_structural_times_live]]
     tid, pid = _mk_interners(con)
-    for core_id in changed:                          # decode + append ONLY the changed/new cores
-        path, relpath, mtime = cur[core_id]
-        _decode_insert_core(con, path, relpath, mtime, tid, pid)
-        con.commit()                               # transaction per file (append-only)
+    if changed:
+        import decode_cost as DC
+        sizes = {c: cur[c][3] for c in changed}
+        hist = DC.load_hist()                       # SURFACES: per-core intrinsic decode estimates (median-of-K)
+        W = 64                                      # window: re-read live_state every W cores (ongoing refresh)
+        i = 0
+        while i < len(changed):
+            window = changed[i:i + W]; i += len(window)
+            pkg = DC.package(window, sizes, hist)   # HOST: co-read live_state + compose the whole package (1 epoch)
+            for c, (dec, secs) in zip(window, _decode_window([cur[c][0] for c in window], pkg["P_star"])):
+                _insert_decoded(con, dec, cur[c][1], cur[c][2], tid, pid)   # SERIAL insert
+                DC.record(c, cur[c][3], secs, pkg["load1"])                 # ⟡gce-record-back (state-stamped)
+            con.commit()                            # transaction per window (append-only)
 
     if finalize:
         if stale:                                   # GC events no longer observed by any core — bounded-growth
