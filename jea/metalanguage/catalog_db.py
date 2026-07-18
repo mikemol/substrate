@@ -9,7 +9,7 @@ interned SPPF already materializes:
     from catalog_db import CATALOG_DB, connect
     import query_builders as QB
     con = connect()                       # read-only, Row factory
-    for row in QB.run(con, QB.q_unit_cod()):
+    for row in QB.run(con, "unit_cod"):   # ⟡qinfra: named query, no SQLAlchemy at runtime
         ...
 
 `run` (the compile+execute helper from query_builders) is re-exported so a gate needs one import. A
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # Smoke test: open the DB and run one builder, proving the path/connect/run wiring.
     import query_builders as QB
     con = connect()
-    n = next(iter(QB.run(con, QB.q_core_count())), None)
+    n = next(iter(QB.run(con, "core_count")), None)
     print(f"catalog_db: OK — {CATALOG_DB}")
     print(f"  q_core_count → {tuple(n) if n is not None else None}")
     con.close()

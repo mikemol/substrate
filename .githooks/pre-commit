@@ -58,6 +58,11 @@ run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 # .agda files or directories require regenerating the per-dir makefiles).
 run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --check
 
+# Compiled-query cache (⟡qinfra) must match the builders: query_sql.py is generated from query_defs.py's
+# INTERN_BUILDERS; the runtime (query_builders.py) executes it with NO SQLAlchemy. A stale cache would run
+# outdated SQL. Regenerate: python3 jea/metalanguage/query_defs.py --compile
+run "query cache in sync" python3 "$ROOT/jea/metalanguage/query_defs.py" --check
+
 # Worklist tracker integrity (Ⓥ): the derived-status tracker must PARSE and RUN
 # end-to-end — every entry well-formed, every predicate evaluating without crashing.
 # A tracker that can't execute is not tracking: a dropped comma once made worklist.py

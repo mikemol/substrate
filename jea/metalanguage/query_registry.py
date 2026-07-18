@@ -86,7 +86,7 @@ BUILDERS = {
 }
 # ⟡query-rawtocore-migration: the migrated ad-hoc queries (single source in query_builders) are interned
 # here too — one builder is BOTH executed (via query_builders.run at the call site) AND interned for breadth.
-from query_builders import INTERN_BUILDERS as _QB_BUILDERS
+from query_defs import INTERN_BUILDERS as _QB_BUILDERS   # the builder OBJECTS (⟡qinfra: compiler, not runtime)
 BUILDERS.update({f"qb.{k}": v for k, v in _QB_BUILDERS.items()})
 
 # ── ClauseLowerer: SQLAlchemy Select/ClauseElement → IR, bottom-up, interned into Corpus.I ─────────

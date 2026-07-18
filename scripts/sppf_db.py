@@ -299,16 +299,16 @@ def project_sppf(con):
 
     # head + symbol per event (symbol is head-only ⟹ global, no recursion)
     head, sym = {}, {}
-    for ekey, ctor, qname, idx, litval in QB.run(con, QB.q_event_head()):
+    for ekey, ctor, qname, idx, litval in QB.run(con, "event_head"):
         if ctor in ("Var", "PVar"):        role, op = f"db{idx}", ""
         elif ctor in FREE and qname:       role, op = "", qname
         else:                              role, op = "", (ctor or "")
         head[ekey] = ("AgdaCore", role, op, litval or "")   # ⟡gqs-lit-propagate: distinct literals → distinct packings
         sym[ekey]  = _b64("\x00".join(head[ekey]))
-    raw_ctor = {e: ct for e, ct in QB.run(con, QB.q_event_ctor())}   # true constructor (Def/Con/Var/…) for cod()
-    obs = {(c, l): e for c, l, e in QB.run(con, QB.q_obs_all())}
+    raw_ctor = {e: ct for e, ct in QB.run(con, "event_ctor")}   # true constructor (Def/Con/Var/…) for cod()
+    obs = {(c, l): e for c, l, e in QB.run(con, "obs_all")}
     ch = defaultdict(list)
-    for c, p, o, cl in QB.run(con, QB.q_edge_all()):
+    for c, p, o, cl in QB.run(con, "edge_all"):
         ch[(c, p)].append((o, cl))
 
     def cod(c, root_lid):        # raw_final_head over the UNAMBIGUOUS per-core tree → (ctor, qname)
@@ -391,8 +391,8 @@ def project_sppf(con):
     con.executemany("INSERT OR IGNORE INTO unit_node VALUES (?,?)", un_rows)
     con.commit()
     return (len(seen_n), len(urows),
-            QB.run(con, QB.q_count_shared()).fetchone()[0],
-            QB.run(con, QB.q_max_node_len()).fetchone()[0])
+            QB.run(con, "count_shared").fetchone()[0],
+            QB.run(con, "max_node_len").fetchone()[0])
 
 
 ORBIT_SCHEMA = """
@@ -422,15 +422,15 @@ def project_orbit_sppf(con, distribute=False):
     con.executescript(ORBIT_SCHEMA)
 
     head = {}                                       # reload the forest (self-contained; mirrors project_sppf)
-    for ekey, ctor, qname, idx in QB.run(con, QB.q_event_head()):
+    for ekey, ctor, qname, idx in QB.run(con, "event_head"):
         if ctor in ("Var", "PVar"):    role, op = f"db{idx}", ""
         elif ctor in FREE and qname:   role, op = "", qname
         else:                          role, op = "", (ctor or "")
         head[ekey] = ("AgdaCore", role, op, "")
     sym = {e: _b64("\x00".join(h)) for e, h in head.items()}
-    obs = {(c, l): e for c, l, e in QB.run(con, QB.q_obs_all())}
+    obs = {(c, l): e for c, l, e in QB.run(con, "obs_all")}
     ch = defaultdict(list)
-    for c, p, o, cl in QB.run(con, QB.q_edge_all()):
+    for c, p, o, cl in QB.run(con, "edge_all"):
         ch[(c, p)].append((o, cl))
     def tid(s): return _b64("" if s is None else s)
     def pid(s): return _b64(s)
@@ -491,7 +491,7 @@ def project_orbit_sppf(con, distribute=False):
     con.commit()
     return (len(seen_o),                                          # orbit-node count (the quotient)
             len(set(packing.values())),                          # positional PACKING count (the baseline)
-            QB.run(con, QB.q_max_orbit_len()).fetchone()[0])
+            QB.run(con, "max_orbit_len").fetchone()[0])
 
 
 # ⟡argperm — the GRADED orbit-key per def (type-orbit + proof-orbit), from graded_orbit. ADDITIVE: a new
@@ -524,7 +524,7 @@ def project_argperm(con, filt=None):
         con.execute(f"DROP TABLE IF EXISTS {t}")
     con.executescript(ARGPERM_SCHEMA)
     ctx = G.Ctx(con)
-    uid = {nm: u for u, nm in QB.run(con, QB.q_argperm_uid())}
+    uid = {nm: u for u, nm in QB.run(con, "argperm_uid")}
     defs = []                                                        # (name, k=(tkey,gid), residue_repr, stab)
     for name in ctx.idx:
         if filt and filt not in name:
@@ -736,15 +736,15 @@ if __name__ == "__main__":
     print(f"  events → SPPF projection: {n} packings, {u} units, {sh} shared subtrees, max node_id {mx}")
     if argperm:
         con = sqlite3.connect(CATALOG_DB)
-        d, t, g = QB.run(con, QB.q_orbit_def_stats()).fetchone()
+        d, t, g = QB.run(con, "orbit_def_stats").fetchone()
         print(f"  ⟡argperm GRADED orbit: {d} defs → {t} type-orbits, {g} graded-orbits "
               f"({d-g} defs collapsed by full arg-perm equivalence; {d-t} by type/telescope alone)")
         con.close()
     if orbit:
         con = sqlite3.connect(CATALOG_DB)
-        orbits = QB.run(con, QB.q_orbit_node_count()).fetchone()[0]
-        packings = QB.run(con, QB.q_orbit_packings()).fetchone()[0]
-        merged = QB.run(con, QB.q_orbit_merged()).fetchone()[0]
+        orbits = QB.run(con, "orbit_node_count").fetchone()[0]
+        packings = QB.run(con, "orbit_packings").fetchone()[0]
+        merged = QB.run(con, "orbit_merged").fetchone()[0]
         print(f"  ⟡rig ORBIT projection: {orbits} orbit-nodes vs {packings} packings "
               f"({packings-orbits} collapsed by rig ⊕/⊗ reorder/reassoc); {merged} orbits merged ≥2 packings")
         con.close()

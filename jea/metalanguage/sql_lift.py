@@ -310,7 +310,7 @@ def build(files=None):
                     rec.append((os.path.relpath(path, REPO), getattr(node, "lineno", -1), node.name, cls))
     sql = {}    # rel_id -> RelTerm
     try:
-        from query_builders import INTERN_BUILDERS
+        from query_defs import INTERN_BUILDERS   # ⟡qinfra: the builder OBJECTS live in the compiler
         for name, thunk in INTERN_BUILDERS.items():
             try:
                 rt = rel_of_select(thunk())
@@ -680,7 +680,7 @@ def selftest():
     # ⟡L7 — the recursion→parallel target now EXISTS: q_reach (WITH RECURSIVE) lowers to Rel(Closure), so the
     # reachability closures are MATCHED against a real builder (not merely recommended). Measured byte-exact
     # (59794==59794) and workload-relative (275× on-demand, 0.7× full-graph — the roofline crossover).
-    from query_builders import q_reach as _q_reach
+    from query_defs import q_reach as _q_reach   # ⟡qinfra: builder objects live in the compiler
     assert rel_of_select(_q_reach()).heads == ("Closure",), \
         f"q_reach (WITH RECURSIVE) must lower to Rel(Closure), got {rel_of_select(_q_reach()).heads}"
     _I4, _py4, sql4, _r4 = build([os.path.join(REPO, "scripts", "reuse_catalog.py")])

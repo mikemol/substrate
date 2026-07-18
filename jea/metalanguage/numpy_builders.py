@@ -305,7 +305,7 @@ def verify_hexagon(db=CATALOG_DB):
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "scripts"))   # rig_coherence lives here
     import rig_coherence as rc
     from jea_pyalg import Intern
-    import sql_lift, query_builders as QB
+    import sql_lift, query_defs as QB   # ⟡qinfra: builder OBJECTS (q_reach/…) live in the compiler
     con = sqlite3.connect(db)
     ok, fail = 0, []
     def _cmp(name, got, raw, ordered=False):

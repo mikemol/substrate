@@ -26,35 +26,35 @@ def _con():
     c = sqlite3.connect(DB); c.row_factory = sqlite3.Row; return c
 
 def _uid(c, name):
-    r = QB.run(c, QB.q_uid(), name=name, likep="%."+name).fetchone()
+    r = QB.run(c, "uid", name=name, likep="%."+name).fetchone()
     return r["unit_id"] if r else None
 
 def cmd_support(c, a):
     uid = _uid(c, a[0])
     if uid is None: sys.exit(f"no unit matching {a[0]!r}")
-    n = QB.run(c, QB.q_support_count(), uid=uid).fetchone()["k"]
+    n = QB.run(c, "support_count", uid=uid).fetchone()["k"]
     print(f"support: {n} interned subterm nodes")
-    for r in QB.run(c, QB.q_support_hist(), uid=uid):
+    for r in QB.run(c, "support_hist", uid=uid):
         print(f"   {r['k']:4d}  {r['head'][:60]}")
 
 def cmd_fanin(c, a):
     k = int(a[0]) if a else 15
-    for r in QB.run(c, QB.q_fanin(), lim=k):
+    for r in QB.run(c, "fanin", lim=k):
         print(f"  fan-in {r['fanin']:5d}  node {str(r['node_id'])[:10]:>10}  {r['head'][:55]}")
 
 def cmd_extract(c, a):
     # the parametric-helper apex: a subtree shared across ≥ minunits DISTINCT units — a GROUP BY.
     m = int(a[0]) if a else 3
-    for r in QB.run(c, QB.q_extract(), m=m):
+    for r in QB.run(c, "extract", m=m):
         print(f"  in {r['units']:4d} units  node {str(r['node_id'])[:10]:>10}  {r['head'][:50]}")
 
 def cmd_clusters(c, a):
     uid = _uid(c, a[0])
     if uid is None: sys.exit(f"no unit matching {a[0]!r}")
     thr = float(a[1]) if len(a) > 1 else 0.6
-    sz = QB.run(c, QB.q_support_count(), uid=uid).fetchone()["k"]
+    sz = QB.run(c, "support_count", uid=uid).fetchone()["k"]
     # coherent fraction = |shared| / |support(u)| — a JOIN + GROUP BY, not a pairwise Python pass.
-    for r in QB.run(c, QB.q_clusters_overlap(), sz=sz, uid=uid, thr=thr):
+    for r in QB.run(c, "clusters_overlap", sz=sz, uid=uid, thr=thr):
         print(f"   {r['shared']*1.0/sz:.2f}  ({r['shared']}/{sz})  {r['name'].split('.')[-1]}")
 
 def has_copy(c):
@@ -66,9 +66,10 @@ def reuse_rows(c, min_units=3, limit=None):
     DISTINCT units, each with the defCopy verdict — all instances are module-instantiation copies ⇒
     CONSOLIDATED; none are ⇒ genuine DUP (independent originals sharing structure = the target); else
     MIXED. copies is NULL and verdict '?' if the db predates the copy column."""
-    # single-source: the conditional builder (has_copy branch + optional limit) in query_builders.
+    # single-source: two static named variants (⟡qinfra ⟡q-reuse-rows-copy/-nocopy); lim=-1 ≡ no limit.
     out = []
-    for r in QB.run(c, QB.q_reuse_rows(has_copy(c), limit), min_units=min_units):
+    name = "reuse_rows_copy" if has_copy(c) else "reuse_rows_nocopy"
+    for r in QB.run(c, name, min_units=min_units, lim=(-1 if limit is None else int(limit))):
         cc = r["copies"]
         verdict = ("?" if cc is None else "CONSOLIDATED" if cc == r["units"]
                    else "DUP" if cc == 0 else "MIXED")
