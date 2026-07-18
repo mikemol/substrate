@@ -20,6 +20,7 @@ SQL = {
   'extract': ('SELECT un.node_id, coalesce(nullif(nd.op, :nullif_1), nd.role, nd.kind) AS head, count(distinct(un.unit_id)) AS units \nFROM unit_node AS un JOIN node AS nd ON nd.node_id = un.node_id \nWHERE un.node_id IN (SELECT node_child.node_id \nFROM node_child) GROUP BY un.node_id \nHAVING count(distinct(un.unit_id)) >= :m ORDER BY units DESC\n LIMIT :param_1 OFFSET :param_2', {'m': None, 'nullif_1': '', 'param_1': 20, 'param_2': 0}),
   'fanin': ('SELECT nf.node_id, coalesce(nullif(nd.op, :nullif_1), nd.role, nd.kind) AS head, nf.fanin \nFROM node_fanin AS nf JOIN node AS nd ON nd.node_id = nf.node_id ORDER BY nf.fanin DESC\n LIMIT :lim OFFSET :param_1', {'lim': None, 'nullif_1': '', 'param_1': 0}),
   'indegree_top': ('SELECT in_degree.qname, in_degree.deg \nFROM in_degree ORDER BY in_degree.deg DESC, in_degree.qname\n LIMIT :param_1 OFFSET :param_2', {'param_1': 20, 'param_2': 0}),
+  'level_populated': ('SELECT count(*) AS count_1 \nFROM unit_obs \nWHERE unit_obs.level IS NOT NULL', {}),
   'max_node_len': ('SELECT max(length(_node.node_id)) AS max_1 \nFROM _node', {}),
   'max_orbit_len': ('SELECT max(length(orbit_node.orbit_id)) AS max_1 \nFROM orbit_node', {}),
   'meta_failed': ('SELECT meta.value \nFROM meta \nWHERE meta."key" = :key_1', {'key_1': 'failed'}),

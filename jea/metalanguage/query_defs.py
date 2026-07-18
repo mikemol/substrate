@@ -99,6 +99,9 @@ def q_event_head():                      # sppf_db project_sppf / project_orbit_
 def q_set1_count():                      # ⟡gqs-S0.2: the Set₁ census as a COLUMN READ (was set1_ratchet's 94s decode)
     return select(func.count()).select_from(unit_obs).where(unit_obs.c.level >= 1)
 
+def q_level_populated():                 # ⟡gqs-ratchet-query guard (1): is unit_obs.level emitted at all?
+    return select(func.count()).select_from(unit_obs).where(unit_obs.c.level.isnot(None))
+
 def q_argperm_uid():                     # sppf_db project_argperm preload L420-421
     return (select(_unit.c.unit_id, path_text.c.text)
             .select_from(_unit.join(path_text, path_text.c.path_id == _unit.c.name_pid))
@@ -313,6 +316,7 @@ INTERN_BUILDERS = {
     "unit_cod": q_unit_cod, "unit_member": q_unit_member, "meta_failed": q_meta_failed,
     "event_ctor": q_event_ctor, "obs_all": q_obs_all, "edge_all": q_edge_all,
     "count_shared": q_count_shared, "max_node_len": q_max_node_len, "set1_count": q_set1_count,
+    "level_populated": q_level_populated,   # ⟡gqs-ratchet-query guard (1)
     "view.structs": v_structs, "view.members": v_members, "view.refs": v_refs, "view.edges": v_edges,
     "view.module_edges": v_module_edges, "view.modules": v_modules, "view.orbit": v_orbit,
     # S1 orbit-stats:
@@ -384,6 +388,8 @@ def _reg():
         "core_fp_mtimes":  (q_core_fp_mtimes, {}, "SELECT core_id, mtime FROM core_fp", ()),
         "core_fp_mtime":   (q_core_fp_mtime, lambda c: {"core_id": _samp_core(c)},
             "SELECT mtime FROM core_fp WHERE core_id=?", lambda c: (_samp_core(c),)),
+        "level_populated": (q_level_populated, {},
+            "SELECT COUNT(*) FROM unit_obs WHERE level IS NOT NULL", ()),
         # R1 sppf_query (dynamic params: resolve a sample uid/name/size at run time):
         "uid":             (q_uid, lambda c: {"name": _samp(c)[1], "likep": "%." + _samp(c)[1]},
             "SELECT unit_id FROM unit WHERE name=? OR name LIKE ?",
@@ -462,7 +468,7 @@ _GROUP = {n: "render" for n in ("meta_failed", "structs_index", "structs_namemod
 _GROUP.update({n: "orbit" for n in ("max_orbit_len", "orbit_def_stats", "orbit_node_count",
                                     "orbit_packings", "orbit_merged")})
 _GROUP["reach"] = "recur"   # ⟡L7 recursion→parallel (needs node_child; verified on the SPPF catalog.db)
-_GROUP.update({n: "ingest" for n in ("core_fp_ids", "core_fp_mtimes", "core_fp_mtime")})  # ⟡gqs-nolawsql: fresh core_fp DB
+_GROUP.update({n: "ingest" for n in ("core_fp_ids", "core_fp_mtimes", "core_fp_mtime", "level_populated")})  # ⟡gqs: fresh event-tier DB
 def _group_of(name): return _GROUP.get(name, "catalog")
 
 
