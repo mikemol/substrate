@@ -4,12 +4,19 @@
 -- Crosslink: instantiates CompSideRoundtrip with the V₄ half (v-recovers)
 -- DISCHARGED by the now-proven VRecovers.v-recovers, leaving ONLY the S₃ half
 -- (s-recovers) as a parameter. So the composed-side roundtrip — hence the
--- two-sided S₄ bijection (⟡full-s4-other-half) — is now blocked on exactly
+-- two-sided S₄ bijection (⟡full-s4-other-half) — was blocked on exactly
 -- ONE remaining obligation: embed-S₃ faithfulness (⟡embed-s3-*).
 --
+-- ⟡NOW DISCHARGED: s-recovers is PROVEN in Cocycles.V4Signature.SRecovers
+-- (via Substrate.Groups.S4-Iso.EmbedS3Faithful's roundtrip atom
+-- `extract-embed-roundtrip` + `embed-S₃-faithful`). SRecovers instantiates
+-- THIS module's `comp-side-roundtrip-mod-s` with the proven s-recovers, so
+-- SRecovers.comp-side-roundtrip is the UNCONDITIONAL two-sided S₄ bijection.
+--
 -- Before: CompSideRoundtrip abstracted over TWO obligations (v-recovers,
--- s-recovers). Now: one is a theorem, one remains. This is the crosslink that
--- records the progress in the import graph, not just in prose.
+-- s-recovers). Then one theorem, one parameter (here). Now: both theorems.
+-- This module remains the V₄-half crosslink in the import graph; SRecovers
+-- is the S₃-half discharge.
 --
 -- --safe --without-K. Verified on Agda 2.8.0.
 ------------------------------------------------------------------------

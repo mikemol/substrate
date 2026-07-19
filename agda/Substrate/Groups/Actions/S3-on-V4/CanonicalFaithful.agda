@@ -125,10 +125,19 @@ row-inj sr² sr  () _
 -- exactly a S₃.≈ b; and embed-S₃ a ≈ embed-S₃ b unfolds (Symmetric pointwise
 -- + strip axis-of-v via v-of-axis-axis-of-v) to (L)'s hypothesis.
 --
--- STATUS: row-inj DONE (unconditional, 2.8). (L) = the mechanical lift, NOT
--- yet assembled — it is Coxeter canonical-cover plumbing, no new mathematics.
--- Stated here as the module parameter so the faithfulness term is complete
--- MODULO exactly (L), isolating the remaining bookkeeping.
+-- STATUS: row-inj DONE (unconditional, 2.8). (L) = the mechanical lift via
+-- canonical-cover — this module's INJECTIVITY route, left as a parameter.
+--
+-- ⟡embed-S₃ faithfulness is now DISCHARGED — but by the ROUNDTRIP route, not
+-- via (L). Substrate.Groups.S4-Iso.EmbedS3Faithful proves
+--   extract-embed-roundtrip : extract-s (embed-S₃ s) S₃.≈ s   (R, the atom)
+-- by a double canonical-cover (the same 3×2 = 6 canonical shapes row-inj
+-- enumerates), and derives `embed-S₃-faithful` as its two-line corollary
+-- (apply extract-s to both sides, sandwich with R). The ROUNDTRIP needs no
+-- separate (L) lift, so (L) below stays an un-assembled ALTERNATIVE
+-- (injectivity-direction) parameter; row-inj remains the shared 6-case crux.
+-- Consumed by Cocycles.V4Signature.SRecovers (s-recovers → the two-sided
+-- S₄ bijection).
 ------------------------------------------------------------------------
 
 module _

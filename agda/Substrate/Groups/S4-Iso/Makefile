@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := Embedding.agda Extract.agda ExtractCorrect.agda ForwardHom.agda Foundation.agda IsoTransport.agda Roundtrip.agda V4Normal.agda
+FILES := EmbedS3Faithful.agda Embedding.agda Extract.agda ExtractCorrect.agda ForwardHom.agda Foundation.agda IsoTransport.agda Roundtrip.agda V4Normal.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean

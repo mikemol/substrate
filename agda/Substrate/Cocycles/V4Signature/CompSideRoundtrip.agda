@@ -16,13 +16,25 @@
 --   * S₃ component: extract-s (s-for (embed v · embed-S₃ s)) S₃.≈ s —
 --     needs `embed-S₃` FAITHFUL (embed-S₃ s ≈ embed-S₃ t → S₃.≈ s t). The
 --     tree has embed-S₃-cong (the EASY direction, S₃.≈ → ≈) but NOT its
---     converse. That converse is the ONE genuinely-missing lemma.
+--     converse. That converse was the ONE genuinely-missing lemma.
 --
 -- So this module states the roundtrip CONDITIONAL on the two recovery facts
 -- as PARAMETERS, discharging the composition. It is a rigorous reduction:
 -- "given (v-recovers) and (s-recovers), the composed-side roundtrip holds",
 -- isolating EXACTLY what remains to prove (chiefly S₃-embedding faithfulness).
 -- No postulate, no hole — the gaps are honest hypotheses, --safe.
+--
+-- ⟡DISCHARGED (both halves now PROVEN; this conditional module is the
+-- reduction, the discharge lives downstream):
+--   * v-recovers  — Cocycles.V4Signature.VRecovers.
+--   * s-recovers  — Cocycles.V4Signature.SRecovers, via the roundtrip atom
+--     `extract-embed-roundtrip` and `embed-S₃-faithful` in
+--     Substrate.Groups.S4-Iso.EmbedS3Faithful. That EmbedS3Faithful proof
+--     takes the ROUNDTRIP route (extract-then-re-embed recovers s), which
+--     SIDESTEPS the CanonicalFaithful row-inj / (L) injectivity assembly.
+-- SRecovers.comp-side-roundtrip is the UNCONDITIONAL composed-side roundtrip
+-- (⟡full-s4-other-half). Parallel S₄ bijection in a different parametrization:
+-- Cocycles.V4Signature.Codeword.LiveS4Bijection (`Live≃Permutation`).
 --
 -- ⟡set1-paydown: carriers (V₄, S₃.Carrier, S4C.Carrier) all come from their
 -- home modules as Sets; this module adds only functions/proofs over them.
