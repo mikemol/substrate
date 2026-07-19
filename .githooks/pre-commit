@@ -107,14 +107,6 @@ run "apex gate" python3 "$ROOT/scripts/law_motif_apex.py" --check
 # content-different-name dup check is jea_pysim --cluster (pointed at, not run).
 python3 "$ROOT/scripts/collapse_check.py" || true
 
-# ⟡reuse-gate-wire: reuse-before-write ADVISORY. reuse_sweep --gate exits nonzero when a consolidation
-# opportunity touches CHANGED code (reads the prebuilt catalog.db, NO re-intern). Bare `|| true` — NOT via
-# `run` (run BLOCKS; --gate is nonzero on any opportunity = common for real edits → would spuriously block).
-# The [ -f ] guard suppresses reuse_sweep's clean self-abort when catalog.db is absent.
-if [ -f "$ROOT/catalog/catalog.db" ]; then
-  python3 "$ROOT/scripts/reuse_sweep.py" --gate || true
-fi
-
 # Δ-G2: jea-regression gate. If any scripts/jea_*.py is staged, run the jea correctness suite (fast subset) and
 # block on a FAIL -- converting "run the jea modules" from a discipline I must remember into a non-skippable gate
 # (would have caught the Δ-Ψ-dag leaf-code collision + the eval_aligned_planes contiguity bug). Fires ONLY on jea
@@ -145,15 +137,6 @@ if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
   run "scratch-runtime (Λ8b)" python3 "$ROOT/scripts/check_scratch_runtime.py" --quiet
 
 fi
-
-# Set₁ ratchet (ELABORATED): Set₁ is POLICY DEBT — a record must not FIELD a Set-valued
-# carrier or relation; PARAMETERIZE it (module _ (V : Set) (_≈_ : V → V → Set) where …),
-# as Substrate.Category.Lawvere's carrier-generic atoms do. The measure is a SORT, which
-# only exists after elaboration: an earlier version grepped source tokens, a DIFFERENT
-# quantity (one `record R : Set₁` token = ~4 Set₁ core definitions; Set₁-typed functions
-# carry none). So it reads the .agdai cores. RATCHET: count may only drop. If the cores
-# are absent or undecodable it FAILS — cannot measure is not no-debt.
-run "Set₁ ratchet (elaborated)" python3 "$ROOT/scripts/set1_ratchet_cores.py" --quiet
 
 # Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
 # process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
@@ -231,6 +214,37 @@ if [ "$fail" -eq 0 ]; then
       echo "pre-commit: FAILED — full build (a module does not typecheck)" >&2
       fail=1
     fi
+  fi
+fi
+
+# ⟡gqs-precommit-reorder: the CORE-READING gates run AFTER the full build (freshness-
+# authoritative). On a STRUCTURAL commit the build above recompiled the changed modules
+# (fresh .agdai cores) and gen_catalog rebuilt the full catalog.db projection + renders, so
+# these gates now measure the state BEING COMMITTED — not a lossy pre-build proxy. The old
+# pre-build order read STALE cores: set1_ratchet could FALSE-PASS a Set₁ increase (the new
+# record's .agdai not yet rebuilt), caught only on the NEXT commit; reuse_sweep read a stale
+# projection. On a non-structural commit the build was skipped and the cores/catalog.db are
+# unchanged, so these read the same valid state. Guarded by fail==0: no point measuring a
+# commit already doomed by a cheap gate or a failed build.
+if [ "$fail" -eq 0 ]; then
+  # Set₁ ratchet (ELABORATED): Set₁ is POLICY DEBT — a record must not FIELD a Set-valued
+  # carrier or relation; PARAMETERIZE it (module _ (V : Set) (_≈_ : V → V → Set) where …),
+  # as Substrate.Category.Lawvere's carrier-generic atoms do. The measure is a SORT, which
+  # only exists after elaboration: an earlier version grepped source tokens, a DIFFERENT
+  # quantity (one `record R : Set₁` token = ~4 Set₁ core definitions; Set₁-typed functions
+  # carry none). So it reads the .agdai cores. RATCHET: count may only drop. If the cores
+  # are absent or undecodable it FAILS — cannot measure is not no-debt. Its own incremental
+  # freshen is a no-op here (gen_catalog already rebuilt catalog.db from the fresh cores).
+  run "Set₁ ratchet (elaborated)" python3 "$ROOT/scripts/set1_ratchet_cores.py" --quiet
+
+  # ⟡reuse-gate-wire: reuse-before-write ADVISORY. reuse_sweep --gate exits nonzero when a
+  # consolidation opportunity touches CHANGED code — now reading the FRESH catalog.db projection
+  # (gen_catalog rebuilt it above), so a structural commit's new code is checked against the
+  # current interned structure, not a stale one. Bare `|| true` — NOT via `run` (run BLOCKS;
+  # --gate is nonzero on any opportunity = common for real edits → would spuriously block). The
+  # [ -f ] guard suppresses reuse_sweep's clean self-abort when catalog.db is absent.
+  if [ -f "$ROOT/catalog/catalog.db" ]; then
+    python3 "$ROOT/scripts/reuse_sweep.py" --gate || true
   fi
 fi
 
