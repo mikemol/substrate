@@ -13,7 +13,7 @@ ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
 export PATH := $(SHIM_DIR):$(PATH)
 endif
 
-.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-apex advise
+.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-apex advise
 all:
 	@$(MAKE) -C Substrate
 clean:
@@ -31,7 +31,7 @@ catalog: shim
 	@python3 ../scripts/sppf_db.py "" --argperm
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
-check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-apex
+check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-apex
 	@echo 'all invariant checks passed.'
 # Verify the makefile tree is in sync with the source tree.
 check-makefiles:
@@ -54,6 +54,9 @@ check-decltag:
 # Canonical operators live in their carrier's home, one-per-file (no forks/buckets).
 check-carrier:
 	@python3 ../scripts/check_carrier_locality.py --quiet
+# Ratchet: duplicate type-declarations are DEBT (paydown-only); no NEW forked copy.
+check-sumtype:
+	@python3 ../scripts/check_sumtype_ratchet.py --quiet
 # Apex gate: every relational law-motif (≥3 instances) must have a parametric
 # apex (a parameterizable module, NOT an index). No baseline — build the apex.
 check-apex:

@@ -88,6 +88,12 @@ run "decl-site shape tags" python3 "$ROOT/scripts/decl_shape_tag.py"
 # fork-by-reimplementation class (e.g. _+ℤ_ re-defined under Algebra/Q/).
 run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 
+# Sum-type ratchet: duplicate `data`/`record` declarations are DEBT (paydown-only,
+# a materialized census like Set₁). A NEW copy of a duplicated type — or a name
+# becoming newly-duplicated — is refused; consolidate/import instead. The sibling
+# of carrier-locality (which governs operators over the UNIQUE carriers this skips).
+run "sumtype ratchet" python3 "$ROOT/scripts/check_sumtype_ratchet.py" --quiet
+
 # Apex gate: every relational law-motif (≥3 instances) must have a parametric apex
 # (a parameterizable module — NOT an index, which forces concurrent building). No
 # baseline: a new cluster blocks until its apex is built, snowballing leverage early.

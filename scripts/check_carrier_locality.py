@@ -32,6 +32,8 @@ import os
 import re
 import sys
 
+import ratchet
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "agda", "Substrate")
 
@@ -199,42 +201,13 @@ def main():
         print("carrier-locality: clean (%d unique carriers, %d canonical operators, "
               "%d grandfathered)." % (len(unique), len(canon), len(ALLOW)))
 
-    return ratchet_gate(live_exempt, BASELINE, quiet) or rc
-
-
-def ratchet_gate(live_exempt, baseline_path, quiet=False):
-    """Sanctioned-exemption ratchet (mirrors set1_ratchet_cores.census_gate).
-    The live-exemption SET may only shrink: a NEW key refuses, a paid-down key
-    auto-lowers + rewrites the baseline. 0 = pass, 1 = a new exemption appeared."""
-    cur = sorted(live_exempt)
-    if not os.path.exists(baseline_path):
-        open(baseline_path, "w").write("".join(k + "\n" for k in cur))
-        print("carrier-locality-ratchet: baseline recorded = %d sanctioned exemption(s)"
-              % len(cur))
-        return 0
-    base = {l.strip() for l in open(baseline_path) if l.strip()}
-    cur_set = set(cur)
-    added = cur_set - base
-    if added:                                     # a NEW sanctioned exemption — refuse
-        print("carrier-locality-ratchet: BROKEN — %d NEW sanctioned exemption(s) "
-              "(the ALLOW list is DEBT; it may only be PAID DOWN, not grown):" % len(added))
-        for k in sorted(added):
-            print(f"    + {k}")
-        print("  Home the operator under its carrier's directory (import it) — "
-              "do NOT add to ALLOW.")
-        return 1
-    paid = base - cur_set
-    if paid:                                       # exemption(s) paid down — auto-lower
-        open(baseline_path, "w").write("".join(k + "\n" for k in cur))
-        print("carrier-locality-ratchet: baseline LOWERED %d -> %d (%d exemption(s) paid down)"
-              % (len(base), len(cur_set), len(paid)))
-        for k in sorted(paid):
-            print(f"    - {k}")
-        return 0
-    if not quiet:
-        print("carrier-locality-ratchet: at baseline %d sanctioned exemption(s) (frozen)"
-              % len(base))
-    return 0
+    # The sanctioned-exemption RATCHET: the live-exemption SET is DEBT, paydown-only
+    # (shared scripts/ratchet.py — the same set-ratchet as check_sumtype_ratchet.py).
+    return ratchet.set_ratchet(
+        live_exempt, BASELINE, "carrier-locality-ratchet", quiet,
+        noun="sanctioned exemption(s)",
+        refuse_hint="Home the operator under its carrier's directory (import it) — "
+                    "do NOT add to ALLOW.") or rc
 
 
 if __name__ == "__main__":
