@@ -22,8 +22,9 @@ agda/_build/
 # Local codec state (SQLite caches, etc.)
 scratch/eliza/state/
 
-# Claude Code session configuration
-.claude/
+# Claude Code — project skills / settings / shadow-engineer cotype ARE tracked
+# (versioned repo assets); only personal-local settings stay ignored.
+.claude/settings.local.json
 
 
 # local marker: mtime of the last green full build (pre-commit weekly gate)
