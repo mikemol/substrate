@@ -53,11 +53,11 @@ open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (sign; parityLess; parityLess-zero; sign-map-suc; sign-id; sign-sadj;
          sign-hom; sadj-is-perm; id-perm-is-perm; finLt; _<ᵇ_;
-         swapAdj; pLess-swap; bridge; id-perm-cons)
+         swapAdj; pLess-swap; bridge; id-perm-cons; signW; sign-wd)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (sadj; inj1; CoxGen; cox-id; cox-s; cox-∘)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties
-  using (idInsert-step; toℕ-inj1; coxeter-complete)
+  using (idInsert-step; toℕ-inj1; coxeter-complete; idInsert-CoxGen)
 open import Substrate.WitnessTower.LehmerTowerMorphism
   using (finParity; sign-lehmer-morphism; lehmer-graded; F₂-target)
 open import Substrate.Algebra.Wedge.Graded.Morphism using (GradedDivStrMorphism)
@@ -159,6 +159,16 @@ ip-id-aux (suc k) {suc m} (suc q') ep =
 ip-id-core : {m : ℕ} (p : Fin (suc m)) →
              sign (insert-at p (id-perm m)) ≡ oddB (toℕ p)
 ip-id-core p = ip-id-aux (toℕ p) p refl
+
+-- CO-APEX (ip-id-core ⨝ sign-wd). ip-id-aux is the SIGN-valued twin of the
+-- repo's CoxGen-valued `idInsert-CoxGen` — two independent fuel inductions over
+-- the SAME identity-insertion. `sign-wd` (the flagship "inversion-parity =
+-- Coxeter-length-parity") bridges them: the length-parity signW of the canonical
+-- adjacent-transposition word of insert-at p id EQUALS the factoradic digit
+-- parity oddB (toℕ p). A checkable identification, not a prose mirror.
+idInsert-signW : {m : ℕ} (p : Fin (suc m)) →
+                 signW (idInsert-CoxGen p) ≡ oddB (toℕ p)
+idInsert-signW p = trans (sym (sign-wd (idInsert-CoxGen p))) (ip-id-core p)
 
 ------------------------------------------------------------------------
 -- ROUTE B (◆ip-route-b). Assembly via the σ-independent rotation ρ p:
