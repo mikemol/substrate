@@ -35,6 +35,17 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "agda", "Substrate")
 
+# The sanctioned-exemption RATCHET baseline (mirrors set1_ratchet_cores.py).
+# Holds the sorted set of LIVE exemption keys ("<relpath>::<op>") that ALLOW
+# currently sanctions AND that correspond to a real carrier-locality violation
+# in the tree. The exemption set is DEBT: it may only be PAID DOWN (an operator
+# homed → its violation disappears → its key drops), never grown. A NEW live
+# exemption is refused (home the op / import it, don't add to ALLOW); a paydown
+# auto-lowers + rewrites this baseline. A frozen ALLOW list is the anti-pattern
+# this replaces (see scratch/carrier_locality_policy.md + the set1 ratchet).
+BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "carrier_locality_baseline.txt")
+
 # Sanctioned exceptions — "<relpath>::<op>", documented in
 # scratch/carrier_locality_policy.md. These are pre-existing, cross-subsystem,
 # and NOT forks (derived ops in a layered location; identity aliases; ops over
@@ -51,8 +62,6 @@ ALLOW = {
     "agda/Substrate/Groups/Coxeter/Core/Operations.agda::_·_",
     # `_ℤ : ℤ → ℤ`, `n ℤ = n` — a local readability identity alias, not arithmetic.
     "agda/Substrate/Algebra/GL3F2/Characters.agda::_ℤ",
-    # `_⊗ᴰ_` over DivStr — cross-construction wedge product, sited with the cross.
-    "agda/Substrate/Algebra/Wedge/Cross.agda::_⊗ᴰ_",
     # The canonical Klein-four `_·_` over V₄: `data V₄` lives in Groups/V4/Bijection.agda
     # and its operation historically in the sibling Groups/V4/Operations.agda (the
     # substrate's carrier/op/axioms/bundle split for V₄) — NOT under Bijection/. Exactly
@@ -142,25 +151,36 @@ def main():
 
     locality = []                                 # (op, T, relpath)
     per_file = {}                                 # file -> [(op, T)]
+    live_exempt = set()                           # ALLOW keys hit by a real violation
     for op, T, path in canon:
         rel = os.path.relpath(path, ROOT)
         per_file.setdefault(path, []).append((op, T))
         home_file = unique[T]
         home_dir = home_file[:-5]
         ok = (path == home_file) or path.startswith(home_dir + os.sep)
-        if not ok and f"{rel}::{op}" not in ALLOW:
-            locality.append((op, T, rel))
+        if not ok:
+            key = f"{rel}::{op}"
+            if key in ALLOW:
+                live_exempt.add(key)              # a sanctioned locality exemption, live
+            else:
+                locality.append((op, T, rel))
 
     bucket = []                                    # (relpath, [ops])
     for path, ops in per_file.items():
         rel = os.path.relpath(path, ROOT)
         # exempt operators over a carrier this very file DECLARES (the carrier's
         # named home), and ALLOW-grandfathered ops.
-        foreign = [(op, T) for op, T in ops
-                   if path != unique[T] and f"{rel}::{op}" not in ALLOW]
+        foreign_all = [(op, T) for op, T in ops if path != unique[T]]
+        foreign = [(op, T) for op, T in foreign_all
+                   if f"{rel}::{op}" not in ALLOW]
+        for op, T in foreign_all:                  # sanctioned bucket exemptions, live
+            key = f"{rel}::{op}"
+            if key in ALLOW:
+                live_exempt.add(key)
         if len(foreign) >= 2:
             bucket.append((rel, foreign))
 
+    rc = 0
     if locality or bucket:
         if locality:
             print("carrier-locality: %d operator(s) defined outside their carrier's home:"
@@ -174,10 +194,46 @@ def main():
                   "(split one-per-file):" % len(bucket))
             for rel, ops in sorted(bucket):
                 print(f"    {rel}: {', '.join(op for op, _ in ops)}")
-        return 1
-    if not quiet:
+        rc = 1
+    elif not quiet:
         print("carrier-locality: clean (%d unique carriers, %d canonical operators, "
               "%d grandfathered)." % (len(unique), len(canon), len(ALLOW)))
+
+    return ratchet_gate(live_exempt, BASELINE, quiet) or rc
+
+
+def ratchet_gate(live_exempt, baseline_path, quiet=False):
+    """Sanctioned-exemption ratchet (mirrors set1_ratchet_cores.census_gate).
+    The live-exemption SET may only shrink: a NEW key refuses, a paid-down key
+    auto-lowers + rewrites the baseline. 0 = pass, 1 = a new exemption appeared."""
+    cur = sorted(live_exempt)
+    if not os.path.exists(baseline_path):
+        open(baseline_path, "w").write("".join(k + "\n" for k in cur))
+        print("carrier-locality-ratchet: baseline recorded = %d sanctioned exemption(s)"
+              % len(cur))
+        return 0
+    base = {l.strip() for l in open(baseline_path) if l.strip()}
+    cur_set = set(cur)
+    added = cur_set - base
+    if added:                                     # a NEW sanctioned exemption — refuse
+        print("carrier-locality-ratchet: BROKEN — %d NEW sanctioned exemption(s) "
+              "(the ALLOW list is DEBT; it may only be PAID DOWN, not grown):" % len(added))
+        for k in sorted(added):
+            print(f"    + {k}")
+        print("  Home the operator under its carrier's directory (import it) — "
+              "do NOT add to ALLOW.")
+        return 1
+    paid = base - cur_set
+    if paid:                                       # exemption(s) paid down — auto-lower
+        open(baseline_path, "w").write("".join(k + "\n" for k in cur))
+        print("carrier-locality-ratchet: baseline LOWERED %d -> %d (%d exemption(s) paid down)"
+              % (len(base), len(cur_set), len(paid)))
+        for k in sorted(paid):
+            print(f"    - {k}")
+        return 0
+    if not quiet:
+        print("carrier-locality-ratchet: at baseline %d sanctioned exemption(s) (frozen)"
+              % len(base))
     return 0
 
 

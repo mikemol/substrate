@@ -1,0 +1,7 @@
+agda/Substrate/Algebra/GL3F2/Characters.agda::_ℤ
+agda/Substrate/Algebra/Nat/DivMod/DivSuc.agda::_div-suc_
+agda/Substrate/Algebra/Nat/Mod.agda::_mod-suc_
+agda/Substrate/Cocycles/V4Signature/Codeword/ReservedToBivectorAffine/V4.agda::_+V₄_
+agda/Substrate/Groups/Coxeter/Core/Operations.agda::_·_
+agda/Substrate/Groups/V4/Operations.agda::_·_
+agda/Substrate/Groups/Zn-x-FreeCyclic-PhaseProjection.agda::_·_
