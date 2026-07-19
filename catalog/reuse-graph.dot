@@ -505,6 +505,7 @@ digraph reuse {
   "Substrate.Cocycles.F2CubedPuncturing.WHTCore" [label="WHTCore\nSubstrate.Cocycles.F2CubedPuncturing", style=rounded];
   "Substrate.Cocycles.KRule._.DistPattern" [label="DistPattern\nSubstrate.Cocycles.KRule._", style=rounded];
   "Substrate.Cocycles.V4Signature.Chirality.Type.Chirality" [label="Chirality\nSubstrate.Cocycles.V4Signature.Chirality.Type", style=rounded];
+  "Substrate.Cocycles.V4Signature.Chirality.WHTCharacterBridge.ChiralityIsWHTSelector" [label="ChiralityIsWHTSelector\nSubstrate.Cocycles.V4Signature.Chirality.WHTCharacterBridge"];
   "Substrate.Cocycles.V4Signature.Codeword.Live.Selector" [label="Selector\nSubstrate.Cocycles.V4Signature.Codeword.Live", style=rounded];
   "Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Live≃Permutation" [label="Live≃Permutation\nSubstrate.Cocycles.V4Signature.Codeword.LiveS4Bijection"];
   "Substrate.Cocycles.V4Signature.Pairing.Type.Pairing" [label="Pairing\nSubstrate.Cocycles.V4Signature.Pairing.Type", style=rounded];
@@ -582,6 +583,7 @@ digraph reuse {
   "Substrate.Foundation.WellFounded.Acc" [label="Acc\nSubstrate.Foundation.WellFounded", style=rounded];
   "Substrate.Foundations.Bijection.Bijection" [label="Bijection\nSubstrate.Foundations.Bijection"];
   "Substrate.Geometry.HodgeDim3.HodgeComplement-Dim3" [label="HodgeComplement-Dim3\nSubstrate.Geometry.HodgeDim3"];
+  "Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.Row" [label="Row\nSubstrate.Groups.Actions.S3-on-V4.CanonicalFaithful", style=rounded];
   "Substrate.Groups.Capabilities.CapabilityTag" [label="CapabilityTag\nSubstrate.Groups.Capabilities", style=rounded];
   "Substrate.Groups.Capabilities.CoxeterFin._.CoxeterFinCapability" [label="CoxeterFinCapability\nSubstrate.Groups.Capabilities.CoxeterFin._"];
   "Substrate.Groups.Capabilities.CoxeterGroup._.CoxeterGroupCapability" [label="CoxeterGroupCapability\nSubstrate.Groups.Capabilities.CoxeterGroup._"];
@@ -803,6 +805,7 @@ digraph reuse {
   "Substrate.WitnessTower.Core.WSimplex" [label="WSimplex\nSubstrate.WitnessTower.Core", style=rounded];
   "Substrate.WitnessTower.DuplicateFree.NoDup" [label="NoDup\nSubstrate.WitnessTower.DuplicateFree", style=rounded];
   "Substrate.WitnessTower.FamilyWitness.FSimplex" [label="FSimplex\nSubstrate.WitnessTower.FamilyWitness", style=rounded];
+  "Substrate.WitnessTower.GradeMapInvariant.GradeRole" [label="GradeRole\nSubstrate.WitnessTower.GradeMapInvariant", style=rounded];
   "Substrate.WitnessTower.LehmerPath.LehmerPath" [label="LehmerPath\nSubstrate.WitnessTower.LehmerPath", style=rounded];
   "Substrate.WitnessTower.M40Closure.A4Z2" [label="A4Z2\nSubstrate.WitnessTower.M40Closure"];
   "Substrate.WitnessTower.M40Closure.Chir" [label="Chir\nSubstrate.WitnessTower.M40Closure", style=rounded];
@@ -810,6 +813,7 @@ digraph reuse {
   "Substrate.WitnessTower.M40Iso.VC" [label="VC\nSubstrate.WitnessTower.M40Iso"];
   "Substrate.WitnessTower.M40NoIso.A4Z2≅SymV4" [label="A4Z2≅SymV4\nSubstrate.WitnessTower.M40NoIso"];
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" [label="Permutation\nSubstrate.WitnessTower.SymBridge._.SymN"];
+  "Substrate.WitnessTower.TowerLiftSplit.OneOfFour" [label="OneOfFour\nSubstrate.WitnessTower.TowerLiftSplit", style=rounded];
   "Substrate.WitnessTower.Wedge.Action.StepWedge" [label="StepWedge\nSubstrate.WitnessTower.Wedge.Action"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBifunctor" [label="GradedBifunctor\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];
   "Substrate.WitnessTower.Wedge.OrientationBimonoidal.GradedBraid" [label="GradedBraid\nSubstrate.WitnessTower.Wedge.OrientationBimonoidal"];

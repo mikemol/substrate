@@ -508,6 +508,7 @@
   <url><loc>https://substrate.local/Substrate/Cocycles/F2CubedPuncturing#WHTCore</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/KRule#DistPattern</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Chirality/Type#Chirality</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Chirality/WHTCharacterBridge#ChiralityIsWHTSelector</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/Live#Selector</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection#Live≃Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Pairing/Type#Pairing</loc><priority>0.0</priority></url>
@@ -585,6 +586,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/WellFounded#Acc</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundations/Bijection#Bijection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Geometry/HodgeDim3#HodgeComplement-Dim3</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful#Row</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#CapabilityTag</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterFin#CoxeterFinCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterGroup#CoxeterGroupCapability</loc><priority>0.0</priority></url>
@@ -806,6 +808,7 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#WSimplex</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/DuplicateFree#NoDup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/FamilyWitness#FSimplex</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/GradeMapInvariant#GradeRole</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/LehmerPath#LehmerPath</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40Closure#A4Z2</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40Closure#Chir</loc><priority>0.0</priority></url>
@@ -813,6 +816,7 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40Iso#VC</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40NoIso#A4Z2≅SymV4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/SymBridge#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/TowerLiftSplit#OneOfFour</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/Action#StepWedge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBifunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBraid</loc><priority>0.0</priority></url>

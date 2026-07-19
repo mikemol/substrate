@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 SCRIPTS := ../../../../../scripts
 
-FILES := AsAction.agda Axioms.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
+FILES := AsAction.agda Axioms.agda CanonicalFaithful.agda Composition.agda Dispatch.agda Generators.agda HomRotations.agda HomSwaps.agda Twist.agda
 SUBDIRS := Axioms Composition Dispatch Generators HomSwaps Twist
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean

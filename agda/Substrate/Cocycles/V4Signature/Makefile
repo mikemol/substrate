@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := CY5.agda Codeword.agda Fiber.agda OrbitKey-S3.agda S4GroupIso.agda S4Iso-Bridges.agda S4Iso.agda V4ActsOnItself.agda V4GroupSetoid.agda V4IsTorsor.agda V4LeftCancel.agda V4ToPairing.agda V4Transitive.agda
+FILES := ApexPin.agda AxisActionRoute.agda CY5.agda Codeword.agda CompSideRoundtrip.agda CompSideRoundtripVDischarged.agda Fiber.agda FullS4Route.agda OrbitKey-S3.agda S4GroupIso.agda S4Iso-Bridges.agda S4Iso.agda V4ActsOnItself.agda V4GroupSetoid.agda V4IsTorsor.agda V4LeftCancel.agda V4ToPairing.agda V4Transitive.agda VRecovers.agda
 SUBDIRS := Chirality Codeword OrbitKey OrbitKey-S3 Pairing S4Iso
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean

@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../../..
 SCRIPTS := ../../../../../scripts
 
-FILES := AxisBits.agda IsReserved.agda Iso.agda Live.agda LiveS4.agda LiveS4Bijection.agda LiveS4Iso.agda ReservedSignedMaps.agda ReservedSignedRoundTrip.agda ReservedToBivector.agda ReservedToBivectorAffine.agda ReservedToBivectorCardinality.agda Subtypes.agda Type.agda
+FILES := AxisBits.agda IsReserved.agda Iso.agda Live.agda LiveS4.agda LiveS4Bijection.agda LiveS4Iso.agda ReservedSignedMaps.agda ReservedSignedRoundTrip.agda ReservedToBivector.agda ReservedToBivectorAffine.agda ReservedToBivectorCardinality.agda SignIsStabParity.agda Subtypes.agda Type.agda
 SUBDIRS := LiveS4Bijection ReservedToBivectorAffine
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
