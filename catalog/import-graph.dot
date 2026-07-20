@@ -1740,6 +1740,7 @@ digraph imports {
   "Substrate.WitnessTower.Puncture" [label="WitnessTower.Puncture"];
   "Substrate.WitnessTower.ResidueBridge" [label="WitnessTower.ResidueBridge"];
   "Substrate.WitnessTower.SharedMiddle" [label="WitnessTower.SharedMiddle"];
+  "Substrate.WitnessTower.SignAbelianization" [label="WitnessTower.SignAbelianization"];
   "Substrate.WitnessTower.SignEmbedVEven" [label="WitnessTower.SignEmbedVEven"];
   "Substrate.WitnessTower.SignFactorsThroughStab" [label="WitnessTower.SignFactorsThroughStab"];
   "Substrate.WitnessTower.SignStabTotal" [label="WitnessTower.SignStabTotal"];
@@ -13079,6 +13080,17 @@ digraph imports {
   "Substrate.WitnessTower.SharedMiddle" -> "Substrate.Groups.V4.Axioms";
   "Substrate.WitnessTower.SharedMiddle" -> "Substrate.Groups.V4.Bijection";
   "Substrate.WitnessTower.SharedMiddle" -> "Substrate.Groups.V4.Operations";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Negation";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
+  "Substrate.WitnessTower.SignAbelianization" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.SignEmbedVEven" -> "Substrate.Axes";
   "Substrate.WitnessTower.SignEmbedVEven" -> "Substrate.Axes.Punctured";
   "Substrate.WitnessTower.SignEmbedVEven" -> "Substrate.Foundation.Bool";
