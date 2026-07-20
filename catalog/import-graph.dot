@@ -1746,6 +1746,7 @@ digraph imports {
   "Substrate.WitnessTower.SignCommutator" [label="WitnessTower.SignCommutator"];
   "Substrate.WitnessTower.SignEmbedVEven" [label="WitnessTower.SignEmbedVEven"];
   "Substrate.WitnessTower.SignFactorsThroughStab" [label="WitnessTower.SignFactorsThroughStab"];
+  "Substrate.WitnessTower.SignGrade2Generated" [label="WitnessTower.SignGrade2Generated"];
   "Substrate.WitnessTower.SignStabTotal" [label="WitnessTower.SignStabTotal"];
   "Substrate.WitnessTower.SignStepCocycle" [label="WitnessTower.SignStepCocycle"];
   "Substrate.WitnessTower.SignUniqueCharacter" [label="WitnessTower.SignUniqueCharacter"];
@@ -13149,6 +13150,19 @@ digraph imports {
   "Substrate.WitnessTower.SignFactorsThroughStab" -> "Substrate.Groups.V4-Embedding";
   "Substrate.WitnessTower.SignFactorsThroughStab" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.SignFactorsThroughStab" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Algebra.F2";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Algebra.F2.FromBool";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Algebra.N-to-F2-Parity";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Algebra.ParityKernel.Universal";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
+  "Substrate.WitnessTower.SignGrade2Generated" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.SignStabTotal" -> "Substrate.Axes";
   "Substrate.WitnessTower.SignStabTotal" -> "Substrate.Axes.Punctured";
   "Substrate.WitnessTower.SignStabTotal" -> "Substrate.Foundation.Bool";
