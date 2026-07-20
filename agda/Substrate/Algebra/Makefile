@@ -20,7 +20,7 @@ AGDA_ROOT := ../..
 SCRIPTS := ../../../scripts
 
 FILES := AbelianGroup.agda Bijection.agda CayleyDickson.agda CommutativeRing.agda ExpLogCodec.agda F2-CommutativeMonoid.agda F2.agda Field.agda GL3F2.agda Group.agda GroupAction.agda Involution.agda IsomorphicCocycle.agda Magma.agda Medial.agda Module.agda Monoid.agda N-to-F2-Parity.agda PointedSet.agda PontryaginDual.agda PrimeFactor-168-FieldFanOut.agda Q.agda Quotient.agda Ring.agda SemidirectProduct.agda Semigroup.agda Semiring.agda Setoid.agda SetoidGroup.agda TopologicalGroup.agda Torsor.agda Wedge.agda Z.agda Z6-FieldBond.agda Z6-FieldTower.agda
-SUBDIRS := Abelian CayleyDickson F1 F2 Fin GL3F2 Group Lie Linear List Module Monoid Nat PointedSet Polynomial PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
+SUBDIRS := Abelian CayleyDickson F1 F2 Fin GL3F2 Group Lie Linear List Module Monoid N-to-F2-Parity Nat PointedSet Polynomial PontryaginDual Q Quotient R Semiring Setoid SetoidGroup Sporadic TopologicalGroup V-Arc Wedge Z
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
@@ -127,6 +127,13 @@ Module:
 	@$(MAKE) -C $@
 
 Monoid:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
+N-to-F2-Parity:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
 	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
@@ -243,7 +250,7 @@ ingest-files:
 	@for f in $(FILES); do \
 	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
 	done
-ingest-subdirs: Abelian.ingest CayleyDickson.ingest F1.ingest F2.ingest Fin.ingest GL3F2.ingest Group.ingest Lie.ingest Linear.ingest List.ingest Module.ingest Monoid.ingest Nat.ingest PointedSet.ingest Polynomial.ingest PontryaginDual.ingest Q.ingest Quotient.ingest R.ingest Semiring.ingest Setoid.ingest SetoidGroup.ingest Sporadic.ingest TopologicalGroup.ingest V-Arc.ingest Wedge.ingest Z.ingest
+ingest-subdirs: Abelian.ingest CayleyDickson.ingest F1.ingest F2.ingest Fin.ingest GL3F2.ingest Group.ingest Lie.ingest Linear.ingest List.ingest Module.ingest Monoid.ingest N-to-F2-Parity.ingest Nat.ingest PointedSet.ingest Polynomial.ingest PontryaginDual.ingest Q.ingest Quotient.ingest R.ingest Semiring.ingest Setoid.ingest SetoidGroup.ingest Sporadic.ingest TopologicalGroup.ingest V-Arc.ingest Wedge.ingest Z.ingest
 Abelian.ingest:
 	@$(MAKE) -C Abelian ingest
 CayleyDickson.ingest:
@@ -268,6 +275,8 @@ Module.ingest:
 	@$(MAKE) -C Module ingest
 Monoid.ingest:
 	@$(MAKE) -C Monoid ingest
+N-to-F2-Parity.ingest:
+	@$(MAKE) -C N-to-F2-Parity ingest
 Nat.ingest:
 	@$(MAKE) -C Nat ingest
 PointedSet.ingest:
@@ -312,6 +321,7 @@ clean:
 	@$(MAKE) -C List clean 2>/dev/null || true
 	@$(MAKE) -C Module clean 2>/dev/null || true
 	@$(MAKE) -C Monoid clean 2>/dev/null || true
+	@$(MAKE) -C N-to-F2-Parity clean 2>/dev/null || true
 	@$(MAKE) -C Nat clean 2>/dev/null || true
 	@$(MAKE) -C PointedSet clean 2>/dev/null || true
 	@$(MAKE) -C Polynomial clean 2>/dev/null || true

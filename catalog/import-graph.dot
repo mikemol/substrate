@@ -313,6 +313,7 @@ digraph imports {
   "Substrate.Algebra.Monoid" [label="Algebra.Monoid"];
   "Substrate.Algebra.Monoid.InverseRetract" [label="Monoid.InverseRetract"];
   "Substrate.Algebra.N-to-F2-Parity" [label="Algebra.N-to-F2-Parity"];
+  "Substrate.Algebra.N-to-F2-Parity.Double" [label="N-to-F2-Parity.Double"];
   "Substrate.Algebra.Nat.Bezout" [label="Nat.Bezout"];
   "Substrate.Algebra.Nat.Bezout.Properties" [label="Bezout.Properties"];
   "Substrate.Algebra.Nat.CyclicSuc" [label="Nat.CyclicSuc"];
@@ -4269,6 +4270,10 @@ digraph imports {
   "Substrate.Algebra.N-to-F2-Parity" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.N-to-F2-Parity" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.N-to-F2-Parity" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.N-to-F2-Parity.Double" -> "Substrate.Algebra.F2";
+  "Substrate.Algebra.N-to-F2-Parity.Double" -> "Substrate.Algebra.N-to-F2-Parity";
+  "Substrate.Algebra.N-to-F2-Parity.Double" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.N-to-F2-Parity.Double" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Nat.Bezout" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Nat.Bezout" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Nat.Bezout" -> "Substrate.Foundation.Sum";
