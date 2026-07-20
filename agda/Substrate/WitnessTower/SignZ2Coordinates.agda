@@ -33,15 +33,18 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; s≤s; z
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-assoc)
 open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; boolToℕ)
+open import Substrate.Foundation.Bool using (Bool; true; false; boolToℕ; _xor_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
+open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Algebra.F2 using (F₂)
 open import Substrate.Algebra.F2.FromBool using (bool→F₂)
-open import Substrate.Algebra.N-to-F2-Parity using (parity)
+open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
+open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
+open import Substrate.Algebra.Wedge.Graded.Morphism using (GradedDivStrMorphism; comp-gdsm; map-C)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
-open import Substrate.WitnessTower.IsPermutation using (IsPerm)
+open import Substrate.WitnessTower.IsPermutation using (IsPerm; insert-at-preserves)
 open import Substrate.WitnessTower.SnGroup using (compose-id-left; compose-id-right)
 open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
@@ -54,8 +57,11 @@ open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode; decode-
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality
   using (invCount; countLess; sign-as-parity)
+open import Substrate.WitnessTower.LehmerTowerMorphism
+  using (lehmer-graded; F₂-target)
 open import Substrate.WitnessTower.InsertionParity
-  using (finLt-punchIn; punchIn-lt; map-swapAdj; toℕ≤m)
+  using (finLt-punchIn; punchIn-lt; map-swapAdj; toℕ≤m;
+         oddB; signB-insert; sign-lehmer-morphism-unconditional)
 
 ------------------------------------------------------------------------
 -- ◆ip-chirality-coapex — the graded coordinate meets the static guises.
@@ -183,3 +189,96 @@ invcount-insert p σ pf =
 -- record". The graded sign coordinate agreeing with both static guises IS the
 -- pair of terms; no bundling is needed or wanted.
 ------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- THE SINGLE-INSERTION SIGN LAW, as a TOTAL DICHOTOMY (not a ¬∀ quantification):
+-- the circumstance where it HOLDS, the circumstance where it FAILS, and the two
+-- combined are TOTAL — via decidability (Bool has decidable equality; Dec/Set₀,
+-- our set₁-avoiding machinery). The bare carrier Perm n = Vec (Fin n) n includes
+-- NON-permutations; the law is base-dependent there, base-independent (= the
+-- digit parity) exactly on permutations.
+------------------------------------------------------------------------
+
+-- the law equation at (p, σ) — a Bool equality, so Set₀ (a …→Set family, uncounted).
+insert-parity-law : {m : ℕ} (p : Fin (suc m)) (σ : Perm m) → Set
+insert-parity-law p σ = sign (insert-at p σ) ≡ (oddB (toℕ p) xor sign σ)
+
+-- CIRCUMSTANCE 1 — it HOLDS when σ is a permutation (Route A / Route B).
+holds-on-perm : {m : ℕ} (p : Fin (suc m)) (σ : Perm m) → IsPerm σ → insert-parity-law p σ
+holds-on-perm = signB-insert
+
+-- CIRCUMSTANCE 2 — it FAILS off permutations: a concrete non-perm witness
+-- (σ = zero ∷ zero ∷ [] ∉ IsPerm, p = suc zero): sign = false, oddB 1 xor false = true.
+σ-nonperm : Perm 2
+σ-nonperm = zero ∷ zero ∷ []
+
+fails-off-perm : ¬ insert-parity-law (suc zero) σ-nonperm
+fails-off-perm ()
+
+-- the two circumstances are TOTAL: the law is DECIDABLE at every (p, σ), so
+-- holds ⊎ ¬holds is exhaustive by construction — no quantified negative needed.
+private
+  _≟B_ : (a b : Bool) → Dec (a ≡ b)
+  true  ≟B true  = yes refl
+  true  ≟B false = no (λ ())
+  false ≟B true  = no (λ ())
+  false ≟B false = yes refl
+
+insert-parity-dec : {m : ℕ} (p : Fin (suc m)) (σ : Perm m) → Dec (insert-parity-law p σ)
+insert-parity-dec p σ = sign (insert-at p σ) ≟B (oddB (toℕ p) xor sign σ)
+
+------------------------------------------------------------------------
+-- ◆ip-general-signW — proven, not pre-judged. For ANY perm σ, the Coxeter-length
+-- parity signW of a completed derivation of insert-at p σ equals the sign fact
+-- (= sym sign-wd ∘ signB-insert). Committed so the shape-DB can find a twin — if
+-- one exists, that IS the "second construction" the filing worry denied.
+------------------------------------------------------------------------
+
+general-signW : {m : ℕ} (p : Fin (suc m)) (σ : Perm m) (pf : IsPerm σ) →
+  signW (coxeter-complete (insert-at p σ) (insert-at-preserves p σ pf))
+    ≡ (oddB (toℕ p) xor sign σ)
+general-signW p σ pf =
+  trans (sym (sign-wd (coxeter-complete (insert-at p σ) (insert-at-preserves p σ pf))))
+        (signB-insert p σ pf)
+
+------------------------------------------------------------------------
+-- THE Fₙ PICTURE — the sign (F₂) is the mod-2 shadow of a UNIVERSAL ℕ (= F_∞)
+-- cocycle, and Route A (inversion count) is that universal object while Route B
+-- (the sign homomorphism) is F₂-terminal. This dissolves the "no tower→F₂
+-- composition": it composes — through ℕ, not through the bare tower.
+------------------------------------------------------------------------
+
+-- the additive-ℕ graded target (F_∞: mirror F₂-target at ℕ; reduces to every Fₙ).
+ℕ⁺-target : GradedDivStr (λ _ → ℕ) (λ _ → ℕ)
+ℕ⁺-target = record { recon = λ n b r → r + b }
+
+-- ROUTE A as a genuine ℕ-graded morphism out of the Lehmer tower — inserting
+-- digit p adds toℕ p inversions (invcount-insert). The universal count cocycle.
+invcount-graded : GradedDivStrMorphism lehmer-graded ℕ⁺-target
+invcount-graded = record
+  { map-C          = λ l → invCount (decode l)
+  ; map-R          = toℕ
+  ; respects-recon = λ n l p → invcount-insert p (decode l) (decode-is-perm l)
+  }
+
+-- mod-2: parity IS a graded morphism ℕ⁺-target → F₂-target (parity-+). The n=2
+-- reduction; the analogous mod-n reduction exists for every n (Route A lifts to
+-- all Fₙ) — but there is NO mod-n SIGN for n>2 (Sₙ's abelianisation is Z/2), so
+-- Route B is F₂-terminal. That asymmetry is the retained route-distinction, sharp.
+mod2-graded : GradedDivStrMorphism ℕ⁺-target F₂-target
+mod2-graded = record
+  { map-C = parity ; map-R = parity ; respects-recon = λ n b r → parity-+ r b }
+
+-- THE FACTORIZATION (◆ip-tower-f2-compose, dissolved through ℕ): the twisted F₂
+-- sign-morphism is the mod-2 of the universal ℕ inversion-count morphism — a
+-- SECOND construction of it, via comp-gdsm, distinct from Route B's sign-hom one.
+sign-lehmer-via-invcount : GradedDivStrMorphism lehmer-graded F₂-target
+sign-lehmer-via-invcount = comp-gdsm mod2-graded invcount-graded
+
+-- the two constructions of the twisted sign-morphism (Route B directly; Route A
+-- through the ℕ count) AGREE on carriers — sign-as-parity, i.e. tower-sign-is-
+-- invcount. Two graded morphisms, one F₂ cocycle: the content-cover route-
+-- agreement wanted, now at the intermediate (count) level, not F₂-UIP.
+sign-two-constructions-agree : {n : ℕ} (l : LehmerPath n) →
+  map-C sign-lehmer-morphism-unconditional l ≡ map-C sign-lehmer-via-invcount l
+sign-two-constructions-agree l = tower-sign-is-invcount l
