@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := CyclicZ2.agda
+FILES := CyclicZ2.agda SnAbelianizationZ2.agda
 SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean

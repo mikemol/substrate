@@ -342,6 +342,7 @@ digraph reuse {
   "Substrate.Category.PredictorRing.PredictorSignature" [label="PredictorSignature\nSubstrate.Category.PredictorRing"];
   "Substrate.Category.PresentedGroup.PresentedGroup" [label="PresentedGroup\nSubstrate.Category.PresentedGroup"];
   "Substrate.Category.PresentedUniversalProperty.PresentedUP" [label="PresentedUP\nSubstrate.Category.PresentedUniversalProperty"];
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2._.Rel" [label="Rel\nSubstrate.Category.PresentedUniversalProperty.SnAbelianizationZ2._", style=rounded];
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" [label="PrimeFactoredGauge\nSubstrate.Category.PrimeFactoredGauge"];
   "Substrate.Category.PrimeSampledChain.Crumb" [label="Crumb\nSubstrate.Category.PrimeSampledChain"];
   "Substrate.Category.PrimeSampledChain.PrimePair" [label="PrimePair\nSubstrate.Category.PrimeSampledChain"];
@@ -1104,6 +1105,7 @@ digraph reuse {
   "Substrate.Category.PolyLens.WiringDiagram" -> "Substrate.Category.Poly.Poly";
   "Substrate.Category.PresentedUniversalProperty.PresentedUP" -> "Substrate.Category.FreeOverBasis.AlgebraClass";
   "Substrate.Category.PresentedUniversalProperty.PresentedUP" -> "Substrate.Foundation.Eq._≡_";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2._.Rel" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.PrimeFactoredGauge.PrimeFactoredGauge" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.PseudoFunctor.PseudoFunctor" -> "Substrate.Category.TwoCategory.TwoCategory";

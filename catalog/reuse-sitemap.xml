@@ -344,6 +344,7 @@
   <url><loc>https://substrate.local/Substrate/Category/PredictorRing#PredictorSignature</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PresentedGroup#PresentedGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PresentedUniversalProperty#PresentedUP</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/PresentedUniversalProperty/SnAbelianizationZ2#Rel</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeFactoredGauge#PrimeFactoredGauge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#Crumb</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PrimeSampledChain#PrimePair</loc><priority>0.0</priority></url>

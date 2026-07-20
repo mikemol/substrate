@@ -853,6 +853,7 @@ digraph imports {
   "Substrate.Category.PresentedGroup" [label="Category.PresentedGroup"];
   "Substrate.Category.PresentedUniversalProperty" [label="Category.PresentedUniversalProperty"];
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" [label="PresentedUniversalProperty.CyclicZ2"];
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" [label="PresentedUniversalProperty.SnAbelianizationZ2"];
   "Substrate.Category.PresheafCategory" [label="Category.PresheafCategory"];
   "Substrate.Category.PrimeFactoredGauge" [label="Category.PrimeFactoredGauge"];
   "Substrate.Category.PrimeFactoredGauge.ActedUponByAut" [label="PrimeFactoredGauge.ActedUponByAut"];
@@ -7165,6 +7166,14 @@ digraph imports {
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Foundation.Product";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Foundation.Unit";
   "Substrate.Category.PresentedUniversalProperty.CyclicZ2" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Algebra.F2";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Category.FreeUniversalProperty.FreeMonoid";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Category.PresentedUniversalProperty";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Foundation.Eq";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Foundation.Fin";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Foundation.Nat";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Foundation.Product";
+  "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Category.PresheafCategory" -> "Substrate.Category.CategoryOf";
   "Substrate.Category.PrimeFactoredGauge" -> "Substrate.Category.GTorsor";
   "Substrate.Category.PrimeFactoredGauge" -> "Substrate.Category.SylowDecomposition";
