@@ -1696,6 +1696,7 @@ digraph imports {
   "Substrate.WitnessTower.CodewordSignEqualsStabParity" [label="WitnessTower.CodewordSignEqualsStabParity"];
   "Substrate.WitnessTower.CodewordSignStep" [label="WitnessTower.CodewordSignStep"];
   "Substrate.WitnessTower.CofreeDual" [label="WitnessTower.CofreeDual"];
+  "Substrate.WitnessTower.CommutatorSubgroup" [label="WitnessTower.CommutatorSubgroup"];
   "Substrate.WitnessTower.Complete" [label="WitnessTower.Complete"];
   "Substrate.WitnessTower.Core" [label="WitnessTower.Core"];
   "Substrate.WitnessTower.Counting" [label="WitnessTower.Counting"];
@@ -12654,6 +12655,15 @@ digraph imports {
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.Foundation.Product";
   "Substrate.WitnessTower.CofreeDual" -> "Substrate.WitnessTower.EEATower";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.Foundation.Bool";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.IsPermutation";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.SignCommutator";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.CommutatorSubgroup" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.Complete" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.Complete" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.Complete" -> "Substrate.Foundation.Fin.Punctured";

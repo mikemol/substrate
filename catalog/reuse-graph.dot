@@ -801,6 +801,7 @@ digraph reuse {
   "Substrate.TokiPona.QParticles.QMarkedSentence" [label="QMarkedSentence\nSubstrate.TokiPona.QParticles"];
   "Substrate.TokiPona.QTokiSentence.QTokiSentence" [label="QTokiSentence\nSubstrate.TokiPona.QTokiSentence"];
   "Substrate.TokiPona.TokiSentence.TokiSentence" [label="TokiSentence\nSubstrate.TokiPona.TokiSentence"];
+  "Substrate.WitnessTower.CommutatorSubgroup.InComm" [label="InComm\nSubstrate.WitnessTower.CommutatorSubgroup", style=rounded];
   "Substrate.WitnessTower.Complete._∈_" [label="_∈_\nSubstrate.WitnessTower.Complete", style=rounded];
   "Substrate.WitnessTower.Core.Path" [label="Path\nSubstrate.WitnessTower.Core", style=rounded];
   "Substrate.WitnessTower.Core.WSimplex" [label="WSimplex\nSubstrate.WitnessTower.Core", style=rounded];
@@ -1424,6 +1425,7 @@ digraph reuse {
   "Substrate.TokiPona.QParticles.QMarkedSentence" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.TokiPona.QTokiSentence.QTokiSentence" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.TokiPona.TokiSentence.TokiSentence" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.CommutatorSubgroup.InComm" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Complete._∈_" -> "Substrate.Foundation.List.List";
   "Substrate.WitnessTower.Core.Path" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Core.WSimplex" -> "Substrate.Foundation.Nat.ℕ";

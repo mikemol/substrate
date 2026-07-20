@@ -551,7 +551,7 @@
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQLambek#_×_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQNf#Wit</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Step</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tm</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tm</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Diverges</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#SN</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tag</loc><priority>0.0</priority></url>
@@ -566,7 +566,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.21</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
@@ -731,7 +731,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#CommutativeConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#ConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#ConditionalEntropy</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#MutualInformation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/KLDivergence#CrossEntropy</loc><priority>0.0</priority></url>
@@ -804,6 +804,7 @@
   <url><loc>https://substrate.local/Substrate/TokiPona/QParticles#QMarkedSentence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/TokiPona/QTokiSentence#QTokiSentence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/TokiPona/TokiSentence#TokiSentence</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/CommutatorSubgroup#InComm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Complete#_∈_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#Path</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#WSimplex</loc><priority>0.0</priority></url>
