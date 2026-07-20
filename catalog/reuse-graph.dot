@@ -50,6 +50,7 @@ digraph reuse {
   "Substrate.Algebra.Nat.GCD.EEATrace.EEATrace" [label="EEATrace\nSubstrate.Algebra.Nat.GCD.EEATrace", style=rounded];
   "Substrate.Algebra.Nat.GCD.Wedge.Wedge" [label="Wedge\nSubstrate.Algebra.Nat.GCD.Wedge"];
   "Substrate.Algebra.Nat.Prime.AllPrime" [label="AllPrime\nSubstrate.Algebra.Nat.Prime", style=rounded];
+  "Substrate.Algebra.ParityKernel.Universal._.Gr2Gen" [label="Gr2Gen\nSubstrate.Algebra.ParityKernel.Universal._", style=rounded];
   "Substrate.Algebra.PointedSet.Map._.PointedSetMap" [label="PointedSetMap\nSubstrate.Algebra.PointedSet.Map._"];
   "Substrate.Algebra.PointedSet._.PointedSet" [label="PointedSet\nSubstrate.Algebra.PointedSet._"];
   "Substrate.Algebra.Polynomial.Graded.Div.Over._.Linear" [label="Linear\nSubstrate.Algebra.Polynomial.Graded.Div.Over._"];
@@ -868,6 +869,7 @@ digraph reuse {
   "Substrate.Algebra.Nat.GCD.Wedge.Wedge" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Nat.Prime.AllPrime" -> "Substrate.Foundation.List.List";
   "Substrate.Algebra.Nat.Prime.AllPrime" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.ParityKernel.Universal._.Gr2Gen" -> "Substrate.Groups.Coxeter.Word.Word";
   "Substrate.Algebra.PointedSet.Map._.PointedSetMap" -> "Substrate.Algebra.PointedSet._.PointedSet";
   "Substrate.Algebra.Polynomial.Graded.Div.Over._.Linear" -> "Substrate.Algebra.CommutativeRing.CommutativeRing";
   "Substrate.Algebra.Polynomial.Graded.Div.Over._.Linear" -> "Substrate.Foundation.Nat.ℕ";

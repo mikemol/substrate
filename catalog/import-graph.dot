@@ -358,6 +358,7 @@ digraph imports {
   "Substrate.Algebra.Nat.Prime.Properties" [label="Prime.Properties"];
   "Substrate.Algebra.Nat.Units" [label="Nat.Units"];
   "Substrate.Algebra.Nat.WellFounded" [label="Nat.WellFounded"];
+  "Substrate.Algebra.ParityKernel.Universal" [label="ParityKernel.Universal"];
   "Substrate.Algebra.PointedSet" [label="Algebra.PointedSet"];
   "Substrate.Algebra.PointedSet.Map" [label="PointedSet.Map"];
   "Substrate.Algebra.Polynomial.Cyclotomic" [label="Polynomial.Cyclotomic"];
@@ -4567,6 +4568,12 @@ digraph imports {
   "Substrate.Algebra.Nat.Units" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Nat.WellFounded" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Nat.WellFounded" -> "Substrate.Foundation.WellFounded";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Algebra.F2";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Algebra.N-to-F2-Parity";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Foundation.Empty";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.ParityKernel.Universal" -> "Substrate.Groups.Coxeter.Word";
   "Substrate.Algebra.PointedSet" -> "Substrate.Foundation.Unit";
   "Substrate.Algebra.PointedSet.Map" -> "Substrate.Algebra.PointedSet";
   "Substrate.Algebra.PointedSet.Map" -> "Substrate.Foundation.Eq";

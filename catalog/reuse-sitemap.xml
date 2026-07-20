@@ -52,6 +52,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/GCD/EEATrace#EEATrace</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/GCD/Wedge#Wedge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/Prime#AllPrime</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/ParityKernel/Universal#Gr2Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PointedSet/Map#PointedSetMap</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PointedSet#PointedSet</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Div#Linear</loc><priority>0.0</priority></url>
