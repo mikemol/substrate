@@ -193,7 +193,7 @@
   <url><loc>https://substrate.local/Substrate/Category/CartanType#CartanType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#CascadedCoalgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#TripleCascade</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.09</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.08</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent#CentralizerDescent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent/Tree#DescentTree</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ChainDecomposition#ChainDecomposition</loc><priority>0.0</priority></url>
@@ -567,7 +567,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.18</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.2</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.21</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -827,6 +827,7 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#Objₛ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermAdjClosure#AdjGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeter4#AdjGen4</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterBraid#Sep</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral#CoxGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermGap#BraidGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor</loc><priority>0.01</priority></url>
