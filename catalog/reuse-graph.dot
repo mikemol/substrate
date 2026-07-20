@@ -807,6 +807,8 @@ digraph reuse {
   "Substrate.WitnessTower.Core.Path" [label="Path\nSubstrate.WitnessTower.Core", style=rounded];
   "Substrate.WitnessTower.Core.WSimplex" [label="WSimplex\nSubstrate.WitnessTower.Core", style=rounded];
   "Substrate.WitnessTower.DuplicateFree.NoDup" [label="NoDup\nSubstrate.WitnessTower.DuplicateFree", style=rounded];
+  "Substrate.WitnessTower.EvenInComm.AllInj1" [label="AllInj1\nSubstrate.WitnessTower.EvenInComm", style=rounded];
+  "Substrate.WitnessTower.EvenInComm.Tri" [label="Tri\nSubstrate.WitnessTower.EvenInComm", style=rounded];
   "Substrate.WitnessTower.FamilyWitness.FSimplex" [label="FSimplex\nSubstrate.WitnessTower.FamilyWitness", style=rounded];
   "Substrate.WitnessTower.GradeMapInvariant.GradeRole" [label="GradeRole\nSubstrate.WitnessTower.GradeMapInvariant", style=rounded];
   "Substrate.WitnessTower.LehmerPath.LehmerPath" [label="LehmerPath\nSubstrate.WitnessTower.LehmerPath", style=rounded];
@@ -1432,6 +1434,11 @@ digraph reuse {
   "Substrate.WitnessTower.Core.Path" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.Core.WSimplex" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.DuplicateFree.NoDup" -> "Substrate.Foundation.List.List";
+  "Substrate.WitnessTower.EvenInComm.AllInj1" -> "Substrate.Foundation.Fin.Fin";
+  "Substrate.WitnessTower.EvenInComm.AllInj1" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.WitnessTower.EvenInComm.AllInj1" -> "Substrate.Groups.Coxeter.Word.Word";
+  "Substrate.WitnessTower.EvenInComm.Tri" -> "Substrate.Foundation.Fin.Fin";
+  "Substrate.WitnessTower.EvenInComm.Tri" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.FamilyWitness.FSimplex" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.LehmerPath.LehmerPath" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.WitnessTower.SymBridge._.SymN.Permutation" -> "Substrate.Foundation.Nat.ℕ";

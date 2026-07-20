@@ -569,7 +569,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.21</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.22</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -810,6 +810,8 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#Path</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#WSimplex</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/DuplicateFree#NoDup</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/EvenInComm#AllInj1</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/EvenInComm#Tri</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/FamilyWitness#FSimplex</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/GradeMapInvariant#GradeRole</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/LehmerPath#LehmerPath</loc><priority>0.0</priority></url>

@@ -19,8 +19,8 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../..
 SCRIPTS := ../../../scripts
 
-FILES := AlgebraLadder.agda B3Split.agda Codeword.agda CodewordCountTies.agda CodewordSignEqualsStabParity.agda CodewordSignStep.agda CofreeDual.agda CommutatorSubgroup.agda Complete.agda Core.agda Counting.agda CycleType.agda CyclicCollapse.agda CyclicGrounding.agda Decompose.agda DetectorSignCrossing.agda Diagonal.agda DuplicateFree.agda EEAFoldTable.agda EEATower.agda EEAUnitBezout.agda Enumerate.agda FaceCount.agda FaceSet.agda FaceSetStabilizes.agda FactorisationApex.agda FaithfulnessApex.agda FaithfulnessBridge.agda FamilyWitness.agda FamilyWitnessAmbient.agda FirstAppearance.agda GradeMapInvariant.agda Hodge.agda HodgeGradeInvolution.agda InsertionParity.agda IsPermutation.agda KleinCensus.agda LehmerPath.agda LehmerTowerMorphism.agda LehmerTowerMorphismDischarged.agda Link.agda M40Action.agda M40Closure.agda M40Contrast.agda M40Gauge.agda M40Group.agda M40Groupoid.agda M40Iso.agda M40NoIso.agda ParityCoordIsoApex.agda PhiMultiplicity.agda Puncture.agda ResidueBridge.agda SharedMiddle.agda SignAbelianization.agda SignCommutator.agda SignEmbedVEven.agda SignFactorsThroughStab.agda SignGrade2Generated.agda SignStabTotal.agda SignStepCocycle.agda SignUniqueCharacter.agda SignZ2Coordinates.agda SimplicialBoundary.agda Sn.agda SnGroup.agda SnVersusTwoPow.agda SnVersusTwoPowTowers.agda SupportGrading.agda Surjective.agda SymBridge.agda TowerCocycleGraded.agda TowerFamilyApex.agda TowerLiftSplit.agda UniquenessBridge.agda V4Grounding.agda VecBoolCardinality.agda WedgeStep.agda WholeTower.agda WhyThreeV2.agda
-SUBDIRS := Wedge
+FILES := AlgebraLadder.agda B3Split.agda Codeword.agda CodewordCountTies.agda CodewordSignEqualsStabParity.agda CodewordSignStep.agda CofreeDual.agda CommutatorSubgroup.agda Complete.agda Core.agda Counting.agda CycleType.agda CyclicCollapse.agda CyclicGrounding.agda Decompose.agda DetectorSignCrossing.agda Diagonal.agda DuplicateFree.agda EEAFoldTable.agda EEATower.agda EEAUnitBezout.agda Enumerate.agda EvenInComm.agda FaceCount.agda FaceSet.agda FaceSetStabilizes.agda FactorisationApex.agda FaithfulnessApex.agda FaithfulnessBridge.agda FamilyWitness.agda FamilyWitnessAmbient.agda FirstAppearance.agda GradeMapInvariant.agda Hodge.agda HodgeGradeInvolution.agda InsertionParity.agda IsPermutation.agda KleinCensus.agda LehmerPath.agda LehmerTowerMorphism.agda LehmerTowerMorphismDischarged.agda Link.agda M40Action.agda M40Closure.agda M40Contrast.agda M40Gauge.agda M40Group.agda M40Groupoid.agda M40Iso.agda M40NoIso.agda ParityCoordIsoApex.agda PhiMultiplicity.agda Puncture.agda ResidueBridge.agda SharedMiddle.agda SignAbelianization.agda SignCommutator.agda SignEmbedVEven.agda SignFactorsThroughStab.agda SignGrade2Generated.agda SignStabTotal.agda SignStepCocycle.agda SignUniqueCharacter.agda SignZ2Coordinates.agda SimplicialBoundary.agda Sn.agda SnGroup.agda SnVersusTwoPow.agda SnVersusTwoPowTowers.agda SupportGrading.agda Surjective.agda SymBridge.agda TowerCocycleGraded.agda TowerFamilyApex.agda TowerLiftSplit.agda UniquenessBridge.agda V4Grounding.agda VecBoolCardinality.agda WedgeStep.agda WholeTower.agda WhyThreeV2.agda
+SUBDIRS := EvenInComm Wedge
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
@@ -49,6 +49,13 @@ files:
 
 subdirs: $(SUBDIRS)
 
+EvenInComm:
+	@if [ ! -f $@/Makefile ]; then \
+	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
+	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
+	fi
+	@$(MAKE) -C $@
+
 Wedge:
 	@if [ ! -f $@/Makefile ]; then \
 	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
@@ -61,10 +68,13 @@ ingest-files:
 	@for f in $(FILES); do \
 	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
 	done
-ingest-subdirs: Wedge.ingest
+ingest-subdirs: EvenInComm.ingest Wedge.ingest
+EvenInComm.ingest:
+	@$(MAKE) -C EvenInComm ingest
 Wedge.ingest:
 	@$(MAKE) -C Wedge ingest
 
 clean:
+	@$(MAKE) -C EvenInComm clean 2>/dev/null || true
 	@$(MAKE) -C Wedge clean 2>/dev/null || true
 	@true
