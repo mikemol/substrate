@@ -28,18 +28,18 @@
 -- exactly why the twisted route succeeds where the untwisted failed — the twist
 -- became the coordinate.
 --
--- WHAT REMAINS OPEN (honest bound). The FULL twisted sign-morphism
--- signF ∘ decode : LehmerPath n → F₂ as a GradedDivStrMorphism into the F₂
--- target needs the general law
+-- THE OBLIGATION — NOW DISCHARGED (◆tighten-insertion-parity, 2026-07-19). The
+-- FULL twisted sign-morphism needs the general law
 --     signF (decode (l ◂ p)) ≡ finParity p + signF (decode l)
--- i.e. the insertion-inversion-parity equals the digit parity on decoded perms.
--- This holds on every CONCRETE path tested (see the witnesses below) but is NOT
--- definitional — it requires the factoradic-digit ↔ inversion-count-parity lemma
--- (the sign character = parity of the inversion count, noted in
--- OrientationRigCatPermSignChirality, but not isolated as this single-insertion
--- parity fact). That lemma is the one open obligation; it is stated here as a
--- module parameter so the full morphism is CONDITIONALLY constructed, and the
--- concrete witnesses confirm it is not vacuous.
+-- (the factoradic-digit ↔ inversion-count-parity fact). It is PROVEN
+-- unconditionally in Substrate.WitnessTower.InsertionParity (Route B
+-- insertion-parity-B / Route A insertion-parity-A), and the discharge is a
+-- CHECKABLE TERM in Substrate.WitnessTower.LehmerTowerMorphismDischarged
+-- (obligation-discharged : this-parameter's-type = insertion-parity-B;
+-- twisted-lehmer-sign-morphism : the unconditional morphism). The
+-- `insertion-parity` parameter below is KEPT as the reusable interface (the
+-- conditional construction); InsertionParity supplies the witness. (No import
+-- here — that would cycle; the tie lives in the downstream Discharged module.)
 --
 -- --safe --without-K, no Σ / Set₁. Verified on Agda 2.8.0.
 ------------------------------------------------------------------------
