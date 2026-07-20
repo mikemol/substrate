@@ -1690,6 +1690,7 @@ digraph imports {
   "Substrate.TokiPona.QTokiSentence" [label="TokiPona.QTokiSentence"];
   "Substrate.TokiPona.SemanticSpace" [label="TokiPona.SemanticSpace"];
   "Substrate.TokiPona.TokiSentence" [label="TokiPona.TokiSentence"];
+  "Substrate.WitnessTower.AbelBetaCollapse" [label="WitnessTower.AbelBetaCollapse"];
   "Substrate.WitnessTower.AlgebraLadder" [label="WitnessTower.AlgebraLadder"];
   "Substrate.WitnessTower.B3Split" [label="WitnessTower.B3Split"];
   "Substrate.WitnessTower.Codeword" [label="WitnessTower.Codeword"];
@@ -12592,6 +12593,17 @@ digraph imports {
   "Substrate.TokiPona.TokiSentence" -> "Substrate.Foundation.Nat";
   "Substrate.TokiPona.TokiSentence" -> "Substrate.Foundation.Vec";
   "Substrate.TokiPona.TokiSentence" -> "Substrate.TokiPona.SemanticSpace";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.CyclicGrounding";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.FirstAppearance";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.SignAbelianization";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.SnGroup";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid";
+  "Substrate.WitnessTower.AbelBetaCollapse" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
   "Substrate.WitnessTower.AlgebraLadder" -> "Substrate.Algebra.AbelianGroup";
   "Substrate.WitnessTower.AlgebraLadder" -> "Substrate.Algebra.Group";
   "Substrate.WitnessTower.AlgebraLadder" -> "Substrate.Algebra.Magma";
