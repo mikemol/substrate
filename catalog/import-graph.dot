@@ -1757,6 +1757,7 @@ digraph imports {
   "Substrate.WitnessTower.SignZ2Coordinates" [label="WitnessTower.SignZ2Coordinates"];
   "Substrate.WitnessTower.SimplicialBoundary" [label="WitnessTower.SimplicialBoundary"];
   "Substrate.WitnessTower.Sn" [label="WitnessTower.Sn"];
+  "Substrate.WitnessTower.SnAbCharacterBridge" [label="WitnessTower.SnAbCharacterBridge"];
   "Substrate.WitnessTower.SnGroup" [label="WitnessTower.SnGroup"];
   "Substrate.WitnessTower.SnVersusTwoPow" [label="WitnessTower.SnVersusTwoPow"];
   "Substrate.WitnessTower.SnVersusTwoPowTowers" [label="WitnessTower.SnVersusTwoPowTowers"];
@@ -13297,6 +13298,19 @@ digraph imports {
   "Substrate.WitnessTower.Sn" -> "Substrate.WitnessTower.DuplicateFree";
   "Substrate.WitnessTower.Sn" -> "Substrate.WitnessTower.Enumerate";
   "Substrate.WitnessTower.Sn" -> "Substrate.WitnessTower.IsPermutation";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Algebra.F2";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Algebra.F2.FromBool";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Algebra.ParityKernel.Universal";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Category.FreeUniversalProperty.FreeMonoid";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.Groups.Coxeter.Word";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.WitnessTower.SignGrade2Generated";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral";
+  "Substrate.WitnessTower.SnAbCharacterBridge" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
   "Substrate.WitnessTower.SnGroup" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.SnGroup" -> "Substrate.Foundation.Fin";
   "Substrate.WitnessTower.SnGroup" -> "Substrate.Foundation.Nat";
