@@ -37,6 +37,8 @@ open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
 open import Substrate.Algebra.R.Trace.Final using (ana-unique)
 open import Substrate.Algebra.R.Trace.RationalAdjunction using (reconstruct; eea-unit)
 open import Substrate.WitnessTower.EEATower using (digit-agreement)
+open import Substrate.Algebra.Wedge.NuShapeIso using (shape-is-canonical)
+open import Substrate.Algebra.Wedge.Shape.Double.InternedEffectivity using (corr⇔addr)
 
 ------------------------------------------------------------------------
 -- 1. The dual pair, named in one place.
@@ -63,3 +65,29 @@ generator-recovers a b = eea-unit (gcd-trace a b)
 -- the CF shape DETERMINES the (coprime) value by `≡` — the generator is faithful,
 -- so the cofree `~`-side reduces to `≡` wherever the generator is finite.
 generator-faithful = cf-injective
+
+------------------------------------------------------------------------
+-- 3. THE ν-SIDE AT FINITE GRADE — the interner (⟡sppf-quotient-coapex).
+--
+-- The μ⊣ν pair above is determination (unique map OUT of the initial algebra)
+-- against identification (identity IN the terminal coalgebra, where `~` IS
+-- equality). The INTERNER is the identification half read at FINITE grade:
+--
+--   Corr t₁ t₂ = shape t₁ ≡ shape t₂          -- kernel of the shape-projection
+--   corr⇔addr                                  -- that kernel IS address-equality
+--
+-- and `NuShapeIso` is what makes this one structure rather than an analogy: the
+-- finite shape-projection (Wedge.Shape.shape, a List) and the infinite one (the
+-- RealTrace stream) are the SAME projection at two grades, whose canonicity
+-- `shape-is-canonical` is literally `ana-unique (quotient-coalg co)`.
+--
+-- So the interner's effectivity is not a third instance of the μ-side
+-- uniqueness shape (see UniquenessBridge for that naming boundary) — it is the
+-- ν side, finitely. Recorded here because THIS is where the dual pair lives.
+------------------------------------------------------------------------
+
+-- the ν-uniqueness of the shape-projection (= ana-unique at the quotient coalgebra).
+shape-projection-uniqueness = shape-is-canonical
+
+-- the same projection at FINITE grade: its kernel is exactly address-equality.
+interner-effectivity = corr⇔addr
