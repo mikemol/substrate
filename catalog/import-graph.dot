@@ -626,6 +626,7 @@ digraph imports {
   "Substrate.Algebra.Z.Add" [label="Z.Add"];
   "Substrate.Algebra.Z.Bezout" [label="Z.Bezout"];
   "Substrate.Algebra.Z.Bezout.Examples" [label="Bezout.Examples"];
+  "Substrate.Algebra.Z.CommRing" [label="Z.CommRing"];
   "Substrate.Algebra.Z.Coprime" [label="Z.Coprime"];
   "Substrate.Algebra.Z.Euclid" [label="Z.Euclid"];
   "Substrate.Algebra.Z.JacobianResidue" [label="Z.JacobianResidue"];
@@ -6471,6 +6472,16 @@ digraph imports {
   "Substrate.Algebra.Z.Bezout.Examples" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.Bezout.Examples" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Bezout.Examples" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.AbelianGroup";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.CommutativeRing";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Group";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Ring";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Semiring.Instances.Z";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Z.Properties.Add";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Algebra.Z.Properties.Mul";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Foundation.Empty";
+  "Substrate.Algebra.Z.CommRing" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.Coprime" -> "Substrate.Algebra.Nat.Divides.One";
   "Substrate.Algebra.Z.Coprime" -> "Substrate.Algebra.Nat.Divides.Type";
   "Substrate.Algebra.Z.Coprime" -> "Substrate.Algebra.Nat.GCD.ComputeTrace";

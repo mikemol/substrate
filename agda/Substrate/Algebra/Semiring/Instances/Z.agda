@@ -16,13 +16,19 @@
 -- the distinction the four-gauge split exists to make.
 --
 -- ⚑ THE SHARED ADDITIVE MONOID. `ℤ-+-Monoid` is a TOP-LEVEL definition, not
--- inlined into the record: ANY downstream structure that fields both this
--- semiring and the same additive monoid separately would build two distinct
--- `mk-monoid` applications, so a coherence law between them could not be `refl`
--- and downstream `subst`s would go opaque. Sharing the term keeps it
--- definitional. ⚑ This is term hygiene, NOT a claim that a `Ring ℤ` is the
--- destination — negation is reached by TRANSPORT through `ExpLogCodec`, not by
--- climbing to a ring; see §4.
+-- inlined into the record, so any downstream structure fielding both this
+-- semiring and the same additive monoid (e.g. `Ring ℤ`, whose `+-coherent`
+-- relates them) gets ONE term on both sides.
+--
+-- ⚠ CORRECTION, MEASURED. This module first claimed that rebuilding via a
+-- second `mk-monoid` application would yield DISTINCT terms and break such a
+-- coherence law. **That is false** — `mk-monoid` is transparent, so identical
+-- arguments normalize identically and `refl` goes through either way. What
+-- actually breaks definitional equality is LAW-PROOF DRIFT (a
+-- propositionally-equal but definitionally-different identity/assoc proof on
+-- one side). Sharing this term is still right, but as drift-PROOFING, not
+-- because rebuilding is fatal. Full probe + the failing case:
+-- `Algebra/Z/CommRing.agda` header.
 --
 -- ⚑ THE ARGUMENT ORDER MATCHES DIRECTLY, unlike ℕ. `Semiring.distrib-right`
 -- wants `(a + b) * c ≡ (a * c) + (b * c)`, and `*ℤ-distribʳ-+` is stated in
