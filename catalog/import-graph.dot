@@ -470,6 +470,7 @@ digraph imports {
   "Substrate.Algebra.R.Trace.OrbitComplete" [label="Trace.OrbitComplete"];
   "Substrate.Algebra.R.Trace.OrbitFaithful" [label="Trace.OrbitFaithful"];
   "Substrate.Algebra.R.Trace.OrbitUniversality" [label="Trace.OrbitUniversality"];
+  "Substrate.Algebra.R.Trace.PeriodicCover" [label="Trace.PeriodicCover"];
   "Substrate.Algebra.R.Trace.Properties" [label="Trace.Properties"];
   "Substrate.Algebra.R.Trace.RationalAdjunction" [label="Trace.RationalAdjunction"];
   "Substrate.Algebra.R.Trace.SKIAllegoryFixpoints" [label="Trace.SKIAllegoryFixpoints"];
@@ -5458,6 +5459,14 @@ digraph imports {
   "Substrate.Algebra.R.Trace.OrbitUniversality" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.R.Trace.OrbitUniversality" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.R.Trace.OrbitUniversality" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Algebra.R.Trace";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Algebra.R.Trace.Bisim";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Algebra.R.Trace.OrbitFaithful";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Algebra.R.Trace.OrbitUniversality";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Foundation.Bool";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.R.Trace.PeriodicCover" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.R.Trace.Properties" -> "Substrate.Algebra.R.Trace";
   "Substrate.Algebra.R.Trace.Properties" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.R.Trace.Properties" -> "Substrate.Algebra.Z.Add";
