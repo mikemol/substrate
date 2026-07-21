@@ -15,12 +15,14 @@
 -- have NO additive inverses (see §4). Filing ℤ among them would blur exactly
 -- the distinction the four-gauge split exists to make.
 --
--- ⚑ THE SHARED ADDITIVE MONOID (load-bearing for the sequel). `ℤ-+-Monoid` is
--- a TOP-LEVEL definition, not inlined into the record. A `Ring ℤ` fields both
--- a `Semiring` and an additive `AbelianGroup`, with a `+-coherent` law saying
--- the two agree; if each side builds its own `mk-monoid` application those are
--- distinct terms and `+-coherent` cannot be `refl` — every downstream `subst`
--- then goes opaque. Sharing THIS term keeps it definitional.
+-- ⚑ THE SHARED ADDITIVE MONOID. `ℤ-+-Monoid` is a TOP-LEVEL definition, not
+-- inlined into the record: ANY downstream structure that fields both this
+-- semiring and the same additive monoid separately would build two distinct
+-- `mk-monoid` applications, so a coherence law between them could not be `refl`
+-- and downstream `subst`s would go opaque. Sharing the term keeps it
+-- definitional. ⚑ This is term hygiene, NOT a claim that a `Ring ℤ` is the
+-- destination — negation is reached by TRANSPORT through `ExpLogCodec`, not by
+-- climbing to a ring; see §4.
 --
 -- ⚑ THE ARGUMENT ORDER MATCHES DIRECTLY, unlike ℕ. `Semiring.distrib-right`
 -- wants `(a + b) * c ≡ (a * c) + (b * c)`, and `*ℤ-distribʳ-+` is stated in
@@ -104,17 +106,40 @@ add-computes = refl
 mul-sign-computes : (-suc 0) *ℤ (-suc 0) ≡ (+ 1)
 mul-sign-computes = refl
 
--- ⚑ THE POLE THAT MATTERS, AND THE FORWARD POINTER. `Semiring` has no
--- inverse field, so this fact is INVISIBLE in the record above — yet it is
--- exactly why ℤ is not a job gauge and why a `Ring ℤ` is reachable. Named
--- here so the omission is a stated boundary, not a silent one.
+-- ⚑ THE POLE THAT MATTERS — AND IT IS THE CODEC'S `invˡ`, NOT A RING POINTER.
+-- This is EXACTLY the hypothesis `ExpLogCodec.Inverse` takes (`ExpLogCodec.agda:
+-- 66-68`: `invˡ : (x : L) → x ⊕ neg x ≡ 𝟘`) at L = ℤ, ⊕ = `_+ℤ_`, neg = `-ℤ_`,
+-- 𝟘 = 0ℤ. Supplying it is what makes every `expL x` a UNIT with inverse
+-- `expL (neg x)` (`codec-inverse`, `:73-77`). ℤ is the LOG side of the live
+-- instance `ℤ-power-codec : ExpLogCodecℚ ℤ` (`GValueLSpace/Primes.agda:209`;
+-- `Properties.agda:137` — "L=ℤ a GROUP via `_+ℤ_`"), so this term is the ℤ-side
+-- entry point to that codec, not a waypoint toward a ring.
 ℤ-additive-inverse : (x : ℤ) → x +ℤ (-ℤ x) ≡ 0ℤ
 ℤ-additive-inverse = +ℤ-inverseʳ
 
--- HONEST BOUNDARY. `Semiring` fields neither COMMUTATIVITY (its own header,
--- `Semiring.agda:31-32`, says additive commutativity "is a separate field, not
--- here") nor NEGATION. Both are proven for ℤ already — `+ℤ-comm`
--- (`Z/Properties/Add.agda:57`), `*ℤ-comm` (`Z/Properties/Mul.agda:59`),
--- `+ℤ-inverseˡ`/`ʳ` (`:102,97`) — and they are what a `Ring ℤ` / `CommutativeRing ℤ`
--- will consume. This module claims ONLY the semiring structure; it does not
--- claim, and must not be cited for, the ring.
+-- ⚑ WHAT THE RECORD DOES NOT FIELD IS THE DISCIPLINE, NOT A GAP.
+-- `Semiring` fields neither commutativity nor negation because THIS SUBSTRATE
+-- DOES NOT STUFF STRUCTURE INTO RECORDS — it takes it as MODULE PARAMETERS and
+-- lets the consumer name it. `ExpLogCodec.agda:30-33` performs exactly this move
+-- for exactly this reason ("the additive L-space carrier was a `L : Set` field,
+-- forcing Set₁; taking it as the module parameter keeps the record in Set, and
+-- the CONSUMER names it"). So the absent fields are a design commitment, and
+-- reading them as a deficiency the way a `Ring` would repair is backwards.
+--
+-- ⚑ AND NEGATION IS AVAILABLE IN A SEMIRING — VIA log / involute-over-1 / antilog.
+-- You do NOT add inverses to the carrier (that is what the four gauges decline,
+-- §4 above). You TRANSPORT: `exp-⊕ : expL (a ⊕ b) ≈ expL a · expL b` carries the
+-- additive side to the multiplicative side, the involution about 𝟙 (reciprocal)
+-- acts there, and the antilog returns. `ExpLogCodec.agda:47-56` states the result
+-- outright — "the reciprocal involution IS the additive negation transported by
+-- exp; no multiplicative-inverse axiom is needed, it is DERIVED."
+-- ADDITIVE COMMUTATIVITY IS THE SAME BRIDGE: `a ⊕ b` and `b ⊕ a` cross to
+-- `expL a · expL b` and `expL b · expL a`, which `*-comm` identifies — so ⊕-comm
+-- is read off the multiplicative side, not fielded.
+--
+-- HONEST SCOPE. Those two transports are the ROUTE, stated here because this
+-- module's §4 previously mis-pointed them at `Ring`/`CommutativeRing`; they are
+-- NOT built in this file. Building them at ℤ is ⟡jac-neg-three-routes Route B
+-- (the ruled-PREFERRED route). `+ℤ-comm` (`Z/Properties/Add.agda:57`) and
+-- `*ℤ-comm` (`Z/Properties/Mul.agda:59`) are proven and available; this module
+-- claims only the semiring structure.
