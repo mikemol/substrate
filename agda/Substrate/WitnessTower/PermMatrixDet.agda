@@ -19,23 +19,21 @@
 -- permutation determinant." Both halves of the premise are now false: the
 -- determinant IS built (LeibnizDet, the genuine Leibniz sum — not a fake), and
 -- `Pmat` IS a permutation matrix. The identity is verified here at n = 2, 3;
--- what remains is only the GENERAL theorem (labelled below), so it is no longer
--- a "coincidence" — it is a checked identity awaiting its ∀-n proof.
+-- the GENERAL ∀-n theorem is now also BUILT, so it is no longer a "coincidence"
+-- — it is a checked identity at every arity.
 --
 -- ⚑ THE GENERAL THEOREM ⟡leibniz-det-perm-general — det (P σ) ≡ signVal (signF σ)
--- 1A for ALL σ — is DE-RISKED (route worked out, no wall), NOT yet built:
---   (1) `mono l M ≡ Πⱼ M[combine j (decode l j)]` — the cofactor fold equals the
---       direct indexed product. Induction on l: `minor p M`'s definition unfolds
---       against `remQuot (combine k j) ≡ (k , j)` (the PROVEN round-trip), so the
---       cofactor tail matches the direct product's tail with NO permutation-
---       matrix-specific lemma. (~50 lines.)
---   (2) `Πⱼ (P σ)[j, τ j]` is 1A if τ = σ (product of ones) and 0A otherwise
---       (some factor is 0A by the column indicator; 0 annihilates via the
---       semiring's zero-absorb). (~40 lines.)
---   (3) sum-collapse: `sumF` of a one-hot function is its nonzero value
---       (`enumerate-surjective` locates σ's index; 0-identities fold past the
---       rest). (~40 lines.)
---   Assembly gives the theorem. This is its own focused arc.
+-- 1A for ALL σ — is BUILT in `WitnessTower.LeibnizDetPerm` (`DetPerm.det-P`), via
+--   (1) `LeibnizMonomialDirect.mono≡dprod` — the cofactor fold equals the direct
+--       indexed product (`remQuot-combine`, no perm-matrix-specific lemma);
+--   (2) `indicator-0`/`indicator-1` — `Πⱼ (P σ)[j, τ j]` is 1A iff τ = σ (else a
+--       0A factor annihilates via the semiring's zero-absorb);
+--   (3) `sumF-onehot` — the one-hot `sumF` collapse over the Sₙ enumeration
+--       (`enumerate-surjective`/`-injective`).
+-- Plus the tower ◂-step `DetPerm.det-P-◂` (via `insertion-parity-B`): det∘P∘decode
+-- is a parity character over the ordering tower. `Pmat` here is the concrete
+-- nested-`with` refl witness at n = 2, 3; `LeibnizDetPerm.Pmat` is the δ-based
+-- ∀-n form — the same permutation matrix, two presentations.
 --
 -- Zero postulates, zero holes.
 ------------------------------------------------------------------------
