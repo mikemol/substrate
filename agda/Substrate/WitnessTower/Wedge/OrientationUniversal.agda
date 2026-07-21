@@ -58,15 +58,52 @@ fold alg (l ◂ p)  = step alg (fold alg l) p
 -- 3. UNIVERSALITY: any map g that respects the algebra structure IS the fold. The proof is
 --    the two-tower-meet witnessed grade-by-grade (LehmerPath induction) — the Set₀
 --    higher-order witness, structurally identical to OrientationFixedPoint's decode-injective.
+--
+-- ⚑ THE TARGET EQUALITY IS A PARAMETER (⟡fold-unique-over). `fold-unique` below is stated at
+-- `_≡_`, and for a Set₀ point-carrier that is the right and only equality. But a
+-- FUNCTION-VALUED carrier (C n = Fin (n * n) → A, the flat matrix; or `Endo n = Fin n → Fin n`,
+-- OrientationBimonoidal:102) has no useful `_≡_` without funext — its consumers already work at
+-- the POINTWISE equality instead (`_≐_`, "the funext-free target equality",
+-- OrientationUniversalOver:76; `lookup-hom : GradedHomOver ⊗-over endo-over _≐_`). So the
+-- uniqueness must be stated over the equality too, exactly as `GradedHomOver` relaxes
+-- `GradedDivStrMorphism`'s hardcoded `_≡_` one layer down (OrientationBimonoidal:59-68). It is
+-- the SAME relaxation applied to the initiality rather than to the morphism.
+--
+-- ⚑ WHAT `_≈_` MUST SATISFY — AND WHAT IT NEED NOT. The induction consumes exactly two things:
+-- TRANSITIVITY (to chain the step hypothesis with the recursive call) and STEP-CONGRUENCE (to
+-- push the recursive equality under `step alg _ p`). It needs NEITHER reflexivity NOR symmetry,
+-- so `_≈_` need not be an equivalence — a preorder congruent for `step` suffices. Stating the
+-- requirement exactly (rather than demanding an equivalence for tidiness) is the same
+-- discipline `GradedHomOver` records at :61-62.
+--
+-- `fold-unique` is then this theorem's `_≡_` INSTANCE, not a parallel proof — so the ~12
+-- existing call sites are unchanged, and the two readings are identified by construction
+-- rather than asserted in prose.
 ------------------------------------------------------------------------
 
+fold-unique-over :
+  ∀ {C : ℕ → Set}
+    (_≈_ : {n : ℕ} → C n → C n → Set)
+    (≈-trans : {n : ℕ} {x y z : C n} → x ≈ y → y ≈ z → x ≈ z)
+    (alg : LehmerAlgebra C)
+    (≈-step : {n : ℕ} {x y : C n} (p : Fin (suc n)) → x ≈ y →
+              step alg x p ≈ step alg y p)
+    (g : ∀ {n} → LehmerPath n → C n) →
+    (g start ≈ base alg) →
+    (∀ {n} (l : LehmerPath n) (p : Fin (suc n)) → g (l ◂ p) ≈ step alg (g l) p) →
+    ∀ {n} (l : LehmerPath n) → g l ≈ fold alg l
+fold-unique-over _≈_ ≈-trans alg ≈-step g g-base g-step start   = g-base
+fold-unique-over _≈_ ≈-trans alg ≈-step g g-base g-step (l ◂ p) =
+  ≈-trans (g-step l p)
+          (≈-step p (fold-unique-over _≈_ ≈-trans alg ≈-step g g-base g-step l))
+
+-- the `_≡_` instance — the original statement, now DERIVED (the co-apex identification).
 fold-unique : ∀ {C} (alg : LehmerAlgebra C) (g : ∀ {n} → LehmerPath n → C n) →
               (g start ≡ base alg) →
               (∀ {n} (l : LehmerPath n) (p : Fin (suc n)) → g (l ◂ p) ≡ step alg (g l) p) →
               ∀ {n} (l : LehmerPath n) → g l ≡ fold alg l
-fold-unique alg g g-base g-step start    = g-base
-fold-unique alg g g-base g-step (l ◂ p)  =
-  trans (g-step l p) (cong (λ z → step alg z p) (fold-unique alg g g-base g-step l))
+fold-unique alg =
+  fold-unique-over _≡_ trans alg (λ p e → cong (λ z → step alg z p) e)
 
 ------------------------------------------------------------------------
 -- 4. THE FOLD IS A ⊕-HOMOMORPHISM (the additive half of the rig-functor UP). If the target

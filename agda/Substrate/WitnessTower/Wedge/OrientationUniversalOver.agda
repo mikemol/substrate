@@ -36,11 +36,11 @@ open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Vec using (Vec; lookup; tabulate)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath)
+open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
-  using (LehmerAlgebra; base; step; fold; fold-⊕)
+  using (LehmerAlgebra; base; step; fold; fold-⊕; fold-unique-over)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; GradedHomOver; Endo; u; _∧_; map₀; map-u; map-∧)
@@ -105,3 +105,38 @@ lookup-hom = record
   ; map-u = lookup-1#-id
   ; map-∧ = lookup-⊗-combine
   }
+
+------------------------------------------------------------------------
+-- 3. ⟡fold-unique-over — THE INITIALITY REACHES THE POINTWISE SIDE TOO.
+--
+-- This module already carries the `_≡_` / `_≐_` split at the HOMOMORPHISM level:
+-- §1's `fold-hom` lands at `_≡_`, while §2's `lookup-hom` MUST land at `_≐_`,
+-- because `Endo n = Fin n → Fin n` is function-valued and `_≡_` on it needs
+-- funext. The split reaches the INITIALITY identically — `fold-unique`
+-- (OrientationUniversal) is ≡-stated, so it can conclude nothing about a
+-- function-valued carrier — and it is closed the same way: by taking the target
+-- equality as a parameter (`fold-unique-over`), exactly as `GradedHomOver`
+-- relaxes `GradedDivStrMorphism`'s hardcoded `_≡_`.
+--
+-- The instance below is the NON-VACUITY POLE for that generalization: it is
+-- stated at the REAL `Endo` carrier this module already uses, not a synthetic
+-- one, so it witnesses a conclusion `fold-unique` cannot reach.
+------------------------------------------------------------------------
+
+-- transitivity is one of the two things the induction consumes (the other is the
+-- step-congruence, supplied per-algebra below). Note `_≐_` is NOT assumed to be
+-- an equivalence: no ≐-refl or ≐-sym is needed or defined here.
+≐-trans : {n : ℕ} {x y z : Endo n} → x ≐ y → y ≐ z → x ≐ z
+≐-trans p q k = trans (p k) (q k)
+
+-- Initiality of the ordering tower at a FUNCTION-VALUED carrier, POINTWISE:
+-- any g respecting (base, step) up to `_≐_` IS the fold, up to `_≐_`.
+fold-unique-≐ :
+  (alg : LehmerAlgebra Endo)
+  (≐-step : {n : ℕ} {x y : Endo n} (p : Fin (suc n)) →
+            x ≐ y → step alg x p ≐ step alg y p)
+  (g : ∀ {n} → LehmerPath n → Endo n) →
+  (g start ≐ base alg) →
+  (∀ {n} (l : LehmerPath n) (p : Fin (suc n)) → g (l ◂ p) ≐ step alg (g l) p) →
+  ∀ {n} (l : LehmerPath n) → g l ≐ fold alg l
+fold-unique-≐ alg ≐-step = fold-unique-over _≐_ ≐-trans alg ≐-step
