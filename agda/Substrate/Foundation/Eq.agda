@@ -41,6 +41,17 @@ cong₂ f refl refl = refl
 subst : {A : Set a} (P : A → Set b) {x y : A} → x ≡ y → P x → P y
 subst _ refl p = p
 
+-- `subst` over a CONSTANT family is the identity. Agda cannot reduce this
+-- under an abstract proof, so the step must be named — and it recurs: it was
+-- proved locally at OrientationRigCatSym (Σ-≡ pairing, the second component
+-- transported along the first) and again at Algebra.Z.JacobianNegSemiring
+-- (GradedAssocOver at a constant carrier family). Same shape, same argument
+-- order (proof, value); homed here beside `subst`, level-polymorphic.
+-- (⟡subst-const-home — DISCHARGED.)
+subst-const : {A : Set a} {B : Set b} {x y : A} (p : x ≡ y) (v : B) →
+              subst (λ _ → B) p v ≡ v
+subst-const refl v = refl
+
 ------------------------------------------------------------------------
 -- Naturality-step combinator: `trans (cong f p) q` packaged as one
 -- inference rule. Categorically a chain-cong / naturality-square step;

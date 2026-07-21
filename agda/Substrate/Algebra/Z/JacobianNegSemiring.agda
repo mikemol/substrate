@@ -39,7 +39,8 @@
 
 module Substrate.Algebra.Z.JacobianNegSemiring where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; sym; trans; cong; subst; subst-const)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-suc; +-identityʳ; +-assoc)
@@ -52,19 +53,14 @@ open import Substrate.Algebra.Z.JacobianResidue
   using (mono; detJac; coeff; constant-part)
 
 ------------------------------------------------------------------------
--- 0. A Foundation gap, homed locally.
---
--- `subst` over a CONSTANT family is the identity, but Agda cannot reduce it
--- under an abstract proof. Not in `Foundation.Eq` (checked). Its proper home is
--- there; kept local to avoid a Foundation edit inside a Route-C commit.
--- → ⟡subst-const-home.
-------------------------------------------------------------------------
-
-subst-const : {A B : Set} {x y : A} (p : x ≡ y) (b : B) → subst (λ _ → B) p b ≡ b
-subst-const refl b = refl
-
-------------------------------------------------------------------------
 -- 1. THE CARRIER — an instance of the existing graded product.
+--
+-- ⚑ `subst-const` (constant-family `subst` is the identity) was homed LOCALLY
+-- here, flagged ⟡subst-const-home. DISCHARGED: it now lives in
+-- `Foundation.Eq`, level-polymorphic — and the move was a DEDUP, not merely a
+-- relocation: the same lemma had also been proved at
+-- `WitnessTower/Wedge/OrientationRigCatSym.agda`. Both route through the
+-- Foundation copy.
 ------------------------------------------------------------------------
 
 Diff : GradedProductOver _+_ zero (λ _ → ℕ)

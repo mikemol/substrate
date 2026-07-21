@@ -52,7 +52,8 @@ module Substrate.WitnessTower.Wedge.OrientationRigCatSym where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
 open import Substrate.Foundation.Fin using (Fin; _≟_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
+open import Substrate.Foundation.Eq
+  using (_≡_; refl; sym; trans; cong; subst; subst-const)
 open import Substrate.Foundation.Product
   using (Σ; _,_; proj₁; proj₂; _×_; Σ-≡,≡→≡)
 open import Substrate.Foundation.Vec using (lookup; tabulate)
@@ -88,9 +89,9 @@ private
 perm-UIP : {n : ℕ} {σ τ : Perm n} (p q : σ ≡ τ) → p ≡ q
 perm-UIP {n} = Decidable⇒UIP (≡-dec (_≟_ {n}))
 
--- subst over a CONSTANT family is the identity (up to ≡).
-subst-const : {A B : Set} {x y : A} (e : x ≡ y) (b : B) → subst (λ _ → B) e b ≡ b
-subst-const refl b = refl
+-- (`subst-const` — constant-family `subst` is the identity — was proved here
+-- locally; it is now imported from `Foundation.Eq`, level-polymorphic. The
+-- second consumer that forced the home is `Algebra.Z.JacobianNegSemiring`.)
 
 -- a product of two mere propositions is a mere proposition (funext-free:
 -- the components are ≡-in-a-set, Σ-≡ closes the pair).

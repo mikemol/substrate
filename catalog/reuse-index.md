@@ -168,7 +168,7 @@ One elaborated-members fingerprint (kind + ctor/field names) reached by ≥2 dis
 | `_≈ᶜ_` | record | `Substrate.Category.UniversalProperty.ExtrudeIOCostreamBisim` | ⟡extrude-coio-bisim: bisimilarity on the |
 | `_≈ₐ_` | data | `Substrate.Invented.LieFragment.AntiCommutativity` | D3 of the Closure-debt arc per [scratch/closure_arc_plan.md]. |
 | `_≋_` | record | `Substrate.FUSep.ObsBisim` | ⟡FU-sep, via CrossMul + CrossEquality (operator's pointer). |
-| `_≡_` | data | `Substrate.Foundation.Eq` | Substrate-native propositional equality. Phase 2: native datatype + |
+| `_≡_` | data | `Substrate.Foundation.Eq` | and it recurs: it was |
 | `_≤_` | data | `Substrate.Foundation.Nat` | do NOT bind BUILTIN NATPLUS / NATTIMES downstream. |
 | `_≤ℤ_` | data | `Substrate.Algebra.Q.Order` | Q6 of the constructive ℚ arc per [scratch/q_arc_plan.md]. |
 | `_⊎-OR_` | data | `Substrate.Linguistic.Classification` | this slice |
