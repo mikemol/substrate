@@ -422,6 +422,7 @@ digraph imports {
   "Substrate.Algebra.Quotient.CRT.Idempotents" [label="CRT.Idempotents"];
   "Substrate.Algebra.Quotient.CRT.Inverses" [label="CRT.Inverses"];
   "Substrate.Algebra.Quotient.CRT.WedgeBridge" [label="CRT.WedgeBridge"];
+  "Substrate.Algebra.Quotient.CanonicalRec" [label="Quotient.CanonicalRec"];
   "Substrate.Algebra.Quotient.Coxeter" [label="Quotient.Coxeter"];
   "Substrate.Algebra.Quotient.F2Parity" [label="Quotient.F2Parity"];
   "Substrate.Algebra.Quotient.IRRetraction" [label="Quotient.IRRetraction"];
@@ -5164,6 +5165,9 @@ digraph imports {
   "Substrate.Algebra.Quotient.CRT.WedgeBridge" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Quotient.CRT.WedgeBridge" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.Quotient.CRT.WedgeBridge" -> "Substrate.Logic.Evidence.ElAtlas.CenterIsStarCRT";
+  "Substrate.Algebra.Quotient.CanonicalRec" -> "Substrate.Algebra.Quotient";
+  "Substrate.Algebra.Quotient.CanonicalRec" -> "Substrate.Category.UniversalProperty.Quotient";
+  "Substrate.Algebra.Quotient.CanonicalRec" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Quotient.Coxeter" -> "Substrate.Algebra.Quotient";
   "Substrate.Algebra.Quotient.Coxeter" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Quotient.F2Parity" -> "Substrate.Algebra.F2";
