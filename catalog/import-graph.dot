@@ -1756,6 +1756,7 @@ digraph imports {
   "Substrate.WitnessTower.M40Iso" [label="WitnessTower.M40Iso"];
   "Substrate.WitnessTower.M40NoIso" [label="WitnessTower.M40NoIso"];
   "Substrate.WitnessTower.ParityCoordIsoApex" [label="WitnessTower.ParityCoordIsoApex"];
+  "Substrate.WitnessTower.PermMatrixDet" [label="WitnessTower.PermMatrixDet"];
   "Substrate.WitnessTower.PhiMultiplicity" [label="WitnessTower.PhiMultiplicity"];
   "Substrate.WitnessTower.Puncture" [label="WitnessTower.Puncture"];
   "Substrate.WitnessTower.ResidueBridge" [label="WitnessTower.ResidueBridge"];
@@ -13279,6 +13280,19 @@ digraph imports {
   "Substrate.WitnessTower.ParityCoordIsoApex" -> "Substrate.WitnessTower.SignEmbedVEven";
   "Substrate.WitnessTower.ParityCoordIsoApex" -> "Substrate.WitnessTower.SignStabTotal";
   "Substrate.WitnessTower.ParityCoordIsoApex" -> "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Algebra.F2";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Algebra.Semiring.Instances.Z";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Algebra.Z";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Fin.RemQuot";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Negation";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.WitnessTower.Enumerate";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.WitnessTower.LeibnizDet";
+  "Substrate.WitnessTower.PermMatrixDet" -> "Substrate.WitnessTower.TowerCocycleGraded";
   "Substrate.WitnessTower.PhiMultiplicity" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.PhiMultiplicity" -> "Substrate.Foundation.Nat";
   "Substrate.WitnessTower.PhiMultiplicity" -> "Substrate.Foundation.Nat.Properties.Add";

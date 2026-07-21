@@ -5,12 +5,23 @@
 -- (OrientationRigCatPermSign) is the FIFTH GUISE of the one ℤ/2 that
 -- Substrate.Algebra.R.Trace.ChiralityBridge already unifies.
 --
--- HONEST FRAMING — this is NOT a permutation determinant. The classical
--- `det(P_σ) = sign(σ)` is a NAME-COINCIDENCE here: the substrate has NO
--- permutation matrix and NO Leibniz determinant. ChiralityBridge's
--- `det-sign` is the CONTINUED-FRACTION convergent determinant sign
--- ((−1)ⁿ per Euclidean step), a DIFFERENT "det". We do NOT build a fake
--- permutation determinant.
+-- HONEST FRAMING — the "det" of THIS module is NOT the permutation
+-- determinant. ChiralityBridge's `det-sign` is the CONTINUED-FRACTION
+-- convergent determinant sign ((−1)ⁿ per Euclidean step); the genuine bridge
+-- here is by the SHARED CARRIER (sign σ = parity of the inversion count = the
+-- CF-det chirality), not by a permutation determinant.
+--
+-- ⚑ UPDATED (⟡leibniz-det-of-perm-matrix). An earlier note here said
+-- `det(P_σ) = sign(σ)` is "a NAME-COINCIDENCE… the substrate has NO permutation
+-- matrix and NO Leibniz determinant… We do NOT build a fake permutation
+-- determinant." That premise is now false, and NOT by a fake: the Leibniz
+-- determinant is a genuine term (`WitnessTower.LeibnizDet.det`, the signed sum
+-- of Leibniz monomials, ⟡leibniz-det-sum), `WitnessTower.PermMatrixDet.Pmat` is
+-- a permutation matrix, and `det (P σ) ≡ sign σ` is VERIFIED there at n = 2, 3
+-- by refl. So it is no longer a coincidence — it is a checked identity whose
+-- ∀-n proof is the labelled ⟡leibniz-det-perm-general (de-risked; see that
+-- module). This module's own bridge (guise 5, the shared-carrier parity) is
+-- unchanged.
 --
 -- The GENUINE bridge is by the SHARED CARRIER (a cross-domain bridge, NOT
 -- a collapse): the permutation `sign σ` is the PARITY OF THE INVERSION
