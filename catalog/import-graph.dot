@@ -629,6 +629,7 @@ digraph imports {
   "Substrate.Algebra.Z.CommRing" [label="Z.CommRing"];
   "Substrate.Algebra.Z.Coprime" [label="Z.Coprime"];
   "Substrate.Algebra.Z.Euclid" [label="Z.Euclid"];
+  "Substrate.Algebra.Z.JacobianGradedSource" [label="Z.JacobianGradedSource"];
   "Substrate.Algebra.Z.JacobianNegCodec" [label="Z.JacobianNegCodec"];
   "Substrate.Algebra.Z.JacobianNegSemiring" [label="Z.JacobianNegSemiring"];
   "Substrate.Algebra.Z.JacobianResidue" [label="Z.JacobianResidue"];
@@ -6518,6 +6519,13 @@ digraph imports {
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Semiring.Instances.Z";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Z.JacobianResidue";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Foundation.Fin";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.WitnessTower.LeibnizDet";
   "Substrate.Algebra.Z.JacobianNegCodec" -> "Substrate.Algebra.Q";
   "Substrate.Algebra.Z.JacobianNegCodec" -> "Substrate.Algebra.Q.Equiv";
   "Substrate.Algebra.Z.JacobianNegCodec" -> "Substrate.Algebra.Q.Mul";
