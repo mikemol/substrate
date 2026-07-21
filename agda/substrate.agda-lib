@@ -5,3 +5,17 @@ include: .
 -- the few `Agda.*` imports are the COMPILER's builtins, not the library). It reimplements
 -- everything it needs. The declared dep only made `agda -i .` fail on any machine without
 -- standard-library-2.3 installed — a dependency on something unused.
+
+-- ⟡guardedness-global: `--guardedness` for the WHOLE library, in ONE place.
+-- Verified before adopting: (a) Agda 2.8.0 emits NO warning when the flag is
+-- present but unused (a purely-inductive module compiles silently); (b) the
+-- tree uses NO `--sized-types` anywhere, so there is no `--safe` conflict;
+-- (c) a module whose own pragma is `{-# OPTIONS --safe --without-K #-}` picks
+-- the flag up from here with no ConflictingPragmaOptions — so NO per-file edit
+-- is needed (1831 files left untouched); (d) this covers make,
+-- full_build_check.py AND ad-hoc `agda -i.` probes, which command-line flags in
+-- the two build scripts would not.
+-- ⚑ It also DISSOLVES the InfectiveImport siting problem: that error fires only
+-- at a boundary between a guardedness module and a non-guardedness one, and
+-- globally there is no such boundary. Retires ⟡policy-guardedness-siting.
+flags: --guardedness
