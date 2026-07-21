@@ -500,6 +500,7 @@ digraph imports {
   "Substrate.Algebra.Semiring" [label="Algebra.Semiring"];
   "Substrate.Algebra.Semiring.Contraction" [label="Semiring.Contraction"];
   "Substrate.Algebra.Semiring.Instances" [label="Semiring.Instances"];
+  "Substrate.Algebra.Semiring.Instances.Z" [label="Instances.Z"];
   "Substrate.Algebra.Semiring.NatInf" [label="Semiring.NatInf"];
   "Substrate.Algebra.Semiring.NatInf.Properties" [label="NatInf.Properties"];
   "Substrate.Algebra.Semiring.SPPF" [label="Semiring.SPPF"];
@@ -5663,6 +5664,15 @@ digraph imports {
   "Substrate.Algebra.Semiring.Instances" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Semiring.Instances" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Algebra.Semiring.Instances" -> "Substrate.Foundation.Nat.Properties.Mul";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Monoid";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Semiring";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Semiring.Instances";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Z.Add";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Z.Mul";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Z.Properties.Add";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Algebra.Z.Properties.MulFull";
+  "Substrate.Algebra.Semiring.Instances.Z" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Semiring.NatInf" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Semiring.NatInf" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Semiring.NatInf.Properties" -> "Substrate.Algebra.Semiring.NatInf";
