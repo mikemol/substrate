@@ -13159,6 +13159,8 @@ digraph imports {
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Algebra.Monoid";
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Algebra.Semigroup";
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Algebra.Semiring";
+  "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Algebra.Wedge.Graded";
+  "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Algebra.Wedge.Graded.Morphism";
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Foundation.Empty";
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Foundation.Eq";
   "Substrate.WitnessTower.LeibnizDetPerm" -> "Substrate.Foundation.Fin";

@@ -61,9 +61,13 @@ open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.LehmerPath
   using (LehmerPath; _◂_; encode; decode; decode-encode; decode-is-perm)
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
-open import Substrate.WitnessTower.LehmerTowerMorphism using (finParity)
-open import Substrate.WitnessTower.InsertionParity using (insertion-parity-B)
+open import Substrate.WitnessTower.LehmerTowerMorphism using (finParity; lehmer-graded; F₂-target)
+open import Substrate.WitnessTower.InsertionParity
+  using (insertion-parity-B; sign-lehmer-morphism-unconditional)
 open import Substrate.Algebra.F2 using () renaming (_+_ to _+F_)
+open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
+open import Substrate.Algebra.Wedge.Graded.Morphism
+  using (GradedDivStrMorphism; comp-gdsm; map-C)
 open import Substrate.WitnessTower.Sn
   using (enumerate; enumerate-is-perm; enumerate-injective; enumerate-surjective)
 import Substrate.WitnessTower.LeibnizDet as LD
@@ -265,3 +269,54 @@ module DetPerm (A : Set) (S : Semiring A) (ε₂ : A)
       (trans (cong (λ b → signVal b 1A) (insertion-parity-B l p))
         (trans (signVal-hom (finParity p) (signF (decode l)) 1A)
           (cong (signVal (finParity p)) (sym (det-P (decode l) (decode-is-perm l))))))
+
+  ------------------------------------------------------------------------
+  -- THE COVER (⟡det-P-graded-morphism): det∘P∘decode as a GradedDivStrMorphism.
+  --
+  -- `det-P-◂` IS `respects-recon` for a morphism out of the Lehmer tower into a
+  -- constant-A target whose grade-raising recon is `signVal r a` (multiply by the
+  -- Lehmer-digit's ε₂-sign). So `det ∘ Pmat ∘ decode` is a FIRST-CLASS graded
+  -- morphism, not a per-step lemma — the tower-character reading made a term.
+  --
+  -- ⚑ IT FACTORS (the generative unification). `signVal-hom` IS `respects-recon`
+  -- for the μ₂ CHARACTER morphism `χ : F₂-target → det-sign-target` (χ b = signVal
+  -- b 1A). So `det-sign-morphism` composes as `χ ∘ (the proven sign graded
+  -- morphism)` — `det-factors-through-sign` (= `det-P`) exhibits det∘P∘decode as
+  -- the sign tower morphism post-composed with the μ₂ character. Two threads
+  -- previously separate — the graded SIGN morphism and the Leibniz determinant —
+  -- are one composite. det IS the μ₂-character image of the tower's sign cocycle.
+  ------------------------------------------------------------------------
+
+  -- det ∘ Pmat ∘ decode, with n pinned via `Pmat {n}` (Mat n = Fin (n*n) is a
+  -- non-injective index, so the grade must be supplied explicitly).
+  detPd : {n : ℕ} → LehmerPath n → A
+  detPd {n} l = det {n} (Pmat {n} (decode l))
+
+  -- the constant-A target: grade-raising recon = multiply by the digit's ε₂-sign.
+  det-sign-target : GradedDivStr (λ _ → A) (λ _ → F₂)
+  det-sign-target = record { recon = λ n a r → signVal r a }
+
+  -- det ∘ Pmat ∘ decode, as a graded morphism (respects-recon = det-P-◂).
+  det-sign-morphism : GradedDivStrMorphism lehmer-graded det-sign-target
+  det-sign-morphism = record
+    { map-C          = detPd
+    ; map-R          = λ {n} p → finParity {suc n} p
+    ; respects-recon = λ n l p → det-P-◂ l p
+    }
+
+  -- the μ₂ character χ b = signVal b 1A, as a graded morphism F₂-target →
+  -- det-sign-target (respects-recon = signVal-hom): a group hom (F₂,+,𝟘)→(A,*A,1A).
+  χ-morphism : GradedDivStrMorphism F₂-target det-sign-target
+  χ-morphism = record
+    { map-C          = λ b → signVal b 1A
+    ; map-R          = λ r → r
+    ; respects-recon = λ n b r → signVal-hom r b 1A
+    }
+
+  -- THE FACTORISATION: det∘P∘decode ≡ χ ∘ (the proven sign graded morphism).
+  -- (= det-P, at the map-C level: det (Pmat (decode l)) ≡ signVal (signF (decode l)) 1A.)
+  det-factors-through-sign :
+    {n : ℕ} (l : LehmerPath n) →
+    map-C det-sign-morphism l
+    ≡ map-C (comp-gdsm χ-morphism sign-lehmer-morphism-unconditional) l
+  det-factors-through-sign l = det-P (decode l) (decode-is-perm l)
