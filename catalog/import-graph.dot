@@ -1746,6 +1746,7 @@ digraph imports {
   "Substrate.WitnessTower.LehmerTowerMorphismDischarged" [label="WitnessTower.LehmerTowerMorphismDischarged"];
   "Substrate.WitnessTower.LeibnizDet" [label="WitnessTower.LeibnizDet"];
   "Substrate.WitnessTower.LeibnizMonomial" [label="WitnessTower.LeibnizMonomial"];
+  "Substrate.WitnessTower.LeibnizMonomialDirect" [label="WitnessTower.LeibnizMonomialDirect"];
   "Substrate.WitnessTower.Link" [label="WitnessTower.Link"];
   "Substrate.WitnessTower.M40Action" [label="WitnessTower.M40Action"];
   "Substrate.WitnessTower.M40Closure" [label="WitnessTower.M40Closure"];
@@ -13160,6 +13161,18 @@ digraph imports {
   "Substrate.WitnessTower.LeibnizMonomial" -> "Substrate.Foundation.Product";
   "Substrate.WitnessTower.LeibnizMonomial" -> "Substrate.WitnessTower.LehmerPath";
   "Substrate.WitnessTower.LeibnizMonomial" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Eq";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Fin";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Fin.Combine";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Fin.Combine.RemQuotInverse";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Fin.Punctured";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Fin.RemQuot";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Nat";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Product";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.Foundation.Vec";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.WitnessTower.LehmerPath";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.WitnessTower.LeibnizMonomial";
+  "Substrate.WitnessTower.LeibnizMonomialDirect" -> "Substrate.WitnessTower.Wedge.OrientationUniversal";
   "Substrate.WitnessTower.Link" -> "Substrate.Category.Coalgebra";
   "Substrate.WitnessTower.Link" -> "Substrate.Category.Coalgebra.FiniteOrder";
   "Substrate.WitnessTower.Link" -> "Substrate.Category.Coalgebra.StructuralGCD";
