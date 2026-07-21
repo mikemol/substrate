@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := CRT.agda Coxeter.agda F2Parity.agda IRRetraction.agda ModN.agda PhaseA.agda PhaseB.agda Projection.agda Surreal.agda V4Cosets.agda
+FILES := CRT.agda Coxeter.agda F2Parity.agda IRRetraction.agda ModN.agda PermSign.agda PhaseA.agda PhaseB.agda Projection.agda Surreal.agda V4Cosets.agda
 SUBDIRS := CRT
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
