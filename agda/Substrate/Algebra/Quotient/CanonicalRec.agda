@@ -20,14 +20,14 @@
 -- canonical-form layer." This module IS that canonical-form layer: it turns
 -- the prose pointer into a checkable term.
 --
--- ⚑ LAW → FIELD DISCHARGE (corrected against the record's ACTUAL parameters):
+-- ⚑ LAW → FIELD DISCHARGE (the route taken here — see the caveat below):
 --   the map            `factor`          ← Canonical.canonical
 --   computation        `factor-≡-f`      ← Canonical.≈-canonical          (+ sym)
 --   respect            `factor-respects` ← Canonical.canonical-respects-≈  (+ cong)
 --   uniqueness         `factor-unique`   ← Canonical.≈-canonical           (+ trans)
 --
 -- ⚑ "WHICH FIELDS ARE LOAD-BEARING" IS NOT WELL-POSED — settled by CONSTRUCTION
--- in §5: `canonical-idempotent` is DERIVABLE from the other two,
+-- in §6: `canonical-idempotent` is DERIVABLE from the other two,
 --   canonical-idempotent C a ≡ sym (canonical-respects-≈ C (≈-canonical C a))
 -- so `Canonical` is OVER-COMPLETE — idempotence is a THEOREM of the record, not
 -- independent data. A count of "load-bearing fields" is therefore a property of
@@ -35,9 +35,10 @@
 -- a route through the idempotence field is equally available. This is NOT a
 -- complaint about the field's presence — a derivable field is a legitimate and
 -- useful presentation (it is exactly what `split-Canonical` / `idem-Canonical`
--- fill in directly, at zero cost). §5 records the derivation because the
+-- fill in directly, at zero cost). §6 records the derivation because the
 -- construction is what settles the question; which projection a given proof
--- happens to mention settles nothing.
+-- happens to mention settles nothing. §5 makes the same point for `QuotientUP`'s
+-- absent stability parameter: it is ABSORBED into `factor-respects`, not omitted.
 --
 -- HOME: sited in `Algebra/Quotient/` (sibling of `F2Parity`, the established
 -- home for Quotient+Canonical instances) rather than appended to the
@@ -59,7 +60,7 @@ module Substrate.Algebra.Quotient.CanonicalRec where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Quotient
-  using (Quotient; canonical; canonical-idempotent; canonical-respects-≈; ≈-canonical)
+  using (Quotient; ≈-sym; canonical; canonical-idempotent; canonical-respects-≈; ≈-canonical)
   renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialize the ambiguous name
 open import Substrate.Category.UniversalProperty.Quotient
   using (Respects; QuotientUP)
@@ -115,8 +116,7 @@ module _ {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
 
   ------------------------------------------------------------------------
   -- 4. STABILITY — the recursor cannot be moved by re-normalizing its
-  --    argument. Sited beside the UP laws (it is a property of the recursor,
-  --    which `QuotientUP` happens not to take as a parameter).
+  --    argument. Direct route, via the idempotence field.
   ------------------------------------------------------------------------
 
   canonical-rec-stable : (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
@@ -125,19 +125,26 @@ module _ {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
   canonical-rec-stable B f _ a = cong f (canonical-idempotent C a)
 
   ------------------------------------------------------------------------
-  -- 5. `Canonical` IS OVER-COMPLETE — idempotence is a THEOREM of the other
-  --    two fields, not independent data. Constructed, therefore settled:
-  --    "which fields are load-bearing" is a fact about a chosen route, not
-  --    about the record. (§4 may equivalently be routed through this term.)
+  -- 5. WHY `QuotientUP` TAKES NO STABILITY PARAMETER — it is ABSORBED, not
+  --    omitted. Stability is `factor-respects` applied to `canonical a ≈ a`,
+  --    needing NO `Canonical`-specific field: it holds of ANY respecting map
+  --    out of A, so a fifth `QuotientUP` parameter would be DERIVABLE from
+  --    the parameter already present. (The record is vestigial — obligations
+  --    are parameters, body empty — so it COULD be grown; the point is that
+  --    growing it would add a redundant obligation, not a missing one.)
+  ------------------------------------------------------------------------
+
+  stable-from-respects : {B : Set} (f̃ : A → B) (f̃-resp : Respects _≈_ f̃) →
+                         (a : A) → f̃ (canonical C a) ≡ f̃ a
+  stable-from-respects f̃ f̃-resp a = f̃-resp (≈-sym Q (≈-canonical C a))
+
+  ------------------------------------------------------------------------
+  -- 6. `Canonical` IS LIKEWISE OVER-COMPLETE — idempotence is a THEOREM of
+  --    the other two fields, not independent data. Constructed, therefore
+  --    settled: "which fields are load-bearing" is a fact about a chosen
+  --    route, not about the record.
   ------------------------------------------------------------------------
 
   canonical-idempotent-derived : (a : A) →
                                  canonical C (canonical C a) ≡ canonical C a
   canonical-idempotent-derived a = sym (canonical-respects-≈ C (≈-canonical C a))
-
-  -- and the two agree pointwise, by the same route (both land in the ≡-type
-  -- of a single pair of canonical forms).
-  canonical-rec-stable′ : (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
-                          (a : A) → canonical-rec B f f-resp (canonical C a)
-                                    ≡ canonical-rec B f f-resp a
-  canonical-rec-stable′ B f _ a = cong f (canonical-idempotent-derived a)
