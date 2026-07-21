@@ -13,7 +13,13 @@
 --       (`ExpLogCodec.exp-⊕` carries additive inverses to multiplicative ones;
 --       `ExpLogCodec.agda:47-56`, live instance `ℤ-power-codec`,
 --       `GValueLSpace/Primes.agda:209`), and
---   C — the SEMIRING gauge: negation ELIMINATED by transposition (`det⁺ ≡ det⁻ ⊕ 2`).
+--   C — the SEMIRING gauge: negation ELIMINATED by transposition
+--       (`det⁺ ⊕ 2 ≡ det⁻`; ⟡plan-routeC-arithmetic — an earlier note here had
+--       the operands reversed as `det⁺ ≡ det⁻ ⊕ 2`, which is FALSE. The
+--       transposition of `a − b ≡ c − d` is `a + d ≡ c + b`, so `det ≡ −2`
+--       becomes `det⁺ + 2 ≡ det⁻ + 0`; the rails are `(0,2)`, i.e. 0+2 ≡ 2+0.
+--       The reversed form reads 0 ≡ 4. See `Algebra.Z.JacobianNegSemiring`
+--       §4 `route-C`, which states it correctly and is the term of record).
 -- Building only the "preferred" one and discarding the rest would destroy the
 -- object worth having: the COVERING construction exhibiting all three as
 -- readings of one wedge (⟡jac-neg-cover). Each route is kept; the equivalence

@@ -19,6 +19,24 @@
 --  This is a DEFINITIONAL matrix identity (no signs, no ring lemmas). The det
 --  law over that matrix is then EXACTLY the repo's det-flip (⟡N1b-Matrix-wire
 --  lands this on the substrate's det-flip; the SIGN story is cited, proven).
+--
+-- ⚑ THIS `Mat` IS DELIBERATELY THE TWIN OF `Algebra.R.Trace.CFMatrixBridge.Mat`
+-- — NOT AN UNNOTICED DUPLICATE (⟡dedup-mat-2x2, RETIRED). The two records are a
+-- registered CROSS-DOMAIN BRIDGE: `S5.S5MatrixBridge` witnesses the full
+-- transport — the iso (`to`/`from` with BOTH round-trips), the algebra
+-- morphism (`to-I`, `to-M`, `to-·`, `to-state`, all `refl`), and theorem
+-- transport (`conv-step-agree`, `det-is-det4`, `matrix-det-flip`) — and
+-- `S5.BridgeRegistry` indexes it, citing `feedback_dedup_preserve_crossdomain_bridges`
+-- by name: dedup CROSS-domain is a thing to WITNESS, not collapse. Collapsing
+-- them would destroy the witnessed reflection, which is the point of the S5
+-- cluster.
+--
+-- ⚑ AND THE "cited, proven" SIGN STORY ABOVE IS CARRIED, not merely cited:
+-- `S5MatrixBridge` gives THESE matrices an inherited `detM` (= `CF.detM ∘ to`)
+-- plus `det-is-det4` and `matrix-det-flip`. So the absence of a local `detM`
+-- here is by construction, not a gap. (An audit read the missing `detM` as
+-- evidence of an unwitnessed duplicate; this pointer exists so the bridge is
+-- discoverable from THIS side, which is why that reading was reachable.)
 ------------------------------------------------------------------------
 
 module Substrate.S5.S5Matrix where

@@ -150,7 +150,9 @@ gvalue-rank2-antipode = prod-cancel (gvalue-pow-pair 1 0 3 ∷ gvalue-pow-pair 2
 -- For a base g with an inverse h (g·h≈1), L=ℤ is a GROUP and z ↦ gᶻ is a
 -- monoid hom (ℤ,+ℤ,0) → (ℚ,*ℚ,1) — the rank-1 GROUP codec, vs the rank-1
 -- MONOID `ℕ-power-codec`. `codec-antipode` then fires NON-trivially through
--- the interface (a genuine inverse↦recip, not just 0+0↦1·1). NO factorisation.
+-- the interface (a genuine inverse↦recip, not just 0+0↦1·1) — NON-trivially in
+-- the EXPONENT; that says nothing about the base, which may still be collapsed
+-- (see the ⚠ SCOPE note at `ZPow.ℤpow-antipode-fires`). NO factorisation.
 --
 -- Negative exponents land on h: expℤ(+n)=gⁿ, expℤ(-suc n)=hⁿ⁺¹. exp-⊕ over the
 -- ℤ-addition (routed through `_⊖_`) is 4 cases; the two MIXED-sign cases are the
@@ -215,9 +217,20 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
     ; exp-𝟘 = ≈ℚ-refl 1ℚ
     }
 
-  -- The codec fires NON-trivially: (+1) +ℤ (-suc 0) = 1⊖1 = 0⊖0 = +0 = 𝟘, so
-  -- codec-antipode gives g¹·h¹ ≈ 1 — a genuine inverse↦recip through the
-  -- ExpLogCodec interface (vs ℕ-power-codec's degenerate 0+0).
+  -- The EXPONENT arithmetic fires NON-TRIVIALLY: (+1) +ℤ (-suc 0) = 1⊖1 = 0⊖0
+  -- = +0 = 𝟘 runs through `_⊖_`'s mixed-sign cancellation, so codec-antipode
+  -- gives g¹·h¹ ≈ 1 — a genuine inverse↦recip on the L side, vs
+  -- ℕ-power-codec's degenerate 0+0 (the cyclic monoid fires only at 0).
+  --
+  -- ⚠ SCOPE (⟡primes-antipode-comment). This is a claim about the L-SIDE (ℤ)
+  -- exponent, NOT about the base (g,h) — and it must not be read as one.
+  -- `ZPow` is parameterized `(g h : ℚ)(gh : g *ℚ h ≈ℚ 1ℚ)`, and at the
+  -- COLLAPSED base g = h = 1ℚ the hypothesis HOLDS while `expℤ` is constantly
+  -- 1ℚ: the codec transports nothing, yet the term below still typechecks. So
+  -- it is NOT a base-level discrimination witness and cannot certify that a
+  -- chosen base is non-degenerate. That pole is a SEPARATE statement, shipped
+  -- as its own term: `Algebra.Z.JacobianNegCodec` §3 `codec-discriminates`
+  -- (expℤ (+ 1) ≉ℚ expℤ (-suc 0), at the concrete base (2, ½)).
   ℤpow-antipode-fires : (expℤ (+ 1) *ℚ expℤ (-suc 0)) ≈ℚ 1ℚ
   ℤpow-antipode-fires = codec-antipode ℤ-power-codec (+ 1) (-suc 0) refl
 
