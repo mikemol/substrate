@@ -25,12 +25,19 @@
 --   computation        `factor-≡-f`      ← Canonical.≈-canonical          (+ sym)
 --   respect            `factor-respects` ← Canonical.canonical-respects-≈  (+ cong)
 --   uniqueness         `factor-unique`   ← Canonical.≈-canonical           (+ trans)
--- so THREE of `Canonical`'s four fields are load-bearing for the UP — NOT
--- four. `QuotientUP` has no stability parameter, and `factor-unique` needs
--- only `≈-canonical` in its given direction (no `≈-sym`). The fourth field,
--- `canonical-idempotent`, discharges the SEPARATE stability lemma below,
--- which is a genuine property of the recursor but NOT a QuotientUP field —
--- it is recorded as such rather than folded in.
+--
+-- ⚑ "WHICH FIELDS ARE LOAD-BEARING" IS NOT WELL-POSED — settled by CONSTRUCTION
+-- in §5: `canonical-idempotent` is DERIVABLE from the other two,
+--   canonical-idempotent C a ≡ sym (canonical-respects-≈ C (≈-canonical C a))
+-- so `Canonical` is OVER-COMPLETE — idempotence is a THEOREM of the record, not
+-- independent data. A count of "load-bearing fields" is therefore a property of
+-- a chosen ROUTE, not of the record: the route above happens to name three, and
+-- a route through the idempotence field is equally available. This is NOT a
+-- complaint about the field's presence — a derivable field is a legitimate and
+-- useful presentation (it is exactly what `split-Canonical` / `idem-Canonical`
+-- fill in directly, at zero cost). §5 records the derivation because the
+-- construction is what settles the question; which projection a given proof
+-- happens to mention settles nothing.
 --
 -- HOME: sited in `Algebra/Quotient/` (sibling of `F2Parity`, the established
 -- home for Quotient+Canonical instances) rather than appended to the
@@ -107,13 +114,30 @@ module _ {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
   canonical-QuotientUP = record {}
 
   ------------------------------------------------------------------------
-  -- 4. STABILITY — ⚑ NOT a `QuotientUP` field (the record has no stability
-  --    parameter). Recorded separately because it is the property that
-  --    `canonical-idempotent` exists to give: the recursor cannot be moved
-  --    by re-normalizing its argument.
+  -- 4. STABILITY — the recursor cannot be moved by re-normalizing its
+  --    argument. Sited beside the UP laws (it is a property of the recursor,
+  --    which `QuotientUP` happens not to take as a parameter).
   ------------------------------------------------------------------------
 
   canonical-rec-stable : (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
                          (a : A) → canonical-rec B f f-resp (canonical C a)
                                    ≡ canonical-rec B f f-resp a
   canonical-rec-stable B f _ a = cong f (canonical-idempotent C a)
+
+  ------------------------------------------------------------------------
+  -- 5. `Canonical` IS OVER-COMPLETE — idempotence is a THEOREM of the other
+  --    two fields, not independent data. Constructed, therefore settled:
+  --    "which fields are load-bearing" is a fact about a chosen route, not
+  --    about the record. (§4 may equivalently be routed through this term.)
+  ------------------------------------------------------------------------
+
+  canonical-idempotent-derived : (a : A) →
+                                 canonical C (canonical C a) ≡ canonical C a
+  canonical-idempotent-derived a = sym (canonical-respects-≈ C (≈-canonical C a))
+
+  -- and the two agree pointwise, by the same route (both land in the ≡-type
+  -- of a single pair of canonical forms).
+  canonical-rec-stable′ : (B : Set) (f : A → B) (f-resp : Respects _≈_ f) →
+                          (a : A) → canonical-rec B f f-resp (canonical C a)
+                                    ≡ canonical-rec B f f-resp a
+  canonical-rec-stable′ B f _ a = cong f (canonical-idempotent-derived a)
