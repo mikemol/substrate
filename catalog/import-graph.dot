@@ -633,6 +633,7 @@ digraph imports {
   "Substrate.Algebra.Z.JacobianNegCodec" [label="Z.JacobianNegCodec"];
   "Substrate.Algebra.Z.JacobianNegSemiring" [label="Z.JacobianNegSemiring"];
   "Substrate.Algebra.Z.JacobianResidue" [label="Z.JacobianResidue"];
+  "Substrate.Algebra.Z.MonoCommMonoid" [label="Z.MonoCommMonoid"];
   "Substrate.Algebra.Z.Mul" [label="Z.Mul"];
   "Substrate.Algebra.Z.Properties.Add" [label="Properties.Add"];
   "Substrate.Algebra.Z.Properties.Mul" [label="Properties.Mul"];
@@ -6551,6 +6552,11 @@ digraph imports {
   "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.List";
   "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Z.MonoCommMonoid" -> "Substrate.Algebra.Z.JacobianResidue";
+  "Substrate.Algebra.Z.MonoCommMonoid" -> "Substrate.Category.CommutativeMonoid";
+  "Substrate.Algebra.Z.MonoCommMonoid" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Z.MonoCommMonoid" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Z.MonoCommMonoid" -> "Substrate.Foundation.Nat.Properties.Add";
   "Substrate.Algebra.Z.Mul" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Z.Mul" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Properties.Add" -> "Substrate.Algebra.Z";
