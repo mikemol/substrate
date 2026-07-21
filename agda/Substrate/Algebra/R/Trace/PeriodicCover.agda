@@ -77,7 +77,9 @@ module _ (S : Set) (next : S → S) (obs : S → ℕ) where
 --    S = ℕ, next = id, obs = id: observe the point, stay put.
 ------------------------------------------------------------------------
 
-open OrbitCover ℕ (λ v → v) (λ v → v) using () renaming (cover to stationary)
+-- ⚑ `public`: a cover that does not EXPORT its members is not a cover. Found by
+-- building on it — `EventualPeriod` needed `alt-cover` and could not see it.
+open OrbitCover ℕ (λ v → v) (λ v → v) public using () renaming (cover to stationary)
 
 repeat-is-stationary : (n : ℕ) → repeat n ~ stationary n
 head~ (repeat-is-stationary n) = refl
@@ -115,7 +117,9 @@ tail~ (const-trace-is-repeat v) = const-trace-is-repeat v
 --    its first two observations re-checked so this module stands alone.
 ------------------------------------------------------------------------
 
-open OrbitCover Bool not bobs using () renaming (cover to alt-cover)
+-- `public` for the same reason; note `const-trace` above is deliberately NOT
+-- re-exported — it is the DUPLICATE, referenced only to witness the duplication.
+open OrbitCover Bool not bobs public using () renaming (cover to alt-cover)
 
 alt : RealTrace
 alt = alt-cover tt

@@ -446,6 +446,7 @@ digraph imports {
   "Substrate.Algebra.R.Trace.CycleWire" [label="Trace.CycleWire"];
   "Substrate.Algebra.R.Trace.DetSign" [label="Trace.DetSign"];
   "Substrate.Algebra.R.Trace.DetValSign" [label="Trace.DetValSign"];
+  "Substrate.Algebra.R.Trace.EventualPeriod" [label="Trace.EventualPeriod"];
   "Substrate.Algebra.R.Trace.Exp" [label="Trace.Exp"];
   "Substrate.Algebra.R.Trace.ExtruderBraidRealigned" [label="Trace.ExtruderBraidRealigned"];
   "Substrate.Algebra.R.Trace.ExtruderFix" [label="Trace.ExtruderFix"];
@@ -5301,6 +5302,19 @@ digraph imports {
   "Substrate.Algebra.R.Trace.DetValSign" -> "Substrate.Algebra.Z.Properties.MulFull";
   "Substrate.Algebra.R.Trace.DetValSign" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.R.Trace.DetValSign" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.Nat.Mod";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.Nat.WellFounded";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.R.Trace";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.R.Trace.Bisim";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.R.Trace.PeriodicCover";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.R.Trace.RationalAdjunction";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Algebra.R.Trace.Unfold";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Foundation.Bool";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.R.Trace.EventualPeriod" -> "Substrate.Foundation.WellFounded";
   "Substrate.Algebra.R.Trace.Exp" -> "Substrate.Algebra.Nat.GCD.ComputeTrace";
   "Substrate.Algebra.R.Trace.Exp" -> "Substrate.Algebra.R.Trace";
   "Substrate.Algebra.R.Trace.Exp" -> "Substrate.Algebra.R.Trace.Windowed";
