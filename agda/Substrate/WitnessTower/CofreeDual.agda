@@ -76,10 +76,17 @@ generator-faithful = cf-injective
 --   Corr t₁ t₂ = shape t₁ ≡ shape t₂          -- kernel of the shape-projection
 --   corr⇔addr                                  -- that kernel IS address-equality
 --
--- and `NuShapeIso` is what makes this one structure rather than an analogy: the
--- finite shape-projection (Wedge.Shape.shape, a List) and the infinite one (the
--- RealTrace stream) are the SAME projection at two grades, whose canonicity
--- `shape-is-canonical` is literally `ana-unique (quotient-coalg co)`.
+-- ⚑ AN EARLIER VERSION OF THIS PARAGRAPH SAID `NuShapeIso` "is what makes this
+-- one structure rather than an analogy". THAT WAS AN OVERCLAIM — and the worse
+-- of the two I shipped, because it explicitly DENIED the analogy status that is
+-- in fact exactly what remains. What `NuShapeIso` actually supplies is the ν
+-- side: `shape-is-canonical` IS `ana-unique (quotient-coalg co)`, the canonicity
+-- of the INFINITE projection. It ASSERTS the finite↔infinite same-projection
+-- identity in prose (`NuShapeIso:12,:91`) but never imports
+-- `Substrate.Algebra.Wedge.Shape` — all six of its terms are on the infinite
+-- side — so nothing wires the two grades together. Until ⟡corr-as-finite-bisim
+-- lands, "one structure rather than an analogy" is THE TARGET OF THIS FILE, not
+-- a fact it can cite.
 --
 -- So the interner's effectivity is not a third instance of the μ-side
 -- uniqueness shape (see UniquenessBridge for that naming boundary) — it is the

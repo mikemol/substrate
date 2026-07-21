@@ -46,11 +46,16 @@
 --   * `WitnessTower.CofreeDual` names both halves in one place —
 --     `cata-uniqueness = eea-fold-unique` (μ, `≡`) and
 --     `cofree-uniqueness = ana-unique` (ν, `~`), over the same functor.
---   * `Algebra.Wedge.NuShapeIso` closes it for THIS leg: the finite
---     shape-projection (`Wedge.Shape.shape`, a List) and the infinite one (the
---     RealTrace stream) are the SAME projection at two grades, and its
---     canonicity `shape-is-canonical` IS `ana-unique` applied to the quotient
---     coalgebra.
+--   * `Algebra.Wedge.NuShapeIso` supplies the ν HALF of this leg: its
+--     `shape-is-canonical` IS `ana-unique (quotient-coalg co)` — the canonicity
+--     of the INFINITE projection. ⚑ IT DOES NOT CLOSE THE LEG. An earlier
+--     version of this paragraph said it did, and that was an overclaim: the
+--     finite↔infinite same-projection identity is PROSE in `NuShapeIso` itself
+--     (its `:12`, `:91`, "the finite mirror … as Wedge.Shape does finitely"),
+--     and the module does not import `Substrate.Algebra.Wedge.Shape` at all —
+--     all six of its terms live on the infinite side. So that identity is a
+--     STATED claim, not a wired term. Reifying it is ⟡corr-as-finite-bisim,
+--     still open.
 -- Since `Corr t₁ t₂ = shape t₁ ≡ shape t₂` is precisely the KERNEL of that
 -- finite shape-projection, `quotient-effectivity` below is the ν-side reading
 -- at finite grade, and the two legs above are its μ-side. The interner leg is
