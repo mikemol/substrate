@@ -392,6 +392,7 @@ digraph imports {
   "Substrate.Algebra.Q.HetReduceBezout" [label="Q.HetReduceBezout"];
   "Substrate.Algebra.Q.HetSymbolic" [label="Q.HetSymbolic"];
   "Substrate.Algebra.Q.HetV4" [label="Q.HetV4"];
+  "Substrate.Algebra.Q.JacobianCollision" [label="Q.JacobianCollision"];
   "Substrate.Algebra.Q.Linear" [label="Q.Linear"];
   "Substrate.Algebra.Q.Linear.AsModuleHom" [label="Linear.AsModuleHom"];
   "Substrate.Algebra.Q.Mul" [label="Q.Mul"];
@@ -4841,6 +4842,13 @@ digraph imports {
   "Substrate.Algebra.Q.HetSymbolic" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Q.HetV4" -> "Substrate.Algebra.Q.HetBasis";
   "Substrate.Algebra.Q.HetV4" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Q";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Q.Add";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Q.Equiv";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Q.Mul";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Q.Sub";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Q.JacobianCollision" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Q.Linear" -> "Substrate.Algebra.Q";
   "Substrate.Algebra.Q.Linear" -> "Substrate.Algebra.Q.Vector";
   "Substrate.Algebra.Q.Linear" -> "Substrate.Foundation.Eq";
