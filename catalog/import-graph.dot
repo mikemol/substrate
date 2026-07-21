@@ -627,6 +627,7 @@ digraph imports {
   "Substrate.Algebra.Z.Bezout.Examples" [label="Bezout.Examples"];
   "Substrate.Algebra.Z.Coprime" [label="Z.Coprime"];
   "Substrate.Algebra.Z.Euclid" [label="Z.Euclid"];
+  "Substrate.Algebra.Z.JacobianResidue" [label="Z.JacobianResidue"];
   "Substrate.Algebra.Z.Mul" [label="Z.Mul"];
   "Substrate.Algebra.Z.Properties.Add" [label="Properties.Add"];
   "Substrate.Algebra.Z.Properties.Mul" [label="Properties.Mul"];
@@ -6489,6 +6490,12 @@ digraph imports {
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Algebra.Z.Add";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Algebra.Z.Mul";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.List";
+  "Substrate.Algebra.Z.JacobianResidue" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Mul" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Z.Mul" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Properties.Add" -> "Substrate.Algebra.Z";

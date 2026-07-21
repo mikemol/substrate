@@ -165,6 +165,9 @@ digraph reuse {
   "Substrate.Algebra.Wedge.StarV4._.StarDivStr" [label="StarDivStr\nSubstrate.Algebra.Wedge.StarV4._"];
   "Substrate.Algebra.Wedge.Trace" [label="Trace\nSubstrate.Algebra.Wedge", style=rounded];
   "Substrate.Algebra.Wedge.Wedge" [label="Wedge\nSubstrate.Algebra.Wedge"];
+  "Substrate.Algebra.Z.JacobianResidue.Mono" [label="Mono\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
+  "Substrate.Algebra.Z.JacobianResidue.Term" [label="Term\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
+  "Substrate.Algebra.Z.JacobianResidue.𝔹" [label="𝔹\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
   "Substrate.Algebra.Z.ℤ" [label="ℤ\nSubstrate.Algebra.Z", style=rounded];
   "Substrate.Axes.Axis" [label="Axis\nSubstrate.Axes", style=rounded];
   "Substrate.Category.AbelianPFG.AbelianPFG" [label="AbelianPFG\nSubstrate.Category.AbelianPFG"];
