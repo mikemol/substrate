@@ -69,6 +69,7 @@ digraph reuse {
   "Substrate.Algebra.Q.HetBasis.HetQ" [label="HetQ\nSubstrate.Algebra.Q.HetBasis"];
   "Substrate.Algebra.Q.HetSymbolic.Tm" [label="Tm\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
   "Substrate.Algebra.Q.HetSymbolic._≈t_" [label="_≈t_\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
+  "Substrate.Algebra.Q.JacobianCounterexample.IsJacobianCounterexample" [label="IsJacobianCounterexample\nSubstrate.Algebra.Q.JacobianCounterexample"];
   "Substrate.Algebra.Q.Linear.Linearℚ" [label="Linearℚ\nSubstrate.Algebra.Q.Linear"];
   "Substrate.Algebra.Q.Order._≤ℤ_" [label="_≤ℤ_\nSubstrate.Algebra.Q.Order", style=rounded];
   "Substrate.Algebra.Q.ℚ" [label="ℚ\nSubstrate.Algebra.Q"];
