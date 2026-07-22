@@ -150,7 +150,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Coalgebra#WedgeCoalg</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Contextuality#Constraint</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/CrossMul#CrossMix</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.06</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/MonoidalAdjunction#GradedMonoidalAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/Morphism#GradedDivStrMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedDivStr</loc><priority>0.01</priority></url>
@@ -167,9 +167,12 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/StarV4#StarDivStr</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge#Trace</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge#Wedge</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Z/JacobianResidue#Mono</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/JacobianResidue#Mono</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/JacobianResidue#Term</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/JacobianResidue#𝔹</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#TriM</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#TriN</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#_&lt;M_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z#ℤ</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Axes#Axis</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AbelianPFG#AbelianPFG</loc><priority>0.0</priority></url>
@@ -572,7 +575,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.22</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.21</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -751,7 +754,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovTerm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.06</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Simplex#ProbabilitySemiring</loc><priority>0.06</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#GateReflection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Pipe</loc><priority>0.0</priority></url>

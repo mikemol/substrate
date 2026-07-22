@@ -168,6 +168,9 @@ digraph reuse {
   "Substrate.Algebra.Z.JacobianResidue.Mono" [label="Mono\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
   "Substrate.Algebra.Z.JacobianResidue.Term" [label="Term\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
   "Substrate.Algebra.Z.JacobianResidue.𝔹" [label="𝔹\nSubstrate.Algebra.Z.JacobianResidue", style=rounded];
+  "Substrate.Algebra.Z.MPolyNormalize.TriM" [label="TriM\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
+  "Substrate.Algebra.Z.MPolyNormalize.TriN" [label="TriN\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
+  "Substrate.Algebra.Z.MPolyNormalize._<M_" [label="_<M_\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
   "Substrate.Algebra.Z.ℤ" [label="ℤ\nSubstrate.Algebra.Z", style=rounded];
   "Substrate.Axes.Axis" [label="Axis\nSubstrate.Axes", style=rounded];
   "Substrate.Category.AbelianPFG.AbelianPFG" [label="AbelianPFG\nSubstrate.Category.AbelianPFG"];
@@ -996,6 +999,9 @@ digraph reuse {
   "Substrate.Algebra.Wedge.StarV4._.StarDivStr" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Trace" -> "Substrate.Algebra.Wedge.DivStr";
   "Substrate.Algebra.Wedge.Wedge" -> "Substrate.Algebra.Wedge.DivStr";
+  "Substrate.Algebra.Z.MPolyNormalize.TriM" -> "Substrate.Algebra.Z.JacobianResidue.Mono";
+  "Substrate.Algebra.Z.MPolyNormalize.TriN" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Z.MPolyNormalize._<M_" -> "Substrate.Algebra.Z.JacobianResidue.Mono";
   "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Adjunction.IsLinearAdjunction" -> "Substrate.Foundation.Nat.ℕ";

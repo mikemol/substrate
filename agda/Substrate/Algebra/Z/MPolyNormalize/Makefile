@@ -16,11 +16,11 @@ endif
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
 MEM_CAP ?= 1024m
-AGDA_ROOT := ../../..
-SCRIPTS := ../../../../scripts
+AGDA_ROOT := ../../../..
+SCRIPTS := ../../../../../scripts
 
-FILES := Add.agda Arithmetic.agda Bezout.agda CommRing.agda Coprime.agda Euclid.agda JacobianGradedSource.agda JacobianNegCodec.agda JacobianNegSemiring.agda JacobianResidue.agda MPolyNormalize.agda MonoCommMonoid.agda Mul.agda Residue.agda Sub.agda Wedge.agda
-SUBDIRS := Bezout MPolyNormalize Properties
+FILES := Properties.agda
+SUBDIRS := 
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
 
@@ -49,42 +49,12 @@ files:
 
 subdirs: $(SUBDIRS)
 
-Bezout:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-MPolyNormalize:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
-Properties:
-	@if [ ! -f $@/Makefile ]; then \
-	  echo 'ERROR: $(CURDIR)/$@ has no generated Makefile (new directory?).'; \
-	  echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \
-	fi
-	@$(MAKE) -C $@
-
 ingest: ingest-files ingest-subdirs
 ingest-files:
 	@for f in $(FILES); do \
 	  python3 $(SCRIPTS)/sppf_db.py --ingest-core $(CURDIR)/$$f || exit 1; \
 	done
-ingest-subdirs: Bezout.ingest MPolyNormalize.ingest Properties.ingest
-Bezout.ingest:
-	@$(MAKE) -C Bezout ingest
-MPolyNormalize.ingest:
-	@$(MAKE) -C MPolyNormalize ingest
-Properties.ingest:
-	@$(MAKE) -C Properties ingest
+ingest-subdirs: 
 
 clean:
-	@$(MAKE) -C Bezout clean 2>/dev/null || true
-	@$(MAKE) -C MPolyNormalize clean 2>/dev/null || true
-	@$(MAKE) -C Properties clean 2>/dev/null || true
 	@true
