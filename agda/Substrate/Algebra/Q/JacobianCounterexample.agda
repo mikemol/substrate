@@ -43,6 +43,14 @@ open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
 import Substrate.Algebra.Q.JacobianEvalNormalize as β
 import Substrate.Algebra.Q.JacobianEncodingLiteral as L
 
+-- ⚑ The ℚ-EVAL companion of `det-is-const-neg2` — the RAW determinant polynomial
+-- evaluated equals −2 at every point — is `Substrate.Algebra.Q.JacobianDetLiteral.
+-- detJac-literal : evalℚ x y z R.detJac ≈ℚ ℤ→ℚ (-suc 1)` (⟡jac-det-literal). It is
+-- NOT a field of this record: this module declares a `record` (a def-provider) and
+-- importing that heavy `normalize-eval`-over-det proof would deserialize it at ~40×
+-- and OOM the per-module gate (`scripts/check_def_proof_separation.sh` mechanism).
+-- The rigid normal-form fact below (a cheap `refl`) is the one held here.
+
 -- HALF B, box-free: the determinant's full normal form is the constant −2.
 norm-detJac-is-const : normalize R.detJac ≡ R.kP (-suc 1)
 norm-detJac-is-const = refl
