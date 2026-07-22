@@ -629,6 +629,7 @@ digraph imports {
   "Substrate.Algebra.Z.CommRing" [label="Z.CommRing"];
   "Substrate.Algebra.Z.Coprime" [label="Z.Coprime"];
   "Substrate.Algebra.Z.Euclid" [label="Z.Euclid"];
+  "Substrate.Algebra.Z.JacobianDetNative" [label="Z.JacobianDetNative"];
   "Substrate.Algebra.Z.JacobianGradedSource" [label="Z.JacobianGradedSource"];
   "Substrate.Algebra.Z.JacobianNegCodec" [label="Z.JacobianNegCodec"];
   "Substrate.Algebra.Z.JacobianNegSemiring" [label="Z.JacobianNegSemiring"];
@@ -6523,6 +6524,17 @@ digraph imports {
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Z.Euclid" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Algebra.Z";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Algebra.Z.JacobianResidue";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Algebra.Z.MPolyNormalize";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Algebra.Z.MPolyNormalize.Properties";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Algebra.Z.MPolySemiring";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Foundation.Fin";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Foundation.List";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.Foundation.Product";
+  "Substrate.Algebra.Z.JacobianDetNative" -> "Substrate.WitnessTower.LeibnizDet";
   "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Semiring.Instances.Z";
   "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Z.JacobianGradedSource" -> "Substrate.Algebra.Z.JacobianResidue";

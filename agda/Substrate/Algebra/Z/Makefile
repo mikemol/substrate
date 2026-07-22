@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := Add.agda Arithmetic.agda Bezout.agda CommRing.agda Coprime.agda Euclid.agda JacobianGradedSource.agda JacobianNegCodec.agda JacobianNegSemiring.agda JacobianResidue.agda MPolyNormalize.agda MPolySemiring.agda MonoCommMonoid.agda Mul.agda Residue.agda Sub.agda Wedge.agda
+FILES := Add.agda Arithmetic.agda Bezout.agda CommRing.agda Coprime.agda Euclid.agda JacobianDetNative.agda JacobianGradedSource.agda JacobianNegCodec.agda JacobianNegSemiring.agda JacobianResidue.agda MPolyNormalize.agda MPolySemiring.agda MonoCommMonoid.agda Mul.agda Residue.agda Sub.agda Wedge.agda
 SUBDIRS := Bezout MPolyNormalize Properties
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
