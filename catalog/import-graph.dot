@@ -4876,6 +4876,8 @@ digraph imports {
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Q";
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Q.Equiv";
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Q.JacobianCollision";
+  "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Q.JacobianEncodingLiteral";
+  "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Q.JacobianEvalNormalize";
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Z";
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Z.JacobianResidue";
   "Substrate.Algebra.Q.JacobianCounterexample" -> "Substrate.Algebra.Z.MPolyNormalize";

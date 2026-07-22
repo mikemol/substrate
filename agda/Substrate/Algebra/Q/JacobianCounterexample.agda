@@ -19,14 +19,16 @@
 --     (RUNG 3a) enumerates the true support (combines like monomials, drops
 --     zeros), so "det is the constant −2" needs no degree-bound argument.
 --
--- ⚑ HONEST BOUNDARY. The two halves are about the SAME paper map F but use
--- two independent encodings — HALF A's curried ℚ functions `C.f₁/f₂/f₃` and
--- HALF B's `MPoly` `detJac` (of `Algebra.Z.JacobianResidue`'s `f₁/f₂/f₃`).
--- They are conjoined BY CONSTRUCTION (identical monomial structure, by
--- inspection), NOT by a machine-checked bridge: a term equating the ℚ-eval of
--- the `MPoly` F with the curried ℚ F is the one rung not present. So this
--- capstone states "this ℚ F is non-injective AND this ℤ F has det ≡ −2",
--- true of the one map, without a single-object identification.
+-- ⚑ THE SINGLE-OBJECT IDENTIFICATION — NOW MACHINE-CHECKED (◆jac-gamma). The two
+-- halves are about the SAME paper map F, under two independent encodings — HALF A's
+-- curried ℚ functions `C.f₁/f₂/f₃` and HALF B's `MPoly` F (`Algebra.Z.JacobianResidue`'s
+-- `f₁/f₂/f₃`, of which `detJac` is the determinant). These were previously conjoined
+-- only BY INSPECTION (identical monomial structure); the rung equating the ℚ-eval of the
+-- `MPoly` F with the curried ℚ F is now PRESENT: `JacobianEncodingLiteral.literal₁/₂/₃`
+--    literalᵢ : (x y z : ℚ) → evalℚ x y z R.fᵢ ≈ℚ C.fᵢ x y z
+-- (the ⟡jac-encoding-bridge Rosetta Stone, closed by a free-algebra universal-property
+-- lift). So the `identify₁/₂/₃` fields below make the capstone a TRUE single-object
+-- statement: this ℚ F IS the ℤ F, evaluated — one map, machine-checked end-to-end.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.Q.JacobianCounterexample where
@@ -38,6 +40,8 @@ open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 import Substrate.Algebra.Q.JacobianCollision as C
 import Substrate.Algebra.Z.JacobianResidue   as R
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
+import Substrate.Algebra.Q.JacobianEvalNormalize as β
+import Substrate.Algebra.Q.JacobianEncodingLiteral as L
 
 -- HALF B, box-free: the determinant's full normal form is the constant −2.
 norm-detJac-is-const : normalize R.detJac ≡ R.kP (-suc 1)
@@ -52,6 +56,11 @@ record IsJacobianCounterexample : Set where
     distinct : (0ℚ ≈ℚ 1ℚ) → 0ℤ ≡ 1ℤ
     -- HALF B — det Jac F is the nonzero constant −2 (box-free).
     det-is-const-neg2 : normalize R.detJac ≡ R.kP (-suc 1)
+    -- THE SINGLE-OBJECT IDENTIFICATION — HALF A's curried ℚ F IS HALF B's MPoly F,
+    -- evaluated at every point (◆jac-gamma, JacobianEncodingLiteral.literalᵢ).
+    identify₁ : (x y z : ℚ) → β.evalℚ x y z R.f₁ ≈ℚ C.f₁ x y z
+    identify₂ : (x y z : ℚ) → β.evalℚ x y z R.f₂ ≈ℚ C.f₂ x y z
+    identify₃ : (x y z : ℚ) → β.evalℚ x y z R.f₃ ≈ℚ C.f₃ x y z
 
 jac-counterexample : IsJacobianCounterexample
 jac-counterexample = record
@@ -60,4 +69,7 @@ jac-counterexample = record
   ; collide₃          = C.collision₃
   ; distinct          = C.x-differs
   ; det-is-const-neg2 = norm-detJac-is-const
+  ; identify₁         = L.literal₁
+  ; identify₂         = L.literal₂
+  ; identify₃         = L.literal₃
   }
