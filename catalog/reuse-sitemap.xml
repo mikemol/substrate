@@ -72,10 +72,11 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#_≈t_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianCounterexample#IsJacobianCounterexample</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianEvalCD#Bounded</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianExpr#Expr</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/Linear#Linearℚ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/Order#_≤ℤ_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Q#ℚ</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Q#ℚ</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient/CRT#CRT-Witness</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient/CRT/Idempotents#CRTIdempotents</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient/CRT/Inverses#ModInverses</loc><priority>0.0</priority></url>

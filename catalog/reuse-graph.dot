@@ -70,6 +70,7 @@ digraph reuse {
   "Substrate.Algebra.Q.HetSymbolic.Tm" [label="Tm\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
   "Substrate.Algebra.Q.HetSymbolic._≈t_" [label="_≈t_\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
   "Substrate.Algebra.Q.JacobianCounterexample.IsJacobianCounterexample" [label="IsJacobianCounterexample\nSubstrate.Algebra.Q.JacobianCounterexample"];
+  "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" [label="Bounded\nSubstrate.Algebra.Q.JacobianEvalCD._", style=rounded];
   "Substrate.Algebra.Q.JacobianExpr.Expr" [label="Expr\nSubstrate.Algebra.Q.JacobianExpr", style=rounded];
   "Substrate.Algebra.Q.Linear.Linearℚ" [label="Linearℚ\nSubstrate.Algebra.Q.Linear"];
   "Substrate.Algebra.Q.Order._≤ℤ_" [label="_≤ℤ_\nSubstrate.Algebra.Q.Order", style=rounded];
@@ -902,6 +903,8 @@ digraph reuse {
   "Substrate.Algebra.PontryaginDual._.PontryaginDualityTheorem" -> "Substrate.Algebra.PontryaginDual.LocallyCompactAbelian";
   "Substrate.Algebra.PontryaginDual._.PontryaginDualityTheorem" -> "Substrate.Algebra.PontryaginDual._.PontryaginDual";
   "Substrate.Algebra.Q.HetSymbolic._≈t_" -> "Substrate.Algebra.Q.HetSymbolic.Tm";
+  "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" -> "Substrate.Algebra.Q.ℚ";
+  "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Q.Linear.Linearℚ" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Q.Order._≤ℤ_" -> "Substrate.Algebra.Z.ℤ";
   "Substrate.Algebra.Quotient.CRT.CRT-Witness" -> "Substrate.Foundation.Nat.ℕ";
