@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K --guardedness #-}
+{-# OPTIONS --safe --without-K #-}
 
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Z.MPolyNormalize — ⟡jac-poly-normalize (RUNG 3a), DEFS.

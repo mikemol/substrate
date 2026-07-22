@@ -91,6 +91,20 @@ open import Substrate.Algebra.F2 using (F₂)
 open import Substrate.Algebra.F2.AsField using () renaming (F₂-Semiring to F₂-semiring) public
 
 ------------------------------------------------------------------------
+-- 2b. POLYNOMIAL Semiring — pointer (not re-exported: would cycle here,
+--     since MPolySemiring imports this module for `mk-monoid`).
+--
+-- The only in-tree Semiring on MULTIVARIATE (3-variable) ℤ-polynomials in
+-- sorted/combined/no-zero-coeff normal form, with a faithful `coeff`
+-- semantics, is `NormPoly-Semiring : Semiring NormPoly` at
+--     Substrate.Algebra.Z.MPolySemiring
+-- (built for the Jacobian-counterexample native determinant,
+-- ⟡jac-poly-semiring). Reuse it there rather than rebuilding a polynomial
+-- Semiring. (The univariate Vec-backed `Algebra.Polynomial.Graded` rings and
+-- the F₂[x] ring are different structures — see that module's header.)
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- 3. Bool — the routing gauge.
 --
 -- additive = ∨ (ε = false), multiplicative = ∧ (ε = true).  (Ⓓ: these Bool

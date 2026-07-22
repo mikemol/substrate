@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K --guardedness #-}
+{-# OPTIONS --safe --without-K #-}
 
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Z.MPolySemiring — ⟡jac-poly-semiring (RUNG 3b).

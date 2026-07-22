@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K --guardedness #-}
+{-# OPTIONS --safe --without-K #-}
 
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Z.JacobianDetNative — ⟡jac-det-native (RUNG 3c).
