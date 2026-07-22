@@ -19,7 +19,7 @@ MEM_CAP ?= 1024m
 AGDA_ROOT := ../../..
 SCRIPTS := ../../../../scripts
 
-FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda CrossMixBezout.agda DecidableEq.agda Embeddings.agda Equiv.agda HetBasis.agda HetBasisNest.agda HetCrossMix.agda HetReciprocal.agda HetReduce.agda HetReduceBezout.agda HetSymbolic.agda HetV4.agda JacobianCollision.agda JacobianCounterexample.agda Linear.agda Mul.agda Neg.agda Order.agda QToRCrossMix.agda Reduce.agda Reduction.agda RegistryHetQBridges.agda Sub.agda Vector.agda
+FILES := Add.agda Arithmetic.agda AsField.agda AsLinearAlgebra.agda AsModule.agda Capstone.agda CrossMixBezout.agda DecidableEq.agda Embeddings.agda Equiv.agda HetBasis.agda HetBasisNest.agda HetCrossMix.agda HetReciprocal.agda HetReduce.agda HetReduceBezout.agda HetSymbolic.agda HetV4.agda JacobianCollision.agda JacobianCounterexample.agda JacobianEncodingCodec.agda JacobianEncodingNormalize.agda JacobianEncodingRails.agda Linear.agda Mul.agda Neg.agda Order.agda QToRCrossMix.agda Reduce.agda Reduction.agda RegistryHetQBridges.agda Sub.agda Vector.agda
 SUBDIRS := Linear Properties
 
 .PHONY: all files subdirs $(SUBDIRS) ingest ingest-files ingest-subdirs $(SUBDIRS:%=%.ingest) check-sync clean
