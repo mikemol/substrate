@@ -34,6 +34,26 @@ import Substrate.Foundation.Function.Iterate as F
 HasOrderPerm : ∀ {n} → (Fin n → Fin n) → ℕ → Set
 HasOrderPerm {n} = F.HasFixedOrder {Fin n}
 
+-- ⟡cap-384 ELABORATION HASH-CONS. `HasOrderPerm σ k = ∀ x → iterate k σ x ≡ x`
+-- REDUCES: at a CONCRETE σ it normalizes the k-fold permutation power. A record
+-- field typed `HasOrderPerm σ n` therefore re-normalizes that power at EVERY site
+-- that builds the record at a concrete σ (measured: an order-7 capability record
+-- costs ~307 MB, though the proof itself is ~82 MB at abstract σ). `OrderOf` is an
+-- OPAQUE alias: outside this block it does NOT unfold, so a field typed `OrderOf σ n`
+-- is a non-reducing token (the cross-module elaboration memo). `seal-order`/
+-- `unseal-order` convert (they live in the block, so they see OrderOf = HasOrderPerm)
+-- — no `unfolding` needed downstream. Wrap the proof at ABSTRACT σ (cheap), hand
+-- consumers the sealed token. (Same seal idiom as Permutation.Cyclic's cyclic-Linear.)
+opaque
+  OrderOf : ∀ {n} → (Fin n → Fin n) → ℕ → Set
+  OrderOf f k = HasOrderPerm f k
+
+  seal-order : ∀ {n} {f : Fin n → Fin n} {k} → HasOrderPerm f k → OrderOf f k
+  seal-order p = p
+
+  unseal-order : ∀ {n} {f : Fin n → Fin n} {k} → OrderOf f k → HasOrderPerm f k
+  unseal-order p = p
+
 σ-iterate-add :
   ∀ {n} (σ : Fin n → Fin n) (a b : ℕ) (i : Fin n) →
   σ-iterate (a ℕ+ b) σ i ≡ σ-iterate a σ (σ-iterate b σ i)

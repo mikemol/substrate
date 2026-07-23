@@ -18,7 +18,7 @@ open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
-open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
+open import Substrate.Foundation.Fin.Iterate using (OrderOf)   -- ⟡cap-384: opaque order-token
 
 ------------------------------------------------------------------------
 -- The capability record. Fields correspond 1:1 to the parameters of
@@ -43,7 +43,7 @@ module _ (Gen : Set) (Canonical : Word Gen → Set) where
       action-of-a-is-σ  : ∀ {w} (c : Canonical w) →
                           canonical-to-Fin (insert-canonical a c)
                           ≡ σ (canonical-to-Fin c)
-      σ-aⁿ=ε            : HasOrderPerm σ n
+      σ-aⁿ=ε            : OrderOf σ n
 
   ------------------------------------------------------------------------
   -- from-coxeter-fin-data: take a Zₙ-Coxeter's data + a Zₙ-Coxeter-Fin's
@@ -61,7 +61,7 @@ module _ (Gen : Set) (Canonical : Word Gen → Set) where
     (σ : Fin n → Fin n)
     (action-of-a-is-σ : ∀ {w} (c : Canonical w) →
                         canonical-to-Fin (insert-canonical a c) ≡ σ (canonical-to-Fin c))
-    (σ-aⁿ=ε : HasOrderPerm σ n) →
+    (σ-aⁿ=ε : OrderOf σ n) →
     CoxeterFinCapability n
   from-coxeter-fin-data a insert insert-can c-to-Fin Fin-to-c σ act ord =
     record
@@ -92,7 +92,7 @@ cap-Z₂ = from-coxeter-fin-data Z₂.Gen Z₂.Canonical
   Z₂.a Z₂.insert Z₂.insert-canonical
   Z₂-Fin.canonical-to-Fin Z₂-Fin.Fin-to-canonical
   cyclic-suc Z₂-Fin.action-of-a-is-σ₂
-  Z₂-Fin.σ₂-HasOrderPerm-from-Z2-Coxeter
+  Z₂-Fin.σ₂-OrderOf-from-Z2-Coxeter
 
 import Substrate.Groups.Z3-Coxeter as Z₃
 import Substrate.Groups.Z3-Coxeter-Fin as Z₃-Fin
@@ -102,7 +102,7 @@ cap-Z₃ = from-coxeter-fin-data Z₃.Gen Z₃.Canonical
   Z₃.a Z₃.insert Z₃.insert-canonical
   Z₃-Fin.canonical-to-Fin Z₃-Fin.Fin-to-canonical
   cyclic-suc Z₃-Fin.action-of-a-is-σ₃
-  Z₃-Fin.σ₃-HasOrderPerm-from-Z3-Coxeter
+  Z₃-Fin.σ₃-OrderOf-from-Z3-Coxeter
 
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Z4-Coxeter-Fin as Z₄-Fin
@@ -112,7 +112,7 @@ cap-Z₄ = from-coxeter-fin-data Z₄.Gen Z₄.Canonical
   Z₄.a Z₄.insert Z₄.insert-canonical
   Z₄-Fin.canonical-to-Fin Z₄-Fin.Fin-to-canonical
   cyclic-suc Z₄-Fin.action-of-a-is-σ₄
-  Z₄-Fin.σ₄-HasOrderPerm-from-Z4-Coxeter
+  Z₄-Fin.σ₄-OrderOf-from-Z4-Coxeter
 
 import Substrate.Groups.Z5-Coxeter as Z₅
 import Substrate.Groups.Z5-Coxeter-Fin as Z₅-Fin
@@ -122,7 +122,7 @@ cap-Z₅ = from-coxeter-fin-data Z₅.Gen Z₅.Canonical
   Z₅.a Z₅.insert Z₅.insert-canonical
   Z₅-Fin.canonical-to-Fin Z₅-Fin.Fin-to-canonical
   cyclic-suc Z₅-Fin.action-of-a-is-σ₅
-  Z₅-Fin.σ₅-HasOrderPerm-from-Z5-Coxeter
+  Z₅-Fin.σ₅-OrderOf-from-Z5-Coxeter
 
 import Substrate.Groups.Z7-Coxeter as Z₇
 import Substrate.Groups.Z7-Coxeter-Fin as Z₇-Fin
@@ -132,4 +132,4 @@ cap-Z₇ = from-coxeter-fin-data Z₇.Gen Z₇.Canonical
   Z₇.a Z₇.insert Z₇.insert-canonical
   Z₇-Fin.canonical-to-Fin Z₇-Fin.Fin-to-canonical
   cyclic-suc Z₇-Fin.action-of-a-is-σ₇
-  Z₇-Fin.σ₇-HasOrderPerm-from-Z7-Coxeter
+  Z₇-Fin.σ₇-OrderOf-from-Z7-Coxeter

@@ -8,7 +8,7 @@ typechecks every .agda EXCEPT Substrate.All individually, with the exact build f
 and RAM cap, COLLECTING EVERY FAILURE (never stops), so the output is the complete
 blocking list of non-building modules.
 
-Faithful to the per-dir build: `agda --safe --without-K +RTS -M1024m -RTS -i ..`
+Faithful to the per-dir build: `agda --safe --without-K +RTS -M256m -RTS -i ..`
 invoked from agda/. Parallel, but a shared-.agdai race can give a spurious failure;
 re-run a reported failure solo to confirm.
 
@@ -21,7 +21,7 @@ HERE  = os.path.dirname(os.path.abspath(__file__))
 AGDA_DIR = os.path.abspath(os.path.join(HERE, "..", "agda"))
 SUB = os.path.join(AGDA_DIR, "Substrate")
 FLAGS = ["--safe", "--without-K"]
-MEM = "1024m"
+MEM = os.environ.get("AGDA_FBC_MEM", "256m")   # ⟡cap-384: strict per-module GHC-heap gate (was 1024m)
 J = 6
 TIMEOUT = 600
 ONLY = None

@@ -15,7 +15,7 @@ open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
 open import Substrate.Foundation.Fin.Iterate
-  using (HasOrderPerm)
+  using (HasOrderPerm; OrderOf; seal-order)
 open import Substrate.Algebra.Nat.CyclicSuc
   using (cyclic-suc; cyclic-suc-HasOrderPerm)
 
@@ -86,6 +86,13 @@ Fin-roundtrip _ = refl
 
 σ-HasOrderPerm : HasOrderPerm σ (suc n)
 σ-HasOrderPerm = cyclic-suc-HasOrderPerm {n}
+
+-- ⟡cap-384: the ABSTRACT-σ seal (n is a module param → cyclic-suc {n} abstract →
+-- cheap, no iterate normalization). Rides the `public` re-export chain to every
+-- Zn-Coxeter-Fin; the capability field consumes THIS (a non-reducing token) so a
+-- concrete cap-Zₙ record never re-normalizes `iterate n (cyclic-suc)`.
+σ-OrderOf : OrderOf σ (suc n)
+σ-OrderOf = seal-order σ-HasOrderPerm
 
 ------------------------------------------------------------------------
 -- 7. insert — cyclic Word-level shift.

@@ -146,17 +146,17 @@ _wait_change() { # block up to $1 seconds for a ledger change (a release), then 
 }
 
 _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", from its peak-mem history.
-  # Round the max recorded peak UP to the next POWER OF TWO (floor 64, cap AGDA_MB_MAX=1536 = 1.5GiB).
+  # Round the max recorded peak UP to the next POWER OF TWO (floor 64, cap AGDA_MB_MAX=384 = 384MiB).
   # The power-of-2 step IS the safety margin — it sits 2^n ± 2^(n-1) around the need, so peak ∈
   # (2^(n-1), 2^n] leases 2^n with up to a 2^(n-1) headroom band; no extra fudge, no over-rounding
-  # (900→1024, not 1536). A lease is a hard kill cap, so rounding UP keeps cap ≥ peak.
-  # CEILING 1.5GiB: the full build runs every module at `+RTS -M1024m` and passes, so worst-case maxRSS
-  # ≈ 1GB heap + ~0.1GB RTS ≈ 1.1GB < 1536 (measured AES/KAT/SBox hogs peak ~110MB after the round/table
-  # decomposition); a peak that would round to 2048 is clamped to 1536, still ≥ the real peak. Default
-  # (192) if no history — measured maxRSS tops ~120MB so 192 covers a typical cold module, and the
-  # retry ladder 192→384→768→1536 lands exactly on the ceiling (1536 = 192·2³), so a heavy unseen
-  # module still self-heals via retry-on-OOM.
-  local a mod="" def="${AGDA_MB_DEFAULT:-192}" cap="${AGDA_MB_MAX:-1536}"
+  # (300→384, not 512). A lease is a hard kill cap, so rounding UP keeps cap ≥ peak.
+  # CEILING 384MiB (⟡cap-384): the full build runs every module at `+RTS -M256m` and passes, so worst-case
+  # maxRSS ≈ 256MB heap + ~0.1GB RTS ≈ 356MB < 384. The strict heap gate is the FORCING FUNCTION — a module
+  # that would exceed it must seal its heavy neutrals opaque (a heavy type-level redex → a non-reducing
+  # handle) or import a cheaper proof, not grow the cap. A peak that would round to 512 is clamped to 384,
+  # still ≥ the real peak. Default (192) if no history — measured maxRSS tops ~120MB so 192 covers a typical
+  # cold module, and the retry ladder 192→384 lands on the ceiling (384 = 192·2), self-heals via retry-on-OOM.
+  local a mod="" def="${AGDA_MB_DEFAULT:-192}" cap="${AGDA_MB_MAX:-384}"
   for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done
   [ -n "$mod" ] || { echo "$def"; return; }
   local led; led="$(dirname "$mod")/.agda-times.tsv"
@@ -291,9 +291,9 @@ cmd_run() {
   # there's room to grow, RELEASE the too-small lease and re-enter at the next power-of-2 bucket.
   # Self-corrects a too-tight autobudget guess (then the success records the real peak → history fixes it).
   if { [ "$rc" = 137 ] || [ "$rc" = 143 ]; } && [ "$parent" = "-" ] && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
-     && [ "$mb" -lt "${AGDA_MB_MAX:-1536}" ]; then
+     && [ "$mb" -lt "${AGDA_MB_MAX:-384}" ]; then
     release "$id"
-    local nb=$((mb*2)); [ "$nb" -gt "${AGDA_MB_MAX:-1536}" ] && nb="${AGDA_MB_MAX:-1536}"
+    local nb=$((mb*2)); [ "$nb" -gt "${AGDA_MB_MAX:-384}" ] && nb="${AGDA_MB_MAX:-384}"
     echo "membudget: OOM-killed at ${mb}MB [$label] — retrying at ${nb}MB (idempotent)…" >&2
     export MEMBUDGET_PARENT="$parent"                   # re-enter at the original level (TOP), bigger bucket
     exec "$0" run "$nb" "$label" -- "$@"

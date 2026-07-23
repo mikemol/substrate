@@ -19,6 +19,7 @@ open import Substrate.Groups.Coxeter.Fin-from-Cyclic 3 public
   renaming
     ( σ to σ₄
     ; σ-HasOrderPerm to σ₄-HasOrderPerm-from-Z4-Coxeter
+    ; σ-OrderOf to σ₄-OrderOf-from-Z4-Coxeter
     ; action-of-a-is-σ-ex to action-of-a-is-σ₄
     ; canonical-to-Fin-ex to canonical-to-Fin
     ; Fin-to-canonical-ex to Fin-to-canonical
