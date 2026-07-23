@@ -69,6 +69,7 @@ digraph reuse {
   "Substrate.Algebra.Q.HetBasis.HetQ" [label="HetQ\nSubstrate.Algebra.Q.HetBasis"];
   "Substrate.Algebra.Q.HetSymbolic.Tm" [label="Tm\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
   "Substrate.Algebra.Q.HetSymbolic._≈t_" [label="_≈t_\nSubstrate.Algebra.Q.HetSymbolic", style=rounded];
+  "Substrate.Algebra.Q.JacCubeNorm._._.ZE" [label="ZE\nSubstrate.Algebra.Q.JacCubeNorm._._", style=rounded];
   "Substrate.Algebra.Q.JacobianCounterexample.IsJacobianCounterexample" [label="IsJacobianCounterexample\nSubstrate.Algebra.Q.JacobianCounterexample"];
   "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" [label="Bounded\nSubstrate.Algebra.Q.JacobianEvalCD._", style=rounded];
   "Substrate.Algebra.Q.JacobianExpr.Expr" [label="Expr\nSubstrate.Algebra.Q.JacobianExpr", style=rounded];
@@ -174,6 +175,10 @@ digraph reuse {
   "Substrate.Algebra.Z.MPolyNormalize.TriM" [label="TriM\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
   "Substrate.Algebra.Z.MPolyNormalize.TriN" [label="TriN\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
   "Substrate.Algebra.Z.MPolyNormalize._<M_" [label="_<M_\nSubstrate.Algebra.Z.MPolyNormalize", style=rounded];
+  "Substrate.Algebra.Z.ZRingNorm.Mon" [label="Mon\nSubstrate.Algebra.Z.ZRingNorm"];
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.Mon" [label="Mon\nSubstrate.Algebra.Z.ZRingNorm.Sound._"];
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.ZE" [label="ZE\nSubstrate.Algebra.Z.ZRingNorm.Sound._", style=rounded];
+  "Substrate.Algebra.Z.ZRingNorm.ZE" [label="ZE\nSubstrate.Algebra.Z.ZRingNorm", style=rounded];
   "Substrate.Algebra.Z.ℤ" [label="ℤ\nSubstrate.Algebra.Z", style=rounded];
   "Substrate.Axes.Axis" [label="Axis\nSubstrate.Axes", style=rounded];
   "Substrate.Category.AbelianPFG.AbelianPFG" [label="AbelianPFG\nSubstrate.Category.AbelianPFG"];
@@ -903,6 +908,7 @@ digraph reuse {
   "Substrate.Algebra.PontryaginDual._.PontryaginDualityTheorem" -> "Substrate.Algebra.PontryaginDual.LocallyCompactAbelian";
   "Substrate.Algebra.PontryaginDual._.PontryaginDualityTheorem" -> "Substrate.Algebra.PontryaginDual._.PontryaginDual";
   "Substrate.Algebra.Q.HetSymbolic._≈t_" -> "Substrate.Algebra.Q.HetSymbolic.Tm";
+  "Substrate.Algebra.Q.JacCubeNorm._._.ZE" -> "Substrate.Algebra.Q.ℚ";
   "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" -> "Substrate.Algebra.Q.ℚ";
   "Substrate.Algebra.Q.JacobianEvalCD._.Bounded" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Q.Linear.Linearℚ" -> "Substrate.Foundation.Nat.ℕ";
@@ -1007,6 +1013,18 @@ digraph reuse {
   "Substrate.Algebra.Z.MPolyNormalize.TriM" -> "Substrate.Algebra.Z.JacobianResidue.Mono";
   "Substrate.Algebra.Z.MPolyNormalize.TriN" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Algebra.Z.MPolyNormalize._<M_" -> "Substrate.Algebra.Z.JacobianResidue.Mono";
+  "Substrate.Algebra.Z.ZRingNorm.Mon" -> "Substrate.Algebra.Z.ℤ";
+  "Substrate.Algebra.Z.ZRingNorm.Mon" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Z.ZRingNorm.Mon" -> "Substrate.Foundation.Vec.Vec";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.Mon" -> "Substrate.Algebra.Z.ℤ";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.Mon" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.Mon" -> "Substrate.Foundation.Vec.Vec";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.ZE" -> "Substrate.Algebra.Z.ℤ";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.ZE" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Z.ZRingNorm.Sound._.ZE" -> "Substrate.Foundation.Vec.Vec";
+  "Substrate.Algebra.Z.ZRingNorm.ZE" -> "Substrate.Algebra.Z.ℤ";
+  "Substrate.Algebra.Z.ZRingNorm.ZE" -> "Substrate.Foundation.Nat.ℕ";
+  "Substrate.Algebra.Z.ZRingNorm.ZE" -> "Substrate.Foundation.Vec.Vec";
   "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Fin.Fin";
   "Substrate.Category.AbelianPFG.AbelianPFG" -> "Substrate.Foundation.Nat.ℕ";
   "Substrate.Category.Adjunction.IsLinearAdjunction" -> "Substrate.Foundation.Nat.ℕ";

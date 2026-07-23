@@ -71,6 +71,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetBasis#HetQ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#_≈t_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Q/JacCubeNorm#ZE</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianCounterexample#IsJacobianCounterexample</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianEvalCD#Bounded</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianExpr#Expr</loc><priority>0.0</priority></url>
@@ -176,7 +177,11 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#TriM</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#TriN</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/MPolyNormalize#_&lt;M_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Z#ℤ</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm#Mon</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm/Sound#Mon</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm/Sound#ZE</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm#ZE</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z#ℤ</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Axes#Axis</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AbelianPFG#AbelianPFG</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Adjunction#IsLinearAdjunction</loc><priority>0.0</priority></url>
@@ -593,7 +598,7 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Unit/Polymorphic#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Universe#U</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/WellFounded#Acc</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundations/Bijection#Bijection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Geometry/HodgeDim3#HodgeComplement-Dim3</loc><priority>0.0</priority></url>
@@ -752,7 +757,7 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#ConditionalStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#IsDeterministic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#Marginalisation</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.08</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.07</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Sites/FinStoch#FinStochHom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>
