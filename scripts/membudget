@@ -206,6 +206,24 @@ _launch_scope() {
   esac
 }
 
+# ⟡sched-batch: echo the sched-batch helper path if usable, else nothing (→ command runs untuned). The
+# helper sets SCHED_BATCH + nice-19 + a long EEVDF slice on each agda so builds are best-effort (yield to
+# interactive) yet run long uninterrupted stretches (one agda is not preempted just because a peer is
+# runnable). membudget's memory lease stays the concurrency roofline — this only changes HOW each admitted
+# agda is scheduled. Lazy-built once from the single-file Rust source (flock-serialized + atomic rename),
+# guarded by rustc availability; the helper itself honors MEMBUDGET_NOBATCH / MEMBUDGET_NICE / MEMBUDGET_SLICE_MS.
+_sched_prefix() {
+  local bin="$SELFDIR/sched-batch" src="$SELFDIR/sched-batch.rs"
+  if [ ! -x "$bin" ] && [ -f "$src" ] && command -v rustc >/dev/null 2>&1; then
+    ( flock 9 || exit 0
+      [ -x "$bin" ] && exit 0                         # another builder already produced it
+      local tmp; tmp="$(mktemp "${bin}.XXXXXX" 2>/dev/null)" || exit 0
+      if rustc -O -o "$tmp" "$src" 2>/dev/null; then mv -f "$tmp" "$bin"; else rm -f "$tmp"; fi
+    ) 9>"${bin}.lock" 2>/dev/null
+  fi
+  [ -x "$bin" ] && printf '%s' "$bin"
+}
+
 cmd_run() {
   local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
   [ "$mb" = auto ] && mb=$(_auto_mb "$@")          # Ⓡ.autobudget: lease from peak-mem history
@@ -266,19 +284,20 @@ cmd_run() {
   # genlop-style timing: measure ONLY the post-lease run (not the semaphore wait above), record it to
   # the module's per-dir ledger, and PROPAGATE the real exit code (cgroup-kill 137 included). The
   # recording is best-effort and never alters rc.
-  local rc=0 rstart rend tf=""
+  local rc=0 rstart rend tf="" sb=""
   [ -x /usr/bin/time ] && tf=$(mktemp 2>/dev/null || echo "")   # capture peak-mem (maxRSS) if available
+  sb="$(_sched_prefix)"   # ⟡sched-batch: SCHED_BATCH+nice+long-slice wrapper (empty when unavailable → untuned)
   rstart=$(date +%s.%N)
   if [ "$parent" = "-" ]; then
     echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
     if [ -n "$tf" ]; then
-        _launch_scope "$mb" "$id" -- /usr/bin/time -v -o "$tf" "$@" || rc=$?
+        _launch_scope "$mb" "$id" -- $sb /usr/bin/time -v -o "$tf" "$@" || rc=$?
     else
-        _launch_scope "$mb" "$id" -- "$@" || rc=$?
+        _launch_scope "$mb" "$id" -- $sb "$@" || rc=$?
     fi
   else
     echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2
-    if [ -n "$tf" ]; then /usr/bin/time -v -o "$tf" "$@" || rc=$?; else "$@" || rc=$?; fi
+    if [ -n "$tf" ]; then $sb /usr/bin/time -v -o "$tf" "$@" || rc=$?; else $sb "$@" || rc=$?; fi
   fi
   rend=$(date +%s.%N)
   if [ "$rc" = 0 ]; then _record_time "$rstart" "$rend" "$tf" "$@"; fi   # only learn from SUCCESSFUL runs

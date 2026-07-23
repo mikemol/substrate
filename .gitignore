@@ -54,3 +54,7 @@ scripts/.decode-cost.tsv
 # reuse catalog relational store (Ⓓ.catalog-db; derived from the .agdai cores, regenerated
 # by scripts/gen_catalog.py — the markdown renders are committed, the .db binary is not)
 catalog/catalog.db
+
+# ⟡sched-batch: compiled helper (arch-specific; built from sched-batch.rs) + its build lock
+scripts/sched-batch
+scripts/sched-batch.lock
