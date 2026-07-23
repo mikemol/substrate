@@ -20,6 +20,9 @@
 
 module Substrate.Algebra.Q.JacobianEncodingLiteral where
 
-open import Substrate.Algebra.Q.JacobianLiteral1 public using (literal₁)
+-- literal₁ ← the reflective-normalizer proof `JacCubeNorm.identify₁` (128 MB),
+-- REPLACING the old AES-Full cube proof `JacobianLiteral1.literal₁` (~730 MB,
+-- retired). ⟡cap-384: completing the cube paydown by wiring it into the hub.
+open import Substrate.Algebra.Q.JacCubeNorm      public using () renaming (identify₁ to literal₁)
 open import Substrate.Algebra.Q.JacobianLiteral2 public using (literal₂)
 open import Substrate.Algebra.Q.JacobianLiteral3 public using (literal₃)
