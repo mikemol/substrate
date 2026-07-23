@@ -29,13 +29,22 @@ WHY THIS SHAPE (read before changing):
     ~111 def-less `open import … public` re-export aggregators (their
     children ARE in their source).
 
-  * make is a DISPATCHER, not a staleness tracker. The m/<Module> targets
-    are .PHONY, so make ALWAYS invokes `agda` per file; AGDA decides
-    cached-vs-recheck (correctly, TRANSITIVELY — an edge make's mtime model
-    cannot see) and no-ops fresh files cheaply (0.08–0.74 s cached). A
-    STALE import edge (source gained an import since the last regen) costs
-    only parallelism-on-one-edge, NEVER soundness: agda re-checks the dep
-    in-process. So freshness is Agda's; make only orders + bounds RAM.
+  * REAL-FILE targets, make DOES track staleness — because the DAG is now
+    explicit. Each target is the actual `_build/<ver>/agda/<Mod>.agdai`,
+    depending on its own `.agda` source AND the `.agdai` of every module it
+    imports. The recursive per-dir makefiles went .PHONY (always-run, let
+    agda decide) precisely because they could NOT see import edges, so make's
+    mtime model missed TRANSITIVE staleness (X.agdai newer than X.agda yet
+    stale because an import changed). The flat import-DAG makes those edges
+    EXPLICIT, so make's mtime model becomes sound: a warm build is a near-
+    instant mtime check (not 2003 agda no-ops), and a change rebuilds only
+    the affected subtree. `&& touch $@` closes the one gap — agda 2.8
+    validates interfaces by CONTENT HASH not mtime, so a content-neutral
+    upstream change would leave a downstream .agdai's mtime old (make would
+    re-invoke agda, which no-ops); touching it on success keeps make aligned.
+    Sound only in the safe direction: over-invoke = a wasted no-op, never
+    under-invoke (source-parse gives the complete direct-edge set). Phony
+    `m/<Mod>` aliases remain for `make -f Flat.mk m/…` convenience.
 
   * ANTI-DRIFT: MODULES is listed EXPLICITLY (no globs). The whole-tree
     check-sync recipe blows up loudly if the on-disk .agda set differs from
@@ -69,6 +78,20 @@ SHIM_DIR = os.path.join(ROOT, "scripts", "agda-shim")   # the membudget agda wra
 
 # source-parse: an `open import`/`import` line's first token is the imported module path.
 IMPRE = re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)", re.M)
+
+
+def build_ver():
+    """The agda _build interface version (the `<ver>` in `agda/_build/<ver>/agda/…/X.agdai`) — the real-file
+    target paths key on it. Detect from the on-disk _build; fall back to `agda --numeric-version`; else 2.8.0."""
+    import glob as _glob
+    import subprocess
+    dirs = _glob.glob(os.path.join(AGDA_DIR, "_build", "*", "agda"))
+    if dirs:
+        return os.path.basename(os.path.dirname(sorted(dirs)[-1]))
+    try:
+        return subprocess.check_output(["agda", "--numeric-version"], text=True).strip()
+    except Exception:
+        return "2.8.0"
 
 
 def _shim_block():
@@ -143,28 +166,36 @@ def kahn_check(disk, deps):
 def flat_text(disk, deps):
     kahn_check(disk, deps)
     mods = sorted(disk)
+    ver = build_ver()
+
+    def ai(m):   # the real .agdai output path for module m (disk[m] = Substrate/…/X.agda), relative to agda/
+        return "$(BUILD)/" + disk[m][:-5] + ".agdai"
+
     L = []
     L.append(MARKER)
-    L.append("# ⟡make-import-dag: SINGLE flat makefile. Per-module m/<Module> phony target + its DIRECT-import")
-    L.append("# prereqs (SOURCE-PARSED from `open import`/`import`, NOT catalog.db) → `make -j` builds in true")
-    L.append("# import-DAG order (deps as .agdai first, independents concurrent). make = dispatcher; agda")
-    L.append("# decides cached-vs-recheck transitively. A stale edge costs parallelism, never soundness.")
-    L.append("# Invoked from agda/. Regenerate: scripts/gen_build_makefiles.py.")
+    L.append("# ⟡make-import-dag: SINGLE flat makefile. REAL-FILE target — each _build/<ver>/agda/<Mod>.agdai")
+    L.append("# depends on its own .agda source AND the .agdai of every module it imports (SOURCE-PARSED from")
+    L.append("# `open import`/`import`, NOT catalog.db). make tracks staleness by mtime over the EXPLICIT import")
+    L.append("# DAG: a warm build is a near-instant mtime check; a change rebuilds only the affected subtree;")
+    L.append("# `make -j` runs the frontier concurrently. `&& touch $@` aligns make's mtime with agda's")
+    L.append("# content-hash interface validity. Invoked from agda/. Regenerate: scripts/gen_build_makefiles.py.")
     L.append("")
     L.extend(_shim_block())
     L.append("AGDA ?= agda")
     L.append("AGDA_FLAGS ?= --safe --without-K")
     L.append(f"MEM_CAP ?= {MEM_CAP}")
     L.append("AGDA_ROOT := .")
-    L.append("SCRIPTS := ../scripts")   # ⟡gqs-make-targets: sppf_db.py (the per-core ingest) home
+    L.append(f"BUILD := _build/{ver}/agda")   # the .agdai interface tree (override for a different agda version)
+    L.append("SCRIPTS := ../scripts")         # ⟡gqs-make-targets: sppf_db.py (the per-core ingest) home
     L.append("")
     L.append("MODULES := " + " ".join(mods))
-    L.append("MTARGETS := $(MODULES:%=m/%)")
+    # the .agdai list, derived from MODULES: dots→slashes, prefix $(BUILD)/, suffix .agdai (hyphens untouched).
+    L.append("AGDAI := $(patsubst %,$(BUILD)/%.agdai,$(subst .,/,$(MODULES)))")
     L.append("ITARGETS := $(MODULES:%=i/%)")
     L.append("")
-    L.append(".PHONY: all check-sync ingest clean $(MTARGETS) $(ITARGETS)")
+    L.append(".PHONY: all check-sync ingest clean $(MODULES:%=m/%) $(ITARGETS)")
     L.append("")
-    L.append("all: check-sync $(MTARGETS)")
+    L.append("all: check-sync $(AGDAI)")
     L.append("")
     # ⟡mid-check-sync: whole-tree drift gate (the 280 per-dir check-sync recipes collapse into ONE).
     L.append("# Blow up if the on-disk .agda set differs from the generated MODULES (new/removed file →")
@@ -177,13 +208,14 @@ def flat_text(disk, deps):
     L.append("\t   echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \\")
     L.append("\t fi")
     L.append("")
-    # One agda process PER FILE, RTS heap-capped, invoked from agda/ so .agda-lib/_build resolve. Always
-    # runs (phony); agda no-ops a current interface cheaply. Import prereqs give the -j DAG order.
-    L.append("# ── compile: m/<Module> depends on m/<direct-import> ─────────────────────────────────────")
+    # Real-file rule: <Mod>.agdai depends on its source + its imports' .agdai. make rebuilds only what's stale
+    # (mtime over the explicit DAG); `touch $@` re-aligns after agda's content-hash no-op. m/<Mod> phony alias.
+    L.append("# ── compile: <Mod>.agdai : <Mod>.agda + <direct-import>.agdai ─ real file; touch aligns mtime ──")
     for m in mods:
-        pre = " ".join(f"m/{d}" for d in sorted(deps[m]))
-        L.append(f"m/{m}: {pre}".rstrip())
-        L.append(f"\t@$(AGDA) $(AGDA_FLAGS) +RTS -M$(MEM_CAP) -RTS -i $(AGDA_ROOT) $(AGDA_ROOT)/{disk[m]}")
+        pre = " ".join(ai(d) for d in sorted(deps[m]))
+        L.append(f"{ai(m)}: $(AGDA_ROOT)/{disk[m]} {pre}".rstrip())
+        L.append(f"\t@$(AGDA) $(AGDA_FLAGS) +RTS -M$(MEM_CAP) -RTS -i $(AGDA_ROOT) $(AGDA_ROOT)/{disk[m]} && touch $@")
+        L.append(f"m/{m}: {ai(m)}")
     L.append("")
     # ⟡gqs-make-targets: parallel-to-compile SPPF ingest — one --ingest-core per module (INDEPENDENT of the
     # compile; WAL+busy_timeout in sppf_db → parallel decode / serialized insert; self-skips unadvanced cores).
