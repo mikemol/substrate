@@ -57,4 +57,23 @@ post-commit advisory (auto-captured):
 $(printf '%s\n' "$advisory" | sed 's/^/    /')"
   _POST_COMMIT_AMENDING=1 git commit --amend --no-verify -F - <<<"$msg" >/dev/null 2>&1 || true
 fi
+
+# ⟡membudget-otlp-wire: push the fresh proof-cost ledger to cassian's VictoriaMetrics over
+# OTLP — an advisory SIDE-EFFECT (not folded into the message; runs after the amend). Fires
+# only when a full build actually RAN this commit (STAMP touched <120s ago) — i.e. per
+# STRUCTURAL commit, when the .agda-times.tsv ledger changed — never per module, never on a
+# trivial commit. Self-skips silently: opt out with MEMBUDGET_NO_OTLP=1, or if `uv` is absent
+# or cassian's :8428 is unreachable. Never blocks (post-commit; git ignores the exit). Manual
+# push any time: `uv run --with opentelemetry-sdk --with opentelemetry-exporter-otlp-proto-http
+# python3 scripts/membudget_otlp.py`.
+_OTLP_STAMP="$ROOT/.full-build-stamp"
+if [ -z "${MEMBUDGET_NO_OTLP:-}" ] && [ -f "$_OTLP_STAMP" ] \
+   && [ "$(( $(date +%s) - $(stat -c %Y "$_OTLP_STAMP") ))" -lt 120 ] \
+   && command -v uv >/dev/null 2>&1 \
+   && curl -sf -m 3 'http://127.0.0.1:8428/api/v1/query?query=up' -o /dev/null 2>/dev/null
+then
+  echo "── membudget-otlp: full build ran; pushing proof-cost ledger to cassian (advisory) ──"
+  ( cd "$ROOT" && timeout 90 uv run --with opentelemetry-sdk --with opentelemetry-exporter-otlp-proto-http \
+      python3 scripts/membudget_otlp.py 2>&1 | grep -E 'membudget-otlp:|✓ ingested|✗ ' ) || true
+fi
 exit 0
