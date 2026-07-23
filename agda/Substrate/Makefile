@@ -15,7 +15,7 @@ endif
 
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
-MEM_CAP ?= 1024m
+MEM_CAP ?= 256m
 AGDA_ROOT := ..
 SCRIPTS := ../../scripts
 

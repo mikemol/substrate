@@ -138,8 +138,11 @@ if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
 
 fi
 
-# Full build: prove EVERY module typechecks (scripts/full_build_check.py — one agda
-# process per file, RAM-capped, skips the OOM Substrate.All). EXPENSIVE, so it runs at
+# Full build: prove EVERY module typechecks via `make -C agda -j` — the SINGLE build path
+# (⟡cap-384). make routes through the agda-shim → membudget: cgroup caps maxRSS≤384 (and OWNS
+# retry-on-OOM, so a genuine >384 module exhausts the 192→384 ladder → 137 → make recipe fails,
+# never masked), +RTS -M256m caps GHC heap; Substrate.All is excluded from FILES (OOM by design);
+# stop-at-first-failure (iterate incrementally; `make -C agda/Substrate/<dir>` for detail). EXPENSIVE, so it runs at
 # most weekly: a successful run touches "$STAMP"; while that stamp is younger than a
 # week the build is skipped for fast commits. Only attempted when the cheap gates above
 # already passed (no point building on an otherwise-doomed commit). Force a run by
@@ -190,7 +193,7 @@ if [ "$fail" -eq 0 ]; then
     else
       echo "pre-commit: full build (every module; >7d since last) — running, this may take a while…"
     fi
-    if python3 "$ROOT/scripts/full_build_check.py" -j6; then
+    if make -C "$ROOT/agda" -j; then
       touch "$STAMP"
       echo "pre-commit: full build OK — stamp refreshed."
       # Ⓓ.gate(-graph/-render-from-db): the .agdai cores are now fresh — rebuild the relational

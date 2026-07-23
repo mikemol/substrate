@@ -66,8 +66,8 @@ shim calls `membudget` by absolute path, so it's self-contained. `make -j` self-
 records a proof-cost profile per re-typechecked module (Ⓟ.proof-cost-ledger, always-on opt-out;
 `MEMBUDGET_NOPROFILE=1 make` to skip the ~2× profiling cost; `make AGDA=/path/to/agda` to pin a different
 agda). Sourcing `membudget-shrc` is still useful for *interactive* bare `agda`; it is no longer needed for
-`make`. NOTE: the pre-commit gate (`full_build_check.py`) invokes agda directly (not via make), so it is
-NOT shim-routed — to grow the ledger, build via `make`.
+`make`. NOTE: the pre-commit full-build gate now runs **`make -C agda -j`** (⟡cap-384) — the SINGLE build path,
+shim-routed through `membudget` (which owns retry-on-OOM), so building via the gate grows the ledger too.
 
 `make`'s recipes resolve `agda` via PATH → the shim → `membudget run` → blocks/leases. The
 per-file `+RTS -M256m` heap cap keeps each job under the 384MiB lease ceiling. `AGDA_MB=auto`
@@ -82,8 +82,8 @@ gets a `.agda-times.tsv` alongside its `Makefile` (gitignored — timing is hard
 The **`membudget` wrapper is the universal capture point**: the agda shim routes every compile
 through `membudget run`, which times ONLY the post-lease run (not the semaphore wait) and appends
 `module<TAB>seconds` to the module's per-dir ledger (best-effort; never alters the compile's exit
-code). `full_build_check.py` also records its run and prints a genlop-style up-front estimate + live
-ETA. Read it back:
+code). The pre-commit `make -C agda -j` full build records every re-typechecked module through that same
+capture point; read the accumulated history back with:
 
     scripts/buildtime.py --predict          # genlop -p: estimated full build (Σ medians; wall ≈ /J)
     scripts/buildtime.py --top [N]          # the slowest modules (build hot-spots)

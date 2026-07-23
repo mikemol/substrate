@@ -8,7 +8,7 @@ indirect/dynamic import, a config-driven open. This is the ground-truth compleme
 coupling-surface modules actually EXECUTE.
 
 Proxy (Λ8, per-commit, cheap, static) + oracle (Λ8b, out-of-band, empirical) is the same
-cheap-gate + heavy-throttled-check structure the pre-commit hook already uses for full_build_check.
+cheap-gate + heavy-throttled-check structure the pre-commit hook already uses for the make full build.
 This is the heavy half: it needs cupy + agda and runs real GPU/Agda work, so it is an ON-DEMAND /
 out-of-band oracle (run it to *prove* independence), NOT wired into the per-commit fast path. The
 static proxy guards commits; this proves the proxy's blind spot is empty.

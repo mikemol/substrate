@@ -5,8 +5,8 @@ Per-module typecheck times live in a ledger PARALLEL TO THE RECURSIVE-MAKE STRUC
 dir gets a `.agda-times.tsv` ALONGSIDE its Makefile (gitignored — timing is hardware/cache-specific,
 not a shared fact), holding `module<TAB>seconds[<TAB>peak_mb]` rows (append-only; small lines append
 atomically, so parallel `make -j` writers don't corrupt it). The membudget wrapper (the agda shim's
-universal choke point) appends one row per compile; full_build_check.py appends its run + shows a live
-ETA. This module reads them all and estimates genlop-style:
+universal choke point) appends one row per compile — including the pre-commit `make -C agda -j` full build
+(⟡cap-384, the single build path). This module reads them all and estimates genlop-style:
 
   buildtime.py --predict            # genlop -p: estimated total for the full build, from history
   buildtime.py --predict A B …      # estimate a specific module list (relpaths from agda/)
