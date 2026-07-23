@@ -120,16 +120,18 @@ def predict(hist: dict, modules) -> dict:
             "n": len(modules), "fallback": fb}
 
 
-def autobudget(peak_mb: float, default: int = 192, cap: int = 1536) -> int:
-    """The membudget _auto_mb rule: round peak UP to the next POWER OF TWO (floor 64, cap). The pow2
-    step IS the safety margin — it sits 2^n ± 2^(n-1) around the need (up to a 2^(n-1) headroom band),
-    so no extra fudge and no over-rounding (900→1024, not 1536). A lease is a hard kill cap, so rounding
-    UP keeps cap ≥ peak; a too-tight first guess self-corrects via membudget's retry-on-OOM.
+def autobudget(peak_mb: float, default: int = 192, cap: int = 384) -> int:
+    """The membudget _auto_mb rule (mirrors AGDA_MB_DEFAULT=192 / AGDA_MB_MAX=384): round peak UP to the
+    next POWER OF TWO (floor 64, cap). The pow2 step IS the safety margin — it sits 2^n ± 2^(n-1) around
+    the need (up to a 2^(n-1) headroom band), so no extra fudge and no over-rounding (peak 65 → 128, not
+    256). A lease is a hard kill cap, so rounding UP keeps cap ≥ peak; a too-tight first guess self-corrects
+    via membudget's retry-on-OOM ladder (192→384).
 
-    Ceiling = 1.5GiB (cap=1536): the full build runs every module at `+RTS -M1024m` (1GB heap) and
-    passes, so worst-case maxRSS ≈ 1GB heap + ~0.1GB RTS overhead ≈ 1.1GB < 1536 — measured AES/KAT/SBox
-    hogs peak ~110MB after decomposition, so the cap has wide margin. cap is NOT a power of two: a peak
-    that rounds to 2048 is clamped down to 1536 (still ≥ any real peak by the -M1024m invariant)."""
+    Ceiling = 384MiB (⟡cap-384): the full build runs every module at `+RTS -M256m` (256MB heap) and
+    passes, so worst-case maxRSS ≈ 256MB heap + ~0.1GB RTS overhead ≈ 356MB < 384. cap is NOT a power of
+    two: a peak that rounds to 512 is clamped down to 384 (still ≥ any real peak by the -M256m invariant).
+    The 384 ceiling is a FORCING FUNCTION — a module that would exceed it must SEAL its heavy neutrals
+    `opaque` or import a cheaper proof, not grow the cap."""
     if peak_mb <= 0:
         return default
     v = 64
