@@ -65,8 +65,10 @@ ShiftRows ((b00 ∷ b01 ∷ b02 ∷ b03 ∷ []) ∷ (b10 ∷ b11 ∷ b12 ∷ b13
 ------------------------------------------------------------------------
 -- THE ROUND (FIPS-197 §5.1).
 ------------------------------------------------------------------------
-round : State → State → State
-round k s = addKey k (MixColumns (ShiftRows (SubBytes s)))
+opaque
+  round : State → State → State
+  round k s = addKey k (MixColumns (ShiftRows (SubBytes s)))
 
-final-round : State → State → State
-final-round k s = addKey k (ShiftRows (SubBytes s))
+opaque
+  final-round : State → State → State
+  final-round k s = addKey k (ShiftRows (SubBytes s))

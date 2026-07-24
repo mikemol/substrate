@@ -91,19 +91,23 @@ shift-rt ((b00 ∷ b01 ∷ b02 ∷ b03 ∷ []) ∷ (b10 ∷ b11 ∷ b12 ∷ b13 
 inv-round : State → State → State
 inv-round k t = InvSubBytes (InvShiftRows (InvMixColumns (addKey k t)))
 
-round-rt : (k s : State) → inv-round k (round k s) ≡ s
-round-rt k s =
-  trans (cong (λ x → InvSubBytes (InvShiftRows (InvMixColumns x)))
-              (add-rt k (MixColumns (ShiftRows (SubBytes s)))))
-  (trans (cong (λ x → InvSubBytes (InvShiftRows x)) (mix-rt (ShiftRows (SubBytes s))))
-  (trans (cong InvSubBytes (shift-rt (SubBytes s)))
-         (sub-rt s)))
+opaque
+  unfolding round
+  round-rt : (k s : State) → inv-round k (round k s) ≡ s
+  round-rt k s =
+    trans (cong (λ x → InvSubBytes (InvShiftRows (InvMixColumns x)))
+                (add-rt k (MixColumns (ShiftRows (SubBytes s)))))
+    (trans (cong (λ x → InvSubBytes (InvShiftRows x)) (mix-rt (ShiftRows (SubBytes s))))
+    (trans (cong InvSubBytes (shift-rt (SubBytes s)))
+           (sub-rt s)))
 
 inv-final-round : State → State → State
 inv-final-round k t = InvSubBytes (InvShiftRows (addKey k t))
 
-final-round-rt : (k s : State) → inv-final-round k (final-round k s) ≡ s
-final-round-rt k s =
-  trans (cong (λ x → InvSubBytes (InvShiftRows x)) (add-rt k (ShiftRows (SubBytes s))))
-  (trans (cong InvSubBytes (shift-rt (SubBytes s)))
-         (sub-rt s))
+opaque
+  unfolding final-round
+  final-round-rt : (k s : State) → inv-final-round k (final-round k s) ≡ s
+  final-round-rt k s =
+    trans (cong (λ x → InvSubBytes (InvShiftRows x)) (add-rt k (ShiftRows (SubBytes s))))
+    (trans (cong InvSubBytes (shift-rt (SubBytes s)))
+           (sub-rt s))

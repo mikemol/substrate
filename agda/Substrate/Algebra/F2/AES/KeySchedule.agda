@@ -55,14 +55,15 @@ rc9  = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F
 rc10 = F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x36
 
 -- one round-key step (FIPS-197 §5.2): the 4 new words from the previous 4.
-nextRoundKey : Byte → State → State
-nextRoundKey rc (w0 ∷ w1 ∷ w2 ∷ w3 ∷ []) =
-  let t   = SubWord (RotWord w3) ⊕w (rc ∷ 𝟘b ∷ 𝟘b ∷ 𝟘b ∷ [])
-      nw0 = w0 ⊕w t
-      nw1 = w1 ⊕w nw0
-      nw2 = w2 ⊕w nw1
-      nw3 = w3 ⊕w nw2
-  in nw0 ∷ nw1 ∷ nw2 ∷ nw3 ∷ []
+opaque
+  nextRoundKey : Byte → State → State
+  nextRoundKey rc (w0 ∷ w1 ∷ w2 ∷ w3 ∷ []) =
+    let t   = SubWord (RotWord w3) ⊕w (rc ∷ 𝟘b ∷ 𝟘b ∷ 𝟘b ∷ [])
+        nw0 = w0 ⊕w t
+        nw1 = w1 ⊕w nw0
+        nw2 = w2 ⊕w nw1
+        nw3 = w3 ⊕w nw2
+    in nw0 ∷ nw1 ∷ nw2 ∷ nw3 ∷ []
 
 -- KeyExpansion: master key → (k₀, the 9 middle keys, k₁₀).
 keyExpansion : State → State × (Vec State 9 × State)

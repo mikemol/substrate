@@ -2071,7 +2071,6 @@ digraph imports {
   "Substrate.Algebra.F2.AES.KAT" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.AES.KAT" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.F2.AES.KAT" -> "Substrate.Foundation.Vec";
-  "Substrate.Algebra.F2.AES.KAT.Full" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.AES.KAT.Full" -> "Substrate.Algebra.F2.AES.Cipher";
   "Substrate.Algebra.F2.AES.KAT.Full" -> "Substrate.Algebra.F2.AES.KAT";
   "Substrate.Algebra.F2.AES.KAT.Full" -> "Substrate.Algebra.F2.AES.KAT.KeyPins";

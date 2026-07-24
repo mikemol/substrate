@@ -30,7 +30,7 @@ open import Substrate.Foundation.Product using (proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.AES.Round using (Byte; Col; State)
-open import Substrate.Algebra.F2.AES.KeySchedule using (keyExpansion)
+open import Substrate.Algebra.F2.AES.KeySchedule using (keyExpansion; nextRoundKey)
 open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
 
 -- ℕ → byte (8 bits, LSB-first) and Vec ℕ 16 → State (column-major).
@@ -63,8 +63,10 @@ k1-expected = 214 ∷ 170 ∷ 116 ∷ 253 ∷ 210 ∷ 175 ∷ 114 ∷ 250
             ∷ 218 ∷ 166 ∷ 120 ∷ 241 ∷ 214 ∷ 171 ∷ 118 ∷ 254 ∷ []
 
 -- THE KEY-SCHEDULE KNOWN-ANSWER TEST (RotWord/SubWord/Rcon/XOR vs FIPS-197).
-keysched-kat : head (proj₁ (proj₂ (keyExpansion (to-state key-C1)))) ≡ to-state k1-expected
-keysched-kat = refl
+opaque
+  unfolding nextRoundKey
+  keysched-kat : head (proj₁ (proj₂ (keyExpansion (to-state key-C1)))) ≡ to-state k1-expected
+  keysched-kat = refl
 
 ------------------------------------------------------------------------
 -- THE MIXCOLUMNS COMPONENT KNOWN-ANSWER TEST (the canonical Daemen–Rijmen

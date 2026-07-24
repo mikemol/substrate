@@ -6,5 +6,7 @@ module Substrate.Algebra.F2.AES.KAT.Round6 where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2.AES.Round using (round)
 open import Substrate.Algebra.F2.AES.KAT.Trace
-r6 : round M5 S5 ≡ S6
-r6 = refl
+opaque
+  unfolding round
+  r6 : round M5 S5 ≡ S6
+  r6 = refl

@@ -22,5 +22,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2.AES.Round using (final-round)
 open import Substrate.Algebra.F2.AES.KAT.Trace
 
-fin : final-round K10 S9 ≡ Sct
-fin = refl
+opaque
+  unfolding final-round
+  fin : final-round K10 S9 ≡ Sct
+  fin = refl
