@@ -26,8 +26,8 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (m-lo; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
-import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly)
+import Substrate.Algebra.Polynomial.Graded.Base as GB
+open GB.Over F2.𝟘 using (Poly)
 
 -- numeric value of a byte (LSB-first: index 0 = x^0 = bit 0).
 bit : F2.F₂ → ℕ

@@ -27,6 +27,7 @@ open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
+import Substrate.Algebra.Polynomial.Graded.Base as Base
 
 -- R[y] over the coefficient operations + commutative-ring laws (flat bundle).
 -- Instantiate `open Over (+) (*) 𝟘 𝟙 …laws…` at A = F₂ (re-derives F₂[x]) or
@@ -48,8 +49,9 @@ module Over {A : Set}
   private variable n m k : ℕ
 
   -- 1. The graded polynomial type and its operations (no laws needed).
-  Poly : ℕ → Set
-  Poly n = Vec A n
+  -- Poly / nth are single-sourced from the thin `Graded.Base` (a byte-table
+  -- consumer deserialises just Base, not this whole ring tower).
+  open Base.Over 𝟘 public using (Poly; nth)
 
   infixl 6 _+P_
   _+P_ : Poly n → Poly n → Poly n
@@ -84,12 +86,7 @@ module Over {A : Set}
   _*P_ : Poly n → Poly m → Poly (n ℕ+ m)
   p *P q = anti-diag-sum (outer p q)
 
-  -- 2. Coefficient extraction `nth` and its homomorphism lemmas.
-  nth : Poly n → ℕ → A
-  nth []      _       = 𝟘
-  nth (x ∷ _) zero    = x
-  nth (_ ∷ v) (suc i) = nth v i
-
+  -- 2. Coefficient extraction `nth` (from Base above) and its homomorphism lemmas.
   nth-replicate : (k i : ℕ) → nth (replicate k 𝟘) i ≡ 𝟘
   nth-replicate zero    _       = refl
   nth-replicate (suc _) zero    = refl

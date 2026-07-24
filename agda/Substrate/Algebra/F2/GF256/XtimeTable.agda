@@ -25,10 +25,11 @@ open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; sym)
 open import Substrate.Foundation.Bool using (Bool; true)
+import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; all-vec; all-vec-sound)
-import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly)
+import Substrate.Algebra.Polynomial.Graded.Base as GB
+open GB.Over F2.𝟘 using (Poly)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable
   using (byte-val; idx; _==ℕ_; ==ℕ-sound; nb; byte-roundtrip)

@@ -23,8 +23,8 @@ open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBox
   using (inv-sbox) renaming (sbox to sbox-gf; sbox-rt to sbox-gf-rt) public
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; all-vec; all-vec-sound)
-import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly)
+import Substrate.Algebra.Polynomial.Graded.Base as GB
+open GB.Over F2.𝟘 using (Poly)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable public
 
 -- point sanity (cheap): S(00)=0x63=99, S(01)=0x7c=124, S(10)=0xca=202.

@@ -26,8 +26,8 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
-import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (nth)
+import Substrate.Algebra.Polynomial.Graded.Base as GB
+open GB.Over F2.𝟘 using (nth)
 
 -- AES modulus low part: b-poly = x^8 + x^4+x^3+x+1.
 m-lo : Vec F2.F₂ 8
