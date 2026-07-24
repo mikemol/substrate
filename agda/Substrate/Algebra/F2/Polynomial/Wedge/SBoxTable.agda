@@ -24,7 +24,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base
   using (m-lo; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
 import Substrate.Algebra.Polynomial.Graded.Base as GB
 open GB.Over F2.𝟘 using (Poly)

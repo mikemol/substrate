@@ -238,6 +238,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4DLog" [label="Wedge.GF4DLog"];
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" [label="Wedge.GF4TwoFaces"];
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" [label="Wedge.GUnit"];
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" [label="GUnit.Base"];
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" [label="Wedge.Inverse"];
   "Substrate.Algebra.F2.Polynomial.Wedge.PolyDiv" [label="Wedge.PolyDiv"];
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" [label="Wedge.SBox"];
@@ -2182,7 +2183,7 @@ digraph imports {
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold";
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.EEATrace";
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
-  "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.Inverse";
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.SBox";
   "Substrate.Algebra.F2.AES.SBoxFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable";
@@ -2283,7 +2284,7 @@ digraph imports {
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.GF256.Reduce";
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.GF256.Xtime";
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.Polynomial";
-  "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.F2.Vector";
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.Monoid";
   "Substrate.Algebra.F2.GF256.Bridge" -> "Substrate.Algebra.Polynomial.Graded";
@@ -2315,7 +2316,7 @@ digraph imports {
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.GF256.Bridge";
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.GF256.Mul";
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.Polynomial";
-  "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.F2.Vector";
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.Polynomial.Graded.Mod";
   "Substrate.Algebra.F2.GF256.HornerSeam" -> "Substrate.Algebra.Polynomial.Graded.Quotient";
@@ -2352,7 +2353,7 @@ digraph imports {
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.GF256.HornerSeam";
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.GF256.Idempotent";
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.GF256.Mul";
-  "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.F2.Vector";
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Algebra.Polynomial.Graded.Quotient";
   "Substrate.Algebra.F2.GF256.MulLaws" -> "Substrate.Foundation.Eq";
@@ -2401,7 +2402,7 @@ digraph imports {
   "Substrate.Algebra.F2.GF256.Xtime" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.F2.GF256.Xtime";
-  "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable";
   "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Algebra.Polynomial.Graded.Base";
   "Substrate.Algebra.F2.GF256.XtimeTable" -> "Substrate.Foundation.Bool";
@@ -3607,7 +3608,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Utilities.LeadingPosition" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.F2.CommRing";
-  "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.F2.Polynomial.Wedge.Inverse";
   "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.Field";
   "Substrate.Algebra.F2.Polynomial.Wedge.AsField" -> "Substrate.Algebra.Monoid";
@@ -3738,6 +3739,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.EEATrace";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.Polynomial.Graded.Div";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.Polynomial.Graded.Mod";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse" -> "Substrate.Algebra.Polynomial.Graded.ModZero";
@@ -3761,7 +3763,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2.CommRing";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.DLogHom";
-  "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.Inverse";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.Polynomial.Graded.Div";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces" -> "Substrate.Algebra.Polynomial.Graded.Mod";
@@ -3788,6 +3790,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GF4DLog";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.Polynomial.Graded.Div";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.Polynomial.Graded.Mod";
   "Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces" -> "Substrate.Algebra.Polynomial.Graded.ModZero";
@@ -3800,19 +3803,26 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Algebra.F2.Polynomial.Wedge.EEATrace";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Algebra.Polynomial.Graded.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Bool";
-  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Bool.Properties";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Eq";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.F2.Polynomial.Wedge.GUnit" -> "Substrate.Foundation.Vec";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Algebra.F2";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Foundation.Bool";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Foundation.Bool.Properties";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.CommRing";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.EEATrace";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.Polynomial.Graded.Div";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.Polynomial.Graded.Mod";
   "Substrate.Algebra.F2.Polynomial.Wedge.Inverse" -> "Substrate.Algebra.Polynomial.Graded.ModZero";
@@ -3846,7 +3856,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.CommRing";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.AsField";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA";
-  "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.Inverse";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.F2.Polynomial.Wedge.Trim";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Algebra.Polynomial.Graded.Base";
@@ -3862,7 +3872,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Foundation.Product";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBox" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Algebra.F2";
-  "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Algebra.Polynomial.Graded.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Foundation.Bool";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Foundation.Bool.Properties";
@@ -3870,7 +3880,7 @@ digraph imports {
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.F2";
-  "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit";
+  "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.F2.Polynomial.Wedge.SBox";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable";
   "Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties" -> "Substrate.Algebra.Polynomial.Graded.Base";

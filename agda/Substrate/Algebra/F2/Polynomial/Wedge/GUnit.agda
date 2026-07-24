@@ -21,26 +21,21 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; subst)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_)
-open import Substrate.Foundation.Bool.Properties using (∧-elimˡ; ∧-elimʳ) public
 import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base public
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
 import Substrate.Algebra.Polynomial.Graded.Base as GB
 open GB.Over F2.𝟘 using (nth)
 
--- AES modulus low part: b-poly = x^8 + x^4+x^3+x+1.
-m-lo : Vec F2.F₂ 8
-m-lo = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
+-- m-lo / is-zero8 / all-vec / all-vec-sound live in GUnit.Base (EEA-free
+-- slice), re-exported via `open … GUnit.Base public` above.
 
 -- gcd of an invertible byte is EXACTLY the unit (1, 𝟙∷[]).
 is-unit-q : QPoly → Bool
 is-unit-q (suc zero , (F2.𝟙 ∷ [])) = true
 is-unit-q _                        = false
-
-is-zero8 : Vec F2.F₂ 8 → Bool
-is-zero8 (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []) = true
-is-zero8 _ = false
 
 gcd-of : Vec F2.F₂ 8 → QPoly
 gcd-of a = proj₁ (fuel-bezout 10 (8 , a) 7 m-lo)
@@ -48,19 +43,9 @@ gcd-of a = proj₁ (fuel-bezout 10 (8 , a) 7 m-lo)
 check : Vec F2.F₂ 8 → Bool
 check a = is-unit-q (gcd-of a) ∨ is-zero8 a
 
--- generic exhaustion over all 2^n bit-vectors + soundness.
-all-vec : {n : ℕ} (P : Vec F2.F₂ n → Bool) → Bool
-all-vec {zero}  P = P []
-all-vec {suc n} P = all-vec (λ v → P (F2.𝟘 ∷ v)) ∧ all-vec (λ v → P (F2.𝟙 ∷ v))
-
--- Ⓓ: ∧-elimˡ/ʳ are Foundation.Bool.Properties' (imported + re-exported above);
--- they were re-proved here. SBox / SBoxTable consume them via this module.
-
-all-vec-sound : {n : ℕ} (P : Vec F2.F₂ n → Bool) → all-vec P ≡ true
-              → (v : Vec F2.F₂ n) → P v ≡ true
-all-vec-sound {zero}  P h []         = h
-all-vec-sound {suc n} P h (F2.𝟘 ∷ v) = all-vec-sound (λ w → P (F2.𝟘 ∷ w)) (∧-elimˡ {all-vec (λ w → P (F2.𝟘 ∷ w))} h) v
-all-vec-sound {suc n} P h (F2.𝟙 ∷ v) = all-vec-sound (λ w → P (F2.𝟙 ∷ w)) (∧-elimʳ {all-vec (λ w → P (F2.𝟘 ∷ w))} h) v
+-- all-vec / all-vec-sound (generic 2ⁿ bit-vector exhaustion) live in
+-- GUnit.Base, re-exported via `open … GUnit.Base public`; SBox / SBoxTable
+-- consume them (and ∧-elimˡ/ʳ) via this module's re-export.
 
 -- THE COMPUTED FACT: every byte passes (9s refl over 256 EEA runs).
 all-pass : all-vec check ≡ true

@@ -27,7 +27,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; sym)
 open import Substrate.Foundation.Bool using (Bool; true)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; all-vec; all-vec-sound)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; all-vec; all-vec-sound)
 import Substrate.Algebra.Polynomial.Graded.Base as GB
 open GB.Over F2.𝟘 using (Poly)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
