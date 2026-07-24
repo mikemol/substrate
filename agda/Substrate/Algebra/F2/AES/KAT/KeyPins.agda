@@ -1,4 +1,4 @@
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.AES.KAT.KeyPins
 --

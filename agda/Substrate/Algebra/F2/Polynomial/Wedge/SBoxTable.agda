@@ -1,39 +1,29 @@
 {-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
--- Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable  (AI-7s: verified S-box = AES)
+-- Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable  (lean / DEF half)
 --
--- CERTIFIES that the verified S-box construction `sbox = affine . pinv`
--- (AI-10, built on the verified GF(2^8) inverse AI-8) computes EXACTLY the
--- canonical FIPS-197 S-box table, for all 256 inputs:
---   sbox-is-aes : (a) -> byte-val (sbox a) == SBOX[byte-val a].
--- This closes the G8 "is the verified construction really the AES spec?" gap
--- at its nonlinear CRUX (the S-box is the only nontrivial layer; ShiftRows/
--- MixColumns/AddRoundKey are linear).  Pure proof, no oracle.
+-- The evaluation-CHEAP, table-driven S-box `sbox = nb ∘ idx SBOX ∘ byte-val`
+-- (a lookup) plus the cheap decoder machinery (`nb`, `byte-val`, `SBOX`, the
+-- 8-bit round-trip `byte-roundtrip`). GF-FREE by construction — this module
+-- does NOT import `Wedge.SBox` / `Wedge.Inverse` (the EEA GF-inversion), so a
+-- consumer that FORCES the table (the AES key schedule / cipher / KAT) never
+-- deserializes the ~89 MB GF-inverse closure.
 --
--- COST: a 256-byte reflection that normalises the EEA inverse once per byte
--- (~56s).  This is inherently computational -- the table IS its values, so
--- there is no algebraic shortcut (cf. AI-10 pinv-inv, which had one).
---
--- B-deep (2026-06-18): this module now ALSO hosts the canonical, evaluation-
--- CHEAP S-box `sbox = nb ∘ idx SBOX ∘ byte-val` (a table lookup), with the
--- GF(2⁸)-inversion construction (`affine ∘ pinv`, imported as `sbox-gf`)
--- retained as a proven THEOREM `sbox≡gf` (via `sbox-is-aes` + the 8-bit
--- round-trip `byte-roundtrip`). The cipher (F2/AES/) now imports `sbox` /
--- `inv-sbox` / `sbox-rt` from HERE so its forcing (e.g. AES/KAT key schedule)
--- is a table lookup, not a GF inversion — the FIPS rigor is preserved because
--- the table IS the verified S-box (sbox-is-aes). --safe --without-K, 0 postulates.
+-- The FIPS certification that this table IS the verified `affine ∘ pinv` S-box
+-- (`sbox-is-aes`, the 256-byte GF reflection) and the decrypt round-trip
+-- (`sbox-rt`, via `inv-sbox`) live in `SBoxTable.Properties` — the algebra is
+-- preserved, just routed so the forward path (this module) is Inverse-free.
+-- --safe --without-K, 0 postulates.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂; sym)
+open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBox
-  using (inv-sbox) renaming (sbox to sbox-gf; sbox-rt to sbox-gf-rt) public
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (m-lo; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
 import Substrate.Algebra.Polynomial.Graded.Div as D
@@ -84,30 +74,8 @@ SBOX =
   225 ∷ 248 ∷ 152 ∷  17 ∷ 105 ∷ 217 ∷ 142 ∷ 148 ∷ 155 ∷  30 ∷ 135 ∷ 233 ∷ 206 ∷  85 ∷  40 ∷ 223 ∷
   140 ∷ 161 ∷ 137 ∷  13 ∷ 191 ∷ 230 ∷  66 ∷ 104 ∷  65 ∷ 153 ∷  45 ∷  15 ∷ 176 ∷  84 ∷ 187 ∷  22 ∷ []
 
--- point sanity (cheap): S(00)=0x63=99, S(01)=0x7c=124, S(10)=0xca=202.
-b00 : Poly 8
-b00 = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
-b01 : Poly 8
-b01 = F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
-b10 : Poly 8
-b10 = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
-chk00 : byte-val (sbox-gf b00) ≡ 99
-chk00 = refl
-chk01 : byte-val (sbox-gf b01) ≡ 124
-chk01 = refl
-chk10 : byte-val (sbox-gf b10) ≡ 202
-chk10 = refl
-
--- THE CERTIFICATION: the verified GF-inversion S-box IS the canonical AES S-box
--- (256-byte refl). This is the inherently-computational ~56s reflection.
-sbox-table-check : all-vec (λ a → byte-val (sbox-gf a) ==ℕ idx SBOX (byte-val a)) ≡ true
-sbox-table-check = refl
-sbox-is-aes : (a : Poly 8) → byte-val (sbox-gf a) ≡ idx SBOX (byte-val a)
-sbox-is-aes a = ==ℕ-sound _ _
-  (all-vec-sound (λ x → byte-val (sbox-gf x) ==ℕ idx SBOX (byte-val x)) sbox-table-check a)
-
 ------------------------------------------------------------------------
--- B-deep: the canonical, evaluation-CHEAP S-box = the proven table lookup.
+-- The canonical, evaluation-CHEAP S-box = the proven table lookup.
 ------------------------------------------------------------------------
 
 -- F₂ / byte Bool-equality, with soundness (the reflection→≡ bridge for bytes).
@@ -148,15 +116,6 @@ byte-roundtrip : (b : Poly 8) → nb (byte-val b) ≡ b
 byte-roundtrip b = ==V-sound (nb (byte-val b)) b
   (all-vec-sound (λ x → nb (byte-val x) ==V x) byte-roundtrip-check b)
 
--- THE CANONICAL S-BOX: the table lookup (cheap to force).
+-- THE CANONICAL S-BOX: the table lookup (cheap to force; GF-free).
 sbox : Poly 8 → Poly 8
 sbox b = nb (idx SBOX (byte-val b))
-
--- GF-inversion retained as a THEOREM: the table sbox EQUALS affine ∘ pinv.
-sbox≡gf : (b : Poly 8) → sbox b ≡ sbox-gf b
-sbox≡gf b = trans (cong nb (sym (sbox-is-aes b))) (byte-roundtrip (sbox-gf b))
-
--- the round-trip, re-derived for the table sbox via the equivalence + the
--- computed round-trip (cheap; no forcing of the GF inverse).
-sbox-rt : (b : Poly 8) → inv-sbox (sbox b) ≡ b
-sbox-rt b = trans (cong inv-sbox (sbox≡gf b)) (sbox-gf-rt b)

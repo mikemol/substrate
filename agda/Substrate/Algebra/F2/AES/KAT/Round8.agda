@@ -1,4 +1,4 @@
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 -- Round 8 pin (INDEPENDENT): one round on the concrete prior state S7 (the handoff)
 -- under the concrete key M7 → S8. Constant cost (~3 s); no X-composition to carry
 -- residue. KAT.Full recomposes these via fold-chain9 without re-forcing any round.

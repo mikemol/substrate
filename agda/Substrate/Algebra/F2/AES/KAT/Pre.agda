@@ -1,4 +1,4 @@
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 -- Pre-whiten (FIPS "round 0" AddRoundKey): X0 = AddRoundKey(pt, rk0) ≡ S0.
 module Substrate.Algebra.F2.AES.KAT.Pre where
 open import Substrate.Foundation.Eq using (_≡_; refl)

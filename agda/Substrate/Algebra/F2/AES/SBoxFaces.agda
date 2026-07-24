@@ -39,7 +39,7 @@ import Substrate.Algebra.Polynomial.Graded.Div as D
 open D.Over F₂-CommRing 7 m-lo using (Poly; _*Q_; oneC)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox; affine; pinv-nonzero)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law; W)
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox-is-aes)
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties using (sbox-is-aes)
 
 ------------------------------------------------------------------------
 -- The three faces, named in one place.

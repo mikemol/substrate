@@ -19,7 +19,6 @@ module Substrate.Algebra.F2.AES.KeySchedule where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; zipWith; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2 using (_+_)
@@ -27,7 +26,7 @@ open import Substrate.Algebra.F2 using (_+_)
 -- key-schedule KAT is a table lookup not a GF inversion. (= sbox-gf, proven.)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox)
 open import Substrate.Algebra.F2.AES.Round using (Byte; Col; State)
-open import Substrate.Algebra.F2.AES.Cipher using (encrypt; decrypt; cipher-rt)
+open import Substrate.Algebra.F2.AES.Cipher using (encrypt)
 
 -- the key-schedule unit is a column of 4 bytes (= the State column `Col`).
 𝟘b : Byte
@@ -87,12 +86,8 @@ rkmid key = proj₁ (proj₂ (keyExpansion key))
 rk10 : State → State
 rk10 key = proj₂ (proj₂ (keyExpansion key))
 
--- the COMPLETE AES-128: master key → ciphertext (and back).
+-- the COMPLETE AES-128 forward cipher: master key → ciphertext.
+-- (`decrypt-key` / the master-key round-trip `cipher-key-rt` live in
+--  `KeySchedule.RoundTrip` — they force the per-round inverses.)
 encrypt-key : State → State → State
 encrypt-key key s = encrypt (rk0 key) (rkmid key) (rk10 key) s
-decrypt-key : State → State → State
-decrypt-key key t = decrypt (rk0 key) (rkmid key) (rk10 key) t
-
--- the full structural round-trip for a MASTER KEY (decrypt∘encrypt ≡ id).
-cipher-key-rt : (key s : State) → decrypt-key key (encrypt-key key s) ≡ s
-cipher-key-rt key s = cipher-rt (rk0 key) (rkmid key) (rk10 key) s

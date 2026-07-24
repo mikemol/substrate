@@ -1,4 +1,4 @@
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.AES.KAT.Full
 --
@@ -41,9 +41,10 @@ open import Substrate.Algebra.F2.AES.KAT.Round6 using (r6)
 open import Substrate.Algebra.F2.AES.KAT.Round7 using (r7)
 open import Substrate.Algebra.F2.AES.KAT.Round8 using (r8)
 open import Substrate.Algebra.F2.AES.KAT.Round9 using (r9)
-
-fin : final-round K10 S9 ≡ Sct
-fin = refl
+-- ⟡cap128-aes-pipeline: the final round (Round 10) is now pinned in its OWN module,
+-- like Round1…Round9 — imported here as a handle, not computed in-line (~108 MB of
+-- final-round refl removed from THIS module's peak).
+open import Substrate.Algebra.F2.AES.KAT.RoundFin using (fin)
 
 -- The whole proof, ABSTRACT over master key / round keys / states — every round, fold
 -- and nextRoundKey is neutral here, so nothing is forced. Threads the supplied pins.
