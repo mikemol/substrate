@@ -11,7 +11,7 @@ ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
 export PATH := $(SHIM_DIR):$(PATH)
 endif
 
-.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-apex advise
+.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-cap check-apex advise
 all:
 	@$(MAKE) -f Flat.mk all
 clean:
@@ -28,7 +28,7 @@ catalog: shim
 	@python3 ../scripts/sppf_db.py "" --argperm
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
-check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-apex
+check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-cap check-apex
 	@echo 'all invariant checks passed.'
 # Verify Flat.mk + the root Makefile are in sync with the source tree.
 check-makefiles:
@@ -54,6 +54,10 @@ check-carrier:
 # Ratchet: duplicate type-declarations are DEBT (paydown-only); no NEW forked copy.
 check-sumtype:
 	@python3 ../scripts/check_sumtype_ratchet.py --quiet
+# Ratchet: a module's elaboration PEAK over 128MB is DEBT (paydown-only) — the census
+# that lets MEM_CAP descend mechanically. SHARD/split/seal a new offender; never raise the cap.
+check-cap:
+	@python3 ../scripts/check_cap_ratchet.py --quiet
 # Apex gate: every relational law-motif (≥3 instances) must have a parametric
 # apex (a parameterizable module, NOT an index). No baseline — build the apex.
 check-apex:

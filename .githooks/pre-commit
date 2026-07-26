@@ -240,6 +240,17 @@ if [ "$fail" -eq 0 ]; then
   # freshen is a no-op here (gen_catalog already rebuilt catalog.db from the fresh cores).
   run "Set₁ ratchet (elaborated)" python3 "$ROOT/scripts/set1_ratchet_cores.py" --quiet
 
+  # ⟡cap-ratchet: per-module elaboration PEAK over 128MB is MEMORY DEBT — the census that lets
+  # MEM_CAP (gen_build_makefiles.py, currently 256m) descend to 128 MECHANICALLY instead of by a
+  # flag day. Paydown-only, like its three sibling set-ratchets: a NEW module crossing the cap is
+  # REFUSED (shard the elaboration unit at an associative boundary and seal the parts — cf.
+  # KAT.Full's fold-++ shards — or split def/proof, or seal the heavy neutral `opaque`; never raise
+  # the cap), a paid-down module auto-lowers the baseline. It reads the per-dir .agda-times.tsv
+  # peaks membudget captured, so like set1_ratchet it MUST run here (post-build): the build above
+  # just re-elaborated the changed modules, so the LATEST peak row measures the state being
+  # committed. Existing offenders are grandfathered at the baseline.
+  run "cap ratchet (128MB)" python3 "$ROOT/scripts/check_cap_ratchet.py" --quiet
+
   # ⟡reuse-gate-wire: reuse-before-write ADVISORY. reuse_sweep --gate exits nonzero when a
   # consolidation opportunity touches CHANGED code — now reading the FRESH catalog.db projection
   # (gen_catalog rebuilt it above), so a structural commit's new code is checked against the
