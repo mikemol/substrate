@@ -33,10 +33,14 @@ open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Ring using (Ring)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
-  open M.Over CR d f-lo public
+  -- ⟡public-policy: bind Graded's API at ITS source. `Mod` no longer re-exports what it
+  -- does not define (*P-comm/*P-assoc/*P-distribʳ/ˡ/neg/+-inverse* are Graded's, not Mod's).
+  open F.Over CR
+  open M.Over CR d f-lo
 
   private variable n m : ℕ
 

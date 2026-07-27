@@ -28,11 +28,14 @@ open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.Field using (Field)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; is-zero8)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
-open D.Over F₂-CommRing 7 m-lo using (Poly; nth)
-open Q.Over F₂-CommRing 7 m-lo using (Quotient-Ring; 𝟎C; oneC)
+open F.Over F₂-CommRing using (Poly; nth)
+open M.Over F₂-CommRing 7 m-lo using (oneC)
+open Q.Over F₂-CommRing 7 m-lo using (Quotient-Ring; 𝟎C)
 
 -- is-zero8 a ≡ true forces a to be the zero poly 𝟎C (= replicate 8 𝟘).
 is-zero8-sound : (a : Poly 8) → is-zero8 a ≡ true → a ≡ 𝟎C

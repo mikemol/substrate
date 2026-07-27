@@ -21,10 +21,14 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 -- generic (f-lo-independent) vector ops from a dummy instance.
-open D.Over F₂-CommRing 0 (F2.𝟘 ∷ [])
-  using (Poly; nth; snoc; vinit; vlast; snoc-vinit-vlast; nth-snoc-zero)
+open F.Over F₂-CommRing using (Poly; nth)
+open M.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (vinit; vlast)
+open D.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (snoc; snoc-vinit-vlast; nth-snoc-zero)
 
 -- the trimmed presentation: all-zero, or a monic poly of exact degree with the
 -- SAME coefficients (value-equal, trailing zeros removed).

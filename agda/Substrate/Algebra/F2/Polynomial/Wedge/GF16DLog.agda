@@ -31,13 +31,18 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 -- GF(2⁴) = F₂[x]/(x⁴+x+1); x is primitive (multiplicative order 15).
 m-lo₄ : Vec F2.F₂ 4
 m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
 
-open D.Over F₂-CommRing 3 m-lo₄ using (Poly; _*Q_; oneC; xpow)
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing 3 m-lo₄ using (oneC; xpow)
+open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 
 -- the antilog g^· in the DIVISION regime: x^n mod m = ytimeⁿ oneC (bounded magnitude).
 gpow : ℕ → Poly 4

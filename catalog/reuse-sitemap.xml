@@ -11,7 +11,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/AbelianGroup#AbelianGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Bijection#_↔_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/CayleyDickson#Prod</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/ExpLogCodec#ExpLogCodec</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F1/GL#GL-F₁</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Code#ImageCode</loc><priority>0.01</priority></url>
@@ -28,9 +28,12 @@
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear/KernelSpan#KernelDim</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear#Linear</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Generic#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/BezoutFold/Base#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/BezoutFold/Step#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/BezoutFold#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/EEATrace#PolyEEATrace</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/GF4DLog#Exp3</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/GF4TwoFaces#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/Trim#Trim</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/WedgePoly#Wedge-Poly</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Transfer#SplitSection</loc><priority>0.0</priority></url>
@@ -55,11 +58,13 @@
   <url><loc>https://substrate.local/Substrate/Algebra/ParityKernel/Universal#Gr2Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PointedSet/Map#PointedSetMap</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PointedSet#PointedSet</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Div#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/FromCommRing#Linear</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Mod#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/AssocLinearP#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/AssocLinearQ#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/AssocLinearR#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/Comm#Linear</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/Linear#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded#Linear</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Quotient#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#Character</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharGen</loc><priority>0.0</priority></url>
@@ -109,7 +114,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒_</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Shed</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.11</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.1</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKITermToShedding#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/V4FullCocycle#V4Full</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Ring#Ring</loc><priority>0.03</priority></url>
@@ -581,9 +586,9 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.17</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.19</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.21</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.2</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
@@ -591,14 +596,14 @@
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#NonZero</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#_≤_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#ℕ</loc><priority>1.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.12</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.11</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Product#Σ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/RewriteConfluence#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit/Polymorphic#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Universe#U</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/WellFounded#Acc</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundations/Bijection#Bijection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Geometry/HodgeDim3#HodgeComplement-Dim3</loc><priority>0.0</priority></url>
@@ -611,7 +616,7 @@
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#ZnInstance</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.11</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.1</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Canonical</loc><priority>0.0</priority></url>

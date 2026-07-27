@@ -36,14 +36,19 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.ExpLogCodec using (ExpLogCodec)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 ------------------------------------------------------------------------
 -- The structural antilog, generic over the field and primitive element.
 ------------------------------------------------------------------------
 
-module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : D.Over.Poly F₂-CommRing d m-lo (suc d)) where
-  open D.Over F₂-CommRing d m-lo using (Poly; _*Q_; oneC; *Q-assoc; *Q-identityˡ)
+module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : F.Over.Poly F₂-CommRing (suc d)) where
+  open F.Over F₂-CommRing using (Poly)
+  open M.Over F₂-CommRing d m-lo using (oneC)
+  open Q.Over F₂-CommRing d m-lo using (_*Q_; *Q-assoc; *Q-identityˡ)
 
   -- the antilog g^· : ℕ → GF(2ⁿ)*, iterated multiplication by the primitive g.
   gpow : ℕ → Poly (suc d)
@@ -77,11 +82,12 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : D.Over.Poly F₂-CommRi
 m-lo₄ : Vec F2.F₂ 4
 m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
 
-gx₄ : D.Over.Poly F₂-CommRing 3 m-lo₄ 4
+gx₄ : F.Over.Poly F₂-CommRing 4
 gx₄ = F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []          -- x
 
 module GF16 = Over 3 m-lo₄ gx₄
-open D.Over F₂-CommRing 3 m-lo₄ using (_*Q_; oneC)
+open M.Over F₂-CommRing 3 m-lo₄ using (oneC)
+open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 
 -- THE AES NIBBLE-FIELD CODEC: GF(2⁴) multiplication IS exp of ℕ-addition — the
 -- first AES-field instance of the generic `ExpLogCodec` (structural, no reflection).

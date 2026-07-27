@@ -25,11 +25,17 @@ open import Substrate.Foundation.Nat using (ℕ; _+_)
 open import Substrate.Foundation.Bool using (false)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Div as D
 open import Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse
   using (inv₄; inv-law₄; is-zero4; m-lo₄)
 import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom as DH
 
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing 3 m-lo₄
+open Q.Over F₂-CommRing 3 m-lo₄
 open D.Over F₂-CommRing 3 m-lo₄
   using (Poly; _*Q_; oneC; *Q-comm; *Q-assoc; *Q-identityˡ; *Q-identityʳ)
 

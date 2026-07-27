@@ -35,8 +35,13 @@ open import Substrate.Foundation.Bool using (Bool; false)
 open import Substrate.Foundation.Eq using (_≡_; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; is-zero8)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly; _*Q_; oneC)
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing 7 m-lo using (oneC)
+open Q.Over F₂-CommRing 7 m-lo using (_*Q_)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox; affine; pinv-nonzero)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law; W)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties using (sbox-is-aes)

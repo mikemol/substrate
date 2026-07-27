@@ -39,20 +39,23 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold
 open import Substrate.Algebra.F2.Polynomial.Wedge.Trim
   using (trim; Trim; is-zero; is-monic)
 import Substrate.Algebra.F2.Polynomial.Wedge.ComputeTrace as CT
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (Poly; nth; convCoeff; vinit; vlast; +-identityʳ)
+open F.Over F₂-CommRing using (Poly; nth; convCoeff; +-identityʳ)
+open M.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (vinit; vlast)
 
 -- cross-instance transport: vlast/vinit agree across Div.Over instances
 -- (provable by induction; the projections reduce within each instance).
 vlast-cross : {d₀ d₁ : ℕ} (f₀ : Vec F2.F₂ (suc d₀)) (f₁ : Vec F2.F₂ (suc d₁))
               {n : ℕ} (v : Vec F2.F₂ (suc n))
-            → D.Over.vlast F₂-CommRing d₀ f₀ v ≡ D.Over.vlast F₂-CommRing d₁ f₁ v
+            → M.Over.vlast F₂-CommRing d₀ f₀ v ≡ M.Over.vlast F₂-CommRing d₁ f₁ v
 vlast-cross f₀ f₁ {zero}  (x ∷ []) = refl
 vlast-cross f₀ f₁ {suc n} (x ∷ v)  = vlast-cross f₀ f₁ v
 
 vinit-cross : {d₀ d₁ : ℕ} (f₀ : Vec F2.F₂ (suc d₀)) (f₁ : Vec F2.F₂ (suc d₁))
               {n : ℕ} (v : Vec F2.F₂ (suc n))
-            → D.Over.vinit F₂-CommRing d₀ f₀ v ≡ D.Over.vinit F₂-CommRing d₁ f₁ v
+            → M.Over.vinit F₂-CommRing d₀ f₀ v ≡ M.Over.vinit F₂-CommRing d₁ f₁ v
 vinit-cross f₀ f₁ {zero}  (x ∷ []) = refl
 vinit-cross f₀ f₁ {suc n} (x ∷ v)  = cong (x ∷_) (vinit-cross f₀ f₁ v)
 

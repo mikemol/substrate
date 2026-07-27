@@ -29,6 +29,9 @@ open import Substrate.Foundation.Vec using (Vec; replicate)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as Div
 
 ------------------------------------------------------------------------
@@ -40,7 +43,9 @@ d = 3
 f-lo₀ : Vec F2.F₂ (suc d)
 f-lo₀ = replicate (suc d) F2.𝟘
 
-open Div.Over F₂-CommRing d f-lo₀ using (Poly; _*Q_; oneC; 𝟎C)
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing d f-lo₀ using (oneC)
+open Q.Over F₂-CommRing d f-lo₀ using (_*Q_; 𝟎C)
 open Over d f-lo₀ using (gpow; gpow-hom)
 
 ------------------------------------------------------------------------
@@ -78,7 +83,7 @@ gpowM nothing  = 𝟎C
 ------------------------------------------------------------------------
 -- absorbing-left: gpowM (mulM nothing y) = 𝟎C = gpowM nothing *Q gpowM y, because
 -- 𝟎C is absorbing in the ring. (Needs 𝟎C *Q p ≡ 𝟎C — the ring's zero-absorb.)
-open Div.Over F₂-CommRing d f-lo₀ using (*Q-zeroˡ)
+open Q.Over F₂-CommRing d f-lo₀ using (*Q-zeroˡ)
 
 bridge-absorb-left : (y : LogM) → gpowM (mulM nothing y) ≡ (gpowM nothing *Q gpowM y)
 bridge-absorb-left y = sym (*Q-zeroˡ (gpowM y))       -- 𝟎C *Q gpowM y ≡ 𝟎C

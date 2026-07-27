@@ -35,10 +35,16 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (BezoutNthWit
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (is-unit-q; all-vec; all-vec-sound; ∨-elim-false; unit-q-nth0; unit-q-nths)
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 open import Substrate.Algebra.F2.Polynomial.Wedge.GF4DLog
   using (Exp3; z0; z1; z2; expL₃; dlog-inv; dlog-inv-law; m-lo₂)
 
+open F.Over F₂-CommRing
+open M.Over F₂-CommRing 1 m-lo₂
+open Q.Over F₂-CommRing 1 m-lo₂
 open D.Over F₂-CommRing 1 m-lo₂
   using (Poly; _*Q_; oneC; reduce-mod-f; *Q-comm; *Q-assoc; *Q-identityˡ; *Q-identityʳ)
 module M₂ = MZ.Over F₂-CommRing 1 m-lo₂

@@ -23,6 +23,9 @@ open import Substrate.Foundation.Vec using (Vec; replicate)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as Div
 open import Substrate.Algebra.Wedge using (DivStr; z; recon)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; Nilpotent; pow)
@@ -38,7 +41,9 @@ d = 3
 f-lo₀ : Vec F2.F₂ (suc d)
 f-lo₀ = replicate (suc d) F2.𝟘
 
-open Div.Over F₂-CommRing d f-lo₀ using (Poly; _*Q_; _+P_; oneC; 𝟎C)
+open F.Over F₂-CommRing using (Poly; _+P_)
+open M.Over F₂-CommRing d f-lo₀ using (oneC)
+open Q.Over F₂-CommRing d f-lo₀ using (_*Q_; 𝟎C)
 open Over d f-lo₀ using (gpow; gpow-hom)
 
 ------------------------------------------------------------------------

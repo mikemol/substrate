@@ -35,10 +35,13 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (m-lo; is-zero8; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 open import Substrate.Algebra.F2.Polynomial.Wedge.AsField using (is-zero8-sound; nonzero-bridge)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Div as D
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
-open D.Over F₂-CommRing 7 m-lo using (Poly; nth)
-open Q.Over F₂-CommRing 7 m-lo using (_*Q_; 𝟎C; oneC; *Q-assoc; *Q-identityˡ; *Q-identityʳ; *Q-zeroʳ)
+open F.Over F₂-CommRing using (Poly; nth)
+open M.Over F₂-CommRing 7 m-lo using (oneC)
+open Q.Over F₂-CommRing 7 m-lo using (_*Q_; 𝟎C; *Q-assoc; *Q-identityˡ; *Q-identityʳ; *Q-zeroʳ)
 
 -- decidable equality on bit vectors, and its soundness.
 _==F_ : F2.F₂ → F2.F₂ → Bool

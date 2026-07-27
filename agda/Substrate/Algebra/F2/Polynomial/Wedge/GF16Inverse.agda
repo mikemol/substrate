@@ -33,13 +33,18 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (BezoutNthWit
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (is-unit-q; all-vec; all-vec-sound; ∨-elim-false; unit-q-nth0; unit-q-nths)
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 -- GF(2⁴) modulus  x⁴ + x + 1  (low part, x⁰..x³ = 1,1,0,0; the leading x⁴ implicit).
 m-lo₄ : Vec F2.F₂ 4
 m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
 
-open D.Over F₂-CommRing 3 m-lo₄ using (Poly; reduce-mod-f; _*Q_; oneC)
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing 3 m-lo₄ using (reduce-mod-f; oneC)
+open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 module M₄ = MZ.Over F₂-CommRing 3 m-lo₄
 
 is-zero4 : Vec F2.F₂ 4 → Bool

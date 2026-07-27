@@ -29,8 +29,13 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (BezoutNthWit
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
   using (m-lo; is-zero8; gcd-of; g-unit-nth0; g-unit-nths)
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as GMod
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open D.Over F₂-CommRing 7 m-lo using (Poly; reduce-mod-f; _*Q_; oneC)
+open F.Over F₂-CommRing using (Poly)
+open GMod.Over F₂-CommRing 7 m-lo using (reduce-mod-f; oneC)
+open Q.Over F₂-CommRing 7 m-lo using (_*Q_)
 
 module M = MZ.Over F₂-CommRing 7 m-lo
 

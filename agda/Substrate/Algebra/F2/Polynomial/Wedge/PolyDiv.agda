@@ -30,6 +30,8 @@ open import Substrate.Algebra.Wedge
   using (DivStr; Trace; done; more; collapse; collapse-fold; collapse-fold≡collapse; quot; rem)
   renaming (Wedge to Wedge⟦478f66a6⟧)   -- specialize the colliding name by shape
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as Div
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem; div-quot; PolyEEATrace; base; step)
@@ -91,7 +93,10 @@ gcd-fold-poly-is-trace-fold t =
 ------------------------------------------------------------------------
 
 module _ (d : ℕ) (f-lo : Vec F₂ (suc d)) where
-  open Div.Over F₂-CommRing d f-lo using (b-poly; snoc; vinit; -P; 𝟙)
+  open F.Over F₂-CommRing using (𝟙)
+  open M.Over F₂-CommRing d f-lo using (vinit)
+  open Q.Over F₂-CommRing d f-lo using (-P)
+  open Div.Over F₂-CommRing d f-lo using (b-poly; snoc)
 
   -- char-2: polynomial negation is the identity (componentwise -_ = id).
   -P-id : {n : ℕ} (v : Vec F₂ n) → -P v ≡ v

@@ -26,10 +26,15 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
-  open Q.Over CR d f-lo public   -- Mod (ytime, ·c laws, nth-*P, convCoeff…) + B3 (-P, +P laws)
+  -- ⟡public-policy: NO RE-EXPORT. Each module binds what it needs at the SOURCE.
+  open F.Over CR             -- Graded's API, from Graded
+  open M.Over CR d f-lo      -- Mod's own defs, from Mod
+  open Q.Over CR d f-lo      -- Quotient's own defs, from Quotient
   private variable n : ℕ
 
   -- append at the top (the y^(suc d) slot).

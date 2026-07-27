@@ -94,6 +94,12 @@ run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 # of carrier-locality (which governs operators over the UNIQUE carriers this skips).
 run "sumtype ratchet" python3 "$ROOT/scripts/check_sumtype_ratchet.py" --quiet
 
+# Public ratchet: a WHOLESALE `open … public` (no using/hiding/renaming) is DEBT — Agda
+# module application COPIES, so it re-materializes the whole upstream API into this core
+# AND every consumer's, transitively (the ⟡cap-ratchet blowup mechanism). A module
+# re-exports ONLY what it DEFINES; bind at the OWNER, non-publicly. Paydown-only.
+run "public ratchet" python3 "$ROOT/scripts/check_public_ratchet.py" --quiet
+
 # Apex gate: every relational law-motif (≥3 instances) must have a parametric apex
 # (a parameterizable module — NOT an index, which forces concurrent building). No
 # baseline: a new cluster blocks until its apex is built, snowballing leverage early.

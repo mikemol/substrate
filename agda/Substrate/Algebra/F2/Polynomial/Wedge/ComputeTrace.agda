@@ -33,10 +33,16 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2 using (F₂)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 -- the monic presentation, relative to the candidate divisor's (d, f-lo).
 module Pres (n : ℕ) (f-lo : Vec F₂ (suc n)) where
+  open F.Over F₂-CommRing
+  open M.Over F₂-CommRing n f-lo
+  open Q.Over F₂-CommRing n f-lo
   open D.Over F₂-CommRing n f-lo
 
   -- char-2 negation is the identity.

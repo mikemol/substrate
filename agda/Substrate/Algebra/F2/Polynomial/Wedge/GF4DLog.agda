@@ -29,13 +29,18 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.ExpLogCodec as ELC using (ExpLogCodec)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 -- GF(4) = F₂[x]/(x²+x+1): low coeffs (x⁰,x¹) = (1,1), the leading x² implicit (d=1).
 m-lo₂ : Vec F2.F₂ 2
 m-lo₂ = F2.𝟙 ∷ F2.𝟙 ∷ []
 
-open D.Over F₂-CommRing 1 m-lo₂ using (Poly; _*Q_; oneC)
+open F.Over F₂-CommRing using (Poly)
+open M.Over F₂-CommRing 1 m-lo₂ using (oneC)
+open Q.Over F₂-CommRing 1 m-lo₂ using (_*Q_)
 
 -- the three nonzero field elements: 1, x, x+1  (Poly 2 = Vec F₂ 2, degree < 2).
 ex  : Poly 2      -- x

@@ -32,13 +32,15 @@ open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
+import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+import Substrate.Algebra.Polynomial.Graded.Mod as M
+import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) where
-  open D.Over F₂-CommRing d m-lo using
-    ( Poly ; _*Q_ ; oneC ; xpow ; ytime
-    ; reduce-*P-expand ; reduce-idempotent ; hsum ; hsum-ytime ; xpow-ytime
-    ; *Q-comm ; *Q-assoc ; *Q-identityˡ )
+  open F.Over F₂-CommRing using (Poly)
+  open M.Over F₂-CommRing d m-lo using (oneC; xpow; ytime; reduce-*P-expand; reduce-idempotent; hsum; hsum-ytime; xpow-ytime)
+  open Q.Over F₂-CommRing d m-lo using (_*Q_; *Q-comm; *Q-assoc; *Q-identityˡ)
 
   -- the antilog in the bounded-magnitude (division) regime.
   gpow : ℕ → Poly (suc d)
@@ -106,7 +108,8 @@ m-lo₄ : Vec F2.F₂ 4
 m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
 
 module GF16 = Over 3 m-lo₄
-open D.Over F₂-CommRing 3 m-lo₄ using (_*Q_; oneC)
+open M.Over F₂-CommRing 3 m-lo₄ using (oneC)
+open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 
 order15 : GF16.gpow 15 ≡ oneC
 order15 = refl
