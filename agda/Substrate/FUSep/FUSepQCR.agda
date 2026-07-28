@@ -30,5 +30,5 @@ module Newman
   {Tm : Set}
   (_⇒_ : Tm → Tm → Set)                              -- the one-step reduction
   where
-  open import Substrate.Foundation.RewriteConfluence _⇒_ public
+  open import Substrate.Foundation.RewriteConfluence _⇒_
     using (_⇒*_; done; _◅_; _++*_; Converge; WCR; CR; SN; newman)

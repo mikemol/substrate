@@ -11,16 +11,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z7-Coxeter-Fin where
+open import Substrate.Groups.Coxeter.Cyclic.Base 6 using (σ-HasOrderPerm; σ-OrderOf)
+open import Substrate.Groups.Coxeter.Cyclic.Core 6 using (chain)
+
 
 import Substrate.Groups.Z7-Coxeter as Z₇
 
-open import Substrate.Groups.Coxeter.Fin-from-Cyclic 6 public
-  hiding (canonical-to-Fin; Fin-to-canonical)
-  renaming
-    ( σ to σ₇
-    ; σ-HasOrderPerm to σ₇-HasOrderPerm-from-Z7-Coxeter
-    ; σ-OrderOf to σ₇-OrderOf-from-Z7-Coxeter
-    ; action-of-a-is-σ-ex to action-of-a-is-σ₇
-    ; canonical-to-Fin-ex to canonical-to-Fin
-    ; Fin-to-canonical-ex to Fin-to-canonical
-    )
+

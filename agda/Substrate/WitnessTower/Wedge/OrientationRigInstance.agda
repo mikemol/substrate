@@ -22,7 +22,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigInstance where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)

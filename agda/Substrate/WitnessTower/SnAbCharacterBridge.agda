@@ -43,7 +43,7 @@
 module Substrate.WitnessTower.SnAbCharacterBridge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Algebra.F2 using (F₂; 𝟙; _+_)
 open import Substrate.Algebra.F2.FromBool using (bool→F₂)

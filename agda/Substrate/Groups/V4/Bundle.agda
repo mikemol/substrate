@@ -10,11 +10,16 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4.Bundle where
+open import Substrate.Groups.V4.Operations using (_·_; ε; inv)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Groups.V4.Axioms public
-
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonRight using (ε-right)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
+open import Substrate.Groups.V4.Axioms.InvRight using (inv-right)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 import Substrate.Algebra.Magma     as SM
 import Substrate.Algebra.Semigroup as SS
 import Substrate.Algebra.Monoid    as SMo

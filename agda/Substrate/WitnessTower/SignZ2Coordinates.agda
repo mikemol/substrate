@@ -31,7 +31,9 @@ module Substrate.WitnessTower.SignZ2Coordinates where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; s≤s; z≤n)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-assoc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; boolToℕ; _xor_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)

@@ -22,7 +22,7 @@
 
 module Substrate.WitnessTower.Link where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.Coalgebra using (Endomap; _∘E_)

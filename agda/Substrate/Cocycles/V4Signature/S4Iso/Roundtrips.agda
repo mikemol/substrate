@@ -17,10 +17,11 @@ open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂; trans-sym)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.S4
-  using (Permutation; _≈_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Injective Axis using (σ-injective)
 open import Substrate.Groups.V4-Embedding
   using (act-axis-involutive)
 open import Substrate.Groups.SemidirectProduct
@@ -30,6 +31,10 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Injective
 open import Substrate.Cocycles.V4Signature.S4Iso.StabElements
 open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 open import Substrate.Cocycles.V4Signature.S4Iso.Cases
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
 
 ------------------------------------------------------------------------
 -- Stab(D)-side round-trip.
@@ -39,7 +44,7 @@ stab-round-trip :
   (σ : Permutation) (σ-stab : Stab D σ) →
   orbit-key-to-stab-d (stab-d-to-orbit-key σ σ-stab) ≈ σ
 stab-round-trip σ σ-stab z
-  with applyₛ σ C in pC | applyₛ σ S in pS
+  with apply σ C in pC | apply σ S in pS
 ... | D | _ = ⊥-elim (C≢D (σ-injective σ C D (trans-sym pC σ-stab)))
 ... | C | D = ⊥-elim (S≢D (σ-injective σ S D (trans-sym pS σ-stab)))
 ... | S | D = ⊥-elim (S≢D (σ-injective σ S D (trans-sym pS σ-stab)))
@@ -63,7 +68,7 @@ stab-round-trip σ σ-stab z
 σ-round-trip σ z =
   trans (cong (act-axis (v-for σ))
               (stab-round-trip (s-for σ) (s-for-fixes-anchor D σ) z))
-        (act-axis-involutive (v-for σ) (applyₛ σ z))
+        (act-axis-involutive (v-for σ) (apply σ z))
 
 ------------------------------------------------------------------------
 -- TotalSpace-side round-trip.
@@ -76,20 +81,20 @@ total-round-trip (ok , v) = cong₂ _,_ ok-eq v-eq
     σ′ : Permutation
     σ′ = total-to-s4 (ok , v)
 
-    σD : applyₛ σ′ D ≡ act-axis v D
+    σD : apply σ′ D ≡ act-axis v D
     σD = cong (act-axis v) (orbit-key-to-stab-d-fixes-D ok)
 
     v-eq : v-for σ′ ≡ v
-    v-eq = sym (v-of-axis-unique v (applyₛ σ′ D) (sym σD))
+    v-eq = sym (v-of-axis-unique v (apply σ′ D) (sym σD))
 
     s≈orb : (z : Axis) →
-            applyₛ (s-for σ′) z ≡ applyₛ (orbit-key-to-stab-d ok) z
+            apply (s-for σ′) z ≡ apply (orbit-key-to-stab-d ok) z
     s≈orb z =
       trans (cong (λ w → act-axis w (act-axis v
-                          (applyₛ (orbit-key-to-stab-d ok) z))) v-eq)
-            (act-axis-involutive v (applyₛ (orbit-key-to-stab-d ok) z))
+                          (apply (orbit-key-to-stab-d ok) z))) v-eq)
+            (act-axis-involutive v (apply (orbit-key-to-stab-d ok) z))
 
-    ok-eq : classify-CS (applyₛ (s-for σ′) C) (applyₛ (s-for σ′) S) ≡ ok
+    ok-eq : classify-CS (apply (s-for σ′) C) (apply (s-for σ′) S) ≡ ok
     ok-eq =
       trans (cong₂ classify-CS (s≈orb C) (s≈orb S))
             (ok-round-trip ok)

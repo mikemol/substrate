@@ -11,7 +11,8 @@
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s; z≤n)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-irrefl)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
 open import Substrate.Foundation.Empty using (⊥-elim)
@@ -26,7 +27,7 @@ open import Substrate.Algebra.Nat.CyclicSuc
 
 module Substrate.Groups.Coxeter.Cyclic.Bridge (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Base n public
+open import Substrate.Groups.Coxeter.Cyclic.Base n
 
 ------------------------------------------------------------------------
 -- For k : Fin (suc n) where ¬ (toℕ k < n), toℕ k must equal n.
@@ -78,9 +79,9 @@ insert-power-eq k with toℕ k <? n
 ------------------------------------------------------------------------
 
 insert-canonical : (g : Gen) {w : Word Gen} {k : Fin (suc n)} →
-                   Canonical w k → Canonical (insert g w) (σ k)
+                   Canonical-at w k → Canonical-at (insert g w) (σ k)
 insert-canonical a (c-here k) =
-  subst (λ w → Canonical w (σ k)) (sym (insert-power-eq k)) (c-here (σ k))
+  subst (λ w → Canonical-at w (σ k)) (sym (insert-power-eq k)) (c-here (σ k))
 
 ------------------------------------------------------------------------
 -- Per-case insert helpers (used by Core for power-canonical-bounded

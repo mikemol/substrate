@@ -12,16 +12,15 @@
 module Substrate.Pedagogy.Capstone where
 
 -- Re-export the E-arc slices publicly.
-open import Substrate.Pedagogy.MarkdownToken public
-open import Substrate.Pedagogy.Section public
-open import Substrate.Pedagogy.PageBundle public
-open import Substrate.Pedagogy.WitnessToSection public
-open import Substrate.Pedagogy.RosettaToSection public
-open import Substrate.Pedagogy.ArcToSection public
-open import Substrate.Pedagogy.LanguagePage public
-open import Substrate.Pedagogy.RosettaPage public
-open import Substrate.Pedagogy.Index public
-
+open import Substrate.Pedagogy.MarkdownToken
+open import Substrate.Pedagogy.Section
+open import Substrate.Pedagogy.PageBundle
+open import Substrate.Pedagogy.WitnessToSection
+open import Substrate.Pedagogy.RosettaToSection
+open import Substrate.Pedagogy.ArcToSection
+open import Substrate.Pedagogy.LanguagePage
+open import Substrate.Pedagogy.RosettaPage
+open import Substrate.Pedagogy.Index
 -- Bring in the substrate witnesses for the worked example.
 open import Substrate.Linguistic.Roster using (lojban; tokipona)
 

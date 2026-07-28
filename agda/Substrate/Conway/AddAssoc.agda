@@ -12,7 +12,7 @@
 module Substrate.Conway.AddAssoc where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Nat.Properties using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
 open import Substrate.Foundation.Eq
   using (_≡_; sym; cong; subst)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)

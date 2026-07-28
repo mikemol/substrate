@@ -35,7 +35,7 @@
 module Substrate.WitnessTower.Wedge.Simplicial where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _≤_)
-open import Substrate.Foundation.Fin using (Fin; zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)

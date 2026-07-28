@@ -30,7 +30,7 @@ module Substrate.Cocycles.V4Signature.ApexPin where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Groups.V4.Bijection using (V₄)
 
 -- the tower apex (rung-3 factor of the whole tower = S₄)
 open import Substrate.WitnessTower.WholeTower using (apex-V₄)

@@ -33,7 +33,7 @@
 module Substrate.WitnessTower.DetectorSignCrossing where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
 open import Substrate.Foundation.Negation using (¬_)

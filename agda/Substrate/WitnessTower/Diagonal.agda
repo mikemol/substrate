@@ -36,7 +36,7 @@
 module Substrate.WitnessTower.Diagonal where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; head; tail; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥)

@@ -25,7 +25,7 @@
 
 module Substrate.Algebra.Z6-FieldBond where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₇)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)

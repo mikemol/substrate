@@ -1,7 +1,3 @@
-Canonical::agda/Substrate/Algebra/Quotient.agda
-Canonical::agda/Substrate/Groups/Coxeter/Cyclic/Base.agda
-Canonical::agda/Substrate/Groups/FreeCyclic-Coxeter.agda
-Canonical::agda/Substrate/Groups/V4-Coxeter.agda
 Crumb::agda/Substrate/Category/PrimeSampledChain.agda
 Crumb::agda/Substrate/Pipeline/Examples/RotateCrumb.agda
 Gen::agda/Substrate/Algebra/R/Trace/SKIFaithfulRb.agda
@@ -12,8 +8,6 @@ LambekFix::agda/Substrate/Algebra/R/Trace/ExtruderLambekRealigned.agda
 LambekFix::agda/Substrate/FUSep/FUSepQLambek.agda
 Mat::agda/Substrate/Algebra/R/Trace/CFMatrixBridge.agda
 Mat::agda/Substrate/S5/S5Matrix.agda
-Present::agda/Substrate/Algebra/R/Trace/SKIGradedFlatAllegory.agda
-Present::agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda
 Progress::agda/Substrate/FUSep/FUSepQHalts.agda
 Progress::agda/Substrate/S5/S5Verdict.agda
 Shed::agda/Substrate/Algebra/R/Trace/SKIGradedTraceChain.agda

@@ -22,7 +22,7 @@
 
 module Substrate.Algebra.F2.FanoPlane where
 
-open import Substrate.Foundation.Fin using (Fin) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
@@ -47,13 +47,13 @@ data Point : Set where
 ------------------------------------------------------------------------
 
 point-to-vec : Point → Vector 3
-point-to-vec e₁   = basis fz
-point-to-vec e₂   = basis (fs fz)
-point-to-vec e₃   = basis (fs (fs fz))
-point-to-vec e₁₂  = basis fz +ⱽ basis (fs fz)
-point-to-vec e₁₃  = basis fz +ⱽ basis (fs (fs fz))
-point-to-vec e₂₃  = basis (fs fz) +ⱽ basis (fs (fs fz))
-point-to-vec e₁₂₃ = basis fz +ⱽ (basis (fs fz) +ⱽ basis (fs (fs fz)))
+point-to-vec e₁   = basis fzero
+point-to-vec e₂   = basis (fsuc fzero)
+point-to-vec e₃   = basis (fsuc (fsuc fzero))
+point-to-vec e₁₂  = basis fzero +ⱽ basis (fsuc fzero)
+point-to-vec e₁₃  = basis fzero +ⱽ basis (fsuc (fsuc fzero))
+point-to-vec e₂₃  = basis (fsuc fzero) +ⱽ basis (fsuc (fsuc fzero))
+point-to-vec e₁₂₃ = basis fzero +ⱽ (basis (fsuc fzero) +ⱽ basis (fsuc (fsuc fzero)))
 
 ------------------------------------------------------------------------
 -- 3. Singer cycle: the canonical order-7 element of GL(3, F₂),
@@ -109,9 +109,9 @@ singer⁷-id e₁₂₃ = refl
 ------------------------------------------------------------------------
 
 singer-basis : Fin 3 → Vector 3
-singer-basis fz                = basis (fs fz)
-singer-basis (fs fz)           = basis (fs (fs fz))
-singer-basis (fs (fs fz))      = basis fz +ⱽ basis (fs fz)
+singer-basis fzero                = basis (fsuc fzero)
+singer-basis (fsuc fzero)           = basis (fsuc (fsuc fzero))
+singer-basis (fsuc (fsuc fzero))      = basis fzero +ⱽ basis (fsuc fzero)
 
 singer-Linear : Linear 3 3
 singer-Linear = linear-from-images singer-basis

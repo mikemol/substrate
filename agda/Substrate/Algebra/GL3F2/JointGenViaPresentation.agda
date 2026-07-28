@@ -40,8 +40,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Fin.Literals using (₁; ₂)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq

@@ -4,10 +4,11 @@
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Monomial where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
@@ -60,15 +61,15 @@ module Over {A : Set}
   convCoeff-𝟎P {n = suc n'} q (suc k) =
     trans (cong₂ _+_ (*-absorbˡ (nth q (suc k))) (convCoeff-𝟎P {n = n'} q k)) (+-identityˡ 𝟘)
 
-  convCoeff-basis-fz : (q : Poly m) (k : ℕ) → convCoeff (basis {suc n} fz) q k ≡ nth q k
+  convCoeff-basis-fz : (q : Poly m) (k : ℕ) → convCoeff (basis {suc n} fzero) q k ≡ nth q k
   convCoeff-basis-fz         q zero    = *-identityˡ (nth q zero)
   convCoeff-basis-fz {n = n} q (suc k) =
     trans (cong₂ _+_ (*-identityˡ (nth q (suc k))) (convCoeff-𝟎P {n = n} q k)) (+-identityʳ (nth q (suc k)))
 
   convCoeff-basis-xpower : (i : Fin n) (q : Poly m) (k : ℕ)
                          → convCoeff (basis i) q k ≡ nth (x-power (toℕ i) q) k
-  convCoeff-basis-xpower fz       q k       = convCoeff-basis-fz q k
-  convCoeff-basis-xpower (fs i)   q zero    = *-absorbˡ (nth q zero)
-  convCoeff-basis-xpower (fs i)   q (suc k) =
+  convCoeff-basis-xpower fzero       q k       = convCoeff-basis-fz q k
+  convCoeff-basis-xpower (fsuc i)   q zero    = *-absorbˡ (nth q zero)
+  convCoeff-basis-xpower (fsuc i)   q (suc k) =
     trans (cong₂ _+_ (*-absorbˡ (nth q (suc k))) (convCoeff-basis-xpower i q k))
           (+-identityˡ (nth (x-power (toℕ i) q) k))

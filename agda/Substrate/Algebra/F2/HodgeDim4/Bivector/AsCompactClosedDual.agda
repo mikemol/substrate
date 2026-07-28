@@ -23,8 +23,10 @@ module Substrate.Algebra.F2.HodgeDim4.Bivector.AsCompactClosedDual
   (F2L-Dag : DaggerCategory Obj Mor)
   where
 
-open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM public
+open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag
+  renaming (named-DaggerCategory to Bivector-AsCompactClosedDual-Dag)
+
+open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM
   renaming (named-SymmetricMonoidal to Bivector-AsCompactClosedDual-SM)
 
-open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag public
-  renaming (named-DaggerCategory to Bivector-AsCompactClosedDual-Dag)
+

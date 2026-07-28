@@ -10,14 +10,17 @@
 
 module Substrate.Groups.S4-Iso.Roundtrip where
 
-open import Substrate.Axes using (Axis; D)
-import Substrate.Groups.V4 as V4
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Axes.Axis using (Axis; D)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection
 open V4 using (V₄)
 import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.V4-Embedding using (embed; embed-self-inverse)
-open import Substrate.Groups.S4
-  using (Permutation; _·_; _⁻¹; _≈_)
-open Permutation
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
 open import Substrate.Groups.SemidirectProduct
   using (v-for; s-for; s-for-fixes-anchor)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
@@ -28,6 +31,7 @@ open import Substrate.Groups.S4-Iso.Extract
   using (extract-s; perm-to-compositional)
 open import Substrate.Groups.S4-Iso.Foundation using (embed-S₃-ε)
 open import Substrate.Groups.S4-Iso.ExtractCorrect using (extract-s-correct)
+open import Substrate.Groups.SemidirectProduct.S
 
 ------------------------------------------------------------------------
 -- compositional-to-perm ∘ perm-to-compositional ≈ id.

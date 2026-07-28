@@ -53,14 +53,15 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 ------------------------------------------------------------------------
 
 -- the linear witnessing spine (Core) — the gauge choice.
-open import Substrate.WitnessTower.Core public
+open import Substrate.WitnessTower.Core
   using (WSimplex; base; witnessing; Path; walk; steps; steps-walk)
 
 -- (a) Core is a CHAIN: WSimplex k is a singleton (one spine, no branching).
-open import Substrate.WitnessTower.FamilyWitness public
+open import Substrate.WitnessTower.FamilyWitness
   using (WSimplex-unique)
 
 -- witness that Core carries no branching: the whole rung is determined.
+open import Substrate.WitnessTower.Enumerate using (perms; factorial; perms-length; lengthL)
 core-is-one-spine : ∀ {k} (x y : WSimplex k) → x ≡ y
 core-is-one-spine = WSimplex-unique
 
@@ -70,7 +71,6 @@ core-is-one-spine = WSimplex-unique
 --    the spines of the FamilyWitness DAG. Re-exported from the census.
 ------------------------------------------------------------------------
 
-open import Substrate.WitnessTower.Enumerate using (perms; factorial; perms-length; lengthL)
 
 -- #spines at rung k = |perms (suc k)| = (suc k)! — the census counts the DAG's
 -- gauge group. (perms-length is the general term; here it names the identity

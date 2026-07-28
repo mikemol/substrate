@@ -4,14 +4,14 @@
 -- V₄ as a Coxeter presentation: ⟨A, B | A² = B² = ε, AB = BA⟩.
 --
 -- This file is the V₄ INSTANTIATION of Substrate.Groups.Coxeter.Core.
--- The per-construct work (Gen, Canonical, insert, the 3 invariants
+-- The per-construct work (Gen, Canonical-V4, insert, the 3 invariants
 -- that depend on V₄'s specific relations) lives here. The scalable
 -- foundation (Word, normalize, _·_, _≈_, _≉_, ε, the bridge lemmas,
 -- clash, ++-assoc-4) is inherited from Core via instantiation.
 --
 -- Per [[feedback-v4-typeclass-architecture]] applied at the Coxeter
 -- level: ~280 lines of reusable Core inherited; the V₄-specific work
--- is ~250 lines (Gen + insert + Canonical + insert-involution +
+-- is ~250 lines (Gen + insert + Canonical-V4 + insert-involution +
 -- insert-commute + insert-append-lemma + same-canonical + eval-
 -- canonical + V₄-4-product).
 --
@@ -24,7 +24,7 @@
 
 module Substrate.Groups.V4-Coxeter where
 
-open import Substrate.Groups.Coxeter.Word public
+open import Substrate.Groups.Coxeter.Word
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Foundation.Eq
@@ -34,14 +34,16 @@ open import Substrate.Foundation.Eq
 -- 1. V₄-specific data: generators, canonical forms, insert.
 ------------------------------------------------------------------------
 
+open import Substrate.Groups.Coxeter.SameCanonical
+  using (same-canonical-via-Gen)
 data Gen : Set where
   A B : Gen
 
-data Canonical : Word Gen → Set where      -- ⟦shape:ab211b40 c-ε,c-A,c-B⟧
-  c-ε  : Canonical []
-  c-A  : Canonical (A ∷ [])
-  c-B  : Canonical (B ∷ [])
-  c-AB : Canonical (A ∷ B ∷ [])
+data Canonical-V4 : Word Gen → Set where      -- ⟦shape:ab211b40 c-ε,c-A,c-B⟧
+  c-ε  : Canonical-V4 []
+  c-A  : Canonical-V4 (A ∷ [])
+  c-B  : Canonical-V4 (B ∷ [])
+  c-AB : Canonical-V4 (A ∷ B ∷ [])
 
 insert : Gen → Word Gen → Word Gen
 insert A []           = A ∷ []
@@ -54,7 +56,7 @@ insert B (B ∷ [])     = []
 insert B (A ∷ B ∷ []) = A ∷ []
 insert g w            = g ∷ w  -- fallback structural safety
 
-insert-canonical : (g : Gen) {w : Word Gen} → Canonical w → Canonical (insert g w)
+insert-canonical : (g : Gen) {w : Word Gen} → Canonical-V4 w → Canonical-V4 (insert g w)
 insert-canonical A c-ε  = c-A
 insert-canonical A c-A  = c-ε
 insert-canonical A c-B  = c-AB
@@ -64,6 +66,9 @@ insert-canonical B c-A  = c-AB
 insert-canonical B c-B  = c-ε
 insert-canonical B c-AB = c-A
 
+
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-V4 c-ε insert insert-canonical public
 ------------------------------------------------------------------------
 -- 2. Open the ListPresentation wrapper with V₄'s atoms.
 --
@@ -72,8 +77,6 @@ insert-canonical B c-AB = c-A
 -- per-relation obligations.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.ListPresentation
-  Gen Canonical c-ε insert insert-canonical public
 
 ------------------------------------------------------------------------
 -- 3. V₄-specific Coxeter relations (lifted to the insert level).
@@ -85,7 +88,7 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- BA). 10 refl cases (g = h trivial; g ≠ h × 4 canonical forms × 2).
 ------------------------------------------------------------------------
 
-insert-involution : (g : Gen) {w : Word Gen} → Canonical w →
+insert-involution : (g : Gen) {w : Word Gen} → Canonical-V4 w →
                     insert g (insert g w) ≡ w
 insert-involution A c-ε  = refl
 insert-involution A c-A  = refl
@@ -96,7 +99,7 @@ insert-involution B c-A  = refl
 insert-involution B c-B  = refl
 insert-involution B c-AB = refl
 
-insert-commute : (g h : Gen) {w : Word Gen} → Canonical w →
+insert-commute : (g h : Gen) {w : Word Gen} → Canonical-V4 w →
                  insert g (insert h w) ≡ insert h (insert g w)
 insert-commute A A _    = refl
 insert-commute B B _    = refl
@@ -115,14 +118,14 @@ insert-commute B A c-AB = refl
 -- commute).
 ------------------------------------------------------------------------
 
-canonical-is-fixed-V4 : {w : Word Gen} → Canonical w → normalize w ≡ w
+canonical-is-fixed-V4 : {w : Word Gen} → Canonical-V4 w → normalize w ≡ w
 canonical-is-fixed-V4 c-ε  = refl
 canonical-is-fixed-V4 c-A  = refl
 canonical-is-fixed-V4 c-B  = refl
 canonical-is-fixed-V4 c-AB = refl
 
 insert-append-lemma-V4 :
-  (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
+  (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical-V4 w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
 insert-append-lemma-V4 A {[]}         w₂ c-ε  = refl
 insert-append-lemma-V4 A {A ∷ []}     w₂ c-A  =
@@ -141,6 +144,8 @@ insert-append-lemma-V4 B {A ∷ B ∷ []} w₂ c-AB =
             (sym (insert-commute B A
                     (insert-canonical B (normalize-canonical w₂))))
 
+
+open WithLemmas canonical-is-fixed-V4 insert-append-lemma-V4 public
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 --
@@ -150,10 +155,9 @@ insert-append-lemma-V4 B {A ∷ B ∷ []} w₂ c-AB =
 -- scope (re-exported via `public`).
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed-V4 insert-append-lemma-V4 public
 
 ------------------------------------------------------------------------
--- 6. Decidable equality on Canonical forms — V₄-specific (depends on
+-- 6. Decidable equality on Canonical-V4 forms — V₄-specific (depends on
 -- the 4 ctors). Used by eval-canonical's clash dispatcher.
 ------------------------------------------------------------------------
 
@@ -163,10 +167,8 @@ gen-≟ A B = no (λ ())
 gen-≟ B A = no (λ ())
 gen-≟ B B = yes refl
 
-open import Substrate.Groups.Coxeter.SameCanonical
-  using (same-canonical-via-Gen)
 
-same-canonical : {w₁ w₂ : Word Gen} → Canonical w₁ → Canonical w₂ → Dec (w₁ ≡ w₂)
+same-canonical : {w₁ w₂ : Word Gen} → Canonical-V4 w₁ → Canonical-V4 w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
@@ -197,7 +199,7 @@ private
     (cong-trans normalize (++-assoc-4 w₁ w₂ w₃ w₄)
            (normalize-quad w₁ w₂ w₃ w₄))))
 
-  -- eval-canonical: on 4 Canonical proofs + 6 pairwise ≉, the
+  -- eval-canonical: on 4 Canonical-V4 proofs + 6 pairwise ≉, the
   -- concatenated normalize is `[]`. 124 patterns total (24 distinct
   -- refl + 100 clash-killed via canonical pairs).
   --
@@ -209,8 +211,8 @@ private
   -- presentation (V4-Coxeter), not bolted on at the action level.
   eval-canonical :
     {w₁ w₂ w₃ w₄ : Word Gen}
-    (c₁ : Canonical w₁) (c₂ : Canonical w₂)
-    (c₃ : Canonical w₃) (c₄ : Canonical w₄) →
+    (c₁ : Canonical-V4 w₁) (c₂ : Canonical-V4 w₂)
+    (c₃ : Canonical-V4 w₃) (c₄ : Canonical-V4 w₄) →
     w₁ ≉ w₂ → w₁ ≉ w₃ → w₁ ≉ w₄ → w₂ ≉ w₃ → w₂ ≉ w₄ → w₃ ≉ w₄ →
     normalize (w₁ ++ w₂ ++ w₃ ++ w₄) ≡ []
   -- 24 all-distinct refl cases:

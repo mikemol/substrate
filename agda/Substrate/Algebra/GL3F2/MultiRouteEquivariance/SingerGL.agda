@@ -15,11 +15,10 @@ module Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL where
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Linear using (apply)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (iterate-apply-as-L-iterate)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (iterate-apply-as-L-iterate)
 open import Substrate.Algebra.GL3F2 using (GL3F2; mkGL3F2)
 open import Substrate.Algebra.GL3F2.GaugeGenerators using (singer-Linear)
-open import Substrate.Algebra.GL3F2.SingerOrder using (HasOrder-singer)
+open import Substrate.Algebra.GL3F2.SingerOrder.HasOrder using (HasOrder-singer)
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerInv using (singer-inv)
 
 singer-GL : GL3F2

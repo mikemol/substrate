@@ -15,11 +15,10 @@
 module Substrate.TokiPona.QSemanticSpace where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_)
 
 -- Re-export ℚ-Vector publicly so consumers get the whole carrier.
-open import Substrate.Algebra.Q.Vector public
+open import Substrate.Algebra.Q.Vector
   using (Vector; 𝟎ℚⱽ; _+ℚⱽ_; _*ℚₛ_; basis-ℚ)
 
 ------------------------------------------------------------------------

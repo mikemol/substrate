@@ -15,7 +15,7 @@
 module Substrate.Algebra.Polynomial.Graded.ModZero where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Algebra.CommutativeRing using (CommutativeRing)

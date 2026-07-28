@@ -32,17 +32,17 @@
 
 module Substrate.Category.ReferenceOrbit where
 
-open import Substrate.Category.ReferenceOrbit.SourceClass              public
-open import Substrate.Category.ReferenceOrbit.Permanence               public
-open import Substrate.Category.ReferenceOrbit.BindingClass             public
-open import Substrate.Category.ReferenceOrbit.Record                   public
-open import Substrate.Category.ReferenceOrbit.QUOT                     public
-open import Substrate.Category.ReferenceOrbit.ChainBackRef             public
-open import Substrate.Category.ReferenceOrbit.ByteBackRef              public
-open import Substrate.Category.ReferenceOrbit.QUOTRecent               public
-open import Substrate.Category.ReferenceOrbit.OneShotSlice             public
-open import Substrate.Category.ReferenceOrbit.ChamberFreeQUOT          public
-open import Substrate.Category.ReferenceOrbit.ChamberFreeQUOTRecent    public
-open import Substrate.Category.ReferenceOrbit.ChamberFreeOneShotSlice  public
-open import Substrate.Category.ReferenceOrbit.OrbitName                public
-open import Substrate.Category.ReferenceOrbit.Chirality                public
+open import Substrate.Category.ReferenceOrbit.SourceClass
+open import Substrate.Category.ReferenceOrbit.Permanence
+open import Substrate.Category.ReferenceOrbit.BindingClass
+open import Substrate.Category.ReferenceOrbit.Record
+open import Substrate.Category.ReferenceOrbit.QUOT
+open import Substrate.Category.ReferenceOrbit.ChainBackRef
+open import Substrate.Category.ReferenceOrbit.ByteBackRef
+open import Substrate.Category.ReferenceOrbit.QUOTRecent
+open import Substrate.Category.ReferenceOrbit.OneShotSlice
+open import Substrate.Category.ReferenceOrbit.ChamberFreeQUOT
+open import Substrate.Category.ReferenceOrbit.ChamberFreeQUOTRecent
+open import Substrate.Category.ReferenceOrbit.ChamberFreeOneShotSlice
+open import Substrate.Category.ReferenceOrbit.OrbitName
+open import Substrate.Category.ReferenceOrbit.Chirality

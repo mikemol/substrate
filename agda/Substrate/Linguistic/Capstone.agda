@@ -22,40 +22,39 @@ module Substrate.Linguistic.Capstone where
 
 -- Re-export C1 (parent primitive) + the six witness modules + the
 -- classification/Rosetta machinery so consumers see the whole arc.
-open import Substrate.Category.FreeOverBasis public
-
-open import Substrate.Lojban.AsFreeOverBasis public
+open import Substrate.Category.FreeOverBasis
+open import Substrate.Lojban.AsFreeOverBasis
   using (lojban-witness; lojban-free-structure)
-open import Substrate.TokiPona.AsFreeOverBasis public
+open import Substrate.TokiPona.AsFreeOverBasis
   using (tokipona-witness; tokipona-free-structure)
-open import Substrate.Solresol.Fragment public
+open import Substrate.Solresol.Fragment
   using (solresol-witness; solresol-free-structure;
          Note; SolresolWord; transpose-1; transpose-7; transpose-7-id)
-open import Substrate.Kelen.Fragment public
+open import Substrate.Kelen.Fragment
   using (kelen-witness; kelen-free-structure;
          Relational; KelenWord; arity)
-open import Substrate.Lambda.Fragment public
+open import Substrate.Lambda.Fragment
   using (lambda-witness; lambda-free-structure;
          Combinator; SKIWord;
          S; K; I; B; C;
          expr-I; expr-SKK; expr-B-derived)
-open import Substrate.Invented.LieFragment public
+open import Substrate.Invented.LieFragment
   using (lie-witness; lie-free-structure;
          LieGen; LieExpr; gen; bracket;
          expr-x; expr-xy; expr-jacobi-1; expr-jacobi-2)
 
-open import Substrate.Linguistic.Classification public
+open import Substrate.Linguistic.Classification
   using (witness-count; all-witnesses;
          witness-by-name; witness-by-class;
          name∘witness-by-name; class∘witness-by-class;
          _⊎-OR_; here; there)
-open import Substrate.Linguistic.RosettaTable public
+open import Substrate.Linguistic.RosettaTable
   using (RosettaEntry; mkEntry; pair-entry; class-decide;
          rosetta-lojban-tokipona; rosetta-lojban-lambda;
          rosetta-tokipona-solresol; rosetta-kelen-lambda;
          rosetta-lojban-lojban; sample-entries)
 
 -- File-per-lemma capstone submodules.
-open import Substrate.Linguistic.Capstone.CrossTable public
-open import Substrate.Linguistic.Capstone.SmokeTests public
-open import Substrate.Linguistic.Capstone.Worked     public
+open import Substrate.Linguistic.Capstone.CrossTable
+open import Substrate.Linguistic.Capstone.SmokeTests
+open import Substrate.Linguistic.Capstone.Worked

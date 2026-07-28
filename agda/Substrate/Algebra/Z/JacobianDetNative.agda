@@ -14,7 +14,7 @@
 module Substrate.Algebra.Z.JacobianDetNative where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (proj₁; _,_)
 open import Substrate.Algebra.Z using (ℤ)
 open import Substrate.Algebra.Z.JacobianResidue

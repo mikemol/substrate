@@ -29,7 +29,8 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; suc-injective)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Sucinjective
 
 private
   variable
@@ -56,7 +57,7 @@ punchIn-≢ : (k : Fin (suc n)) (j : Fin n) → ¬ (punchIn k j ≡ k)
 punchIn-≢ zero    j       ()
 punchIn-≢ (suc k) zero    ()
 punchIn-≢ {suc _} (suc k) (suc j) eq =
-  punchIn-≢ k j (suc-injective eq)
+  punchIn-≢ k j (fin-suc-injective eq)
 
 ------------------------------------------------------------------------
 -- 3. punchOut : i ≢ k → Fin n — remove slot k (given i ≠ k).

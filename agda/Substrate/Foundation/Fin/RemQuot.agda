@@ -12,7 +12,8 @@
 module Substrate.Foundation.Fin.RemQuot where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.SplitAt
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Sum using (inj₁; inj₂)
 open import Substrate.Foundation.Fin.SplitAt using (splitAt)

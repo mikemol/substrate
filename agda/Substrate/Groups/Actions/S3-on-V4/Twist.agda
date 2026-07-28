@@ -11,7 +11,7 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Twist where
 
-open import Substrate.Groups.Actions.S3-on-V4.Generators              public
-open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow     public
-open import Substrate.Groups.Actions.S3-on-V4.Twist.SwapRotateTwist  public
-open import Substrate.Groups.Actions.S3-on-V4.Twist.RotPowSwapTwist  public
+open import Substrate.Groups.Actions.S3-on-V4.Generators
+open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow
+open import Substrate.Groups.Actions.S3-on-V4.Twist.SwapRotateTwist
+open import Substrate.Groups.Actions.S3-on-V4.Twist.RotPowSwapTwist

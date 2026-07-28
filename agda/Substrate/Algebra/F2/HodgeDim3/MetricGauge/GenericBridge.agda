@@ -36,7 +36,7 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
 open import Substrate.Foundation.Product using (_,_)
@@ -46,16 +46,15 @@ open import Substrate.Foundation.Eq
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
-  using (SymBilinForm-3; bilinear-form-of; metric-id;
-         entry-a; entry-b; entry-c; entry-d; entry-e; entry-f)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3; entry-a; entry-b; entry-c; entry-d; entry-e; entry-f)
 
 -- Generic infrastructure.
-open import Substrate.Algebra.F2.SymBilinForm
-  using () renaming (BilinForm to BilinForm-generic;
-                     IsSymmetric to IsSymmetric-generic;
-                     bilinear-form-of to bilinear-form-of-generic;
-                     metric-id to metric-id-generic)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using () renaming (BilinForm to BilinForm-generic)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using () renaming (bilinear-form-of to bilinear-form-of-generic)
+open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using () renaming (IsSymmetric to IsSymmetric-generic)
+open import Substrate.Algebra.F2.SymBilinForm.MetricId using () renaming (metric-id to metric-id-generic)
 
 ------------------------------------------------------------------------
 -- N-1: SymBilinForm-3-to-generic — convert Vector 6 packing into
@@ -67,6 +66,8 @@ open import Substrate.Algebra.F2.SymBilinForm
 -- with i > j returns the corresponding upper-triangular entry.
 ------------------------------------------------------------------------
 
+open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
+open import Substrate.Foundation.Vec using (lookup)
 SymBilinForm-3-to-generic : SymBilinForm-3 → BilinForm-generic 3
 SymBilinForm-3-to-generic M zero             zero             = entry-a M
 SymBilinForm-3-to-generic M zero             ₁       = entry-d M
@@ -221,8 +222,6 @@ metric-id-3-eq-bridged ₂ ₂ = refl
 -- generic metric-id at every (i, j) — N-4 provides this.
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Substrate.Foundation.Vec using (lookup)
 
 bilinear-form-of-metric-id-bridge :
   (v w : Vector 3) →

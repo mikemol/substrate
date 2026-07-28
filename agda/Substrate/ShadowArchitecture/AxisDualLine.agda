@@ -25,8 +25,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.AxisDualLine where
+open import Substrate.Algebra.F2.FanoPlane using (FanoLine; Point; point-to-vec)
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₂₃)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Vec using (lookup)
@@ -45,6 +46,8 @@ open import Substrate.ShadowArchitecture.SelfReference using (_on_)
 -- the three signatures with 𝟘 in the first slot.
 ------------------------------------------------------------------------
 
+open import Substrate.ShadowArchitecture.Weight
+  using (line-orbit; wt-1)
 Axis : Set
 Axis = Fin 3
 
@@ -101,8 +104,6 @@ axis-3-dual-coord-zero p₁₁₀ (inj₂ (inj₂ refl)) = refl
 -- itself lives in Weight.agda.
 ------------------------------------------------------------------------
 
-open import Substrate.ShadowArchitecture.Weight
-  using (line-orbit; wt-1)
 
 axis-dual-lands-wt-1 : ∀ (i : Axis) → line-orbit (axis-dual i) ≡ wt-1
 axis-dual-lands-wt-1 ax₁ = refl

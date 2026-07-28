@@ -12,6 +12,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.FreeCyclic-Coxeter-Strict2Monoid where
+open import Substrate.Groups.Coxeter.Word using (++-assoc)
 
 import Substrate.Groups.FreeCyclic-Coxeter as F
 open import Substrate.Groups.Coxeter.Word
@@ -21,7 +22,7 @@ open import Substrate.Category.Strict2Monoid.FromCoxeter
   (Word F.Gen)
   _++_
   []
-  (λ a b c → F.++-assoc a b c)
+  (λ a b c → ++-assoc a b c)
   ++-identity-left
   ++-identity-right
   F.normalize

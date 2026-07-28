@@ -24,13 +24,13 @@
 
 module Substrate.ShadowArchitecture.Raven.PhaseTransition where
 
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase       public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.IsAñeléTerminal    public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé         public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt     public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices      public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase     public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII      public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII    public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.FirstLockupAtVIII  public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone           public
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.IsAñeléTerminal
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.FirstLockupAtVIII
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone

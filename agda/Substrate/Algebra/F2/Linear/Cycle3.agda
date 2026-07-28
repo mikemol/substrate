@@ -24,7 +24,7 @@
 
 module Substrate.Algebra.F2.Linear.Cycle3 where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
 

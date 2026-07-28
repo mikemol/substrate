@@ -30,7 +30,8 @@
 module Substrate.WitnessTower.Wedge.OrientationCoherence where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)

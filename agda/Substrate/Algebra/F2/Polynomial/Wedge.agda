@@ -17,7 +17,7 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge where
 
-open import Substrate.Algebra.F2.Polynomial.Wedge.WedgePoly         public
-open import Substrate.Algebra.F2.Polynomial.Wedge.DegreeLt          public
-open import Substrate.Algebra.F2.Polynomial.Wedge.TrivialWedgePoly  public
-open import Substrate.Algebra.F2.Polynomial.Wedge.XPower            public
+open import Substrate.Algebra.F2.Polynomial.Wedge.WedgePoly
+open import Substrate.Algebra.F2.Polynomial.Wedge.DegreeLt
+open import Substrate.Algebra.F2.Polynomial.Wedge.TrivialWedgePoly
+open import Substrate.Algebra.F2.Polynomial.Wedge.XPower

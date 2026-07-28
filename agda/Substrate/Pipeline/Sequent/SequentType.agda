@@ -9,6 +9,8 @@
 {-# OPTIONS --without-K #-}
 
 module Substrate.Pipeline.Sequent.SequentType where
+open import Substrate.Pipeline.Brick.Unit using (⊤)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Pipeline.Brick
 

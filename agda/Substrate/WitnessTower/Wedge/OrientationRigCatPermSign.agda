@@ -47,7 +47,10 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermSign where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; suc-injective)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Sucinjective
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Fin.Properties using (toℕ-injective)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map; tabulate)

@@ -38,9 +38,8 @@
 module Substrate.WitnessTower.LeibnizMonomialDirect where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
-open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Vec using (Vec; _∷_; lookup; map)

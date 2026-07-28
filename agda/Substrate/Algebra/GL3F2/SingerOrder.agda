@@ -21,5 +21,5 @@
 
 module Substrate.Algebra.GL3F2.SingerOrder where
 
-open import Substrate.Algebra.GL3F2.SingerOrder.HasOrder public
+open import Substrate.Algebra.GL3F2.SingerOrder.HasOrder
   using (HasOrder-singer)

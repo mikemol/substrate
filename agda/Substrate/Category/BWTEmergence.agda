@@ -34,7 +34,8 @@
 module Substrate.Category.BWTEmergence where
 
 open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op3
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)

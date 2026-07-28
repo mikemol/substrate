@@ -12,16 +12,15 @@
 module Substrate.Algebra.Q.Capstone where
 
 -- Re-export the Q-arc slices publicly.
-open import Substrate.Algebra.Z public
-open import Substrate.Algebra.Q public
-open import Substrate.Algebra.Q.DecidableEq public
-open import Substrate.Algebra.Q.Reduction public
-open import Substrate.Algebra.Q.Arithmetic public
-open import Substrate.Algebra.Q.Order public
-open import Substrate.Algebra.Q.Embeddings public
-open import Substrate.Algebra.Q.Vector public
-open import Substrate.Algebra.Q.Linear public
-
+open import Substrate.Algebra.Z
+open import Substrate.Algebra.Q
+open import Substrate.Algebra.Q.DecidableEq
+open import Substrate.Algebra.Q.Reduction
+open import Substrate.Algebra.Q.Arithmetic
+open import Substrate.Algebra.Q.Order
+open import Substrate.Algebra.Q.Embeddings
+open import Substrate.Algebra.Q.Vector
+open import Substrate.Algebra.Q.Linear
 ------------------------------------------------------------------------
 -- 1. Smoke test: 1 + 1 in ℚ.
 --

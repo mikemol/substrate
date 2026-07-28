@@ -25,7 +25,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
@@ -34,9 +34,10 @@ open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (basis-permutation-Linear; basis-permutation-involution;
-         HasOrderPerm; HasOrder-from-perm)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution using (basis-permutation-involution)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear using (basis-permutation-Linear)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (HasOrder-from-perm)
+open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.Universal
   using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
@@ -48,6 +49,8 @@ open import Substrate.Algebra.F2.HodgeDim4.Bivector
 -- Definitionally equal to `basis ∘ complement`.
 ------------------------------------------------------------------------
 
+open import Substrate.Category.Coalgebra using (Endomap)
+open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 hodge-star-images : Fin 6 → Vector 6
 hodge-star-images i = basis (complement i)
 
@@ -114,8 +117,6 @@ hodge-involution =
 -- lift rather than from the per-instance involution proof.
 ------------------------------------------------------------------------
 
-open import Substrate.Category.Coalgebra using (Endomap)
-open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 
 -- Hodge ★ as an endomap of Vector 6 (= Bivector at dim 4).
 hodge-star-endo : Endomap (Vector 6)

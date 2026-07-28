@@ -29,7 +29,10 @@
 module Substrate.WitnessTower.InsertionParity where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _≤_; s≤s; z≤n; suc-injective)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Sucinjective
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; not)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; lookup)

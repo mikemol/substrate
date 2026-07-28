@@ -44,24 +44,24 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations where
 
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE0  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE1  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE2  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnV   public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE0  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE1  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE2  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnV   public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE0      public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE1      public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE2      public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnV       public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1Endo         public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2Endo         public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2Endo       public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1     public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS2     public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE0  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE1  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE2  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1S2   public
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE0
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE1
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE2
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnV
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE0
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE1
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE2
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnV
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE0
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE1
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE2
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnV
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1Endo
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2Endo
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2Endo
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS2
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE0
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE1
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE2
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1S2

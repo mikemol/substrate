@@ -19,9 +19,12 @@
 
 module Substrate.WitnessTower.M40Group where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ; _·_)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ε-left; ε-identity)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)
@@ -38,6 +41,9 @@ open A4Z2
 open import Substrate.WitnessTower.M40Action using (cinv)
 open import Substrate.WitnessTower.M40Iso using (sigma-cinv)
 
+open import Substrate.Foundation.Unit using (⊤)
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping using (deloop)
 ε-right : (x : V₄) → (x · e) ≡ x
 ε-right = proj₂ ε-identity
 
@@ -198,9 +204,6 @@ A4Z2-Group = record { monoid = A4Z2-Monoid ; inv = invA ; inv-left = inv-leftA ;
 -- GROUNDS-IN-ALGEBRA flag the "right" way — a typechecked bridge, not a note.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.CategoryOf using (CategoryOf)
-open import Substrate.Category.Delooping using (deloop)
 
 A4Z2-Category : CategoryOf ⊤ (λ _ _ → A4Z2)
 A4Z2-Category = deloop A4Z2-Monoid

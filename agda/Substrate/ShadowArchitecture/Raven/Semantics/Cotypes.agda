@@ -9,6 +9,24 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Raven.Semantics.Cotypes where
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVIII using (stanza-XVIII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVII using (stanza-XVII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVI using (stanza-XVI)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXV using (stanza-XV)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIV using (stanza-XIV)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIII using (stanza-XIII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXII using (stanza-XII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXI using (stanza-XI)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaX using (stanza-X)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIX using (stanza-IX)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVIII using (stanza-VIII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVII using (stanza-VII)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVI using (stanza-VI)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaV using (stanza-V)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIV using (stanza-IV)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIII using (stanza-III)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaII using (stanza-II)
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaI using (stanza-I)
 
 open import Substrate.ShadowArchitecture.Persistence using (Cotype; empty-cotype)
 open import Substrate.ShadowArchitecture.Raven.Poem

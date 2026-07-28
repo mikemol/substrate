@@ -52,7 +52,7 @@
 module Substrate.WitnessTower.SnVersusTwoPowTowers where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Vec using (Vec)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
@@ -62,12 +62,19 @@ open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 
+open import Substrate.Algebra.CayleyDickson.Grade using (F₂-length-grading)
+open import Substrate.WitnessTower.SnVersusTwoPow
+  using (|S|; |S|-is-tower-count; complement; ceil-exp; crossover-at-4;
+         complement-8-reappears)
+open import Substrate.WitnessTower.VecBoolCardinality using (allVB; card-VecBool)
+open import Substrate.WitnessTower.Enumerate using (lengthL)
+open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat using (_^_)
 Ⓣ₁-graded : GradedDivStr Perm (λ n → Fin (suc n))
 Ⓣ₁-graded = tower-graded
 
 -- Ⓣ₂ — the Cayley-Dickson doubling tower's basis grading, as a GradedDivStr
 -- (increment = one bit / one doubling). Re-exported from its home.
-open import Substrate.Algebra.CayleyDickson.Grade using (F₂-length-grading)
 
 Ⓣ₂-graded : GradedDivStr (Vec Bool) (λ _ → Bool)
 Ⓣ₂-graded = F₂-length-grading
@@ -88,9 +95,6 @@ open import Substrate.Algebra.CayleyDickson.Grade using (F₂-length-grading)
 -- card-VecBool, ◆AI-1d discharged).
 ------------------------------------------------------------------------
 
-open import Substrate.WitnessTower.SnVersusTwoPow public
-  using (|S|; |S|-is-tower-count; complement; ceil-exp; crossover-at-4;
-         complement-8-reappears)
 
 -- Ⓣ₂'s rung index at level n: the basis-index type whose cardinality is the
 -- sweep's 2ⁿ column. Named here as the tower-side reading of that column.
@@ -101,10 +105,6 @@ open import Substrate.WitnessTower.SnVersusTwoPow public
 -- a proved term — VecBoolCardinality.card-VecBool. So the sweep's right column
 -- is not a bare literal but the enumerated count of the Cayley-Dickson basis
 -- index. (Was "pending ◆AI-1d"; now a citation to the built term.)
-open import Substrate.WitnessTower.VecBoolCardinality using (allVB; card-VecBool)
-open import Substrate.WitnessTower.Enumerate using (lengthL)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Nat using (_^_)
 
 Ⓣ₂-rung-count : (n : ℕ) → lengthL (allVB n) ≡ 2 ^ n
 Ⓣ₂-rung-count = card-VecBool

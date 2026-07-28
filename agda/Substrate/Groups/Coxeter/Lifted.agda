@@ -63,5 +63,5 @@
 
 module Substrate.Groups.Coxeter.Lifted where
 
-open import Substrate.Groups.Coxeter.SameCanonical  public
-open import Substrate.Groups.Coxeter.CanonicalCover public
+open import Substrate.Groups.Coxeter.SameCanonical
+open import Substrate.Groups.Coxeter.CanonicalCover

@@ -22,7 +22,8 @@
 module Substrate.WitnessTower.IsPermutation where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; suc-injective)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
@@ -42,12 +43,12 @@ open import Substrate.WitnessTower.Enumerate
 punchIn-injective :
   {n : ℕ} (k : Fin (suc n)) {i j : Fin n} →
   punchIn k i ≡ punchIn k j → i ≡ j
-punchIn-injective zero          eq = suc-injective eq
+punchIn-injective zero          eq = fin-suc-injective eq
 punchIn-injective (suc k) {zero}  {zero}  eq = refl
 punchIn-injective (suc k) {zero}  {suc j} ()
 punchIn-injective (suc k) {suc i} {zero}  ()
 punchIn-injective {suc _} (suc k) {suc i} {suc j} eq =
-  cong suc (punchIn-injective k (suc-injective eq))
+  cong suc (punchIn-injective k (fin-suc-injective eq))
 
 lookup-map :
   {A B : Set} {n : ℕ} (f : A → B) (v : Vec A n) (i : Fin n) →

@@ -17,7 +17,7 @@
 module Substrate.WitnessTower.Complete where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; [])
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; subst; sym)

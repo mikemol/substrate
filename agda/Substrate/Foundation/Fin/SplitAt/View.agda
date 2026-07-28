@@ -11,7 +11,9 @@
 module Substrate.Foundation.Fin.SplitAt.View where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Inject
+open import Substrate.Foundation.Fin.Raise
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 

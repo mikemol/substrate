@@ -53,12 +53,12 @@
 
 module Substrate.Algebra.GL3F2.MultiRouteEquivariance where
 
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL          public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderSwap01GL  public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3Inv         public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL          public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderCycle3GL  public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerInv         public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL          public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderSingerGL  public
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.PrimeDivisors     public
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderSwap01GL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3Inv
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderCycle3GL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerInv
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.HasOrderSingerGL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.PrimeDivisors

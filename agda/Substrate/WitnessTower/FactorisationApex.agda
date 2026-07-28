@@ -44,8 +44,9 @@ module Substrate.WitnessTower.FactorisationApex where
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Groups.S4 using (Permutation)
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Groups.SemidirectProduct.V using (v-for)
 open import Substrate.Groups.SemidirectProduct.S using (s-for)
 open import Substrate.WitnessTower.ParityCoordIsoApex using (coord)

@@ -20,11 +20,11 @@
 
 module Substrate.Pipeline.Brick where
 
-open import Substrate.Pipeline.Brick.Witnessing     public
-open import Substrate.Pipeline.Brick.Axis           public
-open import Substrate.Pipeline.Brick.WitnessAxis    public
-open import Substrate.Pipeline.Brick.Type           public
-open import Substrate.Pipeline.Brick.Unit           public
-open import Substrate.Pipeline.Brick.Record         public
-open import Substrate.Pipeline.Brick.PureBrick      public
-open import Substrate.Pipeline.Brick.EdgeAccessors  public
+open import Substrate.Pipeline.Brick.Witnessing
+open import Substrate.Pipeline.Brick.Axis
+open import Substrate.Pipeline.Brick.WitnessAxis
+open import Substrate.Pipeline.Brick.Type
+open import Substrate.Pipeline.Brick.Unit
+open import Substrate.Pipeline.Brick.Record
+open import Substrate.Pipeline.Brick.PureBrick
+open import Substrate.Pipeline.Brick.EdgeAccessors

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Coxeter.Cyclic.Existential
 --
--- The single-index existential view Canonical-ex = Σ Fin Canonical,
+-- The single-index existential view Canonical-ex = Σ Fin Canonical-at,
 -- + the ex-versions of c-ε / canonical-cover / insert-canonical /
 -- inv-canonical, + opens ListPresentation's outer module (normalize
 -- + normalize-canonical).
@@ -10,21 +10,23 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Groups.Coxeter.Word using (Word; [])
 
 module Substrate.Groups.Coxeter.Cyclic.Existential (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Inverse n public
+open import Substrate.Groups.Coxeter.Cyclic.Bridge n using (insert-canonical)
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; Canonical-at; c-here; insert; σ)
+open import Substrate.Groups.Coxeter.Cyclic.Inverse n
+
 
 ------------------------------------------------------------------------
 -- Existential view.
 ------------------------------------------------------------------------
 
 Canonical-ex : Word Gen → Set
-Canonical-ex w = Σ (Fin (suc n)) (Canonical w)
+Canonical-ex w = Σ (Fin (suc n)) (Canonical-at w)
 
 ------------------------------------------------------------------------
 -- Generic position-parametric pattern synonym.
@@ -49,6 +51,9 @@ canonical-cover-ex P f (k , c-here .k) = f k
 insert-canonical-ex : (g : Gen) {w : Word Gen} → Canonical-ex w → Canonical-ex (insert g w)
 insert-canonical-ex g (k , c) = σ k , insert-canonical g c
 
+
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex public
 inv-canonical-ex : ∀ {w} → Canonical-ex w → Canonical-ex (inv w)
 inv-canonical-ex (k , c) = inv-pos k , inv-canonical c
 
@@ -57,5 +62,3 @@ inv-canonical-ex (k , c) = inv-pos k , inv-canonical c
 -- normalize-canonical (using Canonical-ex as the single-index view).
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.ListPresentation
-  Gen Canonical-ex c-ε insert insert-canonical-ex public

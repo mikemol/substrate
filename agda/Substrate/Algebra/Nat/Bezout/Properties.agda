@@ -21,11 +21,11 @@ module Substrate.Algebra.Nat.Bezout.Properties where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Nat.Properties
-  using (*-zeroˡ; +-identityʳ; +-identityˡ; *-identityˡ)
+open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-identityˡ)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroˡ; *-identityˡ)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.Nat.GCD using (EEATrace; base; step)
+open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 open import Substrate.Algebra.Nat.Bezout using (BezoutWitness)
 
 ------------------------------------------------------------------------

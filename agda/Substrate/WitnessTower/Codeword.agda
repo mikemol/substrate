@@ -30,7 +30,7 @@
 module Substrate.WitnessTower.Codeword where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using ([]; _∷_)
 
 open import Substrate.Algebra.F2

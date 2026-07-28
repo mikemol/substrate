@@ -34,8 +34,6 @@ open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
 open import Substrate.Algebra.Quotient
-  using (Quotient; ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Category.UniversalProperty.TmDBGodel
 
 ------------------------------------------------------------------------
@@ -106,5 +104,5 @@ godel-retract t =
 --    godel-retract. The object-syntax IS Gödel-codeable.
 ------------------------------------------------------------------------
 
-TmDB-Canonical : Canonical⟦de760d07⟧ (ker-Quotient ungodel)
+TmDB-Canonical : Canonical (ker-Quotient ungodel)
 TmDB-Canonical = split-Canonical ungodel godel godel-retract

@@ -16,16 +16,15 @@ module Substrate.Linguistic.YonedaCapstone where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 -- Re-export the Y-arc slices publicly.
-open import Substrate.Linguistic.Morphism public
-open import Substrate.Linguistic.IdMorphism public
-open import Substrate.Linguistic.Compose public
-open import Substrate.Linguistic.CategoryLaws public
-open import Substrate.Linguistic.CategoryOfLanguages public
-open import Substrate.Linguistic.ClassFunctor public
-open import Substrate.Linguistic.HomFunctor public
-open import Substrate.Linguistic.YonedaEmbedding public
-open import Substrate.Linguistic.YonedaLemma public
-
+open import Substrate.Linguistic.Morphism
+open import Substrate.Linguistic.IdMorphism
+open import Substrate.Linguistic.Compose
+open import Substrate.Linguistic.CategoryLaws
+open import Substrate.Linguistic.CategoryOfLanguages
+open import Substrate.Linguistic.ClassFunctor
+open import Substrate.Linguistic.HomFunctor
+open import Substrate.Linguistic.YonedaEmbedding
+open import Substrate.Linguistic.YonedaLemma
 -- Bring in the Lang enum for worked examples.
 open import Substrate.Linguistic.Roster
   using (Lang; witness-of; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)

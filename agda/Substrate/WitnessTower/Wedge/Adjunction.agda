@@ -26,7 +26,7 @@
 module Substrate.WitnessTower.Wedge.Adjunction where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)

@@ -22,7 +22,8 @@ module Substrate.WitnessTower.Wedge.OrientationProductUnit where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ; *-identityʳ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-injective)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)

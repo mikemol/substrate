@@ -14,6 +14,8 @@
 
 open import Substrate.Foundation.Eq using (_≡_)
 
+open import Substrate.Groups.Coxeter.Word using (_++_; ++-assoc; Word)
+open import Substrate.Groups.FreeCyclic-Coxeter using (Gen; canonical-is-fixed-Free; Canonical-Free; normalize; normalize-canonical; normalize-distrib; ε)
 module Substrate.Groups.Zn-x-FreeCyclic
   (Zn-Word        : Set)
   (_Zn-++_        : Zn-Word → Zn-Word → Zn-Word)
@@ -27,13 +29,13 @@ module Substrate.Groups.Zn-x-FreeCyclic
     Zn-normalize (a Zn-++ b) ≡ Zn-normalize (Zn-normalize a Zn-++ Zn-normalize b))
   where
 
-import Substrate.Groups.FreeCyclic-Coxeter as F
-
 open import Substrate.Groups.Coxeter.DirectProduct
   Zn-Word _Zn-++_ Zn-ε Zn-++-assoc
     Zn-Canonical Zn-normalize Zn-normalize-canonical
     Zn-canonical-is-fixed Zn-normalize-distrib
-  (F.Word F.Gen) (F._++_) F.ε F.++-assoc
-    F.Canonical F.normalize F.normalize-canonical
-    F.canonical-is-fixed-Free F.normalize-distrib
+  (Word Gen) (_++_) ε ++-assoc
+    Canonical-Free normalize normalize-canonical
+    canonical-is-fixed-Free normalize-distrib
   public
+
+

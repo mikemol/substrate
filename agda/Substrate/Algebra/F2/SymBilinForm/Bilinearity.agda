@@ -34,7 +34,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.Bilinearity where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
@@ -44,8 +44,8 @@ open import Substrate.Foundation.Eq
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Substrate.Algebra.F2.SymBilinForm
-  using (BilinForm; bilinear-form-of)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 
 ------------------------------------------------------------------------
 -- N-1: Helper sum-F₂ properties.

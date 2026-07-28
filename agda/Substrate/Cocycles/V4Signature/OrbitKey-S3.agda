@@ -25,11 +25,11 @@
 
 module Substrate.Cocycles.V4Signature.OrbitKey-S3 where
 
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition       public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Cycle3              public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements          public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3        public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey        public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip   public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj        public
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip       public
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Cycle3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip

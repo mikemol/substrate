@@ -50,7 +50,7 @@
 
 module Substrate.Algebra.GL3F2.Characters where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 

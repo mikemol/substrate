@@ -13,7 +13,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 
@@ -25,7 +26,10 @@ open import Substrate.Algebra.Nat.CyclicSuc
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower.Concat (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Core n public
+open import Substrate.Groups.Coxeter.Cyclic.Bridge n using (insert-power-eq)
+open import Substrate.Groups.Coxeter.Cyclic.Existential n using (normalize)
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (power; a; insert)
+open import Substrate.Groups.Coxeter.Cyclic.Core n
 
 ------------------------------------------------------------------------
 -- 1. power-concat-eq: concatenating powers adds exponents.

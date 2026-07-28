@@ -11,7 +11,7 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt where
 
 open import Substrate.Foundation.Bool using (true; false)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; lookup)
 open import Substrate.ShadowArchitecture.Raven.Grammar using (Stanza)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase

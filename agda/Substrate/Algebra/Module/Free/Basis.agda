@@ -23,7 +23,7 @@
 module Substrate.Algebra.Module.Free.Basis where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_)
 

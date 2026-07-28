@@ -15,7 +15,7 @@ module Substrate.Algebra.Wedge.NilpotentLogMAssoc where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_)
-open import Substrate.Foundation.Nat.Properties using (+-assoc; +-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-comm)
 open import Substrate.Foundation.Nat.Properties.Order using (m≤m+n; ≤-<-trans)
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)

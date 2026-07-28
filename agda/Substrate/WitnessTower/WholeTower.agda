@@ -29,17 +29,17 @@
 
 module Substrate.WitnessTower.WholeTower where
 
-import Substrate.Groups.V4 as V4
+open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bundle using (V₄-Group)
 import Substrate.Groups.S3 as S₃
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.Groups.S4-Composed using (S₄-Group)
 open import Substrate.Groups.Stab-S3-Iso using (Stab≃S₃; stab≃s₃)
-open import Substrate.Axes using (Axis)
+open import Substrate.Axes.Axis using (Axis)
 
 -- the tower's apex links + their permuter, so this module's dependency
 -- cone literally contains the tower hardware it identifies with S₄'s
@@ -62,13 +62,13 @@ whole-tower-is-S₄ : whole-tower ≡ S₄-Group
 whole-tower-is-S₄ = refl
 
 -- the rungs as the factors (each presupposed by the one above):
-apex-V₄    : SetoidGroup V4.V₄ _≡_        -- carrier is the V₄ the three V₂ links live on
-apex-V₄    = to-setoid V4.V₄-Group       -- rung-3 contribution (the links)
+apex-V₄    : SetoidGroup V₄ _≡_        -- carrier is the V₄ the three V₂ links live on
+apex-V₄    = to-setoid V₄-Group       -- rung-3 contribution (the links)
 triangle-edge-S₃ = S₃.S₃-Group           -- = Z₃ ⋊ Z₂, rungs 2 and 1
 
 -- the apex factor's carrier is the V₄ the three V₂ links live on —
--- now manifest in apex-V₄'s type (SetoidGroup V4.V₄ _≡_):
-apex-carrier-is-V₄ : V4.V₄ ⇔ V4.V₄
+-- now manifest in apex-V₄'s type (SetoidGroup V₄ _≡_):
+apex-carrier-is-V₄ : V₄ ⇔ V₄
 apex-carrier-is-V₄ = ⇔-refl
 ------------------------------------------------------------------------
 -- 2. The stabilizer-chain grounding (the "presupposes everything below"

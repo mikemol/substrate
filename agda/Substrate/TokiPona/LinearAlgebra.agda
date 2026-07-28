@@ -40,12 +40,12 @@
 module Substrate.TokiPona.LinearAlgebra where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
-open import Substrate.TokiPona.SemanticSpace
-  using (SemVec; basis)
+open import Substrate.Algebra.F2.Vector using (basis)
+open import Substrate.TokiPona.SemanticSpace using (SemVec)
 open import Substrate.TokiPona.Nimi
   using (Nimi; nimi-count; nimi-index)
 open import Substrate.TokiPona.NimiSpace

@@ -21,9 +21,9 @@
 
 module Substrate.ShadowArchitecture.Raven.Semantics where
 
-open import Substrate.ShadowArchitecture.Raven.Semantics.InterpretStanza public
-open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes          public
-open import Substrate.ShadowArchitecture.Raven.Semantics.L7Population     public
-open import Substrate.ShadowArchitecture.Raven.Semantics.Steps            public
-open import Substrate.ShadowArchitecture.Raven.Semantics.FullChain        public
-open import Substrate.ShadowArchitecture.Raven.Semantics.L7Summary        public
+open import Substrate.ShadowArchitecture.Raven.Semantics.InterpretStanza
+open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes
+open import Substrate.ShadowArchitecture.Raven.Semantics.L7Population
+open import Substrate.ShadowArchitecture.Raven.Semantics.Steps
+open import Substrate.ShadowArchitecture.Raven.Semantics.FullChain
+open import Substrate.ShadowArchitecture.Raven.Semantics.L7Summary

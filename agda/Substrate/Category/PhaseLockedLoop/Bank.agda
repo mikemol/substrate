@@ -14,5 +14,5 @@
 
 module Substrate.Category.PhaseLockedLoop.Bank where
 
-open import Substrate.Category.PhaseLockedLoop.Bank.PLLBank          public
-open import Substrate.Category.PhaseLockedLoop.Bank.BankIndependence public
+open import Substrate.Category.PhaseLockedLoop.Bank.PLLBank
+open import Substrate.Category.PhaseLockedLoop.Bank.BankIndependence

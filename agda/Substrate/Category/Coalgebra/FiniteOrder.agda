@@ -38,6 +38,7 @@ open import Substrate.Foundation.Eq
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
 
+open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 private
   variable
     ℓ : Level
@@ -201,7 +202,6 @@ iterate-iterate γ (suc k) j x =
 --   ≡ x                                     [HasOrder-multiple at n = j]
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat.Properties using (*-comm)
 
 HasOrder-iterate :
   {X : Set ℓ} {γ : Endomap X} {k : ℕ} →

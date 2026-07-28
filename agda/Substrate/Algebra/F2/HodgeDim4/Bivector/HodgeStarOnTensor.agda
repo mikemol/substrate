@@ -24,7 +24,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Fin.Cover using (fin-cover; fin-cover-2⁴)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)

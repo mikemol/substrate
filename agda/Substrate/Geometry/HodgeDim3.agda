@@ -66,13 +66,10 @@ open import Substrate.Geometry.HodgeDim3.Orthogonality
 
 -- File-per-lemma child re-exported here so consumers see the
 -- HodgeDim3 surface through one import.
-open import Substrate.Geometry.HodgeDim3.Fano public
-
+open import Substrate.Geometry.HodgeDim3.Fano
 -- File-per-lemma child re-exported here so consumers see the
 -- HodgeDim3 surface through one import. Per [[s3-on-v4-file-per-lemma]]
 -- the child stays in its own file.
-open import Substrate.Geometry.HodgeDim3.Fano public
-
 ------------------------------------------------------------------------
 -- The capstone record.
 ------------------------------------------------------------------------

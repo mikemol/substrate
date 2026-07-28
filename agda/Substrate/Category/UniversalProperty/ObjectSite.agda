@@ -31,7 +31,8 @@
 module Substrate.Category.UniversalProperty.ObjectSite where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty.TmDBGodel using (TmDB; var; app)

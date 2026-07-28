@@ -27,7 +27,7 @@
 module Substrate.WitnessTower.Wedge.OrientationSumNaturality where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)

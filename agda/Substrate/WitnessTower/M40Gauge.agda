@@ -22,9 +22,11 @@
 
 module Substrate.WitnessTower.M40Gauge where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; _·_)
-open import Substrate.Groups.V4.Axioms using (ε-left; ε-identity)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e)
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₂)
 open import Substrate.WitnessTower.M40Closure

@@ -27,7 +27,7 @@
 module Substrate.WitnessTower.Wedge.OrientationSum where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)

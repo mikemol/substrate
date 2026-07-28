@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Foundation.Fin.Iterate

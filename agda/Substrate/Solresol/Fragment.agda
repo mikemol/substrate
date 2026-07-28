@@ -19,10 +19,10 @@
 
 module Substrate.Solresol.Fragment where
 
-open import Substrate.Solresol.Fragment.Note          public
-open import Substrate.Solresol.Fragment.NoteIndex     public
-open import Substrate.Solresol.Fragment.Word          public
-open import Substrate.Solresol.Fragment.Examples      public
-open import Substrate.Solresol.Fragment.Transpose     public
-open import Substrate.Solresol.Fragment.TransposeWord public
-open import Substrate.Solresol.Fragment.Witness       public
+open import Substrate.Solresol.Fragment.Note
+open import Substrate.Solresol.Fragment.NoteIndex
+open import Substrate.Solresol.Fragment.Word
+open import Substrate.Solresol.Fragment.Examples
+open import Substrate.Solresol.Fragment.Transpose
+open import Substrate.Solresol.Fragment.TransposeWord
+open import Substrate.Solresol.Fragment.Witness

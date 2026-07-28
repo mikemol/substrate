@@ -21,6 +21,7 @@ import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _++_; ++-identity-left; ++-identity-right)
 
+open import Substrate.Groups.Coxeter.Word using (++-assoc)
 module Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism
   (hom         : Word V₄.Gen → ℕ)
   (hom-ε       : hom [] ≡ zero)
@@ -31,10 +32,11 @@ open import Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism
   (Word V₄.Gen)
   _++_
   []
-  (λ a b c → V₄.++-assoc a b c)
+  (λ a b c → ++-assoc a b c)
   ++-identity-left
   ++-identity-right
   hom
   hom-ε
   hom-distrib
   public
+

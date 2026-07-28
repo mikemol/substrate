@@ -43,7 +43,7 @@
 
 module Substrate.ShadowArchitecture.FanoLabeling where
 
-open import Substrate.Algebra.F2.FanoPlane public
+open import Substrate.Algebra.F2.FanoPlane
   using (Point; FanoLine;
          e₁; e₂; e₃; e₁₂; e₁₃; e₂₃; e₁₂₃;
          L₁₂; L₁₃; L₂₃; L₁-₂₃; L₂-₁₃; L₃-₁₂; L₁₂-₁₃;

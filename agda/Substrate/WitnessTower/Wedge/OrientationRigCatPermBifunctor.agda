@@ -69,7 +69,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermBifunctor where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)

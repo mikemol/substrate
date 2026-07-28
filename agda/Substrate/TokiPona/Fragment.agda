@@ -25,24 +25,23 @@
 module Substrate.TokiPona.Fragment where
 
 -- Re-export T1-T8 publicly so consumers get the whole arc.
-open import Substrate.TokiPona.SemanticSpace public
-open import Substrate.TokiPona.Nimi public
-open import Substrate.TokiPona.NimiSpace public
+open import Substrate.TokiPona.SemanticSpace
+open import Substrate.TokiPona.Nimi
+open import Substrate.TokiPona.NimiSpace
   using (nimi-as-vector; nimi-from-index; from-index∘index)
-open import Substrate.TokiPona.ModifierBilinear public
+open import Substrate.TokiPona.ModifierBilinear
   using (modify; modifier-chain;
          modify-identityˡ; modify-identityʳ;
          modify-comm; modify-assoc; modify-self-inverse)
-open import Substrate.TokiPona.TokiSentence public
-open import Substrate.TokiPona.Particles public
-open import Substrate.TokiPona.Linearity public
-open import Substrate.TokiPona.LinearAlgebra public
-
+open import Substrate.TokiPona.TokiSentence
+open import Substrate.TokiPona.Particles
+open import Substrate.TokiPona.Linearity
+open import Substrate.TokiPona.LinearAlgebra
 -- Worked examples (file-per-lemma decomposition).
-open import Substrate.TokiPona.Fragment.Example1Intransitive     public
-open import Substrate.TokiPona.Fragment.Example2Transitive       public
-open import Substrate.TokiPona.Fragment.Example3ModifierChain    public
-open import Substrate.TokiPona.Fragment.Example4PiRegrouping     public
-open import Substrate.TokiPona.Fragment.Example5ParticleStacking public
-open import Substrate.TokiPona.Fragment.Example6Linearity        public
-open import Substrate.TokiPona.Fragment.Example7Free             public
+open import Substrate.TokiPona.Fragment.Example1Intransitive
+open import Substrate.TokiPona.Fragment.Example2Transitive
+open import Substrate.TokiPona.Fragment.Example3ModifierChain
+open import Substrate.TokiPona.Fragment.Example4PiRegrouping
+open import Substrate.TokiPona.Fragment.Example5ParticleStacking
+open import Substrate.TokiPona.Fragment.Example6Linearity
+open import Substrate.TokiPona.Fragment.Example7Free

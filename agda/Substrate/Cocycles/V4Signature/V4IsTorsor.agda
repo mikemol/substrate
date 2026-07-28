@@ -11,7 +11,7 @@
 module Substrate.Cocycles.V4Signature.V4IsTorsor where
 
 open import Substrate.Cocycle using (IsTorsor)
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid  using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.V4ActsOnItself using (V4-acts-on-itself)

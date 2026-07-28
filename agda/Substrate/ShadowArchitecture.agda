@@ -39,14 +39,14 @@
 
 module Substrate.ShadowArchitecture where
 
-open import Substrate.ShadowArchitecture.FanoLabeling   public
-open import Substrate.ShadowArchitecture.Duality        public
-open import Substrate.ShadowArchitecture.Weight         public
-open import Substrate.ShadowArchitecture.SelfReference  public
-open import Substrate.ShadowArchitecture.AxisDualLine   public
-open import Substrate.ShadowArchitecture.Mode           public
-open import Substrate.ShadowArchitecture.Charter        public
-open import Substrate.ShadowArchitecture.Distinction    public
-open import Substrate.ShadowArchitecture.Symmetry       public
-open import Substrate.ShadowArchitecture.Loop           public
-open import Substrate.ShadowArchitecture.Persistence    public
+open import Substrate.ShadowArchitecture.FanoLabeling
+open import Substrate.ShadowArchitecture.Duality
+open import Substrate.ShadowArchitecture.Weight
+open import Substrate.ShadowArchitecture.SelfReference
+open import Substrate.ShadowArchitecture.AxisDualLine
+open import Substrate.ShadowArchitecture.Mode
+open import Substrate.ShadowArchitecture.Charter
+open import Substrate.ShadowArchitecture.Distinction
+open import Substrate.ShadowArchitecture.Symmetry
+open import Substrate.ShadowArchitecture.Loop
+open import Substrate.ShadowArchitecture.Persistence

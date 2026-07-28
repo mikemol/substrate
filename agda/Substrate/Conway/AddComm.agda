@@ -20,7 +20,7 @@
 module Substrate.Conway.AddComm where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Eq
   using (_≡_; cong; subst)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)

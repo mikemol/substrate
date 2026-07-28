@@ -32,17 +32,21 @@ module Substrate.Cocycles.V4Signature.SRecovers where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Axes using (Axis; act-axis)
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄)
 import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.V4-Embedding using (embed; act-axis-involutive)
-open import Substrate.Groups.S4 using (Permutation; _·_; _≈_) renaming (apply to applyₛ)
 open import Substrate.Groups.SemidirectProduct using (s-for)
 open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃; compositional-to-perm)
 open import Substrate.Groups.S4-Iso.Extract using (extract-s; perm-to-compositional)
 open import Substrate.Groups.S4-Iso.EmbedS3Faithful using (extract-embed-roundtrip; extract-s-cong)
 open import Substrate.Cocycles.V4Signature.VRecovers using (v-recovers)
 import Substrate.Cocycles.V4Signature.CompSideRoundtripVDischarged as VD
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
 
 ------------------------------------------------------------------------
 -- (A) the Stab-side residue collapses: s-for (embed v · embed-S₃ s) ≈ embed-S₃ s.
@@ -52,9 +56,9 @@ s-for-collapses :
   (v : V₄) (s : S₃.Carrier) →
   s-for (compositional-to-perm (v , s)) ≈ embed-S₃ s
 s-for-collapses v s x =
-  trans (cong (λ w → act-axis w (act-axis v (applyₛ (embed-S₃ s) x)))
+  trans (cong (λ w → act-axis w (act-axis v (apply (embed-S₃ s) x)))
               (v-recovers v s))
-        (act-axis-involutive v (applyₛ (embed-S₃ s) x))
+        (act-axis-involutive v (apply (embed-S₃ s) x))
 
 ------------------------------------------------------------------------
 -- s-recovers: PROVEN (was the CompSideRoundtrip module parameter).

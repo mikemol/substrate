@@ -27,15 +27,15 @@
 
 module Substrate.Category.UniversalProperty.Phase3 where
 
-open import Substrate.Category.UniversalProperty.Presheaf          public
+open import Substrate.Category.UniversalProperty.Presheaf
   using (UPPresheaf)
-open import Substrate.Category.UniversalProperty.Yoneda            public
+open import Substrate.Category.UniversalProperty.Yoneda
   using (よ)
-open import Substrate.Category.UniversalProperty.Sheaf             public
+open import Substrate.Category.UniversalProperty.Sheaf
   using (UPSheaf)
-open import Substrate.Category.UniversalProperty.MatchingFamily    public
+open import Substrate.Category.UniversalProperty.MatchingFamily
   using (MatchingFamily)
-open import Substrate.Category.UniversalProperty.ConstantSheaf     public
+open import Substrate.Category.UniversalProperty.ConstantSheaf
   using (constant-Presheaf)
-open import Substrate.Category.UniversalProperty.SubstrateSheaves  public
+open import Substrate.Category.UniversalProperty.SubstrateSheaves
   using (InstancesAt)

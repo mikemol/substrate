@@ -16,7 +16,8 @@ module Substrate.Algebra.Wedge.NilpotentLogMFinLaws where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Algebra.Wedge.NilpotentFaithfulLogChart using (LogM; mulM)
 open import Substrate.Algebra.Wedge.NilpotentLogMMonoid using (mulM-comm)
@@ -27,8 +28,8 @@ open import Substrate.Algebra.Wedge.NilpotentLogMFin using (LogF; mulF; ι; ι-h
 -- toℕ injective on Fin (not in Foundation.Fin — derived inline), then ι injective.
 ------------------------------------------------------------------------
 toℕ-injective : {n : ℕ} {i j : Fin n} → toℕ i ≡ toℕ j → i ≡ j
-toℕ-injective {i = fz}   {fz}   _  = refl
-toℕ-injective {i = fs i} {fs j} e  = cong fs (toℕ-injective (suc-inj e))
+toℕ-injective {i = fzero}   {fzero}   _  = refl
+toℕ-injective {i = fsuc i} {fsuc j} e  = cong fsuc (toℕ-injective (suc-inj e))
   where suc-inj : {a b : ℕ} → suc a ≡ suc b → a ≡ b
         suc-inj refl = refl
 

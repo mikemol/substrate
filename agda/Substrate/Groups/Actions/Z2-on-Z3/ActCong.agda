@@ -1,26 +1,27 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Actions.Z2-on-Z3.ActCong
 --
--- act-cong: the action depends only on the Z₂-normalize of h and the
--- Z₃-normalize of n, so action equalities transport directly.
+-- act respects both groups' equalities. One definition; relational, so
+-- it names both group instances — the folder says which two.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Actions.Z2-on-Z3.ActCong where
 
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
-import Substrate.Groups.Z2-Coxeter-Group as Z₂G
-import Substrate.Groups.Z3-Coxeter-Group as Z₃G
+import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
+import Substrate.Groups.Capabilities.CoxeterGroup.Witness as CoxeterGroupW
 open import Substrate.Foundation.Eq using (cong; cong₂)
-
 open import Substrate.Groups.Actions.Z2-on-Z3.Act using (act; act-letter)
+cap-Z₂ = CoxeterGroupW.cap 1
 
+import Substrate.Groups.Coxeter.GroupFromCapability cap-Z₂ as Z₂G
+cap-Z₃ = CoxeterGroupW.cap 2
+
+
+
+import Substrate.Groups.Coxeter.GroupFromCapability cap-Z₃ as Z₃G
 act-cong : ∀ {h₁ h₂ n₁ n₂} → h₁ Z₂G.≈ h₂ → n₁ Z₃G.≈ n₂ →
            act h₁ n₁ Z₃G.≈ act h₂ n₂
 act-cong {h₁} {h₂} {n₁} {n₂} h-eq n-eq =
-  -- act h n = act-letter (Z₂.normalize h) (Z₃.normalize n).
-  -- act h₁ n₁ ≡ act h₂ n₂ propositionally via cong on act-letter.
-  -- ≈ on top: Z₃.normalize equality preserved by cong.
-  cong Z₃.normalize (cong₂ act-letter h-eq n-eq)
+  cong Z₃E.normalize (cong₂ act-letter h-eq n-eq)

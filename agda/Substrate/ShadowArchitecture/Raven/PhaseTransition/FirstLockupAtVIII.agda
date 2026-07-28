@@ -13,7 +13,7 @@ module Substrate.ShadowArchitecture.Raven.PhaseTransition.FirstLockupAtVIII wher
 open import Substrate.Foundation.Bool using (false)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
+open import Substrate.ShadowArchitecture.Raven.Poem.Raven using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
   using (locked-now)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt

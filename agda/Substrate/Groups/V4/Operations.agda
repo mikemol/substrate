@@ -10,7 +10,7 @@
 module Substrate.Groups.V4.Operations where
 
 import Substrate.Groups.V4-Coxeter as C
-open import Substrate.Groups.V4.Bijection public
+open import Substrate.Groups.V4.Bijection
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 infixl 7 _·_

@@ -26,9 +26,13 @@
 
 module Substrate.WitnessTower.SharedMiddle where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ; _·_; inv)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ε-left; inv-left)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_; inv)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
+open import Substrate.Groups.V4.Axioms.Comm using (·-comm)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 
 open import Substrate.Category.Coalgebra using (Endomap; _∘E_)
@@ -88,7 +92,7 @@ Lγ-V₂ = trans-by-V₂ γ
 trans-commute : (g h : V₄) → Commute (trans-by g) (trans-by h)
 trans-commute g h = record { commute = λ x →
   trans (sym (·-assoc g h x))
-        (trans (cong (_· x) (V4.·-comm g h)) (·-assoc h g x)) }
+        (trans (cong (_· x) (·-comm g h)) (·-assoc h g x)) }
 
 V₄-lower : HasOrder (Lα ∘E Lβ) 4     -- ⟨α-link, β-link⟩
 V₄-lower = HasOrder-compose-commute {γ₁ = Lα} {γ₂ = Lβ} {k₁ = 2} {k₂ = 2}

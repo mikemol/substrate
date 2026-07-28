@@ -28,7 +28,8 @@
 module Substrate.Algebra.F2.AES.ShiftRowsFace where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.Vec.Properties
   using (lookup∘tabulate; tabulate∘lookup; tabulate-cong)

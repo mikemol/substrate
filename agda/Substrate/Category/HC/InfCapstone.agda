@@ -62,9 +62,8 @@ open import Substrate.Category.HC.QuillenAdjunction  public using (QuillenAdjunc
 open import Substrate.Category.HC.InfLimit           public using (InfLimit-UP)
 
 -- Full HC-arc re-exports
-open import Substrate.Category.HC.CoherenceCapstone     public
-open import Substrate.Category.HC.BraidedSymCapstone    public
-open import Substrate.Category.HC.DoubleFiberedCapstone public
-
+open import Substrate.Category.HC.CoherenceCapstone
+open import Substrate.Category.HC.BraidedSymCapstone
+open import Substrate.Category.HC.DoubleFiberedCapstone
 -- UP-arc re-export
-open import Substrate.Category.UniversalProperty.Capstone public
+open import Substrate.Category.UniversalProperty.Capstone

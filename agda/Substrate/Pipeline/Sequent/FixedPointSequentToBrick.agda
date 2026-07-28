@@ -11,6 +11,9 @@
 {-# OPTIONS --without-K #-}
 
 module Substrate.Pipeline.Sequent.FixedPointSequentToBrick where
+open import Substrate.Pipeline.Brick.Witnessing using (D⇒S)
+open import Substrate.Pipeline.Brick.Unit using (⊤; tt)
+open import Substrate.Pipeline.Brick.Record using (Brick)
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Maybe using (Maybe)

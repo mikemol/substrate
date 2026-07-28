@@ -29,9 +29,9 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly; divisor-q)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
-open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (BezoutNthWitness)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
-  using (is-unit-q; all-vec; all-vec-sound; ∨-elim-false; unit-q-nth0; unit-q-nths)
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (is-unit-q; ∨-elim-false; unit-q-nth0; unit-q-nths)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (all-vec; all-vec-sound)
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
@@ -39,10 +39,11 @@ import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
 -- GF(2⁴) modulus  x⁴ + x + 1  (low part, x⁰..x³ = 1,1,0,0; the leading x⁴ implicit).
+open F.Over F₂-CommRing using (Poly)
 m-lo₄ : Vec F2.F₂ 4
 m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
 
-open F.Over F₂-CommRing using (Poly)
+
 open M.Over F₂-CommRing 3 m-lo₄ using (reduce-mod-f; oneC)
 open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 module M₄ = MZ.Over F₂-CommRing 3 m-lo₄

@@ -34,8 +34,7 @@ module Substrate.Algebra.Wedge.Adjunction where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge⟦478f66a6⟧)
-open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)
+open import Substrate.Algebra.Quotient
 open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge⟦478f66a6⟧)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
@@ -130,7 +129,7 @@ module FreeForgetful {C : Set} (D : DivStr C) (b : C) (divide : (a : C) → Wedg
   forget∘free a = forget-correct (divide a)
 
   -- the split idempotent: a Canonical for ker(Forgetful) — the adjoint engine.
-  wedge-Canonical : Canonical⟦de760d07⟧ (ker-Quotient U)
+  wedge-Canonical : Canonical (ker-Quotient U)
   wedge-Canonical = split-Canonical U F forget∘free
 
   -- the adjoint comparison IS the residue (total ⟹ prove-or-correct, no dead-end).

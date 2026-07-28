@@ -34,7 +34,7 @@
 module Substrate.WitnessTower.Wedge.OrientationFixedPoint where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong₂)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)

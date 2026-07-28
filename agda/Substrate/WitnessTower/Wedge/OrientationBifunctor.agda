@@ -24,7 +24,7 @@
 module Substrate.WitnessTower.Wedge.OrientationBifunctor where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)

@@ -15,7 +15,7 @@ open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_; 𝟎ⱽ; 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Nat.Properties renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_; shift-to-suc-on-left;
   pad-end; x-shift; _·c_)
 open import Substrate.Algebra.F2.GF256.Xtime using (m-lo; xtime; xtime-+ⱽ; xtime-*ₛ)

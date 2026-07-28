@@ -29,7 +29,7 @@
 
 module Substrate.Algebra.F2.V4LagrangeInstance where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq

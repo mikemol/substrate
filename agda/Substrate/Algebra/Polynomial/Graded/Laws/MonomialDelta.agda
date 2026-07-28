@@ -4,10 +4,11 @@
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.MonomialDelta where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
@@ -76,6 +77,6 @@ module Over {A : Set}
     trans (convCoeff-basis-xpower i (basis j) k)
           (trans (xpower-basis-symm i j k) (sym (convCoeff-basis-xpower j (basis i) k)))
 
-  -- multiplicative identity (graded / nth form): basis fz = the polynomial 1.
-  *P-identityˡ-nth : ∀ {n m} (q : Poly m) (k : ℕ) → nth (basis {suc n} fz *P q) k ≡ nth q k
-  *P-identityˡ-nth q k = trans (nth-*P (basis fz) q k) (convCoeff-basis-fz q k)
+  -- multiplicative identity (graded / nth form): basis fzero = the polynomial 1.
+  *P-identityˡ-nth : ∀ {n m} (q : Poly m) (k : ℕ) → nth (basis {suc n} fzero *P q) k ≡ nth q k
+  *P-identityˡ-nth q k = trans (nth-*P (basis fzero) q k) (convCoeff-basis-fz q k)

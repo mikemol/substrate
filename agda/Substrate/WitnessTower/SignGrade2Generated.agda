@@ -26,7 +26,7 @@
 module Substrate.WitnessTower.SignGrade2Generated where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Bool using (Bool; false; _xor_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
 open import Substrate.Algebra.F2 using (F₂; 𝟘) renaming (_+_ to _+F_)

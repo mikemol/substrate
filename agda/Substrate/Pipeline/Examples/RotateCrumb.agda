@@ -17,6 +17,10 @@
 {-# OPTIONS --without-K #-}
 
 module Substrate.Pipeline.Examples.RotateCrumb where
+open import Substrate.Pipeline.Brick.Witnessing using (D⇒S)
+open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.Pipeline.Brick.Unit using (⊤; tt)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)

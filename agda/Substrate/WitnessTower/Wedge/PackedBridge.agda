@@ -34,7 +34,7 @@
 module Substrate.WitnessTower.Wedge.PackedBridge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)

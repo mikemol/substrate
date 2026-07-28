@@ -31,7 +31,7 @@ open import Substrate.Foundation.Eq
 
 open import Substrate.Foundations.Bijection
 open import Substrate.Algebra.F2
-open import Substrate.Cocycles.V4Signature using (Chirality; even; odd)
+open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even; odd)
 
 ------------------------------------------------------------------------
 -- Forward: Chirality → F₂.

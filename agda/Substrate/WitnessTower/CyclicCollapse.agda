@@ -26,7 +26,7 @@
 module Substrate.WitnessTower.CyclicCollapse where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)

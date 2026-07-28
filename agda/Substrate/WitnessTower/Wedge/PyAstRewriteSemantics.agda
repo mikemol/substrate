@@ -27,7 +27,8 @@
 module Substrate.WitnessTower.Wedge.PyAstRewriteSemantics where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; _+_)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.WitnessTower.LehmerPath using (decode)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal using (LehmerAlgebra; fold)

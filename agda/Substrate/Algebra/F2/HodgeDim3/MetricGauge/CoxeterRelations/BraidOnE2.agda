@@ -8,7 +8,6 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE2 where
 
-open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (basis)

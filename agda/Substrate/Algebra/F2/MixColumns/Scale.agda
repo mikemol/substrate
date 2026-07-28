@@ -6,9 +6,12 @@
 -- This is why the 8 "products" never needed a 280MB const×const normalization — each is
 -- xtime of a constant (a shift) ⊕ XOR. Both lemmas are generic & abstract over a (cheap).
 module Substrate.Algebra.F2.MixColumns.Scale where
+open import Substrate.Algebra.F2.GF256.MulLaws using (gmul-identityʳ)
 open import Substrate.Algebra.F2.MixColumns.Base
-open import Substrate.Algebra.F2.GF256 using (xtime; gmul-comm; reduce-*P-expand;
-  reduce-idempotent; hsum; hsum-zero) public
+open import Substrate.Algebra.F2.GF256.Expand using (reduce-*P-expand; hsum)
+open import Substrate.Algebra.F2.GF256.Idempotent using (reduce-idempotent)
+open import Substrate.Algebra.F2.GF256.Mul using (gmul-comm; hsum-zero; gmul; gmul-distribˡ)
+open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 open import Substrate.Algebra.F2.Vector using (*ₛ-absorbˡ; *ₛ-identityˡ)
 
 -- ×02 = xtime. gmul c02 a = hsum c02 (reduce a); c02 = 𝟘∷𝟙∷𝟎ⱽ picks out exactly xtime a.

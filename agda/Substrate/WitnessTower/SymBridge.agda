@@ -18,7 +18,7 @@
 module Substrate.WitnessTower.SymBridge where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup; tabulate)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
@@ -31,13 +31,19 @@ open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.Surjective using (perm-surjective)
 open import Substrate.WitnessTower.SnGroup using (apply-compose; compose-is-perm)
 
-import Substrate.Groups.Symmetric as Sym
+import Substrate.Groups.Symmetric.Permutation as SymP
+import Substrate.Groups.Symmetric.Eq          as SymEq
+import Substrate.Groups.Symmetric.Permutation.Compose     as SymComp
+import Substrate.Groups.Symmetric.Identity    as SymId
+
 
 module _ (n : ℕ) where
 
-  open module SymN = Sym (Fin n)
-    using (Permutation; _≈_; _·_; ε)
+  open SymP    (Fin n) using (Permutation)
     renaming (apply to applyP; invₐ to invP; inv-l to inv-lP; inv-r to inv-rP)
+  open SymEq   (Fin n) using (_≈_)
+  open SymComp (Fin n) using (_·_)
+  open SymId   (Fin n) using (ε)
 
   ----------------------------------------------------------------------
   -- 1. to-Sym: a bijective vector becomes a Permutation record. The

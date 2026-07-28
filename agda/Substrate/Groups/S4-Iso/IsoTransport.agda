@@ -13,17 +13,21 @@
 
 module Substrate.Groups.S4-Iso.IsoTransport where
 
-open import Substrate.Axes using (Axis; act-axis; axis-of-v; v-of-axis)
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
+open import Substrate.Axes.ActAxis using (act-axis)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
-import Substrate.Groups.Actions.S3-on-V4 as φ
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong
 open import Substrate.Groups.V4-Embedding using (embed; act-axis-id)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_; _⁻¹; ε; _≈_;
-         ≈-refl; ≈-sym; ≈-trans;
-         ·-cong)
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Groups.Symmetric.Group Axis using (Symmetric-Group)
+open import Substrate.Groups.Symmetric.ComposeCong Axis
 open import Substrate.Foundation.Product using (_,_; proj₁)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 
@@ -31,11 +35,17 @@ open import Substrate.Groups.S4-Iso.Embedding
   using (embed-S₃; compositional-to-perm)
 open import Substrate.Groups.S4-Iso.Foundation using (embed-S₃-ε)
 open import Substrate.Groups.S4-Iso.ForwardHom using (forward-hom)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.EqSym Axis
+open import Substrate.Groups.Symmetric.EqTrans Axis
 
 ------------------------------------------------------------------------
 -- forward-ε: compositional-to-perm preserves identity.
 ------------------------------------------------------------------------
 
+open import Substrate.Algebra.SetoidGroup.Properties using (module Props)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
+open Props Permutation _≈_ Symmetric-Group using (inverseˡ-unique)
 forward-ε : compositional-to-perm S4C.ε ≈ ε
 forward-ε x = trans (cong (act-axis e) (embed-S₃-ε x)) (act-axis-id x)
 
@@ -50,7 +60,7 @@ embed-S₃-cong : ∀ {s₁ s₂ : S₃.Carrier} → s₁ S₃.≈ s₂ →
                 embed-S₃ s₁ ≈ embed-S₃ s₂
 embed-S₃-cong {s₁} {s₂} s-eq x =
   cong axis-of-v
-       (φ.act-cong {s₁ = s₁} {s₂ = s₂}
+       (act-cong {s₁ = s₁} {s₂ = s₂}
                     {v₁ = v-of-axis x} {v₂ = v-of-axis x}
                     s-eq refl)
 
@@ -71,8 +81,6 @@ compositional-to-perm-cong {v₁ , sa} {v₂ , sb} (v-eq , s-eq) =
 -- forward-inv: compositional-to-perm respects ⁻¹.
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.SetoidGroup.Properties using (module Props)
-open Props Permutation _≈_ S4.Symmetric-Group using (inverseˡ-unique)
 
 forward-inv : ∀ (s : S4C.Carrier) →
               compositional-to-perm (s S4C.⁻¹) ≈ (compositional-to-perm s) ⁻¹

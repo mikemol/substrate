@@ -20,10 +20,8 @@
 module Substrate.Algebra.F2.Linear.FromImages where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin)
-  renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans; trans-sym)
 
@@ -70,8 +68,8 @@ sum-+ⱽ-distrib :
   sum (λ i → f i +ⱽ g i) ≡ sum f +ⱽ sum g
 sum-+ⱽ-distrib {zero}  f g = sym (+ⱽ-identityˡ 𝟎ⱽ)
 sum-+ⱽ-distrib {suc _} f g =
-  cong-trans (f fz +ⱽ g fz +ⱽ_) (sum-+ⱽ-distrib (f ∘ fs) (g ∘ fs))
-             (swap-+ⱽ (f fz) (g fz) (sum (f ∘ fs)) (sum (g ∘ fs)))
+  cong-trans (f fzero +ⱽ g fzero +ⱽ_) (sum-+ⱽ-distrib (λ ix → f (fsuc ix)) (λ ix → g (fsuc ix)))
+             (swap-+ⱽ (f fzero) (g fzero) (sum (λ ix → f (fsuc ix))) (sum (λ ix → g (fsuc ix))))
   where
     -- (a +ⱽ b) +ⱽ (c +ⱽ d) ≡ (a +ⱽ c) +ⱽ (b +ⱽ d), via lookup-componentwise
     -- + F₂ associativity / commutativity.
@@ -99,8 +97,8 @@ sum-+ⱽ-distrib {suc _} f g =
   (c *ₛ sum f) ≡ sum (λ i → c *ₛ f i)
 *ₛ-sum-distrib {zero}  c f = *ₛ-zeroʳ c
 *ₛ-sum-distrib {suc _} c f =
-  trans (*ₛ-distribˡ-+ⱽ c (f fz) (sum (f ∘ fs)))
-        (cong (c *ₛ f fz +ⱽ_) (*ₛ-sum-distrib c (f ∘ fs)))
+  trans (*ₛ-distribˡ-+ⱽ c (f fzero) (sum (λ ix → f (fsuc ix))))
+        (cong (c *ₛ f fzero +ⱽ_) (*ₛ-sum-distrib c (λ ix → f (fsuc ix))))
 
 ------------------------------------------------------------------------
 -- Basis-collapse helper (does NOT mention linear-from-images; kept
@@ -114,29 +112,29 @@ sum-+ⱽ-distrib {suc _} f g =
 sum-F₂-basis-collapse :
   ∀ {k} (i : Fin k) (g : Fin k → F₂) →
   sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
-sum-F₂-basis-collapse {suc k} fz g =
-  cong-trans (_+ tail-sum) (·-identityˡ (g fz))
-  (cong-trans (g fz +_) (zero-tail g)
-         (+-identityʳ (g fz)))
+sum-F₂-basis-collapse {suc k} fzero g =
+  cong-trans (_+ tail-sum) (·-identityˡ (g fzero))
+  (cong-trans (g fzero +_) (zero-tail g)
+         (+-identityʳ (g fzero)))
   where
     tail-sum : F₂
-    tail-sum = sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fs j'))
+    tail-sum = sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fsuc j'))
 
-    -- After basis fz unfolds to 𝟙 ∷ 𝟎ⱽ, the suc-indexed summands
+    -- After basis fzero unfolds to 𝟙 ∷ 𝟎ⱽ, the suc-indexed summands
     -- become lookup 𝟎ⱽ j' · g (suc j') = 𝟘.
     zero-tail : ∀ {k} (g : Fin (suc k) → F₂) →
-      sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fs j')) ≡ 𝟘
+      sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fsuc j')) ≡ 𝟘
     zero-tail {zero}    _ = refl
     zero-tail {suc k'} g =
-      cong-trans (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fs (fs j'))))
-                 (·-absorbˡ (g (fs fz)))
+      cong-trans (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fsuc (fsuc j'))))
+                 (·-absorbˡ (g (fsuc fzero)))
       (trans (+-identityˡ _)
-             (zero-tail (g ∘ fs)))
-sum-F₂-basis-collapse {suc k} (fs i) g =
-  cong-trans (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fs j)))
-             (·-absorbˡ (g fz))
+             (zero-tail (λ ix → g (fsuc ix))))
+sum-F₂-basis-collapse {suc k} (fsuc i) g =
+  cong-trans (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fsuc j)))
+             (·-absorbˡ (g fzero))
   (trans (+-identityˡ _)
-         (sum-F₂-basis-collapse i (g ∘ fs)))
+         (sum-F₂-basis-collapse i (λ ix → g (fsuc ix))))
 
 ------------------------------------------------------------------------
 -- The main construction: linear-from-images, sealed behind `opaque`.

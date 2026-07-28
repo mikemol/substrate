@@ -8,7 +8,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup0 where
 
-open import Substrate.Foundation.Fin using (zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq  using (_≡_; trans; cong; cong-trans)
 open import Substrate.Algebra.F2

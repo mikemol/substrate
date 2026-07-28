@@ -37,7 +37,9 @@
 module Substrate.Algebra.Fin.Wedge.ModBridge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-injective)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)

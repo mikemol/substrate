@@ -9,10 +9,10 @@
 
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆)
 open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
+open import Substrate.ShadowArchitecture.Raven.Poem.Raven using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
   using (open-phase)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt

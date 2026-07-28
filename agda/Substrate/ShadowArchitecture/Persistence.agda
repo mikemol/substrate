@@ -31,6 +31,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Persistence where
+open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
 open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
 open import Substrate.Foundation.Product using (_×_; _,_)

@@ -22,7 +22,7 @@ module Substrate.Algebra.Wedge.NilpotentLogMMonoid where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_)
-open import Substrate.Foundation.Nat.Properties using (+-comm; +-assoc; +-identityʳ)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-assoc; +-identityʳ)
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
 open import Substrate.Foundation.Empty using (⊥-elim)

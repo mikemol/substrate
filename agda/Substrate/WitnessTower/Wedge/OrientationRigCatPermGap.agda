@@ -47,7 +47,7 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermGap where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)

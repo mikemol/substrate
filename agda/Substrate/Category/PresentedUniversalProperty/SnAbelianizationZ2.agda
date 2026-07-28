@@ -43,7 +43,9 @@
 module Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2 where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; suc-injective)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fzero; suc to fsuc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-assoc; +-identityˡ; +-identityʳ)

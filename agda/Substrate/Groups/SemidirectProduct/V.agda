@@ -21,13 +21,16 @@ module Substrate.Groups.SemidirectProduct.V where
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
-open import Substrate.Groups.S4
-  using (Permutation)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
 open import Substrate.Groups.V4-Embedding
-  using (v-of-axis; axis-of-v; act-axis-∙; act-axis-as-V₄-mult)
+  using (act-axis-∙; act-axis-as-V₄-mult)
 
 ------------------------------------------------------------------------
 -- Uniqueness of v-of-axis (the only V₄ element sending D to x).
@@ -70,7 +73,7 @@ private
   self-to-D : (Y : Axis) → act-axis (v-of-axis Y) Y ≡ D
   self-to-D Y =
     trans (act-axis-as-V₄-mult (v-of-axis Y) Y)
-          (cong axis-of-v (V4.inv-left (v-of-axis Y)))
+          (cong axis-of-v (inv-left (v-of-axis Y)))
 
   -- Internal helper: the non-D anchor-sends body. Generic over the
   -- anchor Y (called only at Y ∈ {C, S, W}).
@@ -95,15 +98,15 @@ v-of-axis-anchor-sends W x = non-D-sends W x
 ------------------------------------------------------------------------
 
 v-for : Permutation → V₄
-v-for σ = v-of-axis-anchor D (applyₛ σ D)
+v-for σ = v-of-axis-anchor D (apply σ D)
 
 ------------------------------------------------------------------------
 -- Anchor-parametric v-for. X=D specialisation IS v-for (definitionally).
 ------------------------------------------------------------------------
 
 v-for-anchor : Axis → Permutation → V₄
-v-for-anchor X σ = v-of-axis-anchor X (applyₛ σ X)
+v-for-anchor X σ = v-of-axis-anchor X (apply σ X)
 
 v-for-anchor-sends :
-  (X : Axis) (σ : Permutation) → act-axis (v-for-anchor X σ) X ≡ applyₛ σ X
-v-for-anchor-sends X σ = v-of-axis-anchor-sends X (applyₛ σ X)
+  (X : Axis) (σ : Permutation) → act-axis (v-for-anchor X σ) X ≡ apply σ X
+v-for-anchor-sends X σ = v-of-axis-anchor-sends X (apply σ X)

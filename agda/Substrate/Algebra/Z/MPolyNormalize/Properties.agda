@@ -29,8 +29,6 @@ open import Substrate.Algebra.Z.Properties.Add using (+ℤ-assoc; +ℤ-identity�
 open import Substrate.Algebra.Z.JacobianResidue
   using (Mono; mono; Term; term; MPoly; coeff; eqM; eqℕ; 𝔹; tt; ff; and)
 open import Substrate.Algebra.Quotient
-  using (Quotient; ker-Quotient; idem-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Algebra.Z.MPolyNormalize
 
 ------------------------------------------------------------------------
@@ -321,7 +319,7 @@ normalize-idem : (p : MPoly) → normalize (normalize p) ≡ normalize p
 normalize-idem p = normalize-fixed (normalize p) (normalize-sorted p)
 
 -- THE REUSE WITNESS: normalize is a canonical form for its own kernel.
-normalize-Canonical : Canonical⟦de760d07⟧ (ker-Quotient normalize)
+normalize-Canonical : Canonical (ker-Quotient normalize)
 normalize-Canonical = idem-Canonical normalize normalize-idem
 
 ------------------------------------------------------------------------

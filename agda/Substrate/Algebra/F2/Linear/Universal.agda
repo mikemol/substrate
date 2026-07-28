@@ -25,7 +25,7 @@
 module Substrate.Algebra.F2.Linear.Universal where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; lookup)
 open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq

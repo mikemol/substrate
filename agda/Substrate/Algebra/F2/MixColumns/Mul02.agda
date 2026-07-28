@@ -2,6 +2,7 @@
 -- The four ×{02} products = xtime of the InvMixColumns coefficients {0e,0b,0d,09}.
 -- Each is `xtime const` — a shift (cheap refl), NOT a const×const normalization.
 module Substrate.Algebra.F2.MixColumns.Mul02 where
+open import Substrate.Algebra.F2.GF256.Mul using (gmul)
 open import Substrate.Algebra.F2.MixColumns.Base
 open import Substrate.Algebra.F2.MixColumns.Scale using (gmul-c02)
 pe2 : gmul c0e c02 ≡ b1c ; pe2 = trans (gmul-c02 c0e) refl

@@ -30,7 +30,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₁; ₀₂; ₂; ₀₃; ₃; ₄; ₅; ₁₂; ₁₃; ₂₃)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)

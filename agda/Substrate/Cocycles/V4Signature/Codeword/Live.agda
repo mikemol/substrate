@@ -32,11 +32,11 @@ open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Cocycles.V4Signature.Codeword
-  using (Codeword; IsReserved; Reserved; Live;
-         axis-from-bits; axis-to-bits;
-         axis-bits-id; bits-axis-id)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Cocycles.V4Signature.Codeword.AxisBits using (axis-from-bits; axis-to-bits; axis-bits-id; bits-axis-id)
+open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved; Live)
+open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
 
 ------------------------------------------------------------------------
 -- Decidable equality on Axis.

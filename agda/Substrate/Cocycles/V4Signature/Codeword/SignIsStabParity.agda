@@ -25,12 +25,12 @@
 module Substrate.Cocycles.V4Signature.Codeword.SignIsStabParity where
 
 -- The 24-case codeword-domain result (sign = stab parity, axis-independent).
-open import Substrate.WitnessTower.CodewordSignEqualsStabParity public
+open import Substrate.WitnessTower.CodewordSignEqualsStabParity
   using (codeword-sign; stab-parity;
          codeword-sign-is-stab-parity;
          axis-independent-DC; axis-independent-DS; axis-independent-DW)
 
 -- The general (all-of-S₄) orientation-anchored form: sign factors through the
 -- Stab retraction s-for; the V₄-coset is the exact fibre.
-open import Substrate.WitnessTower.SignStabTotal public
+open import Substrate.WitnessTower.SignStabTotal
   using (sign-of; sign-stab-total; sign-factors-through-s-for)

@@ -40,7 +40,7 @@
 
 module Substrate.Geometry.Fano where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
@@ -94,7 +94,7 @@ Collinear-Three p₁ p₂ p₃ =
 -- 0-indexed.)
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Fin
 
 -- 1 = Fin index 0, 2 = Fin index 1, ..., 7 = Fin index 6.
 p₁ p₂ p₃ p₄ p₅ p₆ p₇ : Point

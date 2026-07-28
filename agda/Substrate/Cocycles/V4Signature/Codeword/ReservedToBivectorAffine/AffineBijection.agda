@@ -15,7 +15,7 @@ open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual using (SelfDual-Pred; sd-closed-+ⱽ)
-open import Substrate.Cocycles.V4Signature.Codeword using (Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shift
   using (shift)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftSelfDual

@@ -36,7 +36,7 @@
 module Substrate.WitnessTower.Wedge.PyAstRig where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; gen; one; _⊗_; _⊕_; inside)
@@ -135,17 +135,17 @@ gen-inj refl = refl
 -- the spine: gen 0 ⊕ gen 1 ⊕ … ⊕ gen (n-1) — every position exactly once, in order.
 spine : (n : ℕ) → Objpy n
 spine zero    = one
-spine (suc n) = gen fz ⊕ mapSPPF fs (spine n)
+spine (suc n) = gen fzero ⊕ mapSPPF fsuc (spine n)
 
 -- the spine SEPARATES: two relabellings that agree on it agree pointwise. (The
 -- whole content of "each position appears once": the term witnesses every position.)
 spine-sep : {n : ℕ} {B : Set} (f g : Fin n → B) →
             mapSPPF f (spine n) ≡ mapSPPF g (spine n) → (i : Fin n) → f i ≡ g i
-spine-sep {suc n} f g eq fz     = gen-inj (⊕-injˡ eq)
-spine-sep {suc n} f g eq (fs i) =
-  spine-sep (λ x → f (fs x)) (λ x → g (fs x))
-    (trans (sym (mapSPPF-∘ f fs (spine n)))
-           (trans (⊕-injʳ eq) (mapSPPF-∘ g fs (spine n)))) i
+spine-sep {suc n} f g eq fzero     = gen-inj (⊕-injˡ eq)
+spine-sep {suc n} f g eq (fsuc i) =
+  spine-sep (λ x → f (fsuc x)) (λ x → g (fsuc x))
+    (trans (sym (mapSPPF-∘ f fsuc (spine n)))
+           (trans (⊕-injʳ eq) (mapSPPF-∘ g fsuc (spine n)))) i
 
 -- so the action is FREE on the spine (a permutation is recovered from its effect),
 act-faithful-spine : {n : ℕ} (σ τ : Perm n) →

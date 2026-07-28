@@ -23,7 +23,8 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-K; cong-l; cong-r)

@@ -25,7 +25,9 @@ module Substrate.Category.UniversalProperty.ExtrudeSKIEncodeInj where
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _<_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-injective)
 open import Substrate.Algebra.Wedge using (ℕ-div; recon)
 open import Substrate.Algebra.Wedge.BoundedIso using (recon-bounded-unique)

@@ -50,15 +50,11 @@
 
 module Substrate.Algebra.Quotient.PhaseB where
 
-open import Substrate.Algebra.Quotient.PhaseA   public
-open import Substrate.Algebra.Quotient.Coxeter  using ()
-  -- parametric module, not directly re-exported
-open import Substrate.Algebra.Quotient.F2Parity public
+open import Substrate.Algebra.Quotient.PhaseA
+open import Substrate.Algebra.Quotient.F2Parity
 -- Substrate.Algebra.Quotient.V4Cosets is held back from re-export
 -- until the stdlib-Algebra.Bundles chain in S4 / Symmetric finishes
 -- migrating to Substrate.Algebra.Group. The V4Cosets instance is
 -- written and ready (see [scratch/qu_arc_plan.md] QU7); it'll re-
 -- enter PhaseB the moment the upstream chain typechecks under
 -- --safe.
-open import Substrate.Algebra.Quotient.Surreal  using ()
-  -- parametric module, not directly re-exported

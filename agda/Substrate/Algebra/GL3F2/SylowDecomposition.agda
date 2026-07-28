@@ -35,7 +35,8 @@
 
 module Substrate.Algebra.GL3F2.SylowDecomposition where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₈)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
@@ -44,8 +45,9 @@ open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.GL3F2
   using (GL3F2; _·G_; id-GL; applyG; iterateG)
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance
-  using (swap01-GL; cycle3-GL; singer-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL using (cycle3-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL using (singer-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL using (swap01-GL)
 open import Substrate.Category.SylowDecomposition
   using (SylowDecomposition; mkSylowDecomposition; InGenerated)
 

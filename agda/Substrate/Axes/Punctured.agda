@@ -32,13 +32,14 @@ module Substrate.Axes.Punctured where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
 open import Substrate.Foundation.Fin.Punctured
   using (punchIn; punchIn-≢; punchOut; punchOut-irrelevant; punchOut-cong;
          punchOut-punchIn; punchIn-punchOut)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
-open import Substrate.Axes using (Axis; D; C; S; W; axis-cover)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.Cover using (axis-cover)
 
 ------------------------------------------------------------------------
 -- 1. The canonical Axis ≅ Fin 4 enumeration (single source of truth).

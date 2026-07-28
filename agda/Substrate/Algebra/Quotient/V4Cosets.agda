@@ -29,7 +29,8 @@
 
 module Substrate.Algebra.Quotient.V4Cosets where
 
-open import Substrate.Groups.S4 using (Permutation)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.V4-Cosets
   using (_∼V₄_; ∼V₄-refl; ∼V₄-sym; ∼V₄-trans)
 

@@ -36,7 +36,7 @@
 module Substrate.Category.PredictorRing where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ-syntax; _,_; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word

@@ -10,7 +10,7 @@
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Z using (ℤ; +_; 0ℤ)

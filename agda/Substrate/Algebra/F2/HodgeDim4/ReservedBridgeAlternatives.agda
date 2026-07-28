@@ -37,18 +37,17 @@
 
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives where
 
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Forward   public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.SelfDual  public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Inverse   public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup1   public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup2   public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup0   public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.RoundTrip public
-
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Forward     public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.SelfDual    public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Inverse     public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup0     public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup2     public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup1     public
-open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.RoundTrip   public
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Forward
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.SelfDual
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Inverse
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup1
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup2
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup0
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.RoundTrip
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Forward
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.SelfDual
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Inverse
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup0
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup2
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup1
+open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.RoundTrip

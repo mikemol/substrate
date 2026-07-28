@@ -24,7 +24,7 @@
 module Substrate.Algebra.F2.Linear.Augmentation where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
 

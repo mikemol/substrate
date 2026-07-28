@@ -21,7 +21,7 @@
 module Substrate.Cocycles.V4Signature.OrbitKey.Structural where
 
 open import Substrate.Foundations.Bijection
-open import Substrate.Cocycles.V4Signature using (OrbitKey)
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.Pairing.Structural
   using (Pairing↔V4-Nonzero)
 open import Substrate.Cocycles.V4Signature.Chirality.Structural

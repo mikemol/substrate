@@ -19,24 +19,23 @@
 
 module Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄)
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
+import Substrate.Groups.V4.Operations as V4
+import Substrate.Groups.Coxeter.Cyclic.Existential 1 as Z₂E
+import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
 open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong₂)
 
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
 open import Substrate.Groups.V4.IsHomomorphism.Compose using (∘-IsHom)
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch using (act-on-canonical)
-open import Substrate.Groups.Actions.S3-on-V4.Generators
-  using (rot-pow; swap-pow)
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow using (rot-pow)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPow using (swap-pow)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapABIsHom using (swap-αβ-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.IterPowIsHom using (iter-pow-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow using (act-equals-pow)
 
 act-hom-on-canonical :
-  ∀ {n h} (c-n : Z₃.Canonical n) (c-h : Z₂.Canonical h) →
+  ∀ {n h} (c-n : Z₃E.Canonical-ex n) (c-h : Z₂E.Canonical-ex h) →
   ∀ v₁ v₂ →
   act-on-canonical n h (v₁ V4.· v₂) ≡
   act-on-canonical n h v₁ V4.· act-on-canonical n h v₂

@@ -26,9 +26,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Distinction where
+open import Substrate.Algebra.F2.FanoPlane using (Point; point-to-vec; FanoLine; line-points)
 
 open import Substrate.Foundation.Bool using (true)
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Eq

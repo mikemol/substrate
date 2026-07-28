@@ -39,8 +39,9 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.SylowOrbitWitnesses where
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
-open import Substrate.Algebra.GL3F2.MultiRouteEquivariance
-  using (swap01-GL; cycle3-GL; singer-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL using (cycle3-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL using (singer-GL)
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL using (swap01-GL)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor
   using (bridge-of)
 

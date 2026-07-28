@@ -19,7 +19,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod.Core as ModCore

@@ -22,7 +22,7 @@
 module Substrate.WitnessTower.EvenInComm where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin) renaming (suc to fsuc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral using (inj1)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid using (Sep)

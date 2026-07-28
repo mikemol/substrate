@@ -19,7 +19,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 module Substrate.Groups.Coxeter.Cyclic.InvCanonical (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvPosAddMod n public
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Left          n public
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Right         n public
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv        n public
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvPosAddMod n
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Left          n
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Right         n
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv        n

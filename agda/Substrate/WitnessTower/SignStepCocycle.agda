@@ -31,7 +31,7 @@
 module Substrate.WitnessTower.SignStepCocycle where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
 open import Substrate.Foundation.Bool using (Bool; _xor_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)

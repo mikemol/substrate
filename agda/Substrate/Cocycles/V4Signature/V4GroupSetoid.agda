@@ -9,7 +9,7 @@
 
 module Substrate.Cocycles.V4Signature.V4GroupSetoid where
 
-open import Substrate.Groups.V4 using (V₄-Group)
+open import Substrate.Groups.V4.Bundle using (V₄-Group)
 open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 
 V₄-Group-Setoid = to-setoid V₄-Group

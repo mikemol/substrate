@@ -53,7 +53,8 @@
 module Substrate.Algebra.Wedge.AxisWord where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
 open import Substrate.Foundation.Negation using (Dec; yes; no)

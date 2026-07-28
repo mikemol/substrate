@@ -25,7 +25,8 @@
 module Substrate.WitnessTower.FaithfulnessApex where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin) renaming (_≟_ to _≟F_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec)
 open import Substrate.Foundation.Vec.Properties using (≡-dec)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
@@ -40,7 +41,7 @@ import Substrate.Algebra.Wedge.AxisWord.Detector as Det
 ------------------------------------------------------------------------
 
 _≟P_ : {n : ℕ} (σ τ : Perm n) → _
-_≟P_ {n} = ≡-dec _≟F_
+_≟P_ {n} = ≡-dec _≟_
 
 ------------------------------------------------------------------------
 -- 2. Instantiate the detector grade at Perm n.

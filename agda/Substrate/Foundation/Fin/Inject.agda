@@ -12,7 +12,7 @@
 module Substrate.Foundation.Fin.Inject where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 
 inject+ : ∀ {n} k → Fin n → Fin (n + k)
 inject+ _ zero    = zero

@@ -35,7 +35,7 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
@@ -45,8 +45,10 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
 
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
-  using (SymBilinForm-3; metric-id; bilinear-form-of; congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser
   using (s₁; s₂; s₁-stabilises-metric-id; s₂-stabilises-metric-id)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.StabiliserClosure

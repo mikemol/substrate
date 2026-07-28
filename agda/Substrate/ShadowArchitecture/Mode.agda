@@ -33,8 +33,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Mode where
+open import Substrate.Algebra.F2.FanoPlane using (FanoLine)
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_; T)
+open import Substrate.Category.UniversalProperty.ExtrudeSKISection using (T)
+open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
 open import Substrate.Foundation.Sum using (inj₁; inj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)

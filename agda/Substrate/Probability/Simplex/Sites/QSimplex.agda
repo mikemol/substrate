@@ -14,7 +14,6 @@
 
 module Substrate.Probability.Simplex.Sites.QSimplex where
 
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Level using (Level; 0ℓ)
 

@@ -25,6 +25,12 @@ open import Substrate.Linguistic.Morphism using (LanguageMorphism; mkLangMor)
 -- and carrier-map are λ x → x; η-coherence holds by refl.
 ------------------------------------------------------------------------
 
+open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
+open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
+open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
+open import Substrate.Kelen.Fragment using (kelen-witness)
+open import Substrate.Lambda.Fragment using (lambda-witness)
+open import Substrate.Invented.LieFragment using (lie-witness)
 id-morphism : {B F : Set} (L : LanguageWitness B F) → LanguageMorphism L L
 id-morphism L = mkLangMor
   (λ b → b)
@@ -38,12 +44,6 @@ id-morphism L = mkLangMor
 -- tests demonstrate the construction works on all six.
 ------------------------------------------------------------------------
 
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
 
 id-lojban : LanguageMorphism lojban-witness lojban-witness
 id-lojban = id-morphism lojban-witness

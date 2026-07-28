@@ -22,11 +22,19 @@
 ------------------------------------------------------------------------
 
 module Substrate.S5.S5TorsorWireV4 where
+open import Substrate.Groups.V4.Bundle using (V₄-Monoid)
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_) renaming (proj₁ to fst; proj₂ to snd)
 
 -- V₄ = {e,α,β,γ}, exponent 2, self-inverse (inv = id), abelian.
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Bijection using (V₄) renaming (e to e₄; α to α₄; β to β₄; γ to γ₄)
+open import Substrate.Groups.V4.Operations using () renaming (_·_ to _·₄_)
+open import Substrate.Foundation.Unit using (⊤)
+open import Substrate.Category.Delooping using (deloop)
+open import Substrate.Category.CategoryOf using (CategoryOf)
+import Substrate.Groups.V4.Bundle as V4B
 data KleinV4 : Set where e α β γ : KleinV4      -- ⟦shape:fb526564⟧
 
 _·_ : KleinV4 → KleinV4 → KleinV4
@@ -157,8 +165,6 @@ cdsw-gtorsor = record
 -- homomorphism), grounding the torsor in the canonical V₄ without destabilising the
 -- definitional proofs. Reuse recorded, alternate-path preserved.
 ------------------------------------------------------------------------
-open import Substrate.Groups.V4 using (V₄; ε-left)
-  renaming (e to e₄; α to α₄; β to β₄; γ to γ₄; _·_ to _·₄_)
 
 to₄ : KleinV4 → V₄
 to₄ e = e₄
@@ -208,11 +214,7 @@ to₄-hom γ γ = refl
 -- module categorically. It was FLOATING (·-assoc proven, off-spine); the KleinV4≅V₄
 -- witness now does WORK: it carries the torsor's group onto the categorical spine.
 ------------------------------------------------------------------------
-open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.Delooping using (deloop)
-open import Substrate.Category.CategoryOf using (CategoryOf)
-import Substrate.Groups.V4.Bundle as V4B
 
 -- BV₄ : the Klein four-group as its one-object groupoid (KleinV4's category, via the iso).
-klein-deloop : CategoryOf ⊤ (λ _ _ → V4B.V₄)
-klein-deloop = deloop V4B.V₄-Monoid
+klein-deloop : CategoryOf ⊤ (λ _ _ → V₄)
+klein-deloop = deloop V₄-Monoid

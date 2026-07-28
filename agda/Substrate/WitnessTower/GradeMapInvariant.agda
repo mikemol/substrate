@@ -84,7 +84,7 @@ Mod2 C = {n : ℕ} → C n → Bool
 
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.FaceSet using (Face; with-apex)
-open import Substrate.Foundation.Fin using (zero)
+open import Substrate.Foundation.Fin.Fin
 
 -- the perm tower step at position 0: a rung (grade-raising).
 raise-perm : Raise Perm

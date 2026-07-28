@@ -78,17 +78,17 @@ private
 -- Normalize componentwise.
 ------------------------------------------------------------------------
 
-Canonical : Word → Set
-Canonical (w₁ , w₂) = Canonical₁ w₁ × Canonical₂ w₂
+Canonical-prod : Word → Set
+Canonical-prod (w₁ , w₂) = Canonical₁ w₁ × Canonical₂ w₂
 
 normalize : Word → Word
 normalize (w₁ , w₂) = (normalize₁ w₁ , normalize₂ w₂)
 
-normalize-canonical : (w : Word) → Canonical (normalize w)
+normalize-canonical : (w : Word) → Canonical-prod (normalize w)
 normalize-canonical (w₁ , w₂) =
   (normalize-canonical₁ w₁ , normalize-canonical₂ w₂)
 
-canonical-is-fixed : {w : Word} → Canonical w → normalize w ≡ w
+canonical-is-fixed : {w : Word} → Canonical-prod w → normalize w ≡ w
 canonical-is-fixed {w₁ , w₂} (c₁ , c₂) =
   cong₂ _,_ (canonical-is-fixed₁ c₁) (canonical-is-fixed₂ c₂)
 
@@ -112,6 +112,6 @@ normalize-distrib (a₁ , a₂) (b₁ , b₂) =
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter.Core
-  Word _++-prod_ ε-prod ++-assoc Canonical normalize normalize-canonical
+  Word _++-prod_ ε-prod ++-assoc Canonical-prod normalize normalize-canonical
   canonical-is-fixed normalize-distrib
   public

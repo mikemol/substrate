@@ -34,10 +34,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₇)
-open import Substrate.Foundation.Fin using (zero; suc)
 
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.NthPower     n public
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical n public
+open import Substrate.Groups.Coxeter.Cyclic.NthPower     n
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical n

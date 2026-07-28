@@ -9,11 +9,13 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Cocycles.V4Signature.V4LeftCancel where
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
 
-V4-left-cancel : (g h : V₄) → g V4.· h ≡ h → g ≡ e
+V4-left-cancel : (g h : V₄) → g · h ≡ h → g ≡ e
 V4-left-cancel e h _ = refl
 V4-left-cancel α e p = p
 V4-left-cancel α α p = sym p

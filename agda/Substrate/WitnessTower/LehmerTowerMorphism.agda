@@ -49,7 +49,7 @@
 module Substrate.WitnessTower.LehmerTowerMorphism where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)

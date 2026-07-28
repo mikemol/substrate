@@ -28,7 +28,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 
 module Substrate.Algebra.Sporadic.Monster.WithCharacters
   -- The value type for character values.

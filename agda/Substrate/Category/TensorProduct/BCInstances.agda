@@ -45,8 +45,8 @@ open import Substrate.Algebra.F2.Polynomial
   using (Polynomial; _*P_; anti-diag-sum)
 open import Substrate.Algebra.F2.Polynomial.TensorProductView
   using (*P-via-tensor-eq)
-open import Substrate.Algebra.F2.SymBilinForm
-  using (BilinForm; bilinear-form-of)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.SymBilinForm.TensorProductView
   using (bilinear-form-of-via-tensor; bilinear-form-of-via-tensor-agrees)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)

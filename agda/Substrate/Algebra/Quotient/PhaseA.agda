@@ -52,6 +52,6 @@
 
 module Substrate.Algebra.Quotient.PhaseA where
 
-open import Substrate.Algebra.Quotient            public
-open import Substrate.Algebra.Quotient.Projection public
-open import Substrate.Category.UniversalProperty.Quotient public
+open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.Projection
+open import Substrate.Category.UniversalProperty.Quotient

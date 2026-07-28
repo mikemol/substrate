@@ -16,7 +16,7 @@ open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_; _·_; +-identityʳ)
 open import Substrate.Algebra.F2.Polynomial
   using (Polynomial; _*P_; x-shift; pad-end; shift-to-suc-on-left; _·c_)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong₂)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-replicate;

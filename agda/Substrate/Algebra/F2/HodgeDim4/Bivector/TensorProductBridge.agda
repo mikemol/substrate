@@ -31,7 +31,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector.TensorProductBridge where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Eq

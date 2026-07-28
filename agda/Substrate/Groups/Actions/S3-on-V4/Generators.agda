@@ -19,13 +19,13 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Generators where
 
-open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate              public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB              public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow              public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPow             public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowAppend        public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPowAppend       public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId        public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapSquareId        public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowNormalizeEq   public
-open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPowNormalizeEq  public
+open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPow
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowAppend
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPowAppend
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapSquareId
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowNormalizeEq
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPowNormalizeEq

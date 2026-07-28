@@ -56,7 +56,7 @@ module Substrate.Cardinality.Product where
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Bijection
   using (_↔_; mk↔ₛ′; ↔-sym; ↔-trans; _×-↔_)
@@ -65,12 +65,13 @@ open import Substrate.Algebra.Bijection
 -- Replaces the prior transitional `Function.Bundles` bridge.
 open import Substrate.Foundation.Fin.Combine.Bijection using (*↔×)
 
-open import Substrate.Axes using (Axis)
-open import Substrate.Groups.V4 using (V₄)
-open import Substrate.Cocycles.V4Signature using (OrbitKey)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Cardinality
   using (axis-↔-fin4; v4-↔-fin4; pairing-↔-fin3;
          chirality-↔-fin2; bool-↔-fin2)
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 
 ------------------------------------------------------------------------
 -- Core primitive: (Fin m × Fin n) ↔ Fin (m * n).
@@ -80,6 +81,7 @@ open import Substrate.Cardinality
 -- composition, so we take its symmetry.
 ------------------------------------------------------------------------
 
+open import Substrate.Cocycles.V4Signature.S4Iso using (TotalSpace)
 fin-product : ∀ {m n} → (Fin m × Fin n) ↔ Fin (m * n)
 fin-product = ↔-sym *↔×
 
@@ -126,7 +128,6 @@ orbitkey×v4-↔-fin24 = cardinality-product orbitkey-↔-fin6 v4-↔-fin4
 -- TotalSpace-flavoured name for downstream clarity.
 ------------------------------------------------------------------------
 
-open import Substrate.Cocycles.V4Signature.S4Iso using (TotalSpace)
 
 totalspace-↔-fin24 : TotalSpace ↔ Fin 24
 totalspace-↔-fin24 = orbitkey×v4-↔-fin24

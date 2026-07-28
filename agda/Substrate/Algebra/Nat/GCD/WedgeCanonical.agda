@@ -24,8 +24,6 @@ open import Substrate.Foundation.Nat     using (ℕ; suc; _*_; _+_)
 open import Substrate.Foundation.Eq      using (_≡_; sym)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Quotient
-  using (Quotient; KerRel; ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Algebra.Nat.GCD.Wedge
   using (quotient; remainder; wedge-eq)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
@@ -49,5 +47,5 @@ module _ (b : ℕ) where    -- the fixed divisor is (suc b)
   WedgeValue-Quotient : Quotient (ℕ × ℕ) (KerRel recon-pair)
   WedgeValue-Quotient = ker-Quotient recon-pair
 
-  WedgeValue-Canonical : Canonical⟦de760d07⟧ WedgeValue-Quotient
+  WedgeValue-Canonical : Canonical WedgeValue-Quotient
   WedgeValue-Canonical = split-Canonical recon-pair divide-pair recon-divide

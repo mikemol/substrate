@@ -23,7 +23,7 @@
 
 module Substrate.Geometry.HodgeDim3.ChiralityAxis where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)

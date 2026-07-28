@@ -37,8 +37,8 @@ open import Substrate.Foundation.Eq
 open import Substrate.Groups.F2Cubed
   using (F₂³; _+_; -_; ε; F₂³-Group;
          +-assoc; +-identityˡ; +-identityʳ; +-self)
-open import Substrate.Cocycle
-  using (IsomorphicCocycleStructure; Action; IsTorsor)
+open import Substrate.Algebra.SetoidGroup.Action using (Action)
+open import Substrate.Cocycle using (IsomorphicCocycleStructure; IsTorsor)
 open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 
 F₂³-Group-Setoid = to-setoid F₂³-Group

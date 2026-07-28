@@ -42,15 +42,16 @@ module Substrate.Cocycles.V4Signature.S4Iso where
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Groups.S4 using (Permutation; _≈_)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 
-open import Substrate.Cocycles.V4Signature.S4Iso.Injective    public
-open import Substrate.Cocycles.V4Signature.S4Iso.StabElements public
-open import Substrate.Cocycles.V4Signature.S4Iso.Anchor       public
-open import Substrate.Cocycles.V4Signature.S4Iso.Classify     public
-open import Substrate.Cocycles.V4Signature.S4Iso.Cases        public
-open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips   public
-
+open import Substrate.Cocycles.V4Signature.S4Iso.Injective
+open import Substrate.Cocycles.V4Signature.S4Iso.StabElements
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Cocycles.V4Signature.S4Iso.Classify
+open import Substrate.Cocycles.V4Signature.S4Iso.Cases
+open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
 ------------------------------------------------------------------------
 -- TotalSpace ≃ S₄: the bijection packaged.
 --

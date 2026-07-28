@@ -28,7 +28,7 @@ open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-distribʳ-+; *ℤ-identityˡ; +ℤ-injective; *ℤ-cancelʳ-pos)
 open import Substrate.Algebra.Z.Bezout using (bezout-ℤ)
-open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.Divides.One using (∣-one)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)

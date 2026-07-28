@@ -29,7 +29,8 @@
 module Substrate.WitnessTower.FirstAppearance where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; not; if_then_else_)

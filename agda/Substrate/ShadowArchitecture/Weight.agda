@@ -27,10 +27,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Weight where
+open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 

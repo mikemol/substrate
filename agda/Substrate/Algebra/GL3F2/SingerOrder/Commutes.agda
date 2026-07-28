@@ -17,7 +17,7 @@
 
 module Substrate.Algebra.GL3F2.SingerOrder.Commutes where
 
-open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_)

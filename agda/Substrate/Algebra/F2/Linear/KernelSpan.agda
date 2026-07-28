@@ -31,7 +31,7 @@
 module Substrate.Algebra.F2.Linear.KernelSpan where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)

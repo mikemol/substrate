@@ -33,7 +33,9 @@ open import Substrate.Foundation.Nat
   using (ℕ; zero; suc; _+_; _*_; _≤_; s≤s; s≤s-injective)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Nat.Properties.Order using (+-mono-≤; *-monoˡ-≤)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound)
 open import Substrate.Foundation.Eq using (_≡_; subst)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)

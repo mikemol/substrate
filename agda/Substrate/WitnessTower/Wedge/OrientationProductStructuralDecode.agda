@@ -26,7 +26,9 @@ open import Substrate.Foundation.Nat
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-suc; +-assoc)
 open import Substrate.Foundation.Nat.Properties.Order
   using (+-monoʳ-≤; +-mono-≤; *-monoˡ-≤; ≤-trans; m≤m+n; <-irrefl)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-bound; toℕ-injective)
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)

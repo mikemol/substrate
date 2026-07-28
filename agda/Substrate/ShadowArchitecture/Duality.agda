@@ -36,6 +36,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.Duality where
+open import Substrate.Algebra.F2.FanoPlane using (FanoLine; Point; point-to-vec)
 
 open import Substrate.Foundation.Eq
   using (_≡_; refl)

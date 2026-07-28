@@ -29,9 +29,11 @@
 module Substrate.WitnessTower.ResidueBridge where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Groups.V4 using (V₄; e)
+open import Substrate.Groups.V4.Bijection using (V₄; e)
 open import Substrate.Groups.V4.Operations using (_·_)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ε-left; ε-right)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonRight using (ε-right)
 
 open import Substrate.Algebra.Wedge using (DivStr; Wedge)
 
@@ -41,6 +43,7 @@ open import Substrate.Algebra.Wedge using (DivStr; Wedge)
 -- Category.ResidueCompensation, packaged as the generic wedge shape.
 ------------------------------------------------------------------------
 
+open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 v4-div : DivStr V₄
 v4-div = record
   { z     = e
@@ -93,7 +96,6 @@ wedge-residue a b w rem-e =
 -- morphism that the shapes forbid.
 ------------------------------------------------------------------------
 
-open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 
 -- The graded residue is the tower's (imported, edge now real). v4-div is the
 -- FLAT V₄ slice; their relation is the ι grade-collapse discipline, not a

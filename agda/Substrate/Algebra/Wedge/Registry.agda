@@ -34,7 +34,7 @@ open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Algebra.F2 using (F₂)
 open import Substrate.Algebra.Z using (ℤ)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)

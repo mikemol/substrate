@@ -33,9 +33,9 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem)
-open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold
-  using (BezoutNthWitness; base-bezout-poly; step-bezout-poly; bezout-cong-b;
-         unit-bezout; convCoeff-one)
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (bezout-cong-b; unit-bezout)
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness; base-bezout-poly; convCoeff-one)
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Step using (step-bezout-poly)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Trim
   using (trim; Trim; is-zero; is-monic)
 import Substrate.Algebra.F2.Polynomial.Wedge.ComputeTrace as CT

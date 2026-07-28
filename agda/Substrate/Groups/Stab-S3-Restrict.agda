@@ -2,7 +2,7 @@
 -- Substrate.Groups.Stab-S3-Restrict
 --
 -- Slice 14b: bundle slice 14a's restrict-apply / restrict-invₐ into
--- a full SFin.Permutation 3 record, with the inv-l / inv-r round-
+-- a full SFinP.Permutation 3 record, with the inv-l / inv-r round-
 -- trip proofs.
 --
 -- The proofs chain three pieces:
@@ -27,17 +27,17 @@ module Substrate.Groups.Stab-S3-Restrict where
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_; _⁻¹; ε)
-  renaming (apply to applyₛ; invₐ to invₐₛ; inv-l to S4-inv-l;
-            inv-r to S4-inv-r)
-import Substrate.Groups.SFin as SFin
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
+open import Substrate.Groups.Symmetric.Identity Axis using (ε)
+import Substrate.Groups.SFin.Permutation as SFinP
 open import Substrate.Groups.Stab-S3
   using (Stab; stab-preserves-≢; Stab-inv;
          fin3-to-non-anchor; fin3-to-non-anchor-≢;
@@ -87,7 +87,7 @@ non-anchor-to-fin3-cong anchor refl p₁ p₂ =
 --
 -- The chain (for inv-l, symmetric for inv-r):
 --   restrict-invₐ (restrict-apply i)
---     = non-anchor-to-fin3 anchor (applyₛ (σ⁻¹) (fin3-to-non-anchor anchor j)) p
+--     = non-anchor-to-fin3 anchor (apply (σ⁻¹) (fin3-to-non-anchor anchor j)) p
 --       where j = restrict-apply σ i.
 --     ≡ non-anchor-to-fin3 anchor a (fin3-to-non-anchor-≢ anchor i)
 --       by axis-substitution (fin3-non-anchor round-trip + inv-l σ)
@@ -106,21 +106,21 @@ restrict-inv-l anchor σ σ-stab i =
     a : Axis
     a = fin3-to-non-anchor anchor i
 
-    σa-≢ : applyₛ σ a ≢ anchor
+    σa-≢ : apply σ a ≢ anchor
     σa-≢ = stab-preserves-≢ anchor σ σ-stab a (fin3-to-non-anchor-≢ anchor i)
 
     j : Fin 3
     j = restrict-apply anchor σ σ-stab i
 
     σ⁻¹-fin3j :
-      applyₛ (σ ⁻¹) (fin3-to-non-anchor anchor j) ≡ a
+      apply (σ ⁻¹) (fin3-to-non-anchor anchor j) ≡ a
     σ⁻¹-fin3j =
-      trans (cong (applyₛ (σ ⁻¹))
-                  (non-anchor-fin3-non-anchor anchor (applyₛ σ a) σa-≢))
-            (S4-inv-l σ a)
+      trans (cong (apply (σ ⁻¹))
+                  (non-anchor-fin3-non-anchor anchor (apply σ a) σa-≢))
+            (inv-l σ a)
 
     σ⁻¹-fin3j-≢ :
-      applyₛ (σ ⁻¹) (fin3-to-non-anchor anchor j) ≢ anchor
+      apply (σ ⁻¹) (fin3-to-non-anchor anchor j) ≢ anchor
     σ⁻¹-fin3j-≢ =
       stab-preserves-≢ anchor (σ ⁻¹) (Stab-inv anchor σ σ-stab)
                        (fin3-to-non-anchor anchor j)
@@ -137,7 +137,7 @@ restrict-inv-r anchor σ σ-stab i =
     a : Axis
     a = fin3-to-non-anchor anchor i
 
-    σ⁻¹a-≢ : applyₛ (σ ⁻¹) a ≢ anchor
+    σ⁻¹a-≢ : apply (σ ⁻¹) a ≢ anchor
     σ⁻¹a-≢ = stab-preserves-≢ anchor (σ ⁻¹) (Stab-inv anchor σ σ-stab) a
                               (fin3-to-non-anchor-≢ anchor i)
 
@@ -145,15 +145,15 @@ restrict-inv-r anchor σ σ-stab i =
     k = restrict-invₐ anchor σ σ-stab i
 
     σ-fin3k :
-      applyₛ σ (fin3-to-non-anchor anchor k) ≡ a
+      apply σ (fin3-to-non-anchor anchor k) ≡ a
     σ-fin3k =
-      trans (cong (applyₛ σ)
+      trans (cong (apply σ)
                   (non-anchor-fin3-non-anchor anchor
-                                              (applyₛ (σ ⁻¹) a) σ⁻¹a-≢))
-            (S4-inv-r σ a)
+                                              (apply (σ ⁻¹) a) σ⁻¹a-≢))
+            (inv-r σ a)
 
     σ-fin3k-≢ :
-      applyₛ σ (fin3-to-non-anchor anchor k) ≢ anchor
+      apply σ (fin3-to-non-anchor anchor k) ≢ anchor
     σ-fin3k-≢ =
       stab-preserves-≢ anchor σ σ-stab
                        (fin3-to-non-anchor anchor k)
@@ -164,7 +164,7 @@ restrict-inv-r anchor σ σ-stab i =
 ------------------------------------------------------------------------
 
 restrict :
-  (anchor : Axis) → Σ Permutation (Stab anchor) → SFin.Permutation 3
+  (anchor : Axis) → Σ Permutation (Stab anchor) → SFinP.Permutation 3
 restrict anchor (σ , σ-stab) = record
   { apply = restrict-apply anchor σ σ-stab
   ; invₐ  = restrict-invₐ anchor σ σ-stab

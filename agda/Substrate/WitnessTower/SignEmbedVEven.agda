@@ -30,7 +30,7 @@
 
 module Substrate.WitnessTower.SignEmbedVEven where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; tabulate; lookup)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
 open import Substrate.Foundation.Bool using (Bool; false; _xor_)
@@ -40,13 +40,16 @@ open import Substrate.WitnessTower.FirstAppearance using (compose)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.SnGroup using (apply-injective)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; sign-hom)
-open import Substrate.Axes using (Axis)
+open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Axes.Punctured using (a→f; f→a; f→a→f; a→f→a)
-open import Substrate.Groups.S4 using (Permutation; _·_; apply)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
-open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 
 -- transport S4.Permutation → Perm 4.
+open import Substrate.Axes.Punctured using (a→f-inj; f→a→f)
+open import Substrate.Foundation.Bool using (true)
 perm4 : Permutation → Perm 4
 perm4 π = tabulate (λ i → a→f (apply π (f→a i)))
 
@@ -85,8 +88,6 @@ perm4-compose a b = apply-injective λ i →
 --    Injectivity from apply's bijectivity + a→f/f→a roundtrips.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.S4 using (invₐ; inv-l; inv-r)
-open import Substrate.Axes.Punctured using (a→f-inj; f→a→f)
 
 perm4-isperm : (π : Permutation) → IsPerm (perm4 π)
 perm4-isperm π i j eq = i≡j
@@ -108,7 +109,6 @@ perm4-isperm π i j eq = i≡j
 --    sign of ANY composite. sign(perm4(embed v · s)) ≡ sign(perm4 s).
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Bool using (true)
 
 -- false xor b ≡ b (the V₄ contribution drops out).
 xor-falseˡ : (b : Bool) → (false xor b) ≡ b

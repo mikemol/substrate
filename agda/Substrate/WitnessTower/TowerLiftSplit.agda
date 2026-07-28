@@ -63,7 +63,7 @@
 module Substrate.WitnessTower.TowerLiftSplit where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Foundation.Vec using (lookup; map)
@@ -84,6 +84,15 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; 
 open import Substrate.WitnessTower.Enumerate using (perms-length)
 
 -- The graded tower itself: a GradedDivStr at ALL grades n.
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.WitnessTower.SignStabTotal using (sign-stab-total; sign-of)
+open import Substrate.WitnessTower.SignEmbedVEven using (perm4)
+open import Substrate.Groups.SemidirectProduct.S using (s-for)
+open import Substrate.Groups.V4-Coxeter-F2Graded using (V4-F2Graded)
+open import Substrate.Groups.V4-Coxeter-F2Graded-CountA using (V4-F2Graded-CountA)
+open import Substrate.Groups.V4-Coxeter-F2Graded-CountB using (V4-F2Graded-CountB)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 lifts-tower-graded : GradedDivStr Perm (λ n → Fin (suc n))
 lifts-tower-graded = tower-graded
 
@@ -130,10 +139,6 @@ lifts-count = perms-length
 --       So the PARITY lifts even though the normal-complement does not.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.S4 using (Permutation)
-open import Substrate.WitnessTower.SignStabTotal using (sign-stab-total; sign-of)
-open import Substrate.WitnessTower.SignEmbedVEven using (perm4)
-open import Substrate.Groups.SemidirectProduct.S using (s-for)
 
 -- (a) the rung-3 reading: fixed to the 4-axis symmetric group.
 rung3-sign-stab : (σ : Permutation) → sign-of σ ≡ sign-of (s-for σ)
@@ -142,9 +147,6 @@ rung3-sign-stab = sign-stab-total
 -- (b) the GENERAL reading: V₄ as an F₂-graded object (parity), and the three
 -- parity gradings that give the V₂×V₂ coordinate iso. These LIFT — they are
 -- instances of the general parity∘homomorphism combinator, not S₄ structure.
-open import Substrate.Groups.V4-Coxeter-F2Graded using (V4-F2Graded)
-open import Substrate.Groups.V4-Coxeter-F2Graded-CountA using (V4-F2Graded-CountA)
-open import Substrate.Groups.V4-Coxeter-F2Graded-CountB using (V4-F2Graded-CountB)
 
 -- the AB-diagonal parity (length), the shared-point V₂ made even:
 lifts-v4-parity-diagonal = V4-F2Graded
@@ -164,7 +166,6 @@ lifts-v4-parity-B = V4-F2Graded-CountB
 -- the GRADED role — the split above.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
 
 -- V₄'s carrier is exhausted by four constructors: every v : V₄ is one of
 -- e, α, β, γ. This 4-boundedness is what stops V₄ from being a subgroup of

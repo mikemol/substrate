@@ -24,7 +24,8 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ)
 open import Substrate.Foundation.Nat.Properties.Cancel using (+-cancelˡ)
-open import Substrate.Foundation.Fin using (Fin; zero; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-injective)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; Σ-≡,≡→≡)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)

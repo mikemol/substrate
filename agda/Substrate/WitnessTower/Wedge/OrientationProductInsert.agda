@@ -33,7 +33,7 @@
 module Substrate.WitnessTower.Wedge.OrientationProductInsert where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)

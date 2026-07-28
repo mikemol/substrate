@@ -25,7 +25,6 @@
 
 module Substrate.WitnessTower.SignStabTotal where
 
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (tabulate)
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
@@ -33,9 +32,11 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply-injective)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign)
-open import Substrate.Axes using (Axis)
+open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Axes.Punctured using (a→f; f→a)
-open import Substrate.Groups.S4 using (Permutation; _≈_; _·_; apply)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct.V using (v-for)
 open import Substrate.Groups.SemidirectProduct.S using (s-for)

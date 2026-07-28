@@ -3,13 +3,15 @@
 --
 -- Generic inverse: inv-pos at the Fin level, inv at the Word level
 -- (via length-check + power), and inv-canonical at the Fin-indexed
--- Canonical level.
+-- Canonical-at level.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _∸_; _<_; _<?_; s≤s; z≤n)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
 open import Substrate.Foundation.Empty using (⊥-elim)
@@ -21,7 +23,8 @@ open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
 
 module Substrate.Groups.Coxeter.Cyclic.Inverse (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Bridge n public
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; power; length-power; Canonical-at; c-here)
+open import Substrate.Groups.Coxeter.Cyclic.Bridge n
 
 ------------------------------------------------------------------------
 -- inv-pos: the inverse position via (suc n ∸ toℕ k) mod-suc n.
@@ -63,6 +66,6 @@ inv-power-eq k with length (power (toℕ k)) <? suc n | length-power (toℕ k)
 ... | yes p | _    = cong (λ x → power (toℕ (inv-pos x))) (fromℕ<-power-toℕ k p)
 ... | no ¬p | l≡tk = ⊥-elim (¬p (subst (λ x → x < suc n) (sym l≡tk) (toℕ-bound k)))
 
-inv-canonical : ∀ {w} {k : Fin (suc n)} → Canonical w k → Canonical (inv w) (inv-pos k)
+inv-canonical : ∀ {w} {k : Fin (suc n)} → Canonical-at w k → Canonical-at (inv w) (inv-pos k)
 inv-canonical (c-here k) =
-  subst (λ w → Canonical w (inv-pos k)) (sym (inv-power-eq k)) (c-here (inv-pos k))
+  subst (λ w → Canonical-at w (inv-pos k)) (sym (inv-power-eq k)) (c-here (inv-pos k))

@@ -14,7 +14,7 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Generators.IterPow where
 
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 
 iter-pow : {Gen : Set} → (V₄ → V₄) → Word Gen → V₄ → V₄

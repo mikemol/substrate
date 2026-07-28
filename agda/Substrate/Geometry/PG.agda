@@ -35,7 +35,7 @@
 
 module Substrate.Geometry.PG where
 
-open import Substrate.Geometry.PG.Type        public
-open import Substrate.Geometry.PG.Projections public
-open import Substrate.Geometry.PG.Preserves   public
-open import Substrate.Geometry.PG.Action      public
+open import Substrate.Geometry.PG.Type
+open import Substrate.Geometry.PG.Projections
+open import Substrate.Geometry.PG.Preserves
+open import Substrate.Geometry.PG.Action

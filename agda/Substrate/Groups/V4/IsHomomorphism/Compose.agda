@@ -13,8 +13,8 @@
 
 module Substrate.Groups.V4.IsHomomorphism.Compose where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
 

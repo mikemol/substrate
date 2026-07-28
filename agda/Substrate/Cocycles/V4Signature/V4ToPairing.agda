@@ -18,7 +18,7 @@ module Substrate.Cocycles.V4Signature.V4ToPairing where
 
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Eq    using (_≡_; refl)
-open import Substrate.Groups.V4        using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 open import Substrate.Cocycles.V4Signature.Pairing.Type
   using (Pairing; α-pair; β-pair; γ-pair)
 

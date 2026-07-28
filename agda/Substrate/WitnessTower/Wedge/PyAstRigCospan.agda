@@ -32,7 +32,8 @@
 module Substrate.WitnessTower.Wedge.PyAstRigCospan where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Bool using (Bool; true; false)

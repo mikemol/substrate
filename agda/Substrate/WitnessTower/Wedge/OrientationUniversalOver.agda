@@ -29,7 +29,7 @@
 module Substrate.WitnessTower.Wedge.OrientationUniversalOver where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)

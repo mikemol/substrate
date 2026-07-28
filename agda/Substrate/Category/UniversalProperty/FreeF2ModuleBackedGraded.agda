@@ -16,7 +16,7 @@
 module Substrate.Category.UniversalProperty.FreeF2ModuleBackedGraded where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; basis)
 open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (vector-F2Mod; ext)

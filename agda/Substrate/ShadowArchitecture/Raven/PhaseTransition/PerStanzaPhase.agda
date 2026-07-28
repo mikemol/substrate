@@ -18,7 +18,7 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
+open import Substrate.ShadowArchitecture.Raven.Poem.Raven using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
   using (HistoryPhase; open-phase; locked-now; post-lock)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt

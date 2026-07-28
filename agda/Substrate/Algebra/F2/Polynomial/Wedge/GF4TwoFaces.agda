@@ -31,9 +31,9 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly; divisor-q)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
-open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold using (BezoutNthWitness)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
-  using (is-unit-q; all-vec; all-vec-sound; ∨-elim-false; unit-q-nth0; unit-q-nths)
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (is-unit-q; ∨-elim-false; unit-q-nth0; unit-q-nths)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (all-vec; all-vec-sound)
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M

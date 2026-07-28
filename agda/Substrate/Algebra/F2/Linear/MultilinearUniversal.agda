@@ -28,7 +28,7 @@
 module Substrate.Algebra.F2.Linear.MultilinearUniversal where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)

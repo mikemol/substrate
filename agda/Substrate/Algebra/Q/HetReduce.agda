@@ -14,7 +14,7 @@
 -- the two bridge legs (refl), so the cross-equality of the reduced HetQ form
 -- is computed by exactly the same bridge semantics; (3) reduction is
 -- value-preserving in the HetQ cross-equality (reuses Q.Properties.Reduce's
--- ≈-canonical) — i.e. reduce preserves the bridge semantics, not just the
+-- ≈-reduce) — i.e. reduce preserves the bridge semantics, not just the
 -- syntax. Reuse-not-rebuild: re-exports viaBridges / reduce / the HetQ
 -- bijections; the only "real" content is one transport of the existing
 -- soundness lemma, everything else is refl.
@@ -34,7 +34,7 @@ open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Reduce using (reduce)
 open import Substrate.Algebra.Q.Reduction using (is-reduced; gcd-of-ℚ)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-canonical)
+open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
 -- HetBasis is imported UNRESTRICTED: it re-exports `HetQ` publicly and the
 -- top-level `_⊗ℚ_` / `_≈Hℚ_` / `≈ℚ-is-cross` come from an `open CrossEq …`
 -- (a parametrized submodule that cannot appear in a `using` list).
@@ -111,16 +111,16 @@ reduce-respects-viaBridges h = refl
 -- 4. Reduction preserves the BRIDGE SEMANTICS (value), not merely the
 --    syntactic basis-pair: in the HetQ cross-equality (the equality the
 --    codec layer induces), a ℚ and its reduced form are equal. This is the
---    existing soundness lemma `≈-canonical : q ≈ℚ reduce q` transported
+--    existing soundness lemma `≈-reduce : q ≈ℚ reduce q` transported
 --    across `≈ℚ-is-cross` (refl) into the CrossEq layer and through
 --    `reduceH-commutes` (refl). So reduce is value-preserving WHEN read
 --    through the bridges — the cross-term residue is unchanged.
 ------------------------------------------------------------------------
 
 reduce-preserves-cross : (q : ℚ) → toHetQ q ≈Hℚ reduceH (toHetQ q)
-reduce-preserves-cross q = ≈-canonical q
+reduce-preserves-cross q = ≈-reduce q
 
 -- Equivalent ℚ-side statement (definitionally `q ≈ℚ reduce q`): the reduced
 -- HetQ form reconstructed back to ℚ has the same value.
 reduce-preserves-value : (q : ℚ) → q ≈ℚ fromHetQ (reduceH (toHetQ q))
-reduce-preserves-value q = ≈-canonical q
+reduce-preserves-value q = ≈-reduce q

@@ -10,15 +10,16 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4.FourProduct where
+open import Substrate.Groups.V4.Operations using (_·_; ε)
+open import Substrate.Groups.V4.Bijection using (V₄; to-c; to-c-canonical; to-from-canonical; e; α; β; γ)
 
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; _≢_; sym-trans; cong-trans)
 
 import Substrate.Groups.V4-Coxeter as C
-open import Substrate.Groups.Coxeter.Word using ([])
+open import Substrate.Groups.Coxeter.Word using ([]; _++_)
 
-open import Substrate.Groups.V4.Bundle public
-
+open import Substrate.Groups.V4.Bundle
 ------------------------------------------------------------------------
 -- Bijection injectivity + inequality lift.
 ------------------------------------------------------------------------
@@ -56,7 +57,7 @@ private
   to-c-· a b =
     trans (to-from-canonical
             (C.normalize-canonical (to-c a C.· to-c b)))
-          (C.normalize-idem (to-c a C.++ to-c b))
+          (C.normalize-idem (to-c a ++ to-c b))
 
 ------------------------------------------------------------------------
 -- V₄-4-product: four pairwise-distinct V₄ elements multiply to ε.
@@ -79,10 +80,10 @@ V₄-4-product a b c d a≢b a≢c a≢d b≢c b≢d c≢d =
     bridge : to-c ((a · b) · (c · d)) ≡ []
     bridge =
       trans (to-c-· (a · b) (c · d))
-      (cong-trans (λ x → C.normalize (x C.++ to-c (c · d)))
+      (cong-trans (λ x → C.normalize (x ++ to-c (c · d)))
                   (to-c-· a b)
-      (cong-trans (λ x → C.normalize ((to-c a C.· to-c b) C.++ x))
+      (cong-trans (λ x → C.normalize ((to-c a C.· to-c b) ++ x))
                   (to-c-· c d)
       (sym-trans (C.normalize-idem
-                    ((to-c a C.· to-c b) C.++ (to-c c C.· to-c d)))
+                    ((to-c a C.· to-c b) ++ (to-c c C.· to-c d)))
                  coxeter-result)))

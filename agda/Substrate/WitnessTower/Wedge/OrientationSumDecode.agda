@@ -18,7 +18,7 @@
 module Substrate.WitnessTower.Wedge.OrientationSumDecode where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; trans; sym)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode)

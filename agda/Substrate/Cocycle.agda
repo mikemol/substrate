@@ -20,7 +20,7 @@ open import Substrate.Foundation.Eq
 open import Substrate.Foundation.Product
   using (Σ; Σ-syntax; _×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
-open import Substrate.Algebra.SetoidGroup.Action public
+open import Substrate.Algebra.SetoidGroup.Action
   using (Action; act; act-id; act-∙)
 
 ------------------------------------------------------------------------
@@ -40,8 +40,8 @@ record IsTorsor (Carrier : Set) (_≈_ : Carrier → Carrier → Set)
       (t₁ t₂ : T) →
       Σ Carrier (λ g → act action g t₁ ≡ t₂)
 
-open IsTorsor public
 
+open IsTorsor public
 ------------------------------------------------------------------------
 -- IsomorphicCocycleStructure — primary abstraction.
 ------------------------------------------------------------------------

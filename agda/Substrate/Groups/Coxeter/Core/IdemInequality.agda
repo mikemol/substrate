@@ -22,6 +22,7 @@ module Substrate.Groups.Coxeter.Core.IdemInequality
 open import Substrate.Groups.Coxeter.Core.NormalizeIdem
   Word Canonical normalize normalize-canonical canonical-is-fixed
 
+
 private
   _≉_ : Word → Word → Set
   w₁ ≉ w₂ = normalize w₁ ≢ normalize w₂

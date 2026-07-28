@@ -10,7 +10,7 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 

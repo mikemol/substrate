@@ -41,7 +41,8 @@
 module Substrate.WitnessTower.PermMatrixDet where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)

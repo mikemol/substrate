@@ -29,8 +29,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser where
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq

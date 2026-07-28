@@ -33,9 +33,7 @@ module Substrate.Cocycles.V4Signature.FullS4Route where
 
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
-import Substrate.Groups.S4        as S4
 import Substrate.Groups.S4-Composed as S4C
-open S4 using (Permutation; _≈_; ≈-refl)
 
 -- (1) CY-5's TotalSpace ↔ Permutation
 open import Substrate.Cocycles.V4Signature.S4Iso.Classify
@@ -47,6 +45,10 @@ open import Substrate.Groups.S4-Iso.Embedding  using (compositional-to-perm)
 open import Substrate.Groups.S4-Iso.Roundtrip  using (perm-roundtrip-≈)
 open import Substrate.Cocycles.V4Signature.S4GroupIso   using (≈-respects-s4-to-total)
 open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips using (total-round-trip)
+open import Substrate.Axes.Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
 
 -- (3) the tower's rung-3 carrier is exactly S4C.Carrier
 TowerRung3 : Set

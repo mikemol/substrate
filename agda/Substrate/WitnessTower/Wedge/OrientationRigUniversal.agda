@@ -26,7 +26,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigUniversal where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal

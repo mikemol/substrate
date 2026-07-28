@@ -17,13 +17,16 @@
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Pipeline.Brick
 
+open import Substrate.Pipeline.Brick.Witnessing using (S⇒D)
+open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
+open import Substrate.Foundation.Product using (_,_)
 module Substrate.Pipeline.Examples.PredictorSurprise
   (Char   : Set)
   (Counts : Set)
   (surprise-bits : Counts → Char → ℕ)
   where
 
-open import Substrate.Foundation.Product using (_,_)
 
 -- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
 PredictorSurprise-Type : BrickType Char ℕ Counts Counts

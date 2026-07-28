@@ -35,7 +35,7 @@
 
 module Substrate.Algebra.Sporadic.MathieuFischer where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.ConjugationCoalgebra

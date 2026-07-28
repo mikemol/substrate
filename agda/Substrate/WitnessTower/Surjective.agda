@@ -13,7 +13,8 @@
 module Substrate.WitnessTower.Surjective where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (lookup; tabulate)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)

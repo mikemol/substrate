@@ -18,7 +18,6 @@
 
 module Substrate.Geometry.HodgeDim3.Orthogonality where
 
-open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq

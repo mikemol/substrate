@@ -7,5 +7,5 @@
 
 module Substrate.Category.PolyLens.Eval where
 
-open import Substrate.Category.PolyLens.Term public
+open import Substrate.Category.PolyLens.Term
 open import Substrate.Category.Poly.Eval public using (eval)

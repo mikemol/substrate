@@ -59,6 +59,19 @@ open import Substrate.Groups.V4-Coxeter-F2Graded-CountB  using (V4-F2Graded-Coun
 -- of V₄ ≅ Z/2×Z/2. length-parity fixes the AB-diagonal (even); count-A and
 -- count-B are the two axis coordinates; AB is odd under both counts = the shared
 -- point of the two Z/2 factors.
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 using (_+V₄_)
+open import Substrate.Foundation.Product using (proj₁; proj₂)
+open import Substrate.Groups.V4.Bijection using (to-c)
+open import Substrate.Algebra.F2.FromBool using (F₂→bool)
+open import Substrate.Category.RGradedMonoid using (RGradedMonoid)
+open import Substrate.WitnessTower.Enumerate using (Perm)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; sign-hom)
+open import Substrate.WitnessTower.SignStabTotal using (sign-stab-total)
+open import Substrate.WitnessTower.TowerLiftSplit using (rung3-sign-stab)
 parity-length = V4-F2Graded
 parity-A      = V4-F2Graded-CountA
 parity-B      = V4-F2Graded-CountB
@@ -74,9 +87,6 @@ parity-B      = V4-F2Graded-CountB
 -- exactly as the parity story requires.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Groups.V4 using (V₄; e; α; β; γ; _·_)
 
 coord : V₄ → Bool × Bool
 coord e = false , false
@@ -104,7 +114,6 @@ uncoord-coord (true  , true ) = refl
 
 -- the Z/2×Z/2 operation: componentwise xor — IMPORT the canonical F₂²/V₄-affine op
 -- (_+V₄_ over V₄ = Bool × Bool) instead of redeclaring it here (carrier-locality).
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 using (_+V₄_)
 
 -- coord is a group homomorphism V₄ → (Bool×Bool, +V₄): the iso is not just a
 -- bijection of carriers but respects the group structure. All 16 cases by refl.
@@ -136,10 +145,6 @@ coord-hom γ γ = refl
 -- pair, proven, not asserted. All refl on the 4 elements.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Groups.V4.Bijection using (to-c)
-open import Substrate.Algebra.F2.FromBool using (F₂→bool)
-open import Substrate.Category.RGradedMonoid using (RGradedMonoid)
 
 -- the real degree functions from the graded records (parity ∘ count-by, on Words):
 degree-A = RGradedMonoid.degree V4-F2Graded-CountA
@@ -165,8 +170,6 @@ coord-snd-is-parity-B γ = refl
 --     Re-exported with its general-n type to exhibit the lift.
 ------------------------------------------------------------------------
 
-open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; sign-hom)
 
 -- the MOD-2 parity lifts general-n: sign is a homomorphism sign(compose σ τ) ≡
 -- sign σ xor sign τ at ALL n (with the IsPerm side-conditions the repo requires).
@@ -181,8 +184,6 @@ sign-parity-lifts = sign-hom
 -- factorisation) is rung-3-bound.
 ------------------------------------------------------------------------
 
-open import Substrate.WitnessTower.SignStabTotal using (sign-stab-total)
-open import Substrate.WitnessTower.TowerLiftSplit using (rung3-sign-stab)
 
 -- sign-stab-total : (σ : Permutation) → sign(perm4 σ) ≡ sign(perm4 (s-for σ)) —
 -- the n=4 instance (Permutation = the 4 axes). Named here as the NON-lifting

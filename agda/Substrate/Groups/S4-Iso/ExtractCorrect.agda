@@ -11,12 +11,13 @@
 
 module Substrate.Groups.S4-Iso.ExtractCorrect where
 
-open import Substrate.Axes
-  using (Axis; D; C; S; W; axis-of-v; v-of-axis)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
 import Substrate.Groups.S3 as S₃
-import Substrate.Groups.Actions.S3-on-V4 as φ
-open import Substrate.Groups.S4 using (Permutation; _≈_)
-open Permutation
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.EpsilonN
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; sym-trans; trans-sym; cong-trans)
@@ -33,11 +34,11 @@ apply-inj s {x} {y} eq =
   sym-trans (inv-l s x) (cong-trans (invₐ s) eq (inv-l s y))
 
 ------------------------------------------------------------------------
--- embed-S₃ recovers D at the D-axis via φ.act-ε-N.
+-- embed-S₃ recovers D at the D-axis via act-ε-N.
 ------------------------------------------------------------------------
 
 embed-S₃-D : (s' : S₃.Carrier) → apply (embed-S₃ s') D ≡ D
-embed-S₃-D s' = cong axis-of-v (φ.act-ε-N s')
+embed-S₃-D s' = cong axis-of-v (act-ε-N s')
 
 ------------------------------------------------------------------------
 -- Distinct-constructor disequalities.

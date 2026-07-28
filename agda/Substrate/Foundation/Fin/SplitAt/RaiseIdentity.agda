@@ -10,7 +10,9 @@
 module Substrate.Foundation.Fin.SplitAt.RaiseIdentity where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Raise
+open import Substrate.Foundation.Fin.SplitAt
 open import Substrate.Foundation.Sum using (_⊎_; inj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Fin.Raise using (raise)

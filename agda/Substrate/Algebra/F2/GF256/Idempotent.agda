@@ -15,7 +15,8 @@ open import Substrate.Algebra.F2 using (𝟙; ·-identityʳ)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_; 𝟎ⱽ; basis)
 open import Substrate.Algebra.F2.Vector.Universal using (sum; basis-decomp)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
@@ -39,7 +40,7 @@ xpow (suc k) r = xpow k (xtime r)
 
 sum-cong : ∀ {n m} {f g : Fin n → Vector m} → (∀ i → f i ≡ g i) → sum f ≡ sum g
 sum-cong {zero}  _  = refl
-sum-cong {suc _} eq = cong₂ _+ⱽ_ (eq fz) (sum-cong (λ i → eq (fs i)))
+sum-cong {suc _} eq = cong₂ _+ⱽ_ (eq fzero) (sum-cong (λ i → eq (fsuc i)))
 
 -- hsum is the basis-weighted sum (the fold = Σᵢ pᵢ ·ₛ xtimeⁱ r).
 hsum-is-sum : ∀ {n} (p : Polynomial n) (r : Vector 8)
@@ -49,14 +50,14 @@ hsum-is-sum (a ∷ p) r = cong (λ z → (a *ₛ r) +ⱽ z) (hsum-is-sum p (xtim
 
 -- the validated off-by-one, as a total Fin-8 fact (8 refl clauses).
 hsum-one-basis : (i : Fin 8) → xpow (toℕ i) one₈ ≡ basis i
-hsum-one-basis fz = refl
-hsum-one-basis (fs fz) = refl
-hsum-one-basis (fs (fs fz)) = refl
-hsum-one-basis (fs (fs (fs fz))) = refl
-hsum-one-basis (fs (fs (fs (fs fz)))) = refl
-hsum-one-basis (fs (fs (fs (fs (fs fz))))) = refl
-hsum-one-basis (fs (fs (fs (fs (fs (fs fz)))))) = refl
-hsum-one-basis (fs (fs (fs (fs (fs (fs (fs fz))))))) = refl
+hsum-one-basis fzero = refl
+hsum-one-basis (fsuc fzero) = refl
+hsum-one-basis (fsuc (fsuc fzero)) = refl
+hsum-one-basis (fsuc (fsuc (fsuc fzero))) = refl
+hsum-one-basis (fsuc (fsuc (fsuc (fsuc fzero)))) = refl
+hsum-one-basis (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))) = refl
+hsum-one-basis (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero)))))) = refl
+hsum-one-basis (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc (fsuc fzero))))))) = refl
 
 hsum-𝟙₈-id : (p : Vector 8) → hsum p one₈ ≡ p
 hsum-𝟙₈-id p =

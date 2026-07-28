@@ -24,7 +24,7 @@
 module Substrate.Category.CascadedCoalgebra.Term where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)

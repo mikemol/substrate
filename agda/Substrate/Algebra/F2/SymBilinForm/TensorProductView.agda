@@ -24,7 +24,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.TensorProductView where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (lookup; _∷_)
 open import Substrate.Foundation.Eq
@@ -33,7 +33,8 @@ open import Substrate.Foundation.Eq
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Substrate.Algebra.F2.SymBilinForm using (BilinForm; bilinear-form-of)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.SymBilinForm.Bilinearity using (sum-F₂-scalar)
 open import Substrate.Category.TensorProduct using (TensorProduct; pair)
 

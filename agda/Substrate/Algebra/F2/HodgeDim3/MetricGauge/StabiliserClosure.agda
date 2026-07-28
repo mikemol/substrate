@@ -48,8 +48,8 @@ open import Substrate.Foundation.Eq
   using (_≡_; trans; cong; cong-trans)
 
 open import Substrate.Algebra.F2.Linear
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
-  using (metric-id; congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser
   using (s₁; s₂; s₁-stabilises-metric-id; s₂-stabilises-metric-id)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge

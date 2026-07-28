@@ -28,19 +28,19 @@
 
 module Substrate.Category.UniversalProperty.Phase2 where
 
-open import Substrate.Category.Site                                public
+open import Substrate.Category.Site
   using (Site; CoverData)
-open import Substrate.Category.UniversalProperty.Coverage          public
+open import Substrate.Category.UniversalProperty.Coverage
   using (UPCover)
-open import Substrate.Category.UniversalProperty.Sieve             public
+open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve)
-open import Substrate.Category.UniversalProperty.SieveClosure      public
+open import Substrate.Category.UniversalProperty.SieveClosure
   using (FactorsThroughCover; generated-Sieve; factor-precompose)
-open import Substrate.Category.UniversalProperty.Pretopology       public
+open import Substrate.Category.UniversalProperty.Pretopology
   using (UPPretopology)
-open import Substrate.Category.UniversalProperty.CoverageAxioms    public
+open import Substrate.Category.UniversalProperty.CoverageAxioms
   using (singleton-id-Cover)
-open import Substrate.Category.UniversalProperty.ConcreteCovers    public
+open import Substrate.Category.UniversalProperty.ConcreteCovers
   using (trivial-cover)
-open import Substrate.Category.UniversalProperty.Refinement        public
+open import Substrate.Category.UniversalProperty.Refinement
   using (Refines)

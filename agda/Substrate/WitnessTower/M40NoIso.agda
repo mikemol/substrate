@@ -18,8 +18,8 @@
 
 module Substrate.WitnessTower.M40NoIso where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
@@ -35,8 +35,8 @@ record A4Z2≅SymV4 : Set where
     to-inj : (g h : A4Z2) → ((x : V₄) → to g x ≡ to h x) → g ≡ h
     fc-hit : Σ A4Z2 (λ g → (x : V₄) → to g x ≡ fc x)
 
-open A4Z2≅SymV4
 
+open A4Z2≅SymV4
 no-iso : A4Z2≅SymV4 → ⊥
 no-iso iso = fc-not-order-2 fc²e≡e
   where

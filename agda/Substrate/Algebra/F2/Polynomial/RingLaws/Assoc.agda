@@ -19,8 +19,10 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.XPower using (x-power)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using (+-comm) renaming (+-assoc to +ℕ-assoc)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm) renaming (+-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-subst)

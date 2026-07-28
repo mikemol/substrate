@@ -4,10 +4,11 @@
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Linear where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
@@ -66,8 +67,8 @@ module Over {A : Set}
                 → apply L (sum f) ≡ sum (λ i → apply L (f i))
   preserves-sum {k = zero}  L f = preserves-𝟎P L
   preserves-sum {k = suc _} L f =
-    trans (preserves-+ L (f fz) (sum (λ i → f (fs i))))
-          (cong (apply L (f fz) +P_) (preserves-sum L (λ i → f (fs i))))
+    trans (preserves-+ L (f fzero) (sum (λ i → f (fsuc i))))
+          (cong (apply L (f fzero) +P_) (preserves-sum L (λ i → f (fsuc i))))
 
   linear-extensionality : (L M : Linear n m)
     → ((i : Fin n) → apply L (basis i) ≡ apply M (basis i))

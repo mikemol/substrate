@@ -25,7 +25,7 @@ module Substrate.Conway.AsCone where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₁; ₄)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
 open import Substrate.Category.Cone using (Cone)

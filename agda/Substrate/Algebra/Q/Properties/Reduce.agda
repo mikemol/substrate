@@ -24,8 +24,8 @@ open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Reduce using (reduce; reduce-build)
 open import Substrate.Algebra.Q.Reduction using (abs-ℤ)
-open import Substrate.Algebra.Nat.GCD using (gcd-ℕ)
-open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
+open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
 
@@ -44,7 +44,7 @@ nat-xmul n qn g qd′ d eqn eqd =
 ------------------------------------------------------------------------
 
 -- Lemma over the worker (pattern-matches its own witness args, so reduce-build
--- reduces transparently); ≈-canonical specializes it to the gcd witnesses.
+-- reduces transparently); ≈-reduce specializes it to the gcd witnesses.
 ≈-build : (q : ℚ) {g : ℕ}
           (dl : g ∣ abs-ℤ (num q)) (dr : g ∣ denominator q) →
           q ≈ℚ reduce-build (num q) dl dr
@@ -56,8 +56,8 @@ nat-xmul n qn g qd′ d eqn eqd =
                 (sym (neg-*-left (+ qn) (+ suc d₋)))
 ≈-build (mkℚ (-suc m) d₋) (divides _  _)   (divides zero ())
 
-≈-canonical : (q : ℚ) → q ≈ℚ reduce q
-≈-canonical q =
+≈-reduce : (q : ℚ) → q ≈ℚ reduce q
+≈-reduce q =
   ≈-build q (gcd-divides-left  (abs-ℤ (num q)) (denominator q))
             (gcd-divides-right (abs-ℤ (num q)) (denominator q))
 

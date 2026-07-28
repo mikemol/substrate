@@ -12,16 +12,15 @@
 module Substrate.Category.FreeLinearizationR.Capstone where
 
 -- Re-export the FLQ-arc slices publicly.
-open import Substrate.Category.LinearAlgebra public
-open import Substrate.Category.FreeLinearizationR public
-open import Substrate.Category.FreeLinearizationR.FromImages public
-open import Substrate.Algebra.F2.AsLinearAlgebra public
-open import Substrate.Category.FreeLinearizationR.F2Bridge public
-open import Substrate.Algebra.Q.AsLinearAlgebra public
-open import Substrate.Category.FreeLinearizationR.QInstance public
-open import Substrate.Category.FreeLinearizationR.QExamples public
-open import Substrate.Category.FreeLinearizationR.SmokeTests public
-
+open import Substrate.Category.LinearAlgebra
+open import Substrate.Category.FreeLinearizationR
+open import Substrate.Category.FreeLinearizationR.FromImages
+open import Substrate.Algebra.F2.AsLinearAlgebra
+open import Substrate.Category.FreeLinearizationR.F2Bridge
+open import Substrate.Algebra.Q.AsLinearAlgebra
+open import Substrate.Category.FreeLinearizationR.QInstance
+open import Substrate.Category.FreeLinearizationR.QExamples
+open import Substrate.Category.FreeLinearizationR.SmokeTests
 ------------------------------------------------------------------------
 -- Capstone for the FLQ-arc.
 --

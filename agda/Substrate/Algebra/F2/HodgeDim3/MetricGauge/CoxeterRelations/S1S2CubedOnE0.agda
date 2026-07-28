@@ -8,7 +8,7 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE0 where
 
-open import Substrate.Foundation.Fin using (zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.Linear using (apply; id-L; _∘L_)

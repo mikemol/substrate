@@ -22,11 +22,10 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBox
   using (inv-sbox) renaming (sbox to sbox-gf; sbox-rt to sbox-gf-rt) public
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; all-vec; all-vec-sound)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; all-vec; all-vec-sound)
 import Substrate.Algebra.Polynomial.Graded.Base as GB
 open GB.Over F2.𝟘 using (Poly)
-open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable public
-
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable
 -- point sanity (cheap): S(00)=0x63=99, S(01)=0x7c=124, S(10)=0xca=202.
 b00 : Poly 8
 b00 = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []

@@ -10,5 +10,5 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Dispatch where
 
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical public
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act            public
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act

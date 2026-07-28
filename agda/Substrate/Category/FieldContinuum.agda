@@ -38,7 +38,7 @@
 module Substrate.Category.FieldContinuum where
 
 open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.FieldFanOut using (FixedFanOut)

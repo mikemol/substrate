@@ -33,7 +33,8 @@
 module Substrate.Category.UniversalProperty.ObjectUniverse where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)

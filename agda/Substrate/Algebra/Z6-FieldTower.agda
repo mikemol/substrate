@@ -23,7 +23,7 @@
 
 module Substrate.Algebra.Z6-FieldTower where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Category.MultiFieldBond
 

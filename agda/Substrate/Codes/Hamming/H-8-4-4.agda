@@ -43,7 +43,7 @@
 
 module Substrate.Codes.Hamming.H-8-4-4 where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 

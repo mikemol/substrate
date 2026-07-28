@@ -44,11 +44,11 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 -- the ambient Boolean lattice of faces (the level above the simplex-DAG).
-open import Substrate.WitnessTower.FaceSet public
+open import Substrate.WitnessTower.FaceSet
   using (Face; nothing-face; universe)
 
 -- the simplex-as-DAG (FamilyWitness) — one object in that lattice.
-open import Substrate.WitnessTower.FamilyWitness public
+open import Substrate.WitnessTower.FamilyWitness
   using (FSimplex; vertex; cell; WSimplex-unique)
 
 -- the f-vector census (k-face counts). Its 0-face count is n+1.

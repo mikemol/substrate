@@ -29,11 +29,11 @@
 
 module Substrate.Category.PhaseLockedLoop where
 
-open import Substrate.Category.PhaseLockedLoop.LockState public
-open import Substrate.Category.PhaseLockedLoop.PLL public
-open import Substrate.Category.PhaseLockedLoop.AcquisitionStrategies public
-open import Substrate.Category.PhaseLockedLoop.LockTimeBound public
-open import Substrate.Category.PhaseLockedLoop.Bank public
-open import Substrate.Category.PhaseLockedLoop.AcquisitionTimeline public
-open import Substrate.Category.PhaseLockedLoop.LoopParameters public
-open import Substrate.Category.PhaseLockedLoop.SubstratePLLBank public
+open import Substrate.Category.PhaseLockedLoop.LockState
+open import Substrate.Category.PhaseLockedLoop.PLL
+open import Substrate.Category.PhaseLockedLoop.AcquisitionStrategies
+open import Substrate.Category.PhaseLockedLoop.LockTimeBound
+open import Substrate.Category.PhaseLockedLoop.Bank
+open import Substrate.Category.PhaseLockedLoop.AcquisitionTimeline
+open import Substrate.Category.PhaseLockedLoop.LoopParameters
+open import Substrate.Category.PhaseLockedLoop.SubstratePLLBank

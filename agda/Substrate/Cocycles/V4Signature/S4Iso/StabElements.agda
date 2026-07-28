@@ -14,14 +14,25 @@ open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4 using (Permutation)
-open import Substrate.Groups.SemidirectProduct
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Groups.SemidirectProduct.Factorisation
+open import Substrate.Groups.V4-Embedding
   using (Stab)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Groups.Stab-S3 using (fin3-to-non-anchor)
 open import Substrate.Groups.Stab-S3-Extend using (extend)
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Cycle3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip
   using (transposition; transposition-fixes-third; s3-id; s3-csw; s3-cws)
 
 ------------------------------------------------------------------------

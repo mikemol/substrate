@@ -37,9 +37,11 @@
 module Substrate.Groups.StabNormalCharacterization where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
-open import Substrate.Axes using (Axis)
-open import Substrate.Groups.S4 using (Permutation; _·_; _⁻¹; apply; invₐ; inv-r)
-open import Substrate.Groups.SemidirectProduct using (Stab)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
+open import Substrate.Groups.SemidirectProduct.Stab
 
 ------------------------------------------------------------------------
 -- The two conditions.

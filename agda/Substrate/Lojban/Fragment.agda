@@ -23,21 +23,21 @@ module Substrate.Lojban.Fragment where
 
 -- Re-export the L1-L8 surface so consumers can `open import
 -- Substrate.Lojban.Fragment` and get the whole arc.
-open import Substrate.Lojban.PlaceStructure public
-open import Substrate.Lojban.Gismu public
-open import Substrate.Lojban.Lujvo public
+open import Substrate.Lojban.PlaceStructure
+open import Substrate.Lojban.Gismu
+open import Substrate.Lojban.Lujvo
   using (Lujvo; mkLujvo; lujvo-word; lujvo-arity;
          gismu-as-lujvo; prepend-modifiers; prepend-modifier)
-open import Substrate.Lojban.Bridi public
-open import Substrate.Lojban.Cmavo public
-open import Substrate.Lojban.Functoriality public
-open import Substrate.Lojban.WordAlgebra public
+open import Substrate.Lojban.Bridi
+open import Substrate.Lojban.Cmavo
+open import Substrate.Lojban.Functoriality
+open import Substrate.Lojban.WordAlgebra
   using (MonoidLaws; LojbanWord-Monoid; module WithTarget)
 
 -- Worked-example submodules.
-open import Substrate.Lojban.Fragment.Carriers                public
-open import Substrate.Lojban.Fragment.Example1MiNelciDo       public
-open import Substrate.Lojban.Fragment.Example2MiKlamaLeZarci  public
-open import Substrate.Lojban.Fragment.Example3MiPuTavlaDo     public
-open import Substrate.Lojban.Fragment.Example4MiNaNelciDo     public
-open import Substrate.Lojban.Fragment.Example5Stacked         public
+open import Substrate.Lojban.Fragment.Carriers
+open import Substrate.Lojban.Fragment.Example1MiNelciDo
+open import Substrate.Lojban.Fragment.Example2MiKlamaLeZarci
+open import Substrate.Lojban.Fragment.Example3MiPuTavlaDo
+open import Substrate.Lojban.Fragment.Example4MiNaNelciDo
+open import Substrate.Lojban.Fragment.Example5Stacked

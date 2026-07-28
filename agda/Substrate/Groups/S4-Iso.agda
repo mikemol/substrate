@@ -30,11 +30,11 @@
 
 module Substrate.Groups.S4-Iso where
 
-open import Substrate.Groups.S4-Iso.Embedding      public
-open import Substrate.Groups.S4-Iso.Extract        public
-open import Substrate.Groups.S4-Iso.Foundation     public
-open import Substrate.Groups.S4-Iso.ForwardHom     public
-open import Substrate.Groups.S4-Iso.ExtractCorrect public
-open import Substrate.Groups.S4-Iso.Roundtrip      public
-open import Substrate.Groups.S4-Iso.IsoTransport   public
-open import Substrate.Groups.S4-Iso.V4Normal       public
+open import Substrate.Groups.S4-Iso.Embedding
+open import Substrate.Groups.S4-Iso.Extract
+open import Substrate.Groups.S4-Iso.Foundation
+open import Substrate.Groups.S4-Iso.ForwardHom
+open import Substrate.Groups.S4-Iso.ExtractCorrect
+open import Substrate.Groups.S4-Iso.Roundtrip
+open import Substrate.Groups.S4-Iso.IsoTransport
+open import Substrate.Groups.S4-Iso.V4Normal

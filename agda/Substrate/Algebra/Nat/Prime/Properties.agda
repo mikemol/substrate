@@ -37,8 +37,7 @@ open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
 open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
 open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
-open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialise: `Canonical` collides across nodes
+open import Substrate.Algebra.Quotient
 open import Substrate.Algebra.Nat.GCD.GcdPos using (gcd-pos)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
@@ -269,7 +268,7 @@ factor-section-product m = proj₂ (proj₂ (factorize! (suc m) (s≤s z≤n)))
 -- THE ISO: the split idempotent factor-section ∘ factor-value is a Canonical
 -- for ker factor-value — ℕ⁺ ≅ canonical prime factorisations, from the
 -- retraction alone (uniqueness/.u2 then characterises the image as THE multiset).
-factor-Canonical : Canonical⟦de760d07⟧ (ker-Quotient factor-value)
+factor-Canonical : Canonical (ker-Quotient factor-value)
 factor-Canonical = split-Canonical factor-value factor-section factor-retract
 
 ------------------------------------------------------------------------

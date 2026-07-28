@@ -5,8 +5,8 @@ module Substrate.Algebra.F2.MixColumns.Base where
 open import Substrate.Algebra.F2 using (𝟘; 𝟙) public
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; +ⱽ-identityˡ; +ⱽ-identityʳ;
   +ⱽ-comm; +ⱽ-assoc) public
-open import Substrate.Algebra.F2.GF256 using (gmul; gmul-distribˡ; gmul-distribʳ; gmul-assoc;
-  gmul-identityˡ; gmul-identityʳ; gmul-zeroˡ; +ⱽ-rearrange) public
+open import Substrate.Algebra.F2.GF256.Mul using (gmul; gmul-distribˡ; gmul-distribʳ)
+open import Substrate.Algebra.F2.GF256.Reduce using (+ⱽ-rearrange)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_) public
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂) public
 
@@ -30,14 +30,6 @@ b1b = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []
 -- fully-generic (no constant appears): cheap to check & to instantiate.
 dot4 : (c0 c1 c2 c3 a0 a1 a2 a3 : Vector 8) → Vector 8
 dot4 c0 c1 c2 c3 a0 a1 a2 a3 = (gmul c0 a0 +ⱽ gmul c1 a1) +ⱽ (gmul c2 a2 +ⱽ gmul c3 a3)
-gmul-dot4 : (k c0 c1 c2 c3 a0 a1 a2 a3 : Vector 8) → gmul k (dot4 c0 c1 c2 c3 a0 a1 a2 a3)
-          ≡ dot4 (gmul k c0) (gmul k c1) (gmul k c2) (gmul k c3) a0 a1 a2 a3
-gmul-dot4 k c0 c1 c2 c3 a0 a1 a2 a3 =
-  trans (gmul-distribˡ k (gmul c0 a0 +ⱽ gmul c1 a1) (gmul c2 a2 +ⱽ gmul c3 a3))
-        (cong₂ _+ⱽ_ (trans (gmul-distribˡ k (gmul c0 a0) (gmul c1 a1))
-                 (cong₂ _+ⱽ_ (sym (gmul-assoc k c0 a0)) (sym (gmul-assoc k c1 a1))))
-          (trans (gmul-distribˡ k (gmul c2 a2) (gmul c3 a3))
-                 (cong₂ _+ⱽ_ (sym (gmul-assoc k c2 a2)) (sym (gmul-assoc k c3 a3)))))
 dot4-add : (p0 p1 p2 p3 q0 q1 q2 q3 a0 a1 a2 a3 : Vector 8)
          → dot4 p0 p1 p2 p3 a0 a1 a2 a3 +ⱽ dot4 q0 q1 q2 q3 a0 a1 a2 a3
          ≡ dot4 (p0 +ⱽ q0) (p1 +ⱽ q1) (p2 +ⱽ q2) (p3 +ⱽ q3) a0 a1 a2 a3
@@ -69,3 +61,4 @@ dot4-cyc c0 c1 c2 c3 a0 a1 a2 a3 = cyc4 (gmul c0 a3) (gmul c1 a0) (gmul c2 a1) (
       (trans (cong (w +ⱽ_) (sym (+ⱽ-assoc x y z)))
       (trans (+ⱽ-comm w ((x +ⱽ y) +ⱽ z))
              (+ⱽ-assoc (x +ⱽ y) z w)))
+

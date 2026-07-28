@@ -17,15 +17,16 @@ module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Anchor where
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4 using (Permutation)
-  renaming (apply to applyₛ)
-open import Substrate.Cocycles.V4Signature
-  using (OrbitKey; α-pair; β-pair; γ-pair; even; odd)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Cocycles.V4Signature.S4Iso
   using (orbit-key-to-stab-anchor; orbit-key-to-stab-anchor-fixes)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt)
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Cocycles.V4Signature.Pairing.Type
+open import Substrate.Cocycles.V4Signature.Chirality.Type
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
 
 ------------------------------------------------------------------------
 -- Selector → OrbitKey table.
@@ -49,18 +50,18 @@ stab-from-selector-anchor X sel =
 
 stab-from-selector-fixes-anchor :
   (X : Axis) (sel : Selector) →
-  applyₛ (stab-from-selector-anchor X sel) X ≡ X
+  apply (stab-from-selector-anchor X sel) X ≡ X
 stab-from-selector-fixes-anchor X sel =
   orbit-key-to-stab-anchor-fixes X (selector-to-orbit-key sel)
 
 stab-from-selector-fixes-C :
-  (sel : Selector) → applyₛ (stab-from-selector-anchor C sel) C ≡ C
+  (sel : Selector) → apply (stab-from-selector-anchor C sel) C ≡ C
 stab-from-selector-fixes-C = stab-from-selector-fixes-anchor C
 
 stab-from-selector-fixes-S :
-  (sel : Selector) → applyₛ (stab-from-selector-anchor S sel) S ≡ S
+  (sel : Selector) → apply (stab-from-selector-anchor S sel) S ≡ S
 stab-from-selector-fixes-S = stab-from-selector-fixes-anchor S
 
 stab-from-selector-fixes-W :
-  (sel : Selector) → applyₛ (stab-from-selector-anchor W sel) W ≡ W
+  (sel : Selector) → apply (stab-from-selector-anchor W sel) W ≡ W
 stab-from-selector-fixes-W = stab-from-selector-fixes-anchor W

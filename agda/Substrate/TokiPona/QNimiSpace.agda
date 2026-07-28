@@ -17,10 +17,10 @@
 module Substrate.TokiPona.QNimiSpace where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
 
 open import Substrate.TokiPona.Nimi using (Nimi; nimi-count; nimi-index)
-open import Substrate.TokiPona.QSemanticSpace using (QSemVec; basis-ℚ)
+open import Substrate.Algebra.Q.Vector using (basis-ℚ)
+open import Substrate.TokiPona.QSemanticSpace using (QSemVec)
 
 ------------------------------------------------------------------------
 -- 1. One-hot ℚ-embedding.

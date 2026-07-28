@@ -33,7 +33,9 @@
 module Substrate.Algebra.Fin.Wedge where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
 open import Substrate.Algebra.Wedge using (DivStr)
 

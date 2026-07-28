@@ -28,8 +28,8 @@ open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong₂; subst)
-open import Substrate.Groups.V4
-  using (V₄; e; α; β; γ; _·_; ε; inv; v4-cover; v4×v4-cover)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_; ε; inv; v4-cover; v4×v4-cover)
 open import Substrate.Category.ConjugationCoalgebra using (ConjugationCoalgebra)
 open import Substrate.Category.ConjugationCoalgebra.Simplicity using (module Recognizer)
 
@@ -59,8 +59,9 @@ V4-coalg = record
       λ g c h c≡h → trans c≡h (sym (conj-trivial g h))
   }
 
-open Recognizer V4-coalg (λ x y → x ≡ y)
 
+
+open Recognizer V4-coalg (λ x y → x ≡ y)
 ------------------------------------------------------------------------
 -- The normal subgroup ⟨α⟩ = {e, α}.
 ------------------------------------------------------------------------
@@ -118,8 +119,9 @@ conj-e = v4-cover _ (refl , refl , refl , refl)
 V4-orbit : (c h : V₄) → c ≡ h → ∃[ g ] (((g · c) · inv g) ≡ h)
 V4-orbit c h c≡h = e , trans (conj-e c) c≡h
 
-open WithOrbits V4-orbit using (saturated)
 
+
+open WithOrbits V4-orbit using (saturated)
 ------------------------------------------------------------------------
 -- Toward the accept leg (separate arc):
 --

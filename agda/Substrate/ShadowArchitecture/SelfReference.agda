@@ -29,6 +29,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.ShadowArchitecture.SelfReference where
+open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)

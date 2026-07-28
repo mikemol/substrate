@@ -16,12 +16,13 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone where
 
 open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Nat using (ℕ) renaming (_≤_ to _ℕ≤_; s≤s to s≤s)
 open import Substrate.Foundation.Vec using (Vec; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.ShadowArchitecture.Raven.Grammar using (Stanza)
-open import Substrate.ShadowArchitecture.Raven.Poem using (raven)
+open import Substrate.ShadowArchitecture.Raven.Poem.Raven using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.IsAñeléTerminal
   using (is-añelē-terminal)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé

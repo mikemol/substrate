@@ -32,7 +32,9 @@ open import Substrate.Foundation.Nat using (ℕ; suc)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
+open import Substrate.Foundation.Fin.Punctured
 open import Substrate.Foundation.Fin.Punctured
   using (punchIn; punchIn-≢; punchOut; punchOut-irrelevant; punchOut-cong;
          punchOut-punchIn; punchIn-punchOut)

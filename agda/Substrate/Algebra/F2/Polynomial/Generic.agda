@@ -21,7 +21,7 @@
 module Substrate.Algebra.F2.Polynomial.Generic where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Eq using (_≡_; subst)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F

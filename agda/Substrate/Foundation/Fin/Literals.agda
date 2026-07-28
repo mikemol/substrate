@@ -25,7 +25,7 @@
 
 module Substrate.Foundation.Fin.Literals where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 
 pattern ₀ = zero
 pattern ₁ = suc ₀

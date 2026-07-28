@@ -13,8 +13,9 @@ module Substrate.Algebra.Nat.GCD.ConstructWedge where
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Eq using (trans)
-open import Substrate.Algebra.Nat.DivMod
-  using (_mod-suc_; _div-suc_; mod-suc-bound; div-mod-eq)
+open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
+open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
+open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
 open import Substrate.Algebra.Nat.GCD.Wedge using () renaming (Wedge to Wedge⟦b7e6a995⟧)
 construct-wedge : (a b : ℕ) → Wedge⟦b7e6a995⟧ a (suc b)
 construct-wedge a b = record

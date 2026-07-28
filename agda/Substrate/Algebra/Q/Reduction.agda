@@ -25,7 +25,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
-open import Substrate.Algebra.Nat.GCD using (gcd-ℕ)
+open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 
 ------------------------------------------------------------------------
 -- 1. Absolute value of ℤ.
@@ -33,6 +33,7 @@ open import Substrate.Algebra.Nat.GCD using (gcd-ℕ)
 -- Maps + n to n and -suc n to suc n. Always non-negative.
 ------------------------------------------------------------------------
 
+open import Substrate.Algebra.Q using (0ℚ; 1ℚ; -1ℚ)
 abs-ℤ : ℤ → ℕ
 abs-ℤ (+ n)    = n
 abs-ℤ (-suc n) = suc n
@@ -64,7 +65,6 @@ is-reduced q = gcd-of-ℚ q ≡ 1
 -- ±1/1 similarly.
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.Q using (0ℚ; 1ℚ; -1ℚ)
 
 private
   -- gcd-ℕ at small closed inputs computes; the Q4-deferred oracles now

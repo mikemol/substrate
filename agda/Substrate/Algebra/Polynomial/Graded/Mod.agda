@@ -27,9 +27,11 @@ module Substrate.Algebra.Polynomial.Graded.Mod where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; s≤s; z≤n; s≤s-injective)
   renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Fin using (Fin; toℕ; fromℕ<) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<; toℕ-injective)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
@@ -104,20 +106,20 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
   -- This is the part GF256 brute-forced with 8 refls; generically it's the single
   -- shift lemma ytime-basis-shift = ytime-shift ∘ (top coeff = 𝟘) ∘ vinit-basis.)
   inj : ∀ {n} → Fin n → Fin (suc n)
-  inj fz     = fz
-  inj (fs i) = fs (inj i)
+  inj fzero     = fzero
+  inj (fsuc i) = fsuc (inj i)
 
   inj-toℕ : ∀ {n} (i : Fin n) → toℕ (inj i) ≡ toℕ i
-  inj-toℕ fz     = refl
-  inj-toℕ (fs i) = cong suc (inj-toℕ i)
+  inj-toℕ fzero     = refl
+  inj-toℕ (fsuc i) = cong suc (inj-toℕ i)
 
   <-irrefl : (n : ℕ) → n <ℕ n → ⊥
   <-irrefl (suc n) (s≤s p) = <-irrefl n p
 
   -- vinit drops the (zero) top of a low basis vector → the basis one dim down.
   vinit-basis : ∀ {n} (i : Fin n) → vinit (basis {suc n} (inj i)) ≡ basis {n} i
-  vinit-basis {suc n} fz     = cong (𝟙 ∷_) (vinit-zero {n})
-  vinit-basis {suc n} (fs i) = cong (𝟘 ∷_) (vinit-basis {n} i)
+  vinit-basis {suc n} fzero     = cong (𝟙 ∷_) (vinit-zero {n})
+  vinit-basis {suc n} (fsuc i) = cong (𝟘 ∷_) (vinit-basis {n} i)
 
   -- a low basis vector has zero top coefficient (its 𝟙 sits below position d).
   vlast-basis-inj : (i : Fin d) → vlast (basis {suc d} (inj i)) ≡ 𝟘
@@ -128,7 +130,7 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
                      (subst (λ z → toℕ (inj i) <ℕ z) e
                             (subst (_<ℕ d) (sym (inj-toℕ i)) (toℕ-bound i)))))
 
-  ytime-basis-shift : (i : Fin d) → ytime (basis {suc d} (inj i)) ≡ basis {suc d} (fs i)
+  ytime-basis-shift : (i : Fin d) → ytime (basis {suc d} (inj i)) ≡ basis {suc d} (fsuc i)
   ytime-basis-shift i =
     trans (ytime-shift (basis (inj i)) (vlast-basis-inj i))
           (cong (𝟘 ∷_) (vinit-basis i))

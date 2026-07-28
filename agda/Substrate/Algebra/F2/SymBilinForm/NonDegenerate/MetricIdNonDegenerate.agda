@@ -14,7 +14,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.NonDegenerate.MetricIdNonDegenerate where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans)
 

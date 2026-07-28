@@ -45,19 +45,32 @@ open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.CategoryOf using (CategoryOf)
 open import Substrate.Category.Delooping  using (deloop)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group; ≈-refl; inv-l; inv-r)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive)
 open import Substrate.Groups.SemidirectProduct
   using (Stab; v-for; s-for; s-for-fixes-anchor; v-of-axis; v-of-axis-unique; factorisation)
-open import Substrate.Cocycles.V4Signature
-  using (Pairing; α-pair; β-pair; γ-pair; Chirality; even; odd; OrbitKey)
 open import Substrate.Cocycles.V4Signature.S4Iso
   using (TotalSpace; total-to-s4; s4-to-total; σ-round-trip; total-round-trip; classify-CS)
+open import Substrate.Groups.S4
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
+open import Substrate.Cocycles.V4Signature.Pairing.Type
+open import Substrate.Cocycles.V4Signature.Chirality.Type
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Cocycles.V4Signature.S4Iso.Classify
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Axes.VOfAxis
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
 
 ------------------------------------------------------------------------
 -- Helper: propositional equality implies pointwise equivalence.
@@ -70,10 +83,10 @@ open import Substrate.Cocycles.V4Signature.S4Iso
 -- s4-to-total respects pointwise equivalence.
 --
 -- Proof: s4-to-total σ is built from
---   v-for σ              = v-of-axis (applyₛ σ D)
---   stab-d-to-orbit-key  = classify-CS (applyₛ (s-for σ) C)
---                                       (applyₛ (s-for σ) S)
--- and `s-for σ`'s apply at z is `act-axis (v-for σ) (applyₛ σ z)`.
+--   v-for σ              = v-of-axis (apply σ D)
+--   stab-d-to-orbit-key  = classify-CS (apply (s-for σ) C)
+--                                       (apply (s-for σ) S)
+-- and `s-for σ`'s apply at z is `act-axis (v-for σ) (apply σ z)`.
 -- All three uses of σ are through its `apply` projection, so any two
 -- pointwise-equivalent permutations produce equal s4-to-total values.
 ------------------------------------------------------------------------
@@ -86,14 +99,14 @@ open import Substrate.Cocycles.V4Signature.S4Iso
     v-eq = cong v-of-axis (σ≈τ D)
 
     s-for-eq-at :
-      (z : Axis) → applyₛ (s-for σ) z ≡ applyₛ (s-for τ) z
+      (z : Axis) → apply (s-for σ) z ≡ apply (s-for τ) z
     s-for-eq-at z =
       trans (cong (act-axis (v-for σ)) (σ≈τ z))
-            (cong (λ v → act-axis v (applyₛ τ z)) v-eq)
+            (cong (λ v → act-axis v (apply τ z)) v-eq)
 
     ok-eq :
-      classify-CS (applyₛ (s-for σ) C) (applyₛ (s-for σ) S)
-      ≡ classify-CS (applyₛ (s-for τ) C) (applyₛ (s-for τ) S)
+      classify-CS (apply (s-for σ) C) (apply (s-for σ) S)
+      ≡ classify-CS (apply (s-for τ) C) (apply (s-for τ) S)
     ok-eq = cong₂ classify-CS (s-for-eq-at C) (s-for-eq-at S)
 
 ------------------------------------------------------------------------
@@ -134,11 +147,11 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
     φc = total-to-s4 c
     σL = total-to-s4 (s4-to-total (φa · φb)) · φc
     σR = φa · total-to-s4 (s4-to-total (φb · φc))
-    -- Key step: applyₛ σL z = applyₛ φa (φb (φc z)) = applyₛ σR z
+    -- Key step: apply σL z = apply φa (φb (φc z)) = apply σR z
     chain : σL ≈ σR
     chain z =
-      trans (σ-round-trip (φa · φb) (applyₛ φc z))
-            (sym (cong (applyₛ φa) (σ-round-trip (φb · φc) z)))
+      trans (σ-round-trip (φa · φb) (apply φc z))
+            (sym (cong (apply φa) (σ-round-trip (φb · φc) z)))
 
 -- Left identity.
 ∙ₜ-identityˡ : (a : TotalSpace) → εₜ ∙ₜ a ≡ a
@@ -148,7 +161,7 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
   where
     σL = total-to-s4 (s4-to-total ε) · total-to-s4 a
     chain : σL ≈ total-to-s4 a
-    chain z = σ-round-trip ε (applyₛ (total-to-s4 a) z)
+    chain z = σ-round-trip ε (apply (total-to-s4 a) z)
 
 -- Right identity.
 ∙ₜ-identityʳ : (a : TotalSpace) → a ∙ₜ εₜ ≡ a
@@ -158,7 +171,7 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
   where
     σL = total-to-s4 a · total-to-s4 (s4-to-total ε)
     chain : σL ≈ total-to-s4 a
-    chain z = cong (applyₛ (total-to-s4 a)) (σ-round-trip ε z)
+    chain z = cong (apply (total-to-s4 a)) (σ-round-trip ε z)
 
 -- Left inverse.
 ∙ₜ-inverseˡ : (a : TotalSpace) → (a ⁻¹ₜ) ∙ₜ a ≡ εₜ
@@ -168,7 +181,7 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
     σL = total-to-s4 (s4-to-total (φa ⁻¹)) · φa
     chain : σL ≈ ε
     chain z =
-      trans (σ-round-trip (φa ⁻¹) (applyₛ φa z))
+      trans (σ-round-trip (φa ⁻¹) (apply φa z))
             (inv-l φa z)
 
 -- Right inverse.
@@ -179,7 +192,7 @@ a ⁻¹ₜ = s4-to-total ((total-to-s4 a) ⁻¹)
     σL = φa · total-to-s4 (s4-to-total (φa ⁻¹))
     chain : σL ≈ ε
     chain z =
-      trans (cong (applyₛ φa) (σ-round-trip (φa ⁻¹) z))
+      trans (cong (apply φa) (σ-round-trip (φa ⁻¹) z))
             (inv-r φa z)
 
 -- Congruence of _∙ₜ_ wrt ≡ (trivial since TotalSpace uses propositional
@@ -268,7 +281,7 @@ total-to-s4-injective {a} {b} eq =
 total-to-s4-surjective :
   ∀ σ → ∃ λ a → ∀ {z} → z ≡ a → total-to-s4 z ≈ σ
 total-to-s4-surjective σ = s4-to-total σ , λ {z} z≡ x →
-  trans (cong (λ w → applyₛ (total-to-s4 w) x) z≡)
+  trans (cong (λ w → apply (total-to-s4 w) x) z≡)
         (σ-round-trip σ x)
 
 ------------------------------------------------------------------------

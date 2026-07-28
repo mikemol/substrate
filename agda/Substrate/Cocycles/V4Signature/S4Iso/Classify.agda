@@ -10,22 +10,25 @@
 
 module Substrate.Cocycles.V4Signature.S4Iso.Classify where
 
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Cocycles.V4Signature.CY5
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4
-  using (Permutation; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (Stab; v-for; s-for; s-for-fixes-anchor)
-open import Substrate.Cocycles.V4Signature
-  using (OrbitKey; α-pair; β-pair; γ-pair; even; odd; CY5-V4Signature)
 open import Substrate.Cocycle using (IsomorphicCocycleStructure)
 
-open import Substrate.Cocycles.V4Signature.S4Iso.Anchor public
-
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Cocycles.V4Signature.Pairing.Type
+open import Substrate.Cocycles.V4Signature.Chirality.Type
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Groups.SemidirectProduct.V
 ------------------------------------------------------------------------
 -- TotalSpace of the CY-5 cocycle.
 ------------------------------------------------------------------------
@@ -54,7 +57,7 @@ classify-CS W S = γ-pair , odd
 classify-CS _ _ = α-pair , even   -- impossible for σ ∈ Stab(D)
 
 stab-d-to-orbit-key : (σ : Permutation) → Stab D σ → OrbitKey
-stab-d-to-orbit-key σ _ = classify-CS (applyₛ σ C) (applyₛ σ S)
+stab-d-to-orbit-key σ _ = classify-CS (apply σ C) (apply σ S)
 
 s4-to-total : Permutation → IsomorphicCocycleStructure.TotalSpace CY5-V4Signature
 s4-to-total σ =

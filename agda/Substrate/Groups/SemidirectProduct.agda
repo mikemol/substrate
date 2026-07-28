@@ -35,13 +35,12 @@
 
 module Substrate.Groups.SemidirectProduct where
 
-open import Substrate.Groups.SemidirectProduct.Stab          public
-open import Substrate.Groups.SemidirectProduct.V             public
-open import Substrate.Groups.SemidirectProduct.S             public
-open import Substrate.Groups.SemidirectProduct.Factorisation public
-
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Groups.SemidirectProduct.Factorisation
 -- Historic re-export of V4-Embedding names that downstream modules
 -- imported from SemidirectProduct.
-open import Substrate.Groups.V4-Embedding public
+open import Substrate.Groups.V4-Embedding
   using (v-of-axis; axis-of-v; act-axis-as-V₄-mult;
          axis-of-v-v-of-axis; v-of-axis-axis-of-v)

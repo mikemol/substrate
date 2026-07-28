@@ -12,7 +12,7 @@ module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4Equiva
 
 open import Substrate.Foundation.Product using (_,_; Σ-≡,≡→≡)
 open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Cocycles.V4Signature.Codeword using (Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4
   using (V₄)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReserved

@@ -15,7 +15,8 @@
 
 module Substrate.TokiPona.AsFreeOverBasis where
 
-open import Substrate.TokiPona.SemanticSpace using (SemVec; basis)
+open import Substrate.Algebra.F2.Vector using (basis)
+open import Substrate.TokiPona.SemanticSpace using (SemVec)
 open import Substrate.TokiPona.Nimi using (Nimi; nimi-count; nimi-index)
 open import Substrate.TokiPona.NimiSpace using (nimi-as-vector)
 open import Substrate.Category.FreeOverBasis

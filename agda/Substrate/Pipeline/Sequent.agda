@@ -37,18 +37,18 @@
 
 module Substrate.Pipeline.Sequent where
 
-open import Substrate.Pipeline.Sequent.SequentRule                 public
-open import Substrate.Pipeline.Sequent.SequentType                 public
-open import Substrate.Pipeline.Sequent.Type                        public
-open import Substrate.Pipeline.Sequent.AsBrick                     public
-open import Substrate.Pipeline.Sequent.IdentitySequent             public
-open import Substrate.Pipeline.Sequent.WeakeningSequent            public
-open import Substrate.Pipeline.Sequent.ContractionSequent          public
-open import Substrate.Pipeline.Sequent.ExchangeSequent             public
-open import Substrate.Pipeline.Sequent.CoerceSequent               public
-open import Substrate.Pipeline.Sequent.CutSequent                  public
-open import Substrate.Pipeline.Sequent.ComposeViaSequent           public
-open import Substrate.Pipeline.Sequent.CanonicalSpec               public
-open import Substrate.Pipeline.Sequent.SequentFixed                public
-open import Substrate.Pipeline.Sequent.IterateToCanonical          public
-open import Substrate.Pipeline.Sequent.FixedPointSequentToBrick    public
+open import Substrate.Pipeline.Sequent.SequentRule
+open import Substrate.Pipeline.Sequent.SequentType
+open import Substrate.Pipeline.Sequent.Type
+open import Substrate.Pipeline.Sequent.AsBrick
+open import Substrate.Pipeline.Sequent.IdentitySequent
+open import Substrate.Pipeline.Sequent.WeakeningSequent
+open import Substrate.Pipeline.Sequent.ContractionSequent
+open import Substrate.Pipeline.Sequent.ExchangeSequent
+open import Substrate.Pipeline.Sequent.CoerceSequent
+open import Substrate.Pipeline.Sequent.CutSequent
+open import Substrate.Pipeline.Sequent.ComposeViaSequent
+open import Substrate.Pipeline.Sequent.CanonicalSpec
+open import Substrate.Pipeline.Sequent.SequentFixed
+open import Substrate.Pipeline.Sequent.IterateToCanonical
+open import Substrate.Pipeline.Sequent.FixedPointSequentToBrick

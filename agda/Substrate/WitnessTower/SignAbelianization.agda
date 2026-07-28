@@ -32,7 +32,7 @@
 module Substrate.WitnessTower.SignAbelianization where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Bool using (Bool; false)
 open import Substrate.Foundation.Negation using (¬_)

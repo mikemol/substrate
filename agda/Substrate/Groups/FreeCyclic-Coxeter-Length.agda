@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.FreeCyclic-Coxeter-Length
 --
--- The bijection between FreeCyclic-Coxeter's Word/Canonical structure
+-- The bijection between FreeCyclic-Coxeter's Word/Canonical-Free structure
 -- and ℕ via word length.
 --
 -- FreeCyclic has no relations; every word `(a ∷ a ∷ ... ∷ [])` of

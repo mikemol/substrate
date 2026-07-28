@@ -23,7 +23,6 @@ module Substrate.Linguistic.ClassFunctor where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
-  using (LanguageWitness; FreeConstructionClass; class)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 
 ------------------------------------------------------------------------
@@ -33,6 +32,14 @@ open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 -- called the "chaotic" or "indiscrete" category.
 ------------------------------------------------------------------------
 
+  using (Free-monoid; Free-F2-module; Free-cyclic;
+         Free-relation; Free-CCC; Free-Lie)
+open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
+open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
+open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
+open import Substrate.Kelen.Fragment using (kelen-witness)
+open import Substrate.Lambda.Fragment using (lambda-witness)
+open import Substrate.Invented.LieFragment using (lie-witness)
 data ClassMorphism : FreeConstructionClass → FreeConstructionClass → Set where
   any-class-mor :
     (a b : FreeConstructionClass) → ClassMorphism a b
@@ -80,15 +87,6 @@ codiscrete-unique (any-class-mor _ _) (any-class-mor _ _) = refl
 -- Each witness's class is exactly the expected cell.
 ------------------------------------------------------------------------
 
-open import Substrate.Category.FreeOverBasis
-  using (Free-monoid; Free-F2-module; Free-cyclic;
-         Free-relation; Free-CCC; Free-Lie)
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
-open import Substrate.Invented.LieFragment using (lie-witness)
 
 class-lojban   : class lojban-witness   ≡ Free-monoid
 class-lojban   = refl

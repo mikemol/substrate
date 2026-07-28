@@ -16,7 +16,7 @@
 module Substrate.Foundation.Fin.Exists where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
 

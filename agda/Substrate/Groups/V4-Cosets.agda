@@ -45,13 +45,11 @@ open import Substrate.Foundation.Product using (∃; Σ; Σ-syntax; _,_; proj₁
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_; _⁻¹; ε; _≈_;
-         ·-cong; ≈-refl; ≈-sym; ≈-trans;
-         inv-right; ⁻¹-cong; inv-l; inv-r)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+
 open import Substrate.Groups.V4-Embedding
   using (embed; V₄-image; act-axis-id)
 open import Substrate.Groups.SemidirectProduct
@@ -60,6 +58,21 @@ open import Substrate.Groups.SemidirectProduct
 open import Substrate.Groups.Subgroup
   using (V₄-image-ε; V₄-image-∙; V₄-image-⁻¹; V₄-image-resp-≈;
          Stab-∙; Stab-⁻¹; Stab-resp-≈)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.ComposeCong Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
+open import Substrate.Groups.Symmetric.EqSym Axis
+open import Substrate.Groups.Symmetric.EqTrans Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Groups.Symmetric.InvRight Axis
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
+open import Substrate.Groups.Symmetric.InverseCong Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.Factorisation
 
 ------------------------------------------------------------------------
 -- The V_4-coset equivalence (anchor-independent).
@@ -91,8 +104,8 @@ _∼V₄_ : Permutation → Permutation → Set
   V₄-image-resp-≈ {(τ · (σ ⁻¹)) ⁻¹} {σ · (τ ⁻¹)}
     inv-eq (V₄-image-⁻¹ {τ · (σ ⁻¹)} τσ⁻¹∈V₄)
   where
-    -- (τ · σ⁻¹)⁻¹ x = invₐ τ⁻¹ (invₐ τ x) = applyₛ σ (invₐₛ τ x)
-    --              = applyₛ (σ · τ⁻¹) x.   Pointwise refl.
+    -- (τ · σ⁻¹)⁻¹ x = invₐ τ⁻¹ (invₐ τ x) = apply σ (invₐ τ x)
+    --              = apply (σ · τ⁻¹) x.   Pointwise refl.
     inv-eq : ((τ · (σ ⁻¹)) ⁻¹) ≈ (σ · (τ ⁻¹))
     inv-eq _ = refl
 
@@ -105,11 +118,11 @@ _∼V₄_ : Permutation → Permutation → Set
     chain (V₄-image-∙ {ρ · (τ ⁻¹)} {τ · (σ ⁻¹)} ρτ⁻¹∈V₄ τσ⁻¹∈V₄)
   where
     -- ((ρ · τ⁻¹) · (τ · σ⁻¹)) x
-    --   = applyₛ ρ (invₐₛ τ (applyₛ τ (invₐₛ σ x)))
-    --   = applyₛ ρ (invₐₛ σ x)              [inv-l τ]
-    --   = applyₛ (ρ · σ⁻¹) x.
+    --   = apply ρ (invₐ τ (apply τ (invₐ σ x)))
+    --   = apply ρ (invₐ σ x)              [inv-l τ]
+    --   = apply (ρ · σ⁻¹) x.
     chain : ((ρ · (τ ⁻¹)) · (τ · (σ ⁻¹))) ≈ (ρ · (σ ⁻¹))
-    chain x = cong (applyₛ ρ) (inv-l τ (invₐₛ σ x))
+    chain x = cong (apply ρ) (inv-l τ (invₐ σ x))
 
 ------------------------------------------------------------------------
 -- coset-has-stab-rep: every σ has a Stab(X) representative in its
@@ -128,9 +141,9 @@ coset-has-stab-rep X σ =
   s-for-anchor X σ , s-for-fixes-anchor X σ , v-for-anchor X σ , prf
   where
     -- ((s-for-anchor X σ) · σ⁻¹) x
-    --   = act-axis (v-for-anchor X σ) (applyₛ σ (invₐₛ σ x))
+    --   = act-axis (v-for-anchor X σ) (apply σ (invₐ σ x))
     --   = act-axis (v-for-anchor X σ) x                  [inv-r σ]
-    --   = applyₛ (embed (v-for-anchor X σ)) x.
+    --   = apply (embed (v-for-anchor X σ)) x.
     prf : ((s-for-anchor X σ) · (σ ⁻¹)) ≈ embed (v-for-anchor X σ)
     prf x = cong (act-axis (v-for-anchor X σ)) (inv-r σ x)
 
@@ -153,8 +166,8 @@ coset-stab-rep-unique :
   τ₁ ≈ τ₂
 coset-stab-rep-unique X σ τ₁ τ₂ τ₁-stab τ₂-stab σ∼τ₁ σ∼τ₂ x =
   sym (trans
-        (cong (applyₛ τ₂) (sym (inv-l τ₁ x)))
-        (τ₂τ₁⁻¹≈ε (applyₛ τ₁ x)))
+        (cong (apply τ₂) (sym (inv-l τ₁ x)))
+        (τ₂τ₁⁻¹≈ε (apply τ₁ x)))
   where
     -- Step 1: τ₂ · τ₁⁻¹ ∈ V_4-image (from σ∼τ₂ ∘ sym σ∼τ₁ via trans).
     τ₁∼τ₂ : τ₁ ∼V₄ τ₂

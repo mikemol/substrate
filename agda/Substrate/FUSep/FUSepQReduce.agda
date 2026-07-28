@@ -114,8 +114,7 @@ module _ (⇒ : Reduce) where
   -- handed to bisimilarity (ADD 100) — the R side where SN fails and Newman cannot
   -- reach, exactly as the ℚ⊣R = SN boundary (ADD 109 insight).
   ----------------------------------------------------------------------
-  open import Substrate.FUSep.FUSepQCR using (module Newman)
-  open Newman _↦_ using () renaming (SN to SN-Acc; WCR to WCR↦; CR to CR↦; newman to newman↦)
+  open import Substrate.Foundation.RewriteConfluence _↦_ using () renaming (SN to SN-Acc; WCR to WCR↦; CR to CR↦; newman to newman↦)
 
   -- SN (this module's least-fixed-point) coincides with Newman's Acc-SN.
   SN⟹Acc : ∀ {t} → SN t → SN-Acc t
@@ -125,6 +124,6 @@ module _ (⇒ : Reduce) where
   -- THE ℚ-SIDE CONFLUENCE, assembled: given local confluence, every SN term is
   -- Church-Rosser (newman↦ applied at the SN term's Acc) — the wedge-projected
   -- confluent fragment. This is the REAL wire: SN feeds Newman, out comes CR.
-  open Newman _↦_ using (_⇒*_; Converge)
+  open import Substrate.Foundation.RewriteConfluence _↦_ using (_⇒*_; Converge)
   sn-confluent : WCR↦ → ∀ {t} → SN t → ∀ {b c} → t ⇒* b → t ⇒* c → Converge b c
   sn-confluent wcr snt = newman↦ wcr (SN⟹Acc snt)

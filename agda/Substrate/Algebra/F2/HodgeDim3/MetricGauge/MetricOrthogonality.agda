@@ -29,6 +29,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricOrthogonality where
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricMixed using (metric-mixed)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Eq

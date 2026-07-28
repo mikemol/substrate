@@ -17,7 +17,7 @@
 module Substrate.Algebra.Wedge.Contextuality.Models2 where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)

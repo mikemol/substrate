@@ -41,7 +41,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
 open import Substrate.Foundation.Product using (_,_)
@@ -57,11 +57,10 @@ open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
          entry-e; entry-f; entry-g; entry-h; entry-i; entry-j)
 
 -- Generic infrastructure.
-open import Substrate.Algebra.F2.SymBilinForm
-  using () renaming (BilinForm to BilinForm-generic;
-                     IsSymmetric to IsSymmetric-generic;
-                     bilinear-form-of to bilinear-form-of-generic;
-                     metric-id to metric-id-generic)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using () renaming (BilinForm to BilinForm-generic)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using () renaming (bilinear-form-of to bilinear-form-of-generic)
+open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using () renaming (IsSymmetric to IsSymmetric-generic)
+open import Substrate.Algebra.F2.SymBilinForm.MetricId using () renaming (metric-id to metric-id-generic)
 
 ------------------------------------------------------------------------
 -- N-1: SymBilinForm-4-to-generic — convert Vector 10 packing into
@@ -74,6 +73,7 @@ open import Substrate.Algebra.F2.SymBilinForm
 --    [ g  i  j  d ]]
 ------------------------------------------------------------------------
 
+open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 SymBilinForm-4-to-generic : SymBilinForm-4 → BilinForm-generic 4
 -- Row 0
 SymBilinForm-4-to-generic M ₀ ₀                   = entry-a M
@@ -236,7 +236,6 @@ metric-id-4-eq-bridged ₃ ₃ = refl
 -- via metric-id-4-eq-bridged.
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 
 bilinear-form-of-metric-id-4-bridge :
   (v w : Vector 4) →

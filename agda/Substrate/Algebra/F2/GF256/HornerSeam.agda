@@ -18,7 +18,7 @@ module Substrate.Algebra.F2.GF256.HornerSeam where
 open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
 open import Substrate.Algebra.F2.Polynomial using (_*P_)
 open import Substrate.Algebra.F2.GF256.Mul using (gmul)
 open import Substrate.Algebra.F2.GF256.Bridge using (reduce-eq; *P-eq)

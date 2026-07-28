@@ -30,9 +30,10 @@ open import Substrate.Foundation.Eq
 
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_)
-open import Substrate.Solresol.Fragment
-  using (Note; SolresolWord; ε; single;
-         transpose-1; transpose-word)
+open import Substrate.Solresol.Fragment.Note using (Note)
+open import Substrate.Solresol.Fragment.Transpose using (transpose-1)
+open import Substrate.Solresol.Fragment.TransposeWord using (transpose-word)
+open import Substrate.Solresol.Fragment.Word using (SolresolWord; ε; single)
 
 ------------------------------------------------------------------------
 -- 1. The basis-map.

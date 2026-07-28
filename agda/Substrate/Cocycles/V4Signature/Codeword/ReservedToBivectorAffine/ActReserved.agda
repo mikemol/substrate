@@ -14,7 +14,7 @@ module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReser
 open import Substrate.Foundation.Bool using (Bool; false; _xor_)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (refl)
-open import Substrate.Cocycles.V4Signature.Codeword using (Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4
   using (V₄)
 

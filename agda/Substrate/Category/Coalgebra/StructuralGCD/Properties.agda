@@ -21,7 +21,7 @@
 module Substrate.Category.Coalgebra.StructuralGCD.Properties where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Nat.Properties using (*-comm)
+open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 

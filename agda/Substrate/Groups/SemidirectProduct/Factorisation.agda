@@ -21,11 +21,16 @@ module Substrate.Groups.SemidirectProduct.Factorisation where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e)
-open import Substrate.Groups.S4
-  using (Permutation; _≈_; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Axioms.RightCancelEpsilon using (·-right-cancel-ε)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive; act-axis-as-V₄-mult;
          v-of-axis; v-of-axis-axis-of-v)
@@ -44,20 +49,20 @@ factorisation :
   (σ : Permutation) →
   σ ≈ (embed (v-for σ) · s-for σ)
 factorisation σ x =
-  sym (act-axis-involutive (v-for σ) (applyₛ σ x))
+  sym (act-axis-involutive (v-for σ) (apply σ x))
 
 ------------------------------------------------------------------------
 -- V₄ ∩ Stab(X) = {e}.
 --
 -- No non-identity V₄ element fixes any axis. The proof composes
--- act-axis-as-V₄-mult + v-of-axis-axis-of-v + V4.·-right-cancel-ε —
+-- act-axis-as-V₄-mult + v-of-axis-axis-of-v + ·-right-cancel-ε —
 -- one algebraic chain, no (V₄ × Axis) enumeration.
 ------------------------------------------------------------------------
 
 V₄-cap-Stab-trivial :
   (X : Axis) (v : V₄) → act-axis v X ≡ X → v ≡ e
 V₄-cap-Stab-trivial X v stab =
-  V4.·-right-cancel-ε v (v-of-axis X)
+  ·-right-cancel-ε v (v-of-axis X)
     (trans (sym (v-of-axis-axis-of-v (v V4.· v-of-axis X)))
     (trans (cong v-of-axis (sym (act-axis-as-V₄-mult v X)))
            (cong v-of-axis stab)))

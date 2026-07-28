@@ -13,7 +13,9 @@
 module Substrate.Foundation.Fin.Combine.Bijection where
 
 open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Combine
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.RemQuot
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
 open import Substrate.Foundation.Fin.Combine using (combine)

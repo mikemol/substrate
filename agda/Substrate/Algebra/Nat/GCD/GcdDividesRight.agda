@@ -10,7 +10,7 @@ module Substrate.Algebra.Nat.GCD.GcdDividesRight where
 
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (proj₂)
-open import Substrate.Algebra.Nat.Divides using (_∣_)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.TraceDivides using (trace-divides-right)

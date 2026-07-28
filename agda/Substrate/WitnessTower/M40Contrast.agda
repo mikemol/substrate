@@ -23,8 +23,8 @@
 
 module Substrate.WitnessTower.M40Contrast where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (_×_; _,_)

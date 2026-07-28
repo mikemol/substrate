@@ -25,14 +25,14 @@
 
 module Substrate.Category.RuleAction where
 
-open import Substrate.Category.RuleAction.V4                public
-open import Substrate.Category.RuleAction.V4Compose         public
-open import Substrate.Category.RuleAction.AffineProjection  public
-open import Substrate.Category.RuleAction.F2Patch           public
-open import Substrate.Category.RuleAction.SpanCoupling      public
-open import Substrate.Category.RuleAction.Record            public
-open import Substrate.Category.RuleAction.ComposeAffine     public
-open import Substrate.Category.RuleAction.ComposePatch      public
-open import Substrate.Category.RuleAction.ComposeSpan       public
-open import Substrate.Category.RuleAction.Compose           public
-open import Substrate.Category.RuleAction.Laws              public
+open import Substrate.Category.RuleAction.V4
+open import Substrate.Category.RuleAction.V4Compose
+open import Substrate.Category.RuleAction.AffineProjection
+open import Substrate.Category.RuleAction.F2Patch
+open import Substrate.Category.RuleAction.SpanCoupling
+open import Substrate.Category.RuleAction.Record
+open import Substrate.Category.RuleAction.ComposeAffine
+open import Substrate.Category.RuleAction.ComposePatch
+open import Substrate.Category.RuleAction.ComposeSpan
+open import Substrate.Category.RuleAction.Compose
+open import Substrate.Category.RuleAction.Laws

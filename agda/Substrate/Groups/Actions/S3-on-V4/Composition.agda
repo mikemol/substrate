@@ -14,9 +14,9 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Composition where
 
-open import Substrate.Groups.Actions.S3-on-V4.Composition.Block00          public
-open import Substrate.Groups.Actions.S3-on-V4.Composition.Block01          public
-open import Substrate.Groups.Actions.S3-on-V4.Composition.Block10          public
-open import Substrate.Groups.Actions.S3-on-V4.Composition.Block11          public
-open import Substrate.Groups.Actions.S3-on-V4.Composition.ActDotCanonical  public
-open import Substrate.Groups.Actions.S3-on-V4.Composition.ActDot           public
+open import Substrate.Groups.Actions.S3-on-V4.Composition.Block00
+open import Substrate.Groups.Actions.S3-on-V4.Composition.Block01
+open import Substrate.Groups.Actions.S3-on-V4.Composition.Block10
+open import Substrate.Groups.Actions.S3-on-V4.Composition.Block11
+open import Substrate.Groups.Actions.S3-on-V4.Composition.ActDotCanonical
+open import Substrate.Groups.Actions.S3-on-V4.Composition.ActDot

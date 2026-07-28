@@ -39,7 +39,7 @@
 module Substrate.WitnessTower.TowerCocycleGraded where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Bool using (Bool; _xor_)
 open import Substrate.Foundation.Eq using (_≡_; trans; cong; cong₂)
 open import Substrate.Algebra.F2 using (F₂; _+_)

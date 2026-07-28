@@ -9,15 +9,14 @@
 
 module Substrate.Groups.S4-Iso.V4Normal where
 
-import Substrate.Groups.V4 as V4
+import Substrate.Groups.V4.Operations as V4
 open V4 using (V₄)
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
 open import Substrate.Groups.V4-Embedding using (embed; V₄-image)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_; _⁻¹; _≈_;
-         ≈-refl; ≈-sym; ≈-trans;
-         ·-cong)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.InverseCong Axis using (⁻¹-cong)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 
 open import Substrate.Groups.S4-Iso.Embedding
@@ -29,6 +28,14 @@ open import Substrate.Groups.S4-Iso.Roundtrip
   using (perm-roundtrip-≈; embed-as-N-injection)
 open import Substrate.Groups.S4-Iso.IsoTransport
   using (forward-inv; compositional-to-perm-cong)
+open import Substrate.Groups.V4.Bijection
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.EqSym Axis
+open import Substrate.Groups.Symmetric.EqTrans Axis
+open import Substrate.Groups.Symmetric.ComposeCong Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
 
 ------------------------------------------------------------------------
 -- V₄-normal-compositional.
@@ -68,7 +75,7 @@ V₄-normal-compositional σ v =
 
     σ⁻¹≈P : (σ ⁻¹) ≈ P-σ⁻¹
     σ⁻¹≈P = ≈-trans {σ = σ ⁻¹} {τ = (compositional-to-perm σ̂) ⁻¹} {ρ = P-σ⁻¹}
-              (S4.⁻¹-cong {σ = σ} {τ = compositional-to-perm σ̂} σ≈P)
+              (⁻¹-cong {σ = σ} {τ = compositional-to-perm σ̂} σ≈P)
               (≈-sym {σ = P-σ⁻¹} {τ = (compositional-to-perm σ̂) ⁻¹}
                       (forward-inv σ̂))
 

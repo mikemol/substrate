@@ -20,7 +20,7 @@
 module Substrate.Category.UniversalProperty.BackedGradedUnique where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _<_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge

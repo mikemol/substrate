@@ -13,7 +13,7 @@ module Substrate.Cocycles.V4Signature.Codeword.Iso where
 open import Substrate.Foundation.Bool using (Bool)
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
-open import Substrate.Axes using (Axis)
+open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedMaps
   using (reserved-to-signed; signed-to-reserved)

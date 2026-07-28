@@ -23,7 +23,7 @@
 
 module Substrate.Algebra.PrimeFactor-168-FieldFanOut where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₇)
 open import Substrate.Category.FieldFanOut
 

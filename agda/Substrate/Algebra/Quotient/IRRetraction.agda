@@ -32,8 +32,7 @@ module Substrate.Algebra.Quotient.IRRetraction where
 open import Agda.Primitive using (Level; _⊔_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Quotient using (ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialise: `Canonical` collides across 4 nodes
+open import Substrate.Algebra.Quotient
 
 ------------------------------------------------------------------------
 -- The IR-retraction data, abstract over the three carriers + the maps.
@@ -72,7 +71,7 @@ module IR
   -- The apex: a retraction ⟹ the split idempotent decompose ∘ recon is a Canonical
   -- for ker recon (two Reprs that rebuild the same source — e.g. an ill-formed residue
   -- stream, or a non-canonical skeleton). The canonical form is `decompose ∘ recon`.
-  ir-Canonical : Canonical⟦de760d07⟧ (ker-Quotient recon)
+  ir-Canonical : Canonical (ker-Quotient recon)
   ir-Canonical = split-Canonical recon decompose recon-decompose
 
 ------------------------------------------------------------------------

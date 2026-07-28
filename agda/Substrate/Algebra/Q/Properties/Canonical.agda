@@ -4,9 +4,9 @@
 -- CAPSTONE: the `Canonical ℚ-Quotient` instance, with reduced-form
 -- uniqueness supplied by the continued-fraction shape (the SPPF/EEA route).
 --
--- The whole arc collapses to `canonical-respects-≈ : a ≈ℚ b → reduce a ≡
+-- The whole arc collapses to `reduce-respects-≈ : a ≈ℚ b → reduce a ≡
 -- reduce b`. We discharge it through the `reduced-≈⇒≡` spine:
---   reduce a ≈ℚ a ≈ℚ b ≈ℚ reduce b   (≈-canonical + the ℚ setoid)
+--   reduce a ≈ℚ a ≈ℚ b ≈ℚ reduce b   (≈-reduce + the ℚ setoid)
 -- gives `reduce a ≈ℚ reduce b` for free, leaving "two REDUCED, ≈ℚ-equal ℚ
 -- are propositionally ≡". That is the shape uniqueness cashed out: both
 -- reduced fractions have coprime traces (reduce-is-reduced), equal value ⟹
@@ -28,15 +28,15 @@ open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Z using (ℤ)
-open import Substrate.Algebra.Quotient using () renaming (Canonical to Canonical⟦de760d07⟧)
+open import Substrate.Algebra.Quotient
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-sym; ≈ℚ-trans; ℚ-Quotient)
 open import Substrate.Algebra.Q.Reduce using (reduce; reduce-build; sign-of)
 open import Substrate.Algebra.Q.Reduction using (is-reduced; abs-ℤ)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-canonical)
+open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
 open import Substrate.Algebra.Q.Properties.Abs using (abs-sign-of)
 open import Substrate.Algebra.Q.Properties.Uniqueness using (mag-cross-of-≈; uniq-from-mag-den)
-open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
@@ -87,19 +87,19 @@ reduced-≈⇒≡ p q rp rq pq = uniq-from-mag-den p q (proj₁ inj) (proj₂ in
 -- 3. The capstone obligation + the instance.
 ------------------------------------------------------------------------
 
-canonical-respects-≈ : {a b : ℚ} → a ≈ℚ b → reduce a ≡ reduce b
-canonical-respects-≈ {a} {b} hab =
+reduce-respects-≈ : {a b : ℚ} → a ≈ℚ b → reduce a ≡ reduce b
+reduce-respects-≈ {a} {b} hab =
   reduced-≈⇒≡ (reduce a) (reduce b) (reduce-is-reduced a) (reduce-is-reduced b)
     (≈ℚ-trans {reduce a} {a} {reduce b}
-       (≈ℚ-sym {a} {reduce a} (≈-canonical a))
-       (≈ℚ-trans {a} {b} {reduce b} hab (≈-canonical b)))
+       (≈ℚ-sym {a} {reduce a} (≈-reduce a))
+       (≈ℚ-trans {a} {b} {reduce b} hab (≈-reduce b)))
 
-ℚ-Canonical : Canonical⟦de760d07⟧ ℚ-Quotient
+ℚ-Canonical : Canonical ℚ-Quotient
 ℚ-Canonical = record
   { canonical            = reduce
-  ; canonical-idempotent = λ a → sym (canonical-respects-≈ (≈-canonical a))
-  ; canonical-respects-≈ = canonical-respects-≈
-  ; ≈-canonical          = ≈-canonical
+  ; canonical-idempotent = λ a → sym (reduce-respects-≈ (≈-reduce a))
+  ; canonical-respects-≈ = reduce-respects-≈
+  ; ≈-canonical          = ≈-reduce
   }
 
 ------------------------------------------------------------------------
@@ -110,4 +110,4 @@ private
   open import Substrate.Algebra.Z using (+_)
   -- 2/4 ≈ℚ 1/2 (both reduce to 1/2); respect-≈ applies on the closed witness.
   _ : reduce (mkℚ (+ 2) 3) ≡ reduce (mkℚ (+ 1) 1)
-  _ = canonical-respects-≈ {mkℚ (+ 2) 3} {mkℚ (+ 1) 1} refl
+  _ = reduce-respects-≈ {mkℚ (+ 2) 3} {mkℚ (+ 1) 1} refl

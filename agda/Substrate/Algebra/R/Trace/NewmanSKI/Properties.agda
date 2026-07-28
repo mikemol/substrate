@@ -11,7 +11,7 @@ module Substrate.Algebra.R.Trace.NewmanSKI.Properties where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; s≤s; z≤n; _≤_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-refl; ≤-<-trans; m≤m+n; n≤m+n; +-monoʳ-≤)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)

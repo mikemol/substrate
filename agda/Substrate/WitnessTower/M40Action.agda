@@ -31,9 +31,11 @@
 
 module Substrate.WitnessTower.M40Action where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; _·_)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ε-identity)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e)
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)

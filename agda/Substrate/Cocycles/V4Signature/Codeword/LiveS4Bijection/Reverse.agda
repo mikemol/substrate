@@ -16,10 +16,11 @@ open import Substrate.Foundation.Product using (_,_; proj₁)
 open import Substrate.Foundation.Eq
   using (_≡_; sym; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Axes using (Axis; D; C; S; act-axis)
-open import Substrate.Groups.S4
-  using (Permutation; _≈_; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive)
 open import Substrate.Groups.SemidirectProduct
@@ -37,6 +38,10 @@ open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
 
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
   using (stab-from-selector-fixes-D; axis-selector-roundtrip-cw)
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Axes.VOfAxis
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
 
 ------------------------------------------------------------------------
 -- Helper: selector-from-stab respects pointwise equivalence on Stab(D).
@@ -60,12 +65,12 @@ s-for-of-live-perm-≈ a sel z =
   trans
     (cong (λ v → act-axis v
                   (act-axis (v-of-axis a)
-                    (applyₛ (stab-from-selector sel) z)))
+                    (apply (stab-from-selector sel) z)))
           v-for-σ'-eq)
     (act-axis-involutive (v-of-axis a)
-                          (applyₛ (stab-from-selector sel) z))
+                          (apply (stab-from-selector sel) z))
   where
-    σ'D≡a : applyₛ (embed (v-of-axis a) · stab-from-selector sel) D ≡ a
+    σ'D≡a : apply (embed (v-of-axis a) · stab-from-selector sel) D ≡ a
     σ'D≡a = trans
               (cong (act-axis (v-of-axis a))
                     (stab-from-selector-fixes-D sel))
@@ -96,7 +101,7 @@ live-σ-live-roundtrip lv with live-to-axis-selector lv in p-decoded
     σ' : Permutation
     σ' = embed (v-of-axis a) · stab-from-selector sel
 
-    σ'D≡a : applyₛ σ' D ≡ a
+    σ'D≡a : apply σ' D ≡ a
     σ'D≡a = cong-trans (act-axis (v-of-axis a))
                        (stab-from-selector-fixes-D sel)
                        (v-of-axis-anchor-sends D a)

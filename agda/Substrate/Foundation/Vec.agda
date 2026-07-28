@@ -17,7 +17,7 @@
 module Substrate.Foundation.Vec where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Level using (Level; _⊔_)
 
 private

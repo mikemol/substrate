@@ -15,7 +15,7 @@ open import Substrate.Category.FreeOverBasis
          Free-relation; Free-CCC; Free-Lie)
 open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
 open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
+open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
 open import Substrate.Kelen.Fragment using (kelen-witness)
 open import Substrate.Lambda.Fragment using (lambda-witness)
 open import Substrate.Invented.LieFragment using (lie-witness)

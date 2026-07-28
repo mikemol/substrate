@@ -30,8 +30,7 @@ module Substrate.Algebra.Nat.Mod where
 
 open import Substrate.Foundation.Nat
   using (ℕ; zero; suc; _+_; _<_; _≤_; _<?_; s≤s; z≤n)
-open import Substrate.Foundation.Nat.Properties
-  using (≤-suc-r; <-suc-r; ≤-refl; <-suc-self; <-irrefl)
+open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-suc-r; ≤-refl; <-suc-self; <-irrefl)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)

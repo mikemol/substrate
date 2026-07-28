@@ -37,15 +37,16 @@
 
 module Substrate.WitnessTower.SignFactorsThroughStab where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; tabulate)
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign)
-open import Substrate.Axes using (Axis; D; C; S; W; v-of-axis)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.Punctured using (a→f; f→a)
-open import Substrate.Groups.S4 using (Permutation; _·_; apply)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt)

@@ -15,6 +15,6 @@
 
 module Substrate.Groups.Actions.S3-on-V4.HomSwaps where
 
-open import Substrate.Groups.Actions.S3-on-V4.HomRotations              public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHom            public
+open import Substrate.Groups.Actions.S3-on-V4.HomRotations
+open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical
+open import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHom

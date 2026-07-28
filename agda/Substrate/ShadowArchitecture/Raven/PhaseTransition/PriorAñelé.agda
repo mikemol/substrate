@@ -12,7 +12,7 @@
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé where
 
 open import Substrate.Foundation.Bool using (Bool; false; _∨_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; _∷_)
 open import Substrate.ShadowArchitecture.Raven.Grammar using (Stanza)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.IsAñeléTerminal

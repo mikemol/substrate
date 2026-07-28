@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.MetricId where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Algebra.F2 using (𝟘; 𝟙)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 

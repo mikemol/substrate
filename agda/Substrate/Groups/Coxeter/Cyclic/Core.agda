@@ -14,7 +14,8 @@
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-irrefl)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
 open import Substrate.Foundation.Empty using (⊥-elim)
@@ -28,7 +29,9 @@ open import Substrate.Foundation.Fin.Iterate
 
 module Substrate.Groups.Coxeter.Cyclic.Core (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Existential n public
+open import Substrate.Groups.Coxeter.Cyclic.Bridge n using (insert-power-advance; insert-power-eq; not-lt-eq-n; insert-power-wrap)
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (power; insert; a; Gen; σ; c-here; σ-HasOrderPerm)
+open import Substrate.Groups.Coxeter.Cyclic.Existential n
 
 ------------------------------------------------------------------------
 -- power-canonical-bounded: normalize fixes power words within bound.
@@ -86,6 +89,8 @@ normalize-power-prepend (suc k) w₂ = cong (insert a) (normalize-power-prepend 
 
 insert-append-lemma : (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical-ex w →
                      normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
+
+open WithLemmas canonical-is-fixed insert-append-lemma public
 insert-append-lemma a w₂ (k , c-here .k) with toℕ k <? n
 ... | yes p
   rewrite insert-power-advance (toℕ k) p
@@ -101,4 +106,3 @@ insert-append-lemma a w₂ (k , c-here .k) with toℕ k <? n
 -- (_·_, _≈_, ε, normalize-distrib, etc.).
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed insert-append-lemma public

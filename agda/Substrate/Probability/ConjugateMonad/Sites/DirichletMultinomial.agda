@@ -24,7 +24,8 @@
 
 module Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial where
 
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Negation using (yes; no)
 open import Substrate.Foundation.Nat using (ℕ; suc; zero; _+_)
 open import Substrate.Foundation.Level using (Level; 0ℓ)

@@ -33,7 +33,7 @@
 
 module Substrate.Codes.ReedMuller.RM-1-3 where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_)
 

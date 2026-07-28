@@ -25,5 +25,6 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap
   -- expressing that ★ is self-adjoint (= self-dagger).
   where
 
-open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag public
+open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag
   renaming (named-DaggerCategory to HodgeStar-AsDaggerEndomap-Carrier)
+

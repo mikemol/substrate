@@ -4,10 +4,11 @@
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Basis where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
@@ -48,11 +49,11 @@ module Over {A : Set}
   -- the coefficient-level (A-valued) Fin sum, and its congruence / zero.
   sumA : (Fin n → A) → A
   sumA {zero}  _ = 𝟘
-  sumA {suc _} g = g fz + sumA (λ i → g (fs i))
+  sumA {suc _} g = g fzero + sumA (λ i → g (fsuc i))
 
   sumA-cong : {g h : Fin n → A} → (∀ i → g i ≡ h i) → sumA g ≡ sumA h
   sumA-cong {zero}  _  = refl
-  sumA-cong {suc _} eq = cong₂ _+_ (eq fz) (sumA-cong (λ i → eq (fs i)))
+  sumA-cong {suc _} eq = cong₂ _+_ (eq fzero) (sumA-cong (λ i → eq (fsuc i)))
 
   sumA-zero : sumA {n} (λ _ → 𝟘) ≡ 𝟘
   sumA-zero {zero}   = refl
@@ -61,28 +62,28 @@ module Over {A : Set}
   -- the polynomial-level Fin sum (fold +P), its congruence, and nth through it.
   sum : (Fin n → Poly m) → Poly m
   sum {zero}  {m} _ = replicate m 𝟘
-  sum {suc _}     f = f fz +P sum (λ i → f (fs i))
+  sum {suc _}     f = f fzero +P sum (λ i → f (fsuc i))
 
   sum-cong : {f g : Fin n → Poly m} → (∀ i → f i ≡ g i) → sum f ≡ sum g
   sum-cong {zero}  _  = refl
-  sum-cong {suc _} eq = cong₂ _+P_ (eq fz) (sum-cong (λ i → eq (fs i)))
+  sum-cong {suc _} eq = cong₂ _+P_ (eq fzero) (sum-cong (λ i → eq (fsuc i)))
 
   nth-sum : (f : Fin n → Poly m) (k : ℕ) → nth (sum f) k ≡ sumA (λ i → nth (f i) k)
   nth-sum {zero}  {m} f k = nth-replicate m k
   nth-sum {suc _}     f k =
-    trans (nth-+P (f fz) (sum (λ i → f (fs i))) k)
-          (cong (nth (f fz) k +_) (nth-sum (λ i → f (fs i)) k))
+    trans (nth-+P (f fzero) (sum (λ i → f (fsuc i))) k)
+          (cong (nth (f fzero) k +_) (nth-sum (λ i → f (fsuc i)) k))
 
   -- basis i is the delta at toℕ i.
   nth-basis-same : (i : Fin n) → nth (basis i) (toℕ i) ≡ 𝟙
-  nth-basis-same fz     = refl
-  nth-basis-same (fs i) = nth-basis-same i
+  nth-basis-same fzero     = refl
+  nth-basis-same (fsuc i) = nth-basis-same i
 
   nth-basis-other : (i : Fin n) (k : ℕ) → ¬ (k ≡ toℕ i) → nth (basis i) k ≡ 𝟘
-  nth-basis-other fz       zero    neq = ⊥-elim (neq refl)
-  nth-basis-other (fs i)   zero    _   = refl
-  nth-basis-other {suc n'} fz (suc k) _   = nth-replicate n' k
-  nth-basis-other (fs i)   (suc k) neq = nth-basis-other i k (λ e → neq (cong suc e))
+  nth-basis-other fzero       zero    neq = ⊥-elim (neq refl)
+  nth-basis-other (fsuc i)   zero    _   = refl
+  nth-basis-other {suc n'} fzero (suc k) _   = nth-replicate n' k
+  nth-basis-other (fsuc i)   (suc k) neq = nth-basis-other i k (λ e → neq (cong suc e))
 
   -- the one-hot collapse: Σᵢ (nth v (toℕ i))·(δ_{toℕ i})_k ≡ nth v k.
   basis-collapse : (v : Poly n) (k : ℕ) → sumA (λ (i : Fin n) → (nth v (toℕ i)) * nth (basis i) k) ≡ nth v k

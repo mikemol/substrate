@@ -69,7 +69,8 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
 open import Substrate.Foundation.Negation using (Dec; yes; no; dec-¬; from-¬¬)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op3
 open import Substrate.Foundation.Fin.Exists using (Fin-∃?)
 open import Substrate.Foundation.Eq using (sym; subst)
 open import Substrate.Algebra.Bijection using (_↔_)

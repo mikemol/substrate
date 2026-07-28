@@ -36,15 +36,16 @@
 
 module Substrate.Algebra.GL3F2.GaugeGenerators where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₈; ₁₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (basis-permutation-Linear; HasOrderPerm; HasOrder-from-perm)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
-  using (cyclic-suc; cyclic-Linear; cyclic-HasOrder)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear using (basis-permutation-Linear)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (HasOrder-from-perm)
+open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-Linear; cyclic-HasOrder)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 open import Substrate.Algebra.F2.FanoPlane
   using (singer-Linear) public
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)

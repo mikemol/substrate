@@ -41,10 +41,10 @@
 
 module Substrate.Cocycles.V4Signature.Codeword where
 
-open import Substrate.Cocycles.V4Signature.Codeword.Type                    public
-open import Substrate.Cocycles.V4Signature.Codeword.IsReserved              public
-open import Substrate.Cocycles.V4Signature.Codeword.Subtypes                public
-open import Substrate.Cocycles.V4Signature.Codeword.AxisBits                public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedMaps      public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedRoundTrip public
-open import Substrate.Cocycles.V4Signature.Codeword.Iso                     public
+open import Substrate.Cocycles.V4Signature.Codeword.Type
+open import Substrate.Cocycles.V4Signature.Codeword.IsReserved
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
+open import Substrate.Cocycles.V4Signature.Codeword.AxisBits
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedMaps
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedRoundTrip
+open import Substrate.Cocycles.V4Signature.Codeword.Iso

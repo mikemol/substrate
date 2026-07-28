@@ -58,7 +58,7 @@
 
 module Substrate.ShadowArchitecture.Raven where
 
-open import Substrate.ShadowArchitecture.Raven.Grammar         public
-open import Substrate.ShadowArchitecture.Raven.Poem            public
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition public
-open import Substrate.ShadowArchitecture.Raven.Semantics       public
+open import Substrate.ShadowArchitecture.Raven.Grammar
+open import Substrate.ShadowArchitecture.Raven.Poem
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition
+open import Substrate.ShadowArchitecture.Raven.Semantics

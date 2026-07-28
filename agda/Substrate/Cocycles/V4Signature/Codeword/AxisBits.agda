@@ -13,7 +13,7 @@ module Substrate.Cocycles.V4Signature.Codeword.AxisBits where
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 
 axis-from-bits : Bool → Bool → Axis
 axis-from-bits false false = D

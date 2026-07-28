@@ -31,7 +31,7 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq
@@ -41,17 +41,17 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Algebra.F2.Linear
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
-  using (SymBilinForm-3; bilinear-form-of; congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge
   using (SymBilinForm-3-to-generic; is-symmetric-bridged-3;
          bilinear-form-of-bridge-3)
 
 -- Generic infrastructure.
-open import Substrate.Algebra.F2.SymBilinForm
-  using (BilinForm)
-  renaming (bilinear-form-of to bilinear-form-of-generic;
-            congruence-act   to congruence-act-generic)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using () renaming (bilinear-form-of to bilinear-form-of-generic)
+open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct using () renaming (congruence-act to congruence-act-generic)
 open import Substrate.Algebra.F2.SymBilinForm.CongruenceCompose
   using (congruence-compose-pointwise)
 open import Substrate.Algebra.F2.SymBilinForm.Symmetry

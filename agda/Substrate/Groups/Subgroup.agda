@@ -28,16 +28,24 @@ open import Substrate.Foundation.Product using (∃; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; sym-trans)
 
-open import Substrate.Axes using (Axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_; _⁻¹; ε; _≈_;
-         ·-cong; ≈-refl; ≈-sym; ⁻¹-cong; inv-l)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+
 open import Substrate.Groups.V4-Embedding
   using (embed; embed-hom; V₄-image; act-axis-id)
 open import Substrate.Groups.SemidirectProduct using (Stab)
 open import Substrate.Groups.V4-Normality using (V₄-normal)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.ComposeCong Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
+open import Substrate.Groups.Symmetric.EqSym Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
+open import Substrate.Groups.Symmetric.InverseCong Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.SemidirectProduct.Stab
 
 ------------------------------------------------------------------------
 -- Subgroup of S_4 (specialised).
@@ -148,12 +156,12 @@ Stab-ε X = refl
 Stab-∙ :
   ∀ {X σ τ} → Stab X σ → Stab X τ → Stab X (σ · τ)
 Stab-∙ {X} {σ} σ-stab τ-stab =
-  trans (cong (applyₛ σ) τ-stab) σ-stab
+  trans (cong (apply σ) τ-stab) σ-stab
 
 Stab-⁻¹ :
   ∀ {X σ} → Stab X σ → Stab X (σ ⁻¹)
 Stab-⁻¹ {X} {σ} σ-stab =
-  sym-trans (cong (invₐₛ σ) σ-stab) (inv-l σ X)
+  sym-trans (cong (invₐ σ) σ-stab) (inv-l σ X)
 
 Stab-Subgroup : (X : Axis) → S₄-Subgroup (Stab X)
 Stab-Subgroup X = record
@@ -184,9 +192,9 @@ Stab-Subgroup X = record
 ------------------------------------------------------------------------
 
 Stab-conj-equivariant :
-  ∀ {X} (g σ : Permutation) → Stab X σ → Stab (applyₛ g X) ((g · σ) · (g ⁻¹))
+  ∀ {X} (g σ : Permutation) → Stab X σ → Stab (apply g X) ((g · σ) · (g ⁻¹))
 Stab-conj-equivariant {X} g σ σ-stab =
-  cong (applyₛ g) (trans (cong (applyₛ σ) (inv-l g X)) σ-stab)
+  cong (apply g) (trans (cong (apply σ) (inv-l g X)) σ-stab)
 
 ------------------------------------------------------------------------
 -- THE ORBIT-STABILISER STRUCTURE (one structure, several readings).

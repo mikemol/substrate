@@ -34,7 +34,7 @@ module Substrate.Algebra.F2.AES.SBoxFaces where
 open import Substrate.Foundation.Bool using (Bool; false)
 open import Substrate.Foundation.Eq using (_≡_; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q

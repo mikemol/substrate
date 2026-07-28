@@ -37,7 +37,7 @@
 module Substrate.WitnessTower.Wedge.V4Seam where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.Wedge using () renaming (Wedge to Wedge⟦478f66a6⟧)

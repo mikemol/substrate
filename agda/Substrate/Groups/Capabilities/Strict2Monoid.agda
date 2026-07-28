@@ -45,6 +45,7 @@ module _ (Word : Set) where
 -- instance's per-Zₙ data. Captures every shared field once.
 ------------------------------------------------------------------------
 
+
 open import Substrate.Groups.Coxeter.Word as CW
   using (_++_; ++-identity-left; ++-identity-right)
 
@@ -65,19 +66,3 @@ from-coxeter-data Gen assoc norm distrib = record
   ; normalize         = norm
   ; normalize-distrib = distrib
   }
-
-------------------------------------------------------------------------
--- Per-Zₙ witnesses, one line each.
-------------------------------------------------------------------------
-
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
-import Substrate.Groups.Z4-Coxeter as Z₄
-import Substrate.Groups.Z5-Coxeter as Z₅
-import Substrate.Groups.Z7-Coxeter as Z₇
-
-cap-Z₂ = from-coxeter-data Z₂.Gen Z₂.++-assoc Z₂.normalize Z₂.normalize-distrib
-cap-Z₃ = from-coxeter-data Z₃.Gen Z₃.++-assoc Z₃.normalize Z₃.normalize-distrib
-cap-Z₄ = from-coxeter-data Z₄.Gen Z₄.++-assoc Z₄.normalize Z₄.normalize-distrib
-cap-Z₅ = from-coxeter-data Z₅.Gen Z₅.++-assoc Z₅.normalize Z₅.normalize-distrib
-cap-Z₇ = from-coxeter-data Z₇.Gen Z₇.++-assoc Z₇.normalize Z₇.normalize-distrib

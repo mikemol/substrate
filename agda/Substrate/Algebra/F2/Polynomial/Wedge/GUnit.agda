@@ -22,7 +22,7 @@ open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; subst)
 open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_)
 import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base public
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)

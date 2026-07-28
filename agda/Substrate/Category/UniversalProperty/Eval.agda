@@ -26,8 +26,6 @@ module Substrate.Category.UniversalProperty.Eval where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Algebra.Quotient
-  using (Quotient; ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)
 open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category
@@ -157,5 +155,5 @@ module _ (O : Set) (Hom : O → O → Set) (C : UPCategory O Hom) where
   UPTerm-Quotient : (X Y : O) → Quotient (UPTerm O Hom X Y) _≈ᵤ_
   UPTerm-Quotient X Y = ker-Quotient (eval {X} {Y})
 
-  UPTerm-Canonical : (X Y : O) → Canonical⟦de760d07⟧ (UPTerm-Quotient X Y)
+  UPTerm-Canonical : (X Y : O) → Canonical (UPTerm-Quotient X Y)
   UPTerm-Canonical X Y = split-Canonical (eval {X} {Y}) reify eval-reify

@@ -15,7 +15,7 @@
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ)
 open import Substrate.Algebra.Z.Add using (_+ℤ_)

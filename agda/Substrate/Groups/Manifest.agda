@@ -99,7 +99,9 @@ import Substrate.Groups.Z7-x-FreeCyclic-PhaseProjection
 -- x-FreeCyclic-Degree: ℕ-grading on the cycle axis (single instance).
 ------------------------------------------------------------------------
 
-import Substrate.Groups.Z3-x-FreeCyclic-Degree
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.CycleDegree
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeEpsilon
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeDot
 
 ------------------------------------------------------------------------
 -- x-FreeCyclic-Strict2Monoid: 2-D Strict2Monoid via direct-product.
@@ -111,8 +113,18 @@ import Substrate.Groups.Z3-x-FreeCyclic-Strict2Monoid
 -- Cross-Zₙ aggregators (orbit consumers, not per-cell capabilities).
 ------------------------------------------------------------------------
 
-import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance
-import Substrate.Groups.Z-x-FreeCyclic-Recovery
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z3.Advance
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z3.AsSigma
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z4.Advance
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z4.AsSigma
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.Embed
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.PhaseRecovery
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.EmbedEpsilon
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.EmbedDot
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.Embed
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.PhaseRecovery
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.EmbedEpsilon
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.EmbedDot
 import Substrate.Groups.Z3-x-Z4-x-FreeCyclic
 import Substrate.Groups.CyclicCoxeterStrict2Monoids
 import Substrate.Groups.ConsolidatedCyclicCoxeter

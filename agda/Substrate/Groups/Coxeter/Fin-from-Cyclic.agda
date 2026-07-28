@@ -11,7 +11,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
@@ -19,7 +20,10 @@ open import Substrate.Groups.Coxeter.Word using (Word)
 
 module Substrate.Groups.Coxeter.Fin-from-Cyclic (n : ℕ) where
 
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; power; c-here; a; σ; insert; σ-HasOrderPerm)
+open import Substrate.Groups.Coxeter.Cyclic.Existential n using (Canonical-ex; insert-canonical-ex)
 open import Substrate.Groups.Coxeter.Cyclic n public
+
 
 ------------------------------------------------------------------------
 -- Bijection helpers at the existential view.
@@ -36,12 +40,13 @@ action-of-a-is-σ-ex : ∀ {w} (c : Canonical-ex w) →
                       ≡ σ (canonical-to-Fin-ex c)
 action-of-a-is-σ-ex (k , _) = refl
 
-------------------------------------------------------------------------
--- Apply Coxeter-Fin-Generic at order (suc n).
-------------------------------------------------------------------------
 
 open import Substrate.Groups.Coxeter-Fin-Generic
   (suc n) Gen a Canonical-ex insert insert-canonical-ex
   canonical-to-Fin-ex Fin-to-canonical-ex σ
   action-of-a-is-σ-ex σ-HasOrderPerm
   public
+------------------------------------------------------------------------
+-- Apply Coxeter-Fin-Generic at order (suc n).
+------------------------------------------------------------------------
+

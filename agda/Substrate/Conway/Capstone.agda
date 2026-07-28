@@ -51,21 +51,21 @@
 module Substrate.Conway.Capstone where
 
 -- Game-induction tower
-open import Substrate.Conway.BirthdayOrdered public
+open import Substrate.Conway.BirthdayOrdered
   using (BirthdayOrdered; bday)
-open import Substrate.Conway.AddGeneral     public
+open import Substrate.Conway.AddGeneral
   using (ConwayAddType; ConwayAddSignature)
-open import Substrate.Conway.AddComm        public
+open import Substrate.Conway.AddComm
   using (ConwayAddCommutativity)
-open import Substrate.Conway.AddAssoc       public
+open import Substrate.Conway.AddAssoc
   using (ConwayAddAssociativity)
-open import Substrate.Conway.OrderTrans     public
+open import Substrate.Conway.OrderTrans
   using (ConwayOrderTransitivity)
-open import Substrate.Conway.OrderAntisym   public
+open import Substrate.Conway.OrderAntisym
   using (ConwayOrderAntisymmetry)
-open import Substrate.Conway.Mul            public
+open import Substrate.Conway.Mul
   using (ConwayMulType; ConwayMulSignature)
-open import Substrate.Conway.AsField        public
+open import Substrate.Conway.AsField
   using (SurrealFieldObligation)
 
 ------------------------------------------------------------------------

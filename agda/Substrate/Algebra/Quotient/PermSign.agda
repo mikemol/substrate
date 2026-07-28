@@ -46,12 +46,10 @@
 module Substrate.Algebra.Quotient.PermSign where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Bool using (Bool; true; false)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Algebra.Quotient
-  using (Quotient; KerRel; ker-Quotient; split-Canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialize the ambiguous name
 open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_)
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
 open import Substrate.WitnessTower.Enumerate using (Perm)
@@ -104,17 +102,17 @@ module _ (n' : ℕ) where
   sign-Quotient : Quotient (Perm N) (KerRel signP)
   sign-Quotient = ker-Quotient signP
 
-  sign-Canonical : Canonical⟦de760d07⟧ sign-Quotient
+  sign-Canonical : Canonical sign-Quotient
   sign-Canonical = split-Canonical signP s retract
 
   -- the canonical representative set is EXACTLY the two elements {id, sadj₀}
   -- — the Z/2 sitting inside Sₙ. Both are `cong s` on the sign value.
   canonical-even : (σ : Perm N) → signP σ ≡ false →
-                   Canonical⟦de760d07⟧.canonical sign-Canonical σ ≡ id-perm N
+                   Canonical.canonical sign-Canonical σ ≡ id-perm N
   canonical-even σ e = cong s e
 
   canonical-odd : (σ : Perm N) → signP σ ≡ true →
-                  Canonical⟦de760d07⟧.canonical sign-Canonical σ ≡ sadj (suc n') zero
+                  Canonical.canonical sign-Canonical σ ≡ sadj (suc n') zero
   canonical-odd σ e = cong s e
 
   ------------------------------------------------------------------------

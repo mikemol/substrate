@@ -26,7 +26,7 @@
 
 module Substrate.WitnessTower.V4Grounding where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Bool using (Bool; true)
 open import Substrate.Foundation.Eq using (_≡_; refl)

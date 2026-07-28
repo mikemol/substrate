@@ -12,7 +12,8 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Axioms where
 
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch        public
-open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong     public
-open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon  public
-open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN public
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.OnCanonical
+open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.EpsilonN

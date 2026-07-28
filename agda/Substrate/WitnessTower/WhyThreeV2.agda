@@ -7,7 +7,7 @@
 -- (automorphic image) of the others. BUILT verdict, in three checked
 -- facts:
 --
---   (1) NOT conjugate INSIDE V₄. V₄ is abelian (V4.·-comm), so internal
+--   (1) NOT conjugate INSIDE V₄. V₄ is abelian (·-comm), so internal
 --       conjugation g·x·g⁻¹ = x is trivial — the three V₂'s are distinct
 --       central subgroups, NOT related by any V₄-internal conjugation.
 --
@@ -31,10 +31,14 @@
 
 module Substrate.WitnessTower.WhyThreeV2 where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ; _·_)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Axioms.Comm using (·-comm)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ·-comm; ε-left; inv-left)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB using (swap-αβ)

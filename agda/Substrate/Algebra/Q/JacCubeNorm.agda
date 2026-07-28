@@ -7,7 +7,7 @@
 --   the identity: same : norm e-N ≡ norm e-R = refl              (make-or-break)
 module Substrate.Algebra.Q.JacCubeNorm where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _∸_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Z using (ℤ; +_; 1ℤ)
@@ -25,6 +25,9 @@ import Substrate.Algebra.Z.JacobianResidue as R
 import Substrate.Algebra.Q.JacobianCollision as C
 
 module _ (x y z : ℚ) where
+  -- ⟡public-policy: explicit signatures so `suc` disambiguates to ℕ's
+  -- constructor (Fin's `suc` is also in scope from Foundation.Fin.Fin).
+  qxn qyn qzn : ℕ
   qxn = suc (den-1 x)
   qyn = suc (den-1 y)
   qzn = suc (den-1 z)

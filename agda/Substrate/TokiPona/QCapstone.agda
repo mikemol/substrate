@@ -12,16 +12,15 @@
 module Substrate.TokiPona.QCapstone where
 
 -- Re-export the TPQ-arc slices publicly.
-open import Substrate.TokiPona.QSemanticSpace public
-open import Substrate.TokiPona.QNimiSpace public
-open import Substrate.TokiPona.QModifierBilinear public
-open import Substrate.TokiPona.QTokiSentence public
-open import Substrate.TokiPona.QParticles public
-open import Substrate.TokiPona.QLinearity public
-open import Substrate.TokiPona.QLinearAlgebra public
-open import Substrate.TokiPona.F2toQForget public
-open import Substrate.TokiPona.QFragment public
-
+open import Substrate.TokiPona.QSemanticSpace
+open import Substrate.TokiPona.QNimiSpace
+open import Substrate.TokiPona.QModifierBilinear
+open import Substrate.TokiPona.QTokiSentence
+open import Substrate.TokiPona.QParticles
+open import Substrate.TokiPona.QLinearity
+open import Substrate.TokiPona.QLinearAlgebra
+open import Substrate.TokiPona.F2toQForget
+open import Substrate.TokiPona.QFragment
 ------------------------------------------------------------------------
 -- 1. Cross-arc consistency note.
 --

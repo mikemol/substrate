@@ -31,7 +31,6 @@
 module Substrate.TokiPona.SemanticSpace where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
@@ -39,7 +38,7 @@ open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 -- can `open import Substrate.TokiPona.SemanticSpace` and get the
 -- whole carrier surface in one shot.
 
-open import Substrate.Algebra.F2.Vector public
+open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; basis;
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-comm; +ⱽ-assoc;
          +ⱽ-self-inverse)

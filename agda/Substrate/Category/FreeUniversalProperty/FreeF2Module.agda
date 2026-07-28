@@ -24,7 +24,7 @@
 module Substrate.Category.FreeUniversalProperty.FreeF2Module where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)

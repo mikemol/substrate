@@ -23,7 +23,12 @@ module Substrate.Foundation.Fin.Combine.Assoc where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc; *-distribʳ-+)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Combine
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Inject
+open import Substrate.Foundation.Fin.Properties
+open import Substrate.Foundation.Fin.Raise
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Combine using (combine)

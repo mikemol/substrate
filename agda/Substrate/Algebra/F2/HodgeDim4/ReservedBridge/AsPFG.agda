@@ -33,7 +33,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AsPFG where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.Algebra.GL3F2

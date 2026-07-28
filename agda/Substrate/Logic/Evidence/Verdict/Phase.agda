@@ -27,8 +27,12 @@ module Substrate.Logic.Evidence.Verdict.Phase where
 open import Substrate.Foundation.Bool  using (true; false)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Eq    using (_≡_; refl; cong)
-open import Substrate.Groups.V4
-  using (V₄; e; α; β; γ; _·_; ε; ·-assoc; ·-comm; ε-left; ε-right)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.Comm using (·-comm)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonRight using (ε-right)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_; ε)
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Verdict

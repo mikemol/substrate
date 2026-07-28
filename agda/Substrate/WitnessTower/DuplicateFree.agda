@@ -17,7 +17,8 @@
 module Substrate.WitnessTower.DuplicateFree where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; suc-injective)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; subst; trans)
@@ -137,7 +138,7 @@ NoDup-concatMapL g (x ∷ xs) (x∉xs ∷ ndxs) ndg  ident =
 
 all-positions-nodup : (n : ℕ) → NoDup (all-positions n)
 all-positions-nodup zero    = []
-all-positions-nodup (suc n) = zero∉ ∷ NoDup-mapL suc suc-injective (all-positions-nodup n)
+all-positions-nodup (suc n) = zero∉ ∷ NoDup-mapL suc fin-suc-injective (all-positions-nodup n)
   where
     -- zero is not in mapL suc (...) — suc is never zero.
     zero∉ : ¬ (zero ∈ mapL suc (all-positions n))

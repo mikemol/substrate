@@ -43,7 +43,7 @@ open import Substrate.Algebra.Wedge.Product
 open import Substrate.Category.GradedMonoid using (GradedMonoid)
 -- The law PREDICATES live in (proof-free) Product.LawTypes so law-bundling
 -- records can import the field types without a proof dependency; re-exported.
-open import Substrate.Algebra.Wedge.Product.LawTypes public
+open import Substrate.Algebra.Wedge.Product.LawTypes
   using (GradedAssoc; GradedUnitˡ; GradedUnitʳ)
 
 ------------------------------------------------------------------------

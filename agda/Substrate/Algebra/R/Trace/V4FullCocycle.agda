@@ -29,12 +29,14 @@ open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even
 -- (det-flip = rowSwap = Chirality, ⟡S3); second = the OBJECT ℤ/2 (recip = the
 -- CF-representation flip). Element (a , b): a = chirality bit, b = recip bit.
 ------------------------------------------------------------------------
+open import Substrate.Groups.V4.Bijection using (V₄) renaming (e to e₄; α to α₄; β to β₄; γ to γ₄)
+open import Substrate.Groups.V4.Operations using () renaming (_·_ to _·₄_)
 record V4Full : Set where      -- ⟦shape:5d032637 field morph,obj⟧
   constructor v4
   field morph : F₂     -- the det-flip / rowSwap / Chirality generator (⟡S3)
         obj   : F₂     -- the recip / CF-representation generator (⟡S1-remainder)
-open V4Full
 
+open V4Full
 -- the group operation: componentwise XOR (ℤ/2 × ℤ/2).
 _·_ : V4Full → V4Full → V4Full
 (v4 a b) · (v4 c d) = v4 (a ⊕ c) (b ⊕ d)
@@ -99,8 +101,6 @@ chirality-hom g h = refl
 -- bit-coordinate chart being the one where chirality-of reads the morph bit.
 --   e ↔ e    rowSwap-gen ↔ α    recip-gen ↔ β    klein ↔ γ
 ------------------------------------------------------------------------
-open import Substrate.Groups.V4 using (V₄)
-  renaming (e to e₄; α to α₄; β to β₄; γ to γ₄; _·_ to _·₄_)
 
 to₄ : V4Full → V₄
 to₄ (v4 𝟘 𝟘) = e₄

@@ -29,7 +29,7 @@
 module Substrate.Algebra.F1.GL where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 

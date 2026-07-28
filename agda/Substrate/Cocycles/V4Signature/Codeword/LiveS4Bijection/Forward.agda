@@ -24,10 +24,11 @@ module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Forward where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
-open import Substrate.Axes using (act-axis; D)
-open import Substrate.Groups.S4
-  using (Permutation; _≈_; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (v-of-axis; v-for; s-for; s-for-fixes-anchor; factorisation)
@@ -39,6 +40,10 @@ open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
 
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
   using (live-perm-axis-sel; stab-roundtrip)
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Axes.VOfAxis
+open import Substrate.Groups.SemidirectProduct.Factorisation
 
 σ-live-σ-roundtrip :
   (σ : Permutation) →
@@ -50,19 +55,19 @@ open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
     sel-σ = selector-from-stab (s-for σ)
 
     step1 :
-      applyₛ (live-to-permutation (permutation-to-live σ)) z
-      ≡ applyₛ (embed (v-of-axis a-σ) · stab-from-selector sel-σ) z
-    step1 = cong (λ p → applyₛ p z) (live-perm-axis-sel a-σ sel-σ)
+      apply (live-to-permutation (permutation-to-live σ)) z
+      ≡ apply (embed (v-of-axis a-σ) · stab-from-selector sel-σ) z
+    step1 = cong (λ p → apply p z) (live-perm-axis-sel a-σ sel-σ)
 
     step2 :
-      applyₛ (embed (v-of-axis a-σ) · stab-from-selector sel-σ) z
-      ≡ applyₛ (embed (v-for σ) · stab-from-selector sel-σ) z
+      apply (embed (v-of-axis a-σ) · stab-from-selector sel-σ) z
+      ≡ apply (embed (v-for σ) · stab-from-selector sel-σ) z
     step2 =
-      cong (λ v → act-axis v (applyₛ (stab-from-selector sel-σ) z))
+      cong (λ v → act-axis v (apply (stab-from-selector sel-σ) z))
            (v-of-axis-axis-of-v-id (v-for σ))
 
     step3 :
-      applyₛ (embed (v-for σ) · stab-from-selector sel-σ) z
-      ≡ applyₛ (embed (v-for σ) · s-for σ) z
+      apply (embed (v-for σ) · stab-from-selector sel-σ) z
+      ≡ apply (embed (v-for σ) · s-for σ) z
     step3 = cong (act-axis (v-for σ))
                  (stab-roundtrip (s-for σ) (s-for-fixes-anchor D σ) z)

@@ -23,6 +23,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.FreeCyclic-Coxeter-GradedMonoid where
+open import Substrate.Groups.Coxeter.Word using (++-assoc)
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Eq
@@ -56,7 +57,7 @@ FreeCyclic-GradedMonoid : GradedMonoid (Word F.Gen)
 FreeCyclic-GradedMonoid = record
   { _·_         = _++_
   ; ε           = []
-  ; ·-assoc     = λ a b c → F.++-assoc a b c
+  ; ·-assoc     = λ a b c → ++-assoc a b c
   ; ·-identityˡ = ++-identity-left
   ; ·-identityʳ = ++-identity-right
   ; degree      = F-Len.length-of-word

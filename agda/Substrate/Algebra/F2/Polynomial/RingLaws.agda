@@ -33,12 +33,12 @@
 
 module Substrate.Algebra.F2.Polynomial.RingLaws where
 
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth       public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv      public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Distrib   public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Basis     public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Scalar    public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.BasisComm public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Comm      public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Assoc     public
-open import Substrate.Algebra.F2.Polynomial.RingLaws.Identity  public
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Distrib
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Basis
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Scalar
+open import Substrate.Algebra.F2.Polynomial.RingLaws.BasisComm
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Comm
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Assoc
+open import Substrate.Algebra.F2.Polynomial.RingLaws.Identity

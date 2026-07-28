@@ -23,7 +23,9 @@ open import Substrate.Foundation.Nat.Properties.Add using (+-suc)
 open import Substrate.Foundation.Nat.Properties.Order
   using (<→≤; ≤-<-trans; <-suc-self)
 open import Substrate.Foundation.Nat.Properties.Sub using (∸-+-id; ∸-≤-self)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Nat.Mod

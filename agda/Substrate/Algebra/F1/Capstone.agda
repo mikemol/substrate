@@ -26,15 +26,15 @@
 
 module Substrate.Algebra.F1.Capstone where
 
-open import Substrate.Algebra.PointedSet      public
+open import Substrate.Algebra.PointedSet
   using (PointedSet; Carrier; base; ⊤-Pointed)
-open import Substrate.Algebra.PointedSet.Map  public
+open import Substrate.Algebra.PointedSet.Map
   using (PointedSetMap; id-PointedSetMap; compose-PointedSetMap)
-open import Substrate.Algebra.F1.AsModule     public
+open import Substrate.Algebra.F1.AsModule
   using (F₁-Module; F₁-Module-Hom; id-F₁-Hom; compose-F₁-Hom)
-open import Substrate.Algebra.F1.GL           public
+open import Substrate.Algebra.F1.GL
   using (F₁ⁿ; GL-F₁; id-GL-F₁)
-open import Substrate.Algebra.Monoid          public
+open import Substrate.Algebra.Monoid
   using (F₁-Monoid)
 
 ------------------------------------------------------------------------

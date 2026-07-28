@@ -15,8 +15,9 @@ open import Substrate.Algebra.F2 using (𝟘; 𝟙)
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.Polynomial.Wedge.XPower using (x-power)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth)

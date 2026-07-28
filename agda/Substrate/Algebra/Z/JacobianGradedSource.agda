@@ -32,7 +32,7 @@
 
 module Substrate.Algebra.Z.JacobianGradedSource where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
 open import Substrate.Algebra.Semiring.Instances.Z using (ℤ-semiring; mul-sign-computes)

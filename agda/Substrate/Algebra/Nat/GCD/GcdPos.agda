@@ -18,7 +18,7 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₂)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ)
-open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
 

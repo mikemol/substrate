@@ -37,9 +37,13 @@ open import Substrate.Groups.S4-Iso using (V₄-normal-compositional) public
 -- Defined as the structural-compositional construction; the predicate-
 -- based proof (formerly inlined here) has been retired.
 open import Substrate.Groups.V4-Embedding using (V₄-image)
-open import Substrate.Groups.S4 using (Permutation; _·_; _⁻¹)
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Groups.V4-Embedding using (embed)
+open import Substrate.Groups.S4-Iso.V4Normal
 
 V₄-normal :
   (σ : Permutation) (v : V₄) → V₄-image ((σ · embed v) · (σ ⁻¹))

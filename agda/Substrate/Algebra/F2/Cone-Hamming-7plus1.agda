@@ -27,7 +27,7 @@
 
 module Substrate.Algebra.F2.Cone-Hamming-7plus1 where
 
-open import Substrate.Foundation.Fin using (Fin; zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 

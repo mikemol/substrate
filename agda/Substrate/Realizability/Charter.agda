@@ -53,7 +53,7 @@ open import Substrate.Foundation.Eq      using (_≡_; refl; cong; trans)
 open import Substrate.Foundation.Product using (_,_; _×_)
 open import Substrate.Foundation.Sum     using (_⊎_; inj₁; inj₂)
 open import Substrate.Foundation.Nat     using (ℕ)
-open import Substrate.Foundation.Fin     using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Category.CategoryOf using (CategoryOf)
 
 ------------------------------------------------------------------------

@@ -16,6 +16,7 @@
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.X8aConfluentClassifier where
+import Substrate.Foundation.RewriteConfluence
 
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Negation using (¬_)
@@ -34,17 +35,17 @@ record ConfluentClassifier : Set where
     fpf  : (t t' : Tm⟦533ef80d⟧) → ⇒ t ≡ shed t' → ¬ (t' ≡ t)
     -- ② local confluence of the shedding step ↦ (the braided-diamond content, in RELATIONAL
     --    form: one-step peaks converge — what sn-confluent/newman consumes).
-    wcr  : let open Newman (_↦_ ⇒) in {a b c : Tm⟦533ef80d⟧} → (_↦_ ⇒) a b → (_↦_ ⇒) a c → Converge b c
+    wcr  : let open Substrate.Foundation.RewriteConfluence (_↦_ ⇒) in {a b c : Tm⟦533ef80d⟧} → (_↦_ ⇒) a b → (_↦_ ⇒) a c → Converge b c
+
 
 open ConfluentClassifier public
-
 ------------------------------------------------------------------------
 -- GIVEN a ConfluentClassifier, its SKI Church-Rosser is DISCHARGED for every SN term: the wcr
 -- field feeds sn-confluent directly. This is the composition the interface enables — the
 -- discharge is now "supply a ConfluentClassifier", a single obligation.
 ------------------------------------------------------------------------
 module _ (C : ConfluentClassifier) where
-  open Newman (_↦_ (⇒ C)) using (_⇒*_; Converge)
+  open Substrate.Foundation.RewriteConfluence (_↦_ (⇒ C)) using (_⇒*_; Converge)
 
   -- the SKI CR for this classifier, for any SN-rooted reduction — sn-confluent fed the wcr field.
   classifier-CR : {t : Tm⟦533ef80d⟧} → SN (⇒ C) t → {b c : Tm⟦533ef80d⟧} → t ⇒* b → t ⇒* c → Converge b c

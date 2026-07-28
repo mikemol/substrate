@@ -18,7 +18,10 @@ open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower.Flat (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n public
+open import Substrate.Groups.Coxeter.Cyclic.Existential n using (normalize)
+open import Substrate.Groups.Coxeter.Cyclic.Core n using (_·_; normalize-idem; normalize-append; normalize-append-right)
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen)
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n
 
 ------------------------------------------------------------------------
 -- 1. apply-power-suc / apply-power-suc-flat.

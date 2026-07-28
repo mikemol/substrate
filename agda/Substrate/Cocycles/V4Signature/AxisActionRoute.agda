@@ -25,7 +25,7 @@
 module Substrate.Cocycles.V4Signature.AxisActionRoute where
 
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Groups.V4 using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Cocycles.V4Signature.Pairing.Type using (Pairing; α-pair; β-pair; γ-pair)
 open import Substrate.Cocycles.V4Signature.V4ToPairing using (V₄→Pairing; _≢_)  -- the REAL CY-5 projection + its ≢

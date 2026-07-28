@@ -18,11 +18,11 @@
 
 module Substrate.Algebra.Nat.Divides where
 
-open import Substrate.Algebra.Nat.Divides.Type  public
-open import Substrate.Algebra.Nat.Divides.Refl  public
-open import Substrate.Algebra.Nat.Divides.Trans public
-open import Substrate.Algebra.Nat.Divides.Mul   public
-open import Substrate.Algebra.Nat.Divides.Sum   public
-open import Substrate.Algebra.Nat.Divides.Zero  public
-open import Substrate.Algebra.Nat.Divides.One     public
-open import Substrate.Algebra.Nat.Divides.Antisym public
+open import Substrate.Algebra.Nat.Divides.Type
+open import Substrate.Algebra.Nat.Divides.Refl
+open import Substrate.Algebra.Nat.Divides.Trans
+open import Substrate.Algebra.Nat.Divides.Mul
+open import Substrate.Algebra.Nat.Divides.Sum
+open import Substrate.Algebra.Nat.Divides.Zero
+open import Substrate.Algebra.Nat.Divides.One
+open import Substrate.Algebra.Nat.Divides.Antisym

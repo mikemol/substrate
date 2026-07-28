@@ -32,7 +32,7 @@
 
 module Substrate.Groups.FreeCyclic-Coxeter where
 
-open import Substrate.Groups.Coxeter.Word public
+open import Substrate.Groups.Coxeter.Word
 open import Substrate.Foundation.Eq
   using (_≡_; refl; cong; trans; sym)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
@@ -46,8 +46,8 @@ data Gen : Set where
   a : Gen
 
 -- Every word is canonical (no relations to satisfy).
-data Canonical : Word Gen → Set where      -- ⟦shape:0c35b127 c-any⟧
-  c-any : (w : Word Gen) → Canonical w
+data Canonical-Free : Word Gen → Set where      -- ⟦shape:0c35b127 c-any⟧
+  c-any : (w : Word Gen) → Canonical-Free w
 
 ------------------------------------------------------------------------
 -- 2. The insert step: cons (no wraparound, since no relation).
@@ -56,15 +56,16 @@ data Canonical : Word Gen → Set where      -- ⟦shape:0c35b127 c-any⟧
 insert : Gen → Word Gen → Word Gen
 insert g w = g ∷ w
 
-insert-canonical : (g : Gen) {w : Word Gen} → Canonical w → Canonical (insert g w)
+insert-canonical : (g : Gen) {w : Word Gen} → Canonical-Free w → Canonical-Free (insert g w)
 insert-canonical g (c-any w) = c-any (g ∷ w)
 
+
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-Free (c-any []) insert insert-canonical public
 ------------------------------------------------------------------------
 -- 3. Open ListPresentation with FreeCyclic's atoms.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.ListPresentation
-  Gen Canonical (c-any []) insert insert-canonical public
 
 ------------------------------------------------------------------------
 -- 4. Per-relation obligations.
@@ -73,21 +74,22 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- insert-append-lemma: refl (insert just conses).
 ------------------------------------------------------------------------
 
-canonical-is-fixed-Free : {w : Word Gen} → Canonical w → normalize w ≡ w
+canonical-is-fixed-Free : {w : Word Gen} → Canonical-Free w → normalize w ≡ w
 canonical-is-fixed-Free {w = []}     (c-any _) = refl
 canonical-is-fixed-Free {w = x ∷ xs} (c-any _) =
   cong (x ∷_) (canonical-is-fixed-Free {w = xs} (c-any xs))
 
 insert-append-lemma-Free :
-  (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical w →
+  (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical-Free w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
 insert-append-lemma-Free g w₂ _ = refl
 
+
+open WithLemmas canonical-is-fixed-Free insert-append-lemma-Free public
 ------------------------------------------------------------------------
 -- 5. Open WithLemmas to inherit the full abstract Core surface.
 ------------------------------------------------------------------------
 
-open WithLemmas canonical-is-fixed-Free insert-append-lemma-Free public
 
 ------------------------------------------------------------------------
 -- 6. The INFINITE ORDER of `a`, as a CONSTRUCTIVE theorem (Ⓞ).
@@ -99,7 +101,7 @@ open WithLemmas canonical-is-fixed-Free insert-append-lemma-Free public
 -- invariant: LENGTH.
 --
 -- aᵏ = `a ∷ a ∷ … ∷ []` (k applications of the insert step). Since `insert`
--- just conses and every word is `Canonical`, length faithfully tracks the
+-- just conses and every word is `Canonical-Free`, length faithfully tracks the
 -- power: len aᵏ ≡ k. ε = [] has length 0. So distinct powers are distinct
 -- words (`pow-injective`), and aᵏ ≡ ε forces k ≡ 0 — for k>0, absurd
 -- (`a-infinite-order`). "aᵏ is not ε" reads "not ONLY at the value grade —

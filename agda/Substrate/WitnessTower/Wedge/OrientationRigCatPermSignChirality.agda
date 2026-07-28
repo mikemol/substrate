@@ -53,7 +53,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; boolToℕ)  -- ⟡A4: single source

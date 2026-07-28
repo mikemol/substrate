@@ -21,7 +21,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_)
 open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Reduction using (abs-ℤ)
-open import Substrate.Algebra.Nat.Divides using (_∣_; divides)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
 

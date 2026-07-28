@@ -9,15 +9,15 @@
 
 module Substrate.Groups.S4-Iso.Extract where
 
-open import Substrate.Axes using (Axis; C; S; W)
+open import Substrate.Axes.Axis using (Axis; C; S; W)
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
+open import Substrate.Groups.Z2.A
+open import Substrate.Groups.Z3.A
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_)
-open import Substrate.Groups.S4 using (Permutation)
-open Permutation
-open import Substrate.Groups.SemidirectProduct using (v-for; s-for)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Foundation.Product using (_,_)
 
 ------------------------------------------------------------------------
@@ -26,11 +26,11 @@ open import Substrate.Foundation.Product using (_,_)
 
 extract-s-from : Axis → Axis → S₃.Carrier
 extract-s-from C S = ([] , [])                                -- identity
-extract-s-from S W = (Z₃.a ∷ [] , [])                         -- rotate (CSW)
-extract-s-from W C = (Z₃.a ∷ Z₃.a ∷ [] , [])                  -- rotate² (CWS)
-extract-s-from S C = ([] , Z₂.a ∷ [])                         -- swap CS
-extract-s-from W S = (Z₃.a ∷ [] , Z₂.a ∷ [])                  -- swap CW
-extract-s-from C W = (Z₃.a ∷ Z₃.a ∷ [] , Z₂.a ∷ [])           -- swap SW
+extract-s-from S W = (a₃ ∷ [] , [])                         -- rotate (CSW)
+extract-s-from W C = (a₃ ∷ a₃ ∷ [] , [])                  -- rotate² (CWS)
+extract-s-from S C = ([] , a₂ ∷ [])                         -- swap CS
+extract-s-from W S = (a₃ ∷ [] , a₂ ∷ [])                  -- swap CW
+extract-s-from C W = (a₃ ∷ a₃ ∷ [] , a₂ ∷ [])           -- swap SW
 extract-s-from _ _ = ([] , [])                                -- impossible
 
 extract-s : Permutation → S₃.Carrier

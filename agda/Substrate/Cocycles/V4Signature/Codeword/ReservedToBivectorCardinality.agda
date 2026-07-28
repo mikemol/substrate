@@ -42,10 +42,11 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual
-open import Substrate.Cocycles.V4Signature.Codeword
-  using (Codeword; IsReserved; Reserved)
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine
-  using (V₄; _+V₄_; v4-act-reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReserved using (v4-act-reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 using (V₄; _+V₄_)
 
 ------------------------------------------------------------------------
 -- The 2-element target subspace.

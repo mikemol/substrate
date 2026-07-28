@@ -30,16 +30,16 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine where
 
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4                  public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.XorSelf             public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReserved         public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shift               public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftSelfDual       public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftHom            public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActSelfDual         public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BaseBivector        public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.AffineBijection     public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BivectorEquivariance public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4EquivarianceProj  public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.SelfDualPredIrr     public
-open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4Equivariance      public
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.XorSelf
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReserved
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shift
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftSelfDual
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftHom
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActSelfDual
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BaseBivector
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.AffineBijection
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BivectorEquivariance
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4EquivarianceProj
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.SelfDualPredIrr
+open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4Equivariance

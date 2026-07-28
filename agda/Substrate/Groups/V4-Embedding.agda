@@ -32,6 +32,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4-Embedding where
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
+open import Substrate.Groups.V4.Bijection using (V₄; e)
 
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; _,_; -,_)
@@ -42,14 +46,20 @@ open import Substrate.Foundation.Eq
 -- Axis + bijection (v-of-axis / axis-of-v) + round-trips + act-axis
 -- now live in Substrate.Axes. Re-exported here so downstream code
 -- importing this module keeps working unchanged.
-open import Substrate.Axes public
-  using (Axis; D; C; S; W; act-axis;
-         v-of-axis; axis-of-v;
-         axis-of-v-v-of-axis; v-of-axis-axis-of-v)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ; V₄-Group)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; _⁻¹; ε; S₄-Group)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
+open import Substrate.Axes.AxisRoundtrip using (axis-of-v-v-of-axis)
+open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
+open import Substrate.Axes.ActAxis using (act-axis)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (α; β; γ)
+open import Substrate.Groups.V4.Bundle using (V₄-Group)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Identity Axis using (ε)
+open import Substrate.Groups.S4
 
 ------------------------------------------------------------------------
 -- act-axis IS V₄ multiplication on Axis — DEFINITIONAL identity.
@@ -72,23 +82,23 @@ act-axis-as-V₄-mult _ _ = refl
 -- act-id: act-axis e x ≡ x.
 --   Under the structural definition, this is no longer definitional
 --   for variable x (V₄'s ε-left needs to fire). Proof: chain
---   V4.ε-left + axis-of-v-v-of-axis through cong axis-of-v.
+--   ε-left + axis-of-v-v-of-axis through cong axis-of-v.
 --
 -- act-∙: act-axis (g · h) x ≡ act-axis g (act-axis h x).
---   Algebraic chain through V4.·-assoc + v-of-axis-axis-of-v
+--   Algebraic chain through ·-assoc + v-of-axis-axis-of-v
 --   round-trip. No (V₄ × V₄ × Axis) enumeration.
 ------------------------------------------------------------------------
 
 act-axis-id : (x : Axis) → act-axis e x ≡ x
 act-axis-id x =
-  cong-trans axis-of-v (V4.ε-left (v-of-axis x))
+  cong-trans axis-of-v (ε-left (v-of-axis x))
              (axis-of-v-v-of-axis x)
 
 act-axis-∙ :
   (g h : V₄) (x : Axis) →
   act-axis (g V4.· h) x ≡ act-axis g (act-axis h x)
 act-axis-∙ g h x =
-  cong-trans axis-of-v (V4.·-assoc g h (v-of-axis x))
+  cong-trans axis-of-v (·-assoc g h (v-of-axis x))
              (cong (λ w → axis-of-v (g V4.· w))
                    (sym (v-of-axis-axis-of-v (h V4.· v-of-axis x))))
 
@@ -97,7 +107,7 @@ act-axis-∙ g h x =
 --
 --   act-axis g (act-axis g x)
 --     ≡ act-axis (g · g) x   [sym act-axis-∙]
---     ≡ act-axis ε x         [V4.inv-left g, since inv = id on V₄]
+--     ≡ act-axis ε x         [inv-left g, since inv = id on V₄]
 --     ≡ x                    [act-axis-id, after V4.ε reduces to e]
 --
 -- Under the structural act-axis, the final step is no longer
@@ -107,7 +117,7 @@ act-axis-∙ g h x =
 act-axis-involutive : (g : V₄) (x : Axis) → act-axis g (act-axis g x) ≡ x
 act-axis-involutive g x =
   sym-trans (act-axis-∙ g g x)
-        (cong-trans (λ v → act-axis v x) (V4.inv-left g)
+        (cong-trans (λ v → act-axis v x) (inv-left g)
                     (act-axis-id x))
 
 ------------------------------------------------------------------------

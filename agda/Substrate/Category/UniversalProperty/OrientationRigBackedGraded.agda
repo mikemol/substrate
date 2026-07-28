@@ -17,7 +17,7 @@
 module Substrate.Category.UniversalProperty.OrientationRigBackedGraded where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
 open import Substrate.WitnessTower.Wedge.OrientationRigInitial using (foldR)

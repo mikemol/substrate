@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.BilinForm where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Algebra.F2 using (F₂)
 

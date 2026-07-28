@@ -31,8 +31,8 @@ open import Substrate.Foundation.Empty using (⊥-elim)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2 using (_+_; 𝟘≢𝟙)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit
-  using (m-lo; is-zero8; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8; all-vec; all-vec-sound)
+open import Substrate.Foundation.Bool.Properties using (∧-elimˡ; ∧-elimʳ)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 open import Substrate.Algebra.F2.Polynomial.Wedge.AsField using (is-zero8-sound; nonzero-bridge)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F

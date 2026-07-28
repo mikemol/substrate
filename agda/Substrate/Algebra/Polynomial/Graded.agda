@@ -14,10 +14,9 @@
 module Substrate.Algebra.Polynomial.Graded where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Fin using (Fin; toℕ) renaming (zero to fz; suc to fs)
 open import Substrate.Foundation.Negation using (¬_; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)

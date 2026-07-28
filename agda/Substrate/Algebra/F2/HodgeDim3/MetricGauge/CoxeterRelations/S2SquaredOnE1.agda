@@ -6,7 +6,6 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S2SquaredOnE1 where
 
-open import Substrate.Foundation.Fin using (zero; suc)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (basis)

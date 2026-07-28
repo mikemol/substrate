@@ -24,7 +24,7 @@ module Substrate.WitnessTower.Wedge.OrientationSumLaws where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-identityʳ)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂; subst)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)

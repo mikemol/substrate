@@ -27,7 +27,7 @@
 module Substrate.WitnessTower.Wedge.OrientationProductComm where
 
 open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)

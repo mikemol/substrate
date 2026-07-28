@@ -11,7 +11,7 @@ module Substrate.Algebra.R.Trace.NewmanKI.Properties where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; s≤s; z≤n; _≤_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-refl; ≤-<-trans; m≤m+n; n≤m+n; +-monoʳ-≤; ≤-trans)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
@@ -21,6 +21,8 @@ open import Substrate.Algebra.R.Trace.NewmanKI
 ------------------------------------------------------------------------
 -- 3. Every step strictly shrinks size (⟹ SN). β-K DELETES y: size x < size ((K∙x)∙y).
 ------------------------------------------------------------------------
+open import Substrate.Foundation.RewriteConfluence _⇒_
+  using (_⇒*_; done; _◅_; _++*_; Converge; WCR; CR; SN; newman)
 +-monoʳ-< : (k : ℕ) {m n : ℕ} → m < n → (k + m) < (k + n)
 +-monoʳ-< zero    m<n = m<n
 +-monoʳ-< (suc k) m<n = s≤s (+-monoʳ-< k m<n)
@@ -46,8 +48,6 @@ sn a = acc-from-size a (<-wellFounded (size a))
 ------------------------------------------------------------------------
 -- 5. WCR (Newman API + congruence closure), then the critical pairs.
 ------------------------------------------------------------------------
-open import Substrate.Foundation.RewriteConfluence _⇒_
-  using (_⇒*_; done; _◅_; _++*_; Converge; WCR; CR; SN; newman)
 
 cong-l* : {f f' : Tm} (g : Tm) → f ⇒* f' → (f ∙ g) ⇒* (f' ∙ g)
 cong-l* g done    = done

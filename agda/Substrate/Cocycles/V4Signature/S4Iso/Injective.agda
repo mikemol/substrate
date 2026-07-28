@@ -12,7 +12,8 @@ module Substrate.Cocycles.V4Signature.S4Iso.Injective where
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Injective Axis
 
 ------------------------------------------------------------------------
 -- apply σ is injective.
@@ -23,9 +24,6 @@ open import Substrate.Axes using (Axis; D; C; S; W)
 -- are this module's own content.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.S4 using (σ-injective) public
-
-------------------------------------------------------------------------
 -- Axis-constructor distinctness (nine obvious lemmas).
 ------------------------------------------------------------------------
 

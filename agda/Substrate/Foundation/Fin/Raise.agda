@@ -10,7 +10,7 @@
 module Substrate.Foundation.Fin.Raise where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; suc)
+open import Substrate.Foundation.Fin.Fin
 
 raise : ∀ n {k} → Fin k → Fin (n + k)
 raise zero    i = i

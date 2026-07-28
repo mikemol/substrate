@@ -60,13 +60,11 @@ module Substrate.Algebra.Quotient.CanonicalRec where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Quotient
-  using (Quotient; ≈-sym; canonical; canonical-idempotent; canonical-respects-≈; ≈-canonical)
-  renaming (Canonical to Canonical⟦de760d07⟧)   -- shape-specialize the ambiguous name
 open import Substrate.Category.UniversalProperty.Quotient
   using (Respects; QuotientUP)
 
 module _ {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
-         (C : Canonical⟦de760d07⟧ Q) where
+         (C : Canonical Q) where
 
   ------------------------------------------------------------------------
   -- 1. THE RECURSOR — eliminate out of the quotient by evaluating the

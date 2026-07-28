@@ -37,7 +37,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.CongruenceCompose where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat as ℕ using (ℕ)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
@@ -50,8 +50,9 @@ open import Substrate.Algebra.F2.Vector.Universal
   using (sum; sum-F₂; sum-F₂-cong; basis-decomp)
 open import Substrate.Algebra.F2.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (preserves-sum; sum-cong)
-open import Substrate.Algebra.F2.SymBilinForm
-  using (BilinForm; bilinear-form-of; congruence-act)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct using (congruence-act)
 open import Substrate.Algebra.F2.SymBilinForm.Bilinearity
   using (bilinear-form-of-+ⱽ-left; bilinear-form-of-+ⱽ-right;
          bilinear-form-of-*ₛ-left; bilinear-form-of-*ₛ-right;

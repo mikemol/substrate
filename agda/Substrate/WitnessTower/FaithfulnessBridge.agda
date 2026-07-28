@@ -32,21 +32,25 @@
 
 module Substrate.WitnessTower.FaithfulnessBridge where
 
+open import Substrate.Groups.Z2.Gen
+open import Substrate.Groups.Z3.Gen
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-injective)
 
-open import Substrate.Groups.V4 using (α; β)
+open import Substrate.Groups.V4.Bijection using (α; β)
+open import Substrate.Groups.Z2.A
+open import Substrate.Groups.Z3.A
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
+
+
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
 open import Substrate.Groups.S4-Iso.Extract using (extract-s-from)
-open import Substrate.Axes using (axis-of-v)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
 
 ------------------------------------------------------------------------
 -- (T) The concept, named once at rung n: determined-by-action ⇒ equal.
@@ -68,24 +72,24 @@ faithful-tower = apply-injective
 -- S4-Iso's "extract-s recovers" — the same faithfulness, computing.
 ------------------------------------------------------------------------
 
-recover : Word Z₃.Gen → Word Z₂.Gen → _
+recover : Word Gen₃ → Word Gen₂ → _
 recover n h = extract-s-from (axis-of-v (act-on-canonical n h α))
                              (axis-of-v (act-on-canonical n h β))
 
 extract-inverts-id  : recover [] [] ≡ ([] , [])
 extract-inverts-id  = refl
 
-extract-inverts-r   : recover (Z₃.a ∷ []) [] ≡ (Z₃.a ∷ [] , [])
+extract-inverts-r   : recover (a₃ ∷ []) [] ≡ (a₃ ∷ [] , [])
 extract-inverts-r   = refl
 
-extract-inverts-r²  : recover (Z₃.a ∷ Z₃.a ∷ []) [] ≡ (Z₃.a ∷ Z₃.a ∷ [] , [])
+extract-inverts-r²  : recover (a₃ ∷ a₃ ∷ []) [] ≡ (a₃ ∷ a₃ ∷ [] , [])
 extract-inverts-r²  = refl
 
-extract-inverts-s   : recover [] (Z₂.a ∷ []) ≡ ([] , Z₂.a ∷ [])
+extract-inverts-s   : recover [] (a₂ ∷ []) ≡ ([] , a₂ ∷ [])
 extract-inverts-s   = refl
 
-extract-inverts-sr  : recover (Z₃.a ∷ []) (Z₂.a ∷ []) ≡ (Z₃.a ∷ [] , Z₂.a ∷ [])
+extract-inverts-sr  : recover (a₃ ∷ []) (a₂ ∷ []) ≡ (a₃ ∷ [] , a₂ ∷ [])
 extract-inverts-sr  = refl
 
-extract-inverts-sr² : recover (Z₃.a ∷ Z₃.a ∷ []) (Z₂.a ∷ []) ≡ (Z₃.a ∷ Z₃.a ∷ [] , Z₂.a ∷ [])
+extract-inverts-sr² : recover (a₃ ∷ a₃ ∷ []) (a₂ ∷ []) ≡ (a₃ ∷ a₃ ∷ [] , a₂ ∷ [])
 extract-inverts-sr² = refl

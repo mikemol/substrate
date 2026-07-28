@@ -16,6 +16,10 @@
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Pipeline.Brick
 
+open import Substrate.Pipeline.Brick.Witnessing using (D⇒C)
+open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
+open import Substrate.Foundation.Product using (_,_)
 module Substrate.Pipeline.Examples.ChooseRotation
   (Window    : Set)
   (RotIdx    : Set)
@@ -25,7 +29,6 @@ module Substrate.Pipeline.Examples.ChooseRotation
     : Window → (Predictor × Cache) → (RotIdx × (Predictor × Cache)))
   where
 
-open import Substrate.Foundation.Product using (_,_)
 
 -- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
 Chooser-Type : BrickType Window RotIdx (Predictor × Cache) (Predictor × Cache)

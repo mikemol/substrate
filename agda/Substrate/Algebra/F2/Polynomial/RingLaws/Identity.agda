@@ -15,12 +15,12 @@ module Substrate.Algebra.F2.Polynomial.RingLaws.Identity where
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using () renaming (zero to fz)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; trans)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (nth-*P)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Basis using (convCoeff-basis-fz)
 
 *P-identityˡ-nth : ∀ {n m} (q : Polynomial m) (k : ℕ)
-                 → nth (basis {suc n} fz *P q) k ≡ nth q k
-*P-identityˡ-nth q k = trans (nth-*P (basis fz) q k) (convCoeff-basis-fz q k)
+                 → nth (basis {suc n} fzero *P q) k ≡ nth q k
+*P-identityˡ-nth q k = trans (nth-*P (basis fzero) q k) (convCoeff-basis-fz q k)

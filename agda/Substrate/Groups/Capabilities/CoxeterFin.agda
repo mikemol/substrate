@@ -13,12 +13,12 @@
 module Substrate.Groups.Capabilities.CoxeterFin where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Iterate
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
-open import Substrate.Foundation.Fin.Iterate using (OrderOf)   -- ⟡cap-384: opaque order-token
 
 ------------------------------------------------------------------------
 -- The capability record. Fields correspond 1:1 to the parameters of
@@ -29,6 +29,7 @@ open import Substrate.Foundation.Fin.Iterate using (OrderOf)   -- ⟡cap-384: op
 -- Canonical : Word Gen → Set family out of the record; both were `field`s
 -- valued in Set, forcing the record to Set₁. With them as module parameters
 -- the record lands in Set. Consumers write `CoxeterFinCapability Gen Canonical n`.
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 module _ (Gen : Set) (Canonical : Word Gen → Set) where
 
   record CoxeterFinCapability (n : ℕ) : Set where
@@ -82,54 +83,3 @@ module _ (Gen : Set) (Canonical : Word Gen → Set) where
 -- Ⓖ.cyclen-collapse: the per-n Cycleₙ orbit-modules (thin renamings σₙ = cyclic-suc {n-1})
 -- are obsolete — the cyclic permutation is the generic GENERATOR `cyclic-suc` directly, with n
 -- inferred from each capability's index (the [[expose-generator-not-orbit]] collapse, finished).
-open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
-
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z2-Coxeter-Fin as Z₂-Fin
-
-cap-Z₂ : CoxeterFinCapability Z₂.Gen Z₂.Canonical 2
-cap-Z₂ = from-coxeter-fin-data Z₂.Gen Z₂.Canonical
-  Z₂.a Z₂.insert Z₂.insert-canonical
-  Z₂-Fin.canonical-to-Fin Z₂-Fin.Fin-to-canonical
-  cyclic-suc Z₂-Fin.action-of-a-is-σ₂
-  Z₂-Fin.σ₂-OrderOf-from-Z2-Coxeter
-
-import Substrate.Groups.Z3-Coxeter as Z₃
-import Substrate.Groups.Z3-Coxeter-Fin as Z₃-Fin
-
-cap-Z₃ : CoxeterFinCapability Z₃.Gen Z₃.Canonical 3
-cap-Z₃ = from-coxeter-fin-data Z₃.Gen Z₃.Canonical
-  Z₃.a Z₃.insert Z₃.insert-canonical
-  Z₃-Fin.canonical-to-Fin Z₃-Fin.Fin-to-canonical
-  cyclic-suc Z₃-Fin.action-of-a-is-σ₃
-  Z₃-Fin.σ₃-OrderOf-from-Z3-Coxeter
-
-import Substrate.Groups.Z4-Coxeter as Z₄
-import Substrate.Groups.Z4-Coxeter-Fin as Z₄-Fin
-
-cap-Z₄ : CoxeterFinCapability Z₄.Gen Z₄.Canonical 4
-cap-Z₄ = from-coxeter-fin-data Z₄.Gen Z₄.Canonical
-  Z₄.a Z₄.insert Z₄.insert-canonical
-  Z₄-Fin.canonical-to-Fin Z₄-Fin.Fin-to-canonical
-  cyclic-suc Z₄-Fin.action-of-a-is-σ₄
-  Z₄-Fin.σ₄-OrderOf-from-Z4-Coxeter
-
-import Substrate.Groups.Z5-Coxeter as Z₅
-import Substrate.Groups.Z5-Coxeter-Fin as Z₅-Fin
-
-cap-Z₅ : CoxeterFinCapability Z₅.Gen Z₅.Canonical 5
-cap-Z₅ = from-coxeter-fin-data Z₅.Gen Z₅.Canonical
-  Z₅.a Z₅.insert Z₅.insert-canonical
-  Z₅-Fin.canonical-to-Fin Z₅-Fin.Fin-to-canonical
-  cyclic-suc Z₅-Fin.action-of-a-is-σ₅
-  Z₅-Fin.σ₅-OrderOf-from-Z5-Coxeter
-
-import Substrate.Groups.Z7-Coxeter as Z₇
-import Substrate.Groups.Z7-Coxeter-Fin as Z₇-Fin
-
-cap-Z₇ : CoxeterFinCapability Z₇.Gen Z₇.Canonical 7
-cap-Z₇ = from-coxeter-fin-data Z₇.Gen Z₇.Canonical
-  Z₇.a Z₇.insert Z₇.insert-canonical
-  Z₇-Fin.canonical-to-Fin Z₇-Fin.Fin-to-canonical
-  cyclic-suc Z₇-Fin.action-of-a-is-σ₇
-  Z₇-Fin.σ₇-OrderOf-from-Z7-Coxeter

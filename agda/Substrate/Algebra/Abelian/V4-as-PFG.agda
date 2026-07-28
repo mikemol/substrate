@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Nat using (ℕ; suc; zero)
-open import Substrate.Foundation.Fin using (Fin; zero)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Category.GTorsor using (GTorsor; mkGTorsor)

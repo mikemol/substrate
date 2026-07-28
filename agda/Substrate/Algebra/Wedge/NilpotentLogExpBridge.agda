@@ -80,9 +80,10 @@ bridge-resets i j ¬lt = cong gpow (addCap-collapse d i j ¬lt)   -- gpow 0 = on
 -- annihilation are genuinely different — the bridge is PARTIAL, faithful only
 -- below the cap. (The obstruction to totality IS the residue.)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Fin renaming (zero to fz)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op2
 oneC≢𝟎C : oneC ≡ 𝟎C → ⊥
-oneC≢𝟎C p = F2.𝟙≢𝟘 (cong (λ v → lookup v fz) p)
+oneC≢𝟎C p = F2.𝟙≢𝟘 (cong (λ v → lookup v fzero) p)
 
 ------------------------------------------------------------------------
 -- ③ THE DEEP RESIDUE (grounded by computation): Rₖ's gen CYCLES through z, the

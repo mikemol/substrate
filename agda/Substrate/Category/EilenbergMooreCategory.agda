@@ -31,5 +31,6 @@ module Substrate.Category.EilenbergMooreCategory
   (EM-Cat : CategoryOf ObjEM MorEM)
   where
 
-open import Substrate.Category.Monad.DerivedCategoryOf C M EM-Cat public
+open import Substrate.Category.Monad.DerivedCategoryOf C M EM-Cat
   renaming (monad-derived-Category to EilenbergMoore-Category)
+

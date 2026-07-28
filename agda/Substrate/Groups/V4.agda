@@ -43,7 +43,7 @@
 
 module Substrate.Groups.V4 where
 
-open import Substrate.Groups.V4.FourProduct public
+open import Substrate.Groups.V4.FourProduct
 -- FourProduct re-exports Bundle, which re-exports Axioms,
 -- which re-exports Operations, which re-exports Bijection;
 -- so the entire former-monolith surface is available here.

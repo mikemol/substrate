@@ -7,7 +7,7 @@
 -- contractible: `reduce a ≡ reduce b` is a PROPOSITION. Hence the two route
 -- proofs agree:
 --
---   routes-agree : canonical-respects-≈ hab ≡ canonical-respects-≈-bezout hab
+--   routes-agree : reduce-respects-≈ hab ≡ reduce-respects-≈-bezout hab
 --
 -- READ THIS AS A CHART, NOT A VERDICT. The agreement is VACUOUS as
 -- "convergence": any two proofs of `reduce a ≡ reduce b` are equal — a third,
@@ -37,8 +37,8 @@ open import Substrate.Algebra.Q using (ℚ; mkℚ; num)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Reduce using (reduce)
 open import Substrate.Algebra.Q.DecidableEq using (_≟ℚ_)
-open import Substrate.Algebra.Q.Properties.Canonical using (canonical-respects-≈)
-open import Substrate.Algebra.Q.Properties.CanonicalBezout using (canonical-respects-≈-bezout)
+open import Substrate.Algebra.Q.Properties.Canonical using (reduce-respects-≈)
+open import Substrate.Algebra.Q.Properties.CanonicalBezout using (reduce-respects-≈-bezout)
 
 ------------------------------------------------------------------------
 -- 1. The chart certificate: ℚ is a set (Hedberg on _≟ℚ_).
@@ -49,9 +49,9 @@ open import Substrate.Algebra.Q.Properties.CanonicalBezout using (canonical-resp
 
 -- The two routes' proofs are equal — because the codomain is a prop.
 routes-agree : {a b : ℚ} (hab : a ≈ℚ b) →
-               canonical-respects-≈ {a} {b} hab ≡ canonical-respects-≈-bezout {a} {b} hab
+               reduce-respects-≈ {a} {b} hab ≡ reduce-respects-≈-bezout {a} {b} hab
 routes-agree {a} {b} hab =
-  ℚ-isSet (canonical-respects-≈ {a} {b} hab) (canonical-respects-≈-bezout {a} {b} hab)
+  ℚ-isSet (reduce-respects-≈ {a} {b} hab) (reduce-respects-≈-bezout {a} {b} hab)
 
 ------------------------------------------------------------------------
 -- 2. The phase-witness triangle: the OTHER chart does not collapse.

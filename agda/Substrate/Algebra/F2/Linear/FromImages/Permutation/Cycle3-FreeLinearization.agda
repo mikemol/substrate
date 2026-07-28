@@ -16,7 +16,7 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Cycle3-FreeLinearization where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 -- Ⓖ.cyclen-collapse-registry: σ₃ was the Cycle3 orbit-module's thin alias for

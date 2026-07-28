@@ -35,11 +35,13 @@ open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; ε)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Cocycles.V4Signature.S4Iso.StabElements
+
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (v-of-axis)
@@ -50,6 +52,11 @@ open import Substrate.Cocycles.V4Signature.Codeword
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt;
          live-to-axis-selector)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
+open import Substrate.Axes.VOfAxis
 
 ------------------------------------------------------------------------
 -- The 6-element selector ↔ Stab(D) bijection.
@@ -102,7 +109,7 @@ private
   -- Applied to D this is D, since v-of-axis D = e (identity on axes)
   -- and stab-cs fixes D.
   example-σD-fixed :
-    applyₛ (embed (v-of-axis D) · stab-from-selector sel-ftf) D ≡ D
+    apply (embed (v-of-axis D) · stab-from-selector sel-ftf) D ≡ D
   example-σD-fixed = refl
 
 ------------------------------------------------------------------------

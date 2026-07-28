@@ -39,15 +39,22 @@ module Substrate.Cocycles.KRule where
 
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
+open import Substrate.Foundation.Fin.Op3
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 
-open import Substrate.Groups.SFin as SFin
-  using (Permutation; _·_; ε; _⁻¹; _≈_; S-Group; σ-injective)
-  renaming (apply to applyₛ)
+open import Substrate.Groups.SFin.Permutation using (Permutation)
+open import Substrate.Groups.SFin.Apply
+open import Substrate.Groups.SFin.Eq using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.SFinCompose using (_·_)
+open import Substrate.Groups.SFin.Identity using (ε)
+open import Substrate.Groups.Symmetric.Permutation.SFinInverse using (_⁻¹)
+open import Substrate.Groups.SFin.Injective using (σ-injective)
+open import Substrate.Groups.SFin.Group using (S-Group)
 open import Substrate.Cocycle
   using (WeakCocycleStructure)
 open import Substrate.Algebra.SetoidGroup.Action using (Action)
@@ -99,7 +106,7 @@ module _ (n : ℕ) where
   ----------------------------------------------------------------------
 
   sn-act : Permutation n → Assignment → Assignment
-  sn-act σ (v , w) = applyₛ σ v , applyₛ σ w
+  sn-act σ (v , w) = apply σ v , apply σ w
 
   sn-act-id : (a : Assignment) → sn-act ε a ≡ a
   sn-act-id (v , w) = refl
@@ -118,11 +125,11 @@ module _ (n : ℕ) where
   ----------------------------------------------------------------------
   -- Gauge invariance of dist.
   --
-  -- The case analysis on `v ≟ w` and `applyₛ σ v ≟ applyₛ σ w`:
+  -- The case analysis on `v ≟ w` and `apply σ v ≟ apply σ w`:
   --
   --   yes | yes  ⇒  both diagonal              ⇒  refl
   --   yes | no   ⇒  contradiction:                   the σ-image of a
-  --                  diagonal pair is diagonal       (cong applyₛ σ)
+  --                  diagonal pair is diagonal       (cong apply σ)
   --   no  | yes  ⇒  contradiction:                   σ is injective,
   --                  so σ(v) = σ(w) ⇒ v = w          (σ-injective)
   --   no  | no   ⇒  both off-diagonal          ⇒  refl
@@ -131,9 +138,9 @@ module _ (n : ℕ) where
   dist-gauge-inv :
     (σ : Permutation n) (a : Assignment) →
     dist (sn-act σ a) ≡ dist a
-  dist-gauge-inv σ (v , w) with v ≟ w | applyₛ σ v ≟ applyₛ σ w
+  dist-gauge-inv σ (v , w) with v ≟ w | apply σ v ≟ apply σ w
   ... | yes _    | yes _      = refl
-  ... | yes v≡w  | no  σv≢σw  = ⊥-elim (σv≢σw (cong (applyₛ σ) v≡w))
+  ... | yes v≡w  | no  σv≢σw  = ⊥-elim (σv≢σw (cong (apply σ) v≡w))
   ... | no  v≢w  | yes σv≡σw  = ⊥-elim (v≢w (σ-injective σ v w σv≡σw))
   ... | no  _    | no  _      = refl
 

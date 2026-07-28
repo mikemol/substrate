@@ -31,6 +31,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth where
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricFullyCoupled using (metric-fully-coupled)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricMixed using (metric-mixed)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
 
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
@@ -53,6 +58,9 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricOrthogonality
 -- other two by bilinearity.
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Category.Pullback
+  using (Wide-Meet)
 M-orth-to-V4Plane : SymBilinForm-3 → Vector 3 → Set
 M-orth-to-V4Plane M v =
   metric-orthogonal M v (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) ×
@@ -185,9 +193,6 @@ e₃-NOT-orth-e₀-under-metric-fully-coupled = refl
 -- pattern generalises to V4Plane-equivalents in higher dimensions.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
-open import Substrate.Category.Pullback
-  using (Wide-Meet)
 
 -- The 2-element family: i = zero ↦ orthogonal-to-e₀; i = 1 ↦ -to-e₁.
 V4Plane-basis-orth-family : SymBilinForm-3 → Fin 2 → Vector 3 → Set

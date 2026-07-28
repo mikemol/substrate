@@ -35,15 +35,27 @@
 
 module Substrate.Groups.S4-Iso.EmbedS3Faithful where
 
-open import Substrate.Axes using (Axis; C; S; axis-of-v; v-of-axis)
-open import Substrate.Groups.V4 using (V₄; α; β)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Groups.Z2.Gen
+open import Substrate.Groups.Z3.Gen
+open import Substrate.Axes.Axis using (Axis; C; S)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
+open import Substrate.Groups.V4.Bijection using (V₄; α; β)
+open import Substrate.Foundation.Fin.Fin
 import Substrate.Groups.S3 as S₃
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
+
+
+open import Substrate.Groups.Z2.CPos
+open import Substrate.Groups.Z2.CanonicalEx
+open import Substrate.Groups.Z2.Normalize
+open import Substrate.Groups.Z2.NormalizeCanonical
+open import Substrate.Groups.Z3.CPos
+open import Substrate.Groups.Z3.CanonicalEx
+open import Substrate.Groups.Z3.Normalize
+open import Substrate.Groups.Z3.NormalizeCanonical
 open import Substrate.Groups.Coxeter.Word using (Word)
-open import Substrate.Groups.S4 using (Permutation; _≈_)
-open Permutation
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 
@@ -55,7 +67,7 @@ open import Substrate.Groups.S4-Iso.Extract using (extract-s; extract-s-from)
 -- The extracted words of a canonical (nn, hh), as read through the action.
 ------------------------------------------------------------------------
 
-extracted : Word Z₃.Gen → Word Z₂.Gen → S₃.Carrier
+extracted : Word Gen₃ → Word Gen₂ → S₃.Carrier
 extracted nn hh =
   extract-s-from (axis-of-v (act-on-canonical nn hh α))
                  (axis-of-v (act-on-canonical nn hh β))
@@ -66,16 +78,16 @@ extracted nn hh =
 ------------------------------------------------------------------------
 
 R-canonical :
-  (nn : Word Z₃.Gen) (hh : Word Z₂.Gen)
-  (cn : Z₃.Canonical nn) (ch : Z₂.Canonical hh) →
-  (Z₃.normalize (proj₁ (extracted nn hh)) ≡ nn)
-  × (Z₂.normalize (proj₂ (extracted nn hh)) ≡ hh)
-R-canonical _ _ (Z₃.c-pos zero)             (Z₂.c-pos zero)       = refl , refl
-R-canonical _ _ (Z₃.c-pos zero)             (Z₂.c-pos (suc zero)) = refl , refl
-R-canonical _ _ (Z₃.c-pos (suc zero))       (Z₂.c-pos zero)       = refl , refl
-R-canonical _ _ (Z₃.c-pos (suc zero))       (Z₂.c-pos (suc zero)) = refl , refl
-R-canonical _ _ (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos zero)       = refl , refl
-R-canonical _ _ (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos (suc zero)) = refl , refl
+  (nn : Word Gen₃) (hh : Word Gen₂)
+  (cn : Canonical₃ nn) (ch : Canonical₂ hh) →
+  (normalize₃ (proj₁ (extracted nn hh)) ≡ nn)
+  × (normalize₂ (proj₂ (extracted nn hh)) ≡ hh)
+R-canonical _ _ (c-pos₃ zero)             (c-pos₂ zero)       = refl , refl
+R-canonical _ _ (c-pos₃ zero)             (c-pos₂ (suc zero)) = refl , refl
+R-canonical _ _ (c-pos₃ (suc zero))       (c-pos₂ zero)       = refl , refl
+R-canonical _ _ (c-pos₃ (suc zero))       (c-pos₂ (suc zero)) = refl , refl
+R-canonical _ _ (c-pos₃ (suc (suc zero))) (c-pos₂ zero)       = refl , refl
+R-canonical _ _ (c-pos₃ (suc (suc zero))) (c-pos₂ (suc zero)) = refl , refl
 
 ------------------------------------------------------------------------
 -- R: extract-s (embed-S₃ s) S₃.≈ s.
@@ -83,8 +95,8 @@ R-canonical _ _ (Z₃.c-pos (suc (suc zero))) (Z₂.c-pos (suc zero)) = refl , r
 
 extract-embed-roundtrip : (s : S₃.Carrier) → extract-s (embed-S₃ s) S₃.≈ s
 extract-embed-roundtrip (n , h) =
-  R-canonical (Z₃.normalize n) (Z₂.normalize h)
-              (Z₃.normalize-canonical n) (Z₂.normalize-canonical h)
+  R-canonical (normalize₃ n) (normalize₂ h)
+              (normalize-canonical₃ n) (normalize-canonical₂ h)
 
 ------------------------------------------------------------------------
 -- embed-S₃-faithful: the corollary.

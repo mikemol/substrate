@@ -24,7 +24,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigFreeUP where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Vec using (Vec; map)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)

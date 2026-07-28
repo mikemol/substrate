@@ -27,14 +27,14 @@
 
 module Substrate.Category.ComposedReference where
 
-open import Substrate.Category.ComposedReference.EmissionSource    public
-open import Substrate.Category.ComposedReference.V4                public
-open import Substrate.Category.ComposedReference.ActionAlgebra     public
-open import Substrate.Category.ComposedReference.BasisLabel        public
-open import Substrate.Category.ComposedReference.Record            public
-open import Substrate.Category.ComposedReference.QuotOrbit         public
-open import Substrate.Category.ComposedReference.Z1BackrefOrbit    public
-open import Substrate.Category.ComposedReference.Aa2ResidueBackref public
-open import Substrate.Category.ComposedReference.Aa6AffineBackref  public
-open import Substrate.Category.ComposedReference.IdentityEmission  public
-open import Substrate.Category.ComposedReference.MonoidLaws        public
+open import Substrate.Category.ComposedReference.EmissionSource
+open import Substrate.Category.ComposedReference.V4
+open import Substrate.Category.ComposedReference.ActionAlgebra
+open import Substrate.Category.ComposedReference.BasisLabel
+open import Substrate.Category.ComposedReference.Record
+open import Substrate.Category.ComposedReference.QuotOrbit
+open import Substrate.Category.ComposedReference.Z1BackrefOrbit
+open import Substrate.Category.ComposedReference.Aa2ResidueBackref
+open import Substrate.Category.ComposedReference.Aa6AffineBackref
+open import Substrate.Category.ComposedReference.IdentityEmission
+open import Substrate.Category.ComposedReference.MonoidLaws

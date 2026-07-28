@@ -30,7 +30,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.Symmetry where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
@@ -41,8 +41,10 @@ open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
-open import Substrate.Algebra.F2.SymBilinForm
-  using (BilinForm; IsSymmetric; bilinear-form-of; congruence-act)
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct using (congruence-act)
+open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using (IsSymmetric)
 open import Substrate.Algebra.F2.SymBilinForm.Bilinearity
   using (sum-F₂-+-distribute; sum-F₂-scalar)
 open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast

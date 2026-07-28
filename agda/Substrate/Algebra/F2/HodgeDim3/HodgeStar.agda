@@ -24,15 +24,15 @@
 
 module Substrate.Algebra.F2.HodgeDim3.HodgeStar where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (basis-permutation-Linear; basis-permutation-involution)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution using (basis-permutation-involution)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear using (basis-permutation-Linear)
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 
 ------------------------------------------------------------------------

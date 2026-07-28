@@ -13,4 +13,4 @@
 
 module Substrate.Groups.Actions.S3-on-V4.HomRotations where
 
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch public
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch

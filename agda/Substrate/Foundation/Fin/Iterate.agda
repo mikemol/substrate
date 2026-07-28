@@ -23,7 +23,7 @@
 
 module Substrate.Foundation.Fin.Iterate where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)
 open import Substrate.Foundation.Eq using (_≡_)
 import Substrate.Foundation.Function.Iterate as F

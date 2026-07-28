@@ -16,13 +16,17 @@
 
 open import Substrate.Pipeline.Brick
 
+open import Substrate.Pipeline.Brick.Witnessing using (D⇒S)
+open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.Pipeline.Brick.Unit using (⊤; tt)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
+open import Substrate.Foundation.Product using (_,_)
 module Substrate.Pipeline.Examples.PredictorUpdate
   (Char   : Set)
   (Counts : Set)
   (update-counts : Counts → Char → Counts)
   where
 
-open import Substrate.Foundation.Product using (_,_)
 
 -- ⟡set1-paydown: BrickType edges are now type indices — moved into the annotation; body is the tag.
 PredictorUpdate-Type : BrickType Char ⊤ Counts Counts

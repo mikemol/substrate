@@ -16,6 +16,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4-Coxeter-Strict2Monoid where
+open import Substrate.Groups.Coxeter.Word using (++-assoc)
 
 import Substrate.Groups.V4-Coxeter as V₄
 open import Substrate.Groups.Coxeter.Word
@@ -29,7 +30,7 @@ open import Substrate.Category.Strict2Monoid.FromCoxeter
   (Word V₄.Gen)
   _++_
   []
-  (λ a b c → V₄.++-assoc a b c)
+  (λ a b c → ++-assoc a b c)
   ++-identity-left
   ++-identity-right
   V₄.normalize

@@ -21,7 +21,8 @@ open import Substrate.Foundation.Nat.Properties.Order
   using (<→≤; ≤-<-trans; <-suc-self)
 open import Substrate.Foundation.Nat.Properties.Sub
   using (∸-≤-self; ∸-suc-l; ∸-∸-cancel)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ; fromℕ<)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong-trans)
 open import Substrate.Algebra.Nat.Mod
@@ -29,7 +30,11 @@ open import Substrate.Algebra.Nat.Mod
 
 module Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv (n : ℕ) where
 
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (power)
+open import Substrate.Groups.Coxeter.Cyclic.Existential n using (Canonical-ex; canonical-cover-ex)
+open import Substrate.Groups.Coxeter.Cyclic.Inverse n using (inv-pos; inv; inv-power-eq)
 open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n
+
 
 ------------------------------------------------------------------------
 -- 1. toℕ-inv-pos-inv-pos: the Fin-level involution at the toℕ image.

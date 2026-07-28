@@ -20,7 +20,7 @@ module Substrate.Algebra.R.Trace.ExtruderNfCrossDlog where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
@@ -35,17 +35,18 @@ import Substrate.Algebra.Polynomial.Graded.Div as Div
 -- work at d = 3 (bound 4): y is a degree-4 nilpotent — the SAME degree-4
 -- obstruction as NilpotentDegreeK's Rk 3, now MULTIPLICATIVELY via exp/dlog.
 ------------------------------------------------------------------------
+open F.Over F₂-CommRing using (Poly)
 d : ℕ
 d = 3
 
 f-lo₀ : Vec F2.F₂ (suc d)              -- ZERO modulus ⟹ y^(suc d) ≡ 0 (nilpotent)
 f-lo₀ = replicate (suc d) F2.𝟘
 
-open F.Over F₂-CommRing using (Poly)
+
+
 open M.Over F₂-CommRing d f-lo₀ using (oneC)
 open Q.Over F₂-CommRing d f-lo₀ using (_*Q_; 𝟎C)
 open Over d f-lo₀ using (gpow; gpow-hom)
-
 ------------------------------------------------------------------------
 -- ① THE CROSS, exp/dlog form. Two Nf strands carry exponents (shed-step logs)
 -- i, j; the cross is their product in the ring, gpow i *Q gpow j.

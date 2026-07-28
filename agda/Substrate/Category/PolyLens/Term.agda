@@ -10,7 +10,7 @@
 module Substrate.Category.PolyLens.Term where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Category.Poly.Term public
+open import Substrate.Category.Poly.Term
   using (PolyTerm; []ₚ; _++ₚ_; poly-product)
 
 -- A PolyLensTerm IS a PolyTerm (PolyLens = poly-morphism = poly-term).

@@ -15,6 +15,6 @@
 
 module Substrate.Foundation.Nat.Properties where
 
-open import Substrate.Foundation.Nat.Properties.Add   public
-open import Substrate.Foundation.Nat.Properties.Mul   public
-open import Substrate.Foundation.Nat.Properties.Order public
+open import Substrate.Foundation.Nat.Properties.Add
+open import Substrate.Foundation.Nat.Properties.Mul
+open import Substrate.Foundation.Nat.Properties.Order

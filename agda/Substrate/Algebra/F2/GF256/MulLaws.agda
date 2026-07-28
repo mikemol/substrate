@@ -17,7 +17,7 @@ module Substrate.Algebra.F2.GF256.MulLaws where
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
 open import Substrate.Algebra.F2.GF256.Idempotent using (one₈)
 open import Substrate.Algebra.F2.GF256.Mul using (gmul)
 open import Substrate.Algebra.F2.GF256.HornerSeam using (*Q-is-gmul)

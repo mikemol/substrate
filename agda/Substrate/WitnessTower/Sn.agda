@@ -22,7 +22,7 @@
 module Substrate.WitnessTower.Sn where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; subst)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Negation using (¬_)

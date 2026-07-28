@@ -68,30 +68,27 @@
 module Substrate.Category.UniversalProperty.Capstone where
 
 -- Phase 1 re-exports
-open import Substrate.Category.UniversalProperty.Phase1     public
-
+open import Substrate.Category.UniversalProperty.Phase1
 -- Phase 2 re-exports
-open import Substrate.Category.UniversalProperty.Phase2     public
-
+open import Substrate.Category.UniversalProperty.Phase2
 -- Phase 3 re-exports
-open import Substrate.Category.UniversalProperty.Phase3     public
-
+open import Substrate.Category.UniversalProperty.Phase3
 -- Phase 4 final-set re-exports
-open import Substrate.Category.UniversalProperty.Topos              public
+open import Substrate.Category.UniversalProperty.Topos
   using (UPTopos)
-open import Substrate.Category.UniversalProperty.Omega              public
+open import Substrate.Category.UniversalProperty.Omega
   using (Ω)
-open import Substrate.Category.UniversalProperty.TruthValues        public
+open import Substrate.Category.UniversalProperty.TruthValues
   using (is-instance-truth)
-open import Substrate.Category.UniversalProperty.InternalLogic      public
+open import Substrate.Category.UniversalProperty.InternalLogic
   using (⊤-sieve)
-open import Substrate.Category.UniversalProperty.GeometricMorphism  public
+open import Substrate.Category.UniversalProperty.GeometricMorphism
   using (GeometricMorphism)
-open import Substrate.Category.UniversalProperty.AdjointPair        public
+open import Substrate.Category.UniversalProperty.AdjointPair
   using (SheafAdjointPair)
-open import Substrate.Category.UniversalProperty.SubstrateTopos     public
+open import Substrate.Category.UniversalProperty.SubstrateTopos
   using (Substrate-UPTopos)
-open import Substrate.Category.UniversalProperty.HigherCatAsInternal public
+open import Substrate.Category.UniversalProperty.HigherCatAsInternal
   using (HC-Structure-Shape)
 
 ------------------------------------------------------------------------

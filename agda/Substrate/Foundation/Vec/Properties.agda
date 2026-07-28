@@ -9,7 +9,8 @@
 module Substrate.Foundation.Vec.Properties where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
 open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)

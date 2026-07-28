@@ -25,7 +25,7 @@
 module Substrate.WitnessTower.Enumerate where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)

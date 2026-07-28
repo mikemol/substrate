@@ -47,14 +47,15 @@ module Substrate.Cocycles.V4Signature.CompSideRoundtrip where
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂; _×_)
 
-import Substrate.Groups.S4          as S4
 import Substrate.Groups.S4-Composed as S4C
 import Substrate.Groups.S3          as S₃
-open import Substrate.Groups.V4 using (V₄)
-open S4 using (Permutation; _≈_)
+open import Substrate.Groups.V4.Bijection using (V₄)
 
 open import Substrate.Groups.S4-Iso.Extract   using (perm-to-compositional)
 open import Substrate.Groups.S4-Iso.Embedding using (compositional-to-perm)
+open import Substrate.Axes.Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis
 
 ------------------------------------------------------------------------
 -- The two component-recovery facts, as hypotheses. Each is a real, in-tree-
@@ -66,6 +67,7 @@ open import Substrate.Groups.S4-Iso.Embedding using (compositional-to-perm)
 -- We take the two projections of `perm-to-compositional ∘ compositional-to-perm`
 -- back to identity as the hypotheses.
 
+open import Substrate.Category.ResidueCompensation using (ResidueCompensation; FullResidueCompensation)
 module _
   (v-recovers :
      (v : V₄) (s : S₃.Carrier) →
@@ -99,4 +101,3 @@ module _
 -- durable pointer to that reframing (NOT a discharge — it names the tool).
 ------------------------------------------------------------------------
 
-open import Substrate.Category.ResidueCompensation using (ResidueCompensation; FullResidueCompensation)

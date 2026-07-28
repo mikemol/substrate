@@ -14,8 +14,9 @@ module Substrate.Foundation.Fin.Properties where
 open import Substrate.Foundation.Nat
   using (ℕ; zero; suc; _<_; _≤_; s≤s; z≤n)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Fin public
-  using (Fin; zero; suc; toℕ; fromℕ; fromℕ<; _≟_; _<_; _≤_; suc-injective)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.From2
+open import Substrate.Foundation.Fin.To
 
 ------------------------------------------------------------------------
 -- The toℕ-bound: every Fin n's underlying ℕ is strictly less than n.

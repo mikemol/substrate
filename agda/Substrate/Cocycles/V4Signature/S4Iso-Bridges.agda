@@ -33,7 +33,7 @@
 -- lemmas with a parametric proof via `extend-restrict D`. That
 -- refactor hits Agda's `with`-abstraction limit on the
 -- non-anchor-to-fin3 proof-irrelevance arguments — `refl` no
--- longer closes the per-axis equalities because applyₛ σ C inside
+-- longer closes the per-axis equalities because apply σ C inside
 -- the unfolded `restrict-apply` doesn't substitute eagerly enough.
 -- The fix is explicit `non-anchor-to-fin3-cong` chains (slice 14b),
 -- which expand line count to roughly parity with the original
@@ -53,20 +53,20 @@ open import Substrate.Foundation.Product using (_,_; proj₁)
 open import Substrate.Foundation.Eq
   using (_≡_; refl)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4 as S4 using (Permutation)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Stab-S3-Extend using (extend)
-open import Substrate.Cocycles.V4Signature
-  using (Pairing; α-pair; β-pair; γ-pair;
-         Chirality; even; odd;
-         OrbitKey)
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3
   using (s3-id; s3-sw; s3-cs; s3-cw; s3-csw; s3-cws;
          orbit-key-to-s3)
 open import Substrate.Cocycles.V4Signature.S4Iso
   using (stab-id; stab-sw; stab-cs; stab-cw; stab-csw; stab-cws;
          orbit-key-to-stab-d)
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Cocycles.V4Signature.Pairing.Type
+open import Substrate.Cocycles.V4Signature.Chirality.Type
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
 
 ------------------------------------------------------------------------
 -- The bridge: for each OrbitKey, the named stab record agrees with
@@ -83,7 +83,7 @@ open import Substrate.Cocycles.V4Signature.S4Iso
 
 orbit-key-to-stab-d-≈-extend :
   (ok : OrbitKey) (x : Axis) →
-  applyₛ (orbit-key-to-stab-d ok) x ≡ applyₛ (proj₁ (extend D (orbit-key-to-s3 ok))) x
+  apply (orbit-key-to-stab-d ok) x ≡ apply (proj₁ (extend D (orbit-key-to-s3 ok))) x
 orbit-key-to-stab-d-≈-extend (α-pair , even) D = refl
 orbit-key-to-stab-d-≈-extend (α-pair , even) C = refl
 orbit-key-to-stab-d-≈-extend (α-pair , even) S = refl

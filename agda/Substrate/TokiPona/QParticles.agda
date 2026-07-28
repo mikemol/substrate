@@ -20,7 +20,7 @@ open import Substrate.Foundation.Nat using (ℕ)
 
 -- Re-export the F₂ Particles infrastructure (which is F₂-graded
 -- but is about structural markers, not semantic vectors).
-open import Substrate.TokiPona.Particles public
+open import Substrate.TokiPona.Particles
   using (Particle; li; e; pi; la; o;
          MarkerSet; mkMarkers; no-markers;
          set-particle; merge-markers)
@@ -36,8 +36,8 @@ record QMarkedSentence (m : ℕ) : Set where
     q-sentence : QTokiSentence m
     markers    : MarkerSet
 
-open QMarkedSentence public
 
+open QMarkedSentence public
 ------------------------------------------------------------------------
 -- 2. Constructors.
 ------------------------------------------------------------------------

@@ -37,18 +37,20 @@ module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection where
 open import Substrate.Foundation.Product using (proj₁)
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Groups.S4 using (Permutation; _≈_)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Cocycles.V4Signature.Codeword using (Live)
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
   using (live-to-permutation)
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
   using (permutation-to-live)
 
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips public
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Anchor     public
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Forward    public
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Reverse    public
-
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Anchor
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Forward
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Reverse
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
 ------------------------------------------------------------------------
 -- The bundled bijection.
 ------------------------------------------------------------------------

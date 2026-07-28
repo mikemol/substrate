@@ -40,14 +40,14 @@
 
 module Substrate.Cocycles.V4Signature where
 
-open import Substrate.Cocycles.V4Signature.Pairing.Type     public
-open import Substrate.Cocycles.V4Signature.Chirality.Type   public
-open import Substrate.Cocycles.V4Signature.OrbitKey.Type    public
-open import Substrate.Cocycles.V4Signature.V4GroupSetoid    public
-open import Substrate.Cocycles.V4Signature.V4ToPairing      public
-open import Substrate.Cocycles.V4Signature.V4ActsOnItself   public
-open import Substrate.Cocycles.V4Signature.V4LeftCancel     public
-open import Substrate.Cocycles.V4Signature.V4Transitive     public
-open import Substrate.Cocycles.V4Signature.V4IsTorsor       public
-open import Substrate.Cocycles.V4Signature.Fiber            public
-open import Substrate.Cocycles.V4Signature.CY5              public
+open import Substrate.Cocycles.V4Signature.Pairing.Type
+open import Substrate.Cocycles.V4Signature.Chirality.Type
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type
+open import Substrate.Cocycles.V4Signature.V4GroupSetoid
+open import Substrate.Cocycles.V4Signature.V4ToPairing
+open import Substrate.Cocycles.V4Signature.V4ActsOnItself
+open import Substrate.Cocycles.V4Signature.V4LeftCancel
+open import Substrate.Cocycles.V4Signature.V4Transitive
+open import Substrate.Cocycles.V4Signature.V4IsTorsor
+open import Substrate.Cocycles.V4Signature.Fiber
+open import Substrate.Cocycles.V4Signature.CY5

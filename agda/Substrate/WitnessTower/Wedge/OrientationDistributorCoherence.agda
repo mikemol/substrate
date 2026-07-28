@@ -27,7 +27,8 @@ module Substrate.WitnessTower.Wedge.OrientationDistributorCoherence where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Combine using (combine)

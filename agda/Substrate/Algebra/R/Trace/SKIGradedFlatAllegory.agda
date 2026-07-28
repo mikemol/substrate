@@ -23,6 +23,7 @@ open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s;
 open import Substrate.Category.Allegory.Refinement
   using (_⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
 open import Substrate.Algebra.R.Trace.SKIFaithfulRb using (Gen; gI; gK; gS; arity)
+open import Substrate.Category.Allegory.Refinement.Present
 
 ------------------------------------------------------------------------
 -- ① THE FIBER FAMILY: over arity-grades (ℕ), a family assigns to each grade n the
@@ -31,7 +32,8 @@ open import Substrate.Algebra.R.Trace.SKIFaithfulRb using (Gen; gI; gK; gS; arit
 -- Fam ℕ = ℕ → Set — the fiber at each grade.
 ------------------------------------------------------------------------
 -- the base family: at every grade, the combinator is present (⊤-like fiber).
-data Present : Set where present : Present
+-- `Present` is single-sourced in Category.Allegory.Refinement.Present (it is the
+-- Φ-chain's base fiber, shared with ExtrudeCoEmitGraded's prefix-observation one).
 
 R⁰ : ℕ → Set
 R⁰ _ = Present

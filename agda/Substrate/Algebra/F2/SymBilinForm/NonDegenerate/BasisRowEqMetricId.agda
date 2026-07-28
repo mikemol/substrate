@@ -11,7 +11,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.NonDegenerate.BasisRowEqMetricId where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (basis; lookup-𝟎)

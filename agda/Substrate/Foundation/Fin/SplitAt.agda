@@ -10,7 +10,7 @@
 module Substrate.Foundation.Fin.SplitAt where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
 
 splitAt : ∀ a {b} → Fin (a + b) → Fin a ⊎ Fin b

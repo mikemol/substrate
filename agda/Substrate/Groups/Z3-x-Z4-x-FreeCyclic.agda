@@ -6,7 +6,7 @@
 -- pattern iterates: nested products give arbitrarily many composition
 -- axes.
 --
--- The underlying Word is a 3-pair (Word Z₃.Gen × Word Z₄.Gen ×
+-- The underlying Word is a 3-pair (Word Z₃-Base.Gen × Word Z₄-Base.Gen ×
 -- Word F.Gen). Composition is componentwise ++ on each axis.
 -- Identity is the triple-ε.
 --
@@ -25,12 +25,15 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z3-x-Z4-x-FreeCyclic where
+open import Substrate.Groups.Z3-Coxeter using (++-assoc)
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 
+import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃-Base
 import Substrate.Groups.Z3-Coxeter as Z₃
+import Substrate.Groups.Coxeter.Cyclic.Base 3 as Z₄-Base
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.FreeCyclic-Coxeter as F
 open import Substrate.Groups.Coxeter.Word
@@ -41,7 +44,7 @@ open import Substrate.Groups.Coxeter.Word
 ------------------------------------------------------------------------
 
 Word3 : Set
-Word3 = Word Z₃.Gen × Word Z₄.Gen × Word F.Gen
+Word3 = Word Z₃-Base.Gen × Word Z₄-Base.Gen × Word F.Gen
 
 ------------------------------------------------------------------------
 -- N-2: The 3-axis identity.
@@ -68,7 +71,7 @@ infixr 5 _++3_
 ++3-assoc (a₁ , a₂ , a₃) (b₁ , b₂ , b₃) (c₁ , c₂ , c₃) =
   cong₂ _,_ (Z₃.++-assoc a₁ b₁ c₁)
             (cong₂ _,_ (Z₄.++-assoc a₂ b₂ c₂)
-                       (F.++-assoc a₃ b₃ c₃))
+                       (++-assoc a₃ b₃ c₃))
 
 ------------------------------------------------------------------------
 -- N-5: Identity laws.

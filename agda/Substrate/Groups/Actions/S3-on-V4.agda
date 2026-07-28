@@ -36,11 +36,11 @@
 
 module Substrate.Groups.Actions.S3-on-V4 where
 
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch     public
-open import Substrate.Groups.Actions.S3-on-V4.HomRotations public
-open import Substrate.Groups.Actions.S3-on-V4.HomSwaps     public
-open import Substrate.Groups.Actions.S3-on-V4.Axioms       public
-open import Substrate.Groups.Actions.S3-on-V4.Generators   public
-open import Substrate.Groups.Actions.S3-on-V4.Twist        public
-open import Substrate.Groups.Actions.S3-on-V4.Composition  public
-open import Substrate.Groups.Actions.S3-on-V4.AsAction     public
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch
+open import Substrate.Groups.Actions.S3-on-V4.HomRotations
+open import Substrate.Groups.Actions.S3-on-V4.HomSwaps
+open import Substrate.Groups.Actions.S3-on-V4.Axioms
+open import Substrate.Groups.Actions.S3-on-V4.Generators
+open import Substrate.Groups.Actions.S3-on-V4.Twist
+open import Substrate.Groups.Actions.S3-on-V4.Composition
+open import Substrate.Groups.Actions.S3-on-V4.AsAction

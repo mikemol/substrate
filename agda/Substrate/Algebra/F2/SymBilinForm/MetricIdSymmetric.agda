@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.MetricIdSymmetric where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using (IsSymmetric)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)

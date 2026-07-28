@@ -17,8 +17,9 @@ module Substrate.Algebra.Wedge.NilpotentLogMFin where
 
 open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_; z≤n; s≤s)
-open import Substrate.Foundation.Fin using (Fin; toℕ; fromℕ<)
-  renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
 open import Substrate.Foundation.Empty using (⊥-elim)
@@ -29,13 +30,13 @@ open import Substrate.Algebra.Wedge.NilpotentFaithfulLogChart using (d; LogM; mu
 ------------------------------------------------------------------------
 -- every Fin (suc n) is below its bound.
 toℕ-bound : {n : ℕ} (i : Fin n) → toℕ i < n
-toℕ-bound fz     = s≤s z≤n
-toℕ-bound (fs i) = s≤s (toℕ-bound i)
+toℕ-bound fzero     = s≤s z≤n
+toℕ-bound (fsuc i) = s≤s (toℕ-bound i)
 
 -- fromℕ< recovers the Fin it came from (the round-trip), for ANY bound witness.
 fromℕ<-toℕ : {n : ℕ} (i : Fin n) (p : toℕ i < n) → fromℕ< p ≡ i
-fromℕ<-toℕ fz     (s≤s q) = refl
-fromℕ<-toℕ (fs i) (s≤s p) = cong fs (fromℕ<-toℕ i p)
+fromℕ<-toℕ fzero     (s≤s q) = refl
+fromℕ<-toℕ (fsuc i) (s≤s p) = cong fsuc (fromℕ<-toℕ i p)
 
 ------------------------------------------------------------------------
 -- THE FAITHFUL CARRIER + its multiplication. LogF = Maybe (Fin (suc d)); mulF
@@ -53,18 +54,18 @@ mulF (just i) (just j) with (toℕ i + toℕ j) <? suc d
 ... | no  _ = nothing
 
 ------------------------------------------------------------------------
--- ① THE WIN: IDENTITY holds UNCONDITIONALLY. just fz (the Fin 0) is a two-sided
+-- ① THE WIN: IDENTITY holds UNCONDITIONALLY. just fzero (the Fin 0) is a two-sided
 -- identity — for EVERY j : Fin (suc d), no `j < cap` hypothesis, because the
 -- carrier's bound (toℕ-bound) supplies it. This is exactly what Maybe ℕ could not
 -- do (ADD 137's identity-fails-on-junk); the junk is gone.
 ------------------------------------------------------------------------
 fz₀ : Fin (suc d)
-fz₀ = fz
+fz₀ = fzero
 
 mulF-identityˡ : (x : LogF) → mulF (just fz₀) x ≡ x
 mulF-identityˡ nothing  = refl
 mulF-identityˡ (just j) with (toℕ fz₀ + toℕ j) <? suc d
--- toℕ fz + toℕ j = 0 + toℕ j reduces to toℕ j, so p : toℕ j < suc d and fromℕ< p ≡ j.
+-- toℕ fzero + toℕ j = 0 + toℕ j reduces to toℕ j, so p : toℕ j < suc d and fromℕ< p ≡ j.
 ... | yes p = cong just (fromℕ<-toℕ j p)
 ... | no ¬p = ⊥-elim (¬p (toℕ-bound j))
 

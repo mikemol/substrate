@@ -56,7 +56,9 @@ import Substrate.Category.GradedMonoid
 
 import Substrate.Groups.V4-Coxeter-Strict2Monoid
 import Substrate.Groups.FreeCyclic-Coxeter-GradedMonoid
-import Substrate.Groups.Z3-x-FreeCyclic-Degree
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.CycleDegree
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeEpsilon
+import Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeDot
 import Substrate.Groups.Z3-x-Z4-x-FreeCyclic
 
 ------------------------------------------------------------------------

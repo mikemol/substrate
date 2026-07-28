@@ -26,6 +26,7 @@
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (_×_)
 
+open import Substrate.Pipeline.Examples.RotateCrumb
 module Substrate.Pipeline.Examples
   (Char      : Set)
   (Counts    : Set)
@@ -39,11 +40,9 @@ module Substrate.Pipeline.Examples
      Window → (Predictor × Cache) → (RotIdx × (Predictor × Cache)))
   where
 
-open import Substrate.Pipeline.Examples.RotateCrumb       public
 open import Substrate.Pipeline.Examples.PredictorUpdate Char Counts update-counts
-  public
 open import Substrate.Pipeline.Examples.PredictorSurprise Char Counts surprise-bits
-  public
 open import Substrate.Pipeline.Examples.ChooseRotation Window RotIdx Predictor Cache
                                                        choose-rotation-impl
   public
+

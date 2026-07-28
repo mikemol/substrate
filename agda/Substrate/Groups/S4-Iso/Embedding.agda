@@ -9,18 +9,23 @@
 
 module Substrate.Groups.S4-Iso.Embedding where
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis;
-                                   v-of-axis; axis-of-v;
-                                   axis-of-v-v-of-axis; v-of-axis-axis-of-v)
-import Substrate.Groups.V4 as V4
-open V4 using (V₄)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.VOfAxis using (v-of-axis)
+open import Substrate.Axes.AxisOfV using (axis-of-v)
+open import Substrate.Axes.AxisRoundtrip using (axis-of-v-v-of-axis)
+open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄)
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
-import Substrate.Groups.Actions.S3-on-V4 as φ
+import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act as φ-Act
+import Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong as φ-ActCong
+import Substrate.Groups.Actions.S3-on-V4.Composition.ActDot as φ-ActDot
+import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilon as φ-ActEpsilon
+import Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHom as φ-ActHom
 open import Substrate.Groups.V4-Embedding using (embed)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _·_)
-open Permutation
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; trans; sym; cong; sym-trans; cong-trans)
@@ -31,34 +36,34 @@ open import Substrate.Foundation.Eq
 
 private
   s3-apply : S₃.Carrier → Axis → Axis
-  s3-apply s x = axis-of-v (φ.act s (v-of-axis x))
+  s3-apply s x = axis-of-v (φ-Act.act s (v-of-axis x))
 
   s3-inv-apply : S₃.Carrier → Axis → Axis
-  s3-inv-apply s x = axis-of-v (φ.act (s S₃.⁻¹) (v-of-axis x))
+  s3-inv-apply s x = axis-of-v (φ-Act.act (s S₃.⁻¹) (v-of-axis x))
 
-  -- φ.act-cong specialised to v-eq = refl.
+  -- φ-ActCong.act-cong specialised to v-eq = refl.
   φ-cong-v : (s₁ s₂ : S₃.Carrier) (v : V₄) → s₁ S₃.≈ s₂ →
-             φ.act s₁ v ≡ φ.act s₂ v
-  φ-cong-v s₁ s₂ v eq = φ.act-cong {s₁ = s₁} {s₂ = s₂} {v₁ = v} {v₂ = v} eq refl
+             φ-Act.act s₁ v ≡ φ-Act.act s₂ v
+  φ-cong-v s₁ s₂ v eq = φ-ActCong.act-cong {s₁ = s₁} {s₂ = s₂} {v₁ = v} {v₂ = v} eq refl
 
   s3-apply-inv-r : (s : S₃.Carrier) (x : Axis) →
                    s3-apply s (s3-inv-apply s x) ≡ x
   s3-apply-inv-r s x =
-    cong-trans (λ y → axis-of-v (φ.act s y))
-               (v-of-axis-axis-of-v (φ.act (s S₃.⁻¹) (v-of-axis x)))
-    (sym-trans (cong axis-of-v (φ.act-∙ s (s S₃.⁻¹) (v-of-axis x)))
+    cong-trans (λ y → axis-of-v (φ-Act.act s y))
+               (v-of-axis-axis-of-v (φ-Act.act (s S₃.⁻¹) (v-of-axis x)))
+    (sym-trans (cong axis-of-v (φ-ActDot.act-∙ s (s S₃.⁻¹) (v-of-axis x)))
     (cong-trans axis-of-v (φ-cong-v (s S₃.∙ s S₃.⁻¹) S₃.ε (v-of-axis x) (S₃.inv-right s))
-    (cong-trans axis-of-v (φ.act-ε (v-of-axis x))
+    (cong-trans axis-of-v (φ-ActEpsilon.act-ε (v-of-axis x))
            (axis-of-v-v-of-axis x))))
 
   s3-inv-apply-l : (s : S₃.Carrier) (x : Axis) →
                    s3-inv-apply s (s3-apply s x) ≡ x
   s3-inv-apply-l s x =
-    cong-trans (λ y → axis-of-v (φ.act (s S₃.⁻¹) y))
-               (v-of-axis-axis-of-v (φ.act s (v-of-axis x)))
-    (sym-trans (cong axis-of-v (φ.act-∙ (s S₃.⁻¹) s (v-of-axis x)))
+    cong-trans (λ y → axis-of-v (φ-Act.act (s S₃.⁻¹) y))
+               (v-of-axis-axis-of-v (φ-Act.act s (v-of-axis x)))
+    (sym-trans (cong axis-of-v (φ-ActDot.act-∙ (s S₃.⁻¹) s (v-of-axis x)))
     (cong-trans axis-of-v (φ-cong-v (s S₃.⁻¹ S₃.∙ s) S₃.ε (v-of-axis x) (S₃.inv-left s))
-    (cong-trans axis-of-v (φ.act-ε (v-of-axis x))
+    (cong-trans axis-of-v (φ-ActEpsilon.act-ε (v-of-axis x))
            (axis-of-v-v-of-axis x))))
 
 ------------------------------------------------------------------------

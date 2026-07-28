@@ -17,20 +17,20 @@
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.X8aSkiInstance where
+import Substrate.Foundation.RewriteConfluence
 
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Category.UniversalProperty.ConfluenceUnique using (module CRUnique)
 open import Substrate.FUSep.FUSepQReduce
   using (Reduce; _↦_; SN; sn-confluent) renaming (Tm to Tm⟦533ef80d⟧)  -- the SKI shedding system (⇒ is an explicit arg)
-open import Substrate.FUSep.FUSepQCR using (module Newman)
 
 ------------------------------------------------------------------------
 -- ① Enter FUSep's SKI shedding system at a classifier ⇒ (the wedge tags each term stop/shed),
 --    with its local confluence WCR↦ as hypothesis (the braided diamond, FUSepQConfluence).
 ------------------------------------------------------------------------
 module SkiCR (⇒ : Reduce) where
-  open Newman (_↦_ ⇒) using (_⇒*_; Converge)
+  open import Substrate.Foundation.RewriteConfluence (_↦_ ⇒) using (_⇒*_; Converge)
 
   -- FUSep's concrete SKI Church-Rosser: newman applied at the SN term's Acc. Given local
   -- confluence and SN, multi-step peaks converge — the wedge-projected confluent fragment.
@@ -46,9 +46,9 @@ module SkiCR (⇒ : Reduce) where
 ------------------------------------------------------------------------
 module SkiNfUnique
   (⇒ : Reduce)
-  (wcr : let open Newman (_↦_ ⇒) in {a b c : Tm⟦533ef80d⟧} → (_↦_ ⇒) a b → (_↦_ ⇒) a c → Converge b c)
+  (wcr : let open Substrate.Foundation.RewriteConfluence (_↦_ ⇒) in {a b c : Tm⟦533ef80d⟧} → (_↦_ ⇒) a b → (_↦_ ⇒) a c → Converge b c)
   where
-  open Newman (_↦_ ⇒) using (_⇒*_; Converge)
+  open import Substrate.Foundation.RewriteConfluence (_↦_ ⇒) using (_⇒*_; Converge)
   open import Substrate.Foundation.Eq using (sym; trans)
 
   -- a term is NORMAL when every reduction from it is trivial (returns it): b ⇒* d ⟹ d ≡ b.

@@ -22,5 +22,6 @@ module Substrate.Algebra.F2.Linear.Bijection.AsDagger
   (Bij-Dag : DaggerCategory Obj Mor)
   where
 
-open import Substrate.Category.DaggerCategory.AsNamed Bij-Dag public
+open import Substrate.Category.DaggerCategory.AsNamed Bij-Dag
   renaming (named-DaggerCategory to Bijection-AsDagger)
+

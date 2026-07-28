@@ -20,10 +20,10 @@ open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4
-  using (Permutation; _≈_; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (Stab; v-of-axis)
@@ -42,6 +42,13 @@ open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
 -- Axis × Selector → Live → Axis × Selector ≡ id (24 refls).
 ------------------------------------------------------------------------
 
+open import Substrate.Cocycles.V4Signature.S4Iso using (classify-CS)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
+open import Substrate.Axes.VOfAxis
+open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Cocycles.V4Signature.S4Iso.Classify
+open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
 axis-selector-roundtrip :
   (xy : Axis × Selector) →
   live-to-axis-selector (axis-selector-to-live xy) ≡ xy
@@ -142,7 +149,6 @@ live-perm-axis-sel W sel-ttt = refl
 -- classify-CS, pointwise (16 refls).
 ------------------------------------------------------------------------
 
-open import Substrate.Cocycles.V4Signature.S4Iso using (classify-CS)
 
 stab-from-selector-eq-orbit :
   (a b : Axis) →
@@ -171,8 +177,8 @@ stab-roundtrip :
   (σ : Permutation) (σ-stab : Stab D σ) →
   stab-from-selector (selector-from-stab σ) ≈ σ
 stab-roundtrip σ σ-stab z =
-  trans (cong (λ p → applyₛ p z)
-              (stab-from-selector-eq-orbit (applyₛ σ C) (applyₛ σ S)))
+  trans (cong (λ p → apply p z)
+              (stab-from-selector-eq-orbit (apply σ C) (apply σ S)))
         (stab-round-trip σ σ-stab z)
 
 ------------------------------------------------------------------------
@@ -180,7 +186,7 @@ stab-roundtrip σ σ-stab z =
 ------------------------------------------------------------------------
 
 stab-from-selector-fixes-D :
-  (sel : Selector) → applyₛ (stab-from-selector sel) D ≡ D
+  (sel : Selector) → apply (stab-from-selector sel) D ≡ D
 stab-from-selector-fixes-D sel-fft = refl
 stab-from-selector-fixes-D sel-tft = refl
 stab-from-selector-fixes-D sel-ftf = refl

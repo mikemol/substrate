@@ -26,8 +26,7 @@ open import Substrate.TokiPona.QModifierBilinear
   using (modify-Q-sum; modify-Q-prod)
 open import Substrate.TokiPona.QTokiSentence
   using (QTokiSentence; interpret-sum; interpret-prod)
-open import Substrate.TokiPona.QParticles
-  using (MarkerSet; no-markers; merge-markers)
+open import Substrate.TokiPona.Particles using (MarkerSet; no-markers; merge-markers)
 
 ------------------------------------------------------------------------
 -- 1. QLinearity record.
@@ -37,6 +36,7 @@ open import Substrate.TokiPona.QParticles
 -- arithmetic-heavy ones as documented obligations.
 ------------------------------------------------------------------------
 
+open import Substrate.TokiPona.Particles using (merge-no-markersˡ)
 record QLinearity (m : ℕ) : Set where
   field
     -- Interpretation under modifier composition.
@@ -65,7 +65,6 @@ record QLinearity (m : ℕ) : Set where
 -- markers-identityˡ is inherited from the F₂ particle infrastructure.
 ------------------------------------------------------------------------
 
-open import Substrate.TokiPona.Particles using (merge-no-markersˡ)
 
 canonical-QLinearity : {m : ℕ} → QLinearity m
 canonical-QLinearity = record

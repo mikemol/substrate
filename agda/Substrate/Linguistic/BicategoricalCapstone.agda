@@ -15,16 +15,15 @@ open import Substrate.Linguistic.Roster using (Lang; witness-of)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 
 -- Re-export the B-arc slices publicly.
-open import Substrate.Linguistic.Language2Morphism public
-open import Substrate.Linguistic.Vertical public
-open import Substrate.Linguistic.Horizontal public
-open import Substrate.Linguistic.Interchange public
-open import Substrate.Linguistic.BicategoryOfLanguages public
-open import Substrate.Linguistic.NaturalPresheafMorphism public
-open import Substrate.Linguistic.YonedaNatural public
-open import Substrate.Linguistic.YonedaReverse public
-open import Substrate.Linguistic.YonedaFull public
-
+open import Substrate.Linguistic.Language2Morphism
+open import Substrate.Linguistic.Vertical
+open import Substrate.Linguistic.Horizontal
+open import Substrate.Linguistic.Interchange
+open import Substrate.Linguistic.BicategoryOfLanguages
+open import Substrate.Linguistic.NaturalPresheafMorphism
+open import Substrate.Linguistic.YonedaNatural
+open import Substrate.Linguistic.YonedaReverse
+open import Substrate.Linguistic.YonedaFull
 ------------------------------------------------------------------------
 -- 1. The B-arc summary.
 --

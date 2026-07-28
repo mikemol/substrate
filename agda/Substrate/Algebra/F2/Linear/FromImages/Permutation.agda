@@ -33,9 +33,8 @@
 
 module Substrate.Algebra.F2.Linear.FromImages.Permutation where
 
-open import Substrate.Foundation.Fin.Iterate     public
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose     public
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear      public
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution  public
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift public
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order       public
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order

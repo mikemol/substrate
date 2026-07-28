@@ -33,5 +33,6 @@ module Substrate.Category.KleisliCategory
   (Kleisli : CategoryOf ObjKleisli MorKleisli)
   where
 
-open import Substrate.Category.Monad.DerivedCategoryOf C M Kleisli public
+open import Substrate.Category.Monad.DerivedCategoryOf C M Kleisli
   renaming (monad-derived-Category to KleisliCategory)
+

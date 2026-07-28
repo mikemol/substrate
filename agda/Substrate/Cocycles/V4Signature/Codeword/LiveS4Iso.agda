@@ -33,11 +33,11 @@ open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; C; S; W; act-axis)
-open import Substrate.Groups.V4 as V4 using (V₄; e; α; β; γ)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; ε; ≈-refl)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (v-of-axis; v-of-axis-anchor-sends; v-for; s-for; s-for-fixes-anchor;
@@ -51,6 +51,15 @@ open import Substrate.Cocycles.V4Signature.Codeword.Live
          live-to-axis-selector; axis-selector-to-live)
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
   using (stab-from-selector; live-to-permutation)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Groups.Symmetric.Eq Axis
+open import Substrate.Groups.Symmetric.EqRefl Axis
+open import Substrate.Groups.Symmetric.Identity Axis
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Axes.VOfAxis
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
+open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.S
 
 ------------------------------------------------------------------------
 -- axis-of-v: the inverse of v-of-axis.
@@ -99,7 +108,7 @@ classify-CS-to-selector W C = sel-ttt
 classify-CS-to-selector _ _ = sel-fft
 
 selector-from-stab : Permutation → Selector
-selector-from-stab σ = classify-CS-to-selector (applyₛ σ C) (applyₛ σ S)
+selector-from-stab σ = classify-CS-to-selector (apply σ C) (apply σ S)
 
 ------------------------------------------------------------------------
 -- Selector ↔ Stab(D) round trip (6 cases, mechanical refls).
@@ -140,7 +149,7 @@ permutation-to-live σ =
 --   * v-of-axis (axis-of-v (v-for σ)) ≡ v-for σ
 --     — by v-of-axis-axis-of-v-id on (v-for σ).
 --   * stab-from-selector (selector-from-stab (s-for σ)) ≈ s-for σ
---     — requires that (applyₛ (s-for σ) C , applyₛ (s-for σ) S) is
+--     — requires that (apply (s-for σ) C , apply (s-for σ) S) is
 --     one of the 6 valid (s.C, s.S) pairs, by s-for-fixes-anchor and
 --     the structural properties of Stab(D).
 --

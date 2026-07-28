@@ -26,23 +26,23 @@
 
 module Substrate.ShadowArchitecture.Raven.Poem where
 
-open import Substrate.ShadowArchitecture.Raven.Poem.LineShorthands public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaI        public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaII       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIII      public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIV       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaV        public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVI       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVII      public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVIII     public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIX       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaX        public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXI       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXII      public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIII     public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIV      public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXV       public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVI      public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVII     public
-open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVIII    public
-open import Substrate.ShadowArchitecture.Raven.Poem.Raven          public
+open import Substrate.ShadowArchitecture.Raven.Poem.LineShorthands
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaI
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIV
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaV
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVI
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaVIII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaIX
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaX
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXI
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXIV
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXV
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVI
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVII
+open import Substrate.ShadowArchitecture.Raven.Poem.StanzaXVIII
+open import Substrate.ShadowArchitecture.Raven.Poem.Raven

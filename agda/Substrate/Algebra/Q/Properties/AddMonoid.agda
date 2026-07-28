@@ -13,7 +13,7 @@
 -- (compute-trace), which does NOT normalise on SYMBOLIC ℚ — instantiating it
 -- inside the nested-reduce monoid laws blows up typechecking. Kept abstract,
 -- the laws never force it; the concrete instance substitutes `reduce` +
--- `canonical-respects-≈` + `≈-canonical` into the already-checked proofs.
+-- `reduce-respects-≈` + `≈-reduce` into the already-checked proofs.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -31,8 +31,8 @@ open import Substrate.Algebra.Q.Properties.Field
   using (+ℚ-assoc; +ℚ-identityˡ; +ℚ-identityʳ)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong)
 open import Substrate.Algebra.Q.Reduce using (reduce)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-canonical)
-open import Substrate.Algebra.Q.Properties.Canonical using (canonical-respects-≈)
+open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
+open import Substrate.Algebra.Q.Properties.Canonical using (reduce-respects-≈)
 open import Substrate.Algebra.Monoid using (Monoid)
 
 ------------------------------------------------------------------------
@@ -104,6 +104,6 @@ module ReducedMonoid
 -- The concrete instance: red := the ℚ `reduce`-Canonical.
 ------------------------------------------------------------------------
 
-module Reduced = ReducedMonoid reduce canonical-respects-≈ ≈-canonical
+module Reduced = ReducedMonoid reduce reduce-respects-≈ ≈-reduce
 
 open Reduced public using () renaming (RQ to ℚ/≈; Reduced-Monoid to +ℚ-reduced-Monoid)

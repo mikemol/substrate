@@ -24,6 +24,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF256TwoFaces where
+open import Substrate.Algebra.Polynomial.Graded.Mod using (xpow)
+open import Substrate.Algebra.Polynomial.Graded.Mod.Core using (ytime)
+open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (gpow)
 
 open import Substrate.Foundation.Nat using (ℕ; _+_)
 open import Substrate.Foundation.Bool using (false)
@@ -33,7 +36,7 @@ import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom as DH
 

@@ -20,7 +20,7 @@
 
 module Substrate.Algebra.F2.Linear.Cycle3x2 where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
 

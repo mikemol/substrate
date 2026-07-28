@@ -11,7 +11,7 @@
 
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉; ₁₀; ₁₁; ₁₂; ₁₃; ₁₄; ₁₅; ₁₆)
 
 s1  : Fin 18 ; s1  = zero

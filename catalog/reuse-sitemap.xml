@@ -11,10 +11,10 @@
   <url><loc>https://substrate.local/Substrate/Algebra/AbelianGroup#AbelianGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Bijection#_↔_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/CayleyDickson#Prod</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/CommutativeRing#CommutativeRing</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/ExpLogCodec#ExpLogCodec</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F1/GL#GL-F₁</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/F2/Code#ImageCode</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/F2/Code#ImageCode</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Code#KernelCode</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Code/Universal#Image-Equivalent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/FanoPlane#FanoLine</loc><priority>0.0</priority></url>
@@ -26,7 +26,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear/BilinearFromImages#Bilinear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear/CategoryStructures#F2LinearCategoryStructures</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear/KernelSpan#KernelDim</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear#Linear</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/F2/Linear#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Generic#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/BezoutFold/Base#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/F2/Polynomial/Wedge/BezoutFold/Step#Linear</loc><priority>0.0</priority></url>
@@ -41,14 +41,14 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Field#Field</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2/AsChainDecomp#GL3F2ChainShape</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/GL3F2#GL3F2</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.02</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/GroupAction#Actionᴳ</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Group#Group</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/GroupAction#Actionᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/IsomorphicCocycle#IsomorphicCocycleStructureᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Magma#Magma</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Module/Free/Basis#FreeBasisUniversal</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Module/Free/UniqueExtension#FreeBasisUniversalAt</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Module/Hom#ModuleHom</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Module#Module</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Module#Module</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Monoid#Monoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/Bezout#BezoutWitness</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/Divides/Type#_∣_</loc><priority>0.0</priority></url>
@@ -57,7 +57,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Nat/Prime#AllPrime</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/ParityKernel/Universal#Gr2Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PointedSet/Map#PointedSetMap</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PointedSet#PointedSet</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PointedSet#PointedSet</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/FromCommRing#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/AssocLinearP#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/AssocLinearQ#Linear</loc><priority>0.0</priority></url>
@@ -66,15 +66,15 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded/Laws/Linear#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Polynomial/Graded#Linear</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#Character</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#LocallyCompactAbelian</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual/Term#CharTerm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#F2nSelfDual</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDual</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDual</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/PontryaginDual#PontryaginDualityTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/AsField#ℚ-Field-Obligation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetBasis#HetQ</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#Tm</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/HetSymbolic#_≈t_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacCubeNorm#ZE</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Q/JacobianCounterexample#IsJacobianCounterexample</loc><priority>0.0</priority></url>
@@ -87,7 +87,8 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient/CRT/Idempotents#CRTIdempotents</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient/CRT/Inverses#ModInverses</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Quotient#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Quotient#Quotient</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Quotient#Quotient</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Quotient/V4Cosets#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#AllPos</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/Bisim#_~_</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/CFBezoutBridge#Matℤ</loc><priority>0.0</priority></url>
@@ -96,7 +97,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/ExtruderFix#CombinatorAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/ExtruderLambekRealigned#LambekFix</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/ExtruderObsCoalg#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/ExtruderObsCoalg#ObservedAlgebra</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/ExtruderObsCoalg#ObservedAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanKI/Properties#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanKI#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanKI#_⇒_</loc><priority>0.0</priority></url>
@@ -104,35 +105,34 @@
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanSKI#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/NewmanSKI#_⇒_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/OrbitAudit#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#RealTrace</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace#RealTrace</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIFaithfulRb#Tm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIGradedFlatAllegory#Present</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIGradedTraceChain#Shed</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIGradedTraceChain#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIOnCombinatorDivStr#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒*_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒_</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIReductionToList#_⇒_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Shed</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.1</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKIShedDuality#Tm</loc><priority>0.07</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/SKITermToShedding#Tm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/R/Trace/V4FullCocycle#V4Full</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Ring#Ring</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Ring#Ring</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/SemidirectProduct#SemidirectGroupObligation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Semigroup#Semigroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Semiring/NatInf#ℕ∞</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Semiring/SPPF#SPPF</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Semiring#Semiring</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Setoid/Map#SetoidMap</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Setoid#Setoid</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Setoid#Setoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup/Action#Action</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup#SetoidGroup</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/SetoidGroup#SetoidGroup</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/TopologicalGroup#TopologicalGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Torsor#IsTorsorᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedBulk#_∈ᵀ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedBulk#_∈ˡ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedInvariant#NonEmpty</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedInvariant#Node</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedInvariant#Node</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedInvariant#PackOutcome</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedMembership#Node</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedMembership#_∈ᴺ_</loc><priority>0.0</priority></url>
@@ -146,7 +146,7 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedReadout#_∈ᴺ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedReadout#_∈ᵀ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedReadoutDynamics#_∈ˡ_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedRecall#Node</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedRecall#Node</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedRecall#PackOutcome</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedRecall#_∈ᴺ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/AxisWord/PackedRecall#_∈ᵀ_</loc><priority>0.0</priority></url>
@@ -159,13 +159,13 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Coalgebra#WedgeCoalg</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Contextuality#Constraint</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/CrossMul#CrossMix</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge#DivStr</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/MonoidalAdjunction#GradedMonoidalAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded/Morphism#GradedDivStrMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedDivStr</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Graded#GradedWedge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Iso#WedgeIso</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Mul#MulDivStr</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Mul#MulDivStr</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Mul#Two</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/NComplex#Three</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Wedge/Product/Hom#GradedHom</loc><priority>0.0</priority></url>
@@ -186,34 +186,35 @@
   <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm/Sound#Mon</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm/Sound#ZE</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Algebra/Z/ZRingNorm#ZE</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Algebra/Z#ℤ</loc><priority>0.03</priority></url>
-  <url><loc>https://substrate.local/Substrate/Axes#Axis</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Algebra/Z#ℤ</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Axes/Axis#Axis</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AbelianPFG#AbelianPFG</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Adjunction#IsLinearAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Algebra-of-Monad#AlgebraOfMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Maps#Map</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Allegory/Refinement/Present#Present</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/Refinement#Refinement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Allegory/RefinementReconstruct#GRefinement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AntiCommutativeAlgebra#AntiCommutativeAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasCatalog</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#Probe</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#ProbeAtlas</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#ProbeAtlas</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#SylowClass</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#SynergyMeasurement</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#AtlasContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AtlasOfProbes#JointContext</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/AutomorphismGroup#AutomorphismGroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BWTEmergence#EmergentConcentration</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/BWTEmergence#RotationCommitMap</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/BWTEmergence#RotationCommitMap</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BeckChevalley#BCSquare</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BoundaryEvent#BoundaryDetector</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/BoundaryEvent#BoundaryEvent</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/BoundaryEvent#BoundaryEvent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/BoundaryEvent#TraceConsistency</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CartanRootEquivalence#CartanRoot-Equivalence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CartanType#CartanType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#CascadedCoalgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CascadedCoalgebra#TripleCascade</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.08</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CategoryOf#CategoryOf</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent#CentralizerDescent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CentralizerDescent/Tree#DescentTree</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ChainDecomposition#ChainDecomposition</loc><priority>0.0</priority></url>
@@ -237,7 +238,7 @@
   <url><loc>https://substrate.local/Substrate/Category/Coequalizer#IsCoequalising</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Coherence#CoherenceDiagram</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CommutativeComonoid#CommutativeComonoid</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/CommutativeMonoid#CommutativeMonoid</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/CommutativeMonoid#CommutativeMonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CommutativeNonAssociativeAlgebra#CommutativeNonAssociativeAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Comonoid#Comonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Comonoid/Sites/V4#V4</loc><priority>0.0</priority></url>
@@ -248,11 +249,11 @@
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#AtlasCell</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#AtlasDomain</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/CompressionAtlas#CompressionAtlas</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Cone#Cone</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Cone#Cone</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Cone/EdgeApex#EdgeApexCone</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Cone/FieldFilling#FieldFilling</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Cone/WithMorphisms#ConeWithMorphisms</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/ConjugationCoalgebra#ConjugationCoalgebra</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/ConjugationCoalgebra#ConjugationCoalgebra</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ConjugationCoalgebra/Examples/V4#NonSimplicityWitness</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ConjugationCoalgebra/Examples/V4#NormalSubgroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ConjugationCoalgebra/Simplicity#NonSimplicityWitness</loc><priority>0.0</priority></url>
@@ -269,7 +270,7 @@
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#CRTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#ConvolutionTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DFTasMarkovMorphism</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DiscreteFourierTransform</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#DiscreteFourierTransform</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#MultiSylowDFTDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#PlancherelTheorem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/DiscreteFourierTransform#WalshHadamardDFT</loc><priority>0.0</priority></url>
@@ -284,14 +285,14 @@
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR/QInstance#QFreeLinearizationSketch</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeLinearizationR#FreeLinearizationR</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#AlgebraClass</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeConstructionClass</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeConstructionClass</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#FreeOverBasis</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#LanguageWitness</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#LanguageWitness</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeOverBasis#WitnessName</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeF2Module#F2Mod</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty/FreeMonoid#MonoidOn</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/FreeUniversalProperty#FreeUP</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Functor#Functor</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Functor#Functor</loc><priority>0.02</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GTorsor#GTorsor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GaloisAdjunction/AsAdjunction#GaloisAdjunction-AsAdjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/GaloisAdjunction#GaloisAdjunction</loc><priority>0.0</priority></url>
@@ -310,15 +311,15 @@
   <url><loc>https://substrate.local/Substrate/Category/Lawvere#InvolutiveResidue</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Lawvere#TorsorAtom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/LaxFunctor#LaxFunctor</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/LieAlgebra#LieAlgebra</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/LieAlgebra#LieAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Limit#Limit</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/LimitUniversalProperty#LimitUP</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/LinearAlgebra#LinearAlgebra</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/LinearAlgebra#LinearAlgebra</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Modification#Modification</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Monad#Monad</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Monad#Monad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Morphism#Morphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiFieldBond#FieldTower</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/MultiPrimeSpectralProfile#BitWidth</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/MultiPrimeSpectralProfile#BitWidth</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiPrimeSpectralProfile#CrossPrimeCorrelation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiPrimeSpectralProfile#HammingSpectrumBridge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiPrimeSpectralProfile#MultiPrimeAtlas</loc><priority>0.0</priority></url>
@@ -334,7 +335,7 @@
   <url><loc>https://substrate.local/Substrate/Category/MultiscaleOctonionLoop#MultiscaleOctonionLoop</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiscaleOctonionLoop#Rotation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/MultiscaleOctonionLoop#RotationAction</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/NaturalIsomorphism#NaturalIsomorphism</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/NaturalIsomorphism#NaturalIsomorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/NaturalTransformation#NaturalTransformation</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/OpcodeAlgebra#OpcodeAlgebra</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/OpcodeAlgebra#OpcodeCategory</loc><priority>0.0</priority></url>
@@ -345,7 +346,7 @@
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/AcquisitionStrategies#WarmupBufferStrategy</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/AcquisitionTimeline#AcquisitionTimeline</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/Bank/BankIndependence#BankIndependence</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/Bank/PLLBank#PLLBank</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/Bank/PLLBank#PLLBank</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/LockState#ForwardOnly</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/LockState#LockState</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/LockState#LockTransition</loc><priority>0.0</priority></url>
@@ -354,7 +355,7 @@
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/PLL#PLL</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PhaseLockedLoop/SubstratePLLBank#SubstratePLLBank</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Poly#GeneralizeTel</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/Poly#Poly</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/Poly#Poly</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Poly#_⇒_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PolyLens#OpenDynamicalSystem</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/PolyLens#PolyCoalgebra</loc><priority>0.0</priority></url>
@@ -376,7 +377,7 @@
   <url><loc>https://substrate.local/Substrate/Category/Pullback#IsInPullback</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Pushout#IsPushoutCocone</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/RGradedMonoid#RGradedMonoid</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#RMParams</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#RMParams</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#CliffordGradeConnection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#GLAction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/ReedMullerHierarchy#InclusionLattice</loc><priority>0.0</priority></url>
@@ -399,19 +400,19 @@
   <url><loc>https://substrate.local/Substrate/Category/Site#Site</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#Filter</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#IdentityLens</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/StochasticLens#LensComposition</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/StochasticLens#LensComposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#LensFunctoriality</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#ParticleFilter</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens/Sites/ChainWalk#ChainWalkLens</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#StochasticLens</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StochasticLens#StochasticLensCategory</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/StratifiedBundle#StratifiedBundle</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/StratifiedBundle#StratifiedBundle</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StratifiedBundle#WithinStratumStationary</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/StratifiedSequence#StratifiedSequence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Strict2Monoid#Strict2Monoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/SubobjectClassifier#SubobjectClassifier</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/SylowDecomposition#InGenerated</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/SylowDecomposition#SylowDecomposition</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/SylowDecomposition#SylowDecomposition</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/SymmetricMonoidal#SymmetricMonoidal</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/TensorProduct/AntisymmetricTensor#AntisymmetricTensor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/Topos#Topos</loc><priority>0.0</priority></url>
@@ -422,40 +423,186 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalEnvelopingAlgebra#UniversalEnvelopingAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/AdjointPair#SheafAdjointPair</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/AgdaExtrude#Tm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ArrowOfArrow#UPArrow²-Morphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/BackedGraded#BackedUPᴳ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Category#UPCategory</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Coverage#UPCover</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Covers</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Obs</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalDoFComputable#Obs</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalLawvereCarrier#Reflexive</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalOrdinal#Ord</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalOrdinal#Ord</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalOrdinal#_&lt;_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalYClosed#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/DiagonalYCombinator#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Discriminator#Discriminated</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimDriver#Driver</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimRun#RedTrace</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimRun#RedTrace</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimRun#_≈_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeBisimUnfold#BisimOutcome</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#CoemitMuCarrier</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#CoemitMuCoalgebra</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#Framed</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#CoemitTwoFraming</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#GradingAxis</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#Present</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#ProofEq</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#CoEmit</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded#CommutingInvolutionsUpTo</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon2#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon2#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon2#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon2#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon3#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon3#CommutingInvolutionsUpTo</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon3#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon3#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Anon3#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCarrier#CoemitMuCarrier</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCarrier#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCarrier#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCarrier#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCarrier#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCoalgebra#CoemitMuCoalgebra</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCoalgebra#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCoalgebra#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCoalgebra#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitMuCoalgebra#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitStencil#Framed</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitTwoFraming#CoemitTwoFraming</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitTwoFraming#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitTwoFraming#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitTwoFraming#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/CoemitTwoFraming#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitacthom#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitacthom#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitacthom#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitacthom#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitcarrierstep#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitcarrierstep#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitcarrierstep#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitcarrierstep#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitdigitmod4#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitdigitmod4#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitdigitmod4#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitdigitmod4#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitisana#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitisana#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitisana#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitisana#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuana#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuana#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuana#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuana#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuisanchornotmap#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuisanchornotmap#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuisanchornotmap#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuisanchornotmap#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitmuisanchornotmap#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitorbitkeytostab#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitout#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitout#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitout#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitout#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitpairingcanonical#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitproofeq#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitproofeq#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitproofeq#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitproofeq#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemits4roundtrip#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstabcomponent#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstabcomponentfixesanchor#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstepchirality#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstepchirality#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstepchirality#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstepchirality#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstephodgeidentity#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstephodgeidentity#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstephodgeidentity#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitstephodgeidentity#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittotaltos4#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittotaltos4#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittotaltos4#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittotaltos4#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittotaltos4#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceselfunique#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceselfunique#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceselfunique#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceselfunique#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceunique#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceunique#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceunique#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemittraceunique#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitunfoldlaw#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitunfoldlaw#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitunfoldlaw#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitunfoldlaw#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4component#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4identityisadditiveorigin#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4identityisadditiveorigin#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4identityisadditiveorigin#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4identityisadditiveorigin#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4ontopairings#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4ontopairings#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4ontopairings#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4ontopairings#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4pairings#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4pairings#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4pairings#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4pairings#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4square#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4square#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4square#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4square#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squarehead#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squarehead#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squarehead#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squarehead#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squareproof#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squareproof#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squareproof#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Coemitv4squareproof#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/F2flip#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/F2flip#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/F2flip#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/F2flip#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Forgetgrade#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Forgetgrade#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Forgetgrade#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Forgetgrade#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/GradingAxis#GradingAxis</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Len#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Len#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Len#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Len#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Mod4#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Mod4#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Mod4#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Mod4#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Natuip#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Natuip#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Natuip#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Natuip#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Pflip#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Pflip#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Pflip#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Pflip#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/ProofEq#ProofEq</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/ProofEq#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/ProofEq#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/ProofEq#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/ProofEq#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Tracemul#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Tracemul#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Tracemul#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/Tracemul#_≈ᵉ_</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/V4flipmorph#CoEmit</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/V4flipmorph#Step</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/V4flipmorph#Step≈</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded/V4flipmorph#_≈ᵉ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#CoEmitTwoFraming</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#FrameIso</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#CoEmit</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#Step</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#_≈ᵉ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitIffIso#_≈~_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#CoEmit</loc><priority>0.03</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#Step</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#CoEmit</loc><priority>0.26</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#Step</loc><priority>0.13</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#Step≈</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitMonad#_≈ᵉ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitTraceEq#CoEmit</loc><priority>0.0</priority></url>
@@ -465,7 +612,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitViaTrace#Step≈</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeCoEmitViaTrace#_≈ᵉ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIO#IO</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIOCostream#CoIO</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIOCostream#CoIO</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIOCostreamBisim#_≈ᶜ_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIOKleisli#IO</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeIOMonadNT#IO</loc><priority>0.0</priority></url>
@@ -477,7 +624,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeMinimalRun#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeNerveGeneral#NerveOp</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeNerveGeneral#NervePath</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeNerveGeneral#_⇒*_</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeNerveGeneral#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudePackageInstance#ReductionExtruder</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudePackageInstance#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/ExtrudeReductionReversal#_⇒*_</loc><priority>0.0</priority></url>
@@ -502,7 +649,7 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/GeometricMorphism#GeometricMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/MatchingFamily#MatchingFamily</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Morphism#UPMorphism</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Presheaf#UPPresheaf</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Presheaf#UPPresheaf</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Pretopology#UPPretopology</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Quotient#QuotientUP</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/QuotientProduct#QuotientProduct</loc><priority>0.0</priority></url>
@@ -514,10 +661,10 @@
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Term#UPTerm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/TmDBGodel#TmDB</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Topos#UPTopos</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrowP</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/Topos#UPTopos</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty#UPArrowP</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/UniquenessStencilAbstract#UniquenessStencil</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#ConfluentClassifier</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#ConfluentClassifier</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aConfluentClassifier#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aSkiInstance#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Category/UniversalProperty/X8aSkiInstance#_⇒*_</loc><priority>0.0</priority></url>
@@ -525,15 +672,34 @@
   <url><loc>https://substrate.local/Substrate/Category/WedgeProduct#WedgeProduct</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycle#IsTorsor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycle#IsomorphicCocycleStructure</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Cocycle#WeakCocycleStructure</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycle#WeakCocycleStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/F2CubedPuncturing#WHTCore</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/KRule#DistPattern</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Chirality/Type#Chirality</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Chirality/WHTCharacterBridge#ChiralityIsWHTSelector</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/Live#Selector</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Anchor#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Forward#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection#Live≃Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Reverse#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection/Roundtrips#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Codeword/LiveS4Iso#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/CompSideRoundtrip#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/FullS4Route#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/Pairing/Type#Pairing</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4GroupIso#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso-Bridges#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso/Anchor#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso/Cases#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso/Classify#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso/Roundtrips#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso/StabElements#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso#TotalSpace≃S₄</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/S4Iso#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/SRecovers#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Cocycles/V4Signature/VRecovers#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Conway/AddGeneral#ConwayAddSignature</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Conway/AsField#SurrealFieldObligation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Conway/BirthdayOrdered#BirthdayOrdered</loc><priority>0.0</priority></url>
@@ -542,9 +708,9 @@
   <url><loc>https://substrate.local/Substrate/Discipline#CocycleSection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Discipline#RigidifiedWCS</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/ConversionCongruence#ARS</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/ConversionCongruence#_≈_</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/ConversionCongruence#_≈_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUEtaObsCoalg#St</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepConv#Adjunction</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepConv#Adjunction</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConv#EqSetoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConv#Reaches</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepConvEtaWitness#Head</loc><priority>0.0</priority></url>
@@ -558,7 +724,6 @@
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQ#_≈BT_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQ#_≈L_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQBridge#FinTrace</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQCR#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQConfluence#Iso</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQConfluence#Span</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQCyc#AllHeads</loc><priority>0.0</priority></url>
@@ -571,107 +736,220 @@
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQLambek#_×_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQNf#Wit</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Step</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tm</loc><priority>0.04</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tm</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Diverges</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#SN</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#Tag</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#_⇒*_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#_↦_</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#_↦_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQReduce#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQSKI#Tm</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FUSepQSKI#_◁_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FoldUnfold#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/FoldUnfold#Congruence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/FUSep/ObsBisim#_≋_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Bool#Bool</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty/Polymorphic#⊥</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Empty#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.19</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Eq#_≡_</loc><priority>0.12</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/Cover#Lift⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Fin#Fin</loc><priority>0.2</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Fin/Fin#Fin</loc><priority>0.23</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Fin/SplitAt/View#SplitAtView</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/List/Any#Any</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.05</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/List#List</loc><priority>0.03</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Maybe#Maybe</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#NonZero</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#_≤_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Nat#ℕ</loc><priority>1.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.11</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Negation#Dec</loc><priority>0.08</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Product#Σ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/RewriteConfluence#_⇒*_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Sum#_⊎_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit/Polymorphic#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Unit#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/Universe#U</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Foundation/Vec#Vec</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundation/WellFounded#Acc</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Foundations/Bijection#Bijection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Geometry/HodgeDim3#HodgeComplement-Dim3</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful#Row</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/HOf#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/HOf#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/NOf#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/NOf#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/Row#Row</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/TableFaithful#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/TableFaithful#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/TableFaithful#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/CanonicalFaithful/TableFaithful#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block00#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block00#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block01#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block01#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block10#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block10#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block11#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/Block11#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/RotPowComposeChain#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Composition/RotPowComposeChain#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Dispatch/ActOnCanonical#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Dispatch/ActOnCanonical#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Dispatch/ActOnCanonical#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Dispatch/ActOnCanonical#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPow#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPow#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowAppend#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowAppend#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowNormalizeEq#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowNormalizeEq#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPow#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPow#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowAppend#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowAppend#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowNormalizeEq#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowNormalizeEq#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/Z2-on-Z3/Act#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/Z2-on-Z3/Act#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/Z2-on-Z3/Act#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Actions/Z2-on-Z3/Act#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#CapabilityTag</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterFin/Witness#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterFin#CoxeterFinCapability</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterGroup/Witness#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/CoxeterGroup#CoxeterGroupCapability</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Capabilities/PhaseProjection/Witness#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/PhaseProjection#PhaseProjectionCapability</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Capabilities/Strict2Monoid/Witness#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/Strict2Monoid#Strict2MonoidCapability</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities#ZnInstance</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic/Witness#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Capabilities/xFreeCyclic#xFreeCyclicCapability</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.1</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Base#Gen</loc><priority>0.16</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Canonical-at</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Bridge#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Core#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Existential#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Existential#Canonical-at</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Existential#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Inverse#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Inverse#Canonical-at</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/Inverse#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower/Concat#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower/Concat#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower/Flat#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower/Flat#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic/NthPower#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Cyclic#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Fin-from-Cyclic#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Fin-from-Cyclic#Canonical-at</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Fin-from-Cyclic#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Word#Word</loc><priority>0.14</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Gen</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Coxeter/Word#Word</loc><priority>0.18</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Canonical-Free</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/FreeCyclic-Coxeter#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/S4-AsOpcodeAlgebra#S4AlphabetLayout</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/S4#Permutation</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/EmbedS3Faithful#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/Embedding#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/Extract#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/ExtractCorrect#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/ForwardHom#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/Foundation#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/IsoTransport#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/Roundtrip#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4-Iso/V4Normal#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/S4#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/SemidirectProduct/Factorisation#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/SemidirectProduct/S#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/SemidirectProduct/Stab#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/SemidirectProduct/V#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Extend#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Hom#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Iso#Stab≃S₃</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Iso#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Stab-S3-Restrict#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Stab-S3#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/StabNormalCharacterization#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/StabNotNormal#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Subgroup#Permutation</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Subgroup#S₄-NormalSubgroup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Subgroup#S₄-Subgroup</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Symmetric#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Assoc#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/ComposeCong#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/EpsilonLeft#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/EpsilonRight#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Eq#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/EqRefl#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/EqSym#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/EqTrans#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Group#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Identity#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Injective#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/InvLeft#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/InvRight#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/InverseCong#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Permutation/Compose#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Permutation/Inverse#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Symmetric/Permutation#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-Cosets#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/V4-Cosets#S₄/V₄-↔-Stab</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Gen</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Canonical-V4</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-Coxeter#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-Embedding#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-Normality#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/V4-as-Z2xZ2#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/V4/Bijection#V₄</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z3/Advance#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z3/Advance#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z3/AsSigma#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z3/AsSigma#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z4/Advance#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z4/Advance#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z4/AsSigma#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance/Z4/AsSigma#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/Embed#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/Embed#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/EmbedDot#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/EmbedDot#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/PhaseRecovery#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z3/PhaseRecovery#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/Embed#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/Embed#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/EmbedDot#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/EmbedDot#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/PhaseRecovery#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z-x-FreeCyclic-Recovery/Z4/PhaseRecovery#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter-Group#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z2-Coxeter#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z3-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z3-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z3-Coxeter#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/A#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/A#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/CPos#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/CPos#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/CanonicalEx#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/CanonicalEx#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/Gen#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/Gen#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/Normalize#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/Normalize#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/NormalizeCanonical#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z2/NormalizeCanonical#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3-Coxeter-Group#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z3-Coxeter#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z4-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z4-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z4-Coxeter#Canonical</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3-x-Z4-x-FreeCyclic#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3-x-Z4-x-FreeCyclic#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3-x-Z4-x-FreeCyclic#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3-x-Z4-x-FreeCyclic#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/A#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/A#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/CPos#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/CPos#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/CanonicalEx#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/CanonicalEx#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/Gen#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/Gen#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/Normalize#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/Normalize#Gen</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/NormalizeCanonical#Canonical-at</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/Groups/Z3/NormalizeCanonical#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z4-Coxeter#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z5-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z5-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z5-Coxeter#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z5-Coxeter#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z7-Coxeter-Fin#Canonical</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z7-Coxeter-Fin#Gen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Groups/Z7-Coxeter#Canonical</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Groups/Z7-Coxeter#Gen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Invented/LieFragment/AntiCommutativity#_≈ₐ_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Invented/LieFragment/Jacobi#LieAlgExpr</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Invented/LieFragment/Jacobi#LieAlgExpr</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Invented/LieFragment/Jacobi#_≈L_</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Invented/LieFragment#LieExpr</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Invented/LieFragment#LieExpr</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Invented/LieFragment#LieGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Kelen/Fragment#Relational</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Lambda/Fragment#Combinator</loc><priority>0.0</priority></url>
@@ -691,7 +969,7 @@
   <url><loc>https://substrate.local/Substrate/Linguistic/RetroactiveAlignment#FullRetroactiveAlignment</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/RetroactiveAlignment#WitnessAlignment</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/RosettaTable#RosettaEntry</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Linguistic/Roster#Lang</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Linguistic/Roster#Lang</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaCapstone#YArcSummary</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaEmbedding#PresheafMorphism</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Linguistic/YonedaFull#YonedaLemmaFull</loc><priority>0.0</priority></url>
@@ -724,7 +1002,7 @@
   <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Axis#BrickAxis</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Brick/PureBrick#PureBrick</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Record#Brick</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Type#BrickType</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Type#BrickType</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Unit#⊤</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Brick/Witnessing#Witnessing</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Composition#Chooser</loc><priority>0.0</priority></url>
@@ -733,9 +1011,7 @@
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/PredictorSurprise#Preserves-Shannon</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/PredictorUpdate#Preserves-CountMonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples/RotateCrumb#Crumb</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-CountMonoid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-Ranking</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Examples#Preserves-Shannon</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#BinaryMerger</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#Either</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Merger#MergeStrategy</loc><priority>0.0</priority></url>
@@ -743,7 +1019,7 @@
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/CanonicalSpec#CanonicalSpec</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentFixed#SequentFixed</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentRule#SequentRule</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentType#SequentType</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/SequentType#SequentType</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Pipeline/Sequent/Type#Sequent</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/BaezFritzLeinster#BFLEntropyFunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/BaezFritzLeinster#EntropyBasedAdaptation</loc><priority>0.0</priority></url>
@@ -751,8 +1027,8 @@
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#CommutativeConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/ConjugateMonad#ConjugateMonad</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#ConditionalEntropy</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.04</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Entropy#EntropyFunctor</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Entropy#JointEntropy</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/Entropy#MutualInformation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/KLDivergence#CrossEntropy</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/KLDivergence#FisherInformation</loc><priority>0.0</priority></url>
@@ -762,13 +1038,13 @@
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#ConditionalStructure</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#IsDeterministic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#Marginalisation</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.07</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#MarkovCategory</loc><priority>0.05</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Sites/FinStoch#FinStochHom</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory#SufficientStatistic</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Probability/MarkovCategory/Term#MarkovTerm</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.05</priority></url>
-  <url><loc>https://substrate.local/Substrate/Probability/Simplex#ProbabilitySemiring</loc><priority>0.06</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Simplex#DiscreteDistribution</loc><priority>0.03</priority></url>
+  <url><loc>https://substrate.local/Substrate/Probability/Simplex#ProbabilitySemiring</loc><priority>0.04</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#GateReflection</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Pipe</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Step</loc><priority>0.0</priority></url>
@@ -778,9 +1054,9 @@
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Rejected</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/Realizability/Charter#Wit</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5Carrier#⊥</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/S5/S5Carrier#SectionC</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/S5/S5Carrier#Susp</loc><priority>0.01</priority></url>
-  <url><loc>https://substrate.local/Substrate/S5/S5EEA#DivStr</loc><priority>0.02</priority></url>
+  <url><loc>https://substrate.local/Substrate/S5/S5Carrier#SectionC</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/S5/S5Carrier#Susp</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/S5/S5EEA#DivStr</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5EEA#QSeq</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5EEA#Trace</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5EEA#Wedge</loc><priority>0.0</priority></url>
@@ -793,7 +1069,7 @@
   <url><loc>https://substrate.local/Substrate/S5/S5TorsorWireV4#GTorsorShape</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5TorsorWireV4#KleinV4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5TwoFuelFix#Stop</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/S5/S5Verdict#Progress</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/S5/S5Verdict#Progress</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/S5/S5Verdict#Verdict</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/ShadowArchitecture/CellReconstruct#Cellₚ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/ShadowArchitecture/Charter#Cell</loc><priority>0.0</priority></url>
@@ -824,6 +1100,7 @@
   <url><loc>https://substrate.local/Substrate/TokiPona/QParticles#QMarkedSentence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/TokiPona/QTokiSentence#QTokiSentence</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/TokiPona/TokiSentence#TokiSentence</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/CodewordSignEqualsStabParity#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/CommutatorSubgroup#InComm</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Complete#_∈_</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Core#Path</loc><priority>0.0</priority></url>
@@ -831,6 +1108,7 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/DuplicateFree#NoDup</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/EvenInComm#AllInj1</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/EvenInComm#Tri</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/FactorisationApex#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/FamilyWitness#FSimplex</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/GradeMapInvariant#GradeRole</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/LehmerPath#LehmerPath</loc><priority>0.0</priority></url>
@@ -839,22 +1117,26 @@
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40Closure#Z3</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40Iso#VC</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/M40NoIso#A4Z2≅SymV4</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/SignEmbedVEven#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/SignFactorsThroughStab#Permutation</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/SignStabTotal#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/SymBridge#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/TowerLiftSplit#OneOfFour</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/TowerLiftSplit#Permutation</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/Action#StepWedge</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBifunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedBraid</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedHomOver</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedProductOver</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationBimonoidal#GradedSymMonoidal</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#GradedRigCat</loc><priority>0.01</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCat#Objₛ</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermAdjClosure#AdjGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeter4#AdjGen4</loc><priority>0.0</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeter4/Elements#AdjGen4</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterBraid#Sep</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral#CoxGen</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatPermGap#BraidGen</loc><priority>0.0</priority></url>
-  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor</loc><priority>0.01</priority></url>
+  <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigCatUP#RigFunctor≈</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigFreeUP#FreeRigAlgebra</loc><priority>0.0</priority></url>
   <url><loc>https://substrate.local/Substrate/WitnessTower/Wedge/OrientationRigInitial#RigAlgebra</loc><priority>0.0</priority></url>

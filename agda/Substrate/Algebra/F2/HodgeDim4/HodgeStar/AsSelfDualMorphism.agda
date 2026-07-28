@@ -23,8 +23,10 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsSelfDualMorphism
   (F2L-Dag : DaggerCategory Obj Mor)
   where
 
-open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM public
+open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag
+  renaming (named-DaggerCategory to HodgeStar-AsSelfDualMorphism-Dag)
+
+open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM
   renaming (named-SymmetricMonoidal to HodgeStar-AsSelfDualMorphism-SM)
 
-open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag public
-  renaming (named-DaggerCategory to HodgeStar-AsSelfDualMorphism-Dag)
+

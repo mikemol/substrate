@@ -16,10 +16,10 @@ module Substrate.Groups.SemidirectProduct.S where
 
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
-open import Substrate.Axes using (Axis; D; act-axis)
-open import Substrate.Groups.S4
-  using (Permutation; _·_)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis; D)
+open import Substrate.Axes.ActAxis using (act-axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive)
 
@@ -40,7 +40,7 @@ s-for-anchor : Axis → Permutation → Permutation
 s-for-anchor X σ = embed (v-for-anchor X σ) · σ
 
 s-for-fixes-anchor :
-  (X : Axis) (σ : Permutation) → applyₛ (s-for-anchor X σ) X ≡ X
+  (X : Axis) (σ : Permutation) → apply (s-for-anchor X σ) X ≡ X
 s-for-fixes-anchor X σ =
   trans (cong (act-axis (v-for-anchor X σ)) (sym (v-for-anchor-sends X σ)))
         (act-axis-involutive (v-for-anchor X σ) X)

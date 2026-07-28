@@ -8,7 +8,7 @@
 -- direction of the characterising iff) read at a CONCRETE orbit-fixing
 -- FAILURE: if Stab(D)'s obligation held, every element of Stab(D) would fix
 -- every point of orbit(D); but swapCS = (C S) ∈ Stab D (it fixes D) MOVES the
--- orbit point C = applyₛ (D C) D — sending it to S. So normality would force
+-- orbit point C = apply (D C) D — sending it to S. So normality would force
 -- S ≡ C. The non-normality IS that orbit-fixing failure, transported through
 -- the positive characterization — the degenerate (negative) reading of the
 -- same structure whose positive reading is fixed→member-normal.
@@ -21,8 +21,8 @@ module Substrate.Groups.StabNotNormal where
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Axes using (Axis; D; C; S; W)
-open import Substrate.Groups.S4 using (Permutation; apply; invₐ; inv-l; inv-r)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.StabNormalCharacterization
   using (member-normal; member-normal→fixes-orbit)
 
@@ -49,8 +49,8 @@ S≢C : S ≡ C → ⊥
 S≢C ()
 
 -- Stab(D) is NOT normal — the negative pole. member-normal→fixes-orbit would
--- make swapCS (∈ Stab D, witnessed by refl : applyₛ swapCS D ≡ D) fix the
--- orbit point applyₛ swapDC D = C; but applyₛ swapCS C = S, so it reduces to
+-- make swapCS (∈ Stab D, witnessed by refl : apply swapCS D ≡ D) fix the
+-- orbit point apply swapDC D = C; but apply swapCS C = S, so it reduces to
 -- S ≡ C, which is absurd.
 StabD-not-normal : ¬ (member-normal D)
 StabD-not-normal mn = S≢C (member-normal→fixes-orbit {D} mn swapDC swapCS refl)

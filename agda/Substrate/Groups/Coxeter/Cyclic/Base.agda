@@ -1,14 +1,16 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Coxeter.Cyclic.Base
 --
--- Foundation layer: Gen, power, Canonical (Fin-indexed), canonical-cover,
+-- Foundation layer: Gen, power, Canonical-at (Fin-indexed), canonical-cover,
 -- bijection to/from Fin, σ permutation, σ-HasOrderPerm, Word-level insert.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s; z≤n)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Negation using (Dec; yes; no)
 
@@ -47,30 +49,30 @@ length-power zero    = refl
 length-power (suc k) = cong suc (length-power k)
 
 ------------------------------------------------------------------------
--- 3. Canonical w k — length-indexed.
+-- 3. Canonical-at w k — length-indexed.
 ------------------------------------------------------------------------
 
-data Canonical : Word Gen → Fin (suc n) → Set where      -- ⟦shape:421aa4ad c-here⟧
-  c-here : (k : Fin (suc n)) → Canonical (power (toℕ k)) k
+data Canonical-at : Word Gen → Fin (suc n) → Set where      -- ⟦shape:421aa4ad c-here⟧
+  c-here : (k : Fin (suc n)) → Canonical-at (power (toℕ k)) k
 
 ------------------------------------------------------------------------
 -- 4. canonical-cover — Fin-indexed dispatch.
 ------------------------------------------------------------------------
 
 canonical-cover :
-  ∀ {ℓ} (P : ∀ {w k} → Canonical w k → Set ℓ) →
+  ∀ {ℓ} (P : ∀ {w k} → Canonical-at w k → Set ℓ) →
   ((k : Fin (suc n)) → P (c-here k)) →
-  ∀ {w k} (c : Canonical w k) → P c
+  ∀ {w k} (c : Canonical-at w k) → P c
 canonical-cover P f (c-here k) = f k
 
 ------------------------------------------------------------------------
 -- 5. Bijection canonical-to-Fin / Fin-to-canonical.
 ------------------------------------------------------------------------
 
-canonical-to-Fin : ∀ {w k} → Canonical w k → Fin (suc n)
+canonical-to-Fin : ∀ {w k} → Canonical-at w k → Fin (suc n)
 canonical-to-Fin (c-here k) = k
 
-Fin-to-canonical : (k : Fin (suc n)) → Canonical (power (toℕ k)) k
+Fin-to-canonical : (k : Fin (suc n)) → Canonical-at (power (toℕ k)) k
 Fin-to-canonical k = c-here k
 
 Fin-roundtrip : (k : Fin (suc n)) →

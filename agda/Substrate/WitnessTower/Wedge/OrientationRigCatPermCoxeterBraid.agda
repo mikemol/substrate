@@ -31,7 +31,7 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose)

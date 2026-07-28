@@ -26,9 +26,12 @@
 
 module Substrate.WitnessTower.M40Closure where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ; _·_)
-open import Substrate.Groups.V4.Axioms using (ε-left; ε-identity; inv-left)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_; ε)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (proj₂)
@@ -38,6 +41,10 @@ open import Substrate.Foundation.Product using (proj₂)
 -- carrier; the group op is xor (sign multiplication).
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Unit using (⊤)
+open import Substrate.Algebra.Monoid using (Monoid)
+open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.Delooping using (deloop)
 data Chir : Set where
   even odd : Chir
 
@@ -71,10 +78,6 @@ odd  *c odd  = even
 -- sign-factor on its own.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Algebra.Monoid using (Monoid)
-open import Substrate.Category.CategoryOf using (CategoryOf)
-open import Substrate.Category.Delooping using (deloop)
 
 Chir-Monoid : Monoid Chir
 Chir-Monoid = record
@@ -128,8 +131,8 @@ record A4Z2 : Set where
     mask : V₄
     zee  : Z3
 
-open A4Z2
 
+open A4Z2
 compose : A4Z2 → A4Z2 → A4Z2
 compose g h = mk (chir g *c chir h)
                  (mask g · σ (zee g) (mask h))
@@ -182,7 +185,7 @@ central-χ g =
 *c-sq odd  = refl
 
 -- V₄ exponent-2: x · x ≡ ε  (inv x ≡ x definitionally, so inv-left applies).
-·-sq : (x : V₄) → x · x ≡ V4.ε
+·-sq : (x : V₄) → x · x ≡ ε
 ·-sq x = inv-left x
 
 sq : A4Z2 → A4Z2

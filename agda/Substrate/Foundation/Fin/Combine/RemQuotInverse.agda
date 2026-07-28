@@ -10,7 +10,10 @@
 module Substrate.Foundation.Fin.Combine.RemQuotInverse where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Combine
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.RemQuot
+open import Substrate.Foundation.Fin.SplitAt
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Sum using (inj₁; inj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)

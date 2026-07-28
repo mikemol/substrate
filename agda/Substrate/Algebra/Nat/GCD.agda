@@ -26,14 +26,14 @@
 
 module Substrate.Algebra.Nat.GCD where
 
-open import Substrate.Algebra.Nat.GCD.Wedge public
-open import Substrate.Algebra.Nat.GCD.ConstructWedge    public
-open import Substrate.Algebra.Nat.GCD.EEATrace          public
-open import Substrate.Algebra.Nat.GCD.ComputeTrace      public
-open import Substrate.Algebra.Nat.GCD.GcdN              public
-open import Substrate.Algebra.Nat.GCD.TraceDivides      public
-open import Substrate.Algebra.Nat.GCD.GcdDividesLeft    public
-open import Substrate.Algebra.Nat.GCD.GcdDividesRight   public
-open import Substrate.Algebra.Nat.GCD.LcmN              public
-open import Substrate.Algebra.Nat.GCD.ADividesLcm       public
-open import Substrate.Algebra.Nat.GCD.BDividesLcm       public
+open import Substrate.Algebra.Nat.GCD.Wedge
+open import Substrate.Algebra.Nat.GCD.ConstructWedge
+open import Substrate.Algebra.Nat.GCD.EEATrace
+open import Substrate.Algebra.Nat.GCD.ComputeTrace
+open import Substrate.Algebra.Nat.GCD.GcdN
+open import Substrate.Algebra.Nat.GCD.TraceDivides
+open import Substrate.Algebra.Nat.GCD.GcdDividesLeft
+open import Substrate.Algebra.Nat.GCD.GcdDividesRight
+open import Substrate.Algebra.Nat.GCD.LcmN
+open import Substrate.Algebra.Nat.GCD.ADividesLcm
+open import Substrate.Algebra.Nat.GCD.BDividesLcm

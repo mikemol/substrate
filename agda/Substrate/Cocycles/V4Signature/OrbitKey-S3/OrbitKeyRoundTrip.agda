@@ -13,8 +13,9 @@ module Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip where
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Cocycles.V4Signature
-  using (α-pair; β-pair; γ-pair; even; odd; OrbitKey)
+open import Substrate.Cocycles.V4Signature.Chirality.Type using (even; odd)
+open import Substrate.Cocycles.V4Signature.OrbitKey.Type using (OrbitKey)
+open import Substrate.Cocycles.V4Signature.Pairing.Type using (α-pair; β-pair; γ-pair)
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
   using (orbit-key-to-s3)
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey

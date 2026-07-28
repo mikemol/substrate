@@ -29,7 +29,7 @@ open import Substrate.Category.FreeOverBasis
 
 open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
 open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
-open import Substrate.Solresol.Fragment using (solresol-witness)
+open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
 open import Substrate.Kelen.Fragment using (kelen-witness)
 open import Substrate.Lambda.Fragment using (lambda-witness)
 open import Substrate.Invented.LieFragment using (lie-witness)
@@ -53,8 +53,8 @@ record WitnessAlignment {B F : Set} (W : LanguageWitness B F) : Set where
     name-witness   : name W ≡ expected-name
     class-witness  : class W ≡ expected-class
 
-open WitnessAlignment public
 
+open WitnessAlignment public
 ------------------------------------------------------------------------
 -- 2. The six aligned witnesses.
 ------------------------------------------------------------------------

@@ -31,10 +31,10 @@
 
 module Substrate.Algebra.F2.GF256 where
 
-open import Substrate.Algebra.F2.GF256.Xtime      public
-open import Substrate.Algebra.F2.GF256.Reduce     public
-open import Substrate.Algebra.F2.GF256.Expand     public
-open import Substrate.Algebra.F2.GF256.Idempotent public
-open import Substrate.Algebra.F2.GF256.Mul        public
-open import Substrate.Algebra.F2.GF256.MulLaws    public
-open import Substrate.Algebra.F2.GF256.Ring       public
+open import Substrate.Algebra.F2.GF256.Xtime
+open import Substrate.Algebra.F2.GF256.Reduce
+open import Substrate.Algebra.F2.GF256.Expand
+open import Substrate.Algebra.F2.GF256.Idempotent
+open import Substrate.Algebra.F2.GF256.Mul
+open import Substrate.Algebra.F2.GF256.MulLaws
+open import Substrate.Algebra.F2.GF256.Ring

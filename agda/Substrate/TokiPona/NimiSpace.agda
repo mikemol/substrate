@@ -26,12 +26,12 @@
 module Substrate.TokiPona.NimiSpace where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; lookup)
   renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
 
-open import Substrate.TokiPona.SemanticSpace
-  using (SemVec; ∅; _⊕_; basis)
+open import Substrate.Algebra.F2.Vector using (basis)
+open import Substrate.TokiPona.SemanticSpace using (SemVec; ∅; _⊕_)
 open import Substrate.TokiPona.Nimi
   using (Nimi; nimi-count; nimi-index;
          jan; soweli; kili; moku; tomo; ma; telo; ilo; ijo;
@@ -53,6 +53,7 @@ open import Substrate.Category.FreeLinearization.FromImages
 -- supports arbitrary image maps via WithTarget below.
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Eq using (_≡_; refl)
 nimi-as-vector : Nimi → SemVec nimi-count
 nimi-as-vector n = basis (nimi-index n)
 
@@ -89,7 +90,6 @@ nimi-from-index = lookup nimi-vec
 -- properties to Nimi-indexed ones.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 from-index∘index : (n : Nimi) → nimi-from-index (nimi-index n) ≡ n
 from-index∘index jan      = refl
@@ -149,6 +149,11 @@ module WithTarget {m : ℕ} (image : Nimi → SemVec m) where
   open FreeLinearization free-record public
     using (extension; extension-on-basis; uniqueness)
 
+open WithTarget {m = nimi-count} nimi-as-vector public
+  renaming ( extension          to nimi-extension
+           ; extension-on-basis to nimi-extension-basis
+           ; uniqueness         to nimi-extension-uniqueness
+           )
 ------------------------------------------------------------------------
 -- 4. The canonical instance: one-hot identity FreeLinearization.
 --
@@ -157,8 +162,3 @@ module WithTarget {m : ℕ} (image : Nimi → SemVec m) where
 -- for worked examples.
 ------------------------------------------------------------------------
 
-open WithTarget {m = nimi-count} nimi-as-vector public
-  renaming ( extension          to nimi-extension
-           ; extension-on-basis to nimi-extension-basis
-           ; uniqueness         to nimi-extension-uniqueness
-           )

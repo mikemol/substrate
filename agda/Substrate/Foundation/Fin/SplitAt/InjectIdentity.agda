@@ -10,7 +10,9 @@
 module Substrate.Foundation.Fin.SplitAt.InjectIdentity where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Inject
+open import Substrate.Foundation.Fin.SplitAt
 open import Substrate.Foundation.Sum using (_⊎_; inj₁)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Fin.Inject using (inject+)

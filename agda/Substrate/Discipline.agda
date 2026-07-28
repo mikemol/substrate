@@ -47,6 +47,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Discipline where
+open import Substrate.Cocycles.V4Signature.CY5 using (CY5-V4Signature)
 
 open import Substrate.Foundation.Product using (Σ; Σ-syntax; _,_; proj₁; proj₂; ∃; -,_)
 open import Substrate.Foundation.Eq

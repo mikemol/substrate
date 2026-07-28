@@ -27,10 +27,15 @@
 
 module Substrate.Groups.Actions.Z2-on-Z3 where
 
-open import Substrate.Groups.Actions.Z2-on-Z3.Act         public
-open import Substrate.Groups.Actions.Z2-on-Z3.Canonical   public
-open import Substrate.Groups.Actions.Z2-on-Z3.ActCong     public
-open import Substrate.Groups.Actions.Z2-on-Z3.ActEpsilon  public
-open import Substrate.Groups.Actions.Z2-on-Z3.ActEpsilonN public
-open import Substrate.Groups.Actions.Z2-on-Z3.ActDot      public
-open import Substrate.Groups.Actions.Z2-on-Z3.ActHom      public
+open import Substrate.Groups.Actions.Z2-on-Z3.Act
+open import Substrate.Groups.Actions.Z2-on-Z3.Canonical.LetterCanonical
+open import Substrate.Groups.Actions.Z2-on-Z3.Canonical.ActCanonical
+open import Substrate.Groups.Actions.Z2-on-Z3.Canonical.NormalizeAct
+open import Substrate.Groups.Actions.Z2-on-Z3.ActCong
+open import Substrate.Groups.Actions.Z2-on-Z3.ActEpsilon
+open import Substrate.Groups.Actions.Z2-on-Z3.ActEpsilonN.LetterEpsilon
+open import Substrate.Groups.Actions.Z2-on-Z3.ActEpsilonN.EpsilonN
+open import Substrate.Groups.Actions.Z2-on-Z3.ActDot.LetterCompose
+open import Substrate.Groups.Actions.Z2-on-Z3.ActDot.Dot
+open import Substrate.Groups.Actions.Z2-on-Z3.ActHom.LetterHom
+open import Substrate.Groups.Actions.Z2-on-Z3.ActHom.Hom

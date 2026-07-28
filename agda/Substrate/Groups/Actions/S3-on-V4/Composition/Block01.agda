@@ -9,37 +9,43 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Composition.Block01 where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄)
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
+import Substrate.Groups.Coxeter.Cyclic.Base 1 as Z₂B
+import Substrate.Groups.Coxeter.Cyclic.Existential 1 as Z₂E
+import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
+import Substrate.Groups.Coxeter.Cyclic.Inverse 2 as Z₃I
+import Substrate.Groups.Coxeter.Cyclic.Core 2 as Z₃C
 import Substrate.Groups.S3 as S₃
-open import Substrate.Foundation.Fin using (zero; suc)
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act using (act)
+open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
+open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow using (act-equals-pow)
+open import Substrate.Groups.Actions.S3-on-V4.Twist.RotPowSwapTwist using (rot-pow-swap-twist)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow using (rot-pow)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB using (swap-αβ)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapSquareId using (swap-αβ²-id)
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowNormalizeEq using (rot-pow-normalize-eq)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_; _++_)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
-open import Substrate.Groups.Actions.S3-on-V4.Dispatch using (act; act-on-canonical)
-open import Substrate.Groups.Actions.S3-on-V4.Twist
-open import Substrate.Groups.Actions.S3-on-V4.Composition.RotPowComposeChain
-  using (rot-pow-compose-chain)
+open import Substrate.Groups.Actions.S3-on-V4.Composition.RotPowComposeChain using (rot-pow-compose-chain)
 
 act-∙-canonical-01 : ∀ {n₁ n₂} →
-                     Z₃.Canonical n₁ → Z₃.Canonical n₂ →
+                     Z₃E.Canonical-ex n₁ → Z₃E.Canonical-ex n₂ →
                      ∀ v →
-                     act ((n₁ , []) S₃.∙ (n₂ , Z₂.a ∷ [])) v ≡
-                     act-on-canonical n₁ [] (act-on-canonical n₂ (Z₂.a ∷ []) v)
+                     act ((n₁ , []) S₃.∙ (n₂ , Z₂B.a ∷ [])) v ≡
+                     act-on-canonical n₁ [] (act-on-canonical n₂ (Z₂B.a ∷ []) v)
 act-∙-canonical-01 {n₁} {n₂} c-n₁ c-n₂ v = trans LHS-to-pow (sym RHS-to-pow)
   where
-    LHS-to-pow : act ((n₁ , []) S₃.∙ (n₂ , Z₂.a ∷ [])) v ≡
+    LHS-to-pow : act ((n₁ , []) S₃.∙ (n₂ , Z₂B.a ∷ [])) v ≡
                  rot-pow n₁ (rot-pow n₂ (swap-αβ v))
     LHS-to-pow =
-      trans (act-equals-pow (Z₃.normalize-canonical (Z₃.normalize (n₁ ++ Z₃.normalize n₂))) (Z₂.c-pos ₁) v)
-      (trans (rot-pow-compose-chain n₁ (Z₃.normalize n₂) (swap-αβ v))
+      trans (act-equals-pow (Z₃E.normalize-canonical (Z₃E.normalize (n₁ ++ Z₃E.normalize n₂))) (Z₂E.c-pos ₁) v)
+      (trans (rot-pow-compose-chain n₁ (Z₃E.normalize n₂) (swap-αβ v))
              (sym (cong (rot-pow n₁) (rot-pow-normalize-eq n₂ (swap-αβ v)))))
-    RHS-to-pow : act-on-canonical n₁ [] (act-on-canonical n₂ (Z₂.a ∷ []) v) ≡
+    RHS-to-pow : act-on-canonical n₁ [] (act-on-canonical n₂ (Z₂B.a ∷ []) v) ≡
                  rot-pow n₁ (rot-pow n₂ (swap-αβ v))
     RHS-to-pow =
-      trans (act-equals-pow c-n₁ (Z₂.c-pos zero) (act-on-canonical n₂ (Z₂.a ∷ []) v))
-            (cong (rot-pow n₁) (act-equals-pow c-n₂ (Z₂.c-pos ₁) v))
+      trans (act-equals-pow c-n₁ (Z₂E.c-pos zero) (act-on-canonical n₂ (Z₂B.a ∷ []) v))
+            (cong (rot-pow n₁) (act-equals-pow c-n₂ (Z₂E.c-pos ₁) v))

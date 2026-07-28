@@ -42,13 +42,13 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge where
 
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type                public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Det                 public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.NonDegenerate       public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId            public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricMixed         public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricFullyCoupled  public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf      public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct       public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed          public
-open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceIdToMixed public
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Det
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.NonDegenerate
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricMixed
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricFullyCoupled
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed
+open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceIdToMixed

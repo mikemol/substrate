@@ -26,7 +26,7 @@
 module Substrate.Cocycles.V4Signature.CompSideRoundtripVDischarged where
 
 open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Groups.V4.Bijection using (V₄)
 import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.S4-Iso.Extract   using (perm-to-compositional)
 open import Substrate.Groups.S4-Iso.Embedding using (compositional-to-perm)

@@ -19,10 +19,8 @@
 module Substrate.Algebra.F2.Linear.ImagesProps where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin)
-  renaming (zero to fz; suc to fs)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Function using (_∘_)
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
@@ -49,8 +47,8 @@ sum-F₂-+-distrib :
 sum-F₂-+-distrib {zero}  a b = refl
 sum-F₂-+-distrib {suc _} a b =
   -- (a₀ + b₀) + Σ(aᵢ + bᵢ) ≡ (a₀ + Σaᵢ) + (b₀ + Σbᵢ)
-  cong-trans ((a fz + b fz) +_) (sum-F₂-+-distrib (a ∘ fs) (b ∘ fs))
-  (swap-+ (a fz) (b fz) (sum-F₂ (a ∘ fs)) (sum-F₂ (b ∘ fs)))
+  cong-trans ((a fzero + b fzero) +_) (sum-F₂-+-distrib (λ ix → a (fsuc ix)) (λ ix → b (fsuc ix)))
+  (swap-+ (a fzero) (b fzero) (sum-F₂ (λ ix → a (fsuc ix))) (sum-F₂ (λ ix → b (fsuc ix))))
   where
     -- Ⓜ: the 4-term rearrange = the medial law (Algebra.Medial) at F₂'s `+`.
     swap-+ : (w x y z : F₂) → ((w + x) + (y + z)) ≡ ((w + y) + (x + z))
@@ -62,8 +60,8 @@ sum-F₂-·-distrib :
   sum-F₂ (λ i → c · a i) ≡ (c · sum-F₂ a)
 sum-F₂-·-distrib {zero}  c a = sym (·-absorbʳ c)
 sum-F₂-·-distrib {suc _} c a =
-  trans (cong (c · a fz +_) (sum-F₂-·-distrib c (a ∘ fs)))
-        (sym (·-distribˡ-+ c (a fz) (sum-F₂ (a ∘ fs))))
+  trans (cong (c · a fzero +_) (sum-F₂-·-distrib c (λ ix → a (fsuc ix))))
+        (sym (·-distribˡ-+ c (a fzero) (sum-F₂ (λ ix → a (fsuc ix)))))
 
 ------------------------------------------------------------------------
 -- apply-congruence in the images family.

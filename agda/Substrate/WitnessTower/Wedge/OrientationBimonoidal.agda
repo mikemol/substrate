@@ -24,7 +24,7 @@
 module Substrate.WitnessTower.Wedge.OrientationBimonoidal where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; subst)
 
 ------------------------------------------------------------------------

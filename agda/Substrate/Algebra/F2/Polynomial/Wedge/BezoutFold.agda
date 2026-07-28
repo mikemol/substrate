@@ -12,10 +12,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold where
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness; base-bezout-poly; convCoeff-cong-r; convCoeff-one)
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties using ()
-  renaming (+-assoc to +ℕ-assoc; +-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-assoc to +ℕ-assoc; +-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
@@ -28,9 +28,8 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem; PolyEEATrace)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEAFold using (eea-fold-poly)
 
+open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Step
 private variable n m l : ℕ
-
-open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Step public
 
 -- THE FOLD: the Bézout bridge over the polynomial EEA trace.
 bezout-poly : {a b g : QPoly} → PolyEEATrace a b g → BezoutNthWitness a b g

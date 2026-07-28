@@ -31,10 +31,9 @@
 module Substrate.Category.FreeLinearizationR.AsModule where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
 open import Substrate.Foundation.Iff using (_⇔_)
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.Ring using (Ring)
 open import Substrate.Algebra.Module using (Module)

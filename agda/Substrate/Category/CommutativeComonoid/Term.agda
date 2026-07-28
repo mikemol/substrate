@@ -10,8 +10,7 @@
 module Substrate.Category.CommutativeComonoid.Term where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Category.Comonoid.Term public
-
+open import Substrate.Category.Comonoid.Term
 -- CommutativeComonoidTerm IS a ComonoidTerm; cocommutativity is enforced at
 -- the GENERATOR level (each generator must commute with the carrier's swap
 -- morphism). Now that terms ARE the tower's LehmerPath (combinations of

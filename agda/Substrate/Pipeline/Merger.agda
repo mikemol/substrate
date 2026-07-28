@@ -29,12 +29,16 @@
 {-# OPTIONS --without-K #-}
 
 module Substrate.Pipeline.Merger where
+open import Substrate.Pipeline.Brick.Unit using (⊤; tt)
+open import Substrate.Pipeline.Brick.Witnessing using (C⇒D)
+open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _%_)
+open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Fin using (Fin; zero; suc) renaming (fromℕ to Fin-fromℕ)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Pipeline.Brick
 
 ------------------------------------------------------------------------

@@ -19,9 +19,13 @@
 
 module Substrate.WitnessTower.M40Iso where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ; _·_)
-open import Substrate.Groups.V4.Axioms using (·-assoc; ε-left; ε-identity; inv-left)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
+open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
+open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
+open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
@@ -89,16 +93,18 @@ record VC : Set where
   field
     vcv : V₄
     vcc : Chir
-open VC
 
+
+open VC
 negVC : VC → VC
 negVC x = vcv x ,, oflip (vcc x)
 
 negVC-invol : (x : VC) → negVC (negVC x) ≡ x
 negVC-invol x = cong (vcv x ,,_) (oflip-invol (vcc x))
 
-open MA.Action VC negVC negVC-invol using (act)
 
+
+open MA.Action VC negVC negVC-invol using (act)
 F₀ : V₄ → VC
 F₀ k = k ,, even
 

@@ -32,7 +32,8 @@
 module Substrate.WitnessTower.Wedge.PyAstRigNormalize where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
 open import Substrate.Foundation.Empty using (⊥-elim)
 open import Substrate.Foundation.Negation using (Dec; yes; no)

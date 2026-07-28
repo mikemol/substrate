@@ -20,7 +20,8 @@
 module Substrate.WitnessTower.Decompose where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; suc-injective)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map; tabulate)
 open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
@@ -79,7 +80,7 @@ decomp-tail σ perm =
 
 decomp-tail-perm :
   {n : ℕ} (σ : Perm (suc n)) (perm : IsPerm σ) → IsPerm (decomp-tail σ perm)
-decomp-tail-perm σ perm i j eq = suc-injective (perm (suc i) (suc j) tails-eq)
+decomp-tail-perm σ perm i j eq = fin-suc-injective (perm (suc i) (suc j) tails-eq)
   where
     f = λ i → punchOut {k = lookup σ zero} {i = lookup σ (suc i)}
                         (tail-≢-head σ perm i)

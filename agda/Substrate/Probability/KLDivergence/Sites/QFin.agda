@@ -12,7 +12,6 @@
 
 module Substrate.Probability.KLDivergence.Sites.QFin where
 
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Level using (Level)
 

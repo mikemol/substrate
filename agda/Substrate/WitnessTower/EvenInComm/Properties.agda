@@ -23,13 +23,14 @@
 
 module Substrate.WitnessTower.EvenInComm.Properties where
 
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.WitnessTower.EvenInComm
   using (Tri; tri-eq; tri-adj; tri-adj'; tri-sep; tri-sep';
          AllInj1; ai-nil; ai-cons)
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
-  renaming (zero to fzero; suc to fsuc; suc-injective to fsuc-inj)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂; subst)
 open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
 open import Substrate.Foundation.Empty using (⊥-elim)
@@ -244,12 +245,12 @@ suc≢inj1 j = λ e → inj1≢suc j (sym e)
 -- Sep i j (i below j by ≥2): inj1 i ≠ suc j (the two overlap positions miss).
 sep→inj1≢suc : {m : ℕ} {i j : Fin m} → Sep i j → ¬ (inj1 i ≡ fsuc j)
 sep→inj1≢suc (sep0 k) = λ ()
-sep→inj1≢suc (sepS s) = λ e → sep→inj1≢suc s (fsuc-inj e)
+sep→inj1≢suc (sepS s) = λ e → sep→inj1≢suc s (fin-suc-injective e)
 
 -- Sep j i (j below i by ≥2): still inj1 i ≠ suc j (i above j).
 sepr→inj1≢suc : {m : ℕ} {i j : Fin m} → Sep j i → ¬ (inj1 i ≡ fsuc j)
 sepr→inj1≢suc (sep0 k) ()
-sepr→inj1≢suc (sepS s) = λ e → sepr→inj1≢suc s (fsuc-inj e)
+sepr→inj1≢suc (sepS s) = λ e → sepr→inj1≢suc s (fin-suc-injective e)
 
 ------------------------------------------------------------------------
 -- 6.  STEP 2a — equal indices: sₖ² = id ∈ [Sₙ,Sₙ].

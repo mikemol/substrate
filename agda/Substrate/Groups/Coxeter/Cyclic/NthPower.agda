@@ -20,7 +20,8 @@
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityʳ; *-suc)
-open import Substrate.Foundation.Fin using (Fin; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _++_)
@@ -29,7 +30,12 @@ open import Substrate.Algebra.Nat.Mod
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower (n : ℕ) where
 
+open import Substrate.Groups.Coxeter.Cyclic.Core n using (_≈_; ε)
+open import Substrate.Groups.Coxeter.Cyclic.Existential n using (normalize; canonical-cover-ex; normalize-canonical)
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n using (power-concat-eq; power-cyclic-normalize)
+open import Substrate.Groups.Coxeter.Cyclic.Base n using (power; Gen)
 open import Substrate.Groups.Coxeter.Cyclic.NthPower.Flat n public
+
 
 ------------------------------------------------------------------------
 -- 1. flat-power-eq: apply-power-suc-flat (power j) m ≡ power (j * suc m).

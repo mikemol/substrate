@@ -53,7 +53,7 @@ module Substrate.Generators where
 -- across the finite-constructor type.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Fin.Cover public
+open import Substrate.Foundation.Fin.Cover
   using ( dep-Pow
         ; fin-cover
         ; fin×fin-cover
@@ -62,16 +62,14 @@ open import Substrate.Foundation.Fin.Cover public
         ; tabulate
         )
 
-open import Substrate.Groups.V4.Operations public
+open import Substrate.Groups.V4.Operations
   using ( v4-cover
         ; v4×v4-cover
         ; v4×v4×v4-cover
         )
 
-open import Substrate.Axes public
-  using ( axis-cover
-        ; axis×axis-cover
-        )
+open import Substrate.Axes.Cover using (axis-cover)
+open import Substrate.Axes.PairCover using (axis×axis-cover)
 
 ------------------------------------------------------------------------
 -- 2. PAYLOAD-SHAPE PRIMITIVES
@@ -80,7 +78,7 @@ open import Substrate.Axes public
 -- covers consume.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.CanonicalCover public
+open import Substrate.Groups.Coxeter.CanonicalCover
   using ( Pow
         ; copies
         ; n-refls
@@ -103,27 +101,121 @@ open import Substrate.Groups.Coxeter.CanonicalCover public
 -- `Substrate.Generators.Z₃.a` etc. without clashes.
 ------------------------------------------------------------------------
 
+open import Substrate.Groups.Actions.S3-on-V4.Generators
+  using ( rotate
+        ; swap-αβ
+        ; rot-pow
+        ; swap-pow
+        )
+open import Substrate.Algebra.GL3F2.GaugeGenerators
+  using ( σ₂
+        ; swap01-Linear
+        ; σ₃
+        ; cycle3-Linear
+        )
+open import Substrate.Algebra.F2.FanoPlane
+  using ( singer
+        ; singer-Linear
+        )
+open import Substrate.Algebra.F2.HodgeDim4.HodgeStar
+  using ( hodge-star
+        )
+open import Substrate.ShadowArchitecture.Duality
+  using ( normal-vector
+        ; dual-line
+        )
+open import Substrate.Category.FreeOverBasis
+  using ( FreeOverBasis
+        )
+open import Substrate.Category.FreeLinearization
+  using ( FreeLinearization
+        )
+open import Substrate.Category.FreeLinearization.FromImages
+  using ( free-linearize
+        )
+open import Substrate.Algebra.F2.Linear.FromImages
+  using ( linear-from-images
+        )
+open import Substrate.Algebra.F2.Linear.Universal
+  using ( linear-extensionality
+        )
+open import Substrate.Algebra.Module.Free.Basis
+  using ( FreeBasisUniversal
+        )
+open import Substrate.Algebra.Module.Free.UniqueExtension
+  using ( FreeModuleExtensionality
+        )
+open import Substrate.Category.Equalizer
+  using ( Equalizer-Of
+        ; equalizer-factor
+        )
+open import Substrate.Category.Coequalizer
+  using ( Coequalises
+        ; coequalizer-factor
+        )
+open import Substrate.Category.Pullback
+  using ( Pullback-Of
+        )
+open import Substrate.Category.Pushout
+  using ( PushoutCocone
+        ; pushout-factor
+        )
+open import Substrate.Category.Limit
+  using ( Limit
+        )
+open import Substrate.Category.Colimit
+  using ( Colimit
+        )
+open import Substrate.Category.Opposite
+  using ( Opposite
+        )
+open import Substrate.Category.Functor.Opposite
+  using ( opposite-Functor
+        ; from-opposite-Functor
+        )
+open import Substrate.Category.Adjunction
+  using ( IsLinearAdjunction
+        ; linear-adjunction
+        )
+open import Substrate.Category.GaloisAdjunction
+  using ( GaloisAdjunction
+        )
+open import Substrate.Category.UniversalProperty
+  using ( UPArrowP
+        )
+open import Substrate.Category.UniversalProperty.Morphism
+  using ( UPMorphism
+        )
+open import Substrate.Category.UniversalProperty.FixedPoint
+  using ( ι
+        )
+open import Substrate.Category.UniversalProperty.Terminal
+  using ( to-trivial-cond
+        )
+open import Substrate.Category.Monad
+  using ( Monad
+        )
+open import Substrate.Category.Comonad
+  using ( Comonad
+        )
+open import Substrate.Category.KanExtension
+  using ( LeftKanExtension
+        ; RightKanExtension
+        )
 module Z₂C where
-  open import Substrate.Groups.Z2-Coxeter public
-
+  open import Substrate.Groups.Z2-Coxeter
 module Z₃C where
-  open import Substrate.Groups.Z3-Coxeter public
-
+  open import Substrate.Groups.Z3-Coxeter
 module Z₄C where
-  open import Substrate.Groups.Z4-Coxeter public
-
+  open import Substrate.Groups.Z4-Coxeter
 module Z₅C where
-  open import Substrate.Groups.Z5-Coxeter public
-
+  open import Substrate.Groups.Z5-Coxeter
 module Z₇C where
-  open import Substrate.Groups.Z7-Coxeter public
-
+  open import Substrate.Groups.Z7-Coxeter
 module V₄C where
-  open import Substrate.Groups.V4-Coxeter public
-
+  open import Substrate.Groups.V4-Coxeter
 module FCyclic where
-  open import Substrate.Groups.FreeCyclic-Coxeter public
-
+  open import Substrate.Groups.FreeCyclic-Coxeter
 ------------------------------------------------------------------------
 -- 4. GROUP-ACTION GENERATORS (S₃ on V₄)
 --
@@ -131,12 +223,6 @@ module FCyclic where
 -- iterators. Together they generate the full S₃ action on V₄.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Actions.S3-on-V4.Generators public
-  using ( rotate
-        ; swap-αβ
-        ; rot-pow
-        ; swap-pow
-        )
 
 ------------------------------------------------------------------------
 -- 5. F₂-LINEAR / GL(3,F₂) GENERATORS
@@ -150,17 +236,7 @@ open import Substrate.Groups.Actions.S3-on-V4.Generators public
 -- Ⓖ.cyclen-collapse-registry: σ₃ / cycle3-Linear now come from their canonical
 -- Sylow-3 home (GaugeGenerators, below) — the standalone ...Permutation.Cycle3
 -- orbit-module is dissolved. All three Sylow generators re-export from one place.
-open import Substrate.Algebra.GL3F2.GaugeGenerators public
-  using ( σ₂
-        ; swap01-Linear
-        ; σ₃
-        ; cycle3-Linear
-        )
 
-open import Substrate.Algebra.F2.FanoPlane public
-  using ( singer
-        ; singer-Linear
-        )
 
 ------------------------------------------------------------------------
 -- 6. HODGE / DUALITY GENERATORS
@@ -169,14 +245,7 @@ open import Substrate.Algebra.F2.FanoPlane public
 -- F₂⁴ bivectors and Fano-plane self-duality (Point ↔ Line).
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.F2.HodgeDim4.HodgeStar public
-  using ( hodge-star
-        )
 
-open import Substrate.ShadowArchitecture.Duality public
-  using ( normal-vector
-        ; dual-line
-        )
 
 ------------------------------------------------------------------------
 -- 7. UNIVERSAL-PROPERTY GENERATORS
@@ -186,33 +255,12 @@ open import Substrate.ShadowArchitecture.Duality public
 -- checking (size of carrier) to per-basis checking (n).
 ------------------------------------------------------------------------
 
-open import Substrate.Category.FreeOverBasis public
-  using ( FreeOverBasis
-        )
 
-open import Substrate.Category.FreeLinearization public
-  using ( FreeLinearization
-        )
 
-open import Substrate.Category.FreeLinearization.FromImages public
-  using ( free-linearize
-        )
 
-open import Substrate.Algebra.F2.Linear.FromImages public
-  using ( linear-from-images
-        )
 
-open import Substrate.Algebra.F2.Linear.Universal public
-  using ( linear-extensionality
-        )
 
-open import Substrate.Algebra.Module.Free.Basis public
-  using ( FreeBasisUniversal
-        )
 
-open import Substrate.Algebra.Module.Free.UniqueExtension public
-  using ( FreeModuleExtensionality
-        )
 
 ------------------------------------------------------------------------
 -- 8. CATEGORICAL LIMIT / COLIMIT PRIMITIVES
@@ -223,32 +271,11 @@ open import Substrate.Algebra.Module.Free.UniqueExtension public
 -- primitives.
 ------------------------------------------------------------------------
 
-open import Substrate.Category.Equalizer public
-  using ( Equalizer-Of
-        ; equalizer-factor
-        )
 
-open import Substrate.Category.Coequalizer public
-  using ( Coequalises
-        ; coequalizer-factor
-        )
 
-open import Substrate.Category.Pullback public
-  using ( Pullback-Of
-        )
 
-open import Substrate.Category.Pushout public
-  using ( PushoutCocone
-        ; pushout-factor
-        )
 
-open import Substrate.Category.Limit public
-  using ( Limit
-        )
 
-open import Substrate.Category.Colimit public
-  using ( Colimit
-        )
 
 ------------------------------------------------------------------------
 -- 8a. DUALITY-WITNESSING PRIMITIVES
@@ -264,14 +291,7 @@ open import Substrate.Category.Colimit public
 -- specializations (Monad on C; Monad on Opposite C = Comonad on C).
 ------------------------------------------------------------------------
 
-open import Substrate.Category.Opposite public
-  using ( Opposite
-        )
 
-open import Substrate.Category.Functor.Opposite public
-  using ( opposite-Functor
-        ; from-opposite-Functor
-        )
 
 -- 1:N cone witnesses for substrate-named categorical structures
 -- (per [[named-categorical-structure-skeletons]]). DaggerCategory.AsNamed
@@ -291,14 +311,7 @@ open import Substrate.Category.Functor.Opposite public
 -- (T-arc Galois machinery).
 ------------------------------------------------------------------------
 
-open import Substrate.Category.Adjunction public
-  using ( IsLinearAdjunction
-        ; linear-adjunction
-        )
 
-open import Substrate.Category.GaloisAdjunction public
-  using ( GaloisAdjunction
-        )
 
 ------------------------------------------------------------------------
 -- 10. HIGHER-CATEGORICAL GENERATORS (Universal Property as object)
@@ -311,21 +324,9 @@ open import Substrate.Category.GaloisAdjunction public
 -- conditional terminal map.
 ------------------------------------------------------------------------
 
-open import Substrate.Category.UniversalProperty public
-  using ( UPArrowP
-        )
 
-open import Substrate.Category.UniversalProperty.Morphism public
-  using ( UPMorphism
-        )
 
-open import Substrate.Category.UniversalProperty.FixedPoint public
-  using ( ι
-        )
 
-open import Substrate.Category.UniversalProperty.Terminal public
-  using ( to-trivial-cond
-        )
 
 ------------------------------------------------------------------------
 -- 11. OPERADIC / OPCODE-ALGEBRA GENERATORS
@@ -360,18 +361,8 @@ open import Substrate.Category.UniversalProperty.Terminal public
 -- functor along another.
 ------------------------------------------------------------------------
 
-open import Substrate.Category.Monad public
-  using ( Monad
-        )
 
-open import Substrate.Category.Comonad public
-  using ( Comonad
-        )
 
-open import Substrate.Category.KanExtension public
-  using ( LeftKanExtension
-        ; RightKanExtension
-        )
 
 -- 1:N cone witness for Monad-derived categories.
 -- Substrate.Category.Monad.DerivedCategoryOf is the apex; its legs

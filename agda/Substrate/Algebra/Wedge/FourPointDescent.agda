@@ -26,8 +26,6 @@ module Substrate.Algebra.Wedge.FourPointDescent where
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.V4-Coxeter
-  using (Gen; A; B; c-ε; c-A; c-B; c-AB; insert; normalize; normalize-canonical)
-  renaming (Canonical to Canonical⟦ab211b40⟧)   -- shape-specialize the ambiguous name
 open import Substrate.Groups.V4.Bijection using (from-c; to-from-canonical)
 open import Substrate.Algebra.Wedge.FourPointV4
   using (Square; rowSwap; colSwap; rowSwap-inv; colSwap-inv; row-col-commute)
@@ -42,7 +40,7 @@ module _ {C : Set} where
   --    the Coxeter relation it triggers.
   ------------------------------------------------------------------------
 
-  wordAct-insert : (g : Gen) {w : Word Gen} (c : Canonical⟦ab211b40⟧ w) (s : Square {C}) →
+  wordAct-insert : (g : Gen) {w : Word Gen} (c : Canonical-V4 w) (s : Square {C}) →
                    wordAct (insert g w) s ≡ genAct g (wordAct w s)
   wordAct-insert A c-ε  s = refl                                    -- insert A [] = A∷[]
   wordAct-insert A c-A  s = sym (rowSwap-inv s)                     -- A² = ε

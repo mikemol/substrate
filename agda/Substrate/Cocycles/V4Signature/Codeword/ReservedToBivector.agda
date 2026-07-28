@@ -35,8 +35,9 @@ open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual using (SelfDual-Pred)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge
   using (vector3-to-selfdual; vector3-to-selfdual-sd; selfdual-coefficients)
-open import Substrate.Cocycles.V4Signature.Codeword
-  using (Codeword; IsReserved; Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
+open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
 
 ------------------------------------------------------------------------
 -- N-2: extract the 3 free bits of a Reserved codeword + apply Bool→F₂

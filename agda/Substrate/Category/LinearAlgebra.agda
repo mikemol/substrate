@@ -23,7 +23,7 @@
 module Substrate.Category.LinearAlgebra where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 
 ------------------------------------------------------------------------
 -- 1. The LinearAlgebra record.

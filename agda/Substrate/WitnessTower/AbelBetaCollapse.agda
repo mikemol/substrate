@@ -43,7 +43,7 @@
 module Substrate.WitnessTower.AbelBetaCollapse where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
 open import Substrate.WitnessTower.FirstAppearance using (compose)
 open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)

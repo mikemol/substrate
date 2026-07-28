@@ -27,7 +27,8 @@
 module Substrate.WitnessTower.Hodge where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; fromℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.From
 open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
 
 ------------------------------------------------------------------------

@@ -23,10 +23,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4.IsHomomorphism where
+open import Substrate.Groups.V4.Operations using (_·_)
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Foundation.Eq using (_≡_)
 
 IsHomomorphism : (V₄ → V₄) → Set
-IsHomomorphism f = ∀ v₁ v₂ → f (v₁ V4.· v₂) ≡ f v₁ V4.· f v₂
+IsHomomorphism f = ∀ v₁ v₂ → f (v₁ · v₂) ≡ f v₁ · f v₂

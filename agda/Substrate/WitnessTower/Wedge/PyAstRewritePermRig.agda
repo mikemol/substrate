@@ -36,7 +36,7 @@
 module Substrate.WitnessTower.Wedge.PyAstRewritePermRig where
 
 open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; _◂_; start; decode)

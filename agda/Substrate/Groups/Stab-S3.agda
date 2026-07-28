@@ -45,29 +45,34 @@ open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
 open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.Eq
   using (_≡_; _≢_; refl; sym; trans; cong; sym-trans; trans-sym; cong-trans)
 
-open import Substrate.Axes using (Axis; D; C; S; W; axis-cover; axis×axis-cover)
+open import Substrate.Axes.Axis using (Axis; D; C; S; W)
+open import Substrate.Axes.Cover using (axis-cover)
+open import Substrate.Axes.PairCover using (axis×axis-cover)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Groups.S4 as S4
-  using (Permutation; _≈_; _·_; _⁻¹; ε; ≈-refl; ≈-sym; inv-l; inv-r)
-  renaming (apply to applyₛ; invₐ to invₐₛ)
-import Substrate.Groups.SFin as SFin
+open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
+open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
+open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
+open import Substrate.Groups.Symmetric.Identity Axis using (ε)
+open import Substrate.Groups.Symmetric.EqRefl Axis using (≈-refl)
+open import Substrate.Groups.Symmetric.EqSym Axis using (≈-sym)
 
 ------------------------------------------------------------------------
 -- The parametric Stab predicate.
 --
 -- Ⓢ: defined ONCE, in Substrate.Groups.SemidirectProduct.Stab, and
--- re-exported here. It was duplicated (an identical `applyₛ σ X ≡ X` lived
+-- re-exported here. It was duplicated (an identical `apply σ X ≡ X` lived
 -- here too), fragmenting the Stab lemmas across two homes — the same split
 -- that bred the Stab-normal-when-fixed duplicate. One canonical predicate,
 -- one place; this module's lemmas (Stab-inv, restrict-apply, …) below use the
--- shared Stab (definitionally `applyₛ σ anchor ≡ anchor`, since both modules'
--- `applyₛ` is S4.apply).
+-- shared Stab (definitionally `apply σ anchor ≡ anchor`, since both modules'
+-- `apply` is S4.apply).
 ------------------------------------------------------------------------
 
 open import Substrate.Groups.SemidirectProduct.Stab using (Stab) public
@@ -79,18 +84,18 @@ open import Substrate.Groups.SemidirectProduct.Stab using (Stab) public
 -- Ⓓ: σ-injective is the generic Symmetric.σ-injective (S4 instantiates
 -- Symmetric at Axis and re-exports it); imported + re-exported here (the local
 -- proof was byte-identical). stab-preserves-≢ below uses it.
-open import Substrate.Groups.S4 using (σ-injective) public
+open import Substrate.Groups.Symmetric.Injective Axis using (σ-injective)
 
 stab-preserves-≢ :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ →
-  (x : Axis) → x ≢ anchor → applyₛ σ x ≢ anchor
+  (x : Axis) → x ≢ anchor → apply σ x ≢ anchor
 stab-preserves-≢ anchor σ σ-stab x x≢anc σx≡anc =
   x≢anc (σ-injective σ x anchor (trans-sym σx≡anc σ-stab))
 
 Stab-inv :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ → Stab anchor (σ ⁻¹)
 Stab-inv anchor σ σ-stab =
-  sym-trans (cong (invₐₛ σ) σ-stab) (inv-l σ anchor)
+  sym-trans (cong (invₐ σ) σ-stab) (inv-l σ anchor)
 
 ------------------------------------------------------------------------
 -- Fin 3 ↔ non-anchor-axis bridges. 12 cases each direction.
@@ -182,7 +187,7 @@ restrict-apply :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ → Fin 3 → Fin 3
 restrict-apply anchor σ σ-stab i =
   non-anchor-to-fin3 anchor
-    (applyₛ σ (fin3-to-non-anchor anchor i))
+    (apply σ (fin3-to-non-anchor anchor i))
     (stab-preserves-≢ anchor σ σ-stab
                        (fin3-to-non-anchor anchor i)
                        (fin3-to-non-anchor-≢ anchor i))

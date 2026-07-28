@@ -39,8 +39,18 @@ import Substrate.Groups.Z3-x-FreeCyclic-PhaseProjection
 import Substrate.Groups.Z4-x-FreeCyclic-PhaseProjection
 
 -- Operational correspondences.
-import Substrate.Groups.Z-x-FreeCyclic-Recovery
-import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.Embed
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.PhaseRecovery
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.EmbedEpsilon
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.EmbedDot
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.Embed
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.PhaseRecovery
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.EmbedEpsilon
+import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.EmbedDot
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z3.Advance
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z3.AsSigma
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z4.Advance
+import Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z4.AsSigma
 
 ------------------------------------------------------------------------
 -- Capstone — 2-D word algebra arc complete.

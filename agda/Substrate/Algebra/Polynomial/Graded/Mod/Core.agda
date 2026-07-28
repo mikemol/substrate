@@ -23,10 +23,9 @@ module Substrate.Algebra.Polynomial.Graded.Mod.Core where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; s≤s; z≤n; s≤s-injective)
   renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Nat.Properties using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Fin using (Fin; toℕ; fromℕ<) renaming (zero to fz; suc to fs)
-open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<; toℕ-injective)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Algebra.CommutativeRing using (CommutativeRing)

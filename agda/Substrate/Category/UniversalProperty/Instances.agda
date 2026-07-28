@@ -21,7 +21,7 @@ open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (_,_)
-import Substrate.Foundation.Fin as F
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP-UPArrow)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (word-unit)
@@ -48,7 +48,7 @@ FreeMonoid-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w tt)
 FreeModule-UP = FreeUP-UPArrow (basis {n = 1}) ℕ
 
 FreeModule-contentful : Contentful FreeModule-UP
-FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
+FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w fzero)
 
 ------------------------------------------------------------------------
 -- 3. Cone / Limit — the product is the limit of a discrete diagram.
@@ -57,7 +57,7 @@ FreeModule-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
 ConeLimit-UP = LimitUP-UPArrow (product-leg 1 (λ _ → ℕ)) ⊤
 
 ConeLimit-contentful : Contentful ConeLimit-UP
-ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w F.zero tt)
+ConeLimit-contentful = (λ _ _ → 0) , (λ _ _ → 1) , λ w → 1≢0 (w fzero tt)
 
 ------------------------------------------------------------------------
 -- 4. Adjunction — the trivial Free ⊣ Forgetful (free-Set: F = B, η = id).
@@ -76,4 +76,4 @@ Adjunction-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w 0)
 FreeLinearization-UP = FreeUP-UPArrow (basis {n = 2}) ℕ
 
 FreeLinearization-contentful : Contentful FreeLinearization-UP
-FreeLinearization-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w F.zero)
+FreeLinearization-contentful = (λ _ → 0) , (λ _ → 1) , λ w → 1≢0 (w fzero)

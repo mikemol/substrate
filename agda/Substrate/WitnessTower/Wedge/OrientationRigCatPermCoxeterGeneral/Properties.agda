@@ -50,10 +50,11 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; suc-injective)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map)
 open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 

@@ -8,8 +8,8 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB where
 
-import Substrate.Groups.V4 as V4
-open V4 using (V₄; e; α; β; γ)
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
 
 swap-αβ : V₄ → V₄
 swap-αβ e = e

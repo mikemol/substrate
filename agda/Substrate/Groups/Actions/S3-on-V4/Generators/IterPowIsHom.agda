@@ -12,7 +12,7 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Generators.IterPowIsHom where
 
-open import Substrate.Groups.V4 using (V₄)
+open import Substrate.Groups.V4.Bijection using (V₄)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
 open import Substrate.Groups.V4.IsHomomorphism.Compose using (id-IsHom; ∘-IsHom)

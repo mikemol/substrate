@@ -24,7 +24,8 @@ module Substrate.Algebra.F2.Linear.SpectralCycleDim where
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _≤_; _≤?_; s≤s-injective)
 open import Substrate.Foundation.Nat.Properties.Order
   using (<→≤; ≤-<-trans; <-irrefl; ≤-tight; ≤-suc-r; ≤-refl)
-open import Substrate.Foundation.Fin using (Fin; zero; suc; toℕ)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-injective; toℕ-bound)
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
 open import Substrate.Foundation.Eq using (_≡_; _≢_; refl; trans; sym; cong; cong₂; subst)
@@ -42,8 +43,8 @@ open import Substrate.Algebra.F2.Linear.Cyclotomic using (powL; geomSumL)
 open import Substrate.Algebra.F2.Linear.SpectralCycle using (σ; Φσ)
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Foundation.Fin.Iterate using (σ-iterate)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
-  using (cyclic-suc; cyclic-Linear-basis; σ-iterate-toℕ; cyclic-suc-HasOrderPerm)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic using (cyclic-Linear-basis)
+open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc; σ-iterate-toℕ; cyclic-suc-HasOrderPerm)
 
 ------------------------------------------------------------------------
 -- Transport: pointwise-equal operators share their KernelDim. (Generic;

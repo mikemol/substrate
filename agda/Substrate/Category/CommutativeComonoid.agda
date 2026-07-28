@@ -18,6 +18,7 @@ open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Comonoid
 
+open import Substrate.Category.CommutativeComonoid.Term
 private
   variable
     ℓ : Level
@@ -39,8 +40,7 @@ record CommutativeComonoid
     cocomm   : (x : Carrier) →
                swap (comult comonoid x) ≡ comult comonoid x
 
-open CommutativeComonoid public
 
+open CommutativeComonoid public
 -- File-per-lemma child re-exported here so consumers see the
 -- CommutativeComonoid surface through one import.
-open import Substrate.Category.CommutativeComonoid.Term public

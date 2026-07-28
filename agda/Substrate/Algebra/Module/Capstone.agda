@@ -70,27 +70,27 @@ open import Substrate.Algebra.Field         public using (Field)
 
 -- F₂ / ℚ as Field instances
 open import Substrate.Algebra.F2.AsField    public using (F₂-Field; F₂-Ring)
-open import Substrate.Algebra.Q.AsField     public
+open import Substrate.Algebra.Q.AsField
   using (ℚ-+-Magma; ℚ-·-Magma; ℚ-Field-Obligation)
 
 -- Module tower
 open import Substrate.Algebra.Module             public using (Module)
 open import Substrate.Algebra.Module.Hom         public using (ModuleHom)
-open import Substrate.Algebra.Module.Hom.Compose public
+open import Substrate.Algebra.Module.Hom.Compose
   using (id-ModHom; compose-ModHom)
-open import Substrate.Algebra.Module.Free        public
+open import Substrate.Algebra.Module.Free
   using (FreeCarrier; free-zero; free-+; free-scalar)
-open import Substrate.Algebra.Module.Free.Basis  public
+open import Substrate.Algebra.Module.Free.Basis
   using (basis-vec; free-basis; FreeBasisUniversal)
-open import Substrate.Algebra.Module.Free.UniqueExtension public
+open import Substrate.Algebra.Module.Free.UniqueExtension
   using (FreeModuleExtensionality;
          FreeBasisUniversalAt;
          extensionality-from-universal)
 
 -- Module instances
-open import Substrate.Algebra.F2.AsModule public
+open import Substrate.Algebra.F2.AsModule
   using (F₂-FreeModule; F₂-FreeModule-on-FreeCarrier)
-open import Substrate.Algebra.Q.AsModule public
+open import Substrate.Algebra.Q.AsModule
   using (module Lifters)
 
 ------------------------------------------------------------------------

@@ -22,18 +22,18 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic where
 
 open import Substrate.Foundation.Nat using (suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear using (Linear; apply)
-open import Substrate.Algebra.F2.Linear.FromImages.Permutation
-  using (HasOrder-from-perm; basis-permutation-Linear; apply-basis-permutation-Linear)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear using (basis-permutation-Linear; apply-basis-permutation-Linear)
+open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (HasOrder-from-perm)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 
 -- Re-export the F₂-free cyclic generator (relocated to Algebra.Nat.CyclicSuc):
 -- surface unchanged for existing consumers of Permutation.Cyclic.
-open import Substrate.Algebra.Nat.CyclicSuc public
+open import Substrate.Algebra.Nat.CyclicSuc
   using (cyclic-suc; cyclic-suc-toℕ; σ-iterate-toℕ; cyclic-suc-HasOrderPerm)
 
 ------------------------------------------------------------------------

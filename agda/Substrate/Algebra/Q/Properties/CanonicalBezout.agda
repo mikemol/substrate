@@ -4,7 +4,7 @@
 -- The SECOND, redundant route to ℚ reduced-form uniqueness: Bézout/Euclid,
 -- cross-navigating the CF-shape route (Q.Properties.Canonical).
 --
--- Both routes prove the SAME proposition `canonical-respects-≈ : a ≈ℚ b →
+-- Both routes prove the SAME proposition `reduce-respects-≈ : a ≈ℚ b →
 -- reduce a ≡ reduce b`, share the SAME assembly (uniq-from-mag-den) and the
 -- SAME reduce-is-reduced, and differ ONLY in how they pin the components:
 --   * shape route:  cf-injective on coprime traces (KEYSTONE #1 + #2)
@@ -20,15 +20,17 @@ module Substrate.Algebra.Q.Properties.CanonicalBezout where
 open import Substrate.Foundation.Nat using (_*_)
 open import Substrate.Foundation.Nat.Properties.Cancel using (*-cancelʳ-suc)
 open import Substrate.Foundation.Eq using (_≡_; sym; subst)
-open import Substrate.Algebra.Quotient using () renaming (Canonical to Canonical⟦30f92ad5⟧)
+open import Substrate.Algebra.Quotient
 open import Substrate.Algebra.Q using (ℚ; num; den-1; denominator)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-sym; ≈ℚ-trans; ℚ-Quotient)
 open import Substrate.Algebra.Q.Reduce using (reduce)
 open import Substrate.Algebra.Q.Reduction using (is-reduced; abs-ℤ)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-canonical)
+open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
 open import Substrate.Algebra.Q.Properties.Uniqueness using (mag-cross-of-≈; uniq-from-mag-den)
 open import Substrate.Algebra.Q.Properties.Canonical using (reduce-is-reduced)
-open import Substrate.Algebra.Nat.Divides using (_∣_; n∣m*n; ∣-antisym)
+open import Substrate.Algebra.Nat.Divides.Antisym using (∣-antisym)
+open import Substrate.Algebra.Nat.Divides.Mul using (n∣m*n)
+open import Substrate.Algebra.Nat.Divides.Type using (_∣_)
 open import Substrate.Algebra.Z.Euclid using (euclid)
 
 ------------------------------------------------------------------------
@@ -61,19 +63,19 @@ reduced-≈⇒≡-bezout p q rp rq pq = uniq-from-mag-den p q mag-eq den-eq pq
 -- same reduce-is-reduced, same ≈ℚ spine as the shape route.
 ------------------------------------------------------------------------
 
-canonical-respects-≈-bezout : {a b : ℚ} → a ≈ℚ b → reduce a ≡ reduce b
-canonical-respects-≈-bezout {a} {b} hab =
+reduce-respects-≈-bezout : {a b : ℚ} → a ≈ℚ b → reduce a ≡ reduce b
+reduce-respects-≈-bezout {a} {b} hab =
   reduced-≈⇒≡-bezout (reduce a) (reduce b) (reduce-is-reduced a) (reduce-is-reduced b)
     (≈ℚ-trans {reduce a} {a} {reduce b}
-       (≈ℚ-sym {a} {reduce a} (≈-canonical a))
-       (≈ℚ-trans {a} {b} {reduce b} hab (≈-canonical b)))
+       (≈ℚ-sym {a} {reduce a} (≈-reduce a))
+       (≈ℚ-trans {a} {b} {reduce b} hab (≈-reduce b)))
 
-ℚ-Canonical-bezout : Canonical⟦30f92ad5⟧ ℚ-Quotient
+ℚ-Canonical-bezout : Canonical ℚ-Quotient
 ℚ-Canonical-bezout = record
   { canonical            = reduce
-  ; canonical-idempotent = λ a → sym (canonical-respects-≈-bezout (≈-canonical a))
-  ; canonical-respects-≈ = canonical-respects-≈-bezout
-  ; ≈-canonical          = ≈-canonical
+  ; canonical-idempotent = λ a → sym (reduce-respects-≈-bezout (≈-reduce a))
+  ; canonical-respects-≈ = reduce-respects-≈-bezout
+  ; ≈-canonical          = ≈-reduce
   }
 
 private
@@ -82,4 +84,4 @@ private
   open import Substrate.Foundation.Eq using (refl)
   -- The Bézout route agrees on the same closed witness (2/4 ≈ 1/2).
   _ : reduce (mkℚ (+ 2) 3) ≡ reduce (mkℚ (+ 1) 1)
-  _ = canonical-respects-≈-bezout {mkℚ (+ 2) 3} {mkℚ (+ 1) 1} refl
+  _ = reduce-respects-≈-bezout {mkℚ (+ 2) 3} {mkℚ (+ 1) 1} refl

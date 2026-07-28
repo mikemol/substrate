@@ -19,7 +19,6 @@
 module Substrate.Algebra.F2.Vector.DotProduct where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Vec using (lookup)
 
 open import Substrate.Algebra.F2

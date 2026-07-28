@@ -39,7 +39,7 @@
 
 module Substrate.Geometry.HodgeDim3.Fano where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
 open import Substrate.Foundation.Eq
@@ -104,7 +104,7 @@ ChiralityAxis-At-Pred p u = Σ F₂ (λ c → u ≡ c *ₛ point-coords p)
 -- vector u gives the dot product u ·F point-coords p.
 --
 -- Uses `apply-linear-from-images-lookup` (universal-property discipline).
--- The inner `lookup (chirality-projection-images p i) fz` reduces by
+-- The inner `lookup (chirality-projection-images p i) fzero` reduces by
 -- refl to `lookup (point-coords p) i`, so the sum matches the dot-
 -- product definition directly.
 ------------------------------------------------------------------------

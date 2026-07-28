@@ -58,26 +58,26 @@
 
 module Substrate.Category.UniversalProperty.Phase1 where
 
-open import Substrate.Category.UniversalProperty            public
+open import Substrate.Category.UniversalProperty
   using (UPArrowP; mkUP; SourceP; TargetP; WitnessP; trivial-UPP)
-open import Substrate.Category.UniversalProperty.Morphism   public
+open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
-open import Substrate.Category.UniversalProperty.Compose    public
+open import Substrate.Category.UniversalProperty.Compose
   using (id-UPMorphism; compose-UPMorphism)
-open import Substrate.Category.UniversalProperty.Term       public
+open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
-open import Substrate.Category.UniversalProperty.ArrowOfArrow public
+open import Substrate.Category.UniversalProperty.ArrowOfArrow
   using (UPArrow²; L0-SourceP; L0-TargetP; L1-WitnessP; UPArrow²-Morphism)
-open import Substrate.Category.UniversalProperty.FixedPoint public
+open import Substrate.Category.UniversalProperty.FixedPoint
   using (ι; promote)
-open import Substrate.Category.UniversalProperty.Category   public
+open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical;
          id-UPTerm; compose-UPTerm; ++ᵤ-identityˡ;
          ++ᵤ-identityʳ; ++ᵤ-assoc)
-open import Substrate.Category.UniversalProperty.Instances  public
+open import Substrate.Category.UniversalProperty.Instances
   using (FreeMonoid-UP; FreeModule-UP; ConeLimit-UP;
          Adjunction-UP; FreeLinearization-UP)
-open import Substrate.Category.UniversalProperty.Terminal   public
+open import Substrate.Category.UniversalProperty.Terminal
   using (to-trivial-cond)
 
 ------------------------------------------------------------------------

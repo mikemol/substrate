@@ -29,7 +29,7 @@
 
 module Substrate.Algebra.F2.HodgeDim4.SelfDual where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; cong₂)
 

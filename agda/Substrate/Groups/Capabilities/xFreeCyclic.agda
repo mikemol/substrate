@@ -24,6 +24,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 -- (Zn-Canonical : Zn-Word → Set) out of the record — both were `field`s
 -- valued in Set, forcing the record to Set₁. As module parameters the record
 -- lands in Set; consumers write `xFreeCyclicCapability Zn-Word Zn-Canonical`.
+open import Substrate.Groups.Coxeter.Word using ([])
 module _ (Zn-Word : Set) (Zn-Canonical : Zn-Word → Set) where
 
   record xFreeCyclicCapability : Set where
@@ -43,7 +44,6 @@ module _ (Zn-Word : Set) (Zn-Canonical : Zn-Word → Set) where
 -- from-coxeter-data: build the capability from a Coxeter instance.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.Word using ([])
 
 from-coxeter-data :
   (Gen : Set)
@@ -65,30 +65,3 @@ from-coxeter-data Gen assoc Can norm norm-can can-fix distrib = record
   ; Zn-canonical-is-fixed  = can-fix
   ; Zn-normalize-distrib   = distrib
   }
-
-------------------------------------------------------------------------
--- Per-Zₙ witnesses, one line each (now that canonical-is-fixed is
--- uniformly named).
-------------------------------------------------------------------------
-
-import Substrate.Groups.Z2-Coxeter as Z₂
-import Substrate.Groups.Z3-Coxeter as Z₃
-import Substrate.Groups.Z4-Coxeter as Z₄
-import Substrate.Groups.Z5-Coxeter as Z₅
-import Substrate.Groups.Z7-Coxeter as Z₇
-
-cap-Z₂ = from-coxeter-data Z₂.Gen Z₂.++-assoc Z₂.Canonical Z₂.normalize
-                           Z₂.normalize-canonical Z₂.canonical-is-fixed
-                           Z₂.normalize-distrib
-cap-Z₃ = from-coxeter-data Z₃.Gen Z₃.++-assoc Z₃.Canonical Z₃.normalize
-                           Z₃.normalize-canonical Z₃.canonical-is-fixed
-                           Z₃.normalize-distrib
-cap-Z₄ = from-coxeter-data Z₄.Gen Z₄.++-assoc Z₄.Canonical Z₄.normalize
-                           Z₄.normalize-canonical Z₄.canonical-is-fixed
-                           Z₄.normalize-distrib
-cap-Z₅ = from-coxeter-data Z₅.Gen Z₅.++-assoc Z₅.Canonical Z₅.normalize
-                           Z₅.normalize-canonical Z₅.canonical-is-fixed
-                           Z₅.normalize-distrib
-cap-Z₇ = from-coxeter-data Z₇.Gen Z₇.++-assoc Z₇.Canonical Z₇.normalize
-                           Z₇.normalize-canonical Z₇.canonical-is-fixed
-                           Z₇.normalize-distrib

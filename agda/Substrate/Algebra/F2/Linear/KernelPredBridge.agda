@@ -21,7 +21,7 @@
 
 module Substrate.Algebra.F2.Linear.KernelPredBridge where
 
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Eq
   using (_≡_; sym; trans; cong; cong-trans; sym-trans; trans-sym)

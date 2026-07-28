@@ -38,7 +38,7 @@
 module Substrate.WitnessTower.HodgeGradeInvolution where
 
 open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_; _∸_)
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
 
 -- Half (4): the grade-label Hodge ★ involution.

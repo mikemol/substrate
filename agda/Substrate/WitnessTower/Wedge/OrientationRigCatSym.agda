@@ -51,7 +51,8 @@
 module Substrate.WitnessTower.Wedge.OrientationRigCatSym where
 
 open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Fin using (Fin; _≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Eq
   using (_≡_; refl; sym; trans; cong; subst; subst-const)
 open import Substrate.Foundation.Product

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition
 --
--- transposition (i j : Fin 3) : SFin.Permutation 3.
+-- transposition (i j : Fin 3) : SFinP.Permutation 3.
 -- Parametric transposition swapping i and j (fixing the third index).
 -- Symmetric in (i, j); no chirality-choice generators. When i ≡ j the
 -- result is the identity.
@@ -15,14 +15,17 @@
 module Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition where
 
 open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Fin using (Fin)
-open import Substrate.Foundation.Fin.Properties using (_≟_)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Eq using (_≡_; _≢_; refl)
 open import Substrate.Foundation.Negation using (yes; no)
 
-import Substrate.Groups.SFin as SFin
+import Substrate.Groups.SFin.Apply as SFinA
+import Substrate.Groups.SFin.Permutation as SFinP
 
-transposition : (i j : Fin 3) → SFin.Permutation 3
+transposition : (i j : Fin 3) → SFinP.Permutation 3
 transposition i j = record
   { apply  = swap-fn
   ; invₐ   = swap-fn
@@ -56,7 +59,7 @@ transposition i j = record
 
 transposition-fixes-third :
   (i j k : Fin 3) → k ≢ i → k ≢ j →
-  SFin.apply (transposition i j) k ≡ k
+  SFinA.apply (transposition i j) k ≡ k
 transposition-fixes-third i j k k≢i k≢j with k ≟ i
 ... | yes p = ⊥-elim (k≢i p)
 ... | no _ with k ≟ j

@@ -26,6 +26,7 @@ module Substrate.Groups.Coxeter.Core.NormalizeAppend.Right
 open import Substrate.Groups.Coxeter.Core.NormalizeIdem
   Word Canonical normalize normalize-canonical canonical-is-fixed
 
+
 normalize-append-right : (a b : Word) →
                          normalize (a ++ b) ≡ normalize (a ++ normalize b)
 normalize-append-right a b =

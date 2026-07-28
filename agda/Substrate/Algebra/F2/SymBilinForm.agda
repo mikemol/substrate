@@ -27,14 +27,14 @@
 
 module Substrate.Algebra.F2.SymBilinForm where
 
-open import Substrate.Algebra.F2.SymBilinForm.BilinForm          public
-open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric        public
-open import Substrate.Algebra.F2.SymBilinForm.Type               public
-open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf     public
-open import Substrate.Algebra.F2.SymBilinForm.MetricId           public
-open import Substrate.Algebra.F2.SymBilinForm.MetricIdSymmetric  public
-open import Substrate.Algebra.F2.SymBilinForm.MetricIdSym        public
-open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct      public
-open import Substrate.Algebra.F2.SymBilinForm.PairEqFamily       public
-open import Substrate.Algebra.F2.SymBilinForm.Radical            public
-open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate      public
+open import Substrate.Algebra.F2.SymBilinForm.BilinForm
+open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric
+open import Substrate.Algebra.F2.SymBilinForm.Type
+open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf
+open import Substrate.Algebra.F2.SymBilinForm.MetricId
+open import Substrate.Algebra.F2.SymBilinForm.MetricIdSymmetric
+open import Substrate.Algebra.F2.SymBilinForm.MetricIdSym
+open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct
+open import Substrate.Algebra.F2.SymBilinForm.PairEqFamily
+open import Substrate.Algebra.F2.SymBilinForm.Radical
+open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate

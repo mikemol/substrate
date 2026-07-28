@@ -39,7 +39,7 @@
 module Substrate.WitnessTower.Wedge.PyAstRigGround where
 
 open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.LehmerPath using (LehmerPath; _◂_; decode)

@@ -17,12 +17,11 @@
 module Substrate.TokiPona.QLinearAlgebra where
 
 open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin using (Fin)
 open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.TokiPona.Nimi using (Nimi; nimi-count; nimi-index)
-open import Substrate.TokiPona.QSemanticSpace
-  using (QSemVec; basis-ℚ)
+open import Substrate.Algebra.Q.Vector using (basis-ℚ)
+open import Substrate.TokiPona.QSemanticSpace using (QSemVec)
 open import Substrate.TokiPona.QNimiSpace using (nimi-as-Q-vector)
 
 open import Substrate.Algebra.Q.Linear using (Linearℚ; apply; id-LQ)

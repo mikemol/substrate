@@ -13,10 +13,8 @@ module Substrate.Groups.SemidirectProduct.Stab where
 
 open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Axes using (Axis)
-open import Substrate.Groups.S4
-  using (Permutation)
-  renaming (apply to applyₛ)
+open import Substrate.Axes.Axis using (Axis)
+open import Substrate.Groups.Symmetric.Permutation Axis
 
 Stab : Axis → Permutation → Set
-Stab X σ = applyₛ σ X ≡ X
+Stab X σ = apply σ X ≡ X

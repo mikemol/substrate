@@ -26,7 +26,7 @@ import Substrate.Algebra.F2 as F2
 open import Substrate.Algebra.F2 using (𝟘≢𝟙)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.Field using (Field)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F

@@ -35,7 +35,8 @@
 
 module Substrate.Algebra.F2.Polynomial where
 
-open import Substrate.Foundation.Fin using (Fin; zero; suc)
+open import Substrate.Foundation.Fin.Fin
+open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; replicate)
 open import Substrate.Foundation.Function using (_∘_)
@@ -56,6 +57,9 @@ open import Substrate.Algebra.F2.Vector
 -- (lookup, +ⱽ, etc.) is fully available.
 ------------------------------------------------------------------------
 
+open import Substrate.Foundation.Vec using (replicate)
+open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc) renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Eq using (subst)
 Polynomial : ℕ → Set
 Polynomial n = Vector n
 
@@ -150,10 +154,6 @@ infixl 7 _·c_
 -- give the cleaner decomposition than convolution-mashing.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Vec using (replicate)
-open import Substrate.Foundation.Nat.Properties using (+-identityʳ; +-suc)
-  renaming (+-comm to +ℕ-comm)
-open import Substrate.Foundation.Eq using (subst)
 
 -- The outer product: the universal bilinear map.
 -- Given p : Polynomial n and q : Polynomial m, outer p q : Vec (Polynomial m) n

@@ -17,8 +17,8 @@
 
 module Substrate.Algebra.F2.Polynomial.Utilities where
 
-open import Substrate.Algebra.F2.Polynomial.Utilities.IsZeroPoly         public
-open import Substrate.Algebra.F2.Polynomial.Utilities.LeadingPosition    public
-open import Substrate.Algebra.F2.Polynomial.Utilities.LeadingCoefficient public
-open import Substrate.Algebra.F2.Polynomial.Utilities.Degree             public
-open import Substrate.Algebra.F2.Polynomial.Utilities.DegreeToBound      public
+open import Substrate.Algebra.F2.Polynomial.Utilities.IsZeroPoly
+open import Substrate.Algebra.F2.Polynomial.Utilities.LeadingPosition
+open import Substrate.Algebra.F2.Polynomial.Utilities.LeadingCoefficient
+open import Substrate.Algebra.F2.Polynomial.Utilities.Degree
+open import Substrate.Algebra.F2.Polynomial.Utilities.DegreeToBound
