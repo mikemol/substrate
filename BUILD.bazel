@@ -15,14 +15,92 @@ Further `run "..."` stages are added one at a time, each as its own py_test.
 load("@mikemol_rules_py//:tracked.bzl", "select_tracked")
 load("@rules_python//python:py_test.bzl", "py_test")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@mikemol_rules_py//:pinned.bzl", "pinned_labels")
+load("@mtools_hooks//:manifest.bzl", HOOKS = "FILES")
+load("@mtools_ratchet//:manifest.bzl", RATCHET = "FILES")
+load("@mtools_corpus//:manifest.bzl", CORPUS = "FILES")
 load("@tracked//:manifest.bzl", "TRACKED")
+
+# THE PINNED mtools SOURCES THE PYTHON ROWS READ (substrate:W377): mikemol.hooks, mikemol.ratchet and
+# mikemol.corpus, at uv.lock's commit (MODULE.bazel). Kept whole: they move only on a repin.
+GATE_PY_PINNED = (
+    pinned_labels("mtools_hooks", HOOKS) +
+    pinned_labels("mtools_ratchet", RATCHET) +
+    pinned_labels("mtools_corpus", CORPUS)
+)
+
+# ⚑ EACH ROW NAMES ITS OWN MEASURED CLOSURE, NEVER "every tracked scripts/ or substrate/ .py"
+# (github-cb review, W377; memory feedback-input-belongs-iff-build-fails-without-it). A shared
+# prefix-of-everything set lets every red-row repair invalidate every python target's cache, which
+# defeats the operator's reason for this conversion (host L179677: bazel first, to ACCELERATE the
+# check fixes). The list is the RUNTIME closure, measured by running the row with its real argv and
+# listing every tracked module it loaded (lazy imports included):
+#   SUBSTRATE_NO_CACHE=1 SUBSTRATE_NO_VALKEY=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=<empty> \
+#   PYTHONPATH=scratch:scripts:tests:. .venv/bin/python <scratch>/run_closure.py \
+#       scripts/check_feature_coverage.py --quiet
+# (measured COLD; the tests/*.py it also opens are the files it SCANS, already in its data below)
+# A "closure in sync" gate check that regenerates these lists is carded (W384).
+FEATURE_COVERAGE_CLOSURE = [
+    "scripts/__init__.py",
+    "scripts/gherkin_scan.py",
+    "scripts/ratchet.py",
+    "scripts/ratchet_legacy.py",
+    "substrate/__init__.py",
+    "substrate/baseline_io.py",
+    "substrate/baseline_state.py",
+    "substrate/corpus.py",
+    "substrate/luthen_resolver.py",
+    "substrate/proc_ancestry.py",
+    "substrate/ratchet_core.py",
+    "substrate/ratchet_flags.py",
+    "substrate/ratchet_suites.py",
+    "substrate/vlogs_destination.py",
+    "substrate/vmagent_address.py",
+    "substrate/withheld_verdict.py",
+]
+
+# `+pinned_files+<name>` is bazel 9's canonical spelling of a pinned repo (measured with
+# `bazel query --output=location`). It is an INTERNAL name and would break silently on a bazel
+# change; asking mtools for a pinned_imports export so consumers stop spelling it is carded (W385).
+GATE_PY_IMPORTS = [
+    ".",
+    "../+pinned_files+mtools_hooks/hooks/src",
+    "../+pinned_files+mtools_ratchet/ratchet/src",
+    "../+pinned_files+mtools_corpus/corpus/src",
+]
 
 # gen_build_makefiles --check parses every Agda module's imports and compares the result to the
 # generated Flat.mk and root Makefile, so the whole tracked Agda tree is its input, file by file.
+# The .agda set stays WHOLE: it is the check's real read set (it parses every module's imports).
+# The python part is the row's MEASURED RUNTIME closure, never every tracked scripts/ or substrate/
+# .py (github-cb review, W377): otherwise every python repair re-runs the most expensive check, which
+# parses the whole Agda tree. Measured COLD (no shared cache, no .pyc), because a warm cache skips the
+# parse and hides scripts/_agdatext.py, which is loaded BY PATH and is invisible to sys.modules:
+#   SUBSTRATE_NO_CACHE=1 SUBSTRATE_NO_VALKEY=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=<empty> \
+#   PYTHONPATH=scratch:scripts:tests:. .venv/bin/python <scratch>/run_closure.py \
+#       scripts/gen_build_makefiles.py --check --parameterized
+# A "closure in sync" gate check that regenerates this list is carded (W384).
+CHECK_MAKEFILES_CLOSURE = [
+    "scratch/agda_lex.py",
+    "scripts/_agdatext.py",
+    "substrate/__init__.py",
+    "substrate/agda_dag.py",
+    "substrate/build_compat.py",
+    "substrate/build_compat_selftest.py",
+    "substrate/build_gen_cli.py",
+    "substrate/build_settings.py",
+    "substrate/build_settings_selftest.py",
+    "substrate/corpus.py",
+    "substrate/flat_emit.py",
+    "substrate/flat_emit_selftest.py",
+    "substrate/flat_origin.py",
+    "substrate/root_emit.py",
+    "substrate/root_emit_selftest.py",
+]
+
 MAKEFILE_INPUTS = (
     select_tracked(TRACKED, prefix = "agda/", suffix = ".agda") +
-    select_tracked(TRACKED, prefix = "scripts/", suffix = ".py") +
-    select_tracked(TRACKED, prefix = "substrate/", suffix = ".py") +
+    CHECK_MAKEFILES_CLOSURE +
     [
         "agda/Flat.mk",
         "agda/Makefile",
@@ -37,8 +115,37 @@ py_test(
         "--parameterized",
     ],
     data = MAKEFILE_INPUTS,
+    # The bare-name imports (agda_lex, imported at --check time) resolve under the project's DECLARED
+    # pythonpath (pyproject.toml:396, ["scratch", "scripts", "tests", "."]), the authority that
+    # retired sys.path injection. `imports` is bazel's spelling of that declaration. MEASURED: this row
+    # sat in //:precommit with no `imports` and failed `No module named 'agda_lex'` the first time
+    # the hook ran it through bazel (W377); it had never been run by bazel before.
+    imports = [
+        ".",
+        "scratch",
+        "scripts",
+    ],
     legacy_create_init = 0,
     main = "scripts/gen_build_makefiles.py",
+)
+
+# substrate:W377 / W357, the first hook-row conversion (operator 2026-11-16, host L179677:
+# "fix the bazel build aspect first, because that will help accelerate the check fixes").
+# check_feature_coverage cross-references EVERY test against EVERY feature, so its real read
+# set is the whole tracked features/ and tests/ trees: named via @tracked, never globbed.
+py_test(
+    name = "feature_coverage",
+    srcs = ["scripts/check_feature_coverage.py"],
+    args = ["--quiet"],
+    data = (
+        GATE_PY_PINNED +
+        FEATURE_COVERAGE_CLOSURE +
+        select_tracked(TRACKED, prefix = "features/", suffix = ".feature") +
+        select_tracked(TRACKED, prefix = "tests/", suffix = ".py")
+    ),
+    imports = GATE_PY_IMPORTS,
+    legacy_create_init = 0,
+    main = "scripts/check_feature_coverage.py",
 )
 
 # substrate:W382 / W377: the post-commit marker is a git TRAILER read by git's trailer parser,
@@ -55,6 +162,7 @@ test_suite(
     name = "precommit",
     tests = [
         ":check_makefiles",
+        ":feature_coverage",
         ":postcommit_marker_witness",
     ],
 )

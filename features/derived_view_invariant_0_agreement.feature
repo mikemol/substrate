@@ -91,3 +91,14 @@ Feature: Two routes to one fact must agree [tooling, invariant, depth=0]
     # expectedFailure: recorded as a NUMBER in the suite, not a note that gets dropped.
     # Paying it down moves the sumtype baseline 25 -> 32 — a real debt discovery that
     # must be banked deliberately on the commit path, never as a refactor side effect.
+
+  # Declared 2026-11-16 (substrate:W357): tests/test_agda_census_drain.py named this scenario
+  # while no feature file declared it, at 771283c, in the bootstrap arc, or at HEAD — the test
+  # was written against a spec that was never written. The spec is declared, not the test bent.
+  Scenario: the drained census modules answer for the tree they measure
+    Given the ⟡drain-split-census modules (agda_import_dag, agda_tree_state) derive facts
+      about the Agda tree by their own route
+    And the freshness predicate's origin returned `fresh` for EVERY log twice — once because
+      a hand-built module key missed the DAG, once because a bare except swallowed getmtime
+    Then each derived fact is checked against the live tree it describes
+    And every case carries a negative discriminator, so a predicate that always says yes fails

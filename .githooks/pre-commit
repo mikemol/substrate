@@ -216,6 +216,26 @@ fi
 # the operand is what makes this gate independent of the cwd it is handed.  They can only
 # disagree by someone pointing this line at a different directory, which is a visible
 # edit — as against a silent cwd, which is not.
+# ⚑⚑⚑ THE GATE BECOMES A BAZEL BUILD, ONE ROW AT A TIME (substrate:W377; operator 2026-11-16, host
+# L179677: "fix the bazel build aspect first, because that will help accelerate the check fixes").
+# Every row converted to a named target in BUILD.bazel's //:precommit runs HERE, through bazel, and its
+# bash line below is deleted in the same commit: each row runs exactly once, and bazel's cache serves an
+# unchanged row's verdict instead of re-running it. The remaining bash rows keep running after this.
+#
+# ⚑ OVER mikemol-commit's ISOLATED SNAPSHOT there is no `.git`, and @tracked asks git for the file
+# list. The pattern is gcalculus's (gcalculus:W254), adopted, not reinvented: a throwaway repository
+# whose index is refreshed every run (`-A` records deletions) is the commit's file list; the `.venv`
+# link is excluded so it is never a tracked file. The commit's own GIT_* is unset for bazel, so
+# @tracked reads THIS tree's index, never the commit's private one.
+if [ -n "${MIKEMOL_REAL_ROOT:-}" ] && [ "$MIKEMOL_REAL_ROOT" != "$ROOT" ]; then
+  if [ ! -e "$ROOT/.git" ]; then
+    env -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE -u GIT_PREFIX git -C "$ROOT" init -q .
+  fi
+  env -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE -u GIT_PREFIX \
+    git -C "$ROOT" add -A -f -- . ':(exclude).venv'
+fi
+run "bazel //:precommit" env -C "$ROOT" -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE -u GIT_PREFIX \
+  bazel test //:precommit --ui_event_filters=-debug,-warning --show_result=0
 run "tool unit tests" python3 -m pytest --rootdir "$ROOT" -q "$ROOT/tests"
 # ⚑⚑⚑ THE ROSTER'S CURRENCY IS A PRECONDITION FOR THE RUN THAT CONSUMES IT (⟡roster-currency-
 # ungated, 2026-09-01).  Selftest.mk is GENERATED from suite_discovery, and nothing checked the
@@ -231,7 +251,7 @@ run "tool unit tests" python3 -m pytest --rootdir "$ROOT" -q "$ROOT/tests"
 # gate and the next writer reintroduced the defect it described.
 run "selftest roster current" python3 "$ROOT/substrate/selftest_mk.py" --check
 run "tool selftests" python3 "$ROOT/scripts/run_selftests.py" --quiet
-run "feature coverage" python3 "$ROOT/scripts/check_feature_coverage.py" --quiet
+# "feature coverage" runs in bazel: //:feature_coverage in //:precommit (W377, W357).
 
 run "def/proof separation" "$ROOT/scripts/check_def_proof_separation.sh" --quiet \
   || true   # --quiet is silent; re-run verbose on failure for the message
@@ -247,8 +267,8 @@ run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 # The generated build makefiles must stay in sync with the source tree: a new/removed .agda
 # file changes the explicit MODULES list and the import DAG, so agda/Flat.mk (one flat
 # import-DAG makefile — NOT per-directory; those 280 were deleted) and the thin agda/Makefile
-# must be regenerated. Regenerate: python3 scripts/gen_build_makefiles.py
-run "build makefiles in sync" "$PY" "$ROOT/scripts/gen_build_makefiles.py" --check --parameterized
+# must be regenerated. Regenerate: python3 scripts/gen_build_makefiles.py --parameterized
+# "build makefiles in sync" runs in bazel: //:check_makefiles in //:precommit (W377, W359).
 
 # Build census (⟡build-census) must match the build: the `build-census` block inside
 # .claude/skills/build-system/SKILL.md is generated from the tools that OWN each figure — the

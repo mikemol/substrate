@@ -16,18 +16,49 @@ bazel_dep(name = "mikemol_rules_py", version = "0.1.0")
 # resolves transitively, declared directly so BUILD.bazel can load it (substrate:W382).
 bazel_dep(name = "rules_shell", version = "0.6.1")
 
-# Pinned at the mtools commit that carries tracked.bzl (mtools:W799). The remote is the local clone:
-# the pin is the commit, so a moving working tree is never read.
+# Pinned at the mtools commit that carries tracked.bzl (mtools:W799) AND pinned.bzl (mtools:W843),
+# the commit gcalculus uses (substrate:W377). The remote is the local clone: the pin is the commit,
+# so a moving working tree is never read. The local-path remote is the fleet's current form;
+# its move to a fetchable URL is mtools:W2602 (github-cb host ruling, 2026-11-16).
 git_override(
     module_name = "mikemol_rules_py",
     remote = "/home/mikemol/github/mtools",
-    commit = "370784d59a169494787ef04e92999f56d4483200",
+    commit = "5137e0c0149fb9de63bd0c0d70fa70bc5199f29a",
     strip_prefix = "rules_py",
 )
 
 tracked = use_repo_rule("@mikemol_rules_py//:tracked.bzl", "tracked_files")
 
 tracked(name = "tracked")
+
+# mikemol.hooks and mikemol.ratchet AT THE COMMIT uv.lock RECORDS (03749d56), so the bazel pin and
+# uv.lock cannot diverge (substrate:W377; github-cb ruling: pinned_files, never a pip git
+# requirement; mikemol-* stay out of any pip hub, as aeternum's lock does). scripts/ratchet.py, which
+# every python gate row imports, reads mikemol.hooks, mikemol.ratchet and (via
+# substrate.ratchet_suites) mikemol.corpus: the closure MEASURED by importing the row under the venv
+# and listing every non-stdlib module (no third-party package appears in it).
+pinned = use_repo_rule("@mikemol_rules_py//:pinned.bzl", "pinned_files")
+
+pinned(
+    name = "mtools_hooks",
+    commit = "03749d56d55741840da13d86533e7e8d698e3be8",
+    prefix = "hooks/src/",
+    remote = "/home/mikemol/github/mtools",
+)
+
+pinned(
+    name = "mtools_corpus",
+    commit = "03749d56d55741840da13d86533e7e8d698e3be8",
+    prefix = "corpus/src/",
+    remote = "/home/mikemol/github/mtools",
+)
+
+pinned(
+    name = "mtools_ratchet",
+    commit = "03749d56d55741840da13d86533e7e8d698e3be8",
+    prefix = "ratchet/src/",
+    remote = "/home/mikemol/github/mtools",
+)
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(python_version = "3.14", is_default = True)
