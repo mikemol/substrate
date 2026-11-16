@@ -46,7 +46,13 @@ for m in rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD; do
 done
 
 # Idempotent: don't append the advisory twice (e.g. a manual --amend).
-if git log -1 --format=%B | grep -q 'post-commit advisory (auto-captured)'; then
+# ⚑ THE MARKER IS A GIT TRAILER, READ BY GIT'S TRAILER PARSER (W382). It used to be a
+# `git log -1 --format=%B | grep -q '<marker>'` over the WHOLE message, which (a) could match
+# marker-like text inside the multi-megabyte folded gate report, and (b) is FLAKY under
+# pipefail: grep -q exits at the match while git log is still writing, git log dies of
+# SIGPIPE (141), and the pipeline fails with the marker present (forced-interleaving witness:
+# tests/postcommit_marker_witness.sh). %(trailers:key=...) reads only the trailer block.
+if [ -n "$(git log -1 --format='%(trailers:key=Post-Commit-Advisory,valueonly)')" ]; then
   exit 0
 fi
 
@@ -54,7 +60,9 @@ if [ -n "$advisory" ]; then
   msg="$(git log -1 --format=%B)
 
 post-commit advisory (auto-captured):
-$(printf '%s\n' "$advisory" | sed 's/^/    /')"
+$(printf '%s\n' "$advisory" | sed 's/^/    /')
+
+Post-Commit-Advisory: done"
   _POST_COMMIT_AMENDING=1 git commit --amend --no-verify -F - <<<"$msg" >/dev/null 2>&1 || true
 fi
 

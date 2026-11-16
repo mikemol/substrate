@@ -12,6 +12,10 @@ bazel_dep(name = "rules_python", version = "2.3.3")
 
 bazel_dep(name = "mikemol_rules_py", version = "0.1.0")
 
+# sh_test is not native in Bazel 9; rules_shell 0.6.1 is the version this lockfile already
+# resolves transitively, declared directly so BUILD.bazel can load it (substrate:W382).
+bazel_dep(name = "rules_shell", version = "0.6.1")
+
 # Pinned at the mtools commit that carries tracked.bzl (mtools:W799). The remote is the local clone:
 # the pin is the commit, so a moving working tree is never read.
 git_override(

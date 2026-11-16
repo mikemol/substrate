@@ -14,10 +14,22 @@ while read -r _localref localsha _remoteref _remotesha; do
   case "$localsha" in *[!0]*) : ;; *) continue ;; esac          # skip ref deletions
   # skip merge commits (the post-commit hook does not amend mid-merge by design)
   if [ "$(git show --no-patch --format=%P "$localsha" | wc -w)" -gt 1 ]; then continue; fi
-  if ! git log -1 --format=%B "$localsha" | grep -q 'post-commit advisory (auto-captured)'; then
+  # ⚑ The marker is the Post-Commit-Advisory TRAILER, read by git's trailer parser (W382),
+  # not `git log --format=%B | grep -q` over the whole message: under pipefail that pipeline
+  # FAILS on a large message with the marker present (grep -q exits early, git log dies of
+  # SIGPIPE 141). Measured: 044a3cd3b refused twice, then pushed unchanged.
+  # Witness: tests/postcommit_marker_witness.sh.
+  # ⚑ REWRITTEN COMMITS (rebase, cherry-pick, a hand `commit --amend`) run post-rewrite, not
+  # post-commit, so they keep the old prose marker but carry NO trailer and are refused here.
+  # That is deliberate: accepting the prose marker would bring back the whole-message read and
+  # its flake. Remedy: run .githooks/post-commit with that commit checked out as HEAD; it
+  # re-amends HEAD and writes the trailer.
+  if [ -z "$(git log -1 --format='%(trailers:key=Post-Commit-Advisory,valueonly)' "$localsha")" ]; then
     echo "pre-push: BLOCKED — tip $(git rev-parse --short "$localsha") lacks the post-commit advisory amend." >&2
     echo "          (It raced the push, or was made mid-rebase.) Wait until HEAD's message gains" >&2
-    echo "          'post-commit advisory (auto-captured)', or re-amend, then push." >&2
+    echo "          the 'Post-Commit-Advisory: done' trailer, then push. A REWRITTEN commit" >&2
+    echo "          (rebase/cherry-pick/hand amend) never gets it: check it out as HEAD and run" >&2
+    echo "          .githooks/post-commit, which re-amends it with the trailer." >&2
     fail=1
   fi
 done

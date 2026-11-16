@@ -14,6 +14,7 @@ Further `run "..."` stages are added one at a time, each as its own py_test.
 
 load("@mikemol_rules_py//:tracked.bzl", "select_tracked")
 load("@rules_python//python:py_test.bzl", "py_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 load("@tracked//:manifest.bzl", "TRACKED")
 
 # gen_build_makefiles --check parses every Agda module's imports and compares the result to the
@@ -40,9 +41,20 @@ py_test(
     main = "scripts/gen_build_makefiles.py",
 )
 
+# substrate:W382 / W377: the post-commit marker is a git TRAILER read by git's trailer parser,
+# never a whole-message `grep -q` (which fails under pipefail on a large message: SIGPIPE 141).
+# The forced-interleaving witness proves both sides deterministically; it writes only inside
+# its own mktemp directory. Its one input is named.
+sh_test(
+    name = "postcommit_marker_witness",
+    srcs = ["tests/postcommit_marker_witness.sh"],
+    size = "small",
+)
+
 test_suite(
     name = "precommit",
     tests = [
         ":check_makefiles",
+        ":postcommit_marker_witness",
     ],
 )
