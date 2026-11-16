@@ -800,3 +800,9 @@
 2026-11-16T16:15:12Z  tick  --   interrupt spender   "spender: gate-oracle (W356 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T16:19:50Z  tick  --   interrupt spender   "spender: gate-oracle (W356 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T16:20:26Z  tick  W356 advanced  oracle    "tick 9: W356 gate row recorded; its red is UNMEASURED (the oracle's run hit a wall-clock cutoff); the prior run shows 199 failures, likely bazel-bin runfiles duplicates in suite discovery [blocked by W357]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:22:27Z  interrupt W378 minted    -         "re-sync the stale gate census in .claude/skills/precommit-gates/SKILL.md (gate_census --check: carrier_locality 5->4, claims 14->13)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W356
+2026-11-16T16:41:05Z  status W357 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:41:17Z  tick  --   interrupt spender   "spender: gate-oracle (W357 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:42:32Z  tick  --   interrupt spender   "spender: gate-oracle (W357 gate row) return (no background work left, per its report)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:42:35Z  tick  W379 minted    -         "a CPU-time-bounded run wrapper the no-chaining hook admits (standing 14's 'bash -c ulimit -t' is refused); check mikemol-membudget/fence first"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W357
+2026-11-16T16:42:39Z  tick  W357 advanced  oracle    "tick 10: W357 gate row recorded, MEASURED red: tests/test_agda_census_drain.py names a Scenario no features/ file has; hermetic tracked-edit repair; W379 carded (standing 14's ulimit form is refused by the no-chaining hook) [blocked by W358]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
