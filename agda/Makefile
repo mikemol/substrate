@@ -13,6 +13,10 @@ endif
 MEMBUDGET := /home/mikemol/github/substrate/scripts/membudget
 export MEMBUDGET
 
+TENANT ?= live
+export TENANT
+$(if $(filter $(TENANT),live sandbox),,$(error TENANT must be live or sandbox))
+PYTHON := $(abspath ../.venv/bin/python)
 .PHONY: all clean shim catalog sourced promote drain reconcile check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex advise
 all:
 	@$(MAKE) -f Flat.mk reconcile
@@ -31,7 +35,8 @@ clean:
 shim:
 	@$(MAKE) -C ../jea/metalanguage shim
 catalog: shim
-	@$(MEMBUDGET) run 1024 catalog -- python3 ../scripts/sppf_db.py "" --argperm
+	@$(if $(filter live,$(TENANT)),,$(error catalog writes the store with no tenant flag; live only))
+	@$(MEMBUDGET) run 1024 catalog -- $(PYTHON) -m substrate.store_launch ../scripts/sppf_db.py "" --argperm
 sourced:
 	@$(MAKE) -f Flat.mk sourced
 promote:
@@ -44,7 +49,7 @@ check: check-defproof check-makefiles check-vacuity check-index check-import che
 	@echo 'all invariant checks passed.'
 # Verify Flat.mk + the root Makefile are in sync with the source tree.
 check-makefiles:
-	@python3 ../scripts/gen_build_makefiles.py --check
+	@$(PYTHON) ../scripts/gen_build_makefiles.py --check --parameterized
 # Verify def/proof separation (definition-providers import no proof modules).
 check-defproof:
 	@../scripts/check_def_proof_separation.sh

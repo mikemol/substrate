@@ -6,7 +6,9 @@ Every input is a named file: never a glob, never a directory (operator, 2026-10-
 from git's index through @tracked (mtools:W799), so a new tracked file joins the gate by being
 tracked, an untracked file never does, and select_tracked fails on a selector that matches nothing.
 
-One row so far: check-makefiles (build_targets.CHECKS[0], the hook's gen_build_makefiles --check).
+One row so far: check-makefiles (build_targets.CHECKS[0], the hook's gen_build_makefiles
+--check --parameterized; the committed makefiles are the parameterized, tenant-aware render,
+substrate:W359 per the operator's t102 choice recorded in substrate/flat_emit.py).
 Further `run "..."` stages are added one at a time, each as its own py_test.
 """
 
@@ -29,7 +31,10 @@ MAKEFILE_INPUTS = (
 py_test(
     name = "check_makefiles",
     srcs = ["scripts/gen_build_makefiles.py"],
-    args = ["--check"],
+    args = [
+        "--check",
+        "--parameterized",
+    ],
     data = MAKEFILE_INPUTS,
     legacy_create_init = 0,
     main = "scripts/gen_build_makefiles.py",
