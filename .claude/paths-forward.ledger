@@ -795,3 +795,8 @@
 2026-11-16T15:56:43Z  tick  --   interrupt spender   "spender: gate-oracle (W355 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T15:56:53Z  tick  W376 minted    -         "census and commit (or discard, by reading) untracked work: substrate/suite_walk.py, suite_flag.py and any other untracked tree files"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W355
 2026-11-16T15:56:54Z  tick  W355 advanced  oracle    "tick 8: W355 gate row recorded (aim, goal, incident=comment-only/UNKNOWN commit, why red: Selftest.mk misses agdai_shim_path_selftest, repair: regenerate against the index; not yet a bazel target) [blocked by W356]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:58:28Z  interrupt W377 minted    -         "each rebuilt gate row becomes a bazel py_test in //:precommit (the W352-wide form; W355-W374 reference this card)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T16:15:02Z  status W356 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:15:12Z  tick  --   interrupt spender   "spender: gate-oracle (W356 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:19:50Z  tick  --   interrupt spender   "spender: gate-oracle (W356 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T16:20:26Z  tick  W356 advanced  oracle    "tick 9: W356 gate row recorded; its red is UNMEASURED (the oracle's run hit a wall-clock cutoff); the prior run shows 199 failures, likely bazel-bin runfiles duplicates in suite discovery [blocked by W357]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
