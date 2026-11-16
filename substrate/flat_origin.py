@@ -80,8 +80,8 @@ def settings(*, parameterized: bool = False) -> flat_emit.Settings:
     """
     return flat_emit.Settings(
         marker=build_settings.MARKER,
-        shim_dir=str(build_settings.SHIM_DIR),
-        membudget=str(build_settings.MEMBUDGET),
+        shim_dir=build_settings.SHIM_DIR_MAKE,
+        membudget=build_settings.MEMBUDGET_MAKE,
         mem_cap=build_settings.MEM_CAP,
         ver=build_settings.build_ver(),
         parameterized=parameterized,

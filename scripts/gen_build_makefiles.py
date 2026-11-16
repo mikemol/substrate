@@ -117,8 +117,8 @@ def flat_text(disk: dict[str, str], deps: dict[str, set[str]]) -> str:
     """Render `agda/Flat.mk` (faithful mode) for the given graph."""
     settings = flat_emit.Settings(
         marker=MARKER,
-        shim_dir=SHIM_DIR,
-        membudget=str(build_settings.MEMBUDGET),
+        shim_dir=build_settings.SHIM_DIR_MAKE,
+        membudget=build_settings.MEMBUDGET_MAKE,
         mem_cap=MEM_CAP,
         ver=build_ver(),
     )

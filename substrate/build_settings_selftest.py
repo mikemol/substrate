@@ -70,8 +70,10 @@ def _cases() -> list[tuple[str, bool]]:
     block = bs.shim_block()
     out.append(
         (
-            "the shim block names SHIM_DIR and MEMBUDGET",
-            f"SHIM_DIR := {bs.SHIM_DIR}" in block and f"MEMBUDGET := {bs.MEMBUDGET}" in block,
+            "the shim block names SHIM_DIR and MEMBUDGET in their make-relative form (W381)",
+            f"SHIM_DIR := {bs.SHIM_DIR_MAKE}" in block
+            and f"MEMBUDGET := {bs.MEMBUDGET_MAKE}" in block
+            and str(bs.ROOT) not in block,
         )
     )
     return out

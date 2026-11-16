@@ -9,11 +9,11 @@
 # membudget agda-shim → make is the controlled+instrumented build path (RAM-budgeted + proof-cost
 # profiled). Idempotent (findstring); exported to recipes + sub-makes. MEMBUDGET_NOPROFILE=1 to skip
 # profiling; `make AGDA=…` to pin a different agda.
-SHIM_DIR := /home/mikemol/github/substrate/scripts/agda-shim
+SHIM_DIR := $(abspath ../scripts/agda-shim)
 ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
 export PATH := $(SHIM_DIR):$(PATH)
 endif
-MEMBUDGET := /home/mikemol/github/substrate/scripts/membudget
+MEMBUDGET := $(abspath ../scripts/membudget)
 
 AGDA ?= agda
 AGDA_FLAGS ?= --safe --without-K
