@@ -3,14 +3,14 @@
 
 state file: `.claude/paths-forward.json`
 
-counter 379 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:7d273913b0fbeb81`
+counter 379 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:76edc717c26e145b`
 
 | # | symbol | status |
 |---|---|---|
 | 1 | W355 | working |
 | 2 | W357 | working |
 | 3 | W358 | working |
-| 4 | W359 | ready |
+| 4 | W359 | working |
 | 5 | W360 | ready |
 | 6 | W361 | ready |
 | 7 | W362 | ready |
@@ -394,10 +394,12 @@ counter 379 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:7d27
    - next: decide restore-vs-delete for the Scenario 'the drained census modules answer for the tree they measure' (read
      features/ history in refs/preserve and the test), then land the tracked edit on gate-rebuild
 3. **W358** (working) gate row: def/proof separation (aim, goal, incident)
-   - next: split proof-needing code out of HetBasis, DeriveOrFetch and S5Verdict into sibling *.Properties modules via
-     the agda-codemod toolkit (agda-oracle routes the tool), regenerate Flat.mk, typecheck the affected modules through
-     the membudget build path, land on gate-rebuild
-4. **W359** (ready) gate row: build makefiles in sync (aim, goal, incident)
+   - next: route the *.Properties split of HetBasis, DeriveOrFetch and S5Verdict through the agda-oracle (it names the
+     pipeline tool, never a hand edit), regenerate Flat.mk, build through the membudget make path, land on gate-rebuild
+4. **W359** (working) gate row: build makefiles in sync (aim, goal, incident)
+   - next: decide which render is canonical (default vs --parameterized/tenant-aware): read why the hook added
+     --parameterized (the tenant arc, sql-oracle), then make hook, bazel row, committed makefiles and
+     build_gen_cli_selftest all agree on ONE render; the absolute-path non-hermeticity stays with W354
 5. **W360** (ready) gate row: build census in sync (aim, goal, incident)
 6. **W361** (ready) gate row: gate census in sync (aim, goal, incident)
 7. **W362** (ready) gate row: query cache in sync (aim, goal, incident)
@@ -2539,3 +2541,9 @@ counter 379 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:7d27
   minted for a hook-admitted CPU-time-bounded run wrapper; legacy false LANDED for W355/W356 printed and not acted on:
   root standing 14 prescribed an instrument (ulimit -t through bash -c) without checking it against the repo's own
   hooks, so the rule was not constructible in this harness; 3 finding(s)
+- **substrate:R12** (instructions) tick 11: one gate-oracle spender bracketed 17:04:44Z-17:05:59Z, prompt checked under
+  standing 15; WHY RED measured: 3 provider-imports-proof violations (HetBasis, DeriveOrFetch, S5Verdict); repair is an
+  Agda split into *.Properties needing Flat.mk regen and typecheck (heavy); oracle named blind spots (indented
+  data/record, multi-line imports) and a policy wider than the script; no LANDED for c6760a0 (R11 finding 3 met): root
+  no root fault this tick; open design points: the scope of W379 versus the sanctioned membudget Agda path, and where a
+  gate's own undercount is tracked; 2 finding(s)

@@ -811,3 +811,7 @@
 2026-11-16T17:04:44Z  tick  --   interrupt spender   "spender: gate-oracle (W358 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:05:59Z  tick  --   interrupt spender   "spender: gate-oracle (W358 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:06:04Z  tick  W358 advanced  oracle    "tick 11: W358 gate row recorded, MEASURED red: 3 definition modules import proof modules (HetBasis, DeriveOrFetch, S5Verdict); repair = split to *.Properties (Agda edit plus typecheck); not a bazel target [blocked by W359]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:24:07Z  status W359 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:24:15Z  tick  --   interrupt spender   "spender: gate-oracle (W359 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:26:10Z  tick  --   interrupt spender   "spender: gate-oracle (W359 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:26:15Z  tick  W359 advanced  oracle    "tick 12: W359 gate row recorded, MEASURED red from a render-mode mismatch: the hook checks --parameterized, the committed makefiles and the bazel row use the default render; one canonical render to be chosen [blocked by W360]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
