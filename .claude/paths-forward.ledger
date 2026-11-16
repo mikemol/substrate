@@ -846,3 +846,8 @@
 2026-11-16T21:14:34Z  status W381 working>done writer    "working -> done"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T21:14:35Z  status W359 ready>done writer    "ready -> done"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T21:14:39Z  tick  W381 advanced  landed    "tick 17: W381 LANDED e81f962 (emission-only make-relative SHIM_DIR/MEMBUDGET); the isolated gate's 'build makefiles in sync' row is GREEN (19 FAILED, down from 20); W359 and W381 done; W354 waits only on mtools:W2602 [reason: G0 met: the row is green in isolation; the next gate row (W360 build census) is the next tick's G0 (cites W360)]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T21:40:36Z  status W360 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T21:47:11Z  tick  --   interrupt spender   "spender: readiness-gatherer (W342 REV 2, github-cb request) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T21:51:05Z  tick  --   interrupt spender   "spender: readiness-gatherer (W342 REV 2) return; its background nemik-check was killed by the subagent, nothing left running"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T22:02:34Z  status W360 working>done writer    "working -> done"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T22:02:43Z  tick  W360 advanced  landed    "tick 18: W360 LANDED 1bfe38e (build census re-synced); the isolated gate's 'build census in sync' row is GREEN (18 FAILED, down from 19); readiness REV 2 written for github-cb (W342) [reason: G0 met; the next gate row is the next tick's G0 (cites W361) (cites W361)]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9

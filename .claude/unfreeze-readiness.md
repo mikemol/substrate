@@ -163,3 +163,119 @@ made. This section corrects §3 and §5. Nothing above it is rewritten.
   3. Precommit-is-bazel is W352's rebuild itself.
   4. Re-seed substrate's persistent warm reviewer. This is being done now.
 - The `mikemol-transcriptstruct --rulings` KeyError has been reported to mtools.
+
+---
+
+## REV 2: re-measured for github-cb's warm/cold unfreeze review (2026-11-16, ~21:50Z)
+
+Requested by github-cb for W342. This file is append-only, and nothing above this section is
+rewritten. This section is REV 2, because the committed file already carries REV 1 (the warm-review
+corrections). Each item is labelled [measured: <command>] or [not run / not found: <reason>]. The
+readings were gathered by one read-only subagent, with ledger lines at 21:47:11Z and 21:51:05Z.
+
+### 1. The freeze
+- It is unchanged. The ruling is host L98633 (uuid 0f249f38), and W342 is still blocked on the
+  operator's unfreeze decision. The fleet predicate is host L176325 (a7056eac): being caught up on
+  tooling, under warm/cold review.
+
+### 2. Toolchain (read now)
+- **Pinned bin** [measured: readlink -f]: by-sha/d2e6cdf68cd9.../nemik/bin. **REV 1's nemik 896263e
+  is STALE: the fleet pin has moved to nemik d2e6cdf.** [measured: Read of 3 direct_url.json files,
+  nemik, mikemol_hooks and mikemol_converge: all give commit d2e6cdf]. The vendored mtools wheels
+  still carry +636e39b (converge: +0f8267e).
+- **substrate pins** [measured: Read pyproject.toml L282-345]: every mtools package is
+  `mtools.git@03749d56`, and paperkit is `@main` (L255, an unpinned ref). **Gap: 03749d56 is not
+  636e39b. REV 1 promise 1 (repin) is NOT met.**
+- **mikemol-commit** [measured: a bad flag prints the usage]: the modes are single, --ship, --stack,
+  --stack --freeze-from, --withdraw and --in-gate. Defects [measured: mtools paths-forward --show]:
+  - W2585 (index reset): root cause fixed in scratch; status working, NOT landed. Substrate
+    standing 4 (preserve the index before a commit) therefore stays load-bearing.
+  - W2581 (branch push line): ready, not worked. Substrate pushes by name.
+  - W2584 (fixed Sonnet trailer): ready.
+- **Watchdog and arming** [measured: --watchdog-line, plus `pgrep -af mikemol-watchdog`]: the arming
+  line is as printed by --tick-open. **substrate's watchdog IS running** (pid 2257705, by-sha/d2e6cdf).
+  It has been restarted on every exit 8 this session.
+- **BES** [measured: Read .bazelrc]: L26-29 unconditionally set remote_cache, remote_cache_async,
+  bes_backend and bes_results_url to the buildbuddy service. L10-15 set a hermetic sandbox. BES
+  streaming was observed in the session's own bazel runs ("Streaming build results to: …invocation/…").
+- **Precommit is bazel** [measured: Read BUILD.bazel and .githooks/pre-commit]: //:precommit holds
+  **2** tests: :check_makefiles (--check --parameterized) and :postcommit_marker_witness (an sh_test,
+  new since REV 1). The hook has **38** `run "` rows (4 conditional on staged paths, 2 after the
+  build) and never invokes bazel. **NOT met** (2 against 38).
+
+### 3. Standing fleet directives
+- These are unchanged from §3 and REV 1. Substrate's own law now holds **24** standing rules
+  [measured: --standing]. They cover:
+  - G0 written before open (rule 7);
+  - one token spender, with ledger brackets (rules 1 and 6);
+  - CPU-time, never wall-clock, bounds (rule 15);
+  - no false blocks (rule 23);
+  - tool modes, never hand filters (rule 24);
+  - verifying in the gate's environment (rule 14).
+- Sibling paths: SHIM_DIR is FIXED (W381, e81f962, make-relative). The MODULE.bazel remote waits on
+  the fleet codemod mtools:W2602 (github-cb's ruling: one campaign, no local divergence).
+
+### 4. Queue health
+- `--check` [measured]: "OK — 383 of 383 symbols resolve", UNSCORED 91.
+- Other counts [measured]: `--ready-count` is 24; `--working-stale 1` reads 0; `--inbound` is
+  empty.
+- **Vectors** [measured: --show W360]: W360, the card now working, carries
+  `WV:1/R:L/E:N/C:N/I:L/A:L/X:N/S:U/F:K/W:Y` (vector_source agent). The writer accepted it, and the
+  tick-18 nemik-check no longer flags "working card with no vector".
+- **nemik-check**:
+  - [measured: tick-18 background run, started at tick open]: exit 1, "VIOLATES substrate".
+  - Dispositions:
+    - R13 handoff: carded at nemik. The record is append-only; nemik's gap card covers it.
+    - 24 ready cards with no manifest: deferred, each until its repair starts.
+  - [not run: the subagent's foreground re-run exceeded 120 s and was killed]. The slowness is
+    carded with nemik.
+- **The round** [not found: no read mode reports it; mikemol-commit's usage names no round check].
+
+### 5. The ORIGINAL gate's status (W352's 20 red rows)
+- Green in isolation [measured: card evidence quoting the commits' isolated gate runs]:
+  - "build makefiles in sync" (W359, landed 4b5032f and e81f962): `gen_build_makefiles --check:
+    OK (2 makefiles current)`, absent from FAILED. The FAILED count went from 20 to 19.
+- "build census in sync" (W360, landed 1bfe38e): the commit's isolated gate printed "the census in
+  .claude/skills/build-system/SKILL.md is fresh", and the row is absent from FAILED. **2 of 20 green
+  in isolation; FAILED is now 18.**
+- The other 18 rows have no repair landed; some have readings recorded:
+  - W355-W358: aim, goal, incident and why-red recorded. W356 is blocked on W379 (the CPU-time
+    wrapper).
+  - W361-W374: still the 'UNKNOWN' stubs.
+
+### 6. Post-commit amend
+- The **trailer fix is LANDED** (W382 interim, 26f39dc, reviewed PASS) [measured: Read
+  post-commit L55/L65 and pre-push.local L27]. Both hooks now read and write
+  `Post-Commit-Advisory: done` via %(trailers). A forced-interleaving witness proves the old
+  shape's SIGPIPE failure, and it is a bazel sh_test.
+  - pre-push.local's header comment (L5-7) still describes the old prose marker; it is stale and
+    will be fixed with the next hook touch.
+- The **amend itself is NOT retired** [measured: --show W382]. W382 is blocked on mtools:W2582 and
+  W2593. The plan is fleet-wide, across substrate, el-openglo and freecell, per github-cb's census:
+  - advisories run at the guarded merge and are written into its message;
+  - the gate report leaves commit messages, and the merge message carries a pointer to it.
+
+### 7. First work after a lift, and avoiding churn
+- Unchanged from §5. All work stays on gate-rebuild, and nothing reaches main except through W353's
+  mtools guard, with the original gate green on the merge tree.
+- Order:
+  - the remaining W352 rows, one bounded commit each;
+  - the repin (W339), to the LIVE pin read at that time;
+  - W383 (venv interpreter in the oracle briefs).
+- No change to scripts/ files that other repos symlink without the census-kit symlink check.
+
+### Verdict (self-assessed) [inferred from the measured items above]: **STILL NOT CAUGHT UP.**
+Progress since REV 1:
+- two original-gate rows green in isolation (build makefiles, build census);
+- the post-commit flake fixed;
+- //:precommit grew from 1 to 2 tests;
+- SHIM_DIR sibling paths fixed;
+- the warm reviewer was re-seeded and has run every tick.
+
+Not met:
+- the pins (03749d56, while the fleet has moved again to nemik d2e6cdf);
+- precommit-is-bazel (2 against 38);
+- the MODULE.bazel remote (waits on mtools:W2602);
+- 18 of 20 original-gate rows have no repair landed.
+
+An unfreeze would be premature.
