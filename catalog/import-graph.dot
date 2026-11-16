@@ -599,6 +599,7 @@ digraph imports {
   "Substrate.Algebra.Wedge.AxisWord.PackedRecall" [label="AxisWord.PackedRecall"];
   "Substrate.Algebra.Wedge.AxisWord.PackedSize" [label="AxisWord.PackedSize"];
   "Substrate.Algebra.Wedge.AxisWord.PackedTree" [label="AxisWord.PackedTree"];
+  "Substrate.Algebra.Wedge.Bin" [label="Wedge.Bin"];
   "Substrate.Algebra.Wedge.BoundedIso" [label="Wedge.BoundedIso"];
   "Substrate.Algebra.Wedge.Bridge" [label="Wedge.Bridge"];
   "Substrate.Algebra.Wedge.CertGenericProjection" [label="Wedge.CertGenericProjection"];
@@ -7104,6 +7105,13 @@ digraph imports {
   "Substrate.Algebra.Wedge.AxisWord.PackedTree" -> "Substrate.Foundation.List";
   "Substrate.Algebra.Wedge.AxisWord.PackedTree" -> "Substrate.Foundation.Nat";
   "Substrate.Algebra.Wedge.AxisWord.PackedTree" -> "Substrate.Foundation.Negation";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Algebra.CayleyDickson.Curve";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Algebra.Wedge.Graded";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Algebra.Wedge.VecGraded";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Foundation.Bool";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Foundation.Eq";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Foundation.Nat";
+  "Substrate.Algebra.Wedge.Bin" -> "Substrate.Foundation.Vec";
   "Substrate.Algebra.Wedge.BoundedIso" -> "Substrate.Algebra.Nat.DivMod.Unique";
   "Substrate.Algebra.Wedge.BoundedIso" -> "Substrate.Algebra.Wedge";
   "Substrate.Algebra.Wedge.BoundedIso" -> "Substrate.Foundation.Eq";

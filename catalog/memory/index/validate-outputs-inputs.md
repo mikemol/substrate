@@ -1,0 +1,8 @@
+# validate outputs inputs
+_concept index · 10 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **hunt opacity after green** [4] — [feedback_close_residue_meta_layers](../feedback_close_residue_meta_layers.md), [feedback_firmware_unpopulated_surface](../feedback_firmware_unpopulated_surface.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_overclaim_witness_arc](../project_overclaim_witness_arc.md)
+- **never discard residue** [4] — [feedback_close_residue_meta_layers](../feedback_close_residue_meta_layers.md), [feedback_never_discard_residue](../feedback_never_discard_residue.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_overclaim_witness_arc](../project_overclaim_witness_arc.md)
+- **kernel cost model** [3] — [feedback_silo_sprawl_orphans_fixes](../feedback_silo_sprawl_orphans_fixes.md), [feedback_structural_not_scalar](../feedback_structural_not_scalar.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md)
+- **silo sprawl orphans fixes** [3] — [feedback_demo_proven_is_not_wired](../feedback_demo_proven_is_not_wired.md), [feedback_reread_meters_toctou](../feedback_reread_meters_toctou.md), [feedback_structural_not_scalar](../feedback_structural_not_scalar.md)
+- **test wall before declaring** [3] — [feedback_dont_reconstruct_a_missing_source_and_conclude](../feedback_dont_reconstruct_a_missing_source_and_conclude.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_overclaim_witness_arc](../project_overclaim_witness_arc.md)

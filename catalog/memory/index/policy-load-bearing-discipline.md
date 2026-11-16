@@ -1,0 +1,4 @@
+# policy load-bearing discipline
+_concept index · 8 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- _direct members_ [8] — [feedback_categorical_name_first](../feedback_categorical_name_first.md), [feedback_coalgebraic_not_consumer_driven](../feedback_coalgebraic_not_consumer_driven.md), [feedback_comments_dont_overclaim](../feedback_comments_dont_overclaim.md), [feedback_expose_generator_not_orbit](../feedback_expose_generator_not_orbit.md), [feedback_expose_generator_not_orbit_applies](../feedback_expose_generator_not_orbit_applies.md), [feedback_file_size_one_pass_rewrite](../feedback_file_size_one_pass_rewrite.md), [feedback_universal_property_discipline](../feedback_universal_property_discipline.md), [project_homology_cohomology_recursion](../project_homology_cohomology_recursion.md)

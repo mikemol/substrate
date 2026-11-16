@@ -1,0 +1,8 @@
+# finite window constructive lem
+_concept index · 6 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **center free universal property** [3] — [feedback_suspended_generators_not_approximations](../feedback_suspended_generators_not_approximations.md), [project_substrate_real_arc](../project_substrate_real_arc.md), [project_witness_tower_constructive_generator](../project_witness_tower_constructive_generator.md)
+- **exp log round-trip** [3] — [feedback_suspended_generators_not_approximations](../feedback_suspended_generators_not_approximations.md), [feedback_transcendental_value_is_a_digit_basis](../feedback_transcendental_value_is_a_digit_basis.md), [project_substrate_real_arc](../project_substrate_real_arc.md)
+- **find common structure recursively** [3] — [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_substrate_real_arc](../project_substrate_real_arc.md), [project_witness_tower_constructive_generator](../project_witness_tower_constructive_generator.md)
+- **suspended generators approximations** [3] — [feedback_transcendental_value_is_a_digit_basis](../feedback_transcendental_value_is_a_digit_basis.md), [project_substrate_real_arc](../project_substrate_real_arc.md), [project_witness_tower_constructive_generator](../project_witness_tower_constructive_generator.md)
+- **test wall before declaring** [3] — [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_witness_tower_constructive_generator](../project_witness_tower_constructive_generator.md), [reference_proved_lookup_table_aes_pattern](../reference_proved_lookup_table_aes_pattern.md)

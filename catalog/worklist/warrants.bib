@@ -1,0 +1,1034 @@
+% warrants.bib — the substrate worklist as a claim-DAG.
+%
+% THE GOVERNING INVARIANT: every claim here is UNDISCHARGED until its check
+% passes, and the item is incomplete until it can be discharged.  Those are the
+% same fact — a claim whose check exits non-zero is a claim the gate refuses to
+% certify, so `open item` and `red check` are one state, computed fresh on every
+% run.
+%
+% ⚑ THERE IS NO open/closed FIELD, AND THERE MUST NEVER BE ONE.  Openness is
+% computed from exit codes; nothing records it, so nothing about it can go
+% stale.  Recording open-ness is precisely the failure mode this design exists
+% to dissolve.
+%
+% `claim` is the COMMITMENT — one line.  The finding it came from lives in
+% plan.md and is cited by section number.  Do not grow these into paragraphs:
+% the one-line limit is what forced T17's figure into a checkable [tag].
+%
+% This file is SOURCE and is meant to be edited.  WORKLIST.md is the projection
+% and must never be hand-edited — the gate refuses it.
+
+% ── tooling ──────────────────────────────────────────────────────────────────
+% ⚑ `enables` IS SEQUENCING, NOT GROUNDING, and the two must not be conflated.
+% `rests-on` says a claim cannot be TRUE unless its premises are; `enables` says
+% the work is cheaper or safer in this order.  T17 does not make A5 true -- it
+% makes A5's gate askable without an env-var bypass, which is what "tooling
+% first" means when it is measured rather than asserted.  The ordering counts
+% `enables` toward LEVERAGE and never toward the topological layer, so a tool
+% can rank first without becoming a false premise (plan sections 21, 65).
+@misc{T17,
+  section = {tooling},
+  enables = {A5, R8, G1, G6, R2-SWEEP, R9-residue, S1, T12-rederive},
+  claim   = {--dry-run is reachable on every ratchet gate, so a gate that mints or lowers a baseline can be asked what it would do without doing it [gates-without-dryrun=0]},
+  check   = {item:T17}
+}
+
+@misc{T11,
+  section = {tooling}, from = {T17}, join = {, and },
+  enables = {A5, R8, G1, G6, R2-SWEEP, R9-residue, S1, T12-rederive},
+  claim   = {every ratchet gate routes its flags through the shared authority rather than testing sys.argv itself [gates-without-checkargv=0]},
+  check   = {item:T11}
+}
+
+@misc{T12,
+  section = {tooling}, from = {T11}, join = {. },
+  claim   = {agda_lex.agda_files is the sole corpus-enumeration authority --- a shared name is not a shared authority [own-agda-files=0]},
+  check   = {item:T12}
+}
+
+% ⚑ THE SAME CLASS AS T12, ONE SCALE UP, AND MEASURED RATHER THAN ASSERTED.
+% `_module_edges` holds 15,754 import edges INDEXED ON BOTH COLUMNS
+% (reuse_catalog.py:97,112-113) with a `module_edges` view --- so `deps` is
+% `ix_medges_src` and `rdeps` is `ix_medges_dst`, and `split_pipeline._import_dag`
+% materializes as four eager dicts what the database already serves as seeks.
+%
+% ⚑ SCOPED, BECAUSE THE TWO SITES ARE NOT THE SAME CASE.  `parse_tree` parses
+% SOURCE and is the superset the BUILD GENERATOR requires --- it must emit
+% prerequisites for modules that do not compile yet, which a core-derived
+% relation cannot cover (2241 distinct src catalogued vs 3457 on disk; 140 cores
+% undecodable).  The ANALYSIS consumers have no such requirement.  A verdict
+% that lumped them would prescribe deleting the generator's own input.
+%
+% ⚑ CLOSURE IS DELIBERATELY NOT STORED, and the number is why: sql_lift.py:398
+% records the recursive CTE winning ~275x at small N and LOSING at 0.7x at full
+% N against eager BFS.  `sqlite_master` holds zero RECURSIVE.  An item that said
+% "move the DAG to SQL" would have taken a measured 0.7x regression as progress.
+% ⚑ MEASURED, NOT ARGUED: RSS grew 255.3 MB while `tracemalloc` saw 66.2 MB, and
+% `gc.collect()` freed 240,279 objects while returning 0.0 MB to the OS.  That is
+% cyclic CST garbage recycled into allocator arenas — 2,090,974 `libcst` visit
+% calls over 203.9s, per file, per consumer.  The 189.1 MB gap is invisible to
+% every allocation-level instrument, which is why four attributions missed it.
+%
+% ⚑ AND L2 CANNOT FIX IT, BY CONSTRUCTION.  `shared_cache` pickles the WHOLE
+% return value under one key (`cached()`: `pickle.dumps(out)`), so a tree fetched
+% from it is a tree materialized entire — the same four copies, plus a
+% round-trip.  Its docstring is right for what it serves (a comment mask keyed by
+% file content is one input, one indivisible output); a CST is not that.
+% **A blob store's granularity is the CALL; a table's is the ROW.**
+%
+% ⚑ THE SCHEMA FITS AS-IS — checked, not assumed.  `_node` carries
+% `(kind, role, op)` read as `COALESCE(NULLIF(op,''), role, kind)`: a generic
+% three-tier head, not an Agda vocabulary.  `node_child (node_id, ord, child_id)`
+% is tree-as-rows with `WHERE ord=0`, `GROUP BY node_id` and `WITH RECURSIVE`
+% already in use; `unit_node` is the file->nodes membership; `INSERT OR IGNORE`
+% makes it CONTENT-ADDRESSED, so a subtree shared across 747 files is ONE row
+% rather than 747 pickles.
+%
+% ⚑ ONE STORE, NOT TWO (user, 2026-08-04): *"We either reuse the 3.3GB catalog,
+% or we stand up ANOTHER sqlite3 file. And we have more mature tooling to work
+% with around this one."*  I filed the size as an open question; it is not one.
+% A rival store forfeits `catalog_db.connect`, the compiled-builder layer,
+% `query_defs --verify` and the drift gate — the four-`agda_files()`-bodies shape
+% at the storage layer.
+@misc{T30,
+  section = {tooling}, from = {T29}, join = {, and },
+  claim   = {the Python CST is ingested into catalog.db as interned nodes rather than pickled whole into the shared cache --- a blob store cannot serve a tree piecemeal [cst-blob-sites=0]},
+  check   = {item:T30}
+}
+
+@misc{T29,
+  section = {tooling}, from = {T12}, join = {, and },
+  claim   = {analysis consumers read the import DAG from catalog.db rather than re-deriving it in Python --- the relation is catalogued and indexed both ways, while its transitive closure stays in Python on a measured crossover [dag-rederivations=0]},
+  check   = {item:T29}
+}
+
+% ⚑ "THERE ARE NO SWEEPS, ONLY CENSUSES" (user, 2026-08-02).  Filed as an ITEM
+% rather than a maxim, so its influence is measured: a census has a denominator
+% and can therefore be INCOMPLETE (a finding); a sweep has only a traversal and
+% can therefore be BLIND (which reads as success).  Every defect in this
+% session's tooling work was the second kind.
+%
+% ⚑ NO FIGURE TAG, because the figure is not yet measurable.  The predicate
+% wants a structural query over prints, and the regex cut returned 0 on the day
+% a live sweep printed `0 across 0 files`.  An unanchored claim is normally
+% refused by `_tag`; this one carries no tag at all and its witness REFUSES,
+% which is the honest state for an item whose instrument does not exist.
+@misc{T21,
+  section = {tooling}, from = {T12}, join = {. },
+  claim   = {every population-visiting tool reports n of m rather than a bare count, so an empty result is distinguishable from an empty search},
+  check   = {item:T21}
+}
+
+% ⚑ FOUND BY USING THE TOOL, NOT BY AUDITING IT (2026-08-02).  Working T12 I ran
+% `--items T12` and got all 19 rows: the argument is accepted and never consumed.
+% That is the SAME defect class as a flag typo'd to `--queit` running a gate
+% verbose-but-passing -- an argument the CLI takes and ignores, where the output
+% still looks like an answer.  The cost is not cosmetic: reading 19 verdicts to
+% find one is the reasoning-over-program-output shape, and it is what every
+% witness-reading item pays.
+%
+% `enables` and NOT `rests-on`: no item's claim becomes FALSE because the filter
+% is missing -- the witnesses are correct and the gate is honest.  What the
+% filter changes is whether asking one item's verdict is one command or a scan,
+% which is sequencing (plan sections 21, 65).
+@misc{T22,
+  section = {tooling}, from = {T21}, join = {, and },
+  enables = {A5, G1, G6, R2-SWEEP, R8, R9-residue, R12b, T12-rederive},
+  claim   = {every CLI argument this gate accepts is consumed, so `--items <key>` answers about that key and an unconsumed argument cannot pass for an answer [items-filter-ignored=0]},
+  check   = {item:T22}
+}
+
+% ⚑ FOUND BY THE USER CHALLENGING A DEFENCE I HAD ASSERTED (2026-08-02: *"I
+% question whether the concrete difference is legitimate ... much of what's
+% presumed to be domain-specific is stale, calcified judgement-as-code"*).  Two
+% functions named `leverage` -- one a DAG cone, one a two-grade bib reading --
+% and I called their difference legitimate without measuring it.  Measured: the
+% cone one shrank 11 statements to 7 once its "domain layer" (seed ranking, and
+% a `[:5]` display cap frozen into the computation) turned out to be generic.
+% What survives is genuinely different, and the SHARED NAME is still a defect:
+% two return types under one name is the `agda_files()` shape, where a reader
+% who finds one assumes the other's contract.
+%
+% This is a rename across call sites, so it is its own item rather than
+% smuggled into a cone fix -- and filing it is the point: a deferral written in
+% a docstring is exactly the prose-instead-of-item shape this worklist exists
+% to refuse.
+% ⚑ AND I NARROWED THIS CLAIM TO MAKE ITS NUMBER REACHABLE, WHICH WAS NOT MY
+% CALL (user, 2026-08-02: *"not your call"*).  I wrote `[name-collisions=0]`,
+% measured **396** names with multiple real bodies corpus-wide, judged that
+% "almost none are the defect", and rewrote the claim to cover only
+% `scratch/scripts/catalog` -- 294 -- reasoning that an unreachable figure is a
+% permanent refusal rather than a ratchet.
+%
+% That reasoning is fine and the ACT was wrong: it edits the target to fit what
+% I am willing to work on.  A ratchet refusing at 396 is the gate saying the
+% debt is 396; deciding that most of it does not count is the scope-to-fit move
+% one level up, and scope is the user's.  The plan already records the rule
+% (`at a gate firing PAY DOWN, never add an exemption`) -- I applied it to
+% baselines and not to the claim that defines one.
+%
+% So the claim is the WHOLE corpus, and the figure is what the corpus says.
+% The shared-authority subset is reported as a SEPARATE figure because it is
+% the part with a known live instance (`leverage`: a DAG cone in one module, a
+% two-grade warrant reading in the other) -- a way to WORK the population in
+% order, never a way to shrink it.
+% ⚑ AND THE MOVE IS DECOMPOSITION (user, 2026-08-02: *"the move is
+% decomposition"*).  Not a smaller claim, and not a location split either --
+% my narrowing kept the 294 in `scratch/scripts/catalog`, which cuts ACROSS the
+% real kinds.  Partitioned by what RESOLVES each:
+%
+%   sibling  218  one directory -- a candidate lift, or a genuine per-file
+%                 entry point (`main`, `_selftest`)
+%   crossing 166  DIFFERENT trees -- the class that bit, where a reader who
+%                 finds one def assumes the other's contract (`leverage`)
+%   local     12  every site in ONE file -- Python scopes these apart; a
+%                 module-local helper is not a shared authority
+%
+% Three items, three resolutions, and the census keeps all 396.
+@misc{T23-crossing,
+  section = {tooling}, from = {T22}, join = {, and },
+  claim   = {no name is reimplemented in two different trees --- `leverage` is a DAG cone in `scratch/` and a two-grade reading in `scripts/` [name-collisions-crossing=0]},
+  check   = {item:T23-crossing}
+}
+
+@misc{T23-sibling,
+  section = {tooling}, from = {T23-crossing}, join = {, },
+  claim   = {no name is reimplemented twice within one directory without being a declared per-file entry point [name-collisions-sibling=0]},
+  check   = {item:T23-sibling}
+}
+
+% ⚑ THE G6 / T23-local TIE, ADJUDICATED ON A MEASURED DIFFERENCE.  Both sit at
+% layer 0, leverage 0, sizes 11 and 12 -- the ordering could not separate them
+% and correctly refused rather than improvising.  The difference is what they
+% BLOCK: `G6` is a RED hook-wired gate, so it stands between the tree and B3
+% (the gated commit); `T23-local` blocks nothing -- it is the smallest and
+% least-coupled collision bucket, and Python scopes its members apart anyway.
+%
+% So the edge is `G6 enables T23-local`: not grounding (T23-local's claim is
+% true or false regardless of G6), but SEQUENCING -- clearing a commit blocker
+% comes before tidying a bucket nothing waits on.
+% ⚑ AND THE EDGE IS ON G6, NOT A `rests-on` HERE.  My first cut wrote
+% `rests-on = {G6}` on T23-local -- after arguing in the line above that this
+% is SEQUENCING.  `rests-on` sets the topological layer and would make G6 a
+% false premise of a claim that does not depend on it; `enables` feeds leverage
+% and never the layer.  The comment was right and the field was wrong.
+%
+% ⚑ AND THE RATIONALE IS NOW MEASURED, NOT READ (user: *"if you have a question
+% the tooling doesn't answer directly, fix the tooling"*).  I adjudicated this
+% by reading two verdicts and reasoning that G6 blocks the commit.  That
+% rationale is mechanical -- `gate_status` parses `.githooks/pre-commit`, which
+% IS the set of gates standing between the tree and a commit -- so `--next` now
+% prints the evidence:
+%
+%     G6         on the COMMIT PATH via check_cap_ratchet.py
+%     T23-local  reaches no hook-wired gate
+%
+% The edge below is declared FROM that line.  ⚑ Getting there cost three wrong
+% guesses at `gates()`'s return shape in a row (a dict key, then iterating a
+% string as a list, then stripping quotes off characters) -- each because I
+% wrote the consumer before reading the producer.
+@misc{T23-local,
+  section = {tooling}, from = {T23-sibling}, join = {, and },
+  claim   = {no single file reimplements one name twice [name-collisions-local=0]},
+  check   = {item:T23-local}
+}
+
+@misc{T23,
+  section = {tooling}, from = {T23-local}, join = {. },
+  rests-on = {T23-crossing, T23-sibling, T23-local},
+  claim   = {no name carries two reimplementations with different return shapes [name-collisions=0]},
+  check   = {item:T23}
+}
+
+% ⚑ THE DISCOVERED CONE DOES NOT REACH THE SORT KEY (user, 2026-08-02: *"does
+% our final calculated leverage incorporate these discovered points, or are
+% they being masked/collapsed by intermediate dag nodes?"*).  Traced: masked,
+% at two places.
+%
+%   1. `lev` COUNTS BIB ITEMS.  `leverage()` walks the declared warrant graph
+%      and counts open items in the closure.  A5-using's measured 3180-module
+%      provider cone contributes NOTHING; the item scores 2 because two
+%      warrants depend on it.  The Agda DAG informs the item's TEXT and never
+%      its RANK.
+%   2. `size` COLLAPSES BEFORE THE SORT.  `SIZES[key]` takes one scalar, so the
+%      route split (3180 decompose / 0 rewire) is gone before `rows.sort()`,
+%      and `graded = 1 if blocked else 0` flattens grade 1 to a bit.
+%
+% VISIBLE IN THE LIVE TABLE: `T23-sibling` (218) and `T23-local` (12) both
+% score `lev 1` -- an 18x size difference separated only by the tiebreak; and
+% `A5-using` (82) outranks `T23-crossing` (166) on bib-edge count alone.
+%
+% ⚑ AND THE FIX IS NOT "ADD THE CONE TO `lev`".  The two quantities count
+% different things (warrants vs modules) and summing them would be the
+% ungraded-shadow error this ordering already retired once.  What is owed is a
+% GRADE: the declared-warrant reading and the discovered-module reading are the
+% same relation at two resolutions, and the sort must compare at the highest
+% available -- exactly as grade 0/1 already do for openness.
+@misc{T24,
+  section = {tooling}, from = {T23}, join = {. },
+  enables = {A5-as, A5-using, A5-renaming, T23-crossing, T23-sibling, T23-local},
+  claim   = {the ordering ranks by discovered cone where one exists, not only by declared warrant edges --- a 3180-module provider cone must not score the same as a 12-module one [cone-blind-items=0]},
+  check   = {item:T24}
+}
+
+% ⚑ THE WITNESSES ARE NOT PARAMETRIC, AND THE ENGINE ALREADY IS (user,
+% 2026-08-02: *"this is also the point behind parametric witnesses; you PASS
+% the witness what it needs.  See how the fuel-series paperkit library
+% works"*).  Read: `paperkit/resolver.py:161` is
+% `resolves(check, project_dir, custom)` -- the verb is a string in the bib and
+% every input arrives as an ARGUMENT.  `concept:<key>` runs a witness authored
+% and graded ONCE in a library and imports its verdict; `custom` lets a project
+% declare its own verbs, `{target}` substituted at the call.
+%
+% Ours reach out instead: `items.SIZES` / `items.PARTS` are module globals a
+% witness writes and another reads, so T24 needed every sibling to have run.
+% I answered that with a lazy promise -- which only HIDES the ordering, since
+% the witness still pulls.  Parametric removes the ordering: nothing to
+% sequence because nothing is shared.
+%
+% Filed rather than smuggled: converting ~30 witnesses to take their inputs is
+% a signature change plus the bib verbs that name them, and the interim
+% (`_Promise`, order-independent and cycle-refusing) is explicitly NOT the
+% target design.
+%
+% ⚑ AND THE REFERENCE IMPLEMENTATION IS READ, NOT GUESSED (user supplied
+% `fuel-series`).  Measured with `pycodemod --archive`: **229 defs across 4
+% files**, and the shape is
+%   * `library/concepts.py` -- ONE file, every witness a top-level named
+%     function, dispatched by KEY from `main()`.  The names ARE the claims:
+%     `summary_collapse_is_lossy`, `leverage_sits_at_the_chokepoint`,
+%     `a_deferral_is_declared_not_silent`.
+%   * `routing.py` -- `graph` / `closure` / `dependents` / `commit`, the DAG
+%     kept SEPARATE from the witnesses that populate it.
+%
+% So the target is not "add parameters to `items.py`".  It is: witnesses in one
+% keyed library, the graph in its own module, and neither reading the other's
+% globals -- which is also why `concept:<key>` can import a verdict graded once
+% elsewhere.  Our `SIZES`/`PARTS` are the coupling that structure removes.
+% ⚑ T25 WAS AN AGGREGATE AND I ASKED THE USER TO SCOPE IT (user, 2026-08-02:
+% *"this seems like these should be subitems, no?"*).  I posed "all ~30 at once,
+% or the ordering-critical two first?" as a question for them -- which is the
+% scoping move the worklist forbids twice over: a population with DISTINGUISHABLE
+% ROUTES is several items, and narrowing to make one reachable is editing the
+% target.  Filed as three, the ORDERING picks, and the choice stops living in my
+% head.  Same correction A5 took when it turned out to be `as`/`using`/`renaming`
+% with three different tools.
+%
+% ⚑ AND THE SPLIT IS MEASURED, NOT INVENTED.  T25's own witness names exactly two
+% witnesses reading another's globals (`T24`, `T25`); the library move is a
+% structural change with no census; the remaining ~28 are a signature sweep.
+% Three routes, three items.  ⚑ The "~28 take arguments without pain" figure is
+% MINE FROM READING and is exactly the shape this session has repeatedly found
+% 4x off -- `T25-parametric`'s witness must COUNT them, never trust the estimate.
+%
+% They are SIBLINGS: no sub-claim depends on another's, and `T25-globals` alone
+% un-inerts the content-weighting in `worklist_gate._content_size` (which reads
+% `SIZES` at sort time, before witnesses have run -- landed, and dead, because
+% the ordering dependency this item names was in the way).
+@misc{T25-globals,
+  section = {tooling}, from = {T24}, join = {. },
+  enables = {T24},
+  claim   = {no witness reads another witness's module globals --- the two the census names, so the ordering can weigh an item by its content without a prior run [witness-globals=0]},
+  check   = {item:T25-globals}
+}
+
+% ⚑ THE HOME IS THE STRUCTURE, NOT A FILING DETAIL (user: *"they move to the
+% keyed library; that's why the keyed library exists as a concept"*).  Read from
+% the reference through `--archive`: `library/concepts.py` is ONE file of
+% top-level named functions dispatched by key, and `routing.py` holds the graph
+% SEPARATELY -- `closure(seed, rev)` takes its edges as a parameter, so nothing
+% needs to have run first.  ⚑ MEASURED: the whole reference is STDLIB-ONLY, zero
+% third-party imports, which is not incidental -- a witness that RECEIVES its
+% inputs has nothing to reach out to.
+% ⚑ THE TIE WITH G1 IS ADJUDICATED HERE, NOT PER RUN.  `--next` refused to pick
+% between them (leverage 0 each, cones disjoint) and handed over the
+% discriminator instead of a coin flip: **G1 is ON THE COMMIT PATH via
+% `check_claims.py`; T25-library reaches no hook-wired gate.**  That is
+% `gates_reached` working -- the last tie of this shape I settled by hand, and
+% was told to fix the tooling rather than adjudicate.
+%
+% Commit-path reachability is the sharper criterion: G1 is one of six items `B3`
+% rests on, and B3 is the terminal goal.  T25-library is a real structural move
+% that blocks no gate.  So the edge is `G1 enables T25-library` -- SEQUENCING,
+% never grounding: the library does not become TRUE because a claims gate went
+% green, it becomes the cheaper thing to do second.
+%
+% ⚑ AND THE EDGE IS THE POINT, not the choice it encodes.  Left unrecorded, the
+% ordering escalates this same tie every run and I re-derive the same answer --
+% which is the judgement-not-in-code shape.  Recorded, the ordering answers it.
+% ⚑ AND I WROTE `rests-on` FIRST, WHICH CONTRADICTS THE PARAGRAPH ABOVE IT.  The
+% bib's own header says the two must never be conflated -- `rests-on` means the
+% claim cannot be TRUE without its premise; `enables` means the work is cheaper
+% in this order.  T25-library does not become true because a claims gate went
+% green.  Recorded as `enables` ON G1, where the ordering counts it toward
+% leverage and never toward the topological layer.
+@misc{T25-library,
+  section = {tooling}, from = {T25-globals}, join = {. },
+  claim   = {the witnesses live in a keyed library and the dispatch reads it --- `catalog/library/concepts.py`, with `items.py` reduced to the roster [witness-library=1]},
+  check   = {item:T25-library}
+}
+
+@misc{T25-parametric,
+  section = {tooling}, from = {T25-library}, join = {. },
+  claim   = {every witness takes what it needs as arguments --- the engine's `resolves(check, project_dir, custom)` shape, so no witness reaches for state a caller could hand it [witness-nonparametric=0]},
+  check   = {item:T25-parametric}
+}
+
+@misc{T25,
+  section = {tooling},
+  rests-on = {T25-globals, T25-library, T25-parametric},
+  claim   = {a witness takes what it needs as arguments rather than reading another witness's globals --- closes exactly when its three routes do},
+  check   = {item:T25}
+}
+
+% ⚑ A VERIFY DEADLINE UNDER THE STORE'S OWN LATENCY FLOOR IS A FALSE NEGATIVE,
+% AND WE SHIPPED ONE.  `scripts/membudget_otlp.py:147` polls read-your-write for
+% 30s.  VictoriaMetrics' `-search.latencyOffset` DEFAULTS TO 30s -- an instant
+% query evaluates at `now - offset` -- so on a stock store the datapoint is not
+% queryable until the deadline has already expired.  The verify reports
+% `NOT queryable` on data that ingested correctly.
+%
+% ⚑ THE FIGURE IS PAPERKIT'S MEASUREMENT, NOT MY INFERENCE: 30.77s at the
+% default vs 10.5s at `-search.latencyOffset=1s`.  Two independent producers
+% pushing to one store is what made the constant visible; substrate's own arc
+% never ran long enough against a stock configuration to see it.
+%
+% ⚑ AND IT IS THE `vm_rows_inserted_total` CLASS ONE LAYER DOWN.  That episode
+% (substrate found it, cassian corrected the guide, paperkit was warned before
+% implementing) was a verify predicate that reported failure on success.  This
+% is the same defect in the REPLACEMENT predicate -- read-your-write is correct
+% and its deadline is not, so the fix that retired the counter can still fail.
+% A verify that cries wolf is worse than none: it trains the operator to
+% disbelieve the one instrument that distinguishes ingested from dropped.
+%
+% NOT part of OBS, deliberately.  OBS is the series item and this is a defect in
+% a file that ships today, true whether or not OBS ever lands -- but it
+% `enables` OBS, because OBS's emit path IS this producer and would inherit the
+% deadline unchanged.  ⚑ It also dissolves what I filed as a precondition: I
+% wrote that OBS must first prove the push path end-to-end, since the store
+% currently holds ZERO `membudget_*` series.  Read-your-write IS that proof --
+% a value the producer controls, queried back, is unaffected by whether the
+% producer stopped or the store was reset.  There is no separate liveness step,
+% only a deadline long enough for the answer to arrive.
+@misc{OBS-DEADLINE,
+  section = {tooling}, from = {OBS}, join = {. },
+  enables = {OBS},
+  claim   = {every read-your-write verify allows for the store's `-search.latencyOffset`, so a correct push is never reported as a failed one [verify-deadline-under-floor=0]},
+  check   = {item:OBS-DEADLINE}
+}
+
+% ⚑ A MODE SHIPPED WITHOUT A CASE IS DEBT NOBODY IS TRACKING, AND I MADE IT TWICE
+% IN ONE TURN.  `--package` and `--imports` both landed working, both were used to
+% draw conclusions immediately, and neither carried a selftest -- while the skill
+% they were built under says the capability lands WITH a case that fails against
+% the pre-change code.  I noticed, said so in prose, and moved on: the anti-pointer
+% failure, one turn after naming it.
+%
+% ⚑ AND THE ORDERING IS THE POINT, NOT THE BOOKKEEPING (user, 2026-08-02: *"if
+% they're needed, shouldn't there be an item for them?  If there's an item for
+% them, shouldn't they bubble up?"*).  Un-filed, "guard before I act on the census"
+% was MY judgement about sequencing -- the same call the ordering exists to take
+% out of my head.  Filed, it is ranked against everything else by leverage.
+%
+% ⚑ THE POPULATION IS DISCOVERED, NOT THIS PAIR.  Writing the claim as "--package
+% and --imports have cases" would be the guard-from-the-instance shape this repo
+% has recorded five times: it passes the moment I write two cases and says nothing
+% about the third mode shipped tomorrow.  The predicate is over MODES: every
+% dispatch branch a tool advertises is exercised by at least one case.
+@misc{T26,
+  section = {tooling}, from = {T22}, join = {. },
+  enables = {DEPS},
+  claim   = {every CLI mode a struct tool advertises is exercised by a selftest case, so a shipped capability cannot be un-guarded [modes-uncased=0]},
+  check   = {item:T26}
+}
+
+% ⚑ THE MANIFEST WAS WRITTEN FROM RECALL AND WAS WRONG BY 200 ROWS.  I authored this
+% repo's first `pyproject.toml` from FOUR dependencies I happened to remember, then
+% built `--imports` and measured the corpus: 224 distinct imports, of which 11 are
+% installed-and-undeclared (`numpy` 225 files, `sympy` 102, `cupy` 82, `matplotlib`
+% 57, `textual` 34, `scipy`, `pyvista`, `sqlalchemy`, `mpl_toolkits`, `cupyx`,
+% `clang`) and 9 are imported-and-absent.  A hand-listed roster is the frozen-tuple
+% shape `run_selftests.DIRS` and `pycodemod._roots` each shipped once.
+%
+% ⚑ AND `requirements.txt` IS A SECOND MANIFEST THAT DISAGREES.  45 pinned lines
+% naming cupy/pyqt6/vtk/matplotlib and NONE of the tool dependencies, beside a
+% pyproject naming four tool dependencies and none of those.  Two derived views of
+% one intent, neither current -- and the drift was invisible because nothing read
+% either against the source.
+%
+% ⚑ THE CLAIM IS NOT "EVERY IMPORT IS DECLARED", WHICH WOULD BE FALSE BY DESIGN.
+% `bpy`/`bmesh`/`mathutils` are Blender's EMBEDDED interpreter: not installable by
+% pip, and declaring them would make the manifest lie.  The honest predicate is
+% that every import is ACCOUNTED FOR -- declared, stdlib, first-party, vendored, or
+% explicitly recorded as environment-provided.  ⚑ `paperkit` is the sharp one: the
+% bib projection runs through it and it resolves only if a SIBLING REPO is on the
+% path, which the census surfaced and no manifest can fix.
+@misc{DEPS,
+  section = {tooling}, from = {T26}, join = {. },
+  rests-on = {T26},
+  claim   = {every third-party import in the corpus is accounted for in one manifest --- declared, or recorded as environment-provided [imports-unaccounted=0]},
+  check   = {item:DEPS}
+}
+
+% ⚑ THE BIB IS THE ONE STRUCTURED ARTIFACT WITH NO WRITE PATH, AND I HAND-EDITED
+% IT ALL SESSION (user, 2026-08-02: *"sounds like the tooling needs to be
+% smarter"*).  `mdstruct` has `--apply`, `pycodemod` has codemods, `agda_lex`
+% backs a dozen rewriters -- every reader in this repo has a transform where one
+% is well-defined.  `bibstruct` alone is read-only, so every bib edit falls back
+% to matching raw text with `Edit`.
+%
+% ⚑ MEASURED, on ONE field added to ONE entry: four commands hunting the entry's
+% position in the file (`--field join` to identify it, then paging), and TWO
+% failed matches on whitespace I guessed at -- `join = {, and }` carries a
+% trailing space.  That is the "more than one tooling command means reasoning not
+% codified" tell, and the guessing is worse: `entries()` ALREADY parses fields
+% correctly, so matching raw text was re-deriving a parse the tool owns.
+%
+% ⚑ THE TRANSFORM MUST PRESERVE, NOT REFORMAT.  Field order and spacing are
+% as-written; re-emitting sorted (which is what a display mode does) would
+% rewrite every entry's layout on any edit -- a diff that hides the change inside
+% noise.  ⚑ AND IT IS A WRITE TOOL ON THE WORKLIST SOURCE, so it owes
+% `edit_snapshot.guard` and an `--apply` gate like every other write path here;
+% `check_snapshot_guard` censuses it otherwise.
+@misc{T27,
+  section = {tooling}, from = {T26}, join = {. },
+  claim   = {the bib has a structural write path, so an edge is added by a command rather than by matching raw text [bib-hand-edits=0]},
+  check   = {item:T27}
+}
+
+% ⚑ THE ENGINE IS PARTIALLY ADOPTED AND I KEPT BUILDING ALONGSIDE IT.  Surveyed
+% 2026-08-02 (findings stashed at `catalog/library/paperkit-architecture.md`, with
+% witnesses): `worklist_gate.py:196` ALREADY IMPORTS `paperkit.bib` -- so this is
+% not "should we adopt it", it is an adoption that stopped at the parse and
+% re-rolled everything above it.  That is the harder case: the seam exists, and
+% every reuse-search I ran this session looked PAST it because the import was
+% already there and read as done.
+%
+% ⚑ AND THE SHARPEST DUPLICATION IS ONE I DEFENDED ALL SESSION.  `order()`'s
+% comments insist `enables` (sequencing) is distinct from `rests-on` (grounding);
+% paperkit has no `enables` -- it has `from` (prose order) vs `rests-on`
+% (grounding), which is EXACTLY that distinction (`bib.py:28-30`: *"the two are
+% often reversed"*).  I reinvented the second edge under a third name, and
+% `bib._LIST` whitelists `from`/`rests-on`/`reads`, so the engine DROPS `enables`
+% on every read.  Every ordering decision this session ran on an edge the engine
+% cannot see.
+%
+% Filed as THREE routes because the remedies differ -- a rename, a delegation, and
+% a semantics change are not one item (the A5 and T25 correction, third time).
+%
+% ⚑ AND THE FIRST ROUTE'S CLAIM WAS WRONG, CAUGHT BY CHECKING ONE ENTRY BEFORE
+% TOUCHING FOURTEEN.  I filed this as "respell `enables` as `from`", reading the
+% agent's finding as a rename.  Then `--source dep_order` (`bib.py:96`) showed
+% `from` means *visit my antecedents first* -- so `B from A` orders A before B,
+% which is what `A enables B` says from the other end.  A direction flip, not a
+% rename.  Fine so far.
+%
+% ⚑ EXCEPT `OBS-DEADLINE` CARRIES BOTH `from = {OBS}` AND `enables = {OBS}`.
+% Under the engine that pair is a CYCLE; under our reading it is coherent and
+% says two different things: *cite OBS in the prose* and *do OBS-DEADLINE first*.
+% So the two fields are NOT one relation spelled twice -- `from` is CITATION
+% order, `enables` is WORK order, and they genuinely diverge on at least one
+% entry.  Respelling would have asserted a citation nobody intended and put a
+% self-cycle in the graph, on 14 entries, mechanically.
+%
+% The honest claim is therefore NOT "respell".  It is that the work-order edge
+% must be legible to the engine WITHOUT being conflated with citation order --
+% which is the foreign-reference route (a derived bib the engine imports,
+% carrying `check = concept:<key>`), not a field rename.  Re-sized accordingly;
+% the 14 entries are not a mechanical sweep and must not be treated as one.
+@misc{T28-edges,
+  section = {tooling}, from = {T27}, join = {. },
+  claim   = {the work-order edge is legible to the engine without being conflated with citation order --- `enables` is not `from`, and one entry carries both toward the same key [engine-dropped-edges=0]},
+  check   = {item:T28-edges}
+}
+
+% ⚑ `cone()` LOSES A HALF THE ENGINE RETURNS.  `bib.rests_closure` (`bib.py:118`)
+% returns `(reachable, dangling)`; substrate's `cone()` computes reachability and
+% discards the second -- so a DANGLING grounding edge, which fails paperkit's own
+% gate, is invisible here.  That is not a performance duplication; it is a
+% correctness one, and it is the `--dropped` class (what one view has that another
+% silently does not).
+@misc{T28-closure,
+  section = {tooling}, from = {T28-edges}, join = {. },
+  claim   = {the claim-graph walk delegates to the engine's closure, so a dangling grounding edge is reported rather than discarded [closure-rivals=0]},
+  check   = {item:T28-closure}
+}
+
+% ⚑ OPENNESS IS A BOOLEAN WHERE THE ENGINE HAS A LADDER.  `items.ITEMS[label]()`
+% returns 0/1; `grade.py:59` grades `broken < vacuous < existence < indeterminate
+% < behavioral`, where `behavioral` is established BY MUTATION (corrupt an input,
+% the check must flip red) and every record carries `why`/`not_higher`/`not_lower`.
+% ⚑ A GRADE THAT EXPLAINS ITS OWN BOUNDS is what a pass/fail cannot: this session
+% shipped three predicates that PASSED while measuring nothing, and each was found
+% by hand.  Mutation-grading is the mechanism that finds them.
+%
+% Deliberately LAST of the three: it changes what a witness IS, and doing it before
+% the edges are legible would grade a graph the engine cannot read.
+@misc{T28-grade,
+  section = {tooling}, from = {T28-closure}, join = {. },
+  rests-on = {T28-edges, T28-closure},
+  claim   = {a witness reports a grade rather than a bit --- the engine's ladder, with `behavioral` established by mutation [ungraded-witnesses=0]},
+  check   = {item:T28-grade}
+}
+
+@misc{keys-unique,
+  section = {tooling}, from = {T17}, join = {. },
+  claim   = {no warrant key is silently shadowed by a later entry of the same name},
+  check   = {item:keys-unique}
+}
+
+% ── paydown ──────────────────────────────────────────────────────────────────
+% ⚑ THE FIGURE IN EACH CLAIM IS READ FROM THE GATE, NOT REMEMBERED.  Each of
+% these is a ratchet's added-key count, checked live on every run: the claim
+% commits to 0 (paid down), the gate says what the tree holds, and the anchor
+% refuses when they disagree.  A5's own history is the argument -- it was sized
+% against 66, then measured at 216.
+% ⚑ A5 WAS AN AGGREGATE WEARING A SINGLE LABEL (user, 2026-08-02: *"that sounds
+% like A5 needs to be broken down into sub items properly"*).  Measured, its 216
+% keys are THREE KINDS with THREE DIFFERENT TOOLS -- `as` 135, `using` 51,
+% `renaming` 30 -- and the plan's own sequencing note says the `using` bucket
+% routes to `split_pipeline` on the provider while `as` is a qualified-reference
+% rewrite and `renaming` is the un-rename gate.  One item cannot name three
+% tools, and the WORKLIST DISCIPLINE says an item names the tool that resolves
+% it.
+%
+% ⚑ AND THE COST OF NOT SPLITTING IT WAS MINE, THIS TURN.  With one item the
+% ordering ranked A5 as a single 216-size row, so "which bucket first" fell to
+% me -- I reached for `as` because it was biggest, which is the reflex, not a
+% measurement.  As three items the ordering ranks them, and the concentration
+% figure sizes each: a bucket over 8 providers is not the same work as the same
+% count over 135.  **An aggregate item relocates a decision from the ordering
+% into the operator's head.**
+%
+% They are SIBLINGS, not a chain: no bucket's claim depends on another's, and
+% the plan measured the recorded dependency (`build errors -> ban additions`)
+% as FALSE for two of the three.  A5 becomes the aggregate that rests on all
+% three, so it closes exactly when they do and never before.
+% ⚑ THE REWRITER EXISTS AND IS UNREACHABLE FOR THIS POPULATION (measured
+% 2026-08-02, on first contact with the bucket).  The plan sizes the `as` class
+% as needing `scope_fix.fix_qualified`, *"~400 lines"*, not yet built.  It IS
+% built -- 24 statements, and better than the plan credits: it consults the
+% alias module's own binding statement (authoritative over any export search,
+% which cannot separate homonyms) and repoints an APPLIED alias rather than
+% de-qualifying onto a collision.
+%
+% But its ONE caller is inside `scope_fix`'s error loop, gated on a compiler
+% `[NotInScope]` (`m.group("name")`, `m.group("sugg")`).  **A5-as's aliases
+% compile fine** -- that is what makes them ban debt rather than build errors --
+% so nothing ever produces the error that would reach the fix.  The capability
+% is real and the ENTRY POINT is missing: the `rewire_only` shape (written,
+% documented, zero reachable callers) that R13 was filed for.
+%
+% So this item is not "build a qualified-name rewriter".  It is: give the
+% existing one a census-driven entry point, then run it.  Filed as its own
+% claim because a reachability gap is not a paydown, and conflating them is how
+% the plan came to record a built tool as unbuilt.
+@misc{A5-as-reach,
+  section = {tooling}, from = {T23-local}, join = {. },
+  enables = {A5-as},
+  claim   = {`scope_fix.fix_qualified` is reachable from the ban census, not only from a compiler error --- the aliases in A5-as compile, so no `[NotInScope]` ever names them [as-entry-point=0]},
+  check   = {item:A5-as-reach}
+}
+
+@misc{A5-as,
+  section = {paydown}, rests-on = {A5-as-reach},
+  claim   = {no Substrate import carries an `as` alias beyond the recorded baseline --- the qualified-reference class, rewritten at the consumer [ban-as=0]},
+  check   = {item:A5-as}
+}
+
+@misc{A5-using,
+  section = {paydown}, from = {A5-as}, join = {, },
+  claim   = {no Substrate import carries a `using` filter beyond the recorded baseline --- decompose the provider so the consumer can import bare [ban-using=0]},
+  check   = {item:A5-using}
+}
+
+@misc{A5-renaming,
+  section = {paydown}, from = {A5-using}, join = {, and },
+  claim   = {no Substrate import carries a `renaming` clause beyond the recorded baseline --- un-rename where safe, rename at source where it collides [ban-renaming=0]},
+  check   = {item:A5-renaming}
+}
+
+@misc{A5,
+  section = {paydown}, from = {A5-renaming}, join = {. },
+  rests-on = {A5-as, A5-using, A5-renaming},
+  claim   = {the ban additions are paid down --- no import carries using/renaming/hiding/as over a Substrate module beyond the recorded baseline [ban-added=0]},
+  check   = {item:A5}
+}
+
+@misc{R8,
+  section = {paydown}, from = {A5}, join = {. },
+  claim   = {the leaf-side open-public re-export residue is paid down [public-added=0]},
+  check   = {item:R8}
+}
+
+% ⚑ THE G1/T25-library TIE, ADJUDICATED ONCE HERE RATHER THAN EVERY RUN.
+% `--next` refused to pick (leverage 0 each, cones disjoint) and handed over the
+% DISCRIMINATOR instead of a coin flip: G1 is on the commit path via
+% `check_claims.py`; T25-library reaches no hook-wired gate.  That is
+% `gates_reached` working -- an earlier tie of this shape I settled by hand and
+% was told to fix the tooling instead of adjudicating.  Left unrecorded, the
+% ordering escalates the same tie every run and I re-derive the same answer.
+%
+% ⚑ `enables`, NEVER `rests-on` -- and I wrote `rests-on` first, contradicting
+% this file's own header.  T25-library does not become TRUE because a claims
+% gate went green; it becomes the cheaper thing to do second.  Sequencing counts
+% toward leverage and never toward the topological layer.
+@misc{G1,
+  section = {paydown}, from = {R8}, join = {, and },
+  enables = {T25-library},
+  claim   = {no prose claim in the tree has been falsified by the tree itself [claims-added=0]},
+  check   = {item:G1}
+}
+
+@misc{G6,
+  section = {paydown}, from = {G1}, join = {. },
+  enables = {T23-local},
+  claim   = {no module elaborates over the 128MB cap [cap-added=0]},
+  check   = {item:G6}
+}
+
+@misc{R2-SWEEP,
+  section = {paydown}, from = {G6}, join = {, and },
+  claim   = {no type is declared in both a parent and its own decomposition leaf --- a barrel-retained duplicate is a rewrite that stopped short of its base [sumtype-added=0]},
+  check   = {item:R2-SWEEP}
+}
+
+@misc{R9-residue,
+  section = {paydown}, from = {R2-SWEEP}, join = {. },
+  claim   = {no definition hides inside a private block --- at one-definition-per-file there is no surface left to narrow [private-added=0]},
+  check   = {item:R9-residue}
+}
+
+% ⚑ ADJUDICATED 2026-08-02 — the ordering could not separate S1 from G1 (layer
+% 0, leverage 1, both size 1).  The edge is REAL: S1's single unarmed editor is
+% `scripts/worklist.py`, which `.githooks/pre-commit:107` runs on EVERY commit
+% — including the one B3 gates.  An unarmed in-place editor on the commit path
+% is a rewrite nobody can undo, so arming it precedes every other paydown that
+% reaches that path.  G1 is a one-line prose correction with no such coupling.
+%
+% ⚑ `enables`, NOT `rests-on`: S1 does not make G1 TRUE.  G1's claim stands or
+% falls on whether the tree has falsified a prose claim, regardless of snapshot
+% arming.  What the edge records is that doing S1 first makes every later
+% paydown recoverable — sequencing, which is what `enables` carries.
+@misc{S1,
+  section = {paydown}, from = {R9-residue}, join = {, and },
+  enables = {G1, B3},
+  claim   = {every in-place source editor is snapshot-armed, so a bad rewrite is recoverable [snapshot-added=0]},
+  check   = {item:S1}
+}
+
+@misc{T12-rederive,
+  section = {paydown}, from = {S1}, join = {. },
+  claim   = {no tool re-derives a capability the shared authorities already own [rederive-added=0]},
+  check   = {item:T12-rederive}
+}
+
+% ── commit ───────────────────────────────────────────────────────────────────
+@misc{B3,
+  section = {commit},
+  rests-on = {A5, R8, G1, G6, R2-SWEEP, R9-residue, S1, T12},
+  claim   = {every gate item this worklist tracks is closed, which is the precondition the gated commit needs},
+  check   = {item:B3}
+}
+
+% ── measured ─────────────────────────────────────────────────────────────────
+% ⚑ These are MEASUREMENTS, not projections: their answer depends on a build
+% that ran, not on the tree alone.  Their witnesses read the ledger's own
+% tree-stamp, so they self-declare staleness rather than quoting an aged figure.
+@misc{CENSUS,
+  section = {measured},
+  claim   = {the leaf-verify census is current --- its ledger stamp matches the tree it claims to describe (plan section 51)},
+  check   = {item:CENSUS}
+}
+
+% ⚑ SUITE CURRENCY IS AN ITEM, NOT A CAVEAT (user, 2026-08-02: *"and if it's
+% needed, wouldn't it crop up as --next, the same way CENSUS does?"*).  I ended
+% three consecutive turns with *"I haven't run the full suite since these
+% edits"* -- a fact the ordering could have surfaced and instead depended on my
+% remembering to append it.  `run_selftests --last` already computes it
+% (content-stamped per suite); nothing consumed the verdict.
+%
+% Modelled on CENSUS exactly: no `[tag=N]`, because the claim is CURRENCY and
+% the witness computes it.  A stale record is then work with a rank, competing
+% for the head like anything else, rather than prose I might omit.
+%
+% ⚑ AND I SAID IT ENABLES NOTHING, WHICH UNDERSTATES IT (user: *"it's a blocker
+% of anything that needs that suite to be correct, INCLUDING THE WORK ITEM(S)
+% THE SUITE PERMITTED TO PASS"*).  I wrote *"a stale suite record is real work,
+% not a blocker of everything"* -- true about scheduling, wrong about evidence.
+% A stale record does not merely delay verification; it RETROACTIVELY UNSETTLES
+% every item whose closure rested on that run.  T12 reads "closed" because a
+% suite certified its figure; if the record no longer describes the tree, that
+% closure is a memory.
+%
+% So the edges are real and they are `enables`, not `rests-on`: a green suite
+% is not a PREMISE of T12's claim (the claim is about `agda_files`, not about
+% tests) -- it is the EVIDENCE that the claim was checked.  Grounding would
+% make every tooling item false whenever the suite goes stale, which is too
+% strong; sequencing says the certification comes first, which is exactly
+% right.
+%
+% ⚑ THE POPULATION IS THE TOOLING ITEMS WHOSE WITNESSES THE SUITE COVERS --
+% named explicitly rather than "everything", because an edge to an item the
+% suite does not exercise would be a fabricated dependency.
+@misc{SUITE,
+  section = {measured},
+  enables = {T12, T17, T11, T22, T24, T25, keys-unique},
+  claim   = {the recorded selftest run describes today's tree --- every suite is unchanged since it ran, so its case count is a measurement rather than a memory},
+  check   = {item:SUITE}
+}
+
+% ⚑ A MOVING CASE COUNT IS A MISSING DIMENSION, NOT A DEFECT (user, 2026-08-02:
+% *"it means you're missing a dimension of information.  Do we have integration
+% with cassian-obs's infra on the docket?"*).  Watching 844 -> 843 -> 842 I
+% called the instability a defect of my own making.  It is not: `items.py`'s
+% total IS its item roster, so the figure legitimately moves as items open and
+% close.  What is missing is the AXIS that separates *the population changed*
+% from *a case was lost* -- collapsing both into one integer is the loss.
+%
+% MEASURED: **no claim in this worklist mentions observability at all** (31
+% claims read via `bibstruct --field claim`).  `T21` is the nearest -- *report
+% n of m, not a bare count* -- but that is per-PRINT; this is per-RUN over
+% time, which no item covers.
+%
+% ⚑ AND THE REPO ALREADY HAS THE INSTRUMENT.  `reference_cassian_tsdb_
+% observability` records querying this box's state from a COUNTER-RATE via
+% VictoriaMetrics/VictoriaLogs rather than from an instantaneous gauge -- the
+% same correction, one domain over: a level tells you where you are, a series
+% tells you what moved.  `run_selftests` already writes a per-suite,
+% content-stamped ledger; emitting it as a series is the small end of this.
+%
+% NOT STARTED, and deliberately not sized from here: whether this is a metrics
+% export, a local series file, or a `--last`-style diff is a design call, and
+% guessing it would be the fourth invented shape today.
+@misc{OBS,
+  section = {tooling}, from = {T21}, join = {. },
+  enables = {SUITE, CENSUS},
+  claim   = {a measurement that moves between runs is recorded as a SERIES, so `842` can be read as population-changed or case-lost rather than as one ambiguous integer [unseries-measures=0]},
+  check   = {item:OBS}
+}
+
+@misc{R12b,
+  section = {measured}, from = {CENSUS}, join = {, and }, rests-on = {CENSUS},
+  claim   = {the leaf-own split failures are re-emitted against that current census, with the worklist taken from split_pipeline --last rather than from any quoted count},
+  check   = {item:R12b}
+}
+
+% ── decide ───────────────────────────────────────────────────────────────────
+% ⚑ A pending user decision is not debt, so it must not BLOCK -- but it must
+% still be FALSIFIABLE.  `premise: cmd = "true"` delivered the first and
+% destroyed the second: a check that provably cannot fail grades `indeterminate`
+% under Delta, the bucket reserved for "falsifiability not demonstrated".
+% Routed through item: instead, where the witness discriminates on whether the
+% decision is LEGIBLE (states the outcome it would commit to) rather than on
+% whether it has been made.
+@misc{U1,
+  section = {decide},
+  claim   = {a harness guard blocks the tree-wide git checkout/reset of agda/ that destroyed a day of decomposition twice (plan section 10)},
+  check   = {item:U1}
+}
+
+% ── retract ──────────────────────────────────────────────────────────────────
+% ⚑ Retraction is VERSIONED KEYS, not a growing section: at ~70 serial
+% corrections a retract section becomes the document.  A -v<n> chain linked by
+% `rests-on` keeps each correction addressable, and the pair drops out of the
+% projection once the successor discharges.  The retracted claim NAMES ITS
+% CORRECTOR in its own prose, which item:R14-legible asserts mechanically.
+@misc{R14-v1,
+  section = {retract},
+  claim   = {R14 was filed as a tooling build --- a new gate over root re-export; RETRACTED, superseded by R14-v2},
+  check   = {item:R14-legible}
+}
+
+% ⚑ ADJUDICATED 2026-08-02 — the ordering could not separate R14-v2 from B3
+% (layer 1, leverage 0, every computed key equal, cones disjoint), so `--order`
+% emitted it as the head-of-queue tiebreak.  The edge is REAL, not a coin-flip:
+% R14-v2's remedy is a rename_at_source pass over private/public name clashes,
+% and R8 is the public re-export residue --- the worklist records them as ONE
+% pass over overlapping populations (private-ratchet 2 added, public 35).  So
+% R14-v2 ENABLES R8, which B3 already rests on, and R14-v2 therefore precedes
+% B3 transitively rather than tying with it.
+%
+% ⚑ `enables`, NOT `rests-on`: R14-v2 does not make R8 TRUE.  R8 is a measured
+% population that stands whether or not the retraction is legible.  What the
+% edge says is that doing them together is one pass and doing them apart is two
+% --- sequencing, which is exactly what `enables` was introduced to carry.
+@misc{R14-v2,
+  section = {retract}, from = {R14-v1}, join = {: }, rests-on = {grandfathered},
+  enables = {R8},
+  claim   = {a private helper clashing with a public sibling is an ordinary name collision that private was masking, so the fix is rename_at_source under existing ban policy and no gate is owed},
+  check   = {item:R14}
+}
+
+@misc{D0-kernel,
+  section  = {tooling},
+  claim    = {the bib reader has a totality probe, so a silently-dropped entry or field is a failure rather than a clean census [bib-kernel-unwitnessed=0]},
+  check    = {item:D0-kernel}
+}
+
+@misc{bz-not-migration,
+  section  = {measured},
+  claim    = {The bazel migration question was not the interesting one: all four repos already share the verdict engine by ADOPTION, so its recurrence corroborates nothing and what the corpus establishes is methodological.},
+  check    = {traces:../../../cassian-observability/bazel-infrastructure/warrants.bib#adopted from linux-sources}
+}
+
+@misc{bz-warrants,
+  section  = {measured},
+  from     = {bz-not-migration},
+  claim    = {Audit-as-warrants beats audit-as-prose: a claim carrying a source-anchored check goes red the moment its needle leaves the source, so prose cannot outlive its sources.},
+  check    = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#prose cannot outlive its sources}
+}
+
+@misc{bz-presence-not-currency,
+  section  = {measured},
+  from     = {bz-warrants},
+  claim    = {A traces needle proves PRESENCE, not CURRENCY: a document that supersedes itself internally defeats the check while staying green, because a string is not a position in an argument.},
+  check    = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#a string is not a position in an argument}
+}
+
+@misc{bz-resource-set,
+  section  = {measured},
+  from     = {bz-presence-not-currency},
+  claim    = {resource_set is a scheduling hint that bounds nothing --- bazel schedules and a cgroup bounds --- so membudget remains substrate's only enforcement layer under bazel rather than becoming redundant.},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#hint, not a bound}
+}
+
+@misc{bz-vendored,
+  section  = {measured},
+  from     = {bz-resource-set},
+  claim    = {Substrate is already a source to the ecosystem rather than only a consumer: cassian vendors its shape and correctness hooks as real committed files, and paperkit independently vendors bibstruct, edit_snapshot and vfs.},
+  check    = {traces:../../../paperkit/docs/bazel-tools.md#Vendored from substrate}
+}
+
+@misc{bz-double-bound-corrected,
+  section  = {measured},
+  rests-on = {bz-resource-set},
+  claim    = {the emitter's double-bound clause was measured false and is corrected in place -- bazel schedules, cgroups bound, so membudget was never redundant},
+  check    = {traces:../../substrate/bazel_emit.py#measured, `resource_set` bounds nothing},
+  note     = {kind=finding by=momentum. The emitted text read -- and the two together would double-bound -- shipped into every generated BUILD file, filed as an open design question when its premise was false. REST-ON is paperkit's measurement that resource_set is a SCHEDULING HINT bounding nothing, taken against their own live bazel build. AND THIS IS FILED AS measured RATHER THAN retract, WHICH IS ITSELF THE FINDING. A retraction needs BOTH edges -- from the superseded claim, rests-on the independent justification -- and --add REFUSED a from edge here because the false clause never existed as an ENTRY. It lived only in the emitter's source, so there is no author-side claim to point back at. A statement that was never filed cannot be retracted, only corrected. That is the boundary of the two-edge shape and it is not a defect in it. What survives is narrower and true -- membudget's cgroup remains the enforcement layer and what is undecided is how the two are WIRED, not which one governs.}
+}
+
+@misc{ado-records-as-deps,
+  section  = {tooling},
+  claim    = {Records-as-deps ranks first among the bazel adoptions: a check's verdict becomes a declared build artifact and therefore an action input, so memoization and invalidation come from the build system instead of a bespoke cache},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#Records-as-deps},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. All three peers adopted it and paperkit names it the clearest single argument for migrating. Filed as tooling rather than a new bazel section because the worklist's rubric sections are KINDS OF WORK, not topics -- adding a topic section would break the document's organising principle.}
+}
+
+@misc{ado-resource-set,
+  section  = {tooling},
+  from     = {ado-records-as-deps},
+  claim    = {resource_set is a scheduling hint that bounds nothing -- bazel schedules and a cgroup bounds -- so membudget is not redundant under bazel and remains the only enforcement layer},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#hint, not a bound},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. This is the claim that refuted substrate's own emitter text, which asserted the two together would double-bound. Cassian adopted it as the interface contract for its RBE integration -- the two layers answer different questions, how-many versus does-it-fit, so neither is redundant.}
+}
+
+@misc{ado-materialise,
+  section  = {tooling},
+  from     = {ado-resource-set},
+  claim    = {Materialise, do not point: paperkit's relative-path rung followed a symlink into the live working tree, so a cell imported unstaged sources -- a sandbox escape that PASSES, and the shape substrate's shared _build interface tree would reproduce},
+  check    = {traces:../../../paperkit/docs/bazel-report.md#A sandbox escape that passes},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. Directly applicable: substrate's _build/<ver>/agda is exactly a shared mutable directory reached by path, so an installation with no root to resolve and no symlink to follow is the design constraint for any agda rule.}
+}
+
+@misc{grandfathered,
+  section  = {decide},
+  claim    = {This claim exists to be rested on by a retraction whose real justification cannot yet be synthesized, so the grounding is NAMED and ENUMERATED rather than left empty -- and the set of claims resting on it may not grow},
+  check    = {item:U1},
+  note     = {kind=decision by=momentum, on the operator's design. WHY A CLAIM AND NOT A SECTION, KIND OR FIELD (operator, verbatim): it can then be referenced by the existing worklist claims where premises are structurally mandatory, but where we do not have enough information to synthesize the reason for the retraction. So the exemption is an ENTRY like any other, and taking it is an ordinary rests-on edge -- which is what makes the population READABLE. THE RATCHET ENUMERATES ITS INBOUND EDGES, IT DOES NOT COUNT THEM (operator: not counting, enumerating). A count over this set is exactly the defect the repo records elsewhere -- six names versus six names with DIFFERENT SETS -- so one claim could leave and another arrive while the number held level and the ratchet reported nothing. The gate must name WHICH claims rest here, and refuse a key that was not in the baseline. THE RATCHET IS SELF-DISSOLVING, which is the whole design: to rest on this you must write why, and once written it IS a premise, so the escape route costs exactly what the correct route costs and produces the correct artefact. The only way through the hatch is the way you would have gone anyway -- stronger than forbidding it, because a forbidden hatch gets routed around and this one cannot be. A SELF-GROUNDED RETRACTION IS VACUOUS BUT NOT FALSE (operator), so this converts an unmarked vacancy into a named, enumerated, non-growing population rather than treating it as an error. THE CHECK IS BORROWED DELIBERATELY: item:U1 is the decision witness, which discriminates on whether a pending decision is LEGIBLE rather than whether it is made, and a grandfathered claim IS a legible pending decision. It gets its own witness when the enumerating gate lands.}
+}
+
+@misc{ado-tier-ladder,
+  section  = {tooling},
+  from     = {ado-materialise},
+  claim    = {The three-tier ladder is directly instantiable: sandbox is hermetic and cached, toolchain is host-coupled but cacheable, and local is uncached and always re-run -- the sound placement for an action reading unpinnable live state},
+  check    = {traces:../../../cassian-observability/gate-architecture/warrants.bib#tier local returns the requirements local},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. The local tier is the escape hatch substrate's stamp chain needs: a cached verdict over live state would bank a die-roll. NEEDLE RE-ANCHORED ON MERGE -- the intake cited bazel-infrastructure/warrants.bib, where no-cache is a common token and the claim it anchors lives in the GATE-ARCHITECTURE bib instead. A weak needle made a wrong FILE undetectable, which is this project's own thesis failing on this project.}
+}
+
+@misc{ado-fingerprint,
+  section  = {tooling},
+  from     = {ado-tier-ladder},
+  claim    = {The toolchain tier is adopted WITH CARE: its category is principled but caching on an incomplete fingerprint serves a stale verdict green, so derive the fingerprint from the invocations or do not cache},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#derive the fingerprint from the invocations},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. This decides an open question for substrate's agda rule rather than leaving it inherited: the compile shells out to agda through the membudget PATH shim, resolved off PATH and unhashed, so its inputs depset would carry the sources and NOT the compiler version. Sandbox-tier only if the toolchain is pinned into the key; otherwise toolchain-tier with the pin as deferred debt.}
+}
+
+@misc{ado-path-independent,
+  section  = {tooling},
+  from     = {ado-fingerprint},
+  claim    = {Path-independent caching is the adoption whose value is highest DURING a migration evaluation, because an evaluation is precisely what produces a second checkout -- and the convention already exists, namespaced by repo under a shared disk-cache parent},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#path-independent},
+  note     = {kind=adoption by=momentum. Merged from the bazel-intake project. FOUND IN A DIRECTORY LISTING, NOT IN THE REPORTS: two of the three peers already share ~/.cache/bazel-disk/<repo>, invisible to a reading of the documents describing their build systems. The peer's own framing is the transferable part -- a document is a description by someone who already knows what to look for, and the filesystem is not. Cost measured on their side at seven output bases and 3.7 GB of near-duplicate cache.}
+}
+
+@misc{bnd-said-not-true,
+  section  = {measured},
+  claim    = {A traces check proves a claim is RECORDED WHERE CITED, never that the mechanism it describes is globally true -- so every claim resting on a peer's document inherits that bound},
+  check    = {traces:../../../cassian-observability/gate-architecture/paper.toml#NOT that a mechanism is globally proven},
+  note     = {kind=bound by=momentum. Merged from the bazel-intake project. THE PEER NAMED THIS AS SOMETHING SUBSTRATE DID BETTER: a bound in prose gets summarized away, a bound carrying its own warrant cannot, and they had the same caveat as an unwitnessed paragraph. That is the ecosystem's bounds-in-band principle applied one step further than its source applied it.}
+}
+
+@misc{bnd-unbuilt,
+  section  = {measured},
+  from     = {bnd-said-not-true},
+  claim    = {Nothing in substrate's bazel work has been built: there is no workspace, no bazel in the checkout, and the emitted rule loads a bzl file that does not exist -- so whether the emitted text builds the tree is UNMEASURED and the emitter says so in its own output},
+  check    = {traces:../../substrate/bazel_emit.py#UNMEASURED},
+  note     = {kind=bound by=momentum. Merged from the bazel-intake project. This bound is why every downstream bazel claim stays a design question rather than a measurement, and why a peer's endpoint change costs substrate nothing to adopt -- there is no config=remote anywhere to repoint.}
+}
+
+@misc{bnd-corpus-moves,
+  section  = {measured},
+  from     = {bnd-unbuilt},
+  claim    = {The corpus moved under this reading at least once, so a needle proves PRESENCE and not CURRENCY -- a claim can stay green while the source it cites has superseded itself elsewhere in the same file},
+  check    = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#a string is not a position in an argument},
+  note     = {kind=bound by=momentum. Merged from the bazel-intake project, and RE-MODELLED: it carried premise: in the intake, the always-green verb the worklist removed. The needle now anchors on a peer's document recording substrate's own sharpening of this bound -- so the claim is checkable rather than self-asserted. MEASURED WHEN IT FIRED: a substrate citation stayed green while the cited thesis had been conceded four sections below it, and only a content stamp saw the file move. The two instruments answer different questions and neither covers the class alone.}
+}
+
+@misc{fix-two-enumerations,
+  section  = {paydown},
+  claim    = {Substrate has two enumerations of its own corpus with no common owner -- git's ignore and the suite walker's name list -- so a repair to one leaves the other wrong, which is how a gitignored build tree stayed in the suite roster},
+  check    = {traces:../../substrate/suite_discovery.py#DISCOVERED, NOT FROZEN},
+  note     = {kind=fix by=momentum. Merged from the bazel-intake project. FOUND BY APPLYING A PEER'S OWN FRAMING TO SUBSTRATE: they measured three enumerations of one population disagreeing, and the same test here found the suite roster counting every package module twice against a stale copy. The repair is one owner, not a longer skip list -- the file's own comment already said a roster can only ever be as current as its last edit.}
+}
+
+@misc{fix-uv-false-green,
+  section  = {paydown},
+  from     = {fix-two-enumerations},
+  claim    = {Substrate has already paid for the undeclared-input class the peers describe: an interpreter mismatch under uv made a type gate's parse find no error lines, and ZERO KEYS WAS BANKED AS CLEAN},
+  check    = {traces:../../substrate/type_gate.py#banked as clean},
+  note     = {kind=fix by=momentum. Merged from the bazel-intake project. The peers describe uv's environment as an undeclared build input and substrate hit the same root cause before any bazel existed, in the direction that produces a false green rather than a failure. THE REFORMULATED TEST IS THE TRANSFERABLE PART, from paperkit: the question is not does an action call uv but can any path an action takes REACH uv, and those differ by one fallback.}
+}
+
+@misc{fix-enumerations,
+  section  = {paydown},
+  from     = {fix-uv-false-green},
+  claim    = {Hand-maintained enumerations of things the system already computes are the peer's do-not-adopt item and substrate's defect too -- and adding a guard over an enumeration reproduces the problem one level up},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#Hand-maintained enumerations},
+  note     = {kind=fix by=momentum. Merged from the bazel-intake project. Substrate's instances were measured rather than inherited: a root makefile spelled its gate roster THREE times and a mode-coverage reader carried two hardcoded paths inside the module whose own docstring condemns hardcoded rosters. Both are now derived from build_targets, which is why a gate added later cannot reach one reader and miss another.}
+}
+
+@misc{res-inferred-channel,
+  section  = {retract},
+  rests-on = {bz-warrants},
+  claim    = {An ecosystem-wide conclusion was inferred from a git status: staged-not-committed was read as invisible-to-peers, when the peers had been told to copy from the working tree},
+  check    = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#prose cannot outlive its sources},
+  note     = {kind=retraction by=momentum. WHAT IT RETRACTS lived only in this session's prose, never as a filed claim -- I read git status --short, saw staged-never-committed, and concluded a session staging thirty modules had shipped nothing. The operator corrected it: peers copy from the working tree because commits are not yet green. NO from EDGE, DELIBERATELY. Reuse-search against cassian's DART model settled this: reference-before-declare is REJECTED there rather than placeholder-minted, supersession is a STATE on a node rather than an edge between two, and they hit this exact case and minted nothing. Filing the superseded claim retroactively just to have a target is the entries-whose-only-purpose smell. THE JUSTIFICATION IS THE SIDEWAYS EDGE and it does the work: the warrants discipline holds that prose cannot outlive its sources, which is why an inference recorded only in prose has no anchor and had to be corrected by someone who knew the channel. THE SHAPE OF THE ERROR: a fact about the INDEX reported as a fact about DISTRIBUTION.}
+}
+
+@misc{res-inferred-absence,
+  section  = {retract},
+  rests-on = {bz-presence-not-currency},
+  claim    = {An absence was reported before the reading was complete: a peer corpus question was called unanswered when the answer sat in a section not yet read},
+  check    = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#a string is not a position in an argument},
+  note     = {kind=retraction by=momentum. WHAT IT RETRACTS lived only in prose. I searched for one shape, did not find it, and reported the question unanswered -- before reading the section that answers it from the other direction. A fact about my SEARCH reported as a fact about the CORPUS. NO from EDGE, per the DART reuse-search: supersession is a state rather than an edge between two nodes, and minting the superseded claim purely to be retracted is the entries-whose-only-purpose smell cassian rejects by construction. THE JUSTIFICATION IS THE SIDEWAYS EDGE: presence is not currency, and its converse is what bit here -- absence in the part I read is not absence in the whole, and a needle proves where a reader looked rather than what a corpus holds. Same instrument, same bound, read from the other end.}
+}
+
+@misc{res-unreached,
+  section  = {retract},
+  from     = {bz-warrants},
+  rests-on = {ado-path-independent},
+  claim    = {The projection capability was not missing but UNREACHED: this plan was hand-written as append-only prose in a repo that already projects five documents from warrants, one of them a plan},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#path-independent},
+  note     = {kind=retraction by=momentum. THIS ONE CARRIES BOTH EDGES, because its superseded claim WAS filed -- bz-warrants holds that audit-as-warrants beats audit-as-prose, and what is retracted is the implicit reading that substrate LACKED the capability. It did not: pycodemod --projects found five live paperkit projects the moment anyone asked. AN UNREACHED CAPABILITY IS INDISTINGUISHABLE FROM AN ABSENT ONE, which is the tool's own recorded defect one level up. THE JUSTIFICATION IS THE SIDEWAYS EDGE and it is the same lesson from a peer: a convention visible in a directory listing was invisible to a careful reading of the documents describing it. A document is a description by someone who already knows what to look for, and the filesystem is not.}
+}

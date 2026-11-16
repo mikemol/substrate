@@ -1,0 +1,9 @@
+# negative findings corpus
+_concept index · 11 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **test wall before declaring** [5] — [feedback_dedup_by_import_reexport_and_policy](../feedback_dedup_by_import_reexport_and_policy.md), [feedback_validate_outputs_not_inputs](../feedback_validate_outputs_not_inputs.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_open_threads](../project_open_threads.md), [project_overclaim_witness_arc](../project_overclaim_witness_arc.md)
+- **negative findings corpus bound** [4] — [feedback_scoped_classical_hypotheses](../feedback_scoped_classical_hypotheses.md), [feedback_test_the_wall_before_declaring_it](../feedback_test_the_wall_before_declaring_it.md), [project_open_threads](../project_open_threads.md), [project_simplicity_recognizer](../project_simplicity_recognizer.md)
+- **never discard residue** [4] — [feedback_duality_operator_is_either_or_trap](../feedback_duality_operator_is_either_or_trap.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_open_threads](../project_open_threads.md), [project_overclaim_witness_arc](../project_overclaim_witness_arc.md)
+- **reject lem substrate** [4] — [feedback_duality_operator_is_either_or_trap](../feedback_duality_operator_is_either_or_trap.md), [feedback_scoped_classical_hypotheses](../feedback_scoped_classical_hypotheses.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_simplicity_recognizer](../project_simplicity_recognizer.md)
+- **choice rigidification substrate** [3] — [feedback_wedge_not_projection](../feedback_wedge_not_projection.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_open_threads](../project_open_threads.md)
+- _direct members_ [1] — [project_center_free_universal_property](../project_center_free_universal_property.md)

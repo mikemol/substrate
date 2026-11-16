@@ -1,0 +1,98 @@
+[paper]
+adequacy = true
+title = "substrate worklist"
+subtitle = "The worklist is the projection of the undischarged subgraph."
+warrants = ["warrants.bib"]
+rubric = "rubric.tsv"
+out = "WORKLIST.md"
+numbered = false
+references = false
+
+# ⚑⚑⚑ `enables` IS A WORK-QUEUE EDGE IN AN ARGUMENT'S FILE, AND DECLARING IT HERE IS A
+# BRIDGE, NOT THE FIX.  Paperkit's parser was dropping it on 14 entries — loudly, per
+# entry, which is the only reason anyone noticed.  Declared as a consumer field it is
+# CARRIED VERBATIM and consumed by NO paperkit invariant: the projector and gate ignore
+# it.  So this line buys a quiet build and a parsed string.  It does NOT make the edge
+# walked, graded, or rendered.
+#
+# ⚑ AND IT ARRIVES AS A STRING, NOT A LIST — measured by paperkit's owner on a real parse:
+#
+#     enables  = {A, B}   declared consumer field  ->  str   'A, B'
+#     rests-on = {A, B}   built-in _LIST field     ->  list  ['A', 'B']
+#
+# `consumer_fields` joins `_SCALAR`; `_LIST` is hardcoded and closed to per-project
+# extension.  Any consumer MUST re-split.  The owner's own framing: *"the loud drop
+# currently protects people from a footgun that declaring walks them into."*  It is
+# declared anyway, deliberately, because the alternative is 14 warnings per run training
+# every reader to ignore paperkit's diagnostics — and this one was worth reading.
+#
+# ⚑⚑ WHY NOT CONVERT IT TO `rests-on`, WHICH WOULD BE WALKED.  Measured with
+# `bibstruct --edges` over 107 edges: only 4 of ~49 `enables` edges have an inverse in a
+# walked field.  The rest are a DIFFERENT RELATION — `SUITE -> {T12, T17, T11, T22, T24,
+# T25, keys-unique}` says *finishing SUITE unblocks work on these*, which is about WHEN
+# WORK BECOMES AVAILABLE, not about what a claim rests on.  `rests-on` feeds ADEQUACY
+# CLAMPING, so writing `T12 rests-on SUITE` would tell the grader that a claim is grounded
+# in a test suite: it silences the warning, satisfies a mechanical inversion, and corrupts
+# the grading.  Two entries (`SUITE`, `T17`) carry NO `from`/`join`/`rests-on` and are
+# named by no prose, so they exist in the walked graph only through this field — deleting
+# it orphans them, converting it lies.
+#
+# ⚑⚑⚑ THE REAL FIX IS TO DERIVE THESE EDGES, NOT DECLARE THEM (operator, 2026-08-23).
+# `items` is a DYNAMIC WORK QUEUE: `figures.failure_kinds()` refuses a hand-maintained
+# roster because *"THE ROSTER IS THE BUILD'S, NOT A LIST I MAINTAIN"*, and an item retires
+# by vanishing from the census rather than being marked done.  Warrants are a STATIC
+# ARGUMENT.  A hand-written queue edge beside a build that already derives class->tool
+# (`split_census.CLASS_REMEDY` + `wg_dispatch.solvers()`) is a SECOND AUTHORITY for one
+# figure — the defect this repo keeps paying for.  This declaration is scaffolding to be
+# removed when the derivation lands; it is not a home.
+#
+# ⚑ AND PAPERKIT'S OWNER NAMES THIS AS A CLASS, NOT OUR BUG: gcalculus reached for
+# `points` (a vantage-dependent projection of a symmetric 3-set — an ARITY the two-edge
+# model cannot express) and `unified`; linux-sources declared four fields and still wrote
+# a probe to believe them.  Three consumers, three vocabularies, one answer each time.
+# The unmet need here is TEMPORAL/ENABLEMENT where `from` and `rests-on` are both
+# EPISTEMIC.  Filed with paperkit as a fourth data point.
+consumer_fields = ["enables"]
+
+# item:<LABEL> — the per-item witness.  ⚑ Wired as `cmd:`, NOT `concept:`:
+# `concept:` passes only the key and cannot carry the citing claim, so a
+# claim-anchored witness (one that parses the figure out of its own claim's
+# prose) has to be a cmd.
+[checks.item]
+cmd = "python3 ../library/items.py {target}"
+
+# traces:<path>#<needle> — the claim is TRACEABLE-TO-SOURCE: the needle (a plain string, no
+# regex) appears in the named file. cwd is this project dir, so paths reach out with ../../.
+#
+# ⚑⚑⚑ A SECOND VERB, AND IT IS NOT A WEAKER `item:`. `item:` witnesses a claim about THIS TREE
+# by running a predicate over it. A claim about a PEER's document has no such predicate — the
+# peer's tree is not ours to run readers against — and the honest check is that the cited
+# sentence is present where the claim says it is. Forcing those onto `item:` would mean writing
+# a substrate reader that re-derives a peer's finding, which is the rival-authority defect.
+#
+# ⚑⚑ WHAT A PASS MEANS, AND IT IS NARROWER THAN IT LOOKS. It proves the claim is RECORDED where
+# cited, never that the claim is TRUE, and — measured this session — never that it is still the
+# source's position: a document that supersedes itself in place leaves the needle green over a
+# retracted thesis. Cassian records this as ◆traces-needle-presence-not-currency. The corpus
+# content stamp is the second instrument; neither covers that class alone.
+#
+# ⚑ THIS IS NOT THE `premise:` VERB THE BLOCK BELOW REFUSES. That one was `cmd = "true"` and
+# PROVABLY could not fail. This one fails loudly on a moved needle or an absent source, which is
+# the property that separates a check from a decoration.
+[checks.traces]
+cmd = "python3 ../../scratch/bazel-intake/checks/traces.py {target}"
+
+# ⚑ THERE IS DELIBERATELY NO `premise:` VERB.
+#
+# It was here, as `cmd = "true"`, to carry user decisions without blocking the
+# gate.  That worked and cost more than it bought: a check that PROVABLY cannot
+# fail grades `indeterminate` under paperkit's own Delta grader — the bucket its
+# docstring reserves for claims whose falsifiability is not demonstrated.  An
+# always-green verb is an unfalsifiable-claim factory: every future item that
+# felt awkward to witness would land here, and the document would accumulate
+# sentences the gate certifies and Delta cannot grade.
+#
+# Not-blocking and not-falsifiable are separable, and every item must have the
+# first without the second.  A decision item is CLOSED while undecided (it is
+# not debt) and its witness discriminates on whether the decision is LEGIBLE.
+# See items.U1.

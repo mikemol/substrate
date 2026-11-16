@@ -1,0 +1,6 @@
+# single source truth
+_concept index · 10 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **policy load-bearing discipline full text policy migrated repository see memory file exists pointer full policy content lives repository path above future sessions load memory** [7] — [feedback_categorical_name_first](../feedback_categorical_name_first.md), [feedback_coalgebraic_not_consumer_driven](../feedback_coalgebraic_not_consumer_driven.md), [feedback_comments_dont_overclaim](../feedback_comments_dont_overclaim.md), [feedback_expose_generator_not_orbit](../feedback_expose_generator_not_orbit.md), [feedback_expose_generator_not_orbit_applies](../feedback_expose_generator_not_orbit_applies.md), [feedback_file_size_one_pass_rewrite](../feedback_file_size_one_pass_rewrite.md), [feedback_universal_property_discipline](../feedback_universal_property_discipline.md)
+- **reject lem substrate** [2] — [feedback_scoped_classical_hypotheses](../feedback_scoped_classical_hypotheses.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md)
+- _direct members_ [1] — [project_punctured_fin_primitive](../project_punctured_fin_primitive.md)

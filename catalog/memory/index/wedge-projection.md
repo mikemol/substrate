@@ -1,0 +1,9 @@
+# wedge projection
+_concept index · 10 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **never discard residue** [6] — [feedback_dont_collapse_to_smallest_representable](../feedback_dont_collapse_to_smallest_representable.md), [feedback_duality_operator_is_either_or_trap](../feedback_duality_operator_is_either_or_trap.md), [feedback_trace_inversion_vs_transcendental_limit](../feedback_trace_inversion_vs_transcendental_limit.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_cayley_dickson_generator](../project_cayley_dickson_generator.md), [project_open_threads](../project_open_threads.md)
+- **atlas substrate congruence** [4] — [feedback_domain_skin_over_category](../feedback_domain_skin_over_category.md), [project_bridge_indexes_algebra_category](../project_bridge_indexes_algebra_category.md), [project_open_threads](../project_open_threads.md), [project_retrospective_2026_06_12](../project_retrospective_2026_06_12.md)
+- **choice rigidification substrate** [3] — [feedback_dont_collapse_to_smallest_representable](../feedback_dont_collapse_to_smallest_representable.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_open_threads](../project_open_threads.md)
+- **common structure recursively** [3] — [feedback_trace_inversion_vs_transcendental_limit](../feedback_trace_inversion_vs_transcendental_limit.md), [project_agda_on_gpu_charter](../project_agda_on_gpu_charter.md), [project_open_threads](../project_open_threads.md)
+- **handoff blind spot** [3] — [project_bridge_indexes_algebra_category](../project_bridge_indexes_algebra_category.md), [project_open_threads](../project_open_threads.md), [project_retrospective_2026_06_12](../project_retrospective_2026_06_12.md)
+- _direct members_ [1] — [feedback_a_flag_is_an_either_or_to_dissolve](../feedback_a_flag_is_an_either_or_to_dissolve.md)

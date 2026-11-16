@@ -1,0 +1,9 @@
+# slices landed all
+_concept index · 9 memories · a node of the MEMORY mind-map. Links: finer concepts (same dir) or memories (`../name.md`)._
+
+- **substrate agda substrate memory** [5] — [project_aa_arc_composed_reference](../project_aa_arc_composed_reference.md), [project_ff_arc_coarse_residue](../project_ff_arc_coarse_residue.md), [project_gg_arc_multiprime_spectral](../project_gg_arc_multiprime_spectral.md), [project_hh_arc_prime_sampled_chain](../project_hh_arc_prime_sampled_chain.md), [project_ii_arc_atlas_of_probes](../project_ii_arc_atlas_of_probes.md)
+- **matrix substrate-honest reading** [4] — [project_ee_arc_reed_muller_hierarchy](../project_ee_arc_reed_muller_hierarchy.md), [project_gg_arc_multiprime_spectral](../project_gg_arc_multiprime_spectral.md), [project_hh_arc_prime_sampled_chain](../project_hh_arc_prime_sampled_chain.md), [project_ii_arc_atlas_of_probes](../project_ii_arc_atlas_of_probes.md)
+- **bits substrate opcodes** [3] — [project_hh_arc_prime_sampled_chain](../project_hh_arc_prime_sampled_chain.md), [project_ii_arc_atlas_of_probes](../project_ii_arc_atlas_of_probes.md), [project_jj_arc_multi_sylow_composition](../project_jj_arc_multi_sylow_composition.md)
+- **bounded tested corpora** [3] — [project_ee_arc_reed_muller_hierarchy](../project_ee_arc_reed_muller_hierarchy.md), [project_ff_arc_coarse_residue](../project_ff_arc_coarse_residue.md), [project_gg_arc_multiprime_spectral](../project_gg_arc_multiprime_spectral.md)
+- **chain-walk-blocks-rotation-factor structural fact whose** [3] — [project_dd_arc_clifford_graded_emission](../project_dd_arc_clifford_graded_emission.md), [project_ee_arc_reed_muller_hierarchy](../project_ee_arc_reed_muller_hierarchy.md), [project_hh_arc_prime_sampled_chain](../project_hh_arc_prime_sampled_chain.md)
+- _direct members_ [1] — [project_term_algebra_extension](../project_term_algebra_extension.md)

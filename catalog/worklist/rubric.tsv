@@ -1,0 +1,8 @@
+# rubric.tsv — the worklist's sections, in document order.  Coverage requires
+# each heading to appear and each section-tagged warrant to be cited in it.
+tooling	Tooling
+paydown	Paydown, sized live from the gates
+commit	The gated commit
+measured	Measured against the build
+decide	User decisions
+retract	Live retractions
