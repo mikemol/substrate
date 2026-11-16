@@ -762,3 +762,31 @@
 2026-11-16T13:44:51Z  interrupt W354 minted    -         "sibling paths become pinned fetches: MODULE.bazel remote and SHIM_DIR"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=github-cb
 2026-11-16T13:47:04Z  tick  W333 advanced  probe     "tick 4: probe REFUSED as G0 expected (blob 5081ff18); operator directive 9b009522 moved the arc to branch gate-rebuild [blocked by W352]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T13:48:25Z  status W351 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T14:49:31Z  tick  W354 advanced  read      "tick 5: W354 scoped. The MODULE.bazel remote is a fleet pattern (fleet ruling asked); SHIM_DIR is held byte-identical across 3 emitters by a selftest and lands with the origin's retirement (W352 row) [blocked by W352]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T14:51:46Z  status W354 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T14:51:56Z  redact W354 redacted  --        "sha256:0befa395771b n=1"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:16:59Z  tick  W355 minted    -         "gate row: selftest roster current (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W356 minted    -         "gate row: tool selftests (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W357 minted    -         "gate row: feature coverage (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W358 minted    -         "gate row: def/proof separation (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W359 minted    -         "gate row: build makefiles in sync (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W360 minted    -         "gate row: build census in sync (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W361 minted    -         "gate row: gate census in sync (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W362 minted    -         "gate row: query cache in sync (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W363 minted    -         "gate row: shape-node index current (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W364 minted    -         "gate row: carrier locality (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W365 minted    -         "gate row: ban ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W366 minted    -         "gate row: rederive ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W367 minted    -         "gate row: discharge ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W368 minted    -         "gate row: snapshot guard (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W369 minted    -         "gate row: sumtype ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W370 minted    -         "gate row: mode contracts (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W371 minted    -         "gate row: divergence ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W372 minted    -         "gate row: public ratchet (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W373 minted    -         "gate row: type gate mypy (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:16:59Z  tick  W374 minted    -         "gate row: stub authority (aim, goal, incident)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:17:04Z  tick  W352 advanced  atomize   "tick 6: W352 atomized into 20 gate-row cards W355-W374, one per check red on the consistent tree (tip 31d1a3e) [blocked by W355]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:18:40Z  interrupt W375 minted    -         "re-derive W352's red-gate rows from the gate's outcome ledger, not a log filter"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W352
+2026-11-16T15:36:17Z  status W375 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:36:44Z  status W375 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:36:49Z  tick  W375 advanced  read      "tick 7: the gate ledger --report is aggregate (fail%/n/med), not per-run; per-run row mode asked of mtools [blocked by W355]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
