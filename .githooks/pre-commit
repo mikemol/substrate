@@ -28,20 +28,210 @@ if [ -z "${_PRECOMMIT_TEE:-}" ]; then
   set +e
   "$0" "$@" 2>&1 | tee "$_pcm_report"
   _pcm_st=${PIPESTATUS[0]}
+  # ⚑ FEATURE BRANCHES COMMIT; main STAYS GATED (operator 2026-11-16, W352/W353; transcript uuid
+  # 9b009522-d030-44e2-a4a1-48a966726eb6). Off main the gate still RUNS and its output is still
+  # recorded, but a red verdict does not refuse the commit. main is guarded separately by the ORIGINAL
+  # gate (771283c's closure) through mtools:W2582, never by this file, which a branch can edit.
+  # Fail-safe: an undeterminable branch (detached HEAD, unreadable ref) is treated as main.
+  # The commit's git environment is UNSET for this read: mikemol-commit exports GIT_DIR and the index
+  # into the hook (mtools:W2549, gcalculus:W278), and an inherited GIT_DIR makes `git -C` read the
+  # WRONG repository's HEAD. The isolated snapshot has no .git of its own, so the real root's HEAD is
+  # the commit's branch; with MIKEMOL_REAL_ROOT unset, "." is the real repo.
+  _pcm_branch="$(env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE -u GIT_PREFIX git -C "${MIKEMOL_REAL_ROOT:-.}" symbolic-ref --short -q HEAD || true)"
+  if [ "$_pcm_st" -ne 0 ] && [ -n "$_pcm_branch" ] && [ "$_pcm_branch" != "main" ]; then
+    echo "pre-commit: ADVISORY on branch '$_pcm_branch' — the gate is red (rc=$_pcm_st) and the commit proceeds; main admits only a green original gate." >&2
+    exit 0   # the red report is KEPT, so prepare-commit-msg folds it into the branch commit
+  fi
   if [ "$_pcm_st" -ne 0 ]; then rm -f "$_pcm_report"; fi
   exit "$_pcm_st"
 fi
 
 ROOT="$(git rev-parse --show-toplevel)"
+# ⚑ THE PROJECT INTERPRETER, NAMED ONCE (operator, 2026-09-23). The makefile generator is being drained
+# into `substrate/` modules, which the system python3 cannot import from a script path; the venv has
+# `substrate` installed. So the generator's callers here run on the venv rather than the generator
+# editing sys.path. No fallback to python3: a missing venv must fail the gate loudly, not quietly run
+# an interpreter that cannot see the code it is checking.
+# ⚑ HOST STATE IS LOOKED UP UNDER `tools`, NOT UNDER THE TREE BEING GATED (mtools:W891, W954).
+# `mikemol-commit` runs this hook in a SNAPSHOT of the index (/var/tmp/mikemol/gate/<repo>/tree) where the
+# .venv and every other untracked host path do not exist, and it isolates ONLY a hook whose text names
+# MIKEMOL_REAL_ROOT; otherwise it silently falls back to the plain commit path. Reference idiom: mtools'
+# own .githooks/pre-commit. Outside isolation the variable is unset and `tools` is just the tree.
+tools="${MIKEMOL_REAL_ROOT:-$ROOT}"
+PY="$tools/.venv/bin/python"
+# ⚑ THE REAL .venv HAS substrate-tooling INSTALLED EDITABLE, pointing at the REAL checkout: a venv python
+# run from the snapshot would import `substrate` and `scripts` from the working tree, so the gate would
+# judge bytes that are not the index. Putting the snapshot first on the path makes the snapshot win
+# (the editable finder is appended to sys.meta_path, so ordinary path entries are tried before it).
+if [ -n "${MIKEMOL_REAL_ROOT:-}" ]; then
+  export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+fi
+# ⚑ EVERY GATE BELOW SAYS `python3`, AND THE SYSTEM python3 CANNOT IMPORT `substrate` (see the PY note above).
+# One function routes them all to the project interpreter instead of 40 hand edits, and a missing venv still
+# fails loudly (command not found) rather than quietly running an interpreter that cannot see the code.
+python3() { "$PY" "$@"; }
 fail=0
 
+# ⚑ THE COMMIT PATH IS THE ONLY PLACE A RATCHET BASELINE MAY BE REWRITTEN.
+# `ratchet.set_ratchet` is read-only unless this is set (scripts/ratchet.py).  Running
+# a gate by hand — or from an audit, an editor, or a pipeline pre-flight — must never
+# bank debt: a transient census dip would lower the baseline PERMANENTLY, and the keys
+# it "paid down" could never return without the gate refusing.  MEASURED twice: a plain
+# `check_sumtype_ratchet.py --quiet` rewrote its baseline 48 -> 45, once during an audit
+# that was explicitly forbidden to write.  Here, at the promotion gate, recording is
+# exactly what we want.
+export SUBSTRATE_RATCHET_WRITE=1
+
+# ⚑ `run` is the UNIVERSAL CAPTURE POINT for gate outcomes: every gate flows
+# through it, so instrumenting here measures all of them at once (the same
+# reason membudget is where build times are captured — instrument the funnel,
+# not each caller).  The ledger feeds `gate_ledger.py --order`, which ranks
+# gates by MEASURED failure rate so the fail-fast ordering tracks the current
+# tree instead of a hand-chosen guess.  Recording is best-effort and never
+# alters the gate's exit status: the instrument must not become a new failure
+# mode for the thing it measures.
 run() {
   local name="$1"; shift
+  local _t0=$SECONDS _st=0
   if ! "$@"; then
     echo "pre-commit: FAILED — $name" >&2
-    fail=1
+    fail=1; _st=1
+  fi
+  # ⚑ AN `if`, NOT `A && B || C` (SC2015). The chain reads as if-then-else and is not one:
+  # `local _res=pass` succeeds, so the `|| local _res=fail` arm is unreachable here — correct
+  # today by accident of what `local` returns, and a defect the moment B can fail. The gate
+  # refuses the SHAPE rather than waiting for the instance, which is why it fired on a line
+  # that currently works.
+  local _res=fail
+  if [ "$_st" -eq 0 ]; then _res=pass; fi
+  python3 "$ROOT/scripts/gate_ledger.py" --record "$name" "$_res" \
+    "$((SECONDS - _t0))" 2>/dev/null || true
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 0 — ⟡census-sync.  SYNC the SELF-MEASURING censuses, then FAIL IF THE SYNC
+# CHANGED ANYTHING.  Runs BEFORE every gate below.
+#
+# ⚑ THE PROBLEM IS ORDERING, NOT A BROKEN GATE.  `sql_lift --check-census` interns EVERY `.py`
+# in the repo, so its figures MEASURE THE CORPUS THEY LIVE IN — editing repo tooling moves the
+# count.  Measured in a single working session 2026-08-24: 1129 -> 1161 -> 1162 -> 1166.  An
+# agent synced it, edited four more files, and it was stale again BEHIND A GATE THAT HAD
+# ALREADY PASSED.  The gate did its job every time: exit 1, a diff, the sync command named.
+# What is wrong is checking a self-measuring census MID-RUN, while the tree it measures is
+# still moving.  `toolmodes --check` (each tool's own bare output + AST across ~90 tools) and
+# `gate_census --check` (this hook + the baselines this hook rewrites) have the same shape.
+#
+# ⚑⚑ THE VERDICT IS THE DIFF THE SYNC PRODUCED — NEVER A RE-CHECK AFTERWARDS.  This is the
+# load-bearing property and it is the easy thing to get wrong.  A phase that repairs and then
+# CONTINUES makes the census gate UNABLE TO FAIL: a third vacuity mechanism beside the ABSENT
+# and EMPTY baselines `check_baseline_health` already tracks.  A census that fixes itself
+# asserts nothing.  Failing on "the sync changed something" keeps the whole signal: the drift
+# is REPORTED, the artifact is ALREADY CORRECT, and the recovery is ONE re-run.  The successor
+# is named AND already executed — which is the strongest form of `refusal-names-its-populator`.
+#
+# ⚑ DETECTED BY CONTENT, NEVER BY EXIT CODE.  A `--sync` mode may exit 0 whether or not it
+# wrote; only the bytes know.  Hash before, hash after.
+#
+# ⚑ NOTHING IS `git add`ed.  A hook that stages files into a commit the author has not read is
+# a different failure; the RE-RUN is what picks the artifact up.  ⚑⚑ All four census artifacts
+# under .claude/skills/ are currently UNTRACKED, so a synced artifact does not enter the commit
+# at ALL until someone stages it.  That is a separate finding, deliberately not fixed here.
+#
+# ⚑ `--check` STAYS IN THE GATE LIST BELOW.  It must remain independently runnable and
+# meaningful outside this hook — agents used it three times in one session to detect drift they
+# had themselves caused mid-round.  ⚑ But note what a green census gate now ASSERTS: "the sync
+# found nothing", which is NARROWER than "the census is correct on its own".  Phase 0 already
+# made it so.
+#
+# ⚑ `gen_build_makefiles --check-census` IS DELIBERATELY NOT HERE.  Criterion: does the census
+# SELF-MEASURE — does editing repo tooling move its figures?  CHECKED, not assumed: after four
+# edits to scripts/gate_census.py that moved sql_lift 1166 -> 1170, `--check-census` still read
+# FRESH.  Its figures are the agda DAG, MEM_CAP, the membudget leases and this hook's gate
+# roster.  It is sensitive to a HOOK edit — a one-shot change its author is reviewing — not to
+# the continuous drift Phase 0 exists for, so it should not pay the cost.
+_sync_dirty=""
+_sync_one() {
+  local label="$1" artifact="$2"; shift 2
+  local before after out
+  before="$(md5sum "$artifact" 2>/dev/null || echo absent)"
+  # ⚑ THE SYNC'S OUTPUT IS CAPTURED FROM THE RUN THAT DID THE WORK.  A second invocation to
+  # "show what it said" reports `already current` — the first sync just fixed it — so the
+  # diagnostic would contradict the verdict beside it.  Run once; keep what it printed.
+  out="$("$@" 2>&1 || true)"
+  after="$(md5sum "$artifact" 2>/dev/null || echo absent)"
+  if [ "$before" != "$after" ]; then
+    echo "pre-commit: ⟡census-sync — $label DRIFTED and was re-synced:" >&2
+    echo "    artifact: $artifact" >&2
+    printf '%s\n' "$out" | sed 's/^/    /' >&2
+    _sync_dirty="$_sync_dirty $label"
   fi
 }
+
+_sync_one "sql census"       "$ROOT/.claude/skills/sql-relalg/SKILL.md" \
+  python3 "$ROOT/jea/metalanguage/sql_lift.py" --sync-census
+_sync_one "tool mode census" "$ROOT/.claude/skills/struct-tools/SKILL.md" \
+  python3 "$ROOT/scratch/toolmodes.py" --sync
+_sync_one "gate census"      "$ROOT/.claude/skills/precommit-gates/SKILL.md" \
+  python3 "$ROOT/scripts/gate_census.py" --sync
+
+if [ -n "$_sync_dirty" ]; then
+  echo "" >&2
+  echo "pre-commit: FAILED — ⟡census-sync: a self-measuring census was STALE:$_sync_dirty" >&2
+  echo "pre-commit:   The artifact(s) above are NOW CORRECT — the sync already ran." >&2
+  echo "pre-commit:   RE-RUN your commit; it should pass this phase." >&2
+  echo "pre-commit:   (Nothing was staged. If the artifact is tracked, \`git add\` it first.)" >&2
+  exit 1
+fi
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ⚑ THE TOOL TESTS RUN FIRST, AND THEY ARE CHEAP.  Every gate below parses Agda text
+# with the shared helpers; if those are broken, every census downstream is wrong and the
+# failure reads as an Agda problem rather than a tooling one.  Milliseconds — pure
+# functions, no Agda, no I/O.
+#
+# ⚑ The `--selftest` suites encode ~100 MEASURED incidents (the 33-file gutting, the
+# self-import class, the span rule, the def-index false positives) and NOTHING RAN THEM:
+# `grep -c selftest .githooks/pre-commit agda/Makefile` was 0 and 0.  A regression in the
+# exact machinery that records past damage was shipping silently.  run_selftests.py
+# DISCOVERS the suites rather than listing them, so a new tool is covered by existing.
+# ⚑⚑ THE RUNNER IS pytest AS OF Ⓝ73″ ⟡the-tests-seam, AND THE REWIRE WAS MANDATORY RATHER
+# THAN OPTIONAL.  `tests/__init__.py` used to insert `scratch/` and `scripts/` onto
+# `sys.path` at import time — the shape the operator refused outright (2026-08-31: *"NOO.
+# No sys.path modification."*).  Retiring it moved that reach into
+# `[tool.pytest.ini_options] pythonpath` in `pyproject.toml`, which ONLY pytest reads, so
+# `unittest discover` now fails to import every suite with `ModuleNotFoundError: agda_lex`.
+# ⚑ A migration that left this line naming the retired runner would have turned a green
+# gate red at the next commit, which is strictly worse than a slower one.
+#
+# ⚑ BOTH THE ROOT AND THE PATH ARE EXPLICIT, AND NEITHER IS INHERITED FROM THE CWD.  A
+# git hook's cwd is the worktree root BY CONVENTION, and this repo has measured the
+# wrong-root class three times over (the wrong-tenant read, the wrong-root
+# `WorkingTree()`, the ambient interpreter) — each time a fact about the INVOCATION,
+# resolved ambiently, whose wrong value is SILENT.  `--rootdir` is where pytest resolves
+# `pyproject.toml` and its `pythonpath` from; the operand is what it collects.  VERIFIED
+# from a foreign cwd, not assumed: the same 54 cases run from `/tmp`.
+#
+# ⚑ THE OPERAND DUPLICATES `testpaths = ["tests"]` AND THAT IS THE ONE ACCEPTED
+# REDUNDANCY.  `testpaths` is the authority for a BARE `pytest` (what a developer types);
+# the operand is what makes this gate independent of the cwd it is handed.  They can only
+# disagree by someone pointing this line at a different directory, which is a visible
+# edit — as against a silent cwd, which is not.
+run "tool unit tests" python3 -m pytest --rootdir "$ROOT" -q "$ROOT/tests"
+# ⚑⚑⚑ THE ROSTER'S CURRENCY IS A PRECONDITION FOR THE RUN THAT CONSUMES IT (⟡roster-currency-
+# ungated, 2026-09-01).  Selftest.mk is GENERATED from suite_discovery, and nothing checked the
+# committed copy against what discovery finds now — so a newly-written suite could sit
+# discovered-but-undeclared and simply never run.  MEASURED: discovery 236, declared 235, the
+# missing one being a suite written minutes earlier.
+#
+# ⚑⚑ AND THE SESSION THAT LOST IT HAD "VERIFIED" THE ROSTER.  It ran `gen_selftest_mk.py
+# --check` and read exit 0 — but that module is a pure RENDERER with no main and no CLI, so it
+# accepts any flag and exits 0 having done nothing.  **A flag a program does not implement is
+# byte-identical to one it satisfies.**  The mode now lives in selftest_mk.py, which owns the
+# file, and this line is what makes it reachable: declared_indexes shipped a diagnosis with no
+# gate and the next writer reintroduced the defect it described.
+run "selftest roster current" python3 "$ROOT/substrate/selftest_mk.py" --check
+run "tool selftests" python3 "$ROOT/scripts/run_selftests.py" --quiet
+run "feature coverage" python3 "$ROOT/scripts/check_feature_coverage.py" --quiet
 
 run "def/proof separation" "$ROOT/scripts/check_def_proof_separation.sh" --quiet \
   || true   # --quiet is silent; re-run verbose on failure for the message
@@ -54,14 +244,74 @@ fi
 # audit/fix); --quiet stays silent on success but prints offenders on failure.
 run "UP non-vacuity" "$ROOT/scripts/check_up_nonvacuity.sh" --quiet
 
-# Build-makefile tree must stay in sync with the source tree (new/removed
-# .agda files or directories require regenerating the per-dir makefiles).
-run "build makefiles in sync" python3 "$ROOT/scripts/gen_build_makefiles.py" --check
+# The generated build makefiles must stay in sync with the source tree: a new/removed .agda
+# file changes the explicit MODULES list and the import DAG, so agda/Flat.mk (one flat
+# import-DAG makefile — NOT per-directory; those 280 were deleted) and the thin agda/Makefile
+# must be regenerated. Regenerate: python3 scripts/gen_build_makefiles.py
+run "build makefiles in sync" "$PY" "$ROOT/scripts/gen_build_makefiles.py" --check --parameterized
+
+# Build census (⟡build-census) must match the build: the `build-census` block inside
+# .claude/skills/build-system/SKILL.md is generated from the tools that OWN each figure — the
+# import DAG and MEM_CAP from gen_build_makefiles, the lease defaults PARSED from membudget, the
+# ledger schemas from buildtime/proofcost, the gate roster from THIS hook's own `run` call sites.
+# It exists because this surface's constants rotted: MEM_CAP was restated as 256m in three files
+# while its authority said 128m. Only the STRUCTURAL block is gated — the measured block reads
+# gitignored, hardware-specific ledgers and would fail on every machine.
+# Regenerate: python3 scripts/gen_build_makefiles.py --sync-census
+run "build census in sync" "$PY" "$ROOT/scripts/gen_build_makefiles.py" --check-census
+
+# Gate census (⟡gate-census) must match THIS hook: the `gate-census` block inside
+# .claude/skills/precommit-gates/SKILL.md is derived from the `run`/`|| true` call sites below
+# and from each ratchet's own baseline declaration. It owns what build_census --gates cannot
+# see — blocking-vs-advisory, ratchet-vs-census-vs-violation, and BASELINE HEALTH.
+# ⚑ It exists because a green gate here is routinely a fact about the census: a baseline that
+# is ABSENT makes its gate exit 0 whatever it measured, and one that is ZERO BYTES makes every
+# census member read as a NEW key. `scripts/gate_census.py --baselines` is the only reader.
+# ⚑ This census measures the gate roster, so adding a gate moves it — a failure right after a
+# hook edit is the instrument working. Regenerate: python3 scripts/gate_census.py --sync
+run "gate census in sync" python3 "$ROOT/scripts/gate_census.py" --check
+
+# ⟡baseline-health: every OTHER gate here measures the tree; this one measures the GATES —
+# whether each ratchet's baseline can support the verdict its gate returns. `set_ratchet`'s
+# no-baseline branch RETURNS 0 whatever it measured, so a ratchet with no baseline file prints
+# a green line while reporting real debt (measured: check_mypy_ratchet exits 0 at 116 type
+# errors). That is census-green-as-a-fact-about-the-census, in five gates at once.
+# ⚑ AN EMPTY BASELINE IS THE OPPOSITE AND IS ACCEPTED: zero bytes reads as the empty set, so
+# every offender is a NEW key — a ZERO-TOLERANCE ratchet that forgives nothing and cannot
+# lower itself. ABSENT is a free pass and is refused; EMPTY is the strong setting and is not.
+# Paydown is to mint the baseline on THIS path. Enumerate: scripts/gate_census.py --baselines
+run "baseline health" python3 "$ROOT/scripts/check_baseline_health.py" --quiet
 
 # Compiled-query cache (⟡qinfra) must match the builders: query_sql.py is generated from query_defs.py's
 # INTERN_BUILDERS; the runtime (query_builders.py) executes it with NO SQLAlchemy. A stale cache would run
 # outdated SQL. Regenerate: python3 jea/metalanguage/query_defs.py --compile
 run "query cache in sync" python3 "$ROOT/jea/metalanguage/query_defs.py" --check
+
+# Tool mode census (⟡modecensus) must match the tools: the `mode-census` block inside
+# .claude/skills/struct-tools/SKILL.md is generated by toolmodes.py --sync from each tool's
+# OWN bare output plus its AST, and is the only place a reader can see the ~30 flags that
+# dispatch while appearing in no usage line. Regenerate: python3 scratch/toolmodes.py --sync
+#
+# ⚑ THE GATE IS THE HALF THAT MAKES THE BLOCK SAFE TO TRUST, so it ships with it and not
+# later. The skill tells every reader "run the tool bare, that output is the authority" —
+# a pointer that was already wrong for 30 modes. Replacing it with a block nobody
+# regenerates would not fix that, it would relocate it: a stale generated table reads as
+# MORE authoritative than the incomplete thing it replaced, because it looks derived.
+# Same shape as `query cache in sync` above (--compile/--check), and the same reason.
+run "tool mode census in sync" python3 "$ROOT/scratch/toolmodes.py" --check
+
+# SQL/relalg census (⟡sql-oracle) must match the tree: the `sql-census` block inside
+# .claude/skills/sql-relalg/SKILL.md is generated by sql_lift.py --sync-census from the tools
+# that OWN each figure — the lift map from sql_lift.build, the builder count from query_defs,
+# the relations/tiers from schema_decl. Regenerate: python3 jea/metalanguage/sql_lift.py --sync-census
+#
+# ⚑ THE THIRD MEMBER OF THE SAME FAMILY (query cache / mode census / this), and it exists
+# because the SQL surface was the one that had NO such gate while being the fastest-moving:
+# a research sweep read the compiled-query cache STALE and minutes later the same command
+# read FRESH. A hand-written map would have frozen whichever reading it caught. The gate is
+# what makes the block safe to trust — a stale generated table reads as MORE authoritative
+# than the incomplete prose it replaced, because it looks derived.
+run "sql census in sync" python3 "$ROOT/jea/metalanguage/sql_lift.py" --check-census
 
 # Worklist tracker integrity (Ⓥ): the derived-status tracker must PARSE and RUN
 # end-to-end — every entry well-formed, every predicate evaluating without crashing.
@@ -69,6 +319,23 @@ run "query cache in sync" python3 "$ROOT/jea/metalanguage/query_defs.py" --check
 # unparseable for ~10 commits, invisible because NO gate ran it (and ad-hoc runs piped
 # stderr to /dev/null). This closes that instrument↔execution residue.
 run "worklist tracker integrity" python3 "$ROOT/scripts/worklist.py" --check
+
+# Worklist PREDICATE resolution: an item must point at something that still EXISTS.
+# ⚑ THIS IS A DIFFERENT QUESTION FROM THE LINE ABOVE, and the split is the whole point.
+# `worklist.py --check` asserts the tracker PARSES AND RUNS; it cannot assert an item is
+# still checkable, because its `status()` collapses every failure onto False = OPEN — its
+# `_defines`/`_grep` return False on OSError, so "the file is gone" and "the file is present
+# and lacks the name" are ONE answer (gate-F93: it computed an offender list into a dead
+# binding and exited 0 regardless).
+# ⚑⚑ IT REFUSES ON A NARROWER CLASS THAN "OPEN", deliberately. An OPEN item with a LIVE
+# artifact predicate is the ordinary state of a work list; only an UNRESOLVABLE predicate
+# refuses. `manual` and `cmd0` items are UNDECIDABLE and never reported — blocking a commit
+# over a human judgement, or over a shell exit that cannot tell "not yet" from "gone", is the
+# false refusal the narrow class exists to avoid.
+# ⚑ NOT A RATCHET, AND THAT IS DELIBERATE. A baseline here would make the FIRST stale
+# predicate permanent by construction. The population must be empty; paydown is to re-point
+# the item. Enumerate: scripts/check_worklist_predicates.py
+run "worklist predicate resolution" python3 "$ROOT/scripts/check_worklist_predicates.py" --quiet
 
 # Shape-node collision index must stay current (names are vacuous; the visible
 # name→shape map disambiguates for the reader). Regenerate: sppf_node_index.py
@@ -88,17 +355,178 @@ run "decl-site shape tags" python3 "$ROOT/scripts/decl_shape_tag.py"
 # fork-by-reimplementation class (e.g. _+ℤ_ re-defined under Algebra/Q/).
 run "carrier locality" python3 "$ROOT/scripts/check_carrier_locality.py" --quiet
 
+# ⚑ A GATE IS NOT SHIPPED UNTIL IT IS WIRED.  These five existed with baselines and ran
+# NOWHERE — two of them written the same day, one baselined minutes before the audit that
+# found it.  A baseline no gate consults is a census wearing a ratchet's clothes: the
+# plan reads as though the policy is enforced, and nothing enforces it.  Worse, the two
+# newest baselines were UNTRACKED, so they would have vanished on a fresh clone.
+#
+# The ban ratchet: no `using`/`renaming`/`hiding`/`as` on a Substrate import — the
+# precondition that unblocks upstream splitting.
+run "ban ratchet" python3 "$ROOT/scripts/check_ban_ratchet.py" --quiet
+
+# Claims: a comment asserting a re-export/shim/count must still be true of the file.
+run "claims" python3 "$ROOT/scripts/check_claims.py" --quiet
+
+# Rederivation: a quantity already derived by a canonical authority may not be derived
+# independently without a `⚑rederive:` declaration — and the declaration is COUNTED, not
+# exempted, so the census can only fall.
+run "rederive ratchet" python3 "$ROOT/scripts/check_rederive_ratchet.py" --quiet
+
+# Discharge: a level-POLYMORPHIC carrier claims something at every level, so it must be
+# handed over — inhabited by a term, or consumed by a construction that discharges it.
+# The Set₁ gate measures universe HEIGHT and is blind to this by construction.
+run "discharge ratchet" python3 "$ROOT/scripts/check_discharge_ratchet.py" --quiet
+
+# ⚑ An in-place source editor must be RECOVERABLE.  The module exists because a
+# rewrite left 33 files unrecoverable (Coxeter/Core.agda 76 lines -> 3), and
+# one-by-one adoption is what produced that exposure — hence a gate whose
+# population is DISCOVERED (the read-then-write shape), not declared.
+#
+# ⚑ THE NUMBER THAT WAS HERE IS GONE ON PURPOSE.  This comment read "MEASURED
+# 2026-08-01: 43 tools read-then-write an Agda source; only 9 armed
+# `edit_snapshot`" — true when written, and by 2026-08-03 the gate measured
+# **47 of 47 armed, 0 unarmed**.  A frozen figure in prose beside a live census
+# ages into a false claim about its own subject, and a reader trusts the sentence
+# over the tool because the sentence is right there.  The ratio is the GATE's to
+# report: `check_snapshot_guard.py --list` answers it, always current.
+run "snapshot guard" python3 "$ROOT/scripts/check_snapshot_guard.py" --quiet
+
 # Sum-type ratchet: duplicate `data`/`record` declarations are DEBT (paydown-only,
 # a materialized census like Set₁). A NEW copy of a duplicated type — or a name
 # becoming newly-duplicated — is refused; consolidate/import instead. The sibling
 # of carrier-locality (which governs operators over the UNIQUE carriers this skips).
 run "sumtype ratchet" python3 "$ROOT/scripts/check_sumtype_ratchet.py" --quiet
 
+# ⟡mode-standardize — a CLI mode's ROSTER and its DISPATCH are two spellings, and nothing
+# compared them.  A dispatched-but-undeclared mode runs with UNDECLARED ARITY (the entry
+# point reads arity from the roster, so the arg-stripper guesses — `--key --archive f.py`
+# crashed exactly this way); a declared-but-never-dispatched row is a promise the CLI does
+# not keep AND still feeds arity resolution.  Measured 2026-08-19: 25 of 57 modes in
+# `pycodemod.py` were undeclared.
+#
+# ⚑ THE READER PRE-DATES THE GATE BY DAYS.  `pycodemod --check-contracts` reported both
+# directions the whole time, at 0 call sites — reachable only from its own CLI.  This is a
+# wrapper, not a second analysis: the verdict stays with the tool that owns `.py`, and the
+# gate only makes it BITE.  Baseline is the ⟡mode-dual-role six (flags that are BOTH an
+# `OPT_OPERANDS` modifier and a dispatch branch) — a real unresolved design question,
+# grandfathered so the gate can refuse the NEXT one before that question is settled.
+run "mode contracts" python3 "$ROOT/scripts/check_mode_contracts.py" --quiet
+
+# ⟡divergence-ungated — the SIBLING of `mode contracts`, one question over.  That gate asks
+# whether a DECLARED mode honours the behaviour it declares; this asks whether a mode is
+# declared AT ALL.  `toolmodes.py --divergence` has been that reader since it was written and
+# NOTHING CONSULTED IT: measured `pycodemod --calls cmd_divergence` -> 0 syntactic calls,
+# reachable only from its own CLI.  `--check` gates the generated census BLOCK's freshness in
+# SKILL.md; the divergence itself had no gate, so 58 modes could dispatch undeclared forever.
+# The cost is not hypothetical — the skill tells every reader "run the tool bare and read its
+# mode list, THAT output is the authority", so an undeclared mode aims that pointer at an
+# incomplete authority and the obedient reader still guesses.
+#
+# ⚑ BASELINE 58 (50 undocumented + 8 unbacked), GRANDFATHERED — a ratchet over a materialized
+# census, never an allow-list.  It forbids GROWTH and rewards paydown; it does not adjudicate
+# which of the 58 are worth declaring.
+# ⚑ AND THE BASELINE IS DELIBERATELY MINTED *AFTER* A READER FIX, WHICH IS LOAD-BEARING: the
+# census read 84 undocumented until 2026-08-23, when 34 turned out to be a READER GAP rather
+# than debt (a roster printed as ~40 single-line `print()` calls was invisible to a reader that
+# only recognised multi-line string constants).  A baseline frozen a day earlier would have
+# banked ~40% instrument artifact into a paydown-only ratchet.  A future reader improvement is
+# therefore EXPECTED PAYDOWN, not the gate malfunctioning.
+run "divergence ratchet" python3 "$ROOT/scripts/check_divergence_ratchet.py" --quiet
+
 # Public ratchet: a WHOLESALE `open … public` (no using/hiding/renaming) is DEBT — Agda
 # module application COPIES, so it re-materializes the whole upstream API into this core
 # AND every consumer's, transitively (the ⟡cap-ratchet blowup mechanism). A module
 # re-exports ONLY what it DEFINES; bind at the OWNER, non-publicly. Paydown-only.
 run "public ratchet" python3 "$ROOT/scripts/check_public_ratchet.py" --quiet
+# ⟡private-policy — the SIBLING of the public ratchet.  `public` re-exports what a module does
+# not define; `private` hides what it does.  Both are ways of appearing to narrow a module that
+# holds too much, and both dissolve under one-definition-per-file: a `private` helper is a
+# SECOND definition in a file that should hold one.  Baseline 226 across 88 files; paydown is
+# EXTRACTING the helper, never deleting the keyword.  `private variable` (164 sites) is a
+# binding form, not a hidden helper, and is deliberately NOT censused.
+# ⚑⚑ RETIRED `scripts/check_private_ratchet.py` AND MOVED HERE — the same shape as the type
+# gate below, and for the same reason. The old gate carried 96 findings (39 ruff + 57 mypy) and
+# therefore could not be edited, INCLUDING by the one-argument edit that would fix it: it passed
+# no `key_move`, so a decomposition that relocates a key read as GROWTH and the gate refused,
+# which also blocked every genuine paydown in the same run from recording. Measured before the
+# switch: 2 additions, both churn from one decomposition, holding back 164 recorded paydowns.
+#
+# ⚑ VERIFIED SET-IDENTICAL BEFORE THE SWITCH, and non-vacuously so. `substrate/private_census`
+# and the retired gate returned the SAME 62 keys — asserted by SET in
+# `private_equivalence_selftest`, both directions named, because a matching COUNT over
+# different sets is the case that passes while being wrong. Non-vacuity matters here too: two
+# empty censuses are equal, so the suite also asserts the census is non-empty.
+#
+# ⚑ THE BASELINE FILE DID NOT MOVE. `substrate/private_gate` reads
+# `scripts/private_ratchet_baseline.txt` deliberately: the baseline IS the debt, and a debt
+# whose ledger moved has not been paid — it would read as a fully paid-down gate.
+run "private ratchet" python3 -m substrate.private_gate --quiet
+
+# ⟡type-gate — a STATIC-TYPE ERROR in PROMOTED python is DEBT (user: "I think I prefer mypy
+# here. And gated.").  The evidence is this arc's own defect log: `imports_of` behind a
+# `hasattr` fallback degraded a freshness check to measuring NOTHING (§52); `_classify`,
+# `CII.importers()` and `AL.agda_files` were three invented APIs; `group_statements(lines,[])`
+# passed a list where a callable was required.  Each cost a run-edit-run cycle.
+#
+# SCOPE is IMPORTED from `substrate.promoted.POPULATION`, never restated — promote a fourth
+# project and it joins by construction.  scratch/ is deliberately UNGATED: it is a STAGING
+# AREA, and residence there IS the not-yet-promoted status, so gating it would defeat staging.
+# That also gives `promotion` a mechanical test it lacked — a candidate must not add census
+# keys.  Keys are `<code>::<path>`, never line-numbered (§7g).  An unrunnable mypy REFUSES
+# (exit 2) rather than reporting a clean census.
+#
+# ⚑⚑ REPOINTED FROM `scripts/check_mypy_ratchet.py` TO THE PROMOTED MODULE (⟡hook-repoint).
+# The old gate carries 198 findings and therefore CANNOT BE EDITED — including by the edit
+# that would switch its roster — so it was frozen holding `ROOTS = ["jea", "el-atlas"]` while
+# the clean roster had gained `substrate`.  Two population declarations disagreed and the hook
+# ran the stale one, which meant every module promoted into `substrate/` landed OUTSIDE the
+# gate the promotion exists to bring it under.
+#
+# ⚑ VERIFIED BYTE-IDENTICAL BEFORE THE SWITCH: `substrate.promote_agree --mypy` reports the
+# two implementations returning the SAME 1144 census keys.  The population is wider (334 ->
+# 347 files, the promoted modules now included) and contributes ZERO keys, because the package
+# was cleaned first — the ordering was deliberate, since admitting a dirty tree to a
+# paydown-only ratchet banks its debt as baseline.
+#
+# ⚑ THE BASELINE FILE DID NOT MOVE.  `substrate/type_gate.py` reads
+# `scripts/mypy_ratchet_baseline.txt` deliberately: the baseline IS the debt, and a debt whose
+# ledger moved has not been paid — it would read as a fully paid-down gate.
+run "type gate (mypy)" python3 -m substrate.type_gate --quiet
+
+# ⟡stub-authority — every `.pyi` in stubs/ must still match the module it describes.  A stub
+# lets a promoted module import an authority that is not yet a package (mypy_path finds the
+# `.pyi`), which buys real safety and opens a real hole: nothing otherwise notices when the
+# module moves and the stub does not.  NOT a ratchet — a BIJECTION: a stub either matches or it
+# does not, so there is no baseline and no paydown ledger.
+#
+# ⚑⚑ THE GATE EXISTED AND ENFORCED NOTHING.  It declared itself "Blocking gate" in its own
+# docstring while appearing in NEITHER `build_census --gates` NOR `gate_census --successors`
+# (35 gate scripts, not among them).  A census defect inside it was repaired earlier the same
+# day — it globbed `stubs/*.pyi` and could see 5 of 17 files — which made an UNENFORCED verdict
+# honest rather than making anything safer.  `a-gate-is-not-shipped-until-it-is-wired`, the same
+# finding this hook already records for the five ratchets above.
+#
+# ⚑⚑⚑ PHASE A, AND THE PLACEMENT IS THE DECISION.  This gate IMPORTS the runtime it checks, so
+# the reflex is to fear it.  But it reads no `.agdai` core and measures nothing the build
+# produces, so Phase C — whose entire justification is post-build freshness — would buy it
+# NOTHING and merely make it unreachable behind an expensive step.  Measured at ~21s, which is
+# Phase A's own scale.  ⚑ The import is of THIS REPO's scripts plus already-installed
+# third-party packages; it runs no Agda and touches no store.
+#
+# ⚑⚑⚑ AND `UNVERIFIABLE` HAD TO BE SPLIT BEFORE THIS LINE COULD EXIST, because wiring it
+# unsplit would have reproduced Ⓝ95 ⟡the-tracking-gaps — a blocking gate that fails a CLEAN
+# CHECKOUT.  `paperkit.bib` needs `bibparse`, absent here.  Two cases arrive as the SAME
+# `ModuleNotFoundError` and the gate now separates them by WHICH module the error names:
+#   · ABSENT-DEP — a third-party package is not installed.  A fact about the MACHINE; the stub
+#     is not implicated and could not be fixed by its author.  REPORTED, PASSES.
+#   · ORPHANED  — the missing name IS the stub's own module.  A fact about the STUB: it
+#     describes something that is gone, and still SHADOWS that import for every consumer.  FAILS.
+# ⚑ MEASURED, NOT REASONED: a stub for a nonexistent `_ghostmod` was dropped into stubs/ and the
+# pre-split gate reported it beside paperkit as NOT VERIFIED and exited 0 — a PERMANENT free
+# pass, in the gate whose subject is stub authority.  Both arms were then fired deliberately
+# (orphan, and a renamed parameter) and restored.  Enumerate: check_stub_authority.py --list
+run "stub authority" python3 "$ROOT/scripts/check_stub_authority.py" --quiet
 
 # Apex gate: every relational law-motif (≥3 instances) must have a parametric apex
 # (a parameterizable module — NOT an index, which forces concurrent building). No
@@ -135,7 +563,7 @@ fi
 # prose exempt). Converts "is jea independent of scratch?" from a hand-grep I answered wrong twice into a
 # non-skippable invariant (the G9 escalation from the 2026-06-17 scratch-dissolution arc).
 if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
-  run "scratch-independence (Λ8)" python3 "$ROOT/scripts/check_scratch_independence.py" --quiet
+  run "scratch-independence (Λ8)" "$PY" "$ROOT/scripts/check_scratch_independence.py" --quiet --root "$ROOT"
   # Λ8b (import-tier): the RUNTIME complement to Λ8's static scan — imports the 5 coupling-surface
   # modules under a sys.addaudithook, catching a module-level DYNAMIC scratch reach (computed path /
   # dynamic import) the AST scan can't see. ~3s (import-only; the heavy GPU/agda DEMO surface is NOT
@@ -144,10 +572,15 @@ if git diff --cached --name-only | grep -qE '^(jea|el-atlas)/'; then
 
 fi
 
-# Full build: prove EVERY module typechecks via `make -C agda -j` — the SINGLE build path
-# (⟡cap-384). make routes through the agda-shim → membudget: cgroup caps maxRSS≤384 (and OWNS
-# retry-on-OOM, so a genuine >384 module exhausts the 192→384 ladder → 137 → make recipe fails,
-# never masked), +RTS -M256m caps GHC heap; Substrate.All is excluded from FILES (OOM by design);
+# Full build: prove EVERY module typechecks via `make -C agda -j` — the SINGLE build path.
+# make routes through the agda-shim → membudget, and TWO DIFFERENT CAPS apply (⚑ they are
+# different KINDS, not two numbers): membudget's cgroup LEASE bounds maxRSS and OWNS
+# retry-on-OOM (a too-small guess is killed at 137 and re-entered at the next power-of-two
+# bucket until it fits or the ladder is exhausted, at which point the make recipe fails, never
+# masked), while `+RTS -M$(MEM_CAP)` caps the GHC HEAP and is a hard GATE (exit 251 → the
+# cap-ratchet's signal). Both values live in their own authorities — gen_build_makefiles.py for
+# MEM_CAP, scripts/membudget for the lease defaults — and are deliberately NOT restated here.
+# Substrate.All is excluded from FILES (OOM by design);
 # stop-at-first-failure (iterate incrementally; `make -C agda/Substrate/<dir>` for detail). EXPENSIVE, so it runs at
 # most weekly: a successful run touches "$STAMP"; while that stamp is younger than a
 # week the build is skipped for fast commits. Only attempted when the cheap gates above
@@ -199,7 +632,13 @@ if [ "$fail" -eq 0 ]; then
     else
       echo "pre-commit: full build (every module; >7d since last) — running, this may take a while…"
     fi
-    if make -C "$ROOT/agda" -j; then
+    # ⟡agda-jobs: the -j width comes from ONE authority (gen_build_makefiles.AGDA_JOBS, env
+    # AGDA_JOBS overrides). Hardcoding it here would be the second spelling the constant exists
+    # to prevent. Falls back to a bare -j only if the reader is unavailable — the pre-⟡agda-jobs
+    # behaviour, which is safe (membudget's semaphore still throttles by RAM) rather than absent.
+    AGDA_J="$("$PY" "$ROOT/scripts/gen_build_makefiles.py" --jobs 2>/dev/null)"
+    if [ -n "$AGDA_J" ]; then set -- -j "$AGDA_J"; else set -- -j; fi
+    if make -C "$ROOT/agda" "$@"; then
       touch "$STAMP"
       echo "pre-commit: full build OK — stamp refreshed."
       # Ⓓ.gate(-graph/-render-from-db): the .agdai cores are now fresh — rebuild the relational
@@ -246,9 +685,10 @@ if [ "$fail" -eq 0 ]; then
   # freshen is a no-op here (gen_catalog already rebuilt catalog.db from the fresh cores).
   run "Set₁ ratchet (elaborated)" python3 "$ROOT/scripts/set1_ratchet_cores.py" --quiet
 
-  # ⟡cap-ratchet: per-module elaboration PEAK over 128MB is MEMORY DEBT — the census that lets
-  # MEM_CAP (gen_build_makefiles.py, currently 256m) descend to 128 MECHANICALLY instead of by a
-  # flag day. Paydown-only, like its three sibling set-ratchets: a NEW module crossing the cap is
+  # ⟡cap-ratchet: per-module elaboration PEAK over the TARGET is MEMORY DEBT — the census that
+  # lets MEM_CAP (gen_build_makefiles.py owns the value; do NOT restate it here) descend
+  # MECHANICALLY instead of by a flag day. Paydown-only, like its three sibling set-ratchets: a
+  # NEW module crossing the cap is
   # REFUSED (shard the elaboration unit at an associative boundary and seal the parts — cf.
   # KAT.Full's fold-++ shards — or split def/proof, or seal the heavy neutral `opaque`; never raise
   # the cap), a paid-down module auto-lowers the baseline. It reads the per-dir .agda-times.tsv
