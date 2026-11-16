@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Hamming — F₇ / Hamming(7, 4) sub-byte layer for the EE-arc.
 
 Hamming(7, 4) = [7, 4, 3]: 16 codewords over 7 bits. Perfect

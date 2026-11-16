@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Remainder plot tied to Euler's totient.
 
 Pick a modulus m. The plot scatters (k, k mod m) for k = 1..N.

@@ -1,0 +1,6 @@
+[COMPLETE] (Σ-arc, trace T2-residue, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **G3 (conservation-of-difficulty, honest residues that REMAIN):** (1) the chart-less recognizer is
+  O(items²)·rounds — position-bucketing is a legitimate INDEX over the grading for speed [Σ-SPPF-CHART-
+  INDEX], not bespoke control; (2) trace()/trace_fold() in canonical jea_pyalg are EAGER — large-forest
+  readouts must drive `wedge` directly; a lazy/generator trace would make streaming default

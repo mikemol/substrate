@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc, trace T3-navigator, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-SEAM-GLUE — WORKED to a precise Agda handoff spec (this pass); the three-V₂ hint reoriented it.**
+  jea/SEAM_GLUE_SPEC.md. Read SharedMiddle (BUILDS three V₂ links Lα,Lβ,Lγ in ONE V₄, Lβ shared middle, all
+  HasOrder 2 + commuting; POSITS-UNBUILT the two-distinct-V₄s seam) + V4-Cosets (proves V₄∩Stab={e}) +
+  GL3F2/SylowDecomposition (Sylow-2 is D₈, order 8). USER's hint "the two V₄s are sup

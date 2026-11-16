@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_spectral_agreement.py — V₄⋊S₃ duality verification.
 
 Per the DATAFLOW_REMODEL correction: the spectral basis and the V₄⋊S₃

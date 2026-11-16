@@ -1,0 +1,9 @@
+[OBLIGATION] (Σ-arc, trace T1-forest, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- (carried: Σ-TRACE-LAZY + Σ-GATE-SKIP-3STATE reports to AI-Q; Σ-FOREST-MATCH here; Σ-SPPF-CHART-INDEX
+  if perf; Σ-BRIDGE-TABLES; Σ-OMML-DOMAIN; Σ-FOREST-AGDA[AI-Q]; Σ-EXTRUDE; Σ-CROSS; Σ-TIDY. Σ-OBLIGATION
+  the spine-NAME; Σ-IR-UNIFY LANDED. GOAL Σ-FOREST core DONE+handed, capstone RAN on mat260.)
+
+
+
+Iterated-subtraction (G4): passes 1–16 SUBTRACTED. This pass ritualizes a DENSE self-corrective

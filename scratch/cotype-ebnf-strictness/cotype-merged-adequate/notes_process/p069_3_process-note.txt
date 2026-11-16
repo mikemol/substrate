@@ -1,0 +1,1 @@
+* WEDDERBURN-ARTIN on ℚ[G] (≅ ⊕ Mᵢ(Dᵢ)) — right LANGUAGE (inverse = sum of matrix rings over

@@ -1,0 +1,1 @@
+- **Σ-SPPF-CHART-INDEX** [only if a real corpus needs the speed] — position-bucketing as an index over

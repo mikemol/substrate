@@ -1,0 +1,2 @@
+P12 PARITY-WITNESS [**100 pure-GS**] odd cycle-dimension FORCES the witness kernel (antisymmetric rank is always even ⟹ odd-dim space must have ≥1 kernel dim). The GOAL-SIDE structural reason the witness exists (not just that a probe witnessed it). rung 2,3 (odd cyc-dim) have the kernel; rung 4,5 (e
+[owner-field(raw): AI-Π0]

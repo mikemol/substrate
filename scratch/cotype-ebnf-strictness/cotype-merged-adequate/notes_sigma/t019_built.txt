@@ -1,0 +1,7 @@
+[BUILT] (Σ-arc, trace T1-forest, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **G2 (delta) — the mechanism was ALREADY BUILT; the work was VERIFY, not build.** The cotype
+  said substitute was "not yet exercised"; opening the projector, the `carrier` map + the BinOp
+  substitute branch were already wired (a prior turn built ahead of the note). So this pass was a
+  VERIFICATION pass, and I treated it as one: exercised it on the cotype's concrete target
+  (schur_frac → ℚ-We

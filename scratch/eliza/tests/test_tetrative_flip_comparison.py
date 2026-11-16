@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_tetrative_flip_comparison.py — flip-opcode redux.
 
 Comparison across the tetrative axis with the user's two corrections

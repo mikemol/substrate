@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Windows — natural window boundaries via V₄ chamber closure.
 
 A V₄-closure point is a position where the cumulative XOR of all crumbs

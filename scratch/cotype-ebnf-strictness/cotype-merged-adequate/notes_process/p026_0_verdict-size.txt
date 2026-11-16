@@ -1,0 +1,2 @@
+Δ-Π-verdict-size [100 pure-GS, small] — STILL OPEN (node-count in verdict) Unchanged from pass 1. "IDENTICAL (0 holes)" on 6-node units = trivial generators mislabeled. Put node-count in `typehole_verdict`. Owner AI-Πτ. (Lower priority than surprisal-truearity now.)
+[axis-signature: 100 | task: Δ-Π-verdict-size]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 unified_address.py — M38: unified Hamming-coded address space.
 

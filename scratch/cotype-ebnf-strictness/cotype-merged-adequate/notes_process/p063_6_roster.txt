@@ -1,0 +1,1 @@
+| **P42/P50 Tarski** | terminal(truth) uncompletable(ν) BUT "it is uncompletable" is a PROVED finite theorem (Liar=x⟺¬x UNSAT, from below); both poles run from ONE diagonal | **WITNESSED (ran)** [was 

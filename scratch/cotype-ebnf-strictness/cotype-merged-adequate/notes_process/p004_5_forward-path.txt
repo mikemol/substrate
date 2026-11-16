@@ -1,0 +1,1 @@
+- **PROVEN against the real Intern (NO core change):** partial Earley items (`S→•AB`, `S→A•B`,

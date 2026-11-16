@@ -1,0 +1,1 @@
+- **THE KEY POINT: the witness is STRUCTURALLY FORCED into `children`.** You cannot construct the

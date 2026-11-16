@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 21: Δ-Π-project [the UNFOLD; DONE-partial — fixpoint gate PASSED)
+
+### Δ-Π-project [the UNFOLD; DONE-partial — fixpoint gate PASSED] — IR→source, inverse of the front-ends
+USER insight: CUDA lives in Python strings; if it can be INTERNED it can be PROJECTED. BUILT
+`jea/jea_piproject.py` (PyProjector + the fixpoint test). IR (kind,role,op,lit,children)+payload =
+quotient+residue; projection = recon with residue supplied. THREE MODES (parameterized by residue):
+  *

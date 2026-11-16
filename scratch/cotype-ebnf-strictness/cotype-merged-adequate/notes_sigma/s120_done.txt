@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 15: Δ-Π-extrude [the API; DONE for the core case — record] — was)
+
+### Δ-Π-extrude [the API; DONE for the core case — record] — was the pass-9 NEXT, now built
+Full status in PROBE STATE. Kept here for the derivation:
+Extrude the same-language writer as an API over the CANONICAL parse/unparse pair, NOT a bespoke
+projector: `transform(source, find=typehole_pattern, rewrite) → source` = canonical-parse → locate
+edit sites (the typeholer/telescope give the pattern) →

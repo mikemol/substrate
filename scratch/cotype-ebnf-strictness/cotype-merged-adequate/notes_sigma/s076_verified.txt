@@ -1,0 +1,6 @@
+[VERIFIED] (Σ-arc, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-SEAM-GLUE spec → v3 (USER: another close read/refactor).** jea/SEAM_GLUE_SPEC.md. Changes from v2:
+    (1) fixed an `S₃` mojibake (was a corrupted byte-sequence on the WhyThreeV2 line); (2) SHARPENED B1 with
+    the now-VERIFIED forest-as-witness-discipline (jea_sppf_torsor.py): the M2 discharge has a SUBSTRATE-
+    NATIVE shape — lower it into IR(op=claim, role=span, children=witnesses) whe

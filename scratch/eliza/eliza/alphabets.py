@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Alphabets — Char, Gen, Chamber, Orbit + V₄ table.
 
 Per the Agda module: Char is open-ended (Unicode strings); Gen is a closed

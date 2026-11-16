@@ -1,0 +1,2 @@
+THE OBJECT IS NOT KNOWABLE FROM ONE FAMILY: single-chain climbing = slices; the real object = the interaction lattice (how families cross at the rung). The investigation reconstructed the interaction lattice one slice at a time without naming that that's what it was. The data structure should be a LATTICE indexed by twistable attribute and their crossings, NOT a list.
+[supporting witness: probe_tree_deform.py — shared block evidence]

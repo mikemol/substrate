@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Hodge dual-grade ★ as a vertical fold tower — PyVista.
 
 Four grade rings (z = grade) with face counts 4,6,4,1; ★ pairs them 0↔3 and

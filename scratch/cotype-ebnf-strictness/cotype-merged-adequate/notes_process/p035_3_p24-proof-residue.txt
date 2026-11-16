@@ -1,0 +1,2 @@
+P24 PROOF-RESIDUE [011] the skeleton-grade-vs-byte-grade scope gap IS the residue of the proof itself (meta-level). Honest-scoping = residue-retention, NOT a hedge. The unbuilt IR→Python unparser is the byte-grade residue.
+[axis-signature: 011 | owner-field(raw): AI-Π0 / USER]

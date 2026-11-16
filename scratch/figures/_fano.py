@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Shared Fano-plane / octonion data (agda/Substrate/Algebra/F2/FanoPlane.agda).
 
 The 7 points (nonzero vectors of F₂³), the 7 lines, the Singer 7-cycle, and the

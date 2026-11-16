@@ -1,0 +1,2 @@
+USER CRITERION: something always happens at prime p; the question is whether it's the SIMPLEST p-thing (⟹ p-as-prime, independent coordinate) or DRESSED (⟹ interference/coprime).
+[supporting witness: probe_three_qzeta3.py — shared block evidence]

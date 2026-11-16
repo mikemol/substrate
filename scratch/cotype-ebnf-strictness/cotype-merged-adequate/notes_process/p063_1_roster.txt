@@ -1,0 +1,1 @@
+| **P37 ring** | meaning(distinction) ⟺ 1≠0; 0-annihilation derived; 1=0 ⇒ zero ring | **PROVEN (ran)** — GF(2,3,5,7) |

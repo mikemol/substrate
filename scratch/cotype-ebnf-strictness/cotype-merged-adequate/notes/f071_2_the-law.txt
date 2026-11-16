@@ -1,0 +1,2 @@
+THE LAW (verified compositionally, nv=10, every factor attributed, none eliminated): charpoly(multi-block element) = ⊕(block-internal factors) ⊕ (CROSS factors), where: * ODD-COPRIME blocks (m,n both odd, coprime) → cross factor is CYCLOTOMIC Φ_{mn} (ABELIAN).
+[supporting witness: probe_composition_law.py — shared block evidence]

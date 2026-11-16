@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV7 — V6 generalised by V-arc operad structure.
 
 V-arc codec. The codec ring acquires four orthogonal axes of

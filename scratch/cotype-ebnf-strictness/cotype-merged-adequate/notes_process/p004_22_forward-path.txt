@@ -1,0 +1,1 @@
+- **the `changed` flag = `intern`'s own novelty signal.** intern appends only on a new key (L67-75),

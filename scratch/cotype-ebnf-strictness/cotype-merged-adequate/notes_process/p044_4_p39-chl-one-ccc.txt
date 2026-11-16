@@ -1,0 +1,2 @@
+P39 CHL-ONE-CCC [011] Curry-Howard-Lambek discharges the "different proof routes" residual: logic = computation = cartesian-closed-category (Lambek), proofs = programs (Curry-Howard); the four theorems are ONE Lawvere fixed-point-theorem diagonal in one CCC, instantiated in Set/syntactic/computable 
+[axis-signature: 011 | owner-field(raw): reasoned]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 witnessed_pairs.py — reformulate the architecture's ternary cells as
 (pair, witness) operations.

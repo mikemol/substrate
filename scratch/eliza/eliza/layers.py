@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Layers — brick adaptations of existing modules.
 
 Each Layer wraps one production module as a Brick conforming to the

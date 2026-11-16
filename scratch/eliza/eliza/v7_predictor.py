@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.V7Predictor — predictor typeclass for V-arc generator ring.
 
 Per the DBE pass: each BasisLabel in V7 is bound to a Predictor

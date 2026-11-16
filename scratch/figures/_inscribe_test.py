@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Prototype: inset (engraved) glowing vertical text on a capsule.
 
 Validates text->mesh, boolean DIFFERENCE engrave, glowing inset faces, vertical

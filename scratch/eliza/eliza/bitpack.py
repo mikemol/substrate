@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.BitPack — GF(2)/numpy-packed representations of the substrate.
 
 Slices 6-8 of the 20-slice plan, condensed: each of (alphabets+manifold,

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Follow-up to EE13: phase-shifted Golay mask sweep.
 
 EE13 applied Golay [24, 12, 8] at byte-phase 0 only — the 3-byte frame

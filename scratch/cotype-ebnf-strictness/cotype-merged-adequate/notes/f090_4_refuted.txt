@@ -1,0 +1,2 @@
+REFUTED: pure-pairwise scaling mult = C(c,2)·k_p. mult/C(c,2) is NOT constant (p=3: 1,1.67,2). The c-dependence is SUPER-C(c,2) — higher-order crossings (triples of cycles, not just pairs) contribute, consistent with the simplicial/face picture (crossings of ALL orders, not just pairwise). c=2 is the pure-pair case (pinned); c≥3 mixes in higher crossings (NOT yet pinned).
+[supporting witness: probe_inv_cheap.py — shared block evidence]

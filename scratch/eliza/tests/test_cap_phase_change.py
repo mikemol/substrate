@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_cap_phase_change.py — measure encode time vs VM steps to
 reveal GPU-internal bottleneck phase changes across the cap sweep.
 

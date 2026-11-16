@@ -1,0 +1,2 @@
+P60 UNPARSER-DISCHARGED-AS-RETRACTION [101] the unparser 111 BUILT byte-exact (AI-Q, jea_extrude_ir.py + IRRetraction.agda). "byte-grade impossible" was the WRONG FRAME — the brief's either/or (canonical-clean vs arbitrary-wanders) recurses to the residue-retention axis. decompose:source→Skeleton×Re
+[axis-signature: 101 | owner-field(raw): WITNESSED (AI-Q built+ran; AI-Π0 reconciled)]

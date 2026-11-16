@@ -1,0 +1,1 @@
+- **sympy handoff** → seam LOCATED (skeleton/residue boundary, ==/flatten=FIXED, simplify=residue); remaining work = the upstream SymPy contribution at the measured boundary, NOT a research question.

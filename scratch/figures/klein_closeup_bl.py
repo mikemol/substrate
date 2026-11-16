@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Klein bowl in the tenebrist museum box + an in-scene picture-in-picture.
 
 The geometry is built ONCE (one set of facet polys in one scene) and presented

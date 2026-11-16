@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """HH4 (revised): MI sweep using PAST chain-symbol context.
 
 The encoder-decoder symmetric context: at chain position k, sample

@@ -1,0 +1,1 @@
+1. numpy scalars (numpy.bool_/int from `==` and rank on numpy arrays) are NOT json-serializable.

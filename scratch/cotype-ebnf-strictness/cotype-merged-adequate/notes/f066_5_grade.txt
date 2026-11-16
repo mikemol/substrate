@@ -1,0 +1,2 @@
+GRADE: exact pieces solid (annih=no-inverse, torsion=inverse-by-conjugate, [ℚ(ζ_p):ℚ]=p−1, conj=inversion-op — standard/proven). THESIS (two towers globally reciprocal, glued by inverse cocycles, width=φ(p)) is grade-2: structurally forced, confirmed p=2,3, ONE clean cheap prediction (p=5 width 4). Order-5 already probed: ignites annihilation-dominant at nv=10 (=2·5, coprime cofactor → annihilation, AS PREDICTED). Open: full-torsion at nv=25 (=5², prime power); width=4 check.
+[supporting witness: probe_inversion_width.py — shared block evidence]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """HH7/HH8: Simulate codec compression with prime-context predictor +
 Hamming(7,4) recovery on mispredict.
 

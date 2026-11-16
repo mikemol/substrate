@@ -1,0 +1,1 @@
+- **Σ-BRIDGE = forest↔sympy — BUILT + VERIFIED (this turn).** `jea/jea_sympy_bridge.py`: the

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """PyVista rendering substrate for the 3D figures — real lighting & shadows.
 
 Matplotlib's 3D is painter's-algorithm: no true occlusion, no cast shadows, no

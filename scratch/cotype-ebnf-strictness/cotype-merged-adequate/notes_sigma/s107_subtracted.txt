@@ -1,0 +1,6 @@
+[SUBTRACTED] (Σ-arc, block 11: FORWARD PATHS — appended (Σ-SPPF-CHART now reachable, no cor)
+
+- **TAKEAWAY (the two-session model working as designed):** I get the architecture + internal-faithfulness
+  right (fixpoint-verified on what runs in my sandbox); the session WITH the real toolchain closes the
+  ENVIRONMENTAL edges by running it where the deps exist. My "honest boundaries" were correctly placed
+  (they marked exactly where integration work was needed) but some were MY-env limits, 

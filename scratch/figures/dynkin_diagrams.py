@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Dynkin diagrams of the crystallographic Cartan types.
 
 A `CartanType` (agda/Substrate/Category/CartanType.agda) is a rank plus a

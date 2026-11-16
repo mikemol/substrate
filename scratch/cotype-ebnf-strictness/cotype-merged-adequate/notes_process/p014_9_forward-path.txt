@@ -1,0 +1,1 @@
+- **(housekeeping, not a forward path) [Σ-TIDY]:** remove stale flat-LCP helpers (jea_pysim

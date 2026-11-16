@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """S₄ permutohedron, breathing along Fiedler — PyVista (real shadows).
 
 Same data as permutohedron_s4_3d.py (the _perm core, radial LiftMap on the

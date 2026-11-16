@@ -1,0 +1,2 @@
+P36 UNIT-CONDUCTANCE-EMBEDS [011] interned structure IS the mesh: irreducibles = hard simplices (rigid), reducibles = unit conductors; effective resistance SORTS ITSELF from topology (fan-in = parallel unit-conductors summed = conductance ⇒ high-sharing = low-resistance = near, automatically). The e
+[axis-signature: 011 | owner-field(raw): reasoned]

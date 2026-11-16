@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 4)
+
+- **Σ-SPPF-CHART — BUILT + VERIFIED (prior turn).** `jea/jea_sppf_chart.py`: an Earley recognizer whose
+  CHART *IS* the Intern forest. NO core change to jea_pyalg (the once-mis-sized gap stayed dissolved).
+  Item = plain interned node (op=`LHS>rhs#dot` [the KEY], role=origin, children=consumed sub-results);
+  PREDICT=register-obligation, SCAN=consume-terminal, COMPLETE=intern-append=discharge. VE

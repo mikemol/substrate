@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Hodge grade ladder as a vertical tower — ★ as a fold.
 
 dual-grade ★ : k ↦ 3 − k (agda/Substrate/WitnessTower/Hodge.agda) is an

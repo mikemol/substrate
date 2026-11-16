@@ -1,0 +1,1 @@
+- **Σ-IR-UNIFY** — built as proposal; **AI-Q integrates** (adopt structured kinds in jea_sympy_bridge,

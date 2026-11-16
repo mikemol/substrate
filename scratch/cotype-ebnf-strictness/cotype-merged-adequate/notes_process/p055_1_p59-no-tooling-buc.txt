@@ -1,0 +1,2 @@
+P59 NO-TOOLING-BUCKET [100] under "all meaning from structure" there is NO "infrastructure orthogonal to the thesis" bucket: the build system ENCODES the principles. autobudget retry-on-OOM = diagonalization-pacing (P45: round peak UP to next pow2 — the pow2 step IS the ±2^(n-1) headroom, don't doub
+[axis-signature: 100 | owner-field(raw): goal-side (USER flagged)]

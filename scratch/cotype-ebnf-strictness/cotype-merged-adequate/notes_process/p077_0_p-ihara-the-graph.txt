@@ -1,0 +1,1 @@
+witness: jea/coboundary_tower/probe_ihara_zeta.py -------------------------------------------------------------------------------- BUILT the actual Ihara edge-zeta (Bass det) for K_n: det(I − Au + (D−I)u²) = (u−1)(qu−1)(qu²+u+1)^(n−1),  q = n−2  (K_n is (n−1)-regular = (q+1)-regular). FUNCTIONAL EQU

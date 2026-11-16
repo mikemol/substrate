@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Walsh–Hadamard terraced landscape — PyVista (real shadows on the steppes).
 
 height h(k,x) = Σᵢ 2⁻ⁱ·(−1)^(kᵢxᵢ): a self-similar terraced surface (the

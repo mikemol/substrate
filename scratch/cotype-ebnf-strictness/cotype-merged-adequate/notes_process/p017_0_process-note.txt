@@ -1,0 +1,1 @@
+- stale flat-LCP helpers in jea_pysim (_trunc_skeleton/lcp_depth/classify_profile) — remove after

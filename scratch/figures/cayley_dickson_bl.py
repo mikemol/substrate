@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Octonion table as a Cayley–Dickson tower — z IS the CD level. Blender/Cycles.
 
 The CD sign cocycle factorises: e_i·e_j = (∏_L σ_L)·e_{i⊕j}, with σ_L ∈ {±1} the

@@ -1,0 +1,1 @@
+- **LESSON ON ME (the spec author):** I should have READ a4z2_compose before writing the spec — the

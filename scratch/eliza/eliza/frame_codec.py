@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.FrameCodec — encode/decode windows as I/P/Patch/B frames.
 
 Per-byte V₄ rotation is XOR with a mask derived from the residue:

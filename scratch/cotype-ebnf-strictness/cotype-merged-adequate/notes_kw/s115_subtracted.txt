@@ -1,0 +1,9 @@
+[SUBTRACTED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 13)
+
+- **Σ-TIDY** — housekeeping + upstreaming (cuda + oneforest now PASSED; jea_extrude still to upstream).
+
+
+
+Iterated-subtraction (G4): passes 1–10 SUBTRACTED. Analysis-only pass (no build); one solid finding,
+one new object. NOTE: a context flush occurred just before this pass — the regrounding doubled as the
+post-flush check that I'm reading the cotype as the stranger it's written for, not a stale

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 walsh_hadamard_core.py — 8 puncturings of RM(1,3) and the Walsh-Hadamard core.
 
@@ -7,7 +9,7 @@ each coordinate), giving 8 distinct but related Hamming(7,4) codes H_0..H_7.
 The user's observation:
 - Each H_i has 16 codewords
 - H_i ∩ H_j has 8 codewords (a 3-dimensional subspace) for i ≠ j
-- The 8 codewords in H_i \ H_j are shifted versions of those in H_j \ H_i
+- The 8 codewords in H_i \\ H_j are shifted versions of those in H_j \\ H_i
 - The 16 codewords of RM(1,3) split into 8 LINEAR + 8 AFFINE (linear + 1)
 - The 8 LINEAR codewords correspond to the 8 rows of an 8×8 Walsh-Hadamard matrix
 - These 8 form a 3D subspace that's the "orthogonal core" — mutually balanced

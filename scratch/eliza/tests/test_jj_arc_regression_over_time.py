@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """JJ follow-up: per-position predictor cost over the chain walk.
 
 Per user 2026-05-21: 'plot the regression over time'. Track

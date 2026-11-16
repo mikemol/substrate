@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc KEYWORD reading, topic metalanguage, block 3)
+
+- **CORRECTION to my last-pull ledger (my bookkeeping error, marked not hidden): `no-order-4` was ALREADY
+  in M40Closure.** M40Contrast's header cites `M40Closure.no-order-4 : g⁴=ι ⟹ g²=ι` by name. Last pull I
+  grepped M40Group, found no no-order-4 there, and inferred the invariant didn't exist — but it was in a
+  SIBLING module (M40Closure) all along. The error: read one module, inferred about 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Fano plane inside its F₂³ cube — PyVista (real shadows), with a key.
 
 Colour scheme (see the legend):

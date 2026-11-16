@@ -1,0 +1,7 @@
+[REAL] (Σ-arc KEYWORD reading, topic metalanguage, block 3)
+
+- **G2 (delta) — the "up-to-normalization" caveat was REAL and bit immediately**, exactly where
+  predicted: the param/body split broke on the 1-param case (lowering unwraps a lone param to a
+  bare Name, ≥2 to a Block — irregular normalization). Fixed by splitting on statement-kind. This
+  confirms the scope estimate: projection is mechanical but the reconstruction of what lowering
+  FLATTENED is

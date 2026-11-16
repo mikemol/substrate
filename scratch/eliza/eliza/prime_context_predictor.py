@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.PrimeContextPredictor — HH5 prime-sampled context predictor
 using PAST chain-symbol V₄-coset positions (decoder-symmetric).
 

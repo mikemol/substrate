@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.PreseededChainSequitur — Sequitur with substrate-native opcodes
 as pre-populated rules.
 
@@ -19,7 +21,7 @@ from typing import Any, Dict, List, Tuple
 
 from eliza.chain_symbol import ChainSymbol
 from eliza.opcode_set import Opcode, build_default_opcodes
-from eliza.sequitur import NT, Node, Rule, Sequitur
+import eliza.sequitur
 
 
 @dataclass
@@ -35,12 +37,12 @@ class PreseededChainSequitur:
     layer (G7).
     """
     opcodes: List[Opcode] = field(default_factory=build_default_opcodes)
-    underlying: Sequitur = field(init=False)
+    underlying: eliza.sequitur.Sequitur = field(init=False)
     opcode_to_rule_id: Dict[str, int] = field(default_factory=dict)
     rule_id_to_opcode: Dict[int, Opcode] = field(default_factory=dict)
 
     def __post_init__(self):
-        self.underlying = Sequitur()
+        self.underlying = eliza.sequitur.Sequitur()
         # Mark pre-seeded rule IDs as PROTECTED so Sequitur's
         # _maybe_inline_underused doesn't garbage-collect them when
         # their use count is below the usual threshold (≥ 2).
@@ -52,10 +54,10 @@ class PreseededChainSequitur:
             if op.length != 2:
                 continue
             # Create a Sequitur Rule with the opcode's body.
-            r = Rule(rule_id)
+            r = eliza.sequitur.Rule(rule_id)
             self.underlying.rules[rule_id] = r
-            n1 = Node(sym=op.body[0], rule_id=rule_id)
-            n2 = Node(sym=op.body[1], rule_id=rule_id)
+            n1 = eliza.sequitur.Node(sym=op.body[0], rule_id=rule_id)
+            n2 = eliza.sequitur.Node(sym=op.body[1], rule_id=rule_id)
             self.underlying._insert_before(r.guard, n1)
             self.underlying._insert_before(r.guard, n2)
             # Register the digram so future occurrences trigger replacement.

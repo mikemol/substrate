@@ -1,0 +1,1 @@
+- **VERIFIED (this pass, jea_sppf_torsor.py): the parse forest IS a torsor-bundle over the input-position

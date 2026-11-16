@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuRotationSpeculation — P3+P4: full-speculation across rotations.
 
 For each window of input bytes, evaluate all 16 nibble-rotations on

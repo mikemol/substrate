@@ -1,0 +1,2 @@
+THE WRINKLE (kept, not swept — never-discard now turned inward): the BLOCKS ALONE are NOT clean. 5-block alone has a deg-9 NON-cyclotomic factor; 3-block a deg-3 NC; even 2-block deg-1 NCs. So "blocks cyclotomic, crosses carry action" is FALSE — the projection (C·Cpinv, T^n≠I) deforms even a SINGLE block. The deformation is PERVASIVE (block-internal AND cross). The ONE thing that survives cleanly is the odd-coprime cross-cyclotomic Φ_{mn}; it is the EXCEPTION that survives, not the rule.
+[supporting witness: probe_composition_law.py — shared block evidence]

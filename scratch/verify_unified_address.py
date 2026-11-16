@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 verify_unified_address.py — tests for M38 unified codeword structure.
 

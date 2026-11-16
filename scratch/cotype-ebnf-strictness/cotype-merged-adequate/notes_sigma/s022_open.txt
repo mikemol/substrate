@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **HEADLINE: StabNotNormal + `Stab-normal-when-fixed` — AI-Q applied the RECURRING LAW to its OWN either/or.**
+  "A bare 'Stab(D) is not normal' HIDES THE STRUCTURE — the parameter that toggles normal↔not-normal is the
+  ORBIT of X." `Stab-conj-equivariant` (Subgroup.agda) proves the positive structure = the orbit map; Stab(X)
+  is normal EXACTLY when X is a global fixed point (orbit={X}); the DI

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_substrate_crosscodec.py — Y-arc Y8: V7 vs external codecs.
 
 Compares V7 (with two-stage lookahead) against structure-agnostic

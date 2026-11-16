@@ -1,0 +1,6 @@
+[VERIFIED] (Σ-arc, block 11: FORWARD PATHS — appended (Σ-SPPF-CHART now reachable, no cor)
+
+- **G2 (delta 2) — the real target is forest↔sympy↔forest + sympy→octave, NOT a one-off emitter.**
+  Recursive law ("why wouldn't we?"): forest↔sympy is a BIDIRECTIONAL structure↔structure bridge (both
+  canonical trees → round-trippable, fixpoint = the retraction), and sympy is a HUB not a spoke (its
+  printers — octave_code/latex/mathml/ccode — ARE the pipeline's fan-out; build ONE bridge, inher

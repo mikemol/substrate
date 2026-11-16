@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 verify_shadows.py — Regroup pass (M10, axis 010).
 
@@ -823,22 +825,47 @@ def M14_audit_K_rule_dispatches_correctly():
 
 
 
+# ⚑⚑ ONE TABLE, IN PRESENTATION ORDER — AND IT WAS TWO ROSTERS THAT COULD DISAGREE.
+# `categorize()` produced the bucket labels and a separate `order` list in `main()`
+# restated all fourteen by hand, so renaming a bucket in one place and not the other
+# silently DROPPED that whole group from the run: `main` skips any category not in
+# `order` (`if cat not in grouped: continue`), and the count it prints is over what
+# survived — so the report still reads clean. `"other"` was never in `order` at all,
+# which means an UNCATEGORIZED test could not appear in the output by construction.
+#
+# ⚑ THE SAME DEFECT CLASS THE `--sync`/`--check` DRIFT GATE EXISTS FOR, in a file with
+# none of the gates: a derived view that someone maintains by hand rots at the first
+# edit. The prefix→label mapping IS the order, so it is written once and read twice.
+BUCKETS = (
+    ("S1", "S1 (nil)"),
+    ("S2", "S2 (cons)"),
+    ("S3", "S3 (left, right)"),
+    ("S4", "S4 (eq)"),
+    ("S5", "S5 (apply)"),
+    ("S6", "S6 (parse)"),
+    ("S7", "S7 (transform)"),
+    ("M3", "M3 (constraint resolutions)"),
+    ("M4", "M4 (apply as single-step)"),
+    ("M5", "M5 (chart as memoization)"),
+    ("M8", "M8 (cocycle invariance)"),
+    ("M11", "M11 (meta-circular interpreter)"),
+    ("M14", "M14 (VAR_MARK refactor audit)"),
+    ("charter", "Charter gates"),
+)
+
+# ⚑ THE CATCH-ALL IS A REAL BUCKET AND MUST BE PRINTABLE.  A test whose name matches no
+# prefix is a test that RUNS and reported nowhere — the silent-drop shape one level in.
+UNCATEGORIZED = "other"
+
+
 def categorize(name):
-    if name.startswith("S1"): return "S1 (nil)"
-    if name.startswith("S2"): return "S2 (cons)"
-    if name.startswith("S3"): return "S3 (left, right)"
-    if name.startswith("S4"): return "S4 (eq)"
-    if name.startswith("S5"): return "S5 (apply)"
-    if name.startswith("S6"): return "S6 (parse)"
-    if name.startswith("S7"): return "S7 (transform)"
-    if name.startswith("M3"): return "M3 (constraint resolutions)"
-    if name.startswith("M4"): return "M4 (apply as single-step)"
-    if name.startswith("M5"): return "M5 (chart as memoization)"
-    if name.startswith("M8"): return "M8 (cocycle invariance)"
-    if name.startswith("M11"): return "M11 (meta-circular interpreter)"
-    if name.startswith("M14"): return "M14 (VAR_MARK refactor audit)"
-    if name.startswith("charter"): return "Charter gates"
-    return "other"
+    # ⚑ LONGEST PREFIX FIRST: `M1` would otherwise claim `M11`/`M14`.  The table is in
+    # presentation order, not match order, so the sort happens here rather than
+    # constraining how a reader may arrange the buckets.
+    for pre, label in sorted(BUCKETS, key=lambda b: -len(b[0])):
+        if name.startswith(pre):
+            return label
+    return UNCATEGORIZED
 
 
 def main():
@@ -852,15 +879,10 @@ def main():
         cat = categorize(t.__name__)
         grouped.setdefault(cat, []).append(t)
 
-    order = [
-        "S1 (nil)", "S2 (cons)", "S3 (left, right)", "S4 (eq)",
-        "S5 (apply)", "S6 (parse)", "S7 (transform)",
-        "M3 (constraint resolutions)", "M4 (apply as single-step)",
-        "M5 (chart as memoization)", "M8 (cocycle invariance)",
-        "M11 (meta-circular interpreter)",
-        "M14 (VAR_MARK refactor audit)",
-        "Charter gates",
-    ]
+    # ⚑ DERIVED FROM `BUCKETS`, NEVER RESTATED — this list was the second roster.
+    # `UNCATEGORIZED` is appended so a test matching no prefix is REPORTED rather than
+    # skipped; without it such a test runs, passes or fails, and appears nowhere.
+    order = [label for _pre, label in BUCKETS] + [UNCATEGORIZED]
 
     passed = failed = 0
     for cat in order:

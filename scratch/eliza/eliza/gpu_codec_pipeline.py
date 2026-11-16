@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecPipeline — Q5+Q6+Q7: multi-window batched + streaming + decoder parity.
 
 Q5: `encode_many(windows)` processes N inputs with shared GPU resources.

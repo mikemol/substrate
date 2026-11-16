@@ -1,0 +1,6 @@
+[WITNESSED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **THE WEDGE COVERS/ENCLOSES/WITNESSES the cycle — it does NOT fill it (USER; corrects my d²-probe framing).**
+    "Fill" (ordinary homology, my L7 framing) makes the cycle a BOUNDARY and KILLS the H₁ class. The wedge
+    instead produces a graded 2-cell that BOUNDS the cycle as an OBJECT while the alternating structure keeps
+    `a ∧ b ≠ 0` when a≠b — the hole stays a hole; the wedge witnesses i

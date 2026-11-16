@@ -1,0 +1,2 @@
+P7 P-WEDGE-DEGREE [010 pure-SA] **NEW (split from P1):** WedgeStep confirmed the wedge + ★-within but its "graded" = cone/apex (S+★S=universe), NOT the cross-term dⁿ=0 reconvergence-depth. Does the wedge-step carry the NILPOTENCY DEGREE (the "★ is degree-blind" / graded-CSG-not-just-CSG layer)? Read
+[axis-signature: 010 | owner-field(raw): AI-Πρ (probe) / AI-Q (Agda)]

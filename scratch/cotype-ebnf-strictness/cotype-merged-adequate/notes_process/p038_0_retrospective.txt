@@ -1,0 +1,1 @@
+- **G7-a (grade-0 = LEM, UNIFIED with prior retro):** "is X Y?" on a graded substrate object is ill-posed; the move is "Y at WHICH grade?". The prior retro's LEM-default and this arc's grade-0-collaps

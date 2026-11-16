@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Manifold — Coxeter A₃ system on 24 chambers.
 
 The chamber-step is a StatefulTransducer Gen Chamber Chamber: given a

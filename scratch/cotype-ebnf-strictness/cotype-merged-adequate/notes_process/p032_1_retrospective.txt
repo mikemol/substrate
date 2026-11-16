@@ -1,0 +1,1 @@
+- **G7-b (provenance):** g-calculus = upstream engine (T3 navigator model), not lens. The linearity track = the SAME arc seen from the algebra end, not adjacent. (Rewrites the old "circuit-semantic re

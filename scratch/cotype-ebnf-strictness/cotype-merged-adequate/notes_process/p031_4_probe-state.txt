@@ -1,0 +1,1 @@
+- **L₇ (110,101,011) → GAP, needs 011.** the guard-cleared-SA point; genuinely empty axis (no 011 anywhere).

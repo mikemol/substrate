@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Coalgebraic — codec over the V₄ slot stream.
 
 The slot stream is the V₄ projection of the chamber walk:

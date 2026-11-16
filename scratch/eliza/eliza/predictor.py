@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Predictor — char trigram with Laplace smoothing.
 
 Implements the Agda contract:

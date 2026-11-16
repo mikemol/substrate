@@ -1,0 +1,1 @@
+witnesses: jea/coboundary_tower/probe_interaction_lattice.py, probe_divisor_debug.py -------------------------------------------------------------------------------- USER'S MOVE: "the order-12 perm doesn't act as order-12 on cycle space" — think how 12 DECOMPOSES: 2, 3, 2², 2·3, 2²·3. The repeated/p

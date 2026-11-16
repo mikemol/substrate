@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """17.py: V₄-orbit decomposition + chirality + period detection.
 
 Three substrate-inspired additions on top of 16.py:

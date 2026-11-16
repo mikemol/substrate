@@ -1,0 +1,2 @@
+P56 XUNIT-IS-GRADED-LOGIC-PROGRAMMING [101] xUnit READ AS PROLOG: assertion=predicate, test-case=Horn-clause (case:-a1,a2,...), suite=program, SLD-resolution=runner (the case short-circuit IS SLD left-to-right), fail=NEGATION-AS-FAILURE (closed-world, already non-classical). MAPPED onto g-calc OR=NO
+[axis-signature: 101 | owner-field(raw): **WITNESSED**]

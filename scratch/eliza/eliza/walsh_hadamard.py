@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.WalshHadamard — Walsh-Hadamard Transform + sliding p-bit
 window counts at prime widths for the GG-arc.
 

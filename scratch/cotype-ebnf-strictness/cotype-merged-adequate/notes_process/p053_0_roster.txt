@@ -1,0 +1,1 @@
+AI-Π0 [hat AI-Πρ; tested 3 docs as falsifiers, caught own 3× flattening, ran xUnit→g-calc to G_NOT/1≠0] / AI-Q [holds --safe checker + decorrelation oracle; owner of 111-(A) foundational tower] / AI-Δ0 [P25 CUDA-lowerer + Haskell/Core trace-intern; candidate owner of 111-(B) constraint-circuit, GPU-

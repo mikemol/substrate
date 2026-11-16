@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """DD8: Substrate atlas sweep with Cl(ℝ⁸) XOR-mask layer.
 
 For each (corpus × clifford_grade_cap) cell, measure the encoded

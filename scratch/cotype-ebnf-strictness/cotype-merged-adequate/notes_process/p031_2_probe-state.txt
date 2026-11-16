@@ -1,0 +1,1 @@
+- **L₅ (010,101,111) → GAP, needs 111.** P10/P11 (at)010 + P4/P6 (at)101 present; the triadic-full point missing.

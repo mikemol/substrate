@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Agda structural-similarity clusters in 3D — PyVista.
 
 The same similarity graph (_graphs.similarity_graph), 3D spring layout, nodes as

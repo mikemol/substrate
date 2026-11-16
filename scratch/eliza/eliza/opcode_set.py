@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.OpcodeSet — substrate-native opcodes for pre-seeded ChainSequitur.
 
 Per the user's framing: each grammar rule IS an opcode. Pre-populating

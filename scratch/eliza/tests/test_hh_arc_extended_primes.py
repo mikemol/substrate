@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """HH-arc extension: prime sweep up to 64-bit / 128-bit / 256-bit
 look-back limits per user 2026-05-21.
 

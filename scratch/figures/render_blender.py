@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Render the Blender/Cycles figures, optionally across both GPUs.
 
 Each *_bl.py runs inside Blender's bundled Python (3.14) which imports our venv

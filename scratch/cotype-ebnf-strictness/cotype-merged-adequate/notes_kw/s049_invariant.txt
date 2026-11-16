@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc KEYWORD reading, topic metalanguage, block 3)
+
+- **A PEER METHODOLOGY MOVE: jea_metalanguage_gate.py (Σ6) — the integration-verdict principle as CI.**
+  AI-Q built a regression gate asserting a KNOWN STRUCTURAL INVARIANT per instrument (fixpoints, the
+  12/12 lowering shape, partition behaviour, gate verdicts), fired per-commit from .githooks/pre-commit;
+  pure modules always run, toolchain modules self-SKIP when the dep is absent. Its docstri

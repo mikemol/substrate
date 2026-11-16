@@ -1,0 +1,1 @@
+- **G7-c (witness-latency):** structural claims ship WITH their witness (the run) by default, not on demand. The orbital-identity sat as assertion two turns until USER demanded the fixed-point proof. 

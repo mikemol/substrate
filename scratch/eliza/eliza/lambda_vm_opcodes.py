@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.LambdaVMOpcodes — R-arc: the codec's existing machinery NAMED as
 a lambda-calculus VM.
 

@@ -1,0 +1,1 @@
+- **111-(A) foundational tower as --safe Agda** → AI-Q's, standing (ring→diagonal→CHL→coinduction→allegory/torsor→Tarski; the SymPy witnesses of this session lifted to checked).

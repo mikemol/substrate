@@ -1,0 +1,2 @@
+GRADE: c=2 STILL NOT closed (3 takes). Solid across takes: (p-1)/2 mult (verified ×3 paths); AA=0 root- deletion (rigorous, explains frame-dependence); BB≡X redundancy. NEW this take: block-local derivation
+[supporting witness: probe_c2_final.py — shared block evidence]

@@ -1,0 +1,6 @@
+[FALSE] (Σ-arc, trace T1-forest, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-SCHEME-DECIDE — RUN (this pass): the strong novelty claim is FALSE; verdict = real-but-not-novel.**
+  jea/jea_scheme_decide.py + read HWG (Hinze-Wu-Gibbons 2013/2015, conjugate hylomorphisms): HWG unify
+  schemes CATEGORICALLY (every scheme = an instance of the conjugate rule / adjoint fold; uniqueness via
+  initiality) — a classification/existence framework, NOT a procedure that decides if 

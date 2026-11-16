@@ -1,0 +1,4 @@
+[COMPLETE] (Σ-arc, trace T1-forest, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **L₁ / L₄/L₅ / L₆** — all COMPLETE as before (circuit deliverable extracted; dependent-full
+  111 triadic; the law realized as the multigraded solve). Unchanged this delta.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.PerNibbleChain — chain stream at every nibble (lossless granularity).
 
 Per the user's directive: "how can we achieve using the chain,

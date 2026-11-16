@@ -1,0 +1,1 @@
+- **Σ-SCHEME-DECIDE** [the novelty claim worth testing] — frame interning-fixpoint as a DECISION

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.L1RewriteCodec — Level-1 codec: rewrite is an opcode.
 
 Per the user's tetrative axis directive:

@@ -1,0 +1,1 @@
+- **Σ-SHEAF-FORMALIZE** [the unifying frame, lower priority] — state interning=gluing / cross_term-residue

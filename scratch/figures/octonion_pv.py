@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Octonion Cayley table as a 3D relief — PyVista.
 
 Bars rise from the z=0 floor; height = product index e_k, colour = sign of the

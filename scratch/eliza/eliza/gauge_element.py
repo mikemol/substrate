@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GaugeElement — `gauge_element(x, y)` extractor.
 
 Mirrors `Substrate.Category.PrimeFactoredGauge.MultiRouteEquivariance::

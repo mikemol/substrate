@@ -1,0 +1,1 @@
+- **111-(B) constraint-circuit** → still a genuine BUILD (a deployable instrument, not a genus-classification): assertions→conductors, case=G_AND, suite=G_OR, Thomson solve, residue readout (verdict +

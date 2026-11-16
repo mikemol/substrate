@@ -1,0 +1,292 @@
+% ⟡bazel-intake — the claim-DAG for the four-repo bazel corpus reading.
+%
+% ⚑ EVERY `traces:` NEEDLE IS A PLAIN STRING PRESENT IN THE CITED FILE. A peer-corpus claim traces
+% to the peer's own document, which witnesses what they SAID — never that they are right.
+% ⚑ EVERY `premise:` IS AN HONEST GAP, rendered as not-machine-checked. The retractions live there.
+
+@misc{res-not-migration,
+  section = {result},
+  claim   = {The migration question was not the interesting one. All four repos already share the verdict engine by ADOPTION --- paperkit to linux-sources to cassian --- so its recurrence corroborates nothing, and what the corpus actually establishes is methodological.},
+  check   = {traces:../../../cassian-observability/bazel-infrastructure/warrants.bib#adopted from linux-sources}
+}
+
+@misc{res-warrants,
+  section = {result},
+  from    = {res-not-migration},
+  claim   = {Audit-as-warrants beats audit-as-prose: a claim carrying a source-anchored check goes red the moment its needle is edited out of the source, so prose cannot outlive its sources.},
+  check   = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#prose cannot outlive its sources}
+}
+
+@misc{res-self-convict,
+  section = {result},
+  from    = {res-warrants},
+  claim   = {Two of the three comparison syntheses convict themselves of the defect they name: linux-sources closes by calling its own document ungated prose.},
+  check   = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#itself ungated prose}
+}
+
+@misc{res-standing-vacuous,
+  section = {result},
+  from    = {res-warrants},
+  claim   = {Substrate's own ledger already measures the gap the warrants discipline closes: its kind census reports the `standing` majority as vacuous, passing unconditionally, against a behavioural minority.},
+  check   = {traces:../../.claude/agents/findings.py#VACUOUS}
+}
+
+@misc{ado-records-as-deps,
+  section = {adopt},
+  claim   = {Records-as-deps ranks first: a check's verdict becomes a declared build artifact and therefore an action input, so memoization, invalidation and parallelism come from the build system instead of a bespoke cache.},
+  check   = {traces:../../../paperkit/docs/bazel-architecture.md#Records-as-deps}
+}
+
+@misc{ado-resource-set,
+  section = {adopt},
+  claim   = {`resource_set` is a scheduling hint that bounds nothing --- bazel schedules, a cgroup bounds --- so membudget remains substrate's only enforcement layer under bazel rather than becoming redundant.},
+  check   = {traces:../../../paperkit/docs/bazel-architecture.md#hint, not a bound}
+}
+
+@misc{ado-materialise,
+  section = {adopt},
+  from    = {ado-resource-set},
+  claim   = {Materialise, do not point: paperkit's relative-path rung followed a symlink into the live working tree, so a sandboxed action imported unstaged sources --- a sandbox escape that passes.},
+  check   = {traces:../../../paperkit/docs/bazel-report.md#A sandbox escape that passes}
+}
+
+@misc{ado-tier-ladder,
+  section = {adopt},
+  from    = {ado-materialise},
+  claim   = {The three-tier ladder is directly instantiable: sandbox is hermetic and cached, toolchain is cacheable and host-env, and local is uncached and always re-runs --- the sound placement for an action reading unpinnable live state.},
+  check   = {traces:../../../cassian-observability/bazel-infrastructure/warrants.bib#no-cache}
+}
+
+@misc{ado-fingerprint,
+  section = {adopt},
+  from    = {ado-tier-ladder},
+  claim   = {The toolchain tier is adopted with care: its category is principled but a cached verdict keyed on an incomplete fingerprint is a stale green, so a fingerprint must be derived from the invocations or the tier must not cache.},
+  check   = {traces:../../../paperkit/docs/bazel-architecture.md#derive the fingerprint from the invocations}
+}
+
+@misc{pro-vendored-hooks,
+  section = {provide},
+  claim   = {Substrate is already a source to the ecosystem rather than only a consumer: cassian vendors substrate's shape and correctness hooks as real committed files.},
+  check   = {traces:../../../cassian-observability/gate-architecture/warrants.bib#VENDORED}
+}
+
+@misc{pro-vendored-tools,
+  section = {provide},
+  from    = {pro-vendored-hooks},
+  claim   = {A second peer vendors substrate code independently: paperkit holds adopted copies of bibstruct, edit_snapshot and vfs, with ownership recorded as substrate's.},
+  check   = {traces:../../../paperkit/docs/bazel-tools.md#Vendored from substrate}
+}
+
+@misc{pro-decline,
+  section = {provide},
+  from    = {pro-vendored-tools},
+  claim   = {A decline that names its own reversal scale is worth more than an adoption: paperkit refused substrate's feedback-arc-set solver as correct-but-unused on an 8-node graph while stating that the calculus inverts at substrate's scale.},
+  check   = {traces:../../../paperkit/docs/cross-repo-synthesis.md#the calculus inverts}
+}
+
+@misc{fix-double-bound,
+  section = {fix},
+  claim   = {A measured-false claim ships in every generated BUILD file: bazel_emit's unresolved block asserts that membudget and bazel together would double-bound, which the corpus refutes since bazel bounds nothing.},
+  check   = {traces:../../substrate/bazel_emit.py#double-bound}
+}
+
+@misc{fix-mdstruct-blind,
+  section = {fix},
+  claim   = {The intake instrument is blind to part of the corpus: mdstruct's AST modes return nothing on one audited peer document while its byte-level modes read the same file, so a reuse-search over it would report confident false absences.},
+  check   = {premise:measured-this-session-headers-empty-budget-13-headings}
+}
+
+@misc{fix-unwired,
+  section = {fix},
+  from    = {fix-mdstruct-blind},
+  claim   = {Substrate has no census of built-but-uninvoked capability across its invocation surfaces, and would score badly on one: bazel_emit is invoked by nothing and make_emit is called by no build.},
+  check   = {traces:../../../paperkit/docs/bazel-tools.md#The unwired census}
+}
+
+@misc{fix-enumerations,
+  section = {fix},
+  from    = {fix-unwired},
+  claim   = {Paperkit's do-not-adopt list names a defect substrate shares: hand-maintained enumerations of things the system already computes, where adding a guard over the enumeration reproduces the problem one level up.},
+  check   = {traces:../../../paperkit/docs/bazel-architecture.md#Hand-maintained enumerations}
+}
+
+@misc{fix-witness-refuted,
+  section = {fix},
+  from    = {fix-enumerations},
+  claim   = {A substrate framing was refuted by measurement and is owed acknowledgement: substrate explained a peer defect as surviving because the file sat off the enforcement path, when the file is in the linter's argument list and the real cause is a blind predicate.},
+  check   = {traces:../../../paperkit/docs/cross-repo-synthesis.md#a defect in the}
+}
+
+@misc{fix-structural-class,
+  section = {fix},
+  from    = {fix-witness-refuted},
+  claim   = {The recurrence of one defect class across independent auditors is evidence it is structural rather than carelessness, so the repair belongs in the type rather than in remembering.},
+  check   = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#structural, not carelessness}
+}
+
+@misc{lin-inheritance,
+  section = {lineage},
+  claim   = {Shared structure arrived at by adoption carries no corroborative weight, and independent arrival is only visible once the lineage is subtracted.},
+  check   = {traces:../../../paperkit/docs/cross-repo-synthesis.md#carries no corroborative weight}
+}
+
+@misc{lin-convergence,
+  section = {lineage},
+  from    = {lin-inheritance},
+  claim   = {The two syntheses appeared to disagree — cassian reading independent convergence as the real signal, paperkit warning that inheritance is not convergence — but cassian conceded the point in the same document, so the split is settled across the corpus rather than contested.},
+  check   = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#independent convergence is the real signal}
+}
+
+@misc{lin-caveat,
+  section = {lineage},
+  from    = {lin-convergence},
+  claim   = {One principle carries four names across the ecosystem --- mechanize the caveat, do not narrate it --- and substrate already holds it as bounds-in-band, printing a reader's blind spots in its own output.},
+  check   = {traces:../../substrate/def_split.py#BLIND TO}
+}
+
+@misc{wrk-project-first,
+  section = {work},
+  claim   = {Projecting this plan is the first item and needs no new machinery: substrate already runs paperkit projects, one of which projects a plan document from warrants.},
+  check   = {traces:../agda-parser-tool/paper.toml#agda-parser-tool-plan.md}
+}
+
+@misc{wrk-premise-kind,
+  section = {work},
+  from    = {wrk-project-first},
+  claim   = {A retraction is a DERIVED claim needing two edges: one naming what it retracts, and one drawing justification from an independent checkable claim. An always-green verb supplies neither, and grades indeterminate under paperkit's own Delta grader.},
+  check   = {traces:../../catalog/worklist/paper.toml#unfalsifiable-claim factory}
+}
+
+@misc{wrk-warrant-rationale,
+  section = {work},
+  from    = {wrk-premise-kind},
+  claim   = {Substrate can go first on warrant-ifying because it owns the warrants reader that both peers vendor, and the repo that warrant-ifies first hands the others a pattern they can copy the way they copied the verdict engine.},
+  check   = {traces:../../../linux-sources/docs/gate-ecosystem-comparison.md#warrant-ifies}
+}
+
+@misc{bnd-said-not-true,
+  section = {bounds},
+  claim   = {A traces check proves a claim is recorded where cited, never that the mechanism is globally true --- so every peer-corpus claim here witnesses what a peer SAID and not that they are correct.},
+  check   = {traces:../../../cassian-observability/gate-architecture/paper.toml#NOT that a mechanism is globally proven}
+}
+
+@misc{bnd-unbuilt,
+  section = {bounds},
+  from    = {bnd-said-not-true},
+  claim   = {Nothing in substrate's bazel work has been built: there is no workspace, no bazel in the checkout, and the rule the emitter calls does not exist, so whether the emitted text builds the tree is unmeasured.},
+  check   = {traces:../../substrate/bazel_emit.py#UNMEASURED}
+}
+
+@misc{bnd-corpus-moves,
+  section = {bounds},
+  from    = {bnd-unbuilt},
+  claim   = {The corpus moved under this reading at least once, so every finding is stamped against specific bytes and a drifted artifact unstamps only the findings that cite it.},
+  check   = {premise:sha256-stamped-twice-one-artifact-drifted}
+}
+
+@misc{res-inferred-double-bound,
+  section = {residue},
+  claim   = {A premise written into shipped code was refuted by the corpus: the emitter asserts that two bounding mechanisms would conflict, which was reasoning from the shape rather than reading either mechanism.},
+  check   = {premise:refuted-by-paperkit-resource-set-section}
+}
+
+@misc{res-inferred-absence,
+  section = {residue},
+  from    = {res-inferred-double-bound},
+  claim   = {An absence was reported before the reading was complete: the stamp-chain question was called unanswered across two reports, and the section answering it from the other direction had not yet been read.},
+  check   = {premise:corrected-same-turn-by-reading-tier-map}
+}
+
+@misc{res-inferred-channel,
+  section = {residue},
+  from    = {res-inferred-absence},
+  claim   = {An ecosystem-wide conclusion was inferred from a git status: staged-not-committed was read as invisible-to-peers, when peers copy from the working tree and the operator alone knew the channel.},
+  check   = {premise:refuted-by-operator-peers-copy-working-tree}
+}
+
+@misc{res-inferred-venue,
+  section = {residue},
+  from    = {res-inferred-channel},
+  claim   = {A reorganisation was proposed on an inferred rationale that a normative ruling explicitly reserves to the operator, and the ruling records a prior session refusing to invent that same rationale.},
+  check   = {traces:../../../summit/proceedings/rulings/inbox-drop-zone.md#testimony and not inference}
+}
+
+@misc{res-unreached,
+  section = {residue},
+  from    = {res-inferred-venue},
+  claim   = {The projection capability was not missing but unreached: this plan was hand-written as append-only prose in a repo already projecting five documents from warrants, so an unreached capability proved indistinguishable from an absent one.},
+  check   = {premise:five-projects-found-only-when-asked}
+}
+
+@misc{res-presence-not-currency,
+  section  = {result},
+  from     = {res-warrants},
+  claim    = {A traces needle proves PRESENCE, not CURRENCY: a document that supersedes itself internally defeats the check while staying green, because a string is not a position in an argument.},
+  check    = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#a string is not a position in an argument}
+}
+
+@misc{res-two-instruments,
+  section  = {result},
+  from     = {res-presence-not-currency},
+  claim    = {The needle and the corpus stamp answer different questions about one event --- did the source change, and did my claim survive --- so a repo running either alone has half the coverage and no signal that it has half.},
+  check    = {traces:../../../cassian-observability/docs/gate-ecosystem-comparison.md#only the two together}
+}
+
+@misc{ado-path-independent,
+  section  = {adopt},
+  from     = {ado-fingerprint},
+  claim    = {Path-independent caching is the adoption whose value is highest DURING a migration evaluation, because the evaluation is what produces a second checkout --- and the default action cache is keyed on the workspace path, so two worktrees share nothing.},
+  check    = {traces:../../../paperkit/docs/bazel-architecture.md#disk_cache}
+}
+
+@misc{fix-two-enumerations,
+  section  = {fix},
+  from     = {fix-structural-class},
+  claim    = {Substrate has two enumerations of its own corpus with no common owner --- git's ignore and the suite walker's skip list --- so gitignoring the build tree removed it from git's view while the walker still admits it, and the suite roster counts every package module twice.},
+  check    = {traces:../../substrate/suite_discovery.py#DISCOVERED, NOT FROZEN}
+}
+
+@misc{fix-uv-false-green,
+  section  = {fix},
+  from     = {fix-two-enumerations},
+  claim    = {Substrate has already paid for the undeclared-input class the peers describe: an interpreter mismatch under uv meant a type census ran, failed, parsed no error lines, and banked zero keys as clean.},
+  check    = {traces:../../substrate/type_gate.py#banked as clean}
+}
+
+@misc{res-inferred-cellvenv,
+  section  = {residue},
+  from     = {res-unreached},
+  rests-on = {fix-two-enumerations},
+  claim    = {An asserted defect was retracted after measurement: substrate was claimed to share a peer's name-keyed census defect because a spelling had changed, when its gate census keys on a predicate and no reader sees half the population.},
+  check    = {traces:../../substrate/gate_population.py#run_gate}
+}
+
+@misc{res-inferred-intents,
+  section  = {residue},
+  from     = {res-inferred-cellvenv},
+  rests-on = {fix-two-enumerations},
+  claim    = {An argument AGAINST a correction was retracted: two exclusion lists were held to encode different intents on the evidence of their entries, when the excluded directories contain no Python at all and the exclusion buys walk time rather than correctness.},
+  check    = {traces:../../substrate/suite_discovery.py#a roster can only ever be as current as its last edit}
+}
+
+@misc{res-vacuous-not-false,
+  section  = {residue},
+  from     = {res-inferred-intents},
+  rests-on = {res-standing-vacuous},
+  claim    = {A self-grounded retraction was called incoherent and is only uninformative: vacuous is not false, and collapsing the two is the mirror of collapsing unmeasured into clean --- committed paragraphs after recording that collapse.},
+  check    = {traces:../../.claude/agents/findings.py#VACUOUS}
+}
+
+@misc{wrk-grandfathered,
+  section  = {work},
+  from     = {wrk-premise-kind},
+  claim    = {A grandfathered claim kind under a non-growing gate is self-dissolving: taking the exemption requires writing the justification, and the justification IS the premise, so the hatch costs what the correct route costs and produces the correct artefact.},
+  check    = {traces:../../scripts/gate_census.py#zero-tolerance, nothing grandf}
+}
+
+@misc{wrk-merge-worklist,
+  section  = {work},
+  from     = {wrk-grandfathered},
+  claim    = {The worklist is an extension of the harness: it is already a paperkit project rendering a tracked shard on this subject, so these warrants merge into it and it projects the plan the harness file points at.},
+  check    = {traces:../../catalog/worklist/paper.toml#substrate worklist}
+}

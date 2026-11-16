@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Parse catalog/idea_lattice.md into levels + tagged concepts.
 
 Shared by the 2D idea_lattice figure and its 3D tower sibling.

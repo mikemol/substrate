@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **"H₁ is just a typed obligation, and we have the machinery" (USER) — YES, with the gap RELOCATED by the
+    d²=0 probe (jea_d2_probe.py).** H₁ = ker∂₁/im∂₂ = 1-cycles (claims that closed) mod 2-boundaries (fillings/
+    witnesses) = posed-obligations mod discharged = **the OPEN obligations, graded**. A nontrivial H₁ class =
+    a cycle with no filling = an obligation with an empty witness slot 

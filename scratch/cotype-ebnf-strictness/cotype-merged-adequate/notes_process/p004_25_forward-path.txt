@@ -1,0 +1,1 @@
+- **HONEST RESIDUE (conservation-of-difficulty):** the chart-less version is O(n²)·rounds (re-scans all

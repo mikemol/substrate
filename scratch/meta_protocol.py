@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 meta_protocol.py — declarative protocol for witnessed-pair operations.
 

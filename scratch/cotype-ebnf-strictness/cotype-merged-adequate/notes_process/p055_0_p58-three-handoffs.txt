@@ -1,0 +1,2 @@
+P58 THREE-HANDOFFS-ONE-GENUS [011] AI-Q's SEAM_PARTITION §3: the three open 111-candidate handoffs (unparser / trace-intern / sympy) are ONE either/or recursively = "is the residue retained?" = the Ⓖ★ idempotent-vs-invertible genus. retain⇒retraction/identity/group-action; discard⇒projection/suspend
+[axis-signature: 011 | owner-field(raw): ran]

@@ -1,0 +1,1 @@
+* focal factor = Frobenius (Dedekind-Kummer/Chebotarev); the Galois group = the lens.

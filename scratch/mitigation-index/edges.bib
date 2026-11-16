@@ -1,0 +1,130 @@
+% mitigation-index — the EDGE SET `(site, remedy, witness)`.
+%
+% ⚑ ONE RELATION, TWO PROJECTIONS. `section = remedy` and `section = arc` are the
+% two VIEWS the operator reads; they are not two rosters. The authority for both is
+% `items.py`'s `EDGES` list, and `--remedies` / `--arcs` project it. A row added
+% here that is not in `EDGES` has no witness and `--add` refuses it.
+%
+% ⚑⚑ NEVER RESTATE A SITE COUNT IN A `claim` OR A `note`. The counts move — this
+% repo has measured the restated-constant defect five times over, once in the
+% ratchet ENFORCING the constant it restated wrongly. Every count in this project
+% is re-derived by `items.py <KEY>` at read time. A number frozen in prose here
+% would be a sixth copy.
+%
+% File with `bibstruct.py --add ... --bib scratch/mitigation-index/edges.bib --apply`.
+% Every `check` must name an edge key that `items.py` resolves.
+
+@misc{E1-unstated-intent-argv,
+  section  = {remedy},
+  claim    = {ratchet.check_argv answers the shape 'unrecognised argument accepted, silently changes nothing' by refusing an argv token that no mode claims, and its site population is dominated by the gate roster.},
+  check    = {item:E1-unstated-intent-argv},
+  note     = {kind=remedy arc=argv-contract by=mitigation-index. Def at scripts/ratchet.py:525. The site count is re-derived by items.py and never restated here. SCOPED=name -- pycodemod --calls is name-scoped, so the count is an UPPER BOUND on the remedy's reach, the same defect as --calls emit missing _emit_one.}
+}
+
+@misc{E2-guard-runs-too-late,
+  section  = {remedy},
+  claim    = {edit_snapshot.require_at_entry answers the shape 'the guard is correct where it runs and runs too late' by forcing the mutation-intent declaration to the entry point rather than the write site.},
+  check    = {item:E2-guard-runs-too-late},
+  note     = {kind=remedy arc=mutation-intent by=mitigation-index. Def at scratch/edit_snapshot.py:1089, call sites all scratch/ writers. Paired with pycodemod --unbound-snapshot, which reports PLACEMENT and explicitly NOT necessity -- it has no read-path exemption, so it can never say whether a tool that never writes needs a guard at all.}
+}
+
+@misc{E3-silent-default-tenant,
+  section  = {remedy},
+  claim    = {store.tenant answers the shape 'a silent default answers a question the caller never stated' by making one resolver the authority for which tenant a read addresses.},
+  check    = {item:E3-silent-default-tenant},
+  note     = {kind=remedy arc=wrong-tenant-read by=mitigation-index. Def at jea/metalanguage/store.py:370. The recorded incident is that a per-dispatch --sandbox drifts so READ modes ignore it SILENTLY, which is the wrong-tenant-read-is-silent memory -- one resolver, and name the tenant in the output.}
+}
+
+@misc{E4-defined-never-dispatched,
+  section  = {remedy},
+  claim    = {pycodemod --dead answers the shape 'a capability defined and never dispatched', and it is a MODE rather than a function, so a call census is the wrong instrument for measuring its own reach.},
+  check    = {item:E4-defined-never-dispatched},
+  note     = {kind=remedy arc=dead-capability by=mitigation-index. The motivating incident is split_pipeline.rewire_only, which was written, documented with its own 354-consumer justification, and left with ZERO callers. ⚑ The mode self-reports SCOPED-RUN blindness -- dead means no caller IN THE SCANNED FILES, and it is blind to names built at runtime and to invocation across a process boundary.}
+}
+
+@misc{E5-census-counted-the-string,
+  section  = {remedy},
+  claim    = {pycodemod --calls and --rivals answer the shape 'the census counted the flag STRING, not the behaviour', and --calls carries a spelling defect of its own, so it is both the remedy and an instance.},
+  check    = {item:E5-census-counted-the-string},
+  note     = {kind=remedy arc=census-spelling by=mitigation-index. --sql node returns 82 sites almost all of which are node_child, obs_node or orbit_node, and discarding those by eye is the judgement that belongs in a program. ⚑⚑ THE REMEDY IS SUBJECT TO ITS OWN SHAPE -- --calls is NAME-scoped not capability-scoped, which is how --calls emit reported one OTLP emitter while the second was spelled _emit_one. Measured again here: --calls guard returns 57 calls over a population including sequitur and eliza.}
+}
+
+@misc{E6-positional-intent,
+  section  = {remedy},
+  claim    = {check_snapshot_guard.intent_census answers the shape 'intent stated positionally, two propositions one spelling', and it is the NARROWEST remedy in the set with no caller outside its own file.},
+  check    = {item:E6-positional-intent},
+  note     = {kind=remedy arc=mutation-intent by=mitigation-index. Def at scripts/check_snapshot_guard.py:528, both call sites in-file. ⚑ THE NARROWNESS IS THE OVERLAP FINDING, NOT A DEFECT -- it is the smallest member of the 'refuse an unstated intent' cluster and therefore the one whose consolidation-or-separation is cheapest to decide either way.}
+}
+
+@misc{E7-gate-refusal-names-successor,
+  section  = {arc},
+  claim    = {ratchet.set_ratchet with refuse_hint is the CONSOLIDATED form of 'a refusal that does not say what to do next' -- one shared authority, forwarded by the ratchet-family gates.},
+  check    = {item:E7-gate-refusal-names-successor},
+  note     = {kind=edge arc=refusal-names-successor by=mitigation-index. Re-derived from gate_census.py --successors, which is READ and not re-implemented here. The named/not-found split is checked live by items.py --successors-drift, so this row cannot silently diverge from the extractor it subsumes.}
+}
+
+@misc{E8-hand-rolled-successor,
+  section  = {arc},
+  rests-on = {E7-gate-refusal-names-successor},
+  claim    = {Eleven gates hand-roll the successor token that E7's shared refuse_hint emits once, which is the clearest genericization candidate in the gate arm.},
+  check    = {item:E8-hand-rolled-successor},
+  note     = {kind=edge arc=refusal-names-successor by=mitigation-index. Presented as a CANDIDATE. ⚑ Whether these eleven should consolidate onto refuse_hint is the operator's call, not this index's -- a hand-rolled successor can carry a per-gate hint that a shared one cannot, so the count alone does not settle it.}
+}
+
+@misc{E9-successor-not-found,
+  section  = {arc},
+  rests-on = {E7-gate-refusal-names-successor},
+  claim    = {Six gates have a refusal path and name NO successor, and no per-run census can distinguish a correctly-terminal refusal from an omission, which is the argument for storing the edge set rather than recomputing it.},
+  check    = {item:E9-successor-not-found},
+  note     = {kind=edge arc=refusal-names-successor by=mitigation-index. ⚑⚑ THE UNREACHABLE-REMEDY ROW, and the reason this artefact earns its cost. gate_census --successors states the limit against itself: a gate whose refusal is CORRECTLY TERMINAL, where nothing populates it so naming a successor would be a fabrication, CANNOT be distinguished by that mode from an omission. Storing the row makes the absence a RECORDED CLAIM rather than a silent gap. Population: jea_metalanguage_gate, check_feature_coverage, decl_shape_tag, law_motif_apex, reuse_sweep, and set1_ratchet_cores which calls set_ratchet WITHOUT refuse_hint and so inherits only the shared refusal.}
+}
+
+@misc{E10-textual-guard-refuses-derived-roster,
+  section  = {remedy},
+  claim    = {bibstruct's item: resolver is a REGEX for a line-initial key-to-lambda, so it refuses the comprehension-derived witness roster -- the one form that cannot drift from its authority -- and forces the spelled roster it then cannot verify.},
+  check    = {item:E10-textual-guard-refuses-derived-roster},
+  note     = {kind=finding arc=witness-roster by=mitigation-index. FOUND BY BUILDING THIS PROJECT, not by sweeping. ⚑ The guard already knows its predicate is a proxy: its own comment records that def D0_KERNEL existed while --items D0-kernel said unknown, because REGISTRATION is the real predicate and the textual check is the weaker one. It enforces the proxy anyway. ⚑⚑ THE COST IS AN INVARIANT DOWNGRADE from 'cannot drift by construction' to 'cannot drift undetected', paid down here by the items-covers-edges selftest. The precedent registry at .claude/agents/findings.py carries 30 rows of exactly this drift, which is what the downgrade risks.}
+}
+
+@misc{R1-residue-idem-inequality,
+  section  = {residue},
+  claim    = {A split dropped the IdemInequality module telescope into an untracked RESIDUE.md, and agda_defs --stranded-residue re-derives all five names as re-homed (bound by the leaves' own telescopes), so the residue file is retirable.},
+  check    = {item:R1-residue-idem-inequality},
+  note     = {kind=residue arc=dropped-telescope by=mitigation-index. The (a)-and-(b)-identical half of the discriminating pair with R3 — same damage class, same successor tool, OPPOSITE verdict. Idem.agda:16 re-declares the whole telescope. The verdict is DECIDED by --stranded-residue on every run, never stored.}
+}
+
+@misc{R2-residue-semidirect-product,
+  section  = {residue},
+  claim    = {The SemidirectProductGroup residue re-derives as re-homed across SIX names, two of which (_≈N_ and _≈H_) a hand roster read off the file by eye did not see.},
+  check    = {item:R2-residue-semidirect-product},
+  note     = {kind=residue arc=dropped-telescope by=mitigation-index. ⚑ THE ROW THAT FORCED THE PREDICATE TO BE DELEGATED — a hand-rolled tree-wide definition check read it 'unused residue' (safe to delete) because nothing DEFINES N-Carrier anywhere, while the leaves bind all six as module PARAMETERS, which agda_defs does not index. WithAction.agda:11-14 documents its own repair. ⚑ The brief filed this under Algebra/Quotient/ and the path on disk is Groups/Coxeter/.}
+}
+
+@misc{R3-residue-surreal,
+  section  = {residue},
+  rests-on = {R1-residue-idem-inequality},
+  claim    = {Surreal/SurrealQuotient.agda uses the two Conway-induction witnesses the split dropped and binds neither, so the residue records LIVE DAMAGE — identical damage class and successor tool to R1 with the opposite verdict, which is the proof that cleaned? is not a function of the first two fields.},
+  check    = {item:R3-residue-surreal},
+  note     = {kind=residue arc=dropped-telescope by=mitigation-index. ⚑⚑ THE DISCRIMINATING INSTANCE. Any model keyed on the residue's SHAPE collapses R1 and R3 — the discriminator is the RELATION between artifact and repair (the-fact-may-be-an-edge-not-a-property). ⚑ NO REMEDY IS NAMED deliberately — SurrealQuotient.agda:36-45 records the witnesses as DEFERRED to Conway.OrderTrans/OrderLaws, so re-homing is not obviously the right repair and this index does not decide it. ⚑ --applied-args is BLIND to this row (it reads applied import arguments, and the leaf references bare names), which is the argument for storing the edge.}
+}
+
+@misc{R4-residue-f2-fixity,
+  section  = {residue},
+  claim    = {The F2 residue is a lone 'infix 8 -_' whose operator was re-homed to Algebra.F2.Op2 without it, and it reads no-binders — a fourth verdict the sibling mode already carried, because a fixity declaration binds no name for the other three to resolve.},
+  check    = {item:R4-residue-f2-fixity},
+  note     = {kind=residue arc=dropped-telescope by=mitigation-index. ⚑ THE THREE-VALUED DESIGN DID NOT FIT THIS ROW and the honest move was to record a gap — --stranded-residue had already named the class. ⚑⚑ WHAT NO VERDICT COVERS — a lost fixity is a PRECEDENCE change across a 369-module subtree, which typechecks silently, and no-binders correctly declines to call that repaired or damaged.}
+}
+
+@misc{R5-snapshot-arming-per-call,
+  section  = {residue},
+  claim    = {The _snapshot_once per-call arming defect is separately witnessed and its check re-derives the SUCCESSOR MECHANISM (pycodemod --placement) rather than the incident, because the attribution to split_upstream destroying a monolith is unconfirmed.},
+  check    = {item:R5-snapshot-arming-per-call},
+  note     = {kind=damage arc=dropped-telescope by=mitigation-index. ⚑ THE REFUSED HALF IS RECORDED RATHER THAN DROPPED — filing the split_upstream incident would give an unestablished cause a check that witnesses the MECHANISM while appearing to witness the INCIDENT. The verdict is labelled mechanism-holds and says explicitly that it does NOT assert cleanup.}
+}
+
+@misc{R6-sed-truncation-emptied-modules,
+  section  = {residue},
+  claim    = {The sed-truncation that emptied three modules is the only transcript member whose third field is CONFIRMED cleaned (three times), which makes it this arm's positive control — without a confirmed-clean member, a census reporting one live-damage of four could not be distinguished from a census blind to cleanup.},
+  check    = {item:R6-sed-truncation-emptied-modules},
+  note     = {kind=damage arc=dropped-telescope by=mitigation-index. ⚑⚑ THE REFUTED FIGURE IS STILL LIVE IN A GATE — check_snapshot_guard prints 'the shape that made 33 files unrecoverable' in its own remediation text. The 33 is --applied-args 33 to 0 (sites REPAIRED, not files lost) and the live tree-wide count today is 2. Recorded as a location where the figure survives, NOT carried. ⚑ The fourth transcript item is refused — --repair-telescopes layer three abandoned with ⓉREWIRE-LEAVES never built, and an unbuilt proposal has nothing to re-derive.}
+}

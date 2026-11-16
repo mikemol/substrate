@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Recovery — Clifford / Hamming recovery operators for the EE-arc.
 
 Runtime realisation of DD9's `CliffordRecovery n` record:

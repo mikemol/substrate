@@ -1,0 +1,1 @@
+- **L₆ (001,110,111) → GAP, needs 111.** P5 (at)001 + P9/P13 (at)110; same 111 gap (guard-reconstitution).

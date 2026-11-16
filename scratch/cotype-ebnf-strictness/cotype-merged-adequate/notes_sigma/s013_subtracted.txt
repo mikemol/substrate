@@ -1,0 +1,7 @@
+[SUBTRACTED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **G8 (handoff/blind spot):** the Data.Binary RECORD TAGS (which integer = which Term
+  constructor) are version-pinned (magic e3bc4eaa). AI-Π0 read the NAMES (plaintext) and the
+  SHARING (index density) but did NOT decode the term-constructor layout. Hand to AI-Q (owns
+  the Agda side): is the per-version Serialise instance decodable from outside, or must Agda
+  itself emit the arena? This dete

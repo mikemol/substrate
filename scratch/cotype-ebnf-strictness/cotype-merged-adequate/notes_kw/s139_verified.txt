@@ -1,0 +1,7 @@
+[VERIFIED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 29)
+
+- **OUR SESSION'S DISTINCT, NOT-YET-UPSTREAMED CONTRIBUTION = the PROJECTION ARC (the UNFOLD):**
+  `jea_piproject.py` (IR→source, 3 modes, fixpoint-verified) and `jea_cuda.py` (bidirectional
+  IR↔CUDA grammar). The CONSOLIDATION_MAP is all READ-direction (similarity/consolidation/textual-
+  supersession); PROJECTION (the WRITER direction) is ours and COMPLEMENTS it. Both artifacts import
+  only je

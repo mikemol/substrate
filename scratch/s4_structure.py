@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 s4_structure.py — Formal V_4 ⋊ S_3 group structure on the 4 axes.
 

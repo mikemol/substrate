@@ -1,0 +1,7 @@
+[SUBTRACTED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 3)
+
+- **G8 (blind spot, NEW) — the Δ-Π-cuda 'front-end + back-end' framing is itself a possible either/or
+  I should not split prematurely.** A CUDA front-end (libclang: CUDA→IR) and a CUDA back-end (grammar
+  table: IR→CUDA) look like two builds. Common structure (recursive law): they are the FOLD and
+  UNFOLD of the SAME IR↔CUDA correspondence — one bidirectional grammar (CursorKind ↔ concrete
+  syn

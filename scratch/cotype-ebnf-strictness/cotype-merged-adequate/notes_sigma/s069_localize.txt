@@ -1,0 +1,6 @@
+[LOCALIZE] (Σ-arc, block 6: FORWARD PATHS — STRICTIFIED into composable symbols (the sea)
+
+- **G2 (recoverability CONFIRMED — the discipline worked) — the probe result survived the flush in the
+  DURABLE record, not just the volatile summary.** Pass 18 had already absorbed Σ-SPINE-PROBE's result
+  (degree 13 LOCALIZE, both controls) into the cotype AT completion time, so the flush lost nothing; and
+  jea/jea_spine_probe.py re-runs IDENTICALLY post-compaction (degree 13; control-1 EEA-vs

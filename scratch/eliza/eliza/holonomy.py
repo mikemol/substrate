@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Holonomy — BC-cell + shadow trajectories.
 
 Implements the G→C→S→G round-trip from readme-4.md as a Beck-Chevalley

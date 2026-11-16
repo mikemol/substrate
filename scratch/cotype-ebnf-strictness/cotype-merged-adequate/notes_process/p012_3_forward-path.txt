@@ -1,0 +1,1 @@
+- **HONEST SCOPE (bounded, table-extension only):** lowering + _SYMPY_CTOR cover Mul/Add/Pow/Symbol/

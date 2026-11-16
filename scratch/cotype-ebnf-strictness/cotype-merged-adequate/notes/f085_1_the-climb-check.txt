@@ -1,0 +1,2 @@
+THE CLIMB-CHECK (5 elements, aggregate v_p(disc) over non-cyc factors, k=1 edges vs k=2 triangles): (4,2): k=1 {2:2,3:1} → k=2 {2:10,3:10} 3 climbs 1→10, reaches parity with 2 (3,2): k=1 {} → k=2 {2:2,3:2} 2 AND 3 appear where neither was structural on edges (5): k=1 {} → k=2 {2:12,3:18,7:2} 3 DOMINATES (18>12) on triangles, from nothing on edges (3,3): k=1 {} → k=2 {2:6,3:2} both appear (2,2): {} both (degenerate carrier, no non-cyc content — not a counterexample)
+[supporting witness: probe_arity_kface.py — shared block evidence]

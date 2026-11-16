@@ -1,0 +1,2 @@
+GRADE: AA=0 root-deletion = DERIVED + rigorous (explains frame-dependence, closes the obstacle). BB≡X redundancy (the real source of /2, not conjugation) = DERIVED + rigorous. dim(BB eigenspace)=φ(p)²/2 = VERIFIED not yet derived (the residual). Construction ~80% closed; the koan-honest status: (p-1)/2 is now conjecture + source-localized + frame-dependence-explained + ONE count residual. FORWARD: derive φ(p)²/2 for a single p-cycle's projected Φ_p eigenspace (then c=2 is a theorem → Δ0).
+[supporting witness: probe_c2_close2.py — shared block evidence]

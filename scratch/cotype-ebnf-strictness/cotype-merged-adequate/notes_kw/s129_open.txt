@@ -1,0 +1,8 @@
+[OPEN] (Σ-arc KEYWORD reading, topic metalanguage, block 28)
+
+### Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest priority
+Unchanged. Agda-flag aliases; human-ergonomics only.
+
+---
+
+## PROBE STATE (Fano lines through the registered tags)

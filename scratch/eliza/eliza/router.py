@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Router — Char → chamber action.
 
 The router is a gauge selection per Substrate.Discipline Rule 1; concrete

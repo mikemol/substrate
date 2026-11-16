@@ -1,0 +1,2 @@
+P38 FOUR-THEOREMS-CONTRAPOSITIVE [101] Gödel/Cantor/Russell/Turing INFRASTRUCTURE rebuilt from a bare ring + verified: rung0 carrier self-generates (1 iterated), rung1 PAIRING (Cantor π a ring polynomial, bijective), rung2 REPRESENTABILITY (β-function/CRT = mod = divisibility = ring+1 existential), 
+[axis-signature: 101 | owner-field(raw): **WITNESSED in part (ran the infra)**]

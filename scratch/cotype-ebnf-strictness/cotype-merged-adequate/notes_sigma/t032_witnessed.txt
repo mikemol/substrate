@@ -1,0 +1,7 @@
+[WITNESSED] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **PROBE (jea_trace_homology.py) — RUN, first rung CONFIRMED on a real trace.** Built a minimal Brainfuck
+    stepper (step is finite = the interpreter terminates) and the canonical fixpoint-NON-closer `+++[->+<]`
+    (loop increments a FAR cell each pass → never the same full state). Computed H₁ = E−V+C of the trace
+    1-complex two ways:
+  - **RAW state nodes (the fixpoint view):** 20 states, 

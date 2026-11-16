@@ -1,0 +1,1 @@
+* 2 = acts as a PRIME / independent coordinate. The even/odd split (2-divisible faces deform) IS the

@@ -1,0 +1,36 @@
+{
+ "'(2,3,5)'": {
+  "lcm_edge_orbits": 30,
+  "nc_degs": [
+   14,
+   4,
+   1,
+   1
+  ]
+ },
+ "'2-block'": {
+  "lcm_edge_orbits": 2,
+  "nc_degs": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ "'3-block'": {
+  "lcm_edge_orbits": 3,
+  "nc_degs": [
+   3
+  ]
+ },
+ "'5-block'": {
+  "lcm_edge_orbits": 5,
+  "nc_degs": [
+   9,
+   1
+  ]
+ }
+}

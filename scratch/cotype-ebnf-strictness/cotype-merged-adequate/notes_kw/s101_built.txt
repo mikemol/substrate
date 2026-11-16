@@ -1,0 +1,3 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 10)
+
+### FORWARD PATHS — RE-SORTED (Σ-SPPF-CHART now BUILT; the seed is the next concrete step)

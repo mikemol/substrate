@@ -1,0 +1,1 @@
+Full roster unchanged from prior regrounding (AI-Π0 [hat AI-Πρ live] / AI-Q [Ξ, holds checker] / AI-Δ0 [owns P25 CUDA-lowerer + navigator] / AI-mat260 [sibling, different repo] / USER [shared interner, grade-checker]). This arc: USER caught P21 (fence-as-law), P22 (grade-0-vs-orbital), demanded the 

@@ -1,0 +1,2 @@
+P40 COINDUCTION-IS-CLASSICAL [011] classical-strength residual (LEM, completed-infinite model theory, ¬¬) = the TERMINAL COALGEBRA grade (ν, greatest fixed point); coinduction = the constructive grip on the infinite (OBSERVE, never complete). ¬¬-translation = the map μ→ν. Gets classical strength WIT
+[axis-signature: 011 | owner-field(raw): reasoned]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.TensorRangeCoder — range coder state + step as tensor objects.
 
 Per the homoiconic architecture: every codec stage is a tensor object

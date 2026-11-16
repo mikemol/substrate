@@ -1,0 +1,72 @@
+------------------------------------------------------------------------
+-- Substrate.Category.UniversalProperty.Instances
+--
+-- UP8 of the UP-topos arc. Five canonical universal-property instances,
+-- MIGRATED (⟡upfamily-rewire, T1) from the flat Set₁ `UPArrow` to the Set₀
+-- `UPArrowᴳ`. Each was a relational `UPArrow` (Source/Target : Set, Witness :
+-- Source → Target → Set) — Set₁, and a policy bug: the relational span was used
+-- to ASSERT a solution exists (with a `Contentful` non-vacuity certificate)
+-- instead of HANDING the solution over. The fix exposes each UP's CONSTRUCTIVE
+-- solve (feedback_up_witness_is_constructive_solve_by_policy):
+--   * free side  — solve = `extend fr (free-has fr)` (the fold into the free
+--                  object's own structure);
+--   * limit side — solve = `mediate` (the tupling), dual to extend.
+-- Non-vacuity needs no certificate: the `solve` map IS the content. These 5
+-- defs are now Set₀ (was Set₁) — the first real decrement of the census's 697.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.UniversalProperty.Instances where
+
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Unit using (⊤)
+open import Substrate.Foundation.Fin using (Fin)
+open import Substrate.Groups.Coxeter.Word using (Word)
+open import Substrate.Algebra.F2.Vector using (Vector)
+open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
+open import Substrate.Category.FreeUniversalProperty using (extend; free-has; free-Set)
+open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (free-monoid)
+open import Substrate.Category.FreeUniversalProperty.FreeF2Module using (free-F2Module)
+open import Substrate.Category.LimitUniversalProperty using (mediate; product-LimitUP)
+
+------------------------------------------------------------------------
+-- 1. FreeMonoid — Word ⊤ is the free monoid; solve = the fold (extend into
+--    the free monoid's own ++-monoid structure).
+------------------------------------------------------------------------
+
+FreeMonoid-UPᴳ : UPArrowᴳ (λ _ → (⊤ → Word ⊤)) (λ _ → (Word ⊤ → Word ⊤))
+FreeMonoid-UPᴳ = mkUP (λ f → extend (free-monoid ⊤) (free-has (free-monoid ⊤)) f)
+
+------------------------------------------------------------------------
+-- 2. FreeModule — Vector 1 is the free F₂-module on Fin 1; solve = the linear
+--    extension (sum over the basis) into the module's own structure.
+------------------------------------------------------------------------
+
+FreeModule-UPᴳ : UPArrowᴳ (λ _ → (Fin 1 → Vector 1)) (λ _ → (Vector 1 → Vector 1))
+FreeModule-UPᴳ = mkUP (λ f → extend (free-F2Module 1) (free-has (free-F2Module 1)) f)
+
+------------------------------------------------------------------------
+-- 3. Cone / Limit — the product is the limit of a discrete diagram; solve =
+--    mediate (the tupling of a cone into the product), dual to extend.
+------------------------------------------------------------------------
+
+ConeLimit-UPᴳ :
+  UPArrowᴳ (λ _ → ((i : Fin 1) → ⊤ → ℕ)) (λ _ → (⊤ → (Fin 1 → ℕ)))
+ConeLimit-UPᴳ = mkUP (λ f → mediate (product-LimitUP 1 (λ _ → ℕ)) f)
+
+------------------------------------------------------------------------
+-- 4. Adjunction — the trivial Free ⊣ Forgetful (free-Set: F = B, η = id);
+--    solve = extend = the map itself.
+------------------------------------------------------------------------
+
+Adjunction-UPᴳ : UPArrowᴳ (λ _ → (ℕ → ℕ)) (λ _ → (ℕ → ℕ))
+Adjunction-UPᴳ = mkUP (λ f → extend (free-Set ℕ) (free-has (free-Set ℕ)) f)
+
+------------------------------------------------------------------------
+-- 5. FreeLinearization — the free F₂-module on Fin 2 (the free linearization);
+--    solve = the linear extension.
+------------------------------------------------------------------------
+
+FreeLinearization-UPᴳ : UPArrowᴳ (λ _ → (Fin 2 → Vector 2)) (λ _ → (Vector 2 → Vector 2))
+FreeLinearization-UPᴳ = mkUP (λ f → extend (free-F2Module 2) (free-has (free-F2Module 2)) f)

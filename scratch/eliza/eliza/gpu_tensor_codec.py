@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuTensorCodec — fused codec pipeline (revised per user review).
 
 N7 revision addressing the top issues from user feedback:

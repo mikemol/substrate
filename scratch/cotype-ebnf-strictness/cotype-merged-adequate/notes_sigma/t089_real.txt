@@ -1,0 +1,6 @@
+[REAL] (Σ-arc, trace T3-navigator, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **S₄≅V₄⋊S₃ / WITNESS-TOWER / HODGE 3+1 — USER directed me to the repo's OWN formalization (I'd been
+    theorizing PAST it).** Read catalog/clarified_foundation.md (L7 V₄/S₄ programme, L8 architectural
+    symmetry, L9 structural address) + agda Substrate/Algebra/{SemidirectProduct, Quotient/V4Cosets,
+    F2/HodgeDim4/HodgeStar}. The connection USER asserted is REAL and FORMALIZED, at a precise 

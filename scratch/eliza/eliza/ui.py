@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Textual dashboard over the cleanroom Engine.
 
 OUTSIDE the Agda skeleton's scope (the UI has no substrate content),

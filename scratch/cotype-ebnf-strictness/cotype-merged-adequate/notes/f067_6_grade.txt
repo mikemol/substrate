@@ -1,0 +1,1 @@
+GRADE: now exact-mechanism, not just structurally-forced. The off-circle factor = Φ_p is

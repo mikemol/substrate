@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.BackRef — chain-symbol + byte-level back-reference matcher.
 
 The Z-arc closes the Y-arc's empirical gap to gzip/lzma by adding

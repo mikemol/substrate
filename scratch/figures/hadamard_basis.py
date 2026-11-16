@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Walsh–Hadamard character basis as a self-similar ±1 fractal.
 
 The witness axis of the unified codeword indexes a WHT character of F₂ⁿ

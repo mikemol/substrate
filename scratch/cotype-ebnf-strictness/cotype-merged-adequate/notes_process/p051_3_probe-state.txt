@@ -1,0 +1,1 @@
+- **111-(A)** foundational tower (ring→diagonal→CHL→coinduction→allegory/torsor→Tarski) as --safe Agda. AI-Q's, STANDING (merges the prior two 111 handoffs into one).

@@ -1,0 +1,9 @@
+[COMPLETE] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **CORRECTED LEDGER (B4 now in; one gap left):**
+  - B1 (closure ≅ A4Z2 model) — hole-free --safe ✓
+  - B2ii (order-12 part genuinely A₄) — hole-free --safe ✓
+  - no-order-4 (A₄×ℤ₂ side) — hole-free --safe ✓
+  - B3 / M40Contrast (S₄ side, explicit order-4) — hole-free --safe ✓
+  - B4 / M40Gauge (gauge-invariance, via LABEL-UNIFORMITY not "the automorphism") — hole-free --safe ✓ (this pull)
+  - **

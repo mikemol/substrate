@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Arith — range coder for real bit streams.
 
 A standard 32-bit-state range coder. The Eliza compression pipeline

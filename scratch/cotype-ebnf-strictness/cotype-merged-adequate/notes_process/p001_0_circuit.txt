@@ -1,0 +1,2 @@
+Δ-Π-circuit [110] — DONE (was THE NEXT BIG MOVE; L₁ + L₆ completed) Built as `jea/jea_picircuit.py`. The metalanguage = Kron-reduced operating point of the grading-conductance network; classification = where each node SETTLES (current-division, KCL), not argmin. Live-axis discovery, confounded=cross
+[axis-signature: 110 | task: Δ-Π-circuit]

@@ -1,0 +1,2 @@
+VERDICT: all three Weil/RH criteria satisfied in the form the theory dictates. T=C·P·Cpinv IS an Ihara/graph-Weil object — the graph's H¹ as a curve over 𝔽₁, with zeta, functional equation, RH. CONFIRMED BY CONSTRUCTION on actual data, not analogy.
+[supporting witness: probe_bridge.py — shared block evidence]

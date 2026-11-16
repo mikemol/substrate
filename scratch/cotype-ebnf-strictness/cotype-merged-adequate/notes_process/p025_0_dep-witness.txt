@@ -1,0 +1,2 @@
+Δ-Π-dep-witness [100 pure-GS, small] — witness the recurse-into-holes change recurse-into-holes changed the typeholer's core (divergence was terminal, now descends). Needs a witness pass: confirm flat cases (single divergence, no shared sub-structure) still emit ONE terminal hole and didn't regress;
+[axis-signature: 100 | task: Δ-Π-dep-witness]

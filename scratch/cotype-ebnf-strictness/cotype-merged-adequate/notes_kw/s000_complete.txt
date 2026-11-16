@@ -1,0 +1,12 @@
+[COMPLETE] (Σ-arc KEYWORD reading, topic metalanguage, block 0)
+
+- **AI-Δ0** — (inherited) the GPU/Agda orchestrator. AI-Π0's `jea_navigator` reference
+  (the strategy selector / onegraph circuit solve) is AI-Δ0's work; the metalanguage
+  arc converges onto it (see Δ-Π-circuit below).
+
+No other agents are live in this arc. If a sub-agent is spawned, label it `AI-Π1`,
+`AI-Π2`, … and record its resume id here.
+
+---
+
+## FORWARD PATHS (shadow-engineer classified; a

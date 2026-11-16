@@ -1,0 +1,10 @@
+[BUILT] (Σ-arc, block 12: FORWARD PATHS — appended (sort axis unchanged = distance to )
+
+- (carried) Σ-OMML/Σ-OMML-DOMAIN (carrier BUILT; OMML lowering remains), Σ-FOREST-MATCH, Σ-EXTRUDE,
+  Σ-CROSS, Σ-FOREST-AGDA (AI-Q), Σ-TIDY.
+
+
+
+Iterated-subtraction (G4): passes 1–11 SUBTRACTED. Milestone pass: the project's REASON (the
+verification gate) is built in its language-agnostic core, verified, and passed to AI-Q (cuda +
+oneforest modules). The .agdai shim landed; the textual tool retire

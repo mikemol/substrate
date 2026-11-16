@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.L2FlipCodec — L2 redesigned with flip-opcode + K-step beam.
 
 Same redesign pattern as L1-flip applied to the L2 axis (passing-to-

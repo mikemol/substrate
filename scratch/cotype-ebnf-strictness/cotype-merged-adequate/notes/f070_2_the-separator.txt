@@ -1,0 +1,2 @@
+THE SEPARATOR (recursive law on the contradiction): both bids said "coprime → clean"; the common structure NEITHER saw is that 2 is the ENTANGLING prime. Clean claim (NEGATIVE, robust): the factor of 2 kills cyclotomic-ness of every divisor it touches. Weak claim (positive, has counterexamples): "odd-coprime → clean" — NOT sufficient ((3,3) two odd blocks still had non-cyclotomic residue). So: 2 reliably entangles; odd-coprime is necessary-not-sufficient for clean. The prime 2 is special
+[supporting witness: probe_coprime_headtohead.py — shared block evidence]

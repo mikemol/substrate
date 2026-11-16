@@ -1,0 +1,2 @@
+PINNED (structural, the c=2 single-pair generator): for TWO p-cycles, nullity = (p−1)²/2 and mult = (p−1)/2 = φ(p)/2 (odd p; p=2 special as always) check: p=3 mult 1, p=5 mult 2, p=7 mult 3 = (p-1)/2 exactly; nullity 2,8,18 = (p-1)²/2 exactly.
+[supporting witness: probe_inv_cheap.py — shared block evidence]

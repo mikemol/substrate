@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 rm_in_tier1.py — Reed-Muller structure inside the tier-1 instruction table.
 

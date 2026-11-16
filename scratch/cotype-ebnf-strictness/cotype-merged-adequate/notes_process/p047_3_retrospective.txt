@@ -1,0 +1,1 @@
+- **G6 SUSTAIN:** the ONE run was run well (ring/pairing/β/diagonal verified — bijective pairing, β recovers sequence, composition closes); the recursive-law collapses were all sound (3 g-calc generat

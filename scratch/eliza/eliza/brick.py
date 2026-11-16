@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Brick — typed 2-cell in the substrate's three-axis structure.
 
 Python mirror of `agda/Substrate/Pipeline/Brick.agda`. Each brick has

@@ -1,0 +1,4 @@
+[DONE] (Σ-arc, block 10: FORWARD PATHS — RE-SORTED (Σ-SPPF-CHART now BUILT; the seed )
+
+- **Σ-IR-UNIFY** — LANDED by AI-Q (structured kinds canonical, translator retired, bridge shrank 134L);
+  DONE — drop from active forward (kept in reconciliation record).

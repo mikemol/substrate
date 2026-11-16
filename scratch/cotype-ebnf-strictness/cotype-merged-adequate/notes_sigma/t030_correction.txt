@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **CORRECTION (USER, same nerve as zero divisors): that's a collapse ONLY at grade-0; trace retention
+    shifts it UP a grade (the gradation shift).** The non-invertibility is a property of the line graph as
+    VALUE/lit. The substrate retains the CONSTRUCTION TRACE: L(K₃) and L(K₁,₃) are the same lit (both = K₃ as
+    a value) but DIFFERENT interned nodes — different op+children = the endpoint

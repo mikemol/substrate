@@ -1,0 +1,1 @@
+- **Σ-CENTRALITY must be GAUGE-INVARIANT (the equivariance discipline, 3rd context).** Closing the

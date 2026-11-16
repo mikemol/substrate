@@ -1,0 +1,1 @@
+- **Given** = the dot position + matched prefix (`op` = rule|dot, keyed; + `children` so far) — "given

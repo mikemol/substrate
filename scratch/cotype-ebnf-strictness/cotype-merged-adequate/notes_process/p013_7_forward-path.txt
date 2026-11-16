@@ -1,0 +1,1 @@
+- **G2 (delta) — I initially mis-framed the OMML semantic ambiguity as a LOSSY GAP to disambiguate;

@@ -1,0 +1,2 @@
+P6 Q-CSG-OBSTRUCTION [101 guard-cleared-GS] resolve whether idempotency(A∪A=A)-vs-nilpotency(v∧v=0) kills the operations-match → "substrate IS graded CSG" false in operations, true only in STANCE? = the retro G8 handoff. GUARD: audits the graded-CSG goal against my keep-wanting-them-to-match smuggli
+[axis-signature: 101 | owner-field(raw): AI-Q / external (I can't audit from inside)]

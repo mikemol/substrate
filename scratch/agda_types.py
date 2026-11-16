@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 agda_types.py — cache elaborated type signatures for every definition
 in the Substrate corpus.

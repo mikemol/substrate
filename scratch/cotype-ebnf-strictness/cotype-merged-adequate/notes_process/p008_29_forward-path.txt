@@ -1,0 +1,1 @@
+- **The whole thread's failures share ONE root: prose let the witness slot be elided.** My D₈ spec

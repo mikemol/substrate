@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Render every gallery figure and build an HTML contact sheet.
 
 Runs each figure script non-interactively (so each saves its PNG + SVG to

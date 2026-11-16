@@ -1,0 +1,10 @@
+[OBLIGATION] (Σ-arc, trace T3-navigator, block 5: FORWARD PATHS — STRICTIFIED (the seam arc, ordered by depend)
+
+- (ENGINEERING axis, real-not-novel, carried: Σ-TRACE-LAZY + Σ-GATE-SKIP-3STATE [REPORTS→AI-Q]; Σ-FOREST-MATCH
+  [here]; Σ-SPPF-CHART-INDEX [if perf]; Σ-BRIDGE-TABLES; Σ-OMML-DOMAIN; Σ-FOREST-AGDA [AI-Q]; Σ-EXTRUDE;
+  Σ-CROSS; Σ-TIDY. Σ-OBLIGATION spine-NAME. Σ-IR-UNIFY LANDED. Σ-SPINE-PROBE + Σ-SCHEME-DECIDE[strong] DONE.
+  GOAL Σ-FOREST core DONE+handed; capstone ran on mat260.)
+
+
+
+Iterated-subt

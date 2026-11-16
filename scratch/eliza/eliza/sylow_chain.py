@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.SylowChain — semidirect decomposition + Sylow-product chain.
 
 Mirrors the Sylow-decomposition part of `multi-route-equivariance`:

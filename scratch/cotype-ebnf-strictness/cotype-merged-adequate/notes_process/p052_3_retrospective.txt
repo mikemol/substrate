@@ -1,0 +1,1 @@
+- **G6 SUSTAIN:** 3 docs tested cleanly + meta-finding extracted (frame-travels-discipline-doesn't); caught own flattening 3× and took each into structure (no defense); the xUnit lift ran end-to-end g

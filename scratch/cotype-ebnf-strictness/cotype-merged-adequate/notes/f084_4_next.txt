@@ -1,0 +1,1 @@
+NEXT: P-ARITY3 = build the gauge-nontrivial k-face projection (Wilson-loop ω≠1 on k-cycles), sanity-check it reproduces non-cyclotomic at k=1, then read k=2 (does 3 dominate / does the special prime climb arity).

@@ -1,0 +1,2 @@
+GRADE: 3-is-interference-not-prime = grade-2, two clean negatives + one positive that's the interference signature. The 2-vs-3 asymmetry (2 ramifies/prime, 3 unramified/beat) = grade-2, and it's the sharpest form yet of "2 is special" — 2 is the only prime acting AS a prime in this projection; 3 (and likely 5,7…) act as interference/coprime beats. WHETHER that's intrinsic or a 2-adic-tree artifact = P-TREE.
+[supporting witness: probe_three_qzeta3.py — shared block evidence]

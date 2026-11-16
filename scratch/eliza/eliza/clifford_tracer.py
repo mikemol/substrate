@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.CliffordTracer — DD2/DD3 bit-flip divergence over chain walk.
 
 A single-bit perturbation at byte position p flips one bit in the

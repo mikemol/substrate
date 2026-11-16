@@ -1,0 +1,1 @@
+* [Σ-FOREST-AGDA] the Agda arm runs in AI-Q's toolchain (compile agdai_shim, gate(spec, core) on a

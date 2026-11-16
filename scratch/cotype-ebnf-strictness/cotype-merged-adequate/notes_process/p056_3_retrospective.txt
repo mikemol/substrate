@@ -1,0 +1,1 @@
+- **G7-3 (consolidate-don't-just-generate, action AI-Π0, the real one):** AI-Q ran falsify-first + find-common-structure + verify-don't-inherit on AI-Π0's handoffs; AI-Π0 left them un-collapsed and fl

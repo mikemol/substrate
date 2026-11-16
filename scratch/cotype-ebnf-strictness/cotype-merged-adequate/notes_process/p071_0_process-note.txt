@@ -1,0 +1,1 @@
+* ODD-COPRIME blocks (m,n both odd, coprime) → cross factor is CYCLOTOMIC Φ_(mn) (ABELIAN).

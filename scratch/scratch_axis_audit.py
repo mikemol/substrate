@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 scratch_axis_audit.py — re-classify every M-move by its scratch usage.
 

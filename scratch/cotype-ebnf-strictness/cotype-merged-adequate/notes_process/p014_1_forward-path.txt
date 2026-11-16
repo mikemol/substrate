@@ -1,0 +1,1 @@
+- **HONEST BOUNDARY (env):** the Agda arm needs the COMPILED agdai_shim (ghc -package Agda) — NOT in

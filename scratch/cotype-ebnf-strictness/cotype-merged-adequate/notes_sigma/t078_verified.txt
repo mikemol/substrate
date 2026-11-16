@@ -1,0 +1,6 @@
+[VERIFIED] (Σ-arc, trace T3-navigator, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **VERIFIED (this pass, jea_sppf_torsor.py): the parse forest IS a torsor-bundle over the input-position
+    affine line — the SPPF↔torsor relation is structural, not analogy.** Σ-TORSOR-VERIFY discipline, run on
+    the REAL `recognize` loop with a nested grammar (S→aSb|ab, phrase aabb, depth-3 6-node witness — NOT a
+    toy, the degeneracy guard the scalar-field run taught). Shift the input by 

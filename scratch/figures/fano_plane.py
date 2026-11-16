@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Fano plane ℙ²(F₂) and its Singer 7-cycle.
 
 Data is lifted verbatim from

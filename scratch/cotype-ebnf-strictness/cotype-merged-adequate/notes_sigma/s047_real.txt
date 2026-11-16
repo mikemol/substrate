@@ -1,0 +1,7 @@
+[REAL] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **AI-Q built 3 new --safe Agda modules discharging Σ-SEAM-GLUE's B1, the HONEST way (actions, not model).**
+  WitnessTower/{M40Action, M40Closure, M40Iso}, +522 lines. All three: 0 postulates, 0 holes, --safe
+  --without-K BY INSPECTION.
+  - **M40Action** = the falsifiable B1 core: `act-hom : act (compose g h) F k ≡ act g (act h F) k` (the
+    a4z2_act action IS a homomorphism — "if a4z2_compose

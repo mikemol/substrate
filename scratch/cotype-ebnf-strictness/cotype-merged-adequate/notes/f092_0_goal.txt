@@ -1,0 +1,2 @@
+GOAL: derive why the projection sends raw-cross-torus-p to projected-(p-1)/2 (the (p+1)/2 removal). DID NOT CLOSE. What it established instead (a real obstacle + a discipline catch):
+[supporting witness: probe_c2_close.py — shared block evidence]

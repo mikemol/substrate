@@ -1,0 +1,3 @@
+[BUILT] (Σ-arc, block 4: FORWARD PATHS — RE-SORTED (pipeline RUNS; sort axis = distan)
+
+- **Σ-OMML-DOMAIN** — carrier BUILT, role narrowed to implicit-OMML fallback; lives, low priority.

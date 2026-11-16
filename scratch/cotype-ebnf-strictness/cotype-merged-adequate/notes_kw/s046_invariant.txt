@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc KEYWORD reading, topic torsor-witness, block 3)
+
+- **THE DISTINGUISHING INVARIANT IS NOW IN CODE ON BOTH SIDES** (A₄×ℤ₂ has no order-4: M40Closure; S₄ has
+  one: M40Contrast) — **but AI-Q's scope note flags the remaining gap precisely (no over-claim):** "this
+  gives the distinguishing INVARIANT... the fully machine-checked ¬(A₄×ℤ₂ ≅ S₄) additionally needs an
+  ORDER-PRESERVED-UNDER-ISO TRANSPORT — a further step, NOT claimed here." Exactly righ

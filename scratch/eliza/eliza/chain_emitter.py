@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainEmitter — per-window ChainSymbol emission as a Brick.
 
 Streams (window-sized byte slices) → stream of ChainSymbols. Each

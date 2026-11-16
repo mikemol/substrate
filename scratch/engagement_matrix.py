@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 engagement_matrix.py — build the operation × axis-role matrix, then
 mechanically derive which V₄-rotated operations exist, which are

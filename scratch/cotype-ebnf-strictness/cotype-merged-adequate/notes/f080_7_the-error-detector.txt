@@ -1,0 +1,2 @@
+THE ERROR-DETECTOR (user can wield WITHOUT the lingo): when Claude reports a result, ask (a) FAMILY-FACT or RUNG-FACT? (does it climb the chain, or just this rung?) (b) WHICH FAMILY? (indexed by which twistable attribute — nv? p? k? order? a crossing?) "Unexplained residue" = "UN-INDEXED" = I found a slice and haven't named its family. The fix is to name the family (or the family-crossing) it lives in. If I can't, it's a slice mistaken for the object.
+[supporting witness: probe_tree_deform.py — shared block evidence]

@@ -1,0 +1,8 @@
+[SUBTRACTED] (Σ-arc KEYWORD reading, topic interning, block 3)
+
+- **G8 (blind spot) — substitution mode is wholly unexercised.** Round-trip proven, constructor
+  prototyped, but carrier-substitution (swap Fraction→ℚ-Wedge at every Move) — the mode that makes
+  projection a TRANSFORMER — has zero coverage. It is where projection meets the CUDA Move-carrier
+  analysis; untested means unknown. AI-Πρ owns it after the constructor mode is clean.
+
+## RETROSPECTIVE —

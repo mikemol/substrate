@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic metalanguage, block 0)
+
+- **S(g) denominator fix [DONE, USER-diagnosed] — prefix measured against the SHORTER, not
+  the longer.** S(g) was `lcp / max(len(su),len(sv))`, which penalized LENGTH DIFFERENCE as
+  disagreement: a real shared prefix divided by the LONGER skeleton dragged to ~0 whenever the
+  two terms differed in size, so genuine same-algorithm-different-carrier pairs (e.g. the real
+  `series_schur` vs `curren

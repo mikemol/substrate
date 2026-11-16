@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **WHY THIS BEATS NESTING (now concrete, not asserted):** homology is INVARIANT UNDER SUBDIVISION at a
+    fixed quotient grain; interpreter-nesting IS subdivision (more pc/ptr bookkeeping); so the lifted logic's
+    H₁ is invariant under nesting. The probe is the minimal witness: forgetting one level of "what the loop
+    carries" collapsed 20 raw states to a 10-node cycle; forgetting interprete

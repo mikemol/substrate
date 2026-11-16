@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodec — chunked arithmetic-coded codec with cupy backend.
 
 Slice 9: GPU port of `codec.encode/decode` per `GPU_ACCELERATION.md`.

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The S₄ permutohedron harmonics as a 3D amplitude surface.
 
 The 2D spectrum figure shows the low eigenvectors φ₀…φ₇ as a heatmap over the

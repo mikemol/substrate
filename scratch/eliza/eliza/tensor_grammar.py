@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.TensorGrammar — opcode set + digram index + grammar growth as tensors.
 
 M3+M4+M5 of the homoiconic matricisation arc.

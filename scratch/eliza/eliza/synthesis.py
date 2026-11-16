@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Synthesis — text projection (actual + branched + grammar).
 
 Per the Agda contract:

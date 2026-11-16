@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc KEYWORD reading, topic sppf-grammar, block 3)
+
+- **jea_omml.py [Σ-OMML, the real OMML front-end] — the lowering the domain carrier was WAITING for.**
+  Lowers `<m:oMath>` → IR (App/BinOp/Subscript/Name) against the mat260 renderOMML vocabulary.
+  **EMPIRICAL CORRECTION to my Σ-OMML-DOMAIN framing:** well-authored OMML makes function application
+  EXPLICIT via `<m:func>` → lowers straight to App with ZERO partitions; the App/Mul fork arises ONL

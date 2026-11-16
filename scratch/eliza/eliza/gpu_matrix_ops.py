@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuMatrixOps — GPU implementations of the matrix-op primitives.
 
 CuPy ports of matrix_ops.py routines. Same shapes, same algorithms.

@@ -1,0 +1,2 @@
+P27 AIQ-AS-DECORRELATOR [001→110] **Roster reclassification:** AI-Q is not only the `--safe` checker — it is the DECORRELATION ORACLE for AI-Π0's structural claims. It caught the false-positive AI-Π0's own probe was built to miss (the probe checked T²=I + species, NOT the kernel=axis identification 
+[axis-signature: 001→110 | owner-field(raw): AI-Π0 / AI-Q]

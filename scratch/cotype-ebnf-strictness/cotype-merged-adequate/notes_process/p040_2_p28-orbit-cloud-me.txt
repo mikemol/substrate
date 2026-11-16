@@ -1,0 +1,2 @@
+P28 ORBIT-CLOUD-MECHANIZED [110] AI-Q mechanized the orbit-cloud/parity-species arc in Agda (OrbitCloud/Rung2/Rung3/Rung3Wedge/GenusSpecies + Wedge/Species), hole-free --safe by inspection (options=1, postulate/holes=0). P18/P23 (Python) → Agda witness tower. Genus Ⓖ★: two zero-divisor species (idem
+[axis-signature: 110 | owner-field(raw): AI-Q (Ⓟ/Ⓖ★)]

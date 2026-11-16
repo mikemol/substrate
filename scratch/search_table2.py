@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 search_table2.py — Beam search over candidate table₂ rule sets.
 

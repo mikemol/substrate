@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV2 — O-arc fused codec with all refinements.
 
 Incorporates:

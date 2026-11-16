@@ -1,0 +1,5 @@
+[OBLIGATION] (Σ-arc, trace T1-forest, block 11: FORWARD PATHS — appended (Σ-SPPF-CHART now reachable, no cor)
+
+- **Σ-OBLIGATION** — NOT a build; the NAME of the spine (the one discharge-fold). Use it to refer to the
+  unification when reasoning about any of its instances. A future consolidation MIGHT express CrossMix/
+  resolve/complete as literally one function — but only if usage shows the duplication; don't force it.

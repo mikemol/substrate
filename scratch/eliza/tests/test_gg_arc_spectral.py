@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """GG7: Spectral feature × compression-ratio correlation.
 
 For each corpus × size, measure:

@@ -1,0 +1,2 @@
+THE REAL BLOCKER = COMPUTE WALL (honest, different from last turn's false "blocked"): p=5,c=3 needs nv=15, cycle-space dim 91, symbolic charpoly — out of reach here. Cannot get enough points per prime to fix the p-dependence with the current symbolic approach. So P-INV-PROOF is NOT ready for Δ0: the target function isn't pinned. NOT blocked by a false statement (that was the phi_mult bug) — blocked by insufficient data behind the compute wall.
+[supporting witness: probe_inv_cond_count.py — shared block evidence]

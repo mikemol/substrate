@@ -1,0 +1,9 @@
+{
+ "projection_identity": {
+  "sigma_anchor": "non-injectivity",
+  "sigma_concept": "projection",
+  "frob_anchor": "unsigned",
+  "frob_concept": "non-chain-map",
+  "claim": "non-injectivity-lives-in-the-projection (\u03a3) = unsigned-P non-chain-map mismatch (Frobenius)"
+ }
+}

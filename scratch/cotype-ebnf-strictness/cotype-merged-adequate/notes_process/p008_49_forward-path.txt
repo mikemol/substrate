@@ -1,0 +1,1 @@
+- **HANDOFF: this is --safe --without-K Agda = AI-Q's arm; AI-Π0 packaged the SPEC, did NOT build it.**

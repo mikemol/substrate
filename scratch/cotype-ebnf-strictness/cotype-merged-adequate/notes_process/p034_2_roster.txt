@@ -1,0 +1,1 @@
+- **AI-Δ0** — GPU/Agda orchestrator. Owns `jea_navigator` + `jea_onegraph` + the relaxation. **LIVE in this arc** (was background): T3 (navigator decision-WAL) is a face of JEA, and the g-calculus/Kir

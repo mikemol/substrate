@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Pipeline — composition of bricks via type-checked edge alignment.
 
 Python mirror of `agda/Substrate/Pipeline/Composition.agda`. A Pipeline

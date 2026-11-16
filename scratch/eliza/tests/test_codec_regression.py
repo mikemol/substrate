@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_codec_regression.py — T7+T8 performance + correctness suite.
 
 Locked-in regression check for V2 / V4 / V5 against L0 CPU baseline.

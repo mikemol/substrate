@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.StackMachineCodec — codec as a stack machine over transformation flags.
 
 Per the user's redesign:

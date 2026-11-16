@@ -1,0 +1,1 @@
+- **DO NOT HAND (stale shadows): my top-level jea_sympy_bridge/jea_ir_unify/jea_pysim/jea_cuda/

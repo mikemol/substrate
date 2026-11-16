@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 level3_tesseract_orbits.py — enumerate orbits of GL(4, F_2) ≅ A_8 acting
 on the 2^15 = 32768 subsets of the 15 points of PG(3, F_2).

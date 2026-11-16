@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 two_rotations.py — The substrate and data rotations on the F_2^3 polytope.
 

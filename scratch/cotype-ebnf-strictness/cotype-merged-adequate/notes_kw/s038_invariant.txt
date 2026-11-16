@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc KEYWORD reading, topic torsor-witness, block 3)
+
+- **"Didn't EEA+Bézout provide the gauge residue in witness-fidelity?" (USER) — PARTLY: the HOME is
+    established, the gauge IDENTIFICATION is a sharpened conjecture (checked BEZOUT_READOUT.md, not just
+    resonance).** ESTABLISHED (on disk): the readout IS EEA back-substitution — "one retained chain, two
+    reads: forward composes the obligations into a result; backward reads the witness back

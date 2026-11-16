@@ -1,0 +1,1 @@
+- **NOT NOVEL:** the strong claim is false; and the bare procedure (structural equality of hash-consed

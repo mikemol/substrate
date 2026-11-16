@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Agda structural-similarity clusters in a 3D force layout.
 
 Same similarity graph as the 2D figure (_graphs.similarity_graph), but laid out

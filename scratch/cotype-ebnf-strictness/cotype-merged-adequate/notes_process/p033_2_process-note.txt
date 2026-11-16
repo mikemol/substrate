@@ -1,0 +1,1 @@
+- `jea_strictify_rotation.py` (11/11) — self-annihilation=rotation-into-V₂, reproduces the depopulation law exactly.

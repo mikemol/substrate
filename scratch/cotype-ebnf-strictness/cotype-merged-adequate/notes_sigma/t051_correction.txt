@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc, trace T1-forest, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **jea_omml.py [Σ-OMML, the real OMML front-end] — the lowering the domain carrier was WAITING for.**
+  Lowers `<m:oMath>` → IR (App/BinOp/Subscript/Name) against the mat260 renderOMML vocabulary.
+  **EMPIRICAL CORRECTION to my Σ-OMML-DOMAIN framing:** well-authored OMML makes function application
+  EXPLICIT via `<m:func>` → lowers straight to App with ZERO partitions; the App/Mul fork arises ONL

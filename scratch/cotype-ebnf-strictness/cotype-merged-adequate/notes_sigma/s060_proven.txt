@@ -1,0 +1,6 @@
+[PROVEN] (Σ-arc, block 4: FORWARD PATHS — RE-SORTED (pipeline RUNS; sort axis = distan)
+
+- **Σ-SPPF-CHART-READOUT — SUPERSEDED by COMPOSE: I OVERBUILT; the readout is `trace_fold` (USER caught
+  it).** USER: "you've overbuilt your parser; compose from jea_core; there shouldn't be
+  anything to fix if the Earley/EEA/CRT/SPPF isomorphism is represented faithfully." CORRECT. PROVEN on
+  the EXISTING core (jea_pyalg PyDivStr/Trace/trace_fold): **Earley item = `wedge` (head/base/remainder,

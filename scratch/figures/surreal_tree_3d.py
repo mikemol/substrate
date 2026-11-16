@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The surreal number tree, unfolded into 3D by birthday.
 
 The 2D figure puts value on x and birthday on y, which crowds the dense day-N

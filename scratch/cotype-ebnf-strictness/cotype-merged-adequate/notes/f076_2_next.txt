@@ -1,0 +1,2 @@
+NEXT (the real construction, not a proxy): compute the Ihara edge-zeta det(I − A·u + D·u²) for the graph our permutation acts on; its functional equation u↦1/(qu) is GUARANTEED (Bass's thm) for any graph — so the real question is how T (our cycle-space Frobenius) sits INSIDE that object. Build the zeta, don't guess a symmetry on the charpoly that isn't it. → P-IHARA.
+[supporting witness: probe_weil_proxy.py — shared block evidence]

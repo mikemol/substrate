@@ -1,0 +1,41 @@
+@misc{arch-components,
+  section = {structure},
+  claim   = {the engine is partitioned into EIGHT COMPONENTS --- delta, gate, kernel, library_kernel, model, project, resolver and tests --- and that partition is the one bnd-components gates as TOTAL and DISJOINT over the real tree, so a file belonging to no component is a build error rather than a documentation gap},
+  check   = {claim:arch-components},
+  reads    = {.}
+}
+
+@misc{arch-modules,
+  section = {structure}, from = {arch-components}, rests-on = {arch-components},
+  claim   = {those components hold TWENTY-SIX non-test modules, which is a DIFFERENT count from the eight components --- the distinction matters because this document once asserted seventeen, a number matching neither, and a count in prose is a claim nothing re-derives},
+  check   = {claim:arch-modules},
+  reads    = {.}
+}
+
+@misc{arch-projects,
+  section = {structure}, from = {arch-modules},
+  claim   = {the repository wires THIRTEEN projects in MODULE.bazel, and that is not the number of paper.toml files on disk --- fixtures and starter templates are projects on disk that nothing wires, so the two counts are genuinely different questions and a document must say which it means. This number changed WITHIN the tick that introduced the witness, when arch itself was wired --- which is the counting claim earning its place},
+  check   = {claim:arch-projects},
+  reads    = {.}
+}
+
+@misc{arch-two-pk-grade,
+  section = {tensions},
+  claim   = {TWO rules named pk_grade exist, in tools/grade.bzl and tools/calc.bzl, never loaded together --- benign but a collision that can mislead a reader who greps for one and finds the other},
+  check   = {claim:arch-two-pk-grade},
+  reads    = {.}
+}
+
+@misc{arch-report-scope,
+  section = {tensions}, from = {arch-two-pk-grade},
+  claim   = {the report's document census now covers every wired project rather than three --- this entry RETIRES a tension that read that the committed report covered only paper, README and boundaries while render, image, config and setup were unrepresented, and it is gated so the retirement goes red if the scope narrows again},
+  check   = {claim:arch-report-scope},
+  reads    = {., report}
+}
+
+@misc{arch-two-tiers,
+  section = {tensions}, from = {arch-report-scope}, rests-on = {arch-report-scope},
+  claim   = {no document is on-demand any more --- this entry RETIRES a tension that read that render, image and report gated on-demand so the hook did not exercise their presentation and reproducibility claims; the retirement is a witness rather than a deletion, because a tensions ledger whose entries go stale SILENTLY is the defect claims exist to prevent},
+  check   = {claim:arch-two-tiers},
+  reads    = {., report}
+}

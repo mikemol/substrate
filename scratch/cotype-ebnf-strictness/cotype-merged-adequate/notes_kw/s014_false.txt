@@ -1,0 +1,5 @@
+[FALSE] (Σ-arc KEYWORD reading, topic bezout-gauge, block 3)
+
+- **G2 — CUDA: USER caught my key-tag claim.** "key OR residue" was a FALSE either/or (both treat
+  the qualifier as ATOMIC). Escape: it's a CARRIER, carriers are STRUCTURE — Move(src,dst,data) =
+  recon, which the substrate already has. Verified by hand-lowering.

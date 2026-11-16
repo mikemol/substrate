@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 0)
+
+- **`jea_agdai.py`** [AI-Πι, Δ-Π-agdai DONE-partial] — the THIRD front-end (ast, cst,
+  agdai-core) into the SPPF. Deserializes a real .agdai (Graded.agdai): magic e3bc4eaa +
+  gzip-at-offset-24 → decompress → node-count from header → name table → intern each arena
+  node into jea_pyalg.Intern with FAN-IN DEGREE + name as identity. 43466 arena nodes, 270
+  names, metalanguage signature intact (nod

@@ -1,0 +1,6 @@
+[LOCALIZED] (Σ-arc, trace T3-navigator, block 5: FORWARD PATHS — STRICTIFIED (the seam arc, ordered by depend)
+
+- **G3 (spectral analysis PARTIALLY earned — held the line).** EARNED: the family is a FILTRATION with a
+  LOCALIZED GRADED OBSTRUCTION (cross_term degree = obstruction, localizes WHERE identities split) — basic
+  spectral analysis (filtered object + associated graded + obstruction class). NOT EARNED: a spectral
+  SEQUENCE (needs a SECOND filtration/bicomplex + d²=0 + page-turning). Calling it a s

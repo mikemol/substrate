@@ -1,0 +1,1 @@
+* Dedekind-Kummer = Frobenius on the prime-splitting / Spec(ℤ) face (H⁰/H¹ arithmetic).

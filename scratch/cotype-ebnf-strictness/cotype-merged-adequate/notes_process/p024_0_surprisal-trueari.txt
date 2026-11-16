@@ -1,0 +1,2 @@
+Δ-Π-surprisal-truearity [100] — DONE (recorded above; was the standing gap, now closed) The coboundary-map fix, built at TWO scopes (one principle, the recursive law): (1) PER-NODE: surprisal now uses DISTINCT children (diamond-collapse at depth 1) in BOTH `jea_picircuit._axis_surprisal` AND `jea_py
+[axis-signature: 100 | task: Δ-Π-surprisal-truearity]

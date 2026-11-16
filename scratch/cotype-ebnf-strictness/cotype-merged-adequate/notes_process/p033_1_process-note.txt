@@ -1,0 +1,1 @@
+- `jea_strictify_kirchhoff.py` (9/9) — re-grounded in the source: G_OR/G_AND from nodal solve, relaxation=Thomson, witness=loop-space(KVL), ★=G_NOT forced, bridge-null=kernel.

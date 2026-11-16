@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """DD7: Composition test for Clifford XOR-mask with backref+S₄ residue.
 
 Verifies:

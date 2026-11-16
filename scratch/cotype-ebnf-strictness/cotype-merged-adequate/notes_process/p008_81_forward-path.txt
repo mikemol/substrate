@@ -1,0 +1,1 @@
+- **DISCIPLINE FLAG — TWO encoding errors this session (leaf-values-in-payload, BOTH times).** The probes

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_lossless_chain_comparison.py — three lossless modes head-to-head.
 
 Three lossless paths, all measured on the same corpora at the same sizes:

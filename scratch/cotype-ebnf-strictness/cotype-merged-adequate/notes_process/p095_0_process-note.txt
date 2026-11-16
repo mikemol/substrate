@@ -1,0 +1,1 @@
+- state = ("cursor": i, "results": [[p,c,mult],...]) — JSON-able, cheap, no matrix.

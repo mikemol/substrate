@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.PreseededSPPFCodec — SPPF codec using pre-seeded substrate-native
 opcodes as initial grammar rules.
 

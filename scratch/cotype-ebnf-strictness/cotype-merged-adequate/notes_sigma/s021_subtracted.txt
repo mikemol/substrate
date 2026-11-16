@@ -1,0 +1,7 @@
+[SUBTRACTED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **G8 (blind spot) — the two open CUDA increments may be ONE thread (don't pre-split).** Tiling-
+  Move-pattern recognition (extract "tiling" as a generator subtree over Move-carriers) and the
+  source↔core↔kernel cross-term (does a kernel faithfully realize the proven algorithm) LOOK like
+  two. Common structure: BOTH are reading the SAME interned forest with .agda/.agdai/CUDA all present
+  — ti

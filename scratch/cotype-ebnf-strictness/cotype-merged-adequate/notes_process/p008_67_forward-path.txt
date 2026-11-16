@@ -1,0 +1,1 @@
+- **G3 (THEOREM): S₄ ≅ V₄ ⋊ S₃, S₃ = Stab(anchor), anchor-choice = GAUGE FIXING** (Stab(D/C/S/W) all

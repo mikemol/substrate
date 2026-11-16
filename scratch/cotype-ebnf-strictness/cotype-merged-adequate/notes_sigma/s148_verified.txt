@@ -1,0 +1,3 @@
+[VERIFIED] (Σ-arc, block 42: Retrospective verdict-changes banked)
+
+- **G7-c (verify-don't-defer = verify-don't-inherit, UNIFIED):** an external correction (AI-Q) gets VERIFIED, not deferred-to; an external constraint (prior-instance, cotype) gets VERIFIED, not inherited-as-law. Inherit-as-law and defer-as-authority are ONE root (ungraded trust of an external claim), opposite signs. AI-Π0 DID verify AI-Q's correction (computed the vectors — the sustain), but the r

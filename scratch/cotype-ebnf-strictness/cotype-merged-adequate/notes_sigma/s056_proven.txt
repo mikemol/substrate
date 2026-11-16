@@ -1,0 +1,7 @@
+[PROVEN] (Σ-arc, block 4: FORWARD PATHS — RE-SORTED (pipeline RUNS; sort axis = distan)
+
+- **Σ-SPPF-CHART [grammars via a seeded Earley-SPPF; NO CORE CHANGE NEEDED — gap DISSOLVED] —
+  the obligation-discharge fold the substrate already runs, at the parsing scale.** USER's keys, in
+  order, each a recursive-law cut: (1) Earley chart-as-SPPF self-extends (chart-membership=grammar-
+  membership); (2) predictor/completer ARE EEA's two passes (forward registers the subgoal-obligation,
+  b

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """verify_s4_structure.py — tests for the S_4 / V_4 ⋊ S_3 formalization."""
 
 import sys

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Sequitur — incremental online grammar induction.
 
 The Nevill-Manning & Witten 1997 algorithm with a hot, incremental

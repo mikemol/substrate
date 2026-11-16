@@ -1,0 +1,1 @@
+- **SCOPE (do not over-claim): this verifies the torsor on the SCALAR fields ONLY.** `children` (recursive

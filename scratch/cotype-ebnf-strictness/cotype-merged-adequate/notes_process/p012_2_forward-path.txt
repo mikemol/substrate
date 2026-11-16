@@ -1,0 +1,1 @@
+- **sympy is the HUB:** forest→sympy opens sympy's printer table (octave_code/latex/mathml/ccode) as

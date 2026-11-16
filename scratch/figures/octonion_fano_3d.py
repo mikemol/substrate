@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The octonion Cayley table as a signed 3D relief.
 
 The 2D table colours each cell by the sign of the product (red +, blue −). Here

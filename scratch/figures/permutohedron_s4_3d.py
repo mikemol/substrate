@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The S₄ permutohedron, breathing along the Fiedler eigenvector.
 
 The 2D-ish figure embeds the permutohedron in 3-space and paints the Fiedler

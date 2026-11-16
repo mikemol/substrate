@@ -1,0 +1,2 @@
+GRADE: Galois-group ~S_d-generic = grade-2 (9-cycle+8-cycle forces a large primitive group — solid group theory; "exactly S₉" needs PARI/Sage, not available; sympy gave the Frobenius inventory only). Focal=Frobenius mechanism = CONFIRMED operational. P-THREE [5,4]=Frob_3 = RETRACTED (ramified-prime misread); replaced by "3 ramifies, basis-relatively". The focal law now runs on a confirmed graph-Weil object with a generic-symmetric Galois lens.
+[supporting witness: probe_frobenius_inventory.py — shared block evidence]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 hamming_scaling_hardware.py — The Hamming scaling pattern and hardware
 acceleration implications for the chart.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.MultiscaleRotation — Cayley-Dickson rotation family.
 
 Generalises eliza/octonion.py from byte-only to all scales n ∈ ℕ.

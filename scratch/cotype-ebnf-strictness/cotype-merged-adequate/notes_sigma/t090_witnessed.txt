@@ -1,0 +1,6 @@
+[WITNESSED] (Σ-arc, trace T3-navigator, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-TORSOR-VERIFY — RUN (this pass): the action is FREE on field-complete populations = a genuine
+    ℤ₂⁴ torsor on the scalar fields; the earlier "stabilizer" was a degenerate-population ARTIFACT.**
+  jea/jea_torsor_verify.py: built a population where every scalar field {kind,role,op,lit} carries an
+  INDEPENDENT distinction (a pair differing only in that field). RESULT: all four single-field f

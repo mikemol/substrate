@@ -1,0 +1,6 @@
+[REAL] (Σ-arc, trace T1-forest, block 13: FORWARD PATHS — RE-SORTED (the goal's core is delivered; sor)
+
+- **G3 (honest scope, not overclaimed) — "core case" means operator-holes + single-param.** The
+  end-to-end (cluster→typehole→helper) works, but multi-hole / subtree-hole / non-operator-edit-site
+  are NOT done. Stated in the entry, not buried. The integration verdict (does it refactor the REAL
+  repo cleanly) is the other session's half — my fixpoint/compile checks are internal only.

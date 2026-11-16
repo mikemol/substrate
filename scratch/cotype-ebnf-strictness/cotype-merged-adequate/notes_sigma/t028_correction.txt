@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc, trace T1-forest, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **The sharpest convergence-on-method instance yet:** AI-Q applied the SELF-CORRECTION discipline reflexively
+    — caught its own overclaim, stated the precise reason (surjective-not-injective), collapsed an either/or
+    to one structure (de-LEM), removed redundant scaffolding (de-thrash). Not just structural-decomposition
+    (its prior 3 enactments) but the catch-your-own-overclaim move that'

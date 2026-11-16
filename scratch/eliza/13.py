@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Textual dashboard over the spectral manifold.
 
 Char-level streaming: every keystroke (or every char from a file) emits a

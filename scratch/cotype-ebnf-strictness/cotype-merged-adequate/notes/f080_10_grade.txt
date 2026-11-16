@@ -1,0 +1,2 @@
+GRADE: this is the user's organizing law, taken as the framework (his domain, his call). It reframes every prior finding as a slice-or-crossing of open families. Action: rebuild the findings as an interaction-lattice indexed by family; mark un-indexed residues (v5=3) as "which family?" open Qs.
+[supporting witness: probe_tree_deform.py — shared block evidence]

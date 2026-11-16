@@ -1,0 +1,2 @@
+Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest priority Unchanged. Agda-flag aliases; human-ergonomics only. --- ## PROBE STATE (Fano lines through the registered tags) - **L₁ / L₄/L₅ / L₆** — all COMPLETE as before (circuit deliverable extracted; dependent-full 111 triadic; the law re
+[axis-signature: 010 | task: Δ-Π-flag-parity]

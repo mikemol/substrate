@@ -1,0 +1,1 @@
+1. Build IR→Python unparser making a CANONICAL extrusion choice (sorted/normalized names/standard formatting) — NOT arbitrary. (jea has source→IR via AST/CST + sympy lowerers; the general IR→Python so

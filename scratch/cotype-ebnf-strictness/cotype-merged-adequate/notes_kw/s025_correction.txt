@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc KEYWORD reading, topic bezout-gauge, block 3)
+
+- **SELF-CORRECTION (USER caught me LEMming): "the gauge isn't in the reconstruction, so it'd HAVE TO BE in
+    the Bézout-coefficient extraction" is a DISJUNCTIVE SYLLOGISM (either/or + exclusion = LEM) — the exact
+    move the recurring law forbids, and which I recorded as a TELL two pulls ago, then walked past while
+    calling it "sharpening."** Apply the law instead: don't ask WHICH of recons

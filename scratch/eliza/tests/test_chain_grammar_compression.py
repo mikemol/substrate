@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_chain_grammar_compression.py — per-level diagnostic.
 
 Measurement, not a gate. For each level of the recursive grammar:

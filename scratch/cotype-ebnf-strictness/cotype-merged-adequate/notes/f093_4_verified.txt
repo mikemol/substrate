@@ -1,0 +1,2 @@
+VERIFIED (2,8,18 exact) but not yet DERIVED from first principles — why does one p-cycle's projected within+cross Φ_p structure give exactly φ(p)²/2? That single count is the last step. NOT YET a full theorem, but MUCH closer than last turn: the frame-dependence (the obstacle) is now explained (root-deletes-its-block, rigorous AA=0), and the residual is one clean dimension count, not a fog.
+[supporting witness: probe_c2_close2.py — shared block evidence]

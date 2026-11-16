@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_cap_sweep.py — sweep max_opcodes cap to find the regression boundary.
 
 Hypothesis: higher cap → less compression loss from freeze, but more

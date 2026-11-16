@@ -1,0 +1,2 @@
+GRADE: compute wall = DISSOLVED (price-is-right: nullity not factorization — reusable for ALL high-dim multiplicity questions). c=2 generator mult=φ(p)/2 = PINNED, structural (half cyclotomic width per pair), data-confirmed p=3,5,7. Full f(c,p) = super-pairwise, NOT yet pinned (higher-order crossings). The koan held: did NOT fit a 2-var polynomial; banked the structural c=2 law + the refutation of pure-pairwise.
+[supporting witness: probe_inv_cheap.py — shared block evidence]

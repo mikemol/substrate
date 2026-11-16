@@ -1,0 +1,9 @@
+{
+ "retraction_identity": {
+  "sigma_anchor": "unparse\u2218parse = id-up-to-normalization",
+  "sigma_concept": "retraction check",
+  "frob_anchor": "Cpinv",
+  "frob_concept": "non-equivariant",
+  "claim": "parse/quotient/exp retraction-check (\u03a3) = C\u00b7P\u00b7Cpinv frame-projection (Frobenius)"
+ }
+}

@@ -1,0 +1,1 @@
+- **G6 SUSTAIN:** clean reconciliations (diff-before-remove, path re-sync, handoff marked resolved w/ corrected frame, no collisions); registered convergences correctly once prompted; HONEST-HANDOFF-F

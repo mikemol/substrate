@@ -1,0 +1,14 @@
+[paper]
+title = "The JEA Pi Cotype — Complete"
+subtitle = "The total paperkit projection of the running cotype: the mathematical findings and the process record, as one sectioned, edged, proof-relevant claim-DAG. Mechanically converted, then sorted."
+rubric = "rubric.tsv"
+warrants = ["warrants.bib"]
+out = "paper.md"
+numbered = true
+references = false
+
+# Per-claim discriminating witnesses (prose-bound): the check reads its claim from
+# warrants.bib, parses the asserted numbers, and verifies the live probe reproduces
+# them — so corrupting the claim prose flips the check (Δ grades content_sensitive).
+[checks.claim]
+cmd = "python3 checks/claims.py {target}"

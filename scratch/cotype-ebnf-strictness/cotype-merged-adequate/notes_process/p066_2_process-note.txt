@@ -1,0 +1,1 @@
+- annihilation (det=0, kernel) = NO inverse (crudest, grade 1)

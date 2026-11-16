@@ -1,0 +1,7 @@
+[FALSE] (Σ-arc, trace T1-forest, block 35: New shadow registrations (axis-tagged; dispatch by symbol))
+
+### New shadow registrations (axis-tagged; dispatch by symbol)
+| id | label | sig | move | owner |
+|----|-------|-----|------|-------|
+| **P21** | `EXTRUDE-FENCE-FALSE` | 100 | prior-instance "don't IR-round-trip, recompute error" (`jea_extrude.py` header) is POLICY, not structural law — demonstrated-wrong by P22. Goal-side: recovers the real capability from a mis-stated constraint. | AI-Π0 |
+| **

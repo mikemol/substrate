@@ -1,0 +1,4 @@
+[OBLIGATION] (Σ-arc, block 9: FORWARD PATHS — RE-SORTED (the SPPF arc CLOSED; one file is )
+
+- **G6 (sustain) — nothing new to unify this pass; the spine [Σ-OBLIGATION] stands.** Σ-SPPF-CHART is
+  its proven parsing-scale instance. No either/or arose to dissolve (reconciliation pass).

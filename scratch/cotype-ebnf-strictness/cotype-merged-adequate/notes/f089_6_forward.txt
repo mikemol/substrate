@@ -1,0 +1,2 @@
+FORWARD (re-pathed honestly): P4 [compute wall, PREREQUISITE] conjugacy-class-targeted computation to reach nv=15+ (p=5,c=3; p=7,c=2) — needed to fix the p-dependence. Owner Π0 to design, possibly →Δ0 (GPU) to run. P-INV-COND-STRUCT [the constructive target] find the per-pair-of-p-cycles contribution to Φ_p mult (the C(c,2) crossing generator) — a structural derivation, not a fit. Then P-INV-PROOF is well-posed. P-INV-PROOF [→Δ0, AFTER the above] mechanize once f(c,p) is pinned with a generator.
+[supporting witness: probe_inv_cond_count.py — shared block evidence]

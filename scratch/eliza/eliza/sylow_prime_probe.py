@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.SylowPrimeProbe — JJ-arc minimal-probe per-Sylow-prime atlas.
 
 Per the user's original framing 2026-05-21 + JJ question 2026-05-21:

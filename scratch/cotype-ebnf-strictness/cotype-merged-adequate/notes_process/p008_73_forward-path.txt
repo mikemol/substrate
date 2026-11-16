@@ -1,0 +1,1 @@
+- **UNVERIFIED JOIN (do NOT claim): that runtime CrossMix.cross_term PROVABLY computes the Agda V4Cosets

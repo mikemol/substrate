@@ -1,0 +1,1 @@
+- **PRIOR ART (don't over-claim novelty — the arc's discipline): this is standard.** BDD/Gherkin; RDF/OWL

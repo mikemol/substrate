@@ -1,0 +1,2 @@
+P52 WALL-IS-GALOIS-DEFECT [101] "does D bound" is NOT an internal property — it's the closure of the Galois connection ∂⊣∂* (boundary & fill-adjoint). bounding = im(∂*) = resolved (μ); essential = ker∂/im∂* = H_n = closed-fixed-points the adjoint can't reach = the recurring walls (ν). THE WALL = the
+[axis-signature: 101 | owner-field(raw): **WITNESSED**]

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Substrate package import graph in 3D — PyVista.
 
 Package-level graph (_graphs.package_import_graph), 3D spring layout, node radius

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainSequitur — Sequitur inferring grammar over ChainSymbols.
 
 Each Sequitur rule produced by this layer corresponds to a chain

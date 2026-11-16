@@ -1,0 +1,1 @@
+-------------------------------------------------------------------------------- USER: "arity is just the availability of a successor function describing the cardinality of potential distinct inputs." This COLLAPSES arity and successor/count-twist into one: arity is not a static carrier property — i

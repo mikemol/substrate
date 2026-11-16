@@ -1,0 +1,2 @@
+P54 XUNIT-PRIMITIVES [110] language-independent xUnit primitives: Assertion, Test Case, Fixture, Suite, Runner, Result + relations (short-circuit-conjunction(at)case = SLD resolution, total-conjunction(at)suite, composite-tree, fixture-isolation, result-as-trace-vs-verdict). USER RE-GRADED: (a) pass/fail 
+[axis-signature: 110 | owner-field(raw): reasoned]

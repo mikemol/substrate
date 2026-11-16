@@ -1,0 +1,2 @@
+GOAL: does building on 2-faces (triangles) make 3 the special prime (arity=successor-availability) or does 2 stay special (cell-dim != successor-arity)? Honoring the koan: build the construction, don't pattern-match.
+[supporting witness: probe_arity_baseline.py — shared block evidence]

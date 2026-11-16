@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Laplacian spectrum of the S₄ permutohedron Cayley graph.
 
 Companion to permutohedron_s4.py, sharing the same `Permutohedron` core

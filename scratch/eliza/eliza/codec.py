@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Codec — gt + arithmetic coding = real lossless codec.
 
 Wraps the TrigramPredictor in a range coder so the input stream is

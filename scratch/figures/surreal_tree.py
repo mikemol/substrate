@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The surreal number tree, stratified by birthday.
 
 Conway's {L | R} construction (agda/Substrate/Algebra/Quotient/Surreal.agda):

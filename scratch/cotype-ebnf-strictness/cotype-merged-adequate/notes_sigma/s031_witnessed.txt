@@ -1,0 +1,8 @@
+[WITNESSED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **STATE:** Σ-SEAM-GLUE M2 — AI-Q reports fully discharged+extras (checker); AI-Πρ confirms by inspection,
+  pending independent typecheck. Σ-DELOOP-PRIORART — BG/delooping infra now built (M40 on the categorical
+  spine); torsor↔BG bridge + novelty question open. Σ-GATE-SKIP-3STATE still the one pending verbal report.
+  SPPF-torsor canonical + CI-gated.
+
+## PATH/HOMOLOGY EXIT FROM THE FIXPOINT B

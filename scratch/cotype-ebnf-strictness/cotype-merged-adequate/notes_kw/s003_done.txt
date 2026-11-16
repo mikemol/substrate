@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 0)
+
+- **Dependent typeholes [DONE, in jea_pysim.py]** — typed holes are now a TELESCOPE:
+  `dependency_telescope(th)` reads hole-dependencies FROM THE SPPF (not a post-pass). An
+  EQ-dependency (two holes carry the same filler in every unit) IS a diamond -- one interned
+  node with fan-in >=2, already built by hash-consing (the interner was a dependency-tracker
+  all along; structural-equality→node-id

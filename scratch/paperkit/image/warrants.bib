@@ -1,0 +1,25 @@
+@misc{img-repro,
+  section = {repro},
+  claim   = {paperkit's proof object reproduces as an immutable container image --- building the image from this repository and running its gate inside it, network-isolated, verifies the paper HERMETICALLY: the same green verdict with no host toolchain, fresh-by-construction each build},
+  check   = {cmd:sh checks/repro.sh}
+}
+@misc{img-stable,
+  section = {repro}, from = {img-repro}, join = {. },
+  claim   = {and the build is REPRODUCIBLE: from the pinned toolchain base the proof image is COPY-only, so building it twice --- forced, with a fixed timestamp --- yields the same content digest, making the digest a stable content-address, the proof's checksum},
+  check   = {cmd:sh checks/stable.sh}
+}
+@misc{img-pinned,
+  section = {toolchain},
+  claim   = {the toolchain base is pinned by content digest, not a moving tag, so the proof reproduces and is not at the mercy of a re-tagged base --- the irreducibly non-deterministic package layer is isolated there, the way the python base isolates its own},
+  check   = {cmd:grep -q "python@sha256:" ../Containerfile.base}
+}
+@misc{img-hermetic,
+  section = {toolchain}, from = {img-pinned}, join = {, and },
+  claim   = {the verification runs with the network disabled, so a check cannot reach beyond the image and the proof depends on nothing outside it},
+  check   = {cmd:grep -q -- "--network=none" checks/repro.sh}
+}
+@misc{img-serve,
+  section = {present},
+  claim   = {the same immutable image that PROVES the paper also PRESENTS it: run in serve mode it hosts the repository over HTTP, and the paper fetched from it is byte-for-byte the paper that was gated --- the proof object serves itself, no host webserver},
+  check   = {cmd:sh checks/serve.sh}
+}

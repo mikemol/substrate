@@ -1,0 +1,1 @@
+- **HONEST SCOPE (conservation-of-difficulty, named not hidden):** round 1 (seed recognizes ABNF text)

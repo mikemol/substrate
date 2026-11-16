@@ -1,0 +1,7 @@
+[OPEN] (Σ-arc, trace T1-forest, block 27: Δ-Π-skeleton-emit [011 guard-cleared-SA] — STILL OPEN (the c)
+
+### Δ-Π-skeleton-emit [011 guard-cleared-SA] — STILL OPEN (the constructor)
+Unchanged. `--skeleton` reports; should CONSTRUCT the parametric template + substitution
+map. NOW STRONGER: with dependent typeholes, the emitted template can mark dependent holes
+(this param = that param), so the constructor emits the TRUE-ARITY parametric form, not the
+inflated one. parameter_map + dependency_telescope h

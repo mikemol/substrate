@@ -1,0 +1,1 @@
+- **HAND OVER: `jea_grammar_fixpoint.py`** — recognition AS the intern-fixpoint of decomposition

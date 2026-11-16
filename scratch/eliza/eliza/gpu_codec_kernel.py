@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecKernel — custom CUDA RawKernel for the AC inner loop.
 
 Slice 11 of the post-DBE plan (third pass): the speedup fix promised in

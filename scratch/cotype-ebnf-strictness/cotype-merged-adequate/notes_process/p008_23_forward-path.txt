@@ -1,0 +1,1 @@
+- VERIFIED all pointers exist: 8 Agda modules (B3Split, WhyThreeV2, V4, SemidirectProduct, S4-Iso/V4Normal,

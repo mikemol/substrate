@@ -1,0 +1,6 @@
+[LOCALIZE] (Σ-arc, trace T2-residue, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-SPINE-PROBE — RUN (this pass), result: LOCALIZE; my "too broad" objection was WRONG.**
+  POST-COMPACTION INTEGRITY CHECK (pass 19, USER flagged: the flush hit mid-action, right after reading
+  key()/cross_term but before using them): VERIFIED no corruption — the probe uses the REAL API (cross_term
+  (int,int), .degree/.head_agree/.a_residue/.b_residue, IR(kind,op,children), I.intern all matc

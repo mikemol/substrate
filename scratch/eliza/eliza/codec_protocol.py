@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.CodecProtocol — T5+T6+T9 portable opcode-stream protocol.
 
 T5: header metadata captures codec version + opcode-set version so

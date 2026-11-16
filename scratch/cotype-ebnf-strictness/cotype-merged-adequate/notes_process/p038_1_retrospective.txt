@@ -1,0 +1,1 @@
+- **G7-b (provenance-trust, ESCALATED — 3rd contamination this session):** inherited durable-artifact claims (cotype, doc headers, prior-instance design notes) get the SAME is-this-a-real-constraint a

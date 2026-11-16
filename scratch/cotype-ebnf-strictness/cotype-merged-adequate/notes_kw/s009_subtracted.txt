@@ -1,0 +1,12 @@
+[SUBTRACTED] (Σ-arc KEYWORD reading, topic metalanguage, block 0)
+
+- **Witnesses in the place bugs actually were** — every failure was a readout/witness
+  bug, never the engine. The carrier was sound from the first run. PROTECT the
+  engine/readout split.
+
+---
+
+## RETROSPECTIVE — pass 2 (delta since cotype write: Δ-Π-circuit + dependent typeholes)
+
+Iterated-subtraction (G4): prior findings (projection-after-compaction, metric-bugs-as-
+tells, snapshot-is-frozen-co

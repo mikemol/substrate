@@ -1,0 +1,1 @@
+- **Σ-TIDY** — housekeeping + upstreaming (cuda + oneforest now PASSED; jea_extrude still to upstream).

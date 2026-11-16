@@ -1,0 +1,2 @@
+GRADE: localization-of-ramification-to-the-non-equivariant-gauge = REAL (equivariant ker(∂_k) cyclotomic at all k, established). Arity verdict = NOT ESTABLISHED (test did not fire). Per koan: NO arity claim on a test that didn't fire. The named failure mode (3-climbs vs 2-stays) remains OPEN, pending the correct construction.
+[supporting witness: probe_arity_baseline.py — shared block evidence]

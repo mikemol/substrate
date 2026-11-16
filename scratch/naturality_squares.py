@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 Module-level naturality-square detector for the substrate Agda codebase.
 
@@ -23,6 +25,9 @@ from collections import defaultdict
 import numpy as np
 from scipy.sparse import lil_matrix, csr_matrix
 from scipy.sparse.csgraph import reverse_cuthill_mckee
+import os as _o, sys as _s
+_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch"))
+import agda_lex as _lex   # THE header/comment authority; never re-derive
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
@@ -31,12 +36,12 @@ SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
 def parse_module(path: Path):
     """Extract (module_name, [imported_module]) from an Agda file."""
     text = path.read_text()
-    module_match = re.search(r"^module\s+([A-Za-z0-9_.\-]+)\s+where", text, re.M)
+    module_match = _lex.module_name_of(text)
     if not module_match:
         return None, []
     module_name = module_match.group(1)
     imports = re.findall(
-        r"^(?:open\s+)?import\s+([A-Za-z0-9_.\-]+)", text, re.M
+        r"^(?:open\s+)?import\s+([\w.'-]+)", text, re.M
     )
     # Only keep Substrate.* imports (the rest are stdlib, not part of our graph)
     imports = [imp for imp in imports if imp.startswith("Substrate.")]

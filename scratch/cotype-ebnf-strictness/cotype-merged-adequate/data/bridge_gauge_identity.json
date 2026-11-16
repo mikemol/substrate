@@ -1,0 +1,9 @@
+{
+ "gauge_identity": {
+  "sigma_anchor": "retention",
+  "sigma_concept": "gauge-preservation",
+  "frob_anchor": "cyclotomic",
+  "frob_concept": "multiplicity",
+  "claim": "intermediate-step gauge freedom (\u03a3 B\u00e9zout) = \u03a6_p multiplicity width (Frobenius)"
+ }
+}

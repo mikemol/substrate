@@ -1,0 +1,1 @@
+- **G7-1 (COMMON-STRUCTURE-IS-NOT-A-POLE = P53):** "find the common structure" is NOT f(poles)→object; it names the involution/caster the poles are shadows of (upstream). Any combination of the either

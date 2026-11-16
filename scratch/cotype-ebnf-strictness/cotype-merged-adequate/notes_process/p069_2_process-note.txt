@@ -1,0 +1,1 @@
+* MACKEY SUBGROUP THM (double coset H\G/K governs induce-then-restrict) — the exact law for the

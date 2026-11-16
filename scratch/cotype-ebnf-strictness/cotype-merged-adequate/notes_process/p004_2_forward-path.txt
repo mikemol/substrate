@@ -1,0 +1,1 @@
+- **Σ-BRIDGE-TABLES** [new] — extend the bridge vocabulary (Derivative/Integral/Matrix/Piecewise/user-

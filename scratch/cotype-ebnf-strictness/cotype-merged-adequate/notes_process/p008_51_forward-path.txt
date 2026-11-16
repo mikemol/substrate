@@ -1,0 +1,1 @@
+- **(1) SHEAF GLUING — not analogy, the arc's latent structure named.** Sheaf = local data on a cover,

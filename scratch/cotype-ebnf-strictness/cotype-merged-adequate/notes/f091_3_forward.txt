@@ -1,0 +1,2 @@
+FORWARD: P-INV-COND-c2-CLOSE = derive why the cycle-space projection removes (p+1)/2 copies of each primitive p-th root from the raw cross-torus (decompose: trivial-mode removal + within-block deformation + conjugation). Closing this PROVES the c=2 law constructively. Then P-INV-COND-HIGH (c≥3 higher crossings, now cheap via nullity) + P-INV-PROOF (→Δ0). The construction is the path from numerology to theorem.
+[supporting witness: probe_inv_construct.py — shared block evidence]

@@ -1,0 +1,1 @@
+| **P39 CHL** | Yoneda(point=injective distinction-profile) → CCC(products/exp/currying) → morphism=program=proof | **WITNESSED (ran) + CHECKED-CORE (Agda)** — `Substrate.Linguistic.(YonedaLemma,Yoned

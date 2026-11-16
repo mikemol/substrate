@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 search_k_variants.py — Exhaustive K-rule variable-assignment grid search.
 

@@ -1,0 +1,1 @@
+2. Iterate `source → IR → source → IR → …` at BYTE grade on real code; confirm convergence to a fixed point.

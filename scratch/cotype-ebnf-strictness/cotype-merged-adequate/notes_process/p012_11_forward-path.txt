@@ -1,0 +1,1 @@
+- **G8 (blind spot caught in-pass) — matching-by-name HID the adversarial case.** My first demo

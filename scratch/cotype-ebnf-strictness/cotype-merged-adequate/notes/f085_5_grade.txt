@@ -1,0 +1,2 @@
+GRADE: arity-climb = FAMILY-FACT (systematic across 5 elements, k=1→k=2, v3 gains everywhere there's ramification). The construction fires (verified, non-cyclotomic, T^n≠I). 2-persists = real (the composite outcome). LATTICE: F_arity (successor-on-k-subsets, refinement of F_n) is now a CONFIRMED family — the unsuppressed prime = (face-arity), with lower primes persisting via face-containment. The suppression question CLOSED: it was successor-unavailability, lifted by raising arity.
+[supporting witness: probe_arity_kface.py — shared block evidence]

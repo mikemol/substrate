@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """HH4: Sweep (p, q) ∈ small primes² × axis assignments; measure
 mutual information between the prime-sampled chain context and the
 substrate's actual S₄ chain symbol at each step.

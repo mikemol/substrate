@@ -1,0 +1,1 @@
+- **NEW SUB-OBJECT [Σ-OMML-DOMAIN] — BUILT + VERIFIED (this turn).** `jea/jea_omml_domain.py`: the

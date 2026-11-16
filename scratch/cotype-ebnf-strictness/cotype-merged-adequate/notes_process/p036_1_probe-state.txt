@@ -1,0 +1,1 @@
+- **GAP, all need 111 (triadic-full, STILL EMPTY):** L₄ GS-triadic-completion, L₅ SA-triadic-completion, L₆ guard-reconstitution.

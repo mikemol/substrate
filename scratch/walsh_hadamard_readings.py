@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 walsh_hadamard_readings.py — The 8 mutually orthogonal readings of RM(1,3).
 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GrammarEventCodec — SPPF-as-Free-Markov-Model lossless codec.
 
 Per the user's framing: the SPPF we assemble during ChainSequitur

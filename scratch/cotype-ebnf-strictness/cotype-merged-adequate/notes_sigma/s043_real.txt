@@ -1,0 +1,6 @@
+[REAL] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **AI-Q CORRECTED my spec's loose reasoning (the NB):** my v3 spec said gauge-invariance "falls out — the
+  flip is the ℤ₂-factor's own automorphism." AI-Q: that's WRONG — oflip is NOT a homomorphism (oflip(a·b) ≠
+  oflip a · oflip b) and Aut(ℤ₂) is trivial, so "flip is the automorphism" is loose/empty. The REAL content
+  is LABEL-UNIFORMITY: the centrality proof is identical for both labels and 

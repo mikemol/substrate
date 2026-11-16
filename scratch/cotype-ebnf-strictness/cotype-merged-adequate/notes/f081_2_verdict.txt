@@ -1,0 +1,2 @@
+VERDICT (clean, no hedge): v5=3 is a RUNG-COINCIDENCE, un-indexed, fails every climb-check, dissolves under the control. NOT a finding. The law worked AS DESIGNED — converted "unexplained residue" into "run the climb-check", which returned "doesn't belong to a family, discard." This is the NEGATIVE CONTROL for the whole method: a thing that looked like structure, correctly rejected. (And it's the "something always happens at a prime" fishing trap, CAUGHT by the climb-check discipline.)
+[supporting witness: probe_v5_index.py — shared block evidence]

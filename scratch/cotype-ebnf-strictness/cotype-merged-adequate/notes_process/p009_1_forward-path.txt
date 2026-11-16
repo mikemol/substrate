@@ -1,0 +1,1 @@
+- **Σ-TRACE-LAZY** [REPORT to AI-Q, not a build] — trace()/trace_fold() are eager; large-forest readouts

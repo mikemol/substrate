@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """S₄ permutohedron harmonics as a rectified standing-wave surface — PyVista.
 
 height = |amplitude| (floor flush at 0), colour = signed phase (diverging), over

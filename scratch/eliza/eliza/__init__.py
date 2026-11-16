@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza — cleanroom instantiation of agda/Eliza/ contracts in Python.
 
 Each Python module here implements exactly one Agda module's contract.

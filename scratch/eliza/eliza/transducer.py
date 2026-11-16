@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Transducer — per-symbol transducer interfaces.
 
 Two flavours per the Agda contract:

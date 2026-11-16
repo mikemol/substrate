@@ -1,0 +1,1 @@
+- **BUG CAUGHT MID-BUILD — the value-in-payload collapse, 4th OCCURRENCE.** First cut put the

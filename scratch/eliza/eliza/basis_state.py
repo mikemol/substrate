@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.BasisState — the codec's current basis, modeled as a torsor.
 
 V-arc structural pivot per the user's design iteration:

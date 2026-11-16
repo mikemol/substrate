@@ -1,0 +1,2 @@
+P53 COMMON-STRUCTURE-IS-NOT-A-POLE [100] "find the common structure" is NOT a function f(poles)→object at the poles' grade (NOT meet, NOT join, NOT defect — all are COMBINATORS-OF-SHADOWS, flattened by construction; set-ops on R,S only produce at-or-below-grade things). It NAMES the involution/CASTE
+[axis-signature: 100 | owner-field(raw): goal-side re-grade]

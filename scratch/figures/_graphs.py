@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Graph builders for the meta-structure figures (2D and 3D share these).
 
 - similarity_graph: runs scripts/agda_similarity.py --csv and thresholds it.

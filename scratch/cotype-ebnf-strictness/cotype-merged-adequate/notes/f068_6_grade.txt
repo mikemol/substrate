@@ -1,0 +1,2 @@
+GRADE: observations exact (Φ6 at (2,2,3); (4,3) all-noncyc; entanglement pattern across 5 cases, all consistent). Reading (cyclotomic=abelian/coprime, noncyc=non-abelian/entangled, coprimality separates) is grade-2, 5 consistent cases. SHARP FALSIFIABLE BID: a fully squarefree-coprime element (2,3,5) order 30 should be ENTIRELY cyclotomic = the full divisor lattice {Φ1,Φ2,Φ3,Φ5,Φ6,Φ10,Φ15,Φ30}, minimal/zero non-cyclotomic. If it shows non-cyclotomic, the abelian/coprime reading is wrong.
+[supporting witness: probe_interaction_lattice.py — shared block evidence]

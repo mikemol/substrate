@@ -1,0 +1,1 @@
+* 14 COMPOSED — square is a singular (2,2): zero-divisor inherited from the

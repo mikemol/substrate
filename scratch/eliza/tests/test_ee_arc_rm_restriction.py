@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """EE2: RM(1,3) restriction baseline measurement.
 
 Compare codec compression with:

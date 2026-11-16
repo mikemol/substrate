@@ -1,0 +1,2 @@
+CONFIRMED (the face-action reading): the operator acts on the EDGE (1-face) lattice, not on n vertices. Operator order = lcm(EDGE-ORBIT lengths), NOT vertex-cycle order. For (2,3,5) the edge- orbit lengths are [15,10,6,5,5,3,1] — and 15=3·5, 10=2·5, 6=2·3 are the CROSS-BLOCK PRODUCTS appearing AS edge-orbit lengths. The Mackey cross-block IS the permutation's orbit on cross-edges, period = lcm(block sizes). The face-action and the cross-block are the same thing, made combinatorial.
+[supporting witness: probe_simplex_faces.py — shared block evidence]

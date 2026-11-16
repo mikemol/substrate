@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.FullSpeculationCodec — actually-try-each-path speculation.
 
 Per the user's correction:

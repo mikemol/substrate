@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Frames — variable-frame codec architecture.
 
 Each input stream is partitioned into windows. Each window is encoded

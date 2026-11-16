@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """CLI entry point for the cleanroom eliza pipeline.
 
 Modes:

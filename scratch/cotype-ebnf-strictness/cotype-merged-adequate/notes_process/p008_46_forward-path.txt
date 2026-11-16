@@ -1,0 +1,1 @@
+- **Σ-SEAM-GLUE — WORKED to a precise Agda handoff spec (this pass); the three-V₂ hint reoriented it.**

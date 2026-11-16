@@ -1,0 +1,189 @@
+------------------------------------------------------------------------
+-- Substrate.Category.GradedFreeUP
+--
+-- ⟡upfamily-lift-graded — LIFT the free-UP family off Set₁ by the SAME
+-- dissolution the orientation rig category already proved (RigFunctor : Set,
+-- freeObj, freeFunctor-obj-unique), now GENERALISED to any AlgebraClass A.
+--
+-- The census (⟡defect-locate-census) found the UP family dominates the Set₁
+-- surface: UPArrow (72 inst), FreeUP/Backed/UPTerm/… all Set₁. The reuse-
+-- search found the CENTER is `FreeUniversalProperty.FreeUP` and its Set₁ is
+-- (per that module's own header) "a level artifact — the polymorphic targets
+-- range over all structured Sets". That ∀(M : Set) is the ONLY Set₁ cause; the
+-- DATA (unit + structure) is Set₀. `RigFunctor` is the substrate's ONE Set₀
+-- universal property, and it is Set₀ by TWO moves — reproduced here for the
+-- general AlgebraClass:
+--
+--   MOVE 1 — DEF/PROOF SEPARATION.  FreeUP bundles the ∀(M : Set) universality
+--     INSIDE its record fields (extend / extend-unique : {M : Set} → …) — that
+--     is what forces Set₁. `freeFunctor-obj-unique` instead takes the target T
+--     as a LEMMA PARAMETER, landing in an equation. So we split FreeUP into
+--     `FreeUPData` (Set₀: unit + free-has) and a Π over target M of a per-target
+--     `IsFreeAt` (Set₀, M a PARAMETER). The ∀M survives — but as a Π on a PROOF
+--     (the honest floor: a universal property genuinely quantifies over targets)
+--     — NOT packaged into a Set₁ record. `split` / `rebuild` are mutually
+--     inverse (round-trip `refl`), so this is a faithful re-presentation, and
+--     the reducible half (FreeUPData) is now Set₀ and SHARED across instances.
+--
+--   MOVE 2 — GRADE THE CARRIER (set1-is-grade-collapse).  The free carrier F
+--     becomes a grade-indexed family F : ℕ → Set (as freeObj : ℕ → Obj is);
+--     the FLAT carrier is its collapse Σ ℕ F. `collapse` exhibits flat FreeUPData
+--     as the grade-collapse of `GradedFreeUPData` — so the flat UP (and hence
+--     UPArrow, its span) is a TRUNCATION of the graded one, not the primitive.
+--
+-- ROUTING.  `data-UPArrow` shows UPArrow's Witness IS the per-target `Extends`
+-- relation of a FreeUPData — so the 72 UPArrow instances are the per-target
+-- reading of ONE FreeUPData, and `FreeUniversalProperty.FreeUP-UPArrow` factors
+-- through here. `RigFunctor` + `freeObj` (OrientationRigCatUP) is the fully-
+-- worked graded instance at the rig AlgebraClass — the concrete witness that
+-- both moves land a genuine Set₀ free-UP.
+--
+-- WHY NOT JUST INSTANTIATE GradedRigCat?  Because it and this module vary on
+-- ORTHOGONAL axes. `GradedRigCat (Obj) (Hom)` is parameterised over the CARRIER
+-- but its SIGNATURE is FIXED to rig (⊕obj, ⊗obj, braid⊕, braid⊗ + laws). The UP
+-- family instead varies the SIGNATURE: FreeMonoid = monoid-class (⊕ only, NO ⊗),
+-- FreeF2Module = f2mod-class (a SCALAR ACTION, not ⊗), term-algebra, CCC. None
+-- is a strict subset of rig: a monoid instantiated as a GradedRigCat carries a
+-- VACUOUS ⊗ (forced super-structure); a module/CCC has operations not ⊕/⊗-
+-- expressible (lost signature). So GradedRigCat is ONE POINT (the rig class) in
+-- the algebra-class space; `FreeUP`/here is parametric over the WHOLE space
+-- (`split : {A : AlgebraClass} → …` — that ∀A IS the generality GradedRigCat
+-- lacks). This module is therefore NOT a reinvention of GradedRigCat; it is the
+-- algebra-class-GENERAL apex of which RigFunctor is the rig INSTANCE.
+--
+-- HONEST RESIDUE (⊗). To make RigFunctor a LITERAL instance of this apex needs a
+-- GRADED AlgebraClass (`Has-structure : (ℕ → Set) → Set`) — structure on the
+-- graded family, as GradedRigCat has natively. Move 2 here reaches the grade only
+-- via the `Σ ℕ F` COLLAPSE (weaker). The fully-unifying object — a graded-algebra-
+-- class free-UP of which BOTH GradedRigCat and flat FreeUP are truncations — is
+-- the residue this exposes (⟡graded-algebra-class), not built here.
+--
+-- Zero postulates, zero holes, --safe --without-K. No stdlib (Substrate only).
+-- NO Σ used to PACKAGE an existence claim: `IsFreeAt.extend-at` is the
+-- CONSTRUCTION (a function), uniqueness is an equation — ∃! stays a construction.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Category.GradedFreeUP where
+
+open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Unit using (⊤; tt)
+open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Category.FreeOverBasis
+  using (AlgebraClass; Has-structure; Hom-preserves; trivial-AlgebraClass)
+open import Substrate.Category.FreeUniversalProperty
+  using (FreeUP; unit; free-has; extend; extend-preserves; extend-extends; extend-unique)
+open import Substrate.Category.UniversalProperty using (UPArrow)
+
+------------------------------------------------------------------------
+-- MOVE 1a. The Set₀ DATA half of a free-UP: unit + the free carrier's
+-- structure. No ∀(M : Set) — so this lands at `: Set` (checked by Agda).
+------------------------------------------------------------------------
+
+record FreeUPData (A : AlgebraClass) (B F : Set) : Set where
+  constructor mkData
+  field
+    dunit : B → F
+    dfree : Has-structure A F
+open FreeUPData public
+
+------------------------------------------------------------------------
+-- The per-target SOLVE relation, exposed at Set₀ (M is a PARAMETER): "g
+-- extends f along the unit". This IS UPArrow's Witness for a free-UP.
+------------------------------------------------------------------------
+
+Extends : {B F M : Set} → (B → F) → (B → M) → (F → M) → Set
+Extends {B = B} u f g = (b : B) → g (u b) ≡ f b
+
+------------------------------------------------------------------------
+-- MOVE 1b. Freeness AT one target M (M a PARAMETER ⇒ Set₀): the CONSTRUCTION
+-- `extend-at` (a function, not an ∃), its structure-preservation, its
+-- agreement on generators, and its uniqueness (an equation).
+------------------------------------------------------------------------
+
+record IsFreeAt (A : AlgebraClass) {B F : Set} (d : FreeUPData A B F)
+                (M : Set) (hM : Has-structure A M) : Set where
+  field
+    extend-at    : (B → M) → (F → M)
+    preserves-at : (f : B → M) → Hom-preserves A (dfree d) hM (extend-at f)
+    extends-at   : (f : B → M) → Extends (dunit d) f (extend-at f)
+    unique-at    : (f : B → M) (g : F → M) → Hom-preserves A (dfree d) hM g →
+                   Extends (dunit d) f g → (x : F) → g x ≡ extend-at f x
+open IsFreeAt public
+
+------------------------------------------------------------------------
+-- THE SPLIT.  FreeUP (Set₁) ≅ FreeUPData (Set₀) × (Π over targets of Set₀
+-- freeness). The ∀(M : Set) is now a Π on the PROOF component — the honest
+-- floor — and the DATA is Set₀. `split` / `rebuild` round-trip on the nose.
+------------------------------------------------------------------------
+
+FreeStructure : (A : AlgebraClass) (B F : Set) → Set₁
+FreeStructure A B F =
+  Σ (FreeUPData A B F) (λ d → {M : Set} (hM : Has-structure A M) → IsFreeAt A d M hM)
+
+split : {A : AlgebraClass} {B F : Set} → FreeUP A B F → FreeStructure A B F
+split fr = mkData (unit fr) (free-has fr)
+         , λ hM → record
+             { extend-at    = extend fr hM
+             ; preserves-at = extend-preserves fr hM
+             ; extends-at   = extend-extends fr hM
+             ; unique-at    = extend-unique fr hM }
+
+rebuild : {A : AlgebraClass} {B F : Set} → FreeStructure A B F → FreeUP A B F
+rebuild (d , φ) = record
+  { unit             = dunit d
+  ; free-has         = dfree d
+  ; extend           = λ hM → extend-at (φ hM)
+  ; extend-preserves = λ hM → preserves-at (φ hM)
+  ; extend-extends   = λ hM → extends-at (φ hM)
+  ; extend-unique    = λ hM → unique-at (φ hM)
+  }
+
+-- The re-presentation is faithful: rebuilding a split is the identity.
+split-rebuild : {A : AlgebraClass} {B F : Set} (fr : FreeUP A B F) →
+                rebuild (split fr) ≡ fr
+split-rebuild fr = refl
+
+------------------------------------------------------------------------
+-- ROUTING.  A FreeUPData's per-target UPArrow: Source = maps out of the
+-- basis, Target = maps out of the free carrier, Witness = `Extends`. So the
+-- Set₁ UPArrow is the per-target reading of ONE Set₀ FreeUPData — the 72
+-- UPArrow instances collapse onto their data.
+------------------------------------------------------------------------
+
+data-UPArrow : {A : AlgebraClass} {B F : Set} → FreeUPData A B F → (M : Set) → UPArrow
+data-UPArrow {B = B} {F} d M = record
+  { Source  = B → M
+  ; Target  = F → M
+  ; Witness = Extends (dunit d)
+  }
+
+------------------------------------------------------------------------
+-- MOVE 2. Grade the carrier (set1-is-grade-collapse). The free carrier as a
+-- grade-indexed family F : ℕ → Set; the flat carrier is the collapse Σ ℕ F.
+-- `collapse` exhibits flat FreeUPData as the grade-collapse — so the flat UP
+-- (hence UPArrow) is a TRUNCATION of the graded form. (freeObj : ℕ → Obj in
+-- OrientationRigCatUP is this F, fully worked at the rig class.)
+------------------------------------------------------------------------
+
+record GradedFreeUPData (A : AlgebraClass) (B : Set) (F : ℕ → Set) : Set where
+  constructor mkGData
+  field
+    gunit : B → Σ ℕ F
+    gfree : Has-structure A (Σ ℕ F)
+open GradedFreeUPData public
+
+collapse : {A : AlgebraClass} {B : Set} {F : ℕ → Set} →
+           GradedFreeUPData A B F → FreeUPData A B (Σ ℕ F)
+collapse gd = mkData (gunit gd) (gfree gd)
+
+------------------------------------------------------------------------
+-- NON-VACUITY. The free set on a set, as Set₀ DATA (the trivial adjunction).
+-- Its full free-UP (with content) is `FreeUniversalProperty.free-Set`; `split`
+-- of that lands exactly this data half.
+------------------------------------------------------------------------
+
+free-SetData : (B : Set) → FreeUPData trivial-AlgebraClass B B
+free-SetData B = mkData (λ b → b) tt

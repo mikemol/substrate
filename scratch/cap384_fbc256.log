@@ -1,0 +1,26 @@
+genlop: estimated ~3m08s wall (-j6); 2003/2003 modules have history
+[100/2003] … 100 checked  elapsed 3m10s  ETA ~2m47s
+[200/2003] … 200 checked  elapsed 6m11s  ETA ~2m36s
+[300/2003] … 300 checked  elapsed 6m11s  ETA ~2m24s
+[400/2003] … 400 checked  elapsed 6m11s  ETA ~2m17s
+[500/2003] … 500 checked  elapsed 6m11s  ETA ~2m06s
+[600/2003] … 600 checked  elapsed 6m11s  ETA ~2m00s
+[700/2003] … 700 checked  elapsed 6m11s  ETA ~1m52s
+[800/2003] … 800 checked  elapsed 6m11s  ETA ~1m46s
+[900/2003] … 900 checked  elapsed 6m11s  ETA ~1m43s
+[1000/2003] … 1000 checked  elapsed 6m11s  ETA ~1m38s
+[1100/2003] … 1100 checked  elapsed 6m15s  ETA ~1m31s
+[1200/2003] … 1200 checked  elapsed 6m23s  ETA ~1m24s
+[1300/2003] … 1300 checked  elapsed 6m36s  ETA ~1m12s
+[1400/2003] … 1400 checked  elapsed 6m49s  ETA ~1m02s
+[1500/2003] … 1500 checked  elapsed 7m07s  ETA ~47s
+[1600/2003] … 1600 checked  elapsed 7m27s  ETA ~33s
+[1700/2003] … 1700 checked  elapsed 7m36s  ETA ~27s
+[1800/2003] … 1800 checked  elapsed 7m45s  ETA ~21s
+[1900/2003] … 1900 checked  elapsed 8m01s  ETA ~12s
+[2000/2003] … 2000 checked  elapsed 8m18s  ETA ~0s
+genlop: actual 8m20s wall (estimate was ~3m08s)
+
+==== full build: 2003/2003 PASS, 0 not-building ====
+
+full results: /tmp/full_build_results.tsv

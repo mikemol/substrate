@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainChooser — rotation chooser via Sylow-chain norm.
 
 The substrate-honest replacement for the prior Bezout-of-scalars

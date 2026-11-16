@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 Agda definition-shape detector.
 
@@ -17,6 +19,9 @@ It surfaces patterns; whether to act on them is a separate question.
 import re
 from pathlib import Path
 from collections import defaultdict, Counter
+import os as _o, sys as _s
+_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch"))
+import agda_lex as _lex   # THE header/comment authority; never re-derive
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
@@ -29,13 +34,11 @@ SUSPICIOUS_COUNTS = {2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64}
 
 def parse_module(path):
     text = path.read_text()
-    m = re.search(r"^module\s+([A-Za-z0-9_.\-]+)\s+where", text, re.M)
-    if not m:
+    name = _lex.module_name_of(text)
+    if not name:
         return None, ""
-    name = m.group(1)
     # Strip line comments and block comments.
-    text = re.sub(r"--.*$", "", text, flags=re.M)
-    text = re.sub(r"\{-.*?-\}", "", text, flags=re.S)
+    text = _lex.mask_comments(text)   # nesting-aware; `-->` is a NAME
     return name, text
 
 

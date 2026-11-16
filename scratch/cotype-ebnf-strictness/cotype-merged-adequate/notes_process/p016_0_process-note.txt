@@ -1,0 +1,1 @@
+* TILING / Move-pattern = the cohomology/metalanguage readout on the CUDA sub-forest: a recurring

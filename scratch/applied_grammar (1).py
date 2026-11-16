@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 applied_grammar.py — M41 (v22.0): AddressedOp, registry-domain digest,
 audit-tightened scope claims.

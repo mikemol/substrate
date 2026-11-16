@@ -1,0 +1,46 @@
+[paper]
+adequacy = true
+title = "mitigation index"
+subtitle = "The edge set (site, remedy, witness) — refusals and index as two projections of one relation."
+
+# ⚑⚑⚑ `root` MUST SIT INSIDE `[paper]`. A top-level `root` above this header is a
+# key the engine never reads — `layout._root_override` consults only this table —
+# and the fallback INFERS a sandbox root. Measured elsewhere: 18 abandoned 774 MB
+# copies filling a 7.7 G tmpfs. ⚑ THE GUARD REFUSES ONLY AT `$HOME` OR ABOVE, so a
+# wrong root HERE is SILENT — the failure mode is disk, not a diagnostic.
+root = "."
+
+warrants = ["edges.bib"]
+out = "INDEX.md"
+numbered = false
+references = false
+
+# ⚑ THIS IS THE DUAL OF `.claude/agents` (the "oracle findings" project), which is
+# the precedent this matches. That project records where a defect BIT; this one
+# records what was PRESCRIBED. Same machinery, opposite direction.
+#
+# ⚑⚑ ONE BIB, NOT FIVE — and the reason is the opposite of the precedent's. There,
+# five bibs partition by ORACLE and one project holds them so that `rests-on` edges
+# between oracles can resolve. Here the whole artefact IS one relation, so
+# partitioning it into per-arc bibs would re-introduce exactly the cross-linked-
+# tables shape the operator collapsed:
+#
+#   "'refusal specifies the successor' … that's an EDGE IN A GRAPH … an INDEX IS A
+#    COVERING WITNESS TO THE EDGES THAT EXIST."
+#
+# The remedy-view and the arc-view are `edges.py --remedies` and `--arcs`:
+# PROJECTIONS of one list, which cannot disagree. Two bibs could.
+
+# item:<KEY> — the per-edge witness, wired as `cmd:` (matching the precedent) so
+# the citing claim reaches the runner, which a `concept:` cannot carry.
+#
+# ⚑⚑ EVERY CHECK HERE IS BEHAVIOURAL, AND THAT IS A DELIBERATE DEPARTURE. The
+# precedent's registry reports 169 of its 209 witnesses as kind `standing`, which
+# its own `--kinds` mode labels "⚑ VACUOUS — passes unconditionally". A remedy row
+# whose check cannot fail is the frozen roster this project exists to not become,
+# so `edges.py <KEY>` re-derives a live site count (or, for a mode, that the mode
+# executes) on every run. `edges.py --selftest` carries two POSITIVE CONTROLS
+# proving the witness can still report OPEN and can report a TIMEOUT as unwitnessed
+# — without those, "9 holding" would be a fact about the instrument.
+[checks.item]
+cmd = ".venv/bin/python3 scratch/mitigation-index/items.py {target}"

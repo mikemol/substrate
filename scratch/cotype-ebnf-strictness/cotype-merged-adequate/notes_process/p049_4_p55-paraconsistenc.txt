@@ -1,0 +1,2 @@
+P55 PARACONSISTENCY-IS-COMMON-MODE [101] assertion = differential pair (actual, expected) compared via G_NOT involution. residue DECOMPOSES: DIFFERENTIAL mode = (actual−expected) = verdict + diagnostic; COMMON mode = (actual+expected) = the contradiction axis. classical = high-CMRR = reject-common-m
+[axis-signature: 101 | owner-field(raw): **WITNESSED**]

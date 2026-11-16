@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """JJ2-JJ7: Saturation curve across Sylow-prime subsets.
 
 For each substrate corpus, measure I(chain; joint_atlas) as we

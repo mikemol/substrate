@@ -1,0 +1,2 @@
+VERDICT (the suppression question, ANSWERED in the user's terms): what suppresses primes other than 2 on the edge rep = the carrier is 2-ARY (edges=2-subsets), so only 2 has SUCCESSOR-LEVEL support. Go to 3-ary faces → the 3-successor becomes available → 3 stops being suppressed. SUPPRESSION = UNAVAILABILITY OF THE RELEVANT SUCCESSOR; it lifts exactly when you build on faces of that arity. ARITY = SUCCESSOR-AVAILABILITY,
+[supporting witness: probe_arity_kface.py — shared block evidence]

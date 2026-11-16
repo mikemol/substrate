@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 verify_full_v4.py — tests for the V_4-extension (M36).
 

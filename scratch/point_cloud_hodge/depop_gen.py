@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 depop_gen.py — the DEPOPULATION PROFILE (reconstructed from chat f3e2e60b).
 

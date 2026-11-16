@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 chart_with_inverses.py — extends ChartWithMeta with the 6 inverse operations.
 

@@ -1,0 +1,1 @@
+* over Q(ζ3)=Q(√−3): EVERY non-cyclotomic factor stays INERT (no cube-root-of-unity content).

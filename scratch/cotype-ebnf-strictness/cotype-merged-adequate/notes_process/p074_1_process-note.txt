@@ -1,0 +1,1 @@
+* FROBENIUS / CHEBOTAREV as focal law: changing the projection basis = sampling Frobenius classes;

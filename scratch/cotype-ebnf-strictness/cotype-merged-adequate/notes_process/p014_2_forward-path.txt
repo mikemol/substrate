@@ -1,0 +1,1 @@
+- **HONEST BOUNDARY (matching policy):** `gate` matches units by qname, else best-shared-support.

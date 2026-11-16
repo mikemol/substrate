@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """16.py: SQLite persistence + branched syntheses.
 
   * Persistence moves to a single state.db (SQLite in WAL mode). One-shot

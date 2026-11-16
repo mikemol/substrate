@@ -1,0 +1,7 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 12)
+
+- **Σ-BRIDGE = forest↔sympy — BUILT + VERIFIED (this turn).** `jea/jea_sympy_bridge.py`: the
+  bidirectional structure↔structure bridge. **LOAD-BEARING TEST PASSED FIRST (the pass-13 unification
+  PROVEN):** a unary predicate-obligation, modeled as a refined-vs-unrefined Partition (x-in-lspace vs
+  plain x), discharges through the SAME `resolve(·, domain)` path as a binary OMML partition,
+  UNMODI

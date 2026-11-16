@@ -1,0 +1,161 @@
+membudget: TOP lease 128MB [agda] (global free was 7872MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.CayleyDickson.Curve.XorCancelL (/home/mikemol/github/substrate/agda/Substrate/Algebra/CayleyDickson/Curve/XorCancelL.agda).
+Total           50ms       
+Miscellaneous   21ms       
+Deserialization 28ms (30ms)
+/home/mikemol/github/substrate/agda/Substrate/Algebra/CayleyDickson/Curve/XorCancelL.agda:18.1-19.87: error: [MissingTypeSignature.Function]
+Missing type signature for left hand side xor-cancelˡ a b
+when scope checking the declaration
+  xor-cancelˡ a b
+    = trans (sym (xor-assoc a a b))
+      (trans (cong (_xor b) (xor-same a)) (xor-identityˡ b))
+make[1]: *** [Flat.mk:191: _build/2.8.0/agda/Substrate/Algebra/CayleyDickson/Curve/XorCancelL.agdai] Error 42
+make[1]: *** Waiting for unfinished jobs....
+membudget: TOP lease 128MB [agda] (global free was 7744MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.CayleyDickson.Grade.Shuffle (/home/mikemol/github/substrate/agda/Substrate/Algebra/CayleyDickson/Grade/Shuffle.agda).
+Total           78ms       
+Miscellaneous   25ms       
+Deserialization 41ms (44ms)
+Parsing         10ms       
+/home/mikemol/github/substrate/agda/Substrate/Algebra/CayleyDickson/Grade/Shuffle.agda:17.1-22.42: error: [MissingTypeSignature.Function]
+Missing type signature for left hand side shuffle a b c d
+when scope checking the declaration
+  shuffle a b c d
+    = trans (+ℕ-assoc a b (c ℕ+ d))
+      (trans (cong (a ℕ+_) (sym (+ℕ-assoc b c d)))
+       (trans (cong (λ z → a ℕ+ (z ℕ+ d)) (+ℕ-comm b c))
+        (trans (cong (a ℕ+_) (+ℕ-assoc c b d))
+         (sym (+ℕ-assoc a c (b ℕ+ d))))))
+make[1]: *** [Flat.mk:236: _build/2.8.0/agda/Substrate/Algebra/CayleyDickson/Grade/Shuffle.agdai] Error 42
+membudget: TOP lease 192MB [agda] (global free was 7168MB) → MemoryMax=192M scope
+Checking Substrate.Algebra.F2.HodgeDim4.Bivector.AntisymmetricRoundtrip.TensorBivectorRoundtripRaw (/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/HodgeDim4/Bivector/AntisymmetricRoundtrip/TensorBivectorRoundtripRaw.agda).
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/HodgeDim4/Bivector.agda:34.47-95: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Fin.Literals doesn't export the
+following:
+  ₀₁
+  ₀₂
+  ₀₃
+when scope checking the declaration
+  open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₁; ₀₂;
+                                                       ₂; ₀₃; ₃; ₄; ₅; ₁₂; ₁₃; ₂₃)
+Total                      283ms        
+Miscellaneous               37ms        
+Deserialization            167ms (187ms)
+Deserialization.Compaction  20ms        
+Parsing                     31ms  (37ms)
+Import                      26ms        
+Typing                       0ms  (11ms)
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/HodgeDim4/Bivector.agda:34.47-95: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Fin.Literals doesn't export the
+following:
+  ₀₁
+  ₀₂
+  ₀₃
+when scope checking the declaration
+  open import Substrate.Foundation.Fin.Literals using (₀; ₀₁; ₁; ₀₂;
+                                                       ₂; ₀₃; ₃; ₄; ₅; ₁₂; ₁₃; ₂₃)
+
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/HodgeDim4/Bivector/AntisymmetricRoundtrip/TensorBivectorRoundtripRaw.agda:81.85-92: error: [UnequalTerms]
+lookup (lookup T fzero) fzero ≡ 𝟘 !=< Fin 4
+when checking that the expression dz fzero has type Fin 4
+make[1]: *** [Flat.mk:981: _build/2.8.0/agda/Substrate/Algebra/F2/HodgeDim4/Bivector/AntisymmetricRoundtrip/TensorBivectorRoundtripRaw.agdai] Error 42
+membudget: TOP lease 192MB [agda] (global free was 6720MB) → MemoryMax=192M scope
+Checking Substrate.Algebra.F2.Polynomial.Wedge.DegreeBound.LpEmpty (/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/Wedge/DegreeBound/LpEmpty.agda).
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial.agda:83.3-31: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Nat.Properties.Add.PlusComm doesn't
+export the following:
+  +-comm (did you mean '+ℕ-comm'?)
+when scope checking the declaration
+  open import Substrate.Foundation.Nat.Properties.Add.PlusComm renaming (+-comm to +ℕ-comm)
+Total                      258ms        
+Miscellaneous               15ms        
+Deserialization            160ms (176ms)
+Deserialization.Compaction  15ms        
+Import                      34ms        
+Parsing                     31ms  (31ms)
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial.agda:83.3-31: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Nat.Properties.Add.PlusComm doesn't
+export the following:
+  +-comm (did you mean '+ℕ-comm'?)
+when scope checking the declaration
+  open import Substrate.Foundation.Nat.Properties.Add.PlusComm renaming (+-comm to +ℕ-comm)
+
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/Wedge/DegreeBound/LpEmpty.agda:26.66-68: error: [NotInScope]
+Not in scope:
+  []
+  at /home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/Wedge/DegreeBound/LpEmpty.agda:26.66-68
+when scope checking []
+make[1]: *** [Flat.mk:1851: _build/2.8.0/agda/Substrate/Algebra/F2/Polynomial/Wedge/DegreeBound/LpEmpty.agdai] Error 42
+membudget: TOP lease 128MB [agda] (global free was 6976MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.F2.Linear.FromImages.Permutation.Order (/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Linear/FromImages/Permutation/Order.agda).
+Total                      480ms        
+Miscellaneous               30ms        
+Deserialization            346ms (389ms)
+Deserialization.Compaction  43ms        
+Parsing                     29ms  (32ms)
+Import                      30ms        
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Linear/FromImages/Permutation/Order.agda:83.52-54: error: [NotInScope]
+Not in scope:
+  ℕ*
+  at /home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Linear/FromImages/Permutation/Order.agda:83.52-54
+when scope checking ℕ*
+membudget: TOP lease 128MB [agda] (global free was 6656MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.F2.Polynomial.TensorProductView (/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/TensorProductView.agda).
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial.agda:83.3-31: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Nat.Properties.Add.PlusComm doesn't
+export the following:
+  +-comm (did you mean '+ℕ-comm'?)
+when scope checking the declaration
+  open import Substrate.Foundation.Nat.Properties.Add.PlusComm renaming (+-comm to +ℕ-comm)
+Total                      229ms        
+Miscellaneous                9ms        
+Deserialization            163ms (178ms)
+Deserialization.Compaction  15ms        
+Parsing                     26ms  (26ms)
+Import                      14ms        
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial.agda:83.3-31: warning: -W[no]ModuleDoesntExport
+The module Substrate.Foundation.Nat.Properties.Add.PlusComm doesn't
+export the following:
+  +-comm (did you mean '+ℕ-comm'?)
+when scope checking the declaration
+  open import Substrate.Foundation.Nat.Properties.Add.PlusComm renaming (+-comm to +ℕ-comm)
+
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/TensorProductView.agda:66.57-59: error: [NotInScope]
+Not in scope:
+  ℕ+
+  at /home/mikemol/github/substrate/agda/Substrate/Algebra/F2/Polynomial/TensorProductView.agda:66.57-59
+when scope checking ℕ+
+make[1]: *** [Flat.mk:1756: _build/2.8.0/agda/Substrate/Algebra/F2/Polynomial/TensorProductView.agdai] Error 42
+make[1]: *** [Flat.mk:1371: _build/2.8.0/agda/Substrate/Algebra/F2/Linear/FromImages/Permutation/Order.agdai] Error 42
+membudget: TOP lease 128MB [agda] (global free was 6784MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.Q.AsModule (/home/mikemol/github/substrate/agda/Substrate/Algebra/Q/AsModule.agda).
+Total                 257ms        
+Miscellaneous          32ms        
+Deserialization        91ms (100ms)
+Parsing                60ms  (80ms)
+Parsing.OperatorsExpr  18ms        
+Typing                  4ms  (45ms)
+Typing.CheckLHS         6ms  (14ms)
+Typing.CheckRHS        13ms        
+Typing.TypeSig         12ms        
+Import                 12ms        
+Coverage                5ms  (12ms)
+/home/mikemol/github/substrate/agda/Substrate/Algebra/Q/AsModule.agda:103.29-39: error: [UnequalTerms]
+ℚ !=< Vec ℚ _n_115
+when checking that the expression lookup v i has type Vector _n_115
+make[1]: *** [Flat.mk:3191: _build/2.8.0/agda/Substrate/Algebra/Q/AsModule.agdai] Error 42
+membudget: TOP lease 128MB [agda] (global free was 7232MB) → MemoryMax=128M scope
+Checking Substrate.Algebra.F2.SymBilinForm.NonDegenerate.PairMetricIdWithBasis (/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/SymBilinForm/NonDegenerate/PairMetricIdWithBasis.agda).
+Total                      250ms        
+Miscellaneous               42ms        
+Deserialization            163ms (180ms)
+Deserialization.Compaction  16ms        
+Import                      16ms        
+Parsing                     11ms  (11ms)
+/home/mikemol/github/substrate/agda/Substrate/Algebra/F2/SymBilinForm/NonDegenerate/PairMetricIdWithBasis.agda:46.13-27: error: [NoParseForApplication]
+Could not parse the application lookup v k ·ⱽ_
+Operators used in the grammar:
+  None
+when scope checking lookup v k ·ⱽ_
+make[1]: *** [Flat.mk:2081: _build/2.8.0/agda/Substrate/Algebra/F2/SymBilinForm/NonDegenerate/PairMetricIdWithBasis.agdai] Error 42
+make: *** [Makefile:17: all] Error 2

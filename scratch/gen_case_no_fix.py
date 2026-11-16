@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 gen_case_no_fix.py — brute-force search for a decomposition of
 case-{D,C,S,W}-no-fix into parametric/recursive Agda proofs.

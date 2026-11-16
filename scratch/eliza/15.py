@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """15.py: power-signature ranking + branched predictions via spectral reflection.
 
 Adds two things on top of 14.py:

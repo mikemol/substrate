@@ -1,0 +1,1 @@
+- **G7-P59 (NO-TOOLING-BUCKET = verdict change):** no "tooling orthogonal to the thesis" — read infrastructure diffs THROUGH the thesis. autobudget=pacing, apex-gate=shadow-architecture-executable, gi

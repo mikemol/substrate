@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 hamming_7_4_codewords.py — The Hamming(7, 4) reading of M19 codewords.
 

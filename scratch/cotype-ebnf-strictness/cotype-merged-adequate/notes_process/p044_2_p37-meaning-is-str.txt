@@ -1,0 +1,2 @@
+P37 MEANING-IS-STRUCTURE-RING [100] "all meaning from structure" PROVEN at ring grade: meaning(=distinction) ⟺ 1≠0; 0-annihilation (0·a=0) DERIVED from identity-roles+distributivity, not assumed; collapse 1=0 ⇒ zero ring (one point, no distinction, no meaning). The repo thesis, made theorem.
+[axis-signature: 100 | owner-field(raw): **WITNESSED (ran ring/pairing/β/diagonal)**]

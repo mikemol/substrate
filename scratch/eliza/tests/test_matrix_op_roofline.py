@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_matrix_op_roofline.py — roofline timing of codec stages.
 
 Measure CPU time spent in each codec component to identify where

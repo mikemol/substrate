@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.L1FlipCodec — L1 redesigned with flip-opcode + K-step beam.
 
 Per the user's correction:

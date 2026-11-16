@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.SpectralAtlas — GG2/GG3/GG4 multi-prime spectral analysis.
 
 For each prime p ∈ {2, 3, 5, 7}, computes:

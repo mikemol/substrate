@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainConditionedByte — byte trigram with chain context.
 
 Context = (prev_byte_1, prev_byte_2, chain_of_current_window). The

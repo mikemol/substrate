@@ -1,0 +1,1 @@
+- **Σ-OBLIGATION** — the spine (a name, not a build); Σ-SPPF-CHART is its parsing instance.

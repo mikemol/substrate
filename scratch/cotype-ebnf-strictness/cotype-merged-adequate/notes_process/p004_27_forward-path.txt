@@ -1,0 +1,1 @@
+- **RECURRING LESSON ON ME, AGAIN (mid-rewrite):** my read_rhs trace_fold interp was WRONG twice — I

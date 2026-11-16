@@ -1,0 +1,1 @@
+- **SPPF→ABNF READOUT — DONE + made STREAMING (this turn), in jea_grammar_fixpoint.py.** USER: "that

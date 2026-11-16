@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The {7,3} tiling lifted into 3D — funnel, flower, or inverted.
 
 Three LiftMap gauges, all over the same tiling geometry (_klein):

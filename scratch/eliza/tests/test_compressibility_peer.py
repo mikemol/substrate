@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_compressibility_peer.py — gt-codec vs chain-codec (peers).
 
 Two codecs differing only in rotation chooser:

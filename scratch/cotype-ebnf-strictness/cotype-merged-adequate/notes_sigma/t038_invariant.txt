@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **"Didn't EEA+Bézout provide the gauge residue in witness-fidelity?" (USER) — PARTLY: the HOME is
+    established, the gauge IDENTIFICATION is a sharpened conjecture (checked BEZOUT_READOUT.md, not just
+    resonance).** ESTABLISHED (on disk): the readout IS EEA back-substitution — "one retained chain, two
+    reads: forward composes the obligations into a result; backward reads the witness back

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Engine — n-ary composition of all layers.
 
 Per the Agda contract: per-char `step(ch)` threads through Router →

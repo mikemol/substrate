@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecStages — N-arc CuPy ports of M-arc tensor stages.
 
 N2  chamber walk (batched across windows)

@@ -1,0 +1,32 @@
+genlop: estimated ~3m23s wall (-j6); 2003/2003 modules have history
+[100/2003] … 100 checked  elapsed 4m01s  ETA ~3m05s
+[200/2003] … 200 checked  elapsed 6m45s  ETA ~2m55s
+[300/2003] … 300 checked  elapsed 6m45s  ETA ~2m42s
+[400/2003] … 400 checked  elapsed 6m45s  ETA ~2m34s
+[500/2003] … 500 checked  elapsed 6m45s  ETA ~2m23s
+[600/2003] … 600 checked  elapsed 6m45s  ETA ~2m17s
+[700/2003] … 700 checked  elapsed 6m45s  ETA ~2m08s
+[800/2003] … 800 checked  elapsed 6m45s  ETA ~2m01s
+[900/2003] … 900 checked  elapsed 6m45s  ETA ~1m57s
+[1000/2003] … 1000 checked  elapsed 6m45s  ETA ~1m52s
+[1100/2003] … 1100 checked  elapsed 6m48s  ETA ~1m44s
+[1200/2003] … 1200 checked  elapsed 6m55s  ETA ~1m36s
+[1300/2003] … 1300 checked  elapsed 7m08s  ETA ~1m22s
+[1400/2003] … 1400 checked  elapsed 7m19s  ETA ~1m10s
+[1419/2003] FAIL: Substrate/Groups/Capabilities.agda  ::  agda: Heap exhausted; | agda: Current maximum heap size is 268435456 bytes (256 MB). | agda: Use `+RTS -M<size>' to increase it.
+[1420/2003] FAIL: Substrate/Groups/Capabilities/CoxeterFin.agda  ::  agda: Heap exhausted; | agda: Current maximum heap size is 268435456 bytes (256 MB). | agda: Use `+RTS -M<size>' to increase it.
+[1479/2003] FAIL: Substrate/Groups/Manifest.agda  ::  agda: Heap exhausted; | agda: Current maximum heap size is 268435456 bytes (256 MB). | agda: Use `+RTS -M<size>' to increase it.
+[1500/2003] … 1500 checked  elapsed 7m36s  ETA ~52s
+[1600/2003] … 1600 checked  elapsed 7m51s  ETA ~36s
+[1700/2003] … 1700 checked  elapsed 7m59s  ETA ~29s
+[1800/2003] … 1800 checked  elapsed 8m07s  ETA ~23s
+[1900/2003] … 1900 checked  elapsed 8m20s  ETA ~12s
+[2000/2003] … 2000 checked  elapsed 8m35s  ETA ~0s
+genlop: actual 8m37s wall (estimate was ~3m23s)
+
+==== full build: 2000/2003 PASS, 3 not-building ====
+  FAIL: Substrate/Groups/Capabilities.agda
+  FAIL: Substrate/Groups/Capabilities/CoxeterFin.agda
+  FAIL: Substrate/Groups/Manifest.agda
+
+full results: /tmp/full_build_results.tsv

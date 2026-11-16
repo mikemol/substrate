@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV5 — V4 + active speculation emitting control opcodes.
 
 S-arc: the codec actively chooses between [default, S_DEFER_GROW,

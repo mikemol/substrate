@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc, trace T3-navigator, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **Σ-SEAM-GLUE spec REFACTORED to v2 (USER: clean pointers for AI-Q) — jea/SEAM_GLUE_SPEC.md rewritten
+    from the corrected understanding; all cited modules/functions verified to exist.** The v1 D₈ route was
+    wrong on three counts (now stated in the spec as "what v1 got wrong, so you don't redo it"). v2:
+  - Splits M2 into TWO obligations at TWO layers (a table up top): **A. the seam** = gau

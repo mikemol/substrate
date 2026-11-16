@@ -1,0 +1,2 @@
+USER: every tower level installs the level below as FACES of a higher simplex; the cyclic behavior will not be linear in any sense.
+[supporting witness: probe_simplex_faces.py — shared block evidence]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ProbeAtlas — II-arc kinematic-gauge-class probe atlases.
 
 Per the user 2026-05-21 + [[multi-route-equivariance-recovery]] +

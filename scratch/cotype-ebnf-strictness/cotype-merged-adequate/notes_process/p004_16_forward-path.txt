@@ -1,0 +1,1 @@
+- **DO NOT HAND (scratch, superseded): jea_sppf_chart.py / _seed.py / _compose.py** — the exploratory

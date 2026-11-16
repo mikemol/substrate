@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.SpectralCharacters — S₄ isotypic decomposition of the 24-dim
 regular rep, restricted to the Laplacian eigenspaces.
 

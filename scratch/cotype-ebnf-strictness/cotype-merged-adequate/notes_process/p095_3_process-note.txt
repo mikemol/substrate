@@ -1,0 +1,1 @@
+- cold fallback PRESERVED: bare `python3 probe_inv_cheap.py` runs the full sweep, prints, exits

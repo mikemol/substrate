@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_bitshift_alignment.py — CC7: 8-alignment test methodology.
 
 Per the user's CC-arc insight: bit-alignment is a hidden gauge at

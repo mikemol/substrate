@@ -1,0 +1,1 @@
+- **G8 HANDOFF (exhausted-not-verified):** every strictification is SymPy-exact in AI-Π0's OWN encoding of the structure; none is `--safe` Agda-checked. The encoding itself (cycle-space form, rep⊕witn

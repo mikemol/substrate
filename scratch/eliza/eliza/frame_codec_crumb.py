@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.FrameCodecCrumb — variable-frame codec at CRUMB granularity.
 
 V₄ rotation is the substrate-natural action at the 2-bit-crumb scale.

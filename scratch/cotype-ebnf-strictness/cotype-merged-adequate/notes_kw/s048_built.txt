@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 3)
+
+- **AI-Q LANDED Σ-TRACE-LAZY in canonical jea_pyalg (+60), exactly as the report diagnosed.** The report
+  I'd carried since the 50GiB streaming work ("trace()/trace_fold() are EAGER — large-forest readouts need
+  a lazy wedge-driven walk") is now BUILT: `PyDivStr.trace_steps(i)` (generator, iterative, O(1) working
+  set) + `trace_atom(i)`; `trace_fold_lazy(divstr,i,base,step)` (iterative drop-in 

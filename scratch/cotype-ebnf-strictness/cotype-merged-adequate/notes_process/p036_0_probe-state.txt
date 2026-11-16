@@ -1,0 +1,1 @@
+- **COMPLETE:** L₁ positive-closure, L₂ GS-guard-coverage, L₃ SA-guard-coverage, L₇ pure-composite-diagonal. (4 of 7.)

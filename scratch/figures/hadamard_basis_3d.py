@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Walsh–Hadamard basis as a self-similar terraced landscape.
 
 The flat ±1 matrix is boring in z, but the recursion *grade* gives the height.

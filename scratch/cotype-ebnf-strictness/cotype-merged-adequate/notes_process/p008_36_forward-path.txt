@@ -1,0 +1,1 @@
+- **Where the falsifiable M2 content actually lives:** `verify_m40_group_is_a4z2_not_s4`'s load-bearing

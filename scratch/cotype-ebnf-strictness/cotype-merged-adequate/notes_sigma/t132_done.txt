@@ -1,0 +1,5 @@
+[DONE] (Σ-arc, trace T1-forest, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **Δ-Π-agdai [110→111]** — **DONE-partial**: front-end built (fan-in + names interned, 43466
+  nodes); the edge-bearing `intern_signature` stub now encodes all 4 lessons correctly (free/bound
+  fix propagated). Blocked-by the Agda-2.8.0 readInterface shim for full child edges (AI-Q).

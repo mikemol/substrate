@@ -1,0 +1,15 @@
+{
+ "2": {
+  "fires": true,
+  "nc_degs": [
+   6,
+   3
+  ]
+ },
+ "3": {
+  "fires": true,
+  "nc_degs": [
+   3
+  ]
+ }
+}

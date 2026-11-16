@@ -1,0 +1,7 @@
+[SUBTRACTED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **G8 (blind spot, unchanged + sharpened) — substitution mode still unexercised, and now it has a
+  NAME and a PARTNER.** Withholding (constructor) is done; substituting (transformer) is the open
+  mode, and the defunctionalization finding tells us HOW it'll work: substituting a carrier =
+  supplying a DIFFERENT applied-function/structure at the hole, which is exactly the CUDA Move-
+  carrier swa

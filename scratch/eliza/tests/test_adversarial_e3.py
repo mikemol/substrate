@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_adversarial_e3.py — pathological corpora for U-arc (E3).
 
 Each corpus is designed to bias one factor of the RuleAction algebra

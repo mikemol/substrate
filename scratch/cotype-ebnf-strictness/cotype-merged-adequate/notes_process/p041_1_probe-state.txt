@@ -1,0 +1,1 @@
+- **P27 populates the GUARD axis (001) with a POSITIVE event** (first recorded guard *catch*, not hypothetical): external check caught what internal check missed, reconstituted as 110. So L₆ (001,110,

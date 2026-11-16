@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """EE12: Scale-5 RM(2, 5) diminishing-return measurement.
 
 RM(2, 5) = [32, 16, 8] has 65536 codewords. Full sweep is feasible

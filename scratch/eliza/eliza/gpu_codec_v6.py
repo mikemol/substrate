@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV6 — V5 generalised over the action algebra A.
 
 U-arc codec. Each emission carries a `RuleAction ∈ A`; at U1 the

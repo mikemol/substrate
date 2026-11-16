@@ -1,0 +1,1 @@
+- **WHAT AGDA ACTUALLY PROVES vs DOESN'T (the precise reach):** PROVEN (--safe --without-K, refl):

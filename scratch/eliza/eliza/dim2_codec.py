@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Dim2Codec — the two-Sequitur architecture realized.
 
 Per-window:

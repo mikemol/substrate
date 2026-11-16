@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, trace T1-forest, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **STANDING GAP / NEXT — Δ-Π-substitute [DONE + verified this turn]:** the THIRD projection mode.
+  The `carrier` map (op-kind → emission rule) was already wired in PyProjector's BinOp/UnaryOp
+  branch; this turn EXERCISED + VERIFIED it. Projected schur_frac in the ℚ-Wedge carrier
+  ({Add:q_add, Mult:q_mul, Div:q_div}) → `s=q_add(a,b); return q_div(q_mul(a,b), s)`, COMPILES, and
+  lowering it lan

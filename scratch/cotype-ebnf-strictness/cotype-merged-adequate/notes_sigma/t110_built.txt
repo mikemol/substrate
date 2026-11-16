@@ -1,0 +1,7 @@
+[BUILT] (Σ-arc, trace T1-forest, block 12: FORWARD PATHS — appended (sort axis unchanged = distance to )
+
+- **Σ-BRIDGE = forest↔sympy — BUILT + VERIFIED (this turn).** `jea/jea_sympy_bridge.py`: the
+  bidirectional structure↔structure bridge. **LOAD-BEARING TEST PASSED FIRST (the pass-13 unification
+  PROVEN):** a unary predicate-obligation, modeled as a refined-vs-unrefined Partition (x-in-lspace vs
+  plain x), discharges through the SAME `resolve(·, domain)` path as a binary OMML partition,
+  UNMODI

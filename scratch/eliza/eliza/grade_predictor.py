@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GradePredictor — EE9 grade-conditioned predictor.
 
 A grade-conditioned predictor maintains SEPARATE count tables per

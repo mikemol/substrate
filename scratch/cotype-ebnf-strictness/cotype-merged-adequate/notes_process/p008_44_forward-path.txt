@@ -1,0 +1,1 @@
+- **THE CORRECTED DISCHARGE (lighter, more honest):** formalize a4z2_compose as a finite group, prove

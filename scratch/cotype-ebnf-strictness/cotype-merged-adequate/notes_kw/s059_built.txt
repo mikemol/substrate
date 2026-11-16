@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 4)
+
+- **Σ-SPPF-CHART-COMPOSE — BUILT (this turn); the compose-down (later deepened by CONTROL above).**
+  `jea/jea_sppf_chart_compose.py`: the recognizer re-expressed as a COMPOSITION over jea_core. (COMPOSE
+  still kept a chart+loop as "control flow"; CONTROL above then dissolved THAT too into intern-fixpoint +
+  trace-grading — so the COMPOSE file's residual chart/loop is itself now superseded, but 

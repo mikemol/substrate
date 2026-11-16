@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_baseline.py — the regression gate.
 
 Captures current `compression_stats` numbers under all input modes on

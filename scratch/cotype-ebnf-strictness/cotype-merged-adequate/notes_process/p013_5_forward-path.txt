@@ -1,0 +1,1 @@
+- **Σ-CROSS** — CUDA grammar depth + OpenCL/HIP; feeds Σ-FOREST-AGDA's kernel arm richness.

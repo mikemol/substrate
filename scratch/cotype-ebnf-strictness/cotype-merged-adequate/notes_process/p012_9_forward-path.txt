@@ -1,0 +1,1 @@
+- **G3 (the gate does REAL work, verified) — it grades + localizes, doesn't assert.** Faithful impl →

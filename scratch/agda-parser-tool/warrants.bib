@@ -1,0 +1,193 @@
+% warrants.bib — the claims of the Agda parser-tool design plan.
+% This plan is a paperkit projection of THIS file (paper.toml: out = agda-parser-tool-plan.md).
+% Factual claims about the CURRENT tree carry a repo:<key> grep (checks/repo.sh); design-intent
+% and Agda-CST-structure claims carry premise:<label> (surfaced as not-machine-checked). Promoting
+% a premise to a repo:/agdalib: check IS the ◆T1 next step. Grade by TERMS, not the repo's prose.
+
+% ── thesis ───────────────────────────────────────────────────────────────────
+@misc{t-locality,
+  section = {thesis},
+  claim   = {the tool enforces LOCALITY at the source layer --- every banned form (using/renaming/as, public/re-export, multi-def-per-file) removes a mechanism by which a name's meaning, a module's API, or a module's compile cost could become NON-local},
+  check   = {premise:locality-is-the-invariant-under-all-three-bans}
+}
+@misc{t-twofrontend,
+  section = {thesis}, from = {t-locality}, join = {. },
+  claim   = {the repo already has an authoritative ELABORATED front-end --- the .agdai shim (ghc -package Agda) --- and the tool is its missing SOURCE-depth twin: one parse of Agda's own grammar, not N regex re-approximations of it},
+  check   = {repo:shim-links-agda}
+}
+@misc{t-claimdag,
+  section = {thesis}, from = {t-twofrontend}, join = {. },
+  claim   = {this plan is itself a gated claim-DAG --- every design claim carries its check, so the plan cannot overclaim, the same non-vacuity discipline the tool enforces on the code},
+  check   = {file:paper.toml}
+}
+
+% ── substrate ────────────────────────────────────────────────────────────────
+@misc{s-three,
+  section = {substrate},
+  claim   = {Agda tooling stratifies over three substrates --- SOURCE-TEXT (tokens/CST), ELABORATED-CORE (sorts/types/interface, via the shim), and NON-AGDA --- and the tool owns exactly the first},
+  check   = {premise:three-substrate-stratification}
+}
+@misc{s-rule,
+  section = {substrate}, from = {s-three}, join = {. },
+  claim   = {the ownership rule is sharp: a check belongs to the tool IFF its property is decidable from tokens+CST (single-file or a global CST decl index); a property needing a sort, a type, or a resolved qname stays in the shim tier},
+  check   = {premise:cst-decidable-iff-source-tier}
+}
+@misc{s-set1,
+  section = {substrate}, from = {s-rule}, join = {, and },
+  claim   = {set1 already PROVED that boundary one level up --- it was migrated from source-grep to core-scan precisely because a sort is elaborated information and source text is elaboration's input --- so the tool must never re-absorb it (that would regress it to token-counting)},
+  check   = {repo:set1-why-not-grep}
+}
+
+% ── lexical ──────────────────────────────────────────────────────────────────
+@misc{l-contract,
+  section = {lexical},
+  claim   = {the single lexical contract today is _agdatext.strip --- two regexes, block {-...-} non-greedy DOTALL then line --... , each replaced by one space},
+  check   = {repo:strip-comment-stripper}
+}
+@misc{l-blast,
+  section = {lexical}, from = {l-contract}, join = {, and },
+  claim   = {that one bespoke stripper is imported across a dozen-plus tools (check_import_shape, decl_shape_tag, gen_build_makefiles, the audit_* and _shred_graph family) --- every one betting its comment-strip matches Agda's lexer},
+  check   = {repo:strip-many-importers}
+}
+@misc{l-bugs,
+  section = {lexical}, from = {l-blast}, join = {. },
+  claim   = {strip carries six soundness bugs Agda's real lexer does not --- non-nested block comments, string and char literals left untokenized, holes left untouched, dash-operators (-->, --|) eaten as comments, and a block-comment newline-COLLAPSE that can silently DROP an import edge},
+  check   = {premise:six-named-strip-bugs-from-the-sweep}
+}
+@misc{l-cbc,
+  section = {lexical}, from = {l-bugs}, join = {. },
+  claim   = {correct-by-construction is exactly this --- the tool inherits Agda's own code/comment/string/operator classification, so all six bug classes vanish at the parse layer, not the rule layer},
+  check   = {premise:tool-inherits-agda-lexer-classification}
+}
+
+% ── bans ─────────────────────────────────────────────────────────────────────
+@misc{b-imports,
+  section = {bans},
+  claim   = {ban using/hiding/renaming/as is a field inspection, not a regex --- assert the ImportDirective's using/hiding/renaming are empty and the Import's AsName is Nothing},
+  check   = {premise:cst-importdirective-fields}
+}
+@misc{b-public,
+  section = {bans}, from = {b-imports}, join = {; },
+  claim   = {ban public and re-export is publicOpen-absent AND no ModuleMacro (module-application) --- catching BOTH re-export forms a regex would need two fragile patterns for, and today's check_public_ratchet is already a pure source scan},
+  check   = {repo:public-source-regex}
+}
+@misc{b-onedef,
+  section = {bans}, from = {b-public}, join = {; },
+  claim   = {one definitional unit per file is a fold over the module's top-level declaration list grouping a TypeSig with its FunClauses --- not a line-count},
+  check   = {premise:cst-definitional-group-fold}
+}
+@misc{b-vacuity,
+  section = {bans}, from = {b-onedef}, join = {. },
+  claim   = {the ⊤-Witness vacuity gate matched in CODE tokens only fixes a live false-positive --- today check_up_nonvacuity greps RAW source, so the stub pattern appearing in a comment trips the gate},
+  check   = {repo:vacuity-greps-raw}
+}
+
+% ── proxy ────────────────────────────────────────────────────────────────────
+@misc{p-entails,
+  section = {proxy},
+  claim   = {one-def-per-file is a brutal syntactic over-approximation that ENTAILS the semantic goal (no carrier-mixing in a file) by construction --- so the source tier discharges that intent without ever touching elaboration},
+  check   = {premise:one-def-entails-no-carrier-mixing}
+}
+@misc{p-ram,
+  section = {proxy}, from = {p-entails}, join = {. },
+  claim   = {the same bans are dissipative RAM-locality constraints --- minimal per-module import closure bounds typecheck memory, the ~40x proof-closure inflation being the All.agda OOM driver},
+  check   = {premise:bans-bound-per-module-typecheck-ram}
+}
+@misc{p-gate,
+  section = {proxy}, from = {p-ram}, join = {. },
+  claim   = {an EXACT CST def-count converts check_file_sizes from ADVISORY (kept advisory because grep signature-counting has real false positives) into a ratchet GATE with a sanctioned-exemption set for cohesive primitives modules},
+  check   = {repo:filesize-advisory}
+}
+
+% ── representation ───────────────────────────────────────────────────────────
+@misc{r-levels,
+  section = {representation},
+  claim   = {there are three parse levels --- tokens (comments + ranges), CST (Agda.Syntax.Concrete, surface structure but NO comments), and Abstract (post-scope-check, lossy)},
+  check   = {premise:tokens-cst-abstract-levels}
+}
+@misc{r-libcst,
+  section = {representation}, from = {r-levels}, join = {; },
+  claim   = {libcst-equivalence for the FORMATTER is the CST plus the comment/whitespace token stream re-interleaved by range --- NOT the Abstract AST --- while the linter needs only tokens+CST},
+  check   = {premise:libcst-is-cst-plus-comment-overlay}
+}
+
+% ── boundary ─────────────────────────────────────────────────────────────────
+@misc{x-mustnot,
+  section = {boundary},
+  claim   = {the must-not-move set is genuinely post-typecheck --- set1_ratchet/census/locate (inhabited sort), reuse_catalog and reuse_check (elaborated refs), proofcost (typecheck dynamics), iface_shape (interface SIZE in bytes), and check_cap_ratchet (peak memory)},
+  check   = {repo:set1-why-not-grep}
+}
+@misc{x-reference,
+  section = {boundary}, from = {x-mustnot}, join = {. },
+  claim   = {conversely type_sppf, type_sppf_crosslayer and law_motif_apex are ALREADY source-parsers --- the reference arm of what the tool should be, to be rebuilt in Haskell over a real CST},
+  check   = {premise:existing-source-parsers-are-the-reference-arm}
+}
+@misc{x-virtuous,
+  section = {boundary}, from = {x-reference}, join = {. },
+  claim   = {the bans make source CONCRETE (no alias/renaming), which makes CST name-matching SOUND --- so carrier-uniqueness and scope-ambiguity fall to a GLOBAL CST decl index rather than elaboration, shrinking the shim tier to only what is genuinely elaborated},
+  check   = {premise:bans-keep-source-concrete-so-cst-index-suffices}
+}
+
+% ── contract ─────────────────────────────────────────────────────────────────
+@misc{c-json,
+  section = {contract},
+  claim   = {the tool emits the SAME JSON-lines census shape the shim already emits, so catalog.db and ratchet.py ingest source-depth and elaborated-depth censuses uniformly},
+  check   = {repo:shim-jsonl}
+}
+@misc{c-paid,
+  section = {contract}, from = {c-json}, join = {, and },
+  claim   = {the heavy dependency is already paid --- the shim links -package Agda (2.8.0) in the GHC package db, so the tool is one more ghc -package Agda invocation on the same version pin},
+  check   = {repo:shim-links-agda}
+}
+@misc{c-ratchet,
+  section = {contract}, from = {c-paid}, join = {. },
+  claim   = {the ratchet POLICY layer (ratchet.py plus the baseline and denominator guards) is a CONSUMER of a census, not a scanner --- it stays in Python and consumes the tool's output unchanged},
+  check   = {premise:ratchet-consumes-census}
+}
+
+% ── inventory ────────────────────────────────────────────────────────────────
+@misc{i-table,
+  section = {inventory},
+  claim   = {the full checker/rewriter inventory partitions as tabulated across MOVES / SPLITS / STAYS-ELABORATED / STAYS-NONAGDA / CONSUMER / INFRA},
+  emit    = {assets/inventory.tsv},
+  check   = {premise:four-read-only-sweeps-2026-07-27}
+}
+@misc{i-moves,
+  section = {inventory}, from = {i-table}, join = {. },
+  claim   = {clean MOVES include nine current checkers (check_public, sumtype, carrier, import_shape, collapse, sppf_node_index, and the three audit_*) plus the vacuity and def-proof gates, the migrate/stdlib import rewriters, and the range-local codemods respell_typealias, seal_ops, record_def_edit},
+  check   = {repo:public-source-regex}
+}
+@misc{i-splits,
+  section = {inventory}, from = {i-moves}, join = {; },
+  claim   = {SPLITS keep the CST mechanism but leave the scope/elaboration decision behind --- agda_imports (reprint vs topo-order), decompose_rewrite and telescope_migrate* (edit vs rename), gen_build_makefiles and _shred_graph (import-DAG vs semantic rank), split_graded (cut vs where-to-cut)},
+  check   = {repo:import-permutation-guard}
+}
+@misc{i-proxy,
+  section = {inventory}, from = {i-splits}, join = {. },
+  claim   = {a subtle caveat: audit_dead_fields, audit_type_load_bearing and realizability_surface MOVE by their code but are syntactic PROXIES for post-typecheck properties, so the parser strengthens their census, not their semantics --- the faithful form stays in the shim tier},
+  check   = {premise:movers-that-are-only-syntactic-proxies}
+}
+
+% ── phases ───────────────────────────────────────────────────────────────────
+@misc{ph-a,
+  section = {phases},
+  claim   = {Phase A (MVP) is the import-locality bans as one CST absence-pass --- retiring check_import_shape's regex, check_public_ratchet, and agda_imports' hand-parser in one stroke, on the highest-frequency edit surface},
+  check   = {premise:phase-a-import-bans-mvp}
+}
+@misc{ph-rest,
+  section = {phases}, from = {ph-a}, join = {. },
+  claim   = {Phases B (range-splice --fix), C (the global CST decl index as a shared service), and D (full CST+comment formatter) each ship independently, and the set1 elaborated checks are never absorbed at any phase},
+  check   = {premise:phases-b-c-d-and-set1-stays}
+}
+
+% ── residue ──────────────────────────────────────────────────────────────────
+@misc{res-cbc,
+  section = {residue},
+  claim   = {the guarantee is at the PARSING substrate, not the rules --- a lint rule can still be mis-specified and a CST-correct import reorder can still break scope (import-topo is a scope fact), so rule-adequacy and transform-soundness remain owed},
+  check   = {premise:cbc-scoped-to-parse-not-rule}
+}
+@misc{res-formatter,
+  section = {residue}, from = {res-cbc}, join = {. },
+  claim   = {the near-term deliverable is the CHECKER; the full-file formatter (global comment reattachment) is the genuinely hard, later piece, so "formatter" must not oversell the near-term win},
+  check   = {premise:checker-now-formatter-later}
+}

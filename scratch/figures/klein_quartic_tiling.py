@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The {7,3} order-3 heptagonal tiling — the canonical Klein-quartic picture.
 
 GL(3,F₂) ≅ PSL(2,7) is the (orientation-preserving) automorphism group of the

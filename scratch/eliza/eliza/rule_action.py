@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.RuleAction — algebraic action on rule expansions.
 
 U-arc shadow: every emission of a rule reference carries a

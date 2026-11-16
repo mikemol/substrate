@@ -1,0 +1,3 @@
+[COMPLETE] (Σ-arc, trace T1-forest, block 31: Probe-state (Fano lines) after this regrounding)
+
+- **L₂ {100,001,101} → COMPLETE** (P12 @100 + P5 @001 + P4/P6 @101). GS-guard-coverage satisfied.

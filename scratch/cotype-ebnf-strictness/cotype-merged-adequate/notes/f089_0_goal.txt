@@ -1,0 +1,2 @@
+GOAL: pin Φ_p multiplicity = f(#disjoint p-cycles c, prime p), correct factor-and-match detector.
+[supporting witness: probe_inv_cond_count.py — shared block evidence]

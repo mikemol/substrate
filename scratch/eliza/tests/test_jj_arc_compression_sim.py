@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """JJ8: Compression simulation with multi-Sylow joint-context predictor.
 
 Compare per-emission cost under predictors keyed on:

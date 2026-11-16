@@ -1,0 +1,1 @@
+- **Σ-GATE-SKIP-3STATE** [REPORT to AI-Q] — the metalanguage gate's skip predicate is binary; toolchain

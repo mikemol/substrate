@@ -1,0 +1,1 @@
+- **GOVERNING FORM for proof obligations (USER): a proof/obligation MUST be a TRIPLE with a mandatory

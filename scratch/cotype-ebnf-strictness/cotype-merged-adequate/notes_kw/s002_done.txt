@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic kirchhoff, block 0)
+
+- **`jea_picircuit.py`** [AI-Πχ, Δ-Π-circuit DONE] — the metalanguage as the Kron-reduced
+  OPERATING POINT of the grading-conductance network. Axes (fanin/shallow/size/surprisal)
+  are conductances; classification = where each node SETTLES by current-division (KCL,
+  shares sum to 1), NOT argmin. `series_schur=ab/(a+b)`, `current_divider=d/Σ`, exact-ℚ
+  (same operators as jea_onegraph, on Fractio

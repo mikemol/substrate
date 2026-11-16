@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The common substructure of every 3D lift in the gallery.
 
 Faced with "which figures get a z-axis and how" — the either/or dissolves once

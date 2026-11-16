@@ -1,0 +1,7 @@
+[REAL] (Σ-arc KEYWORD reading, topic torsor-witness, block 8)
+
+- **AI-Q TEST-THE-WALLED Σ-SEAM-GLUE and correctly DISMANTLED my spec (the recursive law on MY work).**
+  AI-Q read SharedMiddle + the REAL M40 closure law before building, and found my SEAM_GLUE_SPEC.md
+  over-engineered on two counts:
+  - **(a) Over-read SharedMiddle.** Its Lα,Lβ,Lγ are three V₂s INSIDE ONE V₄ (Cayley left-translations);
+    ⟨Lα,Lβ⟩=⟨Lβ,Lγ⟩= the whole regular V₄, so they share L

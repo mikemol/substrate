@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.HybridCodec — two-stream codec: chain-trigram + byte-trigram.
 
 For each window of input bytes:

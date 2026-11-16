@@ -1,0 +1,1 @@
+- **G7-2 (falsifier-asymmetry, witness-as-confirmation ESCALATED 3rd time):** the witness-as-test discipline worked OUTWARD (3 docs tested to break, cleanly) but failed INWARD (3 confirmation-shaped s

@@ -1,0 +1,2 @@
+ROUTES INTO P-RECIP/P-DEFORM (the thrice-recurring frame debt): (p-1)/2 being tree-frame-specific is exactly the "is it intrinsic to S_n or to the rep+frame?" question, now concrete: the c=2 multiplicity is REP+FRAME, not intrinsic. So P-INV's inverse-structure law is frame-relative at the multiplicity level (though Φ_p APPEARING vs not may be more robust — untested which).
+[supporting witness: probe_c2_close.py — shared block evidence]

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 verify_v4_twins.py — Cocycle invariance test suite for M30/M31 V₄-twin
 operations implemented in chart.py.

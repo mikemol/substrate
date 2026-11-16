@@ -1,0 +1,1 @@
+- **Σ-IR-UNIFY** — LANDED by AI-Q (structured kinds canonical, translator retired, bridge shrank 134L);

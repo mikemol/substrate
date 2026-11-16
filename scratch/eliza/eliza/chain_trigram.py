@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainTrigram — adaptive predictor over ChainSymbol terminals.
 
 Mirrors `TrigramPredictor` (char-byte trigram) but with ChainSymbol as

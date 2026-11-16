@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """II3+II4+II5+II6: Atlas sweep across substrate atlas corpora.
 
 For each kinematic gauge-class atlas:

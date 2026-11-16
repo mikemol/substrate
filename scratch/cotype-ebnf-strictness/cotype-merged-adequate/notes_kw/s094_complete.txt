@@ -1,0 +1,7 @@
+[COMPLETE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 8)
+
+- **Σ-SPINE-PROBE (original entry, now COMPLETE)** — take two spine-instances I
+  "wouldn't want unified" (e.g. EEA vs a build-system DAG), lower BOTH into the forest with TYPED carriers
+  + explicit termination witnesses, intern, and look: do they COLLAPSE (same node → genuinely one
+  operation) or LOCALIZE (distinct nodes → correctly discriminated, residue shows where)? Either outcome
+  beats th

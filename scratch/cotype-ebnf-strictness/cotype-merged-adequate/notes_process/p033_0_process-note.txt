@@ -1,0 +1,1 @@
+- `jea_strictify_gcalc.py` (25/25) — g-calculus pair calculus, witness=kernel, parity-forces-witness, center=witness-line.

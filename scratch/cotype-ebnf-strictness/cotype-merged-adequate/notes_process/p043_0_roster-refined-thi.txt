@@ -1,0 +1,1 @@
+AI-Π0 [hat AI-Πρ] / **AI-Q [holds `--safe` checker AND is the decorrelation oracle — P27]** / AI-Δ0 [owns P25 CUDA-lowerer + navigator] / AI-mat260 [sibling repo] / USER [shared interner + grade-checker; this arc: requested the pull that surfaced the correction]. --- ## REGROUNDING (the "all meaning

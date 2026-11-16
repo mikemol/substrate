@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Octonion multiplication — the Fano-plane mnemonic and the Cayley table.
 
 The seven imaginary units e₁…e₇ sit on the Fano plane; each of the 7 lines is

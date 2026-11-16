@@ -1,0 +1,122 @@
+% S19/◇10/A116 — one warrant per co-sign subject (a checked claim), plus a closure
+% warrant over the whole set. A subject added to host/preparable.tsv without a warrant
+% here fails coverage; a warrant with no registry row fails it the other way.
+
+@misc{pb-sysctl,
+  section = {playbooks},
+  claim   = {The sysctl co-sign playbook is a fresh projection of host/preparable.tsv AND a valid ansible play: regenerating it from the registry reproduces the committed ansible/sysctl.yml byte-for-byte (determinism), and ansible-playbook --syntax-check accepts it (correctness) — the two independent oracles a projected artifact needs},
+  check   = {playbook:sysctl}
+}
+@misc{pb-zswap-collector,
+  section = {playbooks}, from = {pb-sysctl}, join = {. },
+  claim   = {The zswap-collector co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/zswap-collector.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:zswap-collector}
+}
+@misc{pb-zswap-ablate,
+  section = {playbooks}, from = {pb-zswap-collector}, join = {. },
+  claim   = {The zswap-ablate co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/zswap-ablate.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:zswap-ablate}
+}
+@misc{pb-ablate-polkit,
+  section = {playbooks}, from = {pb-zswap-ablate}, join = {. },
+  claim   = {The ablate-polkit co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/ablate-polkit.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:ablate-polkit}
+}
+@misc{pb-writeback-split,
+  section = {playbooks}, from = {pb-ablate-polkit}, join = {. },
+  claim   = {The writeback-split co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/writeback-split.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:writeback-split}
+}
+@misc{pb-oomd-conf,
+  section = {playbooks}, from = {pb-writeback-split}, join = {. },
+  claim   = {The oomd-conf co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/oomd-conf.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:oomd-conf}
+}
+@misc{pb-oomd-slice,
+  section = {playbooks}, from = {pb-oomd-conf}, join = {. },
+  claim   = {The oomd-slice co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/oomd-slice.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:oomd-slice}
+}
+@misc{pb-oomd,
+  section = {playbooks}, from = {pb-oomd-slice}, join = {. },
+  claim   = {The oomd co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/oomd.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:oomd}
+}
+@misc{pb-swapfile,
+  section = {playbooks}, from = {pb-oomd}, join = {. },
+  claim   = {The swapfile co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/swapfile.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:swapfile}
+}
+@misc{pb-ansible,
+  section = {playbooks}, from = {pb-swapfile}, join = {. },
+  claim   = {The ansible co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/ansible.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:ansible}
+}
+@misc{pb-panic-sysctl,
+  section = {playbooks}, from = {pb-ansible}, join = {. },
+  claim   = {The panic-sysctl co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/panic-sysctl.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:panic-sysctl}
+}
+@misc{pb-panic-capture,
+  section = {playbooks}, from = {pb-panic-sysctl}, join = {. },
+  claim   = {The panic-capture co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/panic-capture.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:panic-capture}
+}
+@misc{pb-pstore-reader,
+  section = {playbooks}, from = {pb-panic-capture}, join = {. },
+  claim   = {The pstore-reader co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/pstore-reader.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:pstore-reader}
+}
+@misc{pb-nvidia-rtd3,
+  section = {playbooks}, from = {pb-pstore-reader}, join = {. },
+  claim   = {The nvidia-rtd3 co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/nvidia-rtd3.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:nvidia-rtd3}
+}
+@misc{pb-grub-menu,
+  section = {playbooks}, from = {pb-nvidia-rtd3}, join = {. },
+  claim   = {The grub-menu co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/grub-menu.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:grub-menu}
+}
+@misc{pb-watchdog-module,
+  section = {playbooks}, from = {pb-grub-menu}, join = {. },
+  claim   = {The watchdog-module co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/watchdog-module.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:watchdog-module}
+}
+@misc{pb-watchdog-systemd,
+  section = {playbooks}, from = {pb-watchdog-module}, join = {. },
+  claim   = {The watchdog-systemd co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/watchdog-systemd.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:watchdog-systemd}
+}
+@misc{pb-exec-trace,
+  section = {playbooks}, from = {pb-watchdog-systemd}, join = {. },
+  claim   = {The exec-trace co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/exec-trace.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:exec-trace}
+}
+@misc{pb-journald-retention,
+  section = {playbooks}, from = {pb-exec-trace}, join = {. },
+  claim   = {The journald-retention co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/journald-retention.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:journald-retention}
+}
+@misc{pb-smart-helper,
+  section = {playbooks}, from = {pb-journald-retention}, join = {. },
+  claim   = {The smart-helper co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/smart-helper.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:smart-helper}
+}
+@misc{pb-psi-burst,
+  section = {playbooks}, from = {pb-smart-helper}, join = {. },
+  claim   = {The psi-burst co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/psi-burst.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check   = {playbook:psi-burst}
+}
+@misc{pb-coverage,
+  section = {closure},
+  claim   = {And the playbook set is closed over the registry both ways: every subject host/preparable.tsv declares has exactly one playbook and one warrant, and no playbook or warrant is an orphan — the set-equality that once lived in scripts/check moved here (A116) so the projection has one owner},
+  check   = {coverage:all}
+}
+
+@misc{pb-k3s-kubeconfig,
+  section  = {playbooks},
+  from     = {pb-psi-burst},
+  join     = {.},
+  claim    = {The k3s-kubeconfig co-sign playbook is a fresh projection of the registry AND a valid ansible play: regeneration reproduces ansible/k3s-kubeconfig.yml byte-for-byte, and ansible-playbook --syntax-check accepts it},
+  check    = {playbook:k3s-kubeconfig}
+}

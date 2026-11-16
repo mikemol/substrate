@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Octonion — 16 byte-rotations at the F₂-octonion-loop quotient.
 
 True octonions over R/Q are non-associative (associator nonzero). Over F₂

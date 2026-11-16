@@ -1,0 +1,2 @@
+THE GAP (named precisely, NOT waved through): raw cross-torus gives multiplicity p per root; the PROJECTED rep gives (p-1)/2. p ↦ (p-1)/2 is NOT simple conjugate-pairing (not ÷2). The projection removes p−(p-1)/2 = (p+1)/2 copies per root. WHY the projection removes exactly (p+1)/2 is NOT YET
+[supporting witness: probe_inv_construct.py — shared block evidence]

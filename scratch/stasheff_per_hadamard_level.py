@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 stasheff_per_hadamard_level.py — At each Hadamard level, a different
 Stasheff polytope encodes the composition choices for that level.

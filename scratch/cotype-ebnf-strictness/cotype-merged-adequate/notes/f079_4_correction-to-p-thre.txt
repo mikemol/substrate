@@ -1,0 +1,2 @@
+CORRECTION TO P-THREE (owed, technical, certain): I had banked "Frob_3 = [5,4] for the deg-9". WRONG
+[supporting witness: probe_frobenius_inventory.py — shared block evidence]

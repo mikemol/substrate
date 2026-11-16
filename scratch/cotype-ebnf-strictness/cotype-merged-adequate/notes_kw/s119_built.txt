@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 14)
+
+- **Δ-Π-omml [Σ-OMML] — OMML (Office Math, the `<m:oMath>` XML in .docx/.pptx) as a NEW front-end.**
+  Gate-1 (canonical parser) ✓ trivially: ECMA-376 schema + any XML parser (lxml) = the authoritative
+  element tree, NO error-recovery ambiguity. Gate-2 (canonical unparser) ✓: lxml tostring round-trips
+  (namespace-prefix = the whitespace-analogue residue) → so OMML is a SAME-LANGUAGE Σ-EXTRUDE ta

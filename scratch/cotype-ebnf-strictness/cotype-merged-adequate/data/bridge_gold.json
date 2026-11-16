@@ -1,0 +1,23 @@
+{
+ "retraction_identity": {
+  "sigma_anchor": "unparse\u2218parse = id-up-to-normalization",
+  "sigma_concept": "retraction check",
+  "frob_anchor": "Cpinv",
+  "frob_concept": "non-equivariant",
+  "claim": "parse/quotient/exp retraction-check (\u03a3) = C\u00b7P\u00b7Cpinv frame-projection (Frobenius)"
+ },
+ "gauge_identity": {
+  "sigma_anchor": "retention",
+  "sigma_concept": "gauge-preservation",
+  "frob_anchor": "cyclotomic",
+  "frob_concept": "multiplicity",
+  "claim": "intermediate-step gauge freedom (\u03a3 B\u00e9zout) = \u03a6_p multiplicity width (Frobenius)"
+ },
+ "projection_identity": {
+  "sigma_anchor": "non-injectivity",
+  "sigma_concept": "projection",
+  "frob_anchor": "unsigned",
+  "frob_concept": "non-chain-map",
+  "claim": "non-injectivity-lives-in-the-projection (\u03a3) = unsigned-P non-chain-map mismatch (Frobenius)"
+ }
+}

@@ -1,0 +1,1 @@
+- **L₁ (100,010,110) → COMPLETE** (P12 (at)100 + P10/P11 (at)010 + P9/P1 (at)110). positive-closure: mediated-composite reachable.

@@ -1,0 +1,1 @@
+- **trace-intern + sympy handoffs:** CLOSE BY GENUS-CLASSIFICATION, not building (P58). trace-intern: is the step idempotent/absorptive (→suspended) or residue-preserving (→decided)? sympy: the seam i

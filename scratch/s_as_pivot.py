@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 s_as_pivot.py — S as the gauge-invariant pivot of the 8-frame rotation.
 

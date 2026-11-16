@@ -1,0 +1,1 @@
+- **G2 (delta 2) — the real target is forest↔sympy↔forest + sympy→octave, NOT a one-off emitter.**

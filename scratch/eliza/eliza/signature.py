@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Signature — recursive 2-bin (conditional bit-prefix) histogram.
 
 The signature of a window of bytes at depth d is a 2^d-bin histogram:

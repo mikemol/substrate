@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """S₄ permutohedron core — Cayley graph + Laplacian spectrum + geometry.
 
 Lifts the construction from `SpectralManifold` in scratch/eliza/13.py (BFS

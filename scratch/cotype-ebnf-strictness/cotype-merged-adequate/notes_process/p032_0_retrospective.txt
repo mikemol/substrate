@@ -1,0 +1,1 @@
+- **G7-a (goal-axis, corpus+code-confirmed):** cotype goal-axis was wrong twice. Corrected to the CATCHALL / lower-into-substrate frame (see header). mat260 demoted (sibling-repo deliverable, not the 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Substrate package import graph in a 3D force layout.
 
 Same package-level graph as the 2D figure (_graphs.package_import_graph), laid

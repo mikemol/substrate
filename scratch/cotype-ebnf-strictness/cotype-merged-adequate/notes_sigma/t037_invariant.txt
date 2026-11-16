@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **"This is why we store every intermediate EEA step" (USER) — RETENTION-OF-STEPS IS GAUGE-PRESERVATION;
+    and it corrects WHERE the gauge residue lives.** I'd been hunting the gauge residue at the TERMINAL r=0
+    (a non-zero final remainder). Wrong end. The gauge residue is the non-zero remainder at EVERY step i>0,
+    DISTRIBUTED across the retained chain; r=0 is just where the chain GROUNDS

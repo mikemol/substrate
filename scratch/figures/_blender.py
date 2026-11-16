@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Blender/Cycles rendering substrate for the 3D figures.
 
 Run *inside* Blender's bundled Python (itself 3.14, matching the venv):

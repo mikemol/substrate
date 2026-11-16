@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuKernels — O-arc fused GPU kernels.
 
 Replaces the per-opcode Python loop in `gpu_codec_stages.gpu_opcode_match`

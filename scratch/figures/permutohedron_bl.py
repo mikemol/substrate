@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """S4 permutohedron breathing along Fiedler — Blender/Cycles.
 
 Run:  blender --background --python scratch/figures/permutohedron_bl.py

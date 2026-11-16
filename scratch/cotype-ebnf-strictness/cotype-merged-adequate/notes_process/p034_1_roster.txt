@@ -1,0 +1,1 @@
+- **AI-Q** — the OTHER live instance; Agda write access; HOLDS THE `--safe` CHECKER. Commit labels: circled letters (Ⓛ Ⓙ Ⓞ Ⓖ Ⓡ Ⓑ Ⓣ★ Ⓣ₃) for features, **Ε** CI/error-correction, **Ξ** seam-glue brick n

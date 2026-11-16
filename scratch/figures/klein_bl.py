@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Klein quartic {7,3} hyperbolic tower — Blender/Cycles.
 
 blender --background --python scratch/figures/klein_bl.py

@@ -1,0 +1,9 @@
+[OBLIGATION] (Σ-arc, trace T1-forest, block 7: FORWARD PATHS — unchanged in substance, re-sorted by what's )
+
+- **Σ-OBLIGATION** spine-NAME (now PROBE-VALIDATED as real+discriminating). **Σ-IR-UNIFY** LANDED.
+  **Σ-SPINE-PROBE** DONE. GOAL **Σ-FOREST** core DONE+handed; capstone jea_mat260_verify RAN on the corpus.
+
+
+
+Iterated-subtraction (G4): passes 1–17 SUBTRACTED. No code this pass. Two substantive results: a
+prior-art map of the whole project, and a sharp correction to how the grand unification shoul

@@ -1,0 +1,1 @@
+- initial() -> cursor 0; pump(state) -> does ONE (p,c) case, rebuilding T INSIDE (never serialized),

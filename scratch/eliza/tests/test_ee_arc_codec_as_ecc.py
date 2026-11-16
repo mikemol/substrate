@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """EE8: Codec-as-ECC measurement.
 
 Verifies (EE-E2): the codec's chain-walk structure provides natural

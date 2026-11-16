@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc KEYWORD reading, topic metalanguage, block 20)
+
+- **OPEN — substitution mode (the G8 blind spot):** withholding a piece is one mode; SUBSTITUTING a
+  piece (swap Fraction→ℚ-Wedge at a carrier, specialize a param) is the transformer mode, still
+  unexercised. Pairs with Δ-Π-cuda's Move-carrier (project a kernel in a different memory-space
+  carrier). Owner AI-Πρ. THE NEXT increment.

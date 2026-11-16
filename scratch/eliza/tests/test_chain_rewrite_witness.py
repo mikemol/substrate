@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_chain_rewrite_witness.py — rewrite-step propagates to bytes.
 
 The user's substrate-native claim: "Sequitur's rewrite step can apply

@@ -1,0 +1,2 @@
+GRADE: one rich element + consistency with (2,3),(3,3). "2 entangles (kills its divisors' cyclotomic- ness)" = grade-2, robust negative claim. "odd-coprime→clean" = refuted as sufficient. The tree-is-2-adic artifact conjecture = grade-2, but now with a concrete falsification test (change the projection).
+[supporting witness: probe_coprime_headtohead.py — shared block evidence]

@@ -1,0 +1,1012 @@
+# pyast (jea_pyalg IR) dump of agda/_build/2.8.0/agda/Substrate/WitnessTower/Wedge/PyAstRig.agdai
+# interned forest: 313 IR nodes; 16 def-units
+# each node: #id  head  [child-count]  (q=qname role= lit= pay=residue)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.Objpy   (Defn-kind: Function) ═══
+#228 Defn [2ch]
+  #225 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #17 Sort [0ch]
+  #227 Clause [2ch]
+    #1 · [0ch]  (role=db0)
+    #226 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+      #42 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.act   (Defn-kind: Function) ═══
+#166 Defn [2ch]
+  #161 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #160 Pi [2ch]
+      #4 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+        #1 · [0ch]  (role=db0)
+      #159 Pi [2ch]
+        #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+          #1 · [0ch]  (role=db0)
+        #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+          #1 · [0ch]  (role=db0)
+  #165 Clause [3ch]
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #164 mapSPPF [3ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+      #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #11 · [0ch]  (role=db1)
+      #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #11 · [0ch]  (role=db1)
+      #163 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+        #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.act-faithful-spine   (Defn-kind: Function) ═══
+#123 Defn [2ch]
+  #117 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #116 Pi [2ch]
+      #4 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+        #1 · [0ch]  (role=db0)
+      #115 Pi [2ch]
+        #53 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+          #11 · [0ch]  (role=db1)
+        #114 Pi [2ch]
+          #111 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+          #113 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+  #122 Clause [5ch]
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #121 apply-injective [4ch]  (q=Substrate.WitnessTower.SnGroup.apply-injective pay=('Substrate.WitnessTower.SnGroup.apply-injective',))
+      #21 · [0ch]  (role=db3)
+      #10 · [0ch]  (role=db2)
+      #11 · [0ch]  (role=db1)
+      #120 spine-sep [5ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.spine-sep pay=('Substrate.WitnessTower.Wedge.PyAstRig.spine-sep',))
+        #21 · [0ch]  (role=db3)
+        #55 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #21 · [0ch]  (role=db3)
+        #118 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #21 · [0ch]  (role=db3)
+          #10 · [0ch]  (role=db2)
+        #119 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #21 · [0ch]  (role=db3)
+          #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.act-grown   (Defn-kind: Function) ═══
+#16 Defn [2ch]
+  #9 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #8 Pi [2ch]
+      #3 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #2 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+          #1 · [0ch]  (role=db0)
+      #7 Pi [2ch]
+        #4 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+          #1 · [0ch]  (role=db0)
+        #6 Pi [2ch]
+          #5 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+            …
+          #5 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+            …
+  #15 Clause [4ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #14 act [2ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act pay=('Substrate.WitnessTower.Wedge.PyAstRig.act',))
+      #12 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+        #10 · [0ch]  (role=db2)
+      #13 insert-at [3ch]  (q=Substrate.WitnessTower.Enumerate.insert-at pay=('Substrate.WitnessTower.Enumerate.insert-at',))
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.act-id   (Defn-kind: Function) ═══
+#215 Defn [5ch]
+  #199 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #198 Pi [2ch]
+      #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+        #1 · [0ch]  (role=db0)
+      #197 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+        #23 Level [0ch]
+        #194 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+          #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+        #196 act [3ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act pay=('Substrate.WitnessTower.Wedge.PyAstRig.act',))
+          #11 · [0ch]  (role=db1)
+          #195 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+            …
+          #1 · [0ch]  (role=db0)
+        #1 · [0ch]  (role=db0)
+  #203 Clause [3ch]
+    #11 · [0ch]  (role=db1)
+    #66 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #1 · [0ch]  (role=db0)
+    #202 cong [8ch]  (q=Substrate.Foundation.Eq.cong pay=('Substrate.Foundation.Eq.cong',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #11 · [0ch]  (role=db1)
+      #194 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #11 · [0ch]  (role=db1)
+      #67 gen [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #200 apply [3ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+        #11 · [0ch]  (role=db1)
+        #195 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+          #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+      #1 · [0ch]  (role=db0)
+      #201 apply-id [2ch]  (q=Substrate.WitnessTower.SnGroup.apply-id pay=('Substrate.WitnessTower.SnGroup.apply-id',))
+        #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+  #204 Clause [3ch]
+    #1 · [0ch]  (role=db0)
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+  #212 Clause [3ch]
+    #10 · [0ch]  (role=db2)
+    #76 _⊗_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #211 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #79 _⊗_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #207 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #206 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #10 · [0ch]  (role=db2)
+          #205 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+            …
+        #11 · [0ch]  (role=db1)
+      #11 · [0ch]  (role=db1)
+      #208 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #206 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #10 · [0ch]  (role=db2)
+          #205 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+            …
+        #1 · [0ch]  (role=db0)
+      #1 · [0ch]  (role=db0)
+      #209 act-id [2ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-id pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-id',))
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #210 act-id [2ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-id pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-id',))
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+  #214 Clause [3ch]
+    #10 · [0ch]  (role=db2)
+    #27 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #213 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #107 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+      #94 _⊕_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #207 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #206 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #10 · [0ch]  (role=db2)
+          #205 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+            …
+        #11 · [0ch]  (role=db1)
+      #11 · [0ch]  (role=db1)
+      #208 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #106 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #10 · [0ch]  (role=db2)
+        #206 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #10 · [0ch]  (role=db2)
+          #205 id-perm [1ch]  (q=Substrate.WitnessTower.FirstAppearance.id-perm pay=('Substrate.WitnessTower.FirstAppearance.id-perm',))
+            …
+        #1 · [0ch]  (role=db0)
+      #1 · [0ch]  (role=db0)
+      #209 act-id [2ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-id pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-id',))
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #210 act-id [2ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-id pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-id',))
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.act-∘   (Defn-kind: Function) ═══
+#97 Defn [5ch]
+  #65 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #64 Pi [2ch]
+      #4 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+        #1 · [0ch]  (role=db0)
+      #63 Pi [2ch]
+        #53 Perm [1ch]  (q=Substrate.WitnessTower.Enumerate.Perm pay=('Substrate.WitnessTower.Enumerate.Perm',))
+          #11 · [0ch]  (role=db1)
+        #62 Pi [2ch]
+          #54 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+            …
+          #61 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+  #73 Clause [5ch]
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #66 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #1 · [0ch]  (role=db0)
+    #72 cong [8ch]  (q=Substrate.Foundation.Eq.cong pay=('Substrate.Foundation.Eq.cong',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #55 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #21 · [0ch]  (role=db3)
+      #56 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #55 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #21 · [0ch]  (role=db3)
+      #67 gen [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #68 apply [3ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+        #21 · [0ch]  (role=db3)
+        #57 compose [3ch]  (q=Substrate.WitnessTower.FirstAppearance.compose pay=('Substrate.WitnessTower.FirstAppearance.compose',))
+          #21 · [0ch]  (role=db3)
+          #10 · [0ch]  (role=db2)
+          #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+      #70 apply [3ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #69 apply [3ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #21 · [0ch]  (role=db3)
+          #11 · [0ch]  (role=db1)
+          #1 · [0ch]  (role=db0)
+      #71 apply-compose [4ch]  (q=Substrate.WitnessTower.SnGroup.apply-compose pay=('Substrate.WitnessTower.SnGroup.apply-compose',))
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+  #75 Clause [5ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+  #93 Clause [5ch]
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #76 _⊗_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #92 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #79 _⊗_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #82 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #81 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #80 compose [3ch]  (q=Substrate.WitnessTower.FirstAppearance.compose pay=('Substrate.WitnessTower.FirstAppearance.compose',))
+            …
+        #11 · [0ch]  (role=db1)
+      #86 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #83 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #21 · [0ch]  (role=db3)
+        #85 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #84 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+            …
+          #11 · [0ch]  (role=db1)
+      #87 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #81 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #80 compose [3ch]  (q=Substrate.WitnessTower.FirstAppearance.compose pay=('Substrate.WitnessTower.FirstAppearance.compose',))
+            …
+        #1 · [0ch]  (role=db0)
+      #89 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #83 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #21 · [0ch]  (role=db3)
+        #88 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #84 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+            …
+          #1 · [0ch]  (role=db0)
+      #90 act-∘ [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-∘',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #91 act-∘ [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-∘',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+  #96 Clause [5ch]
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #27 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #95 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #78 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+      #94 _⊕_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #82 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #81 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #80 compose [3ch]  (q=Substrate.WitnessTower.FirstAppearance.compose pay=('Substrate.WitnessTower.FirstAppearance.compose',))
+            …
+        #11 · [0ch]  (role=db1)
+      #86 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #83 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #21 · [0ch]  (role=db3)
+        #85 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #84 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+            …
+          #11 · [0ch]  (role=db1)
+      #87 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #81 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #80 compose [3ch]  (q=Substrate.WitnessTower.FirstAppearance.compose pay=('Substrate.WitnessTower.FirstAppearance.compose',))
+            …
+        #1 · [0ch]  (role=db0)
+      #89 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #24 · [0ch]  (role=db4)
+        #83 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+          #24 · [0ch]  (role=db4)
+          #21 · [0ch]  (role=db3)
+        #88 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #77 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #84 apply [2ch]  (q=Substrate.WitnessTower.SnGroup.apply pay=('Substrate.WitnessTower.SnGroup.apply',))
+            …
+          #1 · [0ch]  (role=db0)
+      #90 act-∘ [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-∘',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #91 act-∘ [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-∘',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.gen-inj   (Defn-kind: Function) ═══
+#224 Defn [2ch]
+  #222 Pi [2ch]
+    #17 Sort [0ch]
+    #221 Pi [2ch]
+      #1 · [0ch]  (role=db0)
+      #220 Pi [2ch]
+        #11 · [0ch]  (role=db1)
+        #219 Pi [2ch]
+          #217 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+          #218 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+  #223 Clause [5ch]
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #37 PDot [1ch]
+      #1 · [0ch]  (role=db0)
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF   (Defn-kind: Function) ═══
+#251 Defn [5ch]
+  #240 Pi [2ch]
+    #17 Sort [0ch]
+    #239 Pi [2ch]
+      #17 Sort [0ch]
+      #238 Pi [2ch]
+        #124 Pi [2ch]
+          #11 · [0ch]  (role=db1)
+          #1 · [0ch]  (role=db0)
+        #237 Pi [2ch]
+          #19 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+          #18 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+  #243 Clause [5ch]
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #66 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #1 · [0ch]  (role=db0)
+    #242 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #241 · [1ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+  #244 Clause [5ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+  #248 Clause [5ch]
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #76 _⊗_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #247 _⊗_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #245 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #246 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+  #250 Clause [5ch]
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #27 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #249 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #245 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #246 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘   (Defn-kind: Function) ═══
+#158 Defn [5ch]
+  #139 Pi [2ch]
+    #17 Sort [0ch]
+    #138 Pi [2ch]
+      #17 Sort [0ch]
+      #137 Pi [2ch]
+        #17 Sort [0ch]
+        #136 Pi [2ch]
+          #124 Pi [2ch]
+            …
+          #135 Pi [2ch]
+            …
+  #140 Clause [7ch]
+    #126 · [0ch]  (role=db5)
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #66 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+      #1 · [0ch]  (role=db0)
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+  #141 Clause [7ch]
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+  #155 Clause [7ch]
+    #142 · [0ch]  (role=db6)
+    #126 · [0ch]  (role=db5)
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #76 _⊗_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #154 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #79 _⊗_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊗_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊗_',))
+      #144 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #143 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #142 · [0ch]  (role=db6)
+          #126 · [0ch]  (role=db5)
+          #10 · [0ch]  (role=db2)
+          #11 · [0ch]  (role=db1)
+      #148 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #142 · [0ch]  (role=db6)
+        #24 · [0ch]  (role=db4)
+        #147 Lam [1ch]
+          #146 · [1ch]  (role=db4)
+            …
+        #11 · [0ch]  (role=db1)
+      #150 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #149 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #142 · [0ch]  (role=db6)
+          #126 · [0ch]  (role=db5)
+          #10 · [0ch]  (role=db2)
+          #1 · [0ch]  (role=db0)
+      #151 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #142 · [0ch]  (role=db6)
+        #24 · [0ch]  (role=db4)
+        #147 Lam [1ch]
+          #146 · [1ch]  (role=db4)
+            …
+        #1 · [0ch]  (role=db0)
+      #152 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+        #142 · [0ch]  (role=db6)
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #153 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+        #142 · [0ch]  (role=db6)
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+  #157 Clause [7ch]
+    #142 · [0ch]  (role=db6)
+    #126 · [0ch]  (role=db5)
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #27 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #11 · [0ch]  (role=db1)
+      #1 · [0ch]  (role=db0)
+    #156 cong₂ [13ch]  (q=Substrate.Foundation.Eq.cong₂ pay=('Substrate.Foundation.Eq.cong₂',))
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #23 Level [0ch]
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #24 · [0ch]  (role=db4)
+      #94 _⊕_ [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #144 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #143 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #142 · [0ch]  (role=db6)
+          #126 · [0ch]  (role=db5)
+          #10 · [0ch]  (role=db2)
+          #11 · [0ch]  (role=db1)
+      #148 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #142 · [0ch]  (role=db6)
+        #24 · [0ch]  (role=db4)
+        #147 Lam [1ch]
+          #146 · [1ch]  (role=db4)
+            …
+        #11 · [0ch]  (role=db1)
+      #150 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #149 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #142 · [0ch]  (role=db6)
+          #126 · [0ch]  (role=db5)
+          #10 · [0ch]  (role=db2)
+          #1 · [0ch]  (role=db0)
+      #151 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #142 · [0ch]  (role=db6)
+        #24 · [0ch]  (role=db4)
+        #147 Lam [1ch]
+          #146 · [1ch]  (role=db4)
+            …
+        #1 · [0ch]  (role=db0)
+      #152 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+        #142 · [0ch]  (role=db6)
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #11 · [0ch]  (role=db1)
+      #153 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+        #142 · [0ch]  (role=db6)
+        #126 · [0ch]  (role=db5)
+        #24 · [0ch]  (role=db4)
+        #21 · [0ch]  (role=db3)
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.pyEval   (Defn-kind: Function) ═══
+#52 Defn [2ch]
+  #49 Pi [2ch]
+    #17 Sort [0ch]
+    #48 Pi [2ch]
+      #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+      #47 Pi [2ch]
+        #41 Semiring [1ch]  (q=Substrate.Algebra.Semiring.Semiring pay=('Substrate.Algebra.Semiring.Semiring',))
+          #11 · [0ch]  (role=db1)
+        #46 Pi [2ch]
+          #43 Pi [2ch]
+            …
+          #45 Pi [2ch]
+            …
+  #51 Clause [3ch]
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #50 inside [2ch]  (q=Substrate.Algebra.Semiring.SPPF.inside pay=('Substrate.Algebra.Semiring.SPPF.inside',))
+      #11 · [0ch]  (role=db1)
+      #42 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.pyRecon   (Defn-kind: Function) ═══
+#105 Defn [2ch]
+  #101 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #100 Pi [2ch]
+      #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+        #1 · [0ch]  (role=db0)
+      #99 Pi [2ch]
+        #98 LehmerPath [1ch]  (q=Substrate.WitnessTower.LehmerPath.LehmerPath pay=('Substrate.WitnessTower.LehmerPath.LehmerPath',))
+          #1 · [0ch]  (role=db0)
+        #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+          #1 · [0ch]  (role=db0)
+  #104 Clause [4ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #103 act [3ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act pay=('Substrate.WitnessTower.Wedge.PyAstRig.act',))
+      #10 · [0ch]  (role=db2)
+      #102 decode [2ch]  (q=Substrate.WitnessTower.LehmerPath.decode pay=('Substrate.WitnessTower.LehmerPath.decode',))
+        #10 · [0ch]  (role=db2)
+        #1 · [0ch]  (role=db0)
+      #11 · [0ch]  (role=db1)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.pyRecon-spine-injective   (Defn-kind: Function) ═══
+#182 Defn [2ch]
+  #176 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #175 Pi [2ch]
+      #98 LehmerPath [1ch]  (q=Substrate.WitnessTower.LehmerPath.LehmerPath pay=('Substrate.WitnessTower.LehmerPath.LehmerPath',))
+        #1 · [0ch]  (role=db0)
+      #174 Pi [2ch]
+        #167 LehmerPath [1ch]  (q=Substrate.WitnessTower.LehmerPath.LehmerPath pay=('Substrate.WitnessTower.LehmerPath.LehmerPath',))
+          #11 · [0ch]  (role=db1)
+        #173 Pi [2ch]
+          #170 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+          #172 _≡_ [4ch]  (q=Substrate.Foundation.Eq._≡_ pay=('Substrate.Foundation.Eq._≡_',))
+            …
+  #181 Clause [5ch]
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #180 decode-injective [4ch]  (q=Substrate.WitnessTower.Wedge.OrientationFixedPoint.decode-injective pay=('Substrate.WitnessTower.Wedge.OrientationFixedPoint.decode-injective',))
+      #21 · [0ch]  (role=db3)
+      #10 · [0ch]  (role=db2)
+      #11 · [0ch]  (role=db1)
+      #179 act-faithful-spine [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.act-faithful-spine pay=('Substrate.WitnessTower.Wedge.PyAstRig.act-faithful-spine',))
+        #21 · [0ch]  (role=db3)
+        #177 decode [2ch]  (q=Substrate.WitnessTower.LehmerPath.decode pay=('Substrate.WitnessTower.LehmerPath.decode',))
+          #21 · [0ch]  (role=db3)
+          #10 · [0ch]  (role=db2)
+        #178 decode [2ch]  (q=Substrate.WitnessTower.LehmerPath.decode pay=('Substrate.WitnessTower.LehmerPath.decode',))
+          #21 · [0ch]  (role=db3)
+          #11 · [0ch]  (role=db1)
+        #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.spine   (Defn-kind: Function) ═══
+#193 Defn [3ch]
+  #183 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #44 Objpy [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.Objpy pay=('Substrate.WitnessTower.Wedge.PyAstRig.Objpy',))
+      #1 · [0ch]  (role=db0)
+  #185 Clause [2ch]
+    #184 zero [0ch]  (q=Substrate.Foundation.Nat.ℕ.zero pay=('Substrate.Foundation.Nat.ℕ.zero',))
+    #74 one [0ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.one pay=('Substrate.Algebra.Semiring.SPPF.SPPF.one',))
+  #192 Clause [2ch]
+    #2 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+      #1 · [0ch]  (role=db0)
+    #191 _⊕_ [2ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF._⊕_ pay=('Substrate.Algebra.Semiring.SPPF.SPPF._⊕_',))
+      #187 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+        #186 zero [1ch]  (q=Substrate.Foundation.Fin.Fin.zero pay=('Substrate.Foundation.Fin.Fin.zero',))
+          #1 · [0ch]  (role=db0)
+      #190 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+        #42 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #1 · [0ch]  (role=db0)
+        #3 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+          #2 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+            …
+        #188 suc [1ch]  (q=Substrate.Foundation.Fin.Fin.suc pay=('Substrate.Foundation.Fin.Fin.suc',))
+          #1 · [0ch]  (role=db0)
+        #189 spine [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.spine pay=('Substrate.WitnessTower.Wedge.PyAstRig.spine',))
+          #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.spine-sep   (Defn-kind: Function) ═══
+#312 Defn [4ch]
+  #264 Pi [2ch]
+    #0 ℕ [0ch]  (q=Substrate.Foundation.Nat.ℕ pay=('Substrate.Foundation.Nat.ℕ',))
+    #263 Pi [2ch]
+      #17 Sort [0ch]
+      #262 Pi [2ch]
+        #252 Pi [2ch]
+          #162 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #1 · [0ch]  (role=db0)
+        #261 Pi [2ch]
+          #253 Pi [2ch]
+            …
+          #260 Pi [2ch]
+            …
+  #281 Clause [7ch]
+    #265 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+      #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #267 zero [1ch]  (q=Substrate.Foundation.Fin.Fin.zero pay=('Substrate.Foundation.Fin.Fin.zero',))
+      #266 PDot [1ch]
+        #24 · [0ch]  (role=db4)
+    #280 gen-inj [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.gen-inj pay=('Substrate.WitnessTower.Wedge.PyAstRig.gen-inj',))
+      #21 · [0ch]  (role=db3)
+      #269 · [1ch]  (role=db2)
+        #268 zero [1ch]  (q=Substrate.Foundation.Fin.Fin.zero pay=('Substrate.Foundation.Fin.Fin.zero',))
+          #24 · [0ch]  (role=db4)
+      #270 · [1ch]  (role=db1)
+        #268 zero [1ch]  (q=Substrate.Foundation.Fin.Fin.zero pay=('Substrate.Foundation.Fin.Fin.zero',))
+          #24 · [0ch]  (role=db4)
+      #279 ⊕-injˡ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.⊕-injˡ pay=('Substrate.WitnessTower.Wedge.PyAstRig.⊕-injˡ',))
+        #21 · [0ch]  (role=db3)
+        #271 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+          #269 · [1ch]  (role=db2)
+            …
+        #276 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #272 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #21 · [0ch]  (role=db3)
+          #10 · [0ch]  (role=db2)
+          #275 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+        #277 gen [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF.gen pay=('Substrate.Algebra.Semiring.SPPF.SPPF.gen',))
+          #270 · [1ch]  (role=db1)
+            …
+        #278 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #272 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #21 · [0ch]  (role=db3)
+          #11 · [0ch]  (role=db1)
+          #275 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+        #1 · [0ch]  (role=db0)
+  #310 Clause [7ch]
+    #282 suc [1ch]  (q=Substrate.Foundation.Nat.ℕ.suc pay=('Substrate.Foundation.Nat.ℕ.suc',))
+      #126 · [0ch]  (role=db5)
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #284 suc [2ch]  (q=Substrate.Foundation.Fin.Fin.suc pay=('Substrate.Foundation.Fin.Fin.suc',))
+      #283 PDot [1ch]
+        #126 · [0ch]  (role=db5)
+      #1 · [0ch]  (role=db0)
+    #309 spine-sep [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.spine-sep pay=('Substrate.WitnessTower.Wedge.PyAstRig.spine-sep',))
+      #126 · [0ch]  (role=db5)
+      #24 · [0ch]  (role=db4)
+      #287 Lam [1ch]
+        #286 · [1ch]  (role=db4)
+          #285 suc [2ch]  (q=Substrate.Foundation.Fin.Fin.suc pay=('Substrate.Foundation.Fin.Fin.suc',))
+            …
+      #289 Lam [1ch]
+        #288 · [1ch]  (role=db3)
+          #285 suc [2ch]  (q=Substrate.Foundation.Fin.Fin.suc pay=('Substrate.Foundation.Fin.Fin.suc',))
+            …
+      #308 trans [7ch]  (q=Substrate.Foundation.Eq.trans pay=('Substrate.Foundation.Eq.trans',))
+        #23 Level [0ch]
+        #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+          #24 · [0ch]  (role=db4)
+        #292 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #290 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #24 · [0ch]  (role=db4)
+          #287 Lam [1ch]
+            …
+          #291 spine [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.spine pay=('Substrate.WitnessTower.Wedge.PyAstRig.spine',))
+            …
+        #296 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #293 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #24 · [0ch]  (role=db4)
+          #21 · [0ch]  (role=db3)
+          #295 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+        #297 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+          #290 Fin [1ch]  (q=Substrate.Foundation.Fin.Fin pay=('Substrate.Foundation.Fin.Fin',))
+            …
+          #24 · [0ch]  (role=db4)
+          #289 Lam [1ch]
+            …
+          #291 spine [1ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.spine pay=('Substrate.WitnessTower.Wedge.PyAstRig.spine',))
+            …
+        #299 sym [5ch]  (q=Substrate.Foundation.Eq.sym pay=('Substrate.Foundation.Eq.sym',))
+          #23 Level [0ch]
+          #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+          #296 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+          #292 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+          #298 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+            …
+        #307 trans [7ch]  (q=Substrate.Foundation.Eq.trans pay=('Substrate.Foundation.Eq.trans',))
+          #23 Level [0ch]
+          #25 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+          #296 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+          #300 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+          #297 mapSPPF [4ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF',))
+            …
+          #305 ⊕-injʳ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.⊕-injʳ pay=('Substrate.WitnessTower.Wedge.PyAstRig.⊕-injʳ',))
+            …
+          #306 mapSPPF-∘ [6ch]  (q=Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘ pay=('Substrate.WitnessTower.Wedge.PyAstRig.mapSPPF-∘',))
+            …
+      #1 · [0ch]  (role=db0)
+  #311 Clause [6ch]
+    #184 zero [0ch]  (q=Substrate.Foundation.Nat.ℕ.zero pay=('Substrate.Foundation.Nat.ℕ.zero',))
+    #24 · [0ch]  (role=db4)
+    #21 · [0ch]  (role=db3)
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.⊕-injʳ   (Defn-kind: Function) ═══
+#236 Defn [2ch]
+  #235 Pi [2ch]
+    #17 Sort [0ch]
+    #234 Pi [2ch]
+      #18 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #1 · [0ch]  (role=db0)
+      #233 Pi [2ch]
+        #19 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+          #11 · [0ch]  (role=db1)
+        #232 Pi [2ch]
+          #20 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+          #231 Pi [2ch]
+            …
+  #39 Clause [7ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #36 PDot [1ch]
+      #11 · [0ch]  (role=db1)
+    #37 PDot [1ch]
+      #1 · [0ch]  (role=db0)
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+
+═══ Substrate.WitnessTower.Wedge.PyAstRig.⊕-injˡ   (Defn-kind: Function) ═══
+#40 Defn [2ch]
+  #35 Pi [2ch]
+    #17 Sort [0ch]
+    #34 Pi [2ch]
+      #18 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+        #1 · [0ch]  (role=db0)
+      #33 Pi [2ch]
+        #19 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+          #11 · [0ch]  (role=db1)
+        #32 Pi [2ch]
+          #20 SPPF [1ch]  (q=Substrate.Algebra.Semiring.SPPF.SPPF pay=('Substrate.Algebra.Semiring.SPPF.SPPF',))
+            …
+          #31 Pi [2ch]
+            …
+  #39 Clause [7ch]
+    #10 · [0ch]  (role=db2)
+    #11 · [0ch]  (role=db1)
+    #1 · [0ch]  (role=db0)
+    #36 PDot [1ch]
+      #11 · [0ch]  (role=db1)
+    #37 PDot [1ch]
+      #1 · [0ch]  (role=db0)
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+    #38 refl [0ch]  (q=Substrate.Foundation.Eq._≡_.refl pay=('Substrate.Foundation.Eq._≡_.refl',))
+

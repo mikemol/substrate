@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc, trace T2-residue, block 5: FORWARD PATHS — STRICTIFIED (the seam arc, ordered by depend)
+
+- **Σ-SEAM-GLUE** [THE move — discharges M2 in Agda, closes the chirality question at gold standard] —
+  build SharedMiddle's OPEN goal (two distinct V₄s of S₄=V₄⋊S₃ intersect in EXACTLY the middle V₂ seam β) +
+  the GAUGE-INVARIANT centrality computation. Centrality = the seam-GLUING class: trivial/split → A₄×ℤ₂
+  (|Z|=2); twisted/monodromy → S₄ (|Z|=1); or generators don't close at 24 → both cat

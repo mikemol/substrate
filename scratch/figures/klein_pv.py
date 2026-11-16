@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Klein quartic {7,3} hyperbolic tower — PyVista (real self-shadowing).
 
 Same tiling (_klein) and LiftMap (_lift3d.disk_height / hyperboloid) as

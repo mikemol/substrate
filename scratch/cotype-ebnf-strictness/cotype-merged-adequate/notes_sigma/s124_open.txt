@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc, block 20: Δ-Π-construct [the constructor mode; DONE for the core case])
+
+- **OPEN — substitution mode (the G8 blind spot):** withholding a piece is one mode; SUBSTITUTING a
+  piece (swap Fraction→ℚ-Wedge at a carrier, specialize a param) is the transformer mode, still
+  unexercised. Pairs with Δ-Π-cuda's Move-carrier (project a kernel in a different memory-space
+  carrier). Owner AI-Πρ. THE NEXT increment.

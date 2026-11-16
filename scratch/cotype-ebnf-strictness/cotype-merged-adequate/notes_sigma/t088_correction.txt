@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc, trace T1-forest, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **CORRECTION (USER applied the law to my DEFERENCE + to the either/or): M2's "A₄×ℤ₂ not S₄" is
+    PROSE-ASSERTED, not Agda-proven; and the either/or dissolves to ONE undischarged bit.** USER: "not even
+    the repo does it; if it says something in prose but doesn't prove it in code, it's suspect." CHECKED:
+    K-M40-aggregator (claims.md) tags M2 `[theorem]` but its EVIDENCE is `verify_m40_grou

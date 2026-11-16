@@ -1,0 +1,1 @@
+* TORSION (idempotent-rotational species): det≠0, eigenvalues on roots of unity (|λ|=1),

@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, trace T3-navigator, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+### Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_picircuit is now a DERIVATION OF the SPPF)
+`jea/jea_picircuit.py` rebuilt as `SPPFCircuit`: the network IS the interner (nodes +
+children-edges + fanin = a conductance DAG already). Conductances are READ OFF the existing
+edges (g_gen = (fanin+units)/reach, etc.) -- not recomputed into a parallel graph (that was
+the old `GradingCircuit`, a

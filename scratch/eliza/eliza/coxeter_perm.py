@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.CoxeterPerm — adjacent-transposition Coxeter words for S_{2ⁿ}.
 
 CC-arc runtime per [[octonion-loop-expressivity-limit]]: the F₂ⁿ × F₂

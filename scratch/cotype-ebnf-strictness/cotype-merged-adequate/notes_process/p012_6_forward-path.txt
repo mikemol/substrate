@@ -1,0 +1,1 @@
+- **LESSON (sharpened):** a fixpoint proves faithfulness ONLY on the value-distinctions the test

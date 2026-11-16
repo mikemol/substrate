@@ -1,0 +1,1 @@
+- **G7-3 (no grounding-descent):** reactive-charting has a DIRECTIONAL bias — AI-Π0 follows lifts UP (abstraction) readily but does not originate the DESCENT to the concrete runnable instrument. The x

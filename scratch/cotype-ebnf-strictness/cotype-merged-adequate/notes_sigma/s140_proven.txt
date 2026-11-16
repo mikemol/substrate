@@ -1,0 +1,9 @@
+[PROVEN] (Σ-arc, block 29: Δ-Π-extrude [the API; DONE for the core case] — emission = e)
+
+- **The .agdai readInterface shim (AI-Q handoff) is now CONFIRMED the shared critical path:** the
+  other track's tool-retirement gate AND our Δ-Π-oneforest verification gate BOTH block on it.
+
+## ONE-LINE REGROUNDING (if you read nothing else)
+
+Built a Python similarity tool (`jea/jea_pysim.py`) as the backward-image of the Agda
+similarity script, over a Python Wedge/Trace carrier (`jea/jea_pyalg

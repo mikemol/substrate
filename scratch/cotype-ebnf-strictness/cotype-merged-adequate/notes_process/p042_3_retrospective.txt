@@ -1,0 +1,1 @@
+- **G8 HANDOFF:** AI-Π0 verified AI-Q's MATH (two vectors distinct, SymPy-exact) but NOT AI-Q's Agda MECHANIZATION (hole-free by inspection, not checker-run — no agda in env). Math verified, mechaniza

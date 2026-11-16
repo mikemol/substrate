@@ -1,0 +1,7 @@
+[OBLIGATION] (Σ-arc, trace T1-forest, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **GOVERNING FORM for proof obligations (USER): a proof/obligation MUST be a TRIPLE with a mandatory
+    OBSERVABLE witness slot — "As-a/I-must/so-that" ≅ Gherkin "Given/When/Then" ≅ semantic "subject/
+    predicate/object". Prose is the lossy serialization that lets the witness slot go EMPTY.**
+  - **The whole thread's failures share ONE root: prose let the witness slot be elided.** My D₈ spec
+ 

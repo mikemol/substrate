@@ -1,0 +1,1 @@
+- **BOUNDARY (don't over-claim the unification):** VERIFIED = the input-position structure is a genuine

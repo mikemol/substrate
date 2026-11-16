@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, trace T1-forest, block 2: Δ-Π-dependent [110→111] — DONE (this turn; the GRAMMAR layer)
+
+### Δ-Π-dependent [110→111] — DONE (this turn; the GRAMMAR layer)
+Dependent typeholes + recurse-into-holes, both in `jea_pysim.py`. Telescope read from SPPF
+diamonds (NOT a post-pass). True arity = consolidation spec. See FREEZE. This populated a
+new 111 (triadic-full): it touches goal (truer grouping), shadows (the telescope readout),
+AND artefact (the verdict now emits the consolidation spec). *

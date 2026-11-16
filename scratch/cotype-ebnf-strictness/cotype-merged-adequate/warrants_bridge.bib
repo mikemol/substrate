@@ -1,0 +1,25 @@
+@misc{bridge_thesis,
+  section = {frame-mismatch},
+  claim = {The two arcs of the cotype are one object at two scales: the (at)Sigma-metalanguage substrate (parse/quotient/exp, intern-the-coalgebra, SPPF-as-torsor-bundle) is the abstraction that the Frobenius object T = C.P.Cpinv instantiates concretely. Structure-as-frame-mismatch is the single common law, witnessed by three cross-region identities.},
+  check = {cmd:python3 checks/bridge_frame_mismatch.py}
+}
+@misc{bridge_retraction,
+  section = {frame-mismatch}, from = {bridge_thesis}, join = {. First, },
+  claim = {Retraction identity: the (at)Sigma-arc retraction-check unparse-after-parse = id-up-to-normalization (parse=log, edit, unparse=exp) IS the C.P.Cpinv frame-projection; structure lives in how the section-retraction fails to be the identity. The (at)Sigma anchor occurs only in the metalanguage region, Cpinv only in the Frobenius region.},
+  check = {cmd:python3 checks/bridge_retraction_identity.py}
+}
+@misc{bridge_gauge,
+  section = {frame-mismatch}, from = {bridge_retraction}, join = {. Second, },
+  claim = {Gauge identity: the (at)Sigma-arc retention-of-steps = gauge-preservation (gcd invariant, intermediate steps = gauge) IS the Frobenius cyclotomic Phi_p multiplicity width; the arithmetic lives in the gauge freedom of the non-equivariant frame.},
+  check = {cmd:python3 checks/bridge_gauge_identity.py}
+}
+@misc{bridge_projection,
+  section = {frame-mismatch}, from = {bridge_gauge}, join = {. Third, },
+  claim = {Projection identity: the (at)Sigma-arc principle non-injectivity is a property of the projection to value, never of the retained chain IS the Frobenius unsigned-permutation non-chain-map mismatch; both locate the obstruction in the projection, not the object.},
+  check = {cmd:python3 checks/bridge_projection_identity.py}
+}
+@misc{bridge_absent_sphere,
+  section = {frame-mismatch}, from = {bridge_projection}, join = {. Finally, an ESCAPE recorded as a claim: },
+  claim = {The commuting-sphere / Cayley-Dickson cocycle campaign, discharged to --safe Agda completion by Delta0 over multiple sessions, is nearly absent from the cotype (a single mention in 5603 lines) - a completed mechanized result the organization dropped. Recorded here so it is not lost.},
+  check = {file:notes_sigma/absent_commuting_sphere.txt}
+}

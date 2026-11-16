@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """{7,3} hyperbolic tiling geometry — shared by the 2D and 3D Klein figures.
 
 Generates the order-3 heptagonal tiling of the Poincaré disk by reflecting a

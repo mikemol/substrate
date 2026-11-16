@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc, trace T2-residue, block 55: New shadow registrations (axis-tagged))
+
+### New shadow registrations (axis-tagged)
+| id | label | sig | move | grade |
+|----|-------|-----|------|-------|
+| **P58** | `THREE-HANDOFFS-ONE-GENUS` | 011 | AI-Q's SEAM_PARTITION §3: the three open 111-candidate handoffs (unparser / trace-intern / sympy) are ONE either/or recursively = "is the residue retained?" = the Ⓖ★ idempotent-vs-invertible genus. retain⇒retraction/identity/group-action;

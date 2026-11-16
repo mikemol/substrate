@@ -1,0 +1,1 @@
+the canonical-form flag fired a 3rd time, BEFORE a false lemma reached Δ0 -------------------------------------------------------------------------------- GOAL was: prove the off-circle factor of the order-p degeneracy is Φ_p (mechanize P-INV → theorem). Applied the canonical-form flag FIRST (does t

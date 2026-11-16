@@ -1,0 +1,1 @@
+- **HAND OFF: jea_grammar_fixpoint.py + jea_pi_cotype.md** — the arc's deliverable; recognition-as-

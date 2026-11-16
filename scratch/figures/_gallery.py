@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Shared plumbing for the substrate figure gallery.
 
 Every figure script imports this module, calls `set_style()`, builds a

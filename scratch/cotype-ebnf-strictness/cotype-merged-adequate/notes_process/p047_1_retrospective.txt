@@ -1,0 +1,1 @@
+- **G7-b (unrun-cathedral, witness-latency ESCALATED 3rd time):** the arc stacked ~10 theoretical grades on ONE run. A theoretical arc must RUN its checkable slices AS IT CLIMBS, not bank them all. Me

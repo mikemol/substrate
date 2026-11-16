@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Flat 2D test of the glyph geometry — verify the Euclidean construction on its
 own (triangle ABC, apex C, tail CD produced through the true vertex A, filled-disc
 pips at A/B) BEFORE mapping onto the 3D capsule. Renders TRUE / FALSE / UNSET with

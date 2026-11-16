@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 hadamard_basis.py — M39: the architecture as symmetry-governed Hadamard basis mixing.
 

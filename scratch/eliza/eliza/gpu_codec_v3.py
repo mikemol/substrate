@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV3 — V2 + tensor speculation + stack-machine toggles.
 
 Q3+Q4 of the Q-arc: wire the M-arc speculation primitives (StackTensor,

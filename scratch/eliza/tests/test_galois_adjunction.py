@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_galois_adjunction.py — chain-level peer-view measurement.
 
 gt and the chain chooser are Galois-conjugate peer views:

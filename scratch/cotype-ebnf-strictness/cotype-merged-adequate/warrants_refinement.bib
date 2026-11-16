@@ -1,0 +1,15 @@
+@misc{refine_thesis,
+  section = {refinement},
+  claim = {All readings are valid; we retain all residues. The keyword spine (sppf-grammar, kirchhoff, bezout-gauge, metalanguage, ...) and the T1/T2/T3 trace-quotient are not competing organizations but two projections of the same Sigma-arc content, related by a refinement map: the keyword sections are the finer partition, T1/T2/T3 the coarser, and routing is the surjection between them. Neither is THE partition; collapsing to one destroys the residue the other carries.},
+  check = {cmd:python3 checks/refinement_map.py}
+}
+@misc{refine_crossings,
+  section = {refinement}, from = {refine_thesis}, join = {. The structure is where they cross: },
+  claim = {The refinement is NOT a clean surjection - 7 of 8 keyword topics span more than one trace-class (only bezout-gauge is near-pure T2, 19 of 20). By the open-family law (real structure lives where families cross), each impurity is a finding: sppf-grammar spans all three traces (T1 36, T2 13, T3 10), so the SPPF forest is precisely where all three fuse - which is WHY JEA interns through it; torsor-witness spans T3/T2/T1, the frame-choice ambiguity shared by every trace.},
+  check = {file:notes_kw/refinement_crossings.txt}
+}
+@misc{refine_residue_law,
+  section = {refinement}, from = {refine_crossings}, join = {. Methodologically, },
+  claim = {The quotient-correction earlier was itself an over-correction: shown the trace reading, the writer overwrote the keyword reading and destroyed a residue. The cotype's own law - a space of lowerings acted on by a quotient-group, pick-an-origin-but-do-not-forget-you-picked - applies to the ORGANIZATION recursively. Both spines are now retained; the refinement map is the change-of-frame between them.},
+  check = {file:notes_kw/refinement_residue_law.txt}
+}

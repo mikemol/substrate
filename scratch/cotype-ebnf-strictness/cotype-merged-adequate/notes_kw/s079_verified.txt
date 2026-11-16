@@ -1,0 +1,7 @@
+[VERIFIED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 8)
+
+- **USER: Given/When/Then ≅ the jea SPPF structure — VERIFIED against the code; the substrate ALREADY has
+    the witness-mandatory proof-form.** Read jea_grammar_fixpoint.py `item(lhs,rhs,dot,origin,end,kids)`:
+    `IR(kind="it", op=f"{lhs}|{rhs}|{dot}", role=f"{origin}:{end}", children=kids)`. An Earley item IS a
+    Given/When/Then, slotted exactly:
+  - **Given** = the dot position + matched pr

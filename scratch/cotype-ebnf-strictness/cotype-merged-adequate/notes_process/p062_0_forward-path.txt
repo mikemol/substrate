@@ -1,0 +1,1 @@
+- **trace-intern handoff** → CLOSE BY SPECIES-CLASSIFICATION (not build): is the trace-step idempotent/absorptive (→ projection, suspended/grows) or residue-preserving/invertible (→ group action, fini

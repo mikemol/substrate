@@ -1,0 +1,1 @@
+- **Σ-SPECTRAL-BICOMPLEX** [depends on Σ-TORSOR-VERIFY] — the two gradings DEPTH × CARRIER-QUOTIENT as a

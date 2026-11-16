@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 verify_cell_inhabitation.py — strict audit: does each implemented operation
 actually inhabit its claimed V₄ cell?

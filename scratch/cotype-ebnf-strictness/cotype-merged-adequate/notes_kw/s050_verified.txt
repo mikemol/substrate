@@ -1,0 +1,7 @@
+[VERIFIED] (Σ-arc KEYWORD reading, topic interning, block 3)
+
+- **The gate FAILs HERE (jea_cuda, jea_agdai) are a PER-ENV SKIP-PREDICATE GAP, NOT regressions.**
+  VERIFIED: libclang IS present here and the cuda fixpoint PASSES on the literal-subscript kernel
+  (28→28). The gate FAILs because it asserts a fixpoint on a kernel this sandbox can't round-trip
+  (threadIdx.x drops without CUDA headers — the env artifact the _CUDA_PRELUDE addresses, but the gate's
+

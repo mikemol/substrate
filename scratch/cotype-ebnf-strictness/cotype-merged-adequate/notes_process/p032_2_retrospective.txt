@@ -1,0 +1,1 @@
+- **G7-c (checker discipline):** SymPy strictification comparisons must use exact rationals (`sp.Rational(a,b)` not int `a/b`) + a numeric spot-check, so canonicalization artifacts can't masquerade as

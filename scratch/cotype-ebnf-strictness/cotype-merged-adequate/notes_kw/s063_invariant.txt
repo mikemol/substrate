@@ -1,0 +1,6 @@
+[INVARIANT] (Σ-arc KEYWORD reading, topic torsor-witness, block 4)
+
+- **G6 (the either/or dissolves to a BUNDLE — USER: "sub-torsor over ℤ₂").** S₄ vs A₄×ℤ₂ is not two rival
+  groups — it's ONE structure = a ℤ₂-sub-torsor BASE (the sign convention even↔odd = GAUGE, no fact;
+  signed by Chirality↔F₂ being a BIJECTION not a pointed iso — the repo CORRECTLY declining to fix the
+  gauge) with an INVARIANT FIBER (centrality = a FACT, survives the even↔odd flip, the rea

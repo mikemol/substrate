@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.WordMask — scale-4 RM(2, 4) XOR-mask sweep for the EE-arc.
 
 DD-arc operates at byte-level (scale 3): masks are bytes,

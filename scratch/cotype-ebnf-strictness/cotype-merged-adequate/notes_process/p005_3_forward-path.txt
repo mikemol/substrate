@@ -1,0 +1,1 @@
+- (SUPERSEDED/folded: Σ-SPECTRAL-BICOMPLEX → it's LHS of the EXISTING extension, built by Σ-SEAM-GLUE +

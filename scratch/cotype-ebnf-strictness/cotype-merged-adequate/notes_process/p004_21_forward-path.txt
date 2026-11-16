@@ -1,0 +1,1 @@
+- **chart[k] (position index) = the TRACE's descent-grading**, NOT an external coordinate. Core says

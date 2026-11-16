@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.PrimeChain — HH-arc three-crumb prime-sampled chain primitive.
 
 For a bit stream, at each step position k, sample THREE 2-bit crumbs

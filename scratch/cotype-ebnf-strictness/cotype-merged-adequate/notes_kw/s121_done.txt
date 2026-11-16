@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic metalanguage, block 18)
+
+### Δ-Π-cuda [the build; DONE — fixpoint passes; record] — the projection arc closes
+Built jea/jea_cuda.py; full status in PROBE STATE + FREEZE. Kept here for the derivation:
+The transformer ENGINE is built+verified (Δ-Π-substitute). CUDA is now purely: (a) FRONT-END —
+libclang cursor-visitor lowering CUDA-in-Python-strings → IR, with memory-space as Move-carrier
+STRUCTURE (Space nodes, Move(src,d

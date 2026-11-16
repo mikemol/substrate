@@ -1,0 +1,1 @@
+- **Σ-FOREST-MATCH** — harden the gate's matching (above). Small, direct, makes the just-built gate

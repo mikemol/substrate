@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GpuCodecV4 — V2 + lambda-VM control opcodes in the alphabet.
 
 R-arc: the codec's existing machinery is recognized as a lambda VM.

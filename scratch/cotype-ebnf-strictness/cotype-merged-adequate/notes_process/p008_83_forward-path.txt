@@ -1,0 +1,1 @@
+- **Σ-SCHEME-DECIDE — RUN (this pass): the strong novelty claim is FALSE; verdict = real-but-not-novel.**

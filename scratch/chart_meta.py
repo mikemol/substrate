@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 chart_meta.py — Chart extended with the meta-protocol and the 2 missing
 fundamental patterns (β-even and γ-even).

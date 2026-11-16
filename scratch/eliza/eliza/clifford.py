@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Clifford — Cl(ℝⁿ, q=+1) graded algebra for the DD-arc.
 
 Per [[expose-generator-not-orbit]]: AA/BB/CC-arc rotation layers are

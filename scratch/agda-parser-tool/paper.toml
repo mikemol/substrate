@@ -1,0 +1,17 @@
+[paper]
+adequacy = true
+title = "Agda parser-based lint / format tool — design"
+subtitle = "One authoritative source-layer front-end; policies are CST absence-predicates; the plan is a gated claim-DAG."
+warrants = ["warrants.bib"]
+rubric = "rubric.tsv"
+out = "agda-parser-tool-plan.md"
+numbered = true
+references = false
+
+# repo:<key> runs a discriminating grep against the substrate tree (a fact about
+# the CURRENT code, gradeable now). Design-intent and Agda-CST-structure claims
+# instead carry `premise:<label>` — surfaced honestly as not-machine-checked
+# (project.py renders them "Classical premise (not machine-checked)"). Promoting
+# a premise to a repo:/agdalib: check is exactly the ◆T1 next step.
+[checks.repo]
+cmd = "bash checks/repo.sh {target}"

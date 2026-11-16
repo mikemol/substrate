@@ -1,0 +1,6 @@
+[DONE] (Σ-arc, block 0: (preamble))
+
+- **Recurse-into-holes [DONE, required by dependent typeholes]** — the typeholer now DESCENDS
+  into divergent regions (when heads differ, typehole the fillers' children; terminal hole only
+  when fillers share nothing = EEATrace termination). This completes the recursive typeholer
+  (divergence was previously terminal) and is what makes multi-hole dependencies observable.

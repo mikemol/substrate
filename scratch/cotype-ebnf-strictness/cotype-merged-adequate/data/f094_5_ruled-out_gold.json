@@ -1,0 +1,38 @@
+{
+ "11": {
+  "cross_dim": 110,
+  "intersect": 90,
+  "intersect_is_pm1pm2": true,
+  "intersect_ne_target": true,
+  "raw": 110,
+  "raw_ok": true,
+  "target": 50
+ },
+ "3": {
+  "cross_dim": 6,
+  "intersect": 2,
+  "intersect_is_pm1pm2": true,
+  "intersect_ne_target": true,
+  "raw": 6,
+  "raw_ok": true,
+  "target": 2
+ },
+ "5": {
+  "cross_dim": 20,
+  "intersect": 12,
+  "intersect_is_pm1pm2": true,
+  "intersect_ne_target": true,
+  "raw": 20,
+  "raw_ok": true,
+  "target": 8
+ },
+ "7": {
+  "cross_dim": 42,
+  "intersect": 30,
+  "intersect_is_pm1pm2": true,
+  "intersect_ne_target": true,
+  "raw": 42,
+  "raw_ok": true,
+  "target": 18
+ }
+}

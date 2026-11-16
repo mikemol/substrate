@@ -1,0 +1,2 @@
+P5 Q-WITNESS-BASE [001→redirect] does Core.witnessing accept the divergent-pair/cycle as base, or need a join? **PARTLY ANSWERED** — WedgeStep `cone-split` (every rung IS the wedge) leans "literal, no join." Verify vs exact phrasing.
+[axis-signature: 001→redirect | owner-field(raw): AI-Πρ shadow / AI-Q]

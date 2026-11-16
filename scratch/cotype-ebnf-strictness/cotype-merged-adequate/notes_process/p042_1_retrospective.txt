@@ -1,0 +1,1 @@
+- **G7-b (AI-Q = decorrelation oracle, banked):** = P27. Relay-to-AI-Q is part of verification. AI-Π0's iterated-subtraction (simulated independence) approximates but cannot guarantee what AI-Q (real 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Spectral — the Galois pair between the V₄ ⋊ S₃ algebraic basis
 and the Laplacian-eigenvector spectral basis.
 

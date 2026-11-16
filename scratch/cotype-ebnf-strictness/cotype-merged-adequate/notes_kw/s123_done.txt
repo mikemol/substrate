@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic metalanguage, block 20)
+
+### Δ-Π-construct [the constructor mode; DONE for the core case] — was NEXT, now a record
+subsumes Δ-Π-skeleton-emit; full status in PROBE STATE + FREEZE. Kept here for the derivation:
+**DONE for the core case (this turn).** `construct_skeleton(corpus, comp)` in jea_piproject.py:
+typehole the cluster → withhold hole fillers → project unit[0] with holes promoted to named
+params → COMPILABLE paramet

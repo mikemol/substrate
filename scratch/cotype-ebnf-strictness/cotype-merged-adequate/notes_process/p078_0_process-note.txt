@@ -1,0 +1,1 @@
+* the off-circle non-cyclotomic factors ("deformation"/"interference") = Frobenius eigenvalues of

@@ -1,0 +1,6 @@
+[WITNESSED] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **STATE:** path/homology reframe = first rung (path→H₁) WITNESSED (jea_trace_homology.py); continuous with
+    the arc's H¹ thread (torsor=sheaf=delooping=spectral=now trace-homology). Open: real complex (d²=0),
+    cohomological dual, ambiguity-as-H¹, grain-discovery. Connects to the COBOL-lift target: H₁-at-grain
+    replaces fixpoint-closure as the lift criterion, with ambiguity classified (n

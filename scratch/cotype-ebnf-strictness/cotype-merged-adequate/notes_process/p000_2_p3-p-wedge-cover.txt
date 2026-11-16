@@ -1,0 +1,2 @@
+P3 P-WEDGE-COVER [010 pure-SA] **PARTIAL** (jea_wedge_cover_probe.py): sub-claim (b) WITNESSED — degree DISCRIMINATES: genuine ((a+b)+c vs a+(b+c), same span) → distinct nodes, degree=4>0, class survives (cover-not-fill); spurious (same derivation re-interned) → same node, degree=0, collapses. Contr
+[axis-signature: 010 | owner-field(raw): ✓(b) AI-Πρ / (a) open]

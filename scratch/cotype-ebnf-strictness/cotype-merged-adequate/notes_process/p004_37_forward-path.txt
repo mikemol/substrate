@@ -1,0 +1,1 @@
+- **G6 (SHEAF GLUING unifies all threads — USER advice 1+2).** INTERNING = sheaf gluing (hash-cons forces

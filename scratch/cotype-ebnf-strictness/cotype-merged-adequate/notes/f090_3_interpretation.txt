@@ -1,0 +1,2 @@
+INTERPRETATION: a PAIR of p-cycles contributes φ(p)/2 to Φ_p multiplicity — HALF the cyclotomic field's degree per pair. The crossing between two p-cycles realizes half of ℚ(ζ_p). (Ties to the inversion thesis: inverse-structure = ℚ(ζ_p), width φ(p); a single crossing gives half-width.)
+[supporting witness: probe_inv_cheap.py — shared block evidence]

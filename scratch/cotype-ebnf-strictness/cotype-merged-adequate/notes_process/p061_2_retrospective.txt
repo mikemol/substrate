@@ -1,0 +1,1 @@
+- **G7-action (find-common-structure-INWARD):** AI-Π0 applies the recursive law LIVE (in-conversation either/ors) and OUTWARD (falsifier on others' docs) but NOT inward on its own accumulated backlog 

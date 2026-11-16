@@ -1,0 +1,44 @@
+# ⟡bazel-intake — what substrate takes, gives and fixes from the four-repo bazel corpus.
+#
+# ⚑ WHY THIS IS PROJECTED RATHER THAN WRITTEN. The hand-written original grew by append across a
+# dozen turns and ended as 64KB in 38 sections, of which the synthesis was 4KB. Its own structural
+# reader then found two defects in it: a section heading swallowed by an edit (`mdstruct --headers`
+# listed §2, §3, §4 and no §1) and the work list nested INSIDE the span labelled "evidence, not
+# plan". Both are unrepresentable here: headings come from `rubric.tsv` rows, and order is the
+# rubric's row order.
+#
+# ⚑⚑ AND THE CORPUS'S OWN HEADLINE FINDING IS THE REASON. linux-sources §3.2: audit-as-warrants
+# beats audit-as-prose, because a claim carrying a source-anchored check "goes red the moment a
+# claim's needle is edited out of its source — prose cannot outlive its sources." Three of the four
+# peer syntheses are ungated prose and two convict themselves of it in their closing lines. A plan
+# that names that finding while remaining ungated prose would be the same defect one level up.
+#
+# out = bazel-intake-plan.md
+[paper]
+adequacy = true
+title = "⟡bazel-intake: what substrate takes, gives and fixes from the peer corpus"
+subtitle = "Four repos, eleven artifacts, three comparison syntheses. The migration question was not the interesting one: all four already share a verdict engine by ADOPTION, so its recurrence corroborates nothing. What the corpus establishes is methodological — a claim must carry a check that reddens when its source moves."
+warrants = ["warrants.bib"]
+rubric = "rubric.tsv"
+out = "bazel-intake-plan.md"
+numbered = false
+references = false
+
+# traces:<path>#<needle> — the claim is TRACEABLE-TO-SOURCE: the needle (a plain string, no regex)
+# appears in the named file. Adopted from cassian's gate-architecture project, which is the pattern
+# this whole plan recommends. cwd = this project dir, so paths reach out with ../../.
+#
+# ⚑ A `traces:` PROVES THE CLAIM IS RECORDED WHERE CITED, NOT THAT A MECHANISM IS GLOBALLY TRUE.
+# That distinction is cassian's and it is load-bearing: a peer corpus claim traces to the peer's
+# own document, which witnesses what they SAID, never that they are right.
+[checks.traces]
+cmd = "python3 checks/traces.py {target}"
+
+# premise:<label> — honestly NOT machine-checked, rendered as such. Adopted from substrate's own
+# agda-parser-tool project rather than invented.
+#
+# ⚑⚑ THIS IS WHAT LETS THE RETRACTIONS SURVIVE PROJECTION. The open question when this plan was
+# hand-written was whether a self-correction is a claim with a section or genuinely prose. It is a
+# `premise`: "I inferred X and the operator refuted it" is a fact about the author's reasoning with
+# no needle in any source, and forcing a `traces:` onto it would be a fake witness — the exact
+# overclaim the corpus's honesty discipline forbids.

@@ -1,0 +1,2 @@
+P4 P-BEZOUT-GRADE [101 guard-cleared-GS] **WITNESSED (integer carrier)** (jea_bezout_probe.py): EEA(240,46), retained chain, gcd=2; the Bézout coeff non-uniqueness IS exactly the (b/g,−a/g)=(23,−120) shift lattice; the shift generates the WHOLE fiber (every valid (s,t) on the lattice), gcd INVARIANT
+[axis-signature: 101 | owner-field(raw): ✓(arith) AI-Πρ / carrier-wire open]

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Package-level import graph of the Substrate Agda tree.
 
 Parses `open import Substrate.…` / `import Substrate.…` lines across

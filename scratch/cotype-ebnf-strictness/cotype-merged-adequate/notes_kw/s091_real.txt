@@ -1,0 +1,6 @@
+[REAL] (Σ-arc KEYWORD reading, topic metalanguage, block 8)
+
+- **Σ-SCHEME-DECIDE REOPENED at altitude (USER: HoTT reading + spectral analysis) — the DIAMOND is real;
+    spectral is PARTIALLY earned; two encoding errors flagged.** USER reframed: "trace-identity ≠ scheme-
+    identity" isn't a dead end, it's a DIAMOND to characterize precisely (does it close?), and the family
+    of identities is filtered → spectral analysis applies. RESULTS (jea_granularity

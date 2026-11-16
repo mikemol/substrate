@@ -1,0 +1,7 @@
+[OBLIGATION] (Σ-arc, trace T2-residue, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **G6 (spine sharpenings, two this pass) — Σ-OBLIGATION got two corrections:**
+  (a) the readout is the BACKWARD read of the same retained chain (EEA back-substitution) — one fold,
+  two reads (forward composes, backward reads the witness out); (b) "RETAIN all intermediates" is a
+  property of the FOREST (interned, persistent), NOT the readout (which must be O(1)-state streaming) —
+  the forest k

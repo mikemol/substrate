@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Recorder — SQLite-backed persistence.
 
 Per the Agda contract: opaque Database, monotone counter increments,

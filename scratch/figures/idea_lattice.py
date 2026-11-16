@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The substrate idea lattice as a layered cocycle tower.
 
 Parses catalog/idea_lattice.md — its nine structural-dependence levels and the

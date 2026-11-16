@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.AdaptiveOpcodeCodec — opcode-VM codec with adaptive opcode growth.
 
 Per the user's design: speculative-commit IS exploding-bitmap. The

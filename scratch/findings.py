@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 Grothendieck-construction consolidation of all structural-analysis
 scripts.
@@ -34,6 +36,9 @@ from typing import FrozenSet, Tuple, Any
 
 import numpy as np
 import networkx as nx
+import os as _o, sys as _s
+_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch"))
+import agda_lex as _lex   # THE header/comment authority; never re-derive
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
@@ -57,15 +62,14 @@ class Finding:
 
 def parse_module_path(path):
     text = path.read_text()
-    m = re.search(r"^module\s+([A-Za-z0-9_.\-]+)\s+where", text, re.M)
-    if not m:
+    name = _lex.module_name_of(text)
+    if not name:
         return None, ""
-    name = m.group(1)
     return name, re.sub(r"\{-.*?-\}", "", re.sub(r"--.*$", "", text, flags=re.M), flags=re.S)
 
 
 def module_imports(text):
-    return [imp for imp in re.findall(r"^(?:open\s+)?import\s+([A-Za-z0-9_.\-]+)", text, re.M)
+    return [imp for imp in re.findall(r"^(?:open\s+)?import\s+([\w.'-]+)", text, re.M)
             if imp.startswith("Substrate.")]
 
 
@@ -2326,4 +2330,41 @@ def main():
 
 
 if __name__ == "__main__":
+    # ⚑⚑⚑ ⟡findings-hang — THIS TOOL SHARES A NAME WITH `.claude/agents/findings.py`, WHICH IS
+    # THE WITNESS ROSTER EVERY AGENT IS INSTRUCTED TO CALL. Three separate agents reached this
+    # file by that name on 2026-08-24, ran it bare or with `--help` expecting a mode list, and
+    # got a full-corpus structural sweep at ~90% of a core. One created a runaway and killed it.
+    #
+    # ⚑ THE HANG IS NOT A BUG — IT IS `main()` DOING EXACTLY WHAT IT SAYS. It rglobs ~3,600
+    # `.agda` modules, parses each, then runs simplex / triple / def-pair / orbit / coset
+    # analyses over them. Minutes of CPU, by design, with no output until the end.
+    #
+    # ⚑⚑ WHAT MADE IT A TRAP IS THE ARGV SILENCE, AND THAT IS `check_argv`'S FOUNDING DEFECT IN
+    # ITS PUREST FORM. `sys.argv` appears ZERO times in this file: there is no dispatch, no
+    # usage, no `--help`. `ratchet.check_argv`'s docstring records that a typo'd `--queit`
+    # "silently degrades the gate to verbose-but-passing"; here EVERY flag — `--help`,
+    # `--register`, a typo, anything — degrades to a multi-thousand-module sweep. A reader
+    # asking "what does this do?" is answered by it doing it.
+    #
+    # So the sweep now requires being ASKED for. A bare run states what it is, what it costs,
+    # and — because the name collision is the actual hazard — WHICH FILE THE READER LIKELY MEANT.
+    import sys as _sys
+    if "--sweep" not in _sys.argv[1:]:
+        print(__doc__.strip().splitlines()[0], file=_sys.stderr)
+        print(
+            "\n⚑ scratch/findings.py is NOT the findings ledger. You probably want:\n"
+            "    python3 .claude/agents/findings.py --list          # the oracle witness roster\n"
+            "    python3 .claude/agents/findings.py --register …    # file a finding\n"
+            "\nThis file is the Grothendieck consolidation of the structural-analysis\n"
+            "detectors over the Agda tree. Its only mode is a FULL-CORPUS SWEEP:\n"
+            "    python3 scratch/findings.py --sweep\n"
+            "  ⚑ ~3,600 modules parsed, then simplex/triple/def-pair/orbit analyses.\n"
+            "     MINUTES of CPU at ~100% of a core, with no output until it finishes.\n"
+            "     Route it through `scripts/membudget run` and watch it with\n"
+            "     `scratch/procstruct.py --cost`.\n"
+            "\n⚑ Refusing rather than sweeping: this file had NO argv handling at all, so\n"
+            "  every flag was silently ignored and a reader asking what it does was answered\n"
+            "  by it doing it. Three agents hit that on 2026-08-24.",
+            file=_sys.stderr)
+        _sys.exit(2)
     main()

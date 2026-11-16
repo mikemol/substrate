@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.TensorSpeculation — stack-machine state + batched speculation as tensors.
 
 M6+M7+M8 of the homoiconic matricisation arc.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 architecture_state_machine.py — formal state machine over the 28-cell
 signature matrix, with V₄ and Walsh-Hadamard coherence formulae.

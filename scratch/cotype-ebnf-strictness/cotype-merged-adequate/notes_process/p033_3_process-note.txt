@@ -1,0 +1,1 @@
+- Figures (`scratch/figures/out/`): depopulation_profile, depopulation_logspace (slope=rank/2, measured 1/3/5), cloud_evaporation(+_logspace,+_logpolar), orbit_3/4, deform_4. Generators: `/tmp/depop_g

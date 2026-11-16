@@ -1,0 +1,2 @@
+P26 WEDGE-COLLAPSE-CAUGHT [011] AI-Π0's §0 "static kernel = dynamic −1 axis = ONE line" was a wedge-collapse. AI-Q (Ⓟ.3″) proved TWO distinct lines: static w=(1,−1,1)=ker B₃, dynamic d=(1,−1,0)=ker(T+I), glued **d=(I−T)w** (w not a T-eigenvector: T·w=(0,0,1)). Verified independently SymPy-exact. **A
+[axis-signature: 011 | owner-field(raw): AI-Q (Ⓟ.3″) / AI-Π0 verified]

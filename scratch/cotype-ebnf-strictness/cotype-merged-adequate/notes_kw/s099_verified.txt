@@ -1,0 +1,6 @@
+[VERIFIED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 9)
+
+- **G7 (continuity check — the flush discipline working) — Σ-SPPF-CHART SURVIVED the flush intact.**
+  VERIFIED on disk (re-ran jea_sppf_chart.py): all cases green — S→A B accepts; a^n b^n accepts ab/aabb,
+  rejects aab; E→E+E|x ambiguous accepts with `x` at fan-in 3 (SPPF packing via existing fan-in). The
+  build + the 4th value-in-payload bug were ALREADY in probe-state (cotype lines ~650, ~660)

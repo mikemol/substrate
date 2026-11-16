@@ -1,0 +1,2 @@
+RESIDUAL GAP (narrowed, clean, honest): the surviving count dim(BB Φ_p eigenspace) = φ(p)²/2 = (p-1)²/2 is
+[supporting witness: probe_c2_close2.py — shared block evidence]

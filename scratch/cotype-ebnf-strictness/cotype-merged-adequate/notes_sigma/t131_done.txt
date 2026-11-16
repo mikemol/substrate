@@ -1,0 +1,3 @@
+[DONE] (Σ-arc, trace T1-forest, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **Δ-Π-surprisal-truearity / Δ-Π-circuit-derivation** — DONE (recorded). Self-hosting deferred.

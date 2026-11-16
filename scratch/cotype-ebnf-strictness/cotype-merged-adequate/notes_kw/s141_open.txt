@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc KEYWORD reading, topic kirchhoff, block 30)
+
+### New shadow registrations (axis-tagged; dispatch by symbol)
+| id | label | sig | move | owner |
+|----|-------|-----|------|-------|
+| **P9** | `G-CALC-ENGINE` | 110 mediated | g-calculus = the navigator-relaxation conductance model (Kirchhoff/Thomson), CONFIRMED from `el-atlas/tools/kirchhoff_nedge.py` (not inferred): G_OR/G_AND are DERIVED special cases of the nodal solve, exact only on series

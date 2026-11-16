@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 brute_force_probe_states.py — enumerate the Fano-line probe states at each
 Walsh-Hadamard level of the cotype.

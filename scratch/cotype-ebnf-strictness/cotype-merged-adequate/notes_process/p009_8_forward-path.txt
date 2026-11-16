@@ -1,0 +1,1 @@
+- **G1 (the stale entry = a near-miss) — almost re-did proven work.** The stale one-liner could have led

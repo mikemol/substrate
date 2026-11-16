@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.WalkCarrier — the workspace-axis carrier for the spectral atlas.
 
 Per the user's correction (and `cotype-free-self-extending-grammar.md`

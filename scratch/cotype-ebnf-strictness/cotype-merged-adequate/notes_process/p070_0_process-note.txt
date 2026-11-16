@@ -1,0 +1,1 @@
+* External-frame bid "squarefree-coprime → PURELY cyclotomic": REFUTED (20/36 non-cyclotomic).

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """II7+II8: Compression simulation with best-single-atlas and best-
 synergistic-pair predictors, plus Hamming(7,4) recovery on
 mispredict cases.

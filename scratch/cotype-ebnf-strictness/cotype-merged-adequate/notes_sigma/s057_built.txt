@@ -1,0 +1,7 @@
+[BUILT] (Σ-arc, block 4: FORWARD PATHS — RE-SORTED (pipeline RUNS; sort axis = distan)
+
+- **Σ-SPPF-CHART-SEED — BUILT; self-extension DEMONSTRATED end-to-end (this turn).**
+  `jea/jea_sppf_chart_seed.py`: seeds the recognizer with the ABNF-of-ABNF grammar (RFC 5234 §4 core),
+  feeds it an ABNF document (`S = 'a' S 'b' / 'a' 'b'`), reads the recognized rules into a reusable
+  grammar dict, and the SAME engine then recognizes the defined language — a^n b^n exactly (ab✓ aabb✓
+  aab✗ abb

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 construct_v4_twins.py — apply the state machine's transitions to mechanically
 construct V₄-twin operations toward orbit-completion.

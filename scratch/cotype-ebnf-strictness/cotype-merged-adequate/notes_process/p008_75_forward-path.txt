@@ -1,0 +1,1 @@
+- **TRANSITIVE: yes, structurally** (the ℤ₂⁴ flips generate all 16 keyings; any lowering reaches any

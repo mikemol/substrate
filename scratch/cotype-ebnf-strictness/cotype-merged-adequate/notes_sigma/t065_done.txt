@@ -1,0 +1,4 @@
+[DONE] (Σ-arc, trace T3-navigator, block 5: FORWARD PATHS — STRICTIFIED (the seam arc, ordered by depend)
+
+- (SUPERSEDED/folded: Σ-SPECTRAL-BICOMPLEX → it's LHS of the EXISTING extension, built by Σ-SEAM-GLUE +
+  Σ-SHEAF-FORMALIZE; Σ-CENTRALITY + Σ-WITNESS-JOIN → folded into Σ-SEAM-GLUE. Σ-TORSOR-VERIFY DONE axis 1.)

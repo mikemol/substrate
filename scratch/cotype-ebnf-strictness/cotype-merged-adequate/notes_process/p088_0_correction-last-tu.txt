@@ -1,0 +1,1 @@
+-------------------------------------------------------------------------------- RETRACT the prior bank "P-INV-PROOF blocked / Φ_p representative-dependent / clean statement false". That conclusion rested on a BROKEN detector (my phi_mult): it divided Φ_p out of the FULL charpoly `while deg>=` and b

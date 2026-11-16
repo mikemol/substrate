@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.GeoSequitur — Walsh-Hadamard-addressed SPPF.
 
 Replaces the digram-uniqueness invariant with geometric placement:

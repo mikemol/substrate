@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.CodecAPI — clean encode/decode entry points for the GPU codec.
 
 P9 of the P-arc. Exposes a uniform `encode(bytes) → bytes` /

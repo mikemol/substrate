@@ -1,0 +1,64 @@
+# inventory.tsv — per-script disposition wrt the Agda parser tool. Emitted+cited by warrant i-table.
+# Graded by CODE (four read-only sweeps, 2026-07-27), not docstrings.
+# disposition: MOVES=becomes a tokens/CST pass | SPLITS=CST mechanism, elaborated/scope decision
+#   | STAYS-ELAB=property is post-typecheck (must-not-move) | STAYS-NONAGDA | CONSUMER=ratchet over a census | INFRA
+# gate = wired into `make check` / pre-commit today.
+file	role	gate	disposition	substrate/decidability	cst-hook or why-not
+scripts/check_up_nonvacuity.sh	check-gate	yes	MOVES	SOURCE / TOKEN	⊤-Witness stub matched in code tokens only (today greps RAW)
+scripts/check_def_proof_separation.sh	check-gate	yes	MOVES	SOURCE / GLOBAL-CST	Import edge + does-file-declare-data/record
+scripts/check_public_ratchet.py	check-gate	yes	MOVES	SOURCE / TOKEN-CST	ImportDirective.publicOpen flag (+ narrowing on same node)
+scripts/check_sumtype_ratchet.py	check-gate	yes	MOVES	SOURCE / GLOBAL-CST	Data/Record decl Name, dup across files
+scripts/check_carrier_locality.py	check-gate	yes	MOVES (faithful, not strengthened)	SOURCE / GLOBAL-CST	endo TypeSig A→A→A + globally-unique Data/Record name index
+scripts/check_import_shape.py	check-gate	yes	MOVES	SOURCE / GLOBAL-CST	ImportDirective using/renaming vs ambiguous-name set
+scripts/sppf_node_index.py	census+gate	yes (check-index)	MOVES	SOURCE / GLOBAL-CST	decl constructor/field fingerprint — reads SOURCE despite the name
+scripts/collapse_check.py	check-advisory	no	MOVES	SOURCE / GLOBAL-CST	imported-by-0 + same-name overlap
+scripts/audit_dead_fields.py	audit	no	MOVES (strengthens census, still a proxy)	SOURCE / GLOBAL-CST	Record FieldSig vs projection occurrences
+scripts/audit_import_reach.py	audit	no	MOVES	SOURCE / GLOBAL-CST	reverse import-graph BFS
+scripts/audit_type_load_bearing.py	audit	no	MOVES (proxy)	SOURCE / GLOBAL-CST	decl Name vs external-module occurrence count
+scripts/realizability_surface.py	audit	no	MOVES (proxy; faithful=post-typecheck)	SOURCE / GLOBAL-CST	manifest/measure ranks approximate elaboration
+scripts/type_sppf.py	census	no	MOVES (reference arm)	SOURCE / GLOBAL-CST	already a source parser — what the tool should be, in Haskell
+scripts/type_sppf_crosslayer.py	census	no	MOVES (reference arm)	SOURCE / GLOBAL-CST	already a source parser
+scripts/law_motif_apex.py	census	no	MOVES (reference arm)	SOURCE / GLOBAL-CST	signature-telescope motif clustering, already source
+scripts/_agdatext.py	shared-lib	—	SUPERSEDED	SOURCE / TOKEN	strip()=2 regexes w/ 6 soundness bugs; the real lexer replaces it
+scripts/migrate_to_foundation.py	rewriter	no	MOVES	SOURCE / TOKEN-CST	import-prefix rewrite (today comment-blind — CST fixes)
+scripts/migrate_to_foundation_v2.py	rewriter	no	MOVES	SOURCE / TOKEN-CST	batched import-prefix rewrite
+scripts/agda_stdlib_migrator.py	rewriter	no	MOVES	SOURCE / TOKEN-CST	Data.X using(...) → Foundation import
+scratch/respell_typealias.py	rewriter	no	MOVES (cleanest, range-local)	SOURCE / TOKEN-CST	TypeSig type-expr reprint (Fam A → A → Set)
+scratch/seal_ops.py	rewriter	no	MOVES (range-local)	SOURCE / CST	wrap FunClause in opaque/unfolding block
+scratch/record_def_edit.py	rewriter	no	MOVES (range-local)	SOURCE / CST	Record header + Field telescope
+scratch/telescope_text.py	shared-lib	—	SUPERSEDED	SOURCE / CST	hand-rolled brace/depth kit; the parser subsumes it
+scripts/gen_build_makefiles.py	build-gen	yes (check-makefiles)	SPLITS	SOURCE / GLOBAL-CST	import-DAG→CST (strip newline-collapse can DROP an edge); Makefile emit stays
+scripts/_shred_graph.py	shared-lib	—	SPLITS	SOURCE / GLOBAL-CST	import/decl-head→CST; produced/consumed rank approximates elaboration
+scratch/agda_imports.py	rewriter	—	SPLITS	SOURCE + scope	reprint→CST; topo-order needs binding index; carries the 2094-line permutation guard
+scratch/decompose_rewrite.py	rewriter	—	SPLITS	SOURCE + scope	import decomposition→CST; body rename needs scope
+scratch/reparameterize_record.py	rewriter	—	SPLITS	SOURCE + scope	RecordAssignment/TypeSig→CST; carrier-field names scope-fed
+scratch/telescope_migrate.py	rewriter	—	SPLITS	SOURCE + scope	binder threading→CST; projection renames scope-ambiguous
+scratch/telescope_migrate_gen.py	rewriter	—	SPLITS	SOURCE + scope	binder→CST; unqualified projection needs scope
+scratch/telescope_lib.py	shared-lib	—	SPLITS	SOURCE + scope	binder-threading core (CST); rename half scope
+scratch/split_graded.py	rewriter	—	SPLITS	SOURCE + elaboration	module-split mechanism→CST; where-to-cut is measured cost
+scripts/set1_ratchet_cores.py	check-gate	yes	STAYS-ELAB	ELABORATED / sort	inhabited universe level — no source token
+scripts/set1_census_cores.py	census	no	STAYS-ELAB	ELABORATED / sort	defmark level
+scripts/set1_locate_census.py	census	no	STAYS-ELAB	ELABORATED / sort	codomain-head Sort over interned core
+scripts/check_cap_ratchet.py	check-gate	yes	STAYS-ELAB	ELABORATED / peak-MiB	build-ledger elaboration peak memory
+scripts/iface_shape.py	tool	no	STAYS-ELAB	ELABORATED / bytes	.agdai interface size (module application COPIES)
+scripts/proofcost.py	SLI	no	STAYS-ELAB	ELABORATED / typecheck dynamics	runs agda --profile; reduction counts
+scripts/reuse_catalog.py	census	no	STAYS-ELAB	ELABORATED / qname refs	semantic ref/import edges over cores
+scripts/reuse_check.py	tool	no	STAYS-ELAB	ELABORATED / SPPF	interns a typechecked proposal
+scripts/reuse_sweep.py	tool	no (--gate unwired)	STAYS-ELAB	ELABORATED / catalog.db	SPPF shared-subtree verdicts
+scratch/scope_fix.py	rewriter	—	STAYS-ELAB	ELABORATED / error+catalog	resolves owners from compiler errors + cores
+scratch/paydown.py	driver	—	STAYS-ELAB	ELABORATED	strip-public sub-step is CST; repair is elaboration
+scratch/demand_imports.py	tool	—	STAYS-ELAB	ELABORATED / catalog	minimal import block from point demand
+scratch/agda_defs.py	shared-lib	—	STAYS-ELAB	scope index	the scope table the real tool gets for free
+scratch/record_cascade.py	planner	—	STAYS-ELAB	ELABORATED	SCC migration order over cores
+scratch/uparrow_refactor_path.py	planner	—	STAYS-ELAB	ELABORATED	consumer discovery over cores
+scratch/resolve_notinscope.py	reporter	—	STAYS-ELAB	build-log	name→definer report
+jea/metalanguage/jea_agdai.py	decoder	—	STAYS-ELAB	ELABORATED	the .agdai decode/intern substrate itself
+scripts/check_scratch_runtime.py	audit-oracle	no	STAYS-NONAGDA	NON-AGDA	python audithook
+scripts/check_scratch_independence.py	check	yes	STAYS-NONAGDA	NON-AGDA	parses python with ast
+scripts/_content_addr.py	shared-lib	—	STAYS-NONAGDA	NON-AGDA	bijective base64
+scratch/lift_pyhelper.py	rewriter	—	STAYS-NONAGDA	NON-AGDA	python codemod
+scratch/gen_kat.py	generator	—	STAYS-NONAGDA	NON-AGDA	emits new .agda from data
+scripts/ratchet.py	policy	—	CONSUMER	—	set-based paydown over any census
+scripts/decode_cost.py	infra	—	INFRA	—	decode wall-cost model
+scripts/buildtime.py	infra	—	INFRA	—	build ETA / mem budget
+scripts/sppf_db.py	infra	—	INFRA	—	event-sourced decode ingestion

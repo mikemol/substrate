@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Sequent — structural-rule and fixed-point sequent bricks.
 
 Python mirror of `agda/Substrate/Pipeline/Sequent.agda`. A Sequent is

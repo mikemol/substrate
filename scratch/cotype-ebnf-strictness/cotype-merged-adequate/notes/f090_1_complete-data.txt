@@ -1,0 +1,2 @@
+COMPLETE DATA (Φ_p multiplicity vs #p-cycles c): p=2: c=2,3,4 → 1,2,6 p=3: c=1..4 → 0,1,5,12 p=5: c=1,2,3 → 0,2,9 p=7: c=1,2 → 0,3
+[supporting witness: probe_inv_cheap.py — shared block evidence]

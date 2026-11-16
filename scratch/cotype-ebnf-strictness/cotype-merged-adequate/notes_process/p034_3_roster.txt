@@ -1,0 +1,1 @@
+- **USER** — the SHARED INTERNER between sessions; relays distilled artifacts to AI-Q; catches the grade-collapses + provenance inversions (caught both the dependency-arrow AND the goal-axis errors th

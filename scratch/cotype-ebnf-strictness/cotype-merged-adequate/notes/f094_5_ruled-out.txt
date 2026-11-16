@@ -1,0 +1,2 @@
+RULED OUT (eigenspace coupled; cross-alone=(p-1)(p-2)≠target). The residual (p-1)²/2 is a coupled global count. Per koan: NOT a theorem; the constructive route is now known to be global-not-local. FORWARD: a global eigenvalue/character argument on C·P·Cpinv (likely needs the Hashimoto/Ihara framing from P-BRIDGE, since that IS the global spectral object) → possibly →Δ0/Q. This is genuinely hard; flag honestly.
+[supporting witness: probe_c2_final.py — shared block evidence]

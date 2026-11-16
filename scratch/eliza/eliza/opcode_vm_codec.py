@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.OpcodeVMCodec — speculative-commit / exploding-bitmap codec.
 
 The user's design synthesised:

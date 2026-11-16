@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Golay — binary Golay code [23, 12, 7] for the EE-arc.
 
 Sporadic perfect code at length 23. 4096 codewords; corrects up to 3

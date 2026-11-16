@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 rm_codeword_basins.py — Parity basins and rotational transitions of the
 M19 codewords (I, K, S as length-8 Boolean functions on F_2^3).

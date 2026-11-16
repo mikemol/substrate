@@ -1,0 +1,1 @@
+- **Σ-GATE-SKIP-3STATE** [new, a REPORT not a build] — tell AI-Q the metalanguage gate's skip predicate

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 chirality_as_parity_clean.py — chirality is sign(π) where π is the S_4
 permutation [source, sink, witness, fourth].

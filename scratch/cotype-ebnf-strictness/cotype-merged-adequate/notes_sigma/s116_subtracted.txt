@@ -1,0 +1,6 @@
+[SUBTRACTED] (Σ-arc, block 13: FORWARD PATHS — RE-SORTED (the goal's core is delivered; sor)
+
+- **G8 (blind spot → forward structure) — OMML slots into the SAME sort axis.** It's not a detour: its
+  presentation layer is a Σ-EXTRUDE instance (canonical XML parse/unparse), and its semantic layer +
+  the ambitious OMML↔Agda-core arm feed Σ-FOREST (written-math-vs-proven-math = the verification gate
+  pointed at human-authored math). So Σ-OMML sits between Σ-EXTRUDE and Σ-FOREST on the one ax

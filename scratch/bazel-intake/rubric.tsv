@@ -1,0 +1,16 @@
+# rubric.tsv — plan sections, in document order. Coverage gate: each heading
+# appears, and each section-tagged warrant is cited within it.
+#
+# ⚑ THE ORDER HERE IS THE DOCUMENT'S ORDER, and that is the point of projecting
+# this plan at all: the hand-written original grew by APPEND, so it recorded when
+# the author learned things rather than what to do — 60KB of arrival-ordered log
+# under a 4KB synthesis, with its own structural reader reporting a swallowed
+# heading and the work list nested inside the evidence appendix.
+result	The result: audit-as-warrants, not the migration
+adopt	What substrate adopts, and from whom
+provide	What substrate provides, measured
+fix	What the corpus exposed in substrate
+lineage	Inheritance is not corroboration
+work	The work, ranked by leverage
+bounds	What this plan does not establish
+residue	Honest residue — the corrections, and what refuted each

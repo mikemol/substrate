@@ -1,0 +1,2 @@
+GRADE: odd-coprime→Φ_{mn} cross = robust (measured (3,5),(2,3),(2,5),(2,3,5) consistent). 2-entangles- cross = robust. "blocks pristine" = REFUTED (pervasive deformation). The law is a SUM of attributed terms — the compositional reading the tournament framing was hiding.
+[supporting witness: probe_composition_law.py — shared block evidence]

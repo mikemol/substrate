@@ -1,0 +1,1 @@
+- **G6 SUSTAIN (protect):** (1) proof-by-convergence reflex — iteration-to-fixed-point IS the constructive proof of an orbital identity (converge-and-hold, not fail-to-refute); built the right test wh

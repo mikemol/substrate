@@ -1,0 +1,6 @@
+[OBLIGATION] (Σ-arc KEYWORD reading, topic sppf-grammar, block 10)
+
+- **G6 (THE SPINE — deepest unification of the arc) — ONE operation under the whole substrate:**
+  discharge an obligation by composing the discharges it depends on, RETAINING all intermediates.
+  Instances, now provably one shape: Earley complete · EEA back-substitution · CrossMix cross-term ·
+  resolve(·,domain) · the verification gate's "realizes" · the lspace→exp witness-fold. Predictor / EEA-

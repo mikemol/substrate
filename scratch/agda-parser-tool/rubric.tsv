@@ -1,0 +1,13 @@
+# rubric.tsv — plan sections, in document order. Coverage gate: each heading
+# appears, and each section-tagged warrant is cited within it.
+thesis	Thesis: one source-layer front-end enforcing locality
+substrate	The three substrates and the ownership rule
+lexical	The lexical contract it supersedes
+bans	The locality bans as CST absence-predicates
+proxy	One-def-per-file: a brutal proxy that entails the goal
+representation	Parse levels and the libcst-equivalent
+boundary	The must-not-move boundary and the virtuous cycle
+contract	The census contract and the paid dependency
+inventory	Per-script disposition inventory
+phases	Staged delivery
+residue	Honest residue

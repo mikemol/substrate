@@ -1,0 +1,8 @@
+[DONE] (Σ-arc KEYWORD reading, topic bezout-gauge, block 3)
+
+- **STATE:** P1 DONE (WedgeStep, mandated order, ★-lands-on-two-sides confirmed in-tree); the nilpotency-
+    degree layer of the graded wedge still OPEN. Ⓣ₃ adds theory-space to the tower orbit (Ⓣ₁ Sₙ / Ⓣ₂ ℚ,ℝ /
+    Ⓣ₃ theories), Ring=DAG flagged. Forward table updated below. Σ-GATE-SKIP-3STATE still the one pending
+    verbal report.
+
+## REPO RECONCILIATION (git pull 19000da..928c9a5) — EEATower

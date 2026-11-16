@@ -1,0 +1,1 @@
+- **CENTRALITY = the gluing class across the canonical central seam V₂.** Trivial/split → A₄×ℤ₂ (|Z|=2);

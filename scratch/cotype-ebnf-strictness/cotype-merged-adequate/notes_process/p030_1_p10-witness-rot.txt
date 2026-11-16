@@ -1,0 +1,2 @@
+P10 WITNESS-ROT [010 pure-SA] self-annihilation = rotation-into-orthogonal-V₂: vᵀBv≡0 (antisymmetry) ⟺ exp(tB) pure rotation; kernel fixed, image rotated within itself; in-plane mag = cos(φ)→0 as content rotates into V₂. QUANTITATIVE: reproduces the (1−c²)^(rank/2) depopulation law EXACTLY (c=sin φ)
+[axis-signature: 010 | owner-field(raw): AI-Π0]

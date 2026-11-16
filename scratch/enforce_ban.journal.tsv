@@ -1,0 +1,18 @@
+# ts	module	status	detail
+2026-07-31T12:00:49	Substrate.WitnessTower.Wedge.PyAstRewritePermRig	skip	no such file (already split, or a directory module)
+2026-07-31T12:19:16	Substrate.Foundation.Negation	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert
+2026-07-31T12:22:32	Substrate.Foundation.Negation	done	5 leaves; repaired post-run (prefix-op sibling edge + stmt_span defects fixed at source); full build 0 Agda errors
+2026-07-31T12:22:46	Substrate.Foundation.Fin.Literals	atomic	already one declaration — nothing to split
+2026-07-31T12:26:53	Substrate.Algebra.Z	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert
+2026-07-31T12:31:47	Substrate.Algebra.Z	done	8 leaves; 119 importers rewired; 97 consumer-imports freed; full build 0 Agda errors (4 pre-existing cap kills)
+2026-07-31T13:58:38	Substrate.WitnessTower.Enumerate	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert
+2026-07-31T16:44:46-04:00	Substrate.Algebra.Q	done	26 leaves; 1 importer rewired (74 consumers freed); 2 tool defects fixed at source (module-in-using; keyword-prefixed import); full build 0 Agda errors (1 pre-existing cap kill Prime/Properties)
+2026-07-31T16:45:12	Substrate.Algebra.F2.Linear	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert
+2026-07-31T17:04:39-04:00	Substrate.Algebra.F2.Linear	done	7 leaves; 3 tool defects fixed at source (opaque-blind def-index; conduit-destruction unreported; keyword-prefixed import); full build 0 Agda errors (1 pre-existing cap kill)
+2026-07-31T17:08:11-04:00	Substrate.Algebra.Nat.Prime.Properties	done	25 leaves; 1 importer rewired, 18 consumers pruned; CAP PAYDOWN: was the last Error 251 (needed >128m, <256m) — all 25 leaves now fit -M128m; full build 0 errors 0 cap kills
+2026-07-31T17:09:47-04:00	—	note	N raised 1→2 (user, after Prime/Properties completed end-to-end with zero tool defects and zero manual edits)
+2026-07-31T17:09:47	Substrate.Axes.Axis	atomic	already one declaration — nothing to split
+2026-07-31T17:19:39-04:00	Substrate.Category.CategoryOf	done	2 leaves; 64 importers rewired; 2 collisions cured by rename-at-source (F30); full build 0 errors
+2026-07-31T17:19:39-04:00	-	note	F30: split_pipeline now cures ClashingDefinition via rename_at_source instead of dying; AmbiguousOverloadedProjection reported with qualify-at-value recipe
+2026-07-31T17:20:58	Substrate.WitnessTower.LehmerPath	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert
+2026-07-31T17:21:00	Substrate.Foundation.Sum	fail	pipeline stopped (exit 1); split may be ON DISK — stash, do not revert

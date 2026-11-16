@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The surreal number tree, unfolded — PyVista.
 
 x = value, z = birthday, y = unfolding room. Nodes are spheres coloured by

@@ -1,0 +1,1 @@
+* IHARA / BASS DETERMINANT FORMULA — det(I−Au+Du²) factors graph closed-paths into a char poly

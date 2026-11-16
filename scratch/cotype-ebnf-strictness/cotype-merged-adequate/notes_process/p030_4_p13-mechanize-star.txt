@@ -1,0 +1,2 @@
+P13 MECHANIZE-STAR [110→111 mediated] mechanize center-is-★ into Agda over the now-landed linearity carrier (FreeLinearizationR/F2Bridge/multilinear — the ALGEBRA-END of this same arc). center-is-★ is PROVED-BUT-UNMECHANIZED (proved on the g-calculus/graph side, never given a `--safe` witness). Runn
+[axis-signature: 110→111 | owner-field(raw): AI-Q (Ξ)]

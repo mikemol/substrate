@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc, trace T1-forest, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **USER: AI-Q declared "M2 — beyond fully discharged"; AI-Πρ said "pending the checker." SAME bar (a green
+    --safe --without-K typecheck); DIFFERENT access to whether it's met. Both honest from their vantage.**
+  - **AI-Q = the Agda arm WITH the checker.** Wrote the modules, can run agda → OBSERVES the witness:
+    "discharged" = "the term exists and --safe accepts it." "BEYOND" = built MORE t

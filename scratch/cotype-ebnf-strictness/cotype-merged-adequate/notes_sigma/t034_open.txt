@@ -1,0 +1,7 @@
+[OPEN] (Σ-arc, trace T2-residue, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **ESTABLISHED vs OPEN (hold the line — only the FIRST rung is witnessed):**
+  - WITNESSED: real Brainfuck non-closing trace, H₁=0 raw / H₁=1 quotient, E−V+C on the actual complex. The
+    path→H₁ rung is real; the loop-the-fixpoint-can't-see becomes a homology class.
+  - NOT built (the further rungs USER named): (1) d²=0 / the real CHAIN COMPLEX — this is H₁ of a GRAPH via
+    elementary E−V+C, 

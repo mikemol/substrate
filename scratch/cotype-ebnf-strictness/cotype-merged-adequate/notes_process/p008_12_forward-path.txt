@@ -1,0 +1,1 @@
+- **USER: Given/When/Then ≅ the jea SPPF structure — VERIFIED against the code; the substrate ALREADY has

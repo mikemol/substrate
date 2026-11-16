@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, trace T1-forest, block 29: Δ-Π-extrude [the API; DONE for the core case] — emission = e)
+
+### Δ-Π-extrude [the API; DONE for the core case] — emission = exp∘edit∘parse, drift-free
+Built `jea/jea_extrude.py`: the same-language writer as an API over libcst's CANONICAL parse/unparse
+pair. VERIFIED: (a) the retraction `unparse∘parse = id` is BYTE-IDENTICAL (libcst format-preserving,
+comments + layout intact) — strictly stronger than the IR projector's up-to-normalization; (b) all
+three mod

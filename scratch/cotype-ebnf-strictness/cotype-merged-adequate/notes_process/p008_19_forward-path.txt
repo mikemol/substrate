@@ -1,0 +1,1 @@
+- **Σ-SEAM-GLUE spec REFACTORED to v2 (USER: clean pointers for AI-Q) — jea/SEAM_GLUE_SPEC.md rewritten

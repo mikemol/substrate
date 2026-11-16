@@ -1,0 +1,2 @@
+USER DIAGNOSIS: "a lot of tournament organization here, not so much compositional."
+[supporting witness: probe_composition_law.py — shared block evidence]

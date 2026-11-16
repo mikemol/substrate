@@ -1,0 +1,442 @@
+# Consolidation observation — `Substrate.Foundation.Fin.Fin.zero`
+
+Shared subtree `Substrate.Foundation.Fin.Fin.zero` — size 99999, **290 instances**, rung 9, impact 28999710.
+⊃ contains: PDot.
+
+## Instances (canonical candidate first = shallowest module)
+
+- `Substrate.Algebra.PrimeFactor-168-FieldFanOut.PSL27-Bond`  →  `agda/Substrate/Algebra/PrimeFactor-168-FieldFanOut.agda`
+- `Substrate.Algebra.PrimeFactor-168-FieldFanOut.PSL27-Target`  →  `agda/Substrate/Algebra/PrimeFactor-168-FieldFanOut.agda`
+- `Substrate.Algebra.Z6-FieldBond.crt-backward`  →  `agda/Substrate/Algebra/Z6-FieldBond.agda`
+- `Substrate.Algebra.Z6-FieldBond.crt-forward`  →  `agda/Substrate/Algebra/Z6-FieldBond.agda`
+- `Substrate.Algebra.Z6-FieldBond.crt-roundtrip`  →  `agda/Substrate/Algebra/Z6-FieldBond.agda`
+- `Substrate.Algebra.Z6-FieldTower.mod3-of-6`  →  `agda/Substrate/Algebra/Z6-FieldTower.agda`
+- `Substrate.Axes.Punctured.f→a`  →  `agda/Substrate/Axes/Punctured.agda`
+- `Substrate.Cardinality._.from`  →  `agda/Substrate/Cardinality.agda`
+- `Substrate.Cardinality._.from`  →  `agda/Substrate/Cardinality.agda`
+- `Substrate.Cardinality._.from`  →  `agda/Substrate/Cardinality.agda`
+- `Substrate.Cardinality._.from`  →  `agda/Substrate/Cardinality.agda`
+- `Substrate.Category.MultiFieldBond.inj-suc`  →  `agda/Substrate/Category/MultiFieldBond.agda`
+- `Substrate.Foundation.Fin._≟_`  →  `agda/Substrate/Foundation/Fin.agda`
+- `Substrate.Foundation.Fin.toℕ`  →  `agda/Substrate/Foundation/Fin.agda`
+- `Substrate.Foundation.Vec.lookup`  →  `agda/Substrate/Foundation/Vec.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-130`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-152`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-174`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-196`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-218`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-240`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-262`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-284`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-306`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-328`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-350`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Hom.with-372`  →  `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `Substrate.Groups.Stab-S3-Iso.restrict-extend`  →  `agda/Substrate/Groups/Stab-S3-Iso.agda`
+- `Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.phase-advance-Z₃-as-σ₃`  →  `agda/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance.agda`
+- `Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.phase-advance-Z₄-as-σ₄`  →  `agda/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance.agda`
+- `Substrate.Groups.Z3-Coxeter.canonical-cover`  →  `agda/Substrate/Groups/Z3-Coxeter.agda`
+- `Substrate.Realizability.Charter.conMask`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter.con⇒mask`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter.dedup-no-eqrel`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter.obsMask`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter.reaMask`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter.rea⇒mask`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.ShadowArchitecture.AxisDualLine.axis-dual`  →  `agda/Substrate/ShadowArchitecture/AxisDualLine.agda`
+- `Substrate.ShadowArchitecture.AxisDualLine.axis-dual-lands-wt-1`  →  `agda/Substrate/ShadowArchitecture/AxisDualLine.agda`
+- `Substrate.WitnessTower.Codeword.S₃-gens`  →  `agda/Substrate/WitnessTower/Codeword.agda`
+- `Substrate.WitnessTower.Codeword.V₄-gens`  →  `agda/Substrate/WitnessTower/Codeword.agda`
+- `Substrate.WitnessTower.Codeword.generators`  →  `agda/Substrate/WitnessTower/Codeword.agda`
+- `Substrate.WitnessTower.Complete.all-positions-complete`  →  `agda/Substrate/WitnessTower/Complete.agda`
+- `Substrate.WitnessTower.Hodge.dual-grade`  →  `agda/Substrate/WitnessTower/Hodge.agda`
+- `Substrate.WitnessTower.Hodge.dual-grade-inject₁`  →  `agda/Substrate/WitnessTower/Hodge.agda`
+- `Substrate.WitnessTower.Hodge.dual-grade-involution`  →  `agda/Substrate/WitnessTower/Hodge.agda`
+- `Substrate.WitnessTower.Hodge.inject₁`  →  `agda/Substrate/WitnessTower/Hodge.agda`
+- `Substrate.WitnessTower.Hodge.witness-distinct`  →  `agda/Substrate/WitnessTower/Hodge.agda`
+- `Substrate.WitnessTower.IsPermutation.lookup-map`  →  `agda/Substrate/WitnessTower/IsPermutation.agda`
+- `Substrate.WitnessTower.IsPermutation.punchIn-injective`  →  `agda/Substrate/WitnessTower/IsPermutation.agda`
+- `Substrate.WitnessTower.Sn.lookupL`  →  `agda/Substrate/WitnessTower/Sn.agda`
+- `Substrate.WitnessTower.Sn.lookupL-All`  →  `agda/Substrate/WitnessTower/Sn.agda`
+- `Substrate.WitnessTower.Sn.lookupL-injective`  →  `agda/Substrate/WitnessTower/Sn.agda`
+- `Substrate.WitnessTower.Sn.lookupL→∈`  →  `agda/Substrate/WitnessTower/Sn.agda`
+- `Substrate.Algebra.Abelian.Z30-as-PFG.Z30-multiplicities`  →  `agda/Substrate/Algebra/Abelian/Z30-as-PFG.agda`
+- `Substrate.Algebra.Abelian.Z30-as-PFG.Z30-primes`  →  `agda/Substrate/Algebra/Abelian/Z30-as-PFG.agda`
+- `Substrate.Algebra.Abelian.Z6-as-PFG.Z6-multiplicities`  →  `agda/Substrate/Algebra/Abelian/Z6-as-PFG.agda`
+- `Substrate.Algebra.Abelian.Z6-as-PFG.Z6-primes`  →  `agda/Substrate/Algebra/Abelian/Z6-as-PFG.agda`
+- `Substrate.Algebra.F2.Cone-V4-3plus1.leg-V4`  →  `agda/Substrate/Algebra/F2/Cone-V4-3plus1.agda`
+- `Substrate.Algebra.F2.FanoPlane.singer-basis`  →  `agda/Substrate/Algebra/F2/FanoPlane.agda`
+- `Substrate.Algebra.F2.V4-Nonzero.coords`  →  `agda/Substrate/Algebra/F2/V4-Nonzero.agda`
+- `Substrate.Algebra.F2.V4LagrangeInstance.V4-elements`  →  `agda/Substrate/Algebra/F2/V4LagrangeInstance.agda`
+- `Substrate.Algebra.F2.Vector.basis`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.F2.Vector.basis-lookup-same`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.F2.Vector.lookup-*ₛ`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.F2.Vector.lookup-+ⱽ`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.F2.Vector.lookup--ⱽ`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.F2.Vector.lookup-𝟎`  →  `agda/Substrate/Algebra/F2/Vector.agda`
+- `Substrate.Algebra.GL3F2.AsPresented.gen-to-GL3F2`  →  `agda/Substrate/Algebra/GL3F2/AsPresented.agda`
+- `Substrate.Algebra.GL3F2.AsPresented.gen-to-sylow`  →  `agda/Substrate/Algebra/GL3F2/AsPresented.agda`
+- `Substrate.Algebra.GL3F2.Characters.GL3F2-Char`  →  `agda/Substrate/Algebra/GL3F2/Characters.agda`
+- `Substrate.Algebra.GL3F2.Characters.centralizer-order`  →  `agda/Substrate/Algebra/GL3F2/Characters.agda`
+- `Substrate.Algebra.GL3F2.Characters.class-size`  →  `agda/Substrate/Algebra/GL3F2/Characters.agda`
+- `Substrate.Algebra.GL3F2.GaugeGenerators.σ₂`  →  `agda/Substrate/Algebra/GL3F2/GaugeGenerators.agda`
+- `Substrate.Algebra.GL3F2.GaugeGenerators.σ₂-HasOrderPerm`  →  `agda/Substrate/Algebra/GL3F2/GaugeGenerators.agda`
+- `Substrate.Algebra.GL3F2.SylowDecomposition.Sylow-multiplicities`  →  `agda/Substrate/Algebra/GL3F2/SylowDecomposition.agda`
+- `Substrate.Algebra.GL3F2.SylowDecomposition.Sylow-predicates`  →  `agda/Substrate/Algebra/GL3F2/SylowDecomposition.agda`
+- `Substrate.Algebra.GL3F2.SylowDecomposition.Sylow-primes`  →  `agda/Substrate/Algebra/GL3F2/SylowDecomposition.agda`
+- `Substrate.Algebra.Q.AsModule.lookup-*ℚₛ`  →  `agda/Substrate/Algebra/Q/AsModule.agda`
+- `Substrate.Algebra.Q.AsModule.lookup-+ℚⱽ`  →  `agda/Substrate/Algebra/Q/AsModule.agda`
+- `Substrate.Algebra.Q.AsModule.lookup--ℚⱽ`  →  `agda/Substrate/Algebra/Q/AsModule.agda`
+- `Substrate.Algebra.Q.AsModule.lookup-𝟎ℚⱽ`  →  `agda/Substrate/Algebra/Q/AsModule.agda`
+- `Substrate.Algebra.Q.Vector.basis-ℚ`  →  `agda/Substrate/Algebra/Q/Vector.agda`
+- `Substrate.Algebra.Wedge.NilpotentLogMFin.fromℕ<-toℕ`  →  `agda/Substrate/Algebra/Wedge/NilpotentLogMFin.agda`
+- `Substrate.Algebra.Wedge.NilpotentLogMFin.toℕ-bound`  →  `agda/Substrate/Algebra/Wedge/NilpotentLogMFin.agda`
+- `Substrate.Algebra.Wedge.NilpotentLogMFinLaws.toℕ-injective`  →  `agda/Substrate/Algebra/Wedge/NilpotentLogMFinLaws.agda`
+- `Substrate.Algebra.Z6-FieldTower..extendedlambda0`  →  `agda/Substrate/Algebra/Z6-FieldTower.agda`
+- `Substrate.Algebra.Z6-FieldTower..extendedlambda1`  →  `agda/Substrate/Algebra/Z6-FieldTower.agda`
+- `Substrate.Category.Cone.EqualizerInstance.equalizer-Base`  →  `agda/Substrate/Category/Cone/EqualizerInstance.agda`
+- `Substrate.Category.Cone.EqualizerWithMorphisms.eq-Base`  →  `agda/Substrate/Category/Cone/EqualizerWithMorphisms.agda`
+- `Substrate.Category.Cone.PullbackInstance.pullback-Base`  →  `agda/Substrate/Category/Cone/PullbackInstance.agda`
+- `Substrate.Category.Cone.PullbackWithMorphisms.pb-Base`  →  `agda/Substrate/Category/Cone/PullbackWithMorphisms.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeCoEmitGraded.fin→axis`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeCoEmitGraded.swap01`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeCoEmitGraded.swap12`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKIFaceset.eᵢ`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKIFaceset.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKIFaceset.eᵢ-inj`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKIFaceset.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKIKFaces.eᵢ-weight`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKIKFaces.agda`
+- `Substrate.Codes.Hamming.H-7-4-3.H-cols`  →  `agda/Substrate/Codes/Hamming/H-7-4-3.agda`
+- `Substrate.Codes.Hamming.H-8-4-4.H-ext-cols`  →  `agda/Substrate/Codes/Hamming/H-8-4-4.agda`
+- `Substrate.Codes.ReedMuller.RM-1-3.generators`  →  `agda/Substrate/Codes/ReedMuller/RM-1-3.agda`
+- `Substrate.Conway.AsCone._.surreal-leg`  →  `agda/Substrate/Conway/AsCone.agda`
+- `Substrate.Foundation.Fin.Combine.combine`  →  `agda/Substrate/Foundation/Fin/Combine.agda`
+- `Substrate.Foundation.Fin.Cover.fin-cover`  →  `agda/Substrate/Foundation/Fin/Cover.agda`
+- `Substrate.Foundation.Fin.Inject.inject+`  →  `agda/Substrate/Foundation/Fin/Inject.agda`
+- `Substrate.Foundation.Fin.Properties.toℕ-bound`  →  `agda/Substrate/Foundation/Fin/Properties.agda`
+- `Substrate.Foundation.Fin.Properties.toℕ-injective`  →  `agda/Substrate/Foundation/Fin/Properties.agda`
+- `Substrate.Foundation.Fin.Punctured.punchIn`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.Punctured.punchIn-punchOut`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.Punctured.punchIn-≢`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.Punctured.punchOut`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.Punctured.punchOut-irrelevant`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.Punctured.punchOut-punchIn`  →  `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `Substrate.Foundation.Fin.SplitAt.splitAt`  →  `agda/Substrate/Foundation/Fin/SplitAt.agda`
+- `Substrate.Foundation.Vec.Properties.lookup∘tabulate`  →  `agda/Substrate/Foundation/Vec/Properties.agda`
+- `Substrate.Geometry.HodgeDim3.ChiralityAxis.v4-coords-images`  →  `agda/Substrate/Geometry/HodgeDim3/ChiralityAxis.agda`
+- `Substrate.Geometry.HodgeDim3.Gl3.σ-images`  →  `agda/Substrate/Geometry/HodgeDim3/Gl3.agda`
+- `Substrate.Geometry.HodgeDim3.Gl3.τ-images`  →  `agda/Substrate/Geometry/HodgeDim3/Gl3.agda`
+- `Substrate.Geometry.HodgeDim3.V4Plane.chirality-bit-images`  →  `agda/Substrate/Geometry/HodgeDim3/V4Plane.agda`
+- `Substrate.Realizability.Charter._.go`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.Realizability.Charter._.go`  →  `agda/Substrate/Realizability/Charter.agda`
+- `Substrate.WitnessTower.Decompose._.pointwise`  →  `agda/Substrate/WitnessTower/Decompose.agda`
+- `Substrate.WitnessTower.IsPermutation._.go`  →  `agda/Substrate/WitnessTower/IsPermutation.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductCons.lookup-++-inject`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductCons.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode.replay-head`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductStructuralDecode.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode.toℕ-punchIn-<`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductStructuralDecode.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode.toℕ-punchIn-≥`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductStructuralDecode.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode.⊗ˢ-combine`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductStructuralDecode.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductUnit.fin1-toℕ0`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductUnit.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.inj1`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.sadj`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.AdjNeq`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.adjneq-from`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.pLess-swap`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.sadj-realizes`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.sign-swap`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.swapAdj`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.swapAdj-lookup`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.tp`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign.tp-inv`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatSymUP.s₁-isperm`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatSymUP.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigFree.ρ`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigFree.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigFree.ρ-injective`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigFree.agda`
+- `Substrate.WitnessTower.Wedge.OrientationSumLaws.inject+-assoc`  →  `agda/Substrate/WitnessTower/Wedge/OrientationSumLaws.agda`
+- `Substrate.WitnessTower.Wedge.OrientationSumLaws.inject+0-id`  →  `agda/Substrate/WitnessTower/Wedge/OrientationSumLaws.agda`
+- `Substrate.WitnessTower.Wedge.OrientationSumNaturality.decode-⊕-inject`  →  `agda/Substrate/WitnessTower/Wedge/OrientationSumNaturality.agda`
+- `Substrate.WitnessTower.Wedge.OrientationSumNaturality.punchIn-inject+`  →  `agda/Substrate/WitnessTower/Wedge/OrientationSumNaturality.agda`
+- `Substrate.WitnessTower.Wedge.OrientationSumNaturality.punchIn-inject+-raise`  →  `agda/Substrate/WitnessTower/Wedge/OrientationSumNaturality.agda`
+- `Substrate.WitnessTower.Wedge.OrientationUniversalOver.lookup-1#-id`  →  `agda/Substrate/WitnessTower/Wedge/OrientationUniversalOver.agda`
+- `Substrate.WitnessTower.Wedge.PackedBridge.fin2-swap`  →  `agda/Substrate/WitnessTower/Wedge/PackedBridge.agda`
+- `Substrate.WitnessTower.Wedge.PackedBridge.fin2-swap-invol`  →  `agda/Substrate/WitnessTower/Wedge/PackedBridge.agda`
+- `Substrate.WitnessTower.Wedge.PackedBridge.slot`  →  `agda/Substrate/WitnessTower/Wedge/PackedBridge.agda`
+- `Substrate.WitnessTower.Wedge.PackedBridge.slot-grade1-id`  →  `agda/Substrate/WitnessTower/Wedge/PackedBridge.agda`
+- `Substrate.WitnessTower.Wedge.PyAstRig.spine-sep`  →  `agda/Substrate/WitnessTower/Wedge/PyAstRig.agda`
+- `Substrate.Algebra.F2.GF256.Idempotent.hsum-one-basis`  →  `agda/Substrate/Algebra/F2/GF256/Idempotent.agda`
+- `Substrate.Algebra.F2.HodgeDim3.HodgeStar.complement-3`  →  `agda/Substrate/Algebra/F2/HodgeDim3/HodgeStar.agda`
+- `Substrate.Algebra.F2.HodgeDim3.HodgeStar.complement-3-involution`  →  `agda/Substrate/Algebra/F2/HodgeDim3/HodgeStar.agda`
+- `Substrate.Algebra.F2.HodgeDim4.Bivector.complement`  →  `agda/Substrate/Algebra/F2/HodgeDim4/Bivector.agda`
+- `Substrate.Algebra.F2.HodgeDim4.Bivector.complement-involution`  →  `agda/Substrate/Algebra/F2/HodgeDim4/Bivector.agda`
+- `Substrate.Algebra.F2.HodgeDim4.HodgeStar-ConeWithMorphisms.bivector-Base`  →  `agda/Substrate/Algebra/F2/HodgeDim4/HodgeStar-ConeWithMorphisms.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3.ev`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3.ev∈ker`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `Substrate.Algebra.F2.Linear.FromImages.sum-F₂-basis-collapse`  →  `agda/Substrate/Algebra/F2/Linear/FromImages.agda`
+- `Substrate.Algebra.F2.Linear.SpectralCycleDim.ones-lookup`  →  `agda/Substrate/Algebra/F2/Linear/SpectralCycleDim.agda`
+- `Substrate.Algebra.F2.Linear.SpectralCycleDim.total-basis`  →  `agda/Substrate/Algebra/F2/Linear/SpectralCycleDim.agda`
+- `Substrate.Algebra.F2.SymBilinForm.HodgeRecast.metric-id-collapse`  →  `agda/Substrate/Algebra/F2/SymBilinForm/HodgeRecast.agda`
+- `Substrate.Algebra.F2.SymBilinForm.MetricId.metric-id`  →  `agda/Substrate/Algebra/F2/SymBilinForm/MetricId.agda`
+- `Substrate.Algebra.F2.SymBilinForm.MetricIdSymmetric.is-symmetric-metric-id`  →  `agda/Substrate/Algebra/F2/SymBilinForm/MetricIdSymmetric.agda`
+- `Substrate.Algebra.F2.SymBilinForm.TensorProductView.lookup-of-pair`  →  `agda/Substrate/Algebra/F2/SymBilinForm/TensorProductView.agda`
+- `Substrate.Algebra.F2.Vector.Universal.basis-lookup-other`  →  `agda/Substrate/Algebra/F2/Vector/Universal.agda`
+- `Substrate.Algebra.F2.Vector.Universal.lookup-decomp-aux`  →  `agda/Substrate/Algebra/F2/Vector/Universal.agda`
+- `Substrate.Algebra.GL3F2.SingerOrder.OnBasis.basis-point`  →  `agda/Substrate/Algebra/GL3F2/SingerOrder/OnBasis.agda`
+- `Substrate.Algebra.GL3F2.SingerOrder.OnBasis.basis≡point-to-vec`  →  `agda/Substrate/Algebra/GL3F2/SingerOrder/OnBasis.agda`
+- `Substrate.Algebra.Module.Free.Basis.basis-vec`  →  `agda/Substrate/Algebra/Module/Free/Basis.agda`
+- `Substrate.Algebra.Polynomial.Graded.Over.convCoeff-basis-xpower`  →  `agda/Substrate/Algebra/Polynomial/Graded.agda`
+- `Substrate.Algebra.Polynomial.Graded.Over.nth-basis-other`  →  `agda/Substrate/Algebra/Polynomial/Graded.agda`
+- `Substrate.Algebra.Polynomial.Graded.Over.nth-basis-same`  →  `agda/Substrate/Algebra/Polynomial/Graded.agda`
+- `Substrate.Algebra.Sporadic.HappyFamily.AsTree.HF-parent`  →  `agda/Substrate/Algebra/Sporadic/HappyFamily/AsTree.agda`
+- `Substrate.Algebra.Wedge.Contextuality.Models.tri-locally-sat`  →  `agda/Substrate/Algebra/Wedge/Contextuality/Models.agda`
+- `Substrate.Algebra.Wedge.Contextuality.Models2.ok-locally-sat`  →  `agda/Substrate/Algebra/Wedge/Contextuality/Models2.agda`
+- `Substrate.Algebra.Wedge.Contextuality.Models2.pent-locally-sat`  →  `agda/Substrate/Algebra/Wedge/Contextuality/Models2.agda`
+- `Substrate.Category.Cone.EqualizerInstance..extendedlambda0`  →  `agda/Substrate/Category/Cone/EqualizerInstance.agda`
+- `Substrate.Category.Cone.EqualizerWithMorphisms..extendedlambda0`  →  `agda/Substrate/Category/Cone/EqualizerWithMorphisms.agda`
+- `Substrate.Category.Cone.PullbackInstance..extendedlambda0`  →  `agda/Substrate/Category/Cone/PullbackInstance.agda`
+- `Substrate.Category.Cone.PullbackWithMorphisms..extendedlambda0`  →  `agda/Substrate/Category/Cone/PullbackWithMorphisms.agda`
+- `Substrate.Category.FreeUniversalProperty.FreeF2Module._.ext-basis`  →  `agda/Substrate/Category/FreeUniversalProperty/FreeF2Module.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeCoEmitGraded._.fin-axis-iso`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKINVertex._.v`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKINVertex.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKINVertex._.v-inj`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKINVertex.agda`
+- `Substrate.Category.UniversalProperty.ExtrudeSKINVertex._.v-nf`  →  `agda/Substrate/Category/UniversalProperty/ExtrudeSKINVertex.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey.s3-to-orbit-key-from`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/S3ToOrbitKey.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.with-30`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.Pairing.Structural.V4-Nonzero→Pairing`  →  `agda/Substrate/Cocycles/V4Signature/Pairing/Structural.agda`
+- `Substrate.Cocycles.V4Signature.Pairing.Structural.to-from-Pairing`  →  `agda/Substrate/Cocycles/V4Signature/Pairing/Structural.agda`
+- `Substrate.Foundation.Fin.Combine.Assoc.toℕ-combine`  →  `agda/Substrate/Foundation/Fin/Combine/Assoc.agda`
+- `Substrate.Foundation.Fin.Combine.Assoc.toℕ-inject+`  →  `agda/Substrate/Foundation/Fin/Combine/Assoc.agda`
+- `Substrate.Foundation.Fin.Combine.RemQuotInverse.remQuot-combine`  →  `agda/Substrate/Foundation/Fin/Combine/RemQuotInverse.agda`
+- `Substrate.Foundation.Fin.Exists..extendedlambda1`  →  `agda/Substrate/Foundation/Fin/Exists.agda`
+- `Substrate.Foundation.Fin.Exists..extendedlambda2`  →  `agda/Substrate/Foundation/Fin/Exists.agda`
+- `Substrate.Foundation.Fin.SplitAt.InjectIdentity.splitAt-inject`  →  `agda/Substrate/Foundation/Fin/SplitAt/InjectIdentity.agda`
+- `Substrate.Foundation.Fin.SplitAt.View.splitAt-view`  →  `agda/Substrate/Foundation/Fin/SplitAt/View.agda`
+- `Substrate.Geometry.HodgeDim3.ChiralityAxis._.goal`  →  `agda/Substrate/Geometry/HodgeDim3/ChiralityAxis.agda`
+- `Substrate.Geometry.HodgeDim3.V4Plane._.goal`  →  `agda/Substrate/Geometry/HodgeDim3/V4Plane.agda`
+- `Substrate.Groups.Actions.Z2-on-Z3.ActDot.act-letter-compose`  →  `agda/Substrate/Groups/Actions/Z2-on-Z3/ActDot.agda`
+- `Substrate.Groups.Actions.Z2-on-Z3.ActEpsilonN.act-letter-ε`  →  `agda/Substrate/Groups/Actions/Z2-on-Z3/ActEpsilonN.agda`
+- `Substrate.Groups.Actions.Z2-on-Z3.ActHom.act-letter-hom`  →  `agda/Substrate/Groups/Actions/Z2-on-Z3/ActHom.agda`
+- `Substrate.Groups.Actions.Z2-on-Z3.Canonical.act-letter-canonical`  →  `agda/Substrate/Groups/Actions/Z2-on-Z3/Canonical.agda`
+- `Substrate.Groups.Coxeter.Cyclic.Inverse.fromℕ<-toℕ-id`  →  `agda/Substrate/Groups/Coxeter/Cyclic/Inverse.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone.prior-añelē?-monotone`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/Monotone.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII.lift-11-to-18`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/NotOpenFromVIII.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII.not-open-from-VIII`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/NotOpenFromVIII.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII.inject-7-to-18`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/OpenOnPreVIII.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII.open-on-pre-VIII`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/OpenOnPreVIII.agda`
+- `Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé.prior-añelē?`  →  `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/PriorAñelé.agda`
+- `Substrate.WitnessTower.Wedge.OrientationProductCons._.at-combine`  →  `agda/Substrate/WitnessTower/Wedge/OrientationProductCons.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties.idInsert-CoxGen-aux`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties.lookup-map`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties.sadj-lo`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties.sadj-punchIn`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties.toℕ-inj1`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermSign._.aux`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatSymUP._.gens-from-s₁`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatSymUP.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigFree._.pointwise`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigFree.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge.congruence-act-bridge-3`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.ExemplarOrbits.T-id-to-fully-coupled-images`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/ExemplarOrbits.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge.SymBilinForm-3-to-generic`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/GenericBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge.metric-id-3-eq-bridged`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/GenericBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser.S₃-elements`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/S3Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser.S₃-stabilises-metric-id`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/S3Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser.s₁-images`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser.s₂-images`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed.T-id-to-mixed-images`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/TIdToMixed.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth.M-orth-to-V4Plane→WideMeet`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/V4PlaneOrth.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.V4PlaneOrth.V4Plane-basis-orth-family`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/V4PlaneOrth.agda`
+- `Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor.to-fin4`  →  `agda/Substrate/Algebra/F2/HodgeDim4/Bivector/HodgeStarOnTensor.agda`
+- `Substrate.Algebra.F2.HodgeDim4.HodgeStar-ConeWithMorphisms..extendedlambda0`  →  `agda/Substrate/Algebra/F2/HodgeDim4/HodgeStar-ConeWithMorphisms.agda`
+- `Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge.SymBilinForm-4-to-generic`  →  `agda/Substrate/Algebra/F2/HodgeDim4/MetricGauge/GenericBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge.metric-id-4-eq-bridged`  →  `agda/Substrate/Algebra/F2/HodgeDim4/MetricGauge/GenericBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AlternativesAsOrbit.σ-swap12`  →  `agda/Substrate/Algebra/F2/HodgeDim4/ReservedBridge/AlternativesAsOrbit.agda`
+- `Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AlternativesAsOrbit.σ-swap12-HasOrderPerm`  →  `agda/Substrate/Algebra/F2/HodgeDim4/ReservedBridge/AlternativesAsOrbit.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3..extendedlambda14`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3..extendedlambda5`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3..extendedlambda7`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3x2..extendedlambda14`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3x2.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3x2..extendedlambda5`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3x2.agda`
+- `Substrate.Algebra.F2.Linear.Cycle3x2..extendedlambda7`  →  `agda/Substrate/Algebra/F2/Linear/Cycle3x2.agda`
+- `Substrate.Algebra.F2.Polynomial.RingLaws.Basis.convCoeff-basis-xpower`  →  `agda/Substrate/Algebra/F2/Polynomial/RingLaws/Basis.agda`
+- `Substrate.Algebra.F2.Polynomial.RingLaws.Basis.nth-basis-other`  →  `agda/Substrate/Algebra/F2/Polynomial/RingLaws/Basis.agda`
+- `Substrate.Algebra.F2.Polynomial.RingLaws.Basis.nth-basis-same`  →  `agda/Substrate/Algebra/F2/Polynomial/RingLaws/Basis.agda`
+- `Substrate.Algebra.F2.SymBilinForm.NonDegenerate.BasisRowEqMetricId.basis-row-eq-metric-id`  →  `agda/Substrate/Algebra/F2/SymBilinForm/NonDegenerate/BasisRowEqMetricId.agda`
+- `Substrate.Algebra.Polynomial.Graded.Mod.Over.inj`  →  `agda/Substrate/Algebra/Polynomial/Graded/Mod.agda`
+- `Substrate.Algebra.Polynomial.Graded.Mod.Over.inj-toℕ`  →  `agda/Substrate/Algebra/Polynomial/Graded/Mod.agda`
+- `Substrate.Algebra.Polynomial.Graded.Mod.Over.vinit-basis`  →  `agda/Substrate/Algebra/Polynomial/Graded/Mod.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-114`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-132`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-150`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-60`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-78`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.with-96`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.α-even-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.α-odd-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.β-even-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.β-odd-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.γ-even-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip._.γ-odd-case`  →  `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.act-ε-N-on-canonical`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Axioms/ActEpsilonN.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Composition.ActDotCanonical.act-∙-canonical`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Composition/ActDotCanonical.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow.act-equals-pow`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Twist/ActEqualsPow.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Twist.RotPowSwapTwist.rot-pow-swap-twist`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Twist/RotPowSwapTwist.agda`
+- `Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv.toℕ-inv-pos-inv-pos`  →  `agda/Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda`
+- `Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvPosAddMod.inv-pos-add-mod`  →  `agda/Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvPosAddMod.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda0`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda1`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda2`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda3`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda4`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.Logic.Evidence.ElAtlas.OrbitCloud..extendedlambda5`  →  `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties._.aux`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties._.aux`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties._.aux`  →  `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceIdToMixed._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.ExemplarOrbits._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/ExemplarOrbits.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.S3Stabiliser._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/S3Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser._.goal`  →  `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda`
+- `Substrate.Algebra.F2.HodgeDim4.Bivector.AntisymmetricRoundtrip._.entry-eq`  →  `agda/Substrate/Algebra/F2/HodgeDim4/Bivector/AntisymmetricRoundtrip.agda`
+- `Substrate.Algebra.F2.HodgeDim4.Bivector.HodgeStarOnTensor._.fin4-fin4-route`  →  `agda/Substrate/Algebra/F2/HodgeDim4/Bivector/HodgeStarOnTensor.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Generators.RotPowNormalizeEq._.rot-step`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowNormalizeEq.agda`
+- `Substrate.Groups.Actions.S3-on-V4.Generators.SwapPowNormalizeEq._.swap-step`  →  `agda/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowNormalizeEq.agda`
+
+## Files touched
+
+- `agda/Substrate/Algebra/Abelian/Z30-as-PFG.agda`
+- `agda/Substrate/Algebra/Abelian/Z6-as-PFG.agda`
+- `agda/Substrate/Algebra/F2/Cone-V4-3plus1.agda`
+- `agda/Substrate/Algebra/F2/FanoPlane.agda`
+- `agda/Substrate/Algebra/F2/GF256/Idempotent.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/HodgeStar.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceBridge.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/CongruenceIdToMixed.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/ExemplarOrbits.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/GenericBridge.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/S3Stabiliser.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/Stabiliser.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/TIdToMixed.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim3/MetricGauge/V4PlaneOrth.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/Bivector.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/Bivector/AntisymmetricRoundtrip.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/Bivector/HodgeStarOnTensor.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/HodgeStar-ConeWithMorphisms.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/MetricGauge/GenericBridge.agda`
+- `agda/Substrate/Algebra/F2/HodgeDim4/ReservedBridge/AlternativesAsOrbit.agda`
+- `agda/Substrate/Algebra/F2/Linear/Cycle3.agda`
+- `agda/Substrate/Algebra/F2/Linear/Cycle3x2.agda`
+- `agda/Substrate/Algebra/F2/Linear/FromImages.agda`
+- `agda/Substrate/Algebra/F2/Linear/SpectralCycleDim.agda`
+- `agda/Substrate/Algebra/F2/Polynomial/RingLaws/Basis.agda`
+- `agda/Substrate/Algebra/F2/SymBilinForm/HodgeRecast.agda`
+- `agda/Substrate/Algebra/F2/SymBilinForm/MetricId.agda`
+- `agda/Substrate/Algebra/F2/SymBilinForm/MetricIdSymmetric.agda`
+- `agda/Substrate/Algebra/F2/SymBilinForm/NonDegenerate/BasisRowEqMetricId.agda`
+- `agda/Substrate/Algebra/F2/SymBilinForm/TensorProductView.agda`
+- `agda/Substrate/Algebra/F2/V4-Nonzero.agda`
+- `agda/Substrate/Algebra/F2/V4LagrangeInstance.agda`
+- `agda/Substrate/Algebra/F2/Vector.agda`
+- `agda/Substrate/Algebra/F2/Vector/Universal.agda`
+- `agda/Substrate/Algebra/GL3F2/AsPresented.agda`
+- `agda/Substrate/Algebra/GL3F2/Characters.agda`
+- `agda/Substrate/Algebra/GL3F2/GaugeGenerators.agda`
+- `agda/Substrate/Algebra/GL3F2/SingerOrder/OnBasis.agda`
+- `agda/Substrate/Algebra/GL3F2/SylowDecomposition.agda`
+- `agda/Substrate/Algebra/Module/Free/Basis.agda`
+- `agda/Substrate/Algebra/Polynomial/Graded.agda`
+- `agda/Substrate/Algebra/Polynomial/Graded/Mod.agda`
+- `agda/Substrate/Algebra/PrimeFactor-168-FieldFanOut.agda`
+- `agda/Substrate/Algebra/Q/AsModule.agda`
+- `agda/Substrate/Algebra/Q/Vector.agda`
+- `agda/Substrate/Algebra/Sporadic/HappyFamily/AsTree.agda`
+- `agda/Substrate/Algebra/Wedge/Contextuality/Models.agda`
+- `agda/Substrate/Algebra/Wedge/Contextuality/Models2.agda`
+- `agda/Substrate/Algebra/Wedge/NilpotentLogMFin.agda`
+- `agda/Substrate/Algebra/Wedge/NilpotentLogMFinLaws.agda`
+- `agda/Substrate/Algebra/Z6-FieldBond.agda`
+- `agda/Substrate/Algebra/Z6-FieldTower.agda`
+- `agda/Substrate/Axes/Punctured.agda`
+- `agda/Substrate/Cardinality.agda`
+- `agda/Substrate/Category/Cone/EqualizerInstance.agda`
+- `agda/Substrate/Category/Cone/EqualizerWithMorphisms.agda`
+- `agda/Substrate/Category/Cone/PullbackInstance.agda`
+- `agda/Substrate/Category/Cone/PullbackWithMorphisms.agda`
+- `agda/Substrate/Category/FreeUniversalProperty/FreeF2Module.agda`
+- `agda/Substrate/Category/MultiFieldBond.agda`
+- `agda/Substrate/Category/UniversalProperty/ExtrudeCoEmitGraded.agda`
+- `agda/Substrate/Category/UniversalProperty/ExtrudeSKIFaceset.agda`
+- `agda/Substrate/Category/UniversalProperty/ExtrudeSKIKFaces.agda`
+- `agda/Substrate/Category/UniversalProperty/ExtrudeSKINVertex.agda`
+- `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/S3ToOrbitKey.agda`
+- `agda/Substrate/Cocycles/V4Signature/OrbitKey-S3/SFinRoundTrip.agda`
+- `agda/Substrate/Cocycles/V4Signature/Pairing/Structural.agda`
+- `agda/Substrate/Codes/Hamming/H-7-4-3.agda`
+- `agda/Substrate/Codes/Hamming/H-8-4-4.agda`
+- `agda/Substrate/Codes/ReedMuller/RM-1-3.agda`
+- `agda/Substrate/Conway/AsCone.agda`
+- `agda/Substrate/Foundation/Fin.agda`
+- `agda/Substrate/Foundation/Fin/Combine.agda`
+- `agda/Substrate/Foundation/Fin/Combine/Assoc.agda`
+- `agda/Substrate/Foundation/Fin/Combine/RemQuotInverse.agda`
+- `agda/Substrate/Foundation/Fin/Cover.agda`
+- `agda/Substrate/Foundation/Fin/Exists.agda`
+- `agda/Substrate/Foundation/Fin/Inject.agda`
+- `agda/Substrate/Foundation/Fin/Properties.agda`
+- `agda/Substrate/Foundation/Fin/Punctured.agda`
+- `agda/Substrate/Foundation/Fin/SplitAt.agda`
+- `agda/Substrate/Foundation/Fin/SplitAt/InjectIdentity.agda`
+- `agda/Substrate/Foundation/Fin/SplitAt/View.agda`
+- `agda/Substrate/Foundation/Vec.agda`
+- `agda/Substrate/Foundation/Vec/Properties.agda`
+- `agda/Substrate/Geometry/HodgeDim3/ChiralityAxis.agda`
+- `agda/Substrate/Geometry/HodgeDim3/Gl3.agda`
+- `agda/Substrate/Geometry/HodgeDim3/V4Plane.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Axioms/ActEpsilonN.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Composition/ActDotCanonical.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Generators/RotPowNormalizeEq.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Generators/SwapPowNormalizeEq.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Twist/ActEqualsPow.agda`
+- `agda/Substrate/Groups/Actions/S3-on-V4/Twist/RotPowSwapTwist.agda`
+- `agda/Substrate/Groups/Actions/Z2-on-Z3/ActDot.agda`
+- `agda/Substrate/Groups/Actions/Z2-on-Z3/ActEpsilonN.agda`
+- `agda/Substrate/Groups/Actions/Z2-on-Z3/ActHom.agda`
+- `agda/Substrate/Groups/Actions/Z2-on-Z3/Canonical.agda`
+- `agda/Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvInv.agda`
+- `agda/Substrate/Groups/Coxeter/Cyclic/InvCanonical/InvPosAddMod.agda`
+- `agda/Substrate/Groups/Coxeter/Cyclic/Inverse.agda`
+- `agda/Substrate/Groups/Stab-S3-Hom.agda`
+- `agda/Substrate/Groups/Stab-S3-Iso.agda`
+- `agda/Substrate/Groups/Z-x-FreeCyclic-PhaseAdvance.agda`
+- `agda/Substrate/Groups/Z3-Coxeter.agda`
+- `agda/Substrate/Logic/Evidence/ElAtlas/OrbitCloud.agda`
+- `agda/Substrate/Realizability/Charter.agda`
+- `agda/Substrate/ShadowArchitecture/AxisDualLine.agda`
+- `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/Monotone.agda`
+- `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/NotOpenFromVIII.agda`
+- `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/OpenOnPreVIII.agda`
+- `agda/Substrate/ShadowArchitecture/Raven/PhaseTransition/PriorAñelé.agda`
+- `agda/Substrate/WitnessTower/Codeword.agda`
+- `agda/Substrate/WitnessTower/Complete.agda`
+- `agda/Substrate/WitnessTower/Decompose.agda`
+- `agda/Substrate/WitnessTower/Hodge.agda`
+- `agda/Substrate/WitnessTower/IsPermutation.agda`
+- `agda/Substrate/WitnessTower/Sn.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationProductCons.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationProductStructuralDecode.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationProductUnit.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermCoxeterGeneral/Properties.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationRigCatPermSign.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationRigCatSymUP.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationRigFree.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationSumLaws.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationSumNaturality.agda`
+- `agda/Substrate/WitnessTower/Wedge/OrientationUniversalOver.agda`
+- `agda/Substrate/WitnessTower/Wedge/PackedBridge.agda`
+- `agda/Substrate/WitnessTower/Wedge/PyAstRig.agda`
+
+## Instruction (for an LLM)
+
+These 290 units share the structure rooted at `Substrate.Foundation.Fin.Fin.zero`. Consolidate it:
+1. Extract ONE parameterized abstraction (a record / def / parameterized module) capturing the
+   shared shape, homed at the canonical module of `Substrate.Algebra.PrimeFactor-168-FieldFanOut.PSL27-Bond` (or a shallower shared parent).
+2. Rewrite each instance above to INSTANTIATE that abstraction — X is an instance of Y, and that
+   is the goal (consolidation), not a workaround.
+3. Verify: every touched file typechecks `--safe --without-K`; then re-run
+   `scripts/reuse_sweep.py <changed files>` and confirm this subtree's fanin has collapsed onto
+   the single abstraction.

@@ -1,0 +1,1 @@
+* prime-power tower, abelian/non-abelian split, 2-vs-3 asymmetry, inversion thesis (inverse=ℚ(ζ_p))

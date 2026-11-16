@@ -1,0 +1,1 @@
+GRADE: Ihara/Bass + Mackey + Bass-Serre = correct named tools (act on them). Wedderburn-rationality = the sharpening that nearly resolves P-DEFORM (non-cyc = projection artifact). Chebotarev = analogy. Feedback's squarefree=purely-cyclotomic prediction = REFUTED by (2,3) already; P-COPRIME confirms direction.

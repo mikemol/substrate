@@ -1,0 +1,26 @@
+{
+ "3": {
+  "AA_share": 0.0,
+  "AA_zero": true,
+  "mult": 1,
+  "mult_ok": true,
+  "nullity": 2,
+  "target": 1
+ },
+ "5": {
+  "AA_share": 0.0,
+  "AA_zero": true,
+  "mult": 2,
+  "mult_ok": true,
+  "nullity": 8,
+  "target": 2
+ },
+ "7": {
+  "AA_share": 0.0,
+  "AA_zero": true,
+  "mult": 3,
+  "mult_ok": true,
+  "nullity": 18,
+  "target": 3
+ }
+}

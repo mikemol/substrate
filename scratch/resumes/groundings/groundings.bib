@@ -1,0 +1,401 @@
+% groundings.bib — one entry per TERM-to-WORK mapping.
+%
+% ⚑ WHAT A GROUNDING IS.  A claim that *this recorded work is what industry practitioners call X*.
+% The operator's framing: "We're not looking for anything novel.  We're looking to ground everything
+% in what other industry professionals might have called it, since I didn't know the terminology and
+% may still not."  So this is a VOCABULARY layer over the concept library, not a novelty audit.
+%
+% ⚠⚠ AND IT IS A CLAIM ABOUT NAMING, WHICH CAN BE WRONG BY BEING ADJACENT.  `checks/grounding.py`
+% verifies the PROVENANCE of the naming — that the `names` keys resolve in library/concepts.py, that
+% the `rests-on` reference exists and carries a url or doi, that `verdict` is one of the two allowed
+% values.  It CANNOT verify the term is apt.  Read the check's docstring before reading a green gate
+% as the industry agreeing.
+%
+% ⚑ WHY THE `NEARLY` ENTRIES ARE HERE AT ALL, AND WHY THEY CARRY THE MOST VALUE.  Accuracy binds
+% harder than coverage: a term that is adjacent-but-not-accurate is WORSE than no term, because
+% adopting it is exactly the drift this corpus exists to prevent.  A NEARLY entry names the term,
+% then says what DIFFERS — so the difference survives instead of being quietly rounded off the next
+% time somebody reaches for the nearest available word.
+%
+% ⚠ TERMS DELIBERATELY ABSENT, and each absence is a decision:
+%   * "Air-gapped" for the Chef Policyfile.  A forward research pass returned it; the storage
+%     lexicon's air-gapped means a backup copy unreachable from the production control plane, and
+%     there is no air-gapped backup anywhere in this corpus.  MASTERLESS is the honest name and it
+%     is what a Chef practitioner says.  See `g-masterless-chef`, the correction.
+%   * "Hermetic" as a SLSA term — SLSA v1.0 explicitly declines to define it.
+%   * "Data residency" / "data classification" / "data minimization" — the natural vocabulary for
+%     the GDPR work, which is NDA-bound and permanently out of scope.  These would smuggle it in
+%     under a generic-sounding name.
+%   * "Managed service" / "cloud-native" / IaaS / FaaS / serverless — every one invites the AWS/GCP
+%     codelab-only trap, and an ATS scan does not parse negation, so even a disclaimer is forbidden.
+%   * Document-store / NoSQL vocabulary — MongoDB is a recurring fabrication and was never his.
+%   * MDT / SCCM / task sequence / GPO / PowerShell JEA — see the collision in the check's docstring.
+%   * "Error budget", "load shedding", "consistent hashing", "CAP/PACELC", "model checking" — no
+%     work in this corpus instantiates them, so there is nothing to ground.
+
+% ══ Networking and Traffic Engineering ═════════════════════════════════════════════════════════
+
+@misc{g-elephant-flows,
+  section  = {networking},
+  term     = {elephant flows},
+  names    = {vi-lag-hashing-limit},
+  verdict  = {APPLIES},
+  rests-on = {r-rfc7424 r-benson-imc2010 r-hedera-nsdi2010},
+  claim    = {\textbf{Elephant flows, and RFC 7424 is the primary citation rather than Hedera.} Hedera and CONGA address ECMP across a Clos fabric; this was a LAG on a single inter-switch link, which is RFC 7424 literal subject matter. The RFC states the three conditions under which hash-based distribution works --- a fairly uniform hash across flows, "the individual flow rates are much smaller as compared to the link capacity", and no dramatic rate differences --- and defines a large flow by example as one "at or above 10\% of link bandwidth for a time period of at least one second". A handful of fat, long-lived heal flows violates the second and third conditions at once: too few flows to average out, each large relative to the member. \textbf{Which is also why adding links does not fix it:} with few large flows, more members change WHICH member collides, not whether one does, and every remedy the RFC offers is a PLACEMENT mechanism rather than a capacity one},
+  check    = {grounding:g-elephant-flows}
+}
+
+@misc{g-flow-polarization,
+  section  = {networking},
+  term     = {flow polarization},
+  names    = {vi-lag-hashing-limit},
+  verdict  = {APPLIES},
+  rests-on = {r-juniper-hashing},
+  claim    = {\textbf{Flow polarization.} The observation that on an inter-switch link the imbalance compounds instead of averaging is the vendor-named failure mode: identical hash inputs at successive stages concentrate flows rather than spreading them, which is why LAG and ECMP deliberately take different offsets of the same seed. The corpus derives the mechanism; the industry has a one-word name for it},
+  check    = {grounding:g-flow-polarization}
+}
+
+@misc{g-hol-blocking,
+  section  = {networking},
+  term     = {head-of-line blocking},
+  names    = {vi-lag-hashing-limit},
+  verdict  = {NEARLY},
+  rests-on = {r-rfc9113},
+  claim    = {\textbf{Head-of-line blocking --- gloss it, do not claim it bare.} Flows pinned to a saturated LAG member while sibling members idle IS head-of-line blocking, but at the LINK-SELECTION layer. Canonical usage is per-queue or per-stream, as in HTTP/2's transport-level case. The phenomenon is the same and the layer is not, so the honest form is "head-of-line blocking at the link-selection layer" --- never the bare term, which a reader will resolve to the transport sense},
+  check    = {grounding:g-hol-blocking}
+}
+
+% ══ Distributed Systems and Failure Modes ══════════════════════════════════════════════════════
+
+@misc{g-gray-failure,
+  section  = {distributed-systems},
+  term     = {gray failure / differential observability},
+  names    = {vi-lag-hashing-limit},
+  verdict  = {APPLIES},
+  rests-on = {r-gray-failure},
+  claim    = {\textbf{Gray failure, and its mechanism, differential observability.} The LAG bad-pair case is the textbook instance: the link is up, health checks are green, and a stable tuple-selected subset of traffic is permanently broken. The system's own observers and its users disagree about whether it is working --- which is the definition, and the reason the condition survives every check built to catch a hard failure},
+  check    = {grounding:g-gray-failure}
+}
+
+@misc{g-metastable-failure,
+  section  = {distributed-systems},
+  term     = {metastable failure},
+  names    = {google-n-plus-two google-reshape-starvation},
+  verdict  = {APPLIES},
+  rests-on = {r-metastable-hotos, r-metastable-wild},
+  claim    = {\textbf{Metastable failure --- and the corpus has BOTH STATES of the machine, which is the part worth saying.} Bronson decomposes it as stable to vulnerable to metastable, where LOAD moves a system into the vulnerable state, a TRIGGER pushes it to metastable, and a SUSTAINING EFFECT holds it there. The two are distinct claims here and conflating them would overclaim one and lose the other. \textbf{The fleet sizing is a VULNERABLE-STATE claim:} steady state permanently spent the slot planned for transient work, so the fleet sat at effective n+1 against mechanics requiring n+2, and a hardware failure was the trigger. No feedback loop --- a standing condition, and the paper is explicit that systems "choose to run in the vulnerable state all the time because it has much higher efficiency", for years, with the threshold implicit and invisible. \textbf{The reshape starvation is the METASTABLE FAILURE proper,} because the sustaining effect is identifiable: the reshape cannot skip ahead, so tasks ahead of its frontier go stalest, which is exactly what the oldest-first data roller selects --- the lag manufactures the demand that blocks the reshape, and removing the trigger does not clear it. \textbf{And the analytic move the paper prescribes was performed:} refusing to root-cause the incident to the failed hardware, and naming the standing capacity condition instead. Bronson holds that the root cause is the sustaining loop, not the trigger},
+  check    = {grounding:g-metastable-failure}
+}
+
+@misc{g-hedged-requests,
+  section  = {distributed-systems},
+  term     = {hedged requests},
+  names    = {google-conjunctive-deadline},
+  verdict  = {APPLIES},
+  rests-on = {r-tail-at-scale},
+  claim    = {\textbf{Hedged requests.} A conjunctive deadline surfaces the tail rather than the mean, so the lever is not making each instance faster but removing the requirement that every one answer --- which is precisely the hedged-request technique. The corpus identifies the lever that breaks the conjunction; Dean and Barroso name it, alongside the tail-at-scale framing for the amplification itself},
+  check    = {grounding:g-hedged-requests}
+}
+
+@misc{g-bulkhead,
+  section  = {distributed-systems},
+  term     = {bulkhead pattern},
+  names    = {eic-flakeflir eic-concurrency-origin},
+  verdict  = {APPLIES},
+  rests-on = {r-release-it, r-azure-bulkhead},
+  claim    = {\textbf{Bulkhead pattern.} Each unstable vendor ActiveX control was moved into its OWN operating-system process, with data and commands marshalled across a named pipe, so that a control crashing took down a partition rather than the application. That is the bulkhead pattern precisely --- partition the system so a failure cannot consume what the other partitions need --- reached independently on VC6-era Windows, years before the pattern was named and catalogued},
+  check    = {grounding:g-bulkhead}
+}
+
+@misc{g-crash-only,
+  section  = {distributed-systems},
+  term     = {crash-only design},
+  names    = {vi-disposable-nodes},
+  verdict  = {APPLIES},
+  rests-on = {r-crash-only},
+  claim    = {\textbf{Crash-only design.} Reprovisioning a compute node from bare metal was a routine operation rather than a recovery procedure, which is the crash-only property stated operationally: if the only way to stop is to crash and the only way to start is to recover, then recovery is exercised continuously instead of being a rarely-taken path that rots. The corpus reaches it as a byproduct of automation, not as an adopted design principle},
+  check    = {grounding:g-crash-only}
+}
+
+% ⚠ THE ARBITER / WITNESS-NODE ENTRY IS DELIBERATELY ABSENT, and its absence is the rule working.
+% The terminology notes rank it in the highest-value class: the corpus is reported to say
+% "mediated-2" for a two-replica configuration plus a voting third party that holds no data, which
+% is what a practitioner calls an ARBITER or a QUORUM WITNESS --- and "mediated-2" is searched for
+% by nobody.  The reference for it is written and verified (`r-quorum-witness`).  What does not
+% exist is a CONCEPT KEY recording that configuration: the Gluster and replication material in
+% library/concepts.py records the heal-time and disposability properties and says nothing about
+% replica arithmetic (`vi-disposable-nodes` explicitly declines to assert a replica count, noting
+% 3x2 vs 2x3 is still unrecorded).  A grounding needs work to ground.  Writing this entry against
+% the nearest-looking key would be exactly the fabrication the check cannot catch --- predicate (1)
+% only asks that the key RESOLVE, not that it be about the right thing.  So: interview for the
+% replica topology first, then add the entry.  The reference stays, unused, as the standing offer.
+
+@misc{g-hot-spare-blast-radius,
+  section  = {distributed-systems},
+  term     = {blast radius},
+  names    = {vi-blast-radius},
+  verdict  = {APPLIES},
+  rests-on = {r-crash-only},
+  claim    = {\textbf{Blast radius}, and it is already the corpus's own word --- kept here because the reasoning behind it is the transferable part. Where per-device redundancy was unaffordable, the blast radius was FITTED to the redundancy model instead of the other way round: single-supply machines alternated across two power rails so a rail failure cost half a population rather than all of it, and the lone UPS was wired to degrade to raw mains rather than take the load down with it. Designing the failure DOMAIN when you cannot afford to eliminate the failure is the same discipline crash-only recovery formalizes at the software layer},
+  check    = {grounding:g-hot-spare-blast-radius}
+}
+
+@misc{g-event-sourcing,
+  section  = {distributed-systems},
+  term     = {event sourcing},
+  names    = {google-change-rate-capacity},
+  verdict  = {APPLIES},
+  rests-on = {r-fowler-event-sourcing},
+  claim    = {\textbf{Event sourcing.} "The raw observation is the append-only source of truth, the packing is a projection derived by query" is the pattern's definition restated in the corpus's own words: state is a fold over an immutable log rather than a thing mutated in place, and any packing is one derivable view among many},
+  check    = {grounding:g-event-sourcing}
+}
+
+@misc{g-retry-inverted,
+  section  = {distributed-systems},
+  term     = {retry budget / thundering herd},
+  names    = {vi-microsegmentation vi-drop-not-reject},
+  verdict  = {NEARLY},
+  rests-on = {r-sre-cascading},
+  claim    = {\textbf{Retry budgets and thundering herds --- inverted here, and that is worth saying.} The lexicon's concern is retries OVERWHELMING a system, and the standard remedies cap or randomize them. The DROP-not-REJECT choice engineers FOR the retry instead: dropping rather than refusing lets TCP's own retransmit absorb a conntrack replication race that a REJECT would surface to the application. Same primitive, opposite direction --- so the term is the right one to reach for and the wrong one to claim flat},
+  check    = {grounding:g-retry-inverted}
+}
+
+% ══ Site Reliability Engineering ═══════════════════════════════════════════════════════════════
+
+@misc{g-saturation-dimension,
+  section  = {sre},
+  term     = {saturation (golden signals)},
+  names    = {google-change-rate-capacity},
+  verdict  = {NEARLY},
+  rests-on = {r-sre-monitoring},
+  claim    = {\textbf{Saturation --- but of a dimension the golden signals do not enumerate.} Change-rate capacity, the rate at which a leaf can absorb change, is a saturation dimension: it fills, and when full it surfaces as latency elsewhere. The golden signals name saturation generally and enumerate the resources people instrument, which are the static ones --- so calling this "saturation" flat implies an instrumented quantity that did not exist. The honest phrase is "an unnamed saturation dimension"},
+  check    = {grounding:g-saturation-dimension}
+}
+
+@misc{g-toil,
+  section  = {sre},
+  term     = {toil},
+  names    = {eic-toolbox-unowned},
+  verdict  = {NEARLY},
+  rests-on = {r-sre-toil},
+  claim    = {\textbf{Toil --- and it must not swallow the correctness half.} Only ONE of the three toolbox examples is toil in the defined sense of manual, repetitive, automatable work that scales with the service and produces no enduring value. The other two are correctness strategies: they exist because a human doing the same thing would get it wrong, not because a human doing it would be slow. Letting the term cover all three converts an argument about correctness into an argument about labour},
+  check    = {grounding:g-toil}
+}
+
+@misc{g-incident-post-analysis,
+  section  = {sre},
+  term     = {blameless postmortem},
+  names    = {google-oncall-load},
+  verdict  = {NEARLY},
+  rests-on = {r-sre-postmortem},
+  claim    = {\textbf{Blameless postmortem --- the mechanism, not the program.} Post-analysis was run on forwarded pages, which is the mechanism the practice is built out of. What the term additionally denotes is an INSTITUTED program with a template, a review, and an organizational commitment to non-attribution, and no such program is recorded. Say "incident post-analysis"},
+  check    = {grounding:g-incident-post-analysis}
+}
+
+@misc{g-prr,
+  section  = {sre},
+  term     = {production readiness review},
+  names    = {ford-two-tier-promotion},
+  verdict  = {NEARLY},
+  rests-on = {r-sre-prr},
+  claim    = {\textbf{Production readiness review --- and the pre-prod wedge is sharper than the standard.} It asks the PRR's question, whether this thing may be trusted in production, but answers it by CLASSIFICATION against a complete requirement rather than by a checklist a reviewer walks. A checklist is a list of things somebody remembered; a complete classification cannot have a forgotten item, because the completeness is the property being checked. Same question, stronger answer, so the term under-describes it},
+  check    = {grounding:g-prr}
+}
+
+@misc{g-dora-lead-time,
+  section  = {sre},
+  term     = {change lead time (DORA)},
+  names    = {ford-provisioning-latency},
+  verdict  = {NEARLY},
+  rests-on = {r-dora-metrics},
+  claim    = {\textbf{Change lead time --- adjacent, and the metric is not the one that was measured.} Provisioning fell from up to two days of queuing to a 45-minute end-to-end ephemeral deploy, which is an input to lead time and not lead time itself: DORA measures commit-to-production for a CHANGE, and this measures the platform's provisioning step. Quote the 45 minutes as a provisioning latency. \textbf{And DORA now publishes FIVE metrics}, not four --- deployment rework rate was added and failed deployment recovery time replaced the older MTTR framing --- so "the DORA four keys" is not a current statement},
+  check    = {grounding:g-dora-lead-time}
+}
+
+% ══ Observability and Tracing ══════════════════════════════════════════════════════════════════
+
+@misc{g-trace-context,
+  section  = {observability},
+  term     = {trace context propagation},
+  names    = {trace-across-boundaries propagation-standard trace-fanout},
+  verdict  = {APPLIES},
+  rests-on = {r-w3c-trace-context},
+  claim    = {\textbf{Trace context propagation.} Carrying a correlation identifier across a service boundary so that spans emitted by independently-owned systems join into one trace is the W3C-standardized name for the strongest Ford claim, including the hierarchical extension for fan-out. The standard is the vocabulary a reader already has; the work predates their adoption of it and matches its shape},
+  check    = {grounding:g-trace-context}
+}
+
+% ══ Platform, Build, and Configuration Management ══════════════════════════════════════════════
+
+@misc{g-masterless-chef,
+  section  = {platform},
+  term     = {masterless / convergent configuration management},
+  names    = {ford-cis-artifact},
+  verdict  = {APPLIES},
+  rests-on = {r-chef-local-mode, r-chef-policyfile},
+  claim    = {\textbf{Masterless configuration management --- and this entry is a CORRECTION.} A forward research pass grounded the local-only Policyfile as "air-gapped" and "hermetic artifact". Both are wrong here for independent reasons. The storage lexicon's air-gapped means a backup copy unreachable from the production control plane, and there is no air-gapped backup anywhere in this corpus; SLSA v1.0 explicitly declines to define "hermetic", listing it as too ambiguous to specify. Chef Infra Client in local mode with no remote server IS masterless Chef --- it is what a Chef practitioner says, and it carries neither ambiguity},
+  check    = {grounding:g-masterless-chef}
+}
+
+@misc{g-reproducible-build,
+  section  = {platform},
+  term     = {reproducible build},
+  names    = {gabion-determinism determinism-focus},
+  verdict  = {NEARLY},
+  rests-on = {r-reproducible-builds},
+  claim    = {\textbf{Reproducible build --- the right family, and the claim is about the wrong artifact.} Reproducibility as defined is a property of a BUILD: same source, same environment, same instructions, bit-identical outputs. The determinism work is a property of an EXECUTION --- the same inputs yielding the same decisions on every run. The two share their argument (an unreproducible result cannot be attributed) and not their subject, so cite the definition and say which one is meant},
+  check    = {grounding:g-reproducible-build}
+}
+
+@misc{g-level-triggered,
+  section  = {platform},
+  term     = {level-triggered vs edge-triggered},
+  names    = {declaration-frames-corecursion},
+  verdict  = {APPLIES},
+  rests-on = {r-k8s-principles},
+  claim    = {\textbf{Level-triggered, as opposed to edge-triggered.} This is the precise distinction under "derive, don't synchronise": a declaration is level-triggered --- compare current state to intent and converge, correctly, however many intermediate updates were missed --- while a process-in-motion is edge-triggered and has no fixed point to compare against. The corecursion argument is a level-triggered argument without the name, and level-based reconciliation is the term the reconciler ecosystem standardized on},
+  check    = {grounding:g-level-triggered}
+}
+
+% ══ Security and Access Control ════════════════════════════════════════════════════════════════
+
+@misc{g-pep,
+  section  = {security},
+  term     = {policy enforcement point},
+  names    = {vi-microsegmentation},
+  verdict  = {APPLIES},
+  rests-on = {r-nist-800-207},
+  claim    = {\textbf{Policy enforcement point.} A host firewall is enforced BY the host, so it cannot survive that host's compromise. Relocating enforcement onto a firewall VM the workload nodes cannot reach is textbook PEP placement in the zero-trust sense: the point that enables, monitors and terminates the connection is deliberately not the element whose compromise is being defended against},
+  check    = {grounding:g-pep}
+}
+
+@misc{g-operator-blind,
+  section  = {security},
+  term     = {operator-blind / zero-knowledge storage},
+  names    = {vi-zero-knowledge},
+  verdict  = {NEARLY},
+  rests-on = {r-crypto-cloud-storage},
+  claim    = {\textbf{"Encryption at rest" UNDER-CLAIMS this, and settling for it loses the property.} Encryption at rest is satisfied by a provider holding the keys. What was built is a store whose OPERATORS could not read the data --- for a medical use case its author was never told about, which is that property doing exactly what it exists for. The literature's term is cryptographic cloud storage or operator-blind storage; "zero-knowledge" is the industry's marketing word for it and collides with the proof-theoretic sense, so gloss it rather than leading with it. \textbf{Attribution:} this is EIC work done under contract FOR VI},
+  check    = {grounding:g-operator-blind}
+}
+
+@misc{g-least-privilege,
+  section  = {security},
+  term     = {least privilege},
+  names    = {google-tiering-rbac rbac-tiering},
+  verdict  = {NEARLY},
+  rests-on = {r-saltzer-schroeder},
+  claim    = {\textbf{Least privilege --- the right principle over the wrong noun.} The RBAC work removes PARAMETER authority: which knobs a role may turn, and how far. Least privilege as defined governs the privileges a program or user operates with, and the operational vocabulary around it --- just-in-time access, privileged access management, credential brokering --- is about CREDENTIAL authority. Neither JIT access nor PAM is recorded here, so the principle applies and its usual apparatus must not be claimed with it},
+  check    = {grounding:g-least-privilege}
+}
+
+@misc{g-separation-of-duties,
+  section  = {security},
+  term     = {separation of duties},
+  names    = {ford-release-team-ran-it self-verifying-artifact},
+  verdict  = {NEARLY},
+  rests-on = {r-nist-800-53r5},
+  claim    = {\textbf{Separation of duties --- and the phrasing matters more here than anywhere else in this index.} The release organization existed to enforce the control, and the pipeline satisfied the control's EVIDENCE requirement well enough that release authority was delegated to it. Say exactly that. Never "I removed separation of duties": the duty was discharged by a mechanism that produced the audit evidence the control exists to generate, which is the opposite of removing it, and in a regulated environment the difference is the whole claim},
+  check    = {grounding:g-separation-of-duties}
+}
+
+% ══ Method and Experimental Discipline ═════════════════════════════════════════════════════════
+
+@misc{g-chaos-engineering,
+  section  = {method},
+  term     = {chaos engineering},
+  names    = {vi-experimental-hygiene},
+  verdict  = {NEARLY},
+  rests-on = {r-chaos-engineering, r-principles-of-chaos},
+  claim    = {\textbf{Chaos engineering --- and adopting it would invert the point.} The defined practice injects RANDOMIZED faults against a steady-state resilience hypothesis, in production, to discover unknown weaknesses. What is recorded is deterministic, planned destruction whose purpose is experimental ATTRIBUTION: without a clean rebuild a configuration change cannot be attributed, because every trial measures the change plus whatever residue the prior state left. Resilience verification falls out as a byproduct. Say "verified fault tolerance by deliberate destruction"},
+  check    = {grounding:g-chaos-engineering}
+}
+
+@misc{g-positive-control,
+  section  = {method},
+  term     = {positive control},
+  names    = {eic-flakeflir},
+  verdict  = {APPLIES},
+  rests-on = {r-gray-failure},
+  claim    = {\textbf{Positive control.} Already the corpus's own word, and it is the correct experimental-method term, so this entry KEEPS it rather than glossing it. A positive control is a deliberately-injected fault the instrument MUST detect, which is what makes a silent detector distinguishable from a healthy system: without one, a green board is equally consistent with no faults and with no detection. FlakeFLIR forcing the vendor SDK to crash on demand is that control. \textbf{The failure it guards against has a name too} --- an observer reporting healthy while the system is not is differential observability, the mechanism under gray failure},
+  check    = {grounding:g-positive-control}
+}
+
+@misc{g-slack,
+  section  = {distributed-systems},
+  rests-on = {r-demarco-slack},
+  claim    = {\textbf{Slack.} DeMarco defines it as "the degree of freedom required to effect change", and illustrates it with the eight-tile sliding puzzle whose empty square IS the slack --- remove it and the puzzle is maximally efficient by occupancy and can no longer be changed at all. That is the spare pool exactly: holes rotating through a fleet, whose only purpose is to permit any restart at all. He arrived at the quantity from the work and called it change-rate capacity, "a unit I had to invent, because nobody else had yet". The unit was already named; what was missing was the name, not the concept. DeMarco also supplies the reason an allocator destroys it --- slack is "the natural enemy of efficiency", so a scheduler optimising occupancy drives it toward zero AS A SIDE EFFECT OF SUCCEEDING at its stated objective},
+  check    = {grounding:g-slack},
+  names    = {google-reshape-starvation,google-change-rate-capacity},
+  term     = {slack},
+  verdict  = {APPLIES}
+}
+
+@misc{g-vsm-pathologies,
+  section  = {distributed-systems},
+  rests-on = {r-perez-rios-vsm},
+  claim    = {\textbf{Hypertrophy of System 3 (II10), and disjointed behaviour within System 1 (II12).} Perez Rios names both halves. II12 --- "a lack of adequate interrelations between the elemental operating units" --- is two schedulers contending over one spare pool, neither able to observe the other, which is what a missing System 2 looks like in the domain. II10 is the allocator holding activity that belongs to System 2. \textbf{The NEARLY is on II10 specifically and it matters:} the definition describes System 3 ARROGATING THE ACTIVITY, and this allocator never modelled coordination at all --- it set the coordination budget, as a byproduct of a resource decision, with no representation of having done so. Arrogation of the CONSTRAINT WITHOUT THE ACTIVITY. Say "a variant of II10" and it is precise; say II10 flat and it is most of the way there},
+  check    = {grounding:g-vsm-pathologies},
+  names    = {google-reshape-starvation},
+  term     = {hypertrophy of System 3 / disjointed behaviour within System 1},
+  verdict  = {NEARLY}
+}
+
+@misc{g-requisite-variety,
+  section  = {distributed-systems},
+  rests-on = {r-ashby-cybernetics},
+  claim    = {\textbf{The Law of Requisite Variety.} "Only variety can destroy variety" --- a regulator must have at least as much variety as the system it regulates. The joint state space of several interacting control loops exceeds any one of them, so each single-loop regulator had requisite variety FOR ITS OWN VARIABLE and necessarily insufficient variety for the joint system. That makes the shortfall structural and provable rather than anyone failing to try hard enough, which is the most defensible available framing of "no local instrument could see it". The sharp form: the allocator had requisite variety over the resource space and none over the coordination space, and it was gating on the latter},
+  check    = {grounding:g-requisite-variety},
+  names    = {google-reshape-starvation},
+  term     = {law of requisite variety},
+  verdict  = {APPLIES}
+}
+
+@misc{g-component-focus,
+  section  = {method},
+  rests-on = {r-heath-coordination-neglect},
+  claim    = {\textbf{Component focus, a named sub-mechanism of coordination neglect.} Heath and Staudenmayer argue that organisations attend to PARTITIONING work and PERFECTING COMPONENTS, and systematically under-attend the INTERCONNECTIONS --- not from incompetence, but because lay theories of organizing make division of labour salient and integration invisible. That is "each loop was correct, instrumented, and separately owned, and their interaction was regulated by nothing", stated as a research finding twenty-five years earlier. \textbf{It is also the register-safe term:} it names a general cognitive bias in how humans organise, so it describes a structural condition without characterising any person},
+  check    = {grounding:g-component-focus},
+  names    = {google-reshape-starvation,google-conjunctive-deadline},
+  term     = {coordination neglect / component focus},
+  verdict  = {APPLIES}
+}
+
+@misc{g-fail-static,
+  section  = {sre},
+  rests-on = {r-gcp-19009},
+  claim    = {\textbf{Fail static, and a public instance of the same two shapes.} The vendor postmortem for the 2019-06-02 networking incident records an automated allocator that "created a list of jobs to deschedule in that physical location, which included the logical clusters running network control jobs" --- descheduling beyond its intended scope --- and debugging "significantly hampered by failure of tools competing over use of the now-congested network", the instruments degraded by the failure they exist to diagnose. Its remediation extended "fail static" mode duration: keep serving the last known good state when the control plane is unavailable, which is a design for surviving a change you cannot complete. \textbf{Cited because it is public and checkable:} the same two mechanisms, in the vendor own words, without resting on any account of an internal programme},
+  check    = {grounding:g-fail-static},
+  names    = {google-reshape-starvation},
+  term     = {fail static},
+  verdict  = {APPLIES}
+}
+
+@misc{g-error-budget-contrast,
+  section  = {sre},
+  rests-on = {r-sre-error-budget-policy},
+  claim    = {\textbf{Error budget --- and the difference is the whole argument.} Structurally it is the closest thing the field has: a rationed quantity that gates change, where exhaustion stops releases. \textbf{What differs:} an error budget is denominated in reliability, derived from a declared SLO, and deliberately made visible so the change-versus-reliability tradeoff is NEGOTIATED. Change-rate capacity was denominated in machine slots and set implicitly as a byproduct, with no owner, no meter and no feedback. So the sharpest statement of the finding is that \textbf{change capacity was functioning as an error budget nobody had declared, measured, or assigned} --- and the error budget is the existence proof that this class of quantity becomes manageable once it is named. ⚠ Do not claim an error budget was in use; none was},
+  check    = {grounding:g-error-budget-contrast},
+  names    = {google-change-rate-capacity,google-reshape-starvation},
+  term     = {error budget},
+  verdict  = {NEARLY}
+}
+
+@misc{g-lag-remedies,
+  section  = {networking},
+  rests-on = {r-rfc7424},
+  claim    = {\textbf{What the literature actually recommends --- and it is NOT "change the fabric".} RFC 7424 S4.4 offers alternative placement of large flows onto lightly-loaded members, and redistribution of small flows away from congested ones. Every remedy KEEPS the Ethernet fabric. So moving storage transport off it was not what the standards recommend, and the honest framing is that the recommended remedies were REJECTED FOR A STATED REASON rather than agreed with. \textbf{The RFC supplies that reason itself:} rebalancing is imperfect because "flows arrive and depart at different times", moved flows "may experience momentary packet reordering", and S6.1 states his own TCP argument nearly verbatim --- "reordering is a concern for TCP flows with even a few packets because three out-of-order packets would trigger sufficient duplicate ACKs to the sender, resulting in a retransmission [RFC5681]". So the choice was between an imbalance and a rebalancer that trades it for reordering TCP reads as loss. \textbf{Claim the reasoning, not alignment with the recommendation}},
+  check    = {grounding:g-lag-remedies},
+  names    = {vi-lag-hashing-limit},
+  term     = {large-flow placement and small-flow redistribution},
+  verdict  = {NEARLY}
+}
+
+@misc{g-knowledge-vaporization,
+  section  = {method},
+  rests-on = {r-knowledge-vaporization},
+  claim    = {\textbf{Architectural knowledge vaporization --- the established term for the neighbourhood, and the distinction survives it.} Jansen and Bosch name the loss of architectural decisions that were never documented and cannot be derived from the models, existing only as tacit knowledge that dissipates when its holders leave. Being unaware of the term is the risk; the term is not the same claim. \textbf{Vaporization is loss of the RECORD:} the artifacts survive, the rationale was never written down, and every remedy the literature offers --- decision records, rationale capture --- presupposes that writing it down AT THE TIME would have preserved it. \textbf{This is loss of the PREMISES.} Both sides of the derivation were replaced at once, each inheriting a system whose reasoning lived in nobody head, so the derivation became UNDERIVABLE rather than merely forgotten: no decision record written at the time would have saved it, because the inputs that made it derivable are gone too. One is recoverable in principle by better practice. The other is not. \textbf{Gloss it against the standard term rather than adopting it}},
+  check    = {grounding:g-knowledge-vaporization},
+  names    = {google-n-plus-two},
+  term     = {architectural knowledge vaporization},
+  verdict  = {NEARLY}
+}

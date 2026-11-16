@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic metalanguage, block 28)
+
+- **S(g)/verdict rebuild [DONE this delta]** — S(g) is a DEPTH-FOLD over the typehole tree (not a
+  flat-LCP path); shape_verdict REPORTS THE TREE (hole_depths), label only for degenerate shapes.
+  Fixes {f,u,f} (multi-cliff) and the verdict-collapse. Carrier free/bound fix DONE (abs≠str,
+  x=z). Two cases verified; stale flat-LCP helpers (_trunc_skeleton/lcp_depth/classify_profile)
+  flagged for 

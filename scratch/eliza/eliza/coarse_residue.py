@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.CoarseResidue — FF-arc V₄-coarsening of S₄ chamber residue.
 
 Per the user's prompt: 'with EE7, we could permit ourselves to get a

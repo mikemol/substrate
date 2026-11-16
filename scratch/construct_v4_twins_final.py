@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 construct_v4_twins_final.py — complete the remaining 4 V₄-orbits to bring
 F to the entire 32-state space.

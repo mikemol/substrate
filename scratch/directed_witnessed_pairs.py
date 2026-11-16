@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 directed_witnessed_pairs.py — the 24-operation directed framework.
 

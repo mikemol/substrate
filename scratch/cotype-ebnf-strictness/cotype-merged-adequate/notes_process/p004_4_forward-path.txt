@@ -1,0 +1,1 @@
+- **Σ-SPPF-CHART [grammars via a seeded Earley-SPPF; NO CORE CHANGE NEEDED — gap DISSOLVED] —

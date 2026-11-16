@@ -1,0 +1,1 @@
+- **Σ-SPPF-CHART** — seeded Earley-SPPF grammar interning, NO core change (gap dissolved). Load-bearing

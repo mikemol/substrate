@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **Δ-Π-project [the UNFOLD] — DONE-partial, FIXPOINT GATE PASSED.** Built `jea_piproject.py`.
+  Round-trip mode PROVEN: lower→project→re-lower lands on the same canonical node (f/g/schur).
+  intern and projection confirmed as fold and unfold of the one forest. Skeleton-constructor mode
+  PROTOTYPED with 2 bugs (operator-hole withholding; incomplete grammar table). Substitution mode
+  not yet exer

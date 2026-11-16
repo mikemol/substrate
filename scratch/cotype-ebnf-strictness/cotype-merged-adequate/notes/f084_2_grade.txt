@@ -1,0 +1,1 @@
+GRADE: failure mode FOUND (gauge eats identity; trivial gauge → cyclotomic null; test needs non-trivial gauge on k-cycles) — real diagnostic progress, cited to the 2026-06-02 ancestor chat. Arity verdict

@@ -1,0 +1,1 @@
+| **P38 four-theorems infra** | diagonal x⟺¬x UNSAT (forced core); Cantor pairing = bijective ring polynomial | **WITNESSED (ran)** |

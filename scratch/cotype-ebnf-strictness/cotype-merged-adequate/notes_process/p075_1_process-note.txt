@@ -1,0 +1,1 @@
+* Weil/Deligne = Frobenius on H* of a variety over 𝔽_q (the weight/RH structure).

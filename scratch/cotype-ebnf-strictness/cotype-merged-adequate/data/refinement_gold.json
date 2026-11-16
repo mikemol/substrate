@@ -1,0 +1,35 @@
+{
+ "bezout-gauge": {
+  "T1-forest": 1,
+  "T2-residue": 19
+ },
+ "foundations": {
+  "T1-forest": 2
+ },
+ "interning": {
+  "T1-forest": 10,
+  "T3-navigator": 2
+ },
+ "kirchhoff": {
+  "T2-residue": 2,
+  "T3-navigator": 3
+ },
+ "metalanguage": {
+  "T1-forest": 32,
+  "T3-navigator": 3
+ },
+ "obligation-spine": {
+  "T1-forest": 2,
+  "T3-navigator": 1
+ },
+ "sppf-grammar": {
+  "T1-forest": 36,
+  "T2-residue": 13,
+  "T3-navigator": 10
+ },
+ "torsor-witness": {
+  "T1-forest": 3,
+  "T2-residue": 10,
+  "T3-navigator": 9
+ }
+}

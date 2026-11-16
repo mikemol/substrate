@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 0: (preamble))
+
+- **S(g) as a DEPTH-FOLD over the typehole tree [DONE-with-2-open-bugs; the DEEPEST fix; USER
+  invoked the recursive law].** USER asked: are we still RECURSING into the typeholes? The flat
+  LCP S(g) was a single root-to-divergence PATH -- it WALLED at the first mismatch (couldn't see
+  {familiar,unfamiliar,familiar} past the middle) and was fooled into DUPLICATE by {unfamiliar,
+  familiar} root-

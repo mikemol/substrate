@@ -1,0 +1,1 @@
+- **G2 (delta 1) — I mis-placed Octave on the WRONG ARC; USER's real use-case corrected it.** I ran

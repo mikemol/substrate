@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """JJ follow-up: warmup-trimmed Sylow saturation.
 
 Per user 2026-05-21: the chain walk has a sharp transition at

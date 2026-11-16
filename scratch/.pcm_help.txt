@@ -1,0 +1,556 @@
+Structural questions about OUR OWN PYTHON TOOLING — the level above the Agda tools.
+
+⚑ THE ASYMMETRY THIS EXISTS TO CLOSE.  This repo mechanizes every edit to `agda/`
+and makes NONE to the ~85 tools that perform them: `scratch/*.py` and
+`scripts/check_*.py` are edited by hand, one call site at a time.  The same defect
+class the Agda tooling was built to prevent therefore keeps recurring in the Python:
+
+  * `split_pipeline.rewire_only()` was written, documented with its own
+    354-consumer justification, and left with **ZERO CALLERS** — the dispatch
+    branch was never added.  A hand edit forgets the second half.
+  * FOUR gates route through `ratchet.set_ratchet` and none can enumerate its
+    census, while THREE non-family gates each hand-rolled a `--list` block
+    separately: one capability, three copies, four omissions.
+  * `agda_files()` once existed as FOUR different bodies under one name, two of
+    them feeding pre-commit gates.
+
+**A shared NAME is not a shared authority, and a hand sweep is not a transform.**
+
+⚑ WHAT THIS MODULE DELIBERATELY DOES NOT DO — `python -m libcst.tool` ALREADY OWNS IT.
+The reuse-search fired here (user: *"I do notice that the search AI response pointed
+at libcst's own CLI"*) and deleted most of a first draft.  The shipped CLI provides:
+
+    python -m libcst.tool codemod -u <mod>.<Class> <paths>   # unified DIFF preview
+    python -m libcst.tool codemod -j <N> ...                 # parallelism
+    python -m libcst.tool list                               # discover codemods
+    python -m libcst.tool print <file>                       # dump the CST
+
+so a `--dry-run`, a worker pool, a file walker and a preview mode would ALL be
+re-derived infrastructure — `feedback_fix_infra_not_route_around` exactly (conform
+to the tool; do not rebuild its core).  Two of its built-ins are the Python twins
+of tools this repo hand-wrote for Agda: `rename.RenameCommand` ≙ `rename_at_source`,
+`remove_unused_imports` ≙ `prune_imports`.  **Use those; do not re-implement them.**
+
+What is NOT in the CLI, and is therefore what lives here:
+  1. the LOSSLESSNESS precondition for *this* corpus, as a gate; and
+  2. the repo-specific structural QUESTIONS (dead capability, call sites),
+     which the CLI has no notion of because they are not transforms.
+
+⚑ WHY LOSSLESSNESS IS A GATE AND NOT A PROBE.  These files are the arc's incident
+log — nearly every line carries a ⚑ comment recording the measured defect that put
+it there.  A transform that keeps code and drops commentary destroys the more
+valuable half, so "does parse→emit reproduce this byte-for-byte" must be answerable
+for every file before any codemod runs, including files not yet written.  (`libcst`
+and not `ast` for the same reason: `ast` discards comments by construction.)
+
+    pycodemod.py --roundtrip [paths]     # LOSSLESSNESS GATE over the tool corpus
+    pycodemod.py --calls <name> [paths]  # def/call sites; 0 calls = dead capability
+                                         # ⚑⚑ A `--dead` VERDICT IS SCOPE-DIRECTIONAL, AND THE
+                                         # NATURAL QUERY IS THE ONE THAT LIES. An API reached
+                                         # through an aliased module (`import store as _s`;
+                                         # `_s.tenant(...)`) is invisible to a bare-token probe,
+                                         # so scoping to the DEFINER reports dead while scoping
+                                         # to the CALLERS reports live. MEASURED on the tenant
+                                         # resolver: `--calls tenant store.py` → "1 def, 0 calls,
+                                         # ⚑ DEAD CAPABILITY"; the same query over sppf_db.py +
+                                         # schema_rows.py → "0 def, 7 calls". Same name, same
+                                         # tool, opposite verdicts, and the difference is only
+                                         # which file you asked about.
+                                         # ⚑ THIS REPO DELETES ON `--dead`. A sweep over
+                                         # `store.py` would propose removing the function that
+                                         # fixes tenant drift, on a census that cannot see its
+                                         # own callers. Cross-check with `--aliases` (which
+                                         # module is imported under an alias) before acting —
+                                         # same two-spelling shape as the `q_<name>` /
+                                         # `QB.run("<name>")` warning below, one layer up.
+    pycodemod.py --guarded <name> [paths]# WHERE a call SITS, not what it is passed —
+                                         # calls to <name> partitioned by the enclosing
+                                         # `if` conditions, grouped by condition.  Every
+                                         # other reading here answers a question about
+                                         # ARGUMENTS; this is the axis that hid a defect
+                                         # in a GATE: `edit_snapshot.guard` — the
+                                         # mutation-intent guard — has 61 call sites, and
+                                         # at `drop_dead_renames.py:143` it sits inside
+                                         # `if apply:`.  So the guard that forces an
+                                         # operator to STATE intent is reached only after
+                                         # intent is stated as apply, and the UNSTATED
+                                         # case (the whole population the ratchet
+                                         # measures) is the one branch it cannot reach —
+                                         # a WRITE guard where a DECISION guard was
+                                         # specified.  ⚑ Conditions are SOURCE TEXT:
+                                         # "written under this test", never "reachable
+                                         # only when true"; `if apply:` and
+                                         # `if args.apply:` are different keys, and an
+                                         # `else` body is reported under its `if`
+                                         # (over-report, never inverted).  Both sides are
+                                         # printed so a guarded list cannot read as the
+                                         # whole population
+    pycodemod.py --aliases [paths]       # THE BARE-IMPORT BAN, by FORM — the `.py` twin of
+                                         # `agda_defs --qualified`.  `from x import y` is what
+                                         # lacking a bare import looks like in python: it
+                                         # SELECTS names out of a module and binds them where
+                                         # the definition site carries `x.y` (agda's `using`).
+                                         # So `import x` is the only compliant form, graded
+                                         # BARE / AS-MOD / FROM / FROM-AS / FROM-STAR /
+                                         # RELATIVE.  ⚑ SCOPE IS A COLUMN, NOT AN EXCUSE: the
+                                         # ban extends into function bodies for the `from`
+                                         # shapes, while a func-scoped `import x` stays
+                                         # COMPLIANT — so the deferred sites (cycle-breaks,
+                                         # lazy deps) are re-expressed, never deleted.
+                                         # `--all` includes foreign modules; `--sites` lists
+                                         # the violations
+    pycodemod.py --collisions [paths]    # every name with 2+ REIMPLEMENTING defs, PARTITIONED
+                                         # BY WHAT RESOLVES IT — `local` (one file; python
+                                         # scopes them apart), `sibling` (one directory; a
+                                         # candidate lift or a real per-file entry point), and
+                                         # `crossing` (different trees — ONE NAME, TWO
+                                         # CONTRACTS, the class that bit).  ⚑ DELEGATING
+                                         # WRAPPERS DO NOT COLLIDE: four one-liners around one
+                                         # authority are a CONVERGED family, and counting
+                                         # `def` sites finds the defect and its repair without
+                                         # telling them apart.  `--kind K` selects one part
+                                         # (an unknown kind REFUSES); `--sites` lists them
+    pycodemod.py --swallows [paths]      # every `except` that DISCARDS the exception —
+                                         # a handler whose whole body is `continue`/`pass`
+                                         # /bare `return`, split bare-except / broad
+                                         # (`except Exception`) / narrow.  ⚑ A POPULATION,
+                                         # NOT A DEFECT LIST: one unparseable file must not
+                                         # abort a corpus query, so the swallow is usually
+                                         # right.  What is never right is a swallow with NO
+                                         # ACCOUNTING — the population silently shrinks and
+                                         # no number says so.  Measured 2026-08-18: a
+                                         # `NameError` in a visitor, swallowed per-file,
+                                         # made EVERY `--calls` query answer `0 def, 0
+                                         # call, 0 ref` and `--dead` read GREEN on a file
+                                         # with 18 defs — the census this repo DELETES on.
+                                         # ⚑ Exists because `continue`/`pass` are
+                                         # STATEMENTS: `--guarded continue` returns `0 of
+                                         # 0`, a fact about the METHOD (a call-site reader
+                                         # cannot see a statement) that reads as a fact
+                                         # about the code.  Corpus today: 244 sites — 3
+                                         # bare-except, 88 broad, 153 narrow
+    pycodemod.py --check-contracts       # GATE: every mode declaring `scans=True` in
+                                         # `MODES` must call `_report_skipped()`.  The
+                                         # `Arm`/`Convention` model applied to BEHAVIOUR
+                                         # rather than argument shape — `Mode` declared
+                                         # operand/paths/opts and nothing about what a
+                                         # branch OWES, so cross-cutting properties were
+                                         # hand-threaded through ~20 dispatch branches.
+                                         # Measured cost: a visitor defect emptied
+                                         # `scan()`, every `--calls` answered `0 def, 0
+                                         # call, 0 ref`, and `--dead` — what this repo
+                                         # DELETES on — read GREEN on a file with 18
+                                         # defs.  Fixing it meant editing two branches by
+                                         # hand with nothing saying the other eighteen
+                                         # needed it.  Declared and FALSIFIABLE: flip a
+                                         # mode to `scans=True` without the call and this
+                                         # exits 1 naming it (verified).  An empty roster
+                                         # exits 2 — zero contracts and zero violations
+                                         # must not render alike.
+    pycodemod.py --dead [paths]          # every def in the corpus with no caller
+    pycodemod.py --artifacts [paths]     # which tools READ build artifacts, split
+                                         # by whether the artifact can carry a
+                                         # FAILURE — a tool reading failure records
+                                         # emits commit-blockers by construction
+    pycodemod.py --forwards <name> <kw>  # which callers pass <kw>, which DO NOT
+    pycodemod.py --asserted <name> <kw>  # of those, which pass a LITERAL vs a
+                                         # COMPUTED value — presence is not
+                                         # measurement, and a size that cannot
+                                         # vary is a boolean typed as an integer
+    pycodemod.py --values <name> <kw>    # of those, WHICH literal — grouped by the
+                                         # constant each caller wrote.  The third
+                                         # member of the family, and the one that
+                                         # answers "is this call DANGEROUS":
+                                         # `sandbox_connect(reset=…)` has 23 sites,
+                                         # `--asserted` says "23 of 23 LITERAL", and
+                                         # `reset=True` DROPS EVERY RELATION in the
+                                         # tenant.  A non-literal reports UNKNOWN —
+                                         # never a guessed value
+    pycodemod.py --sqlname <query> [paths]# a REGISTERED QUERY's definition and its
+                                         # references.  The store defines `def q_<name>`
+                                         # and invokes `QB.run(con, "<name>")`, so the two
+                                         # spellings NEVER MEET: `--calls q_obs_core`
+                                         # reports `1 def, 0 calls, ⚑ DEAD CAPABILITY` on
+                                         # a query `sppf_db.py:1023` runs every fold.
+                                         # Every registered query is therefore a FALSE
+                                         # POSITIVE in `--dead` — the census this repo
+                                         # uses to decide what to delete.  Takes either
+                                         # spelling (`obs_core` or `q_obs_core`), because
+                                         # a reader arriving from a traceback has the
+                                         # string and one arriving from source has the def
+    pycodemod.py --binding <name> [paths]# where a name is BOUND and where it is LIVE
+    pycodemod.py --types [paths]         # mypy census, keyed error-code::file
+    pycodemod.py --attr <name> [paths]   # ATTRIBUTE reads `.name` — what a field
+                                         # rename must reach; invisible to --binding
+    pycodemod.py --attr <Recv>.* [paths] # the INVERSE: every attribute reached off the
+                                         # bare receiver NAME <Recv>.  `--attr leaf` is
+                                         # deliberately receiver-blind (an arbitrary
+                                         # receiver expression is not decidable), but a
+                                         # receiver written as a bare name IS — so
+                                         # "what does `import scope_fix as SF` actually
+                                         # reach for" is exact, and was the question a
+                                         # module SPLIT could not otherwise answer
+    pycodemod.py --importers <module>    # every file that IMPORTS <module>, with the
+                                         # NAMES it binds — the population `--imports`
+                                         # only counts (`6 file(s)`, one example) and
+                                         # `--attr <Recv>.*` cannot see at all, because
+                                         # `from m import q_x` reads no attribute.  The
+                                         # `_`-prefixed names are reported separately:
+                                         # those are exactly what a `import *`
+                                         # re-export drops while the suites stay green
+    pycodemod.py --projects              # every paperkit PROJECT in the corpus
+                                         # (a dir with paper.toml), its warrants
+                                         # and which of them are FOREIGN bibs
+    pycodemod.py --source <name> [paths] # the SOURCE TEXT of a def/class, CST
+                                         # extents — reading a body inside a
+                                         # scope (--archive) that has no path
+    pycodemod.py --sql <ident> [paths]   # SQL LITERALS mentioning <ident>, split
+                                         # by STYLE: raw `con.execute("...")` vs
+                                         # the compiled-builder layer.  A SQL
+                                         # string inside a .py was structured
+                                         # text this tool could not parse, so
+                                         # "is this relation already a table,
+                                         # and does anything query it
+                                         # recursively" took three probes and
+                                         # still answered `0 of 750` — a fact
+                                         # about --key's mode, not the repo
+    pycodemod.py --relname [<rel>] [paths]
+                                         # where <rel> is used AS A RELATION — in a SQL
+                                         # GRAMMAR POSITION (FROM / JOIN / INSERT INTO /
+                                         # UPDATE / CREATE|DROP TABLE|VIEW), role `sql`,
+                                         # plus string literals EXACTLY equal to it, role
+                                         # `name` (the `_T("node", …)` shim spelling that
+                                         # carries no SQL at all).  `--sql` and `--literal`
+                                         # are both SUBSTRING: `--sql node` returns 82
+                                         # sites almost all of which are `node_child` /
+                                         # `obs_node` / `orbit_node`, and discarding those
+                                         # by eye is the judgement that belongs in a
+                                         # program.  CTEs and table FUNCTIONS are excluded
+                                         # structurally.  With NO <rel> it censuses every
+                                         # relation the corpus references — the form a
+                                         # REMOVAL needs, since "is it gone" cannot be
+                                         # asked by naming the name you expect to be absent
+    pycodemod.py --snapshots [paths]     # ONE VALUE BUILT FROM SEVERAL WORLD-STATES: ≥2
+                                         # store reads inside ONE expression, so the reads
+                                         # cannot be concurrent and the value is a composite
+                                         # of distinct instants (`return (scalar(a),
+                                         # scalar(b), scalar(c))` — a store state that never
+                                         # existed).  Reports `sequential` (≥2 reads in a
+                                         # function, different statements) SEPARATELY and
+                                         # never in the headline: a loop reading once per
+                                         # core is correct, and collapsing the two would
+                                         # report correct code as broken.  `--calls scalar`
+                                         # cannot answer it — it has no enclosing scope
+    pycodemod.py --key <string> [paths]  # STRING-KEY reads `d["k"]`/`.get("k")`/
+                                         # `"k" in d`, split from the schema
+                                         # DECLARATION — the dict-shaped record's
+                                         # `--attr`, invisible to --attr/--binding
+    pycodemod.py --literal <text> [paths]# every STRING LITERAL whose VALUE contains
+                                         # <text>, split by ROLE: `compare` (the
+                                         # branch that dispatches on it) / `arg` /
+                                         # `decl` / `other` / `doc`.  `--key` asks
+                                         # about a string used as a dict KEY; this
+                                         # asks about a string used as a VALUE, which
+                                         # is what a retired enum member is — and
+                                         # what `back == "sqlite"` is.  Written for
+                                         # the sqlite→postgres drop: "which sites
+                                         # still NAME the retired backend" had no
+                                         # mode, and grep cannot separate the four
+                                         # dispatch sites from the 60 ⚑ notes that
+                                         # explain why they exist
+    pycodemod.py --rivals <name> [paths] # per def: REIMPLEMENTS or DELEGATES —
+                                         # a duplicated NAME is not a duplicated BODY
+    pycodemod.py --collision-apex [paths]# ⟡apex-over-collisions — `--rivals`' thesis applied
+                                         # to the WHOLE collision census at once, keyed on BODY
+                                         # STRUCTURE and graded by sharing-breadth.
+                                         # ⚑ `--collisions` GROUPS BY SPELLING and never opens
+                                         # a body (`by_name.setdefault(name, ...)`), so its 239
+                                         # rows cannot be RANKED: 78 defs named `check` and 6
+                                         # named `alphabet_size` are the same kind of row to
+                                         # it.  That is `census-keyed-on-one-spelling` a third
+                                         # time, and the other key already existed —
+                                         # `jea_extrude_ir.templatize` groups units by
+                                         # `full_skeleton` and returns the HOLE COUNT, so
+                                         # IDENTICAL (0 holes) vs a 12-hole coincidence is a
+                                         # COMPUTED verdict where the alternative was a
+                                         # judgement in the turn.
+                                         # ⚑ THE BANDS ARE `catalog/memory/synth_apex.py`'s —
+                                         # universal / broad / pairwise-residue — because the
+                                         # question is the same one that tool grades: how
+                                         # broadly is this structure corroborated.  A candidate
+                                         # witnessed twice is residue; one witnessed 78 times
+                                         # is a skeleton.
+                                         # ⚑ `nskel > 1` IS A BRIDGE, NOT A LIFT: several
+                                         # contracts sharing a spelling, reported rather than
+                                         # resolved (the fragment-gate `cluster_memories`
+                                         # applies with its MARGIN test).  And `no-shared-
+                                         # skeleton` is NOT `IDENTICAL` — None means no two
+                                         # sites shared a skeleton at all, the WEAKEST result,
+                                         # while 0 means byte-identical structure, the
+                                         # strongest; collapsing them inverts the verdict
+    pycodemod.py --available <module>... # is this library importable HERE, and which
+                                         # one — the reuse-search's first question
+    pycodemod.py --archive <t.tar.gz>    # defs inside an archive, WITHOUT extracting —
+                                         # reading a reference implementation
+
+⚑ THIS LIST WAS SEVEN MODES SHORT, AND THE OMISSION DEFEATED THE RULE THAT POINTS AT IT.
+The struct-tools skill says "run the tool bare and read its mode list — THAT output is the
+authority", and a dispatched agent following that instruction correctly reported modes as
+absent that `_dispatch` implements.  A stale index is worse than no index here: it is the
+one artifact a reader is told to trust.  Backfilled and verified by running each:
+
+    pycodemod.py --state [paths]         # process-local CACHES vs accumulators vs const
+                                         # tables — module-scope mutable state, and the
+                                         # ONLY mode that distinguishes module scope from
+                                         # a function body (see the FunctionDef walk)
+    pycodemod.py --diagnose [paths]      # why a file failed to parse, per file
+    pycodemod.py --crossings [paths]     # imports that cross a declared boundary
+    pycodemod.py --rawreads [paths]      # raw `con.execute` reads vs the builder layer
+    pycodemod.py --relalg [paths]        # RELATIONAL ALGEBRA performed in Python over rows
+                                         # the store returned — join / group-by / filter /
+                                         # sort / set-op / distinct, ranked BY FUNCTION
+                                         # (the migration unit).  `--rawreads` asks whether
+                                         # a row's SHAPE survives the driver, one call site
+                                         # at a time; this asks what the enclosing function
+                                         # DOES to the rows, which is the defect
+                                         # `schema.lifecycle_census`'s docstring names and
+                                         # `schema.reclaim` then committed anyway
+    pycodemod.py --control [paths] [--summary]
+                                         # EVERY PIECE OF CONTROL FLOW, TYPED by what the
+                                         # engine could take it as.  Ladder logic has none:
+                                         # a rung's predicate IS the WHERE, so control flow
+                                         # is the MEASURE OF WORK NOT YET MOVED to SQL.
+                                         # Kinds: row-iteration / row-branch / mode-branch /
+                                         # external (the ε boundary, irreducible) /
+                                         # early-exit (break/continue/return inside a loop —
+                                         # ordering dependencies, printed AGAIN separately)
+                                         # / unclassified.  The headline is the RATIO
+                                         # external : everything-else, not a total.
+                                         # NOT `--relalg` deeper: that mode gates on the
+                                         # function reading the store and, by its own
+                                         # module docstring, CANNOT SEE A LOOP WITH AN
+                                         # EARLY BREAK — the class whose canonical witness
+                                         # (`_unreflected_floor`) is now RETIRED, 0 defs /
+                                         # 0 calls, while 45 siblings remain.  The `sqlform`
+                                         # column is allowed to say `unknown`; a plausible
+                                         # guess there is noise that reads like analysis.
+    pycodemod.py --control <paths> --kind <K>
+                                         # narrow to ONE kind.  An unknown kind REFUSES
+                                         # rather than reporting an empty table, which
+                                         # would read exactly like "this corpus has no
+                                         # control flow of that kind".
+    pycodemod.py --control <paths> --constructs
+                                         # the construct ROSTER with its counts, INCLUDING
+                                         # THE ZEROES — "the corpus does not use this form"
+                                         # and "the walker stopped seeing it" are different
+                                         # facts, and only the zero rows keep them apart.
+    pycodemod.py --fingerprint [paths]   # A PRIME PER DISTINCT REFERENT, and the
+                                         # REMAINDER IS THE FINDING.  `--control` types
+                                         # every site and leaves 1,130 of 2,034
+                                         # `unclassified` — an undifferentiated pile with
+                                         # no ordering, no grouping and no progress
+                                         # metric, so nothing can say which sites matter,
+                                         # which are related, or whether attacking them
+                                         # is working.  This gives that pile structure
+                                         # WITHOUT CLASSIFYING ANYTHING: each referent a
+                                         # site's governing expression mentions (a
+                                         # relation, a column, a callee, a bound name)
+                                         # gets a prime — asserting only that it is
+                                         # DISTINCT AND COUNTABLE, never what it IS — and
+                                         # the site's fingerprint is the product.  Then
+                                         # `gcd` is shared structure and `%` is
+                                         # containment, so *is A inside B* is ONE MODULO
+                                         # with nothing decoded.  Decoding against the
+                                         # referents we already model (`schema_decl.py`,
+                                         # `query_decl.py`; `--seed` widens it) returns
+                                         # the keys you understand AND AN EXACT INTEGER
+                                         # REMAINDER for the ones you do not.  ⚑ The
+                                         # rigid mode is one keyword away and is OFF: a
+                                         # system that survives unknown fill is one whose
+                                         # DEFAULT returns a remainder rather than
+                                         # raising.  Σ Ω(remainder) is a MONOTONE
+                                         # progress metric — growing the modelled set can
+                                         # only remove factors, so it falls and cannot
+                                         # rise.  Lifted from gabion's
+                                         # `type_fingerprints.py`; the code is NOT
+                                         # imported and its four-name seed is left behind.
+    pycodemod.py --fingerprint --from <entry.py>
+                                         # scope the population to the TRANSITIVE LOCAL
+                                         # IMPORT CLOSURE of an entry point, rather than a
+                                         # path list typed by hand.  `toolmodes --find
+                                         # closure` reports `--closure` on `agda_defs` and
+                                         # "⚑ NOT on: scratch/pycodemod.py" — so the
+                                         # population every control-flow count is quoted
+                                         # over ("the SPPF import closure, 22 files") could
+                                         # be NAMED and not COMPUTED, and a population that
+                                         # exists only in a sentence is not reproducible.
+    pycodemod.py --fingerprint <paths> --kind <K>
+                                         # narrow to ONE control-flow kind — `unclassified`
+                                         # is the 1,130 this mode exists for.  An unknown
+                                         # kind REFUSES, as `--control`'s does.
+    pycodemod.py --fingerprint <paths> --top <N>
+                                         # how many rows of the residual ordering to print
+                                         # (`--top 0` suppresses it).
+    pycodemod.py --fingerprint <paths> --keys <N>
+                                         # which MODELLED referents are doing the
+                                         # explaining, with their site counts.  The seed is
+                                         # deliberately WIDE — a token like `select` enters
+                                         # it because the declaration mentions it — so the
+                                         # over-credit has to be READABLE rather than
+                                         # argued about; narrowing it by hand would take a
+                                         # rule about which referents "really" count, i.e.
+                                         # the taxonomy this mode exists to avoid.
+    pycodemod.py --fingerprint <paths> --seed <a.py,b.py>
+                                         # WIDEN the modelled set with more authority
+                                         # files.  This is how the metric is driven down:
+                                         # paying down the remainder is modelling more
+                                         # referents, and nothing else moves it.
+    pycodemod.py --fingerprint <paths> --monotone
+                                         # the seed LADDER, as ONE command: Ω / bits /
+                                         # explained-% at each rung, PLUS the per-site
+                                         # divisibility `r_wider | r_narrower` that makes
+                                         # the fall a law rather than an observation.  ⚑ A
+                                         # FALLING TOTAL IS NOT THE PROOF — two totals can
+                                         # both fall while individual sites move the wrong
+                                         # way — and running the census three times to
+                                         # compare by eye is the judgement-in-the-turn
+                                         # shape: it evaporates when the session ends.
+    pycodemod.py --fingerprint <paths> --groups N
+                                         # the gcd CLASSES: sites sharing UNKNOWN
+                                         # structure, attackable together BEFORE either is
+                                         # understood.  A bare residual ordering is half
+                                         # the value — it says which site is least
+                                         # understood and nothing about which sites are the
+                                         # SAME problem.
+    pycodemod.py --portable [paths]      # SQL that will NOT bind on postgres, by
+                                         # EXPLAIN against the sandbox — a real gate.
+                                         # ⚑ RAW LITERALS ONLY: a Core-built statement is
+                                         # never a string, so this reads GREEN over
+                                         # `func.group_concat` — use --funcnames for that half
+    pycodemod.py --funcnames [paths]     # every SQLAlchemy `func.<name>(...)`, graded
+                                         # `generic` (SQLAlchemy owns the per-dialect
+                                         # spelling — genuinely ports for free) vs `verbatim`
+                                         # (passed through UNCHANGED, so dialect-SPECIFIC and
+                                         # unchecked by Core).  ⚑ THE VERDICT IS "UNVERIFIED
+                                         # BY CORE", NEVER "WRONG": measured, an INVENTED name
+                                         # compiles identically on postgres and sqlite, and
+                                         # `string_agg` (valid postgres) sits in the same
+                                         # bucket as the invented one — SQLAlchemy has ONE
+                                         # registry (52 names) and no per-dialect list, so a
+                                         # mode claiming "does not exist" would invent a
+                                         # verdict.  This is the half `store.py`'s
+                                         # "Core is dialect-agnostic" guarantee does not
+                                         # reach, and it is where `group_concat` hid
+    pycodemod.py --funcnames --verbatim  # only the unchecked ones — a migration's work-list
+    pycodemod.py --shape / --shape-all   # the record shape a dict-keyed reader assumes
+    pycodemod.py --discards [paths]      # computed-then-thrown-away values
+    pycodemod.py --reifies [paths]       # defs that RETURN A MATERIALIZED COLLECTION — the
+                                         # set/dict/list a STREAM would serve.  ⚑ The row
+                                         # that matters is `returns-sorted`: a def that sorts
+                                         # and returns has PAID for an order and then dropped
+                                         # the fact, so callers re-sort defensively.  That
+                                         # double payment is witnessed one hop apart in this
+                                         # corpus — `agda_defs.import_index()` sorts at :1732
+                                         # and SAYS SO in its docstring, and `importers_of()`
+                                         # re-sorts at :1757 anyway, because there was nowhere
+                                         # on the VALUE to put the claim.
+                                         # `jea/metalanguage/sorted_stream.py` is where it
+                                         # goes: `Sorted(it, key, origin)` carries the order,
+                                         # and its combinators REFUSE rather than re-sort.
+                                         # ⚑ REPORTS A SHAPE, NEVER A VERDICT — a reification
+                                         # is not a defect (somebody must pay the sort once,
+                                         # at a named producer); the census finds where it is
+                                         # paid MORE THAN ONCE along a chain
+    pycodemod.py --reifies --sorted      # narrow to one kind: --set/--dict/--list/--sorted/
+                                         # --accum
+    pycodemod.py --resorts [paths]       # the CONSUMER arm of --reifies: a `sorted(f(...))`
+                                         # whose callee `f` is itself in the returns-sorted
+                                         # census — the SAME order paid for twice.  ⚑ A SPAN
+                                         # QUERY, not a site query: "is this sort redundant"
+                                         # is a property of the PAIR (producer, consumer), so
+                                         # no per-site predicate can answer it — which is why
+                                         # it could not be a column on --reifies.  Reports
+                                         # re-keyed sorts SEPARATELY and never as debt: a
+                                         # `key=`/`reverse=` is a different order and real
+                                         # work (I misread `swallows()` that way and the
+                                         # split is what caught it)
+    pycodemod.py --layout [paths]        # every TOP-LEVEL def/class/stmt of a module with
+                                         # its line extent and code size, in source order —
+                                         # the mode `--size` needed and did not have: the
+                                         # census named a file too big to edit and then
+                                         # left WHERE-does-it-cut to `grep '^def '`
+    pycodemod.py --size [paths]          # modules too large to READ WHOLE before editing,
+                                         # and modules with MORE THAN ONE `__main__` guard —
+                                         # the defect that made a mid-file entry point
+                                         # unfindable in a 2800-line file
+    pycodemod.py --commentary [paths]    # the ⚑ INCIDENT LOG census: how many marker lines
+                                         # each module carries, and which texts are DUPLICATED.
+                                         # The preservation gate for a SPLIT, which
+                                         # `--roundtrip` structurally cannot be: losslessness
+                                         # is per-file, and a decomposition is precisely the
+                                         # transform that moves a line to a different file —
+                                         # so both halves round-trip green while a ⚑ block
+                                         # that explained a moved def is silently gone.
+    pycodemod.py --commentary <paths> --since <ref>
+                                         # the GATE form: name the original AND every sibling
+                                         # the split created, and it reports which ⚑ TEXTS
+                                         # were in `<ref>` and are in none of them now (exit 1).
+                                         # `<ref>` defaults to `:` — the INDEX, i.e. "before I
+                                         # started" in a working tree; `HEAD` is wrong for a
+                                         # staged-added file, which reads as an empty baseline
+                                         # and so measures nothing.  A bare total cannot be the
+                                         # gate: a split that drops one note and adds another
+                                         # keeps the total.  Each LOST line names its origin
+                                         # file, because a ref that predates OTHER uncommitted
+                                         # work will report that work's removals here too.
+    pycodemod.py --commentary <paths> --marks <s>
+                                         # widen the mark set (comma-separated).  `--marks ''`
+                                         # makes EVERY line a marker line, which turns the
+                                         # `--since` gate into a total preservation gate — the
+                                         # form a corpus with no ⚑ glyph needs, and the one a
+                                         # SPLIT wants: a relocation must lose no line at all,
+                                         # not merely no flagged line.  The census function
+                                         # always took this; only the CLI froze it, which is the
+                                         # hardcoded-vocabulary defect one level up.
+    pycodemod.py --split <file> [--max N] [--max-defs N] [--prefix P] [--keep a,b]
+                                 [--export all|public|a,b] [--apply]
+                                         # PERFORM the cut `--size` demands and `--layout`
+                                         # locates: pack the top-level statements into SIBLING
+                                         # modules under a per-file line bound, byte-identically.
+                                         # Siblings and not a subpackage BY NECESSITY — a body
+                                         # reading `Path(__file__).resolve().parent` is asking
+                                         # which DIRECTORY it is in, and a subpackage silently
+                                         # re-answers it.  Parts are packed out of a TOPOLOGICAL
+                                         # order of the statements, so the sibling imports are
+                                         # acyclic by construction and a cyclic source is a
+                                         # refusal naming the SCC rather than an import-time
+                                         # crash.  Reports, and refuses to write, unless every
+                                         # relocated statement is reproduced byte-for-byte;
+                                         # statements reading `__file__` as SOURCE TEXT are
+                                         # named as HAZARDS, because after a split such a scan
+                                         # SHRINKS and still passes.  `--apply` writes.
+                                         # `--max-defs` is a SECOND, INDEPENDENT bound that
+                                         # composes with `--max`: the count of top-level
+                                         # definitions per part.  It exists because that is the
+                                         # quantity an ADDITION's blast radius scales with — a Δ
+                                         # grade cache keys each check on a hash of the module's
+                                         # sorted qualname SET, so adding one definition
+                                         # invalidates EVERY reader of that module while editing
+                                         # one body invalidates only the check sensitive to it.
+                                         # N definitions is therefore N× the blast radius, and a
+                                         # LINE bound cannot see it: measured on gcalculus,
+                                         # `concepts_05.py` holds 8 defs in 143 lines and is
+                                         # fully line-compliant, while a 1156-line 8-def module
+                                         # (one 316-line body) is the mirror case.  Neither
+                                         # bound subsumes the other, so a part satisfies BOTH.
+
+⚑ AND A MODE THIS TOOL DOES NOT YET HAVE, recorded here rather than in a plan file because
+this docstring is where the next reader looks: **`--import-cost`** — which modules do
+expensive work merely by being imported.  `run_selftests` imports every module defining
+`_selftest` (59 today), so import-time work is paid by every suite run.  `--calls` cannot
+answer it: its `_Scan` visitor records call sites with NO scope tracking, so a module-level
+`build_index()` and one inside `def main()` are indistinguishable.  `--state` already walks
+`tree.body` and already separates module scope from function bodies, and its own docstring
+names the phenomenon as noise it had to suppress ("every script whose whole body runs at
+import") — so the mode is a SIBLING of `--state`, not a new instrument.
+

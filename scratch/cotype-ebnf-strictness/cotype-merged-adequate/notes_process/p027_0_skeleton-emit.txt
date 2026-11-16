@@ -1,0 +1,2 @@
+Δ-Π-skeleton-emit [011 guard-cleared-SA] — STILL OPEN (the constructor) Unchanged. `--skeleton` reports; should CONSTRUCT the parametric template + substitution map. NOW STRONGER: with dependent typeholes, the emitted template can mark dependent holes (this param = that param), so the constructor em
+[axis-signature: 011 | task: Δ-Π-skeleton-emit]

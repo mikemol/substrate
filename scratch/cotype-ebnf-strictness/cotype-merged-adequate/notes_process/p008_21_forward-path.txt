@@ -1,0 +1,1 @@
+- States B as **Gherkin scenarios B1/B2/B3 with mandatory observable witnesses** (the governing form):

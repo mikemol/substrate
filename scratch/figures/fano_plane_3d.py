@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The Fano plane sitting inside its F₂³ cube — the canonical 3D origin.
 
 The 2D Fano figure flattens away the fact that the 7 points ARE the 7 nonzero

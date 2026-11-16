@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.ChainSymbol — hashable wrapper around a SylowChain for use as
 a Sequitur terminal symbol.
 

@@ -1,0 +1,1 @@
+- **The contrast nails the M2 failure:** `verify_architectural_primitives_generate_a4z2` asserting its

@@ -1,0 +1,2 @@
+FORWARD: P-INV-COND-HIGH = pin the higher-order (triple+) crossing contributions (c≥3); now CHEAP via nullity (wall gone) so MORE DATA is reachable — get p=3,5 at c=5,6 and p=7 at c=3 to fix the c-law. Then P-INV-PROOF (→Δ0) with the full generator. The price-is-right principle (compute the invariant, not the spectrum) is now banked as the standard move for every multiplicity/spectrum question.
+[supporting witness: probe_inv_cheap.py — shared block evidence]

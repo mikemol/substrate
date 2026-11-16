@@ -1,0 +1,7 @@
+[DONE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 29)
+
+- **Δ-Π-cuda [the build] — DONE-partial, FIXPOINT PASSES.** Built `jea/jea_cuda.py` as ONE
+  bidirectional IR↔CUDA grammar (the cotype caution honored: lower reads it forward, project
+  backward, fixpoint guards against drift). libclang installed here (--break-system-packages),
+  parses CUDA with -nocudainc. VERIFIED: a kernel `z[0]=x[0]+y[0]; z[1]=x[1]*y[1]` round-trips
+  (28→28 canonical nodes, 

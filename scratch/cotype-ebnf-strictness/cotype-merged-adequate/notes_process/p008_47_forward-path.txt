@@ -1,0 +1,1 @@
+- **CORRECTION caught by reading (near-error): the seam is NOT V₄∩Stab.** V4-Cosets proves V₄∩Stab=(e)

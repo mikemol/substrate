@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_opcode_vm_comparison.py — five-way lossless comparison.
 
   * gt-baseline:         dim2_codec (rotation + byte trigram)

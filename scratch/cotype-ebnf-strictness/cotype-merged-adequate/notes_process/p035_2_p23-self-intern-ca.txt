@@ -1,0 +1,2 @@
+P23 SELF-INTERN-CANON [010] jea interns its OWN source → fan-in = orbit SIZES (12 modules: 18.5% nodes shared, max fan-in 380). Constructor-grade self-canonicalization, NON-vacuous. Reflexive dedup-candidate surfacing (filter by subtree-size for real targets — raw fan-in is mostly trivial vocabulary
+[axis-signature: 010 | owner-field(raw): AI-Πρ]

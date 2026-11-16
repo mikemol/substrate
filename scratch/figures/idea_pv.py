@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The idea lattice as a cocycle tower — PyVista.
 
 Nine levels stacked as rings (z = level); concepts as spheres coloured by tag

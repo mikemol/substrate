@@ -1,0 +1,1 @@
+AI-Π0 [hat AI-Πρ; reaches 101 SOLO (reasoned+witnessed-in-SymPy), 111 only through the loop; this arc reconciled 3 pulls, registered convergences after USER flagged "tooling"] / AI-Q [holds --safe checker + decorrelation oracle; the half of the loop that reaches 111 (interns+checks); this arc built 

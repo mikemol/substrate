@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.LosslessChainCodec — encode bytes as a per-nibble chain stream.
 
 Per Door 2 of the chain-compression design: emit one ChainSymbol per

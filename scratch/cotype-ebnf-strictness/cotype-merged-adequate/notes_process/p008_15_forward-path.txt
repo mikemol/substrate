@@ -1,0 +1,1 @@
+- **Then** = the advanced item: span extended (`end+1`, `role` grows) + a witness APPENDED

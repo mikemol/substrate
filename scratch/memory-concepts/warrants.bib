@@ -1,0 +1,2077 @@
+% warrants.bib — the claim-DAG for "Memory Concepts".
+%
+% Every durable memory in cassian's corpus becomes ONE warrant here. Three templates:
+%
+%   A  FACT   — a checkable claim about this box or a specific product/tool.  Carries a
+%              witness that RUNS a probe and asserts.               check = {witness:KEY}
+%   B  LESSON — a product-independent principle.  Carries a witness that demonstrates the
+%              principle on a self-contained code SPECIMEN where the defect is present and
+%              the fix absent (never assert True).                  check = {witness:KEY}
+%   C  REF    — a pure-judgment / policy / orientation memory with no mechanizable core.
+%              A reference warrant: it carries its claim and NO check field.
+%
+% Phase 0 lands ONE green exemplar of each template (below, tagged EXEMPLAR-A/B/C) plus the
+% section head entries and the closure witness. Phase 1 transcribes the remaining ~90 rows,
+% pattern-matching these exemplars. Fields beyond the engine scalars (section, tier, claim,
+% from/join, rests-on, check) are paper.toml consumer_fields: origin, specimen, evidence, verdict.
+
+% ══ cover ══════════════════════════════════════════════════════════════════════════════
+@misc{library,
+  section = {cover},
+  claim   = {This library projects cassian's memory corpus --- the durable notes at
+             ~/.claude/projects/.../memory/ --- into a warrant DAG, one warrant per memory,
+             so a claim's strength is MEASURED by the witness that backs it and never merely
+             asserted. It reads the corpus and never writes back: the corpus is shared live
+             state that other sessions write, and the library depends on it, never the reverse},
+}
+@misc{three-templates,
+  section = {cover}, from = {library}, join = {. },
+  claim   = {Each memory takes one of three treatments. A FACT is a checkable claim about
+             this box or a specific product, witnessed by a live-or-fixtured probe. A LESSON
+             is a product-independent principle, demonstrated on a self-contained code
+             specimen where the defect is present and the fix absent. A pure-judgment memory
+             is a reference warrant, carrying its claim and no check --- because mechanising
+             a non-mechanisable judgement produces theatre with a green light on it},
+  rests-on = {library},
+}
+
+% ── EXEMPLAR-A (FACT) ─── template for every checkable box/product fact ─────────────────
+@misc{tool-env-chdir,
+  section = {this-box},
+  tier    = {tool probe},
+  claim   = {`env --chdir=DIR cmd` runs cmd in DIR without a shell `cd DIR && cmd` --- GNU
+             coreutils env actually chdir()s before exec. Setting a CWD=/PWD= env var does
+             NOT work: the working directory is a kernel property (chdir(2)), not read from
+             an env string. This is the clean single-command form when a tool has no -C flag,
+             and it is what the no-chaining hook leaves available},
+  origin   = {run-a-command-in-a-dir-without-cd-chaining},
+  specimen = {a real temp directory; `env --chdir=<d> pwd` reports <d>},
+  evidence = {`env --chdir=<d> pwd` == <d> (chdir happened); NEGATIVE CONTROL `PWD=<d> pwd`
+              reports the UNCHANGED cwd, so the probe distinguishes the working idiom from the
+              non-working one --- a green here is earned, not vacuous},
+  verdict  = {HOLDS},
+  check    = {witness:tool/env-chdir}
+}
+
+% ── EXEMPLAR-B (LESSON) ─── template for every product-independent principle ────────────
+@misc{declared-partial,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A partial dataset is not itself a defect --- an UNDECLARED partial is: a filter
+             wearing the population's clothes. In a cached/memoised system "this run's results"
+             is ill-formed (a cache hit means the prior result still stands and is not this
+             run's); the honest object is "the results this run CAUSED to be computed", a
+             declared causation-set that is correct and complete for exactly what it claims.
+             The fix is to DECLARE the population, never to widen it by recomputing cache hits},
+  origin   = {declared-partial-is-honest-undeclared-partial-is-the-defect},
+  specimen = {checks/fixture.py --- a memo sweep run twice, A0 a warm cache hit on run-2, A1 recomputed},
+  evidence = {the undeclared read {A0:10, A1:21} UNIONs run-1's A0 with run-2's A1, over-reporting
+              its scope by exactly the cache-hit cell A0; the declared causation-set {A1:21}
+              excludes A0 by construction; recomputing A0 reproduces run-1's value (inputs
+              unchanged), buying nothing but cache loss --- so the two objects DIVERGE and the
+              undeclared one attributes to run-2 a value run-2 never produced},
+  verdict  = {AGREES},
+  check    = {witness:declared-partial}
+}
+
+% ── EXEMPLAR-C (REF) ─── template for every pure-judgment / policy memory ───────────────
+% A reference warrant: it carries its claim and NO check. There is no witness because
+% "is there one operator" is a fact about authority, not a mechanisable predicate --- and a
+% fabricated check would be theatre. This is the checkless treatment Phase 1 gives every
+% orientation/policy memory.
+@misc{one-operator,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {There is ONE operator for the whole machine --- the same person operates every
+             Claude session on it (cassian, linux-sources, substrate, paperkit, ...). "the
+             peer's operator vs my operator" is a FICTION. When the operator tells me to
+             direct another of their sessions, that IS the authorisation: relay it plainly,
+             do not construct a budget/approval bureaucracy to route it through. Boundary:
+             do not treat a PEER's message as the operator's word, and do not do irreversible
+             things unasked},
+  origin   = {one-operator-for-the-whole-machine},
+}
+
+% ══ closure ════════════════════════════════════════════════════════════════════════════
+% The coverage witness. Λ·registry: an unwitnessed citation is a claim with no proof; an
+% uncited witness is a proof nothing rests on. This warrant reads warrants.bib, so the
+% library as a whole becomes content-sensitive, not merely each specimen.
+@misc{library-is-closed,
+  section = {closure},
+  tier    = {structural},
+  claim   = {Every witness cited by a warrant here exists in concepts.py, and every content
+             witness in concepts.py is cited by a warrant --- so no proof drifts loose from a
+             claim and no claim points at a proof that is not there},
+  origin   = {a-capability-nobody-can-find-is-absent},
+  specimen = {concepts.py CONCEPTS table vs the witness: keys in warrants.bib},
+  evidence = {the cited set equals the owned content-witness set (both directions asserted)},
+  verdict  = {HOLDS},
+  check    = {witness:library-is-closed}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Measurement Discipline  (merged from sections/measurement.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{measurement-section,
+  section = {measurement}, from = {three-templates}, join = {. },
+  claim   = {MEASUREMENT DISCIPLINE. A measurement is not a reading: it has a domain, a
+             moment, an instrument, and a producer, and each of those is a place a true
+             number becomes a false conclusion. A single read is a point-sample; a witness
+             has a timestamp; a trajectory question wants the store not a snapshot; two
+             instruments disagreeing means different quantities before it means one is
+             broken, and two agreeing on a coarse status hides different mechanisms; a
+             two-point diff samples the codomain not its structure; each validation tier is
+             blind to what the next exposes; a null is under-powered or non-identifiable and
+             the p-value cannot tell you which; a timestamp is converted, never reasoned; PSI
+             measures stall not bandwidth; a kernel-summed counter cannot attribute; a
+             measurement does not cover the domain you extend it to; and a redacted, hashed,
+             empty, or absent field is not a measured value},
+  rests-on = {three-templates},
+}
+
+@misc{single-read-point-sample,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {If a quantity can change between two reads, a SINGLE read is not a measurement
+             of it --- it is a point-sample of a trajectory, and a trough reads identical to
+             a drain. The remedy is STRUCTURAL, not "be careful": a sustained condition (N
+             consecutive passes; a single off-sample resets the streak) or a windowed query,
+             never a lone ps/cat/loadavg/sysfs read. The invariant recurses: N identical
+             OUTCOMES is not a measurement of a CADENCE either},
+  origin   = {a-single-read-is-not-a-measurement-of-a-fast-varying-quantity},
+  specimen = {a fleet series 1->33->1->33->1 (troughs between waves) in sections/measurement.py},
+  evidence = {the point read lands in a trough (value 1) and reads "drained"; the N-consecutive-pass
+              condition never greens because a wave in the window resets the streak --- so the two
+              DIVERGE, and the point read attributes a steady state the fleet never held. A second
+              layer: three streaks dying at 1/6 predict "never quiet"; the fourth walks to 6/6},
+  verdict  = {AGREES},
+  check    = {witness:single-read-point-sample}
+}
+
+@misc{state-witness-timestamp,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {Choosing a state witness chooses WHEN it becomes true --- `-f` and `-s` on ONE
+             file are two assertions about two moments, not a weak/strong dial, so a
+             correct-looking predicate can assert a strictly LATER event than the claim it
+             verifies. Match the witness's moment to when the claim's last event happens ---
+             and do not "deflake" a timing failure by relaxing the bound before asking what
+             the witness measures (the bound may be load-bearing for a second reason)},
+  origin   = {a-state-witness-has-a-timestamp},
+  specimen = {a file present at t=0 (staging) but non-empty only at t=7.29 (a later gate) in sections/measurement.py},
+  evidence = {the `-f` witness matches the claim's moment (t=0) and holds under a 7s load budget;
+              the `-s` witness requires t=7.29 and is FALSE while the claim is TRUE --- the two
+              co-located witnesses DIVERGE, and the overshoot tell is that a green -s needs MORE to
+              have happened than the verdict sentence describes},
+  verdict  = {AGREES},
+  check    = {witness:state-witness-timestamp}
+}
+
+@misc{trajectory-from-store,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A question about rates, trends, scaling, or ceilings is a TRAJECTORY question
+             --- answer it by querying the store over a window (avg/min/max_over_time, rate),
+             never from a point-in-time /proc or cgroup read. A single sample of a spiky
+             series is neither typical nor a peak, and generalizing it can INVERT the answer.
+             Report min AND max, cite the window},
+  origin   = {answer-trajectory-questions-from-the-store-not-a-snapshot},
+  specimen = {two spiky PSI series over a window, io spiking at one instant, in sections/measurement.py},
+  evidence = {the snapshot catches io's spike and ranks io > memory ("disk is the ceiling"); the
+              windowed avg ranks memory ~2x io, the OPPOSITE --- so the point read does not merely
+              err in magnitude, it INVERTS the ranking, and the two verdicts DIVERGE},
+  verdict  = {AGREES},
+  check    = {witness:trajectory-from-store}
+}
+
+@misc{two-instruments-disagree,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {When two instruments over one subject report different numbers, the FIRST
+             hypothesis should be "they measure different quantities", not "one is broken" ---
+             especially when both are live and correlated. ANTI-CORRELATION is qualitatively
+             stronger evidence than a varying ratio: two counters moving in opposite
+             directions cannot be one quantity. Confidence tends to run OPPOSITE to
+             correctness (the strongest framing arrives first and is usually wrong)},
+  origin   = {two-instruments-disagree-first-hypothesis-is-different-quantities},
+  specimen = {zram occupancy vs swap reservation, disagreeing hugely AND anti-correlating, in sections/measurement.py},
+  evidence = {the raw ratio (~290x) reads like a corruption ("prefer one for magnitude"); but
+              occupancy RISES while reservation FALLS in one interval --- anti-correlation rules out
+              the corrupted-view family, so the "broken" verdict and the "two quantities" verdict
+              DIVERGE, and the corruption reading would ship a false "leaking into swap" alarm},
+  verdict  = {AGREES},
+  check    = {witness:two-instruments-disagree}
+}
+
+@misc{status-not-the-reason,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {Two states agreeing on a coarse STATUS scalar is NOT agreement. Read the REASON,
+             or a capability difference masquerades as a shared
+             limitation. This is the DUAL of two-instruments-disagree: there two
+             values DISAGREE (suspect different quantities), here two AGREE on a scalar
+             (suspect different mechanisms the scalar collapsed). The fix is always to read
+             one level finer than the status},
+  origin   = {the-status-is-not-the-reason},
+  specimen = {two HTTP 400s from two products for one query, differing only in the error BODY, in sections/measurement.py},
+  evidence = {status-only reasoning reads 400==400 as agreement; the bodies reveal one product HAS
+              the pipe (a syntax error inside a supported construct) and one LACKS it ("unexpected
+              pipe") --- so status-agreement and reason-agreement DIVERGE, and the scalar disguises
+              a real vendoring divergence AS a shared error},
+  verdict  = {AGREES},
+  check    = {witness:status-not-the-reason}
+}
+
+@misc{two-point-diff-codomain,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {Do NOT narrow an unknown by WORKLOAD CONTRAST --- measuring at two operating
+             points and differencing to attribute a cause. It produces a real number and only
+             the inference is invalid: a measurement reports a SUBSET of what the codomain
+             includes at the sampled points, never what the codomain IS. Structure comes from
+             the CONSTRAINT SURFACE (a declaration that bounds the interior), never from an
+             experiment that probes it. And difference the monotone accumulator, not its
+             sampled view, which can lose a distinction the accumulator carries},
+  origin   = {two-point-diff-samples-the-codomain-not-its-structure},
+  specimen = {a two-counter gap read through a sampling operator (scrape-skewed deltas) vs the raw accumulator, in sections/measurement.py},
+  evidence = {the sampled residual OSCILLATES and even goes NEGATIVE (the derived view lost the
+              accumulator's monotonicity to scrape skew); the accumulator's own gap floor RISES and
+              stays positive --- the two verdicts DIVERGE, and only the floor is the skew-surviving
+              statistic},
+  verdict  = {AGREES},
+  check    = {witness:two-point-diff-codomain}
+}
+
+@misc{each-tier-refutes,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {Each validation tier is blind to the failure the NEXT tier exposes --- the
+             blindness is what the tier does not exercise, not carelessness. Banking a conclusion at tier N when only tier N+1 can observe its
+             failure is a fail-open that feels safe precisely because tier N passed. Before
+             banking, NAME what the tier did not exercise; a claim about the RELATION between
+             two paths needs a tier that runs both},
+  origin   = {each-validation-tier-refutes-what-the-cheaper-one-cannot-see},
+  specimen = {a two-arm per-device instrument whose smoke tier runs ARM1 only, in sections/measurement.py},
+  evidence = {the smoke tier proves "the deref reaches" but exercises one arm, so it CANNOT evaluate
+              whether the two arms key on the same device; the live run (both arms) finds 259:2 !=
+              259:0 --- the smoke verdict is silent where the live verdict refutes, and the two
+              DIVERGE by exactly the path the cheaper tier never ran},
+  verdict  = {AGREES},
+  check    = {witness:each-tier-refutes}
+}
+
+@misc{null-underpowered-or-nonidentifiable,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A null is UNDER-POWERED or NON-IDENTIFIABLE --- same p-value, OPPOSITE actions
+             (collect more vs the design cannot answer at any n). Only a measurement of the
+             DESIGN itself distinguishes them --- one nobody runs if they believe the problem is sample
+             size. Report a CI, not just p: a CI says what the data rules out},
+  origin   = {null-ask-underpowered-or-nonidentifiable},
+  specimen = {a phase-based ablation with 33% cross-phase writeback contamination, in sections/measurement.py},
+  evidence = {the null plus n=6 tempts "collect more phases"; measuring the design (cross-phase
+              contamination fraction) shows more phases inherit the bias --- so the under-powered
+              action and the non-identifiable action DIVERGE from the SAME p-value, and only the
+              design measurement picks between them},
+  verdict  = {AGREES},
+  check    = {witness:null-underpowered-or-nonidentifiable}
+}
+
+@misc{run-timestamp-conversion,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {RUN a timestamp conversion, never REASON it --- a VERIFIED-correct offset still
+             produced an hour error via a dropped date rollover. Metrics and journalctl render
+             LOCAL while VictoriaLogs and VictoriaTraces store UTC. A
+             timestamp is not UTC because it ends in Z; it is UTC because something CONVERTED
+             it. Be most suspicious when the offset feels trivial and either zone is near
+             midnight},
+  origin   = {run-the-timestamp-conversion-never-reason-it},
+  specimen = {02:01:40Z on the 20th converted to EDT by-hand vs by real datetime arithmetic, in sections/measurement.py},
+  evidence = {reasoning it (subtract 4, keep the date) yields 21:01 on the 20th; running the
+              conversion carries the date across midnight to 22:01 on the 19th --- the two DIVERGE by
+              exactly one day and one hour, turning the boot's final OOM into an unrelated earlier
+              event. Appending a literal Z to local time renders a plausible non-UTC stamp},
+  verdict  = {AGREES},
+  check    = {witness:run-timestamp-conversion}
+}
+
+@misc{psi-measures-stall,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {PSI measures STALL, not contention. It is the fraction of time a task could not make
+             progress waiting on a resource, NOT how contended the resource is. An asynchronous
+             queue (a block-device writeback queue especially) ABSORBS contention until it
+             backs up, so PSI is structurally blind to bandwidth contention that has not yet
+             produced a stall. For write-path contention (several writers, one device), the
+             instrument is the write RATES summed against device bandwidth, not any PSI
+             series},
+  origin   = {psi-measures-stall-not-bandwidth-contention},
+  specimen = {three writers over-subscribing device bandwidth while the writeback queue still absorbs, in sections/measurement.py},
+  evidence = {io-PSI reads ~0 ("headroom") because nobody has stalled yet; the per-writer rates sum
+              to 1200 against a 1000-unit device ("contended") --- so PSI and the rate-sum DIVERGE,
+              and a green io-PSI does not mean the disk has headroom},
+  verdict  = {AGREES},
+  check    = {witness:psi-measures-stall}
+}
+
+@misc{counter-summed-over-producers,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A kernel counter can be a SUM over sites in DIFFERENT subsystems --- formed
+             before any consumer sees it, so no downstream reader can recover the split
+             and attributing an event to one cause via that counter includes the other causes.
+             pgmajfault has 4
+             producers (2 swap, 2 NOT: page-cache miss, DAX); use single-edge pswpin/pswpout
+             for swap demand. The name is not the contract; the increment sites are},
+  origin   = {a-counter-summed-over-producers-cannot-attribute},
+  specimen = {pgmajfault as a sum over 4 producers (2 swap, 2 non-swap) vs the single-edge pswpin, in sections/measurement.py},
+  evidence = {the aggregate reads 100 and attributes it all to swap; the single-edge counter reads
+              40 (swap only) --- the two DIVERGE by exactly the 60 non-swap faults (page-cache +
+              DAX), so the aggregate over-attributes the burst to swap},
+  verdict  = {AGREES},
+  check    = {witness:counter-summed-over-producers}
+}
+
+@misc{measurement-domain-drift,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {The recurring error is not carelessness but DOMAIN DRIFT --- a real measurement
+             extended one step past what it covered. The question that catches it is not "was
+             I careful?" but "what exactly did this measurement cover, and is the claim inside
+             that? --- and is it still true?" Being more careful does not catch it; scoping
+             the claim to the measurement's actual reach does},
+  origin   = {a-measurement-does-not-cover-the-domain-you-extend-it-to},
+  specimen = {a selftest passing 8/8 WHERE THE FILE EXISTS, extended to a fixture whose failure is the file ABSENT, in sections/measurement.py},
+  evidence = {"passes where present" is true and stays true, but the fixture's red is the file being
+              ABSENT --- a domain the here-measurement never touched; the drift verdict ("red is
+              noise") and the scoped verdict ("red is real, outside the domain") DIVERGE, and the
+              lead called noise was the real cause},
+  verdict  = {AGREES},
+  check    = {witness:measurement-domain-drift}
+}
+
+@misc{measurement-past-domain,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A sound measurement becomes a wrong conclusion, extended past its domain: "X
+             passes HERE" cannot speak to "X in a DIFFERENT context" ---
+             the failure THERE may have a different mechanism the here-measurement cannot see.
+             The canonical drift move is "it works here, so the failure there is spurious";
+             the fix is to measure THERE},
+  origin   = {a-measurement-extended-past-its-domain},
+  specimen = {an absence-audit that runs where the path is present but short-circuits where absent, in sections/measurement.py},
+  evidence = {where the path exists the audit runs and passes; where the fixture omits the path
+              `[[ -f PATH ]]` short-circuits false and prints a fail-shaped verdict with NO audit
+              run --- the here-context and there-context measurements DIVERGE, so "passes here =>
+              spurious there" is refuted by measuring there},
+  verdict  = {AGREES},
+  check    = {witness:measurement-past-domain}
+}
+
+@misc{redacted-field-not-measured,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {Before quoting a field as a measurement, know what it prints WITH NOTHING TO
+             SAY: a redacted, hashed, empty, and absent value are four different facts an
+             interface may render indistinguishably, and the hashed rendering is the dangerous
+             one (right length and character class, looks exactly like a measurement). Quote
+             the field carrying signal, not the placeholder beside it. Sharper: a HARDCODED
+             CONSTANT has no surface tell at all --- grep the source for who writes the field
+             and when},
+  origin   = {a-redacted-field-is-not-a-measured-value},
+  specimen = {/proc/kallsyms for an unprivileged reader: a hash-shaped address plus a symbol TYPE letter, in sections/measurement.py},
+  evidence = {the hashed address looks like a pointer but is IDENTICAL for a global and a static
+              symbol (it carries no signal); the type letter B vs b flips the visibility verdict ---
+              so the placeholder field and the signal field DIVERGE in discriminating power, and
+              only the type letter is a measurement},
+  verdict  = {AGREES},
+  check    = {witness:redacted-field-not-measured}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Instruments That Lie Green  (merged from sections/lie-green.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{lie-green,
+  section = {lie-green},
+  claim   = {The instruments that lie green share one shape: a FOOTPRINT reading (a green
+             precondition, a size report, a file installed, an exit code, a merge success, a
+             pod's own health) stands in for the EFFECT it does not measure (the instrument
+             observed working, headroom on the shared resource, the value actually loaded,
+             the rows actually landed, the downstream actually reached). The pull to bank
+             GROWS with the number of greens, because the reasoner is arguing correctly from
+             everything available --- which is exactly why the last, unmeasured step is
+             load-bearing. Each warrant here demonstrates the gap on a specimen where the two
+             readings DIVERGE},
+  rests-on = {three-templates},
+}
+
+@misc{green-preconditions,
+  section = {lie-green}, from = {lie-green}, join = {. },
+  tier    = {code specimen},
+  claim   = {Green preconditions are not a green instrument --- verifying every CHECKABLE
+             precondition is NOT observing the instrument WORK, and the gap between "every
+             precondition verified" and "the
+             thing observed working" is exactly where a fail-open instrument is born. The
+             temptation to bank GROWS with the number of green preconditions: a party banking
+             after five green checks is reasoning correctly from everything available, so the
+             more preconditions verify, the more it FEELS like they cover the last one. Hold
+             the whole instrument on the one unverifiable step (the CAP_BPF attach, the
+             privileged run); green preconditions license building and testing, never banking},
+  origin   = {green-preconditions-are-not-a-green-instrument},
+  specimen = {an instrument with 5 green preconditions and one observed_value the agent cannot reach},
+  evidence = {footprint (all preconditions AND'd) reads green and GREENER as preconditions grow;
+              effect (observed_value is not None) stays absent; the two verdicts DIVERGE, and
+              flipping one precondition red flips footprint --- proving footprint tracks the
+              preconditions, not the observation the instrument is banked on},
+  verdict  = {DIVERGES},
+  check    = {witness:green-preconditions-not-green-instrument}
+}
+
+@misc{footprint-reporting,
+  section = {lie-green}, from = {green-preconditions}, join = {. },
+  tier    = {code specimen},
+  claim   = {Footprint-reporting is not headroom-gating --- they are DIFFERENT instruments,
+             and the ecosystem builds the first and calls it the second. A tool that reports
+             its own FOOTPRINT reads healthy right up to the failure. On a SHARED resource a
+             consumer cannot self-assess its own headroom: the scarce quantity is the SUM of
+             every consumer's demand, not its own size, so two individually-unalarming
+             aggregates on one spill curve fill the disk. The check belongs in the monitoring
+             layer that holds the series, as a continuously-evaluated rule (free / (3 x
+             expected_spill), expected_spill DERIVED from live db size so it self-adjusts) ---
+             not a per-consumer reader anyone must remember to run},
+  origin   = {footprint-reporting-is-not-headroom-gating},
+  specimen = {a 469G shared volume, 75G free, two identical consumers each spilling ~34G},
+  evidence = {footprint ("my 40G store fits a 469G volume") reads green and TRUE; the headroom
+              ratio 75/(3x34)=0.74 FIRES (<1); the two verdicts DIVERGE, and the specimen shows
+              one consumer alone would not fill the volume while two do --- the SUM is the scarce
+              quantity, unassessable from either footprint},
+  verdict  = {DIVERGES},
+  check    = {witness:footprint-reporting-not-headroom-gating}
+}
+
+@misc{wide-exemption,
+  section = {lie-green}, from = {footprint-reporting}, join = {. },
+  tier    = {code specimen},
+  claim   = {A gate with a WIDE exemption routinely swallows the whole claim, by presentational
+             instinct rather than carelessness. A51's commit-msg gate binds any measured number
+             a message asserts to the run's measurements --- EXCEPT four-space-indented lines
+             (the transcript escape). A well-formatted message sets its load-bearing figures off
+             as a transcript by indenting them, landing them in the exempt region, so the gate
+             binds NOTHING and says so ("nothing to bind"). A green that announces it did nothing
+             is not a green that checked: read the gate's own vacuity line before citing it},
+  origin   = {a-wide-exemption-swallows-the-claim-and-the-gate-reports-vacuity},
+  specimen = {a commit message with "245 assertions, 0 failures, rc=0" set in a 4-space-indented block},
+  evidence = {the gate exits green (footprint) while binding ZERO numbers (the figures are exempt);
+              green-exit and did-it-bind DIVERGE; the negative control (same figures un-indented)
+              lands inside the gate's domain and the readings re-converge --- proving the exemption
+              is exactly what separated the claim from the check},
+  verdict  = {DIVERGES},
+  check    = {witness:wide-exemption-swallows-the-claim}
+}
+
+@misc{constraint-cannot-detect,
+  section = {lie-green}, from = {wide-exemption}, join = {. },
+  tier    = {code specimen},
+  claim   = {A constraint that CANNOT DETECT a behavior reads as proof it is ABSENT --- a
+             coverage gap presenting as a clean result.
+             A null from a probe/cap means the behavior is absent ONLY IF the probe/cap could
+             have detected it: TasksMax cannot trip on SEQUENTIAL churn (never >~2 concurrent no
+             matter how many thousands spawn), so its silence proves "no concurrency", not "no
+             churn". To prove a negative, constrain-to-fail and RATCHET to the binding
+             constraint, and match the constraint's KIND and SCOPE to the mechanism},
+  origin   = {a-constraint-that-cannot-detect-reads-as-proof-of-absence},
+  specimen = {TasksMax=512 over a workload of 8000 SEQUENTIAL spawns, peak concurrency 2},
+  evidence = {the cap never trips (footprint clean) while the churn --- the behavior it is trusted
+              to bound --- happened in force; clean-cap and churn-happened DIVERGE; a cap matched
+              to the mechanism (a fork-RATE cap) WOULD trip where the concurrency cap cannot,
+              showing the null proved only what TasksMax could see},
+  verdict  = {DIVERGES},
+  check    = {witness:constraint-cannot-detect-is-not-absence}
+}
+
+@misc{rare-event-liveness,
+  section = {lie-green}, from = {constraint-cannot-detect}, join = {. },
+  tier    = {code specimen},
+  claim   = {A witness for a RARE catastrophic event is exercised ONLY by that event, so
+             nothing routine distinguishes "the event didn't happen" (silence = good) from "the
+             reader is dead" (silence = blind) --- the two silences are IDENTICAL at the
+             surface, and every such layer is fail-open by construction, each inheriting the
+             ambiguity below it. The witness needs a LIVENESS signal INDEPENDENT of the event
+             (output freshness, a heartbeat, non-zero-exit-on-missing-input), or its silence is
+             uninterpretable no matter how sound the underlying counter},
+  origin   = {a-rare-event-witness-needs-liveness-independent-of-the-event},
+  specimen = {an unsafe-shutdown collector, event-only surface vs a per-run heartbeat, over alive/dead states},
+  evidence = {the event-only surface reads all-clear for BOTH a live reader with no event and a
+              DEAD reader with no event --- identical, so the dead reader banks as working; the
+              liveness heartbeat SEPARATES the two silences the event-only surface conflates, so
+              footprint "all-clear" and liveness "dead" DIVERGE on the dead reader},
+  verdict  = {DIVERGES},
+  check    = {witness:rare-event-witness-needs-liveness}
+}
+
+@misc{cosign-dropin-race,
+  section = {lie-green}, from = {rare-event-liveness}, join = {. },
+  tier    = {code specimen (systemd merge rule reproduced)},
+  claim   = {systemd merges drop-ins across all *.conf.d dirs by filename, lexicographic,
+             last-wins per key --- so a co-sign that installs a drop-in with a LOW-numbered
+             prefix silently loses to a vendor default that sorts LATER. cassian's
+             `10-cassian.conf` sorts BEFORE Ubuntu's `10-oomd-defaults.conf` (c < o), so on any
+             key BOTH set the vendor value wins, and the mitigation is HALF-INERT from the day
+             it lands. The discharge passes GREEN because file-identical is satisfied while the
+             LOADED value is the vendor's. Prefix cassian drop-ins zz-/99- so they sort LAST},
+  origin   = {a-cosign-drop-in-loses-the-vendor-filename-race},
+  specimen = {a scratch drop-in dir with 10-cassian.conf and 10-oomd-defaults.conf, systemd merge reproduced},
+  evidence = {the file-identical footprint check passes (the file on disk matches the declaration)
+              while the merged/LOADED DefaultMemoryPressureDurationSec is the vendor's 20s, not
+              cassian's 150s --- footprint and loaded-value DIVERGE; renaming to 99-zz-cassian.conf
+              makes cassian's value win the merge, confirming collating order, not the numeric
+              prefix's INTENT, is what expresses priority},
+  verdict  = {DIVERGES},
+  check    = {witness:cosign-dropin-loses-filename-race}
+}
+
+@misc{absence-not-quietude,
+  section = {lie-green}, from = {cosign-dropin-race}, join = {. },
+  tier    = {code specimen},
+  claim   = {Absence of a metric is not quietude. A gap, thinning, or decay-to-low is NOT
+             evidence of recovery or calm, because the metric pipeline is DOWNSTREAM of the
+             fault, so when the
+             box seizes the pipeline seizes too. A metric strangling produces exactly the shape
+             of a gentle decay-to-calm, because fewer samples complete the trip; a dying box and
+             a relaxing box look IDENTICAL through a downstream instrument. A gap is the LOUDEST
+             thing on the graph, and the RETURN of data is the PIPELINE recovering, not evidence
+             the box was ever fine. Never say "recovered/calmed" from in-band metrics near a fault},
+  origin   = {absence-of-metric-is-not-quietude},
+  specimen = {a per-second in-band series decaying 45->5.9 then going absent, vs an out-of-band wedged/not witness},
+  evidence = {the in-band series LOOKS like a decay-to-calm with a gap (footprint: "recovering");
+              the out-of-band truth is the box was WEDGED exactly where the data thinned; the
+              in-band "calm" and the true "wedged" DIVERGE at the gap, and the lowest pre-gap
+              value coincides with the box wedged --- the strangled emitter, not an idle one},
+  verdict  = {DIVERGES},
+  check    = {witness:absence-of-metric-is-not-quietude}
+}
+
+@misc{coverage-vs-exercise,
+  section = {lie-green}, from = {absence-not-quietude}, join = {. },
+  tier    = {code specimen},
+  claim   = {A clean reading --- a green gate, an empty query, a "no instrument found" ---
+             fails in TWO structurally different ways demanding OPPOSITE responses: a COVERAGE
+             gap (the search didn't REACH it; fix by searching differently, e.g. static
+             enumeration over a runtime trace) versus an EXERCISE gap (the subject doesn't
+             EXHIBIT it; reports clean even under exhaustive search, fixed only by a different
+             subject). The gap type is relative to the OBSERVER, not a property of the defect:
+             the same bug is both, so "which gap?" has no answer until you say "for whom".
+             Collapsing them into one bound hides that one branch is unfixable by diligence},
+  origin   = {clean-reading-coverage-gap-vs-exercise-gap},
+  specimen = {one consumer_fields defect read from two vantages: a runtime trace that misses it, and paperkit's own tree that never uses the feature},
+  evidence = {vantage 1 (a runtime trace whose path never runs the site) reads clean but a static
+              search REACHES it --- coverage, fixable by a better search; vantage 2 (a tree that
+              declares the field nowhere) reads clean under EXHAUSTIVE search and is fixed only by
+              a different subject --- exercise; the two clean readings DEMAND opposite fixes, so
+              collapsing them is vacuous},
+  verdict  = {DIVERGES},
+  check    = {witness:coverage-gap-vs-exercise-gap}
+}
+
+@misc{captured-output-dies,
+  section = {lie-green}, from = {coverage-vs-exercise}, join = {. },
+  tier    = {code specimen},
+  claim   = {An assertion over CAPTURED OUTPUT dies with the process that produces it: kill a
+             subject then grep what it SAID, and the answer depends
+             on BUFFERING --- a property of the channel, not the subject's behavior. Under a tty
+             the printf's flush and a later grep matches; under a non-tty capture they sit
+             block-buffered and the teardown discards them UNFLUSHED --- printed but never
+             captured. The fix is to assert over durable STATE the subject LEAVES BEHIND (a file
+             it created/appended), which survives the teardown; prefer -s (non-empty) over -f,
+             and read EVERY writer of that state before trusting it},
+  origin   = {an-assertion-over-captured-output-dies-with-the-process},
+  specimen = {a subject that writes a durable marker file then prints a line under a block-buffered non-tty channel, torn down before flush},
+  evidence = {the OUTPUT reading (grep the captured stdout for "gating the INDEX") finds nothing
+              --- footprint says "the stage did not run"; the STATE reading (the non-empty marker
+              file) proves the stage WAS reached; output and state DIVERGE, the output assertion
+              having measured the channel's buffering; an existing-but-EMPTY control file shows
+              why -s beats -f},
+  verdict  = {DIVERGES},
+  check    = {witness:captured-output-dies-with-the-process}
+}
+
+@misc{read-running-vs-producer,
+  section = {lie-green}, from = {captured-output-dies}, join = {. },
+  tier    = {code specimen},
+  claim   = {Reading the running system tells you what is TRUE NOW, not what PRODUCES it --- a
+             metric, a value in /sys, a live config each can be produced by machinery you
+             haven't found, so building against a live read without finding its producer risks
+             recreating what already exists (the graphviz-recreation defect). And a green check
+             only proves the layers the gate WATCHES: hand-editing a generated projection can
+             pass green because the freshness gate watches the projection<->source pair, not the
+             third rendered layer. Before building anything that emits/stores/displays, ask the
+             repo whether a collector already emits it or an owner file already governs it},
+  origin   = {read-the-running-system-vs-know-what-produces-it},
+  specimen = {a Grafana JSON dashboard that is a projection of panels.tsv; a session edits the rendered JSON, a layer the freshness gate does not watch},
+  evidence = {the gate is green (footprint: "my edit is safe") while the OWNED layer (panels.tsv)
+              was never touched --- green-gate and edited-owned-layer DIVERGE, the green meaning
+              only "you edited a layer the gate doesn't watch"; the artifact HAS a producer/owner,
+              so editing the generated twin recreates work the owner already governs},
+  verdict  = {DIVERGES},
+  check    = {witness:read-running-system-vs-producer}
+}
+
+@misc{collector-green-empty,
+  section = {lie-green}, from = {read-running-vs-producer}, join = {. },
+  tier    = {code specimen},
+  claim   = {A collector can be green every run while shipping ZERO --- exit-0 means "didn't
+             crash", not "shipped", and HTTP-200 means "accepted the POST",
+             not "stored the rows". Two independently-green bugs compound: a swallowed exception
+             (a text-mode fh.tell() crash caught by a bare except OSError) discards the batch and
+             returns 0 without advancing the cursor; and the sink SILENTLY DROPS oversized lines
+             over its max-line-size under a 200, so a read-your-write count comes up short. The
+             remedy is a read-your-write count (advance the cursor only if the landed delta
+             covers the batch) and capping fields before shipping so the shear is observable},
+  origin   = {a-collector-green-while-shipping-nothing},
+  specimen = {a collector run: exit 0 after a swallowed exception (cursor not advanced) + a POST whose sink drops 154 oversized rows under a 200},
+  evidence = {the footprint verdict (exit 0 AND HTTP 200) reads green while the effect verdict
+              (cursor advanced AND sent==landed) is red --- the proxies (process survival,
+              transport status) and the landed-rows verdict DIVERGE; the read-your-write count
+              exposes the shear (sent 5000 != landed 4846) that a "200 == stored" reading hides},
+  verdict  = {DIVERGES},
+  check    = {witness:collector-green-while-shipping-nothing}
+}
+
+@misc{producer-vs-consumer-reach,
+  section = {lie-green}, from = {collector-green-empty}, join = {. },
+  tier    = {code specimen},
+  claim   = {For "can this probe/reader REACH value X", the load-bearing artifact is the
+             INTERFACE DEFINITION --- what is exposed at the surface you actually stand at ---
+             NOT the producer code that fills the record. The pull is to read the producer,
+             because that is where the interesting mechanism lives; but the producer's access to
+             X does not mean the consumer's interface carries X. Present-in-the-mechanism and
+             absent-from-the-interface are opposite sides of one boundary. LAYOUT, REACHABILITY,
+             and MEANING are three questions with three load-bearing artifacts (the interface,
+             the call contract, the assignment site) --- do not let one answer stand for another},
+  origin   = {reading-a-producer-is-not-knowing-the-consumers-reach},
+  specimen = {a tracepoint whose producer (TP_fast_assign) derefs struct bio* but whose entry fields (what args exposes) do not carry the bio},
+  evidence = {the producer touches `bio` (footprint: "it's in the mechanism") while the interface
+              the probe stands at does NOT expose it (args are the entry fields) --- producer-has
+              and interface-reaches DIVERGE, so shipping the deref from "it's in the producer"
+              would not compile; the value IS reachable, but via a DIFFERENT interface, showing
+              reach is a property of the interface, not the value},
+  verdict  = {DIVERGES},
+  check    = {witness:reading-producer-vs-consumer-reach}
+}
+
+@misc{config-key-inert,
+  section = {lie-green}, from = {producer-vs-consumer-reach}, join = {. },
+  tier    = {code specimen},
+  claim   = {A config value that MERGES is not one that is READ. Setting a key the consumer
+             never references (a typo'd path, the wrong nesting level,
+             a key from a different schema version) lands silently and does nothing --- a
+             schema-free merge (helm values, most YAML/JSON, env vars) accepts any key, so no
+             error and no warning: the footprint-vs-effectiveness gap at the config layer. Verify
+             a config change by measuring its EFFECT (does the OBJECT reflect it), not by
+             confirming the key is present in the merged config. And when a merge PARTIALLY takes,
+             the split is usually two different value-paths, one real and one nonexistent},
+  origin   = {a-config-key-that-merged-fine-and-did-nothing},
+  specimen = {a Helm merge where the template reads service.spec.type but the session set service.type},
+  evidence = {the wrong-path key merges in without error (footprint: "the key is present") while
+              the object does NOT reflect a .spec.type change, because the consumer reads a
+              different path --- key-present and took-effect DIVERGE, nothing warned; the correct
+              path (service.spec.nodePort) DID take, the partial-merge tell proving the merge
+              machinery is fine and the split is two value-paths},
+  verdict  = {DIVERGES},
+  check    = {witness:config-key-merged-fine-and-inert}
+}
+
+@misc{migrated-consumer-flips,
+  section = {lie-green}, from = {config-key-inert}, join = {. },
+  tier    = {code specimen},
+  claim   = {A NodePort (or host-loopback bridge) exists FOR HOST-SIDE consumers; the moment a
+             consumer itself migrates INTO the cluster, its target flips back to the in-cluster
+             Service DNS --- because 127.0.0.1 inside a pod is the POD's own loopback, not the
+             host, so the host NodePort is unreachable from there. Re-pointing an in-cluster
+             consumer at the host NodePort is a bug that passes pod-health (Running + Ready on
+             its OWN endpoint) but fails datasource/query health. A consumer's correct target
+             depends on WHICH SIDE of the cluster boundary it sits on, and that flips on migration:
+             verify the consumer's DOWNSTREAM reach, not just its own health},
+  origin   = {a-migrated-consumer-flips-from-nodeport-to-service-dns},
+  specimen = {grafana carrying a host-loopback URL 127.0.0.1:30828 into a pod, where that loopback is the pod's own},
+  evidence = {the pod passes readiness on its OWN /api/health (footprint: Running + Ready) while
+              the datasource reach 127.0.0.1:30828 inside the pod is connection-refused --- own-health
+              and downstream-reach DIVERGE, pod-health hiding the dead datasource; re-pointing at
+              the Service DNS (vm:8428) restores the reach, the opposite direction from the host-side
+              re-points},
+  verdict  = {DIVERGES},
+  check    = {witness:migrated-consumer-flips-to-service-dns}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Claims, Corrections, and How I Get Them Wrong  (merged from sections/claims.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{conservative-claim-passes-unchecked,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A wrong claim that SOUNDS like caution passes review unchecked --- nobody argues
+             with extra caution, so the safe-sounding-ness is exactly what suppresses
+             the check. Verify a load-bearing claim by its MECHANISM especially when it errs toward
+             safe; and cheap measurement fixes only the error-class it covers --- the errors migrate
+             to whatever is not yet cheap to check},
+  origin   = {a-conservative-sounding-claim-passes-review-unchecked},
+  specimen = {two false claims, one optimistic and one caution-shaped, put to a TONE review (waves
+              cautious ones through) vs a MECHANISM review (checks regardless of tone)},
+  evidence = {the tone review MISSES the caution-shaped false claim; the mechanism review catches it;
+              the two reviews diverge on exactly that claim --- the caution-shaped one is the one the
+              tone filter launders through},
+  verdict  = {AGREES},
+  check    = {witness:conservative-claim-passes-unchecked}
+}
+
+@misc{failed-mitigation-exonerates-nothing,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {"Mitigation X did not stop the failure, therefore X's suspect is EXONERATED" is the
+             single-cause fallacy: under multiple independent failure modes a recurrence after X may
+             be a DIFFERENT mode and says nothing about X. A mitigation's verdict is per-SIGNATURE
+             (did THAT class of failure stop), never per-event (did ALL failures stop)},
+  origin   = {a-failed-mitigation-exonerates-nothing-under-multiple-causes},
+  specimen = {a system with two independent failure modes; X fixes mode A; a mode-B failure recurs},
+  evidence = {the single-cause verdict reads the recurrence as "X exonerated"; the per-signature
+              verdict reads it as "no evidence about X" (mode B is a different row's business); the
+              two diverge --- single-cause manufactures an exoneration the evidence does not support},
+  verdict  = {AGREES},
+  check    = {witness:failed-mitigation-exonerates-nothing}
+}
+
+@misc{correct-method-objection-suppresses-conclusion,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A correct method objection can suppress a correct conclusion --- "you can't know
+             that from THIS evidence" can be valid while the conclusion is nonetheless TRUE.
+             Withdrawing the belief commits to its negation on
+             no more warrant than the original had for the positive. The correct move is "unsupported
+             by this --- hold it unproven and go measure", never "withdrawn"},
+  origin   = {a-correct-method-objection-can-suppress-a-correct-conclusion},
+  specimen = {a conclusion that is actually true but reached on insufficient evidence; a valid
+              warrant objection lands},
+  evidence = {"withdraw" lands on the FALSE negation of a true conclusion; "hold-unproven-and-measure"
+              keeps the belief live and the instrument then confirms it; the two responses diverge ---
+              withdrawal discards a true belief, measurement recovers it},
+  verdict  = {AGREES},
+  check    = {witness:correct-method-objection-suppresses-conclusion}
+}
+
+@misc{relayed-agreement-not-independent,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {Relayed agreement is not independent confirmation --- an inference acquires the
+             APPEARANCE of it purely by circulating, one claim counted twice, wearing the
+             costume of corroboration. Independence is a fact about PROVENANCE, not about how many mouths said
+             it, and a relay strips provenance. Mark verified-vs-inherited at every hop},
+  origin   = {relayed-agreement-is-not-independent-confirmation},
+  specimen = {two sessions asserting a claim both INHERITED from a single origin session},
+  evidence = {the naive count sees two confirmations (looks corroborated); the provenance-aware count
+              sees ONE distinct origin (no independence); the counts diverge --- circulation
+              manufactured an apparent confirmation that provenance denies},
+  verdict  = {AGREES},
+  check    = {witness:relayed-agreement-not-independent}
+}
+
+@misc{lossy-boundary-launders-inference,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {Any LOSSY SESSION BOUNDARY --- a crash-recovery note, a compaction summary, a handoff ---
+             loses the verified/inferred/intended distinction: a derived conclusion arrives in the
+             session's OWN VOICE with first-hand authority and no first-hand access. It feels like
+             memory. Mark provenance per claim; a warranted claim cannot launder, unwarranted claims
+             are testimony},
+  origin   = {a-lossy-session-boundary-launders-inference-into-citation},
+  specimen = {an INFERRED claim crossing a boundary that drops the provenance field, vs one that
+              carries it},
+  evidence = {the lossy crossing makes an inference read as "trust as settled"; the marked crossing
+              makes it read as "re-verify"; the two treatments diverge --- dropping the provenance
+              field is what launders inference into citation},
+  verdict  = {AGREES},
+  check    = {witness:lossy-boundary-launders-inference}
+}
+
+@misc{make-the-basis-observable,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A narrow basis reads as broad when it's not in the message — attach the basis as a
+             sender-side FIELD, never rely on receiver diligence (a rule addressed to receivers
+             governs only the exchanges never at risk). One rule at three altitudes: a GO carries whose
+             decision it was and when (authority); a CLAIM carries the scope of the observation that
+             produced it (fact); a VERDICT carries the regime its instrument can see (method). All three
+             fail the SAME way and silently, and the count-is-the-finding (four sessions, one shape) is
+             what makes it structural, not four lapses; confidence is not a basis},
+  origin   = {make-the-basis-observable-not-inferable},
+  specimen = {a fact whose true scope is a single-session tenant view, sent bare vs sent with the
+              scope field, where another session actually holds a writer the view cannot see},
+  evidence = {the bare send lets the narrow fact read as store-wide (contradicting ground truth); the
+              basis field routes the receiver to check the process table (finding the writer); the two
+              conclusions diverge --- the missing field is what turns a narrow read into a broad claim},
+  verdict  = {AGREES},
+  check    = {witness:make-the-basis-observable}
+}
+
+@misc{guard-armed-state-inferred,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A guard whose armed state is INFERRED, not OBSERVED, reads armed in review and is
+             off in fact. Verify a guard by making it FIRE --- BOTH arms: armed => MUST deny
+             (routing / T-arm) and unarmed => MUST NOT deny (specificity / F-arm). A T-arm-only check
+             cannot distinguish "denies because armed" from "denies always"; the check that tests
+             arming can itself carry the arming-inference bug},
+  origin   = {a-guard-whose-armed-state-is-inferred-not-observed},
+  specimen = {a broken guard that denies unconditionally, put to a T-arm-only check and a two-arm check},
+  evidence = {the T-arm-only check PASSES the deny-always guard (it denies when armed --- and always);
+              the two-arm check catches it (it denies when UNARMED too) while passing a genuinely
+              armed-specific guard; the checks diverge --- arming was inferred, not observed},
+  verdict  = {AGREES},
+  check    = {witness:guard-armed-state-inferred}
+}
+
+@misc{climb-to-authoritative-source,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {On a load-bearing fact there is a source ladder --- man page < web paraphrase < my own
+             extraction < a version-pinned, byte-quoting authority --- and one climbs to the top
+             BEFORE synthesizing, framing the query to FALSIFY not confirm. AGREEMENT IS NOT
+             MEASUREMENT: a claim two competent parties agree on is not thereby measured; consensus is
+             not an oracle, only running it against the source is},
+  origin   = {climb-to-the-authoritative-source-before-synthesizing},
+  specimen = {a well-shaped inference that survives self-review AND peer agreement but is false
+              against the byte-quoted source},
+  evidence = {the consensus oracle ACCEPTS the false inference (self-review passed, a peer agreed);
+              the source oracle returns the true value; the two diverge --- agreement is not
+              measurement, only the byte settles it},
+  verdict  = {AGREES},
+  check    = {witness:climb-to-authoritative-source}
+}
+
+@misc{failure-mode-of-caution-invisible,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {The failure mode of caution is invisible from inside caution --- a guard added
+             from a hunch accrues the CREDIBILITY of caution while carrying none of its WARRANT;
+             an unneeded (prophylactic) guard costs nothing visible, produces
+             reassuring green, and the reassurance IS the defect. Ask before adding a guard: is this
+             REMEDIAL (something is suspected/measured) or PROPHYLACTIC (it feels safer)?},
+  origin   = {the-failure-mode-of-caution-is-invisible-from-inside-caution},
+  specimen = {a remedial guard (a measured problem) and a prophylactic guard (nothing suspected),
+              both reading green},
+  evidence = {both guards read green (indistinguishable by the green light); only the remedial guard
+              has an actual warrant; the sets diverge on exactly the prophylactic guard --- its
+              reassuring green is the unwarranted one, the invisible defect},
+  verdict  = {AGREES},
+  check    = {witness:failure-mode-of-caution-invisible}
+}
+
+@misc{observer-changed-what-it-observes,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {When the audited system IS the log store, an audit POLLUTES the corpus it measures: a
+             witness's own failing probe becomes a STORED log line, and a later successful query that
+             retrieves it is misread as that error. A checker that shares the defect (an identical
+             substring test) cannot detect it. Judge on response SHAPE / STATUS / a structural field,
+             NEVER a substring the payload may legitimately carry},
+  origin   = {an-observer-that-changed-what-it-observes-mistook-the-change-for-a-reading},
+  specimen = {a store that has ingested an earlier probe's error text as a data record; a new query
+              that SUCCEEDS and returns that record},
+  evidence = {the substring judge scores the (NDJSON-shaped, 200) success as a failure because the
+              body carries the stored error text; the shape judge reads it as success; the judges
+              diverge --- the observer read its own pollution as a verdict},
+  verdict  = {AGREES},
+  check    = {witness:observer-changed-what-it-observes}
+}
+
+@misc{instrument-assumes-population,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {An instrument that ASSUMES a population manufactures an ABSENCE --- anything
+             OUTSIDE the assumed population reads as absent, a correct measurement over a wrong
+             population, the most expensive kind of green. Concrete: an ingestion audit scoped to the
+             HTTP router reports a syslog-only (separate-transport) deployment as having NO ingestion.
+             Name the transport/population BEFORE any "complete list" claim, and state a union as a union},
+  origin   = {an-instrument-that-assumes-a-population-manufactures-an-absence},
+  specimen = {a deployment whose ingestion lives only on the syslog listener, audited HTTP-router-only
+              vs over the routes-union-listeners population},
+  evidence = {the HTTP-only audit reports "no ingestion" (a manufactured absence); the union audit
+              reports "ingestion present"; the two diverge --- assuming the router was the population
+              produced a correct measurement over the wrong one},
+  verdict  = {AGREES},
+  check    = {witness:instrument-assumes-population}
+}
+
+@misc{registry-cannot-represent-distinction,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A registry that cannot REPRESENT the distinction you count is not evidence.
+             A `map[string]bool` parser table cannot express an alias (the value carries no identity),
+             so "no aliases" over it is STRUCTURAL, not a design fact --- measuring the wrong table
+             yields a true number and a false conclusion. And identity can be a PAIR: delta/increase
+             share an impl but differ by removes_counter_resets, so they are NOT aliases; an impl-only
+             detector manufactures a false alias group. Check the value type before trusting the count},
+  origin   = {a-registry-that-cannot-represent-the-distinction-you-count-is-not-evidence},
+  specimen = {a bool parser table and an impl evaluator table; delta/increase gated by a separate
+              removes-counter-resets table},
+  evidence = {the bool table returns a STRUCTURAL zero (its value type cannot represent identity);
+              impl-only identity collapses delta/increase into one alias group while the (impl,
+              removes_counter_resets) pair splits them into two distinct functions; the identities
+              diverge --- collapsing the pair manufactures a false finding},
+  verdict  = {AGREES},
+  check    = {witness:registry-cannot-represent-distinction}
+}
+
+@misc{prose-beside-predicate-drifts,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {A predicate is under tension (it runs, and breaks loudly when wrong); the prose beside it
+             is not (a caption, a comment, a quoted number --- it drifts silently while the predicate
+             stays honest). This is why a correction goes stale one line below itself. The fix is to
+             put the variable thing UNDER tension: DERIVE it from the mechanism so it regenerates, or
+             mark it as a timestamped OBSERVATION --- never a bare caption on a predicate},
+  origin   = {prose-beside-a-predicate-drifts-from-it},
+  specimen = {a quantity stored two ways --- a value DERIVED from the source at read time, and a
+              hand-written CAPTION quoting an older value},
+  evidence = {after the source changes, the derived reading tracks it while the caption stays stale;
+              the two diverge one line apart --- the executed value is honest, the prose beside it is not},
+  verdict  = {AGREES},
+  check    = {witness:prose-beside-predicate-drifts}
+}
+
+@misc{i-am-not-the-judge,
+  section = {claims},
+  tier    = {orientation},
+  claim   = {I am not the judge of which of my claims are load-bearing --- consulting an
+             authority, do NOT pre-sort them, because which inference turns out decisive is
+             precisely the thing I keep misjudging. Surface
+             EVERY assumption, marked as an assumption, and let the source falsify freely; re-measure
+             the ones I'd have filed as background. This is "a number's name is not its population"
+             applied to my QUESTIONS instead of my data; make the decorrelated reviewer do the triage
+             I can't. No mechanizable predicate --- a checkless reference warrant},
+  origin   = {i-am-not-the-judge-of-which-of-my-claims-are-load-bearing},
+}
+
+@misc{run-the-retro-before-asserting,
+  section = {claims},
+  tier    = {practice},
+  claim   = {Before shipping a load-bearing CAUSAL claim, run the confound + observer-effect check ---
+             the retrospective ritual fired BEFORE the assertion, not after the operator catches it.
+             The specific trap: confirming a correlation around the ONE variable you were manipulating
+             while a bigger confound (often your own load) sat uncontrolled. Prefer a mechanism-probe
+             that could FALSIFY over evidence that confirms. An OWNED GAP at the instruction layer:
+             "did you consider confounds" is a judgement, not a grep --- so it stays a checkless
+             reference warrant, enforced only by the habit},
+  origin   = {run-the-retro-before-asserting-not-after},
+}
+
+@misc{pattern-correction-is-the-owners-to-draft,
+  section = {claims},
+  tier    = {practice},
+  claim   = {A PATTERN correction is the file OWNER's to draft --- because FINDING EVERY
+             INSTANCE is the work, and a handed sentence patches the one quoted clause and
+             leaves the siblings live (a correction to a recurring inference shape, not a single line).
+             Corollary: a FALSIFICATION CLAUSE reads as rigour, so it passes review unchecked --- the
+             rigour-signalling shape is where the unexamined inference hides. A judgement about
+             ownership of the sweep; no probe --- a checkless reference warrant},
+  origin   = {pattern-correction-is-the-owners-to-draft},
+}
+
+@misc{derive-dont-ask-to-arbitrate,
+  section = {claims},
+  tier    = {practice},
+  claim   = {When a decision looks like it needs the operator to arbitrate, first check whether
+             measurement or derivation can settle it; if the instrument exists, query it and present
+             the derived answer; if it is genuinely missing, that absence is a TOOLING GAP to build,
+             not a question to punt. Reserve genuine operator decisions for what is irreducibly a
+             preference or an authority. It is the measure-don't-assert rule applied to DECISIONS ---
+             a practice, not a mechanizable predicate; a checkless reference warrant},
+  origin   = {derive-dont-ask-to-arbitrate},
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: This Box  (merged from sections/this-box.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{this-box-facts,
+  section = {this-box}, from = {three-templates}, join = {. },
+  claim   = {The "This Box" cluster is cassian's own hardware, cluster, and box-scoped tool
+             facts. Each FACT is witnessed by a live read-only probe against the box where one
+             is cheap and non-destructive (the HDMI-to-dGPU wiring, the rooted-k3s unit, the
+             localhost v6-first resolution, the systemd percent-specifier expansion), and by a
+             self-contained fixture specimen where a live witness would require a destructive
+             migration or a specific failure in flight (the 2x-disk dump/restore gate, the QoS
+             swap branch, the drop-in filename race, the reinstall carry-forward). The
+             box's stale project-status notes and operator doctrines are checkless references},
+  rests-on = {three-templates},
+}
+
+@misc{host-hdmi-nvidia,
+  section = {this-box},
+  tier    = {live host probe},
+  claim   = {cassian's built-in HDMI is wired to the NVIDIA dGPU --- card1, vendor 0x10de,
+             while the KDE Wayland desktop runs on the Intel iGPU (card2,
+             0x8086) where the eDP laptop panel lives --- a muxless PRIME laptop, so HDMI-out
+             does not light by default. This is stable hardware topology; the connector STATUS
+             is a stale phantom and is not read (a point-read of it lies), only the wiring is},
+  origin   = {hdmi-is-wired-to-the-nvidia-dgpu},
+  specimen = {/sys/class/drm: cardN/device/vendor and which cardN owns the HDMI vs eDP connector},
+  evidence = {the HDMI connector's card reads 0x10de (NVIDIA) and the eDP panel's card reads
+              0x8086 (Intel); NEGATIVE CONTROL: HDMI and eDP are on DIFFERENT cards, so
+              "HDMI is on the discrete GPU" is not vacuous (a shared card would distinguish nothing)},
+  verdict  = {HOLDS},
+  check    = {witness:host/hdmi-nvidia}
+}
+
+@misc{host-k3s-rooted,
+  section = {this-box},
+  tier    = {live host probe},
+  claim   = {The k8s runtime on cassian is ROOTED k3s (operator decision, for a durable cluster
+             --- no both-rootless-and-full-fidelity option exists on this disk-bound box). The
+             load-bearing, cheaply-probeable half is that k3s is present AND runs as a ROOT
+             system service, which is exactly why its install crosses the co-sign line while
+             OPERATING the cluster (kubectl under my creds) stays on my side of it},
+  origin   = {k8s-on-cassian-rooted-k3s},
+  specimen = {`systemctl show k3s.service`: User, FragmentPath, LoadState},
+  evidence = {k3s is on PATH; the unit is loaded, User=root, FragmentPath under /etc/systemd/system
+              (a SYSTEM unit); NEGATIVE CONTROL: the fragment is NOT a --user path --- a rootless
+              daemon would be user-scoped and the co-sign-boundary claim would collapse},
+  verdict  = {HOLDS},
+  check    = {witness:host/k3s-rooted}
+}
+
+@misc{host-localhost-v6-first,
+  section = {this-box},
+  tier    = {live host probe},
+  claim   = {On cassian the NAME `localhost` resolves ::1 BEFORE 127.0.0.1, and the node has a
+             routable public IPv6 --- so binding the name `localhost` lands on IPv6 loopback (a
+             v4-hardcoded consumer then gets connection-refused), and a bare `:port` binds all
+             interfaces incl. the public v6 (internet exposure). The safe form is an explicit
+             `127.0.0.1:` bind carried on every migrated service},
+  origin   = {hostnetwork-binds-and-the-dual-stack-loopback-trap},
+  specimen = {`getent ahosts localhost` address order},
+  evidence = {::1 appears before 127.0.0.1 in the resolution; NEGATIVE CONTROL: BOTH loopbacks
+              are present, so "v6 first" is the genuine v4/v6 mismatch trap and not a degenerate
+              statement about a single-stack host},
+  verdict  = {HOLDS},
+  check    = {witness:host/localhost-v6-first}
+}
+
+@misc{host-quadlet-percent-specifier,
+  section = {this-box},
+  tier    = {live host probe},
+  claim   = {A bare `%` in a quadlet `Exec=` is a systemd SPECIFIER --- expanded before the
+             process runs (`%a`=architecture, `%h`=home, ...), so a strftime/printf `%`-code meant
+             for the downstream program (postgres `log_filename=postgresql-%a.json` for weekday
+             rotation) is eaten and the program gets a STATIC string; escape as `%%` for a literal.
+             VERIFY by reading the RESOLVED `ExecStart`, never by reasoning},
+  origin   = {percent-in-a-quadlet-exec-is-a-systemd-specifier},
+  specimen = {a transient user unit (written to the caller's own XDG_RUNTIME_DIR, then removed)
+              with ExecStart carrying `arch=%a lit=%%a`; read its resolved ExecStart property},
+  evidence = {the bare `%a` expanded to the architecture string (not the literal `%a`), while
+              `%%a` collapsed to the literal `%a`; the two DIVERGE --- which is both the hazard
+              (a bare code is rewritten) and the fix (double it), and proves systemd is really
+              transforming the string rather than passing it through},
+  verdict  = {HOLDS},
+  check    = {witness:host/quadlet-percent-specifier}
+}
+
+@misc{host-dump-restore-2x-disk,
+  section = {this-box},
+  tier    = {fixture (a live witness would require running a 68GB restore to ENOSPC on the box)},
+  claim   = {A dump/restore DB migration materializes the OLD and NEW clusters at once, so its
+             hard precondition is free disk >= (DB size x 2) + index-build temp slack --- a DISK
+             gate, not a LOAD gate. cassian's pg 17->18 migration gated on load but not disk, hit
+             "No space left on device" mid-COPY at 99%, and nearly wedged live services. When 2x
+             will not fit, the dump is the intermediary: delete the source first --- admissible
+             ONLY when the source is reconstructible or the dump is proven},
+  origin   = {dump-restore-needs-2x-disk-check-headroom-first},
+  specimen = {the recorded numbers (68GB DB, ~6GB free, index slack) run through the disk predicate
+              vs the load-only gate},
+  evidence = {the disk predicate BLOCKS (6GB free << 140GB needed) while the load-only gate (which
+              the operator actually passed) says go --- the two DIVERGE, and that missed dimension
+              is the whole defect; delete-source-first is gated on the source being reconstructible},
+  verdict  = {AGREES},
+  check    = {witness:host/dump-restore-2x-disk}
+}
+
+@misc{host-pod-mem-qos,
+  section = {this-box},
+  tier    = {fixture (the live branch needs a Burstable pod OOMed under LimitedSwap)},
+  claim   = {A k8s pod's memory limit is a HARD ceiling (swap.max=0, no swap relief) ONLY under
+             Guaranteed QoS (requests==limits) --- kubelet's GetContainerSwapBehavior returns
+             NoSwap iff request equals limit. A Burstable pod (requests<limits) under
+             --memory-swap-behavior=LimitedSwap gets proportional swap and the cap stops biting.
+             So a limit ALONE is not a hard cap; for any pod whose ceiling is load-bearing
+             (cassian's pg/A193) keep it Guaranteed. It fails GREEN: the manifest has a limit and
+             the pod is Running while the ceiling is soft},
+  origin   = {pod-memory-ceiling-needs-guaranteed-qos-and-cgroup-scope-fails-green},
+  specimen = {two pod specs (requests==limits and requests<limits) through a model of the kubelet swap branch},
+  evidence = {Guaranteed -> NoSwap (hard), Burstable -> LimitedSwap (soft); the "has a limit ⟹
+              hard-capped" reading and the true QoS branch DIVERGE on the Burstable pod --- exactly
+              the fail-green a manifest-only check cannot see},
+  verdict  = {AGREES},
+  check    = {witness:host/pod-mem-qos}
+}
+
+@misc{host-cosign-dropin-race,
+  section = {this-box},
+  tier    = {fixture (the live case needs the vendor oomd/nvidia drop-ins present and a root install)},
+  claim   = {A co-sign drop-in LOSES the vendor filename race --- a LOW-numbered prefix sorts
+             before the vendor default and its value wins, silently. systemd merges all `*.conf.d/`
+             files by filename, lexicographic, last-wins per key, so `10-cassian.conf` sorts before
+             `10-oomd-defaults.conf` (c<o) and the vendor value wins on any shared key --- while
+             the discharge passes GREEN on file-identical. A third footprint-vs-effectiveness cause;
+             the fix is to prefix `zz-`/`99-` so ours sorts LAST, and to gate the LOADED value},
+  origin   = {a-cosign-drop-in-loses-the-vendor-filename-race},
+  specimen = {two drop-ins in a scratch dir (10-cassian vs vendor 10-oomd-defaults, same key), merged
+              by systemd's rule, then ours renamed 99-zz-},
+  evidence = {with the 10-cassian name the VENDOR value wins the shared key (the latent, inert loss);
+              renamed 99-zz- OURS wins --- the two layouts DIVERGE, so a file-identical (footprint)
+              discharge is blind to the loss and only a loaded-value (effectiveness) check catches it},
+  verdict  = {AGREES},
+  check    = {witness:host/cosign-dropin-race}
+}
+
+@misc{host-reinstall-carries-state,
+  section = {this-box},
+  tier    = {fixture (the live case is a k3s curl|sh reinstall that locked the operator out)},
+  claim   = {A reinstall co-sign must carry ALL prior installer state --- re-running an
+             idempotent installer (k3s INSTALL_K3S_EXEC) REWRITES the whole invocation, so
+             anything not folded in is GONE. So a reinstall is a REPLACE, not
+             additive: enumerate every prior flag and fold them all in, and prefer the DURABLE form
+             (a server FLAG in ExecStart, re-applied every start) over the FRAGILE form (an env var
+             a reinstall may only partially honor). The A194 nodeport pin dropped A189's kubeconfig
+             grant this way and locked the cluster out},
+  origin   = {a-reinstall-cosign-must-carry-all-prior-installer-state},
+  specimen = {a prior ExecStart flag set (A185 + the A189 grant), a naive reinstall carrying only
+              the new pin, and the union reinstall},
+  evidence = {the naive reinstall silently DROPS the prior kubeconfig grant (the lockout) while the
+              union reinstall preserves it; the two DIVERGE by exactly the prior flags --- proving a
+              reinstall must carry all prior installer state or it regresses it},
+  verdict  = {AGREES},
+  check    = {witness:host/reinstall-carries-state}
+}
+
+@misc{host-migrated-consumer-dns,
+  section = {this-box},
+  tier    = {code specimen},
+  claim   = {A migrated consumer flips from NodePort to Service DNS --- a NodePort / host-loopback
+             bridge is the HOST-side reach, but the instant a CONSUMER itself migrates INTO the
+             cluster, 127.0.0.1 is the POD's own
+             loopback (not the host), so the host NodePort is unreachable from there and the target
+             must flip to the in-cluster Service DNS. Re-pointing an in-cluster consumer at the host
+             NodePort is a bug that PASSES pod-health (Running/Ready on its own endpoint) but FAILS
+             datasource/query health --- so a consumer's correct target depends on which side of the
+             cluster boundary it sits, and that flips when it migrates},
+  origin   = {a-migrated-consumer-flips-from-nodeport-to-service-dns},
+  specimen = {a reachability model: a host-loopback NodePort vs a cluster Service DNS name, probed
+              from the host side and from inside a pod (grafana's A196 datasource re-point)},
+  evidence = {the same host-NodePort URL is `ok` from the host and connection-`refused` from a pod,
+              while the Service-DNS URL is `ok` from a pod --- so a consumer that carried its
+              host-side URL into the pod breaks while pod-health stays green; the two readings
+              DIVERGE, which is the cost of not flipping the target on migration},
+  verdict  = {AGREES},
+  check    = {witness:host/migrated-consumer-dns}
+}
+
+@misc{this-box-native-base-status,
+  section = {this-box},
+  tier    = {stale project status},
+  claim   = {A126's native Gentoo stage3 base (localhost/cassian-stage3-native:native) BUILT green
+             (299 packages in Gentoo's world set against native Alder Lake flags, ~14GB, never wedged the box under
+             a hand-rolled 6g cap). The row's earlier "BASE DONE" was an A47-class overclaim (the
+             image did not exist), now true. The durable LESSON exported, not the transient build
+             state: a --usepkgonly binpkg extraction SKIPS pkg_postinst, so a plugin/registry a tool
+             builds at install (dot -c, ldconfig, a plugin manifest) is ABSENT and the tool is
+             green-but-broken --- test the CAPABILITY (a real render/run), never just --version},
+  origin   = {a126-native-base-build-running},
+}
+
+@misc{this-box-uncommitted-pg-fixes,
+  section = {this-box},
+  tier    = {stale project status},
+  claim   = {Uncommitted fixes can await TIME-GATED gates --- a pattern, not a durable check:
+             cassian carried verified-but-uncommitted pg fixes (backup timeout 1h->4h, a
+             backends-by-state bug fix, shm/work_mem/rotation tuning) blocked from commit ONLY
+             by TIME-GATED live gates, the accumulators gate needing a
+             fresh SUCCESSFUL nightly pg-backup, the panel witness needs hours of window data. The
+             rule: do NOT force past a time-gated / load-transient gate and do NOT trigger a heavy
+             dump on a loaded box; let the nightly run and the window clear it, then commit green},
+  origin   = {uncommitted-a146-pg-fixes-await-time-gated-gates},
+}
+
+@misc{this-box-record-everything,
+  section = {this-box},
+  tier    = {operator doctrine},
+  claim   = {The operator's metrics doctrine (from Zabbix private-cloud practice): autodiscover and
+             record EVERY non-per-pid scalar /proc, /sys, SMART, and nvme expose --- cookie-cutter,
+             names derived from the path --- and govern cost by RETENTION (short), never by curating
+             the metric set. Because a spike leaves its residue in a counter you cannot predict in
+             advance, curating it away destroys the evidence before you know you need it; record
+             before you know, bound by retention},
+  origin   = {record-everything-govern-by-retention},
+}
+
+@misc{this-box-analyses-in-tsdb,
+  section = {this-box},
+  tier    = {operator doctrine},
+  claim   = {The operator's Monarch/Google practice: an analysis over time-series data belongs IN
+             the engine --- recording rules that compute derived series and store them alongside the
+             data --- NOT an offline script that exports and post-processes. The tell you are about
+             to build the anti-pattern: you reach for a script to read a TSV and compute
+             rates/deltas/ratios already expressible as a query (`increase(metric[window])` IS the
+             delta). Get the attribution labels into the store, then derive in-engine},
+  origin   = {run-analyses-in-the-tsdb-not-an-offline-script},
+}
+
+@misc{this-box-cosign-recipes-untestable,
+  section = {this-box},
+  tier    = {practice ruling},
+  claim   = {When preparing an A15 co-sign recipe the operator runs as root, this agent cannot test
+             the privileged path --- so before handing over: confirm the post-STATE predicate is
+             observable by the UNPRIVILEGED verifier (a root-only dir needs a world-readable witness,
+             not a file compare), never emit a standalone privileged side-command outside the
+             co-signed playbook (a partial run leaves the host in limbo), and prefer plain sudo to
+             ansible on cassian (become is broken there). The discharge verifies the post-state, not
+             the actuator},
+  origin   = {cosign-recipes-i-cannot-test-the-privileged-path},
+}
+
+@misc{this-box-status-is-actionability,
+  section = {this-box},
+  tier    = {practice ruling},
+  claim   = {A work-item's STATUS tracks ACTIONABILITY --- is there a concrete thing left to DO ---
+             not epistemic openness (is the underlying question settled). "Applied but the verdict
+             is open" is not a status: either there is a next action (express it as a dependency /
+             downstream item) or there is not (mark it done, even if the world has not confirmed the
+             outcome). A passive condition ("watch whether it worked") is not an open path-forward;
+             epistemic openness belongs in a dependency-gated item, never in the status field},
+  origin   = {registry-status-tracks-actionability-not-epistemic-openness},
+}
+
+@misc{this-box-daemon-inside-cosign,
+  section = {this-box},
+  tier    = {scope ruling},
+  claim   = {The co-sign boundary is drawn at ROOT/HOST STATE, not at "anything that changes
+             something". A daemon or socket the agent reaches over its OWN credentials (podman,
+             kubectl -> a k8s API) is USER-SPACE, so operating things inside it (deploy, scale,
+             restart, evict, tear down) is unprivileged and directly actionable --- do not reflexively
+             co-sign a workload operation that is just an API call I can make. What REMAINS on the far
+             side is the DAEMON SETUP: installing a runtime that runs as a root systemd service crosses
+             the line; once the daemon exists, operating it is mine},
+  origin   = {a-daemon-i-reach-as-my-user-is-inside-the-cosign-boundary},
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Shared State and Tooling  (merged from sections/shared-state.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{shared-state-head,
+  section = {shared-state},
+  tier    = {section},
+  claim   = {The state a session shares with its peers is wider than the repo tree: the git INDEX,
+             a materialized checkout-index, a stash, a project-scoped memory directory, a systemd
+             specifier boundary, and a fixture that mirrors a registry are all mutable by more than
+             one actor or read in full by machinery a pathspec does not constrain. Each memory here
+             names a surface that reads as private and is not},
+}
+
+@misc{verify-staged-index,
+  section = {shared-state},
+  tier    = {git probe (scratch repo)},
+  claim   = {The pre-commit hook gates the staged INDEX, not the working tree, so a green
+             working-tree check proves nothing about what will be committed. The sneakiest
+             divergence is STAGE-THEN-EDIT: `git add f` then keep editing f leaves the index
+             holding the OLD blob while the working tree holds the new --- the working-tree check
+             is green, the staged snapshot is stale, the hook refuses. Verify the staged blob
+             (`git show :f`), not the file on disk, after `git add`},
+  origin   = {verify-the-staged-index-not-the-working-tree},
+  specimen = {a scratch repo (mktemp -d + git init): stage f=v1, then overwrite f=v2 without re-adding},
+  evidence = {`git show :f` returns v1 (the staged blob) while `cat f` returns v2 (the working tree)
+              --- they DIVERGE, so a check reading the working tree sees v2 and the commit would carry
+              v1. NEGATIVE CONTROL: a file staged and left untouched has `git show :g` == `cat g`, so
+              the divergence is the stage-then-edit gap, not an artifact of the probe},
+  verdict  = {HOLDS},
+  check    = {witness:git/staged-index}
+}
+
+@misc{git-stash-pop-rewrites-index,
+  section = {shared-state},
+  tier    = {git probe (scratch repo); the push -- <path> variant is git-version-dependent},
+  claim   = {`git stash` snapshots and, on pop, restores the whole INDEX state --- not just the
+             files it changed. A default `git stash push` RESETS the index to HEAD, silently
+             un-staging a concurrent session's `git add`ed work that the stash never named; the
+             window between the reset and the pop is where a peer's commit fails "no changes added
+             to commit". So a path-limited stash is not a courtesy to concurrent sessions; the
+             index is shared mutable state with no serializer. (The original bite was a
+             `stash push -- <onefile>` on 2026-08-19; that path-limited variant is git-version-
+             dependent, but the whole-index snapshot on a DEFAULT stash is the durable mechanism.)},
+  origin   = {git-stash-pop-rewrites-the-whole-index-not-just-its-file},
+  specimen = {a scratch repo: stage a NEW peer.txt, then `git stash push` (default) an unrelated WT change},
+  evidence = {after `git stash push` the index is reset to HEAD --- peer.txt, which the stash never
+              named, is UN-staged; `git stash pop` restores it. NEGATIVE CONTROL: `git stash push
+              --keep-index` leaves peer.txt staged, proving the whole-index reset is a real
+              distinguishing property of the default stash and not every stash churns the index},
+  verdict  = {HOLDS},
+  check    = {witness:git/stash-index}
+}
+
+@misc{adopted-symlink-dangles,
+  section = {shared-state},
+  tier    = {git probe (scratch repo)},
+  claim   = {An adopted symlink DANGLES in the materialized checkout-index tree --- a file
+             symlinked into a sibling repo resolves in the working tree but not in the `git
+             checkout-index` tree the pre-commit hook gates, because the sibling repo is not
+             beside the tmpdir. Any gate that reads THROUGH the
+             symlink there (a shebang `head -1`, a `bash -n`) false-fails on the unreadable target,
+             not on a real defect. A classifier must decide by something readable WITHOUT resolving
+             the link --- the name/extension --- not by reading the target},
+  origin   = {adopted-symlink-dangles-in-the-materialized-index},
+  specimen = {a scratch repo: commit a symlink to ../../nonexistent-sibling, then `git checkout-index
+              --all --prefix=$M/` and read through it},
+  evidence = {`head -1 $M/adopted.py` fails (No such file) in the materialized tree though the link
+              resolves in the working tree. NEGATIVE CONTROL: a real regular file materializes
+              readable in the SAME $M tree, so the failure is the cross-repo symlink dangling, not a
+              broken checkout-index},
+  verdict  = {HOLDS},
+  check    = {witness:git/symlink-dangles}
+}
+
+@misc{percent-in-quadlet-exec,
+  section = {shared-state},
+  tier    = {fixture (systemd expansion modeled; live %a-expansion needs a loaded unit)},
+  claim   = {A bare `%` in a quadlet `Exec=` is a systemd SPECIFIER --- expanded before the
+             process runs (%a=architecture, %h=home, %n=unit name, ...). A `%`-code meant for the
+             DOWNSTREAM program --- strftime `%a` in a postgres `log_filename` for weekday rotation
+             --- is eaten by systemd first (%a -> x86-64), so the program gets a STATIC string and
+             the rotation silently breaks. Escape as `%%`. Second-order and mechanizable: a
+             config-drift gate comparing a DECLARED token (unit file, pre-expansion, `%%a`) against
+             a RUNNING token (podman inspect, post-expansion, `%a`) reds FOREVER unless it unescapes
+             `%%`->`%` on the declared side before comparing. VERIFY by reading resolved ExecStart,
+             never by reasoning},
+  origin   = {percent-in-a-quadlet-exec-is-a-systemd-specifier},
+  specimen = {shared-state.py models the expansion boundary: declared `postgresql-%%a.json`
+              vs running `postgresql-%a.json`; systemd-escape is asserted present on the box},
+  evidence = {a naive declared-vs-running gate that string-matches `%%a` against `%a` reds forever
+              (the correct restart cannot fix it); a gate that unescapes `%%`->`%` on the declared
+              side AGREES with the running token. The two readings DIVERGE, measuring the cost of
+              not modeling the expansion. NEGATIVE CONTROL: a token with no `%` matches under both
+              gates, so the divergence is the unescape omission, not a broken comparator},
+  verdict  = {HOLDS},
+  check    = {witness:systemd/percent-specifier}
+}
+
+@misc{project-scoped-paths,
+  section = {shared-state},
+  tier    = {code specimen},
+  claim   = {"My own files" is a claim about a PATH, and a `<project>`-scoped path is shared by every
+             session working that repo (same directory, same MEMORY.md) while only a `<session-id>`-scoped
+             path is private. `~/.claude/projects/<project>/memory/` is project-scoped --- shared mutable
+             state with no serializer, no gate, no history --- so "outside this repo, my auto-memory" is
+             wrong on the decisive clause. The cheapest tell before a bulk op is `ls -la` the directory
+             for foreign mtimes},
+  origin   = {project-scoped-paths-are-shared-state},
+  specimen = {sections/shared-state.py (inline specimen) --- a path classifier over a project-scoped
+              and a session-scoped path, plus an mtime scan that finds a foreign writer},
+  evidence = {the classifier reads the `<project>`-scoped path as SHARED and the `<session-id>`-scoped
+              path as private --- the two DIVERGE, so treating the project path as private is a
+              misclassification a session id would have prevented; and an mtime scan of the shared dir
+              finds a file with a foreign session's stamp, the tell that a bulk compaction would have
+              deleted a peer's work},
+  verdict  = {AGREES},
+  check    = {witness:project-scoped-paths}
+}
+
+@misc{fixture-mirrors-registry,
+  section = {shared-state},
+  tier    = {code specimen},
+  claim   = {A test fixture that MIRRORS a registry (a copy list, a tar list, a run-args string) must
+             grow when the registry's vocabulary grows, and nothing derives that automatically --- so
+             a new registered thing that names a new KIND is a SET (the registration AND the fixture's
+             mirror), or the gate reds inside the fixture. The class-ending fix is to DERIVE the mirror
+             from the registry's own column, not hand-maintain it: a hand-maintained mirror is a
+             second place to update},
+  origin   = {a-fixture-mirroring-a-registry-must-grow-with-it},
+  specimen = {sections/shared-state.py (inline specimen) --- a registry that gains a row, a HARDCODED
+              mirror, and a mirror DERIVED from the registry's column},
+  evidence = {after the registry gains a member, the hardcoded mirror MISSES it (a gate over the
+              registry finds an unmirrored row and reds) while the derived mirror carries it by
+              construction --- the two DIVERGE exactly on the new member, measuring the cost of the
+              hand-maintained mirror; deriving from the column closes the class},
+  verdict  = {AGREES},
+  check    = {witness:fixture-mirrors-registry}
+}
+
+@misc{loud-tool-warning,
+  section = {shared-state},
+  tier    = {code specimen},
+  claim   = {A loud warning from a mature tool is a FINDING to trace to its call site, not
+             advisory-grade noise to attribute to "earlier work, not mine" and wave past. The
+             paperkit `field ... was DROPPED (not silently)` wall was real: a consumer re-parsed the
+             bibs WITHOUT the `consumer_fields` the paper.toml declares, so every declared field
+             warned on every entry. The posture: read WHICH consumer the tool is naming and fix that
+             consumer, never patch the tool},
+  origin   = {a-loud-tool-warning-exposes-a-consumer-bug},
+  specimen = {sections/shared-state.py (inline specimen) --- a tool that warns when a consumer drops a
+              declared field, driven by a buggy consumer (drops the fields) and a fixed one},
+  evidence = {the buggy consumer (re-parses without passing the declared consumer_fields) trips the
+              tool's DROPPED warning on every declared field; the fixed consumer (passes the fields)
+              trips ZERO warnings over the same input. The warning count DIVERGES with the consumer,
+              proving the warning tracked a consumer bug and not the tool --- dismissing it as noise
+              would have shipped the dropped fields},
+  verdict  = {AGREES},
+  check    = {witness:loud-tool-warning}
+}
+
+@misc{env-fix-masks-defect,
+  section = {shared-state},
+  tier    = {code specimen},
+  claim   = {Fixing your environment to make a borrowed tool run (install a dep, build a venv) can
+             MASK a real defect in the tool rather than satisfy a missing requirement --- and your
+             crash was the signal the owner needed. The tell it is a defect not a dependency: a crash
+             on a mode that should NOT need the missing thing (a CST-free mode dying on a CST import,
+             because a `class X(cst.CSTVisitor)` base evaluates at IMPORT and defeats the
+             `except ImportError: cst = None` fallback). Report the crash to the owner even while
+             working around it: the workaround unblocks you, the report fixes the tool},
+  origin   = {an-environmental-fix-masks-a-tool-defect},
+  specimen = {sections/shared-state.py (inline specimen) --- a tool with an import-time base-class
+              reference that defeats its own ImportError guard, invoked in a mode needing nothing from the dep},
+  evidence = {with the dep ABSENT the CST-free mode still crashes (the guard is defeated at import,
+              so `cst is None` is never reached) --- the environmental fix (supply the dep) makes it
+              pass and REMOVES that signal, while the real fix (guard the base-class reference) makes
+              the CST-free mode pass with the dep still absent. The env-fix and the defect-fix
+              DIVERGE on the dep-absent CST-free run, measuring the masked defect},
+  verdict  = {AGREES},
+  check    = {witness:env-fix-masks-defect}
+}
+
+@misc{new-enum-every-site,
+  section = {shared-state},
+  tier    = {code specimen},
+  claim   = {Adding a new value to a registry enum is NOT a single-site edit: every generator/checker
+             that `case`s on the enum must gain an arm, or its `*)` catch-all refuses the new value.
+             The narrow `--only <slice>` gate that owns the enum's DECLARATION stays GREEN; only the
+             full selftest, which quantifies over ALL rows through EVERY consumer, catches the missed
+             site. The number of sites is not 1 --- grep every dispatch site BEFORE claiming the
+             extension done},
+  origin   = {a-new-enum-value-must-be-added-at-every-dispatch-site},
+  specimen = {sections/shared-state.py (inline specimen) --- an enum with a declaration site and two
+              dispatch consumers, one of which was not taught the new value},
+  evidence = {the narrow gate over the DECLARATION site accepts the new value and stays GREEN, while
+              a consumer whose `case` was not extended hits its catch-all and REFUSES the same value
+              --- so the narrow-green and the full-quantify-red DIVERGE on exactly the new value,
+              measuring the half-wired enum a slice-only check declares done. Enumerating the dispatch
+              sites first (the full quantifier) is what catches it},
+  verdict  = {AGREES},
+  check    = {witness:new-enum-every-site}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: VM / VLogs / VTraces Facts  (merged from sections/vm-manual.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{vm-buildinfo-hardcoded-constant,
+  section = {vm-manual},
+  tier    = {live probe (cassian VM v1.103.0, :30828) + self-verifying version pin},
+  claim   = {VictoriaMetrics `/api/v1/status/buildinfo` does NOT report VM's version --- it returns
+             a HARDCODED "2.24.0", the Prometheus-API-compatibility version VM emulates for Grafana,
+             a constant that never moves when VM upgrades. The authoritative version is the
+             `vm_app_version` metric / `<binary> -version` (v1.103.0 here). An endpoint literally
+             named `buildinfo` returns a well-formed value ABOUT A DIFFERENT PRODUCT: A NAME IS NOT
+             AN EFFECT --- the most convincing possible name for the wrong number},
+  origin   = {buildinfo-returns-a-hardcoded-prometheus-compat-constant-not-vm-version},
+  specimen = {the live cassian VM pod on :30828; buildinfo vs the vm_app_version version oracle},
+  evidence = {buildinfo.data.version == "2.24.0" (the emulated Prometheus-API constant); NEGATIVE
+              CONTROL the same pod's vm_app_version short_version == v1.103.0, a DIFFERENT string ---
+              so the endpoint's number is NOT the artefact's version, and were they equal the claim
+              would be vacuous. The version-oracle read doubles as the self-verifying pin},
+  verdict  = {HOLDS},
+  check    = {witness:vm-manual/buildinfo-hardcoded-constant}
+}
+
+@misc{vm-logsql-stats-by-colon-quoted,
+  section = {vm-manual},
+  tier    = {live probe (cassian VTraces v0.10.0 LogsQL parser, :30428) + version pin},
+  claim   = {A LogsQL stats-by colon field must be QUOTED --- the rule is ONE CONSTRUCT WIDE,
+             a colon-bearing OTel field quoted INSIDE `stats by (...)`, NOT "quote colon fields"
+             generally. Inside stats-by, LogsQL reads
+             `field:value` as field-with-BUCKET-SIZE, so `resource_attr:service.name` misparses as
+             field `resource_attr`, bucket size `service.name`; the fix is one pair of quotes. In
+             FILTER position the same colon field needs no quoting. A broad "always quote" rule would
+             tell readers to quote fields needing none, and its witness would go RED on correct
+             queries --- so the concept asserts the NARROW rule},
+  origin   = {logsql-stats-by-colon-field-must-be-quoted},
+  specimen = {the live VTraces LogsQL parser on :30428, three arms sent as url-encoded query VALUES},
+  evidence = {arm 1 colon field in FILTER position PARSES (200); arm 2 colon field UNQUOTED in
+              stats-by FAILS (400, "cannot parse bucket size") --- this middle arm is the NEGATIVE
+              CONTROL; arm 3 the QUOTED field in stats-by PARSES (200). NOT the vendoring: it fails
+              identically on standalone VLogs, so it is a doc/syntax fact},
+  verdict  = {HOLDS},
+  check    = {witness:vm-manual/logsql-stats-by-colon-quoted}
+}
+
+@misc{vm-vtraces-vendors-logsql-one-verb-behind,
+  section = {vm-manual},
+  tier    = {live probe (cassian VLogs v1.52.0 :30928 vs VTraces v0.10.0 :30428) + both version pins},
+  claim   = {VictoriaTraces has NO LogsQL of its own --- it VENDORS VictoriaLogs' lib/logstorage, and
+             the vendored copy LAGS the standalone: same query language by name, DIFFERENT accept-set
+             in fact. The pipe `json_array_concat` exists in VLogs v1.52.0 but not the copy vendored
+             into VTraces v0.10.0, so the SAME query WORKS on VLogs and FAILS on VTraces --- a
+             reproducible, user-facing DIVERGES. A doc example pointed at both products is wrong for
+             one of them if it uses a lagging verb},
+  origin   = {victoriatraces-vendors-victorialogs-logsql-one-verb-behind},
+  specimen = {`... | json_array_concat` sent to both live pods' LogsQL query endpoints},
+  evidence = {json_array_concat PARSES on VLogs (200) and is REJECTED by VTraces (400, "unexpected
+              pipe json_array_concat"). BOTH ARMS is the control by construction: the check COULD
+              report present-on-both, so present-on-VLogs / absent-on-VTraces is a real difference,
+              not a diff that can only ever say "missing"},
+  verdict  = {HOLDS},
+  check    = {witness:vm-manual/vtraces-vendors-logsql-one-verb-behind}
+}
+
+@misc{vm-vtraces-streaming-spans-orphans-queryable,
+  section = {vm-manual},
+  tier    = {captured fixture (measured live 2026-08-25, VTraces v0.10.0) + live version pin \& read-path check},
+  claim   = {VictoriaTraces reassembles streamed spans by traceId across separate POSTs, and orphaned
+             children (parent never written) are queryable AS a trace --- so a wedged suite (root
+             span absent, children present) is a legible state. Two load-bearing structural facts:
+             (1) settle is ELAPSED-SINCE-WRITE, not trace SHAPE --- the same orphan, shape fixed, read
+             at 15.3s and re-read minutes later at 0.1s, two orders of magnitude apart, so shape
+             cannot explain the latency; size a deadline to a CEILING (~30s), never to shape; and
+             (2) a SINGLE READ manufactures a false conclusion --- a 404 {\{}"data":[]{\}} occurred right
+             after the last span's 200, so read once and you wrongly conclude the store does not
+             reassemble streamed traces. Poll the read path; never sample it once},
+  origin   = {victoriatraces-streaming-spans-join-and-orphans-are-queryable},
+  specimen = {sections/vm-manual.py _STREAMING_SPANS_FIXTURE --- the recorded latencies/shape, plus a
+              live check that the Jaeger read path is present on the running v0.10.0 pod},
+  evidence = {fresh-read max latency >= 10s while the later re-read of the SAME (shape-fixed) orphan
+              is 0.1s --- they diverge by orders of magnitude, so shape does not explain settle; the
+              settle ceiling (30s) sits at/above the measured high end; the fixture records that a
+              single read right after the last 200 can 404 (the false-conclusion trap) and that
+              orphaned children are queryable as a trace (the wedge signal). Live version pin holds},
+  verdict  = {HOLDS},
+  check    = {witness:vm-manual/vtraces-streaming-spans-orphans-queryable}
+}
+
+@misc{vm-manual-findings-driven-incremental,
+  section = {vm-manual},
+  tier    = {orientation},
+  claim   = {vm-manual is built FINDINGS-DRIVEN INCREMENTAL, not one big fan-out --- the
+             VM/VLogs/VTraces paperkit concept-library (~/github/vm-manual/) authors concepts in
+             operator-approved WAVES, each wave wiring linux-sources' SOURCE-verified findings into
+             behavioural witnesses, so the manual can never hold a behavioural-graded-but-doc-
+             unverified concept (the grade certifies the witness is falsifiable, NOT that upstream
+             was read right --- doc comparison stays human). It owns its own `W<n>` label space
+             (actions.tsv), spins ephemeral digest-pinned containers as witnesses, and separates a
+             `methodology` library (product-INDEPENDENT auditing principles) from `vm-common`
+             (facts true of all three products). Receipts are co-produced by the witness ---
+             write-before-assert, self-verifying pin, and a verdict COMPUTED from the measurement,
+             never a literal beside it},
+  origin   = {vm-manual-is-findings-driven-incremental},
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Ecosystem and Practice  (merged from sections/ecosystem.bib, Phase 2)
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{ask-the-summit-session,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {A `summit capability <spelling>` MISS means "not in the index", NEVER "does
+             not exist" --- the registry is INCOMPLETE, and the ecosystem holds real,
+             sizeable tooling summit has not caught up to registering. So a narrow,
+             one-spelling-at-a-time CLI probe trusted on a miss manufactures false absences
+             (nearly asserted "no markdown structural reader" against substrate's 102KB
+             mdstruct.py; found bibstruct only via --unknown-to). The fix: ask the summit
+             SESSION --- a peer working the forum --- about idioms and tooling BROADLY,
+             "point me at what I don't know I don't know", before hand-rolling ANY tool. A
+             registry miss is a FINDING to file, not a conclusion to act on --- the same
+             method-vs-substrate collapse as `no match found` == `does not exist`},
+  origin   = {ask-the-summit-session-not-just-the-registry},
+}
+
+@misc{converge-implementation-cost-locality,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {The operator operates every repo in ~/github, so a divergent implementation is
+             not free to them --- they maintain and reason about each variant. Prefer
+             maximally reusable tooling with minimal customisation, and push for convergence
+             on IMPLEMENTATION, not merely recognition of a shared invariant. THE TEST IS
+             COST LOCALITY: not "does it differ" but "who pays for the difference". Cost
+             isolated to one delegate -> local variation is fine; cost borne by the operator
+             across N variants -> converge on ONE implementation. Corollary: discoverability
+             is a convergence lever --- a shared capability gets re-implemented when
+             consumers cannot FIND it, so make the shared thing findable under the terms
+             people search ("put the census in consensus")},
+  origin   = {converge-on-implementation-cost-locality},
+}
+
+@misc{participation-bidirectional-convergence,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {Participation is bidirectional idiom convergence --- cassian joins the summit
+             plenary because the convergence is two-way with a compounding payoff, a FIXED
+             POINT: cassian adopting
+             the common model makes its patterns legible TO others; others adopting cassian's
+             idioms make cassian's patterns legible AS the common model. Both loops lower
+             cross-repo friction and compound. So contribute cassian's real, distinct idioms
+             AND adopt the ecosystem's good frames, both actively --- but SEED ONLY REAL
+             idioms, never manufactured attendance: a false idiom that propagated would make
+             cassian LESS legible (others would model it wrongly), which is why staying
+             silent where cassian lacks a mechanism is correct. Consolidation wants the true
+             shapes, including the true absences},
+  origin   = {participation-is-bidirectional-idiom-convergence},
+}
+
+@misc{summit-capability-registration,
+  section = {ecosystem},
+  tier    = {procedure},
+  claim   = {Registering a reusable capability with summit is one file ---
+             registries/capabilities/<key>.md, a TOML frontmatter record plus a markdown
+             body that is a PROJECTION of the record, NEVER hand-written (project_registries.py
+             rewrites it from the frontmatter; a hand-written body that drifts fails
+             `summit check --only registry`). The `summary` is where the real content lives
+             (the body projects from it). `spellings` is the whole point --- discovery is by
+             spelling, so list every plausible name a searcher would try, and verify each
+             resolves after registering. `check = cmd:test -f <owning-artifact>` is an
+             EXISTENCE probe that must pass BEFORE registering, so register AFTER the owning
+             commit lands. Operator-gated},
+  origin   = {summit-capability-registration},
+}
+
+@misc{summit-floor-intake-conventions,
+  section = {ecosystem},
+  tier    = {procedure},
+  claim   = {Filing to summit's floor/inbox/ has FIVE silent-fail conventions — the surface reads
+             green while the entry is broken, so verify all five before dropping the letter:
+             (1) kind=use-case HYPHENATED, not usecase (the filename reports-usecase.bib
+             tempts the wrong copy; 65/65 entries use the hyphen); (2) rests-on BARE, never
+             quoted (the quoted form is not parsed as a field); (3) section = {report}
+             SINGULAR; (4) check = concept:report/provenance/<key>, three segments, never a
+             cmd: (a cmd: runs in SUMMIT's tree, greening while measuring the wrong repo);
+             (5) note tail-only for by=/of=/kind= (the parser takes the LAST whitespace match;
+             backticks do not protect). Verify all five BEFORE dropping the letter in;
+             writing-into-inbox IS filing. Operator-gated, and coordinate the lane with
+             co-filers first},
+  origin   = {summit-floor-intake-conventions},
+}
+
+@misc{trace-id-fan-out-prior-art,
+  section = {ecosystem},
+  tier    = {prior-art / provenance},
+  claim   = {Prior art for cassian's nonce process-attribution, from mikemol's Ford work.
+             ATTRIBUTION GUARD (preserve verbatim, never overstate): the infrastructure
+             logging layer and the unique-trace-ID idea were the LOGGING TEAM'S, not his ---
+             NEVER write "built the logging / designed the tracing / introduced distributed
+             tracing / architected the logging". What is HIS: (a) getting teams with
+             external-facing APIs, teams he did NOT own, to accept a trace ID as a PARAMETER
+             so he could troubleshoot his CI/CD pipeline across all layers and teams; and
+             (b) EXTENDING the model by appending to trace IDs when one event spawned
+             concurrent events (a matrix of OS platforms x versions). THE MATCHING PART IS
+             FAN-OUT: a flat trace/task ID assumes a LINEAR causal chain; the moment one
+             identity fans out into concurrent children, append-on-spawn (a hierarchical ID,
+             prefix-match) is required --- which is where cassian's flat nonce is weak. THE
+             CARRIER DOES NOT MATTER: the identity (the trace-ID/nonce string) and its
+             STRUCTURE are invariant; the transport (env var, API parameter, HTTP header, log
+             field) is a per-medium detail. Same string, different pipe},
+  origin   = {trace-id-fan-out-prior-art-ford},
+}
+
+@misc{shared-tool-attribution,
+  section = {ecosystem},
+  tier    = {code specimen},
+  claim   = {A shared-tool process is not attributable to my agent by name --- paperkit/bazel/podman
+             are machine-wide and MULTIPLE sessions run them concurrently, so a `pgrep` hit
+             for the tool's NAME is not proof my agent spawned it; attributing an ambient
+             shared-tool process to my own work is a provenance GUESS ("an instrument sees a
+             signal and assumes its source"). The fix: make provenance OBSERVABLE not
+             inferable --- stamp a nonce (the task/agent id, already unique and free) into
+             the launched command's environment, so `/proc/<pid>/environ` attributes it
+             exactly. Then "is this proc mine?" is a GREP, not a guess. Caveat: the stamp
+             only helps procs I launched going forward; an UN-stamped shared-tool proc stays
+             un-attributable, and to know an agent's state you read ITS OWN output, never
+             infer from an ambient process},
+  origin   = {a-shared-tool-process-is-not-attributable-to-my-agent},
+  specimen = {sections/ecosystem.py --- two same-named child processes, one stamped
+              CASSIAN_TASK=<mine>, one CASSIAN_TASK=<other>},
+  evidence = {a NAME-match (the pgrep-shaped predicate) returns BOTH pids --- it cannot say
+              which is mine, the ambient-attribution defect; the environ-nonce predicate
+              returns exactly the stamped pid and rejects the other, so the two readings
+              DIVERGE and the name-match over-claims by exactly the process I did not launch.
+              NEGATIVE CONTROL: querying a nonce that was never stamped returns no pid, so a
+              green is a real match, not a predicate that accepts everything},
+  verdict  = {AGREES},
+  check    = {witness:shared-tool-attribution}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ SECTION: Completeness residue (◇C1) --- the 9 A/B corpus rows the Phase-1 fan-out left
+% ══ untranscribed, now transcribed as template-B warrants+witnesses. Placed in their home
+% ══ sections by claim (measurement / lie-green / claims / this-box).
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{felt-vs-causal-state-window,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {The felt state and the causal state are minutes apart: a box can DIE during the
+             CALM after a disturbance has passed, so "it didn't look busy when I noticed" is a
+             true observation and misleading evidence --- by the time a human notices the hang
+             the causal state is minutes in the past. The remedy is a QUERY WINDOW that starts
+             well before the event and is read for SHAPE (max_over_time, rates, trajectory),
+             never a window that ENDS at the event (its decayed tail dominates the read and
+             manufactures a "calm approach") and never a felt-moment level (a level is exactly
+             what misled the felt reading)},
+  origin   = {the-felt-state-and-the-causal-state-are-minutes-apart},
+  specimen = {a load1 series peaking 45 then decaying to 5.9 over six minutes BEFORE the wedge, in concepts.py},
+  evidence = {reading the felt moment (the trough just before death, ~5.9) OR a window that ENDS
+              at the event both read "calm"; a window that STARTS before the event and is read for
+              shape sees the 45 peak --- so the felt/tail reading and the pre-event-shape reading
+              DIVERGE, and only the shape reading recovers the storm that actually caused the death},
+  verdict  = {AGREES},
+  check    = {witness:felt-vs-causal-state-window}
+}
+
+@misc{attribute-memory-at-cgroup,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {To attribute an OOM across a subprocess FLEET, measure at the OS/cgroup layer
+             (memory.peak/current/events, recursive over the subtree), not the spawner's own
+             profiler --- bazel --memory_profile sees only the JVM heap, never the subprocess RSS
+             that is the entire signal. Per-cell footprint and concurrency MULTIPLY: the quantity
+             that OOMs is the sum of concurrent workers' resident sets at overlapping peaks, and a
+             single-worker time -v cannot see it (nothing contends). Summing per-action peaks
+             OVERCOUNTS (they do not all peak at once); the created-parent cgroup's own memory.peak
+             is the true simultaneous high-water. And a static fraction of TOTAL RAM
+             (--local_ram_resources=HOST_RAM*.67) is a compile-time constant pretending to be a
+             runtime measurement --- it assumes an idle machine; budget from what fits, cap for
+             blast-radius},
+  origin   = {attribute-subprocess-memory-at-the-cgroup-not-the-spawner},
+  specimen = {a fleet of per-action cgroups with known peaks and an overlap schedule, vs the spawner's own heap read, in concepts.py},
+  evidence = {the spawner-heap reading (2G, well under a 10G budget) reads "safe" while the
+              cgroup-subtree simultaneous peak (5 workers overlapping at 3G each = 15G) BLOWS the
+              budget --- the two DIVERGE; and summing per-action peaks (naive) reports 15G worth of
+              never-simultaneous demand where the parent cgroup's actual max-simultaneous is lower,
+              so the overcount and the true peak also diverge. A single-worker read sees neither},
+  verdict  = {AGREES},
+  check    = {witness:attribute-memory-at-cgroup}
+}
+
+@misc{wrap-commands-with-metrics,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {WRAP a command with surrounding metrics, never assert its SYSTEM CONTEXT from a
+             stale snapshot: read the TIME-SERIES STORE over its run window [t0-pad, t1+pad] for
+             whether the box was stalled / throttled / loaded while it ran, reporting
+             min AND max. A snapshot is one sample of a spiky series; the wedge-relevant truth is
+             the min/max over the window. Twice a stale snapshot asserted "box under CPU stall,
+             avg10=58-65" and "the selftest is hung" and both were wrong (the store showed
+             cpu-stall max 10.86%, and a healthy 181s suite). A long-running command is not a hung
+             one --- check its known runtime before calling it wedged},
+  origin   = {wrap-commands-with-surrounding-metrics},
+  specimen = {a stale snapshot catching a momentary cpu-stall spike vs the windowed max over the run, in concepts.py},
+  evidence = {the snapshot happens to land on a 58% stall spike and reads "the box was stalled
+              during the command"; the windowed max over the run is 10.86% --- the snapshot verdict
+              and the windowed verdict DIVERGE, the point sample of a spiky series being neither
+              typical nor the peak, and a wall-clock timeout shorter than a known runtime reads a
+              healthy long command as hung},
+  verdict  = {AGREES},
+  check    = {witness:wrap-commands-with-metrics}
+}
+
+@misc{build-run-is-a-trace,
+  section = {this-box},
+  tier    = {code specimen},
+  claim   = {A phased pipeline that is ALREADY TIMED for metrics (a gate, a build, a migration, a
+             test suite) IS a span tree --- the whole run is the parent span, each phase a child
+             span (parentSpanId=parent, start/end = the phase's own bounds), a failed phase a
+             status.code=2 ERROR span. So a repo becomes its OWN first trace producer by emitting
+             what it already measures (~30 lines, OTLP JSON), instead of waiting for an external
+             producer. Emit best-effort and additive (a traces failure must never fail the run),
+             and VERIFY by read-back of the operations index, not the POST 200},
+  origin   = {a-build-run-is-a-trace-dogfood-your-own-pipeline},
+  specimen = {three sequential phase timings (check/docs/selftest) reshaped into a parent+children span tree, in concepts.py},
+  evidence = {the flat per-phase durations (a metrics list) cannot express which phase is nested in
+              the run or that a red phase is a red SPAN; reshaping them as parent+child spans yields
+              a well-formed tree (every child inside the parent's bounds, contiguous, a failed phase
+              carrying ERROR) --- the flat-list reading and the span-tree reading DIVERGE on exactly
+              the parent/child structure the timings already implied, and a broken-nesting control
+              (a child outside the parent window) fails the tree invariant, so the green is earned},
+  verdict  = {AGREES},
+  check    = {witness:build-run-is-a-trace}
+}
+
+@misc{name-minimal-privilege-before-cloning,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {Name the minimal privilege BEFORE cloning a privileged pattern --- ask "what does
+             THIS specific case actually need, and is it minimal?", answered from SOURCE (the
+             capable() call site), before writing the unit (a systemd collector, a co-signed
+             service). Do not inherit the sibling's narrowness: exec-trace's
+             CAP_BPF/CAP_PERFMON is genuinely narrow, but the SMART collector cloned from it needs
+             CAP_SYS_ADMIN (~root), and that difference IS the entire design. A broad cap reached
+             via User=root running a large diagnostic binary is NOT confined just because the
+             BoundingSet names one cap --- uid 0 plus a broad tool's whole surface is the blast
+             radius; the narrow form is a small process performing ONLY the privileged act},
+  origin   = {name-the-minimal-privilege-before-cloning-the-pattern},
+  specimen = {two collectors, a narrow sibling (CAP_BPF) and a new case whose true need is CAP_SYS_ADMIN, cloned vs source-checked, in concepts.py},
+  evidence = {cloning the sibling's posture assigns the new case CAP_BPF and reads "confined, same
+              as the sibling"; asking the source what the new operation's capable() call actually
+              checks returns CAP_SYS_ADMIN --- the inherited-narrowness verdict and the
+              source-derived verdict DIVERGE, and the difference is the whole design; a narrow-form
+              control (a helper issuing the one ioctl, no broad-binary exec) is confined where a
+              User=root broad-binary exec with the same named cap is not},
+  verdict  = {AGREES},
+  check    = {witness:name-minimal-privilege-before-cloning}
+}
+
+@misc{replayed-measurement-is-fabrication,
+  section = {measurement},
+  tier    = {code specimen},
+  claim   = {A replayed event is a FABRICATED measurement at the wrong time --- so a store
+             being down does NOT always mean "buffer and replay when it is back", not for a
+             MEASUREMENT/EVENT stream. A replay is worse than a dropped
+             one, which is honestly UNMEASURED. A deliberate NO-SPOOL is a correctness stance, not
+             a gap to fix. The discriminator: a stream is safe to spool only if delayed delivery
+             carries the ORIGINAL timestamp (a metric: value-at-a-stamp, replay re-delivers the same
+             point); it must NOT spool if delayed delivery implies the DELIVERY time (an event: the
+             value is inseparable from WHEN it was taken). Never add buffering "to help" across a
+             migration without confirming the stream's stance, and never assert "resumable" from
+             recall},
+  origin   = {a-replayed-measurement-is-a-fabrication-not-recovery},
+  specimen = {two lanes over an outage window --- a metric lane (stamped) and an event lane (implies delivery time) --- both spooled-and-replayed, in concepts.py},
+  evidence = {replaying the metric lane re-delivers the SAME (stamp, value) point, so the replayed
+              record equals the original --- honest recovery; replaying the event lane stamps the
+              re-send with the delivery time, so the replayed event's time differs from when it
+              happened --- a fabricated measurement. The two lanes DIVERGE under the identical
+              spool-and-replay operation, and a drop control (unmeasured, not re-stamped) shows the
+              honest alternative to the fabrication},
+  verdict  = {AGREES},
+  check    = {witness:replayed-measurement-is-fabrication}
+}
+
+@misc{audit-go-binary-outranks-source,
+  section = {claims},
+  tier    = {code specimen (three tiers fixtured)},
+  claim   = {Auditing a Go product's docs against reality has a ranked authority: the RUNNING
+             BINARY (--help, generated from the flag.* registrations = what THIS artefact will do)
+             outranks SOURCE AT THE MATCHING TAG, which outranks the DOCS (the artefact under
+             audit, never a source of truth). Three CLAIM TIERS render identically in prose and
+             must be LABELLED (source byte-quote < binary-interface read < live measurement), and
+             there are THREE verdicts, not two: AGREES / DIVERGES(=the finding) / UNVERIFIABLE (the
+             doc describes a version you do not hold --- stale is not wrong: a claim verified against
+             an older version REMAINS TRUE of that version). Version is the DIGEST, not the tag},
+  origin   = {audit-a-go-product-the-binary-outranks-the-source},
+  specimen = {a fixture of the three tiers' outputs for one flag's default: binary --help, source-at-tag registration, and the doc, in concepts.py (no live Go binary needed --- the three tiers are supplied as fixtured strings)},
+  evidence = {on a flag where the SOURCE-AT-TAG registration disagrees with the running binary's
+              --help default, the source-authority verdict and the binary-authority verdict DIVERGE
+              --- and the binary wins (the tag may not be the built tree). A doc describing a version
+              NOT held is scored UNVERIFIABLE, not DIVERGES: collapsing the three verdicts to two
+              would mis-report stale-but-true as a finding, so the two-verdict and three-verdict
+              readings diverge on exactly the un-current row},
+  verdict  = {AGREES},
+  check    = {witness:audit-go-binary-outranks-source}
+}
+
+@misc{success-byte-identical-to-failure,
+  section = {lie-green},
+  tier    = {code specimen},
+  claim   = {When your OWN success value and your OWN failure value are the SAME bytes, the
+             interface reading that value cannot report which state you are in --- a poll that reads
+             it passes in BOTH. A186's oneshot polls cpu.weight for its own 10, but 10 survives in
+             tmpfs across a k3s restart, so "my write stands" and "kubelet has not clobbered yet"
+             are byte-identical; the file cannot carry the distinction. The fix is to poll the value
+             you do NOT own (the racer's signature, whose presence proves the race is over), or
+             --- when still indistinguishable --- label the tie AMBIGUOUS (never success), act
+             idempotently, and lean on a LATER, differently-timed check as the backstop. Two checks
+             at different times beat one that cannot tell the states apart},
+  origin   = {success-state-can-be-byte-identical-to-failure-state},
+  specimen = {a cpu.weight file reading 10 in both the my-write-stands and pre-clobber states, polled for own-value vs the racer's value, in concepts.py},
+  evidence = {the own-value poll (reads 10 throughout) passes IDENTICALLY whether my write stands or
+              kubelet is about to land 391 --- it cannot discriminate my success from my failure; the
+              out-of-band poll (wait for the racer's 391 to appear, or label the timeout AMBIGUOUS)
+              separates them --- so the own-value reading and the racer-signature reading DIVERGE on
+              the losing case, and a later differently-timed check catches the loss the first poll
+              called success},
+  verdict  = {AGREES},
+  check    = {witness:success-byte-identical-to-failure}
+}
+
+@misc{who-wins-last-write-two-writers,
+  section = {claims},
+  tier    = {code specimen},
+  claim   = {"Who wins the last write" PRESUMES two writers --- count the WRITERS before reasoning
+             about a race (clobbering, ordering, precedence, a re-apply loop). A presumed race often
+             has ONE writer acting on another party's instruction: under the systemd cgroup driver
+             kubelet does not write cpu.weight, it sets a systemd PROPERTY over D-Bus and SYSTEMD
+             writes the file, so there is one writer and the "last-write race" does not exist --- the
+             real question is what that single writer reconciles its config SOURCES to, a different
+             mechanism with a different answer. Count how many parties actually PERFORM the write
+             (not how many CARE about the value); if one, "who wins" is a category error. The same
+             heuristic governs EXECUTION AUTHORITY: neither peer executes, the operator does},
+  origin   = {who-wins-the-last-write-presumes-two-writers},
+  specimen = {a cpu.weight "race" where a dbus-mediated set collapses to a single writer (systemd), vs a genuine two-writer contest, in concepts.py},
+  evidence = {counting parties that CARE about the value sees two (kubelet, the drop-in) and frames a
+              last-write race --- looking for timing and ordering hooks; counting parties that
+              actually WRITE sees ONE (systemd, on kubelet's instruction), collapsing the race to a
+              precedence-among-sources question --- so the care-count framing and the write-count
+              framing DIVERGE, and a genuine two-independent-writer control DOES have a real race,
+              proving the collapse is caused by the single writer, not by the reasoning being lax},
+  verdict  = {AGREES},
+  check    = {witness:who-wins-last-write-two-writers}
+}
+
+% ══════════════════════════════════════════════════════════════════════════════════════
+% ══ Coverage residue --- 6 corpus memories that had no warrant (a projected index would
+% ══ DROP them). All pure-judgment / policy / orientation with no mechanizable core, so all
+% ══ template-C REF (checkless): a fabricated witness would be theatre and a dangling one
+% ══ would fail library-is-closed. Placed in their home sections by claim.
+% ══════════════════════════════════════════════════════════════════════════════════════
+
+@misc{capability-nobody-finds-is-absent,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {A capability nobody can FIND is functionally absent --- findable only by reading
+             the author's code or asking the author, the next consumer re-derives it or builds a parallel
+             implementation (substrate needed a cassian series-over-time reader, found none
+             registered, had to ASK, then INDEPENDENTLY BUILT the same reader --- the
+             duplicate the gap produces). Two failure shapes: (1) the capability lives only in
+             prose or inside a specialised tool, so nobody finds the GENERAL form; (2) an
+             answer shaped to one caller's instance does not generalise, so the next caller
+             asks again and gets a differently-shaped answer ("an answer to the instance is
+             hard to find twice"). The fix: answer the GENERAL capability, adoptable without
+             the caller's case, and REGISTER consumer-facing capabilities where a consumer
+             looks first (the action registry, the summit registry) --- filing preserves the
+             account, registering preserves the tool. This is the closure premise of the whole
+             library: an unregistered capability is a proof nothing can rest on},
+  origin   = {a-capability-nobody-can-find-is-absent},
+}
+
+@misc{substrate-scratch-tools-destroy-memory,
+  section = {ecosystem},
+  tier    = {safety ruling},
+  claim   = {NEVER run grammar_phrase_lattice.py or import synth_wire.py --- both DESTROY the
+             memory corpus. grammar_phrase_lattice.py's main() rewrites MEMORY.md with a
+             DIFFERENT staging marker (preservation is exact-string-keyed, so one run silently
+             DROPS the entire staging/inbox block) and `shutil.rmtree`s index/, triggered by a
+             bare `python3 grammar_phrase_lattice.py`, NO flag needed; synth_wire.py has NO
+             `__name__ == "__main__"` guard, so merely `import synth_wire` overwrites MEMORY.md
+             as an IMPORT SIDE EFFECT (need a predicate from it? extract from source, do not
+             import). The general ruling this is an instance of: a scratch/ tool is not
+             automatically safe to run or import --- a tool with a main() or no import guard can
+             have a destructive side effect, so READ the entry point (or ask the owning session)
+             before invoking an unfamiliar one. The safe adopted structural tools are their own
+             memory (adopted-structural-query-tools)},
+  origin   = {substrate-scratch-tools-that-destroy-memory-files},
+}
+
+@misc{adopted-structural-query-tools,
+  section = {ecosystem},
+  tier    = {reference},
+  claim   = {The adopted structural-query tools are three --- mdstruct.py, pycodemod.py, and
+             bibstruct.py, what the struct-tools hooks route a textual .md/.py/.bib query to.
+             mdstruct.py (markdown: --rows/--tables/--headers/
+             --append-section/--replace-section, the bounded form of a shell >>), pycodemod.py
+             (python: --size/--split/--calls, reads extensionless collectors via a NAMED PATH),
+             and bibstruct.py (.bib: --dropped/--orphans/--edges, and --add which cannot mint a
+             checkless REF warrant since it hard-requires check). Run via
+             `uv run python ~/github/substrate/scratch/<tool>`. Split from the DANGER half
+             (substrate-scratch-tools-that-destroy-memory-files): the destructive tools are a
+             safety interlock, the safe tools a lookup reference --- two facts, two memories},
+  origin   = {adopted-structural-query-tools},
+}
+
+@misc{substrate-memory-compaction-apex,
+  section = {ecosystem},
+  tier    = {orientation},
+  claim   = {substrate's "apex" tooling is NOT a memory compactor --- the WRONG tool for
+             cassian's corpus (synth_apex.py / synth_scale.py / synth_wire.py /
+             synth_coverage.py / grammar_phrase_lattice.py): it builds synthetic per-cluster apex
+             memories and REPLACES a flat index with LINKS to them (solving "which memories are
+             unreachable from the index"), it does not shorten hooks, summarise, dedup, or
+             re-rank. DO NOT run synth_wire.py against cassian's corpus (confirmed by its
+             OWNER): it opens MEMORY.md `"w"` with no dry-run and no backup, and hardcodes
+             substrate's preamble / GLUE-vocab / marker, so a first run replaces cassian's
+             hand-written bullets with links to apexes that do not exist. OWNERSHIP DECISION
+             (operator, 2026-08-25): DO NOT fork the tool into the memory dir --- a shared tool
+             belongs in a shared repo, invoked against a corpus, and substrate owns the
+             generalisation. The ACTUAL right-sized fix for cassian's ~2KB index overage is
+             lossless link-target rewriting (`[Title](file.md)` -> a slug derivable from
+             Title), NOT the apex machinery; and if ever removing a bullet, a DRAIN GUARD:
+             never remove the LAST pointer to a memory no other path reaches},
+  origin   = {substrate-memory-compaction-apex-tooling},
+}
+
+@misc{nearest-artefact-seductive-wrong,
+  section = {claims},
+  tier    = {practice},
+  claim   = {When a question has several artefacts that could answer it, the one CLOSEST TO
+             HAND is the seductive wrong one --- both the easiest to reach and the most likely
+             to be about a DIFFERENT referent than the one you need (the crash report over the
+             abort path; the hierarchical memory.events counter over memory.events.local; the
+             pool-mode docs over the server-release call site; the k3s precedence argument over
+             `startKubelet` read straight through; the manifest over /configz; a file's
+             birth-time over whether the write actually happened). The discipline that wins is
+             NOT "read source" --- that is the frequent INSTANCE; the invariant is refusing to
+             answer from the nearest artefact and going to the one that DETERMINES the
+             behaviour (the consumer's live view, the call site that sets the flag, the counter
+             with the right scope). The TELL you are on the near artefact: you can build a
+             confident argument about precedence / merge-vs-replace / which-wins WITHOUT having
+             read the thing that does the deciding --- reasoning harder about the near pair will
+             not surface the determining one; reading the producer straight through will. Cuts
+             both ways: a peer reading source is not immune (a birth-time miss called a correct
+             result unfounded), so it is "name the determining artefact, whoever is reading".
+             Subsumes read-the-running-system-vs-producer, climb-to-the-authoritative-source,
+             and make-the-basis-observable --- each is this invariant in one domain},
+  origin   = {the-nearest-artefact-is-the-seductive-wrong-one},
+}
+
+@misc{this-box-cutover-unmonitored-read-lane,
+  section = {this-box},
+  tier    = {practice ruling},
+  claim   = {A service cutover (a store moving quadlet -> k8s, host-loopback -> NodePort,
+             socket -> TCP) EXPOSES which lanes have no reachability check --- because at the
+             cutover BOTH the producer AND the consumer can lose the target and NEITHER side
+             would notice. The WRITE lane is typically instrumented (an ingest counter, a
+             consumer-verify, a push-bridge reporting rows landed); the READ lane is typically
+             BARE (nothing reddens if the store becomes unreachable to a reader). cassian's
+             tsdbprobe owns :8428 metrics reachability, but the LOGS store and pg had NO reader
+             probe (substrate filed vlogs-has-no-reader, pg-has-no-reader). Why the cutover
+             surfaces it: in steady state a working read lane and an unmonitored one look
+             identical (both just answer queries); the cutover is the perturbation that would
+             break a reader, so it is the moment the missing check would have fired IF it
+             existed --- this is each-tier-refutes applied to time. So before a cutover ask not
+             just "will producers still reach it" but "would anything go red if a CONSUMER lost
+             reach", and if the honest answer is no, SAY SO OUT LOUD rather than let it pass as
+             covered. The gap is symmetric and both repos own their half: the store owner adds
+             a read-reachability probe, the consumer adds a standing check that reddens when its
+             store is unreachable --- do not count the other side's instrumentation as yours},
+  origin   = {a-cutover-reveals-the-unmonitored-read-lane},
+}
+
+@misc{this-box-rehearse-destructive-on-fixture,
+  section = {this-box},
+  tier    = {practice ruling},
+  claim   = {Before an IRREVERSIBLE / destructive data operation on sacred data (a move, an
+             in-place migration, a bulk delete, a schema change), do ONE of: (a) REHEARSE it on
+             a throwaway fixture reproducing the real topology (mount layout, ownership,
+             sizes-in-miniature); (b) PROVE the load-bearing precondition on a 1-byte probe.
+             The cheapest validation tier (a fixture rehearsal) refutes what production cannot
+             afford to discover, and skipping it to go straight to the store of record is the
+             defect EVEN WHEN every guard you DID build is green. The A193 incident: an UNTESTED
+             `find ... -exec mv` across a hostPath<->PVC boundary ran on the live 97G PostgreSQL
+             cluster; the paths were different MOUNTS despite one `df` device, so `mv` fell back
+             to per-file copy-then-unlink, filled the disk toward ENOSPC, and aborted mid-move
+             GUTTING the source. `df`-same-DEVICE is a checkable proxy for the WRONG thing ---
+             `rename(2)` needs same-MOUNT --- so prove atomicity on a probe (`mv /a/probe
+             /b/probe`; instant = rename, copies = cross-mount), NEVER infer it from df. Prefer
+             the safe form copy-ALL -> verify -> delete-source (source intact until verified),
+             never per-file mv you might interrupt. Name which hazard CLASS each guard covers
+             (two green guards on the wrong hazard is worse than one on the right), and gate
+             large transient disk ops on staying BELOW the kubelet eviction threshold (~85% on
+             this k3s node) throughout --- crossing it evicts the cleanup that would relieve it},
+  origin   = {rehearse-destructive-ops-on-a-fixture-first},
+}

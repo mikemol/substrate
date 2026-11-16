@@ -1,0 +1,2 @@
+GRADE: Ihara functional equation for K_n = exact/proven (Bass). graph-Weil face load-bearing for our object = grade-2 STRONG (the variable mismatch explains the proxy negative; the λ↔u quadratic is the bridge). P-BRIDGE (T's eigenvalues → reciprocal u-poles) is the concrete confirmation, runnable on data in hand. UPDATE the read-rule once more: the "grand claim" (Weil) was NOT overreach — it was RIGHT, in a variable I hadn't computed. Build the object before grading the claim.
+[supporting witness: probe_ihara_zeta.py — shared block evidence]

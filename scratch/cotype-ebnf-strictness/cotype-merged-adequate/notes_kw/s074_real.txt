@@ -1,0 +1,6 @@
+[REAL] (Σ-arc KEYWORD reading, topic interning, block 7)
+
+- **G6 (the candidate REAL novelty, sharper than any pairwise identity) — interning-to-fixpoint is a
+  DECISION PROCEDURE for recursion-scheme instance-identity.** The recursion-schemes literature (Hinze-
+  Wu-Gibbons "Unifying Structured Recursion Schemes" 2013; Kabanov-Vene dynamorphisms 2006) unifies
+  schemes CATEGORICALLY — an existence statement — but has NO constructive test for "are these 

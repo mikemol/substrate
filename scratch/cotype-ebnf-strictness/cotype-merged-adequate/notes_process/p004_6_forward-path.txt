@@ -1,0 +1,1 @@
+- **THE PRIOR "high-blast-radius core decision" is MOOT.** Last pass I flagged promoting IR.children

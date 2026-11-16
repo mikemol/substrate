@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.BrickEngine — the new Engine.step body, expressed as a layer DAG.
 
 Per the DBE trace in DATAFLOW_REMODEL.md, Engine.step has 19 information

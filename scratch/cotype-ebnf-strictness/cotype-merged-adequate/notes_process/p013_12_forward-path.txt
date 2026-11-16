@@ -1,0 +1,1 @@
+- **G6 (sustain) — the IR-LOCATES / libcst-EMITS split avoided a drift trap I nearly walked into.**

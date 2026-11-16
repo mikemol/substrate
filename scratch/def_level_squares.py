@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 Definition-level naturality-square detector. Focuses on the hot spot
 revealed by the module-level analysis: the Stab-S3-* family (parametric)
@@ -22,6 +24,9 @@ from collections import defaultdict
 import numpy as np
 from scipy.sparse import lil_matrix
 from scipy.sparse.csgraph import reverse_cuthill_mckee
+import os as _o, sys as _s
+_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch"))
+import agda_lex as _lex   # THE header/comment authority; never re-derive
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
@@ -43,7 +48,7 @@ FOCUS_MODULES = {
 
 def parse_module(path):
     text = path.read_text()
-    m = re.search(r"^module\s+([A-Za-z0-9_.\-]+)\s+where", text, re.M)
+    name = _lex.module_name_of(text)
     if not m:
         return None, []
     name = m.group(1)

@@ -1,0 +1,1 @@
+- **REPORT to AI-Q [Σ-TRACE-LAZY] — trace()/trace_fold() in canonical jea_pyalg are EAGER** (trace

@@ -1,0 +1,2 @@
+P11 CENTER-STAR [010 pure-SA] center=witness-line (EXACT solve: rep-projection=0 ⟺ (x:z,y:−z), the kernel) + ★=G_NOT (series↔parallel duality, FORCED from the model, swap∘swap=id) + Wheatstone bridge-null (g1·g4=g2·g3) = the kernel/witness condition. Strictified in `jea_strictify_gcalc.py` (25/25) +
+[axis-signature: 010 | owner-field(raw): AI-Π0]

@@ -1,0 +1,2 @@
+GRADE: face-action = lcm(edge-orbits) CONFIRMED (exact). orbit→∏Φ_m, projection-splits-odd/even = grade-2 (explains the measured Φ3,Φ5,Φ15-survive / Φ2,Φ6,Φ10-deform, and the deg-9 as a misread cross- term). Sharpens P-DEFORM: the deformation is the projection on 2-DIVISIBLE FACES specifically → P-TREE (change the root, see if preserved/deformed parity follows the tree's 2-adic structure).
+[supporting witness: probe_simplex_faces.py — shared block evidence]

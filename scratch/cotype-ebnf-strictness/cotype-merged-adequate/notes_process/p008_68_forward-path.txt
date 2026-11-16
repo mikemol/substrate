@@ -1,0 +1,1 @@
+- **G4 (THEOREM): the 24 valid witnessed signatures factor uniquely σ = v·s, v∈V₄, s∈Stab.** This is what

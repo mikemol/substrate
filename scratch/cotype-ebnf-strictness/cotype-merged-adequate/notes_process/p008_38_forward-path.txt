@@ -1,0 +1,1 @@
+- **CONSEQUENCE for the Agda discharge:** formalizing `a4z2_compose` + proving its centrality = a --safe

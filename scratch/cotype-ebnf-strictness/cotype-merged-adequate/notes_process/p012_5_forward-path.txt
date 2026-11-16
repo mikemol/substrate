@@ -1,0 +1,1 @@
+- **CAUGHT A REAL Σ-BRIDGE BUG (running the full path exposed what the bridge's own fixpoint missed):**

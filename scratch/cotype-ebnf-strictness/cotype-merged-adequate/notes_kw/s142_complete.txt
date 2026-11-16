@@ -1,0 +1,3 @@
+[COMPLETE] (Σ-arc KEYWORD reading, topic interning, block 31)
+
+- **L₁ {100,010,110} → COMPLETE** (P12 @100 + P10/P11 @010 + P9/P1 @110). positive-closure: mediated-composite reachable.

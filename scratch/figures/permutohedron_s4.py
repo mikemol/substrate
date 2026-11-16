@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The S₄ permutohedron — the truncated octahedron Cayley graph.
 
 24 vertices = permutations of (1,2,3,4), embedded as 4-vectors projected onto

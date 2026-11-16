@@ -1,0 +1,1 @@
+- **L₂ (100,001,101) → COMPLETE** (P12 (at)100 + P5 (at)001 + P4/P6 (at)101). GS-guard-coverage satisfied.

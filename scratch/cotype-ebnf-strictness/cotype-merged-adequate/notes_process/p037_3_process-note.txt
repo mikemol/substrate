@@ -1,0 +1,1 @@
+4. Partition each node: FIXED across round-trip (invariant = seam must preserve) vs MOVED (residue = plugin supplies). That partition = the seam-location map.

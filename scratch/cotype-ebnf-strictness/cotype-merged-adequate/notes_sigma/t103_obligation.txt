@@ -1,0 +1,9 @@
+[OBLIGATION] (Σ-arc, trace T3-navigator, block 10: FORWARD PATHS — RE-SORTED (Σ-SPPF-CHART now BUILT; the seed )
+
+- **Σ-OBLIGATION** — the spine (a name, not a build); Σ-SPPF-CHART is its parsing instance.
+
+
+
+Iterated-subtraction (G4): passes 1–14 SUBTRACTED. Analysis-only, but it produced the arc's DEEPEST
+unification (one operation under the whole substrate) AND a clean self-correction (I recorded a
+high-blast-radius "core decision" that turned out MOOT one turn later).

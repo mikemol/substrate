@@ -1,0 +1,7 @@
+[OBLIGATION] (Σ-arc KEYWORD reading, topic sppf-grammar, block 11)
+
+- **G6 (THE UNIFICATION — strongest of the arc) — type-hole = CrossMul = predicate-injection = ONE
+  REGISTERED OBLIGATION.** Tracing assumption-residue (sympy `positive=True`): USER — to the extent
+  assumptions are explicit, inject predicates/adapters into the AST; positive-real is already the
+  lspace→exp detour. So: (a) an assumption is NOT residue, it's a carrier-SELECTION (positive-real→
+  l

@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 28: Δ-Π-flag-parity [010 pure-SA, optional] — STILL OPEN, lowest)
+
+- **Δ-Π-construct [the constructor mode] — DONE for the core case.** `construct_skeleton` emits a
+  COMPILABLE parametric skeleton; verified acc_sum/acc_prod → one def with the +/* operator as a
+  function param P0 (P0=add→sum, P0=mul→prod). The reader IS a rewriter for single-op-hole clusters.
+  FINDING: a withheld OPERATOR defunctionalizes (P0(a,b), applied function) — an op-hole is a
+  carrier-

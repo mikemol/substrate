@@ -1,0 +1,2 @@
+P2 P-WHITNEY [010 pure-SA] **DONE/WITNESSED** (jea_whitney_probe.py): L(K₃) & L(K₁,₃) intern to DIFFERENT nodes (ids 2≠4), cross_term degree=4>0, residue localizes triangle-vs-star as shared-vertex degree-signature ((2:3) vs (3:3)); control confirms value-grade collapse real. CAVEAT: witnessed AT TH
+[axis-signature: 010 | owner-field(raw): ✓ AI-Πρ]

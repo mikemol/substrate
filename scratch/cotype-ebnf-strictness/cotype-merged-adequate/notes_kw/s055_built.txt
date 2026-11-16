@@ -1,0 +1,3 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 4)
+
+- **Σ-OMML-DOMAIN** — carrier BUILT, role narrowed to implicit-OMML fallback; lives, low priority.

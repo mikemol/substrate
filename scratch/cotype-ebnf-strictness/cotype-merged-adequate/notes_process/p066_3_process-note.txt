@@ -1,0 +1,1 @@
+- torsion (|λ|=1, roots of unity) = inverse = CONJUGATE (λ⁻¹=λ̄) (grade 2)

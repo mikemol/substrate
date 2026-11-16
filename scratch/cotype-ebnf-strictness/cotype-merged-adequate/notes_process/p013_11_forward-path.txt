@@ -1,0 +1,1 @@
+- **G2 (delta) — the build was a PREDICTION TEST, and the prediction held.** Pass 9 (analysis-only)

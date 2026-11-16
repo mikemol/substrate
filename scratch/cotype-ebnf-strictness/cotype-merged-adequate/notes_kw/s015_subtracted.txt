@@ -1,0 +1,9 @@
+[SUBTRACTED] (Σ-arc KEYWORD reading, topic sppf-grammar, block 3)
+
+- **G8 (blind spot) — projection faithfulness asserted, not proven.** Round-trip is up-to-
+  normalization (intern flattens arguments/ctx); lower→project equivalence NOT yet demonstrated.
+  First test before per-target grammars. AI-Πρ owns it.
+
+## RETROSPECTIVE — pass 5 (delta: Δ-Π-project built, fixpoint gate passed)
+
+Iterated-subtraction (G4): passes 1–4 SUBTRACTED. This is a LIGHT pass — one bu

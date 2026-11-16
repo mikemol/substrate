@@ -1,0 +1,1 @@
+- **G7-1 (rule-not-applied-to-own-backlog, action AI-Π0):** run the recursive law over the ACCUMULATED artifact set, not just live either/ors. AI-Q's §3 is the model. find-common-structure-INWARD.

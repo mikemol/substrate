@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 Voronoi/Delaunay-dual analysis of the substrate Agda dependency graph.
 
@@ -27,6 +29,9 @@ from itertools import combinations
 
 import numpy as np
 import networkx as nx
+import os as _o, sys as _s
+_s.path.insert(0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch"))
+import agda_lex as _lex   # THE header/comment authority; never re-derive
 
 
 SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
@@ -34,12 +39,12 @@ SUBSTRATE_ROOT = Path("/home/mikemol/github/substrate/agda")
 
 def parse_module(path):
     text = path.read_text()
-    m = re.search(r"^module\s+([A-Za-z0-9_.\-]+)\s+where", text, re.M)
+    name = _lex.module_name_of(text)
     if not m:
         return None, []
     name = m.group(1)
     imports = re.findall(
-        r"^(?:open\s+)?import\s+([A-Za-z0-9_.\-]+)", text, re.M
+        r"^(?:open\s+)?import\s+([\w.'-]+)", text, re.M
     )
     imports = [imp for imp in imports if imp.startswith("Substrate.")]
     return name, imports

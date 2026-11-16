@@ -1,0 +1,6 @@
+[PROVEN] (Σ-arc, block 10: FORWARD PATHS — RE-SORTED (Σ-SPPF-CHART now BUILT; the seed )
+
+- **G2 (delta) — USER's EEA framing dissolved a gap I'd mis-sized as a canonical-foundation decision.**
+  I'd run BNF/EBNF/ABNF through the gate (ABNF/EBNF canonical via RFC/ISO; BNF fails like Octave), found
+  the Earley-chart-as-SPPF self-extension, and located a GAP (Intern is a sharing-SPPF, not a chart-SPPF:
+  no packed nodes, no item layer) — then flagged promoting IR.children→families as a 

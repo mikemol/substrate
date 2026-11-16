@@ -1,0 +1,2 @@
+P22 ORBITAL-IDENTITY [011] `extrude∘intern` = the ORBITAL identity (idempotent projection onto canonical representative). PROVEN by fixed-point convergence: 3 surface variants (reformat + rename locals + `;`) → 1 identical canonical skeleton, idempotent in ONE step. guard-cleared: the proof witnesse
+[axis-signature: 011 | owner-field(raw): AI-Π0 / AI-Πρ]

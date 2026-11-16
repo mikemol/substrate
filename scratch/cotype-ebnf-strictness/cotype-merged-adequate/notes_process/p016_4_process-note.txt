@@ -1,0 +1,1 @@
+- **Payoff = the project's reason for being:** a runnable gate that says whether a GPU kernel

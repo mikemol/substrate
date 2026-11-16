@@ -1,0 +1,7 @@
+[INVARIANT] (Σ-arc, block 8: FORWARD PATHS — appended (the assessment opens ONE concrete )
+
+- **REFINEMENT (USER: "that sounds like a sub-torsor over ℤ₂") — the either/or's common structure is a
+    BUNDLE: a ℤ₂-sub-torsor base (gauge, no fact) with an INVARIANT fiber (centrality, a fact).** This is
+    sharper than "undetermined bit": it changes what KIND of thing the answer is.
+  - **THE BASE = a ℤ₂-sub-torsor = the SIGN CONVENTION (even↔odd, = G5 source↔sink inverse-swap).** Pure
+    

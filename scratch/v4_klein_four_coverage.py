@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 v4_klein_four_coverage.py — apply the V₄/S₃ structure to find which
 architectural axis-combinations we haven't explored.

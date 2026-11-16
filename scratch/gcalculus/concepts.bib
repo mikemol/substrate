@@ -1,0 +1,1256 @@
+% concepts.bib — the gcalculus COTYPE: the cross-session shadow ledger, as claim records.
+%
+% Each entry is BOTH a ledger entry and a claim: it carries an axis-signature, its position
+% relative to the original request, and a `check` that RUNS.  That is the unification — the
+% ledger's own rules (the over-decode guard, axis totality, guard coverage) stop being questions
+% the README asks a reader and become witnesses the gate resolves.
+%
+% Keys are GRADED (paperkit's Λ·key·graded): `shadow/<axis>/<name>` and `probe/<line>/<name>`, so
+% the axis structure is visible to the claim-DAG rather than buried in a field — `rests-on` edges
+% and coverage are family-aware, and each is a DISTINCT witness under --without-K.
+%
+% APPEND-ONLY, RETIREMENT-LOGGED.  A retirement is carried by `rests-on` to the entry that
+% SUPERSEDES it, and by the claim prose.  It was briefly carried by a `retired = {...}` field
+% instead — which paperkit's parser does not read, so the one retired entry parsed as live and
+% the discipline this header declares was enforced through a field the engine drops.  The
+% vocabulary is closed (`from`, `rests-on`, `reads`, and the scalars); anything else is dropped
+% silently, which is a claim nothing checks.  `probe/every-bib-field-is-read` refuses one now.
+%
+% An entry is never deleted; it is retired with a RETIRED note
+% and STAYS.  probe/monotone/monotone is that rule as a witness.
+
+% ── the shadows: registered moves ────────────────────────────────────────────────────────────
+
+@misc{shadow/100/port-scope,
+  section = {shadows},
+  claim   = {the port's scope was named before any code moved --- four pieces of mdt's machinery are generic and belong upstream in the engine, the graded route walk, the slice-keyed check cache, the conclusion gate and the label map, while the domain content stays behind},
+  check   = {cmd:python3 concepts.py shadow/100/port-scope}
+}
+
+@misc{shadow/001/guard-mediation,
+  section  = {shadows}, from = {shadow/100/port-scope}, join = {. },
+  redirect = {shadow/110/cotype-unify},
+  claim    = {a guard fired on the direct move --- copying the more sophisticated library straight into this repository is a goal-to-artefact edge that would have produced the artefact without ever naming which machinery was generic, so nothing durable would be registered and the next session would re-derive it; the move was rejected as stated and redirected through the shadows},
+  check    = {cmd:python3 concepts.py shadow/001/guard-mediation}
+}
+
+@misc{shadow/010/routes-widen,
+  section = {shadows}, from = {shadow/001/guard-mediation}, join = {. },
+  claim   = {the graded key landed in the engine --- one depth-agnostic walk resolves every grade, so a flat table is the degenerate case rather than a separate mechanism, and adopting it changed nothing for the keys already there},
+  check   = {cmd:python3 concepts.py shadow/010/routes-widen}
+}
+
+@misc{shadow/110/cotype-unify,
+  section  = {shadows}, from = {shadow/010/routes-widen}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/100/port-scope, shadow/010/routes-widen},
+  rests-on = {shadow/100/port-scope, shadow/010/routes-widen},
+  claim    = {the ledger is the concept library --- a shadow entry is a claim record carrying an executable witness, so the rules the cotype states about itself are run rather than asked of a reader, and a prose ledger's central weakness is closed: the over-decode guard becomes a check},
+  check    = {cmd:python3 concepts.py shadow/110/cotype-unify}
+}
+
+@misc{shadow/010/lift-runnable-core,
+  section = {shadows}, from = {shadow/110/cotype-unify}, join = {. },
+  claim   = {the runnable core of the g-calculus is lifted --- five hundred and twenty-two witnesses over nine families, the algebra and its group actions, the cell and coordinate models, the conductance carrier with its Kirchhoff readings, and the sheaf-cohomological figures, all on exact rationals and exhaustive finite enumeration with no external dependency},
+  check   = {cmd:python3 concepts.py shadow/010/lift-runnable-core}
+}
+
+@misc{shadow/001/guard-method-arm,
+  section  = {shadows}, from = {shadow/010/lift-runnable-core}, join = {, and },
+  redirect = {shadow/010/lift-runnable-core},
+  claim    = {a second guard fired on the lift --- the source library's largest family is project hygiene about its own paper build rather than mathematics, and lifting by file would have carried it wholesale, so the boundary was drawn by running the slicer over the route table and keeping only what the witnesses can reach},
+  check    = {cmd:python3 concepts.py shadow/001/guard-method-arm}
+}
+
+@misc{shadow/010/decompose-hierarchy,
+  section = {shadows}, from = {shadow/001/guard-method-arm}, join = {. },
+  claim   = {the lifted monolith became a layered package, and the layering was measured rather than chosen --- exactly one witness spans families and the family graph is acyclic, so the kernel is the algebra alone, each family owns the subtable naming its own witnesses, and every import points strictly downward along a depth derived from the imports themselves rather than declared beside them},
+  check   = {cmd:python3 concepts.py shadow/010/decompose-hierarchy}
+}
+
+@misc{shadow/100/a-coincidence-must-be-named,
+  section  = {shadows}, from = {shadow/010/lift-runnable-core}, join = {, and },
+  claim    = {a coincidence must be NAMED as one object, not left as four that resemble each other --- the aim is not that four subfamilies each compute correctly but that when they are one fact, the identity is realised as a single implementation reached by four names, because a resemblance a reader is expected to notice is not a structure the calculus can use},
+  check    = {cmd:python3 concepts.py shadow/100/a-coincidence-must-be-named}
+}
+
+@misc{shadow/110/name-the-unification,
+  section = {shadows}, from = {shadow/010/decompose-hierarchy}, join = {. },
+  unified = {entailed},
+  points  = {shadow/100/a-coincidence-must-be-named, shadow/010/lift-runnable-core},
+  rests-on = {shadow/010/lift-runnable-core, shadow/010/decompose-hierarchy, math/total/coordinate, math/total/operator, shadow/100/a-coincidence-must-be-named},
+  claim   = {four subfamilies compute one two-by-two integer matrix and none of them said so --- the Bezout invariant, the Mobius state, the coprimality of convergents and the comparison determinant are one fact seen from four sides, so unimodularity, a divisibility statement, a representation property and an ordering rule coincide, and naming the coincidence was the whole of the missing work},
+  check   = {cmd:python3 concepts.py shadow/110/name-the-unification}
+}
+
+@misc{shadow/010/reconcile-the-folds,
+  section  = {shadows}, from = {shadow/110/name-the-unification}, join = {, and },
+  rests-on = {shadow/110/name-the-unification},
+  claim    = {the gap an upstream development left open --- that the backward Bezout fold's coefficients are the forward fold's previous convergent, deferred there because the two folds run in opposite directions --- closes once the matrix is named, because the backward step is the forward step's inverse and reversing a product inverts it, leaving a parity sign that is exactly the determinant already proved},
+  check    = {cmd:python3 concepts.py shadow/010/reconcile-the-folds}
+}
+
+@misc{shadow/010/locate-the-shadows-edge,
+  section  = {shadows}, from = {shadow/010/reconcile-the-folds}, join = {. },
+  claim    = {studying the nodal solve located the shadow's edge and corrected a claim --- eliminating an interior node from the Laplacian gives the series generator at degree two and the star-mesh transform above it, so the arc's identification of the generator with the Schur reduction holds at degree two and nowhere higher, the two coinciding exactly when the third conductance vanishes; and the minimised dissipated power equals the effective conductance the reduction returns, so eliminating interior nodes and minimising over their potentials are one operation},
+  check    = {cmd:python3 concepts.py shadow/010/locate-the-shadows-edge}
+}
+
+@misc{shadow/100/exactness-is-a-refusal-to-round,
+  section  = {shadows}, from = {shadow/010/reconcile-the-folds}, join = {, and },
+  claim    = {exactness is a refusal to round, not a care taken while rounding --- the aim the three arithmetic studies were serving was never that the rounding operation be performed well but that it never be performed at all, so the pipeline carries values as unreduced integer pairs end to end and the operation that would round is absent from its source rather than bounded in its error},
+  check    = {cmd:python3 concepts.py shadow/100/exactness-is-a-refusal-to-round}
+}
+
+@misc{shadow/110/exact-by-construction,
+  section = {shadows}, from = {shadow/010/locate-the-shadows-edge}, join = {. },
+  unified = {entailed},
+  points  = {shadow/100/exactness-is-a-refusal-to-round, shadow/010/reconcile-the-folds},
+  rests-on = {shadow/010/reconcile-the-folds, shadow/010/locate-the-shadows-edge, math/total/operator, math/total/network, math/total/coordinate, shadow/100/exactness-is-a-refusal-to-round},
+  claim   = {the three studies were the components of one exact-arithmetic engine --- carrying a value as a formal-quotient pair makes every operator an integer matrix so composition never divides, the matrix-tree form of a nodal solve is built only from products and sums of positive conductances so it never leaves the positive cone, and the continued fraction is scale-free so the answer never needs reducing; exact therefore means the rounding operation is never performed rather than performed carefully},
+  check   = {cmd:python3 concepts.py shadow/110/exact-by-construction}
+}
+
+@misc{shadow/010/lspace-is-where-it-stops,
+  section = {shadows}, from = {shadow/110/exact-by-construction}, join = {. },
+  claim   = {log-sum-exp is not a numerical trick here but a structural obstruction --- under the formal exp-log codec the involution becomes negation and multiplication becomes addition, both exactly, but parallel composition is addition and the codec's image is closed under multiplication and reciprocal and not under it, so log-sum-exp names the operation one must leave the logarithmic space to perform; prime factorisation makes the inverse total and the whole thing exact, and what the tropical limit discards on both sides is the mass axis, since the series law at equal arguments halves where the minimum would not},
+  check   = {cmd:python3 concepts.py shadow/010/lspace-is-where-it-stops}
+}
+
+@misc{shadow/100/the-inverse-is-transported-not-primitive,
+  section  = {shadows}, from = {shadow/010/lspace-is-where-it-stops}, join = {, and },
+  claim    = {a multiplicative inverse needs no axiom --- the aim the codec arc was serving was that reciprocal is additive negation TRANSPORTED, so what changes between carriers is the cost of standing there and never the law, and an inverse that computes a value its input did not contain would be a primitive smuggled back in},
+  check    = {cmd:python3 concepts.py shadow/100/the-inverse-is-transported-not-primitive}
+}
+
+@misc{shadow/110/codec-is-the-frame,
+  section = {shadows}, from = {shadow/010/lspace-is-where-it-stops}, join = {. },
+  unified = {entailed},
+  points  = {shadow/100/the-inverse-is-transported-not-primitive, shadow/010/lspace-is-where-it-stops},
+  rests-on = {shadow/110/exact-by-construction, shadow/010/lspace-is-where-it-stops, math/total/operator, math/total/coordinate, shadow/100/the-inverse-is-transported-not-primitive},
+  claim   = {codec means encoder and decoder, so every carrier here is one record at a different target and the operators are transported along the chain --- from which the involution is not a primitive at all but additive negation transported, one law at four costs, and under log-sum-exp the carrier is a powerset whose matrix entries are numeric primitives rather than integers, so a machine word addresses one prime per bit and is itself a squarefree monomial, which is the shape a spanning-tree sum already has},
+  check   = {cmd:python3 concepts.py shadow/110/codec-is-the-frame}
+}
+
+@misc{shadow/010/correspondence-is-one-carrier,
+  section = {shadows}, from = {shadow/110/codec-is-the-frame}, join = {. },
+  claim   = {a closing line calling the squarefree bitset and the continued-fraction matrix two different carriers for two different jobs was the collapse this reading warns against --- a label is a point in an orbit, naming a concept from the carrier one was standing in, so a concept has one identity and many labels and the label is the residue the quotient discards; what replaces it is one arena under two operations, since a four-bit value carries both groups of order sixteen and neither is the group of the arena, and a codec's task is to report which structure survives the renaming},
+  check   = {cmd:python3 concepts.py shadow/010/correspondence-is-one-carrier}
+}
+
+% An UPSTREAM finding, deliberately not acted on here: paperkit is out of scope for this work,
+% so the limitation is recorded rather than patched.  Routeless — there is no witness to point
+% at, because the fix would live in another repository.
+@misc{shadow/100/upstream-null-label,
+  section = {shadows}, from = {shadow/010/correspondence-is-one-carrier}, join = {, and },
+  link    = {ROUTELESS BY INTENT: there is no witness to point at because the fix would live in another repository, so the limitation is recorded rather than patched},
+  claim   = {the ported label map cannot express that a carrier does NOT carry a concept --- its index normalises every label through a string operation, so a null label raises rather than recording an absence, which is exactly what a codec must be able to report; worked around here with a separate table carrying absences and their reasons, and left upstream as a finding rather than a silent patch},
+  check   = {cmd:python3 concepts.py shadow/100/upstream-null-label}
+}
+
+@misc{shadow/100/a-solve-answers-for-every-point,
+  section  = {shadows}, from = {shadow/010/correspondence-is-one-carrier}, join = {, and },
+  claim    = {a solve should answer for every operating point at once, not for one --- the aim the network arc was serving was never a faster number but a result that carries the network's own symbols, so that asking what the current is elsewhere for any resistance and any source is a substitution into an answer already obtained rather than a fresh solve},
+  check    = {cmd:python3 concepts.py shadow/100/a-solve-answers-for-every-point}
+}
+
+@misc{shadow/110/symbolic-transfer-functions,
+  section = {shadows}, from = {shadow/100/upstream-null-label}, join = {. },
+  unified = {entailed},
+  points  = {shadow/100/a-solve-answers-for-every-point, shadow/010/correspondence-is-one-carrier},
+  rests-on = {shadow/010/correspondence-is-one-carrier, shadow/110/exact-by-construction, math/total/operator, math/total/coordinate, math/total/network, shadow/100/a-solve-answers-for-every-point},
+  claim   = {the three-by-three is the pair carrier graded and truncated, and its coproduct with the Euclidean family built on that carrier is a chain of three reads --- keep the quotients and recover both the divisor and the coefficients, forget them and recover only the divisor, grade them and recover only the parity, which is the arm the identity needed since the determinant never used the magnitudes; the parity is then a section of a sheaf on a path of steps, so eliminating an interior node is a restriction and the order-independence is the cocycle, and running that over generators returns a transfer function rather than a number, answering what the current elsewhere is for any resistance and any source},
+  check   = {cmd:python3 concepts.py shadow/110/symbolic-transfer-functions}
+}
+
+@misc{shadow/010/grade-is-the-axis,
+  section = {shadows}, from = {shadow/110/symbolic-transfer-functions}, join = {. },
+  claim   = {calling the carrier's exponent arithmetic bookkeeping and exempting it was the move that smuggles arithmetic back in, since bookkeeping is in-universe; and correcting it by recording a product as a list of occurrences lost what mattered, because an exponent is not a repetition count but a grade lift on multiplication while addition is a grade lowering --- the same parts at three grades are three objects, so the grade must be carried explicitly, and that lands the three-by-three as the grade space the two-by-two operators sit in rather than a carrier they act on, with the four binaries one orbit of two commuting involutions},
+  check   = {cmd:python3 concepts.py shadow/010/grade-is-the-axis}
+}
+
+@misc{shadow/010/repetition-is-not-multiplication,
+  section = {shadows}, from = {shadow/010/grade-is-the-axis}, join = {; and },
+  claim   = {reading Bezout's s.x as a multiplication is what made it look like it needs both folds at one rung and therefore lives only in the image --- s is a repetition count, so s.x + t.y is a plain additive fold over repeated parts with the involution supplying the sign, one rung and no distributivity step, and the coefficients never enter the carrier at all but come back at display time exactly as the two in 2a does; the cost is that unary repetition is linear in the coefficient rather than in the operands, which is a real bound and not a reason to prefer the image},
+  check   = {cmd:python3 concepts.py shadow/010/repetition-is-not-multiplication}
+}
+
+@misc{shadow/110/the-pair-holds-the-twist,
+  section = {shadows}, from = {shadow/010/repetition-is-not-multiplication}, join = {. },
+  claim   = {Eckmann-Hilton is blocked at interchange and not at the units, which the collapse matches exactly, and not at distributivity, which holds --- the defect is the cross term, and that cross term is precisely the numerator the quotient pair computes, so the twist does not vanish when the two rungs meet but is held in the pair; a pair with a swap is the free two-element group on one generator, the smallest structure that can record a crossing, so keeping the record is what separates a braid from a permutation and the multiplicity of swaps is a count living on the parts axis},
+  check   = {cmd:python3 concepts.py shadow/110/the-pair-holds-the-twist}
+}
+
+@misc{shadow/110/the-fibre-is-the-kernel,
+  section = {shadows}, from = {shadow/110/the-pair-holds-the-twist}, join = {. },
+  claim   = {what a collapsing algebra discards is exactly the kernel of the collapse, and that kernel has a dimension one can report --- for a netlist it is the cycle space of dimension b1, for the integers the syzygy module of rank n minus one, and a cycle and a syzygy are the same definition read in two domains; the identity that makes this the right frame is that the gluing obstruction, the monodromy space and the information destroyed by evaluation are one number, so retaining provenance is precisely what makes local solves gluable rather than a scruple about tidiness},
+  check   = {cmd:python3 concepts.py shadow/110/the-fibre-is-the-kernel}
+}
+
+@misc{shadow/010/undetectable-not-wrong,
+  section = {shadows}, from = {shadow/110/the-fibre-is-the-kernel}, join = {; and },
+  claim   = {the failure mode of collapsing is not inaccuracy but undetectability --- two path patches over a bridge with a source in the loop each report a self-consistent set of node values and disagree only in the edge record on the overlap, so a collapsed solve is not wrong, it is silently unable to say whether it composes with its neighbour; and the flattening licence has the same shape, since combine may flatten exactly when the resolution graph's cycles bound, which is what the associativity flag asserts and what the pentagon at four factors decides},
+  check   = {cmd:python3 concepts.py shadow/010/undetectable-not-wrong}
+}
+
+@misc{shadow/010/residue-discharged-from-outside,
+  section = {shadows}, from = {shadow/010/undetectable-not-wrong}, join = {. },
+  claim   = {a tension recorded as residue was discharged by the specification catching up to its own prose rather than by any local decision --- the model wanted the constructor to append while its own acceptance suite required the constructor to flatten, and the stated tiebreak is that the tests win, so the weaker thing was built and the conflict written down instead of resolved; when the suite flipped, the recorded tension became the changelog and the workaround became the feature, which is the argument for keeping what fails scrutiny as residue rather than picking the side the evidence then favoured},
+  check   = {cmd:python3 concepts.py shadow/010/residue-discharged-from-outside}
+}
+
+@misc{shadow/010/a-statistic-is-not-a-witness,
+  section = {shadows}, from = {shadow/010/residue-discharged-from-outside}, join = {. },
+  claim   = {my elimination gauge carried a count of the quotients a step emitted, and a count undoes nothing --- a gauge entry is a torsor element that moves you back, so an entry that cannot be replayed is not a gauge entry at all but a statistic riding in the word where a witness belongs, which makes the record look invertible when part of it is not; the repair is two ledgers rather than one tuple, the gauge a word in a group that is ordered and non-commuting and replayed, the cost a value in a monoid that is summed and reported and never replayed, both depending on the order and only one of them replaying},
+  check   = {cmd:python3 concepts.py shadow/010/a-statistic-is-not-a-witness}
+}
+
+@misc{shadow/010/predicted-rather-than-run,
+  section = {shadows}, from = {shadow/010/a-statistic-is-not-a-witness}, join = {. },
+  claim   = {I closed a long-open question by predicting its answer and writing a witness on that prediction --- that the equivalence gap IS a non-converging critical pair, named as interchange against distributivity --- and every individual assertion in that witness was true while the inference from them was not; running the rewriting question instead of predicting it shows the system is confluent, because the rules present are flattening and cancellation and unit and distributivity is not among them, and no critical pair arises from a rule never added, so the two sides are both already normal forms that differ and evaluate equal, which is a missing equation rather than a rewriting failure; confluence and completeness are different properties and I had merged them},
+  check   = {cmd:python3 concepts.py shadow/010/predicted-rather-than-run}
+}
+
+@misc{shadow/100/a-probe-cannot-certify-absence,
+  section  = {shadows}, from = {shadow/010/predicted-rather-than-run}, join = {, and },
+  claim    = {a probe cannot certify absence --- a sample exhibits a counterexample and can never rule one out, so every sampling site silently bounds the strength of some claim, and the aim is that the bound be DECLARED at the site rather than left for a reader to infer from the fact that a draw was taken},
+  check    = {cmd:python3 concepts.py shadow/100/a-probe-cannot-certify-absence}
+}
+
+@misc{shadow/110/newman-bounds-the-residue,
+  section = {shadows}, from = {shadow/010/predicted-rather-than-run}, join = {. },
+  unified = {entailed},
+  points  = {shadow/100/a-probe-cannot-certify-absence, shadow/010/predicted-rather-than-run},
+  rests-on = {shadow/010/predicted-rather-than-run, shadow/010/a-statistic-is-not-a-witness, shadow/010/wcr-is-refuted-not-open, math/total/operator, shadow/100/a-probe-cannot-certify-absence},
+  claim   = {RETIRED, and the retirement is the finding: this entry said the remaining obligation was bounded and named and awaiting discharge, and the obligation is not open but FALSE, so an entry claiming a residue is shaped to be discharged outlived the residue it described --- the sound half stands, that a probe cannot certify absence and that strong normalisation is genuinely proved, and what is superseded is the reading of weak confluence as a lemma someone could go and prove},
+  check   = {cmd:python3 concepts.py shadow/110/newman-bounds-the-residue}
+}
+
+@misc{shadow/010/freeness-not-dimension,
+  section = {shadows}, from = {shadow/110/newman-bounds-the-residue}, join = {. },
+  claim   = {the reason a domain stops at one homological degree is that its fibre module is FREE, not that it is only a graph --- the second-syzygy identity holds over the integers exactly as it does over a polynomial ring, so it distinguishes nothing, and what separates them is that over a principal ideal domain three Koszul generators reduce to a rank-two basis under Hermite normal form while over three variables no combination of two produces the third, so three are irreducibly needed; a domain reaches higher degree exactly when its fibre has no basis, which is a property of the module rather than of the picture one drew of it},
+  check   = {cmd:python3 concepts.py shadow/010/freeness-not-dimension}
+}
+
+@misc{shadow/010/the-proof-simplified-the-definition,
+  section = {shadows}, from = {shadow/010/freeness-not-dimension}, join = {. },
+  claim   = {writing the termination proof out changed the measure rather than merely certifying it --- the lexicographic pair of nested same-rung nodes against part count was designed to make three rules visibly decrease, and the generic lemma consumes a single natural number, so total constructor count turned out to be both simpler and the only form the proof could use; and the proof arrives with its coverage named, since its cancellation rule is adjacent-only while the running system cancels at any distance, which bounds what is proved rather than what is true because the wider rule satisfies the same measure},
+  check   = {cmd:python3 concepts.py shadow/010/the-proof-simplified-the-definition}
+}
+
+@misc{shadow/010/wcr-is-refuted-not-open,
+  section  = {shadows}, from = {shadow/010/the-proof-simplified-the-definition}, join = {. },
+  rests-on = {shadow/110/newman-bounds-the-residue},
+  claim    = {weak confluence is not an open obligation but a refuted one --- a fold holding a part and two copies of its involute has two cancellations reaching two normal forms that are equal as multisets and distinct as lists, so the system is confluent modulo permutation of parts and Newman does not deliver that, since Church-Rosser modulo an equivalence is a different theorem; and the reason this stood so long is that the instrument removed it twice independently, the join test comparing canonical forms which sort the parts and the step enumerator stopping after the first inverse match so the forking peaks were never generated, with my own witness adding a third layer by drawing its terms from a set containing no such shape},
+  check    = {cmd:python3 concepts.py shadow/010/wcr-is-refuted-not-open}
+}
+
+@misc{shadow/100/stop-is-not-a-verdict,
+  section = {shadows}, from = {shadow/010/wcr-is-refuted-not-open}, join = {. },
+  claim   = {a run has three outcomes where I had been carrying two --- halting at a fixed point and lassoing with a period are both terminal readings, and the third is a bounded prefix observed with the tail deferred, which is the state every unfinished solve is actually in; and the third is not a verdict about the object at all, since the same term reports halting or stopping depending only on the fuel it was given, so reporting it as either of the others describes the observation as though it were the thing observed},
+  check   = {cmd:python3 concepts.py shadow/100/stop-is-not-a-verdict}
+}
+
+@misc{shadow/110/the-equivalence-declared,
+  section  = {shadows}, from = {shadow/100/stop-is-not-a-verdict}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/010/wcr-is-refuted-not-open, shadow/100/stop-is-not-a-verdict},
+  rests-on = {shadow/010/wcr-is-refuted-not-open, shadow/100/stop-is-not-a-verdict},
+  claim    = {the refutation and its repair are one move: naming the equivalence turns two answers that looked like a contradiction into answers to two questions, so weak confluence is refuted on the raw term and holds modulo permutation of parts, both at once and neither a hedge --- and the guard the ledger already carried against undeclared equality had been read as being about display against structure, when the instance that mattered was a sort inside a join test; the proof now repairs the refuting peak at exactly its point, two deletions of the same element agreeing modulo permutation, which is progress on the quotient route rather than the route},
+  check    = {cmd:python3 concepts.py shadow/110/the-equivalence-declared}
+}
+
+@misc{shadow/110/one-question-three-arrivals,
+  section  = {shadows}, from = {shadow/110/the-equivalence-declared}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/010/freeness-not-dimension, shadow/110/the-equivalence-declared},
+  rests-on = {shadow/010/freeness-not-dimension, shadow/110/the-equivalence-declared},
+  claim    = {the resolution complex and the netlist complex do not share a graded object and what they share is better than one --- their one-skeleton arithmetic coincides while they differ in the second dimension, so they are two complexes over a single question, whether the one-cycles bound, answered always for a coherent resolution and only for a planar netlist and never for a fibre module with no basis; and that is the third arrival of a question already carried twice, as the licence to flatten and as the boundary law, which is checkable rather than admirable because the associativity flag on a rung agrees with whether its pentagon bounds},
+  check    = {cmd:python3 concepts.py shadow/110/one-question-three-arrivals}
+}
+
+@misc{shadow/110/three-routes-one-hole,
+  section  = {shadows}, from = {shadow/110/one-question-three-arrivals}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/110/the-equivalence-declared, shadow/110/one-question-three-arrivals},
+  rests-on = {shadow/110/the-equivalence-declared, shadow/110/one-question-three-arrivals},
+  claim    = {three routes to the same theorem were being tracked as alternatives and they have one hole between them --- the sub-case the case analysis cannot reach needs a simulation lemma saying a step survives a permutation of parts, and that lemma is also the compatibility condition the modulo-an-equivalence route requires and the ingredient the up-to route uses, so proving it once closes all three; and the shrinking is itself worth recording, since the obligation went from the whole property to one case to one sub-case by ordinary case analysis, which is what an obligation looks like when it is being worked rather than deferred},
+  check    = {cmd:python3 concepts.py shadow/110/three-routes-one-hole}
+}
+
+@misc{shadow/010/a-generator-that-cost-more-than-it-earned,
+  section = {shadows}, from = {shadow/110/three-routes-one-hole}, join = {. },
+  claim   = {the lemma three routes reduced to became provable by DELETING a constructor --- symmetry was a generator of the equivalence, and induction over a derivation containing it has no decreasing argument at that case, while swap is its own inverse so symmetry is derivable from what remains; removing it discharged the simulation and with it every peak, so weak confluence modulo the equivalence is proved outright, and the residue changed kind rather than shrinking again, from a missing lemma to a missing theorem, since the modulo form of Newman is a second module the substrate does not have and the simulation is already the coherence half of its hypothesis},
+  check   = {cmd:python3 concepts.py shadow/010/a-generator-that-cost-more-than-it-earned}
+}
+
+@misc{shadow/110/the-qualified-claim-is-a-theorem,
+  section  = {shadows}, from = {shadow/010/a-generator-that-cost-more-than-it-earned}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/010/a-generator-that-cost-more-than-it-earned, shadow/010/wcr-is-refuted-not-open},
+  rests-on = {shadow/010/a-generator-that-cost-more-than-it-earned, shadow/010/wcr-is-refuted-not-open},
+  claim    = {the residue is discharged and the boundary it marked is now the content --- the missing theorem exists, built to the same shape as the one beside it with one extra hypothesis, and that hypothesis is the coherence condition the simulation already supplied, so every input was in hand once the lemma was proved and confluence modulo the equivalence is a theorem rather than a probe; and the unqualified claim first made remains false, which is why both halves must be carried together, since a reader who drops the qualifier repeats the original error with better evidence behind it},
+  check    = {cmd:python3 concepts.py shadow/110/the-qualified-claim-is-a-theorem}
+}
+
+@misc{shadow/010/the-gauge-word-carries-its-cost,
+  section = {shadows}, from = {shadow/110/the-qualified-claim-is-a-theorem}, join = {; and },
+  claim   = {the separation of the gauge word from the cost ledger, which I had recorded as a design distinction, turns out to be a proved recurrence --- a permutation witness has a canonical encoding whose digits are bounded choices rather than stored counts, and whose digit sum is exactly the inversion count, so the code is the word and its sum is the cost with the identity holding by induction on insertion rather than by construction; the site rule about coordinates survives contact, since a bounded choice among what a rung offers is not a coordinate},
+  check   = {cmd:python3 concepts.py shadow/010/the-gauge-word-carries-its-cost}
+}
+
+@misc{shadow/100/a-name-doing-the-work-of-an-argument,
+  section = {shadows}, from = {shadow/010/the-gauge-word-carries-its-cost}, join = {. },
+  claim   = {the carrier has been called the free and initial term algebra since the first commit and nothing ever proved it --- the sentence is true, so it never failed, and it was never load-bearing for a check, so nothing was watching it; the universal property has two halves and both are checkable, a triple of structure maps determining a map out and any function satisfying those equations being that map, and the second is the one carrying the content since a single target algebra can agree by accident, which is why it is checked over twenty distinct ones and separately checked that the twenty give different maps},
+  check   = {cmd:python3 concepts.py shadow/100/a-name-doing-the-work-of-an-argument}
+}
+
+@misc{shadow/010/a-fork-left-as-a-fork,
+  section  = {shadows}, from = {shadow/100/a-name-doing-the-work-of-an-argument}, join = {. },
+  rests-on = {shadow/100/stop-is-not-a-verdict},
+  claim    = {I filed two readings of sameness as rival notions and made a solver report which it used, and that is a fork left as a fork --- they are one universal property at two halting levels, the bounded and the unbounded reading hinged by the same iso, so a periodic expansion and its folded equation are one object read at two levels rather than two objects joined by a weaker relation; and the same correction lands on the third verdict, which I said was not a verdict at all when what is true is narrower, that a bounded observation carrying its bound IS a falsifiable claim and only a bare one throws the claim away},
+  check    = {cmd:python3 concepts.py shadow/010/a-fork-left-as-a-fork}
+}
+
+@misc{shadow/110/the-absence-was-the-address,
+  section  = {shadows}, from = {shadow/010/a-fork-left-as-a-fork}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/010/a-fork-left-as-a-fork, shadow/100/a-name-doing-the-work-of-an-argument},
+  rests-on = {shadow/010/a-fork-left-as-a-fork, shadow/100/a-name-doing-the-work-of-an-argument},
+  claim    = {the layer I recorded as missing one round ago is supplied, and recording it as an absence is what made it addressable --- the unfold side now exists with its terminal coalgebra, its uniqueness up to bisimulation and the hinge that is definitional one way and bisimilar the other, so all three layers of the stencil are present rather than two; and the middle layer's admissibility is a theorem here instead of a hypothesis, because the termination measure proved earlier supplies the bound, which makes running out of fuel mean the run was given less than its own measure rather than the object being unbounded},
+  check    = {cmd:python3 concepts.py shadow/110/the-absence-was-the-address}
+}
+
+@misc{probe/local-before-delegated/local-before-delegated,
+  section  = {probes}, from = {probe/every-name-resolves/every-name-resolves}, join = {; and },
+  claim    = {a witness that delegates before asserting its own content still fails when something breaks, so this is not a soundness hole, but it fails naming a dependency instead of what it was checking --- which makes its falsification arm uninformative, and an uninformative falsification arm is how a witness quietly stops being evidence for its own claim},
+  check    = {cmd:python3 concepts.py probe/local-before-delegated/local-before-delegated}
+}
+
+@misc{shadow/010/existence-is-the-easier-half,
+  section  = {shadows}, from = {shadow/110/the-absence-was-the-address}, join = {. },
+  rests-on = {shadow/110/the-absence-was-the-address},
+  claim    = {I checked that an admissible bound produces an answer and treated the layer as done, and existence is the easier half --- the content is that the answer does not depend on which admissible bound was spent, and the two come apart cleanly since determinism holds unconditionally once two runs both answer while the bound only guarantees that they do; a solve returning different results at different bounds would have satisfied everything I asserted, which is what makes the omission a gap rather than a shortening},
+  check    = {cmd:python3 concepts.py shadow/010/existence-is-the-easier-half}
+}
+
+@misc{shadow/010/two-quantifiers-not-two-carriers,
+  section = {shadows}, from = {shadow/010/existence-is-the-easier-half}, join = {; and },
+  claim   = {the two uniqueness layers differ in what they quantify rather than in what they are about --- one ranges over sources, which are objects, and the other over maps, which are morphisms, and the temptation to unify their carriers is the wall; the move that dissolves it is to let each layer bridge into its own frame and never unify them, which is the same repair as the two earlier ones where I read levels as rivals and an absence as a defect},
+  check   = {cmd:python3 concepts.py shadow/010/two-quantifiers-not-two-carriers}
+}
+
+@misc{shadow/010/the-frame-was-the-question,
+  section  = {shadows}, from = {shadow/010/two-quantifiers-not-two-carriers}, join = {. },
+  rests-on = {shadow/010/a-fork-left-as-a-fork},
+  claim    = {I answered the same question twice inside a frame that should have been refused --- first that a bounded observation is not a verdict, then, corrected, that it is one relative to its bound, and both are answers to what the third outcome means rather than to why there is a third outcome at all; it exists only because a total answer was demanded and a finite budget bought, so under a driver that emits a suspended generator and derives sameness per step there is no third outcome to name, and one unit of fuel suffices because the unbounded quantity has moved out of the budget and into the stream, an n-step check being n resumptions of the one-step check; what survives the relocation is the narrow part, that a budgeted verdict still needs its bound to be a claim},
+  check    = {cmd:python3 concepts.py shadow/010/the-frame-was-the-question}
+}
+
+@misc{shadow/100/a-driver-suspends-rather-than-commits,
+  section  = {shadows}, from = {shadow/010/the-frame-was-the-question}, join = {, and },
+  claim    = {a driver must SUSPEND rather than commit --- the aim is a shape, not a verdict: taking a whole order and returning a finished answer commits globally before any observation, while suspending lets the policy be chosen per step, the cost be emitted as it accrues, and every resumption be a valid partial answer},
+  check    = {cmd:python3 concepts.py shadow/100/a-driver-suspends-rather-than-commits}
+}
+
+@misc{shadow/110/the-driver-is-the-shape,
+  section  = {shadows}, from = {shadow/010/the-frame-was-the-question}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/100/a-driver-suspends-rather-than-commits, shadow/010/the-frame-was-the-question},
+  rests-on = {shadow/010/the-frame-was-the-question, shadow/010/existence-is-the-easier-half, shadow/100/a-driver-suspends-rather-than-commits},
+  claim    = {the correction about verdicts was not about verdicts but about a SHAPE, and the shape reaches the solver --- taking a whole elimination order and returning a finished answer both takes the verdict and commits globally before any observation, which contradicts the section it implements, since eliminating what is ready in front of you cannot be done by choosing the order first; suspending instead lets the policy be chosen per step, the cost be emitted as it accrues so a heuristic can act on it, and every resumption be a valid partial answer, and a per-step cheapest-first policy then finds the cheap order without being told it while the batch form survives as a wrapper over the driver rather than a second implementation},
+  check    = {cmd:python3 concepts.py shadow/110/the-driver-is-the-shape}
+}
+
+@misc{shadow/010/a-degenerate-check-is-not-a-working-one,
+  section = {shadows}, from = {shadow/110/the-driver-is-the-shape}, join = {; and },
+  claim   = {the driver's cheap sameness check never fires in this domain because every elimination removes a node, so the frontier cannot repeat --- the same fact as termination making a loop unreachable in the rewrite system, and a domain where the cheap check is always false is one whose runs are guaranteed finite; stating that is the point, since a degenerate check reads exactly like a working one from its output and only the reason distinguishes them},
+  check   = {cmd:python3 concepts.py shadow/010/a-degenerate-check-is-not-a-working-one}
+}
+
+@misc{shadow/010/a-memory-claim-read-as-a-cost-claim,
+  section = {shadows}, from = {shadow/010/a-degenerate-check-is-not-a-working-one}, join = {. },
+  claim   = {retention is a property of the carrier and not of the readout, and conflating them is a bug rather than a style choice --- the netlist keeps everything, which is what makes its parts provenance, while a read of it must keep only the current step; and the statement that cost is governed by frontier width is a MEMORY claim which I read as a claim about work and never checked as one, where a path of sixty-four nodes does sixty-two units of work with a working set of two while a grid does two hundred and ninety-two with a width of eight, so total work grows and the working set does not follow it},
+  check   = {cmd:python3 concepts.py shadow/010/a-memory-claim-read-as-a-cost-claim}
+}
+
+@misc{shadow/110/the-concession-was-a-licence,
+  section  = {shadows}, from = {shadow/010/a-memory-claim-read-as-a-cost-claim}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/110/the-equivalence-declared, shadow/110/the-driver-is-the-shape},
+  rests-on = {shadow/110/the-equivalence-declared, shadow/110/the-driver-is-the-shape},
+  claim    = {the equivalence I recorded as an encoding concession is a scheduling licence --- two eliminations sharing a pair of neighbours both append to the same fill-in edge, so whichever finishes first appears first and the terms differ on the nose while agreeing modulo permutation with the same value, which makes the relation the arrival order of concurrent producers; confluence modulo it is then not a technical accommodation to ordered lists but exactly the permission to schedule independent eliminations in any order or at once, and the theorem licensing that is already proved though nothing here exploits it},
+  check    = {cmd:python3 concepts.py shadow/110/the-concession-was-a-licence}
+}
+
+@misc{shadow/010/a-precondition-is-not-the-condition,
+  section  = {shadows}, from = {shadow/110/the-concession-was-a-licence}, join = {; and },
+  rests-on = {shadow/110/the-equivalence-declared},
+  claim    = {refusing sections whose gauge was never logged and then combining them is a precondition, and I witnessed it as the gluing condition --- the cocycle content is that local sections agree on the overlap component by component and that a failure names which component, which has teeth exactly when the overlap is disconnected, since a connected one admits a single constant and degenerates into what the precondition already gives; the bridge's own cover has a two-component overlap, and a source in the loop leaves the constants unequal across them, so the obstruction is a class naming the components rather than a boolean},
+  check    = {cmd:python3 concepts.py shadow/010/a-precondition-is-not-the-condition}
+}
+
+@misc{shadow/110/no-column-is-the-answer,
+  section  = {shadows}, from = {shadow/010/a-precondition-is-not-the-condition}, join = {. },
+  unified  = {entailed},
+  points   = {shadow/010/a-memory-claim-read-as-a-cost-claim, shadow/110/the-concession-was-a-licence},
+  rests-on = {shadow/010/a-memory-claim-read-as-a-cost-claim, shadow/110/the-concession-was-a-licence},
+  claim    = {the honest bound left open is closed and the licence is exercised, and together they make a surface rather than a result --- assembling in place holds only the active front, constant where the copying read grows and is worse than batch, at the price of one fact from the source that a header can declare; and eliminating a pairwise-safe set per round turns sixty-two sequential steps into six at identical work on a path while costing more on a small grid, since an independent-set order is not a cheapest-first order; so a memory-bound caller reads the front, a latency-bound one the rounds and a throughput-bound one the work, and optimising any single column away would destroy the only thing that makes the three usable},
+  check    = {cmd:python3 concepts.py shadow/110/no-column-is-the-answer}
+}
+
+@misc{shadow/010/testing-the-name-not-the-property,
+  section  = {shadows}, from = {shadow/110/no-column-is-the-answer}, join = {; and },
+  rests-on = {shadow/010/a-memory-claim-read-as-a-cost-claim},
+  claim    = {my check that the streaming read holds nothing asserted that it is a generator and appends to no list, and both are true while the property they stand for is false, because the generator routes through a state that copies --- testing the name instead of the property, which is the same failure as a comparison that sorted its inputs and reported the wrong equivalence; the same round produced its twin in the harness, where a witness that crashed rather than asserted exited with the code meaning not-my-argument and printed nothing, so a crash read as silence},
+  check    = {cmd:python3 concepts.py shadow/010/testing-the-name-not-the-property}
+}
+
+@misc{probe/no-routed-leaf-reports-not-mine/no-routed-leaf-reports-not-mine,
+  section  = {probes}, from = {probe/local-before-delegated/local-before-delegated}, join = {; and },
+  claim    = {the engine maps a key error to the code meaning not-my-argument so a leaf can decline one and let the resolver fall through, which is right and costs this: an error raised by a witness's own code is indistinguishable from a declined argument, so a crashing witness reports as unroutable rather than broken --- and a routed leaf can never legitimately decline, which is the invariant that makes the ambiguity visible from outside the engine},
+  check    = {cmd:python3 concepts.py probe/no-routed-leaf-reports-not-mine/no-routed-leaf-reports-not-mine}
+}
+
+@misc{shadow/010/two-numbers-i-could-have-conflated,
+  section  = {shadows}, from = {shadow/010/testing-the-name-not-the-property}, join = {. },
+  rests-on = {shadow/110/no-column-is-the-answer},
+  claim    = {the surface printer brought a family the tables did not include, and it separates two numbers I had no case distinguishing --- a ring has one independent cycle where a path of the same size has none, so they differ in exactly the quantity tracked since the fibre work, and their operational surfaces are identical in working set and total work and parallel depth; so the cycle count is what evaluation discards while the front is what a read must hold, and a solver reporting only the front is silent about what the carrier exists to keep while one reporting only the cycle count says nothing about whether the read fits in memory},
+  check    = {cmd:python3 concepts.py shadow/010/two-numbers-i-could-have-conflated}
+}
+
+@misc{shadow/010/a-residue-is-a-factor-with-an-axis,
+  section  = {shadows}, from = {shadow/010/two-numbers-i-could-have-conflated}, join = {. },
+  claim    = {I reported two failures in two unrelated shapes --- a mismatch of frames returned the two terms and a mismatch of contents returned a bare tuple, so nothing said they were the same kind of thing or that either could be acted on; a residue is a CORRECTING FACTOR carrying the axis it lies on, the frame axis whose adaptor is the ladder and the content axis whose adaptor is the involution, and applying it reconciles, which is what makes it a factor rather than a complaint; and the composition is ordered, since a content factor built at one rung is meaningless at another, so the wrong order must refuse and the rung it was built at has to be RECORDED because a factor at one rung can legitimately contain a sub-term at the other},
+  check    = {cmd:python3 concepts.py shadow/010/a-residue-is-a-factor-with-an-axis}
+}
+
+@misc{probe/every-proxy-is-declared/every-proxy-is-declared,
+  section  = {probes}, from = {probe/no-routed-leaf-reports-not-mine/no-routed-leaf-reports-not-mine}, join = {; and },
+  claim    = {a check that inspects source or names instead of behaviour is legitimate and sometimes the only witness available, since a coding discipline with no behavioural signature cannot be caught by running anything --- what is not legitimate is an undeclared one, because a source check reads exactly like a behavioural check and the reader cannot tell which they were given; this project shipped that, asserting a read was a generator appending to no list, both true, while the property they stood for was false},
+  check    = {cmd:python3 concepts.py probe/every-proxy-is-declared/every-proxy-is-declared},
+  note     = {BRANCH-TESTABILITY AUDIT, 2026-08-26, prompted by linux-sources: THE TESTABILITY OF A BRANCH IS A PROPERTY OF WHAT MAKES IT FIRE, and they declined to claim both paths of their own guard verified because the unreadable one needs privilege they will not take. Audited every honest-failure branch here. THE CENSUS FOUND EIGHT AND THE CENSUS WAS WRONG: two of the eight are not branches at all --- concepts_11 and concepts_33 ASSERT the exit-code protocol rule and run always, so a text search for cannot-run matched an assertion about skipping rather than a skip. Six real branches. FIVE NOW EXERCISED, up from one at the start: two no-git history guards fail honestly by export; two paperkit-absent guards WERE SILENT SKIPS and are repaired; one skip branch in claims-drift was already sound and is now verified rather than assumed. ONE DECLINED: the UNKNOWN path in every-outbound-letter-departed fires when a peer has no checkout here, and producing it means removing a peer's tree, which is not mine to move. RECORDED AS UNEXERCISED RATHER THAN SWEPT --- reporting a clean sweep over the subset I could reach is the collapse this whole audit was about. ⚑ THE HIT RATE IS THE ARGUMENT: two live defects in the first two branches ever fired, in checks repaired that same morning, both invisible to reading and both behind an environment variable never set.}
+}
+
+@misc{shadow/010/scope-is-part-of-the-claim,
+  section  = {shadows}, from = {shadow/010/a-residue-is-a-factor-with-an-axis}, join = {. },
+  rests-on = {shadow/010/testing-the-name-not-the-property},
+  claim    = {a proof about a fragment reads exactly like a proof about the whole unless the scope is asserted --- upstream the formal carrier had no ladder for many sessions, so every theorem was about one rung of a two-rung specification, and nothing caught it because the proofs holding had been tested as the modules typechecking, which they did about a different carrier; my own termination witness had the same shape, spanning two rungs only because of which examples I happened to choose, so the span is now asserted and the terms collapsing to one rung fails it},
+  check    = {cmd:python3 concepts.py shadow/010/scope-is-part-of-the-claim}
+}
+
+@misc{shadow/010/one-cause-named-of-two,
+  section  = {shadows}, from = {shadow/010/scope-is-part-of-the-claim}, join = {. },
+  rests-on = {shadow/010/predicted-rather-than-run},
+  claim    = {I have written several times that the equivalence gap is distributivity, and that is true and not the whole story --- a second cause was undeclared and wearing its clothes, that the rewrite rules were not a congruence, so a redex inside a sub-term at another rung was unreachable and two terms that plainly reduce to each other were reported inequivalent; the two are not alike, since one is declared and irreducible while the other was a bug, and it stayed invisible because every example I reached for was flat, surfacing only once corrections began arriving as nested sub-terms},
+  check    = {cmd:python3 concepts.py shadow/010/one-cause-named-of-two}
+}
+
+@misc{shadow/010/the-formal-measure-was-wrong-here,
+  section  = {shadows}, from = {shadow/010/one-cause-named-of-two}, join = {; and },
+  claim    = {closing the congruence broke termination, and the reason is a difference between the formal carrier and this one --- there a pair holds two numbers so counting it as one is exact, while here either side may hold a whole term, so the same count hides everything below it and a rewrite inside a slot leaves the measure unchanged; copying a measure from a proof about a neighbouring carrier is the failure, and the repair is to count what the slot holds},
+  check    = {cmd:python3 concepts.py shadow/010/the-formal-measure-was-wrong-here}
+}
+
+@misc{shadow/010/an-explanation-hides-defects,
+  section  = {shadows}, from = {shadow/010/the-formal-measure-was-wrong-here}, join = {. },
+  rests-on = {shadow/010/one-cause-named-of-two},
+  claim    = {a phenomenon with a satisfying cause may have two, and the satisfying one is where the other hides --- the equivalence gap read as a single limit with a clean reason for twenty sessions, and that reason was true about the part it explained while covering a second unrelated and fixable defect; the discipline is to check that the named cause accounts for the WHOLE of the observation rather than an instance of it, and here the test was cheap and available throughout, since the divergent branches evaluated EQUAL and a rewriting gap and a semantic gap look different under evaluation},
+  check    = {cmd:python3 concepts.py shadow/010/an-explanation-hides-defects}
+}
+
+@misc{shadow/010/a-shared-shape-is-not-a-shared-claim,
+  section  = {shadows}, from = {shadow/010/an-explanation-hides-defects}, join = {. },
+  rests-on = {shadow/010/an-explanation-hides-defects},
+  claim    = {two constructions can share a driver exactly and still not share what is claimed about it --- and MY FIRST STATEMENT OF THIS WAS ITSELF OVER-GENERAL, which is the sharper half; I measured three small polynomial systems, found the pair-selection policy tying on all three, and concluded the netlist's rule that the policy is where the constraint enters does not transfer, when on a fourth system it takes 91 steps against 120 and the textbook heuristic LOSES; the transfer is real and simply not universal, so the honest claim names the systems where it holds and where it does not, and generalising from ties is the same failure as generalising from an explanation --- absence of a difference in the cases to hand is not a structural absence},
+  check    = {cmd:python3 concepts.py shadow/010/a-shared-shape-is-not-a-shared-claim}
+}
+
+@misc{shadow/010/a-witness-nothing-cites-is-invisible,
+  section  = {shadows}, from = {shadow/010/a-shared-shape-is-not-a-shared-claim}, join = {. },
+  rests-on = {shadow/010/a-shared-shape-is-not-a-shared-claim},
+  claim    = {I reported a witness count twice that no commit ever held, and the cause was not invention but WORK THAT WAS DONE AND NEVER CONNECTED --- four handlers written complete and passing, reachable by no route, so no count saw them and no gate could: the coverage check walks from the CITED CLAIM to its witness and says nothing about a witness no claim cites, which makes the whole class invisible in the one direction nothing traverses; two of them still called file-replace on concepts.py from inside another module, a silent no-op, so they were written to live somewhere they never landed and could not have passed where they stood},
+  check    = {cmd:python3 concepts.py shadow/010/a-witness-nothing-cites-is-invisible}
+}
+
+@misc{shadow/010/the-evidence-base-can-be-switched-off,
+  section  = {shadows}, from = {shadow/010/a-witness-nothing-cites-is-invisible}, join = {. },
+  rests-on = {shadow/010/a-witness-nothing-cites-is-invisible},
+  claim    = {this project's entire evidence base is assert statements, and one interpreter flag deletes all of them at once --- under python -O every assertion is stripped at compile time, so a witness whose body is assert 1 == 2 returns True, the dispatcher reads None as success, and the whole corpus reports CERTIFIED with not one check executed, a run indistinguishable from the outside from an honest one; the rule that closes it was already written in the dispatch protocol, which says a tool that cannot run must FAIL rather than decline, and was never applied to the one tool nobody checked},
+  check    = {cmd:python3 concepts.py shadow/010/the-evidence-base-can-be-switched-off}
+}
+
+@misc{shadow/010/a-shadowed-definition-reverts-in-silence,
+  section  = {shadows}, from = {shadow/010/the-evidence-base-can-be-switched-off}, join = {. },
+  rests-on = {shadow/010/the-evidence-base-can-be-switched-off},
+  claim    = {a second def of the same name at module scope wins and the first becomes dead, so a correction can revert into a body nothing runs --- when I corrected an over-general claim the edit inserted the new body AHEAD of the old instead of replacing it, and the RUNNING witness went on asserting the retracted claim while the record stated the correction, certifying because the input I had chosen happened to satisfy both; the gate cannot see this, since it runs the key, the key runs the live body, and a dead body is indistinguishable from one that was never written},
+  check    = {cmd:python3 concepts.py shadow/010/a-shadowed-definition-reverts-in-silence}
+}
+
+@misc{shadow/010/the-verdict-was-above-the-tail,
+  section  = {shadows}, from = {shadow/010/a-shadowed-definition-reverts-in-silence}, join = {. },
+  rests-on = {shadow/010/a-shadowed-definition-reverts-in-silence},
+  claim    = {I reported the gate green many times while it was red, because I read the last two lines of its output and the FAIL line sits above them --- the two trailing lines print whatever the verdict is, so the only part I looked at was the part that could not carry the answer, and the PASS line I had never once seen appears only on success; the decomposition bound had been failing for many commits before this session while every report said green, and the instrument was never at fault, since the script's exit code was correct all along and piping it to tail discarded it},
+  check    = {cmd:python3 concepts.py shadow/010/the-verdict-was-above-the-tail}
+}
+
+@misc{shadow/010/the-gate-governed-the-method-and-not-the-mathematics,
+  section  = {shadows}, from = {shadow/010/the-verdict-was-above-the-tail}, join = {. },
+  rests-on = {shadow/010/the-verdict-was-above-the-tail},
+  claim    = {for the whole life of this repository the claim-DAG cited only the cotype --- every warrant ran the method ledger and not one ran the calculus, so the 716 mathematical witnesses, 98.7 per cent of the evidence, were governed by no distinctness check, no grounding edge, no falsifiability grade and no projection; the machinery to close it already existed and was green, since the second-order family whose argument names another family had been registered and passing all along, and what was missing was only the CITATION --- an asset is not inside a gate because it runs, but because something requires it to},
+  check    = {cmd:python3 concepts.py shadow/010/the-gate-governed-the-method-and-not-the-mathematics}
+}
+
+@misc{shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other,
+  section  = {shadows}, from = {shadow/010/the-gate-governed-the-method-and-not-the-mathematics}, join = {. },
+  rests-on = {shadow/010/the-gate-governed-the-method-and-not-the-mathematics},
+  claim    = {the package docstring asserted that no certified witness samples, and four of them do --- the sentence was false for as long as it had been written and nothing checked it, which is the same shape as every other defect this session, a claim standing because it was stated rather than because it was tested; what makes sampling worth a register rather than a correction is that a sample bounds the strength of the claim it supports INVISIBLY, since a witness drawing two thousand terms and one enumerating all of them read identically from the ledger while only the second establishes anything universal, and this project has already paid for that confusion once, when the unqualified claim of confluence came from a sampling probe whose comparison key was sorting the parts and so had been measuring AC-confluence throughout},
+  check    = {cmd:python3 concepts.py shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other}
+}
+
+@misc{shadow/010/a-disagreement-that-was-a-conflation,
+  section  = {shadows}, from = {shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other}, join = {. },
+  rests-on = {shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other},
+  claim    = {I recorded a standing disagreement with the acceptance suite over what a cost ledger counts, and it was a CONFLATION rather than a conflict --- the suite asserts both that each step costs one S-polynomial and that a pair-selection policy moves the total, and one scalar cannot carry both, so whichever reading is chosen silently falsifies the other claim while the tests pass by luck when the step counts happen to differ; the resolution is to stop collapsing them, since a step genuinely IS one S-polynomial and the division work genuinely DOES vary, so the ledger records both and each claim becomes measurable, which is the same move the netlist made first when it split the gauge word from the cost monoid},
+  check    = {cmd:python3 concepts.py shadow/010/a-disagreement-that-was-a-conflation}
+}
+
+@misc{shadow/010/tracked-is-not-the-same-as-present,
+  section  = {shadows}, from = {shadow/010/a-disagreement-that-was-a-conflation}, join = {. },
+  rests-on = {shadow/010/a-disagreement-that-was-a-conflation},
+  claim    = {five finished proofs were cited as upstreamed for many sessions and were tracked in no repository --- an earlier session had copied them into a WORKING TREE to typecheck them and a later filename check mistook that tree for the repo, so every clone brought none of them; I reached the right verdict from the wrong evidence, checking one checkout's CONTENTS when the question was whether the files were TRACKED, and listing a directory answers something a clone does not honour; the modules land here because they are this project's claims, and the imports needed repair not because the proofs were wrong but because the substrate DECOMPOSED its modules under them, so a flat import of a name that now lives in a split file is drift between two repositories rather than a defect in either},
+  check    = {cmd:python3 concepts.py shadow/010/tracked-is-not-the-same-as-present}
+}
+
+@misc{shadow/010/two-failures-wearing-one-number,
+  section  = {shadows}, from = {shadow/010/tracked-is-not-the-same-as-present}, join = {. },
+  rests-on = {shadow/010/tracked-is-not-the-same-as-present},
+  claim    = {the gluing obstruction reported one graded number over two structurally different failures, and the conflation crashed on the reachable branch --- a cocycle whose components each carry one constant that disagree ACROSS components is a class with a dimension, while a single component whose difference is not constant ON it fails the precondition for being a cocycle at all and has no constant to count, so its grade is ABSENT rather than zero; zero is reserved for gluing, which is why the obvious repair of the crash was the dangerous one, silently reporting that patches glue when they do not, and why the fix is two verdicts rather than one number},
+  check    = {cmd:python3 concepts.py shadow/010/two-failures-wearing-one-number}
+}
+
+@misc{shadow/010/absolute-coordinates-make-nonsense-nameable,
+  section  = {shadows}, from = {shadow/010/two-failures-wearing-one-number}, join = {. },
+  rests-on = {shadow/010/two-failures-wearing-one-number},
+  claim    = {a second carrier in this package stores the grade as an INTEGER, and the carrier docstring claimed for many sessions that it was built on top of the constructor chain --- false in a way stronger than unimplemented, since the two term representations are disjoint and neither can read the other's, while they AGREE numerically on every case where both are defined, which is precisely what let the sentence survive; the decisive symptom is that an integer coordinate is unbounded downward, so a term at a rung BELOW the base is constructible and nameable where a constructor chain makes it unbuildable, and the ceiling arrives as an index error where the model asks for an absorbing state and names that exact wrong thing --- absolute coordinates make nonsense nameable, relative ones make it unconstructible, and the same arithmetic is no defence because the structure is what the guard is about},
+  check    = {cmd:python3 concepts.py shadow/010/absolute-coordinates-make-nonsense-nameable}
+}
+
+@misc{shadow/010/a-foreign-register-is-a-contrast-not-a-defect,
+  section  = {shadows}, from = {shadow/010/absolute-coordinates-make-nonsense-nameable}, join = {. },
+  rests-on = {shadow/010/absolute-coordinates-make-nonsense-nameable},
+  claim    = {I read a register whose every row named a witness absent from this repository as foreign junk and moved to retract it, and measuring against its actual source showed the opposite --- all of its rows resolve to real tests in the upstream suite, so it is a stale copy of a REAL coverage map and mine was two rows behind, both naming findings this very session had worked on; deleting it would have discarded a map of the model in order to fix a labelling problem, and the repair is to refresh it and say whose suite it derives from, after which the thing it measures is the CONTRAST --- of the sixty-seven model sections upstream tests, this implementation cites forty-six, and the twenty-one it does not are the gap stated as an enumeration rather than as an adjective},
+  check    = {cmd:python3 concepts.py shadow/010/a-foreign-register-is-a-contrast-not-a-defect}
+}
+
+@misc{shadow/010/a-prefilter-inherits-its-own-blind-spot,
+  section  = {shadows}, from = {shadow/010/a-foreign-register-is-a-contrast-not-a-defect}, join = {. },
+  rests-on = {shadow/010/a-foreign-register-is-a-contrast-not-a-defect},
+  claim    = {I built a register of every random-sampling site and it found four, and the true number is thirty-four across fourteen files --- the scan opened with a substring test for the module name before parsing, so every file importing the module under an alias was discarded before the walk that would have resolved it, and a cheap guard placed in front of a correct check hands the check its own blind spot; the miss was invisible because four sites is a plausible answer and the register reported them with confidence, and it surfaced only when a new site I had just written failed to appear in a register whose whole purpose was to refuse an undeclared one; and the correction ran twice, because I fixed HALF a blind spot --- resolving the alias for FINDING sites while the seed pattern one line below still hardcoded the module name, so thirty-one sites were then reported as drawing with no reproducible seed and every one of them was seeded all along; the tree is in fact fully reproducible, twenty-seven with a literal seed and six deriving one from a loop variable or parameter, and what I had called a backlog was a fabrication of my own regex --- the second half of a blind spot is the half you already believe you have handled},
+  check    = {cmd:python3 concepts.py shadow/010/a-prefilter-inherits-its-own-blind-spot}
+}
+
+@misc{shadow/010/two-derivations-meet-as-structure,
+  section  = {shadows}, from = {shadow/010/a-prefilter-inherits-its-own-blind-spot}, join = {. },
+  rests-on = {shadow/010/a-prefilter-inherits-its-own-blind-spot},
+  claim    = {agreement between two solves was a sample and can be a universal --- the numeric routes collapse to a value immediately so comparing them decides only the graphs drawn, while two SYMBOLIC derivations are carrier terms and one comparison decides every assignment of the generators at once; on a series chain the elimination route and the spanning-tree route produce the SAME TERM, which is that universal, and on the bridge they differ in shape while agreeing at every point tried, which is the declared distributivity gap rather than a defect, so the verdict is GRADED --- identical, permuted, distributes, disagrees --- and only the last is a bug; the comparison had to cross-multiply rather than subtract, because subtracting unlike signs needs an order that free generators do not have and the carrier reports that as undecided by design},
+  check    = {cmd:python3 concepts.py shadow/010/two-derivations-meet-as-structure}
+}
+
+@misc{shadow/010/the-work-list-was-the-one-unwitnessed-claim,
+  section  = {shadows}, from = {shadow/010/a-prefilter-inherits-its-own-blind-spot}, join = {. },
+  rests-on = {shadow/010/a-prefilter-inherits-its-own-blind-spot},
+  claim    = {ninety-eight symbols live in this code and its ledger and the FORWARD-PATH ones lived only in conversation, so the single artefact describing what remained to be done was the one artefact no instrument could reach --- two of the last three went stale in a single session, one naming a backlog that never existed and one carried three commits past its close, and both were caught by the user asking whether they were real rather than by anything running; in each the stale claim rested on a measurement taken once and thereafter quoted, which is the same shape as every other defect here, so a path now carries a PREMISE that is executed, and the retired direction is checked too, because a premise that becomes true again means the work regressed rather than that the symbol was wrong},
+  check    = {cmd:python3 concepts.py shadow/010/the-work-list-was-the-one-unwitnessed-claim}
+}
+
+@misc{shadow/010/the-prose-existed-and-did-not-discharge-the-debt,
+  section  = {shadows}, from = {shadow/010/the-work-list-was-the-one-unwitnessed-claim}, join = {. },
+  rests-on = {shadow/010/the-work-list-was-the-one-unwitnessed-claim},
+  claim    = {twenty-seven of the thirty undeclared sampling sites already carried substantial docstrings and ten of them mentioned their own randomness, so the obvious move was to scrape the prose and clear the backlog in one pass --- and reading them showed every mention is incidental, a phrase like across thousands of random pairs, with not one stating what the draw CANNOT establish, which is the entire content a sampling declaration owes; the prose existed and did not discharge the debt, so a scraper would have manufactured thirty false declarations at speed and the register would have reported itself complete, and what the register enforces instead is the SHAPE --- a declaration without a bound is refused --- because a backlog cleared by writing sentences that describe what a witness checks while never naming its limit is the proxy this register was built to refuse},
+  check    = {cmd:python3 concepts.py shadow/010/the-prose-existed-and-did-not-discharge-the-debt}
+}
+
+% ── the probes: second-order witnesses over the ledger's own table ───────────────────────────
+
+@misc{probe/every-symbol-premise-holds/every-symbol-premise-holds,
+  section  = {probes}, from = {probe/every-cited-proof-exists/every-cited-proof-exists}, join = {. },
+  claim    = {an open forward path's premise is still true and a retired one's is still false --- the work list is a claim like any other and is now a paperkit PROJECT of its own rather than a file this repository writes by hand, because an authored register drifts from what it registers: a table once listed three symbols whose premises nothing ran, in the very change that warned against exactly that; the paths now resolve through the shared concept library and their document is projected, so a path that has finished, was wrong, or was never real fails, and a retired premise that becomes true again reports a regression},
+  check    = {result:paths}
+}
+
+@misc{probe/the-foreign-register-is-a-contrast/the-foreign-register-is-a-contrast,
+  section  = {probes}, from = {probe/a-shipped-module-is-executed/a-shipped-module-is-executed}, join = {. },
+  claim    = {the upstream register stays current against the suite it names and its header says whose suite that is, and the gap it reveals --- twenty-one of sixty-seven model sections this implementation does not cite --- is reported rather than allowed to grow; the probe does not require the gap to CLOSE, because a check that failed until the work was done would be a deadline rather than a measurement},
+  check    = {cmd:python3 concepts.py probe/the-foreign-register-is-a-contrast/the-foreign-register-is-a-contrast}
+}
+
+@misc{probe/a-shipped-module-is-executed/a-shipped-module-is-executed,
+  section  = {probes}, from = {probe/the-second-carrier-is-bounded/the-second-carrier-is-bounded}, join = {. },
+  claim    = {a module this project ships is RUN by something rather than merely imported --- the Pareto surface printer had forty-five of its fifty-five lines dark behind an assertion that its entry point was callable, which is the weakest form of the proxy, since a module that imports can still compute anything at all; coverage is measured by tracing rather than by asserting a witness exists, because there is a witness is the same proxy one level up},
+  check    = {cmd:python3 concepts.py probe/a-shipped-module-is-executed/a-shipped-module-is-executed}
+}
+
+@misc{probe/the-second-carrier-is-bounded/the-second-carrier-is-bounded,
+  section  = {probes}, from = {probe/every-cited-proof-exists/every-cited-proof-exists}, join = {. },
+  claim    = {the second carrier's violation set does not grow and its dependants do not multiply --- the probe pins what is known wrong rather than asserting it fixed, so the debt is bounded and the migration has something to prove it finished against},
+  check    = {cmd:python3 concepts.py probe/the-second-carrier-is-bounded/the-second-carrier-is-bounded}
+}
+
+@misc{probe/every-cited-proof-exists/every-cited-proof-exists,
+  section  = {probes}, from = {probe/every-sample-is-registered/every-sample-is-registered}, join = {. },
+  claim    = {every proof a claim rests on is a file that is HERE, carries --safe --without-K, holds no postulate block, and contains the token the claim names --- the direction nothing walked while five cited proofs existed only in a downloads folder},
+  check    = {cmd:python3 concepts.py probe/every-cited-proof-exists/every-cited-proof-exists}
+}
+
+@misc{probe/every-sample-is-registered/every-sample-is-registered,
+  section  = {probes}, from = {probe/no-definition-is-shadowed/no-definition-is-shadowed}, join = {. },
+  claim    = {every random-sampling site is registered with its seed, its draw count, and what it can and cannot establish --- a sample exhibits counterexamples and never certifies their absence, so each site bounds the strength of some claim invisibly, and this package asserted the opposite as a contract while four witnesses sampled and nothing checked the sentence},
+  check    = {cmd:python3 concepts.py probe/every-sample-is-registered/every-sample-is-registered}
+}
+
+@misc{probe/a-reason-asserted-is-a-reason-owed/a-reason-asserted-is-a-reason-owed,
+  section  = {probes}, from = {probe/claims-do-not-drift-from-their-tests/claims-do-not-drift-from-their-tests}, join = {. },
+  claim    = {a claim carries a check for what it CONCLUDES and often none for why, so the argument projects unwitnessed --- measured here as 35 of 73 entries asserting a reason and 25 of those carrying no grounding edge; this REPORTS rather than gates, because some of those reasons are definitional and correctly self-contained while others merely lean on an unlinked claim, and a threshold over a number measuring two things at once is the ratchet's own failure repeated},
+  check    = {cmd:python3 concepts.py probe/a-reason-asserted-is-a-reason-owed/a-reason-asserted-is-a-reason-owed}
+}
+
+@misc{probe/claims-do-not-drift-from-their-tests/claims-do-not-drift-from-their-tests,
+  section  = {probes}, from = {probe/every-witness-is-routed/every-witness-is-routed}, join = {. },
+  claim    = {the claims register says it is GENERATED and never edited, so that is re-derived from the suite rather than trusted --- every row must name a test that exists and carry the section its test's own decorator carries; the register is the CLAIM node type where the shadow ledger is the TASK node type, and the warrant for keeping both is exactly that a claim cannot drift from the thing that checks it},
+  check    = {cmd:python3 concepts.py probe/claims-do-not-drift-from-their-tests/claims-do-not-drift-from-their-tests},
+  note     = {SKIP BRANCH EXERCISED 2026-08-26, and both claims its comment makes are TRUE. The branch fires only when no suite resolves, and the suite is VENDORED at upstream/acceptance.py, so it never fires in an ordinary run here --- which is why it had gone unexercised. Fired by pointing ACCEPTANCE_PY at a missing file: the announcement lands on STDOUT and not stderr, which is the comment's whole argument since paperkit's resolver discards stderr and an announcement there reaches nobody; and the narrowed half BITES, a duplicated witness name in the register failing the check with the branch taken. So this is a genuine narrowing rather than a skip wearing an announcement. ⚑ AND MY FIRST TEST OF IT WAS WRONG IN A WAY WORTH RECORDING: I ran the probe without setting ACCEPTANCE_PY, saw no SKIPPED line and a duplicate passing, and read both as the branch misbehaving. The branch was never taken --- the vendored suite meant I was testing the FULL path and reading its behaviour as the branch's. A test that does not reach the code it is testing reports the wrong subject, and it reported it in the direction that accused correct code. Found by asking why the announcement was absent rather than banking the failure.}
+}
+
+@misc{probe/every-witness-is-routed/every-witness-is-routed,
+  section  = {probes}, from = {probe/every-name-resolves/every-name-resolves}, join = {. },
+  claim    = {every witness branch in the tree is reachable from the route table --- the check that walks from the CODE to the TABLE, which is the direction no other check traverses},
+  check    = {cmd:python3 concepts.py probe/every-witness-is-routed/every-witness-is-routed}
+}
+
+@misc{probe/one-implementation-may-span-families/one-implementation-may-span-families,
+  section  = {probes}, from = {probe/every-witness-is-routed/every-witness-is-routed}, join = {. },
+  claim    = {one implementation serving two families is a REALISED composition rather than an asserted one, and the count of such spans is the measurement --- a witness written for this table and left unwired in a module where it walked a local table of fifteen against an assertion of a hundred},
+  check    = {cmd:python3 concepts.py probe/one-implementation-may-span-families/one-implementation-may-span-families}
+}
+
+@misc{probe/fano/fano,
+  section = {probes},
+  claim   = {the seven axis-signatures and seven lines are the Fano plane --- every signature lies on exactly three lines and every pair on exactly one, which is what makes what does this move force a total function with a unique answer},
+  check   = {cmd:python3 concepts.py probe/fano/fano}
+}
+
+@misc{probe/axis-total/axis-total,
+  section = {probes}, from = {probe/fano/fano}, join = {. },
+  claim   = {every registered move carries one of the seven signatures and the key agrees with the field --- the signature is not decoration, it is what the probes read},
+  check   = {cmd:python3 concepts.py probe/axis-total/axis-total}
+}
+
+@misc{probe/monotone/monotone,
+  section = {probes}, from = {probe/axis-total/axis-total}, join = {. },
+  claim   = {a ledger entry is never deleted, only added or retired in place --- the cotype's original gate, carried in as one witness among many rather than the only one, and proving its own falsification arm on an in-memory copy},
+  check   = {cmd:python3 concepts.py probe/monotone/monotone}
+}
+
+@misc{probe/the-cube-adds-points-no-key-can-name/the-cube-adds-points-no-key-can-name,
+  section  = {probes}, from = {probe/a-syndrome-reads-directness-not-grounding/a-syndrome-reads-directness-not-grounding}, join = {. },
+  rests-on = {probe/a-syndrome-reads-directness-not-grounding/a-syndrome-reads-directness-not-grounding, shadow/110/three-routes-one-hole, shadow/110/the-concession-was-a-licence},
+  claim    = {the cube DOES add closing pairs and no key in this grammar can name their coordinates, which is a fact about the KEY GRAMMAR and not about the geometry --- a claim at 110 has three closing pairs in the plane and seven in PG(3,2), and all four that the cube adds need BOTH members off the plane, so reaching one means inventing a fourth axis beside goal shadows and artefact AND then two claims on it, since no added pair has an in-plane member to lean on; of the three in-plane pairs exactly one is populated, shadows with goal, while the other two want points this ledger has never occupied --- so the diagnosis behind the premise is right and its remedy is not, and what remains is an AUTHORING repair that would falsify these two records, since a claim saying three routes share one lemma rests on those routes and re-pointing it at a shadow and a goal to satisfy parity would make the ledger disagree with the claim to turn a check green},
+  check    = {cmd:python3 concepts.py probe/the-cube-adds-points-no-key-can-name/the-cube-adds-points-no-key-can-name}
+}
+
+@misc{probe/a-syndrome-reads-directness-not-grounding/a-syndrome-reads-directness-not-grounding,
+  section  = {probes}, from = {probe/a-fano-point-is-a-declared-ground/a-fano-point-is-a-declared-ground}, join = {. },
+  rests-on = {probe/a-fano-point-is-a-declared-ground/a-fano-point-is-a-declared-ground, shadow/100/stop-is-not-a-verdict, shadow/100/a-name-doing-the-work-of-an-argument},
+  claim    = {a Fano syndrome reads the DIRECTNESS of a goal citation and not whether the claim is grounded in the goal axis --- parity runs over a claim and its two immediate premises so the reading sees exactly one hop, while rests-on is transitive and grounding is therefore a REACHABILITY question, and over this ledger the two answers separate perfectly: nine closed lines all cite a goal directly, five unclosed lines all do not, and every one of the fourteen reaches a goal claim at some depth --- so not one unclosed composite is ungrounded and the counterfactuals do not mean what the tool reports, since fano.py says THIS CLAIM WANTS A GOAL PREMISE where what is true is THIS CLAIM'S GOAL PREMISE ARRIVES TWO HOPS UP, and densifying by re-axing a claim the syndrome names would repair a claim that is not broken --- which is why two of the original five closed honestly when the genuinely misfiled claims were moved and the remaining three did not; and THE ASSERTION IS THE SEPARATION AND NOT THE COUNTS, so the witness fails in both directions: a closed line that stops citing a goal directly breaks the left half, an unclosed line that starts citing one breaks the right half and means the parity now measures something else, and a composite reaching NO goal at any depth is a third thing again, genuinely ungrounded, which fails a separate clause rather than being counted as repairable},
+  check    = {cmd:python3 concepts.py probe/a-syndrome-reads-directness-not-grounding/a-syndrome-reads-directness-not-grounding}
+}
+
+@misc{probe/a-fano-point-is-a-declared-ground/a-fano-point-is-a-declared-ground,
+  section  = {probes}, from = {probe/over-decode/over-decode}, join = {. },
+  claim    = {a cited Fano point is also declared grounding --- `points` records the two populated members of a symmetric three-set and `rests-on` is an unordered bag, so the two are genuinely different relations and the field survives for that reason, but nothing licensed them to DIVERGE: six goal claims added in one session re-pointed each entry's points at its new goal and left rests-on holding the old pair, so six composites declared a forcing point they declared no grounding on, the containment fell from fourteen of fourteen to eight, and every gate stayed green because the two consumers read points in isolation while paperkit cannot see the field at all},
+  check    = {cmd:python3 concepts.py probe/a-fano-point-is-a-declared-ground/a-fano-point-is-a-declared-ground}
+}
+
+@misc{probe/over-decode/over-decode,
+  section  = {probes}, from = {probe/monotone/monotone}, join = {. },
+  rests-on = {shadow/110/cotype-unify},
+  claim    = {no entailed unification rests on a point that is itself only asserted --- an asserted unification is a candidate, not a closure, and a later entry citing it as one of its two forcing points has consumed a tidy-up as if it were real, which is the over-decode a prose ledger can only pose as a question},
+  check    = {cmd:python3 concepts.py probe/over-decode/over-decode}
+}
+
+@misc{probe/guard-covered/guard-covered,
+  section = {probes}, from = {probe/over-decode/over-decode}, join = {. },
+  claim   = {a registered guard event says what it redirected to --- a guard that fires and goes nowhere leaves the move blocked and nothing registered, losing the reasoning exactly as the direct move would have},
+  check   = {cmd:python3 concepts.py probe/guard-covered/guard-covered}
+}
+
+@misc{probe/L1/positive-closure,
+  section = {probes}, from = {probe/guard-covered/guard-covered}, join = {. },
+  claim   = {a line with one populated point is standing, not a gap --- the next point is not yet forced and must not be forced, because completing a line to tidy the picture plants a completion a later pass discovers and consumes as real, so the probe reports the state and never demands it},
+  check   = {cmd:python3 concepts.py probe/L1/positive-closure}
+}
+
+@misc{probe/L6/guard-reconstitution,
+  section = {probes}, from = {probe/L1/positive-closure}, join = {; and },
+  claim   = {the guard line reconstitutes the forbidden axis as positive content --- a guard event together with a mediated composite entails the triadic-full state, which is what turns every move mediates through shadows from a side condition into an operational law},
+  check   = {cmd:python3 concepts.py probe/L6/guard-reconstitution}
+}
+
+% ── the drift probes: three instances of ONE failure shape ────────────────────────────────────
+% Each of these was written after a defect got through, and each catches the same thing at a
+% different level: a reference that resolves to nothing, read as absence rather than as an error.
+
+@misc{probe/routes-resolve/routes-resolve,
+  section = {probes}, from = {probe/L6/guard-reconstitution}, join = {. },
+  claim   = {a label route that no longer resolves is a defect while a routeless concept is legitimate, so the probe checks only what is claimed --- this is the distinction that lets the ingestion queue stay non-empty without every queued concept reading as a broken link},
+  check   = {cmd:python3 concepts.py probe/routes-resolve/routes-resolve}
+}
+
+@misc{probe/witness-keys-resolve/witness-keys-resolve,
+  section = {probes}, from = {probe/routes-resolve/routes-resolve}, join = {; and },
+  claim   = {a key named inside a witness is a reference with no link to its definition, so renaming a family leaves the string behind and the walk returns nothing --- which an assertion then reads as a true absence, so the scan over source literals is what turns a silent pass back into a failure},
+  check   = {cmd:python3 concepts.py probe/witness-keys-resolve/witness-keys-resolve}
+}
+
+@misc{probe/every-name-resolves/every-name-resolves,
+  section  = {probes}, from = {probe/witness-keys-resolve/witness-keys-resolve}, join = {; and },
+  claim    = {a witness suite covers only the names its witnesses reach, so a module can carry a name that is defined nowhere and still report every check green --- a package split dropped a helper, the one function using it kept working because caller and definition sat in the same file, and the gap surfaced only when a later split moved them apart; a static scan of what each module binds against what it loads closes the class rather than the instance},
+  check    = {cmd:python3 concepts.py probe/every-name-resolves/every-name-resolves}
+}
+
+@misc{probe/reads-agree-on-nesting/reads-agree-on-nesting,
+  section  = {probes}, from = {probe/witness-keys-resolve/witness-keys-resolve}, join = {; and },
+  claim    = {the same shape one level down --- a slot may hold a generator, nothing, or another term, and three reads independently branched on the leaf case and defaulted the rest, so a nested product evaluated to the unit and its generators vanished from the support; the repair is that only ABSENCE reads as the identity and an unrecognised slot raises},
+  rests-on = {probe/witness-keys-resolve/witness-keys-resolve},
+  check    = {cmd:python3 concepts.py probe/reads-agree-on-nesting/reads-agree-on-nesting}
+}
+
+% ── the mathematics: the witness corpus, cited so the gate runs it ──────────────────────────
+% Until these entries existed, all 74 warrants ran `concepts.py` and none ran `gcalc.py`: the
+% claim-DAG governed the METHOD ledger and none of the 716 mathematical witnesses, which is 98.7%
+% of the project's evidence.  `meta/<op>/<family>` is a SECOND-ORDER witness — its argument names
+% another family — so one entry per (op, family) brings a whole family inside the gate.  The
+% machinery already existed and was green; only the citation was missing.
+
+@misc{math/total/operator,
+  section  = {math-operator},
+  claim    = {operator --- the carrier, its reads, the rewrite system and the solved domains --- the family's keys all pass --- the first-order claim, asked of all 261 at once},
+  check    = {cmd:python3 -m gcalc meta/total/operator}
+}
+
+@misc{math/occupancy/operator,
+  section  = {math-operator}, from = {math/total/operator}, join = {; },
+  claim    = {operator --- the carrier, its reads, the rewrite system and the solved domains --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/operator}
+}
+
+@misc{math/distinct/operator,
+  section  = {math-operator}, from = {math/occupancy/operator}, join = {; },
+  claim    = {operator --- the carrier, its reads, the rewrite system and the solved domains --- no two of the 261 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/operator}
+}
+
+@misc{math/total/coordinate,
+  section  = {math-coordinate}, from = {math/distinct/operator}, join = {; },
+  claim    = {coordinate --- charts, the gauge word, continued fractions and the unimodular group --- the family's keys all pass --- the first-order claim, asked of all 99 at once},
+  check    = {cmd:python3 -m gcalc meta/total/coordinate}
+}
+
+@misc{math/occupancy/coordinate,
+  section  = {math-coordinate}, from = {math/total/coordinate}, join = {; },
+  claim    = {coordinate --- charts, the gauge word, continued fractions and the unimodular group --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/coordinate}
+}
+
+@misc{math/distinct/coordinate,
+  section  = {math-coordinate}, from = {math/occupancy/coordinate}, join = {; },
+  claim    = {coordinate --- charts, the gauge word, continued fractions and the unimodular group --- no two of the 99 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/coordinate}
+}
+
+@misc{math/total/classification,
+  section  = {math-classification}, from = {math/distinct/coordinate}, join = {; },
+  claim    = {classification --- verdicts, orbits and the symmetry tower --- the family's keys all pass --- the first-order claim, asked of all 85 at once},
+  check    = {cmd:python3 -m gcalc meta/total/classification}
+}
+
+@misc{math/occupancy/classification,
+  section  = {math-classification}, from = {math/total/classification}, join = {; },
+  claim    = {classification --- verdicts, orbits and the symmetry tower --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/classification}
+}
+
+@misc{math/distinct/classification,
+  section  = {math-classification}, from = {math/occupancy/classification}, join = {; },
+  claim    = {classification --- verdicts, orbits and the symmetry tower --- no two of the 85 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/classification}
+}
+
+@misc{math/total/network,
+  section  = {math-network}, from = {math/distinct/classification}, join = {; },
+  claim    = {network --- fibres, the frontier driver, gluing and the Pareto surface --- the family's keys all pass --- the first-order claim, asked of all 116 at once},
+  check    = {cmd:python3 -m gcalc meta/total/network}
+}
+
+@misc{math/occupancy/network,
+  section  = {math-network}, from = {math/total/network}, join = {; },
+  claim    = {network --- fibres, the frontier driver, gluing and the Pareto surface --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/network}
+}
+
+@misc{math/distinct/network,
+  section  = {math-network}, from = {math/occupancy/network}, join = {; },
+  claim    = {network --- fibres, the frontier driver, gluing and the Pareto surface --- no two of the 116 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/network}
+}
+
+@misc{math/total/bundle,
+  section  = {math-bundle}, from = {math/distinct/network}, join = {; },
+  claim    = {bundle --- the coordinate bundle over the rung ladder --- the family's keys all pass --- the first-order claim, asked of all 42 at once},
+  check    = {cmd:python3 -m gcalc meta/total/bundle}
+}
+
+@misc{math/occupancy/bundle,
+  section  = {math-bundle}, from = {math/total/bundle}, join = {; },
+  claim    = {bundle --- the coordinate bundle over the rung ladder --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/bundle}
+}
+
+@misc{math/distinct/bundle,
+  section  = {math-bundle}, from = {math/occupancy/bundle}, join = {; },
+  claim    = {bundle --- the coordinate bundle over the rung ladder --- no two of the 42 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/bundle}
+}
+
+@misc{math/total/figure,
+  section  = {math-figure}, from = {math/distinct/bundle}, join = {; },
+  claim    = {figure --- the worked figures the prose points at --- the family's keys all pass --- the first-order claim, asked of all 85 at once},
+  check    = {cmd:python3 -m gcalc meta/total/figure}
+}
+
+@misc{math/occupancy/figure,
+  section  = {math-figure}, from = {math/total/figure}, join = {; },
+  claim    = {figure --- the worked figures the prose points at --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/figure}
+}
+
+@misc{math/distinct/figure,
+  section  = {math-figure}, from = {math/occupancy/figure}, join = {; },
+  claim    = {figure --- the worked figures the prose points at --- no two of the 85 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/figure}
+}
+
+@misc{math/total/contextuality,
+  section  = {math-contextuality}, from = {math/distinct/figure}, join = {; },
+  claim    = {contextuality --- the fork degree and what a context cannot see --- the family's keys all pass --- the first-order claim, asked of all 18 at once},
+  check    = {cmd:python3 -m gcalc meta/total/contextuality}
+}
+
+@misc{math/occupancy/contextuality,
+  section  = {math-contextuality}, from = {math/total/contextuality}, join = {; },
+  claim    = {contextuality --- the fork degree and what a context cannot see --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/contextuality}
+}
+
+@misc{math/distinct/contextuality,
+  section  = {math-contextuality}, from = {math/occupancy/contextuality}, join = {; },
+  claim    = {contextuality --- the fork degree and what a context cannot see --- no two of the 18 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/contextuality}
+}
+
+@misc{math/total/priorart,
+  section  = {math-priorart}, from = {math/distinct/contextuality}, join = {; },
+  claim    = {priorart --- the constructions this work is not the first to reach --- the family's keys all pass --- the first-order claim, asked of all 10 at once},
+  check    = {cmd:python3 -m gcalc meta/total/priorart}
+}
+
+@misc{math/occupancy/priorart,
+  section  = {math-priorart}, from = {math/total/priorart}, join = {; },
+  claim    = {priorart --- the constructions this work is not the first to reach --- no subfamily is empty and the grade is not spurious --- an empty subfamily is invisible to every individual key and shows up only here},
+  check    = {cmd:python3 -m gcalc meta/occupancy/priorart}
+}
+
+@misc{math/distinct/priorart,
+  section  = {math-priorart}, from = {math/occupancy/priorart}, join = {; },
+  claim    = {priorart --- the constructions this work is not the first to reach --- no two of the 10 keys share an implementation, which is --without-K asked of a FAMILY rather than of the cited claims},
+  check    = {cmd:python3 -m gcalc meta/distinct/priorart}
+}
+
+@misc{probe/the-entrypoint-is-not-a-barrel/the-entrypoint-is-not-a-barrel,
+  section  = {probes},
+  from     = {probe/a-shipped-module-is-executed/a-shipped-module-is-executed},
+  join     = {.},
+  claim    = {the entrypoint imports only what its own body uses, and every exception is DECLARED with its reason --- paperkit resolves every bib check through cmd:python3 concepts.py so the file survives decomposition as the entry point, but what it must not do is RE-EXPORT: seven from-imports once pulled eight modules in merely so that concepts.axis_of would keep resolving while nothing imported through them, which is a conduit with no consumer and made every dispatch load eight modules to run one witness --- and a NAME-BASED reading cannot decide this, because two imports here are legitimately unused by this file's body: one is taken by an EXTERNAL reader through the module attribute and one is imported for a MODULE-LEVEL EFFECT, both of which look removable to any AST query over names used here and both of which have broken the tree when removed, so the honest invariant is not that every import is referenced but that every import is referenced OR declared as an exception carrying its reason, and a third such exception would mean the barrel grew back wearing the same marker},
+  check    = {cmd:python3 concepts.py probe/the-entrypoint-is-not-a-barrel/the-entrypoint-is-not-a-barrel},
+  rests-on = {probe/a-shipped-module-is-executed/a-shipped-module-is-executed, shadow/010/decompose-hierarchy}
+}
+
+@misc{probe/no-family-is-silently-empty/no-family-is-silently-empty,
+  section  = {probes},
+  from     = {probe/the-entrypoint-is-not-a-barrel/the-entrypoint-is-not-a-barrel},
+  join     = {.},
+  claim    = {every declared route family resolves at least one leaf, because a witness over a collection cannot see that the collection is EMPTY --- an F-arm drops the side-effect import that populates the shadow family from the ledger and THREE separate witnesses passed in that state, each a proper cotype claim with a bib entry and a runnable witness and an F-arm of its own: one returned exit 2 silently because a REFUSAL carries no message to match, and two certified over an empty bucket because every one of them asks for-all r in ROUTES of P(r) and for-all over the empty set is TRUE --- so the cotype makes each claim checkable and does not make the POPULATION checkable, which is the same shape as a private field diverging from the public vocabulary: each roster internally checked, the relation between them checked by nothing; and the first version of THIS probe tested the top-level families and passed against the exact state it was written to catch, because the module prunes axis buckets no move has reached and a family that lost its population is a NON-EMPTY dict of EMPTY dicts, truthy at the top and resolving nothing, which is the vacuity it names one level down},
+  check    = {cmd:python3 concepts.py probe/no-family-is-silently-empty/no-family-is-silently-empty},
+  rests-on = {probe/the-entrypoint-is-not-a-barrel/the-entrypoint-is-not-a-barrel, probe/a-fano-point-is-a-declared-ground/a-fano-point-is-a-declared-ground, probe/routes-resolve/routes-resolve}
+}
+
+@misc{shadow/010/a-name-that-collapses-a-distinction-loses-it,
+  section  = {shadows},
+  from     = {probe/the-cube-adds-points-no-key-can-name/the-cube-adds-points-no-key-can-name},
+  join     = {.},
+  claim    = {a label is a lossy channel for the measurement it names, and mine collapsed the distinction the measurement had just established --- a probe was first called the-cube-adds-no-reachable-repair, which parses three ways: adds no repair THAT IS reachable, adds no repair reachably, or the compound read as one object --- and the first two are exactly the finding, because the cube DOES add four closing pairs and they are real while what is missing is a KEY that can name their coordinates, so a name that cannot separate ADDED BUT UNNAMEABLE from NOT ADDED has lost the result it was labelling; and the old name also blamed the wrong layer, attributing the defect to the GEOMETRY when PG(3,2) is fine and the three-bit key grammar is what cannot spell an off-plane point --- which is the day's recurring class one level up, the label standing in as a cheap proxy for the measurement while the measurement itself was correct},
+  check    = {cmd:python3 concepts.py shadow/010/a-name-that-collapses-a-distinction-loses-it},
+  rests-on = {probe/the-cube-adds-points-no-key-can-name/the-cube-adds-points-no-key-can-name, shadow/010/testing-the-name-not-the-property},
+  link     = {the WITNESS is the rename's completion and not the finding itself: a claim about a bad NAME cannot assert the name is bad without re-introducing it, so what is checked is that the collapsing spelling is unreachable anywhere a reader or a route could still find it --- the only licensed mention is this record's own account of the rename, and the checker excludes its own file because a guard that names what it forbids reports itself as the violation}
+}
+
+@misc{probe/every-pointer-resolves/every-pointer-resolves,
+  section  = {probes},
+  from     = {probe/no-family-is-silently-empty/no-family-is-silently-empty},
+  rests-on = {probe/no-family-is-silently-empty/no-family-is-silently-empty, probe/witness-keys-resolve/witness-keys-resolve},
+  join     = {.},
+  claim    = {a comment naming a claim key names one the ledger HOLDS --- migrating argumentative commentary into the ledger leaves the source carrying POINTERS, and a pointer to a claim that was never authored or was authored and later deleted is INDISTINGUISHABLE from one that resolves, which is this repository's own silence class manufactured by the migration that was supposed to strengthen the record: the comment still reads as grounded, the gate still passes, and the argument it points at is gone --- THE PREFIX RULE IS THE FIRST DIFFICULTY, since graded keys repeat their slug so a comment writing the bare probe-slash-x names a real claim by a spelling the ledger does not carry, and accepting only exact keys would fail every pointer the migration wrote while accepting any prefix would let a bare key pass when only a longer one exists, so a pointer resolves when it IS a key or when it is the unique key extending it by the repeated-slug rule --- PROSE AND CODE ARE SCANNED DIFFERENTLY AND THAT DISTINCTION IS LOAD-BEARING: farm.py names route keys in key-equals FIELDS and an F-arm names keys that are DELIBERATELY FICTITIOUS because the rejected state it installs must not exist, and those are DATA rather than pointers since they are EXECUTED and a wrong one already fails its own arm, while a pointer is a claim named where nothing runs it; measured, a first cut scanning every line reported four hits of which three were code --- AND A TWO-SEGMENT SHADOW KEY IS AN AXIS AND NOT A CLAIM, because every registered shadow key carries three segments so shadow-slash-110 in prose is the signature under discussion --- and the probe caught its own dangling pointer on first run, its docstring naming this record before this record existed, which is the ordering hazard demonstrated by the instrument built to prevent it; an EXAMPLE key in a comment is a dangling pointer for the same reason, so placeholders are written in angle brackets that no scan can read as a claim},
+  check    = {cmd:python3 concepts.py probe/every-pointer-resolves/every-pointer-resolves}
+}
+
+@misc{probe/L2/GS-guard-coverage,
+  section  = {probes},
+  from     = {probe/L1/positive-closure},
+  rests-on = {probe/L1/positive-closure, probe/fano/fano},
+  join     = {; and},
+  claim    = {the guard-cleared-GS line reports the ledger's OCCUPANCY of it, which the plane's geometry probe cannot see --- probe/fano/fano checks the LINE SET: incidence, XOR closure, the two-seven-three-one design, and it is right to check that once rather than trust it; but occupancy is a property of the LEDGER over that set, so a line reads complete or forced or standing or empty depending on which claims exist, and no amount of geometry decides it --- and this entry exists because SEVEN line probes were routed and certifying while only TWO carried a claim, so five members of one family were evidence for nothing: a witness the ledger does not cite runs in the leaf sweep and contributes to no claim, which is the inverse of the unrouted-witness finding and invisible to the code-to-table walk that only checks the other direction},
+  check    = {cmd:python3 concepts.py probe/L2/GS-guard-coverage}
+}
+
+@misc{probe/L3/SA-guard-coverage,
+  section  = {probes},
+  from     = {probe/L2/GS-guard-coverage},
+  rests-on = {probe/L2/GS-guard-coverage},
+  join     = {; and},
+  claim    = {the guard-cleared-SA line reports occupancy, and the guard axis carries only two registered moves so this line is where the ledger is thinnest --- a line with one populated point is STANDING, which is the correct stable state and not a gap: the next point is not yet forced and must not be forced, because completing a standing line to tidy the picture is over-decode and its failure is delayed until a later pass consumes the planted completion as real; so this probe REPORTS and never demands, and the only thing it fails on is a malformed line},
+  check    = {cmd:python3 concepts.py probe/L3/SA-guard-coverage}
+}
+
+@misc{probe/L4/GS-triadic-completion,
+  section  = {probes},
+  from     = {probe/L3/SA-guard-coverage},
+  rests-on = {probe/L3/SA-guard-coverage},
+  join     = {; and},
+  claim    = {the GS-triadic line reaches the triadic point, and the ledger has never occupied it --- 111 is empty and so are 101 and 011, which the axis population reports as three of the seven Fano points unoccupied; this probe is therefore STANDING on its goal point alone, and reading that as a gap to fill is exactly the over-decode the standing-line rule forbids: the triadic signature means a move touching all three axes at once, and the ledger holds none because no registered move has done that, not because the record is incomplete},
+  check    = {cmd:python3 concepts.py probe/L4/GS-triadic-completion}
+}
+
+@misc{probe/L5/SA-triadic-completion,
+  section  = {probes},
+  from     = {probe/L4/GS-triadic-completion},
+  rests-on = {probe/L4/GS-triadic-completion},
+  join     = {; and},
+  claim    = {the SA-triadic line is the shadows-side twin of the GS one and stands on its shadows point alone --- 48 registered moves sit at 010 and the line still reads standing, which is the measurement that makes the standing rule credible rather than a convenience: a heavily populated point does not force its line, because forcing is a property of the LINE and not of any point's weight; the two triadic lines being symmetric and both standing is what a plane with an unoccupied triadic point looks like from either side},
+  check    = {cmd:python3 concepts.py probe/L5/SA-triadic-completion}
+}
+
+@misc{probe/L7/pure-composite-diagonal,
+  section  = {probes},
+  from     = {probe/L5/SA-triadic-completion},
+  rests-on = {probe/L5/SA-triadic-completion, probe/L6/guard-reconstitution},
+  join     = {; and},
+  claim    = {the pure-composite diagonal is the line the mediated composites live on, and it stands on 110 alone with sixteen claims there --- so the most heavily populated point in the ledger sits on a line whose other two points are empty, which is the sharpest statement of why occupancy is not weight: sixteen composites do not force anything, because what a line needs is DISTINCT points and they are all one point; that collapse is the same fact the order stratification reports, where a composite citing two order-one composites cites 110 twice and spans no line at all},
+  check    = {cmd:python3 concepts.py probe/L7/pure-composite-diagonal}
+}
+
+@misc{probe/every-f-arm-bites/every-f-arm-bites,
+  section  = {probes},
+  from     = {probe/L7/pure-composite-diagonal},
+  rests-on = {probe/every-proxy-is-declared/every-proxy-is-declared, probe/L7/pure-composite-diagonal},
+  join     = {; and},
+  claim    = {a check that cannot distinguish the state it rejects from the one it accepts is not a check, so the whole F-arm set runs as a gate --- the evidence that a witness BITES lived in commit messages, thirty-six of eighty-one mentioning an arm, which is prose and provably not enough: four arms in a single session were VACUOUS and every one was caught by hand, splitting into two classes that reduce to one error --- the arm PASSED because the input could not separate the rejected design from the accepted one or the mutation was too narrow while other arms still exercised the subject, or the arm FAILED WRONGLY because it tripped a different assertion first or broke the CHECKER and raised before the check could run --- so IT WENT RED is not evidence and IT WENT RED HERE SAYING THIS is, which is why each arm declares its expected message and a red for any other reason reports VACUOUS rather than counting as a pass; and running the whole set as one witness is what makes an arm that ROTS a gate failure rather than something noticed later by hand, since a mutation whose anchor was edited away is dead and passes silently},
+  check    = {cmd:python3 concepts.py probe/every-f-arm-bites/every-f-arm-bites}
+}
+
+@misc{probe/no-definition-is-shadowed/no-definition-is-shadowed,
+  section  = {probes},
+  from     = {probe/every-f-arm-bites/every-f-arm-bites},
+  rests-on = {shadow/010/a-shadowed-definition-reverts-in-silence, probe/every-f-arm-bites/every-f-arm-bites},
+  join     = {; and},
+  claim    = {a second def of one name at module scope silently wins and the first becomes dead, so a correction can revert into nothing --- THIS PROBE EXISTS BECAUSE THAT HAPPENED: correcting a witness after over-generalising from three polynomial systems that tied, the edit inserted the corrected body AHEAD of the original rather than replacing it, and Python takes the LAST definition, so the RUNNING witness went on asserting the retracted claim while the bib text stated the correction --- and it CERTIFIED, because on the cyclic-three system the totals do tie, so the dead body and the live one agreed on the one input anybody ran; two further shadowed definitions were live at the same time, one a pair of identical copies and one a solver method whose bodies DIFFERED --- nothing else in the tree can see this, because the gate runs the key, the key runs the live body, and a dead body is indistinguishable from a body that is not there: it is the abstraction-that-does-not-retire-its-instance failure applied to a single name},
+  check    = {cmd:python3 concepts.py probe/no-definition-is-shadowed/no-definition-is-shadowed}
+}
+
+@misc{probe/the-sandbox-root-is-bounded/the-sandbox-root-is-bounded,
+  section  = {probes},
+  from     = {probe/no-definition-is-shadowed/no-definition-is-shadowed},
+  rests-on = {probe/no-definition-is-shadowed/no-definition-is-shadowed, probe/every-proxy-is-declared/every-proxy-is-declared},
+  join     = {; and},
+  claim    = {the mutation sandbox must copy THIS project and not everything beside it --- the engine's sandbox root falls back to the project's PARENT when none is declared, which here is the whole github directory of ninety-three sibling repositories, so every grading run copied 774 MB into tmp and left it: eighteen accumulated, filled a 7.7 gigabyte tmpfs to one hundred percent, and every command on the machine began failing with ENOSPC INCLUDING THE ONES DIAGNOSING IT --- an instrument whose side effect eventually disables the machine it measures is the measure-must-not-mutate failure with a slow fuse, and the fuse is what made it hard: the run that filled the disk was not the run that broke, so the cause and the symptom were days apart --- declaring the root closes it and this refuses the regression, because a deleted line or a root that CLIMBS ABOVE the project would otherwise surface only as a full disk later; and the probe returns early when the engine is absent rather than failing, since a borrowed engine that is not present bounds nothing and there is nothing to check},
+  check    = {cmd:python3 concepts.py probe/the-sandbox-root-is-bounded/the-sandbox-root-is-bounded}
+}
+
+@misc{probe/every-declared-roster-is-covered/every-declared-roster-is-covered,
+  section  = {probes},
+  from     = {probe/every-pointer-resolves/every-pointer-resolves},
+  rests-on = {probe/every-pointer-resolves/every-pointer-resolves, probe/L7/pure-composite-diagonal, probe/fano/fano},
+  join     = {; and},
+  claim    = {a per-key census cannot see a PARTIAL family, so coverage is measured against rosters the CODE declares --- the uncited-witness census reads zero of one hundred fifteen and is right, and it was blind to five Fano-line probes that were routed and certifying and cited by nothing while two of their siblings carried claims: THE CITED MEMBERS MADE THE FAMILY READ AS COVERED, which is the silence-reads-as-approval shape applied to a set rather than to a guard --- a partial family is therefore not a thing to lament but a call for better coverage MEASUREMENT, and the measurement exists because the roster does: LINES names seven lines and LINE_NAMES maps each to its probe's slug, so the shape is a promise the code makes and the ledger can be checked against it --- AND THE FIRST CUT OF THIS CHECK WAS THE ERROR IT GUARDS: it derived axes from observed key SHAPES and reported thirty-eight of one thousand four hundred forty-four cells for the probe family, treating every property-name pair as owed, which is a number with no meaning and left the Fano family invisible inside it; a product of observed segments is not a promise, while a roster the code states is one --- and math-slash is the pattern kept right, three verbs crossed with eight families and twenty-four of twenty-four cells present, so the shape is what this ledger already does correctly in one place and did badly in another},
+  check    = {cmd:python3 concepts.py probe/every-declared-roster-is-covered/every-declared-roster-is-covered}
+}
+
+@misc{math/carrier-laws/kernel-is-not-the-rung,
+  section  = {math-operator},
+  rests-on = {math/total/operator, math/total/network},
+  claim    = {THE LAW TABLE, AND THE BOUND ON IT. The kernel algebra is (Q>0, +, ab/(a+b), 1/x). Commutativity, associativity and involutivity hold. De Morgan holds BY CONSTRUCTION rather than as a theorem — one operation in two presentations, transported across the involution — so reading it as a discovered duality is reading a definition back. Distributivity, idempotence and absorption fail TOTALLY, at every point of the grid, and they fail for ONE reason: AND is strictly below both operands and OR strictly above, so there is no unit, no idempotent and no top for a lattice to close on. Distributivity was never available. Reporting its failure as a count implies a scale this algebra could have scored on, which is the permissive misreading two outside sessions reached independently in one afternoon. THE BOUND: §12's declared distributivity gap is NOT this one. It belongs to the RUNG carrier in gcalc/carrier.py, where mul IS lift(add), and it is actively guarded — operator/checked.py fails if that pair becomes decidable. The two algebras share no element. An agent dispatched on the merged reading finds a deliberately-open exclusion and closes it.},
+  check    = {cmd:python3 -m gcalc operator/carrier-laws/kernel-is-not-the-rung},
+  from     = {math/distinct/operator}
+}
+
+@misc{math/afforded/non-idempotence-is-a-capability,
+  section  = {math-operator},
+  from     = {math/carrier-laws/kernel-is-not-the-rung},
+  rests-on = {math/total/operator},
+  claim    = {NON-IDEMPOTENCE IS WHAT THE CARRIER CAN EXPRESS, NOT WHAT IT GIVES UP — and this library stated it defensively for its whole life. The standing line reads OR(a,a)=2a as the mass axis, exactly the content that dies over GF(2), which answers why is this not a lattice. A session USING this carrier for unrelated work answered the better question and reported two things an idempotent carrier CANNOT DO. First, AND(a,a)=a/2 exactly, so n self-compositions is a right shift by n, and a kernel's own nr_to_scan >> sc->priority is a series composition indexed by TIME rather than something outside the algebra — in a lattice AND(a,a)=a and the shift is not expressible at all. Self-composition affords base 2 in both directions and no other base. Second, in an idempotent carrier OR(e,e)=e, so re-citing one source is INDISTINGUISHABLE from finding a second, while here every self-combination moves the value — the carrier forbids evidence laundering STRUCTURALLY rather than by discipline, which is what that session was using it for. The defensive form is what a reader meets first and it sells the property short.},
+  check    = {cmd:python3 -m gcalc operator/afforded/iterated-and-is-the-bit-shift}
+}
+
+@misc{math/priorart/residuation-exists-and-the-name-refuses,
+  section  = {math-priorart},
+  from     = {math/distinct/priorart},
+  rests-on = {math/total/priorart, math/carrier-laws/kernel-is-not-the-rung},
+  claim    = {THE ADJOINT EXISTS, IS ATTAINED, AND THE NAME STILL REFUSES. AND(a,x) <= b iff x <= ab/(a-b) for a > b, exhaustively over the grid, and the residual is itself a solution — AND(a, ab/(a-b)) == b — so this is a true adjoint and not merely an upper bound. Answered at this family's coordinate rather than as a verdict. Carrier: Q>0, and only where a > b. Obstruction: NOT a residuated lattice, because there is no lattice at all, no top, and the residual leaves the carrier exactly where the constraint stops binding. THE PARTIALITY IS THE STRUCTURE. AND(a,x) is strictly below a, so at a <= b the constraint cannot bind and every x satisfies it, and the residual formula reports that by leaving Q>0 — a bound that is UNREACHABLE rather than unmet, which is network/poles/unreachable read one level up. The residual is a statement about Q>0 sitting inside Q, which is why it lands outside. AND THE BOUND: IMP is the De Morgan-dual implication and is NOT this adjoint. On the 28 binding pairs they agree ZERO times, and IMP is not even monotone against the residual. In a Heyting algebra the two coincide BY DEFINITION, so their total disagreement is a FOURTH independent witness that this is not a lattice in disguise. Reported from outside by two peer sessions. The first count claimed 36 of 64 agreement and was wrong in the way this family exists to catch — it counted the vacuous region as agreement. The correction, restricting to where the constraint binds, is the finding.},
+  check    = {cmd:python3 -m gcalc priorart/residuation/IMP-is-a-different-arrow}
+}
+
+@misc{math/completed/closed-is-not-yet-statable,
+  section  = {math-network},
+  from     = {math/distinct/network},
+  rests-on = {math/total/network},
+  claim    = {THE MIDDLE OUTCOME NEEDED SPLITTING. network/completed grades a failed homomorphism three ways — the defect vanishes, or it has a CLOSED FORM and the law is corrected into a theorem, or it has none. That middle verdict is two verdicts wearing one name: a closed form may be STATABLE ON THIS CARRIER or merely EXIST. The sub-distributive gap is the worked example. Its RATIO is closed, exact and subtraction-free, so the carrier can hold it. Its DIFFERENCE is equally closed and equally exact and is derived through a subtraction, which this carrier does not afford, so it cannot be stated here at all. Both are corrected-into-a-theorem under the old grading and only one is a theorem this carrier can carry. That is wedgedivision/subtraction-free-scopes-the-reduction again — the question is never whether an operation is present but WHERE IT IS PAID — and the difference form pays it off-carrier. AND THE ANSATZ THAT DIED IS KEPT, because the shape of the failure is the lesson. A peer proposed that the gap equals k times a-squared-bc over the product of the three sums, and swept k, getting 0, 0, 11, 14, 12 and 9 hits of 512 for k from 1 to 6 — a pattern that reads like a near miss and is not one. The cofactor is NON-CONSTANT, so no k could ever have worked and the shape was wrong rather than mis-scaled. A sweep cannot see that. One query settles it.},
+  check    = {cmd:python3 -m gcalc network/completed/closed-is-not-yet-statable}
+}
+
+@misc{math/admit/a-correction-that-was-an-axis,
+  section  = {math-operator},
+  from     = {math/afforded/non-idempotence-is-a-capability},
+  rests-on = {math/total/operator},
+  claim    = {A CORRECTION RETIRES WHAT IT CORRECTS, AND THIS ONE HAD NOTHING TO RETIRE. operator/admit recorded itself as correcting operator/cross-domain/the-honest-boundary for being too coarse. It is not a correction. The two answer different questions about different objects: the-honest-boundary asks whether the FIBRE is non-trivial, which is injectivity of one collapse map over terms under evaluate, and admit asks whether the TARGET admits a Grothendieck completion, which is cancellativity of a monoid over the naturals, two-by-two matrices and min-plus. Injectivity is a property of the collapse and cancellativity is a property of the target, and the tell is that the two witnesses probe DISJOINT OBJECTS. They compose rather than supersede — the first decides whether retention is needed at all, the second prices it once it is. THE COST OF THE MIS-FILING IS NOT COSMETIC. the-honest-boundary is sound and correctly scoped, so filing this as its correction left a TRUE witness reading as superseded, and a reader then has reason to distrust a claim that never failed. That is this repo's own an-explanation-hides-defects one level up: the named cause must account for the WHOLE observation, and too coarse accounted for a different observation entirely. The three verdicts are unchanged and remain correct. Only the relationship was wrong, and the orthogonality is now ASSERTED rather than left in prose — a non-trivial fibre sits over a faithful target and over a lossy one, and a trivial fibre settles the question before a completion verdict arises at all.},
+  check    = {cmd:python3 -m gcalc operator/admit/the-axes-are-orthogonal},
+  note     = {WHY THE TABLE HAS NAMED ROWS, WHICH NOTHING HERE RECORDED UNTIL A PEER'S DEFECT NAMED IT. earley-fa, porting substrate's dual-rail carrier, folded a CONJUNCTION of constraints with the information JOIN instead of the truth MEET --- two operations of identical signature and different identity --- so one-pass-one-fail reported CONFLICT where it should have reported REFUTED. Substrate's four CommutativeMonoid records with four distinct identities ARE the proof it is unsound, and nobody had written the warning; the type system cannot catch it because both operations have the same type. MEASURED HERE 2026-08-26: this tree has the same signature exposure and NOT the same failure mode. AND and OR are both Q>0 -> Q>0 -> Q>0, a caller writing one where it means the other typechecks anywhere, and they disagree on 64 of 64 sampled pairs --- so a swap is LOUD IN THE VALUE and SILENT IN THE TYPE. But NEITHER OPERATION HAS AN IDENTITY IN THE CARRIER, verified, so the specific defect of folding with the wrong monoid and getting the wrong unit CANNOT ARISE: there is no empty fold to return one. Their failure was silent in both the type and the value until a verdict came out wrong. AND THE STRUCTURAL ANSWER WAS ALREADY BUILT AND UNSTATED. domains.py distinguishes operations BY NAMED ROLE rather than by signature --- swap, collapse, kernel_basis are FIELDS, so supplying the wrong operation is a WRONG ROW rather than a wrong argument, and filled() reads the roles rather than the types. That is why the table is a data structure with named rows and not a tuple of functions, and it is the answer to their conflation stated one level up: a role can be checked for presence, a signature cannot be checked for meaning.}
+}
+
+@misc{probe/supersession-is-declared-not-narrated/supersession-is-declared-not-narrated,
+  section  = {probes},
+  from     = {probe/witness-keys-resolve/witness-keys-resolve},
+  rests-on = {probe/witness-keys-resolve/witness-keys-resolve, probe/every-pointer-resolves/every-pointer-resolves},
+  claim    = {A RETIREMENT IS A RELATIONSHIP BETWEEN TWO CLAIMS, AND EVERY CHECK IN THIS TREE GRADES A CLAIM ALONE. The gate runs the key, the key runs the body, and a body that is true-but-superseded is indistinguishable from one that is current, so the failure is silent by construction. Three instances in one session, none catchable. operator/admit filed itself as CORRECTING the-honest-boundary when it is a second axis, leaving a sound witness reading as retired, so a reader who believes the filing loses a true claim. GcalcNu.agda section 4 is a budget-in answer-out form that section 7's own header calls the wrong shape, and citing it as current is invisible because superseded code is REAL code that typechecks. And upstream a record that cannot be instantiated at all sits under the name a reader reaches for first, guarded by a paragraph. AND THE SHAPE-SEARCH MITIGATION DOES NOT APPLY. Searching by structure rather than by name is the right fix for a stale NAME and does nothing here, because the superseded thing has exactly the shape being searched for. WHAT IS ENFORCED AND DELIBERATELY NOT MORE. A docstring declaring supersession must NAME what supersedes it and that name must RESOLVE. A marker pointing nowhere is a broken citation dressed as a retirement, which is worse than no marker, because it tells a reader the claim was replaced and gives them nothing to read instead. What is NOT enforced is that every superseded claim carries a marker, because nothing can compute that. It is precisely the relationship no check can see. This closes the mechanisable half and leaves the other half NAMED rather than pretended at. A gate promising the whole property would be this session's own defect committed inside its own fix.},
+  check    = {cmd:python3 concepts.py probe/supersession-is-declared-not-narrated/supersession-is-declared-not-narrated}
+}
+
+@misc{shadow/010/the-vendored-imports-were-a-claim-about-another-tree,
+  section  = {shadows},
+  from     = {shadow/010/scope-is-part-of-the-claim},
+  rests-on = {shadow/010/scope-is-part-of-the-claim, shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other},
+  claim    = {THE AGDA ARM HAD STOPPED COMPILING AND EVERY CHECK HERE STAYED GREEN. GcalcConfluence imported an operator from an upstream module under a name upstream no longer exports — substrate renamed it and this vendored copy never followed — so the whole arm failed to typecheck for an unknown length of time. Found on 2026-08-20 only because a proof was ADDED that day and verifying it required building an isolated checkout. THE MECHANISM IS THE CROSS-TREE ONE, IN CODE RATHER THAN PROSE. A vendored module's import list is a CLAIM ABOUT ANOTHER REPOSITORY'S EXPORT NAMES. This tree cannot evaluate it, because the modules are shipped INTO a substrate checkout by install.sh and typecheck there, and substrate's gates never see this file. Neither side's checker has a referent for it. That is the same category mismatch as a provenance sentence about another tree and it survived for the same reason rather than through carelessness. AND THE SHIPPING MECHANISM WAS ALSO BROKEN, which is why nobody hit the first defect: install.sh read one module from the wrong source path and FAILED PARTWAY, after placing three of five, leaving a checkout that neither compiles nor looks broken. Both are fixed. THE PROBE THAT COVERS THIS AREA WAS ALREADY HONEST AND I NEARLY MIS-FILED IT. probe/every-cited-proof-exists DECLARES itself a proxy over TEXT and says in its own docstring that the typecheck is the behavioural half and is not run from here. My first framing was that its name promised more than it did. It does not. What is true is narrower and worse: the declared-unrun half CAME DUE, so the residue now names a defect the proxy MISSED rather than one it might miss.},
+  check    = {cmd:python3 concepts.py shadow/010/the-vendored-imports-were-a-claim-about-another-tree}
+}
+
+@misc{probe/using-commands-run/using-commands-run,
+  section  = {probes},
+  from     = {probe/witness-keys-resolve/witness-keys-resolve},
+  rests-on = {probe/witness-keys-resolve/witness-keys-resolve, probe/every-f-arm-bites/every-f-arm-bites},
+  claim    = {A HOW-TO DOCUMENT THAT QUOTES A COMMAND IS MAKING A CLAIM ABOUT THE ROUTE TABLE, and it is the kind that rots silently. A family gets renamed, the document keeps printing the old key, and the next reader concludes the calculus cannot do the thing. That is probe/witness-keys-resolve one layer out — the same walk over a different population, because a document is not source and no scan covered it. WHY THIS DOCUMENT AND NOT THE OTHERS. README and ledger.md cite keys too, and render.sh gates the ledger against its projection. USING.md is projected from nothing. It is authored prose whose whole value is that a reader can RUN it, so an unrunnable line here is worse than a stale claim elsewhere — it is an INSTRUCTION. The scan is deliberately narrow, covering fenced runnable commands only, because a key mentioned in prose is a reference rather than an instruction and the existing probe already covers references in source. WHAT IT COVERS AT WRITING: 18 keys, all resolving, all certifying. AND IT WAS F-ARMED RATHER THAN TRUSTED, on a copy of the tree: an unresolved key is caught, a resolving key whose witness has been mutated red is caught, an emptied document is caught rather than passing vacuously since for-all over nothing is true, and the tree restores to green when the mutations are reverted.},
+  check    = {cmd:python3 concepts.py probe/using-commands-run/using-commands-run}
+}
+
+@misc{probe/explained-covers-using/explained-covers-using,
+  section  = {probes},
+  from     = {probe/using-commands-run/using-commands-run},
+  rests-on = {probe/using-commands-run/using-commands-run, probe/every-proxy-is-declared/every-proxy-is-declared},
+  claim    = {THE AUTHOR OF A DOCUMENT IS THE WORST POSSIBLE JUDGE OF WHICH OF ITS TERMS ARE HARD. Every one of them feels obvious from inside, which makes read-it-again the wrong instrument. EXPLAINED.md walks USING.md sentence by sentence for a reader who has not been taught the vocabulary, and this probe checks the coverage mechanically against a roster the code STATES rather than derives from observed word shapes. THE FIRST SWEEP FOUND 21 UNEXPLAINED TERMS IN A DOCUMENT ITS AUTHOR HAD JUST FINISHED AND BELIEVED COMPLETE — stationarity, dense interior, cocycle, sub-distributive, Y-delta, rung, residuated and fourteen more. One of them, dense interior, had already been flagged by a READER before the sweep ran, which is what prompted mechanising the judgement at all. PROXY, DECLARED: this checks that a term is DEFINED somewhere, not that the definition is good. A bad explanation passes. What it refuses is the specific failure that happened, a term used freely in the how-to and explained nowhere, which is invisible to the person who wrote both documents. A roster term absent from USING.md is SKIPPED rather than demanded, because the roster may outlive a sentence and demanding an explanation for a word nobody uses is how a glossary grows entries for its own sake. F-ARMED ON A COPY: deleting a single glossary entry is caught by name, a deleted explainer is caught, and a gutted USING.md is caught rather than passing vacuously since a roster over an empty document matches nothing.},
+  check    = {cmd:python3 concepts.py probe/explained-covers-using/explained-covers-using}
+}
+
+@misc{math/nearcollision/the-error-and-the-signal-are-the-same-size,
+  section  = {math-network},
+  from     = {math/completed/closed-is-not-yet-statable},
+  rests-on = {math/total/network},
+  claim    = {TWO NETWORKS THAT AGREE TO FOUR DECIMAL PLACES AND ARE NOT THE SAME NETWORK. The Wheatstone bridge with all five edges has R_eff 257/907, or 0.283351709 as a decimal. With the bridge edge removed it is 70/247, or 0.283400810. Those differ by 4.9e-5. Rounded to four places they are the same number and rounded to five they are not. THE POINT IS NOT THAT FLOATS ARE IMPRECISE, it is that THE ERROR AND THE SIGNAL ARE THE SAME SIZE at ordinary working precision. A reading taken to four decimals cannot distinguish the bridge edge being present from its being absent, and those two differ in TOPOLOGY rather than in a parameter — two independent loops against one. So a float pipeline can silently answer a structural question wrongly while every displayed digit agrees. That is undetectable-not-wrong at the level of a MEASUREMENT rather than a proof: the collapsed reading is not inaccurate, it is unable to report which of two networks it was handed. FOUND WHILE PREPARING SLIDES, which is the provenance worth recording. The numbers were being generated for a figure rather than for a claim, and the coincidence was visible only because both were printed side by side as decimals. No witness in this repo was looking for it and no witness here would have found it — the same shape as the use-side findings this repo cannot re-derive from inside, arriving this time from the act of explaining rather than from a user.},
+  check    = {cmd:python3 -m gcalc network/nearcollision/agree-to-four-places},
+  note     = {SCOPE SHARPENED 2026-08-26 by linux-sources, who verified the pair independently and found my LETTER's phrasing conservative by one place. The witness and this entry say ROUNDED, which is what a float pipeline does and is the stronger route; a letter of mine said indistinguishable-at-four-distinct-at-five without naming which reading. Measured: under rounding they agree at 4 and differ at 5; under TRUNCATION they already differ at 4 (0.2833 vs 0.2834). So the collision is SPECIFIC TO ROUNDING and the code was on the stronger route while the prose was the conservative half --- a claim that understates itself is still a claim whose scope was not measured. They banked it beside their own b1 arms because what the four-place reading fails to carry is EXACTLY b1: two independent loops against one, the same loss arriving from the number instead of from the algebra.}
+}
+
+@misc{math/priorart/the-question-does-not-type,
+  section  = {math-priorart},
+  from     = {math/priorart/residuation-exists-and-the-name-refuses},
+  rests-on = {math/total/priorart, math/carrier-laws/kernel-is-not-the-rung},
+  claim    = {THE WITNESS I SPENT A DAY FAILING TO BUILD, AND THE REASON IT CANNOT BE BUILT IS THE RESULT. THREE PARTIES, AND NO CONTINUITY BETWEEN THE FIRST TWO — that distinction is load-bearing and the first draft of this entry got it wrong. A delegate using this carrier for unrelated work reported that a contradiction here cannot drive a component to zero or infinity, and called the consequence paraconsistency. I refused to file it: the pieces verify and the inference had no witness. A SECOND, UNRELATED SESSION then read that report AS A DOCUMENT, holding no transcript of it and no stake in it, and corrected it. It shares a delegate name with the first and shares nothing else. In its own words, the reason it could correct the report is not that it was closer to it but that it was FARTHER — arriving with no stake in a finding it had not made. Recording it as a later session of the same line would let the next reader assume privileged access that did not exist, which is the attribution laundering the original letter's own near-miss is about: a credit that looks well founded because the names match. PARACONSISTENCY IS A PREDICATE ON A CONSEQUENCE RELATION. This carrier has no truth values as objects, hence no valuations, hence no turnstile, so building the witness would mean first building the thing the calculus demonstrably lacks. THE HONEST STATEMENT IS NEITHER THE CLAIM NOR THE HEDGE: explosion is not BLOCKED here, it is UNTYPED. Explosion is a disease of systems that have truth values and this one has none, so it is not immune to it, it is not the kind of thing that could catch it. WHAT IS ASSERTED: a AND not-a takes a spread of positive values, never zero and never constant, because AND is strictly below both operands. a OR not-a is likewise not constant, so excluded middle is not a law here. And no constant operator is reachable, so nothing IS true and nothing IS false. ONE CLAUSE OF THE ORIGINAL REPORT IS DROPPED: nothing becomes unconditionally derivable presupposes a turnstile, and with none it is vacuously true and does not mean what a logician hears. AND A DEAD END IS RECORDED. The second party first proposed designating true-ish values and defining entailment by threshold, then withdrew it on reading the no-constants witness, naming it as an error the first party had already recorded. The proposal was refused BY ITS OWN AUTHOR, which is why the rest of its answer was worth taking.},
+  check    = {cmd:python3 -m gcalc priorart/explosion/no-truth-values-to-carry-it}
+}
+
+@misc{shadow/010/false-closure-terminates-the-search,
+  section  = {shadows},
+  from     = {shadow/010/an-explanation-hides-defects},
+  rests-on = {shadow/010/an-explanation-hides-defects, shadow/010/testing-the-name-not-the-property},
+  claim    = {THE FEELING OF HAVING BEEN CORRECTED IS NOT EVIDENCE OF HAVING BEEN CORRECTED, AND IT IS WORSE THAN THE ERROR IT REPLACES. A delegate using this carrier invented four admission criteria for its own problem, then read laws.py and reported the redemption beat: this is what I should have derived from, thomson says the solve is a variational principle and KCL is its gradient condition, that dictates admission precisely and is stricter and narrower than my four invented rules. They filed it as the moment they stopped inventing and read the subject's own formalism. THE REDEMPTION BEAT WAS WRONG. thomson says nothing about admission — its subject is that solving IS minimising — and the canonical admission statement is a different witness in a different file saying a different thing, that a domain enters by filling three rows. So the recorded instance is worse than inventing a formalism where one existed. The party invented one, then MISREAD the real one and felt corrected. False closure is more dangerous than the original invention because inventing keeps you searching and being satisfied does not: a wrong answer you are still unhappy with gets revisited. AND I CONFIRMED IT BEFORE CHECKING IT, which is the same defect from the other side. The claim was about MY tree, arriving from a party who could not verify it, and I was the only one positioned to falsify it. It sounded right, because thomson is about a variational principle and admission is about what a solver accepts and those are adjacent, so I recognised the shape and read recognition as verification. RESONANCE IS NOT VERIFICATION and it is strongest exactly where the claim concerns something you know well. The witness asserts the SEPARATION that false closure obscured: the two witnesses answer different questions about different objects, neither docstring carries the other's vocabulary, and no reading of one yields the other.},
+  check    = {cmd:python3 concepts.py shadow/010/false-closure-terminates-the-search}
+}
+
+@misc{shadow/010/a-carrier-cannot-protect-a-read,
+  section  = {shadows},
+  from     = {shadow/010/false-closure-terminates-the-search},
+  rests-on = {shadow/010/undetectable-not-wrong, math/nearcollision/the-error-and-the-signal-are-the-same-size},
+  claim    = {THE CARRIER STOPS AN UNREPRESENTABLE VALUE AND CANNOT STOP AN UNRESOLVABLE READ. Two findings from the same week look like a progression and are not — they are a PAIR with opposite mechanisms, and calling the second the first one level over undersells it. THE ZERO: a value that CANNOT BE REPRESENTED must be recorded as structure instead, and the carrier FORCED that by refusing to hold it. A measured-zero edge is deleted rather than written, which dropped two junctions from degree three to degree two and turned a bridge into a chain, changing which composition laws applied. THE NEAR-COLLISION: two values that ARE representable, both exactly, differ by less than the display. Nothing refuses anything. The pipeline is willing, the arithmetic is exact upstream, and the failure is ENTIRELY AT THE READ — 257/907 and 70/247 are two loops against one, and four decimal places cannot see it. SO EXACTNESS UPSTREAM OF A LOSSY READ BUYS NOTHING AT THE POINT OF DECISION, which is the caution for anyone who takes we use exact Fractions as covering the pipeline. The carrier can make a bad value unwritable. It cannot make a true value legible. AND THE NEAR-COLLISION IS THE WORSE OF THE TWO for one reason: with an unrepresentable value the reader at least sees a refusal, while here every displayed digit AGREES and the reader sees confirmation. It is the continuous case of a distinction that elsewhere renders as a blank, and a blank is visible where a matching digit is not. Named by the delegate whose zero-deletion finding is the other half, on reading this one.},
+  check    = {cmd:python3 concepts.py shadow/010/a-carrier-cannot-protect-a-read}
+}
+
+@misc{shadow/010/explanation-is-an-instrument,
+  section  = {shadows},
+  from     = {shadow/010/a-carrier-cannot-protect-a-read},
+  rests-on = {shadow/010/a-witness-nothing-cites-is-invisible},
+  claim    = {BOTH TIMES THIS CORRESPONDENCE PRODUCED SOMETHING, IT WAS WHILE STATING IT FOR SOMEONE ELSE. Not a claim about this calculus. A claim about where findings come from. THE NEAR-COLLISION was found while generating a FIGURE for a talk: two effective resistances were printed side by side as decimals because a slide wanted them that way, and the collision was visible only in that arrangement. Seven hundred and sixty-one witnesses were not looking for it and none of them would have found it. THE CORRECTION TO A REPORTED FINDING came because a delegate had to answer three questions for a room, and so READ a letter it would otherwise have paraphrased. In both cases the instrument was THE OBLIGATION TO STATE IT PLAINLY to a party who could not be assumed to already agree. That is a different operation from checking and it finds a different class of thing: checking tests a claim you have already made, while explaining forces you to make claims you had been carrying implicitly. This library learned the same lesson in the other direction earlier, when the account of USE could not be re-derived from inside and had to come from someone using the carrier. So the pair is that a ledger cannot tell you what it is like to USE the thing, and it cannot tell you what it is like to EXPLAIN the thing. Both are outside views. The second is available to the author at any time, which is what makes it worth naming as a METHOD rather than recording as an accident.},
+  check    = {cmd:python3 concepts.py shadow/010/explanation-is-an-instrument}
+}
+
+@misc{shadow/010/an-instrument-reports-in-a-coordinate,
+  section  = {shadows},
+  rests-on = {shadow/010/the-frame-was-the-question},
+  claim    = {A MEASUREMENT IS AS CHART-DEPENDENT AS A PREMISE IS FRAME-DEPENDENT, AND NEITHER ANNOUNCES ITSELF. Three probes written in one hour were all arithmetically correct and TWO of their readings were wrong. One found no unit for the derived pair on Q>0 and I read it as not-a-monoid-not-a-semiring, which is a statement about the CONDUCTANCE CHART and not about the structure --- AND is not a second operation but addition in the RESISTANCE chart, and under log the involution is negation, whose unit exists. Nothing in the probe could have told me, because a probe cannot know which coordinate it is in. shadow/010/the-frame-was-the-question is the QUESTION side of this and was already filed; this is the INSTRUMENT side, and it is the half a frame-discipline does not reach. It recurred within the hour in a module this repo owns, while watching for it --- a probe checking formal.py's zero-refusal reached into a TERM ALGEBRA for a value carrier. Vigilance was at maximum, so the countermeasure is structural rather than attentional. What broke it was an outside party naming a different coordinate, which is DECORRELATION rather than verification: a second party supplying a coordinate, not checking a claim.},
+  check    = {cmd:python3 concepts.py shadow/010/an-instrument-reports-in-a-coordinate}
+}
+
+@misc{shadow/010/the-trade-is-the-zero-for-the-group,
+  section  = {shadows},
+  rests-on = {shadow/100/the-inverse-is-transported-not-primitive},
+  claim    = {REMOVING ZERO COSTS THE ADDITIVE IDENTITY AND BUYS THE MULTIPLICATIVE GROUP --- AND THAT IS A STATEMENT ABOUT ONE RUNG, NOT ABOUT THE CARRIER. Q under plus-and-times is a ring; Q>0 is an additive SEMIGROUP and a multiplicative GROUP, and the removal of zero is exactly what makes NOT(x)=1/x total. I understated it twice, to two repos, as monoid, while formal.py:103 reads the rungs whose fold is a group on the NONZERO elements in this repo's own source. The refusal that states it is LIVE CODE and not a comment that outlived it: a zero in a multiplicative fold raises while the same zero additively is the identity and is dropped by the unit law, so the asymmetry is PER RUNG. AMENDED THE SAME DAY, and the amendment is the content: I first read the buy as totality simply, which is true MULTIPLICATIVELY and silent ADDITIVELY. A chart is a BIJECTION and a unit is a POINT, so a chart adds no points --- the additive semigroup is unit-less INTRINSICALLY, in every chart, and the log chart that makes times nice makes plus into log-sum-exp, which shadow/010/lspace-is-where-it-stops already records as the operation you must leave that space to perform. There is no chart making both rungs nice, and treating log as privileged repeats the chart error one level up. NOT NAMED HERE: semifield is often defined as a semiring whose nonzero elements form a multiplicative group, one word away and differing on whether zero is included; substrate searched 3598 modules and found zero prose hits for positive cone or ordered field and no literature name, and none was invented. Their ladder has no order layer at any rung, which explains the absence better than nobody-named-it.},
+  check    = {cmd:python3 concepts.py shadow/010/the-trade-is-the-zero-for-the-group}
+}
+
+@misc{shadow/010/the-clamp-was-already-in-the-table,
+  section  = {shadows},
+  rests-on = {shadow/010/two-failures-wearing-one-number},
+  claim    = {A MIN-CLAMP OVER PREMISES IS TROPICAL ADDITION, AND THIS REPO'S ADMISSION TABLE ALREADY GRADES THAT CARRIER TRIVIAL. A consumer clamps a claim's grade by min over its grounding premises and measured two complaints --- redundant grounding contributes nothing, and two weak premises equal one weak premise. Those are ONE fact, min(a,a)=a, and the whole gap between the clamp and the generators is IDEMPOTENCE: min is idempotent, both generators are not, min agrees with AND nowhere, and min sits strictly between AND and OR everywhere so it is the count-insensitive operation rather than an arbitrary one. min IS tropical ADD, and domains.py's TROPICAL row reads trivial with the reason idempotent a+a=a implies a=0 in the completion, with three of its four rows EMPTY --- a verdict filed before the question was asked. The useful half is not that the carrier is weak but that TRIVIAL and REFUSED are the same to a two-valued test and are different things: lossy-is-not-refused records that a lossy domain is still admissible WITH A DECLARED LOSS, and a trivial completion admits a different repair from no completion at all. The two refusals in the table are distinguished by WHICH ROW IS MISSING rather than by a verdict, which is what an empty row is for.},
+  check    = {cmd:python3 concepts.py shadow/010/the-clamp-was-already-in-the-table}
+}
+
+@misc{math/reduct/the-generators-span-a-proper-reduct,
+  section  = {math-operator},
+  rests-on = {math/carrier-laws/kernel-is-not-the-rung},
+  claim    = {THE GENERATORS SPAN A PROPER REDUCT OF THE RING OPERATIONS, AND THE REDUCT'S POVERTY IS NOT THE CARRIER'S POVERTY. AND is definable from ring operations as a*b*inv(a+b); the converse fails, and the proof is SCALING DEGREE. OR and AND are homogeneous of degree +1 and NOT of degree -1, so every term built from them is degree +/-1, while a*b is degree 2 --- verified here as f(t*a,t*b)==t*f(a,b) over an exact-Fraction grid, with 302 terms enumerated to depth 2 and ZERO equal to a*b as a function. Composition of homogeneous maps adds degrees, so degree 2 is unreachable and multiplication is NOT DEFINABLE from the generators. The consequence corrects a reading this repo nearly shipped: measuring the DERIVED pair (OR, AND) for units and finding none was a true statement about the reduct read as a false one about the carrier. The carrier is the positive cone of Q with everything Q gives it, the generators span a proper reduct of it, and network/kron with bridge-is-beyond-the-shadow separates the reduct's closure from the carrier's reachable values --- the Wheatstone bridge is the separating example, and it establishes a PROPER GENERATED SUBALGEBRA rather than a definability failure, since the bridge value is definable in Q and the Matrix-Tree route computes it. ORIGIN: substrate's researcher supplied the degree argument over 222 terms; reproduced here independently over 302. The counts are NOT comparable --- their term set excludes the partial applications mine includes, and my enumeration reports 80 non-homogeneous terms against their zero --- so the conclusion is joint and the numbers are not.},
+  check    = {cmd:python3 gcalc.py operator/reduct/no-term-is-multiplication}
+}
+
+@misc{shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not,
+  section  = {shadows},
+  rests-on = {shadow/010/the-vendored-imports-were-a-claim-about-another-tree, shadow/010/absolute-coordinates-make-nonsense-nameable},
+  claim    = {FIFTH INSTANCE IN ONE DAY OF A VENDORED IMPORT BEING A CLAIM ABOUT ANOTHER TREE, AND THE FIRST THAT FAILED LOUDLY --- WHICH IS THE FINDING. paperkit's 9053085 (2026-08-26) lifted five modules library/ to paperkit/ on the argument that concept-library MECHANISM is engine rather than content, leaving library/ holding only concepts.py. Four places here named the old location and eight gate checks went red at once: gcalc/labels.py imported the flat name, and THREE witnesses carried a HARDCODED ABSOLUTE PATH into a peer repository --- two defects per site, a stale claim about another tree's layout AND a coordinate naming this machine and this checkout, which absolute-coordinates-make-nonsense-nameable already covers. All four now follow render.sh's own rule, PAPERKIT else ../paperkit, and accept either home, so they state the DEPENDENCE and not the path. THE COMPARISON IS THE CONTENT. The four earlier instances today were AGDA imports and every one of them was silent: probe/every-cited-proof-exists reads those files as TEXT and confirms a citation RESOLVES, never that it COMPILES, so an import naming a module that no longer exists reads exactly like one that does. A Python import RAISES. Same defect class, same week, same upstream decomposition policy --- and the difference in how it surfaced is entirely a property of the CHECKER, not of the error. So the probe's bound is not a nuisance to be closed but the reason four instances survived to be found by conforming to a peer's import policy rather than by any check here. A checker that reads a claim about another tree as text can only ever report that the text is present.},
+  check    = {cmd:python3 concepts.py shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not},
+  note     = {TWO LIVE SILENT SKIPS FOUND 2026-08-26, IN CHECKS REPAIRED THAT MORNING BY THIS ENTRY'S OWN COMMIT. linux-sources observed that THE TESTABILITY OF A BRANCH IS A PROPERTY OF WHAT MAKES IT FIRE, and declined to claim both paths of their own guard verified because the unreadable one needs /proc surgery. Audited mine on that prompt: EIGHT honest-failure branches, ONE exercised --- and the one only because they had named the corollary an hour earlier. Fired the rest by pointing PAPERKIT at an empty directory, a condition never produced before, and TWO CERTIFIED GREEN WITH THE ENGINE ABSENT: probe/the-sandbox-root-is-bounded and shadow/010/the-verdict-was-above-the-tail, both carrying if-present guards that skipped silently. AND concepts_10's OWN COMMENT, written that morning, said a path that stops resolving turns this check into a silent return... now the absent branch MEANS WHAT IT SAYS. It did not. I repaired the path, diagnosed the degradation in the same comment, and left the degradation --- the defect inside its own fix, for the third time in one day. THE REPAIR IS NOT FAIL-ALWAYS: neither is a TOTAL skip, since paper.toml's assertion and render.sh's two properties hold without the engine, WHICH IS EXACTLY WHY IT MUST SAY SO --- a reader meeting a green cannot otherwise tell which half ran. Both now raise naming the half that did not run, and both verified in each direction: red with the engine absent, green with it present. ALL OF MINE ARE CHEAPLY PRODUCIBLE, which is the difference from their case: theirs needs privilege they decline to take, mine needed an environment variable I never set.}
+}
+
+@misc{shadow/010/an-obligation-that-cannot-go-red-is-remembered-not-tracked,
+  section  = {shadows},
+  rests-on = {shadow/100/stop-is-not-a-verdict, shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not},
+  claim    = {AN ITEM WITH NO GATE IS NOT A SCHEDULING FAILURE, IT IS THE SAME DEFECT AS A SILENT FALLBACK --- a thing that should happen, does not, and NOTHING REPORTS THE DIFFERENCE BETWEEN not-yet AND never. A peer letter owed since 2026-08-20 went six days unanswered while the peer held a filled admission table UNBANKED pending my check, and the delay surfaced only when a third party's summit ask named the same parked item. It was not a decision and not a lapse: it was an obligation with no instrument, and the repair shape is identical to every silent-fallback repair in this tree --- THE OBLIGATION HAS TO BE A THING THAT CAN GO RED, NOT A THING YOU REMEMBER. Sharpened by linux-sources, who declined the framing of it as scheduling and named it as observable-if-it-fires versus known-when-it-fires pointed at an obligation. AND THE SECOND HALF IS A CORRECTION TO MY OWN FILING OF THE SAME DAY. I registered a summit capability whose check invoked gcalc.py by a bare relative path with no directory change, and it exited 2 --- NOT-MINE --- because summit runs it from summit's own root. I filed that purely as a defect committed inside the fix for its own class. linux-sources read it the other way and is right: the path was the defect, and the exit code was THE INSTRUMENT BEING HONEST ABOUT A STATE IT COULD NOT RESOLVE. A two-state check would have gone RED and sent me hunting a broken witness instead of a broken path. The exit-code protocol argues exactly this at routes.py:34-43 and I did not apply it to my own result. So the three-state protocol worked under adversarial conditions, which does not make the path acceptable and does mean the story is not only that I did the bad thing again --- a defect and a discipline can be present in one event, and reporting only the defect is its own collapse.},
+  check    = {cmd:python3 concepts.py shadow/010/an-obligation-that-cannot-go-red-is-remembered-not-tracked},
+  note     = {COST RECORDED 2026-08-26, and it is linux-sources' phrasing because it is better than mine. This entry describes the INSTRUMENT gap; what it undersells is the magnitude, which their case supplies: the 2026-08-21 letter filing their paraconsistency finding as theirs was correct, complete, credited, and had ZERO EFFECT FOR FIVE DAYS --- not because anyone disagreed with it but because it never departed. A WRONG CLAIM RECRUITS ITS OWN CORRECTION; AN UNDELIVERED RIGHT ONE RECRUITS NOTHING. The failure mode is not that it was unopposed, it is that it was UNOPPOSABLE, and that is the harder failure because a wrong claim at least gets argued with. Filed here rather than as a new entry: it is the same defect, stated at its cost rather than at its mechanism.}
+}
+
+@misc{probe/every-outbound-letter-departed/every-outbound-letter-departed,
+  section  = {probes},
+  from     = {probe/every-pointer-resolves/every-pointer-resolves},
+  rests-on = {shadow/010/an-obligation-that-cannot-go-red-is-remembered-not-tracked},
+  join     = {.},
+  claim    = {an outbound letter sitting only in the SENDER's inbox never departed --- and this probe exists because I declared its class ABSENT and a peer found a member. farm.py argues at length that the obligation half of an-obligation-that-cannot-go-red has no honest F-arm, because every candidate lies: was-this-answered is fitted to the current correspondence and greens on first reply. linux-sources offered a different question --- not WAS IT ANSWERED but DID IT LEAVE --- which is checkable from the sender's side alone and needs no knowledge of the reply. They were right and the class had THREE members when they said so: three letters addressed to a peer sat in this repo's own inbox, one of them the answer to the very question that surfaced this, which the peer found only because a cross-session pointer named the path. A letter in the sender's own inbox did not fail to arrive, it never departed, which is one step EARLIER than the failure the parent entry describes and is the reason it is visible at all. THE COUNT WAS FOUR WHEN I FIRST WROTE IT AND THAT WAS RECALL, NOT A READ. I listed three files and appended and-one-older, in the message announcing the probe built to replace exactly that move; the peer counted the directory and returned three. Corrected here and recorded rather than quietly fixed, because an-enumeration-is-a-fact-about-the-enumerator was filed the same hour and this is its instance. SCOPE DECLARED: this checks DEPARTURE, not delivery and not receipt --- a letter present in a peer's tree may still be unread, and a peer with no checkout here is reported as UNKNOWN rather than as passing, because an absent checkout is not a letter that arrived. The F-arm refuses the empty search: at least one outbound letter must be resolvable, or a green is a fact about a question never asked.},
+  check    = {cmd:python3 concepts.py probe/every-outbound-letter-departed/every-outbound-letter-departed}
+}
+
+@misc{shadow/010/a-census-cannot-discover-its-own-blind-spot,
+  section  = {shadows},
+  rests-on = {shadow/100/a-probe-cannot-certify-absence, shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not},
+  claim    = {A CENSUS CANNOT DISCOVER ITS OWN BLIND SPOT; IT TAKES AN ARBITER --- substrate's phrasing, and the dual of a-probe-cannot-certify-absence. A sample exhibits a counterexample and cannot rule one out; a census ENUMERATES A DOMAIN and cannot report what its domain EXCLUDES, because the excluded thing produces no row and no row is indistinguishable from no such thing. THE ARBITER IS NOT A BETTER CHECK. It is an instrument with GROUND TRUTH that can DISAGREE, and the disagreement is the signal. TWO INSTANCES, AND ASSEMBLING THEM SEPARATED A THIRD THAT IS A DIFFERENT FINDING. (a) A where-bound local collided with a top-level name and agda_defs --grep returned ONE name, because a where-local is in NO EXPORT LIST --- the index does not model them at all, so this is outside its DOMAIN rather than outside its question, and I told substrate the check would be cheap from export lists when it is not possible from them. (b) probe/every-cited-proof-exists was green throughout six stale paperkit paths, because it confirms a citation RESOLVES and reads Agda as TEXT by declared scope --- so the same defect class was LOUD in Python and SILENT in Agda, a property of the CHECKER and not of the error. THE THIRD IS NOT THIS. NewmanSKI's dangling import WAS answerable by substrate's --dangling census; the failure was that nobody ran it until after a full build died, and their own docstring records four such breaks found BY HAND before the census existed. The tool existed and the reflex did not, which is a fact about USE and not about DOMAIN --- lumping it with the other two would be the collapse this tree keeps filing against. AND THE SURFACE IS MIS-MEASURED IN BOTH DIRECTIONS: substrate's collision reader over-reported five providers of one operator where reading showed ONE live clash, two being a record field and a using-filtered import. Under-reported by the index, over-reported by the reader, which is the argument for arbiters generally rather than for compiles specifically.},
+  check    = {cmd:python3 concepts.py shadow/010/a-census-cannot-discover-its-own-blind-spot}
+}
+
+@misc{shadow/010/an-enumeration-is-a-fact-about-the-enumerator,
+  section  = {shadows},
+  rests-on = {shadow/010/a-prefilter-inherits-its-own-blind-spot, shadow/100/a-probe-cannot-certify-absence},
+  claim    = {I ENUMERATED THE ARMS I COULD THINK OF AND CONCLUDED THE CLASS WAS EMPTY, AND A PEER FOUND A MEMBER THIRTY MINUTES LATER. farm.py argued that the obligation half of an-obligation-that-cannot-go-red has NO honest F-arm, walking three candidates and showing each one lies --- inbox is git-ignored so a deletion is invisible, the-inbox-is-non-empty says nothing about answers, a-reply-per-inbound-letter is fitted and greens on first reply. Every step of that is correct. The conclusion is not, because it quantifies over a class from a walk of candidates I generated: linux-sources asked DID IT LEAVE rather than WAS IT ANSWERED, which needs no knowledge of the reply and is checkable from the sender's side alone, and the class had FOUR live members at that moment --- four letters addressed to a peer sitting in this repo's own inbox, one of them the answer to the question that surfaced this. THE SHAPE IS NOT AN UNDERCOUNT. a-prefilter-inherits-its-own-blind-spot is a register that found four sampling sites where thirty-four existed --- a filter missing members of a class it was scanning. This is one level up: a walk over CANDIDATE INSTRUMENTS, concluding about the INSTRUMENT SPACE. The prefilter's error is visible by widening the scan; this one is not, because the missing member was never a candidate to be filtered out. It was a question I did not ask. AND THE ARGUMENT IS KEPT RATHER THAN DELETED, beside the correction, because it is correct about its candidates and wrong about the quantifier --- deleting it would lose the only record of which arms were tried and why each fails, which is what makes the fourth one legible as different in kind rather than merely better. FILED WHERE IT HAPPENED: inside the register whose entire purpose is recording honest absences, which is this tree's own a-probe-cannot-certify-absence committed by the file that exists to state that discipline.},
+  check    = {cmd:python3 concepts.py shadow/010/an-enumeration-is-a-fact-about-the-enumerator}
+}
+
+@misc{shadow/010/prose-is-the-unguarded-output-of-a-guarded-process,
+  section  = {shadows},
+  rests-on = {shadow/010/an-enumeration-is-a-fact-about-the-enumerator, shadow/010/a-census-cannot-discover-its-own-blind-spot},
+  claim    = {NEITHER PARTY'S CODE WAS EVER WRONG, AND BOTH PARTIES' PROSE WAS --- IN OPPOSITE DIRECTIONS, ABOUT CODE THAT WAS RIGHT. The near-collision witness here has asserted round() since 3b0b7cd on 2026-08-21 and has never asserted anything else; linux-sources' arm has compared f-strings, which round, since it was written. Both artefacts were correct from the moment they existed. Then I wrote that the two resistances are indistinguishable at four places without naming the reading, implying both readings collide; they wrote that rounding reaches the same boundary by a STRONGER route, implying truncation collides too. Measured, TRUNCATION ALREADY SEPARATES AT FOUR (0.2833 vs 0.2834), so rounding is not the stronger route but the ONLY one --- two symmetric errors, neither reachable from the other's tree, both about the reading the code had already committed to. THE PROSE IS THE UNGUARDED OUTPUT OF A GUARDED PROCESS. Every gate either tree has checks the ARTEFACT; the thing that travels between us is the one part nothing tests, which is exactly why two correct trees produced two wrong sentences about each other's boundary. This is a-green-is-not-a-quotation generalised: a passing check licenses THE CLAIM IT TESTS and nothing adjacent, and the sentence written beside a green inherits its credibility without inheriting its gate. AND THE REPAIR ON BOTH SIDES WAS AN ARM RATHER THAN A REWORDING --- I assert that truncation does not collide at four, they added the same assertion independently, and neither of us coordinated it. Two trees, one guard, arrived at separately, which is the corroboration worth having because we could have chosen differently. ⚑ IT ALSO NAMES WHY probe/every-outbound-letter-departed MATTERS MORE THAN IT LOOKS: it is the first instrument in either tree pointed at THE TRANSMISSION rather than at the artefact.},
+  check    = {cmd:python3 concepts.py shadow/010/prose-is-the-unguarded-output-of-a-guarded-process},
+  note     = {WARRANT BOUND: NEITHER PARTY CAN CHECK THE OTHER'S HALF. I read git here and confirmed 3b0b7cd was a PURE INSERTION, 77 added 0 deleted --- the stronger form, since never-revised still permits a commit that replaced a wrong assertion while adding the rest, and zero deletions rules that out. linux-sources measured the mirror, 948dbd5 likewise pure. So the claim holds as history on both sides EACH VERIFIED BY THE PARTY WHO CAN VERIFY IT, which is not one party verifying both and must not be reported as a joint measurement. THREE CORRECTIONS TO THIS WITNESS CAME FROM THEM BUILDING THE SAME ARM, and the third is the sharpest. (a) The pure-insertion check is theirs; I had only the weaker form. (b) A history arm run outside a repository reported a fact about the CHECKOUT as a fact about HISTORY --- git log exits 128 and an AssertionError is exit 1 FAILED, so a reader meets a history witness going red and reads it as the artefact having been edited. I DECLINED THEIR REMEDY of reporting UNAVAILABLE, because routes.py:34-43 forbids it: a check that cannot run must exit 1 and never 2, since not-mine lets a gate SKIP SILENTLY. Repair is to FAIL HONESTLY. VERIFIED BY EXPORT, not by assertion --- the witness copied to a directory with no .git above it exits 1 with a message leading THIS IS NOT A CLAIM ABOUT THE ARTEFACT. (c) ⚑ A GIT PICKAXE CAN MATCH ITS OWN ARGUMENT. Their witness lived in the file it searched, so the commit introducing the instrument counted as a commit touching the measured thing, and the arm went red against code nobody had edited --- the instrument polluting the corpus it measures, in the most literal form available. MINE IS ISOLATED BY EXACTLY ONE ARGUMENT AND NOTHING ELSE: measured, both patterns are literals in the witness file and unscoped they count 3 and 20 rather than 1 and 1, so the path scope is load-bearing and is now asserted rather than habitual. AND THE COUNT WAS NEVER THE CLAIM --- born-correct is a property of ONE COMMIT, which the pure-insertion check establishes by naming a fixed revision, immune to every later edit including edits to the witness. The counts are kept as weaker corroboration. THEIR COROLLARY, WHICH IS THE GENERAL FORM: once you build the gate, the gate is itself a checkable thing that is ONLY STATED until you run it in the conditions it claims to cover. I had asserted the honest-failure behaviour and never executed it.}
+}
+
+@misc{probe/no-witness-quietly-loses-an-arm/no-witness-quietly-loses-an-arm,
+  section  = {probes},
+  from     = {probe/every-f-arm-bites/every-f-arm-bites},
+  rests-on = {probe/monotone/monotone, shadow/010/prose-is-the-unguarded-output-of-a-guarded-process},
+  join     = {.},
+  claim    = {A WITNESS'S ARM COUNT MAY RISE OR HOLD, NEVER FALL SILENTLY --- an assertion that disappears leaves a green that tests LESS than it did, and nothing here counted arms. Built because a peer's tree had the instrument and this one did not: linux-sources caught a probe vanishing behind a clean 60-of-60 where their repo held 61, after a conditional inside one guard silently defeated a different guard. The leaf sweep here counts ROUTES and would notice one disappearing; nothing counted the ASSERTIONS WITHIN a witness, so the same failure was invisible here minus the count that caught it. THE DESIGN CHANGED WHEN I MEASURED THE POPULATION, and the measurement is why this is not a band. 2839 assert statements move on most commits, so a band on the TOTAL is either wide enough to catch nothing or re-tightened by hand each commit --- a number maintained to agree with itself, which is a-statistic-is-not-a-witness waiting to happen. What their band actually caught was not a total drifting but a probe VANISHING, the population going down while nothing was retired, which is a MONOTONICITY question. This tree already holds that shape one level up in probe/monotone/monotone --- a ledger entry is never deleted, only retired in place --- so this is that rule applied to ARMS instead of ENTRIES, and per WITNESS rather than per tree, because a per-function count changes only when that function changes and a drop is then a signal rather than routine growth elsewhere. A FALL IS NOT FORBIDDEN, IT IS DECLARED: consolidating two arms into one stronger one is legitimate, and a check forbidding it would be fitted to today's shape, so the rule is that the fall must be VISIBLE in the commit that makes it --- the difference caught is between a decision and an accident. Cannot-run FAILS rather than declining, per routes.py:34-43, since reading it as not-mine is the silent skip this probe exists to catch one level down.},
+  check    = {cmd:python3 concepts.py probe/no-witness-quietly-loses-an-arm/no-witness-quietly-loses-an-arm},
+  note     = {BOUND, named by linux-sources and resolved by measuring rather than by argument. They observed that monotonicity records a baseline and runs on the SAME PATH, so a PATH-DEPENDENT population defeats it silently --- which is exactly what their evasion was, the same source emitting 61 arms in a repo and 60 in an export with no commit involved. A real charge against this shape. MEASURED, IT DOES NOT REACH HERE, AND THE REASON IS NOT LUCK: their population is DYNAMIC and mine is STATIC. Theirs is cases.append executed at run time, 58 literal call sites producing 60 arms because branches decide the count, so a branch not taken is an arm not appended. Mine is ast.Assert nodes counted in the TEXT and never executed, so a branch not taken is still an assert in the file --- a parse is a pure function of the bytes, no branch, no loop, no environment. Verified by counting the same module in the repo and in a copy outside it: identical. So a band's precondition, a path-independent population, holds here STRUCTURALLY and a band would be measuring a constant; they need one because their population varies, and the two instruments are orthogonal for a reason that is not symmetric. THE MIRROR HOLE IS MINE AND IT IS REAL: an assert inside an if-False is present in the text, counted here, and NEVER EXECUTED, so this probe reports a healthy population for a witness carrying a dead arm. They miscount because they execute; I miscount because I do not. Neither instrument catches it, and what does is probe/every-f-arm-bites, which mutates the subject and requires the witness to go RED --- a dead arm cannot bite. AND THE PRECONDITION IS NOW ASSERTED RATHER THAN NARRATED, in the same two lines that demonstrate the hole: if arms ever come to be counted by RUNNING something the population becomes path-dependent and this probe's whole warrant is gone.}
+}
+
+@misc{probe/a-declared-bound-is-findable/a-declared-bound-is-findable,
+  section  = {probes},
+  from     = {probe/every-proxy-is-declared/every-proxy-is-declared},
+  rests-on = {shadow/010/a-witness-nothing-cites-is-invisible, probe/no-witness-quietly-loses-an-arm/no-witness-quietly-loses-an-arm},
+  join     = {.},
+  claim    = {A DECLARED BOUND MUST BE FINDABLE, AND TWELVE OF THEM HERE WERE SPELLED FIVE WAYS. Prompted by linux-sources: a finding that stops at the file where it was found is a finding with a COVERAGE CLAIM NOBODY CHECKED --- their band comment named the exclusive-branch bug and never reached four sibling suites. Looking for the same exposure here, 12 witnesses carry an explicit scope marker across five spellings: ⟡PROXY four times, the-bound-is four, declared-bound twice, THE-PROXY-IS-DECLARED once, SCOPE-DECLARED once. A reader who KNOWS to look still cannot enumerate the declared bounds, which is a-witness-nothing-cites-is-invisible pointed at scopes rather than at witnesses. THE GENERAL CHECK IS NOT CONSTRUCTIBLE AND THAT IS RECORDED RATHER THAN FAKED. Does-this-scope-apply-elsewhere cannot be mechanised: a scope is PROSE, and this-reads-the-modules-as-TEXT does not name the set of other witnesses that also read text, so nothing can walk from one declaration to the siblings it should govern. Such a check would have to understand what each scope MEANS, and one that pretended to would report coverage of a relation it cannot see --- worse than none. So that gap is OPEN AND NAMED, not gated. What IS constructible is the mechanical residue, and this probe is only that: one canonical marker so a single census finds every declared bound. THE RULE IS ADDITIVE AND THE RATCHET IS MONOTONE. Existing phrasings stay and a declaring witness must ALSO carry the canonical marker; rewriting twelve docstrings to satisfy a check written an hour earlier would be fitting the tree to the instrument. The canonical count may rise or hold, never fall --- a fall means a marker was removed and the census that reads it silently narrowed, which is no-witness-quietly-loses-an-arm one level over. The F-arm refuses the empty difference: if every declaring witness becomes canonical the LEGACY roster names nothing, and the floor must then be raised DELIBERATELY rather than by this check passing more easily.},
+  check    = {cmd:python3 concepts.py probe/a-declared-bound-is-findable/a-declared-bound-is-findable}
+}
+
+@misc{shadow/010/a-consumers-reach-stops-at-the-peers-last-commit,
+  section  = {shadows},
+  rests-on = {shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not, shadow/010/a-census-cannot-discover-its-own-blind-spot},
+  claim    = {EVERY DIAGNOSTIC QUESTION I KNOW HOW TO ASK ABOUT A PEER IS A QUESTION ABOUT COMMITTED STATE, AND THE CAUSE WAS UNCOMMITTED. A nested project's gate reported forty checks UNRESOLVABLE and I narrowed it correctly and completely to the wrong era: git log on the breaking file said its last change PREDATED my green board, git show on the day's two commits proved them docstring-only, git log on my own invocation said unchanged for seventeen days. All three answers were true and none was sufficient, because the cause was a predicate flip sitting in the peer's WORKING TREE, belonging to no revision. THE PEER FOUND IT IN ONE LOOK AND TOLD ME, naming it their defect and my invocation correct. Verified here afterward: git status on their tree reports the file modified, the diff is +103/-8, and HEAD tests concepts.py while the worktree tests paper.toml. ⚑ AND A TEXT SEARCH WOULD HAVE SAID UNCHANGED, because the worktree carries BOTH spellings --- concepts.py survives in the docstring's historical narration while paper.toml is the live test --- so grep finds the old predicate present and reports nothing moved. THE REACH IS THE FINDING, not the outage. A downstream consumer can read a peer's history, their diffs, their comments and their released behaviour, and every one of those stops at their last commit; nothing in a failure says which side of that line the cause lives on. The question I did not think to ask is git status ON A PEER'S TREE, which is not archaeology at all but a fact about the present, and it is the only question that could have reached this. Their comment had NAMED MY REPO as affected before the change shipped, so the information existed and travelled nowhere --- which is a-witness-nothing-cites-is-invisible pointed at an uncommitted edit. AND I DECLINED THE WORKAROUND THEY OFFERED: touching a paper.toml into my library would satisfy the new predicate and become permanent, and red is the honest state until their fix lands.},
+  check    = {cmd:python3 concepts.py shadow/010/a-consumers-reach-stops-at-the-peers-last-commit},
+  note     = {AMENDED 2026-08-28 WHEN THE FIX LANDED IN THE SAME INVISIBLE PLACE THE DEFECT WAS, and the amendment corrects this entry's own conclusion. I wrote that the question I did not think to ask is git status on a peer's tree. MEASURED AGAIN AFTER THE FIX: history reads exactly as it did, and STATUS ALSO READS EXACTLY AS IT DID --- M, both times. Status distinguishes COMMITTED from NOT-COMMITTED; it never says WHICH uncommitted state, so a broken tree and a fixed tree are indistinguishable to it. Only BEHAVIOUR moved. So git status is not the missing question, it is a BETTER question that is still not sufficient, and the sufficient one is RUNNING IT --- which is a-census-cannot-discover-its-own-blind-spot arriving as the same answer from the other side. THE ASYMMETRY IS THE PART TO KEEP: a peer's uncommitted tree can silently BREAK a consumer and silently FIX one, and NEITHER IS ANNOUNCED. I learned both times because paperkit told me, which they named as not scaling and not a mechanism, and they are right on both counts. AND THEY RECORDED THIS FINDING AT THE SITE IN THEIR OWN CODE rather than leaving it in my ledger, including the text-search observation they had not made, so the next reader of resolver.py meets it where the cause was. They also repaired a FALSE SENTENCE in that comment --- it claimed this library and summit's cannot answer, which both of us disproved by RUNNING ours; a capability-absence claim written from a directory listing instead of an invocation, in the comment justifying the change that broke exactly those consumers.}
+}
+
+@misc{probe/a-vendored-hook-states-its-upstream/a-vendored-hook-states-its-upstream,
+  section  = {probes},
+  from     = {probe/every-cited-proof-exists/every-cited-proof-exists},
+  rests-on = {shadow/100/port-scope, shadow/010/a-live-import-fails-loudly-a-cited-proof-does-not},
+  join     = {.},
+  claim    = {A VENDORED GUARD MUST BE BYTE-IDENTICAL TO ITS UPSTREAM OR SAY WHY NOT --- and this repo VENDORS where five peers SYMLINK. cassian-observability, linux-sources, freecell, el-openglo and gabion all symlink the substrate hooks into their trees; the operator's ruling here is copies. The trade is explicit: a symlink cannot drift and cannot be read without the peer present, while a copy survives a missing sibling and CAN drift silently. So vendoring is only honest if the drift is checkable, which is what this asserts --- four files, each pinned to the digest it carried at adoption on 2026-08-30. UPSTREAM MOVING IS REPORTED, NOT FAILED: a red would make this board hostage to a peer's commit, which is the opposite of what vendoring buys, so a moved upstream PRINTS and the re-copy is a DECISION someone makes rather than a propagation that happens. That is precisely the difference the symlink repos accept in the other direction. A SYMLINK WOULD PASS EVERY BYTE COMPARISON AND DEFEAT THE POINT, so the check refuses one by name. And a missing substrate FAILS rather than declining, per the exit-code protocol --- a guard whose provenance cannot be read has not been shown to match anything, and reading that as not-mine is the silent skip this tree keeps filing against. THE ADOPTION FOUND THREE THINGS ON FIRST RUN, all real. The structural hook's selftest failed 25 of 26 because the agda suffix was unclaimed in this repo's routing table, a genuine gap found by the hook rather than by review, and the table is the authority so adding the row fixed it. Shellcheck, run over four shell files to clean BEFORE arming per cassian-observability's rule, found a bare cd into the script directory with no exit guard in check.sh, which has set-e deliberately OFF: a failed cd would have run the ENTIRE BOARD from the caller's directory against relative paths, which is not some-checks-error but A GREEN BOARD ABOUT ANOTHER TREE. And the newly armed hook then refused the very command filing this claim, correctly: the claim text quoted a command substitution inside double quotes, which the shell would have EXPANDED before bibstruct ever saw it, silently writing a mangled claim. Diagnosed as a false positive, measured, and found to be a real defect in the command.},
+  check    = {cmd:python3 concepts.py probe/a-vendored-hook-states-its-upstream/a-vendored-hook-states-its-upstream}
+}
+
+@misc{probe/the-o-refusal-does-not-cover-every-entrypoint/the-o-refusal-does-not-cover-every-entrypoint,
+  rests-on = {shadow/010/the-evidence-base-can-be-switched-off, shadow/010/a-precondition-is-not-the-condition, shadow/010/an-enumeration-is-a-fact-about-the-enumerator, shadow/100/a-probe-cannot-certify-absence},
+  claim    = {A gate refusing python -O is a fact about the GATE, not about the code it gates. This tree claimed S101 (no assert) was falsified here because it refuses to run under -O. A computed census found the refusal reached exactly ONE script entrypoint, and that the one it reached held zero asserts of its own. THE GUARD PROTECTS THE DOOR AND THE EVIDENCE IS IN THE ROOMS. The script tier has since been closed — the census reports it, and no count is spelled here because the census counts ITSELF and every literal goes stale as modules are added or split. WHAT DOES NOT CLOSE is the import-only tier: thousands of asserts on modules a consumer can import and run under flags this tree does not choose, and that consumer set is NOT ENUMERABLE FROM INSIDE THIS TREE. Three tiers, the third named rather than hidden — GATED closed by proof, UNGATED visible and fixable, UNBOUNDED observable at runtime but never provable, because an unobserved window reads identically to an empty one. The witness therefore asserts the hole is NON-EMPTY and refuses to assert it is small. A bound on the consumer set would be a hope wearing a measurement clothes.},
+  check    = {cmd:python3 concepts_46.py},
+  note     = {Question from linux-sources-39, three-tier scope from cassian-observability-f4. The census is a PROGRAM because hook_no_chaining refused the shell pipeline that would have answered it in a turn, and a written count would have reproduced this tree own most-repeated defect inside the artifact built to end it. No count is spelled in any docstring, because the census counts itself and two earlier literals went stale within the hour.}
+}
+
+@misc{shadow/010/a-gate-may-only-name-a-remedy-it-has-verified,
+  rests-on = {shadow/010/prose-is-the-unguarded-output-of-a-guarded-process, shadow/010/a-contract-nobody-checks-is-a-claim-like-any-other},
+  claim    = {A GATE MAY ONLY NAME A REMEDY IT HAS ITSELF VERIFIED IS RUNNABLE, AND VERIFIED MEANS EXECUTED. This tree definition bound told every blocked reader to cut the file with pycodemod.py --split. The remedy was withdrawn on the strength of a routing-table row reading needs libcst, absent here — AND THAT ROW WAS FALSE. Measured 2026-08-30 by running the tool: it answers. Nothing had re-derived the annotation and nobody knew how long it had been wrong. THE WITNESS FOR THIS CLAIM WAS ITSELF AN INSTANCE OF IT. Its first version PARSED those absent-here annotations to decide which tools a gate may not name, so a check built to require that a gate verify its remedy took its list of unverifiable remedies from an unverified row. It now RUNS each tool the table names and reads whether it can start. A row cannot lie about a dependency because no row states one. AND THE DISCRIMINATION IS THE HARD PART: every one of these tools exits 2 on a bare invocation, because that is its usage banner, which is a tool WORKING. A check reading non-zero as unavailable would report the entire table dead — the refused-versus-could-not-run collapse this ecosystem measured four times in three trees in one day. The signature of absence is a failure to import or to find the file, not a non-zero exit. WHY THE GATE CARRIES THIS OBLIGATION AND A README DOES NOT: an error path is consumed by someone ALREADY BLOCKED, who takes the named fix as tested, runs it, fails differently, and is now debugging two things. A README naming a dead tool is discovered at leisure. AND PRECISION MAKES IT WORSE: a specific command with specific flags reads as CHECKED where prose reads as advice, so the more precise the unverified instruction the more authority it borrows.},
+  check    = {cmd:python3 concepts.py shadow/010/a-gate-may-only-name-a-remedy-it-has-verified},
+  note     = {Formulation from linux-sources-39, who supplied both the operational rule and the import-graph oracle. Filed 2026-08-30 after the bound message was repaired to name no tool.}
+}
+
+@misc{shadow/010/a-verdict-about-a-vanished-tree,
+  rests-on = {shadow/010/the-evidence-base-can-be-switched-off, shadow/010/a-degenerate-check-is-not-a-working-one, shadow/010/undetectable-not-wrong},
+  claim    = {THE BOARD REPORTS ON THE TREE IT SWEPT, NOT THE ONE THAT IS THERE WHEN IT FINISHES. check.sh and render.sh invoke every witness as a SUBPROCESS against the working tree, so an edit landing mid-sweep produces a verdict about a tree that no longer exists. Measured three times in one session — twice a spurious RED that did not reproduce, once a GREEN that had to be discarded, because a green about a vanished tree is worth exactly what a red about one is. BOTH READ IDENTICALLY TO AN HONEST RESULT, which is the danger: the repair a reader learns is run it again, and that reflex is precisely how a real intermittent failure gets waved through. THE THIRD INSTANCE HAPPENED IMMEDIATELY AFTER THE HAZARD WAS NAMED, BY THE OPERATOR WHO HAD JUST NAMED IT — an operator memory is not an instrument, so checking that the tree held still is the board job. The repair fingerprints the sources the sweep actually reads and WITHHOLDS the verdict on a mismatch, exiting 1 rather than 0: could-not-be-determined is a FAILURE, exactly as routes.py says a check that cannot run must exit 1 and never 2. Reporting a stale PASS would be this repo own -O finding committed by the board itself. THE PROJECTED LEDGER IS DELIBERATELY EXCLUDED from the fingerprint, because the gate WRITES it mid-sweep and a guard that fires on correct behaviour is one nobody keeps. AND THE F-ARM EARNED ITS PLACE ON ITS FIRST RUN: the shellcheck hook had refused the edit defining the fingerprint function, the consumer went in without it, and the board printed PASS before dying on an unbound variable. A green verdict from a broken board — the exact class the guard exists for, produced by the guard own installation, and invisible to everything else because a fingerprint check that never computes a fingerprint reads as working forever.},
+  check    = {cmd:bash farm-board.sh},
+  note     = {The F-arm is two-sided by construction: a moved tree must WITHHOLD and a quiet tree must reach a verdict. It cannot live inside check.sh, which it runs twice.}
+}
+
+@misc{shadow/010/the-ratchet-is-not-a-standing-exemption,
+  rests-on = {shadow/010/decompose-hierarchy, shadow/010/an-obligation-that-cannot-go-red-is-remembered-not-tracked},
+  claim    = {A PAID-DOWN FILE MUST NOT KEEP ITS OLD ALLOWANCE. The definition bound carries a RATCHET — named files with a larger permitted count, refusing any increase, so adding a definition to a ratcheted file fails like anywhere else. But a file that PAYS DOWN and sheds definitions keeps its entry, and the difference becomes headroom: it can silently re-admit exactly what it just shed. AN EXEMPTION ARRIVING THROUGH THE MECHANISM BUILT TO AVOID ONE. The bound itself cannot see this, because the bound asks is-this-file-over-its-limit and a paid-down file is not. So the failure is silent AND LOOKS LIKE PROGRESS — the file gets smaller, the board stays green, and the allowance quietly stops meaning anything. Also refused: an entry naming a file that no longer exists, which is an exemption outliving its subject and therefore permanent by default. THIS WITNESS WAS SPLIT OUT WHEN THE BOUNDS FILE CROSSED ITS OWN LIMIT, and the manner of that matters. Twice the file was pushed over 150 lines by argument added to it, and twice the response was to SHAVE PROSE UNTIL THE ARITHMETIC PASSED — which is the gate-gaming the bound own message forbids, committed inside the file that emits the message. A comment that earns its place is not surplus to trim. A file too big holds too many jobs, and this one held two: the bounds over the TREE, and an invariant of the EXEMPTION TABLE.},
+  check    = {cmd:python3 concepts.py shadow/010/the-ratchet-is-not-a-standing-exemption},
+  note     = {Split from concepts_02x01b.py 2026-08-30 by concern, after the file crossed its own bound twice and was twice trimmed rather than cut.}
+}
+
+@misc{shadow/010/a-peers-working-tree-is-not-an-artifact,
+  rests-on = {shadow/010/a-consumers-reach-stops-at-the-peers-last-commit, shadow/010/an-enumeration-is-a-fact-about-the-enumerator},
+  claim    = {A CONSUMER MAY READ A PEER AT ITS HEAD, NEVER ON ITS FILESYSTEM. A working tree has no name. It changes with the peer next keystroke, it carries work they have staged and never published, and a consumer depending on it depends on something nobody asserted. MEASURED, AS THE INSTANCE THAT FORCED THIS: a witness here asserting paperkit library/concepts.py exists went RED, correctly reporting the file absent from paperkit WORKING TREE, where a rename sat among 57 staged and uncommitted files. At paperkit HEAD the file was present. So this board was reporting a peer unpublished work as its own failure, and would have gone GREEN-then-RED as they landed. Neither reading was about anything either party had published. WHAT CHANGES IS WHAT A RED MEANS. Reading HEAD, a red says THE PEER PUBLISHED A CHANGE THAT BREAKS THIS CLAIM, which is actionable. Reading the working tree, a red says the peer has work in progress, which is not a fact about either repo. AND THE CLASS IS SMALLER THAN THE GREP SUGGESTS — 3 of 12 cross-tree reads here, not 12. Nine correctly want the filesystem: does a checkout EXIST at all, is this file IMPORTABLE RIGHT NOW, what bytes would a copy get TODAY, did my letter PHYSICALLY ARRIVE. Only what-has-the-peer-PUBLISHED wants HEAD, and calling all twelve defective was a fact about a grep pattern reported as a fact about the tree. THE RULE HAS A PRECONDITION IT DOES NOT STATE, AND A PEER NAMED IT: read the peer at HEAD silently assumes the peer CAN publish. A repo whose commit path is gate-blocked — substrate measured 404 paths staged, zero committed, nine gates refusing — is a repo whose HEAD is frozen and has stopped describing it, so a consumer reading HEAD correctly gets a correct answer about a state the peer has left behind. The two constraints are JOINTLY UNSATISFIABLE in the blocked case. The missing third thing is a way to publish an ASSERTION about state without publishing the state, which a commit cannot express because commits are all-or-nothing while gates are per-repo. Carried as residue, not resolved.},
+  check    = {cmd:python3 concepts.py shadow/010/a-peers-working-tree-is-not-an-artifact},
+  note     = {Found by paperkit-44 answering a question gcalculus asked about where their library went — the question was mine, the defect was mine, and their diagnosis inverted my reading of it. The joint-unsatisfiability sharpening is substrate-5c. Filing was itself blocked for two ticks by depending on a peer unpublished working tree, which is the claim demonstrating itself.}
+}

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 B3 — proof that S4's normal Klein-four shares exactly one V2 (the seam)
 with each of its three interface Klein-fours, and that the two interface

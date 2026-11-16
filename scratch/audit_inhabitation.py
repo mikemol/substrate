@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 audit_inhabitation.py — rigorous audit of whether the implemented operations
 actually inhabit their claimed V₄ cells and preserve the coherence laws.

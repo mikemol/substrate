@@ -1,0 +1,1 @@
+* order-5 at nv=10 (rung 9): if order-4 does NOT ignite independently (4=2²,

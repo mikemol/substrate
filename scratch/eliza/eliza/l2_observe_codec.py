@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.L2ObserveCodec — Level-2 codec: passing to sequitur is an opcode.
 
 Per the user's tetrative-axis directive:

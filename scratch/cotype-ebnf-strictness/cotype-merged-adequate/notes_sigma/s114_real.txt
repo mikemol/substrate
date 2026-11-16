@@ -1,0 +1,7 @@
+[REAL] (Σ-arc, block 12: FORWARD PATHS — appended (sort axis unchanged = distance to )
+
+- **G6 (sustain) — I did NOT fake the Agda arm, and the env-split was the recursive law, not a
+  compromise.** No ghc/.agdai here → I could have invented shim JSON to "complete" the demo (the
+  invent-attributions error). Instead: front-ends are env-bound, the READOUT is not → build+verify the
+  readout here on Python+CUDA, seam the Agda arm by its REAL interface (core_intern_agdai), let AI-Q
+  ru

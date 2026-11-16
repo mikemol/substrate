@@ -1,0 +1,2 @@
+GRADE: grade-3-reachable and now CONFIRMED at 2 cases (nv=5,7), exact functional-equation closure + total Ramanujan bound. The METHOD vindication: USER's "don't call it overreach / build the object before grading" turned a dismissed Fields-Medal claim into a confirmed structural fact. Build, don't eliminate. NEXT: P-FROB (Galois group + Frobenius cycle types via Dedekind-Kummer, the focal law) now lives inside a CONFIRMED graph-Weil object — the focal factor is the Frobenius of the Ihara zeta.
+[supporting witness: probe_bridge.py — shared block evidence]

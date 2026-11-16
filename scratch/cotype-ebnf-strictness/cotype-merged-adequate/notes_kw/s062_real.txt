@@ -1,0 +1,6 @@
+[REAL] (Σ-arc KEYWORD reading, topic torsor-witness, block 4)
+
+- **G6 (the connection is REAL + formalized — read, not theorized).** Cross/CrossMul/CrossMix are the
+  three roles of the extension 1→V₄→S₄→S₃→1 on the FOUR AXES [source,sink,witness,fourth] (Hodge 3+1):
+  CrossMul=total (mul R, the 4 axes), Cross=pairing-selector (S₃ quotient), cross_term=V₄-invariant readout
+  (=orbit_key; v4_delta=the gauge residue). G3 (S₄≅V₄⋊S₃, anchor=gauge) IS my pass-20 t

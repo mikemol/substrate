@@ -1,0 +1,1 @@
+- **Σ-SEAM-GLUE** [THE move — discharges M2 in Agda, closes the chirality question at gold standard] —

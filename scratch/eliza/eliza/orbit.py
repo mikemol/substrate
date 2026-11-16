@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.Orbit — V₄-cocycle decomposition of chambers.
 
 Per Substrate.Cocycles.V4Signature: every chamber x ∈ S₄ decomposes

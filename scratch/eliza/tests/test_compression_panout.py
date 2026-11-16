@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_compression_panout.py — head-to-head compression measurements.
 
 E5: gt baseline (dim2_codec.encode with default chooser)

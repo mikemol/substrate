@@ -1,0 +1,6 @@
+[REAL] (Σ-arc KEYWORD reading, topic bezout-gauge, block 12)
+
+- **G3 (the gate does REAL work, verified) — it grades + localizes, doesn't assert.** Faithful impl →
+  degree 0 (REALIZES); divergent (x*y vs x+y) → degree 8, shared 0.273, residues carry Add vs Mult.
+  The verification question ("does this artifact realize the proven algorithm") is answered
+  structurally, with the divergence LOCALIZED. This is the thing the whole substrate exists to do.

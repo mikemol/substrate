@@ -1,0 +1,1 @@
+- **Σ-BRIDGE-TABLES** (per formal-object need), **Σ-OMML-DOMAIN** (implicit-OMML fallback), **Σ-FOREST-

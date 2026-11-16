@@ -1,0 +1,1 @@
+- **G2 (the deliverable SHRANK to truth) — four exploratory files → ONE.** jea_grammar_fixpoint.py is the

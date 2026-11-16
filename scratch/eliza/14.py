@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Textual dashboard over the spectral manifold, with a learned predictor.
 
 14.py adds the C-layer the readmes promise: a char-trigram model accumulated

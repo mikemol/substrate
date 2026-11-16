@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Diagnostic: glyphs CONFORMED to the capsule surface (folded over the endcaps),
 extruded along the local surface normal — not cut by a flat slab. A TALL capsule
 and a SHORT (band-1-like) capsule, each TRUE/FALSE/UNSET spread, to confirm the

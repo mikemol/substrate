@@ -1,0 +1,2 @@
+Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_picircuit is now a DERIVATION OF the SPPF) `jea/jea_picircuit.py` rebuilt as `SPPFCircuit`: the network IS the interner (nodes + children-edges + fanin = a conductance DAG already). Conductances are READ OFF the existing edges (g_gen = (fanin+u
+[axis-signature: 110→111 | task: Δ-Π-circuit-derivation]

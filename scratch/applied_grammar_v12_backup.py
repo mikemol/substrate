@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 applied_grammar.py — M41 (v12): sum-type receipts (TermReceipt /
 StateReceipt / ObservationReceipt), StateOpSpec registry, fail-closed

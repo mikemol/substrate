@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Eliza.MatrixOps — matrix-operation formulation of codec primitives.
 
 Per the user's directive: pay attention to how the architecture is

@@ -1,0 +1,1 @@
+* edge energy |s_a − s_b·ω|² ; for uniform s=q it is |q|²|1−ω|². "Wilson loops of value ≠ 1 around

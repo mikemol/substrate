@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """EE5: Scale-4 RM(2, 4) word-mask atlas measurement.
 
 Verifies (EE-E1): ∃ corpus where scale-4 RM(2, 4) strictly outperforms

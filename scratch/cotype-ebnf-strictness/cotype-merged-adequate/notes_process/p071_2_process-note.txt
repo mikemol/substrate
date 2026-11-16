@@ -1,0 +1,1 @@
+* triple (2,3,5): Φ3,Φ5,Φ15 (all odd structure incl odd-odd cross) survive; everything 2-touching

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The idea lattice as a literal cocycle tower.
 
 The 2D figure stacks the nine levels as horizontal bands. Here the LiftMap

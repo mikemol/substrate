@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_substrate_atlas.py — Y-arc substrate self-application.
 
 Each cell is one (corpus × mode) measurement of V7. The matrix

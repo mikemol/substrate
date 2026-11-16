@@ -1,0 +1,1 @@
+- **THE RECURRING LESSON, landed on ME (named):** don't build a primitive that's a derivable projection.

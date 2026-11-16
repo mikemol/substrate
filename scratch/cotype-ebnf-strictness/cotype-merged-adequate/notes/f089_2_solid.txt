@@ -1,0 +1,2 @@
+SOLID: c=1 → mult 0 (a single p-cycle gives NO Φ_p; the bare cycle is the degenerate case, as the corrected detector confirmed). Multiplicity GROWS with c. These are real.
+[supporting witness: probe_inv_cond_count.py — shared block evidence]

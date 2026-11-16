@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """The S₃ Cayley graph as a hexagon, with the braid relation highlighted.
 
 S₃ = ⟨s₁, s₂ | s₁² = s₂² = (s₁s₂)³ = e⟩ — the adjacent transpositions

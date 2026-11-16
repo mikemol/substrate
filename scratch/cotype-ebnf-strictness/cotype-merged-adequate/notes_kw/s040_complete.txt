@@ -1,0 +1,6 @@
+[COMPLETE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 3)
+
+- **CONTRADICTION (USER caught, step 1): I wrote "jea's Intern is NOT reflective" one turn after the
+    grammar-fixpoint / self-extending-grammar arc established it IS.** The grammar-fixpoint PREDICT step
+    interns items whose op encodes productions, and those govern what subsequent PREDICT/COMPLETE intern —
+    the interned contents reprogram subsequent interning = exactly IMMEDIATE/does>. Wha

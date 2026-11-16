@@ -1,0 +1,1 @@
+witness: jea/coboundary_tower/probe_frobenius_inventory.py -------------------------------------------------------------------------------- Dedekind-Kummer Frobenius inventory (factor mod many unramified p, block degrees = Frob_p cycle type) on the (4,3) nv=7 non-cyclotomic factors (deg-6, deg-9): D

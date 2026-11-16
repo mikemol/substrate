@@ -1,0 +1,6 @@
+[OPEN] (Σ-arc, trace T1-forest, block 49: New shadow registrations (axis-tagged))
+
+### New shadow registrations (axis-tagged)
+| id | label | sig | move | grade |
+|----|-------|-----|------|-------|
+| **P51** | `DOCS-ARE-FALSIFICATION-TARGETS` | 110 | three other-LLM documents tested as FALSIFIERS not claims-to-accept. doc-1 (category-of-arcs): real lift (arcs as objects, indexed fibration) BUT treated the OPEN system as CLOSED coalgebra — "arcs compose" FALSIFIED (all arcs CO-EM

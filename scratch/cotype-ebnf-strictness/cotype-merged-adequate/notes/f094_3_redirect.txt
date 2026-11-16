@@ -1,0 +1,2 @@
+REDIRECT (the proof strategy this rules out and what's left): NOT block-local. Must be a GLOBAL eigenvalue argument on the full coupled C·P·Cpinv, handling the tree-projection coupling. The AA=0 root-deletion (take 2, rigorous) + BB≡X redundancy (take 2) are real structural facts, but the (p-1)²/2 count itself is coupled and needs the global argument. HARDER than a block count.
+[supporting witness: probe_c2_final.py — shared block evidence]

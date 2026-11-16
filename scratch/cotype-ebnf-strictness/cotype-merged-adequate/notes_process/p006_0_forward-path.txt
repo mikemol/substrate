@@ -1,0 +1,1 @@
+- **Σ-TORSOR-VERIFY** [FIRST, gates the rest] — on a population where every field is USED, does the

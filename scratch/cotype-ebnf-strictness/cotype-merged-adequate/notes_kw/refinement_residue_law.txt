@@ -1,0 +1,1 @@
+All readings valid; all residues retained. Both spines (keyword + trace) + refinement map now coexist. The quotient-correction was a perspective shift, not a fix; retaining both is the correct move per the substrate's own law.

@@ -1,0 +1,1 @@
+- **FORWARD: every proof-obligation Σ-symbol carries an explicit Given/When/Then with a mandatory

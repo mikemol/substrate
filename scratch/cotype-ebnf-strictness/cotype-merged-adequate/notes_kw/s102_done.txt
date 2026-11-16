@@ -1,0 +1,4 @@
+[DONE] (Σ-arc KEYWORD reading, topic sppf-grammar, block 10)
+
+- **Σ-IR-UNIFY** — LANDED by AI-Q (structured kinds canonical, translator retired, bridge shrank 134L);
+  DONE — drop from active forward (kept in reconciliation record).

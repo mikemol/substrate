@@ -1,0 +1,1 @@
+- **G7-a (witness-must-test-the-claim):** a witness cited for a claim must test THAT claim's assertion, not an adjacent property. The parity probe passed while "kernel = −1 axis" was false because it 

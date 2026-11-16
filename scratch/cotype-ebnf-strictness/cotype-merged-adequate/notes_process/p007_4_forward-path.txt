@@ -1,0 +1,1 @@
+- **Σ-OBLIGATION** spine-NAME (now PROBE-VALIDATED as real+discriminating). **Σ-IR-UNIFY** LANDED.

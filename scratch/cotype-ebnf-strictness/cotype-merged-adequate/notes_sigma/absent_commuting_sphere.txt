@@ -1,0 +1,1 @@
+[ABSENT FINDING] The commuting-sphere/Cayley-Dickson cocycle deep cell was discharged to --safe Agda by Delta0 (Jun 21 transcripts: 'discharge the entire commuting-sphere cocycle deep cell to --safe Agda completion'). It appears ONCE in the 5603-line cotype. This note preserves the escape.

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Fano plane in F2^3 — Blender/Cycles: transparency AND shadows together.
 
 The VTK wall was that order-independent transparency fought cast shadows. In

@@ -1,0 +1,1 @@
+- **So the recursive law on "central vs torsor": common structure = a BUNDLE.** Gauge in the base (sign

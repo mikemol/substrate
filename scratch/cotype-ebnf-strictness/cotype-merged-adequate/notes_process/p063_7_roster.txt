@@ -1,0 +1,1 @@
+* order-4 at nv=8 (rung 7, already affords nv÷4): if (4)/(4,4) ignites

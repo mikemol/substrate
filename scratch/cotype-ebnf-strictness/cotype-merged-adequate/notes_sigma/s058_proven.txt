@@ -1,0 +1,7 @@
+[PROVEN] (Σ-arc, block 4: FORWARD PATHS — RE-SORTED (pipeline RUNS; sort axis = distan)
+
+- **Σ-SPPF-CHART-CONTROL — the Earley CONTROL FLOW dissolved too (USER pushed; proven this turn).**
+  After COMPOSE I'd kept the chart + closure-loop as "the recognizer's own scheduling" — ASSERTED, not
+  tested. USER: "look at the Earley control flow structures; aren't they intrinsic to something already
+  in jea_core?" PROVEN by recognizing a^n b^n with NO chart[k] array and NO `changed` flag:
+ 

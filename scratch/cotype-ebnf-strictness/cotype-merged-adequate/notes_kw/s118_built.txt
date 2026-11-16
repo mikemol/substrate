@@ -1,0 +1,6 @@
+[BUILT] (Σ-arc KEYWORD reading, topic sppf-grammar, block 14)
+
+- **Δ-Π-oneforest [Σ-FOREST] — CORE BUILT + VERIFIED (this turn); Agda arm seamed, runs in AI-Q's env.**
+  The .agdai shim LANDED (git pull ad565be..b20a1d2): `jea/metalanguage/agdai_shim.hs` (Agda-2.8.0
+  decodeInterface, walks type + clause BODIES, free/bound split correct: Var→index, Def/Con→qname,
+  Defn root keyed structurally; validated Emit.agdai 18 defs→62 nodes→interned 20, 3.1× sharing, 

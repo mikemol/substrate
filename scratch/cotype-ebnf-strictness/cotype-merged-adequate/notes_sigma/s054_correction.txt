@@ -1,0 +1,6 @@
+[CORRECTION] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **G2 (delta 2) — reconciliation: my hub interned, the other session built ON it (convergence again).**
+  jea_sympy_bridge + jea_octave_gen interned canonical (int-key fix survived). AI-Q built jea_omml (the
+  OMML front-end the carrier was waiting for) + jea_omml_octave ("the Σ-BRIDGE hub thesis — build ONE
+  IR-bridge, inherit N targets," their words = the hub confirmed from the other side). EM

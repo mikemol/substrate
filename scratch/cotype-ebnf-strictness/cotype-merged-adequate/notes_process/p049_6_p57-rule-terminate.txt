@@ -1,0 +1,2 @@
+P57 RULE-TERMINATES-AT-INVOLUTION [100] "find the common structure, recursively" RECURSES TO the involution G_NOT. Every either/or's common structure IS G_NOT: (G_OR,G_AND)→G_NOT (De Morgan), (+constraint,−constraint)→G_NOT (forbid X = require G_NOT(X) = the reciprocal), (logic,solve)→the circuit (c
+[axis-signature: 100 | owner-field(raw): **WITNESSED**]

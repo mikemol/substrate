@@ -1,0 +1,6 @@
+[VERIFIED] (Σ-arc, block 3: Δ-Π-circuit-derivation [110→111] — DONE (this turn; jea_pici)
+
+- **COHERENT PROOF OBJECT assembled (USER: "pull it all together") — jea/SEAM_PROOF_OBJECT.md, built AS a
+    typed obligation (the form it argues for), NOT as a flowing narrative (which would be the prose-trust
+    failure it forbids).** 8 links L1–L8, each a Given/When/Then with witness status. The object practices
+    what it states; cited witnesses VERIFIED to exist + say what's attributed (tr

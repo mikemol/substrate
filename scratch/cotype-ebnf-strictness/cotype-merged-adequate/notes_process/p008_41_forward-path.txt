@@ -1,0 +1,1 @@
+- **(a) Over-read SharedMiddle.** Its Lα,Lβ,Lγ are three V₂s INSIDE ONE V₄ (Cayley left-translations);

@@ -1,0 +1,7 @@
+[DONE] (Σ-arc, block 24: Δ-Π-surprisal-truearity [100] — DONE (recorded above; was th)
+
+### Δ-Π-surprisal-truearity [100] — DONE (recorded above; was the standing gap, now closed)
+The coboundary-map fix, built at TWO scopes (one principle, the recursive law):
+(1) PER-NODE: surprisal now uses DISTINCT children (diamond-collapse at depth 1) in BOTH
+`jea_picircuit._axis_surprisal` AND `jea_pysim.cohomology` (was raw children there) --
+consistent; eliza idiom fraction 43%→40%. (2) CLUSTE

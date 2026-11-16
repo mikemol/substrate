@@ -1,0 +1,1 @@
+- **Σ-OBLIGATION** — the spine (a NAME). **Σ-IR-UNIFY** — LANDED (AI-Q). (GOAL Σ-FOREST core DONE+handed;

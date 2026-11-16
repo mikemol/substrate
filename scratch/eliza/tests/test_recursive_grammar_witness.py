@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_recursive_grammar_witness.py — substrate-honest gates for
 the recursive chain-grammar inference.
 

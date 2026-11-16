@@ -1,0 +1,1 @@
+* DEDEKIND-KUMMER: reduce charpoly mod p; the factor-block DEGREES = the cycle type of Frob_p

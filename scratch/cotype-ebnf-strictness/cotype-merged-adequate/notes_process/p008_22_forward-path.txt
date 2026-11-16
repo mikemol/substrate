@@ -1,0 +1,1 @@
+- Flags **the critical read BEFORE Agda: `verify_architectural_primitives_generate_a4z2`'s BODY** decides

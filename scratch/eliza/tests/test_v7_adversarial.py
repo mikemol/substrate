@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """tests/test_v7_adversarial.py — V7 (predictor-ring) sweep across the
 adversarial corpora used for the U-arc + V-arc.
 

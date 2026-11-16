@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Hodge duality on the 3-simplex — the dual-grade involution ★.
 
 `dual-grade n k = n − k` from

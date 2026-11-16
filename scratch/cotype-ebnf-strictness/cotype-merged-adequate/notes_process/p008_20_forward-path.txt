@@ -1,0 +1,1 @@
+- Splits M2 into TWO obligations at TWO layers (a table up top): **A. the seam** = gauge/interface V₄s

@@ -1,0 +1,2 @@
+THE ACTUAL ENUMERATION (measured, 5 mixed elements, no dividing-out, no Φ_m assumption): (2,3) sqfree coprime -> Φ1, Φ3 + one deg-3 noncyc (4,3) primepow×coprime -> ZERO cyclotomic, deg-6 ⊕ deg-9 noncyc (2² JUTS OFF, as predicted) (4,2) share prime 2 -> Φ1 + deg-3,deg-6 noncyc (non-coprime entangles) (2,2,3) two-2s + 3 -> Φ1,Φ2,Φ3,Φ6 + small noncyc residue (Φ6 = the 2·3 interaction APPEARS) (3,3) control -> Φ1,Φ3 + deg-3,deg-3 noncyc
+[supporting witness: probe_interaction_lattice.py — shared block evidence]

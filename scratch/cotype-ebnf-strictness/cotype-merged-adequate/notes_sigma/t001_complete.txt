@@ -1,0 +1,6 @@
+[COMPLETE] (Σ-arc, trace T2-residue, block 0: (preamble))
+
+- **THE LOAD-BEARING GAP = the 100 (pure-GS) point: NOW POPULATED (2026-06-19).** The goal decomposition
+  was missing because the goal-axis itself was wrong (see corrected header). The 100 point is the **JEA
+  three-trace decomposition** (T1 eval-SPPF / T2 EEA-residue / T3 decision-WAL), read off `jea_eval`. With
+  P12 (`PARITY-WITNESS`, odd-cyc-dim forces the witness kernel) ALSO at 100, **L₁ {1

@@ -1,0 +1,2 @@
+NEXT (the genuine construction, labeled): P-ARITY2 = build the non-equivariant 2-face projection (2- spanning-tree pseudo-inverse), measure ramification at k=2 vs k=1. Real build, not a quick probe; do it carefully or flag — a botched null misleads. Owner Π0. This is the decisive experiment for the suppression question, still pending.
+[supporting witness: probe_arity_baseline.py — shared block evidence]

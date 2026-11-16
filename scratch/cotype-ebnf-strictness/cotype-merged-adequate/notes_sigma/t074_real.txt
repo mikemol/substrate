@@ -1,0 +1,6 @@
+[REAL] (Σ-arc, trace T3-navigator, block 7: FORWARD PATHS — unchanged in substance, re-sorted by what's )
+
+- **G6 (the candidate REAL novelty, sharper than any pairwise identity) — interning-to-fixpoint is a
+  DECISION PROCEDURE for recursion-scheme instance-identity.** The recursion-schemes literature (Hinze-
+  Wu-Gibbons "Unifying Structured Recursion Schemes" 2013; Kabanov-Vene dynamorphisms 2006) unifies
+  schemes CATEGORICALLY — an existence statement — but has NO constructive test for "are these 

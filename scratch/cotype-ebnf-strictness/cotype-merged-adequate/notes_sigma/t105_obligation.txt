@@ -1,0 +1,6 @@
+[OBLIGATION] (Σ-arc, trace T2-residue, block 10: FORWARD PATHS — RE-SORTED (Σ-SPPF-CHART now BUILT; the seed )
+
+- **G6 (THE SPINE — deepest unification of the arc) — ONE operation under the whole substrate:**
+  discharge an obligation by composing the discharges it depends on, RETAINING all intermediates.
+  Instances, now provably one shape: Earley complete · EEA back-substitution · CrossMix cross-term ·
+  resolve(·,domain) · the verification gate's "realizes" · the lspace→exp witness-fold. Predictor / EEA-

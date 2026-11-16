@@ -1,0 +1,1 @@
+2. INT-KEYED dicts ((2:2,3:1)) serialize but DON'T round-trip — JSON coerces int keys to strings,

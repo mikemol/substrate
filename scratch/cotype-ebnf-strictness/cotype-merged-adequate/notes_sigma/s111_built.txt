@@ -1,0 +1,7 @@
+[BUILT] (Σ-arc, block 12: FORWARD PATHS — appended (sort axis unchanged = distance to )
+
+- **Σ-OCTAVE = sympy→octave — BUILT (this turn); and it CAUGHT + FIXED a Σ-BRIDGE bug.**
+  `jea/jea_octave_gen.py`: THIN orchestration over `sympy.codegen('octave')` (the canonical unparser
+  for this edge — stood on, NOT hand-written). `emit_octave(name, forest_root, intern, arg_order,
+  outputs, translator)`: forest→sympy (Σ-BRIDGE project_sympy) → codegen('octave') → named .m function;
+  multi-

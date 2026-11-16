@@ -1,0 +1,2 @@
+P25 CUDA-LOWERER [100] cuda-interning: the MISSING half of "intern all its own code." Python AST+CST lowerers exist; NO CUDA→IR lowerer found. Goal-side gap; gates the cross-language (Python↔CUDA) self-verification.
+[axis-signature: 100 | owner-field(raw): AI-Δ0]

@@ -1,0 +1,6 @@
+[PROVEN] (Σ-arc, block 44: New shadow registrations (axis-tagged))
+
+### New shadow registrations (axis-tagged)
+| id | label | sig | move | grade |
+|----|-------|-----|------|-------|
+| **P35** | `GCALC-IS-THE-METRIC` | 011 | the 3 "suspended generators" for "nearest transformation satisfying X / forbidding Y" (metric/predicate/search) COLLAPSE into g-calculus: effective-resistance (a PROVEN metric — symmetric, triangle ineq, the resistance distance), X/Y as mesh D

@@ -1,0 +1,10 @@
+[OBLIGATION] (Σ-arc KEYWORD reading, topic sppf-grammar, block 9)
+
+- **Σ-OBLIGATION** — the spine (a NAME). **Σ-IR-UNIFY** — LANDED (AI-Q). (GOAL Σ-FOREST core DONE+handed;
+  edges = Σ-FOREST-MATCH + Σ-FOREST-AGDA.)
+
+
+
+Iterated-subtraction (G4): passes 1–15 SUBTRACTED. A CONTEXT FLUSH occurred mid-pass-15 (the Σ-SPPF-
+CHART fix was applied + the compaction summary flagged it "interrupted before re-run"). This pass is a
+RECONCILIATION, not a new build: confirm the

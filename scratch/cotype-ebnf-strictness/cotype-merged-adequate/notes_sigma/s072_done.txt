@@ -1,0 +1,4 @@
+[DONE] (Σ-arc, block 7: FORWARD PATHS — unchanged in substance, re-sorted by what's )
+
+- **Σ-PRIOR-ART** [asset/report, mostly DONE] — the literature map exists (pass 18). Use to cite-not-claim
+  the infrastructure; feeds Σ-SCHEME-DECIDE's novelty framing.

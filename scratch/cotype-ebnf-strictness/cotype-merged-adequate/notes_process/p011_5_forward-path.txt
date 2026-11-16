@@ -1,0 +1,1 @@
+- **jea_cuda.py: two real DRIFT-FIXES the other session found by RUNNING it (closing edges I'd punted):**
